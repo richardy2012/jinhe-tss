@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<strategies> 
+  <strategy code="taskpool" name="端口扫描任务池"> 
+    <poolClass>com.jinhe.tss.cache.extension.ReusablePool</poolClass>  
+    <poolContainerClass>com.jinhe.tss.cache.extension.MapContainer</poolContainerClass>  
+    <cyclelife>5000</cyclelife>  
+    <interruptTime>1000</interruptTime>  
+	<poolSize>100</poolSize>  
+    <initNum>10</initNum>  
+    <disabled>0</disabled>  
+    <customizerClass>com.jinhe.tss.cache.ScannerTaskPoolCustomizer</customizerClass>  
+    <accessMethod>1</accessMethod>  
+    <remark>上次修改时间2007-01-17 23:20:44, 修改人JK</remark> 
+  </strategy>  
+  <strategy code="threadpool" name="线程池"> 
+    <poolClass>com.jinhe.tss.cache.extension.threadpool.ThreadPool</poolClass>  
+	<poolContainerClass>com.jinhe.tss.cache.extension.MapContainer</poolContainerClass>  
+    <cyclelife>0</cyclelife>  
+    <interruptTime>1000</interruptTime>  
+	<poolSize>10</poolSize>  
+    <initNum>5</initNum>  
+    <disabled>0</disabled>  
+    <customizerClass>com.jinhe.tss.cache.extension.threadpool.ThreadPoolCustomizer</customizerClass>  
+    <remark>上次修改时间2007-01-17 23:46:08, 修改人JK</remark> 
+  </strategy>  
+</strategies>

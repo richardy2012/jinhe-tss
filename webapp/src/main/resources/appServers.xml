@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<servers>
+	<server code="TSS"  userDepositoryCode="tss" name="TSS"  sessionIdName="JSESSIONID" baseURL="http://localhost:8088/tss"/>
+	<server code="DEMO" userDepositoryCode="tss" name="Demo" sessionIdName="JSESSIONID" baseURL="http://localhost:8088/demo"/>
+</servers>

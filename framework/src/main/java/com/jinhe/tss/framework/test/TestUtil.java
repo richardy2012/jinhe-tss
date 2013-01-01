@@ -1,0 +1,109 @@
+package com.jinhe.tss.framework.test;
+
+import java.io.File;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.jinhe.tss.framework.Config;
+import com.jinhe.tss.framework.component.log.LogQueryCondition;
+import com.jinhe.tss.framework.component.log.LogService;
+import com.jinhe.tss.framework.persistence.IDao;
+import com.jinhe.tss.framework.persistence.connectionpool.DBHelper;
+import com.jinhe.tss.util.EasyUtils;
+import com.jinhe.tss.util.FileHelper;
+import com.jinhe.tss.util.URLUtil;
+
+public class TestUtil {
+	
+	protected static Logger log = Logger.getLogger(TestUtil.class);
+	
+	static final String PROJECT_NAME = "jinhe-daodao";
+	
+	public static String getProjectDir() {
+        String path = URLUtil.getResourceFileUrl("com/jinhe/tss").getPath();
+        return path.substring(1, path.indexOf(PROJECT_NAME) + 12);
+    }
+	
+    public static String getInitSQLDir() {
+    	String dbType = "mysql";
+    	if( Config.isH2Database() ) {
+    		dbType = "h2";
+    	}
+        return getProjectDir() + "/webapp/sql/" + dbType;
+    }
+    
+    public static String getSQLDir() {
+        return getProjectDir() + "/webapp/sql";
+    }
+    
+    public static void excuteSQL(String sqlDir) {  
+        log.info("正在执行目录：" + sqlDir+ "下的SQL脚本。。。。。。");  
+        try {  
+            Connection conn = DBHelper.getConnection();
+            Statement stat = conn.createStatement();  
+            
+            List<File> sqlFiles = FileHelper.listFilesByTypeDeeply(".sql", new File(sqlDir));
+            for(File sqlFile : sqlFiles) {
+            	String fileName = sqlFile.getName();
+				if("roleusermapping-init.sql".equals(fileName)) {
+                    continue;
+                }
+            	
+            	log.info("开始执行SQL脚本：" + fileName+ "。");  
+            	
+                String sqls = FileHelper.readFile(sqlFile);
+                String[] sqlArray = sqls.split(";");
+                for(String sql : sqlArray) {
+                	if( EasyUtils.isNullOrEmpty(sql) ) continue;
+                	
+                	log.debug(sql);  
+                	stat.execute(sql);
+                }
+				
+                log.info("SQL脚本：" + fileName+ " 执行完毕。");  
+            }
+ 
+            log.info("成功执行目录：" + sqlDir+ "下的SQL脚本!");
+            
+            stat.close();  
+            conn.close();  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+            throw new RuntimeException("目录：" + sqlDir+ "下的SQL脚本执行出错：", e);
+        }
+    }
+    
+    public static int printLogs(LogService logService) {
+        try {
+            Thread.sleep(1*1000); // 休息一秒，等日志生成
+        } catch (InterruptedException e) {
+        } 
+        
+        LogQueryCondition condition = new LogQueryCondition();
+        Object[] result = logService.getLogsByCondition(condition);
+        
+        List<?> logs = (List<?>) result[0];
+        Integer logCount = (Integer) result[1];
+        
+        log.debug("本次测试共生成了 " + logCount + " 条日志");
+        for(Object temp : logs) {
+            log.debug(temp);
+        }
+        log.debug("\n");
+        
+        return logs.size();
+    }
+    
+    public static void printEntity(IDao<?> dao, String entity) {
+        List<?> list = dao.getEntities("from " + entity );
+        
+        log.debug("表【" + entity + "】的所有记录:");
+        for(Object temp : list) {
+            log.debug(temp);
+        }
+        log.debug("\n");
+    }
+}

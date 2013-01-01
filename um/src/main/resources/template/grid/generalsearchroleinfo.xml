@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grid version="2">
+	<declare sequence="true">
+		<column caption="角色ID" name="roleId" mode="string" display="none"/>
+		<column caption="用户ID" name="userId" mode="string" display="none"/>
+		<column caption="姓名" name="userName" mode="string" align="center"/>
+		<column caption="角色名" name="roleName" mode="string" align="center"/>
+		<column caption="描述" name="description" mode="string" align="left"/>
+	</declare>
+	<data>
+	</data>
+</grid>

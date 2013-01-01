@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+   version="1.0">
+ 
+	<!-- um -->	
+	<entity class="com.jinhe.tss.um.entity.Application"/>
+	<entity class="com.jinhe.tss.um.entity.Group"/>
+	<entity class="com.jinhe.tss.um.entity.GroupUser"/>
+	<entity class="com.jinhe.tss.um.entity.Message"/>
+	<entity class="com.jinhe.tss.um.entity.Operation"/>
+	<entity class="com.jinhe.tss.um.entity.PasswordRule"/>
+	<entity class="com.jinhe.tss.um.entity.ResourceType"/>
+	<entity class="com.jinhe.tss.um.entity.ResourceTypeRoot"/>
+	<entity class="com.jinhe.tss.um.entity.Role"/>
+	<entity class="com.jinhe.tss.um.entity.RoleGroup"/>
+	<entity class="com.jinhe.tss.um.entity.RoleUser"/>
+	<entity class="com.jinhe.tss.um.entity.Strategy"/>
+	<entity class="com.jinhe.tss.um.entity.User"/>
+	
+	<entity class="com.jinhe.tss.um.entity.permission.RoleUserMapping"/>
+	<entity class="com.jinhe.tss.um.entity.permission.ViewRoleUser"/>
+	<entity class="com.jinhe.tss.um.entity.permission.ViewRoleUser4SubAuthorize"/>
+	
+	<entity class="com.jinhe.tss.um.entity.permission.resources.ApplicationResources"/>
+	<entity class="com.jinhe.tss.um.entity.permission.resources.AssistGroupResources"/>
+	<entity class="com.jinhe.tss.um.entity.permission.resources.MainGroupResources"/>
+	<entity class="com.jinhe.tss.um.entity.permission.resources.OtherGroupResources"/>
+	<entity class="com.jinhe.tss.um.entity.permission.resources.RoleResources"/>
+	
+	<entity class="com.jinhe.tss.um.entity.permission.unsupplied.ApplicationPermissions"/>
+	<entity class="com.jinhe.tss.um.entity.permission.unsupplied.AssistGroupPermissions"/>
+	<entity class="com.jinhe.tss.um.entity.permission.unsupplied.MainGroupPermissions"/>
+	<entity class="com.jinhe.tss.um.entity.permission.unsupplied.OtherGroupPermissions"/>
+	<entity class="com.jinhe.tss.um.entity.permission.unsupplied.RolePermissions"/>
+	
+	<entity class="com.jinhe.tss.um.entity.permission.supplied.ApplicationPermissionsFull"/>
+	<entity class="com.jinhe.tss.um.entity.permission.supplied.AssistGroupPermissionsFull"/>
+	<entity class="com.jinhe.tss.um.entity.permission.supplied.MainGroupPermissionsFull"/>
+	<entity class="com.jinhe.tss.um.entity.permission.supplied.OtherGroupPermissionsFull"/>
+	<entity class="com.jinhe.tss.um.entity.permission.supplied.RolePermissionsFull"/>
+
+</entity-mappings>

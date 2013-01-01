@@ -1,0 +1,55 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.0//EN" "http://www.opensymphony.com/xwork/xwork-1.0.dtd">
+
+<xwork>
+    <package name="ums" extends="default" 
+    	externalReferenceResolver="com.opensymphony.xwork.spring.SpringExternalReferenceResolver">
+		
+		<action name="group" class="com.jinhe.tss.um.action.GroupAction">
+			<external-ref name="service" required="true">GroupService</external-ref>
+			<external-ref name="appService" required="true">ApplicationService</external-ref>
+			<external-ref name="propertyService" required="true">PropertyService</external-ref>
+		</action>
+		
+		<action name="user" class="com.jinhe.tss.um.action.UserAction">
+			<external-ref name="userService" required="true">UserService</external-ref>
+			<external-ref name="applicationService" required="true">ApplicationService</external-ref>
+			<external-ref name="propertyService" required="true">PropertyService</external-ref>
+		</action>
+		
+		<action name="role" class="com.jinhe.tss.um.action.RoleAction">
+			<external-ref name="roleService" required="true">RoleService</external-ref>
+			<external-ref name="permissionService" required="true">PermissionService</external-ref>			
+		</action>
+		
+		<action name="rule" class="com.jinhe.tss.um.action.StrategyAction">
+			<external-ref name="service" required="true">StrategyService</external-ref>
+		</action>
+		
+		<action name="appResource" class="com.jinhe.tss.um.action.ApplicationResourceAction">
+			<external-ref name="applicationService" required="true">ApplicationService</external-ref>
+		</action>
+		
+		<action name="resourceRegister" class="com.jinhe.tss.um.action.ResourceRegisterAction">
+			<external-ref name="service" required="true">ResourceRegisterService</external-ref>
+			<interceptor-ref name="stand-upload-interceptors"/>
+		</action>
+		
+		<action name="passwordrule" class="com.jinhe.tss.um.action.PasswordRuleAction">
+			<external-ref name="service" required="true">PasswordRuleService</external-ref>
+		</action>
+		
+		<action name="message" class="com.jinhe.tss.um.action.MessageAction">
+			<external-ref name="service" required="true">MessageService</external-ref>
+		</action>
+		
+	    <action name="generalSearch" class="com.jinhe.tss.um.search.GeneralSearchAction">
+			<external-ref name="service" required="true">GeneralSearchService</external-ref>
+			<external-ref name="remoteService" required="true">RemoteSearchService</external-ref>
+		</action>
+		
+		<action name="syncdata" class="com.jinhe.tss.um.syncdata.SyncAction">
+			<external-ref name="syncService" required="true">SyncService</external-ref>
+			<external-ref name="groupService" required="true">GroupService</external-ref>
+		</action>
+ 	</package>
+</xwork>

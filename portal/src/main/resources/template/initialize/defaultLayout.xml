@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+	<property>
+		<name>默认布局器</name>
+		<portNumber>-1</portNumber>
+	</property>
+	<html>
+		<![CDATA[
+			<table id="${id}" border="0" width="100%" cellspacing="0" cellpadding="0">
+				<tr>
+					<td>${port0}</td>
+				</tr>
+			</table>
+		]]>
+	</html>
+</layout>

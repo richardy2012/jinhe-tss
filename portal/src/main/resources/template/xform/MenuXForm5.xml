@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xform>
+	<declare prefix="navigator">
+		<column name="id" caption="ID号" mode="hidden" editable="false"/>
+		<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>	
+		<column name="contentId" caption="" mode="hidden" />
+		<column name="contentName" caption="局部门户结构" mode="function" cmd="getContent('contentName','contentId', 2)"/>	
+		<column name="targetId" caption="" mode="hidden" />
+		<column name="targetName" caption="目标版面/页面" mode="function" cmd="getContent('targetName','targetId', 1)"/>				
+		<column name="description" caption="描述信息" mode="string"/>
+		
+		<column name="parentId" caption="" mode="hidden"/>
+		<column name="portalId" caption="" mode="hidden"/>
+		<column name="type" caption="" mode="hidden" display="none"/>
+		<column name="seqNo" caption="" mode="hidden" display="none"/>	
+	</declare>
+	<layout>
+		<TR>
+			<TD width="100"><label binding="name"/></TD>
+			<TD><input binding="name" type="text"/></TD>
+		</TR>
+		<TR>
+			<TD width="100" valign="top"><label binding="contentName"/></TD>
+			<TD><input binding="contentName"/></TD>
+		</TR>
+		<TR>
+			<TD width="100" valign="top"><label binding="targetName"/></TD>
+			<TD><input binding="targetName"/></TD>
+		</TR>
+		<TR>
+			<TD width="100"><label binding="description"/></TD>
+			<TD><textarea binding="description" style="width:100%;height:100"/></TD>
+		</TR>
+	</layout>
+	<data>
+	</data>
+</xform>

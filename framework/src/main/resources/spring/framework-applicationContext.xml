@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context-3.0.xsd  http://www.springframework.org/schema/tx  http://www.springframework.org/schema/tx/spring-tx-3.0.xsd  http://www.springframework.org/schema/aop  http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+ 
+ 	<context:annotation-config />
+	<context:property-placeholder location="classpath:application.properties"/>
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"><value>${db.connection.driver_class}</value></property>
+		<property name="url"><value>${db.connection.url}</value></property>
+		<property name="username"><value>${db.connection.username}</value></property>
+		<property name="password"><value>${db.connection.password}</value></property>
+	</bean>
+	
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+	
+	<bean id="CommonDao" class="com.jinhe.tss.framework.persistence.CommonDao" />
+	<bean id="DBOnlineUserManager" class="com.jinhe.tss.framework.sso.online.database.DBOnlineUserManager" />
+	
+	<!-- config Interceptor -->
+	<bean id="operateInfoInterceptor" class="com.jinhe.tss.framework.persistence.entityaop.OperateInfoInterceptor" />
+	<bean id="decodeInterceptor"  class="com.jinhe.tss.framework.persistence.entityaop.DecodeInterceptor" />
+	
+	<bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="beanNames"> <value>*DAO, *Dao</value> </property>
+		<property name="interceptorNames">
+			<list>
+				<value>operateInfoInterceptor</value>
+				<value>decodeInterceptor</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="businessLogger" class="com.jinhe.tss.framework.component.log.BusinessLogger" />
+	<bean id="businessLogInterceptor" class="com.jinhe.tss.framework.component.log.BusinessLogInterceptor"/>
+	
+	<bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="beanNames"> <value>*Service</value> </property>
+		<property name="interceptorNames">
+			<list>
+				<value>businessLogInterceptor</value>
+			</list>
+		</property>
+	</bean>
+ 
+	
+	<!-- 		DAO  config		-->
+	<bean id="ParamDao"    class="com.jinhe.tss.framework.component.param.ParamDaoImpl"/>
+	
+	<!--        Service config    -->	
+	<bean id="ParamService"    class="com.jinhe.tss.framework.component.param.ParamServiceImpl" />
+	<bean id="LogService"      class="com.jinhe.tss.framework.component.log.LogServiceImpl" />
+ 
+</beans>

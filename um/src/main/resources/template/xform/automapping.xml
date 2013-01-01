@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xform>
+	<declare prefix="autoMappingDto">
+		<column name="type" caption="对应方式" mode="string" editor="comboedit" editorvalue="0|1|2|3" editortext="用户帐号|证件号|员工号|姓名" empty="false"/>
+		<column name="toGroupId" caption="" mode="string"/>
+		<column name="groupName" caption="对应组" mode="function" cmd="chooseAutoMappingGroup('toGroupId','groupName')" empty="false"/>
+		<column name="mode" caption="对应类型" mode="string" editor="comboedit" editorvalue="0|1" editortext="单组对应|完全对应" empty="false"/>
+	</declare>
+	<layout>
+		<TR>
+			<TD width="80"><label binding="type"/>：</TD>
+			<TD><input binding="type" class="comboedit"/></TD>
+		</TR>
+		<TR>
+			<TD width="80"><label binding="groupName"/>：</TD>
+			<TD><input binding="groupName"/></TD>
+		</TR>
+		<TR>
+			<TD width="80"><label binding="mode"/>：</TD>
+			<TD><input binding="mode"/></TD>
+		</TR>
+	</layout>
+	<data>
+	</data>
+</xform>

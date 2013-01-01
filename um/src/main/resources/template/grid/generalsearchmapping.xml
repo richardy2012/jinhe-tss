@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grid version="2">
+	<declare sequence="true">
+		<column caption="用户ID" name="id" mode="string" display="none"/>
+		<column caption="用户名"  name="userName" mode="string" align="center"/>
+		<column caption="用户账号" name="loginName" mode="string" align="center"/>
+		<column caption="所在组ID" name="groupId" mode="string" align="center" display="none"/>
+		<column caption="对应用户名" name="appUserName" mode="string" align="center"/>
+		<column caption="对应用户所在组" name="appUserGroupName" mode="string" align="center"/>
+	</declare>
+	<data>
+	</data>
+</grid>

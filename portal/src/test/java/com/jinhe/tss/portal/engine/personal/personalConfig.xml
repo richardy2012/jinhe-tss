@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<personal>
+	<structure>
+		<page id="71" decoratorId="72" layoutId="2">
+			<portletInstanse id="72" decoratorId="74" portletId="83"/>
+			<section id="73" decoratorId="72" layoutId="77">
+				<portletInstanse id="74" decoratorId="72" portletId="70"/>
+				<section id="75" decoratorId="72" layoutId="78">
+					<portletInstanse id="76" decoratorId="73" portletId="85"/>
+					<portletInstanse id="77" decoratorId="73" portletId="85"/>
+					<portletInstanse id="78" decoratorId="73" portletId="85"/>
+					<portletInstanse id="79" decoratorId="73" portletId="85"/>
+					<portletInstanse id="81" decoratorId="73" portletId="85"/>
+					<portletInstanse id="80" decoratorId="73" portletId="85"/>
+				</section>
+			</section>
+			<portletInstanse id="82" decoratorId="72" portletId="63"/>
+		</page>
+	</structure>
+	<params>
+		<param structureId = "81" elementId = "85" class = "portlet">
+			<url>/pms/article2.portal?1=1</url>
+			<menuId>41</menuId>
+			<articleId>1</articleId>
+			<channelId>2</channelId>
+		</param>
+	</params>
+</personal>
+
+

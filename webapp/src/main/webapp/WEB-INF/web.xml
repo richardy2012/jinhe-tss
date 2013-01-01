@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+	<display-name>TSS</display-name>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			classpath*:spring/*applicationContext.xml
+		</param-value>
+	</context-param>
+	<context-param>
+		<param-name>contextClass</param-name>
+		<param-value>
+			com.jinhe.tss.framework.web.GlobalSuportXmlWebApplicationContext
+		</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<servlet>  
+        <servlet-name>springMVC</servlet-name>  
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>  
+        <load-on-startup>1</load-on-startup>  
+    </servlet>     
+	<servlet-mapping>  
+       <servlet-name>springMVC</servlet-name>  
+       <url-pattern>*.form</url-pattern>  
+    </servlet-mapping> 
+	<servlet-mapping> 
+		<servlet-name>springMVC</servlet-name> 
+		<url-pattern>/remote/*</url-pattern> 
+	</servlet-mapping> 
+	
+	<filter-mapping>
+		<filter-name>EncodingFilter</filter-name>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>CatchExceptionFilter</filter-name>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>ContextFilter</filter-name>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>PortalPermissionFilter</filter-name>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>AutoLoginFilter</filter-name>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>HttpProxyFilter</filter-name>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>XmlHttpDecodeFilter</filter-name>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>AccessingCheckFilter</filter-name>
+	</filter-mapping>
+	
+
+	<welcome-file-list>
+		<welcome-file>login.htm</welcome-file>
+	</welcome-file-list>
+</web-app>

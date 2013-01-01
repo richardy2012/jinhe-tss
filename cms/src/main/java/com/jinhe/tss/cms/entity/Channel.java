@@ -1,0 +1,238 @@
+package com.jinhe.tss.cms.entity;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import com.jinhe.tss.cms.CMSConstants;
+import com.jinhe.tss.cms.entity.permission.ChannelResourceView;
+import com.jinhe.tss.framework.exception.BusinessException;
+import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
+import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
+import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
+import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
+import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
+import com.jinhe.tss.um.permission.IResource;
+import com.jinhe.tss.util.BeanUtil;
+
+/**
+ * 站点、栏目类
+ */
+@Entity
+@Table(name = "cms_channel", uniqueConstraints = { 
+        @UniqueConstraint(name="MULTI_NAME_CHANNEL", columnNames = { "PARENTID", "name" })
+    })
+@SequenceGenerator(name = "channel_sequence", sequenceName = "channel_sequence", initialValue = 1, allocationSize = 1)
+public class Channel extends OperateInfo implements IXForm, ILevelTreeNode, IDecodable, IResource {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "channel_sequence")
+	private Long    id;
+    private String  name;    // 名称(站点或栏目名称)
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Channel site;  // 栏目所在站点ID
+    
+    private String  publishArticleClassName; //发布文章实现类
+    
+	private String  path;        // 发布路径
+	private String  imagePath;   // 图片上传根路径
+	private String  docPath;     // 附件上传根路径
+	
+    private String  overdueDate; // 过期时间
+    private String  remark;      // 站点描述
+    
+    // 状态值信息
+    private Integer disabled = CMSConstants.FALSE; // 状态 0:启动 1：停用
+    
+    // 树结构信息
+    private Long    parentId; // 父节点编号 缺省为0，即无父节点
+    
+    @Column(nullable = false)
+    private Integer seqNo;    // 站点或栏目显示顺序
+    private String  decode;   // 层码
+    private Integer levelNo;  // 层次值
+
+	public void setDecode(String decode) {
+		this.decode = decode;
+	}
+ 
+	public void setLevelNo(Integer levelNo) {
+		this.levelNo = levelNo;
+	}
+ 
+	public String getDocPath() {
+		return docPath;
+	}
+ 
+	public void setDocPath(String docPath) {
+		this.docPath = docPath;
+	}
+ 
+	public Long getId() {
+		return id;
+	}
+ 
+	public void setId(Long id) {
+		this.id = id;
+	}
+ 
+	public String getImagePath() {
+		return imagePath;
+	}
+ 
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+ 
+	public String getName() {
+		return name;
+	}
+ 
+	public void setName(String name) {
+		this.name = name;
+	}
+ 
+	public String getOverdueDate() {
+		return overdueDate;
+	}
+ 
+	public void setOverdueDate(String overdueDate) {
+		this.overdueDate = overdueDate;
+	}
+ 
+	public Long getParentId() {
+		return parentId;
+	}
+ 
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
+	}
+ 
+	public String getPath() {
+		return path;
+	}
+ 
+	public void setPath(String path) {
+		this.path = path;
+	}
+ 
+	public Integer getSeqNo() {
+		return seqNo;
+	}
+ 
+	public void setSeqNo(Integer seqNo) {
+		this.seqNo = seqNo;
+	}
+ 
+	public Integer getDisabled() {
+		return disabled;
+	}
+ 
+	public void setDisabled(Integer status) {
+		this.disabled = status;
+	}
+ 
+	public boolean isSite() {
+		return this.id.equals(site.getId());
+	}
+    
+	public Map<String, Object> getAttributesForXForm() {
+		Map<String, Object> attributes = new HashMap<String, Object>();
+		BeanUtil.addBeanProperties2Map(this, attributes);
+		return attributes;
+	}
+
+	public TreeAttributesMap getAttributes() {
+		TreeAttributesMap map = new TreeAttributesMap(id, name);
+		map.put("disabled", this.disabled);
+		map.put("seqNo", this.seqNo);
+		map.put("siteId", this.site.getId());
+		map.put("isSite", isSite() ? 1 : 0);
+		map.put("resourceTypeId", getResourceType());
+ 
+        if (isSite()) {
+            if (CMSConstants.FALSE.equals(disabled)) {
+                map.put("icon", "../platform/images/icon/site.gif");
+            } else {
+                map.put("icon", "../platform/images/icon/site_2.gif");
+            }
+        } else {
+            if (CMSConstants.FALSE.equals(disabled)) {
+                map.put("icon", "../platform/images/icon/channel.gif");
+            } else  {
+                map.put("icon", "../platform/images/icon/channel_2.gif");
+            }
+        }
+        
+        super.putOperateInfo2Map(map);
+		return map;
+	}
+
+	public Integer getLevelNo() {
+		return levelNo;
+	}
+ 
+	public String getDecode() {
+		return decode;
+	}
+    
+    public String getAttanchmentPath(Attachment attanchment){
+        if (attanchment.isImage()) {
+            return this.imagePath;
+        }
+        if (attanchment.isOfficeDoc()) {
+            return this.docPath;
+        }
+        throw new BusinessException("指定类型的附件路径不存在");
+    }
+    
+    public String toString(){
+        return "(id:" + this.id + ", name:" + this.name + ", parentId:" + this.parentId + ")" + this.decode; 
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getResourceType() {
+        return CMSConstants.RESOURCE_TYPE_CHANNEL;
+    }
+    
+	public Class<?> getParentClass() {
+        if(this.parentId.equals(CMSConstants.HEAD_NODE_ID)) {
+            return ChannelResourceView.class;
+        }
+        return getClass();
+	}
+
+	public String getPublishArticleClassName() {
+		return publishArticleClassName;
+	}
+
+	public void setPublishArticleClassName(String publishArticleClassName) {
+		this.publishArticleClassName = publishArticleClassName;
+	}
+
+	public Channel getSite() {
+		return site;
+	}
+
+	public void setSite(Channel site) {
+		this.site = site;
+	}
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<params>
+	<url>jdbc:oracle:thin:@localhost:1521:myoracle</url>
+	<user>test</user>
+	<password>test</password>
+	<groupSql>
+		select distinct g.id, g.parentGroupId as parentId, 
+			g.groupname as groupName, g.grouporder as groupOrder, g.description
+		from tbl_group g start with g.id=:groupId connect by prior g.id = g.parentgroupid 
+		order by g.id
+	</groupSql>
+	<userSql>
+		select distinct u.id, g.id as groupId, u.loginName, u.userName,u.password, 
+			null as sex,null as birthday, null as employeeNo,gu.userorder as userOrder
+		from tbl_group g, tbl_groupuser gu, tbl_user u 
+		where g.id = gu.groupid and gu.userid=u.id 
+			  start with g.id=:groupId connect by prior g.id=g.parentgroupid
+	</userSql>
+	<singleUser>
+		select distinct u.id, null as groupId, u.loginName, u.userName, 
+			u.password, u.sex, u.birthday, u.employeeNo, null as userOrder
+		from tbl_user u 
+		where u.id = :userId
+	</singleUser>
+</params>

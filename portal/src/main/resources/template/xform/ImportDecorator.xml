@@ -1,0 +1,24 @@
+<xform>
+    <declare>	
+        <column name="filePath" caption="上传文件" mode="string" editable="false"/>
+        <column name="groupId" caption="groupId" mode="string" />			
+    </declare>
+    <layout>
+    	<TR>
+            <TD width="50"></TD>
+            <TD><input binding="groupId" name="groupId" type="hidden"/></TD>
+        </TR>
+        <TR>
+            <TD width="50"><label binding="filePath"/></TD>
+			<TD>
+				<input binding="filePath" type="text"
+					style="border:1px solid #ABAAAF;background-color:#ECEFF8;"/>
+				<input type="button" value="浏览" class="btWeak"/>
+				<input type="file" name="file"
+					style="width:50px;position:relative;margin-left:-60;filter:alpha(opacity=0)"
+					onchange="getFilePath(this.value)"/> 同时支持XML和ZIP文件导入 </TD>
+        </TR>
+    </layout>
+    <data>
+    </data>
+</xform>

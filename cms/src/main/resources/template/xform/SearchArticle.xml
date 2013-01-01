@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xform>
+	<declare prefix="condition">
+		<column name="title" caption="标题" mode="string"/>
+		<column name="author" caption="作者" mode="string"/>
+		<column name="time" caption="创建时间" mode="string" editor="comboedit" 
+			editorvalue="0|1|2|3" 
+			editortext="所有时间|今天|三天内|一周内"
+		/>
+			
+		<column name="status" caption="流程状态" mode="string" editor="comboedit" 
+			editorvalue="0|1|2|3|4|-1|5"
+			editortext="所有流程|编辑|已编|已审核|待发布|已发布|已过期"
+		/>
+			
+	</declare>
+	<layout>
+		<TR>
+			<TD width="50">
+				<label binding="title"/>
+			</TD>
+			<TD>
+				<input binding="title" type="text"/>
+			</TD>
+		</TR>
+		<TR>
+			<TD width="50">
+				<label binding="author"/>
+			</TD>
+			<TD>
+				<input binding="author" type="text"/>
+			</TD>
+		</TR>
+		<TR>
+			<TD width="50">
+				<label binding="time"/>
+			</TD>
+			<TD>
+				<input binding="time" type="text"/>
+			</TD>
+		</TR>
+		<TR>
+			<TD width="50">
+				<label binding="status"/>
+			</TD>
+			<TD>
+				<input binding="status" type="text"/>
+			</TD>
+		</TR>
+	</layout>
+	<data/>
+</xform>

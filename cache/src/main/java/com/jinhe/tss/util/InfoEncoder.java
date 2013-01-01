@@ -1,0 +1,123 @@
+/* ==================================================================   
+ * Created [2006-6-19] by Jon.King 
+ * ==================================================================  
+ * TSS 
+ * ================================================================== 
+ * mailTo:jinpujun@hotmail.com
+ * Copyright (c) Jon.King, 2012-2015 
+ * ================================================================== 
+*/
+package com.jinhe.tss.util;
+
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
+import com.thoughtworks.xstream.core.util.Base64Encoder;
+
+/**
+ * 信息加/解密工具类 
+ * 
+ * @author Jon.King 2008-8-18
+ */
+public class InfoEncoder {
+
+    private static String ALGORITHM = "Blowfish";
+
+    private Cipher getCipher(int Cipher_MODE) {
+        SecretKey deskey = new SecretKeySpec("jinhe-tss".getBytes(), ALGORITHM);
+        try {
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            cipher.init(Cipher_MODE, deskey);
+            return cipher;
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("没有此加/解密算法，加密器初始化失败", e);
+        } catch (NoSuchPaddingException e) {
+            throw new RuntimeException("加/解密器初始化失败", e);
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException("非法的加/解密密匙，加密失败", e);
+        }
+    }
+
+    /**
+     * 将字符串加密
+     * 
+     * @param datasource
+     *            要加密的数据
+     * @return 返回加密后的 byte 数组
+     * @throws Exception
+     */
+    public String createEncryptor(String datasource) {
+        byte[] encryptorData;
+        try {
+            encryptorData = getCipher(Cipher.ENCRYPT_MODE).doFinal(datasource.getBytes());
+        } catch (BadPaddingException ex) {
+            throw new RuntimeException("非法的加密数据，加密失败:" + datasource, ex);
+        } catch (IllegalBlockSizeException ex) {
+            throw new RuntimeException("加密字符串字节数不对，加密失败:" + datasource, ex);
+        }
+
+        return new Base64Encoder().encode(encryptorData).replaceAll("\\s", "");
+    }
+
+    /**
+     * <p>
+     * 将字符串解密
+     * </p>
+     * 
+     * @param datasource
+     *            要解密的数据
+     * @return 返回加密后的 byte[]
+     */
+    public String createDecryptor(String datasource) {
+        byte[] decryptorData = new Base64Encoder().decode(datasource);
+
+        byte[] createDecryptor;
+        try {
+            createDecryptor = getCipher(Cipher.DECRYPT_MODE).doFinal(decryptorData);
+        } catch (BadPaddingException ex) {
+            throw new RuntimeException("非法的解密数据，解密失败:" + datasource, ex);
+        } catch (IllegalBlockSizeException ex) {
+            throw new RuntimeException("解密字符串字节数不对，解密失败:" + datasource, ex);
+        }
+        return new String(createDecryptor);
+    }
+
+    
+    private static final String MESSAGE_DIGEST_TYPE = "MD5";
+
+    /**
+     * 加密：MD5
+     * 
+     * @param str
+     * @return
+     */
+    public static String string2MD5(String str) {
+        try {
+            MessageDigest alga = MessageDigest.getInstance(MESSAGE_DIGEST_TYPE);
+            alga.update(str.getBytes());
+            
+            byte[] digesta = alga.digest();
+            String hs = "";
+            for (int n = 0; n < digesta.length; n++) {
+            	String stmp = (Integer.toHexString(digesta[n] & 0XFF));
+                if (stmp.length() == 1)
+                    hs = hs + "0" + stmp;
+                else
+                    hs = hs + stmp;
+            }
+            
+            return hs.toUpperCase();
+            
+        } catch (NoSuchAlgorithmException ex) {
+            return str;
+        }
+    }
+}

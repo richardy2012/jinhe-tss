@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xform action="page3Form">
+    <declare prefix="article">
+        <column name="id" caption="ID" mode="string" empty="false" maxLength="10" editor="text"/>
+        <column name="author" caption="作者" mode="string" empty="true" maxLength="255" editor="text"/>
+        <column name="type" caption="比例图" mode="string" empty="false" maxLength="50" editor="comboedit" editorvalue="0|1" editortext="柱状图|饼状图" />
+        <column name="aspect" caption="统计类型" mode="string" empty="false" editor="comboedit" editorvalue="1|2|3" editortext="文章作者排行榜|文章访问量统计|栏目人气统计"/>
+        <column name="startTime" caption="选择日期" mode="date" pattern="yyyy-MM-dd" empty="true"/>
+	    <column name="endTime" caption="至" mode="date" pattern="yyyy-MM-dd" empty="true"/>
+    	<column name="result" caption="显示方式" mode="string" empty="false" editor="comboedit" editorvalue="1|2" editortext="图形|表格"/>
+    </declare>
+    <layout>
+		<TR>
+	        <TD width="60"><label binding="aspect"/></TD>
+	        <TD width="80"><label binding="author"/></TD>
+			
+	        <TD width="180" colspan="3"><label binding="startTime"/></TD>
+	        <TD width="60"><label binding="type"/></TD>
+			<TD>&amp;nbsp;</TD>
+	    </TR>
+	    <TR>
+	        <TD><input type="text" binding="aspect"/></TD>
+	        <TD><input type="text" binding="author" style="width:60px;"/></TD>
+			
+			<TD width="80"><input binding="startTime" style="width:80px;"/></TD>
+			
+			<TD width="15"><label binding="endTime"/></TD>
+			<TD width="90"><input binding="endTime" style="width:80px;"/></TD>
+			
+			<TD><input binding="type"/></TD>
+			
+			<TD><input type="button" class="btStrong" value="查询" id="btSearch"/></TD>
+	    </TR>
+    </layout>
+    <data>
+    </data>
+</xform>

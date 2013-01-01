@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xform>
+    <declare prefix="condition.tacticIndex">
+        <column name="name" caption="名称" mode="string" empty="false" maxLength="100"/>
+        <column name="indexPermissionClassName" caption="索引执行类" mode="string" editor="comboedit" 
+			editorvalue="com.jinhe.tss.cms.extend.lucene.executor.DefaultIndexExecutor|com.jinhe.tss.cms.extend.lucene.executor.impl.TitleIndexExecutor|com.jinhe.tss.cms.extend.lucene.executor.impl.AuthorIndexExecutor|com.jinhe.tss.cms.extend.lucene.executor.impl.KeywordIndexExecutor|com.jinhe.tss.cms.extend.lucene.executor.impl.ContentIndexExecutor" 
+			editortext="按所有字段索引|按标题索引|按作者索引|按关键字索引|按文章内容索引" 
+			empty="false"
+		/>
+    </declare>
+    <layout>
+        <TR>
+            <TD width="80"><label binding="name"/></TD>
+            <TD><input binding="name" type="text" style="width:120"/></TD>
+        </TR>
+        <TR>
+            <TD width="80"><label binding="indexPermissionClassName"/></TD>
+            <TD><input binding="indexPermissionClassName" type="text" style="width:120"/></TD>
+        </TR>
+    </layout>
+    <data>
+    </data>
+</xform>

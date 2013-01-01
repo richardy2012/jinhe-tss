@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+   version="1.0">
+ 
+	<!-- cms -->	
+	<entity class="com.jinhe.tss.cms.entity.Article"/>
+	<entity class="com.jinhe.tss.cms.entity.Attachment"/>
+	<entity class="com.jinhe.tss.cms.entity.Channel"/>
+	<entity class="com.jinhe.tss.cms.entity.TimerStrategy"/>
+ 
+	<entity class="com.jinhe.tss.cms.entity.permission.ChannelResourceView"/>
+	<entity class="com.jinhe.tss.cms.entity.permission.ChannelPermissions"/>
+	<entity class="com.jinhe.tss.cms.entity.permission.ChannelPermissionsFull"/>
+
+</entity-mappings>

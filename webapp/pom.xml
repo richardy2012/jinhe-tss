@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<project>
+    <parent>
+		<groupId>com.jinhe.tss</groupId>
+		<artifactId>tss</artifactId>
+		<version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.jinhe.tss</groupId>
+    <artifactId>webapp</artifactId>
+    <packaging>war</packaging>
+    <name>webapp</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.jinhe.tss</groupId>
+			<artifactId>portal</artifactId>
+		</dependency>
+		
+		<!-- Oracle DB driver 4 release
+		<dependency>
+			<groupId>Oracle</groupId>
+			<artifactId>ojdbc</artifactId>
+			<version>1.4G</version>
+		</dependency>
+		 -->
+		<!-- Mysql DB driver 4 release -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.6</version>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<finalName>tss-${tss.version}</finalName>
+		
+        <plugins>
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <configuration>
+                    <scanIntervalSeconds>3</scanIntervalSeconds>
+                </configuration>
+            </plugin>
+			<!--
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<outputDirectory>D:\tomcat6014\webapps</outputDirectory>
+				</configuration>
+			</plugin>
+			-->
+        </plugins>
+    </build>
+
+</project>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xform>
+    <declare prefix="condition.tacticIndex">
+        <column name="name" caption="名称" mode="string" empty="false" maxLength="100"/> 
+        <column name="remark" caption="备注" mode="string" empty="true" maxLength="255" editor="textarea" />
+    </declare>
+    <layout>
+        <TR>
+            <TD width="50"><label binding="name"/></TD>
+            <TD><input binding="name" type="text"/></TD>
+        </TR>
+        <TR>
+         	<TD width="50"><label binding="remark" name="备注"/></TD>
+			<TD><input binding="remark" name="备注" style="width:50%;height:100"/></TD>
+        </TR>
+    </layout>
+    <data>
+    </data>
+</xform>

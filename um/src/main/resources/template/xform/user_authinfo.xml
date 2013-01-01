@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xform>
+	<declare prefix="user">
+		<column name="certificateCategory" caption="证件种类" mode="string" empty="true"
+			maxLength="2" editor="comboedit" editorvalue="1|2" editortext="工作证|身份证"/>
+		<column name="certificateNumber" caption="证件号" mode="string" empty="true" maxLength="50" editor="text"/>
+		<column name="accountUsefulLife" caption="账户有效期限" mode="date" empty="false"
+			pattern="yyyy-MM-dd" maxLength="32" editor="text"/>
+		<column name="authenticateMethod" caption="认证方式" mode="string" empty="false" maxLength="100" editor="comboedit"
+			editorvalue="com.jinhe.tss.um.sso.UMSLocalUserPWDIdentifier" editortext="UM本地"/>
+	</declare>
+	<layout>
+		<TR>
+			<TD width="50"><label binding="certificateCategory"/></TD>
+			<TD><input binding="certificateCategory"/></TD>
+			
+			<TD width="50"><label binding="certificateNumber"/></TD>
+			<TD><input binding="certificateNumber"/></TD>
+		</TR>
+		<TR>
+			<TD width="50"><label binding="accountUsefulLife"/></TD>
+			<TD><input binding="accountUsefulLife"/></TD>
+			
+			<TD width="50"><label binding="authenticateMethod"/></TD>
+			<TD><input binding="authenticateMethod"/></TD>
+		</TR>
+	</layout>
+</xform>

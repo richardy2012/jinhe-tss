@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+   version="1.0">
+ 
+	<!-- portal -->	
+	<entity class="com.jinhe.tss.portal.entity.Decorator"/>
+	<entity class="com.jinhe.tss.portal.entity.ElementGroup"/>
+	<entity class="com.jinhe.tss.portal.entity.FlowRate"/>
+	<entity class="com.jinhe.tss.portal.entity.IssueInfo"/>
+	<entity class="com.jinhe.tss.portal.entity.Layout"/>
+	<entity class="com.jinhe.tss.portal.entity.Navigator"/>
+	<entity class="com.jinhe.tss.portal.entity.PersonalPage"/>
+	<entity class="com.jinhe.tss.portal.entity.PersonalTheme"/>
+	<entity class="com.jinhe.tss.portal.entity.Portal"/>
+	<entity class="com.jinhe.tss.portal.entity.PortalStructure"/>
+	<entity class="com.jinhe.tss.portal.entity.Portlet"/>
+	<entity class="com.jinhe.tss.portal.entity.Theme"/>
+	<entity class="com.jinhe.tss.portal.entity.ThemeInfo"/>
+ 
+	<entity class="com.jinhe.tss.portal.entity.permission.MenuResourceView"/>
+	<entity class="com.jinhe.tss.portal.entity.permission.PortalResourceView"/>
+	
+	<entity class="com.jinhe.tss.portal.entity.permission.MenuPermissions"/>
+	<entity class="com.jinhe.tss.portal.entity.permission.PortalPermissions"/>
+	
+	<entity class="com.jinhe.tss.portal.entity.permission.MenuPermissionsFull"/>
+	<entity class="com.jinhe.tss.portal.entity.permission.PortalPermissionsFull"/>
+
+</entity-mappings>

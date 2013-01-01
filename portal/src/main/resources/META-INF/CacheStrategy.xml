@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<strategies> 
+  <strategy code="connectionpool" name="数据库连接池"> 
+    <poolClass>com.jinhe.tss.cache.extension.ReusablePool</poolClass>  
+    <poolSize>10</poolSize>  
+    <cyclelife>0</cyclelife>  
+    <interruptTime>1000</interruptTime>  
+    <initNum>5</initNum>  
+    <disabled>0</disabled> <!-- 数据库连接池配置为启用 -->
+	<visible>1</visible>  
+    <customizerClass>com.jinhe.tss.framework.persistence.connectionpool.ConnectionPoolCustomizer</customizerClass>  
+  </strategy>  
+  <strategy code="taskpool" name="日志输出任务池"> 
+    <poolClass>com.jinhe.tss.cache.extension.ReusablePool</poolClass>  
+    <poolContainerClass>com.jinhe.tss.cache.extension.MapContainer</poolContainerClass>    
+    <poolSize>1000</poolSize>  
+    <cyclelife>18000000</cyclelife>  
+    <interruptTime>100</interruptTime>  
+    <initNum>100</initNum>  
+    <disabled>0</disabled>  
+    <customizerClass>com.jinhe.tss.framework.component.log.LogOutputTaskPoolCustomizer</customizerClass>  
+    <accessMethod>3</accessMethod>  
+  </strategy>  
+  <strategy code="threadpool" name="线程池"> 
+    <poolClass>com.jinhe.tss.cache.extension.threadpool.ThreadPool</poolClass>  
+	<poolContainerClass>com.jinhe.tss.cache.extension.MapContainer</poolContainerClass>  
+    <cyclelife>0</cyclelife>  
+    <interruptTime>1000</interruptTime>  
+	<poolSize>10</poolSize>  
+    <initNum>5</initNum>  
+    <disabled>0</disabled>  
+    <customizerClass>com.jinhe.tss.cache.extension.threadpool.ThreadPoolCustomizer</customizerClass>  
+    <remark>上次修改时间2007-01-17 23:46:08, 修改人JK</remark> 
+  </strategy>  
+  <strategy code="xform_template" name="XForm模板池"/>  
+  <strategy code="grid_template"  name="Grid 模板池"/> 
+  <strategy code="portal_tree" name="门户池"> 
+    <poolClass>com.jinhe.tss.cache.ObjectPool</poolClass>  
+    <poolSize>100</poolSize>  
+    <cyclelife>0</cyclelife>  
+    <disabled>0</disabled>  
+  </strategy> 
+  <strategy code="personal_portal_tree" name="自定义门户池"> 
+    <poolClass>com.jinhe.tss.cache.ObjectPool</poolClass>  
+    <poolSize>1000</poolSize>  
+    <cyclelife>1800000</cyclelife>  
+    <disabled>0</disabled>  
+  </strategy> 
+  <strategy code="menu_pool" name="菜单池"/> 
+</strategies>

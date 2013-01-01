@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xform>
+	<declare>
+		<column name="name" caption="名称" mode="string" empty="false" maxLength="100"/>
+		<column name="type" caption="类型" mode="string" empty="false" editor="comboedit" editorvalue="1|2" editortext="图片|附件"/>
+		<column name="file" caption="上传附件" mode="file" clickOnly="false" editable="true"/>
+		<column name="articleId" caption="文章序号" mode="string" display="none"/>
+		<column name="channelId" caption="栏目序号" mode="string" display="none"/>
+		<column name="serverAttach" caption="服务器附件" mode="string" editable="true"/>
+		<column name="switch1" caption="" mode="string" editor="radio" editorvalue="1" editortext="本地路径"/>
+		<column name="switch2" caption="" mode="string" editor="radio" editorvalue="1" editortext="服务器路径"/>
+	</declare>
+	<layout>
+	    <TR>
+			<TD width="50"><label binding="name"/></TD>
+			<TD><input binding="name" name="params['fileName']"/>
+				<input type="hidden" binding="articleId" name="params['articleId']"/>
+				<input type="hidden" binding="channelId" name="params['channelId']"/>
+			</TD>
+		</TR>
+		<TR>
+			<TD width="50" valign="top"><label binding="type"/></TD>
+			<TD><input binding="type" name="params['type']"/></TD>
+		</TR>
+		<TR>
+			<TD width="50" valign="top"><label binding="file"/></TD>
+			<TD><input binding="switch1"/><br/>
+				&amp;nbsp;&amp;nbsp;&amp;nbsp;<input binding="file"/><br/>
+				<input binding="switch2"/><br/>
+				&amp;nbsp;&amp;nbsp;&amp;nbsp;<input binding="serverAttach" name="localPath"/></TD>
+		</TR>
+		<TR>
+			<TD width="50">&amp;nbsp;</TD>
+			<TD><input type="button" value="清空" class="btWeak" onclick="resetUpload()"/>
+				<input type="button" value="上传" class="btStrong" onclick="upload()"/>
+			</TD>
+		</TR>
+	</layout>
+	<data>
+	</data>
+</xform>

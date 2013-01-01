@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xform>
+	<declare prefix="role">
+		<column name="name" caption="角色组名称" mode="string" maxLength="20" empty="false" />
+		<column name="description" caption="描述"  maxLength="255" mode="string"/>
+	</declare>
+	<layout>
+		<TR>
+			<TD width="50"><label binding="name"/></TD>
+			<TD><input binding="name" type="text"/></TD>
+		</TR>
+		<TR>
+			<TD width="50"><label binding="description"/></TD>
+			<TD><textarea binding="description" style="width:100%;height:100"/></TD>
+		</TR>
+	</layout>
+	<data>
+	</data>
+</xform>
