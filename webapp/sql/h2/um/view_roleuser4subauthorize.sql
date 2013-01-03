@@ -1,5 +1,5 @@
 
---ÓÃ»§ÓµÓĞµÄÄÜ×ªÊÚµÄ½ÇÉ«,°üÀ¨ÓÉ×é¼Ì³ĞÏÂÀ´µÄ½ÇÉ«
+--ç”¨æˆ·æ‹¥æœ‰çš„èƒ½è½¬æˆçš„è§’è‰²,åŒ…æ‹¬ç”±ç»„ç»§æ‰¿ä¸‹æ¥çš„è§’è‰²
 drop table view_roleuser4subauthorize cascade constraints;
 
 create view view_roleuser4subauthorize as

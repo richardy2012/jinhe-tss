@@ -1,31 +1,31 @@
 
--- Ó¦ÓÃ×ÊÔ´ÊÓÍ¼
+-- åº”ç”¨èµ„æºè§†å›¾
 drop table view_application_resources cascade constraints;
 CREATE VIEW view_application_resources AS
 SELECT ID, parentId, seqNo, name, levelNo, decode FROM um_application  WHERE (applicationType = -1 or applicationType = -2)
 UNION
-SELECT -5,  0, 1, 'È«²¿ÏµÍ³', 1, '00001'      FROM DUAL
+SELECT -5,  0, 1, 'å…¨éƒ¨ç³»ç»Ÿ', 1, '00001'      FROM DUAL
 UNION
-SELECT -1, -5, 1, 'Æ½Ì¨ÏµÍ³', 2, '0000100001' FROM DUAL
+SELECT -1, -5, 1, 'å¹³å°ç³»ç»Ÿ', 2, '0000100001' FROM DUAL
 UNION
-SELECT -2, -5, 2, 'ÆäËûÏµÍ³', 2, '0000100002' FROM DUAL;
+SELECT -2, -5, 2, 'å…¶ä»–ç³»ç»Ÿ', 2, '0000100002' FROM DUAL;
 
--- Ö÷ÓÃ»§×é×ÊÔ´ÊÓÍ¼
+-- ä¸»ç”¨æˆ·ç»„èµ„æºè§†å›¾
 drop table view_MAINGROUP_resourcs cascade constraints;
 CREATE VIEW view_MAINGROUP_resourcs AS
 SELECT ID, parentId, seqNo, name, levelNo, decode FROM  um_group WHERE groupType = 1 ;
 
--- ¸¨ÖúÓÃ»§×é×ÊÔ´ÊÓÍ¼
+-- è¾…åŠ©ç”¨æˆ·ç»„èµ„æºè§†å›¾
 drop table view_ASSISTGROUP_resources cascade constraints;
 CREATE VIEW view_ASSISTGROUP_resources AS
 SELECT ID, parentId, seqNo, name, levelNo, decode FROM  um_group WHERE groupType = 2 ;
 
--- ÆäËûÓ¦ÓÃÓÃ»§×é
+-- å…¶ä»–åº”ç”¨ç”¨æˆ·ç»„
 drop table view_OtherGroup_resources cascade constraints;
 CREATE VIEW view_OtherGroup_resources AS
 SELECT ID, parentId, seqNo, name, levelNo, decode FROM  um_group WHERE groupType = 3 ;
 
--- ½ÇÉ«×ÊÔ´ÊÓÍ¼
+-- è§’è‰²èµ„æºè§†å›¾
 drop table view_ROLE_resources cascade constraints;
 CREATE VIEW view_ROLE_resources AS
 SELECT ID, parentId, seqNo, name, levelNo, decode FROM  um_role;

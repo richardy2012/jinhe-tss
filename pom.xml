@@ -200,6 +200,10 @@
 						<include>**/*Test.java </include> 
 					</includes>
 					<testFailureIgnore>true</testFailureIgnore> 
+					<!-- 
+					<forkMode>never</forkMode>
+					<argLine>-Dfile.encoding=UTF-8</argLine>
+					 -->
                 </configuration>
             </plugin>
 
@@ -209,11 +213,9 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
-					<compilerArguments>
-                    	<encoding>UTF-8</encoding>
-                    </compilerArguments>
+					<encoding>UTF-8</encoding>
 				</configuration>
-			</plugin>	
+			</plugin>	 
 			
 			<plugin>
                <artifactId>maven-eclipse-plugin</artifactId>

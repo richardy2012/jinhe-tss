@@ -11,7 +11,7 @@
     
   alter table TBL_TEMP add primary key (ID);
 
-
+truncate table component_param;
 insert into component_param 
 	(id, code, name, value, text, decode, hidden, lockVersion) 
 values

@@ -1,8 +1,8 @@
---ÓÃ»§ÓµÓĞµÄËùÓĞ½ÇÉ«, °üÀ¨ÓÉ×é¼Ì³ĞÏÂÀ´µÄ½ÇÉ«
+--ç”¨æˆ·æ‹¥æœ‰çš„æ‰€æœ‰è§’è‰², åŒ…æ‹¬ç”±ç»„ç»§æ‰¿ä¸‹æ¥çš„è§’è‰²
 drop table VIEW_ROLEUSER cascade constraints;
 
 create view VIEW_ROLEUSER as
---ÆÕÍ¨µÄÓÃ»§¶Ô½ÇÉ«
+--æ™®é€šçš„ç”¨æˆ·å¯¹è§’è‰²
 select u.id as userId, r.id as roleId
     from um_role r, um_roleuser ru, um_user u
     where r.id = ru.roleid and ru.userid = u.id
@@ -10,7 +10,7 @@ select u.id as userId, r.id as roleId
           and sysdate between r.startdate and r.enddate
           and ru.strategyid is null    
 union all
---×ªÊÚµÄÓÃ»§¶Ô½ÇÉ«    
+--è½¬æˆçš„ç”¨æˆ·å¯¹è§’è‰²    
 select u.id as userId, r.id as roleId
     from um_role r, um_roleuser ru, um_user u, um_strategy s
     where r.id = ru.roleid and ru.userid = u.id
@@ -18,7 +18,7 @@ select u.id as userId, r.id as roleId
           and sysdate between r.startdate and r.enddate
           and s.id = ru.strategyid and sysdate between s.startdate and s.enddate and s.disabled <> 1           
 union all
---ÆÕÍ¨µÄ×é¶Ô½ÇÉ«   
+--æ™®é€šçš„ç»„å¯¹è§’è‰²   
 select u.id as userId, r.id as roleId
     from um_group g, um_rolegroup rg, um_role r, um_groupuser gu, um_user u
     where g.id = rg.groupid and rg.roleid = r.id and g.id = gu.groupid and gu.userid = u.id 
@@ -26,7 +26,7 @@ select u.id as userId, r.id as roleId
           and sysdate between r.startdate and r.enddate
           and rg.strategyid is null          
 union all
---×ªÊÚµÄ×é¶Ô½ÇÉ«     
+--è½¬æˆçš„ç»„å¯¹è§’è‰²     
 select u.id as userId, r.id as roleId
     from um_group g, um_rolegroup rg, um_role r, um_groupuser gu, um_user u, um_strategy s
     where g.id = rg.groupid and rg.roleid = r.id and g.id = gu.groupid and gu.userid = u.id 
