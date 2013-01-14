@@ -16,8 +16,9 @@
 window.onload = function() {
 
 	var reader = new XmlReader("<root><name>Jeremy McPeak</name></root>")
-	alert(reader.xmlDom.xml);
-	alert(reader.xmlDom.getElementsByTagName("name").nodeName);
+	alert(reader.toXml());
+	//alert(reader.xmlDom.firstChild.firstChild.nodeName);
+	//alert(reader.xmlDom.getElementsByTagName("root")[0].childNodes[0].text);
 
 }
 
