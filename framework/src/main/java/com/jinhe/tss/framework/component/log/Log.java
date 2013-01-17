@@ -43,7 +43,9 @@ public class Log implements IEntity, IXForm, IGridNode {
     private Date   operateTime;   // 操作时间
     
     @Column(length = 4000)  
-    private String  content;        //操作内容
+    private String  content;      // 操作内容
+    
+    private Integer methodExcuteTime; // 方法执行时间（单位: 微秒）
     
     public Log() {
     }
@@ -172,6 +174,14 @@ public class Log implements IEntity, IXForm, IGridNode {
     
     public String toString() {
         return appCode + ":" + operatorName + ":" + content;
+    }
+
+    public Integer getMethodExcuteTime() {
+        return methodExcuteTime;
+    }
+
+    public void setMethodExcuteTime(Integer methodExcuteTime) {
+        this.methodExcuteTime = methodExcuteTime;
     }
 }
 

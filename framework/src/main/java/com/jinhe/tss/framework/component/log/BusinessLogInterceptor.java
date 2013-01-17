@@ -31,7 +31,11 @@ public class BusinessLogInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         Method targetMethod = invocation.getMethod(); /* 获取目标方法 */
         Object[] args = invocation.getArguments(); /* 获取目标方法的参数 */
+        
+        Long preTime = System.currentTimeMillis();
         Object returnVal = invocation.proceed(); /* 调用目标方法的返回值 */
+        
+        int methodExcuteTime = (int) (System.currentTimeMillis() - preTime);
 
         Logable annotation = targetMethod.getAnnotation(Logable.class); // 取得注释对象
         if (annotation != null) {
@@ -40,10 +44,11 @@ public class BusinessLogInterceptor implements MethodInterceptor {
             String operateType = annotation.operateType();
             String operateInfo = annotation.operateInfo();
 
-            Log dto = new Log(operateType, parseMacro(operateInfo, args, returnVal));
-            dto.setOperateTable(operateTable);
+            Log log = new Log(operateType, parseMacro(operateInfo, args, returnVal));
+            log.setOperateTable(operateTable);
+            log.setMethodExcuteTime(methodExcuteTime);
 
-            businessLogger.output(dto);
+            businessLogger.output(log);
 //            log.debug("方法：" + targetMethod.getName() + "(...)  被调用时成功记录日志信息。内容：" + dto.getContent());
         }
 

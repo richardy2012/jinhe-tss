@@ -15,7 +15,7 @@ import com.jinhe.tss.util.BeanUtil;
  */
 public class DecodeInterceptor extends MatchByDaoMethodNameInterceptor {
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked"})
     public Object invoke(MethodInvocation invocation) throws Throwable {
 	    IDao<IEntity> dao = (IDao<IEntity>) invocation.getThis();
 		Object[] args = invocation.getArguments();
