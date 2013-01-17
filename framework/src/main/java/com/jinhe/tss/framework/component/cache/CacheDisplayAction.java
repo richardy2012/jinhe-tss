@@ -3,7 +3,6 @@ package com.jinhe.tss.framework.component.cache;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +14,7 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.springframework.stereotype.Controller;
 
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
@@ -22,7 +22,6 @@ import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.cache.strategy.CacheConstants;
 import com.jinhe.tss.cache.strategy.CacheStrategy;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.web.dispaly.grid.DefaultGridNode;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
@@ -32,11 +31,11 @@ import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.PTActionSupport;
 import com.jinhe.tss.util.BeanUtil;
-import com.jinhe.tss.util.DateUtil;
 import com.jinhe.tss.util.URLUtil;
 import com.jinhe.tss.util.XMLDocUtil;
 
-public class CacheDisplayAction extends PTActionSupport{
+@Controller
+public class CacheDisplayAction extends PTActionSupport {
 
     private String code;
     private String key;
@@ -49,11 +48,7 @@ public class CacheDisplayAction extends PTActionSupport{
      * 修改缓存策略。
      * @return
      */
-    public String modifyCacheStrategy(){
-     // 保存的时候将操作人的信息记录到remark字段中
-        strategy.setRemark(strategy.getRemark() + "\n上次修改时间" + DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss")
-                + ", 修改人" + Environment.getOperatorName() + "。");
-        
+    public String modifyCacheStrategy() {
         // 覆盖策略文件的该策略节点 
         Document doc = XMLDocUtil.createDoc(CacheConstants.STRATEGY_PATH);      
         List<Element> nodes = XMLDocUtil.selectNodes(doc, CacheConstants.STRATEGY_NODE_NAME);
@@ -91,7 +86,7 @@ public class CacheDisplayAction extends PTActionSupport{
      * 树型展示缓存策略
      * @return
      */
-    public String getAllCacheStrategy4Tree(){
+    public String getAllCacheStrategy4Tree() {
         List<CacheStrategy> strategyList = new ArrayList<CacheStrategy>();
         
         Set<Entry<String, Pool>> pools = cache.listCachePools(); 
@@ -101,7 +96,7 @@ public class CacheDisplayAction extends PTActionSupport{
         }
         
         List<ITreeNode> treeNodeList = new ArrayList<ITreeNode>();
-        for(final CacheStrategy stategy : strategyList){
+        for(final CacheStrategy stategy : strategyList) {
             treeNodeList.add(new ITreeNode(){
                 public TreeAttributesMap getAttributes() {
                     TreeAttributesMap map = new TreeAttributesMap(stategy.getCode(), stategy.getName());

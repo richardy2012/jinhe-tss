@@ -9,6 +9,8 @@ import java.util.Map;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
@@ -37,6 +39,8 @@ import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.URLUtil;
 import com.jinhe.tss.util.XMLDocUtil;
 
+@Controller
+@RequestMapping("/user") 
 public class UserAction extends PTActionSupport {
 
 	private IUserService userService;
