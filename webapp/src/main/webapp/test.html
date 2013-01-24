@@ -14,10 +14,19 @@
 <!--
 
 window.onload = function() {
+	var str = [];
+    str[str.length] = "<book>";
+	str[str.length] = "	<title>Harry Potter</title>";
+	str[str.length] = "	<author>JK.Rowling</author>";
+	str[str.length] = "	<year>2005</year>";
+	str[str.length] = "	<price>29.99</price>";
+	str[str.length] = "</book>";
 
-	var reader = new XmlReader("<root><name>Jeremy McPeak</name></root>")
+	var reader = new XmlReader(str.join("\r\n"));
 	alert(reader.toXml());
-	//alert(reader.xmlDom.firstChild.firstChild.nodeName);
+
+	var xmlNode = new XmlNode(reader.documentElement);
+	alert(xmlNode);
 	//alert(reader.xmlDom.getElementsByTagName("root")[0].childNodes[0].text);
 
 }
