@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE> New Document </TITLE>
+<META NAME="Generator" CONTENT="EditPlus">
+<META NAME="Author" CONTENT="">
+<META NAME="Keywords" CONTENT="">
+<META NAME="Description" CONTENT="">
+
+<script language="javascript" src="../js/core.js"></script>
+
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+
+window.onload = function() {
+	// Debug.print("1234567890", false);
+
+	var result;
+
+	result = Public.executeCommand(f1);
+	assertEquals(result, "JK-1", "Public.executeCommand() method error.");
+
+	// Public.executeCommand("alert(222);");
+
+	Public.showWaitingLayer();
+	Public.hideWaitingLayer();
+
+	var c =  new Collection();
+	c.add(1, "JK");
+	c.add(2, "XZ");
+	assertEquals(c.get(2), "XZ", "Collection.get() method error.");
+
+	c.del(2);
+	assertEquals(c.get(2), null);
+
+	c.clear();
+	assertEquals(c.get(1), null);
+
+	Cookie.setValue("token", "1234567890", null, "/tss");
+	Cookie.del("token", "/tss");
+
+	Cookie.setValue("token", "abceefghij");
+	assertEquals(Cookie.getValue("token"), "abceefghij");
+
+	Cookie.delAll();
+
+	Query.parse("name=JK&id=1");
+	assertEquals(Query.get("id", true), "1");
+
+	var date = new Date();
+	assertEquals(date.getFullYear(), "2013");
+
+	// alert(convertToString(f1));
+
+}
+
+function f1() {
+	return "JK-1";
+}
+
+//-->
+</SCRIPT>
+
+</HEAD>
+
+<BODY>
+
+</BODY>
+</HTML>
