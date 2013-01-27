@@ -458,6 +458,272 @@ Element.removeNode = function(node) {
 	}
 }
 
+/*
+ *	函数说明：获取对象页面绝对位置
+ *	参数：	object:srcElement       HTML对象
+ *	返回值：number:offsetLeft       对象页面绝对位置
+ */
+Element.absLeft = function(srcElement) {
+	var absLeft = 0;
+	var tempObj = srcElement;
+	while( tempObj != null && tempObj != document.body) {
+		absLeft += tempObj.offsetLeft - tempObj.offsetParent.scrollLeft;
+		tempObj = tempObj.offsetParent;
+	}
+	return absLeft;
+}
+Element.absTop = function(srcElement) {
+	var absTop = 0;
+	var tempObj = srcElement;
+	while( tempObj != null && tempObj != document.body) {
+		absTop += tempObj.offsetTop - tempObj.offsetParent.scrollTop;
+		tempObj = tempObj.offsetParent;
+	}
+	return absTop;
+}
+
+/*
+ *	函数说明：创建带命名空间的对象
+ *	参数：	string:tagName		对象标签名
+			string:ns			命名空间
+ *	返回值：object	html对象
+ */
+Element.createElement = function(tagName, ns) {
+	var obj;
+	if( ns == null ) {
+		obj = document.createElement(tagName);
+	}
+	else {
+		var tempDiv = document.createElement("DIV");
+		tempDiv.innerHTML = "<" + ns + ":" + tagName + "/>";
+		obj = tempDiv.firstChild.cloneNode(false);
+		Element.removeNode(tempDiv);
+	}
+	return obj;
+}
+
+/*
+ *	函数说明：隐藏对象覆盖范围内的高优先级的控件(select等)
+ *	参数：	Object:obj			html对象
+ *	返回值：
+ */
+Element.hideConflict = function(obj) {
+	var x = Element.absLeft(obj);
+	var y = Element.absTop(obj);
+	var w = obj.offsetWidth;
+	var h = obj.offsetHeight;
+	var rect = {x:x, y:y, w:w, h:h};
+
+	function isInside(point, rect) {
+		if(point.x > rect.x + rect.w || point.x < rect.x 
+			|| point.y > rect.y + rect.h || point.y < rect.y ) {
+			return false;
+		}
+		return true;
+	}
+
+	var conflictTags = ["select"];
+	for(var i = 0; i < conflictTags.length; i++) {
+		var curTag = conflictTags[i];
+		var curObjs = document.getElementByTagName(curTag);
+		for(var j = 0; j < curObjs.length; j++) {
+			var curObj = curObjs[j];
+
+			var x1 = Element.absLeft(curObj);
+			var y1 = Element.absTop(curObj);
+			var w1 = curObj.offsetWidth;
+			var h1 = curObj.offsetHeight;
+			var x2 = x1 + w1;
+			var y2 = y1 + h1;
+
+			var flag = isInside( {x:x1, y:y1}, rect );
+			flag = flag || isInside( {x:x2, y:y1}, rect );
+			flag = flag || isInside( {x:x2, y:y2}, rect );
+			flag = flag || isInside( {x:x1, y:y2}, rect );
+
+			if(flag == true) {
+				curObj.style.visibility = "hidden";
+				conflict[conflict.length] = curObj;
+			}
+		}
+	}
+	obj.conflict = conflict;
+	return obj;
+}
+
+Element.showConflict = function(obj) {
+	if( obj.conflict != null ) {
+		for( var i = 0; i < obj.conflict.length; i++ ) {
+			obj.conflict[i].style.visibility = "visible";
+		}
+	}
+}
+
+Element.write = function(obj, content) {
+	obj.innerHTML = content;
+}
+
+/*
+ * 函数说明：控制对象拖动改变宽度
+ * 参数：	Object:obj			要拖动改变宽度的HTML对象
+ * 返回值：	
+ */
+Element.attachColResize = function(obj, offsetX) {
+	offsetX = 3 - (offsetX || 0);
+
+	// 计算对象实际的坐标值
+	obj._absTop = this.absTop(obj);
+	obj._absLeft = this.absLeft(obj);
+
+	// 添加resize条
+	var ruleObj = document.createElement("DIV");
+	ruleObj.id = "colRule";
+	ruleObj.style.cssText = "cursor:col-resize;width:3px;height:" +　obj.offsetHeight 
+		+ ";top:" + obj._absTop + ";left:" + (obj._absLeft + obj.offsetWidth - offsetX) 
+		+ ";position:absolute;background-color:white;overflow:hidden;filter:alpha(opacity=0)";
+	document.body.appendChild(ruleObj);
+
+	var colResizeTimeout;
+	var colResizeDelay = 20;
+
+	// 检测边缘
+	function checkEdge(obj) {
+		return event.clientX > obj.offsetWidth - offsetX - 2;
+	}
+
+	ruleObj.onmousedown = function() {
+		if(checkEdge(obj) == true) {
+			this.style.backgroundColor = "#999999";
+			this.style.filter = "alpha(opacity=50)";
+
+			this._isMouseDown = true;
+			this._ox = event.clientX;
+
+			Event.setCapture(this, Event.MOUSEDOWN);
+		}
+		else {
+			this.style.backgroundColor = "white";
+			this.style.filter = "alpha(opacity=0)";
+
+			this._isMouseDown = false;
+			Event.releaseCapture(this, Event.MOUSEDOWN);
+		}
+	};
+	ruleObj.onmousemove = function() {
+		if(this._isMouseDown == true) {
+			this.style.left = Math.max(obj._absLeft, event.clientX - 3);
+		}
+	};
+	ruleObj.onmouseup = function() {
+		if(this._isMouseDown == true) {
+			this._isMouseDown = false;
+			Event.releaseCapture(this, Event.MOUSEUP);
+
+			obj.style.width = Math.max(1, obj.offsetWidth - offsetX + event.clientX - this._ox);
+
+			this.style.backgroundColor = "white";
+			this.style.filter = "alpha(opacity=0)";
+		}
+	};
+	obj.onresize = function() {
+		clearTimeout(colResizeTimeout);
+		colResizeTimeout = setTimeout( function() {
+			// 计算对象实际坐标位置
+			obj._absTop = Element.absTop(obj);
+			obj._absLeft = Element.absLeft(obj);
+
+			ruleObj.style.left = obj._absLeft + obj.offsetWidth - offsetX;
+			ruleObj.style.top = obj._absTop;
+			ruleObj.style.height = obj.offsetHeight;
+		}, colResizeDelay);
+	}
+}
+
+/*
+ * 函数说明：控制对象拖动改变高度
+ * 参数：	Object:obj			要拖动改变宽度的HTML对象
+ * 返回值：	
+ */
+Element.attachRowResize = function(obj, offsetY) {
+	offsetY = 3 - (offsetY||0);
+
+	// 计算对象实际X,Y位置
+	obj._absTop = this.absTop(obj);
+	obj._absLeft = this.absLeft(obj);
+
+	// 添加resize条
+	var ruleObj = document.createElement("DIV");
+	ruleObj.id = "rowRule";
+	ruleObj.style.cssText = "cursor:row-resize;height:3px;width:" + obj.offsetWidth 
+		+ ";top:" + (obj._absTop+obj.offsetHeight-offsetY) 
+		+ ";left:" + obj._absLeft + ";position:absolute;background-color:white;overflow:hidden;filter:alpha(opacity=0)";
+
+	document.body.appendChild(ruleObj);
+
+	var rowResizeTimeout;
+	var rowResizeDelay = 20;
+
+	//检测边缘
+	function checkEdge(obj) {
+		return event.clientY > obj.offsetHeight - offsetY - 2;
+	}
+
+	ruleObj.onmousedown = function() {
+		if(checkEdge(obj) == true) {
+			this.style.backgroundColor = "#999999";
+			this.style.filter = "alpha(opacity=50)";
+
+			this._isMouseDown = true;
+			this._oy = event.clientY;
+
+			Event.setCapture(this, Event.MOUSEDOWN);
+		} else {
+			this.style.backgroundColor = "white";
+			this.style.filter = "alpha(opacity=0)";
+
+			this._isMouseDown = false;
+			Event.releaseCapture(this, Event.MOUSEDOWN);
+		}	
+	};
+	ruleObj.onmousemove = function() {
+		if(this._isMouseDown==true) {
+			this.style.top = Math.max(obj._absTop,event.clientY - 3);
+		}
+	};
+	ruleObj.onmouseup = function() {
+		if(this._isMouseDown==true) {
+			this._isMouseDown = false;
+			Event.releaseCapture(this, Event.MOUSEUP);
+
+			obj.style.height = Math.max(1,obj.offsetHeight - offsetY + event.clientY - this._oy);
+
+			this.style.backgroundColor = "white";
+			this.style.filter = "alpha(opacity=0)";
+		}
+	
+	};
+	obj.onresize = function() {
+		clearTimeout(rowResizeTimeout);
+		rowResizeTimeout = setTimeout(function() {
+			//计算对象实际X,Y位置
+			obj._absTop = Element.absTop(obj);
+			obj._absLeft = Element.absLeft(obj);
+
+			ruleObj.style.top = obj._absTop + obj.offsetHeight - offsetY;
+			ruleObj.style.left = obj._absLeft;
+			ruleObj.style.width = obj.offsetWidth;
+		},rowResizeDelay);
+	}
+	
+}
+
+
+
+
+
+
+
+
 
 /*********************************** html dom 操作  end **********************************/
 
@@ -489,21 +755,21 @@ Event.getSrcElement = function(eventObj) {
 
 /* 使事件始终捕捉对象。设置事件捕获范围。 */
 Event.setCapture = function(srcElement, eventType) {
-	if(window.DOMParser) {
-		window.captureEvents(eventType);
-	}
-	else {
-		srcElement.setCapture();
+	if (srcElement.setCapture) {             
+		srcElement.setCapture();         
+	} 
+	else if(window.captureEvents){           
+		window.captureEvents(eventType);         
 	}
 }
 
 /* 使事件放弃始终捕捉对象。 */
 Event.releaseCapture = function(srcElement, eventType) {
-	if(window.DOMParser) {
-		window.captureEvents(eventType);
-	}
-	else {
+	if(srcElement.releaseCapture){
 		srcElement.releaseCapture();
+	}
+	else if(window.captureEvents) {
+		window.captureEvents(eventType);
 	}
 }
 
@@ -660,12 +926,7 @@ Debug.print = function(str, clear) {
 			this.isMouseDown = true;
 
 			// 添加鼠标监控，弹出框跟着鼠标移动
-			if (this.setCapture) {             
-				this.setCapture();         
-			} 
-			else if(window.captureEvents){           
-				window.captureEvents(Event.MOUSEMOVE | Event.MOUSEUP);         
-			}
+			Event.setCapture(this, Event.MOUSEMOVE | Event.MOUSEUP);
 
 			this.offX = eventObj.clientX - this.offsetLeft; 
 			this.offY = eventObj.clientY - this.offsetTop;
@@ -674,12 +935,7 @@ Debug.print = function(str, clear) {
 			this.isMouseDown = false;
 			
 			// 释放鼠标监控
-			if(this.releaseCapture){
-				this.releaseCapture();
-            }
-			else if(window.captureEvents) {
-				window.captureEvents(Event.MOUSEMOVE | Event.MOUSEUP);
-            }
+			Event.setCapture(this, Event.MOUSEMOVE | Event.MOUSEUP);
 		}
 		boxObj.onmousemove = function(eventObj) {
 			eventObj = eventObj || event;

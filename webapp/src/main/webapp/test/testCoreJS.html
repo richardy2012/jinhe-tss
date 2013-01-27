@@ -7,6 +7,19 @@
 <META NAME="Keywords" CONTENT="">
 <META NAME="Description" CONTENT="">
 
+<style>
+  div#jon{text-indent: 20%; 
+	   padding-left: 5em; 
+	   padding-right: 5em;
+	   width: 800px;
+	   border:1px blue solid;
+	   background-color:red;
+	   word-spacing: 20px;
+	   letter-spacing: 5px;
+	   text-transform: uppercase;
+   }
+</style>
+
 <script language="javascript" src="../js/core.js"></script>
 
 
@@ -80,6 +93,10 @@ window.onload = function() {
 	Event.setCapture(clearObj, Event.MOUSEDOWN);
 	Event.releaseCapture(clearObj, Event.MOUSEDOWN);
 	
+
+	Element.attachColResize($("Jon"));
+	Element.attachRowResize($("Jon"));
+
 }
 
 function f1() {
@@ -96,6 +113,8 @@ function f2() {
 </HEAD>
 
 <BODY>
+
+<div id="Jon"><p>一般来说，可以为所有块级元素应用 text-indent，但无法将该属性应用于行内元素，图像之类的替换元素上也无法应用 text-indent 属性。不过，如果一个块级元素（比如段落）的首行中有一个图像，它会随该行的其余文本移动。</p></div>
 
 </BODY>
 </HTML>
