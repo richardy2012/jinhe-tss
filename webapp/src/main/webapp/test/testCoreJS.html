@@ -53,10 +53,41 @@ window.onload = function() {
 
 	// alert(convertToString(f1));
 
+	var clearObj = window.document.createElement("div");
+	clearObj.style.position = "absolute";
+	clearObj.style.right = "300px";
+	clearObj.style.top = "100px";
+	clearObj.style.fontSize = "10px";
+	clearObj.style.fontFamily = "Verdana";
+	clearObj.style.cursor = "hand";
+	clearObj.innerHTML = "clear";
+	window.document.body.appendChild(clearObj);
+
+	//Event.attachEvent(clearObj, "click", f2);
+	//Event.detachEvent(clearObj, "click", f2);
+
+	 Event.attachEvent(clearObj, "click", function(eventObj) {
+			var srcElement = Event.getSrcElement(eventObj);
+
+			alert( Event.offsetX(eventObj) );
+			alert( Event.offsetY(eventObj) );
+
+			assertEquals(Event.fireOnScrollBar(eventObj), true);
+
+			Event.cancel(eventObj);
+		});
+
+	Event.setCapture(clearObj, Event.MOUSEDOWN);
+	Event.releaseCapture(clearObj, Event.MOUSEDOWN);
+	
 }
 
 function f1() {
 	return "JK-1";
+}
+
+function f2() {
+	return alert("f2");
 }
 
 //-->

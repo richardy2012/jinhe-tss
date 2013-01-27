@@ -440,6 +440,27 @@ function convertToString(value) {
 
 /*********************************** 常用函数  end **********************************/
 
+/*********************************** html dom 操作 start **********************************/
+
+var Element = {};
+
+Element.removeNode = function(node) {
+	if( node == null ) return;
+
+	if(window.DOMParser) {
+		var parentNode = node.parentNode;
+		if( parentNode != null ) {
+			parentNode.removeChild(node);
+		}
+	}
+	else {
+		node.removeNode(true);
+	}
+}
+
+
+/*********************************** html dom 操作  end **********************************/
+
 /*********************************** 事件（Event）函数  start **********************************/
 
 var Event = {};
@@ -540,6 +561,45 @@ Event.detachEvent = function(srcElement, eventName, listener) {
 	}
 }
 
+Event.fireOnScrollBar = function(eventObj) {
+	var isOnScrollBar = false;
+	var srcElement = this.getSrcElement(eventObj);
+
+	// 是否有纵向滚动条
+	if(srcElement.offsetWidth > srcElement.clientWidth) {
+		var offsetX = Event.offsetX(eventObj);
+		if(offsetX > srcElement.clientWidth) {
+			isOnScrollBar = true;
+		}
+	}
+
+	// 是否有横向滚动条
+	if(false == isOnScrollBar && srcElement.offsetHeight > srcElement.clientHeight) {
+		var offsetY = Event.offsetY(eventObj);
+		if(offsetY > srcElement.clientHeight) {
+			isOnScrollBar = true;
+		}
+	}
+	return isOnScrollBar;
+}
+
+// 事件相对触发对象位置X
+Event.offsetX = function(eventObj) {
+	var clientX = eventObj.clientX;
+	var srcElement = this.getSrcElement(eventObj);
+	var offsetLeft = Element.absLeft(srcElement);
+
+	return clientX - offsetLeft;
+}
+
+// 事件相对触发对象位置Y
+Event.offsetY = function(eventObj) {
+	var clientY = eventObj.clientY;
+	var srcElement = this.getSrcElement(eventObj);
+	var offsetTop = Element.absTop(srcElement);
+
+	return clientY - offsetTop;
+}
 
 
 /*********************************** 事件（Event）函数  end **********************************/
