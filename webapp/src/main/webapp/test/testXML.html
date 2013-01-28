@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-<TITLE> New Document </TITLE>
+<TITLE> test xml </TITLE>
 <META NAME="Generator" CONTENT="EditPlus">
 <META NAME="Author" CONTENT="">
 <META NAME="Keywords" CONTENT="">
@@ -60,6 +60,11 @@ window.onload = function() {
 
 	tempNode.removeCDATA("url");
 	assertEquals(tempNode.getCDATA("url"), null);
+
+	var cloneNode = rootNode.cloneNode(true);
+	cloneNode.appendChild(authorNode);
+	cloneNode.replaceChild(authorNode, cloneNode.getFirstChild());
+	alert(cloneNode.toXml());
 
 }
 

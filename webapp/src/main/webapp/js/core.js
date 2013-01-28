@@ -1053,12 +1053,17 @@ XmlReader.prototype.toXml = function() {
 	return str;
 }
 
+/*
+ *  XML节点类型
+ */
+_XML_NODE_TYPE_ELEMENT    = 1; // 元素
+_XML_NODE_TYPE_ATTRIBUTE  = 2; // 属性
+_XML_NODE_TYPE_TEXT		  = 3; // 文本
+_XML_NODE_TYPE_CDATA	  = 4; 
+_XML_NODE_TYPE_PROCESSING = 7;
+_XML_NODE_TYPE_COMMENT    = 8; // 注释
+_XML_NODE_TYPE_DOCUMENT   = 9; // 文档
 
-var ELEMENT_NODE_TYPE = "1";  // 元素
-var ATTRIBUTE_NODE_TYPE = "2"; // 属性
-var TEXT_NODE_TYPE = "3"; // 文本
-var COMMENTS_NODE_TYPE = "8"; // 注释
-var DOCUMENT_NODE_TYPE = "9"; // 文档
 
 /* XML Node */
 function XmlNode(node) {
@@ -1074,13 +1079,13 @@ function XmlNode(node) {
 }
 
 XmlNode.prototype.getAttribute = function(name) {
-	if(ELEMENT_NODE_TYPE == this.nodeType) {
+	if(_XML_NODE_TYPE_ELEMENT == this.nodeType) {
 		return this.node.getAttribute(name);
 	}
 }
 
 XmlNode.prototype.setAttribute = function(name, value, isCDATA) {
-	if(ELEMENT_NODE_TYPE != this.nodeType) {
+	if(_XML_NODE_TYPE_ELEMENT != this.nodeType) {
 		return;
 	}
 
@@ -1095,7 +1100,7 @@ XmlNode.prototype.setAttribute = function(name, value, isCDATA) {
 
 /* 删除节点属性 */
 XmlNode.prototype.removeAttribute = function(name) {
-	if(ELEMENT_NODE_TYPE == this.nodeType) {
+	if(_XML_NODE_TYPE_ELEMENT == this.nodeType) {
 		return this.node.removeAttribute(name);
 	}
 }
@@ -1133,10 +1138,10 @@ XmlNode.prototype.removeCDATA = function(name) {
 
 XmlNode.prototype.cloneNode = function(deep) {
 	var tempNode;
-	if(window.ActiveXObject) {
-		tempNode = new XmlNode(this.node.cloneNode(deep));
-	} else {
+	if( window.DOMParser ) {
 		tempNode = new XmlNode(new XmlReader(this.toXml()).documentElement);
+	} else {
+		tempNode = new XmlNode(this.node.cloneNode(deep));
 	}
 	return tempNode;
 }
@@ -1160,7 +1165,7 @@ XmlNode.prototype.selectSingleNode = function(xpath) {
 	var xmlNode = null;
 	if(window.DOMParser) {
 		var ownerDocument;
-		if(_XML_NODE_TYPE_DOCUMENT==this.nodeType) {
+		if(_XML_NODE_TYPE_DOCUMENT == this.nodeType) {
 			ownerDocument = this.node;
 		} else {
 			ownerDocument = this.node.ownerDocument;
@@ -1177,6 +1182,38 @@ XmlNode.prototype.selectSingleNode = function(xpath) {
 		}
 	}
 	return xmlNode;
+}
+
+/*
+ *	函数说明：查询多个节点
+ *	参数：	string:xpath		xpath
+ *	返回值：array:xmlNodes      XmlNode实例数组
+ */
+XmlNode.prototype.selectNodes = function(xpath) {
+	var xmlNodes = [];
+	if(window.DOMParser) {
+		var ownerDocument = null;
+		if(_XML_NODE_TYPE_DOCUMENT == this.nodeType) {
+			ownerDocument = this.node;
+		} else {
+			ownerDocument = this.node.ownerDocument;
+		}
+		var xPathResult = ownerDocument.evaluate(xpath, this.node, ownerDocument.createNSResolver(ownerDocument.documentElement), XPathResult.ORDERED_NODE_ITERATOR_TYPE);
+		if (xPathResult) {
+			var oNode = xPathResult.iterateNext() ;
+			while(oNode) {
+				xmlNodes[xmlNodes.length] = new XmlNode(oNode);
+				oNode = xPathResult.iterateNext();
+			}
+		}
+	} 
+	else {
+		var nodes = this.node.selectNodes(xpath);
+		for(var i = 0; i < nodes.length; i++) {
+			xmlNodes[xmlNodes.length] = new XmlNode(nodes[i]);
+		}
+	}
+	return xmlNodes;
 }
 
 XmlNode.prototype.appendChild = function(xmlNode) {
@@ -1283,6 +1320,7 @@ XmlNode.prototype.toXml = function() {
 _ERROR_TYPE_OPERATION_EXCEPTION = 0;
 _ERROR_TYPE_KNOWN_EXCEPTION = 1;
 _ERROR_TYPE_UNKNOWN_EXCEPTION = 2;
+
 /*
  *  通讯用XML节点名
  */
@@ -1292,29 +1330,155 @@ _XML_NODE_RESPONSE_ERROR   = "Error";
 _XML_NODE_RESPONSE_SUCCESS = "Success";
 _XML_NODE_REQUEST_NAME     = "Name";
 _XML_NODE_REQUEST_VALUE    = "Value";
-_XML_NODE_REQUEST_PARAM    = "Param";    
-/*
- *  XML节点类型
- */
-_XML_NODE_TYPE_ELEMENT    = 1;
-_XML_NODE_TYPE_ATTRIBUTE  = 2;
-_XML_NODE_TYPE_TEXT		  = 3;
-_XML_NODE_TYPE_CDATA	  = 4;
-_XML_NODE_TYPE_PROCESSING = 7;
-_XML_NODE_TYPE_COMMENT    = 8;
-_XML_NODE_TYPE_DOCUMENT   = 9;
+_XML_NODE_REQUEST_PARAM    = "Param";
+
 /*
  *  HTTP响应状态
  */
 _HTTP_RESPONSE_STATUS_LOCAL_OK = 0;
 _HTTP_RESPONSE_STATUS_REMOTE_OK = 200;
+
 /*
  *  HTTP响应解析结果类型
  */
 _HTTP_RESPONSE_DATA_TYPE_EXCEPTION = "exception";
 _HTTP_RESPONSE_DATA_TYPE_SUCCESS = "success";
 _HTTP_RESPONSE_DATA_TYPE_DATA = "data";
+
 /*
  *  HTTP超时(1分钟)
  */
 _HTTP_TIMEOUT = 60*1000;
+
+/*
+ *  XMLHTTP请求参数对象，负责配置XMLHTTP请求参数
+ */
+function HttpRequestParams() {
+	this.url = "";
+	this.method = "POST";
+	this.async = true;
+	this.content = {};
+	this.header = {};
+}
+
+/*
+ *	函数说明：设置发送数据
+ *	参数：  string:name 		数据字段名
+			string:value        数据内容
+			boolean:flag        同名是否覆盖(默认true)
+ */
+HttpRequestParams.prototype.setContent = function(name, value, flag) {
+	if(flag || true) {
+		this.content[name] = value;
+	}
+	else {
+		var oldValue = this.content[name];
+		if( oldValue == null ) {
+			this.content[name] = value; // 原先没有值
+		}
+		else if(oldValue instanceof Array) {
+			oldValue[oldValue.length] = value; // 原来已经是数组
+		} 
+		else {
+			this.content[name] = [oldValue, value]; // 原来是单值
+		}
+	}
+}
+
+/*
+ *	函数说明：设置xform专用格式发送数据
+ *	参数：	XmlNode:dataNode 	XmlNode实例，xform的data数据节点
+			string:prefix 	    提交字段前缀
+ */
+HttpRequestParams.prototype.setXFormContent = function(dataNode, prefix) {
+	if(dataNode.nodeName != "data") return;
+
+	var rename = dataNode.getAttribute(name);
+	var nodes = dataNode.selectNodes("./row/*");
+	for(var i = 0; i < nodes.length; i++) {
+		var name = rename || nodes[i].nodeName; // 从data节点上获取保存名，如果没有则用原名
+		var value = nodes[i].text;
+		
+		// 前缀，xform declare节点上设置，以便于把值设置到action的bean对象里
+		if(null!=prefix){
+			name = prefix + "." + name;
+		}
+
+		this.setContent(name, value, false);
+	}
+}
+
+/*
+ *	函数说明：清除制定名称的发送数据
+ *	参数：	string:name 		数据字段名
+ */
+HttpRequestParams.prototype.clearContent = function(name) {
+	delete this.content[name];
+}
+
+/*
+ *	函数说明：清除所有发送数据
+ */
+HttpRequestParams.prototype.clearAllContent = function() {
+	this.content = {};
+}
+
+/*
+ *	函数说明：设置请求头信息
+ *	参数：	string:name 		头信息字段名
+			string:value        头信息内容
+ */
+HttpRequestParams.prototype.setHeader = function(name, value) {
+	this.header[name] = value;
+}
+
+
+/*
+ *  XMLHTTP请求对象，负责发起XMLHTTP请求并接收响应数据
+	例子：
+		var p = new HttpRequestParams();
+		p.url = URL_GET_USER_NAME;
+		p.setContent("loginName", loginName);
+		p.setHeader("appCode", APP_CODE);
+
+		var request = new HttpRequest(p);
+		request.onresult = function(){
+ 
+		}
+		request.send();
+ */
+function HttpRequest(paramsInstance) {
+	this.value = "";
+
+	this.xmlhttp = new XmlHttp();
+	this.xmldom  = new XmlReader();
+
+	this.params = paramsInstance;
+}
+
+/*
+ *	函数说明：获取响应数据源代码
+ *	参数：	
+ *	返回值：string:result       响应数据源代码
+ */
+HttpRequest.prototype.getResponseText = function() {
+	return this.value;
+}
+
+/*
+ *	函数说明：获取响应数据XML文档对象
+ *	参数：	
+ *	返回值：XmlReader:xmlReader       XML文档对象
+ */
+HttpRequest.prototype.getResponseXml = function() {
+	return this.xmldom;
+}
+
+/*
+ *	函数说明：获取响应数据XML文档指定节点对象值
+ *	参数：	string:name             指定节点名
+ *	返回值：any:value               根据节点内容类型不同而定
+ */
+HttpRequest.prototype.getNodeValue = function(name) {
+
+}
