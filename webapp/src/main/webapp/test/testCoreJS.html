@@ -27,8 +27,7 @@
 <!--
 
 window.onload = function() {
-	// Debug.print("1234567890", false);
-
+	
 	var result;
 
 	result = Public.executeCommand(f1);
@@ -69,33 +68,39 @@ window.onload = function() {
 	var clearObj = window.document.createElement("div");
 	clearObj.style.position = "absolute";
 	clearObj.style.right = "300px";
-	clearObj.style.top = "100px";
-	clearObj.style.fontSize = "10px";
+	clearObj.style.top = "200px";
+	clearObj.style.fontSize = "12px";
 	clearObj.style.fontFamily = "Verdana";
 	clearObj.style.cursor = "hand";
-	clearObj.innerHTML = "clear";
+	clearObj.innerHTML = "click me!";
 	window.document.body.appendChild(clearObj);
 
-	//Event.attachEvent(clearObj, "click", f2);
-	//Event.detachEvent(clearObj, "click", f2);
+	Event.attachEvent(clearObj, "click", f2);
+	Event.detachEvent(clearObj, "click", f2);
 
-	 Event.attachEvent(clearObj, "click", function(eventObj) {
+	 Event.attachEvent(clearObj, "dblclick", function(eventObj) {
 			var srcElement = Event.getSrcElement(eventObj);
 
-			alert( Event.offsetX(eventObj) );
-			alert( Event.offsetY(eventObj) );
+			alert("事件相对坐标："  + Event.offsetX(eventObj) + ", " + Event.offsetY(eventObj) );
 
-			assertEquals(Event.fireOnScrollBar(eventObj), true);
+			assertEquals(Event.fireOnScrollBar(eventObj), false);
 
 			Event.cancel(eventObj);
 		});
 
 	Event.setCapture(clearObj, Event.MOUSEDOWN);
 	Event.releaseCapture(clearObj, Event.MOUSEDOWN);
-	
+
+	var style = "div#jon{text-indent:20%; padding:5em; width:800px; border:1px blue solid; background-color:red;}";
+	Element.createStyle(style);
+
+	assertEquals(Element.getCurrentStyle($("Jon"), "background-color"), "red");	
+	assertEquals(Element.contains($("Jon"), $("p1")), true);	
 
 	Element.attachColResize($("Jon"));
 	Element.attachRowResize($("Jon"));
+
+	Element.setOpacity($("Jon"), 30);
 
 }
 
@@ -114,7 +119,7 @@ function f2() {
 
 <BODY>
 
-<div id="Jon"><p>一般来说，可以为所有块级元素应用 text-indent，但无法将该属性应用于行内元素，图像之类的替换元素上也无法应用 text-indent 属性。不过，如果一个块级元素（比如段落）的首行中有一个图像，它会随该行的其余文本移动。</p></div>
+<div id="Jon"><p id="p1">一般来说，可以为所有块级元素应用 text-indent，但无法将该属性应用于行内元素，图像之类的替换元素上也无法应用 text-indent 属性。不过，如果一个块级元素（比如段落）的首行中有一个图像，它会随该行的其余文本移动。</p></div>
 
 </BODY>
 </HTML>

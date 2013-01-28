@@ -1,30 +1,11 @@
 /*********************************** 常用函数  start **********************************/
 
-/* 浏览器类型 */
-_BROWSER_IE = "IE";
-_BROWSER_FF = "FF";
-_BROWSER_OPERA = "OPERA";
-_BROWSER_CHROME = "CHROME";
-_BROWSER = _BROWSER_IE;
-
 /* 对象类型 */
 _TYPE_NUMBER = "number";
 _TYPE_OBJECT = "object";
 _TYPE_FUNCTION = "function";
 _TYPE_STRING = "string";
 _TYPE_BOOLEAN = "boolean";
-
-/* 默认唯一编号名前缀 */
-_UNIQUE_ID_DEFAULT_PREFIX = "default__id";
-
-/* 当前应用名 */
-APP_CODE = "TSS";
-CONTEXTPATH = "tss/";
-APPLICATION = "tss";
-URL_CORE = "/" + APPLICATION + "/common/";  // 界面核心包相对路径
-
-URL_LOGOUT = "../logout.in";
-
 
 /* 常用方法缩写 */
 $ = function(id){
@@ -33,13 +14,26 @@ $ = function(id){
 
 /* 前台单元测试断言 */
 function assertEquals(actual, expect, msg) {
-	if( expect != actual) {
+	if( expect != actual ) {
 		alert(msg || "" + "[expect: " + expect + ", actual: " + actual + "]");
+	}
+}
+
+function assertTrue(result, msg) {
+	if( !result && msg != null) {
+		alert(msg);
 	}
 }
 
 /* 对象名称：Public（全局静态对象） */
 var Public = {};
+
+/* 浏览器类型 */
+_BROWSER_IE = "IE";
+_BROWSER_FF = "FF";
+_BROWSER_OPERA = "OPERA";
+_BROWSER_CHROME = "CHROME";
+_BROWSER = _BROWSER_IE;
 
 Public.checkBrowser = function() {
 	var ua = navigator.userAgent.toUpperCase();
@@ -84,9 +78,18 @@ Public.executeCommand = function(callback, param) {
 
 /* 显示等待状态 */
 Public.showWaitingLayer = function () {
-	var _waitingDivObj = $("_waitingDiv");
-	if(_waitingDivObj == null) {
-		var str = [];
+	var waitingDiv = $("_waitingDiv");
+	if(waitingDiv == null) {
+		var waitingDiv = document.createElement("div");    
+		waitingDiv.id = "_waitingDiv";    
+		waitingDiv.style.width ="100%";    
+		waitingDiv.style.height = "100%";    
+		waitingDiv.style.position = "absolute";    
+		waitingDiv.style.left = "0px";   
+		waitingDiv.style.top = "0px";   
+		waitingDiv.style.cursor = "wait"; 
+ 
+ 		var str = [];
 		str[str.length] = "<TABLE width=\"100%\" height=\"100%\"><TR><TD align=\"center\">";
 		str[str.length] = "	 <object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" ";
 		str[str.length] = "		   codebase=\"http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0\" ";
@@ -99,36 +102,34 @@ Public.showWaitingLayer = function () {
 		str[str.length] = "		       type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" />";
 		str[str.length] = "  </object>";
 		str[str.length] = "</TD></TR></TABLE>";
-		
-		if(window.DOMParser) {
-			var _waitingDivObj = document.createElement("div");    
-			_waitingDivObj.id = "_waitingDiv";    
-			_waitingDivObj.style.width ="100%";    
-			_waitingDivObj.style.height = "100%";    
-			_waitingDivObj.style.position = "absolute";    
-			_waitingDivObj.style.left = "0px";   
-			_waitingDivObj.style.top = "0px";   
-			_waitingDivObj.style.cursor = "wait";   
-		}
-		else {
-			_waitingDivObj = document.createElement('<div id="_waitingDiv" style="position:absolute;left:0px;top:0px;width:100%;height:100%;cursor:wait;align:center"></div>');
-			str[str.length] = "<div style=\"background:black;filter:alpha(opacity=0);width:100%;height:100%;position:absolute;left:0;top:0;z-index:10000;\"/>";
-		}
+		waitingDiv.innerHTML = str.join("\r\n");
 
-		_waitingDivObj.innerHTML = str.join("\r\n");
-		document.body.appendChild(_waitingDivObj);
+		var coverDiv = document.createElement("div");  
+		coverDiv.id = "coverDiv";
+		coverDiv.style.width  = "100%";    
+		coverDiv.style.height = "100%";    
+		coverDiv.style.position = "absolute";    
+		coverDiv.style.left = "0px";   
+		coverDiv.style.top  = "0px";   
+		coverDiv.style.zIndex = "10000"; 
+		coverDiv.style.background = "black";   
+		Element.setOpacity(coverDiv, 10);
+
+		document.body.appendChild(waitingDiv);
+		document.body.appendChild(coverDiv);
 	}
 
-	if(_waitingDivObj != null) {
-		_waitingDivObj.style.display = "block";
+	if(waitingDiv != null) {
+		waitingDiv.style.display = "block";
 	}
 }
 
 Public.hideWaitingLayer = function() {
-	var _waitingDivObj = $("_waitingDiv");
-	if( _waitingDivObj != null ) {
+	var waitingDiv = $("_waitingDiv");
+	if( waitingDiv != null ) {
 		setTimeout( function() {
-			_waitingDivObj.style.display = "none";
+			waitingDiv.style.display = "none";
+			$("coverDiv").style.display = "none";
 		}, 100);
 	}
 }
@@ -143,7 +144,12 @@ Public.writeTitle = function() {
 }
 Public.writeTitle();
 
+
 /* 负责生成对象唯一编号（为了兼容FF） */
+
+/* 默认唯一编号名前缀 */
+_UNIQUE_ID_DEFAULT_PREFIX = "_default_id";
+
 var UniqueID = {};
 UniqueID.key = 0;
 
@@ -152,6 +158,7 @@ UniqueID.generator = function(prefix) {
 	this.key ++;
 	return uid;
 }
+
 
 /* 缓存页面数据（xml、变量等） */
 var Cache = {};
@@ -261,7 +268,7 @@ Query.parse = function(queryString) {
 	var params = queryString.split("&");
 	for(var i=0; i < params.length; i++) {
 		var param = params[i];
-		var name = param.split("=")[0];
+		var name  = param.split("=")[0];
 		var value = param.split("=")[1];
 		this.set(name, value);
 	}
@@ -416,19 +423,19 @@ function convertToString(value) {
 
 	var str = "";
 	switch( typeof(value) ) {
-		case "number":
-		case "boolean":
-		case "function":
+		case _TYPE_NUMBER:
+		case _TYPE_BOOLEAN:
+		case _TYPE_FUNCTION:
 			str = value.toString();
 			break;
-		case "object":
+		case _TYPE_OBJECT:
 			if(null != value.toString){
 				str = value.toString();
 			} else {
 				str = "[object]";
 			}
 			break;
-		case "string":
+		case _TYPE_STRING:
 			str = value;
 			break;
 		case "undefined":
@@ -564,9 +571,100 @@ Element.write = function(obj, content) {
 }
 
 /*
+ * 函数说明：动态创建脚本
+ * 参数：	String:script			脚本内容
+ */
+Element.createScript = function(script) {
+	var head = document.head || document.getElementsByTagName('head')[0];
+	var scriptNode = Element.createElement("script");
+	scriptNode.text = script;
+	head.appendChild(scriptNode);
+}
+
+/*
+ * 函数说明：动态创建样式
+ * 参数：	String:style			样式内容
+ */
+ Element.createStyle = function(style) {
+	 if(window.DOMParser) {
+		 var styleNode = document.createElement("style");
+		 styleNode.tyle = "text/css";
+		 styleNode.innerHTML = style;
+
+		 var head = document.head || document.getElementByTagName("head")[0];
+		 head.appendChild(styleNode);
+	 }
+	 else {
+		 var styleNode = document.createStyleSheet();
+		 styleNode.cssText = style;
+	 }
+}
+
+/* 设置透明度 */
+Element.setOpacity = function(obj, opacity) {
+	if(opacity == null || opacity == "") {
+		opacity = 100;
+	}
+
+	if(window.DOMParser) {
+		obj.style.opacity = opacity / 100;
+	}
+	else {
+		obj.style.filter = "alpha(opacity=" + opacity + ")";
+	}
+}
+
+/*
+ * 函数说明：是否包含关系
+ * 参数：   Object:parentObj        html对象
+			Object:obj              html对象
+ * 返回值：	
+ */
+Element.contains = function(parentNode, node) {
+	if(parentNode == null || node == null) {
+		return false;
+	}
+
+	if(window.DOMParser) {
+		while(node != null && node != document.body) {
+			node = node.parentNode;
+			if(node == parentNode) {
+				return true;
+			}
+		}
+		return false;
+	}
+	else {
+		return parentNode.contains(node);
+	}
+}
+
+/*
+ * 函数说明：获取元素的当前样式
+ * 参数：   Object:obj              html对象
+			string:rule             样式名(例:background-color)
+ * 返回值：	string:str              样式值
+ */
+Element.getCurrentStyle = function(obj, rule) {
+	var str = "";
+	if(null != obj) {
+		if(window.DOMParser) {
+			str = document.defaultView.getComputedStyle(obj, null).getPropertyValue(rule);
+		} else {
+			rule = rule.split("-");
+			for(var i=1; i < rule.length; i++) {
+				rule[i] = rule[i].substring(0, 1).toUpperCase() + rule[i].substring(1);
+			}
+			rule = rule.join("");
+			str = obj.currentStyle[rule];
+		}
+	}
+	return str;
+}
+
+/*
  * 函数说明：控制对象拖动改变宽度
  * 参数：	Object:obj			要拖动改变宽度的HTML对象
- * 返回值：	
  */
 Element.attachColResize = function(obj, offsetX) {
 	offsetX = 3 - (offsetX || 0);
@@ -717,14 +815,6 @@ Element.attachRowResize = function(obj, offsetY) {
 	
 }
 
-
-
-
-
-
-
-
-
 /*********************************** html dom 操作  end **********************************/
 
 /*********************************** 事件（Event）函数  start **********************************/
@@ -870,97 +960,6 @@ Event.offsetY = function(eventObj) {
 
 /*********************************** 事件（Event）函数  end **********************************/
 
-var Debug = {};
-Debug.print = function(str, clear) {
-	var debugObj = window.document.getElementById("debug");
-	if(debugObj == null) {
-		debugObj = window.document.createElement("textarea");
-		debugObj.id = "debug";
-		debugObj.readOnly = true;
-		debugObj.cols = 80;
-		debugObj.row = 20;
-		debugObj.style.border = "1px solid gray";
-
-		var clearObj = window.document.createElement("div");
-		clearObj.style.position = "absolute";
-		clearObj.style.right = "3px";
-		clearObj.style.top = "0px";
-		clearObj.style.fontSize = "10px";
-		clearObj.style.fontFamily = "Verdana";
-		clearObj.style.cursor = "hand";
-		clearObj.innerHTML = "clear";
-
-		var boxObj = window.document.createElement("div");
-		boxObj.style.position = "absolute";
-		boxObj.style.left = "200px";
-		boxObj.style.top = "150px";
-		boxObj.style.border = "1px solid gray";
-		boxObj.style.paddingTop = "12px";
-		boxObj.style.paddingLeft = "2px";
-		boxObj.style.paddingRight = "2px";
-		boxObj.style.paddingBottom = "2px";
-		boxObj.style.backgroundColor = "#CCCCFF";
-
-		window.document.body.appendChild(boxObj);
-		boxObj.appendChild(debugObj);
-		boxObj.appendChild(clearObj);
-
-		clearObj.onclick = function(eventObj) {
-			debugObj.value = "";
-		}
-
-		debugObj.onmousedown = function(eventObj) {
-			eventObj = eventObj || event;
-			eventObj.returnValue = false;
-
-		    // 阻止事件冒泡传递，即不让父元素获取到子元素的事件。debugObj.onmousedown将不会传递到boxObj
-			eventObj.cancelBubble = true;
-		}
-
-		boxObj.onblur = function(eventObj) {
-			boxObj.style.display = "none"; // 失去焦点后隐藏起来
-		}
-		boxObj.onmousedown = function(eventObj) {
-			eventObj = eventObj || event;
-
-			this.isMouseDown = true;
-
-			// 添加鼠标监控，弹出框跟着鼠标移动
-			Event.setCapture(this, Event.MOUSEMOVE | Event.MOUSEUP);
-
-			this.offX = eventObj.clientX - this.offsetLeft; 
-			this.offY = eventObj.clientY - this.offsetTop;
-		}
-		boxObj.onmouseup = function(eventObj) {
-			this.isMouseDown = false;
-			
-			// 释放鼠标监控
-			Event.setCapture(this, Event.MOUSEMOVE | Event.MOUSEUP);
-		}
-		boxObj.onmousemove = function(eventObj) {
-			eventObj = eventObj || event;
-			if(this.isMouseDown == true) {
-				this.style.left = eventObj.clientX - this.offX;
-				this.style.top = eventObj.clientY - this.offY;
-			}
-		}
-
-		debugObj.focus();
-	}
-	else {
-		debugObj.parentNode.style.display = "";
-		debugObj.focus();
-	}
-
-	if(true == clear) {
-		debugObj.value = "";
-	}
-
-	debugObj.value += str + "\r\n";
-	debugObj.scrollTop = debugObj.scrollHeight;
-}
-
-
 /*********************************** xml文档、节点相关操作  start **********************************/
 
 function XmlReader(text) {
@@ -990,10 +989,10 @@ XmlReader.prototype.createCDATA = function(data) {
 	data = String(data).convertCDATA();
 	if(window.DOMParser) {
 		var tempReader = new XmlReader("<root><![CDATA[" + data + "]]></root>");
-		var xmlNode =  new XmlNode(tempReader.documentElement.firstChild);
+		var xmlNode = new XmlNode(tempReader.documentElement.firstChild);
 	}
 	else {
-		xmlNode = XmlNode(this.xmlDom.createCDATASection(data));
+		xmlNode = new XmlNode(this.xmlDom.createCDATASection(data));
 	}
 	return xmlNode;
 }
@@ -1017,10 +1016,10 @@ XmlReader.prototype.load = function(url, async) {
 				var onloadType = typeof(thisObj.onload);
 				try
 				{
-					if(onloadType == "function") {
+					if(onloadType == _TYPE_FUNCTION) {
 						thisObj.onload();
 					} 
-					else if(onloadType == "string") {
+					else if(onloadType == _TYPE_STRING) {
 						eval(thisObj.onload);
 					}
 				}
@@ -1085,21 +1084,12 @@ XmlNode.prototype.setAttribute = function(name, value, isCDATA) {
 		return;
 	}
 
-	if(value == null) {
-		if(isCDATA == 1) {
-			this.removeCDATA(name);
-		}
-		else {
-			this.removeAttribute(name);
-		}
+	value = value || "";
+	if(isCDATA == 1) {
+		this.setCDATA(name, value);
 	}
 	else {
-		if(isCDATA == 1) {
-			this.setCDATA(name, value);
-		}
-		else {
-			this.node.setAttribute(name, value);
-		}
+		this.node.setAttribute(name, value);
 	}
 }
 
@@ -1169,12 +1159,16 @@ XmlNode.prototype.removeNode = function() {
 XmlNode.prototype.selectSingleNode = function(xpath) {
 	var xmlNode = null;
 	if(window.DOMParser) {
-		var xPath;   
-        var xresult = this.ownerDocument.evaluate(xPath, this.node  
-            , null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);   
-        if(xresult && xresult.snapshotLength > 0) {   
-           return xresult.snapshotItem(0);   
-        }     
+		var ownerDocument;
+		if(_XML_NODE_TYPE_DOCUMENT==this.nodeType) {
+			ownerDocument = this.node;
+		} else {
+			ownerDocument = this.node.ownerDocument;
+		}
+		var xPathResult = ownerDocument.evaluate(xpath, this.node, ownerDocument.createNSResolver(ownerDocument.documentElement), 9);
+		if (xPathResult && xPathResult.singleNodeValue) {
+			xmlNode = new XmlNode(xPathResult.singleNodeValue);
+		}    
 	} 
 	else {
 		var node = this.node.selectSingleNode(xpath);
@@ -1282,3 +1276,45 @@ XmlNode.prototype.toXml = function() {
 }
 
 /*********************************** xml文档、节点相关操作  end **********************************/
+
+/*
+ *  错误类型
+ */
+_ERROR_TYPE_OPERATION_EXCEPTION = 0;
+_ERROR_TYPE_KNOWN_EXCEPTION = 1;
+_ERROR_TYPE_UNKNOWN_EXCEPTION = 2;
+/*
+ *  通讯用XML节点名
+ */
+_XML_NODE_RESPONSE_ROOT    = "Response";
+_XML_NODE_REQUEST_ROOT     = "Request";
+_XML_NODE_RESPONSE_ERROR   = "Error";
+_XML_NODE_RESPONSE_SUCCESS = "Success";
+_XML_NODE_REQUEST_NAME     = "Name";
+_XML_NODE_REQUEST_VALUE    = "Value";
+_XML_NODE_REQUEST_PARAM    = "Param";    
+/*
+ *  XML节点类型
+ */
+_XML_NODE_TYPE_ELEMENT    = 1;
+_XML_NODE_TYPE_ATTRIBUTE  = 2;
+_XML_NODE_TYPE_TEXT		  = 3;
+_XML_NODE_TYPE_CDATA	  = 4;
+_XML_NODE_TYPE_PROCESSING = 7;
+_XML_NODE_TYPE_COMMENT    = 8;
+_XML_NODE_TYPE_DOCUMENT   = 9;
+/*
+ *  HTTP响应状态
+ */
+_HTTP_RESPONSE_STATUS_LOCAL_OK = 0;
+_HTTP_RESPONSE_STATUS_REMOTE_OK = 200;
+/*
+ *  HTTP响应解析结果类型
+ */
+_HTTP_RESPONSE_DATA_TYPE_EXCEPTION = "exception";
+_HTTP_RESPONSE_DATA_TYPE_SUCCESS = "success";
+_HTTP_RESPONSE_DATA_TYPE_DATA = "data";
+/*
+ *  HTTP超时(1分钟)
+ */
+_HTTP_TIMEOUT = 60*1000;

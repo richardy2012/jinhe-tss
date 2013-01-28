@@ -22,17 +22,44 @@ window.onload = function() {
 	str[str.length] = "</book>";
 
 	var reader = new XmlReader(str.join("\r\n"));
-	alert(reader.toXml());
+	// alert(reader.toXml());
 
-	alert(reader.createElement("price").toXml());
+	var priceNode = reader.createElement("price");
+	assertEquals(priceNode.toXml(), "<price/>");
 
-	// alert(reader.createCDATA("<price>$ 9.99</price>"));
+	assertEquals(reader.createCDATA("<price>$ 9.99</price>").toXml(), "<![CDATA[<price>$ 9.99</price>]]>");
+
+	assertEquals(reader.createElementCDATA("price", "$ 9.99").toXml(), "<price><![CDATA[$ 9.99]]></price>");
 
 	var rootNode = new XmlNode(reader.documentElement);
-	alert(rootNode.toXml());
+	// alert(rootNode.toXml());
 	
-	alert(rootNode.getAttribute("id"));
+	assertEquals(rootNode.getAttribute("id"), "1");
 
+	rootNode.setAttribute("name", "book1");
+	assertEquals(rootNode.getAttribute("name"), "book1");
+
+	rootNode.removeAttribute("name");
+	assertEquals(rootNode.getAttribute("name"), null);
+
+	var authorNode = rootNode.selectSingleNode("author");
+	assertEquals(authorNode.firstChild.nodeValue, "JK.Rowling");
+
+	assertTrue(authorNode.getParent() != null, "xmlNode.getParent return null");
+	assertTrue(authorNode.cloneNode() != null, "xmlNode.cloneNode return null");
+	assertTrue(authorNode.getPrevSibling() != null, "xmlNode.getPrevSibling return null");
+	assertTrue(authorNode.getNextSibling() != null, "xmlNode.getNextSibling return null");
+
+	assertTrue(rootNode.getFirstChild() != null, "xmlNode.getFirstChild return null");
+	assertTrue(rootNode.getFirstChild() != null, "xmlNode.getFirstChild return null");
+
+	var tempNode = reader.createElement("temp");
+	tempNode.setCDATA("url", "http://www.google.com");
+	assertEquals(tempNode.getCDATA("url"), "http://www.google.com");
+	// alert(tempNode.toXml());
+
+	tempNode.removeCDATA("url");
+	assertEquals(tempNode.getCDATA("url"), null);
 
 }
 
