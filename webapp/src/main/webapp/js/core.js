@@ -25,6 +25,12 @@ function assertTrue(result, msg) {
 	}
 }
 
+function assertNotNull(result, msg) {
+	if( result == null && msg != null) {
+		alert(msg);
+	}
+}
+
 /* 对象名称：Public（全局静态对象） */
 var Public = {};
 
@@ -429,7 +435,7 @@ function convertToString(value) {
 			str = value.toString();
 			break;
 		case _TYPE_OBJECT:
-			if(null != value.toString){
+			if(value.toString != null){
 				str = value.toString();
 			} else {
 				str = "[object]";
@@ -576,9 +582,11 @@ Element.write = function(obj, content) {
  */
 Element.createScript = function(script) {
 	var head = document.head || document.getElementsByTagName('head')[0];
-	var scriptNode = Element.createElement("script");
-	scriptNode.text = script;
-	head.appendChild(scriptNode);
+	if( head != null) {
+		var scriptNode = Element.createElement("script");
+		scriptNode.text = script;
+		head.appendChild(scriptNode);
+	}
 }
 
 /*
@@ -646,20 +654,21 @@ Element.contains = function(parentNode, node) {
  * 返回值：	string:str              样式值
  */
 Element.getCurrentStyle = function(obj, rule) {
-	var str = "";
-	if(null != obj) {
-		if(window.DOMParser) {
-			str = document.defaultView.getComputedStyle(obj, null).getPropertyValue(rule);
-		} else {
-			rule = rule.split("-");
-			for(var i=1; i < rule.length; i++) {
-				rule[i] = rule[i].substring(0, 1).toUpperCase() + rule[i].substring(1);
-			}
-			rule = rule.join("");
-			str = obj.currentStyle[rule];
-		}
+	if(obj == null) {
+		return "";
 	}
-	return str;
+
+	if(window.DOMParser) {
+		return document.defaultView.getComputedStyle(obj, null).getPropertyValue(rule);
+	} 
+	else {
+		rule = rule.split("-");
+		for(var i=1; i < rule.length; i++) {
+			rule[i] = rule[i].substring(0, 1).toUpperCase() + rule[i].substring(1);
+		}
+		rule = rule.join("");
+		return obj.currentStyle[rule];
+	}
 }
 
 /*
@@ -670,7 +679,7 @@ Element.attachColResize = function(obj, offsetX) {
 	offsetX = 3 - (offsetX || 0);
 
 	// 计算对象实际的坐标值
-	obj._absTop = this.absTop(obj);
+	obj._absTop  = this.absTop(obj);
 	obj._absLeft = this.absLeft(obj);
 
 	// 添加resize条
@@ -681,31 +690,21 @@ Element.attachColResize = function(obj, offsetX) {
 		+ ";position:absolute;background-color:white;overflow:hidden;filter:alpha(opacity=0)";
 	document.body.appendChild(ruleObj);
 
-	var colResizeTimeout;
-	var colResizeDelay = 20;
-
-	// 检测边缘
-	function checkEdge(obj) {
-		return event.clientX > obj.offsetWidth - offsetX - 2;
+	function move() {
+		if(ruleObj._isMouseDown == true) {
+			ruleObj.style.left = Math.max(obj._absLeft, event.clientX - 3);
+		}
 	}
-
+ 
 	ruleObj.onmousedown = function() {
-		if(checkEdge(obj) == true) {
-			this.style.backgroundColor = "#999999";
-			this.style.filter = "alpha(opacity=50)";
+		this.style.backgroundColor = "#999999";
+		this.style.filter = "alpha(opacity=50)";
 
-			this._isMouseDown = true;
-			this._ox = event.clientX;
+		this._isMouseDown = true;
+		this._ox = event.clientX;
 
-			Event.setCapture(this, Event.MOUSEDOWN);
-		}
-		else {
-			this.style.backgroundColor = "white";
-			this.style.filter = "alpha(opacity=0)";
-
-			this._isMouseDown = false;
-			Event.releaseCapture(this, Event.MOUSEDOWN);
-		}
+		// Event.setCapture(this, Event.MOUSEMOVE | Event.MOUSEUP);
+		document.addEventListener("mousemove", move, true);
 	};
 	ruleObj.onmousemove = function() {
 		if(this._isMouseDown == true) {
@@ -715,26 +714,15 @@ Element.attachColResize = function(obj, offsetX) {
 	ruleObj.onmouseup = function() {
 		if(this._isMouseDown == true) {
 			this._isMouseDown = false;
-			Event.releaseCapture(this, Event.MOUSEUP);
-
+			// Event.releaseCapture(this, Event.MOUSEMOVE | Event.MOUSEUP);
+			document.removeEventListener("mousemove", move, true);
+	
 			obj.style.width = Math.max(1, obj.offsetWidth - offsetX + event.clientX - this._ox);
 
 			this.style.backgroundColor = "white";
 			this.style.filter = "alpha(opacity=0)";
 		}
 	};
-	obj.onresize = function() {
-		clearTimeout(colResizeTimeout);
-		colResizeTimeout = setTimeout( function() {
-			// 计算对象实际坐标位置
-			obj._absTop = Element.absTop(obj);
-			obj._absLeft = Element.absLeft(obj);
-
-			ruleObj.style.left = obj._absLeft + obj.offsetWidth - offsetX;
-			ruleObj.style.top = obj._absTop;
-			ruleObj.style.height = obj.offsetHeight;
-		}, colResizeDelay);
-	}
 }
 
 /*
@@ -743,7 +731,7 @@ Element.attachColResize = function(obj, offsetX) {
  * 返回值：	
  */
 Element.attachRowResize = function(obj, offsetY) {
-	offsetY = 3 - (offsetY||0);
+	offsetY = 3 - (offsetY || 0);
 
 	// 计算对象实际X,Y位置
 	obj._absTop = this.absTop(obj);
@@ -757,62 +745,32 @@ Element.attachRowResize = function(obj, offsetY) {
 		+ ";left:" + obj._absLeft + ";position:absolute;background-color:white;overflow:hidden;filter:alpha(opacity=0)";
 
 	document.body.appendChild(ruleObj);
-
-	var rowResizeTimeout;
-	var rowResizeDelay = 20;
-
-	//检测边缘
-	function checkEdge(obj) {
-		return event.clientY > obj.offsetHeight - offsetY - 2;
-	}
-
+ 
 	ruleObj.onmousedown = function() {
-		if(checkEdge(obj) == true) {
-			this.style.backgroundColor = "#999999";
-			this.style.filter = "alpha(opacity=50)";
+		this.style.backgroundColor = "#999999";
+		this.style.filter = "alpha(opacity=50)";
 
-			this._isMouseDown = true;
-			this._oy = event.clientY;
+		this._isMouseDown = true;
+		this._oy = event.clientY;
 
-			Event.setCapture(this, Event.MOUSEDOWN);
-		} else {
-			this.style.backgroundColor = "white";
-			this.style.filter = "alpha(opacity=0)";
-
-			this._isMouseDown = false;
-			Event.releaseCapture(this, Event.MOUSEDOWN);
-		}	
+		Event.setCapture(this, Event.MOUSEMOVE | Event.MOUSEUP);
 	};
 	ruleObj.onmousemove = function() {
 		if(this._isMouseDown==true) {
-			this.style.top = Math.max(obj._absTop,event.clientY - 3);
+			this.style.top = Math.max(obj._absTop, event.clientY - 3);
 		}
 	};
 	ruleObj.onmouseup = function() {
 		if(this._isMouseDown==true) {
 			this._isMouseDown = false;
-			Event.releaseCapture(this, Event.MOUSEUP);
+			Event.releaseCapture(this, Event.MOUSEMOVE | Event.MOUSEUP);
 
-			obj.style.height = Math.max(1,obj.offsetHeight - offsetY + event.clientY - this._oy);
+			obj.style.height = Math.max(1, obj.offsetHeight - offsetY + event.clientY - this._oy);
 
 			this.style.backgroundColor = "white";
 			this.style.filter = "alpha(opacity=0)";
 		}
-	
-	};
-	obj.onresize = function() {
-		clearTimeout(rowResizeTimeout);
-		rowResizeTimeout = setTimeout(function() {
-			//计算对象实际X,Y位置
-			obj._absTop = Element.absTop(obj);
-			obj._absLeft = Element.absLeft(obj);
-
-			ruleObj.style.top = obj._absTop + obj.offsetHeight - offsetY;
-			ruleObj.style.left = obj._absLeft;
-			ruleObj.style.width = obj.offsetWidth;
-		},rowResizeDelay);
-	}
-	
+	};	
 }
 
 /*********************************** html dom 操作  end **********************************/
@@ -826,6 +784,7 @@ Event.MOUSEOVER = 4;
 Event.MOUSEOUT  = 8;
 Event.MOUSEMOVE = 16;
 Event.MOUSEDRAG = 32;
+
 
 /*
  *	函数说明：获得事件触发对象
@@ -1288,7 +1247,7 @@ XmlNode.prototype.getNextSibling = function() {
 }
 
 XmlNode.prototype.equals = function(xmlNode) {
-	return null != xmlNode && this.node == xmlNode.node;
+	return xmlNode != null && this.node == xmlNode.node;
 }
 
 
@@ -1314,171 +1273,3 @@ XmlNode.prototype.toXml = function() {
 
 /*********************************** xml文档、节点相关操作  end **********************************/
 
-/*
- *  错误类型
- */
-_ERROR_TYPE_OPERATION_EXCEPTION = 0;
-_ERROR_TYPE_KNOWN_EXCEPTION = 1;
-_ERROR_TYPE_UNKNOWN_EXCEPTION = 2;
-
-/*
- *  通讯用XML节点名
- */
-_XML_NODE_RESPONSE_ROOT    = "Response";
-_XML_NODE_REQUEST_ROOT     = "Request";
-_XML_NODE_RESPONSE_ERROR   = "Error";
-_XML_NODE_RESPONSE_SUCCESS = "Success";
-_XML_NODE_REQUEST_NAME     = "Name";
-_XML_NODE_REQUEST_VALUE    = "Value";
-_XML_NODE_REQUEST_PARAM    = "Param";
-
-/*
- *  HTTP响应状态
- */
-_HTTP_RESPONSE_STATUS_LOCAL_OK = 0;
-_HTTP_RESPONSE_STATUS_REMOTE_OK = 200;
-
-/*
- *  HTTP响应解析结果类型
- */
-_HTTP_RESPONSE_DATA_TYPE_EXCEPTION = "exception";
-_HTTP_RESPONSE_DATA_TYPE_SUCCESS = "success";
-_HTTP_RESPONSE_DATA_TYPE_DATA = "data";
-
-/*
- *  HTTP超时(1分钟)
- */
-_HTTP_TIMEOUT = 60*1000;
-
-/*
- *  XMLHTTP请求参数对象，负责配置XMLHTTP请求参数
- */
-function HttpRequestParams() {
-	this.url = "";
-	this.method = "POST";
-	this.async = true;
-	this.content = {};
-	this.header = {};
-}
-
-/*
- *	函数说明：设置发送数据
- *	参数：  string:name 		数据字段名
-			string:value        数据内容
-			boolean:flag        同名是否覆盖(默认true)
- */
-HttpRequestParams.prototype.setContent = function(name, value, flag) {
-	if(flag || true) {
-		this.content[name] = value;
-	}
-	else {
-		var oldValue = this.content[name];
-		if( oldValue == null ) {
-			this.content[name] = value; // 原先没有值
-		}
-		else if(oldValue instanceof Array) {
-			oldValue[oldValue.length] = value; // 原来已经是数组
-		} 
-		else {
-			this.content[name] = [oldValue, value]; // 原来是单值
-		}
-	}
-}
-
-/*
- *	函数说明：设置xform专用格式发送数据
- *	参数：	XmlNode:dataNode 	XmlNode实例，xform的data数据节点
-			string:prefix 	    提交字段前缀
- */
-HttpRequestParams.prototype.setXFormContent = function(dataNode, prefix) {
-	if(dataNode.nodeName != "data") return;
-
-	var rename = dataNode.getAttribute(name);
-	var nodes = dataNode.selectNodes("./row/*");
-	for(var i = 0; i < nodes.length; i++) {
-		var name = rename || nodes[i].nodeName; // 从data节点上获取保存名，如果没有则用原名
-		var value = nodes[i].text;
-		
-		// 前缀，xform declare节点上设置，以便于把值设置到action的bean对象里
-		if(null!=prefix){
-			name = prefix + "." + name;
-		}
-
-		this.setContent(name, value, false);
-	}
-}
-
-/*
- *	函数说明：清除制定名称的发送数据
- *	参数：	string:name 		数据字段名
- */
-HttpRequestParams.prototype.clearContent = function(name) {
-	delete this.content[name];
-}
-
-/*
- *	函数说明：清除所有发送数据
- */
-HttpRequestParams.prototype.clearAllContent = function() {
-	this.content = {};
-}
-
-/*
- *	函数说明：设置请求头信息
- *	参数：	string:name 		头信息字段名
-			string:value        头信息内容
- */
-HttpRequestParams.prototype.setHeader = function(name, value) {
-	this.header[name] = value;
-}
-
-
-/*
- *  XMLHTTP请求对象，负责发起XMLHTTP请求并接收响应数据
-	例子：
-		var p = new HttpRequestParams();
-		p.url = URL_GET_USER_NAME;
-		p.setContent("loginName", loginName);
-		p.setHeader("appCode", APP_CODE);
-
-		var request = new HttpRequest(p);
-		request.onresult = function(){
- 
-		}
-		request.send();
- */
-function HttpRequest(paramsInstance) {
-	this.value = "";
-
-	this.xmlhttp = new XmlHttp();
-	this.xmldom  = new XmlReader();
-
-	this.params = paramsInstance;
-}
-
-/*
- *	函数说明：获取响应数据源代码
- *	参数：	
- *	返回值：string:result       响应数据源代码
- */
-HttpRequest.prototype.getResponseText = function() {
-	return this.value;
-}
-
-/*
- *	函数说明：获取响应数据XML文档对象
- *	参数：	
- *	返回值：XmlReader:xmlReader       XML文档对象
- */
-HttpRequest.prototype.getResponseXml = function() {
-	return this.xmldom;
-}
-
-/*
- *	函数说明：获取响应数据XML文档指定节点对象值
- *	参数：	string:name             指定节点名
- *	返回值：any:value               根据节点内容类型不同而定
- */
-HttpRequest.prototype.getNodeValue = function(name) {
-
-}
