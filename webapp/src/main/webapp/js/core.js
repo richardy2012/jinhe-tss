@@ -685,14 +685,14 @@ Element.attachColResize = function(obj, offsetX) {
 	// 添加resize条
 	var ruleObj = document.createElement("DIV");
 	ruleObj.id = "colRule";
-	ruleObj.style.cssText = "cursor:col-resize;width:3px;height:" +　obj.offsetHeight 
+	ruleObj.style.cssText = "cursor:col-resize;width:" + offsetX + "px;height:" +　obj.offsetHeight 
 		+ ";top:" + obj._absTop + ";left:" + (obj._absLeft + obj.offsetWidth - offsetX) 
 		+ ";position:absolute;background-color:white;overflow:hidden;filter:alpha(opacity=0)";
 	document.body.appendChild(ruleObj);
 
-	function move() {
+	var moveHandler = function() {
 		if(ruleObj._isMouseDown == true) {
-			ruleObj.style.left = Math.max(obj._absLeft, event.clientX - 3);
+			ruleObj.style.left = Math.max(obj._absLeft, event.clientX - offsetX);
 		}
 	}
  
@@ -701,23 +701,29 @@ Element.attachColResize = function(obj, offsetX) {
 		this.style.filter = "alpha(opacity=50)";
 
 		this._isMouseDown = true;
-		this._ox = event.clientX;
+		this._fromX = event.clientX;
 
-		// Event.setCapture(this, Event.MOUSEMOVE | Event.MOUSEUP);
-		document.addEventListener("mousemove", move, true);
-	};
-	ruleObj.onmousemove = function() {
-		if(this._isMouseDown == true) {
-			this.style.left = Math.max(obj._absLeft, event.clientX - 3);
+		if (this.setCapture) {             
+			this.setCapture();         
+		} 
+		else {
+			document.addEventListener("mousemove", moveHandler, true);
 		}
 	};
-	ruleObj.onmouseup = function() {
+	ruleObj.onmousemove = function() {
+		moveHandler();
+	};
+	ruleObj.onmouseup = function() { alert(1);
 		if(this._isMouseDown == true) {
 			this._isMouseDown = false;
-			// Event.releaseCapture(this, Event.MOUSEMOVE | Event.MOUSEUP);
-			document.removeEventListener("mousemove", move, true);
+			if (this.releaseCapture) {             
+				this.releaseCapture();         
+			} 
+			else {
+				document.removeEventListener("mousemove", moveHandler, true);
+			}			
 	
-			obj.style.width = Math.max(1, obj.offsetWidth - offsetX + event.clientX - this._ox);
+			obj.style.width = Math.max(1, obj.offsetWidth + event.clientX - this._fromX);
 
 			this.style.backgroundColor = "white";
 			this.style.filter = "alpha(opacity=0)";
@@ -725,53 +731,6 @@ Element.attachColResize = function(obj, offsetX) {
 	};
 }
 
-/*
- * 函数说明：控制对象拖动改变高度
- * 参数：	Object:obj			要拖动改变宽度的HTML对象
- * 返回值：	
- */
-Element.attachRowResize = function(obj, offsetY) {
-	offsetY = 3 - (offsetY || 0);
-
-	// 计算对象实际X,Y位置
-	obj._absTop = this.absTop(obj);
-	obj._absLeft = this.absLeft(obj);
-
-	// 添加resize条
-	var ruleObj = document.createElement("DIV");
-	ruleObj.id = "rowRule";
-	ruleObj.style.cssText = "cursor:row-resize;height:3px;width:" + obj.offsetWidth 
-		+ ";top:" + (obj._absTop+obj.offsetHeight-offsetY) 
-		+ ";left:" + obj._absLeft + ";position:absolute;background-color:white;overflow:hidden;filter:alpha(opacity=0)";
-
-	document.body.appendChild(ruleObj);
- 
-	ruleObj.onmousedown = function() {
-		this.style.backgroundColor = "#999999";
-		this.style.filter = "alpha(opacity=50)";
-
-		this._isMouseDown = true;
-		this._oy = event.clientY;
-
-		Event.setCapture(this, Event.MOUSEMOVE | Event.MOUSEUP);
-	};
-	ruleObj.onmousemove = function() {
-		if(this._isMouseDown==true) {
-			this.style.top = Math.max(obj._absTop, event.clientY - 3);
-		}
-	};
-	ruleObj.onmouseup = function() {
-		if(this._isMouseDown==true) {
-			this._isMouseDown = false;
-			Event.releaseCapture(this, Event.MOUSEMOVE | Event.MOUSEUP);
-
-			obj.style.height = Math.max(1, obj.offsetHeight - offsetY + event.clientY - this._oy);
-
-			this.style.backgroundColor = "white";
-			this.style.filter = "alpha(opacity=0)";
-		}
-	};	
-}
 
 /*********************************** html dom 操作  end **********************************/
 
