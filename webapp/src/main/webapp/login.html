@@ -121,14 +121,14 @@
      *	参数：	string:loginName      登录帐号
                 function:callback     回调方法
      */
-    function getUserName(loginName, callback){
+    function getUserName(loginName, callback) {
         var p = new HttpRequestParams();
         p.url = URL_GET_USER_NAME;
 		p.setContent("loginName", loginName);
 		p.setHeader("appCode", APP_CODE);
 
         var request = new HttpRequest(p);
-        request.onexception = function(){
+        request.onexception = function() {
             var loginFormObj = $("loginForm");
             loginFormObj.setFocus();
         }
@@ -142,15 +142,16 @@
     }
 
     function login() {
-        //校验loginForm数据有效性
+        // 校验loginForm数据有效性
         var loginFormObj = $("loginForm");
-        var userName = loginFormObj.getData("userName")||"";
-        var password = loginFormObj.getData("password")||"";
+        var userName = loginFormObj.getData("userName") || "";
+        var password = loginFormObj.getData("password") || "";
         if( "" == userName ) {
-            loginFormObj.showCustomErrorInfo("userName","请输入姓名");
+            loginFormObj.showCustomErrorInfo("userName", "请输入姓名");
             return;
-        } else if( "" == password ) {
-            loginFormObj.showCustomErrorInfo("password","请输入密码");
+        } 
+		else if( "" == password ) {
+            loginFormObj.showCustomErrorInfo("password", "请输入密码");
             return;
         }
 
@@ -158,9 +159,9 @@
         p.url = URL_LOGIN;
         p.relogin = "0";
 
-		//登录信息
+		// 登录信息
         var loginNode = Cache.XmlIslands.get(CACHE_LOGIN_FORM);
-        if( null!= loginNode ) {
+        if( null != loginNode ) {
             var dataNode = loginNode.selectSingleNode(".//data");
 			var prefix   = loginNode.selectSingleNode("./declare").getAttribute("prefix");
             if( null != dataNode ) {
@@ -205,7 +206,7 @@
             var btLogin = $("btLogin");
             btLogin.focus();
 
-            setTimeout(function(){
+            setTimeout(function() {
                 login();
             }, 10);
         }

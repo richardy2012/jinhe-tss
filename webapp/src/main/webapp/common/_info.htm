@@ -43,23 +43,12 @@
       bottom:0px;
       background-color:#FFFFFF;
   }
-  .webdings{
+ .webdings{
       font-family:webdings;
       font-size:10px;
       line-height:6px;
       height:9px;
       padding-right:3px;
-  }
-  .buttonBox{
-      border-top:1px solid #D5E1F0;
-      padding-top:5px;
-      margin-top:5px;
-  }
-  .btWeak {
-      margin-left:6px;
-  }
-  .btStrong {
-      margin-left:6px;
   }
 
 </style>
@@ -91,62 +80,42 @@
         var bt_ok         = $("bt_ok");
         var bt_copy       = $("bt_copy");
 
+		var gif;
         switch(params.type) {
             case "alert":
-                bt_ok.focus();
-
-                infoBox.innerText = params.info.replace(/[\r\n]+/g, " ");
-                infoBox.insertAdjacentHTML("afterBegin", "<img src='../images/icon/icon_alert.gif' hspace='5' align='left'>");
-
-                if(params.detail!=""){
-                    detailBox.value = params.detail;
-                    bt_showDetail.style.display = "block";
-                }
-                bt_copy.style.display = "none";
+				gif = "icon_alert.gif";
+                          
                 bt_cancel.style.display = "none";
-                bt_yes.style.display = "none";
-                bt_no.style.display = "none";
-
-                var tempHeightDelta = document.body.scrollHeight - tempContentHeight;
-                window.dialogHeight = (parseInt(defaultDialogHeight) + tempHeightDelta + 10) + "px";
-                defaultDialogHeight = window.dialogHeight;
+                bt_yes.style.display    = "none";
+                bt_no.style.display     = "none";
                 break;
             case "confirm":
-                bt_cancel.focus();
+				gif = "icon_confirm.gif";
 
-                infoBox.innerText = params.info.replace(/[\r\n]/g, "");
-                infoBox.insertAdjacentHTML("afterBegin", "<img src='../platform/images/icon/icon_confirm.gif' hspace='5' align='left'>");
-
-                if(params.detail!=""){
-                    detailBox.value = params.detail;
-                    bt_showDetail.style.display = "block";
-                }
-                bt_copy.style.display = "none";
                 bt_yes.style.display = "none";
                 bt_no.style.display = "none";
-
-                var tempHeightDelta = document.body.scrollHeight - tempContentHeight;
-                window.dialogHeight = (parseInt(defaultDialogHeight) + tempHeightDelta + 10) + "px";
-                defaultDialogHeight = window.dialogHeight;
                 break;
             case "confirm2":
-                bt_cancel.focus();
+				gif = "icon_confirm.gif";
 
-                infoBox.innerText = params.info.replace(/[\r\n]/g,"");
-                infoBox.insertAdjacentHTML("afterBegin", "<img src='../platform/images/icon/icon_confirm.gif' hspace='5' align='left'>");
-
-                if(params.detail!=""){
-                    detailBox.value = params.detail;
-                    bt_showDetail.style.display = "block";
-                }
-                bt_copy.style.display = "none";
-                bt_ok.style.display = "none";
-
-                var tempHeightDelta = document.body.scrollHeight - tempContentHeight;
-                window.dialogHeight = (parseInt(defaultDialogHeight) + tempHeightDelta + 10) + "px";
-                defaultDialogHeight = window.dialogHeight;
+				bt_ok.style.display = "none";
                 break;
         }
+
+		if(params.detail != "") {
+			detailBox.value = params.detail;
+			bt_showDetail.style.display = "block";
+		}
+
+		bt_ok.focus(); 
+		bt_copy.style.display = "none";
+
+		infoBox.innerText = params.info.replace(/[\r\n]/g,"");
+		infoBox.insertAdjacentHTML("afterBegin", "<img src='../images/icon/" + gif + "' hspace='5' align='left'>");
+
+		var tempHeightDelta = document.body.scrollHeight - tempContentHeight;
+		window.dialogHeight = (parseInt(defaultDialogHeight) + tempHeightDelta + 10) + "px";
+		defaultDialogHeight = window.dialogHeight;
     }
 
     function showDetail() {
@@ -161,19 +130,12 @@
         var bt_ok = $("bt_ok");
         var bt_copy = $("bt_copy");
 
-        switch(params.type){
-            case "alert":
-                bt_ok.focus();
-                break;
-            case "confirm":
-            case "confirm2":
-                bt_cancel.focus();
-        }
+        bt_ok.focus();
 
         if(bt_showDetail._state != "false") {
             detailBox.style.display = "block";
             bt_copy.style.display = "";
-            window.dialogWidth = "480px";
+            window.dialogWidth  = "480px";
             window.dialogHeight = "360px";
 
             resizeDetailBox();
@@ -195,7 +157,7 @@
 		bt_showDetail.style.bottom = "";
     }
 
-    function resizeDetailBox(){	
+    function resizeDetailBox() {	
         var infoBox   = $("infoBox");
         var detailBox = $("detailBox");
 
@@ -203,32 +165,32 @@
         detailBox.style.height = Math.max(1, document.body.offsetHeight - 65 - infoBox.offsetHeight);  
     }
 
-    function ok(){
+    function ok() {
         window.returnValue = true;
         window.close();
     }
 
-    function cancel(){
+    function cancel() {
         window.returnValue = false;
         window.close();
     }
 
-    function copy(){
+    function copy() {
         var detailBox = $("detailBox");
-        window.clipboardData.setData("text",detailBox.value);
+        window.clipboardData.setData("text", detailBox.value);
     }
 
-	function yes(){
+	function yes() {
 		window.returnValue = 1;
 		window.close();
 	}
 
-	function no(){
+	function no() {
 		window.returnValue = -1;
 		window.close();
 	}
 
-    Event.attachEvent(document, "keydown", function(eventObj){
+    Event.attachEvent(document, "keydown", function(eventObj) {
         if(27 == eventObj.keyCode) { // ESC 退出
             window.close();
         }
@@ -249,11 +211,11 @@
     </tr>
     <tr>
       <td align="right" height="30" class="t">
-        <input type="button" id="bt_copy" value="复 制" class="btWeak" onclick="copy()">
-		<input type="button" id="bt_cancel" value="取 消" class="btWeak" onclick="cancel()">
-		<input type="button" id="bt_ok" value="确 定" class="btStrong" onclick="ok()">
-		<input type="button" id="bt_yes" value="是" class="btStrong" onclick="yes()">
-		<input type="button" id="bt_no" value="否" class="btStrong" onclick="no()">
+        <input type="button" id="bt_copy"   value="复 制" class="btWeak"   onclick="copy()">
+		<input type="button" id="bt_cancel" value="取 消" class="btWeak"   onclick="cancel()">
+		<input type="button" id="bt_ok"     value="确 定" class="btStrong" onclick="ok()">
+		<input type="button" id="bt_yes"    value="是"    class="btStrong" onclick="yes()">
+		<input type="button" id="bt_no"     value="否"    class="btStrong" onclick="no()">
       </td>
     </tr>
   </table>

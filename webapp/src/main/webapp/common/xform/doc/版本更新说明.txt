@@ -1,0 +1,250 @@
+[2004-7-15]
+1.更正string类型显示双引号的问题，更新文件为string.htc
+
+[2004-8-2]
+1.新增<input type=radio类型，用法同<input type=comboedit，相关属性editorvalue和editortext，形式如下:
+  <input binding="special" type="radio" editorvalue="a|b|c" editortext="测试1|测试2|测试3" style="border:0px"/>
+ 2.更正comboedit在reset form时的BUG
+
+[2004-8-5]
+1.修正不允许为空的表单控件后"*"字符显示位置错误
+
+[2004-8-10]
+1.修正string,number和money类型，在设置某些style后，在手动输入时不会更新数据岛的问题（不会触发onpropertychange），
+	更新文件:
+	xform.htc,
+	jbbis_datepicker.htc,
+	function.htc,
+	number.htc,
+	money.htc,
+	string.htc
+
+[2004-8-11]
+1.修正column的empty属性默认值的问题，更改为默认true
+	更新文件：
+	string.htc
+	number.htc
+	money.htc
+2.修正date类型未设置pattern会出错的问题
+	更新文件：
+	jbbis_datepicker.htc
+
+[2004-8-16]
+1.修正style.display的问题，因为原先除了width和height，其余style属性全都转移到各个mode类型控件内部的input上，所以style.display直接设置对象的显示/隐藏会有问题，现把display和visibility属性仍保留在各个mode类型控件自身
+	更新文件：
+	string.htc
+	number.htc
+	money.htc
+
+
+[2004-8-23]
+1.更改date,function的输出方式，取消原先1.0版本中的自定义标签，改为直接输出input
+	更新文件：
+	date.htc
+	function.htc
+2.更新date和function的两个按钮图片
+	更新文件：
+	button.gif
+	CalendarSharedDir/arrow.gif
+
+[2004-8-30]
+1.修正xform1.1在IE5下的错误，现在应该可以兼容IE5（除了还没发现的问题）
+	更新文件：
+	string.htc
+	number.htc
+	money.htc
+	date.htc
+
+[2004-10-15]by lix
+1、给xform.htc增加方法：xml，以便可以在外部获取xform的xml信息。
+
+[2004-11-11]
+1.修正当mode为string，使用textarea时界面解析不正确造成JS报错问题（原因是textarea必须是围堵标签）
+	更新文件：
+	xform.xsl
+
+[2004-12-14]
+1.增加getAction,setAction方法，用来获取/设置xform控件所使用的xml数据岛节点的action属性，控制表单提交的地址
+2.增加getDataXMLString方法，用来获取xform控件所使用的xml数据岛节点的数据信息节点的内容
+	更新文件:
+	xform.htc
+
+[2004-12-17]
+1.修正comboedit生成时默认选中项不正确的错误
+	更新文件：
+	comboedit.htc
+
+[2004-12-29]
+1.修正comboedit为给出初始值时，若未经操作改变选项就取不到当前值的BUG
+	更新文件：
+	comboedit.htc
+
+[2005-3-15]
+1.修正更改mode=hidden时的JS错误(原因是hidden类型没有赋予setValue方法)
+	更新文件：
+	xform.htc
+
+[2005-9-12]
+1.增加reloadData方法，给定参数rowNode节点对象后，仅刷新数据，不刷新整个界面，避免大面积刷新造成的闪烁现象和响应迟滞问题
+	更新文件：
+	xform.htc
+
+[2005-9-14]
+1.修正reloadData方法，即可以设置值也可以清除值
+	更新文件：
+	xform.htc
+	comboedit.htc
+	radio.htc
+
+[2005-9-15]
+1.增加setCaption方法和saveasDefaultValue方法
+	更新文件：
+	xform.htc
+
+[2005-9-16]
+1.修正setEditable以后不能立刻执行更新数据的问题（HTC异步的缘故），更改为不重新reload，逐个更改元素editable状态
+	更新文件：
+	xform.htc
+
+[2005-9-16]
+1.增加setFocus方法
+2.更改radio类型的自定义标签命名空间为XFORM（原为JBBIS）
+	更新文件：
+	xform.htc
+	xform.xsl
+
+[2005-10-9]
+1.resetForm方法增加参数，用于控制是否触发ondatachange事件，默认true为触发
+2.修正Mode_Date的setValue方法在参数为null时不清除原先值的问题
+	更新文件：
+	xform.htc
+	mode.js
+
+[2005-10-20]
+1.增加isLoaded，标记控件已经加载完成
+	更新文件：
+	xform.htc
+
+[2005-11-1]
+1.更改原错误信息提示的方式（alert），更改为显示层（具有不同方向的指向箭头）
+	更新文件：
+	mode.js
+	errorInfo_01.gif
+	errorInfo_02.gif
+	errorInfo_03.gif
+	errorInfo_04.gif
+
+[2005-11-9]
+1.增加设置单个column是否可编辑的方法setColumnEditable
+	更新文件：
+	xform.htc
+
+[2005-11-11]
+1.修正错误提示层的显示错乱问题
+2.增加showCustomErrorInfo方法
+	更新文件：
+	xform.htc
+	mode.js
+
+[2005-11-14]
+1.修正当执行reloadData,load或者saveasDefaultValue等方法后，错误提示层未清除的问题
+2.修正某些情况下，string,number等需要手工输入的类型，当第一次键入、粘贴、拖拽入无法触发onpropertychange的问题
+3.修正date类型在输入时有根据pattern检测格式而checkForm时未检测的BUG
+	更新文件：
+	xform.htc
+	mode.js
+
+[2005-11-17]
+1.修正comboedit默认值的问题，内建fixComboeditDefaultValue方法
+	更新文件：
+	xform.htc
+
+[2005-12-15]
+1.增加getColumnAttribute方法
+	更新文件：
+	xform.htc
+
+[2005-12-16]
+1.修正date类型的pattern为yyyyMMdd之类无分隔符的形式时的BUG
+	更新文件：
+	xform.htc
+	mode.js
+	calendar.htm
+
+[2005-12-18]
+1.function类型增加clickOnly属性
+2.修正comboedit当没有初始值、显示空时，即使设置empty=false也不能通过checkForm检测出来的问题
+	更新文件：
+	xform.htc
+	mode.js
+	xform.xsl
+
+[2005-12-29]
+1.修正当column定义而layout中不存在的对象，执行checkForm时出错且未执行检测的问题
+	更新文件：
+	xform.htc
+	mode.js
+
+[2005-12-30]
+1.修改ondatachange触发机制，仅在离开编辑时触发（原先是每次键入都会）
+	更新文件：
+	mode.js
+
+[2006-1-5]
+1.修正date类型并未设置empty=false时执行checkForm也会提示错误信息的问题
+	更新文件：
+	mode.js
+
+[2006-2-16]
+1.修正resetForm时column中有而layout中没有的引起的_instance[name]不存在的问题
+2.layout中新增加特殊标签<label binding="user"/>，以代替原来手工书写的名称，相应增加setLabelContent方法用来改变此处文字或其他内容
+3.增加getXmlDocument方法以方便从控件直接找到所使用的数据岛节点
+	更新文件：
+	xform.htc
+	xform.xsl
+
+[2006-4-11]
+1.更改caption性质，使可支持html代码
+2.修正setEditable时column中有而layout中没有的引起的_instance[name]不存在的问题
+	更新文件：
+	xform.htc
+
+[2006-4-22]
+1.控件增加url数据源类型，使用datatype属性设置，值域"island(数据岛方式)/url(地址方式)"，默认"island"
+	更新文件：
+	xform.htc
+
+[2006-4-24]
+1.控件增加node数据源类型，datatype增加值域"node"
+2.load方法更改参数
+	更新文件：
+	xform.htc
+
+[2006-6-6]
+1.更改row节点存取数据的格式，从属性方式更改为子节点
+	更新文件：
+	xform.htc
+	xform.xsl
+
+[2006-6-7]
+1.更改boolean类型的封装方式，统一使用Mode_Boolean封装
+2.支持同一绑定column多值方式，多值间使用同名节点表示，并可以通过+、-增加删除
+	更改文件：
+	xform.htc
+	xform.xsl
+	mode.js
+
+[2006-6-22]
+1.所有绑定项(input,select等)增加title属性以便鼠标悬停时显示完整信息
+	更新文件：
+	mode.js
+
+[2006-6-23]
+1.更改fixComboeditDefaultValue函数，根据实际column指定empty情况确定是否自动取comboedit/radio的第一项值为默认值(empty=false时使用)
+	更新文件：
+	xform.htc
+
+[2006-6-27]
+1.更改string类型当inputReg验证结果为不合法时引起IE崩溃的问题
+	更新文件：
+	mode.js
