@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML XMLNS:WorkSpace>
+<HEAD>
+<TITLE> New Document </TITLE>
+<META NAME="Generator" CONTENT="EditPlus">
+<META NAME="Author" CONTENT="">
+<META NAME="Keywords" CONTENT="">
+<META NAME="Description" CONTENT="">
+<link rel=stylesheet type=text/css href=workspace.css>
+<style>
+WorkSpace\:Box {
+	behavior:url(workspace_local.htc);
+}
+body,td{
+	font-size:12px;
+	line-height:14px;
+}
+</style>
+<SCRIPT src="public.js"></script>
+<SCRIPT src="debug.js"></script>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+	function init(){
+		Public.initHTC(ws,"isLoaded","onload",initWorkSpace);
+	}
+	function initWorkSpace(){
+		ws.onTabClose = function(event){
+			alert(event.tab);
+		}
+		ws.onTabChange = function(event){
+			var fromTab = event.lastTab;
+			var toTab = event.tab;
+//alert("from:"+fromTab+"\r\n\r\n"+"to:"+toTab);
+
+			//event.returnValue = false;
+			//setTimeout(function(){
+			//	toTab.click();
+			//},1000);
+		}
+		//ws.open("page1","页面页面asdfasdf页面页面页面页面页面页面1");
+	}
+	function test(){
+		var phases = [];
+		phases[0] = {page:"page1",label:"编辑组信息"};
+		phases[1] = {page:"page2",label:"组对用户"};
+		phases[2] = {page:"page3",label:"组对角色"};
+		ws.open("page2","页面 ["+new Date().toLocaleString().split(" ")[1]+"]",phases);
+	}
+	function switchPage(){
+		var list = ["page1","page2","page3"];
+		if(null==window.curPageIndex){
+			window.curPageIndex = 0;
+		}
+		window.curPageIndex ++;
+		if(window.curPageIndex>list.length-1){
+			window.curPageIndex = 0;
+		}
+		ws.open(list[window.curPageIndex],"页面"+(window.curPageIndex+1));
+		var tab = ws.getActiveTab();
+		addToHistory(tab);
+	}
+	function addToHistory(tab){
+		if(null==window.tabHistory){
+			window.tabHistory = [];
+		}
+		window.tabHistory.push(tab);
+	}
+	function test2(){
+		if(null!=window.tabHistory){
+			var tab = window.tabHistory[0];
+			alert(tab)
+			tab.click();
+		}
+	}
+	window.onload = init;
+//-->
+</SCRIPT>
+</HEAD>
+
+<BODY>
+  <TABLE width="80%" height="80%" border="1" cellpadding=0>
+    <TR>
+      <TD width="100" height="100">&nbsp;</TD>
+      <TD><INPUT TYPE="button" value="open" onclick="test()"/>
+		<INPUT TYPE="button" value="switch" onclick="switchPage()"/>
+		<INPUT TYPE="button" value="innerHTML" onclick="Debug.print(ws.innerHTML)"/>
+		<INPUT TYPE="button" value="back" onclick="test2()"/>
+	  </TD>
+    </TR>
+    <TR>
+      <TD>&nbsp;</TD>
+      <TD valign=top><WorkSpace:Box id="ws">
+		<WorkSpace:Page id=page1>page1<br/>
+			page1<br/>
+			page1<br/>
+			page1<br/>
+			page1<br/>
+			page1<br/>
+			<a href=# onclick="ws.prevTab(true)">上一标签</a><br/>
+			<a href=# onclick="ws.nextTab(true)">下一标签</a><br/>
+		</WorkSpace:Page>
+		<WorkSpace:Page id=page2>page2<br/>
+			<a href=# onclick="ws.prevTab(true)">上一标签</a><br/>
+			<a href=# onclick="ws.nextTab(true)">下一标签</a><br/>
+			<a href=# onclick="ws.prevPhase(true)">上一步</a><br/>
+			<a href=# onclick="ws.nextPhase(true)">下一步</a><br/>
+		</WorkSpace:Page>
+		<WorkSpace:Page id=page2b>page2b<br/>
+			page2b<br/>
+			page2b<br/>
+			page2b<br/>
+			page2b<br/>
+			page2b<br/>
+			<a href=# onclick="ws.prevPhase(true)">上一步</a><br/>
+			<a href=# onclick="ws.nextPhase(true)">下一步</a><br/>
+		</WorkSpace:Page>
+		<WorkSpace:Page id=page2c>page2c<br/>
+			page2c<br/>
+			page2c<br/>
+			page2c<br/>
+			<a href=# onclick="ws.prevPhase(true)">上一步</a><br/>
+			<a href=# onclick="ws.nextPhase(true)">下一步</a><br/>
+		</WorkSpace:Page>
+		<WorkSpace:Page id=page3>page3<br/>
+			page3<br/>
+			page3<br/>
+			<a href=# onclick="ws.prevTab(true)">上一标签</a><br/>
+			<a href=# onclick="ws.nextTab(true)">下一标签</a><br/>
+		</WorkSpace:Page>
+	  </WorkSpace:Box></TD>
+    </TR>
+  </TABLE>
+</BODY>
+</HTML>

@@ -1,0 +1,101 @@
+Tree\:TreeBox{
+	behavior:url(Tree/Tree3.htc);
+}
+.Tree{
+	width:100%;
+	height:100%;
+	background-color:white;
+	border:solid 1px #A4B9D7;
+}
+.Tree a{
+	margin-left:2px;
+	height:16px;
+	width:1px;
+	font-size:12px;
+	padding:3 5 0 5;
+	color:#111;
+	text-decoration:none;
+	border:1px solid #fff;
+}
+.Tree a.hover{
+	background-color:#eeeeee;
+	border:1px solid #ffffff;
+	color:#000;
+}
+.Tree a.moved{
+	background-color:HighLight;
+	color:HighLightText;
+}
+.Tree a.selected{
+	border:1px solid #ffffff;
+	background-color:#000000;
+	color:#ffffff;
+}
+.Tree table{
+	width:100%;
+	border:solid 0px #A4B9D7;
+	margin:0 5 0 0;
+	border-collapse: collapse;
+	border-width:0px !important;
+}
+.Tree td{
+	border-width:0px !important;
+	line-height:16px;
+	padding:0 2 0 2;
+}.Tree nobr{
+	color:#7F92C5;
+	margin:-1px;
+	padding:0px;
+}
+.Tree img.checkType{
+	position:relative;
+	left:1px;
+	cursor:hand;
+}
+.Tree img.folder{
+	position:relative;
+	left:-2px;
+}
+.Tree span.vLine{
+	position:relative;
+	left:12px;
+	width:6px;
+	top:-5px;
+	margin-right:14px;
+	height:20px;
+	border-right:1px dotted #C6CFE7;
+}
+.Tree span.vHalfLine{
+	position:relative;
+	left:12px;
+	width:6px;
+	height:14px;
+	line-height:14px;
+	margin-right:14px;
+	top:-9px;
+	font-size:14px;
+	border-right:1px dotted #C6CFE7;
+}
+.Tree span.onlyVLine{
+	position:relative;
+	left:17px;
+	top:-5px;
+	width:20px;
+	height:20px;
+	border-left:1px dotted #C6CFE7;
+}
+.Tree span.rootSpace{
+	z-index:2;
+	position:relative;
+	width:12px;
+	height:20px;
+	margin-right:-12px;
+	background-color:#ffffff;
+}
+.Tree span.space{
+	position:relative;
+	left:17px;
+	top:-5px;
+	width:20px;
+	height:20px;
+}

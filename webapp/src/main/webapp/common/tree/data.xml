@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="GB2312"?>
+<actionSet title="单位选择" openednodeid="2">
+	<treeNode id="-1" name="全部111111111111111111111111111111111111111111111111111111111111111111111111111112">
+		<treeNode id="1" name="节点1"/>
+		<treeNode id="2" name="节点2">
+			<treeNode id="21" name="节点21"/>
+			<treeNode id="22" name="节点22"/>
+			<treeNode id="23" name="节点23"/>
+			<treeNode id="24" name="节点24"/>
+		</treeNode>
+		<treeNode id="3" name="节点3"/>
+		<treeNode id="4" name="节点4"/>
+		<treeNode id="5" name="节点5"/>
+	</treeNode>
+	<treeNode id="a" name="a">
+		<treeNode id="b" name="节点b" display="0"/>
+		<treeNode id="c" name="节点c" display="0" canselected="0"/>
+		<treeNode id="d" name="节点d" canselected="0"/>
+		<treeNode id="e" name="节点e"/>
+		<treeNode id="f" name="节点f"/>
+	</treeNode>
+</actionSet>

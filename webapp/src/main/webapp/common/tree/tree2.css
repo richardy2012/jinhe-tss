@@ -1,0 +1,121 @@
+Tree\:TreeBox{
+	behavior: url(htc/tree/Tree.htc);
+}
+.Tree{
+	width: 100%;
+	height: 100%;
+	background-color: white;
+	scrollbar-face-color: #E5E9F2;
+	scrollbar-highlight-color: #E5E9F2;
+	scrollbar-shadow-color: #A4B9D7; 
+	scrollbar-3dlight-color: #A4B9D7; 
+	scrollbar-arrow-color:  #000000; 
+	scrollbar-track-color: #EEEEE6; 
+	scrollbar-darkshadow-color: #FFFFFF;
+}
+.Tree a{
+	color: #111;
+	font-size: 12px;
+	text-decoration: none;
+	height: 16px;
+	width: 1px;
+	line-height:12px;
+	padding: 2 5 0 5;
+	margin-left: -3px;
+	border: 1px solid #FFF;
+}
+.Tree a.hover{
+	background-color: #E4E6F5;
+	border: 1px solid #FFFFFF;
+	color: #000;
+}
+.Tree a.moved{
+	background-color: HighLight;
+	color: HighLightText;
+}
+.Tree a.selected{
+	border: 1px solid #FEF7A9;
+	background-color: #FEF7A9;
+	color: #000000;
+}
+.Tree table{
+	width: 100%;
+	border: 0px solid #A4B9D7;
+	margin: 0 5 0 0;
+	border-collapse: collapse;
+}
+.Tree td{
+	border-width: 0px;
+	line-height: 16px;
+	padding: 0 2 0 2;
+}
+.Tree tr.selected td{
+	background-color: #FEF7A9;
+}
+.Tree nobr{
+	color: #7F92C5;
+	margin: -12px;
+	padding: 0px;
+}
+.Tree img.checkType{
+	position: relative;
+	left: 1px;
+	cursor: hand;
+}
+.Tree img.folder{
+	position: relative;
+	left: -2px;
+}
+.Tree span.vLine{
+	position: relative;
+	left: 12px;
+	width: 6px;
+	top: 0px;
+	margin-right: 14px;
+	height: 20px;
+	background-image: url(images/bg_vline.gif);
+	background-repeat: repeat-y;
+	background-position: right;
+}
+.Tree span.vHalfLine{
+	position: relative;
+	left: 12px;
+	width: 6px;
+	height: 14px;
+	line-height: 14px;
+	margin-right: 14px;
+	top: -9px;
+	font-size: 14px;
+	background-image: url(images/bg_vline_half.gif);
+	background-repeat: repeat-y;
+	background-position: right;
+}
+.Tree span.onlyVLine{
+	position: relative;
+	left: 17px;
+	top: -5px;
+	width: 20px;
+	height: 20px;
+	background-image: url(images/bg_vline.gif);
+	background-repeat: repeat-y;
+	background-position: -5 0;
+}
+.Tree span.rootSpace{
+	z-index: 2;
+	position: relative;
+	width: 13px;
+	height: 20px;
+	margin-right: -11px;
+	background-color: transparent;
+}
+.Tree span.space{
+	position: relative;
+	left: 17px;
+	top: -5px;
+	width: 20px;
+	height: 20px;
+}
+.Tree .icon {
+	margin-left: 3px;
+	margin-right: 3px;
+}

@@ -1,0 +1,58 @@
+    .balloon {
+        position:absolute;
+		cursor:default;
+		overflow:hidden;
+    }
+	.balloon td{
+		font-size:12px;
+    }
+	.balloon .content{
+		height:50px;
+		font-size:12px;
+		padding:5px;
+		vertical-align:top;
+		background-image:url(balloon_bg.gif);
+    }
+	.balloon .content div{
+		width:200px;
+		height:40px;
+		overflow:hidden;
+    }
+	.balloon .arrow_1{
+		width:30px;
+		height:15px;
+		margin-top:-3px;
+		border:0px;
+		background-image:url(balloon_01.gif);
+		position:absolute;
+		z-index:100;
+    }
+	.balloon .arrow_2{
+		width:30px;
+		height:15px;
+		margin-top:-3px;
+		margin-left:-30px;
+		border:0px;
+		background-image:url(balloon_02.gif);
+		position:absolute;
+		z-index:100;
+    }
+	.balloon .arrow_3{
+		width:30px;
+		height:15px;
+		margin-top:1px;
+		border:0px;
+		background-image:url(balloon_03.gif);
+		position:absolute;
+		z-index:100;
+    }
+	.balloon .arrow_4{
+		width:30px;
+		height:15px;
+		margin-top:1px;
+		margin-left:-30px;
+		border:0px;
+		background-image:url(balloon_04.gif);
+		position:absolute;
+		z-index:100;
+    }

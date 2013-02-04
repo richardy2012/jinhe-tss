@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<DefaultToolBar>
+		<toolbar>
+			<button id="bt1" icon="../platform/images/icon/icon_pre.gif" label="上页" cmd="ws.prevTab()" enable="true"/>
+			<button id="bt2" icon="../platform/images/icon/icon_next.gif" label="下页" cmd="ws.nextTab()" enable="true"/>
+			<separator/>
+		</toolbar>
+	</DefaultToolBar>
+	<WorkSpaceTree>
+		<actionSet title="" openednodeid="r1.1">
+			<treeNode id="r1" name="待审核资源(1)" icon="../platform/images/icon/icon_verify_source.gif" href=""/>
+			<treeNode id="r2" name="待发布资源(0)" icon="../platform/images/icon/icon_publish_source.gif" href=""/>
+			<treeNode id="r3" name="待审核用户(5)" icon="../platform/images/icon/icon_verify_user.gif" href=""/>
+			<treeNode id="r3" name="我的消息(15)" icon="../platform/images/icon/icon_message.gif" href=""/>
+		</actionSet>
+	</WorkSpaceTree>
+</Response>

@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns:Tree>
+<head>
+<title>公共基础资料管理</title>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<META HTTP-EQUIV="imagetoolbar" CONTENT="no">
+<link href="tree2.css"	rel="stylesheet" type="text/css"></link>
+<script language="JavaScript" type="text/javascript" src="debug.js"></script>
+<style>
+Tree\:TreeBox{
+	behavior:url(tree2.htc);
+}
+</style>
+<xml id="xmldoc" src="__demo.xml"></xml>
+<xml id="xmldoc2" src="__demo2.xml"></xml>
+<SCRIPT LANGUAGE="JavaScript">
+<!--	
+
+
+	function initComponenet(obj,flag,eventName,method){
+		if(obj==null || flag==null || method==null){
+			return;
+		}
+		if(obj[flag]!=true){
+			obj[eventName] = function(){
+				this[eventName] = null;
+				method();
+			}
+		}else{
+			method();
+		}
+		
+	}
+
+	function loadData(){
+		//载入page数据
+		initComponenet(menuTree,"isLoaded","oncomponentready",initTree);
+		//载入page数据
+		initComponenet(menuTree2,"isLoaded","oncomponentready",initTree2);
+	}
+	function initTree(){	
+		var treeDataNode = xmldoc.selectSingleNode("/result/treeData/actionSet");
+		menuTree.loadXML(treeDataNode);
+		menuTree.onTreeNodeMoved = function(event){
+			moveTreeNode2(menuTree,event);
+		}
+	}
+	function initTree2(){	
+		var treeDataNode = xmldoc2.selectSingleNode("/result/treeData/actionSet");
+		menuTree2.loadXML(treeDataNode);
+		menuTree2.onTreeNodeMoved = function(event){
+			moveTreeNode2(menuTree2,event);
+		}
+	}
+	window.attachEvent("onload", function (){
+		loadData();
+	});
+	function moveTreeNode2(treeObj,event){
+		var fromNode = event.movedTreeNode;
+		var toNode = event.toTreeNode;
+		var moveState = event.moveState;
+		var moveTree = event.moveTree;
+
+		//alert(fromNode)
+		//alert(toNode)
+		//alert(moveState)
+
+		if(moveTree==treeObj){
+			treeObj.moveTreeNode(fromNode,toNode,moveState);
+		}else{
+			//alert(toNode)
+			//alert([moveTree.id,treeObj.id])
+			treeObj.moveExternalTreeNode(fromNode,toNode,moveState);
+
+			var delNodeId = fromNode.getId();
+			var delNode = moveTree.getTreeNodeById(delNodeId);
+			moveTree.removeTreeNode(delNode);
+		}
+	}
+
+	function test(){
+		var delNode = menuTree.getTreeNodeById("a1");
+		alert(delNode)
+
+		menuTree.removeTreeNode(delNode);
+	}
+
+//-->
+</SCRIPT>
+<xml id="menuData"></xml>
+
+</head>
+
+<body>
+<INPUT TYPE="button" value="del" onclick=test()>
+<TABLE border=1 width=100% height="80%">
+<TR>
+	<TD width=50%>
+		<Tree:TreeBox 
+		id="menuTree"
+		canMoveNode="true"
+		treeType="multi"
+		baseurl = ""
+		treeNodeClickOpenNode="true"
+		style="width:100%;height:100%;"
+	> </Tree:TreeBox>
+	</TD>
+	<TD>
+		<Tree:TreeBox 
+		id="menuTree2"
+		canMoveNode="true"
+		treeType="multi"
+		baseurl = ""
+		treeNodeClickOpenNode="true"
+		style="width:100%;height:100%;"
+	> </Tree:TreeBox>
+	</TD>
+</TR>
+</TABLE>
+
+</body>
+</html>

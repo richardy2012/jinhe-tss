@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<WorkSpaceList>
+		<grid version="2">
+			<declare sequence="true">
+				<column caption="名称" name="name" mode="string" align="center"/>
+				<column caption="作者" name="author" mode="string" align="center"/>
+				<column caption="日期" name="date" mode="date" align="center" pattern="yyyy/MM/dd"/>
+				<column caption="状态" name="state" mode="string" align="center" editor="comboedit" editorvalue="0|1" editortext="待审核|待复审"/>
+			</declare>
+			<data>
+				<row id="1" name="测试信息快报的报送流程" author="按时法" date="2006/5/6" state="0"/>
+				<row id="2" name="士大夫" author="反对撒法" date="2006/5/6" state="1"/>
+				<row id="3" name="反对撒" author="问题" date="2006/5/6" state="1"/>
+				<row id="4" name="恢广泛感" author="活动飞过海地方后" date="2006/5/6" state="0"/>
+			</data>
+		</grid>
+	</WorkSpaceList>
+</Response>

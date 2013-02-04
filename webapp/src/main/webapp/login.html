@@ -7,14 +7,24 @@
 <!-- 公共脚本 开始 -->
 <link href="css/css.css" rel="stylesheet" type="text/css">
 <script language="javascript" src="js/core.js"></script>
+<script language="javascript" src="js/framework.js"></script>
 <!-- 公共脚本 结束 -->
 
 <!-- 气球 开始 -->
-<link href="css/balloon.css" rel="stylesheet" type="text/css">
+<link href="common/balloon/balloon.css" rel="stylesheet" type="text/css">
 <script language="javascript" src="common/balloon/balloon.js"></script>
 <!-- 气球 结束 -->
 
-<!-- 当前页相关脚本 结束 -->
+<!-- xform 开始 -->
+<link href="common/xform/xform.css" rel="stylesheet" type="text/css">
+<!-- xform 结束 -->
+
+<!-- 当前页相关脚本 开始 -->
+<style>
+  Xform\:Form {
+      behavior:url(common/xform/xform.htc);
+  }
+</style>
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
@@ -32,8 +42,8 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_GET_USER_NAME = "data/username.xml";
-    URL_LOGIN = "data/_success.xml";
+    URL_GET_USER_NAME = "test/mockdata/username.xml";
+    URL_LOGIN = "test/mockdata/_success.xml";
 
 //    URL_GET_USER_NAME = "getOperatorInfoByLoginName.in";
 //    URL_LOGIN = "login.do";
@@ -80,8 +90,7 @@
         str[str.length] = "    </data>";
         str[str.length] = "</xform>";
 
-        var xmlReader = new XmlReader();
-        xmlReader.loadXML(str.join(""));
+        var xmlReader = new XmlReader(str.join(""));
 
         var loginFormNode = new XmlNode(xmlReader.documentElement);
         var loginFormNodeID = CACHE_LOGIN_FORM;

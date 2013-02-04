@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML XMLNS:Tree XMLNS:XFORM XMLNS:htc XMLNS:GRID2>
+<HEAD>
+<TITLE> 基础资料 </TITLE>
+<META NAME="Generator" CONTENT="EditPlus">
+<META NAME="Author" CONTENT="">
+<META NAME="Keywords" CONTENT="">
+<META NAME="Description" CONTENT="">
+<META HTTP-EQUIV="imagetoolbar" CONTENT="no">
+<link href="dialog.css" rel="stylesheet" type="text/css"/>
+<style type="text/css">
+<!--
+body {
+	overflow: hidden;
+}
+-->
+</style>
+
+
+<xml id="responseXML"></xml>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function search(){
+	var tree = window.dialogArguments;
+	var searchStr = document.all.keyword.value;
+	var searchBy = "name";
+	if(document.all.type.checked){
+		var searchType = "hazy";
+	}else{
+		var searchType = "rigor";
+	}
+	if(document.all.down.checked){
+		var direct = "down";
+	}else{
+		var direct = "up";
+	}
+	tree.searchNode(searchStr, searchBy, searchType, direct);
+	document.all.next.disabled = false;
+}
+function next(){
+	var tree = window.dialogArguments;
+	if(document.all.down.checked){
+		var direct = "down";
+	}else{
+		var direct = "up";
+	}
+	var isCircle = document.all.circle.checked;
+	tree.searchNext(direct, isCircle);
+}
+//-->
+</SCRIPT>
+</HEAD>
+
+<BODY>
+<div class="mainBox" id="mainBox">
+	<table cellspacing="0" cellpadding="0" border="0" height="100%" width="100%">
+	<tr height="30" align=center>
+		<td class="dialogTitle" style="border-bottom:1px #D5E1F0 solid">查询节点</td>
+	</tr>
+	<tr>
+	<td valign=top>
+		<TABLE width="100%">
+		<TR>
+			<TD><TABLE width="100%">
+			<TR>
+				<TD width="50">关键字：</TD>
+				<TD><input type=text class=txtfield1 style="width:100%" id="keyword" onchange="document.all.next.disabled = true"></TD>
+				<TD style="display:none;width:65"><div style="width:65;height:18px;overflow:hidden;border:1px solid #5276A3"><SELECT NAME="" style="width:67;margin:-2"><option>名称</option><option>标准码</option></SELECT></TD>
+			</TR>
+			</TABLE></TD>
+			<TD rowspan="2" valign=top align=right style="padding-top:5px;width:80"><input type="button" value="查　找" onclick="search()" class="bt4" style="width:80px;margin-bottom:3px"><br/>
+			<input type="button" value="后一个" id="next" disabled onclick="next()" class="bt4" style="width:80px;margin-bottom:3px"><br/>
+			<br/>
+			<input type="button" value="关　闭" onclick="window.close()" class="bt4" style="width:80px;margin-bottom:3px"><br/></TD>
+		</TR>
+		<TR>
+			<TD><TABLE width=100%>
+			<TR>
+				<TD><label for="type"><INPUT TYPE="checkbox" id="type" checked onclick="document.all.next.disabled = true">模糊查询</label><br/>
+			<label for="circle"><INPUT TYPE="checkbox" id="circle">循环查询</label></TD>
+				<TD><fieldset><legend>查找方向</legend><label for="up"><INPUT TYPE="radio" NAME="direct" id="up">向前</label><label for="down"><INPUT TYPE="radio" checked NAME="direct" id="down">向后</label></fieldset></TD>
+			</TR>
+			</TABLE></TD>
+		</TR>
+		</TABLE>
+	</td>
+	</tr>
+	</table>
+</div>
+</BODY>
+</HTML>

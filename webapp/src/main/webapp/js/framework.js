@@ -2,7 +2,8 @@
 APP_CODE = "TSS";
 CONTEXTPATH = "tss/";
 APPLICATION = "tss";
-URL_CORE = "/" + APPLICATION + "/common/";  // 界面核心包相对路径
+// URL_CORE = "/" + APPLICATION + "/common/";  // 界面核心包相对路径
+URL_CORE = "common/";  // 界面核心包相对路径
 
 URL_LOGOUT = "../logout.in";
 
@@ -713,3 +714,676 @@ function Ajax() {
 }
 
 /***************************************** xmlhttp end ****************************************/
+
+/*
+ *	函数说明：重新封装alert
+ *	参数：	string:info     简要信息
+			string:detail   详细信息
+ */
+function Alert(info, detail) {
+	info = convertToString(info);
+	detail = convertToString(detail);
+
+	var maxWords = 100;
+	var params = {};
+	params.type = "alert";
+	params.info = info;
+	params.detail = detail;
+	if("" == detail && maxWords < info.length) {
+		params.info = info.substring(0, maxWords) + "...";
+		params.detail = info;        
+	}
+	params.title = "";
+	window.showModalDialog(URL_CORE + '_info.htm', params, 'dialogwidth:280px; dialogheight:150px; status:yes; help:no;resizable:yes;unadorned:yes');
+}
+
+/*
+ *	函数说明：重新封装confirm
+ *	参数：	string:info             简要信息
+			string:detail           详细信息
+ *	返回值：boolean:returnValue     用户选择确定/取消
+ */
+function Confirm(info,detail) {
+	info = convertToString(info);
+	detail = convertToString(detail);
+
+	var maxWords = 100;
+	var params = {};
+	params.type = "confirm";
+	params.info = info;
+	params.detail = detail;
+	if("" == detail && maxWords<info.length) {
+		params.info = info.substring(0, maxWords) + "...";
+		params.detail = info;        
+	}
+	params.title = "";
+	var returnValue = window.showModalDialog(URL_CORE + '_info.htm', params, 'dialogwidth:280px; dialogheight:150px; status:yes; help:no;resizable:yes;unadorned:yes');
+	return returnValue;
+}
+
+/*
+ *	函数说明：带是/否/取消三个按钮的对话框
+ *	参数：	string:info             简要信息
+			string:detail           详细信息
+ *	返回值：boolean:returnValue     用户选择是/否/取消
+ */
+function Confirm2(info,detail) {
+	info = convertToString(info);
+	detail = convertToString(detail);
+
+	var maxWords = 100;
+	var params = {};
+	params.type = "confirm2";
+	params.info = info;
+	params.detail = detail;
+	if("" == detail && maxWords < info.length) {
+		params.info = info.substring(0, maxWords) + "...";
+		params.detail = info;        
+	}
+	params.title = "";
+	var returnValue = window.showModalDialog(URL_CORE + '_info.htm', params, 'dialogwidth:280px; dialogheight:150px; status:yes; help:no;resizable:yes;unadorned:yes');
+	return returnValue;
+}
+
+/*
+ *	函数说明：重新封装prompt
+ *	参数：	string:info             简要信息
+			string:defaultValue     默认值
+			string:title            标题
+			boolean:protect         是否保护
+			number:maxBytes         最大字节数
+ *	返回值：string:returnValue      用户输入的文字
+ */
+function Prompt(info, defaultValue, title, protect, maxBytes) {
+	info = convertToString(info);
+	defaultValue = convertToString(defaultValue);
+	title = convertToString(title);
+
+	var params = {};
+	params.info = info;
+	params.defaultValue = defaultValue;
+	params.title = title;
+	params.protect = protect;
+	params.maxBytes = maxBytes;
+	var returnValue = window.showModalDialog(URL_CORE + '_prompt.htm', params, 'dialogwidth:280px; dialogheight:150px; status:yes; help:no;resizable:no;unadorned:yes');
+	return returnValue;
+}
+
+/*
+ *	函数说明：捕获页面js报错
+ */
+function onError(msg,url,line) {
+	alert(msg, "错误:" + msg + "\r\n行:" + line + "\r\n地址:" + url);
+	event.returnValue = true;
+}
+
+window._alert = window.alert;
+window._confirm = window.confirm;
+window._prompt = window.prompt;
+window.alert = Alert;
+window.confirm = Confirm;
+window.confirm2 = Confirm2;
+window.prompt = Prompt;
+window.onerror = onError;
+
+document.oncontextmenu = function(eventObj) {
+	eventObj = eventObj || window.event;
+	var srcElement = Event.getSrcElement(eventObj);
+	var tagName = srcElement.tagName.toLowerCase();
+	if("input" != tagName && "textarea" != tagName) {
+		event.returnValue = false;            
+	}
+}
+
+
+/*
+ *	函数说明：用户信息初始化
+ */
+function initUserInfo() {
+	var p = new HttpRequestParams();
+	p.url = "ums/user!getOperatorInfo.action";
+	p.setHeader("appCode", APP_CODE);
+	p.setHeader("anonymous", "true");
+
+	var request = new HttpRequest(p);
+	request.onresult = function() {
+		var userName = this.getNodeValue("name");
+		$("userInfo").innerText = userName;
+	}
+	request.send();
+}
+
+function logout() {
+	var p = new HttpRequestParams();
+	p.url = URL_CORE + URL_LOGOUT;
+
+	var request = new HttpRequests(p);
+	request.onsuccess = function() {
+		Cookie.del("token", "/" + CONTEXTPATH);
+		location.href = URL_CORE + "../login.htm";
+	}
+	request.send();
+}
+
+// 关闭页面时候自动注销
+function logoutOnClose() {
+	window.attachEvent("onuload", function() {
+		if(10*1000 < window < screenTop || 10*1000 < window.screenLeft) {
+			logout();
+		}
+	});
+}
+
+
+
+
+
+// 离开提醒
+var Reminder = {};
+
+Reminder.items = {};   // 提醒项
+Reminder.count = 0;
+Reminder.flag  = true; // 是否要提醒
+
+Reminder.del = function(id) {
+	if(this.items[id] != null) {
+		delete this.item[id];
+		this.count--;
+	}
+}
+
+Reminder.remind = function() {
+	if(this.getCount() > 0) {
+		alert("当然有 <" + this.count + ">项修改未保存，请先保存");
+	}
+}
+
+/*
+ * 函数说明：统计提醒项
+ */
+Reminder.getCount = function() {
+	if( true== this.flag) {
+		return this.count;
+	} else {
+		return 0;
+	}
+}
+
+/*
+ * 函数说明：取消提醒
+ */
+Reminder.cancel = function() {
+	this.flag = false;
+}
+
+/*
+ * 函数说明：允许提醒
+ */
+Reminder.restore = function() {
+	this.flag = true;
+}
+
+window.attachEvent("onbeforeunload", function() {
+	if(Reminder.getCount() > 0) {            
+		event.returnValue = "当前有 <" + count + "> 项修改未保存，您确定要离开吗？";
+	}
+});
+
+/* 函数说明：给xform等添加离开提醒 */
+function attachReminder(id, xform) {
+	if(xform != null) {
+		xform.ondatachange = function() {
+			Reminder.add(id); // 数据有变化时才添加离开提醒
+		}
+	}
+	else {
+		Reminder.add(id);
+	}
+}
+
+/*
+ *	函数说明：大数据显示进度
+ *	参数：	string:url                      同步进度请求地址
+			xmlNode:data                    XmlNode实例
+ *	返回值：
+ */
+var Progress = function(url, data, cancelUrl) {
+	this.progressUrl = url;
+	this.cancelUrl = cancelUrl;
+	this.id = UniqueID.generator();
+	this.refreshData(data);
+}
+
+/*
+ *	函数说明：更新数据
+ */
+Progress.prototype.refreshData = function(data) {
+	this.percent      = data.selectSingleNode("./percent").text;
+	this.delay        = data.selectSingleNode("./delay").text;
+	this.estimateTime = data.selectSingleNode("./estimateTime").text;
+	this.code         = data.selectSingleNode("./code").text;
+
+	var feedback = data.selectSingleNode("./feedback");
+	if(feedback != null) {
+		alert(feedback.text);
+	}
+}
+
+/*
+ *	开始执行
+ */
+Progress.prototype.start = function() {
+	this.show();
+	this.next();
+}
+
+/*
+ *	停止执行
+ */
+Progress.prototype.stop = function() {
+	var p = new HttpRequestParams();
+	p.url = this.cancelUrl;
+	p.setContent("code", this.code);
+
+	var thisObj = this;
+	var request = new HttpRequest(p);
+	request.onsuccess = function() {
+		thisObj.hide();
+		clearTimeout(thisObj.timeout);
+	}
+	request.send();
+}
+
+/*
+ *	函数说明：显示进度
+ *	参数：
+ *	返回值：
+ */
+Progress.prototype.show = function() {
+	var thisObj = this;
+	var barObj = $(this.id);
+	if(null == barObj) {
+		barObj = Element.createElement("div");
+		barObj.id = this.id;
+		barObj.style.width = "200px";
+		barObj.style.height = "50px";
+		barObj.style.paddingRight = "3px";
+		barObj.style.paddingTop = "8px";
+		barObj.style.position = "absolute";
+		barObj.style.color = "#5276A3";
+		barObj.style.textAlign = "center";
+		barObj.style.visibility = "hidden";
+		document.body.appendChild(barObj);
+
+		barObj.innerHTML = "<object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" codebase=\"http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0\" width=\"140\" height=\"30\" id=\"loadingbar\" align=\"middle\">"
+			 + "<param name=\"allowScriptAccess\" value=\"sameDomain\" />"
+			 + "<param name=\"movie\" value=\"../platform/images/loadingbar.swf\" />"
+			 + "<param name=\"quality\" value=\"high\" />"
+			 + "<param name=\"wmode\" value=\"transparent\" />"
+			 + "<embed src=\"../platform/images/loadingbar.swf\" quality=\"high\" wmode=\"transparent\" width=\"140\" height=\"30\" name=\"loadingbar\" align=\"middle\" allowScriptAccess=\"sameDomain\" type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" />"
+			 + "</object><div/>";
+	}
+	barObj.style.left = (document.body.offsetWidth - 200) / 2 + "px";
+	barObj.style.top  = (document.body.offsetHeight - 50) / 2 + "px";
+
+	var str = [];
+	str[str.length] = "<div style=\"height:3px;font-size:1px;background-color:#FFFFFF;width:100%;text-align:left\">";
+	str[str.length] = "<div style=\"height:3px;font-size:1px;background-color:#5276A3;width:" + this.percent + "%\"/>";
+	str[str.length] = "</div>";
+	str[str.length] = "<div style=\"padding-top:5px\">";
+	str[str.length] = "<span style=\"font-size:16px;font-family:Arial;font-weight:bold\">" + this.percent + "%</span>";
+	str[str.length] = "&nbsp;&nbsp;剩余时间:<span style=\"font-size:16px;font-family:Arial;font-weight:bold\">" + this.estimateTime + "</span>秒";
+	str[str.length] = "</div>";
+	str[str.length] = "<div style=\"padding-top:5px\">";
+	str[str.length] = "<a href=\"#\" style=\"margin-top:30px;color:#5276A3;text-decoration:underline\">取 消</a>";
+	str[str.length] = "</div>";
+	barObj.childNodes[1].innerHTML = str.join("");
+	barObj.style.visibility = "visible";
+
+	var link = barObj.getElementsByTagName("a")[0];
+	link.onclick = function() {
+		thisObj.stop();
+	}
+}
+
+/*
+ *	函数说明：隐藏进度
+ */
+Progress.prototype.hide = function() {
+	var barObj = $(this.id);
+	if(null != barObj) {
+		barObj.style.visibility = "hidden";
+	}
+}
+
+/*
+ *	函数说明： 同步进度
+ */
+Progress.prototype.sync = function() {
+	var p = new HttpRequestParams();
+	p.url = this.progressUrl;
+	p.setContent("code", this.code);
+	p.ani = false;
+
+	var thisObj = this;
+	var request = new HttpRequest(p);
+	request.onexception = function() {
+		thisObj.hide();
+	}
+	request.onresult = function() {
+		var data = this.getNodeValue("ProgressInfo");
+		thisObj.refreshData(data);
+		thisObj.show();
+		thisObj.next();
+	}
+	request.send();
+}
+
+/*
+ *	函数说明： 延时进行下一次同步
+ */
+Progress.prototype.next = function() {
+	var thisObj = this;
+
+	var percent = parseInt(this.percent);
+	var delay   = parseInt(this.delay) * 1000;
+	if(100 > percent) {
+		this.timeout = setTimeout(function() {
+			thisObj.sync();
+		}, delay);
+	}
+	else if(null != this.oncomplete) {
+		setTimeout(function() {
+			thisObj.hide();
+			thisObj.oncomplete();
+		}, 200);
+	}
+}
+
+
+/*
+ *	对象名称：Blocks
+ *	职责：负责管理所有Block实例
+ */
+var Blocks = {};
+Blocks.items = {};
+
+/*
+ *	函数说明：创建区块实例
+ *	参数：	Object:blockObj		HTML对象
+			Object:associate	关联的HTML对象
+			boolean:visible		默认显示状态
+ *	返回值：
+ */
+Blocks.create = function(blockObj, associate, visible) {
+	var block = new Block(blockObj, associate, visible);
+	this.items[block.uniqueID] = block;
+}
+/*
+ *	函数说明：获取区块实例
+ *	参数：	string:id		HTML对象id
+ *	返回值：Block:block		Block实例
+ */
+Blocks.getBlock = function(id) {
+	var block = this.items[id];
+	return block;
+}
+
+
+/*
+ *	对象名称：Block
+ *	职责：负责控制区块显示隐藏等
+ */
+var Block = function(blockObj, associate, visible) {
+	this.object = blockObj;
+	this.uniqueID = this.object.id;
+	this.associate = associate;
+	this.visible = visible || true;
+
+	this.width = null;
+	this.height = null;	
+	this.mode = null;
+
+	this.init();
+}
+
+/*
+ *	函数说明：初始化区块
+ */
+Block.prototype.init = function() {
+	this.width  = this.object.currentStyle.width;
+	this.height = this.object.currentStyle.height;
+
+	if(false == this.visible) {
+		this.hide();
+	}
+}
+
+/*
+ *	函数说明：显示详细信息
+ *	参数：	boolean:useFixedSize	是否启用固定尺寸显示
+ */
+Block.prototype.show = function(useFixedSize) {
+	if( null != this.associate ) {
+		this.associate.style.display = "";
+	}
+	this.object.style.display = "";
+
+	var width  = "auto";
+	var height = "auto";
+	
+	// 启用固定尺寸
+	if(false != useFixedSize) {
+		width  = this.width || width;
+		height = this.height || height;
+	}
+	this.object.style.width = width;
+	this.object.style.height = height;
+
+	this.visible = true;
+}
+
+/*
+ *	函数说明：隐藏详细信息
+ */
+Block.prototype.hide = function() {
+	if( null!= this.associate){
+		this.associate.style.display = "none";
+	}
+	this.object.style.display = "none";
+
+	this.visible = false;
+}
+
+/*
+ *	函数说明：切换显示隐藏状态
+ *	参数：	boolean:visible		是否显示状态（可选，无参数则默认切换下一状态）
+ */
+Block.prototype.switchTo = function(visible) {
+	visible = visible || !this.visible;
+
+	if( visible){
+		this.show();	
+	}
+	else {
+		this.hide();
+	}
+}
+
+/*
+ *	函数说明：原型继承
+ *	参数：	function:Class		将被继承的类
+ */
+Block.prototype.inherit = function(Class) {
+	var inheritClass = new Class();
+	for(var item in inheritClass){
+		this[item] = inheritClass[item];
+	}
+}
+
+
+/*
+ *	对象名称：WritingBlock
+ *	职责：负责区块内容写入
+ *
+ */
+function WritingBlock() {
+	this.mode = null;
+	this.line = 0;
+	this.minLine = 3;
+	this.maxLength = 16;
+}
+
+/*
+ *	函数说明：打开分行写入模式
+ */
+WritingBlock.prototype.open = function(){
+	this.mode = "line";
+	this.line = 0;
+	this.writeTable();
+}
+
+/*
+ *	函数说明：写入分行模式用的表格
+ */
+WritingBlock.prototype.writeTable = function() {
+	var str = [];
+	str[str.length] = "<table class=hfull><tbody>";
+	for(var i = 0;i < this.minLine; i++) {
+		str[str.length] = "<tr>";
+		str[str.length] = "  <td class=bullet>&nbsp;</td>";
+		str[str.length] = "  <td style=\"width: 55px\"></td>";
+		str[str.length] = "  <td></td>";
+		str[str.length] = "</tr>";
+	}
+	str[str.length] = "</tbody></table>";
+
+	this.object.innerHTML = str.join("");    
+}
+
+/*
+ *	函数说明：清除内容
+ */
+WritingBlock.prototype.clear = function() {
+	this.object.innerHTML = "";
+}
+
+/*
+ *	函数说明：关闭分行写入模式
+ */
+WritingBlock.prototype.close = function() {
+	this.mode = null;
+}
+
+/*
+ *	函数说明：分行写入内容（左右两列）
+ *	参数：	string:name     名称
+			string:value    值
+ */
+WritingBlock.prototype.writeln = function(name, value) {
+	if("line" == this.mode){
+		var table = this.object.firstChild;
+		if(null != table && "TABLE" != table.nodeName.toUpperCase()) {
+			this.clear();
+			table = null;
+		}
+		if(null == table) {
+			this.writeTable();
+		}
+
+		// 大于最小行数，则插入新行
+		if(this.line >= this.minLine) {
+			var newrow = table.rows[0].cloneNode(true);
+			table.firstChild.appendChild(newrow);
+		}
+
+		if(null != value && value.length > this.maxLength) {
+			value = value.substring(0, this.maxLength) + "...";
+		}
+
+		var row = table.rows[this.line];
+		var cells = row.cells;
+		cells[1].innerText = name + ":";
+		cells[2].innerText = value || "-";
+
+		this.line++;
+	}
+}
+
+/*
+ *	函数说明：写入内容
+ *	参数：	string:content		内容
+ */
+WritingBlock.prototype.write = function(content) {
+	this.mode = null;
+	this.object.innerHTML = content;
+}
+
+
+/*
+ *	对象名称：Focus（全局静态对象）
+ *	职责：负责管理所有注册进来对象的聚焦操作
+ */
+var Focus = {};
+Focus.items = {};
+Focus.lastID = null;
+
+/*
+ *	函数说明：注册对象
+ *	参数：	object:focusObj		需要聚焦的HTML对象
+ *	返回值：string:id			用于取回聚焦HTML对象的id
+ */
+Focus.register = function(focusObj) {
+	var id = focusObj.id;
+
+	//如果id不存在则自动生成一个
+	if(null == id || "" == id) {
+		id = UniqueID.generator();
+		focusObj.id = id;
+	}
+	this.items[id] = focusObj;
+
+	this.focus(id);
+	return id;
+}
+
+/*
+ *	函数说明：聚焦对象
+ *	参数：	object:focusObj		需要聚焦的HTML对象
+ *	返回值：string:id			用于取回聚焦HTML对象的id
+ */
+Focus.focus = function(id){
+	var focusObj = this.items[id];
+	if(null != focusObj && id != this.lastID){
+		if(null != this.lastID) {
+			this.blurItem(this.lastID);
+		}
+		
+		focusObj.style.filter = ""; // 施加聚焦效果
+		this.lastID = id;
+	}
+}
+
+/*
+ *	函数说明：施加失焦效果
+ *	参数：	string:id			需要聚焦的HTML对象
+ *	返回值：
+ */
+Focus.blurItem = function(id){
+	var focusObj = this.items[id];
+	if(null!=focusObj){
+		focusObj.style.filter = "alpha(opacity=50) gray()";
+	}
+}
+
+/*
+ *	函数说明：释放对象
+ *	参数：	object:focusObj		需要聚焦的HTML对象
+ *	返回值：string:id			用于取回聚焦HTML对象的id
+ */
+Focus.unregister = function(id){
+	var focusObj = this.items[id];
+	if(null != focusObj){
+		delete this.items[id];
+	}
+}

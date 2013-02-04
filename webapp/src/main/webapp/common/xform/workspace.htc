@@ -1,0 +1,164 @@
+<!--
+    控件名称：标签式工作区
+
+    功能说明：	1、动态创建Tab标签
+                2、动态创建纵向Tab标签
+                3、Tab标签控制子页面显示
+                4、双击Tab标签可关闭
+
+    使用方法：
+    命名空间：WORKSPACE
+    作　　者：毛云
+    时　　间：2006-4-11
+ -->
+<PUBLIC:METHOD NAME="closePhase"/>
+<PUBLIC:METHOD NAME="closeActiveTab"/>
+<PUBLIC:METHOD NAME="getActiveTab"/>
+<PUBLIC:METHOD NAME="nextPhase"/>
+<PUBLIC:METHOD NAME="nextTab"/>
+<PUBLIC:METHOD NAME="open"/>
+<PUBLIC:METHOD NAME="prevPhase"/>
+<PUBLIC:METHOD NAME="prevTab"/>
+<PUBLIC:METHOD NAME="test"/>
+<PUBLIC:ATTACH EVENT="oncontentready" ONEVENT="setTimeout(init,10)"/>
+<PUBLIC:EVENT NAME="onTabChange" ID="event_ontabchange"/>
+<PUBLIC:EVENT NAME="onTabClose" ID="event_ontabclose"/>
+<PUBLIC:EVENT NAME="onTabCloseAll" ID="event_ontabcloseall"/>
+<PUBLIC:EVENT NAME="onPhaseChange" ID="event_onphasechange"/>
+<PUBLIC:EVENT NAME="onload" ID="event_onload"/>
+
+<script>
+    var _baseurl = element.baseurl==null?"":element.baseurl;
+    document.write("<script src=\"" + _baseurl + "constant.js\"><\/" + "script>");
+    document.write("<script src=\"" + _baseurl + "display.js\"><\/" + "script>");
+    document.write("<script src=\"" + _baseurl + "event.js\"><\/" + "script>");
+    document.write("<script src=\"" + _baseurl + "page.js\"><\/" + "script>");
+    document.write("<script src=\"" + _baseurl + "tab.js\"><\/" + "script>");
+    document.write("<script src=\"" + _baseurl + "phase.js\"><\/" + "script>");
+    document.write("<script src=\"" + _baseurl + "controllerbutton.js\"><\/" + "script>");
+</script>
+
+<script>
+    /*
+     *	Display对象实例
+     *
+     */
+    var _display = null;
+
+    /*
+     *	函数说明：初始化控件
+     *	参数：
+     *	返回值：
+     *	作者：毛云
+     *	日期：2006-4-11
+     *
+     */
+    function init(){
+        _display = new Display();
+
+        //触发onload事件
+        Event.fire("onload");
+        element.isLoaded = true;
+    }
+    /*
+     *	函数说明：打开子页面
+     *	参数：	object:inf      配置参数
+     *	返回值：Tab:tab         Tab实例
+     *	作者：毛云
+     *	日期：2006-4-11
+     *
+     */
+    function open(inf){
+        return _display.open(inf);
+    }
+    /*
+     *	函数说明：获取当前激活标签
+     *	参数：	
+     *	返回值：tab    Tab标签实例
+     *	作者：毛云
+     *	日期：2006-4-11
+     *
+     */
+    function getActiveTab(){
+        return _display.getActiveTab();
+    }
+    /*
+     *	函数说明：关闭当前激活标签
+     *	参数：	
+     *	返回值：
+     *	作者：毛云
+     *	日期：2006-6-16
+     *
+     */
+    function closeActiveTab(){
+        var tab = this.getActiveTab();
+        if(null!=tab){
+            //tab.close();
+            _ontabclose(tab);
+        }
+    }
+    /*
+     *	函数说明：激活上一个Tab标签
+     *	参数：	boolean:wrap    是否循环
+     *	返回值：
+     *	作者：毛云
+     *	日期：2006-4-11
+     *
+     */
+    function prevTab(wrap){
+        return _display.prevTab(wrap);
+    }
+    /*
+     *	函数说明：激活下一个Tab标签
+     *	参数：	boolean:wrap    是否循环
+     *	返回值：
+     *	作者：毛云
+     *	日期：2006-4-11
+     *
+     */
+    function nextTab(wrap){
+        return _display.nextTab(wrap);
+    }
+    /*
+     *	函数说明：激活上一个Phase标签
+     *	参数：	boolean:wrap    是否循环
+     *	返回值：
+     *	作者：毛云
+     *	日期：2006-4-11
+     *
+     */
+    function prevPhase(wrap){
+        var tab = this.getActiveTab();
+        if(null!=tab){
+            return tab.prevPhase(wrap);
+        }
+    }
+    /*
+     *	函数说明：激活下一个Phase标签
+     *	参数：	boolean:wrap    是否循环
+     *	返回值：
+     *	作者：毛云
+     *	日期：2006-4-11
+     *
+     */
+    function nextPhase(wrap){
+        var tab = this.getActiveTab();
+        if(null!=tab){
+            return tab.nextPhase(wrap);
+        }
+    }
+    /*
+     *	函数说明：关闭指定Phase标签
+     *	参数：	
+     *	返回值：
+     *	作者：毛云
+     *	日期：2006-6-16
+     *
+     */
+    function closePhase(pageId){
+        var tab = this.getActiveTab();
+        if(null!=tab){
+            tab.closePhase(pageId);
+        }
+    }
+</script>
