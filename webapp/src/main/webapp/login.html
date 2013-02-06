@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html xmlns:ToolBar xmlns:Grid2 xmlns:WorkSpace xmlns:Xform xmlns:Tree>
+<html  XMLNS:XFORM>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
 <title>应用支撑平台</title>
@@ -114,6 +114,23 @@
                 }
             }
         });
+    }
+
+	    /*
+     * 函数说明：初始化htc类型控件
+     * 参数：   Object:obj			htc绑定的HTML对象
+                string:flag			检测htc加载完成的特定属性
+                string:eventName	加载完成的事件名称
+                function:callback	回调方法
+     * 返回值：	
+     */
+    Public.initHTC = function (obj, flag, eventName, callback) {
+        if(obj[flag] != true) {
+            obj[eventName] = function() {
+                this[eventName] = null;
+            }
+        } 
+		Public.executeCommand(callback);
     }
  
     /*
@@ -249,7 +266,7 @@
     <!-- 登录框 开始 -->
 	<div class="loginBox">
 		<!-- xform 开始 -->
-		<Xform:Form id="loginForm" baseurl="core/htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
+		<Xform:Form id="loginForm" baseurl="common/xform/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
 		<!-- xform 结束 -->
     </div>
     <!-- 登录框 结束 -->

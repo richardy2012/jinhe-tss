@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE> 行为效果演示 </TITLE>
+
+<STYLE >   
+.myfilter{
+	behavior:url(font_effect.htc);
+	position:relative;
+	font-weight:bold;
+	width=180;
+	left:0;
+}   
+</STYLE>   
+
+</HEAD> 
+
+<BODY>   
+	<span id="myspan" class='myfilter'>行为产生的文字效果</span><br>   
+	<span class='myfilter'>鼠标指向后产生辉光</span><br>   
+	<span class='myfilter'>同时文字变白</span><br>   
+	<span class='myfilter'>按下鼠标后文字变黄</span><br>   
+	<span class='myfilter'>抬起鼠标后文字变蓝</span><br>   
+	<span class='myfilter'>鼠标离开后文字恢复原状</span><br>   
+	<button onclick="myspan.move_right();">向右移动第一行文字</button><br>   
+	<button onclick="myspan.move_down();">向下移动第一行文字</button>  
+</BODY>   
+</html>

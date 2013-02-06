@@ -56,8 +56,6 @@
     document.write("<script src=\"" + _baseurl + "mode.js\"><\/" + "script>");
     document.write("<script src=\"" + _baseurl + "money.js\"><\/" + "script>");
 </script>
-<!-- <script src="../core/htc/xform1.2.3/mode.js"></script> -->
-<!-- <script src="../core/htc/xform1.2.3/money.js"></script> -->
 
 <script>
     var xmlDoc;

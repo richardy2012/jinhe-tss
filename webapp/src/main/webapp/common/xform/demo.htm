@@ -34,19 +34,20 @@
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 
-	function test(){
-		document.all.xform1.reload();
+function test(){
+	document.all.xform1.reload();
 
-		//此处模拟获取树节点相应属性来构建xform用的数据节点row
-		var tempRowNode = form_a.createElement("row");
-		tempRowNode.setAttribute("inCode",new Date().valueOf().toString(10));
-		tempRowNode.setAttribute("typeId","2");
+	//此处模拟获取树节点相应属性来构建xform用的数据节点row
+	var tempRowNode = form_a.createElement("row");
+	tempRowNode.setAttribute("inCode", new Date().valueOf().toString(10));
+	tempRowNode.setAttribute("typeId", "2");
 
-		//刷新xform数据显示
-		xform1.reloadData(tempRowNode);
-		xform1.saveasDefaultValue();
+	//刷新xform数据显示
+	xform1.reloadData(tempRowNode);
+	xform1.saveasDefaultValue();
 
-	}
+}
+
 //-->
 </SCRIPT>
 <body>
@@ -178,36 +179,32 @@
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
-	function initXForm(){
-
+	function initXForm() {
 		//查找是否有历史修改记录
 		checkHistory("date");
 		checkHistory("user");
-	
-	
 	}
-	function collapseXForm(btObj,xformObj){
-		if(xformObj.style.overflow=="hidden"){
+	function collapseXForm(btObj, xformObj) {
+		if(xformObj.style.overflow == "hidden") {
 			btObj.value = "折叠";
 			xformObj.style.height = "";
 			xformObj.style.overflow = "visible";
-		}else{
+		} else {
 			btObj.value = "展开";
 			xformObj.style.height = "22px";
 			xformObj.style.overflow = "hidden";
 		}
 	}
 
-	function checkHistory(name){
-	
-		var tempHistoryNode = xform1.getXmlDocument().selectSingleNode("./extend/histories/history[@binding='"+name+"']");
-		if(tempHistoryNode!=null){
+	function checkHistory(name) {
+		var tempHistoryNode = xform1.getXmlDocument().selectSingleNode("./extend/histories/history[@binding='" + name + "']");
+		if(tempHistoryNode != null) {
 			var tempHistoryRows = tempHistoryNode.selectNodes("./row");
-			if(tempHistoryRows.length>0){
+			if(tempHistoryRows.length > 0) {
 				var tempCaption = xform1.getColumnAttribute(name,"caption");
 
 				//已经有历史修改记录	
-				xform1.setLabelContent(name,"<span style='color:red'>" + tempCaption + "</span><a class='history' href='#' id='bt_history'><img src='history.gif' width='16' height='16' align='absmiddle' border='0'/></a>");
+				xform1.setLabelContent(name, "<span style='color:red'>" + tempCaption + "</span><a class='history' href='#' id='bt_history'><img src='history.gif' width='16' height='16' align='absmiddle' border='0'/></a>");
 
 				var bt = document.getElementById("bt_history");
 				if(bt!=null){

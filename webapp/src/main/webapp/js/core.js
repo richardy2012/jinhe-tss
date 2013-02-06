@@ -535,10 +535,11 @@ Element.hideConflict = function(obj) {
 		return true;
 	}
 
+	var conflict = [];
 	var conflictTags = ["select"];
 	for(var i = 0; i < conflictTags.length; i++) {
 		var curTag = conflictTags[i];
-		var curObjs = document.getElementByTagName(curTag);
+		var curObjs = document.getElementsByTagName(curTag);
 		for(var j = 0; j < curObjs.length; j++) {
 			var curObj = curObjs[j];
 
@@ -599,7 +600,7 @@ Element.createScript = function(script) {
 		 styleNode.tyle = "text/css";
 		 styleNode.innerHTML = style;
 
-		 var head = document.head || document.getElementByTagName("head")[0];
+		 var head = document.head || document.getElementsByTagName("head")[0];
 		 head.appendChild(styleNode);
 	 }
 	 else {
@@ -986,14 +987,14 @@ _XML_NODE_TYPE_DOCUMENT   = 9; // ÎÄµµ
 /* XML Node */
 function XmlNode(node) {
 	this.node = node;
-	this.nodeName = node.nodeName;
-	this.nodeType = node.nodeType;
-	this.nodeValue = node.nodeValue;
-	this.text = node.text;
-	this.firstChild = node.firstChild;
-	this.lastChild = node.lastChild;
-	this.childNodes = node.childNodes;
-	this.attributes = node.attributes;
+	this.nodeName = this.node.nodeName;
+	this.nodeType = this.node.nodeType;
+	this.nodeValue = this.node.nodeValue;
+	this.text = this.node.text;
+	this.firstChild = this.node.firstChild;
+	this.lastChild = this.node.lastChild;
+	this.childNodes = this.node.childNodes;
+	this.attributes = this.node.attributes;
 }
 
 XmlNode.prototype.getAttribute = function(name) {
