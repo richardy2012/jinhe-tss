@@ -1,66 +1,52 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/TR/WD-xsl" xmlns:XFORM="http://myhyli.digichina.net" version="1.0">
+	
 	<xsl:template match="/">
 		<xsl:apply-templates select="*" />
 	</xsl:template>
 
 	<xsl:template match="/*">
-	<!-- <xsl:if test="/*/data/row"> -->
-	<form>
-		<xsl:apply-templates select="@*" />
-		<xsl:if test=".[not(@class) or @class='']"><xsl:attribute name="class">xform</xsl:attribute></xsl:if>
-		<xsl:if expr="this.getAttribute('method')==null"><xsl:attribute name="method">post</xsl:attribute></xsl:if>
-		<xsl:if expr="this.getAttribute('name')==null"><xsl:attribute name="name">actionForm</xsl:attribute></xsl:if>
+	    <form>
+			<xsl:apply-templates select="@*" />
 
-		<xsl:apply-templates select="layout" />
-	</form>
-	<!-- </xsl:if> -->
+			<xsl:if test = ".[not(@class) or @class='']">
+				<xsl:attribute name="class">xform</xsl:attribute>
+			</xsl:if>
+			<xsl:if expr="this.getAttribute('method') == null">
+				<xsl:attribute name="method">post</xsl:attribute>
+			</xsl:if>
+			<xsl:if expr="this.getAttribute('name') == null">
+				<xsl:attribute name="name">actionForm</xsl:attribute>
+			</xsl:if>
+
+			<xsl:apply-templates select="layout" />
+	    </form>
 	</xsl:template>
 
 	<xsl:template match="/*/layout">
 	<table border="0" bordercolor="#D5E1F0" cellspacing="0" cellpadding="0" width="100%" style="border-collapse:collapse;">
-		<tr>
-			<td>
-				<div class="contentBox">
+		<tr><td><div class="contentBox">
 					<table border="0" cellspacing="0" cellpadding="0" width="100%">
 						<xsl:apply-templates select="/*/declare/column[@mode='hidden']" />
 						<xsl:for-each select="TR">
 						<tr>
 							<xsl:for-each select="TD">
-							<td><xsl:apply-templates select="@*" />
-								<xsl:apply-templates select="node()"/>
-							</td>
+							<td> <xsl:apply-templates select="@*"/><xsl:apply-templates select="node()"/> </td>
 							</xsl:for-each>
 						</tr>
 						</xsl:for-each>
 					</table>
-				</div>	
-			</td>
-		</tr>
-		<xsl:if test="buttonset">
-			<tr>
-				<td>
-					<xsl:attribute name="align"><xsl:value-of select="buttonset/@align"/></xsl:attribute>
-				<br/>
-				<div id="buttonBox">
-					<xsl:if expr="formEditable!='true'"><xsl:attribute name="style">display:none</xsl:attribute></xsl:if>
-					<xsl:for-each select="buttonset/*">
-						<xsl:copy><xsl:apply-templates select="@*" /></xsl:copy>
-					</xsl:for-each>
-				</div>
-				</td>
-			</tr>
-		</xsl:if>
+		</div></td></tr>
 	</table>
 	<input type="hidden" name="xml"/>
 	</xsl:template>
 
 	<xsl:template match="@*">
         <xsl:choose>
-            <xsl:when expr="this.nodeName!='style' || this.selectSingleNode('..').getAttribute('binding')==null">
+            <xsl:when expr="this.nodeName != 'style' || this.selectSingleNode('..').getAttribute('binding') == null">
                 <xsl:copy><xsl:value-of/></xsl:copy>
             </xsl:when>
-            <xsl:when expr="this.selectSingleNode('..').getAttribute('binding')!=null &amp;&amp; this.nodeName=='style'">
+            <xsl:when expr="this.nodeName == 'style' &amp;&amp; this.selectSingleNode('..').getAttribute('binding') != null">
                 <xsl:attribute name="defaultStyle"><xsl:value-of/></xsl:attribute>
             </xsl:when>
         </xsl:choose>
@@ -68,9 +54,12 @@
 
 	<xsl:template match="/*/declare/column[@mode='hidden']">
 		<input type="hidden">
-			<!-- <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute> -->
-			<xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
-			<xsl:attribute name="value"><xsl:eval>getValue(this.getAttribute('name'))</xsl:eval></xsl:attribute>
+			<xsl:attribute name="id">
+				<xsl:value-of select="@name"/>
+			</xsl:attribute>
+			<xsl:attribute name="value">
+				<xsl:eval>getValue(this.getAttribute('name'))</xsl:eval>
+			</xsl:attribute>
 		</input>
 	</xsl:template>
 

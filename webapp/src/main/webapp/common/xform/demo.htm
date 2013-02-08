@@ -79,11 +79,10 @@ function test(){
 					<TD align="right"><label binding="special"/></TD>
 					<TD><input binding="special" type="radio" editorvalue="a|b|c" editortext="测试1|测试2|测试3"/></TD>
 				</TR>
-				<buttonset>
-					<input type="submit" value="确定"/>
-					<input type="reset" value="重置"/>
-					<input type="button" value="关闭" onclick="window.close()"/>
-				</buttonset>
+				<TR>
+					<TD><input type="submit" value="确定"/><input type="reset" value="重置"/></TD>
+					<TD><input type="button" value="关闭" onclick="window.close()"/></TD>
+				</TR>
 			</layout>
 			<data>
 				<row user="2222" password="aaaaaaaaa" id="222" date="2005/09/09" special="b"/>
@@ -273,10 +272,6 @@ function test(){
 //-->
 </SCRIPT>
 
-
-		<!-- <input type=button value="alert" onclick="alert(form_a.selectSingleNode('/forms/query[0]/data').xml)">
-
-		<XFORM:FORM id="xform2" data="form_a" datapath="/forms/xxx[0]" style="behavior:url(XForm.htc);" baseurl="" caption="aasdfsdf" ondatachangex="alert('event1:'+event.result.newValue)" onloadx="alert('111:'+this.id)" onloadPriority="true" ondatachangePriority="true"/> -->
 	</TD>
 </TR>
 <TR>

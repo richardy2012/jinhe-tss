@@ -933,8 +933,7 @@ XmlReader.prototype.load = function(url, async) {
 		this.xmlDom.onreadystatechange = function() {
 			if(thisObj.xmlDom.readyState == 4) {
 				var onloadType = typeof(thisObj.onload);
-				try
-				{
+				try {
 					if(onloadType == _TYPE_FUNCTION) {
 						thisObj.onload();
 					} 
@@ -942,9 +941,7 @@ XmlReader.prototype.load = function(url, async) {
 						eval(thisObj.onload);
 					}
 				}
-				catch (e)
-				{
-				}
+				catch (e) { }
 			}
 		}
 		this.xmlDom.load(url);
