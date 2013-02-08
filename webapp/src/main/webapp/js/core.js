@@ -694,7 +694,27 @@ Element.attachColResize = function(obj, offsetX) {
 	var moveHandler = function() {
 		if(ruleObj._isMouseDown == true) {
 			ruleObj.style.left = Math.max(obj._absLeft, event.clientX - offsetX);
+
+			if (document.addEventListener) {             
+				document.addEventListener("mouseup", stopHandler, true);  
+			}
 		}
+	}
+
+	var stopHandler = function() {
+		ruleObj._isMouseDown = false;
+		obj.style.width = Math.max(1, obj.offsetWidth + event.clientX - ruleObj._fromX); 
+
+		ruleObj.style.backgroundColor = "white";
+		ruleObj.style.filter = "alpha(opacity=0)";
+
+		if (ruleObj.releaseCapture) {             
+			ruleObj.releaseCapture();         
+		} 
+		else {
+			document.removeEventListener("mousemove", moveHandler, true);
+			document.removeEventListener("mouseup", stopHandler, true);  
+		}	
 	}
  
 	ruleObj.onmousedown = function() {
@@ -705,7 +725,7 @@ Element.attachColResize = function(obj, offsetX) {
 		this._fromX = event.clientX;
 
 		if (this.setCapture) {             
-			this.setCapture();         
+			this.setCapture();    
 		} 
 		else {
 			document.addEventListener("mousemove", moveHandler, true);
@@ -714,23 +734,21 @@ Element.attachColResize = function(obj, offsetX) {
 	ruleObj.onmousemove = function() {
 		moveHandler();
 	};
-	ruleObj.onmouseup = function() { alert(1);
-		if(this._isMouseDown == true) {
-			this._isMouseDown = false;
-			if (this.releaseCapture) {             
-				this.releaseCapture();         
-			} 
-			else {
-				document.removeEventListener("mousemove", moveHandler, true);
-			}			
-	
-			obj.style.width = Math.max(1, obj.offsetWidth + event.clientX - this._fromX);
-
-			this.style.backgroundColor = "white";
-			this.style.filter = "alpha(opacity=0)";
-		}
+	ruleObj.onmouseup = function() { 
+		stopHandler();
 	};
 }
+
+Element.attachResize = function(obj) {
+	// 添加水平方向拖拽的线，3px粗细
+	var rightLine = document.createElement("DIV");
+	ruleObj.id = "rightLine";
+	ruleObj.style.cssText = "cursor:col-resize;width:" + offsetX + "px;height:" +　obj.offsetHeight 
+		+ ";top:" + obj._absTop + ";left:" + (obj._absLeft + obj.offsetWidth - offsetX) 
+		+ ";position:absolute;background-color:white;overflow:hidden;filter:alpha(opacity=0)";
+	document.body.appendChild(ruleObj);
+}
+
 
 
 /*********************************** html dom 操作  end **********************************/
