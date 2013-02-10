@@ -2,6 +2,7 @@
 
 var XForm = function(element) {
 	this.element = element;
+	this.form = this.form;
 
 	var pointUrl = this.element.getAttribute("baseurl");
 	this._baseurl = pointUrl == null? "" : pointUrl;
@@ -14,6 +15,13 @@ var XForm = function(element) {
 	this.xslDom = new ActiveXObject('MSXML.DOMDocument');
 	this.xslDom.async = false;
 	this.xslDom.resolveExternals = false;
+
+	this._width;
+    this._height;
+
+    this._overflow = false;
+
+	this._instances = {};
 }
 
 
@@ -21,7 +29,7 @@ XForm.prototype.attachEvents = function() {
 	// 回车自动聚焦下一个（input、button等）
 	this.element.onkeydown = function() {
 		var srcElement = event.srcElement;
-		if(window.event.keyCode == 13 && srcElement.tagName.toLowerCase() != "textarea"){
+		if(window.event.keyCode == 13 && srcElement.tagName.toLowerCase() != "textarea") {
 			window.event.keyCode = 9;  // 相当于按了下Tab键，光标移动到下一个元素上
 		}
 	}
@@ -53,7 +61,7 @@ function loadXmlDoc() {
 	switch(dataType) {
 		case "url":
 			tempDom.load(data);
-			if(tempDom.parseError != 0){
+			if(tempDom.parseError != 0) {
 				alert("data地址有问题，解析XML不正确");
 			}
 			if(dataPath == null || dataPath == "") {
@@ -68,7 +76,7 @@ function loadXmlDoc() {
 			break;
 
 		case "node":
-			if("object" == typeof(data) && 1 == data.nodeType){
+			if("object" == typeof(data) && 1 == data.nodeType) {
 				var curXmlDom = data;
 				xmlDoc = new Class_XMLDocument(curXmlDom);
 			}
@@ -111,494 +119,308 @@ XForm.prototype.reload = reload() {
 				try{
 					eval(tempEvent);
 				} catch(e) {
-					alert("指定的函数运行出错:"+tempEvent);
+					alert("指定的函数运行出错:" + tempEvent);
 					throw e;
 				}
 			}
 		}
 
-		if(this.element.firstChild != null) {
-			var tempTarget = xmlDoc.xmlObj.getAttribute("target");
-			if(tempTarget ==null){
-				tempTarget = element.getAttribute("target");
+		if(this.form != null) {
+			var tempTarget = xmlDoc.xmlObj.getAttribute("target") || this.element.getAttribute("target");
+			if(tempTarget != null) {
+				this.form.target = tempTarget;					
 			}
-			if(tempTarget!=null){
-				element.firstChild.target = tempTarget;					
-			}
-			element.firstChild.attachEvent('onsubmit',function(){checkForm()});
-			element.firstChild.attachEvent('onreset',function(){resetForm()});
+
+			this.form.attachEvent('onsubmit', checkForm);
+			this.form.attachEvent('onreset', resetForm);
 
 			//添加标题栏				
-			var theTable = element.firstChild.all.tags("TABLE")[0];
-			if(theTable!=null && element.getAttribute("caption")!=null){
+			var theTable = this.form.all.tags("TABLE")[0];
+			if(theTable != null && this.element.getAttribute("caption") != null) {
 				var count = theTable.rows(0).cells.length;
-				for(var i=0;i<theTable.rows(0).cells.length;i++){
-					count+=parseInt(theTable.rows(0).cells(i).colSpan);
+				for(var i = 0;i < theTable.rows(0).cells.length; i++) {
+					count += parseInt(theTable.rows(0).cells(i).colSpan);
 				}
 				var captionTR = theTable.insertRow(0);
 				var captionTD = captionTR.insertCell();
 				captionTD.colSpan = count;
 				captionTD.id = "titleBox";
 				captionTD.className = "titleBox";
-				captionTD.style.cssText = "font-size:12px;height:19px;background-image:url("+_baseurl+"titlebg.gif);background-repeat:no-repeat;"
-				//2006-4-11 设置标题
-				//captionTD.innerText = element.getAttribute("caption");
-				setCaption(element.caption);
+				captionTD.style.cssText = "font-size:12px;height:19px;background-image:url(" +_baseurl + "titlebg.gif);background-repeat:no-repeat;"
 
-				var tempDivHeight = _height-theTable.rows[0].offsetHeight-(theTable.rows[2]==null?0:theTable.rows[2].offsetHeight);
-				if(tempDivHeight>0 && _overflow == true){
+				setCaption(this.element.caption);
+
+				var tempDivHeight = _height - theTable.rows[0].offsetHeight - (theTable.rows[2] == null ? 0 : theTable.rows[2].offsetHeight);
+				if(tempDivHeight > 0 && _overflow == true) {
 					theTable.rows(1).cells(0).firstChild.style.height = tempDivHeight;
 				}
-			}else if(theTable!=null && _overflow == true){
+			}
+			else if(theTable != null && _overflow == true) {
 				theTable.rows(0).cells(0).firstChild.style.height = _height-theTable.rows[1].offsetHeight;
 			}
-					
-			//初始化money单位对象
-			var unit = xmlDoc.declare.getAttribute("moneyUnit");
-			var unitLabel = xmlDoc.declare.getAttribute("moneyUnitLabel");
-			var pattern = xmlDoc.declare.getAttribute("moneyPattern");
-			var reg = xmlDoc.declare.getAttribute("moneyReg");
-			_moneyUnit = new MoneyUnit(unit, unitLabel, pattern, reg);
 		}
 
-		//针对多值的，自动增加多行
-		cloneMultiple();
-
-		//绑定各个column对应的编辑方式
+		// 绑定各个column对应的编辑方式
 		attachEditor();
 	
-		//触发onload事件
-		var _ancestor = element;
-		var onload1 = element.getAttribute("onload");
-		var onload2 = xmlDoc.declare.getAttribute("onload");
-
-		if(element.getAttribute("onloadPriority") =="true"){
-			if(onload1!=null){
-				eval(onload1);
-			}
-			if(onload2!=null){
-				eval(onload2);
-			}
-		}else{
-			if(onload2!=null){
-				eval(onload2);
-			}else{
-				if(onload1!=null){
-					eval(onload1);
-				}			
-			}
+		// 触发onload事件
+		var onload = this.element.getAttribute("onload");
+		if(onload != null) {
+			eval(onload);
 		}
 
-		//自动聚焦
-		if(element.autoFocus!="false" && element.autoFocus!=false){
+		// 自动聚焦
+		if(this.element.autoFocus != "false" && this.element.autoFocus != false) {
 			setFocus();
 		}
 	}
 }
-/*
- *  函数说明：如果有多值的column，则复制相应的页面元素
- *  参数：  
- */
-function cloneMultiple(){
+
+XForm.prototype.attachEditor = function() {
 	var cols = xmlDoc.Columns;
-	for(var i=0;i<cols.length;i++){
-		var tempColName = cols[i].getAttribute("name");
-		var tempMultiple = cols[i].getAttribute("multiple");
-		var tempMode = cols[i].getAttribute("mode");
-		if("true"==tempMultiple && "hidden"!=tempMode){//多值，非隐藏
-			var tempObj = element.all(tempColName);
-			if(tempObj==null){
-				continue;
-			}
-			if(tempObj.attributes==null && tempObj.length!=null){
-				tempObj = tempObj[0];
-			}
-
-			var tempNodeValue = getRowNodeValue(tempColName);
-			for(var j=tempNodeValue.length-1;j>0;j--){
-				var br = document.createElement("br");
-				tempObj.insertAdjacentElement("afterEnd",br);
-
-				var cloneObj = tempObj.cloneNode(true);
-
-				//select不能用.value或者setAttribute("value"来设置value属性，所以换用此方法
-				if("TEXTAREA"==cloneObj.nodeName.toUpperCase()){
-					cloneObj.value = tempNodeValue[j];                    
-				}else{
-					if("file"!=tempMode){
-						cloneObj.attributes["value"].nodeValue = tempNodeValue[j];
-					}
-				}
-
-				br.insertAdjacentElement("afterEnd",cloneObj);
-
-				//删除值图标
-				var subtract = document.createElement("span");
-				subtract.className = "subtract";
-				subtract.innerText = "-";
-				subtract.params = {
-					index:j,
-					name:tempColName
-				};
-				subtract.onclick = function(){
-					delRowNodeValue(this.params.name,this.params.index);
-				}
-				cloneObj.insertAdjacentElement("afterEnd",subtract);
-			}
-
-			//增加值图标
-			var plus = document.createElement("span");
-			plus.className = "plus";
-			plus.innerText = "+";
-			plus.params = {
-				name:tempColName
-			};
-			plus.onclick = function(){
-				addRowNodeValue(this.params.name);
-			}
-			tempObj.insertAdjacentElement("afterEnd",plus);
-		}
-	}
-}
-
-function attachEditor(){
-	var cols = xmlDoc.Columns;
-	for(var i=0;i<cols.length;i++){
-		var tempColName = cols[i].getAttribute("name");
-		var tempColMode = cols[i].getAttribute("mode");
+	for(var i = 0; i < cols.length; i++) {
+		var tempColName   = cols[i].getAttribute("name");
+		var tempColMode   = cols[i].getAttribute("mode");
 		var tempColEditor = cols[i].getAttribute("editor");
-		var tempMultiple = cols[i].getAttribute("multiple");
-		var tempNodeValue = getRowNodeValue(tempColName);
+		var nodeValue = getRowNodeValue(tempColName);
 
-		//一般不允许多个对象绑定同一个column，如果有则只取第一个
-		var tempObj = element.all(tempColName);
-		if(tempObj==null){
+		// 取layout中绑定该columne的元素
+		var tempObj = this.element.all(tempColName);
+		if(tempObj == null) {
 			continue;
 		}
-		if(tempObj.attributes==null && tempObj.length!=null){
+
+		// 一般不允许多个对象绑定同一个column，如果有则只取第一个
+		if(tempObj.attributes == null && tempObj.length != null) {
 			tempObj = tempObj[0];
 		}
 
-		if("true"==tempMultiple){
-			var arr = [];
-
-			for(var j=0,jLen=Math.max(1,tempNodeValue.length);j<jLen;j++){
-				var curInstance;
-				switch(tempColMode){
-					case "string":
-						if(tempColEditor=="comboedit"){
-							curInstance = new Mode_ComboEdit(tempColName,j);
-						}else if(tempColEditor=="radio"){
-							curInstance = new Mode_Radio(tempColName,j);
-						}else{
-							curInstance = new Mode_String(tempColName,j);
-						}
-						break;
-					case "number":
-						curInstance = new Mode_Number(tempColName,j);
-						break;
-					case "money":
-						curInstance = new Mode_Money(tempColName,j);
-						break;
-					case "function":
-						curInstance = new Mode_Function(tempColName,j);
-						break;
-					case "date":
-						curInstance = new Mode_Date(tempColName,j);
-						break;
-					case "hidden":
-						curInstance = new Mode_Hidden(tempColName,j);
-						break;
-					case "boolean":
-						curInstance = new Mode_Boolean(tempColName,j);
-						break;
-					case "file":
-						curInstance = new Mode_File(tempColName,j);
-						break;
+		var curInstance;
+		switch(tempColMode) {
+			case "string":
+				if(tempColEditor == "comboedit") {
+					curInstance = new Mode_ComboEdit(tempColName);
 				}
-				curInstance.saveasDefaultValue();
-				arr[arr.length] = curInstance;
-			}
-
-			_instances[tempColName] = arr;
-
-		}else{
-			var curInstance;
-			switch(tempColMode){
-				case "string":
-					if(tempColEditor=="comboedit"){
-						curInstance = new Mode_ComboEdit(tempColName);
-					}else if(tempColEditor=="radio"){
-						curInstance = new Mode_Radio(tempColName);
-					}else{
-						curInstance = new Mode_String(tempColName);
-					}
-					break;
-				case "number":
-					curInstance = new Mode_Number(tempColName);
-					break;
-				case "money":
-					curInstance = new Mode_Money(tempColName);
-					break;
-				case "function":
-					curInstance = new Mode_Function(tempColName);
-					break;
-				case "date":
-					curInstance = new Mode_Date(tempColName);
-					break;
-				case "hidden":
-					curInstance = new Mode_Hidden(tempColName);
-					break;
-				case "boolean":
-					curInstance = new Mode_Boolean(tempColName);
-					break;
-				case "file":
-					curInstance = new Mode_File(tempColName);
-					break;
-			}
-			curInstance.saveasDefaultValue();
-			_instances[tempColName] = curInstance;
+				else if(tempColEditor == "radio") {
+					curInstance = new Mode_Radio(tempColName);
+				}
+				else {
+					curInstance = new Mode_String(tempColName);
+				}
+				break;
+			case "number":
+				curInstance = new Mode_Number(tempColName);
+				break;
+			case "function":
+				curInstance = new Mode_Function(tempColName);
+				break;
+			case "date":
+				curInstance = new Mode_Date(tempColName);
+				break;
+			case "hidden":
+				curInstance = new Mode_Hidden(tempColName);
+				break;
+			case "boolean":
+				curInstance = new Mode_Boolean(tempColName);
+				break;
+			case "file":
+				curInstance = new Mode_File(tempColName);
+				break;
 		}
+		curInstance.saveasDefaultValue();
+		_instances[tempColName] = curInstance;
 	}
 }
 
-
-function checkForm(){
-	//隐藏上次的错误信息层
+XForm.prototype.checkForm = function() {
+	// 隐藏上次的错误信息层
 	hideErrorInfo();
 
 	var cols = xmlDoc.Columns;
-	for(var i=0;i<cols.length;i++){
-		var tempColName = cols[i].getAttribute("name");
+	for(var i = 0; i < cols.length; i++) {
+		var tempColName  = cols[i].getAttribute("name");
 		var tempInstance = _instances[tempColName];
-		if(tempInstance!=null){
-			if(0<tempInstance.length){//多值
-				for(var j=0,jLen=tempInstance.length;j<jLen;j++){
-					var isValidate = tempInstance[j].validate();
-					if(isValidate==false){
-						return false;
-					}
-				}
-			}else{
-				var isValidate = tempInstance.validate();
-				if(isValidate==false){
-					return false;
-				}
-			}
-		}else{//2005-12-29 layout内不存在时创建虚拟实例执行校验
-			var tempInstance = {};
-			tempInstance.isInstance = false;
-			tempInstance.obj = {
-				isInstance:false,
-				empty:cols[i].getAttribute("empty"),
-				errorInfo:cols[i].getAttribute("errorInfo"),
-				caption:cols[i].getAttribute("caption"),
-				submitReg:cols[i].getAttribute("submitReg"),
-				value:getRowNodeValue(tempColName)
-			};
-
-
-			tempInstance.validate = validate;
-			var isValidate = tempInstance.validate();
-			if(isValidate==false){
+		if(tempInstance != null) {
+			if(tempInstance.validate() == false) {
 				return false;
 			}
 		}
-	
+		else { // layout内不存在时创建虚拟实例执行校验
+			var tempInstance = {};
+			tempInstance.isInstance = false;
+			tempInstance.obj = {
+				isInstance: false,
+				empty: cols[i].getAttribute("empty"),
+				errorInfo: cols[i].getAttribute("errorInfo"),
+				caption: cols[i].getAttribute("caption"),
+				submitReg: cols[i].getAttribute("submitReg"),
+				value: getRowNodeValue(tempColName)
+			};
+
+			tempInstance.validate = validate;
+			if(tempInstance.validate() == false) {
+				return false;
+			}
+		}
 	}
+
 	var submitCmd = xmlDoc.xmlObj.getAttribute("submitCmd");
-	var _ancestor = element;
-	if(eval(submitCmd) ==false){
-		if(event!=null){
+	if( eval(submitCmd) == false ) {
+		if(event != null) {
 			event.returnValue = false;
 		}
 		return false;
 	}
 
-	var formObj=element.firstChild;
-	formObj.elements['xml'].value = getDataXMLString(element.submitDataXMLString);
+	var formObj = this.form;
+	formObj.elements['xml'].value = getDataXMLString(this.element.submitDataXMLString);
 
 	return true;
 }
-function resetForm(fireOnDataChange){
+
+XForm.prototype.resetForm = function(fireOnDataChange) {
 	//隐藏上次的错误信息层
 	hideErrorInfo();
 
 	var cols = xmlDoc.Columns;
-	for(var i=0;i<cols.length;i++){
+	for(var i = 0; i < cols.length; i++) {
 		var tempColName = cols[i].getAttribute("name");
-		if(_instances[tempColName]!=null){
-			if(0<_instances[tempColName].length){//多值
-				for(var j=0,jLen=_instances[tempColName].length;j<jLen;j++){
-					_instances[tempColName][j].reset(fireOnDataChange);
-				}
-			}else{
-				_instances[tempColName].reset(fireOnDataChange);
-			}
+		if(_instances[tempColName] != null) {
+			_instances[tempColName].reset(fireOnDataChange);
 		}
-	
 	}
-	if(event!=null){
+	if(event != null) {
 		event.returnValue = false;
 	}
 
-	//触发onreset事件
+	// 触发onreset事件
 	var oEvent = createEventObject();
-	event_onreset.fire (oEvent);
+	event_onreset.fire(oEvent);
 }
-function updateData(obj,fire){
+
+function updateData(obj, fire) {
 	var oldValue = getRowNodeValue(obj.binding);
-	if(event.propertyName=="checked"){
-		var newValue = obj.checked==true?1:0;
-	}else if(obj.tagName.toLowerCase()=="select"){
+	if(event.propertyName == "checked") {
+		var newValue = obj.checked == true ? 1 : 0;
+	}
+	else if(obj.tagName.toLowerCase() == "select") {
 		var newValue = obj._value;            
-	}else{
+	}
+	else{
 		var newValue = obj.value;
 	}
 
-	if(null!=obj.multipleIndex){//多值
-		//原值根据序号获取
-		oldValue = oldValue[obj.multipleIndex];
-		
-		//新值需要更改成数组形式
-		var tempNewValue = [];
-		tempNewValue[obj.multipleIndex] = newValue;
-		newValue = tempNewValue;
-	}
+	if(newValue != oldValue && (newValue != "" || oldValue != null)) {
+		setRowNodeValue(obj.binding, newValue);
 
-	if(newValue!=oldValue && (newValue != "" || oldValue != null)){
-		setRowNodeValue(obj.binding,newValue);
-
-		//触发ondatachange事件
-		if(fire!=false){//2005-10-9 默认true
-			fireDataChange(obj,oldValue,newValue);
+		// 触发ondatachange事件
+		if(fire != false) { // 默认true
+			fireDataChange(obj, oldValue, newValue);
 		}
 	}
 }
-function updateDataExternal(name,value,fire){
+function updateDataExternal(name, value, fire) {
+	var node = getColumn(name);
+	var nodeMode = node.getAttribute("mode");
+	if(node.getAttribute("isConst") != "true") {
+		var oldValue  = getData(name);
 
-	var tempNode = getColumn(name);
-	var tempNodeMode = tempNode.getAttribute("mode");
-	if(tempNode.getAttribute("isConst")!="true"){
-		var oldValue = getData(name);
-		var showValue;
-
-		if(tempNodeMode=="money" && typeof(value)=="object"){
-			var tempMoney = value.formattedStr();
-			setRowNodeValue(name,tempMoney);
-			showValue = tempMoney;
-		}else{
-			setRowNodeValue(name,value);
-			showValue = value;
-		}
+		setRowNodeValue(name, value);
 		
-		//更改页面显示数据
+		// 更改页面显示数据
 		var tempSrcElement;
 		var tempInstance = _instances[name];
-		if(tempInstance!=null){
-			if(0<tempInstance.length){//多值
-				for(var i=0,iLen=tempInstance.length;i<iLen;i++){
-					var curShowValue = showValue[i];
-					if(null==curShowValue && "undefined"==typeof(curShowValue)){//未定义则忽略，null则表示清除原值，两者有区别
-						continue;
-					}
-					curShowValue = curShowValue||"";
-					tempInstance[i].setValue(curShowValue);
-					tempSrcElement = tempInstance[i].obj;
-				}
-			}else{
-				tempInstance.setValue(showValue);
-				tempSrcElement = tempInstance.obj;
-			}
-		}else{
-			tempSrcElement = {binding:name};
+		if(tempInstance != null) {
+			tempInstance.setValue(value);
+			tempSrcElement = tempInstance.obj;
+		}
+		else {
+			tempSrcElement = { binding: name };
 		}
 
-		//触发ondatachange事件
-		if(fire!=false){
-			fireDataChange(tempSrcElement,oldValue,value);
+		// 触发ondatachange事件
+		if(fire != false) {
+			fireDataChange(tempSrcElement, oldValue, value);
 		}
-	}else{
-		alert("不允许修改该\""+name+"\"的值");
+	}
+	else {
+		alert("不允许修改该\"" + name + "\"的值");
 	}
 }
-function updateUnbindingDataExternal(id,value){
-	element.all(id).value = value;
-	var tempNode = xmlDoc.Layout.selectSingleNode(".//*[@id='"+id+"']");
-	if(tempNode!=null){
-		tempNode.setAttribute("value",value);
+
+function updateUnbindingDataExternal(id, value) {
+	this.element.all(id).value = value;
+	var node = xmlDoc.Layout.selectSingleNode(".//*[@id='" + id + "']");
+	if(node != null) {
+		node.setAttribute("value", value);
 	}
 }
-function Class_XMLDocument(xmlObj){
+
+function Class_XMLDocument(xmlObj) {
 	this.xmlObj = xmlObj;
-	this.transformXML = function(xslObj){			
+	this.transformXML = function(xslObj) {			
 		var tempXMLDom = new ActiveXObject('MSXML.DOMDocument');
 		tempXMLDom.async = false;
 		tempXMLDom.resolveExternals = false;
 		tempXMLDom.loadXML(this.toString());
 
-		return tempXMLDom.transformNode(xslObj).replace(/&amp;nbsp;/g,"&nbsp;").replace(/\u00A0/g,"&amp;nbsp;");
+		return tempXMLDom.transformNode(xslObj).replace(/&amp;nbsp;/g, "&nbsp;").replace(/\u00A0/g, "&amp;nbsp;");
 	}
-	this.toString = function(){
-		if(this.xmlObj!=null){
+	this.toString = function() {
+		if(this.xmlObj != null) {
 			return this.xmlObj.xml;
-		}else{
-			return null;
 		}
+		return null;
 	}
-	this.refresh = function(){
-		if(this.xmlObj!=null){
+	this.refresh = function() {
+		if(this.xmlObj != null) {
 			this.declare = this.xmlObj.selectSingleNode("./declare");
-			this.Layout = this.xmlObj.selectSingleNode("./layout");
-			this.Script = this.xmlObj.selectSingleNode("./script");
-			this.Data = this.xmlObj.selectSingleNode("./data");
-			if(this.Data==null){				
-				var tempDataNode = tempDom.createElement("data");
-				this.xmlObj.appendChild(tempDataNode);
-
-				this.Data = tempDataNode;
-			}
-			this.Row = this.xmlObj.selectSingleNode("./data/row[0]");
-			if(this.Row==null){
-				var tempRowNode = tempDom.createElement("row");
-				this.Data.appendChild(tempRowNode);	
-				
-				this.Row = tempRowNode;
-			}
+			this.Layout  = this.xmlObj.selectSingleNode("./layout");
+			this.Script  = this.xmlObj.selectSingleNode("./script");
 			this.Columns = this.xmlObj.selectNodes("./declare/column");
+			
+			this.Data    = this.xmlObj.selectSingleNode("./data");
+			if(this.Data == null) {				
+				var dataNode = tempDom.createElement("data");
+				this.xmlObj.appendChild(dataNode);
 
+				this.Data = dataNode;
+			}
+			
+			this.Row = this.xmlObj.selectSingleNode("./data/row[0]");
+			if(this.Row == null) {
+				var rowNode = tempDom.createElement("row");
+				this.Data.appendChild(rowNode);	
+				
+				this.Row = rowNode;
+			}
+			
 			this.ColByName = {};
-			for(var i=0;i<this.Columns.length;i++){
+			for(var i = 0; i < this.Columns.length; i++) {
 				this.ColByName[this.Columns[i].getAttribute("name")] = this.Columns[i];
 			}
 		}
 	}
 	this.refresh();
 }
-function setEditable(s){
 
-	if(element.editable!=s){
+function setEditable(s) {
+	if(element.editable != s ) {
 		element.editable = s;
 
 		var buttonBox = element.all("buttonBox");
-		if(buttonBox!=null){
-			buttonBox.style.display = (s=="true"?"block":"none");
+		if(buttonBox != null) {
+			buttonBox.style.display = (s=="true" ? "block": "none");
 		}
 
 		var cols = xmlDoc.Columns;
-		for(var i=0;i<cols.length;i++){
-			var tempAttr = cols[i].getAttribute("name");
-			var tempColumnEditable = cols[i].getAttribute("editable");
-			s = (s=="true" && tempColumnEditable!="false")?"true":"false";
-			var tempInstance = _instances[tempAttr];
-			if(tempInstance!=null){
-				if(0<tempInstance.length){//多值
-					for(var j=0,jLen=tempInstance.length;j<jLen;j++){
-						tempInstance[j].setEditable(s);
-					}
-				}else{
-					tempInstance.setEditable(s);
-				}
+		for(var i = 0; i < cols.length; i++) {
+			var name = cols[i].getAttribute("name");
+			var tempInstance = _instances[name];
+			if(tempInstance != null) {
+				var columnEditable = cols[i].getAttribute("editable");
+				s = (s == "true" && columnEditable != "false") ? "true": "false";
+				tempInstance.setEditable(s);
 			}
 		}
 
@@ -606,66 +428,62 @@ function setEditable(s){
 	}
 }
 
-function getData(name,replace){
-	var tempNodeValue = getRowNodeValue(name);
-	var tempNodeMode = getColumn(name).getAttribute("mode");
-	if(tempNodeMode=="money"){
-		return new Money(tempNodeValue,_moneyUnit);
-	}else{
-		if(true == replace){
-			tempNodeValue = tempNodeValue.replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/'/g,"&#39;");
-		}
-		return tempNodeValue;
+function getData(name, replace) {
+	var nodeValue = getRowNodeValue(name);
+	var nodeMode  = getColumn(name).getAttribute("mode");
+
+	if(true == replace) {
+		nodeValue = nodeValue.replace(/\"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\'/g, "&#39;");
+	}
+	return nodeValue;
+}
+
+function submit() {
+	if(this.form != null) {
+		this.form.submit();
 	}
 }
 
-function submit(){
-	if(element.firstChild!=null){
-		element.firstChild.submit();
+function getFormName() {
+	if(this.form != null && this.form.tagName == "FORM") {
+		return this.form.attributes["name"];
 	}
 }
 
-function getFormName(){
-	if(element.firstChild!=null && element.firstChild.tagName=="FORM"){
-		return element.firstChild.attributes["name"];
-	}
-}
-
-function fireDataChange(obj,oldValue,newValue){
+function fireDataChange(obj, oldValue, newValue) {
 	var oEvent = createEventObject();
 	oEvent.result = {
-		srcElement:obj,
-		name:obj==null?null:obj.binding,
-		oldValue:oldValue,
-		newValue:newValue
+		srcElement: obj,
+		name: obj == null ? null : obj.binding,
+		oldValue: oldValue,
+		newValue: newValue
 	};
-	event_ondatachange.fire (oEvent);
+	event_ondatachange.fire(oEvent);
 }
 
-function getColumn(name){
+function getColumn(name) {
 	var tempCol = xmlDoc.ColByName[name];
-	if(tempCol==null){
-		alert(name+"不存在");
-		throw(name+"不存在");
-	}else{
-		return tempCol;
+	if(tempCol == null) {
+		alert(name + "不存在");
+		throw(name + "不存在");
 	}
+	return tempCol;
 }
 
 function xml() {
 	return xmlDoc.toString();
 }
 
-function setAction(action){
-	xmlDoc.xmlObj.setAttribute("action",action);
+function setAction(action) {
+	xmlDoc.xmlObj.setAttribute("action", action);
 }
 
-function getAction(){
+function getAction() {
 	return xmlDoc.xmlObj.getAttribute("action");
 }
 
-function getDataXMLString(mode){
-	switch(mode){
+function getDataXMLString(mode) {
+	switch(mode) {
 		case "data":
 			return xmlDoc.Data.xml;
 			break;
@@ -674,26 +492,26 @@ function getDataXMLString(mode){
 			break;
 	}
 }
-//2005-9-13 以column定义为获取依据
-function reloadData(rowNode){
-	//2005-11-17 修正comboedit类型默认第一项的值
+
+// 以column定义为获取依据
+function reloadData(rowNode) {
+	// 修正comboedit类型默认第一项的值
 	fixComboeditDefaultValue(rowNode);
 
-	//隐藏上次的错误信息层
+	// 隐藏上次的错误信息层
 	hideErrorInfo();
 
 	var cols = xmlDoc.Columns;
-	//var attrs = rowNode.attributes;
-	for(var i=0;i<cols.length;i++){
+	for(var i = 0; i < cols.length; i++) {
 		var tempAttr = cols[i].getAttribute("name");
 		var tempValue = rowNode.getAttribute(tempAttr);
-		updateDataExternal(tempAttr,tempValue||"",false);
+		updateDataExternal(tempAttr, tempValue || "", false);
 	}
 }
 
-function fixComboeditDefaultValue(rowNode){
+function fixComboeditDefaultValue(rowNode) {
 	var cols = xmlDoc.Columns;
-	for(var i=0;i<cols.length;i++){
+	for(var i=0;i<cols.length;i++) {
 		var tempAttr = cols[i].getAttribute("name");
 		var tempMode = cols[i].getAttribute("mode");
 		var tempEditor = cols[i].getAttribute("editor");
@@ -703,7 +521,7 @@ function fixComboeditDefaultValue(rowNode){
 		var tempValue = getRowNodeValue(tempAttr);
 
 		//2006-6-23 当empty=false(不允许为空)时自动取第一项值
-		if((tempValue==null || tempValue.length==0) && tempFirstValue!="" && tempMode=="string" && (tempEditor=="comboedit" || tempEditor=="radio") && tempEmpty=="false"){
+		if((tempValue==null || tempValue.length==0) && tempFirstValue!="" && tempMode=="string" && (tempEditor=="comboedit" || tempEditor=="radio") && tempEmpty=="false") {
 			setRowNodeValue(tempAttr,tempFirstValue);
 		}
 	}
@@ -711,24 +529,24 @@ function fixComboeditDefaultValue(rowNode){
 }
 
 //2005-9-15 设置标题栏文字
-function setCaption(str){
+function setCaption(str) {
 	var titleBox = element.all("titleBox");
-	if(titleBox!=null){
+	if(titleBox!=null) {
 		titleBox.innerHTML = str;
 		element.caption = str;
 	}
 }
 
-function saveasDefaultValue(){
+function saveasDefaultValue() {
 	//隐藏上次的错误信息层
 	hideErrorInfo();
 
 	var cols = xmlDoc.Columns;
-	for(var i=0;i<cols.length;i++){
+	for(var i=0;i<cols.length;i++) {
 		var tempColName = cols[i].getAttribute("name");
 		var tempInstance = _instances[tempColName];
-		if(0<tempInstance.length){//多值
-			for(var j=0,jLen=tempInstance.length;j<jLen;j++){
+		if(0<tempInstance.length) {//多值
+			for(var j=0,jLen=tempInstance.length;j<jLen;j++) {
 				tempInstance[j].saveasDefaultValue();
 			}
 		}else{
@@ -736,20 +554,20 @@ function saveasDefaultValue(){
 		}        
 	}
 }
-function setFocus(name,index){
+function setFocus(name,index) {
 	index = index||0;//多值时必须指定序号，默认为0
 
-	if(name==null || name==""){
+	if(name==null || name=="") {
 		var tempColumn = xmlDoc.declare.selectSingleNode("column[(@editable='true' or not(@editable)) and (@display!='none' or not(@display))]");
-		if(tempColumn!=null){
+		if(tempColumn!=null) {
 			name = tempColumn.getAttribute("name");
 		}else{
 			return;
 		}
 	}
 	var tempInstance = _instances[name];
-	if(null!=tempInstance){
-		if(0<tempInstance.length && null!=tempInstance[index]){//多值
+	if(null!=tempInstance) {
+		if(0<tempInstance.length && null!=tempInstance[index]) {//多值
 			tempInstance[index].setFocus();
 		}else{
 			tempInstance.setFocus();
@@ -757,16 +575,16 @@ function setFocus(name,index){
 	}
 }
 
-function setColumnEditable(name,s){
+function setColumnEditable(name,s) {
 
-	var tempNode = getColumn(name);
-	tempNode.setAttribute("editable",s);
+	var node = getColumn(name);
+	node.setAttribute("editable",s);
 	
 	//更改页面显示数据
 	var tempInstance = _instances[name];
-	if(null!=tempInstance){
-		if(0<tempInstance.length){//多值
-			for(var i=0,iLen=tempInstance.length;i<iLen;i++){
+	if(null!=tempInstance) {
+		if(0<tempInstance.length) {//多值
+			for(var i=0,iLen=tempInstance.length;i<iLen;i++) {
 				tempInstance[i].setEditable(s);                
 			}
 		}else{
@@ -775,20 +593,20 @@ function setColumnEditable(name,s){
 	}
 }
 
-function stringToMoney(value){
+function stringToMoney(value) {
 	return new Money(value,_moneyUnit).getSystemUnitValueStr();
 }
 
-function stringToNumber(str){
+function stringToNumber(str) {
 	str = str.replace(/[^0-9\.\-]/g,'');
-	if(str ==""){
+	if(str =="") {
 		return 0;
 	}else{
 		return parseFloat(str);
 	}
 }
 
-function stringToDate(str,pattern){
+function stringToDate(str,pattern) {
 	var testYear = str.substr(pattern.indexOf("yyyy"),4);
 	var testMonth = str.substr(pattern.indexOf("MM"),2);
 	var testDay = str.substr(pattern.indexOf("dd"),2);
@@ -805,19 +623,19 @@ function stringToDate(str,pattern){
 
 	testDate = new Date(testDate);
 	
-	if(testDate.getFullYear()!=parseInt(testYear,10) || testDate.getMonth()!=parseInt(testMonth,10)-1 || testDate.getDate()!=parseInt(testDay,10)){
+	if(testDate.getFullYear()!=parseInt(testYear,10) || testDate.getMonth()!=parseInt(testMonth,10)-1 || testDate.getDate()!=parseInt(testDay,10)) {
 		return null;
 	}else{
 		return new Date(testDate);
 	}
 }
 
-function moneyToString(value){		
+function moneyToString(value) {		
 	return new Money(value,_moneyUnit).formattedStr();
 }
 
-function numberToString(number,pattern){
-	if(pattern =="null"){
+function numberToString(number,pattern) {
+	if(pattern =="null") {
 		pattern = "0";
 	}
 	if(typeof(number) == "string") {
@@ -825,7 +643,7 @@ function numberToString(number,pattern){
 	}
 
 	if(typeof(number) != "number") {
-		if(obj.getAttribute("errorInfo")!=null){
+		if(obj.getAttribute("errorInfo")!=null) {
 			alert(obj.getAttribute("errorInfo"));
 		}else{
 			alert("给定参数number类型错误，typeof(number)="+typeof(number));
@@ -847,14 +665,14 @@ function numberToString(number,pattern){
 	return str.replace(/^\./,"0.");
 }
 
-function dateToString(dateObj,pattern){
+function dateToString(dateObj,pattern) {
 	if(typeof(dateObj) != "object") {
 		alert("给定参数number类型错误，typeof(dateObj)="+typeof(dateObj));
 		return;
 	}
-	function addZero(number,digit){
+	function addZero(number,digit) {
 		var str = number.toString(10);
-		if(str.length>digit){
+		if(str.length>digit) {
 			return str;
 		}else{
 			var zero = (1<<(digit-str.length)).toString(2).substring(1);
@@ -889,7 +707,7 @@ function dateToString(dateObj,pattern){
 	xslStr[xslStr.length] = "<xsl:for-each select=\"root/Date\">";
 	xslStr[xslStr.length] = "<xsl:eval>formatDate(this.nodeTypedValue, \"" + datePattern + "\");</xsl:eval>";
 	xslStr[xslStr.length] = "</xsl:for-each>";
-	if("" != timePattern && null != timePattern){
+	if("" != timePattern && null != timePattern) {
 		xslStr[xslStr.length] = "<xsl:for-each select=\"root/Time\">";
 		xslStr[xslStr.length] = "<xsl:eval>\" \" + formatTime(this.nodeTypedValue, \"" + timePattern + "\");</xsl:eval>";
 		xslStr[xslStr.length] = "</xsl:for-each>";
@@ -905,12 +723,12 @@ function dateToString(dateObj,pattern){
 	return str;
 }
 
-function showCustomErrorInfo(name,str,index){
+function showCustomErrorInfo(name,str,index) {
 	index = index||0;
 
 	var tempInstance = _instances[name];
-	if(tempInstance!=null){
-		if(0<tempInstance.length && null!=tempInstance[index]){
+	if(tempInstance!=null) {
+		if(0<tempInstance.length && null!=tempInstance[index]) {
 			showErrorInfo(str,tempInstance[index].obj);
 		}else{
 			showErrorInfo(str,tempInstance.obj);
@@ -918,9 +736,9 @@ function showCustomErrorInfo(name,str,index){
 	}
 }
 
-function getColumnAttribute(name,attrName){
+function getColumnAttribute(name,attrName) {
 	var curColumn = xmlDoc.ColByName[name];
-	if(curColumn!=null){
+	if(curColumn!=null) {
 		return curColumn.getAttribute(attrName);
 	}else{
 		alert("指定的列["+name+"]不存在");
@@ -928,96 +746,96 @@ function getColumnAttribute(name,attrName){
 	}
 }
 
-function setLabelContent(name,content){
+function setLabelContent(name,content) {
 	var labelObj = element.all("label_"+name);
-	if(labelObj!=null){
-		if(labelObj.length>1){
+	if(labelObj!=null) {
+		if(labelObj.length>1) {
 			labelObj = labelObj[0];
 		}
 		labelObj.innerHTML = content;
 
 	}
 }
-function getXmlDocument(){
+function getXmlDocument() {
 	return xmlDoc.xmlObj;
 }
 /*
  *  函数说明：获取row节点上与column对应的值
  *
  */
-function getRowNodeValue(name){
+function getRowNodeValue(name) {
 	//是否多值
 	var multiple = "false";
 	var tempColumn = xmlDoc.ColByName[name];
-	if(null!=tempColumn){
+	if(null!=tempColumn) {
 		multiple = tempColumn.getAttribute("multiple")||multiple;
 	}
 
 	var tempRowNode = xmlDoc.Row;
-	var tempNodeValue;
-	if("true"!=multiple){//单值返回单值
-		var tempNode = tempRowNode.selectSingleNode(name);
-		tempNodeValue = (null==tempNode?null:tempNode.text);
+	var nodeValue;
+	if("true"!=multiple) {//单值返回单值
+		var node = tempRowNode.selectSingleNode(name);
+		nodeValue = (null==node?null:node.text);
 	}else{//多值返回数组
-		var tempNodes = tempRowNode.selectNodes(name);
-		tempNodeValue = [];
-		for(var i=0,iLen=tempNodes.length;i<iLen;i++){
-			tempNodeValue[tempNodeValue.length] = tempNodes[i].text;
+		var nodes = tempRowNode.selectNodes(name);
+		nodeValue = [];
+		for(var i=0,iLen=nodes.length;i<iLen;i++) {
+			nodeValue[nodeValue.length] = nodes[i].text;
 		}            
 	}
 
-	return tempNodeValue;
+	return nodeValue;
 }
 /*
  *  函数说明：设置row节点上与column对应的值
  *  参数：  string:name             列名
 			string/array:value      值
  */
-function setRowNodeValue(name,value){
+function setRowNodeValue(name,value) {
 	//是否多值
 	var multiple = "false";
 	var tempColumn = xmlDoc.ColByName[name];
-	if(null!=tempColumn){
+	if(null!=tempColumn) {
 		multiple = tempColumn.getAttribute("multiple");
 	}
 
 	var tempRowNode = xmlDoc.Row;
-	if("true"==multiple && true==(value instanceof Array)){//多值并且给定值是数组，设置多值
-		var tempNodes = tempRowNode.selectNodes(name);
-		for(var i=0,iLen=tempNodes.length;i<iLen;i++){//以实际多值行数为准，给定值超过上限的部分将被忽略
+	if("true"==multiple && true==(value instanceof Array)) {//多值并且给定值是数组，设置多值
+		var nodes = tempRowNode.selectNodes(name);
+		for(var i=0,iLen=nodes.length;i<iLen;i++) {//以实际多值行数为准，给定值超过上限的部分将被忽略
 			var curValue = value[i];
-			if(null==curValue && "undefined"==typeof(curValue)){//未定义则忽略，null则表示清除原值，两者有区别
+			if(null==curValue && "undefined"==typeof(curValue)) {//未定义则忽略，null则表示清除原值，两者有区别
 				continue;
 			}
 			curValue = curValue||"";
 
-			var tempNode = tempNodes[i];
-			var tempCDATANode = tempNode.selectSingleNode("cdata()");
-			if(null!=tempCDATANode){
+			var node = nodes[i];
+			var tempCDATANode = node.selectSingleNode("cdata()");
+			if(null!=tempCDATANode) {
 				tempCDATANode.text = curValue;
 			}else{
 				var newCDATANode = tempDom.createCDATASection(curValue);
-				tempNode.appendChild(newCDATANode);
+				node.appendChild(newCDATANode);
 			}
 		}
 
 	}else{//单值或者给定值不是数组,设置单值
-		if(true==(value instanceof Array)){//单值，给定值却是数组，则取第一个
+		if(true==(value instanceof Array)) {//单值，给定值却是数组，则取第一个
 			value = value[0];
 		}
-		var tempNode = tempRowNode.selectSingleNode(name);
-		if(null==tempNode){
+		var node = tempRowNode.selectSingleNode(name);
+		if(null==node) {
 			//创建多值节点
 			var newNode = tempDom.createElement(name);
 			tempRowNode.appendChild(newNode);
-			tempNode = newNode;
+			node = newNode;
 		}
-		var tempCDATANode = tempNode.selectSingleNode("cdata()");
-		if(null!=tempCDATANode){
+		var tempCDATANode = node.selectSingleNode("cdata()");
+		if(null!=tempCDATANode) {
 			tempCDATANode.text = value;
 		}else{
 			var newCDATANode = tempDom.createCDATASection(value);
-			tempNode.appendChild(newCDATANode);
+			node.appendChild(newCDATANode);
 		}
 	}
 }
@@ -1025,7 +843,7 @@ function setRowNodeValue(name,value){
  *  函数说明：增加多值的行
  *  参数：  string:name             列名
  */
-function addRowNodeValue(name){
+function addRowNodeValue(name) {
 	//是否多值
 	var tempColumn = xmlDoc.ColByName[name];
 	var tempMode = tempColumn.getAttribute("mode");
@@ -1036,15 +854,15 @@ function addRowNodeValue(name){
 	var tempDefaultValue = tempColumn.getAttribute("defaultValue");
 
 	var multiple = "false";
-	if(null!=tempColumn){
+	if(null!=tempColumn) {
 		multiple = tempColumn.getAttribute("multiple");
 	}
-	if("true"==multiple){
+	if("true"==multiple) {
 		var tempRowNode = xmlDoc.Row;
 
 		//如果没有该列名的值，则先创建一个空值
-		var tempNode = tempRowNode.selectSingleNode(name);
-		if(null==tempNode){
+		var node = tempRowNode.selectSingleNode(name);
+		if(null==node) {
 			var newNode = tempDom.createElement(name);
 			var newCDATANode = tempDom.createCDATASection("");
 			newNode.appendChild(newCDATANode);
@@ -1058,9 +876,9 @@ function addRowNodeValue(name){
 		var newValue = "";
 
 		//2006-8-10 当empty=false(不允许为空)时自动取第一项值
-		if(tempFirstValue!="" && tempMode=="string" && (tempEditor=="comboedit" || tempEditor=="radio") && tempEmpty=="false"){
+		if(tempFirstValue!="" && tempMode=="string" && (tempEditor=="comboedit" || tempEditor=="radio") && tempEmpty=="false") {
 			newValue = tempFirstValue;
-		}else if(null != tempDefaultValue){
+		}else if(null != tempDefaultValue) {
 			newValue = tempDefaultValue;
 		
 		}
@@ -1078,19 +896,19 @@ function addRowNodeValue(name){
  *  参数：  string:name             列名
 			number:index            序号
  */
-function delRowNodeValue(name,index){
+function delRowNodeValue(name,index) {
 	//是否多值
 	var multiple = "false";
 	var tempColumn = xmlDoc.ColByName[name];
-	if(null!=tempColumn){
+	if(null!=tempColumn) {
 		multiple = tempColumn.getAttribute("multiple");
 	}
-	if("true"==multiple){
+	if("true"==multiple) {
 		var tempRowNode = xmlDoc.Row;
-		var tempNode = tempRowNode.selectSingleNode(name+"["+index+"]");
-		if(null!=tempNode){
+		var node = tempRowNode.selectSingleNode(name+"["+index+"]");
+		if(null!=node) {
 			//删除指定节点
-			tempNode.parentNode.removeChild(tempNode);
+			node.parentNode.removeChild(node);
 
 			//刷新界面
 			reload();
@@ -1104,16 +922,16 @@ function delRowNodeValue(name,index){
 			string:params           参数
 			function:callback       回调方法
  */
-function upload(action,params,callback){
+function upload(action,params,callback) {
 	var hasFileColumn = xmlDoc.xmlObj.selectSingleNode("//column[@mode='file']")!=null;
-	if(hasFileColumn==true){
+	if(hasFileColumn==true) {
 		var uploadFrame = createUploadFrame();
 
-		window.iframeOnload = function(){
+		window.iframeOnload = function() {
 			//获取iframe中response变量值
 			var win = window.frames[uploadFrame];
 			var response = win.response;
-			if(null==response){
+			if(null==response) {
 				response = {};
 				response.type = "Error";
 				response.msg = "文件上传失败";
@@ -1125,20 +943,20 @@ function upload(action,params,callback){
 			frameObj.removeNode(true);
 
 			//回调
-			if(null!=callback){
+			if(null!=callback) {
 				callback(response);
 			}
 		}
 
 
 
-		var formObj = element.firstChild;
+		var formObj = this.form;
 		formObj.target = uploadFrame;
 		formObj.method = "post";
 		formObj.enctype = "multipart/form-data";
 		formObj.encoding = "multipart/form-data";
 
-		if(null!=params){
+		if(null!=params) {
 			params = "?" + params;
 		}else{
 			params = "";
@@ -1155,40 +973,40 @@ function upload(action,params,callback){
  *	参数：  function:callback       回调方法
  *	返回值：
  */
-function createUploadFrame(callback){
+function createUploadFrame(callback) {
 	var frameName = "frame" + new Date().valueOf();
-	frameObj = window.document.createElement("<iframe onload='if(null!=window.iframeOnload){window.iframeOnload()}' name='"+frameName+"' id='"+frameName+"' src='about:blank' style='display:none'></iframe>");
+	frameObj = window.document.createElement("<iframe onload='if(null!=window.iframeOnload) {window.iframeOnload()}' name='"+frameName+"' id='"+frameName+"' src='about:blank' style='display:none'></iframe>");
 	element.appendChild(frameObj);
 	return frameName;
 }
-function beforeUpdateData(obj,fire){
+function beforeUpdateData(obj,fire) {
 	var oldValue = getRowNodeValue(obj.binding);
-	if(event.propertyName=="checked"){
+	if(event.propertyName=="checked") {
 		var newValue = obj.checked==true?1:0;
-	}else if(obj.tagName.toLowerCase()=="select"){
+	}else if(obj.tagName.toLowerCase()=="select") {
 		var newValue = obj._value;            
 	}else{
 		var newValue = obj.value;
 	}
 
-	if(null!=obj.multipleIndex){//多值
+	if(null!=obj.multipleIndex) {//多值
 		//原值根据序号获取
 		oldValue = oldValue[obj.multipleIndex];
 		
 		//新值需要更改成数组形式
-		var tempNewValue = [];
-		tempNewValue[obj.multipleIndex] = newValue;
-		newValue = tempNewValue;
+		var newValue = [];
+		newValue[obj.multipleIndex] = newValue;
+		newValue = newValue;
 	}
 
-	if(newValue!=oldValue && (newValue != "" || oldValue != null)){
+	if(newValue!=oldValue && (newValue != "" || oldValue != null)) {
 		clearTimeout(obj.bdcTimeout);
-		obj.bdcTimeout = setTimeout(function(){
+		obj.bdcTimeout = setTimeout(function() {
 			fireBeforeDataChange(obj,oldValue,newValue);
 		},200);
 	}
 }
-function fireBeforeDataChange(obj,oldValue,newValue){
+function fireBeforeDataChange(obj,oldValue,newValue) {
 	var oEvent = createEventObject();
 	oEvent.result = {
 		srcElement:obj,
