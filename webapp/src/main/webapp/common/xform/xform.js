@@ -503,37 +503,36 @@ function reloadData(rowNode) {
 
 	var cols = xmlDoc.Columns;
 	for(var i = 0; i < cols.length; i++) {
-		var tempAttr = cols[i].getAttribute("name");
-		var tempValue = rowNode.getAttribute(tempAttr);
-		updateDataExternal(tempAttr, tempValue || "", false);
+		var name = cols[i].getAttribute("name");
+		var value = rowNode.getAttribute(name);
+		updateDataExternal(name, value || "", false);
 	}
 }
 
 function fixComboeditDefaultValue(rowNode) {
-	var cols = xmlDoc.Columns;
-	for(var i=0;i<cols.length;i++) {
-		var tempAttr = cols[i].getAttribute("name");
-		var tempMode = cols[i].getAttribute("mode");
-		var tempEditor = cols[i].getAttribute("editor");
-		var tempEditorValue = cols[i].getAttribute("editorvalue")||"";
-		var tempFirstValue = tempEditorValue.split("|")[0];
-		var tempEmpty = cols[i].getAttribute("empty");
-		var tempValue = getRowNodeValue(tempAttr);
+	var cols = this.xmlDoc.Columns;
+	for(var i = 0; i < cols.length; i++) {
+		var name = cols[i].getAttribute("name");
+		var mode = cols[i].getAttribute("mode");
+		var editor = cols[i].getAttribute("editor");
+		var editorValue = cols[i].getAttribute("editorvalue")||"";
+		var firstValue = editorValue.split("|")[0];
+		var empty = cols[i].getAttribute("empty");
+		var value = getRowNodeValue(name);
 
-		//2006-6-23 当empty=false(不允许为空)时自动取第一项值
-		if((tempValue==null || tempValue.length==0) && tempFirstValue!="" && tempMode=="string" && (tempEditor=="comboedit" || tempEditor=="radio") && tempEmpty=="false") {
-			setRowNodeValue(tempAttr,tempFirstValue);
+		// 当empty = false(表示不允许为空)时，下拉列表的默认值自动取第一项值
+		if((value == null || value.length == 0) && firstValue != "" && mode=="string" && (editor=="comboedit" || editor=="radio") && empty=="false") {
+			setRowNodeValue(name, firstValue);
 		}
 	}
-
 }
 
-//2005-9-15 设置标题栏文字
+// 设置标题栏文字
 function setCaption(str) {
-	var titleBox = element.all("titleBox");
-	if(titleBox!=null) {
+	var titleBox = this.element.all("titleBox");
+	if(titleBox != null) {
 		titleBox.innerHTML = str;
-		element.caption = str;
+		this.element.caption = str;
 	}
 }
 
@@ -542,379 +541,148 @@ function saveasDefaultValue() {
 	hideErrorInfo();
 
 	var cols = xmlDoc.Columns;
-	for(var i=0;i<cols.length;i++) {
+	for(var i = 0; i < cols.length; i++) {
 		var tempColName = cols[i].getAttribute("name");
 		var tempInstance = _instances[tempColName];
-		if(0<tempInstance.length) {//多值
-			for(var j=0,jLen=tempInstance.length;j<jLen;j++) {
-				tempInstance[j].saveasDefaultValue();
-			}
-		}else{
-			tempInstance.saveasDefaultValue();
-		}        
+		tempInstance.saveasDefaultValue();    
 	}
 }
-function setFocus(name,index) {
-	index = index||0;//多值时必须指定序号，默认为0
 
-	if(name==null || name=="") {
-		var tempColumn = xmlDoc.declare.selectSingleNode("column[(@editable='true' or not(@editable)) and (@display!='none' or not(@display))]");
-		if(tempColumn!=null) {
-			name = tempColumn.getAttribute("name");
-		}else{
+function setFocus(name, index) {
+	index = index || 0; // 多值时必须指定序号，默认为0
+
+	if( name == null || name == "") {
+		var column = xmlDoc.declare.selectSingleNode("column[(@editable='true' or not(@editable)) and (@display!='none' or not(@display))]");
+		if(column == null) {
 			return;
 		}
+		name = tempColumn.getAttribute("name");
 	}
+
 	var tempInstance = _instances[name];
-	if(null!=tempInstance) {
-		if(0<tempInstance.length && null!=tempInstance[index]) {//多值
-			tempInstance[index].setFocus();
-		}else{
-			tempInstance.setFocus();
-		}
+	if(null != tempInstance) {
+		tempInstance.setFocus();
 	}
 }
 
 function setColumnEditable(name,s) {
-
 	var node = getColumn(name);
-	node.setAttribute("editable",s);
+	node.setAttribute("editable", s);
 	
 	//更改页面显示数据
 	var tempInstance = _instances[name];
-	if(null!=tempInstance) {
-		if(0<tempInstance.length) {//多值
-			for(var i=0,iLen=tempInstance.length;i<iLen;i++) {
-				tempInstance[i].setEditable(s);                
-			}
-		}else{
-			tempInstance.setEditable(s);
-		}
+	if(null != tempInstance) {
+		tempInstance.setEditable(s);
 	}
 }
 
-function stringToMoney(value) {
-	return new Money(value,_moneyUnit).getSystemUnitValueStr();
-}
+
 
 function stringToNumber(str) {
-	str = str.replace(/[^0-9\.\-]/g,'');
-	if(str =="") {
+	str = str.replace(/[^0-9\.\-]/g, '');
+	if(str == "") {
 		return 0;
-	}else{
-		return parseFloat(str);
 	}
+	return parseFloat(str);
 }
 
-function stringToDate(str,pattern) {
-	var testYear = str.substr(pattern.indexOf("yyyy"),4);
-	var testMonth = str.substr(pattern.indexOf("MM"),2);
-	var testDay = str.substr(pattern.indexOf("dd"),2);
+function stringToDate(str, pattern) {
+	var testYear  = str.substr(pattern.indexOf("yyyy"), 4);
+	var testMonth = str.substr(pattern.indexOf("MM"), 2);
+	var testDay   = str.substr(pattern.indexOf("dd"), 2);
 
 	var testDate = testYear + "/" + testMonth + "/" + testDay;
 
-	var HH = pattern.indexOf("HH");
-	var mm = pattern.indexOf("mm");
-	var ss = pattern.indexOf("ss");
-	var testHour = -1==HH?"00":str.substr(HH,2);
-	var testMinute = -1==mm?"00":str.substr(mm,2);
-	var testSecond = -1==ss?"00":str.substr(ss,2);
-	testDate += " " + testHour + ":" + testMinute + ":" + testSecond;
-
 	testDate = new Date(testDate);
-	
-	if(testDate.getFullYear()!=parseInt(testYear,10) || testDate.getMonth()!=parseInt(testMonth,10)-1 || testDate.getDate()!=parseInt(testDay,10)) {
-		return null;
-	}else{
-		return new Date(testDate);
-	}
+	return new Date(testDate);
 }
 
-function moneyToString(value) {		
-	return new Money(value,_moneyUnit).formattedStr();
+function numberToString(number, pattern) {
+	return number.toString();
 }
 
-function numberToString(number,pattern) {
-	if(pattern =="null") {
-		pattern = "0";
-	}
-	if(typeof(number) == "string") {
-		number = stringToNumber(number);
-	}
-
-	if(typeof(number) != "number") {
-		if(obj.getAttribute("errorInfo")!=null) {
-			alert(obj.getAttribute("errorInfo"));
-		}else{
-			alert("给定参数number类型错误，typeof(number)="+typeof(number));
-		}
-	}
-
-	var xmldomobj = new ActiveXObject('MSXML.DOMDocument');
-	var xsldomobj = new ActiveXObject('MSXML.DOMDocument');
-	var xmldomdoc = '<root/>';
-	var xsldomdoc = '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/TR/WD-xsl"><xsl:template match="/root"><xsl:eval>formatNumber('+number+',"'+pattern+'")</xsl:eval></xsl:template></xsl:stylesheet>';
-	
-	xmldomobj.loadXML(xmldomdoc);
-	xsldomobj.loadXML(xsldomdoc);
-
-	var str = xmldomobj.documentElement.transformNode(xsldomobj);
-	xmldomobj = null;
-	xsldomobj = null;
-
-	return str.replace(/^\./,"0.");
+function dateToString(dateObj, pattern) {
+	return dateObj.toString();
 }
 
-function dateToString(dateObj,pattern) {
-	if(typeof(dateObj) != "object") {
-		alert("给定参数number类型错误，typeof(dateObj)="+typeof(dateObj));
-		return;
-	}
-	function addZero(number,digit) {
-		var str = number.toString(10);
-		if(str.length>digit) {
-			return str;
-		}else{
-			var zero = (1<<(digit-str.length)).toString(2).substring(1);
-			str = zero+str;
-			return str;
-		}
-	}
+function showCustomErrorInfo(name, str, index) {
+	index = index || 0;
 
-	var dateStr = dateObj.getFullYear() + '-' + addZero(dateObj.getMonth() + 1,2) + '-' + addZero(dateObj.getDate(),2);
-	var timeStr = addZero(dateObj.getHours(),2) + ':' + addZero(dateObj.getMinutes(),2) + ':' + addZero(dateObj.getSeconds(),2);
-
-	var datePattern = pattern.split(" ")[0];
-	var timePattern = pattern.split(" ")[1];
-
-	var xmldomobj = new ActiveXObject('MSXML.DOMDocument');
-	var xsldomobj = new ActiveXObject('MSXML.DOMDocument');
-
-	var xmlStr = [];
-	xmlStr[xmlStr.length] = "<root xml:space=\"preserve\" xmlns:dt=\"urn:schemas-microsoft-com:dataTypes\">";
-	xmlStr[xmlStr.length] = "<Date dt:dt=\"datetime\">";
-	xmlStr[xmlStr.length] = dateStr;
-	xmlStr[xmlStr.length] = "</Date>";
-	xmlStr[xmlStr.length] = "<Time dt:dt=\"datetime\">";
-	xmlStr[xmlStr.length] = dateStr + "T" + timeStr;
-	xmlStr[xmlStr.length] = "</Time>";
-	xmlStr[xmlStr.length] = "</root>";
-	xmldomobj.loadXML(xmlStr.join(""));
-
-	var xslStr = [];
-	xslStr[xslStr.length] = "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/TR/WD-xsl\" xmlns:dt=\"urn:schemas-microsoft-com:dataTypes\">";
-	xslStr[xslStr.length] = "<xsl:template match=\"/\">";
-	xslStr[xslStr.length] = "<xsl:for-each select=\"root/Date\">";
-	xslStr[xslStr.length] = "<xsl:eval>formatDate(this.nodeTypedValue, \"" + datePattern + "\");</xsl:eval>";
-	xslStr[xslStr.length] = "</xsl:for-each>";
-	if("" != timePattern && null != timePattern) {
-		xslStr[xslStr.length] = "<xsl:for-each select=\"root/Time\">";
-		xslStr[xslStr.length] = "<xsl:eval>\" \" + formatTime(this.nodeTypedValue, \"" + timePattern + "\");</xsl:eval>";
-		xslStr[xslStr.length] = "</xsl:for-each>";
-	}
-	xslStr[xslStr.length] = "</xsl:template>";
-	xslStr[xslStr.length] = "</xsl:stylesheet>";
-	xsldomobj.loadXML(xslStr.join(""));
-
-	var str = xmldomobj.transformNode(xsldomobj);
-	xmldomobj = null;
-	xsldomobj = null;
-
-	return str;
-}
-
-function showCustomErrorInfo(name,str,index) {
-	index = index||0;
-
-	var tempInstance = _instances[name];
-	if(tempInstance!=null) {
-		if(0<tempInstance.length && null!=tempInstance[index]) {
-			showErrorInfo(str,tempInstance[index].obj);
-		}else{
-			showErrorInfo(str,tempInstance.obj);
+	var instance = _instances[name];
+	if(instance != null) {
+		if(0 < instance.length && null != instance[index]) {
+			showErrorInfo(str, instance[index].obj);
+		} 
+		else {
+			showErrorInfo(str, instance.obj);
 		}
 	}
 }
 
-function getColumnAttribute(name,attrName) {
-	var curColumn = xmlDoc.ColByName[name];
-	if(curColumn!=null) {
-		return curColumn.getAttribute(attrName);
-	}else{
-		alert("指定的列["+name+"]不存在");
+function getColumnAttribute(name, attrName) {
+	var column = xmlDoc.ColByName[name];
+	if(column != null) {
+		return column.getAttribute(attrName);
+	}
+	else {
+		alert("指定的列[" + name + "]不存在");
 		return null;
 	}
 }
 
-function setLabelContent(name,content) {
-	var labelObj = element.all("label_"+name);
-	if(labelObj!=null) {
-		if(labelObj.length>1) {
+function setLabelContent(name, content) {
+	var labelObj = this.element.all("label_" + name);
+	if(labelObj != null) {
+		if(labelObj.length > 1) {
 			labelObj = labelObj[0];
 		}
 		labelObj.innerHTML = content;
-
 	}
 }
+
 function getXmlDocument() {
-	return xmlDoc.xmlObj;
+	return this.xmlDoc.xmlObj;
 }
+
 /*
- *  函数说明：获取row节点上与column对应的值
- *
+ * 获取row节点上与column对应的值
  */
 function getRowNodeValue(name) {
-	//是否多值
-	var multiple = "false";
-	var tempColumn = xmlDoc.ColByName[name];
-	if(null!=tempColumn) {
-		multiple = tempColumn.getAttribute("multiple")||multiple;
-	}
-
-	var tempRowNode = xmlDoc.Row;
-	var nodeValue;
-	if("true"!=multiple) {//单值返回单值
-		var node = tempRowNode.selectSingleNode(name);
-		nodeValue = (null==node?null:node.text);
-	}else{//多值返回数组
-		var nodes = tempRowNode.selectNodes(name);
-		nodeValue = [];
-		for(var i=0,iLen=nodes.length;i<iLen;i++) {
-			nodeValue[nodeValue.length] = nodes[i].text;
-		}            
-	}
+	var rowNode = xmlDoc.Row;
+	var node = rowNode.selectSingleNode(name);
+	var nodeValue = (null == node ? null : node.text);
 
 	return nodeValue;
 }
+
 /*
  *  函数说明：设置row节点上与column对应的值
  *  参数：  string:name             列名
 			string/array:value      值
  */
 function setRowNodeValue(name,value) {
-	//是否多值
-	var multiple = "false";
-	var tempColumn = xmlDoc.ColByName[name];
-	if(null!=tempColumn) {
-		multiple = tempColumn.getAttribute("multiple");
-	}
-
 	var tempRowNode = xmlDoc.Row;
-	if("true"==multiple && true==(value instanceof Array)) {//多值并且给定值是数组，设置多值
-		var nodes = tempRowNode.selectNodes(name);
-		for(var i=0,iLen=nodes.length;i<iLen;i++) {//以实际多值行数为准，给定值超过上限的部分将被忽略
-			var curValue = value[i];
-			if(null==curValue && "undefined"==typeof(curValue)) {//未定义则忽略，null则表示清除原值，两者有区别
-				continue;
-			}
-			curValue = curValue||"";
 
-			var node = nodes[i];
-			var tempCDATANode = node.selectSingleNode("cdata()");
-			if(null!=tempCDATANode) {
-				tempCDATANode.text = curValue;
-			}else{
-				var newCDATANode = tempDom.createCDATASection(curValue);
-				node.appendChild(newCDATANode);
-			}
-		}
+	if(true==(value instanceof Array)) { // 单值，给定值却是数组，则取第一个
+		value = value[0];
+	}
 
-	}else{//单值或者给定值不是数组,设置单值
-		if(true==(value instanceof Array)) {//单值，给定值却是数组，则取第一个
-			value = value[0];
-		}
-		var node = tempRowNode.selectSingleNode(name);
-		if(null==node) {
-			//创建多值节点
-			var newNode = tempDom.createElement(name);
-			tempRowNode.appendChild(newNode);
-			node = newNode;
-		}
-		var tempCDATANode = node.selectSingleNode("cdata()");
-		if(null!=tempCDATANode) {
-			tempCDATANode.text = value;
-		}else{
-			var newCDATANode = tempDom.createCDATASection(value);
-			node.appendChild(newCDATANode);
-		}
+	var node = tempRowNode.selectSingleNode(name);
+	if(null == node) { // 创建单值节点
+		node = tempDom.createElement(name);
+		tempRowNode.appendChild(node);
+	}
+
+	var tempCDATANode = node.selectSingleNode("cdata()");
+	if(null != tempCDATANode) {
+		tempCDATANode.text = value;
+	}
+	else{
+		var newCDATANode = tempDom.createCDATASection(value);
+		node.appendChild(newCDATANode);
 	}
 }
-/*
- *  函数说明：增加多值的行
- *  参数：  string:name             列名
- */
-function addRowNodeValue(name) {
-	//是否多值
-	var tempColumn = xmlDoc.ColByName[name];
-	var tempMode = tempColumn.getAttribute("mode");
-	var tempEditor = tempColumn.getAttribute("editor");
-	var tempEditorValue = tempColumn.getAttribute("editorvalue")||"";
-	var tempFirstValue = tempEditorValue.split("|")[0];
-	var tempEmpty = tempColumn.getAttribute("empty");
-	var tempDefaultValue = tempColumn.getAttribute("defaultValue");
 
-	var multiple = "false";
-	if(null!=tempColumn) {
-		multiple = tempColumn.getAttribute("multiple");
-	}
-	if("true"==multiple) {
-		var tempRowNode = xmlDoc.Row;
-
-		//如果没有该列名的值，则先创建一个空值
-		var node = tempRowNode.selectSingleNode(name);
-		if(null==node) {
-			var newNode = tempDom.createElement(name);
-			var newCDATANode = tempDom.createCDATASection("");
-			newNode.appendChild(newCDATANode);
-			tempRowNode.appendChild(newNode);                
-		}
-
-		//创建多值节点
-		var newNode = tempDom.createElement(name);
-
-		//新值
-		var newValue = "";
-
-		//2006-8-10 当empty=false(不允许为空)时自动取第一项值
-		if(tempFirstValue!="" && tempMode=="string" && (tempEditor=="comboedit" || tempEditor=="radio") && tempEmpty=="false") {
-			newValue = tempFirstValue;
-		}else if(null != tempDefaultValue) {
-			newValue = tempDefaultValue;
-		
-		}
-
-		var newCDATANode = tempDom.createCDATASection(newValue);
-		newNode.appendChild(newCDATANode);
-		tempRowNode.appendChild(newNode);
-
-		//刷新界面
-		reload();
-	}
-}
-/*
- *  函数说明：删除指定的多值行
- *  参数：  string:name             列名
-			number:index            序号
- */
-function delRowNodeValue(name,index) {
-	//是否多值
-	var multiple = "false";
-	var tempColumn = xmlDoc.ColByName[name];
-	if(null!=tempColumn) {
-		multiple = tempColumn.getAttribute("multiple");
-	}
-	if("true"==multiple) {
-		var tempRowNode = xmlDoc.Row;
-		var node = tempRowNode.selectSingleNode(name+"["+index+"]");
-		if(null!=node) {
-			//删除指定节点
-			node.parentNode.removeChild(node);
-
-			//刷新界面
-			reload();
-		}
-	}
-}
 
 /*
  *  函数说明：上传文件
@@ -922,97 +690,77 @@ function delRowNodeValue(name,index) {
 			string:params           参数
 			function:callback       回调方法
  */
-function upload(action,params,callback) {
-	var hasFileColumn = xmlDoc.xmlObj.selectSingleNode("//column[@mode='file']")!=null;
-	if(hasFileColumn==true) {
-		var uploadFrame = createUploadFrame();
-
-		window.iframeOnload = function() {
-			//获取iframe中response变量值
-			var win = window.frames[uploadFrame];
-			var response = win.response;
-			if(null==response) {
-				response = {};
-				response.type = "Error";
-				response.msg = "文件上传失败";
-				response.description = "服务器没有响应。可能是连接超时，请稍后重试";
-			}
-
-			//删除iframe元素
-			var frameObj = window.document.getElementById(uploadFrame);
-			frameObj.removeNode(true);
-
-			//回调
-			if(null!=callback) {
-				callback(response);
-			}
-		}
-
-
-
-		var formObj = this.form;
-		formObj.target = uploadFrame;
-		formObj.method = "post";
-		formObj.enctype = "multipart/form-data";
-		formObj.encoding = "multipart/form-data";
-
-		if(null!=params) {
-			params = "?" + params;
-		}else{
-			params = "";
-		}
-		formObj.action = action + params;
-
-		formObj.submit();
-	}else{
+function upload(action, params, callback) {
+	if(xmlDoc.xmlObj.selectSingleNode("//column[@mode='file']") == null) {
 		return null;
 	}
+
+	var uploadFrame = createUploadFrame();
+	window.iframeOnload = function() {
+		var win = window.frames[uploadFrame];  
+		var response = win.response; // 获取iframe中response变量值
+		if(null == response) {
+			response = {};
+			response.type = "Error";
+			response.msg = "文件上传失败";
+			response.description = "服务器没有响应。可能是连接超时，请稍后重试";
+		}
+
+		//删除iframe元素
+		$(uploadFrame).removeNode(true);
+
+		if(null != callback) {
+			callback(response);
+		}
+	}
+
+	var formObj = this.form;
+	formObj.target = uploadFrame;
+	formObj.method = "post";
+	formObj.enctype  = "multipart/form-data";
+	formObj.encoding = "multipart/form-data";
+
+	if(null != params) {
+		formObj.action = action + "?" + params;
+	}
+	formObj.submit();
 }
+
 /*
- *	函数说明：创建上传提交用iframe
- *	参数：  function:callback       回调方法
- *	返回值：
+ *	创建上传提交用iframe
  */
-function createUploadFrame(callback) {
+function createUploadFrame() {
 	var frameName = "frame" + new Date().valueOf();
-	frameObj = window.document.createElement("<iframe onload='if(null!=window.iframeOnload) {window.iframeOnload()}' name='"+frameName+"' id='"+frameName+"' src='about:blank' style='display:none'></iframe>");
-	element.appendChild(frameObj);
+	var frameObj = window.document.createElement("<iframe onload='if(null!=window.iframeOnload) {window.iframeOnload()}' name='" + frameName 
+		+ "' id='" + frameName + "' src='about:blank' style='display:none'/>");
+	this.element.appendChild(frameObj);
+
 	return frameName;
 }
-function beforeUpdateData(obj,fire) {
+
+function beforeUpdateData(obj, fire) {
 	var oldValue = getRowNodeValue(obj.binding);
-	if(event.propertyName=="checked") {
-		var newValue = obj.checked==true?1:0;
-	}else if(obj.tagName.toLowerCase()=="select") {
+	if(event.propertyName == "checked") {
+		var newValue = obj.checked==true ? 1 : 0;
+	}
+	else if(obj.tagName.toLowerCase() == "select") {
 		var newValue = obj._value;            
-	}else{
+	}
+	else {
 		var newValue = obj.value;
 	}
 
-	if(null!=obj.multipleIndex) {//多值
-		//原值根据序号获取
-		oldValue = oldValue[obj.multipleIndex];
-		
-		//新值需要更改成数组形式
-		var newValue = [];
-		newValue[obj.multipleIndex] = newValue;
-		newValue = newValue;
-	}
-
-	if(newValue!=oldValue && (newValue != "" || oldValue != null)) {
+	if(newValue != oldValue && (newValue != "" || oldValue != null)) {
 		clearTimeout(obj.bdcTimeout);
 		obj.bdcTimeout = setTimeout(function() {
-			fireBeforeDataChange(obj,oldValue,newValue);
-		},200);
+			var oEvent = createEventObject();
+			oEvent.result = {
+				srcElement: obj,
+				name: obj.binding,
+				oldValue: oldValue,
+				newValue: newValue
+			};
+			event_onbeforedatachange.fire (oEvent);
+		}, 200);
 	}
-}
-function fireBeforeDataChange(obj,oldValue,newValue) {
-	var oEvent = createEventObject();
-	oEvent.result = {
-		srcElement:obj,
-		name:obj==null?null:obj.binding,
-		oldValue:oldValue,
-		newValue:newValue
-	};
-	event_onbeforedatachange.fire (oEvent);
 }

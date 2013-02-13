@@ -82,7 +82,7 @@ window.onload = function() {
 	Event.attachEvent(clearObj, "click", f2);
 	Event.detachEvent(clearObj, "click", f2);
 
-	 Event.attachEvent(clearObj, "dblclick", function(eventObj) {
+    Event.attachEvent(clearObj, "dblclick", function(eventObj) {
 			var srcElement = Event.getSrcElement(eventObj);
 
 			alert("事件相对坐标："  + Event.offsetX(eventObj) + ", " + Event.offsetY(eventObj) );
