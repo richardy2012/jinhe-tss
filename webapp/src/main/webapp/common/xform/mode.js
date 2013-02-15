@@ -111,8 +111,8 @@ function Mode_ComboEdit(name) {
 		tempValueList[x] = true;
 	}
 
-	var valueList = this.obj.editorvalue | this.obj.valueField;
-	var textList  = this.obj.editortext  | this.obj.showName;
+	var valueList = this.obj.editorvalue;
+	var textList  = this.obj.editortext;
 	
 	var isMatch = false;
 	var selectedIndex = [];
@@ -162,59 +162,65 @@ function Mode_ComboEdit(name) {
 Mode_ComboEdit.prototype.setValue = function(s) {
 	var tempValueList = {};
 	s = s.split(",");
-	for(var i=0,iLen=s.length;i<iLen;i++){
+	for(var i = 0;i < s.length; i++){
 		tempValueList[s[i]] = true;
 	}
 	var isMatch = false;
-	for(var i=0;i<this.obj.options.length;i++){
+	for(var i=0; i < this.obj.options.length; i++){
 		var opt = this.obj.options[i];
-		if(true==tempValueList[opt.value]){
+		if(tempValueList[opt.value]) {
 			opt.selected = true;
 			isMatch = true;
 		}
 	}
-	if(false==isMatch){
+
+	if(false == isMatch){
 		this.obj.selectedIndex = -1;	
 	}
 }
-Mode_ComboEdit.prototype.setEditable = function(s){
-	this.obj.disabled = (s=="true"?false:true);
-	this.obj.className = (s=="true"?"comboedit":"comboedit_disabled");
+
+Mode_ComboEdit.prototype.setEditable = function(s) {
+	this.obj.disabled  = (s == "true" ? false : true);
+	this.obj.className = (s == "true" ? "comboedit" : "comboedit_disabled");
 	this.obj.editable = s;
 }
-Mode_ComboEdit.prototype.validate = function(){
+
+Mode_ComboEdit.prototype.validate = function() {
 	var tempEmpty = this.obj.getAttribute("empty");
 	var tempValue = this.obj.value;
-	if(tempValue=="" && tempEmpty=="false"){
-		showErrorInfo("["+this.obj.caption.replace(/\s/g,"")+"] 格式不正确，请更正",this.obj);
+	if(tempValue == "" && tempEmpty == "false") {
+		showErrorInfo("[" + this.obj.caption.replace(/\s/g, "") + "] 不允许为空，请选择。", this.obj);
 		return false;
-	}else{
-		return true;
 	}
+	return true;
 }
-Mode_ComboEdit.prototype.reset = function(fireOnDataChange){
+
+Mode_ComboEdit.prototype.reset = function(fireOnDataChange) {
 	this.fireOnDataChange = fireOnDataChange;
+
 	this.obj.selectedIndex = -1;
 	var selectedIndex = this.obj.defaultSelectedIndex;
-	if(""!=selectedIndex){
+	if(selectedIndex != "") {
 		selectedIndex = selectedIndex.split(",");
-		for(var i=0,iLen=selectedIndex.length;i<iLen;i++){
+		for(var i=0; i < selectedIndex.lengt; i++) {
 			this.obj.options[selectedIndex[i]].selected = true;
 		}
 	}
 	this.fireOnDataChange = true;
 }
-Mode_ComboEdit.prototype.saveasDefaultValue = function(){
+
+Mode_ComboEdit.prototype.saveasDefaultValue = function() {
 	var selectedIndex = [];
-	for(var i=0,iLen=this.obj.options.length;i<iLen;i++){
+	for(var i=0; i < this.obj.options.length; i++){
 		var opt = this.obj.options[i];
-		if(true==opt.selected){
+		if(opt.selected) {
 			selectedIndex[selectedIndex.length] = i;
 		}
 	}
 	this.obj.defaultSelectedIndex = selectedIndex.join(",");
 }
-Mode_ComboEdit.prototype.setFocus = function(){
+
+Mode_ComboEdit.prototype.setFocus = function() {
 	try{
 		this.obj.focus();
 	}catch(e){
@@ -224,108 +230,88 @@ Mode_ComboEdit.prototype.setFocus = function(){
 
 
 
-
-
-
-
-function Mode_Radio(name,index){
+function Mode_Radio(name) {
 	this.name = name;
-	var tempObj = element.all(name);
-	if(tempObj==null){
+	this.obj = element.all(name);
+	if(this.obj == null) {
 		return;
 	}
-	if(tempObj.attributes==null && tempObj.length!=null){
-		if(null==index){//未给定序号，或者重复绑定
-			tempObj = tempObj[0];
-		}else{//多值，给定序号
-			tempObj = tempObj[index];
-			tempObj.multipleIndex = index;
-		}
-	}else{
 
-	}
-	this.obj = tempObj;
-	this.init();
-}
-Mode_Radio.prototype.init = function(){
 	var tempThis = this;
 	this.obj._value = this.obj.value;
-	//2006-6-19 增加title提示信息
-	this.obj.title = this.obj.value;
+	this.obj.title  = this.obj.value;
 
 	var tempRadios = "";
-
 	var valueList = this.obj.editorvalue;
-	if(valueList==null){
-		valueList = this.obj.valueField;
-	}
 	var textList = this.obj.editortext;
-	if(textList==null){
-		textList = this.obj.showName;
-	}
-
-	
-	for(var i=0;i<valueList.split('|').length;i++){
-		var tempValue = valueList.split('|')[i];
+	var valueArray = valueList.split('|');
+	for(var i=0; i < valueArray.length; i++ ) {
+		var tempValue = valueArray[i];
 		var tempLable = textList.split('|')[i];
-		var tempID = this.obj.binding + '_radio_' + this.obj.uniqueID + "_" + i;
+
+		var tempID   = this.obj.binding + '_radio_' + this.obj.uniqueID + "_" + i;
 		var tempName = this.obj.binding + '_radio_' + this.obj.uniqueID;
-		tempRadios += '<input type="radio" class="radio" id="'+tempID+'" name="'+tempName+'" value="'+tempValue+'"'+(this.obj._value==tempValue?' checked':'')+(this.obj.getAttribute('editable')=='false'?' disabled':'')+' binding="'+this.obj.binding+'">'+'<label for="'+tempID+'">'+tempLable+'</label>';
+		tempRadios += '<input type="radio" class="radio" id="' + tempID + '" name="' + tempName + '" value="' + tempValue + '"' 
+			+ (this.obj._value == tempValue ? ' checked' : '') + (this.obj.getAttribute('editable') == 'false' ? ' disabled' : '') 
+			+ ' binding="' + this.obj.binding + '">' + '<label for="' + tempID + '">' + tempLable + '</label>';
 	}
 	this.obj.innerHTML = tempRadios;
 	
 	var inputObjs = this.obj.all.tags("INPUT");
-	var tempObj = this.obj;
-	for(var i=0;i<inputObjs.length;i++){
+	var tempObj   = this.obj;
+	for(var i=0; i < inputObjs.length; i++) {
 		var inputObj = inputObjs[i];
 		inputObj.style.cssText = tempObj.defaultStyle;
 		inputObj.multipleIndex = tempObj.multipleIndex;
 
-		inputObj.onclick = function(){
-			element.updateData(this,tempThis.fireOnDataChange);
+		inputObj.onclick = function() {
+			element.updateData(this, tempThis.fireOnDataChange);
 			tempObj._value = this.value;
-
-			//2006-6-19 增加title提示信息
 			tempObj.title = tempObj.value;
 		}
 	}
 }
-Mode_Radio.prototype.setValue = function(s){
+
+Mode_Radio.prototype.setValue = function(value) {
 	var inputObjs = this.obj.all.tags("INPUT");
-	for(var i=0;i<inputObjs.length;i++){
+	for(var i=0; i < inputObjs.length; i++) {
 		var inputObj = inputObjs[i];
-		if(inputObj.value==s){
+		if(inputObj.value == value ) {
 			inputObj.checked = true;
 			this.obj._value = inputObj.value;
 			return;
-		}else{
+		} 
+		else {
 			inputObj.checked = false;
 		}
 	}
 }
-Mode_Radio.prototype.setEditable = function(s){
+
+Mode_Radio.prototype.setEditable = function(s) {
 	var inputObjs = this.obj.all.tags("INPUT");
-	for(var i=0;i<inputObjs.length;i++){
+	for(var i=0; i < inputObjs.length; i++) {
 		var inputObj = inputObjs[i];
-		inputObj.disabled = (s=="true"?false:true);
+		inputObj.disabled = (s == "true" ? false : true);
 	}
 	this.obj.editable = s;
 }
-Mode_Radio.prototype.validate = function(){
+
+Mode_Radio.prototype.validate = function() {
 	return true;
 }
-Mode_Radio.prototype.reset = function(fireOnDataChange){
+
+Mode_Radio.prototype.reset = function(fireOnDataChange) {
 	this.fireOnDataChange = fireOnDataChange;
 	var inputObjs = this.obj.all.tags("INPUT");
-	for(var i=0;i<inputObjs.length;i++){
+	for(var i=0; i < inputObjs.length; i++) {
 		var inputObj = inputObjs[i];
 		inputObj.checked = inputObj.defaultChecked;
 	}
 	this.fireOnDataChange = true;
 }
-Mode_Radio.prototype.saveasDefaultValue = function(){
+Mode_Radio.prototype.saveasDefaultValue = function() {
 	var inputObjs = this.obj.all.tags("INPUT");
-	for(var i=0;i<inputObjs.length;i++){
+	for(var i=0; i < inputObjs.length; i++){
 		var inputObj = inputObjs[i];
 		inputObj.defaultChecked = inputObj.checked;
 	}
@@ -341,265 +327,116 @@ Mode_Radio.prototype.setFocus = function(){
 
 
 
-
-
-
-
-function Mode_Number(name,index){
+function Mode_Number(name) {
 	this.name = name;
-	var tempObj = element.all(name);
-	if(tempObj==null){
+	this.obj = element.all(name);
+	if(this.obj == null) {
 		return;
 	}
-	if(tempObj.attributes==null && tempObj.length!=null){
-		if(null==index){//未给定序号，或者重复绑定
-			tempObj = tempObj[0];
-		}else{//多值，给定序号
-			tempObj = tempObj[index];
-			tempObj.multipleIndex = index;
-		}
-	}else{
 
-	}
-	this.obj = tempObj;
-	this.init();
-}
-Mode_Number.prototype.init = function(){
 	var tempThis = this;
-//        if(this.obj.tagName=="TEXTAREA"){
-//            setTimeout(function(){
-//                tempThis.obj.defaultValue = tempThis.obj.value = tempThis.obj.attributes["value"].nodeValue;
-//            },0);
-//        }
 	this.obj._value = this.obj.value;
-	//2006-6-19 增加title提示信息
-	this.obj.title = this.obj.value;
+	this.obj.title  = this.obj.value;
 
-	if(this.obj.getAttribute('empty')=="false"){
-		this.obj.insertAdjacentHTML("afterEnd","<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
+	if(this.obj.getAttribute('empty') == "false") {
+		this.obj.insertAdjacentHTML("afterEnd", "<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
 	}
-	this.obj.className = (this.obj.getAttribute("editable")=="false"?"string_disabled":"string");
-	this.obj.disabled = (this.obj.getAttribute("editable")=="false");
 
-	this.obj.onfocus = function(){
+	this.obj.disabled = (this.obj.getAttribute("editable") == "false");
+	this.obj.className = (this.obj.disabled ? "string_disabled" : "string");	
+
+	this.obj.onfocus = function() {
 		var tempEvent = this.onpropertychange;
 		this.onpropertychange = null;
 		this.value = element.stringToNumber(this.value);
 		this.onpropertychange = tempEvent;
 		this.select();
 	}
-	this.obj.onblur = function(){
-		if(this.getAttribute("inputCmd")!="null"){
+	this.obj.onblur = function() {
+		if(this.getAttribute("inputCmd") != "null") {
 			var _srcElement = this;
 			var _ancestor = element;
-			try{
+			try {
 				eval(this.getAttribute("inputCmd"));
 			}catch(e){}
 			return;
-		}else if(this.value=="" && this.empty=="false"){
-			showErrorInfo("请输入 ["+this.caption.replace(/\s/g,"")+"]",this);
-		}else if(this.inputReg!="null" && eval(this.inputReg).test(this.value)==false){
-			if(this.errorInfo!="null"){
+		}
+		else if(this.value=="" && this.empty=="false") {
+			showErrorInfo("请输入 [" + this.caption.replace(/\s/g, "") + "]", this);
+		}
+		else if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false) {
+			if(this.errorInfo != "null") {
 				showErrorInfo(this.errorInfo);
-			}else{
-				showErrorInfo("["+this.caption.replace(/\s/g,"")+"] 格式不正确，请更正",this);
+			} else {
+				showErrorInfo("[" + this.caption.replace(/\s/g, "") + "] 格式不正确，请更正。", this);
 			}
-		}else{
+		}
+		else {
 			tempThis.setValue(this.value);
 			element.updateData(this);
-
-			//2006-6-19 增加title提示信息
 			this.title = this.value;
 		}
 	}
 
-	this.obj.onpropertychange = function(){
-		if(window.event.propertyName=="value"){
-			if(this.inputReg!="null" && eval(this.inputReg).test(this.value)==false){//输入不符合
-				var tempValue = element.stringToNumber(this._value);
-				if(eval(this.inputReg).test(tempValue)==true){
-					restore(this,tempValue);
-				}else{
+	this.obj.onpropertychange = function() {
+		if(window.event.propertyName == "value") {
+			if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false) { // 输入不符合
+				var value = element.stringToNumber(this._value);
+				if(eval(this.inputReg).test(value)) {
+					restore(this, value);
+				} else {
 					restore(this,"");
 				}
-			}else{
+			} else {
 				this._value = this.value;
 			}
 		}
 	};
 }
-Mode_Number.prototype.setValue = function(s){
-	var tempValue = element.numberToString(s,this.obj.pattern);
-	restore(this.obj,tempValue);
+
+Mode_Number.prototype.setValue = function(value) {
+	restore(this.obj, element.numberToString(value, this.obj.pattern));
 }
-Mode_Number.prototype.setEditable = function(s){
-	this.obj.disabled = (s=="true"?false:true);
-	this.obj.className = (s=="true"?"string":"string_disabled");
+
+Mode_Number.prototype.setEditable = function(s) {
+	this.obj.disabled  = (s == "true" ? false : true);
+	this.obj.className = (s == "true" ? "string" : "string_disabled");
 	this.obj.editable = s;
 }
+
 Mode_Number.prototype.validate = validate;
-Mode_Number.prototype.reset = function(fireOnDataChange){
+
+Mode_Number.prototype.reset = function(fireOnDataChange) {
 	this.fireOnDataChange = fireOnDataChange;
 	this.obj.value = this.obj.defaultValue;
 	this.fireOnDataChange = true;
 }
-Mode_Number.prototype.saveasDefaultValue = function(){
+
+Mode_Number.prototype.saveasDefaultValue = function() {
 	this.obj.defaultValue = this.obj.value;
 }
+
 Mode_Number.prototype.setFocus = function(){
-	try{
+	try {
 		this.obj.focus();
-	}catch(e){
+	} catch(e) {
 	}
 }
 
 
 
-
-
-
-
-
-function Mode_Money(name,index){
+function Mode_Function(name) {
 	this.name = name;
-	var tempObj = element.all(name);
-	if(tempObj==null){
+	this.obj = element.all(name);
+	if(this.obj == null) {
 		return;
 	}
-	if(tempObj.attributes==null && tempObj.length!=null){
-		if(null==index){//未给定序号，或者重复绑定
-			tempObj = tempObj[0];
-		}else{//多值，给定序号
-			tempObj = tempObj[index];
-			tempObj.multipleIndex = index;
-		}
-	}else{
 
-	}
-	this.obj = tempObj;
-	this.init();
-}
-Mode_Money.prototype.init = function(){
-	var tempThis = this;
-//        if(this.obj.tagName=="TEXTAREA"){
-//            setTimeout(function(){
-//                tempThis.obj.defaultValue = tempThis.obj.value = tempThis.obj.attributes["value"].nodeValue;
-//            },0);
-//        }
-	//2006-6-19 增加title提示信息
-	this.obj.title = this.obj.value;
-
-	if(this.obj.getAttribute('empty')=="false"){
-		this.obj.insertAdjacentHTML("afterEnd","<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
-	}
-	this.obj.className = (this.obj.getAttribute("editable")=="false"?"string_disabled":"string");
-	this.obj.disabled = (this.obj.getAttribute("editable")=="false");
-
-	this.obj.onfocus = function(){
-		var tempEvent = this.onpropertychange;
-		this.onpropertychange = null;
-		this.value = element.stringToMoney(this.value);
-		this.onpropertychange = tempEvent;
-		this.select();
-	}
-	this.obj.onblur = function(){
-		if(this.getAttribute("inputCmd")!="null"){
-			var _srcElement = this;
-			var _ancestor = element;
-			try{
-				eval(this.getAttribute("inputCmd"));
-			}catch(e){}
-			return;
-		}else if(this.value=="" && this.empty=="false"){
-			showErrorInfo("请输入 ["+this.caption.replace(/\s/g,"")+"]",this);
-		}else if(this.inputReg!="null" && eval(this.inputReg).test(this.value)==false){
-			if(this.errorInfo!="null"){
-				showErrorInfo(this.errorInfo,this);
-			}else{
-				showErrorInfo("["+this.caption.replace(/\s/g,"")+"] 格式不正确，请更正",this);
-			}
-		}else{
-			tempThis.setValue(this.value);
-			element.updateData(this);
-
-			//2006-6-19 增加title提示信息
-			this.title = this.value;
-		}
-	}
-
-	this.obj.onpropertychange = function(){
-		if(window.event.propertyName=="value"){
-			if(this.inputReg!="null" && eval(this.inputReg).test(this.value)==false){//输入不符合
-				var tempValue = element.stringToMoney(this._value);
-				if(eval(this.inputReg).test(tempValue)==true){
-					restore(this,tempValue);
-				}else{
-					restore(this,"");
-				}
-			}else{
-				this._value = this.value;
-			}
-		}
-	};
-}
-Mode_Money.prototype.setValue = function(s){
-	var tempValue = element.moneyToString(s);
-	restore(this.obj,tempValue);
-}
-Mode_Money.prototype.setEditable = function(s){
-	this.obj.disabled = (s=="true"?false:true);
-	this.obj.className = (s=="true"?"string":"string_disabled");
-	this.obj.editable = s;
-}
-Mode_Money.prototype.validate = validate;
-Mode_Money.prototype.reset = function(fireOnDataChange){
-	this.fireOnDataChange = fireOnDataChange;
-	this.obj.value = this.obj.defaultValue;
-	this.fireOnDataChange = true;
-}
-Mode_Money.prototype.saveasDefaultValue = function(){
-	this.obj.defaultValue = this.obj.value;
-}
-Mode_Money.prototype.setFocus = function(){
-	try{
-		this.obj.focus();
-	}catch(e){
-	}
-}
-
-
-
-
-
-
-
-
-function Mode_Function(name,index){
-	this.name = name;
-	var tempObj = element.all(name);
-	if(tempObj==null){
-		return;
-	}
-	if(tempObj.attributes==null && tempObj.length!=null){
-		if(null==index){//未给定序号，或者重复绑定
-			tempObj = tempObj[0];
-		}else{//多值，给定序号
-			tempObj = tempObj[index];
-			tempObj.multipleIndex = index;
-		}
-	}else{
-
-	}
-	this.obj = tempObj;
-	this.init();
-}
-Mode_Function.prototype.init = function(){
 	var tempThis = this;
 	this.obj._value = this.obj.value;
-	//2006-6-19 增加title提示信息
-	this.obj.title = this.obj.value;
+	this.obj.title  = this.obj.value;
 
-	if(this.obj.clickOnly!="false"){//可通过column上clickOnly来控制是否允许可手工输入
+	if(this.obj.clickOnly!="false"){ // 可通过column上clickOnly来控制是否允许可手工输入
 		this.obj.readOnly = true;
 	}
 	
@@ -1001,146 +838,6 @@ Mode_Boolean.prototype.setFocus = function(){
 	}catch(e){
 	}
 }
-
-
-
-
-
-
-
-
-function Mode_File(name,index){
-	this.name = name;
-	var tempObj = element.all(name);
-	if(tempObj==null){
-		return;
-	}
-	if(tempObj.attributes==null && tempObj.length!=null){
-		if(null==index){//未给定序号，或者重复绑定
-			tempObj = tempObj[0];
-		}else{//多值，给定序号
-			tempObj = tempObj[index*2];
-			tempObj.multipleIndex = index;
-		}
-	}else{
-
-	}
-	this.obj = tempObj;
-	this.init();
-}
-Mode_File.prototype.init = function(){
-	var tempThis = this;
-	this.obj._value = this.obj.value;
-	//2006-6-19 增加title提示信息
-	this.obj.title = this.obj.value;
-
-	if(this.obj.clickOnly!="false"){//可通过column上clickOnly来控制是否允许可手工输入
-		this.obj.readOnly = true;
-	}
-	
-	//如果不可为空，添加星号
-	if(this.obj.getAttribute('empty')=="false"){
-		this.obj.insertAdjacentHTML("afterEnd","<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
-	}
-
-	//添加点击按钮
-	this.obj.insertAdjacentHTML('afterEnd','<button style="width:20px;height:18px;background-color:transparent;border:0px;"><img src="'+_baseurl+'file.gif"></button><input type="file" name="'+this.name+'"/>');
-	waitingForVisible(function(){
-		tempThis.obj.style.width = Math.max(1,tempThis.obj.offsetWidth - 20);
-	});
-
-	var editable = this.obj.getAttribute("editable");
-	this.obj.className = editable=="false"?"file_disabled":"file";
-	this.obj.disabled = editable=="false";
-
-	this.obj.onpropertychange = function(){
-		if(window.event.propertyName=="value"){
-			this._value = this.value;
-			element.updateData(this);
-		}
-	};
-
-	var tempThisObj = this.obj;
-	var tempBtObj = this.obj.nextSibling;
-	var tempFileObj = tempBtObj.nextSibling;
-
-	tempBtObj.className = editable=="false"?"bt_disabled":"";
-	tempBtObj.disabled = editable=="false";
-	tempFileObj.className = editable=="false"?"file_browser_disabled":"file_browser";
-	tempFileObj.disabled = editable=="false";
-
-	var w = tempThisObj.offsetWidth;
-	tempFileObj.style.marginTop = 1;
-	tempFileObj.style.position = "absolute";
-	tempFileObj.style.marginLeft = "-" + (w + (editable=="false"?0:20));
-	tempFileObj.style.clip = "rect(0 " + w + " 18 0)";
-	tempFileObj.style.width = w + 65;
-	waitingForVisible(function(){
-		w = tempThisObj.offsetWidth;
-		tempFileObj.style.marginLeft = "-" + (w + (editable=="false"?0:20));
-		tempFileObj.style.clip = "rect(0 " + w + " 18 0)";
-		tempFileObj.style.width = w + 65;
-	});
-
-	tempBtObj.onmouseover = function(){
-		w = tempThisObj.offsetWidth;
-		tempFileObj.style.marginLeft = "-" + (w + (editable=="false"?0:20));
-		tempFileObj.style.filter = "alpha(opacity=0)";
-		tempFileObj.style.opacity = "0";
-		tempFileObj.style.width = w + 65;
-
-		var editable = tempThisObj.getAttribute("editable");
-		var w2 = w + (editable=="false"?0:20);
-		tempFileObj.style.clip = "rect(0 " + w2 + " 18 " + (w2 - 20) + ")";
-		tempFileObj.blur();
-	}
-	tempFileObj.onchange = function(){
-		tempThisObj.value = this.value;
-		tempThisObj.scrollLeft = this.scrollLeft;
-	}
-	tempFileObj.onscroll = function(){
-		tempThisObj.scrollLeft = this.scrollLeft;
-	}
-	tempThisObj.onmouseover = tempFileObj.onmouseout = function(){
-		tempFileObj.style.filter = "";
-		tempFileObj.style.clip = "rect(0 " + w + " 18 0)";
-	}
-}
-Mode_File.prototype.setValue = function(s){
-	this.obj._value = this.obj.value = s;
-}
-Mode_File.prototype.setEditable = function(s){
-	this.obj.disabled = (s=="true"?false:true);
-	this.obj.className = (s=="true"?"file":"file_disabled");
-	this.obj.nextSibling.disabled = (s=="true"?false:true);
-	this.obj.nextSibling.className = (s=="true"?"":"bt_disabled");
-	this.obj.nextSibling.nextSibling.className = (s=="true"?"file_browser":"file_browser_disabled");
-	this.obj.nextSibling.nextSibling.disabled = (s=="true"?false:true);
-	this.obj.nextSibling.nextSibling.style.marginLeft = "-" + (this.obj.offsetWidth + (s=="false"?0:20));
-	this.obj.editable = s;
-}
-Mode_File.prototype.validate = function(){
-	return true;
-};
-Mode_File.prototype.reset = function(fireOnDataChange){
-	this.fireOnDataChange = fireOnDataChange;
-	this.obj.value = this.obj.defaultValue;
-	this.fireOnDataChange = true;
-}
-Mode_File.prototype.saveasDefaultValue = function(){
-	this.obj.defaultValue = this.obj.value;
-}
-Mode_File.prototype.setFocus = function(){
-	try{
-		this.obj.focus();
-	}catch(e){
-	}
-}
-
-
-
-
-
 
 
 
