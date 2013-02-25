@@ -98,12 +98,10 @@
 			<textarea>
 				<xsl:apply-templates select="@*" />
 				<xsl:attribute name="caption"><xsl:eval>getProperty("caption")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="cmd"><xsl:eval>getProperty("cmd")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="editable"><xsl:eval>getEditable()</xsl:eval></xsl:attribute>                    
 				<xsl:attribute name="empty"><xsl:eval>getProperty("empty")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="errorInfo"><xsl:eval>getProperty("errorInfo")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="id"><xsl:eval>getProperty("name")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="inputCmd"><xsl:eval>getProperty("inputCmd")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="inputReg"><xsl:eval>getProperty("inputReg")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="maxLength"><xsl:eval>getProperty("maxLength")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="style"><xsl:value-of select="@style"/></xsl:attribute>
@@ -117,12 +115,10 @@
 				<xsl:apply-templates select="@*[nodeName()!='type']" />
 				<xsl:attribute name="type">password</xsl:attribute>
 				<xsl:attribute name="caption"><xsl:eval>getProperty("caption")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="cmd"><xsl:eval>getProperty("cmd")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="editable"><xsl:eval>getEditable()</xsl:eval></xsl:attribute>                    
 				<xsl:attribute name="empty"><xsl:eval>getProperty("empty")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="errorInfo"><xsl:eval>getProperty("errorInfo")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="id"><xsl:eval>getProperty("name")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="inputCmd"><xsl:eval>getProperty("inputCmd")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="inputReg"><xsl:eval>getProperty("inputReg")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="maxLength"><xsl:eval>getProperty("maxLength")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="style"><xsl:value-of select="@style"/></xsl:attribute>
@@ -134,12 +130,10 @@
 			<input>
 				<xsl:apply-templates select="@*" />
 				<xsl:attribute name="caption"><xsl:eval>getProperty("caption")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="cmd"><xsl:eval>getProperty("cmd")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="editable"><xsl:eval>getEditable()</xsl:eval></xsl:attribute>                    
 				<xsl:attribute name="empty"><xsl:eval>getProperty("empty")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="errorInfo"><xsl:eval>getProperty("errorInfo")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="id"><xsl:eval>getProperty("name")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="inputCmd"><xsl:eval>getProperty("inputCmd")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="inputReg"><xsl:eval>getProperty("inputReg")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="maxLength"><xsl:eval>getProperty("maxLength")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="style"><xsl:value-of select="@style"/></xsl:attribute>
@@ -152,12 +146,10 @@
 				<xsl:apply-templates select="@*" />
 				<xsl:attribute name="ancestor"><xsl:eval>uniqueID</xsl:eval></xsl:attribute>
 				<xsl:attribute name="caption"><xsl:eval>getProperty("caption")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="cmd"><xsl:eval>getProperty("cmd")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="editable"><xsl:eval>getEditable()</xsl:eval></xsl:attribute>
 				<xsl:attribute name="empty"><xsl:eval>getProperty("empty")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="errorInfo"><xsl:eval>getProperty("errorInfo")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="id"><xsl:eval>getProperty("name")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="inputCmd"><xsl:eval>getProperty("inputCmd")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="inputReg"><xsl:eval>getProperty("inputReg")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="maxLength"><xsl:eval>getProperty("maxLength")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="pattern"><xsl:eval>getProperty("pattern")</xsl:eval></xsl:attribute>
@@ -176,7 +168,6 @@
 				<xsl:attribute name="cmd"><xsl:eval>getProperty("cmd")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="editable"><xsl:eval>getEditable()</xsl:eval></xsl:attribute>
 				<xsl:attribute name="empty"><xsl:eval>getProperty("empty")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="inputCmd"><xsl:eval>getProperty("inputCmd")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="inputReg"><xsl:eval>getProperty("inputReg")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="id"><xsl:eval>getProperty("name")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="style"><xsl:value-of select="@style"/></xsl:attribute>
@@ -192,7 +183,6 @@
 				<xsl:attribute name="editable"><xsl:eval>getEditable()</xsl:eval></xsl:attribute>
 				<xsl:attribute name="empty"><xsl:eval>getProperty("empty")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="id"><xsl:eval>getProperty("name")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="inputCmd"><xsl:eval>getProperty("inputCmd")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="inputReg"><xsl:eval>getProperty("inputReg")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="pattern"><xsl:eval>getProperty("pattern")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="style"><xsl:value-of select="@style"/></xsl:attribute>

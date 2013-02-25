@@ -223,9 +223,6 @@ XForm.prototype.attachEditor = function() {
 			case "boolean":
 				curInstance = new Mode_Boolean(tempColName);
 				break;
-			case "file":
-				curInstance = new Mode_File(tempColName);
-				break;
 		}
 		curInstance.saveasDefaultValue();
 		_instances[tempColName] = curInstance;

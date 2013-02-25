@@ -15,25 +15,14 @@ function Mode_String(name) {
 			this.value = this.value.replace(/(^\s*)|(\s*$)/g, "");
 		}
 
-		if(this.getAttribute("inputCmd") != "null") {
-			try  {
-				eval(this.getAttribute("inputCmd"));
-			} catch(e){ }
-
-			return;
-		}
-		else if(this.value == "" && this.empty == "false") {
+		if(this.value == "" && this.empty == "false") {
 			showErrorInfo("请输入 [" + this.caption.replace(/\s/g, "") + "]", this);
 		}
 		else if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false){
 			showErrorInfo("[" + this.caption.replace(/\s/g, "") + "] 格式不正确，请更正。", this);
 		}
-		else{
+		else {
 			element.updateData(this);
-
-			if(this.tagName != "TEXTAREA") {
-				this.title = this.value;
-			}
 		}
 	}
 
@@ -58,7 +47,7 @@ Mode_String.prototype.setValue = function(s) {
 }
 
 Mode_String.prototype.setEditable = function(s) {
-	s = s | this.obj.getAttribute("editable");
+	s = s || this.obj.getAttribute("editable");
 	this.obj.editable = s;
 
 	var disabled = (s == "false");
@@ -66,7 +55,6 @@ Mode_String.prototype.setEditable = function(s) {
 
 	if(this.obj.tagName != "TEXTAREA") {
 		this.obj.disabled = disabled;  // textarea 禁止状态无法滚动显示所有内容，所以改为只读
-		this.obj.title = this.obj.value;
 	} else {
 		this.obj.readOnly = disabled;        
 	}
@@ -102,7 +90,6 @@ function Mode_ComboEdit(name) {
  
 	var tempThis = this;
 	this.obj._value = this.obj.attributes["value"].nodeValue;
-	this.obj.title  = this.obj._value;
 
 	var tempValueList = {};
 	var tempValueArr = this.obj._value.split(",");
@@ -154,8 +141,6 @@ function Mode_ComboEdit(name) {
 		}
 		this._value = x.join(",");
 		element.updateData(this, tempThis.fireOnDataChange);
-
-		this.title = this._value;
 	}
 }
 
@@ -239,7 +224,6 @@ function Mode_Radio(name) {
 
 	var tempThis = this;
 	this.obj._value = this.obj.value;
-	this.obj.title  = this.obj.value;
 
 	var tempRadios = "";
 	var valueList = this.obj.editorvalue;
@@ -267,7 +251,6 @@ function Mode_Radio(name) {
 		inputObj.onclick = function() {
 			element.updateData(this, tempThis.fireOnDataChange);
 			tempObj._value = this.value;
-			tempObj.title = tempObj.value;
 		}
 	}
 }
@@ -336,7 +319,6 @@ function Mode_Number(name) {
 
 	var tempThis = this;
 	this.obj._value = this.obj.value;
-	this.obj.title  = this.obj.value;
 
 	if(this.obj.getAttribute('empty') == "false") {
 		this.obj.insertAdjacentHTML("afterEnd", "<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
@@ -353,39 +335,26 @@ function Mode_Number(name) {
 		this.select();
 	}
 	this.obj.onblur = function() {
-		if(this.getAttribute("inputCmd") != "null") {
-			var _srcElement = this;
-			var _ancestor = element;
-			try {
-				eval(this.getAttribute("inputCmd"));
-			}catch(e){}
-			return;
-		}
-		else if(this.value=="" && this.empty=="false") {
+		if(this.value=="" && this.empty == "false") {
 			showErrorInfo("请输入 [" + this.caption.replace(/\s/g, "") + "]", this);
 		}
 		else if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false) {
-			if(this.errorInfo != "null") {
-				showErrorInfo(this.errorInfo);
-			} else {
-				showErrorInfo("[" + this.caption.replace(/\s/g, "") + "] 格式不正确，请更正。", this);
-			}
+			showErrorInfo("[" + this.caption.replace(/\s/g, "") + "] 格式不正确，请更正。", this);
 		}
 		else {
 			tempThis.setValue(this.value);
 			element.updateData(this);
-			this.title = this.value;
 		}
 	}
 
 	this.obj.onpropertychange = function() {
 		if(window.event.propertyName == "value") {
-			if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false) { // 输入不符合
+			if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false) { // 输入不合法
 				var value = element.stringToNumber(this._value);
 				if(eval(this.inputReg).test(value)) {
 					restore(this, value);
 				} else {
-					restore(this,"");
+					restore(this, "");
 				}
 			} else {
 				this._value = this.value;
@@ -434,117 +403,96 @@ function Mode_Function(name) {
 
 	var tempThis = this;
 	this.obj._value = this.obj.value;
-	this.obj.title  = this.obj.value;
 
 	if(this.obj.clickOnly!="false"){ // 可通过column上clickOnly来控制是否允许可手工输入
 		this.obj.readOnly = true;
 	}
 	
 	//如果不可为空，添加星号
-	if(this.obj.getAttribute('empty')=="false"){
-		this.obj.insertAdjacentHTML("afterEnd","<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
+	if(this.obj.getAttribute('empty') == "false"){
+		this.obj.insertAdjacentHTML("afterEnd", "<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
 	}
 
-	//添加点击按钮
-	this.obj.insertAdjacentHTML('afterEnd','<button style="width:20px;height:18px;background-color:transparent;border:0px;"><img src="'+_baseurl+'function.gif"></button>');
-	this.obj.className = (this.obj.getAttribute("editable")=="false"?"function_disabled":"function");
-	this.obj.disabled = (this.obj.getAttribute("editable")=="false");
-	waitingForVisible(function(){
-		tempThis.obj.style.width = Math.max(1,tempThis.obj.offsetWidth - 20);
+	this.obj.disabled  = (this.obj.getAttribute("editable") == "false");
+	this.obj.className = (this.obj.disabled ? "function_disabled" : "function");
+
+	waitingForVisible(function() {
+		tempThis.obj.style.width = Math.max(1, tempThis.obj.offsetWidth - 20);
 	});
 
-	this.obj.onblur = function(){
-		if("text"==this.type){
-			var tempValue = this.value.replace(/(^\s*)|(\s*$)/g,"");
-			if(tempValue != this.value){
-				this.value = tempValue;
-			}
+	this.obj.onblur = function() {
+		if("text" == this.type) {
+			this.value = this.value.replace(/(^\s*)|(\s*$)/g, "");
 		}
-		if(this.getAttribute("inputCmd")!="null"){
-			var _srcElement = this;
-			var _ancestor = element;
-			try{
-				eval(this.getAttribute("inputCmd"));
-			}catch(e){}
-			return;
-		}else if(this.value=="" && this.empty=="false"){
-			showErrorInfo("请输入 ["+this.caption.replace(/\s/g,"")+"]",this);
-		}else if(this.inputReg!="null" && eval(this.inputReg).test(this.value)==false){
-			if(this.errorInfo!="null"){
-				showErrorInfo(this.errorInfo,this);
-			}else{
-				showErrorInfo("["+this.caption.replace(/\s/g,"")+"] 格式不正确，请更正",this);
-			}
-		}else{
+		
+		if(this.value=="" && this.empty=="false"){
+			showErrorInfo("请输入 [" + this.caption.replace(/\s/g, "") + "]", this);
+		} 
+		else if(this.inputReg!="null" && eval(this.inputReg).test(this.value) == false) {
+			showErrorInfo("[" + this.caption.replace(/\s/g,"") + "] 格式不正确，请更正",this);
+		}
+		else{
 			element.updateData(this);
-
-			if(this.tagName!="TEXTAREA"){
-				//2006-6-19 增加title提示信息
-				this.title = this.value;
-			}
 		}
 	};
 	this.obj.onpropertychange = function(){
-		if(window.event.propertyName=="value"){
-			if(this.inputReg!="null" && eval(this.inputReg).test(this.value)==false){//输入不符合
-				if(eval(this.inputReg).test(this._value)==true){//测试旧值是否符合要求
-					restore(this,this._value);
-				}else{
-					restore(this,"");
-				}
-			}else if(this.value.replace(/[^\u0000-\u00FF]/g,"**").length>parseInt(this.maxLength)){
-				var tempValue = this.value.substringB(0,this.maxLength);
-				restore(this,tempValue);
-			}else{
+		if(window.event.propertyName == "value") {
+			if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false) { // 输入不符合
+				restore(this, this._value);
+			} 
+			else if(this.value.replace(/[^\u0000-\u00FF]/g, "**").length > parseInt(this.maxLength)) {
+				restore(this, this.value.substringB(0, this.maxLength));
+			} 
+			else {
 				this._value = this.value;
 				element.beforeUpdateData(this);
 			}
 		}
 	};
 
-	var tempThisObj = this.obj;
-	var tempBtObj = this.obj.nextSibling;
-	tempBtObj.disabled = (this.obj.getAttribute("editable")=="false"?"disabled":"");
-	tempBtObj.className = (this.obj.getAttribute("editable")=="false"?"bt_disabled":"");
-	tempBtObj.onclick = function(){
-		var _srcElement = tempThisObj;
-		var _ancestor = element;
-		try{
-			eval(tempThisObj.cmd);
-		}catch(e){
-			showErrorInfo("运行自定义JavaScript代码<"+tempThisObj.cmd+">出错，异常信息："+e.description,tempThisObj);
-			throw(e);
+	if( !this.obj.disabled ) 
+		var tempThisObj = this.obj;
+
+		//添加点击按钮
+		this.obj.insertAdjacentHTML('afterEnd', '<button style="width:20px;height:18px;background-color:transparent;border:0px;"><img src="' + _baseurl + 'function.gif"></button>');
+		var btObj = this.obj.nextSibling; // 动态添加进去的按钮
+		btObj.onclick = function(){
+			try {
+				eval(tempThisObj.cmd);
+			} catch(e) {
+				showErrorInfo("运行自定义JavaScript代码<" + tempThisObj.cmd + ">出错，异常信息：" + e.description, tempThisObj);
+				throw(e);
+			}
 		}
-	}
+	}	
+	
 }
-Mode_Function.prototype.setValue = function(s){
-	this.obj._value = this.obj.value = s;
+Mode_Function.prototype.setValue = function(value) {
+	this.obj._value = this.obj.value = value;
 }
-Mode_Function.prototype.setEditable = function(s){
-	this.obj.disabled = (s=="true"?false:true);
-	this.obj.className = (s=="true"?"function":"function_disabled");
-	this.obj.nextSibling.disabled = (s=="true"?false:true);
-	this.obj.nextSibling.className = (s=="true"?"":"bt_disabled");
+Mode_Function.prototype.setEditable = function(s) {
+	this.obj.disabled  = (s == "false");
+	this.obj.className = (this.obj.disabled ? "function_disabled" : "function");
+
+	this.obj.nextSibling.disabled = this.obj.disabled;
+	this.obj.nextSibling.className = (this.obj.disabled ? "bt_disabled" : "");
 	this.obj.editable = s;
 }
 Mode_Function.prototype.validate = validate;
-Mode_Function.prototype.reset = function(fireOnDataChange){
+Mode_Function.prototype.reset = function(fireOnDataChange) {
 	this.fireOnDataChange = fireOnDataChange;
 	this.obj.value = this.obj.defaultValue;
 	this.fireOnDataChange = true;
 }
-Mode_Function.prototype.saveasDefaultValue = function(){
+Mode_Function.prototype.saveasDefaultValue = function() {
 	this.obj.defaultValue = this.obj.value;
 }
-Mode_Function.prototype.setFocus = function(){
-	try{
+Mode_Function.prototype.setFocus = function() {
+	try {
 		this.obj.focus();
-	}catch(e){
+	} catch(e) {
 	}
 }
-
-
-
 
 
 
@@ -572,8 +520,6 @@ function Mode_Date(name,index){
 Mode_Date.prototype.init = function(){
 	var tempThis = this;
 	this.obj._value = this.obj.value;
-	//2006-6-19 增加title提示信息
-	this.obj.title = this.obj.value;
 	
 	if(this.obj.pattern==null || this.obj.pattern=="null"){
 		showErrorInfo("["+this.obj.binding+"] column未设置pattern",this.obj);
@@ -650,9 +596,6 @@ Mode_Date.prototype.init = function(){
 				}
 			}
 			element.updateData(this);
-
-			//2006-6-19 增加title提示信息
-			this.title = this.value;
 		}
 	}
 
