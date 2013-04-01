@@ -4,9 +4,10 @@ XForm控件说明
 
 	1、形式：
 	<xml id=node>
-	xml定义规范中的操作节点。
+		xml定义规范中的操作节点。
 	</xml>
-	<XFORM:FORM data="node" datapath="/query" id="nodeForm" style="behavior:url(/public/htc/XForm/XForm.htc)"  baseurl="/public/htc/XForm/" editable="false" ondatachange="onChange()" onreset="onReset()"/>
+	<XFORM:FORM data="node" datapath="/query" id="nodeForm" style="behavior:url(/public/htc/XForm/XForm.htc)"  
+               baseurl="/public/htc/XForm/" editable="false" ondatachange="onChange()" onreset="onReset()"/>
 
 .	2、属性说明：
 	说明：不特别说明的为必有属性，不能缺省。

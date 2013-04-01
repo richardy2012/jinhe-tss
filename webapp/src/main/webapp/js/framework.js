@@ -820,7 +820,8 @@ function onError(msg,url,line) {
 window._alert = window.alert;
 window._confirm = window.confirm;
 window._prompt = window.prompt;
-window.alert = Alert;
+
+// window.alert = Alert;
 window.confirm = Confirm;
 window.confirm2 = Confirm2;
 window.prompt = Prompt;

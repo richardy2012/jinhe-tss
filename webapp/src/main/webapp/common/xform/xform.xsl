@@ -175,45 +175,6 @@
 				<xsl:attribute name="value"><xsl:eval>getValue(this.getAttribute("binding"))</xsl:eval></xsl:attribute>
 			</input>
 		</xsl:when>
-		<xsl:when expr="getMode()=='date'">
-			<input type="text">
-				<xsl:apply-templates select="@*" />
-				<xsl:attribute name="baseurl"><xsl:eval>baseurl</xsl:eval>CalendarSharedDir/</xsl:attribute>
-				<xsl:attribute name="caption"><xsl:eval>getProperty("caption")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="editable"><xsl:eval>getEditable()</xsl:eval></xsl:attribute>
-				<xsl:attribute name="empty"><xsl:eval>getProperty("empty")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="id"><xsl:eval>getProperty("name")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="inputReg"><xsl:eval>getProperty("inputReg")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="pattern"><xsl:eval>getProperty("pattern")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="style"><xsl:value-of select="@style"/></xsl:attribute>
-				<xsl:attribute name="submitReg"><xsl:eval>getProperty("submitReg")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="value"><xsl:eval>getValue(this.getAttribute("binding"))</xsl:eval></xsl:attribute>
-			</input>
-		</xsl:when>
-		<xsl:when expr="getMode()=='boolean'">
-			<input type="checkbox">
-				<xsl:apply-templates select="@*" />
-				<xsl:attribute name="caption"><xsl:eval>getProperty("caption")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="class">boolean</xsl:attribute>
-				<xsl:attribute name="id"><xsl:eval>getProperty("name")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="editable"><xsl:eval>getEditable()</xsl:eval></xsl:attribute>
-				<xsl:attribute name="value"><xsl:eval>getValue(this.getAttribute("binding"))</xsl:eval></xsl:attribute>
-			</input>
-		</xsl:when>
-		<xsl:when expr="getMode()=='file'">
-			<input type="text">
-				<xsl:apply-templates select="@*" />
-				<xsl:attribute name="ancestor"><xsl:eval>uniqueID</xsl:eval></xsl:attribute>
-				<xsl:attribute name="baseurl"><xsl:eval>baseurl</xsl:eval></xsl:attribute>
-				<xsl:attribute name="caption"><xsl:eval>getProperty("caption")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="clickOnly"><xsl:eval>getProperty("clickOnly")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="cmd"><xsl:eval>getProperty("cmd")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="editable"><xsl:eval>getEditable()</xsl:eval></xsl:attribute>
-				<xsl:attribute name="empty"><xsl:eval>getProperty("empty")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="id"><xsl:eval>getProperty("name")</xsl:eval></xsl:attribute>
-				<xsl:attribute name="style"><xsl:value-of select="@style"/></xsl:attribute>
-			</input>
-		</xsl:when>
 		<xsl:otherwise>
 			<xsl:copy>
 				<xsl:apply-templates select="@*" />
