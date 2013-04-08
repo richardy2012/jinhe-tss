@@ -206,9 +206,9 @@ Mode_ComboEdit.prototype.saveasDefaultValue = function() {
 }
 
 Mode_ComboEdit.prototype.setFocus = function() {
-	try{
+	try {
 		this.obj.focus();
-	}catch(e){
+	} catch(e) {
 	}
 }
 
@@ -330,7 +330,7 @@ function Mode_Number(name) {
 	this.obj.onfocus = function() {
 		var tempEvent = this.onpropertychange;
 		this.onpropertychange = null;
-		this.value = element.stringToNumber(this.value);
+		this.value = stringToNumber(this.value);
 		this.onpropertychange = tempEvent;
 		this.select();
 	}
@@ -350,7 +350,7 @@ function Mode_Number(name) {
 	this.obj.onpropertychange = function() {
 		if(window.event.propertyName == "value") {
 			if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false) { // 输入不合法
-				var value = element.stringToNumber(this._value);
+				var value = stringToNumber(this._value);
 				if(eval(this.inputReg).test(value)) {
 					restore(this, value);
 				} else {
@@ -364,7 +364,7 @@ function Mode_Number(name) {
 }
 
 Mode_Number.prototype.setValue = function(value) {
-	restore(this.obj, element.numberToString(value, this.obj.pattern));
+	restore(this.obj, numberToString(value, this.obj.pattern));
 }
 
 Mode_Number.prototype.setEditable = function(s) {
@@ -610,4 +610,27 @@ function waitingForVisible(func, element) {
 			element.onresize = null;
 		}
 	}
+}
+
+function stringToNumber(str) {
+	str = str.replace(/[^0-9\.\-]/g, '');
+	if(str == "") {
+		return 0;
+	}
+	return parseFloat(str);
+}
+
+function stringToDate(str, pattern) {
+	var testYear  = str.substr(pattern.indexOf("yyyy"), 4);
+	var testMonth = str.substr(pattern.indexOf("MM"), 2);
+	var testDay   = str.substr(pattern.indexOf("dd"), 2);
+
+	var testDate = testYear + "/" + testMonth + "/" + testDay;
+
+	testDate = new Date(testDate);
+	return new Date(testDate);
+}
+
+function numberToString(number, pattern) {
+	return number.toString();
 }
