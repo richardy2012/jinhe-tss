@@ -138,23 +138,23 @@ XForm.prototype.attachEditor = function() {
 		switch(colMode) {
 			case "string":
 				if(colEditor == "comboedit") {
-					curInstance = new Mode_ComboEdit(colName);
+					curInstance = new Mode_ComboEdit(colName, tempObj);
 				}
 				else if(colEditor == "radio") {
-					curInstance = new Mode_Radio(colName);
+					curInstance = new Mode_Radio(colName, tempObj);
 				}
 				else {
-					curInstance = new Mode_String(colName);
+					curInstance = new Mode_String(colName, tempObj);
 				}
 				break;
 			case "number":
-				curInstance = new Mode_Number(colName);
+				curInstance = new Mode_Number(colName, tempObj);
 				break;
 			case "function":
-				curInstance = new Mode_Function(colName);
+				curInstance = new Mode_Function(colName, tempObj);
 				break;
 			case "hidden":
-				curInstance = new Mode_Hidden(colName);
+				curInstance = new Mode_Hidden(colName, tempObj);
 				break;
 		}
 		curInstance.saveAsDefaultValue();
@@ -214,7 +214,6 @@ XForm.prototype.resetForm = function(fireOnDataChange) {
 }
 
 XFrom.prototype.updateData = function(obj) {
-	var oldValue = this.getColumnValue(obj.binding);
 	if(event.propertyName == "checked") {
 		var newValue = obj.checked == true ? 1 : 0;
 	}
@@ -225,7 +224,8 @@ XFrom.prototype.updateData = function(obj) {
 		var newValue = obj.value;
 	}
 
-	if(newValue != oldValue && (newValue != "" || oldValue != null)) {
+	var oldValue = this.getColumnValue(obj.binding);
+	if(newValue != oldValue && newValue != null) {
 		this.setColumnValue(obj.binding, newValue);
 	}
 }
@@ -432,8 +432,8 @@ XForm.prototype.showCustomErrorInfo = function(name, str) {
 	}
 }
 
-function getColumnAttribute(name, attrName) {
-	var column = xmlDoc.columnsMap[name];
+XForm.prototype.getColumnAttribute = function(name, attrName) {
+	var column = this.xmlDoc.columnsMap[name];
 	if(column != null) {
 		return column.getAttribute(attrName);
 	}
@@ -443,7 +443,7 @@ function getColumnAttribute(name, attrName) {
 	}
 }
 
-function setLabelContent(name, content) {
+XForm.prototype.setLabelContent = function(name, content) {
 	var labelObj = this.element.all("label_" + name);
 	if(labelObj != null) {
 		if(labelObj.length > 1) {
@@ -453,7 +453,7 @@ function setLabelContent(name, content) {
 	}
 }
 
-function getXmlDocument() {
+XForm.prototype.getXmlDocument = function() {
 	return this.xmlDoc.xmlObj;
 }
 
@@ -479,46 +479,20 @@ XForm.prototype.setColumnValue = function(name, value) {
 		value = value[0];
 	}
 
-	var tempRowNode = xmlDoc.Row;
-	var node = tempRowNode.selectSingleNode(name);
-	if(null == node) { 
+	var rowNode = this.xmlDoc.Row;
+	var node = rowNode.selectSingleNode(name);
+	if( node == null ) { 
 		node = this.tempDom.createElement(name); // 创建单值节点
-		tempRowNode.appendChild(node);
+		rowNode.appendChild(node);
 	}
 
-	var tempCDATANode = node.selectSingleNode("cdata()");
-	if( tempCDATANode != null) {
-		tempCDATANode.text = value;
+	var CDATANode = node.selectSingleNode("cdata()");
+	if( CDATANode != null) {
+		CDATANode.text = value;
 	}
 	else{
-		var newCDATANode = tempDom.createCDATASection(value);
+		var newCDATANode = this.tempDom.createCDATASection(value);
 		node.appendChild(newCDATANode);
 	}
 }
 
-function beforeUpdateData(obj, fire) {
-	var oldValue = getColumnValue(obj.binding);
-	if(event.propertyName == "checked") {
-		var newValue = obj.checked==true ? 1 : 0;
-	}
-	else if(obj.tagName.toLowerCase() == "select") {
-		var newValue = obj._value;            
-	}
-	else {
-		var newValue = obj.value;
-	}
-
-	if(newValue != oldValue && (newValue != "" || oldValue != null)) {
-		clearTimeout(obj.bdcTimeout);
-		obj.bdcTimeout = setTimeout(function() {
-			var oEvent = createEventObject();
-			oEvent.result = {
-				srcElement: obj,
-				name: obj.binding,
-				oldValue: oldValue,
-				newValue: newValue
-			};
-			event_onbeforedatachange.fire (oEvent);
-		}, 200);
-	}
-}

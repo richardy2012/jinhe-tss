@@ -1,9 +1,6 @@
-function Mode_String(name) {
+function Mode_String(name, element) {
 	this.name = name;
-	this.obj = element.all(name);
-	if(this.obj == null) {
-		return;
-	}
+	this.obj = element;
 	 
 	var tempThis = this;
 	this.obj._value = this.obj.value;
@@ -81,12 +78,9 @@ Mode_String.prototype.setFocus = function(){
 
 
 // 下拉选择框，单选或多选
-function Mode_ComboEdit(name) {
+function Mode_ComboEdit(name, element) {
 	this.name = name;
-	this.obj = element.all(name);
-	if(this.obj == null) {
-		return;
-	}
+	this.obj = element;
  
 	var tempThis = this;
 	this.obj._value = this.obj.attributes["value"].nodeValue;
@@ -215,12 +209,9 @@ Mode_ComboEdit.prototype.setFocus = function() {
 
 
 
-function Mode_Radio(name) {
+function Mode_Radio(name, element) {
 	this.name = name;
-	this.obj = element.all(name);
-	if(this.obj == null) {
-		return;
-	}
+	this.obj = element;
 
 	var tempThis = this;
 	this.obj._value = this.obj.value;
@@ -310,12 +301,9 @@ Mode_Radio.prototype.setFocus = function(){
 
 
 
-function Mode_Number(name) {
+function Mode_Number(name, element) {
 	this.name = name;
-	this.obj = element.all(name);
-	if(this.obj == null) {
-		return;
-	}
+	this.obj = element;
 
 	var tempThis = this;
 	this.obj._value = this.obj.value;
@@ -394,12 +382,9 @@ Mode_Number.prototype.setFocus = function(){
 
 
 
-function Mode_Function(name) {
+function Mode_Function(name, element) {
 	this.name = name;
-	this.obj = element.all(name);
-	if(this.obj == null) {
-		return;
-	}
+	this.obj = element;
 
 	var tempThis = this;
 	this.obj._value = this.obj.value;
@@ -445,7 +430,6 @@ function Mode_Function(name) {
 			} 
 			else {
 				this._value = this.value;
-				element.beforeUpdateData(this);
 			}
 		}
 	};
@@ -498,12 +482,9 @@ Mode_Function.prototype.setFocus = function() {
 
 
 
-function Mode_Hidden(name) {
+function Mode_Hidden(name, element) {
 	this.name = name;
-	this.obj = element.all(name);
-	if(this.obj == null) {
-		return;
-	}
+	this.obj = element;
  
 	var tempThis = this;
 }
@@ -555,7 +536,7 @@ function validate() {
 }
 
 function showErrorInfo(errorInfo, obj) {
-	clearTimeout(this.element.errorInfoTimeout);
+	clearTimeout(200);
 	
 	this.element.errorInfoTimeout = setTimeout(function() {
 		// 页面全局Balllon对象
