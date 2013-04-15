@@ -2,7 +2,7 @@
 var _baseurl = "";
 var _iconPath = _baseurl + "/icon/"
 
-var XForm = function(element) {
+function XForm(element) {
 	this.element = element;
 	this.form = element.firstChild;
 
@@ -22,46 +22,46 @@ var XForm = function(element) {
 
 
 XForm.prototype.attachEvents = function() {
-	// å›è½¦è‡ªåŠ¨èšç„¦ä¸‹ä¸€ä¸ªï¼ˆinputã€buttonç­‰ï¼‰
+	// »Ø³µ×Ô¶¯¾Û½¹ÏÂÒ»¸ö£¨input¡¢buttonµÈ£©
 	this.element.onkeydown = function() {
 		var srcElement = event.srcElement;
 		if(window.event.keyCode == 13 && srcElement.tagName.toLowerCase() != "textarea") {
-			window.event.keyCode = 9;  // ç›¸å½“äºæŒ‰äº†ä¸‹Tabé”®ï¼Œå…‰æ ‡ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªå…ƒç´ ä¸Š
+			window.event.keyCode = 9;  // Ïàµ±ÓÚ°´ÁËÏÂTab¼ü£¬¹â±êÒÆ¶¯µ½ÏÂÒ»¸öÔªËØÉÏ
 		}
 	}
 	
 	this.element.onselectstart = function() {
-		event.cancelBubble = true; // æ‹–åŠ¨é€‰æ‹©äº‹ä»¶å–æ¶ˆå†’æ³¡
+		event.cancelBubble = true; // ÍÏ¶¯Ñ¡ÔñÊÂ¼şÈ¡ÏûÃ°Åİ
 	}
 }
 
 XForm.prototype.load = function(data, dataType) {
 	this.element.data = data;
 	this.element.dataType = dataType;
-	reload();
+	this.reload();
 }
 
-XForm.prototype.reload = reload() {
-	// éšè—ä¸Šæ¬¡çš„é”™è¯¯ä¿¡æ¯å±‚
+XForm.prototype.reload = function() {
+	// Òş²ØÉÏ´ÎµÄ´íÎóĞÅÏ¢²ã
 	hideErrorInfo();
 
 	this.xslDom.load(_baseurl + "xform.xsl");
-	this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\nvar uniqueID=\"" + element.uniqueID 
-		+ "\";\r\nvar baseurl=\"" + _baseurl + "\";\r\nvar formEditable=\"" + element.editable + "\";\r\n";
+	this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\nvar uniqueID=\"" + this.element.uniqueID 
+		+ "\";\r\nvar baseurl=\"" + _baseurl + "\";\r\nvar formEditable=\"" + this.element.editable + "\";\r\n";
 
-	var data = this.element.data;
-	if(data != null && data != "") {
+	var data = this.element.data; 
+	if( data != null && data != "" ) {
 		var curXmlDom;
 		switch(this.element.dataType) {
 			case "url":
 				tempDom.load(data);
 				if(tempDom.parseError != 0) {
-					alert("dataåœ°å€æœ‰é—®é¢˜ï¼Œè§£æXMLä¸æ­£ç¡®.");
+					alert("dataµØÖ·ÓĞÎÊÌâ£¬½âÎöXML²»ÕıÈ·.");
 				}
 
 				var curXmlDom = tempDom.selectSingleNode("/*");
 				if(curXmlDom == null) {
-					alert("æ•°æ®æºæœ‰é—®é¢˜.");
+					alert("Êı¾İÔ´ÓĞÎÊÌâ.");
 				}
 				break;
 			case "node":
@@ -74,17 +74,17 @@ XForm.prototype.reload = reload() {
 	}
 	
 	if(this.xmlDoc != null && this.xmlDoc.xmlObj != null) {
-		// ä¿®æ­£comboeditç±»å‹é»˜è®¤ç¬¬ä¸€é¡¹çš„å€¼
+		// ĞŞÕıcomboeditÀàĞÍÄ¬ÈÏµÚÒ»ÏîµÄÖµ
 		fixComboeditDefaultValue(xmlDoc.Row);
 
-		var htmlStr = this.xmlDoc.transformXML(xslDom); // åˆ©ç”¨XSLæŠŠXMLè§£ææˆHtml
+		var htmlStr = this.xmlDoc.transformXML(xslDom); // ÀûÓÃXSL°ÑXML½âÎö³ÉHtml
 		this.element.innerHTML = htmlStr.replace(/<\/br>/gi, "");
 
 		if(this.form != null) {
 			this.form.attachEvent('onsubmit', checkForm);
 			this.form.attachEvent('onreset', resetForm);
 
-			// æ·»åŠ æ ‡é¢˜æ 				
+			// Ìí¼Ó±êÌâÀ¸				
 			var theTable = this.form.all.tags("TABLE")[0];
 			if(theTable != null && this.element.getAttribute("caption") != null) {
 				var count = theTable.rows(0).cells.length;
@@ -106,16 +106,16 @@ XForm.prototype.reload = reload() {
 			}
 		}
 
-		// ç»‘å®šå„ä¸ªcolumnå¯¹åº”çš„ç¼–è¾‘æ–¹å¼
+		// °ó¶¨¸÷¸öcolumn¶ÔÓ¦µÄ±à¼­·½Ê½
 		attachEditor();
 	
-		// è§¦å‘onloadäº‹ä»¶
+		// ´¥·¢onloadÊÂ¼ş
 		var onload = this.element.getAttribute("onload");
 		if(onload != null) {
 			eval(onload);
 		}
 
-		// è‡ªåŠ¨èšç„¦
+		// ×Ô¶¯¾Û½¹
 		setFocus();
 	}
 }
@@ -128,7 +128,7 @@ XForm.prototype.attachEditor = function() {
 		var colEditor = cols[i].getAttribute("editor");
 		var nodeValue = getColumnValue(colName);
 
-		// å–layoutä¸­ç»‘å®šè¯¥columneçš„å…ƒç´ 
+		// È¡layoutÖĞ°ó¶¨¸ÃcolumneµÄÔªËØ
 		var tempObj = this.element.all(colName);
 		if(tempObj == null) {
 			continue;
@@ -163,7 +163,7 @@ XForm.prototype.attachEditor = function() {
 }
 
 XForm.prototype.checkForm = function() {
-	// éšè—ä¸Šæ¬¡çš„é”™è¯¯ä¿¡æ¯å±‚
+	// Òş²ØÉÏ´ÎµÄ´íÎóĞÅÏ¢²ã
 	hideErrorInfo();
 
 	var cols = this.xmlDoc.Columns;
@@ -175,7 +175,7 @@ XForm.prototype.checkForm = function() {
 				return false;
 			}
 		}
-		else { // layoutå†…ä¸å­˜åœ¨æ—¶åˆ›å»ºè™šæ‹Ÿå®ä¾‹æ‰§è¡Œæ ¡éªŒ
+		else { // layoutÄÚ²»´æÔÚÊ±´´½¨ĞéÄâÊµÀıÖ´ĞĞĞ£Ñé
 			var _column = {};
 			_column.obj = {
 				empty: cols[i].getAttribute("empty"),
@@ -198,7 +198,7 @@ XForm.prototype.checkForm = function() {
 }
 
 XForm.prototype.resetForm = function(fireOnDataChange) {
-	//éšè—ä¸Šæ¬¡çš„é”™è¯¯ä¿¡æ¯å±‚
+	//Òş²ØÉÏ´ÎµÄ´íÎóĞÅÏ¢²ã
 	hideErrorInfo();
 
 	var cols = this.xmlDoc.Columns;
@@ -213,7 +213,7 @@ XForm.prototype.resetForm = function(fireOnDataChange) {
 	}
 }
 
-XFrom.prototype.updateData = function(obj) {
+XForm.prototype.updateData = function(obj) {
 	if(event.propertyName == "checked") {
 		var newValue = obj.checked == true ? 1 : 0;
 	}
@@ -230,13 +230,13 @@ XFrom.prototype.updateData = function(obj) {
 	}
 }
 
-XFrom.prototype.updateDataExternal = function(name, value) {
+XForm.prototype.updateDataExternal = function(name, value) {
 	var node = this.getColumn(name);
 	var oldValue  = getData(name);
 
 	this.setColumnValue(name, value);
 	
-	// æ›´æ”¹é¡µé¢æ˜¾ç¤ºæ•°æ®
+	// ¸ü¸ÄÒ³ÃæÏÔÊ¾Êı¾İ
 	var tempSrcElement;
 	var _column = _columnList[name];
 	if(_column != null) {
@@ -247,90 +247,45 @@ XFrom.prototype.updateDataExternal = function(name, value) {
 		tempSrcElement = { binding: name };
 	}
 
-	// è§¦å‘ondatachangeäº‹ä»¶
+	// ´¥·¢ondatachangeÊÂ¼ş
 	if(fire != false) {
 		fireDataChange(tempSrcElement, oldValue, value);
 	}
 }
 
-function updateUnbindingDataExternal(id, value) {
-	this.element.all(id).value = value;
-	var node = xmlDoc.Layout.selectSingleNode(".//*[@id='" + id + "']");
+XForm.prototpe.updateUnbindingDataExternal = function(id, value) {
+	$(id).value = value;
+
+	var node = this.xmlDoc.Layout.selectSingleNode(".//*[@id='" + id + "']");
 	if(node != null) {
 		node.setAttribute("value", value);
 	}
 }
 
-function Class_XMLDocument(xmlObj) {
-	this.xmlObj = xmlObj;
-	this.transformXML = function(xslObj) {			
-		var tempXMLDom = new ActiveXObject('MSXML.DOMDocument');
-		tempXMLDom.async = false;
-		tempXMLDom.resolveExternals = false;
-		tempXMLDom.loadXML(this.toString());
-
-		return tempXMLDom.transformNode(xslObj).replace(/&amp;nbsp;/g, "&nbsp;").replace(/\u00A0/g, "&amp;nbsp;");
+XForm.prototype.setEditable = function(status) {
+	if(this.element.editable != status ) {
+		return£»
 	}
-	this.toString = function() {
-		if(this.xmlObj != null) {
-			return this.xmlObj.xml;
-		}
-		return null;
-	}
-	this.refresh = function() {
-		if(this.xmlObj != null) {
-			this.declare = this.xmlObj.selectSingleNode("./declare");
-			this.Layout  = this.xmlObj.selectSingleNode("./layout");
-			this.Script  = this.xmlObj.selectSingleNode("./script");
-			this.Columns = this.xmlObj.selectNodes("./declare/column");
-			
-			this.Data    = this.xmlObj.selectSingleNode("./data");
-			if(this.Data == null) {				
-				var dataNode = tempDom.createElement("data");
-				this.xmlObj.appendChild(dataNode);
 
-				this.Data = dataNode;
-			}
-			
-			this.Row = this.xmlObj.selectSingleNode("./data/row[0]");
-			if(this.Row == null) {
-				var rowNode = tempDom.createElement("row");
-				this.Data.appendChild(rowNode);	
-				
-				this.Row = rowNode;
-			}
-			
-			this.columnsMap = {};
-			for(var i = 0; i < this.Columns.length; i++) {
-				this.columnsMap[this.Columns[i].getAttribute("name")] = this.Columns[i];
-			}
+	this.element.editable = status;
+
+	var buttonBox = $("buttonBox");
+	if(buttonBox != null) {
+		buttonBox.style.display = (status == "true" ? "block": "none");
+	}
+
+	var cols = this.xmlDoc.Columns;
+	for(var i = 0; i < cols.length; i++) {
+		var name = cols[i].getAttribute("name");
+		var _column = _columnList[name];
+		if(_column != null) {
+			var columnEditable = cols[i].getAttribute("editable");
+			if (columnEditable == "false") continue;
+			_column.setEditable(status);
 		}
 	}
-	this.refresh();
-}
 
-function setEditable(s) {
-	if(element.editable != s ) {
-		element.editable = s;
-
-		var buttonBox = element.all("buttonBox");
-		if(buttonBox != null) {
-			buttonBox.style.display = (s=="true" ? "block": "none");
-		}
-
-		var cols = xmlDoc.Columns;
-		for(var i = 0; i < cols.length; i++) {
-			var name = cols[i].getAttribute("name");
-			var _column = _columnList[name];
-			if(_column != null) {
-				var columnEditable = cols[i].getAttribute("editable");
-				s = (s == "true" && columnEditable != "false") ? "true": "false";
-				_column.setEditable(s);
-			}
-		}
-
-		setFocus();
-	}
+	this.setFocus();
 }
 
 XForm.prototype.getData = function(name, replace) {
@@ -344,7 +299,7 @@ XForm.prototype.getData = function(name, replace) {
 XForm.prototype.getColumn = function(name) {
 	var _column = this.xmlDoc.columnsMap[name];
 	if(_column == null) {
-		alert(name + "ä¸å­˜åœ¨");
+		alert(name + "²»´æÔÚ");
 	}
 	return _column;
 }
@@ -355,13 +310,13 @@ XForm.prototype.xml = function() {
 
 // <row user="2222" password="aaaaaaaaa" id="222" date="2005/09/09"/>
 XForm.prototype.reloadData = function(rowNode) {
-	// ä¿®æ­£comboeditç±»å‹é»˜è®¤ç¬¬ä¸€é¡¹çš„å€¼
+	// ĞŞÕıcomboeditÀàĞÍÄ¬ÈÏµÚÒ»ÏîµÄÖµ
 	this.fixComboeditDefaultValue(rowNode);
 
-	// éšè—ä¸Šæ¬¡çš„é”™è¯¯ä¿¡æ¯å±‚
+	// Òş²ØÉÏ´ÎµÄ´íÎóĞÅÏ¢²ã
 	hideErrorInfo();
 
-	var cols = this.xmlDoc.Columns;  // ä»¥columnå®šä¹‰ä¸ºè·å–ä¾æ®
+	var cols = this.xmlDoc.Columns;  // ÒÔcolumn¶¨ÒåÎª»ñÈ¡ÒÀ¾İ
 	for(var i = 0; i < cols.length; i++) {
 		var name  = cols[i].getAttribute("name");
 		var value = rowNode.getAttribute(name);
@@ -379,7 +334,7 @@ XForm.prototype.fixComboeditDefaultValue = function(rowNode) {
 		var firstValue = editorValue.split("|")[0];
 		var value = this.getColumnValue(name);
 
-		// å½“empty = false(è¡¨ç¤ºä¸å…è®¸ä¸ºç©º)æ—¶ï¼Œä¸‹æ‹‰åˆ—è¡¨çš„é»˜è®¤å€¼è‡ªåŠ¨å–ç¬¬ä¸€é¡¹å€¼
+		// µ±empty = false(±íÊ¾²»ÔÊĞíÎª¿Õ)Ê±£¬ÏÂÀ­ÁĞ±íµÄÄ¬ÈÏÖµ×Ô¶¯È¡µÚÒ»ÏîÖµ
 		if((value == null || value.length == 0) && firstValue != "" && (editor=="comboedit" || editor=="radio") && empty=="false") {
 			this.setColumnValue(name, firstValue);
 		}
@@ -388,7 +343,7 @@ XForm.prototype.fixComboeditDefaultValue = function(rowNode) {
 
 
 XForm.prototype.saveAsDefaultValue = function() {
-	//éšè—ä¸Šæ¬¡çš„é”™è¯¯ä¿¡æ¯å±‚
+	//Òş²ØÉÏ´ÎµÄ´íÎóĞÅÏ¢²ã
 	hideErrorInfo();
 
 	var cols = this.xmlDoc.Columns;
@@ -414,7 +369,7 @@ XForm.prototype.setFocus = function(name) {
 	}
 }
 
-function setColumnEditable(name, booleanValue) {
+XForm.prototype.setColumnEditable = function(name, booleanValue) {
 	var _columnNode = this.getColumn(name);
 	_columnNode.setAttribute("editable", booleanValue);
 	
@@ -438,7 +393,7 @@ XForm.prototype.getColumnAttribute = function(name, attrName) {
 		return column.getAttribute(attrName);
 	}
 	else {
-		alert("æŒ‡å®šçš„åˆ—[" + name + "]ä¸å­˜åœ¨");
+		alert("Ö¸¶¨µÄÁĞ[" + name + "]²»´æÔÚ");
 		return null;
 	}
 }
@@ -458,9 +413,9 @@ XForm.prototype.getXmlDocument = function() {
 }
 
 /*
- * è·å–rowèŠ‚ç‚¹ä¸Šä¸columnå¯¹åº”çš„å€¼
+ * »ñÈ¡row½ÚµãÉÏÓëcolumn¶ÔÓ¦µÄÖµ
  */
-XFrom.prototype.getColumnValue = function(name) {
+XForm.prototype.getColumnValue = function(name) {
 	var rowNode = this.xmlDoc.Row;
 	var node = rowNode.selectSingleNode(name);
 	var nodeValue = (null == node ? null : node.text);
@@ -469,12 +424,12 @@ XFrom.prototype.getColumnValue = function(name) {
 }
 
 /*
- *  å‡½æ•°è¯´æ˜ï¼šè®¾ç½®rowèŠ‚ç‚¹ä¸Šä¸columnå¯¹åº”çš„å€¼
- *  å‚æ•°ï¼š  string:name             åˆ—å
-			string/array:value      å€¼
+ *  º¯ÊıËµÃ÷£ºÉèÖÃrow½ÚµãÉÏÓëcolumn¶ÔÓ¦µÄÖµ
+ *  ²ÎÊı£º  string:name             ÁĞÃû
+			string/array:value      Öµ
  */
 XForm.prototype.setColumnValue = function(name, value) {
-	// å•å€¼ï¼Œç»™å®šå€¼å´æ˜¯æ•°ç»„ï¼Œåˆ™å–ç¬¬ä¸€ä¸ª
+	// µ¥Öµ£¬¸ø¶¨ÖµÈ´ÊÇÊı×é£¬ÔòÈ¡µÚÒ»¸ö
 	if(value instanceof Array) { 
 		value = value[0];
 	}
@@ -482,7 +437,7 @@ XForm.prototype.setColumnValue = function(name, value) {
 	var rowNode = this.xmlDoc.Row;
 	var node = rowNode.selectSingleNode(name);
 	if( node == null ) { 
-		node = this.tempDom.createElement(name); // åˆ›å»ºå•å€¼èŠ‚ç‚¹
+		node = this.tempDom.createElement(name); // ´´½¨µ¥Öµ½Úµã
 		rowNode.appendChild(node);
 	}
 
@@ -496,3 +451,53 @@ XForm.prototype.setColumnValue = function(name, value) {
 	}
 }
 
+
+var Class_XMLDocument = function(xmlObj) {
+	this.xmlObj = xmlObj;
+
+	this.toString = function() {
+		if(this.xmlObj != null) {
+			return this.xmlObj.xml;
+		}
+		return null;
+	}
+
+	this.transformXML = function(xslObj) {			
+		var tempXMLDom = new ActiveXObject('MSXML.DOMDocument');
+		tempXMLDom.async = false;
+		tempXMLDom.resolveExternals = false;
+		tempXMLDom.loadXML(this.toString());
+
+		return tempXMLDom.transformNode(xslObj).replace(/&amp;nbsp;/g, "&nbsp;").replace(/\u00A0/g, "&amp;nbsp;");
+	}
+	
+	this.refresh = function() {
+		if(this.xmlObj != null) {
+			this.declare = this.xmlObj.selectSingleNode("./declare");
+			this.Layout  = this.xmlObj.selectSingleNode("./layout");
+			this.Script  = this.xmlObj.selectSingleNode("./script");
+			this.Columns = this.xmlObj.selectNodes("./declare/column");
+			this.Data    = this.xmlObj.selectSingleNode("./data");
+			
+			if(this.Data == null) {				
+				var dataNode = tempDom.createElement("data");
+				this.xmlObj.appendChild(dataNode);
+				this.Data = dataNode;
+			}
+			
+			this.Row = this.xmlObj.selectSingleNode("./data/row[0]");
+			if(this.Row == null) {
+				var rowNode = tempDom.createElement("row");
+				this.Data.appendChild(rowNode);	
+				this.Row = rowNode;
+			}
+			
+			this.columnsMap = {};
+			for(var i = 0; i < this.Columns.length; i++) {
+				this.columnsMap[this.Columns[i].getAttribute("name")] = this.Columns[i];
+			}
+		}
+	}
+
+	this.refresh();
+}

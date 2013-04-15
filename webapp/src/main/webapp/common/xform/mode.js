@@ -420,7 +420,7 @@ function Mode_Function(name, element) {
 			element.updateData(this);
 		}
 	};
-	this.obj.onpropertychange = function(){
+	this.obj.onpropertychange = function() {
 		if(window.event.propertyName == "value") {
 			if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false) { // 输入不符合
 				restore(this, this._value);
@@ -434,23 +434,23 @@ function Mode_Function(name, element) {
 		}
 	};
 
-	if( !this.obj.disabled ) 
-		var tempThisObj = this.obj;
-
-		//添加点击按钮
-		this.obj.insertAdjacentHTML('afterEnd', '<button style="width:20px;height:18px;background-color:transparent;border:0px;"><img src="' + _iconPath + 'function.gif"></button>');
-		var btObj = this.obj.nextSibling; // 动态添加进去的按钮
-		btObj.onclick = function(){
-			try {
-				eval(tempThisObj.cmd);
-			} catch(e) {
-				showErrorInfo("运行自定义JavaScript代码<" + tempThisObj.cmd + ">出错，异常信息：" + e.description, tempThisObj);
-				throw(e);
-			}
-		}
-	}	
-	
+//	if( !this.obj.disabled ) 
+//		var tempThisObj = this.obj;
+//
+//		//添加点击按钮
+//		this.obj.insertAdjacentHTML('afterEnd', '<button style="width:20px;height:18px;background-color:transparent;border:0px;"><img src="' + _iconPath + 'function.gif"></button>');
+//		var btObj = this.obj.nextSibling; // 动态添加进去的按钮
+//		btObj.onclick = function(){
+//			try {
+//				eval(tempThisObj.cmd);
+//			} catch(e) {
+//				showErrorInfo("运行自定义JavaScript代码<" + tempThisObj.cmd + ">出错，异常信息：" + e.description, tempThisObj);
+//				throw(e);
+//			}
+//		}
+//	}	
 }
+
 Mode_Function.prototype.setValue = function(value) {
 	this.obj._value = this.obj.value = value;
 }
@@ -517,7 +517,7 @@ function validate() {
 	}
 
 	if(submitReg != "null" && submitReg != null && !eval(submitReg).test(value)) {
-		errorInfo = errorInfo || "[" + caption + "] 格式不正确，请更正.");
+		errorInfo = errorInfo || "[" + caption + "] 格式不正确，请更正.";
 	}
 
 	if( errorInfo != null ) {
