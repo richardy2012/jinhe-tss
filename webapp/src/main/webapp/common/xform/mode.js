@@ -65,7 +65,7 @@ Mode_String.prototype.reset = function(fireOnDataChange) {
 	this.fireOnDataChange = true;
 }
 
-Mode_String.prototype.saveasDefaultValue = function() {
+Mode_String.prototype.saveAsDefaultValue = function() {
 	this.obj.defaultValue = this.obj.value;
 }
 
@@ -188,7 +188,7 @@ Mode_ComboEdit.prototype.reset = function(fireOnDataChange) {
 	this.fireOnDataChange = true;
 }
 
-Mode_ComboEdit.prototype.saveasDefaultValue = function() {
+Mode_ComboEdit.prototype.saveAsDefaultValue = function() {
 	var selectedIndex = [];
 	for(var i=0; i < this.obj.options.length; i++){
 		var opt = this.obj.options[i];
@@ -283,7 +283,7 @@ Mode_Radio.prototype.reset = function(fireOnDataChange) {
 	}
 	this.fireOnDataChange = true;
 }
-Mode_Radio.prototype.saveasDefaultValue = function() {
+Mode_Radio.prototype.saveAsDefaultValue = function() {
 	var inputObjs = this.obj.all.tags("INPUT");
 	for(var i=0; i < inputObjs.length; i++){
 		var inputObj = inputObjs[i];
@@ -369,7 +369,7 @@ Mode_Number.prototype.reset = function(fireOnDataChange) {
 	this.fireOnDataChange = true;
 }
 
-Mode_Number.prototype.saveasDefaultValue = function() {
+Mode_Number.prototype.saveAsDefaultValue = function() {
 	this.obj.defaultValue = this.obj.value;
 }
 
@@ -468,7 +468,7 @@ Mode_Function.prototype.reset = function(fireOnDataChange) {
 	this.obj.value = this.obj.defaultValue;
 	this.fireOnDataChange = true;
 }
-Mode_Function.prototype.saveasDefaultValue = function() {
+Mode_Function.prototype.saveAsDefaultValue = function() {
 	this.obj.defaultValue = this.obj.value;
 }
 Mode_Function.prototype.setFocus = function() {
@@ -497,7 +497,7 @@ Mode_Hidden.prototype.validate = function() {
 }
 Mode_Hidden.prototype.reset = function() {
 }
-Mode_Hidden.prototype.saveasDefaultValue = function() {
+Mode_Hidden.prototype.saveAsDefaultValue = function() {
 }
 Mode_Hidden.prototype.setFocus = function() {
 }

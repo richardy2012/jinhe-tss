@@ -50,12 +50,14 @@
         str[str.length] = "</xform>";
 
         var xmlReader = new XmlReader(str.join(""));
-        var loginFormNode = new XmlNode(xmlReader.documentElement);
-        Cache.XmlIslands.add(CACHE_LOGIN_FORM, loginFormNode);
+        var loginFormXML = new XmlNode(xmlReader.documentElement);
+        Cache.XmlIslands.add(CACHE_LOGIN_FORM, loginFormXML);
 
 		// ³õÊ¼»¯µÇÂ¼xform
-		var loginFormObj = new XForm($("loginForm"));
-		loginFormObj.load(loginFormNode.node, null, "node");
+		var loginForm = $("loginForm");
+		loginForm.dateType = "node";
+		var loginFormObj = new XForm(loginForm);
+		loginFormObj.load(loginFormXML.node, "node");
 		loginFormObj.ondatachange = function() {
 			var name  = event.result.name;
 			var value = event.result.newValue;
@@ -195,7 +197,7 @@
 	  <td class="loginContainer">
 		<!-- µÇÂ¼¿ò ¿ªÊ¼ -->
 		<div class="loginBox">
-			<div id="loginForm" editable="true"><div class="loading"/></div>
+			<div id="loginForm" editable="true" dataType="node"><div class="loading"/>123</div>
 		</div>
 		<!-- µÇÂ¼¿ò ½áÊø -->
 	  </td>

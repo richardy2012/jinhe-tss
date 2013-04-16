@@ -49,40 +49,37 @@ XForm.prototype.reload = function() {
 	this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\nvar uniqueID=\"" + this.element.uniqueID 
 		+ "\";\r\nvar baseurl=\"" + _baseurl + "\";\r\nvar formEditable=\"" + this.element.editable + "\";\r\n";
 
-	var data = this.element.data; 
-	if( data != null && data != "" ) {
-		var curXmlDom;
-		switch(this.element.dataType) {
-			case "url":
-				tempDom.load(data);
-				if(tempDom.parseError != 0) {
-					alert("data地址有问题，解析XML不正确.");
-				}
+	var curXmlDom;
+	switch(this.element.dataType) {
+		case "url":
+			tempDom.load(this.element.data);
+			if(tempDom.parseError != 0) {
+				alert("data地址有问题，解析XML不正确.");
+			}
 
-				var curXmlDom = tempDom.selectSingleNode("/*");
-				if(curXmlDom == null) {
-					alert("数据源有问题.");
-				}
-				break;
-			case "node":
-				if("object" == typeof(data) && 1 == data.nodeType) {
-					var curXmlDom = data;
-				}
-				break;
-		}
-		this.xmlDoc = new Class_XMLDocument(curXmlDom);
+			var curXmlDom = tempDom.selectSingleNode("/*");
+			if(curXmlDom == null) {
+				alert("数据源有问题.");
+			}
+			break;
+		case "node":
+			if("object" == typeof(this.element.data) && 1 == this.element.data.nodeType) {
+				var curXmlDom = this.element.data;
+			}
+			break;
 	}
+	this.xmlDoc = new Class_XMLDocument(curXmlDom);
 	
 	if(this.xmlDoc != null && this.xmlDoc.xmlObj != null) {
 		// 修正comboedit类型默认第一项的值
-		fixComboeditDefaultValue(xmlDoc.Row);
+		this.fixComboeditDefaultValue(this.xmlDoc.Row);
 
-		var htmlStr = this.xmlDoc.transformXML(xslDom); // 利用XSL把XML解析成Html
+		var htmlStr = this.xmlDoc.transformXML(this.xslDom); // 利用XSL把XML解析成Html
 		this.element.innerHTML = htmlStr.replace(/<\/br>/gi, "");
 
 		if(this.form != null) {
-			this.form.attachEvent('onsubmit', checkForm);
-			this.form.attachEvent('onreset', resetForm);
+			this.form.attachEvent('onsubmit', this.checkForm);
+			this.form.attachEvent('onreset', this.resetForm);
 
 			// 添加标题栏				
 			var theTable = this.form.all.tags("TABLE")[0];
@@ -107,7 +104,7 @@ XForm.prototype.reload = function() {
 		}
 
 		// 绑定各个column对应的编辑方式
-		attachEditor();
+		this.attachEditor();
 	
 		// 触发onload事件
 		var onload = this.element.getAttribute("onload");
@@ -116,7 +113,7 @@ XForm.prototype.reload = function() {
 		}
 
 		// 自动聚焦
-		setFocus();
+		this.setFocus();
 	}
 }
 
@@ -126,7 +123,7 @@ XForm.prototype.attachEditor = function() {
 		var colName   = cols[i].getAttribute("name");
 		var colMode   = cols[i].getAttribute("mode");
 		var colEditor = cols[i].getAttribute("editor");
-		var nodeValue = getColumnValue(colName);
+		var nodeValue = this.getColumnValue(colName);
 
 		// 取layout中绑定该columne的元素
 		var tempObj = this.element.all(colName);
@@ -158,7 +155,7 @@ XForm.prototype.attachEditor = function() {
 				break;
 		}
 		curInstance.saveAsDefaultValue();
-		_columnList[colName] = curInstance;
+		this._columnList[colName] = curInstance;
 	}
 }
 
@@ -253,7 +250,7 @@ XForm.prototype.updateDataExternal = function(name, value) {
 	}
 }
 
-XForm.prototpe.updateUnbindingDataExternal = function(id, value) {
+XForm.prototype.updateUnbindingDataExternal = function(id, value) {
 	$(id).value = value;
 
 	var node = this.xmlDoc.Layout.selectSingleNode(".//*[@id='" + id + "']");
