@@ -1,6 +1,6 @@
-function Mode_String(name, element) {
-	this.name = name;
-	this.obj = element;
+function Mode_String(colName, element) {
+	this.name = colName;
+	this.obj = $(colName);
 	 
 	var tempThis = this;
 	this.obj._value = this.obj.value;
@@ -33,7 +33,6 @@ function Mode_String(name, element) {
 			}
 			else{
 				this._value = this.value;
-				element.beforeUpdateData(this);
 			}
 		}
 	};
@@ -59,10 +58,8 @@ Mode_String.prototype.setEditable = function(s) {
 
 Mode_String.prototype.validate = validate;
 
-Mode_String.prototype.reset = function(fireOnDataChange) {
-	this.fireOnDataChange = fireOnDataChange;
+Mode_String.prototype.reset = function() {
 	this.obj.value = this.obj.defaultValue;
-	this.fireOnDataChange = true;
 }
 
 Mode_String.prototype.saveAsDefaultValue = function() {
@@ -78,9 +75,9 @@ Mode_String.prototype.setFocus = function(){
 
 
 // 下拉选择框，单选或多选
-function Mode_ComboEdit(name, element) {
-	this.name = name;
-	this.obj = element;
+function Mode_ComboEdit(colName, element) {
+	this.name = colName;
+	this.obj = $(colName);
  
 	var tempThis = this;
 	this.obj._value = this.obj.attributes["value"].nodeValue;
@@ -134,7 +131,7 @@ function Mode_ComboEdit(name, element) {
 			}
 		}
 		this._value = x.join(",");
-		element.updateData(this, tempThis.fireOnDataChange);
+		element.updateData(this);
 	}
 }
 
@@ -174,9 +171,7 @@ Mode_ComboEdit.prototype.validate = function() {
 	return true;
 }
 
-Mode_ComboEdit.prototype.reset = function(fireOnDataChange) {
-	this.fireOnDataChange = fireOnDataChange;
-
+Mode_ComboEdit.prototype.reset = function() {
 	this.obj.selectedIndex = -1;
 	var selectedIndex = this.obj.defaultSelectedIndex;
 	if(selectedIndex != "") {
@@ -185,7 +180,6 @@ Mode_ComboEdit.prototype.reset = function(fireOnDataChange) {
 			this.obj.options[selectedIndex[i]].selected = true;
 		}
 	}
-	this.fireOnDataChange = true;
 }
 
 Mode_ComboEdit.prototype.saveAsDefaultValue = function() {
@@ -209,9 +203,9 @@ Mode_ComboEdit.prototype.setFocus = function() {
 
 
 
-function Mode_Radio(name, element) {
-	this.name = name;
-	this.obj = element;
+function Mode_Radio(colName, element) {
+	this.name = colName;
+	this.obj = $(colName);
 
 	var tempThis = this;
 	this.obj._value = this.obj.value;
@@ -240,7 +234,7 @@ function Mode_Radio(name, element) {
 		inputObj.multipleIndex = tempObj.multipleIndex;
 
 		inputObj.onclick = function() {
-			element.updateData(this, tempThis.fireOnDataChange);
+			element.updateData(this);
 			tempObj._value = this.value;
 		}
 	}
@@ -274,14 +268,12 @@ Mode_Radio.prototype.validate = function() {
 	return true;
 }
 
-Mode_Radio.prototype.reset = function(fireOnDataChange) {
-	this.fireOnDataChange = fireOnDataChange;
+Mode_Radio.prototype.reset = function() {
 	var inputObjs = this.obj.all.tags("INPUT");
 	for(var i=0; i < inputObjs.length; i++) {
 		var inputObj = inputObjs[i];
 		inputObj.checked = inputObj.defaultChecked;
 	}
-	this.fireOnDataChange = true;
 }
 Mode_Radio.prototype.saveAsDefaultValue = function() {
 	var inputObjs = this.obj.all.tags("INPUT");
@@ -301,9 +293,9 @@ Mode_Radio.prototype.setFocus = function(){
 
 
 
-function Mode_Number(name, element) {
-	this.name = name;
-	this.obj = element;
+function Mode_Number(colName, element) {
+	this.name = colName;
+	this.obj = $(colName);
 
 	var tempThis = this;
 	this.obj._value = this.obj.value;
@@ -363,10 +355,8 @@ Mode_Number.prototype.setEditable = function(s) {
 
 Mode_Number.prototype.validate = validate;
 
-Mode_Number.prototype.reset = function(fireOnDataChange) {
-	this.fireOnDataChange = fireOnDataChange;
+Mode_Number.prototype.reset = function() {
 	this.obj.value = this.obj.defaultValue;
-	this.fireOnDataChange = true;
 }
 
 Mode_Number.prototype.saveAsDefaultValue = function() {
@@ -382,9 +372,9 @@ Mode_Number.prototype.setFocus = function(){
 
 
 
-function Mode_Function(name, element) {
-	this.name = name;
-	this.obj = element;
+function Mode_Function(colName, element) {
+	this.name = colName;
+	this.obj = $(colName);
 
 	var tempThis = this;
 	this.obj._value = this.obj.value;
@@ -434,21 +424,21 @@ function Mode_Function(name, element) {
 		}
 	};
 
-//	if( !this.obj.disabled ) 
-//		var tempThisObj = this.obj;
-//
-//		//添加点击按钮
-//		this.obj.insertAdjacentHTML('afterEnd', '<button style="width:20px;height:18px;background-color:transparent;border:0px;"><img src="' + _iconPath + 'function.gif"></button>');
-//		var btObj = this.obj.nextSibling; // 动态添加进去的按钮
-//		btObj.onclick = function(){
-//			try {
-//				eval(tempThisObj.cmd);
-//			} catch(e) {
-//				showErrorInfo("运行自定义JavaScript代码<" + tempThisObj.cmd + ">出错，异常信息：" + e.description, tempThisObj);
-//				throw(e);
-//			}
-//		}
-//	}	
+	if( !this.obj.disabled ) {
+		var tempThisObj = this.obj;
+
+		//添加点击按钮
+		this.obj.insertAdjacentHTML('afterEnd', '<button style="width:20px;height:18px;background-color:transparent;border:0px;"><img src="' + _iconPath + 'function.gif"></button>');
+		var btObj = this.obj.nextSibling; // 动态添加进去的按钮
+		btObj.onclick = function(){
+			try {
+				eval(tempThisObj.cmd);
+			} catch(e) {
+				showErrorInfo("运行自定义JavaScript代码<" + tempThisObj.cmd + ">出错，异常信息：" + e.description, tempThisObj);
+				throw(e);
+			}
+		}
+	}	
 }
 
 Mode_Function.prototype.setValue = function(value) {
@@ -463,10 +453,8 @@ Mode_Function.prototype.setEditable = function(s) {
 	this.obj.editable = s;
 }
 Mode_Function.prototype.validate = validate;
-Mode_Function.prototype.reset = function(fireOnDataChange) {
-	this.fireOnDataChange = fireOnDataChange;
+Mode_Function.prototype.reset = function() {
 	this.obj.value = this.obj.defaultValue;
-	this.fireOnDataChange = true;
 }
 Mode_Function.prototype.saveAsDefaultValue = function() {
 	this.obj.defaultValue = this.obj.value;
@@ -482,11 +470,9 @@ Mode_Function.prototype.setFocus = function() {
 
 
 
-function Mode_Hidden(name, element) {
-	this.name = name;
-	this.obj = element;
- 
-	var tempThis = this;
+function Mode_Hidden(colName, element) {
+	this.name = colName;
+	this.obj = $(colName);
 }
 Mode_Hidden.prototype.setValue = function(s) {
 }
@@ -538,7 +524,7 @@ function validate() {
 function showErrorInfo(errorInfo, obj) {
 	clearTimeout(200);
 	
-	this.element.errorInfoTimeout = setTimeout(function() {
+	setTimeout(function() {
 		// 页面全局Balllon对象
 		if(null != window.Balloons) {
 			var balloon = Balloons.create(errorInfo);
@@ -572,7 +558,7 @@ function restore(obj, value) {
 
 function waitingForVisible(func, element) {
 	// 控件未隐藏, 则直接执行
-	if(0 != element.offsetWidth) {
+	if( 0 != element.offsetWidth ) {
 		func();
 		return;
 	}

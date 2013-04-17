@@ -1,8 +1,16 @@
 
 var _baseurl = "";
 var _iconPath = _baseurl + "/icon/"
+		
+		
+function $X(xformId) {
+	var element = $(xformId);
+	var xformObj = new XForm(element);
+	
+	return xformObj;
+}
 
-function XForm(element) {
+var XForm = function(element) {
 	this.element = element;
 	this.form = element.firstChild;
 
@@ -37,7 +45,7 @@ XForm.prototype.attachEvents = function() {
 
 XForm.prototype.load = function(data, dataType) {
 	this.element.data = data;
-	this.element.dataType = dataType;
+	this.element.dataType = dataType || "url";
 	this.reload();
 }
 
@@ -126,7 +134,7 @@ XForm.prototype.attachEditor = function() {
 		var nodeValue = this.getColumnValue(colName);
 
 		// 取layout中绑定该columne的元素
-		var tempObj = this.element.all(colName);
+		var tempObj = $(colName);
 		if(tempObj == null) {
 			continue;
 		}
@@ -135,23 +143,23 @@ XForm.prototype.attachEditor = function() {
 		switch(colMode) {
 			case "string":
 				if(colEditor == "comboedit") {
-					curInstance = new Mode_ComboEdit(colName, tempObj);
+					curInstance = new Mode_ComboEdit(colName, this);
 				}
 				else if(colEditor == "radio") {
-					curInstance = new Mode_Radio(colName, tempObj);
+					curInstance = new Mode_Radio(colName, this);
 				}
 				else {
-					curInstance = new Mode_String(colName, tempObj);
+					curInstance = new Mode_String(colName, this);
 				}
 				break;
 			case "number":
-				curInstance = new Mode_Number(colName, tempObj);
+				curInstance = new Mode_Number(colName, this);
 				break;
 			case "function":
-				curInstance = new Mode_Function(colName, tempObj);
+				curInstance = new Mode_Function(colName, this);
 				break;
 			case "hidden":
-				curInstance = new Mode_Hidden(colName, tempObj);
+				curInstance = new Mode_Hidden(colName, this);
 				break;
 		}
 		curInstance.saveAsDefaultValue();
@@ -194,15 +202,15 @@ XForm.prototype.checkForm = function() {
 	return true;
 }
 
-XForm.prototype.resetForm = function(fireOnDataChange) {
+XForm.prototype.resetForm = function() {
 	//隐藏上次的错误信息层
 	hideErrorInfo();
 
 	var cols = this.xmlDoc.Columns;
 	for(var i = 0; i < cols.length; i++) {
 		var colName = cols[i].getAttribute("name");
-		if(_columnList[colName] != null) {
-			_columnList[colName].reset(fireOnDataChange);
+		if(this._columnList[colName] != null) {
+			this._columnList[colName].reset();
 		}
 	}
 	if(event != null) {
@@ -222,31 +230,26 @@ XForm.prototype.updateData = function(obj) {
 	}
 
 	var oldValue = this.getColumnValue(obj.binding);
-	if(newValue != oldValue && newValue != null) {
+	if(newValue != oldValue && newValue != null && newValue != "") {
 		this.setColumnValue(obj.binding, newValue);
 	}
 }
 
 XForm.prototype.updateDataExternal = function(name, value) {
 	var node = this.getColumn(name);
-	var oldValue  = getData(name);
+	var oldValue  = this.getData(name);
 
 	this.setColumnValue(name, value);
 	
 	// 更改页面显示数据
 	var tempSrcElement;
-	var _column = _columnList[name];
+	var _column = this._columnList[name];
 	if(_column != null) {
 		_column.setValue(value);
 		tempSrcElement = _column.obj;
 	}
 	else {
 		tempSrcElement = { binding: name };
-	}
-
-	// 触发ondatachange事件
-	if(fire != false) {
-		fireDataChange(tempSrcElement, oldValue, value);
 	}
 }
 
@@ -363,6 +366,7 @@ XForm.prototype.setFocus = function(name) {
 	var _column = this._columnList[name];
 	if( _column != null ) {
 		_column.setFocus();
+		$(name).focus();
 	}
 }
 
@@ -396,7 +400,7 @@ XForm.prototype.getColumnAttribute = function(name, attrName) {
 }
 
 XForm.prototype.setLabelContent = function(name, content) {
-	var labelObj = this.element.all("label_" + name);
+	var labelObj = $("label_" + name);
 	if(labelObj != null) {
 		if(labelObj.length > 1) {
 			labelObj = labelObj[0];

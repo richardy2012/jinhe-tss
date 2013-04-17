@@ -5,6 +5,7 @@
 <script language="javascript" src="../../js/core.js"></script>
 <script language="javascript" src="../../js/framework.js"></script>
 <script language="javascript" src="../../js/debug.js"></script>
+<script language="javascript" src="../balloon/balloon.js"></script>
 
 <script language="javascript" src="xform.js"></script>
 <script language="javascript" src="mode.js"></script>
@@ -15,7 +16,12 @@
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 
+ URL_LOGIN = "";
+ URL_GET_USER_NAME = "";
+
  CACHE_LOGIN_FORM = "login__id";
+ 
+ var loginXForm;
 
  function loadInitData() {
         var str = [];
@@ -54,21 +60,19 @@
         Cache.XmlIslands.add(CACHE_LOGIN_FORM, loginFormXML);
 
 		// 初始化登录xform
-		var loginForm = $("loginForm");
-		loginForm.dateType = "node";
-		var loginFormObj = new XForm(loginForm);
-		loginFormObj.load(loginFormXML.node, "node");
-		loginFormObj.ondatachange = function() {
-			var name  = event.result.name;
-			var value = event.result.newValue;
-			if("userName" == name){
-				getUserName(value, function(userName, identifier) {
-					loginFormObj.updateDataExternal("userName", userName, false);
-					loginFormObj.updateDataExternal("identifier", identifier, false);
-					loginFormObj.updateDataExternal("loginName", value, false);
-					loginFormObj.setFocus("password");
-				});
-			}
+		loginXForm = $X("loginForm")
+		loginXForm.load(loginFormXML.node, "node");
+		
+		$("userName").onblur = function() { 
+			var value = this.value;
+			if(value == null || value == "") return;
+			
+			getUserName(value, function(userName, identifier) {
+				loginXForm.updateDataExternal("userName", userName, false);
+				loginXForm.updateDataExternal("identifier", identifier, false);
+				loginXForm.updateDataExternal("loginName", value, false);
+				loginXForm.setFocus("password");
+			});
 		}
     }
 
@@ -78,6 +82,8 @@
                 function:callback     回调方法
      */
     function getUserName(loginName, callback) {
+		callback("Jon", "11111"); return;
+	
         var p = new HttpRequestParams();
         p.url = URL_GET_USER_NAME;
 		p.setContent("loginName", loginName);
@@ -85,8 +91,7 @@
 
         var request = new HttpRequest(p);
         request.onexception = function() {
-            var loginFormObj = $("loginForm");
-            loginFormObj.setFocus();
+            loginXForm.setFocus();
         }
         request.onresult = function(){
             var userName   = this.getNodeValue(XML_USER_NAME);
@@ -99,15 +104,14 @@
 
     function login() {
         // 校验loginForm数据有效性
-        var loginFormObj = $("loginForm");
-        var userName = loginFormObj.getData("userName") || "";
-        var password = loginFormObj.getData("password") || "";
+        var userName = loginXForm.getData("userName") || "";
+        var password = loginXForm.getData("password") || "";
         if( "" == userName ) {
-            loginFormObj.showCustomErrorInfo("userName", "请输入姓名");
+            loginXForm.showCustomErrorInfo("userName", "请输入姓名");
             return;
         } 
 		else if( "" == password ) {
-            loginFormObj.showCustomErrorInfo("password", "请输入密码");
+            loginXForm.showCustomErrorInfo("password", "请输入密码");
             return;
         }
 
@@ -143,8 +147,7 @@
 
         var request = new HttpRequest(p);
         request.onexception = function(){
-            var loginFormObj = $("loginForm");
-            loginFormObj.setFocus("password");
+            loginXForm.setFocus("password");
         }
         request.onsuccess = function(){
             location.href = "index.html";
@@ -180,10 +183,8 @@
 
     /* 取消 */
     function resetForm() {
-        var loginFormObj = $("loginForm");
-        loginFormObj.resetForm();
-
-        loginFormObj.setFocus();
+        loginXForm.resetForm();
+        loginXForm.setFocus();
     }
 
     window.onload = loadInitData;
@@ -197,7 +198,7 @@
 	  <td class="loginContainer">
 		<!-- 登录框 开始 -->
 		<div class="loginBox">
-			<div id="loginForm" editable="true" dataType="node"><div class="loading"/>123</div>
+			<div id="loginForm" editable="true" dataType="node"><div class="loading"/></div>
 		</div>
 		<!-- 登录框 结束 -->
 	  </td>
