@@ -566,7 +566,8 @@ Element.hideConflict = function(obj) {
 }
 
 Element.showConflict = function(obj) {
-	if( obj.conflict != null ) {
+	// 气球有可能已经被其他途径释放掉了，obj被清空
+	if( typeof(obj) != "undefined" && obj.conflict != null ) {
 		for( var i = 0; i < obj.conflict.length; i++ ) {
 			obj.conflict[i].style.visibility = "visible";
 		}
@@ -811,7 +812,7 @@ Event.cancel = function(eventObj) {
 }
 
 /* 阻止事件向上冒泡 */
-Event.cancel = function(eventObj) {
+Event.cancelBubble = function(eventObj) {
 	if(window.DOMParser) {
 		eventObj.stopPropagation();
 	}

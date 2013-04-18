@@ -197,10 +197,11 @@
 
 <xsl:script>
 	function getMode() {
-		if(this.getAttribute("binding") == null) {
+		var binding = this.getAttribute("binding");
+		if( binding == null) {
 			return null;
 		} else {
-			return this.selectSingleNode("/*/declare/column[@name='" + this.getAttribute("binding")+"']").getAttribute("mode");
+			return this.selectSingleNode("/*/declare/column[@name='" + binding + "']").getAttribute("mode");
 		}
 	}
 	function getValue(binding) {
@@ -215,10 +216,12 @@
 		return str;
 	}
 	function getProperty(propName) {
-		if(this.getAttribute("binding") == null){
+		var binding = this.getAttribute("binding");
+		if(binding == null) {
 			return "null";
-		} else {
-			var propValue = this.selectSingleNode("/*/declare/column[@name='" + this.getAttribute("binding") + "']").getAttribute(propName);
+		} 
+		else {
+			var propValue = this.selectSingleNode("/*/declare/column[@name='" + binding + "']").getAttribute(propName);
 			if( propValue == null) {
 				propValue = "null";
 			}

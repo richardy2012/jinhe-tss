@@ -1,6 +1,7 @@
 <HTML>
 <head>
 <link href="xform.css" rel="stylesheet" type="text/css">
+<link href="../balloon/balloon.css" rel="stylesheet" type="text/css">
 
 <script language="javascript" src="../../js/core.js"></script>
 <script language="javascript" src="../../js/framework.js"></script>
@@ -16,10 +17,23 @@
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 
- URL_LOGIN = "";
- URL_GET_USER_NAME = "";
+    /*
+     *	后台响应数据节点名称
+     */
+    XML_USER_NAME = "UserName";
+    XML_CLASS_NAME = "ClassName";
+	
+	CACHE_LOGIN_FORM = "login__id";
 
- CACHE_LOGIN_FORM = "login__id";
+    /*
+     *	XMLHTTP请求地址汇总
+     */
+    URL_GET_USER_NAME = "test/mockdata/username.xml";
+    URL_LOGIN = "test/mockdata/_success.xml";
+
+//    URL_GET_USER_NAME = "getOperatorInfoByLoginName.in";
+//    URL_LOGIN = "login.do";
+
  
  var loginXForm;
 

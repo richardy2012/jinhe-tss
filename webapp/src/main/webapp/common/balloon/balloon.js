@@ -156,9 +156,11 @@
         table.cellSpacing = 0;
         table.cellPadding = 0;
 
-        this.object = document.createElement(_TAG_NAME_BALLOON);
-        this.object.className = _STYLE_NAME_BALLOON;
-        this.object.appendChild(table);
+        var temp = document.createElement(_TAG_NAME_BALLOON);
+        temp.className = _STYLE_NAME_BALLOON;
+        temp.appendChild(table);
+		
+		this.object = temp;
         this.object.id = this.uniqueID;
     }
 	
@@ -407,7 +409,7 @@
             var id = srcElement.id;
             var balloon = Balloons.items[id];
 
-            balloon.moveTo(x,y);
+            balloon.moveTo(x, y);
         }
     }
 	

@@ -1,43 +1,34 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html  XMLNS:XFORM>
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
-<title>应用支撑平台</title>
+<title>它山石应用支撑平台</title>
 
-<!-- 公共脚本 开始 -->
 <link href="css/css.css" rel="stylesheet" type="text/css">
+<link href="common/xform/xform.css" rel="stylesheet" type="text/css">
+<link href="balloon/balloon.css" rel="stylesheet" type="text/css">
+
 <script language="javascript" src="js/core.js"></script>
 <script language="javascript" src="js/framework.js"></script>
-<!-- 公共脚本 结束 -->
+<script language="javascript" src="js/debug.js"></script>
 
-<!-- 气球 开始 -->
-<link href="common/balloon/balloon.css" rel="stylesheet" type="text/css">
 <script language="javascript" src="common/balloon/balloon.js"></script>
-<!-- 气球 结束 -->
 
-<!-- xform 开始 -->
-<link href="common/xform/xform.css" rel="stylesheet" type="text/css">
-<!-- xform 结束 -->
+<script language="javascript" src="common/xform/xform.js"></script>
+<script language="javascript" src="common/xform/mode.js"></script>
 
-<!-- 当前页相关脚本 开始 -->
-<style>
-  Xform\:Form {
-      behavior:url(common/xform/xform.htc);
-  }
-</style>
+</head>
+
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
+
     /*
      *	后台响应数据节点名称
      */
     XML_USER_NAME = "UserName";
     XML_CLASS_NAME = "ClassName";
-
-    /*
-     *	默认唯一编号名前缀
-     */
-    CACHE_LOGIN_FORM = "login__id";
+	
+	CACHE_LOGIN_FORM = "login__id";
 
     /*
      *	XMLHTTP请求地址汇总
@@ -47,18 +38,11 @@
 
 //    URL_GET_USER_NAME = "getOperatorInfoByLoginName.in";
 //    URL_LOGIN = "login.do";
- 
-    /*
-     *	页面初始化
-     */
-    function init(){
-        loadInitData();
-    }
 
-    /*
-     *	初始化数据
-     */
-    function loadInitData(){
+ 
+ var loginXForm;
+
+ function init() {
         var str = [];
         str[str.length] = "<xform>";
         str[str.length] = "    <declare>";
@@ -91,54 +75,32 @@
         str[str.length] = "</xform>";
 
         var xmlReader = new XmlReader(str.join(""));
-
-        var loginFormNode = new XmlNode(xmlReader.documentElement);
-        var loginFormNodeID = CACHE_LOGIN_FORM;
-
-        Cache.XmlIslands.add(loginFormNodeID, loginFormNode);
+        var loginFormXML = new XmlNode(xmlReader.documentElement);
+        Cache.XmlIslands.add(CACHE_LOGIN_FORM, loginFormXML);
 
 		// 初始化登录xform
-		var loginFormObj = $("loginForm");
-        Public.initHTC(loginFormObj, "isLoaded", "oncomponentready", function() {
-			loginFormObj.load(loginFormNode.node, null, "node");
-			loginFormObj.ondatachange = function() {
-                var name  = event.result.name;
-                var value = event.result.newValue;
-                if("userName" == name){
-                    getUserName(value, function(userName, identifier) {
-                        loginFormObj.updateDataExternal("userName", userName, false);
-                        loginFormObj.updateDataExternal("identifier", identifier, false);
-                        loginFormObj.updateDataExternal("loginName", value, false);
-                        loginFormObj.setFocus("password");
-                    });
-                }
-            }
-        });
+		loginXForm = $X("loginForm")
+		loginXForm.load(loginFormXML.node, "node");
+		
+		$("userName").onblur = function() { 
+			var value = this.value;
+			if(value == null || value == "") return;
+			
+			getUserName(value, function(userName, identifier) {
+				loginXForm.updateDataExternal("userName", userName, false);
+				loginXForm.updateDataExternal("identifier", identifier, false);
+				loginXForm.updateDataExternal("loginName", value, false);
+				loginXForm.setFocus("password");
+			});
+		}
     }
 
-	    /*
-     * 函数说明：初始化htc类型控件
-     * 参数：   Object:obj			htc绑定的HTML对象
-                string:flag			检测htc加载完成的特定属性
-                string:eventName	加载完成的事件名称
-                function:callback	回调方法
-     * 返回值：	
-     */
-    Public.initHTC = function (obj, flag, eventName, callback) {
-        if(obj[flag] != true) {
-            obj[eventName] = function() {
-                this[eventName] = null;
-            }
-        } 
-		Public.executeCommand(callback);
-    }
- 
-    /*
+	/*
      *	根据用户输入登录帐号返回用户姓名
      *	参数：	string:loginName      登录帐号
                 function:callback     回调方法
      */
-    function getUserName(loginName, callback) {
+    function getUserName(loginName, callback) {	
         var p = new HttpRequestParams();
         p.url = URL_GET_USER_NAME;
 		p.setContent("loginName", loginName);
@@ -146,8 +108,7 @@
 
         var request = new HttpRequest(p);
         request.onexception = function() {
-            var loginFormObj = $("loginForm");
-            loginFormObj.setFocus();
+            loginXForm.setFocus();
         }
         request.onresult = function(){
             var userName   = this.getNodeValue(XML_USER_NAME);
@@ -160,15 +121,14 @@
 
     function login() {
         // 校验loginForm数据有效性
-        var loginFormObj = $("loginForm");
-        var userName = loginFormObj.getData("userName") || "";
-        var password = loginFormObj.getData("password") || "";
+        var userName = loginXForm.getData("userName") || "";
+        var password = loginXForm.getData("password") || "";
         if( "" == userName ) {
-            loginFormObj.showCustomErrorInfo("userName", "请输入姓名");
+            loginXForm.showCustomErrorInfo("userName", "请输入姓名");
             return;
         } 
 		else if( "" == password ) {
-            loginFormObj.showCustomErrorInfo("password", "请输入密码");
+            loginXForm.showCustomErrorInfo("password", "请输入密码");
             return;
         }
 
@@ -204,8 +164,7 @@
 
         var request = new HttpRequest(p);
         request.onexception = function(){
-            var loginFormObj = $("loginForm");
-            loginFormObj.setFocus("password");
+            loginXForm.setFocus("password");
         }
         request.onsuccess = function(){
             location.href = "index.html";
@@ -229,49 +188,38 @@
         }
     }
 
-    /*
-     *	找回密码
-     */
+    /* 找回密码  */
     function forget() {
         window.open("forget.htm", "", "width=400, height=400");
     }
 
-    /*
-     *	注册
-     */
+    /* 注册 */
     function register() {
         window.open("register.htm", "", "width=600, height=400");
     }
 
-    /*
-     *	取消
-     */
+    /* 取消 */
     function resetForm() {
-        var loginFormObj = $("loginForm");
-        loginFormObj.resetForm();
-
-        loginFormObj.setFocus();
+        loginXForm.resetForm();
+        loginXForm.setFocus();
     }
 
     window.onload = init;
+
 //-->
 </SCRIPT>
 
-</head>
-
 <body>
-<table class="full" border="0" cellpadding="0" cellspacing="0">
-<tr> 
-  <td class="loginContainer">
-    <!-- 登录框 开始 -->
-	<div class="loginBox">
-		<!-- xform 开始 -->
-		<Xform:Form id="loginForm" baseurl="common/xform/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
-		<!-- xform 结束 -->
-    </div>
-    <!-- 登录框 结束 -->
-  </td>
-</tr>
-</table>
+	<table class="full" border="0" cellpadding="0" cellspacing="0">
+	<tr> 
+	  <td class="loginContainer">
+		<!-- 登录框 开始 -->
+		<div class="loginBox">
+			<div id="loginForm" editable="true" dataType="node" _baseurl="common/xform/"><div class="loading"/></div>
+		</div>
+		<!-- 登录框 结束 -->
+	  </td>
+	</tr>
+	</table>
 </body>
 </html>

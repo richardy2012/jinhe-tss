@@ -26,9 +26,9 @@ import com.jinhe.tss.framework.web.RewriteableHttpServletRequest;
 public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrapper 
 				implements RewriteableHttpServletRequest {
 
-	private Map<String, String[]> params = new HashMap<String, String[]>();
+	private Map<String, String> params = new HashMap<String, String>();
 
-	private Map<String, String[]> headers = new HashMap<String, String[]>();
+	private Map<String, String> headers = new HashMap<String, String>();
 
 	private Map<String, Cookie> cookies = new HashMap<String, Cookie>();
 
@@ -53,20 +53,7 @@ public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrap
 	}
 
 	public void addParameter(String name, String value) {
-		Object oldValue = params.get(name);
-		
-		String[] newValues;
-		if (oldValue == null) {
-			newValues = new String[] { value };
-		} 
-		else if (oldValue instanceof String[]) {
-			List<String> oldValues = Arrays.asList((String[]) oldValue);
-			newValues = oldValues.toArray(new String[oldValues.size() + 1]);
-			newValues[oldValues.size()] = value; // 将新value add到数组最后
-		} else {
-			newValues = new String[] { (String) oldValue, value };
-		}
-		params.put(name, newValues);
+		params.put(name, value);
 	}
 
 	public Map<String, String[]> getParameterMap() {
@@ -79,23 +66,25 @@ public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrap
 	public Enumeration<String> getParameterNames() {
 		return new Enumerator(getParameterMap().keySet());
 	}
-	// 取指定名字参数的值（多值）
+	
+	// 获得如checkbox类（名字相同，但值有多个）的数据
 	public String[] getParameterValues(String name) {
-		return (String[])getParameterMap().get(name);
+		return super.getParameterValues(name);
 	}
+	
 	// 取指定名字参数的值（单值）
     public String getParameter(String name) {
-        String[] values = (String[]) params.get(name);
-        if (values != null && values.length > 0) {
-            return values[0];
+        String value = params.get(name);
+        if (value != null) {
+            return value;
         }
         return super.getParameter(name);
     }
 
 	public String getHeader(String name) {
-		String[] value = (String[]) headers.get(name);
-		if (value != null && value.length > 0) {
-			return value[0];
+		String value = headers.get(name);
+		if ( value != null ) {
+			return value;
 		}
 		return super.getHeader(name);
 	}
@@ -116,12 +105,11 @@ public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrap
 	public Enumeration<String> getHeaders(String name) {
 		Enumeration<String> e = super.getHeaders(name);
 		Set<String> set = new HashSet<String>();
-		String[] value = (String[]) headers.get(name);
-		if (value != null && value.length > 0) {
-			for (int i = 0; i < value.length; i++) {
-				set.add(value[i]);
-			}
-		} else {
+		String value = headers.get(name);
+		if (value != null) {
+		    set.add(value);
+		} 
+		else {
 			while (e.hasMoreElements()) {
 				set.add(e.nextElement());
 			}
@@ -130,7 +118,7 @@ public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrap
 	}
 
 	public void setHeader(String name, String value) {
-		headers.put(name, new String[] { value });
+		headers.put(name, value);
 	}
  
 	public void setServletPath(String servletPath) {

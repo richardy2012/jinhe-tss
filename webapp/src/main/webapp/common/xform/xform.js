@@ -1,7 +1,3 @@
-
-var _baseurl = "";
-var _iconPath = _baseurl + "/icon/"
-		
 		
 function $X(xformId) {
 	var element = $(xformId);
@@ -24,6 +20,9 @@ var XForm = function(element) {
 	this.xmlDoc;
 	this._width;
     this._height;
+	
+	this._baseurl  = element._baseurl || "";
+	this._iconPath = this._baseurl + "icon/"
 
 	this._columnList = {};
 }
@@ -53,9 +52,9 @@ XForm.prototype.reload = function() {
 	// 隐藏上次的错误信息层
 	hideErrorInfo();
 
-	this.xslDom.load(_baseurl + "xform.xsl");
+	this.xslDom.load(this._baseurl + "xform.xsl");
 	this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\nvar uniqueID=\"" + this.element.uniqueID 
-		+ "\";\r\nvar baseurl=\"" + _baseurl + "\";\r\nvar formEditable=\"" + this.element.editable + "\";\r\n";
+		+ "\";\r\nvar baseurl=\"" + this._baseurl + "\";\r\nvar formEditable=\"" + this.element.editable + "\";\r\n";
 
 	var curXmlDom;
 	switch(this.element.dataType) {
@@ -101,7 +100,7 @@ XForm.prototype.reload = function() {
 				captionTD.colSpan = count;
 				captionTD.id = "titleBox";
 				captionTD.className = "titleBox";
-				captionTD.style.cssText = "font-size:12px;height:19px;background-image:url(" + _iconPath + "titlebg.gif);background-repeat:no-repeat;";
+				captionTD.style.cssText = "font-size:12px;height:19px;background-image:url(" + this._iconPath + "titlebg.gif);background-repeat:no-repeat;";
 				captionTD.innerHTML = this.element.getAttribute("caption");
 
 				var tempDivHeight = _height - theTable.rows[0].offsetHeight - (theTable.rows[2] == null ? 0 : theTable.rows[2].offsetHeight);

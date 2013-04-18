@@ -1,7 +1,9 @@
+
 /* 当前应用名 */
 APP_CODE = "TSS";
 CONTEXTPATH = "tss/";
 APPLICATION = "tss";
+
 // URL_CORE = "/" + APPLICATION + "/common/";  // 界面核心包相对路径
 URL_CORE = "common/";  // 界面核心包相对路径
 
@@ -10,16 +12,12 @@ URL_LOGOUT = "../logout.in";
 
 /***************************************** xmlhttp start ****************************************/
 
-/*
- *  错误类型
- */
+/* 错误类型 */
 _ERROR_TYPE_OPERATION_EXCEPTION = 0;
 _ERROR_TYPE_KNOWN_EXCEPTION = 1;
 _ERROR_TYPE_UNKNOWN_EXCEPTION = 2;
 
-/*
- *  通讯用XML节点名
- */
+/* 通讯用XML节点名 */
 _XML_NODE_RESPONSE_ROOT    = "Response";
 _XML_NODE_REQUEST_ROOT     = "Request";
 _XML_NODE_RESPONSE_ERROR   = "Error";
@@ -28,23 +26,17 @@ _XML_NODE_REQUEST_NAME     = "Name";
 _XML_NODE_REQUEST_VALUE    = "Value";
 _XML_NODE_REQUEST_PARAM    = "Param";
 
-/*
- *  HTTP响应状态
- */
+/* HTTP响应状态 */
 _HTTP_RESPONSE_STATUS_LOCAL_OK = 0;
 _HTTP_RESPONSE_STATUS_REMOTE_OK = 200;
 
-/*
- *  HTTP响应解析结果类型
- */
+/* HTTP响应解析结果类型 */
 _HTTP_RESPONSE_DATA_TYPE_EXCEPTION = "exception";
 _HTTP_RESPONSE_DATA_TYPE_SUCCESS = "success";
 _HTTP_RESPONSE_DATA_TYPE_DATA = "data";
 
-/*
- *  HTTP超时(1分钟)
- */
-_HTTP_TIMEOUT = 60*1000;
+/* HTTP超时(1分钟) */
+_HTTP_TIMEOUT = 1*1000;
 
 /*
  *  XMLHTTP请求参数对象，负责配置XMLHTTP请求参数
@@ -61,24 +53,9 @@ function HttpRequestParams() {
  *	函数说明：设置发送数据
  *	参数：  string:name 		数据字段名
 			string:value        数据内容
-			boolean:flag        同名是否覆盖(默认true)
  */
-HttpRequestParams.prototype.setContent = function(name, value, flag) {
-	if(flag || true) {
-		this.content[name] = value;
-	}
-	else {
-		var oldValue = this.content[name];
-		if( oldValue == null ) {
-			this.content[name] = value; // 原先没有值
-		}
-		else if(oldValue instanceof Array) {
-			oldValue[oldValue.length] = value; // 原来已经是数组
-		} 
-		else {
-			this.content[name] = [oldValue, value]; // 原来是单值
-		}
-	}
+HttpRequestParams.prototype.setContent = function(name, value) {
+	this.content[name] = value;
 }
 
 /*
