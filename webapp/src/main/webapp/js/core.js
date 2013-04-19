@@ -969,6 +969,22 @@ XmlReader.prototype.load = function(url, async) {
 	this.documentElement = this.xmlDom.documentElement;
 }
 
+/*
+ *	函数说明：获取解析错误
+ */
+XmlReader.prototype.getParseError = function() {
+	var parseError = null;
+	if(window.DOMParser) {
+
+	} 
+	else {
+		if( this.xmlDom.parseError.errorCode != 0 ) {
+			parseError = this.xmlDom.parseError;
+		}
+	}
+	return parseError;
+}
+
 XmlReader.prototype.toString = function() {
 	var str = [];
 	str[str.length] = "[XmlReader Object]";
@@ -1225,7 +1241,6 @@ XmlNode.prototype.getNextSibling = function() {
 XmlNode.prototype.equals = function(xmlNode) {
 	return xmlNode != null && this.node == xmlNode.node;
 }
-
 
 XmlNode.prototype.toString = function() {
 	var str = [];

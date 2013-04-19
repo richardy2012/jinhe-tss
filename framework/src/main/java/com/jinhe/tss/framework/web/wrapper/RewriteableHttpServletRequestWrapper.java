@@ -1,11 +1,9 @@
 package com.jinhe.tss.framework.web.wrapper;
 
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -56,15 +54,17 @@ public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrap
 		params.put(name, value);
 	}
 
-	public Map<String, String[]> getParameterMap() {
-		Map<String, String[]> map = new HashMap<String, String[]>();
-		map.putAll(super.getParameterMap());
-		map.putAll(params);
-		return map;
-	}
-
 	public Enumeration<String> getParameterNames() {
-		return new Enumerator(getParameterMap().keySet());
+	    Set<String> set = new HashSet<String>();
+        
+        Enumeration<String> e = super.getParameterNames();
+        while (e.hasMoreElements()) {
+            set.add(e.nextElement());
+        }
+        
+        set.addAll(params.keySet());
+        
+        return new Enumerator(set);
 	}
 	
 	// 获得如checkbox类（名字相同，但值有多个）的数据
