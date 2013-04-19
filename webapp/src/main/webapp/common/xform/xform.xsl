@@ -162,7 +162,6 @@
 			<input type="text">
 				<xsl:apply-templates select="@*" />
 				<xsl:attribute name="ancestor"><xsl:eval>uniqueID</xsl:eval></xsl:attribute>
-				<xsl:attribute name="baseurl"><xsl:eval>baseurl</xsl:eval></xsl:attribute>
 				<xsl:attribute name="caption"><xsl:eval>getProperty("caption")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="clickOnly"><xsl:eval>getProperty("clickOnly")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="cmd"><xsl:eval>getProperty("cmd")</xsl:eval></xsl:attribute>

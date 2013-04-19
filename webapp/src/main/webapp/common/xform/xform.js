@@ -44,7 +44,7 @@ XForm.prototype.attachEvents = function() {
 
 XForm.prototype.load = function(data, dataType) {
 	this.element.data = data;
-	this.element.dataType = dataType || "url";
+	this.element.dataType = dataType || "node";
 	this.reload();
 }
 
@@ -173,15 +173,15 @@ XForm.prototype.checkForm = function() {
 	var cols = this.xmlDoc.Columns;
 	for(var i = 0; i < cols.length; i++) {
 		var colName  = cols[i].getAttribute("name");
-		var _column = _columnList[colName];
+		var _column = this._columnList[colName];
 		if(_column != null) {
 			if(_column.validate() == false) {
 				return false;
 			}
 		}
 		else { // layout内不存在时创建虚拟实例执行校验
-			var _column = {};
-			_column.obj = {
+			var _columnTemp = {};
+			_columnTemp.obj = {
 				empty: cols[i].getAttribute("empty"),
 				errorInfo: cols[i].getAttribute("errorInfo"),
 				caption: cols[i].getAttribute("caption"),
@@ -189,8 +189,8 @@ XForm.prototype.checkForm = function() {
 				value: getColumnValue(colName)
 			};
 
-			_column.validate = validate;
-			if(_column.validate() == false) {
+			_columnTemp.validate = validate;
+			if(_columnTemp.validate() == false) {
 				return false;
 			}
 		}
@@ -479,6 +479,8 @@ var Class_XMLDocument = function(xmlObj) {
 			this.Columns = this.xmlObj.selectNodes("./declare/column");
 			this.Data    = this.xmlObj.selectSingleNode("./data");
 			
+			var tempDom = new ActiveXObject('MSXML.DOMDocument');
+			tempDom.async = false;
 			if(this.Data == null) {				
 				var dataNode = tempDom.createElement("data");
 				this.xmlObj.appendChild(dataNode);

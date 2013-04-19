@@ -102,7 +102,7 @@ function Tree() {
 	 * 作者：scq
 	 * 时间：2004-12-23
 	 */
-	this.loadSelectedData = function (selectedSrc, isClearOldSelected){
+	this.loadSelectedData = function (selectedSrc, isClearOldSelected) {
 		if(_xmlRoot == null){
 			return;
 		}

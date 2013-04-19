@@ -30,6 +30,7 @@ import com.jinhe.tss.util.XMLDocUtil;
 /**
  * Junit Test 类里执行构造函数的时候无事务，即构造函数不在单元测试方法的事物边界内。
  */
+@SuppressWarnings("deprecation")
 @ContextConfiguration(
         locations={
           "classpath:spring/testUMApplicationContext.xml",  

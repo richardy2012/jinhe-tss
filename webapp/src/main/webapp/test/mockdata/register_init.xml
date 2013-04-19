@@ -9,7 +9,7 @@
                 <column name="userName" caption="姓名" mode="string" maxLength="100" empty="false"/>
                 <column name="employeeNo" caption="员工号" maxLength="100" mode="string"/>
                 <column name="sex" caption="性别" mode="string" editor="comboedit" editorvalue="0|1" editortext="男|女"/>
-                <column name="birthday" caption="出生年月" mode="date" pattern="yyyy/MM/dd"/>
+                <column name="birthday" caption="出生年月" mode="String" pattern="yyyy/MM/dd"/>
                 <column name="certificateCategory" caption="证件种类" mode="string" editor="comboedit" editorvalue="1|2" editortext="工作证|身份证"/>
                 <column name="certificateNumber" caption="证件号码" maxLength="100" mode="string"/>
                 <column name="mail" caption="电子邮件" mode="string" inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/" submitReg="/^[\w\-]+@[\w\-]+(\.[\w\-]+){1,2}$/" maxLength="100"/>
@@ -72,4 +72,34 @@
             </data>
         </xform>
     </UserInfo>
+	<PasswordInfo>
+		<xform>
+			<declare>
+				<column name="userId" caption="" mode="string" display="none"/>
+				<column name="userName" caption="用户名" mode="string" editable="false"/>
+				<column name="password" caption="输入旧密码" mode="string"/>
+				<column name="newPassword" caption="输入新密码" mode="string"/>
+				<column name="newPassword2" caption="新密码确认" mode="string"/>
+			</declare>
+			<layout>
+				<TR>
+					<TD width="100"><label binding="userName"/></TD>
+					<TD><input binding="userName" type="text"/></TD>
+				</TR>
+				<TR>
+					<TD width="100"><label binding="password"/></TD>
+					<TD><input binding="password" type="password" style="width:250"/></TD>
+				</TR>
+				<TR>
+					<TD width="100"><label binding="newPassword"/></TD>
+					<TD><input binding="newPassword" type="password" style="width:250"/></TD>
+				</TR>
+				<TR>
+					<TD width="100"><label binding="newPassword2"/></TD>
+					<TD><input binding="newPassword2" type="password" style="width:250"/></TD>
+				</TR>
+			</layout>
+			<data></data>
+		</xform>
+	</PasswordInfo>
 </Response>

@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>它山石--找回密码</title>
+
+<link href="css/css.css" rel="stylesheet" type="text/css">
+<link href="common/xform/xform.css" rel="stylesheet" type="text/css">
+<link href="common/balloon/balloon.css" rel="stylesheet" type="text/css">
+
+<script language="javascript" src="js/core.js"></script>
+<script language="javascript" src="js/framework.js"></script>
+
+<script language="javascript" src="common/balloon/balloon.js"></script>
+
+<script language="javascript" src="common/xform/xform.js"></script>
+<script language="javascript" src="common/xform/mode.js"></script>
+
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+    /*
+     *	后台响应数据节点名称
+     */
+    XML_FORGET_INFO = "ForgetInfo";
+    XML_USER_ID = "UserId";
+
+    /*
+     *	默认唯一编号名前缀
+     */
+    CACHE_FORGET_INFO = "forget__id";
+
+    /*
+     *	XMLHTTP请求地址汇总
+     */
+    URL_INIT = "test/mockdata/forget_init.xml";
+    URL_FORGET = "test/mockdata/forget.xml";
+    URL_SET_NEW_PASSWORD = "test/mockdata/_success.xml";
+
+//    URL_INIT = "ums/user!getForgetPasswordInfo.action";
+//    URL_FORGET = "getPassword.in";
+//    URL_SET_NEW_PASSWORD = "resetPassword.in";
+
+	var forgetForm;
+
+    function init() {
+        var p = new HttpRequestParams();
+        p.url = URL_INIT;
+		p.setHeader("appCode", APP_CODE);
+        p.setHeader("anonymous", "true");
+
+        var request = new HttpRequest(p);
+        request.onresult = function() {
+            var forgetXML = this.getNodeValue(XML_FORGET_INFO);
+			var cacheID = CACHE_FORGET_INFO;
+            Cache.XmlIslands.add(cacheID, forgetXML);
+
+			forgetForm = $X("forgetForm")
+			forgetForm.load(forgetXML.node);
+        }
+        request.send();
+    }
+    
+    function getPassword() {
+        var p = new HttpRequestParams();
+        p.url = URL_FORGET;
+		p.setHeader("appCode", APP_CODE);
+        p.setHeader("anonymous", "true");
+
+        var forgetXML = Cache.XmlIslands.get(CACHE_FORGET_INFO);
+        if( forgetXML != null ) {
+			var dataNode = forgetXML.selectSingleNode(".//data"); 
+            if( dataNode != null ) {
+                var nodes = dataNode.selectNodes("./row/*");
+                for( var i=0; i < nodes.length; i++ ) {
+                    var name  = nodes[i].nodeName;
+                    var value = nodes[i].text;
+                    p.setContent(name, value); 
+                }
+            }
+        }
+
+		// 如果用户输入的密码问题答案正确，则返回该用户的UserID并允许其重新设置新密码
+        var request = new HttpRequest(p);
+        request.onresult = function() {
+            var userID = this.getNodeValue(XML_USER_ID);
+            forgetForm.updateDataExternal("userId", userID);
+
+            // 显示设置新密码
+            var newPasswordBox = $("newPasswordBox");
+			newPasswordBox.style.visibility = "visible";
+        }
+        request.send();
+    }
+
+    function resetForm(){
+        forgetForm.resetForm();
+        forgetForm.setFocus();
+    }
+
+    /*
+     *	检测注册表单是否填写正确。点击“找回”按钮的时候触发
+     */
+    function checkForgetForm(){
+        var flag = true;
+        if( false == forgetForm.checkForm()) {
+            flag = false;
+        }
+		else {
+            var loginName = forgetForm.getData("loginName")||"";
+            var question  = forgetForm.getData("passwordQuestion")||"";
+            var answer    = forgetForm.getData("passwordAnswer")||"";
+ 
+            if( "" == (loginName||userName||code||credCode) ){
+                flag = false;
+                if( "" == loginName ){
+                    forgetForm.showCustomErrorInfo("loginName", "登录账号不能为空");
+                }
+            }
+        }
+        return flag;
+    }
+
+    /*
+     *	函数说明：检测新密码
+     */
+    function checkNewPassword(){
+        var flag = true;
+        var password   = forgetForm.getData("password");
+        var repassword = forgetForm.getData("repassword");
+
+        if(password != repassword) {
+            flag = false;
+            forgetForm.showCustomErrorInfo("repassword", "两次密码输入不一致，请重新输入");
+        }
+		else if(null == password || "" == password) {
+            flag = false;
+            forgetForm.showCustomErrorInfo("password", "密码不能为空");
+        }
+        return flag;
+    }
+
+    /*
+     *	函数说明：设置新密码
+、     */
+    function setNewPassword() {
+        var p = new HttpRequestParams();
+        p.url = URL_SET_NEW_PASSWORD;
+		p.setHeader("appCode", APP_CODE);
+        p.setHeader("anonymous", "true");
+		p.setContent("type", "reset");
+
+        //登录信息
+        var forgetXML = Cache.XmlIslands.get(CACHE_FORGET_INFO);
+        if(null != forgetXML) {
+            var dataNode = forgetXML.selectSingleNode(".//data");
+            if( dataNode != null ) {
+                var nodes = dataNode.selectNodes("./row/*");
+                for(var i=0; i < nodes.length; i++) {
+                    p.setContent(nodes[i].nodeName, nodes[i].text);
+                }
+            }
+        }
+
+        var request = new HttpRequest(p);
+        request.onsuccess = function(){
+            window.close();
+        }
+        request.send();
+    }
+
+    window.onload = init;
+//-->
+</SCRIPT>
+
+</head>
+
+<body>
+<table class="full" border="0" cellpadding="0" cellspacing="0">
+	<tr> 
+	  <td class="loginContainer" style="background-position:center -400;padding-top:0px">
+
+		  <div class="loginBox" style="width:300px;">
+			<div id="forgetForm" editable="true" dataType="node" _baseurl="common/xform/"><div class="loading"/></div>
+		  </div>
+
+	  </td>
+	</tr>
+</table>
+</body>
+</html>

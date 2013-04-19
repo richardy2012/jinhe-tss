@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>它山石--用户注册</title>
+
+<link href="css/css.css" rel="stylesheet" type="text/css">
+<link href="common/xform/xform.css" rel="stylesheet" type="text/css">
+<link href="common/balloon/balloon.css" rel="stylesheet" type="text/css">
+
+<script language="javascript" src="js/core.js"></script>
+<script language="javascript" src="js/framework.js"></script>
+
+<script language="javascript" src="common/balloon/balloon.js"></script>
+
+<script language="javascript" src="common/xform/xform.js"></script>
+<script language="javascript" src="common/xform/mode.js"></script>
+
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+	/*
+     *	后台响应数据节点名称
+     */
+    XML_REGISTER_INFO  = "UserInfo";
+	XML_SECURITY_LEVEL = "SecurityLevel";
+
+    /*
+     *	默认唯一编号名前缀
+     */
+    CACHE_REGISTER_INFO = "register__id";
+
+    /*
+     *	XMLHTTP请求地址汇总
+     */
+    URL_INIT = "test/mockdata/register_init.xml";
+    URL_REGISTER = "test/mockdata/_success.xml";
+    URL_CHECK_PASSWORD = "test/mockdata/password_check.xml";
+
+//    URL_INIT = "ums/user!getUserInfo.action";
+//    URL_REGISTER = "ums/user!registerUser.action";
+//    URL_CHECK_PASSWORD = "getStrength.in";
+
+
+	var registerForm;
+
+    function init() {
+        var p = new HttpRequestParams();
+        p.url = URL_INIT; 
+		p.setHeader("appCode", APP_CODE);
+        p.setHeader("anonymous", "true");
+
+        var request = new HttpRequest(p);
+        request.onresult = function() {
+			var registerXML = this.getNodeValue(XML_REGISTER_INFO);
+            Cache.XmlIslands.add(XML_REGISTER_INFO, registerXML);
+			registerForm = $X("registerForm");
+			registerForm.load(registerXML.node);
+
+			$("password").onblur = function() { 
+				var password = this.value;
+				if(password == null || password == "") return;
+				
+				var loginName = registerForm.getData("loginName");
+				checkPasswordSecurityLevel(registerForm, URL_CHECK_PASSWORD, password, loginName);
+			}
+        }
+        request.send();
+    }
+ 
+    /*
+     *	函数说明：注册新用户
+     *	参数：	
+     *	返回值：
+     */
+    function register(){
+        var p = new HttpRequestParams();
+        p.url = URL_REGISTER;
+		p.setHeader("appCode", APP_CODE);
+        p.setHeader("anonymous", "true");
+
+        //登录信息
+        var registerNode = Cache.XmlIslands.get(CACHE_REGISTER_INFO);
+        if(null != registerNode) {
+            var dataNode = registerNode.selectSingleNode(".//data");
+            if(dataNode != null) {
+                var nodes = dataNode.selectNodes("./row/*");
+                for(var i = 0; i < nodes.length; i++) {
+                    var name  = nodes[i].nodeName;
+                    var value = nodes[i].text;
+                    p.setContent(name, value);
+                }
+            }
+        }
+
+        var request = new HttpRequest(p);
+        request.onsuccess = function() {
+            if( null != opener ) {
+				var loginName = registerForm.getData("loginName");
+                opener.$X("loginForm").updateDataExternal("userName", loginName, true); // opener返回对创建该窗口的Window 对象的引用
+            }
+            window.close();
+        }
+        request.send();
+    }
+
+    /*
+     *	函数说明：检测注册表单是否填写正确
+     *	参数：	
+     *	返回值：
+     */
+    function checkRegisterForm(){
+        var flag = true;
+
+        var password = registerForm.getData("password"); 
+		var repassword = prompt("请再输入一边确认密码");
+		if(password != repassword) {
+			flag = false;
+			alert("两次密码输入不一致，请重新输入");
+		}
+        return flag;
+    }
+
+    /*
+     *	函数说明：重置
+     *	参数：	
+     *	返回值：
+     */
+    function resetForm(){
+        registerForm.resetForm();
+        registerForm.setFocus();
+    }
+
+    window.onload = init;
+
+//-->
+</SCRIPT>
+</head>
+
+<body>
+<table class="full" border="0" cellpadding="0" cellspacing="0">
+<tr> 
+  <td class="loginContainer" style="background-position:center -400;padding-top:0px">
+    <!-- 登录框 开始 -->
+	  <div class="loginBox" style="width:500px;">
+		<div id="registerForm" _baseurl="common/xform/"><div class="loading"></div></div>
+		<br/>
+		<input type="button" class="btStrong" value="提交" onclick="if( checkRegisterForm() ) { register() }"/>
+		<input type="button" class="btWeak"   value="重置" onclick="resetForm()"/>
+		<input type="button" class="btWeak"   value="关闭" onclick="window.close()"/>
+	  </div>
+    <!-- 登录框 结束 -->
+  </td>
+</tr>
+</table>
+</body>
+</html>

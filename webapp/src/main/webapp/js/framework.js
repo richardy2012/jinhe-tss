@@ -73,7 +73,7 @@ HttpRequestParams.prototype.setXFormContent = function(dataNode, prefix) {
 		var value = nodes[i].text;
 		
 		// 前缀，xform declare节点上设置，以便于把值设置到action的bean对象里
-		if(null!=prefix){
+		if(null != prefix){
 			name = prefix + "." + name;
 		}
 
@@ -124,7 +124,7 @@ function HttpRequest(paramsInstance) {
 	this.value = "";
 
 	this.xmlhttp = new XmlHttp();
-	this.xmldom  = new XmlReader();
+	this.xmlReader  = new XmlReader();
 
 	this.params = paramsInstance;
 }
@@ -144,7 +144,7 @@ HttpRequest.prototype.getResponseText = function() {
  *	返回值：XmlReader:xmlReader       XML文档对象
  */
 HttpRequest.prototype.getResponseXml = function() {
-	return this.xmldom;
+	return this.xmlReader;
 }
 
 /*
@@ -153,9 +153,9 @@ HttpRequest.prototype.getResponseXml = function() {
  *	返回值：any:value               根据节点内容类型不同而定
  */
 HttpRequest.prototype.getNodeValue = function(name) {
-	if(this.xmldom.documentElement == null) return;
+	if(this.xmlReader.documentElement == null) return;
 
-	var documentElement = new XmlNode(this.xmldom.documentElement);
+	var documentElement = new XmlNode(this.xmlReader.documentElement);
 	var node = documentElement.selectSingleNode("/" + _XML_NODE_RESPONSE_ROOT + "/" + name);
 	if(node == null) return;
 
@@ -214,14 +214,13 @@ HttpRequest.prototype.getNodeValue = function(name) {
 		 return;
 	 }
 	
-	 try
-	 {
+	 try {
 		 if(this.params.ani != null) {
 			 Public.showWaitingLayer();
 		 }
 
 		 this.xmlhttp.onreadystatechange = function() {
-			 if(OThis.xmlhttp.readyState == 4) {
+			 if(oThis.xmlhttp.readyState == 4) {
 				 oThis.clearTimeout();
 
 				 var response = {};
@@ -259,8 +258,7 @@ HttpRequest.prototype.getNodeValue = function(name) {
 		 HttpRequests.add(this); // 存入队列
 
 	 }
-	 catch (e)
-	 {
+	 catch (e) {
 		 Public.hideWaitingLayer();
 
 		 //throw e;
@@ -330,14 +328,7 @@ HttpRequest.prototype.packageContent = function() {
 			continue;
 		}
 
-		if( value instanceof Array ) {
-			for(var i = 0; i < value.length; i++) {
-				setParamNode(name, value[i]);                
-			}
-		} 
-		else {
-			setParamNode(name,value);
-		}
+		setParamNode(name, value);
 	}
 
 	var contentStr = contentXml.toXml();
@@ -394,8 +385,8 @@ HttpRequest.prototype.onload = function(response) {
 
 	var responseParser = new HTTP_Response_Parser(this.value);
 
-	// 将通过解析后的xmlReader赋予xmldom
-	this.xmldom = responseParser.xmlReader;
+	// 将通过解析后的xmlReader
+	this.xmlReader = responseParser.xmlReader;
 
 	if(responseParser.result.dataType ==_HTTP_RESPONSE_DATA_TYPE_EXCEPTION) {
 		new Message_Exception(responseParser.result, this);
@@ -418,7 +409,7 @@ HttpRequest.prototype.onload = function(response) {
 	}
 
 	// 清除原始文档
-	this.xmldom.loadXML("");
+	this.xmlReader.xmlDom.loadXML("");
 }
 
 HttpRequest.prototype.ondata = HttpRequest.prototype.onresult = HttpRequest.prototype.onsuccess = HttpRequest.prototype.onexception = function() {
@@ -429,7 +420,7 @@ HttpRequest.prototype.ondata = HttpRequest.prototype.onresult = HttpRequest.prot
  *	函数说明：终止XMLHTTP请求
  */
 HttpRequest.prototype.abort = function() {
-	if(null!=this.xmlhttp) {
+	if(null != this.xmlhttp) {
 		this.xmlhttp.abort();
 	}
 }
@@ -485,7 +476,7 @@ function HTTP_Response_Parser(responseText) {
 		var informationNode = documentNode.selectSingleNode("/" + _XML_NODE_RESPONSE_ROOT + "/*");
 		var hasInformation = false;
 
-		if( informationNode != null) {		
+		if( informationNode == null) {		
 			this.result.dataType = _HTTP_RESPONSE_DATA_TYPE_EXCEPTION; // 未找到有效节点则认为是异常信息
 		}
 		else if(informationNode.nodeName == _XML_NODE_RESPONSE_ERROR) { // 只要有Error节点就认为是异常信息

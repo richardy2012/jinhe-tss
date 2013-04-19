@@ -16,6 +16,7 @@ import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.IH2DBServer;
 import com.jinhe.tss.framework.test.TestUtil;
 
+@SuppressWarnings("deprecation")
 @ContextConfiguration(
 	  locations={
 		    "classpath:spring/testFrameworkContext.xml",  
