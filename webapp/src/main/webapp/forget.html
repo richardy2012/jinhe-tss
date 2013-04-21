@@ -93,7 +93,7 @@
         request.send();
     }
 
-    function resetForm(){
+    function resetForm() {
         forgetForm.resetForm();
         forgetForm.setFocus();
     }
@@ -101,7 +101,7 @@
     /*
      *	检测注册表单是否填写正确。点击“找回”按钮的时候触发
      */
-    function checkForgetForm(){
+    function checkForgetForm() {
         var flag = true;
         if( false == forgetForm.checkForm()) {
             flag = false;
@@ -111,9 +111,9 @@
             var question  = forgetForm.getData("passwordQuestion")||"";
             var answer    = forgetForm.getData("passwordAnswer")||"";
  
-            if( "" == (loginName||userName||code||credCode) ){
+            if( "" == (loginName||userName||code||credCode) ) {
                 flag = false;
-                if( "" == loginName ){
+                if( "" == loginName ) {
                     forgetForm.showCustomErrorInfo("loginName", "登录账号不能为空");
                 }
             }
@@ -124,7 +124,7 @@
     /*
      *	函数说明：检测新密码
      */
-    function checkNewPassword(){
+    function checkNewPassword() {
         var flag = true;
         var password   = forgetForm.getData("password");
         var repassword = forgetForm.getData("repassword");
@@ -163,7 +163,7 @@
         }
 
         var request = new HttpRequest(p);
-        request.onsuccess = function(){
+        request.onsuccess = function() {
             window.close();
         }
         request.send();

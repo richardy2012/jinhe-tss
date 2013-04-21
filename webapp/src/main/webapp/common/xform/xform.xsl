@@ -40,7 +40,7 @@
 				</table>
 		</div></td></tr>
 	</table>
-	<input type="hidden" name="xml"/>
+	<input type="hidden" name="xml" id="xml"/>
 </xsl:template>
 
 <xsl:template match="@*">

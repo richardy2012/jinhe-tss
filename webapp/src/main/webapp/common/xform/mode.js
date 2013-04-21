@@ -506,7 +506,7 @@ function validate() {
 		errorInfo = errorInfo || "[" + caption + "] 格式不正确，请更正.";
 	}
 
-	if( errorInfo != null ) {
+	if( errorInfo != "null" && errorInfo != null ) {
 		showErrorInfo(errorInfo, this.obj);
 
 		if(this.isInstance != false) {

@@ -186,7 +186,7 @@ XForm.prototype.checkForm = function() {
 				errorInfo: cols[i].getAttribute("errorInfo"),
 				caption: cols[i].getAttribute("caption"),
 				submitReg: cols[i].getAttribute("submitReg"),
-				value: getColumnValue(colName)
+				value: this.getColumnValue(colName)
 			};
 
 			_columnTemp.validate = validate;
@@ -196,7 +196,7 @@ XForm.prototype.checkForm = function() {
 		}
 	}
 
-	this.form.elements['xml'].value = this.xmlDoc.Data.xml;
+	$("xml").value = this.xmlDoc.Data.xml;
 
 	return true;
 }
