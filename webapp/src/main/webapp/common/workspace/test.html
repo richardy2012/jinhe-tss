@@ -1,6 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML XMLNS:WorkSpace>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>它山石-- test workspace</title>
 
 <link rel=stylesheet type=text/css href=workspace.css>
 
@@ -20,37 +22,31 @@ body, td{
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 
-	var phases = [];
+	var ws;
+	window.onload = function () {
+		  ws = new WorkSpace($("ws"));
+
+		  var inf = {};
+		  inf.label = "页面1";
+		  inf.SID = "page1"
+		  inf.defaultPage = "page1";
+
+			var phases = [];
 			phases[0] = {page: "page1", label: "编辑组信息"};
 			phases[1] = {page: "page2", label: "组对用户"};
 			phases[2] = {page: "page3", label: "组对角色"};
-
-
-	var ws;
-	window.onload = function () {
-		  var ws = new WorkSpace($("ws"));
-
-			var inf = {};
-			inf.label = "页面1";
-			inf.SID = "page1"
-			inf.defaultPage = "page1";
-
-			inf.phases = phases;
-			inf.callback = null;
+		  inf.phases = phases;
+		  inf.callback = null;
 
 		  ws.open(inf);
 	}
 
-	function switchPage() {
-			var list = ["page1", "page2", "page3"];
-			if(null == window.curPageIndex){
-				window.curPageIndex = 0;
-			}
-			window.curPageIndex ++;
-			if(window.curPageIndex > list.length - 1){
-					window.curPageIndex = 0;
-			}
-			ws.open(list[window.curPageIndex], "页面" + (window.curPageIndex+1));
+	function switchPage(i) {
+			var list = ["page1", "page2"];
+
+			var inf = {SID: list[i]};
+			ws.open(inf);
+
 			var tab = ws.getActiveTab();
 			addToHistory(tab);
 	}
@@ -62,16 +58,23 @@ body, td{
 			window.tabHistory.push(tab);
 	}
 
-	function test() {
-			var phases = [];
-			phases[0] = {page: "page1", label: "编辑组信息"};
-			phases[1] = {page: "page2", label: "组对用户"};
-			phases[2] = {page: "page3", label: "组对角色"};
+	function openNewTab() {
+			var inf = {};
+		  inf.label = "页面2";
+		  inf.SID = "page2"
+		  inf.defaultPage = "page2";
 
-			ws.open("page2", "页面 [" + new Date().toLocaleString().split(" ")[1] + "]", phases);
+			var phases = [];
+			phases[0] = {page: "page1", label: "第一步"};
+			phases[1] = {page: "page2", label: "第二步"};
+			phases[2] = {page: "page3", label: "第三步"};
+		  inf.phases = phases;
+		  inf.callback = null;
+
+		  ws.open(inf);
 	}
 
-	function test2(){
+	function back() {
 			if( window.tabHistory ) {
 					var tab = window.tabHistory[0];
 					alert(tab)
@@ -88,54 +91,31 @@ body, td{
     <TR>
       <TD width="100" height="100">&nbsp;</TD>
       <TD>
-				<INPUT TYPE="button" value="open" onclick="test()"/>
-				<INPUT TYPE="button" value="switch" onclick="switchPage()"/>
-				<INPUT TYPE="button" value="innerHTML" onclick="Debug.print(ws.innerHTML)"/>
-				<INPUT TYPE="button" value="back" onclick="test2()"/>
+				<INPUT TYPE="button" value="open" onclick="openNewTab()"/>
+				<INPUT TYPE="button" value="switch" onclick="switchPage(0)"/>
+				<INPUT TYPE="button" value="innerHTML" onclick="alert($('ws').innerHTML)"/>
+				<INPUT TYPE="button" value="back" onclick="back()"/>
 		  </TD>
     </TR>
 
     <TR>
       <TD>&nbsp;</TD>
-      <TD valign=top>
+      <TD valign = "top">
 				<WorkSpace:Box id="ws">
-					<WorkSpace:Page id=page1>page1<br/>
-						page1<br/>
-						page1<br/>
-						page1<br/>
-						page1<br/>
+					<WorkSpace:Page id = "page1">
 						page1<br/>
 						<a href=# onclick="ws.prevTab(true)">上一标签</a><br/>
 						<a href=# onclick="ws.nextTab(true)">下一标签</a><br/>
 					</WorkSpace:Page>
-					<WorkSpace:Page id=page2>page2<br/>
+
+					<WorkSpace:Page id = "page2">
+						page2<br/>
 						<a href=# onclick="ws.prevTab(true)">上一标签</a><br/>
 						<a href=# onclick="ws.nextTab(true)">下一标签</a><br/>
 						<a href=# onclick="ws.prevPhase(true)">上一步</a><br/>
 						<a href=# onclick="ws.nextPhase(true)">下一步</a><br/>
 					</WorkSpace:Page>
-					<WorkSpace:Page id=page2b>page2b<br/>
-						page2b<br/>
-						page2b<br/>
-						page2b<br/>
-						page2b<br/>
-						page2b<br/>
-						<a href=# onclick="ws.prevPhase(true)">上一步</a><br/>
-						<a href=# onclick="ws.nextPhase(true)">下一步</a><br/>
-					</WorkSpace:Page>
-					<WorkSpace:Page id=page2c>page2c<br/>
-						page2c<br/>
-						page2c<br/>
-						page2c<br/>
-						<a href=# onclick="ws.prevPhase(true)">上一步</a><br/>
-						<a href=# onclick="ws.nextPhase(true)">下一步</a><br/>
-					</WorkSpace:Page>
-					<WorkSpace:Page id=page3>page3<br/>
-						page3<br/>
-						page3<br/>
-						<a href=# onclick="ws.prevTab(true)">上一标签</a><br/>
-						<a href=# onclick="ws.nextTab(true)">下一标签</a><br/>
-					</WorkSpace:Page>
+
 				</WorkSpace:Box>
 			</TD>
     </TR>

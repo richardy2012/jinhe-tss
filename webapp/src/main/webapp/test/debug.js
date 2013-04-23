@@ -6,7 +6,7 @@ Debug.print = function(str, clear) {
 		debugObj.id = "debug";
 		debugObj.readOnly = true;
 		debugObj.cols = 80;
-		debugObj.row = 20;
+		debugObj.row = 60;
 		debugObj.style.border = "1px solid gray";
 
 		var clearObj = window.document.createElement("div");

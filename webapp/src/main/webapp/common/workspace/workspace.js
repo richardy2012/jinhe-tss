@@ -147,8 +147,6 @@ function Tab(label, phasesParams, callback) {
 	closeIcon._tab = this;		
 	this.object.appendChild(closeIcon);
 	
-	// closeIcon.onclick = this.object.ondblclick =  closeIcon._tab.close();	
-	
 	var div = _display.createElement(WS_TAG_DIV);
 	div.innerText = this.label;
 	div.title = this.label;
@@ -157,6 +155,9 @@ function Tab(label, phasesParams, callback) {
 	this.object.appendChild(div);
 
 	this.createContextMenu();
+	
+//	var oThis = this;
+//	closeIcon.onclick = this.object.ondblclick = oThis.close();	
 }
 /*
  *	创建右键菜单
@@ -179,7 +180,7 @@ Tab.prototype.createContextMenu = function() {
  *	关闭标签
  */
 Tab.prototype.close = function() {
-	if(null != this.link && this == _display.getActiveTab()) {
+	if( this.link && this == _display.getActiveTab() ) {
 		this.hideLink();
 	}
 	this.dispose();
