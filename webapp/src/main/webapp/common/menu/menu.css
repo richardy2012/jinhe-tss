@@ -5,7 +5,7 @@
 		padding:1px;
 		border:1px solid #666666;
 		background-color:#F9F8F7;
-		background-image:url(menu_bg.gif);
+		background-image:url(icons/menu_bg.gif);
 		background-repeat:repeat-y;
     }
 	.menu div {
@@ -47,7 +47,7 @@
 		left:auto;
 		right:0px;
         top:1px;
-        background-image:url(icon_has_child.gif);
+        background-image:url(icons/has_child.gif);
         background-position:left top;
         background-repeat:no-repeat;
     }

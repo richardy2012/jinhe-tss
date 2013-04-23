@@ -1,11 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<title> new document </title>
-<meta name="generator" content="editplus">
-<meta name="author" content="">
-<meta name="keywords" content="">
-<meta name="description" content="">
+ 
 <link rel="stylesheet" type="text/css" media="all" href="menu.css" />
 <style>
 	body {
@@ -13,15 +9,16 @@
 	}
 </style>
 
-<script language="javascript" src="../debug.js"></script>
-<script language="javascript" src="../event.js"></script>
-<script language="javascript" src="../public.js"></script>
-<script language="javascript" src="../element.js"></script>
+<script language="javascript" src="../../test/debug.js"></script>
+<script language="javascript" src="../../js/core.js"></script>
+<script language="javascript" src="../../js/framework.js"></script>
+<script language="javascript" src="../balloon/balloon.js"></script>
 <script language="javascript" src="menu.js"></script>
+
 <script language="javascript">
 <!--
     var menu1 = new Menu();
-    var menu2 = new Menu();//子菜单
+    var menu2 = new Menu(); // 子菜单
 
 	var item1 = {
 		label:"剪切",
@@ -73,14 +70,14 @@
 		bold:true
 	}
 
-//	var uid1 = menu1.addItem(item1);
-//	menu1.addItem(item2);
-//	menu1.addItem(item3);
-//	menu1.addSeparator();
-//	menu1.addItem(item4);
+	var uid1 = menu1.addItem(item1);
+	menu1.addItem(item2);
+	menu1.addItem(item3);
+	menu1.addSeparator();
+	menu1.addItem(item4);
 	
-//	menu2.addItem(item5);
-//	menu2.addItem(item6);
+	menu2.addItem(item5);
+	menu2.addItem(item6);
 
 
     menu1.addItem(item10);
@@ -90,11 +87,7 @@
     menu1.addItem(item10);
     menu1.addSeparator();
     menu1.addItem(item2);
-
-
-
-
-	menu1.attachTo(document.body,"contextmenu");
+	
 
 	function test(){
 		Debug.print(document.body.innerHTML);
@@ -102,6 +95,12 @@
 	function test2(){
 		menu1.delItem(uid1);
 	}
+
+window.onload = function() {
+	 menu1.attachTo(document.body, "contextmenu");
+}
+
+
 //-->
 </script>
 </head>

@@ -1,22 +1,15 @@
 /*
  *	气球唯一编号名前缀
  */
-_UNIQUE_ID_MENU_PREFIX = "menu__id";
-_UNIQUE_ID_MENU_ITEM_PREFIX = "menu_item__id";
-_UNIQUE_ID_DEFAULT_PREFIX = "default__id";
+_UNIQUE_ID_MENU_PREFIX = "menu_id";
+_UNIQUE_ID_MENU_ITEM_PREFIX = "menu_item_id";
 
 /*
  *	样式名称
  */
-_STYLE_NAME_MENU = "menu";
-_STYLE_NAME_MENU_ITEM_ACITVE = "active";
-_STYLE_NAME_MENU_SEPARATOR = "separator";
-
-/*
- *	文件地址
- */
-_FILE_ICON_HAS_CHILD = "icon_has_child.gif";
-
+CSS_CLASS_MENU = "menu";
+CSS_CLASS_MENU_ITEM_ACITVE = "active";
+CSS_CLASS_MENU_SEPARATOR = "separator";
 
 /*
  *	对象名称：Menus（全局静态对象）
@@ -24,7 +17,7 @@ _FILE_ICON_HAS_CHILD = "icon_has_child.gif";
  */
 var Menus = {};
 Menus.nextDepth = 1000;
-Menus.items = {};
+Menus.collection = {};
 
 /*
  *	函数说明：获取下一个层次
@@ -42,11 +35,11 @@ Menus.getNextDepth = function() {
  *	参数：  instance:menu		Menu实例
  */
 Menus.add = function(menu) {
-	var uniqueID = menu.uniqueID;
-	if(null != this.items[uniqueID]) {
-		this.items[uniqueID].dispose();
+	var menuId = menu.uniqueID;
+	if( this.collection[menuId] ) {
+		this.collection[menuId].dispose();
 	}
-	this.items[uniqueID] = menu;
+	this.collection[menuId] = menu;
 }
 
 /*
@@ -54,10 +47,10 @@ Menus.add = function(menu) {
  *	参数：  instance:menu		Menu实例
  */
 Menus.del = function(menu) {
-	var uniqueID = menu.uniqueID;
-	if(null != this.items[uniqueID]) {
-		this.items[uniqueID].dispose();
-		delete this.items[uniqueID];
+	var menuId = menu.uniqueID;
+	if(this.collection[menuId]) {
+		this.collection[menuId].dispose();
+		delete this.collection[menuId];
 	}
 }
 /*
@@ -65,20 +58,20 @@ Menus.del = function(menu) {
  *	参数：
  *	返回值：number:count	Menu实例数量
  */
-Menus.count = function(){
+Menus.count = function() {
 	var count = 0;
-	for(var item in this.items){
+	for(var menu in this.collection) {
 		count ++;
 	}
 	return count;
 }
 
 /*
- *	函数说明：不激活所有Menu实例
+ *	函数说明：inactive所有Menu实例
  */
 Menus.inactiveAllMenus = function() {
-	for(var item in this.items) {
-		this.items[item].inactive();
+	for(var menuId in this.collection) {
+		this.collection[menuId].inactive();
 	}
 }
 
@@ -86,8 +79,8 @@ Menus.inactiveAllMenus = function() {
  *	函数说明：隐藏所有Menu实例
  */
 Menus.hideAllMenus = function() {
-	for(var item in this.items) {
-		curthis.items[item]Menu.hide();
+	for(var menuId in this.collection) {
+		this.collection[menuId].hide();
 	}
 }
 
@@ -96,10 +89,10 @@ Menus.hideAllMenus = function() {
  *	参数：
  *	返回值：instance:menu	Menu实例
  */
-Menus.getActiveMenu = function(){
-	for(var item in this.items){
-		var curMenu = this.items[item];
-		if(curMenu.isActive){
+Menus.getActiveMenu = function() {
+	for(var menuId in this.collection) {
+		var curMenu = this.collection[menuId];
+		if(curMenu.isActive) {
 			return curMenu;
 		}
 	}
@@ -110,20 +103,19 @@ Menus.getActiveMenu = function(){
  *	函数说明：根据菜单项ID获取所属Menu实例
  */
 Menus.getMenuByItemID = function(id) {
-	for(var item in this.items){
-		var curMenu = this.items[item];
+	for(var menuId in this.collection) {
+		var curMenu = this.collection[menuId];
 		var menuItem = curMenu.items[id];
-		if(null != menuItem){
+		if(menuItem) {
 			return curMenu;
 		}
 	}
-	return null;
 }
 
 /*
  *	函数说明：以文本方式输出对象信息
  */
-Menus.toString = function(){
+Menus.toString = function() {
 	var str = [];
 	str[str.length] = "[Menus 对象]";
 	str[str.length] = "items:" + this.count();
@@ -137,63 +129,43 @@ Menus.toString = function(){
  *	职责：负责展示右键菜单
  */
 function Menu() {
-	this.uniqueID = null;
 	this.items = {};
-	this.object = null;
-	this.srcElement = null;
-	this.isActive = false;
-	this.parentMenuItem = null;
-	this.init();
-}
 
-/*
- *	函数说明：Menu初始化
- */
-Menu.prototype.init = function() {
-	this.create();        
+	this.srcElement;
+	this.isActive = false;
+	this.parentMenuItem;
+ 
+	this.uniqueID = UniqueID.generator(_UNIQUE_ID_MENU_PREFIX);
+	
+	this.object = document.createElement("div");
+	this.object.id = this.uniqueID;
+	this.object.className = CSS_CLASS_MENU;
+	
 	this.setVisible(false);
-	this.attachEvents();
+	
+	// 绑定事件
+	this.object.onselectstart = _Menu_onSelectStart;
+	Event.attachEvent(document, "mousedown", _Menu_Document_onMouseDown);
+	Event.attachEvent(window, "resize", _Menu_Window_onResize);
+	
 	Menus.add(this);
 }
 
-/*
- *	函数说明：创建界面
- */
-Menu.prototype.create = function() {
-	this.uniqueID = UniqueID.generator(_UNIQUE_ID_MENU_PREFIX);
-
-	var object = document.createElement("div");
-	object.id = this.uniqueID;
-	object.className = _STYLE_NAME_MENU;
-
-	this.object = object;
-}
-
-/*
- *	函数说明：绑定事件
- */
-Menu.prototype.attachEvents = function() {
-	if(null != this.object){
-		this.object.onselectstart = _Menu_onSelectStart;
-
-		Event.attachEvent(document, "mousedown", _Menu_Document_onMouseDown);
-		Event.attachEvent(window, "resize", _Menu_Window_onResize);
-	}
-}
 /*
  *	函数说明：将实例绑定到指定对象
  *	参数：  object:srcElement       HTML对象
 			string:eventName		事件名称
  */
-Menu.prototype.attachTo = function(srcElement, eventName){
+Menu.prototype.attachTo = function(srcElement, eventName) {
 	this.srcElement = srcElement;
+	
 	var thisObj = this;
 	Event.attachEvent(srcElement, eventName, function(eventObj) {
 		Event.cancel(eventObj);
 
 		var x = eventObj.clientX + document.body.scrollLeft;
 		var y = eventObj.clientY + document.body.scrollTop;
-		thisObj.show(x,y);
+		thisObj.show(x, y);
 	});
 }
 
@@ -210,7 +182,7 @@ Menu.prototype.show = function(x, y, autofit, offX, offY) {
 	
 	var visibleItemsCount = this.refreshItems();
 	if(0 == visibleItemsCount) {
-		return; // 可见菜单项只要要有一个才显示菜单
+		return;
 	}
 
 	this.active();
@@ -227,12 +199,12 @@ Menu.prototype.show = function(x, y, autofit, offX, offY) {
 	if(false != autofit) {
 		if( (x + w) > (document.body.clientWidth + document.body.scrollLeft) ) {
 			var dx = 0;
-			if(null != this.parentMenuItem){
+			if(this.parentMenuItem) {
 				dx = w + this.parentMenuItem.object.offsetWidth - 2;
 			} 
 			else {
 				dx = w;
-				if(null != offX){
+				if(offX) {
 					dx -= offX;
 				}
 			}
@@ -242,12 +214,12 @@ Menu.prototype.show = function(x, y, autofit, offX, offY) {
 		}
 		if( (y + h) > (document.body.clientHeight + document.body.scrollTop) ) {
 			var dy = 0;
-			if(null != this.parentMenuItem) {
+			if(this.parentMenuItem) {
 				dy = h - this.parentMenuItem.object.offsetHeight;
 			}
 			else {
 				dy = h;
-				if(null != offY){
+				if(offY) {
 					dy -= offY;
 				}
 			}
@@ -275,9 +247,9 @@ Menu.prototype.show = function(x, y, autofit, offX, offY) {
 /*
  *	函数说明：隐藏菜单
  */
-Menu.prototype.hide = function(){
+Menu.prototype.hide = function() {
 	this.setVisible(false);
-	this.moveTo(0,0);
+	this.moveTo(0, 0);
 	this.inactive();
 
 	// 恢复显示select控件
@@ -335,7 +307,7 @@ Menu.prototype.refreshSeparators = function() {
 	var childs = this.object.childNodes;
 	for(var i = 0; i < childs.length; i++) {
 		var curChild = childs[i];
-		if(_STYLE_NAME_MENU_SEPARATOR == curChild.className) { // 分隔线
+		if(CSS_CLASS_MENU_SEPARATOR == curChild.className) { // 分隔线
 			vChilds[vChilds.length] = curChild;
 		}
 		else {
@@ -345,13 +317,13 @@ Menu.prototype.refreshSeparators = function() {
 		}
 	}
 
-	//第一遍过滤，排除连续分隔线
+	// 第一遍过滤，排除连续分隔线
 	var flag = false;
 	var lastChild = null;
 	for(var i = 0; i < vChilds.length; i++) {
 		var curChild = vChilds[i];
-		if(_STYLE_NAME_MENU_SEPARATOR == curChild.className){//分隔线
-			if(true == flag){
+		if(CSS_CLASS_MENU_SEPARATOR == curChild.className) { // 分隔线
+			if( flag ) {
 				lastChild = curChild;
 				curChild.style.display = "";
 				flag = false;
@@ -367,7 +339,7 @@ Menu.prototype.refreshSeparators = function() {
 	}
 
 	// 第二遍过滤，排除末尾分隔线
-	if(_STYLE_NAME_MENU_SEPARATOR == lastChild.className){
+	if(CSS_CLASS_MENU_SEPARATOR == lastChild.className) {
 		lastChild.style.display = "none";
 	}
 }
@@ -376,7 +348,7 @@ Menu.prototype.refreshSeparators = function() {
  *	函数说明：将菜单加入到页面文档
  */
 Menu.prototype.appendToDocument = function() {
-	if(null != this.object) {
+	if(this.object) {
 		document.body.appendChild(this.object);
 	}
 }
@@ -386,8 +358,8 @@ Menu.prototype.appendToDocument = function() {
  *	参数：  boolean:visible     菜单是否可见
  */
 Menu.prototype.setVisible = function(visible) {
-	if(null != this.object) {
-		this.object.style.visibility = visible ? "visible":"hidden";
+	if(this.object) {
+		this.object.style.visibility = visible ? "visible" : "hidden";
 	}
 }
 
@@ -397,7 +369,7 @@ Menu.prototype.setVisible = function(visible) {
 			number:y        菜单参考点位置
  */
 Menu.prototype.moveTo = function(x, y) {
-	if(null != this.object) {
+	if(this.object) {
 		this.object.style.left = x;
 		this.object.style.top = y;
 	}
@@ -407,7 +379,7 @@ Menu.prototype.moveTo = function(x, y) {
  *	函数说明：将菜单置于顶层
  */
 Menu.prototype.bringToTop = function() {
-	if(null != this.object) {
+	if(this.object) {
 		this.object.style.zIndex = Menus.getNextDepth();
 	}
 }
@@ -431,7 +403,7 @@ Menu.prototype.addItem = function(menuItem) {
  */
 Menu.prototype.delItem = function(uniqueID) {
 	var menuItem = this.items[uniqueID];
-	if(null != menuItem) {
+	if(menuItem) {
 		menuItem.dispose();
 		delete this.items[uniqueID];
 	}
@@ -440,17 +412,15 @@ Menu.prototype.delItem = function(uniqueID) {
 /*
  *	函数说明：添加分隔线
  */
-Menu.prototype.addSeparator = function(){
+Menu.prototype.addSeparator = function() {
 	var separator = document.createElement("div");
-	separator.className = _STYLE_NAME_MENU_SEPARATOR;
+	separator.className = CSS_CLASS_MENU_SEPARATOR;
 
 	this.object.appendChild(separator);
 }
 
 /*
  *	函数说明：统计所有MenuItem实例数量
- *	参数：
- *	返回值：number:count	Menu实例数量
  */
 Menu.prototype.count = function() {
 	var count = 0;
@@ -491,70 +461,40 @@ Menu.prototype.toString = function() {
  *	对象名称：MenuItem
  *	职责：负责控制右键菜单项
  */
-function MenuItem(menuItem) {
-	this.uniqueID = null;
-	for(var item in menuItem) {
-		this[item] = menuItem[item];
+function MenuItem(itemProperties) {
+	for(var propertyName in itemProperties) {
+		this[propertyName] = itemProperties[propertyName];
 	}
-	this.object = null;
+
 	this.isEnable = true;
 	this.isVisible = true;
-	this.init();
-}
-
-/*
- *	函数说明：菜单项初始化
- */
-MenuItem.prototype.init = function() {
-	this.create();
-	this.attachEvents();
-	if(null != this.submenu) {
-		this.submenu.parentMenuItem = this;
-	}
-}
-
-/*
- *	函数说明：创建菜单项
- */
-MenuItem.prototype.create = function() {
+ 
 	this.uniqueID = UniqueID.generator(_UNIQUE_ID_MENU_ITEM_PREFIX);
 
-	var object = document.createElement("div");
-	object.id = this.uniqueID;
-	object.noWrap = true;
-	object.title = this.label;
+	this.object = document.createElement("div");
+	this.object.id = this.uniqueID;
+	this.object.noWrap = true;
+	this.object.title = this.label;
+	this.object.innerHTML = this.bold ? ("<b>" + this.label + "</b>") : this.label;
 
-	var str = this.label;
-	if(this.bold) {
-		str = "<b>" + str + "</b>";
-	}
-	object.innerHTML = str;
-
-	if(null != this.icon && "" != this.icon) {
+	if(this.icon && "" != this.icon) {
 		var img = document.createElement("img");
 		img.src = this.icon;
-		object.appendChild(img);
+		this.object.appendChild(img);
 	}
-	if(null != this.submenu) {
+	if(this.submenu) {
 		var img = document.createElement("div");
 		img.className = "hasChild";
-		object.appendChild(img);
+		this.object.appendChild(img);
+		
+		this.submenu.parentMenuItem = this;
 	}
-
-	this.object = object;
-}
-
-/*
- *	函数说明：绑定事件
- */
-MenuItem.prototype.attachEvents = function(){
-	if(null != this.object) {
-		this.object.onmouseover   = _Menu_Item_onMouseOver;
-		this.object.onmouseout    = _Menu_Item_onMouseOut;
-		this.object.onmousedown   = _Menu_Item_onMouseDown;
-		this.object.onclick       = _Menu_Item_onClick;
-		this.object.oncontextmenu = _Menu_Item_onContextMenu;
-	}
+	
+	this.object.onmouseover   = _Menu_Item_onMouseOver;
+	this.object.onmouseout    = _Menu_Item_onMouseOut;
+	this.object.onmousedown   = _Menu_Item_onMouseDown;
+	this.object.onclick       = _Menu_Item_onClick;
+	this.object.oncontextmenu = _Menu_Item_onContextMenu;
 }
 
 /*
@@ -562,7 +502,7 @@ MenuItem.prototype.attachEvents = function(){
  *	参数：  object:container        HTML容器对象
  */
 MenuItem.prototype.dockTo = function(container) {
-	if(null != this.object) {
+	if(this.object) {
 		container.appendChild(this.object);
 	}
 }
@@ -571,19 +511,19 @@ MenuItem.prototype.dockTo = function(container) {
  *	函数说明：高亮菜单项
  */
 MenuItem.prototype.active = function() {
-	if(null != this.object && true == this.isEnable) {
-		this.object.className = _STYLE_NAME_MENU_ITEM_ACITVE;
+	if(this.object && true == this.isEnable) {
+		this.object.className = CSS_CLASS_MENU_ITEM_ACITVE;
 	}
 }
 
 /*
  *	函数说明：低亮菜单项
  */
-MenuItem.prototype.inactive = function(){
-	if(null != this.object && this.isEnable) {
+MenuItem.prototype.inactive = function() {
+	if(this.object && this.isEnable) {
 		this.object.className = "";
 	}
-	if(null != this.submenu) {
+	if(this.submenu) {
 		this.submenu.inactiveAllItems();
 		this.submenu.hide();
 	}
@@ -594,7 +534,7 @@ MenuItem.prototype.inactive = function(){
  *	参数：  boolean:visible     是否可见
  */
 MenuItem.prototype.setVisible = function(visible) {
-	if(null != this.object) {
+	if(this.object) {
 		this.object.style.display = visible ? "block" : "none";
 		this.isVisible = visible;
 	}
@@ -605,7 +545,7 @@ MenuItem.prototype.setVisible = function(visible) {
  *	参数：  boolean:enable     是否可用
  */
 MenuItem.prototype.setEnable = function(enable) {
-	if(null != this.object) {
+	if(this.object) {
 		this.object.className = enable ? "" : "disable";
 		this.isEnable = enable;
 	}
@@ -616,12 +556,12 @@ MenuItem.prototype.setEnable = function(enable) {
  */
 MenuItem.prototype.refresh = function() {
 	var visible = true;
-	if(null != this.visible) {
+	if(this.visible) {
 		visible = Public.executeCommand(this.visible);
 	}
 
 	var enable = true;
-	if(null != this.enable){
+	if(this.enable) {
 		enable = Public.executeCommand(this.enable);
 	}
 
@@ -642,7 +582,7 @@ MenuItem.prototype.execCallBack = function() {
  *	函数说明：显示子菜单
  */
 MenuItem.prototype.showSubMenu = function() {
-	if(null!=this.submenu) {
+	if( this.submenu ) {
 		var x = Element.absLeft(this.object) + this.object.offsetWidth;
 		var y = Element.absTop(this.object);
 		this.submenu.show(x, y);
@@ -655,15 +595,15 @@ MenuItem.prototype.showSubMenu = function() {
 MenuItem.prototype.dispose = function() {
 	Element.removeNode(this.object);
 
-	for(var item in this) {
-		delete this[item];
+	for(var propertyName in this) {
+		delete this[propertyName];
 	}
 }
 
 /*
  *	函数说明：以文本方式输出对象信息
  */
-MenuItem.prototype.toString = function(){
+MenuItem.prototype.toString = function() {
 	var str = [];
 	str[str.length] = "[MenuItem 对象]";
 	str[str.length] = "uniqueID:" + this.uniqueID;
@@ -749,7 +689,7 @@ function _Menu_onSelectStart(eventObj) {
 /*
  *	函数说明：隐藏所有菜单(虚拟事件)
  */
-function _Menu_onCloseAll(){
+function _Menu_onCloseAll() {
 	Menus.hideAllMenus();
 }
 
@@ -759,7 +699,7 @@ function _Menu_onCloseAll(){
 function _Menu_Item_onActive(srcElement, eventObj) {
 	var id = srcElement.id;
 	var menu = Menus.getMenuByItemID(id);
-	if(null != menu) {
+	if(menu) {
 		menu.inactiveAllItems();
 		var menuItem = menu.items[id];
 		menuItem.active();
@@ -773,9 +713,9 @@ function _Menu_Item_onActive(srcElement, eventObj) {
 function _Menu_Item_onInActive(srcElement, eventObj) {
 	var id = srcElement.id;
 	var menu = Menus.getMenuByItemID(id);
-	if(null != menu) {
+	if(menu) {
 		var menuItem = menu.items[id];
-		if(null == menuItem.submenu || false == menuItem.submenu.isActive){
+		if(null == menuItem.submenu || false == menuItem.submenu.isActive) {
 			menuItem.inactive();            
 		}
 	}
@@ -787,10 +727,10 @@ function _Menu_Item_onInActive(srcElement, eventObj) {
 function _Menu_Item_onCallBack(srcElement, eventObj) {
 	var id = srcElement.id;
 	var menu = Menus.getMenuByItemID(id);
-	if(null != menu) {
+	if(menu) {
 		var menuItem = menu.items[id];
 		if(menuItem.isEnable) {
-			if(null != menuItem.callback){
+			if(menuItem.callback) {
 				_Menu_onCloseAll();
 			}
 			menuItem.execCallBack();
