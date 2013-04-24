@@ -206,6 +206,8 @@ Tab.prototype.dispose = function() {
 	delete _display.tabs[this.uniqueID];
 
 	this.object.removeNode(true);
+	
+	Reminder.del(this.SID); // 解除提醒
 
 	this.label = null;
 	this.object = null;
@@ -837,6 +839,11 @@ Display.prototype.createTabControllerButtons = function() {
 	lastBt.linkTo(function() {
 		_display.tabBox.scrollLeft = _display.tabBox.scrollWidth;
 	});
+	
+	var oThis = this;
+	firstBt.object.onclick = function() { 
+		oThis.getFirstTab().click();
+	}
 }
 /*
  *	刷新Tab标签控制器按钮
@@ -935,38 +942,21 @@ Display.prototype.clearPhaseController = function() {
  *	创建Phase标签控制器按钮
  */
 Display.prototype.createPhaseControllerButtons = function() {
-	var firstBt = new ControllerButton(_TYPE_PHASE_CONTROLLER_BT, _IMG_PHASE_FIRST);
 	var prevBt = new ControllerButton(_TYPE_PHASE_CONTROLLER_BT, _IMG_PHASE_PREV);
 	var nextBt = new ControllerButton(_TYPE_PHASE_CONTROLLER_BT, _IMG_PHASE_NEXT);
-	var lastBt = new ControllerButton(_TYPE_PHASE_CONTROLLER_BT, _IMG_PHASE_LAST);
 
-	this.buttons[firstBt.uniqueID] = firstBt;
 	this.buttons[prevBt.uniqueID] = prevBt;
 	this.buttons[nextBt.uniqueID] = nextBt;
-	this.buttons[lastBt.uniqueID] = lastBt;
 
-	firstBt.dockTo(this.phaseController);
 	prevBt.dockTo(this.phaseController);
 	nextBt.dockTo(this.phaseController);
-	lastBt.dockTo(this.phaseController);
 
-	firstBt.linkTo(function() {
-		_display.phaseBox.scrollTop = 0;
-	});
 	prevBt.linkTo(function() {
 		_display.phaseBox.scrollTop -= _SIZE_PHASE_HEIGHT + _SIZE_PHASE_MARGIN_TOP;
 	});
 	nextBt.linkTo(function() {
 		_display.phaseBox.scrollTop += _SIZE_PHASE_HEIGHT + _SIZE_PHASE_MARGIN_TOP;
 	});
-	lastBt.linkTo(function() {
-		_display.phaseBox.scrollTop = _display.phaseBox.scrollHeight;
-	});
-	
-	var oThis = this;
-	firstBt.onclick = function() {
-		oThis.getFirstTab().click();
-	}
 }
 /*
  *	刷新Phase标签控制器按钮

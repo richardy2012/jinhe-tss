@@ -1,29 +1,6 @@
-/*
- *	函数说明：tab页工作区初始化
- *	参数：	
- */
-function initWorkSpace(hide) {
-	ws.onTabClose = function(event) {
-		var tab = event.tab;
-		detachReminder(tab.SID); // 解除提醒
-	}
-
-	if(false != hide) {
-		ws.onTabCloseAll = function(event) {
-			hideWorkSpace();
-		}
-		ws.onTabChange = function(event) {
-			var fromTab = event.lastTab;
-			var toTab = event.tab;
-			showWorkSpace();
-		}
-	}
-}
 
 /*
  *	函数说明：隐藏tab页工作区
- *	参数：	
- *	返回值：
  */
 function hideWorkSpace() {
 	var ws = $("ws");
@@ -31,10 +8,9 @@ function hideWorkSpace() {
 	tr.style.display = "none";
 	tr.previousSibling.style.display = "none";    
 }
+
 /*
  *	函数说明：显示tab页工作区
- *	参数：	
- *	返回值：
  */
 function showWorkSpace() {
 	var ws = $("ws");
@@ -44,166 +20,140 @@ function showWorkSpace() {
 }
 
 
-
-
-
 /*
- *	函数说明：左栏添加拖动效果
- *	参数：	
- *	返回值：
+ *	函数说明：左栏添加左右拖动效果
  */
 function initPaletteResize() {
 	var palette = $("palette");
 	Element.attachColResize(palette, -1);
 }
+
 /*
- *	函数说明：右上栏添加拖动效果
- *	参数：	
- *	返回值：
+ *	函数说明：添加上下拖动效果
  */
 function initListContainerResize() {
 	var listContainer = $("listContainer");
 	Element.attachRowResize(listContainer, 8);
 }
+
 /*
  *	函数说明：用户信息初始化
- *	参数：	
- *	返回值：
  */
 function initUserInfo() {
 	var p = new HttpRequestParams();
-	p.url = "ums/user!getOperatorInfo.action";
+	p.url = "um/user!getOperatorInfo.action";
 	p.setHeader("appCode", APP_CODE);
 	p.setHeader("anonymous", "true");
 
 	var request = new HttpRequest(p);
 	request.onresult = function() {
-		var userName = this.getNodeValue("name");
-
-		var userInfoObj = $("userInfo");
-		userInfoObj.innerText = userName;
+		$("userInfo").innerText = this.getNodeValue("name");
 	}
 	request.send();   
 }
+
 /*
  *	函数说明：工具条初始化
- *	参数：	
- *	返回值：
  */
 function initToolBar() {
 	var tbObj = $("toolbar");
-	toolbar = ToolBars.create(tbObj);
+	ToolBars.create(tbObj);
 }
-
-
-
-
 
 
 /*
  *	函数说明：点击树刷新按钮
- *	参数：	
- *	返回值：
  */
 function onClickTreeBtRefresh() {
 	loadInitData();
 }
+
 /*
  *	函数说明：点击树标题按钮
- *	参数：	
- *	返回值：
  */
 function onClickTreeTitleBt() {
 	var treeTitleObj = $("treeTitle");
 	var statusTitleObj = $("statusTitle");
 
 	var block = Blocks.getBlock("treeContainer");
-	if(null!=block) {
+	if( block ) {
 		block.switchTo();
 	}
-	if(true==block.visible) {
+	if( block.visible ) {
 		treeTitleObj.firstChild.className = "opened";
 		statusTitleObj.firstChild.className = "opened";
 
 		var block = Blocks.getBlock("statusContainer");
-		if(null!=block) {
+		if( block ) {
 			block.show();
 		}
-	}else{
+	} else {
 		treeTitleObj.firstChild.className = "closed";
 		statusTitleObj.firstChild.className = "opened";
 
 		var block = Blocks.getBlock("statusContainer");
-		if(null!=block) {
+		if( block ) {
 			block.show(false);
 		}
 	}
 }
+
 /*
  *	函数说明：点击状态栏标题按钮
- *	参数：	
- *	返回值：
  */
 function onClickStatusTitleBt() {
 	var treeTitleObj = $("treeTitle");
 	var statusTitleObj = $("statusTitle");
 
 	var block = Blocks.getBlock("statusContainer");
-	if(null!=block) {
+	if( block ) {
 		block.switchTo();
 	}
-	if(true==block.visible) {
+
+	if(block.visible) {
 		statusTitleObj.firstChild.className = "opened";        
-	}else{
+	}
+	else {
 		statusTitleObj.firstChild.className = "closed";
 
 		var block = Blocks.getBlock("treeContainer");
-		if(null!=block && true!=block.visible) {
+		if( block && true != block.visible ) {
 			treeTitleObj.firstChild.className = "opened";
 
 			var block = Blocks.getBlock("treeContainer");
-			if(null!=block) {
+			if( block ) {
 				block.show();
 			}
 		}
 	}
 }
+
 /*
  *	函数说明：点击左栏控制按钮
- *	参数：	
- *	返回值：
  */
 function onClickPaletteBt() {
-	var paletteBtObj = $("paletteBt");
-
 	var block = Blocks.getBlock("palette");
-	if(null!=block) {
+	if( block ) {
 		block.switchTo();
 	}
-	if(false==block.visible) {
-		paletteBtObj.className = "iconClosed";
-	}else{
-		paletteBtObj.className = "icon";
-	}
+	
+	$("paletteBt").className = block.visible ? "icon" : "iconClosed";
 }
+
 /*
  *	函数说明：点击树标题
- *	参数：	
- *	返回值：
  */
 function onClickTreeTitle() {
-	var treeTitleObj = $("treeTitle");
-	Focus.focus(treeTitleObj.firstChild.id);
+	Focus.focus($("treeTitle").firstChild.id);
 }
+
 /*
  *	函数说明：点击状态栏标题
- *	参数：	
- *	返回值：
  */
 function onClickStatusTitle() {
-	var statusTitleObj = $("statusTitle");
-	Focus.focus(statusTitleObj.firstChild.id);
+	Focus.focus($("statusTitle").firstChild.id);
 }
+
 /*
  *	函数说明：点击grid标题
  *	参数：	
@@ -220,15 +170,13 @@ function onClickGridTitle() {
  *	函数说明：删除缓存(公用)
  *	参数：	string:cacheID      缓存数据id
 			boolean:flag        是否清除关联的XML数据
- *	返回值：
  */
-function delCacheData(cacheID,flag) {
+function delCacheData(cacheID, flag) {
 	var cacheData = Cache.Variables.get(cacheID);
 	Cache.Variables.del(cacheID);
 
-	//2007-1-18
-	if(false!=flag) {
-		for(var i=0;null!=cacheData && i<cacheData.length;i++) {
+	if( flag ) {
+		for(var i=0; cacheData && i < cacheData.length; i++) {
 			Cache.XmlIslands.del(cacheData[i]);
 		}
 	}
@@ -239,35 +187,32 @@ function delCacheData(cacheID,flag) {
 /*
  *	函数说明：检测右键菜单项是否可见
  *	参数：	string:code     操作码
- *	返回值：
  */
 function getOperation(code) {
 	var flag = false;
 	var treeObj = $("tree");
 	var treeNode = treeObj.getActiveTreeNode();
-	if(null!=treeNode) {
+	if( treeNode ) {
 		var _operation = treeNode.getAttribute("_operation");
-		flag = checkOperation(code,_operation);
+		flag = checkOperation(code, _operation);
 	}
 	return flag;
 }
+
 /*
  *	函数说明：检测操作权限
  *	参数：	string:code             操作码
 			string:_operation       权限
  *	返回值：
  */
-function checkOperation(code,_operation) {
+function checkOperation(code, _operation) {
 	var flag = false;
-	if("string"==typeof(code) && "string"==typeof(_operation)) {
-		var reg = new RegExp("(^"+code+",)|(^"+code+"$)|(,"+code+",)|(,"+code+"$)","gi");
+	if( "string" == typeof(code) && "string" == typeof(_operation) ) {
+		var reg = new RegExp("(^" + code + ",)|(^" + code + "$)|(," + code + ",)|(," + code + "$)", "gi");
 		flag = reg.test(_operation);
 	}
 	return flag;
 }
-
-
-
 
 
 /*
@@ -276,14 +221,14 @@ function checkOperation(code,_operation) {
  *	返回值：string:value        属性值
  */
 function getTreeAttribute(name) {
-	var value = null;
 	var treeObj = $("tree");
 	var treeNode = treeObj.getActiveTreeNode();
-	if(null!=treeNode) {
-		value = treeNode.getAttribute(name);
+	if( treeNode ) {
+		return treeNode.getAttribute(name);
 	}
-	return value;   
+	return null;   
 }
+
 /*
  *	函数说明：修改树节点属性
  *	参数：  string:id               树节点id
@@ -292,72 +237,77 @@ function getTreeAttribute(name) {
 			string:refresh          是否刷新树
  *	返回值：
  */
-function modifyTreeNode(id,attrName,attrValue,refresh) {
+function modifyTreeNode(id, attrName, attrValue, refresh) {
 	var treeObj = $("tree");
 	var treeNode = treeObj.getTreeNodeById(id);
-	if(null!=treeNode) {
-		treeNode.setAttribute(attrName,attrValue);
+	if( treeNode ) {
+		treeNode.setAttribute(attrName, attrValue);
 	}
-	if(false!=refresh) {
+	if( refresh ) {
 		treeObj.reload();
 	}
 }
+
 /*
  *	函数说明：添加子节点
  *	参数：	string:id           树节点id
 			XmlNode:xmlNode     XmlNode实例
  *	返回值：
  */
-function appendTreeNode(id,xmlNode) {
+function appendTreeNode(id, xmlNode) {
 	var treeObj = $("tree");
 	var treeNode = treeObj.getTreeNodeById(id);
-	if(null!=treeNode && null!=xmlNode) {
-		treeObj.insertTreeNodeXml(xmlNode.toXml(),treeNode);
+	if( treeNode && xmlNode ) {
+		treeObj.insertTreeNodeXml(xmlNode.toXml(), treeNode);
 	}
 }
+
 /*
  *	函数说明：获取树全部节点id数组
  *	参数：	XmlNode:xmlNode         XmlNode实例
 			string:xpath            选取节点xpath
  *	返回值：Array:Ids               节点id数组
  */
-function getTreeNodeIds(xmlNode,xpath) {
-	  var Ids = [];
+function getTreeNodeIds(xmlNode, xpath) {
+	  var idArray = [];
 	  var treeNodes = xmlNode.selectNodes(xpath);
-	  for(var i=0,iLen=treeNodes.length;i<iLen;i++) {
+	  for(var i=0; i < treeNodes.length; i++) {
 		  var curNode = treeNodes[i];
 		  var id = curNode.getAttribute("id");
-		  if(null!=id) {
-			  Ids.push(id);
+		  if( id ) {
+			  idArray.push(id);
 		  }
 	  }
-	  return Ids;
+	  return idArray;
 }
+
 /*
  *	函数说明：树节点定位
  *	参数：	Element:treeObj         tree控件
 			Element:keywordObj      关键字输入框
  *	返回值：
  */
-function searchTree(treeObj,keywordObj) {
-	//覆盖树控件搜索出错信息提示方法
-	var tempAlert = window.alert;
+function searchTree(treeObj, keywordObj) {	
+	var tempAlert = window.alert;  // 覆盖树控件搜索出错信息提示方法
+	
 	window.alert = function(str) {
 		var balloon = Balloons.create(str);
 		balloon.dockTo(keywordObj);
 	}
 
-	if(false!=treeObj.research) {
+	if( treeObj.research ) {
 		var keyword = treeObj.keyword;
 		treeObj.searchNode(keyword, "name", "hazy", "down");
 		treeObj.research = false;
-	}else{
+	}
+	else{
 		treeObj.searchNext("down", true);
 	}
 
-	//还原信息提示方法
+	// 还原信息提示方法
 	window.alert = tempAlert;
 }
+
 /*
  *	函数说明：树节点定位
  *	参数：	Element:treeObj         tree控件
@@ -365,20 +315,22 @@ function searchTree(treeObj,keywordObj) {
 			Element:keywordObj      关键字输入框
  *	返回值：
  */
-function attachSearchTree(treeObj,btObj,keywordObj) {
-	//设置搜索按钮操作
+function attachSearchTree(treeObj, btObj, keywordObj) {
+	// 设置搜索按钮操作
 	btObj.onclick = function() {
-		searchTree(treeObj,keywordObj);
+		searchTree(treeObj, keywordObj);
 	}
 
-	//设置搜索关键字操作
+	// 设置搜索关键字操作
 	keywordObj.value = "";
 	keywordObj.onchange = function() {
 		treeObj.research = true;
 		treeObj.keyword = this.value;
 	}
+
 	keywordObj.onchange();    
 }
+
 /*
  *	函数说明：清除tree数据
  *	参数：	Element:treeObj         tree控件对象
@@ -390,34 +342,36 @@ function clearTreeData(treeObj) {
 	treeObj.load(emptyNode.node);
 	treeObj.research = true;
 }    
+
 /*
  *	函数说明：删除树选中节点
  *	参数：	Element:treeObj         tree控件对象
 			Array:exceptIds         例外的id
  *	返回值：
  */
-function removeTreeNode(treeObj,exceptIds) {
-	var selectedNodes = treeObj.getSelectedTreeNode();
-	if(null==exceptIds) {
-		exceptIds = ["_rootId"];
-	}
+function removeTreeNode(treeObj, exceptIds) {
+	
+	exceptIds = exceptIds || ["_rootId"];
 
-	for(var i=0,iLen=selectedNodes.length;i<iLen;i++) {
+	var selectedNodes = treeObj.getSelectedTreeNode();
+	for(var i=0; i < selectedNodes.length; i++) {
 		var curNode = selectedNodes[i];
 		var id = curNode.getId();
 
 		var flag = true;
-		for(var j=0,jLen=exceptIds.length;j<jLen;j++) {
-			if(id==exceptIds[j]) {
+		for(var j=0; j < exceptIds.length; j++) {
+			if(id == exceptIds[j]) {
 				flag = false;
 				break;
 			}
 		}
-		if(true==flag) {
+
+		if(flag) {
 			treeObj.removeTreeNode(curNode);
 		}
 	}
 }
+
 /*
  *	函数说明：将树选中节点添加到另一树中(注：过滤重复id节点，并且结果树只有一层结构)
  *	参数：	Element:fromTreeObj         树控件
@@ -425,61 +379,57 @@ function removeTreeNode(treeObj,exceptIds) {
 			Function:checkFunction      检测单个节点是否允许添加
  *	返回值：
  */
-function addTreeNode(fromTreeObj,toTreeObj,checkFunction) {
-	var selectedNodes = fromTreeObj.getSelectedTreeNode(false);
-
+function addTreeNode(fromTreeObj, toTreeObj, checkFunction) {	
 	var reload = false;
-	for(var i=0,iLen=selectedNodes.length;i<iLen;i++) {
+	var selectedNodes = fromTreeObj.getSelectedTreeNode(false);	
+	for(var i=0; i < selectedNodes.length; i++) {
 		var curNode = selectedNodes[i];
 
-		//2007-5-23 过滤不可选择的节点
-		var canselected = curNode.getAttribute("canselected");
-		if("0"==canselected) {
-			continue;
+		if("0" == curNode.getAttribute("canselected")) {
+			continue;  // 过滤不可选择的节点
 		}
 
+		curNode.setSelectedState(0, true, true);
 
-		curNode.setSelectedState(0,true,true);
-
-		if(null!=checkFunction) {
+		if( checkFunction ) {
 			var result = checkFunction(curNode);
-			if(null!=result && true==result.error) {
-
-				if(null!=result.message) {
-					//显示错误信息
+			if( result && result.error ) {
+				// 显示错误信息
+				if( result.message ) {
 					var balloon = Balloons.create(result.message);
 					balloon.dockTo(toTreeObj);
 				}
 
-				if(true==result.stop) {
+				if( result.stop ) {
 					return;
-				}else{
-					continue;
 				}
+				continue;
 			}
 		}
 
 		var groupName = curNode.getName();
 		var id = curNode.getId();
 
-		var sameAttributeTreeNode = hasSameAttributeTreeNode(toTreeObj,"id",id);
-		if("_rootId"!=id && false==sameAttributeTreeNode) {
-			//至少有一行添加才刷新grid
+		var sameAttributeTreeNode = hasSameAttributeTreeNode(toTreeObj, "id", id);
+		if("_rootId" != id && false == sameAttributeTreeNode) {
+			// 至少有一行添加才刷新Tree
 			reload = true;
 
+			// 排除子节点
 			var treeNode = toTreeObj.getTreeNodeById("_rootId");
-			if(null!=treeNode) {
-				//排除子节点
+			if( treeNode ) {
 				var cloneNode = new XmlNode(curNode.node).cloneNode(false);
 				toTreeObj.insertTreeNodeXml(cloneNode.toXml(),treeNode);
 			}
 		}
 	}
-	if(true==reload) {
+
+	if( reload ) {
 		toTreeObj.reload();
 	}
 	fromTreeObj.reload();
 }
+
 /*
  *	函数说明：检测是否有相同属性节点
  *	参数：	Element:treeObj         tree控件对象
@@ -487,46 +437,42 @@ function addTreeNode(fromTreeObj,toTreeObj,checkFunction) {
 			string:attrValue        属性值
  *	返回值：
  */
-function hasSameAttributeTreeNode(treeObj,attrName,attrValue) {
+function hasSameAttributeTreeNode(treeObj, attrName, attrValue) {
 	var flag = new Boolean(false);
 	var xmlIsland = treeObj.getTreeNodeById("_rootId").node;
-	var treeNode = xmlIsland.selectSingleNode(".//treeNode[@"+attrName+"='"+attrValue+"']");
-	if(null!=treeNode) {
+	var treeNode = xmlIsland.selectSingleNode(".//treeNode[@" + attrName + "='" + attrValue + "']");
+	if( treeNode ) {
 		flag = new Boolean(true);
 		flag.treeNode = treeNode;
 	}
 	return flag;
 }
+
 /*
  *	函数说明：显示当前树节点信息
- *	参数：	
- *	返回值：
  */
 function showTreeNodeStatus(params) {
 	var treeObj = $("tree");
 	var treeNode = treeObj.getActiveTreeNode();
-	if(null!=treeNode) {
-
+	if( treeNode ) {
 		var id = treeNode.getId();
-
 		var block = Blocks.getBlock("statusContainer");
-		if(null!=block && "_rootId"!=id) {
+		if( block && "_rootId" != id ) {
 			block.open();
 
 			for(var item in params) {
 				var name = params[item];
 				var val = treeNode.getAttribute(item);
-				block.writeln(name,val);                
+				block.writeln(name, val);                
 			}
 
 			block.close();
 		}
-		if("_rootId"==id) {
+		if( "_rootId" == id ) {
 		   block.hide();
 		}
 	}
 }
-
 
 
 /*
@@ -780,5 +726,3 @@ function showPasswordSecurityLevel(formObj) {
 	};
 	formObj.showCustomErrorInfo("password", errorInfo[formObj.securityLevel]);
 }
-
-
