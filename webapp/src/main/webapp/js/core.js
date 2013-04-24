@@ -764,6 +764,7 @@ Event.MOUSEOUT  = 8;
 Event.MOUSEMOVE = 16;
 Event.MOUSEDRAG = 32;
 
+Event.timeout = {};
 
 /*
  *	函数说明：获得事件触发对象

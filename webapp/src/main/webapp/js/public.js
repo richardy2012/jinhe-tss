@@ -3,16 +3,6 @@
  *	参数：	
  */
 function initWorkSpace(hide) {
-	Public.initHTC(ws, "isLoaded", "onload", function() {
-		loadWorkSpaceData(hide);
-	});
-}
-/*
- *	函数说明：tab页工作区加载数据
- *	参数：	
- *	返回值：
- */
-function loadWorkSpaceData(hide) {
 	ws.onTabClose = function(event) {
 		var tab = event.tab;
 		detachReminder(tab.SID); // 解除提醒
@@ -29,6 +19,7 @@ function loadWorkSpaceData(hide) {
 		}
 	}
 }
+
 /*
  *	函数说明：隐藏tab页工作区
  *	参数：	
@@ -63,7 +54,7 @@ function showWorkSpace() {
  */
 function initPaletteResize() {
 	var palette = $("palette");
-	Element.attachColResize(palette,-1);
+	Element.attachColResize(palette, -1);
 }
 /*
  *	函数说明：右上栏添加拖动效果
@@ -72,7 +63,7 @@ function initPaletteResize() {
  */
 function initListContainerResize() {
 	var listContainer = $("listContainer");
-	Element.attachRowResize(listContainer,8);
+	Element.attachRowResize(listContainer, 8);
 }
 /*
  *	函数说明：用户信息初始化
@@ -83,7 +74,7 @@ function initUserInfo() {
 	var p = new HttpRequestParams();
 	p.url = "ums/user!getOperatorInfo.action";
 	p.setHeader("appCode", APP_CODE);
-	p.setHeader("anonymous","true");
+	p.setHeader("anonymous", "true");
 
 	var request = new HttpRequest(p);
 	request.onresult = function() {
@@ -92,9 +83,7 @@ function initUserInfo() {
 		var userInfoObj = $("userInfo");
 		userInfoObj.innerText = userName;
 	}
-	request.send();
-
-   
+	request.send();   
 }
 /*
  *	函数说明：工具条初始化
@@ -540,9 +529,6 @@ function showTreeNodeStatus(params) {
 
 
 
-
-
-
 /*
  *	函数说明：初始化翻页工具条
  *	参数：	object:toolbarObj       工具条对象
@@ -550,113 +536,121 @@ function showTreeNodeStatus(params) {
 			function:callback       回调函数
  *	返回值：
  */
-function initGridToolBar(toolbarObj,xmlIsland,callback) {
+function initGridToolBar(toolbarObj, xmlIsland, callback) {
 	//初始化
 	toolbarObj.init = function() {
 		this.clear();
 		this.create();
 		this.attachEvents();
 	}
+	
 	//清空内容
 	toolbarObj.clear = function() {
 		this.innerHTML = "";
 	}
+	
 	//创建按钮
 	toolbarObj.create = function() {
 		var totalpages = toolbarObj.getTotalPages();
 		var curPage = toolbarObj.getCurrentPage();
 
 		var str = [];
-		str[str.length] = "<span class=\"button refresh\" id=\"gridBtRefresh\" title=\"刷新\"></span>";
-		str[str.length] = "<span class=\"button first\" id=\"gridBtFirst\" title=\"第一页\"></span>";
-		str[str.length] = "<span class=\"button prev\" id=\"gridBtPrev\" title=\"上一页\"></span>";
-		str[str.length] = "<span class=\"button next\" id=\"gridBtNext\" title=\"下一页\"></span>";
-		str[str.length] = "<span class=\"button last\" id=\"gridBtLast\" title=\"最后一页\"></span>";
-		str[str.length] = "<select id=\"gridPageList\">";
-		for(var i=0;i<totalpages;i++) {
-			str[str.length] = "  <option value=\"" + (i+1) + "\"" + (curPage==(i+1)?" selected":"") + ">" + (i+1) + "</option>";
+		str[str.length] = "<span class=\"button refresh\" id=\"GridBtRefresh\" title=\"刷新\"></span>";
+		str[str.length] = "<span class=\"button first\"   id=\"GridBtFirst\"   title=\"第一页\"></span>";
+		str[str.length] = "<span class=\"button prev\"    id=\"GridBtPrev\"    title=\"上一页\"></span>";
+		str[str.length] = "<span class=\"button next\"    id=\"GridBtNext\"    title=\"下一页\"></span>";
+		str[str.length] = "<span class=\"button last\"    id=\"GridBtLast\"    title=\"最后一页\"></span>";
+		
+		str[str.length] = "<select id=\"GridPageList\">";
+		for(var i=0; i <= totalpages; i++) {
+			str[str.length] = "  <option value=\"" + i + "\"" + (curPage == i ? " selected" : "") + ">" + i + "</option>";
 		}
 		str[str.length] = "</select>";
 
 		this.innerHTML = str.join("");
 	}
+	
 	//绑定事件
 	toolbarObj.attachEvents = function() {
-		var gridBtRefreshObj = $("gridBtRefresh");
-		var gridBtFirstObj = $("gridBtFirst");
-		var gridBtPrevObj = $("gridBtPrev");
-		var gridBtNextObj = $("gridBtNext");
-		var gridBtLastObj = $("gridBtLast");
-		var gridPageListObj = $("gridPageList");
+		var gridBtRefreshObj = $("GridBtRefresh");
+		var gridBtFirstObj   = $("GridBtFirst");
+		var gridBtPrevObj    = $("GridBtPrev");
+		var gridBtNextObj    = $("GridBtNext");
+		var gridBtLastObj    = $("GridBtLast");
+		var gridPageListObj  = $("GridPageList");
 
-		Event.attachEvent(gridBtRefreshObj,"click",function() {
+		Event.attachEvent(gridBtRefreshObj, "click", function() {
 			var curPage = toolbarObj.getCurrentPage();
 			toolbarObj.gotoPage(curPage);
 		});
-		Event.attachEvent(gridBtFirstObj,"click",function() {
+		Event.attachEvent(gridBtFirstObj, "click", function() {
 			toolbarObj.gotoPage("1");
 		});
-		Event.attachEvent(gridBtLastObj,"click",function() {
+		Event.attachEvent(gridBtLastObj, "click", function() {
 			var lastpage = toolbarObj.getLastPage();
 			toolbarObj.gotoPage(lastpage);
 		});
-		Event.attachEvent(gridBtNextObj,"click",function() {
+		Event.attachEvent(gridBtNextObj, "click", function() {
 			var curPage = toolbarObj.getCurrentPage();
 			var lastpage = toolbarObj.getLastPage();
 			var page = lastpage;
-			if(curPage<lastpage) {
+			if(curPage < lastpage) {
 				page = curPage + 1;
 			}
 			toolbarObj.gotoPage(page);
 		});
-		Event.attachEvent(gridBtPrevObj,"click",function() {
+		Event.attachEvent(gridBtPrevObj, "click", function() {
 			var curPage = toolbarObj.getCurrentPage();
 			var page = 1;
-			if(curPage>1) {
+			if(curPage > 1) {
 				page = curPage - 1;
 			}
 			toolbarObj.gotoPage(page);
 		});
-		Event.attachEvent(gridPageListObj,"change",function() {
+		Event.attachEvent(gridPageListObj, "change", function() {
 			toolbarObj.gotoPage(gridPageListObj.value);
 		});
 	}
+	
 	//获取当前页码
 	toolbarObj.getCurrentPage = function() {
 		var currentpage = xmlIsland.getAttribute("currentpage");
-		if(null==currentpage) {
+		if(null == currentpage) {
 			currentpage = 1;
-		}else{
+		} else {
 			currentpage = parseInt(currentpage);
 		}
 		return currentpage;
 	}
+	
 	//获取最后一页页码
 	toolbarObj.getLastPage = function() {
 		var lastpage = this.getTotalPages();
-		if(null==lastpage) {
+		if(null == lastpage) {
 			lastpage = 1;
-		}else{
+		} else {
 			lastpage = parseInt(lastpage);
 		}
 		return lastpage;
 	}
+	
 	//获取总页码
 	toolbarObj.getTotalPages = function() {
 		var totalpages = xmlIsland.getAttribute("totalpages");
-		if(null==totalpages) {
+		if(null == totalpages) {
 			totalpages = 1;
-		}else{
+		} else {
 			totalpages = parseInt(totalpages);
 		}
 		return totalpages;
 	}
+	
 	//转到指定页
 	toolbarObj.gotoPage = function(page) {
 		callback(page);
 	}
+	
 	toolbarObj.init();
-
 }
 
 
@@ -665,32 +659,26 @@ function initGridToolBar(toolbarObj,xmlIsland,callback) {
 
 /*
  *	函数说明：禁止点击按钮
- *	参数：	
- *	返回值：
  */
 function disableButton(btObj) {
 	btObj.disabled = true;
 }
 /*
- *	函数说明：允许点击按钮
- *	参数：	
- *	返回值：
+ *	函数说明：允许点击按钮：
  */
 function enableButton(btObj) {
 	btObj.disabled = false;
 }
 /*
  *	函数说明：同步按钮禁止/允许状态
- *	参数：	
- *	返回值：
  */
-function syncButton(btObjs,request) {
-	for(var i=0,iLen=btObjs.length;i<iLen;i++) {
+function syncButton(btObjs, request) {
+	for(var i=0; i < btObjs.length; i++) {
 		disableButton(btObjs[i]);
 	}
 
 	request.ondata = function() {
-		for(var i=0,iLen=btObjs.length;i<iLen;i++) {
+		for(var i=0; i < btObjs.length; i++) {
 			enableButton(btObjs[i]);
 		}
 	}
@@ -701,69 +689,47 @@ function syncButton(btObjs,request) {
 /*
  *	函数说明：初始化导航条
  *	参数：	string:curId       当前菜单项id
- *	返回值：
  */
-function initNaviBar(curId) {
-	var url = "../navi.xml";
-	var module = window.location.href.indexOf("module");
-	if(-1!=module) {
-		url = "../../../navi.xml";
-	}
+function initNaviBar(curId) {	
+	var isModule = (window.location.href.indexOf("module") > 0);
+	var relativePath = isModule ? "../../../" : "../";
 
 	var p = new HttpRequestParams();
-	p.url = url;
+	p.url = relativePath + "navi.xml";
 
 	var request = new HttpRequest(p);
 	request.onresult = function() {
 		var data = this.getNodeValue("NaviInfo");
 
-		loadNaviBar(data,curId);
+		var str = [];
+		var menuItems = data.selectNodes("MenuItem");
+		for(var i=0; i < menuItems.length; i++) {
+			var menuItem = menuItems[i];
+			var id   = menuItem.getAttribute("id");
+			var href = menuItem.getAttribute("href");
+			var name = menuItem.getAttribute("name");
+
+			if( false == /^javascript\:/.test(href) ) {
+				href = relativePath + href;
+			}
+			
+			var cssStyle = (curId == id) ? "naviActive" : "navi";
+			str[str.length] = "<a href=\"" + href + "\" class=\"" + cssStyle + "\">" + name + "</a>";
+		}
+		$("navibar").innerHTML = str.join(" ");
 	}
 	request.send();
 }
-/*
- *	函数说明：生成导航条
- *	参数：	xmlNode:data            XmlNode实例
-			string:curId            当前菜单项id
- *	返回值：
- */
-function loadNaviBar(data,curId) {
-	var module = window.location.href.indexOf("module");
 
-	var naviObj = $("navibar");
-	var str = [];
-	var menuItems = data.selectNodes("MenuItem");
-	for(var i=0,iLen=menuItems.length;i<iLen;i++) {
-		var menuItem = menuItems[i];
-		var id = menuItem.getAttribute("id");
-		var href = menuItem.getAttribute("href");
-		var name = menuItem.getAttribute("name");
-
-		if(false==/^javascript\:/.test(href)) {
-			if(-1!=module) {
-				href = "../../../" + href;
-			}else{
-				href = "../" + href;
-			}
-		}
-		if(curId!=id) {
-			str[str.length] = "<a href=\"" + href + "\" class=\"navi\">" + name + "</a>";
-		}else{
-			str[str.length] = "<a href=\"" + href + "\" class=\"naviActive\">" + name + "</a>";
-		}
-	}
-	naviObj.innerHTML = str.join(" ");
-}
 /*
  *	函数说明：清除树节点操作权限
  *	参数：	xmlNode:treeNode                XmlNode实例
 			boolean:clearChildren           是否清除子节点
- *	返回值：
  */
-function clearOperation(treeNode,clearChildren) {
+function clearOperation(treeNode, clearChildren) {
 	treeNode.removeAttribute("_operation");
 
-	if(false!=clearChildren) {
+	if(false != clearChildren) {
 		var childs = treeNode.selectNodes(".//treeNode");
 		for(var i=0,iLen=childs.length;i<iLen;i++) {
 			childs[i].removeAttribute("_operation");
@@ -784,8 +750,8 @@ function checkPasswordSecurityLevel(formObj, url, password, loginName) {
 	var p = new HttpRequestParams();
 	p.url = url;
 	p.setHeader("appCode", APP_CODE);
-	p.setContent("password",password);
-	p.setContent("loginName",loginName);
+	p.setContent("password", password);
+	p.setContent("loginName", loginName);
 
 	var request = new HttpRequest(p);
 	request.onresult = function(error) {
@@ -806,29 +772,13 @@ function checkPasswordSecurityLevel(formObj, url, password, loginName) {
  *	返回值：
  */
 function showPasswordSecurityLevel(formObj) {
-	var securityLevel = formObj.securityLevel;
-
 	var errorInfo = {
-		0:"您输入的密码安全等级为\"不可用\"，不安全",
-		1:"您输入的密码安全等级为\"低\"，只能保障基本安全",
-		2:"您输入的密码安全等级为\"中\"，较安全",
-		3:"您输入的密码安全等级为\"高\"，很安全"
+		0: "您输入的密码安全等级为\"不可用\"，不安全",
+		1: "您输入的密码安全等级为\"低\"，只能保障基本安全",
+		2: "您输入的密码安全等级为\"中\"，较安全",
+		3: "您输入的密码安全等级为\"高\"，很安全"
 	};
-	formObj.showCustomErrorInfo("password", errorInfo[securityLevel]);
+	formObj.showCustomErrorInfo("password", errorInfo[formObj.securityLevel]);
 }
 
-/*
- *	函数说明：切换到指定tab页
- *	参数：	object:ws                       ws对象
-			string:page                     page页id
- *	返回值：
- */
-function switchToPhase(ws,page) {
-	var tab = ws.getActiveTab();
-	if(null!=tab) {
-		var phase = tab.getActivePhase();
-		if(null != phase && page != phase.link.id) {
-			tab.switchToPhase(page);
-		}
-	}
-}
+

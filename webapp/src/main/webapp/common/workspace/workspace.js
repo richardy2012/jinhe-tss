@@ -136,7 +136,7 @@ function Tab(label, phasesParams, callback) {
 	this.callback = callback;
 	this.link ;
 	
-	this.phases = {}; // 步骤、阶段
+	this.phases = {};
 	this.phasesParams = phasesParams;  
 	
 	this.object = _display.createElement(WS_TAG_TAB, WS_NAMESPACE);
@@ -156,8 +156,15 @@ function Tab(label, phasesParams, callback) {
 
 	this.createContextMenu();
 	
-//	var oThis = this;
-//	closeIcon.onclick = this.object.ondblclick = oThis.close();	
+	var oThis = this;
+	closeIcon.onclick = this.object.ondblclick = function() {
+		oThis.close();
+	};	
+	this.object.onclick = function() {
+		if (!oThis.isActive) {
+			oThis.click();
+		}		
+	};	
 }
 /*
  *	创建右键菜单
@@ -214,7 +221,7 @@ Tab.prototype.click = function() {
 	_display.inactiveAllTabs();
 	this.active();
 
-	if(null != this.link) {
+	if( this.link ) {
 		this.showLink();
 		this.refreshPhases();
 	}
@@ -457,6 +464,13 @@ function Phase(label) {
 	div._target = this.object;
 	
 	this.object.appendChild(div);       
+	
+	var oThis = this;
+	this.object.onclick = function() {
+		if (!oThis.isActive) {
+			oThis.click();
+		}		
+	};	
 }
 /*
  *	将标签与Page对象关联
@@ -577,27 +591,25 @@ Phase.getInstance = function(uniqueID) {
 function ControllerButton(type, imgSrc) {
 	this.type = type;
 	this.imgSrc = imgSrc;
-	this.uniqueID;
-	this.object;
 	this.link;
 	this.enable = true;
-	this.init();
-}
-/*
- *	初始化控制器按钮
- */
-ControllerButton.prototype.init = function() {
-	var img    = _display.createElement(WS_TAG_IMG);
-	var object = _display.createElement(WS_TAG_CONTROLLER_BT, WS_NAMESPACE);
+ 	
+	this.object = _display.createElement(WS_TAG_CONTROLLER_BT, WS_NAMESPACE);
+	this.uniqueID = this.object.uniqueID;
 
+	var img = _display.createElement(WS_TAG_IMG);
 	img.src = (_display.element.baseurl || "") + this.imgSrc;
-	img._target = object;
+	img._target = this.object;
 	img.width  = _SIZE_IMG;
 	img.height = _SIZE_IMG;
-	object.appendChild(img);
-
-	this.object = object;
-	this.uniqueID = object.uniqueID;
+	this.object.appendChild(img);
+	
+	var oThis = this;
+	this.object.onclick = function() {
+		if (!oThis.isActive) {
+			oThis.click();
+		}		
+	};	
 }
 /*
  *	将按钮插入指定容器
@@ -654,7 +666,7 @@ ControllerButton.prototype.active = function() {
  *	低亮按钮
  */
 ControllerButton.prototype.inactive = function() {
-	if(!this.enable) {
+	if( !this.enable ) {
 		this.object.className = CSS_CLASS__NO_CLASS;
 	}
 }
@@ -950,6 +962,11 @@ Display.prototype.createPhaseControllerButtons = function() {
 	lastBt.linkTo(function() {
 		_display.phaseBox.scrollTop = _display.phaseBox.scrollHeight;
 	});
+	
+	var oThis = this;
+	firstBt.onclick = function() {
+		oThis.getFirstTab().click();
+	}
 }
 /*
  *	刷新Phase标签控制器按钮
@@ -1219,5 +1236,19 @@ WorkSpace.prototype.closePhase = function(pageId) {
 	var tab = this.getActiveTab();
 	if( tab ) {
 		tab.closePhase(pageId);
+	}
+}
+
+/*
+ *	函数说明：切换到指定tab页
+ *	参数：string:page
+ */
+WorkSpace.prototype.switchToPhase = function(page) {
+	var tab = this.getActiveTab();
+	if( tab ) {
+		var phase = tab.getActivePhase();
+		if( phase && page != phase.link.id) {
+			tab.switchToPhase(page);
+		}
 	}
 }
