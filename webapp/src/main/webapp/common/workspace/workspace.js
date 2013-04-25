@@ -844,6 +844,15 @@ Display.prototype.createTabControllerButtons = function() {
 	firstBt.object.onclick = function() { 
 		oThis.getFirstTab().click();
 	}
+	lastBt.object.onclick = function() { 
+		oThis.getLastTab().click();
+	}
+	prevBt.object.onclick = function() { 
+		oThis.prevTab();
+	}
+	nextBt.object.onclick = function() { 
+		oThis.nextTab();
+	}
 }
 /*
  *	刷新Tab标签控制器按钮
@@ -957,6 +966,20 @@ Display.prototype.createPhaseControllerButtons = function() {
 	nextBt.linkTo(function() {
 		_display.phaseBox.scrollTop += _SIZE_PHASE_HEIGHT + _SIZE_PHASE_MARGIN_TOP;
 	});
+	
+	var oThis = this;
+	prevBt.object.onclick = function() { 
+		var tab = oThis.getActiveTab();
+		if( tab ) {
+			tab.prevPhase();
+		}
+	}
+	nextBt.object.onclick = function() { 
+		var tab = oThis.getActiveTab();
+		if( tab ) {
+			tab.nextPhase();
+		}
+	}
 }
 /*
  *	刷新Phase标签控制器按钮

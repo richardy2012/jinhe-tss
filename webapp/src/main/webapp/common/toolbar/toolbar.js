@@ -1,47 +1,38 @@
-
 /*
  *	标签名
  */
 _TOOLBAR_NAMESPACE = "ToolBar";
-_TAG_NAME_BAR = "Bar";
 _TAG_NAME_BOX = "Box";
 _TAG_NAME_BUTTON = "Button";
 _TAG_NAME_LISTBUTTON = "ListButton";
 _TAG_NAME_TXTBUTTON = "TxtButton";
 _TAG_NAME_SEPARATOR = "Separator";
 _TAG_NAME_BUTTON_MORE = "ButtonMore";
-_TAG_NAME_TABLE = "table";
-_TAG_NAME_TBODY = "tbody";
-_TAG_NAME_TR = "tr";
-_TAG_NAME_TD = "td";
 _TAG_NAME_DIV = "div";
 _TAG_NAME_IMG = "img";
 _TAG_NAME_NOBR = "nobr";
+
 /*
  *	xml节点名
  */
-_XML_NODE_NAME_TOOLBAR = "toolbar";
 _XML_NODE_NAME_BUTTON = "button";
 _XML_NODE_NAME_LISTBUTTON = "listbutton";
 _XML_NODE_NAME_TXTBUTTON = "txtbutton";
-_XML_NODE_NAME_LISTITEM = "item";
 _XML_NODE_NAME_SEPARATOR = "separator";
-_XML_ATTRIBUTE_NAME_ID = "id";
-_XML_ATTRIBUTE_NAME_LABEL = "label";
-_XML_ATTRIBUTE_NAME_ICON = "icon";
-_XML_ATTRIBUTE_NAME_CMD = "cmd";
-_XML_ATTRIBUTE_NAME_ENABLE = "enable";
+
 _XML_NODE_TYPE_ELEMENT = 1;
 _XML_NODE_TYPE_ATTRIBUTE = 2;
 _XML_NODE_TYPE_TEXT = 3;
 _XML_NODE_TYPE_COMMENT = 8;
 _XML_NODE_TYPE_DOCUMENT = 9;
+
 /*
  *	唯一编号名前缀
  */
 _UNIQUE_ID_TOOLBAR_PREFIX = "toolbar__id";
 _UNIQUE_ID_TOOLBAR_ITEM_PREFIX = "toolbar_item__id";
 _UNIQUE_ID_DEFAULT_PREFIX = "default__id";
+
 /*
  *	样式名称
  */
@@ -57,16 +48,6 @@ _STYLE_NAME_TOOLBAR_TXTBUTTON_ACTIVE = "active";
 _STYLE_NAME_TOOLBAR_TXTBUTTON_INVERT = "invert";
 _STYLE_NAME_TOOLBAR_TXTBUTTON_DISABLE = "disable";
 
-_STYLE_NAME_TOOLBAR_SEPARATOR = "separator";
-
-/*
- *	特定字符
- */
-_STRING_NO_BREAK_SPACE = "&nbsp;";
-/*
- *	尺寸
- */
-_SIZE_TOOLBAR_WIDTH = 133;
 /*
  *	文件地址
  */
@@ -82,7 +63,7 @@ var ToolBars = {};
 ToolBars.items = {};
 
 /*
- *	函数说明：创建一个ToolBar实例
+ *	创建一个ToolBar实例
  *	参数：  object:tbObj  ToolBar实例关联的HTML对象
  *	返回值：ToolBar:toolbar     ToolBar实例
  */
@@ -94,7 +75,7 @@ ToolBars.create = function(tbObj) {
 }
 
 /*
- *	函数说明：统计所有ToolBar实例数量
+ *	统计所有ToolBar实例数量
  */
 ToolBars.count = function() {
 	var count = 0;
@@ -105,7 +86,7 @@ ToolBars.count = function() {
 }
 
 /*
- *	函数说明：以文本方式输出对象信息
+ *	以文本方式输出对象信息
  */
 ToolBars.toString = function() {
 	var str = [];
@@ -137,7 +118,7 @@ function ToolBar(tbObj) {
 }
 
 /*
- *	函数说明：创建界面
+ *	创建界面
  */
 ToolBar.prototype.create = function() {
 	var box  = Element.createElement(_TAG_NAME_BOX, _TOOLBAR_NAMESPACE);
@@ -164,7 +145,7 @@ ToolBar.prototype.create = function() {
 }
 
 /*
- *	函数说明：载入按钮配置
+ *	载入按钮配置
  *	参数：  XmlNode/string:xmlstr       xml字符串或者XmlNode实例
  */
 ToolBar.prototype.loadXML = function(xmlstr) {
@@ -196,7 +177,7 @@ ToolBar.prototype.loadXML = function(xmlstr) {
 }
 
 /*
- *	函数说明：清除所有ToolBarItem实例
+ *	清除所有ToolBarItem实例
  */
 ToolBar.prototype.clear = function() {
 	for(var item in this.items) {
@@ -206,7 +187,7 @@ ToolBar.prototype.clear = function() {
 }
 
 /*
- *	函数说明：释放实例
+ *	释放实例
  */
 ToolBar.prototype.dispose = function() {
 	this.clear();
@@ -220,7 +201,7 @@ ToolBar.prototype.dispose = function() {
 }
 
 /*
- *	函数说明：添加按钮
+ *	添加按钮
  *	参数：  xmlNode/Object:itemObj    XML节点或Object类型
  */
 ToolBar.prototype.add = function(itemObj) {
@@ -245,7 +226,7 @@ ToolBar.prototype.add = function(itemObj) {
 }
 
 /*
- *	函数说明：将xml节点转化成Object类型
+ *	将xml节点转化成Object类型
  *	参数：  xmlNode:node    XML节点
  *	返回值：    Object:itemObj      Object类型
  */
@@ -253,17 +234,16 @@ ToolBar.prototype.convert = function(node) {
 	var itemObj = {};
 	itemObj.type = node.nodeName;
 	itemObj.subitems = [];
-	for(var i=0,iLen=node.attributes.length;i<iLen;i++) {
+	for(var i=0; i < node.attributes.length; i++) {
 		var attr = node.attributes[i];
 		itemObj[attr.nodeName] = attr.nodeValue;
 	}
 	var childs = node.childNodes;
-	for(var i=0,iLen=childs.length;i<iLen;i++) {
+	for(var i=0;i <= childs.length; i++) {
 		var curChild = childs[i];
-		if(_XML_NODE_TYPE_ELEMENT==curChild.nodeType) {
-
+		if(_XML_NODE_TYPE_ELEMENT == curChild.nodeType) {
 			var subItemObject = {};
-			for(var j=0,jLen=curChild.attributes.length;j<jLen;j++) {
+			for(var j=0; j < curChild.attributes.length; j++) {
 				var attr = curChild.attributes[j];
 				subItemObject[attr.nodeName] = attr.nodeValue;
 			}
@@ -272,114 +252,81 @@ ToolBar.prototype.convert = function(node) {
 	}
 	return itemObj;
 }
+
 /*
- *	函数说明：为更多按钮下拉菜单添加选项
+ *	为更多按钮下拉菜单添加选项
  *	参数：  xmlNode/Object:itemObj    XML节点或Object类型
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
  */
 ToolBar.prototype.addSubMenuItem = function(itemObj) {
-	if(null!=window.Menu) {
-		if(_XML_NODE_NAME_SEPARATOR!=itemObj.type) {
-			var subMenuItem = {};
-			subMenuItem.label = itemObj.label;
-			subMenuItem.callback = itemObj.cmd;
-			subMenuItem.icon = itemObj.icon;
-			subMenuItem.enable = true;
-			subMenuItem.visible = true;
+	if( window.Menu && _XML_NODE_NAME_SEPARATOR != itemObj.type) {
+		var subMenuItem = {};
+		subMenuItem.label = itemObj.label;
+		subMenuItem.callback = itemObj.cmd;
+		subMenuItem.icon = itemObj.icon;
+		subMenuItem.enable = true;
+		subMenuItem.visible = true;
 
-			this.submenuMap[itemObj.id] = this.submenu.addItem(subMenuItem);
-		}
+		this.submenuMap[itemObj.id] = this.submenu.addItem(subMenuItem);
 	}
 }
+
 /*
- *	函数说明：清除指定按钮
+ *	清除指定按钮
  *	参数：  string:id       按钮ID
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
  */
 ToolBar.prototype.del = function(id) {
 	var curItem = this.items[id];
-	if(null!=curItem) {
+	if( curItem ) {
 		curItem.dispose();
-
 		delete this.items[id];
-
 		this.delSubMenuItem(id);
 	}
 }
+
 /*
- *	函数说明：从更多按钮下拉菜单删除选项
+ *	从更多按钮下拉菜单删除选项
  *	参数：  string:id       按钮ID
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
  */
 ToolBar.prototype.delSubMenuItem = function(id) {
 	var submenuUniqueID = this.submenuMap[id];
 	this.submenu.delItem(submenuUniqueID);
 }
+
 /*
- *	函数说明：绑定事件
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	绑定事件
  */
 ToolBar.prototype.attachEvents = function() {
 	this.object.onselectstart = _toolbar_onselectstart;
-	this.btMore.onmouseover = _toolbar_more_onmouseover;
-	this.btMore.onmouseout = _toolbar_more_onmouseout;
-	this.btMore.onmousedown = _toolbar_more_onmousedown;
-	this.btMore.onmouseup = _toolbar_more_onmouseup;
-	this.btMore.onclick = _toolbar_more_onclick;
+	this.btMore.onmouseover   = _toolbar_more_onmouseover;
+	this.btMore.onmouseout    = _toolbar_more_onmouseout;
+	this.btMore.onmousedown   = _toolbar_more_onmousedown;
+	this.btMore.onmouseup     = _toolbar_more_onmouseup;
+	this.btMore.onclick       = _toolbar_more_onclick;
 }
+
 /*
- *	函数说明：更多按钮高亮效果
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	更多按钮高亮效果
  */
 ToolBar.prototype.active = function() {
 	this.btMore.className = _STYLE_NAME_TOOLBAR_BUTTON_MORE_ACTIVE;
 }
+
 /*
- *	函数说明：更多按钮低亮效果
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	更多按钮低亮效果
  */
 ToolBar.prototype.inactive = function() {
 	this.btMore.className = "";
 }
+
 /*
- *	函数说明：更多按钮反白效果
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	更多按钮反白效果
  */
 ToolBar.prototype.invert = function() {
 	this.btMore.className = _STYLE_NAME_TOOLBAR_BUTTON_MORE_INVERT;
 }
+
 /*
- *	函数说明：统计所有ToolBarItem实例数量
- *	参数：
- *	返回值：number:count	ToolBarItem实例数量
- *	作者：毛云
- *	日期：2006-4-15
- *
+ *	统计所有ToolBarItem实例数量
  */
 ToolBar.prototype.count = function() {
 	var count = 0;
@@ -388,68 +335,50 @@ ToolBar.prototype.count = function() {
 	}
 	return count;
 }
+
 /*
- *	函数说明：检测更多按钮是否应该生效
- *	参数：
- *	返回值：    boolean:flag    是否应该生效(true表示应该生效)
- *	作者：毛云
- *	日期：2006-4-15
- *
+ *	检测更多按钮是否应该生效
  */
 ToolBar.prototype.checkMore = function() {
-	var flag = false;
 	var count = 0;
 	for(var item in this.items) {
 		var curItem = this.items[item];
 		switch(curItem.type) {
 			case _XML_NODE_NAME_BUTTON:
-				if(true==curItem.isOutSide()) {
-					count++;
-				}
-				break;
 			case _XML_NODE_NAME_LISTBUTTON:
-				if(true==curItem.isOutSide()) {
-					count++;
+				if( curItem.isOutSide()) {
+					count ++;
 				}
 				break;
 			case _XML_NODE_NAME_SEPARATOR:
 				break;
 		}
 	}
-	if(0<count) {
-		flag = true;
-	}
-	return flag;
+
+	return count > 0;
 }
+
 /*
- *	函数说明：触发点击更多按钮事件
- *	参数：
- *	返回值：number:count	ToolBarItem实例数量
- *	作者：毛云
- *	日期：2006-4-15
- *
+ *	触发点击更多按钮事件
  */
 ToolBar.prototype.fireOnShowMore = function() {
-	if(true==this.checkMore()) {
+	if( this.checkMore() ) {
 		Public.execCommand(this.onShowMore);
 		this.refreshSubMenu();
 	}
 }
+
 /*
- *	函数说明：刷新更多按钮下拉菜单选项
+ *	刷新更多按钮下拉菜单选项
  *	参数：  xmlNode/Object:itemObj    XML节点或Object类型
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
  */
 ToolBar.prototype.refreshSubMenu = function() {
-	if(null!=window.Menu) {
+	if( window.Menu ) {
 		for(var item in this.items) {
 			var curItem = this.items[item];
 			var visible = curItem.isOutSide();
 			var enable = curItem.enable;
-			if(_XML_NODE_NAME_SEPARATOR!=curItem.type) {
+			if(_XML_NODE_NAME_SEPARATOR != curItem.type) {
 
 				var submenuItemUniqueID = this.submenuMap[item];
 				var submenuItem = this.submenu.items[submenuItemUniqueID];
@@ -465,54 +394,38 @@ ToolBar.prototype.refreshSubMenu = function() {
 		}
 	}
 }
+
 /*
- *	函数说明：停用按钮
- *	参数：  string:id       按钮id
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-15
- *
+ *	停用按钮
  */
 ToolBar.prototype.disable = function(id) {
-	this.enable(id,false);
+	this.enable(id, false);
 }
+
 /*
- *	函数说明：启用按钮
- *	参数：  string:id       按钮id
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-15
- *
+ *	启用按钮
  */
-ToolBar.prototype.enable = function(id,enable) {
+ToolBar.prototype.enable = function(id, enable) {
 	var curItem = this.items[id];
-	if(null!=curItem) {
-		curItem.enable = (null==enable?true:enable);
+	if( curItem ) {
+		curItem.enable = (null == enable ? true : enable);
 		curItem.refresh();
 	}
 }
+
 /*
- *	函数说明：设置按钮是否可见
- *	参数：  string:id       按钮id
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-15
- *
+ *	设置按钮是否可见
  */
-ToolBar.prototype.setVisible = function(id,visible) {
+ToolBar.prototype.setVisible = function(id, visible) {
 	var curItem = this.items[id];
-	if(null!=curItem) {
-		curItem.visible = (null==visible?true:visible);
+	if( curItem ) {
+		curItem.visible = ( null == visible ? true : visible);
 		curItem.refresh();
 	}
 }
+
 /*
- *	函数说明：以文本方式输出对象信息
- *	参数：	
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	以文本方式输出对象信息
  */
 ToolBar.prototype.toString = function() {
 	var str = [];
@@ -522,16 +435,12 @@ ToolBar.prototype.toString = function() {
 	return str.join("\r\n");
 }
 
-
-
-
-
-
-
+ 
+ 
+ 
 /*
  *	对象名称：ToolBarItem
  *	职责：负责工具条按钮/分隔线等的展示
- *
  */
 function ToolBarItem(itemObj) {
 	this.object = null;
@@ -544,29 +453,15 @@ function ToolBarItem(itemObj) {
 	this.type = itemObj.type;
 	this.subitems = itemObj.subitems;
 	this.submenu = null;
-	this.init();
-}
-/*
- *	函数说明：ToolBarItem初始化
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
- */
-ToolBarItem.prototype.init = function() {
+ 
 	this.create();
 	this.createListItem();
 	this.refresh();
 	this.attachEvents();
 }
+
 /*
- *	函数说明：创建界面展示
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	创建界面展示
  */
 ToolBarItem.prototype.create = function() {
 	switch(this.type) {
@@ -574,7 +469,7 @@ ToolBarItem.prototype.create = function() {
 			var img = Element.createElement(_TAG_NAME_IMG);
 			img.src = this.icon;
 
-			var div = Element.createElement(_TAG_NAME_BUTTON,_TOOLBAR_NAMESPACE);
+			var div = Element.createElement(_TAG_NAME_BUTTON, _TOOLBAR_NAMESPACE);
 			div.id = this.id;
 			div.title = this.label;
 			div._instance = this;
@@ -587,11 +482,11 @@ ToolBarItem.prototype.create = function() {
 			var img = Element.createElement(_TAG_NAME_IMG);
 			img.src = this.icon;
 
-			var arrow = Element.createElement(_TAG_NAME_IMG);
+			var arrow = Element.createElement(_TAG_NAME_IMG); // 箭头
 			arrow.src = _FILE_IMG_LISTBUTTON_ARROW;
 			arrow.className = _STYLE_NAME_TOOLBAR_LISTBUTTON_ARROW;
 
-			var div = Element.createElement(_TAG_NAME_LISTBUTTON,_TOOLBAR_NAMESPACE);
+			var div = Element.createElement(_TAG_NAME_LISTBUTTON, _TOOLBAR_NAMESPACE);
 			div.id = this.id;
 			div.title = this.label;
 			div._instance = this;
@@ -602,14 +497,11 @@ ToolBarItem.prototype.create = function() {
 			this.object = div;
 			break;
 		case _XML_NODE_NAME_SEPARATOR:
-
-			var div = Element.createElement(_TAG_NAME_SEPARATOR,_TOOLBAR_NAMESPACE);
-
-			this.object = div;
+			this.object = Element.createElement(_TAG_NAME_SEPARATOR, _TOOLBAR_NAMESPACE);;
 			break;
 		case _XML_NODE_NAME_TXTBUTTON:
 
-			var div = Element.createElement(_TAG_NAME_TXTBUTTON,_TOOLBAR_NAMESPACE);
+			var div = Element.createElement(_TAG_NAME_TXTBUTTON, _TOOLBAR_NAMESPACE);
 			div.id = this.id;
 			div.title = this.label;
 			div.innerText = this.label;
@@ -619,59 +511,45 @@ ToolBarItem.prototype.create = function() {
 			break;
 	}
 }
+
 /*
- *	函数说明：刷新按钮状态
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	刷新按钮状态
  */
 ToolBarItem.prototype.refresh = function() {
-	if(false==this.enable) {
+	if(false == this.enable) {
 		this.disable();
-	}else{
+	} else {
 		this.inactive();
 	}
-	if(false==this.visible) {
+	
+	if(false == this.visible) {
 		this.hide();
-	}else{
+	} else {
 		this.show();
 	}
 }
+
 /*
- *	函数说明：绑定事件
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	绑定事件
  */
 ToolBarItem.prototype.attachEvents = function() {
 	this.object.onmouseover = _toolbar_bt_onmouseover;
-	this.object.onmouseout = _toolbar_bt_onmouseout;
+	this.object.onmouseout  = _toolbar_bt_onmouseout;
 	this.object.onmousedown = _toolbar_bt_onmousedown;
-	this.object.onmouseup = _toolbar_bt_onmouseup;
-	this.object.onclick = _toolbar_bt_onclick;
+	this.object.onmouseup   = _toolbar_bt_onmouseup;
+	this.object.onclick     = _toolbar_bt_onclick;
 }
+
 /*
- *	函数说明：将对象定位到指定容器
+ *	将对象定位到指定容器
  *	参数：  object:container    HTML容器对象
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
  */
 ToolBarItem.prototype.dockTo = function(container) {
 	container.appendChild(this.object);
 }
+
 /*
- *	函数说明：按钮高亮效果
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	按钮高亮效果
  */
 ToolBarItem.prototype.active = function() {
 	switch(this.type) {
@@ -681,43 +559,27 @@ ToolBarItem.prototype.active = function() {
 		case _XML_NODE_NAME_LISTBUTTON:
 			this.object.className = _STYLE_NAME_TOOLBAR_LISTBUTTON_ACTIVE;
 			break;
-		case _XML_NODE_NAME_SEPARATOR:
-			break;
 		case _XML_NODE_NAME_TXTBUTTON:
 			this.object.className = _STYLE_NAME_TOOLBAR_TXTBUTTON_ACTIVE;
 			break;
 	}
 }
+
 /*
- *	函数说明：按钮低亮效果
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	按钮低亮效果
  */
 ToolBarItem.prototype.inactive = function() {
 	switch(this.type) {
 		case _XML_NODE_NAME_BUTTON:
-			this.object.className = "";
-			break;
 		case _XML_NODE_NAME_LISTBUTTON:
-			this.object.className = "";
-			break;
-		case _XML_NODE_NAME_SEPARATOR:
-			break;
 		case _XML_NODE_NAME_TXTBUTTON:
 			this.object.className = "";
 			break;
 	}
 }
+
 /*
- *	函数说明：按钮反白效果
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	按钮反白效果
  */
 ToolBarItem.prototype.invert = function() {
 	switch(this.type) {
@@ -727,186 +589,118 @@ ToolBarItem.prototype.invert = function() {
 		case _XML_NODE_NAME_LISTBUTTON:
 			this.object.className = _STYLE_NAME_TOOLBAR_LISTBUTTON_INVERT;
 			break;
-		case _XML_NODE_NAME_SEPARATOR:
-			break;
 		case _XML_NODE_NAME_TXTBUTTON:
 			this.object.className = _STYLE_NAME_TOOLBAR_TXTBUTTON_INVERT;
 			break;
 	}
 }
+
 /*
- *	函数说明：按钮禁止效果
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	按钮禁止效果
  */
 ToolBarItem.prototype.disable = function() {
 	switch(this.type) {
 		case _XML_NODE_NAME_BUTTON:
 			this.object.className = _STYLE_NAME_TOOLBAR_BUTTON_DISABLE;
 			break;
-		case _XML_NODE_NAME_LISTBUTTON:
-			break;
-		case _XML_NODE_NAME_SEPARATOR:
-			break;
 		case _XML_NODE_NAME_TXTBUTTON:
 			this.object.className = _STYLE_NAME_TOOLBAR_TXTBUTTON_DISABLE;
 			break;
 	}
 }
+
 /*
- *	函数说明：按钮隐藏
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	按钮隐藏
  */
 ToolBarItem.prototype.hide = function() {
 	switch(this.type) {
 		case _XML_NODE_NAME_BUTTON:
-			this.object.style.display = "none";
-			break;
-		case _XML_NODE_NAME_LISTBUTTON:
-			break;
-		case _XML_NODE_NAME_SEPARATOR:
-			break;
 		case _XML_NODE_NAME_TXTBUTTON:
 			this.object.style.display = "none";
 			break;
 	}
 }
+
 /*
- *	函数说明：按钮显示
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	按钮显示
  */
 ToolBarItem.prototype.show = function() {
 	switch(this.type) {
 		case _XML_NODE_NAME_BUTTON:
-			this.object.style.display = "";
-			break;
-		case _XML_NODE_NAME_LISTBUTTON:
-			break;
-		case _XML_NODE_NAME_SEPARATOR:
-			break;
 		case _XML_NODE_NAME_TXTBUTTON:
 			this.object.style.display = "";
 			break;
 	}
 }
+
 /*
- *	函数说明：执行按钮方法
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	执行按钮方法
  */
 ToolBarItem.prototype.execCallBack = function() {
 	switch(this.type) {
-		case _XML_NODE_NAME_BUTTON:
-			Public.execCommand(this.cmd);
-			break;
 		case _XML_NODE_NAME_LISTBUTTON:
 			this.showListItem();
 			break;
-		case _XML_NODE_NAME_SEPARATOR:
-			break;
+		case _XML_NODE_NAME_BUTTON:
 		case _XML_NODE_NAME_TXTBUTTON:
 			Public.execCommand(this.cmd);
 			break;
 	}
 }
+
 /*
- *	函数说明：创建ListButton的下拉列表项
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	创建ListButton的下拉列表项(利用Menu控件生成)
  */
 ToolBarItem.prototype.createListItem = function() {
-	if(this.type==_XML_NODE_NAME_LISTBUTTON) {
-		//利用Menu控件生成
-		if(null!=window.Menu) {
-			var submenu = new Menu();
-			for(var i=0,iLen=this.subitems.length;i<iLen;i++) {
-				var curSubItem = this.subitems[i];
-				var curMenuSubItem = {};
-				curMenuSubItem.label = curSubItem.label;
-				curMenuSubItem.callback = curSubItem.cmd;
-				curMenuSubItem.icon = curSubItem.icon;
+	if(this.type == _XML_NODE_NAME_LISTBUTTON && window.Menu) {
+		var submenu = new Menu();
+		for(var i=0; i < this.subitems.length; i++) {
+			var subItem = this.subitems[i];
+			var menuSubItem = {};
+			menuSubItem.label = subItem.label;
+			menuSubItem.callback = subItem.cmd;
+			menuSubItem.icon = subItem.icon;
 
-				submenu.addItem(curMenuSubItem);
-			}
-			this.submenu = submenu;
+			submenu.addItem(menuSubItem);
 		}
+		this.submenu = submenu;
 	}
 }
+
 /*
- *	函数说明：显示ListButton的下拉列表项
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	显示ListButton的下拉列表项(利用Menu控件生成)
  */
 ToolBarItem.prototype.showListItem = function() {
-	if(this.type==_XML_NODE_NAME_LISTBUTTON) {
-		//利用Menu控件生成
-		if(null!=window.Menu) {
-			var absLeft = Element.absLeft(this.object);
-			var absTop = Element.absTop(this.object);
-			var h = this.object.offsetHeight;
-			var offX = this.object.offsetWidth;
-			this.submenu.show(offsetLeft,offsetTop+h,true,offX);
-		}
+	if(this.type == _XML_NODE_NAME_LISTBUTTON && window.Menu) {
+		var absLeft = Element.absLeft(this.object);
+		var absTop  = Element.absTop(this.object);
+		var h = this.object.offsetHeight;
+		var offX = this.object.offsetWidth;
+		this.submenu.show(absLeft, absTop + h, true, offX);
 	}
 }
+
 /*
- *	函数说明：获取按钮是否不在滚动显示区内
- *	参数：
- *	返回值：    bollean:flag    是否不在滚动显示区内(true表示不在)
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	获取按钮是否不在滚动显示区内
  */
 ToolBarItem.prototype.isOutSide = function() {
 	var flag = false;
 	switch(this.type) {
-		case _XML_NODE_NAME_BUTTON:
-			var refLeft = this.object.offsetLeft+this.object.offsetWidth/2;
-			var rightBound = this.object.parentNode.parentNode.offsetWidth;
-			flag = (refLeft>rightBound);
-			break;
-		case _XML_NODE_NAME_LISTBUTTON:
-			var refLeft = this.object.offsetLeft+this.object.offsetWidth/2;
-			var rightBound = this.object.parentNode.parentNode.offsetWidth;
-			flag = (refLeft>rightBound);
-			break;
 		case _XML_NODE_NAME_SEPARATOR:
 			break;
+		case _XML_NODE_NAME_BUTTON:
+		case _XML_NODE_NAME_LISTBUTTON:
 		case _XML_NODE_NAME_TXTBUTTON:
-			var refLeft = this.object.offsetLeft+this.object.offsetWidth/2;
+			var refLeft = this.object.offsetLeft + this.object.offsetWidth / 2;
 			var rightBound = this.object.parentNode.parentNode.offsetWidth;
-			flag = (refLeft>rightBound);
+			flag = (refLeft > rightBound);
 			break;
 	}
 	return flag;
 }
+
 /*
- *	函数说明：释放实例
- *	参数：
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-19
- *
+ *	释放实例
  */
 ToolBarItem.prototype.dispose = function() {
 	Element.removeNode(this.object);
@@ -915,13 +709,9 @@ ToolBarItem.prototype.dispose = function() {
 		delete this[item];
 	}
 }
+
 /*
- *	函数说明：以文本方式输出对象信息
- *	参数：	
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-13
- *
+ *	以文本方式输出对象信息
  */
 ToolBarItem.prototype.toString = function() {
 	var str = [];
@@ -936,208 +726,104 @@ ToolBarItem.prototype.toString = function() {
 
 
 
-
-
 /*
- *	函数说明：鼠标悬停更多按钮
+ *	鼠标离开更多按钮
  *	参数：  event:eventObj    事件对象
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
  */
-function _toolbar_more_onmouseover(eventObj) {		
-	if(null==eventObj) {
-		eventObj = window.event;
-	}
+function _toolbar_more_onmouseout() {		
 	var srcElement = this;
 	var _instance = srcElement._instance;
-	if(null!=_instance) {
-		if(true==_instance.checkMore()) {
-			_instance.active();
-		}
-	}
-}
-/*
- *	函数说明：鼠标离开更多按钮
- *	参数：  event:eventObj    事件对象
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
- */
-function _toolbar_more_onmouseout(eventObj) {		
-	if(null==eventObj) {
-		eventObj = window.event;
-	}
-	var srcElement = this;
-	var _instance = srcElement._instance;
-	if(null!=_instance) {
-		if(true==_instance.checkMore()) {
-			_instance.inactive();
-		}
-	}
-}
-/*
- *	函数说明：鼠标按下更多按钮
- *	参数：  event:eventObj    事件对象
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
- */
-function _toolbar_more_onmousedown(eventObj) {		
-	if(null==eventObj) {
-		eventObj = window.event;
-	}
-	var srcElement = this;
-	var _instance = srcElement._instance;
-	if(null!=_instance) {
-		if(true==_instance.checkMore()) {
-			_instance.invert();
-		}
-	}
-}
-/*
- *	函数说明：鼠标松开更多按钮
- *	参数：  event:eventObj    事件对象
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
- */
-function _toolbar_more_onmouseup(eventObj) {		
-	if(null==eventObj) {
-		eventObj = window.event;
-	}
-	var srcElement = this;
-	var _instance = srcElement._instance;
-	if(null!=_instance) {
-		if(true==_instance.checkMore()) {
-			_instance.active();
-		}
-	}
-}
-/*
- *	函数说明：鼠标点击更多按钮
- *	参数：  event:eventObj    事件对象
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
- */
-function _toolbar_more_onclick(eventObj) {		
-	if(null==eventObj) {
-		eventObj = window.event;
-	}
-	var srcElement = this;
-	this._instance.fireOnShowMore();
-}
-/*
- *	函数说明：鼠标悬停按钮
- *	参数：  event:eventObj    事件对象
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
- */
-function _toolbar_bt_onmouseover(eventObj) {		
-	if(null==eventObj) {
-		eventObj = window.event;
-	}
-	var srcElement = this;
-	var _instance = srcElement._instance;
-	if(null!=_instance && false!=_instance.enable) {
-		_instance.active();
-	}
-}
-/*
- *	函数说明：鼠标离开按钮
- *	参数：  event:eventObj    事件对象
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
- */
-function _toolbar_bt_onmouseout(eventObj) {		
-	if(null==eventObj) {
-		eventObj = window.event;
-	}
-	var srcElement = this;
-	var _instance = srcElement._instance;
-	if(null!=_instance && false!=_instance.enable) {
+	if( _instance && _instance.checkMore() ) {
 		_instance.inactive();
 	}
 }
+
 /*
- *	函数说明：鼠标按下按钮
- *	参数：  event:eventObj    事件对象
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	鼠标按下更多按钮
  */
-function _toolbar_bt_onmousedown(eventObj) {		
-	if(null==eventObj) {
-		eventObj = window.event;
-	}
+function _toolbar_more_onmousedown() {		
 	var srcElement = this;
 	var _instance = srcElement._instance;
-	if(null!=_instance && false!=_instance.enable) {
+	if( _instance && _instance.checkMore() ) {
 		_instance.invert();
 	}
 }
+
 /*
- *	函数说明：鼠标松开按钮
- *	参数：  event:eventObj    事件对象
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	鼠标悬停更多按钮 or 鼠标松开更多按钮
  */
-function _toolbar_bt_onmouseup(eventObj) {		
-	if(null==eventObj) {
-		eventObj = window.event;
-	}
+function _toolbar_more_onmouseover() = function _toolbar_more_onmouseup() {		
 	var srcElement = this;
 	var _instance = srcElement._instance;
-	if(null!=_instance && false!=_instance.enable) {
+	if( _instance && _instance.checkMore() ) {
 		_instance.active();
 	}
 }
+
 /*
- *	函数说明：鼠标点击按钮
- *	参数：  event:eventObj    事件对象
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	鼠标点击更多按钮
  */
-function _toolbar_bt_onclick(eventObj) {		
-	if(null==eventObj) {
-		eventObj = window.event;
-	}
+function _toolbar_more_onclick() {		
+	this._instance.fireOnShowMore();
+}
+/*
+ *	鼠标悬停按钮
+ */
+function _toolbar_bt_onmouseover() {		
 	var srcElement = this;
 	var _instance = srcElement._instance;
-	if(null!=_instance && false!=_instance.enable) {
+	if(_instance && _instance.enable) {
+		_instance.active();
+	}
+}
+
+/*
+ *	鼠标离开按钮
+ */
+function _toolbar_bt_onmouseout() {		
+	var srcElement = this;
+	var _instance = srcElement._instance;
+	if(_instance && _instance.enable) {
+		_instance.inactive();
+	}
+}
+
+/*
+ *	鼠标按下按钮
+ */
+function _toolbar_bt_onmousedown() {		
+	var srcElement = this;
+	var _instance = srcElement._instance;
+	if(_instance && _instance.enable) {
+		_instance.invert();
+	}
+}
+
+/*
+ *	鼠标松开按钮
+ */
+function _toolbar_bt_onmouseup() {		
+	var srcElement = this;
+	var _instance = srcElement._instance;
+	if( _instance &&  _instance.enable) {
+		_instance.active();
+	}
+}
+
+/*
+ *	鼠标点击按钮
+ */
+function _toolbar_bt_onclick() {		
+	var srcElement = this;
+	var _instance = srcElement._instance;
+	if( _instance && _instance.enable) {
 		_instance.execCallBack();
 	}
 }
+
 /*
- *	函数说明：鼠标拖动选择文字
- *	参数：  event:eventObj    事件对象
- *	返回值：
- *	作者：毛云
- *	日期：2006-4-18
- *
+ *	鼠标拖动选择文字
  */
 function _toolbar_onselectstart(eventObj) {		
-	if(null==eventObj) {
-		eventObj = window.event;
-	}
-	var srcElement = this;
-	Event.cancel(eventObj);
+	Event.cancel(eventObj || window.event);
 }
-
-
-

@@ -193,7 +193,7 @@ Collection.prototype.get = function(id) {
 }
 
 /*
- *	函数说明：原型继承
+ *	原型继承
  *	参数：	function:Class		将被继承的类
  */
 Collection.prototype.inherit = function(Class) {
@@ -350,7 +350,7 @@ String.prototype.revertCDATA = function(){
 }
 
 /*
- *	函数说明：根据给定字符串裁减原字符串
+ *	根据给定字符串裁减原字符串
  *	参数：	string:trimStr  要裁减的字符串
  *	返回值：string:str      裁减后的字符串
  */
@@ -363,7 +363,7 @@ String.prototype.trim = function(trimStr){
 }
 
 /*
- *	函数说明：按字节，从起始位置到终止位置截取
+ *	按字节，从起始位置到终止位置截取
  *	参数：	number:startB       起始字节位置
 			number:endB         终止字节位置
  *	返回值：string:str          截取后的字符串
@@ -395,7 +395,7 @@ String.prototype.substringB = function(startB, endB){
 	return str.substring(start,end);
 }
 /*
- *	函数说明：按字节，从起始位置开始截取指定字节数
+ *	按字节，从起始位置开始截取指定字节数
  *	参数：	number:startB       起始字节位置
 			number:lenB         截取字节数
  *	返回值：string:str          截取后的字符串
@@ -406,7 +406,7 @@ String.prototype.substrB = function(startB, lenB){
 }
 
 /*
- *	函数说明：按字节，从起始位置开始截取指定字节数
+ *	按字节，从起始位置开始截取指定字节数
  */
 String.prototype.getBytes = function(){
 	var str = this;
@@ -472,7 +472,7 @@ Element.removeNode = function(node) {
 }
 
 /*
- *	函数说明：获取对象页面绝对位置
+ *	获取对象页面绝对位置
  *	参数：	object:srcElement       HTML对象
  *	返回值：number:offsetLeft       对象页面绝对位置
  */
@@ -496,7 +496,7 @@ Element.absTop = function(srcElement) {
 }
 
 /*
- *	函数说明：创建带命名空间的对象
+ *	创建带命名空间的对象
  *	参数：	string:tagName		对象标签名
 			string:ns			命名空间
  *	返回值：object	html对象
@@ -516,7 +516,7 @@ Element.createElement = function(tagName, ns) {
 }
 
 /*
- *	函数说明：隐藏对象覆盖范围内的高优先级的控件(select等)
+ *	隐藏对象覆盖范围内的高优先级的控件(select等)
  *	参数：	Object:obj			html对象
  *	返回值：
  */
@@ -579,7 +579,7 @@ Element.write = function(obj, content) {
 }
 
 /*
- * 函数说明：动态创建脚本
+ * 动态创建脚本
  * 参数：	String:script			脚本内容
  */
 Element.createScript = function(script) {
@@ -592,7 +592,7 @@ Element.createScript = function(script) {
 }
 
 /*
- * 函数说明：动态创建样式
+ * 动态创建样式
  * 参数：	String:style			样式内容
  */
  Element.createStyle = function(style) {
@@ -625,7 +625,7 @@ Element.setOpacity = function(obj, opacity) {
 }
 
 /*
- * 函数说明：是否包含关系
+ * 是否包含关系
  * 参数：   Object:parentObj        html对象
 			Object:obj              html对象
  * 返回值：	
@@ -650,7 +650,7 @@ Element.contains = function(parentNode, node) {
 }
 
 /*
- * 函数说明：获取元素的当前样式
+ * 获取元素的当前样式
  * 参数：   Object:obj              html对象
 			string:rule             样式名(例:background-color)
  * 返回值：	string:str              样式值
@@ -674,7 +674,7 @@ Element.getCurrentStyle = function(obj, rule) {
 }
 
 /*
- * 函数说明：控制对象拖动改变宽度
+ * 控制对象拖动改变宽度
  * 参数：	Object:obj			要拖动改变宽度的HTML对象
  */
 Element.attachColResize = function(obj, offsetX) {
@@ -767,7 +767,7 @@ Event.MOUSEDRAG = 32;
 Event.timeout = {};
 
 /*
- *	函数说明：获得事件触发对象
+ *	获得事件触发对象
  *	参数：	event:eventObj      事件对象
  *	返回值：object:object       HTML对象
  */
@@ -823,7 +823,7 @@ Event.cancelBubble = function(eventObj) {
 }
 
 /*
- *	函数说明：附加事件
+ *	附加事件
  *	参数：	object:srcElement       HTML对象
 			string:eventName        事件名称(不带on前缀)
 			function:listener       回调方法                
@@ -901,6 +901,15 @@ Event.offsetY = function(eventObj) {
 
 /*********************************** xml文档、节点相关操作  start **********************************/
 
+/*
+ * 将字符串转化成xml节点对象
+ */
+function loadXmlToNode(xml) {
+	var xr = new XmlReader(xml);
+	return xt.xmlDom;
+}
+
+
 function XmlReader(text) {
 	this.xmlDom = null;
 
@@ -971,7 +980,7 @@ XmlReader.prototype.load = function(url, async) {
 }
 
 /*
- *	函数说明：获取解析错误
+ *	获取解析错误
  */
 XmlReader.prototype.getParseError = function() {
 	var parseError = null;
@@ -1137,7 +1146,7 @@ XmlNode.prototype.selectSingleNode = function(xpath) {
 }
 
 /*
- *	函数说明：查询多个节点
+ *	查询多个节点
  *	参数：	string:xpath		xpath
  *	返回值：array:xmlNodes      XmlNode实例数组
  */
@@ -1264,4 +1273,470 @@ XmlNode.prototype.toXml = function() {
 }
 
 /*********************************** xml文档、节点相关操作  end **********************************/
+
+// 离开提醒
+var Reminder = {};
+
+Reminder.items = {};   // 提醒项
+Reminder.count = 0;
+Reminder.flag  = true; // 是否要提醒
+
+Reminder.del = function(id) {
+	if( this.items[id] ) {
+		delete this.item[id];
+		this.count--;
+	}
+}
+
+Reminder.remind = function() {
+	if(this.getCount() > 0) {
+		alert("当然有 <" + this.count + ">项修改未保存，请先保存");
+	}
+}
+
+/*
+ * 统计提醒项
+ */
+Reminder.getCount = function() {
+	if( true== this.flag) {
+		return this.count;
+	} else {
+		return 0;
+	}
+}
+
+/*
+ * 取消提醒
+ */
+Reminder.cancel = function() {
+	this.flag = false;
+}
+
+/*
+ * 允许提醒
+ */
+Reminder.restore = function() {
+	this.flag = true;
+}
+
+window.attachEvent("onbeforeunload", function() {
+	if(Reminder.getCount() > 0) {            
+		event.returnValue = "当前有 <" + count + "> 项修改未保存，您确定要离开吗？";
+	}
+});
+
+/* 给xform等添加离开提醒 */
+function attachReminder(id, xform) {
+	if( xform ) {
+		xform.ondatachange = function() {
+			Reminder.add(id); // 数据有变化时才添加离开提醒
+		}
+	}
+	else {
+		Reminder.add(id);
+	}
+}
+
+
+
+/*
+ *	对象名称：Blocks
+ *	职责：负责管理所有Block实例
+ */
+var Blocks = {};
+Blocks.items = {};
+
+/*
+ *	创建区块实例
+ *	参数：	Object:blockObj		HTML对象
+			Object:associate	关联的HTML对象
+			boolean:visible		默认显示状态
+ *	返回值：
+ */
+Blocks.create = function(blockObj, associate, visible) {
+	var block = new Block(blockObj, associate, visible);
+	this.items[block.uniqueID] = block;
+}
+/*
+ *	获取区块实例
+ *	参数：	string:id		HTML对象id
+ *	返回值：Block:block		Block实例
+ */
+Blocks.getBlock = function(id) {
+	var block = this.items[id];
+	return block;
+}
+
+
+/*
+ *	对象名称：Block
+ *	职责：负责控制区块显示隐藏等
+ */
+var Block = function(blockObj, associate, visible) {
+	this.object = blockObj;
+	this.uniqueID = this.object.id;
+	this.associate = associate;
+	this.visible = visible || true;
+
+	this.width = null;
+	this.height = null;	
+	this.mode = null;
+
+	this.init();
+}
+
+/*
+ *	初始化区块
+ */
+Block.prototype.init = function() {
+	this.width  = this.object.currentStyle.width;
+	this.height = this.object.currentStyle.height;
+
+	if(false == this.visible) {
+		this.hide();
+	}
+}
+
+/*
+ *	显示详细信息
+ *	参数：	boolean:useFixedSize	是否启用固定尺寸显示
+ */
+Block.prototype.show = function(useFixedSize) {
+	if( this.associate ) {
+		this.associate.style.display = "";
+	}
+	this.object.style.display = "";
+
+	var width  = "auto";
+	var height = "auto";
+	
+	// 启用固定尺寸
+	if(false != useFixedSize) {
+		width  = this.width || width;
+		height = this.height || height;
+	}
+	this.object.style.width = width;
+	this.object.style.height = height;
+
+	this.visible = true;
+}
+
+/*
+ *	隐藏详细信息
+ */
+Block.prototype.hide = function() {
+	if(  this.associate){
+		this.associate.style.display = "none";
+	}
+	this.object.style.display = "none";
+
+	this.visible = false;
+}
+
+/*
+ *	切换显示隐藏状态
+ *	参数：	boolean:visible		是否显示状态（可选，无参数则默认切换下一状态）
+ */
+Block.prototype.switchTo = function(visible) {
+	visible = visible || !this.visible;
+
+	if( visible){
+		this.show();	
+	}
+	else {
+		this.hide();
+	}
+}
+
+/*
+ *	原型继承
+ *	参数：	function:Class		将被继承的类
+ */
+Block.prototype.inherit = function(Class) {
+	var inheritClass = new Class();
+	for(var item in inheritClass){
+		this[item] = inheritClass[item];
+	}
+}
+
+
+/*
+ *	对象名称：WritingBlock
+ *	职责：负责区块内容写入
+ *
+ */
+function WritingBlock() {
+	this.mode = null;
+	this.line = 0;
+	this.minLine = 3;
+	this.maxLength = 16;
+}
+
+/*
+ *	打开分行写入模式
+ */
+WritingBlock.prototype.open = function(){
+	this.mode = "line";
+	this.line = 0;
+	this.writeTable();
+}
+
+/*
+ *	写入分行模式用的表格
+ */
+WritingBlock.prototype.writeTable = function() {
+	var str = [];
+	str[str.length] = "<table class=hfull><tbody>";
+	for(var i = 0;i < this.minLine; i++) {
+		str[str.length] = "<tr>";
+		str[str.length] = "  <td class=bullet>&nbsp;</td>";
+		str[str.length] = "  <td style=\"width: 55px\"></td>";
+		str[str.length] = "  <td></td>";
+		str[str.length] = "</tr>";
+	}
+	str[str.length] = "</tbody></table>";
+
+	this.object.innerHTML = str.join("");    
+}
+
+/*
+ *	清除内容
+ */
+WritingBlock.prototype.clear = function() {
+	this.object.innerHTML = "";
+}
+
+/*
+ *	关闭分行写入模式
+ */
+WritingBlock.prototype.close = function() {
+	this.mode = null;
+}
+
+/*
+ *	分行写入内容（左右两列）
+ *	参数：	string:name     名称
+			string:value    值
+ */
+WritingBlock.prototype.writeln = function(name, value) {
+	if("line" == this.mode){
+		var table = this.object.firstChild;
+		if(table && "TABLE" != table.nodeName.toUpperCase()) {
+			this.clear();
+			table = null;
+		}
+		if(null == table) {
+			this.writeTable();
+		}
+
+		// 大于最小行数，则插入新行
+		if(this.line >= this.minLine) {
+			var newrow = table.rows[0].cloneNode(true);
+			table.firstChild.appendChild(newrow);
+		}
+
+		if(value && value.length > this.maxLength) {
+			value = value.substring(0, this.maxLength) + "...";
+		}
+
+		var row = table.rows[this.line];
+		var cells = row.cells;
+		cells[1].innerText = name + ":";
+		cells[2].innerText = value || "-";
+
+		this.line++;
+	}
+}
+
+/*
+ *	写入内容
+ */
+WritingBlock.prototype.write = function(content) {
+	this.mode = null;
+	this.object.innerHTML = content;
+}
+
+
+/*
+ *	对象名称：Focus（全局静态对象）
+ *	职责：负责管理所有注册进来对象的聚焦操作
+ */
+var Focus = {};
+Focus.items = {};
+Focus.lastID = null;
+
+/*
+ *	注册对象
+ *	参数：	object:focusObj		需要聚焦的HTML对象
+ *	返回值：string:id			用于取回聚焦HTML对象的id
+ */
+Focus.register = function(focusObj) {
+	var id = focusObj.id;
+
+	//如果id不存在则自动生成一个
+	if(null == id || "" == id) {
+		id = UniqueID.generator();
+		focusObj.id = id;
+	}
+	this.items[id] = focusObj;
+
+	this.focus(id);
+	return id;
+}
+
+/*
+ *	聚焦对象
+ *	参数：	object:focusObj		需要聚焦的HTML对象
+ *	返回值：string:id			用于取回聚焦HTML对象的id
+ */
+Focus.focus = function(id){
+	var focusObj = this.items[id];
+	if(focusObj && id != this.lastID){
+		if(this.lastID) {
+			this.blurItem(this.lastID);
+		}
+		
+		focusObj.style.filter = ""; // 施加聚焦效果
+		this.lastID = id;
+	}
+}
+
+/*
+ *	施加失焦效果
+ *	参数：	string:id			需要聚焦的HTML对象
+ */
+Focus.blurItem = function(id){
+	var focusObj = this.items[id];
+	if(focusObj){
+		focusObj.style.filter = "alpha(opacity=50) gray()";
+	}
+}
+
+/*
+ *	释放对象
+ *	参数：	object:focusObj		需要聚焦的HTML对象
+ *	返回值：string:id			用于取回聚焦HTML对象的id
+ */
+Focus.unregister = function(id){
+	var focusObj = this.items[id];
+	if(focusObj){
+		delete this.items[id];
+	}
+}
+
+
+
+
+/*
+ *	重新封装alert
+ *	参数：	string:info     简要信息
+			string:detail   详细信息
+ */
+function Alert(info, detail) {
+	info = convertToString(info);
+	detail = convertToString(detail);
+
+	var maxWords = 100;
+	var params = {};
+	params.type = "alert";
+	params.info = info;
+	params.detail = detail;
+	if("" == detail && maxWords < info.length) {
+		params.info = info.substring(0, maxWords) + "...";
+		params.detail = info;        
+	}
+	params.title = "";
+	window.showModalDialog(URL_CORE + '_info.htm', params, 'dialogwidth:280px; dialogheight:150px; status:yes; help:no;resizable:yes;unadorned:yes');
+}
+
+/*
+ *	重新封装confirm
+ *	参数：	string:info             简要信息
+			string:detail           详细信息
+ *	返回值：boolean:returnValue     用户选择确定/取消
+ */
+function Confirm(info,detail) {
+	info = convertToString(info);
+	detail = convertToString(detail);
+
+	var maxWords = 100;
+	var params = {};
+	params.type = "confirm";
+	params.info = info;
+	params.detail = detail;
+	if("" == detail && maxWords<info.length) {
+		params.info = info.substring(0, maxWords) + "...";
+		params.detail = info;        
+	}
+	params.title = "";
+	var returnValue = window.showModalDialog(URL_CORE + '_info.htm', params, 'dialogwidth:280px; dialogheight:150px; status:yes; help:no;resizable:yes;unadorned:yes');
+	return returnValue;
+}
+
+/*
+ *	带是/否/取消三个按钮的对话框
+ *	参数：	string:info             简要信息
+			string:detail           详细信息
+ *	返回值：boolean:returnValue     用户选择是/否/取消
+ */
+function Confirm2(info,detail) {
+	info = convertToString(info);
+	detail = convertToString(detail);
+
+	var maxWords = 100;
+	var params = {};
+	params.type = "confirm2";
+	params.info = info;
+	params.detail = detail;
+	if("" == detail && maxWords < info.length) {
+		params.info = info.substring(0, maxWords) + "...";
+		params.detail = info;        
+	}
+	params.title = "";
+	var returnValue = window.showModalDialog(URL_CORE + '_info.htm', params, 'dialogwidth:280px; dialogheight:150px; status:yes; help:no;resizable:yes;unadorned:yes');
+	return returnValue;
+}
+
+/*
+ *	重新封装prompt
+ *	参数：	string:info             简要信息
+			string:defaultValue     默认值
+			string:title            标题
+			boolean:protect         是否保护
+			number:maxBytes         最大字节数
+ *	返回值：string:returnValue      用户输入的文字
+ */
+function Prompt(info, defaultValue, title, protect, maxBytes) {
+	info = convertToString(info);
+	defaultValue = convertToString(defaultValue);
+	title = convertToString(title);
+
+	var params = {};
+	params.info = info;
+	params.defaultValue = defaultValue;
+	params.title = title;
+	params.protect = protect;
+	params.maxBytes = maxBytes;
+	var returnValue = window.showModalDialog(URL_CORE + '_prompt.htm', params, 'dialogwidth:280px; dialogheight:150px; status:yes; help:no;resizable:no;unadorned:yes');
+	return returnValue;
+}
+
+/*
+ *	捕获页面js报错
+ */
+function onError(msg,url,line) {
+	alert(msg, "错误:" + msg + "\r\n行:" + line + "\r\n地址:" + url);
+	event.returnValue = true;
+}
+
+window._alert = window.alert;
+window._confirm = window.confirm;
+window._prompt = window.prompt;
+
+// window.alert = Alert;
+window.confirm = Confirm;
+window.confirm2 = Confirm2;
+window.prompt = Prompt;
+window.onerror = onError;
+
 

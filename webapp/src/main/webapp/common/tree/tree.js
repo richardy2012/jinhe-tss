@@ -1,990 +1,708 @@
-//////////////////////////////////////////////////////////////////
-//	¶ÔÏóÃû³Æ£ºTree												//
-//	Ö°Ôğ£º	¸ºÔğ´¦ÀíÓÉÓÚÊ÷ÀàĞÍÒıÆğµÄ²»Í¬Ö®´¦£¬Í¬Ê±¼ÇÂ¼Ê÷µÄÈ«¾Ö±äÁ¿¡£	//
-//////////////////////////////////////////////////////////////////
+/*
+ * æ ‘ç±»å‹
+ */
+var _TREE_TYPE_SINGLE = "single";
+var _TREE_TYPE_MULTI  = "multi";
+var _TREE_TYPE_MENU   = "menu";
+/*
+ * æ ‘æ§ä»¶å±æ€§åç§°
+ */
+var _TREE_ATTRIBUTE_BASE_URL = "baseurl";
+var _TREE_ATTRIBUTE_TREE_TYPE = "treeType";
+var _TREE_ATTRIBUTE_SRC = "src";
+var _TREE_ATTRIBUTE_SELECTED_SRC = "selected";	  // é€‰ä¸­èŠ‚ç‚¹æ•°æ®æº
+var _TREE_ATTRIBUTE_SELECTED_IDS = "selectedIds"; //é€‰ä¸­èŠ‚ç‚¹idå­—ç¬¦ä¸²
+var _TREE_ATTRIBUTE_CAN_MOVE_NODE = "canMoveNode";	
+var _TREE_ATTRIBUTE_SELECTED_WITH_CHANGE_STATE = "treeNodeSelectedChangeState"; 	// é€‰ä¸­ã€æ¿€æ´»èŠ‚ç‚¹æ˜¯å¦åŒæ­¥
+var _TREE_ATTRIBUTE_OPEN_WITH_CLICK = "treeNodeClickOpenNode";	// ç‚¹å‡»æ–‡å­—æ˜¯å¦å±•å¼€/æ”¶ç¼©èŠ‚ç‚¹
+var _TREE_ATTRIBUTE_DISABLED_ALL_CHECKTYPE = "allCheckTypeDisabled";	// ç¦æ­¢æ‰€æœ‰èŠ‚ç‚¹æ”¹å˜é€‰ä¸­çŠ¶æ€
+var _TREE_ATTRIBUTE_JUST_SELECT_SELF = "selectSelf";	// é€‰ä¸­èŠ‚ç‚¹æ—¶ï¼Œä¸è€ƒè™‘çˆ¶å­å…³ç³»
+var _TREE_ATTRIBUTE_FOCUS_NEW_TREE_NODE = "focusNewTreeNode";	// æ–°å¢èŠ‚ç‚¹ç„¦ç‚¹ä¸è‡ªåŠ¨ç§»åˆ°æ–°èŠ‚ç‚¹ä¸Š
+var _TREE_ATTRIBUTE_DEFAULT_OPEN = "defaultOpen";	// æ˜¯å¦è‡ªåŠ¨æ‰“å¼€èŠ‚ç‚¹
+var _TREE_ATTRIBUTE_DEFAULT_ACTIVE = "defaultActive";	// é»˜è®¤æ¿€æ´»èŠ‚ç‚¹æ–¹å¼ï¼šnone-ä¸é€‰ä¸­ï¼›root-é€‰ä¸­æ ¹èŠ‚ç‚¹ï¼›valid-é€‰ä¸­ç¬¬ä¸€ä¸ªæœ‰æ•ˆèŠ‚ç‚¹
 
 /*
- * º¯ÊıËµÃ÷£º³õÊ¼»¯Ê÷¶ÔÏó
- * ²ÎÊı£º
- * ·µ»ØÖµ£º	Tree¶ÔÏó
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-24
+ * æ ‘æ§ä»¶å±æ€§ç›¸åº”çš„å±æ€§å€¼
  */
-function instanceTree() {
-	var type = getValue(_TREE_ATTRIBUTE_TREE_TYPE, _TREE_TYPE_SINGLE);
-	treeObj = new Tree();
-	if(type == _TREE_TYPE_MULTI){
-		treeObj.setAttribute(_TREE_ATTRIBUTE_TREE_TYPE, _TREE_TYPE_MULTI);
-		treeObj.setAttribute(_TREE_ATTRIBUTE_SELECTED_WITH_CHANGE_STATE, getValue(_TREE_ATTRIBUTE_SELECTED_WITH_CHANGE_STATE, _TREE_ATTRIBUTE_SELECTED_WITH_CHANGE_STATE_MULTI_DEFAULT_VALUE));
-		//»ñÈ¡ÏÂÒ»¸öÑ¡ÖĞ×´Ì¬
-		treeObj.getNextState = multiGetNextState;
-		//»ñÈ¡Ñ¡Ôñ×´Ì¬Í¼±ê£¨¶àÑ¡Ê÷£©
-		treeObj.getCheckTypeImageSrc = getMultiCheckTypes;
-		//¸ù¾İÌØ¶¨µÄ½ÚµãË¢ĞÂËùÓĞ½ÚµãµÄÑ¡Ôñ×´Ì¬
-		treeObj.refreshStates = multiRefreshStates;
-		//»ñÈ¡Ñ¡ÖĞ½ÚµãTreeNode¶ÔÏóÊı×é
-		treeObj.getSelectedTreeNode = multiGetSelectedTreeNode;
-		//»ñÈ¡Ñ¡ÖĞ½ÚµãXml¶ÔÏóÊı×é
-		treeObj.getSelectedXmlNode = multiGetSelectedXmlNode;
-	}else{
-		treeObj.setAttribute(_TREE_ATTRIBUTE_TREE_TYPE, _TREE_TYPE_SINGLE);
-		treeObj.setAttribute(_TREE_ATTRIBUTE_SELECTED_WITH_CHANGE_STATE, getValue(_TREE_ATTRIBUTE_SELECTED_WITH_CHANGE_STATE, _TREE_ATTRIBUTE_SELECTED_WITH_CHANGE_STATE_SINGLE_DEFAULT_VALUE));
-		//»ñÈ¡ÏÂÒ»¸öÑ¡ÖĞ×´Ì¬
-		treeObj.getNextState = singleGetNextState;
-		//»ñÈ¡Ñ¡Ôñ×´Ì¬Í¼±ê£¨µ¥Ñ¡Ê÷£©
-		treeObj.getCheckTypeImageSrc = getSingleCheckTypes;
-		//Çå³ıÆäËû½ÚµãµÄÑ¡ÖĞ×´Ì¬
-		treeObj.refreshStates = clearOtherSelectedState;
-		//»ñÈ¡Ñ¡ÖĞ½ÚµãµÄTreeNode¶ÔÏó
-		treeObj.getSelectedTreeNode = singleGetSelectedTreeNode;
-		//»ñÈ¡Ñ¡ÖĞ½ÚµãµÄXml¶ÔÏó
-		treeObj.getSelectedXmlNode = singleGetSelectedXmlNode;
+var _TREE_ATTRIBUTE_BASE_URL_DEFAULT_VALUE = "public/htc/Tree/";	//æ§ä»¶æ‰€åœ¨ç›®å½•
+var _TREE_ATTRIBUTE_TREE_TYPE_DEFAULT_VALUE = _TREE_TYPE_SINGLE;
+var _TREE_ATTRIBUTE_SRC_DEFAULT_VALUE = null;
+var _TREE_ATTRIBUTE_SELECTED_SRC_DEFAULT_VALUE = null;
+var _TREE_ATTRIBUTE_SELECTED_IDS_DEFAULT_VALUE = null;
+var _TREE_ATTRIBUTE_CAN_MOVE_NODE_DEFAULT_VALUE = "false";	//å€¼åŸŸï¼š "true" "false"
+var _TREE_ATTRIBUTE_SELECTED_WITH_CHANGE_STATE_SINGLE_DEFAULT_VALUE = "true";	//å€¼åŸŸï¼š "true" "false"
+var _TREE_ATTRIBUTE_SELECTED_WITH_CHANGE_STATE_MULTI_DEFAULT_VALUE = "false";	//å€¼åŸŸï¼š "true" "false"
+var _TREE_ATTRIBUTE_OPEN_WITH_CLICK_DEFAULT_VALUE = "false";	//å€¼åŸŸï¼š "true" "false"
+var _TREE_ATTRIBUTE_DISABLED_ALL_CHECKTYPE_DEFAULT_VALUE = "false";
+var _TREE_ATTRIBUTE_JUST_SELECT_SELF_DEFAULT_VALUE = "false";
+var _TREE_ATTRIBUTE_FOCUS_NEW_TREE_NODE_DEFAULT_VALUE = "true";
+var _TREE_ATTRIBUTE_DEFAULT_OPEN_DEFAULT_VALUE = "true";	
+var _TREE_ATTRIBUTE_DEFAULT_ACTIVE_DEFAULT_VALUE = "none";	//ç¬¬ä¸€ä¸ªæœ‰æ•ˆèŠ‚ç‚¹
+
+/*
+ * èŠ‚ç‚¹å±æ€§åç§°
+ */
+var _TREE_XML_NODE_ATTRIBUTE_DEFAULT_OPENED_NODE_ID = "openednodeid";
+var _TREE_XML_NODE_ATTRIBUTE_ID = "id";
+var _TREE_XML_NODE_ATTRIBUTE_NAME = "name";
+var _TREE_XML_NODE_ATTRIBUTE_FULLNAME = "fullname";
+var _TREE_XML_NODE_ATTRIBUTE_CANSELECTED = "canselected";
+var _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE = "checktype";
+var _TREE_XML_NODE_ATTRIBUTE_DISPLAY = "display";
+
+/*
+èŠ‚ç‚¹åç§°
+ */
+var _TREE_XML_NODE_NAME = "treeNode";
+/*
+ * æ ¹èŠ‚ç‚¹åç§°
+ */
+var _TREE_XML_ROOT_NODE_NAME = "actionSet";
+/*
+ * â€œå…¨éƒ¨â€èŠ‚ç‚¹çš„IDå€¼
+ */
+var _TREE_XML_ROOT_TREE_NODE_ID = "_rootId";
+
+/*
+ * é€‰ä¸­çŠ¶æ€å›¾æ ‡åœ°å€ï¼ˆæ§ä»¶æ‰€åœ¨ç›®å½•ä¸ºæ ¹ç›®å½•ï¼Œèµ·å§‹ä¸èƒ½æœ‰â€œ/â€ï¼‰
+ */
+var _MULTI_NO_CHECKED_IMAGE_SRC   = "images/no_checked.gif";
+var _MULTI_CHECKED_IMAGE_SRC      = "images/checked.gif";
+var _MULTI_HALF_CHECKED_IMAGE_SRC = "images/half_checked.gif";
+var _SINGLE_NO_SELECTED_IMAGE_SRC = "images/no_selected.gif";
+var _SINGLE_SELECTED_IMAGE_SRC    = "images/selected.gif";
+var _MULTI_CAN_NOT_CHECK_IMAGE_SRC = "images/checkbox_disabled.gif";
+var _SINGLE_CAN_NOT_SELECT_IMAGE_SRC = "images/radio_disabled.gif";
+/*
+ * ä¼¸ç¼©çŠ¶æ€å›¾æ ‡åœ°å€
+ */
+var _TREE_NODE_CONTRACT_IMAGE_SRC = "images/contract.gif";
+var _TREE_NODE_EXPAND_IMAGE_SRC   = "images/expand.gif";
+var _TREE_NODE_LEAF_IMAGE_SRC     = "images/leaf.gif";
+var _TREE_ROOT_NODE_CONTRACT_IMAGE_SRC = "images/root_contract.gif";
+var _TREE_ROOT_NODE_EXPAND_IMAGE_SRC = "images/root_expand.gif";
+var _TREE_ROOT_NODE_LEAF_IMAGE_SRC = "images/root_leaf.gif";
+/*
+ * èŠ‚ç‚¹é€‰ä¸­æ ·å¼åç§°
+ */
+var _TREE_WAIT_LOAD_DATA_MSG = '<span style="margin:5 0 0 8;font-size:12px;color:#666">æ­£åœ¨åŠ è½½æ•°æ®...</span>';
+/*
+ * æ§ä»¶æ ·å¼å
+ */
+var _TREE_STYLE_NAME = "Tree";
+/*
+ * é¼ æ ‡ç§»åˆ°èŠ‚ç‚¹ä¸Šæ–¹æ ·å¼
+ */
+var _TREE_NODE_OVER_STYLE_NAME = "hover";
+/*
+ * èŠ‚ç‚¹ç§»åŠ¨æ ·å¼åç§°
+ */
+var _TREE_NODE_MOVED_STYLE_NAME = "moved";
+/*
+ * æŸ¥è¯¢ç»“æœèŠ‚ç‚¹æ ·å¼åç§°
+ */
+var _TREE_NODE_FINDED_STYLE_NAME = "finded";
+/*
+ * ç›®æ ‡èŠ‚ç‚¹åˆ’çº¿æ ·å¼
+ */
+var _TREE_NODE_MOVE_TO_LINE_STYLE = "1px solid #333399";
+/*
+ * ç›®æ ‡èŠ‚ç‚¹éšè—åˆ’çº¿æ ·å¼
+ */
+var _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE = "1px solid #ffffff";
+/*
+ * èŠ‚ç‚¹é€‰ä¸­æ ·å¼åç§°
+ */
+var _TREE_NODE_SELECTED_STYLE_NAME = "selected";
+/*
+ * èŠ‚ç‚¹ä¼¸ç¼©å›¾æ ‡æ ·å¼åç§°
+ */
+var _TREE_NODE_FOLDER_STYLE_NAME = "folder";
+/*
+ * èŠ‚ç‚¹é€‰æ‹©çŠ¶æ€å›¾æ ‡æ ·å¼åç§°
+ */
+var _TREE_NODE_CHECK_TYPE_STYLE_NAME = "checkType";
+/*
+ * èŠ‚ç‚¹æ˜¾ç¤ºçš„è¡Œé«˜ï¼ˆè±¡ç´ ï¼‰ï¼Œåªç”¨äºè®¡ç®—æ˜¾ç¤ºçš„è¡Œæ•°ï¼Œä¸èƒ½æ§åˆ¶æ˜¾ç¤ºæ—¶è¡Œçš„é«˜åº¦
+ * å¦‚æœè¦ä¿®æ”¹æ˜¾ç¤ºçš„è¡Œé«˜ï¼Œä¿®æ”¹æ ·å¼æ–‡ä»¶
+ */
+var _TREE_NODE_DISPLAY_ROW_HEIGHT = 20;	
+/*
+ * æ»šåŠ¨æ¡çš„å®½åº¦ï¼ˆè±¡ç´ ï¼‰
+ */
+var _TREE_SCROLL_BAR_WIDTH = 17;
+/*
+ * æ ‘æ§ä»¶æ˜¾ç¤ºåŒºæœ€å°å®½åº¦ï¼ˆè±¡ç´ ï¼‰
+ */
+var _TREE_BOX_MIN_WIDTH = 10;
+/*
+ * æ ‘æ§ä»¶æ˜¾ç¤ºåŒºæœ€å°é«˜åº¦ï¼ˆè±¡ç´ ï¼‰
+ */
+var _TREE_BOX_MIN_HEIGHT = 22;
+/*
+ * æ»šåŠ¨æ¡çš„æ»šåŠ¨äº‹ä»¶å»¶è¿Ÿæ—¶é—´ï¼ˆæ¯«å¦™ï¼‰
+ */
+var _TREE_SCROLL_DELAY_TIME = 0;
+/*
+ * æ‹–åŠ¨èŠ‚ç‚¹åˆ°æœ€ä¸Šã€ä¸‹è¡Œæ—¶å¾ªç¯æ»šåŠ¨äº‹ä»¶æ¯æ¬¡å»¶è¿Ÿæ—¶é—´ï¼ˆæ¯«å¦™ï¼‰
+ */
+var _TREE_SCROLL_REPEAT_DELAY_TIME = 300;
+/*
+ * èŠ‚ç‚¹è‡ªå®šä¹‰å›¾æ ‡æ ·å¼åç§°
+ */
+var _TREE_NODE_ICON_STYLE_NAME = "icon";
+/*
+ * èŠ‚ç‚¹è‡ªå®šä¹‰å›¾æ ‡å±æ€§å
+ */
+var _TREE_NODE_ICON_ATTRIBUTE = "icon";
+/*
+ * èŠ‚ç‚¹è‡ªå®šä¹‰å›¾æ ‡å°ºå¯¸
+ */
+var _TREE_NODE_ICON_WIDTH = 16;
+var _TREE_NODE_ICON_HEIGHT = 16;
+/*
+ * æŸ¥è¯¢æ–¹å¼
+ */
+var _TREE_SEARCH_TYPE_INEXACT_SEARCH = "hazy";	// æ¨¡ç³ŠæŸ¥è¯¢
+var _TREE_SEARCH_TYPE_EXACT_SEARCH = "rigor";	// ç²¾ç¡®æŸ¥è¯¢
+/*
+ * æŸ¥è¯¢æç¤ºä¿¡æ¯
+ */
+var _TREE_SEARCH_NO_RESULT_MSG          = "æ²¡æœ‰æŸ¥è¯¢åˆ°ç›¸åº”çš„ç»“æœï¼";
+var _TREE_SEARCH_NO_CONDITION_VALUE_MSG = "æŸ¥è¯¢æ¡ä»¶ä¸èƒ½ä¸ºç©ºï¼";
+var _TREE_SEARCH_NO_CONDITION_NAME_MSG  = "æŸ¥è¯¢æ¡ä»¶çš„å±æ€§åç§°ä¸èƒ½ä¸ºç©ºï¼";
+
+
+/*
+ * æ ¹æ®xmlèŠ‚ç‚¹è·å–TreeNodeå¯¹è±¡çš„ä¸€ä¸ªå®ä¾‹
+ * å‚æ•°ï¼š	node	xmlèŠ‚ç‚¹
+ * è¿”å›å€¼ï¼š	TreeNode
+ */
+function instanceTreeNode(node) {
+	if(node == null) {
+		return null;
 	}
-	if(type == _TREE_TYPE_MENU){
-		treeObj.isMenu = function(){
-			return true;
-		}
-	}else{
-		treeObj.isMenu = function(){
-			return false;
-		}
-	}
+	return new TreeNode(node);
 }
+
 /*
- * º¯ÊıËµÃ÷£ºÊ÷¶ÔÏó£¬´¦ÀíÓÉÓÚ¿Ø¼ş²ÎÊı²»Í¬£¬ÒıÆğµÄ²»Í¬Ö®´¦
- * ²ÎÊı£º
- * ·µ»ØÖµ£º
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-24
+ * å¯¹è±¡åç§°ï¼šTreeNode
+ * å‚æ•°ï¼š	node	xmlèŠ‚ç‚¹
+ * èŒè´£ï¼š	æ ‘èŠ‚ç‚¹å¯¹è±¡æ¥å£ã€‚è´Ÿè´£å¤„ç†èŠ‚ç‚¹çŠ¶æ€å˜åŒ–ã€‚	
  */
-function Tree() {
-	var _baseUrl = getValue(_TREE_ATTRIBUTE_BASE_URL, _TREE_ATTRIBUTE_BASE_URL_DEFAULT_VALUE);
-	var _treeType = getValue(_TREE_ATTRIBUTE_TREE_TYPE, _TREE_ATTRIBUTE_TREE_TYPE_DEFAULT_VALUE);
-	var _src = getValue(_TREE_ATTRIBUTE_SRC, _TREE_ATTRIBUTE_SRC_DEFAULT_VALUE);
-	var _selectedSrc = getValue(_TREE_ATTRIBUTE_SELECTED_SRC, _TREE_ATTRIBUTE_SELECTED_SRC_DEFAULT_VALUE);
-	var _selectedIds = getValue(_TREE_ATTRIBUTE_SELECTED_IDS, _TREE_ATTRIBUTE_SELECTED_IDS_DEFAULT_VALUE);
-	var _canMoveNode = getValue(_TREE_ATTRIBUTE_CAN_MOVE_NODE, _TREE_ATTRIBUTE_CAN_MOVE_NODE_DEFAULT_VALUE);
-	var _treeNodeSelectedChangeState = "false";
-	var _treeNodeClickOpenNode = getValue(_TREE_ATTRIBUTE_OPEN_WITH_CLICK, _TREE_ATTRIBUTE_OPEN_WITH_CLICK_DEFAULT_VALUE);
-	var _allCheckTypeDisabled = getValue(_TREE_ATTRIBUTE_DISABLED_ALL_CHECKTYPE, _TREE_ATTRIBUTE_DISABLED_ALL_CHECKTYPE_DEFAULT_VALUE);
-	var _justSelectSelf = 	getValue(_TREE_ATTRIBUTE_JUST_SELECT_SELF, _TREE_ATTRIBUTE_JUST_SELECT_SELF_DEFAULT_VALUE);
-	var _focusNewNode = getValue(_TREE_ATTRIBUTE_FOCUS_NEW_TREE_NODE, _TREE_ATTRIBUTE_FOCUS_NEW_TREE_NODE_DEFAULT_VALUE);
-	var _defaultOpen = getValue(_TREE_ATTRIBUTE_DEFAULT_OPEN, _TREE_ATTRIBUTE_DEFAULT_OPEN_DEFAULT_VALUE);
-	var _defaultActive = getValue(_TREE_ATTRIBUTE_DEFAULT_ACTIVE, _TREE_ATTRIBUTE_DEFAULT_ACTIVE_DEFAULT_VALUE);
-	var _activedNode = null;
-	var _movedNode = null;
-	var _xmlRoot = null;
-	var _scrollTimer = null;
-	var _findedNode = null;
-	/*
-	 * º¯ÊıËµÃ÷£º	 Éè¶¨¿Ø¼şµÄÊı¾İ£¬Êı¾İÀ´Ô´Îªxml½Úµã¡¢Êı¾İµº¡¢Êı¾İÎÄ¼ş»òxml×Ö·û´®
-	 * ²ÎÊı£º	dataSrc	Êı¾İÔ´
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-25
-	 */
-	this.loadData = function (dataSrc){
-		if(isNullOrEmpty(dataSrc)){
-			dataSrc = _src;
-		}
-		var ds = new DataSource(dataSrc);
-		_xmlRoot = ds.xmlRoot;
-		if(_defaultOpen == "true"){
-			openNode(getDefaultOpenedNode(_xmlRoot));
-		}
-	}
+function TreeNode(node) {
+	this.node = node;
+}
+
+TreeNode.prototype = new function() {
 
 	/*
-	 * º¯ÊıËµÃ÷£º	 »ñÈ¡Ä¬ÈÏÑ¡Ôñ×´Ì¬Êı¾İ£ºxml½Úµã¡¢Êı¾İµº¡¢Êı¾İÎÄ¼ş»òxml×Ö·û´®
-	 * ²ÎÊı£º	selectedSrc	½ÚµãÑ¡ÖĞ×´Ì¬µÄÊı¾İÔ´
-	 *			isClearOldSelected	ÊÇ·ñÇå³ıÔ­ÏÈÑ¡ÖĞ½Úµã
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-12-23
+	 * è·å–xmlèŠ‚ç‚¹
 	 */
-	this.loadSelectedData = function (selectedSrc, isClearOldSelected) {
-		if(_xmlRoot == null){
+	this.getXmlNode = function() {
+		return this.node;
+	}
+	/*
+	 * æ˜¯å¦ä¸ºå­èŠ‚ç‚¹å·²ç»æ‰“å¼€çš„èŠ‚ç‚¹
+	 * è¿”å›ï¼š	true/false
+	 */
+	this.isOpened = function() {
+		return this.node.getAttribute("_open") == "true";
+	}
+	/*
+	 * æ˜¯å¦ä¸ºå¯é€‰æ‹©èŠ‚ç‚¹
+	 * è¿”å›ï¼š	true/false
+	 */
+	this.isCanSelected = function() {
+		return this.node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_CANSELECTED) != "0";
+	}
+	/*
+	 * æ˜¯å¦ä¸ºå¯ç”¨é“¾æ¥èŠ‚ç‚¹ï¼Œå³display!=0
+	 * è¿”å›ï¼š	tree/false
+	 */
+	this.isEnabled = function() {
+		return this.node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_DISPLAY) != '0';
+	}
+	/*
+	 * æ˜¯å¦ä¸ºæ¿€æ´»èŠ‚ç‚¹
+	 * è¿”å›ï¼š	true/false
+	 */
+	this.isActive = function() {
+		return treeObj.isActiveNode(this.node);
+	}
+	/*
+	 * è·å–èŠ‚ç‚¹çš„é€‰æ‹©çŠ¶æ€
+	 * è¿”å›ï¼š	å¤šé€‰æ ‘ï¼š0/1/2ï¼›å•é€‰æ•°ï¼š1/0
+	 */
+	this.getSelectedState = function() {
+		var state = this.node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_CHECKTYPE);
+		if(/^(1|2)$/.test(state)) {
+			return parseInt(state);
+		} 
+		return 0;
+	}
+	/*
+	 * ç‚¹å‡»èŠ‚ç‚¹æ–‡å­—æ ‡ç­¾æ—¶ï¼Œæ ¹æ®ç°æœ‰çŠ¶æ€æ”¹æˆä¸‹ä¸€ä¸ªé€‰æ‹©çŠ¶æ€
+	 * å‚æ•°ï¼š	noChildren	ä¸åŒ…å«å­èŠ‚ç‚¹
+	 * æ ¹æ®åŸæœ‰çš„é€‰æ‹©çŠ¶æ€ï¼Œæ”¹å˜çŠ¶æ€ã€‚å¦‚ä¸º1ï¼Œ2åˆ™è¿”å›0ï¼Œå¦åˆ™è¿”å›1
+	 */
+	this.changeSelectedStateByActive = function(noChildren) {
+		treeObj.changeCheckedStateByActive(this, noChildren);
+	}
+	/*
+	 * æ ¹æ®ç°æœ‰çŠ¶æ€æ”¹æˆä¸‹ä¸€ä¸ªé€‰æ‹©çŠ¶æ€
+	 * å‚æ•°ï¼šnoChildren	é€‰ä¸­èŠ‚ç‚¹æ—¶ä¸åŒ…å«å­èŠ‚ç‚¹
+	 *		 noFireChangeEvent	æ˜¯å¦è§¦å‘onChangeäº‹ä»¶
+	 * æ ¹æ®åŸæœ‰çš„é€‰æ‹©çŠ¶æ€ï¼Œæ”¹å˜çŠ¶æ€ã€‚å¦‚ä¸º1ï¼Œ2åˆ™è¿”å›0ï¼Œå¦åˆ™è¿”å›1
+	 */
+	this.changeSelectedState = function(noChildren, noFireChangeEvent) {
+		this.setSelectedState(treeObj.getNextState(this), noChildren, noFireChangeEvent);
+	}
+	/*
+	 * è®¾ç½®é€‰ä¸­çŠ¶æ€ï¼ŒåŒæ—¶åˆ·æ–°ç›¸å…³èŠ‚ç‚¹çš„é€‰æ‹©çŠ¶æ€
+	 * å‚æ•°ï¼š	state	é€‰æ‹©çŠ¶æ€
+	 *			noChildren	åªé€‰ä¸­è‡ªå·±èŠ‚ç‚¹ï¼ˆåªå¯¹é€‰ä¸­æ—¶æœ‰æ•ˆï¼‰
+	 *			noFireChangeEvent	æ˜¯å¦è§¦å‘onChangeäº‹ä»¶
+	 */
+	this.setSelectedState = function(state, noChildren, noFireChangeEvent) {
+		if(!this.isCanSelected() || treeObj.isAllDisabledCheckType()) {	//ä¸å¯é€‰æ‹©åˆ™è¿”å›
 			return;
 		}
-		if(isNullOrEmpty(selectedSrc)){
-			selectedSrc = _selectedSrc;
+		if(state == 1 && treeObj.isActiveBySelected(state)) {
+			var eventObj = createEventObject();
+			eventObj.treeNode = this;
+			eventObj.returnValue = true;
+			eventObj.type = "_BeforeSelectedAndActived(Selected)";
+			eventBeforeSelectedAndActived.fire(eventObj);
+			if(!eventObj.returnValue) {
+				return;
+			}
 		}
-		var ds = new DataSource(selectedSrc);
-		if(treeObj.getAttribute(_TREE_ATTRIBUTE_TREE_TYPE) == _TREE_TYPE_SINGLE){	//µ¥Ñ¡Ê÷
-			singleCheckedDefault(_xmlRoot, ds.xmlRoot);
+		if(state == 1) {
+			var eventObj = createEventObject();
+			eventObj.treeNode = this;
+			eventObj.returnValue = true;
+			eventObj.type = "_BeforeSelected";
+			eventBeforeSelected.fire(eventObj);
+			if(!eventObj.returnValue) {
+				return;
+			}
+		}
+		justSelected(this, state, noChildren, noFireChangeEvent);
+		if(!this.isActive() && treeObj.isActiveBySelected(state)) {
+			var eventObj = createEventObject();
+			eventObj.treeNode = this;
+			eventObj.returnValue = true;
+			eventObj.type = "_BeforeActivedBySelected";
+			eventBeforeActived.fire(eventObj);
+			if(!eventObj.returnValue) {
+				return;
+			}
+			justActive(this);
+		}
+	}
+
+	/*
+	 * è·å–çˆ¶èŠ‚ç‚¹çš„TreeNodeå¯¹è±¡
+	 * è¿”å›ï¼š	TreeNode/null
+	 */
+	this.getParent = function() {
+		return instanceTreeNode(this.node.parentNode);
+	}
+	/*
+	 * è·å–idsï¼Œè‡ªå·±å’Œå­èŠ‚ç‚¹çš„idå­—ç¬¦ä¸²ï¼Œé»˜è®¤ä¸ºè‡ªå·±å’Œå…¨éƒ¨å­èŠ‚ç‚¹ä¸­é€‰ä¸­çŠ¶æ€(å…¨é€‰ã€åŠé€‰)çš„èŠ‚ç‚¹idå­—ç¬¦ä¸²
+	 * å‚æ•°ï¼šisAll	æ˜¯å¦ä¸ºå…¨éƒ¨è‡ªå·±ã€å­èŠ‚ç‚¹çš„Id
+	 *       onlySelected	åªåŒ…æ‹¬å…¨é€‰çš„
+	 * è¿”å›ï¼š	idï¼Œå­—ç¬¦ä¸²ï¼šid1,id2,id3
+	 */
+	this.getIds = function(isAll, onlySelected) {
+		if(isAll) {
+			var path = ".|.//" + _TREE_XML_NODE_NAME;
 		}else{
-			multiCheckedDefault(_xmlRoot, ds.xmlRoot, isClearOldSelected);
+			if(onlySelected) {
+				var path = ".[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1']|.//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1']";
+			}else{
+				var path = ".[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1' or @" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='2']|.//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1' or @" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='2']";
+			}
 		}
+		var nodes = this.node.selectNodes(path);
+		var ids = "";
+		for(var i = 0; i < nodes.length; i++) {
+			var id = nodes[i].getAttribute(_TREE_XML_NODE_ATTRIBUTE_ID);
+			if(id == _TREE_XML_ROOT_TREE_NODE_ID) {
+				continue;
+			}
+			if(i > 0) {
+				ids += ",";
+			}
+			ids += id;
+		}
+		return ids;
+	}
+	/*
+	 * è·å–id
+	 * è¿”å›ï¼š	idï¼Œå­—ç¬¦ä¸²
+	 */
+	this.getId = function() {
+		return this.node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_ID);
+	}
+	/*
+	 * è®¾å®šid
+	 */
+	this.setId = function(id) {
+		var node = treeObj.getXmlRoot().selectSingleNode(".//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_ID + "='" + id + "']");
+		if(node != null && node != this.node) {
+			return alert("åŒidçš„èŠ‚ç‚¹å·²ç»å­˜åœ¨ï¼[id:" + id + "]");
+		}
+		//è®¾ç½®xmlå¯¹è±¡çš„id
+		this.node.setAttribute(_TREE_XML_NODE_ATTRIBUTE_ID, id);
+	}
+	/*
+	 * è·å–Name
+	 * è¿”å›ï¼š	nameï¼Œå­—ç¬¦ä¸²
+	 */
+	this.getName = function() {
+		return this.node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_NAME);
+	}
+	/*
+	 * è®¾å®šName
+	 */
+	this.setName = function(name) {
+		this.node.setAttribute(_TREE_XML_NODE_ATTRIBUTE_NAME, name);
+	}
+	/*
+	 * è·å–FullName
+	 * è¿”å›ï¼š	fullNameï¼Œå­—ç¬¦ä¸²
+	 */
+	this.getFullName = function() {
+		return this.node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_FULLNAME);
+	}
+	/*
+	 * è®¾å®šFullName
+	 */
+	this.setFullName = function(fullName) {
+		this.node.setAttribute(_TREE_XML_NODE_ATTRIBUTE_FULLNAME, fullName);
+	}
+	/*
+	 * æ¿€æ´»èŠ‚ç‚¹
+	 * å‚æ•°ï¼šnoChildren		é€‰ä¸­èŠ‚ç‚¹æ—¶ï¼Œæ˜¯å¦ä¸åŒ…å«å­èŠ‚ç‚¹
+	 */
+	this.setActive = function(noChildren) {
+		if(!this.isCanSelected()) {
+			return;
+		}
+		if(!treeObj.isAllDisabledCheckType() && treeObj.isSelectByActived() && treeObj.getNextState(this) == 1) {
+			var eventObj = createEventObject();
+			eventObj.treeNode = this;
+			eventObj.returnValue = true;
+			eventObj.type = "_BeforeSelectedAndActived(Active)";
+			eventBeforeSelectedAndActived.fire(eventObj);
+			if(!eventObj.returnValue) {
+				return;
+			}
+		}
+		if(!this.isActive()) {
+			var eventObj = createEventObject();
+			eventObj.treeNode = this;
+			eventObj.returnValue = true;
+			eventObj.type = "_BeforeActived";
+			eventBeforeActived.fire(eventObj);
+			if(!eventObj.returnValue) {
+				return;
+			}
+		}
+        justActive(this);
+		if(!treeObj.isAllDisabledCheckType() && treeObj.isSelectByActived()) {
+			if(treeObj.getNextState(this) == 1) {
+				var eventObj = createEventObject();
+				eventObj.treeNode = this;
+				eventObj.returnValue = true;
+				eventObj.type = "_BeforeSelectedByActive";
+				eventBeforeSelected.fire(eventObj);
+				if(!eventObj.returnValue) {
+					return;
+				}
+			}
+			justSelected(this, treeObj.getNextState(this), noChildren, false);
+		}
+	}
+	/*
+	 * æ‰“å¼€èŠ‚ç‚¹ï¼Œè®©èŠ‚ç‚¹å‡ºç°åœ¨å¯è§†åŒºåŸŸå†…ã€‚
+	 */
+	this.focus = function() {
+		//æ‰“å¼€æœªè¢«æ‰“å¼€çš„çˆ¶èŠ‚ç‚¹ï¼Œçˆ¶èŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹ï¼Œä»¥æ­¤ç±»æ¨ã€‚
+		openNode(this.node.parentNode);
+
+		displayObj.resetTotalTreeNodes();
+
+		//å¦‚æœèŠ‚ç‚¹æ²¡æœ‰åœ¨å¯è§†åŒºåŸŸå†…ï¼Œåˆ™æ»šåŠ¨èŠ‚ç‚¹åˆ°å¯æ˜¯åŒºåŸŸ
+		displayObj.scrollTo(this.node);
+	}
+	/*
+	 * è®¾ç½®é“¾æ¥ä¸ºå¯ç”¨
+	 * å‚æ•°ï¼šisAllParent	æ˜¯å¦åŒæ—¶å¯ç”¨æ‰€æœ‰åœç”¨çš„çˆ¶èŠ‚ç‚¹
+	 */
+	this.enabled = function(isAllParent) {
+		if(isAllParent) {
+			var node = this.node;
+			while(node != null && node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_ID) != _TREE_XML_ROOT_TREE_NODE_ID
+					&& node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_DISPLAY) == '0') {
+				node.setAttribute(_TREE_XML_NODE_ATTRIBUTE_DISPLAY, "1");
+				node = node.parentNode;
+			}
+		}else{
+			this.node.setAttribute(_TREE_XML_NODE_ATTRIBUTE_DISPLAY, "1");
+		}
+	}
+
+	/*
+	 * è®¾ç½®é“¾æ¥ä¸ºä¸å¯ç”¨
+	 * å‚æ•°ï¼šisAllChildren	æ˜¯å¦åŒæ—¶åœç”¨å­èŠ‚ç‚¹
+	 */
+	this.disabled = function(isAllChildren) {
+		if(isAllChildren) {
+			var nodes = this.node.selectNodes(".|.//" + _TREE_XML_NODE_NAME);
+			for(var i = 0; i < nodes.length; i++) {
+				nodes[i].setAttribute(_TREE_XML_NODE_ATTRIBUTE_DISPLAY, "0");
+			}
+		}else{
+			this.node.setAttribute(_TREE_XML_NODE_ATTRIBUTE_DISPLAY, "0");
+		}
+	}
+	/*
+	 * è®¾å®šèŠ‚ç‚¹çš„å¯é€‰æ‹©å±æ€§
+	 * å‚æ•°ï¼š	canSelected:	1/0 å‰è€…ä»£è¡¨å¯é€‰æ‹©ï¼Œåè€…ä»£è¡¨ä¸å¯é€‰
+	 */
+	this.setCanSelected = function(canSelected) {
+		this.node.setAttribute(_TREE_XML_NODE_ATTRIBUTE_CANSELECTED, canSelected);
+	}
+
+	/**
+	 * ç‚¹å‡»æ–‡å­—æ ‡ç­¾æ—¶ï¼Œæ”¹å˜èŠ‚ç‚¹ä¼¸ç¼©çŠ¶æ€
+	 */
+	this.changeFolderStateByActive = function() {
+		//æ”¹å˜èŠ‚ç‚¹çš„ä¼¸ç¼©çŠ¶æ€
+		treeObj.changeOpenStateByActive(this);
+	}
+
+	/*
+	 * æ”¹å˜èŠ‚ç‚¹çš„ä¼¸ç¼©çŠ¶æ€
+	 */
+	this.changeFolderState = function() {
+		if(this.isOpened()) {	
+			this.close();	//å…³é—­å­èŠ‚ç‚¹
+		}else{
+			this.open();	//æ‰“å¼€å­èŠ‚ç‚¹
+            
+            //è§¦å‘å±•å¼€äº‹ä»¶
+            var eventObj = createEventObject();
+            eventObj.treeNode = this;
+            eventNodeExpand.fire(eventObj);
+		}
+	}
+	/*
+	 * æ‰“å¼€å­èŠ‚ç‚¹
+	 */
+	this.open = function() {
+		this.node.setAttribute("_open", "true");	//æ ‡è®°å½“å‰èŠ‚ç‚¹ä¸ºæ‰“å¼€çŠ¶æ€
+
+		//æ­¤èŠ‚ç‚¹æ‰“å¼€ï¼Œæ‰“å¼€å› æ­¤èŠ‚ç‚¹å…³é—­è€Œå…³é—­çš„å­æèŠ‚ç‚¹ï¼ŒåŒæ—¶å»é™¤æ ‡è®°ã€‚
+		openChildNodesCloseByThisNode(this.node);
+
+		displayObj.resetTotalTreeNodes();
+		//å¦‚æœèŠ‚ç‚¹æˆ–å…¶æ‰“å¼€çš„å­èŠ‚ç‚¹æ²¡æœ‰åœ¨å¯è§†åŒºåŸŸå†…ï¼Œåˆ™æ»šåŠ¨èŠ‚ç‚¹ä½¿å…¶åŠå…¶å­èŠ‚ç‚¹å…¨éƒ¨å‡ºç°åœ¨å¯è§†åŒºæˆ–ä½¿å…¶åœ¨æœ€ä¸Šç«¯
+		displayObj.scrollTo(this.node);
+	}
+	/*
+	 * å…³é—­å­èŠ‚ç‚¹
+	 */
+	this.close = function() {
+		this.node.setAttribute("_open", "false");	//æ ‡è®°å½“å‰èŠ‚ç‚¹ä¸ºå…³é—­çŠ¶æ€
+
+		//æ­¤èŠ‚ç‚¹å…³é—­ï¼Œå…³é—­æ­¤èŠ‚ç‚¹çš„æ‰“å¼€çš„å­æèŠ‚ç‚¹ï¼ŒåŒæ—¶æ ‡è®°å…³é—­çš„åŸå› ã€‚
+		closeOpendChildNodes(this.node);
+
+		displayObj.resetTotalTreeNodes();
+	}
+	/*
+	 * åˆ é™¤å½“å‰èŠ‚ç‚¹
+	 * è¿”å›ï¼š	true/false	å‰è€…è¡¨åˆ é™¤æˆåŠŸï¼Œåè€…è¡¨å¤±è´¥
+	 */
+	this.remove = function() {
+		//åˆ é™¤xmlä¸­çš„æ­¤èŠ‚ç‚¹
+		this.node.parentNode.removeChild(this.node);
+
+		displayObj.resetTotalTreeNodes();
+		return true;
+	}
+ 
+	this.appendChild = function(xml) {
+		return _appendChild(xml, this.node);
+	}
+ 
+	this.appendRoot = function(xml) {
+		return return _appendChild(xml, treeObj.getXmlRoot());;
+	}
+	/*
+	 * ç§»åŠ¨å½“å‰èŠ‚ç‚¹
+	 * å‚æ•°ï¼š	toTreeNode	ç›®æ ‡èŠ‚ç‚¹çš„TreeNodeå¯¹è±¡
+	 *			moveState	ç§»åŠ¨çŠ¶æ€ï¼š-1ï¼Œç§»åŠ¨åˆ°ç›®æ ‡èŠ‚ç‚¹çš„ä¸Šé¢ï¼Œ1ï¼Œç§»åŠ¨åˆ°ç›®æ ‡èŠ‚ç‚¹çš„ä¸‹é¢ï¼Œ1ä¸ºç¼ºçœçŠ¶æ€
+	 * è¿”å›ï¼š	true/false	æ˜¯å¦ç§»åŠ¨èŠ‚ç‚¹æˆåŠŸ
+	 */
+	this.moveTo = function(toTreeNode, moveState) {
+		if( !(toTreeNode instanceof TreeNode) || this.node.parentNode == null ) {
+			return false;
+		}
+		
+		var beforeNode = (moveState == -1 ? toTreeNode.getXmlNode() : toTreeNode.getXmlNode().nextSibling;
+		toTreeNode.getXmlNode().parentNode.insertBefore(this.node, beforeNode);
+		
+		displayObj.resetTotalTreeNodes();
+		return true;
+	}
+	/*
+	 * è·å–å½“å‰èŠ‚ç‚¹çš„XMLèŠ‚ç‚¹å¯¹è±¡ï¼Œè¯¥å¯¹è±¡æ˜¯ä¸€ä¸ªæµ…æ‹·è´å¯¹è±¡ï¼ˆä¸åŒ…å«å½“å‰èŠ‚ç‚¹å­èŠ‚ç‚¹ï¼‰ã€‚
+	 */
+	this.toElement = function() {
+		return this.node.cloneNode(false);
+	}
+	/*
+	 * è·å–å½“å‰èŠ‚ç‚¹çš„XMLèŠ‚ç‚¹å¯¹è±¡çš„xmlå­—ç¬¦ä¸²
+	 * è¿”å›ï¼š	xmlå­—ç¬¦ä¸²ï¼Œå½“å‰èŠ‚ç‚¹çš„æµ…æ‹·è´å¯¹è±¡çš„xmlå­—ç¬¦ä¸²
+	 */
+	this.toString = function() {
+		return this.toElement().xml;
+	}
+	/*
+	 * è·å–èŠ‚ç‚¹å±æ€§å­—ç¬¦ä¸²
+	 */
+	this.getAttribute = function(name) {
+		return this.node.getAttribute(name);
+	}
+	/*
+	 * è®¾ç½®èŠ‚ç‚¹å±æ€§å­—ç¬¦ä¸²
+	 */
+	this.setAttribute = function(name, value) {
+		value = value || "";
+
+		if(name == _TREE_XML_NODE_ATTRIBUTE_ID) {	//ä¿®æ”¹id
+			this.setId(value);
+		}
+		else if(name == _TREE_XML_NODE_ATTRIBUTE_NAME) {	//ä¿®æ”¹name
+			this.setName(value);
+		}
+		else if(name == _TREE_XML_NODE_ATTRIBUTE_FULLNAME) { //ä¿®æ”¹fullname
+			this.setFullName(value);
+		}
+		else if(name == _TREE_XML_NODE_ATTRIBUTE_DISPLAY) {	// ä¿®æ”¹display
+			if(value == 1) {
+				this.enabled();
+			} else {
+				this.disabled();
+			}
+		} else if(name == _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE) { //ä¿®æ”¹checkType
+			this.setSelectedState(value);
+		} 
+		else if(name == _TREE_XML_NODE_ATTRIBUTE_CANSELECTED) { //ä¿®æ”¹canSelected
+			this.setCanSelected(value);
+		}
+		else {	// ä¿®æ”¹å…¶ä»–å±æ€§
+			this.node.setAttribute(name, value);
+		}
+	}
+	/*
+	 * ä½¿ç”¨ä¸€æ®µåˆæ³•çš„xmlå­—ç¬¦ä¸²æ›´æ–°è¯¥èŠ‚ç‚¹çš„æ‰€æœ‰å±æ€§ä¿¡æ¯ã€‚
+	 */
+	this.setAttrbutesByXmlStr = function(xml) {
+		var newNodeXML = loadXmlToNode(xml);
+		if(newNodeXML && newNodeXML.documentElement) {
+			var attributes = newNodeXML.documentElement.attributes;
+			for(var i = 0; i < attributes.length; i++) {
+				this.setAttribute(attributes[i].name, attributes[i].value);
+			}
+		}		
+	}
+	/*
+	 * åˆ·æ–°é¡µé¢æ˜¾ç¤º
+	 */
+	this.reload = function () {
+		displayObj.reload();
+	}
+
+	
+	/*
+	 * æ·»åŠ èŠ‚ç‚¹
+	 * å‚æ•°ï¼š	xml	åˆæ³•çš„èŠ‚ç‚¹xmlå­—ç¬¦ä¸²
+	 * è¿”å›ï¼š	TreeNode/null	å‰è€…è¡¨æ·»åŠ æ ¹èŠ‚ç‚¹æˆåŠŸï¼Œè¿”å›æ–°èŠ‚ç‚¹çš„TreeNode; åè€…è¡¨å¤±è´¥
+	 */
+	function appendChild(xml, parent) {
+		//ç”Ÿæˆæ–°èŠ‚ç‚¹
+		var xmlDom = loadXmlToNode(xml);
+		if(xmlDom == null || xmlDom.documentElement == null || xmlDom.documentElement.nodeName != _TREE_XML_NODE_NAME) {
+			return alert("TreeNodeå¯¹è±¡ï¼šæ–°å¢èŠ‚ç‚¹xmlæ•°æ®ä¸èƒ½æ­£å¸¸è§£æï¼");
+		}
+		
+		var newNode = parent.appendChild(xmlDom.documentElement);
+
+		var treeNode = instanceTreeNode(newNode);
+		if(treeNode instanceof TreeNode) {
+			refreshStatesByNode(treeNode);	 // æ ¹æ®æ–°èŠ‚ç‚¹çš„é€‰æ‹©çŠ¶æ€åˆ·æ–°ç›¸å…³èŠ‚ç‚¹
+		}
+
+		displayObj.resetTotalTreeNodes();
+		return treeNode;
 	}
 	
 	/*
-	 * º¯ÊıËµÃ÷£º	 »ñÈ¡Ä¬ÈÏÑ¡Ôñ×´Ì¬Êı¾İ£ºid×Ö·û´®£¬¶àidÖ®¼äÓÃ","¸ô¿ª
-	 * ²ÎÊı£º	selectedIds	½ÚµãÑ¡ÖĞ×´Ì¬µÄId×Ö·û´®
-	 *			isClearOldSelected	ÊÇ·ñÇå³ıÔ­ÏÈÑ¡ÖĞ½Úµã
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2005-4-19
+	 * æ‰“å¼€å› æ­¤èŠ‚ç‚¹å…³é—­è€Œå…³é—­çš„èŠ‚ç‚¹ï¼Œå³å­èŠ‚ç‚¹æœ¬èº«æ˜¯æ‰“å¼€çš„ï¼Œåªæ˜¯æ­¤èŠ‚ç‚¹å…³é—­æ‰ä¸æ˜¾ç¤ºçš„
 	 */
-	this.loadSelectedDataByIds = function (selectedIds, isClearOldSelected, isDependParent){
-		if(_xmlRoot == null){
-			return;
+	function openChildNodesCloseByThisNode(node) {
+		var nodes = node.selectNodes(".//" + _TREE_XML_NODE_NAME + "[@_closeBy = '" + node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_ID) + "']");
+		for(var i = 0; i < nodes.length; i++) {
+			nodes[i].setAttribute("_open", "true");
+			nodes[i].removeAttribute("_closeBy");	//å»é™¤å› çˆ¶èŠ‚ç‚¹å…³é—­è€Œä¸æ˜¾ç¤ºçš„æ ‡è®°
 		}
-		if(isNullOrEmpty(selectedIds)){
-			selectedIds = _selectedIds;
+	}
+	/*
+	 * å…³é—­æ­¤èŠ‚ç‚¹ä¸‹å·²ç»æ‰“å¼€çš„å­èŠ‚ç‚¹ï¼Œå³æ­¤èŠ‚ç‚¹å…³é—­çš„è¯ï¼Œæ‰“å¼€çš„å­—èŠ‚ç‚¹ä¹Ÿåº”å…³é—­
+	 */
+	function closeOpendChildNodes(node) {
+		var nodes = node.selectNodes(".//" + _TREE_XML_NODE_NAME + "[@_open = 'true']");
+		for(var i = 0; i < nodes.length; i++) {
+			nodes[i].setAttribute("_open", "false");
+			nodes[i].setAttribute("_closeBy", node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_ID));	// å› æ­¤èŠ‚ç‚¹å…³é—­è€Œä¸æ˜¾ç¤º
 		}
-		if(treeObj.getAttribute(_TREE_ATTRIBUTE_TREE_TYPE) == _TREE_TYPE_SINGLE){	//µ¥Ñ¡Ê÷
-			if(selectedIds == null){
-				return;
-			}
-			eval("var selectedIds = '" + selectedIds + "';");
-			var node = _xmlRoot.selectSingleNode("//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_ID + "='"+selectedIds+"']");
-			var treeNode = instanceTreeNode(node);
-			if(treeNode != null){
-				treeNode.setSelectedState(1, false, true);
-				treeNode.focus();
-			}
-		}else{
-			multiCheckedDefaultByIds(_xmlRoot, selectedIds, isClearOldSelected, isDependParent);
-		}
+	}
+	/*
+	 * æ¿€æ´»èŠ‚ç‚¹ï¼Œè§¦å‘ç›¸åº”äº‹ä»¶
+	 */
+	function justActive(treeNode) {
+		// è®¾ç½®èŠ‚ç‚¹ä¸ºæ¿€æ´»
+		treeObj.setActiveNode(treeNode);
 	}
 
 	/*
-	 * º¯ÊıËµÃ÷£ºÉèÖÃÄ¬ÈÏ¼¤»î½Úµã
-	 * ²ÎÊı£º	type	Ä¬ÈÏ¼¤»îÀàĞÍ
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2005-11-17
+	 * é€‰ä¸­èŠ‚ç‚¹ 
 	 */
-	this.setDefaultActive = function (type) {
-		if(isNullOrEmpty(type)){
-			type = _defaultActive;
-		}
-		if(_xmlRoot == null || type == "none"){
-			return;
-		}
-		var activeNode = null;
-		if(type == "root"){
-			activeNode = _xmlRoot.selectSingleNode(".//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_ID + "='" + _TREE_XML_ROOT_TREE_NODE_ID + "']");
-		}else if(type == "valid"){
-			activeNode = _xmlRoot.selectSingleNode(".//" + _TREE_XML_NODE_NAME + "[(@" + _TREE_XML_NODE_ATTRIBUTE_CANSELECTED + "!='0' or not(@" + _TREE_XML_NODE_ATTRIBUTE_CANSELECTED + ")) and @" + _TREE_XML_NODE_ATTRIBUTE_ID + "!='" + _TREE_XML_ROOT_TREE_NODE_ID + "']");
-		}
-		var treeNode = instanceTreeNode(activeNode);
-		if(treeNode != null){
-			treeNode.setActive();
-			treeNode.focus();
-		}
-	}
-
-	/*
-	 * º¯ÊıËµÃ÷£º»ñÈ¡Êı¾İµÄ¸ù½Úµã
-	 * ²ÎÊı£º
-	 * ·µ»ØÖµ£º	xml½Úµã
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-25
-	 */
-	this.getXmlRoot = function () {
-		if(_xmlRoot == null){
-			var xmlDom = new ActiveXObject("Microsoft.XMLDOM");
-			xmlDom.async = false;
-			if (xmlDom.loadXML("<actionSet/>")){	
-				return xmlDom.documentElement;
-			}
-		}
-		return _xmlRoot;
-	}
-	/*
-	 * º¯ÊıËµÃ÷£ºÉè¶¨µ±Ç°¸ßÁÁ£¨¼¤»î£©µÄ½Úµã
-	 * ²ÎÊı£º	treeNode	TreeNode½Úµã
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-24
-	 */
-	this.setActiveNode = function (treeNode) {
-	    _activedNode = treeNode.getXmlNode();
-	}
-	/*
-	 * º¯ÊıËµÃ÷£º¸ù¾İÊôĞÔÅäÖÃ£¬µã»÷½ÚµãÎÄ×Ö±êÇ©Ê±ÊÇ·ñ¸Ä±ä½ÚµãÑ¡Ôñ×´Ì¬
-	 * ²ÎÊı£º
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2005-10-27
-	 */
-	this.isSelectByActived = function (){
-		return _treeNodeSelectedChangeState == "true";
-	}
-
-	/*
-	 * º¯ÊıËµÃ÷£º¸ù¾İÊôĞÔÅäÖÃ£¬µã»÷½ÚµãÎÄ×Ö±êÇ©Ê±ÊÇ·ñ¸Ä±ä½ÚµãÉìËõ×´Ì¬
-	 * ²ÎÊı£º
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2005-10-27
-	 */
-	this.isChangeFolderStateByClickLabel = function (){
-		return _treeNodeClickOpenNode == "true";
-	}
-	/*
-	 * º¯ÊıËµÃ÷£º»ñÈ¡µ±Ç°¸ßÁÁ£¨¼¤»î£©µÄ½Úµã
-	 * ²ÎÊı£º
-	 * ·µ»ØÖµ£º	TreeNode¶ÔÏó
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-30
-	 */
-	this.getActiveNode = function () {
-	    return instanceTreeNode(_activedNode);
-	}
-	/*
-	 * º¯ÊıËµÃ÷£ºÉè¶¨¶ÔÏóÊôĞÔÖµ
-	 * ²ÎÊı£º	name	ÊôĞÔÃû
-	 *			value	ÊôĞÔÖµ
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-24
-	 */
-	this.setAttribute = function (name, value) {
-	    switch (name) {
-	        case _TREE_ATTRIBUTE_BASE_URL:
-				_baseUrl = value;
-	            break;
-	        case _TREE_ATTRIBUTE_TREE_TYPE:
-				_treeType = value;
-	            break;
-	        case _TREE_ATTRIBUTE_SRC:
-				_src = value;
-	            break;
-	        case _TREE_ATTRIBUTE_CAN_MOVE_NODE:
-				_canMoveNode = value;
-	            break;
-	        case _TREE_ATTRIBUTE_SELECTED_WITH_CHANGE_STATE:
-				_treeNodeSelectedChangeState = value;
-	            break;
-	        case _TREE_ATTRIBUTE_OPEN_WITH_CLICK:
-				_treeNodeClickOpenNode = value;
-	            break;
-	        case _TREE_ATTRIBUTE_DISABLED_ALL_CHECKTYPE:
-				_allCheckTypeDisabled = value;
-	            break;
-	        case _TREE_ATTRIBUTE_JUST_SELECT_SELF:
-				_justSelectSelf = value;
-	            break;
-	        default :
-				alert("Tree¶ÔÏó£ºÃ»ÓĞÊôĞÔ[" + name + "]!");
-	    }
-	}
-	/*
-	 * º¯ÊıËµÃ÷£º»ñÈ¡¶ÔÏóÊôĞÔ
-	 * ²ÎÊı£º	name	ÊôĞÔÃû³Æ
-	 * ·µ»ØÖµ£º	ÊôĞÔÖµ
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-24
-	 */
-	this.getAttribute = function (name) {
-	    switch (name) {
-	        case _TREE_ATTRIBUTE_BASE_URL:
-				return _baseUrl;
-	        case _TREE_ATTRIBUTE_TREE_TYPE:
-				return _treeType;
-	        case _TREE_ATTRIBUTE_SRC:
-				return _src;
-	        case _TREE_ATTRIBUTE_CAN_MOVE_NODE:
-				return _canMoveNode;
-	        case _TREE_ATTRIBUTE_SELECTED_WITH_CHANGE_STATE:
-				return _treeNodeSelectedChangeState;
-	        case _TREE_ATTRIBUTE_OPEN_WITH_CLICK:
-				return _treeNodeClickOpenNode;
-	        case _TREE_ATTRIBUTE_DISABLED_ALL_CHECKTYPE:
-				return _allCheckTypeDisabled;
-	        case _TREE_ATTRIBUTE_JUST_SELECT_SELF:
-				return _justSelectSelf;
-	        default :
-				alert("Tree¶ÔÏó£ºÃ»ÓĞÊôĞÔ[" + name + "]!");
-	    }
-	}
-	/*
-	 * º¯ÊıËµÃ÷£º¸ù¾İ½Úµã²»Í¬µÄcheckTypeÊôĞÔÖµ»ñÈ¡Ñ¡Ôñ×´Ì¬Í¼±êµÄµØÖ·
-	 * ²ÎÊı£º	node	xml½Úµã
-	 * ·µ»ØÖµ£º	String	Í¼±êµØÖ·
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-24
-	 */
-	this.getCheckTypeImageSrc = function (node) {
-	    alert("Tree¶ÔÏó£º´Ë·½·¨[getCheckTypeImageSrc]ÉĞÎ´³õÊ¼»¯£¡");
-	}
-	/*
-	 * º¯ÊıËµÃ÷£ºÅĞ¶Ï½ÚµãÊÇ·ñ¸ßÁÁ£¨¼¤»î£©
-	 * ²ÎÊı£º	node	xml½Úµã
-	 * ·µ»ØÖµ£º	true/false
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-29
-	 */
-	this.isActiveNode = function (node) {
-	    return _activedNode == node;
-	}
-	/*
-	 * º¯ÊıËµÃ÷£ºÅĞ¶Ï½ÚµãÊÇ·ñÎª±»ÍÏ¶¯µÄ½Úµã
-	 * ²ÎÊı£º	node	xml½Úµã
-	 * ·µ»ØÖµ£º	true/false
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-30
-	 */
-	this.isMovedNode = function (node) {
-	    return _movedNode == node;
-	}
-	/*
-	 * º¯ÊıËµÃ÷£ºÅĞ¶Ï½ÚµãÊÇ·ñÎª²éÑ¡½á¹û½Úµã
-	 * ²ÎÊı£º	node	xml½Úµã
-	 * ·µ»ØÖµ£º	true/false
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2006-1-9
-	 */
-	this.isFindedNode = function (node) {
-	    return _findedNode == node;
-	}
-	/*
-	 * º¯ÊıËµÃ÷£º»ñÈ¡½ÚµãÎÄ×ÖÁ´½ÓµÄÑùÊ½Ãû
-	 * ²ÎÊı£º	node	xml½Úµã
-	 * ·µ»ØÖµ£º	String	ÑùÊ½Ãû
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-30
-	 */
-	this.getClassName = function (node, defaultClassName) {
-		if(this.isMovedNode(node)){
-			return _TREE_NODE_MOVED_STYLE_NAME;
-		}else if(this.isActiveNode(node)){
-			return _TREE_NODE_SELECTED_STYLE_NAME;
-		}else if(this.isFindedNode(node)){
-			return _TREE_NODE_FINDED_STYLE_NAME;
-		}
-		if(isNullOrEmpty(defaultClassName)){
-			return null;
-		}
-		return defaultClassName;
-	}
-	/*
-	 * º¯ÊıËµÃ÷£º½Úµã±»Ñ¡ÖĞÊ±ÊÇ·ñĞèÒª¼¤»î£¨¸ßÁÁ£©½Úµã
-	 * ²ÎÊı£ºstate	½ÚµãÑ¡ÖĞ×´Ì¬
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-7-1
-	 */
-	this.isActiveBySelected = function (state) {
-		return _treeNodeSelectedChangeState == "true" && state == 1;
-	}
-	/*
-	 * º¯ÊıËµÃ÷£ºÉè¶¨±»ÍÏ¶¯µÄ½Úµã
-	 * ²ÎÊı£º	node	xml½Úµã
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-30
-	 */
-	this.setMovedNode = function (node) {
-	    _movedNode = node;
-	}
-	/*
-	 * º¯ÊıËµÃ÷£º»ñÈ¡½ÚµãµÄÏÂÒ»ÖĞÑ¡ÖĞ×´Ì¬
-	 * ²ÎÊı£º	treeNode	TreeNode½Úµã¶ÔÏó
-	 * ·µ»ØÖµ£º	0/1	²»Ñ¡ÖĞ/Ñ¡ÖĞ
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-28
-	 */
-	this.getNextState = function (treeNode) {
-		alert("Tree¶ÔÏó£º´Ë·½·¨[getNextState]ÉĞÎ´³õÊ¼»¯£¡");
-	}
-	/*
-	 * º¯ÊıËµÃ÷£º¸ù¾İÌØ¶¨µÄ½Úµã£¬Ë¢ĞÂËùÓĞ½ÚµãµÄÑ¡Ôñ×´Ì¬
-	 * ²ÎÊı£º	node	xml½Úµã¶ÔÏó
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-28
-	 */
-	this.refreshStates = function (node) {
-		alert("Tree¶ÔÏó£º´Ë·½·¨[refreshStates]ÉĞÎ´³õÊ¼»¯£¡");
-	}
-	/*
-	 * º¯ÊıËµÃ÷£ºÊ÷ÊÇ·ñ¿ÉÒÔÒÆ¶¯½Úµã
-	 * ²ÎÊı£º
-	 * ·µ»ØÖµ£º	true/false
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-29
-	 */
-	this.isCanMoveNode = function () {
-	    return _canMoveNode == "true";
-	}
-	/*
-	 * º¯ÊıËµÃ÷£ºÊ÷ÊÇ·ñ½ûÖ¹¸Ä±äËùÓĞµÄÑ¡Ôñ×´Ì¬
-	 * ²ÎÊı£º
-	 * ·µ»ØÖµ£º	true/false
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-29
-	 */
-	this.isAllDisabledCheckType = function () {
-	    return _allCheckTypeDisabled == "true";
-	}
-	/*
-	 * º¯ÊıËµÃ÷£º»ñÈ¡Ñ¡ÖĞµÄ½ÚµãµÄTreeNode¶ÔÏóÊı×é
-	 * ²ÎÊı£º	hasHalfChecked	ÊÇ·ñ°üº¬°ëÑ¡½Úµã
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-6-30
-	 */
-	this.getSelectedTreeNode = function (hasHalfChecked) {
-	    alert("Tree¶ÔÏó£º´Ë·½·¨[getSelectedTreeNode]ÉĞÎ´³õÊ¼»¯£¡");
-	}
-	/*
-	 * º¯ÊıËµÃ÷£º½ûÖ¹ËùÓĞ½Úµã¸Ä±äÑ¡ÖĞ×´Ì¬
-	 * ²ÎÊı£º
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2005-10-29
-	 */
-	this.disable = function (){
-		_allCheckTypeDisabled = "true";
-	}
-	/*
-	 * º¯ÊıËµÃ÷£ºÔÊĞíÃ»ÓĞ±»ÌØÊâÖ¸¶¨²»ÄÜÑ¡ÖĞµÄ½Úµã¸Ä±äÑ¡ÖĞ×´Ì¬
-	 * ²ÎÊı£º
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2005-10-29
-	 */
-	this.enable = function (){
-		_allCheckTypeDisabled = "false";
-	}
-	/*
-	 * º¯ÊıËµÃ÷£ºĞÂÔö½Úµãºó£¬ÊÇ·ñĞèÒª½«½¹µãÒÆµ½ĞÂ½ÚµãÉÏ
-	 * ²ÎÊı£º
-	 * ·µ»ØÖµ£º	true	ĞèÒªÒÆµ½ĞÂ½ÚµãÉÏ
-	 *			false	²»ĞèÒªÒÆµ½ĞÂ½ÚµãÉÏ
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2005-11-17
-	 */
-	this.isFocusNewTreeNode = function(){
-		return _focusNewNode == "true";
-	}
-
-	/*
-	 * º¯ÊıËµÃ÷£ºÉè¶¨²éÑ¯½á¹ûÖĞµÄµ±Ç°½ÚµãÎªÌØÊâ¸ßÁÁÏÔÊ¾
-	 * ²ÎÊı£º	node	xml½Úµã
-	 * ·µ»ØÖµ£º
-	 * ×÷Õß£ºscq
-	 * Ê±¼ä£º2004-7-2
-	 */
-	this.setFindedNode = function (node) {
-	    _findedNode = node;
-	}
-	this.test = function(name){
-		return eval(name);
-	}
-}
-/*
- * º¯ÊıËµÃ÷£º»ñÈ¡¶¨ÒåµÄÄ¬ÈÏ´ò¿ª½Úµã
- * ²ÎÊı£º	xmlRoot	xmlÊı¾İ
- * ·µ»ØÖµ£ºÄ¬ÈÏ´ò¿ªµÄxml½Úµã
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-11
- */
-function getDefaultOpenedNode(xmlRoot) {
-	if(xmlRoot == null){
-		return;
-	}
-	var actionSetNode = xmlRoot;
-	var openedNodeId = actionSetNode.getAttribute(_TREE_XML_NODE_ATTRIBUTE_DEFAULT_OPENED_NODE_ID);
-	var openedNode = null;
-	if(!isNullOrEmpty(openedNodeId)){
-		openedNode = actionSetNode.selectSingleNode(".//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_ID + "='"+openedNodeId+"']");
-	}
-	if(isNullOrEmpty(openedNode)){
-		openedNode = actionSetNode.selectSingleNode(".//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CANSELECTED + "!='0' or not(@" + _TREE_XML_NODE_ATTRIBUTE_CANSELECTED + ")]");
-	}
-	return isNullOrEmpty(openedNode)?actionSetNode.firstChild:openedNode;
-}
-/*
- * º¯ÊıËµÃ÷£º»ñÈ¡¿Ø¼ş²ÎÊı
- * ²ÎÊı£º	name	²ÎÊıÃû
- *			defaultValue	Ä¬ÈÏÖµ
- * ·µ»ØÖµ£º	String	ÊôĞÔÖµ
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-11
- */
-function getValue(name, defaultValue) {
-	var value = eval("element." + name);
-    if(value == null){
-		return defaultValue;
-	}
-	return value;
-}
-
-/*
- * º¯ÊıËµÃ÷£º¸ù¾İ¸ø¶¨½ÚµãµÄÑ¡ÖĞ×´Ì¬£¬Ñ¡ÖĞÄ¬ÈÏ½Úµã£¨¶àÑ¡Ê÷£¬¸ù¾İxml½Úµã£©
- * ²ÎÊı£º	node	ĞèÒª´¦ÀíÄ¬ÈÏÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµã
- *			defaltCheckedNode	Ä¬ÈÏÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµã
- *			isClearOldSelected	ÊÇ·ñÇå³ıÔ­ÏÈÑ¡ÖĞ½Úµã
- * ·µ»ØÖµ£º
- * ×÷Õß£ºÉò³¬Ææ
- * Ê±¼ä£º2004-12-23
- */
-function multiCheckedDefault(node, defaultCheckedNode, isClearOldSelected) {
-	if(node == null){
-		return;
-	}
-	if(isClearOldSelected){
-		clearSelected(node);
-	}
-	if(defaultCheckedNode == null){
-		return;
-	}
-	if (treeObj.getAttribute(_TREE_ATTRIBUTE_JUST_SELECT_SELF) == "true"){
-		multiCheckedDefaultOnlySelf(node, defaultCheckedNode);
-	}else{
-		multiCheckedDefaultWithOther(node, defaultCheckedNode);
-	}
-}
-/*
- * º¯ÊıËµÃ÷£º¸ù¾İ¸ø¶¨½ÚµãµÄÑ¡ÖĞ×´Ì¬£¬Ñ¡ÖĞÄ¬ÈÏ½Úµã£¨¶àÑ¡Ê÷£¬¸ù¾İId×Ö·û´®£©
- * ²ÎÊı£º	node	ĞèÒª´¦ÀíÄ¬ÈÏÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµã
- *			defaltCheckedIds	Ä¬ÈÏÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµã
- *			isClearOldSelected	ÊÇ·ñÇå³ıÔ­ÏÈÑ¡ÖĞ½Úµã
- * ·µ»ØÖµ£º
- * ×÷Õß£ºÉò³¬Ææ
- * Ê±¼ä£º2005-4-19
- */
-function multiCheckedDefaultByIds(node, defaltCheckedIds, isClearOldSelected, isDependParent) {
-	if(node == null){
-		return;
-	}
-	if(isClearOldSelected){
-		clearSelected(node);
-	}
-	if(defaltCheckedIds == null || defaltCheckedIds == ""){
-		return;
-	}
-	if (treeObj.getAttribute(_TREE_ATTRIBUTE_JUST_SELECT_SELF) == "true"){
-		multiCheckedDefaultByIdsOnlySelf(node, defaltCheckedIds);
-	}else{
-		multiCheckedDefaultByIdsWithOther(node, defaltCheckedIds, isDependParent);
-	}
-}
-
-/*
- * º¯ÊıËµÃ÷£ºÈ¥³ıËùÓĞÑ¡ÖĞ½ÚµãµÄÑ¡ÖĞ×´Ì¬
- * ²ÎÊı£º	node	ĞèÒª´¦ÀíÈ¥³ıËùÓĞ½ÚµãÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµã
- * ·µ»ØÖµ£º
- * ×÷Õß£ºÉò³¬Ææ
- * Ê±¼ä£º2005-9-24
- */
-function clearSelected(node){
-	var nodes = node.selectNodes(".//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1' or @" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='2']");
-	for(var i = 0; i < nodes.length; i++){
-		setNodeState(nodes[i], 0);
-	}
-}
-
-/*
- * º¯ÊıËµÃ÷£º¸ù¾İ¸ø¶¨½ÚµãµÄÑ¡ÖĞ×´Ì¬£¬Ñ¡ÖĞÄ¬ÈÏ½Úµã£¨µ¥Ñ¡Ê÷£©
- * ²ÎÊı£º	node	ĞèÒª´¦ÀíÄ¬ÈÏÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµã
- *			defaltCheckedNode	Ä¬ÈÏÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµã
- * ·µ»ØÖµ£º
- * ×÷Õß£ºÉò³¬Ææ
- * Ê±¼ä£º2005-4-19
- */
-function singleCheckedDefault(node, defaultCheckedNode) {
-	if(defaultCheckedNode == null || node == null){
-		return;
-	}
-	var checkedNode = defaultCheckedNode.selectSingleNode("//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1']");
-	if(checkedNode == null){
-		return;
-	}
-	var fNodeId = checkedNode.getAttribute(_TREE_XML_NODE_ATTRIBUTE_ID);
-	var xpath = "//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_ID + "='" + fNodeId + "']";
-	var fNode = node.selectSingleNode(xpath);
-	var treeNode = instanceTreeNode(fNode);
-	if(treeNode != null){
-		treeNode.changeSelectedState(false, true);
-		treeNode.focus();
-	}
-}
-
-/*
- * º¯ÊıËµÃ÷£º¸ù¾İ¸ø¶¨½ÚµãµÄÑ¡ÖĞ×´Ì¬£¬Ñ¡ÖĞÄ¬ÈÏ½Úµã (¶àÑ¡Ê÷£¬Ñ¡½ÚµãÊ±²»¿¼ÂÇ¸¸×Ó¹ØÏµ)
- * ²ÎÊı£º	node	ĞèÒª´¦ÀíÄ¬ÈÏÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµã
- *			defaltCheckedNode	Ä¬ÈÏÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµã
- * ·µ»ØÖµ£º
- * ×÷Õß£ºÉò³¬Ææ
- * Ê±¼ä£º2004-12-23
- */
-function multiCheckedDefaultOnlySelf(node, defaultCheckedNode) {
-	if(node == null || defaultCheckedNode == null){
-		return;
-	}
-	var checkedNodes = defaultCheckedNode.selectNodes("//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1']");
-	for(var i = 0; i < checkedNodes.length; i++){
-		var fNodeId = checkedNodes[i].getAttribute(_TREE_XML_NODE_ATTRIBUTE_ID);
-		var xpath = "//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_ID + "='" + fNodeId + "']";
-		var fNode = node.selectSingleNode(xpath);
-		setNodeState(fNode, 1);
-		openNode(fNode);
-	}
-}
-/*
- * º¯ÊıËµÃ÷£º¸ù¾İ¸ø¶¨½ÚµãµÄÑ¡ÖĞ×´Ì¬£¬Ñ¡ÖĞÄ¬ÈÏ½Úµã (¶àÑ¡Ê÷£¬Ñ¡½ÚµãÊ±¿¼ÂÇ¸¸×Ó¹ØÏµ)
- * ²ÎÊı£º	node	ĞèÒª´¦ÀíÄ¬ÈÏÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµã
- *			defaltCheckedNode	Ä¬ÈÏÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµã
- * ·µ»ØÖµ£º
- * ×÷Õß£ºÉò³¬Ææ
- * Ê±¼ä£º2004-12-23
- */
-function multiCheckedDefaultWithOther(node, defaultCheckedNode) {
-	if(node == null || defaultCheckedNode == null){
-		return;
-	}
-	var checkedNodes = defaultCheckedNode.selectNodes("//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1' && ..[not(@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1') || not(@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + ")]]");
-	for(var i = 0; i < checkedNodes.length; i++){
-		var fNodeId = checkedNodes[i].getAttribute(_TREE_XML_NODE_ATTRIBUTE_ID);
-		var xpath = "//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_ID + "='" + fNodeId + "']";
-		var fNode = node.selectSingleNode(xpath);
-		if(fNode != null){
-			setNodeState(fNode, 1);
-			refreshParentNodeState(fNode);
-			refreshChildrenNodeState(fNode);
-		}
-	}
-}
-/*
- * º¯ÊıËµÃ÷£º¸ù¾İ¸ø¶¨½ÚµãµÄÑ¡ÖĞ×´Ì¬£¬Ñ¡ÖĞÄ¬ÈÏ½Úµã (¶àÑ¡Ê÷£¬Ñ¡½ÚµãÊ±²»¿¼ÂÇ¸¸×Ó¹ØÏµ)
- * ²ÎÊı£º	node	ĞèÒª´¦ÀíÄ¬ÈÏÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµã
- *			defaltCheckedIds	Ä¬ÈÏÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµãid×Ö·û´®
- * ·µ»ØÖµ£º
- * ×÷Õß£ºÉò³¬Ææ
- * Ê±¼ä£º2004-12-23
- */
-function multiCheckedDefaultByIdsOnlySelf(node, defaltCheckedIds) {
-	if(node == null || defaltCheckedIds == null){
-		return;
-	}
-	var checkedNodeIds = defaltCheckedIds.split(',');
-	for(var i = 0; i < checkedNodeIds.length; i++){
-		var xpath = "//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_ID + "='" + checkedNodeIds[i] + "']";
-		var fNode = node.selectSingleNode(xpath);
-		if(fNode != null){
-			setNodeState(fNode, 1);
-			openNode(fNode);
-		}
-	}
-}
-
-/*
- * º¯ÊıËµÃ÷£º¸ù¾İ¸ø¶¨½ÚµãµÄÑ¡ÖĞ×´Ì¬£¬Ñ¡ÖĞÄ¬ÈÏ½Úµã (¶àÑ¡Ê÷£¬Ñ¡½ÚµãÊ±¿¼ÂÇ¸¸×Ó¹ØÏµ)
- * ²ÎÊı£º	node	ĞèÒª´¦ÀíÄ¬ÈÏÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµã
- *			defaltCheckedIds	Ä¬ÈÏÑ¡ÖĞ×´Ì¬µÄÊı¾İ½Úµãid×Ö·û´®
- * ·µ»ØÖµ£º
- * ×÷Õß£ºÉò³¬Ææ
- * Ê±¼ä£º2004-12-23
- */
-function multiCheckedDefaultByIdsWithOther(node, defaltCheckedIds, isDependParent) {
-	if(node == null || defaltCheckedIds == null){
-		return;
-	}
-	var checkedNodeIds = defaltCheckedIds.split(',');
-	for(var i = 0; i < checkedNodeIds.length; i++){
-		var xpath = "//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_ID + "='" + checkedNodeIds[i] + "']";
-		var fNode = node.selectSingleNode(xpath);
-		if(fNode != null){
-			setNodeState(fNode, 1);
-
-            //Èç¹ûÏÂËİ£¬ÔòÉèÖÃÈ«²¿×Ó½ÚµãÎªÑ¡ÖĞ
-            if(true==isDependParent){
-                var xpath = ".//" + _TREE_XML_NODE_NAME;
-                var subnodes = fNode.selectNodes(xpath);
-                for(var j = 0; j < subnodes.length; j++){
-                    setNodeState(subnodes[j], 1);
-                }
-            
+	function justSelected(treeNode, state, noChildren) {
+        if(false == treeObj.isMenu()) {
+            if(state == 1 && noChildren && treeNode.node.hasChildNodes()) {
+                setNodeState(treeNode.node, 2);
+            } else {
+                setNodeState(treeNode.node, state);
             }
-		}
+			
+			// åˆ·æ–°ç›¸åº”èŠ‚ç‚¹çš„é€‰ä¸­çŠ¶æ€
+            refreshStatesByNode(treeNode, noChildren);	 
+        }
 	}
-	//±ê¼Ç°üº¬Ñ¡ÖĞ½ÚµãµÄËùÓĞ¸¸½ÚµãÎªÑ¡ÖĞ
-	var xpath = "//" + _TREE_XML_NODE_NAME + "[not(@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + " and @" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + " = '1') and .//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + " = '1']]";
-	var nodes = node.selectNodes(xpath);
-	for(var i = 0; i < nodes.length; i++){
-		setNodeState(nodes[i], 1);
+	
+	/*
+	 * æ ¹æ®ç»™å®šçš„èŠ‚ç‚¹çš„é€‰ä¸­çŠ¶æ€ï¼Œåˆ·æ–°ç›¸åº”èŠ‚ç‚¹çš„é€‰ä¸­çŠ¶æ€
+	 * å‚æ•°ï¼š	TreeNodeèŠ‚ç‚¹å¯¹è±¡
+	 *			noChildren	é€‰ä¸­èŠ‚ç‚¹æ—¶ï¼Œåªé€‰ä¸­è‡ªå·±èŠ‚ç‚¹ï¼Œä¸å½±å“å­èŠ‚ç‚¹
+	 */
+	function refreshStatesByNode(treeNode, noChildren) {
+		treeObj.refreshStates(treeNode, noChildren);
 	}
-	//±ê¼ÇËùÓĞÈ«Ñ¡½ÚµãÖĞ°üº¬Î´È«Ñ¡½ÚµãµÄ½ÚµãÎª°ëÑ¡
-	var nodes = node.selectNodes("//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + " = '1' and .//" + _TREE_XML_NODE_NAME + "[not(@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + " = '1') || not(@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + ")]]");
-	for(var i = 0; i < nodes.length; i++){
-		setNodeState(nodes[i], 2);
-	}
-}
-/*
- * º¯ÊıËµÃ÷£ºË¢ĞÂÏà¹Ø½ÚµãµÄÑ¡ÖĞ×´Ì¬£¨¶àÑ¡Ê÷£©£¬Í¬Ê±¸ù¾İ²ÎÊı¾ö¶¨ÊÇ·ñ¼¤»îµ±Ç°½Úµã
- * ²ÎÊı£º	treeNode	TreeNode½Úµã¶ÔÏó
- *			noChildren	Ñ¡ÖĞ½ÚµãÊ±£¬²»°üº¬×Ó½Úµã
- * ·µ»ØÖµ£º
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-29
- */
-function multiRefreshStates(treeNode, noChildren) {
-	if (treeObj.getAttribute(_TREE_ATTRIBUTE_JUST_SELECT_SELF) == "true"){
-		return;
-	}
-	refreshParentNodeState(treeNode.getXmlNode());
-
-	if(noChildren && treeNode.getSelectedState() == 2){
-		return;
-	}
-	refreshChildrenNodeState(treeNode.getXmlNode());
-}
-/*
- * º¯ÊıËµÃ÷£ºË¢ĞÂËùÓĞ¸¸½ÚµãµÄÑ¡Ôñ×´Ì¬
- * ²ÎÊı£º	tempNode	xml½Úµã
- * ·µ»ØÖµ£º
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-28
- */
-function refreshParentNodeState(tempNode) {
-	tempNode = tempNode.parentNode;
-	while(tempNode != treeObj.getXmlRoot()){
-		setNodeState(tempNode, getChildsNodeState(tempNode));
-		tempNode = tempNode.parentNode;
-	}
-}
-/*
- * º¯ÊıËµÃ÷£º»ñÈ¡Ö¦½ÚµãµÄÑ¡Ôñ×´Ì¬
- * ²ÎÊı£º	node	xml½Úµã
- * ·µ»ØÖµ£º	0/1/2	²»Ñ¡/Ñ¡ÖĞ/°ëÑ¡
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-28
- */
-function getChildsNodeState(node) {
-	var nodeChildNum = node.childNodes.length;	//ËùÓĞ×Ó½ÚµãÊı
-	var nodeCheckedChildNum = node.selectNodes("./" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1']").length;	//È«Ñ¡×Ó½ÚµãÊı
-	var nodeHalfCheckedChildNum = node.selectNodes("./" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='2']").length;	//°ëÑ¡×Ó½ÚµãÊı
-	if(nodeCheckedChildNum == 0 && nodeHalfCheckedChildNum == 0){	
-		return 0;		//ËùÓĞ×Ó½Úµã¶¼Ã»ÓĞÑ¡ÖĞ£¬±ê¼ÇÎ´Ñ¡ÖĞ
-	}else if(nodeChildNum == nodeCheckedChildNum){
-		return 1;		//ËùÓĞ×Ó½Úµã¶¼±»È«Ñ¡£¬±ê¼ÇÈ«Ñ¡
-	}
-	return 2;
-}
-/*
- * º¯ÊıËµÃ÷£ºË¢ĞÂËùÓĞ×Ó½Úµã
- * ²ÎÊı£º	node	xml½Úµã¶ÔÏó
- * ·µ»ØÖµ£º
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-28
- */
-function refreshChildrenNodeState(node) {
-	var childNodes = node.selectNodes(".//" + _TREE_XML_NODE_NAME);
-	for(var i = 0, len = childNodes.length; i < len; i++){
-		setNodeState(childNodes[i], node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_CHECKTYPE));
-	}
-}
-
-/*
- * º¯ÊıËµÃ÷£º¸ù¾İ½ÚµãÑ¡Ôñ×´Ì¬£¬»ñÈ¡Í¼±êµØÖ·£¨¶àÑ¡Ê÷£©
- * ²ÎÊı£º	node	xml½Úµã
- * ·µ»ØÖµ£º	String	Í¼±êµØÖ·
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-29
- */
-function getMultiCheckTypes(node) {
-	var checkType = node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_CHECKTYPE);
-	var canSelected = node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_CANSELECTED);
-	if(canSelected == 0){
-		return this.getAttribute(_TREE_ATTRIBUTE_BASE_URL) + _MULTI_CAN_NOT_CHECK_IMAGE_SRC;
-	}
-	if(checkType == 1) {
-		return this.getAttribute(_TREE_ATTRIBUTE_BASE_URL) + _MULTI_CHECKED_IMAGE_SRC;
-	}
-	if(checkType == 2){
-		return this.getAttribute(_TREE_ATTRIBUTE_BASE_URL) + _MULTI_HALF_CHECKED_IMAGE_SRC;
-	}
-	return this.getAttribute(_TREE_ATTRIBUTE_BASE_URL) + _MULTI_NO_CHECKED_IMAGE_SRC;
-}
-/*
- * º¯ÊıËµÃ÷£º¸ù¾İ½ÚµãÑ¡Ôñ×´Ì¬£¬»ñÈ¡Í¼±êµØÖ·£¨µ¥Ñ¡Ê÷£©
- * ²ÎÊı£º	node	xml½Úµã
- * ·µ»ØÖµ£º	String	Í¼±êµØÖ·
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-29
- */
-function getSingleCheckTypes(node) {
-	var checkType = node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_CHECKTYPE);
-	var canSelected = node.getAttribute(_TREE_XML_NODE_ATTRIBUTE_CANSELECTED);
-	if(canSelected == 0){
-		return this.getAttribute(_TREE_ATTRIBUTE_BASE_URL) + _SINGLE_CAN_NOT_SELECT_IMAGE_SRC;
-	}
-	if(checkType == 1) {
-		return this.getAttribute(_TREE_ATTRIBUTE_BASE_URL) + _SINGLE_SELECTED_IMAGE_SRC;
-	}
-	return this.getAttribute(_TREE_ATTRIBUTE_BASE_URL) + _SINGLE_NO_SELECTED_IMAGE_SRC;
-}
-/*
- * º¯ÊıËµÃ÷£ºÇå³ıÌØ¶¨½ÚµãÒÔÍâµÄÆäËû½ÚµãµÄÑ¡ÖĞ×´Ì¬
- * ²ÎÊı£º	treeNode	TreeNode½Úµã¶ÔÏó
- * ·µ»ØÖµ£º
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-29
- */
-function clearOtherSelectedState(treeNode) {
-	var childNodes = this.getXmlRoot().selectNodes(".//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1']");
-	for(var i = 0, len = childNodes.length; i < len; i++){
-		if(childNodes[i] == treeNode.getXmlNode()){
-			continue;
-		}
-		setNodeState(childNodes[i], "0");
-	}
-}
-/*
- * º¯ÊıËµÃ÷£º»ñÈ¡Ñ¡ÖĞ½ÚµãµÄXml¶ÔÏóÊı×é£¨¶àÑ¡Ê÷£©
- * ²ÎÊı£º	hasHalfChecked	ÊÇ·ñ°üº¬°ëÑ¡½Úµã
- * ·µ»ØÖµ£º	Xml¶ÔÏóÊı×é
- * ×÷Õß£ºscq
- * Ê±¼ä£º2005-8-22
- */
-function multiGetSelectedXmlNode(hasHalfChecked) {
-	var xmlNodeArray = new Array();
-	var xmlNodes = null;
-	if(hasHalfChecked != false){	//°üÀ¨°ëÑ¡×´Ì¬
-		xmlNodes = this.getXmlRoot().selectNodes(".//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1' or @" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='2']");
-	}else{	//²»°üÀ¨°ëÑ¡×´Ì¬
-		xmlNodes = this.getXmlRoot().selectNodes(".//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1']");
-	}
-	for(var i = 0; i < xmlNodes.length; i++){
-		xmlNodeArray[i] = xmlNodes[i];
-	}
-	try{
-		xmlNodeArray.rootNode = this.getXmlRoot().cloneNode(false);	//»ñÈ¡actionSet½Úµã
-	}catch(e){
-		alert("¿Ø¼şÊı¾İ´íÎó£¬xml²»ÄÜ½âÎö£¡");
-		throw(e);
-	}
-	xmlNodeArray.hasHalfChecked = hasHalfChecked;
-	//¸øÊı×éÌá¹©toElement·½·¨£¬¸ù¾İ²»Í¬µÄÊÇ·ñ°üÀ¨°ëÑ¡×´Ì¬£¬·Ö±ğÒÔ²»Í¬µÄ·½Ê½·µ»Øxml½Úµã¡£
-	xmlNodeArray.toElement = xmlNodesToXmlNode;
-	return xmlNodeArray;
-}
-
-/*
- * º¯ÊıËµÃ÷£º¸ù¾İ²»Í¬µÄÊÇ·ñ°üÀ¨°ëÑ¡×´Ì¬£¬·Ö±ğÒÔ²»Í¬µÄ·½Ê½·µ»Øxml½Úµã¡£
- * ²ÎÊı£º
- * ·µ»ØÖµ£º	xml½Úµã
- * ×÷Õß£ºscq
- * Ê±¼ä£º2005-8-22
- */
-function xmlNodesToXmlNode() {
-	for(var i = 0, len = this.length; i < len; i++){
-		if(this[i] == null){
-			continue;
-		}
-		var parentNode = null;
-		if(this.hasHalfChecked != false){	//°üÀ¨°ëÑ¡×´Ì¬£¬ÔòÒÔÔ­ÓĞ½Úµã²ã´Î¹ØÏµ·µ»Øxml
-			parentNode = this.rootNode.selectSingleNode(".//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_ID + "='"+this[i].parentNode.getAttribute(_TREE_XML_NODE_ATTRIBUTE_ID)+"']");
-		}
-		if (parentNode == null){
-			parentNode = this.rootNode;
-		}
-		parentNode.appendChild(this[i].cloneNode(false));
-	}
-	return this.rootNode;
-}
-
-/*
- * º¯ÊıËµÃ÷£º»ñÈ¡Ñ¡ÖĞ½ÚµãµÄTreeNode¶ÔÏóÊı×é£¨¶àÑ¡Ê÷£©
- * ²ÎÊı£º	hasHalfChecked	ÊÇ·ñ°üº¬°ëÑ¡½Úµã
- * ·µ»ØÖµ£º	TreeNode¶ÔÏóÊı×é
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-29
- */
-function multiGetSelectedTreeNode(hasHalfChecked) {
-	var treeNodeArray = new Array();	
-	var treeNodes = null;
-	if(hasHalfChecked != false){	//°üÀ¨°ëÑ¡×´Ì¬
-		treeNodes = this.getXmlRoot().selectNodes(".//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1' or @" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='2']");
-	}else{	//²»°üÀ¨°ëÑ¡×´Ì¬
-		treeNodes = this.getXmlRoot().selectNodes(".//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1']");
-	}
-	//Éú³É·µ»ØµÄ¶ÔÏóÊı×é
-	for(var i = 0, len = treeNodes.length; i < len; i++){
-		treeNodeArray[i] = instanceTreeNode(treeNodes[i]);
-	}
-	try{
-		treeNodeArray.rootNode = this.getXmlRoot().cloneNode(false);	//»ñÈ¡actionSet½Úµã
-	}catch(e){
-		alert("¿Ø¼şÊı¾İ´íÎó£¬xml²»ÄÜ½âÎö£¡");
-		throw(e);
-	}
-	treeNodeArray.hasHalfChecked = hasHalfChecked;
-	//¸øÊı×éÌá¹©toElement·½·¨£¬¸ù¾İ²»Í¬µÄÊÇ·ñ°üÀ¨°ëÑ¡×´Ì¬£¬·Ö±ğÒÔ²»Í¬µÄ·½Ê½·µ»Øxml½Úµã¡£
-	treeNodeArray.toElement = treeNodesToXmlNode;
-	return treeNodeArray;
-}
-/*
- * º¯ÊıËµÃ÷£º¸ù¾İ²»Í¬µÄÊÇ·ñ°üÀ¨°ëÑ¡×´Ì¬£¬·Ö±ğÒÔ²»Í¬µÄ·½Ê½·µ»Øxml½Úµã¡£
- * ²ÎÊı£º
- * ·µ»ØÖµ£º	xml½Úµã
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-30
- */
-function treeNodesToXmlNode() {
-	for(var i = 0, len = this.length; i < len; i++){
-		if(this[i] == null){
-			continue;
-		}
-		var parentNode = null;
-		if(this.hasHalfChecked != false){	//°üÀ¨°ëÑ¡×´Ì¬£¬ÔòÒÔÔ­ÓĞ½Úµã²ã´Î¹ØÏµ·µ»Øxml
-			parentNode = this.rootNode.selectSingleNode(".//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_ID + "='"+this[i].getXmlNode().parentNode.getAttribute(_TREE_XML_NODE_ATTRIBUTE_ID)+"']");
-		}
-		if (parentNode == null){
-			parentNode = this.rootNode;
-		}
-		parentNode.appendChild(this[i].getXmlNode().cloneNode(false));
-	}
-	return this.rootNode;
-}
-/*
- * º¯ÊıËµÃ÷£º»ñÈ¡Ñ¡ÖĞ½ÚµãµÄTreeNode¶ÔÏó£¨µ¥Ñ¡Ê÷£©
- * ²ÎÊı£º
- * ·µ»ØÖµ£º	TreeNode¶ÔÏó
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-29
- */
-function singleGetSelectedTreeNode(){
-	var node = this.getXmlRoot().selectSingleNode(".//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1']");
-	return instanceTreeNode(node);
-}
-
-/*
- * º¯ÊıËµÃ÷£º»ñÈ¡Ñ¡ÖĞ½ÚµãµÄXml¶ÔÏó£¨µ¥Ñ¡Ê÷£©
- * ²ÎÊı£º
- * ·µ»ØÖµ£º	Xml¶ÔÏó
- * ×÷Õß£ºscq
- * Ê±¼ä£º2005-8-22
- */
-function singleGetSelectedXmlNode(){
-	return this.getXmlRoot().selectSingleNode(".//" + _TREE_XML_NODE_NAME + "[@" + _TREE_XML_NODE_ATTRIBUTE_CHECKTYPE + "='1']");
-}
-
-/*
- * º¯ÊıËµÃ÷£º»ñÈ¡½ÚµãµÄÏÂÒ»Ñ¡ÖĞ×´Ì¬£¨¶àÑ¡1¡¢2 -> 0; 0 -> 1£©
- * ²ÎÊı£º	treeNode	TreeNode¶ÔÏó
- * ·µ»ØÖµ£º	×´Ì¬0/1/2
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-30
- */
-function multiGetNextState(treeNode) {
-	if(/^(2|1)$/.test(treeNode.getSelectedState())){	//°ëÑ¡¡¢È«Ñ¡Ê±£¬ÖÃÎª²»Ñ¡
-		return 0;
-	}	
-	return 1;	//²»Ñ¡Ê±£¬ÖÃÎªÈ«Ñ¡
-}
-/*
- * º¯ÊıËµÃ÷£º»ñÈ¡½ÚµãµÄÏÂÒ»Ñ¡ÖĞ×´Ì¬£¨µ¥Ñ¡£©
- * ²ÎÊı£º
- * ·µ»ØÖµ£º	×´Ì¬1
- * ×÷Õß£ºscq
- * Ê±¼ä£º2004-6-30
- */
-function singleGetNextState() {
-    return 1;
 }
