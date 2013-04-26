@@ -11,8 +11,6 @@ var _TREE_BASE_URL = "baseurl";
 var _TREE_BASE_URL_DEFAULT_VALUE = "common/Tree/";	// 默认控件所在目录
 
 var _TREE_TREE_TYPE = "treeType";
-var _TREE_SRC = "src";
-var _TREE_SELECTED_SRC = "selected";    // 选中节点数据源
 var _TREE_SELECTED_IDS = "selectedIds"; // 选中节点id字符串
 var _TREE_CAN_MOVE_NODE = "canMoveNode";	
 var _TREE_SELECTED_AND_ACTIVE = "treeNodeSelectedChangeState"; 	// 选中、激活节点是否同步
@@ -37,15 +35,15 @@ var _TREE_NODE_DISPLAY = "display";
 /*
 节点名称
  */
-var _TREE_NODE_NAME = "treeNode";
+var _TREE_NODE = "treeNode";
 /*
  * 根节点名称
  */
-var _TREE_ROOT_NODE_NAME = "actionSet";
+var _TREE_ROOT_NODE = "actionSet";
 /*
  * “全部”节点的ID值
  */
-var _TREE_ROOT_TREE_NODE_ID = "_rootId";
+var _TREE_ROOT_NODE_ID = "_rootId";
 
 /*
  * 选中状态图标地址（控件所在目录为根目录，起始不能有“/”）
@@ -302,20 +300,20 @@ TreeNode.prototype = new function() {
 	 */
 	this.getIds = function(isAll, onlySelected) {
 		if(isAll) {
-			var path = ".|.//" + _TREE_NODE_NAME;
+			var path = ".|.//" + _TREE_NODE;
 		} 
 		else {
 			if(onlySelected) {
-				var path = ".[@" + _TREE_NODE_CHECKTYPE + "='1']|.//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1']";
+				var path = ".[@" + _TREE_NODE_CHECKTYPE + "='1']|.//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']";
 			} else {
-				var path = ".[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']|.//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']";
+				var path = ".[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']|.//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']";
 			}
 		}
 		var nodes = this.node.selectNodes(path);
 		var ids = "";
 		for(var i = 0; i < nodes.length; i++) {
 			var id = nodes[i].getAttribute(_TREE_NODE_ID);
-			if(id == _TREE_ROOT_TREE_NODE_ID) {
+			if(id == _TREE_ROOT_NODE_ID) {
 				continue;
 			}
 			if(i > 0) {
@@ -336,7 +334,7 @@ TreeNode.prototype = new function() {
 	 * 设定id
 	 */
 	this.setId = function(id) {
-		var node = treeObj.getXmlRoot().selectSingleNode(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_ID + "='" + id + "']");
+		var node = treeObj.getXmlRoot().selectSingleNode(".//treeNode[@id='" + id + "']");
 		if( node && node != this.node ) {
 			return alert("同id的节点已经存在！[id:" + id + "]");
 		}
@@ -401,7 +399,7 @@ TreeNode.prototype = new function() {
 	this.enabled = function(isAllParent) {
 		if( isAllParent ) {
 			var node = this.node;
-			while( node && node.getAttribute(_TREE_NODE_ID) != _TREE_ROOT_TREE_NODE_ID
+			while( node && node.getAttribute(_TREE_NODE_ID) != _TREE_ROOT_NODE_ID
 					&& node.getAttribute(_TREE_NODE_DISPLAY) == '0') {
 				node.setAttribute(_TREE_NODE_DISPLAY, "1");
 				node = node.parentNode;
@@ -418,7 +416,7 @@ TreeNode.prototype = new function() {
 	 */
 	this.disabled = function(isAllChildren) {
 		if(isAllChildren) {
-			var nodes = this.node.selectNodes(".|.//" + _TREE_NODE_NAME);
+			var nodes = this.node.selectNodes(".|.//" + _TREE_NODE);
 			for(var i = 0; i < nodes.length; i++) {
 				nodes[i].setAttribute(_TREE_NODE_DISPLAY, "0");
 			}
@@ -592,7 +590,7 @@ TreeNode.prototype = new function() {
 	function appendChild(xml, parent) {
 		//生成新节点
 		var xmlDom = loadXmlToNode(xml);
-		if(xmlDom == null || xmlDom.documentElement == null || xmlDom.documentElement.nodeName != _TREE_NODE_NAME) {
+		if(xmlDom == null || xmlDom.documentElement == null || xmlDom.documentElement.nodeName != _TREE_NODE) {
 			return alert("TreeNode对象：新增节点xml数据不能正常解析！");
 		}
 		
@@ -611,7 +609,7 @@ TreeNode.prototype = new function() {
 	 * 打开因此节点关闭而关闭的节点，即子节点本身是打开的，只是此节点关闭才不显示的
 	 */
 	function openChildNodesCloseByThisNode(node) {
-		var nodes = node.selectNodes(".//" + _TREE_NODE_NAME + "[@_closeBy = '" + node.getAttribute(_TREE_NODE_ID) + "']");
+		var nodes = node.selectNodes(".//treeNode[@_closeBy = '" + node.getAttribute(_TREE_NODE_ID) + "']");
 		for(var i = 0; i < nodes.length; i++) {
 			nodes[i].setAttribute("_open", "true");
 			nodes[i].removeAttribute("_closeBy");	//去除因父节点关闭而不显示的标记
@@ -621,7 +619,7 @@ TreeNode.prototype = new function() {
 	 * 关闭此节点下已经打开的子节点，即此节点关闭的话，打开的字节点也应关闭
 	 */
 	function closeOpendChildNodes(node) {
-		var nodes = node.selectNodes(".//" + _TREE_NODE_NAME + "[@_open = 'true']");
+		var nodes = node.selectNodes(".//treeNode[@_open = 'true']");
 		for(var i = 0; i < nodes.length; i++) {
 			nodes[i].setAttribute("_open", "false");
 			nodes[i].setAttribute("_closeBy", node.getAttribute(_TREE_NODE_ID));	// 因此节点关闭而不显示
@@ -672,8 +670,7 @@ function instanceTree() {
 	
 	treeObj = new Tree();
 	
-	var type = getValue(_TREE_TREE_TYPE, _TREE_TYPE_SINGLE);
-	if(type == _TREE_TYPE_MULTI) {
+	if(treeObj._treeType == _TREE_TYPE_MULTI) {
 		treeObj.setAttribute(_TREE_TREE_TYPE, _TREE_TYPE_MULTI);
 		treeObj.setAttribute(_TREE_SELECTED_AND_ACTIVE, getValue(_TREE_SELECTED_AND_ACTIVE, "false"));
 
@@ -739,7 +736,7 @@ function instanceTree() {
 		 * 清除特定节点以外的其他节点的选中状态
 		 */
 		treeObj.refreshStates = function(treeNode) {
-			var childNodes = this.getXmlRoot().selectNodes(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1']");
+			var childNodes = this.getXmlRoot().selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
 			for(var i = 0, len = childNodes.length; i < len; i++) {
 				if(childNodes[i] == treeNode.getXmlNode()) {
 					continue;
@@ -752,7 +749,7 @@ function instanceTree() {
 		 * 获取选中节点的TreeNode对象（单选树）
 		 */
 		treeObj.getSelectedTreeNode = function() {
-			var node = this.getXmlRoot().selectSingleNode(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1']");
+			var node = this.getXmlRoot().selectSingleNode(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
 			return instanceTreeNode(node);
 		};
 		
@@ -760,7 +757,7 @@ function instanceTree() {
 		 * 获取选中节点的Xml对象（单选树）
 		 */
 		treeObj.getSelectedXmlNode = function() {
-			return this.getXmlRoot().selectSingleNode(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1']");
+			return this.getXmlRoot().selectSingleNode(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
 		};
 	}
 	
@@ -777,9 +774,9 @@ function instanceTree() {
 function multiGetSelectedXmlNode(hasHalfChecked) {	
 	var xmlNodes;
 	if(hasHalfChecked) { // 包括半选状态
-		xmlNodes = this.getXmlRoot().selectNodes(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']");
+		xmlNodes = this.getXmlRoot().selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']");
 	} else {	// 不包括半选状态
-		xmlNodes = this.getXmlRoot().selectNodes(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1']");
+		xmlNodes = this.getXmlRoot().selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
 	}
 	
 	var xmlNodeArray = new Array();
@@ -802,7 +799,7 @@ function multiGetSelectedXmlNode(hasHalfChecked) {
 			}
 			var parentNode = null;
 			if(this.hasHalfChecked) {	// 包括半选状态，则以原有节点层次关系返回xml
-				parentNode = this.rootNode.selectSingleNode(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_ID + "='" + this[i].parentNode.getAttribute(_TREE_NODE_ID) + "']");
+				parentNode = this.rootNode.selectSingleNode(".//treeNode[@id='" + this[i].parentNode.getAttribute(_TREE_NODE_ID) + "']");
 			}
 			else {
 				parentNode = this.rootNode;
@@ -822,9 +819,9 @@ function multiGetSelectedXmlNode(hasHalfChecked) {
 function multiGetSelectedTreeNode(hasHalfChecked) {	
 	var treeNodes;
 	if(hasHalfChecked) {	// 包括半选状态
-		treeNodes = this.getXmlRoot().selectNodes(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']");
+		treeNodes = this.getXmlRoot().selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']");
 	} else {	//不包括半选状态
-		treeNodes = this.getXmlRoot().selectNodes(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1']");
+		treeNodes = this.getXmlRoot().selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
 	}
 	
 	//生成返回的对象数组
@@ -849,7 +846,7 @@ function multiGetSelectedTreeNode(hasHalfChecked) {
 			var xmlNode = this[i].getXmlNode();
 			var parentNode;
 			if( this.hasHalfChecked ) {	// 包括半选状态，则以原有节点层次关系返回xml
-				parentNode = this.rootNode.selectSingleNode(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_ID + "='" + xmlNode.parentNode.getAttribute(_TREE_NODE_ID) + "']");
+				parentNode = this.rootNode.selectSingleNode(".//treeNode[@id='" + xmlNode.parentNode.getAttribute(_TREE_NODE_ID) + "']");
 			}
 			else {
 				parentNode = this.rootNode;
@@ -870,8 +867,6 @@ function Tree() {
 	
 	var _baseUrl = getValue(_TREE_BASE_URL, _TREE_BASE_URL_DEFAULT_VALUE);
 	var _treeType = getValue(_TREE_TREE_TYPE, _TREE_TYPE_SINGLE);
-	var _src = getValue(_TREE_SRC);
-	var _selectedSrc = getValue(_TREE_SELECTED_SRC);
 	var _selectedIds = getValue(_TREE_SELECTED_IDS);
 	var _canMoveNode = getValue(_TREE_CAN_MOVE_NODE, "false");
 	var _treeNodeSelectedChangeState = "false";
@@ -888,14 +883,10 @@ function Tree() {
 	var _findedNode = null;
 	
 	/*
-	 * 设定控件的数据，数据来源为xml节点、数据岛、数据文件或xml字符串
+	 * 设定控件的数据，数据来源为xml节点、xml字符串
 	 */
-	this.loadData = function (dataSrc) {
-		if(isNullOrEmpty(dataSrc)) {
-			dataSrc = _src;
-		}
-		var ds = new DataSource(dataSrc);
-		_xmlRoot = ds.xmlRoot;
+	this.loadData = function (dataXML) {
+		_xmlRoot = loadXmlToNode(dataXML);
 		if(_defaultOpen == "true") {
 			openNode(getDefaultOpenedNode(_xmlRoot));
 		}
@@ -906,48 +897,40 @@ function Tree() {
 	 * 参数：	selectedSrc	节点选中状态的数据源
 	 *			isClearOldSelected	是否清除原先选中节点
 	 */
-	this.loadSelectedData = function (selectedSrc, isClearOldSelected) {
+	this.loadSelectedData = function (selectedDataXML, isClearOldSelected) {
 		if(_xmlRoot == null) {
 			return;
 		}
-		if(isNullOrEmpty(selectedSrc)) {
-			selectedSrc = _selectedSrc;
+		
+		var xmlDom = loadXmlToNode(selectedDataXML);
+		if(_treeType == _TREE_TYPE_SINGLE) {	// 单选树
+			singleCheckedDefault(_xmlRoot, xmlDom);
 		}
-		var ds = new DataSource(selectedSrc);
-		if(treeObj.getAttribute(_TREE_TREE_TYPE) == _TREE_TYPE_SINGLE) {	//单选树
-			singleCheckedDefault(_xmlRoot, ds.xmlRoot);
-		}else{
-			multiCheckedDefault(_xmlRoot, ds.xmlRoot, isClearOldSelected);
+		else {
+			multiCheckedDefault(_xmlRoot, xmlDom, isClearOldSelected);
 		}
 	}
 	
 	/*
-	 * 	 获取默认选择状态数据：id字符串，多id之间用","隔开
+	 * 获取默认选择状态数据：id字符串，多id之间用","隔开
 	 * 参数：	selectedIds	节点选中状态的Id字符串
 	 *			isClearOldSelected	是否清除原先选中节点
-	 * 返回值：
-	 * 作者：scq
-	 * 时间：2005-4-19
 	 */
-	this.loadSelectedDataByIds = function (selectedIds, isClearOldSelected, isDependParent) {
-		if(_xmlRoot == null) {
-			return;
-		}
+	this.loadSelectedNodesByIds = function (selectedIds, isClearOldSelected, isDependParent) {
 		if(isNullOrEmpty(selectedIds)) {
 			selectedIds = _selectedIds;
 		}
-		if(treeObj.getAttribute(_TREE_TREE_TYPE) == _TREE_TYPE_SINGLE) {	//单选树
-			if(selectedIds == null) {
-				return;
-			}
+		if(_treeType == _TREE_TYPE_SINGLE) { // 单选树
+			if(selectedIds == null) return;
+			
 			eval("var selectedIds = '" + selectedIds + "';");
-			var node = _xmlRoot.selectSingleNode("//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_ID + "='"+selectedIds+"']");
+			var node = _xmlRoot.selectSingleNode("//treeNode[@id='" + selectedIds + "']");
 			var treeNode = instanceTreeNode(node);
 			if(treeNode != null) {
 				treeNode.setSelectedState(1, false, true);
 				treeNode.focus();
 			}
-		}else{
+		} else {
 			multiCheckedDefaultByIds(_xmlRoot, selectedIds, isClearOldSelected, isDependParent);
 		}
 	}
@@ -955,9 +938,6 @@ function Tree() {
 	/*
 	 * 设置默认激活节点
 	 * 参数：	type	默认激活类型
-	 * 返回值：
-	 * 作者：scq
-	 * 时间：2005-11-17
 	 */
 	this.setDefaultActive = function (type) {
 		if(isNullOrEmpty(type)) {
@@ -968,9 +948,9 @@ function Tree() {
 		}
 		var activeNode = null;
 		if(type == "root") {
-			activeNode = _xmlRoot.selectSingleNode(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_ID + "='" + _TREE_ROOT_TREE_NODE_ID + "']");
+			activeNode = _xmlRoot.selectSingleNode(".//treeNode[@id='" + _TREE_ROOT_NODE_ID + "']");
 		}else if(type == "valid") {
-			activeNode = _xmlRoot.selectSingleNode(".//" + _TREE_NODE_NAME + "[(@" + _TREE_NODE_CANSELECTED + "!='0' or not(@" + _TREE_NODE_CANSELECTED + ")) and @" + _TREE_NODE_ID + "!='" + _TREE_ROOT_TREE_NODE_ID + "']");
+			activeNode = _xmlRoot.selectSingleNode(".//treeNode[(@" + _TREE_NODE_CANSELECTED + "!='0' or not(@" + _TREE_NODE_CANSELECTED + ")) and @id!='" + _TREE_ROOT_NODE_ID + "']");
 		}
 		var treeNode = instanceTreeNode(activeNode);
 		if(treeNode != null) {
@@ -1053,9 +1033,6 @@ function Tree() {
 	        case _TREE_TREE_TYPE:
 				_treeType = value;
 	            break;
-	        case _TREE_SRC:
-				_src = value;
-	            break;
 	        case _TREE_CAN_MOVE_NODE:
 				_canMoveNode = value;
 	            break;
@@ -1088,8 +1065,6 @@ function Tree() {
 				return _baseUrl;
 	        case _TREE_TREE_TYPE:
 				return _treeType;
-	        case _TREE_SRC:
-				return _src;
 	        case _TREE_CAN_MOVE_NODE:
 				return _canMoveNode;
 	        case _TREE_SELECTED_AND_ACTIVE:
@@ -1295,10 +1270,10 @@ function getDefaultOpenedNode(xmlRoot) {
 	var openedNodeId = actionSetNode.getAttribute(_DEFAULT_OPENED_TREE_NODE_ID);
 	var openedNode = null;
 	if(!isNullOrEmpty(openedNodeId)) {
-		openedNode = actionSetNode.selectSingleNode(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_ID + "='"+openedNodeId+"']");
+		openedNode = actionSetNode.selectSingleNode(".//treeNode[@id='"+openedNodeId+"']");
 	}
 	if(isNullOrEmpty(openedNode)) {
-		openedNode = actionSetNode.selectSingleNode(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CANSELECTED + "!='0' or not(@" + _TREE_NODE_CANSELECTED + ")]");
+		openedNode = actionSetNode.selectSingleNode(".//treeNode[@" + _TREE_NODE_CANSELECTED + "!='0' or not(@" + _TREE_NODE_CANSELECTED + ")]");
 	}
 	return isNullOrEmpty(openedNode)?actionSetNode.firstChild:openedNode;
 }
@@ -1374,7 +1349,7 @@ function multiCheckedDefaultByIds(node, defaltCheckedIds, isClearOldSelected, is
  * 时间：2005-9-24
  */
 function clearSelected(node) {
-	var nodes = node.selectNodes(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']");
+	var nodes = node.selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']");
 	for(var i = 0; i < nodes.length; i++) {
 		setNodeState(nodes[i], 0);
 	}
@@ -1392,12 +1367,12 @@ function singleCheckedDefault(node, defaultCheckedNode) {
 	if(defaultCheckedNode == null || node == null) {
 		return;
 	}
-	var checkedNode = defaultCheckedNode.selectSingleNode("//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1']");
+	var checkedNode = defaultCheckedNode.selectSingleNode("//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
 	if(checkedNode == null) {
 		return;
 	}
 	var fNodeId = checkedNode.getAttribute(_TREE_NODE_ID);
-	var xpath = "//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_ID + "='" + fNodeId + "']";
+	var xpath = "//treeNode[@id='" + fNodeId + "']";
 	var fNode = node.selectSingleNode(xpath);
 	var treeNode = instanceTreeNode(fNode);
 	if(treeNode != null) {
@@ -1418,10 +1393,10 @@ function multiCheckedDefaultOnlySelf(node, defaultCheckedNode) {
 	if(node == null || defaultCheckedNode == null) {
 		return;
 	}
-	var checkedNodes = defaultCheckedNode.selectNodes("//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1']");
+	var checkedNodes = defaultCheckedNode.selectNodes("//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
 	for(var i = 0; i < checkedNodes.length; i++) {
 		var fNodeId = checkedNodes[i].getAttribute(_TREE_NODE_ID);
-		var xpath = "//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_ID + "='" + fNodeId + "']";
+		var xpath = "//treeNode[@id='" + fNodeId + "']";
 		var fNode = node.selectSingleNode(xpath);
 		setNodeState(fNode, 1);
 		openNode(fNode);
@@ -1439,10 +1414,10 @@ function multiCheckedDefaultWithOther(node, defaultCheckedNode) {
 	if(node == null || defaultCheckedNode == null) {
 		return;
 	}
-	var checkedNodes = defaultCheckedNode.selectNodes("//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1' && ..[not(@" + _TREE_NODE_CHECKTYPE + "='1') || not(@" + _TREE_NODE_CHECKTYPE + ")]]");
+	var checkedNodes = defaultCheckedNode.selectNodes("//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1' && ..[not(@" + _TREE_NODE_CHECKTYPE + "='1') || not(@" + _TREE_NODE_CHECKTYPE + ")]]");
 	for(var i = 0; i < checkedNodes.length; i++) {
 		var fNodeId = checkedNodes[i].getAttribute(_TREE_NODE_ID);
-		var xpath = "//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_ID + "='" + fNodeId + "']";
+		var xpath = "//treeNode[@id='" + fNodeId + "']";
 		var fNode = node.selectSingleNode(xpath);
 		if(fNode != null) {
 			setNodeState(fNode, 1);
@@ -1465,7 +1440,7 @@ function multiCheckedDefaultByIdsOnlySelf(node, defaltCheckedIds) {
 	}
 	var checkedNodeIds = defaltCheckedIds.split(',');
 	for(var i = 0; i < checkedNodeIds.length; i++) {
-		var xpath = "//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_ID + "='" + checkedNodeIds[i] + "']";
+		var xpath = "//treeNode[@id='" + checkedNodeIds[i] + "']";
 		var fNode = node.selectSingleNode(xpath);
 		if(fNode != null) {
 			setNodeState(fNode, 1);
@@ -1488,14 +1463,14 @@ function multiCheckedDefaultByIdsWithOther(node, defaltCheckedIds, isDependParen
 	}
 	var checkedNodeIds = defaltCheckedIds.split(',');
 	for(var i = 0; i < checkedNodeIds.length; i++) {
-		var xpath = "//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_ID + "='" + checkedNodeIds[i] + "']";
+		var xpath = "//treeNode[@id='" + checkedNodeIds[i] + "']";
 		var fNode = node.selectSingleNode(xpath);
 		if(fNode != null) {
 			setNodeState(fNode, 1);
 
             //如果下溯，则设置全部子节点为选中
             if(true==isDependParent) {
-                var xpath = ".//" + _TREE_NODE_NAME;
+                var xpath = ".//treeNode" ;
                 var subnodes = fNode.selectNodes(xpath);
                 for(var j = 0; j < subnodes.length; j++) {
                     setNodeState(subnodes[j], 1);
@@ -1505,13 +1480,13 @@ function multiCheckedDefaultByIdsWithOther(node, defaltCheckedIds, isDependParen
 		}
 	}
 	//标记包含选中节点的所有父节点为选中
-	var xpath = "//" + _TREE_NODE_NAME + "[not(@" + _TREE_NODE_CHECKTYPE + " and @" + _TREE_NODE_CHECKTYPE + " = '1') and .//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + " = '1']]";
+	var xpath = "//treeNode[not(@" + _TREE_NODE_CHECKTYPE + " and @" + _TREE_NODE_CHECKTYPE + " = '1') and .//treeNode[@" + _TREE_NODE_CHECKTYPE + " = '1']]";
 	var nodes = node.selectNodes(xpath);
 	for(var i = 0; i < nodes.length; i++) {
 		setNodeState(nodes[i], 1);
 	}
 	//标记所有全选节点中包含未全选节点的节点为半选
-	var nodes = node.selectNodes("//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + " = '1' and .//" + _TREE_NODE_NAME + "[not(@" + _TREE_NODE_CHECKTYPE + " = '1') || not(@" + _TREE_NODE_CHECKTYPE + ")]]");
+	var nodes = node.selectNodes("//treeNode[@" + _TREE_NODE_CHECKTYPE + " = '1' and .//treeNode[not(@" + _TREE_NODE_CHECKTYPE + " = '1') || not(@" + _TREE_NODE_CHECKTYPE + ")]]");
 	for(var i = 0; i < nodes.length; i++) {
 		setNodeState(nodes[i], 2);
 	}
@@ -1559,8 +1534,8 @@ function refreshParentNodeState(tempNode) {
  */
 function getChildsNodeState(node) {
 	var nodeChildNum = node.childNodes.length;	//所有子节点数
-	var nodeCheckedChildNum = node.selectNodes("./" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1']").length;	//全选子节点数
-	var nodeHalfCheckedChildNum = node.selectNodes("./" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='2']").length;	//半选子节点数
+	var nodeCheckedChildNum = node.selectNodes("./treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']").length;	//全选子节点数
+	var nodeHalfCheckedChildNum = node.selectNodes("./treeNode[@" + _TREE_NODE_CHECKTYPE + "='2']").length;	//半选子节点数
 	if(nodeCheckedChildNum == 0 && nodeHalfCheckedChildNum == 0) {	
 		return 0;		//所有子节点都没有选中，标记未选中
 	}else if(nodeChildNum == nodeCheckedChildNum) {
@@ -1576,7 +1551,7 @@ function getChildsNodeState(node) {
  * 时间：2004-6-28
  */
 function refreshChildrenNodeState(node) {
-	var childNodes = node.selectNodes(".//" + _TREE_NODE_NAME);
+	var childNodes = node.selectNodes(".//treeNode" );
 	for(var i = 0, len = childNodes.length; i < len; i++) {
 		setNodeState(childNodes[i], node.getAttribute(_TREE_NODE_CHECKTYPE));
 	}
@@ -2210,7 +2185,7 @@ function Display() {
 	var _windowWidth = Math.max(element.offsetWidth - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_WIDTH);
 	var _rowHeight = _TREE_NODE_DISPLAY_ROW_HEIGHT;
 	var _pageSize = Math.floor(_windowHeight / _rowHeight);
-	var _totalTreeNodes = treeObj.getXmlRoot().selectNodes(".//" + _TREE_NODE_NAME + "[../@_open = 'true']");
+	var _totalTreeNodes = treeObj.getXmlRoot().selectNodes(".//treeNode[../@_open = 'true']");
 	var _totalTreeNodesNum = _totalTreeNodes.length;
 	var _vScrollBox = null;
 	var _vScrollDiv = null;
@@ -2386,7 +2361,7 @@ function Display() {
 	 * 时间：2004-6-8
 	 */
 	this.resetTotalTreeNodes = function() {
-		_totalTreeNodes = treeObj.getXmlRoot().selectNodes(".//" + _TREE_NODE_NAME + "[../@_open = 'true']");
+		_totalTreeNodes = treeObj.getXmlRoot().selectNodes(".//treeNode[../@_open = 'true']");
 		_totalTreeNodesNum = _totalTreeNodes.length;
 
 		_vScrollDiv.style.height = Math.max(1,(_totalTreeNodesNum - _pageSize) * _rowHeight + _windowHeight);
@@ -2419,7 +2394,7 @@ function Display() {
 		if(nodeIndex == null) {
 			return;
 		}
-		var childNums = node.selectNodes(".//" + _TREE_NODE_NAME + "[../@_open = 'true']").length;
+		var childNums = node.selectNodes(".//treeNode[../@_open = 'true']").length;
 		if(childNums + 1 > _pageSize 
 			|| nodeIndex < _startNum 
 			|| nodeIndex >= _startNum + _pageSize) {
@@ -2642,15 +2617,15 @@ function Search() {
 			return false;
 		}
 		if(searchType == _TREE_SEARCH_TYPE_INEXACT_SEARCH) {
-			var allNodes = treeObj.getXmlRoot().selectNodes(".//" + _TREE_NODE_NAME);
+			var allNodes = treeObj.getXmlRoot().selectNodes(".//treeNode" );
 			for(var i = 0, len = allNodes.length; i < len; i++) {	//模糊查询所有节点
 				if(allNodes[i].getAttribute(searchBy) != null && allNodes[i].getAttribute(searchBy).indexOf(searchStr) != -1) {
 					_findedNodes[_findedNodes.length] = allNodes[i];
 				}
 			}
 		}else{
-			alert(".//" + _TREE_NODE_NAME + "[@" + searchBy + "='" + searchStr + "']");
-			_findedNodes = treeObj.getXmlRoot().selectNodes(".//" + _TREE_NODE_NAME + "[@" + searchBy + "='" + searchStr + "']");
+			alert(".//treeNode[@" + searchBy + "='" + searchStr + "']");
+			_findedNodes = treeObj.getXmlRoot().selectNodes(".//treeNode[@" + searchBy + "='" + searchStr + "']");
 		}
 		_findedIndex = -1;
 		return true;
@@ -2906,7 +2881,7 @@ function initializeImp() {
  * 返回：	TreeNode对象/null
  */
 function getTreeNodeById(id) {
-	var node = treeObj.getXmlRoot().selectSingleNode(".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_ID + "='" + id + "']");
+	var node = treeObj.getXmlRoot().selectSingleNode(".//treeNode[@id='" + id + "']");
 	return instanceTreeNode(node);
 }
 
@@ -3136,7 +3111,7 @@ function loadDefaultChecked(selectedSrc, isClearOldSelected) {
  * 时间：2005-4-19
  */
 function loadDefaultCheckedByIds(selectedIds, isClearOldSelected, isDependParent) {
-	treeObj.loadSelectedDataByIds(selectedIds, isClearOldSelected, isDependParent);
+	treeObj.loadSelectedNodesByIds(selectedIds, isClearOldSelected, isDependParent);
 	displayObj.resetTotalTreeNodes();
 	displayObj.reload();
 	var eventObj = createEventObject();
@@ -3155,12 +3130,12 @@ function loadDefaultCheckedByIds(selectedIds, isClearOldSelected, isDependParent
  */
 function getIds(isAll, onlySelected, exIdPatterns) {
 	if(isAll) {
-		var path = ".//" + _TREE_NODE_NAME;
+		var path = ".//treeNode" ;
 	}else{
 		if(onlySelected) {
-			var path = ".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1']";
+			var path = ".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']";
 		}else{
-			var path = ".//" + _TREE_NODE_NAME + "[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']";
+			var path = ".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']";
 		}
 	}
 	var nodes = treeObj.getXmlRoot().selectNodes(path);
@@ -3168,7 +3143,7 @@ function getIds(isAll, onlySelected, exIdPatterns) {
 	node:
 	for(var i = 0; i < nodes.length; i++) {
 		var id = nodes[i].getAttribute(_TREE_NODE_ID);
-		if(id == _TREE_ROOT_TREE_NODE_ID) {
+		if(id == _TREE_ROOT_NODE_ID) {
 			continue;
 		}
 		if(exIdPatterns != null) {
@@ -3240,61 +3215,6 @@ function searchNext(direct, isCircle) {
 </script>
 
 
-/*
- *	名    称：	数据源对象
- *	功能描述：	此对象主要实现获取控件数据，以及数据的常用处理功能；
- *	
- */
-
-
-/*
- * 数据源对象
- */
-function DataSource(src) {
-	this.xmlRoot = this.loadXml(src);
-}
- 
-DataSource.prototype.loadXml= function (src) {
-	if(isNullOrEmpty(src)) { 
-		return null;
-	}
-	if(typeof(src) == "object"
-		&& (src.tagName == _TREE_ROOT_NODE_NAME || src.tagName == _TREE_NODE_NAME)
-		&& src.nodeTypeString == "element") {
-		return src;
-	}
-	try{
-		eval("src = " + src + ";");
-		if(src == null || (typeof(src) == "string" && src =="")) {	//没有定义
-			return null;
-		}
-		if(typeof(src) == "object") {
-			if(/^xml$/.test(src.tagName) && src.nodeTypeString == "document") {	//xml数据岛
-				return src.documentElement;
-			}
-			if((src.tagName == _TREE_ROOT_NODE_NAME || src.tagName == _TREE_NODE_NAME)
-				 && src.nodeTypeString == "element") {	//xml节点
-				return src;
-			}
-			throw("DataSource:装载数据出错!（数据源类型不合法）");
-		}
-	}catch(e) {
-	}
-	try{
-		//引用xml数据文件/xml数据字符串
-		var xmlDom = new ActiveXObject("Microsoft.XMLDOM");
-		xmlDom.async = false;
-		if (xmlDom.loadXML(src)) {	//当src为xml数据时导入数据
-			return xmlDom.documentElement;
-		}
-		if (xmlDom.load(src)) {		//当src为文件路径时导入数据
-			return xmlDom.documentElement;
-		}
-	}catch(e) {
-	}
-	alert("DataSource:装载数据出错!");
-	return null;																
-}
 
 
 
