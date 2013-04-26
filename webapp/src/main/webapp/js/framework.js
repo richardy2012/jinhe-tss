@@ -1,7 +1,7 @@
 /* 
  * 当前应用名 
  */
-APP_CODE = "TSS";
+APP_CODE    = "TSS";
 CONTEXTPATH = "tss/";
 APPLICATION = "tss";
 
@@ -37,6 +37,7 @@ function initUserInfo() {
 	}
 	request.send();
 }
+
 
 URL_LOGOUT = "../logout.in";
 

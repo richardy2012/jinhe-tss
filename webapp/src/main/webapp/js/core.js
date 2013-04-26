@@ -12,6 +12,13 @@ $ = function(id){
 	return document.getElementById(id);
 }
 
+/*
+ * 判断值是否为null或空字符串
+ */
+function isNullOrEmpty(value) {
+	return (value == null || (typeof(value) == 'string' && value == ""));
+}
+
 /* 前台单元测试断言 */
 function assertEquals(actual, expect, msg) {
 	if( expect != actual ) {
