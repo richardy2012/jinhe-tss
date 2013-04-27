@@ -291,23 +291,23 @@ TreeNode.prototype = new function() {
 	 */
 	this.getIds = function(isAll, onlySelected) {
 		if(isAll) {
-			var path = ".|.//" + _TREE_NODE;
+			var path = ". | .//treeNode";  // 当前节点及其所有的子节点
 		} 
 		else {
 			if(onlySelected) {
-				var path = ".[@" + _TREE_NODE_CHECKTYPE + "='1']|.//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']";
+				var path = ".[@checktype='1'] | .//treeNode[@checktype='1']";
 			} else {
-				var path = ".[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']|.//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']";
+				var path = ".[@checktype='1' or @checktype='2'] | " 
+						 + ".//treeNode[@checktype='1' or @checktype='2']";
 			}
 		}
 		var nodes = this.node.selectNodes(path);
 		var ids = "";
 		for(var i = 0; i < nodes.length; i++) {
 			var id = nodes[i].getAttribute(_TREE_NODE_ID);
-			if(id == _TREE_ROOT_NODE_ID) {
-				continue;
-			}
-			if(i > 0) {
+			if(id == _TREE_ROOT_NODE_ID) continue;
+			
+			if (i > 0) {
 				ids += ",";
 			}
 			ids += id;
@@ -727,7 +727,7 @@ function instanceTree() {
 		 * 清除特定节点以外的其他节点的选中状态
 		 */
 		treeObj.refreshStates = function(treeNode) {
-			var childNodes = this.getXmlRoot().selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
+			var childNodes = this.getXmlRoot().selectNodes(".//treeNode[@checktype='1']");
 			for(var i = 0, len = childNodes.length; i < len; i++) {
 				if(childNodes[i] == treeNode.getXmlNode()) {
 					continue;
@@ -740,7 +740,7 @@ function instanceTree() {
 		 * 获取选中节点的TreeNode对象（单选树）
 		 */
 		treeObj.getSelectedTreeNode = function() {
-			var node = this.getXmlRoot().selectSingleNode(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
+			var node = this.getXmlRoot().selectSingleNode(".//treeNode[@checktype='1']");
 			return instanceTreeNode(node);
 		};
 		
@@ -748,7 +748,7 @@ function instanceTree() {
 		 * 获取选中节点的Xml对象（单选树）
 		 */
 		treeObj.getSelectedXmlNode = function() {
-			return this.getXmlRoot().selectSingleNode(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
+			return this.getXmlRoot().selectSingleNode(".//treeNode[@checktype='1']");
 		};
 	}
 	
@@ -765,9 +765,9 @@ function instanceTree() {
 function multiGetSelectedXmlNode(includeHalfChecked) {	
 	var xmlNodes;
 	if(includeHalfChecked) { // 包括半选状态
-		xmlNodes = this.getXmlRoot().selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']");
-	} else {	// 不包括半选状态
-		xmlNodes = this.getXmlRoot().selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
+		xmlNodes = this.getXmlRoot().selectNodes(".//treeNode[@checktype='1' or @checktype='2']");
+	} else { // 不包括半选状态
+		xmlNodes = this.getXmlRoot().selectNodes(".//treeNode[@checktype='1']");
 	}
 	
 	var xmlNodeArray = new Array();
@@ -810,9 +810,9 @@ function multiGetSelectedXmlNode(includeHalfChecked) {
 function multiGetSelectedTreeNode(includeHalfChecked) {	
 	var treeNodes;
 	if(includeHalfChecked) {	// 包括半选状态
-		treeNodes = this.getXmlRoot().selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']");
+		treeNodes = this.getXmlRoot().selectNodes(".//treeNode[@checktype='1' or @checktype='2']");
 	} else {	//不包括半选状态
-		treeNodes = this.getXmlRoot().selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
+		treeNodes = this.getXmlRoot().selectNodes(".//treeNode[@checktype='1']");
 	}
 	
 	//生成返回的对象数组
@@ -887,11 +887,11 @@ function Tree() {
 	}
 
 	/*
-	 * 获取默认选择状态数据：xml节点、数据岛、数据文件或xml字符串
-	 * 参数：	selectedSrc	节点选中状态的数据源
-	 *			isClearOldSelected	是否清除原先选中节点
+	 * 获取默认选择状态数据：xml字符串
+	 * 参数：	selectedDataXML	 节点选中状态的数据源
+	 *			clearOldSelected 是否清除原先选中节点
 	 */
-	this.loadSelectedData = function (selectedDataXML, isClearOldSelected) {
+	this.loadSelectedData = function (selectedDataXML, clearOldSelected) {
 		if(_xmlRoot == null) {
 			return;
 		}
@@ -901,17 +901,17 @@ function Tree() {
 			singleCheckedDefault(_xmlRoot, xmlDom);
 		}
 		else {
-			multiCheckedDefault(_xmlRoot, xmlDom, isClearOldSelected);
+			multiCheckedDefault(_xmlRoot, xmlDom, clearOldSelected);
 		}
 	}
 	
 	/*
 	 * 获取默认选择状态数据：id字符串，多id之间用","隔开
 	 * 参数：	selectedIds	节点选中状态的Id字符串
-	 *			isClearOldSelected	是否清除原先选中节点
+	 *			clearOldSelected	是否清除原先选中节点
 	 *			isDependParent 下溯，设置全部子节点为选中
 	 */
-	this.loadSelectedNodesByIds = function (selectedIds, isClearOldSelected, isDependParent) {
+	this.loadSelectedNodesByIds = function (selectedIds, clearOldSelected, isDependParent) {
 		if(isNullOrEmpty(selectedIds)) {
 			selectedIds = _selectedIds;
 		}
@@ -926,7 +926,7 @@ function Tree() {
 				treeNode.focus();
 			}
 		} else {
-			if(isClearOldSelected) {
+			if(clearOldSelected) {
 				clearSelected(_xmlRoot);
 			}
 		 
@@ -954,7 +954,7 @@ function Tree() {
 		if(type == "root") {
 			path = ".//treeNode[@id='" + _TREE_ROOT_NODE_ID + "']";
 		} else if(type == "valid") {
-			path = ".//treeNode[(@" + _TREE_NODE_CANSELECTED + "!='0' or not(@" + _TREE_NODE_CANSELECTED + ")) and @id!='" + _TREE_ROOT_NODE_ID + "']";
+			path = ".//treeNode[(@" + _TREE_NODE_CANSELECTED + "='1' or not(@" + _TREE_NODE_CANSELECTED + ")) and @id!='" + _TREE_ROOT_NODE_ID + "']";
 		}
 		
 		var activeNode = _xmlRoot.selectSingleNode(path);
@@ -1174,7 +1174,7 @@ function getDefaultOpenedNode(xmlRoot) {
 	var openedNodeId = xmlRoot.getAttribute(_DEFAULT_OPENED_TREE_NODE_ID) || "noDefaultOpened";	
 	var openedNode = xmlRoot.selectSingleNode(".//treeNode[@id='" + openedNodeId + "']");;
 	if( openedNode == null) {
-		openedNode = xmlRoot.selectSingleNode(".//treeNode[@" + _TREE_NODE_CANSELECTED + "!='0' or not(@" + _TREE_NODE_CANSELECTED + ")]");
+		openedNode = xmlRoot.selectSingleNode(".//treeNode[@" + _TREE_NODE_CANSELECTED + "='1' or not(@" + _TREE_NODE_CANSELECTED + ")]");
 	}
  
 	return if(openedNode) ? openedNode : xmlRoot.firstChild;
@@ -1193,14 +1193,14 @@ function getValue(name, defaultValue) {
  * 根据给定节点的选中状态，选中默认节点（多选树，根据xml节点）
  * 参数：	node	需要处理默认选中状态的数据节点
  *			defaltCheckedNode	默认选中状态的数据节点
- *			isClearOldSelected	是否清除原先选中节点
+ *			clearOldSelected	是否清除原先选中节点
  */
-function multiCheckedDefault(node, defaultCheckedNode, isClearOldSelected) {
+function multiCheckedDefault(node, defaultCheckedNode, clearOldSelected) {
 	if(node == null || defaultCheckedNode == null) {
 		return;
 	}
 	
-	if(isClearOldSelected) {
+	if(clearOldSelected) {
 		clearSelected(node);
 	}
 
@@ -1213,14 +1213,10 @@ function multiCheckedDefault(node, defaultCheckedNode, isClearOldSelected) {
 
 
 /*
- * 去除所有选中节点的选中状态
- * 参数：	node	需要处理去除所有节点选中状态的数据节点
- * 返回值：
- * 作者：沈超奇
- * 时间：2005-9-24
+ * 去除所有选中节点的选中状态(包括半选和全选)
  */
 function clearSelected(node) {
-	var nodes = node.selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']");
+	var nodes = node.selectNodes(".//treeNode[@checktype='1' or @checktype='2']");
 	for(var i = 0; i < nodes.length; i++) {
 		setNodeState(nodes[i], 0);
 	}
@@ -1228,25 +1224,19 @@ function clearSelected(node) {
 
 /*
  * 根据给定节点的选中状态，选中默认节点（单选树）
- * 参数：	node	需要处理默认选中状态的数据节点
- *			defaltCheckedNode	默认选中状态的数据节点
- * 返回值：
- * 作者：沈超奇
- * 时间：2005-4-19
  */
 function singleCheckedDefault(node, defaultCheckedNode) {
 	if(defaultCheckedNode == null || node == null) {
 		return;
 	}
-	var checkedNode = defaultCheckedNode.selectSingleNode("//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
+	var checkedNode = defaultCheckedNode.selectSingleNode("//treeNode[@checktype='1']");
 	if(checkedNode == null) {
 		return;
 	}
 	var fNodeId = checkedNode.getAttribute(_TREE_NODE_ID);
-	var xpath = "//treeNode[@id='" + fNodeId + "']";
-	var fNode = node.selectSingleNode(xpath);
+	var fNode = node.selectSingleNode("//treeNode[@id='" + fNodeId + "']");
 	var treeNode = instanceTreeNode(fNode);
-	if(treeNode != null) {
+	if( treeNode ) {
 		treeNode.changeSelectedState(false, true);
 		treeNode.focus();
 	}
@@ -1256,19 +1246,15 @@ function singleCheckedDefault(node, defaultCheckedNode) {
  * 根据给定节点的选中状态，选中默认节点 (多选树，选节点时不考虑父子关系)
  * 参数：	node	需要处理默认选中状态的数据节点
  *			defaltCheckedNode	默认选中状态的数据节点
- * 返回值：
- * 作者：沈超奇
- * 时间：2004-12-23
  */
 function multiCheckedDefaultOnlySelf(node, defaultCheckedNode) {
 	if(node == null || defaultCheckedNode == null) {
 		return;
 	}
-	var checkedNodes = defaultCheckedNode.selectNodes("//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
+	var checkedNodes = defaultCheckedNode.selectNodes("//treeNode[@checktype='1']");
 	for(var i = 0; i < checkedNodes.length; i++) {
 		var fNodeId = checkedNodes[i].getAttribute(_TREE_NODE_ID);
-		var xpath = "//treeNode[@id='" + fNodeId + "']";
-		var fNode = node.selectSingleNode(xpath);
+		var fNode = node.selectSingleNode("//treeNode[@id='" + fNodeId + "']");
 		setNodeState(fNode, 1);
 		openNode(fNode);
 	}
@@ -1277,43 +1263,40 @@ function multiCheckedDefaultOnlySelf(node, defaultCheckedNode) {
  * 根据给定节点的选中状态，选中默认节点 (多选树，选节点时考虑父子关系)
  * 参数：	node	需要处理默认选中状态的数据节点
  *			defaltCheckedNode	默认选中状态的数据节点
- * 返回值：
- * 作者：沈超奇
- * 时间：2004-12-23
  */
 function multiCheckedDefaultWithOther(node, defaultCheckedNode) {
 	if(node == null || defaultCheckedNode == null) {
 		return;
 	}
-	var checkedNodes = defaultCheckedNode.selectNodes("//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1' && ..[not(@" + _TREE_NODE_CHECKTYPE + "='1') || not(@" + _TREE_NODE_CHECKTYPE + ")]]");
+	
+	// 子节点被选中，且父节点未被选中的节点
+	var checkedNodes = defaultCheckedNode.selectNodes("//treeNode[@checktype='1' " 
+									+ " && ..[not(@checktype='1') || not(@checktype)]]");
 	for(var i = 0; i < checkedNodes.length; i++) {
 		var fNodeId = checkedNodes[i].getAttribute(_TREE_NODE_ID);
-		var xpath = "//treeNode[@id='" + fNodeId + "']";
-		var fNode = node.selectSingleNode(xpath);
-		if(fNode != null) {
+		var fNode = node.selectSingleNode("//treeNode[@id='" + fNodeId + "']");
+		if( fNode ) {
 			setNodeState(fNode, 1);
 			refreshParentNodeState(fNode);
 			refreshChildrenNodeState(fNode);
 		}
 	}
 }
+
 /*
  * 根据给定节点的选中状态，选中默认节点 (多选树，选节点时不考虑父子关系)
  * 参数：	node	需要处理默认选中状态的数据节点
  *			defaltCheckedIds	默认选中状态的数据节点id字符串
- * 返回值：
- * 作者：沈超奇
- * 时间：2004-12-23
  */
 function multiCheckedOnlySelf(node, defaltCheckedIds) {
 	if(node == null || defaltCheckedIds == null) {
 		return;
 	}
+	
 	var checkedNodeIds = defaltCheckedIds.split(',');
 	for(var i = 0; i < checkedNodeIds.length; i++) {
-		var xpath = "//treeNode[@id='" + checkedNodeIds[i] + "']";
-		var fNode = node.selectSingleNode(xpath);
-		if(fNode != null) {
+		var fNode = node.selectSingleNode("//treeNode[@id='" + checkedNodeIds[i] + "']");
+		if( fNode ) {
 			setNodeState(fNode, 1);
 			openNode(fNode);
 		}
@@ -1332,29 +1315,29 @@ function multiCheckedWithOther(node, defaltCheckedIds, isDependParent) {
 	}
 	var checkedNodeIds = defaltCheckedIds.split(',');
 	for(var i = 0; i < checkedNodeIds.length; i++) {
-		var xpath = "//treeNode[@id='" + checkedNodeIds[i] + "']";
-		var fNode = node.selectSingleNode(xpath);
-		if(fNode != null) {
+		var fNode = node.selectSingleNode("//treeNode[@id='" + checkedNodeIds[i] + "']");
+		if( fNode ) {
 			setNodeState(fNode, 1);
  
             if( isDependParent ) {
-                var xpath = ".//treeNode" ;
-                var subnodes = fNode.selectNodes(xpath);
+                var subnodes = fNode.selectNodes(".//treeNode");
                 for(var j = 0; j < subnodes.length; j++) {
                     setNodeState(subnodes[j], 1);
                 }
-            
             }
 		}
 	}
-	//标记包含选中节点的所有父节点为选中
-	var xpath = "//treeNode[not(@" + _TREE_NODE_CHECKTYPE + " and @" + _TREE_NODE_CHECKTYPE + " = '1') and .//treeNode[@" + _TREE_NODE_CHECKTYPE + " = '1']]";
+	
+	// 把包含选中节点的所有父节点为选中（.//treeNode 表示 满足and之前条件的node的子节点）
+	var xpath = "//treeNode[ not(@checktype and @checktype = '1') and .//treeNode[@checktype = '1'] ]";
 	var nodes = node.selectNodes(xpath);
 	for(var i = 0; i < nodes.length; i++) {
 		setNodeState(nodes[i], 1);
 	}
-	//标记所有全选节点中包含未全选节点的节点为半选
-	var nodes = node.selectNodes("//treeNode[@" + _TREE_NODE_CHECKTYPE + " = '1' and .//treeNode[not(@" + _TREE_NODE_CHECKTYPE + " = '1') || not(@" + _TREE_NODE_CHECKTYPE + ")]]");
+	
+	// 把所有全选节点中包含未全选节点的节改为半选
+	xpath = "//treeNode[ @checktype = '1' and .//treeNode[not(@checktype = '1') || not(@checktype)] ]";
+	nodes = node.selectNodes(xpath);
 	for(var i = 0; i < nodes.length; i++) {
 		setNodeState(nodes[i], 2);
 	}
@@ -1364,9 +1347,6 @@ function multiCheckedWithOther(node, defaltCheckedIds, isDependParent) {
  * 刷新相关节点的选中状态（多选树），同时根据参数决定是否激活当前节点
  * 参数：	treeNode	TreeNode节点对象
  *			noChildren	选中节点时，不包含子节点
- * 返回值：
- * 作者：scq
- * 时间：2004-6-29
  */
 function multiRefreshStates(treeNode, noChildren) {
 	if (treeObj.getAttribute(_TREE_JUST_SELECT_SELF) == "true") {
@@ -1379,12 +1359,9 @@ function multiRefreshStates(treeNode, noChildren) {
 	}
 	refreshChildrenNodeState(treeNode.getXmlNode());
 }
+
 /*
  * 刷新所有父节点的选择状态
- * 参数：	tempNode	xml节点
- * 返回值：
- * 作者：scq
- * 时间：2004-6-28
  */
 function refreshParentNodeState(tempNode) {
 	tempNode = tempNode.parentNode;
@@ -1393,17 +1370,16 @@ function refreshParentNodeState(tempNode) {
 		tempNode = tempNode.parentNode;
 	}
 }
+
 /*
  * 获取枝节点的选择状态
  * 参数：	node	xml节点
  * 返回值：	0/1/2	不选/选中/半选
- * 作者：scq
- * 时间：2004-6-28
  */
 function getChildsNodeState(node) {
 	var nodeChildNum = node.childNodes.length;	//所有子节点数
-	var nodeCheckedChildNum = node.selectNodes("./treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']").length;	//全选子节点数
-	var nodeHalfCheckedChildNum = node.selectNodes("./treeNode[@" + _TREE_NODE_CHECKTYPE + "='2']").length;	//半选子节点数
+	var nodeCheckedChildNum = node.selectNodes("./treeNode[@checktype='1']").length;	//全选子节点数
+	var nodeHalfCheckedChildNum = node.selectNodes("./treeNode[@checktype='2']").length;	//半选子节点数
 	if(nodeCheckedChildNum == 0 && nodeHalfCheckedChildNum == 0) {	
 		return 0;		//所有子节点都没有选中，标记未选中
 	}else if(nodeChildNum == nodeCheckedChildNum) {
@@ -2956,13 +2932,13 @@ function initData() {
 /*
  * 根据给定的数据，处理树节点的默认选中状态
  * 参数：	selectedSrc	默认选中的数据
- *		isClearOldSelected	是否清除原先选中节点
+ *		clearOldSelected	是否清除原先选中节点
  * 返回值：
  * 作者：沈超奇
  * 时间：2004-12-23
  */
-function loadDefaultChecked(selectedSrc, isClearOldSelected) {
-	treeObj.loadSelectedData(selectedSrc, isClearOldSelected);
+function loadDefaultChecked(selectedSrc, clearOldSelected) {
+	treeObj.loadSelectedData(selectedSrc, clearOldSelected);
 	displayObj.resetTotalTreeNodes();
 	displayObj.reload();
 	var eventObj = createEventObject();
@@ -2972,14 +2948,14 @@ function loadDefaultChecked(selectedSrc, isClearOldSelected) {
 /*
  * 根据给定的数据，处理树节点的默认选中状态
  * 参数：	selectedIds	默认选中的数据(id字符串，多个id用“,”隔开)
- *		isClearOldSelected	是否清除原先选中节点
+ *		clearOldSelected	是否清除原先选中节点
  *		isDependParent	    是否依赖父节点(父节点选中，则所有子节点均选中)
  * 返回值：
  * 作者：沈超奇
  * 时间：2005-4-19
  */
-function loadDefaultCheckedByIds(selectedIds, isClearOldSelected, isDependParent) {
-	treeObj.loadSelectedNodesByIds(selectedIds, isClearOldSelected, isDependParent);
+function loadDefaultCheckedByIds(selectedIds, clearOldSelected, isDependParent) {
+	treeObj.loadSelectedNodesByIds(selectedIds, clearOldSelected, isDependParent);
 	displayObj.resetTotalTreeNodes();
 	displayObj.reload();
 	var eventObj = createEventObject();
@@ -3001,9 +2977,9 @@ function getIds(isAll, onlySelected, exIdPatterns) {
 		var path = ".//treeNode" ;
 	}else{
 		if(onlySelected) {
-			var path = ".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']";
+			var path = ".//treeNode[@checktype='1']";
 		}else{
-			var path = ".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']";
+			var path = ".//treeNode[@checktype='1' or @checktype='2']";
 		}
 	}
 	var nodes = treeObj.getXmlRoot().selectNodes(path);
