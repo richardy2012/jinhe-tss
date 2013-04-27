@@ -13,8 +13,8 @@ var _TREE_BASE_URL_DEFAULT_VALUE = "common/Tree/";	// 默认控件所在目录
 var _TREE_TREE_TYPE = "treeType";
 var _TREE_SELECTED_IDS = "selectedIds"; // 选中节点id字符串
 var _TREE_CAN_MOVE_NODE = "canMoveNode";	
-var _TREE_SELECTED_AND_ACTIVE = "treeNodeSelectedChangeState"; 	// 选中、激活节点是否同步
-var _TREE_OPEN_WITH_CLICK = "treeNodeClickOpenNode";	// 点击文字是否展开/收缩节点
+var _TREE_SELECTED_AND_ACTIVE = "treeNodeSelectAndActive"; 	// 选中、激活节点是否同步
+var _TREE_OPEN_WITH_CLICK = "treeNodeToOpenOnClick";	// 点击文字是否展开/收缩节点
 var _TREE_DISABLED_ALL_CHECKTYPE = "allCheckTypeDisabled";	// 禁止所有节点改变选中状态
 var _TREE_JUST_SELECT_SELF = "selectSelf";	// 选中节点时，不考虑父子关系
 var _TREE_FOCUS_NEW_TREE_NODE = "focusNewTreeNode";	// 新增节点焦点不自动移到新节点上
@@ -32,18 +32,9 @@ var _TREE_NODE_CANSELECTED = "canselected";
 var _TREE_NODE_CHECKTYPE = "checktype";
 var _TREE_NODE_DISPLAY = "display";
 
-/*
-节点名称
- */
-var _TREE_NODE = "treeNode";
-/*
- * 根节点名称
- */
-var _TREE_ROOT_NODE = "actionSet";
-/*
- * “全部”节点的ID值
- */
-var _TREE_ROOT_NODE_ID = "_rootId";
+var _TREE_NODE = "treeNode";        /* 节点名称 */
+var _TREE_ROOT_NODE = "actionSet";  /* 根节点名称 */
+var _TREE_ROOT_NODE_ID = "_rootId"; /* “全部”节点的ID值  */
 
 /*
  * 选中状态图标地址（控件所在目录为根目录，起始不能有“/”）
@@ -768,12 +759,12 @@ function instanceTree() {
 
 /*
  * 获取选中节点的Xml对象数组（多选树）
- * 参数：	hasHalfChecked	是否包含半选节点
+ * 参数：	includeHalfChecked	是否包含半选节点
  * 返回值：	Xml对象数组
  */
-function multiGetSelectedXmlNode(hasHalfChecked) {	
+function multiGetSelectedXmlNode(includeHalfChecked) {	
 	var xmlNodes;
-	if(hasHalfChecked) { // 包括半选状态
+	if(includeHalfChecked) { // 包括半选状态
 		xmlNodes = this.getXmlRoot().selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']");
 	} else {	// 不包括半选状态
 		xmlNodes = this.getXmlRoot().selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
@@ -789,7 +780,7 @@ function multiGetSelectedXmlNode(hasHalfChecked) {
 		alert("控件数据错误，xml不能解析！");
 		throw(e);
 	}
-	xmlNodeArray.hasHalfChecked = hasHalfChecked;
+	xmlNodeArray.includeHalfChecked = includeHalfChecked;
 	
 	//给数组提供toElement方法，根据不同的是否包括半选状态，分别以不同的方式返回xml节点。
 	xmlNodeArray.toElement = function() {
@@ -798,7 +789,7 @@ function multiGetSelectedXmlNode(hasHalfChecked) {
 				continue;
 			}
 			var parentNode = null;
-			if(this.hasHalfChecked) {	// 包括半选状态，则以原有节点层次关系返回xml
+			if(this.includeHalfChecked) {	// 包括半选状态，则以原有节点层次关系返回xml
 				parentNode = this.rootNode.selectSingleNode(".//treeNode[@id='" + this[i].parentNode.getAttribute(_TREE_NODE_ID) + "']");
 			}
 			else {
@@ -813,12 +804,12 @@ function multiGetSelectedXmlNode(hasHalfChecked) {
 
 /*
  * 获取选中节点的TreeNode对象数组（多选树）
- * 参数：	hasHalfChecked	是否包含半选节点
+ * 参数：	includeHalfChecked	是否包含半选节点
  * 返回值：	TreeNode对象数组
  */
-function multiGetSelectedTreeNode(hasHalfChecked) {	
+function multiGetSelectedTreeNode(includeHalfChecked) {	
 	var treeNodes;
-	if(hasHalfChecked) {	// 包括半选状态
+	if(includeHalfChecked) {	// 包括半选状态
 		treeNodes = this.getXmlRoot().selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1' or @" + _TREE_NODE_CHECKTYPE + "='2']");
 	} else {	//不包括半选状态
 		treeNodes = this.getXmlRoot().selectNodes(".//treeNode[@" + _TREE_NODE_CHECKTYPE + "='1']");
@@ -836,7 +827,7 @@ function multiGetSelectedTreeNode(hasHalfChecked) {
 		alert("控件数据错误，xml不能解析！");
 		throw(e);
 	}
-	treeNodeArray.hasHalfChecked = hasHalfChecked;
+	treeNodeArray.includeHalfChecked = includeHalfChecked;
 	
 	// 给数组提供toElement方法，根据不同的是否包括半选状态，分别以不同的方式返回xml节点。
 	treeNodeArray.toElement = function() {
@@ -845,7 +836,7 @@ function multiGetSelectedTreeNode(hasHalfChecked) {
 			
 			var xmlNode = this[i].getXmlNode();
 			var parentNode;
-			if( this.hasHalfChecked ) {	// 包括半选状态，则以原有节点层次关系返回xml
+			if( this.includeHalfChecked ) {	// 包括半选状态，则以原有节点层次关系返回xml
 				parentNode = this.rootNode.selectSingleNode(".//treeNode[@id='" + xmlNode.parentNode.getAttribute(_TREE_NODE_ID) + "']");
 			}
 			else {
@@ -869,18 +860,21 @@ function Tree() {
 	var _treeType = getValue(_TREE_TREE_TYPE, _TREE_TYPE_SINGLE);
 	var _selectedIds = getValue(_TREE_SELECTED_IDS);
 	var _canMoveNode = getValue(_TREE_CAN_MOVE_NODE, "false");
-	var _treeNodeSelectedChangeState = "false";
-	var _treeNodeClickOpenNode = getValue(_TREE_OPEN_WITH_CLICK, "false");
-	var _allCheckTypeDisabled = getValue(_TREE_DISABLED_ALL_CHECKTYPE, "false");
-	var _justSelectSelf = 	getValue(_TREE_JUST_SELECT_SELF, "false");
+	var _justSelectSelf = getValue(_TREE_JUST_SELECT_SELF, "false");
 	var _focusNewNode = getValue(_TREE_FOCUS_NEW_TREE_NODE, "true");
 	var _defaultOpen = getValue(_TREE_DEFAULT_OPEN, "true");
 	var _defaultActive = getValue(_TREE_DEFAULT_ACTIVE, "none");
-	var _activedNode = null;
-	var _movedNode = null;
-	var _xmlRoot = null;
-	var _scrollTimer = null;
-	var _findedNode = null;
+	
+	var _treeNodeSelectAndActive = getValue(_TREE_SELECTED_AND_ACTIVE, "false");
+	var _treeNodeToOpenOnClick = getValue(_TREE_OPEN_WITH_CLICK, "false");
+	var _allCheckTypeDisabled = getValue(_TREE_DISABLED_ALL_CHECKTYPE, "false");
+	
+	
+	var _activedNode ;
+	var _movedNode;
+	var _xmlRoot;
+	var _scrollTimer;
+	var _findedNode;
 	
 	/*
 	 * 设定控件的数据，数据来源为xml节点、xml字符串
@@ -915,6 +909,7 @@ function Tree() {
 	 * 获取默认选择状态数据：id字符串，多id之间用","隔开
 	 * 参数：	selectedIds	节点选中状态的Id字符串
 	 *			isClearOldSelected	是否清除原先选中节点
+	 *			isDependParent 下溯，设置全部子节点为选中
 	 */
 	this.loadSelectedNodesByIds = function (selectedIds, isClearOldSelected, isDependParent) {
 		if(isNullOrEmpty(selectedIds)) {
@@ -926,15 +921,23 @@ function Tree() {
 			eval("var selectedIds = '" + selectedIds + "';");
 			var node = _xmlRoot.selectSingleNode("//treeNode[@id='" + selectedIds + "']");
 			var treeNode = instanceTreeNode(node);
-			if(treeNode != null) {
+			if( treeNode ) {
 				treeNode.setSelectedState(1, false, true);
 				treeNode.focus();
 			}
 		} else {
-			multiCheckedDefaultByIds(_xmlRoot, selectedIds, isClearOldSelected, isDependParent);
+			if(isClearOldSelected) {
+				clearSelected(_xmlRoot);
+			}
+		 
+			if (_justSelectSelf == "true") {
+				multiCheckedOnlySelf(_xmlRoot, selectedIds);
+			} else {
+				multiCheckedWithOther(_xmlRoot, selectedIds, isDependParent);
+			}
 		}
 	}
-
+	
 	/*
 	 * 设置默认激活节点
 	 * 参数：	type	默认激活类型
@@ -946,14 +949,17 @@ function Tree() {
 		if(_xmlRoot == null || type == "none") {
 			return;
 		}
-		var activeNode = null;
+		
+		var path;
 		if(type == "root") {
-			activeNode = _xmlRoot.selectSingleNode(".//treeNode[@id='" + _TREE_ROOT_NODE_ID + "']");
-		}else if(type == "valid") {
-			activeNode = _xmlRoot.selectSingleNode(".//treeNode[(@" + _TREE_NODE_CANSELECTED + "!='0' or not(@" + _TREE_NODE_CANSELECTED + ")) and @id!='" + _TREE_ROOT_NODE_ID + "']");
+			path = ".//treeNode[@id='" + _TREE_ROOT_NODE_ID + "']";
+		} else if(type == "valid") {
+			path = ".//treeNode[(@" + _TREE_NODE_CANSELECTED + "!='0' or not(@" + _TREE_NODE_CANSELECTED + ")) and @id!='" + _TREE_ROOT_NODE_ID + "']";
 		}
+		
+		var activeNode = _xmlRoot.selectSingleNode(path);
 		var treeNode = instanceTreeNode(activeNode);
-		if(treeNode != null) {
+		if( treeNode ) {
 			treeNode.setActive();
 			treeNode.focus();
 		}
@@ -961,69 +967,37 @@ function Tree() {
 
 	/*
 	 * 获取数据的根节点
-	 * 参数：
-	 * 返回值：	xml节点
-	 * 作者：scq
-	 * 时间：2004-6-25
 	 */
 	this.getXmlRoot = function () {
-		if(_xmlRoot == null) {
-			var xmlDom = new ActiveXObject("Microsoft.XMLDOM");
-			xmlDom.async = false;
-			if (xmlDom.loadXML("<actionSet/>")) {	
-				return xmlDom.documentElement;
-			}
-		}
-		return _xmlRoot;
+		return _xmlRoot || loadXmlToNode("<actionSet/>");
 	}
 	/*
 	 * 设定当前高亮（激活）的节点
-	 * 参数：	treeNode	TreeNode节点
-	 * 返回值：
-	 * 作者：scq
-	 * 时间：2004-6-24
 	 */
 	this.setActiveNode = function (treeNode) {
 	    _activedNode = treeNode.getXmlNode();
 	}
 	/*
 	 * 根据属性配置，点击节点文字标签时是否改变节点选择状态
-	 * 参数：
-	 * 返回值：
-	 * 作者：scq
-	 * 时间：2005-10-27
 	 */
 	this.isSelectByActived = function () {
-		return _treeNodeSelectedChangeState == "true";
+		return _treeNodeSelectAndActive == "true";
 	}
 
 	/*
 	 * 根据属性配置，点击节点文字标签时是否改变节点伸缩状态
-	 * 参数：
-	 * 返回值：
-	 * 作者：scq
-	 * 时间：2005-10-27
 	 */
-	this.isChangeFolderStateByClickLabel = function () {
-		return _treeNodeClickOpenNode == "true";
+	this.isTreeNodeToOpenOnClick = function () {
+		return _treeNodeToOpenOnClick == "true";
 	}
 	/*
 	 * 获取当前高亮（激活）的节点
-	 * 参数：
-	 * 返回值：	TreeNode对象
-	 * 作者：scq
-	 * 时间：2004-6-30
 	 */
 	this.getActiveNode = function () {
 	    return instanceTreeNode(_activedNode);
 	}
 	/*
 	 * 设定对象属性值
-	 * 参数：	name	属性名
-	 *			value	属性值
-	 * 返回值：
-	 * 作者：scq
-	 * 时间：2004-6-24
 	 */
 	this.setAttribute = function (name, value) {
 	    switch (name) {
@@ -1037,10 +1011,10 @@ function Tree() {
 				_canMoveNode = value;
 	            break;
 	        case _TREE_SELECTED_AND_ACTIVE:
-				_treeNodeSelectedChangeState = value;
+				_treeNodeSelectAndActive = value;
 	            break;
 	        case _TREE_OPEN_WITH_CLICK:
-				_treeNodeClickOpenNode = value;
+				_treeNodeToOpenOnClick = value;
 	            break;
 	        case _TREE_DISABLED_ALL_CHECKTYPE:
 				_allCheckTypeDisabled = value;
@@ -1054,10 +1028,6 @@ function Tree() {
 	}
 	/*
 	 * 获取对象属性
-	 * 参数：	name	属性名称
-	 * 返回值：	属性值
-	 * 作者：scq
-	 * 时间：2004-6-24
 	 */
 	this.getAttribute = function (name) {
 	    switch (name) {
@@ -1068,9 +1038,9 @@ function Tree() {
 	        case _TREE_CAN_MOVE_NODE:
 				return _canMoveNode;
 	        case _TREE_SELECTED_AND_ACTIVE:
-				return _treeNodeSelectedChangeState;
+				return _treeNodeSelectAndActive;
 	        case _TREE_OPEN_WITH_CLICK:
-				return _treeNodeClickOpenNode;
+				return _treeNodeToOpenOnClick;
 	        case _TREE_DISABLED_ALL_CHECKTYPE:
 				return _allCheckTypeDisabled;
 	        case _TREE_JUST_SELECT_SELF:
@@ -1081,80 +1051,50 @@ function Tree() {
 	}
 	/*
 	 * 根据节点不同的checkType属性值获取选择状态图标的地址
-	 * 参数：	node	xml节点
-	 * 返回值：	String	图标地址
-	 * 作者：scq
-	 * 时间：2004-6-24
 	 */
 	this.getCheckTypeImageSrc = function (node) {
 	    alert("Tree对象：此方法[getCheckTypeImageSrc]尚未初始化！");
 	}
 	/*
 	 * 判断节点是否高亮（激活）
-	 * 参数：	node	xml节点
-	 * 返回值：	true/false
-	 * 作者：scq
-	 * 时间：2004-6-29
 	 */
 	this.isActiveNode = function (node) {
 	    return _activedNode == node;
 	}
 	/*
 	 * 判断节点是否为被拖动的节点
-	 * 参数：	node	xml节点
-	 * 返回值：	true/false
-	 * 作者：scq
-	 * 时间：2004-6-30
 	 */
 	this.isMovedNode = function (node) {
 	    return _movedNode == node;
 	}
 	/*
 	 * 判断节点是否为查选结果节点
-	 * 参数：	node	xml节点
-	 * 返回值：	true/false
-	 * 作者：scq
-	 * 时间：2006-1-9
 	 */
 	this.isFindedNode = function (node) {
 	    return _findedNode == node;
 	}
 	/*
 	 * 获取节点文字链接的样式名
-	 * 参数：	node	xml节点
-	 * 返回值：	String	样式名
-	 * 作者：scq
-	 * 时间：2004-6-30
 	 */
-	this.getClassName = function (node, defaultClassName) {
+	this.getStyleClass = function (node, defaultStyle) {
 		if(this.isMovedNode(node)) {
 			return _TREE_NODE_MOVED_STYLE;
-		}else if(this.isActiveNode(node)) {
+		} else if(this.isActiveNode(node)) {
 			return _TREE_NODE_SELECTED_STYLE;
-		}else if(this.isFindedNode(node)) {
+		} else if(this.isFindedNode(node)) {
 			return _TREE_NODE_FINDED_STYLE;
 		}
-		if(isNullOrEmpty(defaultClassName)) {
-			return null;
-		}
-		return defaultClassName;
+		return defaultStyle;
 	}
+	
 	/*
 	 * 节点被选中时是否需要激活（高亮）节点
-	 * 参数：state	节点选中状态
-	 * 返回值：
-	 * 作者：scq
-	 * 时间：2004-7-1
 	 */
 	this.isActiveBySelected = function (state) {
-		return _treeNodeSelectedChangeState == "true" && state == 1;
+		return _treeNodeSelectAndActive == "true" && state == 1;
 	}
 	/*
 	 * 设定被拖动的节点
-	 * 参数：	node	xml节点
-	 * 返回值：
-	 * 作者：scq
-	 * 时间：2004-6-30
 	 */
 	this.setMovedNode = function (node) {
 	    _movedNode = node;
@@ -1163,8 +1103,6 @@ function Tree() {
 	 * 获取节点的下一中选中状态
 	 * 参数：	treeNode	TreeNode节点对象
 	 * 返回值：	0/1	不选中/选中
-	 * 作者：scq
-	 * 时间：2004-6-28
 	 */
 	this.getNextState = function (treeNode) {
 		alert("Tree对象：此方法[getNextState]尚未初始化！");
@@ -1172,59 +1110,36 @@ function Tree() {
 	/*
 	 * 根据特定的节点，刷新所有节点的选择状态
 	 * 参数：	node	xml节点对象
-	 * 返回值：
-	 * 作者：scq
-	 * 时间：2004-6-28
 	 */
 	this.refreshStates = function (node) {
 		alert("Tree对象：此方法[refreshStates]尚未初始化！");
 	}
 	/*
 	 * 树是否可以移动节点
-	 * 参数：
-	 * 返回值：	true/false
-	 * 作者：scq
-	 * 时间：2004-6-29
 	 */
 	this.isCanMoveNode = function () {
 	    return _canMoveNode == "true";
 	}
 	/*
 	 * 树是否禁止改变所有的选择状态
-	 * 参数：
-	 * 返回值：	true/false
-	 * 作者：scq
-	 * 时间：2004-6-29
 	 */
 	this.isAllDisabledCheckType = function () {
 	    return _allCheckTypeDisabled == "true";
 	}
 	/*
 	 * 获取选中的节点的TreeNode对象数组
-	 * 参数：	hasHalfChecked	是否包含半选节点
-	 * 返回值：
-	 * 作者：scq
-	 * 时间：2004-6-30
 	 */
-	this.getSelectedTreeNode = function (hasHalfChecked) {
+	this.getSelectedTreeNode = function (includeHalfChecked) {
 	    alert("Tree对象：此方法[getSelectedTreeNode]尚未初始化！");
 	}
 	/*
 	 * 禁止所有节点改变选中状态
-	 * 参数：
-	 * 返回值：
-	 * 作者：scq
-	 * 时间：2005-10-29
 	 */
 	this.disable = function () {
 		_allCheckTypeDisabled = "true";
 	}
 	/*
 	 * 允许没有被特殊指定不能选中的节点改变选中状态
-	 * 参数：
-	 * 返回值：
-	 * 作者：scq
-	 * 时间：2005-10-29
 	 */
 	this.enable = function () {
 		_allCheckTypeDisabled = "false";
@@ -1234,8 +1149,6 @@ function Tree() {
 	 * 参数：
 	 * 返回值：	true	需要移到新节点上
 	 *			false	不需要移到新节点上
-	 * 作者：scq
-	 * 时间：2005-11-17
 	 */
 	this.isFocusNewTreeNode = function() {
 		return _focusNewNode == "true";
@@ -1243,10 +1156,6 @@ function Tree() {
 
 	/*
 	 * 设定查询结果中的当前节点为特殊高亮显示
-	 * 参数：	node	xml节点
-	 * 返回值：
-	 * 作者：scq
-	 * 时间：2004-7-2
 	 */
 	this.setFindedNode = function (node) {
 	    _findedNode = node;
@@ -1255,37 +1164,27 @@ function Tree() {
 		return eval(name);
 	}
 }
+
 /*
- * 获取定义的默认打开节点
- * 参数：	xmlRoot	xml数据
- * 返回值：默认打开的xml节点
- * 作者：scq
- * 时间：2004-6-11
+ * 获取定义的默认打开的节点。默认打开第一个子节点
  */
 function getDefaultOpenedNode(xmlRoot) {
-	if(xmlRoot == null) {
-		return;
+	if(xmlRoot == null)  return;
+
+	var openedNodeId = xmlRoot.getAttribute(_DEFAULT_OPENED_TREE_NODE_ID) || "noDefaultOpened";	
+	var openedNode = xmlRoot.selectSingleNode(".//treeNode[@id='" + openedNodeId + "']");;
+	if( openedNode == null) {
+		openedNode = xmlRoot.selectSingleNode(".//treeNode[@" + _TREE_NODE_CANSELECTED + "!='0' or not(@" + _TREE_NODE_CANSELECTED + ")]");
 	}
-	var actionSetNode = xmlRoot;
-	var openedNodeId = actionSetNode.getAttribute(_DEFAULT_OPENED_TREE_NODE_ID);
-	var openedNode = null;
-	if(!isNullOrEmpty(openedNodeId)) {
-		openedNode = actionSetNode.selectSingleNode(".//treeNode[@id='"+openedNodeId+"']");
-	}
-	if(isNullOrEmpty(openedNode)) {
-		openedNode = actionSetNode.selectSingleNode(".//treeNode[@" + _TREE_NODE_CANSELECTED + "!='0' or not(@" + _TREE_NODE_CANSELECTED + ")]");
-	}
-	return isNullOrEmpty(openedNode)?actionSetNode.firstChild:openedNode;
+ 
+	return if(openedNode) ? openedNode : xmlRoot.firstChild;
 }
+
 /*
  * 获取控件参数
- * 参数：	name	参数名
- *			defaultValue	默认值
- * 返回值：	String	属性值
  */
 function getValue(name, defaultValue) {
-	var value = eval("element." + name) || defaultValue;
-	return value;
+	return eval("element." + name) || defaultValue;
 }
 
 
@@ -1295,51 +1194,23 @@ function getValue(name, defaultValue) {
  * 参数：	node	需要处理默认选中状态的数据节点
  *			defaltCheckedNode	默认选中状态的数据节点
  *			isClearOldSelected	是否清除原先选中节点
- * 返回值：
- * 作者：沈超奇
- * 时间：2004-12-23
  */
 function multiCheckedDefault(node, defaultCheckedNode, isClearOldSelected) {
-	if(node == null) {
+	if(node == null || defaultCheckedNode == null) {
 		return;
 	}
+	
 	if(isClearOldSelected) {
 		clearSelected(node);
 	}
-	if(defaultCheckedNode == null) {
-		return;
-	}
+
 	if (treeObj.getAttribute(_TREE_JUST_SELECT_SELF) == "true") {
 		multiCheckedDefaultOnlySelf(node, defaultCheckedNode);
-	}else{
+	} else {
 		multiCheckedDefaultWithOther(node, defaultCheckedNode);
 	}
 }
-/*
- * 根据给定节点的选中状态，选中默认节点（多选树，根据Id字符串）
- * 参数：	node	需要处理默认选中状态的数据节点
- *			defaltCheckedIds	默认选中状态的数据节点
- *			isClearOldSelected	是否清除原先选中节点
- * 返回值：
- * 作者：沈超奇
- * 时间：2005-4-19
- */
-function multiCheckedDefaultByIds(node, defaltCheckedIds, isClearOldSelected, isDependParent) {
-	if(node == null) {
-		return;
-	}
-	if(isClearOldSelected) {
-		clearSelected(node);
-	}
-	if(defaltCheckedIds == null || defaltCheckedIds == "") {
-		return;
-	}
-	if (treeObj.getAttribute(_TREE_JUST_SELECT_SELF) == "true") {
-		multiCheckedDefaultByIdsOnlySelf(node, defaltCheckedIds);
-	}else{
-		multiCheckedDefaultByIdsWithOther(node, defaltCheckedIds, isDependParent);
-	}
-}
+
 
 /*
  * 去除所有选中节点的选中状态
@@ -1434,7 +1305,7 @@ function multiCheckedDefaultWithOther(node, defaultCheckedNode) {
  * 作者：沈超奇
  * 时间：2004-12-23
  */
-function multiCheckedDefaultByIdsOnlySelf(node, defaltCheckedIds) {
+function multiCheckedOnlySelf(node, defaltCheckedIds) {
 	if(node == null || defaltCheckedIds == null) {
 		return;
 	}
@@ -1453,11 +1324,9 @@ function multiCheckedDefaultByIdsOnlySelf(node, defaltCheckedIds) {
  * 根据给定节点的选中状态，选中默认节点 (多选树，选节点时考虑父子关系)
  * 参数：	node	需要处理默认选中状态的数据节点
  *			defaltCheckedIds	默认选中状态的数据节点id字符串
- * 返回值：
- * 作者：沈超奇
- * 时间：2004-12-23
+ *          isDependParent 下溯，设置全部子节点为选中
  */
-function multiCheckedDefaultByIdsWithOther(node, defaltCheckedIds, isDependParent) {
+function multiCheckedWithOther(node, defaltCheckedIds, isDependParent) {
 	if(node == null || defaltCheckedIds == null) {
 		return;
 	}
@@ -1467,9 +1336,8 @@ function multiCheckedDefaultByIdsWithOther(node, defaltCheckedIds, isDependParen
 		var fNode = node.selectSingleNode(xpath);
 		if(fNode != null) {
 			setNodeState(fNode, 1);
-
-            //如果下溯，则设置全部子节点为选中
-            if(true==isDependParent) {
+ 
+            if( isDependParent ) {
                 var xpath = ".//treeNode" ;
                 var subnodes = fNode.selectNodes(xpath);
                 for(var j = 0; j < subnodes.length; j++) {
@@ -1977,7 +1845,7 @@ Row.prototype = new function () {
 			fullName = name;
 		}
 		this.setTitle(fullName);
-		this.setClassName(treeObj.getClassName(node));
+		this.setClassName(treeObj.getStyleClass(node));
 		this.setAbled(canSelected, display);
 	}
 	/*
@@ -2765,9 +2633,9 @@ function Search() {
 <PUBLIC:PROPERTY NAME="selected" /><!-- 树数据源（符合树XML规范的xml数据岛id） -->
 <PUBLIC:PROPERTY NAME="selectedIds" /><!-- 默认选中的节点id，多个id用“,”隔开 -->
 <PUBLIC:PROPERTY NAME="canMoveNode" /><!-- 是否可以移动树节点，默认为false -->
-<PUBLIC:PROPERTY NAME="treeNodeSelectedChangeState" /><!-- 当树被选择时，同时修改树的选择状态（此时会触发onChange事件），单选树默认为true，多选树默认为false -->
+<PUBLIC:PROPERTY NAME="treeNodeSelectAndActive" /><!-- 当树被选择时，同时修改树的选择状态（此时会触发onChange事件），单选树默认为true，多选树默认为false -->
 <PUBLIC:PROPERTY NAME="baseUrl" /><!--文件基本目录-->
-<PUBLIC:PROPERTY NAME="treeNodeClickOpenNode" /><!--点击节点是否同步打开此节点-->
+<PUBLIC:PROPERTY NAME="treeNodeToOpenOnClick" /><!--点击节点是否同步打开此节点-->
 <PUBLIC:PROPERTY NAME="allCheckTypeDisabled" /><!--所有节点都不能改变选择状态-->
 <PUBLIC:PROPERTY NAME="selectSelf" /><!--选中节点时只改变自己的选择状态，与父、子节点无关-->
 
@@ -2886,27 +2754,27 @@ function getTreeNodeById(id) {
 }
 
 /* 返回选取节点的TreeNode对象或对象数组
- * 参数：	hasHalfChecked	是否包括半选状态的节点，true为包括，false为不包括。
+ * 参数：	includeHalfChecked	是否包括半选状态的节点，true为包括，false为不包括。
  * 返回：	单选树：TreeNode对象；多选树：TreeNode对象数组
  * 如果返回的是数组，则数组对象还提供toElement方法，将数组直接转换成xml字符串。
- * 如果hasHalfChecked参数为false，则不包括半选状态的节点，同时toElement方法
+ * 如果includeHalfChecked参数为false，则不包括半选状态的节点，同时toElement方法
  * 给出的xml将所有TreeNode都放到根节点actionSet节点下；否则将给出包括全选、半
  * 选的所有节点，并按原有的节点层次关系给出xml字符串。
  */
-function getSelectedTreeNode(hasHalfChecked) {
-	return treeObj.getSelectedTreeNode(hasHalfChecked);
+function getSelectedTreeNode(includeHalfChecked) {
+	return treeObj.getSelectedTreeNode(includeHalfChecked);
 }
 
 /* 返回选取节点的Xml对象或对象数组
- * 参数：	hasHalfChecked	是否包括半选状态的节点，true为包括，false为不包括。
+ * 参数：	includeHalfChecked	是否包括半选状态的节点，true为包括，false为不包括。
  * 返回：	单选树：Xml对象；多选树：Xml对象数组
  * 如果返回的是数组，则数组对象还提供toElement方法，将数组直接转换成xml节点。
- * 如果hasHalfChecked参数为false，则不包括半选状态的节点，同时toElement方法
+ * 如果includeHalfChecked参数为false，则不包括半选状态的节点，同时toElement方法
  * 给出的xml将所有Xml都放到根节点actionSet节点下；否则将给出包括全选、半
  * 选的所有节点，并按原有的节点层次关系给出xml字符串。
  */
-function getSelectedXmlNode(hasHalfChecked) {
-	return treeObj.getSelectedXmlNode(hasHalfChecked);
+function getSelectedXmlNode(includeHalfChecked) {
+	return treeObj.getSelectedXmlNode(includeHalfChecked);
 }
 
 /*
@@ -2922,12 +2790,12 @@ function getActiveTreeNode() {
  * 参数：id 字符串，所要激活的节点的id，必须提供，否则会报错。
  * 返回：	无
  * 如果相应id的节点尚未被打开，也就是其父节点或父节点的父节点等没有被打开，那么先打开此节点。
- * 然后激活此节点，同时根据treeNodeSelectedChangeState属性，确定是否同时改变节点选择状态。
+ * 然后激活此节点，同时根据treeNodeSelectAndActive属性，确定是否同时改变节点选择状态。
  */
 function setActiveTreeNode(id) {
 	var treeNode = getTreeNodeById(id);
 	if(treeNode instanceof TreeNode) {
-		treeNode.setActive();	//激活节点，同时根据treeNodeSelectedChangeState属性，确定是否同时改变节点选择状态。
+		treeNode.setActive();	//激活节点，同时根据treeNodeSelectAndActive属性，确定是否同时改变节点选择状态。
 		treeObj.setActiveNode(treeNode);
 		treeNode.focus();		//打开节点，让节点出现在可视区域内。
 	}
@@ -2948,7 +2816,7 @@ function insertTreeNodeXml(newNodeXML, parentTreeNode) {
 		return false;
 	}
 	if(treeObj.isFocusNewTreeNode()) {
-		treeNode.setActive();	//激活节点，同时根据treeNodeSelectedChangeState属性，确定是否同时改变节点选择状态。
+		treeNode.setActive();	//激活节点，同时根据treeNodeSelectAndActive属性，确定是否同时改变节点选择状态。
 		treeNode.focus();		//打开节点，让节点出现在可视区域内。
 	}else{
 		parentTreeNode.setActive();
@@ -3014,7 +2882,7 @@ function moveExternalTreeNode(movedTreeNode, toTreeNode, moveState) {
 	moveTreeNode(newNode,toTreeNode,moveState);
 
 	var newNode = getTreeNodeById(movedTreeNodeId);
-	newNode.setActive();	//激活节点，同时根据treeNodeSelectedChangeState属性，确定是否同时改变节点选择状态。
+	newNode.setActive();	//激活节点，同时根据treeNodeSelectAndActive属性，确定是否同时改变节点选择状态。
 	newNode.focus();		//打开节点，让节点出现在可视区域内。
 }
 
@@ -3288,9 +3156,9 @@ function _oncontextmenu() {
 
 /*
  * 	鼠标单击事件响应函数
- *			如果点击的是选择状态图标，则改变选择状态，同时根据treeNodeSelectedChangeState属性，确定是否同时激活该节点。
+ *			如果点击的是选择状态图标，则改变选择状态，同时根据treeNodeSelectAndActive属性，确定是否同时激活该节点。
  *			如果点击的是伸缩状态图标，则打开或收缩当前节点的直系子节点。
- *			如果点击的是文字连接，则激活该节点，同时根据treeNodeSelectedChangeState属性，确定是否同时改变节点选择状态。
+ *			如果点击的是文字连接，则激活该节点，同时根据treeNodeSelectAndActive属性，确定是否同时改变节点选择状态。
  * 参数：
  * 返回值：
  * 作者：scq
@@ -3311,7 +3179,7 @@ function _onclick() {
 	}else if(eventObj == row.getFolder()) {
 		treeNode.changeFolderState();		//展开、收缩节点的直系子节点
 	}else if(eventObj == row.getLabel() || eventObj == row.getIcon()) {
-		if(treeObj.isChangeFolderStateByClickLabel()) {
+		if(treeObj.isTreeNodeToOpenOnClick()) {
 			//2006-4-22 只有当枝节点才允许执行
 			if(treeNode.node.hasChildNodes()) {
 				//点击节点文字时，改变节点伸缩状态
@@ -3337,7 +3205,7 @@ function _onmouseover() {
 	if(!(row instanceof Row) || row.getLabel() != obj) {
 		return;
 	}
-	row.setClassName(treeObj.getClassName(row.getXmlNode(), _TREE_NODE_OVER_STYLE));
+	row.setClassName(treeObj.getStyleClass(row.getXmlNode(), _TREE_NODE_OVER_STYLE));
 }
 //鼠标离开节点
 /*
@@ -3353,7 +3221,7 @@ function _onmouseout() {
 	if(!(row instanceof Row) || row.getLabel() != obj) {
 		return;
 	}
-	row.setClassName(treeObj.getClassName(row.getXmlNode()));
+	row.setClassName(treeObj.getStyleClass(row.getXmlNode()));
 }
 
 ///////////////////////	以下函数用于节点拖动 ////////////////////////////
