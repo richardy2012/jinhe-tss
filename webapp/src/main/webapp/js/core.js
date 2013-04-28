@@ -458,6 +458,29 @@ function convertToString(value) {
 	return str;
 }
 
+function stringToNumber(str) {
+	str = str.replace(/[^0-9\.\-]/g, '');
+	if(str == "") {
+		return 0;
+	}
+	return parseFloat(str);
+}
+
+function stringToDate(str, pattern) {
+	var testYear  = str.substr(pattern.indexOf("yyyy"), 4);
+	var testMonth = str.substr(pattern.indexOf("MM"), 2);
+	var testDay   = str.substr(pattern.indexOf("dd"), 2);
+
+	var testDate = testYear + "/" + testMonth + "/" + testDay;
+
+	testDate = new Date(testDate);
+	return new Date(testDate);
+}
+
+function numberToString(number, pattern) {
+	return number.toString();
+}
+
 /*********************************** 常用函数  end **********************************/
 
 /*********************************** html dom 操作 start **********************************/

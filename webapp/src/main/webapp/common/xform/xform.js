@@ -77,20 +77,20 @@ XForm.prototype.reload = function() {
 	}
 	this.xmlDoc = new Class_XMLDocument(curXmlDom);
 	
-	if(this.xmlDoc != null && this.xmlDoc.xmlObj != null) {
+	if(this.xmlDoc && this.xmlDoc.xmlObj) {
 		// 修正comboedit类型默认第一项的值
 		this.fixComboeditDefaultValue(this.xmlDoc.Row);
 
 		var htmlStr = this.xmlDoc.transformXML(this.xslDom); // 利用XSL把XML解析成Html
 		this.element.innerHTML = htmlStr.replace(/<\/br>/gi, "");
 
-		if(this.form != null) {
+		if(this.form) {
 			this.form.attachEvent('onsubmit', this.checkForm);
 			this.form.attachEvent('onreset', this.resetForm);
 
 			// 添加标题栏				
 			var theTable = this.form.all.tags("TABLE")[0];
-			if(theTable != null && this.element.getAttribute("caption") != null) {
+			if(theTable && this.element.getAttribute("caption")) {
 				var count = theTable.rows(0).cells.length;
 				for(var i = 0; i < theTable.rows(0).cells.length; i++) {
 					count += parseInt(theTable.rows(0).cells(i).colSpan);
@@ -115,7 +115,7 @@ XForm.prototype.reload = function() {
 	
 		// 触发onload事件
 		var onload = this.element.getAttribute("onload");
-		if(onload != null) {
+		if(onload) {
 			eval(onload);
 		}
 
@@ -174,7 +174,7 @@ XForm.prototype.checkForm = function() {
 	for(var i = 0; i < cols.length; i++) {
 		var colName  = cols[i].getAttribute("name");
 		var _column = this._columnList[colName];
-		if(_column != null) {
+		if(_column) {
 			if(_column.validate() == false) {
 				return false;
 			}
@@ -208,11 +208,11 @@ XForm.prototype.resetForm = function() {
 	var cols = this.xmlDoc.Columns;
 	for(var i = 0; i < cols.length; i++) {
 		var colName = cols[i].getAttribute("name");
-		if(this._columnList[colName] != null) {
+		if(this._columnList[colName]) {
 			this._columnList[colName].reset();
 		}
 	}
-	if(event != null) {
+	if(event) {
 		event.returnValue = false;
 	}
 }
@@ -229,7 +229,7 @@ XForm.prototype.updateData = function(obj) {
 	}
 
 	var oldValue = this.getColumnValue(obj.binding);
-	if(newValue != oldValue && newValue != null && newValue != "") {
+	if(newValue != oldValue && newValue && newValue != "") {
 		this.setColumnValue(obj.binding, newValue);
 	}
 }
@@ -243,7 +243,7 @@ XForm.prototype.updateDataExternal = function(name, value) {
 	// 更改页面显示数据
 	var tempSrcElement;
 	var _column = this._columnList[name];
-	if(_column != null) {
+	if(_column) {
 		_column.setValue(value);
 		tempSrcElement = _column.obj;
 	}
@@ -256,7 +256,7 @@ XForm.prototype.updateUnbindingDataExternal = function(id, value) {
 	$(id).value = value;
 
 	var node = this.xmlDoc.Layout.selectSingleNode(".//*[@id='" + id + "']");
-	if(node != null) {
+	if(node) {
 		node.setAttribute("value", value);
 	}
 }
@@ -269,7 +269,7 @@ XForm.prototype.setEditable = function(status) {
 	this.element.editable = status;
 
 	var buttonBox = $("buttonBox");
-	if(buttonBox != null) {
+	if(buttonBox) {
 		buttonBox.style.display = (status == "true" ? "block": "none");
 	}
 
@@ -277,7 +277,7 @@ XForm.prototype.setEditable = function(status) {
 	for(var i = 0; i < cols.length; i++) {
 		var name = cols[i].getAttribute("name");
 		var _column = _columnList[name];
-		if(_column != null) {
+		if( _column ) {
 			var columnEditable = cols[i].getAttribute("editable");
 			if (columnEditable == "false") continue;
 			_column.setEditable(status);
@@ -363,7 +363,7 @@ XForm.prototype.setFocus = function(name) {
 	}
 
 	var _column = this._columnList[name];
-	if( _column != null ) {
+	if( _column ) {
 		_column.setFocus();
 		$(name).focus();
 	}
@@ -374,7 +374,7 @@ XForm.prototype.setColumnEditable = function(name, booleanValue) {
 	_columnNode.setAttribute("editable", booleanValue);
 	
 	var _column = this._columnList[name];
-	if( _column != null ) {
+	if( _column ) {
 		_column.setEditable(booleanValue);
 	}
 }
@@ -382,14 +382,14 @@ XForm.prototype.setColumnEditable = function(name, booleanValue) {
 
 XForm.prototype.showCustomErrorInfo = function(name, str) {
 	var instance = this._columnList[name];
-	if( instance != null ) {
+	if( instance ) {
 		showErrorInfo(str, instance.obj);
 	}
 }
 
 XForm.prototype.getColumnAttribute = function(name, attrName) {
 	var column = this.xmlDoc.columnsMap[name];
-	if(column != null) {
+	if( column ) {
 		return column.getAttribute(attrName);
 	}
 	else {
@@ -400,7 +400,7 @@ XForm.prototype.getColumnAttribute = function(name, attrName) {
 
 XForm.prototype.setLabelContent = function(name, content) {
 	var labelObj = $("label_" + name);
-	if(labelObj != null) {
+	if( labelObj ) {
 		if(labelObj.length > 1) {
 			labelObj = labelObj[0];
 		}
@@ -442,7 +442,7 @@ XForm.prototype.setColumnValue = function(name, value) {
 	}
 
 	var CDATANode = node.selectSingleNode("cdata()");
-	if( CDATANode != null) {
+	if( CDATANode ) {
 		CDATANode.text = value;
 	}
 	else{
@@ -553,7 +553,7 @@ function Mode_ComboEdit(colName, element) {
 	
 	var isMatch = false;
 	var selectedIndex = [];
-	for(var i=0; valueList != null && i < valueList.split('|').length; i++){
+	for(var i=0; valueList && i < valueList.split('|').length; i++){
 		var value = valueList.split('|')[i];
 		var tempLable = textList.split('|')[i];
 
@@ -926,25 +926,18 @@ Mode_Function.prototype.setFocus = function() {
 }
 
 
-
 function Mode_Hidden(colName, element) {
 	this.name = colName;
 	this.obj = $(colName);
 }
-Mode_Hidden.prototype.setValue = function(s) {
-}
-Mode_Hidden.prototype.setEditable = function(s) {
-}
+Mode_Hidden.prototype.setValue = function(s) {}
+Mode_Hidden.prototype.setEditable = function(s) {}
 Mode_Hidden.prototype.validate = function() {
 	return true;
 }
-Mode_Hidden.prototype.reset = function() {
-}
-Mode_Hidden.prototype.saveAsDefaultValue = function() {
-}
-Mode_Hidden.prototype.setFocus = function() {
-}
-
+Mode_Hidden.prototype.reset = function() {}
+Mode_Hidden.prototype.saveAsDefaultValue = function() {}
+Mode_Hidden.prototype.setFocus = function() {}
 
 
 
@@ -952,7 +945,7 @@ var Class_XMLDocument = function(xmlObj) {
 	this.xmlObj = xmlObj;
 
 	this.toString = function() {
-		if(this.xmlObj != null) {
+		if( this.xmlObj ) {
 			return this.xmlObj.xml;
 		}
 		return null;
@@ -968,7 +961,7 @@ var Class_XMLDocument = function(xmlObj) {
 	}
 	
 	this.refresh = function() {
-		if(this.xmlObj != null) {
+		if( this.xmlObj ) {
 			this.declare = this.xmlObj.selectSingleNode("./declare");
 			this.Layout  = this.xmlObj.selectSingleNode("./layout");
 			this.Script  = this.xmlObj.selectSingleNode("./script");
@@ -1013,17 +1006,17 @@ function validate() {
 		errorInfo = "[" + caption.replace(/\s/g, "") + "] 不允许为空，请选择。";
 	}
 
-	if(submitReg != "null" && submitReg != null && !eval(submitReg).test(value)) {
+	if(submitReg != "null" && submitReg && !eval(submitReg).test(value)) {
 		errorInfo = errorInfo || "[" + caption + "] 格式不正确，请更正.";
 	}
 
-	if( errorInfo != "null" && errorInfo != null ) {
+	if( errorInfo != "null" && errorInfo ) {
 		showErrorInfo(errorInfo, this.obj);
 
 		if(this.isInstance != false) {
 			this.setFocus();
 		}
-		if(event != null) {
+		if( event ) {
 			event.returnValue = false;
 		}
 		return false;
@@ -1037,7 +1030,7 @@ function showErrorInfo(errorInfo, obj) {
 	
 	setTimeout(function() {
 		// 页面全局Balllon对象
-		if(null != window.Balloons) {
+		if( window.Balloons ) {
 			var balloon = Balloons.create(errorInfo);
 			balloon.dockTo(obj);
 		}
@@ -1045,7 +1038,7 @@ function showErrorInfo(errorInfo, obj) {
 }
 
 function hideErrorInfo() {
-	if(null != window.Balloons) {
+	if( window.Balloons ) {
 		Balloons.dispose();
 	}
 }
@@ -1088,27 +1081,4 @@ function waitingForVisible(func, element) {
 			element.onresize = null;
 		}
 	}
-}
-
-function stringToNumber(str) {
-	str = str.replace(/[^0-9\.\-]/g, '');
-	if(str == "") {
-		return 0;
-	}
-	return parseFloat(str);
-}
-
-function stringToDate(str, pattern) {
-	var testYear  = str.substr(pattern.indexOf("yyyy"), 4);
-	var testMonth = str.substr(pattern.indexOf("MM"), 2);
-	var testDay   = str.substr(pattern.indexOf("dd"), 2);
-
-	var testDate = testYear + "/" + testMonth + "/" + testDay;
-
-	testDate = new Date(testDate);
-	return new Date(testDate);
-}
-
-function numberToString(number, pattern) {
-	return number.toString();
 }
