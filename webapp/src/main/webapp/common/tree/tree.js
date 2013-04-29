@@ -332,7 +332,228 @@ var Tree = function(element) {
 	this.element.isLoaded = true;
 
 	// 触发控件初始化完成事件
-	eventComponentReady.fire(createEventObject()); 
+	eventComponentReady.fire(createEventObject()); 	
+		
+	/*
+	 * 鼠标双击响应函数，触发自定义双击事件。
+	 */
+	this.element.ondblclick = function() {
+		var eventObj = window.event.srcElement;
+		var row = getRow(eventObj);
+		if(row instanceof Row) {
+			var treeNode = instanceTreeNode(row.node);
+		}
+		if( (treeNode instanceof TreeNode) && treeNode.isCanSelected() && (eventObj == row.label || eventObj == row.icon)) {	
+			// 触发双击事件
+			var eventObj = createEventObject();
+			eventObj.treeNode = treeNode;
+			eventNodeDoubleClick.fire(eventObj);
+		}		
+	}
+
+	/*
+	 * 	鼠标右键单击事件响应函数。
+	 *	如果点击的是文字连接，则激活该节点，同时触发右键单击事件。
+	 */
+	this.element.oncontextmenu = function() {
+		var eventObj = window.event.srcElement;
+		window.event.returnValue = false;
+		var row = getRow(eventObj);
+		if(row instanceof Row) {
+			var treeNode = instanceTreeNode(row.node);
+		}
+		if( treeNode instanceof TreeNode ) {
+			//设置节点为激活
+			if(treeNode.isCanSelected()) {
+				treeObj.setActiveNode(treeNode);
+			}
+
+			//触发右键激活节点事件
+			var eventObj = createEventObject();
+			eventObj.treeNode = treeNode;
+			eventObj.clientX = event.clientX;
+			eventObj.clientY = event.clientY;
+			eventNodeRightClick.fire(eventObj);
+
+			oThis.displayObj.reload();  
+		}
+	}
+
+	/*
+	 * 	鼠标单击事件响应函数
+	 *			如果点击的是选择状态图标，则改变选择状态，同时根据treeNodeSelectAndActive属性，确定是否同时激活该节点。
+	 *			如果点击的是伸缩状态图标，则打开或收缩当前节点的直系子节点。
+	 *			如果点击的是文字连接，则激活该节点，同时根据treeNodeSelectAndActive属性，确定是否同时改变节点选择状态。
+	 */
+	this.element.onclick = function() {
+		var eventObj = window.event.srcElement;
+		window.event.returnValue = false;
+		var row = getRow(eventObj);
+		if(row instanceof Row) {
+			var treeNode = instanceTreeNode(row.node);
+		}
+		if( treeNode && (treeNode instanceof TreeNode) ) {
+			if(eventObj == row.checkType) {		// 根据不同的treeType，改变相应的选择状态
+				treeNode.changeSelectedState(window.event.shiftKey);
+			}
+			else if(eventObj == row.folder) {
+				treeNode.changeFolderState();	//展开、收缩节点的直系子节点
+			}
+			else if(eventObj == row.label || eventObj == row.icon) {
+				if(treeObj.isTreeNodeToOpenOnClick()) {
+					// 只有当枝节点才允许执行
+					if(treeNode.node.hasChildNodes()) {					
+						treeNode.changeFolderState(); // 点击节点文字时，改变节点伸缩状态
+					}
+				}
+				treeNode.setActive(window.event.shiftKey); //激活节点
+			}
+			oThis.displayObj.reload();
+		}
+	}
+
+	/*
+	 * 鼠标移到元素上。
+	 */
+	this.element.onmouseover = function() {
+		var obj = window.event.srcElement;
+		var row = getRow(obj);
+		if( (row instanceof Row) && row.label == obj) {
+			row.setClassName(oThis.getStyleClass(row.node, _TREE_NODE_OVER_STYLE));;
+		}
+	}
+
+	/*
+	 * 鼠标离开元素时。
+	 */
+	this.element.onmouseout = function() {
+		var obj = window.event.srcElement;
+		var row = getRow(obj);
+		if( (row instanceof Row) && row.label == obj) {
+			row.setClassName(oThis.getStyleClass(row.node));
+		}	
+	}
+
+	/********************************************* 节点拖动相关事件 *********************************************/
+
+	/*
+	 * 开始拖动事件响应，设定拖动节点
+	 */
+	this.element.ondragstart = function() {
+		if( !oThis.isCanMoveNode() ) return;
+
+		var obj = window.event.srcElement;
+		var row = getRow(obj);
+		if( (row instanceof Row) && row.label == obj) {
+			var node = row.node;	
+			oThis.setMovedNode(node); //设定拖动节点
+			
+			var tempData = {};
+			tempData.moveTree = element;
+			tempData.movedNode = node;
+			tempData.movedNodeScrollTop = displayObj.getScrollTop() + getTop(obj);
+			tempData.movedRow = obj;
+			window._dataTransfer = tempData;
+
+			row.setClassName(_TREE_NODE_MOVED_STYLE);
+			window.event.dataTransfer.effectAllowed = "move";
+		}
+	}
+
+	/*
+	 * 拖动完成，触发自定义节点拖动事件
+	 */
+	this.element.ondrop = function() {
+		if(!oThis.isCanMoveNode()) return;
+		
+		stopScrollTree();
+		var obj = window.event.srcElement;
+		obj.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
+		obj.runtimeStyle.borderTop = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
+		
+		//触发自定义事件
+		var eObj = createEventObject();
+		eObj.movedTreeNode = instanceTreeNode(window._dataTransfer.movedNode);
+		eObj.toTreeNode    = instanceTreeNode(window._dataTransfer.toNode);
+		eObj.moveState = window._dataTransfer.moveState;
+		eObj.moveTree  = window._dataTransfer.moveTree; // 增加被拖动的节点所在树
+		eventNodeMoved.fire(eObj);
+	}
+
+	/*
+	 * 拖动结束，去除拖动时添加的样式
+	 */
+	this.element.ondragend = function() {
+		if(!oThis.isCanMoveNode()) return;
+		
+		stopScrollTree();
+		var obj = window.event.srcElement;
+		var row = getRow(obj);
+		if( (row instanceof Row) && obj == row.label) {
+			obj.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
+			obj.runtimeStyle.borderTop    = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
+			oThis.setMovedNode(null);
+			oThis.displayObj.reload();
+		}	
+	}
+
+	/*
+	 * 拖动时，鼠标进入节点，设定目标节点和拖动状态
+	 */
+	this.element.ondragenter = function() {
+		if(!oThis.isCanMoveNode() || window._dataTransfer == null) return;
+		
+		var obj = window.event.srcElement;	
+		startScrollTree(obj); //判断是否需要滚动树，如是则相应的滚动
+		
+		var row = getRow(obj);
+		if(row instanceof Row) {
+			var node = row.node;
+		}
+
+		// 拖动的不是文字链接，则无效
+		if(!(row instanceof Row) || obj != row.label) {	
+			return;
+		}
+		
+		//区分是否同一棵树
+		if( window._dataTransfer.moveTree == this ) {
+			if(node.parentNode != window._dataTransfer.movedNode.parentNode	// 不是兄弟节点无效
+				|| obj == window._dataTransfer.movedRow) {	// 目标节点相同无效
+				return;
+			}
+		}
+
+		window._dataTransfer.toNode = node;
+		if(displayObj.getScrollTop() + getTop(obj) > window._dataTransfer.movedNodeScrollTop) {
+			window._dataTransfer.moveState = 1;
+			obj.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_LINE_STYLE;
+		} else {
+			window._dataTransfer.moveState = -1;
+			obj.runtimeStyle.borderTop = _TREE_NODE_MOVE_TO_LINE_STYLE;
+		}
+		window.event.returnValue = false;
+		window.event.dataTransfer.dropEffect = "move";
+	}
+
+	/*
+	 * 拖动时，鼠标离开节点
+	 */
+	this.element.ondragleave = function() {
+		if(!oThis.isCanMoveNode()) return;
+		
+		stopScrollTree(obj);
+		var obj = window.event.srcElement;
+		var row = getRow(obj);
+		if( (row instanceof Row) && obj != row.label) {
+			obj.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
+			obj.runtimeStyle.borderTop = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
+			window.event.dataTransfer.dropEffect = "none";
+		}	
+	}
+
+	/********************************************* 节点拖动结束 *********************************************/
+
 	
 	
 	/*
