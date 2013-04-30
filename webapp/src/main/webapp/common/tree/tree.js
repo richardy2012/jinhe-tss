@@ -1,27 +1,24 @@
-<!--
-	控件名称：单选or多选树
-
-	功能说明：	1、单选or多选树的显示，重载
+/*
+	控件名称: 单选or多选树
+	功能说明:	1、单选or多选树的显示，重载
 				2、枝节点的打开关闭（响应鼠标事件、接口对象提供方法）
 				3、兄弟节点间的移动位置（响应鼠标事件、接口对象提供方法）
 				4、节点的增、删、改
 				5、节点选择状态的更改（响应鼠标事件、接口对象提供方法），参数控制是否和激活节点相关联
 				6、返回选中节点（参数控制是否包括半选节点），返回对象或数组，提供方法转换成xml
 				7、TreeNode接口对象。
- -->
-/*
- * 树类型
  */
+ 
+/* 树类型 */
 var _TREE_TYPE_SINGLE = "single";
 var _TREE_TYPE_MULTI  = "multi";
 var _TREE_TYPE_MENU   = "menu";
-/*
- * 树控件属性名称
- */
+
+/* 树控件属性名称 */
 var _TREE_BASE_URL = "baseurl";
 var _TREE_BASE_URL_DEFAULT_VALUE = "common/Tree/";	// 默认控件所在目录
 
-var _TREE_TREE_TYPE = "treeType";         // 树的类型 :value: multi/single
+var _TREE_TREE_TYPE = "treeType";         // 树的类型 : multi / single
 var _TREE_SELECTED_IDS = "selectedIds";   // 选中节点id字符串
 var _TREE_CAN_MOVE_NODE = "canMoveNode";  // 是否可以移动树节点，默认为false
 var _TREE_SELECTED_AND_ACTIVE = "treeNodeSelectAndActive"; 	// 选中、激活节点是否同步(单选树默认为true，多选树默认为false)
@@ -47,9 +44,7 @@ var _TREE_NODE = "treeNode";        /* 节点名称 */
 var _TREE_ROOT_NODE = "actionSet";  /* 根节点名称 */
 var _TREE_ROOT_NODE_ID = "_rootId"; /* “全部”节点的ID值  */
 
-/*
- * 选中状态图标地址（控件所在目录为根目录，起始不能有“/”）
- */
+/* 选中状态图标地址（控件所在目录为根目录，起始不能有“/” */
 var _MULTI_NO_CHECKED_IMAGE   = "images/no_checked.gif";
 var _MULTI_CHECKED_IMAGE      = "images/checked.gif";
 var _MULTI_HALF_CHECKED_IMAGE = "images/half_checked.gif";
@@ -57,9 +52,8 @@ var _SINGLE_NO_SELECTED_IMAGE = "images/no_selected.gif";
 var _SINGLE_SELECTED_IMAGE    = "images/selected.gif";
 var _MULTI_CAN_NOT_CHECK_IMAGE  = "images/checkbox_disabled.gif";
 var _RADIO_CAN_NOT_SELECT_IMAGE = "images/radio_disabled.gif";
-/*
- * 伸缩状态图标地址
- */
+
+/* 伸缩状态图标地址 */
 var _TREE_NODE_CONTRACT_IMAGE = "images/contract.gif";
 var _TREE_NODE_EXPAND_IMAGE   = "images/expand.gif";
 var _TREE_NODE_LEAF_IMAGE     = "images/leaf.gif";
@@ -67,9 +61,7 @@ var _TREE_ROOT_CONTRACT_IMAGE = "images/root_contract.gif";
 var _TREE_ROOT_EXPAND_IMAGE = "images/root_expand.gif";
 var _TREE_ROOT_NODE_LEAF_IMAGE = "images/root_leaf.gif";
 
-/*
- * Tree相关样式名称
- */
+/* Tree相关样式名称 */
 var _TREE_WAIT_LOAD_DATA_MSG = '<span style="margin:5 0 0 8;font-size:12px;color:#666">正在加载数据...</span>';
 var _TREE_NODE_MOVE_TO_LINE_STYLE = "1px solid #333399"; // 目标节点划线样式
 var _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE = "1px solid #ffffff"; // 目标节点隐藏划线样式
@@ -100,240 +92,365 @@ var _TREE_SCROLL_REPEAT_DELAY_TIME = 300; // 拖动节点到最上、下行时�
 var _TREE_NODE_ICON_WIDTH = 16;
 var _TREE_NODE_ICON_HEIGHT = 16;
 var _TREE_NODE_ICON_ATTRIBUTE = "icon"; // 节点自定义图标属性名
- 
 
-var SingleCheckTree = function(element) {
-	Tree.call(this, element);
-	
-	this.setAttribute(_TREE_TREE_TYPE, _TREE_TYPE_SINGLE);
-	this.setAttribute(_TREE_SELECTED_AND_ACTIVE, getValue(_TREE_SELECTED_AND_ACTIVE, "true"));
-		
-	/*
-	 * 获取节点的下一选中状态（单选）
-	 */
-	this.getNextState = function() {
-		return 1;
-	};
-	
-	/*
-	 * 根据节点选择状态，获取图标地址（单选树）
-	 */
-	this.getCheckTypeImageSrc = function(node) {
-		var checkType   = node.getAttribute(_TREE_NODE_CHECKTYPE);
-		var canSelected = node.getAttribute(_TREE_NODE_CANSELECTED);
-		if(canSelected == 0) {
-			return this._baseUrl + _RADIO_CAN_NOT_SELECT_IMAGE;
-		}
-		if(checkType == 1) {
-			return this._baseUrl + _SINGLE_SELECTED_IMAGE;
-		}
-		return this._baseUrl + _SINGLE_NO_SELECTED_IMAGE;
-	};
-
-	/*
-	 * 清除特定节点以外的其他节点的选中状态
-	 */
-	this.refreshStates = function(treeNode) {
-		var childNodes = this.getXmlRoot().selectNodes(".//treeNode[@checktype='1']");
-		for(var i = 0, len = childNodes.length; i < len; i++) {
-			if(childNodes[i] == treeNode.getXmlNode()) {
-				continue;
-			}
-			setNodeState(childNodes[i], "0");
-		}
-	};
-	
-	/*
-	 * 获取选中节点的TreeNode对象（单选树）
-	 */
-	this.getSelectedTreeNode = function() {
-		var node = this.getXmlRoot().selectSingleNode(".//treeNode[@checktype='1']");
-		return instanceTreeNode(node);
-	};
-	
-	/*
-	 * 获取选中节点的Xml对象（单选树）
-	 */
-	this.getSelectedXmlNode = function() {
-		return this.getXmlRoot().selectSingleNode(".//treeNode[@checktype='1']");
-	};
-	
-}
-
-
-var MultiCheckTree = function(element) {
-	Tree.call(this, element);
-	
-	this.setAttribute(_TREE_TREE_TYPE, _TREE_TYPE_MULTI);
-	this.setAttribute(_TREE_SELECTED_AND_ACTIVE, getValue(_TREE_SELECTED_AND_ACTIVE, "false"));
-
-	/*
-	 * 获取节点的下一选中状态（多选1、2 -> 0; 0 -> 1）
-	 */
-	this.getNextState = function () {
-		if(/^(2|1)$/.test(this.getSelectedState())) {	// 半选、全选时，置为不选
-			return 0;
-		}	
-		return 1;	// 不选时，置为全选
-	};		
-	
-	/*
-	 * 根据节点选择状态，获取图标地址（多选树）
-	 */
-	this.getCheckTypeImageSrc = function(node) {
-		var checkType   = node.getAttribute(_TREE_NODE_CHECKTYPE);
-		var canSelected = node.getAttribute(_TREE_NODE_CANSELECTED);
-		if(canSelected == 0) {
-			return this._baseUrl + _MULTI_CAN_NOT_CHECK_IMAGE;
-		}
-		if(checkType == 1) {
-			return this._baseUrl + _MULTI_CHECKED_IMAGE;
-		}
-		if(checkType == 2) {
-			return this._baseUrl + _MULTI_HALF_CHECKED_IMAGE;
-		}
-		return this._baseUrl + _MULTI_NO_CHECKED_IMAGE;
-	};
-	
-	/*
-	 * 刷新相关节点的选中状态（多选树），同时根据参数决定是否激活当前节点
-	 * 参数：	treeNode	TreeNode节点对象
-	 *			noChildren	选中节点时，不包含子节点
-	 */
-	this.refreshStates = function (treeNode, noChildren) {
-		if (this.getAttribute(_TREE_JUST_SELECT_SELF) == "true") {
-			return;
-		}
-		refreshParentNodeState(treeNode.getXmlNode());
-
-		if(noChildren && treeNode.getSelectedState() == 2) {
-			return;
-		}
-		refreshChildrenNodeState(treeNode.getXmlNode());
-	}
-	
-	/*
-	 * 获取选中节点的TreeNode对象数组（多选树）
-	 * 参数：	includeHalfChecked	是否包含半选节点
-	 * 返回值：	TreeNode对象数组，数组对象还提供toElement方法，将数组直接转换成xml字符串。
-	 */
-	this.getSelectedTreeNode = function (includeHalfChecked) {	
-		var treeNodeArray = this.getSelectedXmlNode(includeHalfChecked);			
-		for(var i = 0; i < treeNodeArray.length; i++) {
-			treeNodeArray[i] = instanceTreeNode(treeNodeArray[i]);
-		}
-			
-		return treeNodeArray;
-	}
-	
-	/*
-	 * 获取选中节点的Xml对象数组（多选树）
-	 * 参数：	includeHalfChecked	是否包含半选节点
-	 * 返回值：	xmlNode对象数组，数组对象还提供toElement方法，将数组直接转换成xml字符串。
-	 */
-	this.getSelectedXmlNode  = function (includeHalfChecked) {	
-		var treeNodes;
-		if(includeHalfChecked) { // 包括半选状态
-			treeNodes = this.getXmlRoot().selectNodes(".//treeNode[@checktype='1' or @checktype='2']");
-		} else { // 不包括半选状态
-			treeNodes = this.getXmlRoot().selectNodes(".//treeNode[@checktype='1']");
-		}
-		
-		var treeNodeArray = new Array();
-		for(var i = 0; i < treeNodes.length; i++) {
-			treeNodeArray[i] = treeNodes[i];
-		}
-		try{
-			treeNodeArray.rootNode = this.getXmlRoot().cloneNode(false); // 获取actionSet节点
-		} catch(e) {
-			throw(e);
-		}
-		treeNodeArray.includeHalfChecked = includeHalfChecked;
-		
-		/* 
-		 * 给数组提供toElement方法，根据是否包括半选状态，分别以不同的方式返回xml节点。
-		 * 如果不包括半选状态的节点，生成的xml将所有TreeNode都放到根节点actionSet节点下；		 
-		 * 否则将给出包括全选、半选的所有节点，并按原有的节点层次关系给出xml字符串。
-		 */
-		treeNodeArray.toElement = function() {
-			for(var i = 0; i < this.length; i++) {				
-				var xmlNode = (this[i] instanceof TreeNode) ? this[i].getXmlNode() : this[i];
-				var parentNode = this.includeHalfChecked ? xmlNode.parentNode : this.rootNode;
-				parentNode.appendChild(xmlNode.cloneNode(false));
-			}
-			return this.rootNode;
-		};
-		
-		return treeNodeArray;
-	}
-}
-
-
-/*
- * 初始化树对象
- */
-function instanceTree(element) {
-	
-	var treeObj;
-	
-	var _treeType = getValue(_TREE_TREE_TYPE, _TREE_TYPE_SINGLE);
-	if(_treeType == _TREE_TYPE_MULTI) {
-		treeObj = new Tree(element)
-	} 
-	else {
-		treeObj = new Tree(element)
-	}
-	
-}
-
-
- 
 /*
  * 对象名称：Tree	
  */
 var Tree = function(element) {	
-
-	var _baseUrl = getValue(_TREE_BASE_URL, _TREE_BASE_URL_DEFAULT_VALUE);
-	var _treeType = getValue(_TREE_TREE_TYPE, _TREE_TYPE_SINGLE);
-	var _selectedIds = getValue(_TREE_SELECTED_IDS);
-	var _canMoveNode = getValue(_TREE_CAN_MOVE_NODE, "false");
-	var _justSelectSelf = getValue(_TREE_JUST_SELECT_SELF, "false");
-	var _focusNewNode = getValue(_TREE_FOCUS_NEW_TREE_NODE, "true");
-	var _defaultOpen = getValue(_TREE_DEFAULT_OPEN, "true");
-	var _defaultActive = getValue(_TREE_DEFAULT_ACTIVE, "none");
-	
-	var _treeNodeSelectAndActive = getValue(_TREE_SELECTED_AND_ACTIVE, "false");
-	var _treeNodeToOpenOnClick = getValue(_TREE_OPEN_WITH_CLICK, "false");
-	var _allCheckTypeDisabled = getValue(_TREE_DISABLED_ALL_CHECKTYPE, "false");
-	
-	
-	var _activedNode ;
-	var _movedNode;
+	var _baseUrl     = eval("element." + _TREE_BASE_URL) || _TREE_BASE_URL_DEFAULT_VALUE;
+	var _treeType    = eval("element." + _TREE_TREE_TYPE) ||  _TREE_TYPE_SINGLE;
+	var _selectedIds = eval("element." + _TREE_SELECTED_IDS);
+	var _canMoveNode = eval("element." + _TREE_CAN_MOVE_NODE) || "false";
+	var _justSelectSelf = eval("element." + _TREE_JUST_SELECT_SELF) || "false";
+	var _focusNewNode   = eval("element." + _TREE_FOCUS_NEW_TREE_NODE) || "true";
+	var _defaultOpen    = eval("element." + _TREE_DEFAULT_OPEN) || "true";
+	var _treeNodeSelectAndActive = eval("element." + _TREE_SELECTED_AND_ACTIVE) || "false";
+	var _treeNodeToOpenOnClick = eval("element." + _TREE_OPEN_WITH_CLICK) || "false";
+	var _allCheckTypeDisabled = eval("element." + _TREE_DISABLED_ALL_CHECKTYPE) || "false";
+		
 	var _treeXMLDom;
-	var _scrollTimer;
-	var _findedNode;
+	var activedNode;
 	
 	this.element = element;
-	this.element.className = _TREE_STYLE;
-	
-	this.displayObj = new Display(this);
-	this.searchObj  = new Search(this);
-	
-	this.loadData();
-	this.setNodesChecked();
-	this.setDefaultActive();
-	displayObj.resetTotalTreeNodes();
-	displayObj.reload();
-	
-	// 触发载入完成事件
-	eventTreeReady.fire(createEventObject()); 
-	
-	//增加isLoaded属性表示是否初始化完成
-	this.element.isLoaded = true;
-
-	// 触发控件初始化完成事件
-	eventComponentReady.fire(createEventObject()); 	
+	this.element.className = _TREE_STYLE;	
 		
+	this.init = function() {
+		this.displayObj = new Display(this);
+		this.searchObj  = new Search(this);
+		
+		this.loadData();
+		this.setNodesChecked();
+		this.setDefaultActive();
+		this.reload();
+		
+		eventTreeReady.fire(createEventObject()); // 触发载入完成事件		
+		this.element.isLoaded = true; //增加isLoaded属性表示是否初始化完成		
+		eventComponentReady.fire(createEventObject()); 	// 触发控件初始化完成事件
+	}	
+	
+	/*
+	 * 设定控件的数据，数据来源为xml字符串
+	 */
+	this.loadData = function (dataXML) {
+		this._treeXMLDom = loadXmlToNode(dataXML);
+		
+		if(_treeXMLDom && _defaultOpen == "true") {			
+			// 获取定义的默认打开的节点
+			var openedNodeId = _treeXMLDom.getAttribute(_DEFAULT_OPENED_TREE_NODE_ID) || "noDefaultOpened";	
+			var openedNode = _treeXMLDom.selectSingleNode(".//treeNode[@id='" + openedNodeId + "']");;
+			if( openedNode == null) {
+				openedNode = _treeXMLDom.selectSingleNode(".//treeNode[@" + _TREE_NODE_CANSELECTED + "='1' or not(@" + _TREE_NODE_CANSELECTED + ")]");
+			}
+		
+			var defaultOpenedNode = (openedNode ? openedNode : _treeXMLDom.firstChild);  // 默认打开第一个子节点
+			openNode(defaultOpenedNode);
+		}
+	}
+	
+	this.isMenu = function() {
+		return this._treeType == _TREE_TYPE_MENU;
+	}
+
+	/*
+	 * 获取默认选择状态数据：xml字符串
+	 * 参数：	selectedDataXML	 节点选中状态的数据源
+	 *			clearOldSelected 是否清除原先选中节点
+	 */
+	this.setNodesChecked = function (selectedDataXML, clearOldSelected) {
+		var checkedNodeDom = loadXmlToNode(selectedDataXML);
+		if(_treeXMLDom == null || checkedNodeDom == null) {
+			return;
+		}
+		
+		
+		if(_treeType == _TREE_TYPE_SINGLE) {	// 单选树
+			var checkedNode = checkedNodeDom.selectSingleNode("//treeNode[@checktype='1']");
+			if(checkedNode == null) {
+				return;
+			}
+			var fNodeId = checkedNode.getAttribute(_TREE_NODE_ID);
+			var fNode = _treeXMLDom.selectSingleNode("//treeNode[@id='" + fNodeId + "']");
+			var treeNode = instanceTreeNode(fNode);
+			if( treeNode ) {
+				treeNode.changeSelectedState(false, true);
+				treeNode.focus();
+			}
+		}
+		else {
+			if(clearOldSelected) {
+				clearSelected(_treeXMLDom);
+			}
+
+			// 选节点时是否考虑父子关系
+			if (treeObj.getAttribute(_TREE_JUST_SELECT_SELF) == "true") {
+				var checkedNodes = checkedNodeDom.selectNodes("//treeNode[@checktype='1']");
+				for(var i = 0; i < checkedNodes.length; i++) {
+					var fNodeId = checkedNodes[i].getAttribute(_TREE_NODE_ID);
+					var fNode = _treeXMLDom.selectSingleNode("//treeNode[@id='" + fNodeId + "']");
+					setNodeState(fNode, 1);
+					openNode(fNode);
+				}
+			} 
+			else { 
+				// 子节点(包括自己)被选中，且父节点未被选中的节点
+				var checkedNodes = checkedNodeDom.selectNodes("//treeNode[@checktype='1' " 
+												+ " && ..[not(@checktype='1') || not(@checktype)]]");
+				for(var i = 0; i < checkedNodes.length; i++) {
+					var fNodeId = checkedNodes[i].getAttribute(_TREE_NODE_ID);
+					var fNode = _treeXMLDom.selectSingleNode("//treeNode[@id='" + fNodeId + "']");
+					if( fNode ) {
+						setNodeState(fNode, 1);
+						refreshParentNodeState(fNode);
+						refreshChildrenNodeState(fNode);
+					}
+				}
+			}
+		}
+	}
+	
+	/*
+	 * 获取默认选择状态数据：id字符串，多id之间用","隔开
+	 * 参数：	selectedIds	节点选中状态的Id字符串
+	 *			clearOldSelected	是否清除原先选中节点
+	 *			isDependParent 下溯，设置全部子节点为选中
+	 */
+	this.setNodesCheckedByNodeIDs = function (selectedIds, clearOldSelected, isDependParent) {
+		if(isNullOrEmpty(selectedIds)) {
+			selectedIds = _selectedIds;
+		}
+		if(selectedIds == null) return;
+		
+		if(_treeType == _TREE_TYPE_SINGLE) { // 单选树
+			eval("var selectedIds = '" + selectedIds + "';");
+			var node = _treeXMLDom.selectSingleNode("//treeNode[@id='" + selectedIds + "']");
+			var treeNode = instanceTreeNode(node);
+			if( treeNode ) {
+				treeNode.setSelectedState(1, false, true);
+				treeNode.focus();
+			}
+		} else {
+			if(clearOldSelected) {
+				clearSelected(_treeXMLDom);
+			}
+		 
+			var checkedNodeIds = selectedIds.split(',');
+			if (_justSelectSelf == "true") {
+				
+				for(var i = 0; i < checkedNodeIds.length; i++) {
+					var fNode = _treeXMLDom.selectSingleNode("//treeNode[@id='" + checkedNodeIds[i] + "']");
+					if( fNode ) {
+						setNodeState(fNode, 1);
+						openNode(fNode);
+					}
+				}
+			} 
+			else {
+				for(var i = 0; i < checkedNodeIds.length; i++) {
+					var fNode = _treeXMLDom.selectSingleNode("//treeNode[@id='" + checkedNodeIds[i] + "']");
+					if( fNode ) {
+						setNodeState(fNode, 1);
+			 
+						if( isDependParent ) {
+							var subnodes = fNode.selectNodes(".//treeNode");
+							for(var j = 0; j < subnodes.length; j++) {
+								setNodeState(subnodes[j], 1);
+							}
+						}
+					}
+				}
+				
+				// 把包含选中节点的所有父节点为选中（.//treeNode 表示 满足and之前条件的node的子节点）
+				var xpath = "//treeNode[ not(@checktype and @checktype = '1') and .//treeNode[@checktype = '1'] ]";
+				var nodes = _treeXMLDom.selectNodes(xpath);
+				for(var i = 0; i < nodes.length; i++) {
+					setNodeState(nodes[i], 1);
+				}
+				
+				// 把所有全选节点中包含未全选节点的节改为半选
+				xpath = "//treeNode[ @checktype = '1' and .//treeNode[not(@checktype = '1') || not(@checktype)] ]";
+				nodes = _treeXMLDom.selectNodes(xpath);
+				for(var i = 0; i < nodes.length; i++) {
+					setNodeState(nodes[i], 2);
+				}
+			}
+		}
+	}
+	
+	/*
+	 * 获取数据的根节点
+	 */
+	this.getXmlRoot = function () {
+		return this._treeXMLDom || loadXmlToNode("<actionSet/>");
+	}
+	/*
+	 * 设定当前高亮（激活）的节点
+	 */
+	this.setActiveNode = function (treeNode) {
+	    activedNode = treeNode.getXmlNode();
+	}
+	/*
+	 * 根据属性配置，点击节点文字标签时是否改变节点选择状态
+	 */
+	this.isSelectByActived = function () {
+		return _treeNodeSelectAndActive == "true";
+	}
+
+	/*
+	 * 根据属性配置，点击节点文字标签时是否改变节点伸缩状态
+	 */
+	this.isTreeNodeToOpenOnClick = function () {
+		return _treeNodeToOpenOnClick == "true";
+	}
+
+	/*
+	 * 设定对象属性值
+	 */
+	this.setAttribute = function (name, value) {
+	    switch (name) {
+	        case _TREE_BASE_URL:
+				_baseUrl = value;
+	            break;
+	        case _TREE_TREE_TYPE:
+				_treeType = value;
+	            break;
+	        case _TREE_CAN_MOVE_NODE:
+				_canMoveNode = value;
+	            break;
+	        case _TREE_SELECTED_AND_ACTIVE:
+				_treeNodeSelectAndActive = value;
+	            break;
+	        case _TREE_OPEN_WITH_CLICK:
+				_treeNodeToOpenOnClick = value;
+	            break;
+	        case _TREE_DISABLED_ALL_CHECKTYPE:
+				_allCheckTypeDisabled = value;
+	            break;
+	        case _TREE_JUST_SELECT_SELF:
+				_justSelectSelf = value;
+	            break;
+	        default :
+				alert("Tree对象：没有属性[" + name + "]!");
+	    }
+	}
+	/*
+	 * 获取对象属性
+	 */
+	this.getAttribute = function (name) {
+	    switch (name) {
+	        case _TREE_BASE_URL:
+				return _baseUrl;
+	        case _TREE_TREE_TYPE:
+				return _treeType;
+	        case _TREE_CAN_MOVE_NODE:
+				return _canMoveNode;
+	        case _TREE_SELECTED_AND_ACTIVE:
+				return _treeNodeSelectAndActive;
+	        case _TREE_OPEN_WITH_CLICK:
+				return _treeNodeToOpenOnClick;
+	        case _TREE_DISABLED_ALL_CHECKTYPE:
+				return _allCheckTypeDisabled;
+	        case _TREE_JUST_SELECT_SELF:
+				return _justSelectSelf;
+	        default :
+				alert("Tree对象：没有属性[" + name + "]!");
+	    }
+	}
+	/*
+	 * 根据节点不同的checkType属性值获取选择状态图标的地址
+	 */
+	this.getCheckTypeImageSrc = function (node) {
+	    alert("Tree对象：此方法[getCheckTypeImageSrc]尚未初始化！");
+	}
+	/*
+	 * 判断节点是否高亮（激活）
+	 */
+	this.isActiveNode = function (node) {
+	    return activedNode == node;
+	}
+	/*
+	 * 判断节点是否为被拖动的节点
+	 */
+	this.isMovedNode = function (node) {
+	    return this.movedNode == node;
+	}
+	/*
+	 * 判断节点是否为查选结果节点
+	 */
+	this.isFindedNode = function (node) {
+	    return this.findedNode == node;
+	}
+	/*
+	 * 获取节点文字链接的样式名
+	 */
+	this.getStyleClass = function (node, defaultStyle) {
+		if(this.isMovedNode(node)) {
+			return _TREE_NODE_MOVED_STYLE;
+		} else if(this.isActiveNode(node)) {
+			return _TREE_NODE_SELECTED_STYLE;
+		} else if(this.isFindedNode(node)) {
+			return _TREE_NODE_FINDED_STYLE;
+		}
+		return defaultStyle;
+	}
+	
+	/*
+	 * 节点被选中时是否需要激活（高亮）节点
+	 */
+	this.isActiveBySelected = function (state) {
+		return _treeNodeSelectAndActive == "true" && state == 1;
+	}
+	/*
+	 * 设定被拖动的节点
+	 */
+	this.setMovedNode = function (node) {
+	    this.movedNode = node;
+	}
+
+	/*
+	 * 树是否可以移动节点
+	 */
+	this.isCanMoveNode = function () {
+	    return _canMoveNode == "true";
+	}
+	
+	/*
+	 * 树是否禁止改变所有的选择状态
+	 */
+	this.isAllDisabledCheckType = function () {
+	    return _allCheckTypeDisabled == "true";
+	}
+
+	/*
+	 * 禁止所有节点改变选中状态
+	 */
+	this.disable = function () {
+		_allCheckTypeDisabled = "true";
+	}
+	/*
+	 * 允许没有被特殊指定不能选中的节点改变选中状态
+	 */
+	this.enable = function () {
+		_allCheckTypeDisabled = "false";
+	}
+	/*
+	 * 新增节点后，是否需要将焦点移到新节点上
+	 * 参数：
+	 * 返回值：	true	需要移到新节点上
+	 *			false	不需要移到新节点上
+	 */
+	this.isFocusNewTreeNode = function() {
+		return _focusNewNode == "true";
+	}
+
+	/*
+	 * 设定查询结果中的当前节点为特殊高亮显示
+	 */
+	this.setFindedNode = function (node) {
+	    this.findedNode = node;
+	}
+	
+	
+	/********************************************* 以下定义树事件 *********************************************/
 	/*
 	 * 鼠标双击响应函数，触发自定义双击事件。
 	 */
@@ -553,329 +670,8 @@ var Tree = function(element) {
 	}
 
 	/********************************************* 节点拖动结束 *********************************************/
-
 	
-	
-	/*
-	 * 设定控件的数据，数据来源为xml字符串
-	 */
-	this.loadData = function (dataXML) {
-		_treeXMLDom = loadXmlToNode(dataXML);
-		
-		if(_treeXMLDom && _defaultOpen == "true") {			
-			// 获取定义的默认打开的节点
-			var openedNodeId = _treeXMLDom.getAttribute(_DEFAULT_OPENED_TREE_NODE_ID) || "noDefaultOpened";	
-			var openedNode = _treeXMLDom.selectSingleNode(".//treeNode[@id='" + openedNodeId + "']");;
-			if( openedNode == null) {
-				openedNode = _treeXMLDom.selectSingleNode(".//treeNode[@" + _TREE_NODE_CANSELECTED + "='1' or not(@" + _TREE_NODE_CANSELECTED + ")]");
-			}
-		
-			var defaultOpenedNode = (openedNode ? openedNode : _treeXMLDom.firstChild);  // 默认打开第一个子节点
-			openNode(defaultOpenedNode);
-		}
-	}
-	
-	this.isMenu = function() {
-		return this._treeType == _TREE_TYPE_MENU;
-	}
-
-	/*
-	 * 获取默认选择状态数据：xml字符串
-	 * 参数：	selectedDataXML	 节点选中状态的数据源
-	 *			clearOldSelected 是否清除原先选中节点
-	 */
-	this.setNodesChecked = function (selectedDataXML, clearOldSelected) {
-		var checkedNodeDom = loadXmlToNode(selectedDataXML);
-		if(_treeXMLDom == null || checkedNodeDom == null) {
-			return;
-		}
-		
-		
-		if(_treeType == _TREE_TYPE_SINGLE) {	// 单选树
-			var checkedNode = checkedNodeDom.selectSingleNode("//treeNode[@checktype='1']");
-			if(checkedNode == null) {
-				return;
-			}
-			var fNodeId = checkedNode.getAttribute(_TREE_NODE_ID);
-			var fNode = _treeXMLDom.selectSingleNode("//treeNode[@id='" + fNodeId + "']");
-			var treeNode = instanceTreeNode(fNode);
-			if( treeNode ) {
-				treeNode.changeSelectedState(false, true);
-				treeNode.focus();
-			}
-		}
-		else {
-			if(clearOldSelected) {
-				clearSelected(_treeXMLDom);
-			}
-
-			// 选节点时是否考虑父子关系
-			if (treeObj.getAttribute(_TREE_JUST_SELECT_SELF) == "true") {
-				var checkedNodes = checkedNodeDom.selectNodes("//treeNode[@checktype='1']");
-				for(var i = 0; i < checkedNodes.length; i++) {
-					var fNodeId = checkedNodes[i].getAttribute(_TREE_NODE_ID);
-					var fNode = _treeXMLDom.selectSingleNode("//treeNode[@id='" + fNodeId + "']");
-					setNodeState(fNode, 1);
-					openNode(fNode);
-				}
-			} 
-			else { 
-				// 子节点(包括自己)被选中，且父节点未被选中的节点
-				var checkedNodes = checkedNodeDom.selectNodes("//treeNode[@checktype='1' " 
-												+ " && ..[not(@checktype='1') || not(@checktype)]]");
-				for(var i = 0; i < checkedNodes.length; i++) {
-					var fNodeId = checkedNodes[i].getAttribute(_TREE_NODE_ID);
-					var fNode = _treeXMLDom.selectSingleNode("//treeNode[@id='" + fNodeId + "']");
-					if( fNode ) {
-						setNodeState(fNode, 1);
-						refreshParentNodeState(fNode);
-						refreshChildrenNodeState(fNode);
-					}
-				}
-			}
-		}
-	}
-	
-	/*
-	 * 获取默认选择状态数据：id字符串，多id之间用","隔开
-	 * 参数：	selectedIds	节点选中状态的Id字符串
-	 *			clearOldSelected	是否清除原先选中节点
-	 *			isDependParent 下溯，设置全部子节点为选中
-	 */
-	this.setNodesCheckedByNodeIDs = function (selectedIds, clearOldSelected, isDependParent) {
-		if(isNullOrEmpty(selectedIds)) {
-			selectedIds = _selectedIds;
-		}
-		if(selectedIds == null) return;
-		
-		if(_treeType == _TREE_TYPE_SINGLE) { // 单选树
-			eval("var selectedIds = '" + selectedIds + "';");
-			var node = _treeXMLDom.selectSingleNode("//treeNode[@id='" + selectedIds + "']");
-			var treeNode = instanceTreeNode(node);
-			if( treeNode ) {
-				treeNode.setSelectedState(1, false, true);
-				treeNode.focus();
-			}
-		} else {
-			if(clearOldSelected) {
-				clearSelected(_treeXMLDom);
-			}
-		 
-			var checkedNodeIds = selectedIds.split(',');
-			if (_justSelectSelf == "true") {
-				
-				for(var i = 0; i < checkedNodeIds.length; i++) {
-					var fNode = _treeXMLDom.selectSingleNode("//treeNode[@id='" + checkedNodeIds[i] + "']");
-					if( fNode ) {
-						setNodeState(fNode, 1);
-						openNode(fNode);
-					}
-				}
-			} 
-			else {
-				for(var i = 0; i < checkedNodeIds.length; i++) {
-					var fNode = _treeXMLDom.selectSingleNode("//treeNode[@id='" + checkedNodeIds[i] + "']");
-					if( fNode ) {
-						setNodeState(fNode, 1);
-			 
-						if( isDependParent ) {
-							var subnodes = fNode.selectNodes(".//treeNode");
-							for(var j = 0; j < subnodes.length; j++) {
-								setNodeState(subnodes[j], 1);
-							}
-						}
-					}
-				}
-				
-				// 把包含选中节点的所有父节点为选中（.//treeNode 表示 满足and之前条件的node的子节点）
-				var xpath = "//treeNode[ not(@checktype and @checktype = '1') and .//treeNode[@checktype = '1'] ]";
-				var nodes = _treeXMLDom.selectNodes(xpath);
-				for(var i = 0; i < nodes.length; i++) {
-					setNodeState(nodes[i], 1);
-				}
-				
-				// 把所有全选节点中包含未全选节点的节改为半选
-				xpath = "//treeNode[ @checktype = '1' and .//treeNode[not(@checktype = '1') || not(@checktype)] ]";
-				nodes = _treeXMLDom.selectNodes(xpath);
-				for(var i = 0; i < nodes.length; i++) {
-					setNodeState(nodes[i], 2);
-				}
-			}
-		}
-	}
-	
-	/*
-	 * 获取数据的根节点
-	 */
-	this.getXmlRoot = function () {
-		return _treeXMLDom || loadXmlToNode("<actionSet/>");
-	}
-	/*
-	 * 设定当前高亮（激活）的节点
-	 */
-	this.setActiveNode = function (treeNode) {
-	    _activedNode = treeNode.getXmlNode();
-	}
-	/*
-	 * 根据属性配置，点击节点文字标签时是否改变节点选择状态
-	 */
-	this.isSelectByActived = function () {
-		return _treeNodeSelectAndActive == "true";
-	}
-
-	/*
-	 * 根据属性配置，点击节点文字标签时是否改变节点伸缩状态
-	 */
-	this.isTreeNodeToOpenOnClick = function () {
-		return _treeNodeToOpenOnClick == "true";
-	}
-
-	/*
-	 * 设定对象属性值
-	 */
-	this.setAttribute = function (name, value) {
-	    switch (name) {
-	        case _TREE_BASE_URL:
-				_baseUrl = value;
-	            break;
-	        case _TREE_TREE_TYPE:
-				_treeType = value;
-	            break;
-	        case _TREE_CAN_MOVE_NODE:
-				_canMoveNode = value;
-	            break;
-	        case _TREE_SELECTED_AND_ACTIVE:
-				_treeNodeSelectAndActive = value;
-	            break;
-	        case _TREE_OPEN_WITH_CLICK:
-				_treeNodeToOpenOnClick = value;
-	            break;
-	        case _TREE_DISABLED_ALL_CHECKTYPE:
-				_allCheckTypeDisabled = value;
-	            break;
-	        case _TREE_JUST_SELECT_SELF:
-				_justSelectSelf = value;
-	            break;
-	        default :
-				alert("Tree对象：没有属性[" + name + "]!");
-	    }
-	}
-	/*
-	 * 获取对象属性
-	 */
-	this.getAttribute = function (name) {
-	    switch (name) {
-	        case _TREE_BASE_URL:
-				return _baseUrl;
-	        case _TREE_TREE_TYPE:
-				return _treeType;
-	        case _TREE_CAN_MOVE_NODE:
-				return _canMoveNode;
-	        case _TREE_SELECTED_AND_ACTIVE:
-				return _treeNodeSelectAndActive;
-	        case _TREE_OPEN_WITH_CLICK:
-				return _treeNodeToOpenOnClick;
-	        case _TREE_DISABLED_ALL_CHECKTYPE:
-				return _allCheckTypeDisabled;
-	        case _TREE_JUST_SELECT_SELF:
-				return _justSelectSelf;
-	        default :
-				alert("Tree对象：没有属性[" + name + "]!");
-	    }
-	}
-	/*
-	 * 根据节点不同的checkType属性值获取选择状态图标的地址
-	 */
-	this.getCheckTypeImageSrc = function (node) {
-	    alert("Tree对象：此方法[getCheckTypeImageSrc]尚未初始化！");
-	}
-	/*
-	 * 判断节点是否高亮（激活）
-	 */
-	this.isActiveNode = function (node) {
-	    return _activedNode == node;
-	}
-	/*
-	 * 判断节点是否为被拖动的节点
-	 */
-	this.isMovedNode = function (node) {
-	    return _movedNode == node;
-	}
-	/*
-	 * 判断节点是否为查选结果节点
-	 */
-	this.isFindedNode = function (node) {
-	    return _findedNode == node;
-	}
-	/*
-	 * 获取节点文字链接的样式名
-	 */
-	this.getStyleClass = function (node, defaultStyle) {
-		if(this.isMovedNode(node)) {
-			return _TREE_NODE_MOVED_STYLE;
-		} else if(this.isActiveNode(node)) {
-			return _TREE_NODE_SELECTED_STYLE;
-		} else if(this.isFindedNode(node)) {
-			return _TREE_NODE_FINDED_STYLE;
-		}
-		return defaultStyle;
-	}
-	
-	/*
-	 * 节点被选中时是否需要激活（高亮）节点
-	 */
-	this.isActiveBySelected = function (state) {
-		return _treeNodeSelectAndActive == "true" && state == 1;
-	}
-	/*
-	 * 设定被拖动的节点
-	 */
-	this.setMovedNode = function (node) {
-	    _movedNode = node;
-	}
-
-	/*
-	 * 树是否可以移动节点
-	 */
-	this.isCanMoveNode = function () {
-	    return _canMoveNode == "true";
-	}
-	
-	/*
-	 * 树是否禁止改变所有的选择状态
-	 */
-	this.isAllDisabledCheckType = function () {
-	    return _allCheckTypeDisabled == "true";
-	}
-
-	/*
-	 * 禁止所有节点改变选中状态
-	 */
-	this.disable = function () {
-		_allCheckTypeDisabled = "true";
-	}
-	/*
-	 * 允许没有被特殊指定不能选中的节点改变选中状态
-	 */
-	this.enable = function () {
-		_allCheckTypeDisabled = "false";
-	}
-	/*
-	 * 新增节点后，是否需要将焦点移到新节点上
-	 * 参数：
-	 * 返回值：	true	需要移到新节点上
-	 *			false	不需要移到新节点上
-	 */
-	this.isFocusNewTreeNode = function() {
-		return _focusNewNode == "true";
-	}
-
-	/*
-	 * 设定查询结果中的当前节点为特殊高亮显示
-	 */
-	this.setFindedNode = function (node) {
-	    _findedNode = node;
-	}
+	this.init();
 }
 
 /*
@@ -890,7 +686,7 @@ Tree.prototype.getTreeNodeById = function(id) {
  * 获取当前高亮（激活）的节点（被激活的节点一次只有一个）。如果没有激活的节点，则返回null。
  */
 Tree.prototype.getActiveTreeNode = function () {
-	return instanceTreeNode(_activedNode);
+	return instanceTreeNode(activedNode);
 }
 
 /*
@@ -935,7 +731,7 @@ Tree.prototype.insertTreeNodeXml = function(newNodeXML, parent) {
 /*
  * 删除节点
  */
-Tree.prototype.removeTreeNode(treeNode) {
+Tree.prototype.removeTreeNode = function(treeNode) {
 	if( !(treeNode instanceof TreeNode) ) {
 		return false;
 	}
@@ -951,7 +747,7 @@ Tree.prototype.removeTreeNode(treeNode) {
  *			toTreeNode		目标节点TreeNode对象
  *			moveState		移动状态，-1为目标节点上方，1为目标节点下方
  */
-Tree.prototype.moveTreeNode(movedTreeNode, toTreeNode, moveState) {
+Tree.prototype.moveTreeNode = function(movedTreeNode, toTreeNode, moveState) {
 	if( !this.isCanMoveNode() 
 	    || !(movedTreeNode instanceof TreeNode)
 		|| !(toTreeNode instanceof TreeNode) ) {
@@ -968,7 +764,7 @@ Tree.prototype.moveTreeNode(movedTreeNode, toTreeNode, moveState) {
  *			toTreeNode		目标节点TreeNode对象
  *			moveState		移动状态，-1为目标节点上方，1为目标节点下方
  */
-Tree.prototype.moveExternalTreeNode(movedTreeNode, toTreeNode, moveState) {
+Tree.prototype.moveExternalTreeNode = function(movedTreeNode, toTreeNode, moveState) {
 	var movedTreeNodeId  = movedTreeNode.getId();
 	var movedTreeNodeXml = movedTreeNode.getXmlNode().xml;
 	var toTreeNodeParent = toTreeNode.getParent();
@@ -1007,9 +803,9 @@ Tree.prototype.getTreeTitle = function() {
  */
 Tree.prototype.setDefaultActive = function (type) {
 	if( isNullOrEmpty(type) ) {
-		type = _defaultActive;
+		type = eval("this.element." + _TREE_DEFAULT_ACTIVE) || "none";;
 	}
-	if(_treeXMLDom == null || type == "none") {
+	if(type == "none") {
 		return;
 	}
 	
@@ -1020,7 +816,7 @@ Tree.prototype.setDefaultActive = function (type) {
 		path = ".//treeNode[(@" + _TREE_NODE_CANSELECTED + "='1' or not(@" + _TREE_NODE_CANSELECTED + ")) and @id!='" + _TREE_ROOT_NODE_ID + "']";
 	}
 	
-	var activeNode = this._treeXMLDom.selectSingleNode(path);
+	var activeNode = this.getXmlRoot().selectSingleNode(path);
 	var treeNode = instanceTreeNode(activeNode);
 	if( treeNode ) {
 		treeNode.setActive();
@@ -1065,7 +861,7 @@ Tree.prototype.loadDefaultChecked = function(selectedSrc, clearOldSelected) {
  *		 clearOldSelected	是否清除原先选中节点
  *		 isDependParent	    是否依赖父节点(父节点选中，则所有子节点均选中)
  */
-Tree.prototype.loadDefaultCheckedByIds(selectedIds, clearOldSelected, isDependParent) {
+Tree.prototype.loadDefaultCheckedByIds = function(selectedIds, clearOldSelected, isDependParent) {
 	this.setNodesCheckedByNodeIDs(selectedIds, clearOldSelected, isDependParent);
 	this.reload();
 	
@@ -1138,6 +934,190 @@ Tree.prototype.searchNext = function(direct, isCircle) {
 }
 
 
+
+
+/*
+ * 初始化树对象
+ */
+function initTree(element) {	
+	var _treeType = eval("element." + _TREE_TREE_TYPE) ||  _TREE_TYPE_SINGLE;
+	if(_treeType == _TREE_TYPE_MULTI) {
+		return new MultiCheckTree(element)
+	} 
+	else {
+		return new SingleCheckTree(element)
+	}
+}
+
+
+
+var SingleCheckTree = function(element) {
+	Tree.call(this, element);
+	
+	this.setAttribute(_TREE_TREE_TYPE, _TREE_TYPE_SINGLE);
+	this.setAttribute(_TREE_SELECTED_AND_ACTIVE, eval("this.element." + _TREE_SELECTED_AND_ACTIVE) ||  "true");
+		
+	/*
+	 * 获取节点的下一选中状态（单选）
+	 */
+	this.getNextState = function() {
+		return 1;
+	};
+	
+	/*
+	 * 根据节点选择状态，获取图标地址（单选树）
+	 */
+	this.getCheckTypeImageSrc = function(node) {
+		var checkType   = node.getAttribute(_TREE_NODE_CHECKTYPE);
+		var canSelected = node.getAttribute(_TREE_NODE_CANSELECTED);
+		if(canSelected == 0) {
+			return this._baseUrl + _RADIO_CAN_NOT_SELECT_IMAGE;
+		}
+		if(checkType == 1) {
+			return this._baseUrl + _SINGLE_SELECTED_IMAGE;
+		}
+		return this._baseUrl + _SINGLE_NO_SELECTED_IMAGE;
+	};
+
+	/*
+	 * 清除特定节点以外的其他节点的选中状态
+	 */
+	this.refreshStates = function(treeNode) {
+		var childNodes = this.getXmlRoot().selectNodes(".//treeNode[@checktype='1']");
+		for(var i = 0, len = childNodes.length; i < len; i++) {
+			if(childNodes[i] == treeNode.getXmlNode()) {
+				continue;
+			}
+			setNodeState(childNodes[i], "0");
+		}
+	};
+	
+	/*
+	 * 获取选中节点的TreeNode对象（单选树）
+	 */
+	this.getSelectedTreeNode = function() {
+		var node = this.getXmlRoot().selectSingleNode(".//treeNode[@checktype='1']");
+		return instanceTreeNode(node);
+	};
+	
+	/*
+	 * 获取选中节点的Xml对象（单选树）
+	 */
+	this.getSelectedXmlNode = function() {
+		return this.getXmlRoot().selectSingleNode(".//treeNode[@checktype='1']");
+	};
+	
+}
+
+
+var MultiCheckTree = function(element) {
+	Tree.call(this, element);
+	
+	this.setAttribute(_TREE_TREE_TYPE, _TREE_TYPE_MULTI);
+	this.setAttribute(_TREE_SELECTED_AND_ACTIVE, eval("this.element." + _TREE_SELECTED_AND_ACTIVE) || "false");
+
+	/*
+	 * 获取节点的下一选中状态（多选1、2 -> 0; 0 -> 1）
+	 */
+	this.getNextState = function () {
+		if(/^(2|1)$/.test(this.getSelectedState())) {	// 半选、全选时，置为不选
+			return 0;
+		}	
+		return 1;	// 不选时，置为全选
+	};		
+	
+	/*
+	 * 根据节点选择状态，获取图标地址（多选树）
+	 */
+	this.getCheckTypeImageSrc = function(node) {
+		var checkType   = node.getAttribute(_TREE_NODE_CHECKTYPE);
+		var canSelected = node.getAttribute(_TREE_NODE_CANSELECTED);
+		if(canSelected == 0) {
+			return this._baseUrl + _MULTI_CAN_NOT_CHECK_IMAGE;
+		}
+		if(checkType == 1) {
+			return this._baseUrl + _MULTI_CHECKED_IMAGE;
+		}
+		if(checkType == 2) {
+			return this._baseUrl + _MULTI_HALF_CHECKED_IMAGE;
+		}
+		return this._baseUrl + _MULTI_NO_CHECKED_IMAGE;
+	};
+	
+	/*
+	 * 刷新相关节点的选中状态（多选树），同时根据参数决定是否激活当前节点
+	 * 参数：	treeNode	TreeNode节点对象
+	 *			noChildren	选中节点时，不包含子节点
+	 */
+	this.refreshStates = function (treeNode, noChildren) {
+		if (this.getAttribute(_TREE_JUST_SELECT_SELF) == "true") {
+			return;
+		}
+		refreshParentNodeState(treeNode.getXmlNode());
+
+		if(noChildren && treeNode.getSelectedState() == 2) {
+			return;
+		}
+		refreshChildrenNodeState(treeNode.getXmlNode());
+	}
+	
+	/*
+	 * 获取选中节点的TreeNode对象数组（多选树）
+	 * 参数：	includeHalfChecked	是否包含半选节点
+	 * 返回值：	TreeNode对象数组，数组对象还提供toElement方法，将数组直接转换成xml字符串。
+	 */
+	this.getSelectedTreeNode = function (includeHalfChecked) {	
+		var treeNodeArray = this.getSelectedXmlNode(includeHalfChecked);			
+		for(var i = 0; i < treeNodeArray.length; i++) {
+			treeNodeArray[i] = instanceTreeNode(treeNodeArray[i]);
+		}
+			
+		return treeNodeArray;
+	}
+	
+	/*
+	 * 获取选中节点的Xml对象数组（多选树）
+	 * 参数：	includeHalfChecked	是否包含半选节点
+	 * 返回值：	xmlNode对象数组，数组对象还提供toElement方法，将数组直接转换成xml字符串。
+	 */
+	this.getSelectedXmlNode  = function (includeHalfChecked) {	
+		var treeNodes;
+		if(includeHalfChecked) { // 包括半选状态
+			treeNodes = this.getXmlRoot().selectNodes(".//treeNode[@checktype='1' or @checktype='2']");
+		} else { // 不包括半选状态
+			treeNodes = this.getXmlRoot().selectNodes(".//treeNode[@checktype='1']");
+		}
+		
+		var treeNodeArray = new Array();
+		for(var i = 0; i < treeNodes.length; i++) {
+			treeNodeArray[i] = treeNodes[i];
+		}
+		try{
+			treeNodeArray.rootNode = this.getXmlRoot().cloneNode(false); // 获取actionSet节点
+		} catch(e) {
+			throw(e);
+		}
+		treeNodeArray.includeHalfChecked = includeHalfChecked;
+		
+		/* 
+		 * 给数组提供toElement方法，根据是否包括半选状态，分别以不同的方式返回xml节点。
+		 * 如果不包括半选状态的节点，生成的xml将所有TreeNode都放到根节点actionSet节点下；		 
+		 * 否则将给出包括全选、半选的所有节点，并按原有的节点层次关系给出xml字符串。
+		 */
+		treeNodeArray.toElement = function() {
+			for(var i = 0; i < this.length; i++) {				
+				var xmlNode = (this[i] instanceof TreeNode) ? this[i].getXmlNode() : this[i];
+				var parentNode = this.includeHalfChecked ? xmlNode.parentNode : this.rootNode;
+				parentNode.appendChild(xmlNode.cloneNode(false));
+			}
+			return this.rootNode;
+		};
+		
+		return treeNodeArray;
+	}
+}
+
+
 //////////////////////////////////////////////////////////////////////////////
 ///////////////////             	自定义事件				    //////////////
 //////////////////////////////////////////////////////////////////////////////
@@ -1152,7 +1132,7 @@ function createEventObject() {
 function EventFirer(name) {
 	var _name = name;
 	this.fire = function (event) {
-		var func = element.getAttribute(_name);
+		var func = $("tree").getAttribute(_name);
 		if( func ) {
 			var funcType = typeof(func);
 			if("string" == funcType) {
@@ -1496,17 +1476,35 @@ TreeNode.prototype = new function() {
 		//删除xml中的此节点
 		this.node.parentNode.removeChild(this.node);
 
-		displayObj.resetTotalTreeNodes();
+		this.displayObj.resetTotalTreeNodes();
 		return true;
 	}
  
-	this.appendChild = function(xml) {
-		return _appendChild(xml, this.node);
+	this.appendChild = function(xml) {	
+		return this._appendChild(xml, this.node);;
 	}
  
 	this.appendRoot = function(xml) {
-		return return _appendChild(xml, treeObj.getXmlRoot());;
+		return this._appendChild(xml, this.getXmlRoot());
 	}
+	
+	this._appendChild = function(xml, parent) {	
+		var newNodeXML = loadXmlToNode(xml);
+		if(newNodeXML == null || newNodeXML.documentElement == null || newNodeXML.documentElement.nodeName != _TREE_NODE){
+			alert("TreeNode对象：新增节点xml数据不能正常解析！");
+			return null;
+		}
+		
+		var newNode = parent.appendChild(newNodeXML.documentElement); // 添加子节点
+		var treeNode = instanceTreeNode(newNode);
+		if(treeNode instanceof TreeNode) {
+			refreshStatesByNode(treeNode);		// 根据新节点的选择状态刷新相关节点
+		}
+		this.displayObj.resetTotalTreeNodes();
+
+		return treeNode;
+	}
+	
 	/*
 	 * 移动当前节点
 	 * 参数：	toTreeNode	目标节点的TreeNode对象
@@ -1518,7 +1516,7 @@ TreeNode.prototype = new function() {
 			return false;
 		}
 		
-		var beforeNode = (moveState == -1 ? toTreeNode.getXmlNode() : toTreeNode.getXmlNode().nextSibling;
+		var beforeNode = (moveState == -1) ? toTreeNode.getXmlNode() : toTreeNode.getXmlNode().nextSibling;
 		toTreeNode.getXmlNode().parentNode.insertBefore(this.node, beforeNode);
 		
 		displayObj.resetTotalTreeNodes();
@@ -1678,11 +1676,9 @@ TreeNode.prototype = new function() {
  * 返回值：	TreeNode
  */
 function instanceTreeNode(node) {
-	if(node == null) {
-		return null;
-	}
-	return new TreeNode(node);
+	return node ? new TreeNode(node) : null;
 }
+
  
 ///////////////////////////////////////////////////////////////////////////
 //	对象名称：Row	 												     //
@@ -1690,8 +1686,10 @@ function instanceTreeNode(node) {
 //			只要给定一个xml节点，此对象负责将节点显示到对应的tr中。	     //
 ///////////////////////////////////////////////////////////////////////////
  
-function Row(tr) {
+var Row = function(tr, treeObj) {
 	this.row = tr;
+	this.treeObj = treeObj; 
+	
 	this.node;
 	
 	this.nobr;
@@ -1718,7 +1716,7 @@ Row.prototype = new function () {
 				this.label  = this.icon.nextSibling;
 				this.icon   = this.folder.nextSibling;
 
-				if( !treeObj.isMenu() ) {
+				if( !this.treeObj.isMenu() ) {
 					this.checkType = this.folder.nextSibling;
 					this.icon = this.checkType.nextSibling;				
 				}
@@ -1730,7 +1728,7 @@ Row.prototype = new function () {
 				this.folder = this.nobr.appendChild(createObjByTagName("img", _TREE_NODE_FOLDER_STYLE));
 				this.icon   = this.nobr.appendChild(createObjByTagName("img", _TREE_NODE_ICON_STYLE));
 				this.label  = this.nobr.appendChild(createObjByTagName("a"));
-				if( !treeObj.isMenu() ) {
+				if( !this.treeObj.isMenu() ) {
 					this.checkType = this.nobr.appendChild(createObjByTagName("img", _TREE_NODE_CHECK_TYPE_STYLE));
 				}	
 			}
@@ -1750,14 +1748,14 @@ Row.prototype = new function () {
 			return;
 		}
 		
-	    this.line.innerHTML = getFrontStr(this.row, node, treeObj.getXmlRoot());
+	    this.line.innerHTML = getFrontStr(this.row, node, this.treeObj.getXmlRoot());
 		this.setFolder(node);
 		this.setIcon(node);
 		this.setLabel(node);
 		this.node = node;
 		
-		if( !treeObj.isMenu() ) {
-			this.checkType.src = treeObj.getCheckTypeImageSrc(node);
+		if( !this.treeObj.isMenu() ) {
+			this.checkType.src = this.treeObj.getCheckTypeImageSrc(node);
 		}
 	}
  
@@ -1787,13 +1785,13 @@ Row.prototype = new function () {
 		var hasChild = node.hasChildNodes() || node.getAttribute("hasChild") == "1";
 		var isOpen = node.getAttribute("_open") == "true"
 		
-		if( node.parentNode && treeObj.getXmlRoot() == node.parentNode) { // 是第一层树节点
+		if( node.parentNode && this.treeObj.getXmlRoot() == node.parentNode) { // 是第一层树节点
 			folderImage = hasChild ? (isOpen ? _TREE_ROOT_CONTRACT_IMAGE : _TREE_ROOT_EXPAND_IMAGE) : _TREE_ROOT_NODE_LEAF_IMAGE;
 		} 
 		else {
 			folderImage = hasChild ? (isOpen ? _TREE_NODE_CONTRACT_IMAGE : _TREE_NODE_EXPAND_IMAGE) : _TREE_NODE_LEAF_IMAGE;		
 		}
-		this.folder.src = _baseUrl + folderImage;
+		this.folder.src = eval("this.treeObj.element." + _TREE_BASE_URL)  + folderImage;
 	}
  
 	/*
@@ -1809,7 +1807,7 @@ Row.prototype = new function () {
 		this.label.title = fullName || name;
 		this.label.setAttribute("disabled", (display == '0' || canSelected == '0'));
 		
-		this.setClassName(treeObj.getStyleClass(node));
+		this.setClassName(this.treeObj.getStyleClass(node));
 	}
  
 	/*
@@ -1876,12 +1874,11 @@ Row.prototype = new function () {
 ////////////////////////////////////////////////////////////////////////////////
  
 function Display(treeObj) {
-	var _windowHeight = Math.max(element.offsetHeight - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_HEIGHT);
-	var _windowWidth  = Math.max(element.offsetWidth - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_WIDTH);
+	var _windowHeight = Math.max(treeObj.element.offsetHeight - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_HEIGHT);
+	var _windowWidth  = Math.max(treeObj.element.offsetWidth  - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_WIDTH);
 	var _rowHeight    = _TREE_NODE_DISPLAY_ROW_HEIGHT;
 	var _pageSize     = Math.floor(_windowHeight / _rowHeight);
-	
-	var _totalTreeNodes = treeObj.getXmlRoot().selectNodes(".//treeNode[../@_open = 'true']");
+	var _totalTreeNodes = ""; // treeObj.getXmlRoot().selectNodes(".//treeNode[../@_open = 'true']");
 	var _totalTreeNodesNum = _totalTreeNodes.length;
 	
 	var _vScrollBox;
@@ -1895,12 +1892,12 @@ function Display(treeObj) {
 	
 	var _Rows = new Array(_pageSize);
 	
-	element.style.overflow = 'hidden';
-	element.onresize = resize;
-	element.onmousewheel = function() {
+	treeObj.element.style.overflow = 'hidden';
+	treeObj.element.onresize = resize;
+	treeObj.element.onmousewheel = function() {
 		_vScrollBox.scrollTop += -Math.round(window.event.wheelDelta / 120) * _rowHeight;
 	}
-	element.onkeydown = function() {
+	treeObj.element.onkeydown = function() {
 		switch (event.keyCode) {
 		    case 33:	//PageUp
 				_vScrollBox.scrollTop -= _pageSize * _rowHeight;
@@ -1928,38 +1925,37 @@ function Display(treeObj) {
 				return false;
 		}
 	}
-	this.init();
 	
 	/*
 	 * 生成默认展示的树节点。
 	 */
 	this.init = function() {
-		element.innerHTML = "";
+		treeObj.element.innerHTML = "";
 		
 		// 生成滚动条
 		var vScrollStr = '<div id="treeVScrollBox" style="position:absolute;overflow-y:auto;heigth:100%;width:17px;top:0px;right:0px;"><div id="treeVScrollDiv" style="width:1px"></div></div>';
 		var hScrollStr = '<div id="treeHScrollBox" style="position:absolute;overflow-x:auto;overflow-y:hidden;heigth:17px;width:100%;bottom:0px;left:0px"><div id="treeHScrollDiv" style="higth:1px"></div></div>';
-		element.insertAdjacentHTML('afterBegin', vScrollStr + hScrollStr);
-		_vScrollBox = element.all("treeVScrollBox");
-		_vScrollDiv = element.all("treeVScrollDiv");
-		_hScrollBox = element.all("treeHScrollBox");
-		_hScrollDiv = element.all("treeHScrollDiv");
+		treeObj.element.insertAdjacentHTML('afterBegin', vScrollStr + hScrollStr);
+		_vScrollBox = treeObj.element.all("treeVScrollBox");
+		_vScrollDiv = treeObj.element.all("treeVScrollDiv");
+		_hScrollBox = treeObj.element.all("treeHScrollBox");
+		_hScrollDiv = treeObj.element.all("treeHScrollDiv");
 		_vScrollBox.onscroll = onVScroll;
 		_hScrollBox.onscroll = onHScroll;
 		
 		// 生成页面上显示节点的table对象。
 		var tableStr = '<div id="treeRootBox" style="position:absolute;overflow:hidden;top:0px;left:0px"><table id="treeRootTable" cellspacing="0"></table></div>';
-		element.insertAdjacentHTML('afterBegin', tableStr);
-		_rootBox   = element.all("treeRootBox");
-		_rootTable = element.all("treeRootTable");
+		treeObj.element.insertAdjacentHTML('afterBegin', tableStr);
+		_rootBox   = treeObj.element.all("treeRootBox");
+		_rootTable = treeObj.element.all("treeRootTable");
 		for(var i = 0; i < _pageSize; i++) {
 			var tr = _rootTable.insertRow();
 			tr.insertCell();
-			_Rows[i] = new Row(tr);
+			_Rows[i] = new Row(tr, treeObj);
 		}
 		
 		// 设置滚动条的大小
-		vScrollBox.style.height = _windowHeight;
+		_vScrollBox.style.height = _windowHeight;
 		_vScrollDiv.style.height = (_totalTreeNodesNum - _pageSize) * _rowHeight + _windowHeight;
 		_hScrollBox.style.width = _windowWidth;
 		_hScrollDiv.style.width = _rootTable.style.width; 
@@ -1972,7 +1968,7 @@ function Display(treeObj) {
 	/*
 	 * 根据滚动状态，显示可视范围内的树节点。
 	 */
-	this.reload = function refresh() {
+	this.reload = function() {
 		var startTime = new Date();
 		if(_totalTreeNodesNum <= _pageSize) {
 			_startNum = 0;
@@ -2131,13 +2127,13 @@ function Display(treeObj) {
 						var tr = _rootTable.insertRow();
 						tr.insertCell();
 					}
-					_Rows[i] = new Row(tr);
+					_Rows[i] = new Row(tr, treeObj);
 				}
 			}
 			else if (pageSize < _pageSize) { // 高度减少时				
 				for(var i = 0; i < pageSize; i++) {
 					var tr = _rootTable.rows[i];
-					_Rows[i] = new Row(tr);
+					_Rows[i] = new Row(tr, treeObj);
 				}
 				for(var i = pageSize; i < _pageSize; i++) {
 					_rootTable.deleteRow(pageSize);
@@ -2178,6 +2174,8 @@ function Display(treeObj) {
 	this.getPageSize = function () {
 	    return _pageSize;
 	}
+	
+	this.init();
 }
 
 
@@ -2287,8 +2285,7 @@ function Search(treeObj) {
 		} 
 		
 		// 没找到则刷新树
-		displayObj.resetTotalTreeNodes();
-		displayObj.reload();
+		treeObj.reload();
 	}
 }
 
@@ -2296,13 +2293,6 @@ function Search(treeObj) {
 //////////////////////////////////////////////////////////////////////////////
 //		                       公用函数	   	                                //
 //////////////////////////////////////////////////////////////////////////////
-
-/*
- * 获取控件参数
- */
-function getValue(name, defaultValue) {
-	return eval("element." + name) || defaultValue;
-}
 
 /*
  * 判断节点是否为父节点的最后一个节点
@@ -2495,4 +2485,3 @@ function getRowIndex(obj) {
 	}
 	return obj.rowIndex;
 }
-

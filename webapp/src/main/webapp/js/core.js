@@ -936,7 +936,7 @@ Event.offsetY = function(eventObj) {
  */
 function loadXmlToNode(xml) {
 	var xr = new XmlReader(xml);
-	return xt.xmlDom;
+	return xr.xmlDom;
 }
 
 

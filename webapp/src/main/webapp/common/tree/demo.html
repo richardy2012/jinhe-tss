@@ -1,7 +1,7 @@
 <HTML>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
-<title>它山石--test XForm</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>瀹冨北鐭�--test Tree</title>
 
 <link href="tree.css" rel="stylesheet" type="text/css">
 <link href="../balloon/balloon.css" rel="stylesheet" type="text/css">
@@ -16,14 +16,35 @@
 <SCRIPT LANGUAGE="JavaScript">
 <!--
  
+    function init() {
+        var p = new HttpRequestParams();
+        p.url = "data.xml";
 
+        var request = new HttpRequest(p);
+        request.onresult = function() {
+            var treeNode = this.getNodeValue("ParamTree");
+            var treeNodeID = "ParamTree";
+            Cache.XmlIslands.add(treeNodeID, treeNode);
 
+            var tree = initTree($("tree"));
+			// alert(treeNode.toXml());
+			tree.load(treeNode.toXml());
+       
+        }
+        request.send();
+    }
+	
+	window.onload = init;
    
 //-->
 </SCRIPT>
 </head>
 
 <body>
+
+<div id="treeContainer">
+	<div id="tree" treeType="menu" baseurl="" canMoveNode="true"><div class="loading"></div></div>
+</div>
  
 </body>
 </html>
