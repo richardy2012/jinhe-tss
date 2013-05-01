@@ -18,7 +18,7 @@
  
     function init() {
         var p = new HttpRequestParams();
-        p.url = "data.xml";
+        p.url = "test/data.xml";
 
         var request = new HttpRequest(p);
         request.onresult = function() {
@@ -42,9 +42,7 @@
 
 <body>
 
-<div id="treeContainer">
-	<div id="tree" treeType="menu" baseurl="" canMoveNode="true"><div class="loading"></div></div>
-</div>
+	<div id="tree" treeType="menu" baseurl="" canMoveNode="true" height=600><div class="loading"></div></div>
  
 </body>
 </html>

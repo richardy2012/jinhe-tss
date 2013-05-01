@@ -1,16 +1,16 @@
 /* 
- * µ±Ç°Ó¦ÓÃÃû 
+ * å½“å‰åº”ç”¨å 
  */
 APP_CODE    = "TSS";
 CONTEXTPATH = "tss/";
 APPLICATION = "tss";
 
-// URL_CORE = "/" + APPLICATION + "/common/";  // ½çÃæºËĞÄ°üÏà¶ÔÂ·¾¶
-URL_CORE = "common/";  // ½çÃæºËĞÄ°üÏà¶ÔÂ·¾¶
+// URL_CORE = "/" + APPLICATION + "/common/";  // ç•Œé¢æ ¸å¿ƒåŒ…ç›¸å¯¹è·¯å¾„
+URL_CORE = "common/";  // ç•Œé¢æ ¸å¿ƒåŒ…ç›¸å¯¹è·¯å¾„
 
 
 /*
- *	½ûÖ¹Êó±êÓÒ¼ü 
+ *	ç¦æ­¢é¼ æ ‡å³é”® 
  */
 document.oncontextmenu = function(eventObj) {
 	eventObj = eventObj || window.event;
@@ -22,7 +22,7 @@ document.oncontextmenu = function(eventObj) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÓÃ»§ĞÅÏ¢³õÊ¼»¯
+ *	å‡½æ•°è¯´æ˜ï¼šç”¨æˆ·ä¿¡æ¯åˆå§‹åŒ–
  */
 function initUserInfo() {
 	var p = new HttpRequestParams();
@@ -53,7 +53,7 @@ function logout() {
 	request.send();
 }
 
-// ¹Ø±ÕÒ³ÃæÊ±ºò×Ô¶¯×¢Ïú
+// å…³é—­é¡µé¢æ—¶å€™è‡ªåŠ¨æ³¨é”€
 function logoutOnClose() {
 	window.attachEvent("onuload", function() {
 		if(10*1000 < window < screenTop || 10*1000 < window.screenLeft) {
@@ -63,11 +63,11 @@ function logoutOnClose() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£º¼ì²éÃÜÂëÇ¿¶È
- *	²ÎÊı£º	object:formObj                  xform¶ÔÏó
-			string:url                      ÇëÇóµØÖ·
-			string:password                 ÃÜÂë
-			string:loginName                µÇÂ¼Ãû
+ *	å‡½æ•°è¯´æ˜ï¼šæ£€æŸ¥å¯†ç å¼ºåº¦
+ *	å‚æ•°ï¼š	object:formObj                  xformå¯¹è±¡
+			string:url                      è¯·æ±‚åœ°å€
+			string:password                 å¯†ç 
+			string:loginName                ç™»å½•å
  */
 function checkPasswordSecurityLevel(formObj, url, password, loginName) {
 	var p = new HttpRequestParams();
@@ -90,24 +90,24 @@ function checkPasswordSecurityLevel(formObj, url, password, loginName) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÏÔÊ¾ÃÜÂëÇ¿¶ÈÌáÊ¾ĞÅÏ¢
- *	²ÎÊı£º	object:formObj                  xform¶ÔÏó
- *	·µ»ØÖµ£º
+ *	å‡½æ•°è¯´æ˜ï¼šæ˜¾ç¤ºå¯†ç å¼ºåº¦æç¤ºä¿¡æ¯
+ *	å‚æ•°ï¼š	object:formObj                  xformå¯¹è±¡
+ *	è¿”å›å€¼ï¼š
  */
 function showPasswordSecurityLevel(formObj) {
 	var errorInfo = {
-		0: "ÄúÊäÈëµÄÃÜÂë°²È«µÈ¼¶Îª\"²»¿ÉÓÃ\"£¬²»°²È«",
-		1: "ÄúÊäÈëµÄÃÜÂë°²È«µÈ¼¶Îª\"µÍ\"£¬Ö»ÄÜ±£ÕÏ»ù±¾°²È«",
-		2: "ÄúÊäÈëµÄÃÜÂë°²È«µÈ¼¶Îª\"ÖĞ\"£¬½Ï°²È«",
-		3: "ÄúÊäÈëµÄÃÜÂë°²È«µÈ¼¶Îª\"¸ß\"£¬ºÜ°²È«"
+		0: "æ‚¨è¾“å…¥çš„å¯†ç å®‰å…¨ç­‰çº§ä¸º\"ä¸å¯ç”¨\"ï¼Œä¸å®‰å…¨",
+		1: "æ‚¨è¾“å…¥çš„å¯†ç å®‰å…¨ç­‰çº§ä¸º\"ä½\"ï¼Œåªèƒ½ä¿éšœåŸºæœ¬å®‰å…¨",
+		2: "æ‚¨è¾“å…¥çš„å¯†ç å®‰å…¨ç­‰çº§ä¸º\"ä¸­\"ï¼Œè¾ƒå®‰å…¨",
+		3: "æ‚¨è¾“å…¥çš„å¯†ç å®‰å…¨ç­‰çº§ä¸º\"é«˜\"ï¼Œå¾ˆå®‰å…¨"
 	};
 	formObj.showCustomErrorInfo("password", errorInfo[formObj.securityLevel]);
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÉ¾³ı»º´æ(¹«ÓÃ)
- *	²ÎÊı£º	string:cacheID      »º´æÊı¾İid
-			boolean:flag        ÊÇ·ñÇå³ı¹ØÁªµÄXMLÊı¾İ
+ *	å‡½æ•°è¯´æ˜ï¼šåˆ é™¤ç¼“å­˜(å…¬ç”¨)
+ *	å‚æ•°ï¼š	string:cacheID      ç¼“å­˜æ•°æ®id
+			boolean:flag        æ˜¯å¦æ¸…é™¤å…³è”çš„XMLæ•°æ®
  */
 function delCacheData(cacheID, flag) {
 	var cacheData = Cache.Variables.get(cacheID);
@@ -122,7 +122,7 @@ function delCacheData(cacheID, flag) {
 
 
 /*
- *	º¯ÊıËµÃ÷£ºÒş²ØtabÒ³¹¤×÷Çø
+ *	å‡½æ•°è¯´æ˜ï¼šéšè—tabé¡µå·¥ä½œåŒº
  */
 function hideWorkSpace() {
 	var ws = $("ws");
@@ -132,7 +132,7 @@ function hideWorkSpace() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÏÔÊ¾tabÒ³¹¤×÷Çø
+ *	å‡½æ•°è¯´æ˜ï¼šæ˜¾ç¤ºtabé¡µå·¥ä½œåŒº
  */
 function showWorkSpace() {
 	var ws = $("ws");
@@ -143,7 +143,7 @@ function showWorkSpace() {
 
 
 /*
- *	º¯ÊıËµÃ÷£º×óÀ¸Ìí¼Ó×óÓÒÍÏ¶¯Ğ§¹û
+ *	å‡½æ•°è¯´æ˜ï¼šå·¦æ æ·»åŠ å·¦å³æ‹–åŠ¨æ•ˆæœ
  */
 function initPaletteResize() {
 	var palette = $("palette");
@@ -151,7 +151,7 @@ function initPaletteResize() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÌí¼ÓÉÏÏÂÍÏ¶¯Ğ§¹û
+ *	å‡½æ•°è¯´æ˜ï¼šæ·»åŠ ä¸Šä¸‹æ‹–åŠ¨æ•ˆæœ
  */
 function initListContainerResize() {
 	var listContainer = $("listContainer");
@@ -160,7 +160,7 @@ function initListContainerResize() {
 
 
 /*
- *	º¯ÊıËµÃ÷£º¹¤¾ßÌõ³õÊ¼»¯
+ *	å‡½æ•°è¯´æ˜ï¼šå·¥å…·æ¡åˆå§‹åŒ–
  */
 function initToolBar() {
 	var tbObj = $("toolbar");
@@ -169,14 +169,14 @@ function initToolBar() {
 
 
 /*
- *	º¯ÊıËµÃ÷£ºµã»÷Ê÷Ë¢ĞÂ°´Å¥
+ *	å‡½æ•°è¯´æ˜ï¼šç‚¹å‡»æ ‘åˆ·æ–°æŒ‰é’®
  */
 function onClickTreeBtRefresh() {
 	loadInitData();
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºµã»÷Ê÷±êÌâ°´Å¥
+ *	å‡½æ•°è¯´æ˜ï¼šç‚¹å‡»æ ‘æ ‡é¢˜æŒ‰é’®
  */
 function onClickTreeTitleBt() {
 	var treeTitleObj = $("treeTitle");
@@ -206,7 +206,7 @@ function onClickTreeTitleBt() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºµã»÷×´Ì¬À¸±êÌâ°´Å¥
+ *	å‡½æ•°è¯´æ˜ï¼šç‚¹å‡»çŠ¶æ€æ æ ‡é¢˜æŒ‰é’®
  */
 function onClickStatusTitleBt() {
 	var treeTitleObj = $("treeTitle");
@@ -236,7 +236,7 @@ function onClickStatusTitleBt() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºµã»÷×óÀ¸¿ØÖÆ°´Å¥
+ *	å‡½æ•°è¯´æ˜ï¼šç‚¹å‡»å·¦æ æ§åˆ¶æŒ‰é’®
  */
 function onClickPaletteBt() {
 	var block = Blocks.getBlock("palette");
@@ -248,23 +248,23 @@ function onClickPaletteBt() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºµã»÷Ê÷±êÌâ
+ *	å‡½æ•°è¯´æ˜ï¼šç‚¹å‡»æ ‘æ ‡é¢˜
  */
 function onClickTreeTitle() {
 	Focus.focus($("treeTitle").firstChild.id);
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºµã»÷×´Ì¬À¸±êÌâ
+ *	å‡½æ•°è¯´æ˜ï¼šç‚¹å‡»çŠ¶æ€æ æ ‡é¢˜
  */
 function onClickStatusTitle() {
 	Focus.focus($("statusTitle").firstChild.id);
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºµã»÷grid±êÌâ
- *	²ÎÊı£º	
- *	·µ»ØÖµ£º
+ *	å‡½æ•°è¯´æ˜ï¼šç‚¹å‡»gridæ ‡é¢˜
+ *	å‚æ•°ï¼š	
+ *	è¿”å›å€¼ï¼š
  */
 function onClickGridTitle() {
 	Focus.focus("gridTitle");
@@ -272,8 +272,8 @@ function onClickGridTitle() {
 
 
 /*
- *	º¯ÊıËµÃ÷£º¼ì²âÓÒ¼ü²Ëµ¥ÏîÊÇ·ñ¿É¼û
- *	²ÎÊı£º	string:code     ²Ù×÷Âë
+ *	å‡½æ•°è¯´æ˜ï¼šæ£€æµ‹å³é”®èœå•é¡¹æ˜¯å¦å¯è§
+ *	å‚æ•°ï¼š	string:code     æ“ä½œç 
  */
 function getOperation(code) {
 	var flag = false;
@@ -287,10 +287,10 @@ function getOperation(code) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£º¼ì²â²Ù×÷È¨ÏŞ
- *	²ÎÊı£º	string:code             ²Ù×÷Âë
-			string:_operation       È¨ÏŞ
- *	·µ»ØÖµ£º
+ *	å‡½æ•°è¯´æ˜ï¼šæ£€æµ‹æ“ä½œæƒé™
+ *	å‚æ•°ï¼š	string:code             æ“ä½œç 
+			string:_operation       æƒé™
+ *	è¿”å›å€¼ï¼š
  */
 function checkOperation(code, _operation) {
 	var flag = false;
@@ -303,9 +303,9 @@ function checkOperation(code, _operation) {
 
 
 /*
- *	º¯ÊıËµÃ÷£º»ñÈ¡Ê÷½ÚµãÊôĞÔ
- *	²ÎÊı£º	string:name         ÊôĞÔÃû
- *	·µ»ØÖµ£ºstring:value        ÊôĞÔÖµ
+ *	å‡½æ•°è¯´æ˜ï¼šè·å–æ ‘èŠ‚ç‚¹å±æ€§
+ *	å‚æ•°ï¼š	string:name         å±æ€§å
+ *	è¿”å›å€¼ï¼šstring:value        å±æ€§å€¼
  */
 function getTreeAttribute(name) {
 	var treeObj = $("tree");
@@ -317,12 +317,12 @@ function getTreeAttribute(name) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºĞŞ¸ÄÊ÷½ÚµãÊôĞÔ
- *	²ÎÊı£º  string:id               Ê÷½Úµãid
-			string:attrName         ÊôĞÔÃû
-			string:attrValue        ÊôĞÔÖµ
-			string:refresh          ÊÇ·ñË¢ĞÂÊ÷
- *	·µ»ØÖµ£º
+ *	å‡½æ•°è¯´æ˜ï¼šä¿®æ”¹æ ‘èŠ‚ç‚¹å±æ€§
+ *	å‚æ•°ï¼š  string:id               æ ‘èŠ‚ç‚¹id
+			string:attrName         å±æ€§å
+			string:attrValue        å±æ€§å€¼
+			string:refresh          æ˜¯å¦åˆ·æ–°æ ‘
+ *	è¿”å›å€¼ï¼š
  */
 function modifyTreeNode(id, attrName, attrValue, refresh) {
 	var treeObj = $("tree");
@@ -336,10 +336,10 @@ function modifyTreeNode(id, attrName, attrValue, refresh) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÌí¼Ó×Ó½Úµã
- *	²ÎÊı£º	string:id           Ê÷½Úµãid
-			XmlNode:xmlNode     XmlNodeÊµÀı
- *	·µ»ØÖµ£º
+ *	å‡½æ•°è¯´æ˜ï¼šæ·»åŠ å­èŠ‚ç‚¹
+ *	å‚æ•°ï¼š	string:id           æ ‘èŠ‚ç‚¹id
+			XmlNode:xmlNode     XmlNodeå®ä¾‹
+ *	è¿”å›å€¼ï¼š
  */
 function appendTreeNode(id, xmlNode) {
 	var treeObj = $("tree");
@@ -350,10 +350,10 @@ function appendTreeNode(id, xmlNode) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£º»ñÈ¡Ê÷È«²¿½ÚµãidÊı×é
- *	²ÎÊı£º	XmlNode:xmlNode         XmlNodeÊµÀı
-			string:xpath            Ñ¡È¡½Úµãxpath
- *	·µ»ØÖµ£ºArray:Ids               ½ÚµãidÊı×é
+ *	å‡½æ•°è¯´æ˜ï¼šè·å–æ ‘å…¨éƒ¨èŠ‚ç‚¹idæ•°ç»„
+ *	å‚æ•°ï¼š	XmlNode:xmlNode         XmlNodeå®ä¾‹
+			string:xpath            é€‰å–èŠ‚ç‚¹xpath
+ *	è¿”å›å€¼ï¼šArray:Ids               èŠ‚ç‚¹idæ•°ç»„
  */
 function getTreeNodeIds(xmlNode, xpath) {
 	  var idArray = [];
@@ -369,13 +369,13 @@ function getTreeNodeIds(xmlNode, xpath) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÊ÷½Úµã¶¨Î»
- *	²ÎÊı£º	Element:treeObj         tree¿Ø¼ş
-			Element:keywordObj      ¹Ø¼ü×ÖÊäÈë¿ò
- *	·µ»ØÖµ£º
+ *	å‡½æ•°è¯´æ˜ï¼šæ ‘èŠ‚ç‚¹å®šä½
+ *	å‚æ•°ï¼š	Element:treeObj         treeæ§ä»¶
+			Element:keywordObj      å…³é”®å­—è¾“å…¥æ¡†
+ *	è¿”å›å€¼ï¼š
  */
 function searchTree(treeObj, keywordObj) {	
-	var tempAlert = window.alert;  // ¸²¸ÇÊ÷¿Ø¼şËÑË÷³ö´íĞÅÏ¢ÌáÊ¾·½·¨
+	var tempAlert = window.alert;  // è¦†ç›–æ ‘æ§ä»¶æœç´¢å‡ºé”™ä¿¡æ¯æç¤ºæ–¹æ³•
 	
 	window.alert = function(str) {
 		var balloon = Balloons.create(str);
@@ -391,24 +391,24 @@ function searchTree(treeObj, keywordObj) {
 		treeObj.searchNext("down", true);
 	}
 
-	// »¹Ô­ĞÅÏ¢ÌáÊ¾·½·¨
+	// è¿˜åŸä¿¡æ¯æç¤ºæ–¹æ³•
 	window.alert = tempAlert;
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÊ÷½Úµã¶¨Î»
- *	²ÎÊı£º	Element:treeObj         tree¿Ø¼ş
-			Element:btObj           ËÑË÷°´Å¥
-			Element:keywordObj      ¹Ø¼ü×ÖÊäÈë¿ò
- *	·µ»ØÖµ£º
+ *	å‡½æ•°è¯´æ˜ï¼šæ ‘èŠ‚ç‚¹å®šä½
+ *	å‚æ•°ï¼š	Element:treeObj         treeæ§ä»¶
+			Element:btObj           æœç´¢æŒ‰é’®
+			Element:keywordObj      å…³é”®å­—è¾“å…¥æ¡†
+ *	è¿”å›å€¼ï¼š
  */
 function attachSearchTree(treeObj, btObj, keywordObj) {
-	// ÉèÖÃËÑË÷°´Å¥²Ù×÷
+	// è®¾ç½®æœç´¢æŒ‰é’®æ“ä½œ
 	btObj.onclick = function() {
 		searchTree(treeObj, keywordObj);
 	}
 
-	// ÉèÖÃËÑË÷¹Ø¼ü×Ö²Ù×÷
+	// è®¾ç½®æœç´¢å…³é”®å­—æ“ä½œ
 	keywordObj.value = "";
 	keywordObj.onchange = function() {
 		treeObj.research = true;
@@ -419,9 +419,9 @@ function attachSearchTree(treeObj, btObj, keywordObj) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÇå³ıtreeÊı¾İ
- *	²ÎÊı£º	Element:treeObj         tree¿Ø¼ş¶ÔÏó
- *	·µ»ØÖµ£º
+ *	å‡½æ•°è¯´æ˜ï¼šæ¸…é™¤treeæ•°æ®
+ *	å‚æ•°ï¼š	Element:treeObj         treeæ§ä»¶å¯¹è±¡
+ *	è¿”å›å€¼ï¼š
  */
 function clearTreeData(treeObj) {
 	var xmlReader = new XmlReader("<actionSet/>");
@@ -431,10 +431,10 @@ function clearTreeData(treeObj) {
 }    
 
 /*
- *	º¯ÊıËµÃ÷£ºÉ¾³ıÊ÷Ñ¡ÖĞ½Úµã
- *	²ÎÊı£º	Element:treeObj         tree¿Ø¼ş¶ÔÏó
-			Array:exceptIds         ÀıÍâµÄid
- *	·µ»ØÖµ£º
+ *	å‡½æ•°è¯´æ˜ï¼šåˆ é™¤æ ‘é€‰ä¸­èŠ‚ç‚¹
+ *	å‚æ•°ï¼š	Element:treeObj         treeæ§ä»¶å¯¹è±¡
+			Array:exceptIds         ä¾‹å¤–çš„id
+ *	è¿”å›å€¼ï¼š
  */
 function removeTreeNode(treeObj, exceptIds) {
 	
@@ -460,11 +460,11 @@ function removeTreeNode(treeObj, exceptIds) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£º½«Ê÷Ñ¡ÖĞ½ÚµãÌí¼Óµ½ÁíÒ»Ê÷ÖĞ(×¢£º¹ıÂËÖØ¸´id½Úµã£¬²¢ÇÒ½á¹ûÊ÷Ö»ÓĞÒ»²ã½á¹¹)
- *	²ÎÊı£º	Element:fromTreeObj         Ê÷¿Ø¼ş
-			Element:toTreeObj           Ê÷¿Ø¼ş
-			Function:checkFunction      ¼ì²âµ¥¸ö½ÚµãÊÇ·ñÔÊĞíÌí¼Ó
- *	·µ»ØÖµ£º
+ *	å‡½æ•°è¯´æ˜ï¼šå°†æ ‘é€‰ä¸­èŠ‚ç‚¹æ·»åŠ åˆ°å¦ä¸€æ ‘ä¸­(æ³¨ï¼šè¿‡æ»¤é‡å¤idèŠ‚ç‚¹ï¼Œå¹¶ä¸”ç»“æœæ ‘åªæœ‰ä¸€å±‚ç»“æ„)
+ *	å‚æ•°ï¼š	Element:fromTreeObj         æ ‘æ§ä»¶
+			Element:toTreeObj           æ ‘æ§ä»¶
+			Function:checkFunction      æ£€æµ‹å•ä¸ªèŠ‚ç‚¹æ˜¯å¦å…è®¸æ·»åŠ 
+ *	è¿”å›å€¼ï¼š
  */
 function addTreeNode(fromTreeObj, toTreeObj, checkFunction) {	
 	var reload = false;
@@ -473,7 +473,7 @@ function addTreeNode(fromTreeObj, toTreeObj, checkFunction) {
 		var curNode = selectedNodes[i];
 
 		if("0" == curNode.getAttribute("canselected")) {
-			continue;  // ¹ıÂË²»¿ÉÑ¡ÔñµÄ½Úµã
+			continue;  // è¿‡æ»¤ä¸å¯é€‰æ‹©çš„èŠ‚ç‚¹
 		}
 
 		curNode.setSelectedState(0, true, true);
@@ -481,7 +481,7 @@ function addTreeNode(fromTreeObj, toTreeObj, checkFunction) {
 		if( checkFunction ) {
 			var result = checkFunction(curNode);
 			if( result && result.error ) {
-				// ÏÔÊ¾´íÎóĞÅÏ¢
+				// æ˜¾ç¤ºé”™è¯¯ä¿¡æ¯
 				if( result.message ) {
 					var balloon = Balloons.create(result.message);
 					balloon.dockTo(toTreeObj);
@@ -499,10 +499,10 @@ function addTreeNode(fromTreeObj, toTreeObj, checkFunction) {
 
 		var sameAttributeTreeNode = hasSameAttributeTreeNode(toTreeObj, "id", id);
 		if("_rootId" != id && false == sameAttributeTreeNode) {
-			// ÖÁÉÙÓĞÒ»ĞĞÌí¼Ó²ÅË¢ĞÂTree
+			// è‡³å°‘æœ‰ä¸€è¡Œæ·»åŠ æ‰åˆ·æ–°Tree
 			reload = true;
 
-			// ÅÅ³ı×Ó½Úµã
+			// æ’é™¤å­èŠ‚ç‚¹
 			var treeNode = toTreeObj.getTreeNodeById("_rootId");
 			if( treeNode ) {
 				var cloneNode = new XmlNode(curNode.node).cloneNode(false);
@@ -518,11 +518,11 @@ function addTreeNode(fromTreeObj, toTreeObj, checkFunction) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£º¼ì²âÊÇ·ñÓĞÏàÍ¬ÊôĞÔ½Úµã
- *	²ÎÊı£º	Element:treeObj         tree¿Ø¼ş¶ÔÏó
-			string:attrName         ÊôĞÔÃû
-			string:attrValue        ÊôĞÔÖµ
- *	·µ»ØÖµ£º
+ *	å‡½æ•°è¯´æ˜ï¼šæ£€æµ‹æ˜¯å¦æœ‰ç›¸åŒå±æ€§èŠ‚ç‚¹
+ *	å‚æ•°ï¼š	Element:treeObj         treeæ§ä»¶å¯¹è±¡
+			string:attrName         å±æ€§å
+			string:attrValue        å±æ€§å€¼
+ *	è¿”å›å€¼ï¼š
  */
 function hasSameAttributeTreeNode(treeObj, attrName, attrValue) {
 	var flag = new Boolean(false);
@@ -536,7 +536,7 @@ function hasSameAttributeTreeNode(treeObj, attrName, attrValue) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÏÔÊ¾µ±Ç°Ê÷½ÚµãĞÅÏ¢
+ *	å‡½æ•°è¯´æ˜ï¼šæ˜¾ç¤ºå½“å‰æ ‘èŠ‚ç‚¹ä¿¡æ¯
  */
 function showTreeNodeStatus(params) {
 	var treeObj = $("tree");
@@ -563,36 +563,36 @@ function showTreeNodeStatus(params) {
 
 
 /*
- *	º¯ÊıËµÃ÷£º³õÊ¼»¯·­Ò³¹¤¾ßÌõ
- *	²ÎÊı£º	object:toolbarObj       ¹¤¾ßÌõ¶ÔÏó
-			XmlNode:xmlIsland       XmlNodeÊµÀı
-			function:callback       »Øµ÷º¯Êı
- *	·µ»ØÖµ£º
+ *	å‡½æ•°è¯´æ˜ï¼šåˆå§‹åŒ–ç¿»é¡µå·¥å…·æ¡
+ *	å‚æ•°ï¼š	object:toolbarObj       å·¥å…·æ¡å¯¹è±¡
+			XmlNode:xmlIsland       XmlNodeå®ä¾‹
+			function:callback       å›è°ƒå‡½æ•°
+ *	è¿”å›å€¼ï¼š
  */
 function initGridToolBar(toolbarObj, xmlIsland, callback) {
-	//³õÊ¼»¯
+	//åˆå§‹åŒ–
 	toolbarObj.init = function() {
 		this.clear();
 		this.create();
 		this.attachEvents();
 	}
 	
-	//Çå¿ÕÄÚÈİ
+	//æ¸…ç©ºå†…å®¹
 	toolbarObj.clear = function() {
 		this.innerHTML = "";
 	}
 	
-	//´´½¨°´Å¥
+	//åˆ›å»ºæŒ‰é’®
 	toolbarObj.create = function() {
 		var totalpages = toolbarObj.getTotalPages();
 		var curPage = toolbarObj.getCurrentPage();
 
 		var str = [];
-		str[str.length] = "<span class=\"button refresh\" id=\"GridBtRefresh\" title=\"Ë¢ĞÂ\"></span>";
-		str[str.length] = "<span class=\"button first\"   id=\"GridBtFirst\"   title=\"µÚÒ»Ò³\"></span>";
-		str[str.length] = "<span class=\"button prev\"    id=\"GridBtPrev\"    title=\"ÉÏÒ»Ò³\"></span>";
-		str[str.length] = "<span class=\"button next\"    id=\"GridBtNext\"    title=\"ÏÂÒ»Ò³\"></span>";
-		str[str.length] = "<span class=\"button last\"    id=\"GridBtLast\"    title=\"×îºóÒ»Ò³\"></span>";
+		str[str.length] = "<span class=\"button refresh\" id=\"GridBtRefresh\" title=\"åˆ·æ–°\"></span>";
+		str[str.length] = "<span class=\"button first\"   id=\"GridBtFirst\"   title=\"ç¬¬ä¸€é¡µ\"></span>";
+		str[str.length] = "<span class=\"button prev\"    id=\"GridBtPrev\"    title=\"ä¸Šä¸€é¡µ\"></span>";
+		str[str.length] = "<span class=\"button next\"    id=\"GridBtNext\"    title=\"ä¸‹ä¸€é¡µ\"></span>";
+		str[str.length] = "<span class=\"button last\"    id=\"GridBtLast\"    title=\"æœ€åä¸€é¡µ\"></span>";
 		
 		str[str.length] = "<select id=\"GridPageList\">";
 		for(var i=0; i <= totalpages; i++) {
@@ -603,7 +603,7 @@ function initGridToolBar(toolbarObj, xmlIsland, callback) {
 		this.innerHTML = str.join("");
 	}
 	
-	//°ó¶¨ÊÂ¼ş
+	//ç»‘å®šäº‹ä»¶
 	toolbarObj.attachEvents = function() {
 		var gridBtRefreshObj = $("GridBtRefresh");
 		var gridBtFirstObj   = $("GridBtFirst");
@@ -645,7 +645,7 @@ function initGridToolBar(toolbarObj, xmlIsland, callback) {
 		});
 	}
 	
-	//»ñÈ¡µ±Ç°Ò³Âë
+	//è·å–å½“å‰é¡µç 
 	toolbarObj.getCurrentPage = function() {
 		var currentpage = xmlIsland.getAttribute("currentpage");
 		if(null == currentpage) {
@@ -656,7 +656,7 @@ function initGridToolBar(toolbarObj, xmlIsland, callback) {
 		return currentpage;
 	}
 	
-	//»ñÈ¡×îºóÒ»Ò³Ò³Âë
+	//è·å–æœ€åä¸€é¡µé¡µç 
 	toolbarObj.getLastPage = function() {
 		var lastpage = this.getTotalPages();
 		if(null == lastpage) {
@@ -667,7 +667,7 @@ function initGridToolBar(toolbarObj, xmlIsland, callback) {
 		return lastpage;
 	}
 	
-	//»ñÈ¡×ÜÒ³Âë
+	//è·å–æ€»é¡µç 
 	toolbarObj.getTotalPages = function() {
 		var totalpages = xmlIsland.getAttribute("totalpages");
 		if(null == totalpages) {
@@ -678,7 +678,7 @@ function initGridToolBar(toolbarObj, xmlIsland, callback) {
 		return totalpages;
 	}
 	
-	//×ªµ½Ö¸¶¨Ò³
+	//è½¬åˆ°æŒ‡å®šé¡µ
 	toolbarObj.gotoPage = function(page) {
 		callback(page);
 	}
@@ -691,19 +691,19 @@ function initGridToolBar(toolbarObj, xmlIsland, callback) {
 
 
 /*
- *	º¯ÊıËµÃ÷£º½ûÖ¹µã»÷°´Å¥
+ *	å‡½æ•°è¯´æ˜ï¼šç¦æ­¢ç‚¹å‡»æŒ‰é’®
  */
 function disableButton(btObj) {
 	btObj.disabled = true;
 }
 /*
- *	º¯ÊıËµÃ÷£ºÔÊĞíµã»÷°´Å¥£º
+ *	å‡½æ•°è¯´æ˜ï¼šå…è®¸ç‚¹å‡»æŒ‰é’®ï¼š
  */
 function enableButton(btObj) {
 	btObj.disabled = false;
 }
 /*
- *	º¯ÊıËµÃ÷£ºÍ¬²½°´Å¥½ûÖ¹/ÔÊĞí×´Ì¬
+ *	å‡½æ•°è¯´æ˜ï¼šåŒæ­¥æŒ‰é’®ç¦æ­¢/å…è®¸çŠ¶æ€
  */
 function syncButton(btObjs, request) {
 	for(var i=0; i < btObjs.length; i++) {
@@ -720,8 +720,8 @@ function syncButton(btObjs, request) {
 
 
 /*
- *	º¯ÊıËµÃ÷£º³õÊ¼»¯µ¼º½Ìõ
- *	²ÎÊı£º	string:curId       µ±Ç°²Ëµ¥Ïîid
+ *	å‡½æ•°è¯´æ˜ï¼šåˆå§‹åŒ–å¯¼èˆªæ¡
+ *	å‚æ•°ï¼š	string:curId       å½“å‰èœå•é¡¹id
  */
 function initNaviBar(curId) {	
 	var isModule = (window.location.href.indexOf("module") > 0);
@@ -755,9 +755,9 @@ function initNaviBar(curId) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÇå³ıÊ÷½Úµã²Ù×÷È¨ÏŞ
- *	²ÎÊı£º	xmlNode:treeNode                XmlNodeÊµÀı
-			boolean:clearChildren           ÊÇ·ñÇå³ı×Ó½Úµã
+ *	å‡½æ•°è¯´æ˜ï¼šæ¸…é™¤æ ‘èŠ‚ç‚¹æ“ä½œæƒé™
+ *	å‚æ•°ï¼š	xmlNode:treeNode                XmlNodeå®ä¾‹
+			boolean:clearChildren           æ˜¯å¦æ¸…é™¤å­èŠ‚ç‚¹
  */
 function clearOperation(treeNode, clearChildren) {
 	treeNode.removeAttribute("_operation");

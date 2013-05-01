@@ -115,12 +115,18 @@ var Tree = function(element) {
 	this.element.className = _TREE_STYLE;	
 		
 	this.init = function() {	
+		this.loadData(this.element._dataXML);
+	
 		this.displayObj = new Display(this);
 		this.searchObj  = new Search(this);		
 		
-		this.load(this.element._dataXML);
-		
-		this.element.isLoaded = true; //增加isLoaded属性表示是否初始化完成		
+		this.setDefaultActive();
+		this.reload();
+	
+		this.element._dataXML = "";
+		this.element.isLoaded = true; // 增加isLoaded属性表示是否初始化完成	
+
+		eventTreeReady.fire(createEventObject()); // 触发载入完成事件		
 		eventComponentReady.fire(createEventObject()); 	// 触发控件初始化完成事件
 	}	
 	
@@ -1873,7 +1879,7 @@ function Display(treeObj) {
 	var _windowWidth  = Math.max(treeObj.element.offsetWidth  - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_WIDTH);
 	var _rowHeight    = _TREE_NODE_DISPLAY_ROW_HEIGHT;
 	var _pageSize     = Math.floor(_windowHeight / _rowHeight);
-	var _totalTreeNodes = ""; // treeObj.getXmlRoot().selectNodes(".//treeNode[../@_open = 'true']");
+	var _totalTreeNodes = treeObj.getXmlRoot().selectNodes(".//treeNode[../@_open = 'true']");
 	var _totalTreeNodesNum = _totalTreeNodes.length;
 	
 	var _vScrollBox;
@@ -1931,7 +1937,7 @@ function Display(treeObj) {
 		var vScrollStr = '<div id="treeVScrollBox" style="position:absolute;overflow-y:auto;heigth:100%;width:17px;top:0px;right:0px;"><div id="treeVScrollDiv" style="width:1px"></div></div>';
 		var hScrollStr = '<div id="treeHScrollBox" style="position:absolute;overflow-x:auto;overflow-y:hidden;heigth:17px;width:100%;bottom:0px;left:0px"><div id="treeHScrollDiv" style="higth:1px"></div></div>';
 		treeObj.element.insertAdjacentHTML('afterBegin', vScrollStr + hScrollStr);
-		_vScrollBox = treeObj.element.all("treeVScrollBox");
+		_vScrollBox = $("treeVScrollBox");
 		_vScrollDiv = treeObj.element.all("treeVScrollDiv");
 		_hScrollBox = treeObj.element.all("treeHScrollBox");
 		_hScrollDiv = treeObj.element.all("treeHScrollDiv");
@@ -1963,7 +1969,7 @@ function Display(treeObj) {
 	/*
 	 * 根据滚动状态，显示可视范围内的树节点。
 	 */
-	this.reload = function() {
+	this.reload = function refresh() {
 		var startTime = new Date();
 		if(_totalTreeNodesNum <= _pageSize) {
 			_startNum = 0;
@@ -2088,10 +2094,10 @@ function Display(treeObj) {
 	 */
 	function resize() {
 		// 增加延时，避免极短时间内重复触发多次
-		clearTimeout(element._resizeTimeout);
-		element._resizeTimeout = setTimeout(function() {
-			var tempWindowHeight = Math.max(element.offsetHeight - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_HEIGHT);
-			var tempWindowWidth  = Math.max(element.offsetWidth  - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_WIDTH);
+		clearTimeout(treeObj.element._resizeTimeout);
+		treeObj.element._resizeTimeout = setTimeout(function() {
+			var tempWindowHeight = Math.max(treeObj.element.offsetHeight - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_HEIGHT);
+			var tempWindowWidth  = Math.max(treeObj.element.offsetWidth  - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_WIDTH);
 
 			if(_windowHeight != tempWindowHeight || _windowWidth != tempWindowWidth) {
 				_windowHeight = tempWindowHeight;

@@ -1,25 +1,25 @@
-/*********************************** ³£ÓÃº¯Êı  start **********************************/
+/*********************************** å¸¸ç”¨å‡½æ•°  start **********************************/
 
-/* ¶ÔÏóÀàĞÍ */
+/* å¯¹è±¡ç±»å‹ */
 _TYPE_NUMBER = "number";
 _TYPE_OBJECT = "object";
 _TYPE_FUNCTION = "function";
 _TYPE_STRING = "string";
 _TYPE_BOOLEAN = "boolean";
 
-/* ³£ÓÃ·½·¨ËõĞ´ */
+/* å¸¸ç”¨æ–¹æ³•ç¼©å†™ */
 $ = function(id){
 	return document.getElementById(id);
 }
 
 /*
- * ÅĞ¶ÏÖµÊÇ·ñÎªnull»ò¿Õ×Ö·û´®
+ * åˆ¤æ–­å€¼æ˜¯å¦ä¸ºnullæˆ–ç©ºå­—ç¬¦ä¸²
  */
 function isNullOrEmpty(value) {
 	return (value == null || (typeof(value) == 'string' && value == ""));
 }
 
-/* Ç°Ì¨µ¥Ôª²âÊÔ¶ÏÑÔ */
+/* å‰å°å•å…ƒæµ‹è¯•æ–­è¨€ */
 function assertEquals(actual, expect, msg) {
 	if( expect != actual ) {
 		alert(msg || "" + "[expect: " + expect + ", actual: " + actual + "]");
@@ -38,10 +38,10 @@ function assertNotNull(result, msg) {
 	}
 }
 
-/* ¶ÔÏóÃû³Æ£ºPublic£¨È«¾Ö¾²Ì¬¶ÔÏó£© */
+/* å¯¹è±¡åç§°ï¼šPublicï¼ˆå…¨å±€é™æ€å¯¹è±¡ï¼‰ */
 var Public = {};
 
-/* ä¯ÀÀÆ÷ÀàĞÍ */
+/* æµè§ˆå™¨ç±»å‹ */
 _BROWSER_IE = "IE";
 _BROWSER_FF = "FF";
 _BROWSER_OPERA = "OPERA";
@@ -89,7 +89,7 @@ Public.executeCommand = function(callback, param) {
 	return returnVal;
 }
 
-/* ÏÔÊ¾µÈ´ı×´Ì¬ */
+/* æ˜¾ç¤ºç­‰å¾…çŠ¶æ€ */
 Public.showWaitingLayer = function () {
 	var waitingDiv = $("_waitingDiv");
 	if(waitingDiv == null) {
@@ -151,16 +151,16 @@ Public.writeTitle = function() {
 	if(window.dialogArguments) {
 		var title = window.dialogArguments.title;
 		if( title != null ) {
-			document.write("<title>" + title + new Array(100).join("¡¡") + "</title>");
+			document.write("<title>" + title + new Array(100).join("ã€€") + "</title>");
 		}
 	}
 }
 Public.writeTitle();
 
 
-/* ¸ºÔğÉú³É¶ÔÏóÎ¨Ò»±àºÅ£¨ÎªÁË¼æÈİFF£© */
+/* è´Ÿè´£ç”Ÿæˆå¯¹è±¡å”¯ä¸€ç¼–å·ï¼ˆä¸ºäº†å…¼å®¹FFï¼‰ */
 
-/* Ä¬ÈÏÎ¨Ò»±àºÅÃûÇ°×º */
+/* é»˜è®¤å”¯ä¸€ç¼–å·åå‰ç¼€ */
 _UNIQUE_ID_DEFAULT_PREFIX = "_default_id";
 
 var UniqueID = {};
@@ -173,12 +173,12 @@ UniqueID.generator = function(prefix) {
 }
 
 
-/* »º´æÒ³ÃæÊı¾İ£¨xml¡¢±äÁ¿µÈ£© */
+/* ç¼“å­˜é¡µé¢æ•°æ®ï¼ˆxmlã€å˜é‡ç­‰ï¼‰ */
 var Cache = {};
 Cache.Variables = new Collection();
 Cache.XmlIslands = new Collection();
 
-/* ¼¯ºÏÀà: ÀàËÆjava Map */
+/* é›†åˆç±»: ç±»ä¼¼java Map */
 function Collection() {
 	this.items = {};
 }
@@ -200,8 +200,8 @@ Collection.prototype.get = function(id) {
 }
 
 /*
- *	Ô­ĞÍ¼Ì³Ğ
- *	²ÎÊı£º	function:Class		½«±»¼Ì³ĞµÄÀà
+ *	åŸå‹ç»§æ‰¿
+ *	å‚æ•°ï¼š	function:Class		å°†è¢«ç»§æ‰¿çš„ç±»
  */
 Collection.prototype.inherit = function(Class) {
 	var inheritClass = new Class();
@@ -212,8 +212,8 @@ Collection.prototype.inherit = function(Class) {
 
 
 /* 
- * ¸ºÔğ¹ÜÀíÒ³ÃæÉÏcookieÊı¾İ.
- * ChromeÖ»Ö§³ÖÔÚÏßÍøÕ¾µÄcookieµÄ¶ÁĞ´²Ù×÷£¬¶Ô±¾µØhtmlµÄcookie²Ù×÷ÊÇ½ûÖ¹µÄ¡£
+ * è´Ÿè´£ç®¡ç†é¡µé¢ä¸Šcookieæ•°æ®.
+ * Chromeåªæ”¯æŒåœ¨çº¿ç½‘ç«™çš„cookieçš„è¯»å†™æ“ä½œï¼Œå¯¹æœ¬åœ°htmlçš„cookieæ“ä½œæ˜¯ç¦æ­¢çš„ã€‚
  */
 var Cookie = {};
 
@@ -261,9 +261,9 @@ Cookie.delAll = function(path) {
 	}
 }
 
-/* ¸ºÔğ»ñÈ¡µ±Ç°Ò³ÃæµØÖ·²ÎÊı */
+/* è´Ÿè´£è·å–å½“å‰é¡µé¢åœ°å€å‚æ•° */
 var Query = {};
-Query.items = {}; // {}£ºMap£¬ÓÉkey/value¶Ô×é³É; []:Êı×é
+Query.items = {}; // {}ï¼šMapï¼Œç”±key/valueå¯¹ç»„æˆ; []:æ•°ç»„
 
 Query.get = function(name, decode) {
 	var str = this.items[name];
@@ -302,7 +302,7 @@ Log.clear = function() {
 	this.info = [];
 }
 
-// Ğ´ÈëÈÕÖ¾ĞÅÏ¢
+// å†™å…¥æ—¥å¿—ä¿¡æ¯
 Log.write = function(str) {
 	var index = this.info.length;
 	this.info.push("[" + index + "]" + str);
@@ -319,7 +319,7 @@ Log.read = function(index) {
 	}
 }
 
-// À©Õ¹Êı×é£¬Ôö¼ÓÊı×éÏî
+// æ‰©å±•æ•°ç»„ï¼Œå¢åŠ æ•°ç»„é¡¹
 Array.prototype.push = function(item) {
 	this[this.length] = item;
 }
@@ -357,9 +357,9 @@ String.prototype.revertCDATA = function(){
 }
 
 /*
- *	¸ù¾İ¸ø¶¨×Ö·û´®²Ã¼õÔ­×Ö·û´®
- *	²ÎÊı£º	string:trimStr  Òª²Ã¼õµÄ×Ö·û´®
- *	·µ»ØÖµ£ºstring:str      ²Ã¼õºóµÄ×Ö·û´®
+ *	æ ¹æ®ç»™å®šå­—ç¬¦ä¸²è£å‡åŸå­—ç¬¦ä¸²
+ *	å‚æ•°ï¼š	string:trimStr  è¦è£å‡çš„å­—ç¬¦ä¸²
+ *	è¿”å›å€¼ï¼šstring:str      è£å‡åçš„å­—ç¬¦ä¸²
  */
 String.prototype.trim = function(trimStr){
 	var str = this;
@@ -370,11 +370,11 @@ String.prototype.trim = function(trimStr){
 }
 
 /*
- *	°´×Ö½Ú£¬´ÓÆğÊ¼Î»ÖÃµ½ÖÕÖ¹Î»ÖÃ½ØÈ¡
- *	²ÎÊı£º	number:startB       ÆğÊ¼×Ö½ÚÎ»ÖÃ
-			number:endB         ÖÕÖ¹×Ö½ÚÎ»ÖÃ
- *	·µ»ØÖµ£ºstring:str          ½ØÈ¡ºóµÄ×Ö·û´®
- *	²¹³äËµÃ÷£ºµ±ÆğÊ¼Î»ÖÃÂäÔÚË«×Ö½Ú×Ö·ûÖĞ¼äÊ±£¬Ç¿ÖÆ³É¸Ã×Ö·ûÓÒ²à£»µ±ÖÕÖ¹Î»ÖÃÂäÔÚË«×Ö½Ú×Ö·ûÖĞ¼äÊ±£¬Ç¿ÖÆ³É¸Ã×Ö·û×ó²à
+ *	æŒ‰å­—èŠ‚ï¼Œä»èµ·å§‹ä½ç½®åˆ°ç»ˆæ­¢ä½ç½®æˆªå–
+ *	å‚æ•°ï¼š	number:startB       èµ·å§‹å­—èŠ‚ä½ç½®
+			number:endB         ç»ˆæ­¢å­—èŠ‚ä½ç½®
+ *	è¿”å›å€¼ï¼šstring:str          æˆªå–åçš„å­—ç¬¦ä¸²
+ *	è¡¥å……è¯´æ˜ï¼šå½“èµ·å§‹ä½ç½®è½åœ¨åŒå­—èŠ‚å­—ç¬¦ä¸­é—´æ—¶ï¼Œå¼ºåˆ¶æˆè¯¥å­—ç¬¦å³ä¾§ï¼›å½“ç»ˆæ­¢ä½ç½®è½åœ¨åŒå­—èŠ‚å­—ç¬¦ä¸­é—´æ—¶ï¼Œå¼ºåˆ¶æˆè¯¥å­—ç¬¦å·¦ä¾§
  */
 String.prototype.substringB = function(startB, endB){
 	var str = this;
@@ -402,10 +402,10 @@ String.prototype.substringB = function(startB, endB){
 	return str.substring(start,end);
 }
 /*
- *	°´×Ö½Ú£¬´ÓÆğÊ¼Î»ÖÃ¿ªÊ¼½ØÈ¡Ö¸¶¨×Ö½ÚÊı
- *	²ÎÊı£º	number:startB       ÆğÊ¼×Ö½ÚÎ»ÖÃ
-			number:lenB         ½ØÈ¡×Ö½ÚÊı
- *	·µ»ØÖµ£ºstring:str          ½ØÈ¡ºóµÄ×Ö·û´®
+ *	æŒ‰å­—èŠ‚ï¼Œä»èµ·å§‹ä½ç½®å¼€å§‹æˆªå–æŒ‡å®šå­—èŠ‚æ•°
+ *	å‚æ•°ï¼š	number:startB       èµ·å§‹å­—èŠ‚ä½ç½®
+			number:lenB         æˆªå–å­—èŠ‚æ•°
+ *	è¿”å›å€¼ï¼šstring:str          æˆªå–åçš„å­—ç¬¦ä¸²
  */
 String.prototype.substrB = function(startB, lenB){
 	var str = this;
@@ -413,14 +413,14 @@ String.prototype.substrB = function(startB, lenB){
 }
 
 /*
- *	°´×Ö½Ú£¬´ÓÆğÊ¼Î»ÖÃ¿ªÊ¼½ØÈ¡Ö¸¶¨×Ö½ÚÊı
+ *	æŒ‰å­—èŠ‚ï¼Œä»èµ·å§‹ä½ç½®å¼€å§‹æˆªå–æŒ‡å®šå­—èŠ‚æ•°
  */
 String.prototype.getBytes = function(){
 	var str = this;
 	return str.replace(/[^\u0000-\u00FF]/,"*").length;
 }
 
-// À©Õ¹ÈÕÆÚ£¬»ñÈ¡ËÄÎ»ÊıÄê·İ
+// æ‰©å±•æ—¥æœŸï¼Œè·å–å››ä½æ•°å¹´ä»½
 Date.prototype.getFullYear = function() {
 	var year = this.getYear();
 	if(year < 1000) {
@@ -481,9 +481,9 @@ function numberToString(number, pattern) {
 	return number.toString();
 }
 
-/*********************************** ³£ÓÃº¯Êı  end **********************************/
+/*********************************** å¸¸ç”¨å‡½æ•°  end **********************************/
 
-/*********************************** html dom ²Ù×÷ start **********************************/
+/*********************************** html dom æ“ä½œ start **********************************/
 
 var Element = {};
 
@@ -502,9 +502,9 @@ Element.removeNode = function(node) {
 }
 
 /*
- *	»ñÈ¡¶ÔÏóÒ³Ãæ¾ø¶ÔÎ»ÖÃ
- *	²ÎÊı£º	object:srcElement       HTML¶ÔÏó
- *	·µ»ØÖµ£ºnumber:offsetLeft       ¶ÔÏóÒ³Ãæ¾ø¶ÔÎ»ÖÃ
+ *	è·å–å¯¹è±¡é¡µé¢ç»å¯¹ä½ç½®
+ *	å‚æ•°ï¼š	object:srcElement       HTMLå¯¹è±¡
+ *	è¿”å›å€¼ï¼šnumber:offsetLeft       å¯¹è±¡é¡µé¢ç»å¯¹ä½ç½®
  */
 Element.absLeft = function(srcElement) {
 	var absLeft = 0;
@@ -526,10 +526,10 @@ Element.absTop = function(srcElement) {
 }
 
 /*
- *	´´½¨´øÃüÃû¿Õ¼äµÄ¶ÔÏó
- *	²ÎÊı£º	string:tagName		¶ÔÏó±êÇ©Ãû
-			string:ns			ÃüÃû¿Õ¼ä
- *	·µ»ØÖµ£ºobject	html¶ÔÏó
+ *	åˆ›å»ºå¸¦å‘½åç©ºé—´çš„å¯¹è±¡
+ *	å‚æ•°ï¼š	string:tagName		å¯¹è±¡æ ‡ç­¾å
+			string:ns			å‘½åç©ºé—´
+ *	è¿”å›å€¼ï¼šobject	htmlå¯¹è±¡
  */
 Element.createElement = function(tagName, ns) {
 	var obj;
@@ -546,9 +546,9 @@ Element.createElement = function(tagName, ns) {
 }
 
 /*
- *	Òş²Ø¶ÔÏó¸²¸Ç·¶Î§ÄÚµÄ¸ßÓÅÏÈ¼¶µÄ¿Ø¼ş(selectµÈ)
- *	²ÎÊı£º	Object:obj			html¶ÔÏó
- *	·µ»ØÖµ£º
+ *	éšè—å¯¹è±¡è¦†ç›–èŒƒå›´å†…çš„é«˜ä¼˜å…ˆçº§çš„æ§ä»¶(selectç­‰)
+ *	å‚æ•°ï¼š	Object:obj			htmlå¯¹è±¡
+ *	è¿”å›å€¼ï¼š
  */
 Element.hideConflict = function(obj) {
 	var x = Element.absLeft(obj);
@@ -596,7 +596,7 @@ Element.hideConflict = function(obj) {
 }
 
 Element.showConflict = function(obj) {
-	// ÆøÇòÓĞ¿ÉÄÜÒÑ¾­±»ÆäËûÍ¾¾¶ÊÍ·ÅµôÁË£¬obj±»Çå¿Õ
+	// æ°”çƒæœ‰å¯èƒ½å·²ç»è¢«å…¶ä»–é€”å¾„é‡Šæ”¾æ‰äº†ï¼Œobjè¢«æ¸…ç©º
 	if( typeof(obj) != "undefined" && obj.conflict != null ) {
 		for( var i = 0; i < obj.conflict.length; i++ ) {
 			obj.conflict[i].style.visibility = "visible";
@@ -609,8 +609,8 @@ Element.write = function(obj, content) {
 }
 
 /*
- * ¶¯Ì¬´´½¨½Å±¾
- * ²ÎÊı£º	String:script			½Å±¾ÄÚÈİ
+ * åŠ¨æ€åˆ›å»ºè„šæœ¬
+ * å‚æ•°ï¼š	String:script			è„šæœ¬å†…å®¹
  */
 Element.createScript = function(script) {
 	var head = document.head || document.getElementsByTagName('head')[0];
@@ -622,8 +622,8 @@ Element.createScript = function(script) {
 }
 
 /*
- * ¶¯Ì¬´´½¨ÑùÊ½
- * ²ÎÊı£º	String:style			ÑùÊ½ÄÚÈİ
+ * åŠ¨æ€åˆ›å»ºæ ·å¼
+ * å‚æ•°ï¼š	String:style			æ ·å¼å†…å®¹
  */
  Element.createStyle = function(style) {
 	 if(window.DOMParser) {
@@ -640,7 +640,7 @@ Element.createScript = function(script) {
 	 }
 }
 
-/* ÉèÖÃÍ¸Ã÷¶È */
+/* è®¾ç½®é€æ˜åº¦ */
 Element.setOpacity = function(obj, opacity) {
 	if(opacity == null || opacity == "") {
 		opacity = 100;
@@ -655,10 +655,10 @@ Element.setOpacity = function(obj, opacity) {
 }
 
 /*
- * ÊÇ·ñ°üº¬¹ØÏµ
- * ²ÎÊı£º   Object:parentObj        html¶ÔÏó
-			Object:obj              html¶ÔÏó
- * ·µ»ØÖµ£º	
+ * æ˜¯å¦åŒ…å«å…³ç³»
+ * å‚æ•°ï¼š   Object:parentObj        htmlå¯¹è±¡
+			Object:obj              htmlå¯¹è±¡
+ * è¿”å›å€¼ï¼š	
  */
 Element.contains = function(parentNode, node) {
 	if(parentNode == null || node == null) {
@@ -680,10 +680,10 @@ Element.contains = function(parentNode, node) {
 }
 
 /*
- * »ñÈ¡ÔªËØµÄµ±Ç°ÑùÊ½
- * ²ÎÊı£º   Object:obj              html¶ÔÏó
-			string:rule             ÑùÊ½Ãû(Àı:background-color)
- * ·µ»ØÖµ£º	string:str              ÑùÊ½Öµ
+ * è·å–å…ƒç´ çš„å½“å‰æ ·å¼
+ * å‚æ•°ï¼š   Object:obj              htmlå¯¹è±¡
+			string:rule             æ ·å¼å(ä¾‹:background-color)
+ * è¿”å›å€¼ï¼š	string:str              æ ·å¼å€¼
  */
 Element.getCurrentStyle = function(obj, rule) {
 	if(obj == null) {
@@ -704,20 +704,20 @@ Element.getCurrentStyle = function(obj, rule) {
 }
 
 /*
- * ¿ØÖÆ¶ÔÏóÍÏ¶¯¸Ä±ä¿í¶È
- * ²ÎÊı£º	Object:obj			ÒªÍÏ¶¯¸Ä±ä¿í¶ÈµÄHTML¶ÔÏó
+ * æ§åˆ¶å¯¹è±¡æ‹–åŠ¨æ”¹å˜å®½åº¦
+ * å‚æ•°ï¼š	Object:obj			è¦æ‹–åŠ¨æ”¹å˜å®½åº¦çš„HTMLå¯¹è±¡
  */
 Element.attachColResize = function(obj, offsetX) {
 	offsetX = 3 - (offsetX || 0);
 
-	// ¼ÆËã¶ÔÏóÊµ¼ÊµÄ×ø±êÖµ
+	// è®¡ç®—å¯¹è±¡å®é™…çš„åæ ‡å€¼
 	obj._absTop  = this.absTop(obj);
 	obj._absLeft = this.absLeft(obj);
 
-	// Ìí¼ÓresizeÌõ
+	// æ·»åŠ resizeæ¡
 	var ruleObj = document.createElement("DIV");
 	ruleObj.id = "colRule";
-	ruleObj.style.cssText = "cursor:col-resize;width:" + offsetX + "px;height:" +¡¡obj.offsetHeight 
+	ruleObj.style.cssText = "cursor:col-resize;width:" + offsetX + "px;height:" +ã€€obj.offsetHeight 
 		+ ";top:" + obj._absTop + ";left:" + (obj._absLeft + obj.offsetWidth - offsetX) 
 		+ ";position:absolute;background-color:white;overflow:hidden;filter:alpha(opacity=0)";
 	document.body.appendChild(ruleObj);
@@ -771,10 +771,10 @@ Element.attachColResize = function(obj, offsetX) {
 }
 
 Element.attachResize = function(obj) {
-	// Ìí¼ÓË®Æ½·½ÏòÍÏ×§µÄÏß£¬3px´ÖÏ¸
+	// æ·»åŠ æ°´å¹³æ–¹å‘æ‹–æ‹½çš„çº¿ï¼Œ3pxç²—ç»†
 	var rightLine = document.createElement("DIV");
 	ruleObj.id = "rightLine";
-	ruleObj.style.cssText = "cursor:col-resize;width:" + offsetX + "px;height:" +¡¡obj.offsetHeight 
+	ruleObj.style.cssText = "cursor:col-resize;width:" + offsetX + "px;height:" +ã€€obj.offsetHeight 
 		+ ";top:" + obj._absTop + ";left:" + (obj._absLeft + obj.offsetWidth - offsetX) 
 		+ ";position:absolute;background-color:white;overflow:hidden;filter:alpha(opacity=0)";
 	document.body.appendChild(ruleObj);
@@ -782,9 +782,9 @@ Element.attachResize = function(obj) {
 
 
 
-/*********************************** html dom ²Ù×÷  end **********************************/
+/*********************************** html dom æ“ä½œ  end **********************************/
 
-/*********************************** ÊÂ¼ş£¨Event£©º¯Êı  start **********************************/
+/*********************************** äº‹ä»¶ï¼ˆEventï¼‰å‡½æ•°  start **********************************/
 
 var Event = {};
 Event.MOUSEDOWN = 1;
@@ -797,9 +797,9 @@ Event.MOUSEDRAG = 32;
 Event.timeout = {};
 
 /*
- *	»ñµÃÊÂ¼ş´¥·¢¶ÔÏó
- *	²ÎÊı£º	event:eventObj      ÊÂ¼ş¶ÔÏó
- *	·µ»ØÖµ£ºobject:object       HTML¶ÔÏó
+ *	è·å¾—äº‹ä»¶è§¦å‘å¯¹è±¡
+ *	å‚æ•°ï¼š	event:eventObj      äº‹ä»¶å¯¹è±¡
+ *	è¿”å›å€¼ï¼šobject:object       HTMLå¯¹è±¡
  */
 Event.getSrcElement = function(eventObj) {
 	var srcElement = null;
@@ -812,7 +812,7 @@ Event.getSrcElement = function(eventObj) {
 	return srcElement;
 }
 
-/* Ê¹ÊÂ¼şÊ¼ÖÕ²¶×½¶ÔÏó¡£ÉèÖÃÊÂ¼ş²¶»ñ·¶Î§¡£ */
+/* ä½¿äº‹ä»¶å§‹ç»ˆæ•æ‰å¯¹è±¡ã€‚è®¾ç½®äº‹ä»¶æ•è·èŒƒå›´ã€‚ */
 Event.setCapture = function(srcElement, eventType) {
 	if (srcElement.setCapture) {             
 		srcElement.setCapture();         
@@ -822,7 +822,7 @@ Event.setCapture = function(srcElement, eventType) {
 	}
 }
 
-/* Ê¹ÊÂ¼ş·ÅÆúÊ¼ÖÕ²¶×½¶ÔÏó¡£ */
+/* ä½¿äº‹ä»¶æ”¾å¼ƒå§‹ç»ˆæ•æ‰å¯¹è±¡ã€‚ */
 Event.releaseCapture = function(srcElement, eventType) {
 	if(srcElement.releaseCapture){
 		srcElement.releaseCapture();
@@ -832,7 +832,7 @@ Event.releaseCapture = function(srcElement, eventType) {
 	}
 }
 
-/* È¡ÏûÊÂ¼ş */
+/* å–æ¶ˆäº‹ä»¶ */
 Event.cancel = function(eventObj) {
 	if(window.DOMParser) {
 		eventObj.preventDefault();
@@ -842,7 +842,7 @@ Event.cancel = function(eventObj) {
 	}
 }
 
-/* ×èÖ¹ÊÂ¼şÏòÉÏÃ°Åİ */
+/* é˜»æ­¢äº‹ä»¶å‘ä¸Šå†’æ³¡ */
 Event.cancelBubble = function(eventObj) {
 	if(window.DOMParser) {
 		eventObj.stopPropagation();
@@ -853,15 +853,15 @@ Event.cancelBubble = function(eventObj) {
 }
 
 /*
- *	¸½¼ÓÊÂ¼ş
- *	²ÎÊı£º	object:srcElement       HTML¶ÔÏó
-			string:eventName        ÊÂ¼şÃû³Æ(²»´øonÇ°×º)
-			function:listener       »Øµ÷·½·¨                
- *	·µ»ØÖµ£º
+ *	é™„åŠ äº‹ä»¶
+ *	å‚æ•°ï¼š	object:srcElement       HTMLå¯¹è±¡
+			string:eventName        äº‹ä»¶åç§°(ä¸å¸¦onå‰ç¼€)
+			function:listener       å›è°ƒæ–¹æ³•                
+ *	è¿”å›å€¼ï¼š
  */
 Event.attachEvent = function(srcElement, eventName, listener) {
 	if(null == srcElement || null == eventName || null == listener) {
-		alert("ĞèÒªµÄ²ÎÊıÎª¿Õ£¬Çë¼ì²é");
+		alert("éœ€è¦çš„å‚æ•°ä¸ºç©ºï¼Œè¯·æ£€æŸ¥");
 		return;
 	}
 
@@ -874,7 +874,7 @@ Event.attachEvent = function(srcElement, eventName, listener) {
 }
 Event.detachEvent = function(srcElement, eventName, listener) {
 	if(null == srcElement || null == eventName || null == listener) {
-		alert("ĞèÒªµÄ²ÎÊıÎª¿Õ£¬Çë¼ì²é");
+		alert("éœ€è¦çš„å‚æ•°ä¸ºç©ºï¼Œè¯·æ£€æŸ¥");
 		return;
 	}
 
@@ -890,7 +890,7 @@ Event.fireOnScrollBar = function(eventObj) {
 	var isOnScrollBar = false;
 	var srcElement = this.getSrcElement(eventObj);
 
-	// ÊÇ·ñÓĞ×İÏò¹ö¶¯Ìõ
+	// æ˜¯å¦æœ‰çºµå‘æ»šåŠ¨æ¡
 	if(srcElement.offsetWidth > srcElement.clientWidth) {
 		var offsetX = Event.offsetX(eventObj);
 		if(offsetX > srcElement.clientWidth) {
@@ -898,7 +898,7 @@ Event.fireOnScrollBar = function(eventObj) {
 		}
 	}
 
-	// ÊÇ·ñÓĞºáÏò¹ö¶¯Ìõ
+	// æ˜¯å¦æœ‰æ¨ªå‘æ»šåŠ¨æ¡
 	if(false == isOnScrollBar && srcElement.offsetHeight > srcElement.clientHeight) {
 		var offsetY = Event.offsetY(eventObj);
 		if(offsetY > srcElement.clientHeight) {
@@ -908,7 +908,7 @@ Event.fireOnScrollBar = function(eventObj) {
 	return isOnScrollBar;
 }
 
-// ÊÂ¼şÏà¶Ô´¥·¢¶ÔÏóÎ»ÖÃX
+// äº‹ä»¶ç›¸å¯¹è§¦å‘å¯¹è±¡ä½ç½®X
 Event.offsetX = function(eventObj) {
 	var clientX = eventObj.clientX;
 	var srcElement = this.getSrcElement(eventObj);
@@ -917,7 +917,7 @@ Event.offsetX = function(eventObj) {
 	return clientX - offsetLeft;
 }
 
-// ÊÂ¼şÏà¶Ô´¥·¢¶ÔÏóÎ»ÖÃY
+// äº‹ä»¶ç›¸å¯¹è§¦å‘å¯¹è±¡ä½ç½®Y
 Event.offsetY = function(eventObj) {
 	var clientY = eventObj.clientY;
 	var srcElement = this.getSrcElement(eventObj);
@@ -927,16 +927,19 @@ Event.offsetY = function(eventObj) {
 }
 
 
-/*********************************** ÊÂ¼ş£¨Event£©º¯Êı  end **********************************/
+/*********************************** äº‹ä»¶ï¼ˆEventï¼‰å‡½æ•°  end **********************************/
 
-/*********************************** xmlÎÄµµ¡¢½ÚµãÏà¹Ø²Ù×÷  start **********************************/
+/*********************************** xmlæ–‡æ¡£ã€èŠ‚ç‚¹ç›¸å…³æ“ä½œ  start **********************************/
 
 /*
- * ½«×Ö·û´®×ª»¯³Éxml½Úµã¶ÔÏó
+ * å°†å­—ç¬¦ä¸²è½¬åŒ–æˆxmlèŠ‚ç‚¹å¯¹è±¡
  */
 function loadXmlToNode(xml) {
+	if(xml == null || xml == "" || xml == "undifined") {
+		return null;
+	}
 	var xr = new XmlReader(xml);
-	return xr.xmlDom;
+	return xr.documentElement;
 }
 
 
@@ -1010,7 +1013,7 @@ XmlReader.prototype.load = function(url, async) {
 }
 
 /*
- *	»ñÈ¡½âÎö´íÎó
+ *	è·å–è§£æé”™è¯¯
  */
 XmlReader.prototype.getParseError = function() {
 	var parseError = null;
@@ -1045,15 +1048,15 @@ XmlReader.prototype.toXml = function() {
 }
 
 /*
- *  XML½ÚµãÀàĞÍ
+ *  XMLèŠ‚ç‚¹ç±»å‹
  */
-_XML_NODE_TYPE_ELEMENT    = 1; // ÔªËØ
-_XML_NODE_TYPE_ATTRIBUTE  = 2; // ÊôĞÔ
-_XML_NODE_TYPE_TEXT		  = 3; // ÎÄ±¾
+_XML_NODE_TYPE_ELEMENT    = 1; // å…ƒç´ 
+_XML_NODE_TYPE_ATTRIBUTE  = 2; // å±æ€§
+_XML_NODE_TYPE_TEXT		  = 3; // æ–‡æœ¬
 _XML_NODE_TYPE_CDATA	  = 4; 
 _XML_NODE_TYPE_PROCESSING = 7;
-_XML_NODE_TYPE_COMMENT    = 8; // ×¢ÊÍ
-_XML_NODE_TYPE_DOCUMENT   = 9; // ÎÄµµ
+_XML_NODE_TYPE_COMMENT    = 8; // æ³¨é‡Š
+_XML_NODE_TYPE_DOCUMENT   = 9; // æ–‡æ¡£
 
 
 /* XML Node */
@@ -1089,7 +1092,7 @@ XmlNode.prototype.setAttribute = function(name, value, isCDATA) {
 	}
 }
 
-/* É¾³ı½ÚµãÊôĞÔ */
+/* åˆ é™¤èŠ‚ç‚¹å±æ€§ */
 XmlNode.prototype.removeAttribute = function(name) {
 	if(_XML_NODE_TYPE_ELEMENT == this.nodeType) {
 		return this.node.removeAttribute(name);
@@ -1176,9 +1179,9 @@ XmlNode.prototype.selectSingleNode = function(xpath) {
 }
 
 /*
- *	²éÑ¯¶à¸ö½Úµã
- *	²ÎÊı£º	string:xpath		xpath
- *	·µ»ØÖµ£ºarray:xmlNodes      XmlNodeÊµÀıÊı×é
+ *	æŸ¥è¯¢å¤šä¸ªèŠ‚ç‚¹
+ *	å‚æ•°ï¼š	string:xpath		xpath
+ *	è¿”å›å€¼ï¼šarray:xmlNodes      XmlNodeå®ä¾‹æ•°ç»„
  */
 XmlNode.prototype.selectNodes = function(xpath) {
 	var xmlNodes = [];
@@ -1233,7 +1236,7 @@ XmlNode.prototype.getLastChild = function() {
 	return null;
 }
 
-// ½»»»×Ó½Úµã
+// äº¤æ¢å­èŠ‚ç‚¹
 XmlNode.prototype.replaceChild = function(newNode, oldNode) {
 	var oldParent = oldNode.getParent();
 	if(oldParent != null && oldParent.equals(this)) {
@@ -1248,7 +1251,7 @@ XmlNode.prototype.replaceChild = function(newNode, oldNode) {
 }
 		
 
-// ½»»»½Úµã
+// äº¤æ¢èŠ‚ç‚¹
 XmlNode.prototype.swapNode = function(xmlNode) {
 	var parentNode = this.getParent();
 	if(parentNode != null) {
@@ -1257,7 +1260,7 @@ XmlNode.prototype.swapNode = function(xmlNode) {
 }
 
 /*
- *	»ñÈ¡Ç°Ò»¸öĞÖµÜ½Úµã
+ *	è·å–å‰ä¸€ä¸ªå…„å¼ŸèŠ‚ç‚¹
  */
 XmlNode.prototype.getPrevSibling = function() {
 	var xmlNode = null;
@@ -1268,7 +1271,7 @@ XmlNode.prototype.getPrevSibling = function() {
 }
 
 /*
- * »ñÈ¡ºóÒ»¸öĞÖµÜ½Úµã
+ * è·å–åä¸€ä¸ªå…„å¼ŸèŠ‚ç‚¹
  */
 XmlNode.prototype.getNextSibling = function() {
 	if(this.node.nextSibling != null) {
@@ -1302,14 +1305,14 @@ XmlNode.prototype.toXml = function() {
 	}
 }
 
-/*********************************** xmlÎÄµµ¡¢½ÚµãÏà¹Ø²Ù×÷  end **********************************/
+/*********************************** xmlæ–‡æ¡£ã€èŠ‚ç‚¹ç›¸å…³æ“ä½œ  end **********************************/
 
-// Àë¿ªÌáĞÑ
+// ç¦»å¼€æé†’
 var Reminder = {};
 
-Reminder.items = {};   // ÌáĞÑÏî
+Reminder.items = {};   // æé†’é¡¹
 Reminder.count = 0;
-Reminder.flag  = true; // ÊÇ·ñÒªÌáĞÑ
+Reminder.flag  = true; // æ˜¯å¦è¦æé†’
 
 Reminder.del = function(id) {
 	if( this.items[id] ) {
@@ -1320,12 +1323,12 @@ Reminder.del = function(id) {
 
 Reminder.remind = function() {
 	if(this.getCount() > 0) {
-		alert("µ±È»ÓĞ <" + this.count + ">ÏîĞŞ¸ÄÎ´±£´æ£¬ÇëÏÈ±£´æ");
+		alert("å½“ç„¶æœ‰ <" + this.count + ">é¡¹ä¿®æ”¹æœªä¿å­˜ï¼Œè¯·å…ˆä¿å­˜");
 	}
 }
 
 /*
- * Í³¼ÆÌáĞÑÏî
+ * ç»Ÿè®¡æé†’é¡¹
  */
 Reminder.getCount = function() {
 	if( true== this.flag) {
@@ -1336,14 +1339,14 @@ Reminder.getCount = function() {
 }
 
 /*
- * È¡ÏûÌáĞÑ
+ * å–æ¶ˆæé†’
  */
 Reminder.cancel = function() {
 	this.flag = false;
 }
 
 /*
- * ÔÊĞíÌáĞÑ
+ * å…è®¸æé†’
  */
 Reminder.restore = function() {
 	this.flag = true;
@@ -1351,15 +1354,15 @@ Reminder.restore = function() {
 
 window.attachEvent("onbeforeunload", function() {
 	if(Reminder.getCount() > 0) {            
-		event.returnValue = "µ±Ç°ÓĞ <" + count + "> ÏîĞŞ¸ÄÎ´±£´æ£¬ÄúÈ·¶¨ÒªÀë¿ªÂğ£¿";
+		event.returnValue = "å½“å‰æœ‰ <" + count + "> é¡¹ä¿®æ”¹æœªä¿å­˜ï¼Œæ‚¨ç¡®å®šè¦ç¦»å¼€å—ï¼Ÿ";
 	}
 });
 
-/* ¸øxformµÈÌí¼ÓÀë¿ªÌáĞÑ */
+/* ç»™xformç­‰æ·»åŠ ç¦»å¼€æé†’ */
 function attachReminder(id, xform) {
 	if( xform ) {
 		xform.ondatachange = function() {
-			Reminder.add(id); // Êı¾İÓĞ±ä»¯Ê±²ÅÌí¼ÓÀë¿ªÌáĞÑ
+			Reminder.add(id); // æ•°æ®æœ‰å˜åŒ–æ—¶æ‰æ·»åŠ ç¦»å¼€æé†’
 		}
 	}
 	else {
@@ -1370,27 +1373,27 @@ function attachReminder(id, xform) {
 
 
 /*
- *	¶ÔÏóÃû³Æ£ºBlocks
- *	Ö°Ôğ£º¸ºÔğ¹ÜÀíËùÓĞBlockÊµÀı
+ *	å¯¹è±¡åç§°ï¼šBlocks
+ *	èŒè´£ï¼šè´Ÿè´£ç®¡ç†æ‰€æœ‰Blockå®ä¾‹
  */
 var Blocks = {};
 Blocks.items = {};
 
 /*
- *	´´½¨Çø¿éÊµÀı
- *	²ÎÊı£º	Object:blockObj		HTML¶ÔÏó
-			Object:associate	¹ØÁªµÄHTML¶ÔÏó
-			boolean:visible		Ä¬ÈÏÏÔÊ¾×´Ì¬
- *	·µ»ØÖµ£º
+ *	åˆ›å»ºåŒºå—å®ä¾‹
+ *	å‚æ•°ï¼š	Object:blockObj		HTMLå¯¹è±¡
+			Object:associate	å…³è”çš„HTMLå¯¹è±¡
+			boolean:visible		é»˜è®¤æ˜¾ç¤ºçŠ¶æ€
+ *	è¿”å›å€¼ï¼š
  */
 Blocks.create = function(blockObj, associate, visible) {
 	var block = new Block(blockObj, associate, visible);
 	this.items[block.uniqueID] = block;
 }
 /*
- *	»ñÈ¡Çø¿éÊµÀı
- *	²ÎÊı£º	string:id		HTML¶ÔÏóid
- *	·µ»ØÖµ£ºBlock:block		BlockÊµÀı
+ *	è·å–åŒºå—å®ä¾‹
+ *	å‚æ•°ï¼š	string:id		HTMLå¯¹è±¡id
+ *	è¿”å›å€¼ï¼šBlock:block		Blockå®ä¾‹
  */
 Blocks.getBlock = function(id) {
 	var block = this.items[id];
@@ -1399,8 +1402,8 @@ Blocks.getBlock = function(id) {
 
 
 /*
- *	¶ÔÏóÃû³Æ£ºBlock
- *	Ö°Ôğ£º¸ºÔğ¿ØÖÆÇø¿éÏÔÊ¾Òş²ØµÈ
+ *	å¯¹è±¡åç§°ï¼šBlock
+ *	èŒè´£ï¼šè´Ÿè´£æ§åˆ¶åŒºå—æ˜¾ç¤ºéšè—ç­‰
  */
 var Block = function(blockObj, associate, visible) {
 	this.object = blockObj;
@@ -1416,7 +1419,7 @@ var Block = function(blockObj, associate, visible) {
 }
 
 /*
- *	³õÊ¼»¯Çø¿é
+ *	åˆå§‹åŒ–åŒºå—
  */
 Block.prototype.init = function() {
 	this.width  = this.object.currentStyle.width;
@@ -1428,8 +1431,8 @@ Block.prototype.init = function() {
 }
 
 /*
- *	ÏÔÊ¾ÏêÏ¸ĞÅÏ¢
- *	²ÎÊı£º	boolean:useFixedSize	ÊÇ·ñÆôÓÃ¹Ì¶¨³ß´çÏÔÊ¾
+ *	æ˜¾ç¤ºè¯¦ç»†ä¿¡æ¯
+ *	å‚æ•°ï¼š	boolean:useFixedSize	æ˜¯å¦å¯ç”¨å›ºå®šå°ºå¯¸æ˜¾ç¤º
  */
 Block.prototype.show = function(useFixedSize) {
 	if( this.associate ) {
@@ -1440,7 +1443,7 @@ Block.prototype.show = function(useFixedSize) {
 	var width  = "auto";
 	var height = "auto";
 	
-	// ÆôÓÃ¹Ì¶¨³ß´ç
+	// å¯ç”¨å›ºå®šå°ºå¯¸
 	if(false != useFixedSize) {
 		width  = this.width || width;
 		height = this.height || height;
@@ -1452,7 +1455,7 @@ Block.prototype.show = function(useFixedSize) {
 }
 
 /*
- *	Òş²ØÏêÏ¸ĞÅÏ¢
+ *	éšè—è¯¦ç»†ä¿¡æ¯
  */
 Block.prototype.hide = function() {
 	if(  this.associate){
@@ -1464,8 +1467,8 @@ Block.prototype.hide = function() {
 }
 
 /*
- *	ÇĞ»»ÏÔÊ¾Òş²Ø×´Ì¬
- *	²ÎÊı£º	boolean:visible		ÊÇ·ñÏÔÊ¾×´Ì¬£¨¿ÉÑ¡£¬ÎŞ²ÎÊıÔòÄ¬ÈÏÇĞ»»ÏÂÒ»×´Ì¬£©
+ *	åˆ‡æ¢æ˜¾ç¤ºéšè—çŠ¶æ€
+ *	å‚æ•°ï¼š	boolean:visible		æ˜¯å¦æ˜¾ç¤ºçŠ¶æ€ï¼ˆå¯é€‰ï¼Œæ— å‚æ•°åˆ™é»˜è®¤åˆ‡æ¢ä¸‹ä¸€çŠ¶æ€ï¼‰
  */
 Block.prototype.switchTo = function(visible) {
 	visible = visible || !this.visible;
@@ -1479,8 +1482,8 @@ Block.prototype.switchTo = function(visible) {
 }
 
 /*
- *	Ô­ĞÍ¼Ì³Ğ
- *	²ÎÊı£º	function:Class		½«±»¼Ì³ĞµÄÀà
+ *	åŸå‹ç»§æ‰¿
+ *	å‚æ•°ï¼š	function:Class		å°†è¢«ç»§æ‰¿çš„ç±»
  */
 Block.prototype.inherit = function(Class) {
 	var inheritClass = new Class();
@@ -1491,8 +1494,8 @@ Block.prototype.inherit = function(Class) {
 
 
 /*
- *	¶ÔÏóÃû³Æ£ºWritingBlock
- *	Ö°Ôğ£º¸ºÔğÇø¿éÄÚÈİĞ´Èë
+ *	å¯¹è±¡åç§°ï¼šWritingBlock
+ *	èŒè´£ï¼šè´Ÿè´£åŒºå—å†…å®¹å†™å…¥
  *
  */
 function WritingBlock() {
@@ -1503,7 +1506,7 @@ function WritingBlock() {
 }
 
 /*
- *	´ò¿ª·ÖĞĞĞ´ÈëÄ£Ê½
+ *	æ‰“å¼€åˆ†è¡Œå†™å…¥æ¨¡å¼
  */
 WritingBlock.prototype.open = function(){
 	this.mode = "line";
@@ -1512,7 +1515,7 @@ WritingBlock.prototype.open = function(){
 }
 
 /*
- *	Ğ´Èë·ÖĞĞÄ£Ê½ÓÃµÄ±í¸ñ
+ *	å†™å…¥åˆ†è¡Œæ¨¡å¼ç”¨çš„è¡¨æ ¼
  */
 WritingBlock.prototype.writeTable = function() {
 	var str = [];
@@ -1530,23 +1533,23 @@ WritingBlock.prototype.writeTable = function() {
 }
 
 /*
- *	Çå³ıÄÚÈİ
+ *	æ¸…é™¤å†…å®¹
  */
 WritingBlock.prototype.clear = function() {
 	this.object.innerHTML = "";
 }
 
 /*
- *	¹Ø±Õ·ÖĞĞĞ´ÈëÄ£Ê½
+ *	å…³é—­åˆ†è¡Œå†™å…¥æ¨¡å¼
  */
 WritingBlock.prototype.close = function() {
 	this.mode = null;
 }
 
 /*
- *	·ÖĞĞĞ´ÈëÄÚÈİ£¨×óÓÒÁ½ÁĞ£©
- *	²ÎÊı£º	string:name     Ãû³Æ
-			string:value    Öµ
+ *	åˆ†è¡Œå†™å…¥å†…å®¹ï¼ˆå·¦å³ä¸¤åˆ—ï¼‰
+ *	å‚æ•°ï¼š	string:name     åç§°
+			string:value    å€¼
  */
 WritingBlock.prototype.writeln = function(name, value) {
 	if("line" == this.mode){
@@ -1559,7 +1562,7 @@ WritingBlock.prototype.writeln = function(name, value) {
 			this.writeTable();
 		}
 
-		// ´óÓÚ×îĞ¡ĞĞÊı£¬Ôò²åÈëĞÂĞĞ
+		// å¤§äºæœ€å°è¡Œæ•°ï¼Œåˆ™æ’å…¥æ–°è¡Œ
 		if(this.line >= this.minLine) {
 			var newrow = table.rows[0].cloneNode(true);
 			table.firstChild.appendChild(newrow);
@@ -1579,7 +1582,7 @@ WritingBlock.prototype.writeln = function(name, value) {
 }
 
 /*
- *	Ğ´ÈëÄÚÈİ
+ *	å†™å…¥å†…å®¹
  */
 WritingBlock.prototype.write = function(content) {
 	this.mode = null;
@@ -1588,22 +1591,22 @@ WritingBlock.prototype.write = function(content) {
 
 
 /*
- *	¶ÔÏóÃû³Æ£ºFocus£¨È«¾Ö¾²Ì¬¶ÔÏó£©
- *	Ö°Ôğ£º¸ºÔğ¹ÜÀíËùÓĞ×¢²á½øÀ´¶ÔÏóµÄ¾Û½¹²Ù×÷
+ *	å¯¹è±¡åç§°ï¼šFocusï¼ˆå…¨å±€é™æ€å¯¹è±¡ï¼‰
+ *	èŒè´£ï¼šè´Ÿè´£ç®¡ç†æ‰€æœ‰æ³¨å†Œè¿›æ¥å¯¹è±¡çš„èšç„¦æ“ä½œ
  */
 var Focus = {};
 Focus.items = {};
 Focus.lastID = null;
 
 /*
- *	×¢²á¶ÔÏó
- *	²ÎÊı£º	object:focusObj		ĞèÒª¾Û½¹µÄHTML¶ÔÏó
- *	·µ»ØÖµ£ºstring:id			ÓÃÓÚÈ¡»Ø¾Û½¹HTML¶ÔÏóµÄid
+ *	æ³¨å†Œå¯¹è±¡
+ *	å‚æ•°ï¼š	object:focusObj		éœ€è¦èšç„¦çš„HTMLå¯¹è±¡
+ *	è¿”å›å€¼ï¼šstring:id			ç”¨äºå–å›èšç„¦HTMLå¯¹è±¡çš„id
  */
 Focus.register = function(focusObj) {
 	var id = focusObj.id;
 
-	//Èç¹ûid²»´æÔÚÔò×Ô¶¯Éú³ÉÒ»¸ö
+	//å¦‚æœidä¸å­˜åœ¨åˆ™è‡ªåŠ¨ç”Ÿæˆä¸€ä¸ª
 	if(null == id || "" == id) {
 		id = UniqueID.generator();
 		focusObj.id = id;
@@ -1615,9 +1618,9 @@ Focus.register = function(focusObj) {
 }
 
 /*
- *	¾Û½¹¶ÔÏó
- *	²ÎÊı£º	object:focusObj		ĞèÒª¾Û½¹µÄHTML¶ÔÏó
- *	·µ»ØÖµ£ºstring:id			ÓÃÓÚÈ¡»Ø¾Û½¹HTML¶ÔÏóµÄid
+ *	èšç„¦å¯¹è±¡
+ *	å‚æ•°ï¼š	object:focusObj		éœ€è¦èšç„¦çš„HTMLå¯¹è±¡
+ *	è¿”å›å€¼ï¼šstring:id			ç”¨äºå–å›èšç„¦HTMLå¯¹è±¡çš„id
  */
 Focus.focus = function(id){
 	var focusObj = this.items[id];
@@ -1626,14 +1629,14 @@ Focus.focus = function(id){
 			this.blurItem(this.lastID);
 		}
 		
-		focusObj.style.filter = ""; // Ê©¼Ó¾Û½¹Ğ§¹û
+		focusObj.style.filter = ""; // æ–½åŠ èšç„¦æ•ˆæœ
 		this.lastID = id;
 	}
 }
 
 /*
- *	Ê©¼ÓÊ§½¹Ğ§¹û
- *	²ÎÊı£º	string:id			ĞèÒª¾Û½¹µÄHTML¶ÔÏó
+ *	æ–½åŠ å¤±ç„¦æ•ˆæœ
+ *	å‚æ•°ï¼š	string:id			éœ€è¦èšç„¦çš„HTMLå¯¹è±¡
  */
 Focus.blurItem = function(id){
 	var focusObj = this.items[id];
@@ -1643,9 +1646,9 @@ Focus.blurItem = function(id){
 }
 
 /*
- *	ÊÍ·Å¶ÔÏó
- *	²ÎÊı£º	object:focusObj		ĞèÒª¾Û½¹µÄHTML¶ÔÏó
- *	·µ»ØÖµ£ºstring:id			ÓÃÓÚÈ¡»Ø¾Û½¹HTML¶ÔÏóµÄid
+ *	é‡Šæ”¾å¯¹è±¡
+ *	å‚æ•°ï¼š	object:focusObj		éœ€è¦èšç„¦çš„HTMLå¯¹è±¡
+ *	è¿”å›å€¼ï¼šstring:id			ç”¨äºå–å›èšç„¦HTMLå¯¹è±¡çš„id
  */
 Focus.unregister = function(id){
 	var focusObj = this.items[id];
@@ -1658,9 +1661,9 @@ Focus.unregister = function(id){
 
 
 /*
- *	ÖØĞÂ·â×°alert
- *	²ÎÊı£º	string:info     ¼òÒªĞÅÏ¢
-			string:detail   ÏêÏ¸ĞÅÏ¢
+ *	é‡æ–°å°è£…alert
+ *	å‚æ•°ï¼š	string:info     ç®€è¦ä¿¡æ¯
+			string:detail   è¯¦ç»†ä¿¡æ¯
  */
 function Alert(info, detail) {
 	info = convertToString(info);
@@ -1680,10 +1683,10 @@ function Alert(info, detail) {
 }
 
 /*
- *	ÖØĞÂ·â×°confirm
- *	²ÎÊı£º	string:info             ¼òÒªĞÅÏ¢
-			string:detail           ÏêÏ¸ĞÅÏ¢
- *	·µ»ØÖµ£ºboolean:returnValue     ÓÃ»§Ñ¡ÔñÈ·¶¨/È¡Ïû
+ *	é‡æ–°å°è£…confirm
+ *	å‚æ•°ï¼š	string:info             ç®€è¦ä¿¡æ¯
+			string:detail           è¯¦ç»†ä¿¡æ¯
+ *	è¿”å›å€¼ï¼šboolean:returnValue     ç”¨æˆ·é€‰æ‹©ç¡®å®š/å–æ¶ˆ
  */
 function Confirm(info,detail) {
 	info = convertToString(info);
@@ -1704,10 +1707,10 @@ function Confirm(info,detail) {
 }
 
 /*
- *	´øÊÇ/·ñ/È¡ÏûÈı¸ö°´Å¥µÄ¶Ô»°¿ò
- *	²ÎÊı£º	string:info             ¼òÒªĞÅÏ¢
-			string:detail           ÏêÏ¸ĞÅÏ¢
- *	·µ»ØÖµ£ºboolean:returnValue     ÓÃ»§Ñ¡ÔñÊÇ/·ñ/È¡Ïû
+ *	å¸¦æ˜¯/å¦/å–æ¶ˆä¸‰ä¸ªæŒ‰é’®çš„å¯¹è¯æ¡†
+ *	å‚æ•°ï¼š	string:info             ç®€è¦ä¿¡æ¯
+			string:detail           è¯¦ç»†ä¿¡æ¯
+ *	è¿”å›å€¼ï¼šboolean:returnValue     ç”¨æˆ·é€‰æ‹©æ˜¯/å¦/å–æ¶ˆ
  */
 function Confirm2(info,detail) {
 	info = convertToString(info);
@@ -1728,13 +1731,13 @@ function Confirm2(info,detail) {
 }
 
 /*
- *	ÖØĞÂ·â×°prompt
- *	²ÎÊı£º	string:info             ¼òÒªĞÅÏ¢
-			string:defaultValue     Ä¬ÈÏÖµ
-			string:title            ±êÌâ
-			boolean:protect         ÊÇ·ñ±£»¤
-			number:maxBytes         ×î´ó×Ö½ÚÊı
- *	·µ»ØÖµ£ºstring:returnValue      ÓÃ»§ÊäÈëµÄÎÄ×Ö
+ *	é‡æ–°å°è£…prompt
+ *	å‚æ•°ï¼š	string:info             ç®€è¦ä¿¡æ¯
+			string:defaultValue     é»˜è®¤å€¼
+			string:title            æ ‡é¢˜
+			boolean:protect         æ˜¯å¦ä¿æŠ¤
+			number:maxBytes         æœ€å¤§å­—èŠ‚æ•°
+ *	è¿”å›å€¼ï¼šstring:returnValue      ç”¨æˆ·è¾“å…¥çš„æ–‡å­—
  */
 function Prompt(info, defaultValue, title, protect, maxBytes) {
 	info = convertToString(info);
@@ -1752,10 +1755,10 @@ function Prompt(info, defaultValue, title, protect, maxBytes) {
 }
 
 /*
- *	²¶»ñÒ³Ãæjs±¨´í
+ *	æ•è·é¡µé¢jsæŠ¥é”™
  */
 function onError(msg,url,line) {
-	alert(msg, "´íÎó:" + msg + "\r\nĞĞ:" + line + "\r\nµØÖ·:" + url);
+	alert(msg, "é”™è¯¯:" + msg + "\r\nè¡Œ:" + line + "\r\nåœ°å€:" + url);
 	event.returnValue = true;
 }
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<Operation>p1,p2</Operation>
+    <ParamTree>
+        <actionSet title="">
+            <treeNode name="全部" id="_rootId" _open="true">
+                <treeNode type="0" parentId="0" isGroup="1" icon="test/param_group.gif" disabled="0" readOnly="0" name="系统参数" id="-1" _open="true">
+                    <treeNode type="1" mode="0" decode="0000100001" parentId="-1" icon="test/param.gif" disabled="0" levelNo="2" name="pagesize" id="-3" displayName="sectSize"/>
+                    <treeNode type="1" mode="1" decode="0000100002" parentId="-1" icon="test/param.gif" disabled="0" levelNo="2" name="debug" id="1"/>
+                    <treeNode type="1" mode="2" decode="0000100003" parentId="-1" icon="test/param.gif" disabled="0" levelNo="2" name="XXXXXXX" id="2"/>
+                </treeNode>
+                <treeNode type="0" parentId="0" isGroup="1" icon="test/param_group.gif" disabled="0" readOnly="0" name="应用配置" id="-2" _open="true">
+                    <treeNode type="1" mode="0" decode="0000200006" parentId="-2" icon="test/param.gif" disabled="0" levelNo="2" name="CMS" id="15"/>
+                    <treeNode type="1" mode="0" decode="0000200012" parentId="-2" icon="test/param.gif" disabled="0" levelNo="2" name="PMS" id="21"/>
+                    <treeNode type="1" mode="0" decode="0000200018" parentId="-2" icon="test/param.gif" disabled="0" levelNo="2" name="UMS" id="27"/>
+                </treeNode>
+            </treeNode>
+        </actionSet>
+    </ParamTree>
+</Response>

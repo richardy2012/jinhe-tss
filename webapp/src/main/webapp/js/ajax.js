@@ -1,10 +1,10 @@
 
-/* ´íÎóÀàĞÍ */
+/* é”™è¯¯ç±»å‹ */
 _ERROR_TYPE_OPERATION_EXCEPTION = 0;
 _ERROR_TYPE_KNOWN_EXCEPTION = 1;
 _ERROR_TYPE_UNKNOWN_EXCEPTION = 2;
 
-/* Í¨Ñ¶ÓÃXML½ÚµãÃû */
+/* é€šè®¯ç”¨XMLèŠ‚ç‚¹å */
 _XML_NODE_RESPONSE_ROOT    = "Response";
 _XML_NODE_REQUEST_ROOT     = "Request";
 _XML_NODE_RESPONSE_ERROR   = "Error";
@@ -13,20 +13,20 @@ _XML_NODE_REQUEST_NAME     = "Name";
 _XML_NODE_REQUEST_VALUE    = "Value";
 _XML_NODE_REQUEST_PARAM    = "Param";
 
-/* HTTPÏìÓ¦×´Ì¬ */
+/* HTTPå“åº”çŠ¶æ€ */
 _HTTP_RESPONSE_STATUS_LOCAL_OK = 0;
 _HTTP_RESPONSE_STATUS_REMOTE_OK = 200;
 
-/* HTTPÏìÓ¦½âÎö½á¹ûÀàĞÍ */
+/* HTTPå“åº”è§£æç»“æœç±»å‹ */
 _HTTP_RESPONSE_DATA_TYPE_EXCEPTION = "exception";
 _HTTP_RESPONSE_DATA_TYPE_SUCCESS = "success";
 _HTTP_RESPONSE_DATA_TYPE_DATA = "data";
 
-/* HTTP³¬Ê±(1·ÖÖÓ) */
+/* HTTPè¶…æ—¶(1åˆ†é’Ÿ) */
 _HTTP_TIMEOUT = 1*1000;
 
 /*
- *  XMLHTTPÇëÇó²ÎÊı¶ÔÏó£¬¸ºÔğÅäÖÃXMLHTTPÇëÇó²ÎÊı
+ *  XMLHTTPè¯·æ±‚å‚æ•°å¯¹è±¡ï¼Œè´Ÿè´£é…ç½®XMLHTTPè¯·æ±‚å‚æ•°
  */
 function HttpRequestParams() {
 	this.url = "";
@@ -37,18 +37,18 @@ function HttpRequestParams() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÉèÖÃ·¢ËÍÊı¾İ
- *	²ÎÊı£º  string:name 		Êı¾İ×Ö¶ÎÃû
-			string:value        Êı¾İÄÚÈİ
+ *	å‡½æ•°è¯´æ˜ï¼šè®¾ç½®å‘é€æ•°æ®
+ *	å‚æ•°ï¼š  string:name 		æ•°æ®å­—æ®µå
+			string:value        æ•°æ®å†…å®¹
  */
 HttpRequestParams.prototype.setContent = function(name, value) {
 	this.content[name] = value;
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÉèÖÃxform×¨ÓÃ¸ñÊ½·¢ËÍÊı¾İ
- *	²ÎÊı£º	XmlNode:dataNode 	XmlNodeÊµÀı£¬xformµÄdataÊı¾İ½Úµã
-			string:prefix 	    Ìá½»×Ö¶ÎÇ°×º
+ *	å‡½æ•°è¯´æ˜ï¼šè®¾ç½®xformä¸“ç”¨æ ¼å¼å‘é€æ•°æ®
+ *	å‚æ•°ï¼š	XmlNode:dataNode 	XmlNodeå®ä¾‹ï¼Œxformçš„dataæ•°æ®èŠ‚ç‚¹
+			string:prefix 	    æäº¤å­—æ®µå‰ç¼€
  */
 HttpRequestParams.prototype.setXFormContent = function(dataNode, prefix) {
 	if(dataNode.nodeName != "data") return;
@@ -56,10 +56,10 @@ HttpRequestParams.prototype.setXFormContent = function(dataNode, prefix) {
 	var rename = dataNode.getAttribute(name);
 	var nodes = dataNode.selectNodes("./row/*");
 	for(var i = 0; i < nodes.length; i++) {
-		var name = rename || nodes[i].nodeName; // ´Ódata½ÚµãÉÏ»ñÈ¡±£´æÃû£¬Èç¹ûÃ»ÓĞÔòÓÃÔ­Ãû
+		var name = rename || nodes[i].nodeName; // ä»dataèŠ‚ç‚¹ä¸Šè·å–ä¿å­˜åï¼Œå¦‚æœæ²¡æœ‰åˆ™ç”¨åŸå
 		var value = nodes[i].text;
 		
-		// Ç°×º£¬xform declare½ÚµãÉÏÉèÖÃ£¬ÒÔ±ãÓÚ°ÑÖµÉèÖÃµ½actionµÄbean¶ÔÏóÀï
+		// å‰ç¼€ï¼Œxform declareèŠ‚ç‚¹ä¸Šè®¾ç½®ï¼Œä»¥ä¾¿äºæŠŠå€¼è®¾ç½®åˆ°actionçš„beanå¯¹è±¡é‡Œ
 		if(null != prefix){
 			name = prefix + "." + name;
 		}
@@ -69,24 +69,24 @@ HttpRequestParams.prototype.setXFormContent = function(dataNode, prefix) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÇå³ıÖÆ¶¨Ãû³ÆµÄ·¢ËÍÊı¾İ
- *	²ÎÊı£º	string:name 		Êı¾İ×Ö¶ÎÃû
+ *	å‡½æ•°è¯´æ˜ï¼šæ¸…é™¤åˆ¶å®šåç§°çš„å‘é€æ•°æ®
+ *	å‚æ•°ï¼š	string:name 		æ•°æ®å­—æ®µå
  */
 HttpRequestParams.prototype.clearContent = function(name) {
 	delete this.content[name];
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÇå³ıËùÓĞ·¢ËÍÊı¾İ
+ *	å‡½æ•°è¯´æ˜ï¼šæ¸…é™¤æ‰€æœ‰å‘é€æ•°æ®
  */
 HttpRequestParams.prototype.clearAllContent = function() {
 	this.content = {};
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÉèÖÃÇëÇóÍ·ĞÅÏ¢
- *	²ÎÊı£º	string:name 		Í·ĞÅÏ¢×Ö¶ÎÃû
-			string:value        Í·ĞÅÏ¢ÄÚÈİ
+ *	å‡½æ•°è¯´æ˜ï¼šè®¾ç½®è¯·æ±‚å¤´ä¿¡æ¯
+ *	å‚æ•°ï¼š	string:name 		å¤´ä¿¡æ¯å­—æ®µå
+			string:value        å¤´ä¿¡æ¯å†…å®¹
  */
 HttpRequestParams.prototype.setHeader = function(name, value) {
 	this.header[name] = value;
@@ -94,8 +94,8 @@ HttpRequestParams.prototype.setHeader = function(name, value) {
 
 
 /*
- *  XMLHTTPÇëÇó¶ÔÏó£¬¸ºÔğ·¢ÆğXMLHTTPÇëÇó²¢½ÓÊÕÏìÓ¦Êı¾İ
-	Àı×Ó£º
+ *  XMLHTTPè¯·æ±‚å¯¹è±¡ï¼Œè´Ÿè´£å‘èµ·XMLHTTPè¯·æ±‚å¹¶æ¥æ”¶å“åº”æ•°æ®
+	ä¾‹å­ï¼š
 		var p = new HttpRequestParams();
 		p.url = URL_GET_USER_NAME;
 		p.setContent("loginName", loginName);
@@ -117,27 +117,27 @@ function HttpRequest(paramsInstance) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£º»ñÈ¡ÏìÓ¦Êı¾İÔ´´úÂë
- *	²ÎÊı£º	
- *	·µ»ØÖµ£ºstring:result       ÏìÓ¦Êı¾İÔ´´úÂë
+ *	å‡½æ•°è¯´æ˜ï¼šè·å–å“åº”æ•°æ®æºä»£ç 
+ *	å‚æ•°ï¼š	
+ *	è¿”å›å€¼ï¼šstring:result       å“åº”æ•°æ®æºä»£ç 
  */
 HttpRequest.prototype.getResponseText = function() {
 	return this.value;
 }
 
 /*
- *	º¯ÊıËµÃ÷£º»ñÈ¡ÏìÓ¦Êı¾İXMLÎÄµµ¶ÔÏó
- *	²ÎÊı£º	
- *	·µ»ØÖµ£ºXmlReader:xmlReader       XMLÎÄµµ¶ÔÏó
+ *	å‡½æ•°è¯´æ˜ï¼šè·å–å“åº”æ•°æ®XMLæ–‡æ¡£å¯¹è±¡
+ *	å‚æ•°ï¼š	
+ *	è¿”å›å€¼ï¼šXmlReader:xmlReader       XMLæ–‡æ¡£å¯¹è±¡
  */
 HttpRequest.prototype.getResponseXml = function() {
 	return this.xmlReader;
 }
 
 /*
- *	º¯ÊıËµÃ÷£º»ñÈ¡ÏìÓ¦Êı¾İXMLÎÄµµÖ¸¶¨½Úµã¶ÔÏóÖµ
- *	²ÎÊı£º	string:name             Ö¸¶¨½ÚµãÃû
- *	·µ»ØÖµ£ºany:value               ¸ù¾İ½ÚµãÄÚÈİÀàĞÍ²»Í¬¶ø¶¨
+ *	å‡½æ•°è¯´æ˜ï¼šè·å–å“åº”æ•°æ®XMLæ–‡æ¡£æŒ‡å®šèŠ‚ç‚¹å¯¹è±¡å€¼
+ *	å‚æ•°ï¼š	string:name             æŒ‡å®šèŠ‚ç‚¹å
+ *	è¿”å›å€¼ï¼šany:value               æ ¹æ®èŠ‚ç‚¹å†…å®¹ç±»å‹ä¸åŒè€Œå®š
  */
 HttpRequest.prototype.getNodeValue = function(name) {
 	if(this.xmlReader.documentElement == null) return;
@@ -167,7 +167,7 @@ HttpRequest.prototype.getNodeValue = function(name) {
 	}
 
 	if(data != null) {
-		data = data.cloneNode(true); // ·µ»Ø¸´ÖÆ½Úµã£¬ÒÔ±ãÇå³ıÕû¸öÔ­Ê¼ÎÄµµ
+		data = data.cloneNode(true); // è¿”å›å¤åˆ¶èŠ‚ç‚¹ï¼Œä»¥ä¾¿æ¸…é™¤æ•´ä¸ªåŸå§‹æ–‡æ¡£
 		switch(data.nodeType) {
 			case _XML_NODE_TYPE_ELEMENT:
 				return data;
@@ -180,9 +180,9 @@ HttpRequest.prototype.getNodeValue = function(name) {
 }
 
 /*
- * º¯ÊıËµÃ÷£º·¢ÆğXMLHTTPÇëÇó
- * ²ÎÊı£ºboolean  ÊÇ·ñµÈ´ıÆäÓàÇëÇóÍê³ÉÔÙ·¢ËÍ
- * ·µ»ØÖµ£º
+ * å‡½æ•°è¯´æ˜ï¼šå‘èµ·XMLHTTPè¯·æ±‚
+ * å‚æ•°ï¼šboolean  æ˜¯å¦ç­‰å¾…å…¶ä½™è¯·æ±‚å®Œæˆå†å‘é€
+ * è¿”å›å€¼ï¼š
  */
 
  HttpRequest.prototype.send = function(wait) {
@@ -223,26 +223,26 @@ HttpRequest.prototype.getNodeValue = function(name) {
 						 Public.hideWaitingLayer();
 						 oThis.onload(response);
 						 
-						 HttpRequests.del(oThis); // ´Ó¶ÓÁĞÖĞÈ¥³ı
+						 HttpRequests.del(oThis); // ä»é˜Ÿåˆ—ä¸­å»é™¤
 						 oThis.executeCallback();
 					 }, 100);
 				 }
 				 else {
 					 Public.hideWaitingLayer();
 
-					 HttpRequests.del(oThis);  // ´Ó¶ÓÁĞÖĞÈ¥³ı
+					 HttpRequests.del(oThis);  // ä»é˜Ÿåˆ—ä¸­å»é™¤
 					 oThis.executeCallback();
 				 }
 			 }
 		 }
 
 		 this.xmlhttp.open(this.params.method, this.params.url, this.params.async);
-		 this.setTimeout(); // Ôö¼Ó³¬Ê±ÅĞ¶¨
+		 this.setTimeout(); // å¢åŠ è¶…æ—¶åˆ¤å®š
 		 this.packageContent();
 		 this.setCustomRequestHeader();
 		 this.xmlhttp.send(this.requestBody);
 
-		 HttpRequests.add(this); // ´æÈë¶ÓÁĞ
+		 HttpRequests.add(this); // å­˜å…¥é˜Ÿåˆ—
 
 	 }
 	 catch (e) {
@@ -261,13 +261,13 @@ HttpRequest.prototype.getNodeValue = function(name) {
  }
 
 /*
- *	º¯ÊıËµÃ÷£º³¬Ê±ÖĞ¶ÏÇëÇó
+ *	å‡½æ•°è¯´æ˜ï¼šè¶…æ—¶ä¸­æ–­è¯·æ±‚
  */
 HttpRequest.prototype.setTimeout = function(noConfirm) {
 	var oThis = this;
 
 	this.timeout = setTimeout(function() {
-		if(noConfirm != true && confirm("·şÎñÆ÷ÏìÓ¦½ÏÂı£¬ĞèÒªÖĞ¶ÏÇëÇóÂğ£¿") == true) {
+		if(noConfirm != true && confirm("æœåŠ¡å™¨å“åº”è¾ƒæ…¢ï¼Œéœ€è¦ä¸­æ–­è¯·æ±‚å—ï¼Ÿ") == true) {
 			oThis.isAbort = true;
 			oThis.abort();
 			oThis.isAbort = false;
@@ -280,14 +280,14 @@ HttpRequest.prototype.setTimeout = function(noConfirm) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÇå³ı³¬Ê±
+ *	å‡½æ•°è¯´æ˜ï¼šæ¸…é™¤è¶…æ—¶
  */
 HttpRequest.prototype.clearTimeout = function() {
 	clearTimeout(this.timeout);
 }
 
 /*
- *	º¯ÊıËµÃ÷£º¶Ô·¢ËÍÊı¾İ½øĞĞ·â×°£¬ÒÔXML¸ñÊ½·¢ËÍ
+ *	å‡½æ•°è¯´æ˜ï¼šå¯¹å‘é€æ•°æ®è¿›è¡Œå°è£…ï¼Œä»¥XMLæ ¼å¼å‘é€
  */
 HttpRequest.prototype.packageContent = function() {
 	var contentXml = new XmlReader("<" + _XML_NODE_REQUEST_ROOT+"/>");
@@ -324,7 +324,7 @@ HttpRequest.prototype.packageContent = function() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÉèÖÃ×Ô¶¨ÒåÇëÇóÍ·ĞÅÏ¢
+ *	å‡½æ•°è¯´æ˜ï¼šè®¾ç½®è‡ªå®šä¹‰è¯·æ±‚å¤´ä¿¡æ¯
  */
 HttpRequest.prototype.setCustomRequestHeader = function() {
 	this.xmlhttp.setRequestHeader("REQUEST-TYPE", "xmlhttp");
@@ -336,12 +336,12 @@ HttpRequest.prototype.setCustomRequestHeader = function() {
 		}
 	}
 
-	// µ±Ò³Ãæurl¾ßÓĞ²ÎÊıtokenÔò¼Ó
+	// å½“é¡µé¢urlå…·æœ‰å‚æ•°tokenåˆ™åŠ 
 	var token = Query.get("token");
 	if( token != null ) {
 		var exp = new Date();  
 		exp.setTime(exp.getTime() + (30*1000));
-		var expires = exp.toGMTString();  // ¹ıÆÚÊ±¼äÉè¶¨Îª30s
+		var expires = exp.toGMTString();  // è¿‡æœŸæ—¶é—´è®¾å®šä¸º30s
 		Cookie.setValue("token", token, expires, "/" + CONTEXTPATH);
 	}
 	this.xmlhttp.setRequestHeader("CONTENT-TYPE","text/xml");
@@ -349,13 +349,13 @@ HttpRequest.prototype.setCustomRequestHeader = function() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£º¼ÓÔØÊı¾İÍê³É£¬¶Ô½á¹û½øĞĞ´¦Àí
- *	²ÎÊı£º	Object:response     ¸Ã¶ÔÏó¸÷ÊôĞÔÖµ¼Ì³Ğ×Ôxmlhttp¶ÔÏó
+ *	å‡½æ•°è¯´æ˜ï¼šåŠ è½½æ•°æ®å®Œæˆï¼Œå¯¹ç»“æœè¿›è¡Œå¤„ç†
+ *	å‚æ•°ï¼š	Object:response     è¯¥å¯¹è±¡å„å±æ€§å€¼ç»§æ‰¿è‡ªxmlhttpå¯¹è±¡
  */
 HttpRequest.prototype.onload = function(response) {
 	this.value = response.responseText;
 
-	//Ô¶³Ì(200) »ò ±¾µØ(0)²ÅÔÊĞí
+	//è¿œç¨‹(200) æˆ– æœ¬åœ°(0)æ‰å…è®¸
 	var httpStatus = response.status;
 	var httpStatusText = response.statusText;
 	if(httpStatus != _HTTP_RESPONSE_STATUS_LOCAL_OK && httpStatus != _HTTP_RESPONSE_STATUS_REMOTE_OK) {
@@ -363,8 +363,8 @@ HttpRequest.prototype.onload = function(response) {
 		param.dataType = _HTTP_RESPONSE_DATA_TYPE_EXCEPTION;
 		param.type = 1;
 		param.source = this.value;
-		param.msg = "HTTP " + httpStatus + " ´íÎó\r\n" + httpStatusText;
-		param.description = "ÇëÇóÔ¶³ÌµØÖ·\"" + this.params.url + "\"³ö´í";
+		param.msg = "HTTP " + httpStatus + " é”™è¯¯\r\n" + httpStatusText;
+		param.description = "è¯·æ±‚è¿œç¨‹åœ°å€\"" + this.params.url + "\"å‡ºé”™";
 		new Message_Exception(param, this);
 		this.returnValue = false;
 		return;
@@ -372,7 +372,7 @@ HttpRequest.prototype.onload = function(response) {
 
 	var responseParser = new HTTP_Response_Parser(this.value);
 
-	// ½«Í¨¹ı½âÎöºóµÄxmlReader
+	// å°†é€šè¿‡è§£æåçš„xmlReader
 	this.xmlReader = responseParser.xmlReader;
 
 	if(responseParser.result.dataType ==_HTTP_RESPONSE_DATA_TYPE_EXCEPTION) {
@@ -388,14 +388,14 @@ HttpRequest.prototype.onload = function(response) {
 		this.onresult();
 		this.returnValue = true;
 
-		// µ±·µ»ØÊı¾İÖĞº¬½Å±¾ÄÚÈİÔò×Ô¶¯Ö´ĞĞ
+		// å½“è¿”å›æ•°æ®ä¸­å«è„šæœ¬å†…å®¹åˆ™è‡ªåŠ¨æ‰§è¡Œ
 		var script = this.getNodeValue("script");
 		if( script != null) {
-			Element.createScript(script); // ´´½¨scriptÔªËØ²¢Ìí¼Óµ½headÖĞ.
+			Element.createScript(script); // åˆ›å»ºscriptå…ƒç´ å¹¶æ·»åŠ åˆ°headä¸­.
 		}
 	}
 
-	// Çå³ıÔ­Ê¼ÎÄµµ
+	// æ¸…é™¤åŸå§‹æ–‡æ¡£
 	this.xmlReader.xmlDom.loadXML("");
 }
 
@@ -404,7 +404,7 @@ HttpRequest.prototype.ondata = HttpRequest.prototype.onresult = HttpRequest.prot
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÖÕÖ¹XMLHTTPÇëÇó
+ *	å‡½æ•°è¯´æ˜ï¼šç»ˆæ­¢XMLHTTPè¯·æ±‚
  */
 HttpRequest.prototype.abort = function() {
 	if(null != this.xmlhttp) {
@@ -413,7 +413,7 @@ HttpRequest.prototype.abort = function() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÖ´ĞĞ»Øµ÷º¯Êı
+ *	å‡½æ•°è¯´æ˜ï¼šæ‰§è¡Œå›è°ƒå‡½æ•°
  */
 HttpRequest.prototype.executeCallback = function() {
 	if( HttpRequests.getCount() == 0 && HttpRequests.callback != null ) {
@@ -424,10 +424,10 @@ HttpRequest.prototype.executeCallback = function() {
 
 
 /*
- *  ¶ÔÏóÃû³Æ£ºHTTP_Response_Parser¶ÔÏó
- *  Ö°Ôğ£º¸ºÔğ·ÖÎö´¦ÀíºóÌ¨ÏìÓ¦Êı¾İ
+ *  å¯¹è±¡åç§°ï¼šHTTP_Response_Parserå¯¹è±¡
+ *  èŒè´£ï¼šè´Ÿè´£åˆ†æå¤„ç†åå°å“åº”æ•°æ®
  *
- *  ³É¹¦ĞÅÏ¢¸ñÊ½
+ *  æˆåŠŸä¿¡æ¯æ ¼å¼
  *  <Response>
  *      <Success>
  *          <type>1</type>
@@ -436,7 +436,7 @@ HttpRequest.prototype.executeCallback = function() {
  *      </Success>
  *  </Response>
  *
- *  ´íÎóĞÅÏ¢¸ñÊ½
+ *  é”™è¯¯ä¿¡æ¯æ ¼å¼
  *  <Response>
  *      <Error>
  *          <type>1</type>
@@ -455,8 +455,8 @@ function HTTP_Response_Parser(responseText) {
 	if( parseError != null) {
 		this.result.dataType = _HTTP_RESPONSE_DATA_TYPE_EXCEPTION;
 		this.result.source = this.source;
-		this.result.msg = "·şÎñÆ÷Òì³£";
-		this.result.description = "Êı¾İ³ö´íÔÚµÚ" + parseError.line + "ĞĞµÚ" + parseError.linepos + "×Ö·û\r\n" + parseError.reason;
+		this.result.msg = "æœåŠ¡å™¨å¼‚å¸¸";
+		this.result.description = "æ•°æ®å‡ºé”™åœ¨ç¬¬" + parseError.line + "è¡Œç¬¬" + parseError.linepos + "å­—ç¬¦\r\n" + parseError.reason;
 	} 
 	else {
 		var documentNode = new XmlNode(this.xmlReader.documentElement);
@@ -464,14 +464,14 @@ function HTTP_Response_Parser(responseText) {
 		var hasInformation = false;
 
 		if( informationNode == null) {		
-			this.result.dataType = _HTTP_RESPONSE_DATA_TYPE_EXCEPTION; // Î´ÕÒµ½ÓĞĞ§½ÚµãÔòÈÏÎªÊÇÒì³£ĞÅÏ¢
+			this.result.dataType = _HTTP_RESPONSE_DATA_TYPE_EXCEPTION; // æœªæ‰¾åˆ°æœ‰æ•ˆèŠ‚ç‚¹åˆ™è®¤ä¸ºæ˜¯å¼‚å¸¸ä¿¡æ¯
 		}
-		else if(informationNode.nodeName == _XML_NODE_RESPONSE_ERROR) { // Ö»ÒªÓĞError½Úµã¾ÍÈÏÎªÊÇÒì³£ĞÅÏ¢
+		else if(informationNode.nodeName == _XML_NODE_RESPONSE_ERROR) { // åªè¦æœ‰ErrorèŠ‚ç‚¹å°±è®¤ä¸ºæ˜¯å¼‚å¸¸ä¿¡æ¯
 			this.result.dataType = _HTTP_RESPONSE_DATA_TYPE_EXCEPTION;
 			this.result.source = this.source;
 			hasInformation = true;
 		}
-		else if(informationNode.nodeName == _XML_NODE_RESPONSE_SUCCESS) { //Ö»ÒªÓĞSuccess¾ÍÈÏÎªÊÇ³É¹¦ĞÅÏ¢
+		else if(informationNode.nodeName == _XML_NODE_RESPONSE_SUCCESS) { //åªè¦æœ‰Successå°±è®¤ä¸ºæ˜¯æˆåŠŸä¿¡æ¯
 			this.result.dataType = _HTTP_RESPONSE_DATA_TYPE_SUCCESS;
 			hasInformation = true;
 		} 
@@ -492,7 +492,7 @@ function HTTP_Response_Parser(responseText) {
 
 
 /*
- *  ¶ÔÏóÃû³Æ£ºXmlHttp¶ÔÏó£¬¸ºÔğXmlHttp¶ÔÏó´´½¨
+ *  å¯¹è±¡åç§°ï¼šXmlHttpå¯¹è±¡ï¼Œè´Ÿè´£XmlHttpå¯¹è±¡åˆ›å»º
  */
 function XmlHttp() {
 	if(window.ActiveXObject) {
@@ -502,14 +502,14 @@ function XmlHttp() {
 		return new XMLHttpRequest();
 	} 
 	else {
-		alert("ÄúµÄä¯ÀÀÆ÷²»Ö§³ÖXMLHTTP");
+		alert("æ‚¨çš„æµè§ˆå™¨ä¸æ”¯æŒXMLHTTP");
 		return null;
 	}
 }
 
 /*
- *  ¶ÔÏóÃû³Æ£ºMessage_Success¶ÔÏó
- *  Ö°Ôğ£º¸ºÔğ´¦Àí³É¹¦ĞÅÏ¢
+ *  å¯¹è±¡åç§°ï¼šMessage_Successå¯¹è±¡
+ *  èŒè´£ï¼šè´Ÿè´£å¤„ç†æˆåŠŸä¿¡æ¯
  */
 function Message_Success(param, request) {
 	request.ondata();
@@ -528,14 +528,14 @@ function Message_Success(param, request) {
 }
 
 /*
- *  ¶ÔÏóÃû³Æ£ºMessage_Exception¶ÔÏó
- *  Ö°Ôğ£º¸ºÔğ´¦ÀíÒì³£ĞÅÏ¢
+ *  å¯¹è±¡åç§°ï¼šMessage_Exceptionå¯¹è±¡
+ *  èŒè´£ï¼šè´Ÿè´£å¤„ç†å¼‚å¸¸ä¿¡æ¯
  *
- *  ×¢Òâ£º±¾¶ÔÏó³ıÁËÕ¹Ê¾Òì³£ĞÅÏ¢£¨Í¨¹ıalert·½·¨£¬window.alert=Alert£¬AlertÔÚframework.jsÀï×öÁËÖØĞÂ¶¨Òå£©Íâ£¬
- *  »¹¿ÉÒÔ¸ù¾İÊÇ·ñĞèÒªÖØĞÂµÇÂ¼À´ÔÙÒ»´Î·¢ËÍrequestÇëÇó£¬×¢Òâ´Ë´¦²ÎÊıMessage_Exception(param, request)£¬¸Ã
- *  requestÒÀÈ»»¹ÊÇÉÏÒ»´Î·¢ËÍ·µ»ØÒì³£ĞÅÏ¢µÄrequest£¬½«µÇÂ½ĞÅÏ¢¼ÓÈëºó£¨loginName/pwdµÈ£¬Í¨¹ı_relogin.htmÒ³Ãæ»ñµÃ£©£¬
- *  ÔÙÒ»´Î·¢ËÍ¸ÃrequestÇëÇó£¬´Ó¶øÍ¨¹ıAutoLoginFilterµÄÑéÖ¤£¬È¡»ØÒµÎñÊı¾İ¡£  
- *  ÕâÑù×öµÄºÃ´¦ÊÇ£¬µ±session¹ıÆÚĞèÒªÖØĞÂµÇÂ½Ê±£¬ÎŞĞèÀë¿ªµ±Ç°Ò³Ãæ»Øµ½µÇÂ½Ò³µÇÂ½£¬±£Ö¤ÁËÓÃ»§²Ù×÷µÄÁ¬¹áĞÔ¡£
+ *  æ³¨æ„ï¼šæœ¬å¯¹è±¡é™¤äº†å±•ç¤ºå¼‚å¸¸ä¿¡æ¯ï¼ˆé€šè¿‡alertæ–¹æ³•ï¼Œwindow.alert=Alertï¼ŒAlertåœ¨framework.jsé‡Œåšäº†é‡æ–°å®šä¹‰ï¼‰å¤–ï¼Œ
+ *  è¿˜å¯ä»¥æ ¹æ®æ˜¯å¦éœ€è¦é‡æ–°ç™»å½•æ¥å†ä¸€æ¬¡å‘é€requestè¯·æ±‚ï¼Œæ³¨æ„æ­¤å¤„å‚æ•°Message_Exception(param, request)ï¼Œè¯¥
+ *  requestä¾ç„¶è¿˜æ˜¯ä¸Šä¸€æ¬¡å‘é€è¿”å›å¼‚å¸¸ä¿¡æ¯çš„requestï¼Œå°†ç™»é™†ä¿¡æ¯åŠ å…¥åï¼ˆloginName/pwdç­‰ï¼Œé€šè¿‡_relogin.htmé¡µé¢è·å¾—ï¼‰ï¼Œ
+ *  å†ä¸€æ¬¡å‘é€è¯¥requestè¯·æ±‚ï¼Œä»è€Œé€šè¿‡AutoLoginFilterçš„éªŒè¯ï¼Œå–å›ä¸šåŠ¡æ•°æ®ã€‚  
+ *  è¿™æ ·åšçš„å¥½å¤„æ˜¯ï¼Œå½“sessionè¿‡æœŸéœ€è¦é‡æ–°ç™»é™†æ—¶ï¼Œæ— éœ€ç¦»å¼€å½“å‰é¡µé¢å›åˆ°ç™»é™†é¡µç™»é™†ï¼Œä¿è¯äº†ç”¨æˆ·æ“ä½œçš„è¿è´¯æ€§ã€‚
  */
 function Message_Exception(param, request) {
 	request.ondata();
@@ -553,18 +553,18 @@ function Message_Exception(param, request) {
 
 	request.onexception(param);
 
-	//³õÊ¼»¯Ä¬ÈÏÖµ
+	//åˆå§‹åŒ–é»˜è®¤å€¼
 	if( request.params.relogin != null) {
 		param.relogin = request.params.relogin;
 	}
-	else if( param.relogin == null ) { // Ä¬ÈÏ²»ÖØĞÂµÇÂ¼
+	else if( param.relogin == null ) { // é»˜è®¤ä¸é‡æ–°ç™»å½•
 		param.relogin = "0";
 	}
 
 	if(param.relogin == "1") {
-		Cookie.del("token", "/" + CONTEXTPATH); // ÏÈÇå³ıÁîÅÆ
+		Cookie.del("token", "/" + CONTEXTPATH); // å…ˆæ¸…é™¤ä»¤ç‰Œ
 
-		var loginObj = window.showModalDialog(URL_CORE + "_relogin.htm", {title:"ÇëÖØĞÂµÇÂ¼"},"dialogWidth:250px;dialogHeight:200px;resizable:yes");
+		var loginObj = window.showModalDialog(URL_CORE + "_relogin.htm", {title:"è¯·é‡æ–°ç™»å½•"},"dialogWidth:250px;dialogHeight:200px;resizable:yes");
 		if( loginObj != null) {
 			var p = request.params;
 			p.setHeader("loginName", loginObj.loginName);
@@ -574,8 +574,8 @@ function Message_Exception(param, request) {
 			request.send();
 		}
 	}
-	else if(param.relogin == "2" ) { // µ¥µãµÇÂ¼Ó¦ÓÃÌø×ª£¬ĞèÒªÊäÈëÓÃ»§ÔÚÄ¿±êÏµÍ³ÖĞµÄÃÜÂë
-		var loginObj = window.showModalDialog(URL_CORE + "_relogin2.htm",{title:"ÇëÖØĞÂÊäÈëÃÜÂë"},"dialogWidth:250px;dialogHeight:200px;resizable:yes");
+	else if(param.relogin == "2" ) { // å•ç‚¹ç™»å½•åº”ç”¨è·³è½¬ï¼Œéœ€è¦è¾“å…¥ç”¨æˆ·åœ¨ç›®æ ‡ç³»ç»Ÿä¸­çš„å¯†ç 
+		var loginObj = window.showModalDialog(URL_CORE + "_relogin2.htm",{title:"è¯·é‡æ–°è¾“å…¥å¯†ç "},"dialogWidth:250px;dialogHeight:200px;resizable:yes");
 		if(loginObj != null) {
 			request.params.setHeader("pwd", loginObj.password);
 			request.send();
@@ -585,14 +585,14 @@ function Message_Exception(param, request) {
 
 
 /*
- *	¶ÔÏóÃû³Æ£ºHttpRequests£¨È«¾Ö¾²Ì¬¶ÔÏó£©
- *	Ö°Ôğ£º¸ºÔğËùÓĞhttpÇëÇóÁ¬½Ó
+ *	å¯¹è±¡åç§°ï¼šHttpRequestsï¼ˆå…¨å±€é™æ€å¯¹è±¡ï¼‰
+ *	èŒè´£ï¼šè´Ÿè´£æ‰€æœ‰httpè¯·æ±‚è¿æ¥
  */
 var HttpRequests = {};
 HttpRequests.items = [];
 
 /*
- *	º¯ÊıËµÃ÷£ºÖÕÖ¹ËùÓĞÇëÇóÁ¬½Ó
+ *	å‡½æ•°è¯´æ˜ï¼šç»ˆæ­¢æ‰€æœ‰è¯·æ±‚è¿æ¥
  */
 HttpRequests.closeAll = function() {
 	for(var i = 0; i < this.items.length; i++) {
@@ -603,33 +603,33 @@ HttpRequests.closeAll = function() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£º¼ÓÈëÒ»¸öÇëÇóÁ¬½Ó
+ *	å‡½æ•°è¯´æ˜ï¼šåŠ å…¥ä¸€ä¸ªè¯·æ±‚è¿æ¥
  */
 HttpRequests.add = function(request) {
 	this.items[this.items.length] = request;
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÈ¥³ıÒ»¸öÇëÇóÁ¬½Ó
+ *	å‡½æ•°è¯´æ˜ï¼šå»é™¤ä¸€ä¸ªè¯·æ±‚è¿æ¥
  */
 HttpRequests.del = function(request) {
 	for(var i = 0; i < this.items.length; i++) {
 		if(this.items[i] == request ) {
-			this.items.splice(i, 1); // splice() ·½·¨ÓÃÓÚ²åÈë¡¢É¾³ı»òÌæ»»Êı×éµÄÔªËØ
+			this.items.splice(i, 1); // splice() æ–¹æ³•ç”¨äºæ’å…¥ã€åˆ é™¤æˆ–æ›¿æ¢æ•°ç»„çš„å…ƒç´ 
 			break;
 		}
 	}
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÍ³¼Æµ±Ç°Á¬½ÓÊı
+ *	å‡½æ•°è¯´æ˜ï¼šç»Ÿè®¡å½“å‰è¿æ¥æ•°
  */
 HttpRequests.getCount = function() {
 	return this.items.length;
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºµÈ´ıµ±Ç°ÇëÇóÈ«²¿½áÊø
+ *	å‡½æ•°è¯´æ˜ï¼šç­‰å¾…å½“å‰è¯·æ±‚å…¨éƒ¨ç»“æŸ
  */
 HttpRequests.onFinishAll = function(callback) {
 	this.callback = callback;
@@ -637,8 +637,8 @@ HttpRequests.onFinishAll = function(callback) {
 
 
 /*
- *  ¶ÔÏóÃû³Æ£ºAjaxÇëÇó¶ÔÏó
- *  Ö°Ôğ£ºÔÙ´Î·â×°£¬¼ò»¯xmlhttpÊ¹ÓÃ
+ *  å¯¹è±¡åç§°ï¼šAjaxè¯·æ±‚å¯¹è±¡
+ *  èŒè´£ï¼šå†æ¬¡å°è£…ï¼Œç®€åŒ–xmlhttpä½¿ç”¨
  */
 function Ajax() {
 	var arg = arguments[0];
