@@ -16,7 +16,7 @@ var _TREE_TYPE_MENU   = "menu";
 
 /* 树控件属性名称 */
 var _TREE_BASE_URL = "baseurl";
-var _TREE_BASE_URL_DEFAULT_VALUE = "common/Tree/";	// 默认控件所在目录
+// var _TREE_BASE_URL_DEFAULT_VALUE = "common/Tree/";	// 默认控件所在目录
 
 var _TREE_TREE_TYPE = "treeType";         // 树的类型 : multi / single
 var _TREE_SELECTED_IDS = "selectedIds";   // 选中节点id字符串
@@ -97,7 +97,7 @@ var _TREE_NODE_ICON_ATTRIBUTE = "icon"; // 节点自定义图标属性名
  * 对象名称：Tree	
  */
 var Tree = function(element) {	
-	var _baseUrl     = eval("element." + _TREE_BASE_URL) || _TREE_BASE_URL_DEFAULT_VALUE;
+	this._baseUrl    = eval("element." + _TREE_BASE_URL);
 	var _treeType    = eval("element." + _TREE_TREE_TYPE) ||  _TREE_TYPE_SINGLE;
 	var _selectedIds = eval("element." + _TREE_SELECTED_IDS);
 	var _canMoveNode = eval("element." + _TREE_CAN_MOVE_NODE) || "false";
@@ -114,16 +114,12 @@ var Tree = function(element) {
 	this.element = element;
 	this.element.className = _TREE_STYLE;	
 		
-	this.init = function() {
+	this.init = function() {	
 		this.displayObj = new Display(this);
-		this.searchObj  = new Search(this);
+		this.searchObj  = new Search(this);		
 		
-		this.loadData();
-		this.setNodesChecked();
-		this.setDefaultActive();
-		this.reload();
+		this.load(this.element._dataXML);
 		
-		eventTreeReady.fire(createEventObject()); // 触发载入完成事件		
 		this.element.isLoaded = true; //增加isLoaded属性表示是否初始化完成		
 		eventComponentReady.fire(createEventObject()); 	// 触发控件初始化完成事件
 	}	
@@ -132,7 +128,7 @@ var Tree = function(element) {
 	 * 设定控件的数据，数据来源为xml字符串
 	 */
 	this.loadData = function (dataXML) {
-		this._treeXMLDom = loadXmlToNode(dataXML);
+		_treeXMLDom = loadXmlToNode(dataXML);
 		
 		if(_treeXMLDom && _defaultOpen == "true") {			
 			// 获取定义的默认打开的节点
@@ -280,7 +276,7 @@ var Tree = function(element) {
 	 * 获取数据的根节点
 	 */
 	this.getXmlRoot = function () {
-		return this._treeXMLDom || loadXmlToNode("<actionSet/>");
+		return _treeXMLDom || loadXmlToNode("<actionSet/>");
 	}
 	/*
 	 * 设定当前高亮（激活）的节点
@@ -308,7 +304,7 @@ var Tree = function(element) {
 	this.setAttribute = function (name, value) {
 	    switch (name) {
 	        case _TREE_BASE_URL:
-				_baseUrl = value;
+				this._baseUrl = value;
 	            break;
 	        case _TREE_TREE_TYPE:
 				_treeType = value;
@@ -338,7 +334,7 @@ var Tree = function(element) {
 	this.getAttribute = function (name) {
 	    switch (name) {
 	        case _TREE_BASE_URL:
-				return _baseUrl;
+				return this._baseUrl;
 	        case _TREE_TREE_TYPE:
 				return _treeType;
 	        case _TREE_CAN_MOVE_NODE:
@@ -354,12 +350,6 @@ var Tree = function(element) {
 	        default :
 				alert("Tree对象：没有属性[" + name + "]!");
 	    }
-	}
-	/*
-	 * 根据节点不同的checkType属性值获取选择状态图标的地址
-	 */
-	this.getCheckTypeImageSrc = function (node) {
-	    alert("Tree对象：此方法[getCheckTypeImageSrc]尚未初始化！");
 	}
 	/*
 	 * 判断节点是否高亮（激活）
@@ -670,8 +660,6 @@ var Tree = function(element) {
 	}
 
 	/********************************************* 节点拖动结束 *********************************************/
-	
-	this.init();
 }
 
 /*
@@ -939,7 +927,9 @@ Tree.prototype.searchNext = function(direct, isCircle) {
 /*
  * 初始化树对象
  */
-function initTree(element) {	
+function initTree(element, dataXML) {	
+	element._dataXML = dataXML;
+
 	var _treeType = eval("element." + _TREE_TREE_TYPE) ||  _TREE_TYPE_SINGLE;
 	if(_treeType == _TREE_TYPE_MULTI) {
 		return new MultiCheckTree(element)
@@ -1007,7 +997,9 @@ var SingleCheckTree = function(element) {
 		return this.getXmlRoot().selectSingleNode(".//treeNode[@checktype='1']");
 	};
 	
+	this.init();
 }
+SingleCheckTree.prototype = Tree.prototype;
 
 
 var MultiCheckTree = function(element) {
@@ -1115,7 +1107,10 @@ var MultiCheckTree = function(element) {
 		
 		return treeNodeArray;
 	}
+	
+	this.init();
 }
+MultiCheckTree.prototype = Tree.prototype;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2310,7 +2305,7 @@ function isLastChild(node) {
 function openNode(openedNode) {
 	while( openedNode ) {
 		openedNode.setAttribute("_open", "true");
-		if(openedNode == treeObj.getXmlRoot()) {
+		if(openedNode.getAttribute(_TREE_NODE_ID) == _TREE_ROOT_NODE_ID) {
 			return;
 		}
 		openedNode = openedNode.parentNode;

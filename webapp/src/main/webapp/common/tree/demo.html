@@ -26,9 +26,9 @@
             var treeNodeID = "ParamTree";
             Cache.XmlIslands.add(treeNodeID, treeNode);
 
-            var tree = initTree($("tree"));
+            var tree = initTree($("tree"), treeNode.toXml());
 			// alert(treeNode.toXml());
-			tree.load(treeNode.toXml());
+			// tree.load(treeNode.toXml());
        
         }
         request.send();
