@@ -593,7 +593,7 @@ var Tree = function(element) {
 			var tempData = {};
 			tempData.moveTree = element;
 			tempData.movedNode = node;
-			tempData.movedNodeScrollTop = displayObj.getScrollTop() + getTop(obj);
+			tempData.movedNodeScrollTop = oThis.displayObj.getScrollTop() + getTop(obj);
 			tempData.movedRow = obj;
 			window._dataTransfer = tempData;
 
@@ -667,7 +667,7 @@ var Tree = function(element) {
 		}
 
 		window._dataTransfer.toNode = node;
-		if(displayObj.getScrollTop() + getTop(obj) > window._dataTransfer.movedNodeScrollTop) {
+		if(oThis.displayObj.getScrollTop() + getTop(obj) > window._dataTransfer.movedNodeScrollTop) {
 			window._dataTransfer.moveState = 1;
 			obj.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_LINE_STYLE;
 		} else {
@@ -695,6 +695,78 @@ var Tree = function(element) {
 	}
 
 	/********************************************* 节点拖动结束 *********************************************/
+	
+	/********************************************* 事件相关函数 *********************************************/
+	/*
+	 * 获取对象在树控件可视区域中的位置（对象上边缘距可视区域上边缘的距离）, 获取对象相对于控件顶部的距离。
+	 * 参数：	obj	对象
+	 * 返回：	int
+	 */
+	function getTop(obj) {
+		var top = 0;
+		while (obj != element) {
+			top = top + obj.offsetTop;
+			obj = obj.offsetParent;
+		}
+		return top;
+	}
+
+	/*
+	 * 如果拖到页面的最上、下方，相应的滚动树
+	 * 参数：	obj	事件触发对象
+	 */
+	function startScrollTree(obj) {
+		if(obj == null) return;
+		
+		if(isLastLine(obj)) {
+			scrollDown();
+		}
+		if(isFirstLine(obj)) {
+			scrollUp();
+		}
+	}
+
+	/*
+	 * 定时向上滚动
+	 */
+	function scrollUp() {
+		if(element.scroller) {
+			clearTimeout(element.scroller);
+			element.scroller = null;
+		}
+		displayObj.scrollUp();
+		
+		element.scroller = setTimeout(scrollUp, _TREE_SCROLL_REPEAT_DELAY_TIME);
+	}
+
+	/*
+	 * 定时向下滚动
+	 */
+	function scrollDown() {
+		if(element.scroller ) {
+			clearTimeout(element.scroller);
+			element.scroller=null;
+		}
+		displayObj.scrollDown();
+		
+		element.scroller = setTimeout(scrollDown, _TREE_SCROLL_REPEAT_DELAY_TIME);
+	}
+
+	/*
+	 * 如果拖到的不是页面的最上、下方，或者停止拖动，则停止滚动树
+	 * 参数：	obj	事件触发对象
+	 */
+	function stopScrollTree(obj) {
+		if(obj && (isLastLine(obj) || isFirstLine(obj))) {
+			return;
+		}
+		
+		if (element.scroller) {
+			window.clearTimeout(element.scroller);
+			element.scroller = null;
+		}
+	}
+	
 }
 
 /*
@@ -1672,15 +1744,6 @@ TreeNode.prototype = new function() {
 var Row = function(tr, treeObj) {
 	this.row = tr;
 	this.treeObj = treeObj; 
-	
-	this.node;
-	
-	this.nobr;
-	this.line;
-	this.folder;  // 页面显示的伸缩状态对象
-	this.icon;
-	this.checkType; // 页面显示的选择状态对象
-	this.label;    // 页面显示的文字链接对象
 }
 
 Row.prototype = new function () {
@@ -1688,22 +1751,27 @@ Row.prototype = new function () {
 	 * 重新设定相关xml节点
 	 * 参数：	node	树节点的xml节点
 	 */
-	this.init = function (node) {
+	this.initRow = function (node) {
+		this.node = node;
+	
 		if(this.nobr == null) {
 			try {
 				this.nobr   = this.row.cells[0].firstChild;
 				this.line   = this.nobr.firstChild;
-				this.folder = this.line.nextSibling;
-				this.label  = this.icon.nextSibling;
+				this.folder = this.line.nextSibling; // 页面显示的伸缩状态对象
+				this.label  = this.icon.nextSibling; // 页面显示的文字链接对象
 				this.icon   = this.folder.nextSibling;
 
 				if( !this.treeObj.isMenu() ) {
-					this.checkType = this.folder.nextSibling;
+					this.checkType = this.folder.nextSibling;  // 页面显示的选择状态对象
 					this.icon = this.checkType.nextSibling;				
 				}
 			} catch(e) {
+				if(this.row.cells[0].firstChild) {
+					this.row.cells[0].firstChild.removeNode(true);	
+				}
 				this.nobr = createObjByTagName("nobr");
-				this.row.cells[0].appendChild(this.nobr);
+				this.row.cells[0].appendChild(this.nobr);				
 				
 				this.line   = this.nobr.appendChild(createObjByTagName("span"));
 				this.folder = this.nobr.appendChild(createObjByTagName("img", _TREE_NODE_FOLDER_STYLE));
@@ -1725,9 +1793,7 @@ Row.prototype = new function () {
 	    this.line.innerHTML = getFrontStr(this.row, node, this.treeObj.getXmlRoot());
 		this.setFolder(node);
 		this.setIcon(node);
-		this.setLabel(node);
-		this.node = node;
-		
+		this.setLabel(node);	
 		if( !this.treeObj.isMenu() ) {
 			this.checkType.src = this.treeObj.getCheckTypeImageSrc(node);
 		}
@@ -1871,7 +1937,7 @@ function Display(treeObj) {
 	/*
 	 * 生成默认展示的树节点。
 	 */
-	this.init = function() {
+	this.initDisplay = function() {
 		treeObj.element.innerHTML = "";
 		
 		// 生成滚动条
@@ -1975,7 +2041,7 @@ function Display(treeObj) {
 			}
 			_pageSize = pageSize;
 			refresh();
-		}, 20);
+		}, 100);
 	}
 	
 	treeObj.element.onmousewheel = function() {
@@ -2025,9 +2091,9 @@ function Display(treeObj) {
 		for(var i = 0; i < _pageSize; i++) {
 			var nodeIndex = i + _startNum;
 			if(nodeIndex < _totalTreeNodesNum) {
-				_Rows[i].init(_totalTreeNodes[nodeIndex]);
+				_Rows[i].initRow(_totalTreeNodes[nodeIndex]);
 			} else {
-				_Rows[i].init();
+				_Rows[i].initRow();
 			}
 		}
 		//同步横向滚动条的大小
@@ -2132,7 +2198,7 @@ function Display(treeObj) {
 	    return _pageSize;
 	}
 	
-	this.init();
+	this.initDisplay();
 }
 
 
@@ -2332,74 +2398,15 @@ function refreshParentNodeState(node) {
 		parent = parent.parentNode;
 	}
 }
- 
-/*
- * 获取对象在树控件可视区域中的位置（对象上边缘距可视区域上边缘的距离）, 获取对象相对于控件顶部的距离。
- * 参数：	objElement	对象
- * 返回：	int
- */
-function getTop(objElement) {
-	var top = 0;
-	var obj = objElement;
-	while (obj != element) {
-		top = top + obj.offsetTop;
-		obj = obj.offsetParent;
-	}
-	return top;
-}
 
 /*
- * 如果拖到页面的最上、下方，相应的滚动树
- * 参数：	obj	事件触发对象
+ * 获取对象所在行序号
  */
-function startScrollTree(obj) {
-    if(obj == null) return;
-	
-	if(isLastLine(obj)) {
-		scrollDown();
+function getRowIndex(obj) {
+    while( obj.tagName && obj.tagName.toLowerCase() != "tr" ) {
+		obj = obj.parentNode;
 	}
-	if(isFirstLine(obj)) {
-		scrollUp();
-	}
-}
-
-/*
- * 定时向上滚动
- */
-function scrollUp() {
-	if(element.scroller) {
-		clearTimeout(element.scroller);
-		element.scroller = null;
-	}
-	displayObj.scrollUp();
-	element.scroller = setTimeout(scrollUp, _TREE_SCROLL_REPEAT_DELAY_TIME);
-}
-
-/*
- * 定时向下滚动
- */
-function scrollDown() {
-	if(element.scroller ) {
-		clearTimeout(element.scroller);
-		element.scroller=null;
-	}
-	displayObj.scrollDown();
-	element.scroller = setTimeout(scrollDown, _TREE_SCROLL_REPEAT_DELAY_TIME);
-}
-
-/*
- * 如果拖到的不是页面的最上、下方，或者停止拖动，则停止滚动树
- * 参数：	obj	事件触发对象
- */
-function stopScrollTree(obj) {
-	if(obj && (isLastLine(obj) || isFirstLine(obj))) {
-		return;
-	}
-	
-	if (element.scroller) {
-		window.clearTimeout(element.scroller);
-		element.scroller = null;
-	}
+	return obj.rowIndex;
 }
 
 /*
@@ -2413,15 +2420,5 @@ function isLastLine(obj) {
  * 对象是否在最上面的行中
  */
 function isFirstLine(obj) {
-    return getRowIndex(obj) == 0;
-}
-
-/*
- * 获取对象所在行序号
- */
-function getRowIndex(obj) {
-    while(obj.tagName != null && obj.tagName.toLowerCase() != "tr") {
-		obj = obj.parentNode;
-	}
-	return obj.rowIndex;
+	return getRowIndex(obj) == 0;
 }
