@@ -32,7 +32,6 @@ var _TREE_DEFAULT_ACTIVE = "defaultActive";	                // 默认激活节�
 /*
  * 节点属性名称
  */
-var _DEFAULT_OPENED_TREE_NODE_ID = "openednodeid";
 var _TREE_NODE_ID = "id";
 var _TREE_NODE_NAME = "name";
 var _TREE_NODE_FULLNAME = "fullname";
@@ -93,6 +92,23 @@ var _TREE_NODE_ICON_WIDTH = 16;
 var _TREE_NODE_ICON_HEIGHT = 16;
 var _TREE_NODE_ICON_ATTRIBUTE = "icon"; // 节点自定义图标属性名
 
+
+/*
+ * 初始化树对象
+ */
+function initTree(element, dataXML) {	
+	element._dataXML = dataXML;
+
+	var treeObj;
+	var _treeType = eval("element." + _TREE_TREE_TYPE) ||  _TREE_TYPE_SINGLE;
+	if(_treeType == _TREE_TYPE_MULTI) {
+		treeObj = new MultiCheckTree(element)
+	} 
+	else {
+		treeObj = new SingleCheckTree(element)
+	}
+}
+
 /*
  * 对象名称：Tree	
  */
@@ -137,20 +153,14 @@ var Tree = function(element) {
 		_treeXMLDom = loadXmlToNode(dataXML);
 		
 		if(_treeXMLDom && _defaultOpen == "true") {			
-			// 获取定义的默认打开的节点
-			var openedNodeId = _treeXMLDom.getAttribute(_DEFAULT_OPENED_TREE_NODE_ID) || "noDefaultOpened";	
-			var openedNode = _treeXMLDom.selectSingleNode(".//treeNode[@id='" + openedNodeId + "']");;
-			if( openedNode == null) {
-				openedNode = _treeXMLDom.selectSingleNode(".//treeNode[@" + _TREE_NODE_CANSELECTED + "='1' or not(@" + _TREE_NODE_CANSELECTED + ")]");
-			}
-		
+			var openedNode = _treeXMLDom.selectSingleNode(".//treeNode[@canselected='1' or not(@canselected)]");
 			var defaultOpenedNode = (openedNode ? openedNode : _treeXMLDom.firstChild);  // 默认打开第一个子节点
 			openNode(defaultOpenedNode);
 		}
 	}
 	
 	this.isMenu = function() {
-		return this._treeType == _TREE_TYPE_MENU;
+		return eval("element." + _TREE_TREE_TYPE) == _TREE_TYPE_MENU;
 	}
 
 	/*
@@ -172,7 +182,7 @@ var Tree = function(element) {
 			}
 			var fNodeId = checkedNode.getAttribute(_TREE_NODE_ID);
 			var fNode = _treeXMLDom.selectSingleNode("//treeNode[@id='" + fNodeId + "']");
-			var treeNode = instanceTreeNode(fNode);
+			var treeNode = instanceTreeNode(fNode, this);
 			if( treeNode ) {
 				treeNode.changeSelectedState(false, true);
 				treeNode.focus();
@@ -225,7 +235,7 @@ var Tree = function(element) {
 		if(_treeType == _TREE_TYPE_SINGLE) { // 单选树
 			eval("var selectedIds = '" + selectedIds + "';");
 			var node = _treeXMLDom.selectSingleNode("//treeNode[@id='" + selectedIds + "']");
-			var treeNode = instanceTreeNode(node);
+			var treeNode = instanceTreeNode(node, this);
 			if( treeNode ) {
 				treeNode.setSelectedState(1, false, true);
 				treeNode.focus();
@@ -447,6 +457,26 @@ var Tree = function(element) {
 	
 	
 	/********************************************* 以下定义树事件 *********************************************/
+	
+	var oThis = this;
+	
+	/*
+	 * 根据显示的对象，获取相应的Row对象
+	 * 参数：	obj	节点显示在页面上的对象
+	 * 返回值：	Row对象
+	 */
+	function getRow(obj) {
+		if(!/^(a|img)$/.test(obj.tagName.toLowerCase())) {
+			return null;
+		}
+		 
+		try{
+			var index = getRowIndex(obj);
+			return oThis.displayObj.getRowByIndex(index);
+		} catch(e) {		
+		}	
+	}
+
 	/*
 	 * 鼠标双击响应函数，触发自定义双击事件。
 	 */
@@ -454,13 +484,12 @@ var Tree = function(element) {
 		var eventObj = window.event.srcElement;
 		var row = getRow(eventObj);
 		if(row instanceof Row) {
-			var treeNode = instanceTreeNode(row.node);
+			var treeNode = instanceTreeNode(row.node, oThis);
 		}
 		if( (treeNode instanceof TreeNode) && treeNode.isCanSelected() && (eventObj == row.label || eventObj == row.icon)) {	
-			// 触发双击事件
 			var eventObj = createEventObject();
 			eventObj.treeNode = treeNode;
-			eventNodeDoubleClick.fire(eventObj);
+			eventNodeDoubleClick.fire(eventObj);  // 触发双击事件
 		}		
 	}
 
@@ -473,12 +502,12 @@ var Tree = function(element) {
 		window.event.returnValue = false;
 		var row = getRow(eventObj);
 		if(row instanceof Row) {
-			var treeNode = instanceTreeNode(row.node);
+			var treeNode = instanceTreeNode(row.node, oThis);
 		}
 		if( treeNode instanceof TreeNode ) {
 			//设置节点为激活
 			if(treeNode.isCanSelected()) {
-				treeObj.setActiveNode(treeNode);
+				oThis.setActiveNode(treeNode);
 			}
 
 			//触发右键激活节点事件
@@ -503,7 +532,7 @@ var Tree = function(element) {
 		window.event.returnValue = false;
 		var row = getRow(eventObj);
 		if(row instanceof Row) {
-			var treeNode = instanceTreeNode(row.node);
+			var treeNode = instanceTreeNode(row.node, oThis);
 		}
 		if( treeNode && (treeNode instanceof TreeNode) ) {
 			if(eventObj == row.checkType) {		// 根据不同的treeType，改变相应的选择状态
@@ -513,7 +542,7 @@ var Tree = function(element) {
 				treeNode.changeFolderState();	//展开、收缩节点的直系子节点
 			}
 			else if(eventObj == row.label || eventObj == row.icon) {
-				if(treeObj.isTreeNodeToOpenOnClick()) {
+				if(oThis.isTreeNodeToOpenOnClick()) {
 					// 只有当枝节点才允许执行
 					if(treeNode.node.hasChildNodes()) {					
 						treeNode.changeFolderState(); // 点击节点文字时，改变节点伸缩状态
@@ -586,8 +615,8 @@ var Tree = function(element) {
 		
 		//触发自定义事件
 		var eObj = createEventObject();
-		eObj.movedTreeNode = instanceTreeNode(window._dataTransfer.movedNode);
-		eObj.toTreeNode    = instanceTreeNode(window._dataTransfer.toNode);
+		eObj.movedTreeNode = instanceTreeNode(window._dataTransfer.movedNode, oThis);
+		eObj.toTreeNode    = instanceTreeNode(window._dataTransfer.toNode, oThis);
 		eObj.moveState = window._dataTransfer.moveState;
 		eObj.moveTree  = window._dataTransfer.moveTree; // 增加被拖动的节点所在树
 		eventNodeMoved.fire(eObj);
@@ -673,14 +702,14 @@ var Tree = function(element) {
  */
 Tree.prototype.getTreeNodeById = function(id) {
 	var node = this.getXmlRoot().selectSingleNode(".//treeNode[@id='" + id + "']");
-	return instanceTreeNode(node);
+	return instanceTreeNode(node, this);
 }
 
 /*
  * 获取当前高亮（激活）的节点（被激活的节点一次只有一个）。如果没有激活的节点，则返回null。
  */
 Tree.prototype.getActiveTreeNode = function () {
-	return instanceTreeNode(activedNode);
+	return instanceTreeNode(activedNode, this);
 }
 
 /*
@@ -807,11 +836,11 @@ Tree.prototype.setDefaultActive = function (type) {
 	if(type == "root") {
 		path = ".//treeNode[@id='" + _TREE_ROOT_NODE_ID + "']";
 	} else if(type == "valid") {
-		path = ".//treeNode[(@" + _TREE_NODE_CANSELECTED + "='1' or not(@" + _TREE_NODE_CANSELECTED + ")) and @id!='" + _TREE_ROOT_NODE_ID + "']";
+		path = ".//treeNode[(@canselected='1' or not(@canselected)) and @id!='" + _TREE_ROOT_NODE_ID + "']";
 	}
 	
 	var activeNode = this.getXmlRoot().selectSingleNode(path);
-	var treeNode = instanceTreeNode(activeNode);
+	var treeNode = instanceTreeNode(activeNode, this);
 	if( treeNode ) {
 		treeNode.setActive();
 		treeNode.focus();
@@ -929,24 +958,6 @@ Tree.prototype.searchNext = function(direct, isCircle) {
 
 
 
-
-/*
- * 初始化树对象
- */
-function initTree(element, dataXML) {	
-	element._dataXML = dataXML;
-
-	var _treeType = eval("element." + _TREE_TREE_TYPE) ||  _TREE_TYPE_SINGLE;
-	if(_treeType == _TREE_TYPE_MULTI) {
-		return new MultiCheckTree(element)
-	} 
-	else {
-		return new SingleCheckTree(element)
-	}
-}
-
-
-
 var SingleCheckTree = function(element) {
 	Tree.call(this, element);
 	
@@ -993,7 +1004,7 @@ var SingleCheckTree = function(element) {
 	 */
 	this.getSelectedTreeNode = function() {
 		var node = this.getXmlRoot().selectSingleNode(".//treeNode[@checktype='1']");
-		return instanceTreeNode(node);
+		return instanceTreeNode(node, this);
 	};
 	
 	/*
@@ -1067,7 +1078,7 @@ var MultiCheckTree = function(element) {
 	this.getSelectedTreeNode = function (includeHalfChecked) {	
 		var treeNodeArray = this.getSelectedXmlNode(includeHalfChecked);			
 		for(var i = 0; i < treeNodeArray.length; i++) {
-			treeNodeArray[i] = instanceTreeNode(treeNodeArray[i]);
+			treeNodeArray[i] = instanceTreeNode(treeNodeArray[i], this);
 		}
 			
 		return treeNodeArray;
@@ -1166,9 +1177,21 @@ var eventBeforeSelectedAndActived = new EventFirer("onBeforeSelectedAndActived")
 //	参数：	node	xml节点                                              //
 //  职责：	树节点对象接口。负责处理节点状态变化。	                     //
 ///////////////////////////////////////////////////////////////////////////
- 
-var TreeNode = function (node) {
+  
+
+/*
+ * 根据xml节点获取TreeNode对象的一个实例
+ * 参数：	node	xml节点
+ * 返回值：	TreeNode
+ */
+function instanceTreeNode(node, treeObj) {
+	return node ? new TreeNode(node, treeObj) : null;
+}
+
+
+var TreeNode = function (node, treeObj) {
 	this.node = node;
+	this.treeObj = treeObj;
 }
 
 TreeNode.prototype = new function() {
@@ -1204,7 +1227,7 @@ TreeNode.prototype = new function() {
 	 * 返回：	true/false
 	 */
 	this.isActive = function() {
-		return treeObj.isActiveNode(this.node);
+		return this.treeObj.isActiveNode(this.node);
 	}
 	/*
 	 * 获取节点的选择状态
@@ -1223,7 +1246,7 @@ TreeNode.prototype = new function() {
 	 * 根据原有的选择状态，改变状态。如为1，2则返回0，否则返回1
 	 */
 	this.changeSelectedStateByActive = function(noChildren) {
-		treeObj.changeCheckedStateByActive(this, noChildren);
+		this.treeObj.changeCheckedStateByActive(this, noChildren);
 	}
 	/*
 	 * 根据现有状态改成下一个选择状态
@@ -1232,7 +1255,7 @@ TreeNode.prototype = new function() {
 	 * 根据原有的选择状态，改变状态。如为1，2则返回0，否则返回1
 	 */
 	this.changeSelectedState = function(noChildren, noFireChangeEvent) {
-		this.setSelectedState(treeObj.getNextState(this), noChildren, noFireChangeEvent);
+		this.setSelectedState(this.treeObj.getNextState(this), noChildren, noFireChangeEvent);
 	}
 	/*
 	 * 设置选中状态，同时刷新相关节点的选择状态
@@ -1241,10 +1264,10 @@ TreeNode.prototype = new function() {
 	 *			noFireChangeEvent	是否触发onChange事件
 	 */
 	this.setSelectedState = function(state, noChildren, noFireChangeEvent) {
-		if(!this.isCanSelected() || treeObj.isAllDisabledCheckType()) {	//不可选择则返回
+		if(!this.isCanSelected() || this.treeObj.isAllDisabledCheckType()) {	//不可选择则返回
 			return;
 		}
-		if(state == 1 && treeObj.isActiveBySelected(state)) {
+		if(state == 1 && this.treeObj.isActiveBySelected(state)) {
 			var eventObj = createEventObject();
 			eventObj.treeNode = this;
 			eventObj.returnValue = true;
@@ -1265,7 +1288,7 @@ TreeNode.prototype = new function() {
 			}
 		}
 		justSelected(this, state, noChildren, noFireChangeEvent);
-		if(!this.isActive() && treeObj.isActiveBySelected(state)) {
+		if(!this.isActive() && this.treeObj.isActiveBySelected(state)) {
 			var eventObj = createEventObject();
 			eventObj.treeNode = this;
 			eventObj.returnValue = true;
@@ -1283,7 +1306,7 @@ TreeNode.prototype = new function() {
 	 * 返回：	TreeNode/null
 	 */
 	this.getParent = function() {
-		return instanceTreeNode(this.node.parentNode);
+		return instanceTreeNode(this.node.parentNode, this.treeObj);
 	}
 	/*
 	 * 获取ids，自己和子节点的id字符串，默认为自己和全部子节点中选中状态(全选、半选)的节点id字符串
@@ -1327,7 +1350,7 @@ TreeNode.prototype = new function() {
 	 * 设定id
 	 */
 	this.setId = function(id) {
-		var node = treeObj.getXmlRoot().selectSingleNode(".//treeNode[@id='" + id + "']");
+		var node = this.treeObj.getXmlRoot().selectSingleNode(".//treeNode[@id='" + id + "']");
 		if( node && node != this.node ) {
 			return alert("同id的节点已经存在！[id:" + id + "]");
 		}
@@ -1371,7 +1394,7 @@ TreeNode.prototype = new function() {
 		}
 		
         justActive(this);
-		justSelected(this, treeObj.getNextState(this), noChildren);
+		justSelected(this, this.treeObj.getNextState(this), noChildren);
 	}
 	/*
 	 * 打开节点，让节点出现在可视区域内。
@@ -1380,10 +1403,10 @@ TreeNode.prototype = new function() {
 		// 打开未被打开的父节点，父节点的父节点，以此类推。
 		openNode(this.node.parentNode);
 
-		displayObj.resetTotalTreeNodes();
+		this.treeObj.displayObj.resetTotalTreeNodes();
 
 		// 如果节点没有在可视区域内，则滚动节点到可是区域
-		displayObj.scrollTo(this.node);
+		this.treeObj.displayObj.scrollTo(this.node);
 	}
 	/*
 	 * 设置链接为可用
@@ -1430,7 +1453,7 @@ TreeNode.prototype = new function() {
 	 * 点击文字标签时，改变节点伸缩状态
 	 */
 	this.changeFolderStateByActive = function() {
-		treeObj.changeOpenStateByActive(this);
+		this.treeObj.changeOpenStateByActive(this);
 	}
 
 	/*
@@ -1453,10 +1476,10 @@ TreeNode.prototype = new function() {
 		// 此节点打开，打开因此节点关闭而关闭的子枝节点，同时去除标记。
 		openChildNodesCloseByThisNode(this.node);
 
-		displayObj.resetTotalTreeNodes();
+		this.treeObj.displayObj.resetTotalTreeNodes();
 		
 		// 如果节点或其打开的子节点没有在可视区域内，则滚动节点使其及其子节点全部出现在可视区或使其在最上端
-		displayObj.scrollTo(this.node);
+		this.treeObj.displayObj.scrollTo(this.node);
 	}
 	/*
 	 * 关闭子节点
@@ -1467,7 +1490,7 @@ TreeNode.prototype = new function() {
 		//此节点关闭，关闭此节点的打开的子枝节点，同时标记关闭的原因。
 		closeOpendChildNodes(this.node);
 
-		displayObj.resetTotalTreeNodes();
+		this.treeObj.displayObj.resetTotalTreeNodes();
 	}
 	/*
 	 * 删除当前节点
@@ -1477,7 +1500,7 @@ TreeNode.prototype = new function() {
 		//删除xml中的此节点
 		this.node.parentNode.removeChild(this.node);
 
-		this.displayObj.resetTotalTreeNodes();
+		this.treeObj.displayObj.resetTotalTreeNodes();
 		return true;
 	}
  
@@ -1497,11 +1520,11 @@ TreeNode.prototype = new function() {
 		}
 		
 		var newNode = parent.appendChild(newNodeXML.documentElement); // 添加子节点
-		var treeNode = instanceTreeNode(newNode);
+		var treeNode = instanceTreeNode(newNode, this.treeObj);
 		if(treeNode instanceof TreeNode) {
 			refreshStatesByNode(treeNode);		// 根据新节点的选择状态刷新相关节点
 		}
-		this.displayObj.resetTotalTreeNodes();
+		this.treeObj.displayObj.resetTotalTreeNodes();
 
 		return treeNode;
 	}
@@ -1520,7 +1543,7 @@ TreeNode.prototype = new function() {
 		var beforeNode = (moveState == -1) ? toTreeNode.getXmlNode() : toTreeNode.getXmlNode().nextSibling;
 		toTreeNode.getXmlNode().parentNode.insertBefore(this.node, beforeNode);
 		
-		displayObj.resetTotalTreeNodes();
+		this.treeObj.displayObj.resetTotalTreeNodes();
 		return true;
 	}
 	/*
@@ -1585,36 +1608,6 @@ TreeNode.prototype = new function() {
 			}
 		}		
 	}
-	/*
-	 * 刷新页面显示
-	 */
-	this.reload = function () {
-		displayObj.reload();
-	}
-
-	
-	/*
-	 * 添加节点
-	 * 参数：	xml	合法的节点xml字符串
-	 * 返回：	TreeNode/null	前者表添加根节点成功，返回新节点的TreeNode; 后者表失败
-	 */
-	function appendChild(xml, parent) {
-		//生成新节点
-		var xmlDom = loadXmlToNode(xml);
-		if(xmlDom == null || xmlDom.documentElement == null || xmlDom.documentElement.nodeName != _TREE_NODE) {
-			return alert("TreeNode对象：新增节点xml数据不能正常解析！");
-		}
-		
-		var newNode = parent.appendChild(xmlDom.documentElement);
-
-		var treeNode = instanceTreeNode(newNode);
-		if(treeNode instanceof TreeNode) {
-			refreshStatesByNode(treeNode);	 // 根据新节点的选择状态刷新相关节点
-		}
-
-		displayObj.resetTotalTreeNodes();
-		return treeNode;
-	}
 	
 	/*
 	 * 打开因此节点关闭而关闭的节点，即子节点本身是打开的，只是此节点关闭才不显示的
@@ -1640,15 +1633,14 @@ TreeNode.prototype = new function() {
 	 * 激活节点，触发相应事件
 	 */
 	function justActive(treeNode) {
-		// 设置节点为激活
-		treeObj.setActiveNode(treeNode);
+		treeNode.treeObj.setActiveNode(treeNode);
 	}
 
 	/*
 	 * 选中节点 
 	 */
 	function justSelected(treeNode, state, noChildren) {
-        if(false == treeObj.isMenu()) {
+        if( !treeNode.treeObj.isMenu() ) {
             if(state == 1 && noChildren && treeNode.node.hasChildNodes()) {
                 setNodeState(treeNode.node, 2);
             } else {
@@ -1666,18 +1658,8 @@ TreeNode.prototype = new function() {
 	 *			noChildren	选中节点时，只选中自己节点，不影响子节点
 	 */
 	function refreshStatesByNode(treeNode, noChildren) {
-		treeObj.refreshStates(treeNode, noChildren);
+		treeNode.treeObj.refreshStates(treeNode, noChildren);
 	}
-}
-
-
-/*
- * 根据xml节点获取TreeNode对象的一个实例
- * 参数：	node	xml节点
- * 返回值：	TreeNode
- */
-function instanceTreeNode(node) {
-	return node ? new TreeNode(node) : null;
 }
 
  
@@ -1706,9 +1688,7 @@ Row.prototype = new function () {
 	 * 重新设定相关xml节点
 	 * 参数：	node	树节点的xml节点
 	 */
-	this.setXmlNode = function (node) {
-	
-	// 初始化参数（获取指向行内个对象的链接）
+	this.init = function (node) {
 		if(this.nobr == null) {
 			try {
 				this.nobr   = this.row.cells[0].firstChild;
@@ -1737,15 +1717,8 @@ Row.prototype = new function () {
 		
 		if(node == null) {
 			this.setClassName();
-			this.nobr.removeNode(true);
-			
-			this.nobr = null;
-			this.line = null;
-			this.folder = null;
-			this.icon = null;
-			this.checkType = null;
-			this.label = null;
-			this.node = null;
+			this.nobr.removeNode(true);			
+			this.nobr = this.line = this.folder = this.icon = this.checkType = this.label = this.node = null;
 			return;
 		}
 		
@@ -1893,39 +1866,7 @@ function Display(treeObj) {
 	
 	var _Rows = new Array(_pageSize);
 	
-	treeObj.element.style.overflow = 'hidden';
-	treeObj.element.onresize = resize;
-	treeObj.element.onmousewheel = function() {
-		_vScrollBox.scrollTop += -Math.round(window.event.wheelDelta / 120) * _rowHeight;
-	}
-	treeObj.element.onkeydown = function() {
-		switch (event.keyCode) {
-		    case 33:	//PageUp
-				_vScrollBox.scrollTop -= _pageSize * _rowHeight;
-				return false;
-		    case 34:	//PageDown
-				_vScrollBox.scrollTop += _pageSize * _rowHeight;
-				return false;
-		    case 35:	//End
-				_vScrollBox.scrollTop = _vScrollDiv.offsetHeight - _windowHeight;
-				return false;
-		    case 36:	//Home
-				_vScrollBox.scrollTop = 0;
-				return false;
-		    case 37:	//Left
-				_hScrollBox.scrollLeft -= 10;
-				return false;
-		    case 38:	//Up
-				_vScrollBox.scrollTop -= _rowHeight;
-				return false;
-		    case 39:	//Right
-				_hScrollBox.scrollLeft += 10;
-				return false;
-		    case 40:	//Down
-				_vScrollBox.scrollTop += _rowHeight;
-				return false;
-		}
-	}
+	treeObj.element.style.overflow = 'hidden'; // 溢出部分会被隐藏
 	
 	/*
 	 * 生成默认展示的树节点。
@@ -1938,26 +1879,40 @@ function Display(treeObj) {
 		var hScrollStr = '<div id="treeHScrollBox" style="position:absolute;overflow-x:auto;overflow-y:hidden;heigth:17px;width:100%;bottom:0px;left:0px"><div id="treeHScrollDiv" style="higth:1px"></div></div>';
 		treeObj.element.insertAdjacentHTML('afterBegin', vScrollStr + hScrollStr);
 		_vScrollBox = $("treeVScrollBox");
-		_vScrollDiv = treeObj.element.all("treeVScrollDiv");
-		_hScrollBox = treeObj.element.all("treeHScrollBox");
-		_hScrollDiv = treeObj.element.all("treeHScrollDiv");
-		_vScrollBox.onscroll = onVScroll;
-		_hScrollBox.onscroll = onHScroll;
+		_vScrollDiv = $("treeVScrollDiv");
+		_hScrollBox = $("treeHScrollBox");
+		_hScrollDiv = $("treeHScrollDiv");
 		
 		// 生成页面上显示节点的table对象。
 		var tableStr = '<div id="treeRootBox" style="position:absolute;overflow:hidden;top:0px;left:0px"><table id="treeRootTable" cellspacing="0"></table></div>';
 		treeObj.element.insertAdjacentHTML('afterBegin', tableStr);
-		_rootBox   = treeObj.element.all("treeRootBox");
-		_rootTable = treeObj.element.all("treeRootTable");
+		_rootBox   = $("treeRootBox");
+		_rootTable = $("treeRootTable");
 		for(var i = 0; i < _pageSize; i++) {
 			var tr = _rootTable.insertRow();
 			tr.insertCell();
 			_Rows[i] = new Row(tr, treeObj);
 		}
 		
-		// 设置滚动条的大小
-		_vScrollBox.style.height = _windowHeight;
+		/*
+		 * 纵向滚动事件触发后，延时执行reload，如果第二次触发时，上次的事件还没有执行，
+		 * 则取消上次事件，触发本次事件。为的是防止多次触发，屏幕抖动。
+		 */
+		_vScrollBox.onscroll = function() {
+			if (_scrollTimer) {
+				window.clearTimeout(_scrollTimer);
+			}
+			_scrollTimer = window.setTimeout(refresh, _TREE_SCROLL_DELAY_TIME);
+		};
+		_vScrollBox.style.height = _windowHeight; // 设置滚动条的大小
 		_vScrollDiv.style.height = (_totalTreeNodesNum - _pageSize) * _rowHeight + _windowHeight;
+		
+		/*
+		 * 横向滚动事件
+		 */
+		_hScrollBox.onscroll = function() {
+			_rootBox.scrollLeft = this.scrollLeft;
+		};
 		_hScrollBox.style.width = _windowWidth;
 		_hScrollDiv.style.width = _rootTable.style.width; 
 		
@@ -1965,137 +1920,15 @@ function Display(treeObj) {
 		_rootBox.style.height = _windowHeight;
 		_rootBox.style.width = _windowWidth;
 	}
- 
-	/*
-	 * 根据滚动状态，显示可视范围内的树节点。
-	 */
-	this.reload = function refresh() {
-		var startTime = new Date();
-		if(_totalTreeNodesNum <= _pageSize) {
-			_startNum = 0;
-		} else {
-			_startNum = Math.ceil(_vScrollBox.scrollTop  / _rowHeight);
-		}
-		//显示节点
-		for(var i = 0; i < _pageSize; i++) {
-			var nodeIndex = i + _startNum;
-			if(nodeIndex < _totalTreeNodesNum) {
-				_Rows[i].setXmlNode(_totalTreeNodes[nodeIndex]);
-			} else {
-				_Rows[i].setXmlNode();
-			}
-		}
-		//同步横向滚动条的大小
-		_hScrollDiv.style.width = _rootTable.offsetWidth;
-
-		refreshUI();
-
-		window.status = new Date() - startTime;  // 看看效率如何
-	}
-	
-	/*
-	 * 根据页面上的行数，获取相应的Row对象
-	 * 参数：	index	行序号
-	 * 返回值：	Row对象/null
-	 */
-	this.getRowByIndex = function (index) {
-		if(index >= _pageSize || index < 0) {
-			alert("Display对象：行序号[" + index + "]超出允许范围[0 - " + _pageSize + "]！");
-			return null;
-		}
-		return _Rows[index];
-	}
-	
-	/*
-	 * 重新获取所有可以显示的节点数组
-	 */
-	this.resetTotalTreeNodes = function() {
-		_totalTreeNodes = treeObj.getXmlRoot().selectNodes(".//treeNode[../@_open = 'true']");
-		_totalTreeNodesNum = _totalTreeNodes.length;
-
-		_vScrollDiv.style.height = Math.max(1, (_totalTreeNodesNum - _pageSize) * _rowHeight + _windowHeight);
-	}
-	
-	/*
-	 * 获取页面table对象
-	 */
-	this.getRootTable = function() {
-		return _rootTable;
-	}
-	
-	/*
-	 * 将节点滚动到可视范围之内
-	 */
-	this.scrollTo = function(node) {
-		var nodeIndex = null;
-		for(var i = 0; i < _totalTreeNodesNum; i++) {
-			if(_totalTreeNodes[i] == node) {
-				nodeIndex = i;
-				break;
-			}
-		}
-		if(nodeIndex == null) return;
-
-		var childNums = node.selectNodes(".//treeNode[../@_open = 'true']").length;
-		if(childNums + 1 > _pageSize || nodeIndex < _startNum  || nodeIndex >= _startNum + _pageSize) {
-            _vScrollBox.style.display = 'block';
-			_vScrollBox.scrollTop = nodeIndex * _rowHeight;
-		}
-		else if (nodeIndex + childNums + 1 - _pageSize > _startNum) {
-            _vScrollBox.style.display = 'block';
-			_vScrollBox.scrollTop = (nodeIndex + childNums + 1 - _pageSize) * _rowHeight;
-		} 
-		else {
-			this.reload();
-		}
-	}
-	
-	/*
-	 * 向上滚动一个节点
-	 */
-	this.scrollUp = function() {
-		_vScrollBox.scrollTop -= _rowHeight;
-	}
-	
-	/*
-	 * 向下滚动一个节点
-	 */
-	this.scrollDown = function() {
-		_vScrollBox.scrollTop += _rowHeight;
-	}
-	
-	/*
-	 * 获取滚动条的位置
-	 */
-	this.getScrollTop = function() {
-		return _vScrollBox.scrollTop;
-	}
-	
-	/*
-	 * 纵向滚动事件触发后，延时执行reload，如果第二次触发时，上次的事件还没有执行，
-	 * 则取消上次事件，触发本次事件。为的是防止多次触发，屏幕抖动。
-	 */
-	function onVScroll() {
- 		if (_scrollTimer) {
-			window.clearTimeout(_scrollTimer);
-		}
-		_scrollTimer = window.setTimeout(refresh, _TREE_SCROLL_DELAY_TIME);
-	}
-	
-	/*
-	 * 横向滚动事件
-	 */
-	function onHScroll() {
-		_rootBox.scrollLeft = this.scrollLeft;
-	}
 	
 	/*
 	 * 当窗口大小改变后，初始化所有相关参数，并且重新计算所要显示的节点。
 	 */
-	function resize() {
+	treeObj.element.onresize = function () {
 		// 增加延时，避免极短时间内重复触发多次
 		clearTimeout(treeObj.element._resizeTimeout);
-		treeObj.element._resizeTimeout = setTimeout(function() {
+		
+		treeObj.element._resizeTimeout = setTimeout( function() {
 			var tempWindowHeight = Math.max(treeObj.element.offsetHeight - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_HEIGHT);
 			var tempWindowWidth  = Math.max(treeObj.element.offsetWidth  - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_WIDTH);
 
@@ -2145,6 +1978,131 @@ function Display(treeObj) {
 		}, 20);
 	}
 	
+	treeObj.element.onmousewheel = function() {
+		_vScrollBox.scrollTop += -Math.round(window.event.wheelDelta / 120) * _rowHeight;
+	}
+	
+	treeObj.element.onkeydown = function() {
+		switch (event.keyCode) {
+		    case 33:	//PageUp
+				_vScrollBox.scrollTop -= _pageSize * _rowHeight;
+				return false;
+		    case 34:	//PageDown
+				_vScrollBox.scrollTop += _pageSize * _rowHeight;
+				return false;
+		    case 35:	//End
+				_vScrollBox.scrollTop = _vScrollDiv.offsetHeight - _windowHeight;
+				return false;
+		    case 36:	//Home
+				_vScrollBox.scrollTop = 0;
+				return false;
+		    case 37:	//Left
+				_hScrollBox.scrollLeft -= 10;
+				return false;
+		    case 38:	//Up
+				_vScrollBox.scrollTop -= _rowHeight;
+				return false;
+		    case 39:	//Right
+				_hScrollBox.scrollLeft += 10;
+				return false;
+		    case 40:	//Down
+				_vScrollBox.scrollTop += _rowHeight;
+				return false;
+		}
+	}
+ 
+	/*
+	 * 根据滚动状态，显示可视范围内的树节点。
+	 */
+	this.reload = function refresh() {
+		var startTime = new Date();
+		if(_totalTreeNodesNum <= _pageSize) {
+			_startNum = 0;
+		} else {
+			_startNum = Math.ceil(_vScrollBox.scrollTop  / _rowHeight);
+		}
+		//显示节点
+		for(var i = 0; i < _pageSize; i++) {
+			var nodeIndex = i + _startNum;
+			if(nodeIndex < _totalTreeNodesNum) {
+				_Rows[i].init(_totalTreeNodes[nodeIndex]);
+			} else {
+				_Rows[i].init();
+			}
+		}
+		//同步横向滚动条的大小
+		_hScrollDiv.style.width = _rootTable.offsetWidth;
+
+		refreshUI();
+
+		window.status = new Date() - startTime;  // 看看效率如何
+	}
+	
+	/*
+	 * 根据页面上的行数，获取相应的Row对象
+	 * 参数：	index	行序号
+	 * 返回值：	Row对象/null
+	 */
+	this.getRowByIndex = function (index) {
+		if(index >= _pageSize || index < 0) {
+			alert("Display对象：行序号[" + index + "]超出允许范围[0 - " + _pageSize + "]！");
+			return null;
+		}
+		return _Rows[index];
+	}
+	
+	/*
+	 * 重新获取所有可以显示的节点数组
+	 */
+	this.resetTotalTreeNodes = function() {
+		_totalTreeNodes = treeObj.getXmlRoot().selectNodes(".//treeNode[../@_open = 'true']");
+		_totalTreeNodesNum = _totalTreeNodes.length;
+
+		_vScrollDiv.style.height = Math.max(1, (_totalTreeNodesNum - _pageSize) * _rowHeight + _windowHeight);
+	}
+
+	/*
+	 * 将节点滚动到可视范围之内
+	 */
+	this.scrollTo = function(node) {
+		var nodeIndex = null;
+		for(var i = 0; i < _totalTreeNodesNum; i++) {
+			if(_totalTreeNodes[i] == node) {
+				nodeIndex = i;
+				break;
+			}
+		}
+		if(nodeIndex == null) return;
+
+		var childNums = node.selectNodes(".//treeNode[../@_open = 'true']").length;
+		if(childNums + 1 > _pageSize || nodeIndex < _startNum  || nodeIndex >= _startNum + _pageSize) {
+            _vScrollBox.style.display = 'block';
+			_vScrollBox.scrollTop = nodeIndex * _rowHeight;
+		}
+		else if (nodeIndex + childNums + 1 - _pageSize > _startNum) {
+            _vScrollBox.style.display = 'block';
+			_vScrollBox.scrollTop = (nodeIndex + childNums + 1 - _pageSize) * _rowHeight;
+		} 
+		else {
+			this.reload();
+		}
+	}
+	
+	/* 向上滚动一个节点 */
+	this.scrollUp = function() {
+		_vScrollBox.scrollTop -= _rowHeight;
+	}
+	
+	/* 向下滚动一个节点 */
+	this.scrollDown = function() {
+		_vScrollBox.scrollTop += _rowHeight;
+	}
+	
+	/* 获取滚动条的位置 */
+	this.getScrollTop = function() {
+		return _vScrollBox.scrollTop;
+	}
+	
 	/*
 	 * 刷新页面展示：数据展示框、滚动条等
 	 */
@@ -2169,9 +2127,7 @@ function Display(treeObj) {
 		}
 	}
 	
-	/*
-	 * 获取页面上所能展示的行数
-	 */
+	/* 获取页面上所能展示的行数 */
 	this.getPageSize = function () {
 	    return _pageSize;
 	}
@@ -2279,7 +2235,7 @@ function Search(treeObj) {
 	function setFindedNode(node) {
 		_findedNode = node;
 		treeObj.setFindedNode(node);
-		treeNode = instanceTreeNode(node);
+		treeNode = instanceTreeNode(node, treeObj);
 		if( treeNode instanceof TreeNode ) {
 			treeNode.focus();
 			return
@@ -2390,23 +2346,6 @@ function getTop(objElement) {
 		obj = obj.offsetParent;
 	}
 	return top;
-}
-
-/*
- * 根据显示的对象，获取相应的Row对象
- * 参数：	obj	节点显示在页面上的对象
- * 返回值：	Row对象
- */
-function getRow(obj) {
-	if(!/^(a|img)$/.test(obj.tagName.toLowerCase())) {
-		return null;
-	}
-	 
-	try{
-		var index = getRowIndex(obj);
-		return displayObj.getRowByIndex(index);
-	} catch(e) {		
-	}	
 }
 
 /*
