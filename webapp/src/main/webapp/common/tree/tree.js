@@ -593,7 +593,7 @@ var Tree = function(element) {
 			var tempData = {};
 			tempData.moveTree = element;
 			tempData.movedNode = node;
-			tempData.movedNodeScrollTop = oThis.displayObj.getScrollTop() + getTop(obj);
+			tempData.movedNodeScrollTop = oThis.displayObj.getScrollTop() + getTop(obj, oThis.element);
 			tempData.movedRow = obj;
 			window._dataTransfer = tempData;
 
@@ -605,11 +605,12 @@ var Tree = function(element) {
 	/*
 	 * 拖动完成，触发自定义节点拖动事件
 	 */
-	this.element.ondrop = function() {
-		if(!oThis.isCanMoveNode()) return;
+	this.element.ondrop = function() { 		
+		if( !oThis.isCanMoveNode() ) return;	
 		
-		stopScrollTree();
 		var obj = window.event.srcElement;
+		stopScrollTree(obj, oThis);
+		
 		obj.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
 		obj.runtimeStyle.borderTop = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
 		
@@ -619,17 +620,20 @@ var Tree = function(element) {
 		eObj.toTreeNode    = instanceTreeNode(window._dataTransfer.toNode, oThis);
 		eObj.moveState = window._dataTransfer.moveState;
 		eObj.moveTree  = window._dataTransfer.moveTree; // 增加被拖动的节点所在树
-		eventNodeMoved.fire(eObj);
+		eventNodeMoved.fire(eObj); 
+		
+		alert(obj);
 	}
 
 	/*
 	 * 拖动结束，去除拖动时添加的样式
 	 */
 	this.element.ondragend = function() {
-		if(!oThis.isCanMoveNode()) return;
+		if( !oThis.isCanMoveNode() ) return;	
 		
-		stopScrollTree();
 		var obj = window.event.srcElement;
+		stopScrollTree(obj, oThis);
+		
 		var row = getRow(obj);
 		if( (row instanceof Row) && obj == row.label) {
 			obj.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
@@ -646,7 +650,7 @@ var Tree = function(element) {
 		if(!oThis.isCanMoveNode() || window._dataTransfer == null) return;
 		
 		var obj = window.event.srcElement;	
-		startScrollTree(obj); //判断是否需要滚动树，如是则相应的滚动
+		startScrollTree(obj, oThis); //判断是否需要滚动树，如是则相应的滚动
 		
 		var row = getRow(obj);
 		if(row instanceof Row) {
@@ -667,7 +671,7 @@ var Tree = function(element) {
 		}
 
 		window._dataTransfer.toNode = node;
-		if(oThis.displayObj.getScrollTop() + getTop(obj) > window._dataTransfer.movedNodeScrollTop) {
+		if(oThis.displayObj.getScrollTop() + getTop(obj, oThis.element) > window._dataTransfer.movedNodeScrollTop) {
 			window._dataTransfer.moveState = 1;
 			obj.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_LINE_STYLE;
 		} else {
@@ -677,6 +681,11 @@ var Tree = function(element) {
 		window.event.returnValue = false;
 		window.event.dataTransfer.dropEffect = "move";
 	}
+	
+	/* 拖拽元素在目标元素头上移动的时候 */
+	this.element.ondragover = function() { 		
+		window.event.returnValue = false;
+	}
 
 	/*
 	 * 拖动时，鼠标离开节点
@@ -684,8 +693,9 @@ var Tree = function(element) {
 	this.element.ondragleave = function() {
 		if(!oThis.isCanMoveNode()) return;
 		
-		stopScrollTree(obj);
 		var obj = window.event.srcElement;
+		stopScrollTree(obj, oThis);
+		
 		var row = getRow(obj);
 		if( (row instanceof Row) && obj != row.label) {
 			obj.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
@@ -702,7 +712,7 @@ var Tree = function(element) {
 	 * 参数：	obj	对象
 	 * 返回：	int
 	 */
-	function getTop(obj) {
+	function getTop(obj, element) {
 		var top = 0;
 		while (obj != element) {
 			top = top + obj.offsetTop;
@@ -715,21 +725,21 @@ var Tree = function(element) {
 	 * 如果拖到页面的最上、下方，相应的滚动树
 	 * 参数：	obj	事件触发对象
 	 */
-	function startScrollTree(obj) {
+	function startScrollTree(obj, treeObj) {
 		if(obj == null) return;
 		
-		if(isLastLine(obj)) {
-			scrollDown();
+		if(isLastLine(obj, treeObj.displayObj)) {
+			scrollDown(treeObj.element, treeObj.displayObj);
 		}
 		if(isFirstLine(obj)) {
-			scrollUp();
+			scrollUp(treeObj.element, treeObj.displayObj);
 		}
 	}
 
 	/*
 	 * 定时向上滚动
 	 */
-	function scrollUp() {
+	function scrollUp(element, displayObj) {
 		if(element.scroller) {
 			clearTimeout(element.scroller);
 			element.scroller = null;
@@ -742,7 +752,7 @@ var Tree = function(element) {
 	/*
 	 * 定时向下滚动
 	 */
-	function scrollDown() {
+	function scrollDown(element, displayObj) {
 		if(element.scroller ) {
 			clearTimeout(element.scroller);
 			element.scroller=null;
@@ -756,14 +766,14 @@ var Tree = function(element) {
 	 * 如果拖到的不是页面的最上、下方，或者停止拖动，则停止滚动树
 	 * 参数：	obj	事件触发对象
 	 */
-	function stopScrollTree(obj) {
-		if(obj && (isLastLine(obj) || isFirstLine(obj))) {
+	function stopScrollTree(obj, treeObj) {
+		if(obj && (isLastLine(obj, treeObj.displayObj) || isFirstLine(obj))) {
 			return;
 		}
 		
-		if (element.scroller) {
-			window.clearTimeout(element.scroller);
-			element.scroller = null;
+		if (treeObj.element.scroller) {
+			window.clearTimeout(treeObj.element.scroller);
+			treeObj.element.scroller = null;
 		}
 	}
 	
@@ -2412,7 +2422,7 @@ function getRowIndex(obj) {
 /*
  * 对象是否在最下面的行中
  */
-function isLastLine(obj) {
+function isLastLine(obj, displayObj) {
 	return getRowIndex(obj) == (displayObj.getPageSize() - 1);
 }
 
