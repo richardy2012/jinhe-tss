@@ -112,7 +112,8 @@
                                     <td>
                                         <xsl:attribute name="style">border-width:<xsl:eval>getBorderWidth("cell")</xsl:eval>;</xsl:attribute>
                                         <xsl:apply-templates select="@*"/>
-                                        <nobr>&amp;nbsp;</nobr></td>
+                                        <nobr>&amp;nbsp;</nobr>
+									</td>
                                 </xsl:if>
                             </xsl:for-each>
                         </tr>
@@ -202,6 +203,7 @@
         function getLocked(){
             return this.getAttribute("locked")=="true";
         }
+
 		
         function getAlign(){
             switch(this.getAttribute("mode")){

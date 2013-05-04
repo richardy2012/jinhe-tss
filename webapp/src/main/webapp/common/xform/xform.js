@@ -10,19 +10,14 @@ var XForm = function(element) {
 	this.element = element;
 	this.form = element.firstChild;
 
-	this.tempDom = new ActiveXObject("MSXML.DOMDocument");
-	this.tempDom.async = false;
-
-	this.xslDom = new ActiveXObject('MSXML.DOMDocument');
-	this.xslDom.async = false;
+	this.xmlDom = getXmlDOM();
+	this.xslDom = getXmlDOM();
 	this.xslDom.resolveExternals = false;
 
 	this.xmlDoc;
-	this._width;
-    this._height;
 	
 	this._baseurl  = element._baseurl || "";
-	this._iconPath = this._baseurl + "icon/"
+	this._iconPath = this._baseurl + "images/"
 
 	this._columnList = {};
 }
@@ -42,45 +37,25 @@ XForm.prototype.attachEvents = function() {
 	}
 }
 
-XForm.prototype.load = function(data, dataType) {
-	this.element.data = data;
-	this.element.dataType = dataType || "node";
-	this.reload();
-}
-
-XForm.prototype.reload = function() {
+XForm.prototype.load = function(data) {
 	// 隐藏上次的错误信息层
 	hideErrorInfo();
 
-	this.xslDom.load(this._baseurl + "xform.xsl");
-	this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\nvar uniqueID=\"" + this.element.uniqueID 
-		+ "\";\r\nvar baseurl=\"" + this._baseurl + "\";\r\nvar formEditable=\"" + this.element.editable + "\";\r\n";
-
-	var curXmlDom;
-	switch(this.element.dataType) {
-		case "url":
-			tempDom.load(this.element.data);
-			if(tempDom.parseError != 0) {
-				alert("data地址有问题，解析XML不正确.");
-			}
-
-			var curXmlDom = tempDom.selectSingleNode("/*");
-			if(curXmlDom == null) {
-				alert("数据源有问题.");
-			}
-			break;
-		case "node":
-			if("object" == typeof(this.element.data) && 1 == this.element.data.nodeType) {
-				var curXmlDom = this.element.data;
-			}
-			break;
+	if("object" != typeof(data) || 1 != data.nodeType) {
+		alert("传入的XForm数据有问题。")	
 	}
+	
+	var curXmlDom = data;
 	this.xmlDoc = new Class_XMLDocument(curXmlDom);
 	
-	if(this.xmlDoc && this.xmlDoc.xmlObj) {
+	if(this.xmlDoc && this.xmlDoc.xmlDom) {
 		// 修正comboedit类型默认第一项的值
 		this.fixComboeditDefaultValue(this.xmlDoc.Row);
 
+		this.xslDom.load(this._baseurl + "xform.xsl");
+		this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\nvar uniqueID=\"" + this.element.uniqueID 
+		+ "\";\r\nvar baseurl=\"" + this._baseurl + "\";\r\nvar formEditable=\"" + this.element.editable + "\";\r\n";
+		
 		var htmlStr = this.xmlDoc.transformXML(this.xslDom); // 利用XSL把XML解析成Html
 		this.element.innerHTML = htmlStr.replace(/<\/br>/gi, "");
 
@@ -102,11 +77,6 @@ XForm.prototype.reload = function() {
 				captionTD.className = "titleBox";
 				captionTD.style.cssText = "font-size:12px;height:19px;background-image:url(" + this._iconPath + "titlebg.gif);background-repeat:no-repeat;";
 				captionTD.innerHTML = this.element.getAttribute("caption");
-
-				var tempDivHeight = _height - theTable.rows[0].offsetHeight - (theTable.rows[2] == null ? 0 : theTable.rows[2].offsetHeight);
-				if(tempDivHeight > 0 && _overflow == true) {
-					theTable.rows(1).cells(0).firstChild.style.height = tempDivHeight;
-				}
 			}
 		}
 
@@ -409,7 +379,7 @@ XForm.prototype.setLabelContent = function(name, content) {
 }
 
 XForm.prototype.getXmlDocument = function() {
-	return this.xmlDoc.xmlObj;
+	return this.xmlDoc.xmlDom;
 }
 
 /*
@@ -437,7 +407,7 @@ XForm.prototype.setColumnValue = function(name, value) {
 	var rowNode = this.xmlDoc.Row;
 	var node = rowNode.selectSingleNode(name);
 	if( node == null ) { 
-		node = this.tempDom.createElement(name); // 创建单值节点
+		node = this.xmlDom.createElement(name); // 创建单值节点
 		rowNode.appendChild(node);
 	}
 
@@ -446,7 +416,7 @@ XForm.prototype.setColumnValue = function(name, value) {
 		CDATANode.text = value;
 	}
 	else{
-		var newCDATANode = this.tempDom.createCDATASection(value);
+		var newCDATANode = this.xmlDom.createCDATASection(value);
 		node.appendChild(newCDATANode);
 	}
 }
@@ -941,44 +911,34 @@ Mode_Hidden.prototype.setFocus = function() {}
 
 
 
-var Class_XMLDocument = function(xmlObj) {
-	this.xmlObj = xmlObj;
+var Class_XMLDocument = function(xmlDom) {
+	this.xmlDom = xmlDom;
 
 	this.toString = function() {
-		if( this.xmlObj ) {
-			return this.xmlObj.xml;
-		}
-		return null;
+		return this.xmlDom ? this.xmlDom.xml : null;
 	}
 
-	this.transformXML = function(xslObj) {			
-		var tempXMLDom = new ActiveXObject('MSXML.DOMDocument');
-		tempXMLDom.async = false;
-		tempXMLDom.resolveExternals = false;
-		tempXMLDom.loadXML(this.toString());
-
-		return tempXMLDom.transformNode(xslObj).replace(/&amp;nbsp;/g, "&nbsp;").replace(/\u00A0/g, "&amp;nbsp;");
+	this.transformXML = function(xslDom) {			
+		return this.xmlDom.transformNode(xslDom).replace(/&amp;nbsp;/g, "&nbsp;").replace(/\u00A0/g, "&amp;nbsp;");
 	}
 	
 	this.refresh = function() {
-		if( this.xmlObj ) {
-			this.declare = this.xmlObj.selectSingleNode("./declare");
-			this.Layout  = this.xmlObj.selectSingleNode("./layout");
-			this.Script  = this.xmlObj.selectSingleNode("./script");
-			this.Columns = this.xmlObj.selectNodes("./declare/column");
-			this.Data    = this.xmlObj.selectSingleNode("./data");
+		if( this.xmlDom ) {
+			this.declare = this.xmlDom.selectSingleNode("./declare");
+			this.Layout  = this.xmlDom.selectSingleNode("./layout");
+			this.Script  = this.xmlDom.selectSingleNode("./script");
+			this.Columns = this.xmlDom.selectNodes("./declare/column");
+			this.Data    = this.xmlDom.selectSingleNode("./data");
 			
-			var tempDom = new ActiveXObject('MSXML.DOMDocument');
-			tempDom.async = false;
 			if(this.Data == null) {				
-				var dataNode = tempDom.createElement("data");
-				this.xmlObj.appendChild(dataNode);
+				var dataNode = getXmlDOM().createElement("data");
+				this.xmlDom.appendChild(dataNode);
 				this.Data = dataNode;
 			}
 			
-			this.Row = this.xmlObj.selectSingleNode("./data/row[0]");
+			this.Row = this.xmlDom.selectSingleNode("./data/row[0]");
 			if(this.Row == null) {
-				var rowNode = tempDom.createElement("row");
+				var rowNode = getXmlDOM().createElement("row");
 				this.Data.appendChild(rowNode);	
 				this.Row = rowNode;
 			}

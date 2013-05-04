@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
-<title>ËüÉ½Ê¯--µÇÂ½</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>å®ƒå±±çŸ³--ç™»é™†</title>
 
 <link href="css/css.css" rel="stylesheet" type="text/css">
 <link href="common/xform/xform.css" rel="stylesheet" type="text/css">
@@ -18,7 +18,7 @@
 <!--
 
     /*
-     *	ºóÌ¨ÏìÓ¦Êı¾İ½ÚµãÃû³Æ
+     *	åå°å“åº”æ•°æ®èŠ‚ç‚¹åç§°
      */
     XML_USER_NAME = "UserName";
     XML_CLASS_NAME = "ClassName";
@@ -26,7 +26,7 @@
 	CACHE_LOGIN_FORM = "login__id";
 
     /*
-     *	XMLHTTPÇëÇóµØÖ·»ã×Ü
+     *	XMLHTTPè¯·æ±‚åœ°å€æ±‡æ€»
      */
     URL_GET_USER_NAME = "test/mockdata/username.xml";
     URL_LOGIN = "test/mockdata/_success.xml";
@@ -41,10 +41,10 @@
         var str = [];
         str[str.length] = "<xform>";
         str[str.length] = "    <declare>";
-        str[str.length] = "        <column name=\"userName\"   caption=\"ÕË¡¡¡¡ºÅ\" mode=\"string\"/>";
-        str[str.length] = "        <column name=\"loginName\"  caption=\"µÇÂ¼ÕÊºÅ\" mode=\"string\"/>";
-        str[str.length] = "        <column name=\"password\"   caption=\"ÃÜ¡¡¡¡Âë\" mode=\"string\"/>";
-        str[str.length] = "        <column name=\"identifier\" caption=\"ÈÏÖ¤·½Ê½\" mode=\"string\"/>";
+        str[str.length] = "        <column name=\"userName\"   caption=\"è´¦ã€€ã€€å·\" mode=\"string\"/>";
+        str[str.length] = "        <column name=\"loginName\"  caption=\"ç™»å½•å¸å·\" mode=\"string\"/>";
+        str[str.length] = "        <column name=\"password\"   caption=\"å¯†ã€€ã€€ç \" mode=\"string\"/>";
+        str[str.length] = "        <column name=\"identifier\" caption=\"è®¤è¯æ–¹å¼\" mode=\"string\"/>";
         str[str.length] = "    </declare>";
         str[str.length] = "    <layout>";
         str[str.length] = "        <TR>";
@@ -57,11 +57,11 @@
         str[str.length] = "        </TR>";
         str[str.length] = "        <TR>";
         str[str.length] = "            <TD width=\"50\">&amp;nbsp;</TD>";
-        str[str.length] = "            <TD><a href=\"#\" onclick=\"register()\">ĞÂÓÃ»§×¢²á</a> | <a href=\"#\" onclick=\"forget()\">Íü¼ÇÃÜÂë</a></TD>";
+        str[str.length] = "            <TD><a href=\"#\" onclick=\"register()\">æ–°ç”¨æˆ·æ³¨å†Œ</a> | <a href=\"#\" onclick=\"forget()\">å¿˜è®°å¯†ç </a></TD>";
         str[str.length] = "        </TR>";
         str[str.length] = "        <TR>";
         str[str.length] = "            <TD width=\"50\">&amp;nbsp;</TD>";
-        str[str.length] = "            <TD><input type=\"button\" class=\"btLogin\" id=\"btCancel\" value=\"ÖØÖÃ\" onclick=\"resetForm()\"/><input type=\"button\" class=\"btLogin\" id=\"btLogin\" value=\"µÇÂ¼\" onclick=\"login()\"/></TD>";
+        str[str.length] = "            <TD><input type=\"button\" class=\"btLogin\" id=\"btCancel\" value=\"é‡ç½®\" onclick=\"resetForm()\"/><input type=\"button\" class=\"btLogin\" id=\"btLogin\" value=\"ç™»å½•\" onclick=\"login()\"/></TD>";
         str[str.length] = "        </TR>";
         str[str.length] = "    </layout>";
         str[str.length] = "    <data>";
@@ -73,7 +73,7 @@
         var loginFormXML = new XmlNode(xmlReader.documentElement);
         Cache.XmlIslands.add(CACHE_LOGIN_FORM, loginFormXML);
 
-		// ³õÊ¼»¯µÇÂ¼xform
+		// åˆå§‹åŒ–ç™»å½•xform
 		loginXForm = $X("loginForm")
 		loginXForm.load(loginFormXML.node);
 		
@@ -91,9 +91,9 @@
     }
 
 	/*
-     *	¸ù¾İÓÃ»§ÊäÈëµÇÂ¼ÕÊºÅ·µ»ØÓÃ»§ĞÕÃû
-     *	²ÎÊı£º	string:loginName      µÇÂ¼ÕÊºÅ
-                function:callback     »Øµ÷·½·¨
+     *	æ ¹æ®ç”¨æˆ·è¾“å…¥ç™»å½•å¸å·è¿”å›ç”¨æˆ·å§“å
+     *	å‚æ•°ï¼š	string:loginName      ç™»å½•å¸å·
+                function:callback     å›è°ƒæ–¹æ³•
      */
     function getUserName(loginName, callback) {	
         var p = new HttpRequestParams();
@@ -115,15 +115,15 @@
     }
 
     function login() {
-        // Ğ£ÑéloginFormÊı¾İÓĞĞ§ĞÔ
+        // æ ¡éªŒloginFormæ•°æ®æœ‰æ•ˆæ€§
         var userName = loginXForm.getData("userName") || "";
         var password = loginXForm.getData("password") || "";
         if( "" == userName ) {
-            loginXForm.showCustomErrorInfo("userName", "ÇëÊäÈëĞÕÃû");
+            loginXForm.showCustomErrorInfo("userName", "è¯·è¾“å…¥å§“å");
             return;
         } 
 		else if( "" == password ) {
-            loginXForm.showCustomErrorInfo("password", "ÇëÊäÈëÃÜÂë");
+            loginXForm.showCustomErrorInfo("password", "è¯·è¾“å…¥å¯†ç ");
             return;
         }
 
@@ -131,7 +131,7 @@
         p.url = URL_LOGIN;
         p.relogin = "0";
 
-		// µÇÂ¼ĞÅÏ¢
+		// ç™»å½•ä¿¡æ¯
         var loginNode = Cache.XmlIslands.get(CACHE_LOGIN_FORM);
         if( null != loginNode ) {
             var dataNode = loginNode.selectSingleNode(".//data");
@@ -157,7 +157,7 @@
     }
 
     /*
-     *	»Ø³µ×Ô¶¯Ìá½»
+     *	å›è½¦è‡ªåŠ¨æäº¤
      */
     function autoLogin() {
         if( 13 == event.keyCode ){
@@ -172,17 +172,17 @@
         }
     }
 
-    /* ÕÒ»ØÃÜÂë  */
+    /* æ‰¾å›å¯†ç   */
     function forget() {
         window.open("forget.htm", "", "width=400, height=400");
     }
 
-    /* ×¢²á */
+    /* æ³¨å†Œ */
     function register() {
         window.open("register.htm", "", "width=600, height=400");
     }
 
-    /* È¡Ïû */
+    /* å–æ¶ˆ */
     function resetForm() {
         loginXForm.resetForm();
         loginXForm.setFocus();
@@ -198,11 +198,11 @@
 	<table class="full" border="0" cellpadding="0" cellspacing="0">
 	<tr> 
 	  <td class="loginContainer">
-		<!-- µÇÂ¼¿ò ¿ªÊ¼ -->
+		<!-- ç™»å½•æ¡† å¼€å§‹ -->
 		<div class="loginBox">
 			<div id="loginForm" editable="true" dataType="node" _baseurl="common/xform/"><div class="loading"/></div>
 		</div>
-		<!-- µÇÂ¼¿ò ½áÊø -->
+		<!-- ç™»å½•æ¡† ç»“æŸ -->
 	  </td>
 	</tr>
 	</table>

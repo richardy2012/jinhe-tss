@@ -942,6 +942,20 @@ function loadXmlToNode(xml) {
 	return xr.documentElement;
 }
 
+function getXmlDOM() {
+	var xmlDom;
+	if (window.DOMParser) {
+		var parser = new DOMParser();
+		xmlDom = parser.parseFromString("<null/>", "text/xml");
+		xmlDom.parser = parser;
+	}
+	else { // Internet Explorer
+		xmlDom = new ActiveXObject("Msxml2.DOMDOCUMENT");
+		xmlDom.async = false;
+    } 
+	return xmlDom;
+}
+
 
 function XmlReader(text) {
 	this.xmlDom = null;
