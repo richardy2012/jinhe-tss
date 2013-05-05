@@ -21,21 +21,17 @@ var Grid = function(element) {
 }
 
 Grid.prototype.load = function(data) {
-	if("object" != typeof(data) || 1 != data.nodeType) {
+	if("object" != typeof(data) || data.nodeType != 1) {
 		alert("传入的XForm数据有问题。")	
-	}
+	} 
 	
-	var curXmlDom = data;
-	this.gridDoc = new Grid_DOCUMENT(curXmlDom);
-	
-	if(this.gridDoc && this.gridDoc.xmlDom) {
-		this.xslDom.load(this._baseurl + "xform.xsl");
-		this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\nvar uniqueID=\"" + this.element.uniqueID 
-		+ "\";\r\nvar baseurl=\"" + this._baseurl + "\";\r\nvar formEditable=\"" + this.element.editable + "\";\r\n";
+	this.gridDoc = new Grid_DOCUMENT(data.node);	
+	if( this.gridDoc.xmlDom ) {
+		this.xslDom.load(this._baseurl + "grid.xsl");
+		this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\n var cellHeight=22; \r\n";
 		
 		var htmlStr = this.gridDoc.transformXML(this.xslDom); // 利用XSL把XML解析成Html
 		this.element.innerHTML = htmlStr.replace(/<\/br>/gi, "");
-
 		
 		// 触发onload事件
 		var onload = this.element.getAttribute("onload");

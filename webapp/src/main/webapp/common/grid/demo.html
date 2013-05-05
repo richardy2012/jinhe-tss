@@ -1,0 +1,44 @@
+<HTML>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>它山石--test Tree</title>
+
+<link href="grid.css" rel="stylesheet" type="text/css">
+<link href="../balloon/balloon.css" rel="stylesheet" type="text/css">
+
+<script language="javascript" src="../../js/core.js"></script>
+<script language="javascript" src="../../js/ajax.js"></script>
+<script language="javascript" src="../../js/framework.js"></script>
+<script language="javascript" src="../balloon/balloon.js"></script>
+
+<script language="javascript" src="grid.js"></script>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+ 
+    function init() {
+        var p = new HttpRequestParams();
+        p.url = "test/data.xml";
+
+        var request = new HttpRequest(p);
+        request.onresult = function() {
+            var gridData = this.getNodeValue("SourceList");
+            var grid = $G("grid");
+						grid.load(gridData);
+       
+        }
+        request.send();
+    }
+	
+	window.onload = init;
+   
+//-->
+</SCRIPT>
+</head>
+
+<body>
+
+	<div id="grid"  baseurl="" height=600><div class="loading"/></div>
+ 
+</body>
+</html>
