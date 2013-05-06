@@ -1,11 +1,11 @@
 
-Grid2\:Grid{
+#grid{
 	position:relative;
 	background-color:transparent;
 	width:100%;
 	height:100%;
 }
-Grid2\:GridBox{
+#gridBox {
 	position:absolute;
 	border:1px solid #96969E;
 	background-color:#FFFFFF;
@@ -14,45 +14,33 @@ Grid2\:GridBox{
 	height:100%;
 }
 
-Grid2\:Grid .cell td,Grid2\:Grid .header td{
+#gridBox .cell td, #gridBox .header td{
 	border-style:solid;
 	border-color:#FFFFFF #96969E #96969E #FFFFFF;
 	font-size:12px;
 	overflow:hidden;
 	text-overflow:ellipsis;
 }
-Grid2\:Grid .cell td {
+#gridBox .cell td {
 	background-color:#F7F8FD;
 }
-Grid2\:Grid .sum td{
-	border-style:solid;
-	border-color:#96969E;
-	font-size:12px;
-	background-color:#F6F6F6;
-}
-Grid2\:Grid .band{
+#gridBox .column{
 	text-align:center;
 	border-style:solid;
 	border-color:#FFFFFF #96969E #96969E #FFFFFF;
 	font-size:12px;
 	background-color:#E4E6F5;
 }
-Grid2\:Grid .column{
-	text-align:center;
-	border-style:solid;
-	border-color:#FFFFFF #96969E #96969E #FFFFFF;
-	font-size:12px;
-	background-color:#E4E6F5;
-}
-Grid2\:Grid .highlightCol{
+.highlightCol {
 	background-color:#FFFFCC;
 }
-Grid2\:Grid .highlightRow td{
+.highlightRow td {
 	background-color:#FEF7A9;
 }
-Grid2\:Grid .rolloverRow td{
+.rolloverRow {
 	background-color:#FFFFFF;
 }
+
 Grid2\:Grid .rule {
 	overflow:hidden;
 	position:absolute;
@@ -83,14 +71,7 @@ Grid2\:Grid .separator{
 	font-size:1;
 	overflow:hidden;
 }
-Grid2\:Grid .scrollbar{
-}
-.test{
-	background-color:gray !important;
-}
-
-.test2{
-	background-color:green;
+.scrollbar{
 }
 Grid2\:Grid .searchResult td{
 	background-color:#FFFFCC !important;
@@ -116,23 +97,7 @@ Grid2\:Grid input{
 	border-width:0px;
 }
 
-Grid2\:Grid #rowCollapse{
-	font-family:webdings;
-	font-size:10px;
-	font-weight:normal;
-	width:12px;
-	cursor:hand;
-	text-align:center;
-	margin-top:-5;
-	vertical-align:middle;
-	padding-bottom:2px;
-}
 Grid2\:Grid .track{
 	border-color:#F7F8FD;
 	border-style:none;
-}
-
-/* ÐÐ¼ä¸ô±³¾°É« */
-.cell td {
-	/*background-color:expression(this.parentNode.rowIndex%2==1?"#F7F8FD":"#FFFFFF");*/
 }

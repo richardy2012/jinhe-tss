@@ -42,14 +42,14 @@ var Grid = function(element, data) {
 	this._hint      = $("hint");
 	this._other     = $("other");
 	
-	if(this.element.currentStyle.position=="static"){
+	if(this.element.currentStyle.position=="static") {
 		this.element.runtimeStyle.position = "relative";
 	}	
 	
 	// 添加Grid事件处理
 	this.attachEventHandler();
 	
-	this.load(data);
+	this.load(data);	
 }
 
 Grid.prototype.load = function(data) {
@@ -72,15 +72,25 @@ Grid.prototype.load = function(data) {
 	
 	var rows = $("gridTable").childNodes[0].tBodies[0].rows;
 	for(var i=0; i < rows.length; i++) {
-		 var curRow = rows[i]; // 表格行
-		 var cells = curRow.childNodes;
-		 for(var j=0; j < cells.length; j++) {
+		var curRow = rows[i]; // 表格行
+		var cells = curRow.childNodes;
+		for(var j=0; j < cells.length; j++) {
 			var columnName = cells[j].getAttribute("name");
 			if( columnName && columnName != "cellsequence") {
 				var cellFirstChild = cells[j].childNodes[0];
 				cellFirstChild.innerText = curRow.getAttribute(columnName);
-			}
+			}	
 		}
+				
+		// 鼠标经过行时高亮显示
+		curRow.onmouseover = function() { 
+			 this.oldClassName = this.className;
+			 addClass(this, "rolloverRow");  // 鼠标经过时添加class为highlight的值			 
+		}			
+		curRow.onmouseout = function() { 
+			this.className = this.oldClassName; //鼠标离开时还原之前的class值
+		}
+
 	}
 	
 }
@@ -106,9 +116,9 @@ Grid.prototype.initContainers = function() {
 	var tempParent = this.element;
 	this.absLeft = 0;
 	this.absTop = 0;
-	while(tempParent.tagName != "BODY"){
-		this.absLeft	+= tempParent.offsetLeft;
-		this.absTop	+= tempParent.offsetTop;
+	while(tempParent.tagName != "BODY") {
+		this.absLeft += tempParent.offsetLeft;
+		this.absTop  += tempParent.offsetTop;
 		tempParent = tempParent.offsetParent;
 	}
 }
@@ -118,10 +128,10 @@ Grid.prototype.attachEventHandler = function() {
 	
 	attachHintControl();
 	 
-	this.element.onselectstart = this.element.onmousedown = function(){
+	this.element.onselectstart = this.element.onmousedown = this.element.onmouseover = this.element.onmouseout = function() {
 		event.returnValue = false;
 	}
-	this.element.onclick = function(){ // 单击行
+	this.element.onclick = function() { // 单击行
 		if( notOnGridHead(event.srcElement) ) { // 确保点击处不在表头
 			var _srcElement = event.srcElement;
 			clickTR(_srcElement);
@@ -134,20 +144,14 @@ Grid.prototype.attachEventHandler = function() {
 			clickTR(_srcElement);
 		}
 	}
-	this.element.onmouseover = function(){
-		highlightRow();
-	}
-	this.element.onmouseout = function() {
-		lowlightRow();
-	}
-	this.element.onmousewheel = function(){
+	this.element.onmousewheel = function() {
 		event.returnValue = false;
 		if( $("scrollbarV") ) {
 			$("scrollbarV").scrollTop += - Math.round(window.event.wheelDelta/120) * scrollBarZoom;
 		}
 	}
 
-	this.element.oncontextmenu = function(){
+	this.element.oncontextmenu = function() {
 		var _srcElement = event.srcElement;
 		if( notOnGridHead(_srcElement) && notOnGridScollBar(_srcElement) ) { // 确保点击处不在表头和滚动条区域
 			
@@ -167,7 +171,7 @@ Grid.prototype.attachEventHandler = function() {
 
 	this.element.onkeydown = function() {
 		event.returnValue = false;
-		switch(event.keyCode){
+		switch(event.keyCode) {
 			case 33:
 				scrollTo(begin - len);
 				break;
@@ -195,17 +199,16 @@ Grid.prototype.attachEventHandler = function() {
 	}
 	
 	function offsetToNode(container, obj, tag) {
-        while(container.contains(obj) && obj.tagName != tag){
+        while(container.contains(obj) && obj.tagName != tag) {
             obj = obj.parentElement;
         }
 		
-        if(obj.tagName == tag && container.contains(obj))	{
+        if(obj.tagName == tag && container.contains(obj)) {
             return obj;
         }
 		return null;
     }
-	
-	
+
 	function attachHintControl() {
 		var hintTimeout;
 		function getNumber() {
@@ -218,12 +221,12 @@ Grid.prototype.attachEventHandler = function() {
         $("hint").onmouseout = function() {
                 hintTimeout = setTimeout(hideHint, 1000);
 
-                function hideHint(){
+                function hideHint() {
                     $("hint").style.visibility = 'hidden';
                     gotoLine(Math.round($("scrollbarV").scrollTop/scrollBarZoom), true); // 执行取数据刷新显示
                 }
         }
-        $("up").onmousedown = function(){
+        $("up").onmousedown = function() {
             this.style.left = 17;
             this.style.top = 0;			
             clearTimeout(hintTimeout);
@@ -231,21 +234,21 @@ Grid.prototype.attachEventHandler = function() {
 			
             this.setCapture();
         }
-        $("up").onmouseup = function(){
+        $("up").onmouseup = function() {
             this.style.left = 16;
             this.style.top = -1;
             this.releaseCapture();
             
             scrollTo(getNumber() - 1); //执行取数据刷新显示
         }
-        $("down").onmousedown = function(){
+        $("down").onmousedown = function() {
             this.style.left = 17;
             this.style.top = 9;
             clearTimeout(hintTimeout);
             $("number").innerText = Math.min(getNumber() + 1, this.gridDoc.Rows.length - len + 1);
             this.setCapture();
         }
-        $("down").onmouseup = function(){
+        $("down").onmouseup = function() {
             this.style.left = 16;
             this.style.top = 8;
             this.releaseCapture();
@@ -253,6 +256,15 @@ Grid.prototype.attachEventHandler = function() {
             scrollTo(getNumber() - 1); // 执行取数据刷新显示
         }
     }
+}
+
+//动态给js添加class属性
+function addClass (element, className) {
+	if( !element.className ) {
+		element.className = className;    // 如果element本身不存在class,则直接添加class
+	} else {
+		element.className += " " +className;  // 如果之前有一个class值，注意中间要多一个空格,然后再加上
+	} 
 }
 
 
@@ -283,7 +295,7 @@ var Grid_DOCUMENT = function(xmlDom) {
 			this.Rows = this.selectNodes(".//data//row");
  
 			this.RowByIndex = {};
-			for(var i=0; i < this.Rows.length; i++){
+			for(var i=0; i < this.Rows.length; i++) {
 				var curRow = this.Rows[i];
 				var _index = curRow.getAttribute("_index");
 				this.RowByIndex[_index] = curRow;
@@ -299,9 +311,9 @@ Grid_DOCUMENT.prototype.refreshIndex = function(startIndex) {
 		this.Rows[i].setAttribute("_index", i);		
 	}
 }
-Grid_DOCUMENT.prototype.selectNodes = function(xpath){
+Grid_DOCUMENT.prototype.selectNodes = function(xpath) {
 	return this.xmlDom.selectNodes(xpath);
 }
-Grid_DOCUMENT.prototype.selectSingleNode = function(xpath){
+Grid_DOCUMENT.prototype.selectSingleNode = function(xpath) {
 	return this.xmlDom.selectSingleNode(xpath);
 }
