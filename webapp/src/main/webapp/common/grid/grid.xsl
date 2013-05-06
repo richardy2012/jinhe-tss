@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/TR/WD-xsl" version="1.0">
     <xsl:template match="/">
-        <div id="unlocked">
+        <div id="gridTable">
             <xsl:attribute name="style">
-                height:206px;
+                height:260px;
                 overflow:hidden;
                 position:absolute;
                 display:inline;
@@ -56,7 +56,7 @@
                                     <nobr><xsl:eval>childNumber(this)</xsl:eval></nobr>
 								</td>
                             </xsl:if>
-                            <xsl:for-each select="//declare/*[(@display!='none')]">
+                            <xsl:for-each select="//declare/*[(@display!='none')  or not(@display)]">
 								<td>
 									<xsl:attribute name="style">border-width:<xsl:eval>getBorderWidth("cell")</xsl:eval>;</xsl:attribute>
 									<xsl:apply-templates select="@*"/>

@@ -23,9 +23,7 @@
         var request = new HttpRequest(p);
         request.onresult = function() {
             var gridData = this.getNodeValue("SourceList");
-            var grid = $G("grid");
-						grid.load(gridData);
-       
+            var grid = $G("grid", gridData);       
         }
         request.send();
     }
@@ -38,7 +36,7 @@
 
 <body>
 
-	<div id="grid"  baseurl="" height=600><div class="loading"/></div>
+	<div id="grid" baseurl="" height=600><div class="loading"/></div>
  
 </body>
 </html>
