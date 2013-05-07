@@ -46,7 +46,7 @@
                                     <xsl:attribute name="style">border-width:<xsl:eval>getBorderWidth("cellheader")</xsl:eval>;</xsl:attribute>
                                     <nobr>
 										<input class="selectHandle">
-											<xsl:attribute name="name">grid_header</xsl:attribute>
+											<xsl:attribute name="name"><xsl:eval>gridId</xsl:eval>_header</xsl:attribute>
 											<xsl:attribute name="type"><xsl:value-of select="//declare/@header"/></xsl:attribute>
 										</input>
 									</nobr>
@@ -86,7 +86,9 @@
 						<xsl:if test=".[@header='checkbox']">
 							<input type="checkbox" id="headerCheckAll"/>
 						</xsl:if>
-						<xsl:if test=".[@header='radio']">&amp;nbsp;</xsl:if>
+						<xsl:if test=".[@header='radio']">
+							<input type="radio" id="grid_radio"/>
+						</xsl:if>
 					</nobr>
 				</td>
             </xsl:if>
@@ -112,7 +114,6 @@
 			</xsl:if>
             <nobr>
 				<xsl:eval>getCaption()</xsl:eval>
-				<xsl:if test=".[@mode='boolean']"><input type="checkbox"/></xsl:if>
 			</nobr>
 		</td>
     </xsl:template>
@@ -124,6 +125,7 @@
     <xsl:script>
 		var cellHeight = 22;
 		var isHead = false;
+		var gridId;
 	</xsl:script>
     <xsl:script>
         var curRow;

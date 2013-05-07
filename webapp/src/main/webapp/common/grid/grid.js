@@ -16,8 +16,6 @@ var Grid = function(element, data) {
  
 	this._baseurl  = element._baseurl || "";
 	this._iconPath = this._baseurl + "images/"
-
-	this._columnList = {};
 	
 	this.element.innerHTML = "<div id='gridBox' style='position:absolute;left:0px;top:0px;width:100%;height:100%;z-index:1'></div>" + 
 						     "<div id='scrollBox' style='position:absolute;left:0px;top:0px;width:1px;height:1px;z-index:2'></div>";
@@ -46,7 +44,7 @@ Grid.prototype.load = function(data) {
 	this.xslDom = getXmlDOM();
 	this.xslDom.resolveExternals = false;
 	this.xslDom.load(this._baseurl + "grid.xsl");
-	this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\n var cellHeight=22; \r\n"; // 初始化XSL里的变量
+	this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\n var cellHeight=22; var gridId='" + this.element.id + "'; \r\n"; // 初始化XSL里的变量
 	
 	var gridTableHtml = this.gridDoc.transformXML(this.xslDom); // 利用XSL把XML解析成Html
 	this._gridBox.innerHTML = "<nobr>" + gridTableHtml.replace(/<\/br>/gi, "") + "</nobr>";
@@ -60,22 +58,54 @@ Grid.prototype.load = function(data) {
 		for(var j=0; j < cells.length; j++) {
 			var cell = cells[j];
 			var columnName = cell.getAttribute("name");
-			if( columnName && columnName != "cellsequence") {
-				var nobrNodeInCell = cell.childNodes[0];  // nobr 节点
-				nobrNodeInCell.innerText = curRow.getAttribute(columnName); // xsl解析后，各行值记录在了TR上。
+			if( columnName && columnName != "cellsequence"  && columnName != "cellheader")  {
+				var value = curRow.getAttribute(columnName); // xsl解析后，各行的各个TD值统一记录在了TR上。
 				curRow.removeAttribute(columnName);
-				cell.setAttribute("title", nobrNodeInCell.innerText);
-			}	
-			
-			// editortext="男|女" editorvalue="0|1" editor="comboedit" pattern
-			var mode = cell.getAttribute("mode");
-			
-			
-		}
-		
-		
+				
+				var nobrNodeInCell = cell.childNodes[0];  // nobr 节点
+				var columnNode = this.gridDoc.columnsMap[columnName]; 
+				if( columnNode ) {
+					var mode = columnNode.getAttribute("mode");
+					switch( mode ) {
+						case "string":
+							var editor = columnNode.getAttribute("editor");
+							var editortext = columnNode.getAttribute("editortext");
+							var editorvalue = columnNode.getAttribute("editorvalue");
+							if(editor == "comboedit" && editorvalue && editortext) {
+								var listNames  = editortext.split("|");
+								var listValues = editorvalue.split("|");
+								for(var n = 0; n < listValues.length; n++) {
+									if(value == listValues[n]) {
+										value = listNames[n];
+										break;
+									}
+								}
+							}
+							
+							nobrNodeInCell.innerText = value;
+							cell.setAttribute("title", value);								
+							break;
+						case "number":
+							nobrNodeInCell.innerText = value;
+							cell.setAttribute("title", value);
+							break;                       
+						case "function":                          
+							break;    
+						case "image":          
+							nobrNodeInCell.innerHTML = "<img src='" + value + "'>";
+							break;    
+						case "boolean":      
+							var checked = (value =="true") ? "checked" : "";
+							nobrNodeInCell.innerHTML = "<input class='selectHandle' name='" + columnName + "' type='radio' " + checked + ">";
+							nobrNodeInCell.all.tags("INPUT")[0].disabled = true;
+							break;
+					}
+				}						
+			}		
+		}	
 	}
 	
+	// for (this.gridDoc.columnsMap)
 	// var sortable = tHead.td.getAttribute("sortable");
 }
 
