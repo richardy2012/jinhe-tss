@@ -1,5 +1,5 @@
 /*
- *	±êÇ©Ãû
+ *	æ ‡ç­¾å
  */
 _TOOLBAR_NAMESPACE = "ToolBar";
 _TAG_NAME_BOX = "Box";
@@ -13,7 +13,7 @@ _TAG_NAME_IMG = "img";
 _TAG_NAME_NOBR = "nobr";
 
 /*
- *	xml½ÚµãÃû
+ *	xmlèŠ‚ç‚¹å
  */
 _XML_NODE_NAME_BUTTON = "button";
 _XML_NODE_NAME_LISTBUTTON = "listbutton";
@@ -27,14 +27,14 @@ _XML_NODE_TYPE_COMMENT = 8;
 _XML_NODE_TYPE_DOCUMENT = 9;
 
 /*
- *	Î¨Ò»±àºÅÃûÇ°×º
+ *	å”¯ä¸€ç¼–å·åå‰ç¼€
  */
 _UNIQUE_ID_TOOLBAR_PREFIX = "toolbar__id";
 _UNIQUE_ID_TOOLBAR_ITEM_PREFIX = "toolbar_item__id";
 _UNIQUE_ID_DEFAULT_PREFIX = "default__id";
 
 /*
- *	ÑùÊ½Ãû³Æ
+ *	æ ·å¼åç§°
  */
 _STYLE_NAME_TOOLBAR_BUTTON_ACTIVE = "active";
 _STYLE_NAME_TOOLBAR_BUTTON_INVERT = "invert";
@@ -49,23 +49,23 @@ _STYLE_NAME_TOOLBAR_TXTBUTTON_INVERT = "invert";
 _STYLE_NAME_TOOLBAR_TXTBUTTON_DISABLE = "disable";
 
 /*
- *	ÎÄ¼şµØÖ·
+ *	æ–‡ä»¶åœ°å€
  */
 _FILE_IMG_BUTTON_MORE = "icons/more.gif";
 _FILE_IMG_LISTBUTTON_ARROW = "icons/arrow.gif";
 
 
 /*
- *	¶ÔÏóÃû³Æ£ºToolBars£¨È«¾Ö¾²Ì¬¶ÔÏó£©
- *	Ö°Ôğ£º¸ºÔğ¹ÜÀíËùÓĞToolBarÊµÀı
+ *	å¯¹è±¡åç§°ï¼šToolBarsï¼ˆå…¨å±€é™æ€å¯¹è±¡ï¼‰
+ *	èŒè´£ï¼šè´Ÿè´£ç®¡ç†æ‰€æœ‰ToolBarå®ä¾‹
  */
 var ToolBars = {};
 ToolBars.items = {};
 
 /*
- *	´´½¨Ò»¸öToolBarÊµÀı
- *	²ÎÊı£º  object:tbObj  ToolBarÊµÀı¹ØÁªµÄHTML¶ÔÏó
- *	·µ»ØÖµ£ºToolBar:toolbar     ToolBarÊµÀı
+ *	åˆ›å»ºä¸€ä¸ªToolBarå®ä¾‹
+ *	å‚æ•°ï¼š  object:tbObj  ToolBarå®ä¾‹å…³è”çš„HTMLå¯¹è±¡
+ *	è¿”å›å€¼ï¼šToolBar:toolbar     ToolBarå®ä¾‹
  */
 ToolBars.create = function(tbObj) {
 	var toolbar = new ToolBar(tbObj);
@@ -75,7 +75,7 @@ ToolBars.create = function(tbObj) {
 }
 
 /*
- *	Í³¼ÆËùÓĞToolBarÊµÀıÊıÁ¿
+ *	ç»Ÿè®¡æ‰€æœ‰ToolBarå®ä¾‹æ•°é‡
  */
 ToolBars.count = function() {
 	var count = 0;
@@ -86,11 +86,11 @@ ToolBars.count = function() {
 }
 
 /*
- *	ÒÔÎÄ±¾·½Ê½Êä³ö¶ÔÏóĞÅÏ¢
+ *	ä»¥æ–‡æœ¬æ–¹å¼è¾“å‡ºå¯¹è±¡ä¿¡æ¯
  */
 ToolBars.toString = function() {
 	var str = [];
-	str[str.length] = "[ToolBars ¶ÔÏó]";
+	str[str.length] = "[ToolBars å¯¹è±¡]";
 	str[str.length] = "items:" + this.count();
 	return str.join("\r\n");
 
@@ -99,8 +99,8 @@ ToolBars.toString = function() {
 
 
 /*
- *	¶ÔÏóÃû³Æ£ºToolBar
- *	Ö°Ôğ£º¸ºÔğÕ¹Ê¾¹¤¾ßÌõ
+ *	å¯¹è±¡åç§°ï¼šToolBar
+ *	èŒè´£ï¼šè´Ÿè´£å±•ç¤ºå·¥å…·æ¡
  */
 function ToolBar(tbObj) {
 	this.object = tbObj;
@@ -118,7 +118,7 @@ function ToolBar(tbObj) {
 }
 
 /*
- *	´´½¨½çÃæ
+ *	åˆ›å»ºç•Œé¢
  */
 ToolBar.prototype.create = function() {
 	var box  = Element.createElement(_TAG_NAME_BOX, _TOOLBAR_NAMESPACE);
@@ -145,13 +145,13 @@ ToolBar.prototype.create = function() {
 }
 
 /*
- *	ÔØÈë°´Å¥ÅäÖÃ
- *	²ÎÊı£º  XmlNode/string:xmlstr       xml×Ö·û´®»òÕßXmlNodeÊµÀı
+ *	è½½å…¥æŒ‰é’®é…ç½®
+ *	å‚æ•°ï¼š  XmlNode/string:xmlstr       xmlå­—ç¬¦ä¸²æˆ–è€…XmlNodeå®ä¾‹
  */
 ToolBar.prototype.loadXML = function(xmlstr) {
 	this.clear();
 
-	//¸ù¾İ²ÎÊıÀàĞÍÇø·Ö»ñÈ¡xml·½Ê½        
+	//æ ¹æ®å‚æ•°ç±»å‹åŒºåˆ†è·å–xmlæ–¹å¼        
 	var toolbarNode = null;
 	switch(typeof(xmlstr)) {
 		case "string":
@@ -177,7 +177,7 @@ ToolBar.prototype.loadXML = function(xmlstr) {
 }
 
 /*
- *	Çå³ıËùÓĞToolBarItemÊµÀı
+ *	æ¸…é™¤æ‰€æœ‰ToolBarItemå®ä¾‹
  */
 ToolBar.prototype.clear = function() {
 	for(var item in this.items) {
@@ -187,7 +187,7 @@ ToolBar.prototype.clear = function() {
 }
 
 /*
- *	ÊÍ·ÅÊµÀı
+ *	é‡Šæ”¾å®ä¾‹
  */
 ToolBar.prototype.dispose = function() {
 	this.clear();
@@ -201,18 +201,18 @@ ToolBar.prototype.dispose = function() {
 }
 
 /*
- *	Ìí¼Ó°´Å¥
- *	²ÎÊı£º  xmlNode/Object:itemObj    XML½Úµã»òObjectÀàĞÍ
+ *	æ·»åŠ æŒ‰é’®
+ *	å‚æ•°ï¼š  xmlNode/Object:itemObj    XMLèŠ‚ç‚¹æˆ–Objectç±»å‹
  */
 ToolBar.prototype.add = function(itemObj) {
 	if( _TYPE_OBJECT == typeof(itemObj) ) {
 
-		//NodeÀàĞÍ£¬×ª»¯³ÉObject
+		//Nodeç±»å‹ï¼Œè½¬åŒ–æˆObject
 		if(_XML_NODE_TYPE_ELEMENT == itemObj.nodeType) {
 			itemObj = this.convert(itemObj);
 		}
 
-		//Èç¹ûÃ»ÓĞidÔò´´½¨Ò»¸ö
+		//å¦‚æœæ²¡æœ‰idåˆ™åˆ›å»ºä¸€ä¸ª
 		var id = itemObj.id || UniqueID.generator(_UNIQUE_ID_TOOLBAR_ITEM_PREFIX);
 		itemObj.id = id;
 
@@ -226,9 +226,9 @@ ToolBar.prototype.add = function(itemObj) {
 }
 
 /*
- *	½«xml½Úµã×ª»¯³ÉObjectÀàĞÍ
- *	²ÎÊı£º  xmlNode:node    XML½Úµã
- *	·µ»ØÖµ£º    Object:itemObj      ObjectÀàĞÍ
+ *	å°†xmlèŠ‚ç‚¹è½¬åŒ–æˆObjectç±»å‹
+ *	å‚æ•°ï¼š  xmlNode:node    XMLèŠ‚ç‚¹
+ *	è¿”å›å€¼ï¼š    Object:itemObj      Objectç±»å‹
  */
 ToolBar.prototype.convert = function(node) {
 	var itemObj = {};
@@ -254,8 +254,8 @@ ToolBar.prototype.convert = function(node) {
 }
 
 /*
- *	Îª¸ü¶à°´Å¥ÏÂÀ­²Ëµ¥Ìí¼ÓÑ¡Ïî
- *	²ÎÊı£º  xmlNode/Object:itemObj    XML½Úµã»òObjectÀàĞÍ
+ *	ä¸ºæ›´å¤šæŒ‰é’®ä¸‹æ‹‰èœå•æ·»åŠ é€‰é¡¹
+ *	å‚æ•°ï¼š  xmlNode/Object:itemObj    XMLèŠ‚ç‚¹æˆ–Objectç±»å‹
  */
 ToolBar.prototype.addSubMenuItem = function(itemObj) {
 	if( window.Menu && _XML_NODE_NAME_SEPARATOR != itemObj.type) {
@@ -271,8 +271,8 @@ ToolBar.prototype.addSubMenuItem = function(itemObj) {
 }
 
 /*
- *	Çå³ıÖ¸¶¨°´Å¥
- *	²ÎÊı£º  string:id       °´Å¥ID
+ *	æ¸…é™¤æŒ‡å®šæŒ‰é’®
+ *	å‚æ•°ï¼š  string:id       æŒ‰é’®ID
  */
 ToolBar.prototype.del = function(id) {
 	var curItem = this.items[id];
@@ -284,8 +284,8 @@ ToolBar.prototype.del = function(id) {
 }
 
 /*
- *	´Ó¸ü¶à°´Å¥ÏÂÀ­²Ëµ¥É¾³ıÑ¡Ïî
- *	²ÎÊı£º  string:id       °´Å¥ID
+ *	ä»æ›´å¤šæŒ‰é’®ä¸‹æ‹‰èœå•åˆ é™¤é€‰é¡¹
+ *	å‚æ•°ï¼š  string:id       æŒ‰é’®ID
  */
 ToolBar.prototype.delSubMenuItem = function(id) {
 	var submenuUniqueID = this.submenuMap[id];
@@ -293,7 +293,7 @@ ToolBar.prototype.delSubMenuItem = function(id) {
 }
 
 /*
- *	°ó¶¨ÊÂ¼ş
+ *	ç»‘å®šäº‹ä»¶
  */
 ToolBar.prototype.attachEvents = function() {
 	this.object.onselectstart = _toolbar_onselectstart;
@@ -305,28 +305,28 @@ ToolBar.prototype.attachEvents = function() {
 }
 
 /*
- *	¸ü¶à°´Å¥¸ßÁÁĞ§¹û
+ *	æ›´å¤šæŒ‰é’®é«˜äº®æ•ˆæœ
  */
 ToolBar.prototype.active = function() {
 	this.btMore.className = _STYLE_NAME_TOOLBAR_BUTTON_MORE_ACTIVE;
 }
 
 /*
- *	¸ü¶à°´Å¥µÍÁÁĞ§¹û
+ *	æ›´å¤šæŒ‰é’®ä½äº®æ•ˆæœ
  */
 ToolBar.prototype.inactive = function() {
 	this.btMore.className = "";
 }
 
 /*
- *	¸ü¶à°´Å¥·´°×Ğ§¹û
+ *	æ›´å¤šæŒ‰é’®åç™½æ•ˆæœ
  */
 ToolBar.prototype.invert = function() {
 	this.btMore.className = _STYLE_NAME_TOOLBAR_BUTTON_MORE_INVERT;
 }
 
 /*
- *	Í³¼ÆËùÓĞToolBarItemÊµÀıÊıÁ¿
+ *	ç»Ÿè®¡æ‰€æœ‰ToolBarItemå®ä¾‹æ•°é‡
  */
 ToolBar.prototype.count = function() {
 	var count = 0;
@@ -337,7 +337,7 @@ ToolBar.prototype.count = function() {
 }
 
 /*
- *	¼ì²â¸ü¶à°´Å¥ÊÇ·ñÓ¦¸ÃÉúĞ§
+ *	æ£€æµ‹æ›´å¤šæŒ‰é’®æ˜¯å¦åº”è¯¥ç”Ÿæ•ˆ
  */
 ToolBar.prototype.checkMore = function() {
 	var count = 0;
@@ -359,7 +359,7 @@ ToolBar.prototype.checkMore = function() {
 }
 
 /*
- *	´¥·¢µã»÷¸ü¶à°´Å¥ÊÂ¼ş
+ *	è§¦å‘ç‚¹å‡»æ›´å¤šæŒ‰é’®äº‹ä»¶
  */
 ToolBar.prototype.fireOnShowMore = function() {
 	if( this.checkMore() ) {
@@ -369,8 +369,8 @@ ToolBar.prototype.fireOnShowMore = function() {
 }
 
 /*
- *	Ë¢ĞÂ¸ü¶à°´Å¥ÏÂÀ­²Ëµ¥Ñ¡Ïî
- *	²ÎÊı£º  xmlNode/Object:itemObj    XML½Úµã»òObjectÀàĞÍ
+ *	åˆ·æ–°æ›´å¤šæŒ‰é’®ä¸‹æ‹‰èœå•é€‰é¡¹
+ *	å‚æ•°ï¼š  xmlNode/Object:itemObj    XMLèŠ‚ç‚¹æˆ–Objectç±»å‹
  */
 ToolBar.prototype.refreshSubMenu = function() {
 	if( window.Menu ) {
@@ -396,14 +396,14 @@ ToolBar.prototype.refreshSubMenu = function() {
 }
 
 /*
- *	Í£ÓÃ°´Å¥
+ *	åœç”¨æŒ‰é’®
  */
 ToolBar.prototype.disable = function(id) {
 	this.enable(id, false);
 }
 
 /*
- *	ÆôÓÃ°´Å¥
+ *	å¯ç”¨æŒ‰é’®
  */
 ToolBar.prototype.enable = function(id, enable) {
 	var curItem = this.items[id];
@@ -414,7 +414,7 @@ ToolBar.prototype.enable = function(id, enable) {
 }
 
 /*
- *	ÉèÖÃ°´Å¥ÊÇ·ñ¿É¼û
+ *	è®¾ç½®æŒ‰é’®æ˜¯å¦å¯è§
  */
 ToolBar.prototype.setVisible = function(id, visible) {
 	var curItem = this.items[id];
@@ -425,11 +425,11 @@ ToolBar.prototype.setVisible = function(id, visible) {
 }
 
 /*
- *	ÒÔÎÄ±¾·½Ê½Êä³ö¶ÔÏóĞÅÏ¢
+ *	ä»¥æ–‡æœ¬æ–¹å¼è¾“å‡ºå¯¹è±¡ä¿¡æ¯
  */
 ToolBar.prototype.toString = function() {
 	var str = [];
-	str[str.length] = "[ToolBar ¶ÔÏó]";
+	str[str.length] = "[ToolBar å¯¹è±¡]";
 	str[str.length] = "uniqueID:" + this.uniqueID;
 	str[str.length] = "items:" + this.count();
 	return str.join("\r\n");
@@ -439,8 +439,8 @@ ToolBar.prototype.toString = function() {
  
  
 /*
- *	¶ÔÏóÃû³Æ£ºToolBarItem
- *	Ö°Ôğ£º¸ºÔğ¹¤¾ßÌõ°´Å¥/·Ö¸ôÏßµÈµÄÕ¹Ê¾
+ *	å¯¹è±¡åç§°ï¼šToolBarItem
+ *	èŒè´£ï¼šè´Ÿè´£å·¥å…·æ¡æŒ‰é’®/åˆ†éš”çº¿ç­‰çš„å±•ç¤º
  */
 function ToolBarItem(itemObj) {
 	this.object = null;
@@ -461,7 +461,7 @@ function ToolBarItem(itemObj) {
 }
 
 /*
- *	´´½¨½çÃæÕ¹Ê¾
+ *	åˆ›å»ºç•Œé¢å±•ç¤º
  */
 ToolBarItem.prototype.create = function() {
 	switch(this.type) {
@@ -482,7 +482,7 @@ ToolBarItem.prototype.create = function() {
 			var img = Element.createElement(_TAG_NAME_IMG);
 			img.src = this.icon;
 
-			var arrow = Element.createElement(_TAG_NAME_IMG); // ¼ıÍ·
+			var arrow = Element.createElement(_TAG_NAME_IMG); // ç®­å¤´
 			arrow.src = _FILE_IMG_LISTBUTTON_ARROW;
 			arrow.className = _STYLE_NAME_TOOLBAR_LISTBUTTON_ARROW;
 
@@ -513,7 +513,7 @@ ToolBarItem.prototype.create = function() {
 }
 
 /*
- *	Ë¢ĞÂ°´Å¥×´Ì¬
+ *	åˆ·æ–°æŒ‰é’®çŠ¶æ€
  */
 ToolBarItem.prototype.refresh = function() {
 	if(false == this.enable) {
@@ -530,7 +530,7 @@ ToolBarItem.prototype.refresh = function() {
 }
 
 /*
- *	°ó¶¨ÊÂ¼ş
+ *	ç»‘å®šäº‹ä»¶
  */
 ToolBarItem.prototype.attachEvents = function() {
 	this.object.onmouseover = _toolbar_bt_onmouseover;
@@ -541,15 +541,15 @@ ToolBarItem.prototype.attachEvents = function() {
 }
 
 /*
- *	½«¶ÔÏó¶¨Î»µ½Ö¸¶¨ÈİÆ÷
- *	²ÎÊı£º  object:container    HTMLÈİÆ÷¶ÔÏó
+ *	å°†å¯¹è±¡å®šä½åˆ°æŒ‡å®šå®¹å™¨
+ *	å‚æ•°ï¼š  object:container    HTMLå®¹å™¨å¯¹è±¡
  */
 ToolBarItem.prototype.dockTo = function(container) {
 	container.appendChild(this.object);
 }
 
 /*
- *	°´Å¥¸ßÁÁĞ§¹û
+ *	æŒ‰é’®é«˜äº®æ•ˆæœ
  */
 ToolBarItem.prototype.active = function() {
 	switch(this.type) {
@@ -566,7 +566,7 @@ ToolBarItem.prototype.active = function() {
 }
 
 /*
- *	°´Å¥µÍÁÁĞ§¹û
+ *	æŒ‰é’®ä½äº®æ•ˆæœ
  */
 ToolBarItem.prototype.inactive = function() {
 	switch(this.type) {
@@ -579,7 +579,7 @@ ToolBarItem.prototype.inactive = function() {
 }
 
 /*
- *	°´Å¥·´°×Ğ§¹û
+ *	æŒ‰é’®åç™½æ•ˆæœ
  */
 ToolBarItem.prototype.invert = function() {
 	switch(this.type) {
@@ -596,7 +596,7 @@ ToolBarItem.prototype.invert = function() {
 }
 
 /*
- *	°´Å¥½ûÖ¹Ğ§¹û
+ *	æŒ‰é’®ç¦æ­¢æ•ˆæœ
  */
 ToolBarItem.prototype.disable = function() {
 	switch(this.type) {
@@ -610,7 +610,7 @@ ToolBarItem.prototype.disable = function() {
 }
 
 /*
- *	°´Å¥Òş²Ø
+ *	æŒ‰é’®éšè—
  */
 ToolBarItem.prototype.hide = function() {
 	switch(this.type) {
@@ -622,7 +622,7 @@ ToolBarItem.prototype.hide = function() {
 }
 
 /*
- *	°´Å¥ÏÔÊ¾
+ *	æŒ‰é’®æ˜¾ç¤º
  */
 ToolBarItem.prototype.show = function() {
 	switch(this.type) {
@@ -634,7 +634,7 @@ ToolBarItem.prototype.show = function() {
 }
 
 /*
- *	Ö´ĞĞ°´Å¥·½·¨
+ *	æ‰§è¡ŒæŒ‰é’®æ–¹æ³•
  */
 ToolBarItem.prototype.execCallBack = function() {
 	switch(this.type) {
@@ -649,7 +649,7 @@ ToolBarItem.prototype.execCallBack = function() {
 }
 
 /*
- *	´´½¨ListButtonµÄÏÂÀ­ÁĞ±íÏî(ÀûÓÃMenu¿Ø¼şÉú³É)
+ *	åˆ›å»ºListButtonçš„ä¸‹æ‹‰åˆ—è¡¨é¡¹(åˆ©ç”¨Menuæ§ä»¶ç”Ÿæˆ)
  */
 ToolBarItem.prototype.createListItem = function() {
 	if(this.type == _XML_NODE_NAME_LISTBUTTON && window.Menu) {
@@ -668,7 +668,7 @@ ToolBarItem.prototype.createListItem = function() {
 }
 
 /*
- *	ÏÔÊ¾ListButtonµÄÏÂÀ­ÁĞ±íÏî(ÀûÓÃMenu¿Ø¼şÉú³É)
+ *	æ˜¾ç¤ºListButtonçš„ä¸‹æ‹‰åˆ—è¡¨é¡¹(åˆ©ç”¨Menuæ§ä»¶ç”Ÿæˆ)
  */
 ToolBarItem.prototype.showListItem = function() {
 	if(this.type == _XML_NODE_NAME_LISTBUTTON && window.Menu) {
@@ -681,7 +681,7 @@ ToolBarItem.prototype.showListItem = function() {
 }
 
 /*
- *	»ñÈ¡°´Å¥ÊÇ·ñ²»ÔÚ¹ö¶¯ÏÔÊ¾ÇøÄÚ
+ *	è·å–æŒ‰é’®æ˜¯å¦ä¸åœ¨æ»šåŠ¨æ˜¾ç¤ºåŒºå†…
  */
 ToolBarItem.prototype.isOutSide = function() {
 	var flag = false;
@@ -700,7 +700,7 @@ ToolBarItem.prototype.isOutSide = function() {
 }
 
 /*
- *	ÊÍ·ÅÊµÀı
+ *	é‡Šæ”¾å®ä¾‹
  */
 ToolBarItem.prototype.dispose = function() {
 	Element.removeNode(this.object);
@@ -711,11 +711,11 @@ ToolBarItem.prototype.dispose = function() {
 }
 
 /*
- *	ÒÔÎÄ±¾·½Ê½Êä³ö¶ÔÏóĞÅÏ¢
+ *	ä»¥æ–‡æœ¬æ–¹å¼è¾“å‡ºå¯¹è±¡ä¿¡æ¯
  */
 ToolBarItem.prototype.toString = function() {
 	var str = [];
-	str[str.length] = "[ToolBarItem ¶ÔÏó]";
+	str[str.length] = "[ToolBarItem å¯¹è±¡]";
 	str[str.length] = "id:" + this.id;
 	str[str.length] = "label:" + this.label;
 	str[str.length] = "type:" + this.type;
@@ -727,8 +727,8 @@ ToolBarItem.prototype.toString = function() {
 
 
 /*
- *	Êó±êÀë¿ª¸ü¶à°´Å¥
- *	²ÎÊı£º  event:eventObj    ÊÂ¼ş¶ÔÏó
+ *	é¼ æ ‡ç¦»å¼€æ›´å¤šæŒ‰é’®
+ *	å‚æ•°ï¼š  event:eventObj    äº‹ä»¶å¯¹è±¡
  */
 function _toolbar_more_onmouseout() {		
 	var srcElement = this;
@@ -739,7 +739,7 @@ function _toolbar_more_onmouseout() {
 }
 
 /*
- *	Êó±ê°´ÏÂ¸ü¶à°´Å¥
+ *	é¼ æ ‡æŒ‰ä¸‹æ›´å¤šæŒ‰é’®
  */
 function _toolbar_more_onmousedown() {		
 	var srcElement = this;
@@ -750,9 +750,9 @@ function _toolbar_more_onmousedown() {
 }
 
 /*
- *	Êó±êĞüÍ£¸ü¶à°´Å¥ or Êó±êËÉ¿ª¸ü¶à°´Å¥
+ *	é¼ æ ‡æ‚¬åœæ›´å¤šæŒ‰é’® or é¼ æ ‡æ¾å¼€æ›´å¤šæŒ‰é’®
  */
-function _toolbar_more_onmouseover() = function _toolbar_more_onmouseup() {		
+function _toolbar_more_onmouseover() {		
 	var srcElement = this;
 	var _instance = srcElement._instance;
 	if( _instance && _instance.checkMore() ) {
@@ -760,14 +760,16 @@ function _toolbar_more_onmouseover() = function _toolbar_more_onmouseup() {
 	}
 }
 
+var _toolbar_more_onmouseup = _toolbar_more_onmouseover;
+
 /*
- *	Êó±êµã»÷¸ü¶à°´Å¥
+ *	é¼ æ ‡ç‚¹å‡»æ›´å¤šæŒ‰é’®
  */
 function _toolbar_more_onclick() {		
 	this._instance.fireOnShowMore();
 }
 /*
- *	Êó±êĞüÍ£°´Å¥
+ *	é¼ æ ‡æ‚¬åœæŒ‰é’®
  */
 function _toolbar_bt_onmouseover() {		
 	var srcElement = this;
@@ -778,7 +780,7 @@ function _toolbar_bt_onmouseover() {
 }
 
 /*
- *	Êó±êÀë¿ª°´Å¥
+ *	é¼ æ ‡ç¦»å¼€æŒ‰é’®
  */
 function _toolbar_bt_onmouseout() {		
 	var srcElement = this;
@@ -789,7 +791,7 @@ function _toolbar_bt_onmouseout() {
 }
 
 /*
- *	Êó±ê°´ÏÂ°´Å¥
+ *	é¼ æ ‡æŒ‰ä¸‹æŒ‰é’®
  */
 function _toolbar_bt_onmousedown() {		
 	var srcElement = this;
@@ -800,7 +802,7 @@ function _toolbar_bt_onmousedown() {
 }
 
 /*
- *	Êó±êËÉ¿ª°´Å¥
+ *	é¼ æ ‡æ¾å¼€æŒ‰é’®
  */
 function _toolbar_bt_onmouseup() {		
 	var srcElement = this;
@@ -811,7 +813,7 @@ function _toolbar_bt_onmouseup() {
 }
 
 /*
- *	Êó±êµã»÷°´Å¥
+ *	é¼ æ ‡ç‚¹å‡»æŒ‰é’®
  */
 function _toolbar_bt_onclick() {		
 	var srcElement = this;
@@ -822,7 +824,7 @@ function _toolbar_bt_onclick() {
 }
 
 /*
- *	Êó±êÍÏ¶¯Ñ¡ÔñÎÄ×Ö
+ *	é¼ æ ‡æ‹–åŠ¨é€‰æ‹©æ–‡å­—
  */
 function _toolbar_onselectstart(eventObj) {		
 	Event.cancel(eventObj || window.event);

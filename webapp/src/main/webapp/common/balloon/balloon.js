@@ -1,5 +1,5 @@
 
-    /* ±êÇ©Ãû */
+    /* æ ‡ç­¾å */
     _TAG_NAME_BALLOON = "div";
     _TAG_NAME_TABLE = "table";
     _TAG_NAME_TBODY = "tbody";
@@ -8,11 +8,11 @@
     _TAG_NAME_DIV = "div";
     _TAG_NAME_ARROW = "div";
 	
-    /* ÆøÇòÎ¨Ò»±àºÅÃûÇ°×º */
+    /* æ°”çƒå”¯ä¸€ç¼–å·åå‰ç¼€ */
     _UNIQUE_ID_BALLOON_PREFIX = "balloon__id";
     _UNIQUE_ID_DEFAULT_PREFIX = "default__id";
 	
-    /* ÑùÊ½Ãû³Æ */
+    /* æ ·å¼åç§° */
     _STYLE_NAME_BALLOON = "balloon";
     _STYLE_NAME_BALLOON_CONTENT = "content";
     _STYLE_NAME_BALLOON_ARROW_1 = "arrow_1";
@@ -20,17 +20,17 @@
     _STYLE_NAME_BALLOON_ARROW_3 = "arrow_3";
     _STYLE_NAME_BALLOON_ARROW_4 = "arrow_4";
 	
-    /* ÌØ¶¨×Ö·û */
+    /* ç‰¹å®šå­—ç¬¦ */
     _STRING_NO_BREAK_SPACE = "&nbsp;";
 	
-    /* ³ß´ç */
+    /* å°ºå¯¸ */
     _SIZE_BALLOON_ARROW_HEIGHT = 15;
     _SIZE_BALLOON_CONTENT_WIDTH = 210;
     _SIZE_BALLOON_CONTENT_HEIGHT = 50;
     _SIZE_BALLOON_ARROW_OFFX = 10;
     _SIZE_BALLOON_ARROW_OFFY = 10;
     
-	/* ÎÄ¼şÂ·¾¶ */
+	/* æ–‡ä»¶è·¯å¾„ */
     _SRC_ARROW_1 = "balloon_01.gif";
     _SRC_ARROW_2 = "balloon_02.gif";
     _SRC_ARROW_3 = "balloon_03.gif";
@@ -39,8 +39,8 @@
 
 
     /*
-     *	¶ÔÏóÃû³Æ£ºBalloons£¨È«¾Ö¾²Ì¬¶ÔÏó£©
-     *	Ö°Ôğ£º¸ºÔğ¹ÜÀíËùÓĞÆøÇòÌáÊ¾½çÃæ
+     *	å¯¹è±¡åç§°ï¼šBalloonsï¼ˆå…¨å±€é™æ€å¯¹è±¡ï¼‰
+     *	èŒè´£ï¼šè´Ÿè´£ç®¡ç†æ‰€æœ‰æ°”çƒæç¤ºç•Œé¢
      */
     var Balloons = {};
     Balloons.nextDepth = 1000;
@@ -48,8 +48,8 @@
     Balloons.items = {};
 
     /*
-     *	º¯ÊıËµÃ÷£º»ñÈ¡ÏÂÒ»¸ö²ã´Î  
-     *	·µ»ØÖµ£ºnumber:nextPath     ÏÂÒ»¸ö²ã´Î
+     *	å‡½æ•°è¯´æ˜ï¼šè·å–ä¸‹ä¸€ä¸ªå±‚æ¬¡  
+     *	è¿”å›å€¼ï¼šnumber:nextPath     ä¸‹ä¸€ä¸ªå±‚æ¬¡
      */
     Balloons.getNextDepth = function() {
         var nextDepth = this.nextDepth;
@@ -58,12 +58,12 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£º´´½¨Ò»¸öĞÂÆøÇò
-     *	²ÎÊı£º  string:content  ÆøÇòÏÔÊ¾µÄÄÚÈİ
-     *	·µ»ØÖµ£ºBalloonÊµÀı
+     *	å‡½æ•°è¯´æ˜ï¼šåˆ›å»ºä¸€ä¸ªæ–°æ°”çƒ
+     *	å‚æ•°ï¼š  string:content  æ°”çƒæ˜¾ç¤ºçš„å†…å®¹
+     *	è¿”å›å€¼ï¼šBalloonå®ä¾‹
 	 */
     Balloons.create = function(content) {
-        // Èç¹ûÖ»ÔÊĞíµ¥¸öÊµÀıÔòÏÈ½øĞĞÇå³ı
+        // å¦‚æœåªå…è®¸å•ä¸ªå®ä¾‹åˆ™å…ˆè¿›è¡Œæ¸…é™¤
         if(true == this.singleInstance) {
             this.dispose();
         }
@@ -75,7 +75,7 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÇå³ıËùÓĞÆøÇòÊµÀı
+     *	å‡½æ•°è¯´æ˜ï¼šæ¸…é™¤æ‰€æœ‰æ°”çƒå®ä¾‹
      */
     Balloons.dispose = function() {
         for(var item in this.items) {
@@ -86,7 +86,7 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÍ³¼ÆËùÓĞÆøÇòÊıÁ¿
+     *	å‡½æ•°è¯´æ˜ï¼šç»Ÿè®¡æ‰€æœ‰æ°”çƒæ•°é‡
      */
     Balloons.count = function() {
         var count = 0;
@@ -97,11 +97,11 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÒÔÎÄ±¾·½Ê½Êä³ö¶ÔÏóĞÅÏ¢
+     *	å‡½æ•°è¯´æ˜ï¼šä»¥æ–‡æœ¬æ–¹å¼è¾“å‡ºå¯¹è±¡ä¿¡æ¯
      */
     Balloons.toString = function() {
         var str = [];
-        str[str.length] = "[Balloons ¶ÔÏó]";
+        str[str.length] = "[Balloons å¯¹è±¡]";
         str[str.length] = "singleInstance:" + this.singleInstance;
         str[str.length] = "items:" + this.count();
         return str.join("\r\n");
@@ -111,8 +111,8 @@
 
 	
     /*
-     *	¶ÔÏóÃû³Æ£ºBalloon
-     *	Ö°Ôğ£º¸ºÔğÉú³ÉÆøÇòĞÍÌáÊ¾½çÃæ
+     *	å¯¹è±¡åç§°ï¼šBalloon
+     *	èŒè´£ï¼šè´Ÿè´£ç”Ÿæˆæ°”çƒå‹æç¤ºç•Œé¢
      */
     function Balloon(content) {
         this.content = content;
@@ -123,7 +123,7 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºBalloon³õÊ¼»¯
+     *	å‡½æ•°è¯´æ˜ï¼šBalloonåˆå§‹åŒ–
      */
     Balloon.prototype.init = function() {
         this.create();
@@ -131,7 +131,7 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£º´´½¨ĞÂÆøÇò
+     *	å‡½æ•°è¯´æ˜ï¼šåˆ›å»ºæ–°æ°”çƒ
      */
     Balloon.prototype.create = function() {
         this.uniqueID = UniqueID.generator(_UNIQUE_ID_BALLOON_PREFIX);
@@ -165,13 +165,13 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£º¶¨Î»ÆøÇò
-     *	²ÎÊı£º  number:x		×ø±êx
-                number:y		×ø±êy
-				number:delay	ÑÓÊ±
+     *	å‡½æ•°è¯´æ˜ï¼šå®šä½æ°”çƒ
+     *	å‚æ•°ï¼š  number:x		åæ ‡x
+                number:y		åæ ‡y
+				number:delay	å»¶æ—¶
 				------------------------------------
-				object:x		×÷Îª²Î¿¼µãµÄÄ¿±ê¶ÔÏó
-				number:y		ÑÓÊ±
+				object:x		ä½œä¸ºå‚è€ƒç‚¹çš„ç›®æ ‡å¯¹è±¡
+				number:y		å»¶æ—¶
      */
     Balloon.prototype.dockTo = function(x, y, delay) {
         if(typeof(x) == _TYPE_OBJECT && null != x.parentNode) {
@@ -205,9 +205,9 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÒÆ¶¯ÆøÇò
-     *	²ÎÊı£º  number:x  ×ø±êx
-                number:y  ×ø±êy
+     *	å‡½æ•°è¯´æ˜ï¼šç§»åŠ¨æ°”çƒ
+     *	å‚æ•°ï¼š  number:x  åæ ‡x
+                number:y  åæ ‡y
      */
     Balloon.prototype.moveTo = function(x, y) {
         if(null != this.object) {
@@ -217,7 +217,7 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£º½«ÆøÇòÖÃÓÚ×î¶¥ÉÏ
+     *	å‡½æ•°è¯´æ˜ï¼šå°†æ°”çƒç½®äºæœ€é¡¶ä¸Š
      */
     Balloon.prototype.bringToTop = function() {
         if(null != this.object) {
@@ -226,8 +226,8 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÉèÖÃÆøÇò³ÖĞøÊ±¼ä
-     *	²ÎÊı£º  number:delay    ³ÖĞøÊ±¼ä(ms)
+     *	å‡½æ•°è¯´æ˜ï¼šè®¾ç½®æ°”çƒæŒç»­æ—¶é—´
+     *	å‚æ•°ï¼š  number:delay    æŒç»­æ—¶é—´(ms)
      */
     Balloon.prototype.duration = function(delay) {
         clearTimeout(this.timeout);
@@ -239,7 +239,7 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÌí¼ÓÆøÇò¼ıÍ·
+     *	å‡½æ•°è¯´æ˜ï¼šæ·»åŠ æ°”çƒç®­å¤´
      */
     Balloon.prototype.addArrow = function(type) {
         var arrow = document.createElement(_TAG_NAME_ARROW);
@@ -285,7 +285,7 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÊÍ·ÅÆøÇòÊµÀı
+     *	å‡½æ•°è¯´æ˜ï¼šé‡Šæ”¾æ°”çƒå®ä¾‹
      */
     Balloon.prototype.dispose = function() {
         delete Balloons.items[this.uniqueID];
@@ -300,7 +300,7 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£º°ó¶¨ÊÂ¼ş
+     *	å‡½æ•°è¯´æ˜ï¼šç»‘å®šäº‹ä»¶
      */
     Balloon.prototype.attachEvents = function() {
         if(null!=this.object) {
@@ -314,11 +314,11 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÒÔÎÄ±¾·½Ê½Êä³ö¶ÔÏóĞÅÏ¢
+     *	å‡½æ•°è¯´æ˜ï¼šä»¥æ–‡æœ¬æ–¹å¼è¾“å‡ºå¯¹è±¡ä¿¡æ¯
      */
     Balloon.prototype.toString = function() {
         var str = [];
-        str[str.length] = "[Balloon ¶ÔÏó]";
+        str[str.length] = "[Balloon å¯¹è±¡]";
         str[str.length] = "uniqueID:" + this.uniqueID;
         str[str.length] = "content:"  + this.content;
         return str.join("\r\n");
@@ -327,14 +327,14 @@
 
 
     /*
-     *	º¯ÊıËµÃ÷£ºÕû¸öÎÄµµ¶ÔÏóÊó±ê°´ÏÂ
+     *	å‡½æ•°è¯´æ˜ï¼šæ•´ä¸ªæ–‡æ¡£å¯¹è±¡é¼ æ ‡æŒ‰ä¸‹
      */
     function _Balloon_Document_onMouseDown() {
         Balloons.dispose();
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÊó±ê°´ÏÂ
+     *	å‡½æ•°è¯´æ˜ï¼šé¼ æ ‡æŒ‰ä¸‹
      */
     function _Balloon_onMouseDown(eventObj) {
         eventObj = eventObj || window.event;
@@ -349,7 +349,7 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÊó±êËÉ¿ª
+     *	å‡½æ•°è¯´æ˜ï¼šé¼ æ ‡æ¾å¼€
      */
     function _Balloon_onMouseUp(eventObj) {
         var srcElement = this;
@@ -357,7 +357,7 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÊó±êÒÆ¶¯
+     *	å‡½æ•°è¯´æ˜ï¼šé¼ æ ‡ç§»åŠ¨
      */
     function _Balloon_onMouseMove(eventObj) {
         var srcElement = this;
@@ -365,7 +365,7 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÊó±êÓÒ¼üµã»÷
+     *	å‡½æ•°è¯´æ˜ï¼šé¼ æ ‡å³é”®ç‚¹å‡»
      */
     function _Balloon_onContextMenu(eventObj) {
         var srcElement = this;
@@ -373,9 +373,9 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÊó±ê°´ÏÂÆøÇò£¨ĞéÄâÊÂ¼ş£©
-     *	²ÎÊı£º  object:srcElement   HTML¶ÔÏó
-                event:eventObj      ÊÂ¼ş¶ÔÏó
+     *	å‡½æ•°è¯´æ˜ï¼šé¼ æ ‡æŒ‰ä¸‹æ°”çƒï¼ˆè™šæ‹Ÿäº‹ä»¶ï¼‰
+     *	å‚æ•°ï¼š  object:srcElement   HTMLå¯¹è±¡
+                event:eventObj      äº‹ä»¶å¯¹è±¡
      */
     function _Balloon_onBalloonCapture(srcElement, eventObj) {
         srcElement.isMouseDown = true;
@@ -389,8 +389,8 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÊó±êËÉ¿ªÆøÇò£¨ĞéÄâÊÂ¼ş£©
-     *	²ÎÊı£º  object:srcElement   HTML¶ÔÏó
+     *	å‡½æ•°è¯´æ˜ï¼šé¼ æ ‡æ¾å¼€æ°”çƒï¼ˆè™šæ‹Ÿäº‹ä»¶ï¼‰
+     *	å‚æ•°ï¼š  object:srcElement   HTMLå¯¹è±¡
      */
     function _Balloon_onBalloonRelease(srcElement) {
         srcElement.isMouseDown = false;
@@ -398,9 +398,9 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÊó±êÍÏ¶¯ÆøÇò£¨ĞéÄâÊÂ¼ş£©
-     *	²ÎÊı£º  object:srcElement   HTML¶ÔÏó
-                event:eventObj      ÊÂ¼ş¶ÔÏó
+     *	å‡½æ•°è¯´æ˜ï¼šé¼ æ ‡æ‹–åŠ¨æ°”çƒï¼ˆè™šæ‹Ÿäº‹ä»¶ï¼‰
+     *	å‚æ•°ï¼š  object:srcElement   HTMLå¯¹è±¡
+                event:eventObj      äº‹ä»¶å¯¹è±¡
      */
     function _Balloon_onBalloonMove(srcElement, eventObj) {
         if( srcElement.isMouseDown ) {
@@ -414,9 +414,9 @@
     }
 	
     /*
-     *	º¯ÊıËµÃ÷£ºÊó±êÓÒ¼üµã»÷ÆøÇò£¨ĞéÄâÊÂ¼ş£©
-     *	²ÎÊı£º  object:srcElement   HTML¶ÔÏó
-                event:eventObj      ÊÂ¼ş¶ÔÏó
+     *	å‡½æ•°è¯´æ˜ï¼šé¼ æ ‡å³é”®ç‚¹å‡»æ°”çƒï¼ˆè™šæ‹Ÿäº‹ä»¶ï¼‰
+     *	å‚æ•°ï¼š  object:srcElement   HTMLå¯¹è±¡
+                event:eventObj      äº‹ä»¶å¯¹è±¡
      */
     function _Balloon_onBalloonClose(srcElement, eventObj) {
          Event.cancel(eventObj);

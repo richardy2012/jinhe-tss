@@ -703,6 +703,11 @@ Element.getCurrentStyle = function(obj, rule) {
 	}
 }
 
+
+Element.attachRowResize = function(obj, offsetX) {
+
+}
+
 /*
  * 控制对象拖动改变宽度
  * 参数：	Object:obj			要拖动改变宽度的HTML对象

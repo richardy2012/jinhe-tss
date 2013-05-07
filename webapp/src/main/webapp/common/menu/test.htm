@@ -1,7 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
- 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
 <link rel="stylesheet" type="text/css" media="all" href="menu.css" />
 <style>
 	body {
@@ -18,11 +19,11 @@
 <script language="javascript">
 <!--
     var menu1 = new Menu();
-    var menu2 = new Menu(); // ×Ó²Ëµ¥
+    var menu2 = new Menu(); // å­èœå•
 
 	var item1 = {
-		label:"¼ôÇĞ",
-		callback:function(){alert("¼ôÇĞ")},
+		label:"å‰ªåˆ‡",
+		callback:function(){alert("å‰ªåˆ‡")},
 		icon:"icon_cut.gif",
 		enable:function(){return true;},
 		visible:function(){return true;},
@@ -30,40 +31,40 @@
         submenu:menu2
 	}
 	var item2 = {
-		label:"¸´ÖÆ",
-		callback:function(){alert("¸´ÖÆ")},
+		label:"å¤åˆ¶",
+		callback:function(){alert("å¤åˆ¶")},
 		icon:"icon_copy.gif",
 		enable:function(){return false;},
 		visible:function(){return true;}
 	}
 	var item3 = {
-		label:"Õ³Ìù",
-		callback:function(){alert("Õ³Ìù")},
+		label:"ç²˜è´´",
+		callback:function(){alert("ç²˜è´´")},
 		icon:"icon_paste.gif",
 		enable:function(){return true;},
 		visible:function(){return true;}
 	}
 	var item4 = {
-		label:"ÏîÄ¿·ûºÅºÍ±àºÅ",
-		callback:function(){alert("ÏîÄ¿·ûºÅºÍ±àºÅ")},
+		label:"é¡¹ç›®ç¬¦å·å’Œç¼–å·",
+		callback:function(){alert("é¡¹ç›®ç¬¦å·å’Œç¼–å·")},
 		enable:function(){return true;},
 		visible:function(){return Math.random()>0.5}
 	}
 	var item5 = {
-		label:"ÎŞ¸ñÊ½Õ³Ìù",
-		callback:function(){alert("ÎŞ¸ñÊ½Õ³Ìù")},
+		label:"æ— æ ¼å¼ç²˜è´´",
+		callback:function(){alert("æ— æ ¼å¼ç²˜è´´")},
 		enable:function(){return true;},
 		visible:function(){return true;}
 	}
 	var item6 = {
-		label:"´ø¸ñÊ½Õ³Ìù",
-		callback:function(){alert("´ø¸ñÊ½Õ³Ìù")},
+		label:"å¸¦æ ¼å¼ç²˜è´´",
+		callback:function(){alert("å¸¦æ ¼å¼ç²˜è´´")},
 		enable:function(){return true;},
 		visible:function(){return true;}
 	}
 	var item10 = {
-		label:"²âÊÔ",
-		callback:function(){alert("¼ôÇĞ")},
+		label:"æµ‹è¯•",
+		callback:function(){alert("å‰ªåˆ‡")},
 		icon:"icon_cut.gif",
 		enable:function(){return true;},
 		visible:function(){return false;},
@@ -107,6 +108,6 @@ window.onload = function() {
 
 <body>
 <input TYPE="button" value="outerHTML" onclick="test()">
-<input TYPE="button" value="É¾³ıÑ¡Ïî" onclick="test2()">
+<input TYPE="button" value="åˆ é™¤é€‰é¡¹" onclick="test2()">
 </body>
 </html>

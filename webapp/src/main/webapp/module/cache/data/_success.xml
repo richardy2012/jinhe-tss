@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<Success>
+		<msg><![CDATA[ 保存成功^ ^ ]]></msg>
+		<description><![CDATA[ 您填写的数据已经保存入数据库，以下省略N字... ]]></description>
+		<type>1</type>
+	</Success>
+	<!-- <DecoratorTree>
+        <actionSet title="">
+            <treeNode icon="../platform/images/icon/icon_menuitem.gif" name="新建菜单项_1" id="1.1.4" type="3"/>
+        </actionSet>
+	</DecoratorTree> -->
+</Response>
