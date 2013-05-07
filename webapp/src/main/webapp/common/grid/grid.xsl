@@ -29,10 +29,12 @@
                 </colgroup>
 				
                 <thead>
+					<xsl:eval>void(isHead=true)</xsl:eval>
                     <xsl:apply-templates select="//declare"/>
                 </thead>
 				
                 <tbody class="cell">
+					<xsl:eval>void(isHead=false)</xsl:eval>
                     <xsl:for-each select="//data/row">
                         <tr>
                             <xsl:apply-templates select="@*"/>
@@ -58,8 +60,11 @@
                             </xsl:if>
                             <xsl:for-each select="//declare/*[(@display!='none')  or not(@display)]">
 								<td>
-									<xsl:attribute name="style">border-width:<xsl:eval>getBorderWidth("cell")</xsl:eval>;</xsl:attribute>
-									<xsl:apply-templates select="@*"/>
+									<xsl:attribute name="style">border-width:<xsl:eval>getBorderWidth("cell")</xsl:eval>;</xsl:attribute>								
+									<xsl:attribute name="name"><xsl:eval>getColumnName()</xsl:eval></xsl:attribute>	
+									<xsl:if expr="isHighlightCol()==true">
+										<xsl:attribute name="class">highlightCol</xsl:attribute>
+									</xsl:if>
 									<nobr>&amp;nbsp;</nobr>
 								</td>
                             </xsl:for-each>
@@ -102,7 +107,7 @@
             <xsl:attribute name="class">column</xsl:attribute>
             <xsl:attribute name="style">border-width:<xsl:eval>getBorderWidth()</xsl:eval>;height:<xsl:eval>cellHeight</xsl:eval>px;</xsl:attribute>
             <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>            
-			<xsl:if test=".[@sortable='true']">
+			<xsl:if test=".[@sortable='true']" expr="isHead==true">
 				<xsl:attribute name="sortable">true</xsl:attribute>
 			</xsl:if>
             <nobr>
@@ -113,18 +118,12 @@
     </xsl:template>
 	
     <xsl:template match="@*">
-        <xsl:choose>
-            <xsl:when expr="this.nodeName=='highlightCol' &amp;&amp; this.nodeValue=='true'">
-                <xsl:attribute name="class">highlightCol</xsl:attribute>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:copy><xsl:value-of/></xsl:copy>
-            </xsl:otherwise>
-        </xsl:choose>
+        <xsl:copy><xsl:value-of/></xsl:copy>
     </xsl:template>
 	
     <xsl:script>
 		var cellHeight = 22;
+		var isHead = false;
 	</xsl:script>
     <xsl:script>
         var curRow;
@@ -139,12 +138,12 @@
             return top + " " + right + " " + bottom + " " + left;
         }
 		
-        function getAllColumn(){
+        function getAllColumn() {
             return this.selectNodes(".//column[not(@display) or not(@display='none')]").length;
         }
 		
-        function getAlign(){
-            switch(this.getAttribute("mode")){
+        function getAlign() {
+            switch(this.getAttribute("mode")) {
                 case "number":
                     return "right";
                     break;
@@ -159,9 +158,18 @@
             }
         }
 		
-        function getCaption(){
+        function getCaption() {
             return this.getAttribute("caption") || "&amp;nbsp;";
         }
+		
+		function getColumnName() {
+            return this.getAttribute("name") || "&amp;nbsp;";
+        }
+		
+		function isHighlightCol() {
+            return this.getAttribute("highlightCol") == "true";
+        }
+	
 
     </xsl:script>
 </xsl:stylesheet>

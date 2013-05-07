@@ -5,7 +5,7 @@
             <declare sequence="true" header="">
                 <column caption="头像" name="icon" mode="image" align="center"/>
                 <column caption="用户ID" name="id" mode="string" display="none"/>
-                <column caption="用户名" name="loginName" mode="string" align="center" sortable="true"/>
+                <column caption="用户名" name="loginName" mode="string" align="center" sortable="true" highlightCol="true"/>
                 <column caption="用户状态" name="accountState" mode="string" align="center" editor="comboedit" editorvalue="0|1" editortext="停用|启用"/>
                 <column caption="姓名" name="userName" mode="string" align="center"/>
                 <column caption="性别" name="sex" mode="string" align="center" editor="comboedit" editorvalue="0|1" editortext="男|女"/>

@@ -9,9 +9,13 @@
 	position:absolute;
 	border:1px solid #96969E;
 	background-color:#FFFFFF;
-	padding-top:21px;
+	padding-top:0px;
 	width:100%;
 	height:100%;
+}
+
+#gridBox .cell {
+	background-color:#F7F8FD;
 }
 
 #gridBox .cell td, #gridBox .header td{
@@ -21,34 +25,28 @@
 	overflow:hidden;
 	text-overflow:ellipsis;
 }
-#gridBox .cell td {
-	background-color:#F7F8FD;
-}
-#gridBox .column{
+
+#gridBox .column {
 	text-align:center;
 	border-style:solid;
 	border-color:#FFFFFF #96969E #96969E #FFFFFF;
 	font-size:12px;
 	background-color:#E4E6F5;
 }
+
 .highlightCol {
 	background-color:#FFFFCC;
 }
+
 .highlightRow td {
 	background-color:#FEF7A9;
 }
+
 .rolloverRow {
-	background-color:#FFFFFF;
+	background-color:#bed742;
 }
 
-Grid2\:Grid .rule {
-	overflow:hidden;
-	position:absolute;
-	z-index:100;
-	border:1px dotted #464646;
-	cursor:hand;
-}
-Grid2\:Grid .menuItem{
+#gridBox  .menuItem {
 	font-size:12px;
 	height:20;
 	padding-top:4px;
@@ -61,43 +59,4 @@ Grid2\:Grid .menuItem{
 	border-color:#FFFFFF;
 	word-break:keep-all;
 }
-Grid2\:Grid .separator{
-	margin-left:24PX;
-	margin-top:1;
-	margin-bottom:2;
-	height:2;
-	border-bottom:1px solid #CCCCCC;
-	line-height:1;
-	font-size:1;
-	overflow:hidden;
-}
-.scrollbar{
-}
-Grid2\:Grid .searchResult td{
-	background-color:#FFFFCC !important;
-}
-Grid2\:Grid #searchInfo{
-	border:1px solid black;
-	background-color:#FFFFEE;
-	padding:2px;
-	font-size:12px;
-	width:160px;
-	height:32px;
-}
-Grid2\:Grid .alt{
-	border:1px solid black;
-	background-color:#FFFFEE;
-	font-size:12px;
-	position:absolute;
-	padding:2px;
-}
 
-
-Grid2\:Grid input{
-	border-width:0px;
-}
-
-Grid2\:Grid .track{
-	border-color:#F7F8FD;
-	border-style:none;
-}

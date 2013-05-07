@@ -123,6 +123,15 @@ var Tree = function(element) {
 	var _treeXMLDom;
 	var activedNode;
 	
+	/*  自定义事件 */
+	var eventComponentReady  = new EventFirer(element, "oncomponentready");
+	var eventTreeReady       = new EventFirer(element, "onLoad");
+	var eventNodeActived     = new EventFirer(element, "onTreeNodeActived"); 
+	var eventNodeDoubleClick = new EventFirer(element, "onTreeNodeDoubleClick");
+	var eventNodeMoved       = new EventFirer(element, "onTreeNodeMoved");
+	var eventTreeChange      = new EventFirer(element, "onChange");
+	var eventNodeRightClick  = new EventFirer(element, "onTreeNodeRightClick");
+	
 	this.element = element;
 	this.element.className = _TREE_STYLE;	
 		
@@ -418,12 +427,12 @@ var Tree = function(element) {
 	 * 鼠标双击响应函数，触发自定义双击事件。
 	 */
 	this.element.ondblclick = function() {
-		var eventObj = window.event.srcElement;
-		var row = getRow(eventObj);
+		var srcElement = window.event.srcElement;
+		var row = getRow(srcElement);
 		if(row instanceof Row) {
 			var treeNode = instanceTreeNode(row.node, oThis);
 		}
-		if( (treeNode instanceof TreeNode) && treeNode.isCanSelected() && (eventObj == row.label || eventObj == row.icon)) {	
+		if( (treeNode instanceof TreeNode) && treeNode.isCanSelected() && (srcElement == row.label || srcElement == row.icon)) {	
 			var eventObj = createEventObject();
 			eventObj.treeNode = treeNode;
 			eventNodeDoubleClick.fire(eventObj);  // 触发双击事件
@@ -435,9 +444,9 @@ var Tree = function(element) {
 	 *	如果点击的是文字连接，则激活该节点，同时触发右键单击事件。
 	 */
 	this.element.oncontextmenu = function() {
-		var eventObj = window.event.srcElement;
+		var srcElement = window.event.srcElement;
 		window.event.returnValue = false;
-		var row = getRow(eventObj);
+		var row = getRow(srcElement);
 		if(row instanceof Row) {
 			var treeNode = instanceTreeNode(row.node, oThis);
 		}
@@ -465,20 +474,20 @@ var Tree = function(element) {
 	 *			如果点击的是文字连接，则激活该节点，同时根据treeNodeSelectAndActive属性，确定是否同时改变节点选择状态。
 	 */
 	this.element.onclick = function() {
-		var eventObj = window.event.srcElement;
+		var srcElement = window.event.srcElement;
 		window.event.returnValue = false;
-		var row = getRow(eventObj);
+		var row = getRow(srcElement);
 		if(row instanceof Row) {
 			var treeNode = instanceTreeNode(row.node, oThis);
 		}
 		if( treeNode && (treeNode instanceof TreeNode) ) {
-			if(eventObj == row.checkType) {		// 根据不同的treeType，改变相应的选择状态
+			if(srcElement == row.checkType) {		// 根据不同的treeType，改变相应的选择状态
 				treeNode.changeSelectedState(window.event.shiftKey);
 			}
-			else if(eventObj == row.folder) {
+			else if(srcElement == row.folder) {
 				treeNode.changeFolderState();	//展开、收缩节点的直系子节点
 			}
-			else if(eventObj == row.label || eventObj == row.icon) {
+			else if(srcElement == row.label || srcElement == row.icon) {
 				if(oThis.isTreeNodeToOpenOnClick()) {
 					// 只有当枝节点才允许执行
 					if(treeNode.node.hasChildNodes()) {					
@@ -495,9 +504,9 @@ var Tree = function(element) {
 	 * 鼠标移到元素上。
 	 */
 	this.element.onmouseover = function() {
-		var obj = window.event.srcElement;
-		var row = getRow(obj);
-		if( (row instanceof Row) && row.label == obj) {
+		var srcElement = window.event.srcElement;
+		var row = getRow(srcElement);
+		if( (row instanceof Row) && row.label == srcElement) {
 			row.setClassName(oThis.getStyleClass(row.node, _TREE_NODE_OVER_STYLE));;
 		}
 	}
@@ -506,9 +515,9 @@ var Tree = function(element) {
 	 * 鼠标离开元素时。
 	 */
 	this.element.onmouseout = function() {
-		var obj = window.event.srcElement;
-		var row = getRow(obj);
-		if( (row instanceof Row) && row.label == obj) {
+		var srcElement = window.event.srcElement;
+		var row = getRow(srcElement);
+		if( (row instanceof Row) && row.label == srcElement) {
 			row.setClassName(oThis.getStyleClass(row.node));
 		}	
 	}
@@ -521,17 +530,17 @@ var Tree = function(element) {
 	this.element.ondragstart = function() {
 		if( !oThis.isCanMoveNode() ) return;
 
-		var obj = window.event.srcElement;
-		var row = getRow(obj);
-		if( (row instanceof Row) && row.label == obj) {
+		var srcElement = window.event.srcElement;
+		var row = getRow(srcElement);
+		if( (row instanceof Row) && row.label == srcElement) {
 			var node = row.node;	
 			oThis.setMovedNode(node); //设定拖动节点
 			
 			var tempData = {};
 			tempData.moveTree = element;
 			tempData.movedNode = node;
-			tempData.movedNodeScrollTop = oThis.displayObj.getScrollTop() + getTop(obj, oThis.element);
-			tempData.movedRow = obj;
+			tempData.movedNodeScrollTop = oThis.displayObj.getScrollTop() + getTop(srcElement, oThis.element);
+			tempData.movedRow = srcElement;
 			window._dataTransfer = tempData;
 
 			row.setClassName(_TREE_NODE_MOVED_STYLE);
@@ -545,11 +554,11 @@ var Tree = function(element) {
 	this.element.ondrop = function() { 		
 		if( !oThis.isCanMoveNode() ) return;	
 		
-		var obj = window.event.srcElement;
-		stopScrollTree(obj, oThis);
+		var srcElement = window.event.srcElement;
+		stopScrollTree(srcElement, oThis);
 		
-		obj.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
-		obj.runtimeStyle.borderTop = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
+		srcElement.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
+		srcElement.runtimeStyle.borderTop = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
 		
 		//触发自定义事件
 		var eObj = createEventObject();
@@ -559,7 +568,7 @@ var Tree = function(element) {
 		eObj.moveTree  = window._dataTransfer.moveTree; // 增加被拖动的节点所在树
 		eventNodeMoved.fire(eObj); 
 		
-		alert(obj);
+		alert(srcElement);
 	}
 
 	/*
@@ -568,13 +577,13 @@ var Tree = function(element) {
 	this.element.ondragend = function() {
 		if( !oThis.isCanMoveNode() ) return;	
 		
-		var obj = window.event.srcElement;
-		stopScrollTree(obj, oThis);
+		var srcElement = window.event.srcElement;
+		stopScrollTree(srcElement, oThis);
 		
-		var row = getRow(obj);
-		if( (row instanceof Row) && obj == row.label) {
-			obj.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
-			obj.runtimeStyle.borderTop    = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
+		var row = getRow(srcElement);
+		if( (row instanceof Row) && srcElement == row.label) {
+			srcElement.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
+			srcElement.runtimeStyle.borderTop    = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
 			oThis.setMovedNode(null);
 			oThis.displayObj.reload();
 		}	
@@ -586,34 +595,34 @@ var Tree = function(element) {
 	this.element.ondragenter = function() {
 		if(!oThis.isCanMoveNode() || window._dataTransfer == null) return;
 		
-		var obj = window.event.srcElement;	
-		startScrollTree(obj, oThis); //判断是否需要滚动树，如是则相应的滚动
+		var srcElement = window.event.srcElement;	
+		startScrollTree(srcElement, oThis); //判断是否需要滚动树，如是则相应的滚动
 		
-		var row = getRow(obj);
+		var row = getRow(srcElement);
 		if(row instanceof Row) {
 			var node = row.node;
 		}
 
 		// 拖动的不是文字链接，则无效
-		if(!(row instanceof Row) || obj != row.label) {	
+		if(!(row instanceof Row) || srcElement != row.label) {	
 			return;
 		}
 		
 		//区分是否同一棵树
 		if( window._dataTransfer.moveTree == this ) {
 			if(node.parentNode != window._dataTransfer.movedNode.parentNode	// 不是兄弟节点无效
-				|| obj == window._dataTransfer.movedRow) {	// 目标节点相同无效
+				|| srcElement == window._dataTransfer.movedRow) {	// 目标节点相同无效
 				return;
 			}
 		}
 
 		window._dataTransfer.toNode = node;
-		if(oThis.displayObj.getScrollTop() + getTop(obj, oThis.element) > window._dataTransfer.movedNodeScrollTop) {
+		if(oThis.displayObj.getScrollTop() + getTop(srcElement, oThis.element) > window._dataTransfer.movedNodeScrollTop) {
 			window._dataTransfer.moveState = 1;
-			obj.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_LINE_STYLE;
+			srcElement.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_LINE_STYLE;
 		} else {
 			window._dataTransfer.moveState = -1;
-			obj.runtimeStyle.borderTop = _TREE_NODE_MOVE_TO_LINE_STYLE;
+			srcElement.runtimeStyle.borderTop = _TREE_NODE_MOVE_TO_LINE_STYLE;
 		}
 		window.event.returnValue = false;
 		window.event.dataTransfer.dropEffect = "move";
@@ -630,13 +639,13 @@ var Tree = function(element) {
 	this.element.ondragleave = function() {
 		if(!oThis.isCanMoveNode()) return;
 		
-		var obj = window.event.srcElement;
-		stopScrollTree(obj, oThis);
+		var srcElement = window.event.srcElement;
+		stopScrollTree(srcElement, oThis);
 		
-		var row = getRow(obj);
-		if( (row instanceof Row) && obj != row.label) {
-			obj.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
-			obj.runtimeStyle.borderTop = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
+		var row = getRow(srcElement);
+		if( (row instanceof Row) && srcElement != row.label) {
+			srcElement.runtimeStyle.borderBottom = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
+			srcElement.runtimeStyle.borderTop = _TREE_NODE_MOVE_TO_HIDDEN_LINE_STYLE;
 			window.event.dataTransfer.dropEffect = "none";
 		}	
 	}
@@ -1155,39 +1164,6 @@ var MultiCheckTree = function(element) {
 	this.init();
 }
 MultiCheckTree.prototype = Tree.prototype;
-
-
-//////////////////////////////////////////////////////////////////////////////
-///////////////////             	自定义事件				    //////////////
-//////////////////////////////////////////////////////////////////////////////
- 
-/** 模拟事件 */
-function createEventObject() {
-	return new Object();
-}
-function EventFirer(name) {
-	var _name = name;
-	this.fire = function (event) {
-		var func = $("tree").getAttribute(_name);
-		if( func ) {
-			var funcType = typeof(func);
-			if("string" == funcType) {
-				eval(func);
-			}
-			else if ("function" == funcType) {
-				func(event);
-			}
-		}
-	}
-}
-
-var eventComponentReady  = new EventFirer("oncomponentready");
-var eventTreeReady       = new EventFirer("onLoad");
-var eventNodeActived     = new EventFirer("onTreeNodeActived"); 
-var eventNodeDoubleClick = new EventFirer("onTreeNodeDoubleClick");
-var eventNodeMoved       = new EventFirer("onTreeNodeMoved");
-var eventTreeChange      = new EventFirer("onChange");
-var eventNodeRightClick  = new EventFirer("onTreeNodeRightClick");
 
   
 ///////////////////////////////////////////////////////////////////////////

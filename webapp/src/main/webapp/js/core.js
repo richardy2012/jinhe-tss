@@ -926,6 +926,26 @@ Event.offsetY = function(eventObj) {
 	return clientY - offsetTop;
 }
 
+/** 模拟事件 */
+function createEventObject() {
+	return new Object();
+}
+
+function EventFirer(element, eventName) {
+	var _name = eventName;
+	this.fire = function (event) {
+		var func = element.getAttribute(_name);
+		if( func ) {
+			var funcType = typeof(func);
+			if("string" == funcType) {
+				eval(func);
+			}
+			else if ("function" == funcType) {
+				func(event);
+			}
+		}
+	}
+}
 
 /*********************************** 事件（Event）函数  end **********************************/
 

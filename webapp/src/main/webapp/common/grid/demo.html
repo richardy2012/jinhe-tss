@@ -5,6 +5,7 @@
 
 <link href="grid.css" rel="stylesheet" type="text/css">
 <link href="../balloon/balloon.css" rel="stylesheet" type="text/css">
+<link href="../../css/css.css" rel="stylesheet" type="text/css">
 
 <script language="javascript" src="../../js/core.js"></script>
 <script language="javascript" src="../../js/ajax.js"></script>
@@ -24,8 +25,21 @@
         request.onresult = function() {
             var gridData = this.getNodeValue("SourceList");
             var grid = $G("grid", gridData);       
+			
+			var gridPage = this.getNodeValue("PageList");
+			createGridToolBar(gridPage);
         }
         request.send();
+    }
+	
+	/*
+     *	 创建grid工具条
+     */
+    function createGridToolBar(gridPage){
+        var toolbarObj = $("gridToolBar");
+		initGridToolBar(toolbarObj, gridPage, function(page) {
+			alert("翻页")
+		});
     }
 	
 	window.onload = init;
@@ -36,7 +50,20 @@
 
 <body>
 
-	<div id="grid" baseurl="" height=600><div class="loading"/></div>
+<table class="full border" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+	<td id="gridTitle">
+	  <span class="icon"></span>用户列表
+	  <span class="buttonBox" id="gridToolBar"></span>
+	</td>
+  </tr>
+  <tr>
+	<td>
+	  <div id="grid" baseurl="" onRightClickRow="alert('show right menu!');"><div class="loading"/></div>
+	</td>
+  </tr>
+</table>
+										
  
 </body>
 </html>
