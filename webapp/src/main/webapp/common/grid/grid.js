@@ -92,11 +92,11 @@ Grid.prototype.load = function(data) {
 						case "function":                          
 							break;    
 						case "image":          
-							nobrNodeInCell.innerHTML = "<img src='" + value + "'>";
+							nobrNodeInCell.innerHTML = "<img src='" + value + "'/>";
 							break;    
 						case "boolean":      
 							var checked = (value =="true") ? "checked" : "";
-							nobrNodeInCell.innerHTML = "<input class='selectHandle' name='" + columnName + "' type='radio' " + checked + ">";
+							nobrNodeInCell.innerHTML = "<input class='selectHandle' name='" + columnName + "' type='radio' " + checked + "/>";
 							nobrNodeInCell.all.tags("INPUT")[0].disabled = true;
 							break;
 					}
@@ -227,12 +227,6 @@ var Grid_DOCUMENT = function(xmlDom) {
 	}
 
 	this.refresh();
-}
-
-Grid_DOCUMENT.prototype.refreshIndex = function(startIndex) {
-	for(var i = startIndex || 0; i < this.Rows.length; i++) {
-		this.Rows[i].setAttribute("_index", i);		
-	}
 }
 Grid_DOCUMENT.prototype.selectNodes = function(xpath) {
 	return this.xmlDom.selectNodes(xpath);

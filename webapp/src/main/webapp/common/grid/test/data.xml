@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
 	<SourceList>
-        <grid groupType="1" groupId="8988" sfzh="true">
+        <grid>
             <declare sequence="true" header="checkbox">
                 <column caption="头像" name="icon" mode="image" align="center"/>
                 <column caption="用户ID" name="id" mode="string" display="none"/>
