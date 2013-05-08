@@ -176,7 +176,7 @@ UniqueID.generator = function(prefix) {
 /* 缓存页面数据（xml、变量等） */
 var Cache = {};
 Cache.Variables = new Collection();
-Cache.XmlIslands = new Collection();
+Cache.XmlDatas  = new Collection();
 
 /* 集合类: 类似java Map */
 function Collection() {
@@ -1353,10 +1353,17 @@ Reminder.items = {};   // 提醒项
 Reminder.count = 0;
 Reminder.flag  = true; // 是否要提醒
 
+Reminder.add = function(id) {
+	if( null == this.items[id] ) {
+		this.items[id] = true;
+		this.count ++;
+	}
+}
+
 Reminder.del = function(id) {
 	if( this.items[id] ) {
 		delete this.item[id];
-		this.count--;
+		this.count --;
 	}
 }
 
@@ -1805,7 +1812,7 @@ window._alert = window.alert;
 window._confirm = window.confirm;
 window._prompt = window.prompt;
 
-// window.alert = Alert;
+window.alert = Alert;
 window.confirm = Confirm;
 window.confirm2 = Confirm2;
 window.prompt = Prompt;

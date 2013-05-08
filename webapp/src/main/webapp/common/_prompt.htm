@@ -1,14 +1,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-<!-- ¹«¹²½Å±¾ ¿ªÊ¼ -->
+<!-- å…¬å…±è„šæœ¬ å¼€å§‹ -->
 <link href="../css/css.css" rel="stylesheet" type="text/css">
 <link href="../css/dialog.css" rel="stylesheet" type="text/css">
 <script language="javascript" src="../js/core.js"></script>
 <script language="javascript" src="../js/framework.js"></script>
-<!-- ¹«¹²½Å±¾ ½áÊø -->
+<!-- å…¬å…±è„šæœ¬ ç»“æŸ -->
 
 <style>
   #infoBox{
@@ -55,7 +55,7 @@
 
 		var maxLength = params.maxBytes;
         if(false == isNaN(maxLength) && value.getBytes() > maxLength) {
-            alert("²»ÄÜ³¬¹ı×î´ó³¤¶È" + maxLength + "×Ö½Ú");
+            alert("ä¸èƒ½è¶…è¿‡æœ€å¤§é•¿åº¦" + maxLength + "å­—èŠ‚");
             return;
         }
         window.returnValue = value;
@@ -89,8 +89,8 @@
 		</tr>
 		<tr>
 		  <td align="right" height="30">
-			<input type="button" id="bt_cancel" value="È¡ Ïû" class="btWeak" onclick="cancel()"> 
-			<input type="button" id="bt_ok" value="È· ¶¨" class="btStrong" onclick="ok()">
+			<input type="button" id="bt_cancel" value="å– æ¶ˆ" class="btWeak" onclick="cancel()"> 
+			<input type="button" id="bt_ok" value="ç¡® å®š" class="btStrong" onclick="ok()">
 		  </td>
 		</tr>
 	  </table>

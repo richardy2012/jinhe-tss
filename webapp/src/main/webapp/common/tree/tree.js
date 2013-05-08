@@ -91,6 +91,12 @@ var _TREE_NODE_ICON_HEIGHT = 16;
 var _TREE_NODE_ICON_ATTRIBUTE = "icon"; // 节点自定义图标属性名
 
 
+var TreeCache = new Collection();
+
+function $T(treeId) {
+	return TreeCache.get(treeId);
+}
+
 /*
  * 初始化树对象
  */
@@ -105,6 +111,8 @@ function initTree(element, dataXML) {
 	else {
 		treeObj = new SingleCheckTree(element)
 	}
+	
+	TreeCache.add(element.id, treeObj);
 }
 
 /*
@@ -121,7 +129,7 @@ var Tree = function(element) {
 	var _treeNodeToOpenOnClick = eval("element." + _TREE_OPEN_WITH_CLICK) || "false";
 		
 	var _treeXMLDom;
-	var activedNode;
+	this.activedNode;
 	
 	/*  自定义事件 */
 	var eventComponentReady  = new EventFirer(element, "oncomponentready");
@@ -138,7 +146,7 @@ var Tree = function(element) {
 	this.init = function() {	
 		this.loadData(this.element._dataXML);
 	
-		this.displayObj = new Display(this);
+		this.displayObj = new TreeDisplay(this);
 		this.searchObj  = new Search(this);		
 		
 		this.setDefaultActive();
@@ -299,11 +307,16 @@ var Tree = function(element) {
 	this.getXmlRoot = function () {
 		return _treeXMLDom || loadXmlToNode("<actionSet/>");
 	}
+
 	/*
 	 * 设定当前高亮（激活）的节点
 	 */
 	this.setActiveNode = function (treeNode) {
-	    activedNode = treeNode.getXmlNode();
+	    this.activedNode = treeNode.getXmlNode();
+
+		var eventObj = createEventObject();
+		eventObj.treeNode = treeNode;
+		eventNodeActived.fire(eventObj);  // 触发事件	
 	}
 
 	/*
@@ -360,7 +373,7 @@ var Tree = function(element) {
 	 * 判断节点是否高亮（激活）
 	 */
 	this.isActiveNode = function (node) {
-	    return activedNode == node;
+	    return this.activedNode == node;
 	}
 	/*
 	 * 判断节点是否为被拖动的节点
@@ -755,7 +768,7 @@ Tree.prototype.getTreeNodeById = function(id) {
  * 获取当前高亮（激活）的节点（被激活的节点一次只有一个）。如果没有激活的节点，则返回null。
  */
 Tree.prototype.getActiveTreeNode = function () {
-	return instanceTreeNode(activedNode, this);
+	return instanceTreeNode(this.activedNode, this);
 }
 
 /*
@@ -1586,7 +1599,7 @@ TreeNode.prototype = new function() {
 	 * 激活节点，触发相应事件
 	 */
 	function justActive(treeNode) {
-		treeNode.treeObj.setActiveNode(treeNode);
+		treeNode.treeObj.setActiveNode(treeNode);	
 	}
 
 	/*
@@ -1789,12 +1802,12 @@ Row.prototype = new function () {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//	对象名称：Display														   //
+//	对象名称：TreeDisplay														   //
 //	职责：	负责处理将用户可视部分的节点显示到页面上。						   //
 //			控件一切页面上的元素都有此对象生成和调度（tr对象有Row对象专门处理）//
 ////////////////////////////////////////////////////////////////////////////////
  
-function Display(treeObj) {
+function TreeDisplay(treeObj) {
 	var _windowHeight = Math.max(treeObj.element.offsetHeight - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_HEIGHT);
 	var _windowWidth  = Math.max(treeObj.element.offsetWidth  - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_WIDTH);
 	var _rowHeight    = _TREE_NODE_DISPLAY_ROW_HEIGHT;
@@ -1818,7 +1831,7 @@ function Display(treeObj) {
 	/*
 	 * 生成默认展示的树节点。
 	 */
-	this.initDisplay = function() {
+	this.initTreeDisplay = function() {
 		treeObj.element.innerHTML = "";
 		
 		// 生成滚动条
@@ -1992,7 +2005,7 @@ function Display(treeObj) {
 	 */
 	this.getRowByIndex = function (index) {
 		if(index >= _pageSize || index < 0) {
-			alert("Display对象：行序号[" + index + "]超出允许范围[0 - " + _pageSize + "]！");
+			alert("TreeDisplay对象：行序号[" + index + "]超出允许范围[0 - " + _pageSize + "]！");
 			return null;
 		}
 		return _Rows[index];
@@ -2079,7 +2092,7 @@ function Display(treeObj) {
 	    return _pageSize;
 	}
 	
-	this.initDisplay();
+	this.initTreeDisplay();
 }
 
 

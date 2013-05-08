@@ -23,11 +23,11 @@
 
         var request = new HttpRequest(p);
         request.onresult = function() {
-            var gridData = this.getNodeValue("SourceList");
-            var grid = $G("grid", gridData);       
-			
-						var gridPage = this.getNodeValue("PageList");
-						createGridToolBar(gridPage);
+					var gridData = this.getNodeValue("SourceList");
+					var grid = $G("grid", gridData);       
+
+					var gridPage = this.getNodeValue("PageList");
+					createGridToolBar(gridPage);
         }
         request.send();
     }
@@ -35,7 +35,7 @@
     function createGridToolBar(gridPage) {
         var toolbarObj = $("gridToolBar");
 				initGridToolBar(toolbarObj, gridPage, function(page) {
-					alert("翻页")
+						alert("翻页")
 				});
     }
 	

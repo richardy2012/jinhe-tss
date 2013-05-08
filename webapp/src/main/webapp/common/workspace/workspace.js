@@ -192,6 +192,9 @@ Tab.prototype.close = function() {
 	}
 	this.dispose();
 
+	// 执行Tab页上定义的回调方法
+	this.execCallBack("onTabClose");
+
 	var firstTab = _display.getFirstTab();
 	_display.switchToTab(firstTab);
 }
@@ -222,6 +225,10 @@ Tab.prototype.dispose = function() {
 Tab.prototype.click = function() {
 	_display.inactiveAllTabs();
 	this.active();
+
+	// 执行Tab页上定义的回调方法
+	var params = {};
+	this.execCallBack("onTabChange", params);
 
 	if( this.link ) {
 		this.showLink();

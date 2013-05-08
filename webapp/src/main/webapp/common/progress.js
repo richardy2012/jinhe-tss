@@ -1,8 +1,8 @@
 /*
- *	º¯ÊıËµÃ÷£º´óÊı¾İÏÔÊ¾½ø¶È
- *	²ÎÊı£º	string:url                      Í¬²½½ø¶ÈÇëÇóµØÖ·
-			xmlNode:data                    XmlNodeÊµÀı
- *	·µ»ØÖµ£º
+ *	å‡½æ•°è¯´æ˜ï¼šå¤§æ•°æ®æ˜¾ç¤ºè¿›åº¦
+ *	å‚æ•°ï¼š	string:url                      åŒæ­¥è¿›åº¦è¯·æ±‚åœ°å€
+			xmlNode:data                    XmlNodeå®ä¾‹
+ *	è¿”å›å€¼ï¼š
  */
 var Progress = function(url, data, cancelUrl) {
 	this.progressUrl = url;
@@ -12,7 +12,7 @@ var Progress = function(url, data, cancelUrl) {
 }
 
 /*
- *	º¯ÊıËµÃ÷£º¸üĞÂÊı¾İ
+ *	å‡½æ•°è¯´æ˜ï¼šæ›´æ–°æ•°æ®
  */
 Progress.prototype.refreshData = function(data) {
 	this.percent      = data.selectSingleNode("./percent").text;
@@ -27,7 +27,7 @@ Progress.prototype.refreshData = function(data) {
 }
 
 /*
- *	¿ªÊ¼Ö´ĞĞ
+ *	å¼€å§‹æ‰§è¡Œ
  */
 Progress.prototype.start = function() {
 	this.show();
@@ -35,7 +35,7 @@ Progress.prototype.start = function() {
 }
 
 /*
- *	Í£Ö¹Ö´ĞĞ
+ *	åœæ­¢æ‰§è¡Œ
  */
 Progress.prototype.stop = function() {
 	var p = new HttpRequestParams();
@@ -52,9 +52,9 @@ Progress.prototype.stop = function() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÏÔÊ¾½ø¶È
- *	²ÎÊı£º
- *	·µ»ØÖµ£º
+ *	å‡½æ•°è¯´æ˜ï¼šæ˜¾ç¤ºè¿›åº¦
+ *	å‚æ•°ï¼š
+ *	è¿”å›å€¼ï¼š
  */
 Progress.prototype.show = function() {
 	var thisObj = this;
@@ -89,10 +89,10 @@ Progress.prototype.show = function() {
 	str[str.length] = "</div>";
 	str[str.length] = "<div style=\"padding-top:5px\">";
 	str[str.length] = "<span style=\"font-size:16px;font-family:Arial;font-weight:bold\">" + this.percent + "%</span>";
-	str[str.length] = "&nbsp;&nbsp;Ê£ÓàÊ±¼ä:<span style=\"font-size:16px;font-family:Arial;font-weight:bold\">" + this.estimateTime + "</span>Ãë";
+	str[str.length] = "&nbsp;&nbsp;å‰©ä½™æ—¶é—´:<span style=\"font-size:16px;font-family:Arial;font-weight:bold\">" + this.estimateTime + "</span>ç§’";
 	str[str.length] = "</div>";
 	str[str.length] = "<div style=\"padding-top:5px\">";
-	str[str.length] = "<a href=\"#\" style=\"margin-top:30px;color:#5276A3;text-decoration:underline\">È¡ Ïû</a>";
+	str[str.length] = "<a href=\"#\" style=\"margin-top:30px;color:#5276A3;text-decoration:underline\">å– æ¶ˆ</a>";
 	str[str.length] = "</div>";
 	barObj.childNodes[1].innerHTML = str.join("");
 	barObj.style.visibility = "visible";
@@ -104,7 +104,7 @@ Progress.prototype.show = function() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£ºÒş²Ø½ø¶È
+ *	å‡½æ•°è¯´æ˜ï¼šéšè—è¿›åº¦
  */
 Progress.prototype.hide = function() {
 	var barObj = $(this.id);
@@ -114,7 +114,7 @@ Progress.prototype.hide = function() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£º Í¬²½½ø¶È
+ *	å‡½æ•°è¯´æ˜ï¼š åŒæ­¥è¿›åº¦
  */
 Progress.prototype.sync = function() {
 	var p = new HttpRequestParams();
@@ -137,7 +137,7 @@ Progress.prototype.sync = function() {
 }
 
 /*
- *	º¯ÊıËµÃ÷£º ÑÓÊ±½øĞĞÏÂÒ»´ÎÍ¬²½
+ *	å‡½æ•°è¯´æ˜ï¼š å»¶æ—¶è¿›è¡Œä¸‹ä¸€æ¬¡åŒæ­¥
  */
 Progress.prototype.next = function() {
 	var thisObj = this;

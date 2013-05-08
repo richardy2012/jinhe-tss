@@ -35,6 +35,14 @@ XForm.prototype.attachEvents = function() {
 	this.element.onselectstart = function() {
 		event.cancelBubble = true; // 拖动选择事件取消冒泡
 	}
+
+	var func = this.element.getAttribute("ondatachange");            
+	this.element.ondatachange = function() {
+		if( func ) { func(); } 
+		else { 
+			Reminder.add(this.element.id); // 数据有变化时才添加离开提醒 
+		}
+	}
 }
 
 XForm.prototype.load = function(data) {

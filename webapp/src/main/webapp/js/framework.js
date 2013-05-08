@@ -22,7 +22,7 @@ document.oncontextmenu = function(eventObj) {
 }
 
 /*
- *	函数说明：用户信息初始化
+ *	用户信息初始化
  */
 function initUserInfo() {
 	var p = new HttpRequestParams();
@@ -63,7 +63,7 @@ function logoutOnClose() {
 }
 
 /*
- *	函数说明：检查密码强度
+ *	检查密码强度
  *	参数：	object:formObj                  xform对象
 			string:url                      请求地址
 			string:password                 密码
@@ -90,7 +90,7 @@ function checkPasswordSecurityLevel(formObj, url, password, loginName) {
 }
 
 /*
- *	函数说明：显示密码强度提示信息
+ *	显示密码强度提示信息
  *	参数：	object:formObj                  xform对象
  *	返回值：
  */
@@ -105,7 +105,7 @@ function showPasswordSecurityLevel(formObj) {
 }
 
 /*
- *	函数说明：删除缓存(公用)
+ *	删除缓存(公用)
  *	参数：	string:cacheID      缓存数据id
 			boolean:flag        是否清除关联的XML数据
  */
@@ -121,29 +121,41 @@ function delCacheData(cacheID, flag) {
 }
 
 
+var ws;
+function initWorkSpace(hide) {
+	ws = new WorkSpace($("ws"));
+	 
+	$("ws").onTabCloseAll = function(event) {
+		hideWorkSpace();
+	}
+	$("ws").onTabChange = function(event) {
+		var fromTab = event.lastTab;
+		var toTab = event.tab;
+		showWorkSpace();
+	}
+}
+
 /*
- *	函数说明：隐藏tab页工作区
+ *	隐藏tab页工作区
  */
 function hideWorkSpace() {
-	var ws = $("ws");
-	var tr = ws.parentNode.parentNode;
+	var tr = $("ws").parentNode.parentNode;
 	tr.style.display = "none";
 	tr.previousSibling.style.display = "none";    
 }
 
 /*
- *	函数说明：显示tab页工作区
+ *	显示tab页工作区
  */
 function showWorkSpace() {
-	var ws = $("ws");
-	var tr = ws.parentNode.parentNode;
+	var tr = $("ws").parentNode.parentNode;
 	tr.style.display = "";
 	tr.previousSibling.style.display = "";
 }
 
 
 /*
- *	函数说明：左栏添加左右拖动效果
+ *	左栏添加左右拖动效果
  */
 function initPaletteResize() {
 	var palette = $("palette");
@@ -151,7 +163,7 @@ function initPaletteResize() {
 }
 
 /*
- *	函数说明：添加上下拖动效果
+ *	添加上下拖动效果
  */
 function initListContainerResize() {
 	var listContainer = $("listContainer");
@@ -159,24 +171,24 @@ function initListContainerResize() {
 }
 
 
+var toolbar;
 /*
- *	函数说明：工具条初始化
+ *	工具条初始化
  */
 function initToolBar() {
 	var tbObj = $("toolbar");
-	ToolBars.create(tbObj);
+	toolbar = ToolBars.create(tbObj);
 }
 
-
 /*
- *	函数说明：点击树刷新按钮
+ *	点击树刷新按钮
  */
 function onClickTreeBtRefresh() {
 	loadInitData();
 }
 
 /*
- *	函数说明：点击树标题按钮
+ *	点击树标题按钮
  */
 function onClickTreeTitleBt() {
 	var treeTitleObj = $("treeTitle");
@@ -206,7 +218,7 @@ function onClickTreeTitleBt() {
 }
 
 /*
- *	函数说明：点击状态栏标题按钮
+ *	点击状态栏标题按钮
  */
 function onClickStatusTitleBt() {
 	var treeTitleObj = $("treeTitle");
@@ -236,7 +248,7 @@ function onClickStatusTitleBt() {
 }
 
 /*
- *	函数说明：点击左栏控制按钮
+ *	点击左栏控制按钮
  */
 function onClickPaletteBt() {
 	var block = Blocks.getBlock("palette");
@@ -248,21 +260,21 @@ function onClickPaletteBt() {
 }
 
 /*
- *	函数说明：点击树标题
+ *	点击树标题
  */
 function onClickTreeTitle() {
 	Focus.focus($("treeTitle").firstChild.id);
 }
 
 /*
- *	函数说明：点击状态栏标题
+ *	点击状态栏标题
  */
 function onClickStatusTitle() {
 	Focus.focus($("statusTitle").firstChild.id);
 }
 
 /*
- *	函数说明：点击grid标题
+ *	点击grid标题
  *	参数：	
  *	返回值：
  */
@@ -272,12 +284,12 @@ function onClickGridTitle() {
 
 
 /*
- *	函数说明：检测右键菜单项是否可见
+ *	检测右键菜单项是否可见
  *	参数：	string:code     操作码
  */
 function getOperation(code) {
 	var flag = false;
-	var treeObj = $("tree");
+	var treeObj = $T("tree");
 	var treeNode = treeObj.getActiveTreeNode();
 	if( treeNode ) {
 		var _operation = treeNode.getAttribute("_operation");
@@ -287,7 +299,7 @@ function getOperation(code) {
 }
 
 /*
- *	函数说明：检测操作权限
+ *	检测操作权限
  *	参数：	string:code             操作码
 			string:_operation       权限
  *	返回值：
@@ -303,12 +315,12 @@ function checkOperation(code, _operation) {
 
 
 /*
- *	函数说明：获取树节点属性
+ *	获取树节点属性
  *	参数：	string:name         属性名
  *	返回值：string:value        属性值
  */
 function getTreeAttribute(name) {
-	var treeObj = $("tree");
+	var treeObj = $T("tree");
 	var treeNode = treeObj.getActiveTreeNode();
 	if( treeNode ) {
 		return treeNode.getAttribute(name);
@@ -317,7 +329,7 @@ function getTreeAttribute(name) {
 }
 
 /*
- *	函数说明：修改树节点属性
+ *	修改树节点属性
  *	参数：  string:id               树节点id
 			string:attrName         属性名
 			string:attrValue        属性值
@@ -325,7 +337,7 @@ function getTreeAttribute(name) {
  *	返回值：
  */
 function modifyTreeNode(id, attrName, attrValue, refresh) {
-	var treeObj = $("tree");
+	var treeObj = $T("tree");
 	var treeNode = treeObj.getTreeNodeById(id);
 	if( treeNode ) {
 		treeNode.setAttribute(attrName, attrValue);
@@ -336,13 +348,13 @@ function modifyTreeNode(id, attrName, attrValue, refresh) {
 }
 
 /*
- *	函数说明：添加子节点
+ *	添加子节点
  *	参数：	string:id           树节点id
 			XmlNode:xmlNode     XmlNode实例
  *	返回值：
  */
 function appendTreeNode(id, xmlNode) {
-	var treeObj = $("tree");
+	var treeObj = $T("tree");
 	var treeNode = treeObj.getTreeNodeById(id);
 	if( treeNode && xmlNode ) {
 		treeObj.insertTreeNodeXml(xmlNode.toXml(), treeNode);
@@ -350,7 +362,7 @@ function appendTreeNode(id, xmlNode) {
 }
 
 /*
- *	函数说明：获取树全部节点id数组
+ *	获取树全部节点id数组
  *	参数：	XmlNode:xmlNode         XmlNode实例
 			string:xpath            选取节点xpath
  *	返回值：Array:Ids               节点id数组
@@ -369,7 +381,7 @@ function getTreeNodeIds(xmlNode, xpath) {
 }
 
 /*
- *	函数说明：树节点定位
+ *	树节点定位
  *	参数：	Element:treeObj         tree控件
 			Element:keywordObj      关键字输入框
  *	返回值：
@@ -396,7 +408,7 @@ function searchTree(treeObj, keywordObj) {
 }
 
 /*
- *	函数说明：树节点定位
+ *	树节点定位
  *	参数：	Element:treeObj         tree控件
 			Element:btObj           搜索按钮
 			Element:keywordObj      关键字输入框
@@ -419,7 +431,7 @@ function attachSearchTree(treeObj, btObj, keywordObj) {
 }
 
 /*
- *	函数说明：清除tree数据
+ *	清除tree数据
  *	参数：	Element:treeObj         tree控件对象
  *	返回值：
  */
@@ -431,7 +443,7 @@ function clearTreeData(treeObj) {
 }    
 
 /*
- *	函数说明：删除树选中节点
+ *	删除树选中节点
  *	参数：	Element:treeObj         tree控件对象
 			Array:exceptIds         例外的id
  *	返回值：
@@ -460,7 +472,7 @@ function removeTreeNode(treeObj, exceptIds) {
 }
 
 /*
- *	函数说明：将树选中节点添加到另一树中(注：过滤重复id节点，并且结果树只有一层结构)
+ *	将树选中节点添加到另一树中(注：过滤重复id节点，并且结果树只有一层结构)
  *	参数：	Element:fromTreeObj         树控件
 			Element:toTreeObj           树控件
 			Function:checkFunction      检测单个节点是否允许添加
@@ -518,7 +530,7 @@ function addTreeNode(fromTreeObj, toTreeObj, checkFunction) {
 }
 
 /*
- *	函数说明：检测是否有相同属性节点
+ *	检测是否有相同属性节点
  *	参数：	Element:treeObj         tree控件对象
 			string:attrName         属性名
 			string:attrValue        属性值
@@ -536,10 +548,10 @@ function hasSameAttributeTreeNode(treeObj, attrName, attrValue) {
 }
 
 /*
- *	函数说明：显示当前树节点信息
+ *	显示当前树节点信息
  */
 function showTreeNodeStatus(params) {
-	var treeObj = $("tree");
+	var treeObj = $T("tree");
 	var treeNode = treeObj.getActiveTreeNode();
 	if( treeNode ) {
 		var id = treeNode.getId();
@@ -563,7 +575,7 @@ function showTreeNodeStatus(params) {
 
 
 /*
- *	函数说明：初始化翻页工具条
+ *	初始化翻页工具条
  *	参数：	object:toolbarObj       工具条对象
 			XmlNode:xmlIsland       XmlNode实例
 			function:callback       回调函数
@@ -691,19 +703,19 @@ function initGridToolBar(toolbarObj, xmlIsland, callback) {
 
 
 /*
- *	函数说明：禁止点击按钮
+ *	禁止点击按钮
  */
 function disableButton(btObj) {
 	btObj.disabled = true;
 }
 /*
- *	函数说明：允许点击按钮：
+ *	允许点击按钮：
  */
 function enableButton(btObj) {
 	btObj.disabled = false;
 }
 /*
- *	函数说明：同步按钮禁止/允许状态
+ *	同步按钮禁止/允许状态
  */
 function syncButton(btObjs, request) {
 	for(var i=0; i < btObjs.length; i++) {
@@ -720,12 +732,12 @@ function syncButton(btObjs, request) {
 
 
 /*
- *	函数说明：初始化导航条
+ *	初始化导航条
  *	参数：	string:curId       当前菜单项id
  */
 function initNaviBar(curId) {	
 	var isModule = (window.location.href.indexOf("module") > 0);
-	var relativePath = isModule ? "../../../" : "../";
+	var relativePath = isModule ? "../../" : "../";
 
 	var p = new HttpRequestParams();
 	p.url = relativePath + "navi.xml";
@@ -755,7 +767,7 @@ function initNaviBar(curId) {
 }
 
 /*
- *	函数说明：清除树节点操作权限
+ *	清除树节点操作权限
  *	参数：	xmlNode:treeNode                XmlNode实例
 			boolean:clearChildren           是否清除子节点
  */

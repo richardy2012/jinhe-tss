@@ -77,7 +77,7 @@
                         <tr>
                           <td id="treeContainer">
                             <!-- tree 开始 -->
-                            <Tree:TreeBox id="tree" treeType="menu" baseurl="../../htc/tree/"><div class="loading"></div></Tree:TreeBox>
+                            <div id="tree" treeType="menu" baseurl="../../common/tree/"><div class="loading"></div></div>
                             <!-- tree 结束 -->
                           </td>
                         </tr>
@@ -108,7 +108,7 @@
                                 <tr>
                                   <td>
                                     <!-- 标签区域 开始 -->
-                                    <WorkSpace:Box id="ws" baseurl="../../htc/workspace/">
+                                    <WorkSpace:Box id="ws" baseurl="../../common/workspace/">
                                       <!-- page1 开始 -->
                                       <WorkSpace:Page id=page1 class="tight">
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
@@ -123,7 +123,7 @@
                                                 <tr>
                                                   <td class="b">
                                                     <!-- grid 开始 -->
-                                                    <Grid2:Grid id="page1Grid" cols="70,140,70,70,200" editable="false" baseurl="../../htc/grid2.1.3/" contextmenu="false" useCookie="false" showHorizontalBarAsNeed="true" rowresizable="false" colresizable="true"  fireDataChangeWhenSetCheckAll="false"><div class="loading"></div></Grid2:Grid>
+                                                    <div id="page1Grid" cols="70,140,70,70,200" editable="false" baseurl="../../common/grid/" contextmenu="false" useCookie="false" showHorizontalBarAsNeed="true" rowresizable="false" colresizable="true"  fireDataChangeWhenSetCheckAll="false"><div class="loading"></div></Grid2:Grid>
                                                     <!-- grid 结束 -->
                                                   </td>
                                                 </tr>
@@ -132,7 +132,7 @@
                                             <td class="b" valign="top">
                                               <div style="width:100%;height:100%;overflow:auto;padding:10px;">
                                                 <!-- xform 开始 -->
-                                                <Xform:Form id="page1Form" baseurl="../../htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
+                                                <div id="page1Form" baseurl="../../common/xform/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
                                                 <!-- xform 结束 -->
                                               </div>
                                             </td>

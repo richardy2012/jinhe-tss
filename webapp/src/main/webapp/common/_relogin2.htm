@@ -1,9 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-<!-- ¹«¹²½Å±¾ ¿ªÊ¼ -->
+<!-- å…¬å…±è„šæœ¬ å¼€å§‹ -->
 <link href="../platform/css/css.css" rel="stylesheet" type="text/css">
 <link href="../platform/css/dialog.css" rel="stylesheet" type="text/css">
 <script language="javascript" src="js/debug.js"></script>
@@ -13,11 +13,11 @@
 <script language="javascript" src="js/xml.js"></script>
 <script language="javascript" src="js/xmlhttp.js"></script>
 <script language="javascript" src="js/public.js"></script>
-<!-- ¹«¹²½Å±¾ ½áÊø -->
+<!-- å…¬å…±è„šæœ¬ ç»“æŸ -->
 
-<!-- xform ¿ªÊ¼ -->
+<!-- xform å¼€å§‹ -->
 <link href="htc/xform1.2.3/xform.css" rel="stylesheet" type="text/css">
-<!-- xform ½áÊø -->
+<!-- xform ç»“æŸ -->
 
 <style>
   Xform\:Form {
@@ -28,34 +28,34 @@
 <script language="javascript">
 <!--
     /*
-     *	ºóÌ¨ÏìÓ¦Êı¾İ½ÚµãÃû³Æ
+     *	åå°å“åº”æ•°æ®èŠ‚ç‚¹åç§°
      */
     XML_USER_NAME = "UserName";
     XML_CLASS_NAME = "ClassName";
     /*
-     *	Ä¬ÈÏÎ¨Ò»±àºÅÃûÇ°×º
+     *	é»˜è®¤å”¯ä¸€ç¼–å·åå‰ç¼€
      */
     CACHE_LOGIN_FORM = "login__id";
 
     /*
-     *	º¯ÊıËµÃ÷£ºÒ³Ãæ³õÊ¼»¯
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šé¡µé¢åˆå§‹åŒ–
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     window.onload = function(){
         loadInitData();
     }
     /*
-     *	º¯ÊıËµÃ÷£º³õÊ¼»¯Êı¾İ
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåˆå§‹åŒ–æ•°æ®
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function loadInitData(){
 
         var str = [];
         str[str.length] = "<xform>";
         str[str.length] = "    <declare>";
-        str[str.length] = "        <column name=\"password\" caption=\"ÃÜ¡¡¡¡Âë\" mode=\"string\"/>";
+        str[str.length] = "        <column name=\"password\" caption=\"å¯†ã€€ã€€ç \" mode=\"string\"/>";
         str[str.length] = "    </declare>";
         str[str.length] = "    <layout>";
         str[str.length] = "        <TR>";
@@ -79,9 +79,9 @@
         initLoginForm(loginFormNodeID);
     }
     /*
-     *	º¯ÊıËµÃ÷£º³õÊ¼»¯µÇÂ¼xform
-     *	²ÎÊı£º	string:cacheID     »º´æÊı¾İid
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåˆå§‹åŒ–ç™»å½•xform
+     *	å‚æ•°ï¼š	string:cacheID     ç¼“å­˜æ•°æ®id
+     *	è¿”å›å€¼ï¼š
      */
     function initLoginForm(cacheID){
         var loginFormObj = document.getElementById("loginForm");
@@ -90,9 +90,9 @@
         });
     }
     /*
-     *	º¯ÊıËµÃ÷£º½ÇÉ«ĞÅÏ¢xform¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID     »º´æÊı¾İid
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šè§’è‰²ä¿¡æ¯xformåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID     ç¼“å­˜æ•°æ®id
+     *	è¿”å›å€¼ï¼š
      */
     function loadLoginFormData(cacheID){
         var xmlIsland = Cache.XmlIslands.get(cacheID);
@@ -102,9 +102,9 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÉèÖÃ·µ»ØÖµ²¢¹Ø±Õ´°¿Ú
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šè®¾ç½®è¿”å›å€¼å¹¶å…³é—­çª—å£
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function ok(){
         var loginFormObj = document.getElementById("loginForm");
@@ -113,17 +113,17 @@
         window.close();
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÈ¡Ïû²¢¹Ø±Õ´°¿Ú
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå–æ¶ˆå¹¶å…³é—­çª—å£
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function cancel(){
         window.close();
     }
     /*
-     *	º¯ÊıËµÃ÷£º»Ø³µ×Ô¶¯Ìá½»
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå›è½¦è‡ªåŠ¨æäº¤
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function autoLogin(){
         if(13==event.keyCode){
@@ -141,14 +141,14 @@
   <table class="full" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td valign=top>
-        <!-- xform ¿ªÊ¼ -->
+        <!-- xform å¼€å§‹ -->
         <Xform:Form id="loginForm" baseurl="htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
-        <!-- xform ½áÊø -->
+        <!-- xform ç»“æŸ -->
       </td>
     </tr>
     <tr>
       <td align="right" height="30" class="t">
-        <input type="button" id="bt_cancel" value="È¡ Ïû" class="btWeak" onclick="cancel()"> <input type="button" id="bt_ok" value="È· ¶¨" class="btStrong" onclick="ok()">
+        <input type="button" id="bt_cancel" value="å– æ¶ˆ" class="btWeak" onclick="cancel()"> <input type="button" id="bt_ok" value="ç¡® å®š" class="btStrong" onclick="ok()">
       </td>
     </tr>
   </table>

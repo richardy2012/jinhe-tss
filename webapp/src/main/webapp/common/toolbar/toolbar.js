@@ -239,7 +239,7 @@ ToolBar.prototype.convert = function(node) {
 		itemObj[attr.nodeName] = attr.nodeValue;
 	}
 	var childs = node.childNodes;
-	for(var i=0;i <= childs.length; i++) {
+	for(var i=0; i < childs.length; i++) {
 		var curChild = childs[i];
 		if(_XML_NODE_TYPE_ELEMENT == curChild.nodeType) {
 			var subItemObject = {};

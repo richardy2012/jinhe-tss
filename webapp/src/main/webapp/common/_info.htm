@@ -1,14 +1,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-<!-- ¹«¹²½Å±¾ ¿ªÊ¼ -->
+<!-- å…¬å…±è„šæœ¬ å¼€å§‹ -->
 <link href="../css/css.css" rel="stylesheet" type="text/css">
 <link href="../css/dialog.css" rel="stylesheet" type="text/css">
 <script language="javascript" src="../js/core.js"></script>
 <script language="javascript" src="../js/framework.js"></script>
-<!-- ¹«¹²½Å±¾ ½áÊø -->
+<!-- å…¬å…±è„šæœ¬ ç»“æŸ -->
 
 <style>
   #infoBox{
@@ -141,7 +141,7 @@
             resizeDetailBox();
 
             bt_showDetail._state = "false";
-            bt_showDetail.innerHTML = "<span class=\"webdings\">6</span>Òş²ØÏêÇé...";
+            bt_showDetail.innerHTML = "<span class=\"webdings\">6</span>éšè—è¯¦æƒ…...";
             bt_showDetail.style.top = (infoBox.offsetHeight - 15) + "px";
         } 
 		else {
@@ -151,7 +151,7 @@
             window.dialogHeight = defaultDialogHeight;
 
             bt_showDetail._state = "true";
-            bt_showDetail.innerHTML = "<span class=\"webdings\">4</span>ÏÔÊ¾ÏêÇé...";
+            bt_showDetail.innerHTML = "<span class=\"webdings\">4</span>æ˜¾ç¤ºè¯¦æƒ…...";
             bt_showDetail.style.top = "";
         }
 		bt_showDetail.style.bottom = "";
@@ -161,7 +161,7 @@
         var infoBox   = $("infoBox");
         var detailBox = $("detailBox");
 
-		// µ±Ç°ÍøÒ³¸ß¶È - 65 - infoBoxµÄ¸ß¶È
+		// å½“å‰ç½‘é¡µé«˜åº¦ - 65 - infoBoxçš„é«˜åº¦
         detailBox.style.height = Math.max(1, document.body.offsetHeight - 65 - infoBox.offsetHeight);  
     }
 
@@ -191,7 +191,7 @@
 	}
 
     Event.attachEvent(document, "keydown", function(eventObj) {
-        if(27 == eventObj.keyCode) { // ESC ÍË³ö
+        if(27 == eventObj.keyCode) { // ESC é€€å‡º
             window.close();
         }
     });
@@ -206,16 +206,16 @@
       <td valign=top style="position:relative">
         <div id="infoBox"></div>
         <textarea id="detailBox" class="t" readOnly></textarea>
-        <a id="bt_showDetail" onclick="showDetail()" hideFocus="true" href="#"><span class="webdings">4</span>ÏÔÊ¾ÏêÇé...</a>
+        <a id="bt_showDetail" onclick="showDetail()" hideFocus="true" href="#"><span class="webdings">4</span>æ˜¾ç¤ºè¯¦æƒ…...</a>
       </td>
     </tr>
     <tr>
       <td align="right" height="30" class="t">
-        <input type="button" id="bt_copy"   value="¸´ ÖÆ" class="btWeak"   onclick="copy()">
-		<input type="button" id="bt_cancel" value="È¡ Ïû" class="btWeak"   onclick="cancel()">
-		<input type="button" id="bt_ok"     value="È· ¶¨" class="btStrong" onclick="ok()">
-		<input type="button" id="bt_yes"    value="ÊÇ"    class="btStrong" onclick="yes()">
-		<input type="button" id="bt_no"     value="·ñ"    class="btStrong" onclick="no()">
+        <input type="button" id="bt_copy"   value="å¤ åˆ¶" class="btWeak"   onclick="copy()">
+		<input type="button" id="bt_cancel" value="å– æ¶ˆ" class="btWeak"   onclick="cancel()">
+		<input type="button" id="bt_ok"     value="ç¡® å®š" class="btStrong" onclick="ok()">
+		<input type="button" id="bt_yes"    value="æ˜¯"    class="btStrong" onclick="yes()">
+		<input type="button" id="bt_no"     value="å¦"    class="btStrong" onclick="no()">
       </td>
     </tr>
   </table>

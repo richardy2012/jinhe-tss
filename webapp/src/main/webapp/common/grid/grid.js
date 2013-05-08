@@ -14,7 +14,7 @@ var cellHeight = 22; //数据行高
 var Grid = function(element, data) {
 	this.element = element;
  
-	this._baseurl  = element._baseurl || "";
+	this._baseurl  = element.baseurl || "";
 	this._iconPath = this._baseurl + "images/"
 	
 	this.element.innerHTML = "<div id='gridBox' style='position:absolute;left:0px;top:0px;width:100%;height:100%;z-index:1'></div>" + 
