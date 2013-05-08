@@ -16,7 +16,7 @@ var XForm = function(element) {
 
 	this.xmlDoc;
 	
-	this._baseurl  = element._baseurl || "";
+	this._baseurl  = element.baseurl || "";
 	this._iconPath = this._baseurl + "images/"
 
 	this._columnList = {};
@@ -24,54 +24,54 @@ var XForm = function(element) {
 
 
 XForm.prototype.attachEvents = function() {
-	// »Ø³µ×Ô¶¯¾Û½¹ÏÂÒ»¸ö£¨input¡¢buttonµÈ£©
+	// å›è½¦è‡ªåŠ¨èšç„¦ä¸‹ä¸€ä¸ªï¼ˆinputã€buttonç­‰ï¼‰
 	this.element.onkeydown = function() {
 		var srcElement = event.srcElement;
 		if(window.event.keyCode == 13 && srcElement.tagName.toLowerCase() != "textarea") {
-			window.event.keyCode = 9;  // Ïàµ±ÓÚ°´ÁËÏÂTab¼ü£¬¹â±êÒÆ¶¯µ½ÏÂÒ»¸öÔªËØÉÏ
+			window.event.keyCode = 9;  // ç›¸å½“äºæŒ‰äº†ä¸‹Tabé”®ï¼Œå…‰æ ‡ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªå…ƒç´ ä¸Š
 		}
 	}
 	
 	this.element.onselectstart = function() {
-		event.cancelBubble = true; // ÍÏ¶¯Ñ¡ÔñÊÂ¼şÈ¡ÏûÃ°Åİ
+		event.cancelBubble = true; // æ‹–åŠ¨é€‰æ‹©äº‹ä»¶å–æ¶ˆå†’æ³¡
 	}
 
 	var func = this.element.getAttribute("ondatachange");            
 	this.element.ondatachange = function() {
 		if( func ) { func(); } 
 		else { 
-			Reminder.add(this.element.id); // Êı¾İÓĞ±ä»¯Ê±²ÅÌí¼ÓÀë¿ªÌáĞÑ 
+			Reminder.add(this.element.id); // æ•°æ®æœ‰å˜åŒ–æ—¶æ‰æ·»åŠ ç¦»å¼€æé†’ 
 		}
 	}
 }
 
 XForm.prototype.load = function(data) {
-	// Òş²ØÉÏ´ÎµÄ´íÎóĞÅÏ¢²ã
+	// éšè—ä¸Šæ¬¡çš„é”™è¯¯ä¿¡æ¯å±‚
 	hideErrorInfo();
 
 	if("object" != typeof(data) || 1 != data.nodeType) {
-		alert("´«ÈëµÄXFormÊı¾İÓĞÎÊÌâ¡£")	
+		alert("ä¼ å…¥çš„XFormæ•°æ®æœ‰é—®é¢˜ã€‚")	
 	}
 	
 	var curXmlDom = data;
 	this.xmlDoc = new Class_XMLDocument(curXmlDom);
 	
 	if(this.xmlDoc && this.xmlDoc.xmlDom) {
-		// ĞŞÕıcomboeditÀàĞÍÄ¬ÈÏµÚÒ»ÏîµÄÖµ
+		// ä¿®æ­£comboeditç±»å‹é»˜è®¤ç¬¬ä¸€é¡¹çš„å€¼
 		this.fixComboeditDefaultValue(this.xmlDoc.Row);
 
 		this.xslDom.load(this._baseurl + "xform.xsl");
 		this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\nvar uniqueID=\"" + this.element.uniqueID 
 		+ "\";\r\nvar baseurl=\"" + this._baseurl + "\";\r\nvar formEditable=\"" + this.element.editable + "\";\r\n";
 		
-		var htmlStr = this.xmlDoc.transformXML(this.xslDom); // ÀûÓÃXSL°ÑXML½âÎö³ÉHtml
+		var htmlStr = this.xmlDoc.transformXML(this.xslDom); // åˆ©ç”¨XSLæŠŠXMLè§£ææˆHtml
 		this.element.innerHTML = htmlStr.replace(/<\/br>/gi, "");
 
 		if(this.form) {
 			this.form.attachEvent('onsubmit', this.checkForm);
 			this.form.attachEvent('onreset', this.resetForm);
 
-			// Ìí¼Ó±êÌâÀ¸				
+			// æ·»åŠ æ ‡é¢˜æ 				
 			var theTable = this.form.all.tags("TABLE")[0];
 			if(theTable && this.element.getAttribute("caption")) {
 				var count = theTable.rows(0).cells.length;
@@ -88,16 +88,16 @@ XForm.prototype.load = function(data) {
 			}
 		}
 
-		// °ó¶¨¸÷¸öcolumn¶ÔÓ¦µÄ±à¼­·½Ê½
+		// ç»‘å®šå„ä¸ªcolumnå¯¹åº”çš„ç¼–è¾‘æ–¹å¼
 		this.attachEditor();
 	
-		// ´¥·¢onloadÊÂ¼ş
+		// è§¦å‘onloadäº‹ä»¶
 		var onload = this.element.getAttribute("onload");
 		if(onload) {
 			eval(onload);
 		}
 
-		// ×Ô¶¯¾Û½¹
+		// è‡ªåŠ¨èšç„¦
 		this.setFocus();
 	}
 }
@@ -110,7 +110,7 @@ XForm.prototype.attachEditor = function() {
 		var colEditor = cols[i].getAttribute("editor");
 		var nodeValue = this.getColumnValue(colName);
 
-		// È¡layoutÖĞ°ó¶¨¸ÃcolumneµÄÔªËØ
+		// å–layoutä¸­ç»‘å®šè¯¥columneçš„å…ƒç´ 
 		var tempObj = $(colName);
 		if(tempObj == null) {
 			continue;
@@ -145,7 +145,7 @@ XForm.prototype.attachEditor = function() {
 }
 
 XForm.prototype.checkForm = function() {
-	// Òş²ØÉÏ´ÎµÄ´íÎóĞÅÏ¢²ã
+	// éšè—ä¸Šæ¬¡çš„é”™è¯¯ä¿¡æ¯å±‚
 	hideErrorInfo();
 
 	var cols = this.xmlDoc.Columns;
@@ -157,7 +157,7 @@ XForm.prototype.checkForm = function() {
 				return false;
 			}
 		}
-		else { // layoutÄÚ²»´æÔÚÊ±´´½¨ĞéÄâÊµÀıÖ´ĞĞĞ£Ñé
+		else { // layoutå†…ä¸å­˜åœ¨æ—¶åˆ›å»ºè™šæ‹Ÿå®ä¾‹æ‰§è¡Œæ ¡éªŒ
 			var _columnTemp = {};
 			_columnTemp.obj = {
 				empty: cols[i].getAttribute("empty"),
@@ -180,7 +180,7 @@ XForm.prototype.checkForm = function() {
 }
 
 XForm.prototype.resetForm = function() {
-	//Òş²ØÉÏ´ÎµÄ´íÎóĞÅÏ¢²ã
+	//éšè—ä¸Šæ¬¡çš„é”™è¯¯ä¿¡æ¯å±‚
 	hideErrorInfo();
 
 	var cols = this.xmlDoc.Columns;
@@ -218,7 +218,7 @@ XForm.prototype.updateDataExternal = function(name, value) {
 
 	this.setColumnValue(name, value);
 	
-	// ¸ü¸ÄÒ³ÃæÏÔÊ¾Êı¾İ
+	// æ›´æ”¹é¡µé¢æ˜¾ç¤ºæ•°æ®
 	var tempSrcElement;
 	var _column = this._columnList[name];
 	if(_column) {
@@ -241,7 +241,7 @@ XForm.prototype.updateUnbindingDataExternal = function(id, value) {
 
 XForm.prototype.setEditable = function(status) {
 	if(this.element.editable != status ) {
-		return£»
+		returnï¼›
 	}
 
 	this.element.editable = status;
@@ -276,7 +276,7 @@ XForm.prototype.getData = function(name, replace) {
 XForm.prototype.getColumn = function(name) {
 	var _column = this.xmlDoc.columnsMap[name];
 	if(_column == null) {
-		alert(name + "²»´æÔÚ");
+		alert(name + "ä¸å­˜åœ¨");
 	}
 	return _column;
 }
@@ -287,13 +287,13 @@ XForm.prototype.xml = function() {
 
 // <row user="2222" password="aaaaaaaaa" id="222" date="2005/09/09"/>
 XForm.prototype.reloadData = function(rowNode) {
-	// ĞŞÕıcomboeditÀàĞÍÄ¬ÈÏµÚÒ»ÏîµÄÖµ
+	// ä¿®æ­£comboeditç±»å‹é»˜è®¤ç¬¬ä¸€é¡¹çš„å€¼
 	this.fixComboeditDefaultValue(rowNode);
 
-	// Òş²ØÉÏ´ÎµÄ´íÎóĞÅÏ¢²ã
+	// éšè—ä¸Šæ¬¡çš„é”™è¯¯ä¿¡æ¯å±‚
 	hideErrorInfo();
 
-	var cols = this.xmlDoc.Columns;  // ÒÔcolumn¶¨ÒåÎª»ñÈ¡ÒÀ¾İ
+	var cols = this.xmlDoc.Columns;  // ä»¥columnå®šä¹‰ä¸ºè·å–ä¾æ®
 	for(var i = 0; i < cols.length; i++) {
 		var name  = cols[i].getAttribute("name");
 		var value = rowNode.getAttribute(name);
@@ -311,7 +311,7 @@ XForm.prototype.fixComboeditDefaultValue = function(rowNode) {
 		var firstValue = editorValue.split("|")[0];
 		var value = this.getColumnValue(name);
 
-		// µ±empty = false(±íÊ¾²»ÔÊĞíÎª¿Õ)Ê±£¬ÏÂÀ­ÁĞ±íµÄÄ¬ÈÏÖµ×Ô¶¯È¡µÚÒ»ÏîÖµ
+		// å½“empty = false(è¡¨ç¤ºä¸å…è®¸ä¸ºç©º)æ—¶ï¼Œä¸‹æ‹‰åˆ—è¡¨çš„é»˜è®¤å€¼è‡ªåŠ¨å–ç¬¬ä¸€é¡¹å€¼
 		if((value == null || value.length == 0) && firstValue != "" && (editor=="comboedit" || editor=="radio") && empty=="false") {
 			this.setColumnValue(name, firstValue);
 		}
@@ -320,7 +320,7 @@ XForm.prototype.fixComboeditDefaultValue = function(rowNode) {
 
 
 XForm.prototype.saveAsDefaultValue = function() {
-	//Òş²ØÉÏ´ÎµÄ´íÎóĞÅÏ¢²ã
+	//éšè—ä¸Šæ¬¡çš„é”™è¯¯ä¿¡æ¯å±‚
 	hideErrorInfo();
 
 	var cols = this.xmlDoc.Columns;
@@ -371,7 +371,7 @@ XForm.prototype.getColumnAttribute = function(name, attrName) {
 		return column.getAttribute(attrName);
 	}
 	else {
-		alert("Ö¸¶¨µÄÁĞ[" + name + "]²»´æÔÚ");
+		alert("æŒ‡å®šçš„åˆ—[" + name + "]ä¸å­˜åœ¨");
 		return null;
 	}
 }
@@ -391,7 +391,7 @@ XForm.prototype.getXmlDocument = function() {
 }
 
 /*
- * »ñÈ¡row½ÚµãÉÏÓëcolumn¶ÔÓ¦µÄÖµ
+ * è·å–rowèŠ‚ç‚¹ä¸Šä¸columnå¯¹åº”çš„å€¼
  */
 XForm.prototype.getColumnValue = function(name) {
 	var rowNode = this.xmlDoc.Row;
@@ -402,12 +402,12 @@ XForm.prototype.getColumnValue = function(name) {
 }
 
 /*
- *  º¯ÊıËµÃ÷£ºÉèÖÃrow½ÚµãÉÏÓëcolumn¶ÔÓ¦µÄÖµ
- *  ²ÎÊı£º  string:name             ÁĞÃû
-			string/array:value      Öµ
+ *  å‡½æ•°è¯´æ˜ï¼šè®¾ç½®rowèŠ‚ç‚¹ä¸Šä¸columnå¯¹åº”çš„å€¼
+ *  å‚æ•°ï¼š  string:name             åˆ—å
+			string/array:value      å€¼
  */
 XForm.prototype.setColumnValue = function(name, value) {
-	// µ¥Öµ£¬¸ø¶¨ÖµÈ´ÊÇÊı×é£¬ÔòÈ¡µÚÒ»¸ö
+	// å•å€¼ï¼Œç»™å®šå€¼å´æ˜¯æ•°ç»„ï¼Œåˆ™å–ç¬¬ä¸€ä¸ª
 	if(value instanceof Array) { 
 		value = value[0];
 	}
@@ -415,7 +415,7 @@ XForm.prototype.setColumnValue = function(name, value) {
 	var rowNode = this.xmlDoc.Row;
 	var node = rowNode.selectSingleNode(name);
 	if( node == null ) { 
-		node = this.xmlDom.createElement(name); // ´´½¨µ¥Öµ½Úµã
+		node = this.xmlDom.createElement(name); // åˆ›å»ºå•å€¼èŠ‚ç‚¹
 		rowNode.appendChild(node);
 	}
 
@@ -447,10 +447,10 @@ function Mode_String(colName, element) {
 		}
 
 		if(this.value == "" && this.empty == "false") {
-			showErrorInfo("ÇëÊäÈë [" + this.caption.replace(/\s/g, "") + "]", this);
+			showErrorInfo("è¯·è¾“å…¥ [" + this.caption.replace(/\s/g, "") + "]", this);
 		}
 		else if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false){
-			showErrorInfo("[" + this.caption.replace(/\s/g, "") + "] ¸ñÊ½²»ÕıÈ·£¬Çë¸üÕı¡£", this);
+			showErrorInfo("[" + this.caption.replace(/\s/g, "") + "] æ ¼å¼ä¸æ­£ç¡®ï¼Œè¯·æ›´æ­£ã€‚", this);
 		}
 		else {
 			element.updateData(this);
@@ -459,7 +459,7 @@ function Mode_String(colName, element) {
 
 	this.obj.onpropertychange = function() {
 		if(window.event.propertyName == "value") {
-			if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false){ // ÊäÈë²»·ûºÏ
+			if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false){ // è¾“å…¥ä¸ç¬¦åˆ
 				restore(this, this._value);
 			}
 			else if(this.value.replace(/[^\u0000-\u00FF]/g, "**").length > parseInt(this.maxLength)) {
@@ -485,7 +485,7 @@ Mode_String.prototype = {
 		this.obj.className = (disabled ? "string_disabled" : "string");
 
 		if(this.obj.tagName != "TEXTAREA") {
-			this.obj.disabled = disabled;  // textarea ½ûÖ¹×´Ì¬ÎŞ·¨¹ö¶¯ÏÔÊ¾ËùÓĞÄÚÈİ£¬ËùÒÔ¸ÄÎªÖ»¶Á
+			this.obj.disabled = disabled;  // textarea ç¦æ­¢çŠ¶æ€æ— æ³•æ»šåŠ¨æ˜¾ç¤ºæ‰€æœ‰å†…å®¹ï¼Œæ‰€ä»¥æ”¹ä¸ºåªè¯»
 		} else {
 			this.obj.readOnly = disabled;        
 		}
@@ -511,7 +511,7 @@ Mode_String.prototype = {
 
 
 
-// ÏÂÀ­Ñ¡Ôñ¿ò£¬µ¥Ñ¡»ò¶àÑ¡
+// ä¸‹æ‹‰é€‰æ‹©æ¡†ï¼Œå•é€‰æˆ–å¤šé€‰
 function Mode_ComboEdit(colName, element) {
 	this.name = colName;
 	this.obj = $(colName);
@@ -602,7 +602,7 @@ Mode_ComboEdit.prototype.validate = function() {
 	var empty = this.obj.getAttribute("empty");
 	var value = this.obj.value;
 	if(value == "" && empty == "false") {
-		showErrorInfo("[" + this.obj.caption.replace(/\s/g, "") + "] ²»ÔÊĞíÎª¿Õ£¬ÇëÑ¡Ôñ¡£", this.obj);
+		showErrorInfo("[" + this.obj.caption.replace(/\s/g, "") + "] ä¸å…è®¸ä¸ºç©ºï¼Œè¯·é€‰æ‹©ã€‚", this.obj);
 		return false;
 	}
 	return true;
@@ -753,10 +753,10 @@ function Mode_Number(colName, element) {
 	}
 	this.obj.onblur = function() {
 		if(this.value=="" && this.empty == "false") {
-			showErrorInfo("ÇëÊäÈë [" + this.caption.replace(/\s/g, "") + "]", this);
+			showErrorInfo("è¯·è¾“å…¥ [" + this.caption.replace(/\s/g, "") + "]", this);
 		}
 		else if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false) {
-			showErrorInfo("[" + this.caption.replace(/\s/g, "") + "] ¸ñÊ½²»ÕıÈ·£¬Çë¸üÕı¡£", this);
+			showErrorInfo("[" + this.caption.replace(/\s/g, "") + "] æ ¼å¼ä¸æ­£ç¡®ï¼Œè¯·æ›´æ­£ã€‚", this);
 		}
 		else {
 			tempThis.setValue(this.value);
@@ -766,7 +766,7 @@ function Mode_Number(colName, element) {
 
 	this.obj.onpropertychange = function() {
 		if(window.event.propertyName == "value") {
-			if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false) { // ÊäÈë²»ºÏ·¨
+			if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false) { // è¾“å…¥ä¸åˆæ³•
 				var value = stringToNumber(this._value);
 				if(eval(this.inputReg).test(value)) {
 					restore(this, value);
@@ -816,11 +816,11 @@ function Mode_Function(colName, element) {
 	var tempThis = this;
 	this.obj._value = this.obj.value;
 
-	if(this.obj.clickOnly!="false"){ // ¿ÉÍ¨¹ıcolumnÉÏclickOnlyÀ´¿ØÖÆÊÇ·ñÔÊĞí¿ÉÊÖ¹¤ÊäÈë
+	if(this.obj.clickOnly!="false"){ // å¯é€šè¿‡columnä¸ŠclickOnlyæ¥æ§åˆ¶æ˜¯å¦å…è®¸å¯æ‰‹å·¥è¾“å…¥
 		this.obj.readOnly = true;
 	}
 	
-	//Èç¹û²»¿ÉÎª¿Õ£¬Ìí¼ÓĞÇºÅ
+	//å¦‚æœä¸å¯ä¸ºç©ºï¼Œæ·»åŠ æ˜Ÿå·
 	if(this.obj.getAttribute('empty') == "false"){
 		this.obj.insertAdjacentHTML("afterEnd", "<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
 	}
@@ -838,10 +838,10 @@ function Mode_Function(colName, element) {
 		}
 		
 		if(this.value=="" && this.empty=="false"){
-			showErrorInfo("ÇëÊäÈë [" + this.caption.replace(/\s/g, "") + "]", this);
+			showErrorInfo("è¯·è¾“å…¥ [" + this.caption.replace(/\s/g, "") + "]", this);
 		} 
 		else if(this.inputReg!="null" && eval(this.inputReg).test(this.value) == false) {
-			showErrorInfo("[" + this.caption.replace(/\s/g,"") + "] ¸ñÊ½²»ÕıÈ·£¬Çë¸üÕı",this);
+			showErrorInfo("[" + this.caption.replace(/\s/g,"") + "] æ ¼å¼ä¸æ­£ç¡®ï¼Œè¯·æ›´æ­£",this);
 		}
 		else{
 			element.updateData(this);
@@ -849,7 +849,7 @@ function Mode_Function(colName, element) {
 	};
 	this.obj.onpropertychange = function() {
 		if(window.event.propertyName == "value") {
-			if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false) { // ÊäÈë²»·ûºÏ
+			if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false) { // è¾“å…¥ä¸ç¬¦åˆ
 				restore(this, this._value);
 			} 
 			else if(this.value.replace(/[^\u0000-\u00FF]/g, "**").length > parseInt(this.maxLength)) {
@@ -864,14 +864,14 @@ function Mode_Function(colName, element) {
 	if( !this.obj.disabled ) {
 		var tempThisObj = this.obj;
 
-		//Ìí¼Óµã»÷°´Å¥
+		//æ·»åŠ ç‚¹å‡»æŒ‰é’®
 		this.obj.insertAdjacentHTML('afterEnd', '<button style="width:20px;height:18px;background-color:transparent;border:0px;"><img src="' + _iconPath + 'function.gif"></button>');
-		var btObj = this.obj.nextSibling; // ¶¯Ì¬Ìí¼Ó½øÈ¥µÄ°´Å¥
+		var btObj = this.obj.nextSibling; // åŠ¨æ€æ·»åŠ è¿›å»çš„æŒ‰é’®
 		btObj.onclick = function(){
 			try {
 				eval(tempThisObj.cmd);
 			} catch(e) {
-				showErrorInfo("ÔËĞĞ×Ô¶¨ÒåJavaScript´úÂë<" + tempThisObj.cmd + ">³ö´í£¬Òì³£ĞÅÏ¢£º" + e.description, tempThisObj);
+				showErrorInfo("è¿è¡Œè‡ªå®šä¹‰JavaScriptä»£ç <" + tempThisObj.cmd + ">å‡ºé”™ï¼Œå¼‚å¸¸ä¿¡æ¯ï¼š" + e.description, tempThisObj);
 				throw(e);
 			}
 		}
@@ -971,11 +971,11 @@ function validate() {
 	var value = this.obj.value;
 
 	if(value == "" && empty == "false") {
-		errorInfo = "[" + caption.replace(/\s/g, "") + "] ²»ÔÊĞíÎª¿Õ£¬ÇëÑ¡Ôñ¡£";
+		errorInfo = "[" + caption.replace(/\s/g, "") + "] ä¸å…è®¸ä¸ºç©ºï¼Œè¯·é€‰æ‹©ã€‚";
 	}
 
 	if(submitReg != "null" && submitReg && !eval(submitReg).test(value)) {
-		errorInfo = errorInfo || "[" + caption + "] ¸ñÊ½²»ÕıÈ·£¬Çë¸üÕı.";
+		errorInfo = errorInfo || "[" + caption + "] æ ¼å¼ä¸æ­£ç¡®ï¼Œè¯·æ›´æ­£.";
 	}
 
 	if( errorInfo != "null" && errorInfo ) {
@@ -997,7 +997,7 @@ function showErrorInfo(errorInfo, obj) {
 	clearTimeout(200);
 	
 	setTimeout(function() {
-		// Ò³ÃæÈ«¾ÖBalllon¶ÔÏó
+		// é¡µé¢å…¨å±€Balllonå¯¹è±¡
 		if( window.Balloons ) {
 			var balloon = Balloons.create(errorInfo);
 			balloon.dockTo(obj);
@@ -1029,13 +1029,13 @@ function restore(obj, value) {
 }
 
 function waitingForVisible(func, element) {
-	// ¿Ø¼şÎ´Òş²Ø, ÔòÖ±½ÓÖ´ĞĞ
+	// æ§ä»¶æœªéšè—, åˆ™ç›´æ¥æ‰§è¡Œ
 	if( 0 != element.offsetWidth ) {
 		func();
 		return;
 	}
 
-	// ¿Ø¼şÒş²Ø, ÔòµÈ´ıonresize
+	// æ§ä»¶éšè—, åˆ™ç­‰å¾…onresize
 	var tasks = element.resizeTask || [];
 	tasks[task.length] = func;
 	element.resizeTask = tasks;

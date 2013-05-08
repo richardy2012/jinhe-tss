@@ -22,11 +22,11 @@
 	</form>
 </xsl:template>
 
-<xsl:template match="/*/layout">
+<xsl:template match="//layout">
 	<table border="0" bordercolor="#D5E1F0" cellspacing="0" cellpadding="0" width="100%" style="border-collapse:collapse;">
 		<tr><td><div class="contentBox">
 				<table border="0" cellspacing="0" cellpadding="0" width="100%">
-					<xsl:apply-templates select="/*/declare/column[@mode='hidden']" />
+					<xsl:apply-templates select="//declare/column[@mode='hidden']" />
 					<xsl:for-each select="TR">
 					<tr>
 						<xsl:for-each select="TD">
@@ -54,7 +54,7 @@
 	</xsl:choose>
 </xsl:template>
 
-<xsl:template match="/*/declare/column[@mode='hidden']">
+<xsl:template match="//declare/column[@mode='hidden']">
 	<input type="hidden">
 		<xsl:attribute name="id">
 			<xsl:value-of select = "@name"/>
@@ -200,12 +200,12 @@
 		if( binding == null) {
 			return null;
 		} else {
-			return this.selectSingleNode("/*/declare/column[@name='" + binding + "']").getAttribute("mode");
+			return this.selectSingleNode("//declare/column[@name='" + binding + "']").getAttribute("mode");
 		}
 	}
 	function getValue(binding) {
 		var str = "";
-		var tempNode = this.selectSingleNode("/*/data/row");
+		var tempNode = this.selectSingleNode("//data/row");
 		if(tempNode != null) {
 			var tempNodeValue = tempNode.selectSingleNode(binding);
 			if(tempNodeValue != null) {
@@ -220,7 +220,7 @@
 			return "null";
 		} 
 		else {
-			var propValue = this.selectSingleNode("/*/declare/column[@name='" + binding + "']").getAttribute(propName);
+			var propValue = this.selectSingleNode("//declare/column[@name='" + binding + "']").getAttribute(propName);
 			if( propValue == null) {
 				propValue = "null";
 			}

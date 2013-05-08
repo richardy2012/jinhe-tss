@@ -423,6 +423,8 @@ function loadTreeDetailData(treeID, page, callback) {
 
 		//给缓存项grid数据根节点增加cacheId属性
 		cacheOptionNode.setAttribute("cacheId", treeID);
+		
+		Cache.XmlDatas.add(cacheInfoNodeID, cacheInfoNode);
 		Cache.XmlDatas.add(cacheOptionNodeID, cacheOptionNode);
 		Cache.XmlDatas.add(pageListNodeID, pageListNode);
 		Cache.XmlDatas.add(hitRateNodeID, hitRateNode);
@@ -443,12 +445,20 @@ function loadTreeDetailData(treeID, page, callback) {
  *	缓存相关页加载数据
  */
 function initCacheTacticsPages(cacheID) { 
-	var page1FormObj = $("page1Form");
-	loadCacheTacticsInfoFormData(cacheID);
+	var xmlIsland = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_INFO);
+	if( xmlIsland ) {
+		var strategyXForm = $X("page1Form");
+		strategyXForm.load(xmlIsland.node);
+		attachReminder(cacheID, $("page1Form"));
+	}
 
-	var page1GridObj = $("page1Grid");
-	loadCacheOptionGridData(cacheID);
-	initGridMenu();
+	createGridToolBar(cacheID); // 重新创建grid工具条
+	var gridDataXML = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_OPTION);
+	if( gridDataXML ) {
+		var page1GridObj = $("page1Grid");
+		var grid = $G("page1Grid", gridDataXML);      
+	}		
+	initGridMenu();	
 	loadGridEvents();
 
 	//设置保存按钮操作
@@ -466,59 +476,29 @@ function initCacheTacticsPages(cacheID) {
 }
 
 /*
- *	缓存信息xform加载数据
- */
-function loadCacheTacticsInfoFormData(cacheID) {
-	var xmlIsland = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_INFO);
-	if( xmlIsland ) {
-		var loginXForm = $X("page1Form")
-		loginXForm.load(loginFormXML.node);
-
-		// 离开提醒
-		attachReminder(cacheID, $("page1Form"));
-	}
-}
-
-/*
- *	缓存项grid加载数据
- */
-function loadCacheOptionGridData(cacheID) {	
-	createGridToolBar(cacheID); // 重新创建grid工具条
-
-	var gridDataXML = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_OPTION);
-	if( gridDataXML ) {
-		var page1GridObj = $("page1Grid");
-		var grid = $G("page1Grid", gridDataXML);      
-	}
-}
-
-/*
  *	创建grid工具条
  */
 function createGridToolBar(cacheID) {
-	var toolbarObj = $("gridToolBar");
-
 	var xmlIsland = Cache.XmlDatas.get(cacheID + "." + XML_PAGE_LIST);
-	if(null==xmlIsland) {
-		toolbarObj.innerHTML = "";
-	}else{
-		initGridToolBar(toolbarObj,xmlIsland,function(page) {
-			var gridBtRefreshObj = $("gridBtRefresh");
+	if( xmlIsland ) {
+		var toolbarObj = $("gridToolBar");
+		initGridToolBar(toolbarObj, xmlIsland, function(page) {			
 			var gridObj = $("page1Grid");
-
-			if(true==gridObj.hasData_Xml()) {
+			if( gridObj.hasData() ) {
 				var tempXmlIsland = new XmlNode(gridObj.getXmlDocument());
 				var tempCacheId = tempXmlIsland.getAttribute("cacheId");
 
 				//清除该组用户grid缓存
 				delCacheData(CACHE_TREE_NODE + tempCacheId,false);
 
-				loadTreeDetailData(tempCacheId,page,function(cacheID) {
-					Public.initHTC(gridObj,"isLoaded","onload",function() {
-						loadCacheOptionGridData(cacheID);
-						initGridMenu();
-						loadGridEvents();
-					});
+				loadTreeDetailData(tempCacheId, page, function(cacheID) {
+					var gridDataXML = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_OPTION);
+					if( gridDataXML ) {
+						var page1GridObj = $("page1Grid");
+						var grid = $G("page1Grid", gridDataXML);      
+					}	
+					initGridMenu();
+					loadGridEvents();						
 
 					//设置点击率
 					var page1HitRateObj = $("page1HitRate");
@@ -535,9 +515,7 @@ function createGridToolBar(cacheID) {
 	}
 }
 
-/*
- *	Grid菜单初始化
- */
+/* Grid菜单初始化 */
 function initGridMenu() {
 	var gridObj = $("page1Grid");
 	var item1 = {

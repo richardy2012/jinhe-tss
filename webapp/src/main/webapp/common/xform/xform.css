@@ -1,7 +1,5 @@
-Xform\:Form{
+.xform {
     width:100%;
-}
-.xform{
     font-size:12px;
 }
 .xform .contentBox{
@@ -73,20 +71,17 @@ Xform\:Form{
     border:0px;
     background-color:transparent;
 }
-.xform .string{
-}
+
 .xform .string_disabled{
     border:1px dotted #ABAAAF;
     background-color:transparent;
 }
-.xform .function{
-}
+
 .xform .function_disabled{
     border:1px dotted #ABAAAF;
     background-color:transparent;
 }
-.xform .date{
-}
+
 .xform .date_disabled{
     border:1px dotted #ABAAAF;
     background-color:transparent;
@@ -105,15 +100,4 @@ Xform\:Form{
 }
 .xform .subtract{
     color:#999999;
-}
-.xform .file{
-}
-.xform .file_disabled{
-    border:1px dotted #ABAAAF;
-    background-color:transparent;
-}
-.xform .file_browser{
-}
-.xform .file_browser_disabled{
-    display:none;
 }
