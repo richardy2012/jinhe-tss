@@ -1,10 +1,15 @@
 
+var GridCache = new Collection();
+
 function $G(gridId, data) {
-	var element = $(gridId);
-	var gridObj = new Grid(element, data);
+	var gridObj = GridCache.get(gridId);
+	if( gridObj == null || data ) {
+		gridObj = new Grid($(gridId), data);
+	}
 	
 	return gridObj;
 }
+
 
 var scrollBarZoom = 20;
 var scrollbarSize = 17;
@@ -26,6 +31,8 @@ var Grid = function(element, data) {
 	
 	// 添加Grid事件处理
 	this.attachEventHandler();	
+
+	GridCache.add(element.id, this);
 }
 
 Grid.prototype.load = function(data) {

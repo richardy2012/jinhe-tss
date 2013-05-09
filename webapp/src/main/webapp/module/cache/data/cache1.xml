@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
     <PageList><pagelist totalpages="1" totalrecords="1" currentpage="1" pagesize="1" currentpagerows="1" /></PageList>
-    <CacheInfo>
+    <CacheStrategy>
         <xform>
             <declare prefix="cache">
                 <column name="id" caption="ID号" mode="hidden" editable="false"/>
@@ -81,8 +81,8 @@
             </layout>
             <data><row><hitRate><![CDATA[83.33333%]]></hitRate><interruptTime><![CDATA[0]]></interruptTime><disabled><![CDATA[0]]></disabled><initNum><![CDATA[0]]></initNum><arithmeticClass><![CDATA[com.jinhe.tss.core.cachepool.extend.impl.DefaultArithmetic]]></arithmeticClass><cyclelife><![CDATA[0]]></cyclelife><id><![CDATA[xform_template]]></id><accessMethod><![CDATA[3]]></accessMethod><code><![CDATA[xform_template]]></code><poolSize><![CDATA[0]]></poolSize><cacheLoaderClass><![CDATA[com.jinhe.tss.core.cachepool.extend.impl.DefaultCacheLoader]]></cacheLoaderClass><poolClass><![CDATA[com.jinhe.tss.core.cachepool.SimplePool]]></poolClass><poolCollectionClass><![CDATA[com.jinhe.tss.core.cachepool.container.MapContainer]]></poolCollectionClass><name><![CDATA[XFrorm模板]]></name></row></data>
         </xform>
-    </CacheInfo>
-    <CacheOption>
+    </CacheStrategy>
+    <CacheItemList>
         <grid version="2">
             <declare sequence="true">
                 <column name="key" caption="键值" mode="string"/>
@@ -94,6 +94,6 @@
                 <row key="com/jinhe/tss/core/cachepool/strategy/abc.xml" hit="6" hitRate="85.312%"></row>
             </data>
         </grid>
-    </CacheOption>
+    </CacheItemList>
     <HitRate>89.123%</HitRate>
 </Response>

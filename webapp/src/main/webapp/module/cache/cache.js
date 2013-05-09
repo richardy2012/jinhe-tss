@@ -7,16 +7,16 @@ TIMEOUT_TAB_CHANGE = 200;
 
 /* 后台响应数据节点名称  */
 XML_MAIN_TREE = "CacheTree";
-XML_CACHE_INFO = "CacheInfo";
-XML_CACHE_OPTION = "CacheOption";
+XML_CACHE_STRATEGY  = "CacheStrategy";
+XML_CACHE_ITEM_LIST = "CacheItemList";
 XML_OPERATION = "Operation";
 XML_PAGE_LIST = "PageList";
-XML_HIT_RATE = "PoolHitRate";
+XML_HIT_RATE  = "HitRate";
 
 /* 默认唯一编号名前缀 */
-CACHE_TREE_NODE = "treeNode__id";
-CACHE_MAIN_TREE = "tree__id";
-CACHE_TOOLBAR   = "toolbar__id";
+CACHE_TREE_NODE = "_treeNode_";
+CACHE_MAIN_TREE = "_tree_";
+CACHE_TOOLBAR   = "_toolbar_";
  
 /* 名称 */
 OPERATION_EDIT = "维护\"$label\"";
@@ -198,7 +198,7 @@ function initCache() {
 			treeObj.reload();
 
 			delCacheData(CACHE_TREE_NODE + treeID);
-			loadTreeDetailData(treeID, "1");
+			loadCacheDetais(treeID, "1");
 		}
 		request.send();
 	}
@@ -222,7 +222,7 @@ function clearCache() {
 			treeObj.reload();
 
 			delCacheData(CACHE_TREE_NODE + treeID);
-			loadTreeDetailData(treeID, "1");
+			loadCacheDetais(treeID, "1");
 		}
 		request.send();
 	}
@@ -371,7 +371,7 @@ function maintainCache() {
 		};
 		callback.onTabChange = function() {
 			setTimeout(function() {
-				loadTreeDetailData(treeID, "1");
+				loadCacheDetais(treeID, "1");
 			}, TIMEOUT_TAB_CHANGE);
 		};
 
@@ -390,7 +390,7 @@ function maintainCache() {
 			string:page                 页码
 			function:callback           回调(如果不定义则调用initCacheTacticsPages)
  */
-function loadTreeDetailData(treeID, page, callback) {
+function loadCacheDetais(treeID, page, callback) {
 	var cacheID = CACHE_TREE_NODE + treeID;
 	var treeDetail = Cache.Variables.get(cacheID);
 	if( treeDetail ) {
@@ -409,11 +409,11 @@ function loadTreeDetailData(treeID, page, callback) {
 
 	var request = new HttpRequest(p);
 	request.onresult = function() {
-		var cacheInfoNode = this.getNodeValue(XML_CACHE_INFO);
-		var cacheInfoNodeID = cacheID + "." + XML_CACHE_INFO;
+		var cacheInfoNode = this.getNodeValue(XML_CACHE_STRATEGY);
+		var cacheInfoNodeID = cacheID + "." + XML_CACHE_STRATEGY;
 
-		var cacheOptionNode = this.getNodeValue(XML_CACHE_OPTION);
-		var cacheOptionNodeID = cacheID + "." + XML_CACHE_OPTION;
+		var cacheOptionNode = this.getNodeValue(XML_CACHE_ITEM_LIST);
+		var cacheOptionNodeID = cacheID + "." + XML_CACHE_ITEM_LIST;
 
 		var pageListNode = this.getNodeValue(XML_PAGE_LIST);
 		var pageListNodeID = cacheID + "." + XML_PAGE_LIST;
@@ -445,7 +445,7 @@ function loadTreeDetailData(treeID, page, callback) {
  *	缓存相关页加载数据
  */
 function initCacheTacticsPages(cacheID) { 
-	var xmlIsland = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_INFO);
+	var xmlIsland = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_STRATEGY);
 	if( xmlIsland ) {
 		var strategyXForm = $X("page1Form");
 		strategyXForm.load(xmlIsland.node);
@@ -453,7 +453,7 @@ function initCacheTacticsPages(cacheID) {
 	}
 
 	createGridToolBar(cacheID); // 重新创建grid工具条
-	var gridDataXML = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_OPTION);
+	var gridDataXML = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_ITEM_LIST);
 	if( gridDataXML ) {
 		var page1GridObj = $("page1Grid");
 		var grid = $G("page1Grid", gridDataXML);      
@@ -461,17 +461,15 @@ function initCacheTacticsPages(cacheID) {
 	initGridMenu();	
 	loadGridEvents();
 
-	//设置保存按钮操作
-	var page1BtSaveObj = $("page1BtSave");
-	page1BtSaveObj.onclick = function() {
-		saveCacheTactics(cacheID);
-	}
-
 	//设置点击率
-	var page1HitRateObj = $("page1HitRate");
-	var xmlIsland = Cache.XmlDatas.get(cacheID + "." + XML_HIT_RATE);
-	if( xmlIsland ) {
-		page1HitRateObj.innerHTML = "『 池命中率：" + xmlIsland + " 』";
+	var hitRateData = Cache.XmlDatas.get(cacheID + "." + XML_HIT_RATE);
+	if( hitRateData ) {
+		$("page1HitRate").innerHTML = "『 池命中率：" + hitRateData + " 』";
+	}
+	
+	//设置保存按钮操作
+	$("page1BtSave").onclick = function() {
+		saveCacheStrategy(cacheID);
 	}
 }
 
@@ -481,18 +479,14 @@ function initCacheTacticsPages(cacheID) {
 function createGridToolBar(cacheID) {
 	var xmlIsland = Cache.XmlDatas.get(cacheID + "." + XML_PAGE_LIST);
 	if( xmlIsland ) {
-		var toolbarObj = $("gridToolBar");
-		initGridToolBar(toolbarObj, xmlIsland, function(page) {			
-			var gridObj = $("page1Grid");
-			if( gridObj.hasData() ) {
-				var tempXmlIsland = new XmlNode(gridObj.getXmlDocument());
-				var tempCacheId = tempXmlIsland.getAttribute("cacheId");
+		initGridToolBar($("gridToolBar"), xmlIsland, function(page) {			
+			var gridObj = $G("page1Grid");
+			if( gridObj.gridDoc.hasData() ) {
+				var tempCacheId = gridObj.gridDoc.xmlDom.getAttribute("cacheId");
+				delCacheData(CACHE_TREE_NODE + tempCacheId, false);
 
-				//清除该组用户grid缓存
-				delCacheData(CACHE_TREE_NODE + tempCacheId,false);
-
-				loadTreeDetailData(tempCacheId, page, function(cacheID) {
-					var gridDataXML = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_OPTION);
+				loadCacheDetais(tempCacheId, page, function(cacheID) {
+					var gridDataXML = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_ITEM_LIST);
 					if( gridDataXML ) {
 						var page1GridObj = $("page1Grid");
 						var grid = $G("page1Grid", gridDataXML);      
@@ -501,10 +495,9 @@ function createGridToolBar(cacheID) {
 					loadGridEvents();						
 
 					//设置点击率
-					var page1HitRateObj = $("page1HitRate");
-					var xmlIsland = Cache.XmlDatas.get(cacheID + "." + XML_HIT_RATE);
-					if(null!=xmlIsland) {
-						page1HitRateObj.innerHTML = "『 池命中率：" + xmlIsland + " 』";
+					var hitRateData = Cache.XmlDatas.get(cacheID + "." + XML_HIT_RATE);
+					if( hitRateData ) {
+						$("page1HitRate").innerHTML = "『 池命中率：" + hitRateData + " 』";
 					}
 				});
 
@@ -532,26 +525,10 @@ function initGridMenu() {
 		enable:function() {return true;},
 		visible:function() {return true;}
 	}
-	var item3 = {
-		label:"隐藏列...",
-		callback:function() {gridObj.hideCols();},
-		icon:"images/hide_col.gif",
-		enable:function() {return true;},
-		visible:function() {return true;}
-	}
-	var item4 = {
-		label:"搜索...",
-		callback:function() {gridObj.search();},
-		enable:function() {return true;},
-		visible:function() {return true;}
-	}
 
 	var menu1 = new Menu();
 	menu1.addItem(item1);
 	menu1.addItem(item2);
-	menu1.addSeparator();
-	menu1.addItem(item3);
-	menu1.addItem(item4);
 
 	gridObj.contextmenu = menu1;
 }
@@ -560,12 +537,12 @@ function initGridMenu() {
 function loadGridEvents() {
 	var gridObj = $("page1Grid");
 
-	gridObj.onclickrow = function() {
+	gridObj.onClickRow = function() {
 		var rowIndex = event.result.rowIndex;
 		showItemStatus(rowIndex);
 	}
 	
-	gridObj.onrightclickrow = function() {
+	gridObj.onRightClickRow = function() {
 		var rowIndex = event.result.rowIndex;
 		var x = event.clientX;
 		var y = event.clientY;
@@ -574,32 +551,27 @@ function loadGridEvents() {
 	}
 	
 	// 单击grid空白处
-	gridObj.oninactiverow = function() {
-		var treeTitleObj = $("treeTitle");
-		Focus.focus(treeTitleObj.firstChild.id);
-
-		showTreeNodeStatus({id:"ID",name:"名称"});
-
-		var treeObj = $T("tree");
-		var treeNode = treeObj.getActiveTreeNode();
-
+	gridObj.onInactiveRow = function() {
+		Focus.focus($("treeTitle").firstChild.id);
+		
+		showTreeNodeStatus({id:"ID", name:"名称"});
+ 
 		clearTimeout(window._toolbarTimeout);
 		window._toolbarTimeout = setTimeout(function() {
-			loadToolBarData(treeNode);
+			loadToolBarData($T("tree").getActiveTreeNode());
 		}, 0);
 	}
-
 }
 
 /*
  *	保存缓存
  */
-function saveCacheTactics(cacheID) {
-	var page1FormObj = $("page1Form");
-	var check = page1FormObj.checkForm();
-	if(check==false) {
+function saveCacheStrategy(cacheID) {
+	var check = $("page1Form").checkForm();
+	if(check == false) {
 		return
 	}
+	
 	var p = new HttpRequestParams();
 	p.url = URL_SAVE_CACHE;
 
@@ -607,46 +579,40 @@ function saveCacheTactics(cacheID) {
 	var flag = false;
 	
 	var groupCache = Cache.Variables.get(cacheID);
-	if(null!=groupCache) {       
+	if( groupCache ) {       
 
 		//缓存基本信息
-		var cacheInfoNode = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_INFO);
-		if(null!=cacheInfoNode) {
+		var cacheInfoNode = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_STRATEGY);
+		if( cacheInfoNode ) {
 			var cacheInfoDataNode = cacheInfoNode.selectSingleNode(".//data");
-			if(null!=cacheInfoDataNode) {
+			if( cacheInfoDataNode ) {
 				flag = true;
-
 				var prefix = cacheInfoNode.selectSingleNode("./declare").getAttribute("prefix");
-				p.setXFormContent(cacheInfoDataNode,prefix);
+				p.setXFormContent(cacheInfoDataNode, prefix);
 			}
 		}   
 
-		//缓存项信息
-		var cacheOptionNode = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_OPTION);
-		if(null!=cacheOptionNode) {
+		// 缓存项信息
+		var cacheOptionNode = Cache.XmlDatas.get(cacheID + "." + XML_CACHE_ITEM_LIST);
+		if( cacheOptionNode ) {
 			var cacheOptionDataStr = [];
-			var condition = "[(@_new='true' and (not(@_delete='true') or not(@_delete))) or (@_delete='true' and (not(@_new='true') or not(@_new))) or (@_modify='true')]";
-			var cacheOptionDataNodes = cacheOptionNode.selectNodes(".//data//row"+condition);
+			var cacheOptionDataNodes = cacheOptionNode.selectNodes(".//data//row[(not(@_new='true') or not(@_new)) or (@_modify='true')]");
 			
-			for(var i=0,iLen=cacheOptionDataNodes.length;i<iLen;i++) {
+			for(var i=0; i < cacheOptionDataNodes.length; i++) {
 				var curNode = cacheOptionDataNodes[i];
 				cacheOptionDataStr.push(curNode.toXml());
 			}
-			if(0<cacheOptionDataStr.length) {
+			if( cacheOptionDataStr.length > 0 ) {
 				flag = true;
-				p.setContent(XML_CACHE_OPTION,"<data>"+cacheOptionDataStr.join("")+"</data>");
+				p.setContent(XML_CACHE_ITEM_LIST, "<data>" + cacheOptionDataStr.join("") + "</data>");
 			}
 		}
 	}
 
-	if(true==flag) {
+	if( flag ) {
 		var request = new HttpRequest(p);
-		//同步按钮状态
-		var page1BtSaveObj = $("page1BtSave");
-		syncButton([page1BtSaveObj],request);
-
+		syncButton([$("page1BtSave")], request);  // 同步按钮状态
 		request.onsuccess = function() {
-			//解除提醒
 			detachReminder(cacheID);
 
 			var toolbarObj = $("gridToolBar");
@@ -664,35 +630,32 @@ function saveCacheTactics(cacheID) {
 function showItemInfo() {
 	var gridObj = $("page1Grid");
 	var curRowIndex = gridObj.getCurrentRowIndex_Xml()[0];              
-	if(null!=curRowIndex) {
-		var curRowNode = gridObj.getRowNode_Xml(curRowIndex);
-		var id = curRowNode.getAttribute("id");
+	if( curRowIndex ) {
+		var curRowNode = gridObj.getRow(curRowIndex);
 		var key = curRowNode.getAttribute("key");
 		var code = curRowNode.getAttribute("code");
 
 		var url = URL_VIEW_CACHED_ITEM + "?key=" + key + "&code=" + code;
-		window.open(url,"查看缓存项信息","");
+		window.open(url, "查看缓存项信息", "");
 	}
 }
+
 /*
- *	显示用户状态信息
+ *	显示缓存项信息
  */
 function showItemStatus(rowIndex) {
-	if(null==rowIndex) {
-		var id = "-";
-		var key = "-";
-	}else{
-		var gridObj = $("page1Grid");
-		var rowNode = gridObj.getRowNode_Xml(rowIndex);
-		var id = rowNode.getAttribute("id");
+	if( rowIndex ) {
+		var gridObj = $G("page1Grid");
+		var rowNode = gridObj.getRow(rowIndex);
+		var id  = rowNode.getAttribute("id");
 		var key = rowNode.getAttribute("key");
 	}
 
 	var block = Blocks.getBlock("statusContainer");
-	if(null!=block) {
+	if( block ) {
 		block.open();
-		block.writeln("ID",id);
-		block.writeln("key",key);
+		block.writeln("ID", id || "");
+		block.writeln("key", key || "");
 		block.close();
 	}
 }
@@ -703,29 +666,28 @@ function showItemStatus(rowIndex) {
 function refreshCurrentRow() {
 	var gridObj = $("page1Grid");
 	var curRowIndex = gridObj.getCurrentRowIndex_Xml()[0];
-	if(null!=curRowIndex) {
-		var rowNode = gridObj.getRowNode_Xml(curRowIndex);
-		var id = rowNode.getAttribute("id");
+	if( curRowIndex ) {
+		var rowNode = gridObj.getRow(curRowIndex);
 		var key = rowNode.getAttribute("key");
 		var code = rowNode.getAttribute("code");
 
 		var p = new HttpRequestParams();
 		p.url = URL_REFRESH_ITEM;
-		p.setContent("key",id);
-		p.setContent("code",code);
+		p.setContent("key", key);
+		p.setContent("code", code);
 
 		var request = new HttpRequest(p);
 		request.onsuccess = function() {
-			gridObj.delRow_Xml(curRowIndex);
+			gridObj.delRow(curRowIndex);
 		}
 		request.onresult = function() {
-			var row = this.getNodeValue(XML_CACHE_OPTION);
+			var row = this.getNodeValue(XML_CACHE_ITEM_LIST);
 			var columns = gridObj.getAllColumnNames();
-			for(var i=0,iLen=columns.length;i<iLen;i++) {
+			for(var i=0; i < columns.length; i++) {
 				var name = columns[i];
 				var value = row.getAttribute(name);
-				if(null!=value) {
-					gridObj.modifyNamedNode_Xml(curRowIndex,name,value);
+				if( value ) {
+					gridObj.modifyRow(curRowIndex, name, value);
 				}
 			}
 		}
