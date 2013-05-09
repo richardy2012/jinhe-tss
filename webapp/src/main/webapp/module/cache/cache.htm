@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML xmlns:ToolBar xmlns:WorkSpace>
+<HTML xmlns:ToolBar xmlns:WorkSpace xmlns:Tree xmlns:Grid xmlns:XForm>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>它山石--缓存管理</title>
@@ -71,13 +71,14 @@
                       <table class="full border" border="0" cellpadding="0" cellspacing="0">
                         <tr id="treeTitle" class="bar"> 
                           <td class="opened">
-                            <span class="icon"></span>缓存策略<span class="button refresh" id="treeBtRefresh" title="刷新"></span><span class="button collapse" id="treeTitleBt"></span>
+                            <span class="icon"></span>缓存策略<span class="button refresh" id="treeBtRefresh" title="刷新"></span>
+							<span class="button collapse" id="treeTitleBt"></span>
                           </td>
                         </tr>
                         <tr>
                           <td id="treeContainer">
                             <!-- tree 开始 -->
-                            <div id="tree" treeType="menu" baseurl="../../common/tree/"><div class="loading"></div></div>
+                            <Tree:Box id="tree" treeType="menu" baseurl="../../common/tree/"><div class="loading"></div></Tree:Box>
                             <!-- tree 结束 -->
                           </td>
                         </tr>
@@ -94,9 +95,6 @@
                     </td>
                     <td>
                       <table class="full" border="0" cellpadding="0" cellspacing="0">
-                        <!-- <tr> 
-                          <td class="separator"></td>
-                        </tr> -->
                         <tr> 
                           <td class="location"><span class="icon" id="paletteBt"></span>您当前所在的位置:<span class="locationInfo"></span></td>
                         </tr>
@@ -123,7 +121,7 @@
                                                 <tr>
                                                   <td class="">
                                                     <!-- grid 开始 -->
-                                                    <div id="page1Grid" baseurl="../../common/grid/" contextmenu="false" ><div class="loading"></div></div>
+                                                    <Grid:Box id="page1Grid" baseurl="../../common/grid/" contextmenu="false" ><div class="loading"></div></Grid:Box>
                                                     <!-- grid 结束 -->
                                                   </td>
                                                 </tr>
@@ -132,7 +130,7 @@
                                             <td class="" valign="top">
                                               <div style="width:100%;height:100%;overflow:auto;padding:10px;">
                                                 <!-- xform 开始 -->
-                                                <div id="page1Form" baseurl="../../common/xform/" editable="true"><div class="loading"></div></div>
+                                                <XForm:Box id="page1Form" baseurl="../../common/xform/" editable="true"><div class="loading"></div></XForm:Box>
                                                 <!-- xform 结束 -->
                                               </div>
                                             </td>
