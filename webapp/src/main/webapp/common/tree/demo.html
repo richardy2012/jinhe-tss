@@ -1,4 +1,4 @@
-<HTML>
+<HTML xmlns:Tree>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>它山石--test Tree</title>
@@ -15,26 +15,26 @@
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
- 
-    function init() {
-        var p = new HttpRequestParams();
-        p.url = "test/data.xml";
 
-        var request = new HttpRequest(p);
-        request.onresult = function() {
-            var treeNode = this.getNodeValue("ParamTree");
-            var treeNodeID = "ParamTree";
-            Cache.XmlIslands.add(treeNodeID, treeNode);
+/* 核心包相对路径 */
+URL_CORE = "../";
 
-            var tree = initTree($("tree"), treeNode.toXml());
-			// alert(treeNode.toXml());
-			// tree.load(treeNode.toXml());
-       
-        }
-        request.send();
-    }
-	
-	window.onload = init;
+
+var tree;
+
+function init() {
+		var p = new HttpRequestParams();
+		p.url = "test/data.xml";
+
+		var request = new HttpRequest(p);
+		request.onresult = function() {
+				var treeNode = this.getNodeValue("ParamTree");
+				tree = initTree($("tree"), treeNode.toXml());	 
+		}
+		request.send();
+}
+
+window.onload = init;
    
 //-->
 </SCRIPT>
@@ -42,7 +42,7 @@
 
 <body>
 
-	<div id="tree" treeType="menu" baseurl="" canMoveNode="true" height=600><div class="loading"></div></div>
+	<Tree:Box id="tree" treeType="menu" baseurl="" canMoveNode="true" height=600><div class="loading"></div></Tree:Box>
  
 </body>
 </html>
