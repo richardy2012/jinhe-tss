@@ -126,7 +126,8 @@ ToolBar\:Separator {
 	overflow:hidden;
 	margin-right:3px;
 	margin-bottom:3px;
-}	ToolBar\:TxtButton {
+}	
+ToolBar\:TxtButton {
 	display:inline;
 	position:relative;
 	color:#000000;

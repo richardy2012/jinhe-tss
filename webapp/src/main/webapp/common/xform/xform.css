@@ -34,7 +34,6 @@ XForm\:Box .titleBox{
 
 XForm\:Box input{
     color:#535458;
-    font-size:12px;
     height:18px;
     border:1px solid #ABAAAF;
     background-color:#ECEFF8;
@@ -81,23 +80,13 @@ XForm\:Box .function_disabled{
     border:1px dotted #ABAAAF;
     background-color:transparent;
 }
-
-XForm\:Box .date_disabled{
-    border:1px dotted #ABAAAF;
-    background-color:transparent;
-}
 XForm\:Box .bt_disabled{
     display:none;
 }
-XForm\:Box .plus,XForm\:Box .subtract{
+XForm\:Box .plus, XForm\:Box .subtract{
     cursor:hand;
     font-size:12px;
     font-family:Courier New;
     padding-left:3px;
-}
-XForm\:Box .plus{
-    color:#999999;
-}
-XForm\:Box .subtract{
-    color:#999999;
+	color:#999999;
 }
