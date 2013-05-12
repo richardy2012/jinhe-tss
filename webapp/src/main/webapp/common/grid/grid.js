@@ -146,14 +146,14 @@ Grid.prototype.attachEventHandler = function() {
 	}
 
 	this.element.oncontextmenu = function() {
-		var _srcElement = event.srcElement; 
+		var _srcElement = event.srcElement;
 		if( notOnGridHead(_srcElement) ) { // 确保点击处不在表头
 			
 			var trObj = _srcElement;
 			if( trObj.tag != "TR" ) {
 				trObj = trObj.parentElement;
 			}
-			
+
 			if(trObj && trObj.getAttribute("_index") ) {
 				var rowIndex = parseInt( trObj.getAttribute("_index") );
 				var oEvent = createEventObject();

@@ -38,6 +38,7 @@
                     <xsl:for-each select="//data/row">
                         <tr>
                             <xsl:apply-templates select="@*"/>
+							<xsl:attribute name="_index"><xsl:eval>childNumber(this)</xsl:eval></xsl:attribute>
                             <xsl:attribute name="height"><xsl:eval>cellHeight</xsl:eval></xsl:attribute>
                             <xsl:attribute name="class"><xsl:value-of select="@class"/></xsl:attribute>
                             <xsl:eval>void(curRow=childNumber(this))</xsl:eval>

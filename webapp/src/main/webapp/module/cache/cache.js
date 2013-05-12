@@ -537,13 +537,13 @@ function initGridMenu() {
 function loadGridEvents() {
 	var gridObj = $("page1Grid");
 
-	gridObj.onClickRow = function() {
-		var rowIndex = event.result.rowIndex;
+	gridObj.onClickRow = function(eventObj) {
+		var rowIndex = eventObj.result.rowIndex;
 		showItemStatus(rowIndex);
 	}
 	
-	gridObj.onRightClickRow = function() {
-		var rowIndex = event.result.rowIndex;
+	gridObj.onRightClickRow = function(eventObj) {
+		var rowIndex = eventObj.result.rowIndex;
 		var x = event.clientX;
 		var y = event.clientY;
 
@@ -551,7 +551,7 @@ function loadGridEvents() {
 	}
 	
 	// 单击grid空白处
-	gridObj.onInactiveRow = function() {
+	gridObj.onInactiveRow = function(eventObj) {
 		Focus.focus($("treeTitle").firstChild.id);
 		
 		showTreeNodeStatus({id:"ID", name:"名称"});
