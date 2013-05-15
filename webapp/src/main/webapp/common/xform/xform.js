@@ -435,8 +435,6 @@ XForm.prototype.setColumnValue = function(name, value) {
 function Mode_String(colName, element) {
 	this.name = colName;
 	this.obj = $(colName);
-	 
-	var tempThis = this;
 	this.obj._value = this.obj.value;
 
 	this.setEditable();
@@ -478,16 +476,15 @@ Mode_String.prototype = {
 	},
 	
 	setEditable : function(s) {
-		s = s || this.obj.getAttribute("editable");
-		this.obj.editable = s;
+		this.obj.editable = s || this.obj.getAttribute("editable");
 
-		var disabled = (s == "false");
+		var disabled = (this.obj.editable == "false");
 		this.obj.className = (disabled ? "string_disabled" : "string");
 
-		if(this.obj.tagName != "TEXTAREA") {
-			this.obj.disabled = disabled;  // textarea 禁止状态无法滚动显示所有内容，所以改为只读
+		if(this.obj.tagName == "TEXTAREA") {
+			this.obj.readOnly = disabled;  // textarea 禁止状态无法滚动显示所有内容，所以改为只读
 		} else {
-			this.obj.readOnly = disabled;        
+			this.obj.disabled = disabled;        
 		}
 	},
 	
@@ -515,44 +512,35 @@ Mode_String.prototype = {
 function Mode_ComboEdit(colName, element) {
 	this.name = colName;
 	this.obj = $(colName);
- 
-	var tempThis = this;
-	this.obj._value = this.obj.attributes["value"].nodeValue;
+ 	this.obj._value = this.obj.attributes["value"].nodeValue;
+	this.obj.disabled = (this.obj.getAttribute("editable") == "false");
 
-	var valueList = {};
+	var selectedValues = {};
 	var valueArr = this.obj._value.split(",");
 	for(var i=0; i < valueArr.length; i++) {
-		var x = valueArr[i];
-		valueList[x] = true;
+		selectedValues[ valueArr[i] ] = true;
 	}
 
-	var valueList = this.obj.editorvalue;
-	var textList  = this.obj.editortext;
-	
-	var isMatch = false;
+	var valueList = this.obj.editorvalue.split('|');
+	var textList  = this.obj.editortext.split('|');
 	var selectedIndex = [];
-	for(var i=0; valueList && i < valueList.split('|').length; i++){
-		var value = valueList.split('|')[i];
-		var tempLable = textList.split('|')[i];
-
-		if(tempLable=="&#124;"){
-			tempLable = "|";
+	for(var i=0; i < valueList.length; i++){
+		var value = valueList[i];
+		var lable = textList[i];
+		if( lable == "&#124;" ){
+			lable = "|";
 		}
 
 		var option = new Option();
 		option.value = value;
-		option.text  = tempLable;
-		this.obj.options[this.obj.options.length] = option;
-
-		if(true == valueList[value]) {
-			isMatch = true;
-			this.obj.options[this.obj.options.length].selected = true;
+		option.text  = lable;
+		if( selectedValues[value] ) {
+			option.selected = true;
+			selectedIndex[selectedIndex.length] = i;
 		}
+		this.obj.options[this.obj.options.length] = option;
 	}
-
-	this.obj.disabled = (this.obj.getAttribute("editable") == "false");
-
-	if(isMatch){
+	if( selectedIndex.length > 0 ){
 		this.obj.defaultSelectedIndex = selectedIndex.join(",");
 	} 
 	else {
@@ -572,11 +560,11 @@ function Mode_ComboEdit(colName, element) {
 	}
 }
 
-Mode_ComboEdit.prototype.setValue = function(s) {
+Mode_ComboEdit.prototype.setValue = function(value) {
 	var valueList = {};
-	s = s.split(",");
-	for(var i = 0;i < s.length; i++){
-		valueList[s[i]] = true;
+	var valueArray = value.split(",");
+	for(var i = 0; i < valueArray.length; i++){
+		valueList[valueArray[i]] = true;
 	}
 	var isMatch = false;
 	for(var i=0; i < this.obj.options.length; i++){

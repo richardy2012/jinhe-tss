@@ -71,15 +71,15 @@ _SIZE_PHASE_CONTROLLER_HEIGHT = 70;
 /*
  *	样式名
  */
-CSS_CLASS__BOX_HAS_TAB = "hasTab";
-CSS_CLASS__TAB_BOX_HAS_TAB = "hasTab";
-CSS_CLASS__NO_CLASS = "";
-CSS_CLASS__CONTROLLER_BT_ACTIVE = "active";
-CSS_CLASS__CONTROLLER_BT_INVERT = "invert";
-CSS_CLASS__CONTROLLER_BT_DISABLED = "disabled";
-CSS_CLASS__TAB_ACTIVE = "active";
-CSS_CLASS__PHASE_ACTIVE = "active";
-CSS_CLASS__RIGHT_BOX = "rightBox";
+CSS_CLASS_BOX_HAS_TAB = "hasTab";
+CSS_CLASS_TAB_BOX_HAS_TAB = "hasTab";
+CSS_CLASS_NO_CLASS = "";
+CSS_CLASS_CONTROLLER_BT_ACTIVE = "active";
+CSS_CLASS_CONTROLLER_BT_INVERT = "invert";
+CSS_CLASS_CONTROLLER_BT_DISABLED = "disabled";
+CSS_CLASS_TAB_ACTIVE = "active";
+CSS_CLASS_PHASE_ACTIVE = "active";
+CSS_CLASS_RIGHT_BOX = "rightBox";
 
 
 
@@ -251,14 +251,14 @@ Tab.prototype.hideLink = function() {
  *	高亮标签
  */
 Tab.prototype.active = function() {
-	this.object.className = CSS_CLASS__TAB_ACTIVE;
+	this.object.className = CSS_CLASS_TAB_ACTIVE;
 	this.isActive = true;
 }
 /*
  *	低亮标签
  */
 Tab.prototype.inactive = function() {
-	this.object.className = CSS_CLASS__NO_CLASS;
+	this.object.className = CSS_CLASS_NO_CLASS;
 	this.isActive = false;
 }
 /*
@@ -563,14 +563,14 @@ Phase.prototype.hideLink = function() {
  *	高亮纵向标签
  */
 Phase.prototype.active = function() {
-	this.object.className = CSS_CLASS__PHASE_ACTIVE;
+	this.object.className = CSS_CLASS_PHASE_ACTIVE;
 	this.isActive = true;
 }
 /*
  *	低亮纵向标签
  */
 Phase.prototype.inactive = function() {
-	this.object.className = CSS_CLASS__NO_CLASS;
+	this.object.className = CSS_CLASS_NO_CLASS;
 	this.isActive = false;
 }
 /*
@@ -668,7 +668,7 @@ ControllerButton.prototype.click = function() {
  */
 ControllerButton.prototype.active = function() {
 	if(this.enable) {
-		this.object.className = CSS_CLASS__CONTROLLER_BT_ACTIVE;
+		this.object.className = CSS_CLASS_CONTROLLER_BT_ACTIVE;
 	}
 }
 /*
@@ -676,7 +676,7 @@ ControllerButton.prototype.active = function() {
  */
 ControllerButton.prototype.inactive = function() {
 	if( !this.enable ) {
-		this.object.className = CSS_CLASS__NO_CLASS;
+		this.object.className = CSS_CLASS_NO_CLASS;
 	}
 }
 /*
@@ -684,7 +684,7 @@ ControllerButton.prototype.inactive = function() {
  */
 ControllerButton.prototype.invert = function() {
 	if(this.enable) {
-		this.object.className = CSS_CLASS__CONTROLLER_BT_INVERT;
+		this.object.className = CSS_CLASS_CONTROLLER_BT_INVERT;
 	}
 }
 /*
@@ -694,7 +694,7 @@ ControllerButton.prototype.invert = function() {
  */
 ControllerButton.prototype.setEnable = function(enable) {
 	this.enable = enable;
-	this.object.className = enable ? CSS_CLASS__NO_CLASS : CSS_CLASS__CONTROLLER_BT_DISABLED;
+	this.object.className = enable ? CSS_CLASS_NO_CLASS : CSS_CLASS_CONTROLLER_BT_DISABLED;
 }
 
 
@@ -773,7 +773,7 @@ Display.prototype.createTabBox = function() {
  *	参数：boolean:hasTab     容器是否有Tab
  */
 Display.prototype.setHasTabStyle = function(hasTab) {
-	this.tabBox.className = hasTab ? CSS_CLASS__TAB_BOX_HAS_TAB : CSS_CLASS__NO_CLASS;
+	this.tabBox.className = hasTab ? CSS_CLASS_TAB_BOX_HAS_TAB : CSS_CLASS_NO_CLASS;
 }
 /*
  *	刷新Tab标签控制器
@@ -881,7 +881,7 @@ Display.prototype.createRightBox = function() {
 	rightBox.cellSpacing = 0;
 	rightBox.cellPadding = 0;
 	rightBox.border = 0;
-	rightBox.className = CSS_CLASS__RIGHT_BOX;
+	rightBox.className = CSS_CLASS_RIGHT_BOX;
 
 	for(var i=0; i < 2; i++) {
 	  var row = rightBox.insertRow();

@@ -580,8 +580,6 @@ var Tree = function(element) {
 		eObj.moveState = window._dataTransfer.moveState;
 		eObj.moveTree  = window._dataTransfer.moveTree; // 增加被拖动的节点所在树
 		eventNodeMoved.fire(eObj); 
-		
-		alert(srcElement);
 	}
 
 	/*
@@ -1812,7 +1810,7 @@ function TreeDisplay(treeObj) {
 	var _windowWidth  = Math.max(treeObj.element.offsetWidth  - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_WIDTH);
 	var _rowHeight    = _TREE_NODE_DISPLAY_ROW_HEIGHT;
 	var _pageSize     = Math.floor(_windowHeight / _rowHeight);
-	var _totalTreeNodes = treeObj.getXmlRoot().selectNodes(".//treeNode[../@_open = 'true']");
+	var _totalTreeNodes = treeObj.getXmlRoot().selectNodes(".//treeNode[../@_open='true' or @id='_rootId']");
 	var _totalTreeNodesNum = _totalTreeNodes.length;
 	
 	var _vScrollBox;
@@ -2015,7 +2013,7 @@ function TreeDisplay(treeObj) {
 	 * 重新获取所有可以显示的节点数组
 	 */
 	this.resetTotalTreeNodes = function() {
-		_totalTreeNodes = treeObj.getXmlRoot().selectNodes(".//treeNode[../@_open = 'true']");
+		_totalTreeNodes = treeObj.getXmlRoot().selectNodes(".//treeNode[../@_open='true' or @id='_rootId']");
 		_totalTreeNodesNum = _totalTreeNodes.length;
 
 		_vScrollDiv.style.height = Math.max(1, (_totalTreeNodesNum - _pageSize) * _rowHeight + _windowHeight);

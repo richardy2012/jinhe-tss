@@ -1,4 +1,4 @@
-<HTML>
+<HTML xmlns:Grid>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>它山石--test Tree</title>
@@ -17,6 +17,9 @@
 <SCRIPT LANGUAGE="JavaScript">
 <!--
  
+ /* 核心包相对路径 */
+URL_CORE = "../";
+
     function init() {
         var p = new HttpRequestParams();
         p.url = "test/data.xml";
@@ -56,7 +59,7 @@
   </tr>
   <tr>
 	<td>
-	  <div id="grid" baseurl="" onRightClickRow="alert('show right menu!');"><div class="loading"/></div>
+	  <Grid:Box id="grid" baseurl="" onRightClickRow="alert('show right menu!');"><div class="loading"/></Grid:Box>
 	</td>
   </tr>
 </table>

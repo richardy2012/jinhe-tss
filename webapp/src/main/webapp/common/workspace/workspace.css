@@ -80,7 +80,7 @@ WorkSpace\:TabBox.hasTab {
 	background-image:url(icons/bg_tab_box.gif);
 	background-repeat:repeat-x;
 }
-.rightBox {
+WorkSpace\:Box .rightBox {
 	font-size:12px;
 	line-height:14px;
 	width:20px;
@@ -98,7 +98,7 @@ WorkSpace\:TabBox.hasTab {
 	position:relative;
 	z-index:100;
 }
-.rightBox td{
+WorkSpace\:Box .rightBox td{
 	vertical-align:top;
 }
 WorkSpace\:PhaseBox {
@@ -138,7 +138,7 @@ WorkSpace\:CtrlBt {
 	overflow:hidden;
 	border:1px solid #E7E7E7;
 }
-.rightBox WorkSpace\:CtrlBt {
+WorkSpace\:Box.rightBox WorkSpace\:CtrlBt {
 	border:1px solid #BEC5E7;
 }
 WorkSpace\:CtrlBt.active {

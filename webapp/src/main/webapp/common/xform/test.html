@@ -1,4 +1,4 @@
-<HTML>
+<HTML xmlns:XForm>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>它山石--test XForm</title>
@@ -16,13 +16,16 @@
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 
+/* 核心包相对路径 */
+URL_CORE = "../";
+
     /*
      *	后台响应数据节点名称
      */
     XML_USER_NAME = "UserName";
     XML_CLASS_NAME = "ClassName";
 	
-	CACHE_LOGIN_FORM = "login__id";
+		CACHE_LOGIN_FORM = "login__id";
 
     /*
      *	XMLHTTP请求地址汇总
@@ -212,7 +215,7 @@
 	  <td class="loginContainer">
 		<!-- 登录框 开始 -->
 		<div class="loginBox">
-			<div id="loginForm" editable="true" dataType="node"><div class="loading"/></div>
+			<XForm:Box id="loginForm" editable="true" dataType="node"><div class="loading"/></XForm:Box>
 		</div>
 		<!-- 登录框 结束 -->
 	  </td>
