@@ -25,8 +25,4 @@ public abstract class GridParser {
 	public void setColumns(GridColumn[] columns) {
 		this.columns = columns;
 	}
-
-	public GridColumn[] getColumns() {
-		return columns;
-	}
 }

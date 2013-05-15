@@ -14,8 +14,6 @@ import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.util.XMLDocUtil;
 
 /** 
- * <p> GridTemplet.java </p> 
- * 
  * Grid模板对象。
  * 格式如：
  *  <?xml version="1.0" encoding="UTF-8"?>
@@ -28,25 +26,6 @@ import com.jinhe.tss.util.XMLDocUtil;
         <data>
         </data>
     </grid>
-
- *  或者带band（区）的：
-    <grid version="2">
-        <declare sequence="true">
-            <band name="curAppInfo" caption="applicationName">
-                <column caption="用户ID" name="id" mode="string" display="none"/>
-                <column caption="用户名" name="loginName" mode="string" align="center"/>
-                <column caption="所在组ID" name="groupId" mode="string" align="center" display="none"/>
-                <column caption="所在组" name="groupName" mode="string" align="center"/>
-            </band>
-            <band name="appInfo" caption="主用户组">
-                <column caption="用户ID" name="appUserId" mode="string" align="center" display="none"/>
-                <column caption="用户名" name="appLoginName" mode="string" align="center"/>
-                <column caption="所在组ID" name="appGroupId" mode="string" align="center" display="none"/>
-                <column caption="所在组" name="appGroupName" mode="string" align="center"/>
-            </band>
-        </declare>
-        <data></data>
-    </grid>
  * 
  */
 public class GridTemplet {
@@ -58,8 +37,6 @@ public class GridTemplet {
     private static final String ATTRIBUTE_NAME = "@name";
 
     private static final String ATTRIBUTE_CALSS_TYPE = "@classType";
-
-    private static final String ATTRIBUTE_IS_SUM = "@isSum";
 
     private static final String ATTRIBUTE_PATTERN = "@pattern";
     
@@ -96,7 +73,6 @@ public class GridTemplet {
             items[i] = new GridColumn();
             items[i].setName(node.valueOf(ATTRIBUTE_NAME));
             items[i].setClassType(node.valueOf(ATTRIBUTE_CALSS_TYPE));
-            items[i].setSum("true".equalsIgnoreCase(node.valueOf(ATTRIBUTE_IS_SUM)));
             items[i].setPattern(node.valueOf(ATTRIBUTE_PATTERN));
         }
         return items;

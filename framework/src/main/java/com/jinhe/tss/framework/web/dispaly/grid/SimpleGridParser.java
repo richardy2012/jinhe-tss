@@ -25,7 +25,7 @@ public class SimpleGridParser extends GridParser {
 		
 		Iterator<?> iter = ((List<?>) data).iterator();
 		while (iter.hasNext()) {
-			root.addChild(new GridNode(iter.next(), this.getColumns(), dataType));
+			root.addChild(new GridNode(iter.next(), super.columns, dataType));
 		}
 		return root;
 	}

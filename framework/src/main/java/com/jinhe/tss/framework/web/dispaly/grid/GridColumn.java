@@ -17,14 +17,9 @@ class GridColumn {
 	private String name;      //列名称
 	private String classType; //数据类型，如果为null或""则认为是字符串
 	private String pattern;   //数据格式化格式，如果为""或null则不格式化数据
-	private boolean isSum;    //是否合计子节点
 
 	public String getClassType() {
 		return classType;
-	}
-
-	public boolean isSum() {
-		return isSum;
 	}
 
 	public String getName() {
@@ -40,10 +35,6 @@ class GridColumn {
 			classType = GRID_COLUMN_CLASS_TYPE_STRING;
 		}
 		this.classType = classType;
-	}
-
-	public void setSum(boolean isSum) {
-		this.isSum = isSum;
 	}
 
 	public void setName(String name) {
