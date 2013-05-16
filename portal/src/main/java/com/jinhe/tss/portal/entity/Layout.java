@@ -88,7 +88,7 @@ public class Layout extends OperateInfo implements IEntity, ILevelTreeNode, IXFo
         map.put("groupId", groupId);
         map.put("disabled", disabled);
         map.put("isDefault", isDefault);
-        map.put("icon", "../platform/images/icon/" 
+        map.put("icon", "../framework/images/" 
         		+ (PortalConstants.TRUE.equals(isDefault) ? "default_" : "") + "layout" 
                 + (PortalConstants.TRUE.equals(disabled) ? "_2" : "") + ".gif");
 

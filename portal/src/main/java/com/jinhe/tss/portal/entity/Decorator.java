@@ -78,7 +78,7 @@ public class Decorator extends OperateInfo implements IEntity, ILevelTreeNode, I
         map.put("groupId", groupId);
         map.put("disabled", disabled);
         map.put("isDefault", isDefault);
-        map.put("icon", "../platform/images/icon/" 
+        map.put("icon", "../framework/images/" 
         		+ (PortalConstants.TRUE.equals(isDefault) ? "default_" : "") + "decorator" 
         		+ (PortalConstants.TRUE.equals(disabled) ? "_2" : "") + ".gif");
         

@@ -380,7 +380,7 @@ public class PortalAction extends FreeMarkerSupportAction {
             public Map<String, Object> translate(Map<String, Object> attributes) {
                 if(defalutThemeId.equals(attributes.get("id"))){
                     attributes.put("isDefault", "1");
-                    attributes.put("icon", "../platform/images/icon/default_theme.gif");
+                    attributes.put("icon", "../framework/images/default_theme.gif");
                 }
                 return attributes;
             }

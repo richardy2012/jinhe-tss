@@ -172,7 +172,7 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
         BeanUtil.addBeanProperties2Map(this, attributes);
         map.putAll(attributes);
         
-        map.put("icon", "../platform/images/icon/article.gif");
+        map.put("icon", "../framework/images/article.gif");
         
         return map;
     }

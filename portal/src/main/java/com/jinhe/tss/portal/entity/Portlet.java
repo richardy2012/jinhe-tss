@@ -74,7 +74,7 @@ public class Portlet extends OperateInfo implements IEntity, ILevelTreeNode, IXF
         map.put("code", code);
         map.put("groupId", groupId);
         map.put("disabled", disabled);
-        map.put("icon", "../platform/images/icon/portlet"
+        map.put("icon", "../framework/images/portlet"
                 + (PortalConstants.TRUE.equals(disabled) ? "_2" : "") + ".gif");
         
         super.putOperateInfo2Map(map);

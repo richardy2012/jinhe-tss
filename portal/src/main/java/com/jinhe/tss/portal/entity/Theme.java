@@ -41,7 +41,7 @@ public class Theme extends OperateInfo implements IEntity, ITreeNode {
 
     public TreeAttributesMap getAttributes() {
         TreeAttributesMap map = new TreeAttributesMap(id, name);
-        map.put("icon", "../platform/images/icon/theme.gif");
+        map.put("icon", "../framework/images/theme.gif");
         return map;
     }
  

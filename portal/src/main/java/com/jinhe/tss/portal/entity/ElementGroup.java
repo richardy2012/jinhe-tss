@@ -68,13 +68,13 @@ public class ElementGroup extends OperateInfo implements IEntity, ILevelTreeNode
         
         switch(this.type){
         case 1:
-            map.put("icon","../platform/images/icon/layout_group.gif");
+            map.put("icon","../framework/images/layout_group.gif");
             break;
         case 2:
-            map.put("icon","../platform/images/icon/decorator_group.gif");
+            map.put("icon","../framework/images/decorator_group.gif");
             break;
         case 3:
-            map.put("icon","../platform/images/icon/portlet_group.gif");
+            map.put("icon","../framework/images/portlet_group.gif");
             break;
         }
         

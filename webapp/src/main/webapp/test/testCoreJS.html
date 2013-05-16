@@ -2,10 +2,6 @@
 <HTML>
 <HEAD>
 <TITLE> test core </TITLE>
-<META NAME="Generator" CONTENT="EditPlus">
-<META NAME="Author" CONTENT="">
-<META NAME="Keywords" CONTENT="">
-<META NAME="Description" CONTENT="">
 
 <style>
   div#jon{text-indent: 20%; 
@@ -20,11 +16,13 @@
    }
 </style>
 
-<script language="javascript" src="../js/core.js"></script>
+<script language="javascript" src="../framework/core.js"></script>
 
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
+
+URL_CORE = "../framework/";
 
 window.onload = function() {
 
@@ -85,7 +83,7 @@ window.onload = function() {
     Event.attachEvent(clearObj, "dblclick", function(eventObj) {
 			var srcElement = Event.getSrcElement(eventObj);
 
-			alert("�¼�������꣺"  + Event.offsetX(eventObj) + ", " + Event.offsetY(eventObj) );
+			alert("事件相对坐标："  + Event.offsetX(eventObj) + ", " + Event.offsetY(eventObj) );
 
 			assertEquals(Event.fireOnScrollBar(eventObj), false);
 
@@ -123,7 +121,7 @@ function f2() {
 
 <BODY>
 
-<div id="Jon"><p id="p1">һ����˵������Ϊ���п鼶Ԫ��Ӧ�� text-indent�����޷���������Ӧ��������Ԫ�أ�ͼ��֮����滻Ԫ����Ҳ�޷�Ӧ�� text-indent ���ԡ����������һ���鼶Ԫ�أ�������䣩����������һ��ͼ����������е������ı��ƶ���</p></div>
+<div id="Jon"><p id="p1">一般来说，可以为所有块级元素应用 text-indent，但无法将该属性应用于行内元素，图像之类的替换元素上也无法应用 text-indent 属性。不过，如果一个块级元素（比如段落）的首行中有一个图像，它会随该行的其余文本移动。</p></div>
 
 </BODY>
 </HTML>

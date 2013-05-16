@@ -138,7 +138,7 @@ public class IssueInfo implements IEntity, ITreeNode, IXForm {
     
     public TreeAttributesMap getAttributes() {
         TreeAttributesMap map = new TreeAttributesMap(id, name);
-        map.put("icon", "../platform/images/icon/url.gif");
+        map.put("icon", "../framework/images/url.gif");
         return map;
     }
 }

@@ -60,7 +60,7 @@ public class FileAction extends PTActionSupport {
             } 
             else {
                 // .. 为目录上翻的按钮
-                sb.append("<treeNode id=\"-1\" name=\"..\" icon=\"../platform/images/icon/folder.gif\" />"); 
+                sb.append("<treeNode id=\"-1\" name=\"..\" icon=\"../framework/images/folder.gif\" />"); 
             }
         } 
         else {
@@ -87,7 +87,7 @@ public class FileAction extends PTActionSupport {
             if(isFolder) {
                 sb.append("\" isFolder=\"").append("1");
             }
-            sb.append("\" icon=\"../platform/images/icon/" + (isFolder ? "folder.gif" : "file.gif") + "\"/>");
+            sb.append("\" icon=\"../framework/images/" + (isFolder ? "folder.gif" : "file.gif") + "\"/>");
         }
         sb.append("</actionSet>");      
         

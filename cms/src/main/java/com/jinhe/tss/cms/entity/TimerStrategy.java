@@ -150,25 +150,25 @@ public class TimerStrategy implements IEntity, ILevelTreeNode, IXForm {
             if (CMSConstants.STATUS_START.equals(status)) {
                 map.put("icon", "../platform/images/icon/time_tactic.gif");
             } else {
-                map.put("icon", "../platform/images/icon/time_tactic_2.gif");
+                map.put("icon", "../framework/images/time_tactic_2.gif");
             }
         } else if (CMSConstants.TACTIC_INDEX_TYPE.equals(type)) {
             if (CMSConstants.STATUS_START.equals(status)) {
-                map.put("icon", "../platform/images/icon/index_tactic.gif");
+                map.put("icon", "../framework/images/index_tactic.gif");
             } else {
-                map.put("icon", "../platform/images/icon/index_tactic_2.gif");
+                map.put("icon", "../framework/images/index_tactic_2.gif");
             }
         } else if (CMSConstants.TACTIC_PUBLISH_TYPE.equals(type)) {
             if (CMSConstants.STATUS_START.equals(status)) {
-                map.put("icon", "../platform/images/icon/publish_tactic.gif");
+                map.put("icon", "../framework/images/publish_tactic.gif");
             } else  {
-                map.put("icon", "../platform/images/icon/publish_tactic_2.gif");
+                map.put("icon", "../framework/images/publish_tactic_2.gif");
             }
         } else if (CMSConstants.TACTIC_EXPIRE_TYPE.equals(type)) {
             if (CMSConstants.STATUS_START.equals(status)) {
-                map.put("icon", "../platform/images/icon/expire_tactic.gif");
+                map.put("icon", "../framework/images/expire_tactic.gif");
             } else {
-                map.put("icon", "../platform/images/icon/expire_tactic_2.gif");
+                map.put("icon", "../framework/images/expire_tactic_2.gif");
             }
         }
         return map;
