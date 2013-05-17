@@ -115,7 +115,7 @@ function delCacheData(cacheID, flag) {
 
 	if( flag ) {
 		for(var i=0; cacheData && i < cacheData.length; i++) {
-			Cache.XmlIslands.del(cacheData[i]);
+			Cache.XmlDatas.del(cacheData[i]);
 		}
 	}
 }
@@ -538,8 +538,8 @@ function addTreeNode(fromTreeObj, toTreeObj, checkFunction) {
  */
 function hasSameAttributeTreeNode(treeObj, attrName, attrValue) {
 	var flag = new Boolean(false);
-	var xmlIsland = treeObj.getTreeNodeById("_rootId").node;
-	var treeNode = xmlIsland.selectSingleNode(".//treeNode[@" + attrName + "='" + attrValue + "']");
+	var root = treeObj.getTreeNodeById("_rootId").node;
+	var treeNode = root.selectSingleNode(".//treeNode[@" + attrName + "='" + attrValue + "']");
 	if( treeNode ) {
 		flag = new Boolean(true);
 		flag.treeNode = treeNode;
@@ -577,11 +577,11 @@ function showTreeNodeStatus(params) {
 /*
  *	初始化翻页工具条
  *	参数：	object:toolbarObj       工具条对象
-			XmlNode:xmlIsland       XmlNode实例
+			XmlNode:pageInfo        XmlNode实例
 			function:callback       回调函数
  *	返回值：
  */
-function initGridToolBar(toolbarObj, xmlIsland, callback) {
+function initGridToolBar(toolbarObj, pageInfo, callback) {
 	//初始化
 	toolbarObj.init = function() {
 		this.clear();
@@ -659,7 +659,7 @@ function initGridToolBar(toolbarObj, xmlIsland, callback) {
 	
 	//获取当前页码
 	toolbarObj.getCurrentPage = function() {
-		var currentpage = xmlIsland.getAttribute("currentpage");
+		var currentpage = pageInfo.getAttribute("currentpage");
 		if(null == currentpage) {
 			currentpage = 1;
 		} else {
@@ -681,7 +681,7 @@ function initGridToolBar(toolbarObj, xmlIsland, callback) {
 	
 	//获取总页码
 	toolbarObj.getTotalPages = function() {
-		var totalpages = xmlIsland.getAttribute("totalpages");
+		var totalpages = pageInfo.getAttribute("totalpages");
 		if(null == totalpages) {
 			totalpages = 1;
 		} else {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
 	<NaviInfo>
-		<Menus baseurl="/eclipse/workspace/PageCode/">
+		<Menus>
             <!-- um -->
             <MenuItem id="um.1" name="组织用户" href="um/group.htm"/>
             <MenuItem id="um.2" name="应用资源" href="um/source.htm"/>

@@ -85,7 +85,7 @@ public class GridTemplet {
             <column caption="" name="id" mode="string" display="none"/>
             <column caption="用户名" name="loginName" mode="string" align="center"/>
         </declare>
-        <data>
+        <data> ...... </data>
      * @return
      */
     public String getHeader() {

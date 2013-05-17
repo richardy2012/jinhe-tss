@@ -67,8 +67,13 @@ public class XmlHttpEncoder implements IDataEncoder {
 
             sb.append("<").append(key).append(">");
             if (BeanUtil.isImplInterface(value.getClass(), IDataEncoder.class)) {
-                sb.append(((IDataEncoder) value).toXml());
-            } else {
+                String xml = ((IDataEncoder) value).toXml();
+                if( xml.startsWith("<?xml") ) {
+                    xml = xml.substring(xml.indexOf("?>") + 2);
+                }
+                sb.append(xml);
+            } 
+            else {
                 sb.append(value);
             }
             sb.append("</").append(key).append(">");

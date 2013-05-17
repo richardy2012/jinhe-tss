@@ -143,7 +143,7 @@ public class CacheDisplayAction extends PTActionSupport {
         }
         
         StringBuffer template = new StringBuffer();
-        template.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><grid version=\"2\"><declare sequence=\"true\">");
+        template.append("<grid=><declare sequence=\"true\">");
         template.append("<column name=\"id\" mode=\"string\" caption=\"项Id\" display=\"none\"/>");
         template.append("<column name=\"code\" mode=\"string\" caption=\"池code\" display=\"none\"/>");
         template.append("<column name=\"key\" caption=\"键值\" mode=\"string\"/>");

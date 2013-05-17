@@ -90,7 +90,7 @@ URL_CORE = "framework/"
 				loginXForm.setFocus("password");
 			});
 		}
-    }
+  }
 
 	/*
      *	根据用户输入登录帐号返回用户姓名
@@ -100,8 +100,8 @@ URL_CORE = "framework/"
     function getUserName(loginName, callback) {	
         var p = new HttpRequestParams();
         p.url = URL_GET_USER_NAME;
-		p.setContent("loginName", loginName);
-		p.setHeader("appCode", APP_CODE);
+				p.setContent("loginName", loginName);
+				p.setHeader("appCode", APP_CODE);
 
         var request = new HttpRequest(p);
         request.onexception = function() {
@@ -124,7 +124,7 @@ URL_CORE = "framework/"
             loginXForm.showCustomErrorInfo("userName", "请输入姓名");
             return;
         } 
-		else if( "" == password ) {
+				else if( "" == password ) {
             loginXForm.showCustomErrorInfo("password", "请输入密码");
             return;
         }
@@ -133,7 +133,7 @@ URL_CORE = "framework/"
         p.url = URL_LOGIN;
         p.relogin = "0";
 
-		// 登录信息
+				// 登录信息
         var loginNode = Cache.XmlDatas.get(CACHE_LOGIN_FORM);
         if( null != loginNode ) {
             var dataNode = loginNode.selectSingleNode(".//data");
@@ -202,7 +202,7 @@ URL_CORE = "framework/"
 	  <td class="loginContainer">
 		<!-- 登录框 开始 -->
 		<div class="loginBox">
-				<XForm:Box id="loginForm" editable="true" dataType="node"><div class="loading"/></XForm:Box>
+				<XForm:Box id="loginForm" editable="true" baseurl="framework/xform/"><div class="loading"/></XForm:Box>
 		</div>
 		<!-- 登录框 结束 -->
 	  </td>
