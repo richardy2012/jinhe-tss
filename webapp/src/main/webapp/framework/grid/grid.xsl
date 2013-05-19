@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/TR/WD-xsl" version="1.0">
     <xsl:template match="/">
-        <div id="gridTable">
+        <div>
+			<xsl:attribute name="id"><xsl:eval>gridId</xsl:eval>Div</xsl:attribute>
             <xsl:attribute name="style">
                 height:260px;
                 overflow:hidden;

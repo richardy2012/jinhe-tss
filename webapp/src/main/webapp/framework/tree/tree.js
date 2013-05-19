@@ -369,6 +369,7 @@ var Tree = function(element) {
 				alert("Tree对象：没有属性[" + name + "]!");
 	    }
 	}
+	
 	/*
 	 * 判断节点是否高亮（激活）
 	 */
@@ -1943,7 +1944,7 @@ function TreeDisplay(treeObj) {
 	treeObj.element.onkeydown = function() {
 		switch (event.keyCode) {
 		    case 33:	//PageUp
-				_vScrollBox.scrollTop -= _pageSize * _rowHeight;
+				_vScrollBox.scrollTop -= _pageSize * _rowHeight; 
 				return false;
 		    case 34:	//PageDown
 				_vScrollBox.scrollTop += _pageSize * _rowHeight;
