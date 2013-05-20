@@ -703,6 +703,15 @@ Element.getCurrentStyle = function(obj, rule) {
 	}
 }
 
+//动态给js添加class属性
+Element.addClass = function(element, className) {
+	if( !element.className ) {
+		element.className = className;    // 如果element本身不存在class,则直接添加class
+	} else {
+		element.className += " " +className;  // 如果之前有一个class值，注意中间要多一个空格,然后再加上
+	} 
+}
+
 
 Element.attachRowResize = function(obj, offsetX) {
 

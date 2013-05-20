@@ -104,6 +104,9 @@ function getTbody() {
 	return 
 }
 
+/*
+ * 处理数据行，按各列的属性设置每一行上对应该列的值.
+ */
 Grid.prototype.processDataRow = function(curRow) {
 	attachHighlightRowEvent(curRow);
 	
@@ -111,51 +114,48 @@ Grid.prototype.processDataRow = function(curRow) {
 	for(var j=0; j < cells.length; j++) {
 		var cell = cells[j];
 		var columnName = cell.getAttribute("name");
-		if( columnName == null || columnName == "cellsequence" || columnName == "cellheader")  {
+		var columnNode = this.gridDoc.columnsMap[columnName]; 
+		if( columnName == null || columnName == "cellsequence" || columnName == "cellheader" || columnNode == null)  {
 			continue;
 		}
  
 		var value = curRow.getAttribute(columnName); // xsl解析后，各行的各个TD值统一记录在了TR上。
 		curRow.removeAttribute(columnName);
-		
 		var nobrNodeInCell = cell.childNodes[0];  // nobr 节点
-		var columnNode = this.gridDoc.columnsMap[columnName]; 
-		if( columnNode ) {
-			var mode = columnNode.getAttribute("mode");
-			switch( mode ) {
-				case "string":
-					var editor = columnNode.getAttribute("editor");
-					var editortext = columnNode.getAttribute("editortext");
-					var editorvalue = columnNode.getAttribute("editorvalue");
-					if(editor == "comboedit" && editorvalue && editortext) {
-						var listNames  = editortext.split("|");
-						var listValues = editorvalue.split("|");
-						for(var n = 0; n < listValues.length; n++) {
-							if(value == listValues[n]) {
-								value = listNames[n];
-								break;
-							}
+		var mode = columnNode.getAttribute("mode");
+		switch( mode ) {
+			case "string":
+				var editor = columnNode.getAttribute("editor");
+				var editortext = columnNode.getAttribute("editortext");
+				var editorvalue = columnNode.getAttribute("editorvalue");
+				if(editor == "comboedit" && editorvalue && editortext) {
+					var listNames  = editortext.split("|");
+					var listValues = editorvalue.split("|");
+					for(var n = 0; n < listValues.length; n++) {
+						if(value == listValues[n]) {
+							value = listNames[n];
+							break;
 						}
 					}
-					
-					nobrNodeInCell.innerText = value;
-					cell.setAttribute("title", value);								
-					break;
-				case "number":
-					nobrNodeInCell.innerText = value;
-					cell.setAttribute("title", value);
-					break;                       
-				case "function":                          
-					break;    
-				case "image":          
-					nobrNodeInCell.innerHTML = "<img src='" + value + "'/>";
-					break;    
-				case "boolean":      
-					var checked = (value =="true") ? "checked" : "";
-					nobrNodeInCell.innerHTML = "<input class='selectHandle' name='" + columnName + "' type='radio' " + checked + "/>";
-					nobrNodeInCell.all.tags("INPUT")[0].disabled = true;
-					break;
-			}
+				}
+				
+				nobrNodeInCell.innerText = value;
+				cell.setAttribute("title", value);								
+				break;
+			case "number":
+				nobrNodeInCell.innerText = value;
+				cell.setAttribute("title", value);
+				break;                       
+			case "function":                          
+				break;    
+			case "image":          
+				nobrNodeInCell.innerHTML = "<img src='" + value + "'/>";
+				break;    
+			case "boolean":      
+				var checked = (value =="true") ? "checked" : "";
+				nobrNodeInCell.innerHTML = "<input class='selectHandle' name='" + columnName + "' type='radio' " + checked + "/>";
+				nobrNodeInCell.all.tags("INPUT")[0].disabled = true;
+				break;
 		}							
 	}	
 }
@@ -164,7 +164,7 @@ function attachHighlightRowEvent(curRow) {
 	// 鼠标经过行时高亮显示
 	curRow.onmouseover = function() { 
 		 this.oldClassName = this.className;
-		 addClass(this, "rolloverRow");    // 鼠标经过时添加class为highlight的值			 
+		 Element.addClass(this, "rolloverRow");    // 鼠标经过时添加class为highlight的值			 
 	}			
 	curRow.onmouseout = function() { 
 		this.className = this.oldClassName; // 鼠标离开时还原之前的class值
@@ -268,15 +268,6 @@ Grid.prototype.attachEventHandler = function() {
         }
 		return false;
     }
-}
-
-//动态给js添加class属性
-function addClass (element, className) {
-	if( !element.className ) {
-		element.className = className;    // 如果element本身不存在class,则直接添加class
-	} else {
-		element.className += " " +className;  // 如果之前有一个class值，注意中间要多一个空格,然后再加上
-	} 
 }
 
 
