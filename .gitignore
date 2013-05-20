@@ -1,6 +1,7 @@
 classes
 .class
 target
+bin
 build
 .settings
 .clover

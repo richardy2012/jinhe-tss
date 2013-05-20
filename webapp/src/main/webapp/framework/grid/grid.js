@@ -11,225 +11,153 @@ function $G(gridId, data) {
 }
 
 
-/*
- * 节点显示的行高（象素），只用于计算显示的行数，不能控制显示时行的高度
- * 如果要修改显示的行高，修改样式文件
- */
+
 var scrollbarSize = 17;
 var cellWidth = 100; //基本列宽
 var cellHeight = 22; //数据行高
-
-var GRID_SCROLL_DELAY_TIME = 0;          // 滚动条的滚动事件延迟时间（毫妙）
+var GRID_SCROLL_DELAY_TIME = 0; // 滚动条的滚动事件延迟时间（毫妙）
 
 var Grid = function(element, data) {
 	this.id = element.id;
 	this.element = element;
  
-	this._baseurl  = element.baseurl || "";
-	this._iconPath = this._baseurl + "images/"
+	this.baseurl  = element.baseurl || "";
+	this.iconPath = this.baseurl + "images/"
 	
-	this.element.innerHTML = "<div id='" + this.id + "Box' style='position:absolute;left:0px;top:0px;width:100%;height:100%;z-index:1'></div>";
+	this.element.innerHTML = "<div id='" + this.id + "Box' style='position:absolute;overflow:auto;left:0px;top:0px;z-index:1'></div>";
 	this.gridBox   = $(this.id + "Box");
+	this.gridBox.style.height = this.windowHeight = element.height || "100%";
+	this.gridBox.style.width  = this.windowWidth  = element.width  || "100%";
+
+	this.pageSize = Math.floor(this.windowHeight / cellHeight);
 	
 	this.load(data);	
-	
-	this.windowHeight = Math.max(this.element.offsetHeight - scrollbarSize, cellHeight);
-	this.windowWidth  = Math.max(this.element.offsetWidth  - scrollbarSize, cellWidth);
-	this.pageSize     = Math.floor(this.windowHeight / cellHeight);
-	
-	// 生成滚动条
-	var vScrollStr = "<div id='" + this.id + "VScrollBox' style='position:absolute;overflow-y:auto;heigth:100%;width:17px;top:0px;right:0px;'>"
-						+ "<div id='" + this.id + "VScrollDiv' style='width:1px'></div></div>";
-	var hScrollStr = "<div id='" + this.id + "HScrollBox' style='position:absolute;overflow-x:auto;overflow-y:hidden;heigth:17px;width:100%;bottom:0px;left:0px'>'"
-						+ "<div id='" + this.id + "HScrollDiv' style='higth:1px'></div></div>";
-	this.element.insertAdjacentHTML('afterBegin', vScrollStr + hScrollStr);
-	this._vScrollBox = $(this.id + "VScrollBox");
-	this._vScrollDiv = $(this.id + "VScrollDiv");
-	this._hScrollBox = $(this.id + "HScrollBox");
-	this._hScrollDiv = $(this.id + "HScrollDiv");
-	
-	var oThis = this;
-	
-	/*
-	 * 纵向滚动事件触发后，延时执行reload，如果第二次触发时，上次的事件还没有执行，
-	 * 则取消上次事件，触发本次事件。为的是防止多次触发，屏幕抖动。
-	 */
-	this._vScrollBox.onscroll = function() {
-		if (this._scrollTimer) {
-			window.clearTimeout(this._scrollTimer);
-		}
-		this._scrollTimer = window.setTimeout(oThis.refresh, GRID_SCROLL_DELAY_TIME);
-	};
-	this._vScrollBox.style.height = this.windowHeight; // 设置滚动条的大小
-	this._vScrollDiv.style.height = (this.totalRows - this.pageSize) * cellHeight + this.windowHeight;
-	
-	/* 横向滚动事件 */
-	this._hScrollBox.onscroll = function() {
-		oThis.gridBox.scrollLeft = this.scrollLeft;
-	};
-	this._hScrollBox.style.width = this.windowWidth;
-	this._hScrollDiv.style.width = this.gridBox.style.width; 
-	
-	// 设置显示节点的table对象的大小
-	this.gridBox.style.height = this.windowHeight;
-	this.gridBox.style.width  = this.windowWidth;
-	
-	this.element.onmousewheel = function() {
-		oThis._vScrollBox.scrollTop += -Math.round(window.event.wheelDelta / 120) * cellHeight;
-	}
-	
-	this.element.onkeydown = function() {
-		switch (event.keyCode) {
-		    case 33:	//PageUp
-				oThis._vScrollBox.scrollTop -= oThis._ageSize * cellHeight;
-				return false;
-		    case 34:	//PageDown
-				oThis._vScrollBox.scrollTop += oThis.pageSize * cellHeight;
-				return false;
-		    case 35:	//End
-				oThis._vScrollBox.scrollTop = oThis._vScrollDiv.offsetHeight - oThis.windowHeight;
-				return false;
-		    case 36:	//Home
-				oThis._vScrollBox.scrollTop = 0;
-				return false;
-		    case 37:	//Left
-				oThis._hScrollBox.scrollLeft -= 10;
-				return false;
-		    case 38:	//Up
-				oThis._vScrollBox.scrollTop -= cellHeight;
-				return false;
-		    case 39:	//Right
-				oThis._hScrollBox.scrollLeft += 10;
-				return false;
-		    case 40:	//Down
-				oThis._vScrollBox.scrollTop += cellHeight;
-				return false;
-		}
-	}
-	
+
 	// 添加Grid事件处理
 	this.attachEventHandler();	
 
-	GridCache.add(this.id, this);
-}
-
-/*
- * 根据滚动状态，显示可视范围内的树节点。
- */
-Grid.prototype.refresh = function () {
-	this.startNum = (this.totalRows <= this.pageSize) ? 0 : Math.ceil(this._vScrollBox.scrollTop  / cellHeight);
-	
-	// 显示节点
-	for(var i = 0; i < this.pageSize; i++) {
-		var nodeIndex = i + this.startNum;
-		if(nodeIndex < this.totalRows) {
-			this.rows[i].style.display = "";
-		} else {
-			this.rows[i].deleteRow();
-		}
-	}
-	
-	// 同步横向滚动条的大小
-	this_hScrollDiv.style.width = this.gridBox.offsetWidth;
-
-	// refreshUI();
+	GridCache.add(this.id, this);	
 }
 
 
 /*
  * 根据页面上的行数，获取相应的Row对象
  * 参数：	index	行序号
- * 返回值：	Row对象/null
+ * 返回值：	Row对象
  */
 Grid.prototype.getRowByIndex = function (index) {
-	if(index >= this.totalRows || index < 0) {
-		alert("Grid对象：行序号[" + index + "]超出允许范围[0 - " + this.totalRows + "]！");
+	if(index >= this.totalRowsNum || index < 0) {
+		alert("Grid对象：行序号[" + index + "]超出允许范围[0 - " + this.totalRowsNum + "]！");
 		return null;
 	}
 	return this.rows[index];
 }
 
-Grid.prototype.load = function(data) {
+Grid.prototype.load = function(data, append) {
 	if("object" != typeof(data) || data.nodeType != 1) {
 		alert("传入的Grid数据有问题。")	
 	} 
 	
 	this.gridDoc = new Grid_DOCUMENT(data.node);	
-	if( this.gridDoc.xmlDom == null ) {
-		return;
-	}
+	if( this.gridDoc.xmlDom == null ) return;
  
-	// 初始化各容器状态
-	this.gridBox.innerHTML = "";
-	
 	this.xslDom = getXmlDOM();
 	this.xslDom.resolveExternals = false;
-	this.xslDom.load(this._baseurl + "grid.xsl");
+	this.xslDom.load(this.baseurl + "grid.xsl");
+
 	// 初始化XSL里的变量
-	this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\n var cellHeight=22; var gridId='" + this.element.id + "'; \r\n"; 
+	var startNum = append ? this.totalRowsNum : 0;
+	this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\n var cellHeight=" + cellHeight 
+		+ "; var startNum=" + startNum + ";"
+		+ "; var gridId='" + this.id + "'; \r\n"; 
 		
 	var gridTableHtml = this.gridDoc.transformXML(this.xslDom); // 利用XSL把XML解析成Html
-	this.gridBox.innerHTML = "<nobr>" + gridTableHtml.replace(/<\/br>/gi, "") + "</nobr>";
 	
-	this.rows = $(this.element.id + "Div").childNodes[0].tBodies[0].rows;
-	this.totalRows = this.rows.length;
-	for(var i=0; i < this.totalRows; i++) {
-		var curRow = this.rows[i];  // 表格行TR
-		attachHighlightRowEvent(curRow);
-		
-		var cells = curRow.childNodes;
-		for(var j=0; j < cells.length; j++) {
-			var cell = cells[j];
-			var columnName = cell.getAttribute("name");
-			if( columnName && columnName != "cellsequence"  && columnName != "cellheader")  {
-				var value = curRow.getAttribute(columnName); // xsl解析后，各行的各个TD值统一记录在了TR上。
-				curRow.removeAttribute(columnName);
-				
-				var nobrNodeInCell = cell.childNodes[0];  // nobr 节点
-				var columnNode = this.gridDoc.columnsMap[columnName]; 
-				if( columnNode ) {
-					var mode = columnNode.getAttribute("mode");
-					switch( mode ) {
-						case "string":
-							var editor = columnNode.getAttribute("editor");
-							var editortext = columnNode.getAttribute("editortext");
-							var editorvalue = columnNode.getAttribute("editorvalue");
-							if(editor == "comboedit" && editorvalue && editortext) {
-								var listNames  = editortext.split("|");
-								var listValues = editorvalue.split("|");
-								for(var n = 0; n < listValues.length; n++) {
-									if(value == listValues[n]) {
-										value = listNames[n];
-										break;
-									}
-								}
-							}
-							
-							nobrNodeInCell.innerText = value;
-							cell.setAttribute("title", value);								
-							break;
-						case "number":
-							nobrNodeInCell.innerText = value;
-							cell.setAttribute("title", value);
-							break;                       
-						case "function":                          
-							break;    
-						case "image":          
-							nobrNodeInCell.innerHTML = "<img src='" + value + "'/>";
-							break;    
-						case "boolean":      
-							var checked = (value =="true") ? "checked" : "";
-							nobrNodeInCell.innerHTML = "<input class='selectHandle' name='" + columnName + "' type='radio' " + checked + "/>";
-							nobrNodeInCell.all.tags("INPUT")[0].disabled = true;
-							break;
-					}
-				}						
-			}		
-		}	
+	if(append) {
+		var tempGridNode = document.createElement("div");
+		tempGridNode.innerHTML = gridTableHtml.replace(/<\/br>/gi, "") ;
+		var tempRows = tempGridNode.childNodes[0].tBodies[0].rows;
+		for(var i=0; i < tempRows.length; i++) {
+			var cloneRow = tempRows[i].cloneNode(true);
+			this.tbody.appendChild(cloneRow);
+		}
+
+		tempGridNode.removeNode(true);
+	}
+	else {
+		this.gridBox.innerHTML = ""; // 初始化容器
+		this.gridBox.innerHTML = gridTableHtml.replace(/<\/br>/gi, "") ;
+	}
+	
+	this.tbody = this.gridBox.childNodes[0].tBodies[0];
+	this.rows = this.tbody.rows;
+	this.totalRowsNum = this.rows.length;
+	for(var i=startNum; i < this.totalRowsNum; i++) {
+		this.processDataRow(this.rows[i]); // 表格行TR
 	}
 	
 	// for (this.gridDoc.columnsMap)
 	// var sortable = tHead.td.getAttribute("sortable");
+}
+
+function getTbody() {
+	return 
+}
+
+Grid.prototype.processDataRow = function(curRow) {
+	attachHighlightRowEvent(curRow);
+	
+	var cells = curRow.childNodes;
+	for(var j=0; j < cells.length; j++) {
+		var cell = cells[j];
+		var columnName = cell.getAttribute("name");
+		if( columnName == null || columnName == "cellsequence" || columnName == "cellheader")  {
+			continue;
+		}
+ 
+		var value = curRow.getAttribute(columnName); // xsl解析后，各行的各个TD值统一记录在了TR上。
+		curRow.removeAttribute(columnName);
+		
+		var nobrNodeInCell = cell.childNodes[0];  // nobr 节点
+		var columnNode = this.gridDoc.columnsMap[columnName]; 
+		if( columnNode ) {
+			var mode = columnNode.getAttribute("mode");
+			switch( mode ) {
+				case "string":
+					var editor = columnNode.getAttribute("editor");
+					var editortext = columnNode.getAttribute("editortext");
+					var editorvalue = columnNode.getAttribute("editorvalue");
+					if(editor == "comboedit" && editorvalue && editortext) {
+						var listNames  = editortext.split("|");
+						var listValues = editorvalue.split("|");
+						for(var n = 0; n < listValues.length; n++) {
+							if(value == listValues[n]) {
+								value = listNames[n];
+								break;
+							}
+						}
+					}
+					
+					nobrNodeInCell.innerText = value;
+					cell.setAttribute("title", value);								
+					break;
+				case "number":
+					nobrNodeInCell.innerText = value;
+					cell.setAttribute("title", value);
+					break;                       
+				case "function":                          
+					break;    
+				case "image":          
+					nobrNodeInCell.innerHTML = "<img src='" + value + "'/>";
+					break;    
+				case "boolean":      
+					var checked = (value =="true") ? "checked" : "";
+					nobrNodeInCell.innerHTML = "<input class='selectHandle' name='" + columnName + "' type='radio' " + checked + "/>";
+					nobrNodeInCell.all.tags("INPUT")[0].disabled = true;
+					break;
+			}
+		}							
+	}	
 }
 
 function attachHighlightRowEvent(curRow) {
@@ -246,6 +174,49 @@ function attachHighlightRowEvent(curRow) {
 
 // 添加Grid事件处理
 Grid.prototype.attachEventHandler = function() {
+	// 添加滚动条事件
+	var oThis = this;
+
+	this.gridBox.onscroll = function() {
+		 if(oThis.gridBox.scrollHeight - oThis.gridBox.scrollTop <= oThis.windowHeight) {
+			// alert("到达底部");
+			var eventFirer = new EventFirer(oThis.element, "onScrollToBottom");
+			eventFirer.fire(createEventObject());
+		 }
+	}
+
+	this.element.onmousewheel = function() {
+		oThis.gridBox.scrollTop += -Math.round(window.event.wheelDelta / 120) * cellHeight;
+	}
+	
+	this.element.onkeydown = function() {
+		switch (event.keyCode) {
+		    case 33:	//PageUp
+				oThis.gridBox.scrollTop -= oThis._ageSize * cellHeight;
+				return false;
+		    case 34:	//PageDown
+				oThis.gridBox.scrollTop += oThis.pageSize * cellHeight;
+				return false;
+		    case 35:	//End
+				oThis.gridBox.scrollTop = oThis.gridBox.offsetHeight - oThis.windowHeight;
+				return false;
+		    case 36:	//Home
+				oThis.gridBox.scrollTop = 0;
+				return false;
+		    case 37:	//Left
+				oThis.gridBox.scrollLeft -= 10;
+				return false;
+		    case 38:	//Up
+				oThis.gridBox.scrollTop -= cellHeight;
+				return false;
+		    case 39:	//Right
+				oThis.gridBox.scrollLeft += 10;
+				return false;
+		    case 40:	//Down
+				oThis.gridBox.scrollTop += cellHeight;
+				return false;
+		}
+	}
  
 	this.element.onclick = function() { // 单击行
 		if( notOnGridHead(event.srcElement) ) { // 确保点击处不在表头
@@ -277,8 +248,8 @@ Grid.prototype.attachEventHandler = function() {
 					rowIndex: rowIndex
 				};
  			
-				var eventRightClickGridRow = new EventFirer(this, "onRightClickRow");
-				eventRightClickGridRow.fire(oEvent);  // 触发右键事件
+				var eventFirer = new EventFirer(this, "onRightClickRow");
+				eventFirer.fire(oEvent);  // 触发右键事件
 			}
 		}
 	}
@@ -333,14 +304,7 @@ var Grid_DOCUMENT = function(xmlDom) {
 			this.hasHeader = (this.header == "radio" || this.header == "checkbox");
 	 
 			this.VisibleColumns = this.selectNodes(".//declare//column[(@display!='none') or not(@display)]");
-			this.Rows = this.selectNodes(".//data//row");
- 
-			this.RowByIndex = {};
-			for(var i=0; i < this.Rows.length; i++) {
-				var curRow = this.Rows[i];
-				var _index = curRow.getAttribute("_index");
-				this.RowByIndex[_index] = curRow;
-			}
+			this.dataRows = this.selectNodes(".//data//row");
 		}
 	}
 

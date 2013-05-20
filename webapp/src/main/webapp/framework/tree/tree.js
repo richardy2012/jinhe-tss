@@ -2275,7 +2275,7 @@ function refreshParentNodeState(node) {
 	var parent = node.parentNode;
 	while (parent != treeObj.getXmlRoot()) {		
 		var nodeChildNum   = parent.childNodes.length;	// 总子节点数
-		var checkedNum     = parent.selectNodes("./treeNode[@checktype='1']").length;	// 全选子节点数
+		var checkedNum     = parent.selectNodes("./treeNode[@checktype='1']").length; // 全选子节点数
 		var halfCheckedNum = parent.selectNodes("./treeNode[@checktype='2']").length; //半选子节点数
 		
 		var state;
