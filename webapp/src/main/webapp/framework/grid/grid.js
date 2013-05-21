@@ -67,7 +67,7 @@ Grid.prototype.load = function(data, append) {
 
 	// 初始化XSL里的变量
 	var startNum = append ? this.totalRowsNum : 0;
-	this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\n var cellHeight=" + cellHeight 
+	this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\n" 
 		+ "; var startNum=" + startNum + ";"
 		+ "; var gridId='" + this.id + "'; \r\n"; 
 		
@@ -87,9 +87,15 @@ Grid.prototype.load = function(data, append) {
 	else {
 		this.gridBox.innerHTML = ""; // 初始化容器
 		this.gridBox.innerHTML = gridTableHtml.replace(/<\/br>/gi, "") ;
+		
+		// 拖动改变列宽
+		var thList = this.gridBox.childNodes[0].tHead.firstChild.childNodes;
+		for( var i = 0; i < thList.length; i++ ) {
+			Element.attachColResize(thList[i]);
+		}
 	}
 	
-	this.tbody = this.gridBox.childNodes[0].tBodies[0];
+	this.tbody = this.tbody || this.gridBox.childNodes[0].tBodies[0];
 	this.rows = this.tbody.rows;
 	this.totalRowsNum = this.rows.length;
 	for(var i=startNum; i < this.totalRowsNum; i++) {

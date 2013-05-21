@@ -17,15 +17,19 @@ Grid\:Box .cell {
 Grid\:Box .cell td, Grid\:Box .header td {
 	border-style:solid;
 	border-color:#FFFFFF #96969E #96969E #FFFFFF;	
+	border-width: 1 1 1 1;
 	overflow:hidden;
 	text-overflow:ellipsis;
+	height:22px;
 }
 
 Grid\:Box .column {
 	text-align:center;
 	border-style:solid;
 	border-color:#FFFFFF #96969E #96969E #FFFFFF;
+	border-width: 1 1 1 1;
 	background-color:#E4E6F5;
+	height:25px;
 }
 
 Grid\:Box .highlightCol {
@@ -38,19 +42,5 @@ Grid\:Box .highlightRow td {
 
 Grid\:Box .rolloverRow {
 	background-color:#bed742;
-}
-
-Grid\:Box .menuItem {
-	font-size:12px;
-	height:20;
-	padding-top:4px;
-	padding-left:4px;
-	padding-right:0px;
-	margin-left:20px;
-	margin-right:0px;
-	border-width:1px;
-	border-style:solid;
-	border-color:#FFFFFF;
-	word-break:keep-all;
 }
 

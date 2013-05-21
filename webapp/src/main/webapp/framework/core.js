@@ -717,28 +717,39 @@ Element.attachRowResize = function(obj, offsetX) {
 
 }
 
+
+/* 缓存页面所有的resize拖动条；元素拖动后可能引起了其他元素位置改变，需要刷新其他元素所对应的resize条位置 */
+var ruleObjList = [];
+
 /*
  * 控制对象拖动改变宽度
  * 参数：	Object:obj			要拖动改变宽度的HTML对象
  */
-Element.attachColResize = function(obj, offsetX) {
-	offsetX = 3 - (offsetX || 0);
-
-	// 计算对象实际的坐标值
-	obj._absTop  = this.absTop(obj);
-	obj._absLeft = this.absLeft(obj);
+Element.attachColResize = function(obj) {
+	var offsetX = 3;
 
 	// 添加resize条
 	var ruleObj = document.createElement("DIV");
-	ruleObj.id = "colRule";
-	ruleObj.style.cssText = "cursor:col-resize;width:" + offsetX + "px;height:" +　obj.offsetHeight 
-		+ ";top:" + obj._absTop + ";left:" + (obj._absLeft + obj.offsetWidth - offsetX) 
-		+ ";position:absolute;background-color:white;overflow:hidden;filter:alpha(opacity=0)";
+	ruleObj.style.cssText = "cursor:col-resize;position:absolute;overflow:hidden;";
 	document.body.appendChild(ruleObj);
+	setDivPosition(ruleObj, obj);
+
+	ruleObj.target = obj;
+	ruleObjList.push(ruleObj);
+
+    // 计算resize条的坐标值
+	function setDivPosition(ruleElement, element) {
+		ruleElement.style.width = offsetX;
+		ruleElement.style.height = element.offsetHeight;
+		ruleElement.style.top  = Element.absTop(element);
+		ruleElement.style.left = Element.absLeft(element) + element.offsetWidth - offsetX;
+		ruleElement.style.backgroundColor = "white";
+		ruleElement.style.filter = "alpha(opacity=0)";		
+	}
 
 	var moveHandler = function() {
 		if(ruleObj._isMouseDown == true) {
-			ruleObj.style.left = Math.max(obj._absLeft, event.clientX - offsetX);
+			ruleObj.style.left = Math.max( Element.absLeft(obj), event.clientX - offsetX);
 
 			if (document.addEventListener) {             
 				document.addEventListener("mouseup", stopHandler, true);  
@@ -750,9 +761,6 @@ Element.attachColResize = function(obj, offsetX) {
 		ruleObj._isMouseDown = false;
 		obj.style.width = Math.max(1, obj.offsetWidth + event.clientX - ruleObj._fromX); 
 
-		ruleObj.style.backgroundColor = "white";
-		ruleObj.style.filter = "alpha(opacity=0)";
-
 		if (ruleObj.releaseCapture) {             
 			ruleObj.releaseCapture();         
 		} 
@@ -760,6 +768,12 @@ Element.attachColResize = function(obj, offsetX) {
 			document.removeEventListener("mousemove", moveHandler, true);
 			document.removeEventListener("mouseup", stopHandler, true);  
 		}	
+		
+		// 刷新所有resize条的位置
+		for(var i = 0; i < ruleObjList.length; i++) {
+			var ruleElement = ruleObjList[i];
+			setDivPosition(ruleElement, ruleElement.target);
+		}
 	}
  
 	ruleObj.onmousedown = function() {
@@ -785,13 +799,7 @@ Element.attachColResize = function(obj, offsetX) {
 }
 
 Element.attachResize = function(obj) {
-	// 添加水平方向拖拽的线，3px粗细
-	var rightLine = document.createElement("DIV");
-	ruleObj.id = "rightLine";
-	ruleObj.style.cssText = "cursor:col-resize;width:" + offsetX + "px;height:" +　obj.offsetHeight 
-		+ ";top:" + obj._absTop + ";left:" + (obj._absLeft + obj.offsetWidth - offsetX) 
-		+ ";position:absolute;background-color:white;overflow:hidden;filter:alpha(opacity=0)";
-	document.body.appendChild(ruleObj);
+
 }
 
 
