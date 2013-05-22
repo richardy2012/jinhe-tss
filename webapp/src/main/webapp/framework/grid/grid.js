@@ -106,9 +106,7 @@ Grid.prototype.load = function(data, append) {
 				}
 				colList[srcElement.index].style.display = "none";
 			}) ;
-		}
-
-		bindSortHandler(this.gridBox.childNodes[0]);
+		}		
 	}
 	
 	this.tbody = this.tbody || this.gridBox.childNodes[0].tBodies[0];
@@ -117,6 +115,8 @@ Grid.prototype.load = function(data, append) {
 	for(var i=startNum; i < this.totalRowsNum; i++) {
 		this.processDataRow(this.rows[i]); // 表格行TR
 	}
+	
+	bindSortHandler(this.gridBox.childNodes[0]);
 } 
 
 /*
@@ -434,64 +434,65 @@ function initGridToolBar(toolbarObj, pageInfo, callback) {
 
 
 function bindSortHandler(table) {
-	this.table = table;
 	this.rows  = table.tBodies[0].rows;
 	this.tags  = table.tHead.rows[0].cells;
+	var defaultClass = this.tags[0].className;
 
 	// 将数据行和列转换成二维数组
 	this._2DArray = [];
 	for(var i=0; i < this.rows.length; i++) {
 		this._2DArray[i] = [];
 		for(var j=0; j < this.tags.length; j++) {
-			this._2DArray[0].push(this.rows[i].cells[j].firstChild.innerHTML);
+			var cell = this.rows[i].cells[j];
+			this._2DArray[i].push(cell.innerHTML);
 		}
 	}
-
-	var defaultClass = this.tags[0].className;
+	
 	for(var i=0; i < this.tags.length; i++) {
 		var tag = this.tags[i];
 		var sortable = tag.getAttribute("sortable");
 		if( sortable == "true") {
 			tag._index = i;
-			Element.attachEvent(tag, 'click', bind(tag, sortHandler));
+			Event.attachEvent(tag, "click", bind(tag, sortHandler));
 		}		
 	}
 
 	var oThis = this;
-	var turn = 0;
-	var sortHandler = function() {
+	var direction = 1;
+	function sortHandler() {
 		for(var i=0; i < oThis.tags.length; i++) {
-			oThis.tags[0].className = defaultClass;
+			oThis.tags[i].className = defaultClass;
 		}
 
-		if(turn == 0) {
+		if(direction == 1) {
+			Element.removeClass(cell, "desc");
 			Element.addClass(this, "asc");
-			_this.sort(0, this._index);
-			turn = 1;
 		} else {
-			Element.addClass(this, "desc");
-			_this.sort(1, this._index);
-			turn = 0;
+			Element.removeClass(cell, "asc");
+			Element.addClass(this, "desc");			
 		}
+		sort(direction, this._index);
+		direction = direction * -1;
 
 		function sort(direction, columnIndex) {
 			this._2DArray.sort(function(a, b) {
 				var x = killHTML( a[columnIndex] ).replace(/,/g, '');
 				var y = killHTML( b[columnIndex] ).replace(/,/g, '');
+				var compareValue;
 				if( isNaN(x) ) {
-					return Number(x) - Number(y);
+					compareValue = Number(x) - Number(y);
 				}
 				else {
-					return x.localeCompare(y);
+					compareValue = x.localeCompare(y);
 				}
+				return compareValue * direction;
 			});
-
-			this._2DArray = (direction == 0) ? this._2DArray : this._2DArray.reverse();
 
 			// 设置排序列的样式
 			for (var i = 0; i < this.rows.length; i++) {
-				for (var n = 0; n < this.rows[i].cells.length; n++) {
-					Element.removeClass(this.rows[i].cells[n], "sorting");
+				for (var j = 0; j < this.tags.length; j++) {
+					var cell = this.rows[i].cells[j];
+					Element.removeClass(cell, "sorting");
 				}
 				Element.addClass(this.rows[i].cells[columnIndex], "sorting");
 			}
@@ -499,7 +500,8 @@ function bindSortHandler(table) {
 			// 将排序后的二维数组重新输出到对应的行和列中
 			for (var i = 0; i < this.rows.length; i++) {
 				for (var j = 0; j < this.tags.length; j++) {
-					this.rows[i].cells[j].innerHTML = this._2DArray[i][j];
+					var cell = this.rows[i].cells[j];
+					cell.innerHTML = this._2DArray[i][j];
 				}
 			}
 		}

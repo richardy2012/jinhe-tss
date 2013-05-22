@@ -726,13 +726,13 @@ Element.hasClass = function(element, className) {
  * 一个元素多个样式，样式之间用空格隔开。
  */
 Element.addClass = function(element, className) {
-	if ( !this.hasClass(element, className) ) {
+	if ( !Element.hasClass(element, className) ) {
 		element.className += " " + className;
 	}
 }
 
 Element.removeClass = function(element, className) {
-	if ( hasClass(element, className) ) {
+	if ( Element.hasClass(element, className) ) {
 		var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
 		element.className = element.className.replace(reg, ' ');
 	}
@@ -771,6 +771,16 @@ Element.attachColResize = function(obj) {
 		ruleElement.style.filter = "alpha(opacity=0)";		
 	}
 
+	// 刷新所有resize条的位置
+	function refreshResizeDivPosition() {
+		for(var i = 0; i < ruleObjList.length; i++) {
+			var ruleElement = ruleObjList[i];
+			setDivPosition(ruleElement, ruleElement.target);
+		}
+	}
+
+	obj.onresize = refreshResizeDivPosition;
+
 	var moveHandler = function() {
 		if(ruleObj._isMouseDown == true) {
 			ruleObj.style.left = Math.max( Element.absLeft(obj), event.clientX - offsetX);
@@ -791,13 +801,7 @@ Element.attachColResize = function(obj) {
 		else {
 			document.removeEventListener("mousemove", moveHandler, true);
 			document.removeEventListener("mouseup", stopHandler, true);  
-		}	
-		
-		// 刷新所有resize条的位置
-		for(var i = 0; i < ruleObjList.length; i++) {
-			var ruleElement = ruleObjList[i];
-			setDivPosition(ruleElement, ruleElement.target);
-		}
+		}			
 	}
  
 	ruleObj.onmousedown = function() {
