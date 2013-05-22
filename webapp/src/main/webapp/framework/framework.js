@@ -2,11 +2,10 @@
  * 当前应用名 
  */
 APP_CODE    = "TSS";
-CONTEXTPATH = "tss/";
-APPLICATION = "tss";
+APPLICATION = APP_CODE.toLowerCase();
+CONTEXTPATH = APPLICATION + "/";
 
-// URL_CORE = "/" + APPLICATION + "/common/";  // 界面核心包相对路径
-URL_CORE = "";  // 界面核心包相对路径
+URL_CORE = "/" + APPLICATION + "/framework/";  // 界面核心包相对路径
 
 
 /*
@@ -38,12 +37,9 @@ function initUserInfo() {
 	request.send();
 }
 
-
-URL_LOGOUT = "../logout.in";
-
 function logout() {
 	var p = new HttpRequestParams();
-	p.url = URL_CORE + URL_LOGOUT;
+	p.url = URL_CORE + "../logout.in";
 
 	var request = new HttpRequests(p);
 	request.onsuccess = function() {
@@ -172,12 +168,9 @@ function initListContainerResize() {
 
 
 var toolbar;
-/*
- *	工具条初始化
- */
+ 
 function initToolBar() {
-	var tbObj = $("toolbar");
-	toolbar = ToolBars.create(tbObj);
+	toolbar = ToolBars.create($("toolbar"));
 }
 
 /*
@@ -575,134 +568,6 @@ function showTreeNodeStatus(params) {
 
 
 /*
- *	初始化翻页工具条
- *	参数：	object:toolbarObj       工具条对象
-			XmlNode:pageInfo        XmlNode实例
-			function:callback       回调函数
- *	返回值：
- */
-function initGridToolBar(toolbarObj, pageInfo, callback) {
-	//初始化
-	toolbarObj.init = function() {
-		this.clear();
-		this.create();
-		this.attachEvents();
-	}
-	
-	//清空内容
-	toolbarObj.clear = function() {
-		this.innerHTML = "";
-	}
-	
-	//创建按钮
-	toolbarObj.create = function() {
-		var totalpages = toolbarObj.getTotalPages();
-		var curPage = toolbarObj.getCurrentPage();
-
-		var str = [];
-		str[str.length] = "<span class=\"button refresh\" id=\"GridBtRefresh\" title=\"刷新\"></span>";
-		str[str.length] = "<span class=\"button first\"   id=\"GridBtFirst\"   title=\"第一页\"></span>";
-		str[str.length] = "<span class=\"button prev\"    id=\"GridBtPrev\"    title=\"上一页\"></span>";
-		str[str.length] = "<span class=\"button next\"    id=\"GridBtNext\"    title=\"下一页\"></span>";
-		str[str.length] = "<span class=\"button last\"    id=\"GridBtLast\"    title=\"最后一页\"></span>";
-		
-		str[str.length] = "<select id=\"GridPageList\">";
-		for(var i=0; i <= totalpages; i++) {
-			str[str.length] = "  <option value=\"" + i + "\"" + (curPage == i ? " selected" : "") + ">" + i + "</option>";
-		}
-		str[str.length] = "</select>";
-
-		this.innerHTML = str.join("");
-	}
-	
-	//绑定事件
-	toolbarObj.attachEvents = function() {
-		var gridBtRefreshObj = $("GridBtRefresh");
-		var gridBtFirstObj   = $("GridBtFirst");
-		var gridBtPrevObj    = $("GridBtPrev");
-		var gridBtNextObj    = $("GridBtNext");
-		var gridBtLastObj    = $("GridBtLast");
-		var gridPageListObj  = $("GridPageList");
-
-		Event.attachEvent(gridBtRefreshObj, "click", function() {
-			var curPage = toolbarObj.getCurrentPage();
-			toolbarObj.gotoPage(curPage);
-		});
-		Event.attachEvent(gridBtFirstObj, "click", function() {
-			toolbarObj.gotoPage("1");
-		});
-		Event.attachEvent(gridBtLastObj, "click", function() {
-			var lastpage = toolbarObj.getLastPage();
-			toolbarObj.gotoPage(lastpage);
-		});
-		Event.attachEvent(gridBtNextObj, "click", function() {
-			var curPage = toolbarObj.getCurrentPage();
-			var lastpage = toolbarObj.getLastPage();
-			var page = lastpage;
-			if(curPage < lastpage) {
-				page = curPage + 1;
-			}
-			toolbarObj.gotoPage(page);
-		});
-		Event.attachEvent(gridBtPrevObj, "click", function() {
-			var curPage = toolbarObj.getCurrentPage();
-			var page = 1;
-			if(curPage > 1) {
-				page = curPage - 1;
-			}
-			toolbarObj.gotoPage(page);
-		});
-		Event.attachEvent(gridPageListObj, "change", function() {
-			toolbarObj.gotoPage(gridPageListObj.value);
-		});
-	}
-	
-	//获取当前页码
-	toolbarObj.getCurrentPage = function() {
-		var currentpage = pageInfo.getAttribute("currentpage");
-		if(null == currentpage) {
-			currentpage = 1;
-		} else {
-			currentpage = parseInt(currentpage);
-		}
-		return currentpage;
-	}
-	
-	//获取最后一页页码
-	toolbarObj.getLastPage = function() {
-		var lastpage = this.getTotalPages();
-		if(null == lastpage) {
-			lastpage = 1;
-		} else {
-			lastpage = parseInt(lastpage);
-		}
-		return lastpage;
-	}
-	
-	//获取总页码
-	toolbarObj.getTotalPages = function() {
-		var totalpages = pageInfo.getAttribute("totalpages");
-		if(null == totalpages) {
-			totalpages = 1;
-		} else {
-			totalpages = parseInt(totalpages);
-		}
-		return totalpages;
-	}
-	
-	//转到指定页
-	toolbarObj.gotoPage = function(page) {
-		callback(page);
-	}
-	
-	toolbarObj.init();
-}
-
-
-
-
-
-/*
  *	禁止点击按钮
  */
 function disableButton(btObj) {
@@ -774,11 +639,10 @@ function initNaviBar(curId) {
 function clearOperation(treeNode, clearChildren) {
 	treeNode.removeAttribute("_operation");
 
-	if(false != clearChildren) {
+	if( clearChildren != false ) {
 		var childs = treeNode.selectNodes(".//treeNode");
-		for(var i=0,iLen=childs.length;i<iLen;i++) {
+		for(var i=0; i < childs.length; i++) {
 			childs[i].removeAttribute("_operation");
 		}
 	}
 }
-

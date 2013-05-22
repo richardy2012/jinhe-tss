@@ -93,6 +93,22 @@ Grid.prototype.load = function(data, append) {
 		for( var i = 0; i < thList.length; i++ ) {
 			Element.attachColResize(thList[i]);
 		}
+		
+		// 设置隐藏列事件，双击隐藏列
+		var colList = this.gridBox.childNodes[0].childNodes[0].childNodes;
+		for( var i = 0; i < colList.length; i++ ) {
+			var th = thList[i];
+			th.index = i;
+			Event.attachEvent(th, "dblclick", function() {
+				var srcElement = Event.getSrcElement(event);
+				while(srcElement.tagName.toLowerCase() != "td") {
+					srcElement = srcElement.parentNode;
+				}
+				colList[srcElement.index].style.display = "none";
+			}) ;
+		}
+
+		bindSortHandler(this.gridBox.childNodes[0]);
 	}
 	
 	this.tbody = this.tbody || this.gridBox.childNodes[0].tBodies[0];
@@ -101,14 +117,7 @@ Grid.prototype.load = function(data, append) {
 	for(var i=startNum; i < this.totalRowsNum; i++) {
 		this.processDataRow(this.rows[i]); // 表格行TR
 	}
-	
-	// for (this.gridDoc.columnsMap)
-	// var sortable = tHead.td.getAttribute("sortable");
-}
-
-function getTbody() {
-	return 
-}
+} 
 
 /*
  * 处理数据行，按各列的属性设置每一行上对应该列的值.
@@ -312,4 +321,187 @@ Grid_DOCUMENT.prototype.selectNodes = function(xpath) {
 }
 Grid_DOCUMENT.prototype.selectSingleNode = function(xpath) {
 	return this.xmlDom.selectSingleNode(xpath);
+}
+
+
+/*
+ *	初始化翻页工具条
+ *	参数：	object:toolbarObj       工具条对象
+			XmlNode:pageInfo        XmlNode实例
+			function:callback       回调函数
+ *	返回值：
+ */
+function initGridToolBar(toolbarObj, pageInfo, callback) {
+
+	toolbarObj.init = function() {
+		this.clear();
+		this.create();
+		this.attachEvents();
+	}
+		
+	toolbarObj.clear = function() {
+		this.innerHTML = ""; // 清空内容
+	}
+	
+	//创建按钮
+	toolbarObj.create = function() {
+		var totalpages = toolbarObj.getTotalPages();
+		var curPage = toolbarObj.getCurrentPage();
+
+		var str = [];
+		str[str.length] = "<span class=\"button refresh\" id=\"GridBtRefresh\" title=\"刷新\"></span>";
+		str[str.length] = "<span class=\"button first\"   id=\"GridBtFirst\"   title=\"第一页\"></span>";
+		str[str.length] = "<span class=\"button prev\"    id=\"GridBtPrev\"    title=\"上一页\"></span>";
+		str[str.length] = "<span class=\"button next\"    id=\"GridBtNext\"    title=\"下一页\"></span>";
+		str[str.length] = "<span class=\"button last\"    id=\"GridBtLast\"    title=\"最后一页\"></span>";
+		
+		str[str.length] = "<select id=\"GridPageList\">";
+		for(var i=0; i <= totalpages; i++) {
+			str[str.length] = "  <option value=\"" + i + "\"" + (curPage == i ? " selected" : "") + ">" + i + "</option>";
+		}
+		str[str.length] = "</select>";
+
+		this.innerHTML = str.join("");
+	}
+	
+	//绑定事件
+	toolbarObj.attachEvents = function() {
+		var gridBtRefreshObj = $("GridBtRefresh");
+		var gridBtFirstObj   = $("GridBtFirst");
+		var gridBtPrevObj    = $("GridBtPrev");
+		var gridBtNextObj    = $("GridBtNext");
+		var gridBtLastObj    = $("GridBtLast");
+		var gridPageListObj  = $("GridPageList");
+
+		Event.attachEvent(gridBtRefreshObj, "click", function() {
+			var curPage = toolbarObj.getCurrentPage();
+			toolbarObj.gotoPage(curPage);
+		});
+		Event.attachEvent(gridBtFirstObj, "click", function() {
+			toolbarObj.gotoPage("1");
+		});
+		Event.attachEvent(gridBtLastObj, "click", function() {
+			var lastpage = toolbarObj.getLastPage();
+			toolbarObj.gotoPage(lastpage);
+		});
+		Event.attachEvent(gridBtNextObj, "click", function() {
+			var curPage = toolbarObj.getCurrentPage();
+			var lastpage = toolbarObj.getLastPage();
+			var page = lastpage;
+			if(curPage < lastpage) {
+				page = curPage + 1;
+			}
+			toolbarObj.gotoPage(page);
+		});
+		Event.attachEvent(gridBtPrevObj, "click", function() {
+			var curPage = toolbarObj.getCurrentPage();
+			var page = 1;
+			if(curPage > 1) {
+				page = curPage - 1;
+			}
+			toolbarObj.gotoPage(page);
+		});
+		Event.attachEvent(gridPageListObj, "change", function() {
+			toolbarObj.gotoPage(gridPageListObj.value);
+		});
+	}
+	
+	//获取当前页码
+	toolbarObj.getCurrentPage = function() {
+		var currentpage = pageInfo.getAttribute("currentpage");
+		return currentpage ? 1 : parseInt(currentpage);
+	}
+	
+	//获取最后一页页码
+	toolbarObj.getLastPage = function() {
+		var lastpage = this.getTotalPages();
+		return lastpage ? 1 : parseInt(lastpage);
+	}
+	
+	//获取总页码
+	toolbarObj.getTotalPages = function() {
+		var totalpages = pageInfo.getAttribute("totalpages");
+		return totalpages ? 1 : parseInt(totalpages);
+	}
+	
+	//转到指定页
+	toolbarObj.gotoPage = function(page) {
+		callback(page);
+	}
+	
+	toolbarObj.init();
+}
+
+
+function bindSortHandler(table) {
+	this.table = table;
+	this.rows  = table.tBodies[0].rows;
+	this.tags  = table.tHead.rows[0].cells;
+
+	// 将数据行和列转换成二维数组
+	this._2DArray = [];
+	for(var i=0; i < this.rows.length; i++) {
+		this._2DArray[i] = [];
+		for(var j=0; j < this.tags.length; j++) {
+			this._2DArray[0].push(this.rows[i].cells[j].firstChild.innerHTML);
+		}
+	}
+
+	var defaultClass = this.tags[0].className;
+	for(var i=0; i < this.tags.length; i++) {
+		var tag = this.tags[i];
+		var sortable = tag.getAttribute("sortable");
+		if( sortable == "true") {
+			tag._index = i;
+			Element.attachEvent(tag, 'click', bind(tag, sortHandler));
+		}		
+	}
+
+	var oThis = this;
+	var turn = 0;
+	var sortHandler = function() {
+		for(var i=0; i < oThis.tags.length; i++) {
+			oThis.tags[0].className = defaultClass;
+		}
+
+		if(turn == 0) {
+			Element.addClass(this, "asc");
+			_this.sort(0, this._index);
+			turn = 1;
+		} else {
+			Element.addClass(this, "desc");
+			_this.sort(1, this._index);
+			turn = 0;
+		}
+
+		function sort(direction, columnIndex) {
+			this._2DArray.sort(function(a, b) {
+				var x = killHTML( a[columnIndex] ).replace(/,/g, '');
+				var y = killHTML( b[columnIndex] ).replace(/,/g, '');
+				if( isNaN(x) ) {
+					return Number(x) - Number(y);
+				}
+				else {
+					return x.localeCompare(y);
+				}
+			});
+
+			this._2DArray = (direction == 0) ? this._2DArray : this._2DArray.reverse();
+
+			// 设置排序列的样式
+			for (var i = 0; i < this.rows.length; i++) {
+				for (var n = 0; n < this.rows[i].cells.length; n++) {
+					Element.removeClass(this.rows[i].cells[n], "sorting");
+				}
+				Element.addClass(this.rows[i].cells[columnIndex], "sorting");
+			}
+
+			// 将排序后的二维数组重新输出到对应的行和列中
+			for (var i = 0; i < this.rows.length; i++) {
+				for (var j = 0; j < this.tags.length; j++) {
+					this.rows[i].cells[j].innerHTML = this._2DArray[i][j];
+				}
+			}
+		}
+	}
 }

@@ -23,7 +23,7 @@ _HTTP_RESPONSE_DATA_TYPE_SUCCESS = "success";
 _HTTP_RESPONSE_DATA_TYPE_DATA = "data";
 
 /* HTTP超时(1分钟) */
-_HTTP_TIMEOUT = 1*1000;
+_HTTP_TIMEOUT = 60*1000;
 
 /*
  *  XMLHTTP请求参数对象，负责配置XMLHTTP请求参数

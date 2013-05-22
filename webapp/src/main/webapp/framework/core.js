@@ -12,6 +12,12 @@ $ = function(id){
 	return document.getElementById(id);
 }
 
+var bind = function(object, fun) {
+	return function() {
+		return fun.apply(object, arguments);
+	}
+}
+
 /*
  * 判断值是否为null或空字符串
  */
@@ -481,6 +487,11 @@ function numberToString(number, pattern) {
 	return number.toString();
 }
 
+//去掉所有的html标记 
+function killHTML(str) {
+	return str.replace(/<[^>]+>/g, "");
+}
+
 /*********************************** 常用函数  end **********************************/
 
 /*********************************** html dom 操作 start **********************************/
@@ -703,19 +714,32 @@ Element.getCurrentStyle = function(obj, rule) {
 	}
 }
 
-//动态给js添加class属性
+ 
+Element.hasClass = function(element, className) {
+	var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+	return element.className.match(reg);
+}
+
+/*
+ * 动态给js添加class属性。
+ * 如果已经包含该样式，则不再重复添加；如不存在，则添加该样式。
+ * 一个元素多个样式，样式之间用空格隔开。
+ */
 Element.addClass = function(element, className) {
-	if( !element.className ) {
-		element.className = className;    // 如果element本身不存在class,则直接添加class
-	} else {
-		element.className += " " +className;  // 如果之前有一个class值，注意中间要多一个空格,然后再加上
-	} 
+	if ( !this.hasClass(element, className) ) {
+		element.className += " " + className;
+	}
+}
+
+Element.removeClass = function(element, className) {
+	if ( hasClass(element, className) ) {
+		var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+		element.className = element.className.replace(reg, ' ');
+	}
 }
 
 
-Element.attachRowResize = function(obj, offsetX) {
 
-}
 
 
 /* 缓存页面所有的resize拖动条；元素拖动后可能引起了其他元素位置改变，需要刷新其他元素所对应的resize条位置 */
@@ -798,6 +822,10 @@ Element.attachColResize = function(obj) {
 	};
 }
 
+Element.attachRowResize = function(obj) {
+
+}
+
 Element.attachResize = function(obj) {
 
 }
@@ -866,7 +894,7 @@ Event.cancel = function(eventObj) {
 
 /* 阻止事件向上冒泡 */
 Event.cancelBubble = function(eventObj) {
-	if(window.DOMParser) {
+	if( eventObj.stopPropagation ) {
 		eventObj.stopPropagation();
 	}
 	else {
@@ -883,24 +911,26 @@ Event.cancelBubble = function(eventObj) {
  */
 Event.attachEvent = function(srcElement, eventName, listener) {
 	if(null == srcElement || null == eventName || null == listener) {
-		alert("需要的参数为空，请检查");
-		return;
+		return alert("需要的参数为空，请检查");
 	}
 
-	if(window.DOMParser) {
+	if(srcElement.addEventListener) {
 		srcElement.addEventListener(eventName, listener, false);
 	}
-	else {
+	else if(srcElement.attachEvent) {
 		srcElement.attachEvent("on" + eventName, listener);
 	}
+	else {
+		srcElement['on' + type] = listener;
+	}
 }
+
 Event.detachEvent = function(srcElement, eventName, listener) {
 	if(null == srcElement || null == eventName || null == listener) {
-		alert("需要的参数为空，请检查");
-		return;
+		return alert("需要的参数为空，请检查");
 	}
 
-	if(window.DOMParser) {
+	if( srcElement.removeEventListener ) {
 		srcElement.removeEventListener(eventName, listener, false);
 	}
 	else {
