@@ -44,6 +44,10 @@ Grid\:Box .rolloverRow {
 	background-color:#bed742;
 }
 
+Grid\:Box .hidden {
+	display: none;
+}
+
 
 Grid\:Box .asc {  
 	background: #FFFFCC url(../images/up.gif) no-repeat right 5px;

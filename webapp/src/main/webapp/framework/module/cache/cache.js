@@ -1,6 +1,6 @@
 
 /* 核心包相对路径 */
-URL_CORE = "../../common/";
+URL_CORE = "../../";
 
 /* 延时  */
 TIMEOUT_TAB_CHANGE = 200;
@@ -510,7 +510,6 @@ function createGridToolBar(cacheID) {
 
 /* Grid菜单初始化 */
 function initGridMenu() {
-	var gridObj = $("page1Grid");
 	var item1 = {
 		label:"查看缓存项信息",
 		callback:showItemInfo,
@@ -518,19 +517,11 @@ function initGridMenu() {
 		enable:function() {return true;},
 		visible:function() {return true;}
 	}
-	var item2 = {
-		label:"刷新本缓存项",
-		callback:refreshCurrentRow,
-		icon:"images/refresh.gif",
-		enable:function() {return true;},
-		visible:function() {return true;}
-	}
 
 	var menu1 = new Menu();
 	menu1.addItem(item1);
-	menu1.addItem(item2);
 
-	gridObj.contextmenu = menu1;
+	$("page1Grid").contextmenu = menu1;
 }
 
 /* grid绑定事件 */
@@ -547,19 +538,42 @@ function loadGridEvents() {
 		var x = event.clientX;
 		var y = event.clientY;
 
+		gridObj.selectRowIndex = rowIndex;
 		gridObj.contextmenu.show(x, y);
 	}
-	
-	// 单击grid空白处
-	gridObj.onInactiveRow = function(eventObj) {
-		Focus.focus($("treeTitle").firstChild.id);
-		
-		showTreeNodeStatus({id:"ID", name:"名称"});
+}
  
-		clearTimeout(window._toolbarTimeout);
-		window._toolbarTimeout = setTimeout(function() {
-			loadToolBarData($T("tree").getActiveTreeNode());
-		}, 0);
+/*
+ *	查看缓存项信息
+ */
+function showItemInfo() { 
+	var rowIndex = $("page1Grid").selectRowIndex;
+	var row = $G("page1Grid").getRowByIndex(rowIndex);
+	if( row ) {
+		var key = row.getAttribute("key");
+		var code = row.getAttribute("code");
+
+		var url = URL_VIEW_CACHED_ITEM + "?key=" + key + "&code=" + code;
+		window.open(url, "查看缓存项信息", "");
+	}
+}
+
+/*
+ *	显示缓存项信息
+ */
+function showItemStatus() {
+	var row = $G("page1Grid").getHighlightRow();
+	if( row ) {		
+		var id  = row.getAttribute("id");
+		var key = row.getAttribute("key");
+	}
+
+	var block = Blocks.getBlock("statusContainer");
+	if( block ) {
+		block.open();
+		block.writeln("ID", id || "");
+		block.writeln("key", key || "");
+		block.close();
 	}
 }
 
@@ -569,7 +583,7 @@ function loadGridEvents() {
 function saveCacheStrategy(cacheID) {
 	var check = $("page1Form").checkForm();
 	if(check == false) {
-		return
+		return;
 	}
 	
 	var p = new HttpRequestParams();
@@ -622,79 +636,6 @@ function saveCacheStrategy(cacheID) {
 		request.send();
 	}
 }
-
- 
-/*
- *	查看缓存项信息
- */
-function showItemInfo() {
-	var gridObj = $("page1Grid");
-	var curRowIndex = gridObj.getCurrentRowIndex_Xml()[0];              
-	if( curRowIndex ) {
-		var curRowNode = gridObj.getRow(curRowIndex);
-		var key = curRowNode.getAttribute("key");
-		var code = curRowNode.getAttribute("code");
-
-		var url = URL_VIEW_CACHED_ITEM + "?key=" + key + "&code=" + code;
-		window.open(url, "查看缓存项信息", "");
-	}
-}
-
-/*
- *	显示缓存项信息
- */
-function showItemStatus(rowIndex) {
-	if( rowIndex ) {
-		var gridObj = $G("page1Grid");
-		var rowNode = gridObj.getRow(rowIndex);
-		var id  = rowNode.getAttribute("id");
-		var key = rowNode.getAttribute("key");
-	}
-
-	var block = Blocks.getBlock("statusContainer");
-	if( block ) {
-		block.open();
-		block.writeln("ID", id || "");
-		block.writeln("key", key || "");
-		block.close();
-	}
-}
-
-/*
- *	刷新单条数据
- */
-function refreshCurrentRow() {
-	var gridObj = $("page1Grid");
-	var curRowIndex = gridObj.getCurrentRowIndex_Xml()[0];
-	if( curRowIndex ) {
-		var rowNode = gridObj.getRow(curRowIndex);
-		var key = rowNode.getAttribute("key");
-		var code = rowNode.getAttribute("code");
-
-		var p = new HttpRequestParams();
-		p.url = URL_REFRESH_ITEM;
-		p.setContent("key", key);
-		p.setContent("code", code);
-
-		var request = new HttpRequest(p);
-		request.onsuccess = function() {
-			gridObj.delRow(curRowIndex);
-		}
-		request.onresult = function() {
-			var row = this.getNodeValue(XML_CACHE_ITEM_LIST);
-			var columns = gridObj.getAllColumnNames();
-			for(var i=0; i < columns.length; i++) {
-				var name = columns[i];
-				var value = row.getAttribute(name);
-				if( value ) {
-					gridObj.modifyRow(curRowIndex, name, value);
-				}
-			}
-		}
-		request.send();
-	}
-}
-
 
 
 window.onload = init;

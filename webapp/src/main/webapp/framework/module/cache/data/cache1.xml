@@ -85,13 +85,14 @@
     <CacheItemList>
         <grid version="2">
             <declare sequence="true">
+				<column name="id" caption="键值" display="none"/>
                 <column name="key" caption="键值" mode="string"/>
                 <column name="hit" caption="点击次数" mode="string" align="center"/>
                 <column name="hitRate" caption="点击率" mode="string" align="center"/>
             </declare>
             <data>
-                <row key="com/jinhe/tss/core/cachepool/strategy/CacheStrategyXForm.xml" hit="5" hitRate="35.71429%"></row>
-                <row key="com/jinhe/tss/core/cachepool/strategy/abc.xml" hit="6" hitRate="85.312%"></row>
+                <row id="1" key="com/jinhe/tss/core/cachepool/strategy/CacheStrategyXForm.xml" hit="5" hitRate="35.71429%"></row>
+                <row id="2" key="com/jinhe/tss/core/cachepool/strategy/abc.xml" hit="6" hitRate="85.312%"></row>
             </data>
         </grid>
     </CacheItemList>

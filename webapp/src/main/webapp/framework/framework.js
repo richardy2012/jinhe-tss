@@ -602,7 +602,7 @@ function syncButton(btObjs, request) {
  */
 function initNaviBar(curId) {	
 	var isModule = (window.location.href.indexOf("module") > 0);
-	var relativePath = isModule ? "../../" : "../";
+	var relativePath = isModule ? "../../../" : "../";
 
 	var p = new HttpRequestParams();
 	p.url = relativePath + "navi.xml";

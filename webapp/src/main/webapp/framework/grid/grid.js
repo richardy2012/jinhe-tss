@@ -40,19 +40,6 @@ var Grid = function(element, data) {
 }
 
 
-/*
- * 根据页面上的行数，获取相应的Row对象
- * 参数：	index	行序号
- * 返回值：	Row对象
- */
-Grid.prototype.getRowByIndex = function (index) {
-	if(index >= this.totalRowsNum || index < 0) {
-		alert("Grid对象：行序号[" + index + "]超出允许范围[0 - " + this.totalRowsNum + "]！");
-		return null;
-	}
-	return this.rows[index];
-}
-
 Grid.prototype.load = function(data, append) {
 	if("object" != typeof(data) || data.nodeType != 1) {
 		alert("传入的Grid数据有问题。")	
@@ -135,7 +122,7 @@ Grid.prototype.processDataRow = function(curRow) {
 		}
  
 		var value = curRow.getAttribute(columnName); // xsl解析后，各行的各个TD值统一记录在了TR上。
-		curRow.removeAttribute(columnName);
+		// curRow.removeAttribute(columnName);
 		var nobrNodeInCell = cell.childNodes[0];  // nobr 节点
 		var mode = columnNode.getAttribute("mode");
 		switch( mode ) {
@@ -173,6 +160,29 @@ Grid.prototype.processDataRow = function(curRow) {
 				break;
 		}							
 	}	
+}
+
+/*
+ * 根据页面上的行数，获取相应的Row对象
+ * 参数：	index	行序号
+ * 返回值：	Row对象
+ */
+Grid.prototype.getRowByIndex = function(index) {
+	for(var i = 0; i < this.rows.length; i++) {
+		var row = this.rows[i];
+		if(row.getAttribute("_index") == index) {
+			return row;
+		}
+	}
+}
+
+Grid.prototype.getHighlightRow = function() {
+	for(var i = 0; i < this.rows.length; i++) {
+		var row = this.rows[i];
+		if( Element.hasClass(row, "rolloverRow")) {
+			return row;
+		}
+	}
 }
 
 function attachHighlightRowEvent(curRow) {
@@ -234,23 +244,20 @@ Grid.prototype.attachEventHandler = function() {
 	}
  
 	this.element.onclick = function() { // 单击行
-		if( notOnGridHead(event.srcElement) ) { // 确保点击处不在表头
-			var _srcElement = event.srcElement;
-			// clickTR(_srcElement);
-			// clickTD(_srcElement);
-		}
+		fireClickRowEvent(this, event, "onClickRow");
 	}
 	this.element.ondblclick = function() { // 双击行
-		if( notOnGridHead(event.srcElement) ) { 
-			var _srcElement = event.srcElement;
-			// dbClickTR(_srcElement);
-		}
+		fireClickRowEvent(this, event, "onDblClickRow");
 	}
 
 	this.element.oncontextmenu = function() {
+		fireClickRowEvent(this, event, "onRightClickRow"); // 触发右键事件
+	}
+
+    // 触发自定义事件
+	function fireClickRowEvent(gridElement, event, firerName) {
 		var _srcElement = event.srcElement;
 		if( notOnGridHead(_srcElement) ) { // 确保点击处不在表头
-			
 			var trObj = _srcElement;
 			if( trObj.tag != "TR" ) {
 				trObj = trObj.parentElement;
@@ -262,11 +269,11 @@ Grid.prototype.attachEventHandler = function() {
 				oEvent.result = {
 					rowIndex: rowIndex
 				};
- 			
-				var eventFirer = new EventFirer(this, "onRightClickRow");
+
+				var eventFirer = new EventFirer(gridElement, firerName);
 				eventFirer.fire(oEvent);  // 触发右键事件
-			}
-		}
+			}	
+		}		
 	}
 	
 	// 确保点击处不在表头
@@ -452,7 +459,7 @@ function bindSortHandler(table) {
 		var tag = this.tags[i];
 		var sortable = tag.getAttribute("sortable");
 		if( sortable == "true") {
-			tag._index = i;
+			tag._colIndex = i;
 			Event.attachEvent(tag, "click", bind(tag, sortHandler));
 		}		
 	}
@@ -471,7 +478,7 @@ function bindSortHandler(table) {
 			Element.removeClass(cell, "asc");
 			Element.addClass(this, "desc");			
 		}
-		sort(direction, this._index);
+		sort(direction, this._colIndex);
 		direction = direction * -1;
 
 		function sort(direction, columnIndex) {
@@ -480,10 +487,10 @@ function bindSortHandler(table) {
 				var y = killHTML( b[columnIndex] ).replace(/,/g, '');
 				var compareValue;
 				if( isNaN(x) ) {
-					compareValue = Number(x) - Number(y);
+					compareValue = x.localeCompare(y);
 				}
 				else {
-					compareValue = x.localeCompare(y);
+					compareValue = Number(x) - Number(y);
 				}
 				return compareValue * direction;
 			});

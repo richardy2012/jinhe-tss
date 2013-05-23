@@ -5,24 +5,24 @@
 <title>它山石--缓存管理</title>
 
 <link href="../../css/css.css" rel="stylesheet" type="text/css"></link>
-<link href="../../common/menu/menu.css" rel="stylesheet" type="text/css"></link>
-<link href="../../common/balloon/balloon.css" rel="stylesheet" type="text/css"></link>
-<link href="../../common/toolbar/toolbar.css" rel="stylesheet" type="text/css"></link>
-<link href="../../common/workspace/workspace.css" rel="stylesheet" type="text/css"></link>
-<link href="../../common/tree/tree.css" rel="stylesheet" type="text/css"></link>
-<link href="../../common/grid/grid.css" rel="stylesheet" type="text/css"></link>
-<link href="../../common/xform/xform.css" rel="stylesheet" type="text/css"></link>
+<link href="../../menu/menu.css" rel="stylesheet" type="text/css"></link>
+<link href="../../balloon/balloon.css" rel="stylesheet" type="text/css"></link>
+<link href="../../toolbar/toolbar.css" rel="stylesheet" type="text/css"></link>
+<link href="../../workspace/workspace.css" rel="stylesheet" type="text/css"></link>
+<link href="../../tree/tree.css" rel="stylesheet" type="text/css"></link>
+<link href="../../grid/grid.css" rel="stylesheet" type="text/css"></link>
+<link href="../../xform/xform.css" rel="stylesheet" type="text/css"></link>
 
-<script language="javascript" src="../../js/core.js"></script>
-<script language="javascript" src="../../js/ajax.js"></script>
-<script language="javascript" src="../../js/framework.js"></script>
-<script language="javascript" src="../../common/menu/menu.js"></script>
-<script language="javascript" src="../../common/balloon/balloon.js"></script>
-<script language="javascript" src="../../common/toolbar/toolbar.js"></script>
-<script language="javascript" src="../../common/workspace/workspace.js"></script>
-<script language="javascript" src="../../common/tree/tree.js"></script>
-<script language="javascript" src="../../common/grid/grid.js"></script>
-<script language="javascript" src="../../common/xform/xform.js"></script>
+<script language="javascript" src="../../core.js"></script>
+<script language="javascript" src="../../ajax.js"></script>
+<script language="javascript" src="../../framework.js"></script>
+<script language="javascript" src="../../menu/menu.js"></script>
+<script language="javascript" src="../../balloon/balloon.js"></script>
+<script language="javascript" src="../../toolbar/toolbar.js"></script>
+<script language="javascript" src="../../workspace/workspace.js"></script>
+<script language="javascript" src="../../tree/tree.js"></script>
+<script language="javascript" src="../../grid/grid.js"></script>
+<script language="javascript" src="../../xform/xform.js"></script>
 
 <script language="javascript" src="cache.js"></script>
 
@@ -76,7 +76,7 @@
                         <tr>
                           <td id="treeContainer">
                             <!-- tree 开始 -->
-                            <Tree:Box id="tree" treeType="menu" baseurl="../../common/tree/"><div class="loading"></div></Tree:Box>
+                            <Tree:Box id="tree" treeType="menu" baseurl="../../tree/"><div class="loading"></div></Tree:Box>
                             <!-- tree 结束 -->
                           </td>
                         </tr>
@@ -104,7 +104,7 @@
                                 <tr>
                                   <td>
                                     <!-- 标签区域 开始 -->
-                                    <WorkSpace:Box id="ws" baseurl="../../common/workspace/">
+                                    <WorkSpace:Box id="ws" baseurl="../../workspace/">
                                       <!-- page1 开始 -->
                                       <WorkSpace:Page id=page1 class="tight">
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
@@ -119,7 +119,7 @@
                                                 <tr>
                                                   <td class="">
                                                     <!-- grid 开始 -->
-                                                    <Grid:Box id="page1Grid" baseurl="../../common/grid/" contextmenu="false" ><div class="loading"></div></Grid:Box>
+                                                    <Grid:Box id="page1Grid" baseurl="../../grid/" contextmenu="false" ><div class="loading"></div></Grid:Box>
                                                     <!-- grid 结束 -->
                                                   </td>
                                                 </tr>
@@ -128,7 +128,7 @@
                                             <td class="" valign="top">
                                               <div style="width:100%;height:100%;overflow:auto;padding:10px;">
                                                 <!-- xform 开始 -->
-                                                <XForm:Box id="page1Form" baseurl="../../common/xform/" editable="true"><div class="loading"></div></XForm:Box>
+                                                <XForm:Box id="page1Form" baseurl="../../xform/" editable="true"><div class="loading"></div></XForm:Box>
                                                 <!-- xform 结束 -->
                                               </div>
                                             </td>

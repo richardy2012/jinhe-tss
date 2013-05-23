@@ -9,7 +9,7 @@
 				<xsl:if test="//declare[(@sequence='true') or not(@sequence)]">
 					<col align="center" class="sequence" id="sequence"/>
 				</xsl:if>
-				<xsl:for-each select=".//column[not(@display) or not(@display='none')]">
+				<xsl:for-each select=".//column">
 					<col>
 						<xsl:attribute name="align">
 							<xsl:choose>
@@ -17,9 +17,10 @@
 								<xsl:otherwise><xsl:eval>getAlign()</xsl:eval></xsl:otherwise>
 							</xsl:choose>
 						</xsl:attribute>
-						<xsl:attribute name="id">
-							<xsl:value-of select="@caption"/>
-						</xsl:attribute>
+						<xsl:attribute name="id"><xsl:value-of select="@caption"/></xsl:attribute>
+						<xsl:if test=".[@display='none']">
+							<xsl:attribute name="class">hidden</xsl:attribute>
+						</xsl:if>       
 					</col>
 				</xsl:for-each>
 			</colgroup>
@@ -52,7 +53,7 @@
 								<nobr><xsl:eval>curRow</xsl:eval></nobr>
 							</td>
 						</xsl:if>
-						<xsl:for-each select="//declare/*[(@display!='none')  or not(@display)]">
+						<xsl:for-each select="//declare/*">
 							<td>	
 								<xsl:attribute name="name"><xsl:eval>getColumnName()</xsl:eval></xsl:attribute>	
 								<xsl:if expr="isHighlightCol()==true">
@@ -94,7 +95,7 @@
         </tr>
     </xsl:template>
 	
-    <xsl:template match="column[not(@display) or not(@display='none')]">
+    <xsl:template match="column">
         <td>
             <xsl:attribute name="class">column</xsl:attribute>
             <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>            
