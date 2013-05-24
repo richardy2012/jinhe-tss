@@ -24,7 +24,452 @@
 <script language="javascript" src="../../grid/grid.js"></script>
 <script language="javascript" src="../../xform/xform.js"></script>
 
-<script language="javascript" src="cache.js"></script>
+<SCRIPT type="text/javascript">
+<!--
+	
+	/* 框架包相对路径 */
+	URL_CORE = "../../"; 
+
+	/* 后台响应数据节点名称  */
+	XML_MAIN_TREE = "CacheTree";
+	XML_HIT_RATE  = "HitRate";
+	XML_CACHE_ITEMS = "CacheItemList";
+	XML_CACHE_STRATEGY  = "CacheStrategy";
+
+	/* XMLHTTP请求地址汇总  */
+	URL_INIT = "data/cache_init.xml";
+	URL_CACHE_DETAIL = "data/cache1.xml";
+	URL_CACHE_CLEAR = "data/_success.xml";
+	URL_CACHE_INIT = "data/_success.xml";
+	URL_VIEW_CACHED_ITEM = "data/option1.xml";
+	URL_SAVE_OPTION = "data/_success.xml";
+	URL_GET_OPERATION = "data/operation.xml";
+
+	//URL_INIT = "../../../pms/cache!getAllCacheStrategy4Tree.action";
+	//URL_CACHE_DETAIL = "../../../pms/cache!getCacheStrategyInfo.action";
+	//URL_CACHE_CLEAR = "../../../pms/cache!releaseCache.action";
+	//URL_CACHE_INIT = "../../../pms/cache!initPool.action";
+	//URL_VIEW_CACHED_ITEM = "../../../pms/cache!viewCachedItem.action";
+	//URL_SAVE_OPTION = "data/_success.xml";
+	//URL_GET_OPERATION = "data/operation.xml";
+
+	 
+	/*页面初始化 */
+	function init() {
+		initPaletteResize();
+		initListContainerResize();
+	//	initUserInfo();
+		initToolBar();
+		initNaviBar();
+		initMenus();
+		initBlocks();
+		initWorkSpace(false);
+		initEvents();
+		initFocus();
+
+		loadInitData();
+	}
+
+	/*
+	 *	区块初始化
+	 */
+	function initBlocks() {
+		var paletteObj = $("palette");
+		Blocks.create(paletteObj);
+
+		var treeContainerObj = $("treeContainer");
+		Blocks.create(treeContainerObj, treeContainerObj.parentNode);
+
+		var statusContainerObj = $("statusContainer");
+		Blocks.create(statusContainerObj, statusContainerObj.parentNode, false);
+
+		// 状态信息区实例继承WritingBlock可写功能
+		var block = Blocks.getBlock("statusContainer");
+		if( block ) {
+			block.inherit(WritingBlock);
+		}     
+	}
+	 
+	/*
+	 *	聚焦初始化
+	 */
+	function initFocus() {
+		var treeTitleObj = $("treeTitle");
+		Focus.register(treeTitleObj.firstChild);
+	}
+
+	/*
+	 *	事件绑定初始化
+	 */
+	function initEvents() {
+		Event.attachEvent($("treeBtRefresh"), "click", onClickTreeBtRefresh);
+		Event.attachEvent($("treeTitleBt"),   "click", onClickTreeTitleBt);
+		Event.attachEvent($("statusTitleBt"), "click", onClickStatusTitleBt);
+		Event.attachEvent($("paletteBt"),     "click", onClickPaletteBt);
+		Event.attachEvent($("treeTitle"),     "click", onClickTreeTitle);
+		Event.attachEvent($("statusTitle"),   "click", onClickStatusTitle);
+	}
+
+	/*
+	 *	页面初始化加载数据(包括工具条、菜单树)：
+	 */
+	function loadInitData() {
+		var onresult = function() {
+			var _operation = this.getNodeValue(XML_OPERATION);
+			loadToolBar(_operation);
+
+			var mainTreeXML = this.getNodeValue(XML_MAIN_TREE);
+			Cache.XmlDatas.add(CACHE_MAIN_TREE, mainTreeXML);
+		
+			var treeObj = $("tree");
+			var tree = initTree(treeObj, mainTreeXML.toXml()); 
+			
+			// 添加自定义树事件
+			treeObj.onTreeNodeActived = function(eventObj) {
+				onTreeNodeActived(eventObj);
+			}
+			treeObj.onTreeNodeDoubleClick = function(eventObj) {
+				onTreeNodeDoubleClick(eventObj);
+			}
+			treeObj.onTreeNodeRightClick = function(eventObj) {
+				onTreeNodeRightClick(eventObj);
+			}
+		}
+
+		Ajax({url : URL_INIT, onresult : onresult});
+	}
+
+	/*
+	 *	工具条加载数据
+	 *	参数：	string:_operation      操作权限
+	 */
+	function loadToolBar(_operation) {
+			var str = [];
+			str[str.length] = "<toolbar>";
+			str[str.length] = "    <button id=\"a1\" code=\"p1\" icon=\"images/icon_pre.gif\" label=\"上页\" cmd=\"ws.prevTab()\" enable=\"true\"/>";
+			str[str.length] = "    <button id=\"a2\" code=\"p2\" icon=\"images/icon_next.gif\" label=\"下页\" cmd=\"ws.nextTab()\" enable=\"true\"/>";
+			str[str.length] = "    <separator/>";
+			str[str.length] = "    <button id=\"b1\" code=\"2\" icon=\"images/edit.gif\" label=\"维护\" cmd=\"maintainCache()\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
+			str[str.length] = "    <button id=\"b2\" code=\"2\" icon=\"images/init.gif\" label=\"初始化\" cmd=\"initCache()\" enable=\"'_rootId'!=getTreeNodeId() &amp;&amp; isCacheReleased()\"/>";
+			str[str.length] = "    <button id=\"b3\" code=\"2\" icon=\"images/clear.gif\" label=\"清空\" cmd=\"clearCache()\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
+			str[str.length] = "</toolbar>";
+
+			_loadToolBar(_operation, str.join("\r\n"));
+	}
+
+	/*
+	 *	菜单初始化
+	 */
+	function initMenus() {
+		var item1 = {
+			label:"维护",
+			callback:maintainCache,
+			icon:"images/edit.gif",
+			enable: function() {return true;},
+			visible:function() {return "_rootId" != getTreeNodeId() && true == getOperation("2");}
+		}
+		var item2 = {
+			label:"初始化",
+			callback:initCache,
+			icon:"images/init.gif",
+			enable:function() {return true;},
+			visible:function() {return "_rootId" != getTreeNodeId() && isCacheReleased() && true==getOperation("2");}
+		}
+		var item3 = {
+			label:"清空",
+			callback:clearCache,
+			icon:"images/clear.gif",
+			enable:function() {return true;},
+			visible:function() {return "_rootId" != getTreeNodeId()  && true==getOperation("2");}
+		}
+
+		var menu = new Menu();
+		menu.addItem(item1);
+		menu.addSeparator();
+		menu.addItem(item2);
+		menu.addItem(item3);
+
+		$("tree").contextmenu = menu;
+	}
+
+	function getTreeNodeId() {
+		return getTreeAttribute("id");
+	}
+	 
+	function isCacheReleased() {
+		return getTreeAttribute("released") == "1";
+	}
+
+	/*
+	 *	初始化缓存池
+	 */
+	function initCache() {
+		var tree = $T("tree");
+		var treeNode = tree.getActiveTreeNode();
+		if ( treeNode ) {
+			var treeID = treeNode.getId();
+			Ajax({
+				url : URL_CACHE_INIT,
+				contents : {"code": treeID}, 
+				onsuccess : function() {
+					treeNode.setAttribute("released", "0");
+					tree.reload();
+					showCachePools(treeID);
+				}
+			});
+		}
+	}
+
+	/*
+	 *	清空缓存池
+	 */
+	function clearCache() {
+		var tree = $T("tree");
+		var treeNode = tree.getActiveTreeNode();
+		if ( treeNode ) {
+			var treeID = treeNode.getId();
+			Ajax({
+				url : URL_CACHE_CLEAR,
+				contents : {"code": treeID}, 
+				onsuccess : function() {
+					treeNode.setAttribute("released", "1");   
+					tree.reload();
+					showCachePools(treeID);
+				}
+			});
+		}
+	}
+
+	/*
+	 *	点击树节点
+	 *	参数：	Object:eventObj     模拟事件对象
+	 */
+	function onTreeNodeActived(eventObj) {
+		Focus.focus($("treeTitle").firstChild.id);
+		showTreeNodeStatus({id : "ID", name : "名称"});
+
+		// 防止因为载入工具条数据而导致不响应双击事件
+		clearTimeout(window._toolbarTimeout);
+		
+		var treeNode = eventObj.treeNode;
+		window._toolbarTimeout = setTimeout(function() {
+			if( treeNode ) {
+				getTreeOperation(treeNode, function(_operation) {
+					loadToolBar(_operation);
+				});
+			}
+		}, 10);
+	}
+
+	/* 双击树节点  */
+	function onTreeNodeDoubleClick(eventObj) {
+		if( "_rootId" != getTreeNodeId() ) {
+			maintainCache();
+		}
+	}
+
+	/* 右击树节点  */
+	function onTreeNodeRightClick(eventObj) {
+		showTreeNodeStatus({id:"ID", name:"名称"});
+
+		var treeNode = eventObj.treeNode;
+		getTreeOperation(treeNode, function(_operation) {
+			var tree = $("tree");
+			if( tree.contextmenu ) {
+				tree.contextmenu.show(eventObj.clientX, eventObj.clientY);                
+			}
+			loadToolBar(_operation);
+		});
+	}
+
+	/*
+	 *	获取树操作权限
+	 *	参数：	treeNode:treeNode       treeNode实例
+				function:callback       回调函数
+	 */
+	function getTreeOperation(treeNode, callback) {
+		var _operation = treeNode.getAttribute("_operation");
+
+		// 如果节点上还没有_operation属性，则发请求从后台获取信息
+		if( isNullOrEmpty(_operation) ) { 		
+			Ajax({
+				url : URL_GET_OPERATION,
+				contents : {"resourceId": treeNode.getId()}, 
+				onresult : function() {
+					_operation = this.getNodeValue(XML_OPERATION);
+					treeNode.setAttribute("_operation", _operation);
+
+					if( callback ) { callback(_operation); }	
+				}
+			});
+		} 
+		else {	
+			if( callback ) { callback(_operation); }	
+		}
+	}
+
+
+
+	/*
+	 *	编辑缓存信息
+	 */
+	function maintainCache() {
+		var tree = $T("tree");
+		var treeNode = tree.getActiveTreeNode();
+		if( treeNode ) {
+			var treeID = treeNode.getId();
+			var treeName = treeNode.getName();
+
+			var callback = {};
+			callback.onTabClose = function(eventObj) {
+				delCacheData(eventObj.tab.SID);
+			};
+			callback.onTabChange = function() {
+				setTimeout(function() {
+					showCachePools(treeID);
+				}, TIMEOUT_TAB_CHANGE);
+			};
+
+			var inf = {};
+			inf.defaultPage = "page1";
+			inf.label = OPERATION_EDIT.replace(/\$label/i, treeName);
+			inf.callback = callback;
+			inf.SID = CACHE_TREE_NODE + treeID;
+			var tab = ws.open(inf);
+		}
+	}
+
+	/*
+	 *	树节点数据详细信息加载数据 
+	 *	参数：	string:treeID               树节点id
+				string:page                 页码
+				boolean:showStrategy        false的话只刷新grid列表
+	 */
+	function showCachePools(treeID, page, justRefreshGrid) {
+		var onresult = function() {
+			var cacheID = CACHE_TREE_NODE + treeID + ".";	
+			Cache.XmlDatas.add(cacheID + XML_CACHE_STRATEGY, this.getNodeValue(XML_CACHE_STRATEGY));
+			Cache.XmlDatas.add(cacheID + XML_CACHE_ITEMS,    this.getNodeValue(XML_CACHE_ITEMS));
+			Cache.XmlDatas.add(cacheID + XML_PAGE_INFO,      this.getNodeValue(XML_PAGE_INFO));
+			Cache.XmlDatas.add(cacheID + XML_HIT_RATE,       this.getNodeValue(XML_HIT_RATE));
+			Cache.Variables.add(cacheID, treeID); // 缓存cacheId
+				
+			var strategyXML = Cache.XmlDatas.get(cacheID + XML_CACHE_STRATEGY);
+			if( strategyXML && !justRefreshGrid) {
+				$X("page1Form").load(strategyXML.node);
+				attachReminder(cacheID, $("page1Form"));
+			}
+
+			createGridToolBar(cacheID); // 重新创建grid工具条
+			var gridDataXML = Cache.XmlDatas.get(cacheID + XML_CACHE_ITEMS);
+			if( gridDataXML ) {
+				var grid = $G("page1Grid", gridDataXML);    
+				initGridMenuAndEvents();
+			}		
+			
+			//设置点击率
+			var hitRateData = Cache.XmlDatas.get(cacheID + XML_HIT_RATE);
+			if( hitRateData ) {
+				$("page1HitRate").innerHTML = "『 池命中率：" + hitRateData + " 』";
+			}
+		}
+		
+		Ajax({
+			url : URL_CACHE_DETAIL,
+			contents : {"code":treeID, "page": page || "1"}, 
+			onresult :onresult
+		});
+	}
+	 
+	/*
+	 *	创建grid工具条
+	 */
+	function createGridToolBar(cacheID) {
+		var xmlData = Cache.XmlDatas.get(cacheID + XML_PAGE_INFO);
+		if( xmlData ) {
+			initGridToolBar($("gridToolBar"), xmlData, refreshGrid);
+
+			function refreshGrid(page) {
+				var treeId =  $T("tree").getActiveTreeNode().getId();
+				showCachePools(treeId, page, true);
+			}
+		}
+	}
+
+	/* Grid菜单初始化 */
+	function initGridMenuAndEvents() {
+		var item1 = {
+			label:"查看缓存项信息",
+			callback:showItemInfo,
+			icon:"images/view.gif",
+			enable:function() {return true;},
+			visible:function() {return true;}
+		}
+
+		var menu = new Menu();
+		menu.addItem(item1);
+
+		var gridObj = $("page1Grid");
+		gridObj.contextmenu = menu;
+
+		/* grid绑定事件 */
+		gridObj.onClickRow = function(eventObj) {
+			var rowIndex = eventObj.result.rowIndex;
+			showItemStatus(rowIndex);
+		}
+		
+		gridObj.onRightClickRow = function(eventObj) {
+			gridObj.selectRowIndex = eventObj.result.rowIndex;
+			gridObj.contextmenu.show(event.clientX, event.clientY);
+		}
+	}
+	 
+	/*
+	 *	查看缓存项信息
+	 */
+	function showItemInfo() { 
+		var rowIndex = $("page1Grid").selectRowIndex;
+		var row = $G("page1Grid").getRowByIndex(rowIndex);
+		if( row ) {
+			var key = row.getAttribute("key");
+			var code = row.getAttribute("code");
+
+			var url = URL_VIEW_CACHED_ITEM + "?key=" + key + "&code=" + code;
+			window.open(url, "查看缓存项信息", "");
+		}
+	}
+
+	/*
+	 *	显示缓存项信息
+	 */
+	function showItemStatus() {
+		var row = $G("page1Grid").getHighlightRow();
+		if( row ) {		
+			var id  = row.getAttribute("id");
+			var key = row.getAttribute("key");
+		}
+
+		var block = Blocks.getBlock("statusContainer");
+		if( block ) {
+			block.open();
+			block.writeln("ID", id || "");
+			block.writeln("key", key || "");
+			block.close();
+		}
+	}
+
+
+	window.onload = init;
+
+	// 关闭页面自动注销
+	window.attachEvent("onunload", function() {
+		if(10000 < window.screenTop || 10000 < window.screenLeft) {
+			logout();
+		}
+	});
+
+//-->
+</SCRIPT>
 
 </head>
 
@@ -119,7 +564,7 @@
                                                 <tr>
                                                   <td class="">
                                                     <!-- grid 开始 -->
-                                                    <Grid:Box id="page1Grid" baseurl="../../grid/" contextmenu="false" ><div class="loading"></div></Grid:Box>
+                                                    <Grid:Box id="page1Grid" baseurl="../../grid/"><div class="loading"></div></Grid:Box>
                                                     <!-- grid 结束 -->
                                                   </td>
                                                 </tr>
@@ -128,16 +573,9 @@
                                             <td class="" valign="top">
                                               <div style="width:100%;height:100%;overflow:auto;padding:10px;">
                                                 <!-- xform 开始 -->
-                                                <XForm:Box id="page1Form" baseurl="../../xform/" editable="true"><div class="loading"></div></XForm:Box>
+                                                <XForm:Box id="page1Form" baseurl="../../xform/" editable="false"><div class="loading"></div></XForm:Box>
                                                 <!-- xform 结束 -->
                                               </div>
-                                            </td>
-                                          </tr>
-                                          <tr height="20">
-                                            <td colspan="2">
-                                              <WorkSpace:PageStep>
-                                                <input type="button" class="btStrong" value="完成" id="page1BtSave"/>
-                                              </WorkSpace:PageStep>
                                             </td>
                                           </tr>
                                         </table>

@@ -76,6 +76,7 @@ Grid.prototype.load = function(data, append) {
 		this.gridBox.innerHTML = gridTableHtml.replace(/<\/br>/gi, "") ;
 		
 		// 拖动改变列宽
+		Element.ruleObjList = []; // 先清空原来的拖动条
 		var thList = this.gridBox.childNodes[0].tHead.firstChild.childNodes;
 		for( var i = 0; i < thList.length; i++ ) {
 			Element.attachColResize(thList[i]);
@@ -333,27 +334,27 @@ Grid_DOCUMENT.prototype.selectSingleNode = function(xpath) {
 
 /*
  *	初始化翻页工具条
- *	参数：	object:toolbarObj       工具条对象
+ *	参数：	object:gridPageBar       工具条对象
 			XmlNode:pageInfo        XmlNode实例
 			function:callback       回调函数
  *	返回值：
  */
-function initGridToolBar(toolbarObj, pageInfo, callback) {
+function initGridToolBar(gridPageBar, pageInfo, callback) {
 
-	toolbarObj.init = function() {
+	gridPageBar.init = function() {
 		this.clear();
 		this.create();
 		this.attachEvents();
 	}
 		
-	toolbarObj.clear = function() {
+	gridPageBar.clear = function() {
 		this.innerHTML = ""; // 清空内容
 	}
 	
 	//创建按钮
-	toolbarObj.create = function() {
-		var totalpages = toolbarObj.getTotalPages();
-		var curPage = toolbarObj.getCurrentPage();
+	gridPageBar.create = function() {
+		var totalpages = gridPageBar.getTotalPages();
+		var curPage = gridPageBar.getCurrentPage();
 
 		var str = [];
 		str[str.length] = "<span class=\"button refresh\" id=\"GridBtRefresh\" title=\"刷新\"></span>";
@@ -372,7 +373,7 @@ function initGridToolBar(toolbarObj, pageInfo, callback) {
 	}
 	
 	//绑定事件
-	toolbarObj.attachEvents = function() {
+	gridPageBar.attachEvents = function() {
 		var gridBtRefreshObj = $("GridBtRefresh");
 		var gridBtFirstObj   = $("GridBtFirst");
 		var gridBtPrevObj    = $("GridBtPrev");
@@ -381,62 +382,62 @@ function initGridToolBar(toolbarObj, pageInfo, callback) {
 		var gridPageListObj  = $("GridPageList");
 
 		Event.attachEvent(gridBtRefreshObj, "click", function() {
-			var curPage = toolbarObj.getCurrentPage();
-			toolbarObj.gotoPage(curPage);
+			var curPage = gridPageBar.getCurrentPage();
+			gridPageBar.gotoPage(curPage);
 		});
 		Event.attachEvent(gridBtFirstObj, "click", function() {
-			toolbarObj.gotoPage("1");
+			gridPageBar.gotoPage("1");
 		});
 		Event.attachEvent(gridBtLastObj, "click", function() {
-			var lastpage = toolbarObj.getLastPage();
-			toolbarObj.gotoPage(lastpage);
+			var lastpage = gridPageBar.getLastPage();
+			gridPageBar.gotoPage(lastpage);
 		});
 		Event.attachEvent(gridBtNextObj, "click", function() {
-			var curPage = toolbarObj.getCurrentPage();
-			var lastpage = toolbarObj.getLastPage();
+			var curPage = gridPageBar.getCurrentPage();
+			var lastpage = gridPageBar.getLastPage();
 			var page = lastpage;
 			if(curPage < lastpage) {
 				page = curPage + 1;
 			}
-			toolbarObj.gotoPage(page);
+			gridPageBar.gotoPage(page);
 		});
 		Event.attachEvent(gridBtPrevObj, "click", function() {
-			var curPage = toolbarObj.getCurrentPage();
+			var curPage = gridPageBar.getCurrentPage();
 			var page = 1;
 			if(curPage > 1) {
 				page = curPage - 1;
 			}
-			toolbarObj.gotoPage(page);
+			gridPageBar.gotoPage(page);
 		});
 		Event.attachEvent(gridPageListObj, "change", function() {
-			toolbarObj.gotoPage(gridPageListObj.value);
+			gridPageBar.gotoPage(gridPageListObj.value);
 		});
 	}
 	
 	//获取当前页码
-	toolbarObj.getCurrentPage = function() {
+	gridPageBar.getCurrentPage = function() {
 		var currentpage = pageInfo.getAttribute("currentpage");
-		return currentpage ? 1 : parseInt(currentpage);
+		return currentpage ? parseInt(currentpage) : 1;
 	}
 	
 	//获取最后一页页码
-	toolbarObj.getLastPage = function() {
+	gridPageBar.getLastPage = function() {
 		var lastpage = this.getTotalPages();
-		return lastpage ? 1 : parseInt(lastpage);
+		return lastpage ? parseInt(lastpage) : 1;
 	}
 	
 	//获取总页码
-	toolbarObj.getTotalPages = function() {
+	gridPageBar.getTotalPages = function() {
 		var totalpages = pageInfo.getAttribute("totalpages");
-		return totalpages ? 1 : parseInt(totalpages);
+		return totalpages ? parseInt(totalpages) : 1;
 	}
 	
 	//转到指定页
-	toolbarObj.gotoPage = function(page) {
+	gridPageBar.gotoPage = function(page) {
 		callback(page);
 	}
 	
-	toolbarObj.init();
+	gridPageBar.init();
 }
 
 

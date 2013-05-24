@@ -33,13 +33,13 @@ function assertEquals(actual, expect, msg) {
 }
 
 function assertTrue(result, msg) {
-	if( !result && msg != null) {
+	if( !result && msg ) {
 		alert(msg);
 	}
 }
 
 function assertNotNull(result, msg) {
-	if( result == null && msg != null) {
+	if( result == null && msg ) {
 		alert(msg);
 	}
 }
@@ -138,14 +138,14 @@ Public.showWaitingLayer = function () {
 		document.body.appendChild(coverDiv);
 	}
 
-	if(waitingDiv != null) {
+	if(waitingDiv ) {
 		waitingDiv.style.display = "block";
 	}
 }
 
 Public.hideWaitingLayer = function() {
 	var waitingDiv = $("_waitingDiv");
-	if( waitingDiv != null ) {
+	if( waitingDiv  ) {
 		setTimeout( function() {
 			waitingDiv.style.display = "none";
 			$("coverDiv").style.display = "none";
@@ -156,7 +156,7 @@ Public.hideWaitingLayer = function() {
 Public.writeTitle = function() {
 	if(window.dialogArguments) {
 		var title = window.dialogArguments.title;
-		if( title != null ) {
+		if( title  ) {
 			document.write("<title>" + title + new Array(100).join("　") + "</title>");
 		}
 	}
@@ -448,7 +448,7 @@ function convertToString(value) {
 			str = value.toString();
 			break;
 		case _TYPE_OBJECT:
-			if(value.toString != null){
+			if(value.toString ){
 				str = value.toString();
 			} else {
 				str = "[object]";
@@ -503,7 +503,7 @@ Element.removeNode = function(node) {
 
 	if(window.DOMParser) {
 		var parentNode = node.parentNode;
-		if( parentNode != null ) {
+		if( parentNode  ) {
 			parentNode.removeChild(node);
 		}
 	}
@@ -520,7 +520,7 @@ Element.removeNode = function(node) {
 Element.absLeft = function(srcElement) {
 	var absLeft = 0;
 	var tempObj = srcElement;
-	while( tempObj != null && tempObj != document.body) {
+	while( tempObj  && tempObj != document.body) {
 		absLeft += tempObj.offsetLeft - tempObj.offsetParent.scrollLeft;
 		tempObj = tempObj.offsetParent;
 	}
@@ -529,7 +529,7 @@ Element.absLeft = function(srcElement) {
 Element.absTop = function(srcElement) {
 	var absTop = 0;
 	var tempObj = srcElement;
-	while( tempObj != null && tempObj != document.body) {
+	while( tempObj  && tempObj != document.body) {
 		absTop += tempObj.offsetTop - tempObj.offsetParent.scrollTop;
 		tempObj = tempObj.offsetParent;
 	}
@@ -608,7 +608,7 @@ Element.hideConflict = function(obj) {
 
 Element.showConflict = function(obj) {
 	// 气球有可能已经被其他途径释放掉了，obj被清空
-	if( typeof(obj) != "undefined" && obj.conflict != null ) {
+	if( typeof(obj) != "undefined" && obj.conflict  ) {
 		for( var i = 0; i < obj.conflict.length; i++ ) {
 			obj.conflict[i].style.visibility = "visible";
 		}
@@ -625,7 +625,7 @@ Element.write = function(obj, content) {
  */
 Element.createScript = function(script) {
 	var head = document.head || document.getElementsByTagName('head')[0];
-	if( head != null) {
+	if( head ) {
 		var scriptNode = Element.createElement("script");
 		scriptNode.text = script;
 		head.appendChild(scriptNode);
@@ -677,7 +677,7 @@ Element.contains = function(parentNode, node) {
 	}
 
 	if(window.DOMParser) {
-		while(node != null && node != document.body) {
+		while(node  && node != document.body) {
 			node = node.parentNode;
 			if(node == parentNode) {
 				return true;
@@ -743,7 +743,7 @@ Element.removeClass = function(element, className) {
 
 
 /* 缓存页面所有的resize拖动条；元素拖动后可能引起了其他元素位置改变，需要刷新其他元素所对应的resize条位置 */
-var ruleObjList = [];
+Element.ruleObjList = [];
 
 /*
  * 控制对象拖动改变宽度
@@ -759,7 +759,7 @@ Element.attachColResize = function(obj) {
 	setDivPosition(ruleObj, obj);
 
 	ruleObj.target = obj;
-	ruleObjList.push(ruleObj);
+	Element.ruleObjList.push(ruleObj);
 
     // 计算resize条的坐标值
 	function setDivPosition(ruleElement, element) {
@@ -773,8 +773,8 @@ Element.attachColResize = function(obj) {
 
 	// 刷新所有resize条的位置
 	function refreshResizeDivPosition() {
-		for(var i = 0; i < ruleObjList.length; i++) {
-			var ruleElement = ruleObjList[i];
+		for(var i = 0; i < Element.ruleObjList.length; i++) {
+			var ruleElement = Element.ruleObjList[i];
 			setDivPosition(ruleElement, ruleElement.target);
 		}
 	}
@@ -1191,7 +1191,7 @@ XmlNode.prototype.removeAttribute = function(name) {
 
 XmlNode.prototype.getCDATA = function(name) {
 	var node = this.selectSingleNode(name + "/node()");
-	if(node != null) {
+	if(node ) {
 		return node.nodeValue.revertCDATA();
 	}
 }
@@ -1215,7 +1215,7 @@ XmlNode.prototype.setCDATA = function(name, value) {
 
 XmlNode.prototype.removeCDATA = function(name) {
 	var node = this.selectSingleNode(name);
-	if(node != null) {
+	if(node ) {
 		node.removeNode(true);
 	}
 }
@@ -1232,7 +1232,7 @@ XmlNode.prototype.cloneNode = function(deep) {
 
 XmlNode.prototype.getParent = function() {
 	var xmlNode = null;
-	if( this.node.parentNode != null ) {
+	if( this.node.parentNode  ) {
 		xmlNode = new XmlNode(this.node.parentNode);
 	}
 	return xmlNode;
@@ -1240,7 +1240,7 @@ XmlNode.prototype.getParent = function() {
 
 XmlNode.prototype.removeNode = function() {
 	var parentNode = this.node.parentNode;
-	if(parentNode != null) {
+	if(parentNode ) {
 		parentNode.removeChild(this.node);
 	}
 }
@@ -1261,7 +1261,7 @@ XmlNode.prototype.selectSingleNode = function(xpath) {
 	} 
 	else {
 		var node = this.node.selectSingleNode(xpath);
-		if(node != null) {
+		if(node ) {
 			xmlNode = new XmlNode(node);
 		}
 	}
@@ -1329,14 +1329,12 @@ XmlNode.prototype.getLastChild = function() {
 // 交换子节点
 XmlNode.prototype.replaceChild = function(newNode, oldNode) {
 	var oldParent = oldNode.getParent();
-	if(oldParent != null && oldParent.equals(this)) {
-		try
-		{
+	if(oldParent && oldParent.equals(this)) {
+		try { 
 			this.node.replaceChild(newNode.node, oldNode.node);
 		}
 		catch (e)
-		{
-		}
+		{ }
 	}
 }
 		
@@ -1344,7 +1342,7 @@ XmlNode.prototype.replaceChild = function(newNode, oldNode) {
 // 交换节点
 XmlNode.prototype.swapNode = function(xmlNode) {
 	var parentNode = this.getParent();
-	if(parentNode != null) {
+	if( parentNode ) {
 		parentNode.replaceChild(xmlNode, this);
 	}
 }
@@ -1354,7 +1352,7 @@ XmlNode.prototype.swapNode = function(xmlNode) {
  */
 XmlNode.prototype.getPrevSibling = function() {
 	var xmlNode = null;
-	if(null!=this.node.previousSibling) {
+	if( this.node.previousSibling ) {
 		xmlNode = new XmlNode(this.node.previousSibling);
 	}
 	return xmlNode;
@@ -1364,7 +1362,7 @@ XmlNode.prototype.getPrevSibling = function() {
  * 获取后一个兄弟节点
  */
 XmlNode.prototype.getNextSibling = function() {
-	if(this.node.nextSibling != null) {
+	if( this.node.nextSibling ) {
 		var node = new XmlNode(this.node.nextSibling);
 		return node;
 	}
@@ -1372,7 +1370,7 @@ XmlNode.prototype.getNextSibling = function() {
 }
 
 XmlNode.prototype.equals = function(xmlNode) {
-	return xmlNode != null && this.node == xmlNode.node;
+	return xmlNode && this.node == xmlNode.node;
 }
 
 XmlNode.prototype.toString = function() {

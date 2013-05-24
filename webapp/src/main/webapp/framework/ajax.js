@@ -639,6 +639,15 @@ HttpRequests.onFinishAll = function(callback) {
 /*
  *  对象名称：Ajax请求对象
  *  职责：再次封装，简化xmlhttp使用
+ * 
+	 Ajax({
+		url : url,
+		headers : {},
+		contents : {}, 
+		onresult : function() { },
+		onexception : function() { },
+		onsuccess : function() { }
+	});
  */
 function Ajax() {
 	var arg = arguments[0];
@@ -654,13 +663,13 @@ function Ajax() {
 	}
 
 	var request = new HttpRequest(p);
-	if(arg.onresult != null) {
+	if( arg.onresult ) {
 		request.onresult = arg.onresult;
 	}
-	if(arg.onexception != null) {
+	if( arg.onexception ) {
 		request.onexception = arg.onexception;
 	}
-	if(arg.onsuccess != null) {
+	if( arg.onsuccess ) {
 		request.onsuccess = arg.onsuccess;
 	}
 	request.send();

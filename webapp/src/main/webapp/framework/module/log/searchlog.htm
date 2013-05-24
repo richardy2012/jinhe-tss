@@ -1,42 +1,74 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html xmlns:ToolBar xmlns:Grid2 xmlns:WorkSpace xmlns:Xform xmlns:Tree>
+<HTML xmlns:XForm>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>å®ƒå±±çŸ³--æ—¥å¿—æœç´¢</title>
 
-<!-- ¹«¹²½Å±¾ ¿ªÊ¼ -->
-<link href="../../../platform/css/css.css" rel="stylesheet" type="text/css">
-<link href="../../../platform/css/dialog.css" rel="stylesheet" type="text/css">
-<script language="javascript" src="../../js/debug.js"></script>
-<script language="javascript" src="../../js/common.js"></script>
-<script language="javascript" src="../../js/event.js"></script>
-<script language="javascript" src="../../js/element.js"></script>
-<script language="javascript" src="../../js/xml.js"></script>
-<script language="javascript" src="../../js/xmlhttp.js"></script>
-<script language="javascript" src="../../js/public.js"></script>
-<!-- ¹«¹²½Å±¾ ½áÊø -->
+<link href="../../css/css.css" rel="stylesheet" type="text/css"></link>
+<link href="../../balloon/balloon.css" rel="stylesheet" type="text/css"></link>
+<link href="../../xform/xform.css" rel="stylesheet" type="text/css"></link>
 
-<!-- ÆøÇò ¿ªÊ¼ -->
-<link href="../../js/balloon/balloon.css" rel="stylesheet" type="text/css">
-<script language="javascript" src="../../js/balloon/balloon.js"></script>
-<!-- ÆøÇò ½áÊø -->
+<script language="javascript" src="../../core.js"></script>
+<script language="javascript" src="../../ajax.js"></script>
+<script language="javascript" src="../../framework.js"></script>
+<script language="javascript" src="../../balloon/balloon.js"></script>
+<script language="javascript" src="../../xform/xform.js"></script>
 
-<!-- ²Ëµ¥ ¿ªÊ¼ -->
-<link href="../../js/menu/menu.css" rel="stylesheet" type="text/css">
-<script language="javascript" src="../../js/menu/menu.js"></script>
-<!-- ²Ëµ¥ ½áÊø -->
+<SCRIPT type="text/javascript">
+<!--
+ 
+    URL_CORE = "../../";
 
-<!-- xform ¿ªÊ¼ -->
-<link href="../../htc/xform1.2.3/xform.css" rel="stylesheet" type="text/css">
-<!-- xform ½áÊø -->
+    /* åŽå°å“åº”æ•°æ®èŠ‚ç‚¹åç§°  */
+    XML_MAIN_FORM = "SearchLog";
 
-<!-- µ±Ç°Ò³Ïà¹Ø½Å±¾ ¿ªÊ¼ -->
-<style>
-  Xform\:Form{
-      behavior:url(../../htc/xform1.2.3/xform.htc);
-  }
-</style>
-<script language="javascript" src="js/searchlog.js"></script>
-<!-- µ±Ç°Ò³Ïà¹Ø½Å±¾ ½áÊø -->
+    /* é»˜è®¤å”¯ä¸€ç¼–å·åå‰ç¼€  */
+    CACHE_MAIN_FORM = "xform__id";
+ 
+    function init(){
+        loadInitData();
+    }
+ 
+    function loadInitData(){
+			 Ajax({
+				url : "SearchXForm.xml",
+				onresult : function() {
+            var searchLogFormXML = this.getNodeValue(XML_MAIN_FORM);
+           
+						var row = searchLogFormXML.selectSingleNode("./data/row");
+            var args = window.dialogArguments;
+            for(var item in args){
+                if("title" != item) {
+                    row.setCDATA(item, args[item]);
+                }
+            }
+
+            Cache.XmlDatas.add(XML_MAIN_FORM, searchLogFormXML);
+						$X("searchForm").load(searchLogFormXML.node);
+        }
+			});
+    }
+ 
+		// æœç´¢ä¿¡æ¯
+    function getCondition(){
+        var condition = {};       
+        var searchLogFormXML = Cache.XmlDatas.get(XML_MAIN_FORM);
+        if( searchLogFormXML ) {
+            var searchInfoDataNode = searchLogFormXML.selectSingleNode(".//data");
+            if(searchInfoDataNode){
+                condition.prefix = searchLogFormXML.selectSingleNode("./declare").getAttribute("prefix");
+                condition.dataXml = searchInfoDataNode.toXml();
+            }
+        }
+        window.returnValue = condition;
+        window.close();
+    }
+
+    window.onload = init;
+
+
+//-->
+</SCRIPT>
 
 </head>
 
@@ -45,14 +77,15 @@
   <table class="full" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td valign="top">
-        <!-- xform ¿ªÊ¼ -->
-        <Xform:Form id="searchForm" baseurl="../../htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
-        <!-- xform ½áÊø -->
+        <!-- xform å¼€å§‹ -->
+				 <XForm:Box id="searchForm" baseurl="../../xform/" editable="true"><div class="loading"></div></XForm:Box>
+        <!-- xform ç»“æŸ -->
       </td>
     </tr>
     <tr>
       <td class="t" height="30" align="right">
-        <input type="button" value="¹Ø±Õ" class="btWeak" onclick="window.close()"/> <input type="button" value="È·¶¨" class="btStrong" onclick="getCondition()"/>
+        <input type="button" value="å…³é—­" class="btWeak" onclick="window.close()"/> 
+				<input type="button" value="ç¡®å®š" class="btStrong" onclick="getCondition()"/>
       </td>
     </tr>
   </table>

@@ -98,7 +98,9 @@ XForm.prototype.load = function(data) {
 		}
 
 		// 自动聚焦
-		this.setFocus();
+		if(this.element.editable != "false") {
+			this.setFocus();
+		}		
 	}
 }
 

@@ -17,7 +17,7 @@
 								<xsl:otherwise><xsl:eval>getAlign()</xsl:eval></xsl:otherwise>
 							</xsl:choose>
 						</xsl:attribute>
-						<xsl:attribute name="id"><xsl:value-of select="@caption"/></xsl:attribute>
+						<xsl:attribute name="caption"><xsl:value-of select="@caption"/></xsl:attribute>
 						<xsl:if test=".[@display='none']">
 							<xsl:attribute name="class">hidden</xsl:attribute>
 						</xsl:if>       

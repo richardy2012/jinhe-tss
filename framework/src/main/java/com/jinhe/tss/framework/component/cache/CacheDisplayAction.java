@@ -1,19 +1,12 @@
 package com.jinhe.tss.framework.component.cache;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
 import org.springframework.stereotype.Controller;
 
 import com.jinhe.tss.cache.Cacheable;
@@ -31,7 +24,6 @@ import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.PTActionSupport;
 import com.jinhe.tss.util.BeanUtil;
-import com.jinhe.tss.util.URLUtil;
 import com.jinhe.tss.util.XMLDocUtil;
 
 @Controller
@@ -40,47 +32,7 @@ public class CacheDisplayAction extends PTActionSupport {
     private String code;
     private String key;
     
-    private CacheStrategy strategy = new CacheStrategy();
-    
     private static JCache cache = JCache.getInstance();
-    
-    /**
-     * 修改缓存策略。
-     * @return
-     */
-    public String modifyCacheStrategy() {
-        // 覆盖策略文件的该策略节点 
-        Document doc = XMLDocUtil.createDoc(CacheConstants.STRATEGY_PATH);      
-        List<Element> nodes = XMLDocUtil.selectNodes(doc, CacheConstants.STRATEGY_NODE_NAME);
-        for(Iterator<Element> it = nodes.iterator(); it.hasNext();){
-            Element strategyNode = it.next();  
-            if( !strategyNode.attributeValue("code").equals(strategy.getCode()) ) {
-                continue;
-            }
-            
-            for(Iterator<?> iter = strategyNode.elementIterator(); iter.hasNext();){
-                Element attrNode = (Element)iter.next();
-                Object newValue = BeanUtil.getPropertyValue(strategy, attrNode.getName());
-                attrNode.setText(newValue.toString());
-            }
-        }
-       
-        try {
-            //pass: FileWriter和FileOutputStream区别：前者会改变文件编码格式，后者不会。
-            //另外可通过format.setEncoding("UTF-8")方式来设置XMLWriter的输出编码方式。
-            String classpath = URLUtil.getClassesPath().getPath(); 
-            String sourceFile = classpath + CacheConstants.STRATEGY_PATH;
-            
-            OutputFormat format = OutputFormat.createPrettyPrint();
-            XMLWriter writer = new XMLWriter(new FileOutputStream(sourceFile), format);
-            writer.write( doc );
-            writer.close();
-        } catch (IOException e) {
-            throw new BusinessException("写入缓存策略文件时出错：", e);
-        }
-        
-        return printSuccessMessage();
-    }
     
     /**
      * 树型展示缓存策略
@@ -234,10 +186,6 @@ public class CacheDisplayAction extends PTActionSupport {
     public String initPool(){
         cache.getCachePool(code).init();
         return printSuccessMessage();
-    }
- 
-    public CacheStrategy getCacheStrategy() {
-        return strategy;
     }
  
     public void setCode(String code) {

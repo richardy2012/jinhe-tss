@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    <PageList><pagelist totalpages="1" totalrecords="1" currentpage="1" pagesize="1" currentpagerows="1" /></PageList>
+    <PageList><pagelist totalpages="3" totalrecords="30" currentpage="2" pagesize="10" currentpagerows="10" /></PageList>
     <CacheStrategy>
         <xform>
             <declare prefix="cache">
