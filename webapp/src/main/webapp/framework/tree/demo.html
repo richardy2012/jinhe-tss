@@ -28,8 +28,8 @@ function init() {
 
 		var request = new HttpRequest(p);
 		request.onresult = function() {
-				var treeNode = this.getNodeValue("ParamTree");
-				tree = initTree($("tree"), treeNode.toXml());	 
+				var treeData = this.getNodeValue("ParamTree");
+				var tree = $T("tree", treeData.toXml());	 
 		}
 		request.send();
 }

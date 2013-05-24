@@ -93,27 +93,26 @@ var _TREE_NODE_ICON_ATTRIBUTE = "icon"; // 节点自定义图标属性名
 
 var TreeCache = new Collection();
 
-function $T(treeId) {
-	return TreeCache.get(treeId);
-}
+function $T(treeId, dataXML) {
+	var tree = TreeCache.get(treeId);
+	if( tree == null || dataXML ) {
+		var element = $(treeId);
+		element._dataXML = dataXML;
 
-/*
- * 初始化树对象
- */
-function initTree(element, dataXML) {	
-	element._dataXML = dataXML;
-
-	var treeObj;
-	var _treeType = eval("element." + _TREE_TREE_TYPE) ||  _TREE_TYPE_SINGLE;
-	if(_treeType == _TREE_TYPE_MULTI) {
-		treeObj = new MultiCheckTree(element)
-	} 
-	else {
-		treeObj = new SingleCheckTree(element)
+		var _treeType = eval("element." + _TREE_TREE_TYPE) ||  _TREE_TYPE_SINGLE;
+		if(_treeType == _TREE_TYPE_MULTI) {
+			tree = new MultiCheckTree(element)
+		} 
+		else {
+			tree = new SingleCheckTree(element)
+		}
+		
+		TreeCache.add(element.id, tree);
 	}
-	
-	TreeCache.add(element.id, treeObj);
+
+	return tree;
 }
+
 
 /*
  * 对象名称：Tree	

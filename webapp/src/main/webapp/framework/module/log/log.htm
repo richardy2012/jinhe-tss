@@ -87,7 +87,7 @@ URL_CORE = "../../";
     function loadInitData(){
         var onresult = function(){
             var _operation = this.getNodeValue(XML_OPERATION);
-						loadToolBar(_operation);
+			loadToolBar(_operation);
 
             var groupTreeNode = this.getNodeValue(XML_MAIN_TREE);
             Cache.XmlDatas.add(CACHE_MAIN_TREE, groupTreeNode); 
@@ -102,23 +102,23 @@ URL_CORE = "../../";
      *	参数：	string:_operation      操作权限
      */
     function loadToolBar(_operation){
-				var str = [];
-				str[str.length] = "<toolbar>";
-				str[str.length] = "    <button id=\"a1\" code=\"p1\" icon=\"images/icon_pre.gif\" label=\"上页\" cmd=\"ws.prevTab()\" enable=\"true\"/>";
-				str[str.length] = "    <button id=\"a2\" code=\"p2\" icon=\"images/icon_next.gif\" label=\"下页\" cmd=\"ws.nextTab()\" enable=\"true\"/>";
-				str[str.length] = "    <separator/>";
-				str[str.length] = "    <button id=\"b1\" code=\"plog1\" icon=\"images/view_list.gif\" label=\"浏览日志\" cmd=\"showLogList()\" enable=\"'_rootId'!=getTreeId()\"/>";
-				str[str.length] = "    <button id=\"b2\" code=\"plog2\" icon=\"images/search.gif\" label=\"搜索日志\" cmd=\"searchLog()\" enable=\"'_rootId'!=getTreeId()\"/>";
-				str[str.length] = "</toolbar>";
+		var str = [];
+		str[str.length] = "<toolbar>";
+		str[str.length] = "    <button id=\"a1\" code=\"p1\" icon=\"images/icon_pre.gif\" label=\"上页\" cmd=\"ws.prevTab()\" enable=\"true\"/>";
+		str[str.length] = "    <button id=\"a2\" code=\"p2\" icon=\"images/icon_next.gif\" label=\"下页\" cmd=\"ws.nextTab()\" enable=\"true\"/>";
+		str[str.length] = "    <separator/>";
+		str[str.length] = "    <button id=\"b1\" code=\"plog1\" icon=\"images/view_list.gif\" label=\"浏览日志\" cmd=\"showLogList()\" enable=\"'_rootId'!=getTreeId()\"/>";
+		str[str.length] = "    <button id=\"b2\" code=\"plog2\" icon=\"images/search.gif\" label=\"搜索日志\" cmd=\"searchLog()\" enable=\"'_rootId'!=getTreeId()\"/>";
+		str[str.length] = "</toolbar>";
 
-				_loadToolBar(_operation, str.join("\r\n"));
+		_loadToolBar(_operation, str.join("\r\n"));
     }
 
     /*
      *	菜单初始化
      */
     function initMenus(){
-				/* 树菜单初始化  */
+		/* 树菜单初始化  */
         var item1 = {
             label:"浏览日志",
             callback:showLogList,
@@ -141,7 +141,7 @@ URL_CORE = "../../";
         menu.addItem(item2);
         treeObj.contextmenu = menu;
  
-			  /* Grid菜单初始化  */
+		/* Grid菜单初始化  */
         var gridObj = $("grid");
         var item1 = {
             label:"查看",
@@ -190,10 +190,7 @@ URL_CORE = "../../";
         }
         gridObj.onrightclickrow = function(){
             onRightClickRow(event);
-        }
- 
- 
-    
+        }   
     }
     /*
      *	grid加载数据
@@ -409,20 +406,17 @@ URL_CORE = "../../";
      */
     function initTree(cacheID){
         var mainTreeXML = Cache.XmlDatas.get(cacheID);
-        if( mainTreeXML ){
-						var treeObj = $("tree");
-						var tree = initTree(treeObj, mainTreeXML.toXml()); 
+        if( mainTreeXML ) {			
+			var tree = $T("tree", mainTreeXML.toXml());
 
-            treeObj.onTreeNodeActived = function(eventObj){
+			var treeElement = $("tree");
+            treeElement.onTreeNodeActived = function(eventObj){
                 onTreeNodeActived(eventObj);
             }
-            treeObj.onTreeNodeDoubleClick = function(eventObj){
+            treeElement.onTreeNodeDoubleClick = function(eventObj){
                 onTreeNodeDoubleClick(eventObj);
             }
-            treeObj.onTreeNodeMoved = function(eventObj){
-                onTreeNodeMoved(eventObj);
-            }
-            treeObj.onTreeNodeRightClick = function(eventObj){
+            treeElement.onTreeNodeRightClick = function(eventObj){
                 onTreeNodeRightClick(eventObj);
             }
         }    
@@ -495,13 +489,6 @@ URL_CORE = "../../";
             }
             loadToolBar(_operation);
         });
-    }
-    /*
-     *	拖动树节点
-     *	参数：	Object:eventObj     模拟事件对象
-     */
-    function onTreeNodeMoved(eventObj){
-        sortGroupTo(eventObj);
     }
  
     /*

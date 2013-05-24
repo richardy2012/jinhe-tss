@@ -120,18 +120,18 @@
 
 			var mainTreeXML = this.getNodeValue(XML_MAIN_TREE);
 			Cache.XmlDatas.add(CACHE_MAIN_TREE, mainTreeXML);
-		
-			var treeObj = $("tree");
-			var tree = initTree(treeObj, mainTreeXML.toXml()); 
+					
+			var tree = $T("tree", mainTreeXML.toXml()); 
 			
 			// 添加自定义树事件
-			treeObj.onTreeNodeActived = function(eventObj) {
+			var treeElement = $("tree");
+			treeElement.onTreeNodeActived = function(eventObj) {
 				onTreeNodeActived(eventObj);
 			}
-			treeObj.onTreeNodeDoubleClick = function(eventObj) {
+			treeElement.onTreeNodeDoubleClick = function(eventObj) {
 				onTreeNodeDoubleClick(eventObj);
 			}
-			treeObj.onTreeNodeRightClick = function(eventObj) {
+			treeElement.onTreeNodeRightClick = function(eventObj) {
 				onTreeNodeRightClick(eventObj);
 			}
 		}
