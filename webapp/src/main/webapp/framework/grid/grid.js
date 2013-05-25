@@ -2,12 +2,12 @@
 var GridCache = new Collection();
 
 function $G(gridId, data) {
-	var gridObj = GridCache.get(gridId);
-	if( gridObj == null || data ) {
-		gridObj = new Grid($(gridId), data);
+	var grid = GridCache.get(gridId);
+	if( grid == null || data ) {
+		grid = new Grid($(gridId), data);
 	}
 	
-	return gridObj;
+	return grid;
 }
 
 
@@ -271,6 +271,7 @@ Grid.prototype.attachEventHandler = function() {
 					rowIndex: rowIndex
 				};
 
+				gridElement.selectRowIndex = rowIndex;
 				var eventFirer = new EventFirer(gridElement, firerName);
 				eventFirer.fire(oEvent);  // 触发右键事件
 			}	

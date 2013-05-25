@@ -356,7 +356,7 @@
 				
 			var strategyXML = Cache.XmlDatas.get(cacheID + XML_CACHE_STRATEGY);
 			if( strategyXML && !justRefreshGrid) {
-				$X("page1Form").load(strategyXML.node);
+				$X("page1Form", strategyXML);
 				attachReminder(cacheID, $("page1Form"));
 			}
 
@@ -414,12 +414,10 @@
 
 		/* grid绑定事件 */
 		gridObj.onClickRow = function(eventObj) {
-			var rowIndex = eventObj.result.rowIndex;
-			showItemStatus(rowIndex);
+			showItemStatus();
 		}
 		
 		gridObj.onRightClickRow = function(eventObj) {
-			gridObj.selectRowIndex = eventObj.result.rowIndex;
 			gridObj.contextmenu.show(event.clientX, event.clientY);
 		}
 	}

@@ -53,14 +53,14 @@ HttpRequestParams.prototype.setContent = function(name, value) {
 HttpRequestParams.prototype.setXFormContent = function(dataNode, prefix) {
 	if(dataNode.nodeName != "data") return;
 
-	var rename = dataNode.getAttribute(name);
+	var rename = dataNode.getAttribute("name");
 	var nodes = dataNode.selectNodes("./row/*");
 	for(var i = 0; i < nodes.length; i++) {
 		var name = rename || nodes[i].nodeName; // 从data节点上获取保存名，如果没有则用原名
 		var value = nodes[i].text;
 		
 		// 前缀，xform declare节点上设置，以便于把值设置到action的bean对象里
-		if(null != prefix){
+		if( prefix ) {
 			name = prefix + "." + name;
 		}
 
@@ -166,7 +166,7 @@ HttpRequest.prototype.getNodeValue = function(name) {
 		if(data != null) break;
 	}
 
-	if(data != null) {
+	if( data ) {
 		data = data.cloneNode(true); // 返回复制节点，以便清除整个原始文档
 		switch(data.nodeType) {
 			case _XML_NODE_TYPE_ELEMENT:

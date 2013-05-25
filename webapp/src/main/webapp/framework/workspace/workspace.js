@@ -1272,3 +1272,7 @@ WorkSpace.prototype.switchToPhase = function(page) {
 		}
 	}
 }
+
+WorkSpace.prototype.noTabOpend = function() {
+	return _display.tabs == null || _display.tabs.length == 0;
+}

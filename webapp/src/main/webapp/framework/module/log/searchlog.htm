@@ -54,10 +54,10 @@
         var condition = {};       
         var searchLogFormXML = Cache.XmlDatas.get(XML_MAIN_FORM);
         if( searchLogFormXML ) {
-            var searchInfoDataNode = searchLogFormXML.selectSingleNode(".//data");
-            if(searchInfoDataNode){
+            var dataNode = searchLogFormXML.selectSingleNode(".//data");
+            if(dataNode){
                 condition.prefix = searchLogFormXML.selectSingleNode("./declare").getAttribute("prefix");
-                condition.dataXml = searchInfoDataNode.toXml();
+                condition.dataXml = dataNode.toXml();
             }
         }
         window.returnValue = condition;

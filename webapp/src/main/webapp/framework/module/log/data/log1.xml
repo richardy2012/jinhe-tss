@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Response>
 	<LogInfo>
         <xform>
@@ -7,7 +7,7 @@
 				<column caption="用户" name="userName" mode="number" align="center"/>
 				<column caption="操作对象" name="target" mode="string" align="center"/>
 				<column caption="类型" name="type" mode="string" align="center"/>
-				<column caption="操作日期" name="date" mode="date" pattern="yyyy-MM-dd"/>
+				<column caption="操作日期" name="date" mode="String"/>
             </declare>
             <layout>
                 <TR>
@@ -52,7 +52,7 @@
                 </TR>
             </layout>
             <data>
-                <row></row>
+                <row><userName><![CDATA[Jon.King]]></userName><date><![CDATA[2013-05-22]]></date></row>
             </data>
         </xform>
 	</LogInfo>
