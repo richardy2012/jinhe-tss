@@ -1,54 +1,24 @@
 
-    /*
-     *	核心包相对路径
-     */
     URL_CORE = "../../";
 
     
     /*
      *	后台响应数据节点名称
      */
-    XML_TOOLBAR = "ToolBar";
     XML_MAIN_TREE = "ParamTree";
     XML_PARAM_LIST = "ParamList";
     XML_PARAM_INFO = "ParamInfo";
-    XML_OPERATION = "Operation";
-    XML_PAGE_LIST = "PageList";
-    XML_PROPERTY_INFO = "PropertyInfo";
-    /*
+    
+	/*
      *	默认唯一编号名前缀
      */
-    CACHE_GRID_ROW_DETAIL = "row__id";
     CACHE_TREE_NODE_DETAIL = "treeNode__id";
     CACHE_VIEW_TREE_NODE_DETAIL = "viewTreeNode__id";
-    CACHE_MAIN_TREE = "tree__id";
-    CACHE_TOOLBAR = "toolbar__id";
-    CACHE_UPLOAD_DETAIL = "upload__id";
-    CACHE_TREE_NODE_GRID = "treeNodeGrid__id";
-    /*
-     *	名称
-     */
-    OPERATION_ADD = "新增$label";
-    OPERATION_VIEW = "查看\"$label\"";
-    OPERATION_DEL = "删除\"$label\"";
-    OPERATION_EDIT = "编辑\"$label\"";
-    OPERATION_IMPORT ="导入\"$label\"";
+   
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_INIT = "data/param_init.xml";
-    URL_PARAM_DETAIL = "data/param1.xml";
-    URL_TREENODE_DEL = "data/_success.xml";
-    URL_TREENODE_DISABLE = "data/_success.xml";
-    URL_SAVE_PARAM = "data/_success.xml";
-    URL_SORT_PARAM = "data/_success.xml";
-    URL_FLUSH_PARAM_CACHE  = "../../../pms/param!flushParamCache.action";
-    URL_COPY_PARAM = "data/_success.xml";
-    URL_COPY_PARAM_TO = "data/_success.xml";
-    URL_MOVE_PARAM_TO = "data/_success.xml";
-    URL_GET_OPERATION = "data/operation.xml";
-
-    URL_INIT = URL_CORE + "../param!get2Tree.action";
+	URL_INIT = URL_CORE + "../param!get2Tree.action";
     URL_PARAM_DETAIL = URL_CORE + "../param!getParamInfo.action";
     URL_TREENODE_DEL = URL_CORE + "../param!delParam.action";
     URL_TREENODE_DISABLE = "../../../param!startOrStopParam.action";
@@ -59,19 +29,27 @@
     URL_COPY_PARAM_TO = "../../../param!copyParam.action";
     URL_MOVE_PARAM_TO = "../../../param!moveParam.action";
     URL_GET_OPERATION = "data/operation.xml";
-    /*
-     *	延时
-     */
-    TIMEOUT_TAB_CHANGE = 200;
-    /*
-     *	icon路径
-     */
+	
+	if(IS_TEST) {
+		URL_INIT = "data/param_init.xml";
+		URL_PARAM_DETAIL = "data/param1.xml";
+		URL_TREENODE_DEL = "data/_success.xml";
+		URL_TREENODE_DISABLE = "data/_success.xml";
+		URL_SAVE_PARAM = "data/_success.xml";
+		URL_SORT_PARAM = "data/_success.xml";
+		URL_FLUSH_PARAM_CACHE  = "../../../pms/param!flushParamCache.action";
+		URL_COPY_PARAM = "data/_success.xml";
+		URL_COPY_PARAM_TO = "data/_success.xml";
+		URL_MOVE_PARAM_TO = "data/_success.xml";
+		URL_GET_OPERATION = "data/operation.xml";
+	}
+ 
     ICON = "images/";
 
     var toolbar = null;
 
     /*
-     *	函数说明：页面初始化
+     *	页面初始化
      *	参数：	
      *	返回值：
      */
@@ -89,7 +67,7 @@
         loadInitData();
     }
     /*
-     *	函数说明：页面初始化加载数据(包括工具条、树)
+     *	页面初始化加载数据(包括工具条、树)
      *	参数：	
      *	返回值：
      */
@@ -112,81 +90,38 @@
         request.send();
     }
     /*
-     *	函数说明：工具条加载数据
+     *	工具条加载数据
      *	参数：	string:_operation      操作权限
      *	返回值：
      */
     function loadToolBar(_operation){
-        var xmlIsland = Cache.XmlIslands.get(CACHE_TOOLBAR);
-        if(null==xmlIsland){//还没有就创建
+		var str = [];
+		str[str.length] = "<toolbar>";
 
-            var str = [];
-            str[str.length] = "<toolbar>";
+		//公共
+		str[str.length] = "    <button id=\"a1\" code=\"p1\" icon=\"" + ICON + "icon_pre.gif\" label=\"上页\" cmd=\"ws.prevTab()\" enable=\"true\"/>";
+		str[str.length] = "    <button id=\"a2\" code=\"p2\" icon=\"" + ICON + "icon_next.gif\" label=\"下页\" cmd=\"ws.nextTab()\" enable=\"true\"/>";
+		str[str.length] = "    <separator/>";
 
-            //公共
-            str[str.length] = "    <button id=\"a1\" code=\"p1\" icon=\"" + ICON + "icon_pre.gif\" label=\"上页\" cmd=\"ws.prevTab()\" enable=\"true\"/>";
-            str[str.length] = "    <button id=\"a2\" code=\"p2\" icon=\"" + ICON + "icon_next.gif\" label=\"下页\" cmd=\"ws.nextTab()\" enable=\"true\"/>";
-            str[str.length] = "    <separator/>";
+		//参数管理
+		str[str.length] = "    <button id=\"b1\" code=\"2\" icon=\"" + ICON + "start.gif\" label=\"启用\" cmd=\"enableParam()\" enable=\"'_rootId'!=getTreeNodeId() &amp;&amp; '0'!=getTreeNodeDisabled()\"/>";
+		str[str.length] = "    <button id=\"b2\" code=\"2\" icon=\"" + ICON + "stop.gif\" label=\"停用\" cmd=\"disableParam()\" enable=\"'_rootId'!=getTreeNodeId() &amp;&amp; '0'==getTreeNodeDisabled()\"/>";
+		str[str.length] = "    <button id=\"b4\" code=\"1\" icon=\"" + ICON + "view.gif\" label=\"查看\" cmd=\"editParamInfo(false)\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
+		str[str.length] = "    <button id=\"b5\" code=\"2\" icon=\"" + ICON + "edit.gif\" label=\"编辑\" cmd=\"editParamInfo()\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
+		str[str.length] = "    <button id=\"b6\" code=\"2\" icon=\"" + ICON + "del.gif\" label=\"删除\" cmd=\"delParam()\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
+		str[str.length] = "    <button id=\"b7\" code=\"2\" icon=\"" + ICON + "copy.gif\" label=\"复制\" cmd=\"copyParam()\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
+		str[str.length] = "    <button id=\"b8\" code=\"2\" icon=\"" + ICON + "copy_to.gif\" label=\"复制到...\" cmd=\"copyParamTo()\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
+		str[str.length] = "    <button id=\"b9\" code=\"2\" icon=\"" + ICON + "move.gif\" label=\"移动到...\" cmd=\"moveParamTo()\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
+		str[str.length] = "    <button id=\"b10\" code=\"2\" icon=\"" + ICON + "new_param_group.gif\" label=\"新建参数组\" cmd=\"addNewParam('0')\" enable=\"'0'==getTreeNodeType() || '_rootId'==getTreeNodeId()\"/>";
+		str[str.length] = "</toolbar>";
 
-            //参数管理
-            str[str.length] = "    <button id=\"b1\" code=\"2\" icon=\"" + ICON + "start.gif\" label=\"启用\" cmd=\"enableParam()\" enable=\"'_rootId'!=getTreeNodeId() &amp;&amp; '0'!=getTreeNodeDisabled()\"/>";
-            str[str.length] = "    <button id=\"b2\" code=\"2\" icon=\"" + ICON + "stop.gif\" label=\"停用\" cmd=\"disableParam()\" enable=\"'_rootId'!=getTreeNodeId() &amp;&amp; '0'==getTreeNodeDisabled()\"/>";
-            str[str.length] = "    <button id=\"b4\" code=\"1\" icon=\"" + ICON + "view.gif\" label=\"查看\" cmd=\"editParamInfo(false)\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
-            str[str.length] = "    <button id=\"b5\" code=\"2\" icon=\"" + ICON + "edit.gif\" label=\"编辑\" cmd=\"editParamInfo()\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
-            str[str.length] = "    <button id=\"b6\" code=\"2\" icon=\"" + ICON + "del.gif\" label=\"删除\" cmd=\"delParam()\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
-            str[str.length] = "    <button id=\"b7\" code=\"2\" icon=\"" + ICON + "copy.gif\" label=\"复制\" cmd=\"copyParam()\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
-            str[str.length] = "    <button id=\"b8\" code=\"2\" icon=\"" + ICON + "copy_to.gif\" label=\"复制到...\" cmd=\"copyParamTo()\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
-            str[str.length] = "    <button id=\"b9\" code=\"2\" icon=\"" + ICON + "move.gif\" label=\"移动到...\" cmd=\"moveParamTo()\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
-            str[str.length] = "    <button id=\"b10\" code=\"2\" icon=\"" + ICON + "new_param_group.gif\" label=\"新建参数组\" cmd=\"addNewParam('0')\" enable=\"'0'==getTreeNodeType() || '_rootId'==getTreeNodeId()\"/>";
-//            str[str.length] = "    <button id=\"b11\" code=\"2\" icon=\"" + ICON + "new_param.gif\" label=\"新建参数\" cmd=\"addNewParam('0')\" enable=\"'0'==getTreeNodeType()\"/>";
-//            str[str.length] = "    <button id=\"b12\" code=\"2\" icon=\"" + ICON + "new_param_item.gif\" label=\"新建参数项\" cmd=\"addNewParam('0')\" enable=\"'0'==getTreeNodeType()\"/>";
-            str[str.length] = "</toolbar>";
-
-            var xmlReader = new XmlReader(str.join("\r\n"));
-            var xmlNode = new XmlNode(xmlReader.documentElement);
-
-            Cache.XmlIslands.add(CACHE_TOOLBAR,xmlNode);
-            xmlIsland = xmlNode;
-
-            //载入工具条
-            toolbar.loadXML(xmlIsland);
-        }
-
-        //控制显示
-        var buttons = xmlIsland.selectNodes("./button");
-        for(var i=0,iLen=buttons.length;i<iLen;i++){
-            var curButton = buttons[i];
-            var id = curButton.getAttribute("id");
-            var code = curButton.getAttribute("code");
-            var enableStr = curButton.getAttribute("enable");
-
-            var reg = new RegExp("(^"+code+",)|(^"+code+"$)|(,"+code+",)|(,"+code+"$)","gi");
-            var visible = false;
-            if("string"==typeof(_operation)){
-                visible = (true==reg.test(_operation)?true:false);
-            }
-            toolbar.setVisible(id,visible);
-
-            if(true==visible){
-                var enable = Public.execCommand(enableStr);
-                toolbar.enable(id,enable);
-            }
-        }
+		_loadToolBar(_operation, str.join("\r\n"));
     }
+	
     /*
-     *	函数说明：菜单初始化
-     *	参数：	
-     *	返回值：
+     *	菜单初始化
      */
     function initMenus(){
-        initTreeMenu();
-    }
-    /*
-     *	函数说明：树菜单初始化
-     *	参数：	
-     *	返回值：
-     */
-    function initTreeMenu(){
         var item1 = {
             label:"新建参数",
             callback:null,
@@ -330,7 +265,7 @@
         treeObj.contextmenu = menu1;
     }
     /*
-     *	函数说明：区块初始化
+     *	区块初始化
      *	参数：	
      *	返回值：
      */
@@ -351,7 +286,7 @@
         }     
     }
     /*
-     *	函数说明：显示属性状态信息
+     *	显示属性状态信息
      *	参数：	number:rowIndex     grid数据行号
      *	返回值：
      */
@@ -369,7 +304,7 @@
         }
     }
     /*
-     *	函数说明：资源树初始化
+     *	资源树初始化
      *	参数：	string:cacheID      缓存数据ID
      *	返回值：
      */
@@ -380,7 +315,7 @@
         });
     }
     /*
-     *	函数说明：资源树加载数据
+     *	资源树加载数据
      *	参数：
      *	返回值：
      */
@@ -428,7 +363,7 @@
         request.send();
     }
     /*
-     *	函数说明：聚焦初始化
+     *	聚焦初始化
      *	参数：	
      *	返回值：
      */
@@ -440,7 +375,7 @@
         Focus.register(statusTitleObj.firstChild);
     }
     /*
-     *	函数说明：事件绑定初始化
+     *	事件绑定初始化
      *	参数：	
      *	返回值：
      */
@@ -462,7 +397,7 @@
         Event.attachEvent(statusTitleObj,"click",onClickStatusTitle);
     }
     /*
-     *	函数说明：点击树节点
+     *	点击树节点
      *	参数：	Object:eventObj     模拟事件对象
      *	返回值：
      */
@@ -479,7 +414,7 @@
         },0);
     }
     /*
-     *	函数说明：双击树节点
+     *	双击树节点
      *	参数：	Object:eventObj     模拟事件对象
      *	返回值：
      */
@@ -494,7 +429,7 @@
         });
     }
     /*
-     *	函数说明：资源树节点移动
+     *	资源树节点移动
      *	参数：
      *	返回值：
      */
@@ -502,7 +437,7 @@
         sortParamTo(eventObj);
     }
     /*
-     *	函数说明：资源树单击右键
+     *	资源树单击右键
      *	参数：
      *	返回值：
      */
@@ -522,7 +457,7 @@
         });
     }
     /*
-     *	函数说明：工具条载入数据
+     *	工具条载入数据
      *	参数：	treeNode:treeNode       treeNode实例
      *	返回值：
      */
@@ -534,7 +469,7 @@
         }
     }
     /*
-     *	函数说明：编辑参数信息
+     *	编辑参数信息
      *	参数：  boolean:editable            是否可编辑(默认true)
      *	返回值：
      */
@@ -572,7 +507,7 @@
         }
     }
     /*
-     *	函数说明：树节点数据详细信息加载数据
+     *	树节点数据详细信息加载数据
      *	参数：	string:treeID               树节点id
                 boolean:editable            是否可编辑(默认true)
                 string:parentID             父节点id
@@ -618,7 +553,7 @@
         }
     }
     /*
-     *	函数说明：参数相关页加载数据
+     *	参数相关页加载数据
      *	参数：	string:cacheID              缓存数据id
                 boolean:editable            是否可编辑(默认true)
                 string:parentID             父节点id
@@ -639,7 +574,7 @@
         }
     }
     /*
-     *	函数说明：参数信息xform加载数据
+     *	参数信息xform加载数据
      *	参数：	string:cacheID              缓存数据id
                 boolean:editable            是否可编辑(默认true)
      *	返回值：
@@ -656,7 +591,7 @@
         }
     }
     /*
-     *	函数说明：保存参数
+     *	保存参数
      *	参数：	string:cacheID          缓存数据id
                 string:parentID         父节点id
                 boolean:isNew           是否新增
@@ -736,7 +671,7 @@
         }
     }
     /*
-     *	函数说明：删除参数节点
+     *	删除参数节点
      *	参数：
      *	返回值：
      */
@@ -769,7 +704,7 @@
         }
     }
     /*
-     *	函数说明：启用
+     *	启用
      *	参数：
      *	返回值：
      */
@@ -800,7 +735,7 @@
 
     }
 	    /*
-     *	函数说明：启用
+     *	启用
      *	参数：
      *	返回值：
      */
@@ -823,7 +758,7 @@
 
     }
     /*
-     *	函数说明：停用
+     *	停用
      *	参数：
      *	返回值：
      */
@@ -853,7 +788,7 @@
         }
     }
     /*
-     *	函数说明：新建参数
+     *	新建参数
      *	参数：  string:type         节点类型(0参数组/1参数/2参数项)
                 string:mode         参数项类型(0简单型/1下拉型/2树型)
      *	返回值：
@@ -897,7 +832,7 @@
         }
     }
     /*
-     *	函数说明：创建导出用iframe
+     *	创建导出用iframe
      *	参数：  
      *	返回值：
      */
@@ -911,7 +846,7 @@
         return frameName;
     }
     /*
-     *	函数说明：获取节点id
+     *	获取节点id
      *	参数：  
      *	返回值：string:id   树节点id
      */
@@ -919,7 +854,7 @@
         return getTreeAttribute("id");
     }
     /*
-     *	函数说明：获取节点disabled
+     *	获取节点disabled
      *	参数：  
      *	返回值：string:disabled   树节点disabled
      */
@@ -927,7 +862,7 @@
         return getTreeAttribute("disabled");
     }
     /*
-     *	函数说明：获取节点type
+     *	获取节点type
      *	参数：  
      *	返回值：string:type   树节点type
      */
@@ -935,7 +870,7 @@
         return getTreeAttribute("type");
     }
     /*
-     *	函数说明：获取节点mode
+     *	获取节点mode
      *	参数：  
      *	返回值：string:mode   树节点mode
      */
@@ -943,7 +878,7 @@
         return getTreeAttribute("mode");
     }
     /*
-     *	函数说明：刷新树节点停用启用状态
+     *	刷新树节点停用启用状态
      *	参数：	treeNode:treeNode       treeNode实例
                 string:state            停/启用状态
      *	返回值：
@@ -975,7 +910,7 @@
         treeNode.setAttribute("icon",ICON + img + (state=="1"?"_2":"") + ".gif");       
     }
     /*
-     *	函数说明：刷新级联树节点停用启用状态
+     *	刷新级联树节点停用启用状态
      *	参数：	XmlNode:curNode         XmlNode实例
                 string:state            停/启用状态
      *	返回值：
@@ -1000,7 +935,7 @@
         treeObj.reload(); 
     }
     /*
-     *	函数说明：复制参数
+     *	复制参数
      *	参数：	
      *	返回值：
      */
@@ -1027,7 +962,7 @@
         }
     }
     /*
-     *	函数说明：复制参数到
+     *	复制参数到
      *	参数：	
      *	返回值：
      */
@@ -1041,8 +976,6 @@
             var parentID = treeNode.getParent().getId();
 			var parentMode = treeNode.getParent().getAttribute("mode");
 
-//            var action = "data/paramtree_init.xml";
-            var action = "../param!getCanAddParamsTree.action";
             var params = {
                 id:id,
 			    type:type,
@@ -1051,7 +984,7 @@
                 action:"copyTo"
             };
 
-            var group = window.showModalDialog("paramtree.htm",{params:params,title:"将\""+name+"\"复制到",action:action},"dialogWidth:300px;dialogHeight:400px;");
+            var group = window.showModalDialog("paramtree.htm",{params:params,title:"将\""+name+"\"复制到"},"dialogWidth:300px;dialogHeight:400px;");
             if(null!=group){
 
                 var p = new HttpRequestParams();
@@ -1069,7 +1002,7 @@
         }
     }
     /*
-     *	函数说明：移动参数到
+     *	移动参数到
      *	参数：	
      *	返回值：
      */
@@ -1083,8 +1016,6 @@
             var parentID = treeNode.getParent().getId();
 			var parentMode = treeNode.getParent().getAttribute("mode");
 
-//            var action = "paramtree_init.xml";
-            var action = "../param!getCanAddParamsTree.action";
             var params = {
                 id:id,
 			    type:type,
@@ -1093,7 +1024,7 @@
                 action:"moveTo"
             };
 
-            var group = window.showModalDialog("paramtree.htm",{params:params,title:"将\""+name+"\"移动到",action:action},"dialogWidth:300px;dialogHeight:400px;");
+            var group = window.showModalDialog("paramtree.htm",{params:params,title:"将\""+name+"\"移动到"},"dialogWidth:300px;dialogHeight:400px;");
             if(null!=group){
 
                 var p = new HttpRequestParams();
@@ -1118,39 +1049,7 @@
             }
         }
     }
-    /*
-     *	函数说明：获取树操作权限
-     *	参数：	treeNode:treeNode       treeNode实例
-                function:callback       回调函数
-     *	返回值：
-     */
-    function getTreeOperation(treeNode,callback){
-        var id = treeNode.getId();
-        var _operation = treeNode.getAttribute("_operation");
-
-        if(null==_operation || ""==_operation){//如果节点上还没有_operation属性，则发请求从后台获取信息
-            var p = new HttpRequestParams();
-            p.url = URL_GET_OPERATION;
-            p.setContent("resourceId",id);
-
-            var request = new HttpRequest(p);
-            request.onresult = function(){
-                _operation = this.getNodeValue(XML_OPERATION);
-                treeNode.setAttribute("_operation",_operation);
-
-                if(null!=callback){
-                    callback(_operation);
-                }
-            }
-            request.send();            
-        }else{
-            if(null!=callback){
-                callback(_operation);
-            }
-        }    
-    }
-
-
+	
 
     window.onload = init;
 

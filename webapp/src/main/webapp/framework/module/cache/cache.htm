@@ -37,22 +37,24 @@
 	XML_CACHE_STRATEGY  = "CacheStrategy";
 
 	/* XMLHTTP请求地址汇总  */
-	URL_INIT = "data/cache_init.xml";
-	URL_CACHE_DETAIL = "data/cache1.xml";
-	URL_CACHE_CLEAR = "data/_success.xml";
-	URL_CACHE_INIT = "data/_success.xml";
-	URL_VIEW_CACHED_ITEM = "data/option1.xml";
+	URL_INIT = "../../../pms/cache!getAllCacheStrategy4Tree.action";
+	URL_CACHE_DETAIL = "../../../pms/cache!getCacheStrategyInfo.action";
+	URL_CACHE_CLEAR = "../../../pms/cache!releaseCache.action";
+	URL_CACHE_INIT = "../../../pms/cache!initPool.action";
+	URL_VIEW_CACHED_ITEM = "../../../pms/cache!viewCachedItem.action";
 	URL_SAVE_OPTION = "data/_success.xml";
 	URL_GET_OPERATION = "data/operation.xml";
-
-	//URL_INIT = "../../../pms/cache!getAllCacheStrategy4Tree.action";
-	//URL_CACHE_DETAIL = "../../../pms/cache!getCacheStrategyInfo.action";
-	//URL_CACHE_CLEAR = "../../../pms/cache!releaseCache.action";
-	//URL_CACHE_INIT = "../../../pms/cache!initPool.action";
-	//URL_VIEW_CACHED_ITEM = "../../../pms/cache!viewCachedItem.action";
-	//URL_SAVE_OPTION = "data/_success.xml";
-	//URL_GET_OPERATION = "data/operation.xml";
-
+	
+	if(IS_TEST) {
+		URL_INIT = "data/cache_init.xml";
+		URL_CACHE_DETAIL = "data/cache1.xml";
+		URL_CACHE_CLEAR = "data/_success.xml";
+		URL_CACHE_INIT = "data/_success.xml";
+		URL_VIEW_CACHED_ITEM = "data/option1.xml";
+		URL_SAVE_OPTION = "data/_success.xml";
+		URL_GET_OPERATION = "data/operation.xml";
+	}
+	
 	 
 	/*页面初始化 */
 	function init() {

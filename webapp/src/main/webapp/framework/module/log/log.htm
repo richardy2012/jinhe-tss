@@ -49,16 +49,17 @@ URL_CORE = "../../";
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_INIT = "data/log_init.xml";
-    URL_LOG_LIST = "data/loglist.xml";
-    URL_LOG_DETAIL = "data/log1.xml";
-    URL_SEARCH_LOG = "data/loglist.xml";
+	URL_INIT = "../../../log/log!getAllApps4Tree.action";
+    URL_LOG_LIST = "../../../log/log!queryLogs4Grid.action";
+    URL_LOG_DETAIL = "../../../log/log!getLogInfo.action";
+    URL_SEARCH_LOG = "../../../log/log!queryLogs4Grid.action";
 
-//    URL_INIT = "../../../log/log!getAllApps4Tree.action";
-//    URL_LOG_LIST = "../../../log/log!queryLogs4Grid.action";
-//    URL_LOG_DETAIL = "../../../log/log!getLogInfo.action";
-//    URL_SEARCH_LOG = "../../../log/log!queryLogs4Grid.action";
-
+	if(IS_TEST) {
+	    URL_INIT = "data/log_init.xml";
+		URL_LOG_LIST = "data/loglist.xml";
+		URL_LOG_DETAIL = "data/log1.xml";
+		URL_SEARCH_LOG = "data/loglist.xml";
+	}
  
     /*
      *	页面初始化
@@ -67,8 +68,8 @@ URL_CORE = "../../";
         initPaletteResize();
         initListContainerResize();
         //initUserInfo();
-        initToolBar();
-        initNaviBar("mod.3");
+ 
+		initNaviBar("mod.3");
         initMenus();
         initBlocks();
         initWorkSpace();
@@ -88,23 +89,6 @@ URL_CORE = "../../";
         }
 
         Ajax({url : URL_INIT, onresult : onresult});
-    }
-
-    /*
-     *	工具条加载数据
-     *	参数：	string:_operation      操作权限
-     */
-    function loadToolBar(_operation) {
-		var str = [];
-		str[str.length] = "<toolbar>";
-		str[str.length] = "    <button id=\"a1\" code=\"p1\" icon=\"images/icon_pre.gif\" label=\"上页\" cmd=\"ws.prevTab()\" enable=\"true\"/>";
-		str[str.length] = "    <button id=\"a2\" code=\"p2\" icon=\"images/icon_next.gif\" label=\"下页\" cmd=\"ws.nextTab()\" enable=\"true\"/>";
-		str[str.length] = "    <separator/>";
-		str[str.length] = "    <button id=\"b1\" code=\"\" icon=\"images/view_list.gif\" label=\"浏览日志\" cmd=\"showLogList()\" enable=\"'_rootId'!=getTreeId()\"/>";
-		str[str.length] = "    <button id=\"b2\" code=\"\" icon=\"images/search.gif\" label=\"搜索日志\" cmd=\"searchLog()\" enable=\"'_rootId'!=getTreeId()\"/>";
-		str[str.length] = "</toolbar>";
-
-		_loadToolBar(_operation, str.join("\r\n"));
     }
 
     /*
@@ -371,9 +355,7 @@ URL_CORE = "../../";
             <tr class="hidden"> 
               <td class="separator"></td>
             </tr>
-            <tr> 
-              <td height="20"><!-- 工具条 开始 --><ToolBar:Bar id="toolbar"><div class="loading"></div></ToolBar:Bar><!-- 工具条 结束 --></td>
-            </tr>
+    
             <tr> 
               <td valign="top">
                 <table class="full" border="0" cellpadding="0" cellspacing="0">
@@ -389,7 +371,7 @@ URL_CORE = "../../";
                         <tr>
                           <td id="treeContainer">
                             <!-- tree 开始 -->
-														 <Tree:Box id="tree" treeType="menu" baseurl="../../tree/"><div class="loading"></div></Tree:Box>
+							<Tree:Box id="tree" treeType="menu" baseurl="../../tree/"><div class="loading"></div></Tree:Box>
                             <!-- tree 结束 -->
                           </td>
                         </tr>

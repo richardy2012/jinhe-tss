@@ -7,6 +7,8 @@ CONTEXTPATH = APPLICATION + "/";
 
 URL_CORE = "/" + APPLICATION + "/framework/";  // 界面核心包相对路径
 
+IS_TEST = true;
+
 
 /* 
  * 常量定义

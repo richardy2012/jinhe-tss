@@ -37,16 +37,14 @@ function HttpRequestParams() {
 }
 
 /*
- *	函数说明：设置发送数据
- *	参数：  string:name 		数据字段名
-			string:value        数据内容
+ *	设置发送数据
  */
 HttpRequestParams.prototype.setContent = function(name, value) {
 	this.content[name] = value;
 }
 
 /*
- *	函数说明：设置xform专用格式发送数据
+ *	设置xform专用格式发送数据
  *	参数：	XmlNode:dataNode 	XmlNode实例，xform的data数据节点
 			string:prefix 	    提交字段前缀
  */
@@ -69,24 +67,21 @@ HttpRequestParams.prototype.setXFormContent = function(dataNode, prefix) {
 }
 
 /*
- *	函数说明：清除制定名称的发送数据
- *	参数：	string:name 		数据字段名
+ *	清除制定名称的发送数据
  */
 HttpRequestParams.prototype.clearContent = function(name) {
 	delete this.content[name];
 }
 
 /*
- *	函数说明：清除所有发送数据
+ *	清除所有发送数据
  */
 HttpRequestParams.prototype.clearAllContent = function() {
 	this.content = {};
 }
 
 /*
- *	函数说明：设置请求头信息
- *	参数：	string:name 		头信息字段名
-			string:value        头信息内容
+ *	设置请求头信息
  */
 HttpRequestParams.prototype.setHeader = function(name, value) {
 	this.header[name] = value;
@@ -125,7 +120,7 @@ HttpRequest.prototype.setParamValue = function(name, value) {
 }
 
 /*
- *	函数说明：获取响应数据源代码
+ *	获取响应数据源代码
  *	参数：	
  *	返回值：string:result       响应数据源代码
  */
@@ -134,7 +129,7 @@ HttpRequest.prototype.getResponseText = function() {
 }
 
 /*
- *	函数说明：获取响应数据XML文档对象
+ *	获取响应数据XML文档对象
  *	参数：	
  *	返回值：XmlReader:xmlReader       XML文档对象
  */
@@ -143,7 +138,7 @@ HttpRequest.prototype.getResponseXml = function() {
 }
 
 /*
- *	函数说明：获取响应数据XML文档指定节点对象值
+ *	获取响应数据XML文档指定节点对象值
  *	参数：	string:name             指定节点名
  *	返回值：any:value               根据节点内容类型不同而定
  */
@@ -188,11 +183,9 @@ HttpRequest.prototype.getNodeValue = function(name) {
 }
 
 /*
- * 函数说明：发起XMLHTTP请求
+ * 发起XMLHTTP请求
  * 参数：boolean  是否等待其余请求完成再发送
- * 返回值：
  */
-
  HttpRequest.prototype.send = function(wait) {
 	 var oThis = this;
 
@@ -269,7 +262,7 @@ HttpRequest.prototype.getNodeValue = function(name) {
  }
 
 /*
- *	函数说明：超时中断请求
+ *	超时中断请求
  */
 HttpRequest.prototype.setTimeout = function(noConfirm) {
 	var oThis = this;
@@ -288,14 +281,14 @@ HttpRequest.prototype.setTimeout = function(noConfirm) {
 }
 
 /*
- *	函数说明：清除超时
+ *	清除超时
  */
 HttpRequest.prototype.clearTimeout = function() {
 	clearTimeout(this.timeout);
 }
 
 /*
- *	函数说明：对发送数据进行封装，以XML格式发送
+ *	对发送数据进行封装，以XML格式发送
  */
 HttpRequest.prototype.packageContent = function() {
 	var contentXml = new XmlReader("<" + _XML_NODE_REQUEST_ROOT+"/>");
@@ -332,7 +325,7 @@ HttpRequest.prototype.packageContent = function() {
 }
 
 /*
- *	函数说明：设置自定义请求头信息
+ *	设置自定义请求头信息
  */
 HttpRequest.prototype.setCustomRequestHeader = function() {
 	this.xmlhttp.setRequestHeader("REQUEST-TYPE", "xmlhttp");
@@ -357,7 +350,7 @@ HttpRequest.prototype.setCustomRequestHeader = function() {
 }
 
 /*
- *	函数说明：加载数据完成，对结果进行处理
+ *	加载数据完成，对结果进行处理
  *	参数：	Object:response     该对象各属性值继承自xmlhttp对象
  */
 HttpRequest.prototype.onload = function(response) {
@@ -412,7 +405,7 @@ HttpRequest.prototype.ondata = HttpRequest.prototype.onresult = HttpRequest.prot
 }
 
 /*
- *	函数说明：终止XMLHTTP请求
+ *	终止XMLHTTP请求
  */
 HttpRequest.prototype.abort = function() {
 	if(null != this.xmlhttp) {
@@ -421,7 +414,7 @@ HttpRequest.prototype.abort = function() {
 }
 
 /*
- *	函数说明：执行回调函数
+ *	执行回调函数
  */
 HttpRequest.prototype.executeCallback = function() {
 	if( HttpRequests.getCount() == 0 && HttpRequests.callback != null ) {
@@ -600,7 +593,7 @@ var HttpRequests = {};
 HttpRequests.items = [];
 
 /*
- *	函数说明：终止所有请求连接
+ *	终止所有请求连接
  */
 HttpRequests.closeAll = function() {
 	for(var i = 0; i < this.items.length; i++) {
@@ -611,14 +604,14 @@ HttpRequests.closeAll = function() {
 }
 
 /*
- *	函数说明：加入一个请求连接
+ *	加入一个请求连接
  */
 HttpRequests.add = function(request) {
 	this.items[this.items.length] = request;
 }
 
 /*
- *	函数说明：去除一个请求连接
+ *	去除一个请求连接
  */
 HttpRequests.del = function(request) {
 	for(var i = 0; i < this.items.length; i++) {
@@ -630,14 +623,14 @@ HttpRequests.del = function(request) {
 }
 
 /*
- *	函数说明：统计当前连接数
+ *	统计当前连接数
  */
 HttpRequests.getCount = function() {
 	return this.items.length;
 }
 
 /*
- *	函数说明：等待当前请求全部结束
+ *	等待当前请求全部结束
  */
 HttpRequests.onFinishAll = function(callback) {
 	this.callback = callback;
