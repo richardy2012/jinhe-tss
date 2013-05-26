@@ -111,9 +111,17 @@ function HttpRequest(paramsInstance) {
 	this.value = "";
 
 	this.xmlhttp = new XmlHttp();
-	this.xmlReader  = new XmlReader();
+	this.xmlReader = new XmlReader();
 
 	this.params = paramsInstance;
+}
+
+HttpRequest.prototype.getParamValue = function(name) {
+	return this.params.content[name];
+}
+
+HttpRequest.prototype.setParamValue = function(name, value) {
+	this.params.content[name] = value;
 }
 
 /*
@@ -163,7 +171,7 @@ HttpRequest.prototype.getNodeValue = function(name) {
 				break;
 		}
 		
-		if(data != null) break;
+		if( data ) break;
 	}
 
 	if( data ) {

@@ -204,7 +204,7 @@ Grid.prototype.attachEventHandler = function() {
 	var oThis = this;
 
 	this.gridBox.onscroll = function() {
-		 if(oThis.gridBox.scrollHeight - oThis.gridBox.scrollTop <= oThis.windowHeight) {
+		 if(oThis.gridBox.scrollHeight - oThis.gridBox.scrollTop <= oThis.element.firstChild.clientHeight) {
 			// alert("到达底部");
 			var eventFirer = new EventFirer(oThis.element, "onScrollToBottom");
 			eventFirer.fire(createEventObject());

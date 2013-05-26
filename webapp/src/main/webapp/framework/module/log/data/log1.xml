@@ -4,10 +4,11 @@
         <xform>
             <declare prefix="ps">
                 <column name="id" caption="ID号" mode="string" editable="false"/>
-				<column caption="用户" name="userName" mode="number" align="center"/>
-				<column caption="操作对象" name="target" mode="string" align="center"/>
-				<column caption="类型" name="type" mode="string" align="center"/>
-				<column caption="操作日期" name="date" mode="String"/>
+				<column caption="用户" name="userName" mode="number" />
+				<column caption="操作对象" name="target" mode="string" />
+				<column caption="类型" name="type" mode="string" />
+				<column caption="操作日期" name="date" mode="string"/>
+				<column caption="详细内容" name="content" mode="string"/>
             </declare>
             <layout>
                 <TR>
@@ -26,7 +27,7 @@
                         <input binding="userName" type="text"/>
                     </TD>
                 </TR>
-                <TR showType="0">
+                <TR>
                     <TD width="50">
                         <label binding="target"/>
                     </TD>
@@ -34,7 +35,7 @@
                         <input binding="target" type="text"/>
                     </TD>
                 </TR>
-                <TR showType="0">
+                <TR>
                     <TD width="50">
                         <label binding="type"/>
                     </TD>
@@ -42,7 +43,7 @@
                         <input binding="type" type="text"/>
                     </TD>
                 </TR>
-                <TR showType="0">
+                <TR>
                     <TD width="50">
                         <label binding="date"/>
                     </TD>
@@ -50,9 +51,17 @@
                         <input binding="date" type="text"/>
                     </TD>
                 </TR>
+				<TR>
+                    <TD width="50">
+                        <label binding="content"/>
+                    </TD>
+                    <TD>
+                        <input binding="content" type="textarea"/>
+                    </TD>
+                </TR>
             </layout>
             <data>
-                <row><userName><![CDATA[Jon.King]]></userName><date><![CDATA[2013-05-22]]></date></row>
+                <row><userName><![CDATA[Jon.King]]></userName><type><![CDATA[删除]]></type><date><![CDATA[2013-05-22]]></date></row>
             </data>
         </xform>
 	</LogInfo>

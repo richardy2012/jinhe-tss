@@ -52,15 +52,11 @@ URL_CORE = "../../";
     URL_INIT = "data/log_init.xml";
     URL_LOG_LIST = "data/loglist.xml";
     URL_LOG_DETAIL = "data/log1.xml";
-    URL_GET_OPERATION = "data/operation.xml";
-    URL_GET_LOG_OPERATION = "data/operation.xml";
     URL_SEARCH_LOG = "data/loglist.xml";
 
 //    URL_INIT = "../../../log/log!getAllApps4Tree.action";
 //    URL_LOG_LIST = "../../../log/log!queryLogs4Grid.action";
 //    URL_LOG_DETAIL = "../../../log/log!getLogInfo.action";
-//    URL_GET_OPERATION = "data/operation.xml";
-//    URL_GET_LOG_OPERATION = "data/operation.xml";
 //    URL_SEARCH_LOG = "../../../log/log!queryLogs4Grid.action";
 
  
@@ -192,7 +188,7 @@ URL_CORE = "../../";
 	
     function getTreeId() {
         var treeNode = $T("tree").getActiveTreeNode();
-        if(treeNode) {
+        if( treeNode ) {
             return treeNode.getId();
         }
     }
@@ -219,15 +215,29 @@ URL_CORE = "../../";
 			$G("grid", this.getNodeValue(XML_LOG_LIST)); 
 
 			var pageListNode = this.getNodeValue(XML_PAGE_INFO);			
-			initGridToolBar($("gridToolBar"), pageListNode, function() {} );
+			initGridToolBar($("gridToolBar"), pageListNode, function(page) {
+				request.setParamValue("page", page); 
+				request.onresult = function() {
+					$G("grid", this.getNodeValue(XML_LOG_LIST)); 
+				}				
+				request.send();
+			} );
 			
-			var gridObj = $("grid"); 
-			gridObj.onDblClickRow = function(eventObj) {
+			var gridElement = $("grid"); 
+			gridElement.onDblClickRow = function(eventObj) {
 				showLogInfo();
 			}
-			gridObj.onRightClickRow = function() {
+			gridElement.onRightClickRow = function() {
 				$("grid").contextmenu.show(event.clientX, event.clientY);
 			}   
+			gridElement.onScrollToBottom = function () {			
+				var currentPage = request.getParamValue("page");
+				request.setParamValue("page", parseInt(currentPage) + 1); 
+				request.onresult = function() {
+					$G("grid").load(this.getNodeValue(XML_LOG_LIST), true);
+				}				
+				request.send();
+			}
 		}
 		request.send();
     }
