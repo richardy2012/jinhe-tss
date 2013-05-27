@@ -29,7 +29,7 @@ function init() {
 		var request = new HttpRequest(p);
 		request.onresult = function() {
 				var treeData = this.getNodeValue("ParamTree");
-				var tree = $T("tree", treeData.toXml());	 
+				var tree = $T("tree", treeData);	 
 		}
 		request.send();
 }

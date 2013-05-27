@@ -60,7 +60,7 @@
 	function init() {
 		initPaletteResize();
 		initListContainerResize();
-	//	initUserInfo();
+		initUserInfo();
 		initToolBar();
 		initNaviBar();
 		initMenus();
@@ -101,18 +101,6 @@
 	}
 
 	/*
-	 *	事件绑定初始化
-	 */
-	function initEvents() {
-		Event.attachEvent($("treeBtRefresh"), "click", onClickTreeBtRefresh);
-		Event.attachEvent($("treeTitleBt"),   "click", onClickTreeTitleBt);
-		Event.attachEvent($("statusTitleBt"), "click", onClickStatusTitleBt);
-		Event.attachEvent($("paletteBt"),     "click", onClickPaletteBt);
-		Event.attachEvent($("treeTitle"),     "click", onClickTreeTitle);
-		Event.attachEvent($("statusTitle"),   "click", onClickStatusTitle);
-	}
-
-	/*
 	 *	页面初始化加载数据(包括工具条、菜单树)：
 	 */
 	function loadInitData() {
@@ -123,7 +111,7 @@
 			var mainTreeXML = this.getNodeValue(XML_MAIN_TREE);
 			Cache.XmlDatas.add(CACHE_MAIN_TREE, mainTreeXML);
 					
-			var tree = $T("tree", mainTreeXML.toXml()); 
+			var tree = $T("tree", mainTreeXML); 
 			
 			// 添加自定义树事件
 			var treeElement = $("tree");
@@ -151,9 +139,9 @@
 			str[str.length] = "    <button id=\"a1\" code=\"p1\" icon=\"images/icon_pre.gif\" label=\"上页\" cmd=\"ws.prevTab()\" enable=\"true\"/>";
 			str[str.length] = "    <button id=\"a2\" code=\"p2\" icon=\"images/icon_next.gif\" label=\"下页\" cmd=\"ws.nextTab()\" enable=\"true\"/>";
 			str[str.length] = "    <separator/>";
-			str[str.length] = "    <button id=\"b1\" code=\"2\" icon=\"images/edit.gif\" label=\"维护\" cmd=\"maintainCache()\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
-			str[str.length] = "    <button id=\"b2\" code=\"2\" icon=\"images/init.gif\" label=\"初始化\" cmd=\"initCache()\" enable=\"'_rootId'!=getTreeNodeId() &amp;&amp; isCacheReleased()\"/>";
-			str[str.length] = "    <button id=\"b3\" code=\"2\" icon=\"images/clear.gif\" label=\"清空\" cmd=\"clearCache()\" enable=\"'_rootId'!=getTreeNodeId()\"/>";
+			str[str.length] = "    <button id=\"b1\" code=\"2\" icon=\"images/edit.gif\" label=\"维护\" cmd=\"maintainCache()\" enable=\"!isTreeRoot()\"/>";
+			str[str.length] = "    <button id=\"b2\" code=\"2\" icon=\"images/init.gif\" label=\"初始化\" cmd=\"initCache()\" enable=\"!isTreeRoot() &amp;&amp; isCacheReleased()\"/>";
+			str[str.length] = "    <button id=\"b3\" code=\"2\" icon=\"images/clear.gif\" label=\"清空\" cmd=\"clearCache()\" enable=\"!isTreeRoot()\"/>";
 			str[str.length] = "</toolbar>";
 
 			_loadToolBar(_operation, str.join("\r\n"));
@@ -168,21 +156,21 @@
 			callback:maintainCache,
 			icon:"images/edit.gif",
 			enable: function() {return true;},
-			visible:function() {return "_rootId" != getTreeNodeId() && true == getOperation("2");}
+			visible:function() {return !isTreeRoot() && true == getOperation("2");}
 		}
 		var item2 = {
 			label:"初始化",
 			callback:initCache,
 			icon:"images/init.gif",
 			enable:function() {return true;},
-			visible:function() {return "_rootId" != getTreeNodeId() && isCacheReleased() && true==getOperation("2");}
+			visible:function() {return !isTreeRoot() && isCacheReleased() && true==getOperation("2");}
 		}
 		var item3 = {
 			label:"清空",
 			callback:clearCache,
 			icon:"images/clear.gif",
 			enable:function() {return true;},
-			visible:function() {return "_rootId" != getTreeNodeId()  && true==getOperation("2");}
+			visible:function() {return !isTreeRoot() && true==getOperation("2");}
 		}
 
 		var menu = new Menu();
@@ -265,7 +253,7 @@
 
 	/* 双击树节点  */
 	function onTreeNodeDoubleClick(eventObj) {
-		if( "_rootId" != getTreeNodeId() ) {
+		if( !isTreeRoot() ) {
 			maintainCache();
 		}
 	}

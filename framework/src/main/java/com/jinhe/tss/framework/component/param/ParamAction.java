@@ -89,7 +89,7 @@ public class ParamAction extends PTActionSupport {
 	
 	/** 停用、启用参数 */
 	public String startOrStopParam(){
-		paramService.startOrStop(paramId,disabled);
+		paramService.startOrStop(paramId, disabled);
 		return printSuccessMessage();
 	}
 	

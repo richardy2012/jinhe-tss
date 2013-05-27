@@ -97,6 +97,8 @@ function $T(treeId, dataXML) {
 	var tree = TreeCache.get(treeId);
 	if( tree == null || dataXML ) {
 		var element = $(treeId);
+
+		dataXML = (typeof(dataXML) == 'string') ? dataXML : dataXML.toXml();
 		element._dataXML = dataXML;
 
 		var _treeType = eval("element." + _TREE_TREE_TYPE) ||  _TREE_TYPE_SINGLE;

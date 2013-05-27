@@ -48,6 +48,8 @@ document.oncontextmenu = function(eventObj) {
  *	用户信息初始化
  */
 function initUserInfo() {
+	if(IS_TEST) return;
+
 	var p = new HttpRequestParams();
 	p.url = "um/user!getOperatorInfo.action";
 	p.setHeader("appCode", APP_CODE);
@@ -345,6 +347,18 @@ function getTreeAttribute(name) {
 	return null;   
 }
 
+function getTreeNodeId() {
+	return getTreeAttribute("id");
+}
+
+function isTreeNodeDisabled() {
+	return getTreeAttribute("disabled") == "true";
+}
+
+function isTreeRoot() {
+	return "_rootId" == getTreeNodeId();
+}
+
 /*
  *	修改树节点属性
  *	参数：  string:id               树节点id
@@ -590,6 +604,12 @@ function showTreeNodeStatus(params) {
 	}
 }
 
+function showTreeNodeInfo() {
+	showTreeNodeStatus(
+		{id:"ID", name:"名称", creator:"创建者", createdTime:"创建时间", updator:"修改者", updatedTime:"修改时间"}
+	);
+}
+
 
 /*
  *	禁止点击按钮
@@ -604,7 +624,7 @@ function enableButton(btObj) {
 	btObj.disabled = false;
 }
 /*
- *	同步按钮禁止/允许状态
+ *	request请求期间，同步按钮禁止/允许状态
  */
 function syncButton(btObjs, request) {
 	for(var i=0; i < btObjs.length; i++) {
@@ -617,7 +637,6 @@ function syncButton(btObjs, request) {
 		}
 	}
 }
-
 
 
 /*
@@ -653,6 +672,43 @@ function initNaviBar(curId) {
 		$("navibar").innerHTML = str.join(" ");
 	}
 	request.send();
+}
+
+function initBlocks(){
+	var paletteObj = $("palette");
+	Blocks.create(paletteObj);
+
+	var treeContainerObj = $("treeContainer");
+	Blocks.create(treeContainerObj,treeContainerObj.parentNode);
+
+	var statusContainerObj = $("statusContainer");
+	Blocks.create(statusContainerObj, statusContainerObj.parentNode, false);
+
+	//状态信息区实例继承WritingBlock可写功能
+	var block = Blocks.getBlock("statusContainer");
+	if( block ){
+		block.inherit(WritingBlock);
+	}     
+}
+
+function initFocus(){
+	var treeTitleObj = $("treeTitle");
+	var statusTitleObj = $("statusTitle");
+
+	Focus.register(treeTitleObj.firstChild);
+	Focus.register(statusTitleObj.firstChild);
+}
+
+/*
+ *	事件绑定初始化
+ */
+function initEvents() {
+	Event.attachEvent($("treeBtRefresh"), "click", onClickTreeBtRefresh);
+	Event.attachEvent($("treeTitleBt"),   "click", onClickTreeTitleBt);
+	Event.attachEvent($("statusTitleBt"), "click", onClickStatusTitleBt);
+	Event.attachEvent($("paletteBt"),     "click", onClickPaletteBt);
+	Event.attachEvent($("treeTitle"),     "click", onClickTreeTitle);
+	Event.attachEvent($("statusTitle"),   "click", onClickStatusTitle);
 }
 
 /*
@@ -693,7 +749,7 @@ function _loadToolBar(_operation, contentXML) {
 		var code = curButton.getAttribute("code");
 		var enableStr = curButton.getAttribute("enable");
 		
-		var visible = false;
+		var visible = true;
 		if("string" == typeof(_operation)) {
 			var reg = new RegExp("(^" + code + ",)|(^" + code + "$)|(," + code + ",)|(," + code + "$)", "gi");
 			visible = reg.test(_operation);

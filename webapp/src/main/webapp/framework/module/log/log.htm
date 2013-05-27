@@ -55,84 +55,68 @@ URL_CORE = "../../";
     URL_SEARCH_LOG = "../../../log/log!queryLogs4Grid.action";
 
 	if(IS_TEST) {
-	    URL_INIT = "data/log_init.xml";
+		URL_INIT = "data/log_init.xml";
 		URL_LOG_LIST = "data/loglist.xml";
 		URL_LOG_DETAIL = "data/log1.xml";
 		URL_SEARCH_LOG = "data/loglist.xml";
 	}
  
-    /*
-     *	页面初始化
-     */
+    /* 页面初始化 */
     function init() {
-        initPaletteResize();
-        initListContainerResize();
-        //initUserInfo();
+		initPaletteResize();
+		initListContainerResize();
+		initUserInfo();
+
+		initNaviBar();
+		initMenus();
+		initBlocks();
+		initWorkSpace();
+		initEvents();
+		initFocus();
+
+		loadInitData();
+    }
  
-		initNaviBar("mod.3");
-        initMenus();
-        initBlocks();
-        initWorkSpace();
-        initEvents();
-        initFocus();
-
-        loadInitData();
-    }
-    /*
-     *	页面初始化加载数据(包括工具条、树)
-     */
-    function loadInitData() {
-        var onresult = function() {
-            var groupTreeNode = this.getNodeValue(XML_MAIN_TREE);
-            Cache.XmlDatas.add(CACHE_MAIN_TREE, groupTreeNode); 
-            initTree(CACHE_MAIN_TREE); 
-        }
-
-        Ajax({url : URL_INIT, onresult : onresult});
-    }
-
-    /*
-     *	菜单初始化
-     */
+    /* 菜单初始化 */
     function initMenus() {
 		/* 树菜单初始化  */
-        var item1 = {
-            label:"浏览日志",
-            callback:showLogList,
-            icon:"images/view_list.gif",
-            enable:function() {return true;},
-            visible:function() {return "_rootId" != getTreeId();}
-        }
-        var item2 = {
-            label:"搜索日志",
-            callback:searchLog,
-            icon:"images/search.gif",
-            enable:function() {return true;},
-            visible:function() {return "_rootId" != getTreeId();}
-        }
+		var item1 = {
+			label:"浏览日志",
+			callback:showLogList,
+			icon:"images/view_list.gif",
+			enable:function() {return true;},
+			visible:function() {return !isTreeRoot();}
+		}
+		var item2 = {
+			label:"搜索日志",
+			callback:searchLog,
+			icon:"images/search.gif",
+			enable:function() {return true;},
+			visible:function() {return !isTreeRoot();}
+		}
 
-        var treeObj = $("tree");
+		var treeObj = $("tree");
 
-        var menu = new Menu();
-        menu.addItem(item1);
-        menu.addItem(item2);
-        treeObj.contextmenu = menu;
- 
+		var menu = new Menu();
+		menu.addItem(item1);
+		menu.addItem(item2);
+		treeObj.contextmenu = menu;
+
 		/* Grid菜单初始化  */
-        var gridObj = $("grid");
-        var item1 = {
-            label:"查看",
-            callback:function() {
-                showLogInfo(false);
-            },
-            icon:"images/view.gif",
-            enable:function() {return true;},
-            visible:function() {return true;}
-        }
+		var gridObj = $("grid");
+		var item1 = {
+			label:"查看",
+			callback:function() {
+					showLogInfo(false);
+			},
+			icon:"images/view.gif",
+			enable:function() {return true;},
+			visible:function() {return true;}
+		}
 
-        var menu = new Menu();
-        menu.addItem(item1);
-        gridObj.contextmenu = menu;
+		var menu = new Menu();
+		menu.addItem(item1);
+		gridObj.contextmenu = menu;
     }
 
     function initBlocks() {
@@ -142,22 +126,17 @@ URL_CORE = "../../";
         var treeContainerObj = $("treeContainer");
         Blocks.create(treeContainerObj,treeContainerObj.parentNode);  
     }
-	
-	  /*
-     *	资源树初始化
-     *	参数：	string:cacheID      缓存数据ID
-     */
-    function initTree(cacheID) {
-        var mainTreeXML = Cache.XmlDatas.get(cacheID);
-        if( mainTreeXML ) {			
-			var tree = $T("tree", mainTreeXML.toXml());
+
+	function loadInitData() {
+        var onresult = function() {
+            var tree = $T("tree", this.getNodeValue(XML_MAIN_TREE));
 
 			var treeElement = $("tree");
             treeElement.onTreeNodeActived = function(eventObj) {
                 Focus.focus($("treeTitle").firstChild.id);
             }
             treeElement.onTreeNodeDoubleClick = function(eventObj) {
-               if("_rootId" != getTreeId()) {
+               if( !isTreeRoot() ) {
 					showLogList();
 				}
             }
@@ -167,7 +146,9 @@ URL_CORE = "../../";
 					treeObj.contextmenu.show(eventObj.clientX, eventObj.clientY);                
 				}
             }
-        }    
+        }
+
+        Ajax({url : URL_INIT, onresult : onresult});
     }
 	
     function getTreeId() {
