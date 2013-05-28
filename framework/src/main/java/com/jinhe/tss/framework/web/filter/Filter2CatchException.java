@@ -16,20 +16,15 @@ import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.exception.ExceptionEncoder;
 
 /**
- * <p>
- * 异常过滤器
- * </p>
+ * <p> 异常过滤器 </p>
  * 
  * 捕获异常并转换成XML输出
  * 
  */
-@WebFilter(filterName = "CatchExceptionFilter", urlPatterns = {"*.do", "*.action", ".in", ".portal"})
-public class CatchExceptionFilter implements Filter {
+@WebFilter(filterName = "CatchExceptionFilter", urlPatterns = {"/*"})
+public class Filter2CatchException implements Filter {
 	
-    private static Logger log = Logger.getLogger(CatchExceptionFilter.class);
- 
-    public void destroy() {
-    }
+    Logger log = Logger.getLogger(Filter2CatchException.class);
  
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
@@ -41,7 +36,9 @@ public class CatchExceptionFilter implements Filter {
     }
  
     public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("异常处理过滤器初始化完成！appCode=" + Config.getAttribute(Config.APPLICATION_CODE));
+        log.info("CatchExceptionFilter init! appCode=" + Config.getAttribute(Config.APPLICATION_CODE));
     }
-
+    
+    public void destroy() {
+    }
 }

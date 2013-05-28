@@ -12,7 +12,7 @@ import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeNode;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.entity.ElementGroup;
 import com.jinhe.tss.portal.entity.Portlet;
@@ -24,7 +24,7 @@ import com.jinhe.tss.util.URLUtil;
 import com.jinhe.tss.util.XMLDocUtil;
 import com.jinhe.tss.util.XmlUtil;
  
-public class PortletAction extends PTActionSupport {
+public class PortletAction extends BaseActionSupport {
 
     private Long    id;   
     private Integer disabled;

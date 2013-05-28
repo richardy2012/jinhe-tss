@@ -1,14 +1,4 @@
-/*
-	控件名称: 单选or多选树
-	功能说明:	1、单选or多选树的显示，重载
-				2、枝节点的打开关闭（响应鼠标事件、接口对象提供方法）
-				3、兄弟节点间的移动位置（响应鼠标事件、接口对象提供方法）
-				4、节点的增、删、改
-				5、节点选择状态的更改（响应鼠标事件、接口对象提供方法），参数控制是否和激活节点相关联
-				6、返回选中节点（参数控制是否包括半选节点），返回对象或数组，提供方法转换成xml
-				7、TreeNode接口对象。
- */
- 
+
 /* 树类型 */
 var _TREE_TYPE_SINGLE = "single";
 var _TREE_TYPE_MULTI  = "multi";
@@ -16,7 +6,6 @@ var _TREE_TYPE_MENU   = "menu";
 
 /* 树控件属性名称 */
 var _TREE_BASE_URL = "baseurl";
-// var _TREE_BASE_URL_DEFAULT_VALUE = "common/Tree/";	// 默认控件所在目录
 
 var _TREE_TREE_TYPE = "treeType";         // 树的类型 : multi / single
 var _TREE_SELECTED_IDS = "selectedIds";   // 选中节点id字符串

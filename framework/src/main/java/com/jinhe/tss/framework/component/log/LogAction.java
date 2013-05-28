@@ -6,9 +6,9 @@ import java.util.List;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 
-public class LogAction extends PTActionSupport {
+public class LogAction extends BaseActionSupport {
 
     /**
      * 日志展示模板路径

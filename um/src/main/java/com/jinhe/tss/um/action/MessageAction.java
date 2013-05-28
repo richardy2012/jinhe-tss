@@ -7,12 +7,12 @@ import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormTemplet;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.entity.Message;
 import com.jinhe.tss.um.helper.UMQueryCondition;
 import com.jinhe.tss.um.service.IMessageService;
  
-public class MessageAction extends PTActionSupport {
+public class MessageAction extends BaseActionSupport {
 
 	private static final String XFORM_URI       = "template/xform/message.xml";
 	private static final String GRID_URI        = "template/grid/messageGrid.xml";

@@ -8,7 +8,7 @@ import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.um.entity.Operation;
@@ -21,7 +21,7 @@ import com.jinhe.tss.util.EasyUtils;
 /**
  * 应用资源管理相关Action对象
  */
-public class ApplicationResourceAction extends PTActionSupport {
+public class ApplicationResourceAction extends BaseActionSupport {
 
 	private IApplicationService applicationService;
 	

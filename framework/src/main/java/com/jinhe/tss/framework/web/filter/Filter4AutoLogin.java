@@ -47,11 +47,11 @@ import com.jinhe.tss.framework.sso.identifier.OnlineUserIdentifier;
  *
  */
 @WebFilter(filterName = "AutoLoginFilter", 
-		urlPatterns = {"*.do", "*.action", "/remote/*", ".portal"}, initParams = {
-		@WebInitParam(name="ignoreServletPaths", value="/remote/OnlineUserService,/remote/LoginService")
+		urlPatterns = {"/*"}, initParams = {
+		@WebInitParam(name="ignoreServletPaths", value="/remote/OnlineUserService,/remote/LoginService,.in,js,htm,html,jpg,gif,css")
 })
-public class AutoLoginFilter implements Filter {
-	private static Logger log = Logger.getLogger(AutoLoginFilter.class);
+public class Filter4AutoLogin implements Filter {
+	private static Logger log = Logger.getLogger(Filter4AutoLogin.class);
 
 	private Set<String> ignoreServletPaths = new HashSet<String>();
  
@@ -60,7 +60,7 @@ public class AutoLoginFilter implements Filter {
 		if (paths != null) {
 			ignoreServletPaths.addAll(Arrays.asList(paths.split(",")));
 		}
-		log.info("自动登录过滤器初始化完成！appCode=" + Context.getApplicationContext().getCurrentAppCode());
+		log.info("AutoLoginFilter init! appCode=" + Context.getApplicationContext().getCurrentAppCode());
 	}
  
 	public void destroy() {
@@ -70,25 +70,27 @@ public class AutoLoginFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		try {
             String servletPath = RequestContext.getServletPath((HttpServletRequest)request);
-			log.debug("当前请求ServletPath: " + servletPath);
+			for(String ignore : ignoreServletPaths) {
+	            if(servletPath.toLowerCase().endsWith(ignore.toLowerCase())) {
+	                chain.doFilter(request, response);
+	                return;
+	            }
+	        }
             
-			if (!ignoreServletPaths.contains(servletPath)) {
-			    
-			    IdentityCard card = authenticate();
-			    
-			    /* 
-			     * 初次登录或从其他系统SSO过来时，会新生成一个在本系统内通行的IdentityCard 。
-			     * 身份认证通过，进入系统（身份认证合法以后，根据普通用户或匿名用户分别处理登录过程）。
-			     */
-			    if (card != null) {
-			        /* 登录系统，初始化用户身份信息 */
-		            Context.initIdentityInfo(card);
-		            /* 登录自定义操作 */
-		            customizerExcuteAfterLogin();
-		            /* 保存Cookie信息到客户端 */
-		            setCookie((HttpServletResponse)response, RequestContext.USER_TOKEN, card.getToken());
-		        }
-			}
+			log.debug("current request path: " + servletPath);
+		    IdentityCard card = authenticate();
+		    /* 
+		     * 初次登录或从其他系统SSO过来时，会新生成一个在本系统内通行的IdentityCard 。
+		     * 身份认证通过，进入系统（身份认证合法以后，根据普通用户或匿名用户分别处理登录过程）。
+		     */
+		    if (card != null) {
+		        /* 登录系统，初始化用户身份信息 */
+	            Context.initIdentityInfo(card);
+	            /* 登录自定义操作 */
+	            customizerExcuteAfterLogin();
+	            /* 保存Cookie信息到客户端 */
+	            setCookie((HttpServletResponse)response, RequestContext.USER_TOKEN, card.getToken());
+	        }
 			
 			chain.doFilter(request, response);
 			

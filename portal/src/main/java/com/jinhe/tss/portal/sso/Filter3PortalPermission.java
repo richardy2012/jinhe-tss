@@ -32,7 +32,7 @@ import com.jinhe.tss.um.permission.PermissionHelper;
  */
 @WebFilter(filterName = "PortalPermissionFilter", 
 		urlPatterns = {"*.action", ".portal"})
-public class PortalPermissionFilter implements Filter {
+public class Filter3PortalPermission implements Filter {
 
 	/**
 	 * 请求中门户编号的属性名

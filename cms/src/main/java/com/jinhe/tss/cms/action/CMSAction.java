@@ -2,7 +2,7 @@ package com.jinhe.tss.cms.action;
 
 import com.jinhe.tss.cms.service.IRemoteArticleService;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.util.EasyUtils;
 
 /** 
@@ -11,7 +11,7 @@ import com.jinhe.tss.util.EasyUtils;
  * 支持RSS。
  * 
  */
-public class CMSAction extends PTActionSupport {
+public class CMSAction extends BaseActionSupport {
  
 	private Long    articleId;
 	private Long    channelId;

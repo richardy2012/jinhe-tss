@@ -12,7 +12,7 @@ import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeNodeOptionsEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.Role;
 import com.jinhe.tss.um.entity.permission.resources.RoleResources;
@@ -26,7 +26,7 @@ import com.jinhe.tss.um.service.IRoleService;
 import com.jinhe.tss.util.DateUtil;
 import com.jinhe.tss.util.EasyUtils;
  
-public class RoleAction extends PTActionSupport {
+public class RoleAction extends BaseActionSupport {
 
 	private IRoleService roleService;
 	private PermissionService permissionService;

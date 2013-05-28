@@ -21,12 +21,12 @@ import org.mortbay.jetty.servlet.Context;
 import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.sso.servlet.JustRedirectServlet;
 import com.jinhe.tss.framework.sso.servlet.MultiRequestServletTest.SimpleRequestServlet;
-import com.jinhe.tss.framework.web.filter.AutoLoginFilter;
-import com.jinhe.tss.framework.web.filter.CatchExceptionFilter;
-import com.jinhe.tss.framework.web.filter.ContextFilter;
-import com.jinhe.tss.framework.web.filter.HttpProxyFilter;
-import com.jinhe.tss.framework.web.filter.EncodingFilter;
-import com.jinhe.tss.framework.web.filter.XmlHttpDecodeFilter;
+import com.jinhe.tss.framework.web.filter.Filter4AutoLogin;
+import com.jinhe.tss.framework.web.filter.Filter2CatchException;
+import com.jinhe.tss.framework.web.filter.Filter3Context;
+import com.jinhe.tss.framework.web.filter.Filter5HttpProxy;
+import com.jinhe.tss.framework.web.filter.Filter1Encoding;
+import com.jinhe.tss.framework.web.filter.Filter6XmlHttpDecode;
 import com.jinhe.tss.framework.web.listener.SessionDestroyedListener;
 import com.jinhe.tss.framework.web.servlet.EmptyServlet;
 import com.jinhe.tss.framework.web.servlet.LoginServlet;
@@ -56,12 +56,12 @@ public class SSOIntegrateTest extends TestCase {
         
         Context context = new Context(server, contextPath, Context.SESSIONS);
         
-        context.addFilter(EncodingFilter.class, "/*", Handler.DEFAULT).setInitParameter("encoding", "UTF-8");
-        context.addFilter(CatchExceptionFilter.class, "*", Handler.DEFAULT);
-        context.addFilter(ContextFilter.class, "/*", Handler.DEFAULT);
-        context.addFilter(AutoLoginFilter.class, "/*", Handler.DEFAULT);
-        context.addFilter(HttpProxyFilter.class, "/*", Handler.DEFAULT);
-        context.addFilter(XmlHttpDecodeFilter.class, "*", Handler.DEFAULT);
+        context.addFilter(Filter1Encoding.class, "/*", Handler.DEFAULT).setInitParameter("encoding", "UTF-8");
+        context.addFilter(Filter2CatchException.class, "*", Handler.DEFAULT);
+        context.addFilter(Filter3Context.class, "/*", Handler.DEFAULT);
+        context.addFilter(Filter4AutoLogin.class, "/*", Handler.DEFAULT);
+        context.addFilter(Filter5HttpProxy.class, "/*", Handler.DEFAULT);
+        context.addFilter(Filter6XmlHttpDecode.class, "*", Handler.DEFAULT);
         
         context.getSessionHandler().addEventListener(new SessionDestroyedListener());
         

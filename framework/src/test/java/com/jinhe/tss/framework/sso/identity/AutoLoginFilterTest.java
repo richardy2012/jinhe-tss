@@ -23,7 +23,7 @@ import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.sso.online.OnlineUserManagerFactory;
-import com.jinhe.tss.framework.web.filter.AutoLoginFilter;
+import com.jinhe.tss.framework.web.filter.Filter4AutoLogin;
  
 public class AutoLoginFilterTest extends TestCase {
 
@@ -35,7 +35,7 @@ public class AutoLoginFilterTest extends TestCase {
 
     private FilterChain chain;
 
-    private AutoLoginFilter filter;
+    private Filter4AutoLogin filter;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -50,7 +50,7 @@ public class AutoLoginFilterTest extends TestCase {
         
         Context.initApplicationContext(MockApplicationContext.getDefaultApplicationContext());
        
-        filter = new AutoLoginFilter();
+        filter = new Filter4AutoLogin();
         chain = new MockFilterChain();
     }
  

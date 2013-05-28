@@ -8,13 +8,14 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.cache.strategy.CacheConstants;
 import com.jinhe.tss.cache.strategy.CacheStrategy;
-import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.grid.DefaultGridNode;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
@@ -22,23 +23,21 @@ import com.jinhe.tss.framework.web.dispaly.tree.ITreeNode;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.XMLDocUtil;
 
 @Controller
-public class CacheDisplayAction extends PTActionSupport {
-
-    private String code;
-    private String key;
-    
+@RequestMapping("/cache")
+public class CacheDisplayAction extends BaseActionSupport {
+ 
     private static JCache cache = JCache.getInstance();
     
     /**
-     * 树型展示缓存策略
-     * @return
+     * 树型展示所有缓存池
      */
-    public String getAllCacheStrategy4Tree() {
+    @RequestMapping("/")
+    public void getAllCacheStrategy4Tree() {
         List<CacheStrategy> strategyList = new ArrayList<CacheStrategy>();
         
         Set<Entry<String, Pool>> pools = cache.listCachePools(); 
@@ -61,22 +60,23 @@ public class CacheDisplayAction extends PTActionSupport {
         
         TreeEncoder encoder = new TreeEncoder(treeNodeList);
         encoder.setNeedRootNode(false);
-        return print("CacheTree", encoder);
+        print("CacheTree", encoder);
     }
     
     /**
      * 获取缓存策略以及缓存池信息
-     * @return
      */
-    public String getCacheStrategyInfo() {
-        CacheStrategy strategy = cache.getCachePool(code).getCacheStrategy();
+    @RequestMapping("/{code}")
+    public void getCacheStrategyInfo(@PathVariable String code) {
+        Pool pool = cache.getCachePool(code);
+        CacheStrategy strategy = pool.getCacheStrategy();
         Map<String, Object> strategyProperties = new HashMap<String, Object>();
         BeanUtil.addBeanProperties2Map(strategy, strategyProperties);
         
         XFormEncoder xEncoder = new XFormEncoder(CacheConstants.CACHESTRATEGY_XFORM_TEMPLET, strategyProperties); 
-        String hitRate = cache.getCachePool(code).getHitRate() + "%";
+        String hitRate = pool.getHitRate() + "%";
         
-        Set<Cacheable> cachedItems = cache.getCachePool(code).listItems();
+        Set<Cacheable> cachedItems = pool.listItems();
         long requests = strategy.getPoolInstance().getRequests();
         List<IGridNode> temp = new ArrayList<IGridNode>();
         String name = null;
@@ -109,49 +109,17 @@ public class CacheDisplayAction extends PTActionSupport {
         
         GridDataEncoder gEncoder = new GridDataEncoder(temp, XMLDocUtil.dataXml2Doc(template.toString()));
            
-        return print(new String[]{"CacheInfo", "CacheOption", "PageList", "PoolHitRate"}, 
-                new Object[]{xEncoder, gEncoder, createPageInfo(cachedItems.size()), hitRate});
-    }
-    
-    //加入分页信息，只有一页。
-    private String createPageInfo(int totalRows){
-        int currentPageRows = totalRows;
-        int pagesize = totalRows + 1;         
-        StringBuffer sb = new StringBuffer("<pagelist totalpages=\"1\" totalrecords=\"");
-        sb.append(totalRows).append("\" currentpage=\"1\" pagesize=\"").append(pagesize);
-        sb.append("\" currentpagerows=\"").append(currentPageRows).append("\" />");
-        
-        return sb.toString();
-    }
-    
-    /**
-     * 刷新缓存.
-     * 如果不能重新加载更新的缓存项，则返回null。
-     */
-    public String refresh() {
-        Pool pool = cache.getCachePool(code);
-        Cacheable object = pool.getObject(key);
-        if(object == null){
-            throw new BusinessException("缓存项不在缓存池中，可能已被清除！");
-        }
-        
-        Cacheable item = pool.reload(object);
-        if(item == null){
-            return printSuccessMessage("刷新成功，缓存项被清除出缓存。");
-        }
-        else {
-            int hit = item.getHit();
-            long requests = pool.getRequests();
-            String hitRate = ((requests == 0) ? 0 : (((float) hit / requests) * 100f)) + "%";
-            return print("CacheOption", "<row key=\"" + key + "\" hit=\"" + hit + "\" code=\"" + code + "\" hitRate=\"" + hitRate + "\"/>");
-        }
+        int totalRows = cachedItems.size();
+        String pageInfo = generatePageInfo(totalRows, 1, totalRows + 1, totalRows); // 加入分页信息，总是只有一页。
+        print(new String[]{"CacheInfo", "CacheOption", "PageList", "PoolHitRate"}, 
+                new Object[]{xEncoder, gEncoder, pageInfo, hitRate});
     }
     
     /**
      * 查看详细的缓存项内容。对象XML格式展示
-     * @return
      */
-    public String viewCachedItem(){
+    @RequestMapping("/{code}/{key}")
+    public void viewCachedItem(String code, String key){
         Cacheable item = cache.getCachePool(code).getObject(key);
         if(item != null) {
             String returnStr = "";
@@ -166,34 +134,25 @@ public class CacheDisplayAction extends PTActionSupport {
         else {
             print("该缓存项已经不存在，已经被清空或是已经被刷新！");
         }
-            
-        return XML;
     }
     
     /**
      * 清空释放缓存池
-     * @return
      */
-    public String releaseCache(){
+    @RequestMapping("/release/{code}")
+    public void releaseCache(String code){
         cache.getCachePool(code).flush();
-        return printSuccessMessage();
+        printSuccessMessage();
     }
     
     /**
      * 初始化缓存池
-     * @return
      */
-    public String initPool(){
+    @RequestMapping("/init/{code}")
+    public void initPool(String code){
         cache.getCachePool(code).init();
-        return printSuccessMessage();
+        printSuccessMessage();
     }
  
-    public void setCode(String code) {
-        this.code = code;
-    }
- 
-    public void setKey(String key) {
-        this.key = key;
-    }
 }
 

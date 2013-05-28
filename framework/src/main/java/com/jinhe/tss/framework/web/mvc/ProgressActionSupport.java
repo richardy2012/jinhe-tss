@@ -8,7 +8,7 @@ import com.jinhe.tss.framework.exception.BusinessException;
  * <p> 支持进度条显示的MVC Action基类 </p>
  * 
  */
-public class ProgressActionSupport extends PTActionSupport {
+public class ProgressActionSupport extends BaseActionSupport {
 
 	protected String code;
 	

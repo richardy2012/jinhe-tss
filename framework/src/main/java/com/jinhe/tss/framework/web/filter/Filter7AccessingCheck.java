@@ -1,4 +1,4 @@
-package com.jinhe.tss.framework.component.param;
+package com.jinhe.tss.framework.web.filter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
+import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.exception.BusinessServletException;
 import com.jinhe.tss.framework.sso.SSOConstants;
@@ -36,14 +37,13 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 应用地址访问权限控制检测过滤器
  * 
  */
-@WebFilter(filterName = "AccessingCheckFilter", 
-		urlPatterns = {"*.htm", "*.action", ".html"})
-public class AccessingCheckFilter implements Filter {
+@WebFilter(filterName = "AccessingCheckFilter", urlPatterns = {"*.htm", "*.action", ".html"})
+public class Filter7AccessingCheck implements Filter {
     
-    private Log log = LogFactory.getLog(AccessingCheckFilter.class);
+    Log log = LogFactory.getLog(Filter7AccessingCheck.class);
 
     public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("应用地址访问权限控制过滤器初始化完成！appCode=" + Context.getApplicationContext().getCurrentAppCode());
+        log.info("AccessingCheckFilter init! appCode=" + Context.getApplicationContext().getCurrentAppCode());
     }
  
     public void destroy() {

@@ -9,11 +9,11 @@ import org.dom4j.io.SAXReader;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.service.IResourceRegisterService;
 
-public class ResourceRegisterAction extends PTActionSupport {
+public class ResourceRegisterAction extends BaseActionSupport {
 
 	private File file;
 	

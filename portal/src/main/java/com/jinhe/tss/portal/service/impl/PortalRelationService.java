@@ -21,7 +21,7 @@ import com.jinhe.tss.portal.entity.PortalStructure;
 import com.jinhe.tss.portal.entity.Theme;
 import com.jinhe.tss.portal.entity.ThemeInfo;
 import com.jinhe.tss.portal.service.IPortalRelationService;
-import com.jinhe.tss.portal.sso.PortalPermissionFilter;
+import com.jinhe.tss.portal.sso.Filter3PortalPermission;
 import com.jinhe.tss.util.EasyUtils;
  
 public class PortalRelationService implements IPortalRelationService {
@@ -102,8 +102,8 @@ public class PortalRelationService implements IPortalRelationService {
 
    public IssueInfo saveIssue(IssueInfo issueInfo) {
        String visitUrl = issueInfo.getVisitUrl();
-       if( !visitUrl.endsWith(PortalPermissionFilter.PORTAL_REDIRECT_URL_SUFFIX) ){
-           visitUrl += PortalPermissionFilter.PORTAL_REDIRECT_URL_SUFFIX;
+       if( !visitUrl.endsWith(Filter3PortalPermission.PORTAL_REDIRECT_URL_SUFFIX) ){
+           visitUrl += Filter3PortalPermission.PORTAL_REDIRECT_URL_SUFFIX;
            issueInfo.setVisitUrl(visitUrl);
        }
        

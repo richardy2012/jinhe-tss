@@ -144,7 +144,7 @@ function delCacheData(cacheID, flag) {
 
 
 var ws;
-function initWorkSpace(hide) {
+function initWorkSpace() {
 	ws = new WorkSpace($("ws"));
 	 
 	$("ws").onTabCloseAll = function(event) {

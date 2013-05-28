@@ -24,7 +24,7 @@ import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormTemplet;
 import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpEncoder;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.um.entity.Group;
@@ -41,7 +41,7 @@ import com.jinhe.tss.util.XMLDocUtil;
 
 @Controller
 @RequestMapping("/user") 
-public class UserAction extends PTActionSupport {
+public class UserAction extends BaseActionSupport {
 
 	private IUserService userService;
 	private IApplicationService applicationService;

@@ -71,6 +71,8 @@ public class ExceptionEncoder {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            be.printStackTrace();
         }
     }
 

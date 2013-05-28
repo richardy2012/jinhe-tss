@@ -16,7 +16,7 @@ import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.sso.context.Context;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;
@@ -29,7 +29,7 @@ import freemarker.template.TemplateException;
  * 可用于组件的预览等功能。
  * 
  */
-public abstract class FreeMarkerSupportAction extends PTActionSupport {
+public abstract class FreeMarkerSupportAction extends BaseActionSupport {
     
     /**  用户自定义的参数（在参数模块中，名称为userdefinedParams）  */
     private static final String USER_DEFINED_PARAMS = "userdefinedParams";

@@ -8,13 +8,13 @@ import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.framework.web.rmi.HttpInvokerProxyFactory;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.service.IApplicationService;
 import com.jinhe.tss.util.EasyUtils;
 
-public class GeneralSearchAction extends PTActionSupport {
+public class GeneralSearchAction extends BaseActionSupport {
 
 	private String applicationId;
 	private String resourceTypeId;

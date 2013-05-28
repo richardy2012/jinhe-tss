@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.helper.ElementHelper;
 import com.jinhe.tss.util.EasyUtils;
@@ -19,7 +19,7 @@ import com.jinhe.tss.util.URLUtil;
 /**
  * 管理门户、页面、布局器、修饰器、布局器等的附件资源。
  */
-public class FileAction extends PTActionSupport {
+public class FileAction extends BaseActionSupport {
 
     public static final String[] ELEMENT_TYPE = new String[]{"layout", "decorator", "portlet"};
     

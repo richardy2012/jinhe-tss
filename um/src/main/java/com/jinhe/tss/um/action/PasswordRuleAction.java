@@ -5,13 +5,13 @@ import java.util.List;
 import com.jinhe.tss.framework.web.dispaly.tree.SimpleTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.PasswordRule;
 import com.jinhe.tss.um.service.IPasswordRuleService;
 import com.jinhe.tss.util.EasyUtils;
 
-public class PasswordRuleAction extends PTActionSupport {
+public class PasswordRuleAction extends BaseActionSupport {
 
 	private IPasswordRuleService service;
 	

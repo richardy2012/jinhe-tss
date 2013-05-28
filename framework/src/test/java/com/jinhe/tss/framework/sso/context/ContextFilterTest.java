@@ -17,7 +17,7 @@ import org.easymock.IMocksControl;
 
 import com.jinhe.tss.framework.sso.AnonymousOperator;
 import com.jinhe.tss.framework.sso.IdentityCard;
-import com.jinhe.tss.framework.web.filter.ContextFilter;
+import com.jinhe.tss.framework.web.filter.Filter3Context;
 
 /**
  * <p>
@@ -29,7 +29,7 @@ import com.jinhe.tss.framework.web.filter.ContextFilter;
  */
 public class ContextFilterTest extends TestCase {
 
-    private ContextFilter filter;
+    private Filter3Context filter;
 
     private IMocksControl mocksControl;
 
@@ -53,7 +53,7 @@ public class ContextFilterTest extends TestCase {
         
         EasyMock.expect(session.getId()).andReturn("1").times(0, 3);
         
-        filter = new ContextFilter();
+        filter = new Filter3Context();
     }
 
     protected void tearDown() throws Exception {
@@ -62,7 +62,7 @@ public class ContextFilterTest extends TestCase {
 
     /**
      * Test method for
-     * {@link com.jinhe.tss.core.web.filter.ContextFilter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)}.
+     * {@link com.jinhe.tss.core.web.filter.Filter3Context#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)}.
      */
     public final void testDoFilterNotLogin() throws IOException, ServletException {
         EasyMock.expect(session.getAttribute(RequestContext.USER_TOKEN)).andReturn(null).times(0, 3); // 无token
@@ -86,7 +86,7 @@ public class ContextFilterTest extends TestCase {
 
     /**
      * Test method for
-     * {@link com.jinhe.tss.core.web.filter.ContextFilter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)}.
+     * {@link com.jinhe.tss.core.web.filter.Filter3Context#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)}.
      */
     public final void testDoFilter4Login() throws IOException, ServletException {
         EasyMock.expect(session.getAttribute(RequestContext.USER_TOKEN)).andReturn("token").times(0, 3);

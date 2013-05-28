@@ -19,11 +19,11 @@ import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.util.EasyUtils;
  
-public class ArticleAction extends PTActionSupport {
+public class ArticleAction extends BaseActionSupport {
 
 	private IArticleService articleService;
     

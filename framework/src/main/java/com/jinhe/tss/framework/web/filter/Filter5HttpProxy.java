@@ -30,7 +30,6 @@ import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.web.rmi.HttpClientHelper;
 
 /**
- * <p> HttpProxyFilter.java </p>
  * <pre>
  * 在HEAD或参数中获取当前请求设置的目标地址所在应用CODE值，如果此CODE值为当前应用CODE，则直接放行；<br/>
  * 否则根据此CODE值获取对应的应用地址，将访问地址重新改写后（如果是登陆用户则在Header中添加令牌），<br/>
@@ -50,14 +49,13 @@ import com.jinhe.tss.framework.web.rmi.HttpClientHelper;
  * </pre>
  *
  */
-@WebFilter(filterName = "HttpProxyFilter", 
-		urlPatterns = {"*.do", "*.action", ".in"})
-public class HttpProxyFilter implements Filter {
+//@WebFilter(filterName = "HttpProxyFilter", urlPatterns = {"/*"})
+public class Filter5HttpProxy implements Filter {
 
-	private static final Logger log = Logger.getLogger(HttpProxyFilter.class);
+	Logger log = Logger.getLogger(Filter5HttpProxy.class);
  
 	public void init(FilterConfig config) throws ServletException {
-		log.info("HTTP请求代理服务初始化完成！appCode=" + Context.getApplicationContext().getCurrentAppCode());
+		log.info("HttpProxyFilter init! appCode=" + Context.getApplicationContext().getCurrentAppCode());
 	}
  
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {

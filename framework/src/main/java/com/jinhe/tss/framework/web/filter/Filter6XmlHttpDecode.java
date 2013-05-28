@@ -21,6 +21,7 @@ import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.exception.BusinessServletException;
 import com.jinhe.tss.framework.sso.context.Context;
+import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpDecoder;
 import com.jinhe.tss.util.XMLDocUtil;
 import com.jinhe.tss.util.XmlUtil;
@@ -34,13 +35,13 @@ import com.jinhe.tss.util.XmlUtil;
  * 需要解析成 request.put("resourceId", 2);
  * </pre>
  */
-@WebFilter(filterName = "XmlHttpDecodeFilter", 
-		urlPatterns = {"*.do", "*.action", ".in"} )
-public class XmlHttpDecodeFilter implements Filter {
-    private static final Logger log = Logger.getLogger(XmlHttpDecodeFilter.class);
+@WebFilter(filterName = "XmlHttpDecodeFilter", urlPatterns = {"/*"} )
+public class Filter6XmlHttpDecode implements Filter {
+    
+    Logger log = Logger.getLogger(Filter6XmlHttpDecode.class);
  
     public void init(FilterConfig arg0) throws ServletException {
-        log.info("XMLHTTP请求解析服务初始化完成！appCode=" + Config.getAttribute(Config.APPLICATION_CODE));
+        log.info("XmlHttpDecodeFilter init! appCode=" + Config.getAttribute(Config.APPLICATION_CODE));
     }
 
     /**
@@ -50,7 +51,8 @@ public class XmlHttpDecodeFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
-            if (Context.getRequestContext().isXmlhttpRequest()) {
+            RequestContext requestContext = Context.getRequestContext();
+            if (requestContext != null && requestContext.isXmlhttpRequest()) {
                 Document doc = null;
                 ServletInputStream is = null;
                 String requestBody = null;

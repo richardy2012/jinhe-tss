@@ -10,7 +10,7 @@ import java.util.Map;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
-import com.jinhe.tss.framework.web.mvc.PTActionSupport;
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.Strategy;
 import com.jinhe.tss.um.service.IStrategyService;
@@ -22,7 +22,7 @@ import com.jinhe.tss.util.DateUtil;
  * 策略没有组，没有上下级关系，没有排序id
  * </p>
  */
-public class StrategyAction extends PTActionSupport {
+public class StrategyAction extends BaseActionSupport {
 
 	private IStrategyService service;
 

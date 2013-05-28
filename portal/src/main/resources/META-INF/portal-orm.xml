@@ -20,12 +20,11 @@
 	<entity class="com.jinhe.tss.portal.entity.ThemeInfo"/>
  
 	<entity class="com.jinhe.tss.portal.entity.permission.MenuResourceView"/>
-	<entity class="com.jinhe.tss.portal.entity.permission.PortalResourceView"/>
-	
 	<entity class="com.jinhe.tss.portal.entity.permission.MenuPermissions"/>
-	<entity class="com.jinhe.tss.portal.entity.permission.PortalPermissions"/>
-	
 	<entity class="com.jinhe.tss.portal.entity.permission.MenuPermissionsFull"/>
+	
+	<entity class="com.jinhe.tss.portal.entity.permission.PortalResourceView"/>
+	<entity class="com.jinhe.tss.portal.entity.permission.PortalPermissions"/>
 	<entity class="com.jinhe.tss.portal.entity.permission.PortalPermissionsFull"/>
 
 </entity-mappings>
