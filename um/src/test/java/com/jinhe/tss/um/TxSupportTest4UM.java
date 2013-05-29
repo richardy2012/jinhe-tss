@@ -33,9 +33,9 @@ import com.jinhe.tss.util.XMLDocUtil;
 @SuppressWarnings("deprecation")
 @ContextConfiguration(
         locations={
-          "classpath:spring/testUMApplicationContext.xml",  
-          "classpath:spring/framework-applicationContext.xml",  
-          "classpath:spring/um-applicationContext.xml"
+          "classpath:META-INF/um-test-spring.xml",  
+          "classpath:META-INF/framework-spring.xml",  
+          "classpath:META-INF/um-spring.xml"
         } 
         , inheritLocations = false // 是否要继承父测试用例类中的 Spring 配置文件，默认为 true
       )

@@ -19,8 +19,8 @@ import com.jinhe.tss.framework.test.TestUtil;
 @SuppressWarnings("deprecation")
 @ContextConfiguration(
 	  locations={
-		    "classpath:spring/testFrameworkContext.xml",  
-		    "classpath:spring/framework-applicationContext.xml"
+		    "classpath:META-INF/framework-test-spring.xml",  
+		    "classpath:META-INF/framework-spring.xml"
 	  }   
 ) 
 @TransactionConfiguration(defaultRollback = true) // 自动回滚设置为false，否则数据将不插进去

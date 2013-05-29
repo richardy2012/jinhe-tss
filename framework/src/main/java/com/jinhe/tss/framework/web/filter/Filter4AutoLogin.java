@@ -47,7 +47,7 @@ import com.jinhe.tss.framework.sso.identifier.OnlineUserIdentifier;
  *
  */
 @WebFilter(filterName = "AutoLoginFilter", 
-		urlPatterns = {"/*"}, initParams = {
+		urlPatterns = {"/nothing"}, initParams = {
 		@WebInitParam(name="ignoreServletPaths", value="/remote/OnlineUserService,/remote/LoginService,.in,js,htm,html,jpg,gif,css")
 })
 public class Filter4AutoLogin implements Filter {

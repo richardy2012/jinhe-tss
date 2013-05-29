@@ -24,7 +24,7 @@ public class TestUtil {
 	
 	public static String getProjectDir() {
         String path = URLUtil.getResourceFileUrl("com/jinhe/tss").getPath();
-        return path.substring(1, path.indexOf(PROJECT_NAME) + 12);
+        return path.substring(1, path.indexOf(PROJECT_NAME) + PROJECT_NAME.length());
     }
 	
     public static String getInitSQLDir() {
@@ -54,7 +54,7 @@ public class TestUtil {
             	
             	log.info("开始执行SQL脚本：" + fileName+ "。");  
             	
-                String sqls = FileHelper.readFile(sqlFile);
+                String sqls = FileHelper.readFile(sqlFile, "UTF-8");
                 String[] sqlArray = sqls.split(";");
                 for(String sql : sqlArray) {
                 	if( EasyUtils.isNullOrEmpty(sql) ) continue;

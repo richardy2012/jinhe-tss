@@ -36,13 +36,14 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 需使用 src/main/resources目录下的配置文件，比如persistence.xml, application.properties等。
  * 另外，初始化时需要把applicationContext.xml的<property name="generateDdl" value="true" /> 设置为true
  */
+@SuppressWarnings("deprecation")
 @ContextConfiguration(
         locations={
-          "classpath:spring/framework-applicationContext.xml",  
-          "classpath:spring/um-applicationContext.xml",
-          "classpath:spring/cms-applicationContext.xml",
-          "classpath:spring/portal-applicationContext.xml",
-          "classpath:spring/applicationContext.xml"
+          "classpath:META-INF/framework-spring.xml",  
+          "classpath:META-INF/um-spring.xml",
+          "classpath:META-INF/cms-spring.xml",
+          "classpath:META-INF/portal-spring.xml",
+          "classpath:META-INF/spring.xml"
         } 
       )
 @TransactionConfiguration(defaultRollback = false) // 不自动回滚，否则后续的test中没有初始化的数据
@@ -92,7 +93,7 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
     private void initUM() {
         /* 初始化应用系统、资源、权限项 */
         String sqlpath = TestUtil.getInitSQLDir();
-        Document doc = XMLDocUtil.createDocByAbsolutePath(sqlpath + "/tss-application-config.xml");
+        Document doc = XMLDocUtil.createDocByAbsolutePath(sqlpath + "/../tss-application-config.xml");
         resourceRegisterService.setInitial(true);
         resourceRegisterService.applicationRegisterByXML(doc, UMConstants.PLATFORM_SYSTEM_APP);
         resourceRegisterService.setInitial(false);

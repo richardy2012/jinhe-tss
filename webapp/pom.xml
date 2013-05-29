@@ -37,16 +37,20 @@
 		<finalName>tss-${tss.version}</finalName>
 		
         <plugins>
-            <plugin>  
-				<groupId>org.mortbay.jetty</groupId>  
-				<artifactId>maven-jetty-plugin</artifactId>  
+			<plugin>  
+			    <groupId>org.mortbay.jetty</groupId>
+			    <artifactId>jetty-maven-plugin</artifactId>
 				<configuration>  
-					<contextPath>/tss</contextPath>  
+					<webAppConfig>  
+						<contextPath>/tss</contextPath>  
+					</webAppConfig>  
 					<connectors>  
-						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">  
+						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">  
 							<port>9000</port>  
-						</connector>  
+						</connector>
 					</connectors>  
+					<stopPort>9966</stopPort>
+					<stopKey>wmsx</stopKey>
 				</configuration>  
 			</plugin> 
 			

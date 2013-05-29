@@ -34,6 +34,8 @@ public class ExceptionEncoder {
     public static void encodeException(ServletResponse response, Exception be) throws IOException {
         try {
             RequestContext requestContext = Context.getRequestContext();
+            if( requestContext == null ) return;
+            
             if (!response.isCommitted() && !requestContext.isMultiRequest()) {
                 response.resetBuffer();
             }

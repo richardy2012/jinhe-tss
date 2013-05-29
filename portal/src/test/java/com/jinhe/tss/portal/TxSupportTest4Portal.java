@@ -36,13 +36,14 @@ import com.jinhe.tss.util.XMLDocUtil;
 /**
  * Junit Test 类里执行构造函数的时候无事务，即构造函数不在单元测试方法的事物边界内。
  */
+@SuppressWarnings("deprecation")
 @ContextConfiguration(
         locations={
-            "classpath:spring/testPortalApplicationContext.xml",  
-            "classpath:spring/framework-applicationContext.xml",  
-            "classpath:spring/um-applicationContext.xml",
-            "classpath:spring/cms-applicationContext.xml",
-            "classpath:spring/portal-applicationContext.xml"
+            "classpath:META-INF/portal-test-spring.xml",  
+            "classpath:META-INF/framework-spring.xml",  
+            "classpath:META-INF/um-spring.xml",
+            "classpath:META-INF/cms-spring.xml",
+            "classpath:META-INF/portal-spring.xml"
         } 
         , inheritLocations = false // 是否要继承父测试用例类中的 Spring 配置文件，默认为 true
       )

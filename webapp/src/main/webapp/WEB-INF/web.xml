@@ -8,7 +8,7 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-			classpath*:spring/*applicationContext.xml
+			classpath*:META-INF/*-spring.xml
 		</param-value>
 	</context-param>
 	<context-param>
@@ -35,31 +35,6 @@
 		<servlet-name>springMVC</servlet-name> 
 		<url-pattern>/remote/*</url-pattern> 
 	</servlet-mapping> 
-	
-	<filter-mapping>
-		<filter-name>EncodingFilter</filter-name>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>CatchExceptionFilter</filter-name>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>ContextFilter</filter-name>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>PortalPermissionFilter</filter-name>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>AutoLoginFilter</filter-name>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>HttpProxyFilter</filter-name>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>XmlHttpDecodeFilter</filter-name>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>AccessingCheckFilter</filter-name>
-	</filter-mapping>
 	
 
 	<welcome-file-list>

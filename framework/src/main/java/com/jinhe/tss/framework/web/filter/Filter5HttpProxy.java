@@ -49,7 +49,7 @@ import com.jinhe.tss.framework.web.rmi.HttpClientHelper;
  * </pre>
  *
  */
-//@WebFilter(filterName = "HttpProxyFilter", urlPatterns = {"/*"})
+@WebFilter(filterName = "HttpProxyFilter", urlPatterns = {"/*"})
 public class Filter5HttpProxy implements Filter {
 
 	Logger log = Logger.getLogger(Filter5HttpProxy.class);
@@ -60,7 +60,13 @@ public class Filter5HttpProxy implements Filter {
  
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
 		try {
-			String targetAppCode  = Context.getRequestContext().getAppCode();  //被请求的目标应用Code
+			RequestContext requestContext = Context.getRequestContext();
+			if( requestContext == null  ) {
+			    chain.doFilter(request, response);
+			    return;
+			}
+			
+            String targetAppCode  = requestContext.getAppCode();  //被请求的目标应用Code
 			String currentAppCode = Context.getApplicationContext().getCurrentAppCode(); //发送请求当前应用Code
 			
 			// 没有取到被请求的应用Code，或者被请求的应用为当前应用，则直接请求本应用

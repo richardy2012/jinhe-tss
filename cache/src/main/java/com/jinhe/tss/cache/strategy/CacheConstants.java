@@ -22,7 +22,7 @@ public interface CacheConstants {
 	/**
 	 * 缓存策略文件目录
 	 */
-	public final static String STRATEGY_PATH = "META-INF/CacheStrategy.xml";
+	public final static String STRATEGY_PATH = "META-INF/cache.xml";
 	
 	/**
 	 * 缓存策略节点名称

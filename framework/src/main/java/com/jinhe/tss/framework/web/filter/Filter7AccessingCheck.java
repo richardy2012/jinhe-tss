@@ -15,7 +15,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -37,7 +36,7 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 应用地址访问权限控制检测过滤器
  * 
  */
-@WebFilter(filterName = "AccessingCheckFilter", urlPatterns = {"*.htm", "*.action", ".html"})
+//@WebFilter(filterName = "AccessingCheckFilter", urlPatterns = {"*.htm", ".html"})
 public class Filter7AccessingCheck implements Filter {
     
     Log log = LogFactory.getLog(Filter7AccessingCheck.class);

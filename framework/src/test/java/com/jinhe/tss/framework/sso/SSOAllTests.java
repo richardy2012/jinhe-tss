@@ -12,7 +12,6 @@ import com.jinhe.tss.framework.sso.identity.identifier.AnonymousUserIdentifierTe
 import com.jinhe.tss.framework.sso.identity.identifier.OnlineUserIdentifierTest;
 import com.jinhe.tss.framework.sso.online.cache.CacheOnlineUserManagerTest;
 import com.jinhe.tss.framework.sso.servlet.MultiRequestServletTest;
-import com.jinhe.tss.framework.sso.servlet.RewriteableRequestWrapperTest;
 
 /**
  * <p>
@@ -32,7 +31,6 @@ public class SSOAllTests {
         suite.addTestSuite(ContextFilterTest.class);
         suite.addTestSuite(ContextTest.class);
         
-        suite.addTestSuite(RewriteableRequestWrapperTest.class);
         suite.addTestSuite(MultiRequestServletTest.class);
         
         suite.addTestSuite(TokenUtilTest.class);
