@@ -36,7 +36,7 @@ public class CacheDisplayAction extends BaseActionSupport {
     /**
      * 树型展示所有缓存池
      */
-    @RequestMapping("/")
+    @RequestMapping("/list")
     public void getAllCacheStrategy4Tree() {
         List<CacheStrategy> strategyList = new ArrayList<CacheStrategy>();
         
@@ -95,7 +95,7 @@ public class CacheDisplayAction extends BaseActionSupport {
         }
         
         StringBuffer template = new StringBuffer();
-        template.append("<grid=><declare sequence=\"true\">");
+        template.append("<grid><declare sequence=\"true\">");
         template.append("<column name=\"id\" mode=\"string\" caption=\"项Id\" display=\"none\"/>");
         template.append("<column name=\"code\" mode=\"string\" caption=\"池code\" display=\"none\"/>");
         template.append("<column name=\"key\" caption=\"键值\" mode=\"string\"/>");

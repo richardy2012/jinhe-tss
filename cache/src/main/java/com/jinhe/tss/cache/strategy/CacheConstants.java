@@ -32,5 +32,5 @@ public interface CacheConstants {
 	/**
 	 * 缓存策略模板目录
 	 */
-	public final static String CACHESTRATEGY_XFORM_TEMPLET = "template/cache/xform/CacheStrategyXForm.xml";
+	public final static String CACHESTRATEGY_XFORM_TEMPLET = "template/cache/strategy_xform.xml";
 }

@@ -38,9 +38,8 @@ import com.jinhe.tss.util.XMLDocUtil;
                 "classpath:META-INF/cms-test-spring.xml",  
                 "classpath:META-INF/framework-spring.xml",  
                 "classpath:META-INF/um-spring.xml",
-                "classpath:META-INF/cms-spring.xml",
-              } 
-              , inheritLocations = false // 是否要继承父测试用例类中的 Spring 配置文件，默认为 true
+                "classpath:META-INF/cms-spring.xml"
+              }, inheritLocations = false // 是否要继承父测试用例类中的 Spring 配置文件，默认为 true
       )
 @TransactionConfiguration(defaultRollback = false) // 不自动回滚，否则后续的test中没有初始化的数据
 public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit38SpringContextTests { 

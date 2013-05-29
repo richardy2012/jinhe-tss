@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jinhe.tss.cms.CMSCommonOperation4TestSupport;
+import com.jinhe.tss.cms.AbstractTestSupport;
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.action.CMSAction;
 import com.jinhe.tss.cms.entity.Article;
@@ -20,7 +20,7 @@ import com.jinhe.tss.framework.test.TestUtil;
 /**
  * 文章发布相关模块的单元测试。
  */
-public class ArticlePublishTest extends CMSCommonOperation4TestSupport {
+public class ArticlePublishTest extends AbstractTestSupport {
     
 	CMSAction   cmsAction;
 	

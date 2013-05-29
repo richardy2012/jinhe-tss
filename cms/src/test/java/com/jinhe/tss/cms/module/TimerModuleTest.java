@@ -2,7 +2,7 @@ package com.jinhe.tss.cms.module;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jinhe.tss.cms.CMSCommonOperation4TestSupport;
+import com.jinhe.tss.cms.AbstractTestSupport;
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.entity.TimerStrategy;
@@ -12,7 +12,7 @@ import com.jinhe.tss.cms.timer.TimerService;
 /**
  * 定时策略相关模块的单元测试。
  */
-public class TimerModuleTest extends CMSCommonOperation4TestSupport {
+public class TimerModuleTest extends AbstractTestSupport {
     
 	TimerAction timerAction;
 	

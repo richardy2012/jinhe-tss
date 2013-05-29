@@ -2,7 +2,7 @@ package com.jinhe.tss.cms.module;
 
 import java.util.List;
 
-import com.jinhe.tss.cms.CMSCommonOperation4TestSupport;
+import com.jinhe.tss.cms.AbstractTestSupport;
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.action.SiteAction;
 import com.jinhe.tss.cms.entity.Channel;
@@ -11,7 +11,7 @@ import com.jinhe.tss.framework.test.TestUtil;
 /**
  * 文章站点栏目相关模块的单元测试。
  */
-public class ChannelModuleTest extends CMSCommonOperation4TestSupport {
+public class ChannelModuleTest extends AbstractTestSupport {
     
 	SiteAction siteAction;
 	
