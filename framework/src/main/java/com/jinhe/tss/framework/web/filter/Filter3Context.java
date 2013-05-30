@@ -36,7 +36,7 @@ import com.jinhe.tss.framework.sso.context.RequestContext;
  */
 @WebFilter(filterName = "ContextFilter", 
 		urlPatterns = {"/*"}, initParams = {
-		@WebInitParam(name="ignoreServletPaths", value="/remote/OnlineUserService,js,htm,html,jpg,gif,css")
+		@WebInitParam(name="ignoreServletPaths", value="/remote/OnlineUserService,js,htm,html,jpg,gif,css,xml")
 })
 public class Filter3Context implements Filter {
 	

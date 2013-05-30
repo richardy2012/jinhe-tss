@@ -26,10 +26,10 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * 
  * 小知识：浏览器客户端是以domain，path，name作为Cookie的唯一标识的，
  * 只要Name、Domain、Path中的任何一项不同，Cookie就是不同的，由此便产生了同名Cookie。
- * 如下面三个名为【d】的cookie是可以共存的    
- *   d=1; expires=Sat, 23 May 2009 03:48:22 GMT; path=/; domain=.dny.com
-     d=2; expires=Sat, 23 May 2009 03:48:46 GMT; path=/; domain=.test.dny.com
-     d=3; expires=Sat, 23 May 2009 03:48:46 GMT; path=/test/; domain=.dny.com
+ * 如下面三个名为【token】的cookie是可以共存的    
+ *   token=111111; expires=Sat, 23 May 2009 03:48:22 GMT; path=/; domain=.dny.com
+     token=222222; expires=Sat, 23 May 2009 03:48:46 GMT; path=/; domain=.test.dny.com
+     token=333333; expires=Sat, 23 May 2009 03:48:46 GMT; path=/test/; domain=.dny.com
  * 
  * </p>
  */

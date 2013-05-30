@@ -28,7 +28,7 @@ public class XmlHttpDecoder {
 	 * 将Request中的XML数据流解析成普通的名值对后置回Request对象并返回
 	 * </p>
 	 * @param element
-     *               类似：<Request><Param><Name><![CDATA[resourceId]]></Name><Value><![CDATA[2]]></Value></Param></Request>
+     *      类似：<Request><Param><Name><![CDATA[resourceId]]></Name><Value><![CDATA[2]]></Value></Param></Request>
 	 * @param request
 	 * @return
 	 */
@@ -38,11 +38,10 @@ public class XmlHttpDecoder {
 
 		// 输出请求（request）的详细信息：请求数据流
         log.debug("---------------------------- Request ----------------------------");
-        log.debug("AppCode:" + Config.getAttribute(Config.APPLICATION_CODE));
-        log.debug("Request:" + req.getContextPath() + req.getServletPath());
-        log.debug("Thread:" + Thread.currentThread().getName());
-        log.debug("Content:");
-        log.debug(element.asXML());
+        log.debug("AppCode: " + Config.getAttribute(Config.APPLICATION_CODE));
+        log.debug("Request: " + req.getContextPath() + req.getServletPath());
+        log.debug("Method: " + req.getMethod());
+        log.debug("Params: " + element.asXML());
         log.debug("---------------------------- End of Request ----------------------------");
 		try {
             //解析Document对象，将相应的值置入Request对象中

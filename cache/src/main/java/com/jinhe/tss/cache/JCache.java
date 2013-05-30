@@ -29,7 +29,6 @@ import com.jinhe.tss.util.XMLDocUtil;
 
 /**
  * 缓存池管理类
- * 
  */
 public class JCache {
 
@@ -46,10 +45,7 @@ public class JCache {
 	private static JCache cache = null;
 
 	/**
-	 * 获取一个缓存池管理类实例。
-	 * singleton
-	 * 
-	 * @return
+	 * 获取一个缓存池管理类实例。 singleton
 	 */
 	public static JCache getInstance() {
 		return getInstance(CacheConstants.STRATEGY_PATH);
@@ -101,6 +97,8 @@ public class JCache {
 	 * @return
 	 */
 	public Pool getCachePool(String code) {
+	    if(code == null) return null;
+	    
 		Pool pool = pools.get(code);
 		if (pool == null) {
 			/* 如果是配置文件里配置的缓冲池获取不到，则先等待3秒钟，其有可能正在初始化。
@@ -140,8 +138,6 @@ public class JCache {
 
 	/**
 	 * 获取所有的池
-	 * 
-	 * @return
 	 */
 	public Set<Map.Entry<String, Pool>> listCachePools() {
 		return pools.entrySet();

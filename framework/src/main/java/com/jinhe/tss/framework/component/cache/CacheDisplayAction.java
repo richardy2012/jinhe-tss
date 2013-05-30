@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,12 +34,12 @@ import com.jinhe.tss.util.XMLDocUtil;
 public class CacheDisplayAction extends BaseActionSupport {
  
     private static JCache cache = JCache.getInstance();
-    
+ 
     /**
      * 树型展示所有缓存池
      */
     @RequestMapping("/list")
-    public void getAllCacheStrategy4Tree() {
+    public void getAllCacheStrategy4Tree(HttpServletResponse response) {
         List<CacheStrategy> strategyList = new ArrayList<CacheStrategy>();
         
         Set<Entry<String, Pool>> pools = cache.listCachePools(); 
@@ -52,7 +54,7 @@ public class CacheDisplayAction extends BaseActionSupport {
                 public TreeAttributesMap getAttributes() {
                     TreeAttributesMap map = new TreeAttributesMap(stategy.getCode(), stategy.getName());
                     map.put("icon", "images/cache.gif");
-                    map.put("visible", stategy.getVisible());
+                    map.put("display", stategy.getVisible());
                     return map;
                 }
             });
@@ -67,7 +69,7 @@ public class CacheDisplayAction extends BaseActionSupport {
      * 获取缓存策略以及缓存池信息
      */
     @RequestMapping("/{code}")
-    public void getCacheStrategyInfo(@PathVariable String code) {
+    public void getCacheStrategyInfo(HttpServletResponse response, @PathVariable String code) {
         Pool pool = cache.getCachePool(code);
         CacheStrategy strategy = pool.getCacheStrategy();
         Map<String, Object> strategyProperties = new HashMap<String, Object>();
@@ -111,7 +113,7 @@ public class CacheDisplayAction extends BaseActionSupport {
            
         int totalRows = cachedItems.size();
         String pageInfo = generatePageInfo(totalRows, 1, totalRows + 1, totalRows); // 加入分页信息，总是只有一页。
-        print(new String[]{"CacheInfo", "CacheOption", "PageList", "PoolHitRate"}, 
+        print(new String[]{"CacheStrategy", "CacheItemList", "PageInfo", "HitRate"}, 
                 new Object[]{xEncoder, gEncoder, pageInfo, hitRate});
     }
     
@@ -119,7 +121,7 @@ public class CacheDisplayAction extends BaseActionSupport {
      * 查看详细的缓存项内容。对象XML格式展示
      */
     @RequestMapping("/{code}/{key}")
-    public void viewCachedItem(String code, String key){
+    public void viewCachedItem(HttpServletResponse response, @PathVariable String code, @PathVariable String key){
         Cacheable item = cache.getCachePool(code).getObject(key);
         if(item != null) {
             String returnStr = "";
@@ -140,7 +142,7 @@ public class CacheDisplayAction extends BaseActionSupport {
      * 清空释放缓存池
      */
     @RequestMapping("/release/{code}")
-    public void releaseCache(String code){
+    public void releaseCache(HttpServletResponse response, @PathVariable String code){
         cache.getCachePool(code).flush();
         printSuccessMessage();
     }
@@ -149,7 +151,7 @@ public class CacheDisplayAction extends BaseActionSupport {
      * 初始化缓存池
      */
     @RequestMapping("/init/{code}")
-    public void initPool(String code){
+    public void initPool(HttpServletResponse response, @PathVariable String code){
         cache.getCachePool(code).init();
         printSuccessMessage();
     }
