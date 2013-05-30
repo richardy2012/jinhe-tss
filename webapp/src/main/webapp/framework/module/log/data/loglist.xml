@@ -115,7 +115,7 @@
             </data>
         </grid>
 	</LogList>
-	<PageList>
+	<PageInfo>
         <pagelist totalpages="10" totalrecords="999" currentpage="3" pagesize="100"/>
-	</PageList>
+	</PageInfo>
 </Response>

@@ -2216,7 +2216,7 @@ function isLastChild(node) {
 function openNode(openedNode) {
 	while( openedNode ) {
 		openedNode.setAttribute("_open", "true");
-		if(openedNode.getAttribute(_TREE_NODE_ID) == _TREE_ROOT_NODE_ID) {
+		if(openedNode.getAttribute(_TREE_NODE_ID) == _TREE_ROOT_NODE_ID || openedNode.tagName != _TREE_NODE) {
 			return;
 		}
 		openedNode = openedNode.parentNode;

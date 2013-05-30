@@ -7,14 +7,14 @@ CONTEXTPATH = APPLICATION + "/";
 
 URL_CORE = "/" + APPLICATION + "/framework/";  // 界面核心包相对路径
 
-IS_TEST = true;
+IS_TEST = false;
 
 
 /* 
  * 常量定义
  */
 XML_OPERATION = "Operation";
-XML_PAGE_INFO = "PageList";
+XML_PAGE_INFO = "PageInfo";
 
 OPERATION_ADD  = "新建$label";
 OPERATION_VIEW = "查看\"$label\"";
@@ -48,31 +48,29 @@ document.oncontextmenu = function(eventObj) {
  *	用户信息初始化
  */
 function initUserInfo() {
-	if(IS_TEST) return;
+	if( true ) return;
 
-	var p = new HttpRequestParams();
-	p.url = "um/user!getOperatorInfo.action";
-	p.setHeader("appCode", APP_CODE);
-	p.setHeader("anonymous", "true");
-
-	var request = new HttpRequest(p);
-	request.onresult = function() {
-		var userName = this.getNodeValue("name");
-		$("userInfo").innerText = userName;
-	}
-	request.send();
+	Ajax({
+		url : "um/user!getOperatorInfo.action",
+		method : "POST",
+		headers : {"appCode": APP_CODE},
+		contents : {"anonymous": "true"}, 
+		onresult : function() {
+			var userName = this.getNodeValue("name");
+			$("userInfo").innerText = userName;
+		}
+	});
 }
 
 function logout() {
-	var p = new HttpRequestParams();
-	p.url = URL_CORE + "../logout.in";
-
-	var request = new HttpRequests(p);
-	request.onsuccess = function() {
-		Cookie.del("token", "/" + CONTEXTPATH);
-		location.href = URL_CORE + "../login.htm";
-	}
-	request.send();
+	Ajax({
+		url : URL_CORE + "../logout.in",
+		method : "GET",
+		onsuccess : function() { 
+			Cookie.del("token", "/" + CONTEXTPATH);
+			location.href = URL_CORE + "../login.htm";
+		}
+	});
 }
 
 // 关闭页面时候自动注销
@@ -92,23 +90,20 @@ function logoutOnClose() {
 			string:loginName                登录名
  */
 function checkPasswordSecurityLevel(formObj, url, password, loginName) {
-	var p = new HttpRequestParams();
-	p.url = url;
-	p.setHeader("appCode", APP_CODE);
-	p.setContent("password", password);
-	p.setContent("loginName", loginName);
-
-	var request = new HttpRequest(p);
-	request.onresult = function(error) {
-		var securityLevel = this.getNodeValue(XML_SECURITY_LEVEL);
-		formObj.securityLevel = securityLevel;
-
-		showPasswordSecurityLevel(formObj);
-	}
-	request.onsuccess = function() {
-		formObj.securityLevel = null;
-	}
-	request.send();
+	Ajax({
+		url : url,
+		method : "POST",
+		headers : {"appCode": APP_CODE},
+		contents : {"password": password, "loginName": loginName}, 
+		onresult : function() {
+			var securityLevel = this.getNodeValue(XML_SECURITY_LEVEL);
+			formObj.securityLevel = securityLevel;
+			showPasswordSecurityLevel(formObj);
+		},
+		onsuccess : function() { 
+			formObj.securityLevel = null;
+		}
+	});
 }
 
 /*
@@ -647,31 +642,30 @@ function initNaviBar(curId) {
 	var isModule = (window.location.href.indexOf("module") > 0);
 	var relativePath = isModule ? "../../../" : "../";
 
-	var p = new HttpRequestParams();
-	p.url = relativePath + "navi.xml";
+	Ajax({
+		url : relativePath + "navi.xml",
+		method : "GET",
+		onresult : function() {
+			var data = this.getNodeValue("NaviInfo");
 
-	var request = new HttpRequest(p);
-	request.onresult = function() {
-		var data = this.getNodeValue("NaviInfo");
+			var str = [];
+			var menuItems = data.selectNodes("MenuItem");
+			for(var i=0; i < menuItems.length; i++) {
+				var menuItem = menuItems[i];
+				var id   = menuItem.getAttribute("id");
+				var href = menuItem.getAttribute("href");
+				var name = menuItem.getAttribute("name");
 
-		var str = [];
-		var menuItems = data.selectNodes("MenuItem");
-		for(var i=0; i < menuItems.length; i++) {
-			var menuItem = menuItems[i];
-			var id   = menuItem.getAttribute("id");
-			var href = menuItem.getAttribute("href");
-			var name = menuItem.getAttribute("name");
-
-			if( false == /^javascript\:/.test(href) ) {
-				href = relativePath + href;
+				if( false == /^javascript\:/.test(href) ) {
+					href = relativePath + href;
+				}
+				
+				var cssStyle = (curId == id) ? "naviActive" : "navi";
+				str[str.length] = "<a href=\"" + href + "\" class=\"" + cssStyle + "\">" + name + "</a>";
 			}
-			
-			var cssStyle = (curId == id) ? "naviActive" : "navi";
-			str[str.length] = "<a href=\"" + href + "\" class=\"" + cssStyle + "\">" + name + "</a>";
+			$("navibar").innerHTML = str.join(" ");
 		}
-		$("navibar").innerHTML = str.join(" ");
-	}
-	request.send();
+	});
 }
 
 function initBlocks(){

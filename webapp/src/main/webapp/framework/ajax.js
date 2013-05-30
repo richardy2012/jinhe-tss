@@ -36,6 +36,10 @@ function HttpRequestParams() {
 	this.header = {};
 }
 
+HttpRequestParams.prototype.setMethod = function(value) {
+	this.method = value;
+}
+
 /*
  *	设置发送数据
  */
@@ -643,6 +647,7 @@ HttpRequests.onFinishAll = function(callback) {
  * 
 	 Ajax({
 		url : url,
+		method : "GET",
 		headers : {},
 		contents : {}, 
 		onresult : function() { },
@@ -655,6 +660,10 @@ function Ajax() {
 
 	var p = new HttpRequestParams();
 	p.url = arg.url;
+
+	if(arg.method) {
+		p.method = arg.method;
+	}
 
 	for(var item in arg.headers) {
 		p.setHeader(item, arg.headers[item]);
