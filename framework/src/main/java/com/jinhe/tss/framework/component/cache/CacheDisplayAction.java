@@ -81,7 +81,6 @@ public class CacheDisplayAction extends BaseActionSupport {
         Set<Cacheable> cachedItems = pool.listItems();
         long requests = strategy.getPoolInstance().getRequests();
         List<IGridNode> temp = new ArrayList<IGridNode>();
-        String name = null;
         for(Cacheable item : cachedItems) {
             int hit = item.getHit();
             Object thisKey = item.getKey();
@@ -90,20 +89,17 @@ public class CacheDisplayAction extends BaseActionSupport {
             gridNode.getAttrs().put("id", thisKey);
             gridNode.getAttrs().put("key", thisKey);
             gridNode.getAttrs().put("code", code);
-            gridNode.getAttrs().put("name", name = (String) BeanUtil.getPropertyValue(item.getValue(), "name"));
             gridNode.getAttrs().put("hit", new Integer(hit));
             gridNode.getAttrs().put("hitRate", ((requests == 0) ? 0 : (((float) hit / requests) * 100f)) + "%");
+            gridNode.getAttrs().put("remark", item.getValue());
             temp.add(gridNode);
         }
         
         StringBuffer template = new StringBuffer();
         template.append("<grid><declare sequence=\"true\">");
-        template.append("<column name=\"id\" mode=\"string\" caption=\"项Id\" display=\"none\"/>");
-        template.append("<column name=\"code\" mode=\"string\" caption=\"池code\" display=\"none\"/>");
+        template.append("<column name=\"id\" mode=\"string\" display=\"none\"/>");
+        template.append("<column name=\"code\" mode=\"string\" display=\"none\"/>");
         template.append("<column name=\"key\" caption=\"键值\" mode=\"string\"/>");
-        if(name != null) {
-            template.append("<column name=\"name\" caption=\"名称\" mode=\"string\" align=\"center\"/>");
-        }
         template.append("<column name=\"hit\" caption=\"点击次数\" mode=\"string\" align=\"center\"/>");
         template.append("<column name=\"hitRate\" caption=\"点击率\" mode=\"string\" align=\"center\"/>");
         template.append("<column name=\"remark\" caption=\"说明\" mode=\"string\" align=\"center\"/>");

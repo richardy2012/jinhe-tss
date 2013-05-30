@@ -16,7 +16,6 @@ public class LogActionTest extends TxTestSupport {
 
 	public void setUp() throws Exception {
 		super.setUp();
-		action.setService(logService);
 	}
 
 	public void testLogAction() throws InterruptedException {

@@ -197,12 +197,11 @@
 		if ( treeNode ) {
 			var treeID = treeNode.getId();
 			Ajax({
-				url : URL_CACHE_INIT,
-				contents : {"code": treeID}, 
+				url : URL_CACHE_INIT + "/" + treeID,
 				onsuccess : function() {
 					treeNode.setAttribute("released", "0");
 					tree.reload();
-					showCachePools(treeID);
+					maintainCache();
 				}
 			});
 		}
@@ -217,14 +216,31 @@
 		if ( treeNode ) {
 			var treeID = treeNode.getId();
 			Ajax({
-				url : URL_CACHE_CLEAR,
-				contents : {"code": treeID}, 
+				url : URL_CACHE_CLEAR + "/" + treeID,
 				onsuccess : function() {
 					treeNode.setAttribute("released", "1");   
 					tree.reload();
-					showCachePools(treeID);
+					maintainCache();
 				}
 			});
+		}
+	}
+	
+	/*
+	 *	查看缓存项信息
+	 */
+	function showItemInfo() { 
+		var tree = $T("tree");
+		var treeNode = tree.getActiveTreeNode();
+		
+		var rowIndex = $("page1Grid").selectRowIndex;
+		var row = $G("page1Grid").getRowByIndex(rowIndex);
+		if( row ) {
+			var key = row.getAttribute("key");
+			var code = row.getAttribute("code");
+
+			var url = URL_VIEW_ITEM + treeNode.getId() + "?key=" + key;
+			window.open(url, "查看缓存项信息", "");
 		}
 	}
 
@@ -408,21 +424,6 @@
 			gridObj.contextmenu.show(event.clientX, event.clientY);
 		}
 	}
-	 
-	/*
-	 *	查看缓存项信息
-	 */
-	function showItemInfo() { 
-		var rowIndex = $("page1Grid").selectRowIndex;
-		var row = $G("page1Grid").getRowByIndex(rowIndex);
-		if( row ) {
-			var key = row.getAttribute("key");
-			var code = row.getAttribute("code");
-
-			var url = URL_VIEW_ITEM + "?key=" + key + "&code=" + code;
-			window.open(url, "查看缓存项信息", "");
-		}
-	}
 
 	/*
 	 *	显示缓存项信息
@@ -558,7 +559,7 @@
 										<td class="" valign="top">
 										  <div style="width:100%;height:100%;overflow:auto;padding:10px;">
 											<!-- xform 开始 -->
-											<XForm:Box id="page1Form" baseurl="../../xform/" editable="false"><div class="loading"></div></XForm:Box>
+											<XForm:Box id="page1Form" baseurl="../../xform/" editable="true"><div class="loading"></div></XForm:Box>
 											<!-- xform 结束 -->
 										  </div>
 										</td>

@@ -3,11 +3,17 @@ package com.jinhe.tss.framework.component.log;
 import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 
+@Controller
+@RequestMapping("/log")
 public class LogAction extends BaseActionSupport {
 
     /**
@@ -23,7 +29,7 @@ public class LogAction extends BaseActionSupport {
     
     private LogQueryCondition condition = new LogQueryCondition();
     
-    private LogService service;
+    @Autowired private LogService service;
 
     public String getAllApps4Tree(){
         List<?> data = service.getAllApps();
@@ -47,28 +53,13 @@ public class LogAction extends BaseActionSupport {
         int currentPageRows = ((List<?>) objs[0]).size();
         
         String pageInfo = generatePageInfo(totalRows, page, PAGE_SIZE, currentPageRows);
-        return print(new String[]{"LogList", "PageList"}, new Object[]{encoder.toXml(), pageInfo});
+        return print(new String[]{"LogList", "PageList"}, new Object[]{encoder, pageInfo});
     }
     
     public String getLogInfo(){
         Log log = service.getLogById(id);          
         return print("LogInfo", new XFormEncoder(LOG_XFORM_TEMPLET_PATH, (IXForm) log));
     }
- 
-    public void setService(LogService service) {
-        this.service = service;
-    }
- 
-    public LogQueryCondition getCondition() {
-        return condition;
-    }
- 
-    public void setPage(int currentPageNum) {
-        this.page = currentPageNum;
-    }
- 
-    public void setId(Long id) {
-        this.id = id;
-    }
+
 }
 
