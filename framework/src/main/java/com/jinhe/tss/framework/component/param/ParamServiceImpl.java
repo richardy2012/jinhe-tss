@@ -129,14 +129,14 @@ public class ParamServiceImpl implements ParamService {
             param.setId(null);
             if (sourceParamId.compareTo(copyParam.getId()) == 0) { // 复制指定节点
                 if (ParamConstants.GROUP_PARAM_TYPE.equals(copyParam.getType())) {
-                    param.setName(ParamConstants.COPY_PREFIX_NAME + copyParam.getName());
+                    param.setName(ParamConstants.COPY_PREFIX + copyParam.getName());
                 }
                 else if (ParamConstants.NORMAL_PARAM_TYPE.equals(copyParam.getType())) {
-                    param.setCode(ParamConstants.COPY_PREFIX_CODE + copyParam.getCode());
-                    param.setName(ParamConstants.COPY_PREFIX_NAME + copyParam.getName());
+                    param.setCode(ParamConstants.COPY_PREFIX + copyParam.getCode());
+                    param.setName(ParamConstants.COPY_PREFIX + copyParam.getName());
                 }
                 else {
-                    param.setText(ParamConstants.COPY_PREFIX_NAME + copyParam.getText());
+                    param.setText(ParamConstants.COPY_PREFIX + copyParam.getText());
                 }
                 param.setSeqNo(paramDao.getNextSeqNo(copyParam.getParentId()));
             }

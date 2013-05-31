@@ -49,15 +49,15 @@
         </TR>
 		<TR>
 			<TD width="60"><label binding="poolClass"/></TD>
-			<TD colspan="3"><input binding="poolClass" type="text" style="width:390;"/></TD>
+			<TD colspan="3"><input binding="poolClass" type="text" style="width:100%;"/></TD>
 		</TR>
 		<TR>
 			<TD width="60"><label binding="poolContainerClass"/></TD>
-			<TD colspan="3"><input binding="poolContainerClass" type="text" style="width:390;"/></TD>
+			<TD colspan="3"><input binding="poolContainerClass" type="text" style="width:100%;"/></TD>
 		</TR>
 		<TR>
 			<TD width="60"><label binding="customizerClass"/></TD>
-			<TD colspan="3"><input binding="customizerClass" type="text" style="width:390;"/></TD>
+			<TD colspan="3"><input binding="customizerClass" type="text" style="width:100%;"/></TD>
 		</TR>
 		<TR>
 			<TD width="60" valign="top"><label binding="remark"/></TD>

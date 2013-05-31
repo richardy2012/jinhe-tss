@@ -55,7 +55,7 @@ public class ParamAction extends BaseActionSupport {
 	
 	/** 取参数信息 */
 	public String getParamInfo() {
-        boolean isnew = isNew != null && ParamConstants.IS_NEW_TAG.equals(isNew);
+        boolean isnew = isNew != null && TRUE.equals(isNew);
         XFormEncoder xformEncoder = null;
         
         String uri = null;

@@ -12,7 +12,6 @@ public class LogActionTest extends TxTestSupport {
 	private LogAction action = new LogAction();
 
 	@Autowired private _IUMSerivce umSerivce;
-	@Autowired private LogService logService;
 
 	public void setUp() throws Exception {
 		super.setUp();
@@ -40,7 +39,7 @@ public class LogActionTest extends TxTestSupport {
 
 		Thread.sleep(3 * 1000);
 		
-		action.queryLogs4Grid();
+		action.queryLogs4Grid(null, new LogQueryCondition(), 1);
 	}
 
 }

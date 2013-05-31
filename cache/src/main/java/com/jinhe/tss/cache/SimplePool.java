@@ -39,9 +39,6 @@ public class SimplePool extends AbstractPool {
 	}
 
 	public final void release(final boolean forced) {
-		if (released)
-			return;
-
 		poolContainer.clear();
 		released = true;
 	}

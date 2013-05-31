@@ -38,8 +38,8 @@
 
 	/* XMLHTTP请求地址汇总  */
 	URL_INIT         = "/" + CONTEXTPATH + "cache/list";
-	URL_CACHE_DETAIL = "/" + CONTEXTPATH + "cache/";
-	URL_VIEW_ITEM    = "/" + CONTEXTPATH + "cache/";
+	URL_CACHE_DETAIL = "/" + CONTEXTPATH + "cache/list/";
+	URL_VIEW_ITEM    = "/" + CONTEXTPATH + "cache/item";
 	URL_CACHE_CLEAR  = "/" + CONTEXTPATH + "cache/release";
 	URL_CACHE_INIT   = "/" + CONTEXTPATH + "cache/init";	
 	URL_GET_OPERATION = "data/operation.xml";
@@ -239,7 +239,7 @@
 			var key = row.getAttribute("key");
 			var code = row.getAttribute("code");
 
-			var url = URL_VIEW_ITEM + treeNode.getId() + "?key=" + key;
+			var url = URL_VIEW_ITEM + "/" + treeNode.getId() + "?key=" + key;
 			window.open(url, "查看缓存项信息", "");
 		}
 	}

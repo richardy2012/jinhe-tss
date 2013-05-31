@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
@@ -68,7 +69,7 @@ public class CacheDisplayAction extends BaseActionSupport {
     /**
      * 获取缓存策略以及缓存池信息
      */
-    @RequestMapping("/{code}")
+    @RequestMapping("/list/{code}")
     public void getCacheStrategyInfo(HttpServletResponse response, @PathVariable String code) {
         Pool pool = cache.getCachePool(code);
         CacheStrategy strategy = pool.getCacheStrategy();
@@ -116,8 +117,8 @@ public class CacheDisplayAction extends BaseActionSupport {
     /**
      * 查看详细的缓存项内容。对象XML格式展示
      */
-    @RequestMapping("/{code}/{key}")
-    public void viewCachedItem(HttpServletResponse response, @PathVariable String code, @PathVariable String key){
+    @RequestMapping("/item/{code}")
+    public void viewCachedItem(HttpServletResponse response, @PathVariable String code, @RequestParam("key") String key){
         Cacheable item = cache.getCachePool(code).getObject(key);
         if(item != null) {
             String returnStr = "";

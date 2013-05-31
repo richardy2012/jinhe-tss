@@ -49,18 +49,16 @@ URL_CORE = "../../";
     /*
      *	XMLHTTP请求地址汇总
      */
-	URL_INIT = "../../../log/log!getAllApps4Tree.action";
-    URL_LOG_LIST = "../../../log/log!queryLogs4Grid.action";
-    URL_LOG_DETAIL = "../../../log/log!getLogInfo.action";
-    URL_SEARCH_LOG = "../../../log/log!queryLogs4Grid.action";
+	URL_INIT       = "/" + CONTEXTPATH + "log/apps";
+    URL_LOG_LIST   = "/" + CONTEXTPATH + "log/";
+    URL_LOG_DETAIL = "/" + CONTEXTPATH + "log/item/";
 
 	if(IS_TEST) {
 		URL_INIT = "data/log_init.xml";
 		URL_LOG_LIST = "data/loglist.xml";
 		URL_LOG_DETAIL = "data/log1.xml";
-		URL_SEARCH_LOG = "data/loglist.xml";
 	}
- 
+ URL_INIT = "data/log_init.xml";
     /* 页面初始化 */
     function init() {
 		initPaletteResize();
@@ -148,7 +146,7 @@ URL_CORE = "../../";
             }
         }
 
-        Ajax({url : URL_INIT, onresult : onresult});
+        Ajax({url : URL_INIT, method : "GET", onresult : onresult});
     }
 	
     function getTreeId() {
@@ -174,14 +172,15 @@ URL_CORE = "../../";
     /*
      *	grid加载数据
      */
-    function loadGridData(p, treeID) {            
+    function loadGridData(p, treeID, page) {
+		p.url = (URL_LOG_LIST + page || "1") + "?condition.appCode=TSS";
 		var request = new HttpRequest(p);
 		request.onresult = function() {
 			$G("grid", this.getNodeValue(XML_LOG_LIST)); 
 
 			var pageListNode = this.getNodeValue(XML_PAGE_INFO);			
 			initGridToolBar($("gridToolBar"), pageListNode, function(page) {
-				request.setParamValue("page", page); 
+				request.params.url = URL_LOG_LIST + page;
 				request.onresult = function() {
 					$G("grid", this.getNodeValue(XML_LOG_LIST)); 
 				}				
@@ -197,7 +196,8 @@ URL_CORE = "../../";
 			}   
 			gridElement.onScrollToBottom = function () {			
 				var currentPage = request.getParamValue("page");
-				request.setParamValue("page", parseInt(currentPage) + 1); 
+				var nextPage = parseInt(currentPage) + 1; 
+				request.params.url = URL_LOG_LIST + nextPage;
 				request.onresult = function() {
 					$G("grid").load(this.getNodeValue(XML_LOG_LIST), true);
 				}				
@@ -210,10 +210,9 @@ URL_CORE = "../../";
 	function showLogList() {		
 	    var appCode = getTreeId();
 		var p = new HttpRequestParams();
-		p.url = URL_LOG_LIST;
 		p.setContent("condition.appCode", appCode);
-		p.setContent("page", "1");
-		loadGridData(p, appCode); 
+		p.setContent("appCode", appCode);
+		loadGridData(p, appCode, "1"); 
     }
 
     function searchLog() {
@@ -226,12 +225,10 @@ URL_CORE = "../../";
                 Cache.Variables.add("condition", condition);
 				
                 var p = new HttpRequestParams();
-				p.url = URL_SEARCH_LOG;
 				var xmlReader = new XmlReader(condition.dataXml);
 				var dataNode  = new XmlNode(xmlReader.documentElement);
 				p.setXFormContent(dataNode, condition.prefix);
-				p.setContent("page", "1");
-				loadGridData(p, treeID); 
+				loadGridData(p, treeID, "1"); 
             }
         }
     }
@@ -272,24 +269,21 @@ URL_CORE = "../../";
 	
     /*
      *	日志详细信息加载数据
-     *	参数：	string:logId                日志id
      */
     function loadLogDetailData(logId) {
-            var p = new HttpRequestParams();
-            p.url = URL_LOG_DETAIL;
-            p.setContent("id", logId);
-
-            var request = new HttpRequest(p);
-            request.onresult = function() {
-                var logInfoNode = this.getNodeValue(XML_LOG_INFO);
+		Ajax({
+			url : URL_LOG_DETAIL + logId,
+			method : "GET",
+			onresult : function() { 
+				var logInfoNode = this.getNodeValue(XML_LOG_INFO);
 				var page1FormObj = $X("page1Form", logInfoNode);
 
 				$("page1BtPrev").style.display = "none";
 				$("page1BtNext").style.display = "none";
 				$("page1BtSave").style.display = "none";
 				// $("page1BtSave").disabled = true;
-            }
-            request.send();
+			}
+		});
     }
 	
 	
