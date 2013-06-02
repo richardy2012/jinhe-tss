@@ -28,6 +28,10 @@ import com.jinhe.tss.util.XmlUtil;
 
 /**
  * <p> XmlHttp请求数据解码 </p>
+ * 
+ * 因Ajax发送的post的请求中 name/value 值对无法设置到request.paramters中，
+ * 故需要本filter将ajax发送的请求参数拦截放到进一步封装后request对象（request.paramters 是一个不可被手动add值的collection，unmodify）中。
+ * 
  * <pre>
  * 将XmlHttp的XML数据解析成Request中的属性。
  * 传入的XMLHttp的XML数据格式，如：

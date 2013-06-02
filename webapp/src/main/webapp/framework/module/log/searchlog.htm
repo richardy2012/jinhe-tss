@@ -32,24 +32,25 @@
     function loadInitData(){
 		Ajax({
 		url : "SearchXForm.xml",
+		method : "GET",
 		onresult : function() {
-		var searchLogFormXML = this.getNodeValue(XML_MAIN_FORM);
+			var searchLogFormXML = this.getNodeValue(XML_MAIN_FORM);
 
-		var row = searchLogFormXML.selectSingleNode("./data/row");
-		var args = window.dialogArguments;
-		for(var item in args){
-			if("title" != item) {
-				row.setCDATA(item, args[item]);
+			var row = searchLogFormXML.selectSingleNode("./data/row");
+			var args = window.dialogArguments;
+			for(var item in args){
+				if("title" != item) {
+					row.setCDATA(item, args[item]);
+				}
 			}
-		}
 
-		Cache.XmlDatas.add(XML_MAIN_FORM, searchLogFormXML);
-			$X("searchForm", searchLogFormXML);
-		}
+			Cache.XmlDatas.add(XML_MAIN_FORM, searchLogFormXML);
+				$X("searchForm", searchLogFormXML);
+			}
 		});
     }
  
-		// 搜索信息
+	// 搜索信息
     function getCondition(){
         var condition = {};       
         var searchLogFormXML = Cache.XmlDatas.get(XML_MAIN_FORM);

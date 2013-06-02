@@ -48,11 +48,13 @@ public class XmlHttpDecoder {
             List<Element> paramNodes = XMLDocUtil.selectNodes(element, "Param");
             if (paramNodes != null) {
                 for (Element paramNode : paramNodes) {
-                    Node nameNode = paramNode.selectSingleNode("Name");
+                    Node nameNode  = paramNode.selectSingleNode("Name");
                     Node valueNode = paramNode.selectSingleNode("Value");
                     if (nameNode != null && valueNode != null) {
-                        String name = nameNode.getText();
+                        String name  = nameNode.getText();
                         String value = valueNode.getText();
+                        
+                        name = name.substring(name.indexOf(".") + 1); // 去掉参数前缀，因spring mvc 不支持ognl
                         value = value.replaceAll("&lt;!\\[CDATA\\[", "<![CDATA[").replaceAll("\\]\\]&gt;", "]]>");
                         req.addParameter(name, value);
                     }

@@ -5,6 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeTranslator;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
@@ -13,48 +19,46 @@ import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.util.EasyUtils;
  
+@Controller
+@RequestMapping("/param")
 public class ParamAction extends BaseActionSupport {
 
-	private ParamService paramService;
-    
-	private Param param = new Param();
-    
-	private Integer type;
-	private Integer mode;
-	private Long parentId;
-	private Long paramId;
-	private String  toParamId;
-	private Integer disabled;
-	private Long targetId;
-	private int direction;
+	@Autowired private ParamService paramService;
+	
     
 	/** 树型展示所有已配置参数 */
-	public String get2Tree(){
-		TreeEncoder treeEncoder = new TreeEncoder(paramService.getAllParams(), new LevelTreeParser());
-		return print("ParamTree", treeEncoder);
+	@RequestMapping("/list")
+	public void get2Tree() {
+		List<?> allParams = paramService.getAllParams();
+		TreeEncoder treeEncoder = new TreeEncoder(allParams, new LevelTreeParser());
+		print("ParamTree", treeEncoder);
 	}
     
     /** 刷新一下参数的缓存 */
-    public String flushParamCache() {
+	@RequestMapping("/cache/{paramId}")
+    public void flushParamCache(@PathVariable("paramId") Long paramId) {
         ParamManager.remove(paramService.getParam(paramId).getCode());       
-        return printSuccessMessage();
+        printSuccessMessage();
     }
 
 	/** 删除 */
-	public String delParam() {
+	@RequestMapping(value = "/list/{paramId}", method = RequestMethod.DELETE)
+	public void delParam(@PathVariable("paramId") Long paramId) {
 		paramService.delete(paramId);		
-		return printSuccessMessage();
+		printSuccessMessage();
 	}
 	
 	/**  新建、编辑 */
-	public String saveParam(){
+	@RequestMapping(method = RequestMethod.POST)
+	public void saveParam(Param param) {
 		boolean isnew = (null == param.getId());
         paramService.saveParam(param);
-		return doAfterSave(isnew, param, "ParamTree");
+		doAfterSave(isnew, param, "ParamTree");
 	}
 	
 	/** 取参数信息 */
-	public String getParamInfo() {
+	@RequestMapping(value = "/list/{paramId}", method = RequestMethod.GET)
+	public String getParamInfo(int type, int mode, Long parentId, @PathVariable("paramId") Long paramId) {
         boolean isnew = isNew != null && TRUE.equals(isNew);
         XFormEncoder xformEncoder = null;
         
@@ -88,19 +92,19 @@ public class ParamAction extends BaseActionSupport {
 	}
 	
 	/** 停用、启用参数 */
-	public String startOrStopParam(){
+	public String startOrStopParam(@PathVariable("paramId") Long paramId, int disabled) {
 		paramService.startOrStop(paramId, disabled);
 		return printSuccessMessage();
 	}
 	
 	/** 参数排序 */
-	public String sortParam(){
+	public String sortParam(@PathVariable("paramId") Long paramId, Long targetId, int direction) {
 		paramService.sortParam(paramId, targetId, direction);
 		return printSuccessMessage();
 	}
 	
 	/**  参数复制 */
-	public String copyParam(){
+	public String copyParam(@PathVariable("paramId") Long paramId, @PathVariable("paramId") Long toParamId) {
         Long targetId = null;
 		if(toParamId != null) {
             targetId = "_rootId".equals(toParamId) ? ParamConstants.DEFAULT_PARENT_ID : new Long(toParamId);
@@ -113,14 +117,14 @@ public class ParamAction extends BaseActionSupport {
 	}
 	
 	/** 移动参数 */
-	public String moveParam(){
+	public String moveParam(@PathVariable("paramId") Long paramId, @PathVariable("paramId") Long toParamId) {
 		Long id = "_rootId".equals(toParamId) ? ParamConstants.DEFAULT_PARENT_ID : new Long(toParamId);
 		paramService.move(paramId, id);
 		return printSuccessMessage();
 	}
 	
 	/** 取可以新增的参数树 */
-	public String getCanAddParamsTree(){
+	public String getCanAddParamsTree(int type, int mode) {
 		Object[] datas = ParamConstants.ITEM_PARAM_TYPE.equals(type) ? 
                 paramService.getCanAddParams(mode) : paramService.getCanAddGroups();
 
@@ -151,18 +155,11 @@ public class ParamAction extends BaseActionSupport {
     
     /***************************************** 以下为应用系统初始化相关 *************************************************/
     
-    private String code;
-    private String name;
-    private String value;
-    
     /**
      * 初始化应用系统，主要是生成appServer配置信息。
      * @return
      */
-    public String initSystem(){
-        value = "<server code=" + code + " userDepositoryCode=\"tss\" name="
-                + code + " sessionIdName=\"JSESSIONID\" baseURL=" + value  + "/>";
-        
+    public String initSystem(String code, String name, String value) {
         Param param = paramService.getParam(code);
         if(param == null){
             param = new Param();
@@ -173,66 +170,12 @@ public class ParamAction extends BaseActionSupport {
             param.setParentId(ParamConstants.DEFAULT_PARENT_ID);
             paramService.saveParam(param);
         }
-        param.setValue(value);
+        param.setValue("<server code=" + code + " userDepositoryCode=\"tss\" name="
+                + code + " sessionIdName=\"JSESSIONID\" baseURL=" + value  + "/>");
         paramService.saveParam(param);
        
         String msg = Context.getApplicationContext().getCurrentAppCode() + "应用里设置(" + code + ")应用配置信息成功";
         return printSuccessMessage(msg);
     }
     
-    
-    /***************************************************************************************************************/
-	
- 
-	public void setParamService(ParamService paramService) {
-		this.paramService = paramService;
-	}
- 
-	public Param getParam() {
-		return param;
-	}
- 
-	public void setParamId(Long paramId) {
-		this.paramId = paramId;
-	}
- 
-	public void setParentId(Long parentId) {
-		this.parentId = parentId;
-	}
- 
-	public void setType(Integer type) {
-		this.type = type;
-	}
- 
-	public void setMode(Integer mode) {
-		this.mode = mode;
-	}	
- 
-	public void setDisabled(Integer disabled) {
-		this.disabled = disabled;
-	}
- 
-	public void setDirection(int direction) {
-		this.direction = direction;
-	}
- 
-	public void setTargetId(Long targetId) {
-		this.targetId = targetId;
-	}
- 
-	public void setToParamId(String toParamId) {
-		this.toParamId = toParamId;
-	}
- 
-    public void setCode(String code) {
-        this.code = code;
-    }
- 
-    public void setName(String name) {
-        this.name = name;
-    }
- 
-    public void setValue(String value) {
-        this.value = value;
-    }
 }	

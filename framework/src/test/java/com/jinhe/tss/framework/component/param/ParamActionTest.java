@@ -12,7 +12,6 @@ public class ParamActionTest extends TxTestSupport {
     
     public void setUp() throws Exception {
         super.setUp();
-		action.setParamService(paramService);
     }
     
 	public void testParamAction() {
