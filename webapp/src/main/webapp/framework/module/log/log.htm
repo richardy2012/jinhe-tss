@@ -58,7 +58,8 @@ URL_CORE = "../../";
 		URL_LOG_LIST = "data/loglist.xml";
 		URL_LOG_DETAIL = "data/log1.xml";
 	}
- URL_INIT = "data/log_init.xml";
+	URL_INIT = "data/log_init.xml";
+	
     /* 页面初始化 */
     function init() {
 		initPaletteResize();
@@ -173,7 +174,7 @@ URL_CORE = "../../";
      *	grid加载数据
      */
     function loadGridData(p, treeID, page) {
-		p.url = (URL_LOG_LIST + page || "1") + "?condition.appCode=TSS";
+		p.url = URL_LOG_LIST + page || "1";
 		var request = new HttpRequest(p);
 		request.onresult = function() {
 			$G("grid", this.getNodeValue(XML_LOG_LIST)); 
@@ -210,7 +211,6 @@ URL_CORE = "../../";
 	function showLogList() {		
 	    var appCode = getTreeId();
 		var p = new HttpRequestParams();
-		p.setContent("condition.appCode", appCode);
 		p.setContent("appCode", appCode);
 		loadGridData(p, appCode, "1"); 
     }

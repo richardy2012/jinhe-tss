@@ -28,7 +28,6 @@
     function init() {		
 		Ajax({
 			url : URL_INIT,
-			headers : {},
 			contents : window.dialogArguments.params, 
 			onresult : function() { 
 				initTree(this.getNodeValue("ParamTree"));

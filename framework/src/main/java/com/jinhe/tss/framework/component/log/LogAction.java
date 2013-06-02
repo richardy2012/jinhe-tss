@@ -3,6 +3,7 @@ package com.jinhe.tss.framework.component.log;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,7 @@ public class LogAction extends BaseActionSupport {
     }
     
     @RequestMapping(method = RequestMethod.POST, value = "/{page}")
-    public void queryLogs4Grid(HttpServletResponse response,
-            @ModelAttribute("condition") LogQueryCondition condition, @PathVariable int page) {
-        
+    public void queryLogs4Grid(HttpServletResponse response, LogQueryCondition condition, @PathVariable int page) {
         condition.setPagesize(PAGE_SIZE);
         condition.setCurrentPage(page);
         Object[] objs = service.getLogsByCondition(condition);
@@ -62,6 +61,11 @@ public class LogAction extends BaseActionSupport {
     public void getLogInfo(HttpServletResponse response, @PathVariable long id) {
         Log log = service.getLogById(id);          
         print("LogInfo", new XFormEncoder(LOG_XFORM_TEMPLET_PATH, (IXForm) log));
+    }
+
+    @RequestMapping("/test/2")
+    public void  test2(HttpServletResponse response, LogQueryCondition condition) {
+    	super.printSuccessMessage(condition.getOperationCode());
     }
 
 }

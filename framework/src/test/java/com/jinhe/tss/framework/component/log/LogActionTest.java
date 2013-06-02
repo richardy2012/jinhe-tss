@@ -39,7 +39,7 @@ public class LogActionTest extends TxTestSupport {
 
 		Thread.sleep(3 * 1000);
 		
-		action.queryLogs4Grid(null, new LogQueryCondition(), 1);
+		action.queryLogs4Grid(null, null, new LogQueryCondition(), 1);
 	}
 
 }

@@ -24,7 +24,7 @@ import com.jinhe.tss.framework.web.RewriteableHttpServletRequest;
 public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrapper 
 				implements RewriteableHttpServletRequest {
 
-	private Map<String, String> params = new HashMap<String, String>();
+	private Map<String, String[]> params = new HashMap<String, String[]>();
 
 	private Map<String, String> headers = new HashMap<String, String>();
 
@@ -49,34 +49,33 @@ public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrap
 	private RewriteableHttpServletRequestWrapper(HttpServletRequest request) {
 		super(request);
 	}
-
+	
+	
 	public void addParameter(String name, String value) {
-		params.put(name, value);
+		params.put(name, new String[] { value });
+	}
+
+	public Map<String, String[]> getParameterMap() {
+		Map<String, String[]> map = new HashMap<String, String[]>();
+		map.putAll(super.getParameterMap());
+		map.putAll(params);
+		return map;
 	}
 
 	public Enumeration<String> getParameterNames() {
-	    Set<String> set = new HashSet<String>();
-        
-        Enumeration<String> e = super.getParameterNames();
-        while (e.hasMoreElements()) {
-            set.add(e.nextElement());
-        }
-        
-        set.addAll(params.keySet());
-        
-        return new Enumerator(set);
+		return new Enumerator(getParameterMap().keySet());
 	}
 	
 	// 获得如checkbox类（名字相同，但值有多个）的数据
 	public String[] getParameterValues(String name) {
-		return super.getParameterValues(name);
+		return getParameterMap().get(name);
 	}
 	
 	// 取指定名字参数的值（单值）
     public String getParameter(String name) {
-        String value = params.get(name);
-        if (value != null) {
-            return value;
+        String[] value = params.get(name);
+        if (value != null && value.length > 0) {
+            return value[0];
         }
         return super.getParameter(name);
     }
