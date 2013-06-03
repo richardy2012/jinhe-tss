@@ -1465,6 +1465,10 @@ function attachReminder(id, xform) {
 	}
 }
 
+function detachReminder(id) {
+	Reminder.del(id);
+}
+
 
 
 /*

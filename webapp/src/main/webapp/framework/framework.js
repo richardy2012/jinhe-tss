@@ -347,7 +347,7 @@ function getTreeNodeId() {
 }
 
 function isTreeNodeDisabled() {
-	return getTreeAttribute("disabled") == "true";
+	return getTreeAttribute("disabled") == "1";
 }
 
 function isTreeRoot() {

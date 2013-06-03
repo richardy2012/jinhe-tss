@@ -1468,13 +1468,13 @@ TreeNode.prototype = new function() {
 	}
 	
 	this._appendChild = function(xml, parent) {	
-		var newNodeXML = loadXmlToNode(xml);
-		if(newNodeXML == null || newNodeXML.documentElement == null || newNodeXML.documentElement.nodeName != _TREE_NODE){
+		var newNode = loadXmlToNode(xml);
+		if( newNode == null || newNode.nodeName != _TREE_NODE ) {
 			alert("TreeNode对象：新增节点xml数据不能正常解析！");
 			return null;
 		}
 		
-		var newNode = parent.appendChild(newNodeXML.documentElement); // 添加子节点
+		parent.appendChild(newNode); // 添加子节点
 		var treeNode = instanceTreeNode(newNode, this.treeObj);
 		if(treeNode instanceof TreeNode) {
 			refreshStatesByNode(treeNode);		// 根据新节点的选择状态刷新相关节点

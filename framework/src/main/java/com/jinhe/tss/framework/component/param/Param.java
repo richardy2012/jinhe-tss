@@ -39,9 +39,9 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
 	@Column(length = 2000)  
 	private String 	value;		// 参数值
 	private String 	text; 		// 参数展示值
-	private Integer modality;	//参数展示方式   0:简单参数 1:下拉型 2:树型
-	private Integer type;	    //种类  0:参数组 1:参数 2:参数项
-	private String 	description;//描述
+	private Integer modality;	// 参数展示方式   0:简单参数 1:下拉型 2:树型
+	private Integer type;	    // 种类  0:参数组 1:参数 2:参数项
+	private String 	description; 
 	
 	private Long    parentId;  // 父节点
 	private Integer seqNo;    // 排序号

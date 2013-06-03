@@ -12,8 +12,6 @@ import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.connectionpool._Connection;
 
 /**
- * <p> ParamManager.java </p>
- *  
  *  调用参数管理功能入口
  */
 public class ParamManager {

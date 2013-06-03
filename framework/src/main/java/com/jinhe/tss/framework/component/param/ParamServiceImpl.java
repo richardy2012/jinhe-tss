@@ -111,7 +111,7 @@ public class ParamServiceImpl implements ParamService {
     public List<?> copyParam(Long paramId, Long toParamId) {
         Param param = paramDao.getEntity(paramId);
  
-        if (null == toParamId) {
+        if (param.getParentId().equals(toParamId)) {
             return copyParamLocal(param);
         } else {
             return copyParamTo(param, paramDao.getEntity(toParamId));

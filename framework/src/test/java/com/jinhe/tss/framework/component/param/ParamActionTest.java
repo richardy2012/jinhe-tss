@@ -29,7 +29,7 @@ public class ParamActionTest extends TxTestSupport {
         addParamItem(temp.getId(), "group2", "组二", ParamConstants.TREE_PARAM_MODE);
         addParamItem(treeParam.getId(), "group3", "组三", ParamConstants.TREE_PARAM_MODE);
         
-		action.get2Tree();
+		action.get2Tree(null);
 	}
 	
     /** 建参数组 */

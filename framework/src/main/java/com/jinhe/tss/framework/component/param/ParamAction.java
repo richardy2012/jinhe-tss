@@ -5,13 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeTranslator;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
@@ -28,46 +31,61 @@ public class ParamAction extends BaseActionSupport {
     
 	/** 树型展示所有已配置参数 */
 	@RequestMapping("/list")
-	public void get2Tree() {
+	public void get2Tree(HttpServletResponse response) {
 		List<?> allParams = paramService.getAllParams();
 		TreeEncoder treeEncoder = new TreeEncoder(allParams, new LevelTreeParser());
 		print("ParamTree", treeEncoder);
 	}
+	
+	   /** 取可以新增的参数树 */
+    @RequestMapping("/list/{type}/{mode}" )
+    public String getCanAddParamsTree(HttpServletResponse response, 
+            @PathVariable("type") int type, @PathVariable("mode") int mode) {
+        
+        Object[] datas = ParamConstants.ITEM_PARAM_TYPE.equals(type) ? 
+                paramService.getCanAddParams(mode) : paramService.getCanAddGroups();
+
+        String canAddIds = (String) (datas[1] == null ? "" : datas[1]);
+        final List<String> canAddParamIds = Arrays.asList(canAddIds.split(","));
+        
+        TreeEncoder paramTree = new TreeEncoder(datas[0], new LevelTreeParser());
+        paramTree.setTranslator(new ITreeTranslator() { 
+            public Map<String, Object> translate(Map<String, Object> attributesMap) {
+                String tempId = attributesMap.get("id").toString();
+                if( !canAddParamIds.contains(tempId) ) {
+                    attributesMap.put("canselected", "0");
+                }
+                return attributesMap;
+            }
+        });
+        
+        // 如果移动的不是参数组而是参数项，则"全部节点(Root Node)"不可选
+        if ( ParamConstants.GROUP_PARAM_TYPE != type ) {
+            paramTree.setRootCanSelect(false);
+        }
+        
+        return print("ParamTree", paramTree);
+    }
     
     /** 刷新一下参数的缓存 */
 	@RequestMapping("/cache/{paramId}")
-    public void flushParamCache(@PathVariable("paramId") Long paramId) {
+    public void flushParamCache(HttpServletResponse response, @PathVariable("paramId") Long paramId) {
         ParamManager.remove(paramService.getParam(paramId).getCode());       
         printSuccessMessage();
     }
-
-	/** 删除 */
-	@RequestMapping(value = "/list/{paramId}", method = RequestMethod.DELETE)
-	public void delParam(@PathVariable("paramId") Long paramId) {
-		paramService.delete(paramId);		
-		printSuccessMessage();
-	}
-	
-	/**  新建、编辑 */
-	@RequestMapping(method = RequestMethod.POST)
-	public void saveParam(Param param) {
-		boolean isnew = (null == param.getId());
-        paramService.saveParam(param);
-		doAfterSave(isnew, param, "ParamTree");
-	}
 	
 	/** 取参数信息 */
-	@RequestMapping(value = "/list/{paramId}", method = RequestMethod.GET)
-	public String getParamInfo(int type, int mode, Long parentId, @PathVariable("paramId") Long paramId) {
-        boolean isnew = isNew != null && TRUE.equals(isNew);
-        XFormEncoder xformEncoder = null;
+	@RequestMapping("/detail")
+	public void getParamInfo(HttpServletRequest request, HttpServletResponse response, @RequestParam("type") int type) {
         
+	    String mode = request.getParameter("mode");
         String uri = null;
         if(ParamConstants.GROUP_PARAM_TYPE.equals(type)){
         	uri = ParamConstants.XFORM_NEW_GROUP;
         } 
         else if(ParamConstants.NORMAL_PARAM_TYPE.equals(type)){
-        	if(ParamConstants.SIMPLE_PARAM_MODE.equals(mode)){
+            
+        	if(ParamConstants.SIMPLE_PARAM_MODE.toString().equals(mode)){
             	uri = ParamConstants.XFORM_NEW_PARAM_SIMPLE;
         	} else {
         		uri = ParamConstants.XFORM_NEW_PARAM_COMPLEX;
@@ -76,35 +94,67 @@ public class ParamAction extends BaseActionSupport {
         	uri = ParamConstants.XFORM_NEW_PARAM_ITEM;
         }
         
-        if( isnew ){
+        XFormEncoder xformEncoder;
+        String paramIdValue = request.getParameter("paramId");
+        if( paramIdValue == null ){
             Map<String, Object> map = new HashMap<String, Object>();
-            parentId = parentId == null ? ParamConstants.DEFAULT_PARENT_ID : parentId;
+            
+            String parentIdValue = request.getParameter("parentId"); 
+            Long parentId = parentIdValue == null ? ParamConstants.DEFAULT_PARENT_ID : EasyUtils.convertObject2Long(parentIdValue);
             map.put("parentId", parentId);
             map.put("type", type);
             map.put("modality", mode);
             xformEncoder = new XFormEncoder(uri, map);
         } 
         else {
-        	Param param = paramService.getParam(paramId);
+        	Param param = paramService.getParam(EasyUtils.convertObject2Long(paramIdValue));
             xformEncoder = new XFormEncoder(uri, param);
         }
-        return print("ParamInfo", xformEncoder);
+        print("ParamInfo", xformEncoder);
 	}
+ 
+	/** 删除 */
+    @RequestMapping(value = "/{paramId}", method = RequestMethod.DELETE)
+    public void delParam(HttpServletResponse response, @PathVariable("paramId") Long paramId) {
+        paramService.delete(paramId);       
+        printSuccessMessage();
+    }
+    
+    /**  新建、编辑 */
+    @RequestMapping(method = RequestMethod.POST)
+    public void saveParam(HttpServletResponse response, Param param) {
+        boolean isnew = (null == param.getId());
+        paramService.saveParam(param);
+        doAfterSave(isnew, param, "ParamTree");
+    }
 	
+    
 	/** 停用、启用参数 */
-	public String startOrStopParam(@PathVariable("paramId") Long paramId, int disabled) {
+	@RequestMapping(value = "/disable/{paramId}/{disabled}", method = RequestMethod.POST)
+	public void startOrStopParam(HttpServletResponse response, 
+	        @PathVariable("paramId") Long paramId, @PathVariable("disabled") int disabled) {
+	    
 		paramService.startOrStop(paramId, disabled);
-		return printSuccessMessage();
+		printSuccessMessage();
 	}
 	
 	/** 参数排序 */
-	public String sortParam(@PathVariable("paramId") Long paramId, Long targetId, int direction) {
+	@RequestMapping(value = "/sort/{paramId}/{targetId}/{direction}", method = RequestMethod.POST)
+	public void sortParam(HttpServletResponse response, 
+	        @PathVariable("paramId") Long paramId, 
+	        @PathVariable("targetId") Long targetId,  
+	        @PathVariable("direction") int direction) {
+	    
 		paramService.sortParam(paramId, targetId, direction);
-		return printSuccessMessage();
+		printSuccessMessage();
 	}
 	
 	/**  参数复制 */
-	public String copyParam(@PathVariable("paramId") Long paramId, @PathVariable("paramId") Long toParamId) {
+	@RequestMapping(value = "/copy/{paramId}/{toParamId}", method = RequestMethod.POST)
+	public void copyParam(HttpServletResponse response, 
+	        @PathVariable("paramId") Long paramId, 
+	        @PathVariable("toParamId") String toParamId) {
+	    
         Long targetId = null;
 		if(toParamId != null) {
             targetId = "_rootId".equals(toParamId) ? ParamConstants.DEFAULT_PARENT_ID : new Long(toParamId);
@@ -113,45 +163,20 @@ public class ParamAction extends BaseActionSupport {
 		List<?> result = paramService.copyParam(paramId, targetId);
 		TreeEncoder encoder = new TreeEncoder(result, new LevelTreeParser());
 		encoder.setNeedRootNode(false);
-		return print("ParamTree", encoder);
+		print("ParamTree", encoder);
 	}
 	
 	/** 移动参数 */
-	public String moveParam(@PathVariable("paramId") Long paramId, @PathVariable("paramId") Long toParamId) {
-		Long id = "_rootId".equals(toParamId) ? ParamConstants.DEFAULT_PARENT_ID : new Long(toParamId);
-		paramService.move(paramId, id);
-		return printSuccessMessage();
+	@RequestMapping(value = "/move/{paramId}/{toParamId}", method = RequestMethod.POST)
+	public void moveParam(HttpServletResponse response, 
+	        @PathVariable("paramId") Long paramId, 
+	        @PathVariable("toParamId") String toParamId) {
+	    
+		Long targetId = "_rootId".equals(toParamId) ? ParamConstants.DEFAULT_PARENT_ID : new Long(toParamId);
+		paramService.move(paramId, targetId);
+		printSuccessMessage();
 	}
 	
-	/** 取可以新增的参数树 */
-	public String getCanAddParamsTree(int type, int mode) {
-		Object[] datas = ParamConstants.ITEM_PARAM_TYPE.equals(type) ? 
-                paramService.getCanAddParams(mode) : paramService.getCanAddGroups();
-
-        final String canAddIds = (String) datas[1];
-        
-        TreeEncoder paramTree = new TreeEncoder(datas[0], new LevelTreeParser());
-        paramTree.setTranslator(new ITreeTranslator(){ 
-            public Map<String, Object> translate(Map<String, Object> attributesMap) {
-                if(EasyUtils.isNullOrEmpty(canAddIds)){
-                    return attributesMap;
-                }
-                
-                List<String> canAddParamIds = Arrays.asList(canAddIds.split(","));
-                if(!canAddParamIds.contains(attributesMap.get("id").toString())) {
-                    attributesMap.put("canselected", "0");
-                }
-                return attributesMap;
-            }
-        });
-        
-        //如果移动的不是参数组而是参数项，则"全部节点(Root Node)"不可选
-        if (!ParamConstants.GROUP_PARAM_TYPE.equals(type)) {
-            paramTree.setRootCanSelect(false);
-        }
-        
-        return print("ParamTree", paramTree);
-	}
     
     /***************************************** 以下为应用系统初始化相关 *************************************************/
     
@@ -159,9 +184,14 @@ public class ParamAction extends BaseActionSupport {
      * 初始化应用系统，主要是生成appServer配置信息。
      * @return
      */
-    public String initSystem(String code, String name, String value) {
+	@RequestMapping(value = "/apps/{code}/{name}/{value}", method = RequestMethod.POST)
+    public void initAppConfig(HttpServletResponse response, 
+            @PathVariable("code") String code, 
+            @PathVariable("name") String name, 
+            @PathVariable("value") String value) {
+	    
         Param param = paramService.getParam(code);
-        if(param == null){
+        if(param == null) {
             param = new Param();
             param.setCode(code);
             param.setName(name);
@@ -174,8 +204,8 @@ public class ParamAction extends BaseActionSupport {
                 + code + " sessionIdName=\"JSESSIONID\" baseURL=" + value  + "/>");
         paramService.saveParam(param);
        
-        String msg = Context.getApplicationContext().getCurrentAppCode() + "应用里设置(" + code + ")应用配置信息成功";
-        return printSuccessMessage(msg);
+        String msg = "当前应用里设置【" + code + "】应用配置信息成功";
+        printSuccessMessage(msg);
     }
     
 }	

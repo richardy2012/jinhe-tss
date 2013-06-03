@@ -1,6 +1,10 @@
 package com.jinhe.tss;
 
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
@@ -11,6 +15,9 @@ import org.springframework.test.context.junit38.AbstractTransactionalJUnit38Spri
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.jinhe.tss.framework.Global;
+import com.jinhe.tss.framework.component.param.Param;
+import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.component.param.ParamService;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
@@ -84,6 +91,8 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
         initUM();
         initPortal();
         
+        importSystemProperties();
+        
         log.info("init tss databse base data over.");
     }
  
@@ -149,5 +158,90 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
         defaultDecorator.setName(decoratorName);
         defaultDecorator.setDefinition(document.asXML());
         elementService.saveElement(defaultDecorator);
+    }
+    
+    
+    @Autowired private ParamService paramService;
+ 
+    /**
+     * 导入 application.properties文件 和 appServers.xml
+     */
+    public void importSystemProperties(){
+        String name = "系统参数";
+        Param param = addParam(ParamConstants.DEFAULT_PARENT_ID, name);
+        ResourceBundle resources = ResourceBundle.getBundle("application", Locale.getDefault());
+        if (resources == null) return;
+        
+        for (Enumeration<String> enumer = resources.getKeys(); enumer.hasMoreElements();) {
+            String key = enumer.nextElement();
+            String value = resources.getString(key);
+            addParam(param.getId(), key, key, value);
+        }
+ 
+        Param paramGroup = addParam(ParamConstants.DEFAULT_PARENT_ID, "应用服务配置");
+        
+        Document doc = XMLDocUtil.createDoc("appServers.xml");
+        List<?> elements = doc.getRootElement().elements();
+        for (Iterator<?> it = elements.iterator(); it.hasNext();) {
+            Element element = (Element) it.next();
+            String appName = element.attributeValue("name");
+            String appCode = element.attributeValue("code");
+            addParam(paramGroup.getId(), appCode, appName, element.asXML());
+        }
+    }
+
+    /**
+     * 建参数组
+     */
+    Param addParam(Long parentId, String name) {
+        Param param = new Param();
+        param.setName(name);
+        param.setParentId(parentId);
+        param.setType(ParamConstants.GROUP_PARAM_TYPE);
+        paramService.saveParam(param);
+        return param;
+    }
+
+    /**
+     * 简单参数
+     */
+    Param addParam(Long parentId, String code, String name, String value) {
+        Param param = new Param();
+        param.setCode(code);
+        param.setName(name);
+        param.setValue(value);
+        param.setParentId(parentId);
+        param.setType(ParamConstants.NORMAL_PARAM_TYPE);
+        param.setModality(ParamConstants.SIMPLE_PARAM_MODE);
+        paramService.saveParam(param);
+        return param;
+    }
+
+    /**
+     * 下拉型参数
+     */
+    Param addParam(Long parentId, String code, String name) {
+        Param param = new Param();
+        param.setCode(code);
+        param.setName(name);
+        param.setParentId(parentId);
+        param.setType(ParamConstants.NORMAL_PARAM_TYPE);
+        param.setModality(ParamConstants.COMBO_PARAM_MODE);
+        paramService.saveParam(param);
+        return param;
+    }
+
+    /**
+     * 新建设参数项
+     */
+    Param addParamItem(Long parentId, String value, String text, Integer mode) {
+        Param param = new Param();
+        param.setValue(value);
+        param.setText(text);
+        param.setParentId(parentId);
+        param.setType(ParamConstants.ITEM_PARAM_TYPE);
+        param.setModality(mode);
+        paramService.saveParam(param);
+        return param;
     }
 }

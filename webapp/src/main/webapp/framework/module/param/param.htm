@@ -36,28 +36,29 @@
     XML_PARAM_LIST = "ParamList";
     XML_PARAM_INFO = "ParamInfo";
    
-    /* XMLHTTP请求地址汇总 */
-	URL_INIT = URL_CORE + "../param!get2Tree.action";
-    URL_PARAM_DETAIL = URL_CORE + "../param!getParamInfo.action";
-    URL_TREENODE_DEL = URL_CORE + "../param!delParam.action";
-    URL_TREENODE_DISABLE = "../../../param!startOrStopParam.action";
-    URL_SAVE_PARAM = URL_CORE + "../param!saveParam.action";
-    URL_SORT_PARAM = "../../../param!sortParam.action";
-    URL_FLUSH_PARAM_CACHE  = "../../../pms/param!flushParamCache.action";
-    URL_COPY_PARAM = "../../../param!copyParam.action";
-    URL_COPY_PARAM_TO = "../../../param!copyParam.action";
-    URL_MOVE_PARAM_TO = "../../../param!moveParam.action";
+    /* 
+	 * XMLHTTP请求地址汇总 
+	 */
+	URL_INIT          = "/" + CONTEXTPATH + "param/list";
+    URL_PARAM_DETAIL  = "/" + CONTEXTPATH + "param/detail";
+	URL_SAVE_PARAM    = "/" + CONTEXTPATH + "param";
+    URL_PARAM_DELETE  = "/" + CONTEXTPATH + "param/";
+	URL_FLUSH_CACHE   = "/" + CONTEXTPATH + "param/cache/";
+
+    URL_PARAM_DISABLE = "/" + CONTEXTPATH + "param/disable/";
+    URL_SORT_PARAM    = "/" + CONTEXTPATH + "param/sort/";
+    URL_COPY_PARAM    = "/" + CONTEXTPATH + "param/copy/";
+    URL_MOVE_PARAM_TO = "/" + CONTEXTPATH + "param/move/";
 	
 	if(IS_TEST) {
 		URL_INIT = "data/param_init.xml";
 		URL_PARAM_DETAIL = "data/param1.xml";
-		URL_TREENODE_DEL = "data/_success.xml";
-		URL_TREENODE_DISABLE = "data/_success.xml";
+		URL_PARAM_DELETE = "data/_success.xml";
+		URL_PARAM_DISABLE = "data/_success.xml";
 		URL_SAVE_PARAM = "data/_success.xml";
 		URL_SORT_PARAM = "data/_success.xml";
-		URL_FLUSH_PARAM_CACHE  = "data/_success.xml";
+		URL_FLUSH_CACHE  = "data/_success.xml";
 		URL_COPY_PARAM = "data/_success.xml";
-		URL_COPY_PARAM_TO = "data/_success.xml";
 		URL_MOVE_PARAM_TO = "data/_success.xml";
 	}
  
@@ -273,7 +274,7 @@
             };
             callback.onTabChange = function() {
                 setTimeout(function() {
-                    loadTreeDetailData(treeID, editable, treeID, type, false, mode);
+                    loadTreeDetailData(treeID, editable, treeID, type, mode);
                 }, TIMEOUT_TAB_CHANGE);
             };
 
@@ -309,7 +310,6 @@
                 var treeName = "参数项";
                 break;
         }
-        var treeID = new Date().valueOf();
 
         var tree = $T("tree");
         var treeNode = tree.getActiveTreeNode();
@@ -322,7 +322,7 @@
             };
             callback.onTabChange = function() {
                 setTimeout(function() {
-                    loadTreeDetailData(treeID, true, parentID, type, true, mode);
+                    loadTreeDetailData(null, true, parentID, type, mode);
                 }, TIMEOUT_TAB_CHANGE);
             };
 
@@ -331,7 +331,7 @@
             inf.label = OPERATION_ADD.replace(/\$label/i,treeName);
             inf.phases = null;
             inf.callback = callback;
-            inf.SID = treeID;
+            inf.SID = new Date().valueOf();
             var tab = ws.open(inf);
         }
     }
@@ -341,48 +341,44 @@
      *	参数：	string:treeID               树节点id
                 boolean:editable            是否可编辑(默认true)
                 string:parentID             父节点id
-                boolean:isNew               是否新增
                 boolean:type                节点类型(0参数组/1参数/2参数项)
      */
-    function loadTreeDetailData(treeID, editable, parentID, type, isNew, mode) {
-		var p = new HttpRequestParams();
-		p.url = URL_PARAM_DETAIL;
-
-		p.setContent("paramId", treeID);
-		p.setContent("type", type);
-
-		if(isNew) {
-			p.setContent("isNew", 1);
-			p.setContent("parentId", parentID);
-		}
-		if("1"==type) {
-			p.setContent("mode", mode);
+    function loadTreeDetailData(treeID, editable, parentID, type, mode) {
+		var params = {};
+		params["type"] = type;
+		params["mode"] = mode || 0;
+		if(treeID) {
+		    params["paramId"] = treeID;			
+		} else {
+			params["parentId"] = parentID;
 		}
 
-		var request = new HttpRequest(p);
-		request.onresult = function() {
-			var paramInfoNode = this.getNodeValue(XML_PARAM_INFO);
-			Cache.XmlDatas.add(treeID, paramInfoNode);
-			
-			$("page1Form").editable = editable ? "true" : "false";
-			var xform = $X("page1Form", paramInfoNode);
+		Ajax({
+			url : URL_PARAM_DETAIL,
+			method : "POST",
+			contents : params,
+			onresult : function() { 
+				var paramInfoNode = this.getNodeValue(XML_PARAM_INFO);
+				Cache.XmlDatas.add(treeID, paramInfoNode);
+				
+				$("page1Form").editable = editable ? "true" : "false";
+				var xform = $X("page1Form", paramInfoNode);
 
-			attachReminder(treeID, xform); // 离开提醒
- 
-			// 设置保存按钮操作
-			var page1BtSaveObj = $("page1BtSave");
-			page1BtSaveObj.onclick = function() {
-				saveParam(treeID, parentID, isNew, type);
+				attachReminder(treeID, xform); // 离开提醒
+	 
+				// 设置保存按钮操作
+				var page1BtSaveObj = $("page1BtSave");
+				page1BtSaveObj.onclick = function() {
+					saveParam(treeID, parentID, type);
+				}
 			}
-		}
-		request.send();
+		});
     }
 
     /*
      *	保存参数
      *	参数：	string:cacheID          缓存数据id
                 string:parentID         父节点id
-                boolean:isNew           是否新增
                 boolean:type            节点类型(0参数组/1参数/2参数项)
      */
     function saveParam(cacheID, parentID, type) {
@@ -393,7 +389,7 @@
 
         var p = new HttpRequestParams();
         p.url = URL_SAVE_PARAM;
-        p.setContent("type",type);
+        p.setContent("type", type);
 
         //是否提交
         var flag = false;
@@ -421,9 +417,9 @@
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
 				appendTreeNode(parentID, treeNode);
 
-				var ws = $("ws");
 				ws.closeActiveTab();
             }
+
             request.onsuccess = function() { // 更新树节点名称
 				if("1" == type) {
 					var name = xform.getData("name");
@@ -449,49 +445,43 @@
         
         var tree = $T("tree");
         var treeNode = tree.getActiveTreeNode();
-        if ( treeNode ) {
-			Ajax({
-				url : URL_TREENODE_DEL,
-				contents : {"paramId": treeNode.getId()}, 
-				onsuccess : function() { 
-					var parentNode = treeNode.getParent();
-					if( parentNode ) {
-						tree.setActiveTreeNode(parentNode.getId());
-					}
-					tree.removeTreeNode(treeNode);
+		Ajax({
+			url : URL_PARAM_DELETE + treeNode.getId(),
+			method : "DELETE",
+			onsuccess : function() { 
+				var parentNode = treeNode.getParent();
+				if( parentNode ) {
+					tree.setActiveTreeNode(parentNode.getId());
 				}
-			});
-        }		
+				tree.removeTreeNode(treeNode);
+			}
+		});	
     }
  
     function enableOrDisable(status) {
         var tree = $T("tree");
         var treeNode = tree.getActiveTreeNode();
-        if( treeNode ) {
-			Ajax({
-				url : URL_TREENODE_DISABLE,
-				contents : {"paramId": treeNode.getId(), "disabled": status}, 
-				onsuccess : function() { 
-					var xmlNode = new XmlNode(treeNode.node);
-					refreshTreeNodeStates(xmlNode, "0");
+		Ajax({
+			url : URL_PARAM_DISABLE + treeNode.getId() + "/" + status,
+			onsuccess : function() { 
+				var xmlNode = new XmlNode(treeNode.node);
+				refreshTreeNodeStates(xmlNode, status);
 
-					loadToolBar(); // 刷新工具条
-				}
-			});
-        }
+				loadToolBar(); // 刷新工具条
+			}
+		});
     }
 
 	function enableParam() {
-		enableOrDisable("1");
+		enableOrDisable("0");
 	}
     function disableParam() {
-        enableOrDisable("0");
+        enableOrDisable("1");
     }
 
 	function flushParamCache() {
        Ajax({
-			url : URL_TREENODE_DISABLE,
-			contents : {"paramId": getTreeNodeId()}, 
+			url : URL_FLUSH_CACHE + getTreeNodeId(),
 			onsuccess : function() { 
 				alert("操作成功！");
 			}
@@ -567,8 +557,7 @@
 		var parentId = treeNode.getParent().getId();
 
 		Ajax({
-			url : URL_COPY_PARAM,
-			contents : {"paramId": treeNode.getId()}, 
+			url : URL_COPY_PARAM + treeNode.getId() + "/" + parentId,
 			onresult : function() { 
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
                 appendTreeNode(parentId, treeNode);
@@ -588,8 +577,7 @@
 		if( targetParent ) {
 			var targetParentId = targetParent.id;
 			Ajax({
-				url : URL_COPY_PARAM_TO,
-				contents : {"paramId": id, "toParamId": targetParentId}, 
+				url : URL_COPY_PARAM + id + "/" + targetParentId,
 				onresult : function() { 
 					var newNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
 					appendTreeNode(targetParentId, newNode);
@@ -606,13 +594,12 @@
 		var parentID = treeNode.getParent().getId();
 
 		var params = { id:id, parentID:parentID };
-		var targetParent = window.showModalDialog("paramtree.htm",{params:params, title:"将\"" + name + "\"移动到"},"dialogWidth:300px;dialogHeight:400px;");
+		var targetParent = window.showModalDialog("paramtree.htm", {params:params, title:"将\"" + name + "\"移动到"},"dialogWidth:300px;dialogHeight:400px;");
 	   
 		if(targetParent) {
 			var targetParentId = targetParent.id;
 			Ajax({
-				url : URL_MOVE_PARAM_TO,
-				contents : {"paramId": id, "toParamId": targetParentId}, 
+				url : URL_MOVE_PARAM_TO + id + "/" + targetParentId,
 				onsuccess : function() { 
 					// 移动树节点
 					var parentNode = tree.getTreeNodeById(targetParentId);
@@ -634,8 +621,7 @@
         var moveState  = eventObj.moveState; // -1: 目标上方, 1: 目标下方
 
 		Ajax({
-			url : URL_SORT_PARAM,
-			contents : {"targetId": toTreeNode.getId(), "paramId": movedTreeNode.getId(), "direction": moveState}, 
+			url : URL_SORT_PARAM + movedTreeNode.getId() + "/" + toTreeNode.getId() + "/" + moveState,
 			onsuccess : function() { 
 				 $T("tree").moveTreeNode(movedTreeNode, toTreeNode, moveState);
 			}

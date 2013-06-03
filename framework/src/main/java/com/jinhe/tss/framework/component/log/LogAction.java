@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
@@ -62,13 +61,18 @@ public class LogAction extends BaseActionSupport {
     }
 
     @RequestMapping("/test/1")
-    @ResponseBody
-    public void test1(LogQueryCondition condition) {
-    	super.printSuccessMessage(condition.getAppCode());
+    public String test1(LogQueryCondition condition) {
+        super.printSuccessMessage(condition.getAppCode());
+    	return "XML";
+    }
+    
+    @RequestMapping("/test/3")
+    public void test3(LogQueryCondition condition) {
+        super.printSuccessMessage(condition.getAppCode());
     }
 
     @RequestMapping("/test/2")
-    public void  test2(HttpServletResponse response, LogQueryCondition condition) {
+    public void test2(HttpServletResponse response, LogQueryCondition condition) {
     	super.printSuccessMessage(condition.getAppCode());
     }
 }
