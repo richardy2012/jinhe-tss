@@ -92,9 +92,9 @@
 		str[str.length] = "    <button id=\"b4\" code=\"1\" icon=\"" + ICON + "view.gif\" label=\"查看\" cmd=\"editParamInfo(false)\" enable=\"!isTreeRoot()\"/>";
 		str[str.length] = "    <button id=\"b5\" code=\"2\" icon=\"" + ICON + "edit.gif\" label=\"编辑\" cmd=\"editParamInfo()\" enable=\"!isTreeRoot()\"/>";
 		str[str.length] = "    <button id=\"b6\" code=\"2\" icon=\"" + ICON + "del.gif\" label=\"删除\" cmd=\"delParam()\" enable=\"!isTreeRoot()\"/>";
-		str[str.length] = "    <button id=\"b7\" code=\"2\" icon=\"" + ICON + "copy.gif\" label=\"复制\" cmd=\"copyParam()\" enable=\"!isTreeRoot()\"/>";
-		str[str.length] = "    <button id=\"b8\" code=\"2\" icon=\"" + ICON + "copy_to.gif\" label=\"复制到...\" cmd=\"copyParamTo()\" enable=\"!isTreeRoot()\"/>";
-		str[str.length] = "    <button id=\"b9\" code=\"2\" icon=\"" + ICON + "move.gif\" label=\"移动到...\" cmd=\"moveParamTo()\" enable=\"!isTreeRoot()\"/>";
+		str[str.length] = "    <button id=\"b7\" code=\"2\" icon=\"" + ICON + "copy.gif\" label=\"复制\" cmd=\"copyParam()\" enable=\"'1' == getTreeNodeType()\"/>";
+		str[str.length] = "    <button id=\"b8\" code=\"2\" icon=\"" + ICON + "copy_to.gif\" label=\"复制到...\" cmd=\"copyParamTo()\" enable=\"'1' == getTreeNodeType()\"/>";
+		str[str.length] = "    <button id=\"b9\" code=\"2\" icon=\"" + ICON + "move.gif\" label=\"移动到...\" cmd=\"moveParamTo()\" enable=\"'1' == getTreeNodeType()\"/>";
 		str[str.length] = "    <button id=\"b10\" code=\"2\" icon=\"" + ICON + "new_param_group.gif\" label=\"新建参数组\" cmd=\"addNewParam('0')\" enable=\"'0'==getTreeNodeType() || '_rootId'==getTreeNodeId()\"/>";
 		str[str.length] = "</toolbar>";
 
@@ -136,25 +136,25 @@
             callback:function() {
                 addNewParam("0");
             },
-            visible:function() {return ("0"==getTreeNodeType() || isTreeRoot());}
+            visible:function() {return ("0" == getTreeNodeType() || isTreeRoot());}
         }
         var item9 = {
             label:"复制",
             callback:copyParam,
             icon:ICON + "copy.gif",
-            visible:function() {return !isTreeRoot();}
+            visible:function() {return "1" == getTreeNodeType();}
         }
         var item11 = {
             label:"复制到...",
             callback:copyParamTo,
             icon:ICON + "copy_to.gif",
-            visible:function() {return !isTreeRoot();}
+            visible:function() {return "1" == getTreeNodeType();}
         }
         var item12 = {
             label:"移动到...",
             callback:moveParamTo,
             icon:ICON + "move.gif",
-            visible:function() {return !isTreeRoot();}
+            visible:function() {return "1" == getTreeNodeType();}
         }
         var item13 = {
             label:"查看",
@@ -162,7 +162,7 @@
                 editParamInfo(false);
             },
             icon:ICON + "view.gif",
-            visible:function() {return !isTreeRoot() && true==getOperation("1");}
+            visible:function() {return !isTreeRoot();}
         }
         var item14 = {
             label:"新建参数项",
@@ -483,7 +483,6 @@
        Ajax({
 			url : URL_FLUSH_CACHE + getTreeNodeId(),
 			onsuccess : function() { 
-				alert("操作成功！");
 			}
 		});
     }
@@ -690,7 +689,7 @@
 					<tr>
 					  <td id="treeContainer">
 						<!-- tree 开始 -->
-						 <Tree:Box id="tree" treeType="menu" baseurl="../../tree/"><div class="loading"></div></Tree:Box>
+						 <Tree:Box id="tree" treeType="menu" baseurl="../../tree/" canMoveNode="true"><div class="loading"></div></Tree:Box>
 						<!-- tree 结束 -->
 					  </td>
 					</tr>

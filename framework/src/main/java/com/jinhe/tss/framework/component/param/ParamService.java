@@ -32,9 +32,7 @@ public interface ParamService {
 	List<Param> getTreeParam(String code);
 	
 	/**
-	 * <p>
 	 * 参数排序
-	 * </p>
 	 * @param paramId
 	 * @param toParamId
 	 * @param direction
@@ -42,26 +40,19 @@ public interface ParamService {
 	void sortParam(Long paramId, Long toParamId, int direction);
 	
 	/**
-	 * <p>
 	 * 复制参数
-	 * </p>
 	 * @param paramId
 	 * @param toParamId
 	 */
 	List<?> copyParam(Long paramId, Long toParamId);
 	
 	/**
-	 * <p>
 	 * 移动参数
-	 * </p>
 	 * @param paramId
 	 * @param toParamId
 	 */
 	void move(Long paramId, Long toParamId);
 	
-	/** 取可以加参数项的所有参数 */
-	Object[] getCanAddParams(Integer mode);
-	
 	/** 取可以添加参数或者参数组的参数组 */
-	Object[] getCanAddGroups();
+	List<?> getCanAddGroups();
 }

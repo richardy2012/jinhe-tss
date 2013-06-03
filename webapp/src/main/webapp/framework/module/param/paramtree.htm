@@ -2,61 +2,44 @@
 <HTML xmlns:ToolBar xmlns:WorkSpace xmlns:Tree xmlns:Grid xmlns:XForm>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>��ɽʯ--��������</title>
+<title>它山石--参数管理</title>
 
 <link href="../../css/css.css" rel="stylesheet" type="text/css"></link>
-<link href="../../balloon/balloon.css" rel="stylesheet" type="text/css"></link>
+<link href="../../css/dialog.css" rel="stylesheet" type="text/css"></link>
 <link href="../../tree/tree.css" rel="stylesheet" type="text/css"></link>
 
 <script language="javascript" src="../../core.js"></script>
 <script language="javascript" src="../../ajax.js"></script>
 <script language="javascript" src="../../framework.js"></script>
-<script language="javascript" src="../../balloon/balloon.js"></script>
 <script language="javascript" src="../../tree/tree.js"></script>
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 
-    URL_CORE = "../../";
+	URL_CORE = "../../";
 	
-	URL_INIT = "../param!getCanAddParamsTree.action";
+	URL_INIT = "/" + CONTEXTPATH + "param/list/";
 	
 	if(IS_TEST) {
 		URL_INIT = "data/paramtree_init.xml";
 	}
 
-    function init() {		
+	var params = window.dialogArguments.params;
+
+	function init() {		
 		Ajax({
-			url : URL_INIT,
-			contents : window.dialogArguments.params, 
+			url : URL_INIT  + params.id,
 			onresult : function() { 
-				initTree(this.getNodeValue("ParamTree"));
-			},
-		});
-    }
-	
-	function initTree(paramTreeNode) {	
-		var curNode = paramTreeNode.selectSingleNode(".//treeNode[@id='" + params.id + "']");
-		if(curNode){
-			curNode.setCanSelected("0");
-			var childNodes = curNode.selectNodes(".//treeNode");
-			for(var i=0; i < childNodes.length; i++){
-				childNodes[i].setCanSelected("0");
+				var tree = $T("tree", this.getNodeValue("ParamTree"));		
+				$("tree").onTreeNodeDoubleClick = function(eventObj) {
+					getTargetParent();
+				}
 			}
-		}
-		var curParentNode = paramTreeNode.selectSingleNode(".//treeNode[@id='" + params.parentID + "']");
-		if(curParentNode) {
-			curParentNode.setCanSelected("0");
-		}               
-				
-		var tree = $G("tree", paramTreeNode);		
-		$("tree").onTreeNodeDoubleClick = function(eventObj) {
-			getTargetParent();
-		}
+		});
 	}
 	
 	function getTargetParent() {
-		var treeNode = $G("tree").getActiveTreeNode();
+		var treeNode = $T("tree").getActiveTreeNode();
 		if( treeNode ) {
 			var returnValue = {};
 			var attributes = treeNode.node.attributes;
@@ -84,8 +67,8 @@
     </tr>
     <tr>
       <td class="t" height="30" align="right">
-		<input type="button" value="ȷ��" class="btStrong" onclick="getTargetParent()"/>
-        <input type="button" value="�ر�" class="btWeak" onclick="window.close()"/> 
+		<input type="button" value="确定" class="btStrong" onclick="getTargetParent()"/>
+        <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> 
       </td>
     </tr>
   </table>

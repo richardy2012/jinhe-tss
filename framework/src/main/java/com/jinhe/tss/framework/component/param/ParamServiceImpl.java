@@ -200,14 +200,8 @@ public class ParamServiceImpl implements ParamService {
         }
     }
 
-    public Object[] getCanAddParams(Integer mode) {
-        List<?> paramAndGroups = paramDao.getCanAddParamsAndGroups(mode);
-        List<?> paramIds = paramDao.getCanAddParams(mode);
-        return new Object[] { paramAndGroups, EasyUtils.list2Str(paramIds) };
-    }
-
-    public Object[] getCanAddGroups() {
-        return new Object[] { paramDao.getCanAddGroups(), null };
+    public List<?> getCanAddGroups() {
+        return paramDao.getCanAddGroups();
     }
 
     /* ********************************************* 以下供ParamManager调用 ************************************ */

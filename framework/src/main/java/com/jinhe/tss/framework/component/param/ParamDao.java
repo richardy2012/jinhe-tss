@@ -15,9 +15,5 @@ public interface ParamDao extends ITreeSupportDao<Param>{
 	 */
 	Param getParamByCode(String code);
 	
-	List<?> getCanAddParamsAndGroups(Integer mode);
-	
-	List<?> getCanAddParams(Integer mode);
-	
 	List<?> getCanAddGroups();
 }

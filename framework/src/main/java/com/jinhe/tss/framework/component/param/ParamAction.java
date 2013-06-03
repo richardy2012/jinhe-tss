@@ -1,6 +1,5 @@
 package com.jinhe.tss.framework.component.param;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,21 +37,14 @@ public class ParamAction extends BaseActionSupport {
 	}
 	
 	   /** 取可以新增的参数树 */
-    @RequestMapping("/list/{type}/{mode}" )
-    public String getCanAddParamsTree(HttpServletResponse response, 
-            @PathVariable("type") int type, @PathVariable("mode") int mode) {
-        
-        Object[] datas = ParamConstants.ITEM_PARAM_TYPE.equals(type) ? 
-                paramService.getCanAddParams(mode) : paramService.getCanAddGroups();
-
-        String canAddIds = (String) (datas[1] == null ? "" : datas[1]);
-        final List<String> canAddParamIds = Arrays.asList(canAddIds.split(","));
-        
-        TreeEncoder paramTree = new TreeEncoder(datas[0], new LevelTreeParser());
+    @RequestMapping("/list/{id}" )
+    public void getCanAddParamsTree(HttpServletResponse response, @PathVariable("id") Long id) {
+    	final Param param = paramService.getParam(id);
+        List<?> paramGroups = paramService.getCanAddGroups();
+        TreeEncoder paramTree = new TreeEncoder(paramGroups, new LevelTreeParser());
         paramTree.setTranslator(new ITreeTranslator() { 
             public Map<String, Object> translate(Map<String, Object> attributesMap) {
-                String tempId = attributesMap.get("id").toString();
-                if( !canAddParamIds.contains(tempId) ) {
+                if( param.getParentId().equals(attributesMap.get("id")) ) {
                     attributesMap.put("canselected", "0");
                 }
                 return attributesMap;
@@ -60,11 +52,11 @@ public class ParamAction extends BaseActionSupport {
         });
         
         // 如果移动的不是参数组而是参数项，则"全部节点(Root Node)"不可选
-        if ( ParamConstants.GROUP_PARAM_TYPE != type ) {
+        if ( ParamConstants.GROUP_PARAM_TYPE.intValue() != param.getType() ) {
             paramTree.setRootCanSelect(false);
         }
         
-        return print("ParamTree", paramTree);
+        print("ParamTree", paramTree);
     }
     
     /** 刷新一下参数的缓存 */
