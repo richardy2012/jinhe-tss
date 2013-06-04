@@ -2,7 +2,7 @@
 <HTML xmlns:ToolBar xmlns:WorkSpace xmlns:Tree xmlns:Grid xmlns:XForm>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>它山石--日志查询</title>
+<title>日志查询</title>
 
 <link href="../../css/css.css" rel="stylesheet" type="text/css"></link>
 <link href="../../menu/menu.css" rel="stylesheet" type="text/css"></link>
@@ -36,15 +36,6 @@ URL_CORE = "../../";
     XML_MAIN_TREE = "AppTree";
     XML_LOG_LIST = "LogList";
     XML_LOG_INFO = "LogInfo";
-
-    /*
-     *	默认唯一编号名前缀
-     */
-    CACHE_GRID_ROW_DETAIL = "row__id";
-    CACHE_VIEW_GRID_ROW_DETAIL = "viewRow__id";
-    CACHE_TREE_NODE_DETAIL = "treeNode__id";
-    CACHE_TREE_NODE_GRID = "treeNodeGrid__id";
-    CACHE_SEARCH_LOG = "searchLog__id";
  
     /*
      *	XMLHTTP请求地址汇总
@@ -258,7 +249,7 @@ URL_CORE = "../../";
 
         var inf = {};
 		inf.label = OPERATION_VIEW.replace(/\$label/i, rowName);
-        inf.SID = CACHE_VIEW_GRID_ROW_DETAIL + rowID;
+        inf.SID = "viewRow_" + rowID;
         inf.defaultPage = "page1";
         inf.phases = null;
         inf.callback = callback;
