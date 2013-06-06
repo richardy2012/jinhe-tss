@@ -73,17 +73,17 @@ public class ParamAction extends BaseActionSupport {
 	    String mode = request.getParameter("mode");
         String uri = null;
         if(ParamConstants.GROUP_PARAM_TYPE.equals(type)){
-        	uri = ParamConstants.XFORM_NEW_GROUP;
+        	uri = ParamConstants.XFORM_PARAM_GROUP;
         } 
         else if(ParamConstants.NORMAL_PARAM_TYPE.equals(type)){
             
         	if(ParamConstants.SIMPLE_PARAM_MODE.toString().equals(mode)){
-            	uri = ParamConstants.XFORM_NEW_PARAM_SIMPLE;
+            	uri = ParamConstants.XFORM_PARAM_SIMPLE;
         	} else {
-        		uri = ParamConstants.XFORM_NEW_PARAM_COMPLEX;
+        		uri = ParamConstants.XFORM_PARAM_COMPLEX;
         	}
         } else if(ParamConstants.ITEM_PARAM_TYPE.equals(type)){
-        	uri = ParamConstants.XFORM_NEW_PARAM_ITEM;
+        	uri = ParamConstants.XFORM_PARAM_ITEM;
         }
         
         XFormEncoder xformEncoder;

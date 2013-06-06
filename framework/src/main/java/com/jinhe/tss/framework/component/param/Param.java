@@ -176,18 +176,18 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
         String icon_path;
         if (ParamConstants.GROUP_PARAM_TYPE.equals(type)) {
             map = new TreeAttributesMap(id, name);
-            icon_path = !isStoped() ? ParamConstants.PARAM_GROUP_TREE_ICON_PATH_START : ParamConstants.PARAM_GROUP_TREE_ICON_PATH_STOP;
+            icon_path = !isStoped() ? ParamConstants.PARAM_GROUP_START : ParamConstants.PARAM_GROUP_STOP;
         } 
         else if (ParamConstants.NORMAL_PARAM_TYPE.equals(type)) {
             map = new TreeAttributesMap(id, (EasyUtils.isNullOrEmpty(name)) ? code : name);
             if(ParamConstants.SIMPLE_PARAM_MODE.equals(modality)){
-                icon_path = !isStoped() ? ParamConstants.PARAM_SIMPLE_ICON_PATH_START : ParamConstants.PARAM_SIMPLE_ICON_PATH_STOP;
+                icon_path = !isStoped() ? ParamConstants.PARAM_SIMPLE_START : ParamConstants.PARAM_SIMPLE_STOP;
             } 
             else if (ParamConstants.COMBO_PARAM_MODE.equals(modality)){
-                icon_path = !isStoped() ? ParamConstants.PARAM_COMBO_ICON_PATH_START : ParamConstants.PARAM_COMBO_ICON_PATH_STOP;
+                icon_path = !isStoped() ? ParamConstants.PARAM_COMBO_START : ParamConstants.PARAM_COMBO_STOP;
             } 
             else {
-                icon_path = !isStoped() ? ParamConstants.PARAM_TREE_ICON_PATH_START : ParamConstants.PARAM_TREE_ICON_PATH_STOP;
+                icon_path = !isStoped() ? ParamConstants.PARAM_TREE_START : ParamConstants.PARAM_TREE_STOP;
             }
             map.put("code", code);
             map.put("value", value);
@@ -196,7 +196,7 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
         else {
             map = new TreeAttributesMap(id, (EasyUtils.isNullOrEmpty(text)) ? value : text);
             map.put("value", value);
-            icon_path = !isStoped() ? ParamConstants.PARAM_ITEM_TREE_ICON_PATH_START : ParamConstants.PARAM_ITEM_TREE_ICON_PATH_STOP;
+            icon_path = !isStoped() ? ParamConstants.PARAM_ITEM_START : ParamConstants.PARAM_ITEM_STOP;
         }
         
         map.put("icon", icon_path);

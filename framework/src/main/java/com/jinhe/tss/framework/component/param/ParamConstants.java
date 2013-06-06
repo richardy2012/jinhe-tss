@@ -26,22 +26,22 @@ public class ParamConstants {
 	public static final Integer TREE_PARAM_MODE   = 2;	//参数类型  树型参数
     
 	//	 =============================== 图标路径定义 ===========================//
-	public static final String PARAM_GROUP_TREE_ICON_PATH_START = "images/param_group.gif";		//参数组图标路径(启用)
-	public static final String PARAM_GROUP_TREE_ICON_PATH_STOP  = "images/param_group_2.gif";	//参数组图标路径(停用)
-	public static final String PARAM_ITEM_TREE_ICON_PATH_START = "images/param_item.gif";		//参数项图标路径(启用)
-	public static final String PARAM_ITEM_TREE_ICON_PATH_STOP = "images/param_item_2.gif";		//参数项图标路径(停用)
-	public static final String PARAM_SIMPLE_ICON_PATH_START = "images/param_simple.gif";	    //树结点 简单参数图标路径(启用)
-	public static final String PARAM_SIMPLE_ICON_PATH_STOP = "images/param_simple_2.gif";	    //树结点 简单参数图标路径(停用)
-	public static final String PARAM_COMBO_ICON_PATH_START = "images/param_combo.gif";	        //树结点 下拉参数图标路径(启用)
-	public static final String PARAM_COMBO_ICON_PATH_STOP = "images/param_combo_2.gif";	        //树结点 下拉参数图标路径(停用)
-	public static final String PARAM_TREE_ICON_PATH_START = "images/param_tree.gif";		    //树结点 树型参数图标路径(启用)
-	public static final String PARAM_TREE_ICON_PATH_STOP = "images/param_tree_2.gif";		    //树结点 树型参数图标路径(停用)
+	public static final String PARAM_GROUP_START  = "images/param_group.gif";		//参数组图标路径(启用)
+	public static final String PARAM_GROUP_STOP   = "images/param_group_2.gif";	    //参数组图标路径(停用)
+	public static final String PARAM_ITEM_START   = "images/param_item.gif";		//参数项图标路径(启用)
+	public static final String PARAM_ITEM_STOP    = "images/param_item_2.gif";		//参数项图标路径(停用)
+	public static final String PARAM_SIMPLE_START = "images/param_simple.gif";	    //树结点 简单参数图标路径(启用)
+	public static final String PARAM_SIMPLE_STOP  = "images/param_simple_2.gif";	//树结点 简单参数图标路径(停用)
+	public static final String PARAM_COMBO_START  = "images/param_combo.gif";	    //树结点 下拉参数图标路径(启用)
+	public static final String PARAM_COMBO_STOP   = "images/param_combo_2.gif";	    //树结点 下拉参数图标路径(停用)
+	public static final String PARAM_TREE_START   = "images/param_tree.gif";	    //树结点 树型参数图标路径(启用)
+	public static final String PARAM_TREE_STOP    = "images/param_tree_2.gif";		//树结点 树型参数图标路径(停用)
 	
 	//	 =============================== XFORM模版路径定义 ===========================//	
-	public static final String XFORM_NEW_GROUP = "template/param/group.xml";			//参数组模板路径
-	public static final String XFORM_NEW_PARAM_SIMPLE = "template/param/simple.xml";	//简单参数模板路径
-	public static final String XFORM_NEW_PARAM_COMPLEX = "template/param/complex.xml";	//复杂（下拉，树型）参数模板路径
-	public static final String XFORM_NEW_PARAM_ITEM = "template/param/item.xml";	    //参数项模板路径
+	public static final String XFORM_PARAM_GROUP   = "template/param/group.xml";	//参数组模板路径
+	public static final String XFORM_PARAM_SIMPLE  = "template/param/simple.xml";	//简单参数模板路径
+	public static final String XFORM_PARAM_COMPLEX = "template/param/complex.xml";	//复杂（下拉，树型）参数模板路径
+	public static final String XFORM_PARAM_ITEM    = "template/param/item.xml";	    //参数项模板路径
 }
 
 	
