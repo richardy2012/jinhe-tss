@@ -14,6 +14,7 @@
 		<column name="poolClass" caption="缓存池类" mode="string" />
 		<column name="poolContainerClass" caption="池容器类" mode="string" />
 		<column name="customizerClass" caption="自定义类" mode="string" />
+		<column name="paramFile" caption="参数文件" mode="string" />
 		<column name="remark" caption="备注" mode="string"/>
 	</declare>
 	<layout>
@@ -58,6 +59,10 @@
 		<TR>
 			<TD width="60"><label binding="customizerClass"/></TD>
 			<TD colspan="3"><input binding="customizerClass" type="text" style="width:100%;"/></TD>
+		</TR>
+		<TR>
+			<TD width="60"><label binding="paramFile"/></TD>
+			<TD colspan="3"><input binding="paramFile" type="text" style="width:100%;"/></TD>
 		</TR>
 		<TR>
 			<TD width="60" valign="top"><label binding="remark"/></TD>

@@ -68,7 +68,7 @@ public class ParamServiceImpl implements ParamService {
         }
 
         if (paramDao.getEntities(hql).size() > flag) {
-            throw new BusinessException("字段重复! + " + hql);
+            throw new BusinessException("参数已存在，不要重复创建! checked by : " + hql);
         }
     }
 

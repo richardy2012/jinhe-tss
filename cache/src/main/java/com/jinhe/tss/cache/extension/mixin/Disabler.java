@@ -15,10 +15,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import com.jinhe.tss.cache.CacheStrategy;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.cache.TimeWrapper;
-import com.jinhe.tss.cache.strategy.CacheConstants;
 import com.jinhe.tss.util.proxy.ProxyUtil;
 
 /**
@@ -63,7 +63,7 @@ public class Disabler {
                  * 取数据时则不从池中获取而重新加载数据；
                  * 存数据则不将数据放到缓存池中，直接返回null 
                  */
-                if(CacheConstants.TRUE.equals(pool.getCacheStrategy().getDisabled())){
+                if(CacheStrategy.TRUE.equals(pool.getCacheStrategy().disabled)){
                     //不进行初始化
                     if (method.getName().equals("init")) 
                         return null;
@@ -77,7 +77,7 @@ public class Disabler {
                     
                     //如果是调用checkOut 方法则调用池算法器创建一个
                     if (method.getName().equals("checkOut"))          
-                        return pool.getCustomizer().create(pool.getCacheStrategy().getCyclelife()); 
+                        return pool.getCustomizer().create(); 
 
                     if (method.getName().equals("checkIn")){
                         pool.getCustomizer().destroy((Cacheable) args[0]);

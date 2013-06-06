@@ -12,7 +12,6 @@ package com.jinhe.tss.cache;
 
 import java.util.Set;
 
-import com.jinhe.tss.cache.strategy.CacheStrategy;
 
 /**
  * 缓存池接口，提供了基本的缓存功能，包括存、取、删除、清空、重新载入等  <br/> <br/>

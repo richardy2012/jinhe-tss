@@ -15,7 +15,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.jinhe.tss.cache.strategy.CacheStrategy;
 
 /** 
  * 对象池抽象基类，定义通用的方法。
@@ -48,7 +47,7 @@ public abstract class AbstractPool implements Pool {
     protected Set<Listener> listeners = new HashSet<Listener>();
     
     public String getName() { 
-    	return strategy.getName(); 
+    	return strategy.name; 
     }
     
 	/**
@@ -124,7 +123,7 @@ public abstract class AbstractPool implements Pool {
 			return oldItem;
 		} else {
 			// 缓存项放入缓存池的同时也设置了其生命周期
-			Cacheable newItem = new TimeWrapper(key, value, strategy.getCyclelife());
+			Cacheable newItem = new TimeWrapper(key, value, strategy.cyclelife);
 			newItem = getFree().put(key, newItem);
 			
 			// 事件监听器将唤醒所有等待中的线程，包括cleaner线程，checkout，remove等方法的等待线程
@@ -191,7 +190,7 @@ public abstract class AbstractPool implements Pool {
     }
     
     protected Cacheable checkOut() {
-        Cacheable item = getFree().getByAccessMethod(strategy.getAccessMethod());
+        Cacheable item = getFree().getByAccessMethod(strategy.accessMethod);
         if(item != null) {
             item.addHit();
             getFree().remove(item.getKey());
@@ -202,7 +201,7 @@ public abstract class AbstractPool implements Pool {
     
     public Cacheable checkOut(long timeout) {
         if(timeout <= 0) {
-            timeout = strategy.getInterruptTime();
+            timeout = strategy.interruptTime;
         }
         
         long time = System.currentTimeMillis();
@@ -245,7 +244,7 @@ public abstract class AbstractPool implements Pool {
         Object value = item.getValue();
         
         //如果池已满，则销毁对象，否则则放回池中
-        int maxSize = strategy.getPoolSize();
+        int maxSize = strategy.poolSize;
         if (maxSize > 0 && size() >= maxSize) {
             destroyObject(item);
         } 
@@ -272,10 +271,10 @@ public abstract class AbstractPool implements Pool {
     }   
     
     public Cacheable remove() {
-        Cacheable item = getFree().getByAccessMethod(strategy.getAccessMethod());
+        Cacheable item = getFree().getByAccessMethod(strategy.accessMethod);
         
         //如果free池中取不到，则要等using池中的缓存对象返回到free中。线程等待
-        long timeout = strategy.getInterruptTime();
+        long timeout = strategy.interruptTime;
         long time = System.currentTimeMillis();
         synchronized(this) {
             while (item == null  &&  (System.currentTimeMillis() - time < timeout)) {

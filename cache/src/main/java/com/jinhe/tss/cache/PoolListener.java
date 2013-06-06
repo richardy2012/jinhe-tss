@@ -61,7 +61,7 @@ public class PoolListener implements Listener {
 	}
 
 	private void checkPoolLimit(Pool pool) {
-		int maxSize = pool.getCacheStrategy().getPoolSize();
+		int maxSize = pool.getCacheStrategy().poolSize;
 		
 		// 如果maxSize = 0则表示不限制池大小
 		if (maxSize > 0) {

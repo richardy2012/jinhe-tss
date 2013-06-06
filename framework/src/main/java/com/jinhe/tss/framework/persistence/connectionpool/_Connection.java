@@ -11,6 +11,8 @@ package com.jinhe.tss.framework.persistence.connectionpool;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -23,6 +25,7 @@ import com.jinhe.tss.util.ConfigurableContants;
 
 /**
  * 管理数据库连接的provider，以及创建或释放掉连接.
+ * 如果连接池定义了自己的数据源信息，则采用；否则从默认的系统配置文件里加载。
  * 
  */
 public class _Connection extends ConfigurableContants {
@@ -30,29 +33,38 @@ public class _Connection extends ConfigurableContants {
 	protected final Logger log = Logger.getLogger(this.getClass());
 
 	private IConnectionProvider provider;
-
+	
+	Properties dbProperties;
+	
 	/**
 	 * 如果配置的是数据源，则优先从数据源获取连接；否则手动创建一个连接。
 	 */
-	private _Connection() {
-		if (properties.getProperty(Environment.DATASOURCE) != null) {
+	private _Connection(String propertiesFile) {
+	    dbProperties = init(propertiesFile);
+	    
+		if (dbProperties.getProperty(Environment.DATASOURCE) != null) {
 			provider = new DatasourceConnectionProvider();
 		} else {
 			provider = new DriverManagerConnectionProvider();
 		}
 	}
 
-	private static _Connection _connection;
+	static Map<String, _Connection> _connectionMap = new HashMap<String, _Connection>();
 
 	public static _Connection getInstanse() {
-		if (_connection == null) {
-			_connection = new _Connection();
-		}
-		return _connection;
+		return getInstanse(DEFAULT_PROPERTIES);
 	}
+	
+    public static _Connection getInstanse(String propertiesFile) {
+        _Connection _connection = _connectionMap.get(propertiesFile);
+        if (_connection == null) {
+            _connectionMap.put(propertiesFile, _connection = new _Connection(propertiesFile));
+        }
+        return _connection;
+    }
 
 	public Connection getConnection() {
-		return provider.getConnection(properties);
+		return provider.getConnection(dbProperties);
 	}
 
 	public void releaseConnection(Connection conn) {

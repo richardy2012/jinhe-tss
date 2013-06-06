@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.jinhe.tss.cache.CacheStrategy;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
-import com.jinhe.tss.cache.strategy.CacheConstants;
-import com.jinhe.tss.cache.strategy.CacheStrategy;
 import com.jinhe.tss.framework.web.dispaly.grid.DefaultGridNode;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
@@ -33,6 +32,9 @@ import com.jinhe.tss.util.XMLDocUtil;
 @Controller
 @RequestMapping("/cache")
 public class CacheDisplayAction extends BaseActionSupport {
+    
+    /** 缓存策略模板目录 */
+    public final static String CACHESTRATEGY_XFORM_TEMPLET = "template/cache/strategy_xform.xml";
  
     private static JCache cache = JCache.getInstance();
  
@@ -53,9 +55,9 @@ public class CacheDisplayAction extends BaseActionSupport {
         for(final CacheStrategy stategy : strategyList) {
             treeNodeList.add(new ITreeNode(){
                 public TreeAttributesMap getAttributes() {
-                    TreeAttributesMap map = new TreeAttributesMap(stategy.getCode(), stategy.getName());
+                    TreeAttributesMap map = new TreeAttributesMap(stategy.code, stategy.name);
                     map.put("icon", "images/cache.gif");
-                    map.put("display", stategy.getVisible());
+                    map.put("display", stategy.visible);
                     return map;
                 }
             });
@@ -76,7 +78,7 @@ public class CacheDisplayAction extends BaseActionSupport {
         Map<String, Object> strategyProperties = new HashMap<String, Object>();
         BeanUtil.addBeanProperties2Map(strategy, strategyProperties);
         
-        XFormEncoder xEncoder = new XFormEncoder(CacheConstants.CACHESTRATEGY_XFORM_TEMPLET, strategyProperties); 
+        XFormEncoder xEncoder = new XFormEncoder(CACHESTRATEGY_XFORM_TEMPLET, strategyProperties); 
         String hitRate = pool.getHitRate() + "%";
         
         Set<Cacheable> cachedItems = pool.listItems();

@@ -24,7 +24,7 @@ public class SimplePool extends AbstractPool {
 	}
 
 	public final void init() {
-		String poolCollectionClass = strategy.getPoolContainerClass();
+		String poolCollectionClass = strategy.poolContainerClass;
 		Class<?> collectionType = BeanUtil.createClassByName(poolCollectionClass);
 		if (!Container.class.isAssignableFrom(collectionType)) {
 			throw new RuntimeException("指定的池容器类类型非法: "
@@ -32,10 +32,10 @@ public class SimplePool extends AbstractPool {
 		}
 
 		ContainerFactory factory = ContainerFactory.getInstance();
-		String containerName = strategy.getCode();
+		String containerName = strategy.code;
 		poolContainer = factory.create(collectionType.getName(), containerName);
 
-		log.info("缓存池【" + strategy.getName() + "】初始化成功！");
+		log.info("缓存池【" + strategy.name + "】初始化成功！");
 	}
 
 	public final void release(final boolean forced) {

@@ -13,8 +13,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.jinhe.tss.cache.Cacheable;
-import com.jinhe.tss.cache.CacheCustomizer;
 import com.jinhe.tss.cache.TimeWrapper;
+import com.jinhe.tss.cache.extension.DefaultCustomizer;
 
 /**
  * 数据库连接池自定义类。<br/>
@@ -22,14 +22,14 @@ import com.jinhe.tss.cache.TimeWrapper;
  * 在本类中定义了如何创建、验证、销毁数据库连接。
  * 
  */
-public class ConnectionPoolCustomizer implements CacheCustomizer {
-
-	public Cacheable create(Long cyclelife) {
-		Connection conn = _Connection.getInstanse().getConnection();
+public class ConnectionPoolCustomizer extends DefaultCustomizer {
+    
+	public Cacheable create() {
+		Connection conn = _Connection.getInstanse(strategy.paramFile).getConnection();
 		String cacheKey = TimeWrapper.createRandomKey("Connection");
 		
 		// 包装新创建的Connection，赋予其生命周期。
-		return  new TimeWrapper(cacheKey, conn, cyclelife);
+		return  new TimeWrapper(cacheKey, conn, strategy.cyclelife);
 	}
 
 	public boolean isValid(Cacheable o) {
@@ -46,12 +46,11 @@ public class ConnectionPoolCustomizer implements CacheCustomizer {
 			return;
 
 		Connection conn = (Connection) o.getValue();
-		_Connection.getInstanse().releaseConnection(conn);
+		_Connection.getInstanse(strategy.paramFile).releaseConnection(conn);
 		o = null;
 	}
 
 	public Cacheable reloadCacheObject(Cacheable item) {
-		Long cyclelife = item.getCyclelife();
-		return create(cyclelife);
+		return create();
 	}
 }

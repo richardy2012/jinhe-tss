@@ -39,6 +39,6 @@ public interface IThreadPool {
      * 创建线程池中的工作线程
      * @return
      */
-    public Thread createWorkThread();
+    Thread createWorkThread();
 }
 

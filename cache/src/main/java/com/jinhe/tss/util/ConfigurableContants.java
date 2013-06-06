@@ -43,21 +43,24 @@ public abstract class ConfigurableContants {
     
     protected static Properties properties = new Properties();
     
+    public static String DEFAULT_PROPERTIES = "application.properties";
+    
     static {
         // 默认载入application.properties
-        URL propertiesFile = URLUtil.getResourceFileUrl("application.properties");
-        init(propertiesFile.getFile());
+        properties = init(DEFAULT_PROPERTIES);
     }
 
-    protected static void init(String propertyFilePath) {
+    protected static Properties init(String propertiesFileName) {
+        Properties properties = new Properties();
         InputStream in = null;
         try {
-            in = new FileInputStream(propertyFilePath);
+            URL propertiesFile = URLUtil.getResourceFileUrl(propertiesFileName);
+            in = new FileInputStream(propertiesFile.getFile());
             if (in != null) {
                 properties.load(in);
             }
         } catch (IOException e) {
-            log.error("load " + propertyFilePath + " into Contants error", e);
+            log.error("load " + propertiesFileName + " into Contants error", e);
         }
         finally {
             if (in != null) {
@@ -67,6 +70,7 @@ public abstract class ConfigurableContants {
                 }
             }
         }
+        return properties;
     }
 
     protected static String getProperty(String key, String defaultValue) {

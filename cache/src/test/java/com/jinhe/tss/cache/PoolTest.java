@@ -29,7 +29,7 @@ public class PoolTest extends TestCase {
             Thread.sleep(6000);
             apool = cache.getTaskPool();
             tpool = cache.getThreadPool();
-            cyclelife = apool.getCacheStrategy().getCyclelife();
+            cyclelife = apool.getCacheStrategy().cyclelife;
         } 
         catch (InterruptedException e) {
             log.error(e);

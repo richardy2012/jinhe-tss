@@ -28,7 +28,7 @@ public class PoolPerformanceTest extends TestCase {
             Thread.sleep(6000);
             apool = cache.getTaskPool();
             tpool = cache.getThreadPool();
-            cyclelife = apool.getCacheStrategy().getCyclelife();
+            cyclelife = apool.getCacheStrategy().cyclelife;
             
 //            ((IDisable)apool).stop();
         } 

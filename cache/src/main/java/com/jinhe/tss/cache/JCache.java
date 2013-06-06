@@ -22,8 +22,6 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 
 import com.jinhe.tss.cache.extension.threadpool.IThreadPool;
-import com.jinhe.tss.cache.strategy.CacheConstants;
-import com.jinhe.tss.cache.strategy.CacheStrategy;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.XMLDocUtil;
 
@@ -33,6 +31,20 @@ import com.jinhe.tss.util.XMLDocUtil;
 public class JCache {
 
 	protected Logger log = Logger.getLogger(this.getClass());
+	
+	/** 缓存策略文件目录 */
+    final static String STRATEGY_PATH = "META-INF/cache.xml";
+    
+    /** 缓存策略节点名称 */
+    final static String STRATEGY_NODE_NAME = "/strategies/strategy";
+    
+    /**
+     * 已经初始化好的各缓存池key
+     */
+    final static String CONNECTION_POOL = "connectionpool";
+    final static String THREAD_POOL = "threadpool";
+    final static String TASK_POOL = "taskpool";
+    
 
 	private static Map<String, Pool> pools = new HashMap<String, Pool>();
 
@@ -48,7 +60,7 @@ public class JCache {
 	 * 获取一个缓存池管理类实例。 singleton
 	 */
 	public static JCache getInstance() {
-		return getInstance(CacheConstants.STRATEGY_PATH);
+		return getInstance(STRATEGY_PATH);
 	}
 
 	public static JCache getInstance(String cacheConfigFile) {
@@ -65,7 +77,7 @@ public class JCache {
 	private void initPools(String cacheConfigFile) {
 		try {
 			Document doc = XMLDocUtil.createDoc(cacheConfigFile);
-			List<Element> nodes = XMLDocUtil.selectNodes(doc, CacheConstants.STRATEGY_NODE_NAME);
+			List<Element> nodes = XMLDocUtil.selectNodes(doc, STRATEGY_NODE_NAME);
 			for (Element strategyNode : nodes) {
 				Map<String, String> attrsMap = new HashMap<String, String>();
 				CacheStrategy strategy = new CacheStrategy();
@@ -80,7 +92,7 @@ public class JCache {
 
 				BeanUtil.setDataToBean(strategy, attrsMap);
 				
-				String poolCode = strategy.getCode();
+				String poolCode = strategy.code;
 				configedPoolCodes.add(poolCode);
 				pools.put(poolCode, strategy.getPoolInstance());
 			}
@@ -116,24 +128,24 @@ public class JCache {
 			log.info("找不到相应的缓存池，请确定code值：【" + code + "】是否正确，系统已经初始化一个临时的简单缓存池。");
 
 			CacheStrategy strategy = new CacheStrategy();
-			strategy.setCode(code);
-			strategy.setName(code);
-			strategy.setVisible(CacheConstants.FALSE);
+			strategy.code = code;
+			strategy.name = code;
+			strategy.visible = CacheStrategy.FALSE;
 			pools.put(code, pool = strategy.getPoolInstance());
 		}
 		return pool;
 	}
 	
 	public IThreadPool getThreadPool() {
-		return (IThreadPool) getCachePool(CacheConstants.THREAD_POOL);
+		return (IThreadPool) getCachePool(THREAD_POOL);
 	}
 	
 	public Pool getConnectionPool() {
-		return getCachePool(CacheConstants.CONNECTION_POOL);
+		return getCachePool(CONNECTION_POOL);
 	}
 	
 	public Pool getTaskPool() {
-		return getCachePool(CacheConstants.TASK_POOL);
+		return getCachePool(TASK_POOL);
 	}
 
 	/**

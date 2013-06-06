@@ -10,22 +10,22 @@
 package com.jinhe.tss.cache.extension.workqueue;
 
 import com.jinhe.tss.cache.Cacheable;
-import com.jinhe.tss.cache.CacheCustomizer;
 import com.jinhe.tss.cache.TimeWrapper;
+import com.jinhe.tss.cache.extension.DefaultCustomizer;
 import com.jinhe.tss.util.BeanUtil;
 
 /**
  * 任务池自定义类
  * 
  */
-public abstract class TaskPoolCustomizer implements CacheCustomizer {
+public abstract class TaskPoolCustomizer extends DefaultCustomizer {
     
-    public Cacheable create(Long cycleLife) {
+    public Cacheable create() {
         String taskClassName = getTaskClass();
 		Task task = (Task)BeanUtil.newInstanceByName(taskClassName);
 		
         String key = TimeWrapper.createRandomKey("Task");
-        return new TimeWrapper(key, task, cycleLife);
+        return new TimeWrapper(key, task, strategy.cyclelife);
     }
     
     public Cacheable reloadCacheObject(Cacheable item) {

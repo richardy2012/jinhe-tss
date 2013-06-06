@@ -12,6 +12,7 @@ package com.jinhe.tss.cache.extension;
 
 import org.apache.log4j.Logger;
 
+import com.jinhe.tss.cache.CacheStrategy;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.CacheCustomizer;
 
@@ -24,8 +25,15 @@ import com.jinhe.tss.cache.CacheCustomizer;
 public class DefaultCustomizer implements CacheCustomizer {
 
 	protected Logger log = Logger.getLogger(this.getClass());
+	
+	protected CacheStrategy strategy;
+	
+    @Override
+    public void setCacheStrategy(CacheStrategy strategy) {
+        this.strategy = strategy;
+    }
 
-	public Cacheable create(Long cyclelife) {
+	public Cacheable create() {
 		return null;
 	}
 	

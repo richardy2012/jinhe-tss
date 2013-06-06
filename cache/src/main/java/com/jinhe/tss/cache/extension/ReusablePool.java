@@ -61,9 +61,9 @@ public class ReusablePool extends ObjectPool {
 
 		// 如果free池中取不到，如果池中缓存项个数还没达到池的最大值，则新建一个
 		if (item == null) {
-			int maxSize = strategy.getPoolSize();
+			int maxSize = strategy.poolSize;
 			if (size() < maxSize || maxSize == 0) {
-				item = customizer.create(strategy.getCyclelife());
+				item = customizer.create();
 				if ( !customizer.isValid(item) ) {
 					String errorMsg = getName() + "池【" + getName() + "】没能创建一个新的有效的缓存项。";
 					log.debug(errorMsg);

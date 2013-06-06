@@ -21,10 +21,9 @@ public interface CacheCustomizer {
 	 * 创建对象,将对象放入池中。<br/>
 	 * 本方法在cache check-out方法调用时，池中没有可用对象的时候被调用用来生成新的对象。
 	 * 
-	 * @param cyclelife 对象的生命周期
 	 * @return
 	 */
-	Cacheable create(Long cyclelife);
+	Cacheable create();
 	
 	/**
 	 * 重新载入缓存项
@@ -51,4 +50,6 @@ public interface CacheCustomizer {
 	 * @param o
 	 */
 	void destroy(Cacheable o);
+	
+	void setCacheStrategy (CacheStrategy strategy);
 }

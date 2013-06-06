@@ -48,26 +48,26 @@ public class ObjectPool extends AbstractPool implements Cleaner {
 	public final void init() {
 		released = false;
 
-		String containerClass = strategy.getPoolContainerClass();
+		String containerClass = strategy.poolContainerClass;
 		Class<?> collectionType = BeanUtil.createClassByName(containerClass);
 		if ( !Container.class.isAssignableFrom(collectionType) )
 			throw new RuntimeException("指定的池集合类类型非法: "
 					+ collectionType.getName() + " (必须实现Container接口)");
 
 		ContainerFactory factory = ContainerFactory.getInstance();
-		String freePoolName = strategy.getCode() + "_free";
+		String freePoolName = strategy.code + "_free";
 		free = free != null ? free : factory.create(containerClass, freePoolName);
 		
-		String usingPoolName = strategy.getCode() + "_using";
+		String usingPoolName = strategy.code + "_using";
 		using = using != null ? using : factory.create(containerClass, usingPoolName);
 		
 		// 为缓存池添加一个监听器
 		addObjectPoolListener( new PoolListener() ); 
 
-		startInitThread( strategy.getInitNum() );
+		startInitThread( strategy.initNum );
 		initCleaner();
 
-		log.info("缓存池【" + strategy.getName() + "】初始化成功！");
+		log.info("缓存池【" + strategy.name + "】初始化成功！");
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class ObjectPool extends AbstractPool implements Cleaner {
 		if (num == 0)
 			return;
 		
-		int maxSize = strategy.getPoolSize();
+		int maxSize = strategy.poolSize;
 		if (num > 0 && (maxSize == 0 || num <= maxSize)) {
 			shutDownIniter();
 			
@@ -97,7 +97,7 @@ public class ObjectPool extends AbstractPool implements Cleaner {
 	public void initCleaner() {
 		shutDownCleaner();
 		
-		long cyclelife = strategy.getCyclelife();
+		long cyclelife = strategy.cyclelife;
 		if (cyclelife > 0) {
 			long iVal = Math.max(1000 * 5, cyclelife / 5);
 			cleaner = new Cleaner(this, iVal);
@@ -265,7 +265,7 @@ public class ObjectPool extends AbstractPool implements Cleaner {
 		private boolean stopped = false;
 
 		private InitThread(int num) {
-			this.num = Math.min(strategy.getPoolSize(), Math.max(num, 0)); // Ensure 0 < num < poolSize.
+			this.num = Math.min(strategy.poolSize, Math.max(num, 0)); // Ensure 0 < num < poolSize.
 		}
 
 		public void halt() {
@@ -282,8 +282,7 @@ public class ObjectPool extends AbstractPool implements Cleaner {
 					return;
 				}
 				try {
-					Long cyclelife = strategy.getCyclelife();
-					Cacheable item = customizer.create(cyclelife);
+					Cacheable item = customizer.create();
 					if (item == null) {
 						String errorMsg = ObjectPool.this.getName() + "初始化时无法创建对象";
 						log.error(errorMsg);

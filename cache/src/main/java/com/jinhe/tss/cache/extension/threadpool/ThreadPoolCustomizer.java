@@ -11,24 +11,24 @@ package com.jinhe.tss.cache.extension.threadpool;
 
 import org.apache.log4j.Logger;
 
-import com.jinhe.tss.cache.CacheCustomizer;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.TimeWrapper;
+import com.jinhe.tss.cache.extension.DefaultCustomizer;
 
 /** 
  * 线程池自定义类。
  * 创建、验证、销毁工作线程。
  */
-public class ThreadPoolCustomizer implements CacheCustomizer {
+public class ThreadPoolCustomizer extends DefaultCustomizer {
     
     protected Logger log = Logger.getLogger(this.getClass());
   
-    public Cacheable create(Long cyclelife) {
+    public Cacheable create() {
         IThreadPool tpool = JCache.getInstance().getThreadPool();
         Thread thread = tpool.createWorkThread();
         thread.start();
-        return new TimeWrapper(thread.getName(), thread, cyclelife);
+        return new TimeWrapper(thread.getName(), thread, strategy.cyclelife);
     }
 
     public boolean isValid(Cacheable o) {

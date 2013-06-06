@@ -9,7 +9,6 @@ import org.dom4j.Node;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
-import com.jinhe.tss.cache.strategy.CacheConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.util.XMLDocUtil;
 
@@ -41,7 +40,9 @@ public class GridTemplet {
     private static final String ATTRIBUTE_PATTERN = "@pattern";
     
     //  Grid模板缓存池
-    private static Pool pool = JCache.getInstance().getCachePool(CacheConstants.GRID_TEMPLATE_POOL);
+    final static String GRID_TEMPLATE_POOL = "grid_template";
+    
+    private static Pool pool = JCache.getInstance().getCachePool(GRID_TEMPLATE_POOL);
 
     private Document doc; // 模板文件
 

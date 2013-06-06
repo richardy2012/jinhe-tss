@@ -9,8 +9,8 @@
 */
 package com.jinhe.tss.cache.extension.mixin;
 
+import com.jinhe.tss.cache.CacheStrategy;
 import com.jinhe.tss.cache.Pool;
-import com.jinhe.tss.cache.strategy.CacheConstants;
 
 /** 
  * Mixin的接口实现
@@ -24,11 +24,11 @@ public class DisableMixin implements IDisable {
     }
 
     public void stop() {
-        pool.getCacheStrategy().setDisabled(CacheConstants.TRUE);
+        pool.getCacheStrategy().disabled = CacheStrategy.TRUE;
     }
 
     public void start() {
-        pool.getCacheStrategy().setDisabled(CacheConstants.FALSE);
+        pool.getCacheStrategy().disabled = CacheStrategy.FALSE;
     }
     
     public String toString() {
