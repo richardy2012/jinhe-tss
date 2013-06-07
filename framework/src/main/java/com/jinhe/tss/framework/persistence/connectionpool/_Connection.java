@@ -56,6 +56,10 @@ public class _Connection extends ConfigurableContants {
 	}
 	
     public static _Connection getInstanse(String propertiesFile) {
+        if(propertiesFile == null) {
+            propertiesFile = DEFAULT_PROPERTIES;
+        }
+        
         _Connection _connection = _connectionMap.get(propertiesFile);
         if (_connection == null) {
             _connectionMap.put(propertiesFile, _connection = new _Connection(propertiesFile));

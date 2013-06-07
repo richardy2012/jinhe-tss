@@ -49,7 +49,6 @@ public class BusinessLogInterceptor implements MethodInterceptor {
             log.setMethodExcuteTime(methodExcuteTime);
 
             businessLogger.output(log);
-//            log.debug("方法：" + targetMethod.getName() + "(...)  被调用时成功记录日志信息。内容：" + dto.getContent());
         }
 
         return returnVal;
