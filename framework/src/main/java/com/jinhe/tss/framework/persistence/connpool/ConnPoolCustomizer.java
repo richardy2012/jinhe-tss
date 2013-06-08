@@ -7,7 +7,7 @@
  * Copyright (c) Jon.King, 2012-2015 
  * ================================================================== 
  */
-package com.jinhe.tss.framework.persistence.connectionpool;
+package com.jinhe.tss.framework.persistence.connpool;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,7 +22,7 @@ import com.jinhe.tss.cache.extension.DefaultCustomizer;
  * 在本类中定义了如何创建、验证、销毁数据库连接。
  * 
  */
-public class ConnectionPoolCustomizer extends DefaultCustomizer {
+public class ConnPoolCustomizer extends DefaultCustomizer {
     
 	public Cacheable create() {
 		Connection conn = _Connection.getInstanse(strategy.paramFile).getConnection();

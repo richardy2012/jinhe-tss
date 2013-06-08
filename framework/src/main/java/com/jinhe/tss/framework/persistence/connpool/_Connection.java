@@ -7,7 +7,7 @@
  * Copyright (c) Jon.King, 2012-2015 
  * ================================================================== 
  */
-package com.jinhe.tss.framework.persistence.connectionpool;
+package com.jinhe.tss.framework.persistence.connpool;
 
 import java.sql.Connection;
 import java.sql.SQLException;

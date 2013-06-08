@@ -53,6 +53,7 @@ public class Log implements IEntity, IXForm, IGridNode {
     public Log(String appCode, Long operatorId, String operatorName,
             String operatorIP, String operationCode, String operateTable,
             String content) {
+        
         this.appCode = appCode;
         this.operatorId = operatorId;
         this.operatorName = operatorName;
@@ -65,8 +66,14 @@ public class Log implements IEntity, IXForm, IGridNode {
 
     public Log(String operationCode, Object entity) {
         this.appCode = Context.getApplicationContext().getCurrentAppCode();
-        this.operatorId = Environment.getOperatorId();
-        this.operatorName = Environment.getOperatorName();
+        if( Environment.getOperatorId() != null) {
+            this.operatorId   = Environment.getOperatorId();
+            this.operatorName = Environment.getOperatorName();
+        } else {
+            this.operatorId   = -1000L;
+            this.operatorName = "anonymous";
+        }
+        
         this.operatorIP   = Environment.getClientIp();
         this.operationCode = operationCode;
         this.operateTable = entity.getClass().getName();

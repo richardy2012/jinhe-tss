@@ -9,7 +9,7 @@
     <initNum>5</initNum>  
     <disabled>0</disabled> <!-- 数据库连接池配置为启用 -->
 	<visible>1</visible>  
-    <customizerClass>com.jinhe.tss.framework.persistence.connectionpool.ConnectionPoolCustomizer</customizerClass>  
+    <customizerClass>com.jinhe.tss.framework.persistence.connpool.ConnPoolCustomizer</customizerClass>  
 	<paramFile>H2.properties</paramFile>
   </strategy>  
   <strategy code="taskpool" name="日志输出任务池"> 

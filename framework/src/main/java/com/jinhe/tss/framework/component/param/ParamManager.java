@@ -9,7 +9,7 @@ import java.util.Map;
 
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.persistence.connectionpool._Connection;
+import com.jinhe.tss.framework.persistence.connpool._Connection;
 
 /**
  *  调用参数管理功能入口

@@ -231,4 +231,60 @@ public class CacheStrategy {
     public void setParamFile(String paramFile) {
         this.paramFile = paramFile;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public Integer getPoolSize() {
+        return poolSize;
+    }
+
+    public Integer getInitNum() {
+        return initNum;
+    }
+
+    public Long getCyclelife() {
+        return cyclelife;
+    }
+
+    public Long getInterruptTime() {
+        return interruptTime;
+    }
+
+    public String getDisabled() {
+        return disabled;
+    }
+
+    public String getVisible() {
+        return visible;
+    }
+
+    public Integer getAccessMethod() {
+        return accessMethod;
+    }
+
+    public String getPoolClass() {
+        return poolClass;
+    }
+
+    public String getPoolContainerClass() {
+        return poolContainerClass;
+    }
+
+    public String getCustomizerClass() {
+        return customizerClass;
+    }
+
+    public String getParamFile() {
+        return paramFile;
+    }
 }

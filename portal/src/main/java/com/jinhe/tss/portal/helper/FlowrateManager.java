@@ -10,7 +10,7 @@ import java.util.List;
 import com.jinhe.tss.cache.extension.workqueue.OutputRecordsManager;
 import com.jinhe.tss.cache.extension.workqueue.RecordsOutputTask;
 import com.jinhe.tss.framework.Config;
-import com.jinhe.tss.framework.persistence.connectionpool.DBHelper;
+import com.jinhe.tss.framework.persistence.connpool.DBHelper;
 import com.jinhe.tss.portal.entity.FlowRate;
 
 /** 
@@ -46,13 +46,11 @@ public class FlowrateManager extends OutputRecordsManager{
 
         protected void createRecords(Connection conn) throws SQLException {
         	String insertSql;
-        	if( Config.TRUE.equals(Config.getAttribute(Config.IS_H2_DATABASE)) ) {
-        		// H2：跑单元测试用，无需关心ID，DEFAULT nextval('pms_flowrate_sequence') 
-                insertSql = "insert into pms_flowrate(pageId, ip, visitTime) values(?, ?, ?)";
+        	if( Config.isOracleDatabase() ) {
+        	    insertSql = "insert into pms_flowrate(id, pagedId, ip, visitTime) values(pms_flowrate.nextval, ?, ?, ?)";
         	} 
         	else {
-        		// Oracle or 其他正式数据库
-        		insertSql = "insert into pms_flowrate(id, pagedId, ip, visitTime) values(pms_flowrate.nextval, ?, ?, ?)";
+        	    insertSql = "insert into pms_flowrate(pageId, ip, visitTime) values(?, ?, ?)";
         	}
             
             PreparedStatement pstmt = conn.prepareStatement(insertSql);

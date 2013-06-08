@@ -16,17 +16,15 @@ public class LogOutputTask extends RecordsOutputTask {
 
     protected void createRecords(Connection conn) throws SQLException {
     	String insertSql;
-    	if( Config.isH2Database() ) {
-    		// H2：跑单元测试用，无需关心ID，DEFAULT nextval('pms_flowrate_sequence') 
-    		insertSql = "insert into COMPONENT_LOG" +
-	    		"(appCode, operatorId, operatorName, operatorIP, operationCode, operateTable, operateTime, content) " +
-	    		"values(?, ?, ?, ?, ?, ?, ?, ?)"; 
-    	} 
-    	else {
-    		// Oracle or 其他正式数据库
-    		insertSql = "insert into COMPONENT_LOG" +
-	            "(id, appCode, operatorId, operatorName, operatorIP, operationCode, operateTable, operateTime, content) " +
-	            "values(log_sequence.nextval, ?, ?, ?, ?, ?, ?, ?, ?)";
+    	if( Config.isOracleDatabase() ) {
+            insertSql = "insert into COMPONENT_LOG" +
+                "(id, appCode, operatorId, operatorName, operatorIP, operationCode, operateTable, operateTime, content) " +
+                "values(log_sequence.nextval, ?, ?, ?, ?, ?, ?, ?, ?)";
+        }
+    	else { // DEFAULT 主键自增 
+            insertSql = "insert into COMPONENT_LOG" +
+                "(appCode, operatorId, operatorName, operatorIP, operationCode, operateTable, operateTime, content) " +
+                "values(?, ?, ?, ?, ?, ?, ?, ?)"; 
     	}
         PreparedStatement pstmt = conn.prepareStatement(insertSql); 
         for ( Object temp : records ) {
@@ -44,6 +42,7 @@ public class LogOutputTask extends RecordsOutputTask {
             
             pstmt.execute();
         }
+        
         pstmt.close();
     }
 }

@@ -11,7 +11,7 @@ import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.component.log.LogQueryCondition;
 import com.jinhe.tss.framework.component.log.LogService;
 import com.jinhe.tss.framework.persistence.IDao;
-import com.jinhe.tss.framework.persistence.connectionpool.DBHelper;
+import com.jinhe.tss.framework.persistence.connpool.DBHelper;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;

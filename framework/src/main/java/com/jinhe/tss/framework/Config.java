@@ -18,8 +18,6 @@ public class Config {
 	
 	public static final String TRUE = "true";
 	public static final String FALSE = "false";
-	
-	public static final String IS_H2_DATABASE = "isH2Database";
 
 	/** 配置文件中应用编号属性名：系统获取Code值，如TSS、CMS */
 	public static final String APPLICATION_CODE = "application.code";
@@ -98,7 +96,17 @@ public class Config {
         propertyMap.clear();
     }
     
+    static String dbDriverName = Config.getAttribute("db.connection.driver_class");
+    
     public static boolean isH2Database() {
-    	return Config.TRUE.equals(Config.getAttribute(Config.IS_H2_DATABASE));
+    	return dbDriverName != null && dbDriverName.indexOf("h2") >= 0;
+    }
+    
+    public static boolean isMysqlDatabase() {
+        return dbDriverName != null && dbDriverName.indexOf("mysql") >= 0;
+    }
+    
+    public static boolean isOracleDatabase() {
+        return dbDriverName != null && dbDriverName.indexOf("oracle") >= 0;
     }
 }
