@@ -54,7 +54,7 @@ public class Filter6XmlHttpDecode implements Filter {
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
+            HttpServletRequest httpRequest = (HttpServletRequest) request; 
             RequestContext requestContext = Context.getRequestContext();
             if (requestContext != null && requestContext.isXmlhttpRequest()) {
                 Document doc = null;
@@ -64,12 +64,12 @@ public class Filter6XmlHttpDecode implements Filter {
                     requestBody = getRequestBody(is = request.getInputStream());
                     doc = XMLDocUtil.dataXml2Doc(requestBody);
                 } catch (IOException e) {
-                    throw new BusinessException("获取请求数据流失败", e);
+                    throw new BusinessException("获取请求数据流失败.requestBody = " + requestBody, e);
                 } catch (Exception e) {
                     try {
                         doc = XMLDocUtil.dataXml2Doc(XmlUtil.stripNonValidXMLCharacters(requestBody));
                     } catch (Exception e1) {
-                        throw new BusinessException("解析xml请求数据流失败", e1);
+                        throw new BusinessException("解析xml请求数据流失败.requestBody = " + requestBody, e1);
                     }
                 } finally {
                     try {
@@ -79,7 +79,9 @@ public class Filter6XmlHttpDecode implements Filter {
                     } 
                 }
                 
-                httpRequest = XmlHttpDecoder.decode(doc.getRootElement(), httpRequest); 
+                if(doc != null) {
+                	httpRequest = XmlHttpDecoder.decode(doc.getRootElement(), httpRequest); 
+                }
             }
             
             chain.doFilter(httpRequest, response);

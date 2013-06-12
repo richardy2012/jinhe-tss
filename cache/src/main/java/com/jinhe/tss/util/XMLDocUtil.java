@@ -86,6 +86,8 @@ public class XMLDocUtil {
     }
 
     public static Document dataXml2Doc(String dataXml) {
+    	if( EasyUtils.isNullOrEmpty(dataXml) ) return null;
+    	
         StringBuffer sb = new StringBuffer();
         if (!dataXml.startsWith("<?xml")) {
             sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
