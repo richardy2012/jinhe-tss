@@ -99,10 +99,10 @@ public abstract class QueryCondition  {
             // 如果是时间，则判断是否有: ****TimeFrom 。。。 ****TimeTo 。。。
             if ( value instanceof Date ) {
                 if(key.endsWith("From")) {
-                    sb.append(" and o." + key + " >= :" + key);
+                    sb.append(" and o." + key.substring(0, key.length() - 4) + " >= :" + key);
                 } 
                 else if(key.endsWith("To")) {
-                    sb.append(" and o." + key + " <= :" + key);
+                    sb.append(" and o." + key.substring(0, key.length() - 2) + " <= :" + key);
                 } 
                 else {
                     sb.append(" and o." + key + " = :" + key);

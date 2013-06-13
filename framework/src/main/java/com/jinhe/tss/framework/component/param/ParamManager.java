@@ -69,7 +69,7 @@ public class ParamManager {
 	public static List<Param> getTreeParam(String code){
     	try{
             List<Param> list = (List<Param>) paramMap.get(code);
-    		if(null == list) {
+    		if( list == null ) {
     			paramMap.put(code, list = getService().getTreeParam(code));
     		}
             return list;

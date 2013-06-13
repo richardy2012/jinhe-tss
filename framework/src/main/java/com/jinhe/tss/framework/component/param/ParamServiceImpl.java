@@ -212,7 +212,7 @@ public class ParamServiceImpl implements ParamService {
 
     public String getSimpleParamValue(String code) {
         Param param = paramDao.getParamByCode(code);
-        if (!ParamConstants.SIMPLE_PARAM_MODE.equals(param.getModality())) {
+        if (param == null || !ParamConstants.SIMPLE_PARAM_MODE.equals(param.getModality())) {
             throw new BusinessException("不是简单参数!");
         }
         return param.getValue();
@@ -220,7 +220,7 @@ public class ParamServiceImpl implements ParamService {
 
     public List<Param> getComboParam(String code) {
         Param param = paramDao.getParamByCode(code);
-        if (!ParamConstants.COMBO_PARAM_MODE.equals(param.getModality())) {
+        if (param == null || !ParamConstants.COMBO_PARAM_MODE.equals(param.getModality())) {
             throw new BusinessException("不是下拉型参数!");
         }
         return paramDao.getChildrenByDecode(param.getDecode());
@@ -228,7 +228,7 @@ public class ParamServiceImpl implements ParamService {
 
     public List<Param> getTreeParam(String code) {
         Param param = paramDao.getParamByCode(code);
-        if (!ParamConstants.TREE_PARAM_MODE.equals(param.getModality())) {
+        if (param == null || !ParamConstants.TREE_PARAM_MODE.equals(param.getModality())) {
             throw new BusinessException("不是树型参数!");
         }
         return paramDao.getChildrenByDecode(param.getDecode());

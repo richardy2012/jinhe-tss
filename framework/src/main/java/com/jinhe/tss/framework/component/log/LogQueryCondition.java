@@ -12,10 +12,10 @@ public class LogQueryCondition extends QueryCondition {
     private String  appCode;
     private String  operatorName;  
     private String  operatorIP;
-    private Date    startTime;      // 开始时间
-    private Date    endTime;        // 结束时间
-    private String  operationCode;  // 操作类型
-    private String  operateTable;   // 操作对象    
+    private Date    operateTimeFrom; // 开始时间
+    private Date    operateTimeTo;   // 结束时间
+    private String  operationCode;   // 操作类型
+    private String  operateTable;    // 操作对象    
 
     public String getAppCode() {
         return appCode;
@@ -41,20 +41,20 @@ public class LogQueryCondition extends QueryCondition {
         this.operatorIP = operatorIP;
     }
 
-    public Date getStartTime() {
-        return startTime;
+    public Date getOperateTimeFrom() {
+        return operateTimeFrom;
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+    public void setOperateTimeFrom(Date operateTimeFrom) {
+        this.operateTimeFrom = operateTimeFrom;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public Date getOperateTimeTo() {
+        return operateTimeTo;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+    public void setOperateTimeTo(Date operateTimeTo) {
+        this.operateTimeTo = operateTimeTo;
     }
 
     public String getOperationCode() {
