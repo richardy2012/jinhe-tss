@@ -12,7 +12,7 @@ import com.jinhe.tss.framework.Global;
  *  <context-param>
  *     <param-name>contextClass</param-name>
  *     <param-value>
- *           com.jinhe.tss.core.web.GlobalSuportXmlWebApplicationContext
+ *           com.jinhe.tss.framework.web.GlobalSuportXmlWebApplicationContext
  *     </param-value>
  *  </context-param>
  *  

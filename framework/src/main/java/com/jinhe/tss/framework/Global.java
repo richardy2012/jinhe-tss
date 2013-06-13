@@ -17,7 +17,7 @@ public class Global {
 	
 	private static ApplicationContext _ctx;
 
-	private static String defaultContextPath = "spring/applicationContext.xml";
+	private static String defaultContextPath = "META-INF/spring.xml";
 
 	private static void initContext(String contextPath) {
 		_ctx = new ClassPathXmlApplicationContext(contextPath);
