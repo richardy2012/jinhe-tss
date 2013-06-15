@@ -1,129 +1,101 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<html xmlns:XForm>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
-<title>ËüÉ½Ê¯--ÓÃ»§×¢²á</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>ç”¨æˆ·æ³¨å†Œ</title>
 
-<link href="css/css.css" rel="stylesheet" type="text/css">
-<link href="common/xform/xform.css" rel="stylesheet" type="text/css">
-<link href="common/balloon/balloon.css" rel="stylesheet" type="text/css">
+<link href="framework/css/css.css" rel="stylesheet" type="text/css">
+<link href="framework/css/other.css" rel="stylesheet" type="text/css">
 
-<script language="javascript" src="js/core.js"></script>
-<script language="javascript" src="js/ajax.js"></script>
-<script language="javascript" src="js/framework.js"></script>
-<script language="javascript" src="common/balloon/balloon.js"></script>
-<script language="javascript" src="common/xform/xform.js"></script>
+<link href="framework/xform/xform.css" rel="stylesheet" type="text/css">
+<link href="framework/balloon/balloon.css" rel="stylesheet" type="text/css">
+
+<script language="javascript" src="framework/core.js"></script>
+<script language="javascript" src="framework/ajax.js"></script>
+<script language="javascript" src="framework/framework.js"></script>
+<script language="javascript" src="framework/balloon/balloon.js"></script>
+<script language="javascript" src="framework/xform/xform.js"></script>
 
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
+
+URL_CORE = "framework/"
 	/*
-     *	ºóÌ¨ÏìÓ¦Êý¾Ý½ÚµãÃû³Æ
+     *	åŽå°å“åº”æ•°æ®èŠ‚ç‚¹åç§°
      */
     XML_REGISTER_INFO  = "UserInfo";
 	XML_SECURITY_LEVEL = "SecurityLevel";
 
     /*
-     *	Ä¬ÈÏÎ¨Ò»±àºÅÃûÇ°×º
+     *	é»˜è®¤å”¯ä¸€ç¼–å·åå‰ç¼€
      */
     CACHE_REGISTER_INFO = "register__id";
 
     /*
-     *	XMLHTTPÇëÇóµØÖ·»ã×Ü
+     *	XMLHTTPè¯·æ±‚åœ°å€æ±‡æ€»
      */
-    URL_INIT = "test/mockdata/register_init.xml";
-    URL_REGISTER = "test/mockdata/_success.xml";
-    URL_CHECK_PASSWORD = "test/mockdata/password_check.xml";
+    URL_INIT = "ums/user!getUserInfo.action";
+    URL_REGISTER = "ums/user!registerUser.action";
+    URL_CHECK_PASSWORD = "getStrength.in";
 
-//    URL_INIT = "ums/user!getUserInfo.action";
-//    URL_REGISTER = "ums/user!registerUser.action";
-//    URL_CHECK_PASSWORD = "getStrength.in";
-
+	if( IS_TEST ) {
+		URL_INIT = "test/mockdata/register_init.xml";
+		URL_REGISTER = "test/mockdata/_success.xml";
+		URL_CHECK_PASSWORD = "test/mockdata/password_check.xml";
+	}
 
 	var registerForm;
 
     function init() {
-        var p = new HttpRequestParams();
-        p.url = URL_INIT; 
-		p.setHeader("appCode", APP_CODE);
-        p.setHeader("anonymous", "true");
+		Ajax({
+			url : URL_INIT,
+			headers : {"appCode": APP_CODE, "anonymous": "true"},
+			onresult : function() { 
+				var registerXML = this.getNodeValue(XML_REGISTER_INFO);
+				Cache.XmlDatas.add(XML_REGISTER_INFO, registerXML);
+				registerForm = $X("registerForm", registerXML);
 
-        var request = new HttpRequest(p);
-        request.onresult = function() {
-			var registerXML = this.getNodeValue(XML_REGISTER_INFO);
-            Cache.XmlIslands.add(XML_REGISTER_INFO, registerXML);
-			registerForm = $X("registerForm");
-			registerForm.load(registerXML.node);
-
-			$("password").onblur = function() { 
-				var password = this.value;
-				if(password == null || password == "") return;
-				
-				var loginName = registerForm.getData("loginName");
-				checkPasswordSecurityLevel(registerForm, URL_CHECK_PASSWORD, password, loginName);
+				$$("password").onblur = function() { 
+					var password = this.value;
+					if(password == null || password == "") return;
+					
+					var loginName = registerForm.getData("loginName");
+					checkPasswordSecurityLevel(registerForm, URL_CHECK_PASSWORD, password, loginName);
+				}
 			}
-        }
-        request.send();
+		});
     }
  
-    /*
-     *	º¯ÊýËµÃ÷£º×¢²áÐÂÓÃ»§
-     *	²ÎÊý£º	
-     *	·µ»ØÖµ£º
-     */
+    /* æ³¨å†Œæ–°ç”¨æˆ· */
     function register(){
-        var p = new HttpRequestParams();
-        p.url = URL_REGISTER;
-		p.setHeader("appCode", APP_CODE);
-        p.setHeader("anonymous", "true");
-
-        //µÇÂ¼ÐÅÏ¢
-        var registerNode = Cache.XmlIslands.get(CACHE_REGISTER_INFO);
-        if(null != registerNode) {
-            var dataNode = registerNode.selectSingleNode(".//data");
-            if(dataNode != null) {
-                var nodes = dataNode.selectNodes("./row/*");
-                for(var i = 0; i < nodes.length; i++) {
-                    var name  = nodes[i].nodeName;
-                    var value = nodes[i].text;
-                    p.setContent(name, value);
-                }
-            }
-        }
-
-        var request = new HttpRequest(p);
-        request.onsuccess = function() {
-            if( null != opener ) {
-				var loginName = registerForm.getData("loginName");
-                opener.$X("loginForm").updateDataExternal("userName", loginName, true); // opener·µ»Ø¶Ô´´½¨¸Ã´°¿ÚµÄWindow ¶ÔÏóµÄÒýÓÃ
-            }
-            window.close();
-        }
-        request.send();
+		Ajax({
+			url : URL_REGISTER,
+			headers : {"appCode": APP_CODE, "anonymous": "true"},
+			xformNode : Cache.XmlDatas.get(CACHE_REGISTER_INFO),
+			onsuccess : function() { 
+				if( opener ) {  // openerè¿”å›žå¯¹åˆ›å»ºè¯¥çª—å£çš„Window å¯¹è±¡çš„å¼•ç”¨
+					var loginName = registerForm.getData("loginName");
+					opener.$X("loginForm").updateDataExternal("userName", loginName); 
+				}
+				window.close();
+			}
+		});
     }
 
-    /*
-     *	º¯ÊýËµÃ÷£º¼ì²â×¢²á±íµ¥ÊÇ·ñÌîÐ´ÕýÈ·
-     *	²ÎÊý£º	
-     *	·µ»ØÖµ£º
-     */
+    /* æ£€æµ‹æ³¨å†Œè¡¨å•æ˜¯å¦å¡«å†™æ­£ç¡® */
     function checkRegisterForm(){
         var flag = true;
 
         var password = registerForm.getData("password"); 
-		var repassword = prompt("ÇëÔÙÊäÈëÒ»±ßÈ·ÈÏÃÜÂë");
+		var repassword = prompt("è¯·å†è¾“å…¥ä¸€è¾¹ç¡®è®¤å¯†ç ");
 		if(password != repassword) {
 			flag = false;
-			alert("Á½´ÎÃÜÂëÊäÈë²»Ò»ÖÂ£¬ÇëÖØÐÂÊäÈë");
+			alert("ä¸¤æ¬¡å¯†ç è¾“å…¥ä¸ä¸€è‡´ï¼Œè¯·é‡æ–°è¾“å…¥");
 		}
         return flag;
     }
 
-    /*
-     *	º¯ÊýËµÃ÷£ºÖØÖÃ
-     *	²ÎÊý£º	
-     *	·µ»ØÖµ£º
-     */
     function resetForm(){
         registerForm.resetForm();
         registerForm.setFocus();
@@ -136,20 +108,12 @@
 </head>
 
 <body>
-<table class="full" border="0" cellpadding="0" cellspacing="0">
-<tr> 
-  <td class="loginContainer" style="background-position:center -400;padding-top:0px">
-    <!-- µÇÂ¼¿ò ¿ªÊ¼ -->
-	  <div class="loginBox" style="width:500px;">
-		<div id="registerForm" _baseurl="common/xform/"><div class="loading"></div></div>
+	<div class="loginContainer loginBox" style="width:500px;padding:10px 10px">
+		<XForm:Box id="registerForm" baseurl="framework/xform/"><div class="loading"></div></XForm:Box>
 		<br/>
-		<input type="button" class="btStrong" value="Ìá½»" onclick="if( checkRegisterForm() ) { register() }"/>
-		<input type="button" class="btWeak"   value="ÖØÖÃ" onclick="resetForm()"/>
-		<input type="button" class="btWeak"   value="¹Ø±Õ" onclick="window.close()"/>
-	  </div>
-    <!-- µÇÂ¼¿ò ½áÊø -->
-  </td>
-</tr>
-</table>
+		<input type="button" class="btStrong" value="æäº¤" onclick="if( checkRegisterForm() ) { register() }"/>
+		<input type="button" class="btWeak"   value="é‡ç½®" onclick="resetForm()"/>
+		<input type="button" class="btWeak"   value="å…³é—­" onclick="window.close()"/>
+	</div>
 </body>
 </html>

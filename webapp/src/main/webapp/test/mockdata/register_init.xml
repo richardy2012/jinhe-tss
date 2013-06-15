@@ -12,7 +12,7 @@
                 <column name="birthday" caption="出生年月" mode="String" pattern="yyyy/MM/dd"/>
                 <column name="certificateCategory" caption="证件种类" mode="string" editor="comboedit" editorvalue="1|2" editortext="工作证|身份证"/>
                 <column name="certificateNumber" caption="证件号码" maxLength="100" mode="string"/>
-                <column name="mail" caption="电子邮件" mode="string" inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/" submitReg="/^[\w\-]+@[\w\-]+(\.[\w\-]+){1,2}$/" maxLength="100"/>
+                <column name="mail" caption="电子邮件" mode="string" inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/" maxLength="100"/>
                 <column name="telephone" caption="联系电话" maxLength="100" mode="string"/>
                 <column name="address" caption="联系地址" maxLength="100" mode="string"/>
                 <column name="postalCode" caption="邮政编码" mode="string" maxLength="100" inputReg="/^\d{0,10}$/"/>

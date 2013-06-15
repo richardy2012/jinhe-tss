@@ -31,8 +31,9 @@ _HTTP_TIMEOUT = 60*1000;
 function HttpRequestParams() {
 	this.url = "";
 	this.method = "POST";
+	this.type = "xml"; // "xml or json"
 	this.async = true;
-	this.content = {};
+	this.params = {};
 	this.header = {};
 }
 
@@ -43,8 +44,8 @@ HttpRequestParams.prototype.setMethod = function(value) {
 /*
  *	设置发送数据
  */
-HttpRequestParams.prototype.setContent = function(name, value) {
-	this.content[name] = value;
+HttpRequestParams.prototype.addParam = HttpRequestParams.prototype.setContent = function(name, value) {
+	this.params[name] = value;
 }
 
 /*
@@ -66,7 +67,7 @@ HttpRequestParams.prototype.setXFormContent = function(dataNode, prefix) {
 			name = prefix + "." + name;
 		}
 
-		this.setContent(name, value, false);
+		this.addParam(name, value);
 	}
 }
 
@@ -74,14 +75,14 @@ HttpRequestParams.prototype.setXFormContent = function(dataNode, prefix) {
  *	清除制定名称的发送数据
  */
 HttpRequestParams.prototype.clearContent = function(name) {
-	delete this.content[name];
+	delete this.params[name];
 }
 
 /*
  *	清除所有发送数据
  */
 HttpRequestParams.prototype.clearAllContent = function() {
-	this.content = {};
+	this.params = {};
 }
 
 /*
@@ -97,7 +98,7 @@ HttpRequestParams.prototype.setHeader = function(name, value) {
 	例子：
 		var p = new HttpRequestParams();
 		p.url = URL_GET_USER_NAME;
-		p.setContent("loginName", loginName);
+		p.addParam("loginName", loginName);
 		p.setHeader("appCode", APP_CODE);
 
 		var request = new HttpRequest(p);
@@ -207,7 +208,7 @@ HttpRequest.prototype.getNodeValue = function(name) {
 	 }
 	
 	 try {
-		 if(this.params.ani != null) {
+		 if(this.params.waiting) {
 			 Public.showWaitingLayer();
 		 }
 
@@ -324,7 +325,9 @@ HttpRequest.prototype.packageContent = function() {
 	}
 
 	var contentStr = contentXml.toXml();
-	this.xmlhttp.setRequestHeader("Content-Length", contentStr.length);
+	if( !window.DOMParser ) {
+		this.xmlhttp.setRequestHeader("Content-Length", contentStr.length);
+	}
 	this.requestBody = contentStr;
 }
 
@@ -333,7 +336,7 @@ HttpRequest.prototype.packageContent = function() {
  */
 HttpRequest.prototype.setCustomRequestHeader = function() {
 	this.xmlhttp.setRequestHeader("REQUEST-TYPE", "xmlhttp");
-	this.xmlhttp.setRequestHeader("REFERER", this.params.url);
+	// this.xmlhttp.setRequestHeader("REFERER", this.params.url);
 	for(var item in this.params.header) {									
 		var itemValue = String(this.params.header[item]);
 		if( itemValue != "" ) {
@@ -361,17 +364,21 @@ HttpRequest.prototype.onload = function(response) {
 	this.value = response.responseText;
 
 	//远程(200) 或 本地(0)才允许
-	var httpStatus = response.status;
-	var httpStatusText = response.statusText;
+	var httpStatus = response.status; 
 	if(httpStatus != _HTTP_RESPONSE_STATUS_LOCAL_OK && httpStatus != _HTTP_RESPONSE_STATUS_REMOTE_OK) {
 		var param = {};
 		param.dataType = _HTTP_RESPONSE_DATA_TYPE_EXCEPTION;
 		param.type = 1;
 		param.source = this.value;
-		param.msg = "HTTP " + httpStatus + " 错误\r\n" + httpStatusText;
+		param.msg = "HTTP " + httpStatus + " 错误\r\n" + response.statusText;
 		param.description = "请求远程地址\"" + this.params.url + "\"出错";
 		new Message_Exception(param, this);
 		this.returnValue = false;
+		return;
+	}
+
+	if(this.params.type == "json") {
+		this.ondata();
 		return;
 	}
 
@@ -649,7 +656,8 @@ HttpRequests.onFinishAll = function(callback) {
 		url : url,
 		method : "GET",
 		headers : {},
-		contents : {}, 
+		params  : {}, 
+		ondata : function() { },
 		onresult : function() { },
 		onexception : function() { },
 		onsuccess : function() { }
@@ -664,15 +672,41 @@ function Ajax() {
 	if(arg.method) {
 		p.method = arg.method;
 	}
+	if(arg.type) {
+		p.type = arg.type;
+	}
+	if(arg.waiting) {
+		p.waiting = arg.waiting;
+	}
+	if(arg.relogin) {
+		p.relogin = arg.relogin;
+	}
 
 	for(var item in arg.headers) {
 		p.setHeader(item, arg.headers[item]);
 	}
 	for(var item in arg.contents) {
-		p.setContent(item, arg.contents[item]);
+		p.addParam(item, arg.contents[item]);
+	}
+	for(var item in arg.params) {
+		p.addParam(item, arg.params[item]);
+	}
+
+	if(arg.xformNode) {
+		var dataMap = xformExtractData(arg.xformNode);
+		for( var key in dataMap) {
+			if( arg.add2Header ) {
+				p.setHeader(key, dataMap[key]);
+			} else {
+				p.addParam(key, dataMap[key]);
+			}
+		}
 	}
 
 	var request = new HttpRequest(p);
+	if( arg.ondata ) {
+		request.ondata = arg.ondata;
+	}
 	if( arg.onresult ) {
 		request.onresult = arg.onresult;
 	}

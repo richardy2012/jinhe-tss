@@ -1,3 +1,11 @@
+  .dialog{
+    background-color:white;
+    border:1px solid #98989C;
+    width:100%;
+    height:100%;
+	overflow:hidden;
+  }
+
   .mainBox{
     background-color:white;
     border:1px solid #98989C;
@@ -5,6 +13,7 @@
     height:100%;
     padding:5px;
   }
+
   body {
     margin: 10px;
     font-size: 12px;

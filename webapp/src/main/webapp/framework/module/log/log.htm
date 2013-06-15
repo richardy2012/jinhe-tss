@@ -45,11 +45,11 @@ URL_CORE = "../../";
     URL_LOG_DETAIL = "/" + CONTEXTPATH + "log/item/";
 
 	if(IS_TEST) {
-		URL_INIT = "data/log_init.xml";
-		URL_LOG_LIST = "data/loglist.xml";
-		URL_LOG_DETAIL = "data/log1.xml";
+		URL_INIT = "data/log_init.xml?";
+		URL_LOG_LIST = "data/loglist.xml?";
+		URL_LOG_DETAIL = "data/log1.xml?";
 	}
-	URL_INIT = "data/log_init.xml";
+	// URL_INIT = "data/log_init.xml";
 	
     /* 页面初始化 */
     function init() {
@@ -85,7 +85,7 @@ URL_CORE = "../../";
 			visible:function() {return !isTreeRoot();}
 		}
 
-		var treeObj = $("tree");
+		var treeObj = $$("tree");
 
 		var menu = new Menu();
 		menu.addItem(item1);
@@ -93,7 +93,7 @@ URL_CORE = "../../";
 		treeObj.contextmenu = menu;
 
 		/* Grid菜单初始化  */
-		var gridObj = $("grid");
+		var gridObj = $$("grid");
 		var item1 = {
 			label:"查看",
 			callback:function() {
@@ -110,10 +110,10 @@ URL_CORE = "../../";
     }
 
     function initBlocks() {
-        var paletteObj = $("palette");
+        var paletteObj = $$("palette");
         Blocks.create(paletteObj);
 
-        var treeContainerObj = $("treeContainer");
+        var treeContainerObj = $$("treeContainer");
         Blocks.create(treeContainerObj,treeContainerObj.parentNode);  
     }
 
@@ -121,9 +121,9 @@ URL_CORE = "../../";
         var onresult = function() {
             var tree = $T("tree", this.getNodeValue(XML_MAIN_TREE));
 
-			var treeElement = $("tree");
+			var treeElement = $$("tree");
             treeElement.onTreeNodeActived = function(eventObj) {
-                Focus.focus($("treeTitle").firstChild.id);
+                Focus.focus($$("treeTitle").firstChild.id);
             }
             treeElement.onTreeNodeDoubleClick = function(eventObj) {
                if( !isTreeRoot() ) {
@@ -131,14 +131,14 @@ URL_CORE = "../../";
 				}
             }
             treeElement.onTreeNodeRightClick = function(eventObj) {
-				var treeObj = $("tree");
+				var treeObj = $$("tree");
 				if(treeObj.contextmenu) {
 					treeObj.contextmenu.show(eventObj.clientX, eventObj.clientY);                
 				}
             }
         }
 
-        Ajax({url : URL_INIT, method : "GET", onresult : onresult});
+        Ajax({url : URL_INIT, onresult : onresult});
     }
 	
     function getTreeId() {
@@ -149,29 +149,32 @@ URL_CORE = "../../";
     }
 	
     function initFocus() {
-        Focus.register($("treeTitle").firstChild);
-        Focus.register($("gridTitle"));
+        Focus.register($$("treeTitle").firstChild);
+        Focus.register($$("gridTitle"));
     }
 
     function initEvents() {
-        Event.attachEvent($("treeBtRefresh"), "click", onClickTreeBtRefresh);
-        Event.attachEvent($("treeTitleBt"), "click", onClickTreeTitleBt);
-        Event.attachEvent($("paletteBt"), "click", onClickPaletteBt);
-        Event.attachEvent($("treeTitle"), "click", onClickTreeTitle);
-        Event.attachEvent($("gridTitle"), "click", onClickGridTitle);
+        Event.attachEvent($$("treeBtRefresh"), "click", onClickTreeBtRefresh);
+        Event.attachEvent($$("treeTitleBt"), "click", onClickTreeTitleBt);
+        Event.attachEvent($$("paletteBt"), "click", onClickPaletteBt);
+        Event.attachEvent($$("treeTitle"), "click", onClickTreeTitle);
+        Event.attachEvent($$("gridTitle"), "click", onClickGridTitle);
     }
+
+	var currentPage
 
     /*
      *	grid加载数据
      */
-    function loadGridData(p, treeID, page) {
+    function loadGridData(p, page) {
 		p.url = URL_LOG_LIST + page || "1";
 		var request = new HttpRequest(p);
 		request.onresult = function() {
 			$G("grid", this.getNodeValue(XML_LOG_LIST)); 
+			var gridToolBar = $$("gridToolBar");
 
 			var pageListNode = this.getNodeValue(XML_PAGE_INFO);			
-			initGridToolBar($("gridToolBar"), pageListNode, function(page) {
+			initGridToolBar(gridToolBar, pageListNode, function(page) {
 				request.params.url = URL_LOG_LIST + page;
 				request.onresult = function() {
 					$G("grid", this.getNodeValue(XML_LOG_LIST)); 
@@ -179,19 +182,22 @@ URL_CORE = "../../";
 				request.send();
 			} );
 			
-			var gridElement = $("grid"); 
+			var gridElement = $$("grid"); 
 			gridElement.onDblClickRow = function(eventObj) {
 				showLogInfo();
 			}
 			gridElement.onRightClickRow = function() {
-				$("grid").contextmenu.show(event.clientX, event.clientY);
+				$$("grid").contextmenu.show(event.clientX, event.clientY);
 			}   
-			gridElement.onScrollToBottom = function () {			
-				var currentPage = request.getParamValue("page");
+			gridElement.onScrollToBottom = function () {		
+				var currentPage = gridToolBar.getCurrentPage();
+				if(gridToolBar.getTotalPages() <= currentPage) return;
+
 				var nextPage = parseInt(currentPage) + 1; 
 				request.params.url = URL_LOG_LIST + nextPage;
 				request.onresult = function() {
 					$G("grid").load(this.getNodeValue(XML_LOG_LIST), true);
+					initGridToolBar(gridToolBar, this.getNodeValue(XML_PAGE_INFO));
 				}				
 				request.send();
 			}
@@ -203,7 +209,7 @@ URL_CORE = "../../";
 	    var appCode = getTreeId();
 		var p = new HttpRequestParams();
 		p.setContent("appCode", appCode);
-		loadGridData(p, appCode, "1"); 
+		loadGridData(p, "1"); 
     }
 
     function searchLog() {
@@ -219,7 +225,7 @@ URL_CORE = "../../";
 				var xmlReader = new XmlReader(condition.dataXml);
 				var dataNode  = new XmlNode(xmlReader.documentElement);
 				p.setXFormContent(dataNode, condition.prefix);
-				loadGridData(p, treeID, "1"); 
+				loadGridData(p, "1"); 
             }
         }
     }
@@ -229,12 +235,12 @@ URL_CORE = "../../";
      *	参数：	boolean:editable            是否可编辑(默认true)
      */
     function showLogInfo() {		
-		var rowIndex = $("grid").selectRowIndex; 
+		var rowIndex = $$("grid").selectRowIndex; 
 		var row = $G("grid").getRowByIndex(rowIndex);
 		var rowID = row.getAttribute("id");  
 		var rowName = "日志";
 		
-		var wsContainer = $("ws").parentElement.parentElement;
+		var wsContainer = $$("ws").parentElement.parentElement;
         var callback = {};
 		callback.onTabClose = function(eventObj){
 			if( ws.noTabOpend() ) {
@@ -264,15 +270,14 @@ URL_CORE = "../../";
     function loadLogDetailData(logId) {
 		Ajax({
 			url : URL_LOG_DETAIL + logId,
-			method : "GET",
 			onresult : function() { 
 				var logInfoNode = this.getNodeValue(XML_LOG_INFO);
 				var page1FormObj = $X("page1Form", logInfoNode);
 
-				$("page1BtPrev").style.display = "none";
-				$("page1BtNext").style.display = "none";
-				$("page1BtSave").style.display = "none";
-				// $("page1BtSave").disabled = true;
+				$$("page1BtPrev").style.display = "none";
+				$$("page1BtNext").style.display = "none";
+				$$("page1BtSave").style.display = "none";
+				// $$("page1BtSave").disabled = true;
 			}
 		});
     }
@@ -367,7 +372,7 @@ URL_CORE = "../../";
 								  <tr>
 									<td>
 									  <!-- grid 开始 -->
-									   <Grid:Box id="grid" baseurl="../../grid/"><div class="loading"></div></Grid:Box>
+									   <Grid:Box id="grid" baseurl="../../grid/"></Grid:Box>
 									  <!-- grid 结束 -->
 									</td>
 								  </tr>

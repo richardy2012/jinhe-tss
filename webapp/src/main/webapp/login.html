@@ -5,6 +5,7 @@
 <title>它山石--登陆</title>
 
 <link href="framework/css/css.css" rel="stylesheet" type="text/css">
+<link href="framework/css/other.css" rel="stylesheet" type="text/css">
 <link href="framework/xform/xform.css" rel="stylesheet" type="text/css">
 <link href="framework/balloon/balloon.css" rel="stylesheet" type="text/css">
 
@@ -19,27 +20,25 @@
 
 URL_CORE = "framework/"
 
-    /*
-     *	后台响应数据节点名称
-     */
+    /* 后台响应数据节点名称 */
     XML_USER_NAME = "UserName";
     XML_CLASS_NAME = "ClassName";
 	
-	  CACHE_LOGIN_FORM = "login__id";
+	CACHE_LOGIN_FORM = "login__id";
 
-    /*
-     *	XMLHTTP请求地址汇总
-     */
-    URL_GET_USER_NAME = "test/mockdata/username.xml";
-    URL_LOGIN = "test/mockdata/_success.xml";
+    /* XMLHTTP请求地址汇总 */
+	URL_GET_USER_NAME = "getOperatorInfoByLoginName.in";
+    URL_LOGIN = "login.do";
 
-//    URL_GET_USER_NAME = "getOperatorInfoByLoginName.in";
-//    URL_LOGIN = "login.do";
+	if( IS_TEST ) {
+		URL_GET_USER_NAME = "test/mockdata/username.xml";
+		URL_LOGIN = "test/mockdata/_success.xml";
+	}    
 
  
- var loginXForm;
+	var loginXForm;
 
- function init() {
+	function init() {
         var str = [];
         str[str.length] = "<xform>";
         str[str.length] = "    <declare>";
@@ -76,17 +75,16 @@ URL_CORE = "framework/"
         Cache.XmlDatas.add(CACHE_LOGIN_FORM, loginFormXML);
 
 		// 初始化登录xform
-		loginXForm = $X("loginForm")
-		loginXForm.load(loginFormXML.node);
+		loginXForm = $X("loginForm", loginFormXML);
 		
-		$("userName").onblur = function() { 
+		$$("userName").onblur = function() { 
 			var value = this.value;
 			if(value == null || value == "") return;
 			
 			getUserName(value, function(userName, identifier) {
-				loginXForm.updateDataExternal("userName", userName, false);
-				loginXForm.updateDataExternal("identifier", identifier, false);
-				loginXForm.updateDataExternal("loginName", value, false);
+				loginXForm.updateDataExternal("userName", userName);
+				loginXForm.updateDataExternal("identifier", identifier);
+				loginXForm.updateDataExternal("loginName", value);
 				loginXForm.setFocus("password");
 			});
 		}
@@ -98,22 +96,20 @@ URL_CORE = "framework/"
                 function:callback     回调方法
      */
     function getUserName(loginName, callback) {	
-        var p = new HttpRequestParams();
-        p.url = URL_GET_USER_NAME;
-				p.setContent("loginName", loginName);
-				p.setHeader("appCode", APP_CODE);
+		Ajax({
+			url: URL_GET_USER_NAME,
+			headers: {"appCode": APP_CODE},
+			contents: {"loginName":loginName},
+			onexcption: function() {
+				loginXForm.setFocus();
+			},
+			onresult: function(){
+				var userName   = this.getNodeValue(XML_USER_NAME);
+				var identifier = this.getNodeValue(XML_CLASS_NAME);
 
-        var request = new HttpRequest(p);
-        request.onexception = function() {
-            loginXForm.setFocus();
-        }
-        request.onresult = function(){
-            var userName   = this.getNodeValue(XML_USER_NAME);
-            var identifier = this.getNodeValue(XML_CLASS_NAME);
-
-            callback(userName, identifier);
-        }
-        request.send();
+				callback(userName, identifier);
+			}
+		});
     }
 
     function login() {
@@ -124,38 +120,23 @@ URL_CORE = "framework/"
             loginXForm.showCustomErrorInfo("userName", "请输入姓名");
             return;
         } 
-				else if( "" == password ) {
+		else if( "" == password ) {
             loginXForm.showCustomErrorInfo("password", "请输入密码");
             return;
         }
 
-        var p = new HttpRequestParams();
-        p.url = URL_LOGIN;
-        p.relogin = "0";
-
-				// 登录信息
-        var loginNode = Cache.XmlDatas.get(CACHE_LOGIN_FORM);
-        if( null != loginNode ) {
-            var dataNode = loginNode.selectSingleNode(".//data");
-            if( dataNode != null ) {
-                var nodes = dataNode.selectNodes("./row/*");
-                for(var i=0 ; i < nodes.length; i++){
-                    var name  = nodes[i].nodeName;
-                    var value = nodes[i].text;
-
-                    p.setHeader(name, value);
-                }
-            }
-        }
-
-        var request = new HttpRequest(p);
-        request.onexception = function(){
-            loginXForm.setFocus("password");
-        }
-        request.onsuccess = function(){
-            location.href = "index.html";
-        }
-        request.send();
+		// 登录信息
+		Ajax({
+			url: URL_LOGIN,
+			xformNode: Cache.XmlDatas.get(CACHE_LOGIN_FORM),
+			add2Header: true,
+			onexcption: function() {
+				loginXForm.setFocus("password");
+			},
+			onsuccess: function(){
+				location.href = "index.html";
+			}
+		});
     }
 
     /*
@@ -202,7 +183,7 @@ URL_CORE = "framework/"
 	  <td class="loginContainer">
 		<!-- 登录框 开始 -->
 		<div class="loginBox">
-				<XForm:Box id="loginForm" editable="true" baseurl="framework/xform/"><div class="loading"/></XForm:Box>
+			<XForm:Box id="loginForm" baseurl="framework/xform/"><div class="loading"></div></XForm:Box>
 		</div>
 		<!-- 登录框 结束 -->
 	  </td>

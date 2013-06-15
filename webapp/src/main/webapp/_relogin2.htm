@@ -1,32 +1,26 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<html xmlns:XForm>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>重新登录</title>
 
-<!-- 公共脚本 开始 -->
-<link href="../platform/css/css.css" rel="stylesheet" type="text/css">
-<link href="../platform/css/dialog.css" rel="stylesheet" type="text/css">
-<script language="javascript" src="js/debug.js"></script>
-<script language="javascript" src="js/common.js"></script>
-<script language="javascript" src="js/event.js"></script>
-<script language="javascript" src="js/element.js"></script>
-<script language="javascript" src="js/xml.js"></script>
-<script language="javascript" src="js/xmlhttp.js"></script>
-<script language="javascript" src="js/public.js"></script>
-<!-- 公共脚本 结束 -->
+<link href="framework/css/css.css" rel="stylesheet" type="text/css">
+<link href="framework/css/other.css" rel="stylesheet" type="text/css">
 
-<!-- xform 开始 -->
-<link href="htc/xform1.2.3/xform.css" rel="stylesheet" type="text/css">
-<!-- xform 结束 -->
+<link href="framework/xform/xform.css" rel="stylesheet" type="text/css">
+<link href="framework/balloon/balloon.css" rel="stylesheet" type="text/css">
 
-<style>
-  Xform\:Form {
-      behavior:url(htc/xform1.2.3/xform.htc);
-  }
+<script language="javascript" src="framework/core.js"></script>
+<script language="javascript" src="framework/ajax.js"></script>
+<script language="javascript" src="framework/framework.js"></script>
+<script language="javascript" src="framework/balloon/balloon.js"></script>
+<script language="javascript" src="framework/xform/xform.js"></script>
 
-</style>
 <script language="javascript">
 <!--
+
+URL_CORE = "framework/";
+
     /*
      *	后台响应数据节点名称
      */
@@ -37,21 +31,7 @@
      */
     CACHE_LOGIN_FORM = "login__id";
 
-    /*
-     *	函数说明：页面初始化
-     *	参数：	
-     *	返回值：
-     */
     window.onload = function(){
-        loadInitData();
-    }
-    /*
-     *	函数说明：初始化数据
-     *	参数：	
-     *	返回值：
-     */
-    function loadInitData(){
-
         var str = [];
         str[str.length] = "<xform>";
         str[str.length] = "    <declare>";
@@ -68,68 +48,22 @@
         str[str.length] = "    </data>";
         str[str.length] = "</xform>";
 
-        var xmlReader = new XmlReader();
-        xmlReader.loadXML(str.join(""));
-
+        var xmlReader = new XmlReader(str.join(""));
         var loginFormNode = new XmlNode(xmlReader.documentElement);
-        var loginFormNodeID = CACHE_LOGIN_FORM;
+        var loginXForm = $X("loginForm", loginFormNode);
+    }
 
-        Cache.XmlIslands.add(loginFormNodeID,loginFormNode);
-
-        initLoginForm(loginFormNodeID);
-    }
-    /*
-     *	函数说明：初始化登录xform
-     *	参数：	string:cacheID     缓存数据id
-     *	返回值：
-     */
-    function initLoginForm(cacheID){
-        var loginFormObj = document.getElementById("loginForm");
-        Public.initHTC(loginFormObj,"isLoaded","oncomponentready",function(){
-            loadLoginFormData(cacheID);
-        });
-    }
-    /*
-     *	函数说明：角色信息xform加载数据
-     *	参数：	string:cacheID     缓存数据id
-     *	返回值：
-     */
-    function loadLoginFormData(cacheID){
-        var xmlIsland = Cache.XmlIslands.get(cacheID);
-        if(null!=xmlIsland){
-            var loginFormObj = document.getElementById("loginForm");
-            loginFormObj.load(xmlIsland.node,null,"node");
-        }
-    }
-    /*
-     *	函数说明：设置返回值并关闭窗口
-     *	参数：	
-     *	返回值：
-     */
-    function ok(){
-        var loginFormObj = document.getElementById("loginForm");
-        var password = loginFormObj.getData("password")||"";
+    function ok() {
+        var password = $X("loginForm").getData("password") || "";
         window.returnValue = {password:password};
         window.close();
     }
-    /*
-     *	函数说明：取消并关闭窗口
-     *	参数：	
-     *	返回值：
-     */
-    function cancel(){
-        window.close();
-    }
-    /*
-     *	函数说明：回车自动提交
-     *	参数：	
-     *	返回值：
-     */
+ 
     function autoLogin(){
-        if(13==event.keyCode){
+        if(13 == event.keyCode){
             setTimeout(function(){
                 ok();
-            },10);
+            }, 10);
         }
     }
 
@@ -137,21 +71,10 @@
 </script>
 </head>
 <body>
-<div class="mainBox">
-  <table class="full" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td valign=top>
-        <!-- xform 开始 -->
-        <Xform:Form id="loginForm" baseurl="htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
-        <!-- xform 结束 -->
-      </td>
-    </tr>
-    <tr>
-      <td align="right" height="30" class="t">
-        <input type="button" id="bt_cancel" value="取 消" class="btWeak" onclick="cancel()"> <input type="button" id="bt_ok" value="确 定" class="btStrong" onclick="ok()">
-      </td>
-    </tr>
-  </table>
-</div>
+	<div class="dialog">
+		<XForm:Box id="loginForm" baseurl="framework/xform/"><div class="loading"></div></XForm:Box>
+		<input type="button" id="bt_cancel" value="取 消" class="btWeak" onclick="window.close()"> 
+		<input type="button" id="bt_ok" value="确 定" class="btStrong" onclick="ok()">
+	</div>
 </body>
 </html>

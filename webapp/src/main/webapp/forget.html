@@ -1,94 +1,79 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<html xmlns:XForm>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
-<title>ËüÉ½Ê¯--ÕÒ»ØÃÜÂë</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>æ‰¾å›žå¯†ç </title>
 
-<link href="css/css.css" rel="stylesheet" type="text/css">
-<link href="common/xform/xform.css" rel="stylesheet" type="text/css">
-<link href="common/balloon/balloon.css" rel="stylesheet" type="text/css">
+<link href="framework/css/css.css" rel="stylesheet" type="text/css">
+<link href="framework/css/other.css" rel="stylesheet" type="text/css">
+<link href="framework/xform/xform.css" rel="stylesheet" type="text/css">
+<link href="framework/balloon/balloon.css" rel="stylesheet" type="text/css">
 
-<script language="javascript" src="js/core.js"></script>
-<script language="javascript" src="js/ajax.js"></script>
-<script language="javascript" src="js/framework.js"></script>
-<script language="javascript" src="common/balloon/balloon.js"></script>
-<script language="javascript" src="common/xform/xform.js"></script>
+<script language="javascript" src="framework/core.js"></script>
+<script language="javascript" src="framework/ajax.js"></script>
+<script language="javascript" src="framework/framework.js"></script>
+<script language="javascript" src="framework/balloon/balloon.js"></script>
+<script language="javascript" src="framework/xform/xform.js"></script>
 
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
+
+URL_CORE = "framework/"
+
     /*
-     *	ºóÌ¨ÏìÓ¦Êý¾Ý½ÚµãÃû³Æ
+     *	åŽå°å“åº”æ•°æ®èŠ‚ç‚¹åç§°
      */
     XML_FORGET_INFO = "ForgetInfo";
     XML_USER_ID = "UserId";
 
     /*
-     *	Ä¬ÈÏÎ¨Ò»±àºÅÃûÇ°×º
+     *	é»˜è®¤å”¯ä¸€ç¼–å·åå‰ç¼€
      */
     CACHE_FORGET_INFO = "forget__id";
 
     /*
-     *	XMLHTTPÇëÇóµØÖ·»ã×Ü
+     *	XMLHTTPè¯·æ±‚åœ°å€æ±‡æ€»
      */
-    URL_INIT = "test/mockdata/forget_init.xml";
-    URL_FORGET = "test/mockdata/forget.xml";
-    URL_SET_NEW_PASSWORD = "test/mockdata/_success.xml";
+    URL_INIT = "ums/user!getForgetPasswordInfo.action";
+    URL_FORGET = "getPassword.in";
+    URL_SET_NEW_PASSWORD = "resetPassword.in";
 
-//    URL_INIT = "ums/user!getForgetPasswordInfo.action";
-//    URL_FORGET = "getPassword.in";
-//    URL_SET_NEW_PASSWORD = "resetPassword.in";
+	if( IS_TEST ) {
+		URL_INIT = "test/mockdata/forget_init.xml";
+		URL_FORGET = "test/mockdata/forget.xml";
+		URL_SET_NEW_PASSWORD = "test/mockdata/_success.xml";
+	}
 
 	var forgetForm;
 
     function init() {
-        var p = new HttpRequestParams();
-        p.url = URL_INIT;
-		p.setHeader("appCode", APP_CODE);
-        p.setHeader("anonymous", "true");
-
-        var request = new HttpRequest(p);
-        request.onresult = function() {
-            var forgetXML = this.getNodeValue(XML_FORGET_INFO);
-			var cacheID = CACHE_FORGET_INFO;
-            Cache.XmlIslands.add(cacheID, forgetXML);
-
-			forgetForm = $X("forgetForm")
-			forgetForm.load(forgetXML.node);
-        }
-        request.send();
+		Ajax({
+			url : URL_INIT,
+			headers : {"appCode": APP_CODE, "anonymous": "true"},
+			onresult : function() { 
+				var forgetXML = this.getNodeValue(XML_FORGET_INFO);
+				Cache.XmlDatas.add(CACHE_FORGET_INFO, forgetXML);
+				forgetForm = $X("forgetForm", forgetXML);
+			}
+		});
     }
     
+	// å¦‚æžœç”¨æˆ·è¾“å…¥çš„å¯†ç é—®é¢˜ç­”æ¡ˆæ­£ç¡®ï¼Œåˆ™è¿”å›žè¯¥ç”¨æˆ·çš„UserIDå¹¶å…è®¸å…¶é‡æ–°è®¾ç½®æ–°å¯†ç 
     function getPassword() {
-        var p = new HttpRequestParams();
-        p.url = URL_FORGET;
-		p.setHeader("appCode", APP_CODE);
-        p.setHeader("anonymous", "true");
+		Ajax({
+			url : URL_FORGET,
+			headers : {"appCode": APP_CODE, "anonymous": "true"},
+			xformNode : Cache.XmlDatas.get(CACHE_FORGET_INFO),
+			onresult : function() { 
+				var userID = this.getNodeValue(XML_USER_ID);
+				forgetForm.updateDataExternal("userId", userID);
 
-        var forgetXML = Cache.XmlIslands.get(CACHE_FORGET_INFO);
-        if( forgetXML != null ) {
-			var dataNode = forgetXML.selectSingleNode(".//data"); 
-            if( dataNode != null ) {
-                var nodes = dataNode.selectNodes("./row/*");
-                for( var i=0; i < nodes.length; i++ ) {
-                    var name  = nodes[i].nodeName;
-                    var value = nodes[i].text;
-                    p.setContent(name, value); 
-                }
-            }
-        }
-
-		// Èç¹ûÓÃ»§ÊäÈëµÄÃÜÂëÎÊÌâ´ð°¸ÕýÈ·£¬Ôò·µ»Ø¸ÃÓÃ»§µÄUserID²¢ÔÊÐíÆäÖØÐÂÉèÖÃÐÂÃÜÂë
-        var request = new HttpRequest(p);
-        request.onresult = function() {
-            var userID = this.getNodeValue(XML_USER_ID);
-            forgetForm.updateDataExternal("userId", userID);
-
-            // ÏÔÊ¾ÉèÖÃÐÂÃÜÂë
-            var newPasswordBox = $("newPasswordBox");
-			newPasswordBox.style.visibility = "visible";
-        }
-        request.send();
+				// æ˜¾ç¤ºè®¾ç½®æ–°å¯†ç 
+				var newPasswordBox = $$("newPasswordBox");
+				newPasswordBox.style.visibility = "visible";
+			}
+		});
     }
 
     function resetForm() {
@@ -97,7 +82,7 @@
     }
 
     /*
-     *	¼ì²â×¢²á±íµ¥ÊÇ·ñÌîÐ´ÕýÈ·¡£µã»÷¡°ÕÒ»Ø¡±°´Å¥µÄÊ±ºò´¥·¢
+     *	æ£€æµ‹æ³¨å†Œè¡¨å•æ˜¯å¦å¡«å†™æ­£ç¡®ã€‚ç‚¹å‡»â€œæ‰¾å›žâ€æŒ‰é’®çš„æ—¶å€™è§¦å‘
      */
     function checkForgetForm() {
         var flag = true;
@@ -109,10 +94,10 @@
             var question  = forgetForm.getData("passwordQuestion")||"";
             var answer    = forgetForm.getData("passwordAnswer")||"";
  
-            if( "" == (loginName||userName||code||credCode) ) {
+            if( "" == (loginName||question||answer) ) {
                 flag = false;
                 if( "" == loginName ) {
-                    forgetForm.showCustomErrorInfo("loginName", "µÇÂ¼ÕËºÅ²»ÄÜÎª¿Õ");
+                    forgetForm.showCustomErrorInfo("loginName", "ç™»å½•è´¦å·ä¸èƒ½ä¸ºç©º");
                 }
             }
         }
@@ -120,7 +105,7 @@
     }
 
     /*
-     *	º¯ÊýËµÃ÷£º¼ì²âÐÂÃÜÂë
+     *	å‡½æ•°è¯´æ˜Žï¼šæ£€æµ‹æ–°å¯†ç 
      */
     function checkNewPassword() {
         var flag = true;
@@ -129,61 +114,42 @@
 
         if(password != repassword) {
             flag = false;
-            forgetForm.showCustomErrorInfo("repassword", "Á½´ÎÃÜÂëÊäÈë²»Ò»ÖÂ£¬ÇëÖØÐÂÊäÈë");
+            forgetForm.showCustomErrorInfo("repassword", "ä¸¤æ¬¡å¯†ç è¾“å…¥ä¸ä¸€è‡´ï¼Œè¯·é‡æ–°è¾“å…¥");
         }
 		else if(null == password || "" == password) {
             flag = false;
-            forgetForm.showCustomErrorInfo("password", "ÃÜÂë²»ÄÜÎª¿Õ");
+            forgetForm.showCustomErrorInfo("password", "å¯†ç ä¸èƒ½ä¸ºç©º");
         }
         return flag;
     }
 
     /*
-     *	º¯ÊýËµÃ÷£ºÉèÖÃÐÂÃÜÂë
-¡¢     */
+     *	å‡½æ•°è¯´æ˜Žï¼šè®¾ç½®æ–°å¯†ç 
+ã€     */
     function setNewPassword() {
-        var p = new HttpRequestParams();
-        p.url = URL_SET_NEW_PASSWORD;
-		p.setHeader("appCode", APP_CODE);
-        p.setHeader("anonymous", "true");
-		p.setContent("type", "reset");
-
-        //µÇÂ¼ÐÅÏ¢
-        var forgetXML = Cache.XmlIslands.get(CACHE_FORGET_INFO);
-        if(null != forgetXML) {
-            var dataNode = forgetXML.selectSingleNode(".//data");
-            if( dataNode != null ) {
-                var nodes = dataNode.selectNodes("./row/*");
-                for(var i=0; i < nodes.length; i++) {
-                    p.setContent(nodes[i].nodeName, nodes[i].text);
-                }
-            }
-        }
-
-        var request = new HttpRequest(p);
-        request.onsuccess = function() {
-            window.close();
-        }
-        request.send();
+		Ajax({
+			url : URL_SET_NEW_PASSWORD,
+			headers : {"appCode": APP_CODE, "anonymous": "true"},
+			params : {"type": "reset"},
+			xformNode : Cache.XmlDatas.get(CACHE_FORGET_INFO),
+			onsuccess : function() { 
+				window.close();
+			}
+		});
     }
 
     window.onload = init;
+
 //-->
 </SCRIPT>
 
 </head>
 
 <body>
-<table class="full" border="0" cellpadding="0" cellspacing="0">
-	<tr> 
-	  <td class="loginContainer" style="background-position:center -400;padding-top:0px">
 
-		  <div class="loginBox" style="width:300px;">
-			<div id="forgetForm" editable="true" dataType="node" _baseurl="common/xform/"><div class="loading"/></div>
-		  </div>
+<div class="loginContainer loginBox" style="width:320px; padding:10px 10px">
+	<XForm:Box id="forgetForm" baseurl="framework/xform/"><div class="loading"></div></XForm:Box>
+</div>
 
-	  </td>
-	</tr>
-</table>
 </body>
 </html>

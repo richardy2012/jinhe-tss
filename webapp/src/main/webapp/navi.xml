@@ -21,7 +21,7 @@
             <MenuItem id="portal.1" name="门户管理" href="portal/site.htm"/>
 			<MenuItem id="portal.6" name="门户发布" href="portal/publish.htm"/>
 			<MenuItem id="portal.5" name="菜单管理" href="portal/menu.htm"/>
-			<MenuItem id="portal.4" name="portlet" href="portal/portlet.htm"/>
+			<MenuItem id="portal.4" name="portlet"  href="portal/portlet.htm"/>
             <MenuItem id="portal.2" name="布局器"   href="portal/layout.htm"/>
             <MenuItem id="portal.3" name="修饰器"   href="portal/decorator.htm"/>
 		</Menus>

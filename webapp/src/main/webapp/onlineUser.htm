@@ -1,38 +1,31 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
-<title>它山石应用支撑平台</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>鍦ㄧ嚎鐢ㄦ埛</title>
 
-<link href="css/css.css" rel="stylesheet" type="text/css">
+<link href="framework/css/css.css" rel="stylesheet" type="text/css">
 
-<script language="javascript" src="js/core.js"></script>
-<script language="javascript" src="js/ajax.js"></script>
-<script language="javascript" src="js/framework.js"></script>
+<script language="javascript" src="framework/core.js"></script>
+<script language="javascript" src="framework/ajax.js"></script>
+<script language="javascript" src="framework/framework.js"></script>
 
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 
-    URL_INIT = "um/user!getOnlineUserInfo.action";
-
-    function init() {
-        var p = new HttpRequestParams();
-        p.url = URL_INIT;
-		p.setHeader("appCode", APP_CODE);
-        p.setHeader("anonymous", "true");
-
-        var request = new HttpRequest(p);
-        request.onresult = function(){
-            var size  = this.getNodeValue("size");
-			var users = this.getNodeValue("users");
-			
-			$("online").innerHTML = "当前共有" + size + "个用户在线：" + users;
-        }
-        request.send();
+    window.onload = function() {
+		Ajax({
+			url : "um/user/onlineUserInfo",
+			method : "GET",
+			headers : {"appCode": APP_CODE, "anonymous": "true"},
+			onresult : function() { 
+				var size  = this.getNodeValue("size");
+				var users = this.getNodeValue("users");
+				$$("online").innerHTML = "褰撳墠鍏辨湁" + size + "涓敤鎴峰湪绾匡細" + users;
+			}
+		});
     }
-
-    window.onload = init;
 
 //-->
 </SCRIPT>
