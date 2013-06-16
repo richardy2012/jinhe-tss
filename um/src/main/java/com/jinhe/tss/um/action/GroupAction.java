@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.jinhe.tss.framework.component.progress.ProgressManager;
 import com.jinhe.tss.framework.component.progress.Progressable;
 import com.jinhe.tss.framework.exception.BusinessException;
@@ -23,43 +27,44 @@ import com.jinhe.tss.um.service.IApplicationService;
 import com.jinhe.tss.um.service.IGroupService;
 import com.jinhe.tss.util.EasyUtils;
  
+@Controller
+@RequestMapping("/group")
 public class GroupAction extends ProgressActionSupport {
 
-	private IGroupService service;
-    private IApplicationService appService;
+	@Autowired private IGroupService service;
+	@Autowired private IApplicationService appService;
 	
-	private Long    groupId;
-    private String  type;   // 1:添加组 /2:添加用户 /3:查看组 /4:其他用户组的“导入到”主用户组下
-	private Long    toGroupId;
-	private String  applicationId;
-	private String  group2UserExistTree;
-	private String  group2RoleExistTree;
-	private Integer disabled = UMConstants.FALSE;
-	private Integer groupType;
-	private int     direction = 0;
-	private Long    resourceId;
-	private boolean isCascadeUser;
-	private String  resourceTypeId;
-	private Long appId;
-	private Long ruleId;
-    
-    private Group group = new Group();
+//	private Long    groupId;
+//    private String  type;   // 1:添加组 /2:添加用户 /3:查看组 /4:其他用户组的“导入到”主用户组下
+//	private Long    toGroupId;
+//	private String  applicationId;
+//	private String  group2UserExistTree;
+//	private String  group2RoleExistTree;
+//	private Integer disabled = UMConstants.FALSE;
+//	private Integer groupType;
+//	private int     direction = 0;
+//	private Long    resourceId;
+//	private boolean isCascadeUser;
+//	private String  resourceTypeId;
+//	private Long appId;
+//	private Long ruleId;
+//    
+//    private Group group = new Group();
 
-	/**
-	 * 用户组织结构管理用户组Tree的xml数据格式
-	 */
-	public String getAllGroup2Tree() {
+	@RequestMapping("/all")
+	public void getAllGroup2Tree() {
 		Object groups = service.findGroups();
 		TreeEncoder treeEncoder = new TreeEncoder(groups, new GroupTreeParser());
         treeEncoder.setNeedRootNode(false);
 		
-		return print(new String[]{"Operation", "GroupTree"}, new Object[]{"p1,p2", treeEncoder});
+        print("GroupTree", treeEncoder);
 	}
 
-    /**
-     * 获取用户可见的主用户组，用于弹出树。
-     */
-    public String getCanAddedGroup2Tree() {
+	/**
+	 * type 1:添加组 /2:添加用户 /3:查看组 /4:其他用户组的“导入到”主用户组下
+	 */
+	@RequestMapping("/parents/{type}")
+    public String getCanAddedGroup2Tree(int groupType, String type) {
         String operationId;
         if ("3".equals(type)) {
             operationId = UMConstants.GROUP_VIEW_OPERRATION;
@@ -318,7 +323,7 @@ public class GroupAction extends ProgressActionSupport {
 	}
 
 	// ===========================================================================
-	// 小应用需要的方法begin
+	// 其他应用需要的方法
 	// ===========================================================================
 	/**
 	 * <p>
@@ -334,71 +339,4 @@ public class GroupAction extends ProgressActionSupport {
 		return print("ImportAccountTree", treeEncoder);
 	}
     
-	public void setService(IGroupService service) {
-		this.service = service;
-	}
- 
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
-	}
- 
-	public void setToGroupId(Long toGroupId) {
-		this.toGroupId = toGroupId;
-	}
- 
-	public void setApplicationId(String applicationId) {
-		this.applicationId = applicationId != null ? applicationId : UMConstants.TSS_APPLICATION_ID;
-	}
- 
-	public void setDisabled(Integer disabled) {
-		this.disabled = disabled;
-	}
- 
-	public void setGroupType(Integer groupType) {
-		this.groupType = groupType;
-	}
- 
-	public void setDirection(int direction) {
-		this.direction = direction;
-	}
- 
-	public void setResourceId(Long resourceId) {
-		this.resourceId = resourceId;
-	}
- 
-	public void setGroup2RoleExistTree(String group2RoleExistTree) {
-		this.group2RoleExistTree = group2RoleExistTree;
-	}
- 
-	public void setGroup2UserExistTree(String group2UserExistTree) {
-		this.group2UserExistTree = group2UserExistTree;
-	}
- 
-	public void setIsCascadeUser(boolean isCascadeUser) {
-		this.isCascadeUser = isCascadeUser;
-	}
- 
-	public void setResourceTypeId(String resourceTypeId) {
-		this.resourceTypeId = resourceTypeId;
-	}
- 
-	public void setAppService(IApplicationService appService) {
-		this.appService = appService;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
- 
-    public Group getGroup() {
-        return this.group;
-    }
- 
-	public void setAppId(Long appId) {
-		this.appId = appId;
-	}
-
-	public void setRuleId(Long ruleId) {
-		this.ruleId = ruleId;
-	}
 }

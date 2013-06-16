@@ -32,17 +32,13 @@ import com.jinhe.tss.util.BeanUtil;
 @SequenceGenerator(name = "group_sequence", sequenceName = "group_sequence", initialValue = 1000, allocationSize = 10)
 public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IXForm, IResource {
 
-	public static final Integer MAIN_GROUP_TYPE                     = new Integer(1); // 主组类型
-	public static final Integer ASSISTANT_GROUP_TYPE                = new Integer(2); // 辅助组类型
-	public static final Integer OTHER_GROUP_TYPE                    = new Integer(3); // 其他应用组类型
-	public static final Integer SELF_REGISTER_GROUP_TYPE            = new Integer(4); // 自注册用户组类型
-	public static final Integer SELF_REGISTER_GROUP_AUTHEN_TYPE     = new Integer(5); // 自注册用户组已认证类型
-	public static final Integer SELF_REGISTER_GROUP_NOT_AUTHEN_TYPE = new Integer(6); // 自注册用户组未认证类型
-    
-	public static final String MAIN_GROUP_ENTITY_CODE      = "maingroup";       // 主组类型
-	public static final String ASSISTANT_GROUP_ENTITY_CODE = "assistantgroup"; // 辅助组类型
-	public static final String OTHER_GROUP_ENTITY_CODE     = "othergroup";    // 其他应用组类型
-    
+	public static final Integer MAIN_GROUP_TYPE                     = 1; // 主组类型
+	public static final Integer ASSISTANT_GROUP_TYPE                = 2; // 辅助组类型
+	public static final Integer OTHER_GROUP_TYPE                    = 3; // 其他应用组类型
+	public static final Integer SELF_REGISTER_GROUP_TYPE            = 4; // 自注册用户组类型
+	public static final Integer SELF_REGISTER_GROUP_AUTHEN_TYPE     = 5; // 自注册用户组已认证类型
+	public static final Integer SELF_REGISTER_GROUP_NOT_AUTHEN_TYPE = 6; // 自注册用户组未认证类型
+  
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "group_sequence")
 	private Long    id;       // 用户组ID , 用户组主键
@@ -191,19 +187,6 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
             throw new BusinessException("参数groupType值有误！groupType=" + groupType);
         }
         return resourceTypeId;
-    }
-
-    public String getEntityCode() {
-        if ( Group.MAIN_GROUP_TYPE.equals(groupType)) { // 主组类型
-            return MAIN_GROUP_ENTITY_CODE;
-        }
-        if ( Group.ASSISTANT_GROUP_TYPE.equals(groupType) ) { // 辅助组类型
-            return ASSISTANT_GROUP_ENTITY_CODE;
-        }
-        if ( Group.OTHER_GROUP_TYPE.equals(groupType) ) { // 其他应用组类型
-            return OTHER_GROUP_ENTITY_CODE;
-        }
-        throw new BusinessException("用户组对象的groupType值有误！groupType=" + groupType);
     }
     
 	public TreeAttributesMap getAttributes() {

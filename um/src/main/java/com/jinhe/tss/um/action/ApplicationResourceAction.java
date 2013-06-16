@@ -39,9 +39,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	private Operation    operation = new Operation();
 	
 	/**
-	 * <p>
 	 * 获取所有的Applicaton对象并转换成Tree相应的xml数据格式
-	 * </p>
 	 */
 	public String getAllApplication2Tree() {
 		Object applications = applicationService.findApplicationAndResourceType();
@@ -52,9 +50,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	}
 	
 	/**
-	 * <p>
 	 * 根据资源类型的id获取资源
-	 * </p>
 	 */
 	public String getResourcesByResourceTypeId() {
 		List<?> data = applicationService.findResoucrcesByResourceType(resourceTypeId, applicationId);
@@ -65,10 +61,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	}
 	
 	/**
-	 * <p>
 	 * 获取一个Application对象的明细信息
-	 * </p>
-	 * @return String
 	 */
 	public String getApplicationInfo() {
 		XFormEncoder applicationXFormEncoder = null;
@@ -92,10 +85,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	}
 	
 	/**
-	 * <p>
 	 * 获取一个ResourceType对象的明细信息
-	 * </p>
-	 * @return String
 	 */
 	public String getResourceTypeInfo() {
 		XFormEncoder resourceTypeXFormEncoder = null;
@@ -118,11 +108,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	}
 	
 	/**
-	 * <p>
 	 * 获取一个Operation对象的明细信息
-	 * </p>
-	 * 
-	 * @return String
 	 */
 	public String getOperationInfo() {
 		XFormEncoder operationXFormEncoder = null;
@@ -142,11 +128,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	}
 	
 	/**
-	 * <p>
 	 * 编辑一个Application对象的明细信息
-	 * </p>
-	 * 
-	 * @return String
 	 */
 	public String editApplication() {
         boolean isNew = application.getId() == null;
@@ -166,11 +148,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	}
 	
 	/**
-	 * <p>
 	 * 编辑一个ResourceType对象的明细信息
-	 * </p>
-	 * 
-	 * @return String
 	 */
 	public String editResourceType() {
         boolean isNew = resourceType.getId() == null;
@@ -184,11 +162,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	}
 	
 	/**
-	 * <p>
 	 * 编辑一个Operation对象的明细信息
-	 * </p>
-	 * 
-	 * @return String
 	 */
 	public String editOperation() {
         boolean isNew = operation.getId() == null;
@@ -202,10 +176,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	}
 	
 	/**
-	 * <p>
 	 * 删除应用系统
-	 * </p>
-	 * @return String
 	 */
 	public String deleteApplication() {
 		applicationService.removeApplication(appId);
@@ -213,10 +184,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	}
 	
 	/**
-	 * <p>
 	 * 删除资源类型
-	 * </p>
-	 * @return String
 	 */
 	public String deleteResourceType() {
 		applicationService.removeResourceType(typeId);
@@ -224,10 +192,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	}
 	
 	/**
-	 * <p>
 	 * 删除操作选项
-	 * </p>
-	 * @return String
 	 */
 	public String deleteOperation() {
 		applicationService.removeOperation(operationId);
@@ -235,10 +200,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	}
 
 	/**
-	 * <p>
 	 * 获得对资源的操作权限选项
-	 * </p>
-	 * @return
 	 */
 	public String getOperationList(){
         if( !EasyUtils.isNullOrEmpty(applicationId) ) {
@@ -248,62 +210,10 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	}
 	
 	/**
-	 * <p>
 	 * 对应用系统进行排序
-	 * </p>
-	 * @return
 	 */
 	public String sortApplication(){
 		applicationService.sortApplication(appId, toAppId, direction, Environment.getOperatorId());
 		return printSuccessMessage();
-	}
-	
-
-	public void setApplicationService(IApplicationService service) {
-		this.applicationService = service;
-	}
-
-	public void setResourceTypeId(String resourceTypeId) {
-		this.resourceTypeId = resourceTypeId;
-	}
-
-	public void setOperationId(Long operationId) {
-		this.operationId = operationId;
-	}
-
-	public void setApplicationId(String applicationId) {
-		this.applicationId = applicationId;
-	}
-
-	public void setAppId(Long appId) {
-		this.appId = appId;
-	}
-
-	public void setTypeId(Long typeId) {
-		this.typeId = typeId;
-	}
-
-	public void setApplicationType(String applicationType) {
-		this.applicationType = applicationType;
-	}
-
-	public Application getApplication() {
-		return application;
-	}
-
-	public Operation getOperation() {
-		return operation;
-	}
-
-	public ResourceType getResourceType() {
-		return resourceType;
-	}
-
-	public void setDirection(int direction) {
-		this.direction = direction;
-	}
-
-	public void setToAppId(Long toAppId) {
-		this.toAppId = toAppId;
 	}
 }
