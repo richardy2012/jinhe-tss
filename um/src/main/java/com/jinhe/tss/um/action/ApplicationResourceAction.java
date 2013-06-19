@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
@@ -16,7 +15,6 @@ import com.jinhe.tss.um.entity.ResourceType;
 import com.jinhe.tss.um.entity.ResourceTypeRoot;
 import com.jinhe.tss.um.helper.ApplicationTreeParser;
 import com.jinhe.tss.um.service.IApplicationService;
-import com.jinhe.tss.util.EasyUtils;
 
 /**
  * 应用资源管理相关Action对象
@@ -31,12 +29,10 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	private String applicationId; //应用Code
 	private String resourceTypeId;//资源类型Code
 	private String applicationType;
-	private Long   toAppId;
-	private int    direction;
     
-	private Application  application = new Application();
+	private Application  application  = new Application();
 	private ResourceType resourceType = new ResourceType();
-	private Operation    operation = new Operation();
+	private Operation    operation    = new Operation();
 	
 	/**
 	 * 获取所有的Applicaton对象并转换成Tree相应的xml数据格式
@@ -132,17 +128,6 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 */
 	public String editApplication() {
         boolean isNew = application.getId() == null;
-		if( isNew ){// 新建
-			// 其他应用系统
-			if(UMConstants.OTHER_SYSTEM_APP.equals(application.getApplicationType())) {
-				application.setParentId(new Long(UMConstants.OTHER_SYSTEM_APP));
-			}
-			
-			// 平台应用系统
-			if(UMConstants.PLATFORM_SYSTEM_APP.equals(application.getApplicationType())) {
-				application.setParentId(new Long(UMConstants.PLATFORM_SYSTEM_APP));
-			}
-		}
         applicationService.saveApplication(application);   
 		return doAfterSave(isNew, application, "AppSource");
 	}
@@ -197,23 +182,5 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	public String deleteOperation() {
 		applicationService.removeOperation(operationId);
         return printSuccessMessage();
-	}
-
-	/**
-	 * 获得对资源的操作权限选项
-	 */
-	public String getOperationList(){
-        if( !EasyUtils.isNullOrEmpty(applicationId) ) {
-            appId = applicationService.getApplication(applicationId).getId();
-        }
-		return print("Operation", "p1,p2," + EasyUtils.list2Str(applicationService.getOperationsByResourceId(appId)));
-	}
-	
-	/**
-	 * 对应用系统进行排序
-	 */
-	public String sortApplication(){
-		applicationService.sortApplication(appId, toAppId, direction, Environment.getOperatorId());
-		return printSuccessMessage();
 	}
 }

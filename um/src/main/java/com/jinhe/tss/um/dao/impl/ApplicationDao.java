@@ -3,12 +3,12 @@ package com.jinhe.tss.um.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jinhe.tss.framework.persistence.TreeSupportDao;
+import com.jinhe.tss.framework.persistence.BaseDao;
 import com.jinhe.tss.um.dao.IApplicationDao;
 import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.util.EasyUtils;
 
-public class ApplicationDao extends TreeSupportDao<Application> implements IApplicationDao {
+public class ApplicationDao extends BaseDao<Application> implements IApplicationDao {
 	
     public ApplicationDao() {
 		super(Application.class);

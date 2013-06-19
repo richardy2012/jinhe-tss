@@ -6,7 +6,6 @@ import java.util.Map;
 import com.jinhe.tss.framework.component.log.Logable;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.Role;
-import com.jinhe.tss.um.permission.filter.PermissionFilter4Sort;
 import com.jinhe.tss.um.permission.filter.PermissionTag;
 
 public interface IRoleService {	
@@ -71,19 +70,6 @@ public interface IRoleService {
 	void disable(Long id, Integer disabled);
 	
 	/**
-	 * 排序
-	 * @param id
-	 * @param targetId
-	 * @param direction
-	 */
-    @Logable(operateTable="角色", operateType="排序", operateInfo="(ID: ${args[0]})节点移动到了(ID: ${args[1]})节点<#if args[2]=1>之下<#else>之上</#if>")
-    @PermissionTag(
-            operation = UMConstants.ROLE_SORT_OPERRATION, 
-            resourceType = UMConstants.ROLE_RESOURCE_TYPE_ID,
-            filter = PermissionFilter4Sort.class)
-	void sort(Long id, Long targetId, int direction);
-	
-	/**
 	 * 跨父节点移动
 	 * @param id
 	 * @param targetId
@@ -141,7 +127,7 @@ public interface IRoleService {
      * @return
      */
     @PermissionTag(
-            operation = UMConstants.ROLE_ADD_OPERRATION, 
+            operation = UMConstants.ROLE_EDIT_OPERRATION, 
             resourceType = UMConstants.ROLE_RESOURCE_TYPE_ID
     )
     List<?> getAddableRoleGroups();

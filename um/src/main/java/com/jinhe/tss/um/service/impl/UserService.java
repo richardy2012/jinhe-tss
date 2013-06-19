@@ -23,7 +23,6 @@ import com.jinhe.tss.um.entity.GroupUser;
 import com.jinhe.tss.um.entity.RoleUser;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.UMQueryCondition;
-import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.service.IGroupService;
 import com.jinhe.tss.um.service.IUserService;
 import com.jinhe.tss.um.sso.UMSLocalUserPWDIdentifier;
@@ -218,8 +217,7 @@ public class UserService implements IUserService{
 
     /* 新建用户对组的关系 */
     private void createUser2Group(Long userId, Long groupId) {
-        Integer nextUserOrder = groupUserDao.getNextSeqNo(groupId);
-        GroupUser user2Group = new GroupUser(userId, groupId, nextUserOrder);
+        GroupUser user2Group = new GroupUser(userId, groupId);
         groupUserDao.saveGroupUser(user2Group);
     }
 
@@ -385,29 +383,8 @@ public class UserService implements IUserService{
         appUser.setAppUserId(mainUserId);
         userDao.update(appUser);
         
-        Integer nextSeqNo = groupUserDao.getNextSeqNo(toGroupId);
-        GroupUser mainGroupUser = new GroupUser(mainUserId, toGroupId, nextSeqNo);
+        GroupUser mainGroupUser = new GroupUser(mainUserId, toGroupId);
         groupUserDao.saveGroupUser(mainGroupUser);
-	}
-
-	public void sortUser(Long groupId, Long userId, Long toUserId, int direction) {
-	    Group group = groupDao.getEntity(groupId);
-	    List<Long> sortableGroupIds = PermissionHelper.getInstance().getResourceIdsByOperation(
-	            PermissionHelper.getApplicationID(), group.getResourceType(), UMConstants.GROUP_SORT_OPERRATION);
-	    if( !sortableGroupIds.contains(groupId) ) {
-	        throw new BusinessException("您对该用户所在组没有排序权限，操作失败！");
-	    }
-	    
-		GroupUser startGroupUser  = userDao.getGroup2User(groupId, userId);
-		GroupUser targetGroupUser = userDao.getGroup2User(groupId, toUserId);;
-        
-		Integer startUserOrder  = startGroupUser.getSeqNo();
-		Integer targetUserOrder = targetGroupUser.getSeqNo();
-		int setp = startUserOrder.compareTo(targetUserOrder) < 0 ? 1 : -1;
-		startGroupUser.setSeqNo(targetUserOrder + (direction - setp) / 2);
-		targetGroupUser.setSeqNo(targetUserOrder - (direction + setp) / 2);
-		groupUserDao.update(startGroupUser);
-		groupUserDao.update(targetGroupUser);
 	}
 
 	public void startOrStopUser(Long userId, Integer disabled, Long groupId) {

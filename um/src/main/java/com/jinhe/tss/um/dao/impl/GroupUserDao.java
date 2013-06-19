@@ -1,12 +1,12 @@
 package com.jinhe.tss.um.dao.impl;
 
-import com.jinhe.tss.framework.persistence.TreeSupportDao;
+import com.jinhe.tss.framework.persistence.BaseDao;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupUserDao;
 import com.jinhe.tss.um.entity.GroupUser;
 import com.jinhe.tss.um.entity.User;
  
-public class GroupUserDao extends TreeSupportDao<GroupUser> implements IGroupUserDao {
+public class GroupUserDao extends BaseDao<GroupUser> implements IGroupUserDao {
 
     public GroupUserDao() {
 		super(GroupUser.class);
@@ -23,9 +23,5 @@ public class GroupUserDao extends TreeSupportDao<GroupUser> implements IGroupUse
         }
  
         return (GroupUser) create(gr);
-    }
-    
-    public Integer getNextSeqNo(Long groupId) {
-        return super.getNextSeqNo(groupId, "groupId"); // GroupUser表的parentId为groupId
     }
 }

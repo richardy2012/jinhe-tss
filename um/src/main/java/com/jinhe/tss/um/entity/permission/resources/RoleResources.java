@@ -10,7 +10,7 @@ import com.jinhe.tss.um.permission.AbstractResourcesView;
  * 角色资源视图
  */
 @Entity
-@Table(name = "view_ROLE_resources")
+@Table(name = "view_role_resources")
 public class RoleResources extends AbstractResourcesView {
 
     public String getResourceType() {

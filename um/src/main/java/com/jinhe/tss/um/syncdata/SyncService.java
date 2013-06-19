@@ -104,23 +104,11 @@ public class SyncService implements ISyncService, Progressable {
     
     /**
      * 检查是否存在登录名重名，如果有，抛出异常提示重名的用户信息。
-     * TODO 目前实现有问题，单向同步的时候不行。
      *      除了判断是否和已有用户重名，还应判断是否是同个组下的。同个组下的重名用户会自动覆盖，无需报错。
      *      如需要检查一个组里是否有重名，则检查users列表是否有重名的。
      */
     private void checkMultiLoginName(String applicationId, List<?> users){
-//        List exsitingUsers = commonDao.getEntities("select o.loginName from User o where o.applicationId = ? ", new Object[]{applicationId});
-//        if(exsitingUsers == null || exsitingUsers.isEmpty()){
-//            return;
-//        }
-//        
-//        for(Iterator it = users.iterator(); it.hasNext(); ){
-//            UserDTO dto = (UserDTO) it.next();
-//            String loginName = dto.getLoginName();
-//            if(exsitingUsers.contains(loginName)){
-//                throw new BusinessException("登陆名为：" + loginName + " 的用户在其他用户组（" + applicationId + "）下已经存在！");
-//            }
-//        }
+
     }
 
     @SuppressWarnings("unchecked")
@@ -184,7 +172,7 @@ public class SyncService implements ISyncService, Progressable {
             user.setGroupId(umsGroupId);
             commonDao.create(user);
             
-            commonDao.create(new GroupUser(user.getId(), umsGroupId, userDto.getSeqNo()));
+            commonDao.create(new GroupUser(user.getId(), umsGroupId));
             
             temp.add(user.getLoginName());
                 
@@ -236,7 +224,7 @@ public class SyncService implements ISyncService, Progressable {
                 if (!groupUsersMap.containsKey(umsGroupId + "_" + user.getId())) {
                     // 用户对组的关系已经改变,重新维护用户对组的关系
                     commonDao.deleteAll(commonDao.getEntities("from GroupUser o where o.userId = ?", new Object[]{user.getId()}));
-                    commonDao.create(new GroupUser(user.getId(), umsGroupId, userDto.getSeqNo()));    
+                    commonDao.create(new GroupUser(user.getId(), umsGroupId));    
                 }
                 commonDao.create(user);             
             }else{// 新增内部用户
@@ -245,7 +233,7 @@ public class SyncService implements ISyncService, Progressable {
                 SyncDataHelper.setUserByDTO(user, userDto);
                 user.setGroupId(umsGroupId);
                 commonDao.create(user);
-                commonDao.create(new GroupUser(user.getId(), umsGroupId, userDto.getSeqNo()));    
+                commonDao.create(new GroupUser(user.getId(), umsGroupId));    
             }
                 
             updateProgressInfo(progress, otherUsers.size(), i);

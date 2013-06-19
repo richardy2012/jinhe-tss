@@ -12,7 +12,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
@@ -51,7 +50,7 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 	@Column(nullable = false)  
 	private String  applicationId; // 应用系统Code
 	private Integer groupType;     // 用户组类型(1-主用户组类型,2-辅助组类型,3-其他应用组类型)
-	private Long    passwordRuleId;//密码规则Id
+	private Long    passwordRuleId;// 密码规则Id
 	
 	// 树信息begin
 	private String  decode;   // 层码
@@ -160,34 +159,12 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 	}
 
 	public String getResourceType() {
-		return Group.getResourceType(this.groupType);
+		return UMConstants.GROUP_RESOURCE_TYPE_ID;
 	}
  
     public void setPasswordRuleId(Long passwordRuleId) {
 		this.passwordRuleId = passwordRuleId;
 	}
-
-	/**
-	 * 用户组资源类型进一步可细分为：主组类型资源、辅助组类型资源、其他应用组类型(不补全)资源、自注册用户组类型资源
-	 */
-	public static String getResourceType(Integer groupType) {
-        String resourceTypeId;
-        if ( Group.MAIN_GROUP_TYPE.equals(groupType) ) { // 主组类型
-            resourceTypeId = UMConstants.MAINGROUP_RESOURCE_TYPE_ID;
-        }
-        else if ( Group.ASSISTANT_GROUP_TYPE.equals(groupType) ) { // 辅助组类型
-            resourceTypeId = UMConstants.ASSISTANTGROUP_RESOURCE_TYPE_ID;
-        }
-        else if ( Group.OTHER_GROUP_TYPE.equals(groupType) ) { // 其他应用组类型(不补全)
-            resourceTypeId = UMConstants.OTHERAPPGROUP_RESOURCE_TYPE_ID;
-        }
-        else if ( Group.SELF_REGISTER_GROUP_TYPE.equals(groupType) ) { // 自注册用户组类型
-            resourceTypeId = UMConstants.MAINGROUP_RESOURCE_TYPE_ID;
-        } else {
-            throw new BusinessException("参数groupType值有误！groupType=" + groupType);
-        }
-        return resourceTypeId;
-    }
     
 	public TreeAttributesMap getAttributes() {
 		TreeAttributesMap map = new TreeAttributesMap(id, name);

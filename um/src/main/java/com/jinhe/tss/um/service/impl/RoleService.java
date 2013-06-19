@@ -1,6 +1,5 @@
 package com.jinhe.tss.um.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,6 @@ import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupDao;
 import com.jinhe.tss.um.dao.IResourceTypeDao;
 import com.jinhe.tss.um.dao.IRoleDao;
-import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.Role;
 import com.jinhe.tss.um.entity.RoleGroup;
 import com.jinhe.tss.um.entity.RoleUser;
@@ -56,7 +54,7 @@ public class RoleService implements IRoleService {
         // 如果将要操作的数量==能够操作的数量, 说明对所有组都有操作权限 
         String applicationId  = UMConstants.TSS_APPLICATION_ID;
         String resourceTypeId = UMConstants.ROLE_RESOURCE_TYPE_ID;
-        String operationId    = UMConstants.ROLE_DEL_OPERRATION;
+        String operationId    = UMConstants.ROLE_EDIT_OPERRATION;
         Long operatorId = Environment.getOperatorId();
         List<?> permitedSubNodeIds = resourcePermission.getSubResourceIds(applicationId, resourceTypeId, roleId, operationId, operatorId);
         List<?> allSubNodes = roleDao.getChildrenById(roleId);
@@ -77,7 +75,7 @@ public class RoleService implements IRoleService {
 	        list = roleDao.getParentsById(id); // 启用一个节点上的所有父节点
 	        
 	        // 如果将要操作的数量 == 能够操作的数量, 说明对所有组都有操作权限
-	        String operationId = UMConstants.ROLE_ENABLE_OPERRATION;
+	        String operationId = UMConstants.ROLE_EDIT_OPERRATION;
 	        List<?> temp = resourcePermission.getParentResourceIds(appId, resourceTypeId, id, operationId, operatorId);
 	        if (temp.size() < list.size()) {
 	            throw new BusinessException("节点之上有角色没有启用操作权限，不能启用此节点！");
@@ -87,7 +85,7 @@ public class RoleService implements IRoleService {
             list = roleDao.getChildrenById(id); // 停用一个节点下的所有节点
             
             // 如果将要操作的数量==能够操作的数量, 说明对所有组都有操作权限,则返回true
-            String operationId = UMConstants.ROLE_DISABLE_OPERRATION;
+            String operationId = UMConstants.ROLE_EDIT_OPERRATION;
             List<?> temp = resourcePermission.getSubResourceIds(appId, resourceTypeId, id, operationId, operatorId);
             if (temp.size() < list.size()) {
                 throw new BusinessException("节点下有角色没有停用操作权限，不能停用此节点！");
@@ -124,10 +122,7 @@ public class RoleService implements IRoleService {
 	}
 
     private List<?> getVisibleGroups() {
-        List<Object> result = new ArrayList<Object>();
-        result.addAll(groupDao.getGroupsByType(Group.MAIN_GROUP_TYPE, Environment.getOperatorId()));
-        result.addAll(groupDao.getGroupsByType(Group.ASSISTANT_GROUP_TYPE, Environment.getOperatorId()));
-        return result;
+        return groupDao.getMainAndAssistantGroups(Environment.getOperatorId());
     }
 
 	public void move(Long id, Long targetId) {
@@ -155,10 +150,6 @@ public class RoleService implements IRoleService {
                 role.setDisabled(UMConstants.TRUE);
             }
         } 
-	}
-
-	public void sort(Long id, Long targetId, int direction) {
-		roleDao.sort(id, targetId, direction);
 	}
 
     public Role saveRoleGroup(Role entity) {

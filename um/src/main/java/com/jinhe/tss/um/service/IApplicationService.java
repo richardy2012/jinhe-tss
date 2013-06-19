@@ -2,28 +2,13 @@ package com.jinhe.tss.um.service;
 
 import java.util.List;
 
-import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.um.entity.Operation;
 import com.jinhe.tss.um.entity.ResourceType;
 import com.jinhe.tss.um.entity.ResourceTypeRoot;
 import com.jinhe.tss.um.permission.dispaly.ResourceTreeNode;
-import com.jinhe.tss.um.permission.filter.PermissionFilter4Sort;
-import com.jinhe.tss.um.permission.filter.PermissionTag;
 
 public interface IApplicationService{
-
-	/**
-	 * <p>
-	 * 获得用户对应用资源的权限
-	 * 只判断对应用系统的权限
-	 * 1.有操作权限就可查看
-	 * 2.有管理权限就可作任何操作
-	 * </p>
-	 * @param applicationId
-	 * @return
-	 */
-	List<?> getOperationsByResourceId(Long appId);
 	
 	/**
 	 * <p>
@@ -172,19 +157,8 @@ public interface IApplicationService{
 	 */
     ResourceTypeRoot findResourceTypeRoot(String applicationId,String resourceTypeId);
     
-    @PermissionTag(
-            operation = UMConstants.APPLICATION_SORT_OPERRATION, 
-            resourceType = UMConstants.APPLICATION_RESOURCE_TYPE_ID,
-            filter = PermissionFilter4Sort.class
-    )
-    void sortApplication(Long appId, Long toAppId, int direction, Long userId);
-    
     /**
      * 获得登陆用户可访问的应用系统名称列表
      */
-    @PermissionTag(
-            operation = UMConstants.APPLICATION_VIEW_OPERRATION, 
-            resourceType = UMConstants.APPLICATION_RESOURCE_TYPE_ID
-    )
     List<?> getApplications();
 }

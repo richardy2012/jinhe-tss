@@ -6,7 +6,7 @@
 	参数说明:
 	1.applicationId: 应用ID(值要求唯一)
 	2.name: 应用名称
-	3.applicationType: 应用系统类型( -1:平台系统，-2:其他系统，默认为平台系统 )
+	3.applicationType: 应用系统类型( -1:平台系统，-2:其他系统. 默认为平台系统 )
 	4.parentId: 父节点id，默认为-1
 	5.dataSourceType：应用系统用户库接口类型(1:ORACLE，2:LDAP，3:DB2)
 -->
@@ -22,101 +22,25 @@
 		suppliedTable: 角色资源权限补全的表的类路径
 		resourceTable: 资源表的类路径 
 	-->
-	
-	<resourceType resourceTypeId="1" name="应用系统" seqNo="1" description="应用系统资源类型"
-		unSuppliedTable="com.jinhe.tss.um.entity.permission.unsupplied.ApplicationPermissions"
-		suppliedTable="com.jinhe.tss.um.entity.permission.supplied.ApplicationPermissionsFull"
-		resourceTable="com.jinhe.tss.um.entity.permission.resources.ApplicationResources">
-		
-		<!-- 权限选项节点 -->
-		<!-- 参数说明:
-			operationId: 权限选项ID(同一种类型不重复)
-			name: 权限选项名称 
-			seqNo: 权限选项的顺序 
-			description: 权限选项描述 
-			dependId: 权限选项相互横向依赖的ID(可选)
-			dependParent: 权限选项纵向相互依赖的类别(可选)1:向上兼向下 2:向上 3:向下
-		-->
-		<operation operationId="2" name="新建应用" seqNo="1" dependId="opt5" />
-		<operation operationId="3" name="删除应用" seqNo="2" dependId="opt5" dependParent="3" />
-		<operation operationId="4" name="编辑应用" seqNo="3" dependId="opt5" />
-		<operation operationId="5" name="查看应用" seqNo="4" dependParent="2" />
-		<operation operationId="6" name="浏览资源" seqNo="5" dependId="opt5" />
-		<operation operationId="7" name="应用排序" seqNo="6" dependId="opt5" />
-	</resourceType>
 
-	<resourceType resourceTypeId="2" name="主用户组" seqNo="2" description="主用户组资源类型"
+	<resourceType resourceTypeId="1" name="用户组" seqNo="1" description="用户组织资源类型"
 		unSuppliedTable="com.jinhe.tss.um.entity.permission.unsupplied.MainGroupPermissions"
 		suppliedTable="com.jinhe.tss.um.entity.permission.supplied.MainGroupPermissionsFull"
 		resourceTable="com.jinhe.tss.um.entity.permission.resources.MainGroupResources">
  
-		<operation operationId="1"  name="新建用户" seqNo="1"  dependId="opt5" />
-		<operation operationId="2"  name="新建组织" seqNo="2"  dependId="opt5" />
-		<operation operationId="3"  name="删除组织" seqNo="3"  dependId="opt5" dependParent="3" />
-		<operation operationId="4"  name="编辑组织" seqNo="4"  dependId="opt5" />
-		<operation operationId="5"  name="查看组织" seqNo="5"  dependParent="2" />
-		<operation operationId="6"  name="浏览用户" seqNo="6"  dependId="opt5" />
-		<operation operationId="7"  name="启用组织" seqNo="7"  dependId="opt5" dependParent="2" />
-		<operation operationId="7t" name="停用组织" seqNo="8"  dependId="opt5" dependParent="3" />
-		<operation operationId="8"  name="组织排序" seqNo="9"  dependId="opt5" />
-		<operation operationId="10" name="搜索用户" seqNo="10" dependId="opt5" dependParent="3" />
-		<operation operationId="11" name="初始密码" seqNo="11" dependId="opt5" />
-		<operation operationId="12" name="设置认证" seqNo="12" dependId="opt5" />
+		<operation operationId="1" name="查看" seqNo="1" dependParent="2" />
+		<operation operationId="2" name="管理" seqNo="2" dependId="opt1" />
 	</resourceType>
 
-	<resourceType resourceTypeId="3" name="辅助用户组" seqNo="3" description="辅助用户组资源类型"
-		unSuppliedTable="com.jinhe.tss.um.entity.permission.unsupplied.AssistGroupPermissions"
-		suppliedTable="com.jinhe.tss.um.entity.permission.supplied.AssistGroupPermissionsFull"
-		resourceTable="com.jinhe.tss.um.entity.permission.resources.AssistGroupResources">
-		
-		<operation operationId="2"  name="新建组织" seqNo="1"  dependId="opt5" />
-		<operation operationId="3"  name="删除组织" seqNo="2"  dependId="opt5" dependParent="3" />
-		<operation operationId="4"  name="编辑组织" seqNo="3"  dependId="opt5" />
-		<operation operationId="5"  name="查看组织" seqNo="4"  dependParent="2" />
-		<operation operationId="6"  name="浏览用户" seqNo="5"  dependId="opt5" />
-		<operation operationId="7"  name="启用组织" seqNo="6"  dependId="opt5" dependParent="2" />
-		<operation operationId="7t" name="停用组织" seqNo="7"  dependId="opt5" dependParent="3" />
-		<operation operationId="8"  name="组织排序" seqNo="8"  dependId="opt5" />
-		<operation operationId="10" name="搜索用户" seqNo="9"  dependId="opt5" dependParent="3" />
-		<operation operationId="11" name="初始密码" seqNo="10" dependId="opt5" />
-		<operation operationId="12" name="设置认证" seqNo="11" dependId="opt5" />
-	</resourceType>
+	
 
-	<resourceType resourceTypeId="4" name="其他用户组" seqNo="4" description="其他用户组源类型"
-		unSuppliedTable="com.jinhe.tss.um.entity.permission.unsupplied.OtherGroupPermissions"
-		suppliedTable="com.jinhe.tss.um.entity.permission.supplied.OtherGroupPermissionsFull"
-		resourceTable="com.jinhe.tss.um.entity.permission.resources.OtherGroupResources">
-		
-		<operation operationId="1"  name="新建用户" seqNo="1"  dependId="opt5" />
-		<operation operationId="2"  name="新建组织" seqNo="2"  dependId="opt5" />
-		<operation operationId="3"  name="删除组织" seqNo="3"  dependId="opt5" dependParent="3" />
-		<operation operationId="4"  name="编辑组织" seqNo="4"  dependId="opt5" />
-		<operation operationId="5"  name="查看组织" seqNo="5"  dependParent="2" />
-		<operation operationId="6"  name="浏览用户" seqNo="6"  dependId="opt5" />
-		<operation operationId="7"  name="启用组织" seqNo="7"  dependId="opt5" dependParent="2" />
-		<operation operationId="7t" name="停用组织" seqNo="8"  dependId="opt5" dependParent="3" />
-		<operation operationId="8"  name="组织排序" seqNo="9"  dependId="opt5" />
-		<operation operationId="10" name="搜索用户" seqNo="10" dependId="opt5" dependParent="3" />
-		<operation operationId="11" name="初始密码" seqNo="11" dependId="opt5" />
-		<operation operationId="12" name="设置认证" seqNo="12" dependId="opt5" />
-		<operation operationId="15" name="同步用户" seqNo="15" dependId="opt5" />
-		<operation operationId="17" name="用户对应" seqNo="17" dependId="opt5" />
-	</resourceType>
-
-	<resourceType resourceTypeId="5" name="角色" seqNo="5" description="角色源类型"
+	<resourceType resourceTypeId="2" name="角色" seqNo="2" description="角色资源类型"
 		unSuppliedTable="com.jinhe.tss.um.entity.permission.unsupplied.RolePermissions"
 		suppliedTable="com.jinhe.tss.um.entity.permission.supplied.RolePermissionsFull"
 		resourceTable="com.jinhe.tss.um.entity.permission.resources.RoleResources">
 
-		<operation operationId="1" seqNo="1" name="新建角色"   dependId="opt5" />
-		<operation operationId="2" seqNo="2" name="新建角色组" dependId="opt5" />
-		<operation operationId="3" seqNo="3" name="删除"      dependId="opt5" dependParent="3" />
-		<operation operationId="4" seqNo="4" name="编辑"      dependId="opt5" />
-		<operation operationId="5" seqNo="5" name="查看"      dependParent="2" />
-		<operation operationId="6" seqNo="6" name="启用"      dependId="opt5" dependParent="2" />
-		<operation operationId="8" seqNo="7" name="停用"      dependId="opt5" dependParent="3" />
-		<operation operationId="7" seqNo="8" name="排序"      dependId="opt5" />
-		<operation operationId="9" seqNo="9" name="角色权限"   dependId="opt5" />
+		<operation operationId="1" name="查看" seqNo="1" dependParent="2" />
+		<operation operationId="2" name="管理" seqNo="2" dependId="opt1" />
 	</resourceType>
 
 
@@ -125,12 +49,8 @@
 		applicationId: 应用系统ID  (对应前面的定义)
 		resourceTypeId: 资源类型ID (对应前面的定义)
 		rootId: 根节点ID (Long型数字，即各种资源根节点的主键值)
-		注意：此处用户User的rootId设为-2，和主用户组一样，所以授权或者补齐的时候只会针对主用户组下的用户，而不包括其它用户组用户
 	-->
-	<resourceTypeRoot applicationId="tss" resourceTypeId="1" rootId="-5"/>
-	<resourceTypeRoot applicationId="tss" resourceTypeId="2" rootId="-2"/>
-	<resourceTypeRoot applicationId="tss" resourceTypeId="3" rootId="-3"/>
-	<resourceTypeRoot applicationId="tss" resourceTypeId="4" rootId="-4"/>
-	<resourceTypeRoot applicationId="tss" resourceTypeId="5" rootId="-6"/>
+	<resourceTypeRoot applicationId="tss" resourceTypeId="1" rootId="-2"/>
+	<resourceTypeRoot applicationId="tss" resourceTypeId="2" rootId="-6"/>
 	
 </application>

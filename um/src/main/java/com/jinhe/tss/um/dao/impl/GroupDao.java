@@ -112,13 +112,12 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
         return getEntities(hql, Environment.getOperatorId(), UMConstants.GROUP_VIEW_OPERRATION, group.getDecode() + "%" );
 	}
  
-	public List<?> getGroupsByType(Integer groupType, Long operatorId) {
-		return getGroupsByType(groupType, operatorId, UMConstants.GROUP_VIEW_OPERRATION);
+	public List<?> getMainAndAssistantGroups(Long operatorId) {
+		return getMainAndAssistantGroups(operatorId, UMConstants.GROUP_VIEW_OPERRATION);
 	}
 	
-	public List<?> getGroupsByType(Integer groupType, Long operatorId, String operationId) {
-        String resourceType = Group.getResourceType(groupType);
-        String suppliedTable = resourceTypeDao.getSuppliedTable(UMConstants.TSS_APPLICATION_ID, resourceType);
+	public List<?> getMainAndAssistantGroups(Long operatorId, String operationId) {
+        String suppliedTable = resourceTypeDao.getSuppliedTable(UMConstants.TSS_APPLICATION_ID, UMConstants.GROUP_RESOURCE_TYPE_ID);
         
         String hql = PermissionHelper.permissionHQL(entityName, suppliedTable);
         return getEntities(hql, operatorId, operationId);
@@ -127,7 +126,7 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
 	public List<?> getParentGroupByGroupIds(Integer groupType, List<Long> groupIds, Long operatorId, String operationId) {
         if( EasyUtils.isNullOrEmpty(groupIds)) return new ArrayList<Group>();
         
-		String suppliedTable = resourceTypeDao.getSuppliedTable(UMConstants.TSS_APPLICATION_ID,  Group.getResourceType(groupType));
+		String suppliedTable = resourceTypeDao.getSuppliedTable(UMConstants.TSS_APPLICATION_ID, UMConstants.GROUP_RESOURCE_TYPE_ID);
 		
 		String hql = "select distinct o " + PermissionHelper.formatHQLFrom(entityName, suppliedTable) + " , Group child " +
 		        PermissionHelper.permissionConditionII() + " and child.id in (:groupIds) and child.decode like o.decode||'%'" + PermissionHelper.ORDER_BY;
@@ -137,7 +136,7 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
 
 	public List<?> getVisibleMainUsers(Long operatorId) {
 	    // 先查出有查看权限的用户组
-	    List<?> groups = getGroupsByType(Group.MAIN_GROUP_TYPE, operatorId, UMConstants.USER_BROWSE_OPERRATION); 
+	    List<?> groups = getMainAndAssistantGroups(operatorId, UMConstants.GROUP_VIEW_OPERRATION); 
 	    List<Long> groupIds = new ArrayList<Long>();
 	    for(Object temp : groups) {
 	        groupIds.add(((Group) temp).getId());

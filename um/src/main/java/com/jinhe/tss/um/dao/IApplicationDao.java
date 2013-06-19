@@ -2,10 +2,10 @@ package com.jinhe.tss.um.dao;
 
 import java.util.List;
 
-import com.jinhe.tss.framework.persistence.ITreeSupportDao;
+import com.jinhe.tss.framework.persistence.IDao;
 import com.jinhe.tss.um.entity.Application;
 
-public interface IApplicationDao extends ITreeSupportDao<Application>{
+public interface IApplicationDao extends IDao<Application>{
  
     /**
      * <p>

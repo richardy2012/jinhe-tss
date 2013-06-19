@@ -58,9 +58,7 @@ public class GroupService implements IGroupService, Progressable{
 
     public Object[] findGroups() {
     	Long operatorId = Environment.getOperatorId();
-        List<Object> mainAndAssistantGroups = new ArrayList<Object>();
-        mainAndAssistantGroups.addAll(groupDao.getGroupsByType(Group.MAIN_GROUP_TYPE, operatorId));
-        mainAndAssistantGroups.addAll(groupDao.getGroupsByType(Group.ASSISTANT_GROUP_TYPE, operatorId));
+        List<?> mainAndAssistantGroups = groupDao.getMainAndAssistantGroups(operatorId);
         
         Object[] objs = getOtherGroupsByOperationId(UMConstants.GROUP_VIEW_OPERRATION);
         return new Object[]{ mainAndAssistantGroups, objs[0], objs[1], objs[2] };
@@ -77,7 +75,7 @@ public class GroupService implements IGroupService, Progressable{
     private Object[] getGroupsByGroupTypeAndOperationId(Integer groupType, String operationId) {
     	Long operatorId = Environment.getOperatorId();
     	
-        List<?> groups = groupDao.getGroupsByType(groupType, operatorId, operationId);
+        List<?> groups = groupDao.getMainAndAssistantGroups(operatorId, operationId);
         List<Long> groupIds = new ArrayList<Long>();
         for( Object temp : groups ){
             Group group = (Group) temp;
@@ -207,45 +205,7 @@ public class GroupService implements IGroupService, Progressable{
         groupDao.deleteAll(historyMap.values());
     }
 
-	public void moveGroup(Long groupId, Long toGroupId) {
-		Group group   = groupDao.getEntity(groupId);
-		if (toGroupId.equals(group.getParentId())) return;  //向自己的父节点移动,等于没有移动
-        
-        if(groupDao.getParentsById(toGroupId).contains(group)) {
-            throw new BusinessException("不能向自己里面的节点移动"); // 节点向自己或者自己的子节点
-        }
-		
-		group.setSeqNo(groupDao.getNextSeqNo(toGroupId));
-		group.setParentId(toGroupId);
-        
-		String oldDecode = group.getDecode();            //移动的oldDecode值肯定非null
-        groupDao.moveGroup(group);                       //被拦截调整整个移动枝的decode值, 同时拦截资源补齐调整
-        
-        // 移动后组的decode值改变了，需修复组下（包括子组）所有对应用户（GroupUser）的decode值。
-        String decode = group.getDecode();
-        List<?> list = groupDao.getEntities("from GroupUser o where o.decode like ?", oldDecode + "%" );
-        DecodeUtil.repairSubNodeDecode(list, oldDecode, decode);
-        
-        groupDao.flush();
-        
-        //如果移动到的组是停用状态，则停用所有移动过来的组和里面的用户。（如果用户自己在移动的组中，则有可能把自己停用掉，允许这么做。）
-        Group toGroup = groupDao.getEntity(toGroupId);
-        if (UMConstants.TRUE.equals(toGroup.getDisabled()) && UMConstants.FALSE.equals(group.getDisabled())) {
-            stopGroup(groupId);
-        }
-	}
-
     public void sortGroup(Long groupId, Long toGroupId, int direction) {
-        Group sourceGroup = groupDao.getEntity(groupId);
-        Long parentId = sourceGroup.getParentId();
-        
-        // 要对父节点有排序权限才能够对此节点排序
-        String resourceTypeId = Group.getResourceType(sourceGroup.getGroupType());
-        List<?> parentOperations = PermissionHelper.getInstance().getOperationsByResource(resourceTypeId, parentId, Environment.getOperatorId());
-        if(!parentOperations.contains(UMConstants.GROUP_SORT_OPERRATION)) {
-            throw new BusinessException("您对这一层树没有排序权限，排序失败！");
-        }
-        
         List<Group> relationalGroups = groupDao.sort(groupId, toGroupId, direction);
         
         /* 排序后多个同级多个组（包括组下的子组）的decode值发生了变化，GroupUser的decode也需要跟着重新生成。
@@ -259,139 +219,11 @@ public class GroupService implements IGroupService, Progressable{
         }
         groupDao.flush();
     }
-    
-	public List<Group> copyGroup(Long groupId, Long toGroupId, boolean isCascadeUser) {
-		Group copyGroup = groupDao.getEntity(groupId);// 获得将要拷贝的用户组
-		groupDao.evict(copyGroup);
-        
-		Group toGroup = null;
-		if (toGroupId == null) {// 复制其他用户组的第一层节点,没有parentGroupId。临时造一个group出来
-            toGroup = new Group();
-			toGroup.setId(UMConstants.OTHER_APPLICATION_GROUP_ID);
-			toGroup.setApplicationId(copyGroup.getApplicationId());
-			toGroup.setGroupType(copyGroup.getGroupType());
-		} else {
-			toGroup = groupDao.getEntity(toGroupId);// 获得拷贝到的用户组
-		}
-        
-		 /* 判断用户有没有拷贝用户组和用户的权限  */
-        checkCopyGroupPrivilege(copyGroup, toGroup);
-        
-        boolean isCopyInTheSameLevel = toGroup.getId().equals(copyGroup.getParentId()); //  是否同层复制
-        
-        List<?> groups = groupDao.getVisibleSubGroups(groupId);
-        Map<Long, Long> idMapping = new HashMap<Long, Long>(); // key:原组的id -- value:新组的id
-        List<Group> result = new ArrayList<Group>();
-        for ( Object temp : groups ) {
-            Group group = (Group) temp;
-            Long sourceGroupId = group.getId(); // 新组复制之前的原组Id
-            
-            groupDao.evict(group);
-            group.setId(null);
-            group.setApplicationId(toGroup.getApplicationId());
-            group.setGroupType(toGroup.getGroupType());
-            group.setDisabled(toGroup.getDisabled());
-               
-            if (sourceGroupId.equals(copyGroup.getId())) {
-                group.setSeqNo(groupDao.getNextSeqNo(toGroup.getId()));
-                group.setParentId(toGroup.getId());
-                if(isCopyInTheSameLevel) {
-                	group.setName(UMConstants.COPY_PREFIX_NAME + copyGroup.getName()); // 同层下复制,需要给组名添加前缀，以免重名
-                }
-            }
-            else {
-                group.setParentId(idMapping.get(group.getParentId()));
-            }
-            
-            group = groupDao.saveGroup(group);
-            idMapping.put(sourceGroupId, group.getId());
-            result.add(group);
-        }
-        
-        //只有从其他组复制到主用户组的时候才及联复制用户 !!!!!!
-        if(isCascadeUser) { 
-        	List<User> users = groupDao.getUsersByGroupIds(idMapping.keySet());
-            for (User otherUser : users) {
-                User mainUser = new User();
-                BeanUtil.copy(mainUser, otherUser);
-                mainUser.setId(null);
-                mainUser.setApplicationId(UMConstants.TSS_APPLICATION_ID);
-                mainUser.setAppUserId(null);
-                mainUser.setDisabled(toGroup.getDisabled()); // 如果复制到的组是停用状态，则停用所有复制过来的组和里面的用户。无需判断权限。
-                mainUser = userDao.create(mainUser);
-
-                otherUser.setAppUserId(mainUser.getId());
-                userDao.update(otherUser);
-                
-                // 新建一个用户组对应用户关系
-                saveGroupUser(idMapping.get(otherUser.getGroupId()), mainUser.getId());
-            }
-        }
- 
-		return result;
-	}
-
-    /** 判断用户有没有拷贝用户组和用户的权限  */
-    private void checkCopyGroupPrivilege(Group copyGroup, Group toGroup) {
-        String resourceTypeId = copyGroup.getResourceType();
-        
-        // 将其他用户组复制到主用户组
-        if( !copyGroup.getGroupType().equals(toGroup.getGroupType()) ){
-            resourceTypeId = UMConstants.MAINGROUP_RESOURCE_TYPE_ID; // 主用户组资源id             
-        }       
-        
-        //如果是复制，则toGroup为copyGroup父节点
-        List<?> parentOperations = PermissionHelper.getInstance().getOperationsByResource(resourceTypeId, toGroup.getId(), Environment.getOperatorId());
-        if(!parentOperations.contains(UMConstants.GROUP_ADD_OPERRATION)) {
-            throw new BusinessException("对父组（即复制到的目标节点）没有新增权限，不能复制此节点！");
-        }
-    }
-    
-    /**
-     * 保存组对用户关系，并在groupUserDao中进行补齐。
-     * 对用户的权限信息也在groupUserDao.saveGroupUser方法中补齐。
-     */
-    private void saveGroupUser(Long groupId, Long userId) {
-        GroupUser groupUser = new GroupUser(userId, groupId, groupUserDao.getNextSeqNo(groupId));
-        groupUserDao.saveGroupUser(groupUser);
-    }
-    
-    public List<Group> copyGroup2OtherApp(Long groupId, Long appId){
-    	Application application = applicationDao.getEntity(appId);
-        
-        List<?> groups = groupDao.getVisibleSubGroups(groupId);
-        Map<Long, Long> idMapping = new HashMap<Long, Long>(); // key:原组的id -- value:新组的id
-        List<Group> result = new ArrayList<Group>();
-        for (int i = 0; i < groups.size(); i++) {
-            Group group = (Group) groups.get(i);
-            Long sourceGroupId = group.getId(); // 新组复制之前的原组Id
-            
-            groupDao.evict(group);
-            group.setId(null);
-            group.setApplicationId(application.getApplicationId());
-               
-            if (sourceGroupId.equals(groupId)) {
-            	group.setSeqNo(groupDao.getNextSeqNo(UMConstants.OTHER_APPLICATION_GROUP_ID));
-                group.setParentId(UMConstants.OTHER_APPLICATION_GROUP_ID);
-            }
-            else {
-                group.setParentId(idMapping.get(group.getParentId()));
-            }
-            
-            group = groupDao.saveGroup(group);
-            idMapping.put(sourceGroupId, group.getId());
-            result.add(group);
-        }
-        
-    	return result;
-    }
 
     public void startOrStopGroup(String applicationId, Long groupId, Integer disabled, Integer groupType) {
-        String resourceTypeId = Group.getResourceType(groupType);
-        
         if (UMConstants.TRUE.equals(disabled)) { // 停用            
-            String operationId = UMConstants.GROUP_DISABLE_OPERRATION;
-            if (!checkSubGroupsPermission(applicationId, groupId, resourceTypeId, operationId)) {
+            String operationId = UMConstants.GROUP_EDIT_OPERRATION;
+            if (!checkSubGroupsPermission(applicationId, groupId, operationId)) {
                 throw new BusinessException("您对停用节点下的某些资源（用户组）没有停用操作权限，不能停用此节点！");
             }
             
@@ -399,8 +231,8 @@ public class GroupService implements IGroupService, Progressable{
         } 
         else { // 启用一个组,该组的父节点也得全部启用
             List<?> groups = groupDao.getParentsById(groupId);
-            String operationId = UMConstants.GROUP_ENABLE_OPERRATION;
-            List<?> canDoGroups = resourcePermission.getParentResourceIds(applicationId, resourceTypeId, groupId, operationId, 
+            String operationId = UMConstants.GROUP_EDIT_OPERRATION;
+            List<?> canDoGroups = resourcePermission.getParentResourceIds(applicationId, UMConstants.GROUP_RESOURCE_TYPE_ID, groupId, operationId, 
                     Environment.getOperatorId());
             
             if (groups.size() > canDoGroups.size()) {
@@ -442,9 +274,8 @@ public class GroupService implements IGroupService, Progressable{
             throw new BusinessException("当前用户在要操作的组中，不能删除此节点！");
         
         Group group = groupDao.getEntity(groupId);
-        String resourceTypeId = Group.getResourceType(groupType);
-        String operationId = UMConstants.GROUP_DEL_OPERRATION;
-        if ( !checkSubGroupsPermission(applicationId, groupId, resourceTypeId, operationId) ) {
+        String operationId = UMConstants.GROUP_EDIT_OPERRATION;
+        if ( !checkSubGroupsPermission(applicationId, groupId, operationId) ) {
             throw new BusinessException("没有删除用户组权限，不能删除此节点！");
         }
         
@@ -458,9 +289,9 @@ public class GroupService implements IGroupService, Progressable{
     }
     
     // 判断对所有子节点是否都拥有指定的操作权限
-    private boolean checkSubGroupsPermission(String applicationId, Long groupId, String resourceTypeId, String operationId) {
+    private boolean checkSubGroupsPermission(String applicationId, Long groupId, String operationId) {
         List<?> allGroups = groupDao.getChildrenById(groupId);
-        List<?> canDoGroups = resourcePermission.getSubResourceIds(applicationId, resourceTypeId, groupId, operationId, 
+        List<?> canDoGroups = resourcePermission.getSubResourceIds(applicationId, UMConstants.GROUP_RESOURCE_TYPE_ID, groupId, operationId, 
                 Environment.getOperatorId());
         
         //如果将要操作的数量==能够操作的数量,说明对所有组都有操作权限,则返回true
@@ -581,5 +412,30 @@ public class GroupService implements IGroupService, Progressable{
         else if(index == total) {
             progress.add(index % 20); // 如果已经同步完，则将总数除以20取余数做为本次完成个数来更新进度信息
         }
+    }
+    
+    /** 判断用户有没有拷贝用户组和用户的权限  */
+    private void checkCopyGroupPrivilege(Group copyGroup, Group toGroup) {
+        String resourceTypeId = copyGroup.getResourceType();
+        
+        // 将其他用户组复制到主用户组
+        if( !copyGroup.getGroupType().equals(toGroup.getGroupType()) ){
+            resourceTypeId = UMConstants.GROUP_RESOURCE_TYPE_ID; // 主用户组资源id             
+        }       
+        
+        //如果是复制，则toGroup为copyGroup父节点
+        List<?> parentOperations = PermissionHelper.getInstance().getOperationsByResource(resourceTypeId, toGroup.getId(), Environment.getOperatorId());
+        if(!parentOperations.contains(UMConstants.GROUP_EDIT_OPERRATION)) {
+            throw new BusinessException("对父组（即复制到的目标节点）没有新增权限，不能复制此节点！");
+        }
+    }
+    
+    /**
+     * 保存组对用户关系，并在groupUserDao中进行补齐。
+     * 对用户的权限信息也在groupUserDao.saveGroupUser方法中补齐。
+     */
+    private void saveGroupUser(Long groupId, Long userId) {
+        GroupUser groupUser = new GroupUser(userId, groupId, groupUserDao.getNextSeqNo(groupId));
+        groupUserDao.saveGroupUser(groupUser);
     }
 }

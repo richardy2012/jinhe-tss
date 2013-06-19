@@ -138,7 +138,6 @@ public class ResourceRegisterService implements IResourceRegisterService{
         }
         
         // 初始化平台应用系统，应用系统作为一类资源，需要做补全操作的，所以最后保存
-        application.setSeqNo(applicationDao.getNextSeqNo(new Long(UMConstants.PLATFORM_SYSTEM_APP)));
         applicationDao.create(application); 
     }
  

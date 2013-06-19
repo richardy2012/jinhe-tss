@@ -1,6 +1,5 @@
 package com.jinhe.tss.um.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,6 @@ import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupDao;
 import com.jinhe.tss.um.dao.IRoleDao;
-import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.RoleGroup;
 import com.jinhe.tss.um.entity.RoleUser;
 import com.jinhe.tss.um.entity.Strategy;
@@ -45,9 +43,7 @@ public class StrategyService implements IStrategyService {
 	public Map<String, Object> getStrategyInfo4Create() {
 	    Long operatorId = Environment.getOperatorId();
 	    
-		List<Object> groups = new ArrayList<Object>();
-		groups.addAll(groupDao.getGroupsByType(Group.MAIN_GROUP_TYPE, operatorId)); // 主用户组
-		groups.addAll(groupDao.getGroupsByType(Group.ASSISTANT_GROUP_TYPE, operatorId)); // 辅助用户组
+		List<?> groups = groupDao.getMainAndAssistantGroups(operatorId); // 用户组
 		
         Map<String, Object> map = new HashMap<String, Object>();
 		map.put("Rule2GroupTree", groups);
@@ -62,7 +58,7 @@ public class StrategyService implements IStrategyService {
         Map<String, Object> map = new HashMap<String, Object>();
 		map.put("RuleInfo", roleDao.getEntity(Strategy.class, strategyId));
 		map.put("Rule2RoleTree", roleDao.getSubAuthorizeableRoles(operatorId));
-		map.put("Rule2GroupTree", groupDao.getGroupsByType(Group.MAIN_GROUP_TYPE, operatorId)); // 主用户组
+		map.put("Rule2GroupTree", groupDao.getMainAndAssistantGroups(operatorId)); // 主用户组
 		map.put("Rule2GroupExistTree", roleDao.getGroupsByStrategy(strategyId));
 		map.put("Rule2UserExistTree",  roleDao.getUsersByStrategy(strategyId));
 		map.put("Rule2RoleExistTree",  roleDao.getRolesByStrategy(strategyId));

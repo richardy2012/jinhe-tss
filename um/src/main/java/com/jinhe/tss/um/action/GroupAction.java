@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jinhe.tss.framework.component.progress.ProgressManager;
 import com.jinhe.tss.framework.component.progress.Progressable;
@@ -63,8 +64,8 @@ public class GroupAction extends ProgressActionSupport {
 	/**
 	 * type 1:添加组 /2:添加用户 /3:查看组 /4:其他用户组的“导入到”主用户组下
 	 */
-	@RequestMapping("/parents/{type}")
-    public String getCanAddedGroup2Tree(int groupType, String type) {
+	@RequestMapping("/parents/{groupType}/{type}")
+    public void getCanAddedGroup2Tree(int groupType, String type) {
         String operationId;
         if ("3".equals(type)) {
             operationId = UMConstants.GROUP_VIEW_OPERRATION;
@@ -110,7 +111,7 @@ public class GroupAction extends ProgressActionSupport {
         }
         
         treeEncoder.setNeedRootNode(false);
-        return print(new String[]{"Operation", "GroupTree"}, new Object[]{"p1,p2", treeEncoder});
+        print("GroupTree", treeEncoder);
     }
 	
 	/**
@@ -251,92 +252,47 @@ public class GroupAction extends ProgressActionSupport {
         service.startOrStopGroup(UMConstants.TSS_APPLICATION_ID, groupId, disabled, groupType);
         return printSuccessMessage();
     }
-    
-    /**
-     * 用户组的移动
-     */
-    public String moveGroup() {
-        service.moveGroup(groupId, toGroupId);
-        return printSuccessMessage();
-    }
-    
-    /**
-     * 用户组的拷贝
-     */
-    public String copyGroup() {
-    	List<?> result;
-    	if( appId != null ) {
-    		result = service.copyGroup2OtherApp(groupId, appId);
-    	} else {
-    		result = service.copyGroup(groupId, toGroupId, isCascadeUser);
-    	}
-    	
-        TreeEncoder treeEncoder = new TreeEncoder(result,new LevelTreeParser());
-        treeEncoder.setNeedRootNode(false);
 
-        return print("GroupTree", treeEncoder);
-    }
-    
     /**
      * 导入其它用户组的下的子组和用户到主用户组
      */
-    public String importGroup(){
-    	Map<String, Object> datasMap = service.getImportGroupData(groupId, toGroupId);
+    @RequestMapping(value = "/import/{groupId}/{targetId}")
+    public void importGroup(Long groupId, Long targetId) {
+    	Map<String, Object> data = service.getImportGroupData(groupId, targetId);
         
-        List<?> groups = (List<?>)datasMap.get("groups");
-        List<?> users  = (List<?>)datasMap.get("users");
-        int totalItemNum = users.size() + groups.size();
+        List<?> groups = (List<?>)data.get("groups");
+        List<?> users  = (List<?>)data.get("users");
+        int totalItem = users.size() + groups.size();
         
-        // 因为导入数据到主用户组下会启用进度条中的线程（独立与当前线程的另一线程）进行，
+        // 因为导入数据到主用户组下会启用进度条中的线程（独立于当前线程的另一线程）进行，
         // 所以需要在action中启动，而不是在service，在service的话会导致事务提交不了。  
-        ProgressManager manager = new ProgressManager((Progressable) service, totalItemNum, datasMap);
+        ProgressManager manager = new ProgressManager((Progressable) service, totalItem, data);
         String code = manager.execute();
-    	return printScheduleMessage(code);
+    	printScheduleMessage(code);
     }
     
     /**
-     * <p>
      * 删除用户组
-     * </p>
-     * @return String
      */
-    public String deleteGroup() {
+    @RequestMapping("/rule/{groupId}/{ruleId}")
+    public void deleteGroup(Long groupId, int groupType) {
         service.deleteGroup(UMConstants.TSS_APPLICATION_ID, groupId, groupType);     
-        return printSuccessMessage();
+        printSuccessMessage();
     }
     
     /**
-     * <p>
      * 用户组的排序
-     * </p>
-     * 
-     * @return String
      */
-    public String sortGroup() {
-        service.sortGroup(groupId, toGroupId, direction);
-        return printSuccessMessage();
+    @RequestMapping(value = "/sort/{groupId}/{targetId}/{direction}")
+    public void sortGroup(Long groupId, Long targetId, int direction) {
+        service.sortGroup(groupId, targetId, direction);
+        printSuccessMessage();
     }
 	
-	public String setPasswordRule(){
+    @RequestMapping("/rule/{groupId}/{ruleId}")
+	public void setPasswordRule(Long groupId, Long ruleId) {
 		service.setPasswordRule(groupId, ruleId);
-		return printSuccessMessage("设置成功!");
-	}
-
-	// ===========================================================================
-	// 其他应用需要的方法
-	// ===========================================================================
-	/**
-	 * <p>
-	 * 用户组织结构管理用户组Tree的xml数据格式
-	 * </p>
-	 * @return String
-	 */
-	public String getGroup2Tree() {
-		Object groups = service.findGroups();
-		TreeEncoder treeEncoder = new TreeEncoder(groups, new GroupTreeParser());
-		treeEncoder.setNeedRootNode(false);
-
-		return print("ImportAccountTree", treeEncoder);
+		printSuccessMessage("设置成功!");
 	}
     
 }

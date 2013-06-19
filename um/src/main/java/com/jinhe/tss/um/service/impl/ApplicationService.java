@@ -12,8 +12,6 @@ import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.um.entity.Operation;
 import com.jinhe.tss.um.entity.ResourceType;
 import com.jinhe.tss.um.entity.ResourceTypeRoot;
-import com.jinhe.tss.um.entity.permission.resources.ApplicationResources;
-import com.jinhe.tss.um.entity.permission.supplied.ApplicationPermissionsFull;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.permission.PermissionService;
 import com.jinhe.tss.um.permission.dispaly.ResourceTreeNode;
@@ -111,8 +109,6 @@ public class ApplicationService implements IApplicationService{
     
 	public void saveApplication(Application application) {
 		if(null == application.getId()){ // 新建
-			Integer nextSeqNo = applicationDao.getNextSeqNo(ApplicationResources.class.getName(), application.getParentId());
-			application.setSeqNo(nextSeqNo);
 			applicationDao.create(application);
 		} 
 		else {
@@ -168,16 +164,7 @@ public class ApplicationService implements IApplicationService{
     public void updateOperation(Operation operation) {
     	resourceTypeDao.update(operation);
     }
- 
-    public List<?> getOperationsByResourceId(Long appId){
-        String suppliedTable = ApplicationPermissionsFull.class.getName();
-		return PermissionHelper.getInstance().getOperationsByResource(appId, suppliedTable, ApplicationResources.class);
-    }
-    
-    public void sortApplication(Long appId, Long toAppId, int direction, Long userId){
-    	applicationDao.sort(appId, toAppId, direction);
-    }
-    
+
     public List<?> getApplications() {
     	return applicationDao.getEntities("from Application o order by o.decode");
     }

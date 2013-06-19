@@ -376,7 +376,7 @@ public class PermissionServiceImpl implements PermissionService {
         /* 获取登录用户对UM中的【角色资源】中有“角色权限设置”权限的那些个角色的ID集合（用于生成【资源授予角色】时的角色树） */
         String hql = "select distinct p.resourceId from " + roleSuppliedTable + " p, RoleUserMapping ru " +
                 " where p.roleId = ru.id.roleId and p.operationId = ? and ru.id.userId = ?";
-        List<?> setableRoleIds = permissionHelper.getEntities(hql, UMConstants.PERMISSION_SET_OPERRATION, Environment.getOperatorId());
+        List<?> setableRoleIds = permissionHelper.getEntities(hql, UMConstants.ROLE_EDIT_OPERRATION, Environment.getOperatorId());
         
         // 登录用户有“角色权限设置”权限的角色列表
 		List<ResourceTreeNode> setableRoleTree = new ArrayList<ResourceTreeNode>();

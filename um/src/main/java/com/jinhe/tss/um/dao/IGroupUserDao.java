@@ -1,12 +1,12 @@
 package com.jinhe.tss.um.dao;
 
-import com.jinhe.tss.framework.persistence.ITreeSupportDao;
+import com.jinhe.tss.framework.persistence.IDao;
 import com.jinhe.tss.um.entity.GroupUser;
 
 /**
  * 新增一个GroupUser，或删除一个GroupUser的dao操作
  */
-public interface IGroupUserDao extends ITreeSupportDao<GroupUser> {
+public interface IGroupUserDao extends IDao<GroupUser> {
 
 	/**
      * 新增一个GroupUser，

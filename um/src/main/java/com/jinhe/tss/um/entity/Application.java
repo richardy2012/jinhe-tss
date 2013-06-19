@@ -12,14 +12,11 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeNode;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.um.UMConstants;
-import com.jinhe.tss.um.entity.permission.resources.ApplicationResources;
-import com.jinhe.tss.um.permission.IResource;
 import com.jinhe.tss.util.BeanUtil;
 
 /**
@@ -31,12 +28,11 @@ import com.jinhe.tss.util.BeanUtil;
         @UniqueConstraint(name = "MULTI_ID_APPLICATION", columnNames = { "applicationId" })
 })
 @SequenceGenerator(name = "application_sequence", sequenceName = "application_sequence", initialValue = 1000, allocationSize = 10)
-public class Application extends OperateInfo implements IDecodable, ITreeNode, IXForm, IResource {
+public class Application extends OperateInfo implements ITreeNode, IXForm {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "application_sequence")
     private Long    id; 
-	private Long    parentId = UMConstants.DEFAULT_ROOT_ID; // 应用系统资源根节点ID，默认为-1
 	
 	@Column(nullable = false)  
 	private String  applicationId;   // 应用系统Code
@@ -53,10 +49,6 @@ public class Application extends OperateInfo implements IDecodable, ITreeNode, I
 	private String  proxyUserName;     // 代理用户名
 	private String  proxyUserPassword; // 代理用户密码
     private String  paramDesc;         // 参数描述xml格式(连接到其他应用系统的参数集合)
-
-    private Integer seqNo;  // 应用系统排序号
-    private String  decode; // 层码
-    private Integer levelNo;// 层次值
 
 	public Long getId() {
 		return id;
@@ -80,30 +72,6 @@ public class Application extends OperateInfo implements IDecodable, ITreeNode, I
  
 	public void setName(String applicationName) {
 		this.name = applicationName;
-	}
- 
-	public Integer getSeqNo() {
-		return seqNo;
-	}
- 
-	public void setSeqNo(Integer applicationOrder) {
-		this.seqNo = applicationOrder;
-	}
- 
-	public String getDecode() {
-		return decode;
-	}
- 
-	public void setDecode(String decode) {
-		this.decode = decode;
-	}
- 
-	public Integer getLevelNo() {
-		return levelNo;
-	}
- 
-	public void setLevelNo(Integer levelNo) {
-		this.levelNo = levelNo;
 	}
  
 	public String getApplicationType() {
@@ -170,28 +138,12 @@ public class Application extends OperateInfo implements IDecodable, ITreeNode, I
 		this.systemUrl = systemUrl;
 	}
  
-	public Long getParentId() {
-		return parentId;
-	}
-	public void setParentId(Long parentId) {
-		this.parentId = parentId;		
-	}
-
-	public Class<?> getParentClass() {
-		return ApplicationResources.class;
-	}
-
-	public String getResourceType() {
-		return UMConstants.APPLICATION_RESOURCE_TYPE_ID;
-	}
- 
 	public TreeAttributesMap getAttributes() {
 		TreeAttributesMap map = new TreeAttributesMap(id, name);
 		
 		map.put("code", applicationId);
 		map.put("applicationType", applicationType);
 		map.put("appType", UMConstants.APPLICATION_TREE_NODE);
-		map.put("resourceTypeId", getResourceType());
 		
 		map.put("icon", UMConstants.APPLICATION_TREENODE_ICON);
 		super.putOperateInfo2Map(map);
@@ -207,4 +159,5 @@ public class Application extends OperateInfo implements IDecodable, ITreeNode, I
 	public String toString(){
         return "(id:" + this.id + ", name:" + this.name + ", code:" + this.applicationId + ")"; 
     }
+
 }

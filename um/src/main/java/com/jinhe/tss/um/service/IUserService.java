@@ -186,20 +186,6 @@ public interface IUserService {
             operateInfo=" 导入(ID: ${args[0]}) 其它用户组中的（ID：${args[2]}）用户至 (ID: ${args[1]}) 主用户组 "
         )
     void importUser(Long groupId, Long toGroupId, Long userId);
-    
-    /**
-     * <p>
-     * 用户排序
-     * </p>
-     * @param userId
-     * @param toUserId
-     * @param direction
-     *            +1/向下 -1/向上
-     */
-    @Logable(operateTable="用户", operateType="排序", 
-            operateInfo=" 排序(ID: ${args[0]}) 用户组中的(ID: ${args[1]})用户至 (ID: ${args[2]}) 用户 "
-        )
-    void sortUser(Long groupId, Long userId, Long toUserId, int direction);
 
     /**
      * <p>

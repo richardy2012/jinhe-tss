@@ -131,7 +131,7 @@ public final class UMConstants {
 
     public static final Long NEW_RESOURCE_DEFAULT_PARENT_ID = new Long(0); //新建资源默认的父节点
 	
-    public static String ADMIN_ROLE_NAME = "系统管理员";     // UMS管理员角色
+    public static String ADMIN_ROLE_NAME = "系统管理员";       //UMS管理员角色
     public static Long ADMIN_ROLE_ID     = new Long(-1);     //UMS管理员角色的ID
     public static Long ANONYMOUS_ROLE_ID = new Long(-10000); //UMS匿名角色的ID
 
@@ -142,8 +142,8 @@ public final class UMConstants {
 	public static final Long MAIN_GROUP_ID                     = new Long(-2); //主用户组的ID (初始化数据库时写死的)
 	public static final Long ASSISTANT_GROUP_ID                = new Long(-3); //辅助用户组的ID(初始化数据库时写死的)
 	public static final Long OTHER_APPLICATION_GROUP_ID        = new Long(-4); //其他应用组的ID(初始化数据库时写死的)
-    public static final Long APPLICATION_RESOURCE_ROOT_ID      = new Long(-5); //应用系统资源根的ID(视图生成)
-	public static final Long ROLE_ROOT_ID                      = new Long(-6); //角色资源根的ID(视图生成)
+    public static final Long APPLICATION_RESOURCE_ROOT_ID      = new Long(-5); //应用系统根的ID(视图生成)
+	public static final Long ROLE_ROOT_ID                      = new Long(-6); //角色的ID(视图生成)
 	public static final Long SELF_REGISTER_GROUP_ID            = new Long(-7); //自注册用户组的ID(初始化数据库时写死的)
 	public static final Long SELF_REGISTER_GROUP_ID_AUTHENED   = new Long(-8); //自注册用户组的ID(已认证)(初始化数据库时写死的)
 	public static final Long SELF_REGISTER_GROUP_ID_NOT_AUTHEN = new Long(-9); //自注册用户组的ID(未认证)(初始化数据库时写死的)
@@ -195,54 +195,19 @@ public final class UMConstants {
      */
     public final static String TSS_APPLICATION_ID = "tss";
     
-    public final static String APPLICATION_RESOURCE_TYPE_ID    = "1"; //应用系统资源类型ID
-    public final static String MAINGROUP_RESOURCE_TYPE_ID      = "2"; //主用户组资源类型ID
-    public final static String ASSISTANTGROUP_RESOURCE_TYPE_ID = "3"; //辅助用户组资源类型ID
-    public final static String OTHERAPPGROUP_RESOURCE_TYPE_ID  = "4"; //其他应用用户组资源类型ID
-    public final static String ROLE_RESOURCE_TYPE_ID           = "5"; //角色资源类型ID
+    public final static String GROUP_RESOURCE_TYPE_ID  = "1"; //用户组资源类型ID
+    public final static String ROLE_RESOURCE_TYPE_ID   = "2"; //角色资源类型ID
 
     /**
      * 用户组资源操作选项 (0表示不判断权限)，默认给新建（子组、用户）的权限
      */
-    public final static String USER_ADD_OPERRATION             = "1";  //新建用户
-    public final static String GROUP_ADD_OPERRATION            = "2";  //新建组
-    public final static String GROUP_DEL_OPERRATION            = "3";  //删除组
-    public final static String GROUP_EDIT_OPERRATION           = "4";  //编辑组
-    public final static String GROUP_VIEW_OPERRATION           = "5";  //查看组
-    public final static String USER_BROWSE_OPERRATION          = "6";  //浏览用户
-    public final static String GROUP_ENABLE_OPERRATION         = "7";  //启用组
-    public final static String GROUP_DISABLE_OPERRATION        = "7t"; //停用组
-    public final static String GROUP_SORT_OPERRATION           = "8";  //排序组
-    public final static String GROUP_MOVE_OPERRATION           = "9";  //移动组
+    public final static String GROUP_VIEW_OPERRATION  = "1";  //新建用户
+    public final static String GROUP_EDIT_OPERRATION  = "2";  //新建组
     
-    public final static String USER_SEARCH_OPERRATION          = "10"; //搜索用户
-    public final static String USER_INIT_PMD_OPERRATION        = "11"; //密码初始化
-    public final static String USER_SET_AUTHEN_OPERRATION      = "12"; //设置认证方式
-    public final static String GROUP_COPY_OPERRATION           = "13"; //复制组
-    public final static String GROUP_SYNC_OPERRATION           = "15"; //同步组
-    public final static String GROUP_MANUAL_MAPPING_OPERRATION = "17"; //用户对应
-    
-    /**
-     * 应用系统资源操作选项 (0表示不判断权限)
-     */
-    public final static String APPLICATION_ADD_OPERRATION    = "2";  //新增应用系统
-    public final static String APPLICATION_DEL_OPERRATION    = "3";  //删除应用系统
-    public final static String APPLICATION_EDIT_OPERRATION   = "4";  //编辑应用系统
-    public final static String APPLICATION_VIEW_OPERRATION   = "5";  //查看应用系统
-    public final static String APPLICATION_BROWSE_OPERRATION = "6";  //查看应用系统资源列表
-    public final static String APPLICATION_SORT_OPERRATION   = "7";  //应用系统资源排序
-
     /**
      * 角色(组)资源操作选项 (0表示不判断权限)
      */
-    public final static String ROLE_ADD_OPERRATION       = "1";  //新建角色
-    public final static String ROLE_GROUP_ADD_OPERRATION = "2";  //新建角色组
-    public final static String ROLE_DEL_OPERRATION       = "3";  //删除角色/组
-    public final static String ROLE_EDIT_OPERRATION      = "4";  //编辑角色/组
-    public final static String ROLE_VIEW_OPERRATION      = "5";  //查看角色/组
-    public final static String ROLE_ENABLE_OPERRATION    = "6";  //启用角色/组
-    public final static String ROLE_DISABLE_OPERRATION   = "7";  //停用角色/组
-    public final static String ROLE_SORT_OPERRATION      = "8";  //排序角色/组
-    public final static String PERMISSION_SET_OPERRATION = "9";  //角色权限设置
+    public final static String ROLE_VIEW_OPERRATION = "1";  //新建角色
+    public final static String ROLE_EDIT_OPERRATION = "2";  //新建角色组
     
 }
