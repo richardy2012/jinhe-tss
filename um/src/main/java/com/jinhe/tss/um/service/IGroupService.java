@@ -99,12 +99,11 @@ public interface IGroupService {
 	 * </p>
 	 * @param groupId
 	 * @param disabled
-	 * @param groupType
 	 */
     @Logable(operateTable="用户组织", operateType="启用/停用", 
             operateInfo="启用/停用用户组 (ID: ${args[1]})"
         )
-	void startOrStopGroup(String applicationId, Long groupId, Integer disabled, Integer groupType);
+	void startOrStopGroup(String applicationId, Long groupId, Integer disabled);
 	
 	/**
 	 * <p>
@@ -142,18 +141,6 @@ public interface IGroupService {
             operateInfo="删除 (ID: ${args[1]}) 用户组" )
 	void deleteGroup(String applicationId, Long groupId, Integer groupType);
 	
-	/**
-	 * <p>
-	 * 设置用户组的密码策略
-	 * </p>
-	 * @param groupId
-	 * @param ruleId
-	 */
-    @Logable(operateTable="用户组织", operateType="设置密码策略", 
-            operateInfo="设置(ID: ${args[0]}) 用户组的为 ID = ${args[1]} 的密码策略"
-        )
-	void setPasswordRule(Long groupId, Long ruleId);
-    
     /**
      * 将用户组从其它用户组下导入到主用户组下 的 操作前需要用到的数据
      * @param groupId 

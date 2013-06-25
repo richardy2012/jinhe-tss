@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jinhe.tss.framework.component.progress.ProgressManager;
 import com.jinhe.tss.framework.component.progress.Progressable;
@@ -34,23 +33,6 @@ public class GroupAction extends ProgressActionSupport {
 
 	@Autowired private IGroupService service;
 	@Autowired private IApplicationService appService;
-	
-//	private Long    groupId;
-//    private String  type;   // 1:添加组 /2:添加用户 /3:查看组 /4:其他用户组的“导入到”主用户组下
-//	private Long    toGroupId;
-//	private String  applicationId;
-//	private String  group2UserExistTree;
-//	private String  group2RoleExistTree;
-//	private Integer disabled = UMConstants.FALSE;
-//	private Integer groupType;
-//	private int     direction = 0;
-//	private Long    resourceId;
-//	private boolean isCascadeUser;
-//	private String  resourceTypeId;
-//	private Long appId;
-//	private Long ruleId;
-//    
-//    private Group group = new Group();
 
 	@RequestMapping("/all")
 	public void getAllGroup2Tree() {
@@ -65,17 +47,8 @@ public class GroupAction extends ProgressActionSupport {
 	 * type 1:添加组 /2:添加用户 /3:查看组 /4:其他用户组的“导入到”主用户组下
 	 */
 	@RequestMapping("/parents/{groupType}/{type}")
-    public void getCanAddedGroup2Tree(int groupType, String type) {
-        String operationId;
-        if ("3".equals(type)) {
-            operationId = UMConstants.GROUP_VIEW_OPERRATION;
-        }
-        else if ("2".equals(type)) {
-            operationId = UMConstants.USER_ADD_OPERRATION;
-        }
-        else {
-            operationId = UMConstants.GROUP_ADD_OPERRATION;
-        }
+    public void getCanAddedGroup2Tree(String applicationId, int groupType, String type) {
+        String operationId = UMConstants.GROUP_EDIT_OPERRATION;
         
         TreeEncoder treeEncoder;
         Object[] objs;
@@ -98,12 +71,7 @@ public class GroupAction extends ProgressActionSupport {
             treeEncoder = new TreeEncoder(objs[1], new LevelTreeParser());
         }
         else if (Group.OTHER_GROUP_TYPE.equals(groupType)) {// 其他应用组
-            if ("5".equals(type) || "2".equals(type)) {
-                objs = service.getGroupsUnderAppByOperationId(operationId, applicationId);
-            }
-            else {
-                objs = service.getOtherGroupsByOperationId(operationId);
-            }
+        	objs = service.getGroupsUnderAppByOperationId(operationId, applicationId);
             treeEncoder = new TreeEncoder(objs, new GroupTreeWithAppParser());
         }
         else {
@@ -117,56 +85,22 @@ public class GroupAction extends ProgressActionSupport {
 	/**
 	 * 得到操作权限
 	 */
-	public String getOperation() {
-		// 资源类型是应用系统
-		if ( UMConstants.APPLICATION_RESOURCE_TYPE_ID.equals(resourceTypeId) ) {
-		    // 选中其他用户组的根节点,只判断有没有新建应用的权限(即对应用有管理权限)
-		    if (UMConstants.OTHER_APPLICATION_GROUP_ID.equals(resourceId)) {
-				resourceId = Long.valueOf(UMConstants.OTHER_SYSTEM_APP);
-                List<?> list = appService.getOperationsByResourceId(resourceId);
-                
-                return print("Operation", "p1,p2," + EasyUtils.list2Str(list));
-			} 
-			else { // 选中其他应用系统,则判断用户对其他用户组根节点的权限
-                groupType = new Integer(resourceTypeId);
-			}
-		} 
- 
-        String resourceTypeId = Group.getResourceType(groupType);
-        if (Group.SELF_REGISTER_GROUP_TYPE.equals(groupType)) {// 自注册用户组类型:没有任何菜单
-            return "p1,p2";
-        } 
-        else if (Group.SELF_REGISTER_GROUP_NOT_AUTHEN_TYPE .equals(groupType)) {// 自注册用户组类型(未认证)
-            return "p1,p2, ug17"; // ug17:设置认证方式
-        }
-        else if (Group.SELF_REGISTER_GROUP_AUTHEN_TYPE.equals(groupType)) { // 自注册用户组类型(已认证)
-            resourceTypeId = UMConstants.APPLICATION_RESOURCE_TYPE_ID;
+	public String getOperation(Integer groupType, Long resourceId) {
+		// 自注册用户组类型:没有任何菜单
+        if (Group.SELF_REGISTER_GROUP_TYPE.equals(groupType) || Group.SELF_REGISTER_GROUP_NOT_AUTHEN_TYPE .equals(groupType)) {
+        	return "p1,p2, ug17"; // ug17:设置认证方式
         } 
         
         PermissionHelper ph = PermissionHelper.getInstance();
         Long operatorId = Environment.getOperatorId();
         
-        List<?> operations = ph.getOperationsByResource(resourceTypeId, resourceId, operatorId);
+        List<?> operations = ph.getOperationsByResource(UMConstants.GROUP_RESOURCE_TYPE_ID, resourceId, operatorId);
         String resultStr = EasyUtils.list2Str(operations);
 
-        // 如果对父节点有新增权限，则对该节点有复制权限
-        List<?> parentOperations = null;
-        if (UMConstants.APPLICATION_RESOURCE_TYPE_ID.equals(resourceTypeId)) {
-            parentOperations = ph.getOperationsByResource(resourceTypeId, UMConstants.OTHER_APPLICATION_GROUP_ID, operatorId);
-        } 
-        else {
-            Group group = service.getGroupById(resourceId);
-            parentOperations = ph.getOperationsByResource(resourceTypeId, group.getParentId(), operatorId);
-        }
+        resultStr += ",ug16";  // 默认添加综合查询功能, 没有判断是否有权限
         
-        if (parentOperations.contains(UMConstants.GROUP_ADD_OPERRATION)) {
-            resultStr += "," + UMConstants.GROUP_COPY_OPERRATION;
-        }
-        
-        resultStr += ",ug16";  // TODO 默认添加综合查询功能, 没有判断是否有权限
-        
-        //加入“授予角色”菜单
-        if( ph.getHighOperationsByResource(resourceTypeId, resourceId, operatorId).size() > 0) {
+        // 加入“授予角色”菜单
+        if( ph.getHighOperationsByResource(UMConstants.GROUP_RESOURCE_TYPE_ID, resourceId, operatorId).size() > 0) {
             resultStr += ",_1";
         }
         
@@ -176,12 +110,12 @@ public class GroupAction extends ProgressActionSupport {
 	/**
 	 * 获取一个Group对象的明细信息、用户组对用户信息、用户组对角色的信息
 	 */
-	public String getGroupInfoAndRelation() {
+	public String getGroupInfoAndRelation(String applicationId, Long parentId, Long groupId, int groupType) {
         Map<String, Object> groupAttributes;
 		boolean isNew = UMConstants.IS_NEW.equals(groupId);
         if(isNew){
         	groupAttributes = new HashMap<String, Object>();
-            groupAttributes.put("parentId", toGroupId);
+            groupAttributes.put("parentId", parentId);
             groupAttributes.put("groupType", groupType);
             groupAttributes.put("applicationId", applicationId);
         } 
@@ -194,7 +128,7 @@ public class GroupAction extends ProgressActionSupport {
         
         List<?> roles = null;
         if( !Group.OTHER_GROUP_TYPE.equals(groupType) ) {
-            roles = service.findRolesByGroupId(isNew ? toGroupId : groupId); // 如果是新建则找到父组对应的角色，如此新建的子组可以继承父组角色
+            roles = service.findRolesByGroupId(isNew ? parentId : groupId); // 如果是新建则找到父组对应的角色，如此新建的子组可以继承父组角色
         }
         TreeEncoder rolesTreeEncoder = new TreeEncoder(roles);
         
@@ -235,9 +169,9 @@ public class GroupAction extends ProgressActionSupport {
     /**
      * 编辑一个Group对象的明细信息、用户组对用户信息、用户组对角色的信息
      */
-    public String editGroup() {
+    public String editGroup(Group group, String group2UserExistTree, String group2RoleExistTree) {
         boolean isNew = group.getId() == null;
-        if (group.getId() == null) {// 新建
+        if (group.getId() == null) { // 新建
             service.createNewGroup(group, group2UserExistTree, group2RoleExistTree);
         } else {// 编辑
             service.editExistGroup(group, group2UserExistTree, group2RoleExistTree);
@@ -248,9 +182,10 @@ public class GroupAction extends ProgressActionSupport {
     /**
      * 启用或者停用用户组
      */
-    public String startOrStopGroup() {  
-        service.startOrStopGroup(UMConstants.TSS_APPLICATION_ID, groupId, disabled, groupType);
-        return printSuccessMessage();
+    @RequestMapping(value = "/disable/{id}/{disabled}")
+    public void startOrStopGroup(Long id, int disabled) {  
+        service.startOrStopGroup(UMConstants.TSS_APPLICATION_ID, id, disabled);
+        printSuccessMessage();
     }
 
     /**
@@ -287,12 +222,5 @@ public class GroupAction extends ProgressActionSupport {
     public void sortGroup(Long groupId, Long targetId, int direction) {
         service.sortGroup(groupId, targetId, direction);
         printSuccessMessage();
-    }
-	
-    @RequestMapping("/rule/{groupId}/{ruleId}")
-	public void setPasswordRule(Long groupId, Long ruleId) {
-		service.setPasswordRule(groupId, ruleId);
-		printSuccessMessage("设置成功!");
-	}
-    
+    }  
 }

@@ -104,7 +104,7 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
         String sqlpath = TestUtil.getInitSQLDir();
         Document doc = XMLDocUtil.createDocByAbsolutePath(sqlpath + "/../tss-application-config.xml");
         resourceRegisterService.setInitial(true);
-        resourceRegisterService.applicationRegisterByXML(doc, UMConstants.PLATFORM_SYSTEM_APP);
+        resourceRegisterService.applicationResourceRegister(doc, UMConstants.PLATFORM_SYSTEM_APP);
         resourceRegisterService.setInitial(false);
         
         // 补全SQL初始化出来的系统级用户组

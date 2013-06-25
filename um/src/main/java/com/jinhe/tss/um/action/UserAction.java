@@ -47,7 +47,6 @@ public class UserAction extends BaseActionSupport {
 	private IApplicationService applicationService;
 	
 	private Long    userId;
-	private Long    toUserId;
 	private Long    groupId;
 	private Long    toGroupId;
 	private String  applicationId;
@@ -56,7 +55,6 @@ public class UserAction extends BaseActionSupport {
 	private Integer accountState;
 	private Integer groupType;
 	private String  password;
-	private int     direction = 0;
 	private String  authenticateMethod;
 	private String  disabled;
 	private Long    mainGroupId;
@@ -64,7 +62,6 @@ public class UserAction extends BaseActionSupport {
 	private String  field;
 	private Integer orderType;
 	private Long    appUserId;
-	private Long    ruleId;
     private String  isModifyOrRegister; // "modify"：修改用户， "register"：注册用户
 	
     private User user = new User();
@@ -151,40 +148,7 @@ public class UserAction extends BaseActionSupport {
 		userService.importUser(groupId, toGroupId, userId);
 		return printSuccessMessage();
 	}
-	
-	/**
-	 * 用户的排序
-	 */
-	public String sortUser() {
-		userService.sortUser(groupId, userId, toUserId, direction);
-        return printSuccessMessage();
-	}
-	
-	/**
-	 * 用户的排序(跨页)
-	 */
-	public String sortUserCrossPage() {
-		if(1 == direction) { // 向下移动,取下一页第一个
-			page = page + 1;
-			PageInfo users = userService.getUsersByGroupId(groupId, page);
-			List<?> list = users.getItems();
-			if( !EasyUtils.isNullOrEmpty(list) ){
-			    User toUser = (User)list.get(0);		
-				userService.sortUser(groupId, userId, toUser.getId(), direction);			
-			}			
-		}
-		else if(-1 == direction){ // 向上，取上一页最后一个
-			page = page - 1;
-			PageInfo users = userService.getUsersByGroupId(groupId, page);
-			List<?> list = users.getItems();
-			if( !EasyUtils.isNullOrEmpty(list) ){
-			    User toUser = (User) list.get(list.size() - 1 );				
-				userService.sortUser(groupId, userId, toUser.getId(), direction);			
-			}			
-		}
-        return printSuccessMessage();
-	}
-	
+
 	/**
 	 * 删除用户
 	 */
@@ -286,18 +250,18 @@ public class UserAction extends BaseActionSupport {
 	public String getOperation() {
         String resultStr = "u1,u2,u3,u4,u4t";
 
-        String resourceTypeId = Group.getResourceType(groupType);
+        String resourceTypeId = UMConstants.GROUP_RESOURCE_TYPE_ID;
         List<?> parentOperations = PermissionHelper.getInstance().getOperationsByResource(resourceTypeId, groupId, Environment.getOperatorId());
 
-        if (parentOperations.contains(UMConstants.GROUP_SORT_OPERRATION)) {
-            resultStr += ",u5"; // 如果对所在组有排序权限，则对该节点有排序权限
-        }
-        if(parentOperations.contains(UMConstants.GROUP_MANUAL_MAPPING_OPERRATION)) {
-        	resultStr += ",u6";
-        }
-        if(parentOperations.contains(UMConstants.GROUP_SYNC_OPERRATION)) {
-        	resultStr += ",u7";
-        }
+//        if (parentOperations.contains(UMConstants.GROUP_SORT_OPERRATION)) {
+//            resultStr += ",u5"; // 如果对所在组有排序权限，则对该节点有排序权限
+//        }
+//        if(parentOperations.contains(UMConstants.GROUP_MANUAL_MAPPING_OPERRATION)) {
+//        	resultStr += ",u6";
+//        }
+//        if(parentOperations.contains(UMConstants.GROUP_SYNC_OPERRATION)) {
+//        	resultStr += ",u7";
+//        }
         
 		return print("Operation", "p1,p2," + resultStr);
 	}
@@ -437,111 +401,5 @@ public class UserAction extends BaseActionSupport {
         Collection<String> userList = OnlineUserManagerFactory.getManager().getOnlineUserNames();
         return print(new String[]{"size", "users"}, 
                 new Object[]{userList.size(), EasyUtils.list2Str(userList, " | ")});
-    }
-	
-	/**
-     * 设置密码策略
-	 */
-	public String setPasswordRule(){
-		userService.updateUserPasswordRule(userId, ruleId);
-		return printSuccessMessage("设置成功!");
-	}
-
-    public User getUser() {
-        return user;
-    }
- 
-    public UMQueryCondition getUserQueryCon() {
-        return userQueryCon;
-    }
- 
-    public GroupAutoMapping getAutoMappingDto() {
-        return autoMappingDto;
-    }
-
-	public void setUserService(IUserService service) { this.userService = service; }
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public void setToUserId(Long toUserId) {
-		this.toUserId = toUserId;
-	}
-
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
-	}
-
-	public void setToGroupId(Long toGroupId) {
-		this.toGroupId = toGroupId;
-	}
-
-	public void setApplicationId(String applicationId) {
-		this.applicationId = applicationId;
-	}
-
-	public void setAccountState(Integer accountState) {
-		this.accountState = accountState;
-	}
-
-	public void setGroupType(Integer groupType) {
-		this.groupType = groupType;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public void setDirection(int direction) {
-		this.direction = direction;
-	}
- 
-	public void setAuthenticateMethod(String authenticateMethod) {
-		this.authenticateMethod = authenticateMethod;
-	}
-
-	public void setUser2GroupExistTree(String user2GroupExistTree) {
-		this.user2GroupExistTree = user2GroupExistTree;
-	}
-
-	public void setUser2RoleExistTree(String user2RoleExistTree) {
-		this.user2RoleExistTree = user2RoleExistTree;
-	}
-
-	public void setDisabled(String disabled) {
-		this.disabled = disabled;
-	}
-
-	public void setMainGroupId(Long mainGroupId) {
-		this.mainGroupId = mainGroupId;
-	}
-
-	public void setPage(Integer page) {
-		this.page = page;
-	}
-
-	public void setField(String field) {
-		this.field = field;
-	}
-
-	public void setOrderType(Integer orderType) {
-		this.orderType = orderType;
-	}
-
-	public void setAppUserId(Long appUserId) {
-		this.appUserId = appUserId;
-	}
-
-	public void setRuleId(Long ruleId) {
-		this.ruleId = ruleId;
-	}
-
-    public void setIsModifyOrRegister(String isModifyOrRegister) {
-        this.isModifyOrRegister = isModifyOrRegister;
-    }
-
-    public void setApplicationService(IApplicationService applicationService) {
-        this.applicationService = applicationService;
     }
 }

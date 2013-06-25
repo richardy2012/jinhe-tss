@@ -43,12 +43,8 @@ public class Application extends OperateInfo implements ITreeNode, IXForm {
 	
 	private String  applicationType = UMConstants.PLATFORM_SYSTEM_APP; // 应用系统种类，默认为平台系统
 	
-	private String  systemUrl;         // 应用系统Url
-	private Integer dataSourceType;    // 应用系统用户库接口类型（数据库、LDAP）,0:ldap;1:oracle;2:DB2
-	private String  dataSourceUrl;     // 数据接口地址Url
-	private String  proxyUserName;     // 代理用户名
-	private String  proxyUserPassword; // 代理用户密码
-    private String  paramDesc;         // 参数描述xml格式(连接到其他应用系统的参数集合)
+	private Integer dataSourceType;  // 应用系统用户库接口类型（数据库、LDAP）,0:ldap;1:oracle;2:DB2;3:MySQL
+    private String  paramDesc;       // 参数描述xml格式(连接到其他应用系统的参数集合)
 
 	public Long getId() {
 		return id;
@@ -90,14 +86,6 @@ public class Application extends OperateInfo implements ITreeNode, IXForm {
 		this.dataSourceType = dataSourceType;
 	}
  
-	public String getDataSourceUrl() {
-		return dataSourceUrl;
-	}
- 
-	public void setDataSourceUrl(String dataSourceUrl) {
-		this.dataSourceUrl = dataSourceUrl;
-	}
- 
 	public String getDescription() {
 		return description;
 	}
@@ -112,30 +100,6 @@ public class Application extends OperateInfo implements ITreeNode, IXForm {
  
 	public void setParamDesc(String paramDesc) {
 		this.paramDesc = paramDesc;
-	}
- 
-	public String getProxyUserName() {
-		return proxyUserName;
-	}
- 
-	public void setProxyUserName(String proxyUserName) {
-		this.proxyUserName = proxyUserName;
-	}
- 
-	public String getProxyUserPassword() {
-		return proxyUserPassword;
-	}
- 
-	public void setProxyUserPassword(String proxyUserPassword) {
-		this.proxyUserPassword = proxyUserPassword;
-	}
- 
-	public String getSystemUrl() {
-		return systemUrl;
-	}
- 
-	public void setSystemUrl(String systemUrl) {
-		this.systemUrl = systemUrl;
 	}
  
 	public TreeAttributesMap getAttributes() {

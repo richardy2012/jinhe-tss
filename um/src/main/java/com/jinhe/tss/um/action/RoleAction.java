@@ -7,6 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
@@ -26,104 +32,106 @@ import com.jinhe.tss.um.service.IRoleService;
 import com.jinhe.tss.util.DateUtil;
 import com.jinhe.tss.util.EasyUtils;
  
+@Controller
+@RequestMapping("role")
 public class RoleAction extends BaseActionSupport {
 
-	private IRoleService roleService;
-	private PermissionService permissionService;
+	@Autowired private IRoleService roleService;
+	@Autowired private PermissionService permissionService;
 
-	private Long    roleId;     //当资源对角色进行授权时, 表示resourceId
-	private String  role2UserIds;
-	private String  role2GroupIds;
-	private Long    parentRoleId;
-	private Integer roleState = UMConstants.FALSE;
-	private Long    groupId;
-	private Long    targetId;        // 移动或者排序的目标节点ID
-	private int     direction;      // 分＋1（向下），和－1（向上）
-	private String  applicationId; // 应用id
-	private String  resourceType; // 资源类型id
-	private String  permissionRank;   // 授权级别(1:普通(10)，2/3:可授权，可授权可传递(11))
-	private String  setPermission;	 // 角色资源权限选项的集合, 当资源对角色授权时:  role1|2224,role2|4022
-	
-	private Role   role = new Role();
-	private String isRole2Resource;
+//	private Long    roleId;     //当资源对角色进行授权时, 表示resourceId
+//	private String  role2UserIds;
+//	private String  role2GroupIds;
+//	private Long    parentRoleId;
+//	private Integer roleState = UMConstants.FALSE;
+//	private Long    groupId;
+//	private Long    targetId;        // 移动或者排序的目标节点ID
+//	private String  applicationId; // 应用id
+//	private String  resourceType; // 资源类型id
+//	private String  permissionRank;   // 授权级别(1:普通(10)，2/3:可授权，可授权可传递(11))
+//	private String  setPermission;	 // 角色资源权限选项的集合, 当资源对角色授权时:  role1|2224,role2|4022
+//	
+//	private Role   role = new Role();
+//	private String isRole2Resource;
 	
     /**
      * 获取所有的角色（不包系统级的角色）
      */
-    public String getAllRole2Tree() {
+	@RequestMapping("/")
+    public void getAllRole2Tree() {
         List<?> roles = roleService.getAllVisiableRole();
         TreeEncoder treeEncoder = new TreeEncoder(roles, new LevelTreeParser());
         treeEncoder.setNeedRootNode(false);
-        return print("RoleGroupTree", treeEncoder);
+        print("RoleGroupTree", treeEncoder);
     }
 
 	/**
 	 * 获取用户可见的角色组
 	 */
-	public String getCanAddedGroup2Tree(){
+	@RequestMapping("/groups")
+	public void getAllRoleGroup2Tree(){
 	    List<?> canAddGroups = roleService.getAddableRoleGroups();
 		TreeEncoder treeEncoder = new TreeEncoder(canAddGroups, new LevelTreeParser());
 		treeEncoder.setNeedRootNode(false);
-		return print("GroupTree", treeEncoder);
+		print("GroupTree", treeEncoder);
 	}
 	
    /**
      * 保存一个Role对象的明细信息、角色对用户信息、角色对用户组的信息
      */
-    public String saveRole() {
+	@RequestMapping(method = RequestMethod.POST)
+    public void saveRole(Role role, String role2UserIds, String role2GroupIds) {
         boolean isNew = (role.getId() == null);
-        roleService.saveRole2UserAndRole2Group(role, role2UserIds, role2GroupIds);
-        
-        return doAfterSave(isNew, role, "RoleGroupTree");
-    }
 
-    /**
-     * 保存角色组信息
-     */
-    public String saveRoleGroupInfo(){
-        boolean isNew = (role.getId() == null);
-        roleService.saveRoleGroup(role);
+        if(UMConstants.TRUE.equals(role.getIsGroup())) {
+        	roleService.saveRoleGroup(role);
+        }
+        else {
+        	roleService.saveRole2UserAndRole2Group(role, role2UserIds, role2GroupIds);
+        }
         
-        return doAfterSave(isNew, role, "RoleGroupTree");
+        doAfterSave(isNew, role, "RoleGroupTree");
     }
     
     /**
      * 获得角色组信息
      */
-    public String getRoleGroupInfo(){
+	@RequestMapping("/group/{id}/{parentId}")
+    public void getRoleGroupInfo(@PathVariable("id") Long id, @PathVariable("parentId") Long parentId) {
         XFormEncoder xFormEncoder;
-        if (isCreateNew()) { // 如果是新增，则返回一个空的无数据的模板
+        if (UMConstants.IS_NEW.equals(id)) { // 如果是新增，则返回一个空的无数据的模板
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("parentId", parentRoleId);
+            map.put("parentId", parentId);
             map.put("isGroup", UMConstants.TRUE);
             xFormEncoder = new XFormEncoder(UMConstants.ROLEGROUP_XFORM, map);
         }
         else {
-            Role role = roleService.getRoleById(roleId);
+            Role role = roleService.getRoleById(id);
             xFormEncoder = new XFormEncoder(UMConstants.ROLEGROUP_XFORM, role);
         }
-        return print("RoleGroupInfo",xFormEncoder);     
+        print("RoleGroupInfo",xFormEncoder);     
     }
     
     /**
      * 获取一个Role（角色）对象的明细信息、角色对用户组信息、角色对用户信息
      */
-    public String getRoleInfoAndRelation() {        
-        if (isCreateNew()) { // 新建角色
-            return getNewRoleInfoAndRelation();
+	@RequestMapping("/{id}/{parentId}")
+    public void getRoleInfoAndRelation(@PathVariable("id") Long id, @PathVariable("parentId") Long parentId) {        
+        if ( UMConstants.IS_NEW.equals(id) ) { // 新建角色
+            getNewRoleInfoAndRelation(parentId);
         } 
         else { // 编辑角色
-            return getEditRoleInfoAndRelation();
+            getEditRoleInfoAndRelation(id);
         }
     }
 
-    private String getNewRoleInfoAndRelation(){
+    private void getNewRoleInfoAndRelation(Long parentId) {
         XFormEncoder roleXFormEncoder;
         TreeEncoder usersTreeEncoder;
         TreeEncoder groupsTreeEncoder;
         
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("parentId", parentRoleId);
+        map.put("parentId", parentId);
         map.put("isGroup", UMConstants.FALSE);
         
         // 默认的有效时间
@@ -146,12 +154,12 @@ public class RoleAction extends BaseActionSupport {
         TreeEncoder roleToUserTree = new TreeEncoder(null);
         TreeEncoder roleToGroupTree = new TreeEncoder(null);
 
-        return print(new String[]{"RoleInfo", "Role2GroupTree", "Role2UserTree", "Role2GroupExistTree", "Role2UserExistTree"}, 
+        print(new String[]{"RoleInfo", "Role2GroupTree", "Role2UserTree", "Role2GroupExistTree", "Role2UserExistTree"}, 
                 new Object[]{roleXFormEncoder, groupsTreeEncoder, usersTreeEncoder, roleToGroupTree, roleToUserTree});
     }
 
-    private String getEditRoleInfoAndRelation(){
-        Map<String, Object> data = roleService.getInfo4UpdateExistRole(roleId);
+    private void getEditRoleInfoAndRelation(Long id) {
+        Map<String, Object> data = roleService.getInfo4UpdateExistRole(id);
         
         Role role = (Role)data.get("RoleInfo");         
         XFormEncoder roleXFormEncoder = new XFormEncoder(UMConstants.ROLE_XFORM, role);
@@ -165,65 +173,58 @@ public class RoleAction extends BaseActionSupport {
         TreeEncoder roleToGroupTree = new TreeEncoder(data.get("Role2GroupExistTree"));
         TreeEncoder roleToUserTree = new TreeEncoder(data.get("Role2UserExistTree"));
 
-        return print(new String[]{"RoleInfo", "Role2GroupTree", "Role2UserTree", "Role2GroupExistTree", "Role2UserExistTree"}, 
+        print(new String[]{"RoleInfo", "Role2GroupTree", "Role2UserTree", "Role2GroupExistTree", "Role2UserExistTree"}, 
                 new Object[]{roleXFormEncoder, groupsTreeEncoder, usersTreeEncoder, roleToGroupTree, roleToUserTree});  
     }
 	
 	/**
 	 * 删除角色
 	 */
-	public String delete(){
-		roleService.delete(roleId);
-		return printSuccessMessage();
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public void delete(@PathVariable("id") Long id) {
+		roleService.delete(id);
+		printSuccessMessage();
 	}
 	
 	/**
 	 * 停用/启用角色
 	 */
-	public String disable(){
-		roleService.disable(roleId, roleState);
-        return printSuccessMessage();
+    @RequestMapping(value = "/disable/{id}/{disabled}")
+	public void disable(@PathVariable("id") Long id, @PathVariable("state") int state) {
+		roleService.disable(id, state);
+        printSuccessMessage();
 	}
-	
-	/**
-	 * 排序
-	 */
-	public String sort(){
-		roleService.sort(roleId, targetId, direction);        
-        return printSuccessMessage();
-	}
-	
+ 
 	/**
 	 * 移动
 	 */
-	public String move(){
-		roleService.move(roleId, targetId);        
-        return printSuccessMessage();
+    @RequestMapping(value = "/move/{id}/{toGroupId}", method = RequestMethod.POST)
+	public void move(@PathVariable("id") Long id, @PathVariable("toGroupId") Long toGroupId) {
+		roleService.move(id, toGroupId);        
+        printSuccessMessage();
 	}
 	
-	/**
-	 * 得到操作权限
-	 */
-	public String getOperation() {
-        roleId = (roleId == null) ? UMConstants.ROLE_ROOT_ID : roleId;
+	@RequestMapping("/operations/{id}")
+	public void getOperation(@PathVariable("id") Long id) {
+		id = (id == null) ? UMConstants.ROLE_ROOT_ID : id;
         
         // 角色（组）树上： 匿名角色节点只需一个“角色权限设置”菜单即可
-        if(roleId.equals(UMConstants.ANONYMOUS_ROLE_ID)) {
-        	return print("Operation", "p1,p2," + UMConstants.PERMISSION_SET_OPERRATION);
+        if(id.equals(UMConstants.ANONYMOUS_ROLE_ID)) {
+        	print("Operation", "p1,p2," + UMConstants.ROLE_EDIT_OPERRATION);
         }
         else {
-        	List<?> list = PermissionHelper.getInstance().getOperationsByResource(roleId, RolePermissionsFull.class.getName(), RoleResources.class);
-        	return print("Operation", "p1,p2," + EasyUtils.list2Str(list));
+        	List<?> list = PermissionHelper.getInstance().getOperationsByResource(id, RolePermissionsFull.class.getName(), RoleResources.class);
+        	print("Operation", "p1,p2," + EasyUtils.list2Str(list));
         }
-        	
 	}
 	
 	/**
 	 * 根据用户组id查找用户列表
 	 */
-	public String getUserByGroupId(){
+	@RequestMapping(value = "/users/{groupId}")
+	public void getUserByGroupId(@PathVariable("groupId") Long groupId) {
 		List<?> list = roleService.getUsersByGroupId(groupId);
-		return print("Group2UserListTree", new TreeEncoder(list));
+		print("Group2UserListTree", new TreeEncoder(list));
 	}
 
 	/**
@@ -353,68 +354,5 @@ public class RoleAction extends BaseActionSupport {
         }
         
         return printSuccessMessage();
-	}
-
-	public void setRoleService(IRoleService service) {
-		this.roleService = service;
-	}
-
-	public void setRoleId(Long roleId) {
-		this.roleId = roleId;
-	}
-	public void setParentRoleId(Long parentRoleId) {
-		this.parentRoleId = parentRoleId;
-	}
-
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
-	}
-
-	public void setRole2GroupIds(String role2GroupIds) {
-		this.role2GroupIds = role2GroupIds;
-	}
-
-	public void setRole2UserIds(String role2UserIds) {
-		this.role2UserIds = role2UserIds;
-	}
-
-	public void setRoleState(Integer roleState) {
-		this.roleState = roleState;
-	}
- 
-	public void setDirection(int direction) {
-		this.direction = direction;
-	}
-
-	public void setTargetId(Long targetId) {
-		this.targetId = targetId;
-	}
-
-	public void setApplicationId(String applicationId) {
-		this.applicationId = applicationId;
-	}
-
-	public void setResourceType(String resourceType) {
-		this.resourceType = resourceType;
-	}
-
-	public void setPermissionRank(String permissionRank) {
-		this.permissionRank = permissionRank;
-	}
-
-	public Role getRole() {
-		return this.role;
-	}
-
-	public void setPermissionService(PermissionService permissionService) {
-		this.permissionService = permissionService;
-	}
-
-	public void setSetPermission(String setPermission) {
-	    this.setPermission = setPermission;
-	}
-
-	public void setIsRole2Resource(String isRole2Resource) {
-		this.isRole2Resource = isRole2Resource;
 	}
 }

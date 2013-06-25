@@ -103,7 +103,7 @@ public class RoleModuleTest extends TxSupportTest4UM {
         
         // 读取角色树形结构
         action.getAllRole2Tree();
-        action.getCanAddedGroup2Tree();
+        action.getAllRoleGroup2Tree();
        
         // 停用角色组
         action.setRoleId(roleGroupId);

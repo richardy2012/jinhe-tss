@@ -36,7 +36,7 @@ public class ResourceRegisterService implements IResourceRegisterService{
 	private boolean initial = false; 
 	public void setInitial(boolean initial) { this.initial = initial; }
 	
-    public void applicationRegisterByXML(Document doc, String applicationType) {
+    public void applicationResourceRegister(Document doc, String applicationType) {
        
         List<ResourceType> resourceTypeList = new ArrayList<ResourceType>();
         List<ResourceTypeRoot> resourceTypeRootList = new ArrayList<ResourceTypeRoot>();

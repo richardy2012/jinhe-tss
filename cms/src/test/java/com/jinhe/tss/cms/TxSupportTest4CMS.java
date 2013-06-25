@@ -91,7 +91,7 @@ public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit38Spri
         /* 初始化应用系统、资源、权限项 */
         Document doc = XMLDocUtil.createDocByAbsolutePath(TestUtil.getSQLDir() + "/cms-application-config.xml");
         resourceRegisterService.setInitial(true);
-        resourceRegisterService.applicationRegisterByXML(doc, UMConstants.PLATFORM_SYSTEM_APP);
+        resourceRegisterService.applicationResourceRegister(doc, UMConstants.PLATFORM_SYSTEM_APP);
         resourceRegisterService.setInitial(false);
     }
  

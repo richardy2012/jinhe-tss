@@ -167,7 +167,7 @@ public class GroupService implements IGroupService, Progressable{
                 // 如果historyMap里面没有，则新增用户组对用户的关系；如果historyMap里面有，则从历史记录中移出；剩下的将被删除
                 Long userId = Long.valueOf(temp);
                 if (historyMap.remove(userId) == null) { 
-                    GroupUser group2User = new GroupUser(userId, groupId, groupUserDao.getNextSeqNo(groupId));
+                    GroupUser group2User = new GroupUser(userId, groupId);
                     groupUserDao.create(group2User);
                 } 
             }
@@ -220,7 +220,7 @@ public class GroupService implements IGroupService, Progressable{
         groupDao.flush();
     }
 
-    public void startOrStopGroup(String applicationId, Long groupId, Integer disabled, Integer groupType) {
+    public void startOrStopGroup(String applicationId, Long groupId, Integer disabled) {
         if (UMConstants.TRUE.equals(disabled)) { // 停用            
             String operationId = UMConstants.GROUP_EDIT_OPERRATION;
             if (!checkSubGroupsPermission(applicationId, groupId, operationId)) {
@@ -296,21 +296,6 @@ public class GroupService implements IGroupService, Progressable{
         
         //如果将要操作的数量==能够操作的数量,说明对所有组都有操作权限,则返回true
         return allGroups.size() == canDoGroups.size();
-    }
-    
-    public void setPasswordRule(Long groupId, Long ruleId){
-        List<?> groups = groupDao.getVisibleSubGroups(groupId);
-        for(Object temp : groups){
-            Group group = (Group) temp;
-            group.setPasswordRuleId(ruleId);
-            groupDao.saveGroup(group);
-        }
-        
-        List<User> users = groupDao.getUsersByGroupIdDeeply(groupId);
-        for(User user : users){
-            user.setPasswordRuleId(ruleId);
-            userDao.update(user);
-        }
     }
     
     //-------------------------------------用户组从其它用户组导入到主用户组，加入进度条显示------------------------------------------
@@ -435,7 +420,7 @@ public class GroupService implements IGroupService, Progressable{
      * 对用户的权限信息也在groupUserDao.saveGroupUser方法中补齐。
      */
     private void saveGroupUser(Long groupId, Long userId) {
-        GroupUser groupUser = new GroupUser(userId, groupId, groupUserDao.getNextSeqNo(groupId));
+        GroupUser groupUser = new GroupUser(userId, groupId);
         groupUserDao.saveGroupUser(groupUser);
     }
 }

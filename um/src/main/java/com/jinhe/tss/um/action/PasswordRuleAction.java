@@ -2,6 +2,12 @@ package com.jinhe.tss.um.action;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.jinhe.tss.framework.web.dispaly.tree.SimpleTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
@@ -11,83 +17,65 @@ import com.jinhe.tss.um.entity.PasswordRule;
 import com.jinhe.tss.um.service.IPasswordRuleService;
 import com.jinhe.tss.util.EasyUtils;
 
+@Controller
+@RequestMapping("passwordrule")
 public class PasswordRuleAction extends BaseActionSupport {
 
-	private IPasswordRuleService service;
-	
-	private PasswordRule rule = new PasswordRule();
-	private Long id;
-	private String loginName;
-	private String password;
-	
-	public String getRuleInfo(){
+	@Autowired private IPasswordRuleService service;
+ 
+	@RequestMapping("/{id}")
+	public void getRuleInfo(@PathVariable("id") Long id) {
 		PasswordRule rule = null;
-		if( id == null ){
+		if( id == 0L ){
 			rule = PasswordRule.getDefaultPasswordRule();
 		} else {
 			rule = service.getRuleById(id);
 		}
 		XFormEncoder ruleEncoder = new XFormEncoder(UMConstants.PASSWORDINFO_XFORM, rule);
-		return print("PasswordInfo", ruleEncoder);
+		print("PasswordInfo", ruleEncoder);
 	}
 	
-	public String saveRule(){
+	@RequestMapping(method = RequestMethod.POST)
+	public void saveRule(PasswordRule rule) {
 		service.saveRule(rule);
-		return printSuccessMessage();
+		printSuccessMessage();
 	}
 	
-	public String modifyRule(){
+	@RequestMapping(method = RequestMethod.PUT)
+	public void modifyRule(PasswordRule rule) {
 		service.updateRule(rule);
-		return printSuccessMessage();
+		printSuccessMessage();
 	}
 	
-	public String deleteRule(){
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public void deleteRule(@PathVariable("id") Long id) {
 		service.deleteRule(id);
-		return printSuccessMessage();
+		printSuccessMessage();
 	}
 	
-	public String getStrengthLevel(){
-		return print("SecurityLevel", service.getStrengthLevel(id, password, loginName));
+	@RequestMapping(value = "/{id}/{loginName}/{password}")
+	public void getStrengthLevel(@PathVariable("id") Long id, 
+			@PathVariable("password") String password, 
+			@PathVariable("loginName") String loginName) {
+		
+		print("SecurityLevel", service.getStrengthLevel(id, password, loginName));
 	}
 	
-	public String getGroupStrengthLevel(){
-		return print("SecurityLevel", service.getStrengthLevel(id, password));
-	}
-	
-	public String getAllRules(){
+	@RequestMapping(method = RequestMethod.GET)
+	public void getAllRules() {
 		List<?> rules = service.getAllPasswordRules();
 		TreeEncoder encoder = new TreeEncoder(rules, new SimpleTreeParser());
-		encoder.setNeedRootNode(true);
-		return print("RuleTree", encoder);
+		print("RuleTree", encoder);
 	}
 	
-	public String getPasswordRuleInfo(){
+	@RequestMapping(value = "/list")
+	public void getPasswordRuleInfo() {
 		List<?> passwordRules = service.getAllPasswordRules();
 		String[] comboedits = EasyUtils.generateComboedit(passwordRules, "id", "name", "|");
 		
 		XFormEncoder encoder = new XFormEncoder(UMConstants.PASSWORD_TACTIC_XFORM);
 		encoder.setColumnAttribute("passwordRuleId", "editorvalue", comboedits[0]);
-		encoder.setColumnAttribute("passwordRuleId", "editortext", comboedits[1]);
-		return print("PasswordRuleInfo", encoder);
-	}
-
-	public void setService(IPasswordRuleService service) {
-		this.service = service;
-	}
-	
-	public PasswordRule getRule(){
-		return rule;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public void setLoginName(String loginName) {
-		this.loginName = loginName;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
+		encoder.setColumnAttribute("passwordRuleId", "editortext",  comboedits[1]);
+		print("PasswordRuleInfo", encoder);
 	}
 }

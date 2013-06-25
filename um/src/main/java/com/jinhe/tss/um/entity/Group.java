@@ -50,7 +50,6 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 	@Column(nullable = false)  
 	private String  applicationId; // 应用系统Code
 	private Integer groupType;     // 用户组类型(1-主用户组类型,2-辅助组类型,3-其他应用组类型)
-	private Long    passwordRuleId;// 密码规则Id
 	
 	// 树信息begin
 	private String  decode;   // 层码
@@ -80,10 +79,6 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
  
 	public String getDbGroupId() {
 		return dbGroupId;
-	}
- 
-	public Long getPasswordRuleId() {
-		return passwordRuleId;
 	}
  
 	public void setDbGroupId(String dbGroupId) {
@@ -161,11 +156,7 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 	public String getResourceType() {
 		return UMConstants.GROUP_RESOURCE_TYPE_ID;
 	}
- 
-    public void setPasswordRuleId(Long passwordRuleId) {
-		this.passwordRuleId = passwordRuleId;
-	}
-    
+   
 	public TreeAttributesMap getAttributes() {
 		TreeAttributesMap map = new TreeAttributesMap(id, name);
 		map.put("parentId", parentId);

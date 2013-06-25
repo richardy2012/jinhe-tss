@@ -95,7 +95,7 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
         /* 初始化应用系统、资源、权限项 */
         Document doc = XMLDocUtil.createDocByAbsolutePath(TestUtil.getSQLDir() + "/tss-application-config.xml");
         resourceRegisterService.setInitial(true);
-        resourceRegisterService.applicationRegisterByXML(doc, UMConstants.PLATFORM_SYSTEM_APP);
+        resourceRegisterService.applicationResourceRegister(doc, UMConstants.PLATFORM_SYSTEM_APP);
         resourceRegisterService.setInitial(false);
         
         // 门户浏览时，freemarker解析时需要用到request里的参数

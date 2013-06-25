@@ -5,7 +5,7 @@
 		<column name="applicationId" caption="应用系统ID" mode="string" empty="false" maxLength="100"/>
 		<column name="name" caption="名称" mode="string" empty="false" maxLength="100"/>
 		<column name="description" caption="描述" mode="string" maxLength="400"/>
-		<column name="dataSourceType" caption="数据库类型" mode="string" editor="comboedit" editorvalue="1|2" editortext="Oracle|LDAP" empty="false"/>
+		<column name="dataSourceType" caption="数据库类型" mode="string" editor="comboedit" editorvalue="0|1|2|3" editortext="LDAP|Oracle|DB2|MySQL" empty="false"/>
 	</declare>
 	<layout>
 		<TR>

@@ -38,13 +38,13 @@ public class PasswordRule implements IEntity, ITreeNode, IXForm{
 	
 	private Integer isDefault = UMConstants.FALSE;
 	
-	private Long leastLength;		//最短长度
-	private Integer canEq2LoginName;//是否可以和用户名相同
+	private Long leastLength;		 // 最短长度
+	private Integer canEq2LoginName; // 是否可以和用户名相同
 	
-	private Long leastStrength;	  //最低强度
-	private Long lowStrength;	  //低强度临界值
-	private Long higherStrength;  //高强度
-	private String impermissible; //不允许的密码，用","隔开
+	private Long leastStrength;	     // 最低强度
+	private Long lowStrength;	     // 低强度临界值
+	private Long higherStrength;     // 高强度
+	private String impermissible;    // 不允许的密码，用","隔开
 
 	public void copyAttribute(PasswordRule rule){
 		name = rule.getName();

@@ -6,18 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.persistence.ICommonDao;
 import com.jinhe.tss.um.UMConstants;
-import com.jinhe.tss.um.dao.IGroupDao;
-import com.jinhe.tss.um.dao.IUserDao;
-import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.PasswordRule;
-import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IPasswordRuleService;
 
 public class PasswordRuleService implements IPasswordRuleService {
 	
     @Autowired private ICommonDao commonDao;
-    @Autowired private IUserDao userDao;
-    @Autowired private IGroupDao groupDao;
 
 	public void updateRule(PasswordRule rule){
 		PasswordRule passwordRule = getRuleById(rule.getId());
@@ -25,17 +19,9 @@ public class PasswordRuleService implements IPasswordRuleService {
 		saveRule(passwordRule);
 	}
 
-	public String getStrengthLevel(Long id, String password, String loginName){
-		PasswordRule rule = null;
-		if(null == id)
-			rule = getDefaultRule();	//新建用户 取默认规则
-		else {
-			User user = userDao.getEntity(id);
-			if( user.getPasswordRuleId() == null )
-				rule = getDefaultRule();	//用户没有设置密码策略 取默认规则
-			else
-				rule = getRuleById(user.getPasswordRuleId());	//用户已设置策略 根据策略ID取规则
-		}
+	public String getStrengthLevel(Long userId, String password, String loginName){
+		PasswordRule rule = getDefaultRule();
+
 		int flag = checkAvailable(rule, password);
 		
 		//如果不允许登录名和密码相同 则将相同的设为不可用
@@ -43,23 +29,6 @@ public class PasswordRuleService implements IPasswordRuleService {
 			flag = 0;
         }
 		
-		return judgeLevel(password, rule, flag);
-	}
-	
-	public String getStrengthLevel(Long id, String password){
-		PasswordRule rule = null;
-		if( id == null ) {
-			rule = getDefaultRule();	// 新建用户 取默认规则
-		}
-		else {
-			Group group = groupDao.getEntity(id);
-			if( group.getPasswordRuleId() == null )
-				rule = getDefaultRule();	//用户没有设置密码策略 取默认规则
-			else
-				rule = getRuleById(group.getPasswordRuleId());	//用户已设置策略 根据策略ID取规则
-		}
-
-		int flag = checkAvailable(rule, password);
 		return judgeLevel(password, rule, flag);
 	}
 	

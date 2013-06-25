@@ -59,7 +59,6 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
     private String password;           // 密码 
     private String passwordQuestion;   // 密码提示问题 
     private String passwordAnswer;     // 密码提示答案 
-    private Long   passwordRuleId;     // 密码规则
     private Date   accountUsefulLife;  // 帐户有效期限 ：用户帐户到某个指顶的期限过期
     private String authenticateMethod = UMSLocalUserPWDIdentifier.class.getName();// 认证方式,一个实现对应的认证方式的类路径
     
@@ -344,15 +343,7 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
 	public void setApplicationName(String applicationName) {
 		this.applicationName = applicationName;
 	}
- 
-	public Long getPasswordRuleId() {
-		return passwordRuleId;
-	}
- 
-	public void setPasswordRuleId(Long passwordRuleId) {
-		this.passwordRuleId = passwordRuleId;
-	}
-    
+
     public String toString(){
         return "(ID:" + this.id + ", loginName:" + this.loginName + ", appCode:" + this.applicationId + ")"; 
     }

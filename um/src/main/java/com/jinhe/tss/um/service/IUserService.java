@@ -34,15 +34,6 @@ public interface IUserService {
      */
     @Logable(operateTable="用户", operateType="修改", operateInfo="修改用户 ${args[0]}")
     void updateUser(User user);
-    
-    /**
-     * <p>
-     * 设置用户的密码策略
-     * </p>
-     * @param userId
-     * @param ruleId
-     */
-    void updateUserPasswordRule(Long userId, Long ruleId);
 
     /**
      * 根据ID查询用户

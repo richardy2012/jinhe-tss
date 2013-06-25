@@ -4,6 +4,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dom4j.Document;
+import org.dom4j.io.SAXReader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
@@ -15,127 +26,99 @@ import com.jinhe.tss.um.entity.ResourceType;
 import com.jinhe.tss.um.entity.ResourceTypeRoot;
 import com.jinhe.tss.um.helper.ApplicationTreeParser;
 import com.jinhe.tss.um.service.IApplicationService;
+import com.jinhe.tss.um.service.IResourceRegisterService;
 
 /**
  * 应用资源管理相关Action对象
  */
+@Controller
+@RequestMapping("ar")
 public class ApplicationResourceAction extends BaseActionSupport {
 
-	private IApplicationService applicationService;
-	
-	private Long   appId;         //应用ID
-	private Long   typeId;        //资源类型ID
-	private Long   operationId ;  //操作ID
-	private String applicationId; //应用Code
-	private String resourceTypeId;//资源类型Code
-	private String applicationType;
-    
-	private Application  application  = new Application();
-	private ResourceType resourceType = new ResourceType();
-	private Operation    operation    = new Operation();
-	
+	@Autowired private IApplicationService applicationService;
+ 
 	/**
 	 * 获取所有的Applicaton对象并转换成Tree相应的xml数据格式
 	 */
-	public String getAllApplication2Tree() {
+	@RequestMapping("/apps")
+	public void getAllApplication2Tree() {
 		Object applications = applicationService.findApplicationAndResourceType();
 		TreeEncoder treeEncoder = new TreeEncoder(applications, new ApplicationTreeParser());
 		treeEncoder.setNeedRootNode(false);
  
-		return print("AppSource", treeEncoder);
+		print("AppSource", treeEncoder);
 	}
 	
 	/**
 	 * 根据资源类型的id获取资源
 	 */
-	public String getResourcesByResourceTypeId() {
+	@RequestMapping("/resources/{applicationId}/{resourceTypeId}")
+	public void getResourcesByResourceTypeId(String resourceTypeId, String applicationId) {
 		List<?> data = applicationService.findResoucrcesByResourceType(resourceTypeId, applicationId);
 		TreeEncoder treeEncoder = new TreeEncoder(data, new LevelTreeParser());
 		treeEncoder.setNeedRootNode(false);
 		
-		return print("SourceTree", treeEncoder);
+		print("SourceTree", treeEncoder);
 	}
 	
 	/**
 	 * 获取一个Application对象的明细信息
 	 */
-	public String getApplicationInfo() {
-		XFormEncoder applicationXFormEncoder = null;
-		if ( UMConstants.IS_NEW.equals(appId) ) { // 新建应用
-		    Map<String, Object> map = new HashMap<String, Object>();
-            map.put("applicationType", applicationType);
-            if(UMConstants.PLATFORM_SYSTEM_APP.equals(applicationType)) {// 平台应用系统
-                applicationXFormEncoder = new XFormEncoder(UMConstants.APPLICATION_XFORM, map);                
-            } else { // 其他应用系统
-                applicationXFormEncoder = new XFormEncoder(UMConstants.OTHER_APPLICATION_XFORM, map);              
-            }
-		} else { // 编辑应用
-            Application application = applicationService.getApplicationById(appId);
-            if(UMConstants.PLATFORM_SYSTEM_APP.equals(application.getApplicationType())){// 平台应用系统
-                applicationXFormEncoder = new XFormEncoder(UMConstants.APPLICATION_XFORM, application);                
-            }else{// 其他应用系统
-                applicationXFormEncoder = new XFormEncoder(UMConstants.OTHER_APPLICATION_XFORM, application);              
-            }
-		}
-		return print("AppDetail", applicationXFormEncoder);
+	@RequestMapping(value = "/application/{id}", method = RequestMethod.GET)
+	public void getApplicationInfo(Long id) {
+		XFormEncoder xformEncoder = null;
+ 
+        Application application = applicationService.getApplicationById(id);
+        if(UMConstants.PLATFORM_SYSTEM_APP.equals(application.getApplicationType())){ // 平台应用系统
+            xformEncoder = new XFormEncoder(UMConstants.APPLICATION_XFORM, application);                
+        } else { // 其他应用系统
+            xformEncoder = new XFormEncoder(UMConstants.OTHER_APPLICATION_XFORM, application);              
+        }
+		print("AppDetail", xformEncoder);
 	}
 	
 	/**
 	 * 获取一个ResourceType对象的明细信息
 	 */
-	public String getResourceTypeInfo() {
+	@RequestMapping(value = "/resource/{id}", method = RequestMethod.GET)
+	public String getResourceTypeInfo(Long id) {
 		XFormEncoder resourceTypeXFormEncoder = null;
-		if ( UMConstants.IS_NEW.equals(typeId) ) {
-			//新建资源类型
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("applicationId", applicationId);
-			resourceTypeXFormEncoder = new XFormEncoder(UMConstants.RESOURCETYPE_XFORM, map);
-		} 
-		else {
-			//编辑资源类型
-			ResourceType resourceType = applicationService.getResourceTypeById(typeId);
-            ResourceTypeRoot resourceTypeRoot = applicationService.findResourceTypeRoot(resourceType.getApplicationId(), resourceType.getResourceTypeId());
-			if(null != resourceTypeRoot){
-				resourceType.setRootId(resourceTypeRoot.getRootId());
-			}
-			resourceTypeXFormEncoder = new XFormEncoder(UMConstants.RESOURCETYPE_XFORM, resourceType);
+		
+		ResourceType resourceType = applicationService.getResourceTypeById(id);
+        ResourceTypeRoot resourceTypeRoot = applicationService.findResourceTypeRoot(resourceType.getApplicationId(), resourceType.getResourceTypeId());
+		if( resourceTypeRoot != null) {
+			resourceType.setRootId(resourceTypeRoot.getRootId());
 		}
+		resourceTypeXFormEncoder = new XFormEncoder(UMConstants.RESOURCETYPE_XFORM, resourceType);
 		return print("TypeInfo", resourceTypeXFormEncoder);
 	}
 	
 	/**
 	 * 获取一个Operation对象的明细信息
 	 */
-	public String getOperationInfo() {
-		XFormEncoder operationXFormEncoder = null;
-		if ( UMConstants.IS_NEW.equals(operationId) ) {
-			// 新建操作选项
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("applicationId", applicationId);
-			map.put("resourceTypeId", resourceTypeId);
-			operationXFormEncoder = new XFormEncoder(UMConstants.OPERATION_XFORM, map);
-		} 
-		else {
-			// 编辑操作选项,操作选项的id不允许修改
-			Operation operation = applicationService.getOperationById(operationId);
-			operationXFormEncoder = new XFormEncoder(UMConstants.OPERATION_XFORM, operation);
-		}
-		return print("PermissionOption", operationXFormEncoder);
+	@RequestMapping(value = "/operation/{id}", method = RequestMethod.GET)
+	public void getOperationInfo(Long operationId) {
+		// 编辑操作选项
+		Operation operation = applicationService.getOperationById(operationId);
+		XFormEncoder xformEncoder = new XFormEncoder(UMConstants.OPERATION_XFORM, operation);
+		print("PermissionOption", xformEncoder);
 	}
 	
 	/**
 	 * 编辑一个Application对象的明细信息
 	 */
-	public String editApplication() {
+	@RequestMapping(value = "/application", method = RequestMethod.POST)
+	public void editApplication(Application application) {
         boolean isNew = application.getId() == null;
         applicationService.saveApplication(application);   
-		return doAfterSave(isNew, application, "AppSource");
+		doAfterSave(isNew, application, "AppSource");
 	}
 	
 	/**
 	 * 编辑一个ResourceType对象的明细信息
 	 */
-	public String editResourceType() {
+	@RequestMapping(value = "/resource", method = RequestMethod.POST)
+	public void editResourceType(ResourceType resourceType) {
         boolean isNew = resourceType.getId() == null;
 		if( isNew ) { // 新建
 			applicationService.createResourceType(resourceType);			
@@ -143,13 +126,14 @@ public class ApplicationResourceAction extends BaseActionSupport {
 		else{ // 编辑
 			applicationService.updateResourceType(resourceType);	
 		}
-		return doAfterSave(isNew, resourceType, "AppSource");
+		doAfterSave(isNew, resourceType, "AppSource");
 	}
 	
 	/**
 	 * 编辑一个Operation对象的明细信息
 	 */
-	public String editOperation() {
+	@RequestMapping(value = "/operation", method = RequestMethod.POST)
+	public void editOperation(Operation operation) {
         boolean isNew = operation.getId() == null;
 		if( isNew ) { // 新建，新建的权限选项要将该权限选项赋予管理员角色(id==-1)
 			applicationService.saveOperation(operation);
@@ -157,30 +141,65 @@ public class ApplicationResourceAction extends BaseActionSupport {
 		else { // 编辑
 			applicationService.updateOperation(operation);
 		}
-		return doAfterSave(isNew, operation, "AppSource");
+		doAfterSave(isNew, operation, "AppSource");
 	}
 	
 	/**
 	 * 删除应用系统
 	 */
-	public String deleteApplication() {
-		applicationService.removeApplication(appId);
-		return printSuccessMessage();
+	@RequestMapping(value = "/application/{id}", method = RequestMethod.DELETE)
+	public void deleteApplication(@PathVariable Long id) {
+		applicationService.removeApplication(id);
+		printSuccessMessage();
 	}
 	
 	/**
 	 * 删除资源类型
 	 */
-	public String deleteResourceType() {
-		applicationService.removeResourceType(typeId);
-        return printSuccessMessage();
+	@RequestMapping(value = "/resource/{id}", method = RequestMethod.DELETE)
+	public void deleteResourceType(@PathVariable Long id) {
+		applicationService.removeResourceType(id);
+        printSuccessMessage();
 	}
 	
 	/**
 	 * 删除操作选项
 	 */
-	public String deleteOperation() {
-		applicationService.removeOperation(operationId);
-        return printSuccessMessage();
+	@RequestMapping(value = "/operation/{id}", method = RequestMethod.DELETE)
+	public void deleteOperation(@PathVariable Long id) {
+		applicationService.removeOperation(id);
+        printSuccessMessage();
+	}
+	
+	
+	private String applicationType;
+	
+	@Autowired private IResourceRegisterService registerService;
+	
+	// 返回一个空的无数据的模板
+	public String getImportTemplate(String applicationType) {
+    	Map<String, Object> map = new HashMap<String, Object>();
+    	map.put("applicationType", applicationType);
+		XFormEncoder encoder = new XFormEncoder(UMConstants.IMPORT_APP_XFORM, map);
+		return print("ImportApplication", encoder);
+	}
+	
+	public String applicationRegisterByXML(@RequestParam MultipartFile file) {
+		if (null == file) {
+			throw new BusinessException("没有选择文件，请重新导入！");
+		}
+		
+		if (!file.getName().endsWith(".xml")) {
+            return print("SCRIPT", "parent.alert(\"文件格式不正确，请导入xml文件！\");");
+		}
+		
+        try {
+            Document doc = new SAXReader().read(file);
+            registerService.applicationResourceRegister(doc, applicationType);
+        } catch (Exception e) {
+            log.error("导入失败，请查看日志信息！", e);
+            return print("SCRIPT", "parent.alert(\"导入失败，请查看日志信息！\");");
+        }
+        return print("SCRIPT", "parent.alert(\"导入成功！\");var ws = parent.$(\"ws\");ws.closeActiveTab();parent.loadInitData();");
 	}
 }

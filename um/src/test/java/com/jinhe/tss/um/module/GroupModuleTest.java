@@ -295,17 +295,17 @@ public class GroupModuleTest extends TxSupportTest4UM {
         action.getGroup2Tree();
         
         action.setGroupType(Group.MAIN_GROUP_TYPE);
-        action.getCanAddedGroup2Tree();
+        action.getAllRoleGroup2Tree();
         action.setResourceId(3L);
         action.getOperation();
         action.setGroupId(3L);
         action.getGroupInfoAndRelation();
         
         action.setGroupType(Group.ASSISTANT_GROUP_TYPE);
-        action.getCanAddedGroup2Tree();
+        action.getAllRoleGroup2Tree();
         
         action.setGroupType(Group.OTHER_GROUP_TYPE);
-        action.getCanAddedGroup2Tree();
+        action.getAllRoleGroup2Tree();
         
         action.getGroup2Tree();
         

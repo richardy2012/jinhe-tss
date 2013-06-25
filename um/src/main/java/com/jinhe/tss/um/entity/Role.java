@@ -41,9 +41,9 @@ public class Role extends OperateInfo implements ILevelTreeNode, IDecodable, IXF
 	@Column(nullable = false)  
 	private String  name;        // 名称:角色名称
 	private String  description; // 描述:对角色的描述
-	private Integer isGroup = UMConstants.FALSE;// 是否角色组 (1-角色组，0-角色)
-	private Date    startDate;// 开始时间 
-	private Date    endDate;  // 结束时间 
+	private Integer isGroup = UMConstants.FALSE;  // 是否角色组 (1-角色组，0-角色)
+	private Date    startDate; // 开始时间 
+	private Date    endDate;   // 结束时间 
     
     private Integer seqNo;   // 角色序号 
     private String  decode;  // 层码

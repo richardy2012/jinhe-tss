@@ -1,6 +1,5 @@
 package com.jinhe.tss.um.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,28 +25,12 @@ public class ApplicationService implements IApplicationService{
     public Object[] findApplicationAndResourceType() {
         // 应用系统列表
         List<?> apps = getApplications();
-        if( apps == null || apps.size() == 0 ) {
-            return new Object[]{apps, new ArrayList<Object>(), new ArrayList<Object>()};
-        }
         
         // 资源类型列表
-        List<String> applicationIds = new ArrayList<String>();
-        for(Object obj : apps){
-            applicationIds.add(((Application) obj).getApplicationId());
-        }
-        String hql = "from ResourceType o where o.applicationId in (:applicationIds)  order by o.seqNo";
-        List<?> resourceTypes = resourceTypeDao.getEntities(hql, new Object[]{"applicationIds"}, new Object[]{applicationIds});    
-        if(resourceTypes == null || resourceTypes.size() == 0) {
-            return new Object[]{apps, new ArrayList<Object>(), new ArrayList<Object>()};
-        }
+        List<?> resourceTypes = resourceTypeDao.getEntities("from ResourceType o order by o.seqNo");    
         
         // 权限选项列表
-        List<String> resourceTypeIds = new ArrayList<String>();
-        for(Object obj : resourceTypes){
-            resourceTypeIds.add(((ResourceType) obj).getResourceTypeId());
-        }
-        hql = "from Operation o where o.resourceTypeId in (:resourceTypeIds) order by o.seqNo";
-        List<?> operations = resourceTypeDao.getEntities(hql, new Object[]{"resourceTypeIds"}, new Object[]{resourceTypeIds});    
+        List<?> operations = resourceTypeDao.getEntities("from Operation o order by o.seqNo");    
         
         return new Object[]{apps, resourceTypes, operations};
     }

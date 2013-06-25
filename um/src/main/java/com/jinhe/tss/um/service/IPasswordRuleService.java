@@ -6,19 +6,17 @@ import com.jinhe.tss.um.entity.PasswordRule;
  
 public interface IPasswordRuleService {
 	
-	public void saveRule(PasswordRule rule);
+	void saveRule(PasswordRule rule);
 	
-	public void updateRule(PasswordRule rule);
+	void updateRule(PasswordRule rule);
 	
-	public void deleteRule(Long ruleId);
+	void deleteRule(Long ruleId);
 	
-	public List<?> getAllPasswordRules();
+	List<?> getAllPasswordRules();
 	
-	public String getStrengthLevel(Long id, String password, String loginName);
+	String getStrengthLevel(Long id, String password, String loginName);
 	
-	public String getStrengthLevel(Long id, String password);
+	PasswordRule getDefaultRule();
 	
-	public PasswordRule getDefaultRule();
-	
-	public PasswordRule getRuleById(Long ruleId);
+	PasswordRule getRuleById(Long ruleId);
 }

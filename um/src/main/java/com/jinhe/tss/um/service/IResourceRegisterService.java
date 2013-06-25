@@ -20,7 +20,7 @@ public interface IResourceRegisterService {
      * @param doc
      * @param applicationType
      */
-    void applicationRegisterByXML(Document doc, String applicationType);
+    void applicationResourceRegister(Document doc, String applicationType);
 }
 
 	

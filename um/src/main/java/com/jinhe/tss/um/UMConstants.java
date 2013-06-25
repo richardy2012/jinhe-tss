@@ -87,7 +87,7 @@ public final class UMConstants {
     
 	public static final String RESOURCETYPE_XFORM           = "template/xform/resourceType.xml";        //ResourceType(新建)
 	public static final String APPLICATION_XFORM            = "template/xform/application.xml";         //Application(新建)
-	public static final String OTHER_APPLICATION_XFORM      = "template/xform/other_application.xml";   //其他应用系统(新建)
+	public static final String OTHER_APPLICATION_XFORM      = "template/xform/application_other.xml";   //其他应用系统(新建)
 	public static final String OPERATION_XFORM              = "template/xform/operation.xml";           //Operation对象
 	public static final String AUTO_MAPPING_XFORM           = "template/xform/automapping.xml";         //模糊对应
 	public static final String MANUAL_MAPPING_XFORM         = "template/xform/manualMapping.xml";       //手工对应
@@ -195,19 +195,19 @@ public final class UMConstants {
      */
     public final static String TSS_APPLICATION_ID = "tss";
     
-    public final static String GROUP_RESOURCE_TYPE_ID  = "1"; //用户组资源类型ID
-    public final static String ROLE_RESOURCE_TYPE_ID   = "2"; //角色资源类型ID
+    public final static String GROUP_RESOURCE_TYPE_ID  = "1"; // 用户组资源类型ID
+    public final static String ROLE_RESOURCE_TYPE_ID   = "2"; // 角色资源类型ID
 
     /**
      * 用户组资源操作选项 (0表示不判断权限)，默认给新建（子组、用户）的权限
      */
-    public final static String GROUP_VIEW_OPERRATION  = "1";  //新建用户
-    public final static String GROUP_EDIT_OPERRATION  = "2";  //新建组
+    public final static String GROUP_VIEW_OPERRATION  = "1";  // 参看用户组
+    public final static String GROUP_EDIT_OPERRATION  = "2";  // 维护用户组
     
     /**
      * 角色(组)资源操作选项 (0表示不判断权限)
      */
-    public final static String ROLE_VIEW_OPERRATION = "1";  //新建角色
-    public final static String ROLE_EDIT_OPERRATION = "2";  //新建角色组
+    public final static String ROLE_VIEW_OPERRATION = "1";  // 参看角色
+    public final static String ROLE_EDIT_OPERRATION = "2";  // 维护角色
     
 }

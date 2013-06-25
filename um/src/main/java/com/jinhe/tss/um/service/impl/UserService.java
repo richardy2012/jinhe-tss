@@ -58,12 +58,6 @@ public class UserService implements IUserService{
     public void updateUser(User user) {
         userDao.update(user);
     }
-    
-    public void updateUserPasswordRule(Long userId, Long ruleId){
-        User user = userDao.getEntity(userId);
-        user.setPasswordRuleId(ruleId);
-        userDao.update(user);
-    }
 
     public User getUserByLoginName(String loginName) {
         return userDao.getUserByLoginName(loginName);

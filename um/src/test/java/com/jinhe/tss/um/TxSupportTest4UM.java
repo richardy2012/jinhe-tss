@@ -90,7 +90,7 @@ public abstract class TxSupportTest4UM extends AbstractTransactionalJUnit38Sprin
         /* 初始化应用系统、资源、权限项 */
         Document doc = XMLDocUtil.createDocByAbsolutePath(TestUtil.getSQLDir() + "/um-application-config.xml");
         resourceRegisterService.setInitial(true);
-        resourceRegisterService.applicationRegisterByXML(doc, UMConstants.PLATFORM_SYSTEM_APP);
+        resourceRegisterService.applicationResourceRegister(doc, UMConstants.PLATFORM_SYSTEM_APP);
         resourceRegisterService.setInitial(false);
         
         // 补全SQL初始化出来的系统级用户组
