@@ -10,12 +10,12 @@ import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.action.RoleAction;
-import com.jinhe.tss.um.action.StrategyAction;
+import com.jinhe.tss.um.action.SubAuthorizeAction;
 import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IApplicationService;
 import com.jinhe.tss.um.service.IRoleService;
-import com.jinhe.tss.um.service.IStrategyService;
+import com.jinhe.tss.um.service.ISubAuthorizeService;
 import com.jinhe.tss.um.service.IUserService;
 
 /**
@@ -29,7 +29,7 @@ public class GeneralSearchTest extends TxSupportTest4UM {
     @Autowired RemoteSearchService remoteService;
     @Autowired IApplicationService applicationService;
     
-    @Autowired IStrategyService strategyService;
+    @Autowired ISubAuthorizeService strategyService;
     @Autowired IRoleService roleService;
     @Autowired IUserService userService;
     
@@ -93,7 +93,7 @@ public class GeneralSearchTest extends TxSupportTest4UM {
         Long roleId = roleAction.getRole().getId();
         
         // 新建转授策略
-        StrategyAction strategyAction = new StrategyAction();
+        SubAuthorizeAction strategyAction = new SubAuthorizeAction();
         strategyAction.setService(strategyService);
         strategyAction.getStrategy().setStartDate(new Date());
         calendar = new GregorianCalendar();

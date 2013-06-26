@@ -46,8 +46,6 @@ public interface IUserService {
      * <p>
      * 新建/修改一个User对象的明细信息、用户对用户组信息、用户对角色的信息
      * </p>
-     * @param mainGroupId
-     *            用户必须对应一个主用户组
      * @param user
      * @param groupIdsStr
      * @param roleIdsStr
@@ -55,7 +53,7 @@ public interface IUserService {
     @Logable(operateTable="用户", operateType="新建/修改", 
             operateInfo="新建/修改了 ${args[1]} 用户（用户对用户组信息 ${args[2]}、用户对角色的信息 ${args[3]?default(\"\")}）"
         )
-    void createOrUpdateUserInfo(Long mainGroupId, User user, String groupIdsStr, String roleIdsStr);
+    void createOrUpdateUserInfo(User user, String groupIdsStr, String roleIdsStr);
 
     /**
      * <p>

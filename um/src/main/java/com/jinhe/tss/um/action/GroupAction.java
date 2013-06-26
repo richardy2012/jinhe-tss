@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.jinhe.tss.framework.component.progress.ProgressManager;
@@ -108,9 +109,18 @@ public class GroupAction extends ProgressActionSupport {
     }
 	
 	/**
+	 * 根据用户组id查找用户列表
+	 */
+	@RequestMapping(value = "/users/{groupId}")
+	public void getUserByGroupId(@PathVariable("groupId") Long groupId) {
+		List<?> list = service.findUsersByGroupId(groupId);
+		print("Group2UserListTree", new TreeEncoder(list));
+	}
+	
+	/**
 	 * 获取一个Group对象的明细信息、用户组对用户信息、用户组对角色的信息
 	 */
-	public String getGroupInfoAndRelation(String applicationId, Long parentId, Long groupId, int groupType) {
+	public String getGroupInfo(String applicationId, Long parentId, Long groupId, int groupType) {
         Map<String, Object> groupAttributes;
 		boolean isNew = UMConstants.IS_NEW.equals(groupId);
         if(isNew){

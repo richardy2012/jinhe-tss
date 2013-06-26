@@ -30,14 +30,6 @@ public interface IRoleService {
             operateInfo="新建/修改${args[0]}角色（角色对用户信息：${args[1]}、角色对用户组的信息 ：${args[2]}）"
         )
 	void saveRole2UserAndRole2Group(Role role, String userIdsStr, String groupIdsStr);	
-
-	/**
-	 * 根据用户组的id查找该组下所有用户
-	 * 
-	 * @param groupId
-	 * @return
-	 */
-	List<?> getUsersByGroupId(Long groupId);
 	
 	/**
 	 * 保存角色组

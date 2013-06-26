@@ -135,18 +135,7 @@ public class UserService implements IUserService{
         }
     }
     
-	public void createOrUpdateUserInfo(Long mainGroupId, User user, String groupIdsStr, String roleIdsStr) {
-        /* 
-         * 当一个用户即对应主用户组又对应辅助用户组时,要判断对应的那个主用户组的停用状态,
-         * 如果该用户对应的主用户组是停用,则该用户也设为停用状态
-         */
-        if ( mainGroupId != null ) {
-            Group mainGroup = groupDao.getEntity(mainGroupId);
-            if(UMConstants.TRUE.equals(mainGroup.getDisabled())) {
-                user.setDisabled(UMConstants.TRUE);
-            }
-        }
-        
+	public void createOrUpdateUserInfo(User user, String groupIdsStr, String roleIdsStr) {
         // 加密密码
         user.setPassword(createUserPwd(user, user.getPassword())); 
         
@@ -283,13 +272,17 @@ public class UserService implements IUserService{
     }
     
 	public Map<String, Object> getInfo4CreateNewUser(Long groupId) {
+        Group group = groupDao.getEntity(groupId);
+        
         List<Group> groups = new ArrayList<Group>();
-        groups.add(groupDao.getEntity(groupId));
+		groups.add(group);
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("User2RoleTree", roleDao.getEditableRoles()); // 操作人拥有的角色列表
         map.put("User2GroupExistTree", groups);
         map.put("User2RoleExistTree", groupDao.findRolesByGroupId(groupId)); // 新建用户继承所在组的角色列表
+        map.put("disabled", group.getDisabled());
+        map.put("applicationId", group.getApplicationId());
         return map;
     }
 
@@ -398,7 +391,7 @@ public class UserService implements IUserService{
 	        
 	        // 如果主用户组状态为停用的话，则向上启用该主用户组及其所有父节点
 	        if(UMConstants.TRUE.equals(group.getDisabled())) {
-	            groupService.startOrStopGroup(group.getApplicationId(), groupId, UMConstants.FALSE, group.getGroupType());
+	            groupService.startOrStopGroup(group.getApplicationId(), groupId, UMConstants.FALSE);
 		    }
 		}
 		 

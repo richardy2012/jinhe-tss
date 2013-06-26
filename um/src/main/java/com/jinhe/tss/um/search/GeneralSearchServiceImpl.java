@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jinhe.tss.framework.persistence.ICommonDao;
 import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.Role;
-import com.jinhe.tss.um.entity.Strategy;
+import com.jinhe.tss.um.entity.SubAuthorize;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.dto.SubAuthorizedUserRoleDTO;
 import com.jinhe.tss.um.helper.dto.UserRoleDTO;
@@ -60,7 +60,7 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
 			Object[] objs = (Object[]) temp;
 			User user = (User) objs[0]; 
 			Role role = (Role) objs[1];
-			Strategy strategy = (Strategy) objs[2];
+			SubAuthorize strategy = (SubAuthorize) objs[2];
 			User creator = (User) objs[3]; 
 			 
 			SubAuthorizedUserRoleDTO dto = new SubAuthorizedUserRoleDTO();
@@ -85,7 +85,7 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
 			Object[] objs = (Object[]) temp;
 			User user = (User) objs[0]; 
 			Role role = (Role) objs[1];
-			Strategy strategy = (Strategy) objs[2];
+			SubAuthorize strategy = (SubAuthorize) objs[2];
 			User creator = (User) objs[3]; 
 			Group group = (Group) objs[4];
 			 

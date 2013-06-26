@@ -9,8 +9,11 @@ import java.util.Map;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
@@ -43,39 +46,40 @@ import com.jinhe.tss.util.XMLDocUtil;
 @RequestMapping("/user") 
 public class UserAction extends BaseActionSupport {
 
-	private IUserService userService;
-	private IApplicationService applicationService;
+	@Autowired private IUserService userService;
+	@Autowired private IApplicationService applicationService;
 	
-	private Long    userId;
-	private Long    groupId;
-	private Long    toGroupId;
-	private String  applicationId;
-	private String  user2GroupExistTree;
-	private String  user2RoleExistTree;
-	private Integer accountState;
-	private Integer groupType;
-	private String  password;
-	private String  authenticateMethod;
-	private String  disabled;
-	private Long    mainGroupId;
-	private Integer page;
-	private String  field;
-	private Integer orderType;
-	private Long    appUserId;
-    private String  isModifyOrRegister; // "modify"：修改用户， "register"：注册用户
-	
-    private User user = new User();
-    private UMQueryCondition userQueryCon = new UMQueryCondition();
-    private GroupAutoMapping autoMappingDto = new GroupAutoMapping();
+//	private Long    userId;
+//	private Long    groupId;
+//	private Long    toGroupId;
+//	private String  applicationId;
+//	private String  user2GroupExistTree;
+//	private String  user2RoleExistTree;
+//	private Integer accountState;
+//	private Integer groupType;
+//	private String  password;
+//	private String  authenticateMethod;
+//	private String  disabled;
+//	private Long    mainGroupId;
+//	private Integer page;
+//	private String  field;
+//	private Integer orderType;
+//	private Long    appUserId;
+//    private String  isModifyOrRegister; // "modify"：修改用户， "register"：注册用户
+//	
+//    private User user = new User();
+//    private UMQueryCondition userQueryCon = new UMQueryCondition();
+//    private GroupAutoMapping autoMappingDto = new GroupAutoMapping();
 
     /**
      * 获取一个User（用户）对象的明细信息、用户对用户组信息、用户对角色的信息
      */
-    public String getUserInfoAndRelation() {
+	@RequestMapping("/{groupId}/{userId}")
+    public void getUserInfoAndRelation(@PathVariable("userId") Long userId, @PathVariable("groupId") Long groupId) {
         TreeEncoder existRoleTree = new TreeEncoder(null);
         Map<String, Object> data;
         Map<String, Object> map = new HashMap<String, Object>(); 
-        if (!UMConstants.IS_NEW.equals(userId)){ // 编辑用户
+        if ( !UMConstants.IS_NEW.equals(userId) ) { // 编辑用户
             data =  userService.getInfo4UpdateExsitUser(userId);
             User user = (User) data.get("UserInfo");
             map.putAll(user.getAttributesForXForm()); 
@@ -84,8 +88,6 @@ public class UserAction extends BaseActionSupport {
             existRoleTree = new TreeEncoder(data.get("User2RoleExistTree"));
         }
         else {
-            map.put("applicationId", applicationId);
-            map.put("disabled", disabled);
             data =  userService.getInfo4CreateNewUser(groupId);
         }
         
@@ -101,39 +103,42 @@ public class UserAction extends BaseActionSupport {
         XFormEncoder baseinfoXFormEncoder = new XFormEncoder(baseinfoXForm, map, true, false);
         XFormEncoder authenXFormEncoder   = new XFormEncoder(authenXForm,   map, true, false); 
         
-        return print(new String[]{"UserInfo", "AuthenticateInfo", "User2GroupExistTree", "User2RoleTree", "User2RoleExistTree"}, 
+        print(new String[]{"UserInfo", "AuthenticateInfo", "User2GroupExistTree", "User2RoleTree", "User2RoleExistTree"}, 
                 new Object[]{baseinfoXFormEncoder, authenXFormEncoder, groupTree, roleTree, existRoleTree});
     }
 
 	/**
-	 * 获取认证方式
+	 * 认证方式
 	 */
-	public String initAuthenticateMethod(){
+	@RequestMapping("/auth/{groupId}")
+	public void initAuthenticateMethod(@PathVariable("groupId") Long groupId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("groupId", groupId);
 		XFormEncoder authXFormEncoder = new XFormEncoder(UMConstants.AUTH_METHOD_XFORM, map);
-		return print("AuthenticateInfo", authXFormEncoder);
+		print("AuthenticateInfo", authXFormEncoder);
 	}
 	
-	public String uniteAuthenticateMethod(){
-		userService.uniteAuthenticateMethod(groupId, authenticateMethod);
-        return printSuccessMessage();
+	@RequestMapping("/auth/unite/{groupId}/{authenticateMethod}")
+	public void uniteAuthenticateMethod(@PathVariable("groupId") Long groupId, @PathVariable("authMethod") String authMethod) {
+		userService.uniteAuthenticateMethod(groupId, authMethod);
+        printSuccessMessage();
 	}
 	
 	/**
 	 * 新增或修改一个User对象的明细信息、用户对用户组信息、用户对角色的信息
 	 */
-	public String saveUser() {
-		userService.createOrUpdateUserInfo(mainGroupId, user, user2GroupExistTree, user2RoleExistTree);
-        return printSuccessMessage();
+	@RequestMapping(method = RequestMethod.POST)
+	public void saveUser(User user, String user2GroupExistTree, String user2RoleExistTree) {
+		userService.createOrUpdateUserInfo(user, user2GroupExistTree, user2RoleExistTree);
+        printSuccessMessage();
 	}
 	
 	/**
 	 * 启用或者停用用户
 	 */
-	public String startOrStopUser() {
-		userService.startOrStopUser(userId, accountState, groupId);
-        return printSuccessMessage();
+	public void startOrStopUser(Long userId, int state, Long groupId) {
+		userService.startOrStopUser(userId, state, groupId);
+        printSuccessMessage();
 	}
 	
 	/**

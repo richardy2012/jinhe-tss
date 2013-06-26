@@ -7,7 +7,7 @@ import com.jinhe.tss.framework.persistence.TreeSupportDao;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IRoleDao;
 import com.jinhe.tss.um.entity.Role;
-import com.jinhe.tss.um.entity.Strategy;
+import com.jinhe.tss.um.entity.SubAuthorize;
  
 public class RoleDao extends TreeSupportDao<Role> implements IRoleDao {
 	
@@ -66,7 +66,7 @@ public class RoleDao extends TreeSupportDao<Role> implements IRoleDao {
     // 按策略转授角色的相关数据库操作
     // ===========================================================================================================
 
-    public void deleteStrategy(Strategy strategy) {
+    public void deleteStrategy(SubAuthorize strategy) {
         delete(strategy);
         
         //清除RoleUser， RoleGroup中的记录

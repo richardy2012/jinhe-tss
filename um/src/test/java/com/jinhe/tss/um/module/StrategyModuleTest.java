@@ -12,11 +12,11 @@ import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.action.RoleAction;
-import com.jinhe.tss.um.action.StrategyAction;
+import com.jinhe.tss.um.action.SubAuthorizeAction;
 import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IRoleService;
-import com.jinhe.tss.um.service.IStrategyService;
+import com.jinhe.tss.um.service.ISubAuthorizeService;
 import com.jinhe.tss.um.service.IUserService;
 
 /**
@@ -24,15 +24,15 @@ import com.jinhe.tss.um.service.IUserService;
  */
 public class StrategyModuleTest extends TxSupportTest4UM {
     
-	StrategyAction action;
+	SubAuthorizeAction action;
     
-    @Autowired IStrategyService service;
+    @Autowired ISubAuthorizeService service;
     @Autowired IRoleService roleService;
     @Autowired IUserService userService;
     
     public void setUp() throws Exception {
         super.setUp();
-        action = new StrategyAction();
+        action = new SubAuthorizeAction();
         action.setService(service);
     }
     

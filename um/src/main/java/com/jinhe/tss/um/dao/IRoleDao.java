@@ -5,7 +5,7 @@ import java.util.List;
 import com.jinhe.tss.framework.persistence.ITreeSupportDao;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.Role;
-import com.jinhe.tss.um.entity.Strategy;
+import com.jinhe.tss.um.entity.SubAuthorize;
 import com.jinhe.tss.um.permission.filter.PermissionTag;
  
 public interface IRoleDao extends ITreeSupportDao<Role> {
@@ -67,7 +67,7 @@ public interface IRoleDao extends ITreeSupportDao<Role> {
      * </p>
      * @param entity
      */
-    void deleteStrategy(Strategy strategy);
+    void deleteStrategy(SubAuthorize strategy);
 
     /**
      * <p>

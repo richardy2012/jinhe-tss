@@ -34,10 +34,6 @@ public class RoleService implements IRoleService {
         return roleDao.getEntities("from Role r where r.id <> -1 order by r.decode");    
     }
 
-    public List<?> getUsersByGroupId(Long groupId) {
-        return groupDao.getUsersByGroupId(groupId);
-    }
-
     public List<?> getPlatformApplication() {
 		return roleDao.getEntities("from Application o where o.applicationType = ? order by o.decode", UMConstants.PLATFORM_SYSTEM_APP);
     }
@@ -174,7 +170,7 @@ public class RoleService implements IRoleService {
             roleDao.update(role);
         }
         
-        saveRole2User(role.getId(), userIdsStr);  // 角色对用户
+        saveRole2User(role.getId(), userIdsStr);   // 角色对用户
         saveRole2Group(role.getId(), groupIdsStr); // 角色对组
     }
 

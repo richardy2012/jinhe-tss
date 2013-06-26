@@ -116,16 +116,16 @@ public class RoleAction extends BaseActionSupport {
      * 获取一个Role（角色）对象的明细信息、角色对用户组信息、角色对用户信息
      */
 	@RequestMapping("/{id}/{parentId}")
-    public void getRoleInfoAndRelation(@PathVariable("id") Long id, @PathVariable("parentId") Long parentId) {        
+    public void getRoleInfo(@PathVariable("id") Long id, @PathVariable("parentId") Long parentId) {        
         if ( UMConstants.IS_NEW.equals(id) ) { // 新建角色
-            getNewRoleInfoAndRelation(parentId);
+            getNewRoleInfo(parentId);
         } 
         else { // 编辑角色
-            getEditRoleInfoAndRelation(id);
+            getEditRoleInfo(id);
         }
     }
 
-    private void getNewRoleInfoAndRelation(Long parentId) {
+    private void getNewRoleInfo(Long parentId) {
         XFormEncoder roleXFormEncoder;
         TreeEncoder usersTreeEncoder;
         TreeEncoder groupsTreeEncoder;
@@ -158,7 +158,7 @@ public class RoleAction extends BaseActionSupport {
                 new Object[]{roleXFormEncoder, groupsTreeEncoder, usersTreeEncoder, roleToGroupTree, roleToUserTree});
     }
 
-    private void getEditRoleInfoAndRelation(Long id) {
+    private void getEditRoleInfo(Long id) {
         Map<String, Object> data = roleService.getInfo4UpdateExistRole(id);
         
         Role role = (Role)data.get("RoleInfo");         
@@ -219,19 +219,10 @@ public class RoleAction extends BaseActionSupport {
 	}
 	
 	/**
-	 * 根据用户组id查找用户列表
-	 */
-	@RequestMapping(value = "/users/{groupId}")
-	public void getUserByGroupId(@PathVariable("groupId") Long groupId) {
-		List<?> list = roleService.getUsersByGroupId(groupId);
-		print("Group2UserListTree", new TreeEncoder(list));
-	}
-
-	/**
 	 * 查询应用系统列表，根据登录用户ID过滤。
 	 * 现在没有过滤(性能不允许),显示用户能够看到的所有应用， 没有授权权限的是不能进行授权的,所以这里不过滤没有大碍
 	 */
-	public String getApplications(){
+	public void getApplications(Long roleId, String isRole2Resource) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("roleId", roleId);
 		map.put("isRole2Resource", isRole2Resource);
@@ -243,13 +234,13 @@ public class RoleAction extends BaseActionSupport {
 		xFormEncoder.setColumnAttribute("applicationId", "editorvalue", appEditor[0]);
 		xFormEncoder.setColumnAttribute("applicationId", "editortext",  appEditor[1]);
 
-		return print("SearchPermission", xFormEncoder);
+		print("SearchPermission", xFormEncoder);
 	}
 	
 	/**
 	 * 根据应用id获得资源类型。 做 应用系统/资源类型/授权级别 三级下拉框时用
 	 */
-	public String getResourceTypes(){
+	public void getResourceTypes(String applicationId) {
 		StringBuffer sb = new StringBuffer();
         sb.append("<column name=\"resourceType\" caption=\"资源类型\" mode=\"string\" editor=\"comboedit\" ");
         
@@ -258,12 +249,12 @@ public class RoleAction extends BaseActionSupport {
         sb.append(" editorvalue=\"").append(resourceTypeEditor[0]).append("\" ");
         sb.append(" editortext=\"").append(resourceTypeEditor[1]).append("\"/>");
 
-		return print("ResourceType", sb);
+		print("ResourceType", sb);
 	}
 
-	public String initSetPermission(){
+	public void initSetPermission(Long roleId, String isRole2Resource, String applicationId, String  resourceType) {
 		if( isRole2Resource != null && "1".equals(isRole2Resource) ){
-			return getApplications();
+			getApplications(roleId, isRole2Resource);
 		}
 		
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -281,7 +272,7 @@ public class RoleAction extends BaseActionSupport {
 		xFormEncoder.setColumnAttribute("resourceType", "editortext", resourceType);
 		xFormEncoder.setColumnAttribute("resourceType", "editorvalue", resourceType);
 
-		return print("SearchPermission", xFormEncoder);
+		print("SearchPermission", xFormEncoder);
 	}
 	
 	// ===========================================================================
@@ -291,7 +282,7 @@ public class RoleAction extends BaseActionSupport {
 	/**
 	 * 获取授权用的矩阵图
 	 */
-	public String getPermissionMatrix() {  
+	public void getPermissionMatrix(String permissionRank, String isRole2Resource, String applicationId, String resourceType, Long roleId) {  
 	    if( EasyUtils.isNullOrEmpty(permissionRank) ){
             throw new BusinessException("请选择授权级别");
         }
@@ -334,10 +325,14 @@ public class RoleAction extends BaseActionSupport {
         rolesTreeEncoder.setOptionsEncoder(treeNodeOptionsEncoder);
         rolesTreeEncoder.setNeedRootNode(false);
         
-        return print("setPermission", rolesTreeEncoder);
+        print("setPermission", rolesTreeEncoder);
 	}
 	
-	public String savePermission() {
+	/**
+	 * permissionRank  授权级别(1:普通(10)，2/3:可授权，可授权可传递(11))
+	 * permission   角色资源权限选项的集合, 当资源对角色授权时:  role1|2224,role2|4022
+	 */
+	public void savePermission(String permissionRank, String isRole2Resource, String applicationId, String resourceType, Long roleId, String permissions) {
 	    if( applicationId == null ) {
             applicationId = PermissionHelper.getApplicationID();
         }
@@ -346,13 +341,13 @@ public class RoleAction extends BaseActionSupport {
         
 	    // 角色对资源授权（“角色维护”菜单，多个资源授权给单个角色）
         if( "1".equals(isRole2Resource) ) {
-            permissionService.saveResources2Role(applicationId, resourceType, roleId, permissionRank, setPermission);
+            permissionService.saveResources2Role(applicationId, resourceType, roleId, permissionRank, permissions);
         } 
         // 资源对角色授权（“资源授予角色”菜单，单个资源授权给多个角色）
         else {
-            permissionService.saveResource2Roles(applicationId, resourceType, roleId, permissionRank, setPermission);
+            permissionService.saveResource2Roles(applicationId, resourceType, roleId, permissionRank, permissions);
         }
         
-        return printSuccessMessage();
+        printSuccessMessage();
 	}
 }
