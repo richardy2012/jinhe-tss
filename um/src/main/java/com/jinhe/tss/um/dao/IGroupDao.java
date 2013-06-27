@@ -86,7 +86,7 @@ public interface IGroupDao extends ITreeSupportDao<Group>{
 
 	/**
 	 * <p>
-	 * 根据一批组下的用户。用于复制、导入等操作。
+	 * 取一批组下的用户。用于复制、导入等操作。
 	 * </p>
 	 * @param groupIds
 	 * @return

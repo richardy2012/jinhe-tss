@@ -3,7 +3,6 @@ package com.jinhe.tss.um.entity.permission.unsupplied;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.permission.AbstractUnSuppliedTable;
 
 /**
@@ -13,7 +12,4 @@ import com.jinhe.tss.um.permission.AbstractUnSuppliedTable;
 @Table(name = "um_permission_role")
 public class RolePermissions extends AbstractUnSuppliedTable {
 
-	public Long getParentResourceId() {
-		return UMConstants.ROLE_ROOT_ID;
-	}
 }

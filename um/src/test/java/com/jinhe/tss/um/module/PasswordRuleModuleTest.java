@@ -6,7 +6,6 @@ import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.action.PasswordRuleAction;
 import com.jinhe.tss.um.entity.PasswordRule;
-import com.jinhe.tss.um.service.IPasswordRuleService;
 import com.jinhe.tss.util.BeanUtil;
 
 /**
@@ -14,43 +13,27 @@ import com.jinhe.tss.util.BeanUtil;
  */
 public class PasswordRuleModuleTest extends TxSupportTest4UM {
     
-	PasswordRuleAction action;
-    
-    @Autowired IPasswordRuleService service;
-    
-    public void setUp() throws Exception {
-        super.setUp();
-        
-        action = new PasswordRuleAction();
-        action.setService(service);
-    }
+	@Autowired PasswordRuleAction action;
     
     public void testCRUD() {
-        action.getRuleInfo();
+        action.getRuleInfo(0L);
         
-        BeanUtil.copy(action.getRule(), PasswordRule.getDefaultPasswordRule());
-        action.getRule().setName("自建密碼策略");
-        action.saveRule();
+        PasswordRule rule = new PasswordRule();
+        BeanUtil.copy(rule, PasswordRule.getDefaultPasswordRule());
+        rule.setName("自建密碼策略");
+        action.saveRule(rule);
         
-        action.setId(action.getRule().getId());
-        action.getRuleInfo();
+        action.getRuleInfo(rule.getId());
         
-        action.modifyRule();
+        action.modifyRule(rule);
         
-        action.setId(UMConstants.ADMIN_USER_ID);
-        action.setLoginName(UMConstants.ADMIN_USER_NAME);
-        action.setPassword("123456");
-        action.getStrengthLevel();
-        
-        action.setId(UMConstants.MAIN_GROUP_ID);
-        action.getGroupStrengthLevel();
+        action.getStrengthLevel(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME, "123456");
         
         action.getAllRules();
         
         action.getPasswordRuleInfo();
         
-        action.setId(action.getRule().getId());
-        action.deleteRule();
+        action.deleteRule(rule.getId());
     }
 
 }

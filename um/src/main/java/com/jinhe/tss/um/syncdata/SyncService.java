@@ -125,7 +125,7 @@ public class SyncService implements ISyncService, Progressable {
             deleteDataInSyncGroup(applicationId, groupId); // 删除um系统中同步组下的用户组、用户、以及GroupUser（包括已对应和未对应的）
             syncGroups(applicationId, groups, groupIdsMap, progress);
             syncUsers (applicationId, users, groupIdsMap, progress);
-        }else {
+        } else {
             Map<String, Group> groupsMap = (Map<String, Group>)paramsMap.get("groupsMap");
             Map<String, User> usersMap  = (Map<String, User>)paramsMap.get("usersMap");
             Map<String, GroupUser> groupUsersMap = (Map<String, GroupUser>)paramsMap.get("groupUsersMap");

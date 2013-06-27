@@ -8,7 +8,7 @@ import com.jinhe.tss.um.module.GroupModuleTest;
 import com.jinhe.tss.um.module.MessageModuleTest;
 import com.jinhe.tss.um.module.PasswordRuleModuleTest;
 import com.jinhe.tss.um.module.RoleModuleTest;
-import com.jinhe.tss.um.module.StrategyModuleTest;
+import com.jinhe.tss.um.module.SubAuthorizeModuleTest;
 import com.jinhe.tss.um.module.UserModuleTest;
 import com.jinhe.tss.um.search.GeneralSearchTest;
 import com.jinhe.tss.um.servlet.GetLoginInfoServletTest;
@@ -30,7 +30,7 @@ public class AllUMTests {
 		suite.addTestSuite(GroupModuleTest.class);
 		suite.addTestSuite(UserModuleTest.class);
 		suite.addTestSuite(RoleModuleTest.class);
-		suite.addTestSuite(StrategyModuleTest.class);
+		suite.addTestSuite(SubAuthorizeModuleTest.class);
 		suite.addTestSuite(PasswordRuleModuleTest.class);
 		suite.addTestSuite(MessageModuleTest.class);
 		suite.addTestSuite(ApplicationModuleTest.class);

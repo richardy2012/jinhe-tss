@@ -151,7 +151,7 @@ public class ApplicationService implements IApplicationService{
     }
 
     public List<?> getApplications() {
-    	return applicationDao.getEntities("from Application o order by o.decode");
+    	return applicationDao.getEntities("from Application o order by o.id");
     }
 }
 	

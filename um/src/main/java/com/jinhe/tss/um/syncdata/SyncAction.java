@@ -27,7 +27,7 @@ public class SyncAction extends ProgressActionSupport {
     @Autowired private ISyncService  syncService;
 
     @RequestMapping("/{groupId}")
-    public void syncData(String applicationId, Long groupId, Long mode) {
+    public void syncData(String applicationId, Long groupId, int mode) {
         Group group = groupService.getGroupById(groupId);
         String dbGroupId = group.getDbGroupId();
         if ( EasyUtils.isNullOrEmpty(dbGroupId) ) {
@@ -35,7 +35,7 @@ public class SyncAction extends ProgressActionSupport {
         }
         
         Map<String, Object> datasMap;
-        if (UMConstants.ALL_SYNC.equals(mode)) {
+        if ( UMConstants.ALL_SYNC == mode ) {
             datasMap = syncService.getCompleteSyncGroupData(groupId, dbGroupId, applicationId);
         }
         else {

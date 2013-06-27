@@ -174,31 +174,30 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
 	}
  
 	public List<User> getUsersByGroupIdDeeply(Long groupId){
-        String hql = "select distinct u, g.id as groupId, g.name as groupName, gu.decode " +
-        		" from User u, GroupUser gu, Group g " + 
-                " where u.id = gu.userId and gu.groupId = g.id " +
-                " and gu.decode like ? and gu.decode <> ? " +
-                " order by gu.decode";
-        Group group = getEntity(groupId);
-        return fillGroupInfo2User(getEntities(hql, group.getDecode() + "%", group.getDecode()));
+		List<Group> sonGroups = this.getChildrenById(groupId);
+		List<Long> sonGroupIds = new ArrayList<Long>();
+		for(Group son : sonGroups) {
+			sonGroupIds.add(son.getId());
+		}
+		
+        return getUsersByGroupIds(sonGroupIds);
 	}
 
 	public List<User> getUsersByGroupIds(Collection<Long> groupIds){
         if( EasyUtils.isNullOrEmpty(groupIds) ) return new ArrayList<User>();
         
-        String hql = "select distinct u, g.id as groupId, g.name as groupName, gu.decode " +
+        String hql = "select distinct u, g.id as groupId, g.name as groupName " +
         		" from User u, GroupUser gu, Group g " + 
-        		" where u.id = gu.userId and gu.groupId = g.id and g.id in (:groupIds) " +
-        		" order by gu.decode";
+        		" where u.id = gu.userId and gu.groupId = g.id and g.id in (:groupIds) ";
 
-        return fillGroupInfo2User(getEntities(hql, new Object[]{"groupIds"}, new Object[]{groupIds}));
+        List<?> list = getEntities(hql, new Object[]{"groupIds"}, new Object[]{groupIds});
+		return fillGroupInfo2User(list);
 	}
 
 	public List<User> getUsersByGroupId(Long groupId) {
-		String hql = "select distinct u, g.id as groupId, g.name as groupName, gu.decode " +
+		String hql = "select distinct u, g.id as groupId, g.name as groupName" +
 				" from User u, GroupUser gu, Group g " +
-                " where u.id = gu.userId and gu.groupId = g.id and g.id = ? " +
-                " order by gu.decode";
+                " where u.id = gu.userId and gu.groupId = g.id and g.id = ? ";
 		return fillGroupInfo2User(getEntities(hql, groupId));
 	}
 
@@ -271,7 +270,7 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
     //******************************************* 按组或按查询条件查询用户 *******************************************
 
     public PageInfo getUsersByGroup(Long groupId, Integer pageNum, String...orderBy) {
-        String hql = "select distinct u, g.id as groupId, g.name as groupName, gu.decode "
+        String hql = "select distinct u, g.id as groupId, g.name as groupName "
         		+ " from User u, GroupUser gu, Group g" 
         		+ " where u.id = gu.userId and gu.groupId = g.id and g.id = :groupId ";
         UMQueryCondition condition = new UMQueryCondition();
@@ -280,9 +279,7 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
         
         if(orderBy != null) {
         	condition.getOrderByFields().addAll( Arrays.asList(orderBy) );
-        } else {
-        	condition.getOrderByFields().add(" gu.decode ");
-        }
+        } 
 
         PaginationQueryByHQL pageQuery = new PaginationQueryByHQL(em, hql, condition);
         PageInfo page = pageQuery.getResultList();
@@ -292,7 +289,7 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
     
     public PageInfo getUsersByOtherGroupNoPermission(Long groupId, Integer pageNum, String...orderBy) {
     	String sql = "select distinct u.id, u.userName, u.loginName, g.id as groupId, g.name as groupName, "
-        	+ " u1.id as appUserId, u1.userName as appUserName,u1.loginName as appLoginName, g1.id as appGroupId, g1.name as appGroupName, gu.decode "
+        	+ " u1.id as appUserId, u1.userName as appUserName,u1.loginName as appLoginName, g1.id as appGroupId, g1.name as appGroupName "
     		+ " from um_user u,  um_groupuser gu,  um_group g, "
     		+ "      um_user u1, um_groupuser gu1, um_group g1"
     		+ " where u.id = gu.userId and gu.groupId = g.id and g.id = :groupId " 
@@ -304,9 +301,7 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
         
         if(orderBy != null) {
         	condition.getOrderByFields().addAll( Arrays.asList(orderBy) );
-        } else {
-        	condition.getOrderByFields().add(" gu.decode ");
-        }
+        } 
 
         PaginationQueryBySQL pageQuery = new PaginationQueryBySQL(em, sql, condition);
         PageInfo page = pageQuery.getResultList();
@@ -319,7 +314,7 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
         if( EasyUtils.isNullOrEmpty(groupIds) ) return null;
  
         String sql = "select distinct u.id, u.userName, u.loginName, g.id as groupId, g.name as groupName, "
-        	+ " u1.id as appUserId, u1.userName as appUserName,u1.loginName as appLoginName, g1.id as appGroupId, g1.name as appGroupName, gu.decode "
+        	+ " u1.id as appUserId, u1.userName as appUserName,u1.loginName as appLoginName, g1.id as appGroupId, g1.name as appGroupName "
     		+ " from um_user u,  um_groupuser gu,  um_group g, "
     		+ "      um_user u1, um_groupuser gu1, um_group g1"
     		+ " where u.id = gu.userId and gu.groupId = g.id and g.id = :groupId " 
@@ -329,7 +324,6 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
         
         condition.getPage().setPageNum(pageNum);
         condition.setGroupIds(groupIds);
-        condition.getOrderByFields().add(" gu.decode "); // decode 作为最后一道排序条件
 
         Set<String> set = condition.getIgnoreProperties();
         set.add("userId");
@@ -346,7 +340,7 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
         List<Long> groupIds = getChildrenGroupIds(condition.getGroupId());
         if( EasyUtils.isNullOrEmpty(groupIds) ) return null;
         
-        String hql = "select distinct u, g.id as groupId, g.name as groupName, gu.decode "
+        String hql = "select distinct u, g.id as groupId, g.name as groupName "
             + " from User u, GroupUser gu, Group g " 
             + " where u.id = gu.userId and gu.groupId = g.id and g.id in (:groupIds) " 
             + " ${loginName} ${userName} ${employeeNo} ${sex} ${birthday} ${certificateNumber} ";

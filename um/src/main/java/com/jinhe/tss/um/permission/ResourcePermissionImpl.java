@@ -52,27 +52,6 @@ public class ResourcePermissionImpl extends TreeSupportDao<IDecodable> implement
             }
         }
     }
-    
-//    public void addResource_old(Long resourceId, String resourceTypeId) {
-//        flush();
-//        String unSuppliedTable = resourceTypeDao.getUnSuppliedTable(PermissionHelper.getApplicationID(), resourceTypeId);
-//        String suppliedTable   = resourceTypeDao.getSuppliedTable(PermissionHelper.getApplicationID(), resourceTypeId);
-//        String resourceTable   = resourceTypeDao.getResourceTable(PermissionHelper.getApplicationID(), resourceTypeId);
-//        Long rootId = resourceTypeDao.getResourceRootId(PermissionHelper.getApplicationID(), resourceTypeId);
-//        
-//        List<?> parentNodes = getParentsById(resourceTable, resourceId, rootId);
-//        for (Iterator<?> it = parentNodes.iterator(); it.hasNext();) {
-//            IResource parentResource = (IResource) it.next();
-//            
-//            // 获取未补全表中和指定资源相关授权状态为2【权限维护状态 1:仅此节点, 2:该节点及所有下层节点】的授权信息,以进行补全
-//            List<?> parentPermissions = getEntities("from " + unSuppliedTable + " t where t.resourceId = ? and t.permissionState = ?", 
-//                    parentResource.getId(), UMConstants.PERMIT_SUB_TREE );
-//            for (Object parentPermission : parentPermissions) {
-//                IResource resource = (IResource) getEntity(BeanUtil.createClassByName(resourceTable), resourceId);
-//                PermissionHelper.getInstance().insertSuppliedTable((IUnSuppliedPermission) parentPermission, resource, suppliedTable);
-//            }
-//        }       
-//    }
 
 	public void delResource(Long resourceId, String resourceTypeId){	
         flush();

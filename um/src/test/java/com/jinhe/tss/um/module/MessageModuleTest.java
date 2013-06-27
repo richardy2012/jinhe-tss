@@ -8,6 +8,7 @@ import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.action.MessageAction;
 import com.jinhe.tss.um.entity.Message;
+import com.jinhe.tss.um.helper.UMQueryCondition;
 import com.jinhe.tss.um.service.IMessageService;
 
 /**
@@ -15,59 +16,48 @@ import com.jinhe.tss.um.service.IMessageService;
  */
 public class MessageModuleTest extends TxSupportTest4UM {
     
-	MessageAction action;
+	@Autowired MessageAction action;
     
     @Autowired IMessageService service;
     
     public void setUp() throws Exception {
         super.setUp();
         
-        action = new MessageAction();
-        action.setService(service);
-        
         // 初始化虚拟登录用户信息
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
     }
     
-    public void testCRUD() {
-        action.getMessageInfo();
+    public void testMesseag() {
+    	Message message = new Message();
+    	
+        message.setTitle("好消息");
+        message.setContent("好消息！");
+        message.setReceiverIds("-1");
+        message.setReceiver("Admin");
+        action.saveMessage(message);
         
-        action.getMessage().setTitle("好消息");
-        action.getMessage().setContent("好消息！");
-        action.getMessage().setReceiverIds("-1");
-        action.getMessage().setReceiver("Admin");
-        action.setMode("save");
-        action.saveMessage();
-        
-        action.setMode("");
-        action.saveMessage();
-        
-        action.setId(action.getMessage().getId());
+        action.sendMessage(message);
         
         List<Message> inboxList = service.getInboxList();
         assertTrue(inboxList.size() > 0);
-        action.setId(inboxList.get(0).getId());
-        action.setType("reply");
-        action.getMessageInfo();
+        Long messageId = inboxList.get(0).getId();
         
-        action.setType("forward");
-        action.getMessageInfo();
+        action.getMessageInfo(messageId, "replay");
+        action.getMessageInfo(messageId, "forward");
         
-        action.viewMessage();
+        action.viewMessage(messageId);
         
-        action.setBoxId(2);
-        action.getMessageList();
-        action.setBoxId(3);
-        action.getMessageList();
-        action.setBoxId(4);
-        action.getMessageList();
+        action.getMessageList(2);
+        action.getMessageList(3);
+        action.getMessageList(4);
         
-        action.deleteMessage();
+        action.deleteMessage(messageId);
         
-        action.getCondition().setGroupId(UMConstants.MAIN_GROUP_ID);
-        action.searchUsers();
+        UMQueryCondition condition = new UMQueryCondition();
+        condition.setGroupId(UMConstants.MAIN_GROUP_ID);
+        action.searchUsers(condition);
+        
         action.getSearchUserInfo();
-        
         action.getGroupTree();
     }
 

@@ -45,9 +45,9 @@
 	<!-- 参数说明:
 		applicationId: 应用系统ID  (对应前面的定义)
 		resourceTypeId: 资源类型ID (对应前面的定义)
-		rootId: 根节点ID (Long型数字，即各种资源根节点的主键值)
+		rootId: 根节点ID (各种资源根节点的主键值)
 	-->
-	<resourceTypeRoot applicationId="tss" resourceTypeId="1" rootId="-2"/>
+	<resourceTypeRoot applicationId="tss" resourceTypeId="1" rootId="-1"/>
 	<resourceTypeRoot applicationId="tss" resourceTypeId="2" rootId="-6"/>
 	
 </application>

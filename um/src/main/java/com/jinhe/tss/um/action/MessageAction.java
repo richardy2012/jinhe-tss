@@ -74,7 +74,7 @@ public class MessageAction extends BaseActionSupport {
 		printSuccessMessage("删除成功!");
 	}
 	
-	public void getSearchUserInfo(){
+	public void getSearchUserInfo() {
 		GridDataEncoder encoder = new GridDataEncoder(null, USER_GRID_URI);
 		XFormTemplet template = new XFormTemplet(SEARCH_USER_URI);
 	    print(new String[]{"SearchUser", "ExistUserList"}, 
