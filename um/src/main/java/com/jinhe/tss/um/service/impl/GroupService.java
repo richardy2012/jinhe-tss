@@ -81,7 +81,7 @@ public class GroupService implements IGroupService, Progressable{
             Group group = (Group) temp;
             groupIds.add(group.getId());
         }
-        List<?> parentGroups = groupDao.getParentGroupByGroupIds(groupType, groupIds, operatorId, UMConstants.GROUP_VIEW_OPERRATION);
+        List<?> parentGroups = groupDao.getParentGroupByGroupIds(groupIds, operatorId, UMConstants.GROUP_VIEW_OPERRATION);
         return new Object[]{groupIds, parentGroups};
     }
 

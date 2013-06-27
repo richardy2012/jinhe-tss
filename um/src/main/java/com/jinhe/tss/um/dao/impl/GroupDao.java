@@ -116,14 +116,44 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
 		return getMainAndAssistantGroups(operatorId, UMConstants.GROUP_VIEW_OPERRATION);
 	}
 	
+	public List<?> getMainGroups(Long operatorId, String operationId) {
+		return getGroupsByType(operatorId, operationId, Group.MAIN_GROUP_TYPE);
+	}
+	
 	public List<?> getMainAndAssistantGroups(Long operatorId, String operationId) {
+        List<?> allGroups = getAllGroups(operatorId, operationId);
+        List<Group> mainAndAssistantGroups = new ArrayList<Group>();
+        for( Object temp : allGroups ){
+            Group group = (Group) temp;
+            Integer groupType = group.getGroupType();
+            if( Group.MAIN_GROUP_TYPE.equals(groupType) || Group.ASSISTANT_GROUP_TYPE.equals(groupType) ) {
+            	mainAndAssistantGroups.add(group);
+            }
+        }
+        return mainAndAssistantGroups;
+	}
+	
+	public List<?> getOtherGroups(Long operatorId, String operationId) {
+        return getGroupsByType(operatorId, operationId, Group.OTHER_GROUP_TYPE);
+	}
+	
+	private List<Group> getGroupsByType(Long operatorId, String operationId, Integer groupType) {
         String suppliedTable = resourceTypeDao.getSuppliedTable(UMConstants.TSS_APPLICATION_ID, UMConstants.GROUP_RESOURCE_TYPE_ID);
         
         String hql = PermissionHelper.permissionHQL(entityName, suppliedTable);
-        return getEntities(hql, operatorId, operationId);
+        List<?> allGroups = getEntities(hql, operatorId, operationId);
+        
+        List<Group> resultList = new ArrayList<Group>();
+        for( Object temp : allGroups ){
+            Group group = (Group) temp;
+            if( groupType.equals(group.getGroupType()) ) {
+            	resultList.add(group);
+            }
+        }
+        return resultList;
 	}
 	
-	public List<?> getParentGroupByGroupIds(Integer groupType, List<Long> groupIds, Long operatorId, String operationId) {
+	public List<?> getParentGroupByGroupIds(List<Long> groupIds, Long operatorId, String operationId) {
         if( EasyUtils.isNullOrEmpty(groupIds)) return new ArrayList<Group>();
         
 		String suppliedTable = resourceTypeDao.getSuppliedTable(UMConstants.TSS_APPLICATION_ID, UMConstants.GROUP_RESOURCE_TYPE_ID);
@@ -136,7 +166,10 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
 
 	public List<?> getVisibleMainUsers(Long operatorId) {
 	    // 先查出有查看权限的用户组
-	    List<?> groups = getMainAndAssistantGroups(operatorId, UMConstants.GROUP_VIEW_OPERRATION); 
+	    List<Group> groups = new ArrayList<Group>(); 
+	    groups.addAll(getGroupsByType(operatorId, UMConstants.GROUP_VIEW_OPERRATION, Group.MAIN_GROUP_TYPE));
+	    groups.addAll(getGroupsByType(operatorId, UMConstants.GROUP_VIEW_OPERRATION, Group.ASSISTANT_GROUP_TYPE));
+	    
 	    List<Long> groupIds = new ArrayList<Long>();
 	    for(Object temp : groups) {
 	        groupIds.add(((Group) temp).getId());

@@ -25,15 +25,12 @@ import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
-import com.jinhe.tss.framework.web.dispaly.xform.XFormTemplet;
 import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.Application;
-import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.UMQueryCondition;
-import com.jinhe.tss.um.helper.dto.GroupAutoMapping;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.service.IApplicationService;
 import com.jinhe.tss.um.service.IUserService;
@@ -48,28 +45,6 @@ public class UserAction extends BaseActionSupport {
 
 	@Autowired private IUserService userService;
 	@Autowired private IApplicationService applicationService;
-	
-//	private Long    userId;
-//	private Long    groupId;
-//	private Long    toGroupId;
-//	private String  applicationId;
-//	private String  user2GroupExistTree;
-//	private String  user2RoleExistTree;
-//	private Integer accountState;
-//	private Integer groupType;
-//	private String  password;
-//	private String  authenticateMethod;
-//	private String  disabled;
-//	private Long    mainGroupId;
-//	private Integer page;
-//	private String  field;
-//	private Integer orderType;
-//	private Long    appUserId;
-//    private String  isModifyOrRegister; // "modify"：修改用户， "register"：注册用户
-//	
-//    private User user = new User();
-//    private UMQueryCondition userQueryCon = new UMQueryCondition();
-//    private GroupAutoMapping autoMappingDto = new GroupAutoMapping();
 
     /**
      * 获取一个User（用户）对象的明细信息、用户对用户组信息、用户对角色的信息
@@ -136,254 +111,161 @@ public class UserAction extends BaseActionSupport {
 	/**
 	 * 启用或者停用用户
 	 */
-	public void startOrStopUser(Long userId, int state, Long groupId) {
-		userService.startOrStopUser(userId, state, groupId);
+	@RequestMapping(value = "/disable/{groupId}/{id}/{state}")
+	public void startOrStopUser(Long groupId, Long id, int state) {
+		userService.startOrStopUser(id, state, groupId);
         printSuccessMessage();
 	}
 	
 	/**
 	 * 用户的移动
 	 */
-	public String moveUser() {
+	@RequestMapping(value = "/move/{groupId}/{userId}/{toGroupId}", method = RequestMethod.POST)
+	public void moveUser(Long groupId, Long userId, Long toGroupId) {
 		userService.moveUser(groupId, toGroupId, userId);
-        return printSuccessMessage();
+        printSuccessMessage();
 	}
 	
-	public String importUser(){
+	@RequestMapping(value = "/import/{groupId}/{userId}/{toGroupId}", method = RequestMethod.POST)
+	public void importUser(Long groupId, Long userId, Long toGroupId) {
 		userService.importUser(groupId, toGroupId, userId);
-		return printSuccessMessage();
+		printSuccessMessage();
 	}
 
 	/**
 	 * 删除用户
 	 */
-	public String deleteUser() {
-		userService.deleteUser(groupId, userId, groupType);
-        return printSuccessMessage();
+	@RequestMapping(value = "/{groupId}/{userId}", method = RequestMethod.DELETE)
+	public void deleteUser(Long groupId, Long userId) {
+		userService.deleteUser(groupId, userId);
+        printSuccessMessage();
 	}
 	
 	/**
 	 * 搜索用户
 	 */
-	public String searchUser() {
-		if( !EasyUtils.isNullOrEmpty(field) ) {
-			if(orderType != null && orderType == -1) {
-				userQueryCon.addOrderByFields( "u." + field + " desc " );
-			} else {
-				userQueryCon.addOrderByFields( "u." + field + " asc " );
-			}
-		}
-		
+	public void searchUser(UMQueryCondition userQueryCon, String applicationId, int page) {
         PageInfo users = userService.searchUser(userQueryCon, page);
-        GridDataEncoder usersGridEncoder = new GridDataEncoder(users.getItems(), XMLDocUtil.createDoc(UMConstants.MAIN_USER_GRID));
-        if(Group.OTHER_GROUP_TYPE.equals(userQueryCon.getGroupType())){
-        	Application app = applicationService.getApplication(applicationId);
-        	usersGridEncoder = new GridDataEncoder(users.getItems(), getTemplate(UMConstants.OTHER_USER_GRID, app.getName()));
-        }
-        
-        return print(new String[]{"SourceList", "PageList"}, new Object[]{usersGridEncoder, users});
+        GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), getUserGridTemplate(applicationId));
+        print(new String[]{"SourceList", "PageList"}, new Object[]{gridEncoder, users});
 	}
-	
+
 	/**
-	 * 搜索用户(手工对应时搜索用户)
-	 */
-	public String searchMappingUser() {
-        PageInfo users = userService.searchUser(userQueryCon, page);
-        GridDataEncoder usersGridEncoder = new GridDataEncoder(users.getItems(), UMConstants.MANUAL_MAPPING_USER_GRID);
-        return print(new String[]{ "SourceList", "PageList" }, new Object[]{ usersGridEncoder, users });
-	}
-    
-    /**
      * 根据用户组的id获取所在用户组的所有用户
      */
-    public String getUsersByGroupId() {
-        field = "icon".equals(field) ? null : field;
-        
-        String orderBy = null;
-		if( !EasyUtils.isNullOrEmpty(field) ) {
-			if(orderType != null && orderType == -1) {
-				orderBy = "u." + field + " desc " ;
-			} else {
-				orderBy = "u." + field + " asc " ;
-			}
-		}
-		
-        PageInfo users = userService.getUsersByGroupId(groupId, page, orderBy);
-        GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), XMLDocUtil.createDoc(UMConstants.MAIN_USER_GRID));
-        if(Group.OTHER_GROUP_TYPE.equals(groupType)){
-        	Application app = applicationService.getApplication(applicationId);
-        	gridEncoder = new GridDataEncoder(users.getItems(), getTemplate(UMConstants.OTHER_USER_GRID, app.getName()));
-        }
-   
-        return print(new String[]{"SourceList", "PageList"}, new Object[]{gridEncoder, users});
+    public void getUsersByGroupId(String applicationId, Long groupId, int page) {
+        PageInfo users = userService.getUsersByGroupId(groupId, page, " u.id asc ");
+        GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), getUserGridTemplate(applicationId));
+        print(new String[]{"SourceList", "PageList"}, new Object[]{gridEncoder, users});
     }
- 
     
     /* 拼出其他用户组的列表头 */
-    private Document getTemplate(String uri, String applicationName){
+    private Document getUserGridTemplate(String applicationId){
+    	if( UMConstants.TSS_APPLICATION_ID.equals(applicationId) ) {
+        	return XMLDocUtil.createDoc(UMConstants.MAIN_USER_GRID);
+        }
+         
+    	Application app = applicationService.getApplication(applicationId);
+    	
     	SAXReader saxReader = new SAXReader();
     	Document doc;
     	try{
-    		URL fileURL = URLUtil.getResourceFileUrl(uri);
+    		URL fileURL = URLUtil.getResourceFileUrl(UMConstants.OTHER_USER_GRID);
     		doc = saxReader.read(fileURL);
     	} catch (DocumentException e) {
 			throw new BusinessException("模板获取失败!");
 		}
-    	return XMLDocUtil.dataXml2Doc(doc.asXML().replaceAll("applicationName", applicationName));
+    	return XMLDocUtil.dataXml2Doc(doc.asXML().replaceAll("applicationName", app.getName()));
     }
-	
-	/**
-	 * 编辑模糊对应信息
-	 */
-	public String editAutoMappingInfo() {
-		userService.editAutoMappingInfo(autoMappingDto.getGroupId(), autoMappingDto.getToGroupId(), 
-		        autoMappingDto.getType(), autoMappingDto.getMode());
-        return printSuccessMessage();
-	}
-	
-	/**
-	 * 编辑手工对应信息
-	 */
-	public String editManualMappingInfo() {
-		userService.editManualMappingInfo(userId, appUserId, applicationId);
-        return printSuccessMessage();
-	}
 
 	/**
 	 * 得到操作权限
 	 */
-	public String getOperation() {
-        String resultStr = "u1,u2,u3,u4,u4t";
-
+	public void getOperation(Long groupId) {
         String resourceTypeId = UMConstants.GROUP_RESOURCE_TYPE_ID;
         List<?> parentOperations = PermissionHelper.getInstance().getOperationsByResource(resourceTypeId, groupId, Environment.getOperatorId());
-
-//        if (parentOperations.contains(UMConstants.GROUP_SORT_OPERRATION)) {
-//            resultStr += ",u5"; // 如果对所在组有排序权限，则对该节点有排序权限
-//        }
-//        if(parentOperations.contains(UMConstants.GROUP_MANUAL_MAPPING_OPERRATION)) {
-//        	resultStr += ",u6";
-//        }
-//        if(parentOperations.contains(UMConstants.GROUP_SYNC_OPERRATION)) {
-//        	resultStr += ",u7";
-//        }
         
-		return print("Operation", "p1,p2," + resultStr);
-	}
-
-	/**
-	 * 获取认证系统
-	 */
-	public String getAuthenticateApp(){		
-		//获得登陆用户可访问的应用系统名称列表		
-		List<?> apps = applicationService.getApplications();
-		String[] appEditor = EasyUtils.generateComboedit(apps, "applicationId", "name", "|");
-		
-		StringBuffer sb = new StringBuffer();
-	    sb.append("<column name=\"authenticateAppId\" caption=\"认证系统\" mode=\"string\" editor=\"comboedit\" ");
-	    sb.append(" editorvalue=\"").append(appEditor[0]).append("\" ");
-	    sb.append(" editortext=\"") .append(appEditor[1]).append("\"/>");
-
-		return print("AuthenticateApplication", sb);
+		print("Operation", "p1,p2," + EasyUtils.list2Str(parentOperations));
 	}
 
 	/**
 	 * 根据用户组的id获取所在用户组的所有用户
 	 */
-	public String getSelectedUsersByGroupId() {
+	public void getSelectedUsersByGroupId(Long groupId) {
 		List<?> users = userService.getUsersByGroup(groupId);
-		return print("Group2UserListTree", new TreeEncoder(users));
-	}
-
-	/**
-	 * 获取模糊对应信息
-	 */
-	public String getAutoMappingInfo() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("groupId", groupId);
-		XFormEncoder autoXFormEncoder = new XFormEncoder(UMConstants.AUTO_MAPPING_XFORM, map);
-        return print("AutoMapping", autoXFormEncoder);
-	}
-
-	/**
-	 * 获取手工对应信息
-	 */
-	public String getManualMappingInfo() {
-		List<?> users = userService.getManualMappingInfo(groupId);
-		GridDataEncoder usersGridEncoder = new GridDataEncoder(users, UMConstants.MANUAL_MAPPING_GRID);
-		
-		XFormTemplet templet = new XFormTemplet(UMConstants.MANUAL_MAPPING_XFORM);
-		Document doc = templet.getTemplet();
-        return print(new String[]{"ManualMapping", "SearchManualMapping"}, new Object[]{usersGridEncoder, doc.asXML()});
+		print("Group2UserListTree", new TreeEncoder(users));
 	}
 
 	/**
 	 * 初始化密码
 	 */
-	public String initPassword() {		
-		userService.initPasswordByGroupId(groupId, password);
-        return printSuccessMessage("初始化密码成功！");
+	@RequestMapping(value = "/initpwd/{groupId}/{userId}/{password}", method = RequestMethod.POST)
+	public void initPassword(Long groupId, Long userId, String password) {		
+		userService.initPasswordByGroupId(groupId, userId, password);
+        printSuccessMessage("初始化密码成功！");
 	}
 	
 	/**
 	 * 用户自注册
 	 */
-	public String registerUser() {
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	public void registerUser(User user) {
         user.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN);
 		user.setApplicationId(UMConstants.TSS_APPLICATION_ID);
 		userService.registerUser(user);
-        return printSuccessMessage("用户注册成功！");
+        printSuccessMessage("用户注册成功！");
 	}
     
     /**
      * 用户自己修改个人信息
      */
-    public String modifyUserSelf(){
+	@RequestMapping(method = RequestMethod.PUT)
+    public void modifyUserSelf(User user) {
         User old = userService.getUserById(Environment.getOperatorId());
         BeanUtil.setDataToBean(old, user.getAttributesForXForm());
         userService.updateUser(old);
-        return printSuccessMessage();
+        
+        printSuccessMessage();
     }
 
 	/**
 	 * 获得用户个人信息(注册信息)。
      * 用于用户修改自己的注册信息和密码时用。
 	 */
-	public String getUserInfo() {
-        User user = null;
-        if(Context.getIdentityCard().isAnonymous()){
-            user = new User();  // 是匿名用户,返回空模版给其注册 
-        }else {
-            user = userService.getUserById(Environment.getOperatorId()); // 用户信息
+    @RequestMapping("/detail")
+	public void getUserInfo() {
+        // 匿名用户,返回空模版给其注册 
+        if(Context.getIdentityCard().isAnonymous()) {
+            print("UserInfo", new XFormEncoder(UMConstants.USER_REGISTER_XFORM, new User()));
         }
-        XFormEncoder xEncoder = new XFormEncoder(UMConstants.USER_REGISTER_XFORM, user);
-        
-        if("modify".equals(isModifyOrRegister)){
-            xEncoder.setColumnAttribute("loginName", "editable", "false");
-            xEncoder.setColumnAttribute("password", "editable", "false");
+        else {
+        	User user = userService.getUserById(Environment.getOperatorId());
+        	XFormEncoder userEncoder = new XFormEncoder(UMConstants.USER_REGISTER_XFORM, user);
+        	userEncoder.setColumnAttribute("loginName", "editable", "false");
+            userEncoder.setColumnAttribute("password",  "editable", "false");
             
             Map<String, Object> tempMap = new HashMap<String, Object>();
             tempMap.put("userId", Environment.getOperatorId());
             tempMap.put("userName", Environment.getUserName());
             tempMap.put("loginName", Environment.getOperatorName());
             XFormEncoder pwdEncoder = new XFormEncoder(UMConstants.PASSWORD_CHANGE_XFORM, tempMap);
-            return print(new String[]{"UserInfo", "PasswordInfo"}, new Object[]{xEncoder, pwdEncoder});
+            print(new String[]{"UserInfo", "PasswordInfo"}, new Object[]{userEncoder, pwdEncoder});
         }
-        return print(new String[]{"UserInfo", "PasswordInfo"}, new Object[]{xEncoder, ""});
 	}
     
     /**
      * 密码提示模板
      */
-    public String getForgetPasswordInfo() {
-        XFormEncoder xEncoder = new XFormEncoder(UMConstants.PASSWORD_FORGET_XFORM);
-        return print("ForgetInfo", xEncoder);
+    @RequestMapping("/forgetpwd")
+    public void getForgetPasswordInfo() {
+        print("ForgetInfo", new XFormEncoder(UMConstants.PASSWORD_FORGET_XFORM));
     }
     
     /**
      * 获取当前在线用户信息
      */
-    public String getOperatorInfo() {
+    @RequestMapping("/operator")
+    public void getOperatorInfo() {
         XmlHttpEncoder encoder = new XmlHttpEncoder();
         encoder.put("id", Environment.getOperatorId());
         if(Context.getIdentityCard().isAnonymous()){
@@ -396,15 +278,14 @@ public class UserAction extends BaseActionSupport {
         }
         
         encoder.print(getWriter());
-        return XML;
     }
     
     /**
      * 读取在线用户信息
      */
-    public String getOnlineUserInfo(){
-        Collection<String> userList = OnlineUserManagerFactory.getManager().getOnlineUserNames();
-        return print(new String[]{"size", "users"}, 
-                new Object[]{userList.size(), EasyUtils.list2Str(userList, " | ")});
+    @RequestMapping("/online")
+    public void getOnlineUserInfo() {
+        Collection<String> list = OnlineUserManagerFactory.getManager().getOnlineUserNames();
+        print(new String[] {"size", "users"},  new Object[]{list.size(), EasyUtils.list2Str(list, " | ")});
     }
 }

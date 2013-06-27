@@ -57,46 +57,30 @@ public interface IUserService {
 
     /**
      * <p>
-     * 删除用户 辅助组用户删除用户要删除关系表 辅助组以外的用户只删除用户,不删除关系表
+     * 删除用户 辅助组用户删除用户只删除对应关系； 
+     * 主用户组和其他用户组的则完全删除用户及和和组的对应关系。
      * </p>
      * @param groupId
      * @param userId
-     * @param groupType
      */
     @Logable(operateTable="用户", operateType="删除", 
             operateInfo="删除了 (ID:${args[1]}) 用户"
         )
-    void deleteUser(Long groupId, Long userId, Integer groupType);
+    void deleteUser(Long groupId, Long userId);
 
     /**
      * <p>
-     * 自动映射用户
-     * </p>
-     * @param groupId
-     *            其他应用组Id
-     * @param toGroupId
-     *            主用户组Id
-     * @param mappingColumn
-     *            对应字段 1-按照登陆帐号对应 2-按照工号对应 3-按照证件号码对应 4-按照姓名对应
-     * @param mode 
-     * 			  对应方式 0-对应当前组 1-同时对应子组
-     */
-    void editAutoMappingInfo(Long groupId, Long toGroupId, Integer mappingColumn, Integer mode);
-
-    /**
-     * <p>
-     * 用户密码统一初始化
+     * 用户密码统一初始化。如果指定了单独用户，则只初始化该用户的密码；否则初始化整个用户组的密码。
      * </p>
      * 
      * @param groupId
-     *            用户组Id
+     * @param userId
      * @param initPassword
-     *            初始化的用户密码
      */
     @Logable(operateTable="用户", operateType="初始化密码", 
-            operateInfo="初始化组（ID:${args[0]}）下的密码为：${args[1]}"
+            operateInfo="初始化（组ID:${args[0]}）下（用户ID:${args[1]}）的密码为：${args[2]}"
         )
-    void initPasswordByGroupId(Long groupId, String initPassword);
+    void initPasswordByGroupId(Long groupId, Long userId, String initPassword);
 
     /**
      * <p>
@@ -127,26 +111,6 @@ public interface IUserService {
             operateInfo=" 用户（${args[0]}）完成注册。"
         )
     void registerUser(User user);
-    
-    /**
-     * <p>
-     * 根据组的Id取的该组手动映射的信息
-     * </p>
-     * @param groupId
-     * @return List
-     */
-    List<User> getManualMappingInfo(Long groupId);
-
-    /**
-     * <p>
-     * 编辑手动映射的用户
-     * </p>
-     * @param userId
-     *            需要对应的用户
-     * @param appUserId
-     * 			  对应的主用户组的用户
-     */
-    void editManualMappingInfo(Long userId, Long appUserId, String applicationId);
 
     /**
      * <p>

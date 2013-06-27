@@ -38,21 +38,6 @@ public class RoleAction extends BaseActionSupport {
 
 	@Autowired private IRoleService roleService;
 	@Autowired private PermissionService permissionService;
-
-//	private Long    roleId;     //当资源对角色进行授权时, 表示resourceId
-//	private String  role2UserIds;
-//	private String  role2GroupIds;
-//	private Long    parentRoleId;
-//	private Integer roleState = UMConstants.FALSE;
-//	private Long    groupId;
-//	private Long    targetId;        // 移动或者排序的目标节点ID
-//	private String  applicationId; // 应用id
-//	private String  resourceType; // 资源类型id
-//	private String  permissionRank;   // 授权级别(1:普通(10)，2/3:可授权，可授权可传递(11))
-//	private String  setPermission;	 // 角色资源权限选项的集合, 当资源对角色授权时:  role1|2224,role2|4022
-//	
-//	private Role   role = new Role();
-//	private String isRole2Resource;
 	
     /**
      * 获取所有的角色（不包系统级的角色）

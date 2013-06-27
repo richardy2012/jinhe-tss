@@ -132,16 +132,16 @@ public interface IGroupDao extends ITreeSupportDao<Group>{
 	
 	/**
 	 * 按操作选项获取一系列组的所有父组
-	 * @param groupType
 	 * @param groupId
 	 * @param operatorId
 	 * @param operationId
 	 * @return
 	 */
-	List<?> getParentGroupByGroupIds(Integer groupType, List<Long> groupIds, Long operatorId, String operationId);
+	List<?> getParentGroupByGroupIds(List<Long> groupIds, Long operatorId, String operationId);
+	
 	/**
 	 * <p>
-	 * 获取所有操作用户可见的用户(即有浏览权限的组下的用户)
+	 * 获取所有可见的用户(即有浏览权限的组下的用户)
 	 * </p>
 	 * @param operatorId
 	 * @return

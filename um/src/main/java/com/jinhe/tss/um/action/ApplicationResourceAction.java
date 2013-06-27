@@ -27,6 +27,7 @@ import com.jinhe.tss.um.entity.ResourceTypeRoot;
 import com.jinhe.tss.um.helper.ApplicationTreeParser;
 import com.jinhe.tss.um.service.IApplicationService;
 import com.jinhe.tss.um.service.IResourceRegisterService;
+import com.jinhe.tss.util.EasyUtils;
 
 /**
  * 应用资源管理相关Action对象
@@ -47,6 +48,20 @@ public class ApplicationResourceAction extends BaseActionSupport {
 		treeEncoder.setNeedRootNode(false);
  
 		print("AppSource", treeEncoder);
+	}
+	
+	/** 获取认证系统 */
+	public String getAuthenticateApp() {		
+		// 获得登陆用户可访问的应用系统名称列表		
+		List<?> apps = applicationService.getApplications();
+		String[] appEditor = EasyUtils.generateComboedit(apps, "applicationId", "name", "|");
+		
+		StringBuffer sb = new StringBuffer();
+	    sb.append("<column name=\"authenticateAppId\" caption=\"认证系统\" mode=\"string\" editor=\"comboedit\" ");
+	    sb.append(" editorvalue=\"").append(appEditor[0]).append("\" ");
+	    sb.append(" editortext=\"") .append(appEditor[1]).append("\"/>");
+
+		return print("AuthenticateApplication", sb);
 	}
 	
 	/**

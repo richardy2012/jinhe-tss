@@ -38,12 +38,13 @@ public class UserService implements IUserService{
 	@Autowired private IGroupUserDao groupUserDao;
 	@Autowired private IGroupService groupService;
 
-	public void deleteUser(Long groupId, Long userId, Integer groupType) {
+	public void deleteUser(Long groupId, Long userId) {
         if(Environment.getOperatorId().equals(userId)) {
             throw new BusinessException("当前用户正在使用中，无法删除！");
         }
         
-        if(Group.ASSISTANT_GROUP_TYPE.equals(groupType)){
+        Group group = groupDao.getEntity(groupId);
+        if(Group.ASSISTANT_GROUP_TYPE.equals(group.getGroupType())){
         	groupUserDao.delete(userDao.getGroup2User(groupId, userId));
         } 
         else {
@@ -63,19 +64,24 @@ public class UserService implements IUserService{
         return userDao.getUserByLoginName(loginName);
     }
  
-    public void initPasswordByGroupId(Long groupId, String initPassword) {
+    public void initPasswordByGroupId(Long groupId, Long userId, String initPassword) {
         if ( EasyUtils.isNullOrEmpty(initPassword) ) {
             throw new BusinessException("初始化密码不能为空");
         }
         
         List<User> userList = groupDao.getUsersByGroupIdDeeply(groupId);
+        if(userId != null && userId.longValue() > 0) {
+        	userList.clear();
+        	userList.add(userDao.getEntity(userId));
+        }
+       
         for (User user : userList) {
             if(UMConstants.TSS_APPLICATION_ID.equals(user.getApplicationId())){
-                //主用户组进行密码初始化时加密密码
-                user.setPassword(InfoEncoder.string2MD5(user.getLoginName() + "_" + initPassword)); 
+                String md5Password = InfoEncoder.string2MD5(user.getLoginName() + "_" + initPassword);
+				user.setPassword(md5Password);  // 主用户组进行密码初始化时加密密码
             }
             else{
-                user.setPassword(initPassword); //其它用户组 不加密
+                user.setPassword(initPassword); // 其它用户组 不加密
             }
             userDao.initUser(user);
         }
@@ -87,7 +93,7 @@ public class UserService implements IUserService{
      * @param password
      * @return
      */
-    private String createUserPwd(User user, String password){
+    private String createUserPwd(User user, String password) {
         if(UMConstants.TSS_APPLICATION_ID.equals(user.getApplicationId())){
             // 新建
             if( user.getId() == null ){
@@ -211,65 +217,6 @@ public class UserService implements IUserService{
         user2Role.setUserId(userId);
         userDao.createObject(user2Role);
     }
-
-	public void editManualMappingInfo(Long userId, Long appUserId, String applicationId) {
-		User appUser = userDao.getAppUser(appUserId, applicationId);
-		if( appUser != null ){
-			appUser.setAppUserId(null);
-			userDao.update(appUser);
-		}
-
-		User user = userDao.getEntity(userId);
-		user.setAppUserId(appUserId);
-		userDao.update(user);
-    }
-
-	public void editAutoMappingInfo(Long groupId, Long toGroupId, Integer mappingColumn, Integer mapMode) {
-		List<User> appUserList;
-		List<User> mainUserList;
-		if(new Integer(0).equals(mapMode)){
-			appUserList = groupDao.getUsersByGroupId(groupId);
-			mainUserList = groupDao.getUsersByGroupId(toGroupId);
-		} else {
-			appUserList= groupDao.getUsersByGroupIdDeeply(groupId);
-			mainUserList= groupDao.getUsersByGroupIdDeeply(toGroupId);
-		}
-        
-        Map<String, User> userMap = new HashMap<String, User>();
-        for ( User user : mainUserList ) {
-            userMap.put(getMappingField(mappingColumn, user), user);
-        } 
-        
-        for ( User appUser : appUserList ) {
-            User mainUser = userMap.get(getMappingField(mappingColumn, appUser));
-            if ( mainUser != null ) {
-                mainUser.setOtherAppUserId(appUser.getId().toString()); // 保存外部用户的ID到主用户的OtherAppUserId字段
-                appUser.setAppUserId(mainUser.getId()); // 保存主用户的ID到外部用户的AppUserId字段
-            }
-        }
-        userDao.flush();
-    }
-
-    private String getMappingField(Integer mappingColumn, User user) {
-        String key;
-        switch(mappingColumn){
-        case 0:
-            key = user.getLoginName();  // 按照登陆帐号对应
-            break;
-        case 1:
-            key = user.getEmployeeNo(); // 按照工号对应
-            break;
-        case 2:
-            key = user.getCertificateNumber(); // 按照证件号码对应
-            break;
-        case 3:
-            key = user.getUserName(); //按照姓名对应
-            break;
-        default:
-            throw new BusinessException("对应字段(1-按照登陆帐号对应 2-按照工号对应 3-按照证件号码对应 4-按照姓名对应) 值有误。mappingColumn=" + mappingColumn);
-        }
-        return key;
-    }
     
 	public Map<String, Object> getInfo4CreateNewUser(Long groupId) {
         Group group = groupDao.getEntity(groupId);
@@ -294,27 +241,6 @@ public class UserService implements IUserService{
         map.put("User2RoleExistTree", userDao.findRolesByUserId(userId));
         return map;
     }
-
-	public List<User> getManualMappingInfo(Long groupId) {
-		List<User> users = groupDao.getUsersByGroupId(groupId);
-		for (User user : users) {
-			Long mapUserId = user.getAppUserId();
-			if (mapUserId == null) {
-				continue;
-			}
-			
-            User mapUser = userDao.getEntity(mapUserId);
-            if (mapUser != null) {
-                user.setAppUserName(mapUser.getLoginName());
-            }
-
-            Group group = groupDao.findMainGroupByUserId(mapUserId);
-            if(group != null) {
-                user.setAppUserGroupName(group.getName());
-            }
-		}
-		return users;
-	}
 
 	public void moveUser(Long groupId, Long toGroupId, Long userId) {
         Group group;
