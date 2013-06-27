@@ -6,7 +6,7 @@ import com.jinhe.tss.framework.TxTestSupport;
 
 public class ParamActionTest extends TxTestSupport {
 	
-	ParamAction action = new ParamAction();
+	@Autowired private ParamAction action;
 
     @Autowired private ParamService paramService;
     

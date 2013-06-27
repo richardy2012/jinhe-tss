@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
@@ -17,6 +18,7 @@ import com.jinhe.tss.um.entity.SubAuthorize;
 import com.jinhe.tss.um.service.ISubAuthorizeService;
 import com.jinhe.tss.util.EasyUtils;
 
+@Service("SubAuthorizeService")
 public class SubAuthorizeService implements ISubAuthorizeService {
 
 	@Autowired private IRoleDao  roleDao;

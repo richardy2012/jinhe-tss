@@ -49,8 +49,8 @@ commit;
 truncate table um_groupUser;
 
 -- 将系统管理员和匿名用户卦到主用户组下
-insert into um_groupUser (ID, GROUPID, USERID, SEQNO, LEVELNO, DECODE) values (-1, -2, -1, 1, 2, '0000100001');
-insert into um_groupUser (ID, GROUPID, USERID, SEQNO, LEVELNO, DECODE) values (-2, -2, -10000, 2, 2, '0000100002');
+insert into um_groupUser (ID, GROUPID, USERID) values (-1, -2, -1);
+insert into um_groupUser (ID, GROUPID, USERID) values (-2, -2, -10000);
 commit;
 
 truncate table UM_ROLEUSER;

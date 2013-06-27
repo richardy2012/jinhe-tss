@@ -9,6 +9,7 @@ import java.util.Map;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.component.progress.Progressable;
@@ -26,6 +27,7 @@ import com.jinhe.tss.um.helper.dto.UserDTO;
 import com.jinhe.tss.um.permission.ResourcePermission;
 import com.jinhe.tss.util.XMLDocUtil;
  
+@Service("SyncData")
 public class SyncService implements ISyncService, Progressable {
 	
     @Autowired private ICommonDao commonDao;
@@ -257,10 +259,13 @@ public class SyncService implements ISyncService, Progressable {
     
     public void syncUser(Long groupId, Long userId){
         User user = (User) commonDao.getEntity(User.class, userId);
-        if(null == user.getOtherAppUserId())
+        String otherAppUserId = user.getOtherAppUserId();
+		if( otherAppUserId == null ) {
             throw new BusinessException("当前用户没有外部应用系统中对应用户（otherAppUserId==null），无法进行同步！");
-        UserDTO otherAppUser = getUserFromOtherApp(user.getApplicationId(), user.getOtherAppUserId());
-        if(null == otherAppUser) {
+        }
+        
+        UserDTO otherAppUser = getUserFromOtherApp(user.getApplicationId(), otherAppUserId);
+        if( otherAppUser == null ) {
             // 如果为空，说明用户在其它应用不存在，可能已经被删除，则将之从UMS中也删除
             commonDao.delete(user);
             return;

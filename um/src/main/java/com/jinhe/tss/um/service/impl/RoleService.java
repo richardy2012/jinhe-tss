@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
@@ -19,6 +20,7 @@ import com.jinhe.tss.um.permission.ResourcePermission;
 import com.jinhe.tss.um.service.IRoleService;
 import com.jinhe.tss.util.EasyUtils;
  
+@Service("RoleService")
 public class RoleService implements IRoleService {
 
 	@Autowired private IRoleDao roleDao;

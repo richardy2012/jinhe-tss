@@ -3,6 +3,7 @@ package com.jinhe.tss.um.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IApplicationDao;
@@ -16,6 +17,7 @@ import com.jinhe.tss.um.permission.PermissionService;
 import com.jinhe.tss.um.permission.dispaly.ResourceTreeNode;
 import com.jinhe.tss.um.service.IApplicationService;
 
+@Service("ApplicationService")
 public class ApplicationService implements IApplicationService{
 	
 	@Autowired private IApplicationDao    applicationDao;

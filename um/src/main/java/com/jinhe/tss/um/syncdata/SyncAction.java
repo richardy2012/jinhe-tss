@@ -3,6 +3,10 @@ package com.jinhe.tss.um.syncdata;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.jinhe.tss.framework.component.progress.ProgressManager;
 import com.jinhe.tss.framework.component.progress.Progressable;
 import com.jinhe.tss.framework.exception.BusinessException;
@@ -15,17 +19,15 @@ import com.jinhe.tss.util.EasyUtils;
 /**
  * 用户组织同步action
  */
+@Controller
+@RequestMapping("syncdata")
 public class SyncAction extends ProgressActionSupport {
-
-    private String applicationId;  //应用ID
-    private Long groupId; //需要同步的其它用户组ID
-    private Long mode;    //单向同步 or 完全同步
-    private Long userId;  //需要单个同步的用户ID
     
-    private IGroupService groupService;
-    private ISyncService  syncService;
+    @Autowired private IGroupService groupService;
+    @Autowired private ISyncService  syncService;
 
-    public String syncData() {
+    @RequestMapping("/{groupId}")
+    public void syncData(String applicationId, Long groupId, Long mode) {
         Group group = groupService.getGroupById(groupId);
         String dbGroupId = group.getDbGroupId();
         if ( EasyUtils.isNullOrEmpty(dbGroupId) ) {
@@ -50,30 +52,13 @@ public class SyncAction extends ProgressActionSupport {
 		ProgressManager manager = new ProgressManager((Progressable) syncService, totalCount, datasMap);
         String code = manager.execute(); 
         
-        return printScheduleMessage(code);
+        printScheduleMessage(code);
     }
-
-    public String syncUser() {
+    
+    // 单个同步用户
+    @RequestMapping("/{groupId}/{userId}")
+    public void syncUser(Long groupId, Long userId) {
         syncService.syncUser(groupId, userId);
-        return printSuccessMessage();
-    }
- 
-    public void setApplicationId(String applicationId) {
-        this.applicationId = applicationId;
-    }
-    public void setGroupId(Long groupId) {
-        this.groupId = groupId;
-    }
-    public void setMode(Long mode) {
-        this.mode = mode;
-    }
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-    public void setSyncService(ISyncService service) {
-        this.syncService = service;
-    }
-    public void setGroupService(IGroupService groupService) {
-        this.groupService = groupService;
+        printSuccessMessage();
     }
 }

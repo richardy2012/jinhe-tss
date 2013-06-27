@@ -3,6 +3,8 @@ package com.jinhe.tss.um.dao.impl;
 import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.jinhe.tss.framework.persistence.BaseDao;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IUserDao;
@@ -10,6 +12,7 @@ import com.jinhe.tss.um.entity.GroupUser;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.util.EasyUtils;
 
+@Repository("UserDao")
 public class UserDao extends BaseDao<User> implements IUserDao {
 
     public UserDao() {

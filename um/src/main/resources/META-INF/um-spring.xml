@@ -6,42 +6,9 @@
 	xmlns:p="http://www.springframework.org/schema/p" 
 	xmlns:aop="http://www.springframework.org/schema/aop" 
 	xsi:schemaLocation="http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context-3.0.xsd  http://www.springframework.org/schema/tx  http://www.springframework.org/schema/tx/spring-tx-3.0.xsd  http://www.springframework.org/schema/aop  http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
- 
- 	<!-- 		DAO Config		-->
-	<bean id="GroupUserDao"    class="com.jinhe.tss.um.dao.impl.GroupUserDao"/>
-	<bean id="GroupDao"        class="com.jinhe.tss.um.dao.impl.GroupDao"/>
-	<bean id="UserDao"         class="com.jinhe.tss.um.dao.impl.UserDao"/>
-	<bean id="RoleDao"         class="com.jinhe.tss.um.dao.impl.RoleDao"/>
-	<bean id="ApplicationDao"  class="com.jinhe.tss.um.dao.impl.ApplicationDao"/>
-	<bean id="ResourceTypeDao" class="com.jinhe.tss.um.dao.impl.ResourceTypeDao"/>
-	
-	<!--   Service Config    -->
-	<bean id="GroupService"            class="com.jinhe.tss.um.service.impl.GroupService"/>
-	<bean id="UserService"             class="com.jinhe.tss.um.service.impl.UserService"/>
-	<bean id="RoleService"             class="com.jinhe.tss.um.service.impl.RoleService"/>
-	<bean id="StrategyService"         class="com.jinhe.tss.um.service.impl.StrategyService"/>
-	<bean id="ApplicationService"      class="com.jinhe.tss.um.service.impl.ApplicationService"/>
-	<bean id="ResourceRegisterService" class="com.jinhe.tss.um.service.impl.ResourceRegisterService"/>
-	
-	<bean id="PasswordRuleService"  class="com.jinhe.tss.um.service.impl.PasswordRuleService"/>
-	<bean id="MessageService"       class="com.jinhe.tss.um.service.impl.MessageService"/>
-	<bean id="GeneralSearchService" class="com.jinhe.tss.um.search.GeneralSearchServiceImpl"/>
-	<bean id="SyncService"          class="com.jinhe.tss.um.syncdata.SyncService"/>
-	
-	<bean id="RemoteSearchService"  class="com.jinhe.tss.um.search.RemoteSearchServiceImpl"/>
- 
- 	<!--   Login Config   -->
-	<bean id="LoginService" class="com.jinhe.tss.um.service.impl.LoginService"/>
-	
- 	<!-- Permission Relation -->	
-	<bean id="permissionHelper" class="com.jinhe.tss.um.permission.PermissionHelper" />
- 
-	<!-- 资源权限手动补全 -->
-	<bean id="ResourcePermission" class="com.jinhe.tss.um.permission.ResourcePermissionImpl"/>
 		
 	<!-- 资源权限自动补齐拦截器  -->
 	<bean id="ResourcePermissionInterceptor" class="com.jinhe.tss.um.permission.ResourcePermissionInterceptor"/>
-	
 	<bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
 		<property name="beanNames"> <value>*DAO, *Dao</value> </property>
 		<property name="interceptorNames">
@@ -53,7 +20,6 @@
 	
 	<!-- 对资源进行权限过滤或检查的拦截器 -->
 	<bean id="PermissionCheckInterceptor" class="com.jinhe.tss.um.permission.filter.PermissionCheckInterceptor"/>
-	
 	<bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
 		<property name="beanNames"> <value> *Service, *DAO, *Dao </value> </property>
 		<property name="interceptorNames">
@@ -62,11 +28,6 @@
 			</list>
 		</property>
 	</bean>
-	
- 
-	<!--  PermissionService   -->
-	<bean id="PermissionService" class="com.jinhe.tss.um.permission.PermissionServiceImpl"/>
- 
  
 	<!-- user overdue Job Config -->
 	<bean id="JobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">

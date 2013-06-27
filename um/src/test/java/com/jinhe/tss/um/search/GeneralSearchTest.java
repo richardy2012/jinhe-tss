@@ -106,7 +106,7 @@ public class GeneralSearchTest extends TxSupportTest4UM {
         strategyAction.saveSubAuthorizeStrategy();
         
         action.setGroupId(mainGroup.getId());
-    	action.searchUserStrategyInfo();
+    	action.searchUserSubauth();
     	
     	action.setRoleId(roleId);
     	action.searchRolesInfo();

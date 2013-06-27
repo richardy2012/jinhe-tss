@@ -17,7 +17,6 @@ import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.IH2DBServer;
 import com.jinhe.tss.framework.test.TestUtil;
-import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.permission.PermissionService;
@@ -35,7 +34,8 @@ import com.jinhe.tss.util.XMLDocUtil;
         locations={
           "classpath:META-INF/um-test-spring.xml",  
           "classpath:META-INF/framework-spring.xml",  
-          "classpath:META-INF/um-spring.xml"
+          "classpath:META-INF/um-spring.xml",
+          "classpath:META-INF/spring-mvc.xml"
         } 
         , inheritLocations = false // 是否要继承父测试用例类中的 Spring 配置文件，默认为 true
       )
@@ -96,16 +96,7 @@ public abstract class TxSupportTest4UM extends AbstractTransactionalJUnit38Sprin
         // 补全SQL初始化出来的系统级用户组
         Long[] groupIds = new Long[] {-2L, -3L, -4L, -7L, -8L, -9L};
         for(Long groupId : groupIds) {
-            Group group = groupService.getGroupById(groupId);
-            if ( Group.MAIN_GROUP_TYPE.equals( group.getGroupType() ) ) {
-                resourcePermission.addResource(group.getId(), UMConstants.MAINGROUP_RESOURCE_TYPE_ID);
-            }
-            if ( Group.ASSISTANT_GROUP_TYPE.equals( group.getGroupType() )) {
-                resourcePermission.addResource(group.getId(), UMConstants.ASSISTANTGROUP_RESOURCE_TYPE_ID);
-            }
-            if ( Group.OTHER_GROUP_TYPE.equals( group.getGroupType() ) ) {
-                resourcePermission.addResource(group.getId(), UMConstants.OTHERAPPGROUP_RESOURCE_TYPE_ID);
-            }
+        	resourcePermission.addResource(groupId, UMConstants.GROUP_RESOURCE_TYPE_ID);
         }
     }
         

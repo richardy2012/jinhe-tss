@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
@@ -16,6 +17,7 @@ import com.jinhe.tss.util.BeanUtil;
  * 操作资源表时相关的补全操作和删除操作
  * </p>
  */
+@Component("ResourcePermission")
 public class ResourcePermissionImpl extends TreeSupportDao<IDecodable> implements ResourcePermission {
 	
     public ResourcePermissionImpl() {

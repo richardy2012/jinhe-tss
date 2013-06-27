@@ -3,12 +3,14 @@ package com.jinhe.tss.um.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.persistence.ICommonDao;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.PasswordRule;
 import com.jinhe.tss.um.service.IPasswordRuleService;
 
+@Service("PasswordRuleService")
 public class PasswordRuleService implements IPasswordRuleService {
 	
     @Autowired private ICommonDao commonDao;

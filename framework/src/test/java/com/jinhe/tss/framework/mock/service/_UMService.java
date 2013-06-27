@@ -3,6 +3,7 @@ package com.jinhe.tss.framework.mock.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.mock._UMCondition;
 import com.jinhe.tss.framework.mock.dao._IGroupDAO;
@@ -14,6 +15,7 @@ import com.jinhe.tss.framework.mock.model._GroupRole;
 import com.jinhe.tss.framework.mock.model._Role;
 import com.jinhe.tss.framework.mock.model._User;
 
+@Service("_UMService")
 public class _UMService implements _IUMSerivce {
     
     @Autowired private _IUserDAO  userDAO;

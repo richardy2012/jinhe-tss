@@ -2,6 +2,8 @@ package com.jinhe.tss.um.dao.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.exception.BusinessException;
@@ -10,6 +12,7 @@ import com.jinhe.tss.um.dao.IResourceTypeDao;
 import com.jinhe.tss.um.entity.ResourceType;
 import com.jinhe.tss.um.entity.ResourceTypeRoot;
 
+@Repository("ResourceTypeDao")
 public class ResourceTypeDao extends BaseDao<ResourceType> implements IResourceTypeDao {
  
 	public ResourceTypeDao() {

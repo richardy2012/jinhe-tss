@@ -1,11 +1,14 @@
 package com.jinhe.tss.um.dao.impl;
 
+import org.springframework.stereotype.Repository;
+
 import com.jinhe.tss.framework.persistence.BaseDao;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupUserDao;
 import com.jinhe.tss.um.entity.GroupUser;
 import com.jinhe.tss.um.entity.User;
  
+@Repository("GroupUserDao")
 public class GroupUserDao extends BaseDao<GroupUser> implements IGroupUserDao {
 
     public GroupUserDao() {

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jinhe.tss.framework.persistence.ICommonDao;
@@ -16,6 +17,7 @@ import com.jinhe.tss.framework.sso.online.OnlineUser;
  * <p> 在线用户库（数据库） </p>
  * 
  */
+@Service
 @Transactional
 public class DBOnlineUserManager implements IOnlineUserManager {
 	

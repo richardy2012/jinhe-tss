@@ -3,12 +3,15 @@ package com.jinhe.tss.um.dao.impl;
 import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IRoleDao;
 import com.jinhe.tss.um.entity.Role;
 import com.jinhe.tss.um.entity.SubAuthorize;
  
+@Repository("RoleDao")
 public class RoleDao extends TreeSupportDao<Role> implements IRoleDao {
 	
 	public RoleDao() {

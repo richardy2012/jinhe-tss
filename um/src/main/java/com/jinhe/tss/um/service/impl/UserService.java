@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
@@ -30,6 +31,7 @@ import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.InfoEncoder;
 
+@Service("UserService")
 public class UserService implements IUserService{
 	
 	@Autowired private IUserDao  userDao;

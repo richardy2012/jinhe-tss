@@ -6,6 +6,7 @@ import java.util.List;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.persistence.IEntity;
@@ -23,6 +24,7 @@ import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
  
+@Service("ResourceRegisterService")
 public class ResourceRegisterService implements IResourceRegisterService{
 	
 	@Autowired private IApplicationDao    applicationDao;

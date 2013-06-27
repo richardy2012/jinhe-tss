@@ -126,9 +126,10 @@ public interface IGroupDao extends ITreeSupportDao<Group>{
 	 * 获取指定类型的用户组，并按指定的操作权限Id进行过滤
 	 * @param operatorId
 	 * @param operationId
+	 * @param groupType
 	 * @return
 	 */
-	List<?> getMainAndAssistantGroups(Long operatorId, String operationId);
+	List<Group> getGroupsByType(Long operatorId, String operationId, Integer groupType);
 	
 	/**
 	 * 按操作选项获取一系列组的所有父组

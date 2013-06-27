@@ -2,6 +2,8 @@ package com.jinhe.tss.framework.component.log;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
@@ -12,6 +14,7 @@ import com.jinhe.tss.framework.component.param.ParamConfig;
  * 跟业务操作相关的日志记录器
  * 
  */
+@Component
 public class BusinessLogger extends OutputRecordsManager implements IBusinessLogger{
    
     private Pool apool;

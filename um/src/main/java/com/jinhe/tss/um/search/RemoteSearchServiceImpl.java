@@ -3,10 +3,12 @@ package com.jinhe.tss.um.search;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.persistence.ICommonDao;
 import com.jinhe.tss.um.permission.RemoteResourceTypeDao;
  
+@Service("RemoteSearchService")
 public class RemoteSearchServiceImpl implements RemoteSearchService {
 	
 	@Autowired private ICommonDao commonDao;

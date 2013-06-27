@@ -33,7 +33,7 @@ public interface GeneralSearchService {
 	 * @param groupId
 	 * @return
 	 */
-	List<?> searchUserStrategyInfoByGroupId(Long groupId);
+	List<?> searchUserSubauthByGroupId(Long groupId);
 	
 	/**
 	 * 根据用户组查询组下用户（需是登陆用户可见的用户）的角色授予情况

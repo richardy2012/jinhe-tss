@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
@@ -22,6 +23,8 @@ import com.jinhe.tss.util.MathUtil;
 // 2. 保存到登录系统的临时表当中
 // 3. 展示资源时关联该临时表
 // ===========================================================================
+
+@Service("PermissionService")
 public class PermissionServiceImpl implements PermissionService {
 
 	@Autowired private PermissionHelper permissionHelper;

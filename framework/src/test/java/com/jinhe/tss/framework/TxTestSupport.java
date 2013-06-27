@@ -19,6 +19,7 @@ import com.jinhe.tss.framework.test.TestUtil;
 @SuppressWarnings("deprecation")
 @ContextConfiguration(
 	  locations={
+			"classpath:META-INF/spring-mvc.xml",
 		    "classpath:META-INF/framework-test-spring.xml",  
 		    "classpath:META-INF/framework-spring.xml"
 	  }   

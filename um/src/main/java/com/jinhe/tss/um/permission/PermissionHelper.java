@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.Global;
@@ -26,6 +27,7 @@ import com.jinhe.tss.util.BeanUtil;
  * 负责处理基于TSS框架的应用里的资源表、权限表（包括补齐和未补齐）的操作。
  * 针对TSS特有的操作不宜放在本接口里，比如读取角色信息等。
  */
+@Component("permissionHelper")
 public class PermissionHelper extends TreeSupportDao<IDecodable> {
     
     public PermissionHelper() {

@@ -9,7 +9,7 @@ import com.jinhe.tss.framework.mock.service._IUMSerivce;
 
 public class LogActionTest extends TxTestSupport {
 
-	private LogAction action = new LogAction();
+	@Autowired private LogAction action;
 
 	@Autowired private _IUMSerivce umSerivce;
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.persistence.ICommonDao;
 import com.jinhe.tss.um.entity.Group;
@@ -14,6 +15,7 @@ import com.jinhe.tss.um.helper.dto.SubAuthorizedUserRoleDTO;
 import com.jinhe.tss.um.helper.dto.UserRoleDTO;
 import com.jinhe.tss.util.EasyUtils;
  
+@Service("GeneralSearchService")
 public class GeneralSearchServiceImpl implements GeneralSearchService {
 
 	@Autowired private ICommonDao commonDao;
@@ -45,7 +47,7 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
 	}
  
 	// 一个组下面所有用户的因转授而获得的角色的情况
-	public List<SubAuthorizedUserRoleDTO> searchUserStrategyInfoByGroupId(Long groupId){
+	public List<SubAuthorizedUserRoleDTO> searchUserSubauthByGroupId(Long groupId){
 	    // 先取出组下所有可见的用户
 		queryUsersInsertTemp(groupId);
 		

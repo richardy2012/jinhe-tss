@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.um.UMConstants;
@@ -28,6 +29,7 @@ import com.jinhe.tss.util.BeanUtil;
  * <li>根据用户登录名获取用户信息；
  * </p>
  */
+@Service("LoginService")
 public class LoginService implements ILoginService {
 
 	@Autowired private IUserDao userDao;

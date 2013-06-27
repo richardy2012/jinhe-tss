@@ -28,11 +28,9 @@ import com.jinhe.tss.portal.entity.ElementGroup;
 import com.jinhe.tss.portal.entity.Layout;
 import com.jinhe.tss.portal.service.IElementService;
 import com.jinhe.tss.um.UMConstants;
-import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.permission.PermissionService;
 import com.jinhe.tss.um.permission.ResourcePermission;
-import com.jinhe.tss.um.service.IGroupService;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.um.service.IResourceRegisterService;
 import com.jinhe.tss.util.XMLDocUtil;
@@ -60,7 +58,6 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
     
     @Autowired private IResourceRegisterService resourceRegisterService;
     @Autowired private ResourcePermission resourcePermission;
-    @Autowired private IGroupService groupService;
     @Autowired private ILoginService loginSerivce;
     @Autowired private PermissionService permissionService;
     
@@ -110,16 +107,7 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
         // 补全SQL初始化出来的系统级用户组
         Long[] groupIds = new Long[] {-2L, -3L, -4L, -7L, -8L, -9L};
         for(Long groupId : groupIds) {
-            Group group = groupService.getGroupById(groupId);
-            if ( Group.MAIN_GROUP_TYPE.equals( group.getGroupType() ) ) {
-                resourcePermission.addResource(group.getId(), UMConstants.MAINGROUP_RESOURCE_TYPE_ID);
-            }
-            if ( Group.ASSISTANT_GROUP_TYPE.equals( group.getGroupType() )) {
-                resourcePermission.addResource(group.getId(), UMConstants.ASSISTANTGROUP_RESOURCE_TYPE_ID);
-            }
-            if ( Group.OTHER_GROUP_TYPE.equals( group.getGroupType() ) ) {
-                resourcePermission.addResource(group.getId(), UMConstants.OTHERAPPGROUP_RESOURCE_TYPE_ID);
-            }
+        	resourcePermission.addResource(groupId, UMConstants.GROUP_RESOURCE_TYPE_ID);
         }
     }
     

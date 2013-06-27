@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
@@ -24,6 +25,7 @@ import com.jinhe.tss.um.helper.dto.OtherUserDTO;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.util.EasyUtils;
  
+@Repository("GroupDao")
 public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
 
     public GroupDao() {
@@ -113,31 +115,13 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
 	}
  
 	public List<?> getMainAndAssistantGroups(Long operatorId) {
-		return getMainAndAssistantGroups(operatorId, UMConstants.GROUP_VIEW_OPERRATION);
+		List<Group> groups = new ArrayList<Group>(); 
+	    groups.addAll(getGroupsByType(operatorId, UMConstants.GROUP_VIEW_OPERRATION, Group.MAIN_GROUP_TYPE));
+	    groups.addAll(getGroupsByType(operatorId, UMConstants.GROUP_VIEW_OPERRATION, Group.ASSISTANT_GROUP_TYPE));
+		return groups;
 	}
 	
-	public List<?> getMainGroups(Long operatorId, String operationId) {
-		return getGroupsByType(operatorId, operationId, Group.MAIN_GROUP_TYPE);
-	}
-	
-	public List<?> getMainAndAssistantGroups(Long operatorId, String operationId) {
-        List<?> allGroups = getAllGroups(operatorId, operationId);
-        List<Group> mainAndAssistantGroups = new ArrayList<Group>();
-        for( Object temp : allGroups ){
-            Group group = (Group) temp;
-            Integer groupType = group.getGroupType();
-            if( Group.MAIN_GROUP_TYPE.equals(groupType) || Group.ASSISTANT_GROUP_TYPE.equals(groupType) ) {
-            	mainAndAssistantGroups.add(group);
-            }
-        }
-        return mainAndAssistantGroups;
-	}
-	
-	public List<?> getOtherGroups(Long operatorId, String operationId) {
-        return getGroupsByType(operatorId, operationId, Group.OTHER_GROUP_TYPE);
-	}
-	
-	private List<Group> getGroupsByType(Long operatorId, String operationId, Integer groupType) {
+	public List<Group> getGroupsByType(Long operatorId, String operationId, Integer groupType) {
         String suppliedTable = resourceTypeDao.getSuppliedTable(UMConstants.TSS_APPLICATION_ID, UMConstants.GROUP_RESOURCE_TYPE_ID);
         
         String hql = PermissionHelper.permissionHQL(entityName, suppliedTable);

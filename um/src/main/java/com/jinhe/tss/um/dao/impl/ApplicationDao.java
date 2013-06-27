@@ -3,11 +3,14 @@ package com.jinhe.tss.um.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.jinhe.tss.framework.persistence.BaseDao;
 import com.jinhe.tss.um.dao.IApplicationDao;
 import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.util.EasyUtils;
 
+@Repository("ApplicationDao")
 public class ApplicationDao extends BaseDao<Application> implements IApplicationDao {
 	
     public ApplicationDao() {

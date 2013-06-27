@@ -2,8 +2,11 @@ package com.jinhe.tss.framework.component.param;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
 
+@Repository("ParamDao")
 public class ParamDaoImpl extends TreeSupportDao<Param> implements ParamDao {
 
 	public ParamDaoImpl() {

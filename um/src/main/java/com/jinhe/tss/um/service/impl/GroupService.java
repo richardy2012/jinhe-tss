@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.component.progress.Progressable;
@@ -31,6 +32,7 @@ import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.InfoEncoder;
  
+@Service("GroupService")
 public class GroupService implements IGroupService, Progressable{
 
 	@Autowired private IGroupDao groupDao;
@@ -75,7 +77,7 @@ public class GroupService implements IGroupService, Progressable{
     private Object[] getGroupsByGroupTypeAndOperationId(Integer groupType, String operationId) {
     	Long operatorId = Environment.getOperatorId();
     	
-        List<?> groups = groupDao.getMainAndAssistantGroups(operatorId, operationId);
+        List<?> groups = groupDao.getGroupsByType(operatorId, operationId, groupType);  
         List<Long> groupIds = new ArrayList<Long>();
         for( Object temp : groups ){
             Group group = (Group) temp;
@@ -87,7 +89,7 @@ public class GroupService implements IGroupService, Progressable{
 
     public Object[] getOtherGroupsByOperationId(String operationId) {
     	Long operatorId = Environment.getOperatorId();
-        List<?> groups = groupDao.getGroupsByType(Group.OTHER_GROUP_TYPE, operatorId, operationId);  
+        List<?> groups = groupDao.getGroupsByType(operatorId, operationId, Group.OTHER_GROUP_TYPE);  
         
         Group otherAppGroupRoot = null;   
         List<Group> otherGroups = new ArrayList<Group>();
@@ -99,15 +101,15 @@ public class GroupService implements IGroupService, Progressable{
             }
             otherGroups.add(group);
         }
+ 
+        String hql = " from Application o where o.applicationType = ? order by o.id";
+        List<?> apps = groupDao.getEntities(hql, UMConstants.OTHER_SYSTEM_APP);
         
-        List<?> appIds = resourcePermission.getResourceIds(UMConstants.TSS_APPLICATION_ID, 
-                UMConstants.APPLICATION_RESOURCE_TYPE_ID, UMConstants.APPLICATION_VIEW_OPERRATION, operatorId);
-        List<?> apps = applicationDao.getApplications(appIds, UMConstants.OTHER_SYSTEM_APP); // 应用系统类型
         return new Object[]{otherAppGroupRoot, otherGroups, apps};
     }
     
     public Object[] getGroupsUnderAppByOperationId(String operationId, String applicationId){
-        List<?> groups = groupDao.getGroupsByType(Group.OTHER_GROUP_TYPE, Environment.getOperatorId(), operationId);  
+        List<?> groups = groupDao.getGroupsByType(Environment.getOperatorId(), operationId, Group.OTHER_GROUP_TYPE);  
         
         Group otherAppGroupRoot = null;   
         List<Group> otherGroups = new ArrayList<Group>();

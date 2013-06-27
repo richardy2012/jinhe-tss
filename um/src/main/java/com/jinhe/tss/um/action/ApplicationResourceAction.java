@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.action;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
@@ -199,7 +199,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 		return print("ImportApplication", encoder);
 	}
 	
-	public String applicationRegisterByXML(@RequestParam MultipartFile file) {
+	public String registerApplication(@RequestParam File file) {
 		if (null == file) {
 			throw new BusinessException("没有选择文件，请重新导入！");
 		}

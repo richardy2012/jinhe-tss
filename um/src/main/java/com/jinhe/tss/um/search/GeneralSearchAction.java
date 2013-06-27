@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
@@ -14,18 +18,16 @@ import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.service.IApplicationService;
 import com.jinhe.tss.util.EasyUtils;
 
+@Controller
+@RequestMapping("search")
 public class GeneralSearchAction extends BaseActionSupport {
-
-	private String applicationId;
-	private String resourceTypeId;
-	private Long groupId;
-	private Long roleId;
 	
-	private GeneralSearchService service;
-	private RemoteSearchService remoteService;
-	private IApplicationService applicationService;
+	@Autowired private GeneralSearchService service;
+	@Autowired private RemoteSearchService remoteService;
+	@Autowired private IApplicationService applicationService;
 	
-	public String getAllApplications(){
+	@RequestMapping("/apps/{groupId}")
+	public void getAllApplications(Long groupId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("groupId", groupId);	
 		
@@ -34,16 +36,14 @@ public class GeneralSearchAction extends BaseActionSupport {
 		xFormEncoder.setColumnAttribute("applicationId", "editortext", applicationOptions[1]);
 		xFormEncoder.setColumnAttribute("applicationId", "editorvalue",	applicationOptions[0]);
 
-        return print("GeneralSearchPermissionInfo", xFormEncoder);
+        print("GeneralSearchPermissionInfo", xFormEncoder);
 	}
 	
 	/**
-	 * <p>
 	 * 根据应用id获得资源类型
-	 * </p>
-	 * @return
 	 */
-	public String getResourceTypes(){
+	@RequestMapping("/resources/{applicationId}")
+	public void getResourceTypes(String applicationId) {
 		StringBuffer sb = new StringBuffer();
         sb.append("<column name=\"resourceTypeId\" caption=\"资源类型\" mode=\"string\" editor=\"comboedit\" ");
         
@@ -51,16 +51,14 @@ public class GeneralSearchAction extends BaseActionSupport {
         sb.append(" editorvalue=\"").append(resourceTypeOptions[0]).append("\" ");
         sb.append(" editortext=\"").append(resourceTypeOptions[1]).append("\"/>");
         
-        return print("ResourceType", sb);
+        print("ResourceType", sb);
 	}
 	
 	/**
-	 * <p>
 	 * 查询授权信息
-	 * </p>
-	 * @return
 	 */
-	public String searchPermission() {
+	@RequestMapping("/permission/{groupId}/{applicationId}/{resourceTypeId}")
+	public void searchPermission(Long groupId, String applicationId, String resourceTypeId) {
         if ( EasyUtils.isNullOrEmpty(applicationId) ) throw new BusinessException("请选择应用系统");
         if ( EasyUtils.isNullOrEmpty(resourceTypeId) ) throw new BusinessException("请选择资源类型");
 
@@ -81,87 +79,58 @@ public class GeneralSearchAction extends BaseActionSupport {
         TreeEncoder treeEncoder = new TreeEncoder(data);
         treeEncoder.setNeedRootNode(false);
 
-        return print("GeneralSearchPermissionList", treeEncoder);
+        print("GeneralSearchPermissionList", treeEncoder);
     }
 	
 	/**
-	 * <p>
 	 * 查询一个其他用户组下面的用户和主用户组的对应关系
-	 * </p>
-	 * @return
 	 */
-	public String searchMapping(){
+	@RequestMapping("/usermapping/{groupId}")
+	public void searchMapping(Long groupId) {
 		List<?> users = service.searchOtherUserMappingInfo(groupId);
 		GridDataEncoder gridEncoder = new GridDataEncoder(users, UMConstants.GENERAL_SEARCH_MAPPING_GRID);
 
-        return print("GeneralSearchMappingGrid", gridEncoder);
+        print("GeneralSearchMappingGrid", gridEncoder);
 	}
  
 	/**
-	 * <p>
 	 * 一个组下面所有用户的因转授而获得的角色的情况
-	 * </p>
-	 * @return
 	 */
-	public String searchUserStrategyInfo(){
-		List<?> list = service.searchUserStrategyInfoByGroupId(groupId);
+	@RequestMapping("/subauth/{groupId}")
+	public void searchUserSubauth(Long groupId) {
+		List<?> list = service.searchUserSubauthByGroupId(groupId);
 		GridDataEncoder gridEncoder = new GridDataEncoder(list, UMConstants.GENERAL_SEARCH_STRATEGY_GRID);
 				
-        return print("GeneralSearchUserStrategyInfoGrid", gridEncoder);
+        print("GeneralSearchUserSubauthGrid", gridEncoder);
 	}
 	
 	/**
 	 * 根据用户组查询组下用户（需是登陆用户可见的用户）的角色授予情况
-	 * @return
 	 */
-	public String searchRolesInfo(){
+	@RequestMapping("/roles/{groupId}")
+	public void searchRolesInfo(Long groupId) {
 		List<?> list = service.searchUserRolesMapping(groupId);
 		GridDataEncoder gridEncoder = new GridDataEncoder(list, UMConstants.GENERAL_SEARCH_ROLE_GRID);
 
-		return print("GeneralSearchRoleGrid", gridEncoder);
+		print("GeneralSearchRoleGrid", gridEncoder);
 	}
 	
 	/**
 	 * 拥有同一个角色的所有用户列表
-	 * @return
 	 */
-	public String searchUserInfoByRole(){
+	@RequestMapping("/role/users/{roleId}")
+	public void searchUsersByRole(Long roleId) {
 		List<?> list = service.searchUsersByRole(roleId);
 		GridDataEncoder gridEncoder = new GridDataEncoder(list,UMConstants.GENERAL_SEARCH_USER_GRID);
 
-        return print("GeneralSearchUserGrid",gridEncoder);
+        print("GeneralSearchUserGrid",gridEncoder);
 	}
 	
-	public String searchUsersByGroup(){
+	@RequestMapping("/group/users/{groupId}")
+	public void searchUsersByGroup(Long groupId) {
 		List<?> list = service.searchUsersByGroup(groupId);
 		GridDataEncoder gridEncoder = new GridDataEncoder(list,UMConstants.GENERAL_SYN_GRID);
 
-        return print("GeneralSearchSyncGrid", gridEncoder);
-	}
-
-
-	public void setApplicationId(String applicationId) {
-		this.applicationId = applicationId;
-	}
-	public void setResourceTypeId(String resourceTypeId) {
-		this.resourceTypeId = resourceTypeId;
-	}
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
-	}
-	public void setRoleId(Long roleId) {
-		this.roleId = roleId;
-	}
-    
-    public void setService(GeneralSearchService service) { 
-        this.service = service; 
-    }
-
-	public void setRemoteService(RemoteSearchService remoteService) {
-		this.remoteService = remoteService;
-	}
-
-	public void setApplicationService(IApplicationService applicationService) {
-		this.applicationService = applicationService;
+        print("GeneralSearchSyncGrid", gridEncoder);
 	}
 }

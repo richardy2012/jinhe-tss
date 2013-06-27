@@ -2,10 +2,13 @@ package com.jinhe.tss.framework.mock.dao.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.jinhe.tss.framework.mock.dao._IGroupDAO;
 import com.jinhe.tss.framework.mock.model._Group;
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
 
+@Repository("_GroupDAO")
 public class _GroupDAO extends TreeSupportDao<_Group> implements _IGroupDAO {
 
     public _GroupDAO() {

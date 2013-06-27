@@ -1,6 +1,7 @@
 package com.jinhe.tss.framework.license;
 
 import java.util.Date;
+import java.util.Properties;
 
 import com.jinhe.tss.util.ConfigurableContants;
 import com.jinhe.tss.util.DateUtil;
@@ -19,6 +20,8 @@ public final class License extends ConfigurableContants {
     String licenseSignature; //license签名
     
     LicenseType licenseType; //license类型
+    
+    static Properties licenseProperties;
     
     /**
      * 把license的属性值拼成一个字符串，然后转身字节数组
@@ -56,19 +59,19 @@ public final class License extends ConfigurableContants {
      */
     public static License fromConfigFile(String fileName) throws Exception {
 
-        init(LicenseFactory.LICENSE_DIR + "/" + fileName);
+    	licenseProperties = init(fileName);
         
         License license = new License();
-        license.product = getProperty("product");
-        license.version = getProperty("version");
-        license.licenseSignature = getProperty("signature");
+        license.product = licenseProperties.getProperty("product");
+        license.version = licenseProperties.getProperty("version");
+        license.licenseSignature = licenseProperties.getProperty("signature");
         
-        String type = getProperty("type");
+        String type = licenseProperties.getProperty("type");
         if( !EasyUtils.isNullOrEmpty(type) ) {
             license.licenseType = new LicenseType(type);
         }
         
-        String expiry = getProperty("expiry");
+        String expiry = licenseProperties.getProperty("expiry");
         if( !EasyUtils.isNullOrEmpty(expiry) ) {
             license.expiresDate = DateUtil.parse(expiry);
         }
