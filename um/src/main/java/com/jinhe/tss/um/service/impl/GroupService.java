@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.component.progress.Progressable;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.persistence.entityaop.DecodeUtil;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IApplicationDao;
@@ -208,18 +207,7 @@ public class GroupService implements IGroupService, Progressable{
     }
 
     public void sortGroup(Long groupId, Long toGroupId, int direction) {
-        List<Group> relationalGroups = groupDao.sort(groupId, toGroupId, direction);
-        
-        /* 排序后多个同级多个组（包括组下的子组）的decode值发生了变化，GroupUser的decode也需要跟着重新生成。
-         * 此处循环一次只维护当前组下的用户（GroupUser）decode值，不包括子组的。 */
-        for(Group temp : relationalGroups) {
-            List<?> list = groupDao.getEntities("from GroupUser o where o.groupId = ?", temp.getId() );
- 
-            // 排序后各几点的层级不变，老的decode和新的decode长度一致。
-            String decode = temp.getDecode();
-            DecodeUtil.repairSubNodeDecode(list, decode, decode);
-        }
-        groupDao.flush();
+        groupDao.sort(groupId, toGroupId, direction);
     }
 
     public void startOrStopGroup(String applicationId, Long groupId, Integer disabled) {

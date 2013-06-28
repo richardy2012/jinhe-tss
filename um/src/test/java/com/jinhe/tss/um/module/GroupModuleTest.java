@@ -115,7 +115,6 @@ public class GroupModuleTest extends TxSupportTest4UM {
         
         List<Group> groups = groupDao.getGroupsByType(Environment.getOperatorId(), 
         		UMConstants.GROUP_VIEW_OPERRATION, Group.MAIN_GROUP_TYPE);
-        printGroups(9, 1, 0, 0);
         for(Group temp : groups) {
         	temp.setName(temp.getName() + "...");
             groupService.editExistGroup(temp, "", "-1");
@@ -123,7 +122,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
         
         log.debug("Testing sortGroup......");
         groupService.sortGroup(group1.getId(), group2.getId(), 1);
-        printGroups(9, 1, 0, 0);
+        printGroups(7, 1, 0, 0);
         
         List<User> users = groupService.findUsersByGroupId(group1.getId());
         assertEquals(1, users.size());
@@ -175,7 +174,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
         group3.setGroupType( Group.ASSISTANT_GROUP_TYPE );
         group3.setApplicationId(APPLICATION_ID);
         groupService.createNewGroup(group3 , "", "-1");
-        printGroups(9, 4, 0, 0);
+        printGroups(7, 4, 0, 0);
         
         List<User> users = groupService.findUsersByGroupId(group1.getId());
         assertEquals(1, users.size());
@@ -231,7 +230,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
         group3.setGroupType( Group.OTHER_GROUP_TYPE );
         group3.setApplicationId(application.getApplicationId());
         groupService.createNewGroup(group3 , "", "");
-        printGroups(9, 4, 3, 1);
+        printGroups(7, 4, 3, 1);
         
         User user1 = new User();
         user1.setApplicationId(otherGroup1.getApplicationId());
@@ -280,23 +279,22 @@ public class GroupModuleTest extends TxSupportTest4UM {
     }
     
     public void _testAction() {
-//        action.getAllGroup2Tree();
-//        action.getGroup2Tree();
-//        
-//        action.setGroupType(Group.MAIN_GROUP_TYPE);
-//        action.getAllRoleGroup2Tree();
-//        action.setResourceId(3L);
-//        action.getOperation();
-//        action.setGroupId(3L);
-//        action.getGroupInfoAndRelation();
-//        
-//        action.setGroupType(Group.ASSISTANT_GROUP_TYPE);
-//        action.getAllRoleGroup2Tree();
-//        
-//        action.setGroupType(Group.OTHER_GROUP_TYPE);
-//        action.getAllRoleGroup2Tree();
-//        
-//        action.getGroup2Tree();
+        action.getAllGroup2Tree();
+        
+        action.setGroupType(Group.MAIN_GROUP_TYPE);
+        action.getAllRoleGroup2Tree();
+        action.setResourceId(3L);
+        action.getOperation();
+        action.setGroupId(3L);
+        action.getGroupInfoAndRelation();
+        
+        action.setGroupType(Group.ASSISTANT_GROUP_TYPE);
+        action.getAllRoleGroup2Tree();
+        
+        action.setGroupType(Group.OTHER_GROUP_TYPE);
+        action.getAllRoleGroup2Tree();
+        
+        action.getAllGroup2Tree();
         
         // 测试其他用户组导入到主用户组
 //        action.setGroupId(otherGroup1.getId());

@@ -44,23 +44,20 @@ public class GroupAction extends ProgressActionSupport {
         print("GroupTree", treeEncoder);
 	}
 
-	/**
-	 * type 1:添加组 /2:添加用户 /3:查看组 /4:其他用户组的“导入到”主用户组下
-	 */
 	@RequestMapping("/parents/{groupType}/{type}")
-    public void getCanAddedGroup2Tree(String applicationId, int groupType, String type) {
+    public void getCanAddedGroup2Tree(String applicationId, int groupType) {
         String operationId = UMConstants.GROUP_EDIT_OPERRATION;
         
         TreeEncoder treeEncoder;
         Object[] objs;
-        if (Group.MAIN_GROUP_TYPE.equals(groupType) || "4".equals(type)) {// 主用户组 type=4的时候是其他用户组的“导入到”功能
-            objs = service.getMainGroupsByOperationId(operationId); // 将其他组（包括用户）导入到主用户组，并完成用户对应
+        if ( Group.MAIN_GROUP_TYPE.equals(groupType) ) {
+            objs = service.getMainGroupsByOperationId(operationId); 
             treeEncoder = new TreeEncoder(objs[1], new LevelTreeParser());
 
             final List<?> groupIds = (List<?>) objs[0];
             treeEncoder.setTranslator(new ITreeTranslator() {
                 public Map<String, Object> translate(Map<String, Object> attribute) {
-                    if (!groupIds.contains(attribute.get("id"))) {
+                    if ( !groupIds.contains(attribute.get("id")) ) {
                         attribute.put("canselected", "0");
                     }
                     return attribute;
@@ -71,7 +68,7 @@ public class GroupAction extends ProgressActionSupport {
             objs = service.getAssistGroupsByOperationId(operationId);
             treeEncoder = new TreeEncoder(objs[1], new LevelTreeParser());
         }
-        else if (Group.OTHER_GROUP_TYPE.equals(groupType)) {// 其他应用组
+        else if (Group.OTHER_GROUP_TYPE.equals(groupType)) { // 其他应用组
         	objs = service.getGroupsUnderAppByOperationId(operationId, applicationId);
             treeEncoder = new TreeEncoder(objs, new GroupTreeWithAppParser());
         }
