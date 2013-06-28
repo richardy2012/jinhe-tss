@@ -36,7 +36,7 @@ public interface IGroupService {
 	 * </p>
 	 * @return List
 	 */
-	List<?> findEditableRolesByOperatorId();
+	List<?> findEditableRoles();
 	
     /**
      * 获取有操作权限的主用户组（多用于移动时取目标用户组）

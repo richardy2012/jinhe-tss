@@ -53,7 +53,7 @@ public class GroupService implements IGroupService, Progressable{
         return groupDao.findRolesByGroupId(groupId);
     }
 
-    public List<?> findEditableRolesByOperatorId() {
+    public List<?> findEditableRoles() {
         return roleDao.getEditableRoles();
     }
 

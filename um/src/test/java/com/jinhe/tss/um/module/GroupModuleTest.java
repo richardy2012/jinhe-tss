@@ -128,7 +128,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
         assertEquals(1, users.size());
         log.debug(users.get(0) + "\n");
         
-        List<?> roles = groupService.findEditableRolesByOperatorId();
+        List<?> roles = groupService.findEditableRoles();
         assertEquals(0, roles.size());
         
         roles = groupService.findRolesByGroupId(group1.getId());
@@ -281,25 +281,28 @@ public class GroupModuleTest extends TxSupportTest4UM {
     public void _testAction() {
         action.getAllGroup2Tree();
         
-        action.setGroupType(Group.MAIN_GROUP_TYPE);
-        action.getAllRoleGroup2Tree();
-        action.setResourceId(3L);
-        action.getOperation();
-        action.setGroupId(3L);
-        action.getGroupInfoAndRelation();
+        action.getCanAddedGroup2Tree("tss", Group.MAIN_GROUP_TYPE);
+        action.getCanAddedGroup2Tree("tss", Group.ASSISTANT_GROUP_TYPE);
+        action.getCanAddedGroup2Tree("tss", Group.OTHER_GROUP_TYPE);
         
-        action.setGroupType(Group.ASSISTANT_GROUP_TYPE);
-        action.getAllRoleGroup2Tree();
+        action.getOperation(Group.MAIN_GROUP_TYPE, -2L);
         
-        action.setGroupType(Group.OTHER_GROUP_TYPE);
-        action.getAllRoleGroup2Tree();
+        action.getUserByGroupId(-2L);
+        
+        action.getGroupInfo(applicationId, parentId, groupId, groupType);
+        
+        action.editGroup(group, group2UserExistTree, group2RoleExistTree);
+        
+        action.startOrStopGroup(id, disabled);
+        
+        action.deleteGroup(groupId, groupType);
+        
+        action.sortGroup(groupId, targetId, direction);
         
         action.getAllGroup2Tree();
         
         // 测试其他用户组导入到主用户组
-//        action.setGroupId(otherGroup1.getId());
-//        action.setToGroupId(UMConstants.MAIN_GROUP_ID);
-//        action.importGroup();
+        action.importGroup(otherGroup1.getId(), UMConstants.MAIN_GROUP_ID);
  
     }
 }

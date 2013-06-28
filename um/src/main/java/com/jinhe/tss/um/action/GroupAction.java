@@ -49,9 +49,9 @@ public class GroupAction extends ProgressActionSupport {
         String operationId = UMConstants.GROUP_EDIT_OPERRATION;
         
         TreeEncoder treeEncoder;
-        Object[] objs;
         if ( Group.MAIN_GROUP_TYPE.equals(groupType) ) {
-            objs = service.getMainGroupsByOperationId(operationId); 
+        	// 用户可能只对某些子组有权限，需要把这些子组的父节点也找出来，以组成一棵完成的组织结构树
+        	Object[] objs = service.getMainGroupsByOperationId(operationId); 
             treeEncoder = new TreeEncoder(objs[1], new LevelTreeParser());
 
             final List<?> groupIds = (List<?>) objs[0];
@@ -65,11 +65,11 @@ public class GroupAction extends ProgressActionSupport {
             });
         }
         else if (Group.ASSISTANT_GROUP_TYPE.equals(groupType)) { // 辅助用户组
-            objs = service.getAssistGroupsByOperationId(operationId);
+        	Object[] objs = service.getAssistGroupsByOperationId(operationId);
             treeEncoder = new TreeEncoder(objs[1], new LevelTreeParser());
         }
         else if (Group.OTHER_GROUP_TYPE.equals(groupType)) { // 其他应用组
-        	objs = service.getGroupsUnderAppByOperationId(operationId, applicationId);
+        	Object[] objs = service.getGroupsUnderAppByOperationId(operationId, applicationId);
             treeEncoder = new TreeEncoder(objs, new GroupTreeWithAppParser());
         }
         else {
@@ -117,7 +117,7 @@ public class GroupAction extends ProgressActionSupport {
 	/**
 	 * 获取一个Group对象的明细信息、用户组对用户信息、用户组对角色的信息
 	 */
-	public String getGroupInfo(String applicationId, Long parentId, Long groupId, int groupType) {
+	public void getGroupInfo(String applicationId, Long parentId, Long groupId, int groupType) {
         Map<String, Object> groupAttributes;
 		boolean isNew = UMConstants.IS_NEW.equals(groupId);
         if(isNew){
@@ -132,12 +132,6 @@ public class GroupAction extends ProgressActionSupport {
         
         List<?> users = service.findUsersByGroupId(groupId);
         TreeEncoder usersTreeEncoder = new TreeEncoder(users);
-        
-        List<?> roles = null;
-        if( !Group.OTHER_GROUP_TYPE.equals(groupType) ) {
-            roles = service.findRolesByGroupId(isNew ? parentId : groupId); // 如果是新建则找到父组对应的角色，如此新建的子组可以继承父组角色
-        }
-        TreeEncoder rolesTreeEncoder = new TreeEncoder(roles);
         
         String groupXForm = null;
         if(Group.MAIN_GROUP_TYPE.equals(groupType)) {
@@ -158,19 +152,19 @@ public class GroupAction extends ProgressActionSupport {
             groupEncoder.setColumnAttribute("applicationId", "editorvalue", applicationId);
             groupEncoder.setColumnAttribute("applicationId", "editortext",  app.getName());
             
-            return print(new String[]{"GroupInfo", "Group2UserExistTree"}, new Object[]{groupEncoder, usersTreeEncoder});
+            print(new String[]{"GroupInfo", "Group2UserExistTree"}, new Object[]{groupEncoder, usersTreeEncoder});
+        } 
+        else {
+        	// 如果是新建则找到父组对应的角色，如此新建的子组可以继承父组角色
+        	List<?> roles = service.findRolesByGroupId(isNew ? parentId : groupId); 
+            TreeEncoder rolesTreeEncoder = new TreeEncoder(roles);
+            
+            TreeEncoder editableRolesTree = new TreeEncoder(service.findEditableRoles(), new LevelTreeParser());
+    		editableRolesTree.setNeedRootNode(false);
+            
+        	print(new String[]{"GroupInfo", "Group2RoleTree", "Group2RoleExistTree", "Group2UserExistTree"}, 
+                    new Object[]{groupEncoder, editableRolesTree, rolesTreeEncoder, usersTreeEncoder});
         }
-        
-        return print(new String[]{"GroupInfo", "Group2RoleTree", "Group2RoleExistTree", "Group2UserExistTree"}, 
-                new Object[]{groupEncoder, getRolesTreeEncoder(), rolesTreeEncoder, usersTreeEncoder});
-	}
-
-	/** 根据UserId获取角色  */
-	private TreeEncoder getRolesTreeEncoder() {
-		List<?> allRoles = service.findEditableRolesByOperatorId();
-		TreeEncoder treeEncoder = new TreeEncoder(allRoles, new LevelTreeParser());
-		treeEncoder.setNeedRootNode(false);
-		return treeEncoder;
 	}
     
     /**
