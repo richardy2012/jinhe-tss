@@ -121,25 +121,18 @@ public interface IGroupService {
 	void sortGroup(Long groupId, Long toGroupId, int direction);
 	
 	/**
-	 * <p>
 	 * 获取应用系统和用户组
-	 * </p>
-	 * @param userId
-	 * @return 
 	 */
 	Object[] findGroups();
 
 	/**
-	 * <p>
 	 * 删除用户组
-	 * </p>
 	 * @param applicationId
 	 * @param groupId
-	 * @param groupType 用户组类型
 	 */
     @Logable(operateTable="用户组织", operateType="删除", 
             operateInfo="删除 (ID: ${args[1]}) 用户组" )
-	void deleteGroup(String applicationId, Long groupId, Integer groupType);
+	void deleteGroup(String applicationId, Long groupId);
 	
     /**
      * 将用户组从其它用户组下导入到主用户组下 的 操作前需要用到的数据

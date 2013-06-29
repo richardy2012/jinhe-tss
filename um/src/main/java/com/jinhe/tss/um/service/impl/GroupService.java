@@ -259,7 +259,7 @@ public class GroupService implements IGroupService, Progressable{
         }
     }
 
-    public void deleteGroup(String applicationId, Long groupId, Integer groupType) {
+    public void deleteGroup(String applicationId, Long groupId) {
         if(groupDao.isOperatorInGroup(groupId, Environment.getOperatorId()))
             throw new BusinessException("当前用户在要操作的组中，不能删除此节点！");
         
@@ -270,7 +270,7 @@ public class GroupService implements IGroupService, Progressable{
         }
         
         // 辅助用户组里面的用户都是从主用户组选过来的,所以删除的时候只是删除辅助用户组的结构，里面的用户是不删的
-        if ( Group.ASSISTANT_GROUP_TYPE.equals(groupType) ) {// 辅助用户组
+        if ( Group.ASSISTANT_GROUP_TYPE.equals(group.getGroupType()) ) { // 辅助用户组
             groupDao.removeAssistmentGroup(group);
         } 
         else {// 删除主用户组和其他用户组

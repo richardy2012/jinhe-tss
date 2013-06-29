@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jinhe.tss.framework.component.progress.ProgressManager;
 import com.jinhe.tss.framework.component.progress.Progressable;
@@ -210,9 +211,9 @@ public class GroupAction extends ProgressActionSupport {
     /**
      * 删除用户组
      */
-    @RequestMapping("/rule/{groupId}/{ruleId}")
-    public void deleteGroup(Long groupId, int groupType) {
-        service.deleteGroup(UMConstants.TSS_APPLICATION_ID, groupId, groupType);     
+    @RequestMapping(value = "/{groupId}/", method = RequestMethod.DELETE)
+    public void deleteGroup(Long groupId) {
+        service.deleteGroup(UMConstants.TSS_APPLICATION_ID, groupId);     
         printSuccessMessage();
     }
     
