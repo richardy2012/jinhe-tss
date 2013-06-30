@@ -13,6 +13,7 @@ import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.action.RoleAction;
 import com.jinhe.tss.um.entity.Group;
+import com.jinhe.tss.um.entity.Role;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IRoleService;
 import com.jinhe.tss.um.service.IUserService;
@@ -22,21 +23,10 @@ import com.jinhe.tss.um.service.IUserService;
  */
 public class RoleModuleTest extends TxSupportTest4UM {
     
-	RoleAction action = new RoleAction();
+	@Autowired RoleAction action;
     
     @Autowired IRoleService service;
     @Autowired IUserService userService;
-    
-    public void setUp() throws Exception {
-        super.setUp();
-        resetAction();
-    }
-    
-    public void resetAction() {
-        action = new RoleAction();
-        action.setRoleService(service);
-        action.setPermissionService(permissionService);
-    }
     
     public void testRoleModule() {
         // 新建一个用户组
@@ -64,93 +54,67 @@ public class RoleModuleTest extends TxSupportTest4UM {
         mainUser.setUserName("JK");
         mainUser.setPassword("123456");
         mainUser.setGroupId(mainGroup.getId());
-        userService.createOrUpdateUserInfo(mainGroup.getId(), mainUser , "" + mainGroup.getId(), "");
+        userService.createOrUpdateUserInfo(mainUser , "" + mainGroup.getId(), "");
         log.debug(mainUser);
         
         // 新建角色组
-        action.getRole().setIsGroup(1);
-        action.getRole().setName("角色组一");
-        action.getRole().setParentId(UMConstants.ROLE_ROOT_ID);
-        action.saveRoleGroupInfo();
-        Long roleGroupId = action.getRole().getId();
+        Role roleGroup1 = new Role();
+        roleGroup1.setIsGroup(1);
+        roleGroup1.setName("角色组一");
+        roleGroup1.setParentId(UMConstants.ROLE_ROOT_ID);
+        action.saveRole(roleGroup1, null, null);
+        Long roleGroupId = roleGroup1.getId();
         
         // 新建角色
-        resetAction();
-        action.getRole().setIsGroup(0);
-        action.getRole().setName("办公室助理");
-        action.getRole().setParentId(roleGroupId);
-        action.getRole().setStartDate(new Date());
+        Role role2 = new Role();
+        role2.setIsGroup(0);
+        role2.setName("办公室助理");
+        role2.setParentId(roleGroupId);
+        role2.setStartDate(new Date());
         Calendar calendar = new GregorianCalendar();
         calendar.add(UMConstants.ROLE_LIFE_TYPE, UMConstants.ROLE_LIFE_TIME);
-        action.getRole().setEndDate(calendar.getTime());
-        action.setRole2UserIds(UMConstants.ADMIN_USER_ID + "," + mainUser.getId());
-        action.setRole2GroupIds("" + mainGroup.getId());
-        action.saveRole();
-        Long roleId = action.getRole().getId();
+        role2.setEndDate(calendar.getTime());
+        action.saveRole(role2, UMConstants.ADMIN_USER_ID + "," + mainUser.getId(), "" + mainGroup.getId());
+        Long roleId = role2.getId();
         
         // 读取修改角色组的模板
-        action.setRoleId(roleGroupId);
-        action.getRoleGroupInfo();
+        action.getRoleGroupInfo(roleGroupId, null);
         
         // 读取新增或修改角色的模板
-        action.setIsNew(1);
-        action.setParentRoleId(UMConstants.ROLE_ROOT_ID);
-        action.getRoleInfoAndRelation();
-        
-        action.setIsNew(null);
-        action.setRoleId(roleId);
-        action.getRoleInfoAndRelation();
+        action.getRoleInfo(UMConstants.IS_NEW, UMConstants.ROLE_ROOT_ID);
+        action.getRoleInfo(roleGroupId, null);
         
         // 读取角色树形结构
         action.getAllRole2Tree();
         action.getAllRoleGroup2Tree();
        
         // 停用角色组
-        action.setRoleId(roleGroupId);
-        action.setRoleState(UMConstants.TRUE);
-        action.disable();
+        action.disable(roleGroupId, UMConstants.TRUE);
         
         // 启用角色
-        action.setRoleId(roleId);
-        action.setRoleState(UMConstants.FALSE);
-        action.disable();
+        action.disable(roleId, UMConstants.FALSE);
         
         // 再新建一个角色
-        resetAction();
-        action.getRole().setIsGroup(0);
-        action.getRole().setName("部门经理");
-        action.getRole().setParentId(roleGroupId);
-        action.getRole().setStartDate(new Date());
-        action.getRole().setEndDate(calendar.getTime());
-        action.setRole2UserIds(UMConstants.ADMIN_USER_ID + "," + mainUser.getId());
-        action.setRole2GroupIds("" + mainGroup.getId());
-        action.saveRole();
-        Long secondRoleId = action.getRole().getId();
-        action.getAllRole2Tree();
-        
-        // 对组进行排序
-        action.setRoleId(roleId);
-        action.setTargetId(secondRoleId);
-        action.setDirection(1);
-        action.sort(); 
+        Role role3 = new Role();;
+        role3.setIsGroup(0);
+        role3.setName("部门经理");
+        role3.setParentId(roleGroupId);
+        role3.setStartDate(new Date());
+        role3.setEndDate(calendar.getTime());
+        action.saveRole(role3, UMConstants.ADMIN_USER_ID + "," + mainUser.getId(), "" + mainGroup.getId());
+        Long secondRoleId = role3.getId();
         action.getAllRole2Tree();
         
         // 对角色进行移动
-        action.setTargetId(UMConstants.ROLE_ROOT_ID);
-        action.move();
+        action.move(secondRoleId, UMConstants.ROLE_ROOT_ID);
         
-        action.getOperation();
+        action.getOperation(secondRoleId);
         
-        action.setGroupId(mainGroup.getId());
-        action.getUserByGroupId();
+        action.initSetPermission(roleId, "1", "tss", UMConstants.GROUP_RESOURCE_TYPE_ID);
+        action.getApplications(roleId, "1");
+        action.getApplications(roleId, "0");
         
-        action.initSetPermission();
-        action.setIsRole2Resource("1");
-        action.getApplications();
-        action.setIsRole2Resource("0");
-        action.getApplications();
-        action.setApplicationId("tss");
-        action.getResourceTypes();
+        action.getResourceTypes("tss");
         
         // 授权测试 PermissionRank
 //      LOWER_PERMISSION            = "1";  普通授权
@@ -160,46 +124,39 @@ public class RoleModuleTest extends TxSupportTest4UM {
         log.debug("====================== 开始测试授权 ============================");
         
         //一、 多个资源授权给单个角色
-        action.setIsRole2Resource("1");
-        action.setResourceType(UMConstants.MAINGROUP_RESOURCE_TYPE_ID);
-        action.setRoleId(roleId);
-        action.setPermissionRank("2");
-        action.getPermissionMatrix();
+        action.getPermissionMatrix("2", "1", "tss", UMConstants.GROUP_RESOURCE_TYPE_ID, roleId);
         
         // 授权内容, 当多个资源对一个角色授权时:  resource1|2224, resource2|4022
    	    // 竖线后面为各个权限选项的打勾情况【0: 没打勾, 1: 仅此节点，虚勾 2: 此节点及所有子节点，实勾 3:禁用未选中 4:禁用已选中】
-        action.setSetPermission(mainGroup.getId() + "|222222222222");
-        action.savePermission();
-        action.getPermissionMatrix();
+        String permissions = mainGroup.getId() + "|22";
+        action.savePermission("2", "1", "tss", UMConstants.GROUP_RESOURCE_TYPE_ID, roleId, permissions);
+        action.getPermissionMatrix("2", "1", "tss", UMConstants.GROUP_RESOURCE_TYPE_ID, roleId);
         
-        TestUtil.printEntity(super.permissionHelper, "MainGroupPermissions");
-        TestUtil.printEntity(super.permissionHelper, "MainGroupPermissionsFull");
+        TestUtil.printEntity(super.permissionHelper, "GroupPermissions");
+        TestUtil.printEntity(super.permissionHelper, "GroupPermissionsFull");
         
-        // 二、单个资源授权给多个角色
-        action.setIsRole2Resource(null);
-        action.setRoleId(mainGroup.getId()); // 当资源对角色进行授权时, 表示resourceId
-        action.setPermissionRank("2");
-        action.getPermissionMatrix();
+        // 二、单个资源授权给多个角色。当资源对角色进行授权时, roleId表示resourceId
+        Long resourceId = mainGroup.getId(); // 当资源对角色进行授权时, roleId表示resourceId
+        action.getPermissionMatrix("2", "0", "tss", UMConstants.GROUP_RESOURCE_TYPE_ID, resourceId);
         
         // 授权内容, 当单个资源对多个角色授权时:  roleId1|2224, roleId2|4022
    	    // 竖线后面为各个权限选项的打勾情况【0: 没打勾, 1: 仅此节点，虚勾 2: 此节点及所有子节点，实勾 3:禁用未选中 4:禁用已选中】
         action.setSetPermission(secondRoleId + "|222222222222");
-        action.savePermission();
-        action.getPermissionMatrix();
+        action.savePermission(permissionRank, isRole2Resource, applicationId, resourceType, roleId, permissions);
+        action.getPermissionMatrix(permissionRank, isRole2Resource, applicationId, resourceType, roleId);
         
         TestUtil.printEntity(super.permissionHelper, "MainGroupPermissions");
         TestUtil.printEntity(super.permissionHelper, "MainGroupPermissionsFull");
         
         login(mainUser.getId(), mainUser.getLoginName()); // 更好登录用户，看其权限
-        action.getPermissionMatrix();
+        action.getPermissionMatrix(permissionRank, isRole2Resource, applicationId, resourceType, roleId);
         TestUtil.printEntity(super.permissionHelper, "RoleUserMapping");
         printVisibleMainGroups();
         
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME); // 换回Admin登录
         
         // 删除角色组
-        action.setRoleId(roleGroupId);
-        action.delete();
+        action.delete(roleGroupId);
         action.getAllRole2Tree();
     }
 

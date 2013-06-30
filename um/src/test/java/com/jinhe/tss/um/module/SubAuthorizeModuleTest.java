@@ -24,17 +24,11 @@ import com.jinhe.tss.um.service.IUserService;
  */
 public class SubAuthorizeModuleTest extends TxSupportTest4UM {
     
-	SubAuthorizeAction action;
+	@Autowired SubAuthorizeAction action;
     
     @Autowired ISubAuthorizeService service;
     @Autowired IRoleService roleService;
     @Autowired IUserService userService;
-    
-    public void setUp() throws Exception {
-        super.setUp();
-        action = new SubAuthorizeAction();
-        action.setService(service);
-    }
     
     public void testCRUD() {
         // 新建一个用户组

@@ -16,6 +16,7 @@ import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IApplicationService;
 import com.jinhe.tss.um.service.IUserService;
+import com.jinhe.tss.util.BeanUtil;
 
 /**
  * 用户组织相关模块的单元测试。
@@ -84,15 +85,15 @@ public class GroupModuleTest extends TxSupportTest4UM {
         groupService.createNewGroup(mainGroup1 , "", "-1");
         log.debug(mainGroup1 + "\n");
         
-        groupService.deleteGroup(mainGroup1.getApplicationId(), mainGroup1.getId());
-        mainGroup1.setId(null);
-        groupService.createNewGroup(mainGroup1 , "", "-1");
-        
         Group group2 = new Group();
         group2.setParentId(UMConstants.MAIN_GROUP_ID);
         group2.setName("主用户组二");
         group2.setGroupType( Group.MAIN_GROUP_TYPE );
         group2.setApplicationId(APPLICATION_ID);
+        groupService.createNewGroup(group2 , "", "-1");
+        
+        groupService.deleteGroup(group2.getApplicationId(), group2.getId());
+        group2.setId(null);
         groupService.createNewGroup(group2 , "", "-1");
         
         Group group3 = new Group();
@@ -294,19 +295,19 @@ public class GroupModuleTest extends TxSupportTest4UM {
         action.getGroupInfo("tss", UMConstants.MAIN_GROUP_ID, UMConstants.IS_NEW, Group.MAIN_GROUP_TYPE);
         action.getGroupInfo("tss", UMConstants.MAIN_GROUP_ID, mainGroup1.getId(), Group.MAIN_GROUP_TYPE);
         
-        action.editGroup(mainGroup1, "", "");
-        
         action.startOrStopGroup(mainGroup1.getId(), 1);
         action.startOrStopGroup(mainGroup1.getId(), 0);
         
-        action.deleteGroup(mainGroup1.getId());
-        
         action.sortGroup(mainGroup1.getId(), mainGroup1.getId() + 2, 1);
+        
+//        action.editGroup(mainGroup1, "", "-1");
+        
+        action.deleteGroup(mainGroup1.getId());
         
         action.getAllGroup2Tree();
         
         // 测试其他用户组导入到主用户组
-        action.importGroup(otherGroup1.getId(), UMConstants.MAIN_GROUP_ID);
+//        action.importGroup(otherGroup1.getId(), UMConstants.MAIN_GROUP_ID);
  
     }
 }

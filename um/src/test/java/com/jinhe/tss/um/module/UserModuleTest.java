@@ -20,16 +20,10 @@ import com.jinhe.tss.um.service.IUserService;
  */
 public class UserModuleTest extends TxSupportTest4UM {
     
-	UserAction action = new UserAction();
+	@Autowired UserAction action;
     
     @Autowired IUserService service;
     @Autowired IApplicationService appService;
-    
-    public void setUp() throws Exception {
-        super.setUp();
-        action.setUserService(service);
-        action.setApplicationService(appService);
-    }
     
     Group mainGroup1;
     
