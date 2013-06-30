@@ -315,7 +315,7 @@ public class RoleAction extends BaseActionSupport {
 	
 	/**
 	 * permissionRank  授权级别(1:普通(10)，2/3:可授权，可授权可传递(11))
-	 * permission   角色资源权限选项的集合, 当资源对角色授权时:  role1|2224,role2|4022
+	 * permissions   角色资源权限选项的集合, 当资源对角色授权时:  role1|2224,role2|4022
 	 */
 	public void savePermission(String permissionRank, String isRole2Resource, String applicationId, String resourceType, Long roleId, String permissions) {
 	    if( applicationId == null ) {

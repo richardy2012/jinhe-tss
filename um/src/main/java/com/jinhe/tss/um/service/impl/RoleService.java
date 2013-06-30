@@ -37,7 +37,7 @@ public class RoleService implements IRoleService {
     }
 
     public List<?> getPlatformApplication() {
-		return roleDao.getEntities("from Application o where o.applicationType = ? order by o.decode", UMConstants.PLATFORM_SYSTEM_APP);
+		return roleDao.getEntities("from Application o where o.applicationType = ? ", UMConstants.PLATFORM_SYSTEM_APP);
     }
 
     public List<?> getResourceTypeByAppId(String applicationId) {

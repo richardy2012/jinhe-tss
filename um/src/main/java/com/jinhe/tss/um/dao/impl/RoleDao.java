@@ -32,20 +32,14 @@ public class RoleDao extends TreeSupportDao<Role> implements IRoleDao {
                 deleteAll(getEntities("from RoleGroup rg where rg.roleId = ? ", roleId));
                 
                 //-- 补全表 --
-                deleteAll(getEntities("from ApplicationPermissionsFull where roleId = ? ", roleId));
-                deleteAll(getEntities("from AssistGroupPermissionsFull where roleId = ? ", roleId));
-                deleteAll(getEntities("from MainGroupPermissionsFull   where roleId = ? ", roleId));
-                deleteAll(getEntities("from OtherGroupPermissionsFull  where roleId = ? ", roleId));
-                deleteAll(getEntities("from RolePermissionsFull        where roleId = ? ", roleId));
+                deleteAll(getEntities("from GroupPermissionsFull   where roleId = ? ", roleId));
+                deleteAll(getEntities("from RolePermissionsFull    where roleId = ? ", roleId));
                 
                 //-- 未全表 --
-                deleteAll(getEntities("from ApplicationPermissions where roleId = ? ", roleId));
-                deleteAll(getEntities("from AssistGroupPermissions where roleId = ? ", roleId));
-                deleteAll(getEntities("from MainGroupPermissions   where roleId = ? ", roleId));
-                deleteAll(getEntities("from OtherGroupPermissions  where roleId = ? ", roleId));
-                deleteAll(getEntities("from RolePermissions        where roleId = ? ", roleId));
+                deleteAll(getEntities("from GroupPermissions   where roleId = ? ", roleId));
+                deleteAll(getEntities("from RolePermissions    where roleId = ? ", roleId));
                 
-                // TODO Portal、CMS、其他平台应用的相关授权也需一并删除
+                // TODO Portal、CMS、其他基于平台应用的相关授权也需一并删除
             }
         }
         deleteAll(roles);

@@ -12,6 +12,7 @@ import com.jinhe.tss.um.action.UserAction;
 import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.User;
+import com.jinhe.tss.um.helper.UMQueryCondition;
 import com.jinhe.tss.um.service.IApplicationService;
 import com.jinhe.tss.um.service.IUserService;
 
@@ -43,12 +44,12 @@ public class UserModuleTest extends TxSupportTest4UM {
         user1.setUserName("U_JK");
         user1.setPassword("123456");
         user1.setGroupId(mainGroup1.getId());
-        service.createOrUpdateUserInfo(mainGroup1.getId(), user1 , "" + mainGroup1.getId(), "-1");
+        service.createOrUpdateUserInfo(user1 , "" + mainGroup1.getId(), "-1");
         log.debug(user1);
         
-        service.deleteUser(mainGroup1.getId(), user1.getId(), Group.MAIN_GROUP_TYPE);
+        service.deleteUser(mainGroup1.getId(), user1.getId());
         user1.setId(null);
-        service.createOrUpdateUserInfo(mainGroup1.getId(), user1 , "" + mainGroup1.getId(), "-1");
+        service.createOrUpdateUserInfo(user1 , "" + mainGroup1.getId(), "-1");
         log.debug(user1);
         
         // 注册一个用户
@@ -74,16 +75,11 @@ public class UserModuleTest extends TxSupportTest4UM {
         assertEquals(2, mainUsers.size());
         assertEquals(2, otherUsers.size());
         
-        // 建立其他用户组用户和主用户组用户的对应关系
-        User appUser = otherUsers.get(0);
-        service.editManualMappingInfo(user1.getId(), appUser.getId(), appUser.getApplicationId());
-        
         // 导入其他用户组用户到主用户组下
         service.importUser(otherGroup.getId(), mainGroup1.getId(), otherUsers.get(1).getId());
         
         mainUsers  = service.getUsersByGroup(mainGroup1.getId());
         assertEquals(3, mainUsers.size());
-        
         
         _testAction();
         
@@ -97,7 +93,6 @@ public class UserModuleTest extends TxSupportTest4UM {
         application.setApplicationType(UMConstants.OTHER_SYSTEM_APP);
         application.setApplicationId("U_OA");
         application.setName("U_JH OA");
-        application.setParentId(UMConstants.APPLICATION_RESOURCE_ROOT_ID);
         appService.saveApplication(application);
         
         Group group1 = new Group();
@@ -113,7 +108,7 @@ public class UserModuleTest extends TxSupportTest4UM {
         user1.setUserName("U_JK");
         user1.setPassword("123456");
         user1.setGroupId(group1.getId());
-        service.createOrUpdateUserInfo(group1.getId(), user1 , "" + group1.getId(), "");
+        service.createOrUpdateUserInfo(user1 , "" + group1.getId(), "");
         log.debug(user1 + "\n");
         
         User user2 = new User();
@@ -122,7 +117,7 @@ public class UserModuleTest extends TxSupportTest4UM {
         user2.setUserName("JK3");
         user2.setPassword("123456");
         user2.setGroupId(group1.getId());
-        service.createOrUpdateUserInfo(group1.getId(), user2 , "" + group1.getId(), "");
+        service.createOrUpdateUserInfo(user2 , "" + group1.getId(), "");
         log.debug(user2 + "\n");
         
         return group1;
@@ -131,53 +126,35 @@ public class UserModuleTest extends TxSupportTest4UM {
     public void _testAction() {
         List<User> mainUsers  = service.getUsersByGroup(mainGroup1.getId());
         assertEquals(3, mainUsers.size());
-        action.setPage(1);
-        action.setGroupId(mainGroup1.getId());
         
-        action.setUserId(UMConstants.IS_NEW);
-        action.getUserInfoAndRelation();
+        action.getUserInfoAndRelation(UMConstants.IS_NEW, mainGroup1.getId());
         
-        action.setUserId(mainUsers.get(0).getId());
-        action.getUserInfoAndRelation();
+        action.getUserInfoAndRelation(mainUsers.get(0).getId(), mainGroup1.getId());
         
-        action.initAuthenticateMethod();
+        action.initAuthenticateMethod(mainGroup1.getId());
         
-        action.setAuthenticateMethod("com.jinhe.tss.um.sso.UMSLocalUserPWDIdentifier");
-        action.uniteAuthenticateMethod();
+        action.uniteAuthenticateMethod(mainGroup1.getId(), "com.jinhe.tss.um.sso.UMSLocalUserPWDIdentifier");
         
-        action.setAccountState(UMConstants.TRUE);
-        action.startOrStopUser();
-        action.setAccountState(UMConstants.FALSE);
-        action.startOrStopUser();
-        
-        action.setToUserId(mainUsers.get(1).getId());
-        action.setDirection(1);
-        action.sortUser();
+        action.startOrStopUser(mainGroup1.getId(), mainUsers.get(0).getId(), UMConstants.TRUE);
+        action.startOrStopUser(mainGroup1.getId(), mainUsers.get(0).getId(), UMConstants.FALSE);
         
         action.getOnlineUserInfo();
         action.getOperatorInfo();
         action.getForgetPasswordInfo();
         
-        action.setIsModifyOrRegister("modify");
         action.getUserInfo();
         
-        action.setPassword("369852");
-        action.initPassword();
+        action.initPassword(mainGroup1.getId(), mainUsers.get(0).getId(), "369852");
         
-        action.getManualMappingInfo();
-        action.getAutoMappingInfo(); 
-        action.getSelectedUsersByGroupId();
+        action.getSelectedUsersByGroupId(mainGroup1.getId());
         
-        action.getAuthenticateApp();
+        action.getOperation(mainGroup1.getId());
         
-        action.setGroupType(Group.MAIN_GROUP_TYPE);
-        action.getOperation();
+        action.getUsersByGroupId("tss", mainGroup1.getId(), 1);
         
-        action.getUsersByGroupId();
-        
-        action.getUserQueryCon().setGroupId(mainGroup1.getId());
-        action.searchMappingUser();
-        action.searchUser();
+        UMQueryCondition userQueryCon = new UMQueryCondition();
+        userQueryCon.setGroupId(mainGroup1.getId());
+		action.searchUser(userQueryCon , "tss", 1);
         
     }
 }

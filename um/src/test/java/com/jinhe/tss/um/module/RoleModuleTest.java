@@ -141,15 +141,15 @@ public class RoleModuleTest extends TxSupportTest4UM {
         
         // 授权内容, 当单个资源对多个角色授权时:  roleId1|2224, roleId2|4022
    	    // 竖线后面为各个权限选项的打勾情况【0: 没打勾, 1: 仅此节点，虚勾 2: 此节点及所有子节点，实勾 3:禁用未选中 4:禁用已选中】
-        action.setSetPermission(secondRoleId + "|222222222222");
-        action.savePermission(permissionRank, isRole2Resource, applicationId, resourceType, roleId, permissions);
-        action.getPermissionMatrix(permissionRank, isRole2Resource, applicationId, resourceType, roleId);
+        permissions = secondRoleId + "|22";
+        action.savePermission("2", "0", "tss", UMConstants.GROUP_RESOURCE_TYPE_ID, resourceId, permissions);
+        action.getPermissionMatrix("2", "0", "tss", UMConstants.GROUP_RESOURCE_TYPE_ID, resourceId);
         
-        TestUtil.printEntity(super.permissionHelper, "MainGroupPermissions");
-        TestUtil.printEntity(super.permissionHelper, "MainGroupPermissionsFull");
+        TestUtil.printEntity(super.permissionHelper, "GroupPermissions");
+        TestUtil.printEntity(super.permissionHelper, "GroupPermissionsFull");
         
         login(mainUser.getId(), mainUser.getLoginName()); // 更好登录用户，看其权限
-        action.getPermissionMatrix(permissionRank, isRole2Resource, applicationId, resourceType, roleId);
+        action.getPermissionMatrix("2", "1", "tss", UMConstants.GROUP_RESOURCE_TYPE_ID, roleId);
         TestUtil.printEntity(super.permissionHelper, "RoleUserMapping");
         printVisibleMainGroups();
         
