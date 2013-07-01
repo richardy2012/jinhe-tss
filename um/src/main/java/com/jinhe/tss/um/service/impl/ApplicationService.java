@@ -14,7 +14,6 @@ import com.jinhe.tss.um.entity.ResourceType;
 import com.jinhe.tss.um.entity.ResourceTypeRoot;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.permission.PermissionService;
-import com.jinhe.tss.um.permission.dispaly.ResourceTreeNode;
 import com.jinhe.tss.um.service.IApplicationService;
 
 @Service("ApplicationService")
@@ -83,13 +82,6 @@ public class ApplicationService implements IApplicationService{
         String unSuppliedTable = resourceType.getUnSuppliedTable();
         resourceTypeDao.deleteAll(resourceTypeDao.getEntities("from " + suppliedTable   + " o where o.operationId = ?", operation.getOperationId()));
         resourceTypeDao.deleteAll(resourceTypeDao.getEntities("from " + unSuppliedTable + " o where o.operationId = ?", operation.getOperationId()));
-	}
-
-	public List<ResourceTreeNode> findResoucrcesByResourceType(String resourceTypeId, String applicationId) {
-	    String resourceTable = resourceTypeDao.getResourceTable(applicationId, resourceTypeId);
-        String hql = "select distinct o.id, o.parentId, o.name, o.decode from " + resourceTable + " o order by o.decode";
-        List<?> resourcesTree = resourceTypeDao.getEntities(hql);  
-		return ResourceTreeNode.genResourceTreeNodeList(resourcesTree);
 	}
     
 	public void saveApplication(Application application) {

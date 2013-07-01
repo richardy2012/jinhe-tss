@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
@@ -62,18 +61,6 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	    sb.append(" editortext=\"") .append(appEditor[1]).append("\"/>");
 
 		return print("AuthenticateApplication", sb);
-	}
-	
-	/**
-	 * 根据资源类型的id获取资源
-	 */
-	@RequestMapping("/resources/{applicationId}/{resourceTypeId}")
-	public void getResourcesByResourceTypeId(String resourceTypeId, String applicationId) {
-		List<?> data = applicationService.findResoucrcesByResourceType(resourceTypeId, applicationId);
-		TreeEncoder treeEncoder = new TreeEncoder(data, new LevelTreeParser());
-		treeEncoder.setNeedRootNode(false);
-		
-		print("SourceTree", treeEncoder);
 	}
 	
 	/**

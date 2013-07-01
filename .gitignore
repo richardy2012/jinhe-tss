@@ -9,3 +9,4 @@ build
 .project
 .svn
 *.db
+/webapp/src/main/webapp/um/old

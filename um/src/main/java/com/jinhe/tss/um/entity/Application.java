@@ -107,7 +107,7 @@ public class Application extends OperateInfo implements ITreeNode, IXForm {
 		
 		map.put("code", applicationId);
 		map.put("applicationType", applicationType);
-		map.put("appType", UMConstants.APPLICATION_TREE_NODE);
+		map.put("nodeType", UMConstants.APPLICATION_TREE_NODE);
 		
 		map.put("icon", UMConstants.APPLICATION_TREENODE_ICON);
 		super.putOperateInfo2Map(map);

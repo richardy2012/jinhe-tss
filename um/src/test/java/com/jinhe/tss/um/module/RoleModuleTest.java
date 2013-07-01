@@ -54,7 +54,7 @@ public class RoleModuleTest extends TxSupportTest4UM {
         mainUser.setUserName("JK");
         mainUser.setPassword("123456");
         mainUser.setGroupId(mainGroup.getId());
-        userService.createOrUpdateUserInfo(mainUser , "" + mainGroup.getId(), "");
+        userService.createOrUpdateUser(mainUser , "" + mainGroup.getId(), "");
         log.debug(mainUser);
         
         // 新建角色组

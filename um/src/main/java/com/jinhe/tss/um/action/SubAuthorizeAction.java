@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +31,7 @@ import com.jinhe.tss.util.DateUtil;
 @RequestMapping("subauthorize")
 public class SubAuthorizeAction extends BaseActionSupport {
 
-	private ISubAuthorizeService service;
+	@Autowired private ISubAuthorizeService service;
 	
 	/**
 	 * 查找策略列表

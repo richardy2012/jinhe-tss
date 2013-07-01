@@ -143,7 +143,7 @@ public class UserService implements IUserService{
         }
     }
     
-	public void createOrUpdateUserInfo(User user, String groupIdsStr, String roleIdsStr) {
+	public void createOrUpdateUser(User user, String groupIdsStr, String roleIdsStr) {
         // 加密密码
         user.setPassword(createUserPwd(user, user.getPassword())); 
         
@@ -359,13 +359,13 @@ public class UserService implements IUserService{
     }
     
     // 可供定时器等对象直接调用。 
-	public void overdue(){ 
-		try{
+	public void overdue() { 
+		try {
 			Date today = new Date();
 			userDao.executeHQL("update User u set u.disabled = 1 where u.accountUsefulLife < ?", today);
 			userDao.executeHQL("update Role r set r.disabled = 1 where r.endDate < ?", today);
-			userDao.executeHQL("update Strategy s set s.disabled = 1 where s.endDate < ?", today);
-		}catch(Exception e){
+			userDao.executeHQL("update SubAuthorize s set s.disabled = 1 where s.endDate < ?", today);
+		} catch(Exception e) {
 			throw new BusinessException("执行停用过期时出错 ", e);
 		}
 	}

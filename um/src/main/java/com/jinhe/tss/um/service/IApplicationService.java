@@ -114,19 +114,7 @@ public interface IApplicationService{
 	 * @return
 	 */
 	Object[] findApplicationAndResourceType();
-	
-	/**
-	 * <p>
-	 * 根据资源类型的id获取资源
-	 * </p>
-	 * 
-	 * @param userId
-	 * @param resourceTypeId
-	 * @param applicationId
-	 * @return List
-	 */
-	List<ResourceTreeNode> findResoucrcesByResourceType(String resourceTypeId, String applicationId);
-	
+ 
 	/**
 	 * <p>
 	 * 根据ID查询资源类型

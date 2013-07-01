@@ -44,12 +44,12 @@ public class UserModuleTest extends TxSupportTest4UM {
         user1.setUserName("U_JK");
         user1.setPassword("123456");
         user1.setGroupId(mainGroup1.getId());
-        service.createOrUpdateUserInfo(user1 , "" + mainGroup1.getId(), "-1");
+        service.createOrUpdateUser(user1 , "" + mainGroup1.getId(), "-1");
         log.debug(user1);
         
         service.deleteUser(mainGroup1.getId(), user1.getId());
         user1.setId(null);
-        service.createOrUpdateUserInfo(user1 , "" + mainGroup1.getId(), "-1");
+        service.createOrUpdateUser(user1 , "" + mainGroup1.getId(), "-1");
         log.debug(user1);
         
         // 注册一个用户
@@ -108,7 +108,7 @@ public class UserModuleTest extends TxSupportTest4UM {
         user1.setUserName("U_JK");
         user1.setPassword("123456");
         user1.setGroupId(group1.getId());
-        service.createOrUpdateUserInfo(user1 , "" + group1.getId(), "");
+        service.createOrUpdateUser(user1 , "" + group1.getId(), "");
         log.debug(user1 + "\n");
         
         User user2 = new User();
@@ -117,7 +117,7 @@ public class UserModuleTest extends TxSupportTest4UM {
         user2.setUserName("JK3");
         user2.setPassword("123456");
         user2.setGroupId(group1.getId());
-        service.createOrUpdateUserInfo(user2 , "" + group1.getId(), "");
+        service.createOrUpdateUser(user2 , "" + group1.getId(), "");
         log.debug(user2 + "\n");
         
         return group1;

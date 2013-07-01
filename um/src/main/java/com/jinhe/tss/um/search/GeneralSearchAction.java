@@ -108,7 +108,7 @@ public class GeneralSearchAction extends BaseActionSupport {
 	 * 根据用户组查询组下用户（需是登陆用户可见的用户）的角色授予情况
 	 */
 	@RequestMapping("/roles/{groupId}")
-	public void searchRolesInfo(Long groupId) {
+	public void searchRolesByGroup(Long groupId) {
 		List<?> list = service.searchUserRolesMapping(groupId);
 		GridDataEncoder gridEncoder = new GridDataEncoder(list, UMConstants.GENERAL_SEARCH_ROLE_GRID);
 

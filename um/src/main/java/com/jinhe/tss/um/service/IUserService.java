@@ -53,7 +53,7 @@ public interface IUserService {
     @Logable(operateTable="用户", operateType="新建/修改", 
             operateInfo="新建/修改了 ${args[1]} 用户（用户对用户组信息 ${args[2]}、用户对角色的信息 ${args[3]?default(\"\")}）"
         )
-    void createOrUpdateUserInfo(User user, String groupIdsStr, String roleIdsStr);
+    void createOrUpdateUser(User user, String groupIdsStr, String roleIdsStr);
 
     /**
      * <p>

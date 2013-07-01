@@ -47,8 +47,7 @@ public class ApplicationModuleTest extends TxSupportTest4UM {
         assertTrue(apps.size() >= 2);
         
         action.getResourceTypeInfo(1L);
-        action.getResourcesByResourceTypeId(UMConstants.GROUP_RESOURCE_TYPE_ID, application.getApplicationId());
-        
+
         action.editApplication(application);
         
         ResourceType resourceType = service.getResourceTypeById(1L);

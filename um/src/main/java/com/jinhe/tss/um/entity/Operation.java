@@ -137,7 +137,7 @@ public class Operation implements IEntity, ITreeNode, IXForm, IPermissionOption 
 	public TreeAttributesMap getAttributes() {
 		TreeAttributesMap map = new TreeAttributesMap(id, name);
 		map.put("icon", UMConstants.OPERATION_TREENODE_ICON);
-		map.put("appType", UMConstants.OPERATION_TREE_NODE);
+		map.put("nodeType", UMConstants.OPERATION_TREE_NODE);
 		map.put("applicationId", applicationId);
 		return map;
 	}

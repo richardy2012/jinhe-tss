@@ -16,7 +16,6 @@ import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IApplicationService;
 import com.jinhe.tss.um.service.IUserService;
-import com.jinhe.tss.util.BeanUtil;
 
 /**
  * 用户组织相关模块的单元测试。
@@ -110,7 +109,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
         user1.setUserName("JK");
         user1.setPassword("123456");
         user1.setGroupId(mainGroup1.getId());
-        userService.createOrUpdateUserInfo(user1 , "" + mainGroup1.getId(), "-1");
+        userService.createOrUpdateUser(user1 , "" + mainGroup1.getId(), "-1");
         log.debug(user1 + "\n");
         
         groupService.startOrStopGroup(APPLICATION_ID, mainGroup1.getId(), 1);
@@ -241,7 +240,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
         user1.setUserName("JK");
         user1.setPassword("123456");
         user1.setGroupId(otherGroup1.getId());
-        userService.createOrUpdateUserInfo(user1 , "" + otherGroup1.getId(), "");
+        userService.createOrUpdateUser(user1 , "" + otherGroup1.getId(), "");
         log.debug(user1 + "\n");
         
         Object[] result = groupService.getOtherGroupsByOperationId(UMConstants.GROUP_EDIT_OPERRATION);
@@ -306,7 +305,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
         
         action.getAllGroup2Tree();
         
-        // 测试其他用户组导入到主用户组
+        // 测试其他用户组导入到主用户组。TODO 进度条需要单独起线程，里面没有事务。
 //        action.importGroup(otherGroup1.getId(), UMConstants.MAIN_GROUP_ID);
  
     }

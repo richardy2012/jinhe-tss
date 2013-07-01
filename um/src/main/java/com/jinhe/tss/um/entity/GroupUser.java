@@ -33,7 +33,7 @@ public class GroupUser implements IEntity {
     
     public GroupUser() { }
     
-    public GroupUser(Long userId, Long groupId){
+    public GroupUser(Long userId, Long groupId) {
         this.userId = userId;
         this.groupId = groupId;
     }

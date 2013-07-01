@@ -64,7 +64,7 @@ public class SubAuthorizeService implements ISubAuthorizeService {
 	}
 
 	public List<?> getStrategyByCreator() {
-	    return roleDao.getEntities("from Strategy o where o.creatorId = ?" , Environment.getOperatorId());
+	    return roleDao.getEntities("from SubAuthorize o where o.creatorId = ?" , Environment.getOperatorId());
 	}
 
 	public void saveStrategy(SubAuthorize strategy, String userIds, String groupIds, String roleIds) {

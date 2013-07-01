@@ -141,7 +141,7 @@ public class ResourceType extends OperateInfo implements IEntity, ITreeNode, IXF
  
 	public TreeAttributesMap getAttributes() {
 		TreeAttributesMap map = new TreeAttributesMap(id, name);
-		map.put("appType", UMConstants.RESOURCETYPE_TREE_NODE);
+		map.put("nodeType", UMConstants.RESOURCETYPE_TREE_NODE);
 		map.put("resourceTypeId", resourceTypeId);
 		map.put("applicationId", applicationId);
 		

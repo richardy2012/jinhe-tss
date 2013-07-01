@@ -12,6 +12,8 @@ import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.action.RoleAction;
 import com.jinhe.tss.um.action.SubAuthorizeAction;
 import com.jinhe.tss.um.entity.Group;
+import com.jinhe.tss.um.entity.Role;
+import com.jinhe.tss.um.entity.SubAuthorize;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IApplicationService;
 import com.jinhe.tss.um.service.IRoleService;
@@ -23,7 +25,10 @@ import com.jinhe.tss.um.service.IUserService;
  */
 public class GeneralSearchTest extends TxSupportTest4UM {
 	
-	GeneralSearchAction action;
+    @Autowired GeneralSearchAction action;
+    
+    @Autowired RoleAction roleAction;
+    @Autowired SubAuthorizeAction strategyAction;
     
     @Autowired GeneralSearchService service;
     @Autowired RemoteSearchService remoteService;
@@ -36,27 +41,20 @@ public class GeneralSearchTest extends TxSupportTest4UM {
     public void setUp() throws Exception {
         super.setUp();
         
-        action = new GeneralSearchAction();
-        action.setService(service);
-        action.setRemoteService(remoteService);
-        action.setApplicationService(applicationService);
-        
         // 初始化虚拟登录用户信息
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
     }
     
     public void testGeneralSearch() {
+        
+        String applicationId = "tss";
+        String resourceTypeId = UMConstants.GROUP_RESOURCE_TYPE_ID;
     	
-    	action.setGroupId(UMConstants.MAIN_GROUP_ID);
-    	action.getAllApplications();
+    	action.getAllApplications(UMConstants.MAIN_GROUP_ID);
     	
-    	action.setApplicationId("tss");
-    	action.getResourceTypes();
+    	action.getResourceTypes(applicationId);
     	
-    	action.setResourceTypeId("2");
-    	action.searchPermission();
-    	
-    	action.searchMapping();
+    	action.searchPermission(UMConstants.MAIN_GROUP_ID, applicationId, resourceTypeId);
     	
     	 // 新建一个用户组
         Group mainGroup = new Group();
@@ -74,47 +72,34 @@ public class GeneralSearchTest extends TxSupportTest4UM {
         mainUser.setUserName("G_JK");
         mainUser.setPassword("123456");
         mainUser.setGroupId(mainGroup.getId());
-        userService.createOrUpdateUserInfo(mainGroup.getId(), mainUser , "" + mainGroup.getId(), "");
+        userService.createOrUpdateUser( mainUser , "" + mainGroup.getId(), "");
         log.debug(mainUser);
  
         // 新建角色
-        RoleAction roleAction = new RoleAction();
-        roleAction.setRoleService(roleService);
-        roleAction.getRole().setIsGroup(0);
-        roleAction.getRole().setName("G_办公室助理");
-        roleAction.getRole().setParentId(UMConstants.ROLE_ROOT_ID);
-        roleAction.getRole().setStartDate(new Date());
+        Role role = new Role();
+        role.setIsGroup(0);
+        role.setName("G_办公室助理");
+        role.setParentId(UMConstants.ROLE_ROOT_ID);
+        role.setStartDate(new Date());
         Calendar calendar = new GregorianCalendar();
         calendar.add(UMConstants.ROLE_LIFE_TYPE, UMConstants.ROLE_LIFE_TIME);
-        roleAction.getRole().setEndDate(calendar.getTime());
-        roleAction.setRole2UserIds("");
-        roleAction.setRole2GroupIds("");
-        roleAction.saveRole();
-        Long roleId = roleAction.getRole().getId();
+        role.setEndDate(calendar.getTime());
+        roleAction.saveRole(role, "", "");
+        Long roleId = role.getId();
         
         // 新建转授策略
-        SubAuthorizeAction strategyAction = new SubAuthorizeAction();
-        strategyAction.setService(strategyService);
-        strategyAction.getStrategy().setStartDate(new Date());
+        SubAuthorize strategy = new SubAuthorize();
+        strategy.setStartDate(new Date());
         calendar = new GregorianCalendar();
         calendar.add(UMConstants.STRATEGY_LIFE_TYPE, UMConstants.STRATEGY_LIFE_TIME);
-        strategyAction.getStrategy().setEndDate(calendar.getTime());
-        strategyAction.getStrategy().setName("G_转授策略一");
-        strategyAction.setRule2GroupIds(mainGroup.getId() + "");
-        strategyAction.setRule2RoleIds(roleId + "");
-        strategyAction.setRule2UserIds(mainUser.getId() + "");
-        strategyAction.saveSubAuthorizeStrategy();
+        strategy.setEndDate(calendar.getTime());
+        strategy.setName("G_转授策略一");
+        strategyAction.saveSubAuthorizeInfo(strategy, mainUser.getId() + "", mainGroup.getId() + "", roleId + "");
         
-        action.setGroupId(mainGroup.getId());
-    	action.searchUserSubauth();
+    	action.searchUserSubauth(mainGroup.getId());
     	
-    	action.setRoleId(roleId);
-    	action.searchRolesInfo();
+    	action.searchRolesByGroup(roleId);
     	
-    	action.searchUserInfoByRole();
-    	action.searchUsersByGroup();
-    	
+    	action.searchUsersByGroup(mainGroup.getId());
     }
-    
-    
 }

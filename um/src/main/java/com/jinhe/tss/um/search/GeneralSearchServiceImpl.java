@@ -55,7 +55,7 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
 		
 		List<SubAuthorizedUserRoleDTO> result = new ArrayList<SubAuthorizedUserRoleDTO>();
 		
-		String hsql = "select u, r, s, creator from User u, RoleUser ru, Role r, Strategy s, User creator, Temp t " +
+		String hsql = "select u, r, s, creator from User u, RoleUser ru, Role r, SubAuthorize s, User creator, Temp t " +
 					" where u.id=ru.userId and ru.roleId = r.id and ru.strategyId = s.id and s.creatorId = creator.id and u.id = t.id";
         List<?> list = commonDao.getEntities(hsql);
 		for( Object temp : list ){
@@ -79,7 +79,7 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
 			result.add(dto);
 		}
 		
-		hsql = "select u, r, s, creator, g from User u, GroupUser gu, Group g, RoleGroup rg, Role r, Strategy s, User creator, Temp t " +
+		hsql = "select u, r, s, creator, g from User u, GroupUser gu, Group g, RoleGroup rg, Role r, SubAuthorize s, User creator, Temp t " +
 		    " where u.id = gu.userId and gu.groupId=g.id and g.id=rg.groupId and rg.roleId = r.id  " +
 		    "   and rg.strategyId = s.id and s.creatorId = creator.id and u.id = t.id ";
         list = commonDao.getEntities(hsql);

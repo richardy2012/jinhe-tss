@@ -104,7 +104,7 @@ public class UserAction extends BaseActionSupport {
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public void saveUser(User user, String user2GroupExistTree, String user2RoleExistTree) {
-		userService.createOrUpdateUserInfo(user, user2GroupExistTree, user2RoleExistTree);
+		userService.createOrUpdateUser(user, user2GroupExistTree, user2RoleExistTree);
         printSuccessMessage();
 	}
 	
