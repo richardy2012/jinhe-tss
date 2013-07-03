@@ -21,6 +21,7 @@ OPERATION_VIEW = "查看\"$label\"";
 OPERATION_DEL  = "删除\"$label\"";
 OPERATION_EDIT = "编辑\"$label\"";
 OPERATION_SEARCH = "查询\"$label\"";
+OPERATION_PERMISSION = "设置\"$label\"权限";
 
 /* 延时 */
 TIMEOUT_TAB_CHANGE = 200;
