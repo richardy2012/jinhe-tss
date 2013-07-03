@@ -6,7 +6,6 @@ import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.um.entity.Operation;
 import com.jinhe.tss.um.entity.ResourceType;
 import com.jinhe.tss.um.entity.ResourceTypeRoot;
-import com.jinhe.tss.um.permission.dispaly.ResourceTreeNode;
 
 public interface IApplicationService{
 	

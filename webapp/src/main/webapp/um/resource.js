@@ -76,17 +76,11 @@
     URL_IMPORT_APPLICATION = "ums/resourceRegister!getImportTemplate.action";
     URL_IMPORT_ACTION = "ums/resourceRegister!applicationRegisterByXML.action";
     URL_ASSIGN_DETAIL = "data/source2role.xml";
-
-    /*
-     *	延时
-     */
-    TIMEOUT_TAB_CHANGE = 200;
+ 
     /*
      *	icon路径
      */
     ICON = "../platform/images/icon/";
-
-    var toolbar = null;
 
     /*
      *	页面初始化
@@ -96,8 +90,7 @@
     function init(){
         initPaletteResize();
         initListContainerResize();
-        initToolBar();
-        initNaviBar("ums.2");
+        initNaviBar("um.2");
         initMenus();
         initBlocks();
         initWorkSpace();
@@ -106,25 +99,7 @@
 
         loadInitData();
     }
-    /*
-     *	页面初始化加载数据(包括工具条、树)
-     */
-    function loadInitData(){
-        var p = new HttpRequestParams();
-        p.url = URL_INIT;
-
-        var request = new HttpRequest(p);
-        request.onresult = function(){
-            var mainTreeNode = this.getNodeValue(XML_MAIN_TREE);
-            var mainTreeNodeID = CACHE_MAIN_TREE;
-
-            Cache.XmlIslands.add(mainTreeNodeID, mainTreeNode);
-
-            initTree(mainTreeNodeID);
-        }
-        request.send();
-    }
- 
+  
     function initMenus(){
         var item1 = {
             label:"编辑",
@@ -169,122 +144,63 @@
  
         treeObj.contextmenu = menu1;
     }
-    /*
-     *	区块初始化
-     *	参数：	
-     *	返回值：
-     */
+ 
     function initBlocks(){
         var paletteObj = $("palette");
         Blocks.create(paletteObj);
 
         var treeContainerObj = $("treeContainer");
-        Blocks.create(treeContainerObj,treeContainerObj.parentNode);
-
-        var statusContainerObj = $("statusContainer");
-        Blocks.create(statusContainerObj,statusContainerObj.parentNode,false);
-
-        //状态信息区实例继承WritingBlock可写功能
-        var block = Blocks.getBlock("statusContainer");
-        if(null!=block){
-            block.inherit(WritingBlock);
-        }     
+        Blocks.create(treeContainerObj, treeContainerObj.parentNode);   
     }
- 
-    /*
-     *	资源树初始化
-     *	参数：	string:cacheID      缓存数据ID
-     *	返回值：
-     */
-    function initTree(cacheID){
-        var treeObj = $("tree");
-        Public.initHTC(treeObj,"isLoaded","oncomponentready",function(){
-            initTreeData(cacheID);
-        });
-    }
-    /*
-     *	资源树加载数据
-     *	参数：
-     *	返回值：
-     */
-    function initTreeData(cacheID){
-        var xmlIsland = Cache.XmlIslands.get(cacheID);
-        if(null!=xmlIsland){
-            var treeObj = $("tree");
-            treeObj.load(xmlIsland.node);
 
-            treeObj.onTreeNodeActived = function(eventObj){
+	function loadInitData(){
+        var p = new HttpRequestParams();
+        p.url = URL_INIT;
+
+        var request = new HttpRequest(p);
+        request.onresult = function(){
+            var mainTreeNode = this.getNodeValue(XML_MAIN_TREE);
+
+            Cache.XmlIslands.add(CACHE_MAIN_TREE, mainTreeNode);
+
+            initTree(mainTreeNodeID);
+
+			var tree = $T("tree", mainTreeNode);
+			var treeElement = $$("tree");
+
+			treeElement.onTreeNodeActived = function(eventObj){
                 onTreeNodeActived(eventObj);
             }
-            treeObj.onTreeNodeDoubleClick = function(eventObj){
+            treeElement.onTreeNodeDoubleClick = function(eventObj){
                 onTreeNodeDoubleClick(eventObj);
             }
-            treeObj.onTreeNodeRightClick = function(eventObj){
+            treeElement.onTreeNodeRightClick = function(eventObj){
                 onTreeNodeRightClick(eventObj);
             }
-
-        }    
+        }
+        request.send();
     }
-    /*
-     *	聚焦初始化
-     *	参数：	
-     *	返回值：
-     */
+ 
     function initFocus(){
-        var treeTitleObj = $("treeTitle");
-        var statusTitleObj = $("statusTitle");
-        var gridTitleObj = $("gridTitle");
-
-        Focus.register(treeTitleObj.firstChild);
-        Focus.register(statusTitleObj.firstChild);
-        Focus.register(gridTitleObj);
+        Focus.register($$("treeTitle").firstChild);
+        Focus.register($$("gridTitle"));
     }
-    /*
-     *	事件绑定初始化
-     *	参数：	
-     *	返回值：
-     */
+ 
     function initEvents(){
-        var treeBtRefreshObj = $("treeBtRefresh");
-        var treeTitleBtObj = $("treeTitleBt");
-        var statusTitleBtObj = $("statusTitleBt");
-        var paletteBtObj = $("paletteBt");
-
-        var treeTitleObj = $("treeTitle");
-        var statusTitleObj = $("statusTitle");
-        var gridTitleObj = $("gridTitle");
-        
-        Event.attachEvent(treeBtRefreshObj,"click",onClickTreeBtRefresh);
-        Event.attachEvent(treeTitleBtObj,"click",onClickTreeTitleBt);
-        Event.attachEvent(statusTitleBtObj,"click",onClickStatusTitleBt);
-        Event.attachEvent(paletteBtObj,"click",onClickPaletteBt);
-
-        Event.attachEvent(treeTitleObj,"click",onClickTreeTitle);
-        Event.attachEvent(statusTitleObj,"click",onClickStatusTitle);
-        Event.attachEvent(gridTitleObj,"click",onClickGridTitle);
+		Event.attachEvent($$("treeBtRefresh"), "click", onClickTreeBtRefresh);
+		Event.attachEvent($$("treeTitle"), "click", onClickTreeTitle);
+		Event.attachEvent($$("gridTitle"), "click", onClickGridTitle);
     }
+
     /*
      *	点击树节点
-     *	参数：	Object:eventObj     模拟事件对象
-     *	返回值：
      */
     function onTreeNodeActived(eventObj){
-        var treeTitleObj = $("treeTitle");
-        Focus.focus(treeTitleObj.firstChild.id);
-
-        showTreeNodeStatus({id:"ID",name:"名称",creatorName:"创建者",createTime:"创建时间",updatorName:"修改者",updateTime:"修改时间"});
-
-        var treeNode = eventObj.treeNode;
-        //防止因为载入工具条数据而导致不响应双击事件
-        clearTimeout(window._toolbarTimeout);
-        window._toolbarTimeout = setTimeout(function(){
-            loadToolBarData(treeNode);
-        },0);
+        Focus.focus($$("treeTitle").firstChild.id);
+ 
     }
     /*
      *	双击树节点
-     *	参数：	Object:eventObj     模拟事件对象
-     *	返回值：
      */
     function onTreeNodeDoubleClick(eventObj){
         var treeNode = eventObj.treeNode;
