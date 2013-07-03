@@ -1,5 +1,5 @@
     /*
-     *	ºóÌ¨ÏìÓ¦Êı¾İ½ÚµãÃû³Æ
+     *	åå°å“åº”æ•°æ®èŠ‚ç‚¹åç§°
      */
     XML_MAIN_TREE = "MessageTree";
     XML_MESSAGE_LIST = "MessageList";
@@ -14,7 +14,7 @@
 
     XML_GROUP_INFO = "GroupInfo";
     /*
-     *	Ä¬ÈÏÎ¨Ò»±àºÅÃûÇ°×º
+     *	é»˜è®¤å”¯ä¸€ç¼–å·åå‰ç¼€
      */
     CACHE_GRID_ROW_DETAIL = "row__id";
     CACHE_VIEW_GRID_ROW_DETAIL = "viewRow__id";
@@ -27,16 +27,16 @@
     CACHE_REPLY_DETAIL = "reply__id";
     CACHE_FORWARD_DETAIL = "forward__id";
     /*
-     *	Ãû³Æ
+     *	åç§°
      */
-    OPERATION_ADD = "ĞÂ½¨$label";
-    OPERATION_VIEW = "²é¿´\"$label\"";
-    OPERATION_DEL = "É¾³ı\"$label\"";
-    OPERATION_EDIT = "±à¼­\"$label\"";
-    OPERATION_REPLY = "»Ø¸´\"$label\"";
-    OPERATION_FORWARD = "×ª·¢\"$label\"";
+    OPERATION_ADD = "æ–°å»º$label";
+    OPERATION_VIEW = "æŸ¥çœ‹\"$label\"";
+    OPERATION_DEL = "åˆ é™¤\"$label\"";
+    OPERATION_EDIT = "ç¼–è¾‘\"$label\"";
+    OPERATION_REPLY = "å›å¤\"$label\"";
+    OPERATION_FORWARD = "è½¬å‘\"$label\"";
     /*
-     *	XMLHTTPÇëÇóµØÖ·»ã×Ü
+     *	XMLHTTPè¯·æ±‚åœ°å€æ±‡æ€»
      */
     URL_INIT = "data/message_init.xml";
     URL_MESSAGE_LIST = "data/message_list.xml";
@@ -77,21 +77,21 @@
 
  
     /*
-     *	ÑÓÊ±
+     *	å»¶æ—¶
      */
     TIMEOUT_TAB_CHANGE = 200;
     TIMEOUT_GRID_SEARCH = 200;
     /*
-     *	iconÂ·¾¶
+     *	iconè·¯å¾„
      */
     ICON = "../platform/images/icon/";
 
     var toolbar = null;
 
     /*
-     *	º¯ÊıËµÃ÷£ºÒ³Ãæ³õÊ¼»¯
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šé¡µé¢åˆå§‹åŒ–
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function init(){
         initPaletteResize();
@@ -108,9 +108,9 @@
         loadInitData();
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÒ³Ãæ³õÊ¼»¯¼ÓÔØÊı¾İ(°üÀ¨¹¤¾ßÌõ¡¢Ê÷)
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šé¡µé¢åˆå§‹åŒ–åŠ è½½æ•°æ®(åŒ…æ‹¬å·¥å…·æ¡ã€æ ‘)
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function loadInitData(){
         var p = new HttpRequestParams();
@@ -131,33 +131,33 @@
         request.send();
     }
     /*
-     *	º¯ÊıËµÃ÷£º¹¤¾ßÌõ¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:_operation      ²Ù×÷È¨ÏŞ
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå·¥å…·æ¡åŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:_operation      æ“ä½œæƒé™
+     *	è¿”å›å€¼ï¼š
      */
     function loadToolBar(_operation){
         var xmlIsland = Cache.XmlIslands.get(CACHE_TOOLBAR);
-        if(null==xmlIsland){//»¹Ã»ÓĞ¾Í´´½¨
+        if(null==xmlIsland){//è¿˜æ²¡æœ‰å°±åˆ›å»º
 
             var str = [];
             str[str.length] = "<toolbar>";
 
-            //¹«¹²
-            str[str.length] = "    <button id=\"a1\" code=\"p1\" icon=\"" + ICON + "icon_pre.gif\" label=\"ÉÏÒ³\" cmd=\"ws.prevTab()\" enable=\"true\"/>";
-            str[str.length] = "    <button id=\"a2\" code=\"p2\" icon=\"" + ICON + "icon_next.gif\" label=\"ÏÂÒ³\" cmd=\"ws.nextTab()\" enable=\"true\"/>";
+            //å…¬å…±
+            str[str.length] = "    <button id=\"a1\" code=\"p1\" icon=\"" + ICON + "icon_pre.gif\" label=\"ä¸Šé¡µ\" cmd=\"ws.prevTab()\" enable=\"true\"/>";
+            str[str.length] = "    <button id=\"a2\" code=\"p2\" icon=\"" + ICON + "icon_next.gif\" label=\"ä¸‹é¡µ\" cmd=\"ws.nextTab()\" enable=\"true\"/>";
             str[str.length] = "    <separator/>";
 
-            //ÏûÏ¢×é
-            str[str.length] = "    <button id=\"b1\" code=\"1\" icon=\"" + ICON + "new_message.gif\" label=\"Ğ´ĞÂÏûÏ¢\" cmd=\"addNewMessage()\" enable=\"'1'==getTreeId()\"/>";
-            str[str.length] = "    <button id=\"b2\" code=\"6\" icon=\"" + ICON + "view_list.gif\" label=\"ä¯ÀÀÏûÏ¢\" cmd=\"showMessageList()\" enable=\"'1'!=getTreeId()\"/>";
-            str[str.length] = "    <button id=\"b3\" code=\"10\" icon=\"" + ICON + "search.gif\" label=\"ËÑË÷ÏûÏ¢\" cmd=\"searchMessage()\" enable=\"'1'!=getTreeId()\"/>";
+            //æ¶ˆæ¯ç»„
+            str[str.length] = "    <button id=\"b1\" code=\"1\" icon=\"" + ICON + "new_message.gif\" label=\"å†™æ–°æ¶ˆæ¯\" cmd=\"addNewMessage()\" enable=\"'1'==getTreeId()\"/>";
+            str[str.length] = "    <button id=\"b2\" code=\"6\" icon=\"" + ICON + "view_list.gif\" label=\"æµè§ˆæ¶ˆæ¯\" cmd=\"showMessageList()\" enable=\"'1'!=getTreeId()\"/>";
+            str[str.length] = "    <button id=\"b3\" code=\"10\" icon=\"" + ICON + "search.gif\" label=\"æœç´¢æ¶ˆæ¯\" cmd=\"searchMessage()\" enable=\"'1'!=getTreeId()\"/>";
 
-            //ÏûÏ¢
-            str[str.length] = "    <button id=\"c1\" code=\"m3\" icon=\"" + ICON + "view.gif\" label=\"²é¿´\" cmd=\"editMessageInfo(false)\" enable=\"'2'==getMessageBoxId() || '4'==getMessageBoxId()\"/>";
-            str[str.length] = "    <button id=\"c2\" code=\"m2\" icon=\"" + ICON + "edit.gif\" label=\"±à¼­\" cmd=\"editMessageInfo()\" enable=\"'3'==getMessageBoxId()\"/>";
-            str[str.length] = "    <button id=\"c3\" code=\"m1\" icon=\"" + ICON + "del.gif\" label=\"É¾³ı\" cmd=\"delMessage()\" enable=\"true\"/>";
-            str[str.length] = "    <button id=\"c4\" code=\"m4\" icon=\"" + ICON + "reply.gif\" label=\"»Ø¸´\" cmd=\"replyMessage()\" enable=\"'2'==getMessageBoxId()\"/>";
-            str[str.length] = "    <button id=\"c5\" code=\"m5\" icon=\"" + ICON + "forward.gif\" label=\"×ª·¢\" cmd=\"forwardMessage()\" enable=\"'2'==getMessageBoxId()\"/>";
+            //æ¶ˆæ¯
+            str[str.length] = "    <button id=\"c1\" code=\"m3\" icon=\"" + ICON + "view.gif\" label=\"æŸ¥çœ‹\" cmd=\"editMessageInfo(false)\" enable=\"'2'==getMessageBoxId() || '4'==getMessageBoxId()\"/>";
+            str[str.length] = "    <button id=\"c2\" code=\"m2\" icon=\"" + ICON + "edit.gif\" label=\"ç¼–è¾‘\" cmd=\"editMessageInfo()\" enable=\"'3'==getMessageBoxId()\"/>";
+            str[str.length] = "    <button id=\"c3\" code=\"m1\" icon=\"" + ICON + "del.gif\" label=\"åˆ é™¤\" cmd=\"delMessage()\" enable=\"true\"/>";
+            str[str.length] = "    <button id=\"c4\" code=\"m4\" icon=\"" + ICON + "reply.gif\" label=\"å›å¤\" cmd=\"replyMessage()\" enable=\"'2'==getMessageBoxId()\"/>";
+            str[str.length] = "    <button id=\"c5\" code=\"m5\" icon=\"" + ICON + "forward.gif\" label=\"è½¬å‘\" cmd=\"forwardMessage()\" enable=\"'2'==getMessageBoxId()\"/>";
             str[str.length] = "</toolbar>";
 
             var xmlReader = new XmlReader(str.join("\r\n"));
@@ -167,11 +167,11 @@
 
             xmlIsland = xmlNode;
 
-            //ÔØÈë¹¤¾ßÌõ
+            //è½½å…¥å·¥å…·æ¡
             toolbar.loadXML(xmlIsland);
         }
 
-        //¿ØÖÆÏÔÊ¾
+        //æ§åˆ¶æ˜¾ç¤º
         var buttons = xmlIsland.selectNodes("./button");
         for(var i=0,iLen=buttons.length;i<iLen;i++){
             var curButton = buttons[i];
@@ -193,35 +193,35 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º²Ëµ¥³õÊ¼»¯
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šèœå•åˆå§‹åŒ–
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function initMenus(){
         initTreeMenu();
         initGridMenu();
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÊ÷²Ëµ¥³õÊ¼»¯
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ ‘èœå•åˆå§‹åŒ–
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function initTreeMenu(){
         var item1 = {
-            label:"Ğ´ĞÂÏûÏ¢",
+            label:"å†™æ–°æ¶ˆæ¯",
             callback:addNewMessage,
             enable:function(){return true;},
             visible:function(){return "1"==getTreeId() && true==getOperation("1");}
         }
         var item2 = {
-            label:"ä¯ÀÀÏûÏ¢",
+            label:"æµè§ˆæ¶ˆæ¯",
             callback:showMessageList,
             icon:ICON + "view_list.gif",
             enable:function(){return true;},
             visible:function(){return "1"!=getTreeId() &&  true==getOperation("6");}
         }
         var item3 = {
-            label:"ËÑË÷ÏûÏ¢...",
+            label:"æœç´¢æ¶ˆæ¯...",
             callback:searchMessage,
             icon:ICON + "search.gif",
             enable:function(){return true;},
@@ -244,14 +244,14 @@
         treeObj.contextmenu = menu1;
     }
     /*
-     *	º¯ÊıËµÃ÷£ºGrid²Ëµ¥³õÊ¼»¯
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šGridèœå•åˆå§‹åŒ–
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function initGridMenu(){
         var gridObj = $("grid");
         var item1 = {
-            label:"²é¿´",
+            label:"æŸ¥çœ‹",
             callback:function(){
                 editMessageInfo(false);
             },
@@ -260,28 +260,28 @@
             visible:function(){return ("2"==getMessageBoxId() || "4"==getMessageBoxId()) && true==getMessageOperation("m3");}
         }
         var item2 = {
-            label:"±à¼­",
+            label:"ç¼–è¾‘",
             callback:editMessageInfo,
             icon:ICON + "edit.gif",
             enable:function(){return true;},
             visible:function(){return "3"==getMessageBoxId() && true==getMessageOperation("m2");}
         }
         var item3 = {
-            label:"É¾³ı",
+            label:"åˆ é™¤",
             callback:delMessage,
             icon:ICON + "del.gif",
             enable:function(){return gridObj.canDelete();},
             visible:function(){return true==getMessageOperation("m1");}
         }
         var item4 = {
-            label:"»Ø¸´",
+            label:"å›å¤",
             callback:replyMessage,
             icon:ICON + "reply.gif",
             enable:function(){return true;},
             visible:function(){return "2"==getMessageBoxId() && true==getMessageOperation("m4");}
         }
         var item5 = {
-            label:"×ª·¢",
+            label:"è½¬å‘",
             callback:forwardMessage,
             icon:ICON + "forward.gif",
             enable:function(){return true;},
@@ -299,9 +299,9 @@
         gridObj.contextmenu = menu1;
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÇø¿é³õÊ¼»¯
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåŒºå—åˆå§‹åŒ–
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function initBlocks(){
         var paletteObj = $("palette");
@@ -313,28 +313,28 @@
         var statusContainerObj = $("statusContainer");
         Blocks.create(statusContainerObj,statusContainerObj.parentNode,false);
 
-        //×´Ì¬ĞÅÏ¢ÇøÊµÀı¼Ì³ĞWritingBlock¿ÉĞ´¹¦ÄÜ
+        //çŠ¶æ€ä¿¡æ¯åŒºå®ä¾‹ç»§æ‰¿WritingBlockå¯å†™åŠŸèƒ½
         var block = Blocks.getBlock("statusContainer");
         if(null!=block){
             block.inherit(WritingBlock);
         }     
     }
     /*
-     *	º¯ÊıËµÃ÷£ºgrid³õÊ¼»¯
-     *	²ÎÊı£º	string:id                   gridÊı¾İÏà¹ØÊ÷½Úµãid
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šgridåˆå§‹åŒ–
+     *	å‚æ•°ï¼š	string:id                   gridæ•°æ®ç›¸å…³æ ‘èŠ‚ç‚¹id
+     *	è¿”å›å€¼ï¼š
      */
     function initGrid(id){
         var gridObj = $("grid");
         Public.initHTC(gridObj,"isLoaded","onload",function(){
             loadGridEvents();
-            loadGridData(id,"1");//Ä¬ÈÏµÚ1Ò³
+            loadGridData(id,"1");//é»˜è®¤ç¬¬1é¡µ
         });
     }
     /*
-     *	º¯ÊıËµÃ÷£ºgrid°ó¶¨ÊÂ¼ş
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šgridç»‘å®šäº‹ä»¶
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function loadGridEvents(){
         var gridObj = $("grid");
@@ -357,12 +357,12 @@
     
     }
     /*
-     *	º¯ÊıËµÃ÷£ºgrid¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:treeID               gridÊı¾İÏà¹ØÊ÷½Úµãid
-                string:page                 Ò³Âë
-                string:sortName             ÅÅĞò×Ö¶Î
-                string:direction            ÅÅĞò·½Ïò
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šgridåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:treeID               gridæ•°æ®ç›¸å…³æ ‘èŠ‚ç‚¹id
+                string:page                 é¡µç 
+                string:sortName             æ’åºå­—æ®µ
+                string:direction            æ’åºæ–¹å‘
+     *	è¿”å›å€¼ï¼š
      */
     function loadGridData(treeID,page,sortName,direction){
         var cacheID = CACHE_TREE_NODE_GRID + treeID;
@@ -385,10 +385,10 @@
                 var pageListNode = this.getNodeValue(XML_PAGE_LIST);
                 var pageListNodeID = cacheID+"."+XML_PAGE_LIST;
 
-                //¸øÏûÏ¢gridÊı¾İ¸ù½ÚµãÔö¼ÓboxIdµÈÊôĞÔ
+                //ç»™æ¶ˆæ¯gridæ•°æ®æ ¹èŠ‚ç‚¹å¢åŠ boxIdç­‰å±æ€§
                 msgListNode.setAttribute("boxId",treeID);
 
-                //¸øµ±Ç°ÅÅĞòÁĞ¼ÓÉÏ_directionÊôĞÔ
+                //ç»™å½“å‰æ’åºåˆ—åŠ ä¸Š_directionå±æ€§
                 if(null!=sortName && null!=direction){
                     var column = msgListNode.selectSingleNode("//column[@name='" + sortName + "']");
                     if(null!=column){
@@ -408,12 +408,12 @@
 //        }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºgrid´Ó»º´æ¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID   gridÊı¾İÏà¹ØÊ÷½Úµãid
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šgridä»ç¼“å­˜åŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID   gridæ•°æ®ç›¸å…³æ ‘èŠ‚ç‚¹id
+     *	è¿”å›å€¼ï¼š
      */
     function loadGridDataFromCache(cacheID){
-        //ÖØĞÂ´´½¨grid¹¤¾ßÌõ
+        //é‡æ–°åˆ›å»ºgridå·¥å…·æ¡
         createGridToolBar(cacheID);
 
         var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_MESSAGE_LIST);
@@ -425,9 +425,9 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º´´½¨grid¹¤¾ßÌõ
-     *	²ÎÊı£º	string:cacheID   gridÊı¾İÏà¹ØÊ÷½Úµãid
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåˆ›å»ºgridå·¥å…·æ¡
+     *	å‚æ•°ï¼š	string:cacheID   gridæ•°æ®ç›¸å…³æ ‘èŠ‚ç‚¹id
+     *	è¿”å›å€¼ï¼š
      */
     function createGridToolBar(cacheID){
         var toolbarObj = $("gridToolBar");
@@ -446,12 +446,12 @@
                     var sortName = tempXmlIsland.getAttribute("sortName");
                     var direction = tempXmlIsland.getAttribute("direction");
                     if("search"!=tempBoxId){
-                        //Çå³ı¸Ã×éÏûÏ¢grid»º´æ
+                        //æ¸…é™¤è¯¥ç»„æ¶ˆæ¯gridç¼“å­˜
                         delCacheData(CACHE_TREE_NODE_GRID + tempBoxId);
 
                         loadGridData(tempBoxId,page,sortName,direction);
 
-                        //Ë¢ĞÂ¹¤¾ßÌõ
+                        //åˆ·æ–°å·¥å…·æ¡
                         onInactiveRow();
                     }else{
                         loadSearchGridData(cacheID,page,sortName,direction,tempBoxId);
@@ -461,9 +461,9 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÏÔÊ¾ÏûÏ¢×´Ì¬ĞÅÏ¢
-     *	²ÎÊı£º	number:rowIndex     gridÊı¾İĞĞºÅ
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ˜¾ç¤ºæ¶ˆæ¯çŠ¶æ€ä¿¡æ¯
+     *	å‚æ•°ï¼š	number:rowIndex     gridæ•°æ®è¡Œå·
+     *	è¿”å›å€¼ï¼š
      */
     function showMessageStatus(rowIndex){
         if(null==rowIndex){
@@ -491,16 +491,16 @@
         if(null!=block){
             block.open();
             block.writeln("ID",rowID);
-            block.writeln("·¢¼şÈË",sender);
-            block.writeln("·¢¼şÊ±¼ä",sendTime);
-            block.writeln("ÊÕ¼şÈË",receiver);
+            block.writeln("å‘ä»¶äºº",sender);
+            block.writeln("å‘ä»¶æ—¶é—´",sendTime);
+            block.writeln("æ”¶ä»¶äºº",receiver);
             block.close();
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÏÔÊ¾ÏûÏ¢ÏêÏ¸ĞÅÏ¢
-     *	²ÎÊı£º	boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ˜¾ç¤ºæ¶ˆæ¯è¯¦ç»†ä¿¡æ¯
+     *	å‚æ•°ï¼š	boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+     *	è¿”å›å€¼ï¼š
      */
     function editMessageInfo(editable){
         var gridObj = $("grid");
@@ -537,11 +537,11 @@
         
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÏûÏ¢ÏêÏ¸ĞÅÏ¢¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:userID               ÏûÏ¢id
-                boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-                boolean:isNew               ÊÇ·ñĞÂ½¨(Ä¬ÈÏtrue)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ¶ˆæ¯è¯¦ç»†ä¿¡æ¯åŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:userID               æ¶ˆæ¯id
+                boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+                boolean:isNew               æ˜¯å¦æ–°å»º(é»˜è®¤true)
+     *	è¿”å›å€¼ï¼š
      */
     function loadMessageDetailData(id,editable,isNew){
         if(false==editable){
@@ -553,7 +553,7 @@
         if(null==msgDetail){
             var p = new HttpRequestParams();
             p.url = URL_MESSAGE_DETAIL;
-            //Èç¹ûÊÇĞÂÔö
+            //å¦‚æœæ˜¯æ–°å¢
             if(true==isNew){
                 p.setContent("isNew", "true");
             }else{
@@ -579,11 +579,11 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÏûÏ¢Ïà¹ØÒ³¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID          »º´æÊı¾İid
-                boolean:editable        ÊÇ·ñ¿É±à¼­
-                boolean:isNew           ÊÇ·ñĞÂ½¨
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ¶ˆæ¯ç›¸å…³é¡µåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID          ç¼“å­˜æ•°æ®id
+                boolean:editable        æ˜¯å¦å¯ç¼–è¾‘
+                boolean:isNew           æ˜¯å¦æ–°å»º
+     *	è¿”å›å€¼ï¼š
      */
     function initMessagePages(cacheID,editable,isNew){
         var page1FormObj = $("page1Form");
@@ -591,7 +591,7 @@
             loadMessageInfoFormData(cacheID,editable);
         });
 
-        //ÉèÖÃ±£´æ°´Å¥²Ù×÷
+        //è®¾ç½®ä¿å­˜æŒ‰é’®æ“ä½œ
         var page1BtSaveObj = $("page1BtSave");
         var page1BtSaveAndSendObj = $("page1BtSaveAndSend");
         var page1BtSendObj = $("page1BtSend");
@@ -609,10 +609,10 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÏûÏ¢ĞÅÏ¢xform¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID              »º´æÊı¾İid
-                boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ¶ˆæ¯ä¿¡æ¯xformåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID              ç¼“å­˜æ•°æ®id
+                boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+     *	è¿”å›å€¼ï¼š
      */
     function loadMessageInfoFormData(cacheID,editable){
         var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_MESSAGE_INFO);
@@ -621,14 +621,14 @@
             page1FormObj.editable = editable==false?"false":"true";
             page1FormObj.load(xmlIsland.node,null,"node");
 
-            //2007-3-1 Àë¿ªÌáĞÑ
+            //2007-3-1 ç¦»å¼€æé†’
             attachReminder(cacheID,page1FormObj);
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º×ÊÔ´Ê÷³õÊ¼»¯
-     *	²ÎÊı£º	string:cacheID      »º´æÊı¾İID
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šèµ„æºæ ‘åˆå§‹åŒ–
+     *	å‚æ•°ï¼š	string:cacheID      ç¼“å­˜æ•°æ®ID
+     *	è¿”å›å€¼ï¼š
      */
     function initTree(cacheID){
         var treeObj = $("tree");
@@ -637,9 +637,9 @@
         });
     }
     /*
-     *	º¯ÊıËµÃ÷£º×ÊÔ´Ê÷¼ÓÔØÊı¾İ
-     *	²ÎÊı£º
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šèµ„æºæ ‘åŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š
+     *	è¿”å›å€¼ï¼š
      */
     function initTreeData(cacheID){
         var xmlIsland = Cache.XmlIslands.get(cacheID);
@@ -662,13 +662,13 @@
         }    
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÊ÷½ÚµãÊı¾İÏêÏ¸ĞÅÏ¢¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:treeID               Ê÷½Úµãid
-                boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-                string:parentID             ¸¸½Úµãid
-                boolean:isNew               ÊÇ·ñĞÂÔö
-                string:disabled             ×é×´Ì¬(1Í£ÓÃ/0ÆôÓÃ)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ ‘èŠ‚ç‚¹æ•°æ®è¯¦ç»†ä¿¡æ¯åŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:treeID               æ ‘èŠ‚ç‚¹id
+                boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+                string:parentID             çˆ¶èŠ‚ç‚¹id
+                boolean:isNew               æ˜¯å¦æ–°å¢
+                string:disabled             ç»„çŠ¶æ€(1åœç”¨/0å¯ç”¨)
+     *	è¿”å›å€¼ï¼š
      */
     function loadGroupDetailData(treeID,editable,parentID,groupType,applicationId,isNew,disabled){
         if(false==editable){
@@ -699,7 +699,7 @@
                 var group2RoleTreeNode = this.getNodeValue(XML_GROUP_TO_ROLE_TREE);
                 var group2RoleGridNode = this.getNodeValue(XML_GROUP_TO_ROLE_EXIST_TREE);
 
-                //Ö»±£ÁôÖ÷¡¢¸¨ÖúÏûÏ¢×é
+                //åªä¿ç•™ä¸»ã€è¾…åŠ©æ¶ˆæ¯ç»„
                 var mainTreeNode = Cache.XmlIslands.get(CACHE_MAIN_TREE);
                 var GroupType1Node = mainTreeNode.selectSingleNode("./treeNode[@groupType='1']");
                 if(null!=GroupType1Node){
@@ -734,13 +734,13 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÏûÏ¢×éÏà¹ØÒ³¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID              »º´æÊı¾İid
-                boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-                boolean:isNew               ÊÇ·ñĞÂÔö
-                string:parentID             ¸¸½Úµãid
-                string:groupType            ×éÀàĞÍ
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ¶ˆæ¯ç»„ç›¸å…³é¡µåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID              ç¼“å­˜æ•°æ®id
+                boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+                boolean:isNew               æ˜¯å¦æ–°å¢
+                string:parentID             çˆ¶èŠ‚ç‚¹id
+                string:groupType            ç»„ç±»å‹
+     *	è¿”å›å€¼ï¼š
      */
     function initGroupPages(cacheID,editable,isNew,parentID,groupType){
         var page1FormObj = $("page1Form");
@@ -748,13 +748,13 @@
             loadGroupInfoFormData(cacheID,editable,groupType);
         });
 
-        //ÉèÖÃ·­Ò³°´Å¥ÏÔÊ¾×´Ì¬
+        //è®¾ç½®ç¿»é¡µæŒ‰é’®æ˜¾ç¤ºçŠ¶æ€
         var page1BtPrevObj = $("page1BtPrev");
         var page1BtNextObj = $("page1BtNext");
         page1BtPrevObj.style.display = "none";
         page1BtNextObj.style.display = "none";
 
-        //ÉèÖÃ±£´æ°´Å¥²Ù×÷
+        //è®¾ç½®ä¿å­˜æŒ‰é’®æ“ä½œ
         var page1BtSaveObj = $("page1BtSave");
         page1BtSaveObj.disabled = editable==false?true:false;
         page1BtSaveObj.onclick = function(){
@@ -762,11 +762,11 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÏûÏ¢×éĞÅÏ¢xform¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID              »º´æÊı¾İid
-                boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-                string:groupType            ×éÀàĞÍ
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ¶ˆæ¯ç»„ä¿¡æ¯xformåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID              ç¼“å­˜æ•°æ®id
+                boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+                string:groupType            ç»„ç±»å‹
+     *	è¿”å›å€¼ï¼š
      */
     function loadGroupInfoFormData(cacheID,editable,groupType){
         var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_GROUP_INFO);
@@ -776,15 +776,15 @@
             page1FormObj.load(xmlIsland.node,null,"node");
 
             page1FormObj.ondatachange = function(){
-                //2007-3-1 Àë¿ªÌáĞÑ
+                //2007-3-1 ç¦»å¼€æé†’
                 attachReminder(cacheID);
             }
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º¾Û½¹³õÊ¼»¯
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šèšç„¦åˆå§‹åŒ–
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function initFocus(){
         var treeTitleObj = $("treeTitle");
@@ -796,9 +796,9 @@
         Focus.register(gridTitleObj);
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÊÂ¼ş°ó¶¨³õÊ¼»¯
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šäº‹ä»¶ç»‘å®šåˆå§‹åŒ–
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function initEvents(){
         var treeBtRefreshObj = $("treeBtRefresh");
@@ -820,27 +820,27 @@
         Event.attachEvent(gridTitleObj,"click",onClickGridTitle);
     }
     /*
-     *	º¯ÊıËµÃ÷£ºµã»÷Ê÷½Úµã
-     *	²ÎÊı£º	Object:eventObj     Ä£ÄâÊÂ¼ş¶ÔÏó
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šç‚¹å‡»æ ‘èŠ‚ç‚¹
+     *	å‚æ•°ï¼š	Object:eventObj     æ¨¡æ‹Ÿäº‹ä»¶å¯¹è±¡
+     *	è¿”å›å€¼ï¼š
      */
     function onTreeNodeActived(eventObj){
         var treeTitleObj = $("treeTitle");
         Focus.focus(treeTitleObj.firstChild.id);
 
-        showTreeNodeStatus({id:"ID",name:"Ãû³Æ",creatorName:"´´½¨Õß",createTime:"´´½¨Ê±¼ä",updatorName:"ĞŞ¸ÄÕß",updateTime:"ĞŞ¸ÄÊ±¼ä"});
+        showTreeNodeStatus({id:"ID",name:"åç§°",creatorName:"åˆ›å»ºè€…",createTime:"åˆ›å»ºæ—¶é—´",updatorName:"ä¿®æ”¹è€…",updateTime:"ä¿®æ”¹æ—¶é—´"});
 
         var treeNode = eventObj.treeNode;
-        //·ÀÖ¹ÒòÎªÔØÈë¹¤¾ßÌõÊı¾İ¶øµ¼ÖÂ²»ÏìÓ¦Ë«»÷ÊÂ¼ş
+        //é˜²æ­¢å› ä¸ºè½½å…¥å·¥å…·æ¡æ•°æ®è€Œå¯¼è‡´ä¸å“åº”åŒå‡»äº‹ä»¶
         clearTimeout(window._toolbarTimeout);
         window._toolbarTimeout = setTimeout(function(){
             loadToolBarData(treeNode);
         },0);
     }
     /*
-     *	º¯ÊıËµÃ÷£ºË«»÷Ê÷½Úµã
-     *	²ÎÊı£º	Object:eventObj     Ä£ÄâÊÂ¼ş¶ÔÏó
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåŒå‡»æ ‘èŠ‚ç‚¹
+     *	å‚æ•°ï¼š	Object:eventObj     æ¨¡æ‹Ÿäº‹ä»¶å¯¹è±¡
+     *	è¿”å›å€¼ï¼š
      */
     function onTreeNodeDoubleClick(eventObj){
         var treeNode = eventObj.treeNode;
@@ -857,15 +857,15 @@
         });
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÓÒ»÷Ê÷½Úµã
-     *	²ÎÊı£º	Object:eventObj     Ä£ÄâÊÂ¼ş¶ÔÏó
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå³å‡»æ ‘èŠ‚ç‚¹
+     *	å‚æ•°ï¼š	Object:eventObj     æ¨¡æ‹Ÿäº‹ä»¶å¯¹è±¡
+     *	è¿”å›å€¼ï¼š
      */
     function onTreeNodeRightClick(eventObj){
         var treeObj = $("tree");
         var treeNode = eventObj.treeNode;
 
-        showTreeNodeStatus({id:"ID",name:"Ãû³Æ",creatorName:"´´½¨Õß",createTime:"´´½¨Ê±¼ä",updatorName:"ĞŞ¸ÄÕß",updateTime:"ĞŞ¸ÄÊ±¼ä"});
+        showTreeNodeStatus({id:"ID",name:"åç§°",creatorName:"åˆ›å»ºè€…",createTime:"åˆ›å»ºæ—¶é—´",updatorName:"ä¿®æ”¹è€…",updateTime:"ä¿®æ”¹æ—¶é—´"});
 
         var x = eventObj.clientX;
         var y = eventObj.clientY;
@@ -877,17 +877,17 @@
         });
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÍÏ¶¯Ê÷½Úµã
-     *	²ÎÊı£º	Object:eventObj     Ä£ÄâÊÂ¼ş¶ÔÏó
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ‹–åŠ¨æ ‘èŠ‚ç‚¹
+     *	å‚æ•°ï¼š	Object:eventObj     æ¨¡æ‹Ÿäº‹ä»¶å¯¹è±¡
+     *	è¿”å›å€¼ï¼š
      */
     function onTreeNodeMoved(eventObj){
         sortGroupTo(eventObj);
     }
     /*
-     *	º¯ÊıËµÃ÷£ºµ¥»÷gridĞĞ
-     *	²ÎÊı£º	event:eventObj     ÊÂ¼ş¶ÔÏó
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå•å‡»gridè¡Œ
+     *	å‚æ•°ï¼š	event:eventObj     äº‹ä»¶å¯¹è±¡
+     *	è¿”å›å€¼ï¼š
      */
     function onClickRow(eventObj){    
         Focus.focus("gridTitle");
@@ -895,22 +895,22 @@
         var rowIndex = eventObj.result.rowIndex_Xml;
         showMessageStatus(rowIndex);
 
-        //·ÀÖ¹ÒòÎªÔØÈë¹¤¾ßÌõÊı¾İ¶øµ¼ÖÂ²»ÏìÓ¦Ë«»÷ÊÂ¼ş
+        //é˜²æ­¢å› ä¸ºè½½å…¥å·¥å…·æ¡æ•°æ®è€Œå¯¼è‡´ä¸å“åº”åŒå‡»äº‹ä»¶
         clearTimeout(window._toolbarTimeout);
         window._toolbarTimeout = setTimeout(function(){
             loadMessageToolBarData(rowIndex);
         },0);
     }
     /*
-     *	º¯ÊıËµÃ÷£ºË«»÷gridĞĞ
-     *	²ÎÊı£º	event:eventObj     ÊÂ¼ş¶ÔÏó
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåŒå‡»gridè¡Œ
+     *	å‚æ•°ï¼š	event:eventObj     äº‹ä»¶å¯¹è±¡
+     *	è¿”å›å€¼ï¼š
      */
     function onDblClickRow(eventObj){
         var rowIndex = eventObj.result.rowIndex_Xml;
         var boxId = getMessageBoxId();
         getGridOperation(rowIndex,function(_operation){
-            //¼ì²â±à¼­È¨ÏŞ
+            //æ£€æµ‹ç¼–è¾‘æƒé™
             var edit = checkOperation("m2",_operation);
             var view = checkOperation("m3",_operation);
 
@@ -922,9 +922,9 @@
         });
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÓÒ»÷gridĞĞ
-     *	²ÎÊı£º	event:eventObj     ÊÂ¼ş¶ÔÏó
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå³å‡»gridè¡Œ
+     *	å‚æ•°ï¼š	event:eventObj     äº‹ä»¶å¯¹è±¡
+     *	è¿”å›å€¼ï¼š
      */
     function onRightClickRow(eventObj){
         var gridObj = $("grid");
@@ -938,28 +938,28 @@
         });
     }
     /*
-     *	º¯ÊıËµÃ÷£ºµ¥»÷grid¿Õ°×´¦
-     *	²ÎÊı£º	event:eventObj     ÊÂ¼ş¶ÔÏó
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå•å‡»gridç©ºç™½å¤„
+     *	å‚æ•°ï¼š	event:eventObj     äº‹ä»¶å¯¹è±¡
+     *	è¿”å›å€¼ï¼š
      */
     function onInactiveRow(eventObj){
         var treeTitleObj = $("treeTitle");
         Focus.focus(treeTitleObj.firstChild.id);
 
-        showTreeNodeStatus({id:"ID",name:"Ãû³Æ",creatorName:"´´½¨Õß",createTime:"´´½¨Ê±¼ä",updatorName:"ĞŞ¸ÄÕß",updateTime:"ĞŞ¸ÄÊ±¼ä"});
+        showTreeNodeStatus({id:"ID",name:"åç§°",creatorName:"åˆ›å»ºè€…",createTime:"åˆ›å»ºæ—¶é—´",updatorName:"ä¿®æ”¹è€…",updateTime:"ä¿®æ”¹æ—¶é—´"});
 
         var treeObj = $("tree");
         var treeNode = treeObj.getActiveTreeNode();
-        //·ÀÖ¹ÒòÎªÔØÈë¹¤¾ßÌõÊı¾İ¶øµ¼ÖÂ²»ÏìÓ¦Ë«»÷ÊÂ¼ş
+        //é˜²æ­¢å› ä¸ºè½½å…¥å·¥å…·æ¡æ•°æ®è€Œå¯¼è‡´ä¸å“åº”åŒå‡»äº‹ä»¶
         clearTimeout(window._toolbarTimeout);
         window._toolbarTimeout = setTimeout(function(){
             loadToolBarData(treeNode);
         },0);
     }
     /*
-     *	º¯ÊıËµÃ÷£ºµ¥»÷grid±íÍ·ÅÅĞò
-     *	²ÎÊı£º	event:eventObj     ÊÂ¼ş¶ÔÏó
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå•å‡»gridè¡¨å¤´æ’åº
+     *	å‚æ•°ï¼š	event:eventObj     äº‹ä»¶å¯¹è±¡
+     *	è¿”å›å€¼ï¼š
      */
     function onSortRow(eventObj){
         var name = eventObj.result.name;
@@ -977,15 +977,15 @@
         toolbarObj.gotoPage(curPage);
     }
     /*
-     *	º¯ÊıËµÃ÷£º±£´æÏûÏ¢×é
-     *	²ÎÊı£º	string:cacheID      »º´æÊı¾İID
-                boolean:isNew       ÊÇ·ñĞÂÔö
-                string:parentID     ¸¸½Úµãid
-                string:groupType    ×éÀàĞÍ
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šä¿å­˜æ¶ˆæ¯ç»„
+     *	å‚æ•°ï¼š	string:cacheID      ç¼“å­˜æ•°æ®ID
+                boolean:isNew       æ˜¯å¦æ–°å¢
+                string:parentID     çˆ¶èŠ‚ç‚¹id
+                string:groupType    ç»„ç±»å‹
+     *	è¿”å›å€¼ï¼š
      */
     function saveGroup(cacheID,isNew,parentID,groupType){
-        //Ğ£Ñépage1FormÊı¾İÓĞĞ§ĞÔ
+        //æ ¡éªŒpage1Formæ•°æ®æœ‰æ•ˆæ€§
         var page1FormObj = $("page1Form");
         if(false==page1FormObj.checkForm()){
             switchToPhase(ws,"page1");
@@ -995,13 +995,13 @@
         var p = new HttpRequestParams();
         p.url = URL_SAVE_GROUP;
 
-        //ÊÇ·ñÌá½»
+        //æ˜¯å¦æäº¤
         var flag = false;
         
         var groupCache = Cache.Variables.get(cacheID);
         if(null!=groupCache){       
 
-            //ÏûÏ¢×é»ù±¾ĞÅÏ¢
+            //æ¶ˆæ¯ç»„åŸºæœ¬ä¿¡æ¯
             var groupInfoNode = Cache.XmlIslands.get(cacheID+"."+XML_GROUP_INFO);
             if(null!=groupInfoNode){
                 var groupInfoDataNode = groupInfoNode.selectSingleNode(".//data");
@@ -1013,7 +1013,7 @@
                 }
             }
 
-            //ÏûÏ¢×é¶ÔÏûÏ¢
+            //æ¶ˆæ¯ç»„å¯¹æ¶ˆæ¯
             if("2"==groupType){
                 var group2UserNode = Cache.XmlIslands.get(cacheID+"."+XML_GROUP_TO_MESSAGE_EXIST_TREE);
                 if(null!=group2UserNode){
@@ -1025,7 +1025,7 @@
                 }
             }
 
-            //ÏûÏ¢×é¶Ô½ÇÉ«
+            //æ¶ˆæ¯ç»„å¯¹è§’è‰²
             var group2RoleNode = Cache.XmlIslands.get(cacheID+"."+XML_GROUP_TO_ROLE_EXIST_TREE);
             if(null!=group2RoleNode){
                 var group2RoleDataIDs = getTreeNodeIds(group2RoleNode,"./treeNode//treeNode");
@@ -1038,7 +1038,7 @@
 
         if(true==flag){
             var request = new HttpRequest(p);
-            //Í¬²½°´Å¥×´Ì¬
+            //åŒæ­¥æŒ‰é’®çŠ¶æ€
             var page1BtSaveObj = $("page1BtSave");
             var page4BtSaveObj = $("page4BtSave");
             var page3BtSaveObj = $("page3BtSave");
@@ -1046,7 +1046,7 @@
 
             request.onresult = function(){
                 if(true==isNew){
-                    //½â³ıÌáĞÑ
+                    //è§£é™¤æé†’
                     detachReminder(cacheID);
 
                     var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
@@ -1058,12 +1058,12 @@
             }
             request.onsuccess = function(){
                 if(true!=isNew){
-                    //½â³ıÌáĞÑ
+                    //è§£é™¤æé†’
                     detachReminder(cacheID);
 
                     var id = cacheID.trim(CACHE_TREE_NODE_DETAIL);
 
-                    //¸¨ÖúÏûÏ¢×é£¬¸üĞÂÅú´ÎĞÅÏ¢
+                    //è¾…åŠ©æ¶ˆæ¯ç»„ï¼Œæ›´æ–°æ‰¹æ¬¡ä¿¡æ¯
                     if("2"==groupType){
                         var treeObj = $("tree");
                         var disabled = treeObj.getTreeNodeById(id).getAttribute("disabled");
@@ -1075,7 +1075,7 @@
                         modifyTreeNode(id,"icon",ICON + img, false);
                     }
 
-                    //¸üĞÂÊ÷½ÚµãÃû³Æ
+                    //æ›´æ–°æ ‘èŠ‚ç‚¹åç§°
                     var name = page1FormObj.getData("name");
                     modifyTreeNode(id,"name",name,true);
                 }
@@ -1084,14 +1084,14 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º±£´æÏûÏ¢
-     *	²ÎÊı£º	string:cacheID          »º´æÊı¾İID
-                string:mode             Ä£Ê½(save½ö±£´æ/saveAndSend±£´æ²¢·¢ËÍ/send½ö·¢ËÍ)
-                boolean:isNew           ÊÇ·ñĞÂ½¨
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šä¿å­˜æ¶ˆæ¯
+     *	å‚æ•°ï¼š	string:cacheID          ç¼“å­˜æ•°æ®ID
+                string:mode             æ¨¡å¼(saveä»…ä¿å­˜/saveAndSendä¿å­˜å¹¶å‘é€/sendä»…å‘é€)
+                boolean:isNew           æ˜¯å¦æ–°å»º
+     *	è¿”å›å€¼ï¼š
      */
     function saveMessage(cacheID,mode,isNew){
-        //Ğ£Ñépage1Form,page8FormÊı¾İÓĞĞ§ĞÔ
+        //æ ¡éªŒpage1Form,page8Formæ•°æ®æœ‰æ•ˆæ€§
         var page1FormObj = $("page1Form");
         if(false==page1FormObj.checkForm()){
             return;
@@ -1101,13 +1101,13 @@
         p.url = URL_SAVE_MESSAGE;
         p.setContent("mode",mode);
 
-        //ÊÇ·ñÌá½»
+        //æ˜¯å¦æäº¤
         var flag = false;
         
         var userCache = Cache.Variables.get(cacheID);
         if(null!=userCache){
 
-            //ÏûÏ¢»ù±¾ĞÅÏ¢
+            //æ¶ˆæ¯åŸºæœ¬ä¿¡æ¯
             var userInfoNode = Cache.XmlIslands.get(cacheID+"."+XML_MESSAGE_INFO);
             if(null!=userInfoNode){
                 var userInfoDataNode = userInfoNode.selectSingleNode(".//data");
@@ -1122,19 +1122,19 @@
 
         if(true==flag){
             var request = new HttpRequest(p);
-            //Í¬²½°´Å¥×´Ì¬
+            //åŒæ­¥æŒ‰é’®çŠ¶æ€
             var page1BtSaveObj = $("page1BtSave");
             syncButton([page1BtSaveObj],request);
 
             request.onsuccess = function(){
-                //½â³ıÌáĞÑ
+                //è§£é™¤æé†’
                 detachReminder(cacheID);
 
-                //Çå³ı¸Ã×éÏûÏ¢grid»º´æ
-                delCacheData(CACHE_TREE_NODE_GRID + "3");//²İ¸åÏä
-                delCacheData(CACHE_TREE_NODE_GRID + "4");//·¢¼şÏä
+                //æ¸…é™¤è¯¥ç»„æ¶ˆæ¯gridç¼“å­˜
+                delCacheData(CACHE_TREE_NODE_GRID + "3");//è‰ç¨¿ç®±
+                delCacheData(CACHE_TREE_NODE_GRID + "4");//å‘ä»¶ç®±
 
-                //Èç¹ûµ±Ç°gridÏÔÊ¾Îª´ËÏûÏ¢ËùÔÚ×é£¬ÔòË¢ĞÂgrid
+                //å¦‚æœå½“å‰gridæ˜¾ç¤ºä¸ºæ­¤æ¶ˆæ¯æ‰€åœ¨ç»„ï¼Œåˆ™åˆ·æ–°grid
                 var gridObj = $("grid");
                 if(true==gridObj.hasData_Xml()){
                     var tempXmlIsland = new XmlNode(gridObj.getXmlDocument());
@@ -1142,9 +1142,9 @@
                     var cond1 = "3"==tempBoxId && ("save"==mode || "sendAndSave"==mode);
                     var cond2 = "4"==tempBoxId && ("send"==mode || "sendAndSave"==mode);
                     if(true==cond1 || true==cond2){
-                        loadGridData(tempBoxId,"1");//Ä¬ÈÏµÚ1Ò³
+                        loadGridData(tempBoxId,"1");//é»˜è®¤ç¬¬1é¡µ
 
-                        //Ë¢ĞÂ¹¤¾ßÌõ
+                        //åˆ·æ–°å·¥å…·æ¡
                         onInactiveRow();
                     }
                 }
@@ -1158,9 +1158,9 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÏÔÊ¾ÏûÏ¢ÁĞ±í
-     *	²ÎÊı£º	                
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ˜¾ç¤ºæ¶ˆæ¯åˆ—è¡¨
+     *	å‚æ•°ï¼š	                
+     *	è¿”å›å€¼ï¼š
      */
     function showMessageList(){
         var treeObj = $("tree");
@@ -1171,15 +1171,15 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºĞÂ½¨ÏûÏ¢
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ–°å»ºæ¶ˆæ¯
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function addNewMessage(){
         var treeObj = $("tree");
         var treeNode = treeObj.getActiveTreeNode();
         if(null!=treeNode){
-            var name = "ÏûÏ¢";
+            var name = "æ¶ˆæ¯";
             var id = new Date().valueOf();
 
             var phases = null;
@@ -1204,9 +1204,9 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º±à¼­Ê÷½Úµã
-     *	²ÎÊı£º	boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šç¼–è¾‘æ ‘èŠ‚ç‚¹
+     *	å‚æ•°ï¼š	boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+     *	è¿”å›å€¼ï¼š
      */
     function editTreeNode(editable){
         var resourceTypeId = getResourceTypeId();
@@ -1220,9 +1220,9 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º±à¼­×éĞÅÏ¢
-     *	²ÎÊı£º  boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šç¼–è¾‘ç»„ä¿¡æ¯
+     *	å‚æ•°ï¼š  boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+     *	è¿”å›å€¼ï¼š
      */
     function editGroupInfo(editable){
         var treeObj = $("tree");
@@ -1234,10 +1234,10 @@
             var applicationId = treeNode.getAttribute("applicationId");
 
             switch(treeType){
-                case "1"://Ö÷ÏûÏ¢×é
+                case "1"://ä¸»æ¶ˆæ¯ç»„
                     var phases = [];
-                    phases[0] = {page:"page1",label:"»ù±¾ĞÅÏ¢"};
-                    phases[1] = {page:"page3",label:"½ÇÉ«"};
+                    phases[0] = {page:"page1",label:"åŸºæœ¬ä¿¡æ¯"};
+                    phases[1] = {page:"page3",label:"è§’è‰²"};
 
                     var callback = {};
                     callback.onTabClose = function(eventObj){
@@ -1262,11 +1262,11 @@
                     inf.callback = callback;
                     var tab = ws.open(inf);
                     break;
-                case "2"://¸¨ÖúÏûÏ¢×é
+                case "2"://è¾…åŠ©æ¶ˆæ¯ç»„
                     var phases = [];
-                    phases[0] = {page:"page1",label:"»ù±¾ĞÅÏ¢"};
-                    phases[1] = {page:"page4",label:"ÏûÏ¢"};
-                    phases[2] = {page:"page3",label:"½ÇÉ«"};
+                    phases[0] = {page:"page1",label:"åŸºæœ¬ä¿¡æ¯"};
+                    phases[1] = {page:"page4",label:"æ¶ˆæ¯"};
+                    phases[2] = {page:"page3",label:"è§’è‰²"};
 
                     var callback = {};
                     callback.onTabClose = function(eventObj){
@@ -1291,12 +1291,12 @@
                     inf.callback = callback;
                     var tab = ws.open(inf);
                     break;
-                case "3"://ÆäËûÓ¦ÓÃÏÂµÄÏûÏ¢×é
-                default://Ó¦ÓÃ
+                case "3"://å…¶ä»–åº”ç”¨ä¸‹çš„æ¶ˆæ¯ç»„
+                default://åº”ç”¨
                     var phases = [];
-                    phases[0] = {page:"page1",label:"»ù±¾ĞÅÏ¢"};
-                    phases[1] = {page:"page4",label:"ÏûÏ¢"};
-                    phases = null;//ÔİÊ±²»ÆôÓÃ
+                    phases[0] = {page:"page1",label:"åŸºæœ¬ä¿¡æ¯"};
+                    phases[1] = {page:"page4",label:"æ¶ˆæ¯"};
+                    phases = null;//æš‚æ—¶ä¸å¯ç”¨
                     
                     var callback = {};
                     callback.onTabClose = function(eventObj){
@@ -1325,20 +1325,20 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º»ñÈ¡½ÚµãID
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šè·å–èŠ‚ç‚¹ID
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function getTreeId(){
         return getTreeAttribute("id");   
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÉ¾³ıÏûÏ¢
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåˆ é™¤æ¶ˆæ¯
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function delMessage(){
-        if(true!=confirm("ÄúÈ·¶¨ÒªÉ¾³ıÂğ£¿")){
+        if(true!=confirm("æ‚¨ç¡®å®šè¦åˆ é™¤å—ï¼Ÿ")){
             return;
         }
         var gridObj = $("grid");
@@ -1352,18 +1352,18 @@
 
         var request = new HttpRequest(p);
         request.onsuccess = function(){
-            //´ÓgridÉÏÉ¾³ı
+            //ä»gridä¸Šåˆ é™¤
             gridObj.delRow_Xml(rowIndex,true,true);
 
-            //Ë¢ĞÂ¹¤¾ßÌõ
+            //åˆ·æ–°å·¥å…·æ¡
             onInactiveRow();
         }
         request.send();
     }
     /*
-     *	º¯ÊıËµÃ÷£ºËÑË÷ÏûÏ¢
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæœç´¢æ¶ˆæ¯
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function searchMessage(){
 
@@ -1374,7 +1374,7 @@
             var treeName = treeNode.getName();
             var cacheID = CACHE_SEARCH_MESSAGE + treeID;
 
-            var condition = window.showModalDialog("searchmsg.htm",{boxId:treeID,title:"ËÑË÷\""+treeName+"\"ÏÂµÄÏûÏ¢"},"dialogWidth:250px;dialogHeight:250px;");
+            var condition = window.showModalDialog("searchmsg.htm",{boxId:treeID,title:"æœç´¢\""+treeName+"\"ä¸‹çš„æ¶ˆæ¯"},"dialogWidth:250px;dialogHeight:250px;");
             if(null!=condition){
                 Cache.Variables.add("condition",condition);
                 loadSearchGridData(cacheID,1,null,null,treeID);
@@ -1382,12 +1382,12 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º¸ù¾İÌõ¼ş»ñÈ¡ËÑË÷½á¹û
-     *	²ÎÊı£º	string:cacheID      »º´æÊı¾İid
-                string:page         Ò³Âë
-                string:sortName     ÅÅĞò×Ö¶Î
-                string:direction    ÅÅĞò·½Ïò
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ ¹æ®æ¡ä»¶è·å–æœç´¢ç»“æœ
+     *	å‚æ•°ï¼š	string:cacheID      ç¼“å­˜æ•°æ®id
+                string:page         é¡µç 
+                string:sortName     æ’åºå­—æ®µ
+                string:direction    æ’åºæ–¹å‘
+     *	è¿”å›å€¼ï¼š
      */
     function loadSearchGridData(cacheID,page,sortName,direction,boxId){
         var condition = Cache.Variables.get("condition");
@@ -1412,10 +1412,10 @@
                 var pageListNode = this.getNodeValue(XML_PAGE_LIST);
                 var pageListNodeID = cacheID+"."+XML_PAGE_LIST;
 
-                //¸øÏûÏ¢gridÊı¾İ¸ù½ÚµãÔö¼ÓboxIdµÈÊôĞÔ
+                //ç»™æ¶ˆæ¯gridæ•°æ®æ ¹èŠ‚ç‚¹å¢åŠ boxIdç­‰å±æ€§
                 sourceListNode.setAttribute("boxId",boxId);
 
-                //¸øµ±Ç°ÅÅĞòÁĞ¼ÓÉÏ_directionÊôĞÔ
+                //ç»™å½“å‰æ’åºåˆ—åŠ ä¸Š_directionå±æ€§
                 if(null!=sortName && null!=direction){
                     var column = sourceListNode.selectSingleNode("//column[@name='" + sortName + "']");
                     if(null!=column){
@@ -1434,9 +1434,9 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º³õÊ¼»¯ËÑË÷ÏûÏ¢grid
-     *	²ÎÊı£º	string:cacheID      »º´æÊı¾İid
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåˆå§‹åŒ–æœç´¢æ¶ˆæ¯grid
+     *	å‚æ•°ï¼š	string:cacheID      ç¼“å­˜æ•°æ®id
+     *	è¿”å›å€¼ï¼š
      */
     function initSearchGrid(cacheID){
         var gridObj = $("grid");
@@ -1444,14 +1444,14 @@
             loadGridDataFromCache(cacheID);
             loadGridEvents();
 
-            //Ë¢ĞÂ¹¤¾ßÌõ
+            //åˆ·æ–°å·¥å…·æ¡
             onInactiveRow();
         });    
     }
     /*
-     *	º¯ÊıËµÃ÷£º¼ì²âÏûÏ¢ÁĞ±íÓÒ¼ü²Ëµ¥ÏîÊÇ·ñ¿É¼û
-     *	²ÎÊı£º	string:code     ²Ù×÷Âë
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ£€æµ‹æ¶ˆæ¯åˆ—è¡¨å³é”®èœå•é¡¹æ˜¯å¦å¯è§
+     *	å‚æ•°ï¼š	string:code     æ“ä½œç 
+     *	è¿”å›å€¼ï¼š
      */
     function getMessageOperation(code){
         var flag = false;
@@ -1469,9 +1469,9 @@
         return flag;
     }
     /*
-     *	º¯ÊıËµÃ÷£º¹¤¾ßÌõÔØÈëÊı¾İ
-     *	²ÎÊı£º	treeNode:treeNode       treeNodeÊµÀı
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå·¥å…·æ¡è½½å…¥æ•°æ®
+     *	å‚æ•°ï¼š	treeNode:treeNode       treeNodeå®ä¾‹
+     *	è¿”å›å€¼ï¼š
      */
     function loadToolBarData(treeNode){
         if(null!=treeNode){
@@ -1481,9 +1481,9 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÔØÈëÏûÏ¢¹¤¾ßÌõ
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šè½½å…¥æ¶ˆæ¯å·¥å…·æ¡
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function loadMessageToolBarData(rowIndex){
         if(null==rowIndex){
@@ -1499,7 +1499,7 @@
         var groupId = rowNode.getAttribute("groupId");
         var _operation = rowNode.getAttribute("_operation");
 
-        if(null==_operation || ""==_operation){//Èç¹û½ÚµãÉÏ»¹Ã»ÓĞ_operationÊôĞÔ£¬Ôò·¢ÇëÇó´ÓºóÌ¨»ñÈ¡ĞÅÏ¢
+        if(null==_operation || ""==_operation){//å¦‚æœèŠ‚ç‚¹ä¸Šè¿˜æ²¡æœ‰_operationå±æ€§ï¼Œåˆ™å‘è¯·æ±‚ä»åå°è·å–ä¿¡æ¯
             var p = new HttpRequestParams();
             p.url = URL_GET_MESSAGE_OPERATION;
             p.setContent("resourceId",id);
@@ -1522,10 +1522,10 @@
     
     }
     /*
-     *	º¯ÊıËµÃ÷£º»ñÈ¡grid²Ù×÷È¨ÏŞ
-     *	²ÎÊı£º	number:rowIndex         gridĞĞºÅ
-                function:callback       »Øµ÷º¯Êı
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šè·å–gridæ“ä½œæƒé™
+     *	å‚æ•°ï¼š	number:rowIndex         gridè¡Œå·
+                function:callback       å›è°ƒå‡½æ•°
+     *	è¿”å›å€¼ï¼š
      */
     function getGridOperation(rowIndex,callback){
         var gridObj = $("grid");
@@ -1539,7 +1539,7 @@
             groupId = rowNode.getAttribute("groupId");
         }
 
-        if(null==_operation || ""==_operation){//Èç¹û½ÚµãÉÏ»¹Ã»ÓĞ_operationÊôĞÔ£¬Ôò·¢ÇëÇó´ÓºóÌ¨»ñÈ¡ĞÅÏ¢
+        if(null==_operation || ""==_operation){//å¦‚æœèŠ‚ç‚¹ä¸Šè¿˜æ²¡æœ‰_operationå±æ€§ï¼Œåˆ™å‘è¯·æ±‚ä»åå°è·å–ä¿¡æ¯
             var p = new HttpRequestParams();
             p.url = URL_GET_MESSAGE_OPERATION;
             p.setContent("resourceId",id);
@@ -1565,10 +1565,10 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º»ñÈ¡Ê÷²Ù×÷È¨ÏŞ
-     *	²ÎÊı£º	treeNode:treeNode       treeNodeÊµÀı
-                function:callback       »Øµ÷º¯Êı
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šè·å–æ ‘æ“ä½œæƒé™
+     *	å‚æ•°ï¼š	treeNode:treeNode       treeNodeå®ä¾‹
+                function:callback       å›è°ƒå‡½æ•°
+     *	è¿”å›å€¼ï¼š
      */
     function getTreeOperation(treeNode,callback){
         var id = treeNode.getId();
@@ -1577,13 +1577,13 @@
         var groupType = treeNode.getAttribute("groupType");
         var resourceTypeId = treeNode.getAttribute("resourceTypeId");
 
-        if(null==_operation || ""==_operation){//Èç¹û½ÚµãÉÏ»¹Ã»ÓĞ_operationÊôĞÔ£¬Ôò·¢ÇëÇó´ÓºóÌ¨»ñÈ¡ĞÅÏ¢
+        if(null==_operation || ""==_operation){//å¦‚æœèŠ‚ç‚¹ä¸Šè¿˜æ²¡æœ‰_operationå±æ€§ï¼Œåˆ™å‘è¯·æ±‚ä»åå°è·å–ä¿¡æ¯
             var p = new HttpRequestParams();
             p.url = URL_GET_OPERATION;
             p.setContent("resourceId",id);
             p.setContent("applicationId",applicationId);
             p.setContent("groupType",groupType);
-            // µã»÷ÆäËûÏûÏ¢×é¸ù½Úµã
+            // ç‚¹å‡»å…¶ä»–æ¶ˆæ¯ç»„æ ¹èŠ‚ç‚¹
             if("-4" == id || "5"==resourceTypeId){
                 p.setContent("resourceTypeId","5");
             }
@@ -1605,9 +1605,9 @@
         }    
     }
     /*
-     *	º¯ÊıËµÃ÷£º»Ö¸´Ä¬ÈÏÅÅĞò
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ¢å¤é»˜è®¤æ’åº
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function restoreDefaultSort(){
         var gridObj = $("grid");
@@ -1620,9 +1620,9 @@
         toolbarObj.gotoPage(curPage);
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÊÇ·ñÔÊĞí»Ö¸´Ä¬ÈÏÅÅĞò
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ˜¯å¦å…è®¸æ¢å¤é»˜è®¤æ’åº
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function canRestoreDefaultSort(){
         var flag = false;
@@ -1636,9 +1636,9 @@
         return flag;
     }
     /*
-     *	º¯ÊıËµÃ÷£º»ñÈ¡µ±Ç°ÓÊ¼şÊôÓÚÄÄ¸öÎÄ¼ş¼Ğ
-     *	²ÎÊı£º
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šè·å–å½“å‰é‚®ä»¶å±äºå“ªä¸ªæ–‡ä»¶å¤¹
+     *	å‚æ•°ï¼š
+     *	è¿”å›å€¼ï¼š
      */
     function getMessageBoxId(){
         var gridObj = $("grid");
@@ -1646,9 +1646,9 @@
         return boxId;
     }
     /*
-     *	º¯ÊıËµÃ÷£º»Ø¸´ÏûÏ¢
-     *	²ÎÊı£º
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå›å¤æ¶ˆæ¯
+     *	å‚æ•°ï¼š
+     *	è¿”å›å€¼ï¼š
      */
     function replyMessage(){
         var gridObj = $("grid");
@@ -1679,9 +1679,9 @@
         var tab = ws.open(inf);
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÏûÏ¢ÏêÏ¸ĞÅÏ¢¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:id               ÏûÏ¢id
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ¶ˆæ¯è¯¦ç»†ä¿¡æ¯åŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:id               æ¶ˆæ¯id
+     *	è¿”å›å€¼ï¼š
      */
     function loadReplyDetailData(id){
         var cacheID = CACHE_REPLY_DETAIL + id;
@@ -1709,9 +1709,9 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º»Ø¸´Ïà¹ØÒ³¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID          »º´æÊı¾İid
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå›å¤ç›¸å…³é¡µåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID          ç¼“å­˜æ•°æ®id
+     *	è¿”å›å€¼ï¼š
      */
     function initReplyPages(cacheID){
         var page1FormObj = $("page1Form");
@@ -1719,7 +1719,7 @@
             loadReplyInfoFormData(cacheID);
         });
 
-        //ÉèÖÃ±£´æ°´Å¥²Ù×÷
+        //è®¾ç½®ä¿å­˜æŒ‰é’®æ“ä½œ
         var page1BtSaveObj = $("page1BtSave");
         var page1BtSaveAndSendObj = $("page1BtSaveAndSend");
         var page1BtSendObj = $("page1BtSend");
@@ -1737,10 +1737,10 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º»Ø¸´ĞÅÏ¢xform¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID              »º´æÊı¾İid
-                boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå›å¤ä¿¡æ¯xformåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID              ç¼“å­˜æ•°æ®id
+                boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+     *	è¿”å›å€¼ï¼š
      */
     function loadReplyInfoFormData(cacheID){
         var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_REPLY_INFO);
@@ -1749,18 +1749,18 @@
             page1FormObj.editable = "true";
             page1FormObj.load(xmlIsland.node,null,"node");
 
-            //2007-3-1 Àë¿ªÌáĞÑ
+            //2007-3-1 ç¦»å¼€æé†’
             attachReminder(cacheID,page1FormObj);
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º±£´æÏûÏ¢
-     *	²ÎÊı£º	string:cacheID          »º´æÊı¾İID
-                string:mode             Ä£Ê½(save½ö±£´æ/saveAndSend±£´æ²¢·¢ËÍ/send½ö·¢ËÍ)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šä¿å­˜æ¶ˆæ¯
+     *	å‚æ•°ï¼š	string:cacheID          ç¼“å­˜æ•°æ®ID
+                string:mode             æ¨¡å¼(saveä»…ä¿å­˜/saveAndSendä¿å­˜å¹¶å‘é€/sendä»…å‘é€)
+     *	è¿”å›å€¼ï¼š
      */
     function saveReply(cacheID,mode){
-        //Ğ£Ñépage1Form,page8FormÊı¾İÓĞĞ§ĞÔ
+        //æ ¡éªŒpage1Form,page8Formæ•°æ®æœ‰æ•ˆæ€§
         var page1FormObj = $("page1Form");
         if(false==page1FormObj.checkForm()){
             return;
@@ -1770,13 +1770,13 @@
         p.url = URL_SAVE_REPLY;
         p.setContent("mode",mode);
 
-        //ÊÇ·ñÌá½»
+        //æ˜¯å¦æäº¤
         var flag = false;
         
         var userCache = Cache.Variables.get(cacheID);
         if(null!=userCache){
 
-            //ÏûÏ¢»ù±¾ĞÅÏ¢
+            //æ¶ˆæ¯åŸºæœ¬ä¿¡æ¯
             var userInfoNode = Cache.XmlIslands.get(cacheID+"."+XML_REPLY_INFO);
             if(null!=userInfoNode){
                 var userInfoDataNode = userInfoNode.selectSingleNode(".//data");
@@ -1791,19 +1791,19 @@
 
         if(true==flag){
             var request = new HttpRequest(p);
-            //Í¬²½°´Å¥×´Ì¬
+            //åŒæ­¥æŒ‰é’®çŠ¶æ€
             var page1BtSaveObj = $("page1BtSave");
             syncButton([page1BtSaveObj],request);
 
             request.onsuccess = function(){
-                //½â³ıÌáĞÑ
+                //è§£é™¤æé†’
                 detachReminder(cacheID);
 
-                //Çå³ı¸Ã×éÏûÏ¢grid»º´æ
-                delCacheData(CACHE_TREE_NODE_GRID + "3");//²İ¸åÏä
-                delCacheData(CACHE_TREE_NODE_GRID + "4");//·¢¼şÏä
+                //æ¸…é™¤è¯¥ç»„æ¶ˆæ¯gridç¼“å­˜
+                delCacheData(CACHE_TREE_NODE_GRID + "3");//è‰ç¨¿ç®±
+                delCacheData(CACHE_TREE_NODE_GRID + "4");//å‘ä»¶ç®±
 
-                //Èç¹ûµ±Ç°gridÏÔÊ¾Îª´ËÏûÏ¢ËùÔÚ×é£¬ÔòË¢ĞÂgrid
+                //å¦‚æœå½“å‰gridæ˜¾ç¤ºä¸ºæ­¤æ¶ˆæ¯æ‰€åœ¨ç»„ï¼Œåˆ™åˆ·æ–°grid
                 var gridObj = $("grid");
                 if(true==gridObj.hasData_Xml()){
                     var tempXmlIsland = new XmlNode(gridObj.getXmlDocument());
@@ -1811,9 +1811,9 @@
                     var cond1 = "3"==tempBoxId && ("save"==mode || "sendAndSave"==mode);
                     var cond2 = "4"==tempBoxId && ("send"==mode || "sendAndSave"==mode);
                     if(true==cond1 || true==cond2){
-                        loadGridData(tempBoxId,"1");//Ä¬ÈÏµÚ1Ò³
+                        loadGridData(tempBoxId,"1");//é»˜è®¤ç¬¬1é¡µ
 
-                        //Ë¢ĞÂ¹¤¾ßÌõ
+                        //åˆ·æ–°å·¥å…·æ¡
                         onInactiveRow();
                     }
                 }
@@ -1825,9 +1825,9 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º×ª·¢ÏûÏ¢
-     *	²ÎÊı£º
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šè½¬å‘æ¶ˆæ¯
+     *	å‚æ•°ï¼š
+     *	è¿”å›å€¼ï¼š
      */
     function forwardMessage(){
         var gridObj = $("grid");
@@ -1858,9 +1858,9 @@
         var tab = ws.open(inf);
     }
     /*
-     *	º¯ÊıËµÃ÷£º×ª·¢ÏêÏ¸ĞÅÏ¢¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:id               ÏûÏ¢id
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šè½¬å‘è¯¦ç»†ä¿¡æ¯åŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:id               æ¶ˆæ¯id
+     *	è¿”å›å€¼ï¼š
      */
     function loadForwardDetailData(id){
         var cacheID = CACHE_FORWARD_DETAIL + id;
@@ -1888,9 +1888,9 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º×ª·¢Ïà¹ØÒ³¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID          »º´æÊı¾İid
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šè½¬å‘ç›¸å…³é¡µåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID          ç¼“å­˜æ•°æ®id
+     *	è¿”å›å€¼ï¼š
      */
     function initForwardPages(cacheID){
         var page1FormObj = $("page1Form");
@@ -1898,7 +1898,7 @@
             loadForwardInfoFormData(cacheID);
         });
 
-        //ÉèÖÃ±£´æ°´Å¥²Ù×÷
+        //è®¾ç½®ä¿å­˜æŒ‰é’®æ“ä½œ
         var page1BtSaveObj = $("page1BtSave");
         var page1BtSaveAndSendObj = $("page1BtSaveAndSend");
         var page1BtSendObj = $("page1BtSend");
@@ -1916,10 +1916,10 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º×ª·¢ĞÅÏ¢xform¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID              »º´æÊı¾İid
-                boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šè½¬å‘ä¿¡æ¯xformåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID              ç¼“å­˜æ•°æ®id
+                boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+     *	è¿”å›å€¼ï¼š
      */
     function loadForwardInfoFormData(cacheID){
         var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_FORWARD_INFO);
@@ -1928,18 +1928,18 @@
             page1FormObj.editable = "true";
             page1FormObj.load(xmlIsland.node,null,"node");
 
-            //2007-3-1 Àë¿ªÌáĞÑ
+            //2007-3-1 ç¦»å¼€æé†’
             attachReminder(cacheID,page1FormObj);
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º±£´æÏûÏ¢
-     *	²ÎÊı£º	string:cacheID          »º´æÊı¾İID
-                string:mode             Ä£Ê½(save½ö±£´æ/saveAndSend±£´æ²¢·¢ËÍ/send½ö·¢ËÍ)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šä¿å­˜æ¶ˆæ¯
+     *	å‚æ•°ï¼š	string:cacheID          ç¼“å­˜æ•°æ®ID
+                string:mode             æ¨¡å¼(saveä»…ä¿å­˜/saveAndSendä¿å­˜å¹¶å‘é€/sendä»…å‘é€)
+     *	è¿”å›å€¼ï¼š
      */
     function saveForward(cacheID,mode){
-        //Ğ£Ñépage1Form,page8FormÊı¾İÓĞĞ§ĞÔ
+        //æ ¡éªŒpage1Form,page8Formæ•°æ®æœ‰æ•ˆæ€§
         var page1FormObj = $("page1Form");
         if(false==page1FormObj.checkForm()){
             return;
@@ -1949,13 +1949,13 @@
         p.url = URL_SAVE_FORWARD;
         p.setContent("mode",mode);
 
-        //ÊÇ·ñÌá½»
+        //æ˜¯å¦æäº¤
         var flag = false;
         
         var userCache = Cache.Variables.get(cacheID);
         if(null!=userCache){
 
-            //ÏûÏ¢»ù±¾ĞÅÏ¢
+            //æ¶ˆæ¯åŸºæœ¬ä¿¡æ¯
             var userInfoNode = Cache.XmlIslands.get(cacheID+"."+XML_FORWARD_INFO);
             if(null!=userInfoNode){
                 var userInfoDataNode = userInfoNode.selectSingleNode(".//data");
@@ -1970,19 +1970,19 @@
 
         if(true==flag){
             var request = new HttpRequest(p);
-            //Í¬²½°´Å¥×´Ì¬
+            //åŒæ­¥æŒ‰é’®çŠ¶æ€
             var page1BtSaveObj = $("page1BtSave");
             syncButton([page1BtSaveObj],request);
 
             request.onsuccess = function(){
-                //½â³ıÌáĞÑ
+                //è§£é™¤æé†’
                 detachReminder(cacheID);
 
-                //Çå³ı¸Ã×éÏûÏ¢grid»º´æ
-                delCacheData(CACHE_TREE_NODE_GRID + "3");//²İ¸åÏä
-                delCacheData(CACHE_TREE_NODE_GRID + "4");//·¢¼şÏä
+                //æ¸…é™¤è¯¥ç»„æ¶ˆæ¯gridç¼“å­˜
+                delCacheData(CACHE_TREE_NODE_GRID + "3");//è‰ç¨¿ç®±
+                delCacheData(CACHE_TREE_NODE_GRID + "4");//å‘ä»¶ç®±
 
-                //Èç¹ûµ±Ç°gridÏÔÊ¾Îª´ËÏûÏ¢ËùÔÚ×é£¬ÔòË¢ĞÂgrid
+                //å¦‚æœå½“å‰gridæ˜¾ç¤ºä¸ºæ­¤æ¶ˆæ¯æ‰€åœ¨ç»„ï¼Œåˆ™åˆ·æ–°grid
                 var gridObj = $("grid");
                 if(true==gridObj.hasData_Xml()){
                     var tempXmlIsland = new XmlNode(gridObj.getXmlDocument());
@@ -1990,9 +1990,9 @@
                     var cond1 = "3"==tempBoxId && ("save"==mode || "sendAndSave"==mode);
                     var cond2 = "4"==tempBoxId && ("send"==mode || "sendAndSave"==mode);
                     if(true==cond1 || true==cond2){
-                        loadGridData(tempBoxId,"1");//Ä¬ÈÏµÚ1Ò³
+                        loadGridData(tempBoxId,"1");//é»˜è®¤ç¬¬1é¡µ
 
-                        //Ë¢ĞÂ¹¤¾ßÌõ
+                        //åˆ·æ–°å·¥å…·æ¡
                         onInactiveRow();
                     }
                 }
@@ -2004,12 +2004,12 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÑ¡ÔñÓÃ»§
-     *	²ÎÊı£º
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šé€‰æ‹©ç”¨æˆ·
+     *	å‚æ•°ï¼š
+     *	è¿”å›å€¼ï¼š
      */
     function chooseUser(){
-        var returnVal = window.showModalDialog("chooseuser.htm", {title:"ÇëÑ¡ÔñÓÃ»§..."},"dialogWidth:700px;dialogHeight:500px;");
+        var returnVal = window.showModalDialog("chooseuser.htm", {title:"è¯·é€‰æ‹©ç”¨æˆ·..."},"dialogWidth:700px;dialogHeight:500px;");
         if(null != returnVal){
             var receiver = [];
             var receiverId = [];
@@ -2032,5 +2032,5 @@
 
     window.onload = init;
 
-	//¹Ø±ÕÒ³Ãæ×Ô¶¯×¢Ïú
+	//å…³é—­é¡µé¢è‡ªåŠ¨æ³¨é”€
     logoutOnClose();

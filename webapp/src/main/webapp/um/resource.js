@@ -1,5 +1,7 @@
-    /*
-     *	ºóÌ¨ÏìÓ¦Êı¾İ½ÚµãÃû³Æ
+   URL_CORE = "../framework/"
+	
+	/*
+     *	åå°å“åº”æ•°æ®èŠ‚ç‚¹åç§°
      */
     XML_DEFAULT_TOOLBAR = "DefaultToolBar";
     XML_TOOLBAR = "ToolBar";
@@ -16,7 +18,7 @@
     XML_SOURCE_TO_ROLE_TREE = "Source2RoleTree";
     XML_SOURCE_TO_ROLE_EXIST_TREE = "Source2RoleExistTree";
     /*
-     *	Ä¬ÈÏÎ¨Ò»±àºÅÃûÇ°×º
+     *	é»˜è®¤å”¯ä¸€ç¼–å·åå‰ç¼€
      */
     CACHE_GRID_ROW_DETAIL = "row__id";
     CACHE_TREE_NODE_DETAIL = "treeNode__id";
@@ -33,17 +35,17 @@
     CACHE_IMPORT_APPLICATION = "import__id";
     CACHE_ASSIGN_DETAIL = "assign__id";
     /*
-     *	Ãû³Æ
+     *	åç§°
      */
-    OPERATION_ADD = "ĞÂÔö\"$label\"";
-    OPERATION_VIEW = "²é¿´\"$label\"";
-    OPERATION_DEL = "É¾³ı\"$label\"";
-    OPERATION_EDIT = "±à¼­\"$label\"";
-    OPERATION_SEARCH = "²éÑ¯\"$label\"";
-    OPERATION_IMPORT = "µ¼Èë\"$label\"";
-    OPERATION_ASSIGN = "ÊÚÓè½ÇÉ«\"$label\"";
+    OPERATION_ADD = "æ–°å¢\"$label\"";
+    OPERATION_VIEW = "æŸ¥çœ‹\"$label\"";
+    OPERATION_DEL = "åˆ é™¤\"$label\"";
+    OPERATION_EDIT = "ç¼–è¾‘\"$label\"";
+    OPERATION_SEARCH = "æŸ¥è¯¢\"$label\"";
+    OPERATION_IMPORT = "å¯¼å…¥\"$label\"";
+    OPERATION_ASSIGN = "æˆäºˆè§’è‰²\"$label\"";
     /*
-     *	XMLHTTPÇëÇóµØÖ·»ã×Ü
+     *	XMLHTTPè¯·æ±‚åœ°å€æ±‡æ€»
      */
     URL_INIT = "ums/appResource!getAllApplication2Tree.action";
     URL_APPLICATION_DETAIL = "ums/appResource!getApplicationInfo.action";
@@ -53,7 +55,7 @@
     URL_IMPORT = "ums/resourceRegister!applicationRegisterByXML.action";
 	
 	if(IS_TEST) {
-		URL_INIT = "data/source_init.xml";
+		URL_INIT = "data/resource_tree.xml";
 		URL_APPLICATION_DETAIL = "data/application.xml";
 		URL_SAVE_APPLICATION = "data/_success.xml";
 		URL_RESOURCE_TYPE = "data/type.xml";
@@ -78,7 +80,7 @@
   
     function initMenus() {
 	    var item1 = {
-            label:"²é¿´",
+            label:"æŸ¥çœ‹",
             callback:function() {
                 editTreeNode(false);
             },
@@ -87,20 +89,20 @@
             visible:function() {return "-1" != getTreeNodeId() && "-2" != getTreeNodeId();}
         }
         var item2 = {
-            label:"±à¼­",
+            label:"ç¼–è¾‘",
             callback:editTreeNode,
             icon:ICON + "edit.gif",
             enable:function() {return true;},
             visible:function() {return checkTreeNodeEditable();}
         }
 		var item3 = {
-            label:"ĞÂ½¨Ó¦ÓÃ",
+            label:"æ–°å»ºåº”ç”¨",
             callback:createOtherApplication,
             enable:function() {return true;},
             visible:function() {return "-2" == getTreeNodeId();}
         }
         var item4 = {
-            label:"µ¼Èë",
+            label:"å¯¼å…¥",
             callback:importApplication,
             icon:ICON + "import.gif",
             enable:function() {return true;},
@@ -119,10 +121,10 @@
     }
  
     function initBlocks() {
-        var paletteObj = $("palette");
+        var paletteObj = $$("palette");
         Blocks.create(paletteObj);
 
-        var treeContainerObj = $("treeContainer");
+        var treeContainerObj = $$("treeContainer");
         Blocks.create(treeContainerObj, treeContainerObj.parentNode);   
     }
 
@@ -134,9 +136,7 @@
         request.onresult = function() {
             var mainTreeNode = this.getNodeValue(XML_MAIN_TREE);
 
-            Cache.XmlIslands.add(CACHE_MAIN_TREE, mainTreeNode);
-
-            initTree(mainTreeNodeID);
+            Cache.XmlDatas.add(CACHE_MAIN_TREE, mainTreeNode);
 
 			var tree = $T("tree", mainTreeNode);
 			var treeElement = $$("tree");
@@ -199,7 +199,7 @@
 	}
  
     function editApplication(editable, isNew) {
-        var treeObj = $("tree");
+        var treeObj = $$("tree");
         var treeNode = treeObj.getActiveTreeNode();
 		var treeID = treeNode.getId();
 		var treeName = treeNode.getName();
@@ -237,13 +237,13 @@
 		var request = new HttpRequest(p);
 		request.onresult = function() {
 			var appInfoNode = this.getNodeValue(XML_APPLICATION_DETAIL);
-			Cache.XmlIslands.add(cacheID, appInfoNode);
+			Cache.XmlDatas.add(cacheID, appInfoNode);
 
 			var xform = $X("page1Form", appInfoNode);
 			xform.editable = editable == false ? "false" : "true";
 			
-			// ÉèÖÃ±£´æ°´Å¥²Ù×÷
-			var page1BtSaveObj = $("page1BtSave");
+			// è®¾ç½®ä¿å­˜æŒ‰é’®æ“ä½œ
+			var page1BtSaveObj = $$("page1BtSave");
 			page1BtSaveObj.disabled = editable==false?true:false;
 			page1BtSaveObj.onclick = function() {
 				saveApp(cacheID, parentID);
@@ -256,11 +256,11 @@
         var p = new HttpRequestParams();
         p.url = URL_SAVE_APPLICATION;
 
-        // ÊÇ·ñÌá½»
+        // æ˜¯å¦æäº¤
         var flag = false;
 
-        // Ó¦ÓÃ»ù±¾ĞÅÏ¢
-        var appInfoNode = Cache.XmlIslands.get(cacheID);
+        // åº”ç”¨åŸºæœ¬ä¿¡æ¯
+        var appInfoNode = Cache.XmlDatas.get(cacheID);
         if( appInfoNode ) {
             var appInfoDataNode = appInfoNode.selectSingleNode(".//data");
             if( appInfoDataNode ) {
@@ -271,11 +271,11 @@
 
         if( flag ) {
             var request = new HttpRequest(p);
-            //Í¬²½°´Å¥×´Ì¬
+            //åŒæ­¥æŒ‰é’®çŠ¶æ€
             syncButton([$$("page1BtSave")], request);
 
             request.onresult = function() {
-                if( parentID ) { // ĞÂÔö
+                if( parentID ) { // æ–°å¢
                     var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
                     appendTreeNode(parentID, treeNode);
 
@@ -283,7 +283,7 @@
                 }
             }
             request.onsuccess = function() {
-                if( !parentID ) { // ĞŞ¸Ä£¬¸üĞÂÊ÷½ÚµãÃû³Æ                   
+                if( !parentID ) { // ä¿®æ”¹ï¼Œæ›´æ–°æ ‘èŠ‚ç‚¹åç§°                   
                     var name = $X("page1Form").getData("name");
                     modifyTreeNode(cacheID, "name", name, true);
                 }
@@ -293,7 +293,7 @@
     }
  
     function viewResourceType() {
-        var treeNode = $("tree").getActiveTreeNode();
+        var treeNode = $$("tree").getActiveTreeNode();
 		var treeID = treeNode.getId();
 		var treeName = treeNode.getName();
 
@@ -328,7 +328,7 @@
 			var xform = $X("page1Form", typeInfoNode);
 			xform.editable = "false";
 			
-			// ÉèÖÃ±£´æ°´Å¥²Ù×÷
+			// è®¾ç½®ä¿å­˜æŒ‰é’®æ“ä½œ
 			$("page1BtSave").disabled = true;
 		}
 		request.send();
@@ -343,7 +343,7 @@
     }
 	
     /*
-     *	¼ì²âÊ÷½ÚµãÊÇ·ñ¿É±à¼­
+     *	æ£€æµ‹æ ‘èŠ‚ç‚¹æ˜¯å¦å¯ç¼–è¾‘
      */
     function checkTreeNodeEditable() {
         var flag = false;
@@ -362,7 +362,7 @@
     }
  
     /*
-     *	±à¼­Ê÷½Úµã
+     *	ç¼–è¾‘æ ‘èŠ‚ç‚¹
      */
     function editTreeNode(editable) {
         switch(getNodeType()) {
@@ -376,7 +376,7 @@
     }
  
     function importApplication() {
-        var treeObj = $("tree");
+        var treeObj = $$("tree");
         var treeNode = treeObj.getActiveTreeNode();
 
 		var treeID = treeNode.getId();
@@ -403,10 +403,10 @@
     }
     
      /*
-     *	µ¼ÈëÏêÏ¸ĞÅÏ¢¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:treeID               Ê÷½Úµãid
-                string:applicationType      Ó¦ÓÃÀàĞÍ
-     *	·µ»ØÖµ£º
+     *	å¯¼å…¥è¯¦ç»†ä¿¡æ¯åŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:treeID               æ ‘èŠ‚ç‚¹id
+                string:applicationType      åº”ç”¨ç±»å‹
+     *	è¿”å›å€¼ï¼š
      */
     function loadImportDetailData(treeID, applicationType) {
         var cacheID = CACHE_IMPORT_APPLICATION + treeID;
@@ -421,15 +421,15 @@
             request.onresult = function() {
                 var importInfoNode = this.getNodeValue(XML_IMPORT_APPLICATION);
 
-                importInfoNode.setAttribute("action",URL_IMPORT);//actionµØÖ·
+                importInfoNode.setAttribute("action",URL_IMPORT);//actionåœ°å€
                 var frameName = createUploadFrame();
-                importInfoNode.setAttribute("target",frameName);//Ìá½»iframeÃû
+                importInfoNode.setAttribute("target",frameName);//æäº¤iframeå
                 importInfoNode.setAttribute("enctype","multipart/form-data");
                 importInfoNode.setAttribute("method","POST");
 
                 var importInfoNodeID = cacheID+"."+XML_IMPORT_APPLICATION;
 
-                Cache.XmlIslands.add(importInfoNodeID,importInfoNode);
+                Cache.XmlDatas.add(importInfoNodeID,importInfoNode);
                 Cache.Variables.add(cacheID,[importInfoNodeID]);
 
                 initImportPages(cacheID,applicationType);
@@ -441,23 +441,23 @@
     }
 
     /*
-     *	µ¼ÈëÏà¹ØÒ³¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID     »º´æÊı¾İid
-                string:treeID      Ê÷½Úµãid
-				string:applicationType Ó¦ÓÃÏµÍ³ÀàĞÍ(1.Æ½Ì¨ 2.ÆäËû)
-     *	·µ»ØÖµ£º
+     *	å¯¼å…¥ç›¸å…³é¡µåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID     ç¼“å­˜æ•°æ®id
+                string:treeID      æ ‘èŠ‚ç‚¹id
+				string:applicationType åº”ç”¨ç³»ç»Ÿç±»å‹(1.å¹³å° 2.å…¶ä»–)
+     *	è¿”å›å€¼ï¼š
      */
     function initImportPages(cacheID,applicationType) {
-        var page1FormObj = $("page1Form");
+        var page1FormObj = $$("page1Form");
         Public.initHTC(page1FormObj,"isLoaded","oncomponentready",function() {
             loadImportData(cacheID,applicationType);
 
-            //file¿ò²»ÄÜ¸³Öµ£¬ËùÒÔÖ»ÄÜÇå³ıxformÀïÏÔÊ¾µÄÖµ
+            //fileæ¡†ä¸èƒ½èµ‹å€¼ï¼Œæ‰€ä»¥åªèƒ½æ¸…é™¤xformé‡Œæ˜¾ç¤ºçš„å€¼
             page1FormObj.updateDataExternal("filePath", "");
         });
 
-        //ÉèÖÃ±£´æ°´Å¥²Ù×÷
-        var page1BtSaveObj = $("page1BtSave");
+        //è®¾ç½®ä¿å­˜æŒ‰é’®æ“ä½œ
+        var page1BtSaveObj = $$("page1BtSave");
         page1BtSaveObj.disabled = false;
         page1BtSaveObj.onclick = function() {
             saveImport();
@@ -465,34 +465,34 @@
     }
 
     /*
-     *	µ¼Èëxform¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID     »º´æÊı¾İid
-				string:applicationType Ó¦ÓÃÏµÍ³ÀàĞÍ(1.Æ½Ì¨ 2.ÆäËû)
-     *	·µ»ØÖµ£º
+     *	å¯¼å…¥xformåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID     ç¼“å­˜æ•°æ®id
+				string:applicationType åº”ç”¨ç³»ç»Ÿç±»å‹(1.å¹³å° 2.å…¶ä»–)
+     *	è¿”å›å€¼ï¼š
      */
     function loadImportData(cacheID,applicationType) {
-        var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_IMPORT_APPLICATION);
+        var xmlIsland = Cache.XmlDatas.get(cacheID+"."+XML_IMPORT_APPLICATION);
         if(null!=xmlIsland) {
-            var page1FormObj = $("page1Form");
+            var page1FormObj = $$("page1Form");
             page1FormObj.editable = "true";
             page1FormObj.load(xmlIsland.node,null,"node");
             page1FormObj.updateDataExternal("applicationType",applicationType,false);
 
-            //2007-3-1 Àë¿ªÌáĞÑ
+            //2007-3-1 ç¦»å¼€æé†’
             attachReminder(cacheID,page1FormObj);
         }
     }
  
     function saveImport() {
-        var page1FormObj = $("page1Form");	
+        var page1FormObj = $$("page1Form");	
         var fileName = page1FormObj.getData("filePath");
         if (fileName==null || fileName=="") {
-            return alert("ÇëÑ¡Ôñµ¼ÈëÎÄ¼ş!");
+            return alert("è¯·é€‰æ‹©å¯¼å…¥æ–‡ä»¶!");
         }
         else {
             var fileLength = fileName.length;
             if(fileName.substring(fileLength-4,fileLength)!=".zip" && fileName.substring(fileLength-4,fileLength)!=".xml") {
-                return alert("ÇëÑ¡Ôñ.xml»ò.zipÎÄ¼şµ¼Èë!");
+                return alert("è¯·é€‰æ‹©.xmlæˆ–.zipæ–‡ä»¶å¯¼å…¥!");
             }
             else{
                 return page1FormObj.submit();
@@ -512,12 +512,12 @@
     }
  
     function getFilePath(path) {
-        var page1FormObj = $("page1Form");
+        var page1FormObj = $$("page1Form");
         page1FormObj.updateDataExternal("filePath",path);
     }
 	
 
     window.onload = init;
 
-	//¹Ø±ÕÒ³Ãæ×Ô¶¯×¢Ïú
+	//å…³é—­é¡µé¢è‡ªåŠ¨æ³¨é”€
     logoutOnClose();

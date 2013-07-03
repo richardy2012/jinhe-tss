@@ -128,7 +128,7 @@ public class Role extends OperateInfo implements ILevelTreeNode, IDecodable, IXF
 
 		map.put("parentRoleId", parentId);
 		map.put("isGroup", isGroup);
-		map.put("roleState", disabled);
+		map.put("disabled", disabled);
 		map.put("resourceTypeId", getResourceType());
 
 		if (UMConstants.FALSE.equals(isGroup)) { // 角色
