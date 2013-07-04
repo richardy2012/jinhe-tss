@@ -94,7 +94,7 @@ public class RoleAction extends BaseActionSupport {
             Role role = roleService.getRoleById(id);
             xFormEncoder = new XFormEncoder(UMConstants.ROLEGROUP_XFORM, role);
         }
-        print("RoleGroupInfo",xFormEncoder);     
+        print("RoleGroupInfo", xFormEncoder);     
     }
     
     /**
