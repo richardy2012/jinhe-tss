@@ -32,6 +32,8 @@ CACHE_TREE_NODE = "_treeNode_";
 CACHE_MAIN_TREE = "_tree_";
 CACHE_TOOLBAR   = "_toolbar_";
 
+DEFAULT_NEW_ID = "-10";
+
 
 /*
  *	禁止鼠标右键 

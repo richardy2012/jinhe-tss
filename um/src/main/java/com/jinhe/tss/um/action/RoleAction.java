@@ -174,7 +174,7 @@ public class RoleAction extends BaseActionSupport {
 	/**
 	 * 停用/启用角色
 	 */
-    @RequestMapping(value = "/disable/{id}/{disabled}")
+    @RequestMapping(value = "/disable/{id}/{state}")
 	public void disable(@PathVariable("id") Long id, @PathVariable("state") int state) {
 		roleService.disable(id, state);
         printSuccessMessage();
