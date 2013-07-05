@@ -68,15 +68,8 @@
     URL_GET_RESOURCE_TYPE = "ums/role!getResourceTypes.action";
     URL_GET_OPERATION = "ums/role!getOperation.action";
  
-    /*
-     *	icon路径
-     */
     ICON = "../framework/images/";
  
-
-    /*
-     *	页面初始化
-     */
     function init() {
         initPaletteResize();
         initToolBar();
@@ -210,6 +203,25 @@
         }
         request.send();
     }
+	
+	/* 是否根节点 */
+    function isRootNode(id) {
+        id = id || getTreeNodeId;
+        return ("-6" == id);
+    }
+	
+	/* 获取节点类型(1角色组/0角色) */
+	function isRole() {
+		return getTreeAttribute("isGroup") == "0";
+	}
+	function isRoleGroup() {
+		return getTreeAttribute("isGroup") == "1";
+	}
+
+    /* 获取节点停启用状态 */
+    function getTreeNodeState() {
+        return getTreeAttribute("disabled");
+    }
  
     function stopOrStartTreeNode(state) {		
 		var tree = $T("tree");
@@ -278,6 +290,65 @@
 		}
 		request.send();
     }
+	
+	function moveNodeTo() {
+        var treeObj = $T("tree");
+        var treeNode = treeObj.getActiveTreeNode();
+		var treeNodeID = treeNode.getId();
+		var targetId = window.showModalDialog("rolegrouptree.htm",{id:treeNodeID, isGroup:isRoleGroup()},"dialogWidth:300px;dialogHeight:400px;");
+		if( targetId) {
+			Ajax({
+				url : URL_MOVE_NODE + treeNodeID + "/" + targetId,
+				onsuccess : function() {  // 移动树节点					
+					var xmlNode = new XmlNode(treeNode.node);
+					var parentNode = treeObj.getTreeNodeById(targetId);
+
+					// 父节点停用则下溯
+					var parentNodeState = parentNode.getAttribute("disabled");
+					if("1" == parentNodeState) {
+						refreshTreeNodeState(xmlNode, "1");
+					}
+					parentNode.node.appendChild(treeNode.node);
+					parentNode.node.setAttribute("_open", "true");
+
+					clearOperation(xmlNode);
+
+					treeObj.reload();
+				}
+			});
+		}
+    }
+
+
+    /*
+     *	获取树操作权限
+     *	参数：	treeNode:treeNode       treeNode实例
+                function:callback       回调函数
+     */
+    function getTreeOperation(treeNode, callback) {
+        var _operation = treeNode.getAttribute("_operation");
+        if( isNullOrEmpty(_operation) ) {// 如果节点上还没有_operation属性，则发请求从后台获取信息
+            var p = new HttpRequestParams();
+            p.url = URL_GET_OPERATION;
+            p.setContent("roleId", treeNode.getId());
+
+            var request = new HttpRequest(p);
+            request.onresult = function() {
+                _operation = this.getNodeValue(XML_OPERATION);
+                treeNode.setAttribute("_operation", _operation);
+
+                if( callback ) {
+                    callback(_operation);
+                }
+            }
+            request.send();            
+        } else {
+            if( callback ) {
+                callback(_operation);
+            }
+        }    
+    }
+  
 	
 	/*
      *	编辑节点
@@ -558,7 +629,7 @@
 			var page2BtDelObj = $$("page2BtDel");
 			page2BtDelObj.disabled = disabled;
 			page2BtDelObj.onclick = function() {
-				delPage2TreeNode();
+				removeTreeNode($T("page2Tree2")); // 删除page2里tree节点
 			}
 
 			// 设置添加按钮操作
@@ -572,7 +643,7 @@
 			var page4BtDelObj = $$("page4BtDel");
 			page4BtDelObj.disabled = disabled;
 			page4BtDelObj.onclick = function() {
-				 delPage4TreeNode();
+				 removeTreeNode($T("page4Tree3")); // 删除page4里tree节点
 			}
 
 			// 设置保存按钮操作
@@ -680,228 +751,93 @@
     }
 		
 
-    /*
-     *	删除page2里tree节点
-     */
-    function delPage2TreeNode() {
-        removeTreeNode($("page2Tree2"));
-    }
+    
     /*
      *	添加page2里tree节点
      */
     function addPage2TreeNode() {
-        var page2Tree2Obj = $$("page2Tree2");
-        var page2TreeObj  = $$("page2Tree");
+        var page2Tree2Obj = $T("page2Tree2");
+        var page2TreeObj  = $T("page2Tree");
         var selectedNodes = page2TreeObj.getSelectedTreeNode(false);
 
         var reload = false;
-        for(var i=0,iLen=selectedNodes.length;i<iLen;i++) {
+        for(var i=0; i < selectedNodes.length; i++) {
             var curNode = selectedNodes[i];
-            curNode.setSelectedState(0,true,true);
+            curNode.setSelectedState(0, true, true);
 
-            var groupName = curNode.getName();
             var id = curNode.getId();
-
-            var sameAttributeTreeNode = hasSameAttributeTreeNode(page2Tree2Obj,"id",id);
-            if(false==sameAttributeTreeNode) {
-                //至少有一行添加才刷新grid
-                reload = true;
+            var sameAttributeTreeNode = hasSameAttributeTreeNode(page2Tree2Obj, "id", id);
+            if( !sameAttributeTreeNode) {
+                reload = true; // 至少有一行添加才刷新Tree
 
                 var treeNode = page2Tree2Obj.getTreeNodeById("_rootId");
-                if(null!=treeNode) {
-                    //排除子节点
-                    var cloneNode = new XmlNode(curNode.node).cloneNode(false);
-                    page2Tree2Obj.insertTreeNodeXml(cloneNode.toXml(),treeNode);
+                if( treeNode ) {                   
+                    var cloneNode = new XmlNode(curNode.node).cloneNode(false); // 排除子节点
+                    page2Tree2Obj.insertTreeNodeXml(cloneNode.toXml(), treeNode);
                 }
             }
         }
-        if(true==reload) {
+        if( reload ) {
             page2Tree2Obj.reload();
         }
         page2TreeObj.reload();
     }
-    /*
-     *	删除page4里tree节点
-     */
-    function delPage4TreeNode() {
-        removeTreeNode($("page4Tree3"));
-    }
+ 
     /*
      *	添加page4里tree节点
      */
     function addPage4TreeNode() {
-        var page4Tree2Obj = $$("page4Tree2");
-        var page4Tree3Obj = $$("page4Tree3");
+        var page4Tree2Obj = $T("page4Tree2");
+        var page4Tree3Obj = $T("page4Tree3");
         var selectedNodes = page4Tree2Obj.getSelectedTreeNode();
 
         var reload = false;
-        for(var i=0,iLen=selectedNodes.length;i<iLen;i++) {
+        for(var i=0; i < selectedNodes.length; i++) {
             var curNode = selectedNodes[i];
-            curNode.setSelectedState(0,true,true);
-
-            var groupName = curNode.getName();
+            curNode.setSelectedState(0, true, true);
+ 
             var id = curNode.getId();
-
-            var sameAttributeTreeNode = hasSameAttributeTreeNode(page4Tree3Obj,"id",id);
-            if("_rootId"!=id && false==sameAttributeTreeNode) {
-                //至少有一行添加才刷新grid
-                reload = true;
+            var sameAttributeTreeNode = hasSameAttributeTreeNode(page4Tree3Obj, "id", id);
+            if("_rootId" != id && !sameAttributeTreeNode) {          
+                reload = true; // 至少有一行添加才刷新grid
 
                 var treeNode = page4Tree3Obj.getTreeNodeById("_rootId");
-                if(null!=treeNode) {
-                    //排除子节点
-                    var cloneNode = new XmlNode(curNode.node).cloneNode(false);
-                    page4Tree3Obj.insertTreeNodeXml(cloneNode.toXml(),treeNode);
+                if(treeNode) {
+                    var cloneNode = new XmlNode(curNode.node).cloneNode(false); // 排除子节点
+                    page4Tree3Obj.insertTreeNodeXml(cloneNode.toXml(), treeNode);
                 }
             }
         }
-        if(true==reload) {
+        if( reload ) {
             page4Tree3Obj.reload();
         }
         page4Tree2Obj.reload();
     }
  
-    /* 获取节点类型(1角色组/0角色) */
-	function isRole() {
-		return getTreeAttribute("isGroup") == "0";
-	}
 
-	function isRoleGroup() {
-		return getTreeAttribute("isGroup") == "1";
-	}
-
-    /* 获取节点停启用状态 */
-    function getTreeNodeState() {
-        return getTreeAttribute("disabled");
-    }
 	
-    /*
-     *	角色权限设置
-     */
+    /* 角色权限设置 */
     function setRolePermission() {
-        var treeObj = $$("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode) {
-            var id = treeNode.getId();
-            var name = treeNode.getName();
-            
-            var title = "设置\"" + name + "\"权限";
-            var params = {
-                roleId:id,
-                isRole2Resource:"1"
-            };
-
-            window.showModalDialog("setpermission.htm",{params:params,title:title,type:"role"},"dialogWidth:700px;dialogHeight:500px;resizable:yes");
-        }
+        var treeNode = $T("tree").getActiveTreeNode();		
+		var title = "设置\"" + treeNode.getName() + "\"权限";
+		var params = {
+			roleId: treeNode.getId();,
+			isRole2Resource: "1"
+		};
+		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:700px;dialogHeight:500px;resizable:yes");
     }
- 
-    function moveNodeTo() {
-        var treeObj = $$("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode) {
-            var treeNodeID = treeNode.getId();
-            var isGroup = treeNode.getAttribute("isGroup");
-
-            var targetId = window.showModalDialog("rolegrouptree.htm",{id:treeNodeID,isGroup:isGroup,xmlIsland:null},"dialogWidth:300px;dialogHeight:400px;");
-
-            if(null!=targetId) {
-                var p = new HttpRequestParams();
-                p.url = URL_MOVE_NODE;
-                p.setContent("roleId",treeNodeID);
-                p.setContent("targetId",targetId);
-                //p.setContent("moveState",2);//2表示跨层次移动
-
-                var request = new HttpRequest(p);
-                request.onsuccess = function() {
-                    //移动树节点
-                    var curNode = treeObj.getTreeNodeById(treeNodeID);
-                    var xmlNode = new XmlNode(curNode.node);
-                    var parentNode = treeObj.getTreeNodeById(targetId);
-
-                    //父节点停用则下溯
-                    var parentNodeState = parentNode.getAttribute("disabled");
-                    if("1"==parentNodeState) {
-                        //设置停用状态
-                        refreshTreeNodeState(xmlNode,"1");
-                    }
-                    parentNode.node.appendChild(curNode.node);
-                    parentNode.node.setAttribute("_open","true");
-
-                    clearOperation(xmlNode);
-
-                    treeObj.reload();
-                }
-                request.send();
-            }
-        }
-    }
-
-    /*
-     *	是否根节点
-     */
-    function isRootNode(id) {
-        if(null==id) {
-            var treeObj = $$("tree");
-            var treeNode = treeObj.getActiveTreeNode();
-            if(null!=treeNode) {
-                id = treeNode.getId();
-            }            
-        }
-        var flag = ("-6"==id);
-        return flag;
-    }
-    /*
-     *	获取树操作权限
-     *	参数：	treeNode:treeNode       treeNode实例
-                function:callback       回调函数
-     */
-    function getTreeOperation(treeNode,callback) {
-        var id = treeNode.getId();
-        var _operation = treeNode.getAttribute("_operation");
-
-        if(null==_operation || ""==_operation) {//如果节点上还没有_operation属性，则发请求从后台获取信息
-            var p = new HttpRequestParams();
-            p.url = URL_GET_OPERATION;
-            p.setContent("roleId",id);
-
-            var request = new HttpRequest(p);
-            request.onresult = function() {
-                _operation = this.getNodeValue(XML_OPERATION);
-                treeNode.setAttribute("_operation",_operation);
-
-                if(null!=callback) {
-                    callback(_operation);
-                }
-            }
-            request.send();            
-        }else{
-            if(null!=callback) {
-                callback(_operation);
-            }
-        }    
-    }
-  
-    /*
-     *	授予角色
-     */
+    
+    /* 授予角色 */
     function setRole2Permission() {
-        var treeObj = $$("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode) {
-            var id = treeNode.getId();
-            var name = treeNode.getName();
-            var resourceType = "5";  // getTreeAttribute("resourceTypeId")
-            var type = "role";
-
-            var title = "授予\"" + name + "\"角色";
-            var params = {
-                roleId:id,
-                resourceType:resourceType,
-                applicationId:"tss",
-                isRole2Resource:"0"
-            };
-            window.showModalDialog("setpermission.htm",{params:params,title:title,type:type},"dialogWidth:700px;dialogHeight:500px;resizable:yes");
-        }
+        var treeNode = $T("tree").getActiveTreeNode();
+		var title = "授予\"" + treeNode.getName() + "\"角色";
+		var params = {
+			roleId: treeNode.getId(),
+			resourceType: "2",
+			applicationId: "tss",
+			isRole2Resource: "0"
+		};
+		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:700px;dialogHeight:500px;resizable:yes");
     }
 
     window.onload = init;
