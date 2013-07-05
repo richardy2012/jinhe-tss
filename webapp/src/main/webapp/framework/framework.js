@@ -1,14 +1,17 @@
+IS_TEST = true;
+
 /* 
  * 当前应用名 
  */
-APP_CODE    = "WMSX";
+APP_CODE    = "TSS";
 APPLICATION = APP_CODE.toLowerCase();
 CONTEXTPATH = APPLICATION + "/";
 
-URL_CORE = "/" + APPLICATION + "/framework/";  // 界面核心包相对路径
-
-IS_TEST = true;
-
+if( IS_TEST ) {
+	URL_CORE = "../framework/";
+} else {
+	URL_CORE = "/" + APPLICATION + "/framework/";  // 界面核心包相对路径
+}
 
 /* 
  * 常量定义
@@ -709,7 +712,6 @@ function initEvents() {
 	Event.attachEvent($$("treeBtRefresh"), "click", onClickTreeBtRefresh);
 	Event.attachEvent($$("treeTitleBt"),   "click", onClickTreeTitleBt);
 	Event.attachEvent($$("statusTitleBt"), "click", onClickStatusTitleBt);
-	Event.attachEvent($$("paletteBt"),     "click", onClickPaletteBt);
 	Event.attachEvent($$("treeTitle"),     "click", onClickTreeTitle);
 	Event.attachEvent($$("statusTitle"),   "click", onClickStatusTitle);
 }

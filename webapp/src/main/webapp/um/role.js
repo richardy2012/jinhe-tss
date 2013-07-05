@@ -1,4 +1,4 @@
-    /*
+	/*
      *	后台响应数据节点名称
      */
     XML_MAIN_TREE = "RoleGroupTree";
@@ -13,66 +13,46 @@
     XML_GROUP_TO_USER_LIST_TREE = "Group2UserListTree";
     XML_ROLE_TO_GROUP_IDS = "role2GroupIds";
     XML_ROLE_TO_USER_IDS = "role2UserIds";
-    XML_SEARCH_PERMISSION = "SearchPermission";
-    XML_RESOURCE_TYPE = "ResourceType";
+	
     /*
      *	默认唯一编号名前缀
      */
-    CACHE_GRID_ROW_DETAIL = "row__id";
-    CACHE_TREE_NODE_DETAIL = "treeNode__id";
-    CACHE_TREE_NODE_GRID = "treeNodeGrid__id";
-    CACHE_ROLE_PERMISSION = "rolePermission__id";
     CACHE_ROLE_GROUP_DETAIL = "roleGroup__id";
     CACHE_VIEW_ROLE_GROUP_DETAIL = "viewRoleGroup__id";
     CACHE_ROLE_DETAIL = "role__id";
     CACHE_VIEW_ROLE_DETAIL = "viewRole__id";
-    CACHE_ROLE_TO_USER_GRID = "role2User__id";
-    CACHE_SEARCH_PERMISSION = "searchPermission__id";
  
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_SOURCE_TREE = "data/role_init.xml";
-    URL_SOURCE_DETAIL = "data/role1.xml";
-    URL_SAVE_ROLE = "data/_success.xml";
-    URL_ROLE_LIST = "data/rolelist.xml";
-    URL_ROLE_GROUP_DETAIL = "data/rolegroup1.xml";
-    URL_SAVE_ROLE_GROUP = "data/_success.xml";
-    URL_STOP_ROLE_GROUP = "data/_success.xml";
-    URL_START_ROLE_GROUP = "data/_success.xml";
-    URL_STOP_ROLE = "data/_success.xml";
-    URL_START_ROLE = "data/_success.xml";
-    URL_DEL_ROLE_GROUP = "data/_success.xml";
-    URL_DEL_ROLE = "data/_success.xml";
-    URL_GROUP_TO_USER_LIST = "data/role2userlist.xml";
-    URL_SORT_NODE = "data/_success.xml";
-    URL_MOVE_NODE = "data/_success.xml";
-    URL_GET_RESOURCE_TYPE = "data/resourcetype.xml";
-    URL_GET_OPERATION = "data/operation.xml";
-
     URL_SOURCE_TREE = "ums/role!getAllRole2Tree.action";
-    URL_SOURCE_DETAIL = "ums/role!getRoleInfoAndRelation.action";
+    URL_ROLE_DETAIL = "ums/role!getRoleInfoAndRelation.action";
     URL_SAVE_ROLE = "ums/role!saveRole.action";
-    URL_ROLE_LIST = "data/rolelist.xml";
     URL_ROLE_GROUP_DETAIL = "ums/role!getRoleGroupInfo.action";
     URL_SAVE_ROLE_GROUP = "ums/role!saveRoleGroupInfo.action";
-    URL_STOP_ROLE_GROUP = "ums/role!disable.action";
-    URL_START_ROLE_GROUP = "ums/role!disable.action";
-    URL_STOP_ROLE = "ums/role!disable.action";
-    URL_START_ROLE = "ums/role!disable.action";
-    URL_DEL_ROLE_GROUP = "ums/role!delete.action";
-    URL_DEL_ROLE = "ums/role!delete.action";
-    URL_GROUP_TO_USER_LIST = "ums/role!getUserByGroupId.action";
-    URL_SORT_NODE = "ums/role!sort.action";
-    URL_MOVE_NODE = "ums/role!move.action";
-    URL_GET_RESOURCE_TYPE = "ums/role!getResourceTypes.action";
+    URL_STOP_NODE = "ums/role!disable.action";
+    URL_DELETE_NODE = "ums/role!delete.action";
+	URL_MOVE_NODE = "ums/role!move.action";
+    URL_GROUP_TO_USER_LIST = "ums/role!getUserByGroupId.action";    
     URL_GET_OPERATION = "ums/role!getOperation.action";
+	
+	if(IS_TEST) {
+	    URL_SOURCE_TREE = "data/role_tree.xml";
+		URL_ROLE_DETAIL = "data/role_detail.xml";
+		URL_SAVE_ROLE = "data/_success.xml";
+		URL_ROLE_GROUP_DETAIL = "data/rolegroup_detail.xml";
+		URL_SAVE_ROLE_GROUP = "data/_success.xml";
+		URL_STOP_NODE = "data/_success.xml";
+		URL_DELETE_NODE = "data/_success.xml";
+		URL_GROUP_TO_USER_LIST = "data/group2userlist.xml";
+		URL_MOVE_NODE = "data/_success.xml";
+		URL_GET_OPERATION = "data/operation.xml";
+	}
  
     ICON = "../framework/images/";
  
     function init() {
         initPaletteResize();
-        initToolBar();
         initNaviBar("um.3");
         initMenus();
         initBlocks();
@@ -109,13 +89,13 @@
         }
         var item7 = {
             label:"停用",
-            callback:stopTreeNode,
+            callback:stopOrStartTreeNode,
             icon:ICON + "stop.gif",           
             visible:function() {return !isRootNode() && "0"==getTreeNodeState() && getOperation("2");}
         }
         var item8 = {
             label:"启用",
-            callback:startTreeNode,
+            callback:stopOrStartTreeNode,
             icon:ICON + "start.gif",           
             visible:function() {return !isRootNode() && "1"==getTreeNodeState() && getOperation("2");}
         }
@@ -227,7 +207,7 @@
 		var tree = $T("tree");
 		var treeNode = tree.getActiveTreeNode();
 		Ajax({
-			url : URL_STOP_ROLE_GROUP + treeNode.getId() + "/" + state,
+			url : URL_STOP_NODE + treeNode.getId() + "/" + state,
 			onsuccess : function() { 
 				var xmlNode = new XmlNode(treeNode.node);
 				refreshTreeNodeStates(xmlNode, state);
@@ -277,7 +257,7 @@
 		var treeNodeID = treeNode.getId();
 
 		var p = new HttpRequestParams();
-		p.url = URL_DEL_ROLE_GROUP;
+		p.url = URL_DELETE_NODE;
 		p.setContent("roleId", treeNodeID);
 
 		var request = new HttpRequest(p);
@@ -567,7 +547,7 @@
      */
     function loadRoleDetailData(treeID, editable, parentID) {
 		var p = new HttpRequestParams();
-		p.url = URL_SOURCE_DETAIL + treeID + "/" + parentID;
+		p.url = URL_ROLE_DETAIL + treeID + "/" + parentID;
 
 		var request = new HttpRequest(p);
 		request.onresult = function() {
@@ -821,7 +801,7 @@
         var treeNode = $T("tree").getActiveTreeNode();		
 		var title = "设置\"" + treeNode.getName() + "\"权限";
 		var params = {
-			roleId: treeNode.getId();,
+			roleId: treeNode.getId(),
 			isRole2Resource: "1"
 		};
 		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:700px;dialogHeight:500px;resizable:yes");
