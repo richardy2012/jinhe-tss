@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<RoleInfo>
+		<xform>
+			<declare>
+				<column name="id" caption="ID号" mode="string" editable="false"/>
+				<column name="name" caption="名称" mode="string"/>
+				<column name="type" caption="类型" mode="string"/>
+				<column name="remarks" caption="说明" mode="string" empty="false"/>
+			</declare>
+			<layout>
+				<TR>
+					<TD width="50"><label binding="id"/></TD>
+					<TD><input binding="id" type="text"/></TD>
+				</TR>
+				<TR>
+					<TD width="50"><label binding="name"/></TD>
+					<TD><input binding="name" type="text"/></TD>
+				</TR>
+				<TR>
+					<TD width="50"><label binding="type"/></TD>
+					<TD><input binding="type" type="comboedit" editorvalue="0|1" editortext="类型一|类型二"/></TD>
+				</TR>
+				<TR>
+					<TD width="50" valign="top"><label binding="remarks"/></TD>
+					<TD><textarea binding="remarks" style="width:100%;height:100"/></TD>
+				</TR>
+			</layout>
+			<data>
+				<row>
+                  <id><![CDATA[1]]></id>
+                  <name><![CDATA[1]]></name>
+                  <type><![CDATA[1]]></type>
+                  <remarks><![CDATA[3333333测试信息快报的报送流程]]></remarks>
+                </row>
+			</data>
+		</xform>
+	</RoleInfo>
+	<Role2UserTree>
+		<actionSet title="" openednodeid="r2">
+			<treeNode id="r1" name="主用户组" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1">
+				<treeNode id="r1.1" name="用户组1.1" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1">
+					<treeNode id="r1.1.1" name="用户组1.1.1" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+					<treeNode id="r1.1.1" name="用户组1.1.2" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				</treeNode>
+				<treeNode id="r1.2" name="用户组1.2" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				<treeNode id="r1.3" name="用户组1.3" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				<treeNode id="r1.4" name="用户组1.4" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				<treeNode id="r1.5" name="用户组1.5" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				<treeNode id="r1.6" name="用户组1.6" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				<treeNode id="r1.7" name="用户组1.7" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				<treeNode id="r1.8" name="用户组1.8" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				<treeNode id="r1.9" name="用户组1.9" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				<treeNode id="r1.10" name="用户组1.10" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				<treeNode id="r1.11" name="用户组1.11" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				<treeNode id="r1.12" name="用户组1.12" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				<treeNode id="r1.13" name="用户组1.13" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				<treeNode id="r1.14" name="用户组1.14" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				<treeNode id="r1.15" name="用户组1.15" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+				<treeNode id="r1.16" name="用户组1.16" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+			</treeNode>
+		</actionSet>
+	</Role2UserTree>
+	<Role2UserExistTree>
+        <actionSet title="" openednodeid="r2">
+            <treeNode id="_rootId" name="全部" icon="../platform/images/icon/icon_user.gif" href="">
+                <treeNode id="1" name="用户1" icon="../platform/images/icon/icon_user.gif" href=""/>
+            </treeNode>
+        </actionSet>
+	</Role2UserExistTree>
+    <Role2GroupTree>    
+		<actionSet title="" openednodeid="r1">
+            <treeNode id="r1" name="主用户组" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1">
+                <treeNode id="r1.1" name="用户组1.1" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1">
+                    <treeNode id="r1.1.1" name="用户组1.1.1" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                    <treeNode id="r1.1.2" name="用户组1.1.2" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                </treeNode>
+                <treeNode id="r1.2" name="用户组1.2" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                <treeNode id="r1.3" name="用户组1.3" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                <treeNode id="r1.4" name="用户组1.4" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                <treeNode id="r1.5" name="用户组1.5" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                <treeNode id="r1.6" name="用户组1.6" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                <treeNode id="r1.7" name="用户组1.7" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                <treeNode id="r1.8" name="用户组1.8" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                <treeNode id="r1.9" name="用户组1.9" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                <treeNode id="r1.10" name="用户组1.10" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                <treeNode id="r1.11" name="用户组1.11" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                <treeNode id="r1.12" name="用户组1.12" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                <treeNode id="r1.13" name="用户组1.13" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                <treeNode id="r1.14" name="用户组1.14" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                <treeNode id="r1.15" name="用户组1.15" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+                <treeNode id="r1.16" name="用户组1.16" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+            </treeNode>
+            <treeNode id="r2" name="辅助用户组" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="2">
+                <treeNode id="r2.1" name="用户组2.1" icon="../platform/images/icon/icon_group.gif" href="" disabled="0" groupType="2"/>
+                <treeNode id="r2.2" name="用户组2.2" icon="../platform/images/icon/icon_group.gif" href="" disabled="0" groupType="2"/>
+                <treeNode id="r2.3" name="用户组2.3" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="2"/>
+                <treeNode id="r2.4" name="用户组2.4" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="2"/>
+                <treeNode id="r2.5" name="用户组2.5" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="2"/>
+                <treeNode id="r2.6" name="用户组2.6" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="2"/>
+                <treeNode id="r2.7" name="用户组2.7" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="2"/>
+                <treeNode id="r2.8" name="用户组2.8" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="2"/>
+                <treeNode id="r2.9" name="用户组2.9" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="2"/>
+                <treeNode id="r2.10" name="用户组2.10" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="2"/>
+                <treeNode id="r2.11" name="用户组2.11" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="2"/>
+                <treeNode id="r2.12" name="用户组2.12" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="2"/>
+                <treeNode id="r2.13" name="用户组2.13" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="2"/>
+            </treeNode>
+            <treeNode id="r3" name="用户组" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="3">
+                <treeNode id="r3.1" name="用户组3.1" icon="../platform/images/icon/icon_group.gif" href="" disabled="0" groupType="3"/>
+                <treeNode id="r3.2" name="用户组3.2" icon="../platform/images/icon/icon_group.gif" href="" disabled="0" groupType="3"/>
+                <treeNode id="r3.3" name="用户组3.3" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="3"/>
+                <treeNode id="r3.4" name="用户组3.4" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="3"/>
+                <treeNode id="r3.5" name="用户组3.5" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="3"/>
+                <treeNode id="r3.6" name="用户组3.6" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="3"/>
+                <treeNode id="r3.7" name="用户组3.7" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="3"/>
+                <treeNode id="r3.8" name="用户组3.8" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="3"/>
+                <treeNode id="r3.9" name="用户组3.9" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="3"/>
+                <treeNode id="r3.10" name="用户组3.10" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="3"/>
+                <treeNode id="r3.11" name="用户组3.11" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="3"/>
+                <treeNode id="r3.12" name="用户组3.12" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="3"/>
+                <treeNode id="r3.13" name="用户组3.13" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="3"/>
+            </treeNode>
+		</actionSet>
+    </Role2GroupTree>
+	<Role2GroupExistTree>
+        <actionSet title="" openednodeid="r2">
+            <treeNode id="_rootId" name="全部" icon="../platform/images/icon/icon_user.gif" href="">
+                <treeNode id="r1.1.1" name="用户组1.1.1" icon="../platform/images/icon/icon_group.gif" href="" disabled="1" groupType="1"/>
+            </treeNode>
+        </actionSet>
+	</Role2GroupExistTree>
+	<Role2User>
+		<actionSet title="" openednodeid="r2">
+			<treeNode id="r1" name="用户1" icon="../platform/images/icon/icon_r01.gif" href="">
+				<treeNode id="r1.1" name="用户1.1" icon="../platform/images/icon/icon_r02.gif" href="">
+					<treeNode id="r1.1.1" name="用户1.1.1" icon="../platform/images/icon/icon_r02.gif" href=""/>
+					<treeNode id="r1.1.1" name="用户1.1.2" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				</treeNode>
+				<treeNode id="r1.2" name="用户1.2" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r1.3" name="用户1.3" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r1.4" name="用户1.4" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r1.5" name="用户1.5" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r1.6" name="用户1.6" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r1.7" name="用户1.7" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r1.8" name="用户1.8" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r1.9" name="用户1.9" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r1.10" name="用户1.10" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r1.11" name="用户1.11" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r1.12" name="用户1.12" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r1.13" name="用户1.13" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r1.14" name="用户1.14" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r1.15" name="用户1.15" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r1.16" name="用户1.16" icon="../platform/images/icon/icon_r02.gif" href=""/>
+			</treeNode>
+			<treeNode id="r2" name="用户2" icon="../platform/images/icon/icon_r03.gif" href="">
+				<treeNode id="r2.1" name="用户2.1" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r2.2" name="用户2.2" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r2.3" name="用户2.3" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r2.4" name="用户2.4" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r2.5" name="用户2.5" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r2.6" name="用户2.6" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r2.7" name="用户2.7" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r2.8" name="用户2.8" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r2.9" name="用户2.9" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r2.10" name="用户2.10" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r2.11" name="用户2.11" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r2.12" name="用户2.12" icon="../platform/images/icon/icon_r02.gif" href=""/>
+				<treeNode id="r2.13" name="用户2.13" icon="../platform/images/icon/icon_r02.gif" href=""/>
+			</treeNode>
+			<treeNode id="r3" name="用户3" icon="../platform/images/icon/icon_r01.gif" href=""/>
+		</actionSet>
+	</Role2User>
+</Response>

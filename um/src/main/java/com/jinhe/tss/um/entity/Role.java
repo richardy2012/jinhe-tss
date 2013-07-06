@@ -126,7 +126,7 @@ public class Role extends OperateInfo implements ILevelTreeNode, IDecodable, IXF
 	public TreeAttributesMap getAttributes() {
 		TreeAttributesMap map = new TreeAttributesMap(id, name);
 
-		map.put("parentRoleId", parentId);
+		map.put("roleGroupId", parentId);
 		map.put("isGroup", isGroup);
 		map.put("disabled", disabled);
 		map.put("resourceTypeId", getResourceType());

@@ -284,7 +284,7 @@ function onClickPaletteBt() {
  *	点击树标题
  */
 function onClickTreeTitle() {
-	Focus.focus($$$("treeTitle").firstChild.id);
+	Focus.focus($$("treeTitle").firstChild.id);
 }
 
 /*

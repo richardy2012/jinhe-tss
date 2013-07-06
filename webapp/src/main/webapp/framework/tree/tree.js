@@ -1824,19 +1824,27 @@ function TreeDisplay(treeObj) {
 		treeObj.element.innerHTML = "";
 		
 		// 生成滚动条
-		var vScrollStr = '<div id="treeVScrollBox" style="position:absolute;overflow-y:auto;heigth:100%;width:17px;top:0px;right:0px;"><div id="treeVScrollDiv" style="width:1px"></div></div>';
-		var hScrollStr = '<div id="treeHScrollBox" style="position:absolute;overflow-x:auto;overflow-y:hidden;heigth:17px;width:100%;bottom:0px;left:0px"><div id="treeHScrollDiv" style="higth:1px"></div></div>';
+		var treeId = treeObj.element.id;
+		var _vScrollBoxName = treeId + "VScrollBox"; 
+		var _vScrollDivName = treeId + "VScrollDiv"; 
+		var _hScrollBoxName = treeId + "HScrollBox"; 
+		var _hScrollDivName = treeId + "HScrollDiv"; 
+		var _rootBoxName = treeId + "RootBox"; 
+		var _rootTableName = treeId + "RootTable"; 
+
+		var vScrollStr = '<div id="' + _vScrollBoxName + '" style="position:absolute;overflow-y:auto;heigth:100%;width:17px;top:0px;right:0px;"><div id="' + _vScrollDivName + '" style="width:1px"></div></div>';
+		var hScrollStr = '<div id="' + _hScrollBoxName + '" style="position:absolute;overflow-x:auto;overflow-y:hidden;heigth:17px;width:100%;bottom:0px;left:0px"><div id="' + _hScrollDivName + '" style="higth:1px"></div></div>';
 		treeObj.element.insertAdjacentHTML('afterBegin', vScrollStr + hScrollStr);
-		_vScrollBox = $$("treeVScrollBox");
-		_vScrollDiv = $$("treeVScrollDiv");
-		_hScrollBox = $$("treeHScrollBox");
-		_hScrollDiv = $$("treeHScrollDiv");
+		_vScrollBox = $$(_vScrollBoxName);
+		_vScrollDiv = $$(_vScrollDivName);
+		_hScrollBox = $$(_hScrollBoxName);
+		_hScrollDiv = $$(_hScrollDivName);
 		
 		// 生成页面上显示节点的table对象。
-		var tableStr = '<div id="treeRootBox" style="position:absolute;overflow:hidden;top:0px;left:0px"><table id="treeRootTable" cellspacing="0"></table></div>';
+		var tableStr = '<div id="' + _rootBoxName + '" style="position:absolute;overflow:hidden;top:0px;left:0px"><table id="' + _rootTableName + '" cellspacing="0"></table></div>';
 		treeObj.element.insertAdjacentHTML('afterBegin', tableStr);
-		_rootBox   = $$("treeRootBox");
-		_rootTable = $$("treeRootTable");
+		_rootBox   = $$(_rootBoxName);
+		_rootTable = $$(_rootTableName);
 		for(var i = 0; i < _pageSize; i++) {
 			var tr = _rootTable.insertRow();
 			tr.insertCell();
