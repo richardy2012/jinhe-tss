@@ -215,7 +215,7 @@ var Tree = function(element) {
 					var fNode = _treeXMLDom.selectSingleNode("//treeNode[@id='" + fNodeId + "']");
 					if( fNode ) {
 						setNodeState(fNode, 1);
-						refreshParentNodeState(fNode);
+						refreshParentNodeState(fNode, this);
 						refreshChildrenNodeState(fNode);
 					}
 				}
@@ -1066,8 +1066,8 @@ var MultiCheckTree = function(element) {
 	/*
 	 * 获取节点的下一选中状态（多选1、2 -> 0; 0 -> 1）
 	 */
-	this.getNextState = function () {
-		if(/^(2|1)$/.test(this.getSelectedState())) {	// 半选、全选时，置为不选
+	this.getNextState = function (treeNode) {
+		if(/^(2|1)$/.test(treeNode.getSelectedState())) {	// 半选、全选时，置为不选
 			return 0;
 		}	
 		return 1;	// 不选时，置为全选
@@ -1100,7 +1100,7 @@ var MultiCheckTree = function(element) {
 		if (this.getAttribute(_TREE_JUST_SELECT_SELF) == "true") {
 			return;
 		}
-		refreshParentNodeState(treeNode.getXmlNode());
+		refreshParentNodeState(treeNode.getXmlNode(), this);
 
 		if(noChildren && treeNode.getSelectedState() == 2) {
 			return;
@@ -2269,7 +2269,7 @@ function clearSelected(node) {
 /*
  * 刷新所有父节点的选择状态
  */
-function refreshParentNodeState(node) {
+function refreshParentNodeState(node, treeObj) {
 	var parent = node.parentNode;
 	while (parent != treeObj.getXmlRoot()) {		
 		var nodeChildNum   = parent.childNodes.length;	// 总子节点数

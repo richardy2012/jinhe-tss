@@ -397,7 +397,7 @@
 			Cache.Variables.add(treeID, [roleGroupInfoNodeID]);
 
 			var xform = $X("page1Form", roleGroupInfoNode);
-			xform.editable = editable == false? "false" : "true";
+			xform.editable = editable == false ? "false" : "true";
 			
 			// 设置翻页按钮显示状态
 			$$("page1BtPrev").style.display = "none";
@@ -612,26 +612,21 @@
 		request.send();
     }
  
-    /*
-     *	点击页4用户组树节点
-     */
+    /* 点击页4用户组树节点 */
     function onPage4TreeNodeDoubleClick(eventObj) {
         var treeNode = $T("page4Tree").getActiveTreeNode();
 		Ajax({
 			url : URL_GROUP_TO_USER_LIST + treeNode.getId(),
 			onresult : function() { 
-				var sourceListNode = this.getNodeValue(XML_GROUP_TO_USER_LIST_TREE); alert(sourceListNode);
+				var sourceListNode = this.getNodeValue(XML_GROUP_TO_USER_LIST_TREE);
 				$T("page4Tree2", sourceListNode);
 			}
 		});	
     }
  
-    /*
-     *	保存角色
-     */
     function saveRole(cacheID, parentID) {
         //校验page1Form数据有效性
-        var page1FormObj = $$("page1Form");
+        var page1FormObj = $X("page1Form");
         if( !page1FormObj.checkForm() ) {
             switchToPhase(ws, "page1");
             return;
@@ -646,10 +641,9 @@
 			var roleInfoDataNode = roleInfoNode.selectSingleNode(".//data");
 			if(roleInfoDataNode) {
 				flag = true;
-				p.setXFormContent(roleInfoDataNode,prefix);
+				p.setXFormContent(roleInfoDataNode);
 			}
 		}
-
 
 		//角色对用户
 		var role2UserNode = Cache.XmlDatas.get(cacheID + "." + XML_ROLE_TO_USER_EXIST_TREE);
@@ -660,7 +654,6 @@
 				p.setContent(XML_ROLE_TO_USER_IDS, role2UserDataIDs.join(","));
 			}
 		}
-
 
 		//角色对用户组
 		var role2GroupNode = Cache.XmlDatas.get(cacheID + "." + XML_ROLE_TO_GROUP_EXIST_TREE);
@@ -676,16 +669,13 @@
             var request = new HttpRequest(p);
 			
             // 同步按钮状态
-            var page1BtSaveObj = $$("page1BtSave");
-            var page2BtSaveObj = $$("page2BtSave");
-            var page4BtSaveObj = $$("page4BtSave");
-            syncButton([page1BtSaveObj, page2BtSaveObj, page4BtSaveObj], request);
+            syncButton([$$("page1BtSave"), $$("page2BtSave"), $$("page4BtSave")], request);
 
             request.onresult = function() {                   
 				detachReminder(cacheID); //解除提醒
 
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
-				appendTreeNode(parentID,treeNode);
+				appendTreeNode(parentID, treeNode);
 				ws.closeActiveTab();
             }
             request.onsuccess = function() {                  
@@ -696,13 +686,9 @@
             }
             request.send();
         }
-    }
-		
-
+    }		
     
-    /*
-     *	添加page2里tree节点
-     */
+    /* 添加page2里tree节点 */
     function addPage2TreeNode() {
         var page2Tree2Obj = $T("page2Tree2");
         var page2TreeObj  = $T("page2Tree");
@@ -715,7 +701,7 @@
 
             var id = curNode.getId();
             var sameAttributeTreeNode = hasSameAttributeTreeNode(page2Tree2Obj, "id", id);
-            if( !sameAttributeTreeNode) {
+            if( sameAttributeTreeNode == false ) {
                 reload = true; // 至少有一行添加才刷新Tree
 
                 var treeNode = page2Tree2Obj.getTreeNodeById("_rootId");
@@ -731,9 +717,7 @@
         page2TreeObj.reload();
     }
  
-    /*
-     *	添加page4里tree节点
-     */
+    /* 添加page4里tree节点 */
     function addPage4TreeNode() {
         var page4Tree2Obj = $T("page4Tree2");
         var page4Tree3Obj = $T("page4Tree3");
@@ -746,7 +730,7 @@
  
             var id = curNode.getId();
             var sameAttributeTreeNode = hasSameAttributeTreeNode(page4Tree3Obj, "id", id);
-            if("_rootId" != id && !sameAttributeTreeNode) {          
+            if("_rootId" != id && sameAttributeTreeNode == false) {          
                 reload = true; // 至少有一行添加才刷新grid
 
                 var treeNode = page4Tree3Obj.getTreeNodeById("_rootId");
@@ -761,7 +745,6 @@
         }
         page4Tree2Obj.reload();
     }
- 
 
 	
     /* 角色权限设置 */

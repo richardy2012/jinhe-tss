@@ -574,11 +574,11 @@ function addTreeNode(fromTreeObj, toTreeObj, checkFunction) {
  *	返回值：
  */
 function hasSameAttributeTreeNode(treeObj, attrName, attrValue) {
-	var flag = new Boolean(false);
+	var flag = false;
 	var root = treeObj.getTreeNodeById("_rootId").node;
 	var treeNode = root.selectSingleNode(".//treeNode[@" + attrName + "='" + attrValue + "']");
 	if( treeNode ) {
-		flag = new Boolean(true);
+		flag = true;
 		flag.treeNode = treeNode;
 	}
 	return flag;
