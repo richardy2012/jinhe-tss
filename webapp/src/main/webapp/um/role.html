@@ -35,6 +35,9 @@
   #palette {
     width: 250px;
   }
+  .trxx {
+	height: 13px;
+  }
 </style>
 
 </head>
@@ -137,10 +140,10 @@
                                       <!-- page2 开始 -->
                                       <WorkSpace:Page id=page2 class="tight">
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
-                                          <tr class="tf">
-                                            <td class="r b">※可选：</td>
+                                          <tr class="trxx">
+                                            <td class="r b">&nbsp;※可选：</td>
                                             <td class="r b">&nbsp;</td>
-                                            <td class="b label">※已有：</td>
+                                            <td class="b label">&nbsp;※已有：</td>
                                           </tr>
                                           <tr>
                                             <td class="r b" width="50%">
@@ -170,7 +173,7 @@
                                       <!-- page4 开始 -->
                                       <WorkSpace:Page id=page4 class="tight">
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
-                                          <tr class="tf">
+                                          <tr class="trxx">
                                             <td class="r b">※可选用户组：</td>
                                             <td class="r b">※可选用户：</td>
                                             <td class="r b">&nbsp;</td>
@@ -181,9 +184,12 @@
                                               <Tree:Box id="page4Tree" treeType="menu" baseurl="../framework/tree/"><div class="loading"></div></Tree:Box>
                                             </td>
                                             <td class="r b" width="35%">
-                                              <Tree:Box id="page4Tree2" treeType="multi" baseurl="../framework/tree/" selectSelf="false"><div class="loading"></div></Tree:Box>
+                                              <Tree:Box id="page4Tree2" treeType="multi" baseurl="../framework/tree/" selectSelf="false"></Tree:Box>
                                             </td>
-                                            <td class="r b" style="background-color:#E4E6F5;width:18px"><input type="button" class="btWeakS" value=">>" id="page4BtAdd"/><input type="button" class="btWeakS" value="<<" id="page4BtDel"/></td>
+                                            <td class="r b" style="background-color:#E4E6F5;width:18px">
+												<input type="button" class="btWeakS" value=">>" id="page4BtAdd"/>
+												<input type="button" class="btWeakS" value="<<" id="page4BtDel"/>
+											</td>
                                             <td class="b">
                                               <Tree:Box id="page4Tree3" treeType="multi" baseurl="../framework/tree/" selectSelf="false"><div class="loading"></div></Tree:Box>
                                             </td>

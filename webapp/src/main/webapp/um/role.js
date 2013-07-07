@@ -558,6 +558,10 @@
 			$T("page2Tree",  role2GroupTreeNode);
 			$T("page2Tree2", role2GroupExsitInfo);
 			
+			$$("page4Tree").onTreeNodeDoubleClick = function(eventObj){
+                onPage4TreeNodeDoubleClick(eventObj);
+            }
+			
 			 //设置翻页按钮显示状态
 			$$("page1BtPrev").style.display = "none";
 			$$("page4BtPrev").style.display = "";
@@ -612,20 +616,14 @@
      *	点击页4用户组树节点
      */
     function onPage4TreeNodeDoubleClick(eventObj) {
-        var treeObj = $T("page4Tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if( treeNode ) {
-            var p = new HttpRequestParams();
-            p.url = URL_GROUP_TO_USER_LIST;
-            p.setContent("groupId", treeNode.getId());
-
-            var request = new HttpRequest(p);
-            request.onresult = function() {
-                var sourceListNode = this.getNodeValue(XML_GROUP_TO_USER_LIST_TREE);
-                $T("page4Tree2", sourceListNode);
-            }
-            request.send();
-        }
+        var treeNode = $T("page4Tree").getActiveTreeNode();
+		Ajax({
+			url : URL_GROUP_TO_USER_LIST + treeNode.getId(),
+			onresult : function() { 
+				var sourceListNode = this.getNodeValue(XML_GROUP_TO_USER_LIST_TREE); alert(sourceListNode);
+				$T("page4Tree2", sourceListNode);
+			}
+		});	
     }
  
     /*

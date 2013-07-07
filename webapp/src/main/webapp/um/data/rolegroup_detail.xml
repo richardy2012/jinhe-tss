@@ -1,11 +1,10 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Response>
 	<RoleGroupInfo>
 		<xform>
 			<declare>
 				<column name="id" caption="ID号" mode="string" editable="false"/>
 				<column name="name" caption="名称" mode="string"/>
-				<column name="type" caption="类型" mode="string"/>
 				<column name="remarks" caption="说明" mode="string" empty="false"/>
 			</declare>
 			<layout>
@@ -18,10 +17,6 @@
 					<TD><input binding="name" type="text"/></TD>
 				</TR>
 				<TR>
-					<TD width="50"><label binding="type"/></TD>
-					<TD><input binding="type" type="comboedit" editorvalue="0|1" editortext="类型一|类型二"/></TD>
-				</TR>
-				<TR>
 					<TD width="50" valign="top"><label binding="remarks"/></TD>
 					<TD><textarea binding="remarks" style="width:100%;height:100"/></TD>
 				</TR>
@@ -29,9 +24,8 @@
 			<data>
 				<row>
                   <id><![CDATA[1]]></id>
-                  <name><![CDATA[1]]></name>
-                  <type><![CDATA[1]]></type>
-                  <remarks><![CDATA[222222测试信息快报的报送流程]]></remarks>
+                  <name><![CDATA[角色组1]]></name>
+                  <remarks><![CDATA测试角色组编辑]]></remarks>
                 </row>
 			</data>
 		</xform>
