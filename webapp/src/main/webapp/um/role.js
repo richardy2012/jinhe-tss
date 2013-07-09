@@ -21,6 +21,8 @@
     CACHE_VIEW_ROLE_GROUP_DETAIL = "viewRoleGroup__id";
     CACHE_ROLE_DETAIL = "role__id";
     CACHE_VIEW_ROLE_DETAIL = "viewRole__id";
+	
+	ICON = "../framework/images/";
  
     /*
      *	XMLHTTP请求地址汇总
@@ -48,8 +50,6 @@
 		URL_MOVE_NODE = "data/_success.xml?";
 		URL_GET_OPERATION = "data/operation.xml?";
 	}
- 
-    ICON = "../framework/images/";
  
     function init() {
         initPaletteResize();
@@ -91,13 +91,13 @@
             label:"停用",
             callback:function() { stopOrStartTreeNode("1"); },
             icon:ICON + "stop.gif",           
-            visible:function() {return !isRootNode() && "0"==getTreeNodeState() && getOperation("2");}
+            visible:function() {return !isRootNode() && !isTreeNodeDisabled() && getOperation("2");}
         }
         var item8 = {
             label:"启用",
             callback:function() { stopOrStartTreeNode("0"); },
             icon:ICON + "start.gif",           
-            visible:function() {return !isRootNode() && "1"==getTreeNodeState() && getOperation("2");}
+            visible:function() {return !isRootNode() && isTreeNodeDisabled() && getOperation("2");}
         }
         var item9 = {
             label:"新建角色",
@@ -194,11 +194,6 @@
 	function isRoleGroup() {
 		return getTreeAttribute("isGroup") == "1";
 	}
-
-    /* 获取节点停启用状态 */
-    function getTreeNodeState() {
-        return getTreeAttribute("disabled");
-    }
  
     function stopOrStartTreeNode(state) {		
 		var tree = $T("tree");

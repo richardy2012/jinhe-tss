@@ -1,82 +1,28 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html xmlns:ToolBar xmlns:Grid2 xmlns:WorkSpace xmlns:Xform xmlns:Tree>
+<HTML xmlns:Tree xmlns:XForm xmlns:WorkSpace>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
-<title>应用支撑平台</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>权限转授</title>
 
-<!-- 公共脚本 开始 -->
-<link href="../platform/css/css.css" rel="stylesheet" type="text/css">
-<script language="javascript" src="../core/js/debug.js"></script>
-<script language="javascript" src="../core/js/common.js"></script>
-<script language="javascript" src="../core/js/event.js"></script>
-<script language="javascript" src="../core/js/element.js"></script>
-<script language="javascript" src="../core/js/xml.js"></script>
-<script language="javascript" src="../core/js/xmlhttp.js"></script>
-<script language="javascript" src="../core/js/public.js"></script>
-<!-- 公共脚本 结束 -->
+<link href="../framework/css/css.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/menu/menu.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/balloon/balloon.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/toolbar/toolbar.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/workspace/workspace.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/tree/tree.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/xform/xform.css" rel="stylesheet" type="text/css"></link>
 
-<!-- 气球 开始 -->
-<link href="../core/js/balloon/balloon.css" rel="stylesheet" type="text/css">
-<script language="javascript" src="../core/js/balloon/balloon.js"></script>
-<!-- 气球 结束 -->
+<script language="javascript" src="../framework/core.js"></script>
+<script language="javascript" src="../framework/ajax.js"></script>
+<script language="javascript" src="../framework/framework.js"></script>
+<script language="javascript" src="../framework/menu/menu.js"></script>
+<script language="javascript" src="../framework/balloon/balloon.js"></script>
+<script language="javascript" src="../framework/toolbar/toolbar.js"></script>
+<script language="javascript" src="../framework/workspace/workspace.js"></script>
+<script language="javascript" src="../framework/tree/tree.js"></script>
+<script language="javascript" src="../framework/xform/xform.js"></script>
 
-<!-- 菜单 开始 -->
-<link href="../core/js/menu/menu.css" rel="stylesheet" type="text/css">
-<script language="javascript" src="../core/js/menu/menu.js"></script>
-<!-- 菜单 结束 -->
-
-<!-- 工具条 开始 -->
-<link href="../core/js/toolbar/toolbar.css" rel="stylesheet" type="text/css">
-<script language="javascript" src="../core/js/toolbar/toolbar.js"></script>
-<!-- 工具条 结束 -->
-
-<!-- 区块 开始 -->
-<script language="javascript" src="../core/js/block.js"></script>
-<!-- 区块 结束 -->
-
-<!-- grid 开始 -->
-<link href="../core/htc/grid2.1.3/grid.css" rel="stylesheet" type="text/css">
-<!-- grid 结束 -->
-
-<!-- workspace 开始 -->
-<link href="../core/htc/workspace/workspace.css" rel="stylesheet" type="text/css">
-<!-- workspace 结束 -->
-
-<!-- xform 开始 -->
-<link href="../core/htc/xform1.2.3/xform.css" rel="stylesheet" type="text/css">
-<!-- xform 结束 -->
-
-<!-- tree 开始 -->
-<link href="../core/htc/tree/tree.css" rel="stylesheet" type="text/css">
-<!-- tree 结束 -->
-
-<!-- 权限树 开始 -->
-<link href="htc/tree1/tree.css" rel="stylesheet" type="text/css">
-<!-- 权限树 结束 -->
-
-<!-- 当前页相关脚本 开始 -->
-<style>
-  Grid2\:Grid {
-    behavior:url(../core/htc/grid2.1.3/grid_213.htc) url(../core/htc/grid2.1.3/search.htc);
-  }
-  WorkSpace\:Box {
-      behavior:url(../core/htc/workspace/workspace.htc);
-  }
-  Xform\:Form {
-      behavior:url(../core/htc/xform1.2.3/xform.htc);
-  }
-  Tree\:TreeBox {
-      behavior:url(../core/htc/tree/tree.htc);
-  }
-  .padding {
-      padding:5px;
-  }
-  #palette {
-    width: 250px;
-  }
-</style>
-<script language="javascript" src="js/reassign.js"></script>
-<!-- 当前页相关脚本 结束 -->
+<script language="javascript" src="subauth.js"></script>
 
 </head>
 
@@ -129,7 +75,7 @@
                         <tr>
                           <td id="treeContainer">
                             <!-- tree 开始 -->
-                            <Tree:TreeBox id="tree" treeType="menu" baseurl="../core/htc/tree/" canMoveNode="true"><div class="loading"></div></Tree:TreeBox>
+                            <Tree:Box id="tree" treeType="menu" baseurl="../framework/tree/"><div class="loading"></div></Tree:Box>
                             <!-- tree 结束 -->
                           </td>
                         </tr>
@@ -146,12 +92,6 @@
                     </td>
                     <td>
                       <table class="full" border="0" cellpadding="0" cellspacing="0">
-                        <!-- <tr> 
-                          <td class="separator"></td>
-                        </tr> -->
-                        <tr> 
-                          <td class="location"><span class="icon" id="paletteBt"></span>您当前所在的位置:<span class="locationInfo"></span></td>
-                        </tr>
                         <tr valign="top">
                           <!-- 主内容区域 开始 -->
                           <td class="groove">
