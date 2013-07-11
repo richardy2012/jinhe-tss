@@ -1041,7 +1041,7 @@ var SingleCheckTree = function(element) {
 	/*
 	 * 获取选中节点的TreeNode对象（单选树）
 	 */
-	this.getSelectedTreeNode = function(includeHalfChecked) {
+	this.getSelectedTreeNode = function() {
 		var node = this.getXmlRoot().selectSingleNode(".//treeNode[@checktype='1']");
 		return instanceTreeNode(node, this);
 	};
@@ -1049,7 +1049,7 @@ var SingleCheckTree = function(element) {
 	/*
 	 * 获取选中节点的Xml对象（单选树）
 	 */
-	this.getSelectedXmlNode = function(includeHalfChecked) {
+	this.getSelectedXmlNode = function() {
 		return this.getXmlRoot().selectSingleNode(".//treeNode[@checktype='1']");
 	};
 	

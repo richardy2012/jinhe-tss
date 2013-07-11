@@ -533,7 +533,7 @@ function addTreeNode(fromTreeObj, toTreeObj, checkFunction) {
 				// 显示错误信息
 				if( result.message ) {
 					var balloon = Balloons.create(result.message);
-					balloon.dockTo(toTreeObj.element);
+					balloon.dockTo(toTreeObj);
 				}
 
 				if( result.stop ) {

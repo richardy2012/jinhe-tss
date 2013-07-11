@@ -182,23 +182,12 @@
     URL_CHECK_GROUP_PASSWORD = "ums/passwordrule!getGroupStrengthLevel.action";
     URL_SET_GROUP_PASSWORD_TACTIC = "ums/group!setPasswordRule.action";
     URL_SET_USER_PASSWORD_TACTIC = "ums/user!setPasswordRule.action";
-    /*
-     *	延时
-     */
-    TIMEOUT_TAB_CHANGE = 200;
-    TIMEOUT_GRID_SEARCH = 200;
+ 
     /*
      *	icon路径
      */
     ICON = "../platform/images/icon/";
-
-    var toolbar = null;
-
-    /*
-     *	函数说明：页面初始化
-     *	参数：	
-     *	返回值：
-     */
+ 
     function init(){
         initPaletteResize();
         initListContainerResize();
@@ -212,11 +201,7 @@
 
         loadInitData();
     }
-    /*
-     *	函数说明：页面初始化加载数据(包括工具条、树)
-     *	参数：	
-     *	返回值：
-     */
+
     function loadInitData(){
         var p = new HttpRequestParams();
         p.url = URL_INIT;
@@ -235,104 +220,12 @@
         }
         request.send();
     }
-    /*
-     *	函数说明：工具条加载数据
-     *	参数：	string:_operation      操作权限
-     *	返回值：
-     */
-    function loadToolBar(_operation){
-        var xmlIsland = Cache.XmlIslands.get(CACHE_TOOLBAR);
-        if(null==xmlIsland){//还没有就创建
 
-            var str = [];
-            str[str.length] = "<toolbar>";
-
-            //公共
-            str[str.length] = "    <button id=\"a1\" code=\"p1\" icon=\"" + ICON + "icon_pre.gif\" label=\"上页\" cmd=\"ws.prevTab()\" enable=\"true\"/>";
-            str[str.length] = "    <button id=\"a2\" code=\"p2\" icon=\"" + ICON + "icon_next.gif\" label=\"下页\" cmd=\"ws.nextTab()\" enable=\"true\"/>";
-            str[str.length] = "    <separator/>";
-
-            //用户组
-            str[str.length] = "    <button id=\"b1\" code=\"7\" icon=\"" + ICON + "start.gif\" label=\"启用\" cmd=\"startGroup()\" enable=\"'1'==getGroupState() &amp;&amp; true!=isRootNode()\"/>";
-            str[str.length] = "    <button id=\"b2\" code=\"7t\" icon=\"" + ICON + "stop.gif\" label=\"停用\" cmd=\"stopGroup()\" enable=\"'0'==getGroupState() &amp;&amp; true!=isRootNode()\"/>";
-            str[str.length] = "    <button id=\"b3\" code=\"5\" icon=\"" + ICON + "view.gif\" label=\"查看\" cmd=\"editTreeNode(false)\" enable=\"true!=isRootNode()\"/>";
-            str[str.length] = "    <button id=\"b4\" code=\"4\" icon=\"" + ICON + "edit.gif\" label=\"编辑\" cmd=\"editTreeNode()\" enable=\"true!=isRootNode()\"/>";
-            str[str.length] = "    <button id=\"b5\" code=\"3\" icon=\"" + ICON + "del.gif\" label=\"删除\" cmd=\"delTreeNode()\" enable=\"true!=isRootNode()\"/>";
-            str[str.length] = "    <button id=\"b6\" code=\"13\" icon=\"" + ICON + "copy.gif\" label=\"复制\" cmd=\"copyGroup()\" enable=\"true!=isRootNode() &amp;&amp; '5'!=getResourceTypeId()\"/>";
-            str[str.length] = "    <button id=\"b7\" code=\"5\" icon=\"" + ICON + "copy_to.gif\" label=\"复制到...\" cmd=\"copyGroupTo()\" enable=\"true!=isRootNode() &amp;&amp; '5'!=getResourceTypeId()\"/>";
-            str[str.length] = "    <button id=\"b8\" code=\"3\" icon=\"" + ICON + "move.gif\" label=\"移动到...\" cmd=\"moveGroupTo()\" enable=\"true!=isRootNode() &amp;&amp; '5'!=getResourceTypeId()\"/>";
-            str[str.length] = "    <button id=\"b20\" code=\"1\" icon=\"" + ICON + "import_user.gif\" label=\"用户导入到...\" cmd=\"importGroupTo()\" enable=\"true!=isRootNode() &amp;&amp; '5'!=getResourceTypeId() &amp;&amp; '3'==getGroupType()\"/>";
-            str[str.length] = "    <button id=\"b9\" code=\"1\" icon=\"" + ICON + "new_user.gif\" label=\"新建用户\" cmd=\"addNewUser()\" enable=\"true!=isRootNode() &amp;&amp; '5'!=getResourceTypeId()\"/>";
-            str[str.length] = "    <button id=\"b10\" code=\"2\" icon=\"" + ICON + "new_user_group.gif\" label=\"新建用户组\" cmd=\"addNewGroup()\" enable=\"true!=isSelfRegisterNode() &amp;&amp; true!=isOtherGroup()\"/>";
-            str[str.length] = "    <button id=\"b11\" code=\"2\" icon=\"" + ICON + "new_app.gif\" label=\"新建应用\" cmd=\"addApplication()\" enable=\"'-4'==getTreeId()\"/>";
-            str[str.length] = "    <button id=\"b12\" code=\"6\" icon=\"" + ICON + "view_list.gif\" label=\"浏览用户\" cmd=\"showUserList()\" enable=\"null==getAppType() &amp;&amp; '5'!=getResourceTypeId() &amp;&amp; (true!=isRootNode() || '-8'==getTreeId() || '-9'==getTreeId())\"/>";
-            str[str.length] = "    <button id=\"b13\" code=\"10\" icon=\"" + ICON + "search.gif\" label=\"搜索用户\" cmd=\"searchUser()\" enable=\"'5'!=getResourceTypeId()\"/>";
-            str[str.length] = "    <button id=\"b14\" code=\"11\" icon=\"" + ICON + "init_password.gif\" label=\"初始化密码\" cmd=\"resetPassword()\" enable=\"null==getAppType() &amp;&amp; true!=isRootNode()\"/>";
-            str[str.length] = "    <button id=\"b15\" code=\"15\" icon=\"" + ICON + "sync.gif\" label=\"完全同步\" cmd=\"syncGroup('1')\" enable=\"null==getAppType() &amp;&amp; true!=isRootNode()\"/>";
-            str[str.length] = "    <button id=\"b16\" code=\"16\" icon=\"" + ICON + "auto_mapping.gif\" label=\"模糊对应\" cmd=\"autoMappingGroup()\" enable=\"null==getAppType() &amp;&amp; true!=isRootNode()\"/>";
-            str[str.length] = "    <button id=\"b17\" code=\"12\" icon=\"" + ICON + "authenticate.gif\" label=\"设置认证方式\" cmd=\"setAuthenticateMethod()\" enable=\"null==getAppType() &amp;&amp; true!=isRootNode()\"/>";
-            str[str.length] = "    <button id=\"b18\" code=\"ug17\" icon=\"" + ICON + "authenticate.gif\" label=\"认证\" cmd=\"authenticateGroup()\" enable=\"true!=isRootNode()\"/>";
-
-            //用户
-            str[str.length] = "    <button id=\"c1\" code=\"u4\" icon=\"" + ICON + "start.gif\" label=\"启用\" cmd=\"startUser()\" enable=\"'1'==getUserState()\"/>";
-            str[str.length] = "    <button id=\"c2\" code=\"u5\" icon=\"" + ICON + "stop.gif\" label=\"停用\" cmd=\"stopUser()\" enable=\"'0'==getUserState()\"/>";
-            str[str.length] = "    <button id=\"c3\" code=\"u3\" icon=\"" + ICON + "view.gif\" label=\"查看\" cmd=\"editUserInfo(false)\" enable=\"true\"/>";
-            str[str.length] = "    <button id=\"c4\" code=\"u2\" icon=\"" + ICON + "edit.gif\" label=\"编辑\" cmd=\"editUserInfo()\" enable=\"true\"/>";
-            str[str.length] = "    <button id=\"c5\" code=\"u1\" icon=\"" + ICON + "del.gif\" label=\"删除\" cmd=\"delUser()\" enable=\"true\"/>";
-            str[str.length] = "    <button id=\"c6\" code=\"u1\" icon=\"" + ICON + "move.gif\" label=\"移动到...\" cmd=\"moveUserTo()\" enable=\"true\"/>";
-            str[str.length] = "    <button id=\"c7\" code=\"u5\" icon=\"" + ICON + "down.gif\" label=\"下移\" cmd=\"moveUserDown()\" enable=\"true==canMoveUserDown()\"/>";
-            str[str.length] = "    <button id=\"c8\" code=\"u5\" icon=\"" + ICON + "up.gif\" label=\"上移\" cmd=\"moveUserUp()\" enable=\"true==canMoveUserUp()\"/>";
-            str[str.length] = "    <button id=\"c9\" code=\"u6\" icon=\"" + ICON + "manual_mapping.gif\" label=\"用户对应\" cmd=\"manualMappingUser()\" enable=\"true==isOtherUser()\"/>";
-            str[str.length] = "    <button id=\"c10\" code=\"u15\" icon=\"" + ICON + "sync.gif\" label=\"用户同步\" cmd=\"syncUser()\" enable=\"true==isOtherUser()\"/>";
-            str[str.length] = "    <button id=\"c11\" code=\"u3\" icon=\"" + ICON + "import_user.gif\" label=\"用户导入到\" cmd=\"importUserTo()\" enable=\"true==isOtherUser()\"/>";
-            str[str.length] = "</toolbar>";
-
-            var xmlReader = new XmlReader(str.join("\r\n"));
-            var xmlNode = new XmlNode(xmlReader.documentElement);
-
-            Cache.XmlIslands.add(CACHE_TOOLBAR,xmlNode);
-
-            xmlIsland = xmlNode;
-
-            //载入工具条
-            toolbar.loadXML(xmlIsland);
-        }
-
-        //控制显示
-        var buttons = xmlIsland.selectNodes("./button");
-        for(var i=0,iLen=buttons.length;i<iLen;i++){
-            var curButton = buttons[i];
-            var id = curButton.getAttribute("id");
-            var code = curButton.getAttribute("code");
-            var enableStr = curButton.getAttribute("enable");
-
-            var reg = new RegExp("(^"+code+",)|(^"+code+"$)|(,"+code+",)|(,"+code+"$)","gi");
-            var visible = false;
-            if("string"==typeof(_operation)){
-                visible = (true==reg.test(_operation)?true:false);
-            }
-            toolbar.setVisible(id,visible);
-
-            if(true==visible){
-                var enable = Public.execCommand(enableStr);
-                toolbar.enable(id,enable);
-            }
-        }
-    }
-    /*
-     *	函数说明：菜单初始化
-     *	参数：	
-     *	返回值：
-     */
     function initMenus(){
         initTreeMenu();
         initGridMenu();
     }
-    /*
-     *	函数说明：树菜单初始化
-     *	参数：	
-     *	返回值：
-     */
+
     function initTreeMenu(){
         var item1 = {
             label:"停用",
@@ -362,27 +255,7 @@
             enable:function(){return true;},
             visible:function(){return true!=isRootNode() && "3"!=getGroupType() && true==getOperation("3");}
         }
-        var item5 = {
-            label:"复制",
-            callback:copyGroup,
-            icon:ICON + "copy.gif",
-            enable:function(){return true;},
-            visible:function(){return true!=isRootNode() && "5"!=getResourceTypeId() && "3"!=getGroupType() && true==getOperation("13");}
-        }
-        var item6 = {
-            label:"复制到...",
-            callback:copyGroupTo,
-            icon:ICON + "copy_to.gif",
-            enable:function(){return true;},
-            visible:function(){return true!=isRootNode() && "5"!=getResourceTypeId() && "3"!=getGroupType() && true==getOperation("5");}
-        }
-        var item7 = {
-            label:"移动到...",
-            callback:moveGroupTo,
-            icon:ICON + "move.gif",
-            enable:function(){return true;},
-            visible:function(){return true!=isRootNode() && "5"!=getResourceTypeId() && "3"!=getGroupType() && true==getOperation("3");}
-        }
+ 
         var item8 = {
             label:"新建用户组",
             callback:addNewGroup,
@@ -426,14 +299,7 @@
             enable:function(){return true;},
             visible:function(){return null==getAppType() && true!=isRootNode() && true==getOperation("11");}
         }
-        var subitem12_2 = {
-            label:"设置密码策略...",
-            callback:function(){
-                setPasswordTactic("group");
-            },
-            enable:function(){return true;},
-            visible:function(){return null==getAppType() && true!=isRootNode() && true==getOperation("11");}
-        }
+ 
         var subitem12_3 = {
             label:"设置认证方式...",
             callback:setAuthenticateMethod,
@@ -450,19 +316,7 @@
             visible:function(){return true==getOperation("ug16");}
         }
 
-        //综合查询
-        var subitem12_4_1 = {
-            label:"用户对应",
-            callback:generalSearchMapping,
-            enable:function(){return true;},
-            visible:function(){return "3"==getGroupType();}
-        }
-        var subitem12_4_2 = {
-            label:"用户同步",
-            callback:generalSearchSync,
-            enable:function(){return true;},
-            visible:function(){return true;}
-        }
+        // 综合查询
         var subitem12_4_3 = {
             label:"用户权限",
             callback:generalSearchPermission,
@@ -483,8 +337,6 @@
         }
 
         var submenu12_4 = new Menu();
-//        submenu12_4.addItem(subitem12_4_1);
-//        submenu12_4.addItem(subitem12_4_2);
         submenu12_4.addItem(subitem12_4_3);
         submenu12_4.addItem(subitem12_4_4);
         submenu12_4.addItem(subitem12_4_5);
@@ -510,7 +362,6 @@
             enable:function(){return true;},
             visible:function(){return true==getOperation("15");}
         }
-        //同步
         var submenu18_1 = {
             label:"完全同步",
             callback:function(){syncGroup("1")},
@@ -527,14 +378,7 @@
         submenu18.addItem(submenu18_1);
         submenu18.addItem(submenu18_2);
         item18.submenu = submenu18;
-
-
-        var item19 = {
-            label:"模糊对应",
-            callback:autoMappingGroup,
-            enable:function(){return true;},
-            visible:function(){return true==getOperation("16");}
-        }
+ 
 
         var item13 = {
             label:"查看",
@@ -662,9 +506,6 @@
         menu1.addItem(item13);
         menu1.addItem(item3);
         menu1.addItem(item4);
-        menu1.addItem(item5);
-        menu1.addItem(item6);
-        menu1.addItem(item7);
         menu1.addSeparator();
         menu1.addItem(item8);
         menu1.addItem(item9);
@@ -676,14 +517,9 @@
         menu1.addItem(item12);
 
         var treeObj = $("tree");
-        //menu1.attachTo(treeObj,"contextmenu");
         treeObj.contextmenu = menu1;
     }
-    /*
-     *	函数说明：Grid菜单初始化
-     *	参数：	
-     *	返回值：
-     */
+ 
     function initGridMenu(){
         var gridObj = $("grid");
         var item1 = {
@@ -781,14 +617,7 @@
             enable:function(){return true;},
             visible:function(){return true==isOtherUser() && true==getUserOperation("u7");}
         }
-        var item15 = {
-            label:"设置密码策略...",
-            callback:function(){
-                setPasswordTactic("user");
-            },
-            enable:function(){return true;},
-            visible:function(){return "3"!=getUserGroupType();}
-        }
+ 
         var item16 = {
             label:"用户导入到...",
             callback:importUserTo,
@@ -821,29 +650,9 @@
         //menu1.attachTo(gridObj,"contextmenu");
         gridObj.contextmenu = menu1;
     }
+ 
     /*
-     *	函数说明：区块初始化
-     *	参数：	
-     *	返回值：
-     */
-    function initBlocks(){
-        var paletteObj = $("palette");
-        Blocks.create(paletteObj);
-
-        var treeContainerObj = $("treeContainer");
-        Blocks.create(treeContainerObj,treeContainerObj.parentNode);
-
-        var statusContainerObj = $("statusContainer");
-        Blocks.create(statusContainerObj,statusContainerObj.parentNode,false);
-
-        //状态信息区实例继承WritingBlock可写功能
-        var block = Blocks.getBlock("statusContainer");
-        if(null!=block){
-            block.inherit(WritingBlock);
-        }     
-    }
-    /*
-     *	函数说明：grid初始化
+     *	grid初始化
      *	参数：	string:id                   grid数据相关树节点id
                 string:applicationId        应用id
                 string:groupType            组类型
@@ -856,11 +665,7 @@
             loadGridData(id,applicationId,groupType,"1");//默认第1页
         });
     }
-    /*
-     *	函数说明：grid绑定事件
-     *	参数：	
-     *	返回值：
-     */
+ 
     function loadGridEvents(){
         var gridObj = $("grid");
 
@@ -882,7 +687,7 @@
     
     }
     /*
-     *	函数说明：grid加载数据
+     *	grid加载数据
      *	参数：	string:treeID               grid数据相关树节点id
                 string:applicationId        应用id
                 string:groupType            组类型
@@ -939,7 +744,7 @@
 //        }
     }
     /*
-     *	函数说明：grid从缓存加载数据
+     *	grid从缓存加载数据
      *	参数：	string:cacheID   grid数据相关树节点id
      *	返回值：
      */
@@ -956,7 +761,7 @@
         }
     }
     /*
-     *	函数说明：创建grid工具条
+     *	创建grid工具条
      *	参数：	string:cacheID   grid数据相关树节点id
      *	返回值：
      */
@@ -994,44 +799,9 @@
             });
         }
     }
+ 
     /*
-     *	函数说明：显示用户状态信息
-     *	参数：	number:rowIndex     grid数据行号
-     *	返回值：
-     */
-    function showUserStatus(rowIndex){
-        if(null==rowIndex){
-            var rowName = "-";
-            var rowID = "-";
-            var rowPermission = "-";
-        }else{
-            var gridObj = $("grid");
-            var rowNode = gridObj.getRowNode_Xml(rowIndex);
-            var rowName = gridObj.getNamedNodeValue_Xml(rowIndex,"loginName");
-            var rowID = rowNode.getAttribute("id");
-
-            var creatorId = rowNode.getAttribute("creatorId");
-            var creatorName = rowNode.getAttribute("creatorName");
-            var createTime = rowNode.getAttribute("createTime");
-            var updatorId = rowNode.getAttribute("updatorId");
-            var updatorName = rowNode.getAttribute("updatorName");
-            var updateTime = rowNode.getAttribute("updateTime");
-        }
-
-        var block = Blocks.getBlock("statusContainer");
-        if(null!=block){
-            block.open();
-            block.writeln("ID",rowID);
-            block.writeln("名称",rowName);
-            block.writeln("创建者",creatorName);
-            block.writeln("创建时间",createTime);
-            block.writeln("修改者",updatorName);
-            block.writeln("修改时间",updateTime);
-            block.close();
-        }
-    }
-    /*
-     *	函数说明：显示用户详细信息
+     *	显示用户详细信息
      *	参数：	boolean:editable            是否可编辑(默认true)
      *	返回值：
      */
@@ -1109,7 +879,7 @@
         
     }
     /*
-     *	函数说明：其他应用用户详细信息加载数据
+     *	其他应用用户详细信息加载数据
      *	参数：	string:userID               用户id
                 boolean:editable            是否可编辑(默认true)
                 string:groupId              组id
@@ -1172,7 +942,7 @@
         }
     }
     /*
-     *	函数说明：其他应用用户相关页加载数据
+     *	其他应用用户相关页加载数据
      *	参数：	string:cacheID              缓存数据id
                 boolean:editable            是否可编辑(默认true)
                 boolean:isNew               是否新增
@@ -1258,7 +1028,7 @@
         }
     }
     /*
-     *	函数说明：用户详细信息加载数据
+     *	用户详细信息加载数据
      *	参数：	string:userID               用户id
                 boolean:editable            是否可编辑(默认true)
                 string:groupId              用户组id
@@ -1336,7 +1106,7 @@
         }
     }
     /*
-     *	函数说明：用户相关页加载数据
+     *	用户相关页加载数据
      *	参数：	string:cacheID          缓存数据id
                 boolean:isNew           是否新增
                 string:groupId          用户组id
@@ -1471,7 +1241,7 @@
         }
     }
     /*
-     *	函数说明：用户信息xform加载数据
+     *	用户信息xform加载数据
      *	参数：	string:cacheID              缓存数据id
                 boolean:editable            是否可编辑(默认true)
      *	返回值：
@@ -1499,7 +1269,7 @@
         }
     }
     /*
-     *	函数说明：认证信息xform加载数据
+     *	认证信息xform加载数据
      *	参数：	string:cacheID              缓存数据id
                 boolean:editable            是否可编辑(默认true)
      *	返回值：
@@ -1516,7 +1286,7 @@
         }
     }
     /*
-     *	函数说明：用户对用户组tree加载数据
+     *	用户对用户组tree加载数据
      *	参数：	string:cacheID     缓存数据id
      *	返回值：
      */
@@ -1529,7 +1299,7 @@
         }
     }
     /*
-     *	函数说明：用户对用户组tree加载数据
+     *	用户对用户组tree加载数据
      *	参数：	string:cacheID     缓存数据id
      *	返回值：
      */
@@ -1541,7 +1311,7 @@
         }
     }
     /*
-     *	函数说明：用户对角色tree加载数据
+     *	用户对角色tree加载数据
      *	参数：	string:cacheID     缓存数据id
      *	返回值：
      */
@@ -1554,7 +1324,7 @@
         }
     }
     /*
-     *	函数说明：用户对角色tree加载数据
+     *	用户对角色tree加载数据
      *	参数：	string:cacheID     缓存数据id
      *	返回值：
      */
@@ -1566,7 +1336,7 @@
         }
     }
     /*
-     *	函数说明：资源树初始化
+     *	资源树初始化
      *	参数：	string:cacheID      缓存数据ID
      *	返回值：
      */
@@ -1577,7 +1347,7 @@
         });
     }
     /*
-     *	函数说明：资源树加载数据
+     *	资源树加载数据
      *	参数：
      *	返回值：
      */
@@ -1602,7 +1372,7 @@
         }    
     }
     /*
-     *	函数说明：其他应用用户组详细信息加载数据
+     *	其他应用用户组详细信息加载数据
      *	参数：	string:treeID               树节点id
                 boolean:editable            是否可编辑(默认true)
                 string:parentID             父节点id，新增时需要
@@ -1669,7 +1439,7 @@
         }
     }
     /*
-     *	函数说明：用户组相关页加载数据
+     *	用户组相关页加载数据
      *	参数：	string:cacheID              缓存数据id
                 boolean:editable            是否可编辑(默认true)
                 boolean:isNew               是否新增
@@ -1739,7 +1509,7 @@
         }
     }
     /*
-     *	函数说明：树节点数据详细信息加载数据
+     *	树节点数据详细信息加载数据
      *	参数：	string:treeID               树节点id
                 boolean:editable            是否可编辑(默认true)
                 string:parentID             父节点id
@@ -1811,7 +1581,7 @@
         }
     }
     /*
-     *	函数说明：用户组相关页加载数据
+     *	用户组相关页加载数据
      *	参数：	string:cacheID              缓存数据id
                 boolean:editable            是否可编辑(默认true)
                 boolean:isNew               是否新增
@@ -1935,7 +1705,7 @@
         }
     }
     /*
-     *	函数说明：用户组信息xform加载数据
+     *	用户组信息xform加载数据
      *	参数：	string:cacheID              缓存数据id
                 boolean:editable            是否可编辑(默认true)
                 string:groupType            组类型
@@ -1955,7 +1725,7 @@
         }
     }
     /*
-     *	函数说明：用户组对用户tree加载数据
+     *	用户组对用户tree加载数据
      *	参数：	string:cacheID     缓存数据id
      *	返回值：
      */
@@ -1972,7 +1742,7 @@
         }
     }
     /*
-     *	函数说明：用户组对用户tree加载数据
+     *	用户组对用户tree加载数据
      *	参数：	string:cacheID     缓存数据id
      *	返回值：
      */
@@ -1984,7 +1754,7 @@
         }
     }
     /*
-     *	函数说明：用户组对角色tree加载数据
+     *	用户组对角色tree加载数据
      *	参数：	string:cacheID     缓存数据id
      *	返回值：
      */
@@ -1997,7 +1767,7 @@
         }
     }
     /*
-     *	函数说明：用户组对角色tree加载数据
+     *	用户组对角色tree加载数据
      *	参数：	string:cacheID     缓存数据id
      *	返回值：
      */
@@ -2009,7 +1779,7 @@
         }
     }
     /*
-     *	函数说明：聚焦初始化
+     *	聚焦初始化
      *	参数：	
      *	返回值：
      */
@@ -2023,7 +1793,7 @@
         Focus.register(gridTitleObj);
     }
     /*
-     *	函数说明：事件绑定初始化
+     *	事件绑定初始化
      *	参数：	
      *	返回值：
      */
@@ -2047,7 +1817,7 @@
         Event.attachEvent(gridTitleObj,"click",onClickGridTitle);
     }
     /*
-     *	函数说明：点击树节点
+     *	点击树节点
      *	参数：	Object:eventObj     模拟事件对象
      *	返回值：
      */
@@ -2056,16 +1826,10 @@
         Focus.focus(treeTitleObj.firstChild.id);
 
         showTreeNodeStatus({id:"ID",name:"名称",creatorName:"创建者",createTime:"创建时间",updatorName:"修改者",updateTime:"修改时间"});
-
-        var treeNode = eventObj.treeNode;
-        //防止因为载入工具条数据而导致不响应双击事件
-        clearTimeout(window._toolbarTimeout);
-        window._toolbarTimeout = setTimeout(function(){
-            loadToolBarData(treeNode);
-        },0);
+ 
     }
     /*
-     *	函数说明：双击树节点
+     *	双击树节点
      *	参数：	Object:eventObj     模拟事件对象
      *	返回值：
      */
@@ -2091,11 +1855,7 @@
             }
         });
     }
-    /*
-     *	函数说明：右击树节点
-     *	参数：	Object:eventObj     模拟事件对象
-     *	返回值：
-     */
+ 
     function onTreeNodeRightClick(eventObj){
         var treeObj = $("tree");
         var treeNode = eventObj.treeNode;
@@ -2108,22 +1868,13 @@
             if(null!=treeObj.contextmenu){
                 treeObj.contextmenu.show(x,y);                
             }
-            loadToolBar(_operation);
         });
     }
-    /*
-     *	函数说明：拖动树节点
-     *	参数：	Object:eventObj     模拟事件对象
-     *	返回值：
-     */
+ 
     function onTreeNodeMoved(eventObj){
         sortGroupTo(eventObj);
     }
-    /*
-     *	函数说明：点击页4用户组树节点
-     *	参数：	Object:eventObj     模拟事件对象
-     *	返回值：
-     */
+ 
     function onPage4TreeNodeDoubleClick(eventObj){
         var treeObj = $("page4Tree");
         var treeNode = treeObj.getActiveTreeNode();
@@ -2133,28 +1884,12 @@
             initPage4Tree2(id,applicationId);
         }
     }
-    /*
-     *	函数说明：单击grid行
-     *	参数：	event:eventObj     事件对象
-     *	返回值：
-     */
+ 
     function onClickRow(eventObj){    
         Focus.focus("gridTitle");
-
-        var rowIndex = eventObj.result.rowIndex_Xml;
-        showUserStatus(rowIndex);
-
-        //防止因为载入工具条数据而导致不响应双击事件
-        clearTimeout(window._toolbarTimeout);
-        window._toolbarTimeout = setTimeout(function(){
-            loadUserToolBarData(rowIndex);
-        },0);
+ 
     }
-    /*
-     *	函数说明：双击grid行
-     *	参数：	event:eventObj     事件对象
-     *	返回值：
-     */
+ 
     function onDblClickRow(eventObj){
         var rowIndex = eventObj.result.rowIndex_Xml;
         getGridOperation(rowIndex,function(_operation){
@@ -2169,11 +1904,7 @@
             }
         });
     }
-    /*
-     *	函数说明：右击grid行
-     *	参数：	event:eventObj     事件对象
-     *	返回值：
-     */
+ 
     function onRightClickRow(eventObj){
         var gridObj = $("grid");
         var rowIndex = eventObj.result.rowIndex_Xml;
@@ -2185,116 +1916,10 @@
             loadToolBar(_operation);
         });
     }
+ 
+ 
     /*
-     *	函数说明：单击grid空白处
-     *	参数：	event:eventObj     事件对象
-     *	返回值：
-     */
-    function onInactiveRow(eventObj){
-        var treeTitleObj = $("treeTitle");
-        Focus.focus(treeTitleObj.firstChild.id);
-
-        showTreeNodeStatus({id:"ID",name:"名称",creatorName:"创建者",createTime:"创建时间",updatorName:"修改者",updateTime:"修改时间"});
-
-        var treeObj = $("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        //防止因为载入工具条数据而导致不响应双击事件
-        clearTimeout(window._toolbarTimeout);
-        window._toolbarTimeout = setTimeout(function(){
-            loadToolBarData(treeNode);
-        },0);
-    }
-    /*
-     *	函数说明：单击grid表头排序
-     *	参数：	event:eventObj     事件对象
-     *	返回值：
-     */
-    function onSortRow(eventObj){
-        var name = eventObj.result.name;
-        var direction = eventObj.result.direction;
-
-        eventObj.returnValue = false;
-
-        var gridObj = $("grid");
-        var xmlIsland = new XmlNode(gridObj.getXmlDocument());
-        xmlIsland.setAttribute("sortName",name);
-        xmlIsland.setAttribute("direction",direction);
-
-        var toolbarObj = $("gridToolBar");
-        var curPage = toolbarObj.getCurrentPage();
-        toolbarObj.gotoPage(curPage);
-    }
-    /*
-     *	函数说明：保存其他应用用户组
-     *	参数：	string:cacheID      缓存数据ID
-                boolean:isNew       是否新增
-                string:parentID   父节点id，新增时需要
-     *	返回值：
-     */
-    function saveOtherGroup(cacheID,isNew,parentID){
-        //校验page1Form数据有效性
-        var page1FormObj = $("page1Form");
-        if(false==page1FormObj.checkForm()){
-            switchToPhase(ws,"page1");
-            return;
-        }
-
-        var p = new HttpRequestParams();
-        p.url = URL_SAVE_GROUP;
-
-        //是否提交
-        var flag = false;
-        
-        var groupCache = Cache.Variables.get(cacheID);
-        if(null!=groupCache){       
-
-            //用户组基本信息
-            var groupInfoNode = Cache.XmlIslands.get(cacheID+"."+XML_GROUP_INFO);
-            if(null!=groupInfoNode){
-                var groupInfoDataNode = groupInfoNode.selectSingleNode(".//data");
-                if(null!=groupInfoDataNode){
-                    flag = true;
-
-                    var prefix = groupInfoNode.selectSingleNode("./declare").getAttribute("prefix");
-                    p.setXFormContent(groupInfoDataNode,prefix);
-                }
-            }
-        }
-
-        if(true==flag){
-            var request = new HttpRequest(p);
-            //同步按钮状态
-            var page1BtSaveObj = $("page1BtSave");
-            syncButton([page1BtSaveObj],request);
-
-            request.onresult = function(){
-                if(true==isNew){
-                    //解除提醒
-                    detachReminder(cacheID);
-
-                    var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
-                    appendTreeNode(parentID,treeNode);
-
-                    var ws = $("ws");
-                    ws.closeActiveTab();
-                }
-            }
-            request.onsuccess = function(){
-                if(true!=isNew){
-                    //解除提醒
-                    detachReminder(cacheID);
-
-                    //更新树节点名称
-                    var id = cacheID.trim(CACHE_TREE_NODE_DETAIL);
-                    var name = page1FormObj.getData("name");
-                    modifyTreeNode(id,"name",name,true);
-                }
-            }
-            request.send();
-        }
-    }
-    /*
-     *	函数说明：保存用户组
+     *	保存用户组
      *	参数：	string:cacheID      缓存数据ID
                 boolean:isNew       是否新增
                 string:parentID     父节点id
@@ -2401,7 +2026,7 @@
         }
     }
     /*
-     *	函数说明：保存用户
+     *	保存用户
      *	参数：	string:cacheID          缓存数据ID
                 boolean:isNew           是否新增
                 string:groupId          用户组id
@@ -2534,123 +2159,10 @@
             request.send();;
         }
     }
+
     /*
-     *	函数说明：保存其他应用用户
-     *	参数：	string:cacheID          缓存数据ID
-                boolean:isNew           是否新增
-                string:groupId          组id
-     *	返回值：
-     */
-    function saveOtherUser(cacheID,isNew,groupId){
-        //校验page1Form,page8Form数据有效性
-        var page1FormObj = $("page1Form");
-        var page8FormObj = $("page8Form");
-        if(false==page1FormObj.checkForm()){
-            switchToPhase(ws,"page1");
-            return;
-        }
-        if(false==page8FormObj.checkForm()){
-            switchToPhase(ws,"page8");
-            return;
-        }
-        if("0" == page1FormObj.securityLevel){
-            switchToPhase(ws,"page1");
-            showPasswordSecurityLevel(page1FormObj);
-            return;            
-        }
-
-        var p = new HttpRequestParams();
-        p.url = URL_SAVE_USER;
-
-        //是否提交
-        var flag = false;
-        
-        var userCache = Cache.Variables.get(cacheID);
-        if(null!=userCache){       
-
-            //用户基本信息
-            var userInfoNode = Cache.XmlIslands.get(cacheID+"."+XML_USER_INFO);
-            if(null!=userInfoNode){
-                var userInfoDataNode = userInfoNode.selectSingleNode(".//data");
-                if(null!=userInfoDataNode){
-                    flag = true;
-
-                    var prefix = userInfoNode.selectSingleNode("./declare").getAttribute("prefix");
-                    p.setXFormContent(userInfoDataNode,prefix);
-                }
-            }
-
-            //认证基本信息
-            var authenticateInfoNode = Cache.XmlIslands.get(cacheID+"."+XML_AUTHENTICATE_INFO);
-            if(null!=authenticateInfoNode){
-                var authenticateInfoDataNode = authenticateInfoNode.selectSingleNode(".//data");
-                if(null!=userInfoDataNode){
-                    flag = true;
-
-                    var prefix = authenticateInfoNode.selectSingleNode("./declare").getAttribute("prefix");
-                    p.setXFormContent(authenticateInfoDataNode,prefix);
-                }
-            }
-
-            //用户对用户组
-            var user2GroupNode = Cache.XmlIslands.get(cacheID+"."+XML_USER_TO_GROUP_EXIST_TREE);
-            if(null!=user2GroupNode){
-                var user2GroupDataIDs = getTreeNodeIds(user2GroupNode,"./treeNode//treeNode");
-                if(0<user2GroupDataIDs.length){
-                    flag = true;
-                    p.setContent(XML_USER_TO_GROUP_EXIST_TREE,user2GroupDataIDs.join(","));
-                    //主用户组id
-                    var groupType1TreeNode = user2GroupNode.selectSingleNode("./treeNode//treeNode");
-                    if(null!=groupType1TreeNode){
-                        var mainGroupId = groupType1TreeNode.getAttribute("id");
-                        p.setContent("mainGroupId",mainGroupId);
-                    }
-                }
-            }
-        }
-
-        if(true==flag){
-            var request = new HttpRequest(p);
-            //同步按钮状态
-            var page1BtSaveObj = $("page1BtSave");
-            var page8BtSaveObj = $("page8BtSave");
-            syncButton([page1BtSaveObj,page8BtSaveObj],request);
-
-            request.onsuccess = function(){
-                //解除提醒
-                detachReminder(cacheID);
-
-                //清除该组用户grid缓存
-                delCacheData(CACHE_TREE_NODE_GRID + groupId);
-
-                //如果当前grid显示为此用户所在组，则刷新grid
-                var gridObj = $("grid");
-                if(true==gridObj.hasData_Xml()){
-                    var tempXmlIsland = new XmlNode(gridObj.getXmlDocument());
-                    var tempGroupId = tempXmlIsland.getAttribute("groupId");
-                    if(tempGroupId==groupId){
-                        var tempApplicationId = tempXmlIsland.getAttribute("applicationId");
-                        var tempGroupType = tempXmlIsland.getAttribute("groupType");
-
-                        loadGridData(tempGroupId,tempApplicationId,tempGroupType,"1");//默认第1页
-
-                        //刷新工具条
-                        onInactiveRow();
-                    }
-                }
-
-                if(true==isNew){
-                    var ws = $("ws");
-                    ws.closeActiveTab();
-                }
-            }
-            request.send();
-        }
-    }
-    /*
-     *	函数说明：显示用户列表
-     *	参数：	                
-     *	返回值：
+     *	显示用户列表
+ 
      */
     function showUserList(){
         var treeObj = $("tree");
@@ -2663,9 +2175,7 @@
         }
     }
     /*
-     *	函数说明：新建用户
-     *	参数：	
-     *	返回值：
+     *	新建用户 
      */
     function addNewUser(){
         var treeObj = $("tree");
@@ -2735,7 +2245,7 @@
         }
     }
     /*
-     *	函数说明：新建用户组
+     *	新建用户组
      *	参数：	
      *	返回值：
      */
@@ -2852,9 +2362,7 @@
         }
     }
     /*
-     *	函数说明：编辑树节点
-     *	参数：	boolean:editable            是否可编辑(默认true)
-     *	返回值：
+     *	编辑树节点
      */
     function editTreeNode(editable){
         var resourceTypeId = getResourceTypeId();
@@ -2868,9 +2376,7 @@
         }
     }
     /*
-     *	函数说明：编辑组信息
-     *	参数：  boolean:editable            是否可编辑(默认true)
-     *	返回值：
+     *	编辑组信息
      */
     function editGroupInfo(editable){
         var treeObj = $("tree");
@@ -2972,11 +2478,7 @@
             }
         }
     }
-    /*
-     *	函数说明：删除树节点
-     *	参数：	
-     *	返回值：
-     */
+ 
     function delTreeNode(){
         if(true!=confirm("您确定要删除吗？")){
             return;
@@ -2991,11 +2493,7 @@
                 break;
         }
     }
-    /*
-     *	函数说明：删除用户组
-     *	参数：	
-     *	返回值：
-     */
+ 
     function delGroup(){
         var treeObj = $("tree");
         var treeNode = treeObj.getActiveTreeNode();
@@ -3023,11 +2521,7 @@
 
         }        
     }
-    /*
-     *	函数说明：移动用户
-     *	参数：	
-     *	返回值：
-     */
+ 
     function moveUserTo(){
         var gridObj = $("grid");
         var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
@@ -3066,59 +2560,9 @@
             request.send();
         }
     }
+
     /*
-     *	函数说明：移动用户组
-     *	参数：	
-     *	返回值：
-     */
-    function moveGroupTo(){
-        var treeObj = $("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode){
-            var treeNodeID = treeNode.getId();
-            var treeNodeName = treeNode.getName();
-            var groupType = treeNode.getAttribute("groupType");
-            var applicationId = treeNode.getAttribute("applicationId");
-
-            var group = getGroup(treeNodeID,null,"移动\""+treeNodeName+"\"到",groupType,applicationId,"5");
-            if(null!=group){
-                var p = new HttpRequestParams();
-                p.url = URL_MOVE_GROUP;
-                p.setContent("toGroupId",group.id);
-                p.setContent("groupId",treeNodeID);
-                p.setContent("direction",2);//2表示跨层次移动
-
-                var request = new HttpRequest(p);
-                request.onsuccess = function(){
-                    //移动树节点
-                    var curNode = treeObj.getTreeNodeById(treeNodeID);
-                    var xmlNode = new XmlNode(curNode.node);
-                    if(""!=group.appId){// 向应用系统移动
-                        var parentNode = treeObj.getTreeNodeById(group.appId);
-                    }else{
-                        var parentNode = treeObj.getTreeNodeById(group.id);
-                    }
-                    //父节点停用则下溯
-                    var parentNodeState = parentNode.getAttribute("disabled");
-                    if("1"==parentNodeState){
-                        //设置停用状态
-                        refreshGroupStates(xmlNode,"1");
-                    }
-                    parentNode.node.appendChild(curNode.node);
-                    parentNode.node.setAttribute("_open","true");
-
-                    clearOperation(xmlNode);
-
-                    treeObj.reload();
-                }
-                request.send();
-            }
-        }
-    }
-    /*
-     *	函数说明：同一父节点下移动用户组
-     *	参数：	
-     *	返回值：
+     *	同一父节点下移动用户组
      */
     function sortGroupTo(eventObj){
         var treeObj = $("tree");
@@ -3160,49 +2604,37 @@
         request.send();
     }
     /*
-     *	函数说明：获取节点ID
-     *	参数：	
-     *	返回值：
+     *	获取节点ID
      */
     function getTreeId(){
         return getTreeAttribute("id");   
     }
     /*
-     *	函数说明：获取用户组状态
-     *	参数：	
-     *	返回值：
+     *	获取用户组状态
      */
     function getGroupState(){
         return getTreeAttribute("disabled");
     }
     /*
-     *	函数说明：获取用户组类型
-     *	参数：	
-     *	返回值：
+     *	获取用户组类型
      */
     function getGroupType(){
         return getTreeAttribute("groupType");
     }
     /*
-     *	函数说明：获取应用类型
-     *	参数：	
-     *	返回值：
+     *	获取应用类型
      */
     function getAppType(){
         return getTreeAttribute("appType");
     }
     /*
-     *	函数说明：获取资源类型
-     *	参数：	
-     *	返回值：
+     *	获取资源类型
      */
     function getResourceTypeId(){
         return getTreeAttribute("resourceTypeId");
     }
     /*
-     *	函数说明：停用用户组
-     *	参数：	
-     *	返回值：
+     *	停用用户组
      */
     function stopGroup(){
         var treeObj = $("tree");
@@ -3232,7 +2664,7 @@
         }
     }
     /*
-     *	函数说明：启用用户组
+     *	启用用户组
      *	参数：	
      *	返回值：
      */
@@ -3264,7 +2696,7 @@
         }
     }
     /*
-     *	函数说明：刷新父子相关用户组停用启用状态
+     *	刷新父子相关用户组停用启用状态
      *	参数：	XmlNode:curNode         XmlNode实例
                 string:state            停/启用状态
      *	返回值：
@@ -3294,7 +2726,7 @@
         treeObj.reload();    
     }
     /*
-     *	函数说明：是否根节点
+     *	是否根节点
      *	参数：	    string:id           树节点id(如未提供则自动取树当前节点)
      *	返回值：    boolean:flag        是否根节点
      */
@@ -3310,7 +2742,7 @@
         return flag;
     }
     /*
-     *	函数说明：是否是其他组
+     *	是否是其他组
      *	参数：	    string:id           树节点id(如未提供则自动取树当前节点)
      *	返回值：    boolean:flag        是否是其他组
      */
@@ -3326,7 +2758,7 @@
         return flag;
     }
     /*
-     *	函数说明：是否自注册用户组节点
+     *	是否自注册用户组节点
      *	参数：	    string:id           树节点id(如未提供则自动取树当前节点)
      *	返回值：    boolean:flag        是否根节点
      */
@@ -3342,7 +2774,7 @@
         return flag;
     }
     /*
-     *	函数说明：是否顶层节点(注：非根节点)
+     *	是否顶层节点(注：非根节点)
      *	参数：	XmlNode:xmlNode       XmlNode实例
      *	返回值：
      */
@@ -3353,7 +2785,7 @@
         return isRootNode(parentNodeID);
     }
     /*
-     *	函数说明：刷新用户组停用启用状态
+     *	刷新用户组停用启用状态
      *	参数：	XmlNode:xmlNode         XmlNode实例
                 string:state            停/启用状态
      *	返回值：
@@ -3367,9 +2799,7 @@
         delCacheData(CACHE_TREE_NODE_GRID + treeID);
     }
     /*
-     *	函数说明：获取用户状态
-     *	参数：	
-     *	返回值：
+     *	获取用户状态
      */
     function getUserState(){
         var userState = null;
@@ -3382,12 +2812,9 @@
         return userState;   
     }
     /*
-     *	函数说明：停用用户
-     *	参数：	
-     *	返回值：
+     *	停用用户
      */
-    function stopUser(){
-
+    function stopUser() {
         var gridObj = $("grid");
         var curRowIndex = gridObj.getCurrentRowIndex_Xml()[0];
         if(null!=curRowIndex){
@@ -3404,17 +2831,13 @@
                 //成功后设置状态
                 gridObj.modifyNamedNode_Xml(curRowIndex,"disabled","1");
                 gridObj.modifyNamedNode_Xml(curRowIndex,"icon",ICON + "user_2.gif");
-
-                //刷新工具条
-                loadUserToolBarData(curRowIndex);
+ 
             }
             request.send();
         }
     }
     /*
-     *	函数说明：启用用户
-     *	参数：	
-     *	返回值：
+     *	启用用户
      */
     function startUser(){
 
@@ -3447,15 +2870,13 @@
                     var xmlNode = new XmlNode(treeNode.node);
                     refreshGroupStates(xmlNode,"0");
                 }
-
-                //刷新工具条
-                loadUserToolBarData(curRowIndex);
+ 
             }
             request.send();
         }
     }
     /*
-     *	函数说明：同步用户组
+     *	同步用户组
      *	参数：	string:mode     同步方式(1完全同步/2单向同步)
      *	返回值：
      */
@@ -3476,9 +2897,7 @@
             p.setContent("mode",mode);
 
             var request = new HttpRequest(p);
-//            request.onsuccess = function(){
-//                loadInitData();
-//            }
+ 
             request.onresult = function(){
                 var data = this.getNodeValue("ProgressInfo");
                 var progress = new Progress(URL_SYNC_PROGRESS,data,URL_CANCEL_SYNC_PROGRESS);
@@ -3490,155 +2909,9 @@
             request.send();
         }    
     }
+
     /*
-     *	函数说明：模糊对应用户组
-     *	参数：	
-     *	返回值：
-     */
-    function autoMappingGroup(){
-        var treeObj = $("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode){
-            var treeNodeID = treeNode.getId();
-            var treeNodeName = treeNode.getName();
-
-            var callback = {};
-            callback.onTabClose = function(eventObj){
-                delCacheData(eventObj.tab.SID);
-            };
-            callback.onTabChange = function(){
-                setTimeout(function(){
-                    loadAutoMappingData(treeNodeID);
-                },TIMEOUT_TAB_CHANGE);
-            };
-
-            var inf = {};
-            inf.defaultPage = "page1";
-            inf.label = OPERATION_AUTO_MAPPING.replace(/\$label/i,treeNodeName);
-            inf.phases = null;
-            inf.callback = callback;
-            inf.SID = CACHE_AUTO_MAPPING + treeNodeID;
-            var tab = ws.open(inf);
-        }
-    }
-    /*
-     *	函数说明：模糊对应信息加载数据
-     *	参数：	string:treeID     用户id
-     *	返回值：
-     */
-    function loadAutoMappingData(treeID){
-        var cacheID = CACHE_AUTO_MAPPING + treeID;
-        var autoMappingDetail = Cache.Variables.get(cacheID);
-        if(null==autoMappingDetail){
-            var p = new HttpRequestParams();
-            p.url = URL_AUTO_MAPPING;
-            p.setContent("groupId", treeID);
-
-            var request = new HttpRequest(p);
-            request.onresult = function(){
-                var autoMappingInfoNode = this.getNodeValue(XML_AUTO_MAPPING);
-
-                var autoMappingInfoNodeID = cacheID+"."+XML_AUTO_MAPPING;
-
-                Cache.XmlIslands.add(autoMappingInfoNodeID,autoMappingInfoNode);
-
-                Cache.Variables.add(cacheID,[autoMappingInfoNodeID]);
-
-                initAutoMappingPages(cacheID);
-            }
-            request.send();
-        }else{
-            initAutoMappingPages(cacheID);
-        }
-    }
-    /*
-     *	函数说明：模糊对应相关页加载数据
-     *	参数：	string:cacheID     缓存数据id
-     *	返回值：
-     */
-    function initAutoMappingPages(cacheID){
-        var page1FormObj = $("page1Form");
-        Public.initHTC(page1FormObj,"isLoaded","oncomponentready",function(){
-            loadAutoMappingInfoFormData(cacheID);
-        });
-
-        //设置翻页按钮显示状态
-        var page1BtPrevObj = $("page1BtPrev");
-        var page1BtNextObj = $("page1BtNext");
-        page1BtPrevObj.style.display = "none";
-        page1BtNextObj.style.display = "none";
-
-        //设置保存按钮操作
-        var page1BtSaveObj = $("page1BtSave");
-        page1BtSaveObj.onclick = function(){
-            saveAutoMapping(cacheID);
-        }
-    }
-    /*
-     *	函数说明：模糊对应xform加载数据
-     *	参数：	string:cacheID     缓存数据id
-     *	返回值：
-     */
-    function loadAutoMappingInfoFormData(cacheID){
-        var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_AUTO_MAPPING);
-        if(null!=xmlIsland){
-            var page1FormObj = $("page1Form");
-            page1FormObj.load(xmlIsland.node,null,"node");
-
-            //2007-3-1 离开提醒
-            attachReminder(cacheID,page1FormObj);
-        }
-    }
-    /*
-     *	函数说明：保存模糊对应
-     *	参数：	string:cacheID      缓存数据ID
-     *	返回值：
-     */
-    function saveAutoMapping(cacheID){
-        //校验page1Form数据有效性
-        var page1FormObj = $("page1Form");
-        if(false==page1FormObj.checkForm()){
-            switchToPhase(ws,"page1");
-            return;
-        }
-
-        var p = new HttpRequestParams();
-        p.url = URL_SAVE_AUTO_MAPPING;
-
-        //是否提交
-        var flag = false;
-        
-        var groupCache = Cache.Variables.get(cacheID);
-        if(null!=groupCache){       
-
-            //模糊对应基本信息
-            var autoMappingInfoNode = Cache.XmlIslands.get(cacheID+"."+XML_AUTO_MAPPING);
-            if(null!=autoMappingInfoNode){
-                var autoMappingInfoDataNode = autoMappingInfoNode.selectSingleNode(".//data");
-                if(null!=autoMappingInfoDataNode){
-                    flag = true;
-
-                    var prefix = autoMappingInfoNode.selectSingleNode("./declare").getAttribute("prefix");
-                    p.setXFormContent(autoMappingInfoDataNode,prefix);
-                }
-            }
-        }
-
-        if(true==flag){
-            var request = new HttpRequest(p);
-            //同步按钮状态
-            var page1BtSaveObj = $("page1BtSave");
-            syncButton([page1BtSaveObj],request);
-
-            request.onsuccess = function(){
-                //解除提醒
-                detachReminder(cacheID);
-            }
-            request.send();
-        }
-    }
-    /*
-     *	函数说明：page4Tree2初始化
+     *	page4Tree2初始化
      *	参数：	string:id					相关树节点id
                 string:applicationId        应用id
                 string:groupType            组类型
@@ -3651,7 +2924,7 @@
         });
     }
     /*
-     *	函数说明：grid加载数据
+     *	grid加载数据
      *	参数：	string:treeID				相关树节点id
                 string:applicationId        应用id
                 string:groupType            组类型
@@ -3679,7 +2952,7 @@
 		request.send();
     }
     /*
-     *	函数说明：tree从缓存加载数据
+     *	tree从缓存加载数据
      *	参数：	string:cacheID   grid数据相关树节点id
      *	返回值：
      */
@@ -3692,7 +2965,7 @@
         }
     }
     /*
-     *	函数说明：删除用户
+     *	删除用户
      *	参数：	
      *	返回值：
      */
@@ -3726,164 +2999,10 @@
         }
         request.send();
     }
+ 
+  
     /*
-     *	函数说明：用户下移一行
-     *	参数：	
-     *	返回值：
-     */
-    function moveUserDown(){
-        var gridObj = $("grid");
-        var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
-        var rowID = gridObj.getRowNode_Xml(rowIndex).getAttribute("id");
-        var groupID = gridObj.getXmlDocument().getAttribute("groupId");
-
-        var visibleIndex = gridObj.getVisibleIndexFromRowIndex(rowIndex);
-        var visibleNextIndex = visibleIndex + 1;
-        var len = gridObj.getVisibleRowsLength();
-        
-        var toolbarObj = $("gridToolBar");
-        var totalpages = toolbarObj.getTotalPages();
-        var curPage = toolbarObj.getCurrentPage();
-
-        var p = new HttpRequestParams();
-        if(len-1>visibleIndex){
-            var nextRowIndex = gridObj.getRowIndexFromVisibleIndex(visibleNextIndex);
-            var nextRowID = gridObj.getRowNode_Xml(nextRowIndex).getAttribute("id");
-
-            p.url = URL_SORT_USER;
-            p.setContent("userId",rowID);
-            p.setContent("groupId",groupID);
-            p.setContent("toUserId",nextRowID);
-            p.setContent("direction","1");
-        }else{//当前页最后一行下移时
-            var nextRowIndex = null;
-
-            p.url = URL_SORT_USER_CROSS_PAGE;
-            p.setContent("userId",rowID);
-            p.setContent("groupId",groupID);
-            p.setContent("page", curPage);
-            p.setContent("direction", "1");
-        }
-
-        var request = new HttpRequest(p);
-        request.onsuccess = function(){
-            if(null!=nextRowIndex){
-                gridObj.moveRow_Xml([rowIndex],nextRowIndex);
-                loadUserToolBarData(nextRowIndex);
-            }else{//当前页最后一行下移时
-                toolbarObj.gotoPage(curPage);
-            }
-        }
-        request.send();
-    }
-    /*
-     *	函数说明：用户上移一行
-     *	参数：	
-     *	返回值：
-     */
-    function moveUserUp(){
-        var gridObj = $("grid");
-        var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
-        var rowID = gridObj.getRowNode_Xml(rowIndex).getAttribute("id");
-        var groupID = gridObj.getXmlDocument().getAttribute("groupId");
-
-        var visibleIndex = gridObj.getVisibleIndexFromRowIndex(rowIndex);
-        var visibleNextIndex = visibleIndex - 1;
-
-        var toolbarObj = $("gridToolBar");
-        var curPage = toolbarObj.getCurrentPage();
-
-        var p = new HttpRequestParams();
-        if(0<visibleIndex){
-            var nextRowIndex = gridObj.getRowIndexFromVisibleIndex(visibleNextIndex);
-            var nextRowID = gridObj.getRowNode_Xml(nextRowIndex).getAttribute("id");
-
-            p.url = URL_SORT_USER;
-            p.setContent("userId",rowID);
-            p.setContent("groupId",groupID);
-            p.setContent("toUserId",nextRowID);
-            p.setContent("direction","-1");
-        }else{//当前页第一行上移时
-            var nextRowIndex = null;
-
-            p.url = URL_SORT_USER_CROSS_PAGE;
-            p.setContent("userId",rowID);
-            p.setContent("groupId",groupID);
-            p.setContent("page", curPage);
-            p.setContent("direction", "-1");
-        }
-
-        var request = new HttpRequest(p);
-        request.onsuccess = function(){
-            if(null!=nextRowIndex){
-                gridObj.moveRow_Xml([rowIndex],nextRowIndex);
-                loadUserToolBarData(nextRowIndex);
-            }else{//当前页第一行上移时
-                toolbarObj.gotoPage(curPage);
-            }
-        }
-        request.send();
-    }
-    /*
-     *	函数说明：是否可下移(同一用户组下移动)用户
-     *	参数：	
-     *	返回值：
-     */
-    function canMoveUserDown(){
-        var flag = false;
-        var gridObj = $("grid");
-        var groupId = gridObj.getXmlDocument().getAttribute("groupId");
-        if("search"!=groupId){
-            var sortType = gridObj.getCurrentSortType();
-            if("default"==sortType){
-                var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
-                var visibleIndex = gridObj.getVisibleIndexFromRowIndex(rowIndex);
-                var len = gridObj.getVisibleRowsLength();
-                if(len-1>visibleIndex){
-                    flag = true;
-                }else{
-                    var toolbarObj = $("gridToolBar");
-                    var totalpages = toolbarObj.getTotalPages();
-                    var curPage = toolbarObj.getCurrentPage();
-                    if(curPage<totalpages){
-                        flag = true;
-                    }
-                }
-            }
-        }
-        return flag;
-    }
-    /*
-     *	函数说明：是否可上移(同一用户组下移动)用户
-     *	参数：	
-     *	返回值：
-     */
-    function canMoveUserUp(){
-        var flag = false;
-        var gridObj = $("grid");
-        var groupId = gridObj.getXmlDocument().getAttribute("groupId");
-        if("search"!=groupId){
-            var sortType = gridObj.getCurrentSortType();
-            if("default"==sortType){
-                var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
-                var visibleIndex = gridObj.getVisibleIndexFromRowIndex(rowIndex);
-                if(0<visibleIndex){
-                    flag = true;
-                }else{
-                    var toolbarObj = $("gridToolBar");
-                    var curPage = toolbarObj.getCurrentPage();
-                    if(curPage>1){
-                        flag = true;
-                    }
-                }
-            }
-        }
-        return flag;
-    }
-    /*
-     *	函数说明：搜索用户
-     *	参数：	
-     *	返回值：
+     *	搜索用户
      */
     function searchUser(){
 
@@ -3904,7 +3023,7 @@
         }
     }
     /*
-     *	函数说明：根据条件获取搜索结果
+     *	根据条件获取搜索结果
      *	参数：	string:cacheID      缓存数据id
                 string:page         页码
                 string:sortName     排序字段
@@ -3964,7 +3083,7 @@
         }
     }
     /*
-     *	函数说明：初始化搜索用户grid
+     *	初始化搜索用户grid
      *	参数：	string:cacheID      缓存数据id
      *	返回值：
      */
@@ -3979,7 +3098,7 @@
         });    
     }
     /*
-     *	函数说明：更新page4Tree的数据
+     *	更新page4Tree的数据
      *	参数：	string:cacheID            缓存数据id
                 string:applicationId      应用id
      *	返回值：
@@ -4015,26 +3134,9 @@
             clearTreeData(page4Tree3Obj);
         });
     }
+ 
     /*
-     *	函数说明：模糊对应选择对应组
-     *	参数：	string:groupId          组id列
-                string:groupName        组名列
-     *	返回值：
-     */
-    function chooseAutoMappingGroup(groupId,groupName){
-
-        //弹出窗口数据从后台获取
-        var xmlIsland = null;
-
-        var group = getGroup(null,xmlIsland,"选择模糊对应组","1",null,"3");
-        if(null!=group){
-            var page1FormObj = $("page1Form");
-            page1FormObj.updateDataExternal(groupId,group.id);
-            page1FormObj.updateDataExternal(groupName,group.name);
-        }
-    }
-    /*
-     *	函数说明：弹出模态窗口选择用户组
+     *	弹出模态窗口选择用户组
      *	参数：	string:id               组/用户id
                 XmlNode:xmlIsland       如果有该值，树数据不从后台取
                 string:title            弹出窗口标题
@@ -4048,9 +3150,7 @@
         return group;
     }
     /*
-     *	函数说明：初始化密码
-     *	参数：	
-     *	返回值：
+     *	初始化密码
      */
     function resetPassword(){
         var treeObj = $("tree");
@@ -4104,7 +3204,7 @@
         }
     }
     /*
-     *	函数说明：保存初始化密码
+     *	保存初始化密码
      *	参数：	string:groupId          组id
                 string:password         密码
      *	返回值：
@@ -4120,46 +3220,10 @@
         }
         request.send();
     }
+ 
+ 
     /*
-     *	函数说明：手工对应选择对应组
-     *	参数：	string:groupId          组id
-                string:groupName        组名
-                string:groupType        组类型
-     *	返回值：
-     */
-    function chooseManualMappingGroup(groupId,groupName,groupType){
-        //弹出窗口数据从后台获取
-        var xmlIsland = null;
-
-        var group = getGroup(null,xmlIsland,"选择手工对应组","1",null,"3");
-        if(null!=group){
-            var page5FormObj = $("page5Form");
-            page5FormObj.updateDataExternal(groupId,group.id);
-            page5FormObj.updateDataExternal(groupName,group.name);
-            page5FormObj.updateDataExternal(groupType,group.type);
-        }
-
-    }
-    /*
-     *	函数说明：模糊对应选择对应组
-     *	参数：	string:groupId          组id列
-                string:groupName        组名列
-     *	返回值：
-     */
-    function chooseAutoMappingGroup(groupId,groupName){
-
-        //弹出窗口数据从后台获取
-        var xmlIsland = null;
-
-        var group = getGroup(null,xmlIsland,"选择模糊对应组","1",null,"3");
-        if(null!=group){
-            var page1FormObj = $("page1Form");
-            page1FormObj.updateDataExternal(groupId,group.id);
-            page1FormObj.updateDataExternal(groupName,group.name);
-        }
-    }
-    /*
-     *	函数说明：检测用户列表右键菜单项是否可见
+     *	检测用户列表右键菜单项是否可见
      *	参数：	string:code     操作码
      *	返回值：
      */
@@ -4178,175 +3242,9 @@
         }
         return flag;
     }
+ 
     /*
-     *	函数说明：工具条载入数据
-     *	参数：	treeNode:treeNode       treeNode实例
-     *	返回值：
-     */
-    function loadToolBarData(treeNode){
-        if(null!=treeNode){
-            getTreeOperation(treeNode,function(_operation){
-                loadToolBar(_operation);
-            });
-        }
-    }
-    /*
-     *	函数说明：设置认证方式
-     *	参数：	
-     *	返回值：
-     */
-    function setAuthenticateMethod(){
-        var treeObj = $("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode){
-            var treeID = treeNode.getId();
-            var treeName = treeNode.getName();
-
-            var authenticate = window.showModalDialog("authenticatemethod.htm",{title:"设置\""+treeName+"\"的认证方式"},"dialogWidth:250px;dialogHeight:250px;");
-            if(null!=authenticate){
-                var p = new HttpRequestParams();
-                p.url = URL_SET_AUTHENTICATE_METHOD;
-                p.setContent("groupId",treeID);
-                p.setContent("authenticateMethod",authenticate.authenticateMethod);
-                //p.setContent("authenticateAppId",authenticate.authenticateAppId);
-
-                var request = new HttpRequest(p);
-                request.onresult = function(){
-                    
-                }
-                request.send();
-            }
-        }
-        
-    }
-    /*
-     *	函数说明：载入用户工具条
-     *	参数：	
-     *	返回值：
-     */
-    function loadUserToolBarData(rowIndex){
-        if(null==rowIndex){
-            loadToolBar("p1,p2");
-            return;
-        }
-
-        var gridObj = $("grid");
-        var applicationID = gridObj.getXmlDocument().getAttribute("applicationId");
-        var groupType = gridObj.getXmlDocument().getAttribute("groupType");
-        var rowNode = gridObj.getRowNode_Xml(rowIndex);
-        var id = rowNode.getAttribute("id");
-        var groupId = rowNode.getAttribute("groupId");
-        var _operation = rowNode.getAttribute("_operation");
-
-        if(null==_operation || ""==_operation){//如果节点上还没有_operation属性，则发请求从后台获取信息
-            var p = new HttpRequestParams();
-            p.url = URL_GET_USER_OPERATION;
-            p.setContent("resourceId",id);
-            p.setContent("groupId",groupId);
-            p.setContent("applicationId",applicationID);
-            p.setContent("groupType",groupType);
-
-            var request = new HttpRequest(p);
-            request.onresult = function(){
-                _operation = this.getNodeValue(XML_OPERATION);
-                rowNode.setAttribute("_operation",_operation);
-
-                loadToolBar(_operation);
-            }
-            request.send();
-            
-        }else{
-            loadToolBar(_operation);
-        }
-    
-    }
-    /*
-     *	函数说明：综合查询(用户对应查询)
-     *	参数：	
-     *	返回值：
-     */
-    function generalSearchMapping(){
-        var treeObj = $("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode){
-            var groupId = treeNode.getId();
-            var groupName = treeNode.getName();
-            
-            var callback = {};
-            callback.onTabClose = function(eventObj){
-                delCacheData(eventObj.tab.SID);
-            };
-            callback.onTabChange = function(){
-                setTimeout(function(){
-                    loadGeneralSearchMappingData(groupId);
-                },TIMEOUT_TAB_CHANGE);
-            };
-
-            var inf = {};
-            inf.defaultPage = "page6";
-            inf.label = "用户对应" + OPERATION_SEARCH.replace(/\$label/i,groupName);
-            inf.phases = null;
-            inf.callback = callback;
-            inf.SID = CACHE_GENERAL_SEARCH_MAPPING + groupId;
-            var tab = ws.open(inf);
-        }
-    }
-    /*
-     *	函数说明：综合查询加载数据
-     *	参数：	string:groupId          组id
-     *	返回值：
-     */
-    function loadGeneralSearchMappingData(groupId){
-        var cacheID = CACHE_GENERAL_SEARCH_MAPPING + groupId;
-        var cacheData = Cache.Variables.get(cacheID);
-        if(null==cacheData){
-            var p = new HttpRequestParams();
-            p.url = URL_GENERAL_SEARCH_MAPPING;
-
-            p.setContent("groupId", groupId);
-
-            var request = new HttpRequest(p);
-            request.onresult = function(){
-                var generalSearchGridNode = this.getNodeValue(XML_GENERAL_SEARCH_MAPPING);
-
-                var generalSearchGridNodeID = cacheID+"."+XML_GENERAL_SEARCH_MAPPING;
-
-                Cache.XmlIslands.add(generalSearchGridNodeID,generalSearchGridNode);
-
-                Cache.Variables.add(cacheID,[generalSearchGridNodeID]);
-
-                initGeneralSearchMappingPages(cacheID);
-            }
-            request.send();
-        }else{
-            initGeneralSearchMappingPages(cacheID);
-        }
-    }
-    /*
-     *	函数说明：综合查询相关页加载数据
-     *	参数：	string:cacheID     缓存数据id
-     *	返回值：
-     */
-    function initGeneralSearchMappingPages(cacheID){
-        var page6GridObj = $("page6Grid");
-        Public.initHTC(page6GridObj,"isLoaded","onload",function(){
-            loadGeneralSearchMappingGridData(cacheID);
-        });
-    }
-    /*
-     *	函数说明：grid加载数据
-     *	参数：	string:cacheID   grid数据相关树节点id
-     *	返回值：
-     */
-    function loadGeneralSearchMappingGridData(cacheID){
-        var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_GENERAL_SEARCH_MAPPING);
-        if(null!=xmlIsland){
-            var page6GridObj = $("page6Grid");
-            page6GridObj.load(xmlIsland.node,null,"node");
-        }
-    }
-    /*
-     *	函数说明：综合查询(用户同步查询)
+     *	综合查询(用户同步查询)
      *	参数：	
      *	返回值：
      */
@@ -4377,7 +3275,7 @@
         }
     }
     /*
-     *	函数说明：综合查询加载数据
+     *	综合查询加载数据
      *	参数：	string:groupId          组id
      *	返回值：
      */
@@ -4408,7 +3306,7 @@
         }
     }
     /*
-     *	函数说明：综合查询相关页加载数据
+     *	综合查询相关页加载数据
      *	参数：	string:cacheID     缓存数据id
      *	返回值：
      */
@@ -4419,7 +3317,7 @@
         });
     }
     /*
-     *	函数说明：grid加载数据
+     *	grid加载数据
      *	参数：	string:cacheID   grid数据相关树节点id
      *	返回值：
      */
@@ -4431,7 +3329,7 @@
         }
     }
     /*
-     *	函数说明：综合查询(用户授权查询)
+     *	综合查询(用户授权查询)
      *	参数：	
      *	返回值：
      */
@@ -4462,7 +3360,7 @@
         }    
     }
     /*
-     *	函数说明：综合查询加载数据
+     *	综合查询加载数据
      *	参数：	string:groupId          组id
      *	返回值：
      */
@@ -4493,7 +3391,7 @@
         }
     }
     /*
-     *	函数说明：综合查询相关页加载数据
+     *	综合查询相关页加载数据
      *	参数：	string:cacheID     缓存数据id
      *	返回值：
      */
@@ -4505,7 +3403,7 @@
         loadPermissionListData(cacheID);
     }
     /*
-     *	函数说明：级联资源类型下拉菜单
+     *	级联资源类型下拉菜单
      *	参数：	string:cacheID              缓存数据id
                 string:applicationID        应用id
      *	返回值：
@@ -4533,7 +3431,7 @@
         request.send();
     }
     /*
-     *	函数说明：xform加载数据
+     *	xform加载数据
      *	参数：	string:cacheID   grid数据相关树节点id
      *	返回值：
      */
@@ -4560,9 +3458,7 @@
         }
     }
     /*
-     *	函数说明：搜索用户授权信息
-     *	参数：	
-     *	返回值：
+     *	搜索用户授权信息
      */
     function searchPermission(cacheID){
         var p = new HttpRequestParams();
@@ -4590,9 +3486,7 @@
         request.send();
     }
     /*
-     *	函数说明：载入授权列表数据
-     *	参数：	
-     *	返回值：
+     *	载入授权列表数据
      */
     function loadPermissionListData(cacheID){
         var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_GENERAL_SEARCH_PERMISSION_LIST);
@@ -4603,7 +3497,7 @@
         }
     }
     /*
-     *	函数说明：创建授权列表数据
+     *	创建授权列表数据
      *	参数：	XmlNode:xmlIsland       XmlNode实例
      *	返回值：
      */
@@ -4613,7 +3507,7 @@
         page7Box.innerHTML = str;
     }
     /*
-     *	函数说明：生成列表html
+     *	生成列表html
      *	参数：	XmlNode:xmlIsland       XmlNode实例
      *	返回值：
      */
@@ -4673,7 +3567,7 @@
         return str.join("");
     }
     /*
-     *	函数说明：清除授权列表数据
+     *	清除授权列表数据
      *	参数：	
      *	返回值：
      */
@@ -4681,88 +3575,10 @@
         var page7Box = $("page7Box");
         page7Box.innerHTML = "";
     }
+
+
     /*
-     *	函数说明：复制用户组
-     *	参数：	
-     *	返回值：
-     */
-    function copyGroup(){
-        var treeObj = $("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode){
-            var groupID = treeNode.getId();
-            var groupName = treeNode.getName();
-
-            var parentGroup = treeNode.getParent();
-            var parentGroupID = parentGroup.getId();
-            var parentGroupType = parentGroup.getAttribute("groupType");
-            var applicationId = parentGroup.getAttribute("applicationId");
-
-            var p = new HttpRequestParams();
-            p.url = URL_COPY_GROUP;
-            if(null==parentGroupType){
-                p.setContent("applicationId",applicationId);            
-            }else{
-                p.setContent("toGroupId",parentGroupID);
-            }
-            p.setContent("groupId",groupID);
-            p.setContent("isCascadeUser","false");
-
-            var request = new HttpRequest(p);
-            request.onresult = function(){
-                var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
-                appendTreeNode(parentGroupID,treeNode);
-            }
-            request.send();
-        }
-    }
-    /*
-     *	函数说明：将组复制到
-     *	参数：	
-     *	返回值：
-     */
-    function copyGroupTo(){
-        var treeObj = $("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode){
-            var groupID = treeNode.getId();
-            var groupName = treeNode.getName();
-            var groupType = treeNode.getAttribute("groupType");
-            var isCascadeUser = "false";
-//            if("3"==groupType){
-//                isCascadeUser = true;
-//                groupType = "1";
-//            }
-
-            //弹出窗口数据从后台获取
-            var xmlIsland = null;
-
-            var group = getGroup(groupID,xmlIsland,"复制\""+groupName+"\"到",groupType,"tss","1");
-            if(null!=group){
-
-                var p = new HttpRequestParams();
-                p.url = URL_COPY_GROUP;
-                p.setContent("toGroupId",group.id);
-                p.setContent("groupId",groupID);
-				p.setContent("appId", group.appId);
-                p.setContent("isCascadeUser",isCascadeUser);
-
-                var request = new HttpRequest(p);
-                request.onresult = function(){
-                    var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
-
-                    if(""==group.appId){
-                        appendTreeNode(group.id,treeNode);
-                    }else{
-                        appendTreeNode(group.appId,treeNode);
-                    }
-                }
-                request.send();
-            }
-        }
-    }
-    /*
-     *	函数说明：综合查询(用户转授查询)
+     *	综合查询(用户转授查询)
      *	参数：	
      *	返回值：
      */
@@ -4793,7 +3609,7 @@
         }
     }
     /*
-     *	函数说明：综合查询加载数据
+     *	综合查询加载数据
      *	参数：	string:groupId          组id
      *	返回值：
      */
@@ -4824,7 +3640,7 @@
         }
     }
     /*
-     *	函数说明：综合查询相关页加载数据
+     *	综合查询相关页加载数据
      *	参数：	string:cacheID     缓存数据id
      *	返回值：
      */
@@ -4835,7 +3651,7 @@
         });
     }
     /*
-     *	函数说明：grid加载数据
+     *	grid加载数据
      *	参数：	string:cacheID   grid数据相关树节点id
      *	返回值：
      */
@@ -4847,9 +3663,7 @@
         }
     }
     /*
-     *	函数说明：认证用户组
-     *	参数：	
-     *	返回值：
+     *	认证用户组
      */
     function authenticateGroup(){
         var treeObj = $("tree");
@@ -4873,7 +3687,7 @@
         }
     }
     /*
-     *	函数说明：获取grid操作权限
+     *	获取grid操作权限
      *	参数：	number:rowIndex         grid行号
                 function:callback       回调函数
      *	返回值：
@@ -4916,7 +3730,7 @@
         }
     }
     /*
-     *	函数说明：获取树操作权限
+     *	获取树操作权限
      *	参数：	treeNode:treeNode       treeNode实例
                 function:callback       回调函数
      *	返回值：
@@ -4956,7 +3770,7 @@
         }    
     }
     /*
-     *	函数说明：综合查询(用户角色查询)
+     *	综合查询(用户角色查询)
      *	参数：	
      *	返回值：
      */
@@ -4987,7 +3801,7 @@
         }
     }
     /*
-     *	函数说明：综合查询加载数据
+     *	综合查询加载数据
      *	参数：	string:groupId          组id
      *	返回值：
      */
@@ -5018,7 +3832,7 @@
         }
     }
     /*
-     *	函数说明：综合查询相关页加载数据
+     *	综合查询相关页加载数据
      *	参数：	string:cacheID     缓存数据id
      *	返回值：
      */
@@ -5029,7 +3843,7 @@
         });
     }
     /*
-     *	函数说明：grid加载数据
+     *	grid加载数据
      *	参数：	string:cacheID   grid数据相关树节点id
      *	返回值：
      */
@@ -5040,11 +3854,7 @@
             page6GridObj.load(xmlIsland.node,null,"node");
         }
     }
-    /*
-     *	函数说明：授予角色
-     *	参数：	
-     *	返回值：
-     */
+ 
     function setGroupPermission(){
         var treeObj = $("tree");
         var treeNode = treeObj.getActiveTreeNode();
@@ -5079,11 +3889,7 @@
             window.showModalDialog("setpermission.htm",{params:params,title:title,type:type},"dialogWidth:700px;dialogHeight:500px;resizable:yes");
         }
     }
-    /*
-     *	函数说明：授予角色
-     *	参数：	
-     *	返回值：
-     */
+ 
     function setUserPermission(){
         var gridObj = $("grid");
         var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
@@ -5102,289 +3908,9 @@
 
         window.showModalDialog("setpermission.htm",{params:params,title:title,type:"user"},"dialogWidth:700px;dialogHeight:500px;resizable:yes");
     }
+ 
     /*
-     *	函数说明：新增应用信息
-     *	参数：	                
-     *	返回值：
-     */
-    function addApplication(){
-        var treeObj = $("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode){
-            var treeID = treeNode.getId();
-            var applicationType = treeNode.getAttribute("applicationType")||"-2";
-
-            var appName = "应用";
-            var appID = new Date().valueOf();
-
-            var callback = {};
-            callback.onTabClose = function(eventObj){
-                delCacheData(eventObj.tab.SID);
-            };
-            callback.onTabChange = function(){
-                setTimeout(function(){
-                    loadAppDetailData(appID,true,treeID,applicationType,true);
-                },TIMEOUT_TAB_CHANGE);
-            };
-
-            var inf = {};
-            inf.defaultPage = "page1";
-            inf.label = OPERATION_ADD.replace(/\$label/i,appName);
-            inf.phases = null;
-            inf.callback = callback;
-            inf.SID = CACHE_APPLICATION_DETAIL + appID;
-            var tab = ws.open(inf);
-        }
-    }
-    /*
-     *	函数说明：删除应用
-     *	参数：	
-     *	返回值：
-     */
-    function delApplication(){
-        var treeObj = $("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode){
-            var treeID = treeNode.getId();
-            
-            var p = new HttpRequestParams();
-            p.url = URL_DEL_APPLICATION;
-            p.setContent("appId",treeID);
-
-            var request = new HttpRequest(p);
-            request.onsuccess = function(){
-                var parentNode = treeNode.getParent();
-                if(null!=parentNode){
-                    treeObj.setActiveTreeNode(parentNode.getId());
-                }
-                //从树上删除
-                treeObj.removeTreeNode(treeNode);
-            }
-            request.send();
-        }
-    }
-    /*
-     *	函数说明：编辑应用信息
-     *	参数：  boolean:editable            是否可编辑(默认true)
-     *	返回值：
-     */
-    function editApplication(editable){
-        var treeObj = $("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode){
-            var treeID = treeNode.getId();
-            var treeName = treeNode.getName();
-
-            var callback = {};
-            callback.onTabClose = function(eventObj){
-                delCacheData(eventObj.tab.SID);
-            };
-            callback.onTabChange = function(){
-                setTimeout(function(){
-                    loadAppDetailData(treeID,editable);
-                },TIMEOUT_TAB_CHANGE);
-            };
-
-            var inf = {};
-            if(false==editable){
-                inf.label = OPERATION_VIEW.replace(/\$label/i,treeName);
-                inf.SID = CACHE_VIEW_APPLICATION_DETAIL + treeID;
-            }else{
-                inf.label = OPERATION_EDIT.replace(/\$label/i,treeName);
-                inf.SID = CACHE_APPLICATION_DETAIL + treeID;
-            }
-            inf.defaultPage = "page1";
-            inf.phases = null;
-            inf.callback = callback;
-            var tab = ws.open(inf);
-        }
-    }
-    /*
-     *	函数说明：应用信息加载数据
-     *	参数：	string:treeID               树节点id
-                boolean:editable            是否可编辑(默认true)
-                string:parentID             父节点id
-                string:applicationType      应用类型
-                boolean:isNew               是否新增
-     *	返回值：
-     */
-    function loadAppDetailData(treeID,editable,parentID,applicationType,isNew){
-        if(false==editable){
-            var cacheID = CACHE_VIEW_APPLICATION_DETAIL + treeID;
-        }else{
-            var cacheID = CACHE_APPLICATION_DETAIL + treeID;
-        }
-        var treeDetail = Cache.Variables.get(cacheID);
-        if(null==treeDetail){
-            var p = new HttpRequestParams();
-            p.url = URL_APPLICATION_DETAIL;
-            //是新增
-            if(true==isNew){
-                p.setContent("appId","-10");
-                p.setContent("applicationType",applicationType);
-            }else{
-                p.setContent("appId", treeID);            
-            }
-
-            var request = new HttpRequest(p);
-            request.onresult = function(){
-                var appInfoNode = this.getNodeValue(XML_APPLICATION_DETAIL);
-
-                var appInfoNodeID = cacheID+"."+XML_APPLICATION_DETAIL;
-
-                Cache.XmlIslands.add(appInfoNodeID,appInfoNode);
-
-                Cache.Variables.add(cacheID,[appInfoNodeID]);
-
-                initAppPages(cacheID,editable,isNew,parentID);
-            }
-            request.send();
-        }else{
-            initAppPages(cacheID,editable,isNew,parentID);
-        }
-    }
-    /*
-     *	函数说明：应用相关页加载数据
-     *	参数：	string:cacheID              缓存数据id
-                boolean:editable            是否可编辑(默认true)
-                boolean:isNew               是否新增
-                string:parentID             父节点id
-     *	返回值：
-     */
-    function initAppPages(cacheID,editable,isNew,parentID){
-        var page1FormObj = $("page1Form");
-        Public.initHTC(page1FormObj,"isLoaded","oncomponentready",function(){
-            loadAppInfoFormData(cacheID,editable);
-        });
-
-        //设置翻页按钮显示状态
-        var page1BtPrevObj = $("page1BtPrev");
-        var page1BtNextObj = $("page1BtNext");
-        page1BtPrevObj.style.display = "none";
-        page1BtNextObj.style.display = "none";
-
-        //设置保存按钮操作
-        var page1BtSaveObj = $("page1BtSave");
-        page1BtSaveObj.disabled = editable==false?true:false;
-        page1BtSaveObj.onclick = function(){
-            saveApp(cacheID,isNew,parentID);
-        }
-    }
-    /*
-     *	函数说明：应用信息xform加载数据
-     *	参数：	string:cacheID              缓存数据id
-                boolean:editable            是否可编辑(默认true)
-     *	返回值：
-     */
-    function loadAppInfoFormData(cacheID,editable){
-        var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_APPLICATION_DETAIL);
-        if(null!=xmlIsland){
-            var page1FormObj = $("page1Form");
-            page1FormObj.editable = editable==false?"false":"true";
-            page1FormObj.load(xmlIsland.node,null,"node");
-
-            //2007-3-1 离开提醒
-            attachReminder(cacheID,page1FormObj);
-        }
-    }
-    /*
-     *	函数说明：保存应用信息
-     *	参数：	string:cacheID              缓存数据id
-                boolean:isNew               是否新增
-                string:parentID             父节点id
-     *	返回值：
-     */
-    function saveApp(cacheID,isNew,parentID){
-        //校验page1Form数据有效性
-        var page1FormObj = $("page1Form");
-        if(false==page1FormObj.checkForm()){
-            switchToPhase(ws,"page1");
-            return;
-        }
-
-        var p = new HttpRequestParams();
-        p.url = URL_SAVE_APPLICATION;
-
-        //是否提交
-        var flag = false;
-
-        //应用基本信息
-        var appInfoNode = Cache.XmlIslands.get(cacheID+"."+XML_APPLICATION_DETAIL);
-        if(null!=appInfoNode){
-            var appInfoDataNode = appInfoNode.selectSingleNode(".//data");
-            if(null!=appInfoDataNode){
-                flag = true;
-
-                var prefix = appInfoNode.selectSingleNode("./declare").getAttribute("prefix");
-                p.setXFormContent(appInfoDataNode,prefix);
-            }
-        }
-
-        if(true==flag){
-            var request = new HttpRequest(p);
-            //同步按钮状态
-            var page1BtSaveObj = $("page1BtSave");
-            syncButton([page1BtSaveObj],request);
-
-            request.onresult = function(){
-                if(true==isNew){
-                    //解除提醒
-                    detachReminder(cacheID);
-
-                    var treeNode = this.getNodeValue("AppSource").selectSingleNode("treeNode");
-                    appendTreeNode(parentID,treeNode);
-
-                    var ws = $("ws");
-                    ws.closeActiveTab();
-                }
-            }
-            request.onsuccess = function(){
-                if(true!=isNew){
-                    //解除提醒
-                    detachReminder(cacheID);
-
-                    //更新树节点名称
-                    var id = cacheID.trim(CACHE_APPLICATION_DETAIL);
-                    var name = page1FormObj.getData("name");
-                    modifyTreeNode(id,"name",name,true);
-                }
-            }
-            request.send();
-        }
-    }
-    /*
-     *	函数说明：恢复默认排序
-     *	参数：	
-     *	返回值：
-     */
-    function restoreDefaultSort(){
-        var gridObj = $("grid");
-        var xmlIsland = new XmlNode(gridObj.getXmlDocument());
-        xmlIsland.removeAttribute("sortName");
-        xmlIsland.removeAttribute("direction");
-
-        var toolbarObj = $("gridToolBar");
-        var curPage = toolbarObj.getCurrentPage();
-        toolbarObj.gotoPage(curPage);
-    }
-    /*
-     *	函数说明：是否允许恢复默认排序
-     *	参数：	
-     *	返回值：
-     */
-    function canRestoreDefaultSort(){
-        var flag = false;
-        var gridObj = $("grid");
-        var xmlIsland = new XmlNode(gridObj.getXmlDocument());
-        var sortColumn = xmlIsland.selectSingleNode(".//column[@_direction]");
-
-        if(null!=sortColumn){
-            flag = true;
-        }
-        return flag;
-    }
-    /*
-     *	函数说明：将组导入到
+     *	将组导入到
      *	参数：	
      *	返回值：
      */
@@ -5410,9 +3936,6 @@
 
                 var request = new HttpRequest(p);
                 request.onresult = function(){
-//                    var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
-//                    appendTreeNode(group.id,treeNode);
-
 					var data = this.getNodeValue("ProgressInfo");
 					var progress = new Progress(URL_IMPORT_PROGRESS,data,URL_CANCEL_IMPORT_PROGRESS);
 					progress.oncomplete = function(){
@@ -5423,11 +3946,8 @@
                 request.send();
             }
         }
-    }    /*
-     *	函数说明：将用户导入到
-     *	参数：	
-     *	返回值：
-     */
+    }    
+	
     function importUserTo(){
         var gridObj = $("grid");
         var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
@@ -5465,11 +3985,7 @@
 		}
 
     }
-    /*
-     *	函数说明：是否其他应用组用户
-     *	参数：	
-     *	返回值：
-     */
+ 
     function isOtherUser(){
         var flag = false;
         var gridObj = $("grid");
@@ -5479,49 +3995,8 @@
         }
         return flag;
     }
-    /*
-     *	函数说明：手工对应用户
-     *	参数：	
-     *	返回值：
-     */
-    function manualMappingUser(){
-        var gridObj = $("grid");
-        var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
-        var rowNode = gridObj.getRowNode_Xml(rowIndex);
-        var rowName = gridObj.getNamedNodeValue_Xml(rowIndex,"userName");
-        var rowId = rowNode.getAttribute("id");
-        var groupId = gridObj.getXmlDocument().getAttribute("groupId");
-        if("search"==groupId){
-            groupId = rowNode.getAttribute("groupId");
-        }
-        var groupType = gridObj.getXmlDocument().getAttribute("groupType");
-        var applicationId = gridObj.getXmlDocument().getAttribute("applicationId");
 
-        var params = {
-            id:rowId,
-            groupId:groupId,
-            groupType:groupType,
-            applicationId:applicationId
-        }
-
-        var returnVal = window.showModalDialog("mappinguser.htm",{params:params,title:"\""+rowName+"\"用户对应到..."},"dialogWidth:700px;dialogHeight:500px;");
-        if(null != returnVal){
-            var userName = returnVal.userName;
-            var userId = returnVal.userId;
-            var groupName = returnVal.groupName;
-			var loginName = returnVal.loginName;
-
-            gridObj.modifyNamedNode_Xml(rowIndex,"appUserName",userName);
-            gridObj.modifyNamedNode_Xml(rowIndex,"appUserId",userId);
-            gridObj.modifyNamedNode_Xml(rowIndex,"appGroupName",groupName);
-            gridObj.modifyNamedNode_Xml(rowIndex,"appLoginName",loginName);
-        }
-    }
-    /*
-     *	函数说明：同步单个用户
-     *	参数：	
-     *	返回值：
-     */
+ 
     function syncUser(){
         var gridObj = $("grid");
         var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
@@ -5550,71 +4025,7 @@
         request.send();
 
     }
-    /*
-     *	函数说明：设置密码策略
-     *	参数：	string:type             类型(group:用户组/user:用户)
-     *	返回值：
-     */
-    function setPasswordTactic(type){
-        var params = {};
-        params.type = type;
-
-        //根据类型是用户组还是用户，获取并设置不同参数
-        if("group" == type){
-            var treeObj = $("tree");
-            var treeNode = treeObj.getActiveTreeNode();
-            if(null!=treeNode){
-                var id = treeNode.getId();
-                var name = treeNode.getName();
-
-                params.groupId = id;
-            }
-        
-        }else if("user" == type){
-            var gridObj = $("grid");
-            var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
-            var rowNode = gridObj.getRowNode_Xml(rowIndex);
-
-            var id = rowNode.getAttribute("id");
-            var name = rowNode.getAttribute("userName");
-            var groupId = gridObj.getXmlDocument().getAttribute("groupId");
-            if("search"==groupId){
-                groupId = rowNode.getAttribute("groupId");
-            }
-            var groupType = gridObj.getXmlDocument().getAttribute("groupType");
-            var applicationId = gridObj.getXmlDocument().getAttribute("applicationId");
-
-            params.id = id;
-            params.groupId = groupId;
-            params.groupType = groupType;
-            params.applicationId = applicationId;        
-        }
-
-        var tactic = window.showModalDialog("passwordtactic.htm",{params:params,title:"设置\""+name+"\"的密码策略"},"dialogWidth:250px;dialogHeight:250px;");
-        if(null != tactic){
-            var p = new HttpRequestParams();
-            p.setContent("ruleId",tactic.id);
-
-            if("group" == type){
-				p.url = URL_SET_GROUP_PASSWORD_TACTIC;
-                p.setContent("groupId",id);
-            }else if("user" == type){
-				p.url = URL_SET_USER_PASSWORD_TACTIC;
-                p.setContent("userId",id);          
-            }
-
-            var request = new HttpRequest(p);
-            request.onsuccess = function(){
-                
-            }
-            request.send();
-        }
-    }
-    /*
-     *	函数说明：获取用户所在用户组类型
-     *	参数：	
-     *	返回值：
-     */
+ 
     function getUserGroupType(){
         var gridObj = $("grid");
         var groupType = gridObj.getXmlDocument().getAttribute("groupType");

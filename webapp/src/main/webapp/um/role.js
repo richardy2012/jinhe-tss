@@ -548,10 +548,10 @@
 
 			attachReminder(roleInfoNodeID, page1FormObj);
 
-			var page4Tree  = $T("page4Tree",  role2UserTreeNode);
-			var page4Tree3 = $T("page4Tree3", role2UserExsitInfo);
-			var page2Tree  = $T("page2Tree",  role2GroupTreeNode);
-			var page2Tree2 = $T("page2Tree2", role2GroupExsitInfo);
+			$T("page4Tree",  role2UserTreeNode);
+			$T("page4Tree3", role2UserExsitInfo);
+			$T("page2Tree",  role2GroupTreeNode);
+			$T("page2Tree2", role2GroupExsitInfo);
 			
 			$$("page4Tree").onTreeNodeDoubleClick = function(eventObj){
                 onPage4TreeNodeDoubleClick(eventObj);
@@ -567,25 +567,28 @@
 
 			var disabled = editable==false;
 			
-			// 设置按钮操作
+			// 设置添加按钮操作
 			var page2BtAddObj = $$("page2BtAdd");
 			page2BtAddObj.disabled = disabled;
 			page2BtAddObj.onclick = function() {
-				addTreeNode(page2Tree, page2Tree2);
+				addPage2TreeNode();
 			}
 
+			// 设置删除按钮操作
 			var page2BtDelObj = $$("page2BtDel");
 			page2BtDelObj.disabled = disabled;
 			page2BtDelObj.onclick = function() {
 				removeTreeNode($T("page2Tree2")); // 删除page2里tree节点
 			}
 
+			// 设置添加按钮操作
 			var page4BtAddObj = $$("page4BtAdd");
 			page4BtAddObj.disabled = disabled;
 			page4BtAddObj.onclick = function() {
-				 addTreeNode($T("page4Tree2"), page4Tree3);
+				 addPage4TreeNode();
 			}
 
+			// 设置删除按钮操作
 			var page4BtDelObj = $$("page4BtDel");
 			page4BtDelObj.disabled = disabled;
 			page4BtDelObj.onclick = function() {
@@ -617,7 +620,7 @@
     }
  
     function saveRole(cacheID, parentID) {
-        // 校验page1Form数据有效性
+        //校验page1Form数据有效性
         var page1FormObj = $X("page1Form");
         if( !page1FormObj.checkForm() ) {
             switchToPhase(ws, "page1");
@@ -679,7 +682,66 @@
             request.send();
         }
     }		
+    
+    /* 添加page2里tree节点 */
+    function addPage2TreeNode() {
+        var page2Tree2Obj = $T("page2Tree2");
+        var page2TreeObj  = $T("page2Tree");
+        var selectedNodes = page2TreeObj.getSelectedTreeNode(false);
 
+        var reload = false;
+        for(var i=0; i < selectedNodes.length; i++) {
+            var curNode = selectedNodes[i];
+            curNode.setSelectedState(0, true, true);
+
+            var id = curNode.getId();
+            var sameAttributeTreeNode = hasSameAttributeTreeNode(page2Tree2Obj, "id", id);
+            if( sameAttributeTreeNode == false ) {
+                reload = true; // 至少有一行添加才刷新Tree
+
+                var treeNode = page2Tree2Obj.getTreeNodeById("_rootId");
+                if( treeNode ) {                   
+                    var cloneNode = new XmlNode(curNode.node).cloneNode(false); // 排除子节点
+                    page2Tree2Obj.insertTreeNodeXml(cloneNode.toXml(), treeNode);
+                }
+            }
+        }
+        if( reload ) {
+            page2Tree2Obj.reload();
+        }
+        page2TreeObj.reload();
+    }
+ 
+    /* 添加page4里tree节点 */
+    function addPage4TreeNode() {
+        var page4Tree2Obj = $T("page4Tree2");
+        var page4Tree3Obj = $T("page4Tree3");
+        var selectedNodes = page4Tree2Obj.getSelectedTreeNode();
+
+        var reload = false;
+        for(var i=0; i < selectedNodes.length; i++) {
+            var curNode = selectedNodes[i];
+            curNode.setSelectedState(0, true, true);
+ 
+            var id = curNode.getId();
+            var sameAttributeTreeNode = hasSameAttributeTreeNode(page4Tree3Obj, "id", id);
+            if("_rootId" != id && sameAttributeTreeNode == false) {          
+                reload = true; // 至少有一行添加才刷新grid
+
+                var treeNode = page4Tree3Obj.getTreeNodeById("_rootId");
+                if(treeNode) {
+                    var cloneNode = new XmlNode(curNode.node).cloneNode(false); // 排除子节点
+                    page4Tree3Obj.insertTreeNodeXml(cloneNode.toXml(), treeNode);
+                }
+            }
+        }
+        if( reload ) {
+            page4Tree3Obj.reload();
+        }
+        page4Tree2Obj.reload();
+    }
+
+	
     /* 角色权限设置 */
     function setRolePermission() {
         var treeNode = $T("tree").getActiveTreeNode();		
