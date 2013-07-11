@@ -66,19 +66,14 @@ public class UserModuleTest extends TxSupportTest4UM {
         List<User> mainUsers  = service.getUsersByGroup(mainGroup1.getId());
         assertEquals(2, mainUsers.size());
         
-        mainUsers  = service.getUsersByGroup(mainGroup1.getId());
-        assertEquals(3, mainUsers.size());
-        
-        _testAction();
+        _testAction(mainUsers);
         
         service.overdue();
         
         assertTrue(TestUtil.printLogs(logService) > 0);
     }
     
-    public void _testAction() {
-        List<User> mainUsers  = service.getUsersByGroup(mainGroup1.getId());
-        assertEquals(3, mainUsers.size());
+    public void _testAction(List<User> mainUsers) {
         
         action.getUserInfoAndRelation(UMConstants.IS_NEW, mainGroup1.getId());
         

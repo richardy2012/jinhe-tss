@@ -154,7 +154,6 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 		map.put("disabled", disabled);
 		map.put("dbGroupId", dbGroupId);
 		map.put("groupType", groupType);
-		map.put("resourceTypeId", getResourceType());
 		
 		// 特殊组不显示图标 (特殊组指系统初始化的主用户、辅助用户组等根节点，它们的ID为负值)
 		if (id.longValue() > 0) {

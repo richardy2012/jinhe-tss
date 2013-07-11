@@ -30,7 +30,7 @@ import com.jinhe.tss.util.DateUtil;
  */
 @Entity
 @Table(name = "um_user", uniqueConstraints = { 
-        @UniqueConstraint(columnNames = { "applicationId", "loginName" })
+        @UniqueConstraint(columnNames = { "loginName" })
 })
 @SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence", initialValue = 10000, allocationSize = 10)
 public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {

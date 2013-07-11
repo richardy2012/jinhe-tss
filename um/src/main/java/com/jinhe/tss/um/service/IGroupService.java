@@ -114,7 +114,7 @@ public interface IGroupService {
 	 * @param groupId
 	 */
     @Logable(operateTable="用户组织", operateType="删除", 
-            operateInfo="删除 (ID: ${args[1]}) 用户组" )
+            operateInfo="删除 (ID: ${args[0]}) 用户组" )
 	void deleteGroup(Long groupId);
 
 }
