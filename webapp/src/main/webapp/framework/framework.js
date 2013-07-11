@@ -13,6 +13,8 @@ if( IS_TEST ) {
 	URL_CORE = "/" + APPLICATION + "/framework/";  // 界面核心包相对路径
 }
 
+ICON = URL_CORE + "images/";
+
 /* 
  * 常量定义
  */
@@ -533,7 +535,7 @@ function addTreeNode(fromTreeObj, toTreeObj, checkFunction) {
 				// 显示错误信息
 				if( result.message ) {
 					var balloon = Balloons.create(result.message);
-					balloon.dockTo(toTreeObj);
+					balloon.dockTo(toTreeObj.element);
 				}
 
 				if( result.stop ) {

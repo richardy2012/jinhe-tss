@@ -32,7 +32,7 @@
 	</RoleInfo>
 	<Role2UserTree>
 		<actionSet title="" openednodeid="r2">
-			<treeNode id="r1" name="主用户组" icon="../framework/images/icon_group.gif" groupType="1">
+			<treeNode id="-2" name="主用户组" icon="../framework/images/icon_group.gif" groupType="1">
 				<treeNode id="r1.1" name="用户组1.1" icon="../framework/images/icon_group.gif" groupType="1">
 					<treeNode id="r1.1.1" name="用户组1.1.1" icon="../framework/images/icon_group.gif" groupType="1"/>
 					<treeNode id="r1.1.1" name="用户组1.1.2" icon="../framework/images/icon_group.gif" groupType="1"/>
@@ -64,7 +64,7 @@
 	</Role2UserExistTree>
     <Role2GroupTree>    
 		<actionSet title="" openednodeid="r1">
-            <treeNode id="r1" name="主用户组" icon="../framework/images/icon_group.gif" groupType="1">
+            <treeNode id="-2" name="主用户组" icon="../framework/images/icon_group.gif" groupType="1">
                 <treeNode id="r1.1" name="用户组1.1" icon="../framework/images/icon_group.gif" groupType="1">
                     <treeNode id="r1.1.1" name="用户组1.1.1" icon="../framework/images/icon_group.gif" groupType="1"/>
                     <treeNode id="r1.1.2" name="用户组1.1.2" icon="../framework/images/icon_group.gif" groupType="1"/>
@@ -85,7 +85,7 @@
                 <treeNode id="r1.15" name="用户组1.15" icon="../framework/images/icon_group.gif" groupType="1"/>
                 <treeNode id="r1.16" name="用户组1.16" icon="../framework/images/icon_group.gif" groupType="1"/>
             </treeNode>
-            <treeNode id="r2" name="辅助用户组" icon="../framework/images/icon_group.gif" groupType="2">
+            <treeNode id="-3" name="辅助用户组" icon="../framework/images/icon_group.gif" groupType="2">
                 <treeNode id="r2.1" name="用户组2.1" icon="../framework/images/icon_group.gif" disabled="0" groupType="2"/>
                 <treeNode id="r2.2" name="用户组2.2" icon="../framework/images/icon_group.gif" disabled="0" groupType="2"/>
                 <treeNode id="r2.3" name="用户组2.3" icon="../framework/images/icon_group.gif" groupType="2"/>

@@ -24,6 +24,13 @@
 
 <script language="javascript" src="subauth.js"></script>
 
+<style>
+  .trxx {
+	height: 15px;
+	background-color:#E4E6F5
+  }
+</style>
+
 </head>
 
 <body>
@@ -58,9 +65,6 @@
               <td class="separator"></td>
             </tr>
             <tr> 
-              <td height="20"><!-- 工具条 开始 --><ToolBar:Bar id="toolbar"><div class="loading"></div></ToolBar:Bar><!-- 工具条 结束 --></td>
-            </tr>
-            <tr> 
               <td valign="top">
                 <table class="full" border="0" cellpadding="0" cellspacing="0">
                   <tr> 
@@ -69,14 +73,12 @@
                       <table class="full border" border="0" cellpadding="0" cellspacing="0">
                         <tr id="treeTitle" class="bar"> 
                           <td class="opened">
-                            <span class="icon"></span>转授<span class="button refresh" id="treeBtRefresh" title="刷新"></span><span class="button collapse" id="treeTitleBt"></span>
+                            <span class="icon"></span>转授策略<span class="button refresh" id="treeBtRefresh" title="刷新"></span><span class="button collapse" id="treeTitleBt"></span>
                           </td>
                         </tr>
                         <tr>
                           <td id="treeContainer">
-                            <!-- tree 开始 -->
                             <Tree:Box id="tree" treeType="menu" baseurl="../framework/tree/"><div class="loading"></div></Tree:Box>
-                            <!-- tree 结束 -->
                           </td>
                         </tr>
                         <tr id="statusTitle" class="bar">
@@ -100,18 +102,16 @@
                                 <tr>
                                   <td>
                                     <!-- 标签区域 开始 -->
-                                    <WorkSpace:Box id="ws" baseurl="../core/htc/workspace/">
+                                    <WorkSpace:Box id="ws" baseurl="../framework/workspace/">
                                       <!-- page1 开始 -->
                                       <WorkSpace:Page id=page1 pageStep="true">
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
                                           <tr valign="top">
                                             <td>
-                                              <!-- xform 开始 -->
-                                              <Xform:Form id="page1Form" baseurl="../core/htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
-                                              <!-- xform 结束 -->
+                                              <XForm:Box id="page1Form" baseurl="../framework/xform/"><div class="loading"></div></XForm:Box>
                                             </td>
                                           </tr>
-                                          <tr height="20">
+                                          <tr height="15">
                                             <td>
                                               <WorkSpace:PageStep>
                                                 <input type="button" class="btWeak" value="上一步" id="page1BtPrev" onclick="ws.prevPhase(false)"/>
@@ -127,39 +127,21 @@
                                       <!-- page2 开始 -->
                                       <WorkSpace:Page id=page2 class="tight">
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
-                                          <tr class="tf">
-                                            <td class="r b">
-                                              <table class="hFull" border="0" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                  <td class="label">※可选：</td>
-                                                  <td class="btBox">关键字 <input id="page2Keyword" type="text" class="txtfield"/><input id="page2BtSearch" type="button" value="搜索" class="btWeak"/></td>
-                                                </tr>
-                                              </table>
-                                            </td>
+                                          <tr class="trxx">
+                                            <td class="r b">&nbsp;※&nbsp;可选：</td>
                                             <td class="r b">&nbsp;</td>
-                                            <td class="b">                                            
-                                              <table class="hFull" border="0" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                  <td class="label">※已有：</td>
-                                                  <td class="btBox">&nbsp;</td>
-                                                </tr>
-                                              </table>
-                                            </td>
+                                            <td class="b label">&nbsp;※&nbsp;已有：</td>
                                           </tr>
                                           <tr>
                                             <td class="r b" width="50%">
-                                              <!-- tree 开始 -->
-                                              <Tree:TreeBox id="page2Tree" treeType="multi" baseurl="../core/htc/tree/" selectSelf="true"><div class="loading"></div></Tree:TreeBox>
-                                              <!-- tree 结束 -->
+                                              <Tree:Box id="page2Tree" treeType="multi" baseurl="../framework/tree/" selectSelf="true"><div class="loading"></div></Tree:Box>
                                             </td>
                                             <td class="r b" style="background-color:#E4E6F5;width:18px"><input type="button" class="btWeakS" value=">>" id="page2BtAdd"/><input type="button" class="btWeakS" value="<<" id="page2BtDel"/></td>
                                             <td class="b">
-                                              <!-- tree 开始 -->
-                                              <Tree:TreeBox id="page2Tree2" treeType="multi" baseurl="../core/htc/tree/" selectSelf="false"><div class="loading"></div></Tree:TreeBox>
-                                              <!-- tree 结束 -->
+                                              <Tree:Box id="page2Tree2" treeType="multi" baseurl="../framework/tree/" selectSelf="false"><div class="loading"></div></Tree:Box>
                                             </td>
                                           </tr>
-                                          <tr height="20">
+                                          <tr class="trxx">
                                             <td colspan="3">
                                               <WorkSpace:PageStep>
                                                 <input type="button" class="btWeak" value="上一步" id="page2BtPrev" onclick="ws.prevPhase(false)"/>
@@ -175,39 +157,21 @@
                                       <!-- page3 开始 -->
                                       <WorkSpace:Page id=page3 class="tight">
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
-                                          <tr class="tf">
-                                            <td class="r b">
-                                              <table class="hFull" border="0" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                  <td class="label">※可选：</td>
-                                                  <td class="btBox">关键字 <input id="page3Keyword" type="text" class="txtfield"/><input id="page3BtSearch" type="button" value="搜索" class="btWeak"/></td>
-                                                </tr>
-                                              </table>
-                                            </td>
+                                          <tr class="trxx">
+                                            <td class="r b">&nbsp;※&nbsp;可选：</td>
                                             <td class="r b">&nbsp;</td>
-                                            <td class="b">                                            
-                                              <table class="hFull" border="0" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                  <td class="label">※已有：</td>
-                                                  <td class="btBox">&nbsp;</td>
-                                                </tr>
-                                              </table>
-                                            </td>
+                                            <td class="b label">&nbsp;※&nbsp;已有：</td>
                                           </tr>
                                           <tr>
-                                            <td class="r b" width="50%">
-                                              <!-- tree 开始 -->
-                                              <Tree:TreeBox id="page3Tree" treeType="multi" baseurl="../core/htc/tree/" selectSelf="true"><div class="loading"></div></Tree:TreeBox>
-                                              <!-- tree 结束 -->
+                                            <td class="r b" width="60%">
+                                              <Tree:Box id="page3Tree" treeType="multi" baseurl="../framework/tree/" selectSelf="true"><div class="loading"></div></Tree:Box>
                                             </td>
                                             <td class="r b" style="background-color:#E4E6F5;width:18px"><input type="button" class="btWeakS" value=">>" id="page3BtAdd"/><input type="button" class="btWeakS" value="<<" id="page3BtDel"/></td>
                                             <td class="b">
-                                              <!-- tree 开始 -->
-                                              <Tree:TreeBox id="page3Tree2" treeType="multi" baseurl="../core/htc/tree/" selectSelf="false"><div class="loading"></div></Tree:TreeBox>
-                                              <!-- tree 结束 -->
+                                              <Tree:Box id="page3Tree2" treeType="multi" baseurl="../framework/tree/" selectSelf="false"><div class="loading"></div></Tree:Box>
                                             </td>
                                           </tr>
-                                          <tr height="20">
+                                          <tr class="trxx">
                                             <td colspan="3">
                                               <WorkSpace:PageStep>
                                                 <input type="button" class="btWeak" value="上一步" id="page3BtPrev" onclick="ws.prevPhase(false)"/>
@@ -223,45 +187,25 @@
                                       <!-- page4 开始 -->
                                       <WorkSpace:Page id=page4 class="tight">
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
-                                          <tr class="tf">
-                                            <td class="r b">
-                                              <table class="hFull" border="0" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                  <td class="label">&nbsp;</td>
-                                                  <td class="btBox">关键字 <input id="page4Keyword" type="text" class="txtfield"/><input id="page4BtSearch" type="button" value="搜索" class="btWeak"/></td>
-                                                </tr>
-                                              </table>
-                                            </td>
-                                            <td class="r b">
-                                              <table class="hFull" border="0" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                  <td class="label">※可选：</td>
-                                                  <td class="btBox">关键字 <input id="page4Keyword2" type="text" class="txtfield"/><input id="page4BtSearch2" type="button" value="搜索" class="btWeak"/></td>
-                                                </tr>
-                                              </table>
-                                            </td>
+                                          <tr class="trxx">
+                                            <td class="r b">&nbsp;※&nbsp;可选用户组：</td>
+                                            <td class="r b">&nbsp;※&nbsp;可选用户：</td>
                                             <td class="r b">&nbsp;</td>
-                                            <td class="b label">※已有：</td>
+                                            <td class="b label">&nbsp;※&nbsp;已有：</td>
                                           </tr>
                                           <tr>
                                             <td class="r b" width="30%">
-                                              <!-- tree 开始 -->
-                                              <Tree:TreeBox id="page4Tree" treeType="menu" baseurl="../core/htc/tree/"><div class="loading"></div></Tree:TreeBox>
-                                              <!-- tree 结束 -->
+                                              <Tree:Box id="page4Tree" treeType="menu" baseurl="../framework/tree/"><div class="loading"></div></Tree:Box>
                                             </td>
                                             <td class="r b" width="35%">
-                                              <!-- tree 开始 -->
-                                              <Tree:TreeBox id="page4Tree2" treeType="multi" baseurl="../core/htc/tree/" selectSelf="false"><div class="loading"></div></Tree:TreeBox>
-                                              <!-- tree 结束 -->
+                                              <Tree:Box id="page4Tree2" treeType="multi" baseurl="../framework/tree/" selectSelf="false"></Tree:Box>
                                             </td>
                                             <td class="r b" style="background-color:#E4E6F5;width:18px"><input type="button" class="btWeakS" value=">>" id="page4BtAdd"/><input type="button" class="btWeakS" value="<<" id="page4BtDel"/></td>
                                             <td class="b">
-                                              <!-- tree 开始 -->
-                                              <Tree:TreeBox id="page4Tree3" treeType="multi" baseurl="../core/htc/tree/" selectSelf="false"><div class="loading"></div></Tree:TreeBox>
-                                              <!-- tree 结束 -->
+                                              <Tree:Box id="page4Tree3" treeType="multi" baseurl="../framework/tree/" selectSelf="false"><div class="loading"></div></Tree:Box>
                                             </td>
                                           </tr>
-                                          <tr height="20">
+                                          <tr class="trxx">
                                             <td colspan="4">
                                               <WorkSpace:PageStep>
                                                 <input type="button" class="btWeak" value="上一步" id="page4BtPrev" onclick="ws.prevPhase(false)"/>
