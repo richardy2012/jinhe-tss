@@ -81,17 +81,6 @@ public class GeneralSearchAction extends BaseActionSupport {
 
         print("GeneralSearchPermissionList", treeEncoder);
     }
-	
-	/**
-	 * 查询一个其他用户组下面的用户和主用户组的对应关系
-	 */
-	@RequestMapping("/usermapping/{groupId}")
-	public void searchMapping(Long groupId) {
-		List<?> users = service.searchOtherUserMappingInfo(groupId);
-		GridDataEncoder gridEncoder = new GridDataEncoder(users, UMConstants.GENERAL_SEARCH_MAPPING_GRID);
-
-        print("GeneralSearchMappingGrid", gridEncoder);
-	}
  
 	/**
 	 * 一个组下面所有用户的因转授而获得的角色的情况
@@ -121,16 +110,8 @@ public class GeneralSearchAction extends BaseActionSupport {
 	@RequestMapping("/role/users/{roleId}")
 	public void searchUsersByRole(Long roleId) {
 		List<?> list = service.searchUsersByRole(roleId);
-		GridDataEncoder gridEncoder = new GridDataEncoder(list,UMConstants.GENERAL_SEARCH_USER_GRID);
+		GridDataEncoder gridEncoder = new GridDataEncoder(list, UMConstants.GENERAL_SEARCH_USER_GRID);
 
         print("GeneralSearchUserGrid",gridEncoder);
-	}
-	
-	@RequestMapping("/group/users/{groupId}")
-	public void searchUsersByGroup(Long groupId) {
-		List<?> list = service.searchUsersByGroup(groupId);
-		GridDataEncoder gridEncoder = new GridDataEncoder(list,UMConstants.GENERAL_SYN_GRID);
-
-        print("GeneralSearchSyncGrid", gridEncoder);
 	}
 }

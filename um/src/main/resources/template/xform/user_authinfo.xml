@@ -7,7 +7,7 @@
 		<column name="accountUsefulLife" caption="账户有效期限" mode="date" empty="false"
 			pattern="yyyy-MM-dd" maxLength="32" editor="text"/>
 		<column name="authenticateMethod" caption="认证方式" mode="string" empty="false" maxLength="100" editor="comboedit"
-			editorvalue="com.jinhe.tss.um.sso.UMSLocalUserPWDIdentifier" editortext="UM本地"/>
+			editorvalue="com.jinhe.tss.um.sso.UMPasswordIdentifier" editortext="UM本地"/>
 	</declare>
 	<layout>
 		<TR>

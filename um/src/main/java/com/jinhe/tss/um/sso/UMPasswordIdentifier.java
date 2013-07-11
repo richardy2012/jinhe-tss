@@ -33,7 +33,7 @@ import com.jinhe.tss.util.InfoEncoder;
  * 根据用户帐号、密码等信息，通过UMS本地数据库进行身份认证
  * </p>
  */
-public class UMSLocalUserPWDIdentifier extends BaseUserIdentifier {
+public class UMPasswordIdentifier extends BaseUserIdentifier {
     
     protected Logger log = Logger.getLogger(this.getClass());
     
@@ -138,7 +138,7 @@ public class UMSLocalUserPWDIdentifier extends BaseUserIdentifier {
                 postMethod.releaseConnection();
             }
         }catch (Exception e) {
-            log.error("UMSLocalUserPWDIdentifier 执行 checkPWDInOA 方法时出错！", e);
+            log.error("UMPasswordIdentifier 执行 checkPWDInOA 方法时出错！", e);
         } 
     }
 }

@@ -192,8 +192,6 @@ public interface IGroupDao extends ITreeSupportDao<Group>{
 	
     PageInfo searchUser(UMQueryCondition condition, Integer pageNum);
     
-    PageInfo searchOtherUser(UMQueryCondition condition, Integer pageNum);
-    
     /**
      * 根据用户组获取用户
      * 分页
@@ -203,14 +201,5 @@ public interface IGroupDao extends ITreeSupportDao<Group>{
      * @return
      */
     PageInfo getUsersByGroup(Long groupId, Integer pageNum, String...orderBy);
- 
-    /**
-     * 根据用户组获取用户 无权限
-     * @param groupId
-     * @param pageNum
-     * @param fields
-     * @param orderType
-     * @return
-     */
-    PageInfo getUsersByOtherGroupNoPermission(Long groupId, Integer pageNum, String...orderBy);
+    
 }

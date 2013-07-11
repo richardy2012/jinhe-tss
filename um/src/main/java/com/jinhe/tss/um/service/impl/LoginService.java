@@ -147,23 +147,8 @@ public class LoginService implements ILoginService {
 			throw new BusinessException("没有找到编号ID为(" + userId + ")的用户");
 		}
 		
-		// 不同用户库； 如若相同，则直接返回用户。
-		String originalUserDepositoryCode = user.getApplicationId();
-		if ( !userDepositoryCode.equals(originalUserDepositoryCode) ) { 
-		    // 原用户不为平台用户，则先将给用户转换为平台用户，再有平台用户转换为目标用户库的用户
-			if (!UMConstants.TSS_APPLICATION_ID.equals(originalUserDepositoryCode)) {
-				user = userDao.getAppUser(userId, UMConstants.TSS_APPLICATION_ID); // 取到平台用户
-				if (user == null) {
-					throw new BusinessException("用户（" + userId + "）没有对应的平台（"
-							+ UMConstants.TSS_APPLICATION_ID + "）用户");
-				}
-			}
-			
-		    Long appUserId = user.getId();
-            user = userDao.getAppUser(appUserId, userDepositoryCode); // 取到目标用户库的用户
-            if (user == null) {
-                throw new BusinessException("用户【" + appUserId + "】没有对应的其他用户库【" + userDepositoryCode + "】用户");
-            }
+		if ( !userDepositoryCode.equals(UMConstants.TSS_APPLICATION_ID) ) { 
+		    // TODO 用户登录的不是平台系统，则先设法取出用户对应该平台的信息（比如登录密码等，可考虑存user的某字段里）
 		}
 		
 		return createOperatorDTO(user);

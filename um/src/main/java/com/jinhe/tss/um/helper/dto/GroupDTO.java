@@ -2,8 +2,6 @@ package com.jinhe.tss.um.helper.dto;
 
 import java.io.Serializable;
 
-import com.jinhe.tss.um.entity.Group;
-
 /**
  * 同步使用的DTO
  */
@@ -19,7 +17,7 @@ public class GroupDTO implements Serializable {
 	private Integer disabled;      // 用户组状态
 	private String  applicationId; // 应用系统Code
 	
-	private Integer groupType = Group.OTHER_GROUP_TYPE; // 用户组类型
+	private Integer groupType; // 用户组类型
 	
 	public String getId() {
 		return id;

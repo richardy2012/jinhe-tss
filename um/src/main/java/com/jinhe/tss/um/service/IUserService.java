@@ -126,19 +126,6 @@ public interface IUserService {
         )
     void moveUser(Long groupId, Long toGroupId, Long userId);
 
-    /**
-     * <p>
-     * 导入用户到
-     * 其他用户组的用户导入到主用户组，并形成对应关系
-     * </p>
-     * @param groupId
-     * @param toGroupId
-     * @param userId
-     */
-    @Logable(operateTable="用户", operateType="导入", 
-            operateInfo=" 导入(ID: ${args[0]}) 其它用户组中的（ID：${args[2]}）用户至 (ID: ${args[1]}) 主用户组 "
-        )
-    void importUser(Long groupId, Long toGroupId, Long userId);
 
     /**
      * <p>

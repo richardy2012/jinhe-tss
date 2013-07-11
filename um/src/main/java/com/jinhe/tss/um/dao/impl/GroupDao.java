@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.persistence.pagequery.PaginationQueryByHQL;
-import com.jinhe.tss.framework.persistence.pagequery.PaginationQueryBySQL;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupDao;
@@ -21,7 +20,6 @@ import com.jinhe.tss.um.dao.IResourceTypeDao;
 import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.UMQueryCondition;
-import com.jinhe.tss.um.helper.dto.OtherUserDTO;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.util.EasyUtils;
  
@@ -219,34 +217,6 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
         }    
         return result;
     }
-    
-    private List<OtherUserDTO> fillOtherGroupInfo(List<?> users){
-    	List<OtherUserDTO> result = new ArrayList<OtherUserDTO>();
-    	 if( EasyUtils.isNullOrEmpty(users) ) return result;
-    	 
-    	 for (Object temp : users) {
-            Object[] objs = (Object[]) temp;
-            
-			OtherUserDTO otherUserDTO = new OtherUserDTO();
-			otherUserDTO.setId( EasyUtils.convertObject2Long(objs[0]) );
-			otherUserDTO.setUserName((String)objs[1]);
-			otherUserDTO.setLoginName((String)objs[2]);
-			otherUserDTO.setGroupId( EasyUtils.convertObject2Long(objs[3]));
-			otherUserDTO.setGroupName((String)objs[4]);
-			
-			if( objs[5] != null ){
-    			otherUserDTO.setAppUserId( EasyUtils.convertObject2Long(objs[5]));
-    			otherUserDTO.setAppUserName((String)objs[6]);
-    			otherUserDTO.setAppLoginName((String)objs[7]);
-    			otherUserDTO.setAppGroupId( EasyUtils.convertObject2Long(objs[8]));
-    			otherUserDTO.setAppGroupName((String)objs[9]);
-			}
-			
-			result.add(otherUserDTO);
-		}
-    		
-    	return result;
-    }
 
 	private List<Long> getChildrenGroupIds(Long groupId){
     	List<?> groups = getChildrenById(groupId);
@@ -284,55 +254,6 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
         PaginationQueryByHQL pageQuery = new PaginationQueryByHQL(em, hql, condition);
         PageInfo page = pageQuery.getResultList();
         page.setItems( fillGroupInfo2User(page.getItems()) );
-        return page;
-    }
-    
-    public PageInfo getUsersByOtherGroupNoPermission(Long groupId, Integer pageNum, String...orderBy) {
-    	String sql = "select distinct u.id, u.userName, u.loginName, g.id as groupId, g.name as groupName, "
-        	+ " u1.id as appUserId, u1.userName as appUserName,u1.loginName as appLoginName, g1.id as appGroupId, g1.name as appGroupName "
-    		+ " from um_user u,  um_groupuser gu,  um_group g, "
-    		+ "      um_user u1, um_groupuser gu1, um_group g1"
-    		+ " where u.id = gu.userId and gu.groupId = g.id and g.id = :groupId " 
-    		+ " and u.appUserId = u1.id(+) "
-    		+ " and u1.id = gu1.userId(+) and gu1.groupId = g1.id(+) ";
-    	UMQueryCondition condition = new UMQueryCondition();
-        condition.setGroupId(groupId);
-        condition.getPage().setPageNum(pageNum);
-        
-        if(orderBy != null) {
-        	condition.getOrderByFields().addAll( Arrays.asList(orderBy) );
-        } 
-
-        PaginationQueryBySQL pageQuery = new PaginationQueryBySQL(em, sql, condition);
-        PageInfo page = pageQuery.getResultList();
-        page.setItems(fillOtherGroupInfo(page.getItems()));
-        return page;
-    }
-    
-    public PageInfo searchOtherUser(UMQueryCondition condition, Integer pageNum){
-        List<Long> groupIds = getChildrenGroupIds(condition.getGroupId());
-        if( EasyUtils.isNullOrEmpty(groupIds) ) return null;
- 
-        String sql = "select distinct u.id, u.userName, u.loginName, g.id as groupId, g.name as groupName, "
-        	+ " u1.id as appUserId, u1.userName as appUserName,u1.loginName as appLoginName, g1.id as appGroupId, g1.name as appGroupName "
-    		+ " from um_user u,  um_groupuser gu,  um_group g, "
-    		+ "      um_user u1, um_groupuser gu1, um_group g1"
-    		+ " where u.id = gu.userId and gu.groupId = g.id and g.id = :groupId " 
-    		+ " and u.appUserId = u1.id(+) "
-    		+ " and u1.id = gu1.userId(+) and gu1.groupId = g1.id(+) "
-        	+ " ${loginName} ${userName} ${employeeNo} ${sex} ${birthday} ${certificateNumber} ";
-        
-        condition.getPage().setPageNum(pageNum);
-        condition.setGroupIds(groupIds);
-
-        Set<String> set = condition.getIgnoreProperties();
-        set.add("userId");
-        set.add("groupType");
-        set.add("groupId");
-        
-        PaginationQueryBySQL pageQuery = new PaginationQueryBySQL(em, sql, condition);
-        PageInfo page = pageQuery.getResultList();
-        page.setItems(fillOtherGroupInfo(page.getItems()));
         return page;
     }
     

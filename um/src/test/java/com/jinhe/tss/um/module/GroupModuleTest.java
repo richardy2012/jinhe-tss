@@ -11,7 +11,6 @@ import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.action.GroupAction;
 import com.jinhe.tss.um.dao.IGroupDao;
-import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IApplicationService;
@@ -33,28 +32,10 @@ public class GroupModuleTest extends TxSupportTest4UM {
     @Autowired IUserService userService;
     @Autowired IApplicationService appService;
     
-    private void printGroups(int mainGroupNum, int assistGroupNum, int otherGroupNum, int appNum) {
-        Object[] data = groupService.findGroups();
-        
-        List<?> groups = (List<?>) data[0];
+    private void printGroups(int mainGroupNum, int assistGroupNum) {
+        List<?> groups = groupService.findGroups();
         assertEquals(mainGroupNum + assistGroupNum, groups.size());
         for(Object temp : groups) {
-            log.debug(temp);
-        }
-        
-        Group otherAppGroupRoot = (Group) data[1];
-        assertNotNull(otherAppGroupRoot);
-        log.debug(otherAppGroupRoot);
-        
-        List<?> otherGroups = (List<?>)data[2]; 
-        List<?> apps = (List<?>)data[3];
-        assertEquals(otherGroupNum, otherGroups.size());
-        assertEquals(appNum, apps.size());
-        
-        for(Object temp : otherGroups) {
-            log.debug(temp);
-        }
-        for(Object temp : apps) {
             log.debug(temp);
         }
         
@@ -64,7 +45,6 @@ public class GroupModuleTest extends TxSupportTest4UM {
     public void testGroupModule() {
         _testMainGroupCRUD();
         _testAssistGroupCRUD();
-        _testOtherGroupCRUD();
         
         _testAction();
         
@@ -74,13 +54,12 @@ public class GroupModuleTest extends TxSupportTest4UM {
     Group mainGroup1;
     
     public void _testMainGroupCRUD() {
-        printGroups(4, 1, 0, 0);
+        printGroups(4, 1);
         
         mainGroup1 = new Group();
         mainGroup1.setParentId(UMConstants.MAIN_GROUP_ID);
         mainGroup1.setName("主用户组一");
         mainGroup1.setGroupType( Group.MAIN_GROUP_TYPE );
-        mainGroup1.setApplicationId(APPLICATION_ID);
         groupService.createNewGroup(mainGroup1 , "", "-1");
         log.debug(mainGroup1 + "\n");
         
@@ -88,10 +67,9 @@ public class GroupModuleTest extends TxSupportTest4UM {
         group2.setParentId(UMConstants.MAIN_GROUP_ID);
         group2.setName("主用户组二");
         group2.setGroupType( Group.MAIN_GROUP_TYPE );
-        group2.setApplicationId(APPLICATION_ID);
         groupService.createNewGroup(group2 , "", "-1");
         
-        groupService.deleteGroup(group2.getApplicationId(), group2.getId());
+        groupService.deleteGroup(group2.getId());
         group2.setId(null);
         groupService.createNewGroup(group2 , "", "-1");
         
@@ -99,12 +77,10 @@ public class GroupModuleTest extends TxSupportTest4UM {
         group3.setParentId(mainGroup1.getId());
         group3.setName("主用户组一.1");
         group3.setGroupType( Group.MAIN_GROUP_TYPE );
-        group3.setApplicationId(APPLICATION_ID);
         groupService.createNewGroup(group3 , "", "-1");
-        printGroups(7, 1, 0, 0);
+        printGroups(7, 1);
         
         User user1 = new User();
-        user1.setApplicationId(mainGroup1.getApplicationId());
         user1.setLoginName("JonKing");
         user1.setUserName("JK");
         user1.setPassword("123456");
@@ -112,8 +88,8 @@ public class GroupModuleTest extends TxSupportTest4UM {
         userService.createOrUpdateUser(user1 , "" + mainGroup1.getId(), "-1");
         log.debug(user1 + "\n");
         
-        groupService.startOrStopGroup(APPLICATION_ID, mainGroup1.getId(), 1);
-        groupService.startOrStopGroup(APPLICATION_ID, mainGroup1.getId(), 0);
+        groupService.startOrStopGroup( mainGroup1.getId(), 1);
+        groupService.startOrStopGroup( mainGroup1.getId(), 0);
         
         List<Group> groups = groupDao.getGroupsByType(Environment.getOperatorId(), 
         		UMConstants.GROUP_VIEW_OPERRATION, Group.MAIN_GROUP_TYPE);
@@ -124,7 +100,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
         
         log.debug("Testing sortGroup......");
         groupService.sortGroup(mainGroup1.getId(), group2.getId(), 1);
-        printGroups(7, 1, 0, 0);
+        printGroups(7, 1);
         
         List<User> users = groupService.findUsersByGroupId(mainGroup1.getId());
         assertEquals(1, users.size());
@@ -156,10 +132,9 @@ public class GroupModuleTest extends TxSupportTest4UM {
         group1.setParentId(UMConstants.ASSISTANT_GROUP_ID);
         group1.setName("辅助组一");
         group1.setGroupType( Group.ASSISTANT_GROUP_TYPE );
-        group1.setApplicationId(APPLICATION_ID);
         groupService.createNewGroup(group1 , "" + user1.getId(), "-1");
         
-        groupService.deleteGroup(group1.getApplicationId(), group1.getId());
+        groupService.deleteGroup(group1.getId());
         group1.setId(null);
         groupService.createNewGroup(group1 , "" + user1.getId(), "-1");
         
@@ -167,16 +142,14 @@ public class GroupModuleTest extends TxSupportTest4UM {
         group2.setParentId(UMConstants.ASSISTANT_GROUP_ID);
         group2.setName("辅助组二");
         group2.setGroupType( Group.ASSISTANT_GROUP_TYPE );
-        group2.setApplicationId(APPLICATION_ID);
         groupService.createNewGroup(group2 , "", "-1");
         
         Group group3 = new Group();
         group3.setParentId(group1.getId());
         group3.setName("辅助组一.1");
         group3.setGroupType( Group.ASSISTANT_GROUP_TYPE );
-        group3.setApplicationId(APPLICATION_ID);
         groupService.createNewGroup(group3 , "", "-1");
-        printGroups(7, 4, 0, 0);
+        printGroups(7, 4);
         
         List<User> users = groupService.findUsersByGroupId(group1.getId());
         assertEquals(1, users.size());
@@ -199,93 +172,11 @@ public class GroupModuleTest extends TxSupportTest4UM {
         
     }
     
-    Group otherGroup1;
-    
-    public void _testOtherGroupCRUD() {
-        Application application = new Application();
-        application.setApplicationType(UMConstants.OTHER_SYSTEM_APP);
-        application.setApplicationId("OA");
-        application.setName("JH OA");
-        appService.saveApplication(application);
-        
-        otherGroup1 = new Group();
-        otherGroup1.setParentId(UMConstants.OTHER_APPLICATION_GROUP_ID);
-        otherGroup1.setName("财务部");
-        otherGroup1.setGroupType( Group.OTHER_GROUP_TYPE );
-        otherGroup1.setApplicationId(application.getApplicationId());
-        groupService.createNewGroup(otherGroup1 , "", "");
-        
-        groupService.deleteGroup(UMConstants.TSS_APPLICATION_ID, otherGroup1.getId());
-        otherGroup1.setId(null);
-        groupService.createNewGroup(otherGroup1 , null, null);
-        
-        Group group2 = new Group();
-        group2.setParentId(UMConstants.OTHER_APPLICATION_GROUP_ID);
-        group2.setName("法务部");
-        group2.setGroupType( Group.OTHER_GROUP_TYPE );
-        group2.setApplicationId(application.getApplicationId());
-        groupService.createNewGroup(group2 , "", "");
-        
-        Group group3 = new Group();
-        group3.setParentId(otherGroup1.getId());
-        group3.setName("法务部.1");
-        group3.setGroupType( Group.OTHER_GROUP_TYPE );
-        group3.setApplicationId(application.getApplicationId());
-        groupService.createNewGroup(group3 , "", "");
-        printGroups(7, 4, 3, 1);
-        
-        User user1 = new User();
-        user1.setApplicationId(otherGroup1.getApplicationId());
-        user1.setLoginName("JonKing");
-        user1.setUserName("JK");
-        user1.setPassword("123456");
-        user1.setGroupId(otherGroup1.getId());
-        userService.createOrUpdateUser(user1 , "" + otherGroup1.getId(), "");
-        log.debug(user1 + "\n");
-        
-        Object[] result = groupService.getOtherGroupsByOperationId(UMConstants.GROUP_EDIT_OPERRATION);
-        Group otherAppGroupRoot = (Group) result[0];
-        assertNotNull(otherAppGroupRoot);
-        log.debug(otherAppGroupRoot + "\n");
-        
-        List<?> otherGroups = (List<?>) result[1];
-        List<?> apps = (List<?>) result[2];
-        assertEquals(3, otherGroups.size());
-        assertEquals(1, apps.size());
-        for(Object temp : otherGroups) {
-            log.debug(temp);
-        }
-        log.debug("\n");
-        for(Object temp : apps) {
-            log.debug(temp);
-        }
-        log.debug("\n");
-        
-        result = groupService.getGroupsUnderAppByOperationId(UMConstants.GROUP_EDIT_OPERRATION, application.getApplicationId());
-        otherAppGroupRoot = (Group) result[0];
-        assertNotNull(otherAppGroupRoot);
-        log.debug(otherAppGroupRoot + "\n");
-        
-        otherGroups = (List<?>) result[1];
-        apps = (List<?>) result[2];
-        assertEquals(3, otherGroups.size());
-        assertEquals(1, apps.size());
-        for(Object temp : otherGroups) {
-            log.debug(temp);
-        }
-        log.debug("\n");
-        for(Object temp : apps) {
-            log.debug(temp);
-        }
-        log.debug("\n");
-    }
-    
     public void _testAction() {
         action.getAllGroup2Tree();
         
         action.getCanAddedGroup2Tree("tss", Group.MAIN_GROUP_TYPE);
         action.getCanAddedGroup2Tree("tss", Group.ASSISTANT_GROUP_TYPE);
-        action.getCanAddedGroup2Tree("tss", Group.OTHER_GROUP_TYPE);
         
         action.getOperation(Group.MAIN_GROUP_TYPE, -2L);
         
@@ -305,8 +196,8 @@ public class GroupModuleTest extends TxSupportTest4UM {
         
         action.getAllGroup2Tree();
         
-        // 测试其他用户组导入到主用户组。TODO 进度条需要单独起线程，里面没有事务。
-//        action.importGroup(otherGroup1.getId(), UMConstants.MAIN_GROUP_ID);
+        // 测试用户同步。TODO 进度条需要单独起线程，里面没有事务。
+//        action.syncData(applicationId, groupId, mode);
  
     }
 }

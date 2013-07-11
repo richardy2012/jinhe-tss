@@ -24,28 +24,6 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
         return commonDao.getEntities("from ResourceType o where o.applicationId = ? order by o.seqNo", applicationId);
 	}
  
-	public List<?> searchOtherUserMappingInfo(Long groupId) {
-		List<?> users = searchUsersByGroup(groupId);
-		for ( Object temp : users ) {
-			User user = (User) temp;
-			Long mappedMainUserId = user.getAppUserId();
-			if (mappedMainUserId == null) continue;
-			
-			User mapUser = (User) commonDao.getEntity(User.class, mappedMainUserId);
-			if (mapUser != null) {
-				user.setAppUserName(mapUser.getLoginName());
-			}
-			
-			String hql = "select g from GroupUser gu, Group g where gu.groupId = g.id and gu.userId = ? and g.groupType = ?";
-			List<?> groups = commonDao.getEntities(hql, mappedMainUserId, Group.MAIN_GROUP_TYPE);
-			if ( groups.size() > 0 ) {
-				Group group = (Group) groups.get(0);
-				user.setAppUserGroupName(group.getName());
-			}
-		}
-		return users;
-	}
- 
 	// 一个组下面所有用户的因转授而获得的角色的情况
 	public List<SubAuthorizedUserRoleDTO> searchUserSubauthByGroupId(Long groupId){
 	    // 先取出组下所有可见的用户
@@ -155,11 +133,6 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
 			result.add(user);
 		}
 		return result;
-	}
-	
-	public List<?> searchUsersByGroup(Long groupId){
-		String hql = "select distinct u from GroupUser gu, User u where gu.userId = u.id and gu.groupId = ?";
-		return commonDao.getEntities(hql, groupId);
 	}
 
 }

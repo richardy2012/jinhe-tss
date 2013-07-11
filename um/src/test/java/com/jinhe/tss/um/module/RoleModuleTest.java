@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
@@ -34,7 +33,6 @@ public class RoleModuleTest extends TxSupportTest4UM {
         mainGroup.setParentId(UMConstants.MAIN_GROUP_ID);
         mainGroup.setName("财务部");
         mainGroup.setGroupType( Group.MAIN_GROUP_TYPE );
-        mainGroup.setApplicationId(Config.getAttribute(Config.APPLICATION_CODE));
         groupService.createNewGroup(mainGroup , "", "");
         log.debug(mainGroup);
         
@@ -43,13 +41,11 @@ public class RoleModuleTest extends TxSupportTest4UM {
         childGroup.setParentId(mainGroup.getId());
         childGroup.setName("财务一部");
         childGroup.setGroupType( mainGroup.getGroupType() );
-        childGroup.setApplicationId(mainGroup.getApplicationId());
         groupService.createNewGroup(childGroup , "", "");
         log.debug(childGroup);
         
         // 管理员直接在主组下新增用户
         User mainUser = new User();
-        mainUser.setApplicationId(mainGroup.getApplicationId());
         mainUser.setLoginName("JonKing");
         mainUser.setUserName("JK");
         mainUser.setPassword("123456");
@@ -161,8 +157,7 @@ public class RoleModuleTest extends TxSupportTest4UM {
     }
 
 	private void printVisibleMainGroups() {
-		Object[] data = groupService.findGroups();
-        List<?> groups = (List<?>) data[0];
+        List<?> groups = groupService.findGroups();
         for(Object temp : groups) {
             log.debug(temp);
         }

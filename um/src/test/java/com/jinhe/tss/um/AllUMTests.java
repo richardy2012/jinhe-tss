@@ -17,9 +17,8 @@ import com.jinhe.tss.um.servlet.GetPasswordStrengthServletTest;
 import com.jinhe.tss.um.servlet.RegisterServletTest;
 import com.jinhe.tss.um.servlet.ResetPasswordServletTest;
 import com.jinhe.tss.um.sso.FetchPermissionAfterLoginCustomizerTest;
+import com.jinhe.tss.um.sso.UMPasswordIdentifierTest;
 import com.jinhe.tss.um.sso.UMSIdentityTranslatorTest;
-import com.jinhe.tss.um.sso.UMSLocalUserPWDIdentifierTest;
-import com.jinhe.tss.um.syncdata.SyncDataTest;
  
 public class AllUMTests {
 
@@ -36,7 +35,7 @@ public class AllUMTests {
 		suite.addTestSuite(ApplicationModuleTest.class);
 		
 		suite.addTestSuite(FetchPermissionAfterLoginCustomizerTest.class);
-		suite.addTestSuite(UMSLocalUserPWDIdentifierTest.class);
+		suite.addTestSuite(UMPasswordIdentifierTest.class);
 		suite.addTestSuite(UMSIdentityTranslatorTest.class);
 		
 		suite.addTestSuite(GetLoginInfoServletTest.class);
@@ -45,7 +44,6 @@ public class AllUMTests {
 		suite.addTestSuite(RegisterServletTest.class);
 		suite.addTestSuite(ResetPasswordServletTest.class);
 		
-		suite.addTestSuite(SyncDataTest.class);
 		suite.addTestSuite(GeneralSearchTest.class);
 
 		return suite;

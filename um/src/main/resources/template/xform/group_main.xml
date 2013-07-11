@@ -3,11 +3,16 @@
 	<declare prefix="group">
 		<column name="name" caption="名称" mode="string" empty="false" maxLength="50" editor="text"/>
 		<column name="description" caption="描述" mode="string" empty="true" maxLength="255" editor="textarea"/>
+		<column name="dbGroupId" caption="外部应用用户组ID" mode="string" empty="false" maxLength="50" editor="text"/>
 	</declare>
 	<layout>
 		<TR>
 			<TD width="70"><label binding="name"/></TD>
 			<TD><input binding="name"/></TD>
+		</TR>
+		<TR>
+			<TD width="100"><label binding="dbGroupId"/></TD>
+			<TD><input binding="dbGroupId"/></TD>
 		</TR>
 		<TR>
 			<TD width="70"><label binding="description"/></TD>

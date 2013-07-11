@@ -9,37 +9,27 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jinhe.tss.framework.component.progress.Progress;
-import com.jinhe.tss.framework.component.progress.Progressable;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.um.UMConstants;
-import com.jinhe.tss.um.dao.IApplicationDao;
 import com.jinhe.tss.um.dao.IGroupDao;
 import com.jinhe.tss.um.dao.IGroupUserDao;
 import com.jinhe.tss.um.dao.IRoleDao;
-import com.jinhe.tss.um.dao.IUserDao;
-import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.GroupUser;
 import com.jinhe.tss.um.entity.RoleGroup;
 import com.jinhe.tss.um.entity.User;
-import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.permission.ResourcePermission;
 import com.jinhe.tss.um.service.IGroupService;
-import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
-import com.jinhe.tss.util.InfoEncoder;
  
 @Service("GroupService")
-public class GroupService implements IGroupService, Progressable{
+public class GroupService implements IGroupService {
 
 	@Autowired private IGroupDao groupDao;
 	@Autowired private IRoleDao  roleDao;
-	@Autowired private IUserDao  userDao;
 	@Autowired private IGroupUserDao groupUserDao;
 	@Autowired private ResourcePermission resourcePermission;
-	@Autowired private IApplicationDao applicationDao;
 
     public Group getGroupById(Long id) {
         return groupDao.getEntity(id);
@@ -57,12 +47,11 @@ public class GroupService implements IGroupService, Progressable{
         return roleDao.getEditableRoles();
     }
 
-    public Object[] findGroups() {
+    public List<?> findGroups() {
     	Long operatorId = Environment.getOperatorId();
         List<?> mainAndAssistantGroups = groupDao.getMainAndAssistantGroups(operatorId);
         
-        Object[] objs = getOtherGroupsByOperationId(UMConstants.GROUP_VIEW_OPERRATION);
-        return new Object[]{ mainAndAssistantGroups, objs[0], objs[1], objs[2] };
+        return mainAndAssistantGroups;
     }
     
     public Object[] getAssistGroupsByOperationId(String operationId) {
@@ -85,47 +74,7 @@ public class GroupService implements IGroupService, Progressable{
         List<?> parentGroups = groupDao.getParentGroupByGroupIds(groupIds, operatorId, UMConstants.GROUP_VIEW_OPERRATION);
         return new Object[]{groupIds, parentGroups};
     }
-
-    public Object[] getOtherGroupsByOperationId(String operationId) {
-    	Long operatorId = Environment.getOperatorId();
-        List<?> groups = groupDao.getGroupsByType(operatorId, operationId, Group.OTHER_GROUP_TYPE);  
-        
-        Group otherAppGroupRoot = null;   
-        List<Group> otherGroups = new ArrayList<Group>();
-        for( Object temp : groups ){
-            Group group = (Group) temp;
-            if(UMConstants.OTHER_APPLICATION_GROUP_ID.equals(group.getId())) {
-                otherAppGroupRoot = group; // 其他用户组
-                continue;
-            }
-            otherGroups.add(group);
-        }
  
-        String hql = " from Application o where o.applicationType = ? order by o.id";
-        List<?> apps = groupDao.getEntities(hql, UMConstants.OTHER_SYSTEM_APP);
-        
-        return new Object[]{otherAppGroupRoot, otherGroups, apps};
-    }
-    
-    public Object[] getGroupsUnderAppByOperationId(String operationId, String applicationId){
-        List<?> groups = groupDao.getGroupsByType(Environment.getOperatorId(), operationId, Group.OTHER_GROUP_TYPE);  
-        
-        Group otherAppGroupRoot = null;   
-        List<Group> otherGroups = new ArrayList<Group>();
-        for( Object temp : groups ){
-            Group group = (Group) temp;
-            if(UMConstants.OTHER_APPLICATION_GROUP_ID.equals(group.getId())) {
-                otherAppGroupRoot = group; // 其他用户组
-                continue;
-            }
-            otherGroups.add(group);
-        }
- 
-        List<Application> apps = new ArrayList<Application>();
-        apps.add(applicationDao.getApplication(applicationId));
-        
-        return new Object[]{otherAppGroupRoot, otherGroups, apps};
-    }
     
 	public void createNewGroup(Group group, String userIdsStr, String roleIdsStr) {
 		Long parentId = group.getParentId();
@@ -139,9 +88,6 @@ public class GroupService implements IGroupService, Progressable{
     
     public void editExistGroup(Group group, String userIdsStr, String roleIdsStr) {
         groupDao.saveGroup(group);
-        
-        // 其他用户组只是简单的编辑组的属性，也不改变关系，所以不能调用saveGroupToRole 和 saveGroupToUser
-        if (Group.OTHER_GROUP_TYPE.equals(group.getGroupType())) return;
         
         saveGroupToRole(group.getId(), roleIdsStr);
         
@@ -210,10 +156,11 @@ public class GroupService implements IGroupService, Progressable{
         groupDao.sort(groupId, toGroupId, direction);
     }
 
-    public void startOrStopGroup(String applicationId, Long groupId, Integer disabled) {
+    public void startOrStopGroup(Long groupId, Integer disabled) {
+        String applicationId = UMConstants.TSS_APPLICATION_ID;
         if (UMConstants.TRUE.equals(disabled)) { // 停用            
             String operationId = UMConstants.GROUP_EDIT_OPERRATION;
-            if (!checkSubGroupsPermission(applicationId, groupId, operationId)) {
+            if (!checkSubGroupsPermission(groupId, operationId)) {
                 throw new BusinessException("您对停用节点下的某些资源（用户组）没有停用操作权限，不能停用此节点！");
             }
             
@@ -245,11 +192,10 @@ public class GroupService implements IGroupService, Progressable{
         groupDao.executeHQL("update Group set disabled = ? where decode like ?", UMConstants.TRUE, group.getDecode() + "%");
        
         /* 
-         * 停用主用户组和其他用户组需要停用组下的用户。停用辅助用户组不停用用户，因为辅助用户组当中的用户是从主用户组中选取的.
-         * 停用其它用户组用户无需判断权限；停用主用户组用户上面已经判断过了。
+         * 停用主用户组，需要停用组下的用户。停用辅助用户组不停用用户，因为辅助用户组当中的用户是从主用户组中选取的.
          */
         Integer groupType = group.getGroupType();
-        if (Group.MAIN_GROUP_TYPE.equals(groupType) || Group.OTHER_GROUP_TYPE.equals(groupType)) {
+        if ( Group.MAIN_GROUP_TYPE.equals(groupType) ) {
             List<User> users = groupDao.getUsersByGroupIdDeeply(groupId);
             for( User user : users) {
                 if(!UMConstants.TRUE.equals(user.getDisabled())){
@@ -259,13 +205,13 @@ public class GroupService implements IGroupService, Progressable{
         }
     }
 
-    public void deleteGroup(String applicationId, Long groupId) {
+    public void deleteGroup(Long groupId) {
         if(groupDao.isOperatorInGroup(groupId, Environment.getOperatorId()))
             throw new BusinessException("当前用户在要操作的组中，不能删除此节点！");
         
         Group group = groupDao.getEntity(groupId);
         String operationId = UMConstants.GROUP_EDIT_OPERRATION;
-        if ( !checkSubGroupsPermission(applicationId, groupId, operationId) ) {
+        if ( !checkSubGroupsPermission(groupId, operationId) ) {
             throw new BusinessException("没有删除用户组权限，不能删除此节点！");
         }
         
@@ -279,138 +225,14 @@ public class GroupService implements IGroupService, Progressable{
     }
     
     // 判断对所有子节点是否都拥有指定的操作权限
-    private boolean checkSubGroupsPermission(String applicationId, Long groupId, String operationId) {
+    private boolean checkSubGroupsPermission(Long groupId, String operationId) {
+        String applicationId = UMConstants.TSS_APPLICATION_ID;
         List<?> allGroups = groupDao.getChildrenById(groupId);
-        List<?> canDoGroups = resourcePermission.getSubResourceIds(applicationId, UMConstants.GROUP_RESOURCE_TYPE_ID, groupId, operationId, 
-                Environment.getOperatorId());
+        List<?> canDoGroups = resourcePermission.getSubResourceIds(applicationId, UMConstants.GROUP_RESOURCE_TYPE_ID, 
+                groupId, operationId, Environment.getOperatorId());
         
         //如果将要操作的数量==能够操作的数量,说明对所有组都有操作权限,则返回true
         return allGroups.size() == canDoGroups.size();
     }
-    
-    //-------------------------------------用户组从其它用户组导入到主用户组，加入进度条显示------------------------------------------
-    public Map<String, Object> getImportGroupData(Long groupId, Long toGroupId){
-        Group copyGroup = getGroupById(groupId);
-        groupDao.evict(copyGroup);
-        Group toGroup = getGroupById(toGroupId);
-        checkCopyGroupPrivilege(copyGroup, toGroup);
-        
-        List<?> groups = groupDao.getVisibleSubGroups(groupId);
-        List<Long> groupIds = new ArrayList<Long>();
-        for (int i = 0; i < groups.size(); i++) {
-            Group group = (Group) groups.get(i);
-            groupIds.add(group.getId());
-        }
-        List<User> users = groupDao.getUsersByGroupIds(groupIds);
-
-        Map<String, Object> paramsMap = new HashMap<String, Object>();
-        paramsMap.put("groupId", groupId);
-        paramsMap.put("toGroup", toGroup);
-        paramsMap.put("groups", groups);
-        paramsMap.put("users", users);
-        
-        return paramsMap;
-    }
-
-    public void execute(Map<String, Object> paramsMap, Progress progress) {
-        Long groupId = (Long)paramsMap.get("groupId");
-        Group toGroup = (Group)paramsMap.get("toGroup");
-        List<?> groups = (List<?>)paramsMap.get("groups");
-        List<?> users  = (List<?>)paramsMap.get("users");
-        
-        Map<Long, Long> idMapping = copyGroup(groupId, groups, toGroup, progress);
-        copyUser(users, idMapping, progress);
-    }
-
-    private Map<Long, Long> copyGroup(Long groupId, List<?> groups, Group toGroup, Progress progress){
-        Map<Long, Long> idMapping = new HashMap<Long, Long>(); // key:原组的id -- value:新组的id
-        for (int i = 0; i < groups.size(); i++) {
-            Group group = (Group) groups.get(i);
-            Long sourceGroupId = group.getId(); // 新组复制之前的原组Id
-            
-            groupDao.evict(group);
-            group.setId(null);
-            group.setApplicationId(toGroup.getApplicationId());
-            group.setGroupType(toGroup.getGroupType());
-               
-            if (sourceGroupId.equals(groupId)) {
-                group.setSeqNo(groupDao.getNextSeqNo(toGroup.getId()));
-                group.setParentId(toGroup.getId());
-            }
-            else {
-                group.setParentId(idMapping.get(group.getParentId()));
-            }
-            
-            group = groupDao.saveGroup(group);
-            idMapping.put(sourceGroupId, group.getId());
-            
-            updateProgressInfo(progress, groups.size(), i);
-        }
-        
-        return idMapping;
-    }
-    
-    private void copyUser(List<?> users, Map<Long, Long> idMapping, Progress progress){
-        for (int i = 0; i < users.size(); i++) {
-            User otherUser = (User) users.get(i);
-
-            User mainGroupUser = new User();
-            BeanUtil.copy(mainGroupUser, otherUser);
-            mainGroupUser.setId(null);
-            mainGroupUser.setApplicationId(UMConstants.TSS_APPLICATION_ID);
-            mainGroupUser.setAppUserId(null);
-            String password = InfoEncoder.string2MD5(mainGroupUser.getLoginName() + "_" + mainGroupUser.getPassword());
-            mainGroupUser.setPassword(password); //加密密码
-            mainGroupUser = userDao.create(mainGroupUser);
-
-            //设置主用户组和其它用户组用户的对应关系
-            otherUser.setAppUserId(mainGroupUser.getId());
-            userDao.create(otherUser);
-            
-            // 新建一个用户组对应用户关系
-            saveGroupUser(idMapping.get(otherUser.getGroupId()), mainGroupUser.getId());
-            
-            updateProgressInfo(progress, users.size(), i);
-        }
-    }
-    
-    /**
-     * 更新进度信息
-     */
-    private void updateProgressInfo(Progress progress, long total, int index){
-        groupDao.flush();
-        
-        index = index + 1; // index 从0开始计数
-        if(index % 20 == 0) {
-            progress.add(20); // 每复制20个更新一次进度信息
-        }
-        else if(index == total) {
-            progress.add(index % 20); // 如果已经同步完，则将总数除以20取余数做为本次完成个数来更新进度信息
-        }
-    }
-    
-    /** 判断用户有没有拷贝用户组和用户的权限  */
-    private void checkCopyGroupPrivilege(Group copyGroup, Group toGroup) {
-        String resourceTypeId = copyGroup.getResourceType();
-        
-        // 将其他用户组复制到主用户组
-        if( !copyGroup.getGroupType().equals(toGroup.getGroupType()) ){
-            resourceTypeId = UMConstants.GROUP_RESOURCE_TYPE_ID; // 主用户组资源id             
-        }       
-        
-        //如果是复制，则toGroup为copyGroup父节点
-        List<?> parentOperations = PermissionHelper.getInstance().getOperationsByResource(resourceTypeId, toGroup.getId(), Environment.getOperatorId());
-        if(!parentOperations.contains(UMConstants.GROUP_EDIT_OPERRATION)) {
-            throw new BusinessException("对父组（即复制到的目标节点）没有新增权限，不能复制此节点！");
-        }
-    }
-    
-    /**
-     * 保存组对用户关系，并在groupUserDao中进行补齐。
-     * 对用户的权限信息也在groupUserDao.saveGroupUser方法中补齐。
-     */
-    private void saveGroupUser(Long groupId, Long userId) {
-        GroupUser groupUser = new GroupUser(userId, groupId);
-        groupUserDao.saveGroupUser(groupUser);
-    }
+  
 }

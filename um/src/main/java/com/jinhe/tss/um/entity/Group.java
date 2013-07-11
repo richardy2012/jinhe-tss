@@ -33,7 +33,7 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 
 	public static final Integer MAIN_GROUP_TYPE                     = 1; // 主组类型
 	public static final Integer ASSISTANT_GROUP_TYPE                = 2; // 辅助组类型
-	public static final Integer OTHER_GROUP_TYPE                    = 3; // 其他应用组类型
+
 	public static final Integer SELF_REGISTER_GROUP_TYPE            = 4; // 自注册用户组类型
 	public static final Integer SELF_REGISTER_GROUP_AUTHEN_TYPE     = 5; // 自注册用户组已认证类型
 	public static final Integer SELF_REGISTER_GROUP_NOT_AUTHEN_TYPE = 6; // 自注册用户组未认证类型
@@ -48,8 +48,7 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 	private String  description;   // 描述:用户组信息描述
 	
 	@Column(nullable = false)  
-	private String  applicationId; // 应用系统Code
-	private Integer groupType;     // 用户组类型(1-主用户组类型,2-辅助组类型,3-其他应用组类型)
+	private Integer groupType;     // 用户组类型(1-主用户组类型,2-辅助组类型)
 	
 	// 树信息begin
 	private String  decode;   // 层码
@@ -67,14 +66,6 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
  
 	public void setId(Long id) {
 		this.id = id;
-	}
- 
-	public String getApplicationId() {
-		return applicationId;
-	}
- 
-	public void setApplicationId(String applicationId) {
-		this.applicationId = applicationId;
 	}
  
 	public String getDbGroupId() {
@@ -163,10 +154,9 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 		map.put("disabled", disabled);
 		map.put("dbGroupId", dbGroupId);
 		map.put("groupType", groupType);
-		map.put("applicationId", applicationId);
 		map.put("resourceTypeId", getResourceType());
 		
-		// 特殊组不显示图标 (特殊组指系统初始化的主用户、辅助用户组、其他用户组等根节点，它们的ID为负值)
+		// 特殊组不显示图标 (特殊组指系统初始化的主用户、辅助用户组等根节点，它们的ID为负值)
 		if (id.longValue() > 0) {
 			if (UMConstants.FALSE.equals(disabled)) {
 				map.put("icon", UMConstants.START_GROUP_TREENODE_ICON);

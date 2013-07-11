@@ -6,7 +6,6 @@ import java.util.GregorianCalendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.action.RoleAction;
@@ -61,13 +60,11 @@ public class GeneralSearchTest extends TxSupportTest4UM {
         mainGroup.setParentId(UMConstants.MAIN_GROUP_ID);
         mainGroup.setName("G_财务部");
         mainGroup.setGroupType( Group.MAIN_GROUP_TYPE );
-        mainGroup.setApplicationId(Config.getAttribute(Config.APPLICATION_CODE));
         groupService.createNewGroup(mainGroup , "", "");
         log.debug(mainGroup);
         
         // 管理员直接在主组下新增用户
         User mainUser = new User();
-        mainUser.setApplicationId(mainGroup.getApplicationId());
         mainUser.setLoginName("G_JonKing");
         mainUser.setUserName("G_JK");
         mainUser.setPassword("123456");
@@ -99,7 +96,5 @@ public class GeneralSearchTest extends TxSupportTest4UM {
     	action.searchUserSubauth(mainGroup.getId());
     	
     	action.searchRolesByGroup(roleId);
-    	
-    	action.searchUsersByGroup(mainGroup.getId());
     }
 }

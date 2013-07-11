@@ -1,21 +1,17 @@
 package com.jinhe.tss.um.action;
 
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.AnonymousOperator;
 import com.jinhe.tss.framework.sso.Environment;
@@ -28,15 +24,12 @@ import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
-import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.UMQueryCondition;
 import com.jinhe.tss.um.permission.PermissionHelper;
-import com.jinhe.tss.um.service.IApplicationService;
 import com.jinhe.tss.um.service.IUserService;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
-import com.jinhe.tss.util.URLUtil;
 import com.jinhe.tss.util.XMLDocUtil;
 
 @Controller
@@ -44,7 +37,6 @@ import com.jinhe.tss.util.XMLDocUtil;
 public class UserAction extends BaseActionSupport {
 
 	@Autowired private IUserService userService;
-	@Autowired private IApplicationService applicationService;
 
     /**
      * 获取一个User（用户）对象的明细信息、用户对用户组信息、用户对角色的信息
@@ -125,13 +117,7 @@ public class UserAction extends BaseActionSupport {
 		userService.moveUser(groupId, toGroupId, userId);
         printSuccessMessage();
 	}
-	
-	@RequestMapping(value = "/import/{groupId}/{userId}/{toGroupId}", method = RequestMethod.POST)
-	public void importUser(Long groupId, Long userId, Long toGroupId) {
-		userService.importUser(groupId, toGroupId, userId);
-		printSuccessMessage();
-	}
-
+ 
 	/**
 	 * 删除用户
 	 */
@@ -146,7 +132,7 @@ public class UserAction extends BaseActionSupport {
 	 */
 	public void searchUser(UMQueryCondition userQueryCon, String applicationId, int page) {
         PageInfo users = userService.searchUser(userQueryCon, page);
-        GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), getUserGridTemplate(applicationId));
+        GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), XMLDocUtil.createDoc(UMConstants.MAIN_USER_GRID));
         print(new String[]{"SourceList", "PageList"}, new Object[]{gridEncoder, users});
 	}
 
@@ -155,27 +141,8 @@ public class UserAction extends BaseActionSupport {
      */
     public void getUsersByGroupId(String applicationId, Long groupId, int page) {
         PageInfo users = userService.getUsersByGroupId(groupId, page, " u.id asc ");
-        GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), getUserGridTemplate(applicationId));
+        GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), XMLDocUtil.createDoc(UMConstants.MAIN_USER_GRID));
         print(new String[]{"SourceList", "PageList"}, new Object[]{gridEncoder, users});
-    }
-    
-    /* 拼出其他用户组的列表头 */
-    private Document getUserGridTemplate(String applicationId){
-    	if( UMConstants.TSS_APPLICATION_ID.equals(applicationId) ) {
-        	return XMLDocUtil.createDoc(UMConstants.MAIN_USER_GRID);
-        }
-         
-    	Application app = applicationService.getApplication(applicationId);
-    	
-    	SAXReader saxReader = new SAXReader();
-    	Document doc;
-    	try{
-    		URL fileURL = URLUtil.getResourceFileUrl(UMConstants.OTHER_USER_GRID);
-    		doc = saxReader.read(fileURL);
-    	} catch (DocumentException e) {
-			throw new BusinessException("模板获取失败!");
-		}
-    	return XMLDocUtil.dataXml2Doc(doc.asXML().replaceAll("applicationName", app.getName()));
     }
 
 	/**
@@ -211,7 +178,6 @@ public class UserAction extends BaseActionSupport {
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public void registerUser(User user) {
         user.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN);
-		user.setApplicationId(UMConstants.TSS_APPLICATION_ID);
 		userService.registerUser(user);
         printSuccessMessage("用户注册成功！");
 	}

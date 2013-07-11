@@ -1,7 +1,6 @@
 package com.jinhe.tss.um.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.jinhe.tss.framework.component.log.Logable;
 import com.jinhe.tss.um.entity.Group;
@@ -51,21 +50,6 @@ public interface IGroupService {
      * @return
      */
     Object[] getAssistGroupsByOperationId(String operationId);
-    
-    /**
-     * 取制定有操作权限的其他用户组（以及其他用户组根节点、其他应用列表）
-     * @param operationId
-     * @return
-     */
-    Object[] getOtherGroupsByOperationId(String operationId);
-    
-    /**
-     * 取指定的其他应用下的有操作权限的其他用户组（以及其他用户组根节点、其他应用）
-     * @param operationId
-     * @param applicationId
-     * @return
-     */
-    Object[] getGroupsUnderAppByOperationId(String operationId, String applicationId);
 
 	/**
 	 * <p>
@@ -101,9 +85,9 @@ public interface IGroupService {
 	 * @param disabled
 	 */
     @Logable(operateTable="用户组织", operateType="启用/停用", 
-            operateInfo="启用/停用用户组 (ID: ${args[1]})"
+            operateInfo="启用/停用用户组 (ID: ${args[0]})，(State: ${args[1]})"
         )
-	void startOrStopGroup(String applicationId, Long groupId, Integer disabled);
+	void startOrStopGroup(Long groupId, Integer disabled);
 	
 	/**
 	 * <p>
@@ -121,24 +105,16 @@ public interface IGroupService {
 	void sortGroup(Long groupId, Long toGroupId, int direction);
 	
 	/**
-	 * 获取应用系统和用户组
+	 * 获取用户组
 	 */
-	Object[] findGroups();
+    List<?> findGroups();
 
 	/**
 	 * 删除用户组
-	 * @param applicationId
 	 * @param groupId
 	 */
     @Logable(operateTable="用户组织", operateType="删除", 
             operateInfo="删除 (ID: ${args[1]}) 用户组" )
-	void deleteGroup(String applicationId, Long groupId);
-	
-    /**
-     * 将用户组从其它用户组下导入到主用户组下 的 操作前需要用到的数据
-     * @param groupId 
-     * @param toGroupId
-     * @return
-     */
-    Map<String, Object> getImportGroupData(Long groupId, Long toGroupId);
+	void deleteGroup(Long groupId);
+
 }

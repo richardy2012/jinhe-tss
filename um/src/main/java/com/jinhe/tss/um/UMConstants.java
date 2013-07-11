@@ -25,10 +25,7 @@ public final class UMConstants {
  
 	/**
 	 * 同步功能相关常量定义
-	 */
-	public static final Integer ALL_SYNC    = 1; //完全同步
-	public static final Integer SINGLE_SYNC = 2; //单向同步
-	
+	 */	
 	public static final String DATA_SOURCE_TYPE_ORACLE = "1";
 	public static final String DATA_SOURCE_TYPE_LDAP   = "2";
 	public static final String DATA_SOURCE_TYPE_DB2    = "3";
@@ -53,7 +50,6 @@ public final class UMConstants {
 	public static final Long DEFAULT_ROOT_ID                   = new Long(0); /** 默认根结点ID */
 	public static final Long MAIN_GROUP_ID                     = new Long(-2); //主用户组的ID (初始化数据库时写死的)
 	public static final Long ASSISTANT_GROUP_ID                = new Long(-3); //辅助用户组的ID(初始化数据库时写死的)
-	public static final Long OTHER_APPLICATION_GROUP_ID        = new Long(-4); //其他应用组的ID(初始化数据库时写死的)
 	public static final Long ROLE_ROOT_ID                      = new Long(-6); //角色的ID(视图生成)
 	public static final Long SELF_REGISTER_GROUP_ID            = new Long(-7); //自注册用户组的ID(初始化数据库时写死的)
 	public static final Long SELF_REGISTER_GROUP_ID_AUTHENED   = new Long(-8); //自注册用户组的ID(已认证)(初始化数据库时写死的)
@@ -124,24 +120,17 @@ public final class UMConstants {
 	/**
 	 * Grid模板文件的路径定义
 	 */
-	public static final String MANUAL_MAPPING_GRID      = "template/grid/manualMapping.xml"; //手工对应Grid模板
-	public static final String MANUAL_MAPPING_USER_GRID = "template/grid/manualMappingUser.xml"; //手工对应搜索用户Grid模板
-
-	public static final String GENERAL_SEARCH_MAPPING_GRID = "template/grid/generalsearchmapping.xml"; //综合查询搜索用户对应的结果Grid模板
-	public static final String GENERAL_SEARCH_ROLE_GRID    = "template/grid/generalsearchroleinfo.xml";// 综合查询根据用户搜索角色情况的Grid模板
-	public static final String GENERAL_SEARCH_USER_GRID    = "template/grid/generalsearchuserinfo.xml";//综合查询根据角色搜索用户情况的Grid模板	
-	public static final String GENERAL_SEARCH_STRATEGY_GRID = "template/grid/generalsearchuserstrategyinfo.xml";// 综合查询搜索用户因转授而获得的角色的情况的Grid模板
-	public static final String GENERAL_SYN_GRID = "template/grid/generalsearchsyninfo.xml";
+	public static final String GENERAL_SEARCH_ROLE_GRID     = "template/grid/gs_role_info.xml";// 综合查询根据用户搜索角色情况的Grid模板
+	public static final String GENERAL_SEARCH_USER_GRID     = "template/grid/gs_user_info.xml";//综合查询根据角色搜索用户情况的Grid模板	
+	public static final String GENERAL_SEARCH_STRATEGY_GRID = "template/grid/gs_subauth_info.xml";// 综合查询搜索用户因转授而获得的角色的情况的Grid模板
 	
-	public static final String MAIN_USER_GRID  = "template/grid/user_list.xml"; //其他用户组下的用户浏览Grid模板
-	public static final String OTHER_USER_GRID = "template/grid/otheruser.xml"; //其他用户组下的用户浏览Grid模板
+	public static final String MAIN_USER_GRID  = "template/grid/user_list.xml"; //用户组下的用户浏览Grid模板
 	
 	/**
 	 *  XForm模板文件的路径定义
 	 */
 	public static final String GROUP_MAIN_XFORM  = "template/xform/group_main.xml";    
 	public static final String GROUP_ASSISTANT_XFORM  = "template/xform/group_assistant.xml";
-	public static final String GROUP_OTHER_XFORM  = "template/xform/group_other.xml";
 	
 	public static final String USER_REGISTER_XFORM  = "template/xform/user_register.xml";  
 	public static final String USER_BASEINFO_XFORM  = "template/xform/user_baseinfo.xml"; 
@@ -155,8 +144,6 @@ public final class UMConstants {
 	public static final String APPLICATION_XFORM            = "template/xform/application.xml";         //Application(新建)
 	public static final String OTHER_APPLICATION_XFORM      = "template/xform/application_other.xml";   //其他应用系统(新建)
 	public static final String OPERATION_XFORM              = "template/xform/operation.xml";           //Operation对象
-	public static final String AUTO_MAPPING_XFORM           = "template/xform/automapping.xml";         //模糊对应
-	public static final String MANUAL_MAPPING_XFORM         = "template/xform/manualMapping.xml";       //手工对应
 	public static final String SERACH_PERMISSION_XFORM      = "template/xform/searchpermission.xml";    //查询权限的
 	public static final String AUTH_METHOD_XFORM            = "template/xform/authenticatemethod.xml";  //查询权限转授的
 	public static final String IMPORT_APP_XFORM             = "template/xform/importapplication.xml";   //应用系统导入的
@@ -169,20 +156,18 @@ public final class UMConstants {
 	/**
 	 * 对象节点 Tree 图标文件的路径定义
 	 */
-	public static final String START_GROUP_TREENODE_ICON        = "../framework/images/user_group.gif";       //Group图标(启用)
-	public static final String START_CODE_GROUP_TREENODE_ICON  = "../framework/images/user_group_code.gif";  //有批次的Group图标(启用)
+	public static final String START_GROUP_TREENODE_ICON        = "../framework/images/user_group.gif";     //Group图标(启用)
 	public static final String STOP_GROUP_TREENODE_ICON       = "../framework/images/user_group_2.gif";     //Group图标(停用)
-	public static final String STOP_CODE_GROUP_TREENODE_ICON = "../framework/images/user_group_code_2.gif";//有批次的Group图标(停用)
-	public static final String START_STRATEGY_TREENODE_ICON = "../framework/images/rule.gif";  //Strategy图标(启用)
-	public static final String STOP_STRATEGY_TREENODE_ICON = "../framework/images/rule_2.gif"; //Strategy图标(停用)
-	public static final String START_USER_GRID_NODE_ICON  = "../framework/images/user.gif";    //User对象节点Grid图标(启用)
-	public static final String STOP_USER_GRID_NODE_ICON  = "../framework/images/user_2.gif";   //User对象节点Grid图标(停用)
-	public static final String START_ADMIN_USER_GRID_NODE_ICON  = "../framework/images/admin.gif";     //User管理员对象节点Grid图标(启用)
-	public static final String STOP_ADMIN_USER_GRID_NODE_ICON  = "../framework/images/admin_2.gif";    //User管理员对象节点Grid图标(停用)
-	public static final String START_GROUP_ROLE_TREENODE_ICON = "../framework/images/role_group.gif";  //Role组对象根节点Tree图标(启用)
-	public static final String STOP_GROUP_ROLE_TREENODE_ICON = "../framework/images/role_group_2.gif"; //Role组对象根节点Tree图标(停用)
-	public static final String START_ROLE_TREENODE_ICON = "../framework/images/role.gif";   //Role对象子节点Tree图标(启用)
-	public static final String STOP_ROLE_TREENODE_ICON = "../framework/images/role_2.gif";  //Role对象子节点Tree图标(停用)
+	public static final String START_STRATEGY_TREENODE_ICON = "../framework/images/rule.gif";  //权限转授图标(启用)
+	public static final String STOP_STRATEGY_TREENODE_ICON = "../framework/images/rule_2.gif"; //(Admin)图标(停用)
+	public static final String START_USER_GRID_NODE_ICON  = "../framework/images/user.gif";    //User图标(启用)
+	public static final String STOP_USER_GRID_NODE_ICON  = "../framework/images/user_2.gif";   //User图标(停用)
+	public static final String START_ADMIN_USER_GRID_NODE_ICON  = "../framework/images/admin.gif";     //User(Admin)图标(启用)
+	public static final String STOP_ADMIN_USER_GRID_NODE_ICON  = "../framework/images/admin_2.gif";    //User(Admin)图标(停用)
+	public static final String START_GROUP_ROLE_TREENODE_ICON = "../framework/images/role_group.gif";  //Role组图标(启用)
+	public static final String STOP_GROUP_ROLE_TREENODE_ICON = "../framework/images/role_group_2.gif"; //Role组图标(停用)
+	public static final String START_ROLE_TREENODE_ICON = "../framework/images/role.gif";    //Role图标(启用)
+	public static final String STOP_ROLE_TREENODE_ICON = "../framework/images/role_2.gif";   //Role图标(停用)
 	public static final String APPLICATION_TREENODE_ICON   = "../framework/images/app.gif";  //Application图标
 	public static final String RESOURCETYPE_TREENODE_ICON = "../framework/images/resource_type.gif";//ResourceType图标
 	public static final String OPERATION_TREENODE_ICON   = "../framework/images/permission.gif";    //权限选项Tree图标

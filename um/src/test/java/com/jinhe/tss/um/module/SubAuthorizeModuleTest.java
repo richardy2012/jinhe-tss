@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
@@ -39,7 +38,6 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         mainGroup.setParentId(UMConstants.MAIN_GROUP_ID);
         mainGroup.setName("R_财务部");
         mainGroup.setGroupType( Group.MAIN_GROUP_TYPE );
-        mainGroup.setApplicationId(Config.getAttribute(Config.APPLICATION_CODE));
         groupService.createNewGroup(mainGroup , "", "");
         log.debug(mainGroup);
         
@@ -48,13 +46,11 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         childGroup.setParentId(mainGroup.getId());
         childGroup.setName("R_财务一部");
         childGroup.setGroupType( mainGroup.getGroupType() );
-        childGroup.setApplicationId(mainGroup.getApplicationId());
         groupService.createNewGroup(childGroup , "", "");
         log.debug(childGroup);
         
         // 管理员直接在主组下新增用户
         User mainUser = new User();
-        mainUser.setApplicationId(mainGroup.getApplicationId());
         mainUser.setLoginName("R_JonKing");
         mainUser.setUserName("R_JK");
         mainUser.setPassword("123456");

@@ -16,13 +16,6 @@
 		<column caption="所在组ID"   name="groupId" mode="string" align="center" display="none"/>
 		<column caption="应用系统ID" name="applicationId" mode="string" align="center" display="none"/>
 		<column caption="对应系统用户ID" name="appUserId" mode="string" align="center" display="none"/>
-		
-		<column caption="创建者ID" name="creatorId" mode="string" align="center" display="none"/>
-		<column caption="创建时间" name="createTime" mode="string" align="center" display="none"/>
-		<column caption="创建者"   name="creatorName" mode="string" align="center" display="none"/>
-		<column caption="更新者Id" name="updatorId" mode="string" align="center" display="none"/>
-		<column caption="修改时间" name="updateTime" mode="string" align="center" display="none"/>
-		<column caption="更新者"  name="updatorName" mode="string" align="center" display="none"/>
 	</declare>
 	<data>
 	</data>

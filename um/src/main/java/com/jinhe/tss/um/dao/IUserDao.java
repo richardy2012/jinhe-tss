@@ -63,16 +63,6 @@ public interface IUserDao extends IDao<User>{
 	 */
     GroupUser getGroup2User(Long groupId, Long userId);
 
-	/**
-	 * <p>
-	 * 根据appUserId、用户库Code获得相应用户库的对应用户
-	 * </p>
-	 * @param appUserId
-	 * @param userDepositoryCode
-	 * @return
-	 */
-	User getAppUser(Long userId, String userDepositoryCode);
-
     /**
      * <p>
      * 根据用户登录名获取用户实体
@@ -81,16 +71,6 @@ public interface IUserDao extends IDao<User>{
      * @return  User 用户实体对象
      */
     User getUserByLoginName(String loginName);
-
-	/**
-	 * <p>
-	 * 根据应用系统id和登陆账号获取一个用户
-	 * 应用系统id和登陆账号是唯一约束
-	 * </p>
-	 * @param applicationId
-	 * @param loginName
-	 * @return
-	 */
-	User getUser(String applicationId, String loginName);
+ 
 
 }

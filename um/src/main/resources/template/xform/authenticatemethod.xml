@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
 	<declare>
-		<column name="authenticateMethod" caption="认证方式" mode="string" editor="comboedit" editorvalue="com.jinhe.tss.um.sso.UMSLocalUserPWDIdentifier" editortext="UMS本地" empty="false"/>
+		<column name="authenticateMethod" caption="认证方式" mode="string" editor="comboedit" editorvalue="com.jinhe.tss.um.sso.UMPasswordIdentifier" editortext="UMS本地" empty="false"/>
 	</declare>
 	<layout>
 		<TR>

@@ -20,13 +20,11 @@ import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.ProgressActionSupport;
 import com.jinhe.tss.um.UMConstants;
-import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.helper.GroupTreeParser;
-import com.jinhe.tss.um.helper.GroupTreeWithAppParser;
 import com.jinhe.tss.um.permission.PermissionHelper;
-import com.jinhe.tss.um.service.IApplicationService;
 import com.jinhe.tss.um.service.IGroupService;
+import com.jinhe.tss.um.syncdata.ISyncService;
 import com.jinhe.tss.util.EasyUtils;
  
 @Controller
@@ -34,7 +32,6 @@ import com.jinhe.tss.util.EasyUtils;
 public class GroupAction extends ProgressActionSupport {
 
 	@Autowired private IGroupService service;
-	@Autowired private IApplicationService appService;
 
 	@RequestMapping("/all")
 	public void getAllGroup2Tree() {
@@ -68,10 +65,6 @@ public class GroupAction extends ProgressActionSupport {
         else if (Group.ASSISTANT_GROUP_TYPE.equals(groupType)) { // 辅助用户组
         	Object[] objs = service.getAssistGroupsByOperationId(operationId);
             treeEncoder = new TreeEncoder(objs[1], new LevelTreeParser());
-        }
-        else if (Group.OTHER_GROUP_TYPE.equals(groupType)) { // 其他应用组
-        	Object[] objs = service.getGroupsUnderAppByOperationId(operationId, applicationId);
-            treeEncoder = new TreeEncoder(objs, new GroupTreeWithAppParser());
         }
         else {
             throw new BusinessException("参数groupType值有误！groupType=" + groupType);
@@ -141,31 +134,18 @@ public class GroupAction extends ProgressActionSupport {
         if(Group.ASSISTANT_GROUP_TYPE.equals(groupType)) {
             groupXForm = UMConstants.GROUP_ASSISTANT_XFORM; // 辅助用户组
         }
-        if(Group.OTHER_GROUP_TYPE.equals(groupType)) {
-            groupXForm = UMConstants.GROUP_OTHER_XFORM;     // 其他用户组
-        }
  
         XFormEncoder groupEncoder = new XFormEncoder(groupXForm, groupAttributes);
  
-        if(Group.OTHER_GROUP_TYPE.equals(groupType)){ // 其他用户组
-            applicationId = isNew ? applicationId : service.getGroupById(groupId).getApplicationId();
-            Application app = appService.getApplication(applicationId);
-            groupEncoder.setColumnAttribute("applicationId", "editorvalue", applicationId);
-            groupEncoder.setColumnAttribute("applicationId", "editortext",  app.getName());
-            
-            print(new String[]{"GroupInfo", "Group2UserExistTree"}, new Object[]{groupEncoder, usersTreeEncoder});
-        } 
-        else {
-        	// 如果是新建则找到父组对应的角色，如此新建的子组可以继承父组角色
-        	List<?> roles = service.findRolesByGroupId(isNew ? parentId : groupId); 
-            TreeEncoder rolesTreeEncoder = new TreeEncoder(roles);
-            
-            TreeEncoder editableRolesTree = new TreeEncoder(service.findEditableRoles(), new LevelTreeParser());
-    		editableRolesTree.setNeedRootNode(false);
-            
-        	print(new String[]{"GroupInfo", "Group2RoleTree", "Group2RoleExistTree", "Group2UserExistTree"}, 
-                    new Object[]{groupEncoder, editableRolesTree, rolesTreeEncoder, usersTreeEncoder});
-        }
+    	// 如果是新建则找到父组对应的角色，如此新建的子组可以继承父组角色
+    	List<?> roles = service.findRolesByGroupId(isNew ? parentId : groupId); 
+        TreeEncoder rolesTreeEncoder = new TreeEncoder(roles);
+        
+        TreeEncoder editableRolesTree = new TreeEncoder(service.findEditableRoles(), new LevelTreeParser());
+		editableRolesTree.setNeedRootNode(false);
+        
+    	print(new String[]{"GroupInfo", "Group2RoleTree", "Group2RoleExistTree", "Group2UserExistTree"}, 
+                new Object[]{groupEncoder, editableRolesTree, rolesTreeEncoder, usersTreeEncoder});
 	}
     
     /**
@@ -186,26 +166,8 @@ public class GroupAction extends ProgressActionSupport {
      */
     @RequestMapping(value = "/disable/{id}/{disabled}")
     public void startOrStopGroup(Long id, int disabled) {  
-        service.startOrStopGroup(UMConstants.TSS_APPLICATION_ID, id, disabled);
+        service.startOrStopGroup(id, disabled);
         printSuccessMessage();
-    }
-
-    /**
-     * 导入其它用户组的下的子组和用户到主用户组
-     */
-    @RequestMapping(value = "/import/{groupId}/{targetId}")
-    public void importGroup(Long groupId, Long targetId) {
-    	Map<String, Object> data = service.getImportGroupData(groupId, targetId);
-        
-        List<?> groups = (List<?>)data.get("groups");
-        List<?> users  = (List<?>)data.get("users");
-        int totalItem = users.size() + groups.size();
-        
-        // 因为导入数据到主用户组下会启用进度条中的线程（独立于当前线程的另一线程）进行，
-        // 所以需要在action中启动，而不是在service，在service的话会导致事务提交不了。  
-        ProgressManager manager = new ProgressManager((Progressable) service, totalItem, data);
-        String code = manager.execute();
-    	printScheduleMessage(code);
     }
     
     /**
@@ -213,7 +175,7 @@ public class GroupAction extends ProgressActionSupport {
      */
     @RequestMapping(value = "/{groupId}/", method = RequestMethod.DELETE)
     public void deleteGroup(Long groupId) {
-        service.deleteGroup(UMConstants.TSS_APPLICATION_ID, groupId);     
+        service.deleteGroup(groupId);     
         printSuccessMessage();
     }
     
@@ -225,4 +187,28 @@ public class GroupAction extends ProgressActionSupport {
         service.sortGroup(groupId, targetId, direction);
         printSuccessMessage();
     }  
+    
+    
+    @Autowired private ISyncService  syncService;
+    
+    @RequestMapping("/{groupId}")
+    public void syncData(String applicationId, Long groupId, int mode) {
+        Group group = service.getGroupById(groupId);
+        String dbGroupId = group.getDbGroupId();
+        if ( EasyUtils.isNullOrEmpty(dbGroupId) ) {
+            throw new BusinessException("导入组的对应外部应用组的ID（dbGroupId）为空");
+        }
+        
+        Map<String, Object> datasMap =  syncService.getCompleteSyncGroupData(groupId, applicationId, dbGroupId);
+        
+        List<?> groups = (List<?>)datasMap.get("groups");
+        List<?> users  = (List<?>)datasMap.get("users");
+        int totalCount = users.size() + groups.size();
+        
+        // 因为同步数据会启用进度条中的线程进行，所以需要在action中启动，而不是在service，在service的话会导致事务提交不了
+        ProgressManager manager = new ProgressManager((Progressable) syncService, totalCount, datasMap);
+        String code = manager.execute(); 
+        
+        printScheduleMessage(code);
+    }
 }

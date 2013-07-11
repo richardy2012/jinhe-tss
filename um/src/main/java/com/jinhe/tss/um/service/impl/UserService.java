@@ -26,8 +26,7 @@ import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.UMQueryCondition;
 import com.jinhe.tss.um.service.IGroupService;
 import com.jinhe.tss.um.service.IUserService;
-import com.jinhe.tss.um.sso.UMSLocalUserPWDIdentifier;
-import com.jinhe.tss.util.BeanUtil;
+import com.jinhe.tss.um.sso.UMPasswordIdentifier;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.InfoEncoder;
 
@@ -78,37 +77,30 @@ public class UserService implements IUserService{
         }
        
         for (User user : userList) {
-            if(UMConstants.TSS_APPLICATION_ID.equals(user.getApplicationId())){
-                String md5Password = InfoEncoder.string2MD5(user.getLoginName() + "_" + initPassword);
-				user.setPassword(md5Password);  // 主用户组进行密码初始化时加密密码
-            }
-            else{
-                user.setPassword(initPassword); // 其它用户组 不加密
-            }
+            String md5Password = InfoEncoder.string2MD5(user.getLoginName() + "_" + initPassword);
+			user.setPassword(md5Password);  // 主用户组进行密码初始化时加密密码
             userDao.initUser(user);
         }
     }
     
     /**
-     * 用户如果是主用户组下且是新建的用户或密码已修改的用户，则对用户名＋密码进行MD5加密，其它应用的用户不加密
+     * 主用户组下且是新建的用户或密码已修改的用户，则对用户名＋密码进行MD5加密 
      * @param user
      * @param password
      * @return
      */
     private String createUserPwd(User user, String password) {
-        if(UMConstants.TSS_APPLICATION_ID.equals(user.getApplicationId())){
-            // 新建
-            if( user.getId() == null ){
-                return InfoEncoder.string2MD5(user.getLoginName() + "_" + password);
-            } 
-                      
-            // 编辑：如果密码改变,则重新加密
-            User older = userDao.getEntity(user.getId());
-            userDao.evict(older);
-            if (!password.equals(older.getPassword())) {
-                return InfoEncoder.string2MD5(user.getLoginName() + "_" + password);
-            }    
-        }
+        // 新建
+        if( user.getId() == null ){
+            return InfoEncoder.string2MD5(user.getLoginName() + "_" + password);
+        } 
+                  
+        // 编辑：如果密码改变, 则重新加密
+        User older = userDao.getEntity(user.getId());
+        userDao.evict(older);
+        if (!password.equals(older.getPassword())) {
+            return InfoEncoder.string2MD5(user.getLoginName() + "_" + password);
+        }    
         return password;
     }
 
@@ -124,7 +116,7 @@ public class UserService implements IUserService{
         checkUserAccout(user);
         
         user.setPassword(InfoEncoder.string2MD5(user.getLoginName() + "_" + user.getPassword()));
-        user.setAuthenticateMethod(UMSLocalUserPWDIdentifier.class.getName());
+        user.setAuthenticateMethod(UMPasswordIdentifier.class.getName());
 
         // 默认有效期三年
         Calendar cl = new GregorianCalendar();
@@ -138,7 +130,7 @@ public class UserService implements IUserService{
     }
 
     private void checkUserAccout(User user) {
-        if(userDao.getUser(user.getApplicationId(), user.getLoginName()) != null) {
+        if(userDao.getUserByLoginName(user.getLoginName()) != null) {
             throw new BusinessException("相同登陆账号已经存在,请更换.");
         }
     }
@@ -231,7 +223,6 @@ public class UserService implements IUserService{
         map.put("User2GroupExistTree", groups);
         map.put("User2RoleExistTree", groupDao.findRolesByGroupId(groupId)); // 新建用户继承所在组的角色列表
         map.put("disabled", group.getDisabled());
-        map.put("applicationId", group.getApplicationId());
         return map;
     }
 
@@ -271,37 +262,6 @@ public class UserService implements IUserService{
 		}
 	}
 	
-	//用户导入到
-	public void importUser( Long groupId, Long toGroupId, Long appUserId ) {
-		if( toGroupId == null || (groupDao.getEntity(toGroupId)) == null) {
-			throw new BusinessException("导入的目标用户组Id为null或者是已经被删除，导入失败！");   
-		}
-		
-		// 用户导入前先判断关系是否被改变，如果在导入时发现用户已经被移动到其他组，则取消导入。抛出异常
-        GroupUser groupUser = userDao.getGroup2User(groupId, appUserId);
-        if(groupUser == null) {
-			throw new BusinessException("用户已经被移出该用户组，导入失败！");
-        }
-        
-        // 新建主用户组用户
-        User appUser = userDao.getEntity(appUserId);
-        User mainUser = new User();
-        BeanUtil.copy(mainUser, appUser);
-        mainUser.setId(null);
-        mainUser.setApplicationId(UMConstants.TSS_APPLICATION_ID);
-        mainUser.setAppUserId(null);
-        mainUser.setPassword(createUserPwd(mainUser, mainUser.getPassword())); //加密密码
-        mainUser = userDao.create(mainUser);
-        
-        // 维护映射关系
-        Long mainUserId = mainUser.getId();
-        appUser.setAppUserId(mainUserId);
-        userDao.update(appUser);
-        
-        GroupUser mainGroupUser = new GroupUser(mainUserId, toGroupId);
-        groupUserDao.saveGroupUser(mainGroupUser);
-	}
-
 	public void startOrStopUser(Long userId, Integer disabled, Long groupId) {
 		User user = userDao.getEntity(userId);
 		if ( UMConstants.FALSE.equals(disabled) ) { // 启用用户
@@ -319,7 +279,7 @@ public class UserService implements IUserService{
 	        
 	        // 如果主用户组状态为停用的话，则向上启用该主用户组及其所有父节点
 	        if(UMConstants.TRUE.equals(group.getDisabled())) {
-	            groupService.startOrStopGroup(group.getApplicationId(), groupId, UMConstants.FALSE);
+	            groupService.startOrStopGroup(groupId, UMConstants.FALSE);
 		    }
 		}
 		 
@@ -338,20 +298,11 @@ public class UserService implements IUserService{
     }
 
     public PageInfo getUsersByGroupId(Long groupId, Integer pageNum, String orderBy) {
-    	Group group = groupDao.getEntity(groupId);
-    	if(Group.OTHER_GROUP_TYPE.equals(group.getGroupType())){
-    		return groupDao.getUsersByOtherGroupNoPermission(groupId, pageNum, orderBy);
-    	} else {
-            return groupDao.getUsersByGroup(groupId, pageNum, orderBy);
-    	}
+        return groupDao.getUsersByGroup(groupId, pageNum, orderBy);
     }
  
     public PageInfo searchUser(UMQueryCondition qyCondition, Integer pageNum) {
-    	if(Group.OTHER_GROUP_TYPE.equals(qyCondition.getGroupType())){
-    		return groupDao.searchOtherUser(qyCondition, pageNum);
-    	} else {
-    		return groupDao.searchUser(qyCondition, pageNum);
-    	}
+		return groupDao.searchUser(qyCondition, pageNum);
     }
     
     public List<User> getUsersByGroup(Long groupId) {

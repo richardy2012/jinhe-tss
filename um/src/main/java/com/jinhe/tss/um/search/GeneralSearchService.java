@@ -9,15 +9,6 @@ public interface GeneralSearchService {
  
 	/**
 	 * <p>
-	 * 查询一个其他用户组里面的用户对应的
-	 * 主用户组下里面的用户的情况
-	 * </p>
-	 * @return
-	 */
-	List<?> searchOtherUserMappingInfo(Long groupId);
-
-	/**
-	 * <p>
 	 * 根据应用系统id获得该应用的所有资源类型
 	 * </p>
 	 * @param applicationId
@@ -48,11 +39,4 @@ public interface GeneralSearchService {
 	 * @return
 	 */
 	List<User> searchUsersByRole(Long roleId); 
-	
-	/**
-	 * 查询组下用户列表
-	 * @param groupId
-	 * @return
-	 */
-	List<?> searchUsersByGroup(Long groupId);
 }

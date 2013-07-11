@@ -40,7 +40,7 @@ commit;
 truncate table UM_USER;
 
 insert into UM_USER (ID, DISABLED, ACCOUNTUSEFULLIFE, APPLICATIONID, AUTHENTICATEMETHOD, LOGINNAME, PASSWORD, USERNAME, lockVersion)
-values (-1, 0, str_to_date('01/01/2099', '%m/%d/%Y'), 'tss', 'com.jinhe.tss.um.sso.UMSLocalUserPWDIdentifier', 'Admin', 'E5E0A2593A3AE4C038081D5F113CEC78', '系统管理员', 0);
+values (-1, 0, str_to_date('01/01/2099', '%m/%d/%Y'), 'tss', 'com.jinhe.tss.um.sso.UMPasswordIdentifier', 'Admin', 'E5E0A2593A3AE4C038081D5F113CEC78', '系统管理员', 0);
 
 insert into UM_USER (ID, DISABLED, ACCOUNTUSEFULLIFE, APPLICATIONID, AUTHENTICATEMETHOD, LOGINNAME, PASSWORD, USERNAME, lockVersion)
 values (-10000, 0, str_to_date('01/01/2099', '%m/%d/%Y'), 'tss', null, 'ANONYMOUS', null, '匿名用户', 0);

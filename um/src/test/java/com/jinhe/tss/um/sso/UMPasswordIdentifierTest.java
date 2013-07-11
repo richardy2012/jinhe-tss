@@ -8,7 +8,7 @@ import com.jinhe.tss.framework.sso.SSOConstants;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.um.TxSupportTest4UM;
 
-public class UMSLocalUserPWDIdentifierTest extends TxSupportTest4UM {
+public class UMPasswordIdentifierTest extends TxSupportTest4UM {
 	
 	public void testIdentify() {
 		
@@ -23,7 +23,7 @@ public class UMSLocalUserPWDIdentifierTest extends TxSupportTest4UM {
 		 Context.initRequestContext(request);
 		 
 		 try {
-			new UMSLocalUserPWDIdentifier().identify();
+			new UMPasswordIdentifier().identify();
 			
 		} catch (UserIdentificationException e) {
 			assertFalse(e.getMessage(), true);
