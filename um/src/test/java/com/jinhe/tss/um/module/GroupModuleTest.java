@@ -175,15 +175,15 @@ public class GroupModuleTest extends TxSupportTest4UM {
     public void _testAction() {
         action.getAllGroup2Tree();
         
-        action.getCanAddedGroup2Tree("tss", Group.MAIN_GROUP_TYPE);
-        action.getCanAddedGroup2Tree("tss", Group.ASSISTANT_GROUP_TYPE);
+        action.getCanAddedGroup2Tree(Group.MAIN_GROUP_TYPE);
+        action.getCanAddedGroup2Tree(Group.ASSISTANT_GROUP_TYPE);
         
         action.getOperation(Group.MAIN_GROUP_TYPE, -2L);
         
         action.getUserByGroupId(UMConstants.MAIN_GROUP_ID);
         
-        action.getGroupInfo("tss", UMConstants.MAIN_GROUP_ID, UMConstants.IS_NEW, Group.MAIN_GROUP_TYPE);
-        action.getGroupInfo("tss", UMConstants.MAIN_GROUP_ID, mainGroup1.getId(), Group.MAIN_GROUP_TYPE);
+        action.getGroupInfo(UMConstants.MAIN_GROUP_ID, UMConstants.IS_NEW, Group.MAIN_GROUP_TYPE);
+        action.getGroupInfo(UMConstants.MAIN_GROUP_ID, mainGroup1.getId(), Group.MAIN_GROUP_TYPE);
         
         action.startOrStopGroup(mainGroup1.getId(), 1);
         action.startOrStopGroup(mainGroup1.getId(), 0);

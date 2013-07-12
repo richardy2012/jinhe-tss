@@ -26,7 +26,6 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.UMQueryCondition;
-import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.service.IUserService;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
@@ -144,16 +143,6 @@ public class UserAction extends BaseActionSupport {
         GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), XMLDocUtil.createDoc(UMConstants.MAIN_USER_GRID));
         print(new String[]{"SourceList", "PageList"}, new Object[]{gridEncoder, users});
     }
-
-	/**
-	 * 得到操作权限
-	 */
-	public void getOperation(Long groupId) {
-        String resourceTypeId = UMConstants.GROUP_RESOURCE_TYPE_ID;
-        List<?> parentOperations = PermissionHelper.getInstance().getOperationsByResource(resourceTypeId, groupId, Environment.getOperatorId());
-        
-		print("Operation", "p1,p2," + EasyUtils.list2Str(parentOperations));
-	}
 
 	/**
 	 * 根据用户组的id获取所在用户组的所有用户

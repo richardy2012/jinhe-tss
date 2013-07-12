@@ -307,6 +307,36 @@ function onClickGridTitle() {
 
 
 /*
+ *	获取树操作权限
+ *	参数：	treeNode:treeNode       treeNode实例
+			function:callback       回调函数
+ */
+function getTreeOperation(treeNode, callback, url) {
+	url = url || URL_GET_OPERATION;
+	var _operation = treeNode.getAttribute("_operation");
+	
+	// 如果节点上还没有_operation属性，则发请求从后台获取信息
+	if( isNullOrEmpty(_operation) ) { 
+		Ajax({
+			url : url + treeNode.getId(),
+			onresult : function() {
+				_operation = this.getNodeValue(XML_OPERATION);
+				treeNode.setAttribute("_operation", _operation);
+
+				if ( callback ) {
+					callback(_operation);
+				}
+			}
+		});			
+	} 
+	else {
+		if ( callback ) {
+			callback(_operation);
+		}
+	}    
+}
+	
+/*
  *	检测右键菜单项是否可见
  *	参数：	string:code     操作码
  */
@@ -408,7 +438,7 @@ function appendTreeNode(id, xmlNode) {
  */
 function getTreeNodeIds(xmlNode, xpath) {
 	  var idArray = [];
-	  var treeNodes = xmlNode.selectNodes(xpath);
+	  var treeNodes = xmlNode.selectNodes(xpath || "./treeNode//treeNode");
 	  for(var i=0; i < treeNodes.length; i++) {
 		  var curNode = treeNodes[i];
 		  var id = curNode.getAttribute("id");

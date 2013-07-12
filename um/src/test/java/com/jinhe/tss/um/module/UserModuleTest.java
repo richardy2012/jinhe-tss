@@ -96,8 +96,6 @@ public class UserModuleTest extends TxSupportTest4UM {
         
         action.getSelectedUsersByGroupId(mainGroup1.getId());
         
-        action.getOperation(mainGroup1.getId());
-        
         action.getUsersByGroupId("tss", mainGroup1.getId(), 1);
         
         UMQueryCondition userQueryCon = new UMQueryCondition();

@@ -43,7 +43,7 @@ public class GroupAction extends ProgressActionSupport {
 	}
 
 	@RequestMapping("/parents/{groupType}/{type}")
-    public void getCanAddedGroup2Tree(String applicationId, int groupType) {
+    public void getCanAddedGroup2Tree(int groupType) {
         String operationId = UMConstants.GROUP_EDIT_OPERRATION;
         
         TreeEncoder treeEncoder;
@@ -79,24 +79,15 @@ public class GroupAction extends ProgressActionSupport {
 	 */
 	public String getOperation(Integer groupType, Long resourceId) {
 		// 自注册用户组类型:没有任何菜单
-        if (Group.SELF_REGISTER_GROUP_TYPE.equals(groupType) || Group.SELF_REGISTER_GROUP_NOT_AUTHEN_TYPE .equals(groupType)) {
-        	return "p1,p2, ug17"; // ug17:设置认证方式
+        if (UMConstants.SELF_REGISTER_GROUP_ID.equals(resourceId) || UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN.equals(resourceId)) {
+        	return "p1,p2"; 
         } 
         
-        PermissionHelper ph = PermissionHelper.getInstance();
         Long operatorId = Environment.getOperatorId();
-        
-        List<?> operations = ph.getOperationsByResource(UMConstants.GROUP_RESOURCE_TYPE_ID, resourceId, operatorId);
-        String resultStr = EasyUtils.list2Str(operations);
-
-        resultStr += ",ug16";  // 默认添加综合查询功能, 没有判断是否有权限
-        
-        // 加入“授予角色”菜单
-        if( ph.getHighOperationsByResource(UMConstants.GROUP_RESOURCE_TYPE_ID, resourceId, operatorId).size() > 0) {
-            resultStr += ",_1";
-        }
-        
-        return print("Operation", "p1,p2," + resultStr);
+        String resourceTypeId = UMConstants.GROUP_RESOURCE_TYPE_ID;
+        List<?> operations = PermissionHelper.getInstance().getOperationsByResource(resourceTypeId, resourceId, operatorId);
+ 
+        return print("Operation", "p1,p2," + EasyUtils.list2Str(operations));
     }
 	
 	/**
@@ -111,17 +102,17 @@ public class GroupAction extends ProgressActionSupport {
 	/**
 	 * 获取一个Group对象的明细信息、用户组对用户信息、用户组对角色的信息
 	 */
-	public void getGroupInfo(String applicationId, Long parentId, Long groupId, int groupType) {
+	public void getGroupInfo(Long parentId, Long groupId, int groupType) {
         Map<String, Object> groupAttributes;
 		boolean isNew = UMConstants.IS_NEW.equals(groupId);
-        if(isNew){
+        if(isNew) {
         	groupAttributes = new HashMap<String, Object>();
             groupAttributes.put("parentId", parentId);
             groupAttributes.put("groupType", groupType);
-            groupAttributes.put("applicationId", applicationId);
         } 
         else {
-            groupAttributes = service.getGroupById(groupId).getAttributesForXForm();
+            Group group = service.getGroupById(groupId);
+            groupAttributes = group.getAttributesForXForm();
         }
         
         List<?> users = service.findUsersByGroupId(groupId);

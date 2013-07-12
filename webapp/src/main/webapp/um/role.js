@@ -278,32 +278,6 @@
 			});
 		}
     }
-
-    /*
-     *	获取树操作权限
-     *	参数：	treeNode:treeNode       treeNode实例
-                function:callback       回调函数
-     */
-    function getTreeOperation(treeNode, callback) {
-        var _operation = treeNode.getAttribute("_operation");
-        if( isNullOrEmpty(_operation) ) { // 如果节点上还没有_operation属性，则发请求从后台获取信息
-			Ajax({
-				url : URL_GET_OPERATION + treeNode.getId(),
-				onresult : function() {
-					_operation = this.getNodeValue(XML_OPERATION);
-					treeNode.setAttribute("_operation", _operation);
-
-					if( callback ) {
-						callback(_operation);
-					}
-				}
-			});			
-        } else {
-            if( callback ) {
-                callback(_operation);
-            }
-        }    
-    }
   
     function editTreeNode(editable) {
         if( isRoleGroup() ) {
@@ -550,9 +524,16 @@
 			var page4Tree3 = $T("page4Tree3", role2UserExsitInfo);
 			var page2Tree  = $T("page2Tree",  role2GroupTreeNode);
 			var page2Tree2 = $T("page2Tree2", role2GroupExsitInfo);
-			
-			$$("page4Tree").onTreeNodeDoubleClick = function(eventObj){
-                onPage4TreeNodeDoubleClick(eventObj);
+					
+			$$("page4Tree").onTreeNodeDoubleClick = function(eventObj) {
+                var treeNode = page4Tree.getActiveTreeNode();
+				Ajax({
+					url : URL_GROUP_TO_USER_LIST + treeNode.getId(),
+					onresult : function() { 
+						var sourceListNode = this.getNodeValue(XML_GROUP_TO_USER_LIST_TREE);
+						$T("page4Tree2", sourceListNode);
+					}
+				});	
             }
 			
 			 //设置翻页按钮显示状态
@@ -602,18 +583,6 @@
 		request.send();
     }
  
-    /* 点击页4用户组树节点 */
-    function onPage4TreeNodeDoubleClick(eventObj) {
-        var treeNode = $T("page4Tree").getActiveTreeNode();
-		Ajax({
-			url : URL_GROUP_TO_USER_LIST + treeNode.getId(),
-			onresult : function() { 
-				var sourceListNode = this.getNodeValue(XML_GROUP_TO_USER_LIST_TREE);
-				$T("page4Tree2", sourceListNode);
-			}
-		});	
-    }
- 
     function saveRole(cacheID, parentID) {
         // 校验page1Form数据有效性
         var page1FormObj = $X("page1Form");
@@ -638,7 +607,7 @@
 		//角色对用户
 		var role2UserNode = Cache.XmlDatas.get(cacheID + "." + XML_ROLE_TO_USER_EXIST_TREE);
 		if(role2UserNode) {
-			var role2UserDataIDs = getTreeNodeIds(role2UserNode, "./treeNode//treeNode");
+			var role2UserDataIDs = getTreeNodeIds(role2UserNode);
 			if(role2UserDataIDs.length > 0) {
 				flag = true;
 				p.setContent(XML_ROLE_TO_USER_IDS, role2UserDataIDs.join(","));
@@ -648,7 +617,7 @@
 		//角色对用户组
 		var role2GroupNode = Cache.XmlDatas.get(cacheID + "." + XML_ROLE_TO_GROUP_EXIST_TREE);
 		if(role2GroupNode) {
-			var role2GroupDataIDs = getTreeNodeIds(role2GroupNode, "./treeNode//treeNode");
+			var role2GroupDataIDs = getTreeNodeIds(role2GroupNode);
 			if(role2GroupDataIDs.length > 0) {
 				flag = true;
 				p.setContent(XML_ROLE_TO_GROUP_IDS, role2GroupDataIDs.join(","));

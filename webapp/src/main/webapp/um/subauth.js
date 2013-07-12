@@ -169,7 +169,7 @@
         callback.onTabChange = function(){
             setTimeout(function(){
                 loadRuleDetailData(treeID,true,true);
-            },TIMEOUT_TAB_CHANGE);
+            }, TIMEOUT_TAB_CHANGE);
         };
 
         var inf = {};
