@@ -21,6 +21,8 @@ ICON = URL_CORE + "images/";
 XML_OPERATION = "Operation";
 XML_PAGE_INFO = "PageInfo";
 
+PAGESIZE = 50;
+
 OPERATION_ADD  = "新建$label";
 OPERATION_VIEW = "查看\"$label\"";
 OPERATION_DEL  = "删除\"$label\"";
@@ -342,8 +344,7 @@ function getTreeOperation(treeNode, callback, url) {
  */
 function getOperation(code) {
 	var flag = false;
-	var treeObj = $T("tree");
-	var treeNode = treeObj.getActiveTreeNode();
+	var treeNode = $T("tree").getActiveTreeNode();
 	if( treeNode ) {
 		var _operation = treeNode.getAttribute("_operation");
 		flag = checkOperation(code, _operation);
@@ -518,7 +519,6 @@ function clearTreeData(treeObj) {
  *	返回值：
  */
 function removeTreeNode(treeObj, exceptIds) {
-	
 	exceptIds = exceptIds || ["_rootId"];
 
 	var selectedNodes = treeObj.getSelectedTreeNode();
@@ -542,14 +542,14 @@ function removeTreeNode(treeObj, exceptIds) {
 
 /*
  *	将树选中节点添加到另一树中(注：过滤重复id节点，并且结果树只有一层结构)
- *	参数：	Element:fromTreeObj         树控件
-			Element:toTreeObj           树控件
+ *	参数：	Element:fromTree         树控件
+			Element:toTree           树控件
 			Function:checkFunction      检测单个节点是否允许添加
  *	返回值：
  */
-function addTreeNode(fromTreeObj, toTreeObj, checkFunction) {	
+function addTreeNode(fromTree, toTree, checkFunction) {	
 	var reload = false;
-	var selectedNodes = fromTreeObj.getSelectedTreeNode(false);	
+	var selectedNodes = fromTree.getSelectedTreeNode(false);	
 	for(var i=0; i < selectedNodes.length; i++) {
 		var curNode = selectedNodes[i];
 
@@ -565,7 +565,7 @@ function addTreeNode(fromTreeObj, toTreeObj, checkFunction) {
 				// 显示错误信息
 				if( result.message ) {
 					var balloon = Balloons.create(result.message);
-					balloon.dockTo(toTreeObj.element);
+					balloon.dockTo(toTree.element);
 				}
 
 				if( result.stop ) {
@@ -578,24 +578,24 @@ function addTreeNode(fromTreeObj, toTreeObj, checkFunction) {
 		var groupName = curNode.getName();
 		var id = curNode.getId();
 
-		var sameAttributeTreeNode = hasSameAttributeTreeNode(toTreeObj, "id", id);
+		var sameAttributeTreeNode = hasSameAttributeTreeNode(toTree, "id", id);
 		if("_rootId" != id && false == sameAttributeTreeNode) {
 			// 至少有一行添加才刷新Tree
 			reload = true;
 
 			// 排除子节点
-			var treeNode = toTreeObj.getTreeNodeById("_rootId");
+			var treeNode = toTree.getTreeNodeById("_rootId");
 			if( treeNode ) {
 				var cloneNode = new XmlNode(curNode.node).cloneNode(false);
-				toTreeObj.insertTreeNodeXml(cloneNode.toXml(),treeNode);
+				toTree.insertTreeNodeXml(cloneNode.toXml(),treeNode);
 			}
 		}
 	}
 
 	if( reload ) {
-		toTreeObj.reload();
+		toTree.reload();
 	}
-	fromTreeObj.reload();
+	fromTree.reload();
 }
 
 /*

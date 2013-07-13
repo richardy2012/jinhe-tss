@@ -360,7 +360,7 @@ XForm.prototype.setFocus = function(name) {
 	var _column = this._columnList[name];
 	if( _column ) {
 		_column.setFocus();
-		$$(name).focus();
+		// $$(name).focus();
 	}
 }
 

@@ -223,6 +223,7 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         BeanUtil.addBeanProperties2Map(this, properties);
         map.putAll(properties);
+        map.put("userstate", disabled);
         
         if (id.equals(UMConstants.ADMIN_USER_ID)) {
             if (UMConstants.TRUE.equals(disabled)) {

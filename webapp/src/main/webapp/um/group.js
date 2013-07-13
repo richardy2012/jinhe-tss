@@ -3,8 +3,6 @@
      */
     XML_MAIN_TREE = "GroupTree";
     XML_USER_LIST = "SourceList";
-    XML_GRID_SEARCH = "GridSearch";
-    XML_SEARCH_USER = "SearchUserList";
  
     XML_USER_INFO = "UserInfo";
     XML_AUTHENTICATE_INFO = "AuthenticateInfo";
@@ -20,91 +18,65 @@
     XML_GROUP_TO_ROLE_TREE = "Group2RoleTree";
     XML_GROUP_TO_ROLE_EXIST_TREE = "Group2RoleExistTree";
  
- 
-    XML_GENERAL_SEARCH_PERMISSION = "GeneralSearchPermissionInfo";
-    XML_GENERAL_SEARCH_PERMISSION_LIST = "GeneralSearchPermissionList";
-    XML_GENERAL_SEARCH_REASSIGN = "GeneralSearchUserStrategyInfoGrid";
-    XML_GENERAL_SEARCH_ROLE = "GeneralSearchRoleGrid";
+    XML_SEARCH_SUBAUTH = "SUBAUTH_RESULT";
+    XML_SEARCH_ROLE = "ROLE_RESULT";
  
     /*
      *	默认唯一编号名前缀
      */
     CACHE_GRID_ROW_DETAIL = "row__id";
-    CACHE_VIEW_GRID_ROW_DETAIL = "viewRow__id";
     CACHE_TREE_NODE_DETAIL = "treeNode__id";
-    CACHE_VIEW_TREE_NODE_DETAIL = "viewTreeNode__id";
-    CACHE_TREE_NODE_GRID = "treeNodeGrid__id";
     CACHE_MAIN_TREE = "tree__id";
-    CACHE_GROUP_TO_USER_GRID = "group2User__id";
-    CACHE_SEARCH_USER = "searchUser__id";
-    CACHE_GENERAL_SEARCH_PERMISSION = "generalSearchPermission__id";
-    CACHE_GENERAL_SEARCH_PERMISSION_LIST = "generalSearchPermissionList__id";
-    CACHE_GENERAL_SEARCH_REASSIGN = "generalSearchReassign__id";
-    CACHE_GENERAL_SEARCH_ROLE = "generalSearchRole__id";
+    CACHE_SEARCH_SUBAUTH = "CACHE_SEARCH_SUBAUTH";
+    CACHE_SEARCH_ROLE = "CACHE_SEARCH_ROLE";
  
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_INIT = "data/group_init.xml";
-    URL_USER_LIST = "data/grid.xml";
-    URL_USER_DETAIL = "data/user1.xml";
-    URL_GROUP_DETAIL = "data/group1.xml";
-    URL_SAVE_USER = "data/_success.xml";
-    URL_SAVE_GROUP = "data/_success.xml";
-    URL_DEL_GROUP = "data/_success.xml";
-    URL_MOVE_USER = "data/_success.xml";
-    URL_START_GROUP = "data/_success.xml";
-    URL_STOP_GROUP = "data/_success.xml";
-    URL_SORT_GROUP = "data/_success.xml";
-    URL_STOP_USER = "data/_success.xml";
-    URL_START_USER = "data/_success.xml";
-    URL_SORT_USER = "data/_success.xml";
-    URL_SORT_USER_CROSS_PAGE = "data/_success.xml";
-    URL_SYNC_GROUP = "data/progress.xml";
-    URL_SYNC_PROGRESS = "data/progress.xml";
-    URL_CANCEL_SYNC_PROGRESS = "data/_success.xml";
-    URL_GROUP_TO_USER_LIST = "data/userlist.xml";
-    URL_DEL_USER = "data/_success.xml";
-    URL_SEARCH_USER = "data/grid.xml";
-    URL_RESET_PASSWORD = "data/_success.xml";
-    URL_GET_OPERATION = "data/operation.xml";
-    URL_GET_USER_OPERATION = "data/operation.xml";
-    URL_GENERAL_SEARCH_PERMISSION = "data/group_general_search.xml";
-    URL_GENERAL_SEARCH_PERMISSION_LIST = "data/group_general_search.xml";
-    URL_GENERAL_SEARCH_REASSIGN = "data/group_general_search.xml";
-    URL_GENERAL_SEARCH_ROLE = "data/group_general_search.xml";
- 
-
     URL_INIT = "ums/group!getAllGroup2Tree.action";
     URL_USER_LIST = "ums/user!getUsersByGroupId.action";
     URL_USER_DETAIL = "ums/user!getUserInfoAndRelation.action";
     URL_GROUP_DETAIL = "ums/group!getGroupInfoAndRelation.action";
     URL_SAVE_USER = "ums/user!saveUser.action";
     URL_SAVE_GROUP = "ums/group!editGroup.action";
-    URL_DEL_GROUP = "ums/group!deleteGroup.action";
-    URL_MOVE_USER = "ums/user!moveUser.action";
-    URL_START_GROUP = "ums/group!startOrStopGroup.action";
+    URL_DELETE_GROUP = "ums/group!deleteGroup.action";
     URL_STOP_GROUP = "ums/group!startOrStopGroup.action";
     URL_SORT_GROUP = "ums/group!sortGroup.action";
     URL_STOP_USER = "ums/user!startOrStopUser.action";
-    URL_START_USER = "ums/user!startOrStopUser.action";
-    URL_SORT_USER = "ums/user!sortUser.action";
-    URL_SORT_USER_CROSS_PAGE = "ums/user!sortUserCrossPage.action";
     URL_SYNC_GROUP = "ums/syncdata!syncData.action";
     URL_SYNC_PROGRESS = "ums/syncdata!getProgress.action";
     URL_CANCEL_SYNC_PROGRESS = "ums/syncdata!doConceal.action";
     URL_GROUP_TO_USER_LIST = "ums/user!getSelectedUsersByGroupId.action";
     URL_DEL_USER = "ums/user!deleteUser.action";
-    URL_SEARCH_USER = "ums/user!searchUser.action";
     URL_RESET_PASSWORD = "ums/user!initPassword.action";
     URL_GET_OPERATION = "ums/group!getOperation.action";
-    URL_GET_USER_OPERATION = "ums/user!getOperation.action";
-    URL_GENERAL_SEARCH_PERMISSION_LIST = "ums/generalSearch!searchPermission.action";
-    URL_GENERAL_SEARCH_REASSIGN = "ums/generalSearch!searchUserStrategyInfo.action";
-    URL_GENERAL_SEARCH_ROLE = "ums/generalSearch!searchRolesInfo.action";
+    URL_SEARCH_SUBAUTH = "ums/generalSearch!searchUserStrategyInfo.action";
+    URL_SEARCH_ROLE = "ums/generalSearch!searchRolesInfo.action";
+	
+	if(IS_TEST) {
+		URL_INIT = "data/group_tree.xml?";
+		URL_USER_LIST = "data/user_grid.xml?";
+		URL_USER_DETAIL = "data/user_detail.xml?";
+		URL_GROUP_DETAIL = "data/group_detail.xml?";
+		URL_SAVE_USER = "data/_success.xml?";
+		URL_SAVE_GROUP = "data/_success.xml?";
+		URL_DELETE_GROUP = "data/_success.xml?";
+		URL_STOP_GROUP = "data/_success.xml?";
+		URL_SORT_GROUP = "data/_success.xml?";
+		URL_STOP_USER = "data/_success.xml?";
+		URL_SYNC_GROUP = "data/progress.xml?";
+		URL_SYNC_PROGRESS = "data/progress.xml?";
+		URL_CANCEL_SYNC_PROGRESS = "data/_success.xml?";
+		URL_GROUP_TO_USER_LIST = "data/userlist.xml?";
+		URL_DEL_USER = "data/_success.xml?";
+		URL_RESET_PASSWORD = "data/_success.xml?";
+		URL_GET_OPERATION = "data/operation.xml?";
+		URL_SEARCH_SUBAUTH = "data/group_search_subauth.xml?";
+		URL_SEARCH_ROLE = "data/group_search_role.xml?";
+	}
  
  
-    function init(){
+    function init() {
         initPaletteResize();
         initListContainerResize();
         initNaviBar("um.1");
@@ -123,8 +95,8 @@
     }
 	
 	/* 是否为主用户组 */
-    function isMainGroup(){
-        return getTreeAttribute("groupType") == "1";
+    function isMainGroup(treeNode) {
+        return (treeNode ? treeNode.getAttribute("groupType") : getTreeAttribute("groupType")) == "1";
     }
 	
 	/* 是否自注册用户组节点 */
@@ -183,7 +155,7 @@
             icon:ICON + "view_list.gif",
             visible:function(){return !isTreeRoot() && isMainGroup() && getOperation("1"); }
         }
-        var item8 = {
+        var item9 = {
             label:"搜索用户...",
             callback:searchUser,
             icon:ICON + "search.gif",
@@ -209,23 +181,18 @@
             callback:null,
             icon:ICON + "search.gif"
         }
-        var subitem12_4_3 = {
-            label:"用户权限",
-            callback:generalSearchPermission
-        }
-        var subitem12_4_4 = {
-            label:"用户转授",
-            callback:generalSearchReassign
-        }
-        var subitem12_4_5 = {
+        var subitem12_4_1 = {
             label:"用户角色",
             callback:generalSearchRole
         }
+		 var subitem12_4_2 = {
+            label:"用户转授",
+            callback:generalSearchReassign
+        }
 
         var submenu12_4 = new Menu();
-        submenu12_4.addItem(subitem12_4_3);
-        submenu12_4.addItem(subitem12_4_4);
-        submenu12_4.addItem(subitem12_4_5);
+        submenu12_4.addItem(subitem12_4_1);
+        submenu12_4.addItem(subitem12_4_2);
         subitem12_4.submenu = submenu12_4;
 
         var submenu12 = new Menu();
@@ -254,52 +221,34 @@
         var gridObj = $$("grid");
         var item1 = {
             label:"停用",
-            callback:stopUser,
+            callback:function() { stopOrStartUser("1"); },
             icon:ICON + "stop.gif",
-            visible:function(){return getUserOperation("u5") && "0"==getUserState();}
+            visible:function() { return getUserOperation("2") && "0" == getUserState(); }
         }
         var item2 = {
             label:"启用",
-            callback:startUser,
+            callback:function() { stopOrStartUser("0"); },
             icon:ICON + "start.gif",
-            visible:function() { return getUserOperation("u4") && "1"==getUserState();}
+            visible:function() { return getUserOperation("2") && "1" == getUserState(); }
         }
         var item3 = {
             label:"编辑",
             callback:editUserInfo,
             icon:ICON + "edit.gif",
-            visible:function(){return getUserOperation("u2");}
+            visible:function() { return getUserOperation("2"); }
         }
         var item4 = {
             label:"删除",
             callback:delUser,
             icon:ICON + "del.gif",
-            enable:function(){return gridObj.canDelete();},
-            visible:function(){return getUserOperation("u1");}
-        }
-        var item5 = {
-            label:"移动到...",
-            callback:moveUserTo,
-            icon:ICON + "move.gif",
-            visible:function(){return getUserOperation("u1");}
-        }
-        var item9 = {
-            label:"查看",
-            callback:function() {
-                editUserInfo(false);
-            },
-            icon:ICON + "view.gif",
-            visible:function(){return getUserOperation("u3");}
+            visible:function() { return getUserOperation("2"); }
         }
  
         var menu1 = new Menu();
         menu1.addItem(item1);
         menu1.addItem(item2);
-        menu1.addSeparator();
-        menu1.addItem(item9);
         menu1.addItem(item3);
         menu1.addItem(item4);
-        menu1.addItem(item5);
  
         gridObj.contextmenu = menu1;
     }
@@ -321,7 +270,13 @@
 				showTreeNodeInfo();
             }
             treeObj.onTreeNodeDoubleClick = function(eventObj){
-                showUserList();
+				var treeNode = eventObj.treeNode;
+				if( isMainGroup(treeNode) ) {
+					showTreeNodeInfo();
+					getTreeOperation(treeNode, function(_operation) {
+						showUserList();
+					});
+				}
             }
             treeObj.onTreeNodeMoved = function(eventObj){
                 sort(eventObj);
@@ -398,7 +353,7 @@
 		var tree = $T("tree");
 		var treeNode = tree.getActiveTreeNode();
 		Ajax({
-			url : URL_DEL_GROUP + treeNode.getId(),
+			url : URL_DELETE_GROUP + treeNode.getId(),
 			method : "DELETE",
 			onsuccess : function() { 
 				var parentNode = treeNode.getParent();
@@ -428,16 +383,23 @@
 		});	     
     }
  
-    function editGroupInfo(newGroupID) {
+    function editGroupInfo(newGroupID) { 
+		var isAddGroup = DEFAULT_NEW_ID == newGroupID;
+	
         var treeNode = $T("tree").getActiveTreeNode();
-		var treeID = newGroupID || treeNode.getId();
-		var treeName = newGroupID ? "用户组" : treeNode.getName();
+		var treeID   = isAddGroup ? newGroupID : treeNode.getId();
+		var treeName = isAddGroup ? "用户组" : treeNode.getName();		
+		var parentID = isAddGroup ? treeID : treeNode.getParent().getId();		
 		var groupType = treeNode.getAttribute("groupType");
-		var parentID = newGroupID ? treeID : treeNode.getParent().getId();
 
 		var phases = [];
 		phases[0] = {page:"page1",label:"基本信息"};
-		phases[1] = {page:"page3",label:"角色"};
+		if( isMainGroup() ) { 
+			phases[1] = {page:"page3",label:"角色"};
+		} else {
+			phases[1] = {page:"page4",label:"用户"};
+			phases[2] = {page:"page3",label:"角色"};
+		}		
 		
 		var callback = {};
 		callback.onTabClose = function(eventObj){
@@ -455,9 +417,6 @@
 		inf.label = OPERATION_EDIT.replace(/\$label/i, treeName);
 		inf.SID = CACHE_TREE_NODE_DETAIL + treeID;
 					
-		if( !isMainGroup() ) { 
-			phases[2] = {page:"page4", label:"用户"};
-		}
 		inf.phases = phases;
 		var tab = ws.open(inf);         
     }
@@ -469,9 +428,7 @@
     /*
      *	树节点数据详细信息加载数据
      *	参数：	string:treeID               树节点id
-                boolean:editable            是否可编辑(默认true)
                 string:parentID             父节点id
-     *	返回值：
      */
     function loadGroupDetailData(treeID, parentID, groupType) {
 		var p = new HttpRequestParams();
@@ -479,53 +436,8 @@
  
 		var request = new HttpRequest(p);
 		request.onresult = function(){
-			// 设置翻页按钮显示状态
-			$$("page1BtPrev").style.display = "none";
-			$$("page4BtPrev").style.display = "";
-			$$("page3BtPrev").style.display = "";
-			$$("page1BtNext").style.display = "";
-			$$("page4BtNext").style.display = "";
-			$$("page3BtNext").style.display = "none";
-
-			// 设置保存按钮操作
-			$$("page1BtSave").onclick = $$("page4BtSave").onclick = $$("page3BtSave").onclick = function(){
-				saveGroup(treeID, parentID, groupType);
-			}
-
-			// 设置添加按钮操作
-			var page3BtAddObj = $$("page3BtAdd");
-			page3BtAddObj.disabled = editable==false?true:false;
-			page3BtAddObj.onclick = function() {
-				addTreeNode(page3TreeObj, page3Tree2Obj, function(treeNode){
-					var result = {
-						"error": false,
-						"message": "",
-						"stop": true
-					};
-					if( isMainGroup() ) {
-						result.error = true;
-						result.message = null;
-						result.stop = false;
-					}
-					return result;
-				});
-			}
-
-			// 设置添加按钮操作
-			$$("page4BtAdd").onclick = function(){
-				addTreeNode(page4Tree2Obj, page4Tree3Obj);
-			}
-
-			// 设置删除按钮操作
-			$$("page3BtDel").onclick = function(){
-				 removeTreeNode(page3Tree2Obj);
-			}
-			$$("page4BtDel").onclick = function(){
-				 removeTreeNode(page4Tree3Obj);
-			}
-			
 			var groupInfoNode = this.getNodeValue(XML_GROUP_INFO);
-			var group2UserTreeNode = Cache.XmlDatas.get(CACHE_MAIN_TREE).cloneNode();
+			var group2UserTreeNode = Cache.XmlDatas.get(CACHE_MAIN_TREE).cloneNode(true);
 			var group2UserGridNode = this.getNodeValue(XML_GROUP_TO_USER_EXIST_TREE);
 			var group2RoleTreeNode = this.getNodeValue(XML_GROUP_TO_ROLE_TREE);
 			var group2RoleGridNode = this.getNodeValue(XML_GROUP_TO_ROLE_EXIST_TREE);
@@ -537,9 +449,7 @@
 			Cache.XmlDatas.add(treeID + "." + XML_GROUP_TO_ROLE_EXIST_TREE, group2RoleGridNode);
 				
 			var page1FormObj = $X("page1Form", groupInfoNode);
-            page1FormObj.editable = editable ? "true" : "false";
-
-			attachReminder(roleInfoNodeID, page1FormObj);
+			attachReminder(page1FormObj.element.id, page1FormObj);
  
 			var page3Tree  = $T("page3Tree",  group2RoleTreeNode);
 			var page3Tree2 = $T("page3Tree2", group2RoleGridNode);
@@ -557,6 +467,37 @@
 						}
 					});	
 				}				
+			}
+			
+			// 设置翻页按钮显示状态
+			$$("page1BtPrev").style.display = "none";
+			$$("page4BtPrev").style.display = "";
+			$$("page3BtPrev").style.display = "";
+			$$("page1BtNext").style.display = "";
+			$$("page4BtNext").style.display = "";
+			$$("page3BtNext").style.display = "none";
+
+			// 设置保存按钮操作
+			$$("page1BtSave").onclick = $$("page4BtSave").onclick = $$("page3BtSave").onclick = function(){
+				saveGroup(treeID, parentID, groupType);
+			}
+
+			// 设置添加按钮操作
+			$$("page3BtAdd").onclick = function() {
+				addTreeNode(page3Tree, page3Tree2);
+			}
+
+			// 设置添加按钮操作
+			$$("page4BtAdd").onclick = function(){
+				addTreeNode($T("page4Tree2"), page4Tree3);
+			}
+
+			// 设置删除按钮操作
+			$$("page3BtDel").onclick = function(){
+				 removeTreeNode(page3Tree2);
+			}
+			$$("page4BtDel").onclick = function(){
+				 removeTreeNode(page4Tree3);
 			}
 		}
 		request.send();
@@ -610,7 +551,6 @@
 			}
 		}
  
-
         if( flag ) {
             var request = new HttpRequest(p);
 			
@@ -680,6 +620,7 @@
         var treeNode = $T("tree").getActiveTreeNode();
 		var treeID = groupId || treeNode.getId();
 
+		var p = new HttpRequestParams();
 		p.url = URL_USER_LIST + treeID + "/1/" + PAGESIZE;
 		var request = new HttpRequest(p);
 		request.onresult = function() {
@@ -723,7 +664,7 @@
         var treeNode = $T("tree").getActiveTreeNode();
 		var groupId = treeNode.getId();
 
-		loadUserInfo(operationName, DEFAULT_NEW_ID, "用户", groupId);
+		loadUserInfo(OPERATION_ADD, DEFAULT_NEW_ID, "用户", groupId);
     }
  
     function editUserInfo() {
@@ -732,7 +673,7 @@
 		var rowID = row.getAttribute("id");   
 		var rowName = row.getAttribute("userName");   
  
-		loadUserInfo(operationName, rowID, rowName);
+		loadUserInfo(OPERATION_EDIT, rowID, rowName);
     }
 	
 	function loadUserInfo(operationName, rowID, rowName, groupId) {
@@ -770,9 +711,23 @@
 			var userInfoNode = this.getNodeValue(XML_USER_INFO);
 			var authenticateInfoNode = this.getNodeValue(XML_AUTHENTICATE_INFO);
 			var user2GroupExistTreeNode = this.getNodeValue(XML_USER_TO_GROUP_EXIST_TREE);
-			var user2GroupTreeNode = Cache.XmlDatas.get(CACHE_MAIN_TREE).cloneNode();
+			var user2GroupTreeNode = Cache.XmlDatas.get(CACHE_MAIN_TREE).cloneNode(true);
 			var user2RoleTreeNode = this.getNodeValue(XML_USER_TO_ROLE_TREE);
 			var user2RoleGridNode = this.getNodeValue(XML_USER_TO_ROLE_EXIST_TREE);
+			
+			// 过滤掉辅助用户组 和系统级用户组
+			var assitantGroups = user2GroupTreeNode.selectNodes("//treeNode[@groupType='2']");
+			if(assitantGroups) {
+				for(var i = 0; i < assitantGroups.length; i++) {
+					assitantGroups[i].setAttribute("canselected", "0");
+				}
+			}
+			var systemGroups = user2GroupTreeNode.selectNodes("//treeNode[@id < 0]");
+			if(systemGroups) {
+				for(var i = 0; i < systemGroups.length; i++) {
+					systemGroups[i].setAttribute("canselected", "0");
+				}
+			}
  
 			Cache.XmlDatas.add(userID + "." + XML_USER_INFO, userInfoNode);
 			Cache.XmlDatas.add(userID + "." + XML_AUTHENTICATE_INFO, authenticateInfoNode);
@@ -806,7 +761,7 @@
 
 			//设置保存按钮操作
 			$$("page1BtSave").onclick = $$("page8BtSave").onclick = $$("page2BtSave").onclick = $$("page3BtSave").onclick = function(){
-				saveUser(cacheID, groupId);
+				saveUser(userID, groupId);
 			}
 
 			// 设置添加按钮操作
@@ -818,9 +773,14 @@
 						"stop":true
 					};
 					var groupType = treeNode.getAttribute("groupType");
-					if( groupType == "1" && hasSameAttributeTreeNode(page2Tree2Obj,"groupType",groupType)){
+					if( groupType == "1" && hasSameAttributeTreeNode(page2Tree2, "groupType", groupType)){
 						result.error = true;
 						result.message = "一个用户对应主用户组只允许一个";
+						result.stop = true;
+					}
+					if( groupType == "2"){
+						result.error = true;
+						result.message = "此处只能选择主用户组下的组织";
 						result.stop = true;
 					}
 					return result;
@@ -844,16 +804,16 @@
 
 			// 设置删除按钮操作
 			$$("page2BtDel").onclick = function(){
-				removeTreeNode(page2Tree2Obj);
+				removeTreeNode(page2Tree2);
 			}
 			$$("page3BtDel").onclick = function(){
-				 removeTreeNode(page3Tree2Obj);
+				 removeTreeNode(page3Tree2);
 			}
 		}
 		request.send();
     }
 
-    function saveUser(cacheID, groupId){
+    function saveUser(userID, groupId){
         var page1FormObj = $X("page1Form");
         var page8FormObj = $X("page8Form");
         if( !page1FormObj.checkForm() ) {
@@ -883,7 +843,7 @@
         var flag = false;
  
 		// 用户基本信息
-		var userInfoNode = Cache.XmlDatas.get(cacheID+"."+XML_USER_INFO);
+		var userInfoNode = Cache.XmlDatas.get(userID + "." + XML_USER_INFO);
 		if(userInfoNode) {			
 			flag = true;
 			var userInfoDataNode = userInfoNode.selectSingleNode(".//data");
@@ -891,14 +851,14 @@
 		}
 
 		//认证基本信息
-		var authenticateInfoNode = Cache.XmlDatas.get(cacheID+"."+XML_AUTHENTICATE_INFO);
+		var authenticateInfoNode = Cache.XmlDatas.get(userID + "." + XML_AUTHENTICATE_INFO);
 		if(authenticateInfoNode) {
 			var authenticateInfoDataNode = authenticateInfoNode.selectSingleNode(".//data");
 			p.setXFormContent(authenticateInfoDataNode);
 		}
 
 		//用户对用户组
-		var user2GroupNode = Cache.XmlDatas.get(cacheID+"."+XML_USER_TO_GROUP_EXIST_TREE);
+		var user2GroupNode = Cache.XmlDatas.get(userID + "." + XML_USER_TO_GROUP_EXIST_TREE);
 		if(user2GroupNode) {
 			var user2GroupDataIDs = getTreeNodeIds(user2GroupNode);
 			if( user2GroupDataIDs.length > 0 ) {
@@ -911,40 +871,40 @@
 		}
 
 		//用户对角色
-		var user2RoleNode = Cache.XmlDatas.get(cacheID+"."+XML_USER_TO_ROLE_EXIST_TREE);
+		var user2RoleNode = Cache.XmlDatas.get(userID + "." + XML_USER_TO_ROLE_EXIST_TREE);
 		if(user2RoleNode) {
 			var user2RoleDataIDs = getTreeNodeIds(user2RoleNode);
 			if( user2RoleDataIDs.length > 0) {
 				p.setContent(XML_USER_TO_ROLE_EXIST_TREE, user2RoleDataIDs.join(","));
 			}
 		}
-	}
 
-	if( flag ) {
-		var request = new HttpRequest(p);
-		
-		//同步按钮状态
-		syncButton([$$("page1BtSave"), $$("page2BtSave"), $$("page3BtSave"), $$("page8BtSave")], request);
+		if( flag ) {
+			var request = new HttpRequest(p);
+			
+			//同步按钮状态
+			syncButton([$$("page1BtSave"), $$("page2BtSave"), $$("page3BtSave"), $$("page8BtSave")], request);
 
-		request.onsuccess = function(){
-			// 解除提醒
-			detachReminder(page1FormObj.element.id);
-			detachReminder(page8FormObj.element.id);
+			request.onsuccess = function(){
+				// 解除提醒
+				detachReminder(page1FormObj.element.id);
+				detachReminder(page8FormObj.element.id);
 
-			// 如果当前grid显示为此用户所在组，则刷新grid
-			showUserList(groupId);
- 
-			ws.closeActiveTab();
+				// 如果当前grid显示为此用户所在组，则刷新grid
+				showUserList(groupId);
+	 
+				ws.closeActiveTab();
+			}
+			request.send();
 		}
-		request.send();
-    }
+	}
  
     /* 获取用户状态 */
     function getUserState(){
 		var rowIndex = $$("grid").selectRowIndex; 
         if(rowIndex) {
             var row = $G("grid").getRowByIndex(rowIndex);
-            return row.getAttribute("disabled");
+            return row.getAttribute("userstate");
 		}
         return null;   
     }
@@ -961,7 +921,7 @@
             var request = new HttpRequest(p);
             request.onsuccess = function(){
                 // 成功后设置状态
-                $G("grid").modifyRow(curRowIndex, "disabled", state);
+                $G("grid").modifyRow(curRowIndex, "userstate", state);
                 $G("grid").modifyRow(curRowIndex, "icon", ICON + "user_2.gif");
 				
 				if (state == "0") {
@@ -978,21 +938,22 @@
     }  
  
     function delUser(){
-        if( !confirm("您确定要删除吗？")) return;
+        if( !confirm("您确定要删除吗？") ) return;
 		
 		var rowIndex = $$("grid").selectRowIndex; 
-        if(rowIndex) {
+        if( rowIndex ) {
             var row = $G("grid").getRowByIndex(rowIndex);
 			var userID = row.getAttribute("id");  
 			
 			Ajax({
-			url : URL_DEL_USER + userID,
-			method : "DELETE",
-			onsuccess : function() { 
-				 // 从grid上删除
-				$G("grid").deleteRow(rowIndex);
-			}
-		});	
+				url : URL_DEL_USER + userID,
+				method : "DELETE",
+				onsuccess : function() { 
+					 // 从grid上删除
+					$G("grid").deleteRow(rowIndex);
+				}
+			});	
+		}
     }
  
     /* 搜索用户 */
@@ -1003,69 +964,7 @@
 
 		window.showModalDialog("searchuser.htm", {groupId:treeID,title:"搜索\"" + treeName + "\"下的用户"}, "dialogWidth:250px;dialogHeight:250px;");
     }
- 
 
-  
-    /*
-     *	综合查询(用户授权查询)
-     */
-    function generalSearchPermission(){
-        var treeNode = $T("tree").getActiveTreeNode();
-		var groupId = treeNode.getId();
-		var groupName = treeNode.getName();
-		
-		var callback = {};
-		callback.onTabClose = function(eventObj){
-			delCacheData(eventObj.tab.SID);
-		};
-		callback.onTabChange = function(){
-			setTimeout(function(){
-				loadGeneralSearchPermissionData(groupId);
-			},TIMEOUT_TAB_CHANGE);
-		};
-
-		var inf = {};
-		inf.defaultPage = "page7";
-		inf.label = "用户权限" + OPERATION_SEARCH.replace(/\$label/i,groupName);
-		inf.phases = null;
-		inf.callback = callback;
-		inf.SID = CACHE_GENERAL_SEARCH_PERMISSION + groupId;
-		var tab = ws.open(inf);
-    }
-
-    /* 综合查询(用户转授查询) */
-    function generalSearchReassign(){
-        var treeNode = $T("tree").getActiveTreeNode();
-		var groupId = treeNode.getId();
-		var groupName = treeNode.getName();
-		
-		var callback = {};
-		callback.onTabClose = function(eventObj){
-			delCacheData(eventObj.tab.SID);
-		};
-		callback.onTabChange = function(){
-			setTimeout(function() {
-				var p = new HttpRequestParams();
-				p.url = URL_GENERAL_SEARCH_REASSIGN;
-				p.setContent("groupId", groupId);
-
-				var request = new HttpRequest(p);
-				request.onresult = function() {
-					var generalSearchGridNode = this.getNodeValue(XML_GENERAL_SEARCH_REASSIGN);
-					$G("page6Grid", generalSearchGridNode);
-				}
-				request.send();
-			}, TIMEOUT_TAB_CHANGE);
-		};
-
-		var inf = {};
-		inf.defaultPage = "page6";
-		inf.label = "用户转授" + OPERATION_SEARCH.replace(/\$label/i,groupName);
-		inf.phases = null;
-		inf.callback = callback;
-		inf.SID = CACHE_GENERAL_SEARCH_REASSIGN + groupId;
-		var tab = ws.open(inf);
-    }
  
     /* 综合查询(用户角色查询) */
     function generalSearchRole(){
@@ -1080,12 +979,12 @@
 		callback.onTabChange = function(){
 			setTimeout(function(){
 				var p = new HttpRequestParams();
-				p.url = URL_GENERAL_SEARCH_ROLE;
+				p.url = URL_SEARCH_ROLE;
 				p.setContent("groupId", groupId);
 
 				var request = new HttpRequest(p);
 				request.onresult = function(){
-					var generalSearchGridNode = this.getNodeValue(XML_GENERAL_SEARCH_ROLE);
+					var generalSearchGridNode = this.getNodeValue(XML_SEARCH_ROLE);
 					$G("page6Grid", generalSearchGridNode);
 				}
 				request.send();
@@ -1097,7 +996,41 @@
 		inf.label = "用户角色" + OPERATION_SEARCH.replace(/\$label/i,groupName);
 		inf.phases = null;
 		inf.callback = callback;
-		inf.SID = CACHE_GENERAL_SEARCH_ROLE + groupId;
+		inf.SID = CACHE_SEARCH_ROLE + groupId;
+		var tab = ws.open(inf);
+    }
+	
+	/* 综合查询(用户转授查询) */
+    function generalSearchReassign(){
+        var treeNode = $T("tree").getActiveTreeNode();
+		var groupId = treeNode.getId();
+		var groupName = treeNode.getName();
+		
+		var callback = {};
+		callback.onTabClose = function(eventObj){
+			delCacheData(eventObj.tab.SID);
+		};
+		callback.onTabChange = function(){
+			setTimeout(function() {
+				var p = new HttpRequestParams();
+				p.url = URL_SEARCH_SUBAUTH;
+				p.setContent("groupId", groupId);
+
+				var request = new HttpRequest(p);
+				request.onresult = function() {
+					var generalSearchGridNode = this.getNodeValue(XML_SEARCH_SUBAUTH);
+					$G("page6Grid", generalSearchGridNode);
+				}
+				request.send();
+			}, TIMEOUT_TAB_CHANGE);
+		};
+
+		var inf = {};
+		inf.defaultPage = "page6";
+		inf.label = "用户转授" + OPERATION_SEARCH.replace(/\$label/i,groupName);
+		inf.phases = null;
+		inf.callback = callback;
+		inf.SID = CACHE_SEARCH_SUBAUTH + groupId;
 		var tab = ws.open(inf);
     }
  

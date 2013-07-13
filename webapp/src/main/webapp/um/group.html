@@ -28,26 +28,13 @@
 
 
 <style>
-  #page7Form td{
-    padding-top:0px;
-    padding-bottom:0px;
-  }
-  #page7Box{
-    width:100%;
-    height:100%;
-    padding:10px;
-    overflow:auto;
-  }
-  #page7Box table{
-    border:1px outset #FFFFFF;
-    border-collapse:collapse;
-    background-color:#FFFFFF;
-  }
-  #page7Box td{
-    border:1px solid #CCCCCC;
-  }
   #palette {
     width: 250px;
+  }
+  
+  .trxx {
+	height: 13px;
+	background-color:#E4E6F5
   }
 </style>
 
@@ -85,9 +72,6 @@
               <td class="separator"></td>
             </tr>
             <tr> 
-              <td height="20"><!-- 工具条 开始 --><ToolBar:Bar id="toolbar"><div class="loading"></div></ToolBar:Bar><!-- 工具条 结束 --></td>
-            </tr>
-            <tr> 
               <td valign="top">
                 <table class="full" border="0" cellpadding="0" cellspacing="0">
                   <tr> 
@@ -101,9 +85,7 @@
                         </tr>
                         <tr>
                           <td id="treeContainer">
-                            <!-- tree 开始 -->
-                            <Tree:TreeBox id="tree" treeType="menu" baseurl="../core/htc/tree/" canMoveNode="true"><div class="loading"></div></Tree:TreeBox>
-                            <!-- tree 结束 -->
+                            <Tree:Box id="tree" treeType="menu" baseurl="../framework/tree/" canMoveNode="true"><div class="loading"></div></Tree:Box>
                           </td>
                         </tr>
                         <tr id="statusTitle" class="bar">
@@ -119,54 +101,42 @@
                     </td>
                     <td>
                       <table class="full" border="0" cellpadding="0" cellspacing="0">
-                        <!-- <tr> 
-                          <td class="separator"></td>
-                        </tr> -->
-                        <tr> 
-                          <td class="location"><span class="icon" id="paletteBt"></span>您当前所在的位置:<span class="locationInfo"></span></td>
-                        </tr>
                         <tr valign="top">
                           <!-- 主内容区域 开始 -->
                           <td class="groove">
                             <div class="groove">
                               <table class="full" border="0" cellspacing="2" cellpadding="0">
-                                <tr>
+                                <tr height="53%">
                                   <td id="listContainer" class="gridContainer">
                                     <!-- 列表区域 开始 -->
                                     <table class="full border" border="0" cellspacing="0" cellpadding="0">
                                       <tr>
                                         <td id="gridTitle">
-                                          <span class="icon"></span>
-                                          用户列表
-                                          <span class="buttonBox" id="gridToolBar"></span>
+                                          <span class="icon"></span>用户列表<span class="buttonBox" id="gridToolBar"></span>
                                         </td>
                                       </tr>
                                       <tr>
                                         <td>
-                                          <!-- grid 开始 -->
-                                          <Grid2:Grid id="grid" cols="50,70,70,50,100,100,100,120,70" editable="false" baseurl="../core/htc/grid2.1.3/" contextmenu="false" autoextend="true" useCookie="true" showHorizontalBarAsNeed="true" rowresizable="false" colresizable="true"  fireDataChangeWhenSetCheckAll="false"><div class="loading"></div></Grid2:Grid>
-                                          <!-- grid 结束 -->
+                                          <Grid:Box id="grid" baseurl="../framework/grid/"></Grid:Box>
                                         </td>
                                       </tr>
                                     </table>
                                     <!-- 列表区域 结束 -->
                                   </td>
                                 </tr>
-                                <tr style="display:none">
+                                <tr>
                                   <td class="separator"></td>
                                 </tr>
-                                <tr style="display:none">
+                                <tr>
                                   <td>
                                     <!-- 标签区域 开始 -->
-                                    <WorkSpace:Box id="ws" baseurl="../core/htc/workspace/">
+                                    <WorkSpace:Box id="ws" baseurl="../framework/workspace/">
                                       <!-- page1 开始 -->
                                       <WorkSpace:Page id=page1>
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
                                           <tr valign="top">
                                             <td>
-                                              <!-- xform 开始 -->
-                                              <Xform:Form id="page1Form" baseurl="../core/htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
-                                              <!-- xform 结束 -->
+                                              <Xform:Box id="page1Form" baseurl="../framework/xform/"><div class="loading"></div></Xform:Box>
                                             </td>
                                           </tr>
                                           <tr height="20">
@@ -185,36 +155,21 @@
                                       <!-- page2 开始 -->
                                       <WorkSpace:Page id=page2 class="tight">
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
-                                          <tr class="tf">
-                                            <td class="r b">
-                                              <table class="hFull" border="0" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                  <td class="label">※可选用户组：</td>
-                                                  <td class="btBox">关键字 <input id="page2Keyword" type="text" class="txtfield"/><input id="page2BtSearch" type="button" value="搜索" class="btWeak"/></td>
-                                                </tr>
-                                              </table>
-                                            </td>
+										  <tr class="trxx">
+                                            <td class="r b">&nbsp;※&nbsp;可选用户组：</td>
                                             <td class="r b">&nbsp;</td>
-                                            <td class="b">
-                                              <table class="hFull" border="0" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                  <td class="label">※已有用户组：</td>
-                                                  <td class="btBox">&nbsp;</td>
-                                                </tr>
-                                              </table>
-                                            </td>
+                                            <td class="b label">&nbsp;※&nbsp;已有用户组：</td>
                                           </tr>
                                           <tr>
                                             <td class="r b" width="45%">
-                                              <!-- tree 开始 -->
-                                              <Tree:TreeBox id="page2Tree" treeType="multi" baseurl="../core/htc/tree/" selectSelf="true"><div class="loading"></div></Tree:TreeBox>
-                                              <!-- tree 结束 -->
+                                              <Tree:Box id="page2Tree" treeType="multi" baseurl="../framework/tree/" selectSelf="true"><div class="loading"></div></Tree:Box>
                                             </td>
-                                            <td class="r b" style="background-color:#E4E6F5;width:18px"><input type="button" class="btWeakS" value=">>" id="page2BtAdd"/><input type="button" class="btWeakS" value="<<" id="page2BtDel"/></td>
+                                            <td class="r b" style="background-color:#E4E6F5;width:18px">
+												<input type="button" class="btWeakS" value=">>" id="page2BtAdd"/>
+												<input type="button" class="btWeakS" value="<<" id="page2BtDel"/>
+											</td>
                                             <td class="b">
-                                              <!-- tree 开始 -->
-                                              <Tree:TreeBox id="page2Tree2" treeType="multi" baseurl="../core/htc/tree/" selectSelf="false"><div class="loading"></div></Tree:TreeBox>
-                                              <!-- tree 结束 -->
+                                              <Tree:Box id="page2Tree2" treeType="multi" baseurl="../framework/tree/" selectSelf="false"><div class="loading"></div></Tree:Box>
                                             </td>
                                           </tr>
                                           <tr height="20">
@@ -233,36 +188,21 @@
                                       <!-- page3 开始 -->
                                       <WorkSpace:Page id=page3 class="tight">
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
-                                          <tr class="tf">
-                                            <td class="r b">
-                                              <table class="hFull" border="0" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                  <td class="label">※可选角色：</td>
-                                                  <td class="btBox">关键字 <input id="page3Keyword" type="text" class="txtfield"/><input id="page3BtSearch" type="button" value="搜索" class="btWeak"/></td>
-                                                </tr>
-                                              </table>
-                                            </td>
+										  <tr class="trxx">
+                                            <td class="r b">&nbsp;※&nbsp;可选角色：</td>
                                             <td class="r b">&nbsp;</td>
-                                            <td class="b">                                            
-                                              <table class="hFull" border="0" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                  <td class="label">※已有角色：</td>
-                                                  <td class="btBox">&nbsp;</td>
-                                                </tr>
-                                              </table>
-                                            </td>
+                                            <td class="b label">&nbsp;※&nbsp;已有角色：</td>
                                           </tr>
                                           <tr>
                                             <td class="r b" width="45%">
-                                              <!-- tree 开始 -->
-                                              <Tree:TreeBox id="page3Tree" treeType="multi" baseurl="../core/htc/tree/"><div class="loading"></div></Tree:TreeBox>
-                                              <!-- tree 结束 -->
+                                              <Tree:Box id="page3Tree" treeType="multi" baseurl="../framework/tree/"><div class="loading"></div></Tree:Box>
                                             </td>
-                                            <td class="r b" style="background-color:#E4E6F5;width:18px"><input type="button" class="btWeakS" value=">>" id="page3BtAdd"/><input type="button" class="btWeakS" value="<<" id="page3BtDel"/></td>
+                                            <td class="r b" style="background-color:#E4E6F5;width:18px">
+												<input type="button" class="btWeakS" value=">>" id="page3BtAdd"/>
+												<input type="button" class="btWeakS" value="<<" id="page3BtDel"/>
+											</td>
                                             <td class="b">
-                                              <!-- tree 开始 -->
-                                              <Tree:TreeBox id="page3Tree2" treeType="multi" baseurl="../core/htc/tree/" selectSelf="false"><div class="loading"></div></Tree:TreeBox>
-                                              <!-- tree 结束 -->
+                                              <Tree:Box id="page3Tree2" treeType="multi" baseurl="../framework/tree/" selectSelf="false"><div class="loading"></div></Tree:Box>
                                             </td>
                                           </tr>
                                           <tr height="20">
@@ -281,42 +221,25 @@
                                       <!-- page4 开始 -->
                                       <WorkSpace:Page id=page4 class="tight">
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
-                                          <tr class="tf">
-                                            <td class="r b">
-                                              <table class="hFull" border="0" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                  <td class="label">※可选：</td>
-                                                  <td class="btBox">关键字 <input id="page4Keyword" type="text" class="txtfield" style="width:60px"/><input id="page4BtSearch" type="button" value="搜索" class="btWeak"/></td>
-                                                </tr>
-                                              </table>
-                                            </td>
-                                            <td class="r b">
-                                              <table class="hFull" border="0" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                  <td class="label">&nbsp;</td>
-                                                  <td class="btBox">关键字 <input id="page4Keyword2" type="text" class="txtfield" style="width:60px"/><input id="page4BtSearch2" type="button" value="搜索" class="btWeak"/></td>
-                                                </tr>
-                                              </table>
-                                            </td>
+                                          <tr class="trxx">
+                                            <td class="r b">&nbsp;※&nbsp;可选用户组：</td>
+                                            <td class="r b">&nbsp;※&nbsp;可选用户：</td>
                                             <td class="r b">&nbsp;</td>
-                                            <td class="b label">※已有：</td>
+                                            <td class="b label">&nbsp;※&nbsp;已有：</td>
                                           </tr>
                                           <tr>
-                                            <td class="r b" width="40%">
-                                              <!-- tree 开始 -->
-                                              <Tree:TreeBox id="page4Tree" treeType="menu" baseurl="../core/htc/tree/"><div class="loading"></div></Tree:TreeBox>
-                                              <!-- tree 结束 -->
+                                            <td class="r b" width="36%">
+                                              <Tree:Box id="page4Tree" treeType="menu" baseurl="../framework/tree/"><div class="loading"></div></Tree:Box>
                                             </td>
-                                            <td class="r b" width="25%">
-                                              <!-- tree 开始 -->
-                                              <Tree:TreeBox id="page4Tree2" treeType="multi" baseurl="../core/htc/tree/" selectSelf="false"><div class="loading"></div></Tree:TreeBox>
-                                              <!-- tree 结束 -->
+                                            <td class="r b" width="29%">
+                                              <Tree:Box id="page4Tree2" treeType="multi" baseurl="../framework/tree/" selectSelf="false"></Tree:Box>
                                             </td>
-                                            <td class="r b" style="background-color:#E4E6F5;width:18px"><input type="button" class="btWeakS" value=">>" id="page4BtAdd"/><input type="button" class="btWeakS" value="<<" id="page4BtDel"/></td>
+                                            <td class="r b" style="background-color:#E4E6F5;width:18px">
+												<input type="button" class="btWeakS" value=">>" id="page4BtAdd"/>
+												<input type="button" class="btWeakS" value="<<" id="page4BtDel"/>
+											</td>
                                             <td class="b">
-                                              <!-- tree 开始 -->
-                                              <Tree:TreeBox id="page4Tree3" treeType="multi" baseurl="../core/htc/tree/" selectSelf="false"><div class="loading"></div></Tree:TreeBox>
-                                              <!-- tree 结束 -->
+                                              <Tree:Box id="page4Tree3" treeType="multi" baseurl="../framework/tree/" selectSelf="false"><div class="loading"></div></Tree:Box>
                                             </td>
                                           </tr>
                                           <tr height="20">
@@ -330,54 +253,7 @@
                                           </tr>
                                         </table>
                                       </WorkSpace:Page>
-                                      <!-- page4 结束 -->
-
-                                      <!-- page5 开始 -->
-                                      <WorkSpace:Page id=page5 class="tight">
-                                        <table class="full" border="0" cellspacing="0" cellpadding="0">
-                                          <tr class="tf">
-                                            <td class="r b">
-                                              <table class="hFull" border="0" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                  <td class="btBox">
-                                                    <!-- xform 开始 -->
-                                                    <Xform:Form id="page5Form" baseurl="../core/htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
-                                                    <!-- xform 结束 -->
-                                                  </td>
-                                                </tr>
-                                              </table>
-                                            </td>
-                                            <td class="b">                                            
-                                              <table class="hFull" border="0" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                  <td class="label">※用户列表：</td>
-                                                  <td class="btBox"><input type="button" id="page5BtClear" class="btWeak" value="清除"/></td>
-                                                </tr>
-                                              </table>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <td class="r b" width="55%">
-                                              <!-- grid 开始 -->
-                                              <Grid2:Grid id="page5Grid" cols="100,100,100" editable="false" baseurl="../core/htc/grid2.1.3/" contextmenu="false" useCookie="true" showHorizontalBarAsNeed="true" rowresizable="false" colresizable="true"  fireDataChangeWhenSetCheckAll="false"><div class="loading"></div></Grid2:Grid>
-                                              <!-- grid 结束 -->
-                                            </td>
-                                            <td class="b">
-                                              <!-- grid 开始 -->
-                                              <Grid2:Grid id="page5Grid2" cols="100,100,100" editable="false" baseurl="../core/htc/grid2.1.3/" contextmenu="false" useCookie="true" showHorizontalBarAsNeed="true" rowresizable="false" colresizable="true"  fireDataChangeWhenSetCheckAll="false"><div class="loading"></div></Grid2:Grid>
-                                              <!-- grid 结束 -->
-                                            </td>
-                                          </tr>
-                                          <tr height="20">
-                                            <td colspan="2">
-                                              <WorkSpace:PageStep>
-                                                <input type="button" class="btStrong" value="完成" id="page5BtSave"/>
-                                              </WorkSpace:PageStep>
-                                            </td>
-                                          </tr>
-                                        </table>
-                                      </WorkSpace:Page>
-                                      <!-- page5结束 -->
+                                      <!-- page4 结束 -->                          
 
                                       <!-- page6 开始 -->
                                       <WorkSpace:Page id=page6 class="tight">
@@ -387,9 +263,7 @@
                                           </tr>
                                           <tr valign="top">
                                             <td>
-                                              <!-- grid 开始 -->
-                                              <Grid2:Grid id="page6Grid" cols="100,100,100" editable="false" baseurl="../core/htc/grid2.1.3/" contextmenu="false" useCookie="true" showHorizontalBarAsNeed="true" rowresizable="false" colresizable="true" fireDataChangeWhenSetCheckAll="false"><div class="loading"></div></Grid2:Grid>
-                                              <!-- grid 结束 -->
+                                              <Grid:Box id="page6Grid" baseurl="../framework/grid/"><div class="loading"></div></Grid:Box>
                                             </td>
                                           </tr>
                                           <tr height="20">
@@ -402,33 +276,12 @@
                                       </WorkSpace:Page>
                                       <!-- page6 结束 -->
 
-                                      <!-- page7 开始 -->
-                                      <WorkSpace:Page id=page7 class="tight">
-                                        <table class="full" border="0" cellspacing="0" cellpadding="0">
-                                          <tr valign="top">
-                                            <td class="b tf">
-                                              <!-- xform 开始 -->
-                                              <Xform:Form id="page7Form" baseurl="../core/htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
-                                              <!-- xform 结束 -->
-                                            </td>
-                                          </tr>
-                                          <tr valign="top">
-                                            <td>
-                                              <div id="page7Box"></div>
-                                            </td>
-                                          </tr>
-                                        </table>
-                                      </WorkSpace:Page>
-                                      <!-- page7 结束 -->
-
                                       <!-- page8 开始 -->
                                       <WorkSpace:Page id=page8>
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
                                           <tr valign="top">
                                             <td>
-                                              <!-- xform 开始 -->
-                                              <Xform:Form id="page8Form" baseurl="../core/htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
-                                              <!-- xform 结束 -->
+                                              <Xform:Box id="page8Form" baseurl="../framework/xform/"><div class="loading"></div></Xform:Box>
                                             </td>
                                           </tr>
                                           <tr height="20">
