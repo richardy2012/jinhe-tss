@@ -234,33 +234,6 @@ public class UserService implements IUserService{
         map.put("User2RoleExistTree", userDao.findRolesByUserId(userId));
         return map;
     }
-
-	public void moveUser(Long groupId, Long toGroupId, Long userId) {
-        Group group;
-        if(toGroupId == null || (group = groupDao.getEntity(toGroupId)) == null) {
-            throw new BusinessException("移动的目标用户组Id为null或者是已经被删除，移动失败！");
-        }
-            
-		// 用户移动前先判断关系是否被改变,如果在移动时发现用户已经被移动到其他组,则取消移动.抛出异常
-        GroupUser groupUser = userDao.getGroup2User(groupId, userId);
-        if(groupUser == null) {
-			throw new BusinessException("用户已经被移出该用户组，移动失败");
-        }
-            
-		// 用户移动时，当移动到的用户组是停用时，那么这个用户立即停用。辅助用户组除外，因为辅助用户组停用是不影响下面的用户的。
-	    // 如果该主用户组或者其他用户组是停用，则该用户也设为停用状态.
-		if(!Group.ASSISTANT_GROUP_TYPE.equals(group.getGroupType()) && UMConstants.TRUE.equals(group.getDisabled())){
-			User user = userDao.getEntity(userId);
-			user.setDisabled(UMConstants.TRUE);
-			userDao.update(user);
-		}	
-		
-		// 维护关系时此处做法:  1.先删除原有的组对用户的关系  2.再添加的组对用户的关系
-        groupUserDao.deleteGroupUser(groupUser);
-		if( userDao.getGroup2User(toGroupId, userId) == null ) {
-			createUser2Group(userId, toGroupId); // 添加新的组对用户的关系,如果已经存在则不重复保存
-		}
-	}
 	
 	public void startOrStopUser(Long userId, Integer disabled, Long groupId) {
 		User user = userDao.getEntity(userId);

@@ -114,21 +114,6 @@ public interface IUserService {
 
     /**
      * <p>
-     * 移动用户。可用于用户更换部门等场景使用。
-     * 其他用户组的用户暂时不允许移动
-     * </p>
-     * @param groupId
-     * @param toGroupId
-     * @param userId
-     */
-    @Logable(operateTable="用户", operateType="移动", 
-            operateInfo=" 移动(ID: ${args[0]}) 用户组中的（ID：${args[2]}）用户至 (ID: ${args[1]}) 用户组 "
-        )
-    void moveUser(Long groupId, Long toGroupId, Long userId);
-
-
-    /**
-     * <p>
      * 启用停用用户
      * </p>
      * @param loginUserId

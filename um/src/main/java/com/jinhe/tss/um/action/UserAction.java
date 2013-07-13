@@ -107,15 +107,6 @@ public class UserAction extends BaseActionSupport {
 		userService.startOrStopUser(id, state, groupId);
         printSuccessMessage();
 	}
-	
-	/**
-	 * 用户的移动
-	 */
-	@RequestMapping(value = "/move/{groupId}/{userId}/{toGroupId}", method = RequestMethod.POST)
-	public void moveUser(Long groupId, Long userId, Long toGroupId) {
-		userService.moveUser(groupId, toGroupId, userId);
-        printSuccessMessage();
-	}
  
 	/**
 	 * 删除用户
