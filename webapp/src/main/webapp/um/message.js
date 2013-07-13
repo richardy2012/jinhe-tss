@@ -11,8 +11,7 @@
     XML_MESSAGE_INFO = "MessageInfo";
     XML_REPLY_INFO = "MessageInfo";
     XML_FORWARD_INFO = "MessageInfo";
-
-    XML_GROUP_INFO = "GroupInfo";
+ 
     /*
      *	默认唯一编号名前缀
      */

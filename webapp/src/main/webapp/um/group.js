@@ -117,13 +117,13 @@
     function initTreeMenu(){
         var item1 = {
             label:"停用",
-            callback:function() { stopOrStartTreeNode("1"); },
+            callback:function() { stopOrStartTreeNode(URL_STOP_NODE, "1", "user_group"); },
             icon:ICON + "stop.gif",
             visible:function(){return editable() && isTreeNodeDisabled();}
         }
         var item2 = {
             label:"启用",
-            callback:function() { stopOrStartTreeNode("0"); },
+            callback:function() { stopOrStartTreeNode(URL_STOP_NODE, "0", "user_group"); },
             icon:ICON + "start.gif",
             visible:function(){return editable() && !isTreeNodeDisabled();}
         }
@@ -135,7 +135,7 @@
         }
         var item4 = {
             label:"删除",
-            callback:delGroup,
+            callback:function() { delTreeNode(URL_DELETE_GROUP); },
             icon:ICON + "del.gif",
             visible:function(){return editable();}
         }
@@ -253,7 +253,7 @@
         gridObj.contextmenu = menu1;
     }
  
-     function loadInitData(){
+    function loadInitData(){
         var p = new HttpRequestParams();
         p.url = URL_INIT;
 
@@ -298,73 +298,15 @@
  
 	function sort(eventObj) {
 		var movedNode  = eventObj.movedTreeNode;
-		var targetNode = eventObj.toTreeNode;
-		var direction  = eventObj.moveState; // -1: 往上, 1: 往下
-		var movedNodeID = movedNode.getId();
-		
+		var movedNodeID = movedNode.getId();		
 		if("-2" == movedNodeID || "-3" == movedNodeID ) {
 			alert("不能移动此节点!");
 			return;
 		}
 
-		Ajax({
-			url : URL_SORT_SOURCE + movedNodeID + "/" + targetNode.getId() + "/" + direction,
-			onsuccess : function() { 
-				 $T("tree").moveTreeNode(movedNode, targetNode, direction);
-			}
-		});
+		sortTreeNode(URL_SORT_GROUP, eventObj);
 	}
  
-    function stopOrStartTreeNode(state) {		
-		var tree = $T("tree");
-		var treeNode = tree.getActiveTreeNode();
-		Ajax({
-			url : URL_STOP_NODE + treeNode.getId() + "/" + state,
-			onsuccess : function() { 
-				// 刷新父子树节点停用启用状态: 启用上溯，停用下溯
-				var curNode = new XmlNode(treeNode.node);
-				refreshTreeNodeState(curNode, state);
-		
-				if("1"==state) {
-					var childNodes = curNode.selectNodes(".//treeNode");
-					for(var i=0; i < childNodes.length; i++) {                
-						refreshTreeNodeState(childNodes[i], state);
-					}
-				} else if ("0" == state) {
-					while( curNode && curNode.getAttribute("id") > 0 ) {
-						refreshTreeNodeState(curNode, state);
-						curNode = curNode.getParent();
-					}            
-				}
-				
-				tree.reload(); 
-			}
-		});
-    }
- 
-    function refreshTreeNodeState(xmlNode, state) {
-        xmlNode.setAttribute("disabled", state);
-        xmlNode.setAttribute("icon", ICON + "user_group" + (state == "0" ? "" : "_2 ") + ".gif");
-    }
-	
-	function delGroup() {
-		if( !confirm("您确定要删除吗？") ) return;
-		
-		var tree = $T("tree");
-		var treeNode = tree.getActiveTreeNode();
-		Ajax({
-			url : URL_DELETE_GROUP + treeNode.getId(),
-			method : "DELETE",
-			onsuccess : function() { 
-				var parentNode = treeNode.getParent();
-				if( parentNode ) {
-					tree.setActiveTreeNode(parentNode.getId());
-				}
-				tree.removeTreeNode(treeNode);
-			}
-		});	      
-    }
-	
 	/* 初始化密码  */
     function resetPassword(){
         var treeNode = $T("tree").getActiveTreeNode();
@@ -715,19 +657,10 @@
 			var user2RoleTreeNode = this.getNodeValue(XML_USER_TO_ROLE_TREE);
 			var user2RoleGridNode = this.getNodeValue(XML_USER_TO_ROLE_EXIST_TREE);
 			
-			// 过滤掉辅助用户组 和系统级用户组
-			var assitantGroups = user2GroupTreeNode.selectNodes("//treeNode[@groupType='2']");
-			if(assitantGroups) {
-				for(var i = 0; i < assitantGroups.length; i++) {
-					assitantGroups[i].setAttribute("canselected", "0");
-				}
-			}
-			var systemGroups = user2GroupTreeNode.selectNodes("//treeNode[@id < 0]");
-			if(systemGroups) {
-				for(var i = 0; i < systemGroups.length; i++) {
-					systemGroups[i].setAttribute("canselected", "0");
-				}
-			}
+			// 过滤掉辅助用户组 和系统级用户组 和 角色组
+			disableTreeNodes(user2GroupTreeNode, "//treeNode[@groupType='2']");
+			disableTreeNodes(user2GroupTreeNode, "//treeNode[@id < 0]");
+			disableTreeNodes(user2RoleTreeNode, "//treeNode[@isGroup='1']");
  
 			Cache.XmlDatas.add(userID + "." + XML_USER_INFO, userInfoNode);
 			Cache.XmlDatas.add(userID + "." + XML_AUTHENTICATE_INFO, authenticateInfoNode);
@@ -912,7 +845,8 @@
     function stopOrStartUser(state) {
         var rowIndex = $$("grid").selectRowIndex; 
         if(rowIndex) {
-            var row = $G("grid").getRowByIndex(rowIndex);
+			var grid = $G("grid");
+            var row = grid.getRowByIndex(rowIndex);
             var userID = row.getAttribute("id");
 
             var p = new HttpRequestParams();
@@ -921,8 +855,8 @@
             var request = new HttpRequest(p);
             request.onsuccess = function(){
                 // 成功后设置状态
-                $G("grid").modifyRow(curRowIndex, "userstate", state);
-                $G("grid").modifyRow(curRowIndex, "icon", ICON + "user_2.gif");
+                grid.modifyRow(row, "userstate", state);
+                grid.modifyRow(row, "icon", ICON + "user_2.gif");
 				
 				if (state == "0") {
 					// 启用组
@@ -942,15 +876,15 @@
 		
 		var rowIndex = $$("grid").selectRowIndex; 
         if( rowIndex ) {
-            var row = $G("grid").getRowByIndex(rowIndex);
+			var grid = $G("grid");
+            var row = grid.getRowByIndex(rowIndex);
 			var userID = row.getAttribute("id");  
 			
 			Ajax({
 				url : URL_DEL_USER + userID,
 				method : "DELETE",
 				onsuccess : function() { 
-					 // 从grid上删除
-					$G("grid").deleteRow(rowIndex);
+					grid.deleteRow(row);
 				}
 			});	
 		}

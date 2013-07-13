@@ -234,21 +234,7 @@
      *	删除节点
      */
     function delTreeNode() {
-        if( !confirm("您确定要删除吗？") )  return;
- 
-        var tree = $T("tree");
-		var treeNode = tree.getActiveTreeNode();
-		Ajax({
-			url : URL_DELETE_NODE + treeNode.getId(),
-			method : "DELETE",
-			onsuccess : function() { 
-				var parentNode = treeNode.getParent();
-				if( parentNode ) {
-					tree.setActiveTreeNode(parentNode.getId());
-				}
-				tree.removeTreeNode(treeNode);
-			}
-		});	
+		delTreeNode(URL_DELETE_NODE);
     }
 	
 	function moveNodeTo() {
@@ -499,14 +485,8 @@
 			var role2GroupTreeNode = this.getNodeValue(XML_ROLE_TO_GROUP_TREE);
 			var role2GroupExsitInfo = this.getNodeValue(XML_ROLE_TO_GROUP_EXIST_TREE);
  
-			var mainGroupNode = role2GroupTreeNode.selectSingleNode("//treeNode[@id='-2']");
-			if(mainGroupNode) {
-				mainGroupNode.setAttribute("canselected", "0");
-			}
-			var assistantGroupNode = role2GroupTreeNode.selectSingleNode("//treeNode[@id='-3']");
-			if(assistantGroupNode) {
-				assistantGroupNode.setAttribute("canselected", "0");
-			}
+			disableSingleTreeNode(role2GroupTreeNode, "//treeNode[@id='-2']");
+			disableSingleTreeNode(role2GroupTreeNode, "//treeNode[@id='-3']");
 
 			var roleInfoNodeID  = treeID + "." + XML_ROLE_INFO;
 			Cache.XmlDatas.add(roleInfoNodeID, roleInfoNode);

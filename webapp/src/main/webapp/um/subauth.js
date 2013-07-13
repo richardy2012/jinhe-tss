@@ -227,21 +227,10 @@
 			var rule2GroupTreeNode = this.getNodeValue(XML_RULE_TO_GROUP_TREE);
 			var rule2GroupExistTreeNode = this.getNodeValue(XML_RULE_TO_GROUP_EXIST_TREE);
 			
-			var roleGroups = rule2RoleTreeNode.selectNodes("//treeNode[@isGroup='1']");
-			if(roleGroups) {
-				for(var i = 0; i < roleGroups.length; i++) {
-					roleGroups[i].setAttribute("canselected", "0");
-				}
-			}
-
-			var mainGroupNode = rule2GroupTreeNode.selectSingleNode("//treeNode[@id='-2']");
-			if(mainGroupNode) {
-				mainGroupNode.setAttribute("canselected", "0");
-			}
-			var assistantGroupNode = rule2GroupTreeNode.selectSingleNode("//treeNode[@id='-3']");
-			if(assistantGroupNode) {
-				assistantGroupNode.setAttribute("canselected", "0");
-			}
+			
+			disableTreeNodes(rule2RoleTreeNode, "//treeNode[@isGroup='1']");
+			disableSingleTreeNode(rule2GroupTreeNode, "//treeNode[@id='-2']");
+			disableSingleTreeNode(rule2GroupTreeNode, "//treeNode[@id='-3']");
 
 			Cache.XmlDatas.add(treeID + "." + XML_RULE_INFO, ruleInfoNode);
 			Cache.XmlDatas.add(treeID + "." + XML_RULE_TO_ROLE_TREE, rule2RoleTreeNode);
@@ -338,7 +327,7 @@
 		//转授角色
 		var rule2RoleNode = Cache.XmlDatas.get(cacheID+"."+XML_RULE_TO_ROLE_EXIST_TREE);
 		if(rule2RoleNode) {
-			var rule2RoleDataIDs = getTreeNodeIds(rule2RoleNode, "./treeNode//treeNode");
+			var rule2RoleDataIDs = getTreeNodeIds(rule2RoleNode);
 			if(rule2RoleDataIDs.length > 0) {
 				flag = true;
 				p.setContent(XML_RULE_TO_ROLE_IDS, rule2RoleDataIDs.join(","));
@@ -348,7 +337,7 @@
 		//转授给用户
 		var rule2UserNode = Cache.XmlDatas.get(cacheID+"."+XML_RULE_TO_USER_EXIST_TREE);
 		if(rule2UserNode){
-			var rule2UserDataIDs = getTreeNodeIds(rule2UserNode, "./treeNode//treeNode");
+			var rule2UserDataIDs = getTreeNodeIds(rule2UserNode);
 			if(rule2UserDataIDs.length > 0) {
 				flag = true;
 				p.setContent(XML_RULE_TO_USER_IDS, rule2UserDataIDs.join(","));
@@ -359,7 +348,7 @@
 		//转授给用户组
 		var rule2GroupNode = Cache.XmlDatas.get(cacheID + "." + XML_RULE_TO_GROUP_EXIST_TREE);
 		if( rule2GroupNode) {
-			var rule2GroupDataIDs = getTreeNodeIds(rule2GroupNode, "./treeNode//treeNode");
+			var rule2GroupDataIDs = getTreeNodeIds(rule2GroupNode);
 			if(rule2GroupDataIDs.length > 0) {
 				flag = true;
 				p.setContent(XML_RULE_TO_GROUP_IDS, rule2GroupDataIDs.join(","));

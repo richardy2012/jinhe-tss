@@ -503,7 +503,6 @@ function attachSearchTree(treeObj, btObj, keywordObj) {
 /*
  *	清除tree数据
  *	参数：	Element:treeObj         tree控件对象
- *	返回值：
  */
 function clearTreeData(treeObj) {
 	var xmlReader = new XmlReader("<actionSet/>");
@@ -512,6 +511,25 @@ function clearTreeData(treeObj) {
 	treeObj.research = true;
 }    
 
+/*
+ *	根据条件将部分树节点设置为不可选状态
+ */
+function disableTreeNodes(treeXML, xpath) {
+	var nodeLsit = treeXML.selectNodes(xpath);
+	if(nodeLsit) {
+		for(var i = 0; i < nodeLsit.length; i++) {
+			nodeLsit[i].setAttribute("canselected", "0");
+		}
+	}
+}
+
+function disableSingleTreeNode(treeXML, xpath) {
+	var node = treeXML.selectSingleNode(xpath);
+	if(node) {
+		node.setAttribute("canselected", "0");
+	}
+}
+			
 /*
  *	删除树选中节点
  *	参数：	Element:treeObj         tree控件对象
@@ -646,6 +664,78 @@ function showTreeNodeInfo() {
 	showTreeNodeStatus(
 		{id:"ID", name:"名称", creatorName:"创建者", createTime:"创建时间", updatorName:"修改者", updateTime:"修改时间"}
 	);
+}
+
+// 删除选中节点，适用于多层结构树
+function delTreeNode(url) {
+	if( !confirm("您确定要删除吗？") )  return;
+
+	var tree = $T("tree");
+	var treeNode = tree.getActiveTreeNode();
+	Ajax({
+		url : url || URL_DELETE_NODE + treeNode.getId(),
+		method : "DELETE",
+		onsuccess : function() { 
+			var parentNode = treeNode.getParent();
+			if( parentNode ) {
+				tree.setActiveTreeNode(parentNode.getId());
+			}
+			tree.removeTreeNode(treeNode);
+		}
+	});	
+}
+
+/*
+ *	停用启用节点
+ *	参数：	url      请求地址
+			state    状态
+			iconName 节点图标
+ */
+function stopOrStartTreeNode(url, state, iconName) {		
+	var tree = $T("tree");
+	var treeNode = tree.getActiveTreeNode();
+	Ajax({
+		url : url || URL_STOP_NODE + treeNode.getId() + "/" + state,
+		onsuccess : function() { 
+			// 刷新父子树节点停用启用状态: 启用上溯，停用下溯
+			var curNode = new XmlNode(treeNode.node);
+			refreshTreeNodeState(curNode, state);
+	
+			if("1"==state) {
+				var childNodes = curNode.selectNodes(".//treeNode");
+				for(var i=0; i < childNodes.length; i++) {                
+					refreshTreeNodeState(childNodes[i], state);
+				}
+			} else if ("0" == state) {
+				while( curNode && curNode.getAttribute("id") > 0 ) {
+					refreshTreeNodeState(curNode, state);
+					curNode = curNode.getParent();
+				}            
+			}
+			
+			tree.reload(); 
+		}
+	});
+	
+	this.refreshTreeNodeState = function(xmlNode) {
+        xmlNode.setAttribute("disabled", state);
+        xmlNode.setAttribute("icon", ICON + iconName + (state == "0" ? "" : "_2 ") + ".gif");
+    }
+}
+
+// 对同层的树节点进行排序
+function sortTreeNode(url, eventObj) {
+	var movedNode  = eventObj.movedTreeNode;
+	var targetNode = eventObj.toTreeNode;
+	var direction  = eventObj.moveState; // -1: 往上, 1: 往下
+	var movedNodeID = movedNode.getId();
+ 
+	Ajax({
+		url : url + movedNodeID + "/" + targetNode.getId() + "/" + direction,
+		onsuccess : function() { 
+			 $T("tree").moveTreeNode(movedNode, targetNode, direction);
+		}
+	});
 }
 
 

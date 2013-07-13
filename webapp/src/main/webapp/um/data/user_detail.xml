@@ -132,8 +132,8 @@
 	</User2GroupExistTree>
 	<User2RoleTree>
 		<actionSet title="" openednodeid="r2">
-			<treeNode id="r1" name="角色组1" icon="../framework/images/icon_group.gif">
-				<treeNode id="r1.1" name="角色组1.1" icon="../framework/images/icon_group.gif">
+			<treeNode id="r1" name="角色组1" icon="../framework/images/icon_group.gif"  isGroup="1">
+				<treeNode id="r1.1" name="角色组1.1" icon="../framework/images/icon_group.gif"  isGroup="1">
 					<treeNode id="r1.1.1" name="角色1.1.1" icon="../framework/images/role.gif"/>
 					<treeNode id="r1.1.2" name="角色1.1.2" icon="../framework/images/role.gif"/>
 				</treeNode>
@@ -149,7 +149,7 @@
 				<treeNode id="r1.11" name="角色1.11" icon="../framework/images/role.gif"/>
 				<treeNode id="r1.12" name="角色1.12" icon="../framework/images/role.gif"/>
 			</treeNode>
-			<treeNode id="r2" name="角色组2" icon="../framework/images/icon_group.gif">
+			<treeNode id="r2" name="角色组2" icon="../framework/images/icon_group.gif" isGroup="1">
 				<treeNode id="r2.1" name="角色2.1" icon="../framework/images/role.gif"/>
 				<treeNode id="r2.2" name="角色2.2" icon="../framework/images/role.gif"/>
 				<treeNode id="r2.3" name="角色2.3" icon="../framework/images/role.gif"/>
@@ -163,7 +163,6 @@
 				<treeNode id="r2.11" name="角色2.11" icon="../framework/images/role.gif"/>
 				<treeNode id="r2.12" name="角色2.12" icon="../framework/images/role.gif"/>
 			</treeNode>
-			<treeNode id="r3" name="角色3"/>
 		</actionSet>
 	</User2RoleTree>
 	<User2RoleExistTree>
