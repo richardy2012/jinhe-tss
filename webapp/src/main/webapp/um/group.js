@@ -107,8 +107,7 @@
     function init(){
         initPaletteResize();
         initListContainerResize();
-        initToolBar();
-        initNaviBar("ums.1");
+        initNaviBar("um.1");
         initMenus();
         initBlocks();
         initWorkSpace();
@@ -1001,223 +1000,107 @@
         var treeNode = $T("tree").getActiveTreeNode();
 		var treeID = treeNode.getId();
 		var treeName = treeNode.getName();
-		var groupType = treeNode.getAttribute("groupType");
 
-		window.showModalDialog("searchuser.htm",{groupId:treeID,groupType:groupType,title:"搜索\""+treeName+"\"下的用户"},"dialogWidth:250px;dialogHeight:250px;");
+		window.showModalDialog("searchuser.htm", {groupId:treeID,title:"搜索\"" + treeName + "\"下的用户"}, "dialogWidth:250px;dialogHeight:250px;");
     }
  
 
- 
   
     /*
      *	综合查询(用户授权查询)
      */
     function generalSearchPermission(){
-        var treeObj = $$("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode){
-            var groupId = treeNode.getId();
-            var groupName = treeNode.getName();
-            
-            var callback = {};
-            callback.onTabClose = function(eventObj){
-                delCacheData(eventObj.tab.SID);
-            };
-            callback.onTabChange = function(){
-                setTimeout(function(){
-                    loadGeneralSearchPermissionData(groupId);
-                },TIMEOUT_TAB_CHANGE);
-            };
+        var treeNode = $T("tree").getActiveTreeNode();
+		var groupId = treeNode.getId();
+		var groupName = treeNode.getName();
+		
+		var callback = {};
+		callback.onTabClose = function(eventObj){
+			delCacheData(eventObj.tab.SID);
+		};
+		callback.onTabChange = function(){
+			setTimeout(function(){
+				loadGeneralSearchPermissionData(groupId);
+			},TIMEOUT_TAB_CHANGE);
+		};
 
-            var inf = {};
-            inf.defaultPage = "page7";
-            inf.label = "用户权限" + OPERATION_SEARCH.replace(/\$label/i,groupName);
-            inf.phases = null;
-            inf.callback = callback;
-            inf.SID = CACHE_GENERAL_SEARCH_PERMISSION + groupId;
-            var tab = ws.open(inf);
-        }    
-    }
- 
-    /*
-     *	搜索用户授权信息
-     */
-    function searchPermission(cacheID){
-        var p = new HttpRequestParams();
-        p.url = URL_GENERAL_SEARCH_PERMISSION_LIST;
-
-        var xmlIsland = Cache.XmlDatas.get(cacheID+"."+XML_GENERAL_SEARCH_PERMISSION);
-        if(null!=xmlIsland){
-            var dataNode = xmlIsland.selectSingleNode("./data");
-            if(null!=dataNode){
-                var prefix = xmlIsland.selectSingleNode("./declare").getAttribute("prefix");
-                p.setXFormContent(dataNode,prefix);
-            }
-        }
-
-        var request = new HttpRequest(p);
-        request.onresult = function(){
-            var permissionListNode = this.getNodeValue(XML_GENERAL_SEARCH_PERMISSION_LIST);
-            var page7Box = $$("page7Box");
-			var str = getPermissionListStr(permissionListNode);
-			page7Box.innerHTML = str;
-        }
-        request.send();
-    }
- 
-    function getPermissionListStr(xmlIsland){
-
-        var str = [];
-        var userNodes = xmlIsland.selectNodes("./treeNode");
-
-        //遍历用户
-        for(var i=0,iLen=userNodes.length;i<iLen;i++){
-            var name = userNodes[i].getAttribute("name");
-            str[str.length] = "<table class=\"hFull\" border=\"1\" cellspacing=\"0\" cellpadding=\"5\">";
-            str[str.length] = "<tr><td colspan=\"4\" style=\"text-decoration:underline;font-weight:bold;\">" + name + "</td></tr>";
-
-
-            //遍历资源类型以生成表格的行
-            var sourceNodes = userNodes[i].selectNodes("./treeNode/treeNode/treeNode");
-            for(var j=0,jLen=sourceNodes.length;j<jLen;j++){
-                var sourceNode = sourceNodes[j];
-                var typeNode = sourceNode.getParent();
-                var appNode = typeNode.getParent();
-
-
-                var name = sourceNode.getAttribute("name");
-                str[str.length] = "<tr>";
-
-                if(sourceNode.equals(appNode.getFirstChild().getFirstChild())){
-                    var rowspan = appNode.selectNodes("./treeNode/treeNode").length;
-                    str[str.length] = "<td rowspan=\"" + rowspan + "\" width=\"10%\">" + appNode.getAttribute("name") + "</td>";                
-                }
-                if(sourceNode.equals(typeNode.getFirstChild())){
-                    var rowspan = typeNode.selectNodes("./treeNode").length;
-                    str[str.length] = "<td rowspan=\"" + rowspan + "\" width=\"10%\">" + typeNode.getAttribute("name") + "</td>";
-                }
-                str[str.length] = "<td width=\"30%\">" + name + "</td>";
-
-                //遍历权限选项
-                var optionStr = [];
-                var optionNodes = sourceNode.selectNodes("./treeNode");
-                for(var k=0,kLen=optionNodes.length;k<kLen;k++){
-                    optionStr[optionStr.length] = optionNodes[k].getAttribute("name");
-                }
-                str[str.length] = "<td width=\"50%\">" + optionStr.join(",") + "</td>";
-
-                str[str.length] = "</tr>";
-            }
-            str[str.length] = "</table>";
-        }
-
-        return str.join("");
-    }
-    /*
-     *	清除授权列表数据
-     */
-    function clearPermissionList(){
-        var page7Box = $$("page7Box");
-        page7Box.innerHTML = "";
+		var inf = {};
+		inf.defaultPage = "page7";
+		inf.label = "用户权限" + OPERATION_SEARCH.replace(/\$label/i,groupName);
+		inf.phases = null;
+		inf.callback = callback;
+		inf.SID = CACHE_GENERAL_SEARCH_PERMISSION + groupId;
+		var tab = ws.open(inf);
     }
 
-
-    /*
-     *	综合查询(用户转授查询)
-     */
+    /* 综合查询(用户转授查询) */
     function generalSearchReassign(){
-        var treeObj = $$("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode){
-            var groupId = treeNode.getId();
-            var groupName = treeNode.getName();
-            
-            var callback = {};
-            callback.onTabClose = function(eventObj){
-                delCacheData(eventObj.tab.SID);
-            };
-            callback.onTabChange = function(){
-                setTimeout(function(){
-                    loadGeneralSearchRessignData(groupId);
-                },TIMEOUT_TAB_CHANGE);
-            };
+        var treeNode = $T("tree").getActiveTreeNode();
+		var groupId = treeNode.getId();
+		var groupName = treeNode.getName();
+		
+		var callback = {};
+		callback.onTabClose = function(eventObj){
+			delCacheData(eventObj.tab.SID);
+		};
+		callback.onTabChange = function(){
+			setTimeout(function() {
+				var p = new HttpRequestParams();
+				p.url = URL_GENERAL_SEARCH_REASSIGN;
+				p.setContent("groupId", groupId);
 
-            var inf = {};
-            inf.defaultPage = "page6";
-            inf.label = "用户转授" + OPERATION_SEARCH.replace(/\$label/i,groupName);
-            inf.phases = null;
-            inf.callback = callback;
-            inf.SID = CACHE_GENERAL_SEARCH_REASSIGN + groupId;
-            var tab = ws.open(inf);
-        }
-    }
-    /*
-     *	综合查询加载数据
-     */
-    function loadGeneralSearchRessignData(groupId){
-        var cacheID = CACHE_GENERAL_SEARCH_REASSIGN + groupId;
-        var cacheData = Cache.Variables.get(cacheID);
-        if(null==cacheData){
-            var p = new HttpRequestParams();
-            p.url = URL_GENERAL_SEARCH_REASSIGN;
+				var request = new HttpRequest(p);
+				request.onresult = function() {
+					var generalSearchGridNode = this.getNodeValue(XML_GENERAL_SEARCH_REASSIGN);
+					$G("page6Grid", generalSearchGridNode);
+				}
+				request.send();
+			}, TIMEOUT_TAB_CHANGE);
+		};
 
-            p.setContent("groupId", groupId);
-
-            var request = new HttpRequest(p);
-            request.onresult = function(){
-                var generalSearchGridNode = this.getNodeValue(XML_GENERAL_SEARCH_REASSIGN);
-                $G("page6Grid", generalSearchGridNode);
-            }
-            request.send();
-        }else{
-            initGeneralSearchReassignPages(cacheID);
-        }
-    }
-
-    /*
-     *	综合查询(用户角色查询)
-     */
-    function generalSearchRole(){
-        var treeObj = $$("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode){
-            var groupId = treeNode.getId();
-            var groupName = treeNode.getName();
-            
-            var callback = {};
-            callback.onTabClose = function(eventObj){
-                delCacheData(eventObj.tab.SID);
-            };
-            callback.onTabChange = function(){
-                setTimeout(function(){
-                    loadGeneralSearchRoleData(groupId);
-                },TIMEOUT_TAB_CHANGE);
-            };
-
-            var inf = {};
-            inf.defaultPage = "page6";
-            inf.label = "用户角色" + OPERATION_SEARCH.replace(/\$label/i,groupName);
-            inf.phases = null;
-            inf.callback = callback;
-            inf.SID = CACHE_GENERAL_SEARCH_ROLE + groupId;
-            var tab = ws.open(inf);
-        }
+		var inf = {};
+		inf.defaultPage = "page6";
+		inf.label = "用户转授" + OPERATION_SEARCH.replace(/\$label/i,groupName);
+		inf.phases = null;
+		inf.callback = callback;
+		inf.SID = CACHE_GENERAL_SEARCH_REASSIGN + groupId;
+		var tab = ws.open(inf);
     }
  
-    function loadGeneralSearchRoleData(groupId){
-		var p = new HttpRequestParams();
-		p.url = URL_GENERAL_SEARCH_ROLE;
+    /* 综合查询(用户角色查询) */
+    function generalSearchRole(){
+        var treeNode = $T("tree").getActiveTreeNode();  
+		var groupId = treeNode.getId();
+		var groupName = treeNode.getName();
+		
+		var callback = {};
+		callback.onTabClose = function(eventObj){
+			delCacheData(eventObj.tab.SID);
+		};
+		callback.onTabChange = function(){
+			setTimeout(function(){
+				var p = new HttpRequestParams();
+				p.url = URL_GENERAL_SEARCH_ROLE;
+				p.setContent("groupId", groupId);
 
-		p.setContent("groupId", groupId);
+				var request = new HttpRequest(p);
+				request.onresult = function(){
+					var generalSearchGridNode = this.getNodeValue(XML_GENERAL_SEARCH_ROLE);
+					$G("page6Grid", generalSearchGridNode);
+				}
+				request.send();
+			}, TIMEOUT_TAB_CHANGE);
+		};
 
-		var request = new HttpRequest(p);
-		request.onresult = function(){
-			var generalSearchGridNode = this.getNodeValue(XML_GENERAL_SEARCH_ROLE);
-			$G("page6Grid", generalSearchGridNode);
-		}
-		request.send();
+		var inf = {};
+		inf.defaultPage = "page6";
+		inf.label = "用户角色" + OPERATION_SEARCH.replace(/\$label/i,groupName);
+		inf.phases = null;
+		inf.callback = callback;
+		inf.SID = CACHE_GENERAL_SEARCH_ROLE + groupId;
+		var tab = ws.open(inf);
     }
-	
+ 
 
     window.onload = init;
 

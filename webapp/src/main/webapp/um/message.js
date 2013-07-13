@@ -76,17 +76,6 @@
     URL_SAVE_FORWARD = "data/_success.xml";
 
  
-    /*
-     *	延时
-     */
-    TIMEOUT_TAB_CHANGE = 200;
-    TIMEOUT_GRID_SEARCH = 200;
-    /*
-     *	icon路径
-     */
-    ICON = "../platform/images/icon/";
-
-    var toolbar = null;
 
     /*
      *	函数说明：页面初始化
@@ -96,8 +85,6 @@
     function init(){
         initPaletteResize();
         initListContainerResize();
-       // initUserInfo();
-        initToolBar();
         initNaviBar();
         initMenus();
         initBlocks();
@@ -109,8 +96,6 @@
     }
     /*
      *	函数说明：页面初始化加载数据(包括工具条、树)
-     *	参数：	
-     *	返回值：
      */
     function loadInitData(){
         var p = new HttpRequestParams();
@@ -130,68 +115,7 @@
         }
         request.send();
     }
-    /*
-     *	函数说明：工具条加载数据
-     *	参数：	string:_operation      操作权限
-     *	返回值：
-     */
-    function loadToolBar(_operation){
-        var xmlIsland = Cache.XmlIslands.get(CACHE_TOOLBAR);
-        if(null==xmlIsland){//还没有就创建
 
-            var str = [];
-            str[str.length] = "<toolbar>";
-
-            //公共
-            str[str.length] = "    <button id=\"a1\" code=\"p1\" icon=\"" + ICON + "icon_pre.gif\" label=\"上页\" cmd=\"ws.prevTab()\" enable=\"true\"/>";
-            str[str.length] = "    <button id=\"a2\" code=\"p2\" icon=\"" + ICON + "icon_next.gif\" label=\"下页\" cmd=\"ws.nextTab()\" enable=\"true\"/>";
-            str[str.length] = "    <separator/>";
-
-            //消息组
-            str[str.length] = "    <button id=\"b1\" code=\"1\" icon=\"" + ICON + "new_message.gif\" label=\"写新消息\" cmd=\"addNewMessage()\" enable=\"'1'==getTreeId()\"/>";
-            str[str.length] = "    <button id=\"b2\" code=\"6\" icon=\"" + ICON + "view_list.gif\" label=\"浏览消息\" cmd=\"showMessageList()\" enable=\"'1'!=getTreeId()\"/>";
-            str[str.length] = "    <button id=\"b3\" code=\"10\" icon=\"" + ICON + "search.gif\" label=\"搜索消息\" cmd=\"searchMessage()\" enable=\"'1'!=getTreeId()\"/>";
-
-            //消息
-            str[str.length] = "    <button id=\"c1\" code=\"m3\" icon=\"" + ICON + "view.gif\" label=\"查看\" cmd=\"editMessageInfo(false)\" enable=\"'2'==getMessageBoxId() || '4'==getMessageBoxId()\"/>";
-            str[str.length] = "    <button id=\"c2\" code=\"m2\" icon=\"" + ICON + "edit.gif\" label=\"编辑\" cmd=\"editMessageInfo()\" enable=\"'3'==getMessageBoxId()\"/>";
-            str[str.length] = "    <button id=\"c3\" code=\"m1\" icon=\"" + ICON + "del.gif\" label=\"删除\" cmd=\"delMessage()\" enable=\"true\"/>";
-            str[str.length] = "    <button id=\"c4\" code=\"m4\" icon=\"" + ICON + "reply.gif\" label=\"回复\" cmd=\"replyMessage()\" enable=\"'2'==getMessageBoxId()\"/>";
-            str[str.length] = "    <button id=\"c5\" code=\"m5\" icon=\"" + ICON + "forward.gif\" label=\"转发\" cmd=\"forwardMessage()\" enable=\"'2'==getMessageBoxId()\"/>";
-            str[str.length] = "</toolbar>";
-
-            var xmlReader = new XmlReader(str.join("\r\n"));
-            var xmlNode = new XmlNode(xmlReader.documentElement);
-
-            Cache.XmlIslands.add(CACHE_TOOLBAR,xmlNode);
-
-            xmlIsland = xmlNode;
-
-            //载入工具条
-            toolbar.loadXML(xmlIsland);
-        }
-
-        //控制显示
-        var buttons = xmlIsland.selectNodes("./button");
-        for(var i=0,iLen=buttons.length;i<iLen;i++){
-            var curButton = buttons[i];
-            var id = curButton.getAttribute("id");
-            var code = curButton.getAttribute("code");
-            var enableStr = curButton.getAttribute("enable");
-
-            var reg = new RegExp("(^"+code+",)|(^"+code+"$)|(,"+code+",)|(,"+code+"$)","gi");
-            var visible = false;
-            if("string"==typeof(_operation)){
-                visible = (true==reg.test(_operation)?true:false);
-            }
-            toolbar.setVisible(id,visible);
-
-            if(true==visible){
-                var enable = Public.execCommand(enableStr);
-                toolbar.enable(id,enable);
-            }
-        }
-    }
     /*
      *	函数说明：菜单初始化
      *	参数：	
