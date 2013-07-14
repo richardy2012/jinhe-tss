@@ -30,7 +30,6 @@ public class AllUMTests {
 		suite.addTestSuite(UserModuleTest.class);
 		suite.addTestSuite(RoleModuleTest.class);
 		suite.addTestSuite(SubAuthorizeModuleTest.class);
-		suite.addTestSuite(PasswordRuleModuleTest.class);
 		suite.addTestSuite(MessageModuleTest.class);
 		suite.addTestSuite(ApplicationModuleTest.class);
 		
