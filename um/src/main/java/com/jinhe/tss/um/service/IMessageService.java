@@ -9,14 +9,6 @@ public interface IMessageService {
 	
 	/**
 	 * <p>
-	 * 保存短消息草稿
-	 * </p>
-	 * @param message
-	 */
-	public void saveMessage(Message message);
-	
-	/**
-	 * <p>
 	 * 发送短消息
 	 * </p>
 	 * @param message
@@ -55,14 +47,6 @@ public interface IMessageService {
 	 * @return
 	 */
 	public List<?> getOutboxList();
-	
-	/**
-	 * <p>
-	 * 获取草稿箱列表
-	 * </p>
-	 * @return
-	 */
-	public List<?> getDraftList();
     
     
     public List<?> getGroupsList();

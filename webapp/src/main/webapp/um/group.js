@@ -239,7 +239,7 @@
         }
         var item4 = {
             label:"删除",
-            callback:delUser,
+            callback: function() { delGridRow(URL_DEL_USER); },,
             icon:ICON + "del.gif",
             visible:function() { return getUserOperation("2"); }
         }
@@ -870,25 +870,6 @@
             request.send();
         }
     }  
- 
-    function delUser(){
-        if( !confirm("您确定要删除吗？") ) return;
-		
-		var rowIndex = $$("grid").selectRowIndex; 
-        if( rowIndex ) {
-			var grid = $G("grid");
-            var row = grid.getRowByIndex(rowIndex);
-			var userID = row.getAttribute("id");  
-			
-			Ajax({
-				url : URL_DEL_USER + userID,
-				method : "DELETE",
-				onsuccess : function() { 
-					grid.deleteRow(row);
-				}
-			});	
-		}
-    }
  
     /* 搜索用户 */
     function searchUser(){

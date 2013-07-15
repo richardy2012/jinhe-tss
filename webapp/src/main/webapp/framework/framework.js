@@ -685,6 +685,26 @@ function delTreeNode(url) {
 	});	
 }
 
+// 删除选中Grid行
+function delGridRow(url) {
+	if( !confirm("您确定要删除吗？") ) return;
+	
+	var rowIndex = $$("grid").selectRowIndex; 
+	if( rowIndex ) {
+		var grid = $G("grid");
+		var row = grid.getRowByIndex(rowIndex);
+		var userID = row.getAttribute("id");  
+		
+		Ajax({
+			url : url + userID,
+			method : "DELETE",
+			onsuccess : function() { 
+				grid.deleteRow(row);
+			}
+		});	
+	}
+}
+
 /*
  *	停用启用节点
  *	参数：	url      请求地址

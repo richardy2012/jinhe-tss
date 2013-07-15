@@ -29,32 +29,6 @@ public class MessageAction extends BaseActionSupport {
 	
 	@Autowired private IMessageService service;
 	
-	@RequestMapping("/{id}/{type}")
-	public void getMessageInfo(@PathVariable("id") Long id, @PathVariable("type") String type) {
-		Message message = service.viewMessage(id);
-
-		if("reply".equals(type)) { // 回复
-			Message newMessage = new Message();
-			newMessage.setReceiverId(message.getSenderId());
-			newMessage.setReceiver(message.getSender());
-			newMessage.setTitle("Re: " + message.getTitle());
-			message = newMessage;
-		} 
-		else if("forward".equals(type)) { // 转发
-			Message newMessage = new Message();
-			newMessage.setContent(message.getContent());
-			newMessage.setTitle(message.getTitle());
-			message = newMessage;
-		}
-		XFormEncoder messagerEncoder = new XFormEncoder(XFORM_URI, message);
-		print("MessageInfo", messagerEncoder);
-	}
-	
-	@RequestMapping(method = RequestMethod.POST)
-	public void saveMessage(Message message) {
-		service.saveMessage(message);
-		printSuccessMessage("保存成功!");
-	}
 	
 	@RequestMapping(method = RequestMethod.PUT)
 	public void sendMessage(Message message) {
@@ -67,6 +41,22 @@ public class MessageAction extends BaseActionSupport {
 		XFormEncoder messagerEncoder = new XFormEncoder(XFORM_URI, service.viewMessage(id));
 		print("MessageInfo", messagerEncoder);
 	}
+	
+    @RequestMapping("/{id}")
+    public void getMessageInfo(@PathVariable("id") Long id) {
+        Message message = service.viewMessage(id);
+
+        if( message != null) { // 回复
+            Message newMessage = new Message();
+            newMessage.setReceiverId(message.getSenderId());
+            newMessage.setReceiver(message.getSender());
+            newMessage.setTitle("Re: " + message.getTitle());
+            message = newMessage;
+        } 
+
+        XFormEncoder messagerEncoder = new XFormEncoder(XFORM_URI, message);
+        print("MessageInfo", messagerEncoder);
+    }
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void deleteMessage(@PathVariable("id") Long id) {
@@ -96,11 +86,10 @@ public class MessageAction extends BaseActionSupport {
 	
 	public void getMessageList(int boxType) {
 		List<?> messages = null;
-		// 信箱類型，分收件箱、發件箱、草稿箱
+		// 信箱類型，分收件箱、發件箱
 		switch (boxType) {
     		case 1:	break;
     		case 2:	messages = service.getInboxList(); break;
-    		case 3:	messages = service.getDraftList(); break;
     		case 4: messages = service.getOutboxList(); break;
     		default: break;
 		}

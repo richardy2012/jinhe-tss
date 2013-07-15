@@ -26,9 +26,8 @@ import com.jinhe.tss.util.BeanUtil;
 @Entity
 @Table(name = "um_message")
 @SequenceGenerator(name = "message_sequence", sequenceName = "message_sequence", initialValue = 1000, allocationSize = 10)
-public class Message implements IXForm, IGridNode, IEntity{
+public class Message implements IXForm, IGridNode, IEntity {
     
-    public static final Integer EDIT_STATUS    = new Integer(0); // 编辑
     public static final Integer SEND_STATUS    = new Integer(1); // 已发送
     public static final Integer READ_STATUS    = new Integer(2); // 已读
     
@@ -47,7 +46,7 @@ public class Message implements IXForm, IGridNode, IEntity{
 	private Long   receiverId;	// 接收者ID
 	private String receiver;	// 接收者
 	private Date   sendTime;    // 发送时间
-	private Integer status  = EDIT_STATUS;	 // 状态
+	private Integer status  = SEND_STATUS;	 // 状态
 	private Integer hasRead = UNREAD_STATUS; // 是否已读
  
 	@Transient

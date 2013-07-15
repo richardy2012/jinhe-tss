@@ -35,24 +35,15 @@ public class MessageService implements IMessageService {
 			temp.setTitle(message.getTitle());
 			temp.setContent(message.getContent());
 			
-			insertSenderInfo(temp);
+			temp.setSenderId(Environment.getOperatorId());
+	        temp.setSender(Environment.getUserName());
+	        temp.setSendTime(new Date());
+	        
             commonDao.createWithoutFlush(temp);
 		}
 		commonDao.flush();
 	}
-	
-	public void saveMessage(Message message){
-		insertSenderInfo(message);
-		message.setStatus(Message.EDIT_STATUS);
-        commonDao.create(message);
-	}
-	
-	private void insertSenderInfo(Message message){
-		message.setSenderId(Environment.getOperatorId());
-		message.setSender(Environment.getUserName());
-		message.setSendTime(new Date());
-	}
-
+ 
 	public Message viewMessage(Long id) {
 		Message message = (Message) commonDao.getEntity(Message.class, id);
 		if(Message.SEND_STATUS.equals(message.getStatus())){
@@ -84,11 +75,7 @@ public class MessageService implements IMessageService {
 	public List<?> getOutboxList(){
 		return getOutMessages(Environment.getOperatorId(), Message.SEND_STATUS);
 	}
-	
-	public List<?> getDraftList(){
-		return getOutMessages(Environment.getOperatorId(), Message.EDIT_STATUS);
-	}
-	
+ 
     private List<?> getOutMessages(Long userId, Integer status){
         return commonDao.getEntities(" from Message m where m.senderId = ? and m.status = ?", userId, status);
     }
@@ -140,5 +127,4 @@ public class MessageService implements IMessageService {
         }
         return users;
     }
- 
 }
