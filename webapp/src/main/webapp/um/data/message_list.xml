@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<MessageList>
+        <grid version="2" groupType="1" groupId="8988" applicationId="ums">
+            <declare sequence="true" header="">
+                <column name="id" caption="消息id" mode="string" display="none" editor="text"/>
+                <column name="title" caption="标题" mode="string" editor="text"/>
+                <column name="receiverId" caption="收件人id" mode="string" display="none" editor="text"/>
+                <column name="receiver" caption="收件人" mode="string" editor="text"/>
+                <column name="senderId" caption="发件人id" mode="string" display="none" editor="text"/>
+                <column name="sender" caption="发件人" mode="string" editor="text" editable="false"/>
+                <column name="sendTime" caption="发件时间" mode="string"/>
+                <column name="status" caption="状态" mode="string" editor="text"/>
+            </declare>
+            <data>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+            </data>
+		</grid>
+	</MessageList>
+</Response>

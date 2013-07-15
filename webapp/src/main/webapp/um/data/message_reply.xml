@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<ReplyInfo>
+      <xform action="null">
+        <declare prefix="user">
+          <column name="id" caption="消息id" mode="string" editor="text"/>
+          <column name="title" caption="标题" mode="string" editor="text"/>
+          <column name="content" caption="正文" mode="string" editor="textarea"/>
+          <column name="receiverId" caption="收件人id" mode="string" editor="text"/>
+          <column name="receiver" caption="收件人" mode="string" editor="text"/>
+          <column name="senderId" caption="发件人id" mode="string" editor="text"/>
+          <column name="sender" caption="发件人" mode="string" editor="text" editable="false"/>
+          <column name="sendTime" caption="发件时间" mode="string" pattern="yyyy/MM/dd"/>
+          <column name="status" caption="状态" mode="string" editor="text"/>
+        </declare>
+        <layout>
+          <TR>
+              <TD width="50">
+                  <label binding="receiver"/>
+              </TD>
+              <TD>
+                  <input binding="receiver"/>
+              </TD>
+              <TD width="50">
+                  <label binding="sender"/>
+              </TD>
+              <TD>
+                  <input binding="sender"/>
+              </TD>
+          </TR>
+          <TR>
+              <TD width="50">
+                  <label binding="title"/>
+              </TD>
+              <TD>
+                  <input binding="title"/>
+              </TD>
+              <TD width="50">
+                  <label binding="sendTime"/>
+              </TD>
+              <TD>
+                  <input binding="sendTime"/>
+              </TD>
+          </TR>
+          <TR>
+              <TD width="50">
+                  <label binding="content"/>
+              </TD>
+              <TD colspan="3">
+                  <input binding="content" style="width:100%;height:100px"/>
+              </TD>
+          </TR>
+        </layout><data><row></row></data></xform>
+	</ReplyInfo>
+</Response>

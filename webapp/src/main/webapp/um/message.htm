@@ -60,9 +60,6 @@
               <td class="separator"></td>
             </tr>
             <tr> 
-              <td height="20"><!-- 工具条 开始 --><ToolBar:Bar id="toolbar"><div class="loading"></div></ToolBar:Bar><!-- 工具条 结束 --></td>
-            </tr>
-            <tr> 
               <td valign="top">
                 <table class="full" border="0" cellpadding="0" cellspacing="0">
                   <tr> 
@@ -71,35 +68,19 @@
                       <table class="full border" border="0" cellpadding="0" cellspacing="0">
                         <tr id="treeTitle" class="bar"> 
                           <td class="opened">
-                            <span class="icon"></span>站内消息<span class="button refresh" id="treeBtRefresh" title="刷新"></span><span class="button collapse" id="treeTitleBt"></span>
+                            <span class="icon"></span>站内消息
                           </td>
                         </tr>
                         <tr>
                           <td id="treeContainer">
-                            <!-- tree 开始 -->
-                            <Tree:TreeBox id="tree" treeType="menu" baseurl="../core/htc/tree/" canMoveNode="true"><div class="loading"></div></Tree:TreeBox>
-                            <!-- tree 结束 -->
+                            <Tree:Box id="tree" treeType="menu" baseurl="../framework/tree/" canMoveNode="true"><div class="loading"></div></Tree:Box>
                           </td>
-                        </tr>
-                        <tr id="statusTitle" class="bar">
-                          <td class="opened">
-                            <span class="icon"></span>状态信息<span class="button collapse" id="statusTitleBt"></span>
-                          </td>
-                        </tr>
-                        <tr style="display:none">
-                          <td id="statusContainer"></td>
                         </tr>
                       </table>                        
                       <!-- 左栏 结束 -->
                     </td>
                     <td>
                       <table class="full" border="0" cellpadding="0" cellspacing="0">
-                        <!-- <tr> 
-                          <td class="separator"></td>
-                        </tr> -->
-                        <tr> 
-                          <td class="location"><span class="icon" id="paletteBt"></span>您当前所在的位置:<span class="locationInfo"></span></td>
-                        </tr>
                         <tr valign="top">
                           <!-- 主内容区域 开始 -->
                           <td class="groove">
@@ -111,71 +92,43 @@
                                     <table class="full border" border="0" cellspacing="0" cellpadding="0">
                                       <tr>
                                         <td id="gridTitle">
-                                          <span class="icon"></span>
-                                          消息列表
-                                          <span class="buttonBox" id="gridToolBar"></span>
+                                          <span class="icon"></span>消息列表
                                         </td>
                                       </tr>
                                       <tr>
                                         <td>
-                                          <!-- grid 开始 -->
-                                          <Grid2:Grid id="grid" cols="350,100,100,100,100" editable="false" baseurl="../core/htc/grid2.1.3/" contextmenu="false" autoextend="true" useCookie="true" showHorizontalBarAsNeed="true" rowresizable="false" colresizable="true"  fireDataChangeWhenSetCheckAll="false"><div class="loading"></div></Grid2:Grid>
-                                          <!-- grid 结束 -->
+                                          <Grid:Box id="grid" baseurl="../framework/grid/"></Grid:Box>
                                         </td>
                                       </tr>
                                     </table>
                                     <!-- 列表区域 结束 -->
                                   </td>
                                 </tr>
-                                <tr style="display:none">
+                                <tr>
                                   <td class="separator"></td>
                                 </tr>
-                                <tr style="display:none">
+                                <tr>
                                   <td>
                                     <!-- 标签区域 开始 -->
-                                    <WorkSpace:Box id="ws" baseurl="../core/htc/workspace/">
+                                    <WorkSpace:Box id="ws" baseurl="../framework/workspace/">
                                       <!-- page1 开始 -->
                                       <WorkSpace:Page id=page1>
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
                                           <tr valign="top">
                                             <td>
-                                              <!-- xform 开始 -->
-                                              <Xform:Form id="page1Form" baseurl="../core/htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
-                                              <!-- xform 结束 -->
+                                               <Xform:Box id="page1Form" baseurl="../framework/xform/"><div class="loading"></div></Xform:Box>
                                             </td>
                                           </tr>
                                           <tr height="20">
                                             <td>
                                               <WorkSpace:PageStep>
-                                                <input type="button" class="btWeak" value="仅保存" id="page1BtSave"/>
-                                                <input type="button" class="btStrongL" value="保存并发送" id="page1BtSaveAndSend"/>
-                                                <input type="button" class="btStrong" value="仅发送" id="page1BtSend"/>
+                                                <input type="button" class="btStrong" value="发送" id="page1BtSend"/>
                                               </WorkSpace:PageStep>
                                             </td>
                                           </tr>
                                         </table>
                                       </WorkSpace:Page>
                                       <!-- page1 结束 -->
-                                      <!-- page2 开始 -->
-                                      <WorkSpace:Page id=page2>
-                                        <table class="full" border="0" cellspacing="0" cellpadding="0">
-                                          <tr valign="top">
-                                            <td>
-                                              <!-- xform 开始 -->
-                                              <Xform:Form id="page2Form" baseurl="../core/htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
-                                              <!-- xform 结束 -->
-                                            </td>
-                                          </tr>
-                                          <tr height="20">
-                                            <td>
-                                              <WorkSpace:PageStep>
-                                                <input type="button" class="btStrong" value="完成" id="page2BtSave"/>
-                                              </WorkSpace:PageStep>
-                                            </td>
-                                          </tr>
-                                        </table>
-                                      </WorkSpace:Page>
-                                      <!-- page2 结束 -->
                                     </WorkSpace:Box>
                                     <!-- 标签区域 结束 -->
                                   </td>

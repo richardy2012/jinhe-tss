@@ -43,19 +43,16 @@ public class MessageAction extends BaseActionSupport {
 	}
 	
     @RequestMapping("/{id}")
-    public void getMessageInfo(@PathVariable("id") Long id) {
+    public void getMessage4Reply(@PathVariable("id") Long id) {
         Message message = service.viewMessage(id);
-
-        if( message != null) { // 回复
-            Message newMessage = new Message();
-            newMessage.setReceiverId(message.getSenderId());
-            newMessage.setReceiver(message.getSender());
-            newMessage.setTitle("Re: " + message.getTitle());
-            message = newMessage;
-        } 
+        Message newMessage = new Message();
+        newMessage.setReceiverId(message.getSenderId());
+        newMessage.setReceiver(message.getSender());
+        newMessage.setTitle("Re: " + message.getTitle());
+        message = newMessage;
 
         XFormEncoder messagerEncoder = new XFormEncoder(XFORM_URI, message);
-        print("MessageInfo", messagerEncoder);
+        print("ReplyInfo", messagerEncoder);
     }
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

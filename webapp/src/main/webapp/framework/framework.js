@@ -823,11 +823,10 @@ function initNaviBar(curId, relativePath) {
 }
 
 function initBlocks(){
-	var paletteObj = $$("palette");
-	Blocks.create(paletteObj);
+	Blocks.create($$("palette"));
 
 	var treeContainerObj = $$("treeContainer");
-	Blocks.create(treeContainerObj,treeContainerObj.parentNode);
+	Blocks.create(treeContainerObj, treeContainerObj.parentNode);
 
 	var statusContainerObj = $$("statusContainer");
 	Blocks.create(statusContainerObj, statusContainerObj.parentNode, false);

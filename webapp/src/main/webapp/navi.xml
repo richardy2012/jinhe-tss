@@ -7,7 +7,6 @@
             <MenuItem id="um.2" name="应用资源" href="um/resource.html"/>
             <MenuItem id="um.3" name="角色授权" href="um/role.html"/>
             <MenuItem id="um.4" name="权限转授" href="um/subauth.html"/>
-            <MenuItem id="um.5" name="密码策略" href="um/password.html"/>
 			
 			<MenuItem id="none" name="|"/>
 
