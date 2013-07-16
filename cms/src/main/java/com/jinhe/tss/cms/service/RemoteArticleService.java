@@ -1,4 +1,4 @@
-package com.jinhe.tss.cms.service.impl;
+package com.jinhe.tss.cms.service;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,7 +31,6 @@ import com.jinhe.tss.cms.helper.ArticleHelper;
 import com.jinhe.tss.cms.helper.ArticleQueryCondition;
 import com.jinhe.tss.cms.helper.HitRateManager;
 import com.jinhe.tss.cms.lucene.executor.IndexExecutorFactory;
-import com.jinhe.tss.cms.service.IRemoteArticleService;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;

@@ -148,8 +148,6 @@ public final class UMConstants {
 	public static final String AUTH_METHOD_XFORM            = "template/xform/authenticatemethod.xml";  //查询权限转授的
 	public static final String IMPORT_APP_XFORM             = "template/xform/importapplication.xml";   //应用系统导入的
 	public static final String SEARCH_PERMISSION_XFORM = "template/xform/searchPermissionInfo.xml"; //综合查询搜索用户授权信息的
-	public static final String PASSWORDINFO_XFORM      = "template/xform/passwordRule.xml";         //密码规则的
-	public static final String PASSWORD_TACTIC_XFORM   = "template/xform/passwordRuleId.xml";       //密码策略设置的
     public static final String PASSWORD_FORGET_XFORM   = "template/xform/password_forget.xml";      //密码忘记提示 
     public static final String PASSWORD_CHANGE_XFORM   = "template/xform/password_change.xml";      //密码修改
 

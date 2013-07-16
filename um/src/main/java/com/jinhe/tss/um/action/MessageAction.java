@@ -42,7 +42,7 @@ public class MessageAction extends BaseActionSupport {
 		print("MessageInfo", messagerEncoder);
 	}
 	
-    @RequestMapping("/{id}")
+    @RequestMapping("/reply/{id}")
     public void getMessage4Reply(@PathVariable("id") Long id) {
         Message message = service.viewMessage(id);
         Message newMessage = new Message();

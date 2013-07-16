@@ -1,4 +1,4 @@
-package com.jinhe.tss.cms.service.impl;
+package com.jinhe.tss.cms.service;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,7 +19,6 @@ import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.helper.ArticleHelper;
 import com.jinhe.tss.cms.helper.ArticleQueryCondition;
-import com.jinhe.tss.cms.service.IArticleService;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
@@ -171,18 +170,7 @@ public class ArticleService implements IArticleService {
         
         articleDao.update(article);
 	}
-
-    public void moveArticleDownOrUp(Long articleId, Long toArticleId, Long channelId) {
-        Article article = articleDao.getEntity(articleId);
-        Article toArticle = articleDao.getEntity(toArticleId);
-
-        article.setSeqNo(toArticle.getSeqNo());
-        toArticle.setSeqNo(article.getSeqNo());
-
-		articleDao.update(article);
-		articleDao.update(toArticle);
-	}
-
+ 
     public void lockingArticle(Long articleId) {
 		Article article = getArticleOnly(articleId);
         if (!CMSConstants.START_STATUS.equals(article.getStatus())) {
@@ -205,18 +193,10 @@ public class ArticleService implements IArticleService {
  
 	public Article doTopArticle(Long articleId) {
 	    Article article = getArticleOnly(articleId);
-	    article.setIsTop(CMSConstants.TRUE);
+	    article.setIsTop(article.getIsTop() * -1);
 		articleDao.update(article);
 		
 		return article;
-	}
- 
-	public Article undoTopArticle(Long articleId) {
-	    Article article = getArticleOnly(articleId);
-	    article.setIsTop(CMSConstants.FALSE);
-        articleDao.update(article);
-        
-        return article;
 	}
  
     public PageInfo getChannelArticles(Long channelId, Integer pageNum, String...orderBy) {

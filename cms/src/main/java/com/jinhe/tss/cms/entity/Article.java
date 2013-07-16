@@ -62,7 +62,7 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
     
     private Integer seqNo;
  
-    private Integer isTop;        // 文章是否置顶
+    private Integer isTop = CMSConstants.FALSE;   // 文章是否置顶
     
     @Transient 
     Map<String, Attachment> attachments = new LinkedHashMap<String, Attachment>();  // 存放文章附件列表

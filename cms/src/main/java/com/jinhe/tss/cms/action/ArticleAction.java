@@ -5,13 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.helper.ArticleHelper;
 import com.jinhe.tss.cms.helper.ArticleQueryCondition;
-import com.jinhe.tss.cms.helper.parser.ArticleGridParser;
 import com.jinhe.tss.cms.service.IArticleService;
+import com.jinhe.tss.cms.service.IRemoteArticleService;
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
@@ -23,48 +28,19 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.util.EasyUtils;
  
+@Controller
+@RequestMapping("article")
 public class ArticleAction extends BaseActionSupport {
 
-	private IArticleService articleService;
-    
-    private Article article = new Article();    // 文章信息
-    private ArticleQueryCondition condition = new ArticleQueryCondition();  // 相关的文章信息
-    
-	private Long    articleId;
-	private Long    channelId;
-    private Long    toArticleId;
-    private Long    oldChannelId;
-    
-    private Integer  isTop;            // 前台是否置顶的标记
-	private String   articleContent;   // 正文内容
-	private String   isCommit;         // 判断修改文章的时候是否是保存并提交
-    
-	private String  attachList;        // 附件列表
-	
-	// 分页信息
-	private Integer page;
-	private String  field;
-	private Integer orderType;
+	@Autowired private IArticleService articleService;
 	
 	/**
-	 * <p>
 	 * 获取栏目下文章列表
-	 * </p>
-	 * @return
 	 */
-	public String getChannelArticles() {
-        if (channelId == null) 
-            throw new BusinessException("栏目id为空！");
-        
-        String orderBy;
-        if(orderType == null || orderType > 0)  {
-            orderBy = field;
-        } 
-        else {
-            orderBy = field + " desc ";
-        }
-
-        PageInfo pageInfo = articleService.getChannelArticles(channelId, page, orderBy);
+	@RequestMapping(value = "/list/{channelId}/{page}", method = RequestMethod.GET)
+	public void getChannelArticles(Long channelId, int page) {
+	    
+        PageInfo pageInfo = articleService.getChannelArticles(channelId, page);
 
         List<Article> articles = new ArrayList<Article>();
         List<?> list = pageInfo.getItems();
@@ -74,17 +50,16 @@ public class ArticleAction extends BaseActionSupport {
                 articles.add(article);
             }
         }
-        
-		GridDataEncoder gEncoder = new GridDataEncoder(articles, 
-		        CMSConstants.GRID_TEMPLATE_ARTICLELIST, new ArticleGridParser());
+		GridDataEncoder gEncoder = new GridDataEncoder(articles, CMSConstants.GRID_TEMPLATE_ARTICLELIST);
 
-		return print(new String[]{"ArticleList", "PageList"}, new Object[]{gEncoder, pageInfo});
+		print(new String[]{"ArticleList", "PageList"}, new Object[]{gEncoder, pageInfo});
 	} 
 	
 	/**
 	 * 初始化文章新增信息
 	 */
-	public String initArticleInfo() {
+	@RequestMapping(value = "/init/{channelId}", method = RequestMethod.POST)
+	public void initArticleInfo(Long channelId) {
         Map<String, Object> initMap = new HashMap<String, Object>();
         initMap.put("isTop", CMSConstants.FALSE);
         initMap.put("author", Environment.getUserName()); // 默认作者为登录者，前台可进行修改
@@ -100,14 +75,12 @@ public class ArticleAction extends BaseActionSupport {
         
 		GridDataEncoder attachmentGridEncoder = new GridDataEncoder(new ArrayList<Object>(), CMSConstants.GRID_ATTACHSLIST);
         
-		return print(new String[]{"ArticleInfo", "ArticleContent", "AttachsUpload", "AttachsList"}, 
+		print(new String[]{"ArticleInfo", "ArticleContent", "AttachsUpload", "AttachsList"}, 
                 new Object[]{baseXFormEncoder, "<![CDATA[]]>", attachmentXFormEncoder, attachmentGridEncoder});
 	}
     
-    /**
-     * 获取文章信息
-     */
-    public String getArticleInfo() { 
+	@RequestMapping(value = "/{articleId}", method = RequestMethod.GET)
+    public void getArticleInfo(Long articleId) { 
         Article article = articleService.getArticleById(articleId);
  
         XFormEncoder baseXFormEncoder = new XFormEncoder(CMSConstants.XFORM_ARTICLE, article);
@@ -116,80 +89,70 @@ public class ArticleAction extends BaseActionSupport {
         List<Attachment> attachmentList = new ArrayList<Attachment>(article.getAttachments().values());
         GridDataEncoder attachmentGridEncoder = new GridDataEncoder(attachmentList, CMSConstants.GRID_ATTACHSLIST);
         
-        return print(new String[]{"ArticleInfo", "ArticleContent", "AttachsUpload", "AttachsList"}, 
+        print(new String[]{"ArticleInfo", "ArticleContent", "AttachsUpload", "AttachsList"}, 
                 new Object[]{baseXFormEncoder, "<![CDATA[" + article.getContent() + "]]>", uploadXFormEncoder, attachmentGridEncoder});
     }
     
 	/**
-	 * 保存文章。或者是保存并提交文章。
+	 * 保存文章。
 	 */
-	public String saveArticleInfo() {
-        if( Config.TRUE.equalsIgnoreCase(isCommit) ){
-            article.setStatus(CMSConstants.TOPUBLISH_STATUS);
-        }
-        
+	@RequestMapping(value = "/{channelId}", method = RequestMethod.POST)
+	public void saveArticleInfo(Long channelId, Article article) {
+        String articleContent;
         article.setContent(articleContent);
-	    if(article.getId() == null || article.getId().longValue() == 0) {
-            //新增的时候上传的附件对象以new Date()为主键，此处的"articleId"就是这个值
+        
+	    String attachList;
+        if(article.getId() == null || article.getId().longValue() == 0) {
+            // 新增的时候上传的附件对象以new Date()为主键，此处的"articleId"就是这个值
+            Long articleId;
 	        articleService.createArticle(article, channelId, attachList, articleId); 
 	    } 
 	    else {
 	        articleService.updateArticle(article, channelId, attachList);
 	    }
-	    return printSuccessMessage();
-	}
-
-	/**
-	 * 删除文章
-	 */
-	public String deleteArticle() {
-        if (articleId == null) 
-            throw new BusinessException("文章id为空！");
         
+        String isCommit;
+        if( Config.TRUE.equalsIgnoreCase(isCommit) ){
+            article.setStatus(CMSConstants.TOPUBLISH_STATUS);
+        }
+        
+	    printSuccessMessage();
+	}
+ 
+	@RequestMapping(value = "/{articleId}", method = RequestMethod.DELETE)
+	public void deleteArticle(Long articleId) {
 	    articleService.deleteArticle(articleId);
-	    return printSuccessMessage("删除文章成功");
+	    printSuccessMessage("删除文章成功");
 	}
 	
 	/**
 	 * 移动文章（跨栏目移动）
 	 */
-	public String moveArticle() {
-        if (channelId == null || oldChannelId == null) 
-            throw new BusinessException("栏目id为空！");
-        if (articleId == null)
-            throw new BusinessException("文章id为空！");
-        
+	public void moveArticle(Long articleId, Long oldChannelId, Long channelId) {
 	    articleService.moveArticle(articleId, oldChannelId, channelId);
-        return printSuccessMessage("移动文章成功");
+        printSuccessMessage("移动文章成功");
 	}
-	
-	/**
-	 * 文章排序
-	 */
-	public String moveArticleDownOrUp() {
-	    articleService.moveArticleDownOrUp(articleId, toArticleId, channelId);
-        return printSuccessMessage("文章排序成功");
-	}
-    
+ 
 	/**
 	 * 文章锁定
 	 */
-	public String lockingArticle() {
+	public void lockingArticle(Long articleId) {
 	    articleService.lockingArticle(articleId);
-        return printSuccessMessage("锁定文章成功");
+        printSuccessMessage("锁定文章成功");
 	}
+	
 	/**
 	 * 文章解锁
 	 */
-	public String unLockingArticle() {
+	public void unLockingArticle(Long articleId) {
 	    articleService.unLockingArticle(articleId);
-        return printSuccessMessage("解除锁定成功");
+        printSuccessMessage("解除锁定成功");
 	}
     
 	/**
 	 * 根据对栏目的权限过滤对文章的权限
 	 */
-	public String getArticleOperation() {
+	public void getArticleOperation(Long channelId) {
         PermissionHelper permissionHelper = PermissionHelper.getInstance();
         List<?> operations = permissionHelper.getOperationsByResource(CMSConstants.RESOURCE_TYPE_CHANNEL, channelId, Environment.getOperatorId());
         
@@ -198,26 +161,21 @@ public class ArticleAction extends BaseActionSupport {
 			permissionAll += "a_" + operation + ",";
 		}
         permissionAll += "cd1,cd2,cd3,cd4,cd5,ca1,ca2,ca3,ca4,ca5";
-	    return print("Operation", permissionAll);
+	    print("Operation", permissionAll);
 	}
 	
 	/**
 	 *  文章置顶和取消置顶
 	 */
-	public String doOrUndoTopArticle(){
-	    if(CMSConstants.TRUE.equals(isTop)){
-	        articleService.undoTopArticle(articleId);
-	        return printSuccessMessage("置顶成功");
-	    }
-	    
+	public void doOrUndoTopArticle(Long articleId) {
 	    articleService.doTopArticle(articleId);
-        return printSuccessMessage("取消置顶成功");
+        printSuccessMessage();
 	}
 	
 	/**
 	 *  获得栏目的文章列表以建立起关联关系
 	 */
-	public String getPageArticlesByChannel() {
+	public void getPageArticlesByChannel(Long channelId, int page) {
 	    PageInfo pageInfo = articleService.getChannelArticles(channelId, page);
 	    
 	    List<Article> articles = new ArrayList<Article>();
@@ -228,67 +186,153 @@ public class ArticleAction extends BaseActionSupport {
                 articles.add(article);
             }
         }
-        return print("AssociateArticleList", new TreeEncoder( articles ));
+        print("AssociateArticleList", new TreeEncoder( articles ));
 	}
 	
     /**
      * 获取搜索文章的查询模板
-     * @return
      */
-    public String getSearchArticleTemplate() {
-        XFormEncoder xEncoder = new XFormEncoder(CMSConstants.XFORM_SEARCH_ARTICLE);
-        return print("SearchArticle", xEncoder);
+    public void getSearchArticleTemplate() {
+        print("SearchArticle", new XFormEncoder(CMSConstants.XFORM_SEARCH_ARTICLE));
     }
+    
 	/**
 	 *  搜索文章列表
 	 */
-	public String getArticleList() {
-	    Object[] data = articleService.searchArticleList(condition);
-		GridDataEncoder gEncoder = new GridDataEncoder(data[0], CMSConstants.GRID_TEMPLATE_ARTICLELIST, new ArticleGridParser());
-        return print(new String[]{"ArticleList", "PageList"}, new Object[]{gEncoder, (PageInfo)data[1]});
+	public void getArticleList(ArticleQueryCondition condition) {
+        Object[] data = articleService.searchArticleList(condition);
+		GridDataEncoder gEncoder = new GridDataEncoder(data[0], CMSConstants.GRID_TEMPLATE_ARTICLELIST);
+        print(new String[]{"ArticleList", "PageList"}, new Object[]{gEncoder, (PageInfo)data[1]});
 	}	
-
-    public Article getArticle() {
-        return article;
+	
+	
+	/************ CMS对外Action接口，支持RSS。提供供Portlet等外界应用程序读取的文章列表、文章内容等接口。**************/
+	private Long    articleId;
+    private Long    channelId;
+    private String  channelIds; // 栏目ids 可选多个(逗号隔开)
+    private Integer page = 1;
+    private Integer pageSize = 12;
+    
+    private String  month;
+    private String  year;
+   
+    private Long    tacticId;  // 全文检索索引ID
+    private String  searchStr; // 检索关键字
+    
+    private IRemoteArticleService remoteService;
+    
+    /**
+     * 获取栏目列表并且带有附件信息
+     * @return
+     */
+    public String getPicArticleListByChannel() {
+        String returnXML = remoteService.getPicArticleListByChannel(channelId, page, pageSize);
+        print(returnXML);
+        return XML;
     }
-    public ArticleQueryCondition getCondition() {
-        return condition;
-    }
-    public void setArticleContent(String articleContent) {
-        this.articleContent = articleContent;
-    }
-    public void setArticleId(Long articleId) {
-        this.articleId = articleId;
-    }
-    public void setAttachList(String attachList) {
-        this.attachList = attachList;
-    }
-    public void setChannelId(Long channelId) {
-        this.channelId = channelId;
-    }
-    public void setField(String field) {
-        this.field = field;
-    }
-    public void setIsTop(Integer isTop) {
-        this.isTop = isTop;
-    }
-    public void setToArticleId(Long newArticleId) {
-        this.toArticleId = newArticleId;
-    }
-    public void setOldChannelId(Long oldChannelId) {
-        this.oldChannelId = oldChannelId;
-    }
-    public void setOrderType(Integer orderType) {
-        this.orderType = orderType;
-    }
-    public void setPage(Integer page) {
-        this.page = page;
-    }
-    public void setIsCommit(String isCommit) {
-        this.isCommit = isCommit;
+    
+    /**
+     * 获取栏目的文章列表
+     * @return
+     */
+    public String getArticleListByChannel() {
+        String returnXML = remoteService.getArticleListXMLByChannel(channelId, page, pageSize);
+        print(returnXML);
+        return XML;
     }
 
-    public void setService(IArticleService service) {
-        this.articleService = service;
+    /**
+     * 获取栏目的文章列表。RSS2.0数据格式
+     * http://localhost:8088/cms/cms!getArticleListByChannelRss.action?channelId=12&anonymous=true
+     * 
+     * @return
+     */
+    public String getArticleListByChannelRss() {
+        String returnXML = remoteService.getArticleListByChannel4Rss(channelId, page, pageSize);
+        print(returnXML);
+        return XML;
+    }
+
+    /**
+     * 根据栏目ids，获取这些栏目下的所有文章列表
+     * @return
+     */
+    public String getArticleListByChannels() {
+        if ( EasyUtils.isNullOrEmpty(channelIds) ) {
+            throw new BusinessException("栏目IDs为空");
+        }
+        String returnXML = remoteService.queryArticlesByChannelIds(channelIds, page, pageSize);
+        print(returnXML);
+        return XML;
+    }
+
+    /**
+     * 根据栏目id获取文章列表(深度)，取指定栏目以及该栏目下所有子栏目的所有文章列表
+     * @return
+     */
+    public String getArticleListDeeplyByChannel() {
+        String returnXML = remoteService.queryArticlesDeeplyByChannelId(channelId, page, pageSize);
+        print(returnXML);
+        return XML;
+    }
+    
+    /**
+     * 根据栏目和日期来获取文章列表。
+     * 主要用于期刊类需求。
+     * @param channelId
+     * @param year
+     * @param month
+     * @return
+     */
+    public String getArticleListByChannelAndTime() {
+        String returnXML = remoteService.getArticleListByChannelAndTime(channelId, year, month);
+        print(returnXML);
+        return XML;
+    }
+ 
+    /**
+     * 文章的信息展示，并进行相关文章的动态的处理
+     * @return
+     */
+    public String getArticleXmlInfo() {
+        String returnXML = remoteService.getArticleXML(articleId);
+        if(returnXML.indexOf(("<Response>")) < 0) {
+            returnXML = "<Response>" + returnXML + "</Response>";
+        }
+        print(returnXML);
+        return XML;
+    }
+    
+    /**
+     * 获取栏目树为portlet做展示
+     * @return
+     */
+    public String getChannelTreeList4Portlet() {
+        return print("DownloadChannelTree", remoteService.getChannelTree4Portlet(channelId));
+    }
+    
+    /**
+     * 全文检索action接口。
+     * 供门户网站上通过本接口调用全文搜索。
+     */
+    public String search() {
+        String returnXML = remoteService.search(tacticId, searchStr, page, pageSize);
+        print(returnXML);
+        return XML;
+    }
+    
+    public void setSearchStr(String searchStr) {
+        try {
+            if (searchStr != null) {
+                // 处理非法字符
+                searchStr = searchStr.replaceAll("]", "").replaceAll("[", ""); // '[' ']'在lucene里为非法字符
+                searchStr = searchStr.replaceAll("}", "").replaceAll("{", ""); // '{' '}'在lucene里为非法字符
+                searchStr = searchStr.replaceAll(")", "").replaceAll("(", ""); // '(' ')'在lucene里为非法字符
+            }
+        } catch (Exception e) {
+            this.searchStr = searchStr;
+        } finally {
+            this.searchStr = searchStr;
+        }
     }
 }

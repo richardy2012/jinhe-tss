@@ -34,16 +34,13 @@ public class MessageModuleTest extends TxSupportTest4UM {
         message.setContent("好消息！");
         message.setReceiverIds("-1");
         message.setReceiver("Admin");
-        action.saveMessage(message);
-        
         action.sendMessage(message);
         
         List<Message> inboxList = service.getInboxList();
         assertTrue(inboxList.size() > 0);
         Long messageId = inboxList.get(0).getId();
         
-        action.getMessageInfo(messageId, "replay");
-        action.getMessageInfo(messageId, "forward");
+        action.getMessage4Reply(messageId);
         
         action.viewMessage(messageId);
         

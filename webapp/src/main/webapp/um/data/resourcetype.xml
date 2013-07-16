@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<ResourceType>
+		<column name="resourceTypeId" caption="资源类型" mode="string" editor="comboedit" editorvalue="1" editortext="1"/>
+	</ResourceType>
+</Response>

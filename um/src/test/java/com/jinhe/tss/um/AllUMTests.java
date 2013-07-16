@@ -6,7 +6,6 @@ import junit.framework.TestSuite;
 import com.jinhe.tss.um.module.ApplicationModuleTest;
 import com.jinhe.tss.um.module.GroupModuleTest;
 import com.jinhe.tss.um.module.MessageModuleTest;
-import com.jinhe.tss.um.module.PasswordRuleModuleTest;
 import com.jinhe.tss.um.module.RoleModuleTest;
 import com.jinhe.tss.um.module.SubAuthorizeModuleTest;
 import com.jinhe.tss.um.module.UserModuleTest;

@@ -57,7 +57,3 @@ truncate table UM_ROLEUSER;
 
 insert into UM_ROLEUSER (ID, ROLEID, USERID) values (0, -1, -1);
 commit;
-
-insert into UM_PASSWORDRULE(ID, NAME, LEASTLENGTH, CANEQ2LOGINNAME, LEASTSTRENGTH, LOWSTRENGTH, HIGHERSTRENGTH, IMPERMISSIBLE, ISDEFAULT)
-values(0, '默认规则', 3, 0, 4, 8, 16, '123, abc', 1);
-commit;

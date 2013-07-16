@@ -67,16 +67,6 @@ public interface IArticleService {
      * @return
      */
     Object[] searchArticleList(ArticleQueryCondition condition);
-
-    /**
-     * 文章上移/下移
-     * 
-     * @param articleId
-     * @param toArticleId
-     * @param channelId
-     */
-    @Logable(operateTable="文章", operateType="排序", operateInfo="(ID: ${args[0]}) 和 (ID: ${args[1]})文章顺序互相交换")
-    void moveArticleDownOrUp(Long articleId, Long toArticleId, Long channelId);
  
     /**
      * 锁定文章
@@ -98,18 +88,7 @@ public interface IArticleService {
      * 置顶文章
      * 
      * @param articleId
-     * @param channelId
      */
-    @Logable(operateTable="文章", operateType="置顶", operateInfo="置顶文章(${returnVal})")
-    Article doTopArticle(Long articleId);
-
-    /**
-     * 取消置顶
-     * 
-     * @param articleId
-     * @param channelId
-     */
-    @Logable(operateTable="文章", operateType="解除置顶", operateInfo="取消置顶文章(${returnVal}) ")
-    Article undoTopArticle(Long articleId);
- 
+    @Logable(operateTable="文章", operateType="置顶", operateInfo="置顶/取消置顶文章(${returnVal})")
+    Article doTopArticle(Long articleId); 
 }

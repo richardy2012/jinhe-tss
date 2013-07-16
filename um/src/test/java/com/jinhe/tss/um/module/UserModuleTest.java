@@ -57,14 +57,11 @@ public class UserModuleTest extends TxSupportTest4UM {
         service.registerUser(user2);
         log.debug(user2);
         
-        // 管理员将注册移动至主组（认证该用户通过）
-        service.moveUser(UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN, mainGroup1.getId(), user2.getId());
-        
         user2.setUserName("JK-2");
         service.updateUser(user2);
         
         List<User> mainUsers  = service.getUsersByGroup(mainGroup1.getId());
-        assertEquals(2, mainUsers.size());
+        assertEquals(1, mainUsers.size());
         
         _testAction(mainUsers);
         

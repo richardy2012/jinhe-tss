@@ -8,10 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpEncoder;
-import com.jinhe.tss.um.service.IPasswordRuleService;
+import com.jinhe.tss.um.helper.PasswordRule;
 
 /** 
  * 获取密码强度
@@ -25,8 +24,7 @@ public class GetPasswordStrengthServlet extends HttpServlet {
 		String loginName = request.getParameter("loginName");
 		String password  = request.getParameter("password");
 		
-		IPasswordRuleService service = (IPasswordRuleService) Global.getContext().getBean("PasswordRuleService");
-		String level = service.getStrengthLevel(null, password, loginName);
+		String level = PasswordRule.getStrengthLevel(password, loginName);
 		
 		response.setContentType("text/html;charset=GBK");
 		XmlHttpEncoder encoder = new XmlHttpEncoder();
