@@ -94,7 +94,7 @@ public class ParamManager {
             
     		valueMap.put(code, value = param.getValue());
     	} 
-    	return value;
+    	return value.replace("\n", ""); // 去掉回车
     }
     
     public static String getValueNoSpring(String code){

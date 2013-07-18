@@ -15,10 +15,10 @@ import org.apache.log4j.Logger;
  * 空servlet，啥事都不做。
  * </p>
  * 
- * 通过将本servlet配置成 /*.in，/*.do（配置servlet最后位置），以将处理找不到真实地址的请求。
+ * 通过将本servlet配置成 *.in，*.do（配置servlet最后位置），以将处理找不到真实地址的请求。
  * 
  */
-@WebServlet(urlPatterns={"/*.in", "*.do"} )
+@WebServlet(urlPatterns={"*.in", "*.do"} )
 public class EmptyServlet extends HttpServlet {
 
     private static final long serialVersionUID = 5470879889942418562L;
