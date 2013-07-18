@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.entity.permission.ChannelPermissionsFull;
@@ -21,23 +23,24 @@ import com.jinhe.tss.util.EasyUtils;
  
 public class ChannelAction extends ProgressActionSupport {
 
-	private IChannelService  channelService;
-	private PublishManger    publishManger;
+	@Autowired private IChannelService  channelService;
+	@Autowired private PublishManger    publishManger;
 
 	/**
 	 * 获取所有的栏目树结构
 	 */
-	public String getChannelAll() {
+	public void getChannelAll() {
 		List<?> list = channelService.getAllChannels();
 		TreeEncoder channelTreeEncoder = new TreeEncoder(list, new LevelTreeParser());
 		channelTreeEncoder.setNeedRootNode(false);
-		return print("ChannelTree", channelTreeEncoder);
+		print("ChannelTree", channelTreeEncoder);
 	}
 
 	/**
 	 * 获取栏目xform信息
 	 */
-	public String getChannelDetail() {
+	public void getChannelDetail(Long channelId, Long parentId) {
+		Channel channel;
 		if ( isCreateNew() ) {
             channel = new Channel();
             
@@ -52,96 +55,90 @@ public class ChannelAction extends ProgressActionSupport {
 		}
  
 		XFormEncoder xEncoder = new XFormEncoder(CMSConstants.XFORM_CHANNEL, channel);
-		return print("ChannelInfo", xEncoder);
+		print("ChannelInfo", xEncoder);
 	}
 
 	/**
 	 * 新增栏目
 	 */
-	public String saveChannel() {
+	public void saveChannel(Channel channel) {
 	    channelService.createChannel(channel);
-		return doAfterSave(true, channel, "ChannelTree");
+		doAfterSave(true, channel, "ChannelTree");
 	}
 
 	/**
 	 * 更新栏目
 	 */
-	public String updateChannel() {
+	public void updateChannel(Channel channel) {
 		channelService.updateChannel(channel);
-		return printSuccessMessage("修改成功！");
+		printSuccessMessage("修改成功！");
 	}
 
 	/**
 	 * 逻辑删除栏目
 	 */
-	public String deleteChannel() {
+	public void deleteChannel(Long channelId) {
 		channelService.deleteChannel(channelId);
-        return printSuccessMessage("删除成功！");
+        printSuccessMessage("删除成功！");
 	}
 
 	/**
 	 * 栏目排序
 	 */
-	public String sortChannel() {
+	public void sortChannel(Long channelId, Long toChannelId, int direction) {
 		channelService.sortChannel(channelId, toChannelId, direction);
-        return printSuccessMessage("排序成功！");
+        printSuccessMessage("排序成功！");
 	}
 
 	/**
 	 * 栏目移动
 	 */
-	public String moveChannel() {
+	public void moveChannel(Long channelId, Long toChannelId) {
 		channelService.moveChannel(channelId, toChannelId);
-        return printSuccessMessage("移动成功！");
+        printSuccessMessage("移动成功！");
 	}
  
 	/**
 	 * 带有进度条的栏目发布
 	 * @param category 1:增量发布  2:完全发布
 	 */
-	public String publishChannel(String  category) {
+	public void publishChannel(Long channelId, String  category) {
         String code = publishManger.publishArticle(channelId, category);
-        return printScheduleMessage(code);  
+        printScheduleMessage(code);  
 	}
+	
     /**
      *  带有进度条的站点发布
      */
-    public String publishSite(String  category) {
+    public void publishSite(Long channelId, String  category) {
         String code = publishManger.publishArticle(channelId, category);
-        return printScheduleMessage(code);  
+        printScheduleMessage(code);  
     }
 
     /**
      * 获得站点和栏目树(包括所有的树节点过滤情况)
      */
-    public String getSiteAll(String action) {
+    public void getSiteChannelTree(Long channelId, String action) {
         TreeEncoder treeEncoder = null;
         if ("moveArticle".equals(action) || "copyArticle".equals(action)) {
 
-            Object[] object = channelService
-                    .selectCanAddArticleParentChannels();
+            Object[] object = channelService.selectCanAddArticleParentChannels();
             treeEncoder = new TreeEncoder(object[0], new LevelTreeParser());
             treeEncoder.setRootCanSelect(false);
-            treeEncoder.setTranslator(new ChannelCanSelectTranslator(
-                    (String) object[1], channelId));
+            treeEncoder.setTranslator(new ChannelCanSelectTranslator((String) object[1], channelId));
 
-        } else if ("moveChannel".equals(action)
-                || ("copyChannel").equals(action)) {
-            Object[] object = channelService
-                    .selectCanAddChannelParentChannels();
+        } else if ("moveChannel".equals(action) || ("copyChannel").equals(action)) {
+            Object[] object = channelService.selectCanAddChannelParentChannels();
             treeEncoder = new TreeEncoder(object[0], new LevelTreeParser());
             treeEncoder.setRootCanSelect(false);
 
-            final List<Channel> selectedList = channelService
-                    .getChannelTreeDown(channelId);
+            final List<Channel> selectedList = channelService.getChannelTreeDown(channelId);
 
-            final List<String> canAddChannelIds = Arrays
-                    .asList(((String) object[1]).split(","));
+            final List<String> canAddChannelIds = Arrays.asList(((String) object[1]).split(","));
 
             // 树栏目是否可选 转换器 (专门为移动节点时的目标树结构用，移动节点的子节点都不可选)
             treeEncoder.setTranslator(new ITreeTranslator() {
-                public Map<String, Object> translate(
-                        Map<String, Object> attributes) {
+                public Map<String, Object> translate(Map<String, Object> attributes) {
                     Object channelId = attributes.get("id");
                     for (Channel channel : selectedList) {
                         if (channelId.equals(channel.getId())) {
@@ -157,35 +154,35 @@ public class ChannelAction extends ProgressActionSupport {
             });
 
         } else {
-            treeEncoder = new TreeEncoder(channelService
-                    .getAllSiteChannelList(), new LevelTreeParser());
+            treeEncoder = new TreeEncoder(channelService.getAllSiteChannelList(), new LevelTreeParser());
         }
-        return print("SiteTree", treeEncoder);
+        print("SiteTree", treeEncoder);
     }
 
     /**
      * 新建站点
      */
-    public String saveSite() {
+    public void saveSite(Channel channel) {
         channel.setParentId(CMSConstants.HEAD_NODE_ID);
         channelService.createSite(channel);
 
-        return doAfterSave(true, channel, "SiteTree");
+        doAfterSave(true, channel, "SiteTree");
     }
 
     /**
      * 更新站点信息
      */
-    public String updateSite() {
+    public void updateSite(Channel channel) {
         channelService.updateSite(channel);
-        return printSuccessMessage("修改成功！");
+        printSuccessMessage("修改成功！");
     }
 
     /**
      * 获得站点的详细信息
      */
-    public String getSiteDetail() {
-        if (isCreateNew()) {
+    public void getSiteDetail(Long siteId) {
+    	Channel channel;
+        if ( CMSConstants.DEFAULT_NEW_ID.equals(siteId)) {
             channel = new Channel();
             channel.setDocPath("doc");
             channel.setImagePath("img");
@@ -194,52 +191,49 @@ public class ChannelAction extends ProgressActionSupport {
         }
  
         XFormEncoder xEncoder = new XFormEncoder(CMSConstants.XFORM_SITE, channel);
-        return print("SiteInfo", xEncoder);
+        print("SiteInfo", xEncoder);
     }
 
     /**
      * 逻辑删除站点成功
      */
-    public String deleteSite() {
+    public void deleteSite(Long siteId) {
         channelService.deleteChannel(siteId);
-        return printSuccessMessage("删除成功！");
+        printSuccessMessage("删除成功！");
     }
 
     /**
      * 启用栏目
      */
-    public String startSite() {
+    public void startSite(Long siteId) {
         channelService.startChannel(siteId);
-        return printSuccessMessage("启用成功！");
+        printSuccessMessage("启用成功！");
     }
 
     /**
      * 启用站点下所有栏目
      */
-    public String startAll() {
+    public void startAll(Long siteId) {
         channelService.startSiteAll(siteId);
-        return printSuccessMessage("启用成功！");
+        printSuccessMessage("启用成功！");
     }
 
     /**
      * 停用站点
      */
-    public String stopSite() {
+    public void stopSite(Long siteId) {
         channelService.stopSite(siteId);
-        return printSuccessMessage("停用成功！");
+        printSuccessMessage("停用成功！");
     }
 
     /**
-     * 根据资源id来获取操作权限
+     * 根据栏目资源id来获取对栏目的操作权限
      */
-    public String getOperatorByResourceId() {
-        List<String> list = PermissionHelper.getInstance()
-                .getOperationsByResource(resourceId,
-                        ChannelPermissionsFull.class.getName(),
-                        ChannelResourceView.class);
+    public void getOperatorByResourceId(Long resourceId) {
+        List<String> list = PermissionHelper.getInstance().getOperationsByResource(resourceId,
+                        ChannelPermissionsFull.class.getName(), ChannelResourceView.class);
 
-        String permissionAll = "p1,p2," + EasyUtils.list2Str(list)
-                + "cd1,cd2,cd3,cd4,cd5,ca1,ca2,ca3,ca4,ca5";
-        return print("Operation", permissionAll);
+        String permissionAll = "p1,p2,cd1,cd2,cd3,cd4,cd5,ca1,ca2,ca3,ca4,ca5，" + EasyUtils.list2Str(list);
+        print("Operation", permissionAll);
     }
 }
