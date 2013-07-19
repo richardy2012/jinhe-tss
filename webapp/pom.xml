@@ -50,7 +50,7 @@
 						</connector>
 					</connectors>  
 					<stopPort>9966</stopPort>
-					<stopKey>wmsx</stopKey>
+					<stopKey>tss</stopKey>
 				</configuration>  
 			</plugin> 
 			
