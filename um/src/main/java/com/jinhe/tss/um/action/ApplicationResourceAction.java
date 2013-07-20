@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	}
 	
 	/** 获取认证系统 */
-	public String getAuthenticateApp() {		
+	public void getAuthenticateApp(HttpServletResponse response) {		
 		// 获得登陆用户可访问的应用系统名称列表		
 		List<?> apps = applicationService.getApplications();
 		String[] appEditor = EasyUtils.generateComboedit(apps, "applicationId", "name", "|");
@@ -60,7 +62,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	    sb.append(" editorvalue=\"").append(appEditor[0]).append("\" ");
 	    sb.append(" editortext=\"") .append(appEditor[1]).append("\"/>");
 
-		return print("AuthenticateApplication", sb);
+	    print("AuthenticateApplication", sb);
 	}
 	
 	/**
@@ -83,7 +85,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 * 获取一个ResourceType对象的明细信息
 	 */
 	@RequestMapping(value = "/resource/{id}", method = RequestMethod.GET)
-	public String getResourceTypeInfo(Long id) {
+	public void getResourceTypeInfo(Long id) {
 		XFormEncoder resourceTypeXFormEncoder = null;
 		
 		ResourceType resourceType = applicationService.getResourceTypeById(id);
@@ -92,7 +94,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 			resourceType.setRootId(resourceTypeRoot.getRootId());
 		}
 		resourceTypeXFormEncoder = new XFormEncoder(UMConstants.RESOURCETYPE_XFORM, resourceType);
-		return print("TypeInfo", resourceTypeXFormEncoder);
+		print("TypeInfo", resourceTypeXFormEncoder);
 	}
 	
 	/**
@@ -179,20 +181,21 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	@Autowired private IResourceRegisterService registerService;
 	
 	// 返回一个空的无数据的模板
-	public String getImportTemplate(String applicationType) {
+	public void getImportTemplate(String applicationType) {
     	Map<String, Object> map = new HashMap<String, Object>();
     	map.put("applicationType", applicationType);
 		XFormEncoder encoder = new XFormEncoder(UMConstants.IMPORT_APP_XFORM, map);
-		return print("ImportApplication", encoder);
+		print("ImportApplication", encoder);
 	}
 	
-	public String registerApplication(@RequestParam File file) {
+	public void registerApplication(@RequestParam File file) {
 		if (null == file) {
 			throw new BusinessException("没有选择文件，请重新导入！");
 		}
 		
 		if (!file.getName().endsWith(".xml")) {
-            return print("SCRIPT", "parent.alert(\"文件格式不正确，请导入xml文件！\");");
+            print("SCRIPT", "parent.alert(\"文件格式不正确，请导入xml文件！\");");
+            return;
 		}
 		
         try {
@@ -200,8 +203,9 @@ public class ApplicationResourceAction extends BaseActionSupport {
             registerService.applicationResourceRegister(doc, applicationType);
         } catch (Exception e) {
             log.error("导入失败，请查看日志信息！", e);
-            return print("SCRIPT", "parent.alert(\"导入失败，请查看日志信息！\");");
+            print("SCRIPT", "parent.alert(\"导入失败，请查看日志信息！\");");
+            return;
         }
-        return print("SCRIPT", "parent.alert(\"导入成功！\");var ws = parent.$(\"ws\");ws.closeActiveTab();parent.loadInitData();");
+        print("SCRIPT", "parent.alert(\"导入成功！\");var ws = parent.$(\"ws\");ws.closeActiveTab();parent.loadInitData();");
 	}
 }

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.cms.AbstractTestSupport;
 import com.jinhe.tss.cms.CMSConstants;
-import com.jinhe.tss.cms.action.CMSAction;
 import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.entity.TimerStrategy;
@@ -22,15 +21,7 @@ import com.jinhe.tss.framework.test.TestUtil;
  */
 public class ArticlePublishTest extends AbstractTestSupport {
     
-	CMSAction   cmsAction;
-	
     @Autowired private IRemoteArticleService remoteArticleService;
-    
-    public void setUp() throws Exception {
-        super.setUp();
-		cmsAction = new CMSAction();
-		cmsAction.setRemoteService(remoteArticleService);
-    }
  
     public void testArticlePublish() {
     	// 新建站点
@@ -69,27 +60,20 @@ public class ArticlePublishTest extends AbstractTestSupport {
         publishArticle(channel1Id, CMSConstants.PUBLISH_ALL);
         publishArticle(siteId, CMSConstants.PUBLISH_ALL);
         
-        // 测试 CMSAction 2012.2.2
-        cmsAction.setChannelId(channel1Id);
-        cmsAction.setPage(1);
-        cmsAction.setPageSize(12);
-        cmsAction.getArticleListByChannel();
-        cmsAction.getPicArticleListByChannel();
-        cmsAction.getArticleListByChannelRss();
-        cmsAction.getArticleListDeeplyByChannel();
+        // 测试 articleAction 2012.2.2
+        articleAction.getArticleListByChannel(channel1Id, 1, 12);
+        articleAction.getPicArticleListByChannel(channel1Id, 1, 12);
+        articleAction.getArticleListByChannelRss(channel1Id, 1, 12);
+        articleAction.getArticleListDeeplyByChannel(channel1Id, 1, 12);
         
-        cmsAction.setYear("2012");
-        cmsAction.setMonth("02");
-        cmsAction.getArticleListByChannelAndTime();
+        articleAction.getArticleListByChannelAndTime(channel1Id, "2012", "02");
         
-        cmsAction.setChannelIds(channel1Id + "," + channel2.getId());
-        cmsAction.getArticleListByChannels();
+        String channelIds = channel1Id + "," + channel2.getId();
+        articleAction.getArticleListByChannels(channelIds, 1, 12);
         
-        cmsAction.setArticleId(articleId);
-        cmsAction.getArticleXmlInfo();
+        articleAction.getArticleXmlInfo(articleId);
         
-        cmsAction.setChannelId(siteId);
-        cmsAction.getChannelTreeList4Portlet();
+        articleAction.getChannelTreeList4Portlet(siteId);
         
         // 创建索引
         TimerStrategy strategy = new TimerStrategy();
@@ -104,15 +88,11 @@ public class ArticlePublishTest extends AbstractTestSupport {
         
         // 测试检索文章
         strategy.setParentId(strategy.getId());
-        cmsAction.setTacticId(strategy.getId());
-        cmsAction.setSearchStr("矛盾");
-        cmsAction.search();
         
-        cmsAction.setSearchStr("过河卒子");
-        cmsAction.search();
-        
-        cmsAction.setSearchStr("技术创新"); // 搜索附件
-        cmsAction.search();
+        Long tacticId = strategy.getId();
+        articleAction.search(tacticId, "矛盾", 1, 10);
+        articleAction.search(tacticId, "过河卒子", 1, 10);
+        articleAction.search(tacticId, "技术创新", 1, 10); // 搜索附件
         
         // 最后删除文章、栏目、站点
         super.deleteSite(siteId);

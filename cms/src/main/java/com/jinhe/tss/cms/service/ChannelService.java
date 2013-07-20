@@ -150,7 +150,7 @@ public class ChannelService implements IChannelService {
         }
     }
  
-    public void stopSite(Long siteOrChannelId) {
+    public void disable(Long siteOrChannelId) {
         if ( !checkDownPermission(siteOrChannelId, CMSConstants.OPERATION_STOP_START) ) {
             throw new BusinessException("您对当前栏目没有停用权限！");
         }

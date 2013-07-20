@@ -1,50 +1,41 @@
 package com.jinhe.tss.cms.lucene;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.net.URL;
-
-import jeasy.analysis.MMAnalyzer;
-
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 
-import com.jinhe.tss.util.URLUtil;
+import com.jinhe.tss.cms.lucene.analyzer.CJKAnalyzer;
  
 /**
- * 全文检索分词器MMAnalyzer创建工厂类。
+ * 全文检索分词器创建工厂类。
  */
 public class AnalyzerFactory {
     
-    private static final String DICTIONARY_FILE = "dictionary.txt";
+    static final String DICTIONARY_FILE = "dictionary.txt";
     
-	private static Logger log = Logger.getLogger(AnalyzerFactory.class);
+    static Logger log = Logger.getLogger(AnalyzerFactory.class);
     
-    private AnalyzerFactory(){
+    private AnalyzerFactory() {
     }
     
     private static Analyzer analyzer;
 
     /**
      * 创建一个分词解析对象。
-     * @return
      */
-    public static Analyzer createAnalyzer(){
+    public static Analyzer createAnalyzer() {
         if(analyzer == null){
             // 此处采用MMAnalyzer，分词粒度为2（分词粒度：当字数等于或超过该参数，且能成词，该词就被切分出来 ）
-            analyzer = new MMAnalyzer(2);
+            analyzer = new CJKAnalyzer();
             
-            try {
-                URL dictionaryPath = URLUtil.getResourceFileUrl(DICTIONARY_FILE);
-                if(dictionaryPath != null){
-                    File dictionaryFile = new File(dictionaryPath.getPath());
-                    MMAnalyzer.addDictionary(new FileReader(dictionaryFile));
-                }
-            } catch (Exception e) {
-                log.error("加载字典文件出错", e);
-            }
+//            try {
+//                URL dictionaryPath = URLUtil.getResourceFileUrl(DICTIONARY_FILE);
+//                if(dictionaryPath != null) {
+//                    File dictionaryFile = new File(dictionaryPath.getPath());
+//                    MMAnalyzer.addDictionary(new FileReader(dictionaryFile));
+//                }
+//            } catch (Exception e) {
+//                log.error("加载字典文件出错", e);
+//            }
         }
         return analyzer;
     }
@@ -57,24 +48,24 @@ public class AnalyzerFactory {
     public static Analyzer createAnalyzer(String searchStr){
         analyzer = createAnalyzer();
         
-        if( !MMAnalyzer.contains(searchStr) ){
-            MMAnalyzer.addWord(searchStr);
-            
-            // 写到自己建的词典文件里去
-            try {
-                URL dictionaryPath = URLUtil.getResourceFileUrl(DICTIONARY_FILE);
-                if(dictionaryPath != null){
-                    // FileWriter的第二个参数true表示追加文件到尾部
-                    FileWriter fileWriter = new FileWriter(dictionaryPath.getPath(), true);
-					BufferedWriter bw = new BufferedWriter(fileWriter);   
-                    bw.write(searchStr); // 追加文件内容   
-                    bw.newLine();
-                    bw.close();
-                }
-            } catch (Exception e) {
-                log.error("写入字典文件出错", e);
-            }
-        }
+//        if( !MMAnalyzer.contains(searchStr) ){
+//            MMAnalyzer.addWord(searchStr);
+//            
+//            // 写到自己建的词典文件里去
+//            try {
+//                URL dictionaryPath = URLUtil.getResourceFileUrl(DICTIONARY_FILE);
+//                if(dictionaryPath != null){
+//                    // FileWriter的第二个参数true表示追加文件到尾部
+//                    FileWriter fileWriter = new FileWriter(dictionaryPath.getPath(), true);
+//					BufferedWriter bw = new BufferedWriter(fileWriter);   
+//                    bw.write(searchStr); // 追加文件内容   
+//                    bw.newLine();
+//                    bw.close();
+//                }
+//            } catch (Exception e) {
+//                log.error("写入字典文件出错", e);
+//            }
+//        }
         return analyzer;
     }
 }

@@ -2,9 +2,12 @@ package com.jinhe.tss.cms;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit38.AbstractTransactionalJUnit38SpringContextTests;
@@ -59,10 +62,15 @@ public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit38Spri
     @Autowired protected IChannelDao channelDao;
     @Autowired protected IArticleDao articleDao;
     
+    protected HttpServletRequest request;
+    
     protected void setUp() throws Exception {
         super.setUp();
         Global.setContext(super.applicationContext);
         Context.setResponse(new MockHttpServletResponse());
+        
+        request = new MockHttpServletRequest();
+        Context.initRequestContext(request);
         
         // DB数据在一轮跑多个单元测试中初始化一次就够了。
         if( dbserver.isPrepareed() ) {

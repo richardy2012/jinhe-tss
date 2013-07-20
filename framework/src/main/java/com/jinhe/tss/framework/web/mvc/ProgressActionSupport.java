@@ -1,5 +1,7 @@
 package com.jinhe.tss.framework.web.mvc;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,21 +19,21 @@ public class ProgressActionSupport extends BaseActionSupport {
 	 * 获取进度信息
 	 */
 	@RequestMapping(value = "/progress/{code}", method = RequestMethod.GET)
-	public String getProgress(@PathVariable("code") String code) {
-		return printScheduleMessage(code);
+	public void getProgress(HttpServletResponse response, @PathVariable("code") String code) {
+		printScheduleMessage(code);
 	}
 
 	/**
 	 * 取消，中止进度
 	 */
 	@RequestMapping(value = "/progress/{code}", method = RequestMethod.DELETE)
-	public String doConceal(@PathVariable("code") String code) {
+	public void doConceal(HttpServletResponse response, @PathVariable("code") String code) {
 		Progress progress = (Progress) ProgressPool.getSchedule(code);
 		progress.setIsConceal(true); // 设置中止标志
-		return printScheduleMessage(code);
+		printScheduleMessage(code);
 	}
 
-	protected String printScheduleMessage(String code) {
+	protected void printScheduleMessage(String code) {
 		Progress progress = (Progress) ProgressPool.getSchedule(code);
 		if (!progress.isNormal()) {
 			ProgressPool.removeSchedule(code);
@@ -53,6 +55,6 @@ public class ProgressActionSupport extends BaseActionSupport {
 		if (progress.isCompleted()) {
 			ProgressPool.removeSchedule(code); // 执行结束则将将进度对象从池中移除
 		}
-		return print("ProgressInfo", progressInfo.toString());
+	    print("ProgressInfo", progressInfo.toString());
 	}
 }

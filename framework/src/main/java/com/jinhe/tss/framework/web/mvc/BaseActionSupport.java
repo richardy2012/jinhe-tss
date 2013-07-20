@@ -38,23 +38,8 @@ public abstract class BaseActionSupport {
         }
     }
     
-    
-    /** 请求返回纯xml数据的返回页面 */
-    protected static final String XML = "XML";
     protected static final String DEFAULT_SUCCESS_MSG = "操作成功！";
    
-    protected static final Integer TRUE = 1;
-    
-    
-    protected Integer isNew; // 是否新建
-    
-    protected boolean isCreateNew() {
-        return TRUE.equals(isNew);
-    }
-    
-    public void setIsNew(Integer isNew) {
-        this.isNew = isNew;
-    }
     
     /**
      * 在action调用service进行保存操作后执行
@@ -63,19 +48,21 @@ public abstract class BaseActionSupport {
      * @param returnObj
      * @param treeName
      */
-    protected String doAfterSave(boolean isNew, Object returnObj, String treeName){        
-        return doAfterSave(isNew, returnObj, treeName, DEFAULT_SUCCESS_MSG);
+    protected void doAfterSave(boolean isNew, Object returnObj, String treeName){        
+        doAfterSave(isNew, returnObj, treeName, DEFAULT_SUCCESS_MSG);
     }
     
-    protected String doAfterSave(boolean isNew, Object returnObj, String treeName, String successMsg){        
-        if(isNew){
+    protected void doAfterSave(boolean isNew, Object returnObj, String treeName, String successMsg){        
+        if(isNew) {
             List<Object> list = new ArrayList<Object>();
             list.add(returnObj);       
             TreeEncoder encoder = new TreeEncoder(list);
             encoder.setNeedRootNode(false);
-            return print(treeName, encoder);
+            print(treeName, encoder);
+        } 
+        else {
+        	printSuccessMessage(successMsg);
         }
-        return printSuccessMessage(successMsg);
     }
     
     /**
@@ -83,12 +70,10 @@ public abstract class BaseActionSupport {
      * @param returnDataName
      * @param value
      */
-    protected String print(String returnDataName, Object value){
+    protected void print(String returnDataName, Object value){
         XmlHttpEncoder xmlHttpEncoder = new XmlHttpEncoder();
         xmlHttpEncoder.put(returnDataName, value);
         xmlHttpEncoder.print(getWriter());
-        
-        return XML;
     }
     
     /**
@@ -96,29 +81,26 @@ public abstract class BaseActionSupport {
      * @param returnDataNames
      * @param values
      */
-    protected String print(String[] returnDataNames, Object[] values){
+    protected void print(String[] returnDataNames, Object[] values){
         XmlHttpEncoder xmlHttpEncoder = new XmlHttpEncoder();
         for(int i = 0; i < returnDataNames.length; i++){
             xmlHttpEncoder.put(returnDataNames[i], values[i]);
         }       
         xmlHttpEncoder.print(getWriter());
-        
-        return XML;
     }
     
     /**
      * 向客户端输出一条成功信息
      */
-    protected String printSuccessMessage(){
-        return printSuccessMessage(DEFAULT_SUCCESS_MSG);
+    protected void printSuccessMessage(){
+        printSuccessMessage(DEFAULT_SUCCESS_MSG);
     }
     
     /**
      * 向客户端输出一条成功信息
      */
-    protected String printSuccessMessage(String str){
+    protected void printSuccessMessage(String str){
         new SuccessMessageEncoder(str).print(getWriter());
-        return XML;
     }
     
     /** 生成分页信息 */

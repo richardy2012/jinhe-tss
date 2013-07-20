@@ -3,8 +3,6 @@ package com.jinhe.tss.cms.lucene.analyzer;
 import java.io.IOException;
 import java.io.StringReader;
 
-import jeasy.analysis.MMAnalyzer;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.analysis.StopAnalyzer;
@@ -55,13 +53,13 @@ public class TestAnalyzer {
     static Analyzer analyzer2 = new SimpleAnalyzer();
     static Analyzer analyzer3 = new StandardAnalyzer();
     static Analyzer analyzer4 = new StopAnalyzer();
-    static Analyzer analyzer5 = new MMAnalyzer(2);
-    static Analyzer analyzer6 = new MMAnalyzer();
+//    static Analyzer analyzer5 = new MMAnalyzer(2);
+//    static Analyzer analyzer6 = new MMAnalyzer();
     static Analyzer analyzer7 = new CJKAnalyzer(); 
     static Analyzer analyzer8 = new org.apache.lucene.analysis.cjk.CJKAnalyzer(); 
     
     public static void main(String[] args) throws IOException {
-        displayTokens(analyzer6, text);
+        displayTokens(analyzer8, text);
     }
 
     public static void displayTokens(Analyzer analyzer, String text) throws IOException {

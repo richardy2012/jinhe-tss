@@ -147,7 +147,7 @@ public interface IChannelService {
      * @return boolean
      */
     @Logable(operateTable="站点栏目", operateType="停用", operateInfo="停用了 （ID ：${args[0]}） 站点")
-    void stopSite(Long siteId);
+    void disable(Long siteId);
     
     /**
      * <p>

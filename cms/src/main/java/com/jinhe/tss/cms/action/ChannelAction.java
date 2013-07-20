@@ -41,7 +41,7 @@ public class ChannelAction extends ProgressActionSupport {
 	 */
 	public void getChannelDetail(Long channelId, Long parentId) {
 		Channel channel;
-		if ( isCreateNew() ) {
+		if ( CMSConstants.DEFAULT_NEW_ID.equals(channelId) ) {
             channel = new Channel();
             
             Channel parent = (Channel) channelService.getChannelById(parentId);
@@ -77,8 +77,8 @@ public class ChannelAction extends ProgressActionSupport {
 	/**
 	 * 逻辑删除栏目
 	 */
-	public void deleteChannel(Long channelId) {
-		channelService.deleteChannel(channelId);
+	public void deleteSiteOrChannel(Long id) {
+		channelService.deleteChannel(id);
         printSuccessMessage("删除成功！");
 	}
 
@@ -195,25 +195,17 @@ public class ChannelAction extends ProgressActionSupport {
     }
 
     /**
-     * 逻辑删除站点成功
-     */
-    public void deleteSite(Long siteId) {
-        channelService.deleteChannel(siteId);
-        printSuccessMessage("删除成功！");
-    }
-
-    /**
      * 启用栏目
      */
-    public void startSite(Long siteId) {
-        channelService.startChannel(siteId);
+    public void enable(Long id) {
+        channelService.startChannel(id);
         printSuccessMessage("启用成功！");
     }
 
     /**
      * 启用站点下所有栏目
      */
-    public void startAll(Long siteId) {
+    public void enableSiteAndChannels(Long siteId) {
         channelService.startSiteAll(siteId);
         printSuccessMessage("启用成功！");
     }
@@ -221,15 +213,15 @@ public class ChannelAction extends ProgressActionSupport {
     /**
      * 停用站点
      */
-    public void stopSite(Long siteId) {
-        channelService.stopSite(siteId);
+    public void disable(Long id) {
+        channelService.disable(id);
         printSuccessMessage("停用成功！");
     }
 
     /**
      * 根据栏目资源id来获取对栏目的操作权限
      */
-    public void getOperatorByResourceId(Long resourceId) {
+    public void getOperations(Long resourceId) {
         List<String> list = PermissionHelper.getInstance().getOperationsByResource(resourceId,
                         ChannelPermissionsFull.class.getName(), ChannelResourceView.class);
 

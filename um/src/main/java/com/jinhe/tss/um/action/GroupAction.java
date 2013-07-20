@@ -77,17 +77,17 @@ public class GroupAction extends ProgressActionSupport {
 	/**
 	 * 得到操作权限
 	 */
-	public String getOperation(Integer groupType, Long resourceId) {
+	public void getOperation(Integer groupType, Long resourceId) {
 		// 自注册用户组类型:没有任何菜单
         if (UMConstants.SELF_REGISTER_GROUP_ID.equals(resourceId) || UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN.equals(resourceId)) {
-        	return "p1,p2"; 
+        	return; 
         } 
         
         Long operatorId = Environment.getOperatorId();
         String resourceTypeId = UMConstants.GROUP_RESOURCE_TYPE_ID;
         List<?> operations = PermissionHelper.getInstance().getOperationsByResource(resourceTypeId, resourceId, operatorId);
  
-        return print("Operation", "p1,p2," + EasyUtils.list2Str(operations));
+        print("Operation", "p1,p2," + EasyUtils.list2Str(operations));
     }
 	
 	/**
@@ -142,14 +142,14 @@ public class GroupAction extends ProgressActionSupport {
     /**
      * 编辑一个Group对象的明细信息、用户组对用户信息、用户组对角色的信息
      */
-    public String editGroup(Group group, String group2UserExistTree, String group2RoleExistTree) {
+    public void editGroup(Group group, String group2UserExistTree, String group2RoleExistTree) {
         boolean isNew = group.getId() == null;
         if (group.getId() == null) { // 新建
             service.createNewGroup(group, group2UserExistTree, group2RoleExistTree);
         } else {// 编辑
             service.editExistGroup(group, group2UserExistTree, group2RoleExistTree);
         }
-        return doAfterSave(isNew, group, "GroupTree");
+        doAfterSave(isNew, group, "GroupTree");
     }
     
     /**
