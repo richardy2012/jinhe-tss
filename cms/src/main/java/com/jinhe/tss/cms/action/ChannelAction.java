@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Channel;
@@ -21,6 +23,8 @@ import com.jinhe.tss.framework.web.mvc.ProgressActionSupport;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.util.EasyUtils;
  
+@Controller
+@RequestMapping("channel")
 public class ChannelAction extends ProgressActionSupport {
 
 	@Autowired private IChannelService  channelService;

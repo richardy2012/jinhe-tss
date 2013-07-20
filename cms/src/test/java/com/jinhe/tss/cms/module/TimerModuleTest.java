@@ -4,25 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.cms.AbstractTestSupport;
 import com.jinhe.tss.cms.CMSConstants;
+import com.jinhe.tss.cms.action.TimerAction;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.entity.TimerStrategy;
-import com.jinhe.tss.cms.timer.TimerAction;
-import com.jinhe.tss.cms.timer.TimerService;
 
 /**
  * 定时策略相关模块的单元测试。
  */
 public class TimerModuleTest extends AbstractTestSupport {
     
-	TimerAction timerAction;
-	
-    @Autowired private TimerService   timerService;
-    
-    public void setUp() throws Exception {
-        super.setUp();
-        timerAction = new TimerAction();
-        timerAction.setTimerService(timerService);
-    }
+	@Autowired TimerAction timerAction;
  
     public void testArticleModule() {
         // 新建站点、栏目
@@ -33,80 +24,64 @@ public class TimerModuleTest extends AbstractTestSupport {
         
         TimerStrategy timerStrategy = new TimerStrategy();
         timerStrategy.setName("定时策略");
-        timerStrategy.setType(CMSConstants.TACTIC_TIME_TYPE);
+        timerStrategy.setType(CMSConstants.STRATEGY_TYPE_TIME);
         timerStrategy.setContent("0 15 10 * * ?"); // 每天上午10:15触发
         timerStrategy.setIndexPath("d:/temp/cms/");
-        timerAction.getCondition().setStrategy(timerStrategy);
-        timerAction.addTacticTime();
-        timerAction.updateTacticTime();
+        timerAction.addTimeStrategy(timerStrategy);
+        timerAction.updateTimeStrategy(timerStrategy);
+        
+        Long timerStrategyId = timerStrategy.getId();
         
         TimerStrategy publishStrategy = new TimerStrategy();
         publishStrategy.setName("发布策略");
-        publishStrategy.setType(CMSConstants.TACTIC_PUBLISH_TYPE);
-        publishStrategy.setParentId(timerStrategy.getId());
+        publishStrategy.setType(CMSConstants.STRATEGY_TYPE_PUBLISH);
+		publishStrategy.setParentId(timerStrategyId);
         publishStrategy.setContent(channel1.getId() + "," + channel2.getId());
-        timerAction.getCondition().setParentId(timerStrategy.getId());
-        timerAction.getCondition().setStrategy(publishStrategy);
-        timerAction.addTacticIndexAndPublish();
-        timerAction.updateTacticIndexAndPublish();
+        timerAction.addStrategy(publishStrategy);
+        timerAction.updateStrategy(publishStrategy);
+        
+        Long publishStrategyId = publishStrategy.getId();
         
         TimerStrategy indexStrategy = new TimerStrategy();
         indexStrategy.setName("索引策略");
-        indexStrategy.setType(CMSConstants.TACTIC_INDEX_TYPE);
-        indexStrategy.setParentId(timerStrategy.getId());
+        indexStrategy.setType(CMSConstants.STRATEGY_TYPE_INDEX);
+        indexStrategy.setParentId(timerStrategyId);
         indexStrategy.setContent(channel1.getId() + "," + channel2.getId());
-        timerAction.getCondition().setParentId(timerStrategy.getId());
-        timerAction.getCondition().setStrategy(indexStrategy);
-        timerAction.addTacticIndexAndPublish();
+        timerAction.addStrategy(indexStrategy);
+        
+        Long indexStrategyId = indexStrategy.getId();
         
         TimerStrategy expireStrategy = new TimerStrategy();
         expireStrategy.setName("文章过期策略");
-        expireStrategy.setType(CMSConstants.TACTIC_EXPIRE_TYPE);
-        expireStrategy.setParentId(timerStrategy.getId());
+        expireStrategy.setType(CMSConstants.STRATEGY_TYPE_EXPIRE);
+        expireStrategy.setParentId(timerStrategyId);
         expireStrategy.setContent(channel1.getId() + "," + channel2.getId());
-        timerAction.getCondition().setParentId(timerStrategy.getId());
-        timerAction.getCondition().setStrategy(expireStrategy);
-        timerAction.addTacticIndexAndPublish();
+        timerAction.addStrategy(expireStrategy);
         
-        timerAction.initTacticIndex(); //读取定时策略树
+        Long expireStrategyId = expireStrategy.getId();
         
-        timerAction.getCondition().setTacticId(publishStrategy.getId());
-        timerAction.getCondition().setType(CMSConstants.TACTIC_PUBLISH_TYPE);
-        timerAction.getTacticIndexAndPublish();
         
-        timerAction.getCondition().setTacticId(publishStrategy.getId());
-        timerAction.getCondition().setType(CMSConstants.TACTIC_INDEX_TYPE);
-        timerAction.getTacticIndexAndPublish();
+        timerAction.initIndexStrategy(); //读取定时策略树
         
-        timerAction.getCondition().setTacticId(publishStrategy.getId());
-        timerAction.getCondition().setType(CMSConstants.TACTIC_EXPIRE_TYPE);
-        timerAction.getTacticIndexAndPublish();
+		timerAction.getStrategy(publishStrategyId);
         
-        timerAction.getCondition().setTacticId(timerStrategy.getId());
-        timerAction.getTacticTime();
+        timerAction.getTimeStrategy(timerStrategyId);
         
-        timerAction.getCondition().setTacticId(timerStrategy.getId());
-        timerAction.startTacticTime();
-        timerAction.stopTacticTime();
-        timerAction.startTacticTime();
+        timerAction.startTimeStrategy(timerStrategyId);
+        timerAction.stopTimeStrategy(timerStrategyId);
+        timerAction.startTimeStrategy(timerStrategyId);
         
-        timerAction.getCondition().setTacticId(publishStrategy.getId());
-        timerAction.startTacticIndexAndPublish();
-        timerAction.stopTacticIndexAndPublish();
-        timerAction.startTacticIndexAndPublish();
+        timerAction.disableStrategy(publishStrategyId);
+        timerAction.enableStrategy(publishStrategyId);
+        timerAction.disableStrategy(publishStrategyId);
         
         // 即时执行策略
-        timerAction.getCondition().setTacticId(publishStrategy.getId());
-        timerAction.instantTactic(); 
-        timerAction.getCondition().setTacticId(indexStrategy.getId());
-        timerAction.instantTactic(); 
-        timerAction.getCondition().setTacticId(expireStrategy.getId());
-        timerAction.instantTactic(); 
+        timerAction.instantStrategy(publishStrategyId, 1); 
+		timerAction.instantStrategy(indexStrategyId, 0); 
+		timerAction.instantStrategy(expireStrategyId, 0); 
         
-        timerAction.getCondition().setTacticId(publishStrategy.getId());
-        timerAction.removeTacticIndexAndPublish();
-        timerAction.getCondition().setTacticId(timerStrategy.getId());
-        timerAction.removeTacticTime();
+        timerAction.removeStrategy(publishStrategyId);
+        timerAction.removeTimeStrategy(timerStrategyId);
         
         super.deleteSite(siteId);
     }

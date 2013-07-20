@@ -2,9 +2,8 @@ package com.jinhe.tss.cms.lucene;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.cjk.CJKAnalyzer;
 
-import com.jinhe.tss.cms.lucene.analyzer.CJKAnalyzer;
- 
 /**
  * 全文检索分词器创建工厂类。
  */

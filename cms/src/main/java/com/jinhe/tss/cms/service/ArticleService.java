@@ -10,6 +10,7 @@ import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.dao.IArticleDao;
@@ -25,6 +26,7 @@ import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
  
+@Service("ArticleService")
 public class ArticleService implements IArticleService {
     
     protected final Logger log = Logger.getLogger(getClass());

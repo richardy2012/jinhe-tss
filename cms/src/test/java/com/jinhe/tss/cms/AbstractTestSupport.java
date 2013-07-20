@@ -3,8 +3,6 @@ package com.jinhe.tss.cms;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.cms.action.ArticleAction;
@@ -13,7 +11,6 @@ import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.publish.PublishManger;
 import com.jinhe.tss.cms.service.IArticleService;
-import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.util.BeanUtil;
 
 public class AbstractTestSupport extends TxSupportTest4CMS {
@@ -28,7 +25,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
     protected Channel createSite() {
         Channel site = new Channel();
         site.setParentId(CMSConstants.HEAD_NODE_ID);
-        site.setName("我的门户");
+        site.setName("我的门户" + System.currentTimeMillis());
         site.setPath("d:/Temp/cms");
         site.setDocPath("doc");
         site.setImagePath("img");
@@ -68,8 +65,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
                 "从而延长了统治时间。这是中国历史所特有的周期性振荡。综观国史，史实让笔者也不得不承认上述说法的合理性。" +
                 "那么，目前的中国是否在重新陷入这个历史的轮回怪圈呢？这倒的确是一个值得商榷的问题。";
         
-        HttpServletRequest request = Context.getRequestContext().getRequest();
-		request .getParameterMap().put("articleContent", new String[] {content});
+		request.addParameter("articleContent", content);
         
 		articleAction.saveArticleInfo(request, channel.getId(), article, "1,2", "false");
         Long articleId = article.getId();

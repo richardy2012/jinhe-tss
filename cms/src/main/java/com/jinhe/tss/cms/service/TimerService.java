@@ -1,4 +1,4 @@
-package com.jinhe.tss.cms.timer;
+package com.jinhe.tss.cms.service;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.dao.IArticleDao;
@@ -21,6 +22,7 @@ import com.jinhe.tss.cms.entity.TimerStrategy;
 import com.jinhe.tss.cms.lucene.ArticleContent;
 import com.jinhe.tss.cms.lucene.IndexHelper;
 import com.jinhe.tss.cms.publish.PublishManger;
+import com.jinhe.tss.cms.timer.SchedulerBean;
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.component.progress.ProgressManager;
 import com.jinhe.tss.framework.component.progress.Progressable;
@@ -33,9 +35,10 @@ import com.jinhe.tss.util.FileHelper;
  * 实现了进度条接口，执行创建lucene索引和发布文章时将启动进度条。
  * 
  */
-public class TimerServiceImpl implements TimerService, Progressable {
+@Service("TimerService")
+public class TimerService implements ITimerService, Progressable {
 
-	protected Logger log = Logger.getLogger(TimerServiceImpl.class);
+	protected Logger log = Logger.getLogger(TimerService.class);
     
     private final static Set<Long> LOCK = Collections.synchronizedSet(new HashSet<Long>());
 
@@ -60,17 +63,17 @@ public class TimerServiceImpl implements TimerService, Progressable {
             Map<String, Object> paramsMap = new HashMap<String, Object>();
             try {
                 // 执行发布策略，给当前选中的发布策略发布文章
-                if (CMSConstants.TACTIC_PUBLISH_TYPE.equals(type)) {
-                    paramsMap.put("type", CMSConstants.TACTIC_PUBLISH_TYPE);
+                if (CMSConstants.STRATEGY_TYPE_PUBLISH.equals(type)) {
+                    paramsMap.put("type", CMSConstants.STRATEGY_TYPE_PUBLISH);
                     
                     String channelIds = strategy.getContent();
                     total = publishManger.getPublishableArticleCount4TimerJob(channelIds, paramsMap);
                 } 
                 
                 // 执行索引策略，根据索引策略建立索引文件
-                if (CMSConstants.TACTIC_INDEX_TYPE.equals(type)) { 
+                if (CMSConstants.STRATEGY_TYPE_INDEX.equals(type)) { 
                     paramsMap.put("indexStrategy", strategy);
-                    paramsMap.put("type", CMSConstants.TACTIC_INDEX_TYPE);
+                    paramsMap.put("type", CMSConstants.STRATEGY_TYPE_INDEX);
                     
                     Set<ArticleContent> content = IndexHelper.getIndexableArticles4Lucene(strategy, channelDao, articleDao);
                     paramsMap.put("articleContentSet", content); // 需要建索引的所有文章地址列表
@@ -79,7 +82,7 @@ public class TimerServiceImpl implements TimerService, Progressable {
                 } 
                 
                 // 执行过期策略：直接执行，不启用进度条(进度长度设为0即可)
-                if (CMSConstants.TACTIC_EXPIRE_TYPE.equals(type)) {
+                if (CMSConstants.STRATEGY_TYPE_EXPIRE.equals(type)) {
                     total = 0;
                     excuteExpireStrategy(strategy); 
                 }
@@ -102,12 +105,12 @@ public class TimerServiceImpl implements TimerService, Progressable {
     public void execute(Map<String, Object> params, final Progress progress) {
         Object type = params.get("type");
         
-        if(CMSConstants.TACTIC_INDEX_TYPE.equals(type)) { // 创建索引
-            TimerStrategy tacticIndex = (TimerStrategy) params.get("indexStrategy");
+        if(CMSConstants.STRATEGY_TYPE_INDEX.equals(type)) { // 创建索引
+            TimerStrategy strategy = (TimerStrategy) params.get("indexStrategy");
             Object content = params.get("articleContentSet");
-            IndexHelper.createIndex(tacticIndex, (Set<ArticleContent>)content, progress); 
+            IndexHelper.createIndex(strategy, (Set<ArticleContent>)content, progress); 
         } 
-        else if(CMSConstants.TACTIC_PUBLISH_TYPE.equals(type)) {
+        else if(CMSConstants.STRATEGY_TYPE_PUBLISH.equals(type)) {
             List<Long> channelIds = (List<Long>) params.get("channelIds");
             publishManger.publishArticle4TimerJob(channelIds, progress);
         }
@@ -154,9 +157,7 @@ public class TimerServiceImpl implements TimerService, Progressable {
         return (TimerStrategy)strategy;
     }
     
-    public TimerStrategy addTimeStrategy(TimerCondition condition) {
-        TimerStrategy strategy = condition.getStrategy();
-        
+    public TimerStrategy addTimeStrategy(TimerStrategy strategy) {
         String indexPath = strategy.getIndexPath();
         if( !EasyUtils.isNullOrEmpty(indexPath)) {
         	checkPath(indexPath);
@@ -164,13 +165,13 @@ public class TimerServiceImpl implements TimerService, Progressable {
         
         strategy.setParentId( CMSConstants.HEAD_NODE_ID );
         strategy.setStatus( CMSConstants.STATUS_STOP );
-        strategy.setType( CMSConstants.TACTIC_TIME_TYPE );
+        strategy.setType( CMSConstants.STRATEGY_TYPE_TIME );
         TimerStrategy timerStrategy = (TimerStrategy) commonDao.create(strategy);
         if (timerStrategy == null) {
             throw new BusinessException("新建时间策略不成功！");
         }
         
-        if (CMSConstants.TACTIC_TIME_TYPE.equals(timerStrategy.getType())) {
+        if (CMSConstants.STRATEGY_TYPE_TIME.equals(timerStrategy.getType())) {
             // 创建触发器和定时任务
             SchedulerBean.addTriggerAndJob(timerStrategy);
         }
@@ -198,11 +199,10 @@ public class TimerServiceImpl implements TimerService, Progressable {
         commonDao.deleteAll(getAllStrategysByTimerStrategy(strategyId));
     }
     
-    public void updateTimeStrategy(TimerCondition condition) {
-        TimerStrategy timeStrategy = condition.getStrategy();
+    public void updateTimeStrategy(TimerStrategy timeStrategy) {
         TimerStrategy oldTimeStrategy = getStrategyById(timeStrategy.getId()); 
 
-        if (CMSConstants.TACTIC_TIME_TYPE.equals(timeStrategy.getType())) {
+        if (CMSConstants.STRATEGY_TYPE_TIME.equals(timeStrategy.getType())) {
             SchedulerBean.removeTriggerAndJob(timeStrategy.getId());
             
             // 新建时间策略失败后，新建以前的时间策略
@@ -249,38 +249,36 @@ public class TimerServiceImpl implements TimerService, Progressable {
     }
  
     // -----------------------------   以下操作的是定时策略的子策略，比如索引策略、发布策略、过期策略等 -----------------------------
-    public TimerStrategy addStrategy(TimerCondition condition) {
-        TimerStrategy strategyInCondition = condition.getStrategy();
-        
-        TimerStrategy timeStrategy = getStrategyById(condition.getParentId());
-        strategyInCondition.setStatus(timeStrategy.getStatus());
-        strategyInCondition.setParentId(timeStrategy.getId());
+    public TimerStrategy addStrategy(TimerStrategy strategy) {
+        TimerStrategy timeStrategy = getStrategyById(strategy.getParentId());
+        strategy.setStatus(timeStrategy.getStatus());
+        strategy.setParentId(timeStrategy.getId());
  
-        TimerStrategy tacticIndex = (TimerStrategy) commonDao.create(strategyInCondition);
-        if (tacticIndex == null)
+        strategy = (TimerStrategy) commonDao.create(strategy);
+        if (strategy == null) {
             throw new BusinessException("新建索引策略不成功！");
+        }
 
-        return tacticIndex;
+        return strategy;
     }
  
-    public void removeStrategy(Long tacticId) {
-        commonDao.delete(getStrategyById(tacticId));
+    public void removeStrategy(Long id) {
+        commonDao.delete(getStrategyById(id));
     }
  
-    public void updateTacticIndexAndPublish(TimerCondition condition) {
-        TimerStrategy strategyInCondition = condition.getStrategy();
-		TimerStrategy strategy = getStrategyById(strategyInCondition.getId());
-        strategy.setName(strategyInCondition.getName());
-        strategy.setIndexExecutorClass(strategyInCondition.getIndexExecutorClass());
-        strategy.setRemark(strategyInCondition.getRemark());
+    public void updateStrategy(TimerStrategy newStrategy) {
+		TimerStrategy strategy = getStrategyById(newStrategy.getId());
+        strategy.setName(newStrategy.getName());
+        strategy.setIndexExecutorClass(newStrategy.getIndexExecutorClass());
+        strategy.setRemark(newStrategy.getRemark());
         
-        if(strategyInCondition.getContent() != null){
-            strategy.setContent(strategyInCondition.getContent());
+        if(newStrategy.getContent() != null){
+            strategy.setContent(newStrategy.getContent());
         }
         commonDao.update(strategy);
     }
  
-    public void startStrategy(Long strategyId) {
+    public void enableStrategy(Long strategyId) {
         TimerStrategy strategy = getStrategyById(strategyId);
         TimerStrategy timeStrategy = getStrategyById(strategy.getParentId());
         if (CMSConstants.STATUS_STOP.equals(timeStrategy.getStatus())) {
@@ -291,7 +289,7 @@ public class TimerServiceImpl implements TimerService, Progressable {
         commonDao.update(strategy);
     }
  
-    public void stopStrategy(Long strategyId) {
+    public void disableStrategy(Long strategyId) {
         TimerStrategy strategy = getStrategyById(strategyId);
         strategy.setStatus(CMSConstants.STATUS_STOP);
         commonDao.update(strategy);

@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.stereotype.Repository;
+
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Channel;
@@ -15,6 +17,7 @@ import com.jinhe.tss.util.EasyUtils;
 /**
  * Channel的Dao层，负责处理Channel相关的数据库操作
  */
+@Repository("ChannelDao")
 public class ChannelDao extends TreeSupportDao<Channel> implements IChannelDao {
     
 	public ChannelDao() {

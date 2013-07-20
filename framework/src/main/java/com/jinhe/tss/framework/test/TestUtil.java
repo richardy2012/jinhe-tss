@@ -36,7 +36,9 @@ public class TestUtil {
 	
 	public static String getProjectDir() {
         String path = URLUtil.getResourceFileUrl("com/jinhe/tss").getPath();
-        return path.substring(1, path.indexOf(PROJECT_NAME) + PROJECT_NAME.length());
+        
+        int beginIndex = path.startsWith("/") ? 0 : 1; // linux or windows
+        return path.substring(beginIndex, path.indexOf(PROJECT_NAME) + PROJECT_NAME.length());
     }
 	
     public static String getInitSQLDir() {

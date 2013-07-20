@@ -38,19 +38,19 @@ public class TimerStrategy implements IEntity, ILevelTreeNode, IXForm {
 	private Long    id;		 
     
     @Column(nullable = false)
-    private String  name;	    //策略名称
-    private Long    parentId;   //父节点
-    private Integer status = CMSConstants.TRUE;  //状态值：0 启用 1 停用
+    private String  name;	    // 策略名称
+    private Long    parentId;   // 父节点
+    private Integer status = CMSConstants.TRUE;  // 状态值：0 启用 1 停用
     
     @Column(nullable = false)
-    private Integer type;       //索引类型：0 时间策略 1 索引策略 2 发布策略 3 过期策略
+    private Integer type;       // 索引类型：0 时间策略 1 索引策略 2 发布策略 3 过期策略
     
     @Column(length = 1000)
-    private String content;     //策略内容，对于定时策略，则该字段为定时时间；对于其他策略，则一般为栏目ID列表
-    private String indexPath;   //索引文件存放目录
-    private String remark;      //备注
+    private String content;     // 策略内容，对于定时策略，则该字段为定时时间；对于其他策略，则一般为栏目ID列表
+    private String indexPath;   // 索引文件存放目录
+    private String remark;      // 备注
     
-    private String indexExecutorClass; //索引权限实现类类名
+    private String indexExecutorClass; //索引实现类类名
     
     @Transient private boolean isIncrement; //是否增量操作
     
@@ -146,30 +146,21 @@ public class TimerStrategy implements IEntity, ILevelTreeNode, IXForm {
         map.put("status", status);
         map.put("type", type);
         
-        if (CMSConstants.TACTIC_TIME_TYPE.equals(type)) {
-            if (CMSConstants.STATUS_START.equals(status)) {
-                map.put("icon", "../platform/images/icon/time_tactic.gif");
-            } else {
-                map.put("icon", "../framework/images/time_tactic_2.gif");
-            }
-        } else if (CMSConstants.TACTIC_INDEX_TYPE.equals(type)) {
-            if (CMSConstants.STATUS_START.equals(status)) {
-                map.put("icon", "../framework/images/index_tactic.gif");
-            } else {
-                map.put("icon", "../framework/images/index_tactic_2.gif");
-            }
-        } else if (CMSConstants.TACTIC_PUBLISH_TYPE.equals(type)) {
-            if (CMSConstants.STATUS_START.equals(status)) {
-                map.put("icon", "../framework/images/publish_tactic.gif");
-            } else  {
-                map.put("icon", "../framework/images/publish_tactic_2.gif");
-            }
-        } else if (CMSConstants.TACTIC_EXPIRE_TYPE.equals(type)) {
-            if (CMSConstants.STATUS_START.equals(status)) {
-                map.put("icon", "../framework/images/expire_tactic.gif");
-            } else {
-                map.put("icon", "../framework/images/expire_tactic_2.gif");
-            }
+        String _disable = CMSConstants.STATUS_START.equals(status) ? "_2" : "";
+        switch(type) {
+        case 0:
+        	map.put("icon", "../framework/images/time_tactic" + _disable + ".gif");
+        	break;
+        case 1:
+        	map.put("icon", "../framework/images/index_tactic" + _disable + ".gif");
+        	break;
+        case 2:
+        	map.put("icon", "../framework/images/publish_tactic" + _disable + ".gif");
+        	break;
+        case 3:
+        	map.put("icon", "../framework/images/expire_tactic" + _disable + ".gif");
+        	break;
+        
         }
         return map;
     }

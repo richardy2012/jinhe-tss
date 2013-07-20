@@ -51,11 +51,10 @@ public class ArticleModuleTest extends AbstractTestSupport {
         
         List<?> list = getArticleIdByChannelId(channelId);
         assertNotNull(list);
-        assertEquals(23, list.size());
-        Article article3 = (Article) list.get(2);
+        assertEquals(1, list.size());
         
         // 移动文章
-        articleAction.moveArticle(article3.getId(), channel3.getId(), channel2.getId());
+        articleAction.moveArticle(article.getId(), channel3.getId(), channel2.getId());
 
         // 锁定、解锁
         articleAction.lockingArticle(articleId);
@@ -74,6 +73,7 @@ public class ArticleModuleTest extends AbstractTestSupport {
         
         ArticleQueryCondition condition = new ArticleQueryCondition();
         condition.setTitle("轮回");
+        condition.setChannelId(channelId);
 		articleAction.getArticleList(condition );
        
         // 最后删除文章、栏目、站点

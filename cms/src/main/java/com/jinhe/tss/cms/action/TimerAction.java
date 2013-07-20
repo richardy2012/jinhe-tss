@@ -1,4 +1,4 @@
-package com.jinhe.tss.cms.timer;
+package com.jinhe.tss.cms.action;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,10 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.entity.TimerStrategy;
+import com.jinhe.tss.cms.service.ITimerService;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeTranslator;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
@@ -18,136 +21,128 @@ import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.ProgressActionSupport;
 import com.jinhe.tss.util.EasyUtils;
  
+@Controller
+@RequestMapping("timer")
 public class TimerAction extends ProgressActionSupport {
 
-	@Autowired private TimerService timerService;
-    
-	private Long 	tacticId;  // 策略id
-	private Long 	parentId;  // 父节点id
-	private Integer type;      // 类型
-	
-	/** 索引策略 */
-	private TimerStrategy strategy = new TimerStrategy(); 
-	
-	/** 是否增量操作  0：否  1：是 */
-	private Integer increment; 
+	@Autowired private ITimerService timerService;
     
     /**
      *  初始化定时策略树
      */
-    public void initTacticIndex() {
+    public void initIndexStrategy() {
         List<?> allTimerStrategys = timerService.getAllTimerStrategy();
-        print("TacticTree", new TreeEncoder(allTimerStrategys, new LevelTreeParser()));
+        print("StrategyTree", new TreeEncoder(allTimerStrategys, new LevelTreeParser()));
     }
     
     /**
      * 	新增时间策略
      */
-    public void addTacticTime() {
-        TimerStrategy tacticIndex = timerService.addTimeStrategy(condition);
-        doAfterSave(true, tacticIndex, "TacticTree");
+    public void addTimeStrategy(TimerStrategy strategy) {
+        strategy = timerService.addTimeStrategy(strategy);
+        doAfterSave(true, strategy, "StrategyTree");
     }
     
     /**
      * 	新增索引/发布策略/文章过期策略
      */
-    public void addTacticIndexAndPublish() {
-        TimerStrategy tacticIndex = timerService.addStrategy(condition);
-        doAfterSave(true, tacticIndex, "TacticTree");
+    public void addStrategy(TimerStrategy strategy) {
+        strategy = timerService.addStrategy(strategy);
+        doAfterSave(true, strategy, "StrategyTree");
     }
     
     /**
      *  删除时间策略
      */
-    public void removeTacticTime() {
-        timerService.removeTimeStrategy(condition.getTacticId());
+    public void removeTimeStrategy(Long id) {
+        timerService.removeTimeStrategy(id);
         printSuccessMessage("删除成功！");       
     }
     
     /**
      *  删除 索引/发布 策略
      */
-    public void removeTacticIndexAndPublish() {
-        timerService.removeStrategy(condition.getTacticId());
+    public void removeStrategy(Long id) {
+        timerService.removeStrategy(id);
         printSuccessMessage("删除成功！");       
     }
  
     /**
      *  更新时间策略
      */
-    public void updateTacticTime() {
-        timerService.updateTimeStrategy(condition);
+    public void updateTimeStrategy(TimerStrategy strategy) {
+        timerService.updateTimeStrategy(strategy);
         printSuccessMessage("修改成功！");       
     }
     
     /**
      *  更新索引/发布策略/文章过期策略
      */
-    public void updateTacticIndexAndPublish() {
-        timerService.updateTacticIndexAndPublish(condition);
+    public void updateStrategy(TimerStrategy strategy) {
+        timerService.updateStrategy(strategy);
         printSuccessMessage("修改成功！");       
     }
     
     /**
      *  启用时间策略
      */
-    public void startTacticTime() {      
-        timerService.startTimeStrategy(condition.getTacticId());
+    public void startTimeStrategy(Long id) {      
+        timerService.startTimeStrategy(id);
         printSuccessMessage("启用成功！");       
     }
     
     /**
      * 	启用索引/发布策略/文章过期策略
      */
-    public void startTacticIndexAndPublish() {
-        timerService.startStrategy(condition.getTacticId());
+    public void enableStrategy(Long id) {
+        timerService.enableStrategy(id);
         printSuccessMessage("启用成功！");       
     }
     
     /**
      *  停用时间策略
      */
-    public void stopTacticTime() {
-        timerService.stopTimeStrategy(condition.getTacticId());
+    public void stopTimeStrategy(Long id) {
+        timerService.stopTimeStrategy(id);
         printSuccessMessage("停用成功！");       
     }
     
     /**
      *  停用索引/发布策略/文章过期策略
      */
-    public void stopTacticIndexAndPublish() {
-        timerService.stopStrategy(condition.getTacticId());
+    public void disableStrategy(Long id) {
+        timerService.disableStrategy(id);
         printSuccessMessage("停用成功！");       
     }
 
     /**
      *  获取索引/发布策略/文章过期策略详细信息
      */
-    public void getTacticIndexAndPublish() {
-		Object[] data = timerService.getStrategyAndChannels(condition.getTacticId());
-		TimerStrategy _tacticIndex = (TimerStrategy) data[0];
+    public void getStrategy(Long id) {
+		Object[] data = timerService.getStrategyAndChannels(id);
+		TimerStrategy strategy = (TimerStrategy) data[0];
 		List<?> channelList = (List<?>) data[1];
 
 		String templateUri;
-		Integer strategyType = condition.getType();
-        if (CMSConstants.TACTIC_INDEX_TYPE.equals(strategyType)) {
-			templateUri = CMSConstants.XFORM_TACTIC_INDEX;
+		Integer strategyType = timerService.getStrategyById(id).getType();
+        if (CMSConstants.STRATEGY_TYPE_INDEX.equals(strategyType)) {
+			templateUri = CMSConstants.XFORM_INDEX_STRATEGY;
 		} 
-		else if (CMSConstants.TACTIC_PUBLISH_TYPE.equals(strategyType)) {
-			templateUri = CMSConstants.XFORM_TACTIC_PUBLISH;
+		else if (CMSConstants.STRATEGY_TYPE_PUBLISH.equals(strategyType)) {
+			templateUri = CMSConstants.XFORM_PUBLISH_STRATEGY;
 		} 
-		else if (CMSConstants.TACTIC_EXPIRE_TYPE.equals(strategyType)) {
-			templateUri = CMSConstants.XFORM_EXPIRE_PUBLISH;
+		else if (CMSConstants.STRATEGY_TYPE_EXPIRE.equals(strategyType)) {
+			templateUri = CMSConstants.XFORM_EXPIRE_STRATEGY;
 		} else {
-		    throw new BusinessException("策略类型值不正确。 condition.tacticId=" + strategyType);
+		    throw new BusinessException("策略类型值不正确:" + strategyType);
 		}
-		_tacticIndex.setType(strategyType);
+		strategy.setType(strategyType);
 		
-		XFormEncoder encoder = new XFormEncoder(templateUri, _tacticIndex);
+		XFormEncoder encoder = new XFormEncoder(templateUri, strategy);
 
 		TreeEncoder channelTreeEncoder = new TreeEncoder(channelList, new LevelTreeParser());
 		
-		String channelIds = _tacticIndex.getContent();
+		String channelIds = strategy.getContent();
 		if ( !EasyUtils.isNullOrEmpty(channelIds) ) {
 			final List<String> channelIdList = Arrays.asList(channelIds.split(","));
 			final List<Long> parentNodeIds = getParentNodes(channelList, channelIdList);
@@ -167,7 +162,7 @@ public class TimerAction extends ProgressActionSupport {
 				}
 			});
 		}
-		print(new String[] { "IndexTacticInfo", "SequenceTree" }, new Object[] { encoder, channelTreeEncoder });
+		print(new String[] { "IndexStrategyInfo", "SequenceTree" }, new Object[] { encoder, channelTreeEncoder });
 	}
 
     private List<Long> getParentNodes(List<?> channelList,  List<String> exsitIds) {
@@ -185,39 +180,35 @@ public class TimerAction extends ProgressActionSupport {
     /**
      *  获取时间策略详细信息
      */
-    public void getTacticTime() {
-        TimerStrategy tacticTime = new TimerStrategy();
-        if (condition.getTacticId() != null) {          
-            tacticTime = timerService.getStrategyById(condition.getTacticId());
+    public void getTimeStrategy(Long id) {
+        TimerStrategy strategy = new TimerStrategy();
+        if ( !CMSConstants.DEFAULT_NEW_ID.equals(id) ) {          
+        	strategy = timerService.getStrategyById(id);
         }     
-        XFormEncoder encoder = new XFormEncoder(CMSConstants.XFORM_TACTIC_TIME, tacticTime);
-        print("TimeTacticInfo", encoder);
+        XFormEncoder encoder = new XFormEncoder(CMSConstants.XFORM_TIME_STRATEGY, strategy);
+        print("TimeStrategyInfo", encoder);
     }
 
     /**
      *  即时执行策略
+     * @param id
+     * @param increment 是否增量操作  0：否  1：是
      */
-    public void instantTactic() {
-        Long strategyId = condition.getTacticId();
-        TimerStrategy strategy = timerService.getStrategyById(strategyId);
+    public void instantStrategy(Long id, int increment) {
+        TimerStrategy strategy = timerService.getStrategyById(id);
         String channelIds = strategy.getContent();
-        if (null == channelIds) 
+        if (null == channelIds) {
             throw new BusinessException("您未选择栏目,请在栏目列表里选择需要的栏目.");
+        }
         
         Long parentId = strategy.getParentId();
         TimerStrategy parent = timerService.getStrategyById(parentId);
         strategy.setIndexPath(parent.getIndexPath()); //取父节点的indexPath做为索引路径
         
-        strategy.setIncrement(CMSConstants.TRUE.equals(condition.getIncrement()));
+        strategy.setIncrement(CMSConstants.TRUE == increment);
         String code = timerService.excuteStrategy(strategy);
         
         printScheduleMessage(code);  
     }
-
-    public TimerCondition getCondition() { return condition; }
-
-	public void setTimerService(TimerService timerService) {
-		this.timerService = timerService;
-	}
 }
 

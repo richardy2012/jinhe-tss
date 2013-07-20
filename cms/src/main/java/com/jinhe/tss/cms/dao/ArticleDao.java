@@ -7,6 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Repository;
+
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Attachment;
@@ -21,6 +23,7 @@ import com.jinhe.tss.util.EasyUtils;
 /**
  * Article的Dao层，负责处理Article相关的数据库操作
  */
+@Repository("ArticleDao")
 public class ArticleDao extends BaseDao<Article> implements IArticleDao {
     
     public ArticleDao() {
@@ -164,7 +167,7 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
         String hql = "select a.id, a.title, a.author, a.summary, " 
                 + " a.issueDate, a.createTime, a.hitCount, a.isTop "
                 + " from Article a"
-                + " where ${channelId} ${status} "
+                + " where 1=1 ${channelId} ${status} "
                 + " order by a.isTop desc, a.createTime desc";
  
         PaginationQueryByHQL pageQuery = new PaginationQueryByHQL(em, hql, condition);

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.TimerStrategy;
+import com.jinhe.tss.cms.service.ITimerService;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.TokenUtil;
@@ -33,7 +34,7 @@ public class SchedulerBean {
 	
 	private static final String TIME_STRATEGY_NAME = "timerStrategy";
     
-    @Autowired private TimerService timerService;
+    @Autowired private ITimerService timerService;
     
     private static Scheduler scheduler;
     
@@ -112,7 +113,7 @@ public class SchedulerBean {
             
             // 获取所有的定时策略
             String hql = "from TimerStrategy t where t.type = ? and t.status <> 1";
-            List<?> timerStrategys = timerService.getEntities(hql, CMSConstants.TACTIC_TIME_TYPE); 
+            List<?> timerStrategys = timerService.getEntities(hql, CMSConstants.STRATEGY_TYPE_TIME); 
             for (Object temp : timerStrategys) {
                 TimerStrategy timerStrategy = (TimerStrategy) temp;
                 

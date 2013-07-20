@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.dao.IArticleDao;
@@ -18,6 +19,7 @@ import com.jinhe.tss.cms.publish.PublishManger;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.util.EasyUtils;
 
+@Service("ChannelService")
 public class ChannelService implements IChannelService {
 
     @Autowired private IChannelDao channelDao;

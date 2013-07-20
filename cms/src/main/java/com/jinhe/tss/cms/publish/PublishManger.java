@@ -10,6 +10,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Article;
@@ -27,6 +28,7 @@ import com.jinhe.tss.util.FileHelper;
 /**
  * 文章发布，以及全文检索索引发布
  */
+@Component("PublishManger")
 public class PublishManger implements Progressable {
 
     public static final int PAGE_SIZE = 100; // 每页记录个数

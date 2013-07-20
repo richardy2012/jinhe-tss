@@ -80,7 +80,7 @@ public class ArticlePublishTest extends AbstractTestSupport {
         strategy.setIndexPath("d:/temp/cms/");
         strategy.setContent(channel1Id + "," + channel2.getId());
         strategy.setName("Test TimerStrategy");
-        strategy.setType(CMSConstants.TACTIC_INDEX_TYPE);
+        strategy.setType(CMSConstants.STRATEGY_TYPE_INDEX);
         channelDao.createObject(strategy);
         
         Set<ArticleContent> content = IndexHelper.getIndexableArticles4Lucene(strategy, channelDao, articleDao);
