@@ -130,14 +130,6 @@ public interface IElementService {
     ElementGroup getGroupInfo(Long id);
 
     /**
-     * 复制一个组，包括其下的所有子组和元素
-     * @param id
-     * @param type
-     * @param path
-     */
-    List<?> copyGroup(Long id, int type, String path);
-
-    /**
      * 获取某个元素类型的所有分组
      * @param type
      * @return

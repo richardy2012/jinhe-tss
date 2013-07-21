@@ -31,7 +31,7 @@ public class PublishAction extends ProgressActionSupport {
      * 静态发布匿名访问的门户
      * @return
      */
-    public String staticIssuePortal(){
+    public void staticIssuePortal(){
         //发布整个站点
         MagicRobot robot = new MagicRobot(id);
 
@@ -42,14 +42,14 @@ public class PublishAction extends ProgressActionSupport {
         String code = manager.execute();
         ProgressPool.putFPObject(code, robot);
         
-        return printScheduleMessage(code);
+        printScheduleMessage(code);
     }
     
     /**
      * 静态发布匿名访问的门户的某个页面以及该页面上的链接
      * @return
      */
-    public String staticIssuePortalPage(){
+    public void staticIssuePortalPage(){
         //发布整个站点
         MagicRobot robot = new MagicRobot(pageUrl);
 
@@ -58,10 +58,10 @@ public class PublishAction extends ProgressActionSupport {
         String code = manager.execute();
         ProgressPool.putFPObject(code, robot);
         
-        return printScheduleMessage(code);
+        printScheduleMessage(code);
     }
     
-    protected String printScheduleMessage(String code){
+    protected void printScheduleMessage(String code){
         Progress progress = (Progress)ProgressPool.getSchedule(code);
         if(!progress.isNormal()){
             ProgressPool.removeSchedule(code);
@@ -95,14 +95,14 @@ public class PublishAction extends ProgressActionSupport {
             }
         }
         progressInfo.append("<code>" + code + "</code>");
-        return print("ProgressInfo", progressInfo.append("</actionSet>"));
+        print("ProgressInfo", progressInfo.append("</actionSet>"));
     }
     
     /**
      * 将发布出来站点页面拷贝到远程机器上
      * @return
      */
-    public String ftpUpload2RemoteServer(){
+    public void ftpUpload2RemoteServer(){
         final boolean overrideTag = PortalConstants.TRUE.equals(override);
         /* 
          * FTP服务器配置相关：
@@ -124,7 +124,7 @@ public class PublishAction extends ProgressActionSupport {
             _FtpClient _ftp = new _FtpClient(overrideTag);
             _ftp.ftpUpload(element);
         }
-        return printSuccessMessage("远程发布成功");
+        printSuccessMessage("远程发布成功");
     }
     
     public void setId(Long id) { 

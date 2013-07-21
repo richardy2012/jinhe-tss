@@ -2,25 +2,25 @@ package com.jinhe.tss.portal;
  
 public interface PortalConstants {
     
-    public static final Integer TRUE  = new Integer(1);
-    public static final Integer FALSE = new Integer(0);
+    public static final Integer TRUE  = 1;
+    public static final Integer FALSE = 0;
     
     public static final Long ROOT_ID = 0L;
     
     /**
-     * 复制实体时实体名字前缀
+     * 一些关键字
      */
-    public final static String COPY_PREFIX = "副本_";
-    public static final String PORTAL_CACHE = "portal_tree"; //门户树缓存池
-    public static final String PERSONAL_CACHE = "personal_portal_tree"; //自定义门户树缓存池
-    public static final String MENU_CACHE = "menu_pool";  //菜单缓存池
+    public final static String COPY_PREFIX = "副本_"; // 复制实体时实体名字前缀
+    public static final String PORTAL_CACHE = "portal_tree"; // 门户树缓存池
+    public static final String MENU_CACHE = "menu_pool";     // 菜单缓存池
+    public static final String PERSONAL_CACHE = "personal_portal_tree"; // 自定义门户树缓存池
 
     /**
      * 模板路径
      */
     public static final String PORTALSTRUCTURE_XFORM_PATH   = "template/xform/PortalStructure.xml"; //门户结构
     public static final String ISSUE_XFORM_TEMPLET_PATH     = "template/xform/IssueInfo.xml";      //门户发布信息模板
-    public static final String GROUP_XFORM_TEMPLET_PATH     = "template/xform/ElementGroup.xml";         //Group
+    public static final String GROUP_XFORM_TEMPLET_PATH     = "template/xform/ElementGroup.xml";  //Group
     public static final String PORTLET_XFORM_TEMPLET_PATH   = "template/xform/Portlet.xml";      //Porlet
     public static final String LAYOUT_XFORM_TEMPLET_PATH    = "template/xform/Layout.xml";      //布局器
     public static final String DECORATOR_XFORM_TEMPLET_PATH = "template/xform/Decorator.xml";  //修饰器

@@ -6,15 +6,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.Map.Entry;
+import java.util.StringTokenizer;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import com.jinhe.tss.framework.sso.Environment;
-import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.portal.PortalConstants;
@@ -46,9 +45,9 @@ public class GroupAction extends FreeMarkerSupportAction {
 	/**
 	 * Group的详细信息
 	 */
-	public String getGroupInfo(){
+	public void getGroupInfo(){
 		XFormEncoder encoder;
-        if(isCreateNew()) {  //如果是新增,则返回一个空的无数据的模板
+        if( DEFAULT_NEW_ID.equals(id) ) {  //如果是新增,则返回一个空的无数据的模板
         	Map<String, Object> map = new HashMap<String, Object>();
         	map.put("parentId", parentId);
         	map.put("type", type);
@@ -58,7 +57,7 @@ public class GroupAction extends FreeMarkerSupportAction {
         	ElementGroup group = service.getGroupInfo(id);            
             encoder = new XFormEncoder(PortalConstants.GROUP_XFORM_TEMPLET_PATH, group);
         }        
-        return print("GroupInfo", encoder);
+        print("GroupInfo", encoder);
 	}
 	
 	/**
@@ -66,24 +65,9 @@ public class GroupAction extends FreeMarkerSupportAction {
 	 * 同类型组的排序
 	 * </p>
 	 */
-	public String sortByType(){
+	public void sortByType(){
 		service.sortByType(id, targetId, direction);        
-		return printSuccessMessage();
-	}
-	
-	/**
-	 * <p>
-	 * 复制同类型的组
-	 * </p>
-	 */
-	public String copyByType(){
-        String modelDir = ElementGroup.getBasePathByType(type);      
-        String resourceBaseDir = URLUtil.getWebFileUrl(modelDir).getPath(); 
-        List<?> list = service.copyGroup(id, type, resourceBaseDir);       
-        
-        TreeEncoder encoder = new TreeEncoder(list, new LevelTreeParser());
-        encoder.setNeedRootNode(false);
-        return print(ElementGroup.getClassNameByType(type) + "Tree", encoder);
+		printSuccessMessage();
 	}
 	
 	/**
@@ -91,10 +75,10 @@ public class GroupAction extends FreeMarkerSupportAction {
 	 * 保存Group
 	 * </p>
 	 */
-	public String save(){        
+	public void save(){        
         boolean isNew = group.getId() == null ? true : false;      
         group = service.saveGroup(group);
-        return doAfterSave(isNew, group, group.getClassNameByType() + "Tree");
+        doAfterSave(isNew, group, group.getClassNameByType() + "Tree");
 	}
 	
 	/**
@@ -102,43 +86,43 @@ public class GroupAction extends FreeMarkerSupportAction {
 	 * 删除组.
 	 * </p>
 	 */
-	public String delete(){
+	public void delete(){
 		service.deleteGroupById(id);		
-        return printSuccessMessage();
+        printSuccessMessage();
 	}
     
     /**
      * 获取某个元素类型的所有分组
      */
-    public String getGroupsByType(){
+    public void getGroupsByType(){
         List<?> data = service.getGroupsByType(type);
         TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser());
         encoder.setNeedRootNode(false);
-        return print("SiteTree", encoder);
+        print("SiteTree", encoder);
     }
     
     /**
      * 复制元素到另外一个组
      * @return
      */
-    public String copyTo(){
+    public void copyTo(){
         Object[] returnValues = service.copyTo(id, targetId);                
-        return doAfterSave(true, returnValues[0], (returnValues[1] + "Tree"));
+        doAfterSave(true, returnValues[0], (returnValues[1] + "Tree"));
     }
     
     /**
      * 移动元素到另外一个组
      * @return
      */
-    public String moveTo(){
+    public void moveTo(){
         service.moveTo(id, targetId);     
-        return printSuccessMessage();
+        printSuccessMessage();
     }
     
     /**********************************************      在线编辑组件参数配置    *******************************************/
     private String paramsItem; // 类似 ：bgColor=red 回车 menuId=12
     
-    public String getElementParamsConfig(){
+    public void getElementParamsConfig(){
         IElement element = service.getElementInfo(ElementGroup.getClassByType(type), id);
        
         String configFilePath = URLUtil.getWebFileUrl(element.getResourcePath() + "/paramsXForm.xml").getFile();
@@ -192,19 +176,18 @@ public class GroupAction extends FreeMarkerSupportAction {
         } else {
             print(XMLDocUtil.createDocByAbsolutePath(configFilePath).asXML());
         }
-        return XML;
     }
     
     private String configXML;
     
-    public String saveElementParamsConfig(){
+    public void saveElementParamsConfig(){
         IElement element = service.getElementInfo(ElementGroup.getClassByType(type), id);
         String configFile = URLUtil.getWebFileUrl(element.getResourcePath() + "/paramsXForm.xml").getFile();
         
         Document doc = XMLDocUtil.dataXml2Doc("<Response>\n<ConfigParams>\n" + configXML + "\n</ConfigParams>\n</Response>");
         FileHelper.writeXMLDoc(doc, configFile);
         
-        return printSuccessMessage("保存成功");
+        printSuccessMessage("保存成功");
     }
     
     /********************************************************************************************************************/
@@ -219,7 +202,7 @@ public class GroupAction extends FreeMarkerSupportAction {
      * @throws IOException
      * @throws TemplateException
      */
-    public String  previewElement() throws IOException, TemplateException{
+    public void  previewElement() throws IOException, TemplateException{
         String elementName = ElementGroup.getClassNameByType(type).toLowerCase();
         IElement element = service.getElementInfo(ElementGroup.getClassByType(type), id);
         
@@ -265,10 +248,9 @@ public class GroupAction extends FreeMarkerSupportAction {
             data = toHTML(html, script, prototypeStyle, style, events, parameters);
         }
         if(ElementGroup.PORTLET_TYPE == type.intValue()){
-            return printHTML(data); // 如果是预览portlet，则需要执行模板引擎解析
+            printHTML(data); // 如果是预览portlet，则需要执行模板引擎解析
         } else {
             print(data);
-            return XML;
         }
     }
     
@@ -336,37 +318,5 @@ public class GroupAction extends FreeMarkerSupportAction {
             }
         }
         return sb.append(onloadEvent);
-    }
-    
-    public ElementGroup getGroup() {
-        return group;
-    }
- 
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public void setService(IElementService service) {
-		this.service = service;
-	}
-	public void setParentId(Long parentId) {
-		this.parentId = parentId;
-	}
-	public void setType(Integer type) {
-		this.type = type;
-	}
-	public void setDirection(int direction) {
-		this.direction = direction;
-	}
-	public void setTargetId(Long targetId) {
-		this.targetId = targetId;
-	}
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
-    }
-    public void setConfigXML(String configXML) {
-        this.configXML = configXML;
-    }
-    public void setParamsItem(String paramsItem) {
-        this.paramsItem = paramsItem;
     }
 }

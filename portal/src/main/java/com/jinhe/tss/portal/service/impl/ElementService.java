@@ -2,9 +2,7 @@ package com.jinhe.tss.portal.service.impl;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -232,38 +230,6 @@ public class ElementService implements IElementService {
     
     public ElementGroup getGroupInfo(Long groupId){
         return dao.getEntity( groupId );
-    }
-    
-    public List<Object> copyGroup(Long groupId, int type, String path) {
-    	List<Object> returnList = new ArrayList<Object>();
-    	
-        List<ElementGroup> groups = dao.getChildrenById(groupId); 
-        Map<Long, Long> idMapping = new HashMap<Long, Long>();
-        for ( ElementGroup group : groups ) {
-            Long oldGroupId = group.getId();
-            dao.evict(group);
-            group.setId(null);          
-            if(oldGroupId.equals(groupId)) {
-                group.setName(PortalConstants.COPY_PREFIX + group.getName());
-            } 
-            else {          
-                group.setParentId( idMapping.get(group.getParentId()));
-            }
-            
-            group = saveGroup(group);
-            returnList.add(group);
-            idMapping.put(oldGroupId, group.getId());
-        }      
-        
-        List<?> elements = dao.getAllElementsByGroup(groupId);
-        for( Object temp :  elements){
-            IElement element = (IElement) temp;
-            element.setGroupId(idMapping.get(element.getGroupId()));
-            
-            IElement newElement = copyElement(element, new File(path), "");
-            returnList.add(newElement);
-        }         
-        return returnList;
     }
 
     public List<?> getGroupsByType(Integer type){

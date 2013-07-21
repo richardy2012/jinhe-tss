@@ -40,7 +40,7 @@ public class FileAction extends BaseActionSupport {
      * 列出文件列表
      * @return
      */
-    public String listAvailableFiles(){
+    public void listAvailableFiles(){
         String id   = getParamFromMap("id");  
         String code = getParamFromMap("code");
         String type = getParamFromMap("type"); // 判断是何种类型的资源管理
@@ -94,7 +94,7 @@ public class FileAction extends BaseActionSupport {
         String path = file.getPath();
         String contextPath = path.substring(path.lastIndexOf("model") + 6);
          
-        return print(new String[]{"ContextPath", "ResourceTree"}, new Object[]{contextPath, sb});
+        print(new String[]{"ContextPath", "ResourceTree"}, new Object[]{contextPath, sb});
     }
  
     private String getParamFromMap(String paramName){
@@ -123,7 +123,7 @@ public class FileAction extends BaseActionSupport {
      * 上传文件
      * @return
      */
-    public String upload(){
+    public void upload(){
         File baseDir = null;
         if(contextPath != null){
             baseDir = new File(contextPath);
@@ -133,15 +133,15 @@ public class FileAction extends BaseActionSupport {
             FileHelper.copyFile(baseDir, file);
         }
         
-        return print("script", "window.parent.loadFileTree();");
+        print("script", "window.parent.loadFileTree();");
     }
     
     /**
      * 下载
      * @return
      */
-    public String download(){
-        if(fileNames == null) return XML;
+    public void download(){
+        if(fileNames == null) return;
         
         // 建立临时文件夹存放要下载的所有文件
         File tempDir = new File(contextPath + "temp"); 
@@ -161,15 +161,13 @@ public class FileAction extends BaseActionSupport {
         FileHelper.deleteFile(tempDir); // 删除临时文件夹
         
         ElementHelper.downloadFileByHttp(zipFilePath, "download.zip"); // 下载zip包
-        
-        return XML;
     }
     
     /**
      * 删除文件（文件夹）
      * @return
      */
-    public String deleteFile(){
+    public void deleteFile(){
         List<String> pathList = new ArrayList<String>();
         if(fileNames != null) {
             pathList.addAll(Arrays.asList(fileNames.split(",")));
@@ -187,34 +185,31 @@ public class FileAction extends BaseActionSupport {
             }
         }
  
-        return print("script", "window.parent.loadFileTree();");
+        print("script", "window.parent.loadFileTree();");
     }
     
     /**
      * 重命名文件（文件夹）
-     * @return
      */
-    public String renameFile(){
+    public void renameFile(){
         File newFile = new File(contextPath + newFileName);
         if(newFile.exists()) {
             throw new BusinessException("同名文件(夹)已经存在，重命名失败！");
         }
         
         File file = new File(contextPath + fileName);
-        if( file.renameTo(newFile) ) {
-            return print("script", "window.parent.loadFileTree();");
+        if( !file.renameTo(newFile) ) {
+        	throw new BusinessException("重命名失败，可能文件正在使用中！");
         }
-        
-        throw new BusinessException("重命名失败，可能文件正在使用中！");
+        print("script", "window.parent.loadFileTree();");
     }
     
     /**
      * 新建文件夹 
-     * @return
      */
-    public String addDir(){
+    public void addDir(){
         FileHelper.createDir(contextPath + newFileName);
-        return print("script", "window.parent.loadFileTree();");
+        print("script", "window.parent.loadFileTree();");
     }
 
     public Map<String, Object> getParamsMap() {
@@ -242,19 +237,6 @@ public class FileAction extends BaseActionSupport {
         else {
             this.filter = filter;
         }
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-    public void setNewFileName(String newFileName) {
-        this.newFileName = newFileName;
-    }
-    public void setFileNames(String fileNames) {
-        this.fileNames = fileNames;
-    }
-    public void setFolderNames(String folderNames) {
-        this.folderNames = folderNames;
     }
 }
 

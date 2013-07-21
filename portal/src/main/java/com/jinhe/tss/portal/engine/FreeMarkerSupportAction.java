@@ -49,14 +49,14 @@ public abstract class FreeMarkerSupportAction extends BaseActionSupport {
      * @param template
      * @return
      */
-    protected String printHTML(String template){
-        return printHTML(template, true);
+    protected void printHTML(String template){
+        printHTML(template, true);
     }
     
-    protected String printHTML(String template, boolean parseTwice){
+    protected void printHTML(String template, boolean parseTwice){
         if( !Config.TRUE.equalsIgnoreCase(ParamConfig.getAttribute(USE_FREEMARKER)) ){
             print(template);
-            return XML;
+            return;
         }
         
         try {
@@ -69,7 +69,7 @@ public abstract class FreeMarkerSupportAction extends BaseActionSupport {
                 } else {
                     parser.parseTemplate(template, response.getWriter());
                 }
-                return XML;
+                return;
             }
         } catch (Exception e) {
             log.error("执行Freemarker引擎解析时候出错", e);
@@ -79,10 +79,10 @@ public abstract class FreeMarkerSupportAction extends BaseActionSupport {
             }else {
                 print(errorInfo + e);
             }
-            return XML;
+            return;
         } 
+        
         print(template);
-        return XML;
     }
     
 	protected FreemarkerParser getFreemarkerParser(){

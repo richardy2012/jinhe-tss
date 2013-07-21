@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
@@ -54,14 +55,10 @@ public class PersonalAction extends FreeMarkerSupportAction {
     private String elementType; //组件类型
     private String newElementType; //组件类型
     
-    private IPortalService  portalService;
-    private IElementService elementService;
+    @Autowired private IPortalService  portalService;
+    @Autowired private IElementService elementService;
     
-    public String addElement() throws IOException, TemplateException{
-        return null;
-    }
-    
-    public String changeElement() throws IOException, TemplateException{
+    public void changeElement() throws IOException, TemplateException{
         PortalNode portalNode = (PortalNode) portalService.getPortal(portalId, themeId, method).clone();
         SubNode content = null;
         if("Portlet".equals(elementType) && "Portlet".equals(newElementType)){
@@ -85,48 +82,48 @@ public class PersonalAction extends FreeMarkerSupportAction {
         
         if(content instanceof PageNode){
             HTMLGenerator gen = new HTMLGenerator(portalNode, content.getId(), getFreemarkerParser());
-            return printHTML(gen.toHTML(), false);
+            printHTML(gen.toHTML(), false);
         }
         
         HTMLGenerator gen = new HTMLGenerator(portalNode, content.getId(), content.getParent().getId(), null);
-        return print("Change", gen.toXML());
+        print("Change", gen.toXML());
     }
     
-    public String getThemeList4Personal(){
+    public void getThemeList4Personal(){
         List<?> list = portalService.getThemesByPortal(portalId);
         StringBuffer sb = new StringBuffer("<data>");
         for( Object temp : list ){
             Theme theme = (Theme) temp;
             sb.append("<row themeId=\"" + theme.getId()+ "\" themeName=\"" + theme.getName() + "\"/>");
         }
-        return print("ThemeList", sb.append("</data>"));
+        print("ThemeList", sb.append("</data>"));
     }
     
-    public String removePersonalInfo() {
+    public void removePersonalInfo() {
         portalService.removePersonalInfo(portalId, themeId, Environment.getOperatorId(), id);
-        return printSuccessMessage("成功还原为默认");
+        printSuccessMessage("成功还原为默认");
     }
 
-    public String savePersonalInfo() throws IOException, TemplateException {
+    public void savePersonalInfo() throws IOException, TemplateException {
         portalService.savePersonalInfo(portalId, themeId, Environment.getOperatorId(), id, personalXML);
-        return printSuccessMessage("保存自定义成功");
+        printSuccessMessage("保存自定义成功");
     }
 
-    public String savePersonalTheme() throws IOException, TemplateException {
+    public void savePersonalTheme() throws IOException, TemplateException {
         portalService.savePersonalTheme(portalId, Environment.getOperatorId(), themeId);
-        return printSuccessMessage("更改主题成功");
+        printSuccessMessage("更改主题成功");
     }
     
-    public String getElementParamTemplate() {
+    public void getElementParamTemplate() {
         Integer type = translateElementType(elementType);
         String desDir = URLUtil.getWebFileUrl(ElementGroup.getBasePathByType(type)).getPath();
         IElement element = (IElement) elementService.getElementInfo(ElementGroup.getClassByType(type), id);
         String templateUri = desDir + element.getCode() + element.getId() + "/paramsXForm.xml";  
         
         if(!new File(templateUri).exists())
-            return print("Settings", "");
+            print("Settings", "");
         Document doc = XMLDocUtil.openDocument(templateUri);
-        return print("Settings", doc.selectSingleNode("//xform").asXML());
+        print("Settings", doc.selectSingleNode("//xform").asXML());
     }
     
     private Integer translateElementType(String elementType){
@@ -143,7 +140,7 @@ public class PersonalAction extends FreeMarkerSupportAction {
         return type;
     }
     
-    public String getSimilarElements() {
+    public void getSimilarElements() {
         List<?> layouts = new ArrayList<Object>();
         if("Layout".equals(elementType))
             layouts = elementService.getLayouts();
@@ -180,7 +177,7 @@ public class PersonalAction extends FreeMarkerSupportAction {
             }
         });
         encoder.setNeedRootNode(false);
-        return print("ListTree", encoder.toXml());
+        print("ListTree", encoder.toXml());
     }
     
     private TreeNode createTreeNode(final Long id, final String name, final String type){
@@ -191,35 +188,5 @@ public class PersonalAction extends FreeMarkerSupportAction {
                 return map;
             }
         });
-    }
-    
-
-    public void setPortalService(IPortalService service) { 
-        this.portalService = service; 
-    }
-    public void setElementService(IElementService elementService) { 
-        this.elementService = elementService; 
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public void setThemeId(Long themeId) {
-        this.themeId = themeId;
-    }
-    public void setMethod(String method) {
-        this.method = method;
-    }
-    public void setPersonalXML(String personalXML) {
-        this.personalXML = personalXML;
-    }
-    public void setElementType(String elementType) {
-        this.elementType = elementType;
-    }
-    public void setNewElementType(String newElementType) {
-        this.newElementType = newElementType;
-    }
-    public void setNewId(Long newId) {
-        this.newId = newId;
     }
 }

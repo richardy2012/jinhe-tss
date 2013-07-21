@@ -20,6 +20,11 @@ import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpEncoder;
 public abstract class BaseActionSupport {
     
     protected Logger log = Logger.getLogger(this.getClass());
+    
+    /**
+     * 约定新增对象时前台传过来ID统一为 -10；
+     */
+    public static final Long DEFAULT_NEW_ID = -10L; 
 
     /** 数据流方式向客户端返回数据 */
     protected void print(Object xml) {

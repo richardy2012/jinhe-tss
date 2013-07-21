@@ -36,10 +36,9 @@ public class NavigatorAction extends BaseActionSupport {
     
     /**
      * <p> 生成单个菜单 </p>
-     * @return
      */
-    public String getMenuXML(){
-        return print("MainMenu", service.getMenuXML(id));
+    public void getMenuXML(){
+        print("MainMenu", service.getMenuXML(id));
     }
     
 	/**
@@ -49,11 +48,11 @@ public class NavigatorAction extends BaseActionSupport {
 	 * </p>
 	 * @return
 	 */
-	public String getAllNavigator4Tree(){        
+	public void getAllNavigator4Tree(){        
         List<?> data = service.getAllNavigator();
         TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser());
 		encoder.setNeedRootNode(false);
-        return print("MenuTree", encoder);
+        print("MenuTree", encoder);
 	}
 
 	/**
@@ -62,9 +61,9 @@ public class NavigatorAction extends BaseActionSupport {
 	 * </p>
 	 * @return
 	 */
-	public String getNavigatorInfo(){
+	public void getNavigatorInfo(){
 		XFormEncoder encoder;
-        if(isCreateNew()){
+        if( DEFAULT_NEW_ID.equals(id) ){
         	Map<String, Object> map = new HashMap<String, Object>();
         	map.put("parentId", parentId);
         	map.put("portalId", portalId);
@@ -77,7 +76,7 @@ public class NavigatorAction extends BaseActionSupport {
             encoder = new XFormEncoder("template/xform/MenuXForm" + type + ".xml", info);
         }        
         
-        return print(Navigator.TYPE_MENU.equals(type) ? "MenuInfo" : "MenuItemInfo", encoder); 
+        print(Navigator.TYPE_MENU.equals(type) ? "MenuInfo" : "MenuItemInfo", encoder); 
 	}
 	
 	/**
@@ -86,11 +85,11 @@ public class NavigatorAction extends BaseActionSupport {
 	 * </p>
 	 * @return
 	 */
-	public String save(){
+	public void save(){
         boolean isNew = navigator.getId() == null;
         
         navigator = service.saveMenu(navigator);
-        return doAfterSave(isNew, navigator, "MenuTree");
+        doAfterSave(isNew, navigator, "MenuTree");
 	}
 	
 	/**
@@ -99,9 +98,9 @@ public class NavigatorAction extends BaseActionSupport {
 	 * </p>
 	 * @return
 	 */
-	public String delete(){
+	public void delete(){
 		service.deleteMenu(id);	
-		return printSuccessMessage();
+		printSuccessMessage();
 	}
 	
 	/**
@@ -110,9 +109,9 @@ public class NavigatorAction extends BaseActionSupport {
 	 * </p>
 	 * @return
 	 */
-	public String disable(){
+	public void disable(){
 		service.disable(id, disabled);
-        return printSuccessMessage();
+        printSuccessMessage();
 	}
 	
 	/**
@@ -121,36 +120,36 @@ public class NavigatorAction extends BaseActionSupport {
 	 * </p>
 	 * @return
 	 */
-	public String sort(){
+	public void sort(){
 		service.sort(id, targetId, direction);        
-        return printSuccessMessage();
+        printSuccessMessage();
 	}
     
     /**
      * 移动
      * @return
      */
-    public String move(){
+    public void move(){
         if(id.equals(targetId)){
             throw new BusinessException("节点不能移动到自身节点下");
         }
         service.moveMenu(id, targetId, portalId);
-        return printSuccessMessage();
+        printSuccessMessage();
     }
     
     /**
      * 根据菜单获取菜单项树
      * @return
      */
-    public String getMenus4TreeByPortal(){
+    public void getMenus4TreeByPortal(){
         List<?> data = service.getMenusByPortal(portalId);   
 
         TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());
         encoder.setNeedRootNode(false);
-        return print("MenuTree", encoder);
+        print("MenuTree", encoder);
     }
     
-    public String getPortalStructuresByPortal4Tree(){
+    public void getPortalStructuresByPortal4Tree(){
         List<?> data = portalService.getPortalStructuresByPortal(portalId);      
         TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());
 
@@ -182,14 +181,14 @@ public class NavigatorAction extends BaseActionSupport {
             }            
         });
         encoder.setNeedRootNode(false);
-        return print("SiteTree", encoder);
+        print("SiteTree", encoder);
     }
     
     /**
      * 移动的时候用到
      * @return
      */
-    public String getNavigators4Tree(){        
+    public void getNavigators4Tree(){        
         List<?> data = service.getMenusByPortal(portalId);
         
         //过滤移动节点自身
@@ -217,38 +216,7 @@ public class NavigatorAction extends BaseActionSupport {
         });
         encoder.setNeedRootNode(false);
         
-        return print("SiteTree", encoder);
+        print("SiteTree", encoder);
     }
-    
-	public void setService(INavigatorService service) {
-		this.service = service;
-	}
-    public void setPortalService(IPortalService portalService) {
-        this.portalService = portalService;
-    }
-	
-	public void setDisabled(Integer disabled) {
-		this.disabled = disabled;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public void setParentId(Long groupId) {
-		this.parentId = groupId;
-	}
-	public void setDirection(int direction) {
-		this.direction = direction;
-	}
-	public void setTargetId(Long targetId) {
-		this.targetId = targetId;
-	}
-    public Navigator getNavigator() {
-        return navigator;
-    }
-    public void setType(Integer type) {
-        this.type = type;
-    }
-    public void setPortalId(Long portalId) {
-        this.portalId = portalId;
-    }
+   
 }
