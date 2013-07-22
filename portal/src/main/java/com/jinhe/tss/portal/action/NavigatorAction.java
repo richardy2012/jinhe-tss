@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeTranslator;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
@@ -21,23 +23,23 @@ import com.jinhe.tss.portal.service.IPortalService;
 
 public class NavigatorAction extends BaseActionSupport {
 	
-	private INavigatorService service;
-	private IPortalService portalService;
+	@Autowired private INavigatorService service;
+	@Autowired private IPortalService portalService;
 
-	private Long id;
-	private Long parentId;
-    private Long portalId;
-    private Integer disabled ;
-    private Integer type;
-	private Long targetId; // 移动或者排序的目标节点ID
-	private int direction; // 分＋1（向下），和－1（向上）    
-    
-    private Navigator navigator = new Navigator();
+//	private Long id;
+//	private Long parentId;
+//    private Long portalId;
+//    private Integer disabled ;
+//    private Integer type;
+//	private Long targetId; // 移动或者排序的目标节点ID
+//	private int direction; // 分＋1（向下），和－1（向上）    
+//    
+//    private Navigator navigator = new Navigator();
     
     /**
      * <p> 生成单个菜单 </p>
      */
-    public void getMenuXML(){
+    public void getMenuXML(Long id){
         print("MainMenu", service.getMenuXML(id));
     }
     
@@ -46,7 +48,6 @@ public class NavigatorAction extends BaseActionSupport {
 	 * 菜单的树型展示。
      * 菜单依附于门户而存在，要想给某角色授于菜单管理权限，首先要授予门户节点的查看权限。
 	 * </p>
-	 * @return
 	 */
 	public void getAllNavigator4Tree(){        
         List<?> data = service.getAllNavigator();
@@ -59,14 +60,12 @@ public class NavigatorAction extends BaseActionSupport {
 	 * <p>
 	 * 单个菜单控件的详细信息
 	 * </p>
-	 * @return
 	 */
-	public void getNavigatorInfo(){
+	public void getNavigatorInfo(Long id, Long parentId, int type){
 		XFormEncoder encoder;
         if( DEFAULT_NEW_ID.equals(id) ){
         	Map<String, Object> map = new HashMap<String, Object>();
         	map.put("parentId", parentId);
-        	map.put("portalId", portalId);
             map.put("target", "_blank");
         	map.put("type", type);
             encoder = new XFormEncoder("template/xform/MenuXForm" + type + ".xml", map);           
@@ -83,9 +82,8 @@ public class NavigatorAction extends BaseActionSupport {
 	 * <p>
 	 * 保存菜单控件
 	 * </p>
-	 * @return
 	 */
-	public void save(){
+	public void save(Navigator navigator){
         boolean isNew = navigator.getId() == null;
         
         navigator = service.saveMenu(navigator);
@@ -96,9 +94,8 @@ public class NavigatorAction extends BaseActionSupport {
 	 * <p>
 	 * 删除菜单控件.
 	 * </p>
-	 * @return
 	 */
-	public void delete(){
+	public void delete(Long id){
 		service.deleteMenu(id);	
 		printSuccessMessage();
 	}
@@ -107,10 +104,9 @@ public class NavigatorAction extends BaseActionSupport {
 	 * <p>
 	 * 停用/启用 菜单Navigator（将其下的disabled属性设为"1"/"0"）
 	 * </p>
-	 * @return
 	 */
-	public void disable(){
-		service.disable(id, disabled);
+	public void disable(Long id, int state){
+		service.disable(id, state);
         printSuccessMessage();
 	}
 	
@@ -118,30 +114,27 @@ public class NavigatorAction extends BaseActionSupport {
 	 * <p>
 	 * 同组下的Navigator排序
 	 * </p>
-	 * @return
 	 */
-	public void sort(){
+	public void sort(Long id, Long targetId, int direction){
 		service.sort(id, targetId, direction);        
         printSuccessMessage();
 	}
     
     /**
      * 移动
-     * @return
      */
-    public void move(){
+    public void move(Long id, Long targetId){
         if(id.equals(targetId)){
             throw new BusinessException("节点不能移动到自身节点下");
         }
-        service.moveMenu(id, targetId, portalId);
+        service.moveMenu(id, targetId);
         printSuccessMessage();
     }
     
     /**
      * 根据菜单获取菜单项树
-     * @return
      */
-    public void getMenus4TreeByPortal(){
+    public void getMenus4TreeByPortal(Long portalId){
         List<?> data = service.getMenusByPortal(portalId);   
 
         TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());
@@ -149,11 +142,10 @@ public class NavigatorAction extends BaseActionSupport {
         print("MenuTree", encoder);
     }
     
-    public void getPortalStructuresByPortal4Tree(){
+    public void getPortalStructuresByPortal4Tree(Long portalId, final int type){
         List<?> data = portalService.getPortalStructuresByPortal(portalId);      
         TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());
 
-        final int type = this.type;
         encoder.setTranslator(new ITreeTranslator(){
             public Map<String, Object> translate(Map<String, Object> attributes) {
                 Object psType = attributes.get("type");
@@ -186,9 +178,8 @@ public class NavigatorAction extends BaseActionSupport {
     
     /**
      * 移动的时候用到
-     * @return
      */
-    public void getNavigators4Tree(){        
+    public void getNavigators4Tree(Long id, final Long portalId) {        
         List<?> data = service.getMenusByPortal(portalId);
         
         //过滤移动节点自身
@@ -202,7 +193,6 @@ public class NavigatorAction extends BaseActionSupport {
         
         TreeEncoder encoder = new TreeEncoder(data, new MenuTreeParser());
         
-        final Long portalId = this.portalId;
         encoder.setTranslator(new ITreeTranslator(){
             public Map<String, Object> translate(Map<String, Object> attributes) {  
                 if( !attributes.get("portalId").equals(portalId) )

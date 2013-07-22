@@ -15,9 +15,10 @@ import com.jinhe.tss.util.BeanUtil;
  */
 public class DecodeInterceptor extends MatchByDaoMethodNameInterceptor {
 
-	@SuppressWarnings({ "unchecked", "rawtypes"})
+    @SuppressWarnings("unchecked")
     public Object invoke(MethodInvocation invocation) throws Throwable {
-	    IDao<IEntity> dao = (IDao<IEntity>) invocation.getThis();
+	    Object target = invocation.getThis();
+        IDao<IEntity> dao = (IDao<IEntity>) target;
 		Object[] args = invocation.getArguments();
 		if(args == null || !( BeanUtil.isImplInterface(dao.getType(), IDecodable.class)) ) {
 		    return invocation.proceed();
@@ -33,7 +34,7 @@ public class DecodeInterceptor extends MatchByDaoMethodNameInterceptor {
                 case UPDATE:
                     String oldDecode = entity.getDecode();
                     
-                    ((ITreeSupportDao)dao).saveDecodeableEntity(entity);
+                    ((ITreeSupportDao<IDecodable>)target).saveDecodeableEntity(entity);
                     
                     // 移动时维护(修复)所有子节点的decode值。不包括节点自身
                     if(methodName.startsWith("move")) {

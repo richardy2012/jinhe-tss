@@ -28,6 +28,15 @@ public class NavigatorService implements INavigatorService {
             Integer nextSeqNo = dao.getNextSeqNo(parentId);
             entity.setSeqNo(nextSeqNo);
 		}
+		
+		if(entity.getContentId() != null) {
+		    
+		}
+		if(entity.getTargetId() != null) {
+		    // 把门户ID设置到菜单信息里
+//		    entity.setPortalId(portalId);
+		}
+		
 		return dao.saveMenu(entity);
 	}
 	
@@ -65,10 +74,10 @@ public class NavigatorService implements INavigatorService {
         return dao.getMenusByPortal(portalId);
     }
 
-    public void moveMenu(Long id, Long targetId, Long portalId) {
+    public void moveMenu(Long id, Long targetId) {
         Navigator menu = dao.getEntity(id);
         
-        menu.setPortalId(portalId);
+        menu.setPortalId(dao.getEntity(targetId).getPortalId());
         menu.setParentId(targetId);
         menu.setSeqNo(dao.getNextSeqNo(targetId));
                    

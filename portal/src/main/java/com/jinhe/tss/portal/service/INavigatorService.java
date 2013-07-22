@@ -67,9 +67,8 @@ public interface INavigatorService {
      * 移动菜单项
      * @param id
      * @param targetId
-     * @param portalId
      */
-    void moveMenu(Long id, Long targetId, Long portalId);
+    void moveMenu(Long id, Long targetId);
 
     /**
      * 生成一个菜单下所有菜单项集合的XML格式数据。

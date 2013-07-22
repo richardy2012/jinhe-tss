@@ -3,8 +3,6 @@ package com.jinhe.tss.cms.publish;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.jinhe.tss.cms.AbstractTestSupport;
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Article;
@@ -12,7 +10,6 @@ import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.entity.TimerStrategy;
 import com.jinhe.tss.cms.lucene.ArticleContent;
 import com.jinhe.tss.cms.lucene.IndexHelper;
-import com.jinhe.tss.cms.service.IRemoteArticleService;
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.test.TestUtil;
 
@@ -21,8 +18,6 @@ import com.jinhe.tss.framework.test.TestUtil;
  */
 public class ArticlePublishTest extends AbstractTestSupport {
     
-    @Autowired private IRemoteArticleService remoteArticleService;
- 
     public void testArticlePublish() {
     	// 新建站点
         Channel site = createSite();
