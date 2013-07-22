@@ -14,18 +14,14 @@ import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.dao.INavigatorDao;
-import com.jinhe.tss.portal.engine.PersonalManager;
 import com.jinhe.tss.portal.engine.PortalGenerator;
-import com.jinhe.tss.portal.engine.model.PageNode;
 import com.jinhe.tss.portal.engine.model.PortalNode;
 import com.jinhe.tss.portal.entity.Decorator;
 import com.jinhe.tss.portal.entity.Layout;
 import com.jinhe.tss.portal.entity.Navigator;
-import com.jinhe.tss.portal.entity.PersonalPage;
 import com.jinhe.tss.portal.entity.PersonalTheme;
 import com.jinhe.tss.portal.entity.Portal;
 import com.jinhe.tss.portal.entity.PortalStructure;
@@ -91,13 +87,6 @@ public class PortalService extends PortalRelationService implements IPortalServi
         if(personalTheme != null) {
             Long personalThemeId = personalTheme.getId();
             portal.setPersonalThemeId(personalThemeId);
-            
-            String hql = "from PersonalPage o where o.userId = ? and o.portalId = ? and o.themeId = ?";
-            List<?> list = portalDao.getEntities(hql, Environment.getOperatorId(), portalId, personalThemeId);
-            for( Object temp : list ){
-                PersonalPage pp = (PersonalPage) temp;
-                portal.getPersonalPageXMLs().add(XMLDocUtil.dataXml2Doc(pp.getConfigInfo()));
-            }
         }
         
         return getPersonalPortal(portal);
@@ -119,41 +108,7 @@ public class PortalService extends PortalRelationService implements IPortalServi
         
         return (PortalNode) portalNode.clone();
     }
-
-    public PortalNode getPersonalPortal(Portal portal) {
-        List<Document> personalPageXMLs = portal.getPersonalPageXMLs();
-        if( personalPageXMLs.isEmpty() ) {
-            return getNormalPortal(portal); // 如果该用户没有自定义页面，则直接返回默认门户的拷贝
-        }
-        
-        // 先从自定义门户缓存池中获取自定义门户，取不到再取默认的
-        String personalKey = portal.getPersonalKey();
-        Pool personalPool = JCache.getInstance().getCachePool(PortalConstants.PERSONAL_CACHE);
-        Cacheable item = personalPool.getObject(personalKey);
-        if( item != null ) {
-            return (PortalNode) item.getValue();
-        }
-        
-        PortalNode copy = getNormalPortal(portal);
-        
-        // 加入个性化定制信息
-        PersonalManager personalManager = new PersonalManager(copy, personalPageXMLs, portalDao);
-        
-        log.info("－－－－－－－－－－－－－－－－－－－－－－－－－自定义前－－－－－－－－－－－－－－－－－－－－－－－－－");
-        log.info(personalManager.genetateStructureXML((PageNode) copy.getChildren().toArray()[0]));
-        log.info("－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－");
-        
-        PortalNode personal = personalManager.generatePersonalPortal(); // 执行自定义
-        
-        log.info("－－－－－－－－－－－－－－－－－－－－－－－－－自定义后－－－－－－－－－－－－－－－－－－－－－－－－－");
-        log.info(personalManager.genetateStructureXML((PageNode) copy.getChildren().toArray()[0]));
-        log.info("－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－");
-        
-        //缓存个性化PortalNode
-        personalPool.putObject(personalKey, personal);
-        return personal;
-    }
-    
+ 
     @SuppressWarnings("unchecked")
     private PortalNode getPortalNode(Long portalId, Long themeId){
         List<?> themeInfos = portalDao.getEntities("from ThemeInfo t where t.id.themeId = ?", themeId);

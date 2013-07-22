@@ -82,11 +82,14 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
 	private String  name;       //菜单（项）名称
 	private Integer type;       //类型  参考 TYPE_MENU_X
 	private Long   parentId;    //菜单项对应菜单
-	private Long   portalId;    //菜单或菜单项所属于门户ID
-	
     private String url;         //url地址                     
     private String target  ;    //目标区域，_blank/_self  等  
+    
+    @Column(length = 1000)
+    private String description; //菜单内容的描述信息
 	
+    // Portal内部页面引用的菜单内容
+    private Long   portalId;    //菜单或菜单项所属于门户ID
     private Long   contentId;
     private String contentName; //显示内容                    
     private Long   targetId;   
@@ -94,9 +97,7 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
  	private String methodName;  //方法名                        
     private String params;      //参数    
     
-    @Column(length = 1000)
-    private String description; //菜单内容的描述信息
-    
+    // 菜单树结构信息
     @Column(nullable = false)
 	private Integer seqNo;   // 顺序号
     private String  decode;  // 层码

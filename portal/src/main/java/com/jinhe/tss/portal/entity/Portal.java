@@ -1,8 +1,5 @@
 package com.jinhe.tss.portal.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,10 +8,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.dom4j.Document;
-
 import com.jinhe.tss.framework.persistence.IEntity;
-import com.jinhe.tss.framework.sso.Environment;
 
 /**
  * 门户实体：包括基本信息及主题信息等
@@ -36,15 +30,7 @@ public class Portal implements IEntity {
     
     @Transient private String  name;
     @Transient private Long personalThemeId;  // 用户个性化定制的主题
-    @Transient private List<Document> personalPageXMLs; // 用户个性化定制的门户各个页面的配置XML列表
-
-    public List<Document> getPersonalPageXMLs() {
-        if(personalPageXMLs == null) {
-            personalPageXMLs = new ArrayList<Document>();
-        }
-        return personalPageXMLs;
-    }
-
+ 
     /**
      * 获取用户自定义的主题ID，如果为空则返回默认主题ID
      * @return
@@ -104,11 +90,7 @@ public class Portal implements IEntity {
     public void setCurrentThemeName(String currentThemeName) {
         this.currentThemeName = currentThemeName;
     }
-
-    public String getPersonalKey() {
-        return this.id + "_" + themeId + "_" + Environment.getOperatorId();
-    }
-    
+ 
     public String getDefaultKey() {
         return this.id + "_" + themeId;
     }

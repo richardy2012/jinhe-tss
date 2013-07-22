@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.dom4j.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeTranslator;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
@@ -25,21 +26,11 @@ import com.jinhe.tss.util.XMLDocUtil;
 import com.jinhe.tss.util.XmlUtil;
 
 public class LayoutAction extends BaseActionSupport {
-
-    private Long    layoutId;
-    private Long    groupId;
-    private Integer disabled;
-    private int     direction;
-    private Long    targetId;
-    private File    file;
-    
-    private Layout layout = new Layout();
-    
-    private IElementService service;
+ 
+    @Autowired private IElementService service;
 
     /**
      * 布局器树型展示.
-     * @return
      */
     public void getAllLayout4Tree() {
         List<?> data = service.getAllElementsAndGroups(ElementGroup.LAYOUT_TYPE);
@@ -49,7 +40,6 @@ public class LayoutAction extends BaseActionSupport {
 
     /**
      * 所有启动的布局器树型展示.
-     * @return
      */
     public void getAllStartLayout4Tree() {
         List<?> data = service.getAllStartElementsAndGroups(ElementGroup.LAYOUT_TYPE);
@@ -70,10 +60,9 @@ public class LayoutAction extends BaseActionSupport {
     
     /**
      * 获取布局器参数,并拼装成一个xml返回
-     * @return
      */
-    public void getDefaultParams4Xml() {
-        Layout layout = (Layout) service.getElementInfo(ElementGroup.LAYOUT_CLASS, layoutId);
+    public void getDefaultParams4Xml(Long id) {
+        Layout layout = (Layout) service.getElementInfo(ElementGroup.LAYOUT_CLASS, id);
         
         StringBuffer sb = new StringBuffer("<layout ");
         List<?> parameters = XMLDocUtil.dataXml2Doc(layout.getDefinition()).selectNodes("//layout/parameters/param");
@@ -92,16 +81,15 @@ public class LayoutAction extends BaseActionSupport {
     
     /**
      * 布局器详细信息.
-     * @return
      */
-    public void getLayoutInfo() {
+    public void getLayoutInfo(Long id, Long groupId) {
         XFormEncoder encoder ;
-        if ( DEFAULT_NEW_ID.equals(layoutId) ) { // 如果是新增,则返回一个空的无数据的模板
+        if ( DEFAULT_NEW_ID.equals(id) ) { // 如果是新增,则返回一个空的无数据的模板
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("groupId", groupId);          
             encoder = new XFormEncoder(PortalConstants.LAYOUT_XFORM_TEMPLET_PATH, map);
         } else {
-            Layout layout = (Layout) service.getElementInfo(ElementGroup.LAYOUT_CLASS, layoutId);
+            Layout layout = (Layout) service.getElementInfo(ElementGroup.LAYOUT_CLASS, id);
             encoder = new XFormEncoder(PortalConstants.LAYOUT_XFORM_TEMPLET_PATH, (IXForm) layout);
         }
         print("LayoutInfo", encoder);
@@ -109,9 +97,8 @@ public class LayoutAction extends BaseActionSupport {
 
     /**
      * 新增布局器.
-     * @return
      */
-    public void save() {       
+    public void save(Layout layout) {       
         boolean isNew = (layout.getId() == null);
         layout = (Layout) service.saveElement(layout);          
         doAfterSave(isNew, layout, "LayoutTree");
@@ -119,28 +106,25 @@ public class LayoutAction extends BaseActionSupport {
 
     /**
      * 删除布局器.
-     * @return
      */
-    public void delete() {
-        service.deleteElement(ElementGroup.LAYOUT_CLASS, layoutId);
+    public void delete(Long id) {
+        service.deleteElement(ElementGroup.LAYOUT_CLASS, id);
         printSuccessMessage("删除布局器成功");
     }
 
     /**
      * 停用/启用 布局器（将其下的disabled属性设为"1"/"0"）
-     * @return
      */
-    public void disabled() {
-        service.disableElement(ElementGroup.LAYOUT_CLASS, layoutId, disabled);
+    public void disabled(Long id, int state) {
+        service.disableElement(ElementGroup.LAYOUT_CLASS, id, state);
         printSuccessMessage();
     }
 
     /**
      * 布局器排序
-     * @return
      */
-    public void sort() {
-        service.sortElement(layoutId, targetId, direction, ElementGroup.LAYOUT_CLASS);
+    public void sort(Long id, Long targetId, int direction) {
+        service.sortElement(id, targetId, direction, ElementGroup.LAYOUT_CLASS);
         printSuccessMessage();
     }
 
@@ -148,24 +132,22 @@ public class LayoutAction extends BaseActionSupport {
      * 复制布局器
      * @return
      */
-    public void copy() {       
+    public void copy(Long id) {       
         String desDir = URLUtil.getWebFileUrl(PortalConstants.LAYOUT_MODEL_DIR).getPath(); 
-        IElement copy = service.copyElement(layoutId, new File(desDir), ElementGroup.LAYOUT_CLASS);    
+        IElement copy = service.copyElement(id, new File(desDir), ElementGroup.LAYOUT_CLASS);    
         doAfterSave(true, copy, "LayoutTree");
     }
     
     /**
      * 设置布局器为默认布局器
-     * @return
      */      
-    public void setAsDefault() {      
-        service.setLayout4Default(layoutId);
+    public void setAsDefault(Long id) {      
+        service.setLayout4Default(id);
         printSuccessMessage();
     }
     
     /**
      * 获取导入布局器的模板
-     * @return
      */
     public void getUploadTemplate() {
         XFormEncoder encoder = new XFormEncoder(PortalConstants.IMPORT_LAYOUT_XFORM_PATH);
@@ -174,9 +156,8 @@ public class LayoutAction extends BaseActionSupport {
 
     /**
      * 导入布局器
-     * @return
      */
-    public void importLayout() {
+    public void importLayout(Long groupId, File file) {
         String desDir = URLUtil.getWebFileUrl(PortalConstants.LAYOUT_MODEL_DIR).getPath(); 
         
         Layout layout = new Layout();
@@ -188,11 +169,10 @@ public class LayoutAction extends BaseActionSupport {
 
     /**
      * 布局器的导出
-     * @return
      */
-    public void getExportLayout() {      
+    public void getExportLayout(Long id) {      
         String desDir = URLUtil.getWebFileUrl(PortalConstants.LAYOUT_MODEL_DIR).getPath(); 
-        IElement info = service.getElementInfo(ElementGroup.LAYOUT_CLASS, layoutId);
+        IElement info = service.getElementInfo(ElementGroup.LAYOUT_CLASS, id);
 
         ElementHelper.exportElement(desDir, info, "layout.xml");
     }

@@ -26,15 +26,6 @@ import com.jinhe.tss.util.XmlUtil;
  
 public class PortletAction extends BaseActionSupport {
 
-    private Long    id;   
-    private Integer disabled;
-    private Long    groupId; // 组编号
-    private Long    targetId; // 移动或者排序的目标节点ID
-    private int     direction; // 分＋1（向下），和－1（向上）
-    private File    file;
-    
-    private Portlet portlet = new Portlet();
-
     @Autowired private IElementService service;
 
     /**
@@ -68,7 +59,7 @@ public class PortletAction extends BaseActionSupport {
     /**
      * 获取portlet参数,并拼装成一个xml返回
      */
-    public void getDefaultParams4Xml() {
+    public void getDefaultParams4Xml(Long id) {
         Portlet portlet = (Portlet) service.getElementInfo(ElementGroup.PORTLET_CLASS, id);
 
         StringBuffer sb = new StringBuffer("<portlet ");
@@ -89,7 +80,7 @@ public class PortletAction extends BaseActionSupport {
     /**
      * Portlet的详细信息
      */
-    public void getPortletInfo() {
+    public void getPortletInfo(Long id, Long groupId) {
         XFormEncoder encoder;
         if ( DEFAULT_NEW_ID.equals(id) ) {
             Map<String, Object> map = new HashMap<String, Object>();
@@ -105,7 +96,7 @@ public class PortletAction extends BaseActionSupport {
      * 
      * 保存Portlet
      */
-    public void save() {
+    public void save(Portlet portlet) {
         boolean isNew = portlet.getId() == null ? true : false;
         portlet = (Portlet) service.saveElement(portlet);        
         doAfterSave(isNew, portlet, "PortletTree");
@@ -114,7 +105,7 @@ public class PortletAction extends BaseActionSupport {
     /**
      * 删除Portlet.
      */
-    public void delete() {
+    public void delete(Long id) {
         service.deleteElement(ElementGroup.PORTLET_CLASS, id);
         printSuccessMessage("删除Portlet成功");
     }
@@ -122,15 +113,15 @@ public class PortletAction extends BaseActionSupport {
     /**
      * 停用/启用 Portlet（将其下的disabled属性设为"1"/"0"）
      */
-    public void disable() {
-        service.disableElement(ElementGroup.PORTLET_CLASS, id, disabled);
+    public void disable(Long id, int state) {
+        service.disableElement(ElementGroup.PORTLET_CLASS, id, state);
         printSuccessMessage();
     }
 
     /**
      * 同组下的Portlet排序
      */
-    public void sort() {
+    public void sort(Long id, Long targetId, int direction) {
         service.sortElement(id, targetId, direction, ElementGroup.PORTLET_CLASS);
         printSuccessMessage();
     }
@@ -138,7 +129,7 @@ public class PortletAction extends BaseActionSupport {
     /**
      * 复制portlet
      */
-    public void copy() {
+    public void copy(Long id) {
         String desDir = URLUtil.getWebFileUrl(PortalConstants.PORTLET_MODEL_DIR).getPath(); 
         IElement copy = service.copyElement(id, new File(desDir), ElementGroup.PORTLET_CLASS);    
         doAfterSave(true, copy, "PortletTree");
@@ -155,7 +146,7 @@ public class PortletAction extends BaseActionSupport {
     /**
      * 保存上传Portlet
      */
-    public void importPortlet() {
+    public void importPortlet(Long groupId, File file) {
         String desDir = URLUtil.getWebFileUrl(PortalConstants.PORTLET_MODEL_DIR).getPath(); 
         
         Portlet portlet = new Portlet();
@@ -168,7 +159,7 @@ public class PortletAction extends BaseActionSupport {
     /**
      * portlet导出
      */
-    public void getExportPortlet() {
+    public void getExportPortlet(Long id) {
         String desDir = URLUtil.getWebFileUrl(PortalConstants.PORTLET_MODEL_DIR).getPath(); 
         Portlet info = (Portlet) service.getElementInfo(ElementGroup.PORTLET_CLASS, id);
         

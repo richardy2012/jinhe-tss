@@ -6,18 +6,12 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jinhe.tss.cache.JCache;
-import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.sso.Environment;
-import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.dao.IElementDao;
 import com.jinhe.tss.portal.dao.IPortalDao;
 import com.jinhe.tss.portal.entity.IssueInfo;
-import com.jinhe.tss.portal.entity.PersonalPage;
 import com.jinhe.tss.portal.entity.PersonalTheme;
 import com.jinhe.tss.portal.entity.Portal;
-import com.jinhe.tss.portal.entity.PortalStructure;
 import com.jinhe.tss.portal.entity.Theme;
 import com.jinhe.tss.portal.entity.ThemeInfo;
 import com.jinhe.tss.portal.service.IPortalRelationService;
@@ -136,30 +130,8 @@ public class PortalRelationService implements IPortalRelationService {
    }
    
    //******************************** 以下为门户自定义管理 ***************************************************************
-   
-    public void removePersonalInfo(Long portalId, Long themeId, Long userId, Long pageId) {
-        String hql = "from PersonalPage o where o.portalId = ? and themeId = ? and o.pageId = ? and o.userId = ? ";
-        portalDao.deleteAll(portalDao.getEntities(hql, portalId, themeId, pageId, userId));
-    }
 
-    public void savePersonalInfo(Long portalId, Long themeId, Long userId, Long pageId, String personalXML) {
-        // 一个用户对一个页面只能有一套自定义信息，保存新的自定义信息之前需要删除老的
-        removePersonalInfo(portalId, themeId, userId, pageId);
-        
-        PersonalPage  pp = new PersonalPage(portalId, themeId, pageId, userId, personalXML);
-        portalDao.createObject(pp);
-        
-        // 刷新自定义门户的缓存项
-        Portal portal = portalDao.getPortalById(portalId);
-        PersonalTheme personalTheme = portalDao.getPersonalTheme(portalId);
-        if(personalTheme != null) {
-            portal.setPersonalThemeId(personalTheme.getThemeId());
-        }
-        Pool personalPool = JCache.getInstance().getCachePool(PortalConstants.PERSONAL_CACHE);
-        personalPool.removeObject("主题：" + portal.getThemeName() + "，用户：" + Environment.getOperatorName());
-    }
-
-    public void savePersonalTheme(Long portalId, Long userId, Long themeId) {
+   public void savePersonalTheme(Long portalId, Long userId, Long themeId) {
         //一个用户对一个门户只能有一套自定义主题，保存新的自定义主题之前需要删除老的
         String hql = "from PersonalTheme o where o.portalId = ? and o.userId = ? ";
         portalDao.deleteAll(portalDao.getEntities(hql, portalId, userId));
@@ -167,13 +139,10 @@ public class PortalRelationService implements IPortalRelationService {
         PersonalTheme pt = new PersonalTheme(portalId, userId, themeId);
         portalDao.createObject(pt);
     }
-    
-    public List<?> getPortletInstansesInPortal(Long portalId) {
-        String hql  = "from PortalStructure o where o.portalId = ? and o.disabled <> 1 and o.type = ? ";                
-        return portalDao.getEntities(hql, portalId, PortalStructure.TYPE_PORTLET_INSTANCE);
-    }
-
-    public List<?> getFlowRate(Long portalId) {
+ 
+    //***********************************  门户流量统计获取 ***************************************************************
+   
+   public List<?> getFlowRate(Long portalId) {
     	List<Object> returnList = new ArrayList<Object>();
     	
         String hql = "select p.name, count(f.id) from FlowRate f, PortalStructure p " +

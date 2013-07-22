@@ -11,7 +11,6 @@
 	<entity class="com.jinhe.tss.portal.entity.IssueInfo"/>
 	<entity class="com.jinhe.tss.portal.entity.Layout"/>
 	<entity class="com.jinhe.tss.portal.entity.Navigator"/>
-	<entity class="com.jinhe.tss.portal.entity.PersonalPage"/>
 	<entity class="com.jinhe.tss.portal.entity.PersonalTheme"/>
 	<entity class="com.jinhe.tss.portal.entity.Portal"/>
 	<entity class="com.jinhe.tss.portal.entity.PortalStructure"/>

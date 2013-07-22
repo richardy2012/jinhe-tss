@@ -12,6 +12,7 @@ import java.util.StringTokenizer;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
@@ -31,21 +32,13 @@ import com.jinhe.tss.util.XMLDocUtil;
 import freemarker.template.TemplateException;
 
 public class GroupAction extends FreeMarkerSupportAction {
-
-	private Long    id;	
-	private Long    parentId;
-	private Integer type;
-	private Long    targetId;  // 移动或者排序的目标节点ID
-	private int     direction; // 分＋1（向下），和－1（向上）			
-    
-    private ElementGroup group = new ElementGroup();
-    
-    private IElementService service;
+ 
+    @Autowired private IElementService service;
 	
 	/**
 	 * Group的详细信息
 	 */
-	public void getGroupInfo(){
+	public void getGroupInfo(Long id, Long parentId, int type){
 		XFormEncoder encoder;
         if( DEFAULT_NEW_ID.equals(id) ) {  //如果是新增,则返回一个空的无数据的模板
         	Map<String, Object> map = new HashMap<String, Object>();
@@ -61,32 +54,26 @@ public class GroupAction extends FreeMarkerSupportAction {
 	}
 	
 	/**
-	 * <p>
 	 * 同类型组的排序
-	 * </p>
 	 */
-	public void sortByType(){
+	public void sortByType(Long id, Long targetId, int direction){
 		service.sortByType(id, targetId, direction);        
 		printSuccessMessage();
 	}
 	
 	/**
-	 * <p>
 	 * 保存Group
-	 * </p>
 	 */
-	public void save(){        
+	public void save(ElementGroup group){        
         boolean isNew = group.getId() == null ? true : false;      
         group = service.saveGroup(group);
         doAfterSave(isNew, group, group.getClassNameByType() + "Tree");
 	}
 	
 	/**
-	 * <p>
 	 * 删除组.
-	 * </p>
 	 */
-	public void delete(){
+	public void delete(Long id){
 		service.deleteGroupById(id);		
         printSuccessMessage();
 	}
@@ -94,7 +81,7 @@ public class GroupAction extends FreeMarkerSupportAction {
     /**
      * 获取某个元素类型的所有分组
      */
-    public void getGroupsByType(){
+    public void getGroupsByType(int type){
         List<?> data = service.getGroupsByType(type);
         TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser());
         encoder.setNeedRootNode(false);
@@ -103,26 +90,27 @@ public class GroupAction extends FreeMarkerSupportAction {
     
     /**
      * 复制元素到另外一个组
-     * @return
      */
-    public void copyTo(){
+    public void copyTo(Long id, Long targetId){
         Object[] returnValues = service.copyTo(id, targetId);                
         doAfterSave(true, returnValues[0], (returnValues[1] + "Tree"));
     }
     
     /**
      * 移动元素到另外一个组
-     * @return
      */
-    public void moveTo(){
+    public void moveTo(Long id, Long targetId){
         service.moveTo(id, targetId);     
         printSuccessMessage();
     }
     
     /**********************************************      在线编辑组件参数配置    *******************************************/
-    private String paramsItem; // 类似 ：bgColor=red 回车 menuId=12
     
-    public void getElementParamsConfig(){
+    /**
+     * 
+     * @param paramsItem  类似 ：bgColor=red 回车 menuId=12
+     */
+    public void getElementParamsConfig(Long id, int type, String paramsItem){
         IElement element = service.getElementInfo(ElementGroup.getClassByType(type), id);
        
         String configFilePath = URLUtil.getWebFileUrl(element.getResourcePath() + "/paramsXForm.xml").getFile();
@@ -178,9 +166,7 @@ public class GroupAction extends FreeMarkerSupportAction {
         }
     }
     
-    private String configXML;
-    
-    public void saveElementParamsConfig(){
+    public void saveElementParamsConfig(Long id, int type, String configXML){
         IElement element = service.getElementInfo(ElementGroup.getClassByType(type), id);
         String configFile = URLUtil.getWebFileUrl(element.getResourcePath() + "/paramsXForm.xml").getFile();
         
@@ -194,15 +180,13 @@ public class GroupAction extends FreeMarkerSupportAction {
     /***************************************************      预览组件    ************************************************/
     /********************************************************************************************************************/
 
-    private String dataType = "HTML";
-    
     /**
      * 获取组件的XML结构数据，用于单个组件预览。
      * @return
      * @throws IOException
      * @throws TemplateException
      */
-    public void  previewElement() throws IOException, TemplateException{
+    public void  previewElement(Long id, int type) throws IOException, TemplateException{
         String elementName = ElementGroup.getClassNameByType(type).toLowerCase();
         IElement element = service.getElementInfo(ElementGroup.getClassByType(type), id);
         
@@ -239,43 +223,13 @@ public class GroupAction extends FreeMarkerSupportAction {
         parameters.put("${content}", "");
         parameters.put("${basepath}", Environment.getContextPath() + "/" + element.getResourcePath() + "/");
 
-        String data = null;
-        if("XML".equals(dataType)) {
-            // 返回门户组件XML格式数据
-            data = toXML(html, script, prototypeStyle, style, events, parameters);
-        } else {
-            // 直接预览门户组件
-            data = toHTML(html, script, prototypeStyle, style, events, parameters);
-        }
-        if(ElementGroup.PORTLET_TYPE == type.intValue()){
+        // 直接预览门户组件
+        String data = toHTML(html, script, prototypeStyle, style, events, parameters);
+        if(ElementGroup.PORTLET_TYPE == type){
             printHTML(data); // 如果是预览portlet，则需要执行模板引擎解析
         } else {
             print(data);
         }
-    }
-    
-    private String toXML(String html, String script, String prototypeStyle, String style, 
-            Map<String, String> events, Map<String, String> parameters) {
-        
-        StringBuffer sb = new StringBuffer("<?xml version=\"1.0\" encoding=\"GBK\"?>");
-        sb.append("<Response><rss version=\"2.0\"><Element>");
-        sb.append("<html><![CDATA[").append(MacrocodeCompiler.run(html, parameters)).append("]]></html>");
-        sb.append("<script><![CDATA[").append(MacrocodeCompiler.run(script, parameters)).append("]]></script>");
-        sb.append("<style>").append(MacrocodeCompiler.run(prototypeStyle, parameters));
-        sb.append(MacrocodeCompiler.run(style, parameters)).append("</style>");
-        sb.append("<event>").append(getEvents4XML(events, parameters)).append("</event>");
-        sb.append("</Element></rss></Response>");
-        
-        return sb.toString();
-    }    
-    
-    private StringBuffer getEvents4XML(Map<String, String> events, Map<String, String> parameters) {
-        StringBuffer sb = new StringBuffer();
-        for( Entry<String, String> entry : events.entrySet() ) {
-            String value = entry.getValue();
-            sb.append("<attach event=\"" + entry.getKey() + "\" onevent=\"" + MacrocodeCompiler.run(value, parameters) + "\"/>\n");
-        }
-        return sb;
     }
     
     private String toHTML(String html, String script, String prototypeStyle, String style, 

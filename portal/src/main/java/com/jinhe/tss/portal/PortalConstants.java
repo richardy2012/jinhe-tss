@@ -11,9 +11,9 @@ public interface PortalConstants {
      * 一些关键字
      */
     public final static String COPY_PREFIX = "副本_"; // 复制实体时实体名字前缀
+    
     public static final String PORTAL_CACHE = "portal_tree"; // 门户树缓存池
     public static final String MENU_CACHE = "menu_pool";     // 菜单缓存池
-    public static final String PERSONAL_CACHE = "personal_portal_tree"; // 自定义门户树缓存池
 
     /**
      * 模板路径

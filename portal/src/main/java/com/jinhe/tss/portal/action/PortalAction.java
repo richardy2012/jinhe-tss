@@ -399,6 +399,11 @@ public class PortalAction extends FreeMarkerSupportAction {
         printSuccessMessage();
     }
     
+    public void savePersonalTheme(){
+        service.savePersonalTheme(portalId, Environment.getOperatorId(), themeId);
+        printSuccessMessage("更改主题成功");
+    }
+    
     //******************************** 以下为门户发布管理 ***************************************
     public void getAllIssues4Tree(){        
         TreeEncoder encoder = new TreeEncoder(service.getAllIssues()); 

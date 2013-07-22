@@ -97,38 +97,6 @@ public interface IPortalRelationService {
     
     //******************************** 以下为门户自定义管理 ***************************************************************
     /**
-     * <p>
-     * 保存用户自定义信息。<br>
-     * 当用户执行以下自定义操作后，其自定义信息将被保存：<br>
-     * 1.portlet实例的更改、交换、删除、参数更改<br>
-     * 2.修饰器的更改、参数更改<br>
-     * 3.布局器的更改、交换（版面交换）、删除（版面删除）、添加、参数更改<br>
-     * 4.还原<br>
-     * </p>
-     * @param portalId
-     * @param userId
-     * @param pageId
-     * @param personalXML
-     */
-    @Logable(operateTable="门户自定义", operateType="门户自定义操作", 
-            operateInfo="保存了 ID为 ${args[0]} 的门户的自定义信息"
-        )
-    void savePersonalInfo(Long portalId, Long themeId, Long userId, Long pageId, String personalXML);
-    
-    /**
-     * 删除用户自定义信息。<br>
-     * 当用户选择还原为默认布局时，删除该用户的自定义信息和自定义主题信息。<br>
-     * 
-     * @param portalId
-     * @param userId
-     * @param pageId
-     */
-    @Logable(operateTable="门户自定义", operateType="门户自定义操作", 
-            operateInfo="删除了 ID为 ${args[0]} 的门户的自定义信息"
-        )
-    void removePersonalInfo(Long portalId, Long themeId, Long userId, Long pageId);
-    
-    /**
      * 保存用户自定义主题信息。
      * 
      * @param portalId
@@ -139,14 +107,6 @@ public interface IPortalRelationService {
             operateInfo="重新设置了 ID为 ${args[0]} 的门户的自定义主题 "
         )
     void savePersonalTheme(Long portalId, Long userId, Long themeId);
-    
-    /**
-     * 获取可以用以portlet实例替换的
-     * @param portalId
-     * @return
-     */
-    List<?> getPortletInstansesInPortal(Long portalId);
-    
     
     //***********************************  门户流量统计获取 ***************************************************************
     /**
