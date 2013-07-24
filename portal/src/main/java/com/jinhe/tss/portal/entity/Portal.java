@@ -6,12 +6,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.jinhe.tss.framework.persistence.IEntity;
 
 /**
  * 门户实体：包括基本信息及主题信息等
+ * 
+ * TODO 去掉，字段直接加到 门户节点 里去
  */
 @Entity
 @Table(name = "pms_portal")
@@ -27,30 +28,7 @@ public class Portal implements IEntity {
 	
     private Long    currentThemeId;    // 当前主题编号
     private String  currentThemeName;  // 当前主题名称（默认为：XXXX(门户名称)的主题）
-    
-    @Transient private String  name;
-    @Transient private Long personalThemeId;  // 用户个性化定制的主题
  
-    /**
-     * 获取用户自定义的主题ID，如果为空则返回默认主题ID
-     * @return
-     */
-    public Long getPersonalThemeId() {
-        return personalThemeId != null ? personalThemeId : themeId;
-    }
-
-    public void setPersonalThemeId(Long personalThemeId) {
-        this.personalThemeId = personalThemeId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    
 	public Long getId() {
 		return id;
 	}

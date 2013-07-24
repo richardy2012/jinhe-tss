@@ -31,7 +31,7 @@ import com.jinhe.tss.util.XMLDocUtil;
 
 import freemarker.template.TemplateException;
 
-public class GroupAction extends FreeMarkerSupportAction {
+public class ElementGroupAction extends FreeMarkerSupportAction {
  
     @Autowired private IElementService service;
 	

@@ -24,6 +24,8 @@ import com.jinhe.tss.util.BeanUtil;
 
 /**
  * 修饰器实体：修饰器基本信息及内容定义信息
+ * TODO 三个元素的实体合并掉，不再实体、Action、页面各弄一套
+ * 
  */
 @Entity
 @Table(name = "pms_decorator", uniqueConstraints = { 

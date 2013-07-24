@@ -329,22 +329,10 @@ public class PortalAction extends FreeMarkerSupportAction {
         service.order(id, targetId, direction);
         printSuccessMessage();
     }
-    
+ 
     /**
      * <p>
-     * 在同一父节点下复制门户或者门户节点，要求新输入一个名字。
-     * </p>
-     */
-    public void copyPortal() {
-        List<?> list = service.copyPortal(id);        
-        TreeEncoder encoder = new TreeEncoder(list, new LevelTreeParser());
-        encoder.setNeedRootNode(false);
-        print("SiteTree", encoder);
-    }
-    
-    /**
-     * <p>
-     * 复制门户或者门户节点到不同的父节点下，要求新输入一个名字。
+     * 复制门户节点到不同的父节点下。
      * </p>
      */
     public void copyTo() {

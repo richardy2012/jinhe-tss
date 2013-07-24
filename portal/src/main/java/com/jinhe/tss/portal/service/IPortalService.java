@@ -5,11 +5,12 @@ import java.util.List;
 import com.jinhe.tss.framework.component.log.Logable;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.engine.model.PortalNode;
+import com.jinhe.tss.portal.entity.IssueInfo;
 import com.jinhe.tss.portal.entity.PortalStructure;
+import com.jinhe.tss.portal.entity.Theme;
 import com.jinhe.tss.portal.helper.PortalStructureWrapper;
 import com.jinhe.tss.portal.permission.PermissionFilter4Check;
 import com.jinhe.tss.portal.permission.PermissionFilter4Portal;
-import com.jinhe.tss.um.permission.filter.PermissionFilter4Copy;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4CopyTo;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Create;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Move;
@@ -17,13 +18,12 @@ import com.jinhe.tss.um.permission.filter.PermissionFilter4Sort;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Update;
 import com.jinhe.tss.um.permission.filter.PermissionTag;
  
-public interface IPortalService extends IPortalRelationService {
+public interface IPortalService {
 
     /**
      * <p>
      * 获取所有门户结构PortalStructure
      * </p>
-     * @return
      */
     @PermissionTag(
             operation = PortalConstants.PORTAL_VIEW_OPERRATION, 
@@ -34,7 +34,6 @@ public interface IPortalService extends IPortalRelationService {
      * <p>
      * 获取除portlet应用外的门户结构。移动到...，复制到...的时候将调用本方法。将根据“新增”操作选项过滤
      * </p>
-     * @return
      */
     @PermissionTag(
             operation = PortalConstants.PORTAL_ADD_OPERRATION, 
@@ -43,7 +42,6 @@ public interface IPortalService extends IPortalRelationService {
     
     /**
      * 获取所有启用门户
-     * @return
      */
     @PermissionTag(
             operation = PortalConstants.PORTAL_VIEW_OPERRATION, 
@@ -53,7 +51,6 @@ public interface IPortalService extends IPortalRelationService {
     /**
      * 获取指定门户下启用的页面和版面
      * @param portalId
-     * @return
      */
     @PermissionTag(
             operation = PortalConstants.PORTAL_VIEW_OPERRATION, 
@@ -63,7 +60,6 @@ public interface IPortalService extends IPortalRelationService {
     /**
      * 获取门户下所有可用的门户结构节点列表（不包括门户根节点）
      * @param portalId
-     * @return
      */
     @PermissionTag(
             operation = PortalConstants.PORTAL_VIEW_OPERRATION, 
@@ -193,21 +189,6 @@ public interface IPortalService extends IPortalRelationService {
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Sort.class)
     void order(Long id, Long targetId, int direction);
-
-    /**
-     * <p>
-     * 复制门户，要求新输入一个门户名字。
-     * </p>
-     * 
-     * @param id
-     *         被复制门户的根节点ID
-     */
-    @Logable(operateTable="门户结构", operateType="复制", operateInfo="复制了(ID: ${args[0]})节点")
-    @PermissionTag(
-            operation = PortalConstants.PORTAL_ADD_OPERRATION, 
-            resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
-            filter = PermissionFilter4Copy.class)
-    List<PortalStructure> copyPortal(Long id);
     
     /**
      * 复制到。。。
@@ -236,5 +217,113 @@ public interface IPortalService extends IPortalRelationService {
      */
     @PermissionTag(filter = PermissionFilter4Portal.class)
     PortalNode getPortal(Long portalId, Long themeId, String method);
+    
+    
+    /****************************   门户相关的（包括门户主题、门户发布等）的相关维护  *************************************************/
+    
+    //******************************* 以下为主题管理 ***************************************************************
+    /**
+     * 门户下的当前主题另存为。。。
+     * @param themeId 
+     * @param themeName
+     */
+    @Logable(operateTable="门户主题", operateType="复制", 
+            operateInfo="复制(ID: ${args[1]})主题"
+        )
+    Theme saveThemeAs(Long themeId, String themeName);
+
+    /**
+     * 获取一个Portal的所有主题
+     * @param portalId
+     * @return
+     */
+    List<?> getThemesByPortal(Long portalId);
+
+    /**
+     * 设置默认主题
+     * @param portalId
+     * @param themeId
+     */
+    @Logable(operateTable="门户主题", operateType="设为默认", 
+            operateInfo="将(ID: ${args[1]})主题设置为默认主题"
+        )
+    void specifyDefaultTheme(Long portalId, Long themeId);
+
+    /**
+     * 删除主题，如果删除的主题是当前门户的默认主题或者当前主题，则删除失败
+     * @param portalId
+     * @param themeId
+     */
+    @Logable(operateTable="门户主题", operateType="删除", 
+            operateInfo="删除了(ID: ${args[1]})主题"
+        )
+    void removeTheme(Long portalId, Long themeId);
+
+    /**
+     * 重命名主题名字
+     * @param themeId
+     * @param name
+     */
+    @Logable(operateTable="门户主题", operateType="重命名", 
+            operateInfo="将(ID: ${args[0]})主题重新命名为 ${args[1]}"
+        )
+    void renameTheme(Long themeId, String name);
+    
+    
+    //******************************* 以下为门户发布管理 ***************************************************************
+    /**
+     * 根据访问地址或者门户的真实地址
+     * @param visitUrl
+     * @return
+     */
+    IssueInfo getIssueInfo(String visitUrl);
+
+    /**
+     * 获取所有的门户发布信息
+     * @return
+     */
+    List<?> getAllIssues();
+
+    /**
+     * 保存发布信息
+     * @param issueInfo
+     * @return
+     */
+    IssueInfo saveIssue(IssueInfo issueInfo);
+
+    /**
+     * 移除发布信息
+     * @param id
+     */
+    void removeIssue(Long id);
+
+    /**
+     * 获取发布信息
+     * @param id
+     * @return
+     */
+    IssueInfo getIssueInfo(Long id);
+    
+    
+    //******************************** 以下为门户自定义管理 ***************************************************************
+    /**
+     * 保存用户自定义主题信息。
+     * 
+     * @param portalId
+     * @param userId
+     * @param themeId
+     */
+    @Logable(operateTable="门户主题", operateType="门户自定义操作", 
+            operateInfo="重新设置了 ID为 ${args[0]} 的门户的自定义主题 "
+        )
+    void savePersonalTheme(Long portalId, Long userId, Long themeId);
+    
+    //***********************************  门户流量统计获取 ***************************************************************
+    /**
+     * 获取门户下页面的访问流量
+     * @param portalId
+     * @return
+     */
+    List<?> getFlowRate(Long portalId);
 
 }

@@ -65,7 +65,7 @@ public class Layout extends OperateInfo implements IEntity, ILevelTreeNode, IXFo
     private Long    groupId;     //布局器组编号
     
     @Column(nullable = false)
-    private Integer seqNo;    //顺序号：用于排序
+    private Integer seqNo;    // 顺序号：用于排序
     private String  decode;   // 层码
     private Integer levelNo;  // 层次值
     

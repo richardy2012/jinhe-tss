@@ -6,7 +6,7 @@ import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.um.permission.PermissionHelper;
 
 /**
- * 资源移动时候的权限检查： 判断用户对复制节点的父亲节点是否有新增权限。
+ * 资源复制时候的权限检查： 判断用户对复制节点的父亲节点是否有新增权限。
  * 
  * 复制[只要对父节点有新增权限，就可以复制下面的子节点] 
  * 
