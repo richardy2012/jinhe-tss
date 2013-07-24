@@ -25,34 +25,31 @@
   <table class="full" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td height=30>
-        <!-- xform 开始 -->
-        <Xform:Form id="xform" baseurl="../core/htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
-        <!-- xform 结束 -->
+		<XForm:Box id="xform" baseurl="../framework/xform/"><div class="loading"></div></XForm:Box>
       </td>
     </tr>
     <tr>
       <td>
-        <!-- tree 开始 -->
-        <Tree:TreeBox id="tree" treeType="menu" baseurl="htc/tree1/"><div class="loading"></div></Tree:TreeBox>
-        <!-- tree 结束 -->
+		<Tree:Box id="tree" treeType="multi" baseurl="../framework/tree/"></Tree:Box>
       </td>
     </tr>
     <tr>
       <td height="40" class="comment">&nbsp;&nbsp;说明：鼠标点击切换状态，通常情况下是 &lt;未选中&gt; → &lt;仅此节点&gt; → &lt;所有子节点&gt; → &lt;未选中&gt; 循环<br/>
         <!-- 鼠标点击同时按下shift键，可以将所有(未禁用的)子节点设置为与当前节点相同状态<br/> -->
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;节点状态 (
-        <img src="htc/tree1/images/multistate0.gif" align=absmiddle>未选中 
-        <img src="htc/tree1/images/multistate0_2.gif" align=absmiddle>未选中但有子节点选中 
-        <img src="htc/tree1/images/multistate1.gif" align=absmiddle>仅此节点 
-        <img src="htc/tree1/images/multistate2.gif" align=absmiddle>所有子节点 
-        <img src="htc/tree1/images/multistate3.gif" align=absmiddle>未选中禁用 
-        <img src="htc/tree1/images/multistate4.gif" align=absmiddle>已选中禁用
+        <img src="htc/tree1/images/multistate0.gif"   align=absmiddle> 未选中 
+        <img src="htc/tree1/images/multistate0_2.gif" align=absmiddle> 未选中但有子节点选中 
+        <img src="htc/tree1/images/multistate1.gif"   align=absmiddle> 仅此节点 
+        <img src="htc/tree1/images/multistate2.gif"   align=absmiddle> 所有子节点 
+        <img src="htc/tree1/images/multistate3.gif"   align=absmiddle> 未选中禁用 
+        <img src="htc/tree1/images/multistate4.gif"   align=absmiddle> 已选中禁用
         )
       </td>
     </tr>
     <tr>
       <td class="t" height="30" align="right">
-        <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> <input type="button" value="确定" class="btStrong" onclick="savePermission()"/>
+        <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> 
+		<input type="button" value="确定" class="btStrong" onclick="savePermission()"/>
       </td>
     </tr>
   </table>

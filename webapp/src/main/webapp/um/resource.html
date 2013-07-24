@@ -83,39 +83,18 @@
                           <!-- 主内容区域 开始 -->
                           <td class="groove">
                             <div class="groove">
-                              <table class="full" border="0" cellspacing="2" cellpadding="0">
+                              <table class="full" border="0" cellspacing="2" cellpadding="0">                              
                                 <tr>
-                                  <td id="listContainer" class="comboContainer">
-                                    <!-- 列表区域 开始 -->
-                                    <table class="full border" border="0" cellspacing="0" cellpadding="0">
-                                      <tr>
-                                        <td id="gridTitle"><span class="icon"></span>资源列表</td>
-                                      </tr>
-                                      <tr valign="top">
-                                        <td>
-                                          <!-- tree 开始 -->
-                                          <Tree:TreeBox id="sourceTree" treeType="menu" baseurl="../core/htc/tree/"><div class="loading"></div></Tree:TreeBox>
-                                          <!-- tree 结束 -->
-                                        </td>
-                                      </tr>
-                                    </table>
-                                    <!-- 列表区域 结束 -->
-                                  </td>
-                                </tr>
-                                <tr style="display:none">
-                                  <td class="separator"></td>
-                                </tr>
-                                <tr style="display:none">
                                   <td>
                                     <!-- 标签区域 开始 -->
-                                    <WorkSpace:Box id="ws" baseurl="../core/htc/workspace/">
+                                    <WorkSpace:Box id="ws" baseurl="../framework/workspace/">
                                       <!-- page1 开始 -->
                                       <WorkSpace:Page id=page1>
                                         <table class="full" border="0" cellspacing="0" cellpadding="0">
                                           <tr valign="top">
                                             <td>
                                               <!-- xform 开始 -->
-                                              <Xform:Form id="page1Form" baseurl="../core/htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
+                                              <XForm:Box id="page1Form" baseurl="../framework/xform/"></XForm:Box>
                                               <!-- xform 结束 -->
                                             </td>
                                           </tr>
