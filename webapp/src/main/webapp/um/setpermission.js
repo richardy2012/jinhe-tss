@@ -18,6 +18,8 @@
 		URL_GET_RESOURCE_TYPE = "data/resourcetype.xml";
 		URL_PERMISSION = "data/setpermission.xml";
 		URL_SAVE_ROLE_PERMISSION = "data/_success.xml";
+
+		window.dialogArguments = {type:"", params: {isRole2Resource: "0"} };
 	}
 	
 
@@ -26,8 +28,7 @@
     }
  
     function loadInitData(){
-        var type = window.dialogArguments ? window.dialogArguments.type : null;
-        var params = window.dialogArguments ? window.dialogArguments.params : null;
+        var params = window.dialogArguments.params;
 
         var p = new HttpRequestParams();
         p.url = URL_INIT;
@@ -51,17 +52,16 @@
             Cache.XmlDatas.add(XML_SEARCH_PERMISSION, searchPermissionNode);
 
 			$X("xform", searchPermissionNode);
-			xformObj.ondatachange = function(){
-                var name = event.result.name;
+			$$("xform").ondatachange = function(){
+                var name  = event.result.name;
                 var value = event.result.newValue;
-                if("applicationId"==name){
+                if("applicationId" == name){
                     updateSearchPermissionColumn(value);
                 }
             }
 
-			//设置查询按钮操作
-            var btSearchObj = $("page3BtSearch");
-            btSearchObj.onclick = function(){
+			// 设置查询按钮操作
+            $$("page3BtSearch").onclick = function() {
                 searchPermission();
             }
         }
@@ -72,6 +72,7 @@
         var p = new HttpRequestParams();
         p.url = URL_GET_RESOURCE_TYPE;
         p.setContent("applicationId", applicationId);
+
         var request = new HttpRequest(p);
         request.onresult = function(){
             var resourceTypeNode = this.getNodeValue(XML_RESOURCE_TYPE);
@@ -79,7 +80,7 @@
             
             var xmlData = Cache.XmlDatas.get(XML_SEARCH_PERMISSION);
             if(xmlData) {
-                var oldColumn = xmlData.selectSingleNode(".//column[@name='"+name+"']");
+                var oldColumn = xmlData.selectSingleNode(".//column[@name='" + name + "']");
                 var attributes = resourceTypeNode.attributes;
                 for(var i=0; i<attributes.length; i++){
                     oldColumn.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
@@ -92,9 +93,9 @@
 
     function searchPermission(){
         var xformObj = $X("xform");
-        var applicationId   = xformObj.getData("applicationId") || "";
-        var resourceType    = xformObj.getData("resourceType") || "";
-        var permissionRank  = xformObj.getData("permissionRank") || "";
+        var applicationId   = xformObj.getData("applicationId")   || "";
+        var resourceType    = xformObj.getData("resourceType")    || "";
+        var permissionRank  = xformObj.getData("permissionRank")  || "";
         var isRole2Resource = xformObj.getData("isRole2Resource") || "";
         var roleID = xformObj.getData("roleId") || "";
 
@@ -109,16 +110,15 @@
         var request = new HttpRequest(p);
         request.onresult = function(){
             var role2PermissionNode = this.getNodeValue(XML_SET_PERMISSION);
-            var role2PermissionNodeID = XML_SET_PERMISSION;
 
             //给树节点加搜索条件属性值，以便保存时能取回
             role2PermissionNode.setAttribute("applicationId", applicationId);
             role2PermissionNode.setAttribute("resourceType", resourceType);
             role2PermissionNode.setAttribute("permissionRank", permissionRank);
-            role2PermissionNode.setAttribute("roleId", roleID);
             role2PermissionNode.setAttribute("isRole2Resource", isRole2Resource);
+			role2PermissionNode.setAttribute("roleId", roleID);
 
-            Cache.XmlDatas.add(role2PermissionNodeID, role2PermissionNode);
+            Cache.XmlDatas.add(XML_SET_PERMISSION, role2PermissionNode);
 
             if(role2PermissionNode == null) {
 				var xmlReader = new XmlReader("<actionSet></actionSet>");
@@ -159,20 +159,20 @@
 
             var nodesStr = [];
             var optionIDs = [];
-            var role2PermissionOptions = role2PermissionNode.selectNodes(".//options/option");
+            var permissionOptions = role2PermissionNode.selectNodes(".//options/option");
 
-            //获取option的id名
-            for(var i=0,iLen=role2PermissionOptions.length;i<iLen;i++){
-                var curOption = role2PermissionOptions[i];
-                var curOptionID = curOption.selectSingleNode("operationId").text;
+            // 获取option的id名
+            for(var i=0; i < permissionOptions.length; i++){
+                var curOptionID = permissionOptions[i].selectSingleNode("operationId").text;
                 optionIDs.push(curOptionID);
             }
 
-            var role2PermissionDataNodes = role2PermissionNode.selectNodes(".//treeNode");
-            for(var i=0,iLen=role2PermissionDataNodes.length;i<iLen;i++){
-                var curNode = role2PermissionDataNodes[i];
+            var permissionDataNodes = role2PermissionNode.selectNodes(".//treeNode");
+            for(var i=0; i < permissionDataNodes.length; i++){
+                var curNode = permissionDataNodes[i];
                 var curNodeID = curNode.getAttribute("id");
                 var curNodeStr = "";
+
                 //按照option的顺序获取值，并拼接字符串
                 for(var j=0,jLen=optionIDs.length;j<jLen;j++){
                     var curNodeOption = curNode.getAttribute(optionIDs[j]);

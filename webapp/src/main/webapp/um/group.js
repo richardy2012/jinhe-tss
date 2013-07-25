@@ -239,7 +239,7 @@
         }
         var item4 = {
             label:"删除",
-            callback: function() { delGridRow(URL_DEL_USER); },,
+            callback: function() { delGridRow(URL_DEL_USER); },
             icon:ICON + "del.gif",
             visible:function() { return getUserOperation("2"); }
         }
