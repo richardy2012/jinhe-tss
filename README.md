@@ -1,4 +1,4 @@
-for my kid daodao  
+for my baby mianmian  
 ============  
   
 2013-01-01: use git replace svn, still remain svn; pom adjust；h2/mysql support  
