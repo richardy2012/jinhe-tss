@@ -92,10 +92,10 @@ function $T(treeId, dataXML) {
 
 		var _treeType = eval("element." + _TREE_TREE_TYPE) ||  _TREE_TYPE_SINGLE;
 		if(_treeType == _TREE_TYPE_MULTI) {
-			tree = new MultiCheckTree(element)
+			tree = new MultiCheckTree(element);
 		} 
 		else {
-			tree = new SingleCheckTree(element)
+			tree = new SingleCheckTree(element);
 		}
 		
 		TreeCache.add(element.id, tree);

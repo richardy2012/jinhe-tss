@@ -119,3 +119,30 @@ Tree\:Box .icon {
 	margin-left: 3px;
 	margin-right: 3px;
 }
+
+
+
+Tree\:Box .extendCheckIcon {
+    width:16px;
+    height:16px;
+    cursor:hand;
+}
+Tree\:Box .extendCheckLabel {
+	color:#111;
+	font-size:12px;
+    line-height:13px;
+	cursor:default;
+}
+Tree\:Box .extendTable {
+	width:auto;
+    table-layout:fixed;
+}
+Tree\:Box .extendTable td {
+	overflow:hidden;
+	text-overflow:ellipsis;
+	width:50;
+}
+
+Tree\:Box a, Tree\:Box a.hover {
+	border: 1px solid #F7F8FD;
+}
