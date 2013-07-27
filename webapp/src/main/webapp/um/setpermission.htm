@@ -15,9 +15,20 @@
 <script language="javascript" src="../framework/framework.js"></script>
 <script language="javascript" src="../framework/balloon/balloon.js"></script>
 <script language="javascript" src="../framework/tree/tree.js"></script>
+<script language="javascript" src="../framework/tree/treeExtend.js"></script>
 <script language="javascript" src="../framework/xform/xform.js"></script>
 
 <script language="javascript" src="setpermission.js"></script>
+
+<style>
+  #xform td {
+      padding-top:0px;
+      padding-bottom:0px;
+  }
+  .comment {
+    color:#999999;
+  }
+</style>
 
 </head>
 
@@ -31,7 +42,7 @@
     </tr>
     <tr>
       <td>
-		<Tree:Box id="tree" treeType="multi" baseurl="../framework/tree/"></Tree:Box>
+		<Tree:Box id="tree" treeType="menu" baseurl="../framework/tree/"></Tree:Box>
       </td>
     </tr>
     <tr>

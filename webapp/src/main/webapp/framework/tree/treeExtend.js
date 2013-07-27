@@ -41,17 +41,34 @@ function $ET(treeId, dataXML) {
 }
 
 var ExtendTree = function(element) {
-	SingleCheckTree.call(this, element);
-
-	var _options = [];
+	Tree.call(this, element);
+ 
+	/*
+	 * 根据节点选择状态，获取图标地址（单选树）
+	 */
+	this.getCheckTypeImageSrc = function(node) {
+		var checkType   = node.getAttribute(_TREE_NODE_CHECKTYPE);
+		var canSelected = node.getAttribute(_TREE_NODE_CANSELECTED);
+		if(canSelected == 0) {
+			return this._baseUrl + _RADIO_CAN_NOT_SELECT_IMAGE;
+		}
+		if(checkType == 1) {
+			return this._baseUrl + _SINGLE_SELECTED_IMAGE;
+		}
+		return this._baseUrl + _SINGLE_NO_SELECTED_IMAGE;
+	};
+	
+	
+	this._options = [];
 
 	this.getOptions = function() {
-		return _options;
+		return this._options;
 	}
 
 	this.getOptionById = function(id) {
 		if(this.getXmlRoot()) {
-			return this.getXmlRoot().selectSingleNode("./" + _TREE_OPTIONS_NODE + "/" + _TREE_OPTION_NODE + "[./operationId='" + id + "']");
+			var option = this.getXmlRoot().selectSingleNode("./options/option[./operationId='" + id + "']")
+			return option;
 		}
 		return null;
 	}
@@ -61,12 +78,12 @@ var ExtendTree = function(element) {
 	 */
 	this.setOptions = function() {
 		if( this.getXmlRoot() ) {
-			_options = this.getXmlRoot().selectNodes("./" + _TREE_OPTIONS_NODE + "/" + _TREE_OPTION_NODE);
+			this._options = this.getXmlRoot().selectNodes("./" + _TREE_OPTIONS_NODE + "/" + _TREE_OPTION_NODE);
 
             // 增加被依赖项节点方便反向查询
             var dependedMap = {};
-			for(var i=0; i < _options.length; i++) {
-				var curOption = _options[i];
+			for(var i=0; i < this._options.length; i++) {
+				var curOption = this._options[i];
 				var operationId = curOption.selectSingleNode("./operationId").text;
 				var dependIds = curOption.selectSingleNode("./dependId").text.replace(/^\s*|\s*$/g, "");
 
@@ -79,18 +96,21 @@ var ExtendTree = function(element) {
 					dependedMap[dependId][dependedMap[dependId].length] = operationId;
 				}
 			}
-			for(var dependId in dependedMap) {
-				var option = this.getOptionById(dependId);
+			for(var dependId in dependedMap) {				
 				var node = this.getXmlRoot().ownerDocument.createElement("dependedId");
 				node.text = dependedMap[dependId].join(",");
+				
+				var option = this.getOptionById(dependId);
 				option.appendChild(node);
 			}
 		}	
 	}
 
 	this.init();
-	this.setOptions();
 }
+
+ExtendTree.prototype = SingleCheckTree.prototype;
+
  
 /*
  * 改变权限项选中状态为下一状态
@@ -181,7 +201,7 @@ ExtendRow.prototype = new function () {
      * 重新设定相关xml节点
      * 参数：	node	树节点的xml节点
      */
-    this.setXmlNode = function (node) {
+    this.initRow = function (node) {
         if(node == null) {
             for(var i=0; i < this.cells.length; i++) {
                 this.cells[i].innerHTML = "";
@@ -193,12 +213,14 @@ ExtendRow.prototype = new function () {
         this.createCells();
         this.setCells();
     }
+	
     /*
      * 获取显示节点的xml对象
      */
     this.getXmlNode = function () {
         return this.node;
     }
+	
     /*
      * 创建扩展内容的所有列
      */
@@ -215,6 +237,7 @@ ExtendRow.prototype = new function () {
             }
         }
     }
+	
     /*
      * 设定扩展内容各列内容
      */
@@ -233,6 +256,7 @@ ExtendRow.prototype = new function () {
             this.setCell(i, curNodeAttr, curOption);
         }
     }
+	
     /*
      * 设定扩展内容空列内容
      * 参数：	cellIndex	td序号
@@ -240,6 +264,7 @@ ExtendRow.prototype = new function () {
     this.setEmptyCell = function(cellIndex) {
         this.cells[cellIndex].innerText = " ";
     }
+	
     /*
      * 设定扩展内容单列内容
 	 * 参数：	cellIndex	td序号
@@ -320,9 +345,35 @@ function getExtendRow(display, obj) {
 	return display.getExtendRowByIndex(index);
 }
 
+ 
+////////////////////////////////////////////////////////////////////////////////
+//	对象名称：TreeDisplay														   //
+//	职责：	负责处理将用户可视部分的节点显示到页面上。						   //
+//			控件一切页面上的元素都有此对象生成和调度（tr对象有Row对象专门处理）//
+////////////////////////////////////////////////////////////////////////////////
+ 
+function TreeDisplay(treeObj) {
+	treeObj.element.style.overflow = 'hidden'; // 溢出部分会被隐藏
 
-ExtendDisplay {
-
+	var _windowHeight = Math.max(treeObj.element.offsetHeight - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_HEIGHT);
+	var _windowWidth  = Math.max(treeObj.element.offsetWidth  - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_WIDTH);
+	var _rowHeight    = _TREE_NODE_DISPLAY_ROW_HEIGHT;
+	var _pageSize     = Math.floor(_windowHeight / _rowHeight);
+	var _totalTreeNodes = treeObj.getXmlRoot().selectNodes(".//treeNode[../@_open='true' or @id='_rootId']");
+	var _totalTreeNodesNum = _totalTreeNodes.length;
+	
+	var _vScrollBox;
+	var _vScrollDiv;
+	var _hScrollBox;
+	var _hScrollDiv;
+	var _rootBox;
+	var _rootTable;
+	var _scrollTimer;
+	var _startNum;
+	
+	var _Rows = new Array(_pageSize);
+		
+	// extend ---------------------------------------------------------------------------
 	var _frozenWidth = 100;
 	var _exHScrollBox;
 	var _exHScrollDiv;
@@ -331,33 +382,122 @@ ExtendDisplay {
 	var _extendHeadBox;
 	var _extendHeadTable;
 	var _ExtendRows = new Array(_pageSize);
+	
+	/*
+	 * 生成默认展示的树节点。
+	 */
+	this.initTreeDisplay = function() {
+		treeObj.element.innerHTML = "";
+		
+		// 生成滚动条
+		var treeId = treeObj.element.id;
+		var _vScrollBoxName = treeId + "VScrollBox"; 
+		var _vScrollDivName = treeId + "VScrollDiv"; 
+		var _hScrollBoxName = treeId + "HScrollBox"; 
+		var _hScrollDivName = treeId + "HScrollDiv"; 
+		var _rootBoxName = treeId + "RootBox"; 
+		var _rootTableName = treeId + "RootTable"; 
 
-	this.init = function() {
+		var vScrollStr = '<div id="' + _vScrollBoxName + '" style="position:absolute;overflow-y:auto;heigth:100%;width:17px;top:0px;right:0px;"><div id="' + _vScrollDivName + '" style="width:1px"></div></div>';
+		var hScrollStr = '<div id="' + _hScrollBoxName + '" style="position:absolute;overflow-x:auto;overflow-y:hidden;heigth:17px;width:100%;bottom:0px;left:0px"><div id="' + _hScrollDivName + '" style="higth:1px"></div></div>';
+		treeObj.element.insertAdjacentHTML('afterBegin', vScrollStr + hScrollStr);
+		_vScrollBox = $$(_vScrollBoxName);
+		_vScrollDiv = $$(_vScrollDivName);
+		_hScrollBox = $$(_hScrollBoxName);
+		_hScrollDiv = $$(_hScrollDivName);
+		
+		// 生成页面上显示节点的table对象。
+		var tableStr = '<div id="' + _rootBoxName + '" style="position:absolute;overflow:hidden;top:0px;left:0px"><table id="' + _rootTableName + '" cellspacing="0"></table></div>';
+		treeObj.element.insertAdjacentHTML('afterBegin', tableStr);
+		_rootBox   = $$(_rootBoxName);
+		_rootTable = $$(_rootTableName);
+		for(var i = 0; i < _pageSize; i++) {
+			var tr = _rootTable.insertRow();
+			tr.insertCell();
+			_Rows[i] = new Row(tr, treeObj);
+		}
+		
+		/*
+		 * 纵向滚动事件触发后，延时执行reload，如果第二次触发时，上次的事件还没有执行，
+		 * 则取消上次事件，触发本次事件。为的是防止多次触发，屏幕抖动。
+		 */
+		_vScrollBox.onscroll = function() {
+			if (_scrollTimer) {
+				window.clearTimeout(_scrollTimer);
+			}
+			_scrollTimer = window.setTimeout(refresh, _TREE_SCROLL_DELAY_TIME);
+		};
+		_vScrollBox.style.height = _windowHeight; // 设置滚动条的大小
+		_vScrollDiv.style.height = (_totalTreeNodesNum - _pageSize) * _rowHeight + _windowHeight;
+		
+		/*
+		 * 横向滚动事件
+		 */
+		_hScrollBox.onscroll = function() {
+			_rootBox.scrollLeft = this.scrollLeft;
+		};
+		_hScrollBox.style.width = _windowWidth;
+		_hScrollDiv.style.width = _rootTable.style.width; 
+		
+		// 设置显示节点的table对象的大小
+		_rootBox.style.height = _windowHeight;
+		_rootBox.style.width = _windowWidth;
+		
+		// extend ---------------------------------------------------------------------------
+		/* 生成扩展内容滚动条 */
+		var hScrollStr = '<div id="treeExHScrollBox" style="position:absolute;overflow-x:auto;overflow-y:hidden;heigth:17px;width:100%;bottom:0px;left:0px;"><div id="treeExHScrollDiv" style="height:1px"></div></div>';
+		treeObj.element.insertAdjacentHTML('afterBegin', hScrollStr);
+		_exHScrollBox = $$("treeExHScrollBox");
+		_exHScrollDiv = $$("treeExHScrollDiv");
+		_exHScrollBox.onscroll = onExHScroll;
  
+		/* 生成页面上显示节点扩展内容的table对象。 */
+		var tableStr = '<div id="treeExtendBox" style="position:absolute;top:' + _TREE_HEAD_HEIGHT + 'px;left:0px;overflow:hidden;"><table id="treeExtendTable" border="1" class="extendTable"></table></div>';
+		treeObj.element.insertAdjacentHTML('afterBegin', tableStr);
+		_extendBox = $$("treeExtendBox");
+		_extendTable = $$("treeExtendTable");
+		
+		/* 生成页面上显示节点扩展内容的table的各行对象。 */
+		for(var i = 0; i < _pageSize; i++) {
+			var tr = _extendTable.insertRow();
+			tr.insertCell();
+			_ExtendRows[i] = new ExtendRow(tr, treeObj);
+		}
  
-		createExtendScrollElement();
- 
-		createExtendTableElement();
-		createExtendHeadTableElement();
-
- 
+		/* 生成页面上显示节点扩展内容的表头对象。 */
+		var tableStr = '<div id="treeExtendHeadBox" style="position:absolute;top:0px;height:'+_TREE_HEAD_HEIGHT+'px;left:0px;overflow:hidden;"><table id="treeExtendHeadTable" border="1" class="extendTable"></table></div>';
+		treeObj.element.insertAdjacentHTML('afterBegin', tableStr);
+		_extendHeadBox = $$("treeExtendHeadBox");
+		_extendHeadTable = $$("treeExtendHeadTable");
+		createExtendHeadTableRows();
+		
+		setScrollBoxSize();
+		setScrollDivSize();
+		
+		setTableElementSize();
 		setExtendScrollElementSize();
- 
 		setExtendTableElementSize();
 		setExtendHeadTableElementSize();
-
-	}
-
-
-	/* 确定冻结部分宽度 */
-	function setFrozenWidth() {
-		var totalColumns = treeObj.getOptions().length;
-		if(totalColumns > 0) {
-			_frozenWidth = 250;
-		} else {
-			_frozenWidth = _windowWidth;
+		
+		_extendTable.onclick = function() {
+			var eventObj = window.event.srcElement;
+			window.event.returnValue = false;
+		 
+			var row = getExtendRow(eventObj);
+			if(row instanceof ExtendRow) {
+				var treeNode = instanceTreeNode(row.getXmlNode());
+				if((row instanceof ExtendRow)  && (treeNode instanceof TreeNode)) {
+					treeNode.changeExtendSelectedState(eventObj.id, event.shiftKey);
+				}
+			} 
 		}
 	}
+	
+	function onExHScroll() {
+		_extendBox.scrollLeft = this.scrollLeft;
+		_extendHeadBox.scrollLeft = this.scrollLeft;
+	}
+	
 	/*
 	 * 获取冻结(或非冻结)部分宽度
 	 * 参数：   boolean:frozen         是否要获取冻结部分(默认true)
@@ -365,18 +505,11 @@ ExtendDisplay {
 	 */
 	function getFrozenWidth(frozen) {
         if( frozen ) {
-            return Math.max(1, _windowWidth - _frozenWidth);
+            return _frozenWidth;
         } 
-		return _frozenWidth;
+		return Math.max(1, _windowWidth - _frozenWidth);
 	}
-
-	/* 设置滚动条的大小 */
-	function setScrollElementSize() {
-		setScrollBoxSize();
-
-		_vScrollDiv.style.height = (_totalTreeNodesNum - _pageSize) * _rowHeight + _windowHeight;
-		setScrollDivSize();
-	}
+ 
 	
 	/* 设置滚动条占位器的大小 */
 	function setScrollDivSize() {
@@ -389,7 +522,7 @@ ExtendDisplay {
 	
 	/* 设置滚动条容器的大小  */
 	function setScrollBoxSize() {
-        var frozenWidth = getFrozenWidth(true);
+        var frozenWidth   = getFrozenWidth(true);
         var unfrozenWidth = getFrozenWidth(false);
         var _options = treeObj.getOptions();
 
@@ -401,6 +534,7 @@ ExtendDisplay {
 			_vScrollBox.style.display = 'none';
 			_hScrollBox.style.width = frozenWidth + (0 < _options.length ? 0 : _TREE_SCROLL_BAR_WIDTH);
 		}
+		
 		if(_rootTable.offsetWidth > frozenWidth || _extendTable.offsetWidth > unfrozenWidth) {
 			_hScrollBox.style.display = 'block';
 			_vScrollBox.style.height = _windowHeight;
@@ -409,16 +543,7 @@ ExtendDisplay {
 			_vScrollBox.style.height = _windowHeight + _TREE_SCROLL_BAR_WIDTH;
 		}
 	}
- 	
-	/* 生成扩展内容滚动条 */
-	function createExtendScrollElement() {
-		var hScrollStr = '<div id="treeExHScrollBox" style="position:absolute;overflow-x:auto;overflow-y:hidden;heigth:17px;width:100%;bottom:0px;left:0px;"><div id="treeExHScrollDiv" style="height:1px"></div></div>';
-		element.insertAdjacentHTML('afterBegin', hScrollStr);
-		_exHScrollBox = element.all("treeExHScrollBox");
-		_exHScrollDiv = element.all("treeExHScrollDiv");
-		_exHScrollBox.onscroll = onExHScroll;
-	}
- 
+	
 	function setExtendScrollElementSize() {
 		setExtendScrollBoxPosition();
 		setExtendScrollBoxSize();
@@ -452,49 +577,23 @@ ExtendDisplay {
 		}
 		_exHScrollBox.style.visibility = visible ? "visible" : "hidden";
 	}
-
-	/* 生成页面上显示节点的table对象。 */
-	function createTableElement() {
-		var tableStr = '<div id="treeRootBox" style="position:absolute;overflow:hidden;top:'+_TREE_HEAD_HEIGHT+'px;left:0px;"><table id="treeRootTable" cellspacing="0"></table></div>';
-		element.insertAdjacentHTML('afterBegin', tableStr);
-		_rootBox = element.all("treeRootBox");
-		_rootTable = element.all("treeRootTable");
-		createTableRows(0,_pageSize);
-	}
 	
-	/* 生成页面上显示节点的table的各行对象。 */
-	function createTableRows(begin,end) {
-		for(var i = begin; i < end; i++) {
-			var tr = _rootTable.insertRow();
-			tr.insertCell();
-			_Rows[i] = new Row(tr);
-		}
-	}
-
 	/* 设置显示节点的table对象的大小 */
 	function setTableElementSize() {
         var frozenWidth = getFrozenWidth(true);
         var _options = treeObj.getOptions();
 
-		if(_totalTreeNodesNum > _pageSize || 0<_options.length) {
+		if(_totalTreeNodesNum > _pageSize || 0 < _options.length) {
             _rootBox.style.width = frozenWidth;
-		}else{
+		} else {
 			_rootBox.style.width = frozenWidth + _TREE_SCROLL_BAR_WIDTH;
 		}
+		
 		if(_rootTable.offsetWidth > frozenWidth) {
 			_rootBox.style.height = _windowHeight;
-		}else{
+		} else {
 			_rootBox.style.height = _windowHeight + _TREE_SCROLL_BAR_WIDTH;
 		}
-	}
-	
-	/* 生成页面上显示节点扩展内容的表头对象。 */
-	function createExtendHeadTableElement() {
-		var tableStr = '<div id="treeExtendHeadBox" style="position:absolute;top:0px;height:'+_TREE_HEAD_HEIGHT+'px;left:0px;overflow:hidden;"><table id="treeExtendHeadTable" border="1" class="extendTable"></table></div>';
-		element.insertAdjacentHTML('afterBegin', tableStr);
-		_extendHeadBox = element.all("treeExtendHeadBox");
-		_extendHeadTable = element.all("treeExtendHeadTable");
-		createExtendHeadTableRows();
 	}
 	
 	/* 生成页面上显示节点扩展内容的表头的行对象。*/
@@ -515,98 +614,197 @@ ExtendDisplay {
 	
 	/* 设置显示节点扩展内容的表头对象的大小 */
 	function setExtendHeadTableElementSize() {
-        var frozenWidth = getFrozenWidth(true);
+        var frozenWidth   = getFrozenWidth(true);
         var unfrozenWidth = getFrozenWidth(false);
         var _options = treeObj.getOptions();
 
 		if(_totalTreeNodesNum > _pageSize || 0 < _options.length) {
-			_extendHeadBox.style.left = frozenWidth;
+			_extendHeadBox.style.left  = frozenWidth;
 			_extendHeadBox.style.width = unfrozenWidth;
 		} else {
 			_extendHeadBox.style.left = frozenWidth + _TREE_SCROLL_BAR_WIDTH;
 			_extendHeadBox.style.width = unfrozenWidth;
 		}
 	}
-	
-	/* 生成页面上显示节点扩展内容的table对象。 */
-	function createExtendTableElement() {
-		var tableStr = '<div id="treeExtendBox" style="position:absolute;top:'+_TREE_HEAD_HEIGHT+'px;left:0px;overflow:hidden;"><table id="treeExtendTable" border="1" class="extendTable"></table></div>';
-		element.insertAdjacentHTML('afterBegin', tableStr);
-		_extendBox = element.all("treeExtendBox");
-		_extendTable = element.all("treeExtendTable");
-		createExtendTableRows(0,_pageSize);
-	}
-	
-	/* 生成页面上显示节点扩展内容的table的各行对象。 */
-	function createExtendTableRows(begin,end) {
-		for(var i = begin; i < end; i++) {
-			var tr = _extendTable.insertRow();
-			tr.insertCell();
-			_ExtendRows[i] = new ExtendRow(tr);
-		}
-	}
-	
-	/* 设置显示节点扩展内容的table对象的大小 */
+		
 	function setExtendTableElementSize() {
         var frozenWidth = getFrozenWidth(true);
         var unfrozenWidth = getFrozenWidth(false);
         var _options = treeObj.getOptions();
 
-		if(_totalTreeNodesNum > _pageSize || 0<_options.length) {
+		if(_totalTreeNodesNum > _pageSize || 0 < _options.length) {
 			_extendBox.style.left = frozenWidth;
-			_extendBox.style.width = unfrozenWidth;
-		}else{
-			_extendBox.style.left = frozenWidth + _TREE_SCROLL_BAR_WIDTH;
-			_extendBox.style.width = unfrozenWidth;
+		} else {
+			_extendBox.style.left  = frozenWidth + _TREE_SCROLL_BAR_WIDTH;
 		}
-		if(_rootTable.offsetWidth > frozenWidth) {
-			_extendBox.style.height = _windowHeight;
-		}else{
-			_extendBox.style.height = _windowHeight + _TREE_SCROLL_BAR_WIDTH;
-		}
+		
+		_extendBox.style.width = unfrozenWidth;
+		_extendBox.style.height = _windowHeight + (_rootTable.offsetWidth > frozenWidth ? 0 : _TREE_SCROLL_BAR_WIDTH);
 	}
 	
-	/* 根据滚动状态，显示可视范围内的树节点。
-	 * 作者：scq
-	 * 时间：2004-6-7
+	
+	treeObj.element.onmousewheel = function() {
+		_vScrollBox.scrollTop += -Math.round(window.event.wheelDelta / 120) * _rowHeight;
+	}
+	
+	treeObj.element.onkeydown = function() {
+		switch (event.keyCode) {
+		    case 33:	//PageUp
+				_vScrollBox.scrollTop -= _pageSize * _rowHeight; 
+				return false;
+		    case 34:	//PageDown
+				_vScrollBox.scrollTop += _pageSize * _rowHeight;
+				return false;
+		    case 35:	//End
+				_vScrollBox.scrollTop = _vScrollDiv.offsetHeight - _windowHeight;
+				return false;
+		    case 36:	//Home
+				_vScrollBox.scrollTop = 0;
+				return false;
+		    case 37:	//Left
+				_hScrollBox.scrollLeft -= 10;
+				return false;
+		    case 38:	//Up
+				_vScrollBox.scrollTop -= _rowHeight;
+				return false;
+		    case 39:	//Right
+				_hScrollBox.scrollLeft += 10;
+				return false;
+		    case 40:	//Down
+				_vScrollBox.scrollTop += _rowHeight;
+				return false;
+		}
+	}
+ 
+	/*
+	 * 根据滚动状态，显示可视范围内的树节点。
 	 */
 	this.reload = function refresh() {
-		var st = new Date();
+		var startTime = new Date();
+		
 		if(_totalTreeNodesNum <= _pageSize) {
 			_startNum = 0;
-		}else{
+		} else {
 			_startNum = Math.ceil(_vScrollBox.scrollTop  / _rowHeight);
 		}
-
-		//显示节点
+		
+		// 显示节点
 		for(var i = 0; i < _pageSize; i++) {
 			var nodeIndex = i + _startNum;
 			if(nodeIndex < _totalTreeNodesNum) {
-				_Rows[i].setXmlNode(_totalTreeNodes[nodeIndex]);
-				_ExtendRows[i].setXmlNode(_totalTreeNodes[nodeIndex]);
-			}else{
-				_Rows[i].setXmlNode();
-				_ExtendRows[i].setXmlNode();
+				_Rows[i].initRow(_totalTreeNodes[nodeIndex]);
+				_ExtendRows[i].initRow(_totalTreeNodes[nodeIndex]);
+			} else {
+				_Rows[i].initRow();
+				_ExtendRows[i].initRow();
 			}
 		}
+		//同步横向滚动条的大小
+		_hScrollDiv.style.width = _rootTable.offsetWidth;
 
 		setFrozenWidth();
 		setExtendScrollDivSize();
         createExtendHeadTableRows();
         setExtendHeadTableElementSize();
-
+		
 		refreshUI();
 
-		var et = new Date();
-		window.status=et-st;
+		window.status = new Date() - startTime;  // 看看效率如何
+	}
+	
+	/* 确定冻结部分宽度 */
+	function setFrozenWidth() {
+		var totalColumns = treeObj.getOptions().length;
+		_frozenWidth = totalColumns > 0 ? 250 : _windowWidth;
+	}
+	
+	/*
+	 * 根据页面上的行数，获取相应的Row对象
+	 */
+	this.getRowByIndex = function (index) {
+		if(index >= _pageSize || index < 0) {
+			alert("TreeDisplay对象：行序号[" + index + "]超出允许范围[0 - " + _pageSize + "]！");
+			return null;
+		}
+		return _Rows[index];
+	}
+	
+	/*
+	 * 重新获取所有可以显示的节点数组
+	 */
+	this.resetTotalTreeNodes = function() {
+		_totalTreeNodes = treeObj.getXmlRoot().selectNodes(".//treeNode[../@_open='true' or @id='_rootId']");
+		_totalTreeNodesNum = _totalTreeNodes.length;
+
+		_vScrollDiv.style.height = Math.max(1, (_totalTreeNodesNum - _pageSize) * _rowHeight + _windowHeight);
 	}
 
 	/*
+	 * 将节点滚动到可视范围之内
+	 */
+	this.scrollTo = function(node) {
+		var nodeIndex = null;
+		for(var i = 0; i < _totalTreeNodesNum; i++) {
+			if(_totalTreeNodes[i] == node) {
+				nodeIndex = i;
+				break;
+			}
+		}
+		if(nodeIndex == null) return;
+
+		var childNums = node.selectNodes(".//treeNode[../@_open = 'true']").length;
+		if(childNums + 1 > _pageSize || nodeIndex < _startNum  || nodeIndex >= _startNum + _pageSize) {
+            _vScrollBox.style.display = 'block';
+			_vScrollBox.scrollTop = nodeIndex * _rowHeight;
+		}
+		else if (nodeIndex + childNums + 1 - _pageSize > _startNum) {
+            _vScrollBox.style.display = 'block';
+			_vScrollBox.scrollTop = (nodeIndex + childNums + 1 - _pageSize) * _rowHeight;
+		} 
+		else {
+			this.reload();
+		}
+	}
+	
+	/* 向上滚动一个节点 */
+	this.scrollUp = function() {
+		_vScrollBox.scrollTop -= _rowHeight;
+	}
+	
+	/* 向下滚动一个节点 */
+	this.scrollDown = function() {
+		_vScrollBox.scrollTop += _rowHeight;
+	}
+	
+	/* 获取滚动条的位置 */
+	this.getScrollTop = function() {
+		return _vScrollBox.scrollTop;
+	}
+	
+	/*
+	 * 刷新页面展示：数据展示框、滚动条等
+	 */
+	function refreshUI() {
+		setScrollBoxSize();
+        setExtendScrollBoxPosition();
+        setExtendScrollBoxSize();
+        setTableElementSize();
+        setExtendTableElementSize();
+        setExtendHeadTableElementSize();
+
+		// 同步横向滚动条的大小
+		setScrollDivSize();
+
+		refreshExtendScrollVisible();
+	}
+	
+	/* 获取页面上所能展示的行数 */
+	this.getPageSize = function () {
+	    return _pageSize;
+	}
+	
+	/*
 	 * 根据页面上的行数，获取相应的ExtendRow对象
-	 * 参数：	index	行序号
-	 * 返回值：	Row对象/null
-	 * 作者：scq
-	 * 时间：2004-6-29
 	 */
 	this.getExtendRowByIndex = function (index) {
 		if(index >= _pageSize || index < 0) {
@@ -615,119 +813,6 @@ ExtendDisplay {
 		}
 		return _ExtendRows[index];
 	}
- 
-	function onExHScroll() {
-		_extendBox.scrollLeft = this.scrollLeft;
-		_extendHeadBox.scrollLeft = this.scrollLeft;
-	}
-
-	/*
-	 * 当窗口大小改变后，初始化所有相关参数，并且重新计算所要显示的节点。
-	 * 参数：
-	 * 返回值：
-	 * 作者：scq
-	 * 时间：2004-6-8
-	 */
-	function resize() {
-		//2005-9-8 增加延时，避免极短时间内重复触发多次
-		clearTimeout(element._resizeTimeout);
-		element._resizeTimeout = setTimeout(function() {
-
-			var tempWindowHeight = Math.max(element.offsetHeight - _TREE_SCROLL_BAR_WIDTH - _TREE_HEAD_HEIGHT, _TREE_BOX_MIN_HEIGHT);
-			var tempWindowWidth = Math.max(element.offsetWidth - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_WIDTH);
-			if(_windowHeight!=tempWindowHeight || _windowWidth!=tempWindowWidth) {
-				_windowHeight = tempWindowHeight;
-				_windowWidth = tempWindowWidth;
-			}else{
-				//触发前后尺寸无变化
-				return ;
-			}
-				
-			var pageSize = Math.floor(_windowHeight / _rowHeight);
-			setScrollBoxSize();
-			setExtendScrollElementSize();
-
-			setTableElementSize();
-			setExtendTableElementSize();
-            setExtendHeadTableElementSize();
-
-			//2005-9-8 修正尺寸变化时行数显示错误问题
-			if(pageSize > _pageSize) {//高度增加时
-
-				_Rows = new Array(pageSize);
-				_ExtendRows = new Array(pageSize);
-
-				createTableRows(_pageSize,pageSize);
-				createExtendTableRows(_pageSize,pageSize);
-
-				for(var i = 0; i < _pageSize; i++) {
-					var tr = _rootTable.rows[i];
-					_Rows[i] = new Row(tr);
-
-					var tr = _extendTable.rows[i];
-					_ExtendRows[i] = new ExtendRow(tr);
-				}
-				_pageSize = pageSize;
-				refresh();
-
-			}else if(pageSize < _pageSize) {//高度减少时
-
-				_Rows = new Array(pageSize);
-				_ExtendRows = new Array(pageSize);
-
-				for(var i = 0; i < pageSize; i++) {
-					var tr = _rootTable.rows[i];
-					_Rows[i] = new Row(tr);
-
-					var tr = _extendTable.rows[i];
-					_ExtendRows[i] = new ExtendRow(tr);
-				}
-				for(var i = pageSize; i < _pageSize; i++) {
-					_rootTable.deleteRow(pageSize);
-					_extendTable.deleteRow(pageSize);
-				}
-				_pageSize = pageSize;
-				refresh();
-
-			}else{
-				refreshUI();
-			}
-		},20);
-	}
 	
-	/*
-	 * 刷新页面展示：数据展示框、滚动条等
-	 * 作者：scq
-	 * 时间：2004-6-8
-	 */
-	function refreshUI() {
-        setScrollBoxSize();
-        setExtendScrollBoxPosition();
-        setExtendScrollBoxSize();
-        setTableElementSize();
-        setExtendTableElementSize();
-        setExtendHeadTableElementSize();
-
-		//同步横向滚动条的大小
-		setScrollDivSize();
-
-		refreshExtendScrollVisible();
-	}
+	this.initTreeDisplay();
 }
-
-
-
-$$("treeExtendBox").onclick = function() {
-	var eventObj = window.event.srcElement;
-	window.event.returnValue = false;
- 
-	var row = getExtendRow(eventObj);
-	if(row instanceof ExtendRow) {
-		var treeNode = instanceTreeNode(row.getXmlNode());
-		if((row instanceof ExtendRow)  && (treeNode instanceof TreeNode)) {
-			treeNode.changeExtendSelectedState(eventObj.id, event.shiftKey);
-		}
-	} 
-}
-
-

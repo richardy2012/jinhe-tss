@@ -3,7 +3,7 @@
      */
     XML_SEARCH_PERMISSION = "SearchPermission";
     XML_RESOURCE_TYPE = "ResourceType";
-    XML_SET_PERMISSION = "setPermission";
+    XML_SET_PERMISSION = "SetPermission";
 
     /*
      *	XMLHTTP请求地址汇总
@@ -125,7 +125,7 @@
 				role2PermissionNode = new XmlNode(xmlReader.documentElement);
 			}
 
-			var treeObj = $T("tree", role2PermissionNode);
+			var treeObj = $ET("tree", role2PermissionNode);
 			treeObj.onExtendNodeChange = function(eventObj) {
 				onExtendNodeChange(eventObj);
 			}
