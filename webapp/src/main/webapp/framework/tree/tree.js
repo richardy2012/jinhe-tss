@@ -129,6 +129,7 @@ var Tree = function(element) {
 	var eventNodeMoved       = new EventFirer(element, "onTreeNodeMoved");
 	var eventTreeChange      = new EventFirer(element, "onChange");
 	var eventNodeRightClick  = new EventFirer(element, "onTreeNodeRightClick");
+	var eventExtendNodeChange = new EventFirer(element, "onExtendNodeChange"); // 扩展项（权限项）状态改变
 	
 	this.element = element;
 	this.element.className = _TREE_STYLE;	
@@ -480,6 +481,7 @@ var Tree = function(element) {
 	this.element.onclick = function() {
 		var srcElement = window.event.srcElement;
 		window.event.returnValue = false;
+
 		var row = getRow(srcElement);
 		if(row instanceof Row) {
 			var treeNode = instanceTreeNode(row.node, oThis);

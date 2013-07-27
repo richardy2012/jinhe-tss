@@ -158,13 +158,13 @@
             p.setContent("isRole2Resource", isRole2Resource);
 
             var nodesStr = [];
-            var optionIDs = [];
+            var optionIds = [];
             var permissionOptions = role2PermissionNode.selectNodes(".//options/option");
 
             // 获取option的id名
             for(var i=0; i < permissionOptions.length; i++){
                 var curOptionID = permissionOptions[i].selectSingleNode("operationId").text;
-                optionIDs.push(curOptionID);
+                optionIds.push(curOptionID);
             }
 
             var permissionDataNodes = role2PermissionNode.selectNodes(".//treeNode");
@@ -173,109 +173,108 @@
                 var curNodeID = curNode.getAttribute("id");
                 var curNodeStr = "";
 
-                //按照option的顺序获取值，并拼接字符串
-                for(var j=0,jLen=optionIDs.length;j<jLen;j++){
-                    var curNodeOption = curNode.getAttribute(optionIDs[j]);
+                // 按照option的顺序获取值，并拼接字符串
+                for(var j=0; j < optionIds.length; j++){
+                    var curNodeOption = curNode.getAttribute(optionIds[j]);
 
-                    //2007-4-19 父节点是2(所有子节点)的，则子节点不需要传2
-                    if("2"==curNodeOption){
+                    // 父节点是2(即所有子节点全选中)的，则子节点不需要传2，后台会自动补齐
+                    if("2" == curNodeOption){
                         var curParentNode = curNode.getParent();
-                        var curParentNodeOption = curParentNode.getAttribute(optionIDs[j]);
-                        if("2"==curParentNodeOption){
+                        var curParentNodeOption = curParentNode.getAttribute(optionIds[j]);
+                        if("2" == curParentNodeOption){
                             curNodeOption = "0";
                         }
                     }
 
-                    curNodeStr += curNodeOption||"0";
+                    curNodeStr += curNodeOption || "0";
                 }
-                //整行全部标记至少有一个为1或者2才允许提交
-                if("0"==isRole2Resource || true == /(1|2)/.test(curNodeStr)){
+
+                // 整行全部标记至少有一个为1或者2才允许提交，都是0的话没必要提交
+                if("0" == isRole2Resource || true == /(1|2)/.test(curNodeStr)){
                     nodesStr.push(curNodeID + "|" + curNodeStr);                
                 }
             }
 
-            //即使一行数据也没有，也要执行提交
+            // 即使一行数据也没有，也要执行提交
             flag = true;
-            p.setContent(XML_SET_PERMISSION,nodesStr.join(","));
+            p.setContent(XML_SET_PERMISSION, nodesStr.join(","));
         }
 
-        if(true==flag){
+        if( flag ) {
             var request = new HttpRequest(p);
-            request.onsuccess = function(){
-            }
             request.send();
         }
     }
+
     /*
      *  函数说明：点击更改权限
-     *            选中状态：1仅此选中/2当前及所有子节点选中/0未选
-     *            纵向依赖：2选中上溯，取消下溯/3选中下溯，取消上溯
-     *  参数：	
-     *  返回值：
+     *            选中状态：1仅此选中 / 2当前及所有子节点选中 / 0未选
+     *            纵向依赖：2选中上溯，取消下溯 / 3选中下溯，取消上溯
      */
     function onExtendNodeChange(eventObj){
         var treeObj = $("tree");
 
-        var treeNode = eventObj.treeNode;
-		var curState = eventObj.defaultValue;
+        var treeNode  = eventObj.treeNode;
+		var curState  = eventObj.defaultValue;
 		var nextState = eventObj.newValue;
-		var id = eventObj.optionId;
-        var shiftKey = eventObj.shiftKey;
+		var optionId  = eventObj.optionId;
+        var shiftKey  = eventObj.shiftKey;
 
-        var option = new XmlNode(treeObj.getOptionById(id));
+        var option = new XmlNode(treeObj.getOptionById(optionId));
         var dependParent = option.selectSingleNode("dependParent");
         if( dependParent ) {
-            dependParent = dependParent.text.replace(/^\s*|\s*$/g,"");
+            dependParent = dependParent.text.replace(/^\s*|\s*$/g, "");
         }
 
         if(curState != nextState){
             // 纵向依赖3选中时，直接转入目标状态2(所有子节点)
-            if("3"==dependParent && "1"==nextState){
-                treeNode.changeExtendSelectedState(id, shiftKey, "2");
+            if("3" == dependParent && "1" == nextState) {
+                treeNode.changeExtendSelectedState(optionId, shiftKey, "2");
                 eventObj.returnValue = false; // 阻止原先设置为1的操作
                 return;
             }
 
             // 横向依赖
-            if("1"==nextState) {
-                setDependSelectedState(treeNode,id,nextState); // 仅此选中时同时选中依赖项
+            if("1" == nextState) {
+                setDependSelectedState(treeNode, optionId, nextState); // 仅此选中时同时选中依赖项
             } 
-			else if("2"==nextState) {
-                setDependSelectedState(treeNode,id,nextState); // 所有子节点选中时同时选中依赖项
+			else if("2 "== nextState) {
+                setDependSelectedState(treeNode, optionId, nextState); // 所有子节点选中时同时选中依赖项
             } 
-			else if("0"==nextState) {
-                setDependedSelectedState(treeNode,id,nextState); // 取消时同时取消被依赖项
+			else if("0" == nextState) {
+                setDependedSelectedState(treeNode, optionId, nextState); // 取消时同时取消被依赖项
             }
 
             // 纵向依赖
             if( dependParent ) {
-                if(("2"==dependParent && "1"==nextState) || ("3"==dependParent && "0"==nextState)){                   
-                    setParentSelectedState(treeNode, id, nextState); // 纵向依赖2选中或者3取消时，上溯
+                if(("2" == dependParent && "1" == nextState) || ("3" == dependParent && "0" == nextState)) {                   
+                    setParentSelectedState(treeNode, optionId, nextState);  // 纵向依赖2选中或者3取消时，上溯
                 }
-				else if("2"==dependParent && "2"==nextState){                   
-                    setParentSelectedState(treeNode, id, "1"); // 纵向依赖2选中，上溯
+				else if("2" == dependParent && "2" == nextState) {                   
+                    setParentSelectedState(treeNode, optionId, "1"); // 纵向依赖2选中，上溯，父节点半勾
                 }
-				else if(("2"==dependParent && "0"==nextState) || ("3"==dependParent && "1"==nextState)){                   
-                    setChildsSelectedState(treeNode, id, nextState); // 纵向依赖2取消或者3选中时，下溯
+				else if(("2" == dependParent && "0" == nextState) || ("3" == dependParent && "1" == nextState)) {                   
+                    setChildsSelectedState(treeNode, optionId, nextState); // 纵向依赖2取消或者3选中时，下溯
                 }
             }
 
-            //当前节点目标状态是2(所有子节点)时，下溯
-            if("2"==nextState){
-                setChildsSelectedState(treeNode,id,nextState);
+            // 当前节点目标状态是2(所有子节点)时，下溯
+            if("2" == nextState){
+                setChildsSelectedState(treeNode, optionId, nextState);
             }
 
-            //当前节点目标状态是0或者1，则设置父节点仅此
-            if("0"==nextState || "1"==nextState){
-                setParentSingleState(treeNode,id);
+            // 当前节点目标状态是0或者1，则设置父节点仅此
+            if("0" == nextState || "1" == nextState){
+                setParentSingleState(treeNode, optionId);
             }
 
             //同时按下shift键时
             if(true==shiftKey){
-                setChildsSelectedState(treeNode,id,nextState,shiftKey);
+                setChildsSelectedState(treeNode,optionId,nextState,shiftKey);
             }
         }
     }
+
 	/*
 	 * 设置横向依赖项选中状态
 	 * 参数：	treeNode:treeNode       节点对象
@@ -294,9 +293,9 @@
 				var curId = curIds[i];
 				var curState = treeNode.getAttribute(curId);
 
-				//目标状态与当前状态不同(如果当前已经是2，而目标是1则不执行)
+				// 目标状态与当前状态不同(如果当前已经是2，而目标是1则不执行)
 				if(nextState != curState && ("2" != curState || "1" != nextState)){
-					treeNode.changeExtendSelectedState(curId,null,nextState);
+					treeNode.changeExtendSelectedState(curId, null, nextState);
 				}
 			}
         }

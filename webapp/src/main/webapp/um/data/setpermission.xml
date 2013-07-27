@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Response>
 	<SetPermission>
 		<actionSet title="" openednodeid="r1.0.1">
@@ -68,10 +68,12 @@
 				<treeNode id="r2.9" name="资源2.9" href="" pstate="2"/>
 				<treeNode id="r2.13" name="资源2.13" href="" pstate="2"/>
 			</treeNode>
-			<!-- <treeNode id="r2" name="资源2" href="" pstate="2" opt103="1">
+
+			<treeNode id="r2" name="资源2" href="" pstate="2" opt103="1">
 				<treeNode id="r2.1" name="资源2.1" href="" pstate="2" opt104="1"/>
-			</treeNode> -->
-			<!-- <treeNode id="r3" name="资源3" href="" opt101="1" opt102="1" opt103="1" opt104="1" opt105="1" opt108="1" opt109="1" /> -->
+			</treeNode>
+			<treeNode id="r3" name="资源3" href="" opt101="1" opt102="1" opt103="1" opt104="1" opt105="1" opt108="1" opt109="1" />
+
 		</actionSet>
 	</SetPermission>
 </Response>

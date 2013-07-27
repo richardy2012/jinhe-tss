@@ -557,6 +557,15 @@ Element.createElement = function(tagName, ns) {
 	return obj;
 }
 
+Element.createElement = function(tagName, className) {
+	var element = document.createElement(tagName);
+	if( className ) {
+		Element.addClass(element, className)
+	}
+	return element;
+}
+
+
 Element.show = function(element) {
 	element.style.display = "block"; 
 	element.style.position = "absolute";  
