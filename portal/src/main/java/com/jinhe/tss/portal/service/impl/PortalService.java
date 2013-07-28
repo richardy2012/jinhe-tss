@@ -27,7 +27,7 @@ import com.jinhe.tss.portal.entity.Layout;
 import com.jinhe.tss.portal.entity.Navigator;
 import com.jinhe.tss.portal.entity.PersonalTheme;
 import com.jinhe.tss.portal.entity.Portal;
-import com.jinhe.tss.portal.entity.PortalStructure;
+import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
 import com.jinhe.tss.portal.entity.ThemeInfo;
 import com.jinhe.tss.portal.entity.ThemeInfoId;
@@ -48,7 +48,7 @@ public class PortalService implements IPortalService {
     
     //* ******************************************      获取门户结构操作     ******************************************************
 
-    public PortalStructure getPortalStructureById(Long id) { 
+    public Structure getPortalStructureById(Long id) { 
         return portalDao.getEntity(id); 
     }
    
@@ -128,13 +128,13 @@ public class PortalService implements IPortalService {
         
         // 根据portalId获取一个完整的门户结构，并且根据传入的themeId获取各个门户结构相对应该主题的主题信息，设置到门户结构对象上
         String hql = " from PortalStructure o where o.portalId = ? and o.disabled <> 1 order by o.decode ";    
-        List<PortalStructure> structuresList = (List<PortalStructure>) portalDao.getEntities(hql, portalId);
+        List<Structure> structuresList = (List<Structure>) portalDao.getEntities(hql, portalId);
         
-        PortalStructure rootps = portalDao.getRootPortalStructure(portalId);
+        Structure rootps = portalDao.getRootPortalStructure(portalId);
         structuresList.remove(rootps); // 去除根节点
         portalDao.evict(rootps);
         
-        for( PortalStructure ps : structuresList ){
+        for( Structure ps : structuresList ){
             portalDao.evict(ps);
             
             ThemeInfo info = themeInfosMap.get(ps.getId());
@@ -171,8 +171,8 @@ public class PortalService implements IPortalService {
         return node;
     }
 
-    public PortalStructure getPoratalStructure(Long psId) {
-        PortalStructure ps = portalDao.getEntity(psId);
+    public Structure getPoratalStructure(Long psId) {
+        Structure ps = portalDao.getEntity(psId);
         Portal portal = portalDao.getPortalById(ps.getPortalId());
         if(ps.isRootPortal()) {
             ps = new PortalStructureWrapper(ps, portal);
@@ -211,7 +211,7 @@ public class PortalService implements IPortalService {
         return ps;
     } 
 
-    public PortalStructure createPortalStructure(PortalStructureWrapper psw) {
+    public Structure createPortalStructure(PortalStructureWrapper psw) {
         Portal portal;
         if( psw.isRootPortal() ) {  // 新增门户根节点
             portal = (Portal) portalDao.createObject(psw.getPortal()); //先保存Portal对象，得到生成的Id
@@ -235,7 +235,7 @@ public class PortalService implements IPortalService {
             portal = portalDao.getPortalById(psw.getPortalId());
         }
         
-        PortalStructure returnEntity = savePortalStructure(psw.getPortalStructure());
+        Structure returnEntity = savePortalStructure(psw.getPortalStructure());
         psw = new PortalStructureWrapper(returnEntity, portal);
         
         saveThemeInfo(psw);
@@ -243,8 +243,8 @@ public class PortalService implements IPortalService {
         return psw;
     }
     
-    public PortalStructure updatePortalStructure(PortalStructureWrapper psw) {
-        PortalStructure returnEntity = savePortalStructure(psw.getPortalStructure());
+    public Structure updatePortalStructure(PortalStructureWrapper psw) {
+        Structure returnEntity = savePortalStructure(psw.getPortalStructure());
         Portal portal = portalDao.getPortalById(psw.getPortalId());
         psw = new PortalStructureWrapper(returnEntity, portal);
         
@@ -256,7 +256,7 @@ public class PortalService implements IPortalService {
     /**
      * 因为decode生成需要拦截dao的方法（执行前拦截），如果在dao中设置seqNo，会导致拦截时还没有生成seqNo。
      */
-    private PortalStructure savePortalStructure(PortalStructure ps){
+    private Structure savePortalStructure(Structure ps){
         if(ps.getId() == null) {
             ps.setSeqNo(portalDao.getNextSeqNo(ps.getParentId()));
         }
@@ -309,11 +309,11 @@ public class PortalService implements IPortalService {
     }
 
     public void delete(Long id) {
-        PortalStructure ps = portalDao.getEntity(id);
+        Structure ps = portalDao.getEntity(id);
         
         // 删除一个枝
-        List<PortalStructure> branch = portalDao.getChildrenById(id); 
-        for( PortalStructure node : branch ) {
+        List<Structure> branch = portalDao.getChildrenById(id); 
+        for( Structure node : branch ) {
         	portalDao.deletePortalStructure(node);
         }
  
@@ -336,8 +336,8 @@ public class PortalService implements IPortalService {
     }
 
     public void disable(Long id, Integer disabled) {
-        PortalStructure ps = portalDao.getEntity(id);
-        List<PortalStructure> list;
+        Structure ps = portalDao.getEntity(id);
+        List<Structure> list;
         
         // 如果是启用或者操作的是门户根节点，则处理操作节点以下的所有子节点
         if(disabled.equals(PortalConstants.TRUE) || ps.isRootPortal()){
@@ -347,7 +347,7 @@ public class PortalService implements IPortalService {
             list = portalDao.getParentsById(id, PortalConstants.PORTAL_START_OPERRATION); 
         }
         
-        for( PortalStructure entity : list ){
+        for( Structure entity : list ){
             entity.setDisabled(disabled);
             portalDao.update(entity);
         }
@@ -358,12 +358,12 @@ public class PortalService implements IPortalService {
     }
 
     public void move(Long psId, Long targetId, Long targetPortalId) {
-        PortalStructure ps = portalDao.getEntity(psId);
+        Structure ps = portalDao.getEntity(psId);
         
         // 判断是否是跨门户移动，如果portalId不相等，则说明是跨门户移动
         boolean isAcrossPortal = !ps.getPortalId().equals(targetPortalId);
 
-        List<PortalStructure> sons = portalDao.getChildrenById(psId, PortalConstants.PORTAL_DEL_OPERRATION);
+        List<Structure> sons = portalDao.getChildrenById(psId, PortalConstants.PORTAL_DEL_OPERRATION);
         
         ps.setSeqNo(portalDao.getNextSeqNo(targetId));
         ps.setParentId(targetId);
@@ -371,7 +371,7 @@ public class PortalService implements IPortalService {
 
         // 如果是跨门户移动，则删除和本子节点相关的菜单和主题信息
         if( isAcrossPortal ){
-            for( PortalStructure temp : sons ){
+            for( Structure temp : sons ){
                 temp.setPortalId(targetPortalId);
                 portalDao.updateWithoutFlush(temp);
                 clearRelation(temp.getId());
@@ -379,13 +379,13 @@ public class PortalService implements IPortalService {
             
             // 如果是跨门户且复制的是页面，则一带将页面的资源复制过去
             if(ps.isPage()){ 
-                PortalStructure targetPortal = portalDao.getRootPortalStructure(targetPortalId);
-                PortalStructure sourcePortal = portalDao.getRootPortalStructure(ps.getPortalId());
+                Structure targetPortal = portalDao.getRootPortalStructure(targetPortalId);
+                Structure sourcePortal = portalDao.getRootPortalStructure(ps.getPortalId());
                 copyPageResources(sourcePortal, targetPortal, ps.getSupplement());
             }
         }
         //如果目标节点是停用的，则移动的枝全部停用
-        PortalStructure parent = portalDao.getEntity(targetId);
+        Structure parent = portalDao.getEntity(targetId);
         if(parent.getDisabled().equals(PortalConstants.TRUE)) {
             disable(psId, PortalConstants.TRUE);
         }
@@ -397,7 +397,7 @@ public class PortalService implements IPortalService {
     }
     
     /* 复制页面下挂载的资源文件，css/js等 */
-    private void copyPageResources(PortalStructure sourcePortal, PortalStructure targetPortal, String supplement){
+    private void copyPageResources(Structure sourcePortal, Structure targetPortal, String supplement){
         if(supplement == null)  return;
         
         File dir = sourcePortal.getPortalResourceFileDir();
@@ -425,12 +425,12 @@ public class PortalService implements IPortalService {
     // * ***************************    以下为门户结构"复制、复制到"操作   *************************************************************
     // * ************************************************************************************************************************
 
-    public List<PortalStructure> copyTo(Long id, Long targetId, Long targetPortalId){
-        PortalStructure sourceNode = portalDao.getEntity(id);
-        PortalStructure targetNode = portalDao.getEntity(targetId);
+    public List<Structure> copyTo(Long id, Long targetId, Long targetPortalId){
+        Structure sourceNode = portalDao.getEntity(id);
+        Structure targetNode = portalDao.getEntity(targetId);
         if( !sourceNode.isPortletInstanse() ) { 
             // 复制到可见的节点
-            List<PortalStructure> children = portalDao.getChildrenById(id, PortalConstants.PORTAL_VIEW_OPERRATION); 
+            List<Structure> children = portalDao.getChildrenById(id, PortalConstants.PORTAL_VIEW_OPERRATION); 
             children.remove(sourceNode);
             sourceNode.compose(children);
         }
@@ -449,13 +449,13 @@ public class PortalService implements IPortalService {
         }
         sourceNode.setParentId(targetId);
 
-        List<PortalStructure> returnList = new ArrayList<PortalStructure>();
+        List<Structure> returnList = new ArrayList<Structure>();
         boolean isTargetDisableed = PortalConstants.TRUE.equals(targetNode.getDisabled());  // 目标父节点是否为停用状态
         copyNodeOneByOne(sourceNode, returnList, isAcrossPortal, isTargetDisableed);
 
         if( isAcrossPortal && sourceNode.isPage() ) {
-            PortalStructure sourcePortalNode = portalDao.getRootPortalStructure(sourcePortalId);
-            PortalStructure targetPortalNode = portalDao.getRootPortalStructure(targetPortalId);
+            Structure sourcePortalNode = portalDao.getRootPortalStructure(sourcePortalId);
+            Structure targetPortalNode = portalDao.getRootPortalStructure(targetPortalId);
             copyPageResources(sourcePortalNode, targetPortalNode, sourceNode.getSupplement());
         }
 
@@ -471,7 +471,7 @@ public class PortalService implements IPortalService {
      * @param isTargetDisableed
      *              目标父节点是否为停用状态
      */
-    private void copyNodeOneByOne(PortalStructure sourcePs, List<PortalStructure> returnList, 
+    private void copyNodeOneByOne(Structure sourcePs, List<Structure> returnList, 
             boolean isAcrossPortal, boolean isTargetDisableed) {
         
         Long sourceId = sourcePs.getId(); // 复制源的ID
@@ -481,7 +481,7 @@ public class PortalService implements IPortalService {
         if(isTargetDisableed) {
             sourcePs.setDisabled(PortalConstants.TRUE);
         }
-        PortalStructure newPs = savePortalStructure(sourcePs);
+        Structure newPs = savePortalStructure(sourcePs);
         Long targetPortalId = newPs.getPortalId();
 
         //如果是复制到同一门户下的其他节点，则需要将主题信息一块复制出来。跨门户复制则不需要。
@@ -500,7 +500,7 @@ public class PortalService implements IPortalService {
         }
 
         returnList.add(newPs);
-        for( PortalStructure child : sourcePs.getChildren()){
+        for( Structure child : sourcePs.getChildren()){
             portalDao.evict(child);
             child.setPortalId(targetPortalId);
             child.setParentId(newPs.getId());

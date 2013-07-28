@@ -10,19 +10,19 @@ import com.jinhe.tss.portal.entity.Decorator;
 import com.jinhe.tss.portal.entity.Layout;
 import com.jinhe.tss.portal.entity.PersonalTheme;
 import com.jinhe.tss.portal.entity.Portal;
-import com.jinhe.tss.portal.entity.PortalStructure;
+import com.jinhe.tss.portal.entity.Structure;
 
-public class PortalDao extends TreeSupportDao<PortalStructure> implements IPortalDao {
+public class PortalDao extends TreeSupportDao<Structure> implements IPortalDao {
 
     public PortalDao() {
-		super(PortalStructure.class);
+		super(Structure.class);
 	}
  
     public Portal getPortalById(Long id){
         return (Portal) getEntity(Portal.class, id);
     }
     
-    public PortalStructure savePortalStructure(PortalStructure ps) {
+    public Structure savePortalStructure(Structure ps) {
     	if(ps.getId() == null) {
             return create(ps);
         } 
@@ -32,28 +32,28 @@ public class PortalDao extends TreeSupportDao<PortalStructure> implements IPorta
         }
     }
     
-    public void deletePortalStructure(PortalStructure ps) {
+    public void deletePortalStructure(Structure ps) {
         super.delete(em.merge(ps));
     }
     
-    public PortalStructure movePortalStructure(PortalStructure ps){
+    public Structure movePortalStructure(Structure ps){
         return create(ps);
     }
  
-    public List<PortalStructure> getParentsById(Long id, String operationId) {
+    public List<Structure> getParentsById(Long id, String operationId) {
         return  super.getParentsById(id);
     }
 
-    public List<PortalStructure> getChildrenById(Long id, String operationId) {
+    public List<Structure> getChildrenById(Long id, String operationId) {
         return super.getChildrenById(id);
     }
  
-    public PortalStructure getRootPortalStructure(Long portalId) {
+    public Structure getRootPortalStructure(Long portalId) {
         List<?> list = getEntities("from PortalStructure o where o.type = 0 and o.portalId = ? ", portalId);
         if(list.isEmpty()) {
         	throw new BusinessException("根据portalId获取门户根节点时出错！可能不存在！");
         }
-        return (PortalStructure) list.get(0);
+        return (Structure) list.get(0);
     }
 
     public Object[] getPortalElements(Long portalId, Long currentThemeId){

@@ -2,7 +2,7 @@ package com.jinhe.tss.portal.engine.model;
 
 import java.util.LinkedHashSet;
 
-import com.jinhe.tss.portal.entity.PortalStructure;
+import com.jinhe.tss.portal.entity.Structure;
 
 /**
  * 版面节点对象：用于解析门户中使用到的版面
@@ -39,7 +39,7 @@ public class SectionNode extends AbstractSubNode implements DecoratorConfigable,
 		this.portal = portal;
 	}
 
-    public SectionNode(PortalStructure ps) {
+    public SectionNode(Structure ps) {
         this.id = ps.getId();
         this.name = ps.getName();
         this.code = ps.getCode();

@@ -8,11 +8,11 @@ import com.jinhe.tss.portal.entity.Decorator;
 import com.jinhe.tss.portal.entity.Layout;
 import com.jinhe.tss.portal.entity.PersonalTheme;
 import com.jinhe.tss.portal.entity.Portal;
-import com.jinhe.tss.portal.entity.PortalStructure;
+import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Branch;
 import com.jinhe.tss.um.permission.filter.PermissionTag;
 
-public interface IPortalDao extends ITreeSupportDao<PortalStructure>{
+public interface IPortalDao extends ITreeSupportDao<Structure>{
  
     /**
      * 根据portalId获取Portal实体
@@ -26,14 +26,14 @@ public interface IPortalDao extends ITreeSupportDao<PortalStructure>{
      * @param p
      * @return
      */
-    PortalStructure savePortalStructure(PortalStructure p);
+    Structure savePortalStructure(Structure p);
     
     /**
      * 删除门户节点。 
      * 删除注册资源由拦截器ResourcePermissionInterceptor完成。
      * @param ps
      */
-    void deletePortalStructure(PortalStructure ps);
+    void deletePortalStructure(Structure ps);
     
     /**
      * 本方法是为了资源权限补齐拦截器ResourcePermissionInterceptor能拦截到门户结构的移动保存操作，
@@ -41,7 +41,7 @@ public interface IPortalDao extends ITreeSupportDao<PortalStructure>{
      * @param ps
      * @return
      */
-    PortalStructure movePortalStructure(PortalStructure ps);
+    Structure movePortalStructure(Structure ps);
 
     /**
      * 根据父亲节点获取所有子节点。
@@ -56,7 +56,7 @@ public interface IPortalDao extends ITreeSupportDao<PortalStructure>{
     @PermissionTag(
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Branch.class)
-    List<PortalStructure> getChildrenById(Long id, String operationId);
+    List<Structure> getChildrenById(Long id, String operationId);
 
     /**
      * 获取所有的父亲级节点，一直到根目录。
@@ -70,7 +70,7 @@ public interface IPortalDao extends ITreeSupportDao<PortalStructure>{
     @PermissionTag(
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Branch.class)
-    List<PortalStructure> getParentsById(Long id, String operationId);
+    List<Structure> getParentsById(Long id, String operationId);
     
     /**
      * 获取指定门户Portal的所有组成元素
@@ -98,7 +98,7 @@ public interface IPortalDao extends ITreeSupportDao<PortalStructure>{
      * @param portalId
      * @return
      */
-    PortalStructure getRootPortalStructure(Long portalId);
+    Structure getRootPortalStructure(Long portalId);
 
     /**
      * 获取portal下的所有主题

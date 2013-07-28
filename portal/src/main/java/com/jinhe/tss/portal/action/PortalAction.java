@@ -27,7 +27,7 @@ import com.jinhe.tss.portal.engine.model.PortalNode;
 import com.jinhe.tss.portal.engine.releasehtml.MagicRobot;
 import com.jinhe.tss.portal.engine.releasehtml.SimpleRobot;
 import com.jinhe.tss.portal.entity.IssueInfo;
-import com.jinhe.tss.portal.entity.PortalStructure;
+import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
 import com.jinhe.tss.portal.entity.permission.PortalResourceView;
 import com.jinhe.tss.portal.helper.PortalStructureWrapper;
@@ -171,14 +171,14 @@ public class PortalAction extends FreeMarkerSupportAction {
                 Integer tempType = (Integer)attributes.get("type");
                 switch(type){
                 case 1: // 移动的是页面，则非门户节点的都不可选
-                    if(PortalStructure.TYPE_PORTAL != tempType) {
+                    if(Structure.TYPE_PORTAL != tempType) {
                         attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
                     }
                     break;
                 case 2:
                 case 3:
                     // 移动的是版面或portlet实例，则门户节点不可选
-                    if(PortalStructure.TYPE_PORTAL == tempType) {
+                    if(Structure.TYPE_PORTAL == tempType) {
                         attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
                     }
                     break;
@@ -237,9 +237,9 @@ public class PortalAction extends FreeMarkerSupportAction {
             encoder = new XFormEncoder(PortalConstants.PORTALSTRUCTURE_XFORM_PATH, map);           
         }
         else {
-            PortalStructure info = service.getPoratalStructure(id);            
+            Structure info = service.getPoratalStructure(id);            
             encoder = new XFormEncoder(PortalConstants.PORTALSTRUCTURE_XFORM_PATH, info);
-            if(info.getType().equals(PortalStructure.TYPE_PORTAL)){
+            if(info.getType().equals(Structure.TYPE_PORTAL)){
                 Object[] objs = genComboThemes(info.getPortalId());
                 encoder.setColumnAttribute("currentThemeId", "editorvalue", (String) objs[0]);
                 encoder.setColumnAttribute("currentThemeId", "editortext",  (String) objs[1]);
@@ -262,7 +262,7 @@ public class PortalAction extends FreeMarkerSupportAction {
     public void save(){
         boolean isNew = (ps.getId() == null);
         
-        PortalStructure portalStructure;
+        Structure portalStructure;
         if(isNew) {        
             ps.setCode("PS" + System.currentTimeMillis()); // 设置code值 = PS ＋ 当前时间
             portalStructure = service.createPortalStructure(ps);
@@ -272,8 +272,8 @@ public class PortalAction extends FreeMarkerSupportAction {
              * code值=页面随机生成的一个全局变量（注：code为本action的一个单独属性值），id="null"。<br/>
              * 待保存门户根节点再将名字重新根据生成 code + portalId 值命名。
              */
-            if( ps.getType().equals(PortalStructure.TYPE_PORTAL) ) {
-                File tempDir = PortalStructure.getPortalResourceFileDir(code + "_null");
+            if( ps.getType().equals(Structure.TYPE_PORTAL) ) {
+                File tempDir = Structure.getPortalResourceFileDir(code + "_null");
                 if(tempDir.exists()) {
                     tempDir.renameTo(portalStructure.getPortalResourceFileDir());
                 }

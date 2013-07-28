@@ -1,6 +1,6 @@
 package com.jinhe.tss.portal.engine.model;
 
-import com.jinhe.tss.portal.entity.PortalStructure;
+import com.jinhe.tss.portal.entity.Structure;
 
 /**
  * Portlet实例对象：用于解析门户中使用到的Portlet实例
@@ -42,7 +42,7 @@ public class PortletInstanceNode extends AbstractSubNode implements DecoratorCon
     	// do nothing
     }
 
-    public PortletInstanceNode(PortalStructure ps) {
+    public PortletInstanceNode(Structure ps) {
         this.id = ps.getId();
         this.name = ps.getName();
         this.code = ps.getCode();

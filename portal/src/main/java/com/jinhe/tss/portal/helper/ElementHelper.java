@@ -47,7 +47,7 @@ public class ElementHelper {
         }
         
         Document paramsDoc = XMLDocUtil.dataXml2Doc(params);
-        return paramsDoc.selectSingleNode("/params//" + typeName.toLowerCase()).asXML();
+        return paramsDoc.selectSingleNode("/params//" + typeName).asXML();
     }
     
     public static String getPortletInstanseConfig(String params){

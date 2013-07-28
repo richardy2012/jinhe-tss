@@ -3,13 +3,13 @@ package com.jinhe.tss.portal.helper;
 import java.util.Map;
 
 import com.jinhe.tss.portal.entity.Portal;
-import com.jinhe.tss.portal.entity.PortalStructure;
+import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.util.BeanUtil;
 
 /**
  * 门户结构节点 + 主题信息（取至Portal对象），比普通的门户结构节点多了主题信息。
  */
-public class PortalStructureWrapper extends PortalStructure {
+public class PortalStructureWrapper extends Structure {
 
     private Long    themeId;            //主题编号
     private String  themeName;          //主题名称（默认为：XXXX(门户名称)的主题）
@@ -19,7 +19,7 @@ public class PortalStructureWrapper extends PortalStructure {
     public PortalStructureWrapper(){       
     }
     
-    public PortalStructureWrapper(PortalStructure portalStructure, Portal portal) {
+    public PortalStructureWrapper(Structure portalStructure, Portal portal) {
         if(portal != null){
             BeanUtil.copy(this, portal);
         }        
@@ -36,8 +36,8 @@ public class PortalStructureWrapper extends PortalStructure {
         return portal;
     }
     
-    public PortalStructure getPortalStructure(){
-        PortalStructure portalStructure = new PortalStructure();
+    public Structure getPortalStructure(){
+        Structure portalStructure = new Structure();
         BeanUtil.copy(portalStructure, this);
         portalStructure.setId(this.getId());
         

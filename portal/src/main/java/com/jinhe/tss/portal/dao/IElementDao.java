@@ -3,13 +3,12 @@ package com.jinhe.tss.portal.dao;
 import java.util.List;
 
 import com.jinhe.tss.framework.persistence.ITreeSupportDao;
-import com.jinhe.tss.portal.entity.ElementGroup;
-import com.jinhe.tss.portal.helper.IElement;
+import com.jinhe.tss.portal.entity.Element;
 
 /** 
  * 对元素（修饰器/布局器/Portlet）数据存取操作的DAO接口
  */
-public interface IElementDao extends ITreeSupportDao<ElementGroup>{
+public interface IElementDao extends ITreeSupportDao<Element>{
  
     /**
      * 保存一个元素（修饰器/布局器/Portlet）。
@@ -17,7 +16,7 @@ public interface IElementDao extends ITreeSupportDao<ElementGroup>{
      * @param obj
      * @return
      */
-    IElement saveElement(IElement obj);
+    Element saveElement(Element obj);
 
     /**
      * 删除一个元素（修饰器/布局器/Portlet）
@@ -25,7 +24,7 @@ public interface IElementDao extends ITreeSupportDao<ElementGroup>{
      * @param obj
      * @return
      */
-    IElement deleteElement(IElement obj);
+    Element deleteElement(Element obj);
     
     /**
      * 将元素（修饰器/布局器/Portlet）移动到指定组下。<br/>
@@ -35,32 +34,25 @@ public interface IElementDao extends ITreeSupportDao<ElementGroup>{
      * @param groupId
      * @return
      */
-    IElement moveTo(IElement element);
+    Element moveTo(Element element);
     
     /*****************************************************************************************************************
      ************************************ 以下是对元素（修饰器/布局器/Portlet）组的操作 ************************************* 
      *****************************************************************************************************************/
     
     /**
-     * 保存一个组。
-     * 注意：本方法将会拦截以实现资源注册，所以普通保存应该直接调用save方法。
+     * 删除一个组
      * @param group
      * @return
      */
-    ElementGroup saveGroup(ElementGroup group);
-    /**
-     * 删除一个组（配置了回收站的话本方法将被拦截，代之执行回收站中配置的执行方法）
-     * @param group
-     * @return
-     */
-    void deleteGroup(ElementGroup group);
+    void deleteGroup(Element group);
  
     /**
      * 获取所有儿子节点
      * @param id
      * @return
      */
-    List<ElementGroup> getChildrenById(Long id);
+    List<Element> getChildrenById(Long id);
 
     /**
      * 获取组以及子组下所有的元素，获取portlet用于复制的时候需要根据查看操作进行过滤

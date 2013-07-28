@@ -6,10 +6,7 @@ public interface PortalConstants {
     public static final Integer FALSE = 0;
     
     public static final Long ROOT_ID = 0L;
-    
-    /**
-     * 一些关键字
-     */
+ 
     public final static String COPY_PREFIX = "副本_"; // 复制实体时实体名字前缀
     
     public static final String PORTAL_CACHE = "portal_tree"; // 门户树缓存池
@@ -34,10 +31,6 @@ public interface PortalConstants {
      */
     public static final String MODEL_DIR           = "portal/model/";
     public static final String PORTAL_MODEL_DIR    = "/" + MODEL_DIR + "portal";
-    public static final String LAYOUT_MODEL_DIR    = MODEL_DIR + "layout/";
-    public static final String DECORATOR_MODEL_DIR = MODEL_DIR + "decorator/";
-    public static final String PORTLET_MODEL_DIR   = MODEL_DIR + "portlet/";
-   
     
     /** 是否启用权限过滤 */
     public final static boolean isPermissionFiltrate = true;

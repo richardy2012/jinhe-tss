@@ -20,7 +20,7 @@ import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.web.RewriteableHttpServletRequest;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.entity.IssueInfo;
-import com.jinhe.tss.portal.entity.PortalStructure;
+import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.service.IPortalService;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.permission.PermissionHelper;
@@ -114,7 +114,7 @@ public class Filter3PortalPermission implements Filter {
      */
     private boolean canPortalBrowseByAnonymous(Long portalId){
     	PermissionHelper helper = PermissionHelper.getInstance();
-        List<?> list = helper.getEntities("from PortalStructure o where o.portalId = ? and o.type = ?", portalId, PortalStructure.TYPE_PORTAL);
+        List<?> list = helper.getEntities("from PortalStructure o where o.portalId = ? and o.type = ?", portalId, Structure.TYPE_PORTAL);
         
         if(list.isEmpty())  return false;
 
@@ -124,7 +124,7 @@ public class Filter3PortalPermission implements Filter {
         Long anonymousId = AnonymousOperator.anonymous.getId();
         List<Long> permissons = helper.getResourceIdsByOperation(application, resourceType, operration, anonymousId);
         
-        PortalStructure rootPS = (PortalStructure) list.get(0);
+        Structure rootPS = (Structure) list.get(0);
         return permissons.contains(rootPS.getId());
     }
 

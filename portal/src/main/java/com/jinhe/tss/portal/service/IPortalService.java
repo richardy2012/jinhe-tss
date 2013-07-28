@@ -6,7 +6,7 @@ import com.jinhe.tss.framework.component.log.Logable;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.engine.model.PortalNode;
 import com.jinhe.tss.portal.entity.IssueInfo;
-import com.jinhe.tss.portal.entity.PortalStructure;
+import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
 import com.jinhe.tss.portal.helper.PortalStructureWrapper;
 import com.jinhe.tss.portal.permission.PermissionFilter4Check;
@@ -80,7 +80,7 @@ public interface IPortalService {
             operation = PortalConstants.PORTAL_VIEW_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Check.class)
-    PortalStructure getPoratalStructure(Long id);
+    Structure getPoratalStructure(Long id);
     
     /**
      * 只取门户结构节点
@@ -91,7 +91,7 @@ public interface IPortalService {
             operation = PortalConstants.PORTAL_VIEW_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Check.class)
-    PortalStructure getPortalStructureById(Long id);
+    Structure getPortalStructureById(Long id);
 
     /**
      * <p>
@@ -111,14 +111,14 @@ public interface IPortalService {
             operation = PortalConstants.PORTAL_ADD_OPERRATION , 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Create.class)
-    PortalStructure createPortalStructure(PortalStructureWrapper psw);
+    Structure createPortalStructure(PortalStructureWrapper psw);
     
     @Logable(operateTable="门户结构", operateType="修改", operateInfo="修改了 ${returnVal} 节点")
     @PermissionTag(
             operation = PortalConstants.PORTAL_EDIT_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Update.class)
-    PortalStructure updatePortalStructure(PortalStructureWrapper psw);
+    Structure updatePortalStructure(PortalStructureWrapper psw);
     
     /**
      * <p>
@@ -203,7 +203,7 @@ public interface IPortalService {
             operation = PortalConstants.PORTAL_ADD_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4CopyTo.class)
-    List<PortalStructure> copyTo(Long id, Long targetId, Long portalId);
+    List<Structure> copyTo(Long id, Long targetId, Long portalId);
     
     /**
      * 获取一个门户树的一份拷贝。

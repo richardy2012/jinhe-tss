@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.jinhe.tss.portal.entity.PortalStructure;
+import com.jinhe.tss.portal.entity.Structure;
 
 /**
  * 门户节点对象：用于解析门户
@@ -36,7 +36,7 @@ public class PortalNode extends AbstractNode implements Supplementable{
     public void setScriptCode(String scriptCode) { this.scriptCode = scriptCode; }
     public void setStyleCode (String styleCode)  { this.styleCode = styleCode; }  
 
-    public PortalNode(PortalStructure ps) {
+    public PortalNode(Structure ps) {
         this.id = ps.getId();
         this.name = ps.getName();
         this.code = ps.getCode();

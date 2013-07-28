@@ -8,27 +8,26 @@ import java.util.List;
 
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
 import com.jinhe.tss.portal.dao.IElementDao;
-import com.jinhe.tss.portal.entity.ElementGroup;
-import com.jinhe.tss.portal.helper.IElement;
+import com.jinhe.tss.portal.entity.Element;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;
 
-public class ElementDao extends TreeSupportDao<ElementGroup> implements IElementDao {
+public class ElementDao extends TreeSupportDao<Element> implements IElementDao {
     
     public ElementDao() {
-        super(ElementGroup.class);
+        super(Element.class);
     }
  
-    public IElement saveElement(IElement obj) {  
+    public Element saveElement(Element obj) {  
         if(obj.getId() == null) {    
-            return (IElement) createObject(obj);
+            return (Element) createObject(obj);
         }
         
         update(obj);
         return obj;
     }
     
-    public IElement deleteElement(IElement element){
+    public Element deleteElement(Element element){
         delete(element);
         
         // 删除资源文件
@@ -41,28 +40,17 @@ public class ElementDao extends TreeSupportDao<ElementGroup> implements IElement
         return element;
     }
     
-    public IElement moveTo(IElement element) {
+    public Element moveTo(Element element) {
         return saveElement(element);  
     }
  
-    /*****************************************************************************************************************
-     ************************************ 以下是对元素（修饰器/布局器/Portlet）组的操作 ************************************* 
-     *****************************************************************************************************************/
+    /*********************************** 以下是对元素（修饰器/布局器/Portlet）组的操作 *************************************/
     
-    public ElementGroup saveGroup(ElementGroup group){
-        if(group.getId() == null) {    
-            return create(group);
-        }
-        
-        update(group);
-        return group;
-    }
-    
-    public void deleteGroup(ElementGroup group){
-        List<ElementGroup> groups = getChildrenById(group.getId());
+    public void deleteGroup(Element group){
+        List<Element> groups = getChildrenById(group.getId());
         
         List<Long> groupIds = new ArrayList<Long>();
-        for ( ElementGroup temp : groups ){
+        for ( Element temp : groups ){
             groupIds.add(temp.getId());
             delete(temp); //删除组
         }
@@ -70,18 +58,18 @@ public class ElementDao extends TreeSupportDao<ElementGroup> implements IElement
         if(groupIds.isEmpty()) return;
         
         //删除元素
-        String hql = "from " + group.getClassNameByType() + " t where t.groupId in (:groupIds) order by t.decode";
+        String hql = "from Element t where t.groupId in (:groupIds) order by t.decode";
         List<?> elements =  getEntities(hql, new Object[]{"groupIds"}, new Object[]{groupIds});
         
         for ( Object temp : elements ) {
-            deleteElement((IElement) temp);
+            deleteElement((Element) temp);
         }
     }
  
-    public List<ElementGroup> getChildrenById(Long groupId) {
-        ElementGroup group = getEntity(groupId);
-        List<ElementGroup> children = super.getChildrenById(groupId);
-        for( Iterator<ElementGroup> it = children.iterator(); it.hasNext(); ) {
+    public List<Element> getChildrenById(Long groupId) {
+    	Element group = getEntity(groupId);
+        List<Element> children = super.getChildrenById(groupId);
+        for( Iterator<Element> it = children.iterator(); it.hasNext(); ) {
             if( !it.next().getType().equals(group.getType())) {
                 it.remove();
             }
@@ -91,14 +79,13 @@ public class ElementDao extends TreeSupportDao<ElementGroup> implements IElement
     
     //注：子组的decode值可能和父组下的某个组件decode值相同，所以这里条件过滤要加上t.decode <> 子组decode
     public List<?> getAllElementsByGroup(Long groupId) {
-        ElementGroup group = getEntity(groupId);
-        String hql = "from " + group.getClassNameByType() + " t where t.decode like ?  and t.decode <> ? order by t.decode";
+    	Element group = getEntity(groupId);
+        String hql = "from Element t where t.decode like ?  and t.decode <> ? order by t.decode";
         return getEntities(hql, group.getDecode() + "%", group.getDecode());
     }
     
     public List<?> getElementsByGroup( Long groupId ) {
-        ElementGroup group = getEntity(groupId);
-        String hql = "from " + group.getClassNameByType() + " t where t.groupId = ? order by t.decode";
+        String hql = "from Element t where t.parentId = ? order by t.decode";
         return getEntities(hql, groupId);
     }
  

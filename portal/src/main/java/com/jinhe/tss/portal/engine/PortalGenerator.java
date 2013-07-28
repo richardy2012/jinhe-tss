@@ -22,7 +22,7 @@ import com.jinhe.tss.portal.engine.model.SubNode;
 import com.jinhe.tss.portal.engine.model.Supplementable;
 import com.jinhe.tss.portal.entity.Decorator;
 import com.jinhe.tss.portal.entity.Layout;
-import com.jinhe.tss.portal.entity.PortalStructure;
+import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Portlet;
 import com.jinhe.tss.util.XMLDocUtil;
 
@@ -51,8 +51,8 @@ public class PortalGenerator {
      * @return
      * 			 Node树根节点,PortalNode
      */
-    public static PortalNode genPortalNode(PortalStructure root, List<PortalStructure> list, Object[] elements){
-        if( !root.getType().equals(PortalStructure.TYPE_PORTAL) ) {
+    public static PortalNode genPortalNode(Structure root, List<Structure> list, Object[] elements){
+        if( !root.getType().equals(Structure.TYPE_PORTAL) ) {
             throw new BusinessException("主装门户时根节点必须是portal根节点， 【" + root.getName() + "】不是根节点!");
         }
         
@@ -95,16 +95,16 @@ public class PortalGenerator {
      * 
      * @param list
      */
-    private void compose(PortalStructure root, List<PortalStructure> list){
-        Map<Long, PortalStructure> map = new HashMap<Long, PortalStructure>();
+    private void compose(Structure root, List<Structure> list){
+        Map<Long, Structure> map = new HashMap<Long, Structure>();
         map.put(root.getId(), root);
 
-        for ( PortalStructure entity : list ) {
+        for ( Structure entity : list ) {
             map.put(entity.getId(), entity);
         }
         
-        for ( PortalStructure entity : list ) {
-            PortalStructure parent = map.get(entity.getParentId());
+        for ( Structure entity : list ) {
+            Structure parent = map.get(entity.getParentId());
             if(parent == null) {
                 throw new BusinessException("门户节点【" + entity.getName() + "】找不到父节点，数据有误，组成门户树失败!");
             }
@@ -123,19 +123,19 @@ public class PortalGenerator {
      * @param parent
      * @return
      */
-    private Node ps2Node(PortalStructure ps, Node parent){
+    private Node ps2Node(Structure ps, Node parent){
         Node newNode = null;
         switch(ps.getType()) {
-	        case PortalStructure.TYPE_PORTAL:
+	        case Structure.TYPE_PORTAL:
 	        	newNode = genPortalNode(ps); 
 	        	break;
-	        case PortalStructure.TYPE_PAGE:
+	        case Structure.TYPE_PAGE:
 	        	newNode = genPageNode(ps, parent);   
 	        	break;
-	        case PortalStructure.TYPE_SECTION:
+	        case Structure.TYPE_SECTION:
 	        	newNode = genSectionNode(ps, parent);
 	        	break;
-	        case PortalStructure.TYPE_PORTLET_INSTANCE:
+	        case Structure.TYPE_PORTLET_INSTANCE:
 	        	newNode = genPortletInstanceNode(ps, parent); 
 	        	break;
         	default:
@@ -151,12 +151,12 @@ public class PortalGenerator {
      * @param ps
      * @return
      */
-    private Node genPortalNode(PortalStructure ps) {
+    private Node genPortalNode(Structure ps) {
         PortalNode portalNode = new PortalNode(ps);        
         
         parseSupplement(portalNode, ps.getSupplement());         
         
-        for(PortalStructure child : ps.getChildren() ){
+        for(Structure child : ps.getChildren() ){
             portalNode.addChild(ps2Node(child, portalNode));
         }
         return portalNode;
@@ -169,7 +169,7 @@ public class PortalGenerator {
      * @param portalNode
      * @return
      */
-    private Node genPageNode(PortalStructure ps, Node portalNode) {       
+    private Node genPageNode(Structure ps, Node portalNode) {       
         PageNode pageNode = new PageNode(ps, portalNode);
             
         parseSupplement(pageNode, ps.getSupplement());         
@@ -178,7 +178,7 @@ public class PortalGenerator {
         pageNode.setDecoratorNode(new DecoratorNode(decoratorsMap.get(ps.getDecoratorId()), pageNode, parametersOnPs));
         pageNode.setLayoutNode(new LayoutNode(layoutsMap.get(ps.getDefinerId()), pageNode, parametersOnPs));
         
-        for(PortalStructure child : ps.getChildren() ){
+        for(Structure child : ps.getChildren() ){
             pageNode.addChild(ps2Node(child, pageNode));
         }        
         return pageNode;
@@ -192,7 +192,7 @@ public class PortalGenerator {
      * 				可能是pageNode 也可能是SectionNode 
      * @return
      */
-    private Node genSectionNode(PortalStructure ps, Node parentNode) {
+    private Node genSectionNode(Structure ps, Node parentNode) {
         SectionNode sectionNode = new SectionNode(ps);
         repairSupNode(sectionNode, parentNode);
 
@@ -200,7 +200,7 @@ public class PortalGenerator {
         sectionNode.setDecoratorNode(new DecoratorNode(decoratorsMap.get(ps.getDecoratorId()), sectionNode, parametersOnPs));
         sectionNode.setLayoutNode(new LayoutNode(layoutsMap.get(ps.getDefinerId()), sectionNode, parametersOnPs));
         
-        for(PortalStructure child : ps.getChildren() ){
+        for(Structure child : ps.getChildren() ){
             sectionNode.addChild(ps2Node(child, sectionNode));
         }       
         return sectionNode;
@@ -213,7 +213,7 @@ public class PortalGenerator {
      * @param parentNode
      * @return
      */
-    private Node genPortletInstanceNode(PortalStructure ps, Node parentNode) {
+    private Node genPortletInstanceNode(Structure ps, Node parentNode) {
         PortletInstanceNode node = new PortletInstanceNode(ps);
         repairSupNode(node, parentNode);
  

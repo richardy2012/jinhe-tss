@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import com.jinhe.tss.portal.entity.PortalStructure;
+import com.jinhe.tss.portal.entity.Structure;
 
 /**
  * 页面节点对象：用于解析门户中使用到的页面
@@ -22,7 +22,7 @@ public class PageNode extends AbstractSubNode implements DecoratorConfigable, La
 	private LayoutNode layoutNode; //页面布局器
 	private DecoratorNode decoratorNode; //页面修饰器
 	
-	public PageNode(PortalStructure ps, Node parentNode) {
+	public PageNode(Structure ps, Node parentNode) {
 		this.id = ps.getId();
 		this.name = ps.getName();
 		this.code = ps.getCode();

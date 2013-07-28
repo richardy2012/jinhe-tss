@@ -15,7 +15,7 @@ import com.jinhe.tss.framework.web.dispaly.tree.TreeNode;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.entity.Navigator;
-import com.jinhe.tss.portal.entity.PortalStructure;
+import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.helper.MenuTreeParser;
 import com.jinhe.tss.portal.helper.StrictLevelTreeParser;
 import com.jinhe.tss.portal.service.INavigatorService;
@@ -141,19 +141,19 @@ public class NavigatorAction extends BaseActionSupport {
                 Object psType = attributes.get("type");
                 switch(type){
                 case 3:
-                    if(psType.equals(PortalStructure.TYPE_PORTAL))
+                    if(psType.equals(Structure.TYPE_PORTAL))
                         attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
                     break;
                 case 2:
-                    if(psType.equals(PortalStructure.TYPE_PORTAL) || psType.equals(PortalStructure.TYPE_PAGE))
+                    if(psType.equals(Structure.TYPE_PORTAL) || psType.equals(Structure.TYPE_PAGE))
                         attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
                     break;
                 case 1:  //此处为菜单替换方式中目标版面项，可以选择版面或者页面
-                    if((psType.equals(PortalStructure.TYPE_PORTAL) || psType.equals(PortalStructure.TYPE_PORTLET_INSTANCE)))
+                    if((psType.equals(Structure.TYPE_PORTAL) || psType.equals(Structure.TYPE_PORTLET_INSTANCE)))
                         attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
                     break;
                 case 0:
-                    if(!psType.equals(PortalStructure.TYPE_PORTLET_INSTANCE))
+                    if(!psType.equals(Structure.TYPE_PORTLET_INSTANCE))
                         attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
                     break;
                 default:
