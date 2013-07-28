@@ -126,14 +126,189 @@
 			}
 
 			var treeObj = $ET("tree", role2PermissionNode);
-			treeObj.onExtendNodeChange = function(eventObj) {
+			treeObj.element.onExtendNodeChange = function(eventObj) {
 				onExtendNodeChange(eventObj);
 			}
         }
         request.send();
     }
 
-    function savePermission(){
+    /*
+     *  函数说明：点击更改权限
+     *            选中状态：1仅此选中 / 2当前及所有子节点选中 / 0未选
+     *            纵向依赖：2选中上溯，取消下溯 / 3选中下溯，取消上溯
+     */
+    function onExtendNodeChange(eventObj) {
+        var treeObj = $ET("tree");
+
+        var treeNode  = eventObj.treeNode;
+		var curState  = eventObj.defaultValue;
+		var nextState = eventObj.newValue;
+		var optionId  = eventObj.optionId;
+        var shiftKey  = eventObj.shiftKey;
+
+        var option = new XmlNode(treeObj.getOptionById(optionId));
+        var dependParent = option.selectSingleNode("dependParent");
+        if( dependParent ) {
+            dependParent = dependParent.text.replace(/^\s*|\s*$/g, "");
+        }
+
+        if(curState != nextState){
+            // 纵向依赖3选中时，直接转入目标状态2(所有子节点)
+            if("3" == dependParent && "1" == nextState) {
+                treeNode.changeExtendSelectedState(optionId, shiftKey, "2");
+                eventObj.returnValue = false; // 阻止原先设置为1的操作
+                return;
+            }
+
+            // 横向依赖
+            if("1" == nextState) {
+                setDependSelectedState(treeNode, optionId, nextState); // 仅此选中时同时选中依赖项
+            } 
+			else if("2 "== nextState) {
+                setDependSelectedState(treeNode, optionId, nextState); // 所有子节点选中时同时选中依赖项
+            } 
+			else if("0" == nextState) {
+                setDependedSelectedState(treeNode, optionId, nextState); // 取消时同时取消被依赖项
+            }
+
+            // 纵向依赖
+            if( dependParent ) {
+                if(("2" == dependParent && "1" == nextState) || ("3" == dependParent && "0" == nextState)) {                   
+                    setParentSelectedState(treeNode, optionId, nextState);  // 纵向依赖2选中或者3取消时，上溯
+                }
+				else if("2" == dependParent && "2" == nextState) {                   
+                    setParentSelectedState(treeNode, optionId, "1"); // 纵向依赖2选中，上溯，父节点半勾
+                }
+				else if(("2" == dependParent && "0" == nextState) || ("3" == dependParent && "1" == nextState)) {                   
+                    setChildsSelectedState(treeNode, optionId, nextState); // 纵向依赖2取消或者3选中时，下溯
+                }
+            }
+
+            // 当前节点目标状态是2(所有子节点)时，下溯
+            if("2" == nextState){
+                setChildsSelectedState(treeNode, optionId, nextState);
+            }
+
+            // 当前节点目标状态是0或者1，则设置父节点仅此
+            if("0" == nextState || "1" == nextState){
+                setParentSingleState(treeNode, optionId);
+            }
+
+            //同时按下shift键时
+            if(true==shiftKey){
+                setChildsSelectedState(treeNode,optionId,nextState,shiftKey);
+            }
+        }
+    }
+
+	/*
+	 * 设置横向依赖项选中状态
+	 * 参数：	treeNode:treeNode       节点对象
+                string:id               当前项id
+                string:nextState        目标状态
+	 */
+	function setDependSelectedState(treeNode, id, nextState) {
+        var treeObj = $ET("tree");
+        var curOption = new XmlNode(treeObj.getOptionById(id));
+
+        var curIds = curOption.selectSingleNode("dependId");
+        if( curIds ) {
+            curIds = curIds.text.replace(/^\s*|\s*$/g, "");
+			curIds = curIds.split(",");
+			for(var i=0; i < curIds.length; i++){
+				var curId = curIds[i];
+				if(curId == "") continue;
+
+				var curState = treeNode.getAttribute(curId);
+
+				// 目标状态与当前状态不同(如果当前已经是2，而目标是1则不执行)
+				if(nextState != curState && ("2" != curState || "1" != nextState)){
+					treeNode.changeExtendSelectedState(curId, null, nextState);
+				}
+			}
+        }
+    }
+
+	/*
+	 * 设置横向被依赖项选中状态
+	 * 参数：	treeNode:treeNode       节点对象
+                string:id               当前项id
+                string:nextState        目标状态
+	 */
+	function setDependedSelectedState(treeNode, id, nextState) {
+        var treeObj = $ET("tree");
+        var curOption = new XmlNode(treeObj.getOptionById(id));
+
+        var curIds = curOption.selectSingleNode("dependedId");
+        if(curIds) {
+            curIds = curIds.text.replace(/^\s*|\s*$/g, "");
+			curIds = curIds.split(",");
+
+			for(var j=0; j < curIds.length; j++){
+				var curId = curIds[j];
+				if(curId == "") continue;
+
+				var curState = treeNode.getAttribute(curId);
+				if(nextState != curState){
+					treeNode.changeExtendSelectedState(curId, null, nextState);
+				}
+			}
+        }
+    }
+
+	/*
+	 * 设置父节点依赖项选中状态
+	 * 参数：	treeNode:treeNode       节点对象
+                string:id               当前项id
+                string:nextState        目标状态
+	 */
+	function setParentSelectedState(treeNode, id, nextState){
+        var parentNode = treeNode.getParent();
+        if(parentNode && "treeNode" == parentNode.node.nodeName){
+            parentNode.changeExtendSelectedState(id, null, nextState);
+        }
+    }
+
+	/*
+	 * 设置子节点依赖项选中状态
+	 * 参数：	treeNode:treeNode       节点对象
+                string:id               当前项id
+                string:nextState        目标状态
+                boolean:shiftKey        是否按下shift键
+	 */
+	function setChildsSelectedState(treeNode, id, nextState, shiftKey) {
+        var treeObj = $ET("tree");
+        var childs = treeNode.node.selectNodes("treeNode");
+        if( childs.length > 0 ) {
+            for(var i=0; i < childs.length; i++) {
+                var child = childs[i];
+                var childId = child.getAttribute("id");
+                if(childId ) {
+                    var childNode = treeObj.getTreeNodeById(childId);
+					childNode.changeExtendSelectedState(id, shiftKey, nextState);
+                }
+            }
+        }
+    }
+
+	/*
+	 * 设置父节点仅此
+	 * 参数：	treeNode:treeNode       节点对象
+                string:id               当前项id
+                string:nextState        目标状态
+	 */
+	function setParentSingleState(treeNode, id) {
+        var parentNode = treeNode.getParent();
+        if( parentNode && "treeNode" == parentNode.node.nodeName ) {
+            var curState = parentNode.getAttribute(id);
+            if("2" == curState){
+                parentNode.changeExtendSelectedState(id, null, "1");
+            }
+        }
+    }
+ 
+	function savePermission(){
         var flag = false;
 
         var p = new HttpRequestParams();
@@ -205,177 +380,5 @@
             request.send();
         }
     }
-
-    /*
-     *  函数说明：点击更改权限
-     *            选中状态：1仅此选中 / 2当前及所有子节点选中 / 0未选
-     *            纵向依赖：2选中上溯，取消下溯 / 3选中下溯，取消上溯
-     */
-    function onExtendNodeChange(eventObj){
-        var treeObj = $("tree");
-
-        var treeNode  = eventObj.treeNode;
-		var curState  = eventObj.defaultValue;
-		var nextState = eventObj.newValue;
-		var optionId  = eventObj.optionId;
-        var shiftKey  = eventObj.shiftKey;
-
-        var option = new XmlNode(treeObj.getOptionById(optionId));
-        var dependParent = option.selectSingleNode("dependParent");
-        if( dependParent ) {
-            dependParent = dependParent.text.replace(/^\s*|\s*$/g, "");
-        }
-
-        if(curState != nextState){
-            // 纵向依赖3选中时，直接转入目标状态2(所有子节点)
-            if("3" == dependParent && "1" == nextState) {
-                treeNode.changeExtendSelectedState(optionId, shiftKey, "2");
-                eventObj.returnValue = false; // 阻止原先设置为1的操作
-                return;
-            }
-
-            // 横向依赖
-            if("1" == nextState) {
-                setDependSelectedState(treeNode, optionId, nextState); // 仅此选中时同时选中依赖项
-            } 
-			else if("2 "== nextState) {
-                setDependSelectedState(treeNode, optionId, nextState); // 所有子节点选中时同时选中依赖项
-            } 
-			else if("0" == nextState) {
-                setDependedSelectedState(treeNode, optionId, nextState); // 取消时同时取消被依赖项
-            }
-
-            // 纵向依赖
-            if( dependParent ) {
-                if(("2" == dependParent && "1" == nextState) || ("3" == dependParent && "0" == nextState)) {                   
-                    setParentSelectedState(treeNode, optionId, nextState);  // 纵向依赖2选中或者3取消时，上溯
-                }
-				else if("2" == dependParent && "2" == nextState) {                   
-                    setParentSelectedState(treeNode, optionId, "1"); // 纵向依赖2选中，上溯，父节点半勾
-                }
-				else if(("2" == dependParent && "0" == nextState) || ("3" == dependParent && "1" == nextState)) {                   
-                    setChildsSelectedState(treeNode, optionId, nextState); // 纵向依赖2取消或者3选中时，下溯
-                }
-            }
-
-            // 当前节点目标状态是2(所有子节点)时，下溯
-            if("2" == nextState){
-                setChildsSelectedState(treeNode, optionId, nextState);
-            }
-
-            // 当前节点目标状态是0或者1，则设置父节点仅此
-            if("0" == nextState || "1" == nextState){
-                setParentSingleState(treeNode, optionId);
-            }
-
-            //同时按下shift键时
-            if(true==shiftKey){
-                setChildsSelectedState(treeNode,optionId,nextState,shiftKey);
-            }
-        }
-    }
-
-	/*
-	 * 设置横向依赖项选中状态
-	 * 参数：	treeNode:treeNode       节点对象
-                string:id               当前项id
-                string:nextState        目标状态
-	 */
-	function setDependSelectedState(treeNode, id, nextState) {
-        var treeObj = $("tree");
-        var curOption = new XmlNode(treeObj.getOptionById(id));
-
-        var curIds = curOption.selectSingleNode("dependId");
-        if( curIds ) {
-            curIds = curIds.text.replace(/^\s*|\s*$/g, "");
-			curIds = curIds.split(",");
-			for(var i=0; i < curIds.length; i++){
-				var curId = curIds[i];
-				var curState = treeNode.getAttribute(curId);
-
-				// 目标状态与当前状态不同(如果当前已经是2，而目标是1则不执行)
-				if(nextState != curState && ("2" != curState || "1" != nextState)){
-					treeNode.changeExtendSelectedState(curId, null, nextState);
-				}
-			}
-        }
-    }
-
-	/*
-	 * 设置横向被依赖项选中状态
-	 * 参数：	treeNode:treeNode       节点对象
-                string:id               当前项id
-                string:nextState        目标状态
-	 */
-	function setDependedSelectedState(treeNode,id,nextState) {
-        var treeObj = $("tree");
-        var curOption = new XmlNode(treeObj.getOptionById(id));
-
-        var curIds = curOption.selectSingleNode("dependedId");
-        if(curIds) {
-            curIds = curIds.text.replace(/^\s*|\s*$/g, "");
-			curIds = curIds.split(",");
-
-			for(var j=0; j < curIds.length; j++){
-				var curId = curIds[j];
-				var curState = treeNode.getAttribute(curId);
-				if(nextState != curState){
-					treeNode.changeExtendSelectedState(curId, null, nextState);
-				}
-			}
-        }
-    }
-
-	/*
-	 * 设置父节点依赖项选中状态
-	 * 参数：	treeNode:treeNode       节点对象
-                string:id               当前项id
-                string:nextState        目标状态
-	 */
-	function setParentSelectedState(treeNode, id, nextState){
-        var parentNode = treeNode.getParent();
-        if(parentNode && "treeNode" == parentNode.node.nodeName){
-            parentNode.changeExtendSelectedState(id, null, nextState);
-        }
-    }
-
-	/*
-	 * 设置子节点依赖项选中状态
-	 * 参数：	treeNode:treeNode       节点对象
-                string:id               当前项id
-                string:nextState        目标状态
-                boolean:shiftKey        是否按下shift键
-	 */
-	function setChildsSelectedState(treeNode, id, nextState, shiftKey) {
-        var treeObj = $T("tree");
-        var childs = treeNode.node.selectNodes("treeNode");
-        if( childs.length > 0 ) {
-            for(var i=0; i < childs.length; i++) {
-                var child = childs[i];
-                var childId = child.getAttribute("id");
-                if(childId ) {
-                    var childNode = treeObj.getTreeNodeById(childId);
-					childNode.changeExtendSelectedState(id, shiftKey, nextState);
-                }
-            }
-        }
-    }
-
-	/*
-	 * 设置父节点仅此
-	 * 参数：	treeNode:treeNode       节点对象
-                string:id               当前项id
-                string:nextState        目标状态
-	 */
-	function setParentSingleState(treeNode, id) {
-        var parentNode = treeNode.getParent();
-        if( parentNode && "treeNode" == parentNode.node.nodeName ) {
-            var curState = parentNode.getAttribute(id);
-            if("2" == curState){
-                parentNode.changeExtendSelectedState(id, null, "1");
-            }
-        }
-    }
- 
 
     window.onload = init;

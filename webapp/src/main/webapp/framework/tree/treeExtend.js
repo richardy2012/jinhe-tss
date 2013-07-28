@@ -410,7 +410,7 @@ function TreeDisplay(treeObj) {
 		var _rootBoxName = treeId + "RootBox"; 
 		var _rootTableName = treeId + "RootTable"; 
 
-		var vScrollStr = '<div id="' + _vScrollBoxName + '" style="position:absolute;overflow-y:auto;heigth:100%;width:17px;top:0px;right:0px;"><div id="' + _vScrollDivName + '" style="width:1px"></div></div>';
+		var vScrollStr = '<div id="' + _vScrollBoxName + '" style="position:absolute;overflow-y:auto;heigth:100%;width:17px;top:' + _TREE_HEAD_HEIGHT + 'px;right:0px;"><div id="' + _vScrollDivName + '" style="width:1px"></div></div>';
 		var hScrollStr = '<div id="' + _hScrollBoxName + '" style="position:absolute;overflow-x:auto;overflow-y:hidden;heigth:17px;width:100%;bottom:0px;left:0px"><div id="' + _hScrollDivName + '" style="higth:1px"></div></div>';
 		treeObj.element.insertAdjacentHTML('afterBegin', vScrollStr + hScrollStr);
 		_vScrollBox = $$(_vScrollBoxName);
@@ -419,7 +419,7 @@ function TreeDisplay(treeObj) {
 		_hScrollDiv = $$(_hScrollDivName);
 		
 		// 生成页面上显示节点的table对象。
-		var tableStr = '<div id="' + _rootBoxName + '" style="position:absolute;overflow:hidden;top:0px;left:0px"><table id="' + _rootTableName + '" cellspacing="0"></table></div>';
+		var tableStr = '<div id="' + _rootBoxName + '" style="position:absolute;overflow:hidden;top:' + _TREE_HEAD_HEIGHT + 'px;left:0px"><table id="' + _rootTableName + '" cellspacing="0"></table></div>';
 		treeObj.element.insertAdjacentHTML('afterBegin', tableStr);
 		_rootBox   = $$(_rootBoxName);
 		_rootTable = $$(_rootTableName);
@@ -477,7 +477,7 @@ function TreeDisplay(treeObj) {
 		}
  
 		/* 生成页面上显示节点扩展内容的表头对象。 */
-		var tableStr = '<div id="treeExtendHeadBox" style="position:absolute;top:0px;height:'+_TREE_HEAD_HEIGHT+'px;left:0px;overflow:hidden;"><table id="treeExtendHeadTable" border="1" class="extendTable"></table></div>';
+		var tableStr = '<div id="treeExtendHeadBox" style="position:absolute;top:0px;height:' + _TREE_HEAD_HEIGHT + 'px;left:0px;overflow:hidden;"><table id="treeExtendHeadTable" border="1" class="extendTable"></table></div>';
 		treeObj.element.insertAdjacentHTML('afterBegin', tableStr);
 		_extendHeadBox = $$("treeExtendHeadBox");
 		_extendHeadTable = $$("treeExtendHeadTable");
