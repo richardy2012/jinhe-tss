@@ -43,6 +43,10 @@ function $ET(treeId, dataXML) {
 var ExtendTree = function(element) {
 	Tree.call(this, element);
  
+ 	this.getNextState = function() {
+		return 1;
+	};
+	
 	/*
 	 * 根据节点选择状态，获取图标地址（单选树）
 	 */
@@ -86,10 +90,14 @@ var ExtendTree = function(element) {
 				var curOption = this._options[i];
 				var operationId = curOption.selectSingleNode("./operationId").text;
 				var dependIds = curOption.selectSingleNode("./dependId").text.replace(/^\s*|\s*$/g, "");
+				
+				if(dependIds == null || dependIds == "") continue;
 
 				dependIds = dependIds.split(",");
 				for(var j=0; j < dependIds.length; j++) {
 					var dependId = dependIds[j];
+					if(dependId == null || dependId == "") continue;
+
 					if( dependedMap[dependId] == null ) {
 						dependedMap[dependId] = [];
 					}
@@ -153,6 +161,7 @@ TreeNode.prototype.changeExtendSelectedState = function(id, shiftKey, nextState)
 	var flag = true;
 	var defaultValue = this.getAttribute(id);
 
+	var eventExtendNodeChange = new EventFirer($$("tree"), "onExtendNodeChange"); // 扩展项（权限项）状态改变
 	var eventObj = createEventObject();
 	eventObj.treeNode = this;
 	eventObj.returnValue = true;
@@ -283,6 +292,8 @@ ExtendRow.prototype = new function () {
             cell.innerText = "";
             cell.appendChild(this.getCloneCellCheckbox());
             cell.align = "center";
+			
+			nobr = cell.firstChild;
         }
 		
 		// 设定扩展内容checkbox图片地址
@@ -354,6 +365,7 @@ function getExtendRow(display, obj) {
  
 function TreeDisplay(treeObj) {
 	treeObj.element.style.overflow = 'hidden'; // 溢出部分会被隐藏
+	treeObj.setOptions();
 
 	var _windowHeight = Math.max(treeObj.element.offsetHeight - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_HEIGHT);
 	var _windowWidth  = Math.max(treeObj.element.offsetWidth  - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_WIDTH);
@@ -479,11 +491,12 @@ function TreeDisplay(treeObj) {
 		setExtendTableElementSize();
 		setExtendHeadTableElementSize();
 		
+		var oThis = this;
 		_extendTable.onclick = function() {
 			var eventObj = window.event.srcElement;
 			window.event.returnValue = false;
 		 
-			var row = getExtendRow(eventObj);
+			var row = getExtendRow(oThis, eventObj);
 			if(row instanceof ExtendRow) {
 				var treeNode = instanceTreeNode(row.getXmlNode());
 				if((row instanceof ExtendRow)  && (treeNode instanceof TreeNode)) {
@@ -719,17 +732,6 @@ function TreeDisplay(treeObj) {
 	}
 	
 	/*
-	 * 根据页面上的行数，获取相应的Row对象
-	 */
-	this.getRowByIndex = function (index) {
-		if(index >= _pageSize || index < 0) {
-			alert("TreeDisplay对象：行序号[" + index + "]超出允许范围[0 - " + _pageSize + "]！");
-			return null;
-		}
-		return _Rows[index];
-	}
-	
-	/*
 	 * 重新获取所有可以显示的节点数组
 	 */
 	this.resetTotalTreeNodes = function() {
@@ -801,6 +803,17 @@ function TreeDisplay(treeObj) {
 	/* 获取页面上所能展示的行数 */
 	this.getPageSize = function () {
 	    return _pageSize;
+	}
+			
+	/*
+	 * 根据页面上的行数，获取相应的Row对象
+	 */
+	this.getRowByIndex = function (index) {
+		if(index >= _pageSize || index < 0) {
+			alert("TreeDisplay对象：行序号[" + index + "]超出允许范围[0 - " + _pageSize + "]！");
+			return null;
+		}
+		return _Rows[index];
 	}
 	
 	/*

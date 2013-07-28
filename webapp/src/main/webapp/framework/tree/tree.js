@@ -129,7 +129,6 @@ var Tree = function(element) {
 	var eventNodeMoved       = new EventFirer(element, "onTreeNodeMoved");
 	var eventTreeChange      = new EventFirer(element, "onChange");
 	var eventNodeRightClick  = new EventFirer(element, "onTreeNodeRightClick");
-	var eventExtendNodeChange = new EventFirer(element, "onExtendNodeChange"); // 扩展项（权限项）状态改变
 	
 	this.element = element;
 	this.element.className = _TREE_STYLE;	

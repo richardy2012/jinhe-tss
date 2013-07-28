@@ -53,7 +53,7 @@ Tree\:Box tr.selected td{
 	background-color: #FEF7A9;
 }
 Tree\:Box nobr{
-	color: #7F92C5;
+	/* color: #7F92C5; */
 	margin: 0px;
 	padding: 0px;
 }
