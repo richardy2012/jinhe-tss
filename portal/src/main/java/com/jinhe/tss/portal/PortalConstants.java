@@ -15,22 +15,16 @@ public interface PortalConstants {
     /**
      * 模板路径
      */
-    public static final String PORTALSTRUCTURE_XFORM_PATH   = "template/xform/PortalStructure.xml"; //门户结构
-    public static final String ISSUE_XFORM_TEMPLET_PATH     = "template/xform/IssueInfo.xml";      //门户发布信息模板
-    public static final String GROUP_XFORM_TEMPLET_PATH     = "template/xform/ElementGroup.xml";  //Group
-    public static final String PORTLET_XFORM_TEMPLET_PATH   = "template/xform/Portlet.xml";      //Porlet
-    public static final String LAYOUT_XFORM_TEMPLET_PATH    = "template/xform/Layout.xml";      //布局器
-    public static final String DECORATOR_XFORM_TEMPLET_PATH = "template/xform/Decorator.xml";  //修饰器
-
-    public static final String IMPORT_LAYOUT_XFORM_PATH    = "template/xform/ImportLayout.xml";    //导入布局器
-    public static final String IMPORT_DECORATOR_XFORM_PATH = "template/xform/ImportDecorator.xml"; //导入修饰器
-    public static final String UPLOAD_PORTLET_XFORM_PATH   = "template/xform/ImportPortlet.xml";   //导入Porlet
+    public static final String PORTALSTRUCTURE_XFORM_PATH = "template/xform/PortalStructure.xml"; // 门户结构
+    public static final String ISSUE_XFORM_TEMPLET_PATH   = "template/xform/IssueInfo.xml";       // 门户发布信息模板
+    public static final String GROUP_XFORM_TEMPLET_PATH   = "template/xform/ElementGroup.xml";    // Group
+    public static final String IMPORT_ELEMENT_XFORM_PATH  = "template/xform/ImportElement.xml";   //导入组件
 
     /**
      * 资源文件目录
      */
-    public static final String MODEL_DIR           = "portal/model/";
-    public static final String PORTAL_MODEL_DIR    = "/" + MODEL_DIR + "portal";
+    public static final String MODEL_DIR        = "portal/model/";
+    public static final String PORTAL_MODEL_DIR = "/" + MODEL_DIR + "portal";
     
     /** 是否启用权限过滤 */
     public final static boolean isPermissionFiltrate = true;

@@ -2,15 +2,18 @@ package com.jinhe.tss.portal.dao.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.portal.dao.IPortalDao;
 import com.jinhe.tss.portal.entity.Element;
-import com.jinhe.tss.portal.entity.PersonalTheme;
+import com.jinhe.tss.portal.entity.ThemePersonal;
 import com.jinhe.tss.portal.entity.Portal;
 import com.jinhe.tss.portal.entity.Structure;
 
+@Repository("PortalDao")
 public class PortalDao extends TreeSupportDao<Structure> implements IPortalDao {
 
     public PortalDao() {
@@ -89,11 +92,11 @@ public class PortalDao extends TreeSupportDao<Structure> implements IPortalDao {
         return getEntities("from Theme o where o.portalId = ? and o.disabled <> 1 order by o.id", portalId);
     }
     
-    public PersonalTheme getPersonalTheme(Long portalId) {
+    public ThemePersonal getPersonalTheme(Long portalId) {
         String hql = "from PersonalTheme o where o.userId = ? and o.portalId = ?";
         List<?> list = getEntities(hql, Environment.getOperatorId(), portalId);
         if( !list.isEmpty() ) {
-            return (PersonalTheme) list.get(0);
+            return (ThemePersonal) list.get(0);
         }
         return null;
     }

@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
 import com.jinhe.tss.portal.dao.IElementDao;
 import com.jinhe.tss.portal.entity.Element;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;
 
+@Repository("ComponentDao")
 public class ElementDao extends TreeSupportDao<Element> implements IElementDao {
     
     public ElementDao() {

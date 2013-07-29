@@ -5,7 +5,7 @@ import java.util.List;
 import com.jinhe.tss.framework.persistence.ITreeSupportDao;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.entity.Element;
-import com.jinhe.tss.portal.entity.PersonalTheme;
+import com.jinhe.tss.portal.entity.ThemePersonal;
 import com.jinhe.tss.portal.entity.Portal;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Branch;
@@ -111,6 +111,6 @@ public interface IPortalDao extends ITreeSupportDao<Structure>{
      * @param portalId
      * @return
      */
-    PersonalTheme getPersonalTheme(Long portalId);
+    ThemePersonal getPersonalTheme(Long portalId);
 }
 

@@ -17,8 +17,6 @@ public interface ITreeSupportDao<T extends IDecodable> extends IDao<T> {
      */
     Integer getNextSeqNo(Long parentId);
     Integer getNextSeqNo(String entityName, Long parentId);
-    Integer getNextSeqNo(Long parentId, String parentIdName );
-    Integer getNextSeqNo(String entityName, Long parentId, String parentIdName);
 
     /**
      * 读取排序时移动节点和目标节点之间的节点列表。

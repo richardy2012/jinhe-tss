@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
-import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -20,9 +19,7 @@ import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.IH2DBServer;
 import com.jinhe.tss.framework.test.TestUtil;
-import com.jinhe.tss.portal.entity.Decorator;
-import com.jinhe.tss.portal.entity.ElementGroup;
-import com.jinhe.tss.portal.entity.Layout;
+import com.jinhe.tss.portal.entity.Element;
 import com.jinhe.tss.portal.service.IElementService;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
@@ -42,8 +39,7 @@ import com.jinhe.tss.util.XMLDocUtil;
             "classpath:META-INF/portal-test-spring.xml",  
             "classpath:META-INF/framework-spring.xml",  
             "classpath:META-INF/um-spring.xml",
-            "classpath:META-INF/cms-spring.xml",
-            "classpath:META-INF/portal-spring.xml"
+            "classpath:META-INF/cms-spring.xml"
         } 
         , inheritLocations = false // 是否要继承父测试用例类中的 Spring 配置文件，默认为 true
       )
@@ -110,11 +106,11 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
     protected static String MODEL_DECORATOR_DIR;
     protected static String MODEL_PORTLET_DIR;
   
-    protected static ElementGroup defaultLayoutGroup;
-    protected static Layout defaultLayout;
+    protected static Element defaultLayoutGroup;
+    protected static Element defaultLayout;
     protected static Long defaultLayoutId;
-    protected static ElementGroup defaultDecoratorGroup;
-    protected static Decorator defaultDecorator;
+    protected static Element defaultDecoratorGroup;
+    protected static Element defaultDecorator;
     protected static Long defaultDecoratorId;
     
     /**
@@ -132,17 +128,17 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
         File freemarkerDir = FileHelper.createDir(portalTargetPath + "/freemarker");
         FileHelper.writeFile(new File(freemarkerDir + "/common.ftl"), "");
         
-        defaultLayoutGroup = new ElementGroup();
+        defaultLayoutGroup = new Element();
         defaultLayoutGroup.setName("默认布局器组");
-        defaultLayoutGroup.setType(ElementGroup.LAYOUT_TYPE);
+        defaultLayoutGroup.setType(Element.LAYOUT_TYPE);
         defaultLayoutGroup.setParentId(PortalConstants.ROOT_ID);   
-        defaultLayoutGroup = elementService.saveGroup(defaultLayoutGroup);
+        defaultLayoutGroup = elementService.saveElement(defaultLayoutGroup);
         
-        defaultLayout = new Layout();
+        defaultLayout = new Element();
         defaultLayout.setIsDefault(PortalConstants.TRUE);
-        defaultLayout.setGroupId(defaultLayoutGroup.getId());   
+        defaultLayout.setParentId(defaultLayoutGroup.getId());   
         Document document = XMLDocUtil.createDoc("template/initialize/defaultLayout.xml");
-        Element propertyElement = document.getRootElement().element("property");
+        org.dom4j.Element propertyElement = document.getRootElement().element("property");
         String layoutName = propertyElement.elementText("name");
         defaultLayout.setName(layoutName);
         defaultLayout.setPortNumber(new Integer(propertyElement.elementText("portNumber")));
@@ -150,15 +146,15 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
         elementService.saveElement(defaultLayout);
         defaultLayoutId = defaultLayout.getId();
         
-        defaultDecoratorGroup = new ElementGroup();
+        defaultDecoratorGroup = new Element();
         defaultDecoratorGroup.setName("默认修饰器组");
-        defaultDecoratorGroup.setType(ElementGroup.DECORATOR_TYPE);
+        defaultDecoratorGroup.setType(Element.DECORATOR_TYPE);
         defaultDecoratorGroup.setParentId(PortalConstants.ROOT_ID);  
-        defaultDecoratorGroup = elementService.saveGroup(defaultDecoratorGroup);
+        defaultDecoratorGroup = elementService.saveElement(defaultDecoratorGroup);
         
-        defaultDecorator = new Decorator();
+        defaultDecorator = new Element();
         defaultDecorator.setIsDefault(PortalConstants.TRUE);
-        defaultDecorator.setGroupId(defaultDecoratorGroup.getId());
+        defaultDecorator.setParentId(defaultDecoratorGroup.getId());
         
         document = XMLDocUtil.createDoc("template/initialize/defaultDecorator.xml");
         propertyElement = document.getRootElement().element("property");

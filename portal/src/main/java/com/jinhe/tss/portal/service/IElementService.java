@@ -12,11 +12,10 @@ import com.jinhe.tss.portal.entity.Element;
 public interface IElementService {
 
     /**
-     * 获取指定类型（修饰器/布局器/Portlet）所有的元素及其组
-     * @param type
+     * 获取（修饰器/布局器/Portlet）所有的元素及其组
      * @return
      */
-    List<?> getAllElementsAndGroups(int type);
+    List<?> getAllElementsAndGroups();
     
     /**
      * 获取指定类型（修饰器/布局器/Portlet）所有的启用的元素及其组.
@@ -77,13 +76,13 @@ public interface IElementService {
      * 将修饰器设置为默认修饰器
      * @param decoratorId
      */
-    void setDecorator4Default(Long decoratorId);
+    void setDecoratorAsDefault(Long decoratorId);
 
     /**
      * 将布局器设置为默认布局器
      * @param layoutId
      */
-    void setLayout4Default(Long layoutId);
+    void setLayoutAsDefault(Long layoutId);
 
     /*****************************************************************************************************************
      ************************************ 以下是对元素（修饰器/布局器/Portlet）组的操作 ************************************* 
@@ -114,7 +113,7 @@ public interface IElementService {
      * @param groupId
      * @return
      */
-    Object[] copyTo(Long id, Long groupId);
+    Element copyTo(Long id, Long groupId);
     
     /**
      * 获取布局器列表，用以门户自定义组件替换

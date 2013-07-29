@@ -8,7 +8,6 @@ import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
-import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit38.AbstractTransactionalJUnit38SpringContextTests;
@@ -23,9 +22,7 @@ import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.portal.PortalConstants;
-import com.jinhe.tss.portal.entity.Decorator;
-import com.jinhe.tss.portal.entity.ElementGroup;
-import com.jinhe.tss.portal.entity.Layout;
+import com.jinhe.tss.portal.entity.Element;
 import com.jinhe.tss.portal.service.IElementService;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
@@ -47,7 +44,6 @@ import com.jinhe.tss.util.XMLDocUtil;
           "classpath:META-INF/framework-spring.xml",  
           "classpath:META-INF/um-spring.xml",
           "classpath:META-INF/cms-spring.xml",
-          "classpath:META-INF/portal-spring.xml",
           "classpath:META-INF/spring.xml"
         } 
       )
@@ -113,32 +109,32 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
     
     /** 初始化默认的修饰器，布局器 */
     private void initPortal() {
-        ElementGroup defaultLayoutGroup = new ElementGroup();
+        Element defaultLayoutGroup = new Element();
         defaultLayoutGroup.setName("默认布局器组");
-        defaultLayoutGroup.setType(ElementGroup.LAYOUT_TYPE);
+        defaultLayoutGroup.setType(Element.LAYOUT_TYPE);
         defaultLayoutGroup.setParentId(PortalConstants.ROOT_ID);   
-        defaultLayoutGroup = elementService.saveGroup(defaultLayoutGroup);
+        defaultLayoutGroup = elementService.saveElement(defaultLayoutGroup);
         
-        Layout defaultLayout = new Layout();
+        Element defaultLayout = new Element();
         defaultLayout.setIsDefault(PortalConstants.TRUE);
-        defaultLayout.setGroupId(defaultLayoutGroup.getId());   
+        defaultLayout.setParentId(defaultLayoutGroup.getId());   
         Document document = XMLDocUtil.createDoc("template/initialize/defaultLayout.xml");
-        Element propertyElement = document.getRootElement().element("property");
+        org.dom4j.Element propertyElement = document.getRootElement().element("property");
         String layoutName = propertyElement.elementText("name");
         defaultLayout.setName(layoutName);
         defaultLayout.setPortNumber(new Integer(propertyElement.elementText("portNumber")));
         defaultLayout.setDefinition(document.asXML());
         elementService.saveElement(defaultLayout);
         
-        ElementGroup defaultDecoratorGroup = new ElementGroup();
+        Element defaultDecoratorGroup = new Element();
         defaultDecoratorGroup.setName("默认修饰器组");
-        defaultDecoratorGroup.setType(ElementGroup.DECORATOR_TYPE);
+        defaultDecoratorGroup.setType(Element.DECORATOR_TYPE);
         defaultDecoratorGroup.setParentId(PortalConstants.ROOT_ID);  
-        defaultDecoratorGroup = elementService.saveGroup(defaultDecoratorGroup);
+        defaultDecoratorGroup = elementService.saveElement(defaultDecoratorGroup);
         
-        Decorator defaultDecorator = new Decorator();
+        Element defaultDecorator = new Element();
         defaultDecorator.setIsDefault(PortalConstants.TRUE);
-        defaultDecorator.setGroupId(defaultDecoratorGroup.getId());
+        defaultDecorator.setParentId(defaultDecoratorGroup.getId());
         
         document = XMLDocUtil.createDoc("template/initialize/defaultDecorator.xml");
         propertyElement = document.getRootElement().element("property");
@@ -171,7 +167,7 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
         Document doc = XMLDocUtil.createDoc("appServers.xml");
         List<?> elements = doc.getRootElement().elements();
         for (Iterator<?> it = elements.iterator(); it.hasNext();) {
-            Element element = (Element) it.next();
+            org.dom4j.Element element = (org.dom4j.Element) it.next();
             String appName = element.attributeValue("name");
             String appCode = element.attributeValue("code");
             addParam(paramGroup.getId(), appCode, appName, element.asXML());

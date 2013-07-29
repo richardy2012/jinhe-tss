@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
@@ -24,7 +25,7 @@ import com.jinhe.tss.portal.engine.model.PortalNode;
 import com.jinhe.tss.portal.entity.Element;
 import com.jinhe.tss.portal.entity.IssueInfo;
 import com.jinhe.tss.portal.entity.Navigator;
-import com.jinhe.tss.portal.entity.PersonalTheme;
+import com.jinhe.tss.portal.entity.ThemePersonal;
 import com.jinhe.tss.portal.entity.Portal;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
@@ -38,6 +39,7 @@ import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.XMLDocUtil;
  
+@Service("PortalService")
 public class PortalService implements IPortalService {
 
     protected Logger log = Logger.getLogger(this.getClass());
@@ -89,7 +91,7 @@ public class PortalService implements IPortalService {
             return getNormalPortal(portal);
         }
         
-        PersonalTheme personalTheme = portalDao.getPersonalTheme(portalId);
+        ThemePersonal personalTheme = portalDao.getPersonalTheme(portalId);
         if(personalTheme != null) {
             Long personalThemeId = personalTheme.getId();
             portal.setThemeId(personalThemeId);
@@ -622,7 +624,7 @@ public class PortalService implements IPortalService {
          String hql = "from PersonalTheme o where o.portalId = ? and o.userId = ? ";
          portalDao.deleteAll(portalDao.getEntities(hql, portalId, userId));
          
-         PersonalTheme pt = new PersonalTheme(portalId, userId, themeId);
+         ThemePersonal pt = new ThemePersonal(portalId, userId, themeId);
          portalDao.createObject(pt);
      }
   

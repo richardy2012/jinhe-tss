@@ -39,16 +39,6 @@ public class TreeSupportDao<T extends IDecodable> extends BaseDao<T> implements 
         return (!list.isEmpty() && list.get(0) != null) ? (Integer) list.get(0) + 1 : 1;
     }
     
-    public Integer getNextSeqNo( Long parentId, String parentIdName ) {
-        return getNextSeqNo(entityName, parentId, parentIdName);
-    }
- 
-    public Integer getNextSeqNo(String entityName, Long parentId, String parentIdName) {
-        String hql = "select max(o.seqNo) from " + entityName + " o where o." + parentIdName + " = ?";
-        List<?> list = getEntities(hql, parentId); 
-        return (!list.isEmpty() && list.get(0) != null) ? (Integer) list.get(0) + 1 : 1;
-    }
-    
     /**
      *  读取指定节点的所有子节点，不包括指定节点自身
      * @param entityName

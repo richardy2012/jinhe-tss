@@ -13,22 +13,22 @@ import com.jinhe.tss.framework.persistence.IEntity;
  * 门户自定义主题信息实体
  */
 @Entity
-@Table(name = "pms_personal_theme")
-@SequenceGenerator(name = "personalTheme_sequence", sequenceName = "personalTheme_sequence", initialValue = 1, allocationSize = 1)
-public class PersonalTheme implements IEntity {
+@Table(name = "portal_theme_personal")
+@SequenceGenerator(name = "theme_personal_sequence", sequenceName = "theme_personal_sequence", initialValue = 1)
+public class ThemePersonal implements IEntity {
     
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "personalTheme_sequence")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "theme_personal_sequence")
     private Long id;            //主键
 	
     private Long portalId;      //定制页面所在门户ID
     private Long themeId;       //定制的主题ID
     private Long userId;        //定制人ID
     
-    public PersonalTheme(){
+    public ThemePersonal(){
     }
     
-    public PersonalTheme(Long portalId, Long userId, Long themeId) {
+    public ThemePersonal(Long portalId, Long userId, Long themeId) {
         this.portalId = portalId;
         this.themeId = themeId;
         this.userId = userId;

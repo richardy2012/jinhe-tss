@@ -43,15 +43,31 @@ public class Element extends OperateInfo implements IEntity, ILevelTreeNode, IXF
     public final static String[] ELEMENTS   = new String[]{LAYOUT, DECORATOR, PORTLET};
     
     public String getResourceBaseDir() { 
-    	return PortalConstants.MODEL_DIR + getElementName() + "/"; 
+    	return PortalConstants.MODEL_DIR + getElementType() + "/"; 
     }
     
     public String getResourcePath()    { 
     	return getResourceBaseDir() + this.code + this.id; 
     }
     
-    public String getElementName()     { 
+    public String getTemplatePath()    { 
+        return "template/xform/" + getElementType() + ".xml";
+    }
+    
+    public String getElementType()     { 
     	return ELEMENTS[type - 1]; 
+    }
+    
+    public boolean isLayout() {
+        return this.type == LAYOUT_TYPE;
+    }
+    
+    public boolean isDecorator() {
+        return this.type == DECORATOR_TYPE;
+    }
+    
+    public boolean isportlet() {
+        return this.type == PORTLET_TYPE;
     }
     
 	@Id
@@ -106,14 +122,14 @@ public class Element extends OperateInfo implements IEntity, ILevelTreeNode, IXF
         map.put("isGroup", isGroup);
         
         if(isGroup) {
-        	map.put("icon","../framework/images/" + getElementName() + "_group.gif");
+        	map.put("icon","../framework/images/" + getElementType() + "_group.gif");
         } else {
         	map.put("code", code);
             map.put("groupId", parentId);
             map.put("disabled", disabled);
             map.put("isDefault", isDefault);
             map.put("icon", "../framework/images/" 
-            		+ (PortalConstants.TRUE.equals(isDefault) ? "default_" : "") + getElementName() 
+            		+ (PortalConstants.TRUE.equals(isDefault) ? "default_" : "") + getElementType() 
             		+ (PortalConstants.TRUE.equals(disabled) ? "_2" : "") + ".gif");
         }
         

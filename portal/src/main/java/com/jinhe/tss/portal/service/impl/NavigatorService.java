@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
@@ -14,6 +15,7 @@ import com.jinhe.tss.portal.dao.INavigatorDao;
 import com.jinhe.tss.portal.entity.Navigator;
 import com.jinhe.tss.portal.service.INavigatorService;
 
+@Service("NavigatorService")
 public class NavigatorService implements INavigatorService {
 
 	@Autowired private INavigatorDao dao;

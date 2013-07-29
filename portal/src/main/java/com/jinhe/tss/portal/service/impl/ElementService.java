@@ -1,11 +1,12 @@
 package com.jinhe.tss.portal.service.impl;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Layout;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.portal.PortalConstants;
@@ -15,20 +16,13 @@ import com.jinhe.tss.portal.service.IElementService;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;
 
+@Service("ElementService")
 public class ElementService implements IElementService {
 
     @Autowired private IElementDao dao;
 
-    public List<?> getAllElementsAndGroups(int type) {
-        List<?> groups = getGroupsByType(type);
-        
-        // 根据元素类型名称获取所有的元素（修饰器/布局器/Portlet）
-        List<?> elements = dao.getEntities("from Element o order by o.decode ");
-        
-        List<Object> returnList = new ArrayList<Object>();
-        returnList.addAll(elements);
-        returnList.addAll(groups);
-        return returnList;
+    public List<?> getAllElementsAndGroups() {
+        return dao.getEntities("from Element o order by o.decode ");
     }
 
     public List<?> getAllStartElementsAndGroups(int type) {
@@ -45,7 +39,7 @@ public class ElementService implements IElementService {
  
     public Element saveElement(Element obj) {
         if (obj.getId() == null) {
-            obj.setCode(obj.getElementName() + System.currentTimeMillis());
+            obj.setCode(obj.getElementType() + System.currentTimeMillis());
             
             Integer seqNo = dao.getNextSeqNo(obj.getParentId());
             obj.setSeqNo(seqNo);
@@ -125,7 +119,7 @@ public class ElementService implements IElementService {
         return element;
     }
     
-    public void setDecorator4Default(Long decoratorId) {
+    public void setDecoratorAsDefault(Long decoratorId) {
         List<?> list = dao.getEntities("from Element o where o.type = ? and o.isDefault = 1", Element.DECORATOR_TYPE);
         for ( Object temp : list ) {
             Element decorator = (Element) temp;
@@ -139,7 +133,7 @@ public class ElementService implements IElementService {
         dao.update(decorator);       
     }
     
-    public void setLayout4Default(Long layoutId) {
+    public void setLayoutAsDefault(Long layoutId) {
         List<?> list = dao.getEntities("from Element o where o.type = ? and o.isDefault = 1", Element.LAYOUT_TYPE);
         for ( Object temp : list ) {
             Element layout = (Element) temp;
@@ -191,17 +185,18 @@ public class ElementService implements IElementService {
         
         element.setParentId(groupId);
         
-        File path = new File(URLUtil.getWebFileUrl(group.getResourceBaseDir()).getPath());
+        URL resourceUri = URLUtil.getWebFileUrl(group.getResourceBaseDir());
+        File path = new File(resourceUri.getPath());
         copyElement(element, path, prefix);
         
         return element;
     }
 
     public List<?> getDecorators() {
-        return dao.getEntities("from Decorator o where (o.disabled is null or o.disabled <> 1) order by o.id");
+        return dao.getEntities("from Element o where o.disabled <> 1 and o.type = ? order by o.decode", Element.DECORATOR_TYPE);
     }
 
     public List<?> getLayouts() {
-        return dao.getEntities("from Layout o where (o.disabled is null or o.disabled <> 1) order by o.id");
+        return dao.getEntities("from Element o where o.disabled <> 1 and o.type = ? order by o.decode", Element.LAYOUT_TYPE);
     }
 }

@@ -2,10 +2,13 @@ package com.jinhe.tss.portal.dao.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
 import com.jinhe.tss.portal.dao.INavigatorDao;
 import com.jinhe.tss.portal.entity.Navigator;
  
+@Repository("NavigatorDao")
 public class NavigatorDao extends TreeSupportDao<Navigator> implements INavigatorDao{
 
 	public NavigatorDao() {

@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.dom4j.Document;
-import org.dom4j.Element;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.portal.engine.model.DecoratorNode;
@@ -20,10 +19,8 @@ import com.jinhe.tss.portal.engine.model.PortletNode;
 import com.jinhe.tss.portal.engine.model.SectionNode;
 import com.jinhe.tss.portal.engine.model.SubNode;
 import com.jinhe.tss.portal.engine.model.Supplementable;
-import com.jinhe.tss.portal.entity.Decorator;
-import com.jinhe.tss.portal.entity.Layout;
+import com.jinhe.tss.portal.entity.Element;
 import com.jinhe.tss.portal.entity.Structure;
-import com.jinhe.tss.portal.entity.Portlet;
 import com.jinhe.tss.util.XMLDocUtil;
 
 /**
@@ -34,9 +31,9 @@ import com.jinhe.tss.util.XMLDocUtil;
  */
 public class PortalGenerator {
 	
-	private Map<Long, Decorator> decoratorsMap = new HashMap<Long, Decorator>(); // 修饰器池     
-    private Map<Long, Layout>       layoutsMap = new HashMap<Long, Layout>();    // 布局器池     
-    private Map<Long, Portlet>     portletsMap = new HashMap<Long, Portlet>();   // portlet池     
+	private Map<Long, Element> decoratorsMap = new HashMap<Long, Element>(); // 修饰器池     
+    private Map<Long, Element>    layoutsMap = new HashMap<Long, Element>(); // 布局器池     
+    private Map<Long, Element>   portletsMap = new HashMap<Long, Element>(); // portlet池     
     
     private PortalGenerator() { }
     
@@ -65,15 +62,15 @@ public class PortalGenerator {
         List<?> portletsList   = (List<?>) elements[2];
         
         for( Object temp : decoratorsList ){
-        	Decorator element = (Decorator) temp;
+            Element element = (Element) temp;
         	generator.decoratorsMap.put( element.getId(), element);
         }
         for( Object temp : layoutsList ){
-        	Layout element = (Layout) temp;
+            Element element = (Element) temp;
         	generator.layoutsMap.put( element.getId(), element);
         }
         for( Object temp : portletsList ){
-        	Portlet element = (Portlet) temp;
+            Element element = (Element) temp;
         	generator.portletsMap.put( element.getId(), element);
         }
         
@@ -264,10 +261,10 @@ public class PortalGenerator {
      */
     private void parseSupplement(Supplementable node, String supplement){
         Document doc = XMLDocUtil.dataXml2Doc(supplement);
-        String scriptCode  = ((Element)doc.selectSingleNode("//script/code")).getText();
-        String styleCode   = ((Element)doc.selectSingleNode("//style/code")).getText();        
-        String scriptFiles = ((Element)doc.selectSingleNode("//script/file")).getText(); //格式:1.js,2js,3js
-        String styleFiles  = ((Element)doc.selectSingleNode("//style/file")).getText();  //格式:1.css,2css,3css
+        String scriptCode  = doc.selectSingleNode("//script/code").getText();
+        String styleCode   = doc.selectSingleNode("//style/code").getText();        
+        String scriptFiles = doc.selectSingleNode("//script/file").getText(); //格式:1.js,2js,3js
+        String styleFiles  = doc.selectSingleNode("//style/file").getText();  //格式:1.css,2css,3css
         
         List<String> scriptList = new ArrayList<String>();
         List<String> styleList = new ArrayList<String>();

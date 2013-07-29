@@ -2,7 +2,7 @@ package com.jinhe.tss.portal.engine.model;
 
 import java.util.Map;
 
-import com.jinhe.tss.portal.entity.Decorator;
+import com.jinhe.tss.portal.entity.Element;
 
 /**
  * 修饰器节点对象：用于解析门户中使用到的修饰器
@@ -18,16 +18,16 @@ public class DecoratorNode extends AbstractElementNode {
      * @param parameterOnPs
      * 			门户结构上定义的参数内容（修饰器实例化时自定义参数值）
      */
-    public DecoratorNode(Decorator obj, SubNode parent, String parametersOnPs){
+    public DecoratorNode(Element obj, SubNode parent, String parametersOnPs){
         super(obj, parent, parametersOnPs);
     }
     
-    public DecoratorNode(Decorator obj, SubNode parent, Map<String, String> configedParameters) {
+    public DecoratorNode(Element obj, SubNode parent, Map<String, String> configedParameters) {
         super(obj, parent);
         getParameters().putAll(configedParameters);
     }
     
-    public DecoratorNode(Decorator obj, SubNode parent) {
+    public DecoratorNode(Element obj, SubNode parent) {
         super(obj, parent);
     }
     

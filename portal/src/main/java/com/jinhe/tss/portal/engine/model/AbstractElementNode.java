@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.dom4j.Document;
-import org.dom4j.Element;
 
-import com.jinhe.tss.portal.helper.IElement;
+import com.jinhe.tss.portal.entity.Element;
 import com.jinhe.tss.util.XMLDocUtil;
 
 /**
@@ -18,7 +17,7 @@ import com.jinhe.tss.util.XMLDocUtil;
  */
 public abstract class AbstractElementNode extends AbstractSubNode {
     
-    protected IElement element;  // 元素对象本身
+    protected Element element;  // 元素对象本身
 
     protected PortalNode portal; // 所属Portal节点对象
     protected PageNode   page;   // 所属页面节点对象
@@ -58,13 +57,13 @@ public abstract class AbstractElementNode extends AbstractSubNode {
      * @param parametersOnPs
      *          元素所在门户结构配置的该元素的参数列表
      */
-    public AbstractElementNode(IElement element, SubNode parent, String parametersOnPs) {
+    public AbstractElementNode(Element element, SubNode parent, String parametersOnPs) {
     	this(element, parent);
         
         //先放入元素自定义参数的默认值(parse()方法里已经放进去了)，然后再放入具体门户结构上定义的参数以覆盖默认的（如下）
     	if(parametersOnPs != null) {
     	    Document paramsDoc = XMLDocUtil.dataXml2Doc(parametersOnPs);
-            Element paramsNode = (Element) paramsDoc.selectSingleNode("/params/" + element.getElementName());
+            org.dom4j.Element paramsNode = (org.dom4j.Element) paramsDoc.selectSingleNode("/params/" + element.getElementType());
         	Map<String, String> configParamsMap = XMLDocUtil.dataNode2Map(paramsNode);
             if(configParamsMap != null) {
                 getParameters().putAll(configParamsMap);
@@ -72,7 +71,7 @@ public abstract class AbstractElementNode extends AbstractSubNode {
     	}
     }
     
-    public AbstractElementNode(IElement element, SubNode parent) {
+    public AbstractElementNode(Element element, SubNode parent) {
         this.element = element;
         
         this.id   = element.getId();
@@ -83,7 +82,7 @@ public abstract class AbstractElementNode extends AbstractSubNode {
         this.page   = parent.getPage();
         this.portal = parent.getPortal();
         
-        parse(element.getDefinition(), element.getElementName());
+        parse(element.getDefinition(), element.getElementType());
     }
 
     protected Document parse(String definition, String elementName) {
@@ -99,23 +98,23 @@ public abstract class AbstractElementNode extends AbstractSubNode {
         this.style  = XMLDocUtil.getNodeText(styleNode);
         this.prototypeStyle = XMLDocUtil.getNodeText(ptStyleNode);
         
-        List<Element> eventNodes = XMLDocUtil.selectNodes(doc, "/" + elementName + "/events/attach");
+        List<org.dom4j.Element> eventNodes = XMLDocUtil.selectNodes(doc, "/" + elementName + "/events/attach");
         if(eventNodes != null){
-            for( Element eventNode : eventNodes ){
+            for( org.dom4j.Element eventNode : eventNodes ){
                 this.events.put(eventNode.attributeValue("event"), eventNode.attributeValue("onevent"));
             }   
         }
         
-        List<Element> paramNodes = XMLDocUtil.selectNodes(doc, "/" + elementName + "/parameters/param");
+        List<org.dom4j.Element> paramNodes = XMLDocUtil.selectNodes(doc, "/" + elementName + "/parameters/param");
         if(paramNodes != null){
-            for( Element paramNode : paramNodes ){
+            for( org.dom4j.Element paramNode : paramNodes ){
                 getParameters().put(paramNode.attributeValue("name"), paramNode.attributeValue("defaultValue"));
             } 
         } 
         return doc;
     }
     
-    public IElement getElement() {
+    public Element getElement() {
         return element;
     }
     
