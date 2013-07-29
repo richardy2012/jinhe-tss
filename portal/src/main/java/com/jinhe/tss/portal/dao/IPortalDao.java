@@ -4,8 +4,7 @@ import java.util.List;
 
 import com.jinhe.tss.framework.persistence.ITreeSupportDao;
 import com.jinhe.tss.portal.PortalConstants;
-import com.jinhe.tss.portal.entity.Decorator;
-import com.jinhe.tss.portal.entity.Layout;
+import com.jinhe.tss.portal.entity.Element;
 import com.jinhe.tss.portal.entity.PersonalTheme;
 import com.jinhe.tss.portal.entity.Portal;
 import com.jinhe.tss.portal.entity.Structure;
@@ -85,13 +84,13 @@ public interface IPortalDao extends ITreeSupportDao<Structure>{
      * 获取默认的布局器，如果没有默认的则抛出异常
      * @return
      */
-    Layout getDefaultLayout();
+    Element getDefaultLayout();
     
     /**
      * 获取默认的修饰器，如果没有默认的则抛出异常
      * @return
      */
-    Decorator getDefaultDecorator();
+    Element getDefaultDecorator();
 
     /**
      * 根据portalId获取门户结构根节点

@@ -6,8 +6,7 @@ import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.portal.dao.IPortalDao;
-import com.jinhe.tss.portal.entity.Decorator;
-import com.jinhe.tss.portal.entity.Layout;
+import com.jinhe.tss.portal.entity.Element;
 import com.jinhe.tss.portal.entity.PersonalTheme;
 import com.jinhe.tss.portal.entity.Portal;
 import com.jinhe.tss.portal.entity.Structure;
@@ -70,26 +69,20 @@ public class PortalDao extends TreeSupportDao<Structure> implements IPortalDao {
         return objs;
     }
     
-    public Layout getDefaultLayout(){
-        if(Layout.defaultLayout == null){
-            List<?> list = getEntities("from Layout o where o.isDefault = '1'");
-            if(list.isEmpty()) {
-            	throw new BusinessException("没有设定一个默认的布局器或者存在多个默认布局器！");
-            }
-            Layout.defaultLayout = (Layout) list.get(0);
+    public Element getDefaultLayout(){
+        List<?> list = getEntities("from Layout o where o.isDefault = '1'");
+        if(list.isEmpty()) {
+        	throw new BusinessException("没有设定一个默认的布局器或者存在多个默认布局器！");
         }
-        return Layout.defaultLayout;
+        return (Element) list.get(0);
     }
     
-    public Decorator getDefaultDecorator(){
-        if(Decorator.defaultDecorator == null){
-            List<?> list = getEntities("from Decorator o where o.isDefault = 1");
-            if(list.isEmpty()) {
-            	throw new BusinessException("没有设定一个默认的修饰器或者存在多个默认修饰器！");
-            }
-            Decorator.defaultDecorator = (Decorator) list.get(0);
+    public Element getDefaultDecorator(){
+        List<?> list = getEntities("from Decorator o where o.isDefault = 1");
+        if(list.isEmpty()) {
+        	throw new BusinessException("没有设定一个默认的修饰器或者存在多个默认修饰器！");
         }
-        return Decorator.defaultDecorator;
+        return (Element) list.get(0);
     }
 
     public List<?> getThemesByPortal(Long portalId) {

@@ -21,9 +21,8 @@ import com.jinhe.tss.portal.dao.INavigatorDao;
 import com.jinhe.tss.portal.dao.IPortalDao;
 import com.jinhe.tss.portal.engine.PortalGenerator;
 import com.jinhe.tss.portal.engine.model.PortalNode;
-import com.jinhe.tss.portal.entity.Decorator;
+import com.jinhe.tss.portal.entity.Element;
 import com.jinhe.tss.portal.entity.IssueInfo;
-import com.jinhe.tss.portal.entity.Layout;
 import com.jinhe.tss.portal.entity.Navigator;
 import com.jinhe.tss.portal.entity.PersonalTheme;
 import com.jinhe.tss.portal.entity.Portal;
@@ -182,8 +181,8 @@ public class PortalService implements IPortalService {
             ThemeInfo themeInfo = (ThemeInfo) portalDao.getEntity(ThemeInfo.class, themeInfoId);
             if( themeInfo == null ) {
                 //如果该门户结构在当前主题下找不到主题信息，则取默认的修饰和布局
-                Layout defaultLayout = portalDao.getDefaultLayout();
-                Decorator defaultDecorator = portalDao.getDefaultDecorator();
+            	Element defaultLayout = portalDao.getDefaultLayout();
+                Element defaultDecorator = portalDao.getDefaultDecorator();
                 
                 themeInfo = new ThemeInfo();
                 themeInfo.setDecoratorId(defaultDecorator.getId());
