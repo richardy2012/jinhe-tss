@@ -11,7 +11,7 @@ import com.jinhe.tss.portal.dao.IPortalDao;
 import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.ThemePersonal;
-
+ 
 @Repository("PortalDao")
 public class PortalDao extends TreeSupportDao<Structure> implements IPortalDao {
 

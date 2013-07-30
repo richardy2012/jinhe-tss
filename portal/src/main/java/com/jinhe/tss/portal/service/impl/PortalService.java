@@ -181,7 +181,7 @@ public class PortalService implements IPortalService {
         ThemeInfo themeInfo = (ThemeInfo) portalDao.getEntity(ThemeInfo.class, themeInfoId);
         if( themeInfo == null ) {
             // 如果该门户结构在当前主题下找不到主题信息，则取默认的修饰和布局
-        	Component defaultLayout = portalDao.getDefaultLayout();
+            Component defaultLayout = portalDao.getDefaultLayout();
             Component defaultDecorator = portalDao.getDefaultDecorator();
             
             themeInfo = new ThemeInfo();
@@ -308,7 +308,7 @@ public class PortalService implements IPortalService {
         // 删除一个枝
         List<Structure> branch = portalDao.getChildrenById(id); 
         for( Structure node : branch ) {
-        	portalDao.deletePortalStructure(node);
+            portalDao.deletePortalStructure(node);
         }
  
         // 如果删除的是门户：
