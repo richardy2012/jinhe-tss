@@ -8,7 +8,7 @@ import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.portal.dao.IPortalDao;
-import com.jinhe.tss.portal.entity.Element;
+import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.entity.ThemePersonal;
 import com.jinhe.tss.portal.entity.Portal;
 import com.jinhe.tss.portal.entity.Structure;
@@ -72,20 +72,20 @@ public class PortalDao extends TreeSupportDao<Structure> implements IPortalDao {
         return objs;
     }
     
-    public Element getDefaultLayout(){
+    public Component getDefaultLayout(){
         List<?> list = getEntities("from Layout o where o.isDefault = '1'");
         if(list.isEmpty()) {
         	throw new BusinessException("没有设定一个默认的布局器或者存在多个默认布局器！");
         }
-        return (Element) list.get(0);
+        return (Component) list.get(0);
     }
     
-    public Element getDefaultDecorator(){
+    public Component getDefaultDecorator(){
         List<?> list = getEntities("from Decorator o where o.isDefault = 1");
         if(list.isEmpty()) {
         	throw new BusinessException("没有设定一个默认的修饰器或者存在多个默认修饰器！");
         }
-        return (Element) list.get(0);
+        return (Component) list.get(0);
     }
 
     public List<?> getThemesByPortal(Long portalId) {

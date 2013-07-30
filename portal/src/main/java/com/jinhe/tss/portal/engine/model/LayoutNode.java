@@ -2,7 +2,7 @@ package com.jinhe.tss.portal.engine.model;
 
 import java.util.Map;
 
-import com.jinhe.tss.portal.entity.Element;
+import com.jinhe.tss.portal.entity.Component;
 
 /**
  * 布局器节点对象：用于解析门户中使用到的布局器
@@ -27,18 +27,18 @@ public class LayoutNode extends AbstractElementNode {
      * @param parameterOnPs
      * 			门户结构上定义的参数内容（布局器实例化时自定义参数值）
      */
-    public LayoutNode(Element obj, SubNode parent, String parametersOnPs){
+    public LayoutNode(Component obj, SubNode parent, String parametersOnPs){
         super(obj, parent, parametersOnPs);
         
         this.portNumber = obj.getPortNumber();
     }
     
-    public LayoutNode(Element obj, SubNode parent, Map<String, String> configedParameters) {
+    public LayoutNode(Component obj, SubNode parent, Map<String, String> configedParameters) {
         super(obj, parent);
         getParameters().putAll(configedParameters);
     }
     
-    public LayoutNode(Element obj, SubNode parent) {
+    public LayoutNode(Component obj, SubNode parent) {
         super(obj, parent);
     }
 

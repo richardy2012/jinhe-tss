@@ -3,12 +3,12 @@ package com.jinhe.tss.portal.dao;
 import java.util.List;
 
 import com.jinhe.tss.framework.persistence.ITreeSupportDao;
-import com.jinhe.tss.portal.entity.Element;
+import com.jinhe.tss.portal.entity.Component;
 
 /** 
  * 对元素（修饰器/布局器/Portlet）数据存取操作的DAO接口
  */
-public interface IElementDao extends ITreeSupportDao<Element>{
+public interface IElementDao extends ITreeSupportDao<Component>{
  
     /**
      * 保存一个元素（修饰器/布局器/Portlet）。
@@ -16,7 +16,7 @@ public interface IElementDao extends ITreeSupportDao<Element>{
      * @param obj
      * @return
      */
-    Element saveElement(Element obj);
+    Component saveElement(Component obj);
 
     /**
      * 删除一个元素（修饰器/布局器/Portlet）
@@ -24,7 +24,7 @@ public interface IElementDao extends ITreeSupportDao<Element>{
      * @param obj
      * @return
      */
-    Element deleteElement(Element obj);
+    Component deleteElement(Component obj);
     
     /**
      * 将元素（修饰器/布局器/Portlet）移动到指定组下。<br/>
@@ -34,7 +34,7 @@ public interface IElementDao extends ITreeSupportDao<Element>{
      * @param groupId
      * @return
      */
-    Element moveTo(Element element);
+    Component moveTo(Component element);
     
     /*****************************************************************************************************************
      ************************************ 以下是对元素（修饰器/布局器/Portlet）组的操作 ************************************* 
@@ -45,14 +45,14 @@ public interface IElementDao extends ITreeSupportDao<Element>{
      * @param group
      * @return
      */
-    void deleteGroup(Element group);
+    void deleteGroup(Component group);
  
     /**
      * 获取所有儿子节点
      * @param id
      * @return
      */
-    List<Element> getChildrenById(Long id);
+    List<Component> getChildrenById(Long id);
 
     /**
      * 获取组以及子组下所有的元素，获取portlet用于复制的时候需要根据查看操作进行过滤

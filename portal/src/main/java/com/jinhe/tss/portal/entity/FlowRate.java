@@ -15,7 +15,7 @@ import com.jinhe.tss.framework.persistence.IEntity;
  * 访问量统计实体
  */
 @Entity
-@Table(name = "pms_flowrate")
+@Table(name = "portal_flowrate")
 @SequenceGenerator(name = "flowRate_sequence", sequenceName = "flowRate_sequence", initialValue = 1000, allocationSize = 50)
 public class FlowRate implements IEntity {
     

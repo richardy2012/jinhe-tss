@@ -9,7 +9,7 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.TxSupportTest4Portal;
 import com.jinhe.tss.portal.action.ElementAction;
-import com.jinhe.tss.portal.entity.Element;
+import com.jinhe.tss.portal.entity.Component;
 
 /**
  * Portlet相关模块的单元测试。
@@ -28,38 +28,38 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
             assertFalse("预览组件出错" + e.getMessage(), true);
         }
  
-        groupAction.getGroupInfo(defaultLayoutId, PortalConstants.ROOT_ID, Element.LAYOUT_TYPE);
+        groupAction.getGroupInfo(defaultLayoutId, PortalConstants.ROOT_ID, Component.LAYOUT_TYPE);
         
-        Element elementGroup = new Element();
+        Component elementGroup = new Component();
         elementGroup.setName("测试布局器组");
-        elementGroup.setType(Element.LAYOUT_TYPE);
+        elementGroup.setType(Component.LAYOUT_TYPE);
         elementGroup.setParentId(PortalConstants.ROOT_ID);   
         groupAction.save(elementGroup);
         
         Long groupId = elementGroup.getId();
         assertNotNull(groupId);
  
-        groupAction.getGroupInfo(BaseActionSupport.DEFAULT_NEW_ID, PortalConstants.ROOT_ID, Element.LAYOUT_TYPE);
+        groupAction.getGroupInfo(BaseActionSupport.DEFAULT_NEW_ID, PortalConstants.ROOT_ID, Component.LAYOUT_TYPE);
         
-        groupAction.getGroupsByType(Element.LAYOUT_TYPE);
+        groupAction.getGroupsByType(Component.LAYOUT_TYPE);
  
         groupAction.sort(Context.getResponse(), groupId, defaultLayoutGroup.getId(), -1);
         
         groupAction.copy(defaultLayoutId);
         
-        groupAction.getGroupsByType(Element.LAYOUT_TYPE);
+        groupAction.getGroupsByType(Component.LAYOUT_TYPE);
         
         groupAction.copyTo(defaultLayoutId, groupId);
         
-        List<?> groups = elementService.getGroupsByType(Element.LAYOUT_TYPE);
+        List<?> groups = elementService.getGroupsByType(Component.LAYOUT_TYPE);
         assertTrue(groups.size() >= 3);
  
-        groupAction.moveTo(defaultLayoutId, ((Element)groups.get(2)).getId());
+        groupAction.moveTo(defaultLayoutId, ((Component)groups.get(2)).getId());
         
         groupAction.moveTo(defaultLayoutId, defaultLayoutGroup.getId());  // 移回去
         
         for(Object temp : groups) {
-            Element group = (Element)temp;
+            Component group = (Component)temp;
             if( !defaultLayoutGroup.getId().equals(group.getId()) ){
                 groupAction.delete(group.getId());
             }

@@ -19,7 +19,7 @@ import com.jinhe.tss.portal.engine.model.PortletNode;
 import com.jinhe.tss.portal.engine.model.SectionNode;
 import com.jinhe.tss.portal.engine.model.SubNode;
 import com.jinhe.tss.portal.engine.model.Supplementable;
-import com.jinhe.tss.portal.entity.Element;
+import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.util.XMLDocUtil;
 
@@ -31,9 +31,9 @@ import com.jinhe.tss.util.XMLDocUtil;
  */
 public class PortalGenerator {
 	
-	private Map<Long, Element> decoratorsMap = new HashMap<Long, Element>(); // 修饰器池     
-    private Map<Long, Element>    layoutsMap = new HashMap<Long, Element>(); // 布局器池     
-    private Map<Long, Element>   portletsMap = new HashMap<Long, Element>(); // portlet池     
+	private Map<Long, Component> decoratorsMap = new HashMap<Long, Component>(); // 修饰器池     
+    private Map<Long, Component>    layoutsMap = new HashMap<Long, Component>(); // 布局器池     
+    private Map<Long, Component>   portletsMap = new HashMap<Long, Component>(); // portlet池     
     
     private PortalGenerator() { }
     
@@ -62,15 +62,15 @@ public class PortalGenerator {
         List<?> portletsList   = (List<?>) elements[2];
         
         for( Object temp : decoratorsList ){
-            Element element = (Element) temp;
+            Component element = (Component) temp;
         	generator.decoratorsMap.put( element.getId(), element);
         }
         for( Object temp : layoutsList ){
-            Element element = (Element) temp;
+            Component element = (Component) temp;
         	generator.layoutsMap.put( element.getId(), element);
         }
         for( Object temp : portletsList ){
-            Element element = (Element) temp;
+            Component element = (Component) temp;
         	generator.portletsMap.put( element.getId(), element);
         }
         

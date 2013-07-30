@@ -52,11 +52,10 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
     private Long id;  
 	
 	@Column(nullable = false)
-    private Long parentId; //父节点编号
+    private Long parentId; // 父节点编号
+	
+	private Long portalId; // 门户根节点ID，如果是根节点自身，则为空
     
-    @Column(nullable = false)
-    private Long portalId; //所属门户编号
-
     /**
      * 节点类型：
      * <li>0－结构根节点（相当于门户，但也是一个版面）；
@@ -70,7 +69,23 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
     @Column(nullable = false)
     private String  name;   // 节点名称：门户名称/页面名称/版面名称/Portlet实例名称
     private String  code;   // 门户结构节点的代码
+    private String  description; // 描述信息
+    
+    /**
+     * 门户根节点信息：主题信息等  ------------------------------------------------------------------------------
+     */
+    private Long    themeId;    // 默认主题编号
+	private String  themeName;  // 默认主题名称（默认为：XXXX(门户名称)的主题）
+	
+    private Long    currentThemeId;    // 当前主题编号
+    private String  currentThemeName;  // 当前主题名称（默认为：XXXX(门户名称)的主题）
    
+    @Column(length = 4000)
+    private String supplement;  // Portal和页面全局附加脚本和样式表定义信息
+    
+    /**
+     * 门户结构（页面、版面、portlet实例）信息：具体的布局和portlet实例  ---------------------------------------------
+     */
     private Long   definerId;    // 布局器/Portlet编号
     private String definerName;  // 布局器/Portlet名称
     
@@ -81,10 +96,6 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
     @Transient private String decoratorName; // 修饰器名称
 
     private String parameters;  // Portlet、修饰器实例化时自定义参数值
-    
-    @Column(length = 4000)
-    private String supplement;  // Portal和页面全局附加脚本和样式表定义信息
-    private String description; // 门户、版面、Portlet应用、菜单应用等节点描述信息
     
     @Column(nullable = false)
     private Integer seqNo;   // 顺序号
@@ -381,5 +392,41 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
  
     public void setSupplement(String supplement) {
         this.supplement = supplement;
+    }
+    
+	public Long getThemeId() {
+		return themeId;
+	}
+ 
+	public void setThemeId(Long themeId) {
+		this.themeId = themeId;
+	}
+ 
+	public String getThemeName() {
+		return themeName;
+	}
+ 
+	public void setThemeName(String themeName) {
+		this.themeName = themeName;
+	}
+ 
+    public Long getCurrentThemeId() {
+        return currentThemeId;
+    }
+ 
+    public String getCurrentThemeName() {
+        return currentThemeName;
+    }
+ 
+    public void setCurrentThemeId(Long currentThemeId) {
+        this.currentThemeId = currentThemeId;
+    }
+ 
+    public void setCurrentThemeName(String currentThemeName) {
+        this.currentThemeName = currentThemeName;
+    }
+    
+    public String getDefaultKey() {
+        return (isRootPortal() ? this.id : this.portalId) + "_" + themeId;
     }
 }

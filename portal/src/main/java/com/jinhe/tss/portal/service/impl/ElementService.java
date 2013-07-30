@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.dao.IElementDao;
-import com.jinhe.tss.portal.entity.Element;
+import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.service.IElementService;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;
@@ -37,9 +37,9 @@ public class ElementService implements IElementService {
         return returnList;
     }
  
-    public Element saveElement(Element obj) {
+    public Component saveElement(Component obj) {
         if (obj.getId() == null) {
-            obj.setCode(obj.getElementType() + System.currentTimeMillis());
+            obj.setCode(obj.getComponentType() + System.currentTimeMillis());
             
             Integer seqNo = dao.getNextSeqNo(obj.getParentId());
             obj.setSeqNo(seqNo);
@@ -47,27 +47,27 @@ public class ElementService implements IElementService {
         return dao.saveElement(obj);
     }
     
-    public Element deleteElement(Long id) {
-        Element element = dao.getEntity(id);
+    public Component deleteElement(Long id) {
+        Component element = dao.getEntity(id);
         checkElementInUse(element);
         return dao.deleteElement(element);
     }
 
-    private void checkElementInUse(Element element) {
+    private void checkElementInUse(Component element) {
         if(PortalConstants.TRUE.equals(element.getIsDefault())) {
             throw new BusinessException("删除组件为默认的修饰器或布局器，删除失败！");
         }
         
-        Element group = dao.getEntity(element.getParentId());
+        Component group = dao.getEntity(element.getParentId());
         String hql = null;
         switch (group.getType()) {
-        case Element.PORTLET_TYPE:  // Portlet组
+        case Component.PORTLET_TYPE:  // Portlet组
             hql = "from PortalStructure t where t.definerId = ? and t.type = 3 ";
             break;
-        case Element.LAYOUT_TYPE:   // 布局器组
+        case Component.LAYOUT_TYPE:   // 布局器组
             hql = "select t from PortalStructure t, ThemeInfo ti where t.id = ti.id.portalStructureId and ti.layoutId = ? ";
             break;
-        case Element.DECORATOR_TYPE: // 修饰器组
+        case Component.DECORATOR_TYPE: // 修饰器组
             hql = "select t from PortalStructure t, ThemeInfo ti where t.id = ti.id.portalStructureId and ti.decoratorId = ? ";
             break;
         }     
@@ -79,7 +79,7 @@ public class ElementService implements IElementService {
     }
  
     public void disableElement(Long id, Integer disabled) {
-        Element element = getElementInfo(id);
+        Component element = getElementInfo(id);
         if(PortalConstants.TRUE.equals(element.getIsDefault())) {
             throw new BusinessException("停用组件为默认的修饰器或布局器，停用失败！");
         }
@@ -90,7 +90,7 @@ public class ElementService implements IElementService {
         }
     }
  
-    public Element getElementInfo(Long id) {
+    public Component getElementInfo(Long id) {
         return dao.getEntity(id);
     }
  
@@ -98,12 +98,12 @@ public class ElementService implements IElementService {
         dao.sort(id, targetId, direction);
     }
 
-    public Element copyElement(Long id, File path) {
-        Element element = getElementInfo(id);
+    public Component copyElement(Long id, File path) {
+        Component element = getElementInfo(id);
         return copyElement(element, path, PortalConstants.COPY_PREFIX);
     }
     
-    private Element copyElement(Element element, File path, String prefix) {
+    private Component copyElement(Component element, File path, String prefix) {
         //先取到拷贝原本element的资源文件目录
         File fileDir = FileHelper.findPathByName(path, element.getCode() + element.getId());
         
@@ -120,28 +120,28 @@ public class ElementService implements IElementService {
     }
     
     public void setDecoratorAsDefault(Long decoratorId) {
-        List<?> list = dao.getEntities("from Element o where o.type = ? and o.isDefault = 1", Element.DECORATOR_TYPE);
+        List<?> list = dao.getEntities("from Element o where o.type = ? and o.isDefault = 1", Component.DECORATOR_TYPE);
         for ( Object temp : list ) {
-            Element decorator = (Element) temp;
+            Component decorator = (Component) temp;
             decorator.setIsDefault(PortalConstants.FALSE);
             dao.update(decorator);     
         }     
         
-        Element decorator = dao.getEntity(decoratorId);
+        Component decorator = dao.getEntity(decoratorId);
         decorator.setIsDefault(PortalConstants.TRUE);
         decorator.setDisabled(PortalConstants.FALSE); //设置为默认布局器则启用该修饰器（不管有没有停用掉）
         dao.update(decorator);       
     }
     
     public void setLayoutAsDefault(Long layoutId) {
-        List<?> list = dao.getEntities("from Element o where o.type = ? and o.isDefault = 1", Element.LAYOUT_TYPE);
+        List<?> list = dao.getEntities("from Element o where o.type = ? and o.isDefault = 1", Component.LAYOUT_TYPE);
         for ( Object temp : list ) {
-            Element layout = (Element) temp;
+            Component layout = (Component) temp;
             layout.setIsDefault(PortalConstants.FALSE);
             dao.update(layout);     
         }        
         
-        Element layout = dao.getEntity(layoutId);
+        Component layout = dao.getEntity(layoutId);
         layout.setIsDefault(PortalConstants.TRUE);
         layout.setDisabled(PortalConstants.FALSE); //设置为默认布局器则启用该布局器（不管有没有停用掉）
         dao.update(layout);       
@@ -151,7 +151,7 @@ public class ElementService implements IElementService {
      ************************************ 以下是对元素（修饰器/布局器/Portlet）组的操作 ************************************* 
      *****************************************************************************************************************/   
     public void moveTo(Long elementId, Long groupId) {
-        Element element = dao.getEntity(elementId);
+        Component element = dao.getEntity(elementId);
         element.setSeqNo(dao.getNextSeqNo(groupId));
         element.setParentId(groupId);
         
@@ -162,10 +162,10 @@ public class ElementService implements IElementService {
         // 检查组下是否有元素尚在使用中
         List<?> elements = dao.getAllElementsByGroup(groupId);
         for ( Object element : elements ) {
-            checkElementInUse( (Element) element );
+            checkElementInUse( (Component) element );
         }
             
-        Element entity = dao.getEntity( groupId );
+        Component entity = dao.getEntity( groupId );
         dao.deleteGroup(entity);
     }
  
@@ -173,9 +173,9 @@ public class ElementService implements IElementService {
         return dao.getEntities("from Element t where t.type = ? and isGroup = ? order by t.decode", type, true);
     }
 
-    public Element copyTo(Long elementId, Long groupId) {
-        Element group = dao.getEntity( groupId );
-        Element element = dao.getEntity( elementId );
+    public Component copyTo(Long elementId, Long groupId) {
+        Component group = dao.getEntity( groupId );
+        Component element = dao.getEntity( elementId );
         
         // 如果目标节点和原父节点是同一个，则当"复制"操作处理，name前面加前缀
         String prefix = "";
@@ -193,10 +193,10 @@ public class ElementService implements IElementService {
     }
 
     public List<?> getDecorators() {
-        return dao.getEntities("from Element o where o.disabled <> 1 and o.type = ? order by o.decode", Element.DECORATOR_TYPE);
+        return dao.getEntities("from Element o where o.disabled <> 1 and o.type = ? order by o.decode", Component.DECORATOR_TYPE);
     }
 
     public List<?> getLayouts() {
-        return dao.getEntities("from Element o where o.disabled <> 1 and o.type = ? order by o.decode", Element.LAYOUT_TYPE);
+        return dao.getEntities("from Element o where o.disabled <> 1 and o.type = ? order by o.decode", Component.LAYOUT_TYPE);
     }
 }

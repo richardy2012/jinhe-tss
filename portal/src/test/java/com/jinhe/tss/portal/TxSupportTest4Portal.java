@@ -19,7 +19,7 @@ import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.IH2DBServer;
 import com.jinhe.tss.framework.test.TestUtil;
-import com.jinhe.tss.portal.entity.Element;
+import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.service.IElementService;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
@@ -106,11 +106,11 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
     protected static String MODEL_DECORATOR_DIR;
     protected static String MODEL_PORTLET_DIR;
   
-    protected static Element defaultLayoutGroup;
-    protected static Element defaultLayout;
+    protected static Component defaultLayoutGroup;
+    protected static Component defaultLayout;
     protected static Long defaultLayoutId;
-    protected static Element defaultDecoratorGroup;
-    protected static Element defaultDecorator;
+    protected static Component defaultDecoratorGroup;
+    protected static Component defaultDecorator;
     protected static Long defaultDecoratorId;
     
     /**
@@ -128,13 +128,13 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
         File freemarkerDir = FileHelper.createDir(portalTargetPath + "/freemarker");
         FileHelper.writeFile(new File(freemarkerDir + "/common.ftl"), "");
         
-        defaultLayoutGroup = new Element();
+        defaultLayoutGroup = new Component();
         defaultLayoutGroup.setName("默认布局器组");
-        defaultLayoutGroup.setType(Element.LAYOUT_TYPE);
+        defaultLayoutGroup.setType(Component.LAYOUT_TYPE);
         defaultLayoutGroup.setParentId(PortalConstants.ROOT_ID);   
         defaultLayoutGroup = elementService.saveElement(defaultLayoutGroup);
         
-        defaultLayout = new Element();
+        defaultLayout = new Component();
         defaultLayout.setIsDefault(PortalConstants.TRUE);
         defaultLayout.setParentId(defaultLayoutGroup.getId());   
         Document document = XMLDocUtil.createDoc("template/initialize/defaultLayout.xml");
@@ -146,13 +146,13 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
         elementService.saveElement(defaultLayout);
         defaultLayoutId = defaultLayout.getId();
         
-        defaultDecoratorGroup = new Element();
+        defaultDecoratorGroup = new Component();
         defaultDecoratorGroup.setName("默认修饰器组");
-        defaultDecoratorGroup.setType(Element.DECORATOR_TYPE);
+        defaultDecoratorGroup.setType(Component.DECORATOR_TYPE);
         defaultDecoratorGroup.setParentId(PortalConstants.ROOT_ID);  
         defaultDecoratorGroup = elementService.saveElement(defaultDecoratorGroup);
         
-        defaultDecorator = new Element();
+        defaultDecorator = new Component();
         defaultDecorator.setIsDefault(PortalConstants.TRUE);
         defaultDecorator.setParentId(defaultDecoratorGroup.getId());
         
