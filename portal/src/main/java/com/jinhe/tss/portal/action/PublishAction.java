@@ -13,7 +13,6 @@ import com.jinhe.tss.framework.component.progress.ProgressPool;
 import com.jinhe.tss.framework.component.progress.Progressable;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.mvc.ProgressActionSupport;
-import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.engine.releasehtml.MagicRobot;
 import com.jinhe.tss.portal.engine.releasehtml._FtpClient;
 import com.jinhe.tss.util.XMLDocUtil;
@@ -23,16 +22,13 @@ import com.jinhe.tss.util.XMLDocUtil;
  */
 public class PublishAction extends ProgressActionSupport {
  
-    private Long    id;       // 需要发布的门户portalId
-    private Integer override; // 是否覆盖
-    private String  pageUrl;  // 需要单个发布的页面地址
-
     /**
      * 静态发布匿名访问的门户
-     * @return
+     * 
+     * @param id 需要发布的门户portalId
      */
-    public void staticIssuePortal(){
-        //发布整个站点
+    public void staticIssuePortal(Long id) {
+        // 发布整个站点
         MagicRobot robot = new MagicRobot(id);
 
         // 此处总数是个估算值，如果是第一次发布，按5000计
@@ -47,9 +43,10 @@ public class PublishAction extends ProgressActionSupport {
     
     /**
      * 静态发布匿名访问的门户的某个页面以及该页面上的链接
-     * @return
+     * 
+     * @param pageUrl 需要单个发布的页面地址
      */
-    public void staticIssuePortalPage(){
+    public void staticIssuePortalPage(String  pageUrl) {
         //发布整个站点
         MagicRobot robot = new MagicRobot(pageUrl);
 
@@ -100,10 +97,10 @@ public class PublishAction extends ProgressActionSupport {
     
     /**
      * 将发布出来站点页面拷贝到远程机器上
-     * @return
+     * 
+     * @param override 是否覆盖
      */
-    public void ftpUpload2RemoteServer(){
-        final boolean overrideTag = PortalConstants.TRUE.equals(override);
+    public void ftpUpload2RemoteServer(boolean override) {
         /* 
          * FTP服务器配置相关：
          * 1、首先从系统参数模块读取配置信息，code：ftpConfig，参数化类型为普通参数，解析之；
@@ -121,19 +118,9 @@ public class PublishAction extends ProgressActionSupport {
             final Element element = (Element) it.next();
             
             // 不使用多线程，暂时不带进度
-            _FtpClient _ftp = new _FtpClient(overrideTag);
+            _FtpClient _ftp = new _FtpClient(override);
             _ftp.ftpUpload(element);
         }
         printSuccessMessage("远程发布成功");
-    }
-    
-    public void setId(Long id) { 
-        this.id = id; 
-    }
-    public void setOverride(Integer override) {
-        this.override = override;
-    }
-    public void setPageUrl(String pageUrl) {
-        this.pageUrl = pageUrl;
     }
 }

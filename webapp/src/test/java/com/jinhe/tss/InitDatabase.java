@@ -22,7 +22,7 @@ import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.portal.PortalConstants;
-import com.jinhe.tss.portal.entity.Element;
+import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.service.IElementService;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
@@ -109,13 +109,13 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
     
     /** 初始化默认的修饰器，布局器 */
     private void initPortal() {
-        Element defaultLayoutGroup = new Element();
+        Component defaultLayoutGroup = new Component();
         defaultLayoutGroup.setName("默认布局器组");
-        defaultLayoutGroup.setType(Element.LAYOUT_TYPE);
+        defaultLayoutGroup.setType(Component.LAYOUT_TYPE);
         defaultLayoutGroup.setParentId(PortalConstants.ROOT_ID);   
         defaultLayoutGroup = elementService.saveElement(defaultLayoutGroup);
         
-        Element defaultLayout = new Element();
+        Component defaultLayout = new Component();
         defaultLayout.setIsDefault(PortalConstants.TRUE);
         defaultLayout.setParentId(defaultLayoutGroup.getId());   
         Document document = XMLDocUtil.createDoc("template/initialize/defaultLayout.xml");
@@ -126,13 +126,13 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
         defaultLayout.setDefinition(document.asXML());
         elementService.saveElement(defaultLayout);
         
-        Element defaultDecoratorGroup = new Element();
+        Component defaultDecoratorGroup = new Component();
         defaultDecoratorGroup.setName("默认修饰器组");
-        defaultDecoratorGroup.setType(Element.DECORATOR_TYPE);
+        defaultDecoratorGroup.setType(Component.DECORATOR_TYPE);
         defaultDecoratorGroup.setParentId(PortalConstants.ROOT_ID);  
         defaultDecoratorGroup = elementService.saveElement(defaultDecoratorGroup);
         
-        Element defaultDecorator = new Element();
+        Component defaultDecorator = new Component();
         defaultDecorator.setIsDefault(PortalConstants.TRUE);
         defaultDecorator.setParentId(defaultDecoratorGroup.getId());
         

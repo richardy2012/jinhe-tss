@@ -13,7 +13,7 @@ import org.dom4j.io.SAXReader;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.context.Context;
-import com.jinhe.tss.portal.entity.Element;
+import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.service.IElementService;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
@@ -88,14 +88,14 @@ public class ElementHelper {
     /**
      * 导入元素，XML格式或者zip包格式
      */
-    public static void importElement(IElementService service, File file, Element newElement, String desDir, String eXMLFile) {
+    public static void importElement(IElementService service, File file, Component newElement, String desDir, String eXMLFile) {
         if (null == file) {
             throw new BusinessException("导入文件为空！");
         }
         
         String fileName = file.getName();
         if (fileName.endsWith(".xml")) {
-            Element element = importXml(service, newElement, file);
+            Component element = importXml(service, newElement, file);
             if (element == null) {      
                 throw new BusinessException(fileName + "不符合" + eXMLFile + "导入文件规范!!");   
             }
@@ -112,7 +112,7 @@ public class ElementHelper {
      * @param file
      * @return
      */
-    private static Element importXml(IElementService service, Element newElement, File file) {
+    private static Component importXml(IElementService service, Component newElement, File file) {
         Document document = null;
         SAXReader reader = new SAXReader();
         try {
@@ -134,7 +134,7 @@ public class ElementHelper {
         }
         try {
             org.dom4j.Element rootElement = document.getRootElement();
-            if(!rootElement.getName().equals(newElement.getElementType())) {
+            if(!rootElement.getName().equals(newElement.getComponentType())) {
                 throw new BusinessException("导入的XML文件不是规定的导入文件，根节点名称不匹配！");
             }
             org.dom4j.Element propertyElement = rootElement.element("property");
@@ -160,7 +160,7 @@ public class ElementHelper {
      * @param desDir
      * @param eXMLFile
      */
-    private static void importZip(IElementService service, Element newElement, File importDir, String desDir, String eXMLFile) {
+    private static void importZip(IElementService service, Component newElement, File importDir, String desDir, String eXMLFile) {
         File tempDir = new File(desDir + "/" + System.currentTimeMillis());
         try {
 			FileHelper.upZip(importDir, tempDir);
@@ -174,7 +174,7 @@ public class ElementHelper {
         }
         
         File eXMLFilePath = new File(desDir + "/" + tempDir.getName() + "/" + eXMLFile);
-        Element element = importXml(service, newElement, eXMLFilePath);
+        Component element = importXml(service, newElement, eXMLFilePath);
 
         File newFile = new File(desDir + "/" + element.getCode() + element.getId());
         if ( !tempDir.renameTo(newFile) ) {
@@ -189,7 +189,7 @@ public class ElementHelper {
      * @param info        元素实体
      * @param eXMLFile    元素的XML文件名 "/decorator.xml"
      */
-    public static void exportElement(String modelPath, Element info, String eXMLFile) {
+    public static void exportElement(String modelPath, Component info, String eXMLFile) {
         String elementName = EasyUtils.toUtf8String(info.getName());
         String exportFileName;
         String outPath; // 导出zip或xml文件路径

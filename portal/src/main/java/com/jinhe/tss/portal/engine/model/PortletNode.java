@@ -3,7 +3,7 @@ package com.jinhe.tss.portal.engine.model;
 import java.util.Map;
 
 import com.jinhe.tss.portal.engine.FreemarkerParser;
-import com.jinhe.tss.portal.entity.Element;
+import com.jinhe.tss.portal.entity.Component;
 
 /**
  * Portlet节点对象：用于解析门户中使用到的Portlet
@@ -24,11 +24,11 @@ public class PortletNode extends AbstractElementNode {
      * @param parameterOnPs
      * 			门户结构上定义的参数内容（Portlet实例化时自定义参数值）
      */
-    public PortletNode(Element obj, SubNode parent, String parametersOnPs){
+    public PortletNode(Component obj, SubNode parent, String parametersOnPs){
         super(obj, parent, parametersOnPs);
     }
     
-    public PortletNode(Element obj, SubNode parent, Map<String, String> configedParameters ) {
+    public PortletNode(Component obj, SubNode parent, Map<String, String> configedParameters ) {
         super(obj, parent);
         getParameters().putAll(configedParameters);
     }

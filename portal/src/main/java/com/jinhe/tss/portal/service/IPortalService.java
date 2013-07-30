@@ -8,7 +8,6 @@ import com.jinhe.tss.portal.engine.model.PortalNode;
 import com.jinhe.tss.portal.entity.IssueInfo;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
-import com.jinhe.tss.portal.helper.PortalStructureWrapper;
 import com.jinhe.tss.portal.permission.PermissionFilter4Check;
 import com.jinhe.tss.portal.permission.PermissionFilter4Portal;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4CopyTo;
@@ -101,8 +100,8 @@ public interface IPortalService {
      * save()结束返回 该门户结构PortalStructure 对象
      * </p>
      * 
-     * @param portalStructure
-     *            要保存的门户结构实体（如果是根节点，则实体类型为其子类RootPortalStructure
+     * @param ps
+     *            要保存的门户结构实体
      * @return
      *            保存成功以后的门户结构实体
      */
@@ -111,14 +110,14 @@ public interface IPortalService {
             operation = PortalConstants.PORTAL_ADD_OPERRATION , 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Create.class)
-    Structure createPortalStructure(PortalStructureWrapper psw);
+    Structure createPortalStructure(Structure ps);
     
     @Logable(operateTable="门户结构", operateType="修改", operateInfo="修改了 ${returnVal} 节点")
     @PermissionTag(
             operation = PortalConstants.PORTAL_EDIT_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Update.class)
-    Structure updatePortalStructure(PortalStructureWrapper psw);
+    Structure updatePortalStructure(Structure ps);
     
     /**
      * <p>
@@ -161,15 +160,13 @@ public interface IPortalService {
      *          要移动节点的id
      * @param targetId
      *          目标节点ID
-     * @param portalId 
-     *          目标节点的portalId
      */
     @Logable(operateTable="门户结构", operateType="移动", operateInfo="移动(ID: ${args[0]})节点到(ID: ${args[1]})节点下")
     @PermissionTag(
             operation = PortalConstants.PORTAL_ADD_OPERRATION + "," + PortalConstants.PORTAL_DEL_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Move.class)
-    void move(Long id, Long targetId, Long portalId);
+    void move(Long id, Long targetId);
 
     /**
      * * <p>
@@ -188,14 +185,12 @@ public interface IPortalService {
             operation = PortalConstants.PORTAL_ORDER_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Sort.class)
-    void order(Long id, Long targetId, int direction);
+    void sort(Long id, Long targetId, int direction);
     
     /**
      * 复制到。。。
      * @param id
-     * @param name
      * @param targetId
-     * @param portalId
      * @return
      */
     @Logable(operateTable="门户结构", operateType="复制到", operateInfo="复制(ID: ${args[0]})节点到(ID: ${args[1]})下")
@@ -203,7 +198,7 @@ public interface IPortalService {
             operation = PortalConstants.PORTAL_ADD_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4CopyTo.class)
-    List<Structure> copyTo(Long id, Long targetId, Long portalId);
+    List<Structure> copyTo(Long id, Long targetId);
     
     /**
      * 获取一个门户树的一份拷贝。

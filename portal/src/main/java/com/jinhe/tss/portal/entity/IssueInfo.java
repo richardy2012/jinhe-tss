@@ -22,10 +22,10 @@ import com.jinhe.tss.util.BeanUtil;
  * 门户发布信息表
  */
 @Entity
-@Table(name = "pms_issue_info", uniqueConstraints = { 
+@Table(name = "portal_issue_info", uniqueConstraints = { 
         @UniqueConstraint(name="MULTI_NAME_IssueInfo", columnNames = { "name" })
 })
-@SequenceGenerator(name = "issueInfo_sequence", sequenceName = "issueInfo_sequence", initialValue = 1, allocationSize = 1)
+@SequenceGenerator(name = "issueInfo_sequence", sequenceName = "issueInfo_sequence", initialValue = 1)
 public class IssueInfo implements IEntity, ITreeNode, IXForm {
 	
 	@Id

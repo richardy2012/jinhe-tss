@@ -4,21 +4,13 @@ import java.util.List;
 
 import com.jinhe.tss.framework.persistence.ITreeSupportDao;
 import com.jinhe.tss.portal.PortalConstants;
-import com.jinhe.tss.portal.entity.Element;
-import com.jinhe.tss.portal.entity.ThemePersonal;
-import com.jinhe.tss.portal.entity.Portal;
+import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.entity.Structure;
+import com.jinhe.tss.portal.entity.ThemePersonal;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Branch;
 import com.jinhe.tss.um.permission.filter.PermissionTag;
 
 public interface IPortalDao extends ITreeSupportDao<Structure>{
- 
-    /**
-     * 根据portalId获取Portal实体
-     * @param id
-     * @return
-     */
-    Portal getPortalById(Long id);
     
     /**
      * 本方法将会被拦截进行资源注册操作，所以一般的保存应该直接调save方法。
@@ -84,13 +76,13 @@ public interface IPortalDao extends ITreeSupportDao<Structure>{
      * 获取默认的布局器，如果没有默认的则抛出异常
      * @return
      */
-    Element getDefaultLayout();
+    Component getDefaultLayout();
     
     /**
      * 获取默认的修饰器，如果没有默认的则抛出异常
      * @return
      */
-    Element getDefaultDecorator();
+    Component getDefaultDecorator();
 
     /**
      * 根据portalId获取门户结构根节点

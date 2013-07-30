@@ -35,7 +35,7 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 导航栏内容定义器：描述导航栏（菜单）基本信息及内容定义信息
  */
 @Entity
-@Table(name = "pms_menu", uniqueConstraints = { 
+@Table(name = "portal_menu", uniqueConstraints = { 
         @UniqueConstraint(name="MULTI_NAME_MENU", columnNames = { "parentId", "name" })
 })
 @SequenceGenerator(name = "menu_sequence", sequenceName = "menu_sequence", initialValue = 1000, allocationSize = 50)
@@ -44,35 +44,35 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
     /**
      * 菜单组
      */
-    public static final Integer TYPE_MENU        = new Integer(1);
+    public static final Integer TYPE_MENU        = 1;
     
     /**
      * 普通URL方式: url = www.google.com
      */
-    public static final Integer TYPE_MENU_ITEM_4 = new Integer(4);
+    public static final Integer TYPE_MENU_ITEM_4 = 4;
     
     /**
      * CMS栏目方式: url = ${common.articleListUrl}&channelId=38
      */
-    public static final Integer TYPE_MENU_ITEM_7 = new Integer(7);
+    public static final Integer TYPE_MENU_ITEM_7 = 7;
     
     /**
      * 行为方式: params = appCode:\'UMS\',redirect:\'http://${PT_ip}/ums/redirect.html\',url:\'ums/permission.htm\'
      *         methodName = jumpTo（方法可定义在门户外挂文件或门户元素上）, contentId = 16, contentName = IFrame
      */
-    public static final Integer TYPE_MENU_ITEM_6 = new Integer(6);
+    public static final Integer TYPE_MENU_ITEM_6 = 6;
     
     /**
      * 页面/版面/Portlet 门户内部链接: contentId=66
      * 读取时再解析成 url = portal!previewPortal.action?portalId=" + portalId + "&id=" + contentId 
      */
-    public static final Integer TYPE_MENU_ITEM_3 = new Integer(3);
+    public static final Integer TYPE_MENU_ITEM_3 = 3;
     
     /**
      * 局部替换方式: contentId=66, targetId=88
      * 读取时再解析成 url = portal!getPortalXML.action?portalId=" + portalId + "&id=" + contentId + "&targetId=" + targetId
      */
-    public static final Integer TYPE_MENU_ITEM_5 = new Integer(5);
+    public static final Integer TYPE_MENU_ITEM_5 = 5;
     
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "menu_sequence")

@@ -37,30 +37,27 @@ public abstract class FreeMarkerSupportAction extends BaseActionSupport {
 	private static final String USE_FREEMARKER = "useFreemarker"; // 是否解析
 
 	protected Logger log = Logger.getLogger(this.getClass());
-    
-    protected Long portalId; 
-
-    public void setPortalId(Long portalId) {
-        this.portalId = portalId;
-    }
-    
+ 
     /**
      * 解析Freemarker模板
-     * @param template
-     * @return
      */
+	
     protected void printHTML(String template){
-        printHTML(template, true);
+        printHTML(null, template);
     }
     
-    protected void printHTML(String template, boolean parseTwice){
+    protected void printHTML(Long portalId, String template){
+        printHTML(portalId, template, true);
+    }
+    
+    protected void printHTML(Long portalId, String template, boolean parseTwice){
         if( !Config.TRUE.equalsIgnoreCase(ParamConfig.getAttribute(USE_FREEMARKER)) ){
             print(template);
             return;
         }
         
         try {
-            FreemarkerParser parser = getFreemarkerParser();
+            FreemarkerParser parser = getFreemarkerParser(portalId);
             if(parser.isFtlTemplateReady){
                 HttpServletResponse response = Context.getResponse();
                 response.setContentType("text/html;charset=GBK");
@@ -85,11 +82,11 @@ public abstract class FreeMarkerSupportAction extends BaseActionSupport {
         print(template);
     }
     
-	protected FreemarkerParser getFreemarkerParser(){
+	protected FreemarkerParser getFreemarkerParser(Long portalId) {
         HttpServletRequest  request = Context.getRequestContext().getRequest();
         
         //设置门户资源路进为Freemarker模板路径
-        FreemarkerParser parser = new FreemarkerParser(getPortalResourcesPath());
+        FreemarkerParser parser = new FreemarkerParser(getPortalResourcesPath(portalId));
         if(parser.isFtlTemplateReady){
         	
             // 将本次http请求中带的参数放入到freemarker数据模型中，
@@ -101,12 +98,16 @@ public abstract class FreeMarkerSupportAction extends BaseActionSupport {
         return parser;
     }
     
-    protected File getPortalResourcesPath(){
+    protected File getPortalResourcesPath(Long portalId) {
+        if(portalId == null) return null;
+        
         URL url = URLUtil.getWebFileUrl(PortalConstants.PORTAL_MODEL_DIR);
         List<File> list = FileHelper.listSubDir(new File(url.getFile()));
-        for( File file : list ){
-            if(file.getName().endsWith("_" + portalId)) //判断文件夹路径是否以 "_12"这样结尾，是的话表示是当前门户的资源文件夹
+        for( File file : list ) {
+            // 判断文件夹路径是否以 "_12"这样结尾，是的话表示是当前门户的资源文件夹
+            if(file.getName().endsWith("_" + portalId)) {
                 return file;
+            }
         }
         return null;
     }

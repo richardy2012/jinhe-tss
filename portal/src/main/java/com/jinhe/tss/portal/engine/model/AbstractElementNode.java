@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.dom4j.Document;
 
-import com.jinhe.tss.portal.entity.Element;
+import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.util.XMLDocUtil;
 
 /**
@@ -17,7 +17,7 @@ import com.jinhe.tss.util.XMLDocUtil;
  */
 public abstract class AbstractElementNode extends AbstractSubNode {
     
-    protected Element element;  // 元素对象本身
+    protected Component element;  // 元素对象本身
 
     protected PortalNode portal; // 所属Portal节点对象
     protected PageNode   page;   // 所属页面节点对象
@@ -57,13 +57,13 @@ public abstract class AbstractElementNode extends AbstractSubNode {
      * @param parametersOnPs
      *          元素所在门户结构配置的该元素的参数列表
      */
-    public AbstractElementNode(Element element, SubNode parent, String parametersOnPs) {
+    public AbstractElementNode(Component element, SubNode parent, String parametersOnPs) {
     	this(element, parent);
         
         //先放入元素自定义参数的默认值(parse()方法里已经放进去了)，然后再放入具体门户结构上定义的参数以覆盖默认的（如下）
     	if(parametersOnPs != null) {
     	    Document paramsDoc = XMLDocUtil.dataXml2Doc(parametersOnPs);
-            org.dom4j.Element paramsNode = (org.dom4j.Element) paramsDoc.selectSingleNode("/params/" + element.getElementType());
+            org.dom4j.Element paramsNode = (org.dom4j.Element) paramsDoc.selectSingleNode("/params/" + element.getComponentType());
         	Map<String, String> configParamsMap = XMLDocUtil.dataNode2Map(paramsNode);
             if(configParamsMap != null) {
                 getParameters().putAll(configParamsMap);
@@ -71,7 +71,7 @@ public abstract class AbstractElementNode extends AbstractSubNode {
     	}
     }
     
-    public AbstractElementNode(Element element, SubNode parent) {
+    public AbstractElementNode(Component element, SubNode parent) {
         this.element = element;
         
         this.id   = element.getId();
@@ -82,7 +82,7 @@ public abstract class AbstractElementNode extends AbstractSubNode {
         this.page   = parent.getPage();
         this.portal = parent.getPortal();
         
-        parse(element.getDefinition(), element.getElementType());
+        parse(element.getDefinition(), element.getComponentType());
     }
 
     protected Document parse(String definition, String elementName) {
@@ -114,7 +114,7 @@ public abstract class AbstractElementNode extends AbstractSubNode {
         return doc;
     }
     
-    public Element getElement() {
+    public Component getElement() {
         return element;
     }
     

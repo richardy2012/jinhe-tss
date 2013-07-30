@@ -22,16 +22,15 @@ import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.util.BeanUtil;
 
 /**
- * 修饰器实体：修饰器基本信息及内容定义信息
- * TODO 三个元素的实体合并掉，不再实体、Action、页面各弄一套
- * 
+ * 门户组件：定义门户组件的基本信息及内容。
+ * 包括布局器、修饰器、portlet。
  */
 @Entity
-@Table(name = "portal_element", uniqueConstraints = { 
+@Table(name = "portal_component", uniqueConstraints = { 
         @UniqueConstraint(name="MULTI_NAME_ELEMENT", columnNames = { "groupId", "type", "name" })
 })
-@SequenceGenerator(name = "element_sequence", sequenceName = "element_sequence", initialValue = 1)
-public class Element extends OperateInfo implements IEntity, ILevelTreeNode, IXForm, IDecodable {
+@SequenceGenerator(name = "component_sequence", sequenceName = "component_sequence", initialValue = 1)
+public class Component extends OperateInfo implements IEntity, ILevelTreeNode, IXForm, IDecodable {
 	
 	public final static int LAYOUT_TYPE    = 1;
     public final static int DECORATOR_TYPE = 2;
@@ -43,7 +42,7 @@ public class Element extends OperateInfo implements IEntity, ILevelTreeNode, IXF
     public final static String[] ELEMENTS   = new String[]{LAYOUT, DECORATOR, PORTLET};
     
     public String getResourceBaseDir() { 
-    	return PortalConstants.MODEL_DIR + getElementType() + "/"; 
+    	return PortalConstants.MODEL_DIR + getComponentType() + "/"; 
     }
     
     public String getResourcePath()    { 
@@ -51,10 +50,10 @@ public class Element extends OperateInfo implements IEntity, ILevelTreeNode, IXF
     }
     
     public String getTemplatePath()    { 
-        return "template/xform/" + getElementType() + ".xml";
+        return "template/xform/" + getComponentType() + ".xml";
     }
     
-    public String getElementType()     { 
+    public String getComponentType()     { 
     	return ELEMENTS[type - 1]; 
     }
     
@@ -71,7 +70,7 @@ public class Element extends OperateInfo implements IEntity, ILevelTreeNode, IXF
     }
     
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "element_sequence")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "component_sequence")
     private Long    id;
 	
 	@Column(nullable = false)
@@ -122,14 +121,14 @@ public class Element extends OperateInfo implements IEntity, ILevelTreeNode, IXF
         map.put("isGroup", isGroup);
         
         if(isGroup) {
-        	map.put("icon","../framework/images/" + getElementType() + "_group.gif");
+        	map.put("icon","../framework/images/" + getComponentType() + "_group.gif");
         } else {
         	map.put("code", code);
             map.put("groupId", parentId);
             map.put("disabled", disabled);
             map.put("isDefault", isDefault);
             map.put("icon", "../framework/images/" 
-            		+ (PortalConstants.TRUE.equals(isDefault) ? "default_" : "") + getElementType() 
+            		+ (PortalConstants.TRUE.equals(isDefault) ? "default_" : "") + getComponentType() 
             		+ (PortalConstants.TRUE.equals(disabled) ? "_2" : "") + ".gif");
         }
         
@@ -162,7 +161,7 @@ public class Element extends OperateInfo implements IEntity, ILevelTreeNode, IXF
 	public void setGroup(boolean isGroup) {
 		this.isGroup = isGroup;
 	}
-	public Class<Element> getParentClass() { return Element.class; }
+	public Class<Component> getParentClass() { return Component.class; }
     
     public String toString(){
         return "(id:" + this.id + ", name:" + this.name + ")"; 

@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import com.jinhe.tss.framework.component.log.Logable;
-import com.jinhe.tss.portal.entity.Element;
+import com.jinhe.tss.portal.entity.Component;
 
 /**
  * 对元素（修饰器/布局器/Portlet）及其组的进行操作的service
@@ -31,7 +31,7 @@ public interface IElementService {
      * @return
      */
     @Logable(operateTable="门户元素", operateType="新建/修改", operateInfo="新建/修改了 ${returnVal} 节点")
-    Element saveElement(Element obj);
+    Component saveElement(Component obj);
 
     /**
      * 删除一个元素
@@ -39,7 +39,7 @@ public interface IElementService {
      * @return
      */
     @Logable(operateTable="门户元素", operateType="删除", operateInfo="删除了 ID为 ${args[0]} 的 节点 （${returnVal}）")
-    Element deleteElement(Long id);
+    Component deleteElement(Long id);
 
     /**
      * 停用、启用一个元素
@@ -54,7 +54,7 @@ public interface IElementService {
      * @param id
      * @return
      */
-    Element getElementInfo(Long id);
+    Component getElementInfo(Long id);
 
     /**
      * 对元素进行排序
@@ -70,7 +70,7 @@ public interface IElementService {
      * @param path
      * @return
      */
-    Element copyElement(Long id, File path);
+    Component copyElement(Long id, File path);
 
     /**
      * 将修饰器设置为默认修饰器
@@ -113,7 +113,7 @@ public interface IElementService {
      * @param groupId
      * @return
      */
-    Element copyTo(Long id, Long groupId);
+    Component copyTo(Long id, Long groupId);
     
     /**
      * 获取布局器列表，用以门户自定义组件替换
