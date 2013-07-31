@@ -18,6 +18,7 @@ import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.portal.PortalConstants;
+import com.jinhe.tss.portal.dao.IComponentDao;
 import com.jinhe.tss.portal.dao.INavigatorDao;
 import com.jinhe.tss.portal.dao.IPortalDao;
 import com.jinhe.tss.portal.engine.PortalGenerator;
@@ -30,7 +31,7 @@ import com.jinhe.tss.portal.entity.Theme;
 import com.jinhe.tss.portal.entity.ThemeInfo;
 import com.jinhe.tss.portal.entity.ThemePersonal;
 import com.jinhe.tss.portal.entity.ThemeInfo.ThemeInfoId;
-import com.jinhe.tss.portal.helper.ElementHelper;
+import com.jinhe.tss.portal.helper.ComponentHelper;
 import com.jinhe.tss.portal.service.IPortalService;
 import com.jinhe.tss.portal.sso.Filter3PortalPermission;
 import com.jinhe.tss.util.EasyUtils;
@@ -43,7 +44,8 @@ public class PortalService implements IPortalService {
     protected Logger log = Logger.getLogger(this.getClass());
     
     @Autowired private IPortalDao portalDao;
-    @Autowired private INavigatorDao menuDao;
+    @Autowired private IComponentDao componentDao;
+    @Autowired private INavigatorDao navigatorDao;
     
     //* ******************************************      获取门户结构操作     ******************************************************
 
@@ -122,14 +124,14 @@ public class PortalService implements IPortalService {
         Map<Long, ThemeInfo> themeInfosMap = new HashMap<Long, ThemeInfo>();
         for(Object temp : themeInfos){
             ThemeInfo info = (ThemeInfo) temp;
-            themeInfosMap.put(info.getId().getPortalStructureId(), info);
+            themeInfosMap.put(info.getId().getStructureId(), info);
         }
         
         // 根据portalId获取一个完整的门户结构，并且根据传入的themeId获取各个门户结构相对应该主题的主题信息，设置到门户结构对象上
         String hql = " from PortalStructure o where o.portalId = ? and o.disabled <> 1 order by o.decode ";    
         List<Structure> structuresList = (List<Structure>) portalDao.getEntities(hql, portalId);
         
-        Structure rootps = portalDao.getRootPortalStructure(portalId);
+        Structure rootps = portalDao.getRootStructure(portalId);
         structuresList.remove(rootps); // 去除根节点
         portalDao.evict(rootps);
         
@@ -137,30 +139,30 @@ public class PortalService implements IPortalService {
             portalDao.evict(ps);
             
             ThemeInfo info = themeInfosMap.get(ps.getId());
-            ps.setDecoratorId(info != null ? info.getDecoratorId() : portalDao.getDefaultDecorator().getId());
+            ps.setDecoratorId(info != null ? info.getDecoratorId() : componentDao.getDefaultDecorator().getId());
             
             /* 
              * portlet实例: portlet参数取存于门户结构中的参数(ps.getParameters())，修饰器参数取主题中的(info.getParameters())
              * portlet和修饰器的参数分开来放，如果portlet实例的参数也存放于主题信息中的话，那么修改参数将非常麻烦，需要一个个主题修改过来。 
              */
             if(ps.isPortletInstanse()) {                   
-                String portletParam = ElementHelper.getPortletInstanseConfig(ps.getParameters());
+                String portletParam = ComponentHelper.getPortletConfig(ps.getParameters());
                 String docoratorParam = "<decorator/>" ;
                 if( info != null ) { 
-                    docoratorParam = ElementHelper.getDecoratorInstanseConfig(info.getParameters());
+                    docoratorParam = ComponentHelper.getDecoratorConfig(info.getParameters());
                 }
-                ps.setParameters(ElementHelper.createPortletInstanseConfig(portletParam, docoratorParam));
+                ps.setParameters(ComponentHelper.createPortletInstanseConfig(portletParam, docoratorParam));
             } 
             else{
                 // 页面和版面的参数取各主题信息的。 页面和版面的布局器和修饰器取默认主题中相应布局器和修饰器
-                ps.setDefinerId (info != null ? info.getLayoutId() : portalDao.getDefaultLayout().getId());
+                ps.setDefinerId (info != null ? info.getLayoutId() : componentDao.getDefaultLayout().getId());
                 ps.setParameters(info != null ? info.getParameters() : "<params><layout/><portlet/><decorator/></params>");
             }
         }  
 
         Structure root = portalDao.getEntity(portalId);
         
-        Object[] elements = portalDao.getPortalElements(portalId, themeId);
+        Object[] elements = portalDao.getPortalComponents(portalId, themeId);
         PortalNode node = PortalGenerator.genPortalNode(root, structuresList, elements);
         
         if(node == null) {
@@ -181,8 +183,8 @@ public class PortalService implements IPortalService {
         ThemeInfo themeInfo = (ThemeInfo) portalDao.getEntity(ThemeInfo.class, themeInfoId);
         if( themeInfo == null ) {
             // 如果该门户结构在当前主题下找不到主题信息，则取默认的修饰和布局
-            Component defaultLayout = portalDao.getDefaultLayout();
-            Component defaultDecorator = portalDao.getDefaultDecorator();
+            Component defaultLayout = componentDao.getDefaultLayout();
+            Component defaultDecorator = componentDao.getDefaultDecorator();
             
             themeInfo = new ThemeInfo();
             themeInfo.setDecoratorId(defaultDecorator.getId());
@@ -196,9 +198,9 @@ public class PortalService implements IPortalService {
         
         // 如果是portlet实例，则取主题的修饰器参数和门户结构上的portlet参数做为新的参数配置。（portlet参数不分主题，只保存在门户结构表中）。
         if( ps.isPortletInstanse() ) {
-            String portletParam = ElementHelper.getPortletInstanseConfig(ps.getParameters());
-            String docoratorParam = ElementHelper.getDecoratorInstanseConfig(themeInfo.getParameters());
-            ps.setParameters(ElementHelper.createPortletInstanseConfig(portletParam, docoratorParam));
+            String portletParam = ComponentHelper.getPortletConfig(ps.getParameters());
+            String docoratorParam = ComponentHelper.getDecoratorConfig(themeInfo.getParameters());
+            ps.setParameters(ComponentHelper.createPortletInstanseConfig(portletParam, docoratorParam));
         } 
         // 只有不是portlet实例才直接用主题表中的参数信息（页面、版面的布局修饰器等信息）
         else {
@@ -227,8 +229,8 @@ public class PortalService implements IPortalService {
             portalMenu.setName(ps.getName());
             portalMenu.setPortalId(ps.getPortalId());
             portalMenu.setParentId(PortalConstants.ROOT_ID);
-            portalMenu.setSeqNo(menuDao.getNextSeqNo(portalMenu.getParentId()));
-            menuDao.saveMenu(portalMenu);
+            portalMenu.setSeqNo(navigatorDao.getNextSeqNo(portalMenu.getParentId()));
+            navigatorDao.save(portalMenu);
         }
         
         saveThemeInfo(ps);
@@ -248,7 +250,7 @@ public class PortalService implements IPortalService {
         if(ps.getId() == null) {
             ps.setSeqNo(portalDao.getNextSeqNo(ps.getParentId()));
         }
-        ps = portalDao.savePortalStructure(ps);
+        ps = portalDao.saveStructure(ps);
         
         if(ps.getCode() == null) {
             ps.setCode(ps.getPortalId() + "_" + ps.getId());
@@ -308,7 +310,7 @@ public class PortalService implements IPortalService {
         // 删除一个枝
         List<Structure> branch = portalDao.getChildrenById(id); 
         for( Structure node : branch ) {
-            portalDao.deletePortalStructure(node);
+            portalDao.deleteStructure(node);
         }
  
         // 如果删除的是门户：
@@ -318,7 +320,7 @@ public class PortalService implements IPortalService {
             // 1、删除门户的菜单信息
             List<?> menus = portalDao.getEntities("from Navigator o where o.portalId=?", portalId);
             for( Object temp : menus ){
-                menuDao.deleteMenu((Navigator) temp);
+                navigatorDao.deleteNavigator((Navigator) temp);
             }
  
             // 2、删除主题信息 
@@ -363,7 +365,7 @@ public class PortalService implements IPortalService {
         
         ps.setSeqNo(portalDao.getNextSeqNo(targetId));
         ps.setParentId(targetId);
-        portalDao.movePortalStructure(ps);
+        portalDao.moveStructure(ps);
 
         // 如果是跨门户移动，则删除和本子节点相关的菜单和主题信息
         if( isAcrossPortal ){
@@ -375,8 +377,8 @@ public class PortalService implements IPortalService {
             
             // 如果是跨门户且复制的是页面，则一带将页面的资源复制过去
             if(ps.isPage()){ 
-                Structure targetPortal = portalDao.getRootPortalStructure(targetPortalId);
-                Structure sourcePortal = portalDao.getRootPortalStructure(ps.getPortalId());
+                Structure targetPortal = portalDao.getRootStructure(targetPortalId);
+                Structure sourcePortal = portalDao.getRootStructure(ps.getPortalId());
                 copyPageResources(sourcePortal, targetPortal, ps.getSupplement());
             }
         }
@@ -452,8 +454,8 @@ public class PortalService implements IPortalService {
         copyNodeOneByOne(sourceNode, returnList, isAcrossPortal, isTargetDisableed);
 
         if( isAcrossPortal && sourceNode.isPage() ) {
-            Structure sourcePortalNode = portalDao.getRootPortalStructure(sourcePortalId);
-            Structure targetPortalNode = portalDao.getRootPortalStructure(targetPortalId);
+            Structure sourcePortalNode = portalDao.getRootStructure(sourcePortalId);
+            Structure targetPortalNode = portalDao.getRootStructure(targetPortalId);
             copyPageResources(sourcePortalNode, targetPortalNode, sourceNode.getSupplement());
         }
 
@@ -491,7 +493,7 @@ public class PortalService implements IPortalService {
                 ThemeInfo info = (ThemeInfo) portalDao.getEntity(ThemeInfo.class, themeInfoId);
                 if(info != null){
                     portalDao.evict(info);
-                    info.getId().setPortalStructureId(newPs.getId());
+                    info.getId().setStructureId(newPs.getId());
                     portalDao.createObject(info);
                 }
             }

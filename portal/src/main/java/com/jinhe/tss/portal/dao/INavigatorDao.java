@@ -5,32 +5,30 @@ import java.util.List;
 import com.jinhe.tss.framework.persistence.ITreeSupportDao;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.entity.Navigator;
-import com.jinhe.tss.portal.permission.PermissionFilter4Menu;
+import com.jinhe.tss.portal.permission.PermissionFilter4Navigator;
 import com.jinhe.tss.um.permission.filter.PermissionTag;
 
 public interface INavigatorDao extends ITreeSupportDao<Navigator> {
 
     /**
      * 保存一个菜单或菜单项。
-     * 本方法将被拦截器ResourcePermissionInterceptor拦截。
      * @param navigator
      * @return
      */
-    Navigator saveMenu(Navigator navigator);
+    Navigator save(Navigator navigator);
     
     /**
      * 移动一个菜单项。
-     * 本方法将被拦截器ResourcePermissionInterceptor拦截。
      * @param navigator
      * @return
      */
-    Navigator moveMenu(Navigator navigator);
+    Navigator move(Navigator navigator);
     
     /**
-     * 本方法将被拦截器ResourcePermissionInterceptor拦截。
+     * 删除一个导航栏。
      * @param navigator
      */
-    void deleteMenu(Navigator navigator);
+    void deleteNavigator(Navigator navigator);
     
     /**
      * 根据菜单获取其下的所有菜单项集合。
@@ -38,7 +36,7 @@ public interface INavigatorDao extends ITreeSupportDao<Navigator> {
      * @param menuId
      * @return
      */
-    @PermissionTag(filter = PermissionFilter4Menu.class)
+    @PermissionTag(filter = PermissionFilter4Navigator.class)
     List<Navigator> getMenuItemListByMenu(Long menuId);
     
     /**
@@ -47,7 +45,7 @@ public interface INavigatorDao extends ITreeSupportDao<Navigator> {
      * @return
      */
 	@PermissionTag(
-			operation = PortalConstants.MENU_VIEW_OPERRATION, 
-			resourceType = PortalConstants.MENU_RESOURCE_TYPE)
+			operation = PortalConstants.NAVIGATOR_VIEW_OPERRATION, 
+			resourceType = PortalConstants.NAVIGATOR_RESOURCE_TYPE)
     List<Navigator> getMenusByPortal(Long portalId);
 }

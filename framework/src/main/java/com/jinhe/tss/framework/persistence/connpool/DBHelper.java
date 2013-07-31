@@ -50,20 +50,32 @@ public class DBHelper extends ConfigurableContants {
         return conn;
     }
     
-    public static long executeSQL(Connection connection, String sql) {
+    public static long executeCountSQL(Connection connection, String sql, Object...params) {
+    	PreparedStatement st = null;
         try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            try {
-                ResultSet resultSet = st.executeQuery();
-                resultSet.next();
-                return resultSet.getLong(1);
-            } catch (SQLException sqle) {
-                throw new RuntimeException("执行SQL语句时出错！", sqle);
-            } finally {
-                st.close();
+            st = connection.prepareStatement(sql);
+            
+            if(params != null) {
+            	int index = 1;
+            	for(Object param : params) {
+            		st.setObject(index++, param);
+            	}
             }
+            
+            ResultSet resultSet = st.executeQuery();
+            resultSet.next();
+            return resultSet.getLong(1);
+            
         } catch (Exception e) {
             throw new RuntimeException("执行SQL语句时出错！", e);
+        } finally {
+            try {
+            	if( st != null) {
+            		st.close();
+            	}
+			} catch (SQLException e) {
+				throw new RuntimeException("执行SQL语句时出错！", e);
+			}
         }
     }
 }

@@ -39,13 +39,13 @@ public class NavigatorService implements INavigatorService {
 //		    entity.setPortalId(portalId);
 		}
 		
-		return dao.saveMenu(entity);
+		return dao.save(entity);
 	}
 	
 	public void deleteMenu(Long id){
         List<Navigator> children = dao.getChildrenById(id);
         for( Navigator child : children ){
-            dao.deleteMenu(child);
+            dao.deleteNavigator(child);
         }
 	}
 	
@@ -83,7 +83,7 @@ public class NavigatorService implements INavigatorService {
         menu.setParentId(targetId);
         menu.setSeqNo(dao.getNextSeqNo(targetId));
                    
-        dao.saveMenu(menu);
+        dao.save(menu);
     }
     
     public String getMenuXML(Long id) {
@@ -92,7 +92,7 @@ public class NavigatorService implements INavigatorService {
     	}
     	
     	// 缓存只针对匿名用户访问进行缓存
-        Pool menuPool = JCache.getInstance().getCachePool(PortalConstants.MENU_CACHE);
+        Pool menuPool = JCache.getInstance().getCachePool(PortalConstants.NAVIGATOR_CACHE);
         Cacheable cachedMenu = menuPool.getObject(id);
         if( cachedMenu == null ){
         	cachedMenu = menuPool.putObject(id, createMenuXML(id));

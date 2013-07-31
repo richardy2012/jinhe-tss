@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.jinhe.tss.framework.persistence.ITreeSupportDao;
 import com.jinhe.tss.portal.PortalConstants;
-import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.ThemePersonal;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Branch;
@@ -17,14 +16,14 @@ public interface IPortalDao extends ITreeSupportDao<Structure>{
      * @param p
      * @return
      */
-    Structure savePortalStructure(Structure p);
+    Structure saveStructure(Structure ps);
     
     /**
      * 删除门户节点。 
      * 删除注册资源由拦截器ResourcePermissionInterceptor完成。
      * @param ps
      */
-    void deletePortalStructure(Structure ps);
+    void deleteStructure(Structure ps);
     
     /**
      * 本方法是为了资源权限补齐拦截器ResourcePermissionInterceptor能拦截到门户结构的移动保存操作，
@@ -32,11 +31,12 @@ public interface IPortalDao extends ITreeSupportDao<Structure>{
      * @param ps
      * @return
      */
-    Structure movePortalStructure(Structure ps);
+    Structure moveStructure(Structure ps);
 
     /**
      * 根据父亲节点获取所有子节点。
      * 必须根据decode来排序，以保证层次和顺序结构。
+     * 
      * @param id
      *         父节点Id
      * @param operationId
@@ -52,6 +52,7 @@ public interface IPortalDao extends ITreeSupportDao<Structure>{
     /**
      * 获取所有的父亲级节点，一直到根目录。
      * 必须根据decode来排序，以保证层次和顺序结构。
+     * 
      * @param id
      *         当前节点
      * @param operationId 
@@ -70,26 +71,14 @@ public interface IPortalDao extends ITreeSupportDao<Structure>{
      * @param currentThemeId 
      * @return
      */
-    Object[] getPortalElements(Long portalId, Long currentThemeId);
+    Object[] getPortalComponents(Long portalId, Long currentThemeId);
     
-    /**
-     * 获取默认的布局器，如果没有默认的则抛出异常
-     * @return
-     */
-    Component getDefaultLayout();
-    
-    /**
-     * 获取默认的修饰器，如果没有默认的则抛出异常
-     * @return
-     */
-    Component getDefaultDecorator();
-
     /**
      * 根据portalId获取门户结构根节点
      * @param portalId
      * @return
      */
-    Structure getRootPortalStructure(Long portalId);
+    Structure getRootStructure(Long portalId);
 
     /**
      * 获取portal下的所有主题

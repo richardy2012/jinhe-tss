@@ -12,7 +12,7 @@ import com.jinhe.tss.portal.PortalConstants;
  * 
  * 如果某个节点的父节点丢失，则其子节点全部丢失。
  * 
- * 区分：com.jinhe.tss.core.web.dispaly.tree.LevelTreeParser
+ * @see com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser
  */
 public class StrictLevelTreeParser extends LevelTreeParser {
     

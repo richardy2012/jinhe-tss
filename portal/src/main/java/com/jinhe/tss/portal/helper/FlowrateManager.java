@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,28 +38,24 @@ public class FlowrateManager extends OutputRecordsManager{
         tpool.excute(task);
     }
     
-    public void output(Object record){
-        super.output(record);
-        //super.flush();
-    }
-    
     public static class OutputFlowrateTask extends RecordsOutputTask {
 
         protected void createRecords(Connection conn) throws SQLException {
         	String insertSql;
         	if( Config.isOracleDatabase() ) {
-        	    insertSql = "insert into pms_flowrate(id, pagedId, ip, visitTime) values(pms_flowrate.nextval, ?, ?, ?)";
+        	    insertSql = "insert into portal_flowrate(id, pagedId, ip, visitTime) values(pms_flowrate.nextval, ?, ?, ?)";
         	} 
         	else {
-        	    insertSql = "insert into pms_flowrate(pageId, ip, visitTime) values(?, ?, ?)";
+        	    insertSql = "insert into portal_flowrate(pageId, ip, visitTime) values(?, ?, ?)";
         	}
             
             PreparedStatement pstmt = conn.prepareStatement(insertSql);
             for (Iterator<?> it = records.iterator(); it.hasNext();) {
                 FlowRate temp = (FlowRate) it.next();
                 
-                if(checkIsTheSameVisitor(conn, temp))
+                if(checkIsTheSameVisitor(conn, temp)) {
                     continue;
+                }
                 
                 int index = 1;
                 pstmt.setLong(index++, temp.getPageId());
@@ -71,16 +68,17 @@ public class FlowrateManager extends OutputRecordsManager{
         }
 
         /**
-         * 如果数据库中已经有这样一条记录：和当前访问相同的页面且相同的IP，并且相隔时间在三分钟内
-         * @param conn
-         * @param temp
-         * @return
+         * 如果数据库中已经有这样一条记录：和当前访问相同的页面且相同的IP，并且相隔时间在三分钟内.
+         * 则判定为是重复访问，不记流量。
          */
         private boolean checkIsTheSameVisitor(Connection conn, FlowRate temp) {
-            String sql = "select count(*) from pms_flowrate t where t.ip ='"
-                    + temp.getIp() + "' and t.pageId = " + temp.getPageId() 
-                    + " and t.visitTime between sysdate - 1/480 and sysdate ";
-            return DBHelper.executeSQL(conn, sql) != 0;
+            String sql = "select count(*) from pms_flowrate t " +
+            		" where t.ip =? and t.pageId = ? and t.visitTime > ? ";
+            
+            String ip = temp.getIp();
+			Long pageId = temp.getPageId();
+			Date fromTime = new Date(System.currentTimeMillis() - 3*60*1000);
+			return DBHelper.executeCountSQL(conn, sql, ip, pageId, fromTime) > 0;
         }
     }
 }

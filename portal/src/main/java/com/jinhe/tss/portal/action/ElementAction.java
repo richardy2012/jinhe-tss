@@ -27,9 +27,9 @@ import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.engine.FreeMarkerSupportAction;
 import com.jinhe.tss.portal.entity.Component;
-import com.jinhe.tss.portal.helper.ElementHelper;
+import com.jinhe.tss.portal.helper.ComponentHelper;
 import com.jinhe.tss.portal.helper.StrictLevelTreeParser;
-import com.jinhe.tss.portal.service.IElementService;
+import com.jinhe.tss.portal.service.IComponentService;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.MacrocodeCompiler;
@@ -41,11 +41,11 @@ import freemarker.template.TemplateException;
 
 public class ElementAction extends FreeMarkerSupportAction {
  
-    @Autowired private IElementService service;
+    @Autowired private IComponentService service;
 
     @RequestMapping("/list")
     public void getAllElements4Tree() {
-        List<?> data = service.getAllElementsAndGroups();
+        List<?> data = service.getAllComponentsAndGroups();
         TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());        
         print("SourceTree", encoder);
     }
@@ -55,7 +55,7 @@ public class ElementAction extends FreeMarkerSupportAction {
      */
     @RequestMapping("/list/{type}/enabled")
     public void getAllStartElements4Tree(int type) {
-        List<?> data = service.getAllStartElementsAndGroups(type);
+        List<?> data = service.getEnabledComponentsAndGroups(type);
         
         TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());        
         encoder.setNeedRootNode(false);
@@ -76,7 +76,7 @@ public class ElementAction extends FreeMarkerSupportAction {
      */
     @RequestMapping("/params")
     public void getDefaultParams4Xml(Long id) {
-        Component element = service.getElementInfo(id);
+        Component element = service.getComponent(id);
         String elementType = element.getComponentType();
         
         StringBuffer sb = new StringBuffer("<" + elementType + " ");
@@ -101,14 +101,14 @@ public class ElementAction extends FreeMarkerSupportAction {
     @RequestMapping("/{groupId}/{id}")
     public void getDecoratorInfo(Long id, Long groupId) {
         XFormEncoder encoder;
-        String templatePath = service.getElementInfo(groupId).getTemplatePath();
+        String templatePath = service.getComponent(groupId).getTemplatePath();
         if ( DEFAULT_NEW_ID.equals(id) ) {   // 新增组件
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("groupId", groupId);
             encoder = new XFormEncoder(templatePath, map);
         } 
         else { // 修改组件
-            encoder = new XFormEncoder(templatePath, service.getElementInfo(id));
+            encoder = new XFormEncoder(templatePath, service.getComponent(id));
         }
         print("DetailInfo", encoder);
     }
@@ -119,7 +119,7 @@ public class ElementAction extends FreeMarkerSupportAction {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public void save(Component element) {
         boolean isNew = element.getId() == null ? true : false;      
-        element = service.saveElement(element);
+        element = service.saveComponent(element);
         doAfterSave(isNew, element, "ComponentTree");
     }
 
@@ -128,7 +128,7 @@ public class ElementAction extends FreeMarkerSupportAction {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public void delete(Long id) {
-        service.deleteElement(id);
+        service.deleteComponent(id);
         printSuccessMessage("删除成功");
     }
 
@@ -137,7 +137,7 @@ public class ElementAction extends FreeMarkerSupportAction {
      */
     @RequestMapping("/disable/{id}/{state}")
     public void disabled(Long id, int state) {
-        service.disableElement(id, state);
+        service.disableComponent(id, state);
         printSuccessMessage();
     }
     
@@ -150,7 +150,7 @@ public class ElementAction extends FreeMarkerSupportAction {
             @PathVariable("targetId") Long targetId,  
             @PathVariable("direction") int direction) {
         
-        service.sortElement(id, targetId, direction);
+        service.sort(id, targetId, direction);
         printSuccessMessage();
     }
     
@@ -159,9 +159,9 @@ public class ElementAction extends FreeMarkerSupportAction {
      */
     @RequestMapping(value = "/copy/{id}", method = RequestMethod.POST)
     public void copy(Long id) {    
-        Component element = service.getElementInfo(id);
+        Component element = service.getComponent(id);
         String desDir = URLUtil.getWebFileUrl(element.getResourceBaseDir()).getPath(); 
-        Component copy =  service.copyElement(id, new File(desDir));
+        Component copy =  service.copyComponent(id, new File(desDir));
         doAfterSave(true, copy, "DecoratorTree");
     }
     
@@ -195,12 +195,12 @@ public class ElementAction extends FreeMarkerSupportAction {
      * 导入组件
      */
     public void importDecorator(Long groupId, File file) {
-        Component group = service.getElementInfo(groupId);
+        Component group = service.getComponent(groupId);
         String desDir = URLUtil.getWebFileUrl(group.getResourceBaseDir()).getPath(); 
         
         Component decorator = new Component();
         decorator.setParentId(groupId);
-        ElementHelper.importElement(service, file, decorator, desDir, "decorator.xml");
+        ComponentHelper.importComponent(service, file, decorator, desDir, "decorator.xml");
         
         print("script", "parent.loadInitData();alert(\"导入成功!!!\");var ws = parent.$(\"ws\");ws.closeActiveTab();");
     }
@@ -209,10 +209,10 @@ public class ElementAction extends FreeMarkerSupportAction {
      * 导出修饰器
      */
     public void getExportDecorator(Long id) {   
-        Component info = service.getElementInfo(id);
+        Component info = service.getComponent(id);
         String desDir = URLUtil.getWebFileUrl(info.getResourceBaseDir()).getPath(); 
         
-        ElementHelper.exportElement(desDir, info, info.getComponentType() + ".xml");
+        ComponentHelper.exportComponent(desDir, info, info.getComponentType() + ".xml");
     }
 	
 	/** Group的详细信息 */
@@ -225,7 +225,7 @@ public class ElementAction extends FreeMarkerSupportAction {
             encoder = new XFormEncoder(PortalConstants.GROUP_XFORM_TEMPLET_PATH, map);           
         }
         else{
-        	Component group = service.getElementInfo(id);            
+        	Component group = service.getComponent(id);            
             encoder = new XFormEncoder(PortalConstants.GROUP_XFORM_TEMPLET_PATH, group);
         }        
         print("GroupInfo", encoder);
@@ -233,13 +233,13 @@ public class ElementAction extends FreeMarkerSupportAction {
  
 	/**  删除组 */
 	public void deleteGroup(Long id){
-		service.deleteGroupById(id);		
+		service.deleteComponentGroup(id);		
         printSuccessMessage();
 	}
     
     /** 获取某个元素类型的所有分组 */
     public void getGroupsByType(int type){
-        List<?> data = service.getGroupsByType(type);
+        List<?> data = service.getComponentGroups(type);
         TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser());
         encoder.setNeedRootNode(false);
         print("SourceTree", encoder);
@@ -268,7 +268,7 @@ public class ElementAction extends FreeMarkerSupportAction {
      * @param paramsItem  类似 ：bgColor=red 回车 menuId=12
      */
     public void getElementParamsConfig(Long id, String paramsItem){
-        Component element = service.getElementInfo(id);
+        Component element = service.getComponent(id);
        
         String configFilePath = URLUtil.getWebFileUrl(element.getResourcePath() + "/paramsXForm.xml").getFile();
         if( !new File(configFilePath).exists() ){
@@ -324,7 +324,7 @@ public class ElementAction extends FreeMarkerSupportAction {
     }
     
     public void saveElementParamsConfig(Long id, String configXML){
-        Component element = service.getElementInfo(id);
+        Component element = service.getComponent(id);
         String configFile = URLUtil.getWebFileUrl(element.getResourcePath() + "/paramsXForm.xml").getFile();
         
         Document doc = XMLDocUtil.dataXml2Doc("<Response>\n<ConfigParams>\n" + configXML + "\n</ConfigParams>\n</Response>");
@@ -344,7 +344,7 @@ public class ElementAction extends FreeMarkerSupportAction {
      * @throws TemplateException
      */
     public void  previewElement(Long id) throws IOException, TemplateException{
-        Component element = service.getElementInfo(id);
+        Component element = service.getComponent(id);
         String elementType = element.getComponentType();
         
         Document doc = XMLDocUtil.dataXml2Doc(element.getDefinition());

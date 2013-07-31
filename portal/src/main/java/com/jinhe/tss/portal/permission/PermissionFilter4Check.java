@@ -18,7 +18,7 @@ public class PermissionFilter4Check implements IPermissionFilter {
 	    
 	    Long resourceId = null;
  
-	    //  PortalStructure getPoratalStructure(Long id)
+	    //  eg: Structure getStructure(Long id)
 	    if( args[0] instanceof Long ) {
 	        resourceId = (Long) args[0];
 	    }
@@ -31,5 +31,4 @@ public class PermissionFilter4Check implements IPermissionFilter {
             throw new BusinessException("操作失败，您对进行操作的ID为:" + resourceId + " 目标对象没有该操作权限！");
         }
 	}
-
 }

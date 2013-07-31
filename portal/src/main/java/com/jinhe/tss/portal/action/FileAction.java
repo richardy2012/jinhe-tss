@@ -11,7 +11,7 @@ import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.entity.Component;
-import com.jinhe.tss.portal.helper.ElementHelper;
+import com.jinhe.tss.portal.helper.ComponentHelper;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;
@@ -151,7 +151,7 @@ public class FileAction extends BaseActionSupport {
         String zipFilePath = FileHelper.exportZip(contextPath, tempDir); // 将临时文件夹里的文件打包成zip文件
         FileHelper.deleteFile(tempDir); // 删除临时文件夹
         
-        ElementHelper.downloadFileByHttp(zipFilePath, "download.zip"); // 下载zip包
+        ComponentHelper.downloadFileByHttp(zipFilePath, "download.zip"); // 下载zip包
     }
     
     /**

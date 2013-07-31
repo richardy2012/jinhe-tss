@@ -51,7 +51,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         
         groupAction.copyTo(defaultLayoutId, groupId);
         
-        List<?> groups = elementService.getGroupsByType(Component.LAYOUT_TYPE);
+        List<?> groups = elementService.getComponentGroups(Component.LAYOUT_TYPE);
         assertTrue(groups.size() >= 3);
  
         groupAction.moveTo(defaultLayoutId, ((Component)groups.get(2)).getId());

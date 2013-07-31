@@ -9,8 +9,8 @@ public interface PortalConstants {
  
     public final static String COPY_PREFIX = "副本_"; // 复制实体时实体名字前缀
     
-    public static final String PORTAL_CACHE = "portal_tree"; // 门户树缓存池
-    public static final String MENU_CACHE = "menu_pool";     // 菜单缓存池
+    public static final String PORTAL_CACHE    = "portal_tree";    // 门户树缓存池
+    public static final String NAVIGATOR_CACHE = "navigator_pool"; // 导航栏缓存池
 
     /**
      * 模板路径
@@ -33,8 +33,8 @@ public interface PortalConstants {
     public final static boolean isResourceRegister   = true;
     
     /** 项目标识以及资源类型 */
-    public final static String PORTAL_RESOURCE_TYPE  = "11";
-    public final static String MENU_RESOURCE_TYPE    = "12";
+    public final static String PORTAL_RESOURCE_TYPE    = "11";
+    public final static String NAVIGATOR_RESOURCE_TYPE = "12";
     
     /**
      * 门户结构操作选项 (0表示不判断权限)
@@ -53,13 +53,13 @@ public interface PortalConstants {
     public final static String[] PORTAL_PARENT_OPERRATIONS = new String[]{"p_0", "p_1", "p_2", "p_3", "p_4", "p_5", "p_6", "p_7", "p_8"};
     
     /**
-     * 菜单操作选项 (0表示不判断权限)
+     * 导航栏操作选项 (0表示不判断权限)
      */
-    public final static String MENU_NONE_OPERRATION   = "0"; //不过滤权限
-    public final static String MENU_VIEW_OPERRATION   = "1"; //MENU浏览操作ID
-    public final static String MENU_EDIT_OPERRATION   = "2"; //MENU维护操作ID
+    public final static String NAVIGATOR_NONE_OPERRATION   = "0"; //不过滤权限
+    public final static String NAVIGATOR_VIEW_OPERRATION   = "1"; //MENU浏览操作ID
+    public final static String NAVIGATOR_EDIT_OPERRATION   = "2"; //MENU维护操作ID
     
-    public final static String[] MENU_OPERRATIONS = new String[]{"0", "1", "2"};
-    public final static String[] MENU_PARENT_OPERRATIONS = new String[]{"p_0", "p_1", "p_2"};
+    public final static String[] NAVIGATOR_OPERRATIONS = new String[]{"0", "1", "2"};
+    public final static String[] NAVIGATOR_PARENT_OPERRATIONS = new String[]{"p_0", "p_1", "p_2"};
 }
 

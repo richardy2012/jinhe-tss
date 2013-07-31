@@ -14,8 +14,8 @@ public interface INavigatorService {
 	 * @return
 	 */
 	@PermissionTag(
-			operation = PortalConstants.MENU_VIEW_OPERRATION, 
-			resourceType = PortalConstants.MENU_RESOURCE_TYPE)
+			operation = PortalConstants.NAVIGATOR_VIEW_OPERRATION, 
+			resourceType = PortalConstants.NAVIGATOR_RESOURCE_TYPE)
 	List<?> getAllNavigator();
 	
 	/**

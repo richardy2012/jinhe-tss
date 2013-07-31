@@ -15,11 +15,11 @@ public class NavigatorDao extends TreeSupportDao<Navigator> implements INavigato
 		super(Navigator.class);
 	}
 
-	public Navigator moveMenu(Navigator navigator) {
-        return saveMenu(navigator);
+	public Navigator move(Navigator navigator) {
+        return save(navigator);
     }
 
-    public Navigator saveMenu(Navigator navigator) {
+    public Navigator save(Navigator navigator) {
     	if(navigator.getId() == null) {    
             return create(navigator);
         }
@@ -28,7 +28,7 @@ public class NavigatorDao extends TreeSupportDao<Navigator> implements INavigato
         return navigator;
     }
     
-    public void deleteMenu(Navigator navigator){
+    public void deleteNavigator(Navigator navigator){
         delete(em.merge(navigator));
     }
     
@@ -38,7 +38,7 @@ public class NavigatorDao extends TreeSupportDao<Navigator> implements INavigato
     
     @SuppressWarnings("unchecked")
     public List<Navigator> getMenusByPortal(Long portalId) {
-        String hql = "from Navigator o where (o.disabled is null or o.disabled <> 1) and o.portalId = ? order by o.decode ";
+        String hql = "from Navigator o where o.disabled <> 1 and o.portalId = ? order by o.decode ";
         return (List<Navigator>) getEntities(hql, portalId);
     }
 }

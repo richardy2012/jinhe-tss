@@ -16,7 +16,6 @@ import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.entity.Navigator;
 import com.jinhe.tss.portal.entity.Structure;
-import com.jinhe.tss.portal.helper.MenuTreeParser;
 import com.jinhe.tss.portal.helper.StrictLevelTreeParser;
 import com.jinhe.tss.portal.service.INavigatorService;
 import com.jinhe.tss.portal.service.IPortalService;
@@ -181,7 +180,7 @@ public class NavigatorAction extends BaseActionSupport {
             }
         }
         
-        TreeEncoder encoder = new TreeEncoder(data, new MenuTreeParser());
+        TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());
         
         encoder.setTranslator(new ITreeTranslator(){
             public Map<String, Object> translate(Map<String, Object> attributes) {  

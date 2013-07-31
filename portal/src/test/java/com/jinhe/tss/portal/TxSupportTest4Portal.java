@@ -20,7 +20,7 @@ import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.IH2DBServer;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.portal.entity.Component;
-import com.jinhe.tss.portal.service.IElementService;
+import com.jinhe.tss.portal.service.IComponentService;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.permission.PermissionHelper;
@@ -56,7 +56,7 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
     
     @Autowired protected IH2DBServer dbserver;
  
-    @Autowired protected IElementService elementService;
+    @Autowired protected IComponentService elementService;
     
     protected void setUp() throws Exception {
         super.setUp();
@@ -132,7 +132,7 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
         defaultLayoutGroup.setName("默认布局器组");
         defaultLayoutGroup.setType(Component.LAYOUT_TYPE);
         defaultLayoutGroup.setParentId(PortalConstants.ROOT_ID);   
-        defaultLayoutGroup = elementService.saveElement(defaultLayoutGroup);
+        defaultLayoutGroup = elementService.saveComponent(defaultLayoutGroup);
         
         defaultLayout = new Component();
         defaultLayout.setIsDefault(PortalConstants.TRUE);
@@ -143,14 +143,14 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
         defaultLayout.setName(layoutName);
         defaultLayout.setPortNumber(new Integer(propertyElement.elementText("portNumber")));
         defaultLayout.setDefinition(document.asXML());
-        elementService.saveElement(defaultLayout);
+        elementService.saveComponent(defaultLayout);
         defaultLayoutId = defaultLayout.getId();
         
         defaultDecoratorGroup = new Component();
         defaultDecoratorGroup.setName("默认修饰器组");
         defaultDecoratorGroup.setType(Component.DECORATOR_TYPE);
         defaultDecoratorGroup.setParentId(PortalConstants.ROOT_ID);  
-        defaultDecoratorGroup = elementService.saveElement(defaultDecoratorGroup);
+        defaultDecoratorGroup = elementService.saveComponent(defaultDecoratorGroup);
         
         defaultDecorator = new Component();
         defaultDecorator.setIsDefault(PortalConstants.TRUE);
@@ -161,7 +161,7 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
         String decoratorName = propertyElement.elementText("name");
         defaultDecorator.setName(decoratorName);
         defaultDecorator.setDefinition(document.asXML());
-        elementService.saveElement(defaultDecorator);
+        elementService.saveComponent(defaultDecorator);
         defaultDecoratorId = defaultDecorator.getId();
     }
     

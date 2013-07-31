@@ -26,7 +26,7 @@ import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.portal.PortalConstants;
-import com.jinhe.tss.portal.entity.permission.MenuResourceView;
+import com.jinhe.tss.portal.entity.permission.NavigatorResourceView;
 import com.jinhe.tss.um.permission.IResource;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.XMLDocUtil;
@@ -35,10 +35,10 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 导航栏内容定义器：描述导航栏（菜单）基本信息及内容定义信息
  */
 @Entity
-@Table(name = "portal_menu", uniqueConstraints = { 
+@Table(name = "portal_navigator", uniqueConstraints = { 
         @UniqueConstraint(name="MULTI_NAME_MENU", columnNames = { "parentId", "name" })
 })
-@SequenceGenerator(name = "menu_sequence", sequenceName = "menu_sequence", initialValue = 1000, allocationSize = 50)
+@SequenceGenerator(name = "navigator_sequence", sequenceName = "navigator_sequence", initialValue = 1)
 public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, IXForm, IDecodable, IResource {
 
     /**
@@ -75,7 +75,7 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
     public static final Integer TYPE_MENU_ITEM_5 = 5;
     
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "menu_sequence")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "navigator_sequence")
     private Long   id;
 	
 	@Column(nullable = false)
@@ -119,7 +119,7 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
     public TreeAttributesMap getAttributes() {
         TreeAttributesMap map = new TreeAttributesMap(id, name);
         map.put("parentId", parentId);
-        map.put("portalId", this.portalId);
+        map.put("portalId", portalId);
         map.put("type", type);
         map.put("disabled", disabled);
         map.put("resourceTypeId", getResourceType());
@@ -204,13 +204,13 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
     
     public Class<?> getParentClass() {
         if(this.parentId.equals(PortalConstants.ROOT_ID)) {
-            return MenuResourceView.class;
+            return NavigatorResourceView.class;
         }
         return getClass();
     }
 
     public String getResourceType() {
-        return PortalConstants.MENU_RESOURCE_TYPE;
+        return PortalConstants.NAVIGATOR_RESOURCE_TYPE;
     }
     
     public String toString(){

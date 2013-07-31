@@ -16,7 +16,7 @@ import com.jinhe.tss.framework.persistence.IEntity;
  */
 @Entity
 @Table(name = "portal_flowrate")
-@SequenceGenerator(name = "flowRate_sequence", sequenceName = "flowRate_sequence", initialValue = 1000, allocationSize = 50)
+@SequenceGenerator(name = "flowRate_sequence", sequenceName = "flowRate_sequence", initialValue = 1, allocationSize = 50)
 public class FlowRate implements IEntity {
     
 	@Id

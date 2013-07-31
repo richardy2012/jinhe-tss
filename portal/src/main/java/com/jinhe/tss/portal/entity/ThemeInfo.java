@@ -13,7 +13,7 @@ import com.jinhe.tss.framework.persistence.IEntity;
  * 主题信息表,包含主题下各个门户结构的布局修饰内容
  */
 @Entity
-@Table(name = "pms_theme_info")
+@Table(name = "portal_theme_info")
 public class ThemeInfo implements IEntity {
 	
 	@EmbeddedId
@@ -83,38 +83,38 @@ public class ThemeInfo implements IEntity {
 		
 	    private static final long serialVersionUID = -2913245080847049534L;
 	    
-	    private Long    themeId;    //主题ID
-	    private Long    portalStructureId; //门户结构ID
+	    private Long    themeId;     // 主题ID
+	    private Long    structureId; // 门户结构ID
 	    
 	    public ThemeInfoId(){
 	    }
 	    
-	    public ThemeInfoId(Long themeId, Long portalStructureId){
+	    public ThemeInfoId(Long themeId, Long structureId){
 	        this.themeId = themeId;
-	        this.portalStructureId = portalStructureId;
+	        this.structureId = structureId;
 	    }
 	  
 	    public Long getThemeId() {
 			return themeId;
 		}
 
-		public Long getPortalStructureId() {
-			return portalStructureId;
+		public Long getStructureId() {
+			return structureId;
 		}
 
 		public void setThemeId(Long themeId) {
 			this.themeId = themeId;
 		}
 
-		public void setPortalStructureId(Long portalStructureId) {
-			this.portalStructureId = portalStructureId;
+		public void setStructureId(Long structureId) {
+			this.structureId = structureId;
 		}
 
 		public boolean equals(Object obj) {
 	        if(obj instanceof ThemeInfoId){
 	            ThemeInfoId object = (ThemeInfoId) obj;
 	            return this.themeId.equals(object.getThemeId())
-	                    && this.portalStructureId.equals(object.getPortalStructureId());
+	                    && this.structureId.equals(object.getStructureId());
 	        }
 	        return false;
 	    }
@@ -122,7 +122,7 @@ public class ThemeInfo implements IEntity {
 	    public int hashCode() {
 	        int hash = 1;
 	        hash = hash * 31 + this.themeId.hashCode();
-	        hash = hash * 31 + this.portalStructureId.hashCode();
+	        hash = hash * 31 + this.structureId.hashCode();
 
 	        return hash;
 	    }

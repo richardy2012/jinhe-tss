@@ -27,7 +27,7 @@ import com.jinhe.tss.util.BeanUtil;
  */
 @Entity
 @Table(name = "portal_component", uniqueConstraints = { 
-        @UniqueConstraint(name="MULTI_NAME_ELEMENT", columnNames = { "groupId", "type", "name" })
+        @UniqueConstraint(name="MULTI_NAME_COMPONENT", columnNames = { "parentId", "type", "name" })
 })
 @SequenceGenerator(name = "component_sequence", sequenceName = "component_sequence", initialValue = 1)
 public class Component extends OperateInfo implements IEntity, ILevelTreeNode, IXForm, IDecodable {
@@ -117,15 +117,13 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
         TreeAttributesMap map = new TreeAttributesMap(id, name);
         map.put("type", type);
         map.put("parentId", parentId);
-        map.put("seqNo", seqNo);  
         map.put("isGroup", isGroup);
+        map.put("disabled", disabled);
         
         if(isGroup) {
         	map.put("icon","../framework/images/" + getComponentType() + "_group.gif");
         } else {
         	map.put("code", code);
-            map.put("groupId", parentId);
-            map.put("disabled", disabled);
             map.put("isDefault", isDefault);
             map.put("icon", "../framework/images/" 
             		+ (PortalConstants.TRUE.equals(isDefault) ? "default_" : "") + getComponentType() 

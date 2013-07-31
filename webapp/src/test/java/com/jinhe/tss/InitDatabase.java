@@ -23,7 +23,7 @@ import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.entity.Component;
-import com.jinhe.tss.portal.service.IElementService;
+import com.jinhe.tss.portal.service.IComponentService;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.permission.PermissionService;
@@ -57,7 +57,7 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
     @Autowired private ILoginService loginSerivce;
     @Autowired private PermissionService permissionService;
     
-    @Autowired private IElementService elementService;
+    @Autowired private IComponentService elementService;
     
     protected void setUp() throws Exception {
         super.setUp();
@@ -113,7 +113,7 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
         defaultLayoutGroup.setName("默认布局器组");
         defaultLayoutGroup.setType(Component.LAYOUT_TYPE);
         defaultLayoutGroup.setParentId(PortalConstants.ROOT_ID);   
-        defaultLayoutGroup = elementService.saveElement(defaultLayoutGroup);
+        defaultLayoutGroup = elementService.saveComponent(defaultLayoutGroup);
         
         Component defaultLayout = new Component();
         defaultLayout.setIsDefault(PortalConstants.TRUE);
@@ -124,13 +124,13 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
         defaultLayout.setName(layoutName);
         defaultLayout.setPortNumber(new Integer(propertyElement.elementText("portNumber")));
         defaultLayout.setDefinition(document.asXML());
-        elementService.saveElement(defaultLayout);
+        elementService.saveComponent(defaultLayout);
         
         Component defaultDecoratorGroup = new Component();
         defaultDecoratorGroup.setName("默认修饰器组");
         defaultDecoratorGroup.setType(Component.DECORATOR_TYPE);
         defaultDecoratorGroup.setParentId(PortalConstants.ROOT_ID);  
-        defaultDecoratorGroup = elementService.saveElement(defaultDecoratorGroup);
+        defaultDecoratorGroup = elementService.saveComponent(defaultDecoratorGroup);
         
         Component defaultDecorator = new Component();
         defaultDecorator.setIsDefault(PortalConstants.TRUE);
@@ -141,7 +141,7 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
         String decoratorName = propertyElement.elementText("name");
         defaultDecorator.setName(decoratorName);
         defaultDecorator.setDefinition(document.asXML());
-        elementService.saveElement(defaultDecorator);
+        elementService.saveComponent(defaultDecorator);
     }
     
     
