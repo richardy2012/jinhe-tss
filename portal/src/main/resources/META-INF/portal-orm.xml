@@ -5,22 +5,18 @@
    version="1.0">
  
 	<!-- portal -->	
-	<entity class="com.jinhe.tss.portal.entity.Decorator"/>
-	<entity class="com.jinhe.tss.portal.entity.ElementGroup"/>
+	<entity class="com.jinhe.tss.portal.entity.Component"/>
 	<entity class="com.jinhe.tss.portal.entity.FlowRate"/>
 	<entity class="com.jinhe.tss.portal.entity.IssueInfo"/>
-	<entity class="com.jinhe.tss.portal.entity.Layout"/>
 	<entity class="com.jinhe.tss.portal.entity.Navigator"/>
-	<entity class="com.jinhe.tss.portal.entity.PersonalTheme"/>
-	<entity class="com.jinhe.tss.portal.entity.Portal"/>
-	<entity class="com.jinhe.tss.portal.entity.PortalStructure"/>
-	<entity class="com.jinhe.tss.portal.entity.Portlet"/>
+	<entity class="com.jinhe.tss.portal.entity.Structure"/>
+	<entity class="com.jinhe.tss.portal.entity.ThemePersonal"/>
 	<entity class="com.jinhe.tss.portal.entity.Theme"/>
 	<entity class="com.jinhe.tss.portal.entity.ThemeInfo"/>
  
-	<entity class="com.jinhe.tss.portal.entity.permission.MenuResourceView"/>
-	<entity class="com.jinhe.tss.portal.entity.permission.MenuPermissions"/>
-	<entity class="com.jinhe.tss.portal.entity.permission.MenuPermissionsFull"/>
+	<entity class="com.jinhe.tss.portal.entity.permission.NavigatorResourceView"/>
+	<entity class="com.jinhe.tss.portal.entity.permission.NavigatorPermissions"/>
+	<entity class="com.jinhe.tss.portal.entity.permission.NavigatorPermissionsFull"/>
 	
 	<entity class="com.jinhe.tss.portal.entity.permission.PortalResourceView"/>
 	<entity class="com.jinhe.tss.portal.entity.permission.PortalPermissions"/>

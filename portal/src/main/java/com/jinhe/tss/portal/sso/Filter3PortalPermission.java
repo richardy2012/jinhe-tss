@@ -84,7 +84,7 @@ public class Filter3PortalPermission implements Filter {
                 // 发布路径访问方式
 				IssueInfo issueInfo = getIssueInfo(requestURI);
 				req.setAttribute(PORTAL_ISSUE_INFO, issueInfo); // 设置门户真实访问地址，为后续门户发布路径转向过滤器准备相关参数
-				portalId = issueInfo.getPortalId();
+				portalId = issueInfo.getPortal().getId();
 			} 
 			else if(requestURI.indexOf(PORTAL_PREVIEW_ACTION_URL) > 0){ 
                 // 非发布路径访问方式，portalId参数跟在访问地址后，可从请求中取到

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.portal.dao.IPortalDao;
@@ -43,19 +42,11 @@ public class PortalDao extends TreeSupportDao<Structure> implements IPortalDao {
     public List<Structure> getChildrenById(Long id, String operationId) {
         return getChildrenById(id);
     }
- 
-    public Structure getRootStructure(Long portalId) {
-        List<?> list = getEntities("from Structure o where o.type = 0 and o.portalId = ? ", portalId);
-        if(list.isEmpty()) {
-        	throw new BusinessException("根据portalId获取门户根节点时出错！可能不存在！");
-        }
-        return (Structure) list.get(0);
-    }
 
     public Object[] getPortalComponents(Long portalId, Long currentThemeId){
         String[] hqls = new String[3];        
-        hqls[0] = "from Component o where o.id in (select distinct ti.decoratorId from Structure p, ThemeInfo ti where p.portalId=? and p.id=ti.id.structureId and ti.id.themeId = ? and p.type<>0 and p.disabled<>1) or o.isDefault = 1 ";
-        hqls[1] = "from Component o where o.id in (select distinct ti.layoutId    from Structure p, ThemeInfo ti where p.portalId=? and p.id=ti.id.structureId and ti.id.themeId = ? and p.type<>3 and p.disabled<>1) or o.isDefault = 1 ";
+        hqls[0] = "from Component o where o.id in (select distinct ti.decorator.id from Structure p, ThemeInfo ti where p.portalId=? and p.id=ti.id.structureId and ti.id.themeId = ? and p.type<>0 and p.disabled<>1) or o.isDefault = 1 ";
+        hqls[1] = "from Component o where o.id in (select distinct ti.layout.id    from Structure p, ThemeInfo ti where p.portalId=? and p.id=ti.id.structureId and ti.id.themeId = ? and p.type<>3 and p.disabled<>1) or o.isDefault = 1 ";
         hqls[2] = "from Component o where o.id in (select distinct t.id from Structure p, Portlet t where p.definerId=t.id and p.type=3 and p.portalId=? and p.disabled<>1)";
         
         Object[] returnVal = new Object[3];   

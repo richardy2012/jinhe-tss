@@ -54,7 +54,7 @@ public class PortalDispatcher extends HttpServlet {
                 String visitUrl = issueInfo.getVisitUrl();
                 log.debug("匿名访问门户页面:" + visitUrl + " 被自动转向到静态页面，isRobot = " + isRobot);
                 
-                SimpleRobot.checkVisitFreshness(issueInfo.getPortalId(), visitUrl);
+                SimpleRobot.checkVisitFreshness(issueInfo.getPortal().getId(), visitUrl);
                 redirectPage = "/html/" + visitUrl + ".html";
             } else {
                 redirectPage = req.getContextPath() + getRedirectPath(issueInfo);
@@ -84,12 +84,13 @@ public class PortalDispatcher extends HttpServlet {
      * @return
      */
     private Object getRedirectPath(IssueInfo issueInfo) {
-        String redirectPage = "/pms/portal!previewPortal.action?method=browse&portalId=" + issueInfo.getPortalId();
-        if (issueInfo.getPageId() != null) {
-            redirectPage += "&id=" + issueInfo.getPageId();
+        Long portalId = issueInfo.getPortal().getId();
+        String redirectPage = "/portal/preview/browse/" + portalId + "?";
+        if (issueInfo.getPage() != null) {
+            redirectPage += "&id=" + issueInfo.getPage().getId();
         }
-        if (issueInfo.getThemeId() != null) {
-            redirectPage += "&themeId=" + issueInfo.getThemeId();
+        if (issueInfo.getTheme() != null) {
+            redirectPage += "&themeId=" + issueInfo.getTheme().getId();
         }
         return redirectPage;
     }

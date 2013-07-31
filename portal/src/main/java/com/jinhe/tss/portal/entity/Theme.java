@@ -39,6 +39,13 @@ public class Theme extends OperateInfo implements IEntity, ITreeNode {
 	
     private Integer disabled = PortalConstants.FALSE;  // 是否停用：0－启用；1－停用
 
+    public Theme() {
+    }
+    
+    public Theme(Long themeId) {
+        this.id = themeId;
+    }
+
     public TreeAttributesMap getAttributes() {
         TreeAttributesMap map = new TreeAttributesMap(id, name);
         map.put("icon", "../framework/images/theme.gif");

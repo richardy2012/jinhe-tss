@@ -28,8 +28,8 @@ public class NavigatorAction extends BaseActionSupport {
     /**
      * <p> 生成单个菜单 </p>
      */
-    public void getMenuXML(Long id){
-        print("MainMenu", service.getMenuXML(id));
+    public void getNavigatorXML(Long id){
+        print("MainMenu", service.getNavigatorXML(id));
     }
     
 	/**
@@ -60,7 +60,7 @@ public class NavigatorAction extends BaseActionSupport {
             encoder = new XFormEncoder("template/xform/MenuXForm" + type + ".xml", map);           
         }
         else {
-        	Navigator info = service.getNavigatorInfo(id);            
+        	Navigator info = service.getNavigator(id);            
             encoder = new XFormEncoder("template/xform/MenuXForm" + type + ".xml", info);
         }        
         
@@ -75,7 +75,7 @@ public class NavigatorAction extends BaseActionSupport {
 	public void save(Navigator navigator){
         boolean isNew = navigator.getId() == null;
         
-        navigator = service.saveMenu(navigator);
+        navigator = service.saveNavigator(navigator);
         doAfterSave(isNew, navigator, "MenuTree");
 	}
 	
@@ -85,7 +85,7 @@ public class NavigatorAction extends BaseActionSupport {
 	 * </p>
 	 */
 	public void delete(Long id){
-		service.deleteMenu(id);	
+		service.deleteNavigator(id);	
 		printSuccessMessage();
 	}
 	
@@ -116,23 +116,23 @@ public class NavigatorAction extends BaseActionSupport {
         if(id.equals(targetId)){
             throw new BusinessException("节点不能移动到自身节点下");
         }
-        service.moveMenu(id, targetId);
+        service.moveNavigator(id, targetId);
         printSuccessMessage();
     }
     
     /**
      * 根据菜单获取菜单项树
      */
-    public void getMenus4TreeByPortal(Long portalId){
-        List<?> data = service.getMenusByPortal(portalId);   
+    public void getNavigatorsByPortal(Long portalId){
+        List<?> data = service.getNavigatorsByPortal(portalId);   
 
         TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());
         encoder.setNeedRootNode(false);
         print("MenuTree", encoder);
     }
     
-    public void getPortalStructuresByPortal4Tree(Long portalId, final int type){
-        List<?> data = portalService.getPortalStructuresByPortal(portalId);      
+    public void getStructuresByPortal(Long portalId, final int type){
+        List<?> data = portalService.getStructuresByPortal(portalId);      
         TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());
 
         encoder.setTranslator(new ITreeTranslator(){
@@ -169,7 +169,7 @@ public class NavigatorAction extends BaseActionSupport {
      * 移动的时候用到
      */
     public void getNavigators4Tree(Long id, final Long portalId) {        
-        List<?> data = service.getMenusByPortal(portalId);
+        List<?> data = service.getNavigatorsByPortal(portalId);
         
         //过滤移动节点自身
         for(Iterator<?> it = data.iterator(); it.hasNext();){

@@ -108,6 +108,10 @@ public abstract class BaseActionSupport {
         new SuccessMessageEncoder(str).print(getWriter());
     }
     
+    protected void printImportSuccessMessage() {
+        print("script", "parent.loadInitData();alert('导入成功!');var ws = parent.$$('ws');ws.closeActiveTab();");
+    }
+    
     /** 生成分页信息 */
     protected String generatePageInfo(int totalRows, int page, int pagesize, int currentPageRows) {
         int totalPages = totalRows / pagesize;

@@ -95,7 +95,7 @@ public class PortalAction extends FreeMarkerSupportAction {
      * 获取所有的Portal对象（取门户结构PortalStructure）并转换成Tree相应的xml数据格式
      */
     public void getAllPortals4Tree() {
-        List<?> data = service.getAllPortalStructures();
+        List<?> data = service.getAllStructures();
         TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser());
         print("SourceTree", encoder);
     }
@@ -128,8 +128,8 @@ public class PortalAction extends FreeMarkerSupportAction {
      */
     @SuppressWarnings("unchecked")
     public void getActivePortalStructures4Tree(final Long id) {
-        List<ILevelTreeNode> all = (List<ILevelTreeNode>) service.getAllPortalStructures();
-        List<ILevelTreeNode> targets = (List<ILevelTreeNode>) service.getTargetPortalStructures();
+        List<ILevelTreeNode> all = (List<ILevelTreeNode>) service.getAllStructures();
+        List<ILevelTreeNode> targets = (List<ILevelTreeNode>) service.getTargetStructures();
         
         final List<Long> targetIds = new ArrayList<Long>();
         for( ILevelTreeNode temp : targets ){
@@ -139,7 +139,7 @@ public class PortalAction extends FreeMarkerSupportAction {
         List<ILevelTreeNode> composedTree = composeTargetTree(all, targets);
         TreeEncoder encoder = new TreeEncoder(composedTree, new StrictLevelTreeParser());
         
-        final int type = service.getPortalStructureById(id).getType();
+        final int type = service.getStructure(id).getType();
         encoder.setTranslator( new ITreeTranslator() { 
             
             // 门户结构树转换器：门户结构移动时根据当前节点的type值过滤其它节点是否可以选择
@@ -213,7 +213,7 @@ public class PortalAction extends FreeMarkerSupportAction {
             encoder = new XFormEncoder(PortalConstants.PORTALSTRUCTURE_XFORM_PATH, map);           
         }
         else {
-            Structure info = service.getPoratalStructure(id);            
+            Structure info = service.getStructureWithTheme(id);            
             encoder = new XFormEncoder(PortalConstants.PORTALSTRUCTURE_XFORM_PATH, info);
             if(info.isRootPortal()){
                 Object[] objs = genComboThemes(info.getPortalId());
@@ -222,7 +222,7 @@ public class PortalAction extends FreeMarkerSupportAction {
                 encoder.setColumnAttribute("themeName", "editable", "false");
             }           
         }
-        print("SiteInfo", encoder);
+        print("DetailInfo", encoder);
     }
     
     private Object[] genComboThemes(Long portalId){
@@ -241,7 +241,7 @@ public class PortalAction extends FreeMarkerSupportAction {
         Structure portalStructure;
         if(isNew) {        
             ps.setCode("PS" + System.currentTimeMillis()); // 设置code值 = PS ＋ 当前时间
-            portalStructure = service.createPortalStructure(ps);
+            portalStructure = service.createStructure(ps);
             
             /**
              * 如果是在新增门户根节点时上传文件，则此时code和Id还没生成。
@@ -256,10 +256,10 @@ public class PortalAction extends FreeMarkerSupportAction {
             } 
         } 
         else {
-            portalStructure = service.updatePortalStructure(ps);
+            portalStructure = service.updateStructure(ps);
         }
             
-        doAfterSave(isNew, portalStructure, "SiteTree");
+        doAfterSave(isNew, portalStructure, "SourceTree");
     }
     
     /**
@@ -269,7 +269,7 @@ public class PortalAction extends FreeMarkerSupportAction {
      * </p>
      */
     public void delete(Long id){
-        service.delete(id);
+        service.deleteStructure(id);
         printSuccessMessage();
     }
     
@@ -311,7 +311,7 @@ public class PortalAction extends FreeMarkerSupportAction {
         List<?> list = service.copyTo(id, targetId);        
         TreeEncoder encoder = new TreeEncoder(list, new LevelTreeParser());
         encoder.setNeedRootNode(false);
-        print("SiteTree", encoder);
+        print("SourceTree", encoder);
     }
 
     //******************************** 以下为主题管理  ***************************************
@@ -320,11 +320,11 @@ public class PortalAction extends FreeMarkerSupportAction {
      * 获取一个Portal的所有主题
      */
     public void getThemes4Tree(Long id){
-        Structure root = service.getPoratalStructure(id); 
+        Structure root = service.getStructureWithTheme(id); 
         
         List<?> themeList = service.getThemesByPortal(root.getPortalId());
         TreeEncoder encoder = new TreeEncoder(themeList);
-        final Long defalutThemeId = root.getThemeId();
+        final Long defalutThemeId = root.getTheme().getId();
         encoder.setTranslator(new ITreeTranslator() {
             public Map<String, Object> translate(Map<String, Object> attributes) {
                 if(defalutThemeId.equals(attributes.get("id"))){
@@ -334,7 +334,7 @@ public class PortalAction extends FreeMarkerSupportAction {
                 return attributes;
             }
         });
-        print("ThemeManage", encoder);        
+        print("ThemeList", encoder);        
     }
     
     /**
@@ -342,7 +342,7 @@ public class PortalAction extends FreeMarkerSupportAction {
      */    
     public void saveThemeAs(Long themeId, String name){
         Theme newTheme = service.saveThemeAs(themeId, name);       
-        doAfterSave(true, newTheme, "ThemeManage");
+        doAfterSave(true, newTheme, "ThemeList");
     }
     
     public void renameTheme(Long themeId, String name){
@@ -367,7 +367,7 @@ public class PortalAction extends FreeMarkerSupportAction {
     //******************************** 以下为门户发布管理 ***************************************
     public void getAllIssues4Tree(){        
         TreeEncoder encoder = new TreeEncoder(service.getAllIssues()); 
-        print("PublishTree", encoder);
+        print("IssueTree", encoder);
     }
     
     public void getIssueInfoById(Long id){
@@ -378,12 +378,12 @@ public class PortalAction extends FreeMarkerSupportAction {
         else{
             IssueInfo info = service.getIssueInfo(id);            
             encoder = new XFormEncoder(PortalConstants.ISSUE_XFORM_TEMPLET_PATH, info);
-            Object[] objs = genComboThemes(info.getPortalId());
-            encoder.setColumnAttribute("themeId", "editorvalue", (String) objs[0]);
-            encoder.setColumnAttribute("themeId", "editortext",  (String) objs[1]);
+            Object[] objs = genComboThemes(info.getPortal().getId());
+            encoder.setColumnAttribute("theme.Id", "editorvalue", (String) objs[0]);
+            encoder.setColumnAttribute("theme.Id", "editortext",  (String) objs[1]);
          
         }        
-        print("PublishInfo", encoder);
+        print("IssueInfo", encoder);
     }
     
     public void saveIssue(IssueInfo issueInfo){
@@ -401,7 +401,7 @@ public class PortalAction extends FreeMarkerSupportAction {
         List<?> data = service.getActivePortals();
         TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser());
         encoder.setNeedRootNode(false);
-        print("SiteTree", encoder);
+        print("SourceTree", encoder);
     }
     
     public void getThemesByPortal(Long portalId){

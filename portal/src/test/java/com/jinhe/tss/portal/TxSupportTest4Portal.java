@@ -39,7 +39,7 @@ import com.jinhe.tss.util.XMLDocUtil;
             "classpath:META-INF/portal-test-spring.xml",  
             "classpath:META-INF/framework-spring.xml",  
             "classpath:META-INF/um-spring.xml",
-            "classpath:META-INF/cms-spring.xml"
+            "classpath:META-INF/spring-mvc.xml"
         } 
         , inheritLocations = false // 是否要继承父测试用例类中的 Spring 配置文件，默认为 true
       )

@@ -9,7 +9,7 @@ import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.TxSupportTest4Portal;
-import com.jinhe.tss.portal.action.ElementAction;
+import com.jinhe.tss.portal.action.ComponentAction;
 import com.jinhe.tss.portal.action.PortalAction;
 import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.entity.IssueInfo;
@@ -24,7 +24,7 @@ import com.jinhe.tss.util.URLUtil;
 public class PortalModuleTest extends TxSupportTest4Portal {
     
     @Autowired PortalAction portalAction;
-    @Autowired ElementAction elementAction;
+    @Autowired ComponentAction elementAction;
     
     @Autowired IPortalService portalService;
  
@@ -35,16 +35,19 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         // 新建portal
         portalAction.getPortalStructureInfo(structureId, parentId, Structure.TYPE_PORTAL);
         
+        Theme theme = new Theme();
+        theme.setName("默认主题");
+        
         Structure root = new Structure();
         root.setParentId(parentId);
         root.setType(Structure.TYPE_PORTAL);
         root.setName("Jon的门户");
         root.setSupplement("<page><property><name>Jon的门户</name><description><![CDATA[]]></description></property><script><file><![CDATA[]]></file><code><![CDATA[]]></code></script><style><file><![CDATA[]]></file><code><![CDATA[]]></code></style></page>");
         root.setDescription("测试门户");
-        root.setThemeName("默认主题");
+        root.setTheme(theme);
         portalAction.save(root, "TempPortalCode"); // create portal root
         
-        List<?> list = portalService.getAllPortalStructures();
+        List<?> list = portalService.getAllStructures();
         assertTrue(list.size() == 1);
         root = (Structure) list.get(0);
         Long portalId = root.getPortalId();
@@ -66,7 +69,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         createPortletInstance(section1, "portletInstance1", "portletInstance1", portlet);
         createPortletInstance(section2, "portletInstance2", "portletInstance2", portlet);
         
-        List<?> data = portalService.getAllPortalStructures();
+        List<?> data = portalService.getAllStructures();
         assertEquals(7, data.size());
         portalAction.getAllPortals4Tree();
         
@@ -75,7 +78,8 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         
         List<?> themeList = portalService.getThemesByPortal(portalId);
         assertEquals(1, themeList.size());
-        Long defaultThemeId = ((Theme) themeList.get(0)).getId();
+        Theme defaultTheme = (Theme) themeList.get(0);
+        Long defaultThemeId = defaultTheme.getId();
         portalAction.saveThemeAs(defaultThemeId, "我的主题");
         
         themeList = portalService.getThemesByPortal(portalId);
@@ -97,12 +101,9 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         
         IssueInfo issueInfo = new IssueInfo();
         issueInfo.setName("门户发布配置");
-        issueInfo.setPortalId(portalId);
-        issueInfo.setPortalName(root.getName());
-        issueInfo.setPageId(page1.getId());
-        issueInfo.setPageCode(page1.getCode());
-        issueInfo.setPageName(page1.getName());
-        issueInfo.setThemeId(defaultThemeId);
+        issueInfo.setPortal(root);
+        issueInfo.setPage(page1);
+        issueInfo.setTheme(defaultTheme);
         issueInfo.setVisitUrl("default.portal");
         issueInfo.setRemark("~~~~~~~~~~~~~~~~");
         portalAction.saveIssue(issueInfo); // create
@@ -182,11 +183,9 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         
         newps.setPortalId(parent.getPortalId());
         newps.setParentId(parent.getId());
-        newps.setDecoratorId(defaultDecoratorId);
-        newps.setDecoratorName(defaultDecorator.getName());
-        newps.setDefinerId(defaultLayoutId);
-        newps.setDefinerName(defaultLayout.getName());
-        newps = portalService.createPortalStructure(newps);
+        newps.setDecorator(defaultDecorator);
+        newps.setDefiner(defaultLayout);
+        newps = portalService.createStructure(newps);
         
         return newps;
     }
@@ -201,11 +200,9 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         
         newps.setPortalId(parent.getPortalId());
         newps.setParentId(parent.getId());
-        newps.setDecoratorId(defaultDecoratorId);
-        newps.setDecoratorName(defaultDecorator.getName());
-        newps.setDefinerId(portlet.getId());
-        newps.setDefinerName(portlet.getName());
-        newps = portalService.createPortalStructure(newps);
+        newps.setDecorator(defaultDecorator);
+        newps.setDefiner(portlet);
+        newps = portalService.createStructure(newps);
         
         return newps;
     }
@@ -218,7 +215,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         group = elementService.saveComponent(group);
         
         String file = URLUtil.getResourceFileUrl("testdata/DemoPortlet.zip").getPath();
-        elementAction.importDecorator(group.getId(), new File(file));
+        elementAction.importComponent(group.getId(), new File(file));
         
         List<?> list = permissionHelper.getEntities("from Component o where o.type = ? and o.isGroup = ? order by o.decode", 
                 Component.PORTLET_TYPE, false);

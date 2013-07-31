@@ -4,12 +4,12 @@
 		<column name="id" caption="ID号" mode="hidden" editable="false"/>
 		<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>
 		<column name="visitUrl" caption="映射地址" mode="string" maxLength="50" inputReg="/^[\u0000-\u00FF]*$/g" empty="false"/>
-		<column name="portalId" caption="" mode="hidden" editable="false"/>
-		<column name="portalName" caption="对应门户" mode="function" empty="false" cmd="getPortal('portalId','portalName')"/>
-		<column name="themeId" caption="主题" mode="string" editor="comboedit" editorvalue="" editortext=""/>
-		<column name="pageId" caption="" mode="hidden" editable="false"/>
-		<column name="pageCode" caption="" mode="hidden" editable="false"/>
-		<column name="pageName" caption="对应页面/版面" mode="function" cmd="getPage('portalId','pageId','pageCode','pageName')"/>
+		<column name="portal.id" caption="" mode="hidden" editable="false"/>
+		<column name="portal.name" caption="对应门户" mode="function" empty="false" cmd="getPortal('portalId','portalName')"/>
+		<column name="theme.id" caption="主题" mode="string" editor="comboedit" editorvalue="" editortext=""/>
+		<column name="page.id" caption="" mode="hidden" editable="false"/>
+		<column name="page.code" caption="" mode="hidden" editable="false"/>
+		<column name="page.name" caption="对应页面/版面" mode="function" cmd="getPage('portalId','pageId','pageCode','pageName')"/>
 		<column name="remark" caption="说明" mode="string"/>
 	</declare>
 	<layout>
@@ -31,26 +31,26 @@
 		</TR>
 		<TR>
 			<TD width="80">
-				<label binding="portalName"/>
+				<label binding="portal.name"/>
 			</TD>
 			<TD>
-				<input binding="portalName" type="text"/>
+				<input binding="portal.name" type="text"/>
 			</TD>
 		</TR>
 		<TR>
 			<TD width="80">
-				<label binding="themeId"/>
+				<label binding="theme.id"/>
 			</TD>
 			<TD>
-				<input binding="themeId" type="text"/>
+				<input binding="theme.id" type="text"/>
 			</TD>
 		</TR>
 		<TR>
 			<TD width="80">
-				<label binding="pageName"/>
+				<label binding="page.name"/>
 			</TD>
 			<TD>
-				<input binding="pageName" type="text"/>
+				<input binding="page.name" type="text"/>
 			</TD>
 		</TR>
 		<TR>
@@ -58,7 +58,7 @@
 				<label binding="remark"/>
 			</TD>
 			<TD>
-				<textarea binding="remark" type="text" style="width:100%;height:100"/>
+				<textarea binding="remark" type="text" style="width:88%;height:100"/>
 			</TD>
 		</TR>
 	</layout>

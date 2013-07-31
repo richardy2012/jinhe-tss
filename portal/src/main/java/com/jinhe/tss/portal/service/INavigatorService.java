@@ -23,22 +23,22 @@ public interface INavigatorService {
 	 * @param entity
 	 * @return
 	 */
-	@Logable(operateTable="门户菜单", operateType="新建/修改", operateInfo=" 新建/修改了 ${returnVal} 节点 ")
-	Navigator saveMenu(Navigator entity);
+	@Logable(operateTable="门户导航栏", operateType="新建/修改", operateInfo=" 新建/修改了 ${returnVal} 节点 ")
+	Navigator saveNavigator(Navigator entity);
 	
 	/**
      * 删除一个菜单或者菜单项
 	 * @param id
 	 */
-	@Logable(operateTable="门户菜单", operateType="删除", operateInfo=" 删除了 ID为 ${args[0]} 的 节点 ")
-	void deleteMenu(Long id);
+	@Logable(operateTable="门户导航栏", operateType="删除", operateInfo=" 删除了 ID为 ${args[0]} 的 节点 ")
+	void deleteNavigator(Long id);
 	
 	/**
      * 停/启用一个菜单或者菜单项
 	 * @param id
 	 * @param disabled
 	 */
-	@Logable(operateTable="门户菜单", operateType="停用/启用", operateInfo="<#if args[1]=1>停用<#else>启用</#if>了(ID: ${args[0]})节点 ")
+	@Logable(operateTable="门户导航栏", operateType="停用/启用", operateInfo="<#if args[1]=1>停用<#else>启用</#if>了(ID: ${args[0]})节点 ")
 	void disable(Long id,Integer disabled);
 	
 	/**
@@ -46,7 +46,7 @@ public interface INavigatorService {
 	 * @param id
 	 * @return
 	 */
-	Navigator getNavigatorInfo(Long id);
+	Navigator getNavigator(Long id);
 	
 	/**
      * 菜单项排序
@@ -61,14 +61,14 @@ public interface INavigatorService {
      * @param id
      * @return
      */
-    List<?> getMenusByPortal(Long id);
+    List<?> getNavigatorsByPortal(Long id);
 
     /**
      * 移动菜单项
      * @param id
      * @param targetId
      */
-    void moveMenu(Long id, Long targetId);
+    void moveNavigator(Long id, Long targetId);
 
     /**
      * 生成一个菜单下所有菜单项集合的XML格式数据。
@@ -78,5 +78,5 @@ public interface INavigatorService {
      * @param id
      * @return
      */
-    String getMenuXML(Long id);
+    String getNavigatorXML(Long id);
 }

@@ -41,34 +41,6 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
     public final static String PORTLET   = "portlet";
     public final static String[] ELEMENTS   = new String[]{LAYOUT, DECORATOR, PORTLET};
     
-    public String getResourceBaseDir() { 
-    	return PortalConstants.MODEL_DIR + getComponentType() + "/"; 
-    }
-    
-    public String getResourcePath()    { 
-    	return getResourceBaseDir() + this.code + this.id; 
-    }
-    
-    public String getTemplatePath()    { 
-        return "template/xform/" + getComponentType() + ".xml";
-    }
-    
-    public String getComponentType()     { 
-    	return ELEMENTS[type - 1]; 
-    }
-    
-    public boolean isLayout() {
-        return this.type == LAYOUT_TYPE;
-    }
-    
-    public boolean isDecorator() {
-        return this.type == DECORATOR_TYPE;
-    }
-    
-    public boolean isportlet() {
-        return this.type == PORTLET_TYPE;
-    }
-    
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "component_sequence")
     private Long    id;
@@ -102,6 +74,35 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
     
     private Integer isDefault = PortalConstants.FALSE; // 是否为默认（修饰器/布局器）
     private Integer disabled  = PortalConstants.FALSE; // 是否停用
+    
+    
+    public String getResourceBaseDir() { 
+        return PortalConstants.MODEL_DIR + getComponentType() + "/"; 
+    }
+    
+    public String getResourcePath()    { 
+        return getResourceBaseDir() + this.code + this.id; 
+    }
+    
+    public String getTemplatePath()    { 
+        return "template/xform/" + getComponentType() + ".xml";
+    }
+    
+    public String getComponentType()     { 
+        return ELEMENTS[type - 1]; 
+    }
+    
+    public boolean isLayout() {
+        return this.type == LAYOUT_TYPE;
+    }
+    
+    public boolean isDecorator() {
+        return this.type == DECORATOR_TYPE;
+    }
+    
+    public boolean isportlet() {
+        return this.type == PORTLET_TYPE;
+    }
     
     /**
      * 布局器中可以显示区域数量

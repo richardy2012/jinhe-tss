@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -34,21 +35,19 @@ public class IssueInfo implements IEntity, ITreeNode, IXForm {
 	
 	@Column(nullable = false)
     private String name;
+	private String remark;
 	
-	@Column(nullable = false)
-    private Long   portalId;  // 对应门户ID
-    private String portalName;
-    
     @Column(nullable = false)
     private String visitUrl;  // 门户访问地址
+	
+	@ManyToOne
+    private Structure portal; // 对应门户
     
-    private Long   themeId;   // 指定的主题
+	@ManyToOne
+    private Theme   theme;    // 指定的主题
     
-    private Long   pageId;    // 对应版面的门户结构ID
-    private String pageName;  
-    private String pageCode;  
-    
-    private String remark;
+	@ManyToOne
+    private Structure page;   // 对应页面
  
     public String getName() {
         return name;
@@ -66,44 +65,8 @@ public class IssueInfo implements IEntity, ITreeNode, IXForm {
         return visitUrl;
     }
  
-    public String getPageCode() {
-        return pageCode;
-    }
- 
-    public Long getPortalId() {
-        return portalId;
-    }    
- 
-    public String getPortalName() {
-        return portalName;
-    }
- 
-    public Long getPageId() {
-        return pageId;
-    }
- 
-    public String getPageName() {
-        return pageName;
-    }
- 
-    public Long getThemeId() {
-        return themeId;
-    }
- 
-    public void setThemeId(Long themeId) {
-        this.themeId = themeId;
-    }
- 
     public void setId(Long id) {
         this.id = id;
-    }
- 
-    public void setPageCode(String pageCode) {
-        this.pageCode = pageCode;
-    }
- 
-    public void setPortalId(Long portalId) {
-        this.portalId = portalId;
     }
  
     public void setVisitUrl(String visitUrl) {
@@ -117,22 +80,23 @@ public class IssueInfo implements IEntity, ITreeNode, IXForm {
     public void setRemark(String reamrk) {
         this.remark = reamrk;
     }
- 
-    public void setPortalName(String portalName) {
-        this.portalName = portalName;
-    }
- 
-    public void setPageId(Long pageId) {
-        this.pageId = pageId;
-    }
- 
-    public void setPageName(String pageName) {
-        this.pageName = pageName;
-    }
     
     public Map<String, Object> getAttributesForXForm() {
         Map<String, Object> map = new HashMap<String, Object>();
-        BeanUtil.addBeanProperties2Map(this, map);
+        BeanUtil.addBeanProperties2Map(this, map, "portal", "theme", "page");
+        
+        map.put("portal.id", portal.getId());
+        map.put("portal.name", portal.getName());
+        
+        if(theme != null) {
+            map.put("theme.id", theme.getId());
+        }
+        
+        if(page != null) {
+            map.put("page.id", page.getId());
+            map.put("page.name", page.getName());
+            map.put("page.code", page.getCode());
+        }
         return map;
     }
     
@@ -140,6 +104,30 @@ public class IssueInfo implements IEntity, ITreeNode, IXForm {
         TreeAttributesMap map = new TreeAttributesMap(id, name);
         map.put("icon", "../framework/images/url.gif");
         return map;
+    }
+
+    public Structure getPortal() {
+        return portal;
+    }
+
+    public void setPortal(Structure portal) {
+        this.portal = portal;
+    }
+
+    public Theme getTheme() {
+        return theme;
+    }
+
+    public void setTheme(Theme theme) {
+        this.theme = theme;
+    }
+
+    public Structure getPage() {
+        return page;
+    }
+
+    public void setPage(Structure page) {
+        this.page = page;
     }
 }
 

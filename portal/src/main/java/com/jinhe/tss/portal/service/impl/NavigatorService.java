@@ -24,32 +24,24 @@ public class NavigatorService implements INavigatorService {
         return dao.getEntities("from Navigator o order by o.decode");
 	}
 	
-	public Navigator saveMenu(Navigator entity){
+	public Navigator saveNavigator(Navigator entity){
 		if( entity.getId() == null ) {
 		    Long parentId = entity.getParentId();
             Integer nextSeqNo = dao.getNextSeqNo(parentId);
             entity.setSeqNo(nextSeqNo);
 		}
 		
-		if(entity.getContentId() != null) {
-		    
-		}
-		if(entity.getTargetId() != null) {
-		    // 把门户ID设置到菜单信息里
-//		    entity.setPortalId(portalId);
-		}
-		
 		return dao.save(entity);
 	}
 	
-	public void deleteMenu(Long id){
+	public void deleteNavigator(Long id){
         List<Navigator> children = dao.getChildrenById(id);
         for( Navigator child : children ){
             dao.deleteNavigator(child);
         }
 	}
 	
-	public Navigator getNavigatorInfo(Long id){
+	public Navigator getNavigator(Long id){
         return dao.getEntity(id);
 	}
 	
@@ -72,39 +64,39 @@ public class NavigatorService implements INavigatorService {
         dao.sort(id, targetId, direction);
     }
 
-    public List<?> getMenusByPortal(Long portalId) {
+    public List<?> getNavigatorsByPortal(Long portalId) {
         return dao.getMenusByPortal(portalId);
     }
 
-    public void moveMenu(Long id, Long targetId) {
-        Navigator menu = dao.getEntity(id);
+    public void moveNavigator(Long id, Long targetId) {
+        Navigator navigator = dao.getEntity(id);
         
-        menu.setPortalId(dao.getEntity(targetId).getPortalId());
-        menu.setParentId(targetId);
-        menu.setSeqNo(dao.getNextSeqNo(targetId));
+        navigator.setPortalId(dao.getEntity(targetId).getPortalId());
+        navigator.setParentId(targetId);
+        navigator.setSeqNo(dao.getNextSeqNo(targetId));
                    
-        dao.save(menu);
+        dao.save(navigator);
     }
     
-    public String getMenuXML(Long id) {
+    public String getNavigatorXML(Long id) {
     	if( !Context.getIdentityCard().isAnonymous() ) {
-    		return createMenuXML(id);
+    		return createNavigatorXML(id);
     	}
     	
     	// 缓存只针对匿名用户访问进行缓存
-        Pool menuPool = JCache.getInstance().getCachePool(PortalConstants.NAVIGATOR_CACHE);
-        Cacheable cachedMenu = menuPool.getObject(id);
+        Pool navigatorPool = JCache.getInstance().getCachePool(PortalConstants.NAVIGATOR_CACHE);
+        Cacheable cachedMenu = navigatorPool.getObject(id);
         if( cachedMenu == null ){
-        	cachedMenu = menuPool.putObject(id, createMenuXML(id));
+        	cachedMenu = navigatorPool.putObject(id, createNavigatorXML(id));
         }
         return (String) cachedMenu.getValue();
     }
 
-	private String createMenuXML(Long id) {
-		Navigator menu = getNavigatorInfo(id);   
+	private String createNavigatorXML(Long id) {
+		Navigator navigator = getNavigator(id);   
 		List<Navigator> menuItems = dao.getMenuItemListByMenu(id);
 		
-		Element node = menu.composeMenuNode(menuItems);
+		Element node = navigator.compose2Tree(menuItems);
 		String menuStr = node == null ? "<MainMenu/>" : node.asXML();
 		return menuStr;
 	}

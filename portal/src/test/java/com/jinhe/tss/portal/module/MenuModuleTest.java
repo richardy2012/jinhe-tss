@@ -12,6 +12,7 @@ import com.jinhe.tss.portal.action.NavigatorAction;
 import com.jinhe.tss.portal.action.PortalAction;
 import com.jinhe.tss.portal.entity.Navigator;
 import com.jinhe.tss.portal.entity.Structure;
+import com.jinhe.tss.portal.entity.Theme;
 import com.jinhe.tss.portal.service.INavigatorService;
 import com.jinhe.tss.portal.service.IPortalService;
 
@@ -28,11 +29,14 @@ public class MenuModuleTest extends TxSupportTest4Portal {
  
     public void testMenuModule() {
         // 新建portal
+        Theme theme = new Theme();
+        theme.setName("默认主题");
+        
         Structure root = new Structure();
         root.setParentId(PortalConstants.ROOT_ID);
         root.setType(Structure.TYPE_PORTAL);
         root.setName("Jon的门户");
-        root.setThemeName("默认主题");
+        root.setTheme(theme);
         portalAction.save(root, "TempPortalCode"); // create portal root
         
         List<?> list = menuService.getAllNavigator();
@@ -50,7 +54,7 @@ public class MenuModuleTest extends TxSupportTest4Portal {
         menu1.setName("首页");
         menu1.setParentId(rootMenuId);
         menu1.setPortalId(portalId);
-        menu1.setContentId(66L);
+        menu1.setContent(null);
         menuAction.save(menu1);
         
         Navigator menu2 = new Navigator();
@@ -59,7 +63,7 @@ public class MenuModuleTest extends TxSupportTest4Portal {
         menu2.setParentId(rootMenuId);
         menu2.setPortalId(portalId);
         menu2.setUrl("${common.articleListUrl}&channelId=38");
-        menuService.saveMenu(menu2);
+        menuService.saveNavigator(menu2);
         
         Navigator menu2_1 = new Navigator();
         menu2_1.setType(Navigator.TYPE_MENU_ITEM_6);
@@ -68,9 +72,8 @@ public class MenuModuleTest extends TxSupportTest4Portal {
         menu2_1.setPortalId(portalId);
         menu2_1.setMethodName("jumpTo");
         menu2_1.setParams("appCode:\'UMS\',redirect:\'http://${PT_ip}/ums/redirect.html\',url:\'ums/permission.htm\'");
-        menu2_1.setContentId(16L);
-        menu2_1.setContentName("IFrame");
-        menuService.saveMenu(menu2_1);
+        menu2_1.setContent(null);
+        menuService.saveNavigator(menu2_1);
         
         Navigator menu2_2 = new Navigator();
         menu2_2.setType(Navigator.TYPE_MENU_ITEM_4);
@@ -78,16 +81,16 @@ public class MenuModuleTest extends TxSupportTest4Portal {
         menu2_2.setParentId(menu2.getId());
         menu2_2.setPortalId(portalId);
         menu2.setUrl("www.google.com");
-        menuService.saveMenu(menu2_2);
+        menuService.saveNavigator(menu2_2);
         
         Navigator menu3 = new Navigator();
         menu3.setType(Navigator.TYPE_MENU_ITEM_5);
         menu3.setName("二级页面");
         menu3.setParentId(rootMenuId);
         menu3.setPortalId(portalId);
-        menu3.setContentId(66L);
-        menu3.setTargetId(88L);
-        menuService.saveMenu(menu3);
+        menu3.setContent(null);
+        menu3.setToContent(null);
+        menuService.saveNavigator(menu3);
         
         // 测试停用启用
         for(int i = 0; i < 2; i++) {
@@ -105,13 +108,13 @@ public class MenuModuleTest extends TxSupportTest4Portal {
         // 查询
         menuAction.getAllNavigator4Tree();
         
-        menuAction.getMenus4TreeByPortal(portalId);
+        menuAction.getNavigatorsByPortal(portalId);
 
-        menuAction.getPortalStructuresByPortal4Tree(portalId, Structure.TYPE_SECTION);
-        menuAction.getPortalStructuresByPortal4Tree(portalId, Structure.TYPE_PORTLET_INSTANCE);
+        menuAction.getStructuresByPortal(portalId, Structure.TYPE_SECTION);
+        menuAction.getStructuresByPortal(portalId, Structure.TYPE_PORTLET_INSTANCE);
         
         // 生成菜单XML格式
-        menuAction.getMenuXML(rootMenuId);
+        menuAction.getNavigatorXML(rootMenuId);
         
         // 删除
         menuAction.delete(rootMenuId);

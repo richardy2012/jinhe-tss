@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.jinhe.tss.framework.persistence.IEntity;
@@ -16,67 +17,57 @@ import com.jinhe.tss.framework.persistence.IEntity;
 @Table(name = "portal_theme_info")
 public class ThemeInfo implements IEntity {
 	
+	/**
+	 *  复合主键：主题ID ＋ 门户结构ID
+	 */
 	@EmbeddedId
-    private ThemeInfoId id;  // 复合主键：主题ID ＋ 门户结构ID
+    private ThemeInfoId id;
+    
+    /** 
+     * 如果门户结构为portlet实例，则此项为空 
+     */
+	@ManyToOne
+    private Component layout;      // 布局器
+    
+	@ManyToOne
+    private Component decorator;   // 修饰器
     
     /**
-     * 如果门户结构为Portlet引用，则此项为空
+     * Portlet、修饰器、布局器的实例化时自定义参数值
      */
-    private Long    layoutId;      // 布局器ID
-    private String  layoutName;    // 布局器名称
-    
-    private Long    decoratorId;   // 修饰器Id
-    private String  decoratorName; // 修饰器名称
-    
-    private String  parameters;    // Portlet、修饰器、布局器的实例化时自定义参数值
+    private String  parameters;
 
 	public ThemeInfoId getId() {
 		return id;
 	}
-
-	public Long getLayoutId() {
-		return layoutId;
-	}
-
-	public String getLayoutName() {
-		return layoutName;
-	}
-
-	public Long getDecoratorId() {
-		return decoratorId;
-	}
-
-	public String getDecoratorName() {
-		return decoratorName;
-	}
-
+	
+    public void setId(ThemeInfoId id) {
+        this.id = id;
+    }
+    
 	public String getParameters() {
 		return parameters;
-	}
-
-	public void setId(ThemeInfoId id) {
-		this.id = id;
-	}
-
-	public void setLayoutId(Long layoutId) {
-		this.layoutId = layoutId;
-	}
-
-	public void setLayoutName(String layoutName) {
-		this.layoutName = layoutName;
-	}
-
-	public void setDecoratorId(Long decoratorId) {
-		this.decoratorId = decoratorId;
-	}
-
-	public void setDecoratorName(String decoratorName) {
-		this.decoratorName = decoratorName;
 	}
 
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
 	}
+	
+    public Component getLayout() {
+        return layout;
+    }
+
+    public void setLayout(Component layout) {
+        this.layout = layout;
+    }
+
+    public Component getDecorator() {
+        return decorator;
+    }
+
+    public void setDecorator(Component decorator) {
+        this.decorator = decorator;
+    }
 	
 	@Embeddable
 	public static class ThemeInfoId  implements Serializable {

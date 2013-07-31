@@ -8,7 +8,7 @@ import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.TxSupportTest4Portal;
-import com.jinhe.tss.portal.action.ElementAction;
+import com.jinhe.tss.portal.action.ComponentAction;
 import com.jinhe.tss.portal.entity.Component;
 
 /**
@@ -16,19 +16,19 @@ import com.jinhe.tss.portal.entity.Component;
  */
 public class ComponentModuleTest extends TxSupportTest4Portal {
     
-    @Autowired ElementAction groupAction;
+    @Autowired ComponentAction groupAction;
  
     public void testElementGroupModule() {
-        groupAction.getElementParamsConfig(defaultLayoutId, "");
+        groupAction.getComponentParamsConfig(defaultLayoutId, "");
         
         try {
-            groupAction.previewElement(defaultLayoutId);
+            groupAction.previewComponent(defaultLayoutId);
  
         } catch (Exception e) {
             assertFalse("预览组件出错" + e.getMessage(), true);
         }
  
-        groupAction.getGroupInfo(defaultLayoutId, PortalConstants.ROOT_ID, Component.LAYOUT_TYPE);
+        groupAction.getComponentGroup(defaultLayoutId, PortalConstants.ROOT_ID, Component.LAYOUT_TYPE);
         
         Component elementGroup = new Component();
         elementGroup.setName("测试布局器组");
@@ -39,7 +39,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         Long groupId = elementGroup.getId();
         assertNotNull(groupId);
  
-        groupAction.getGroupInfo(BaseActionSupport.DEFAULT_NEW_ID, PortalConstants.ROOT_ID, Component.LAYOUT_TYPE);
+        groupAction.getComponentGroup(BaseActionSupport.DEFAULT_NEW_ID, PortalConstants.ROOT_ID, Component.LAYOUT_TYPE);
         
         groupAction.getGroupsByType(Component.LAYOUT_TYPE);
  

@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -79,23 +80,27 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
     private Long   id;
 	
 	@Column(nullable = false)
-	private String  name;       //菜单（项）名称
-	private Integer type;       //类型  参考 TYPE_MENU_X
-	private Long   parentId;    //菜单项对应菜单
-    private String url;         //url地址                     
-    private String target  ;    //目标区域，_blank/_self  等  
+	private String  name;       // 菜单（项）名称
+	private Integer type;       // 类型  参考 TYPE_MENU_X
+	private Long   parentId;    // 菜单项对应菜单
+    private String url;         // url地址                     
+    private String target  ;    // 目标区域，_blank/_self  等  
     
     @Column(length = 1000)
-    private String description; //菜单内容的描述信息
+    private String description; // 菜单内容的描述信息
 	
     // Portal内部页面引用的菜单内容
-    private Long   portalId;    //菜单或菜单项所属于门户ID
-    private Long   contentId;
-    private String contentName; //显示内容                    
-    private Long   targetId;   
-    private String targetName;  //目标：版面/Portlet替换  
- 	private String methodName;  //方法名                        
-    private String params;      //参数    
+    @Column(nullable = false)
+    private Long   portalId;   // 菜单或菜单项所属于门户ID
+    
+    @ManyToOne
+    private Structure content;    // 显示内容   
+    
+    @ManyToOne
+    private Structure toContent;  // 目标：版面/Portlet替换  
+    
+ 	private String methodName;    // 方法名                        
+    private String params;        // 参数    
     
     // 菜单树结构信息
     @Column(nullable = false)
@@ -146,7 +151,7 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
      * 
      * @param list
      */    
-    public Element composeMenuNode(List<Navigator> list){
+    public Element compose2Tree(List<Navigator> list){
         if( !this.type.equals(TYPE_MENU) ){
             throw new BusinessException("非[菜单]不能进行组装菜单操作!");
         }
@@ -179,18 +184,20 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
         map.put("methodName", methodName);
         map.put("params", params);
         
-        map.put("contentId", contentId);
-        map.put("targetId", targetId);
-        
-        // 页面/版面/Portlet 门户内部链接
-        if(type.equals(TYPE_MENU_ITEM_3)){
-            map.put("url", "portal!previewPortal.action?portalId=" + portalId + "&id=" + contentId);
+        if(content != null) {
+            map.put("contentId", content.getId());
+            
+            // 页面/版面/Portlet 门户内部链接
+            if(type.equals(TYPE_MENU_ITEM_3)){
+                map.put("url", "portal!previewPortal.action?portalId=" + portalId + "&id=" + content.getId());
+            }
         }
         
         // 局部替换方式
-        if(type.equals(TYPE_MENU_ITEM_5)){
-            map.put("action", "portal!getPortalXML.action?portalId=" + portalId + "&id=" + contentId 
-                    + "&targetId=" + targetId);
+        if(type.equals(TYPE_MENU_ITEM_5)) {
+            map.put("targetId", toContent.getId());
+            map.put("action", "portal!getPortalXML.action?portalId=" + portalId + "&id=" + content.getId() 
+                    + "&targetId=" + toContent.getId());
         }
         
         return XMLDocUtil.map2AttributeNode(map, this.type.equals(TYPE_MENU) ? "Menu" : "MenuItem");
@@ -198,7 +205,17 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
 
     public Map<String, Object> getAttributesForXForm() {
         Map<String, Object> map = new HashMap<String, Object>();
-        BeanUtil.addBeanProperties2Map(this, map, "children".split(","));
+        BeanUtil.addBeanProperties2Map(this, map, "children,content,toContent".split(","));
+        
+        if(content != null) {
+            map.put("content.id", content.getId());
+            map.put("content.name", content.getName());
+        }
+        if(toContent != null) {
+            map.put("toContent.id", toContent.getId());
+            map.put("toContent.name", toContent.getName());
+        }
+       
         return map;
     }
     
@@ -241,14 +258,6 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
 		return seqNo;
 	}
  
-    public Long getContentId() {
-        return contentId;
-    }
- 
-    public String getContentName() {
-        return contentName;
-    }
- 
     public String getParams() {
         return params;
     }
@@ -267,22 +276,6 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
  
     public String getUrl() {
         return url;
-    }
- 
-    public Long getTargetId() {
-        return targetId;
-    }
- 
-    public String getTargetName() {
-        return targetName;
-    }
- 
-    public void setContentId(Long contentId) {
-        this.contentId = contentId;
-    }
- 
-    public void setContentName(String contentName) {
-        this.contentName = contentName;
     }
  
     public void setDescription(String description) {
@@ -329,14 +322,6 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
         this.portalId = portalId;
     }
  
-    public void setTargetId(Long targetId) {
-        this.targetId = targetId;
-    }
- 
-    public void setTargetName(String targetName) {
-        this.targetName = targetName;
-    }
- 
     public Integer getDisabled() {
         return disabled;
     }
@@ -359,5 +344,21 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
  
     public void setLevelNo(Integer levelNo) {
         this.levelNo = levelNo;
+    }
+
+    public Structure getContent() {
+        return content;
+    }
+
+    public void setContent(Structure content) {
+        this.content = content;
+    }
+
+    public Structure getToContent() {
+        return toContent;
+    }
+
+    public void setToContent(Structure toContent) {
+        this.toContent = toContent;
     }
 }	

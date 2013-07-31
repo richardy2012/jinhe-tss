@@ -87,9 +87,9 @@
 	</resourceType>
 	
 	<resourceType resourceTypeId="12" name="菜单" seqNo="13" description="菜单" 
-		unSuppliedTable="com.jinhe.tss.portal.entity.permission.MenuPermissions" 
-		suppliedTable="com.jinhe.tss.portal.entity.permission.MenuPermissionsFull" 
-		resourceTable="com.jinhe.tss.portal.entity.permission.MenuResourceView">	
+		unSuppliedTable="com.jinhe.tss.portal.entity.permission.NavigatorPermissions" 
+		suppliedTable="com.jinhe.tss.portal.entity.permission.NavigatorPermissionsFull" 
+		resourceTable="com.jinhe.tss.portal.entity.permission.NavigatorResourceView">	
 		
 		<operation operationId="1" name="浏览" seqNo="1" description="浏览" dependParent="2" />
 		<operation operationId="2" name="维护" seqNo="2" description="维护" />

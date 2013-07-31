@@ -27,17 +27,19 @@ public interface IPortalService {
     @PermissionTag(
             operation = PortalConstants.PORTAL_VIEW_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE)
-    List<?> getAllPortalStructures();
+    List<?> getAllStructures();
 
     /**
      * <p>
-     * 获取除portlet应用外的门户结构。移动到...，复制到...的时候将调用本方法。将根据“新增”操作选项过滤
+     * 获取除portlet实例外的门户结构。
+     * 移动到...，复制到...的时候将调用本方法。
+     * 将根据“新增”操作选项过滤。
      * </p>
      */
     @PermissionTag(
             operation = PortalConstants.PORTAL_ADD_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE)
-    List<?> getTargetPortalStructures();
+    List<?> getTargetStructures();
     
     /**
      * 获取所有启用门户
@@ -63,7 +65,7 @@ public interface IPortalService {
     @PermissionTag(
             operation = PortalConstants.PORTAL_VIEW_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE)
-    List<?> getPortalStructuresByPortal(Long portalId);
+    List<?> getStructuresByPortal(Long portalId);
 
     /**
      * <p>
@@ -79,7 +81,7 @@ public interface IPortalService {
             operation = PortalConstants.PORTAL_VIEW_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Check.class)
-    Structure getPoratalStructure(Long id);
+    Structure getStructureWithTheme(Long id);
     
     /**
      * 只取门户结构节点
@@ -90,7 +92,7 @@ public interface IPortalService {
             operation = PortalConstants.PORTAL_VIEW_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Check.class)
-    Structure getPortalStructureById(Long id);
+    Structure getStructure(Long id);
 
     /**
      * <p>
@@ -110,14 +112,14 @@ public interface IPortalService {
             operation = PortalConstants.PORTAL_ADD_OPERRATION , 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Create.class)
-    Structure createPortalStructure(Structure ps);
+    Structure createStructure(Structure ps);
     
     @Logable(operateTable="门户结构", operateType="修改", operateInfo="修改了 ${returnVal} 节点")
     @PermissionTag(
             operation = PortalConstants.PORTAL_EDIT_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Update.class)
-    Structure updatePortalStructure(Structure ps);
+    Structure updateStructure(Structure ps);
     
     /**
      * <p>
@@ -129,7 +131,7 @@ public interface IPortalService {
      *          操作节点的ID
      */
     @Logable(operateTable="门户结构", operateType="删除", operateInfo="删除了(ID: ${args[0]})节点")
-    void delete(Long id);
+    void deleteStructure(Long id);
 
     /**
      * <p>

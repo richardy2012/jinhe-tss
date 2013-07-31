@@ -76,17 +76,7 @@ public class BeanUtil {
             }
         }
     }
-    
-    /**
-     * 将对象中的属性按属性名/属性值的方式存入到Map中。
-     * 
-     * @param bean
-     * @param map
-     */
-    public static void addBeanProperties2Map(Object bean, Map<String, Object> map){
-        addBeanProperties2Map(bean, map, new String[]{ });
-    }
-    
+ 
     /**
      * 将对象中的属性按属性名/属性值的方式存入到Map中。
      * 
@@ -94,7 +84,7 @@ public class BeanUtil {
      * @param map
      * @param ignore
      */
-    public static void addBeanProperties2Map(Object bean, Map<String, Object> map, String[] ignore){
+    public static void addBeanProperties2Map(Object bean, Map<String, Object> map, String...ignore){
         List<String> list = Arrays.asList(ignore);
         PropertyDescriptor[] descr = PropertyUtils.getPropertyDescriptors(bean);
         for (int i = 0; i < descr.length; i++) {

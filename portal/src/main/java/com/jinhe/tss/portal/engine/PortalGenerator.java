@@ -172,8 +172,8 @@ public class PortalGenerator {
         parseSupplement(pageNode, ps.getSupplement());         
         
         String parametersOnPs = ps.getParameters(); // 获取门户结构上定义的元素参数列表
-        pageNode.setDecoratorNode(new DecoratorNode(decoratorsMap.get(ps.getDecoratorId()), pageNode, parametersOnPs));
-        pageNode.setLayoutNode(new LayoutNode(layoutsMap.get(ps.getDefinerId()), pageNode, parametersOnPs));
+        pageNode.setDecoratorNode(new DecoratorNode(decoratorsMap.get(ps.getDecorator().getId()), pageNode, parametersOnPs));
+        pageNode.setLayoutNode(new LayoutNode(layoutsMap.get(ps.getDefiner().getId()), pageNode, parametersOnPs));
         
         for(Structure child : ps.getChildren() ){
             pageNode.addChild(ps2Node(child, pageNode));
@@ -194,8 +194,8 @@ public class PortalGenerator {
         repairSupNode(sectionNode, parentNode);
 
         String parametersOnPs = ps.getParameters(); // 获取门户结构上定义的元素参数列表
-        sectionNode.setDecoratorNode(new DecoratorNode(decoratorsMap.get(ps.getDecoratorId()), sectionNode, parametersOnPs));
-        sectionNode.setLayoutNode(new LayoutNode(layoutsMap.get(ps.getDefinerId()), sectionNode, parametersOnPs));
+        sectionNode.setDecoratorNode(new DecoratorNode(decoratorsMap.get(ps.getDecorator().getId()), sectionNode, parametersOnPs));
+        sectionNode.setLayoutNode(new LayoutNode(layoutsMap.get(ps.getDefiner().getId()), sectionNode, parametersOnPs));
         
         for(Structure child : ps.getChildren() ){
             sectionNode.addChild(ps2Node(child, sectionNode));
@@ -215,8 +215,8 @@ public class PortalGenerator {
         repairSupNode(node, parentNode);
  
         String parametersOnPs = ps.getParameters(); // 获取门户结构上定义的元素参数列表
-        node.setDecoratorNode(new DecoratorNode(decoratorsMap.get(ps.getDecoratorId()), node, parametersOnPs));
-        node.setPortletNode(new PortletNode(portletsMap.get(ps.getDefinerId()), node, parametersOnPs));
+        node.setDecoratorNode(new DecoratorNode(decoratorsMap.get(ps.getDecorator().getId()), node, parametersOnPs));
+        node.setPortletNode(new PortletNode(portletsMap.get(ps.getDefiner().getId()), node, parametersOnPs));
         
         return node;
     }

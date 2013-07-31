@@ -72,13 +72,6 @@ public interface IPortalDao extends ITreeSupportDao<Structure>{
      * @return
      */
     Object[] getPortalComponents(Long portalId, Long currentThemeId);
-    
-    /**
-     * 根据portalId获取门户结构根节点
-     * @param portalId
-     * @return
-     */
-    Structure getRootStructure(Long portalId);
 
     /**
      * 获取portal下的所有主题
