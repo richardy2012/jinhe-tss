@@ -47,6 +47,7 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
 	
 	@Column(nullable = false)
     private String  name; // 元素名称
+	private String  code; // 元素代码：用于生成元素资源文件目录及访问相对路径
 	
 	/** 
 	 * 元素类别： 1-布局器, 2-修饰器组 3-Portlet组 
@@ -55,12 +56,9 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
 	
 	@Column(nullable = false)
 	private Long    parentId; // 父组的编码：根节点的parentId = 0;
-	private boolean isGroup;  // 是否为元素组
+	private boolean isGroup = false;  // 是否为元素组
 	
-	@Column(nullable = false)
-    private String  code; // 元素代码：用于生成元素资源文件目录及访问相对路径
-    
-    @Column(length = 4000, nullable = false)
+    @Column(length = 4000)
     private String  definition;  // 元素内容：元素关于展现方式的具体定义信息
     
     @Column(length = 1000)
@@ -145,21 +143,27 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
     public Integer getType() {
 		return type;
 	}
+    
 	public void setType(Integer type) {
 		this.type = type;
 	}
+	
 	public Long getParentId() {
 		return parentId;
 	}
+	
 	public void setParentId(Long parentId) {
 		this.parentId = parentId;
 	}
+	
 	public boolean isGroup() {
 		return isGroup;
 	}
-	public void setGroup(boolean isGroup) {
+	
+	public void setIsGroup(boolean isGroup) {
 		this.isGroup = isGroup;
 	}
+	
 	public Class<Component> getParentClass() { return Component.class; }
     
     public String toString(){

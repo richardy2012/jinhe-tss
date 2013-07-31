@@ -30,20 +30,28 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
  
         groupAction.getComponentGroup(defaultLayoutId, PortalConstants.ROOT_ID, Component.LAYOUT_TYPE);
         
-        Component elementGroup = new Component();
-        elementGroup.setName("测试布局器组");
-        elementGroup.setType(Component.LAYOUT_TYPE);
-        elementGroup.setParentId(PortalConstants.ROOT_ID);   
-        groupAction.save(elementGroup);
+        Component group1 = new Component();
+        group1.setName("测试布局器组1");
+        group1.setIsGroup(true);
+        group1.setType(Component.LAYOUT_TYPE);
+        group1.setParentId(defaultLayoutGroup.getId());   
+        groupAction.save(group1);
         
-        Long groupId = elementGroup.getId();
+        Long groupId = group1.getId();
         assertNotNull(groupId);
+        
+        Component group2 = new Component();
+        group2.setName("测试布局器组2");
+        group2.setIsGroup(true);
+        group2.setType(Component.LAYOUT_TYPE);
+        group2.setParentId(defaultLayoutGroup.getId());   
+        groupAction.save(group2);
  
         groupAction.getComponentGroup(BaseActionSupport.DEFAULT_NEW_ID, PortalConstants.ROOT_ID, Component.LAYOUT_TYPE);
         
         groupAction.getGroupsByType(Component.LAYOUT_TYPE);
  
-        groupAction.sort(Context.getResponse(), groupId, defaultLayoutGroup.getId(), -1);
+        groupAction.sort(Context.getResponse(), groupId, group2.getId(), -1);
         
         groupAction.copy(defaultLayoutId);
         
@@ -51,7 +59,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         
         groupAction.copyTo(defaultLayoutId, groupId);
         
-        List<?> groups = elementService.getComponentGroups(Component.LAYOUT_TYPE);
+        List<?> groups = componentService.getComponentGroups(Component.LAYOUT_TYPE);
         assertTrue(groups.size() >= 3);
  
         groupAction.moveTo(defaultLayoutId, ((Component)groups.get(2)).getId());

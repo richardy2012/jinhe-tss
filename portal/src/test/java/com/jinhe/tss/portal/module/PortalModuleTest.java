@@ -212,7 +212,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         group.setName("测试Portlet组");
         group.setType(Component.PORTLET_TYPE);
         group.setParentId(PortalConstants.ROOT_ID);   
-        group = elementService.saveComponent(group);
+        group = componentService.saveComponent(group);
         
         String file = URLUtil.getResourceFileUrl("testdata/DemoPortlet.zip").getPath();
         elementAction.importComponent(group.getId(), new File(file));

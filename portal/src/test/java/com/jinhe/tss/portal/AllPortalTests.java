@@ -14,7 +14,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import com.jinhe.tss.portal.module.ComponentModuleTest;
-import com.jinhe.tss.portal.module.MenuModuleTest;
+import com.jinhe.tss.portal.module.NavigatorModuleTest;
 import com.jinhe.tss.portal.module.PortalFileOperationTest;
 import com.jinhe.tss.portal.module.PortalModuleTest;
  
@@ -28,7 +28,7 @@ public class AllPortalTests {
 		suite.addTestSuite(PortalFileOperationTest.class);
 		
 		suite.addTestSuite(PortalModuleTest.class);
-		suite.addTestSuite(MenuModuleTest.class);
+		suite.addTestSuite(NavigatorModuleTest.class);
 		
 		return suite;
 	}

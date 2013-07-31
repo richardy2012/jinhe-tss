@@ -28,14 +28,23 @@ public class ComponentService implements IComponentService {
         return dao.getEntities("from Component o where o.disabled <> 1 and o.type=? order by o.decode", type);
     }
  
-    public Component saveComponent(Component obj) {
-        if (obj.getId() == null) {
-            obj.setCode(obj.getComponentType() + System.currentTimeMillis());
+    public Component saveComponent(Component component) {
+        if (component.getId() == null) {
+            Long parentId = component.getParentId();
+            Integer nextSeqNo = dao.getNextSeqNo(parentId);
+			component.setSeqNo(nextSeqNo);
             
-            Integer seqNo = dao.getNextSeqNo(obj.getParentId());
-            obj.setSeqNo(seqNo);
+            Component group = dao.getEntity(parentId);
+            if( group != null ) {
+				component.setType(group.getType());
+            }
         }
-        return dao.save(obj);
+        component = dao.save(component);
+        if( !component.isGroup() ) {
+        	component.setCode(component.getComponentType() + "-" + component.getId());
+        }
+        
+        return dao.save(component);
     }
     
     public Component deleteComponent(Long id) {
@@ -56,10 +65,10 @@ public class ComponentService implements IComponentService {
             hql = "from Structure t where t.definerId = ? and t.type = 3 ";
             break;
         case Component.LAYOUT_TYPE:   // 布局器组
-            hql = "select t from Structure t, ThemeInfo ti where t.id = ti.id.structureId and ti.layoutId = ? ";
+            hql = "select t from Structure t, ThemeInfo ti where t.id = ti.id.structureId and ti.layout.id = ? ";
             break;
         case Component.DECORATOR_TYPE: // 修饰器组
-            hql = "select t from Structure t, ThemeInfo ti where t.id = ti.id.structureId and ti.decoratorId = ? ";
+            hql = "select t from Structure t, ThemeInfo ti where t.id = ti.id.structureId and ti.decorator.id = ? ";
             break;
         }     
  
