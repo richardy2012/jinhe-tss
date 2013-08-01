@@ -39,7 +39,9 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
     public final static String LAYOUT    = "layout";
     public final static String DECORATOR = "decorator";
     public final static String PORTLET   = "portlet";
-    public final static String[] ELEMENTS   = new String[]{LAYOUT, DECORATOR, PORTLET};
+    public final static String[] TYPE_NAMES = new String[]{LAYOUT, DECORATOR, PORTLET};
+    
+    public final static String PARAM_FILE = "paramsXForm.xml";
     
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "component_sequence")
@@ -79,7 +81,7 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
     }
     
     public String getResourcePath()    { 
-        return getResourceBaseDir() + this.code + this.id; 
+        return getResourceBaseDir() + this.code; 
     }
     
     public String getTemplatePath()    { 
@@ -87,7 +89,7 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
     }
     
     public String getComponentType()     { 
-        return ELEMENTS[type - 1]; 
+        return TYPE_NAMES[type - 1]; 
     }
     
     public boolean isLayout() {
@@ -159,6 +161,10 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
 	public boolean isGroup() {
 		return isGroup;
 	}
+	
+   public boolean getIsGroup() {
+        return isGroup;
+    }
 	
 	public void setIsGroup(boolean isGroup) {
 		this.isGroup = isGroup;

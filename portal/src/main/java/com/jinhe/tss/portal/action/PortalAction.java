@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
@@ -38,6 +40,8 @@ import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
 
+@Controller
+@RequestMapping("/portal")
 public class PortalAction extends FreeMarkerSupportAction {
     
     @Autowired private IPortalService service;
@@ -379,8 +383,8 @@ public class PortalAction extends FreeMarkerSupportAction {
             IssueInfo info = service.getIssueInfo(id);            
             encoder = new XFormEncoder(PortalConstants.ISSUE_XFORM_TEMPLET_PATH, info);
             Object[] objs = genComboThemes(info.getPortal().getId());
-            encoder.setColumnAttribute("theme.Id", "editorvalue", (String) objs[0]);
-            encoder.setColumnAttribute("theme.Id", "editortext",  (String) objs[1]);
+            encoder.setColumnAttribute("theme.id", "editorvalue", (String) objs[0]);
+            encoder.setColumnAttribute("theme.id", "editortext",  (String) objs[1]);
          
         }        
         print("IssueInfo", encoder);

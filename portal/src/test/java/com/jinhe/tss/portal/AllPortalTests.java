@@ -24,9 +24,7 @@ public class AllPortalTests {
         TestSuite suite = new TestSuite("All tests from Portal");
 		
 		suite.addTestSuite(ComponentModuleTest.class);
-		
 		suite.addTestSuite(PortalFileOperationTest.class);
-		
 		suite.addTestSuite(PortalModuleTest.class);
 		suite.addTestSuite(NavigatorModuleTest.class);
 		

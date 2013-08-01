@@ -94,7 +94,7 @@ public class ComponentAction extends FreeMarkerSupportAction {
                 sb.append(name).append("=\"").append(XmlUtil.toFormXml(defaultValue)).append("\" ");
             }
         }
-        sb.append(">").append("model/" + elementType + "/" + component.getCode() + component.getId() + "/paramsXForm.xml");                    
+        sb.append(">").append("model/" + elementType + "/" + component.getCode() + "/" + Component.PARAM_FILE);                    
 
         print("ComponentParams", sb.append("</" + elementType + ">").toString());
     }
@@ -207,6 +207,7 @@ public class ComponentAction extends FreeMarkerSupportAction {
         
         Component component = new Component();
         component.setParentId(groupId);
+        component.setType(group.getType());
         ComponentHelper.importComponent(service, file, component, desDir, group.getComponentType() + ".xml");
         
         printImportSuccessMessage();
@@ -277,7 +278,7 @@ public class ComponentAction extends FreeMarkerSupportAction {
     public void getComponentParamsConfig(Long id, String paramsItem){
         Component component = service.getComponent(id);
        
-        String configFilePath = URLUtil.getWebFileUrl(component.getResourcePath() + "/paramsXForm.xml").getFile();
+        String configFilePath = URLUtil.getWebFileUrl(component.getResourcePath() + "/" + Component.PARAM_FILE).getFile();
         if( !new File(configFilePath).exists() ){
             // 如果是第一次配置，且配置参数项不为空，则根据需要的参数项自动生成一个默认模板
             Document doc = DocumentHelper.createDocument();

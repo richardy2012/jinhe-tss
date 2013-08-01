@@ -54,7 +54,7 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         menu1.setName("首页");
         menu1.setParentId(rootMenuId);
         menu1.setPortalId(portalId);
-        menu1.setContent(null);
+        menu1.setContent(root);
         menuAction.save(menu1);
         
         Navigator menu2 = new Navigator();
@@ -72,7 +72,7 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         menu2_1.setPortalId(portalId);
         menu2_1.setMethodName("jumpTo");
         menu2_1.setParams("appCode:\'UMS\',redirect:\'http://${PT_ip}/ums/redirect.html\',url:\'ums/permission.htm\'");
-        menu2_1.setContent(null);
+        menu2_1.setContent(root);
         menuService.saveNavigator(menu2_1);
         
         Navigator menu2_2 = new Navigator();
@@ -88,8 +88,8 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         menu3.setName("二级页面");
         menu3.setParentId(rootMenuId);
         menu3.setPortalId(portalId);
-        menu3.setContent(null);
-        menu3.setToContent(null);
+        menu3.setContent(root);
+        menu3.setToContent(root);
         menuService.saveNavigator(menu3);
         
         // 测试停用启用

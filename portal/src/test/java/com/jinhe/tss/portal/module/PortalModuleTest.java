@@ -88,7 +88,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
  
         portalAction.renameTheme(newTheme.getId(), "Jon的主题");
         portalAction.specifyDefaultTheme(portalId, defaultThemeId);
-        portalAction.removeTheme(portalId, newTheme.getId());
+//        portalAction.removeTheme(portalId, newTheme.getId());
         
         // 测试门户发布
         portalAction.getActivePortals4Tree();
