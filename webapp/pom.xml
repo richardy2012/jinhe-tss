@@ -18,6 +18,13 @@
 			<artifactId>portal</artifactId>
 		</dependency>
 		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.6</version>
+			<scope>test</scope>
+		</dependency>
+		
 		<!-- Oracle DB driver 4 release
 		<dependency>
 			<groupId>Oracle</groupId>

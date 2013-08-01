@@ -88,7 +88,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
  
         portalAction.renameTheme(newTheme.getId(), "Jon的主题");
         portalAction.specifyDefaultTheme(portalId, defaultThemeId);
-        portalAction.removeTheme(portalId, newTheme.getId());
+//        portalAction.removeTheme(portalId, newTheme.getId());
         
         // 测试门户发布
         portalAction.getActivePortals4Tree();
@@ -113,7 +113,6 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         portalAction.saveIssue(issueInfo); // update
         
         portalAction.getAllIssues4Tree();
-        portalAction.removeIssue(issueInfo.getId());
         
         // 测试排序
         portalAction.sort(page1.getId(), page2.getId(), 1);
@@ -154,11 +153,11 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         portalAction.cacheManage(portalId);
         portalAction.flushCache(portalId, defaultThemeId);
         
-        
         // 测试门户流量查看
         portalAction.getFlowRate(portalId);
         
         // 删除新建的门户
+        portalAction.removeIssue(issueInfo.getId());
         portalAction.delete(root.getId());
         
         // 删除复制出来的门户

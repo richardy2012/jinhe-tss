@@ -178,7 +178,10 @@ public class ComponentHelper {
         File eXMLFilePath = new File(desDir + "/" + tempDir.getName() + "/" + eXMLFile);
         component = importXml(service, component, eXMLFilePath);
 
-        File newFile = new File(desDir + "/" + component.getCode() + component.getId());
+        File newFile = new File(desDir + "/" + component.getCode());
+        if(newFile.exists()) {
+            FileHelper.deleteFile(newFile);
+        }
         if ( !tempDir.renameTo(newFile) ) {
             FileHelper.deleteFile(tempDir);
             throw new BusinessException("导入元素时路径重命名时出错!!!");

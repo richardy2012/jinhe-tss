@@ -8,9 +8,11 @@ import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit38.AbstractTransactionalJUnit38SpringContextTests;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.jinhe.tss.framework.Global;
@@ -36,9 +38,8 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 初始化数据库。
  * 
  * 需使用 src/main/resources目录下的配置文件，比如persistence.xml, application.properties等。
- * 另外，初始化时需要把applicationContext.xml的<property name="generateDdl" value="true" /> 设置为true
+ * 初始化时需要把applicationContext.xml 里 <property name="generateDdl" value="true"/> 设为true
  */
-@SuppressWarnings("deprecation")
 @ContextConfiguration(
         locations={
           "classpath:META-INF/framework-spring.xml",  
@@ -48,7 +49,7 @@ import com.jinhe.tss.util.XMLDocUtil;
         } 
       )
 @TransactionConfiguration(defaultRollback = false) // 不自动回滚，否则后续的test中没有初始化的数据
-public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests { 
+public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests { 
  
     Logger log = Logger.getLogger(this.getClass());    
     
@@ -59,12 +60,13 @@ public class InitDatabase extends AbstractTransactionalJUnit38SpringContextTests
     
     @Autowired private IComponentService elementService;
     
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         Global.setContext(super.applicationContext);
     }
     
-    public void testInitDatabase() {
+    @Test
+    public void initDatabase() {
         log.info("create tss databse schema starting......");
  
         String sqlpath = TestUtil.getInitSQLDir();

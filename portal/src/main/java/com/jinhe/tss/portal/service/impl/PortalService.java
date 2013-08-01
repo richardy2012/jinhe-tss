@@ -204,29 +204,32 @@ public class PortalService implements IPortalService {
     } 
 
     public Structure createStructure(Structure ps) {
-        saveStructure(ps);
-        
-        if( ps.isRootPortal() ) {  // 新增门户根节点
-            ps.setPortalId(ps.getId());
-            
+        if( ps.isRootPortal() ) { 
             // 先为新门户新建一套主题
             Theme theme = new Theme();
             theme.setName(ps.getTheme().getName());
-            theme.setPortalId(ps.getPortalId());
             theme = (Theme) portalDao.createObject(theme);
             
             ps.setTheme(theme);
             ps.setCurrentTheme(theme);
-            portalDao.update(ps);
+            ps = saveStructure(ps);
+            
+            Long portalId = ps.getId();
+            ps.setPortalId(portalId);
+            theme.setPortalId(portalId);
+            portalDao.update(theme);
             
             /* 默认新增一个菜单根节点，专门用于新建门户的菜单管理 */
             Navigator portalMenu = new Navigator();
             portalMenu.setType(Navigator.TYPE_MENU);
             portalMenu.setName(ps.getName());
-            portalMenu.setPortalId(ps.getPortalId());
+            portalMenu.setPortalId(portalId);
             portalMenu.setParentId(PortalConstants.ROOT_ID);
             portalMenu.setSeqNo(navigatorDao.getNextSeqNo(portalMenu.getParentId()));
             navigatorDao.save(portalMenu);
+        }
+        else {
+            saveStructure(ps);
         }
         
         saveThemeInfo(ps);
@@ -555,7 +558,7 @@ public class PortalService implements IPortalService {
     }
 
     public List<?> getAllIssues() {
-        return portalDao.getEntities( "from IssueInfo o order by o.portalId " );
+        return portalDao.getEntities( "from IssueInfo o order by o.portal.id " );
     }
 
     public IssueInfo saveIssue(IssueInfo issueInfo) {

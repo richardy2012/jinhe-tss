@@ -1,4 +1,4 @@
-IS_TEST = true;
+IS_TEST = false;
 
 /* 
  * 当前应用名 

@@ -33,7 +33,6 @@ public class Theme extends OperateInfo implements IEntity, ITreeNode {
 	private String  name;   // 主题名称
 	private Integer seqNo;  // 顺序号
 	
-	@Column(nullable = false)
     private Long    portalId;    // 主题所属的门户ID
 	private String  description; // 主题的描述
 	

@@ -72,7 +72,7 @@ public class FlowrateManager extends OutputRecordsManager{
          * 则判定为是重复访问，不记流量。
          */
         private boolean checkIsTheSameVisitor(Connection conn, FlowRate temp) {
-            String sql = "select count(*) from pms_flowrate t " +
+            String sql = "select count(*) from portal_flowrate t " +
             		" where t.ip =? and t.pageId = ? and t.visitTime > ? ";
             
             String ip = temp.getIp();

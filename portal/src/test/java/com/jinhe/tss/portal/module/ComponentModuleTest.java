@@ -22,7 +22,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
     
     @Autowired ComponentAction componentAction;
  
-    public void testElementGroupModule() {
+    public void testComponentGroupFunctions() {
         componentAction.getComponentParamsConfig(defaultLayoutId, "");
         
         try {
@@ -78,9 +78,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         }
     }
 
-
-    public void testDecoratorModule() {
-    	
+    public void testDecoratorFunctions() {
     	Component group1 = new Component();
         group1.setName("测试修饰器组1");
         group1.setIsGroup(true);
@@ -126,7 +124,6 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
 		componentAction.getGroupsByType(Component.DECORATOR_TYPE);
 
 		componentAction.getDefaultParams4Xml(id);
-
 		componentAction.saveElementParamsConfig(id, "");
 
 		componentAction.delete(id);
@@ -135,153 +132,50 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
 
 		assertTrue(TestUtil.printLogs(logService) > 0);
 	}
+    
+    public void testLayoutFunctions() {
+        Component group1 = new Component();
+        group1.setName("测试布局组1");
+        group1.setIsGroup(true);
+        group1.setType(Component.LAYOUT_TYPE);
+        group1.setParentId(defaultLayoutGroup.getId());   
+        componentAction.save(group1);
+        
+        Long groupId = group1.getId();
+        
+        String file = URLUtil.getResourceFileUrl("testdata/DemoLayout.zip").getPath();
+        componentAction.importComponent(groupId, new File(file));
+        
+        List<?> list = componentService.getEnabledComponentsAndGroups(Component.LAYOUT_TYPE);
+        assertTrue(list.size() >= 2);
+        Component layout1 = (Component) list.get(list.size() - 1);
+        Long id = layout1.getId();
+        
+        componentAction.getDefaultParams4Xml(id);
+        componentAction.saveElementParamsConfig(id, "");
+    }
 
-//	public void testLayoutModule() {
-//		Element group = new Element();
-//		group.setName("测试布局器组");
-//		group.setType(Element.LAYOUT_TYPE);
-//		group.setParentId(PortalConstants.ROOT_ID);
-//		group = elementService.saveGroup(group);
-//
-//		layoutAction.getUploadTemplate();
-//
-//		layoutAction.setGroupId(group.getId());
-//		String file = URLUtil.getResourceFileUrl("testdata/DemoLayout.zip")
-//				.getPath();
-//		layoutAction.setFile(new File(file));
-//		layoutAction.importLayout();
-//
-//		List<?> list = elementService.getLayouts();
-//		assertTrue(list.size() >= 2);
-//		Layout newLayout = (Layout) list.get(list.size() - 1);
-//		Long layout1Id = newLayout.getId();
-//
-//		layoutAction.setLayoutId(layout1Id);
-//		layoutAction.getExportLayout();
-//
-//		layoutAction.setLayoutId(layout1Id);
-//		layoutAction.getLayoutInfo();
-//
-//		BeanUtil.copy(layoutAction.getLayout(), newLayout, new String[] { "id",
-//				"code" });
-//		layoutAction.getLayout().setName("copy_" + newLayout.getName());
-//		layoutAction.save();
-//		Long layout2Id = layoutAction.getLayout().getId();
-//		assertNotNull(layout2Id);
-//
-//		layoutAction.save(); // update
-//
-//		for (int i = 0; i < 5; i++) {
-//			layoutAction.setLayoutId(layout1Id);
-//			layoutAction.setDisabled(PortalConstants.TRUE);
-//			layoutAction.disabled();
-//			layoutAction.setDisabled(PortalConstants.FALSE);
-//			layoutAction.disabled();
-//		}
-//
-//		layoutAction.setLayoutId(layout1Id);
-//		layoutAction.setAsDefault();
-//		layoutAction.setLayoutId(defaultLayoutId);
-//		layoutAction.setAsDefault();
-//
-//		layoutAction.setLayoutId(layout1Id);
-//		layoutAction.setTargetId(layout2Id);
-//		layoutAction.setDirection(1);
-//		layoutAction.sort();
-//
-//		layoutAction.setLayoutId(layout2Id);
-//		layoutAction.copy();
-//
-//		layoutAction.getAllLayout4Tree();
-//		layoutAction.getAllStartLayout4Tree();
-//
-//		layoutAction.setLayoutId(layout1Id);
-//		layoutAction.getDefaultParams4Xml();
-//
-//		componentAction.setId(layout1Id);
-//		componentAction.setConfigXML("");
-//		componentAction.setType(Element.LAYOUT_TYPE);
-//		componentAction.saveElementParamsConfig();
-//
-//		layoutAction.setLayoutId(layout2Id);
-//		layoutAction.delete();
-//
-//		componentAction.setId(group.getId());
-//		componentAction.delete();
-//
-//		assertTrue(TestUtil.printLogs(logService) > 0);
-//	}
-//
-//	public void testPortletModule() {
-//		Element group = new Element();
-//		group.setName("测试Portlet组");
-//		group.setType(Element.PORTLET_TYPE);
-//		group.setParentId(PortalConstants.ROOT_ID);
-//		group = elementService.saveGroup(group);
-//
-//		portletAction.getUploadTemplate();
-//
-//		portletAction.setGroupId(group.getId());
-//		String file = URLUtil.getResourceFileUrl("testdata/DemoPortlet.zip")
-//				.getPath();
-//		portletAction.setFile(new File(file));
-//		portletAction.importPortlet();
-//
-//		List<?> list = super.permissionHelper
-//				.getEntities("from Portlet order by id");
-//		assertTrue(list.size() >= 1);
-//		Portlet newPortlet = (Portlet) list.get(list.size() - 1);
-//		Long portlet1Id = newPortlet.getId();
-//
-//		portletAction.setId(portlet1Id);
-//		portletAction.getExportPortlet();
-//
-//		portletAction.setId(portlet1Id);
-//		portletAction.getPortletInfo();
-//
-//		BeanUtil.copy(portletAction.getPortlet(), newPortlet, new String[] {
-//				"id", "code" });
-//		portletAction.getPortlet().setName("copy_" + newPortlet.getName());
-//		portletAction.save();
-//		Long portlet2Id = portletAction.getPortlet().getId();
-//		assertNotNull(portlet2Id);
-//
-//		portletAction.save(); // update
-//
-//		for (int i = 0; i < 5; i++) {
-//			portletAction.setId(portlet1Id);
-//			portletAction.setDisabled(PortalConstants.TRUE);
-//			portletAction.disable();
-//			portletAction.setDisabled(PortalConstants.FALSE);
-//			portletAction.disable();
-//		}
-//
-//		portletAction.setId(portlet1Id);
-//		portletAction.setTargetId(portlet2Id);
-//		portletAction.setDirection(1);
-//		portletAction.sort();
-//
-//		portletAction.setId(portlet2Id);
-//		portletAction.copy();
-//
-//		portletAction.getAllPortlet4Tree();
-//		portletAction.getAllStartPortlet4Tree();
-//
-//		portletAction.setId(portlet1Id);
-//		portletAction.getDefaultParams4Xml();
-//
-//		componentAction.setId(portlet1Id);
-//		componentAction.setConfigXML("");
-//		componentAction.setType(Element.PORTLET_TYPE);
-//		componentAction.saveElementParamsConfig();
-//
-//		portletAction.setId(portlet2Id);
-//		portletAction.delete();
-//
-//		componentAction.setId(group.getId());
-//		componentAction.delete();
-//
-//		assertTrue(TestUtil.printLogs(logService) > 0);
-//	}
+    public void testPortletFunctions() {
+        Component group1 = new Component();
+        group1.setName("测试portlet组1");
+        group1.setIsGroup(true);
+        group1.setType(Component.PORTLET_TYPE);
+        group1.setParentId(PortalConstants.ROOT_ID);   
+        componentAction.save(group1);
+        
+        Long groupId = group1.getId();
+        
+        String file = URLUtil.getResourceFileUrl("testdata/DemoPortlet.zip").getPath();
+        componentAction.importComponent(groupId, new File(file));
+        
+        List<?> list = componentService.getEnabledComponentsAndGroups(Component.PORTLET_TYPE);
+        assertTrue(list.size() >= 2);
+        Component portlet1 = (Component) list.get(list.size() - 1);
+        Long id = portlet1.getId();
+        
+        componentAction.getDefaultParams4Xml(id);
+        componentAction.saveElementParamsConfig(id, "");
+    }
+
 }
 

@@ -114,8 +114,10 @@ public class FileHelper {
 	 *            目标文件
 	 */
 	public static void writeXMLDoc(Document doc, String dirFile) {
-		// pass: FileWriter和FileOutputStream区别：前者会改变文件编码格式，后者不会。
-		// 另外可通过format.setEncoding("UTF-8")方式来设置XMLWriter的输出编码方式。
+		/*
+		 * pass: FileWriter和FileOutputStream区别：前者会改变文件编码格式，后者不会。
+		 *  另外可通过format.setEncoding("UTF-8")方式来设置XMLWriter的输出编码方式。
+		 */ 
 		XMLWriter writer = null;
 		try {
 		    OutputFormat format = OutputFormat.createPrettyPrint();

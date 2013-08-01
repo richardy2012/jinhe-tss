@@ -55,7 +55,6 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
 	@Column(nullable = false)
     private Long parentId; // 父节点编号
 	
-	@Column(nullable = false)
 	private Long portalId; // 门户根节点ID，如果是根节点自身，则和id值一致
     
     /**
@@ -225,11 +224,11 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
             map.put("currentTheme.id", currentTheme.getId());
             map.put("currentTheme.name", currentTheme.getName());
         }
-        if(theme != null) {
+        if(definer != null) {
             map.put("definer.id", definer.getId());
             map.put("definer.name", definer.getName());
         }
-        if(theme != null) {
+        if(decorator != null) {
             map.put("decorator.id", decorator.getId());
             map.put("decorator.name", decorator.getName());
         }

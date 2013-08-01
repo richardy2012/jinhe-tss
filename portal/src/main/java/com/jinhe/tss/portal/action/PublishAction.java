@@ -4,6 +4,8 @@ import java.util.Iterator;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.component.progress.FeedbackProgressable;
@@ -20,6 +22,8 @@ import com.jinhe.tss.util.XMLDocUtil;
 /** 
  * 门户静态发布
  */
+@Controller
+@RequestMapping("/publish")
 public class PublishAction extends ProgressActionSupport {
  
     /**

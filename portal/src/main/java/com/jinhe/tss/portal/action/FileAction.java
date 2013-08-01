@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
@@ -19,6 +22,8 @@ import com.jinhe.tss.util.URLUtil;
 /**
  * 管理门户、页面、布局器、修饰器、布局器等的附件资源。
  */
+@Controller
+@RequestMapping("/portal/file")
 public class FileAction extends BaseActionSupport {
  
     /**
@@ -57,7 +62,7 @@ public class FileAction extends BaseActionSupport {
             if( "site".equalsIgnoreCase(type) ) { // 门户结构
                 baseDir = portalRootDir;        
             }
-            else if(Arrays.asList(Component.ELEMENTS).contains(type)) { // 门户元素
+            else if(Arrays.asList(Component.TYPE_NAMES).contains(type)) { // 门户元素
                 String elementPath = URLUtil.getWebFileUrl(PortalConstants.MODEL_DIR + type).getPath();
                 baseDir = new File(elementPath + "/" + code + id); 
             }

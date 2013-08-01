@@ -47,7 +47,7 @@ public class PortalDao extends TreeSupportDao<Structure> implements IPortalDao {
         String[] hqls = new String[3];        
         hqls[0] = "from Component o where o.id in (select distinct ti.decorator.id from Structure p, ThemeInfo ti where p.portalId=? and p.id=ti.id.structureId and ti.id.themeId = ? and p.type<>0 and p.disabled<>1) or o.isDefault = 1 ";
         hqls[1] = "from Component o where o.id in (select distinct ti.layout.id    from Structure p, ThemeInfo ti where p.portalId=? and p.id=ti.id.structureId and ti.id.themeId = ? and p.type<>3 and p.disabled<>1) or o.isDefault = 1 ";
-        hqls[2] = "from Component o where o.id in (select distinct t.id from Structure p, Portlet t where p.definerId=t.id and p.type=3 and p.portalId=? and p.disabled<>1)";
+        hqls[2] = "from Component o where o.id in (select distinct t.id from Structure p, Component t where p.definer.id=t.id and p.type=3 and p.portalId=? and p.disabled<>1)";
         
         Object[] returnVal = new Object[3];   
         returnVal[0] = getEntities(hqls[0], portalId, currentThemeId); 

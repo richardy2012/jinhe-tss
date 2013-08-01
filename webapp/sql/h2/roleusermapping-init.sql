@@ -1,6 +1,6 @@
-drop table um_roleusermappingcascade constraints;
+drop table um_roleusermapping;
 create table um_roleusermapping(roleId number(19,0) not null, userId number(19,0) not null, primary key (roleId, userId));
 
--- ½«ÄäÃû½ÇÉ«ĞÅÏ¢²åÈë£¬·ñÔòÄäÃû·ÃÎÊµÄÊ±ºòÄäÃûÓÃ»§Ã»ÓĞÄäÃû½ÇÉ«µÄÈ¨ÏŞ£¬ÒòÎªÄäÃû·ÃÎÊ²»»á×Ô¶¯²åÈë½ÇÉ«
+-- å°†åŒ¿åè§’è‰²ä¿¡æ¯æ’å…¥ï¼Œå¦åˆ™åŒ¿åè®¿é—®çš„æ—¶å€™åŒ¿åç”¨æˆ·æ²¡æœ‰åŒ¿åè§’è‰²çš„æƒé™ï¼Œå› ä¸ºåŒ¿åè®¿é—®ä¸ä¼šè‡ªåŠ¨æ’å…¥è§’è‰²
 insert into um_roleusermapping(ROLEID, USERID) values (-10000, -10000);
 commit;
