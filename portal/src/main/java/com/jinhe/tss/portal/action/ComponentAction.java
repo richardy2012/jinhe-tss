@@ -215,7 +215,7 @@ public class ComponentAction extends FreeMarkerSupportAction {
     /**
      * 导出组件
      */
-    public void getExportComponent(Long id) {   
+    public void exportComponent(Long id) {   
         Component component = service.getComponent(id);
         String desDir = URLUtil.getWebFileUrl(component.getResourceBaseDir()).getPath(); 
         
@@ -228,6 +228,7 @@ public class ComponentAction extends FreeMarkerSupportAction {
         	Map<String, Object> map = new HashMap<String, Object>();
         	map.put("parentId", parentId);
         	map.put("type", type);
+        	map.put("isGroup", true);
             encoder = new XFormEncoder(PortalConstants.GROUP_XFORM_TEMPLET_PATH, map);           
         }
         else {
