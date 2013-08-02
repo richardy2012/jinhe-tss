@@ -17,8 +17,7 @@
 
 	function turn2IFrame(ahref) {
 		if (ahref != "#") {
-			var iframeSrc = $("iframeSrc");
-			iframeSrc.setAttribute("src", ahref);
+			$$("iframeSrc").setAttribute("src", ahref);
 		}
     }
 //-->
@@ -38,10 +37,10 @@
 				<nobr>
 					<a href="#" onclick="turn2IFrame('um/message.htm')">站内消息</a> 
 				  | <a href="#" onclick="window.open('userInfo.htm','','width=550,height=400');">【<span id="userInfo"></span>】个人信息</a> 
-				  | <a href="#" onclick="turn2IFrame('framework/module/log/log.htm')">日志</a> 
+				  | <a href="#" onclick="turn2IFrame('framework/module/log/log.htm')">日志查询</a> 
 				  | <a href="#" onclick="turn2IFrame('framework/module/param/param.htm')">系统参数</a> 
-				  | <a href="#" onclick="turn2IFrame('framework/module/cache/cache.htm')">缓存</a> 
-				  | <a href="#" onclick="logout()">注销</a>
+				  | <a href="#" onclick="turn2IFrame('framework/module/cache/cache.htm')">缓存管理</a> 
+				  | <a href="#" onclick="logout()"> 注销 </a>
 			    </nobr>
 			 </td>
 		  </tr>

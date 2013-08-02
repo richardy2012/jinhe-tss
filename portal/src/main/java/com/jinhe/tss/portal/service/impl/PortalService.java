@@ -32,7 +32,7 @@ import com.jinhe.tss.portal.entity.ThemePersonal;
 import com.jinhe.tss.portal.entity.ThemeInfo.ThemeInfoId;
 import com.jinhe.tss.portal.helper.ComponentHelper;
 import com.jinhe.tss.portal.service.IPortalService;
-import com.jinhe.tss.portal.sso.Filter3PortalPermission;
+import com.jinhe.tss.portal.sso.Filter8PortalPermission;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.XMLDocUtil;
@@ -563,8 +563,8 @@ public class PortalService implements IPortalService {
 
     public IssueInfo saveIssue(IssueInfo issueInfo) {
         String visitUrl = issueInfo.getVisitUrl();
-        if( !visitUrl.endsWith(Filter3PortalPermission.PORTAL_REDIRECT_URL_SUFFIX) ){
-            visitUrl += Filter3PortalPermission.PORTAL_REDIRECT_URL_SUFFIX;
+        if( !visitUrl.endsWith(Filter8PortalPermission.PORTAL_REDIRECT_URL_SUFFIX) ){
+            visitUrl += Filter8PortalPermission.PORTAL_REDIRECT_URL_SUFFIX;
             issueInfo.setVisitUrl(visitUrl);
         }
         

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,21 +35,21 @@ public class GroupAction extends ProgressActionSupport {
 
 	@Autowired private IGroupService service;
 
-	@RequestMapping("/all")
-	public void getAllGroup2Tree() {
-		Object groups = service.findGroups();
+	@RequestMapping("/list")
+	public void getAllGroup2Tree(HttpServletResponse response) {
+		List<?> groups = service.findGroups();
 		TreeEncoder treeEncoder = new TreeEncoder(groups, new GroupTreeParser());
         treeEncoder.setNeedRootNode(false);
 		
         print("GroupTree", treeEncoder);
 	}
 
-	@RequestMapping("/parents/{groupType}/{type}")
-    public void getCanAddedGroup2Tree(int groupType) {
+	@RequestMapping("/list/{type}/")
+    public void getCanAddedGroup2Tree(HttpServletResponse response, @PathVariable("type") int type) {
         String operationId = UMConstants.GROUP_EDIT_OPERRATION;
         
         TreeEncoder treeEncoder;
-        if ( Group.MAIN_GROUP_TYPE.equals(groupType) ) {
+        if ( Group.MAIN_GROUP_TYPE.equals(type) ) {
         	// 用户可能只对某些子组有权限，需要把这些子组的父节点也找出来，以组成一棵完成的组织结构树
         	Object[] objs = service.getMainGroupsByOperationId(operationId); 
             treeEncoder = new TreeEncoder(objs[1], new LevelTreeParser());
@@ -62,12 +64,12 @@ public class GroupAction extends ProgressActionSupport {
                 }
             });
         }
-        else if (Group.ASSISTANT_GROUP_TYPE.equals(groupType)) { // 辅助用户组
+        else if (Group.ASSISTANT_GROUP_TYPE.equals(type)) { // 辅助用户组
         	Object[] objs = service.getAssistGroupsByOperationId(operationId);
             treeEncoder = new TreeEncoder(objs[1], new LevelTreeParser());
         }
         else {
-            throw new BusinessException("参数groupType值有误！groupType=" + groupType);
+            throw new BusinessException("参数groupType值有误！groupType=" + type);
         }
         
         treeEncoder.setNeedRootNode(false);

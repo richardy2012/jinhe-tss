@@ -26,7 +26,6 @@ import com.jinhe.tss.util.EasyUtils;
 public class ParamAction extends BaseActionSupport {
 
 	@Autowired private ParamService paramService;
-	
     
 	/** 树型展示所有已配置参数 */
 	@RequestMapping("/list")

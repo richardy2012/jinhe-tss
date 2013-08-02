@@ -33,7 +33,7 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_INIT = "ums/group!getAllGroup2Tree.action";
+    URL_INIT = "/" + CONTEXTPATH + "group/list";
     URL_USER_LIST = "ums/user!getUsersByGroupId.action";
     URL_USER_DETAIL = "ums/user!getUserInfoAndRelation.action";
     URL_GROUP_DETAIL = "ums/group!getGroupInfoAndRelation.action";
@@ -253,12 +253,8 @@
         gridObj.contextmenu = menu1;
     }
  
-    function loadInitData(){
-        var p = new HttpRequestParams();
-        p.url = URL_INIT;
-
-        var request = new HttpRequest(p);
-        request.onresult = function(){
+    function loadInitData() {
+        var onresult = function(){
             var groupTreeNode = this.getNodeValue(XML_MAIN_TREE);
 			Cache.XmlDatas.add(CACHE_MAIN_TREE, groupTreeNode);
             $T("tree", groupTreeNode);
@@ -293,7 +289,8 @@
 				});
             }
         }
-        request.send();
+        
+		Ajax({url : URL_INIT, method : "GET", onresult : onresult});
     }
  
 	function sort(eventObj) {

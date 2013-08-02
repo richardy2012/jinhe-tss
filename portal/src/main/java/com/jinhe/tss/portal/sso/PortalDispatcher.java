@@ -44,7 +44,7 @@ public class PortalDispatcher extends HttpServlet {
             HttpServletResponse res = (HttpServletResponse)response;
             ServletContext servletContext = req.getSession().getServletContext();
             
-            IssueInfo issueInfo = (IssueInfo) req.getAttribute(Filter3PortalPermission.PORTAL_ISSUE_INFO);
+            IssueInfo issueInfo = (IssueInfo) req.getAttribute(Filter8PortalPermission.PORTAL_ISSUE_INFO);
             if (issueInfo == null) {
                 return;
             }
