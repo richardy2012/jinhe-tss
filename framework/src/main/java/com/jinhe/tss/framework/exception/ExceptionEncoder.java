@@ -43,7 +43,7 @@ public class ExceptionEncoder {
             
             if(be instanceof IBusinessException){
                 IBusinessException e = (IBusinessException) be;
-                if(e.getRelogin() == 0){ // 如果是提示登录相关的异常（getRelogin = 1 or 2），不需要在控制台打印出来。
+                if(e.getRelogin() == 0) { // 如果是提示登录相关的异常（getRelogin = 1 or 2），不需要在控制台打印出来。
                     printErrorMessage(be);
                     //输出调试信息
                     log.debug("-----------------------  Exception  -----------------------");

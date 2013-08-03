@@ -32,7 +32,7 @@ import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
 
 @Controller
-@RequestMapping("/user") 
+@RequestMapping("/auth/user") 
 public class UserAction extends BaseActionSupport {
 
 	@Autowired private IUserService userService;
@@ -210,7 +210,7 @@ public class UserAction extends BaseActionSupport {
     /**
      * 获取当前在线用户信息
      */
-    @RequestMapping("/operator")
+    @RequestMapping("/operatorInfo")
     public void getOperatorInfo() {
         XmlHttpEncoder encoder = new XmlHttpEncoder();
         encoder.put("id", Environment.getOperatorId());

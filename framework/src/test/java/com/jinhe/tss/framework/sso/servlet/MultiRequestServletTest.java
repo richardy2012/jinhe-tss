@@ -27,7 +27,7 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHandler;
 
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.web.servlet.MultiRequestServlet;
+import com.jinhe.tss.framework.web.servlet.Servlet3MultiRequest;
 import com.jinhe.tss.util.XMLDocUtil;
 
 
@@ -56,7 +56,7 @@ public class MultiRequestServletTest extends TestCase {
         Context context = new Context(server, "/tss", Context.SESSIONS);
         
         ServletHandler handler = new ServletHandler();
-        handler.addServletWithMapping(MultiRequestServlet.class, "/multi"); 
+        handler.addServletWithMapping(Servlet3MultiRequest.class, "/multi"); 
         handler.addServletWithMapping(SimpleRequestServlet.class, "/simple/*"); 
         
         HandlerList handlers = new HandlerList();
@@ -87,7 +87,7 @@ public class MultiRequestServletTest extends TestCase {
     }
 
     /**
-     * Test method for {@link com.jinhe.tss.core.web.servlet.MultiRequestServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
+     * Test method for {@link com.jinhe.tss.core.web.servlet.Servlet3MultiRequest#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
      */
     public final void testDoPost() throws ServletException, IOException {
         HttpClient client = new HttpClient();

@@ -33,7 +33,7 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_INIT = "/" + CONTEXTPATH + "group/list";
+    URL_INIT = "/" + AUTH_PATH + "group/list";
     URL_USER_LIST = "ums/user!getUsersByGroupId.action";
     URL_USER_DETAIL = "ums/user!getUserInfoAndRelation.action";
     URL_GROUP_DETAIL = "ums/group!getGroupInfoAndRelation.action";

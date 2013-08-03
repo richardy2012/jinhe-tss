@@ -28,9 +28,9 @@ import com.jinhe.tss.framework.web.filter.Filter5HttpProxy;
 import com.jinhe.tss.framework.web.filter.Filter1Encoding;
 import com.jinhe.tss.framework.web.filter.Filter6XmlHttpDecode;
 import com.jinhe.tss.framework.web.listener.SessionDestroyedListener;
-import com.jinhe.tss.framework.web.servlet.EmptyServlet;
-import com.jinhe.tss.framework.web.servlet.LoginServlet;
-import com.jinhe.tss.framework.web.servlet.LogoutServlet;
+import com.jinhe.tss.framework.web.servlet.Servlet8Empty;
+import com.jinhe.tss.framework.web.servlet.Servlet1Login;
+import com.jinhe.tss.framework.web.servlet.Servlet2Logout;
 
 /**
  * <p>
@@ -65,11 +65,11 @@ public class SSOIntegrateTest extends TestCase {
         
         context.getSessionHandler().addEventListener(new SessionDestroyedListener());
         
-        context.addServlet(LoginServlet.class, "/login.do"); 
-        context.addServlet(LogoutServlet.class, "/logout.do"); 
+        context.addServlet(Servlet1Login.class, "/login.do"); 
+        context.addServlet(Servlet2Logout.class, "/logout.do"); 
         context.addServlet(JustRedirectServlet.class, "/rd.do"); 
         context.addServlet(SimpleRequestServlet.class, "/simple.do"); 
-        context.addServlet(EmptyServlet.class, "/*"); // 对应的servlet类，/* 表示任意的url都可以触发
+        context.addServlet(Servlet8Empty.class, "/*"); // 对应的servlet类，/* 表示任意的url都可以触发
         
         server.start();
         return server;

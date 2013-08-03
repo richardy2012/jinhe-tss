@@ -35,15 +35,15 @@
     /* 
 	 * XMLHTTP请求地址汇总 
 	 */
-	URL_INIT          = "/" + CONTEXTPATH + "param/list";
-    URL_PARAM_DETAIL  = "/" + CONTEXTPATH + "param/detail";
-	URL_SAVE_PARAM    = "/" + CONTEXTPATH + "param";
-    URL_PARAM_DELETE  = "/" + CONTEXTPATH + "param/";
-	URL_FLUSH_CACHE   = "/" + CONTEXTPATH + "param/cache/";
-    URL_PARAM_DISABLE = "/" + CONTEXTPATH + "param/disable/";
-    URL_SORT_PARAM    = "/" + CONTEXTPATH + "param/sort/";
-    URL_COPY_PARAM    = "/" + CONTEXTPATH + "param/copy/";
-    URL_MOVE_PARAM_TO = "/" + CONTEXTPATH + "param/move/";
+	URL_INIT          = "/" + AUTH_PATH + "param/list";
+    URL_PARAM_DETAIL  = "/" + AUTH_PATH + "param/detail";
+	URL_SAVE_PARAM    = "/" + AUTH_PATH + "param";
+    URL_PARAM_DELETE  = "/" + AUTH_PATH + "param/";
+	URL_FLUSH_CACHE   = "/" + AUTH_PATH + "param/cache/";
+    URL_PARAM_DISABLE = "/" + AUTH_PATH + "param/disable/";
+    URL_SORT_PARAM    = "/" + AUTH_PATH + "param/sort/";
+    URL_COPY_PARAM    = "/" + AUTH_PATH + "param/copy/";
+    URL_MOVE_PARAM_TO = "/" + AUTH_PATH + "param/move/";
 	
 	if(IS_TEST) {
 		URL_INIT = "data/param_init.xml?";

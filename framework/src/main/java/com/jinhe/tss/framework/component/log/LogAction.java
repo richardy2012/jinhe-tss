@@ -16,7 +16,7 @@ import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 
 @Controller
-@RequestMapping("/log")
+@RequestMapping("/auth/log")
 public class LogAction extends BaseActionSupport {
 
     /** 日志展示模板路径 */

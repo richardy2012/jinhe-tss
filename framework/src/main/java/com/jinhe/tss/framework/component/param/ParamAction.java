@@ -22,7 +22,7 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.util.EasyUtils;
  
 @Controller
-@RequestMapping("/param")
+@RequestMapping("/auth/param")
 public class ParamAction extends BaseActionSupport {
 
 	@Autowired private ParamService paramService;

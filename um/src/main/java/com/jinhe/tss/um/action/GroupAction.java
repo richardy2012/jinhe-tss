@@ -30,7 +30,7 @@ import com.jinhe.tss.um.syncdata.ISyncService;
 import com.jinhe.tss.util.EasyUtils;
  
 @Controller
-@RequestMapping("/group")
+@RequestMapping("/auth/group")
 public class GroupAction extends ProgressActionSupport {
 
 	@Autowired private IGroupService service;

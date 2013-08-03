@@ -6,6 +6,7 @@ IS_TEST = false;
 APP_CODE    = "TSS";
 APPLICATION = APP_CODE.toLowerCase();
 CONTEXTPATH = APPLICATION + "/";
+AUTH_PATH = CONTEXTPATH + "auth/"
 
 if( IS_TEST ) {
 	URL_CORE = "../framework/";
@@ -58,10 +59,10 @@ document.oncontextmenu = function(eventObj) {
  *	用户信息初始化
  */
 function initUserInfo() {
-	if( true ) return;
+	if( IS_TEST ) return;
 
 	Ajax({
-		url : "um/user!getOperatorInfo.action",
+		url : "auth/user/operatorInfo",
 		method : "POST",
 		headers : {"appCode": APP_CODE},
 		contents : {"anonymous": "true"}, 

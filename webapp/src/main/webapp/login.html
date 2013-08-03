@@ -27,7 +27,7 @@ URL_CORE = "framework/"
 	CACHE_LOGIN_FORM = "login__id";
 
     /* XMLHTTP请求地址汇总 */
-	URL_GET_USER_NAME = "getOperatorInfoByLoginName.in";
+	URL_GET_USER_NAME = "getLoginInfo.in";
     URL_LOGIN = "login.do";
 
 	if( IS_TEST ) {
@@ -146,7 +146,7 @@ URL_CORE = "framework/"
         if( 13 == event.keyCode ){
             event.returnValue = false;
 
-            var btLogin = $("btLogin");
+            var btLogin = $$("btLogin");
             btLogin.focus();
 
             setTimeout(function() {
