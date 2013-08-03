@@ -79,7 +79,7 @@ public class GroupAction extends ProgressActionSupport {
 	/**
 	 * 得到操作权限
 	 */
-	public void getOperation(Integer groupType, Long resourceId) {
+	public void getOperation(HttpServletResponse response, Integer groupType, Long resourceId) {
 		// 自注册用户组类型:没有任何菜单
         if (UMConstants.SELF_REGISTER_GROUP_ID.equals(resourceId) || UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN.equals(resourceId)) {
         	return; 
@@ -96,7 +96,7 @@ public class GroupAction extends ProgressActionSupport {
 	 * 根据用户组id查找用户列表
 	 */
 	@RequestMapping(value = "/users/{groupId}")
-	public void getUserByGroupId(@PathVariable("groupId") Long groupId) {
+	public void getUserByGroupId(HttpServletResponse response, @PathVariable("groupId") Long groupId) {
 		List<?> list = service.findUsersByGroupId(groupId);
 		print("Group2UserListTree", new TreeEncoder(list));
 	}
@@ -104,7 +104,9 @@ public class GroupAction extends ProgressActionSupport {
 	/**
 	 * 获取一个Group对象的明细信息、用户组对用户信息、用户组对角色的信息
 	 */
-	public void getGroupInfo(Long parentId, Long groupId, int groupType) {
+	public void getGroupInfo(HttpServletResponse response, 
+			Long parentId, Long groupId, int groupType) {
+		
         Map<String, Object> groupAttributes;
 		boolean isNew = UMConstants.IS_NEW.equals(groupId);
         if(isNew) {
@@ -144,9 +146,11 @@ public class GroupAction extends ProgressActionSupport {
     /**
      * 编辑一个Group对象的明细信息、用户组对用户信息、用户组对角色的信息
      */
-    public void editGroup(Group group, String group2UserExistTree, String group2RoleExistTree) {
+    public void editGroup(HttpServletResponse response, 
+    		Group group, String group2UserExistTree, String group2RoleExistTree) {
+    	
         boolean isNew = group.getId() == null;
-        if (group.getId() == null) { // 新建
+        if ( isNew ) { // 新建
             service.createNewGroup(group, group2UserExistTree, group2RoleExistTree);
         } else {// 编辑
             service.editExistGroup(group, group2UserExistTree, group2RoleExistTree);
@@ -158,7 +162,7 @@ public class GroupAction extends ProgressActionSupport {
      * 启用或者停用用户组
      */
     @RequestMapping(value = "/disable/{id}/{disabled}")
-    public void startOrStopGroup(Long id, int disabled) {  
+    public void startOrStopGroup(HttpServletResponse response, Long id, int disabled) {  
         service.startOrStopGroup(id, disabled);
         printSuccessMessage();
     }
@@ -167,7 +171,7 @@ public class GroupAction extends ProgressActionSupport {
      * 删除用户组
      */
     @RequestMapping(value = "/{groupId}/", method = RequestMethod.DELETE)
-    public void deleteGroup(Long groupId) {
+    public void deleteGroup(HttpServletResponse response, Long groupId) {
         service.deleteGroup(groupId);     
         printSuccessMessage();
     }
@@ -176,7 +180,7 @@ public class GroupAction extends ProgressActionSupport {
      * 用户组的排序
      */
     @RequestMapping(value = "/sort/{groupId}/{targetId}/{direction}")
-    public void sortGroup(Long groupId, Long targetId, int direction) {
+    public void sortGroup(HttpServletResponse response, Long groupId, Long targetId, int direction) {
         service.sortGroup(groupId, targetId, direction);
         printSuccessMessage();
     }  
@@ -185,7 +189,7 @@ public class GroupAction extends ProgressActionSupport {
     @Autowired private ISyncService  syncService;
     
     @RequestMapping("/{groupId}")
-    public void syncData(String applicationId, Long groupId, int mode) {
+    public void syncData(HttpServletResponse response, String applicationId, Long groupId, int mode) {
         Group group = service.getGroupById(groupId);
         String dbGroupId = group.getDbGroupId();
         if ( EasyUtils.isNullOrEmpty(dbGroupId) ) {

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,7 +45,7 @@ public class RoleAction extends BaseActionSupport {
      * 获取所有的角色（不包系统级的角色）
      */
 	@RequestMapping("/")
-    public void getAllRole2Tree() {
+    public void getAllRole2Tree(HttpServletResponse response) {
         List<?> roles = roleService.getAllVisiableRole();
         TreeEncoder treeEncoder = new TreeEncoder(roles, new LevelTreeParser());
         treeEncoder.setNeedRootNode(false);
@@ -54,7 +56,7 @@ public class RoleAction extends BaseActionSupport {
 	 * 获取用户可见的角色组
 	 */
 	@RequestMapping("/groups")
-	public void getAllRoleGroup2Tree(){
+	public void getAllRoleGroup2Tree(HttpServletResponse response) {
 	    List<?> canAddGroups = roleService.getAddableRoleGroups();
 		TreeEncoder treeEncoder = new TreeEncoder(canAddGroups, new LevelTreeParser());
 		treeEncoder.setNeedRootNode(false);
@@ -65,7 +67,7 @@ public class RoleAction extends BaseActionSupport {
      * 保存一个Role对象的明细信息、角色对用户信息、角色对用户组的信息
      */
 	@RequestMapping(method = RequestMethod.POST)
-    public void saveRole(Role role, String role2UserIds, String role2GroupIds) {
+    public void saveRole(HttpServletResponse response, Role role, String role2UserIds, String role2GroupIds) {
         boolean isNew = (role.getId() == null);
 
         if(UMConstants.TRUE.equals(role.getIsGroup())) {
@@ -82,7 +84,7 @@ public class RoleAction extends BaseActionSupport {
      * 获得角色组信息
      */
 	@RequestMapping("/group/{id}/{parentId}")
-    public void getRoleGroupInfo(@PathVariable("id") Long id, @PathVariable("parentId") Long parentId) {
+    public void getRoleGroupInfo(HttpServletResponse response, @PathVariable("id") Long id, @PathVariable("parentId") Long parentId) {
         XFormEncoder xFormEncoder;
         if (UMConstants.IS_NEW.equals(id)) { // 如果是新增，则返回一个空的无数据的模板
             Map<String, Object> map = new HashMap<String, Object>();
@@ -101,7 +103,7 @@ public class RoleAction extends BaseActionSupport {
      * 获取一个Role（角色）对象的明细信息、角色对用户组信息、角色对用户信息
      */
 	@RequestMapping("/{id}/{parentId}")
-    public void getRoleInfo(@PathVariable("id") Long id, @PathVariable("parentId") Long parentId) {        
+    public void getRoleInfo(HttpServletResponse response, @PathVariable("id") Long id, @PathVariable("parentId") Long parentId) {        
         if ( UMConstants.IS_NEW.equals(id) ) { // 新建角色
             getNewRoleInfo(parentId);
         } 
@@ -166,7 +168,7 @@ public class RoleAction extends BaseActionSupport {
 	 * 删除角色
 	 */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable("id") Long id) {
+	public void delete(HttpServletResponse response, @PathVariable("id") Long id) {
 		roleService.delete(id);
 		printSuccessMessage();
 	}
@@ -175,7 +177,7 @@ public class RoleAction extends BaseActionSupport {
 	 * 停用/启用角色
 	 */
     @RequestMapping(value = "/disable/{id}/{state}")
-	public void disable(@PathVariable("id") Long id, @PathVariable("state") int state) {
+	public void disable(HttpServletResponse response, @PathVariable("id") Long id, @PathVariable("state") int state) {
 		roleService.disable(id, state);
         printSuccessMessage();
 	}
@@ -184,13 +186,13 @@ public class RoleAction extends BaseActionSupport {
 	 * 移动
 	 */
     @RequestMapping(value = "/move/{id}/{toGroupId}", method = RequestMethod.POST)
-	public void move(@PathVariable("id") Long id, @PathVariable("toGroupId") Long toGroupId) {
+	public void move(HttpServletResponse response, @PathVariable("id") Long id, @PathVariable("toGroupId") Long toGroupId) {
 		roleService.move(id, toGroupId);        
         printSuccessMessage();
 	}
 	
 	@RequestMapping("/operations/{id}")
-	public void getOperation(@PathVariable("id") Long id) {
+	public void getOperation(HttpServletResponse response, @PathVariable("id") Long id) {
 		id = (id == null) ? UMConstants.ROLE_ROOT_ID : id;
         
         // 角色（组）树上： 匿名角色节点只需一个“角色权限设置”菜单即可
@@ -207,7 +209,7 @@ public class RoleAction extends BaseActionSupport {
 	 * 查询应用系统列表，根据登录用户ID过滤。
 	 * 现在没有过滤(性能不允许),显示用户能够看到的所有应用， 没有授权权限的是不能进行授权的,所以这里不过滤没有大碍
 	 */
-	public void getApplications(Long roleId, String isRole2Resource) {
+	public void getApplications(HttpServletResponse response, Long roleId, String isRole2Resource) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("roleId", roleId);
 		map.put("isRole2Resource", isRole2Resource);
@@ -237,9 +239,9 @@ public class RoleAction extends BaseActionSupport {
 		print("ResourceType", sb);
 	}
 
-	public void initSetPermission(Long roleId, String isRole2Resource, String applicationId, String  resourceType) {
+	public void initSetPermission(HttpServletResponse response, Long roleId, String isRole2Resource, String applicationId, String  resourceType) {
 		if( isRole2Resource != null && "1".equals(isRole2Resource) ){
-			getApplications(roleId, isRole2Resource);
+			getApplications(response, roleId, isRole2Resource);
 		}
 		
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -267,7 +269,7 @@ public class RoleAction extends BaseActionSupport {
 	/**
 	 * 获取授权用的矩阵图
 	 */
-	public void getPermissionMatrix(String permissionRank, String isRole2Resource, String applicationId, String resourceType, Long roleId) {  
+	public void getPermissionMatrix(HttpServletResponse response, String permissionRank, String isRole2Resource, String applicationId, String resourceType, Long roleId) {  
 	    if( EasyUtils.isNullOrEmpty(permissionRank) ){
             throw new BusinessException("请选择授权级别");
         }
@@ -317,7 +319,7 @@ public class RoleAction extends BaseActionSupport {
 	 * permissionRank  授权级别(1:普通(10)，2/3:可授权，可授权可传递(11))
 	 * permissions   角色资源权限选项的集合, 当资源对角色授权时:  role1|2224,role2|4022
 	 */
-	public void savePermission(String permissionRank, String isRole2Resource, String applicationId, String resourceType, Long roleId, String permissions) {
+	public void savePermission(HttpServletResponse response, String permissionRank, String isRole2Resource, String applicationId, String resourceType, Long roleId, String permissions) {
 	    if( applicationId == null ) {
             applicationId = PermissionHelper.getApplicationID();
         }

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.dom4j.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,7 +43,9 @@ public class UserAction extends BaseActionSupport {
      * 获取一个User（用户）对象的明细信息、用户对用户组信息、用户对角色的信息
      */
 	@RequestMapping("/{groupId}/{userId}")
-    public void getUserInfoAndRelation(@PathVariable("userId") Long userId, @PathVariable("groupId") Long groupId) {
+    public void getUserInfoAndRelation(HttpServletResponse response, 
+    		@PathVariable("userId") Long userId, @PathVariable("groupId") Long groupId) {
+		
         TreeEncoder existRoleTree = new TreeEncoder(null);
         Map<String, Object> data;
         Map<String, Object> map = new HashMap<String, Object>(); 
@@ -77,7 +81,7 @@ public class UserAction extends BaseActionSupport {
 	 * 认证方式
 	 */
 	@RequestMapping("/auth/{groupId}")
-	public void initAuthenticateMethod(@PathVariable("groupId") Long groupId) {
+	public void initAuthenticateMethod(HttpServletResponse response, @PathVariable("groupId") Long groupId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("groupId", groupId);
 		XFormEncoder authXFormEncoder = new XFormEncoder(UMConstants.AUTH_METHOD_XFORM, map);
@@ -85,7 +89,9 @@ public class UserAction extends BaseActionSupport {
 	}
 	
 	@RequestMapping("/auth/unite/{groupId}/{authenticateMethod}")
-	public void uniteAuthenticateMethod(@PathVariable("groupId") Long groupId, @PathVariable("authMethod") String authMethod) {
+	public void uniteAuthenticateMethod(HttpServletResponse response, 
+			@PathVariable("groupId") Long groupId, @PathVariable("authMethod") String authMethod) {
+		
 		userService.uniteAuthenticateMethod(groupId, authMethod);
         printSuccessMessage();
 	}
@@ -94,7 +100,7 @@ public class UserAction extends BaseActionSupport {
 	 * 新增或修改一个User对象的明细信息、用户对用户组信息、用户对角色的信息
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public void saveUser(User user, String user2GroupExistTree, String user2RoleExistTree) {
+	public void saveUser(HttpServletResponse response, User user, String user2GroupExistTree, String user2RoleExistTree) {
 		userService.createOrUpdateUser(user, user2GroupExistTree, user2RoleExistTree);
         printSuccessMessage();
 	}
@@ -103,7 +109,7 @@ public class UserAction extends BaseActionSupport {
 	 * 启用或者停用用户
 	 */
 	@RequestMapping(value = "/disable/{groupId}/{id}/{state}")
-	public void startOrStopUser(Long groupId, Long id, int state) {
+	public void startOrStopUser(HttpServletResponse response, Long groupId, Long id, int state) {
 		userService.startOrStopUser(id, state, groupId);
         printSuccessMessage();
 	}
@@ -112,7 +118,7 @@ public class UserAction extends BaseActionSupport {
 	 * 删除用户
 	 */
 	@RequestMapping(value = "/{groupId}/{userId}", method = RequestMethod.DELETE)
-	public void deleteUser(Long groupId, Long userId) {
+	public void deleteUser(HttpServletResponse response, Long groupId, Long userId) {
 		userService.deleteUser(groupId, userId);
         printSuccessMessage();
 	}
@@ -120,7 +126,7 @@ public class UserAction extends BaseActionSupport {
 	/**
 	 * 搜索用户
 	 */
-	public void searchUser(UMQueryCondition userQueryCon, String applicationId, int page) {
+	public void searchUser(HttpServletResponse response, UMQueryCondition userQueryCon, String applicationId, int page) {
         PageInfo users = userService.searchUser(userQueryCon, page);
         GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), XMLDocUtil.createDoc(UMConstants.MAIN_USER_GRID));
         print(new String[]{"SourceList", "PageList"}, new Object[]{gridEncoder, users});
@@ -129,7 +135,7 @@ public class UserAction extends BaseActionSupport {
 	/**
      * 根据用户组的id获取所在用户组的所有用户
      */
-    public void getUsersByGroupId(String applicationId, Long groupId, int page) {
+    public void getUsersByGroupId(HttpServletResponse response, String applicationId, Long groupId, int page) {
         PageInfo users = userService.getUsersByGroupId(groupId, page, " u.id asc ");
         GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), XMLDocUtil.createDoc(UMConstants.MAIN_USER_GRID));
         print(new String[]{"SourceList", "PageList"}, new Object[]{gridEncoder, users});
@@ -138,7 +144,7 @@ public class UserAction extends BaseActionSupport {
 	/**
 	 * 根据用户组的id获取所在用户组的所有用户
 	 */
-	public void getSelectedUsersByGroupId(Long groupId) {
+	public void getSelectedUsersByGroupId(HttpServletResponse response, Long groupId) {
 		List<?> users = userService.getUsersByGroup(groupId);
 		print("Group2UserListTree", new TreeEncoder(users));
 	}
@@ -147,7 +153,7 @@ public class UserAction extends BaseActionSupport {
 	 * 初始化密码
 	 */
 	@RequestMapping(value = "/initpwd/{groupId}/{userId}/{password}", method = RequestMethod.POST)
-	public void initPassword(Long groupId, Long userId, String password) {		
+	public void initPassword(HttpServletResponse response, Long groupId, Long userId, String password) {		
 		userService.initPasswordByGroupId(groupId, userId, password);
         printSuccessMessage("初始化密码成功！");
 	}
@@ -156,7 +162,7 @@ public class UserAction extends BaseActionSupport {
 	 * 用户自注册
 	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public void registerUser(User user) {
+	public void registerUser(HttpServletResponse response, User user) {
         user.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN);
 		userService.registerUser(user);
         printSuccessMessage("用户注册成功！");
@@ -166,7 +172,7 @@ public class UserAction extends BaseActionSupport {
      * 用户自己修改个人信息
      */
 	@RequestMapping(method = RequestMethod.PUT)
-    public void modifyUserSelf(User user) {
+    public void modifyUserSelf(HttpServletResponse response, User user) {
         User old = userService.getUserById(Environment.getOperatorId());
         BeanUtil.setDataToBean(old, user.getAttributesForXForm());
         userService.updateUser(old);
@@ -179,7 +185,7 @@ public class UserAction extends BaseActionSupport {
      * 用于用户修改自己的注册信息和密码时用。
 	 */
     @RequestMapping("/detail")
-	public void getUserInfo() {
+	public void getUserInfo(HttpServletResponse response) {
         // 匿名用户,返回空模版给其注册 
         if(Context.getIdentityCard().isAnonymous()) {
             print("UserInfo", new XFormEncoder(UMConstants.USER_REGISTER_XFORM, new User()));
@@ -203,7 +209,7 @@ public class UserAction extends BaseActionSupport {
      * 密码提示模板
      */
     @RequestMapping("/forgetpwd")
-    public void getForgetPasswordInfo() {
+    public void getForgetPasswordInfo(HttpServletResponse response) {
         print("ForgetInfo", new XFormEncoder(UMConstants.PASSWORD_FORGET_XFORM));
     }
     
@@ -211,7 +217,7 @@ public class UserAction extends BaseActionSupport {
      * 获取当前在线用户信息
      */
     @RequestMapping("/operatorInfo")
-    public void getOperatorInfo() {
+    public void getOperatorInfo(HttpServletResponse response) {
         XmlHttpEncoder encoder = new XmlHttpEncoder();
         encoder.put("id", Environment.getOperatorId());
         if(Context.getIdentityCard().isAnonymous()){
@@ -230,7 +236,7 @@ public class UserAction extends BaseActionSupport {
      * 读取在线用户信息
      */
     @RequestMapping("/online")
-    public void getOnlineUserInfo() {
+    public void getOnlineUserInfo(HttpServletResponse response) {
         Collection<String> list = OnlineUserManagerFactory.getManager().getOnlineUserNames();
         print(new String[] {"size", "users"},  new Object[]{list.size(), EasyUtils.list2Str(list, " | ")});
     }

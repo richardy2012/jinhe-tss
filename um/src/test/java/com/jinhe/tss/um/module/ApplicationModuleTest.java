@@ -19,14 +19,7 @@ public class ApplicationModuleTest extends TxSupportTest4UM {
     
     @Autowired ApplicationResourceAction action;
     @Autowired IApplicationService service;
-    
-    public void setUp() throws Exception {
-        super.setUp();
-        
-        // 初始化虚拟登录用户信息
-        login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
-    }
-    
+  
     public void testApplicationModule() {
         
         Application application = service.getApplication("tss");

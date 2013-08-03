@@ -2,6 +2,8 @@ package com.jinhe.tss.um.action;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,21 +31,20 @@ public class MessageAction extends BaseActionSupport {
 	
 	@Autowired private IMessageService service;
 	
-	
 	@RequestMapping(method = RequestMethod.PUT)
-	public void sendMessage(Message message) {
+	public void sendMessage(HttpServletResponse response, Message message) {
 		service.sendMessage(message);
 		printSuccessMessage("发送成功!");
 	}
 	
 	@RequestMapping("/{id}")
-	public void viewMessage(@PathVariable("id") Long id) {
+	public void viewMessage(HttpServletResponse response, @PathVariable("id") Long id) {
 		XFormEncoder messagerEncoder = new XFormEncoder(XFORM_URI, service.viewMessage(id));
 		print("MessageInfo", messagerEncoder);
 	}
 	
     @RequestMapping("/reply/{id}")
-    public void getMessage4Reply(@PathVariable("id") Long id) {
+    public void getMessage4Reply(HttpServletResponse response, @PathVariable("id") Long id) {
         Message message = service.viewMessage(id);
         Message newMessage = new Message();
         newMessage.setReceiverId(message.getSenderId());
@@ -56,32 +57,32 @@ public class MessageAction extends BaseActionSupport {
     }
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public void deleteMessage(@PathVariable("id") Long id) {
+	public void deleteMessage(HttpServletResponse response, @PathVariable("id") Long id) {
 		service.deleteMessage(id);
 		printSuccessMessage("删除成功!");
 	}
 	
-	public void getSearchUserInfo() {
+	public void getSearchUserInfo(HttpServletResponse response) {
 		GridDataEncoder encoder = new GridDataEncoder(null, USER_GRID_URI);
 		XFormTemplet template = new XFormTemplet(SEARCH_USER_URI);
 	    print(new String[]{"SearchUser", "ExistUserList"}, 
 		        new Object[]{template.getTemplet().asXML(), encoder});
 	}
 	
-	public void getGroupTree(){
+	public void getGroupTree(HttpServletResponse response) {
 		List<?> groups = service.getGroupsList();
 		TreeEncoder encoder = new TreeEncoder(groups, new LevelTreeParser());
 		encoder.setNeedRootNode(false);
 		print("GroupTree", encoder);
 	}
 	
-	public void searchUsers(UMQueryCondition condition) {
+	public void searchUsers(HttpServletResponse response, UMQueryCondition condition) {
 		List<?> users = service.getUsersByCondition(condition);
 		GridDataEncoder encoder = new GridDataEncoder(users, USER_GRID_URI);
 		print("SourceList", encoder);
 	}
 	
-	public void getMessageList(int boxType) {
+	public void getMessageList(HttpServletResponse response, int boxType) {
 		List<?> messages = null;
 		// 信箱類型，分收件箱、發件箱
 		switch (boxType) {

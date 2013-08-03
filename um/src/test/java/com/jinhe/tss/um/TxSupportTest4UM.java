@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.junit.After;
+import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit38.AbstractTransactionalJUnit38SpringContextTests;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.test.context.transaction.AfterTransaction;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.jinhe.tss.framework.Global;
@@ -29,7 +32,6 @@ import com.jinhe.tss.util.XMLDocUtil;
 /**
  * Junit Test 类里执行构造函数的时候无事务，即构造函数不在单元测试方法的事物边界内。
  */
-@SuppressWarnings("deprecation")
 @ContextConfiguration(
         locations={
           "classpath:META-INF/um-test-spring.xml",  
@@ -40,7 +42,7 @@ import com.jinhe.tss.util.XMLDocUtil;
         , inheritLocations = false // 是否要继承父测试用例类中的 Spring 配置文件，默认为 true
       )
 @TransactionConfiguration(defaultRollback = false) // 不自动回滚，否则后续的test中没有初始化的数据
-public abstract class TxSupportTest4UM extends AbstractTransactionalJUnit38SpringContextTests { 
+public abstract class TxSupportTest4UM extends AbstractTransactionalJUnit4SpringContextTests { 
  
     protected Logger log = Logger.getLogger(this.getClass());    
     
@@ -54,15 +56,18 @@ public abstract class TxSupportTest4UM extends AbstractTransactionalJUnit38Sprin
     
     @Autowired protected IH2DBServer dbserver;
     
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After
+    public void tearDown() throws Exception {
         dbserver.stopServer();
     }
  
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         Global.setContext(super.applicationContext);
         Context.setResponse(new MockHttpServletResponse());
+        
+        // 初始化虚拟登录用户信息
+        login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
         
         // DB数据在一轮跑多个单元测试中初始化一次就够了。
         if( dbserver.isPrepareed() ) {

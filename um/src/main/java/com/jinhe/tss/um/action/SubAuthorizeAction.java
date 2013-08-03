@@ -6,6 +6,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +39,7 @@ public class SubAuthorizeAction extends BaseActionSupport {
 	 * 查找策略列表
 	 */
 	@RequestMapping("/")
-	public void getSubAuthorizeStrategys2Tree() {
+	public void getSubAuthorizeStrategys2Tree(HttpServletResponse response) {
 		print("RuleTree", new TreeEncoder(service.getStrategyByCreator()));
 	}
 	
@@ -45,7 +47,7 @@ public class SubAuthorizeAction extends BaseActionSupport {
 	 * 获取一个Strategy（策略）对象的明细信息、角色对策略的信息、策略对用户的信息、策略对用户组的信息
 	 */
 	@RequestMapping("/{id}")
-	public void getSubAuthorizeStrategyInfo(Long id) {
+	public void getSubAuthorizeStrategyInfo(HttpServletResponse response, Long id) {
 		XFormEncoder ruleXFormEncoder;
         TreeEncoder ruleToGroupTree = null;
         TreeEncoder ruleToUserTree  = null;
@@ -88,7 +90,9 @@ public class SubAuthorizeAction extends BaseActionSupport {
 	 * 修改一个Strategy对象的明细信息、策略对用户信息、策略对用户组、角色对策略的信息
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public void saveSubAuthorizeInfo(SubAuthorize strategy, String rule2UserIds, String rule2GroupIds, String rule2RoleIds) {
+	public void saveSubAuthorizeInfo(HttpServletResponse response, SubAuthorize strategy, 
+			String rule2UserIds, String rule2GroupIds, String rule2RoleIds) {
+		
 		service.saveStrategy(strategy, rule2UserIds, rule2GroupIds, rule2RoleIds);
 		printSuccessMessage();
 	}
@@ -97,7 +101,7 @@ public class SubAuthorizeAction extends BaseActionSupport {
 	 * 删除策略
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable("id") Long id) {
+	public void delete(HttpServletResponse response, @PathVariable("id") Long id) {
 		service.deleteStrategy(id);
         printSuccessMessage();
 	}
@@ -106,7 +110,9 @@ public class SubAuthorizeAction extends BaseActionSupport {
 	 * 停用/启用策略
 	 */
 	@RequestMapping(value = "/disable/{id}/{disabled}")
-	public void disable(@PathVariable("id") Long id, @PathVariable("state") int state) {
+	public void disable(HttpServletResponse response, 
+			@PathVariable("id") Long id, @PathVariable("state") int state) {
+		
 		service.disable(id, state);
         printSuccessMessage();
 	}

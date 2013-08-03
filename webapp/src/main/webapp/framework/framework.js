@@ -79,7 +79,7 @@ function logout() {
 		method : "GET",
 		onsuccess : function() { 
 			Cookie.del("token", "/" + CONTEXTPATH);
-			location.href = URL_CORE + "../login.htm";
+			location.href = URL_CORE + "../login.html";
 		}
 	});
 }
@@ -809,6 +809,11 @@ function initNaviBar(curId, relativePath) {
 				var id   = menuItem.getAttribute("id");
 				var href = menuItem.getAttribute("href");
 				var name = menuItem.getAttribute("name");
+
+				if(href == null) {
+					str[str.length] = name;
+					continue;
+				}
 
 				if( false == /^javascript\:/.test(href) ) {
 					href = relativePath + href;

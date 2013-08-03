@@ -43,7 +43,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 * 获取所有的Applicaton对象并转换成Tree相应的xml数据格式
 	 */
 	@RequestMapping("/apps")
-	public void getAllApplication2Tree() {
+	public void getAllApplication2Tree(HttpServletResponse response) {
 		Object applications = applicationService.findApplicationAndResourceType();
 		TreeEncoder treeEncoder = new TreeEncoder(applications, new ApplicationTreeParser());
 		treeEncoder.setNeedRootNode(false);
@@ -69,7 +69,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 * 获取一个Application对象的明细信息
 	 */
 	@RequestMapping(value = "/application/{id}", method = RequestMethod.GET)
-	public void getApplicationInfo(Long id) {
+	public void getApplicationInfo(HttpServletResponse response, Long id) {
 		XFormEncoder xformEncoder = null;
  
         Application application = applicationService.getApplicationById(id);
@@ -85,7 +85,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 * 获取一个ResourceType对象的明细信息
 	 */
 	@RequestMapping(value = "/resource/{id}", method = RequestMethod.GET)
-	public void getResourceTypeInfo(Long id) {
+	public void getResourceTypeInfo(HttpServletResponse response, Long id) {
 		XFormEncoder resourceTypeXFormEncoder = null;
 		
 		ResourceType resourceType = applicationService.getResourceTypeById(id);
@@ -101,7 +101,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 * 获取一个Operation对象的明细信息
 	 */
 	@RequestMapping(value = "/operation/{id}", method = RequestMethod.GET)
-	public void getOperationInfo(Long operationId) {
+	public void getOperationInfo(HttpServletResponse response, Long operationId) {
 		// 编辑操作选项
 		Operation operation = applicationService.getOperationById(operationId);
 		XFormEncoder xformEncoder = new XFormEncoder(UMConstants.OPERATION_XFORM, operation);
@@ -112,7 +112,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 * 编辑一个Application对象的明细信息
 	 */
 	@RequestMapping(value = "/application", method = RequestMethod.POST)
-	public void editApplication(Application application) {
+	public void editApplication(HttpServletResponse response, Application application) {
         boolean isNew = application.getId() == null;
         applicationService.saveApplication(application);   
 		doAfterSave(isNew, application, "AppSource");
@@ -122,7 +122,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 * 编辑一个ResourceType对象的明细信息
 	 */
 	@RequestMapping(value = "/resource", method = RequestMethod.POST)
-	public void editResourceType(ResourceType resourceType) {
+	public void editResourceType(HttpServletResponse response, ResourceType resourceType) {
         boolean isNew = resourceType.getId() == null;
 		if( isNew ) { // 新建
 			applicationService.createResourceType(resourceType);			
@@ -137,7 +137,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 * 编辑一个Operation对象的明细信息
 	 */
 	@RequestMapping(value = "/operation", method = RequestMethod.POST)
-	public void editOperation(Operation operation) {
+	public void editOperation(HttpServletResponse response, Operation operation) {
         boolean isNew = operation.getId() == null;
 		if( isNew ) { // 新建，新建的权限选项要将该权限选项赋予管理员角色(id==-1)
 			applicationService.saveOperation(operation);
@@ -152,7 +152,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 * 删除应用系统
 	 */
 	@RequestMapping(value = "/application/{id}", method = RequestMethod.DELETE)
-	public void deleteApplication(@PathVariable Long id) {
+	public void deleteApplication(HttpServletResponse response, @PathVariable Long id) {
 		applicationService.removeApplication(id);
 		printSuccessMessage();
 	}
@@ -161,7 +161,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 * 删除资源类型
 	 */
 	@RequestMapping(value = "/resource/{id}", method = RequestMethod.DELETE)
-	public void deleteResourceType(@PathVariable Long id) {
+	public void deleteResourceType(HttpServletResponse response, @PathVariable Long id) {
 		applicationService.removeResourceType(id);
         printSuccessMessage();
 	}
@@ -170,25 +170,25 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 * 删除操作选项
 	 */
 	@RequestMapping(value = "/operation/{id}", method = RequestMethod.DELETE)
-	public void deleteOperation(@PathVariable Long id) {
+	public void deleteOperation(HttpServletResponse response, @PathVariable Long id) {
 		applicationService.removeOperation(id);
         printSuccessMessage();
 	}
 	
 	
-	private String applicationType;
-	
 	@Autowired private IResourceRegisterService registerService;
 	
 	// 返回一个空的无数据的模板
-	public void getImportTemplate(String applicationType) {
+	public void getImportTemplate(HttpServletResponse response, String applicationType) {
     	Map<String, Object> map = new HashMap<String, Object>();
     	map.put("applicationType", applicationType);
 		XFormEncoder encoder = new XFormEncoder(UMConstants.IMPORT_APP_XFORM, map);
 		print("ImportApplication", encoder);
 	}
 	
-	public void registerApplication(@RequestParam File file) {
+	public void registerApplication(HttpServletResponse response, 
+			String applicationType, @RequestParam File file) {
+		
 		if (null == file) {
 			throw new BusinessException("没有选择文件，请重新导入！");
 		}
