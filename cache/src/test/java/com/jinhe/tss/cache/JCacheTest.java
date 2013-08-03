@@ -1,12 +1,14 @@
 package com.jinhe.tss.cache;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-import com.jinhe.tss.cache.JCache;
+import org.junit.Test;
+
 import com.jinhe.tss.cache.extension.threadpool.IThreadPool;
 
-public class JCacheTest extends TestCase {
+public class JCacheTest {
 	
+	@Test
 	public void testInitCache() {
 		JCache cache = JCache.getInstance();
 		IThreadPool tpool = cache.getThreadPool();

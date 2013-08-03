@@ -1,7 +1,9 @@
 package com.jinhe.tss.um.module;
 
+import static org.junit.Assert.*;
 import java.util.List;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.Config;
@@ -42,10 +44,10 @@ public class GroupModuleTest extends TxSupportTest4UM {
         log.debug("\n");
     }
     
+    @Test
     public void testGroupModule() {
         _testMainGroupCRUD();
         _testAssistGroupCRUD();
-        
         _testAction();
         
         assertTrue(TestUtil.printLogs(logService) > 0);
@@ -53,7 +55,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
     
     Group mainGroup1;
     
-    public void _testMainGroupCRUD() {
+    private void _testMainGroupCRUD() {
         printGroups(4, 1);
         
         mainGroup1 = new Group();
@@ -125,7 +127,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
         log.debug("\n");
      }
     
-    public void _testAssistGroupCRUD() {
+    private void _testAssistGroupCRUD() {
         User user1 = userService.getUserByLoginName("JonKing");
         
         Group group1 = new Group();
@@ -172,32 +174,32 @@ public class GroupModuleTest extends TxSupportTest4UM {
         
     }
     
-    public void _testAction() {
-        action.getAllGroup2Tree();
+    private void _testAction() {
+        action.getAllGroup2Tree(response);
         
-        action.getCanAddedGroup2Tree(Group.MAIN_GROUP_TYPE);
-        action.getCanAddedGroup2Tree(Group.ASSISTANT_GROUP_TYPE);
+        action.getCanAddedGroup2Tree(response, Group.MAIN_GROUP_TYPE);
+        action.getCanAddedGroup2Tree(response, Group.ASSISTANT_GROUP_TYPE);
         
-        action.getOperation(Group.MAIN_GROUP_TYPE, -2L);
+        action.getOperation(response, Group.MAIN_GROUP_TYPE, -2L);
         
-        action.getUserByGroupId(UMConstants.MAIN_GROUP_ID);
+        action.getUserByGroupId(response, UMConstants.MAIN_GROUP_ID);
         
-        action.getGroupInfo(UMConstants.MAIN_GROUP_ID, UMConstants.IS_NEW, Group.MAIN_GROUP_TYPE);
-        action.getGroupInfo(UMConstants.MAIN_GROUP_ID, mainGroup1.getId(), Group.MAIN_GROUP_TYPE);
+        action.getGroupInfo(response, UMConstants.MAIN_GROUP_ID, UMConstants.DEFAULT_NEW_ID, Group.MAIN_GROUP_TYPE);
+        action.getGroupInfo(response, UMConstants.MAIN_GROUP_ID, mainGroup1.getId(), Group.MAIN_GROUP_TYPE);
         
-        action.startOrStopGroup(mainGroup1.getId(), 1);
-        action.startOrStopGroup(mainGroup1.getId(), 0);
+        action.startOrStopGroup(response, mainGroup1.getId(), 1);
+        action.startOrStopGroup(response, mainGroup1.getId(), 0);
         
-        action.sortGroup(mainGroup1.getId(), mainGroup1.getId() + 2, 1);
+        action.sortGroup(response, mainGroup1.getId(), mainGroup1.getId() + 2, 1);
         
-//        action.editGroup(mainGroup1, "", "-1");
+//        action.editGroup(response, mainGroup1, "", "-1");
         
-        action.deleteGroup(mainGroup1.getId());
+        action.deleteGroup(response, mainGroup1.getId());
         
-        action.getAllGroup2Tree();
+        action.getAllGroup2Tree(response);
         
         // 测试用户同步。TODO 进度条需要单独起线程，里面没有事务。
-//        action.syncData(applicationId, groupId, mode);
+//        action.syncData(response, applicationId, groupId, mode);
  
     }
 }

@@ -2,8 +2,8 @@ package com.jinhe.tss.cache;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.jinhe.tss.cache.extension.threadpool.IThreadPool;
 
@@ -13,7 +13,7 @@ import com.jinhe.tss.cache.extension.threadpool.IThreadPool;
  * 以及ThreadPool的机制（包括worker池和work队列）
  * 
  */
-public class PoolTest extends TestCase {
+public class PoolTest {
     
     protected Logger log = Logger.getLogger(PoolTest.class);
     
@@ -22,6 +22,7 @@ public class PoolTest extends TestCase {
     private int portNum = 28;
     Long cyclelife;
     
+    @Before
     public void setUp() {
         JCache cache = JCache.getInstance();
         
@@ -36,6 +37,7 @@ public class PoolTest extends TestCase {
         }
     }
 
+    @Test
     public void testPool() throws Exception {
         Logger.getRootLogger().setLevel(Level.DEBUG);
         

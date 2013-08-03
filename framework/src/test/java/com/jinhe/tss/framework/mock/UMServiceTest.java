@@ -1,8 +1,10 @@
 package com.jinhe.tss.framework.mock;
 
+import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.TxTestSupport;
@@ -20,6 +22,7 @@ public class UMServiceTest extends TxTestSupport {
     
     @Autowired _IUserDAO userDao;
     
+    @Test
     public void testGetEntitiesByHQL() {
         _Group group = new _Group();
         group.setCode("RD");
@@ -43,6 +46,7 @@ public class UMServiceTest extends TxTestSupport {
         log.debug(result.get(0));
     }
     
+    @Test
     public void testGetEntitiesByNativeSql() {
         _Group group = new _Group();
         group.setCode("RD");
@@ -64,6 +68,7 @@ public class UMServiceTest extends TxTestSupport {
 		log.debug(result.get(0));
     }
  
+    @Test
     public void testUMCRUD() {
         log.info("test start......");
         

@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework.component.param;
 
+import static org.junit.Assert.*;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.ResourceBundle;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.TxTestSupport;
@@ -18,6 +20,7 @@ public class ParamServiceTest extends TxTestSupport {
     @Autowired private ParamService paramService;
 
     /** 导入application.properties文件 */
+    @Test
     public void testImportApplicationProperties(){
         ResourceBundle resources = ResourceBundle.getBundle("application", Locale.getDefault());
         if (resources == null) return;
@@ -34,6 +37,7 @@ public class ParamServiceTest extends TxTestSupport {
     }
     
     /** 导入应用服务配置文件 appServers.xml */
+    @Test
     public void testImportAppServerConfig(){
         Param group = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "应用服务配置");
         
@@ -57,11 +61,11 @@ public class ParamServiceTest extends TxTestSupport {
         for(Object temp :list) {
             Param p = (Param) temp;
             log.debug(p.getAttributesForXForm());
-//            log.debug(p.getId() + p.getName() + p.getCode() + p.getText() + p.getDecode());
         }
     }
     
     /** CRUD/排序/移动/复制/停用启用等  */
+    @Test
     public void testParamFunction() {
         Param paramGroup = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组1");
         Param comboParam = addComboParam(paramGroup.getId(), "book", "可选书籍");

@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.um.TxSupportTest4UM;
@@ -36,14 +37,8 @@ public class GeneralSearchTest extends TxSupportTest4UM {
     @Autowired ISubAuthorizeService strategyService;
     @Autowired IRoleService roleService;
     @Autowired IUserService userService;
-    
-    public void setUp() throws Exception {
-        super.setUp();
-        
-        // 初始化虚拟登录用户信息
-        login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
-    }
-    
+ 
+    @Test
     public void testGeneralSearch() {
         
         String applicationId = "tss";
@@ -81,7 +76,7 @@ public class GeneralSearchTest extends TxSupportTest4UM {
         Calendar calendar = new GregorianCalendar();
         calendar.add(UMConstants.ROLE_LIFE_TYPE, UMConstants.ROLE_LIFE_TIME);
         role.setEndDate(calendar.getTime());
-        roleAction.saveRole(role, "", "");
+        roleAction.saveRole(response, role, "", "");
         Long roleId = role.getId();
         
         // 新建转授策略
@@ -91,7 +86,7 @@ public class GeneralSearchTest extends TxSupportTest4UM {
         calendar.add(UMConstants.STRATEGY_LIFE_TYPE, UMConstants.STRATEGY_LIFE_TIME);
         strategy.setEndDate(calendar.getTime());
         strategy.setName("G_转授策略一");
-        strategyAction.saveSubAuthorizeInfo(strategy, mainUser.getId() + "", mainGroup.getId() + "", roleId + "");
+        strategyAction.saveSubAuthorizeInfo(response, strategy, mainUser.getId() + "", mainGroup.getId() + "", roleId + "");
         
     	action.searchUserSubauth(mainGroup.getId());
     	

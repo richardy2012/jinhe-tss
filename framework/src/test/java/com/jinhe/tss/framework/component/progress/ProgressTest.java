@@ -1,21 +1,25 @@
 package com.jinhe.tss.framework.component.progress;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 
 /** 
  * 测试进度条
  */
-public class ProgressTest extends TestCase {
+public class ProgressTest {
     
     String code;
     long delay = 3; //每次取进度信息间隔时间 单位 s
     
+    @Before
     public void setUp() {
         ProgressManager manager = new ProgressManager(new Progressable(){
             public void execute(Map<String, Object> params, Progress progress) {
@@ -38,6 +42,7 @@ public class ProgressTest extends TestCase {
     }
     
     // 以下为不同的线程轮番请求进度信息
+    @Test
     public void testProgressInMultiThread() {
         int i = 0;
         Progress progress = (Progress)ProgressPool.getSchedule(code);
@@ -59,6 +64,7 @@ public class ProgressTest extends TestCase {
         }
     }
     
+    @Test
     public void testProgressInMultiThread2() {
         int i = 0;
         Progress progress = ProgressPool.getSchedule(code);

@@ -1,18 +1,21 @@
 package com.jinhe.tss.framework.exception;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 import com.jinhe.tss.framework.web.dispaly.ErrorMessageEncoder;
 
 /**
  * 消息处理过程单元测试
  */
-public class TestExceptionProcessor4Message extends TestCase {
+public class TestExceptionProcessor4Message {
 
     /**
      * 处理抛出异常时，消息显示问题
      */
-    public final void testThrowException4Message() {
+	@Test
+    public void testThrowException4Message() {
         BusinessException e1 = new BusinessException("test1", new Exception("test"));
         ErrorMessageEncoder encoder1 = new ErrorMessageEncoder(e1);
         assertEquals("test1", encoder1.getMessage());
@@ -32,11 +35,10 @@ public class TestExceptionProcessor4Message extends TestCase {
     }
 
     /**
-     * <p>
      * 处理抛出异常时，消息显示问题
-     * </p>
      */
-    public final void testThrowBusinessException4Message() {
+	@Test
+    public void testThrowBusinessException4Message() {
         BusinessException e = new BusinessException("test");
         ErrorMessageEncoder encoder = new ErrorMessageEncoder(e);
         assertEquals("test", encoder.getMessage());
@@ -55,11 +57,10 @@ public class TestExceptionProcessor4Message extends TestCase {
     }
 
     /**
-     * <p>
      * 处理抛出异常时，消息显示问题
-     * </p>
      */
-    public final void testThrowUserIdentificationException4Message() {
+	@Test
+    public void testThrowUserIdentificationException4Message() {
         UserIdentificationException e = new UserIdentificationException("test");
         ErrorMessageEncoder encoder = new ErrorMessageEncoder(e);
         assertEquals("test", encoder.getMessage());

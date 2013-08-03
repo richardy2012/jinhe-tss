@@ -1,9 +1,9 @@
 package com.jinhe.tss.cache;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.jinhe.tss.cache.extension.threadpool.IThreadPool;
 
@@ -12,15 +12,16 @@ import com.jinhe.tss.cache.extension.threadpool.IThreadPool;
  * 
  * 任务池的开关在缓存策略配置文件中设置，disabled（0：启用， 1：停用），比较两种状态下的性能。
  */
-public class PoolPerformanceTest extends TestCase {
+public class PoolPerformanceTest {
     
     protected Logger log = Logger.getLogger(PoolPerformanceTest.class);
     
     private Pool apool;
     private IThreadPool tpool;
-    private int portNum = 888;
+    private int portNum = 100;
     Long cyclelife;
     
+    @Before
     public void setUp() {
         JCache cache = JCache.getInstance();
         
@@ -37,6 +38,7 @@ public class PoolPerformanceTest extends TestCase {
         }
     }
 
+    @Test
     public void testPoolPerformance() throws Exception {
         Logger.getRootLogger().setLevel(Level.DEBUG);
         

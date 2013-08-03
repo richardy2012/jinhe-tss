@@ -54,7 +54,7 @@ public class SubAuthorizeAction extends BaseActionSupport {
         TreeEncoder ruleToRoleTree  = null;
 		
         Map<String, Object> data;
-		if (UMConstants.IS_NEW.equals(id)) { // 新建策略
+		if (UMConstants.DEFAULT_NEW_ID.equals(id)) { // 新建策略
             data = service.getStrategyInfo4Create();
             
 			Map<String, Object> map = new HashMap<String, Object>();

@@ -1,9 +1,12 @@
 package com.jinhe.tss.framework.component.param;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class ParamConfigTest extends TestCase {
+import org.junit.Test;
+
+public class ParamConfigTest {
 	
+	@Test
 	public void testGetAttribute() {
 		 assertEquals("TSS", ParamConfig.getAttribute("application.code"));
 	}

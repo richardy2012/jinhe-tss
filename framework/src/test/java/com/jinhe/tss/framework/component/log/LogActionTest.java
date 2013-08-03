@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework.component.log;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.TxTestSupport;
@@ -12,12 +13,9 @@ public class LogActionTest extends TxTestSupport {
 	@Autowired private LogAction action;
 
 	@Autowired private _IUMSerivce umSerivce;
-
-	public void setUp() throws Exception {
-		super.setUp();
-	}
-
-	public void testLogAction() throws InterruptedException {
+ 
+	@Test
+	public void testLogAction() {
 		for (int i = 0; i < 10; i++) {
 			final int index = i;
 			for (int j = 0; j < 10; j++) {
@@ -37,7 +35,10 @@ public class LogActionTest extends TxTestSupport {
 			}
 		}
 
-		Thread.sleep(3 * 1000);
+		try {
+			Thread.sleep(3 * 1000);
+		} catch (InterruptedException e) {
+		}
 		
 		action.queryLogs4Grid(null, new LogQueryCondition(), 1);
 	}

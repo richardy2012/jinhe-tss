@@ -86,7 +86,7 @@ public class RoleAction extends BaseActionSupport {
 	@RequestMapping("/group/{id}/{parentId}")
     public void getRoleGroupInfo(HttpServletResponse response, @PathVariable("id") Long id, @PathVariable("parentId") Long parentId) {
         XFormEncoder xFormEncoder;
-        if (UMConstants.IS_NEW.equals(id)) { // 如果是新增，则返回一个空的无数据的模板
+        if (UMConstants.DEFAULT_NEW_ID.equals(id)) { // 如果是新增，则返回一个空的无数据的模板
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("parentId", parentId);
             map.put("isGroup", UMConstants.TRUE);
@@ -104,7 +104,7 @@ public class RoleAction extends BaseActionSupport {
      */
 	@RequestMapping("/{id}/{parentId}")
     public void getRoleInfo(HttpServletResponse response, @PathVariable("id") Long id, @PathVariable("parentId") Long parentId) {        
-        if ( UMConstants.IS_NEW.equals(id) ) { // 新建角色
+        if ( UMConstants.DEFAULT_NEW_ID.equals(id) ) { // 新建角色
             getNewRoleInfo(parentId);
         } 
         else { // 编辑角色
@@ -227,7 +227,7 @@ public class RoleAction extends BaseActionSupport {
 	/**
 	 * 根据应用id获得资源类型。 做 应用系统/资源类型/授权级别 三级下拉框时用
 	 */
-	public void getResourceTypes(String applicationId) {
+	public void getResourceTypes(HttpServletResponse response, String applicationId) {
 		StringBuffer sb = new StringBuffer();
         sb.append("<column name=\"resourceType\" caption=\"资源类型\" mode=\"string\" editor=\"comboedit\" ");
         

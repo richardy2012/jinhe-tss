@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.servlet;
 
+import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -7,6 +8,7 @@ import com.jinhe.tss.um.TxSupportTest4UM;
 
 public class RegisterServletTest extends TxSupportTest4UM {
     
+	@Test
     public void testDoPost() {
         MockHttpServletRequest request = new MockHttpServletRequest(); 
         MockHttpServletResponse response = new MockHttpServletResponse();

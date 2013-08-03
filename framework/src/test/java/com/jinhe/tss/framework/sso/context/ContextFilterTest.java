@@ -1,5 +1,9 @@
 package com.jinhe.tss.framework.sso.context;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 
 import javax.servlet.FilterChain;
@@ -10,10 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import junit.framework.TestCase;
-
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.jinhe.tss.framework.sso.AnonymousOperator;
 import com.jinhe.tss.framework.sso.IdentityCard;
@@ -27,7 +32,7 @@ import com.jinhe.tss.framework.web.filter.Filter3Context;
  * 单个的Mock对象，利用静态导入EasyMock，通过createMock(interfaceName.class)
  * 多个Mock对象，通过ImocksControl管理。
  */
-public class ContextFilterTest extends TestCase {
+public class ContextFilterTest {
 
     private Filter3Context filter;
 
@@ -39,7 +44,8 @@ public class ContextFilterTest extends TestCase {
 
     private HttpSession session;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         mocksControl = EasyMock.createControl();
         
         request = mocksControl.createMock(HttpServletRequest.class);
@@ -56,7 +62,8 @@ public class ContextFilterTest extends TestCase {
         filter = new Filter3Context();
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         Context.destroy();
     }
 
@@ -64,6 +71,7 @@ public class ContextFilterTest extends TestCase {
      * Test method for
      * {@link com.jinhe.tss.core.web.filter.Filter3Context#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)}.
      */
+    @Test
     public final void testDoFilterNotLogin() throws IOException, ServletException {
         EasyMock.expect(session.getAttribute(RequestContext.USER_TOKEN)).andReturn(null).times(0, 3); // 无token
         EasyMock.expect(session.getAttribute(RequestContext.IDENTITY_CARD)).andReturn(null).atLeastOnce(); // 无card
@@ -88,6 +96,7 @@ public class ContextFilterTest extends TestCase {
      * Test method for
      * {@link com.jinhe.tss.core.web.filter.Filter3Context#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)}.
      */
+    @Test
     public final void testDoFilter4Login() throws IOException, ServletException {
         EasyMock.expect(session.getAttribute(RequestContext.USER_TOKEN)).andReturn("token").times(0, 3);
         final IdentityCard identityCard = new IdentityCard("token", AnonymousOperator.anonymous);

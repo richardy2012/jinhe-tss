@@ -1,36 +1,29 @@
 package com.jinhe.tss.framework.sso.online.cache;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
+import org.junit.Test;
 
 import com.jinhe.tss.framework.sso.online.OnlineUser;
 
 /**
- * <p>
  * 内存管理方式在线用户管理系统
- * </p>
  */
-public class CacheOnlineUserManagerTest extends TestCase {
+public class CacheOnlineUserManagerTest {
     
     protected Logger log = Logger.getLogger(this.getClass());    
-    
-    private CacheOnlineUserManager manager;
  
-    protected void setUp() throws Exception {
-        super.setUp();
-        manager = new CacheOnlineUserManager();
-    }
- 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        manager = null;
-    }
-
-    public final void testDBOnlineUserManager() {
+    @Test
+    public void testDBOnlineUserManager() {
+    	CacheOnlineUserManager manager = new CacheOnlineUserManager();
         manager.register("token", "TSS",  "sessionId",  new Long(1), "Jon.King");
         manager.register("token", "TSS1", "sessionId1", new Long(1), "Jon.King");
         manager.register("token", "TSS2", "sessionId2", new Long(2), "Jon.King2");

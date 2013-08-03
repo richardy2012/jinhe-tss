@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.servlet;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -13,6 +14,7 @@ public class GetPasswordServletTest extends TxSupportTest4UM {
     
     @Autowired IUserService userService;
     
+    @Test
     public void testDoPost() {
         MockHttpServletRequest request = new MockHttpServletRequest(); 
         MockHttpServletResponse response = new MockHttpServletResponse();

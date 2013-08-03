@@ -10,9 +10,15 @@
 
 package com.jinhe.tss.framework.sso.online.database;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 import java.util.Set;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.TxTestSupport;
@@ -23,6 +29,7 @@ public class DBOnlineUserManagerTest extends TxTestSupport {
     
     @Autowired IOnlineUserManager manager;
     
+    @Test
     public final void testDBOnlineUserManager() {
         Collection<String> onlineUserNames = manager.getOnlineUserNames();
         for(String name : onlineUserNames) {

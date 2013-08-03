@@ -10,14 +10,18 @@
 
 package com.jinhe.tss.framework.license;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import com.jinhe.tss.util.FileHelper;
 
-public class LicenseTest extends TestCase {
+public class LicenseTest {
     
+	@Test
     public void testLicense() {
         
         // 第一步：生成公钥、私钥对。公钥公开，注意保管好私钥（如果泄露，则有可能被hacker随意创建license）。

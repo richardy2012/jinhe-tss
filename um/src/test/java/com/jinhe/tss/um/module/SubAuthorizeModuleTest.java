@@ -1,10 +1,12 @@
 package com.jinhe.tss.um.module;
 
+import static org.junit.Assert.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.test.TestUtil;
@@ -32,6 +34,7 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
     @Autowired IRoleService roleService;
     @Autowired IUserService userService;
     
+    @Test
     public void testCRUD() {
         // 新建一个用户组
         Group mainGroup = new Group();
@@ -40,10 +43,11 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         mainGroup.setGroupType( Group.MAIN_GROUP_TYPE );
         groupService.createNewGroup(mainGroup , "", "");
         log.debug(mainGroup);
+        Long mainGroupId = mainGroup.getId();
         
         // 新建一个用户组子组
         Group childGroup = new Group();
-        childGroup.setParentId(mainGroup.getId());
+		childGroup.setParentId(mainGroupId);
         childGroup.setName("R_财务一部");
         childGroup.setGroupType( mainGroup.getGroupType() );
         groupService.createNewGroup(childGroup , "", "");
@@ -54,8 +58,8 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         mainUser.setLoginName("R_JonKing");
         mainUser.setUserName("R_JK");
         mainUser.setPassword("123456");
-        mainUser.setGroupId(mainGroup.getId());
-        userService.createOrUpdateUser(mainUser , "" + mainGroup.getId(), "");
+        mainUser.setGroupId(mainGroupId);
+        userService.createOrUpdateUser(mainUser , "" + mainGroupId, "");
         log.debug(mainUser);
  
         // 新建角色
@@ -67,14 +71,14 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         Calendar calendar = new GregorianCalendar();
         calendar.add(UMConstants.ROLE_LIFE_TYPE, UMConstants.ROLE_LIFE_TIME);
         role.setEndDate(calendar.getTime());
-        roleAction.saveRole(role, "", "");
+        roleAction.saveRole(response, role, "", "");
         Long roleId = role.getId();
         
         login(mainUser.getId(), mainUser.getLoginName()); // 更好登录用户，看其权限
         printUserRoleMapping(mainUser.getId(), 1); // 默认只有一个匿名角色
         
         // 开始测试转授策略模块的功能
-        action.getSubAuthorizeStrategyInfo(UMConstants.IS_NEW);
+        action.getSubAuthorizeStrategyInfo(response, UMConstants.DEFAULT_NEW_ID);
  
         SubAuthorize strategy = new SubAuthorize();
         strategy.setStartDate(new Date());
@@ -82,27 +86,27 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         calendar.add(UMConstants.STRATEGY_LIFE_TYPE, UMConstants.STRATEGY_LIFE_TIME);
         strategy.setEndDate(calendar.getTime());
         strategy.setName("转授策略一");
-        action.saveSubAuthorizeInfo(strategy, mainUser.getId() + "", mainGroup.getId() + "," + childGroup.getId(), roleId + "");
+        action.saveSubAuthorizeInfo(response, strategy, mainUser.getId() + "", mainGroupId + "," + childGroup.getId(), roleId + "");
         
         Long strategyId = strategy.getId();
-        action.getSubAuthorizeStrategyInfo(strategyId);
+        action.getSubAuthorizeStrategyInfo(response, strategyId);
         
         login(mainUser.getId(), mainUser.getLoginName()); // 更好登录用户，看其权限
         printUserRoleMapping(mainUser.getId(), 2); // 匿名角色 + 转授所得角色
         
-        action.disable(strategyId, 1);
+        action.disable(response, strategyId, 1);
         
         login(mainUser.getId(), mainUser.getLoginName()); // 更好登录用户，看其权限
         printUserRoleMapping(mainUser.getId(), 1); // 匿名角色 （转授策略停用了）
         
-        action.disable(strategyId, 0);
+        action.disable(response, strategyId, 0);
         
         login(mainUser.getId(), mainUser.getLoginName()); // 更好登录用户，看其权限
         printUserRoleMapping(mainUser.getId(), 2); // 匿名角色 + 转授所得角色（转授策略重新启用）
         
-        action.getSubAuthorizeStrategys2Tree();
+        action.getSubAuthorizeStrategys2Tree(response);
         
-        action.delete(strategyId);
+        action.delete(response, strategyId);
         
         TestUtil.printEntity(super.permissionHelper, "RoleGroup");
         TestUtil.printEntity(super.permissionHelper, "RoleUser");
@@ -110,7 +114,7 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         login(mainUser.getId(), mainUser.getLoginName()); // 更好登录用户，看其权限
         printUserRoleMapping(mainUser.getId(), 1); // 匿名角色 （转授策略删除了）
         
-        action.getSubAuthorizeStrategys2Tree();
+        action.getSubAuthorizeStrategys2Tree(response);
     }
     
     protected void printUserRoleMapping(Long userId, int count) {

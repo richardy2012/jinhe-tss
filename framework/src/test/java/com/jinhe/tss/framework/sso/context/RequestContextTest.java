@@ -1,14 +1,17 @@
 package com.jinhe.tss.framework.sso.context;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import junit.framework.TestCase;
-
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
+import org.junit.Before;
+import org.junit.Test;
  
-public class RequestContextTest extends TestCase {
+public class RequestContextTest {
 
     private IMocksControl mocksControl;
 
@@ -16,19 +19,15 @@ public class RequestContextTest extends TestCase {
 
     private RequestContext context;
  
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         mocksControl =  EasyMock.createControl();
         request = mocksControl.createMock(HttpServletRequest.class);
         
         context = new RequestContext(request);
-        
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        context = null;
     }
  
+    @Test
     public void testGetClientIpFromHeader() {
         EasyMock.expect(request.getHeader(RequestContext.USER_CLIENT_IP)).andReturn("127.0.0.1").times(0, 3);
         
@@ -36,6 +35,7 @@ public class RequestContextTest extends TestCase {
         assertEquals("127.0.0.1", context.getClientIp());
     }
  
+    @Test
     public void testCanAnonymous4Header() {
         EasyMock.expect(request.getHeader(RequestContext.ANONYMOUS_REQUEST)).andReturn("true").atLeastOnce();
         EasyMock.expect(request.getCharacterEncoding()).andReturn("GBK").atLeastOnce();
@@ -44,6 +44,7 @@ public class RequestContextTest extends TestCase {
         assertTrue(context.canAnonymous());
     }
  
+    @Test
     public void testCanAnonymous4Parameter() {
         EasyMock.expect(request.getHeader(RequestContext.ANONYMOUS_REQUEST)).andReturn("").atLeastOnce();
         EasyMock.expect(request.getParameter(RequestContext.ANONYMOUS_REQUEST)).andReturn("true").atLeastOnce();
@@ -53,6 +54,7 @@ public class RequestContextTest extends TestCase {
         assertTrue(context.canAnonymous());
     }
  
+    @Test
     public void testGetUserToken4Cookie() {
         EasyMock.expect(request.getHeader(RequestContext.USER_TOKEN)).andReturn(null).atLeastOnce();
         EasyMock.expect(request.getParameter(RequestContext.USER_TOKEN)).andReturn("").atLeastOnce();

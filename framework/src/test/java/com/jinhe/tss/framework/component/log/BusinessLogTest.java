@@ -1,8 +1,12 @@
 package com.jinhe.tss.framework.component.log;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.List;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.TxTestSupport;
@@ -21,6 +25,7 @@ public class BusinessLogTest extends TxTestSupport {
     @Autowired private _IUMSerivce umSerivce;
     @Autowired private LogService logService;
     
+    @Test
     public void testParseMacro() throws IOException, TemplateException {
         String template = "<#if args[1]=1>停用<#else>启用</#if>了节点${args[0]}";
         Object[] objects = new Object[]{new Long(12), new Integer(0)};
@@ -31,6 +36,7 @@ public class BusinessLogTest extends TxTestSupport {
     /**
      * 测试日志Annotation、线程池、异步输出日志
      */
+    @Test
     public void testUMToCreateLog() throws InterruptedException {
         log.info("test start......");
         

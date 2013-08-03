@@ -108,7 +108,7 @@ public class GroupAction extends ProgressActionSupport {
 			Long parentId, Long groupId, int groupType) {
 		
         Map<String, Object> groupAttributes;
-		boolean isNew = UMConstants.IS_NEW.equals(groupId);
+		boolean isNew = UMConstants.DEFAULT_NEW_ID.equals(groupId);
         if(isNew) {
         	groupAttributes = new HashMap<String, Object>();
             groupAttributes.put("parentId", parentId);

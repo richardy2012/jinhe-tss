@@ -1,7 +1,9 @@
 package com.jinhe.tss.um.module;
 
+import static org.junit.Assert.*;
 import java.util.List;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.test.TestUtil;
@@ -24,28 +26,32 @@ public class UserModuleTest extends TxSupportTest4UM {
     @Autowired IUserService service;
     @Autowired IApplicationService appService;
     
-    Group mainGroup1;
+    Group mainGroup;
+    Long mainGroupId;
     
+    @Test
     public void testUserModule() {
-        mainGroup1 = new Group();
-        mainGroup1.setParentId(UMConstants.MAIN_GROUP_ID);
-        mainGroup1.setName("U_财务部");
-        mainGroup1.setGroupType( Group.MAIN_GROUP_TYPE );
-        groupService.createNewGroup(mainGroup1 , "", "-1");
-        log.debug(mainGroup1);
+        mainGroup = new Group();
+        mainGroup.setParentId(UMConstants.MAIN_GROUP_ID);
+        mainGroup.setName("U_财务部");
+        mainGroup.setGroupType( Group.MAIN_GROUP_TYPE );
+        groupService.createNewGroup(mainGroup , "", "-1");
+        log.debug(mainGroup);
+        
+        mainGroupId = mainGroup.getId();
         
         // 管理员直接在主组下新增用户
         User user1 = new User();
         user1.setLoginName("U_JonKing");
         user1.setUserName("U_JK");
         user1.setPassword("123456");
-        user1.setGroupId(mainGroup1.getId());
-        service.createOrUpdateUser(user1 , "" + mainGroup1.getId(), "-1");
+		user1.setGroupId(mainGroupId);
+        service.createOrUpdateUser(user1 , "" + mainGroupId, "-1");
         log.debug(user1);
         
-        service.deleteUser(mainGroup1.getId(), user1.getId());
+        service.deleteUser(mainGroupId, user1.getId());
         user1.setId(null);
-        service.createOrUpdateUser(user1 , "" + mainGroup1.getId(), "-1");
+        service.createOrUpdateUser(user1 , "" + mainGroupId, "-1");
         log.debug(user1);
         
         // 注册一个用户
@@ -60,7 +66,7 @@ public class UserModuleTest extends TxSupportTest4UM {
         user2.setUserName("JK-2");
         service.updateUser(user2);
         
-        List<User> mainUsers  = service.getUsersByGroup(mainGroup1.getId());
+        List<User> mainUsers  = service.getUsersByGroup(mainGroupId);
         assertEquals(1, mainUsers.size());
         
         _testAction(mainUsers);
@@ -70,34 +76,34 @@ public class UserModuleTest extends TxSupportTest4UM {
         assertTrue(TestUtil.printLogs(logService) > 0);
     }
     
-    public void _testAction(List<User> mainUsers) {
+    private void _testAction(List<User> mainUsers) {
         
-        action.getUserInfoAndRelation(UMConstants.IS_NEW, mainGroup1.getId());
+        action.getUserInfoAndRelation(response, UMConstants.DEFAULT_NEW_ID, mainGroupId);
         
-        action.getUserInfoAndRelation(mainUsers.get(0).getId(), mainGroup1.getId());
+        action.getUserInfoAndRelation(response, mainUsers.get(0).getId(), mainGroupId);
         
-        action.initAuthenticateMethod(mainGroup1.getId());
+        action.initAuthenticateMethod(response, mainGroupId);
         
-        action.uniteAuthenticateMethod(mainGroup1.getId(), "com.jinhe.tss.um.sso.UMPasswordIdentifier");
+        action.uniteAuthenticateMethod(response, mainGroupId, "com.jinhe.tss.um.sso.UMPasswordIdentifier");
         
-        action.startOrStopUser(mainGroup1.getId(), mainUsers.get(0).getId(), UMConstants.TRUE);
-        action.startOrStopUser(mainGroup1.getId(), mainUsers.get(0).getId(), UMConstants.FALSE);
+        action.startOrStopUser(response, mainGroupId, mainUsers.get(0).getId(), UMConstants.TRUE);
+        action.startOrStopUser(response, mainGroupId, mainUsers.get(0).getId(), UMConstants.FALSE);
         
-        action.getOnlineUserInfo();
-        action.getOperatorInfo();
-        action.getForgetPasswordInfo();
+        action.getOnlineUserInfo(response);
+        action.getOperatorInfo(response);
+        action.getForgetPasswordInfo(response);
         
-        action.getUserInfo();
+        action.getUserInfo(response);
         
-        action.initPassword(mainGroup1.getId(), mainUsers.get(0).getId(), "369852");
+        action.initPassword(response, mainGroupId, mainUsers.get(0).getId(), "369852");
         
-        action.getSelectedUsersByGroupId(mainGroup1.getId());
+        action.getSelectedUsersByGroupId(response, mainGroupId);
         
-        action.getUsersByGroupId("tss", mainGroup1.getId(), 1);
+        action.getUsersByGroupId(response, "tss", mainGroupId, 1);
         
         UMQueryCondition userQueryCon = new UMQueryCondition();
-        userQueryCon.setGroupId(mainGroup1.getId());
-		action.searchUser(userQueryCon , "tss", 1);
+        userQueryCon.setGroupId(mainGroupId);
+		action.searchUser(response, userQueryCon , "tss", 1);
         
     }
 }

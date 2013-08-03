@@ -10,15 +10,17 @@
 
 package com.jinhe.tss.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.dom4j.Element;
+import org.junit.Test;
 
-import junit.framework.TestCase;
-
-public class XMLDocUtilTest extends TestCase{
+public class XMLDocUtilTest {
  
+	@Test
     public void testMap2DataNode() {
     	Map<String, Object> map = new HashMap<String, Object>();
         map.put("tel", new Object[] { "057188889999", "13588899889" });
@@ -27,13 +29,13 @@ public class XMLDocUtilTest extends TestCase{
         map.put("id", new Object[] { new Integer(23), "<![CDATA[sss]]>" });
 
         Element node = XMLDocUtil.map2DataNode(map, "row");
-//        System.out.println(node.asXML());
         
         assertEquals("<row><id><![CDATA[23]]></id><id><![CDATA[&lt;![CDATA[sss]]&gt;]]></id><email><![CDATA[jinpj@g-soft.com.cn]]></email><age><![CDATA[24]]></age><tel><![CDATA[057188889999]]></tel><tel><![CDATA[13588899889]]></tel></row>", node.asXML());
 
         XMLDocUtil.dataNodes2Map(node);
     }
     
+	@Test
     public void testMap2AttributeNode() {
     	Map<String, Object> map = new HashMap<String, Object>();
         map.put("email", "jinpj@g-soft.com.cn");

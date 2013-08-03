@@ -49,7 +49,7 @@ public class UserAction extends BaseActionSupport {
         TreeEncoder existRoleTree = new TreeEncoder(null);
         Map<String, Object> data;
         Map<String, Object> map = new HashMap<String, Object>(); 
-        if ( !UMConstants.IS_NEW.equals(userId) ) { // 编辑用户
+        if ( !UMConstants.DEFAULT_NEW_ID.equals(userId) ) { // 编辑用户
             data =  userService.getInfo4UpdateExsitUser(userId);
             User user = (User) data.get("UserInfo");
             map.putAll(user.getAttributesForXForm()); 

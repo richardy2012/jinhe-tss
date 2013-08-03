@@ -1,7 +1,10 @@
 package com.jinhe.tss.um.module;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.um.TxSupportTest4UM;
@@ -17,16 +20,9 @@ import com.jinhe.tss.um.service.IMessageService;
 public class MessageModuleTest extends TxSupportTest4UM {
     
 	@Autowired MessageAction action;
-    
     @Autowired IMessageService service;
-    
-    public void setUp() throws Exception {
-        super.setUp();
-        
-        // 初始化虚拟登录用户信息
-        login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
-    }
-    
+ 
+    @Test
     public void testMesseag() {
     	Message message = new Message();
     	
@@ -34,28 +30,28 @@ public class MessageModuleTest extends TxSupportTest4UM {
         message.setContent("好消息！");
         message.setReceiverIds("-1");
         message.setReceiver("Admin");
-        action.sendMessage(message);
+        action.sendMessage(response, message);
         
         List<Message> inboxList = service.getInboxList();
         assertTrue(inboxList.size() > 0);
         Long messageId = inboxList.get(0).getId();
         
-        action.getMessage4Reply(messageId);
+        action.getMessage4Reply(response, messageId);
         
-        action.viewMessage(messageId);
+        action.viewMessage(response, messageId);
         
-        action.getMessageList(2);
-        action.getMessageList(3);
-        action.getMessageList(4);
+        action.getMessageList(response, 2);
+        action.getMessageList(response, 3);
+        action.getMessageList(response, 4);
         
-        action.deleteMessage(messageId);
+        action.deleteMessage(response, messageId);
         
         UMQueryCondition condition = new UMQueryCondition();
         condition.setGroupId(UMConstants.MAIN_GROUP_ID);
-        action.searchUsers(condition);
+        action.searchUsers(response, condition);
         
-        action.getSearchUserInfo();
-        action.getGroupTree();
+        action.getSearchUserInfo(response);
+        action.getGroupTree(response);
     }
 
 }

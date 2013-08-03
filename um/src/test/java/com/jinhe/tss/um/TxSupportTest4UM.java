@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
-import org.springframework.test.context.transaction.AfterTransaction;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.jinhe.tss.framework.Global;
@@ -56,6 +55,8 @@ public abstract class TxSupportTest4UM extends AbstractTransactionalJUnit4Spring
     
     @Autowired protected IH2DBServer dbserver;
     
+    protected MockHttpServletResponse response;
+    
     @After
     public void tearDown() throws Exception {
         dbserver.stopServer();
@@ -64,7 +65,9 @@ public abstract class TxSupportTest4UM extends AbstractTransactionalJUnit4Spring
     @Before
     public void setUp() throws Exception {
         Global.setContext(super.applicationContext);
-        Context.setResponse(new MockHttpServletResponse());
+        
+        response = new MockHttpServletResponse();
+		Context.setResponse(response);
         
         // 初始化虚拟登录用户信息
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);

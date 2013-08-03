@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework.component.param;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.TxTestSupport;
@@ -9,11 +10,8 @@ public class ParamActionTest extends TxTestSupport {
 	@Autowired private ParamAction action;
 
     @Autowired private ParamService paramService;
-    
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-    
+ 
+    @Test
 	public void testParamAction() {
 		Param paramGroup = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组1");
         Param comboParam = addComboParam(paramGroup.getId(), "book", "可选书籍");

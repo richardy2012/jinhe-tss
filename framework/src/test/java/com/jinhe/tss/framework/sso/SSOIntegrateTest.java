@@ -1,12 +1,12 @@
 package com.jinhe.tss.framework.sso;
 
+import static org.junit.Assert.fail;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 import javax.servlet.ServletException;
-
-import junit.framework.TestCase;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -14,6 +14,9 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
@@ -21,32 +24,31 @@ import org.mortbay.jetty.servlet.Context;
 import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.sso.servlet.JustRedirectServlet;
 import com.jinhe.tss.framework.sso.servlet.MultiRequestServletTest.SimpleRequestServlet;
-import com.jinhe.tss.framework.web.filter.Filter4AutoLogin;
+import com.jinhe.tss.framework.web.filter.Filter1Encoding;
 import com.jinhe.tss.framework.web.filter.Filter2CatchException;
 import com.jinhe.tss.framework.web.filter.Filter3Context;
+import com.jinhe.tss.framework.web.filter.Filter4AutoLogin;
 import com.jinhe.tss.framework.web.filter.Filter5HttpProxy;
-import com.jinhe.tss.framework.web.filter.Filter1Encoding;
 import com.jinhe.tss.framework.web.filter.Filter6XmlHttpDecode;
 import com.jinhe.tss.framework.web.listener.SessionDestroyedListener;
-import com.jinhe.tss.framework.web.servlet.Servlet8Empty;
 import com.jinhe.tss.framework.web.servlet.Servlet1Login;
 import com.jinhe.tss.framework.web.servlet.Servlet2Logout;
+import com.jinhe.tss.framework.web.servlet.Servlet8Empty;
 
 /**
  * <p>
  * 单点登录集成测试
  * </p>
  */
-public class SSOIntegrateTest extends TestCase {
+public class SSOIntegrateTest {
     
     protected Logger log = Logger.getLogger(this.getClass());
     
     protected Server tssServer;
     protected Server cmsServer;
     
-    protected void setUp() throws Exception {
-        super.setUp();
- 
+    @Before
+    public void setUp() throws Exception {
         tssServer = startOneServer(8083, "/tss"); 
         cmsServer = startOneServer(8081, "/cms"); 
     }
@@ -75,13 +77,14 @@ public class SSOIntegrateTest extends TestCase {
         return server;
     }
  
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After
+    public void tearDown() throws Exception {
         tssServer.stop();
         cmsServer.stop();
     }
     
-    public final void testSSO() throws ServletException, IOException, InterruptedException {
+    @Test
+    public void testSSO() throws ServletException, IOException, InterruptedException {
         HttpClient client = new HttpClient(); 
         
         System.out.println("");

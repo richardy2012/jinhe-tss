@@ -1,7 +1,13 @@
 package com.jinhe.tss.framework.sso.identity.identifier;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 
@@ -18,14 +24,14 @@ import com.jinhe.tss.framework.sso.identity.MockApplicationContext;
 import com.jinhe.tss.framework.sso.identity.MockOnlineUserManagerFactory;
 import com.jinhe.tss.framework.sso.online.OnlineUserManagerFactory;
  
-public class AnonymousUserIdentifierTest extends TestCase {
+public class AnonymousUserIdentifierTest {
     
     private IUserIdentifier identifier;
 
     private MockHttpServletRequest request;
  
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         MockOnlineUserManagerFactory.init();
         
         AppServer server = new AppServer();
@@ -46,14 +52,13 @@ public class AnonymousUserIdentifierTest extends TestCase {
         identifier = new AnonymousUserIdentifier();
     }
  
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    public void tearDown() throws Exception {
         identifier = null;
         request = null;
     }
 
-    /** Test method for {@link com.jinhe.tss.core.sso.identifier.BaseUserIdentifier#identify()}. */
-    public final void testIdentify4Ok() {
+    @Test
+    public void testIdentify4Ok() {
         request.addHeader(RequestContext.ANONYMOUS_REQUEST, "true"); // 允许匿名访问
         IdentityCard card = null;
         try {
@@ -66,7 +71,7 @@ public class AnonymousUserIdentifierTest extends TestCase {
         assertTrue(OnlineUserManagerFactory.getManager().isOnline(card.getToken()));
     }
 
-    /** Test method for {@link com.jinhe.tss.core.sso.identifier.BaseUserIdentifier#identify()}. */
+    @Test
     public final void testIdentify4Fail() {
         IdentityCard card = null;
         try {

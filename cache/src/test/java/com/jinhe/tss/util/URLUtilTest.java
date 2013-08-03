@@ -4,10 +4,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
-public class URLUtilTest extends TestCase {
+import org.junit.Test;
 
+public class URLUtilTest {
+
+	@Test
     public void testGetResourceFileUrl() {
         URL url = URLUtil.getResourceFileUrl("log4j.properties");
         System.out.println(url);
@@ -30,7 +32,7 @@ public class URLUtilTest extends TestCase {
         System.out.println(URLUtil.getClassesPath().getPath());
     }
  
-    
+    @Test
     public void testGetWebFileUrl() {
         try {
             URL url = URLUtil.getWebFileUrl("log4j.properties");
@@ -42,12 +44,14 @@ public class URLUtilTest extends TestCase {
 
     }
     
+    @Test
     public void testGetClassesPath() {
         URL url = URLUtil.getClassesPath();
         System.out.println(url);
         System.out.println(url.getPath()); 
     }
     
+    @Test
     public void testGetLibPath() {
         URL url = URLUtil.getLibPath();
         System.out.println(url);

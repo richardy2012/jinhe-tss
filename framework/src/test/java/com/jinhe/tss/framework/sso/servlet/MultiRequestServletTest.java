@@ -1,5 +1,8 @@
 package com.jinhe.tss.framework.sso.servlet;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -7,8 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import junit.framework.TestCase;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -19,6 +20,9 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.HandlerList;
@@ -39,14 +43,13 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 再将每个子请求的返回结果合并为一个总的结果（响应）。
  * </p>
  */
-public class MultiRequestServletTest extends TestCase {
+public class MultiRequestServletTest {
 
     private Server server;
  
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         
-        super.setUp();
         server = new Server(); // 设置监听端口为8083
         
         Connector connector = new SelectChannelConnector();
@@ -81,15 +84,16 @@ public class MultiRequestServletTest extends TestCase {
         }
     }
  
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After
+    public void tearDown() throws Exception {
         server.stop();
     }
 
     /**
      * Test method for {@link com.jinhe.tss.core.web.servlet.Servlet3MultiRequest#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
      */
-    public final void testDoPost() throws ServletException, IOException {
+    @Test
+    public void testDoPost() throws ServletException, IOException {
         HttpClient client = new HttpClient();
         PostMethod httppost = new PostMethod("http://localhost:8083/tss/multi");
         //设置请求内容

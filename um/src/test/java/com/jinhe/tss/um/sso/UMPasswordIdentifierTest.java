@@ -1,5 +1,8 @@
 package com.jinhe.tss.um.sso;
 
+import static org.junit.Assert.assertFalse;
+
+import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 
@@ -10,12 +13,11 @@ import com.jinhe.tss.um.TxSupportTest4UM;
 
 public class UMPasswordIdentifierTest extends TxSupportTest4UM {
 	
+	@Test
 	public void testIdentify() {
-		
-		 MockHttpServletRequest request = new MockHttpServletRequest(); 
-		 
-		 MockHttpSession session = new MockHttpSession();
-		 request.setSession(session);
+		MockHttpServletRequest request = new MockHttpServletRequest(); 
+		MockHttpSession session = new MockHttpSession();
+		request.setSession(session);
 		 
         request.addParameter(SSOConstants.LOGINNAME_IN_SESSION, "Admin");
         request.addParameter(SSOConstants.USER_PASSWORD, "123456");

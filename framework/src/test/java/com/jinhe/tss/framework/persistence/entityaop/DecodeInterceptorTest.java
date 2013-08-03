@@ -1,7 +1,9 @@
 package com.jinhe.tss.framework.persistence.entityaop;
 
+import static org.junit.Assert.*;
 import java.util.List;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.TxTestSupport;
@@ -12,11 +14,13 @@ public class DecodeInterceptorTest extends TxTestSupport {
     
     @Autowired _IUMSerivce umSerivce;
     
+    @Test
     public void testDecodeUtil() {
         String decode = DecodeUtil.getDecode(null, null, -1);
         assertEquals("0", decode);
     }
  
+    @Test
     public void testUMCRUD() {
         log.info("test start......");
         

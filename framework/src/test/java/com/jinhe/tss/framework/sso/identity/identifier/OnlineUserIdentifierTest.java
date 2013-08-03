@@ -1,9 +1,16 @@
 package com.jinhe.tss.framework.sso.identity.identifier;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import javax.servlet.http.Cookie;
 
-import junit.framework.TestCase;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 
@@ -22,13 +29,13 @@ import com.jinhe.tss.framework.sso.identity.MockIdentityTranslatorFactory;
 import com.jinhe.tss.framework.sso.identity.MockOnlineUserManagerFactory;
 import com.jinhe.tss.framework.sso.online.OnlineUserManagerFactory;
  
-public class OnlineUserIdentifierTest extends TestCase {
+public class OnlineUserIdentifierTest {
     
     private IUserIdentifier identifier;
     private String token;
  
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         MockOnlineUserManagerFactory.init();
         MockIdentityTranslatorFactory.init();
         
@@ -56,14 +63,14 @@ public class OnlineUserIdentifierTest extends TestCase {
         identifier = new OnlineUserIdentifier();
     }
  
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After
+    public void tearDown() throws Exception {
         identifier = null;
         token = null;
     }
 
-    /** Test method for {@link com.jinhe.tss.core.sso.identifier.OnlineUserIdentifier#identify()}. */
-    public final void testIdentify4NotLogin() {
+    @Test
+    public void testIdentify4NotLogin() {
         IdentityCard card = null;
         try {
             card = identifier.identify();
@@ -73,8 +80,8 @@ public class OnlineUserIdentifierTest extends TestCase {
         assertNull(card);
     }
 
-    /** Test method for {@link com.jinhe.tss.core.sso.identifier.OnlineUserIdentifier#identify()}. */
-    public final void testIdentify4Login() {
+    @Test
+    public void testIdentify4Login() {
         MockOnlineUserManagerFactory.getManager().register(token, "Test", "SessionId", new Long(30), null);
         
         IdentityCard card = null;

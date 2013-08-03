@@ -195,7 +195,7 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-					<skip>true</skip> <!-- skip junit test -->
+					<skip>false</skip> <!-- skip junit test -->
 					<includes> 
 						<include>**/*Test.java </include> 
 					</includes>

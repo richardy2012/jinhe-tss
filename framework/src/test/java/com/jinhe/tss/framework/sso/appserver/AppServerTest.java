@@ -1,10 +1,13 @@
 package com.jinhe.tss.framework.sso.appserver;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
  
-public class AppServerTest extends TestCase {
+public class AppServerTest  {
  
-    public final void testGetDomain() {
+	@Test
+    public void testGetDomain() {
         AppServer server = new AppServer();
         server.setBaseURL("http://localhost:8088");
         assertEquals("localhost", server.getDomain());

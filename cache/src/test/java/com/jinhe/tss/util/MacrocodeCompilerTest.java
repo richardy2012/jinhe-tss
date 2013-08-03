@@ -1,12 +1,15 @@
 package com.jinhe.tss.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class MacrocodeCompilerTest extends TestCase {
+public class MacrocodeCompilerTest {
     
+	@Test
     public void testMacrocodeCompiler() {
         String code = "<table id=\"${portlet.id}\" description=\"修饰器\">"
             + "             <tr>"

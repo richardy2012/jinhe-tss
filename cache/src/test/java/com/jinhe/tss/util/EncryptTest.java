@@ -10,22 +10,17 @@
 
 package com.jinhe.tss.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
  
-public class EncryptTest extends TestCase {
+public class EncryptTest {
 
 	InfoEncoder encrypt = new InfoEncoder();
 	EncryptTestThreadGroup group = new EncryptTestThreadGroup();
-
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
  
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
- 
-	public final void testCreateEncryptor() {
+	@Test
+	public void testCreateEncryptor() {
 		for (int i = 0; i < 10; i++) {
 			new Thread(group, "encryptor") {
 				public void run() {
@@ -35,7 +30,8 @@ public class EncryptTest extends TestCase {
 		}
 	}
  
-	public final void testCreateDecryptor() {
+	@Test
+	public void testCreateDecryptor() {
 		try {
 			final String str = encrypt.createEncryptor("testtesttesttesttesttest");
 			for (int i = 0; i < 10; i++) {
@@ -60,14 +56,10 @@ class EncryptTestThreadGroup extends ThreadGroup {
 	}
 
 	/**
-	 * <p>
 	 * 异常处理
-	 * </p>
-	 * @param t
-	 * @param e
 	 * @see java.lang.ThreadGroup#uncaughtException(java.lang.Thread, java.lang.Throwable)
 	 */
 	public void uncaughtException(Thread t, Throwable e) {
-		TestCase.fail("Thread:" + t.getName() + " " + e.getMessage());
+		fail("Thread:" + t.getName() + " " + e.getMessage());
 	}
 }

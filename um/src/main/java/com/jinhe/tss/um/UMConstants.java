@@ -2,6 +2,8 @@ package com.jinhe.tss.um;
 
 import java.util.Calendar;
 
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
+
 /**
  * UMS相关常量定义文件
  */
@@ -35,7 +37,10 @@ public final class UMConstants {
 	// 定义一些约定好的常量
 	// ===========================================================================
 	
-	public static final Long IS_NEW = new Long(-10); //判断是否为新建对象(和前台约定好的)
+	/**
+	 * 判断是否为新建对象(和前台约定好的)
+	 */
+	public static final Long DEFAULT_NEW_ID = BaseActionSupport.DEFAULT_NEW_ID; 
 
     public static final Long NEW_RESOURCE_DEFAULT_PARENT_ID = new Long(0); //新建资源默认的父节点
 	

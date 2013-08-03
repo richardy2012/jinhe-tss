@@ -1,9 +1,12 @@
 package com.jinhe.tss.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class InfoEncoderTest extends TestCase {
+import org.junit.Test;
+
+public class InfoEncoderTest {
     
+	@Test
     public void testInfoEncoder() {
         InfoEncoder test = new InfoEncoder();
         System.out.println(test.createEncryptor("Jon.King"));
