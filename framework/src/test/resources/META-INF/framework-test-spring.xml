@@ -14,7 +14,7 @@
 		<property name="dataSource" ref="dataSource" /> <!-- 注入数据源bean到实体管理工厂bean -->
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-				<property name="generateDdl" value="false" /> <!-- 跑Test时，自动生成表结构scheme-->
+				<property name="generateDdl" value="true" /> <!-- 跑Test时，自动生成表结构scheme-->
 			</bean>
 		</property>
 		<property name="loadTimeWeaver">

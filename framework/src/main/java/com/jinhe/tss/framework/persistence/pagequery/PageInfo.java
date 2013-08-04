@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class PageInfo {
 	
-    static final int DEFAULT_PAGESIZE = 20;
+    static final int DEFAULT_PAGESIZE = 25;
 
     /** 当前页码 */
     private int pageNum;

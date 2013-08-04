@@ -62,7 +62,7 @@ function initUserInfo() {
 	if( IS_TEST ) return;
 
 	Ajax({
-		url : "auth/user/operatorInfo",
+		url : "/" + AUTH_PATH + "user/operatorInfo",
 		method : "POST",
 		headers : {"appCode": APP_CODE},
 		contents : {"anonymous": "true"}, 

@@ -33,25 +33,26 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_INIT = "/" + AUTH_PATH + "group/list";
-    URL_USER_LIST = "ums/user!getUsersByGroupId.action";
-    URL_USER_DETAIL = "ums/user!getUserInfoAndRelation.action";
-    URL_GROUP_DETAIL = "ums/group!getGroupInfoAndRelation.action";
-    URL_SAVE_USER = "ums/user!saveUser.action";
-    URL_SAVE_GROUP = "ums/group!editGroup.action";
-    URL_DELETE_GROUP = "ums/group!deleteGroup.action";
-    URL_STOP_GROUP = "ums/group!startOrStopGroup.action";
-    URL_SORT_GROUP = "ums/group!sortGroup.action";
-    URL_STOP_USER = "ums/user!startOrStopUser.action";
-    URL_SYNC_GROUP = "ums/syncdata!syncData.action";
-    URL_SYNC_PROGRESS = "ums/syncdata!getProgress.action";
-    URL_CANCEL_SYNC_PROGRESS = "ums/syncdata!doConceal.action";
-    URL_GROUP_TO_USER_LIST = "ums/user!getSelectedUsersByGroupId.action";
-    URL_DEL_USER = "ums/user!deleteUser.action";
-    URL_RESET_PASSWORD = "ums/user!initPassword.action";
-    URL_GET_OPERATION = "ums/group!getOperation.action";
-    URL_SEARCH_SUBAUTH = "ums/generalSearch!searchUserStrategyInfo.action";
-    URL_SEARCH_ROLE = "ums/generalSearch!searchRolesInfo.action";
+    URL_INIT          = "/" + AUTH_PATH + "group/list";
+    URL_USER_LIST     = "/" + AUTH_PATH + "user/list/";    // user/list/{groupId}/{page}
+    URL_USER_DETAIL   = "/" + AUTH_PATH + "user/detail/";  // user/detail/{groupId}/{userId}
+    URL_GROUP_DETAIL  = "/" + AUTH_PATH + "group/detail/"; // group/detail/{parentId}/{id}/{type}
+    URL_SAVE_USER     = "/" + AUTH_PATH + "user";   // POST
+    URL_SAVE_GROUP    = "/" + AUTH_PATH + "group";  // POST
+    URL_DELETE_GROUP  = "/" + AUTH_PATH + "group/"; 
+	URL_DEL_USER      = "/" + AUTH_PATH + "user/";
+    URL_STOP_GROUP    = "/" + AUTH_PATH + "group/disable"; 
+    URL_SORT_GROUP    = "/" + AUTH_PATH + "group/sort";
+    URL_STOP_USER     = "/" + AUTH_PATH + "user/disable";
+	URL_GET_OPERATION = "/" + AUTH_PATH + "group/operations/"; 
+    URL_USER_TREE     = "/" + AUTH_PATH + "user/tree/"; // user/tree/{groupId}
+    URL_INIT_PASSWORD = "/" + AUTH_PATH + "user/initpwd/"; // user/initpwd/{groupId}/{userId}/{password}
+
+    URL_SEARCH_SUBAUTH= "/" + AUTH_PATH + "group/list";"ums/generalSearch!searchUserStrategyInfo.action";
+    URL_SEARCH_ROLE   = "/" + AUTH_PATH + "group/list";"ums/generalSearch!searchRolesInfo.action";
+	URL_SYNC_GROUP    = "/" + AUTH_PATH + "group/list";"ums/syncdata!syncData.action";
+    URL_SYNC_PROGRESS = "/" + AUTH_PATH + "group/list";"ums/syncdata!getProgress.action";
+    URL_CANCEL_SYNC   = "/" + AUTH_PATH + "group/list";"ums/syncdata!doConceal.action";
 	
 	if(IS_TEST) {
 		URL_INIT = "data/group_tree.xml?";
@@ -64,15 +65,15 @@
 		URL_STOP_GROUP = "data/_success.xml?";
 		URL_SORT_GROUP = "data/_success.xml?";
 		URL_STOP_USER = "data/_success.xml?";
-		URL_SYNC_GROUP = "data/progress.xml?";
-		URL_SYNC_PROGRESS = "data/progress.xml?";
-		URL_CANCEL_SYNC_PROGRESS = "data/_success.xml?";
-		URL_GROUP_TO_USER_LIST = "data/userlist.xml?";
+		URL_USER_TREE = "data/userlist.xml?";
 		URL_DEL_USER = "data/_success.xml?";
-		URL_RESET_PASSWORD = "data/_success.xml?";
+		URL_INIT_PASSWORD = "data/_success.xml?";
 		URL_GET_OPERATION = "data/operation.xml?";
 		URL_SEARCH_SUBAUTH = "data/group_search_subauth.xml?";
 		URL_SEARCH_ROLE = "data/group_search_role.xml?";
+		URL_SYNC_GROUP = "data/progress.xml?";
+		URL_SYNC_PROGRESS = "data/progress.xml?";
+		URL_CANCEL_SYNC = "data/_success.xml?";
 	}
  
  
@@ -318,7 +319,7 @@
 		}
  
 		Ajax({
-			url : URL_RESET_PASSWORD + treeNode.getId() + "/" + password
+			url : URL_INIT_PASSWORD + treeNode.getId() + "/" + password
 		});	     
     }
  
@@ -399,7 +400,7 @@
 				$$("page4Tree").onTreeNodeDoubleClick = function(eventObj) {
 					var treeNode = page4Tree.getActiveTreeNode();
 					Ajax({
-						url : URL_GROUP_TO_USER_LIST + treeNode.getId(),
+						url : URL_USER_TREE + treeNode.getId(),
 						onresult : function() { 
 							var sourceListNode = this.getNodeValue(XML_GROUP_TO_USER_LIST_TREE);
 							$T("page4Tree2", sourceListNode);
@@ -532,7 +533,7 @@
 
 		request.onresult = function(){
 			var data = this.getNodeValue("ProgressInfo");
-			var progress = new Progress(URL_SYNC_PROGRESS,data,URL_CANCEL_SYNC_PROGRESS);
+			var progress = new Progress(URL_SYNC_PROGRESS,data,URL_CANCEL_SYNC);
 			progress.oncomplete = function(){
 				loadInitData();
 			}
@@ -560,7 +561,7 @@
 		var treeID = groupId || treeNode.getId();
 
 		var p = new HttpRequestParams();
-		p.url = URL_USER_LIST + treeID + "/1/" + PAGESIZE;
+		p.url = URL_USER_LIST + treeID + "/1";
 		var request = new HttpRequest(p);
 		request.onresult = function() {
 			$G("grid", this.getNodeValue(XML_USER_LIST)); 
@@ -568,7 +569,7 @@
 
 			var pageListNode = this.getNodeValue(XML_PAGE_INFO);			
 			initGridToolBar(gridToolBar, pageListNode, function(page) {
-				request.params.url = XML_USER_LIST + treeID + "/" + page + "/" + PAGESIZE;
+				request.params.url = XML_USER_LIST + treeID + "/" + page;
 				request.onresult = function() {
 					$G("grid", this.getNodeValue(XML_USER_LIST)); 
 				}				
@@ -587,7 +588,7 @@
 				if(gridToolBar.getTotalPages() <= currentPage) return;
 
 				var nextPage = parseInt(currentPage) + 1; 
-				request.params.url = XML_USER_LIST + treeID + "/" + nextPage + "/" + PAGESIZE;
+				request.params.url = XML_USER_LIST + treeID + "/" + nextPage;
 				request.onresult = function() {
 					$G("grid").load(this.getNodeValue(XML_REPORT_DATA), true);
 					initGridToolBar(gridToolBar, this.getNodeValue(XML_PAGE_INFO));
@@ -643,7 +644,7 @@
  
     function loadUserDetailData(userID, groupId) {
 		var p = new HttpRequestParams();
-		p.url = URL_USER_DETAIL + userID + "/" + groupId;
+		p.url = URL_USER_DETAIL + groupId + "/" + userID;
  
 		var request = new HttpRequest(p);
 		request.onresult = function(){

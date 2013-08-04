@@ -109,25 +109,25 @@ public class GroupAction extends ProgressActionSupport {
 	/**
 	 * 获取一个Group对象的明细信息、用户组对用户信息、用户组对角色的信息
 	 */
-	@RequestMapping(value = "/detail/{parentId}/{groupId}/{type}")
+	@RequestMapping(value = "/detail/{parentId}/{id}/{type}")
 	public void getGroupInfo(HttpServletResponse response, 
 			@PathVariable("parentId") Long parentId, 
-			@PathVariable("groupId") Long groupId, 
+			@PathVariable("id") Long id, 
 			@PathVariable("type") int type) {
 		
         Map<String, Object> groupAttributes;
-		boolean isNew = UMConstants.DEFAULT_NEW_ID.equals(groupId);
+		boolean isNew = UMConstants.DEFAULT_NEW_ID.equals(id);
         if(isNew) {
         	groupAttributes = new HashMap<String, Object>();
             groupAttributes.put("parentId", parentId);
             groupAttributes.put("groupType", type);
         } 
         else {
-            Group group = service.getGroupById(groupId);
+            Group group = service.getGroupById(id);
             groupAttributes = group.getAttributesForXForm();
         }
         
-        List<?> users = service.findUsersByGroupId(groupId);
+        List<?> users = service.findUsersByGroupId(id);
         TreeEncoder usersTreeEncoder = new TreeEncoder(users);
         
         String groupXForm = null;
@@ -141,7 +141,7 @@ public class GroupAction extends ProgressActionSupport {
         XFormEncoder groupEncoder = new XFormEncoder(groupXForm, groupAttributes);
  
     	// 如果是新建则找到父组对应的角色，如此新建的子组可以继承父组角色
-    	List<?> roles = service.findRolesByGroupId(isNew ? parentId : groupId); 
+    	List<?> roles = service.findRolesByGroupId(isNew ? parentId : id); 
         TreeEncoder rolesTreeEncoder = new TreeEncoder(roles);
         
         TreeEncoder editableRolesTree = new TreeEncoder(service.findEditableRoles(), new LevelTreeParser());
@@ -161,7 +161,7 @@ public class GroupAction extends ProgressActionSupport {
         boolean isNew = group.getId() == null;
         if ( isNew ) { // 新建
             service.createNewGroup(group, group2UserExistTree, group2RoleExistTree);
-        } else {// 编辑
+        } else { // 编辑
             service.editExistGroup(group, group2UserExistTree, group2RoleExistTree);
         }
         doAfterSave(isNew, group, "GroupTree");

@@ -10,24 +10,24 @@ import com.jinhe.tss.framework.persistence.pagequery.MacrocodeQueryCondition;
 /**
  * 用户查询条件对象
  */
-public class UMQueryCondition extends MacrocodeQueryCondition{
+public class UMQueryCondition extends MacrocodeQueryCondition {
 	
-	private Long userId; //用户id
-	private Long groupId; //用户组Id
-	private Collection<Long> groupIds; //用户组Id
+	private Long userId;  // 用户id
+	private Long groupId; // 用户组Id
+	private Collection<Long> groupIds; // 用户组Ids
 	
 	private String applicationId;
 	private String resourceTypeId;
 	
-	private String loginName;  //用户名
-	private String userName;   //姓名
-	private String employeeNo; //员工编号
-	private String groupName;  //组名
+	private String loginName;  // 用户名
+	private String userName;   // 姓名
+	private String employeeNo; // 员工编号
+	private String groupName;  // 组名
 	
-	private String sex; //性别
-	private Date   birthday;//出生年月
-	private String certificateNumber; //证件号
-	private Integer groupType; //组的类型
+	private String sex; // 性别
+	private Date   birthday;// 出生年月
+	private String certificateNumber; // 证件号
+	private Integer groupType; // 组的类型
 	
 	private Integer type;    // 查询类型，按什么来查
 	private String keyword;  // 关键字

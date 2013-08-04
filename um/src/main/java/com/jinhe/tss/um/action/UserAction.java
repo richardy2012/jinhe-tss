@@ -43,7 +43,7 @@ public class UserAction extends BaseActionSupport {
     /**
      * 获取一个User（用户）对象的明细信息、用户对用户组信息、用户对角色的信息
      */
-	@RequestMapping("/{groupId}/{userId}")
+	@RequestMapping("/detail/{groupId}/{userId}")
     public void getUserInfoAndRelation(HttpServletResponse response, 
     		@PathVariable("userId") Long userId, @PathVariable("groupId") Long groupId) {
 		
@@ -136,25 +136,32 @@ public class UserAction extends BaseActionSupport {
 	/**
 	 * 搜索用户
 	 */
-	public void searchUser(HttpServletResponse response, UMQueryCondition userQueryCon, String applicationId, int page) {
+	@RequestMapping("/search/{page}")
+	public void searchUser(HttpServletResponse response, UMQueryCondition userQueryCon) {
+		int page = userQueryCon.getPage().getPageNum();
         PageInfo users = userService.searchUser(userQueryCon, page);
         GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), XMLDocUtil.createDoc(UMConstants.MAIN_USER_GRID));
-        print(new String[]{"SourceList", "PageList"}, new Object[]{gridEncoder, users});
+        print(new String[]{"SourceList", "PageInfo"}, new Object[]{gridEncoder, users});
 	}
 
 	/**
      * 根据用户组的id获取所在用户组的所有用户
      */
-    public void getUsersByGroupId(HttpServletResponse response, String applicationId, Long groupId, int page) {
+	@RequestMapping("/list/{groupId}/{page}")
+    public void getUsersByGroupId(HttpServletResponse response, 
+    		@PathVariable("groupId") Long groupId, 
+    		@PathVariable("page") int page) {
+    	
         PageInfo users = userService.getUsersByGroupId(groupId, page, " u.id asc ");
-        GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), XMLDocUtil.createDoc(UMConstants.MAIN_USER_GRID));
-        print(new String[]{"SourceList", "PageList"}, new Object[]{gridEncoder, users});
+        GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), UMConstants.MAIN_USER_GRID);
+        print(new String[]{"SourceList", "PageInfo"}, new Object[]{gridEncoder, users});
     }
 
 	/**
 	 * 根据用户组的id获取所在用户组的所有用户
 	 */
-	public void getUsersByGroup(HttpServletResponse response, Long groupId) {
+	@RequestMapping("/tree/{groupId}")
+	public void getUserTreeByGroup(HttpServletResponse response, @PathVariable("groupId") Long groupId) {
 		List<?> users = userService.getUsersByGroup(groupId);
 		print("Group2UserListTree", new TreeEncoder(users));
 	}
@@ -163,7 +170,11 @@ public class UserAction extends BaseActionSupport {
 	 * 初始化密码
 	 */
 	@RequestMapping(value = "/initpwd/{groupId}/{userId}/{password}", method = RequestMethod.POST)
-	public void initPassword(HttpServletResponse response, Long groupId, Long userId, String password) {		
+	public void initPassword(HttpServletResponse response, 
+			@PathVariable("groupId") Long groupId, 
+			@PathVariable("userId") Long userId, 
+			@PathVariable("password") String password) {	
+		
 		userService.initPasswordByGroupId(groupId, userId, password);
         printSuccessMessage("初始化密码成功！");
 	}
@@ -202,7 +213,7 @@ public class UserAction extends BaseActionSupport {
         }
         else {
         	User user = userService.getUserById(Environment.getOperatorId());
-        	XFormEncoder userEncoder = new XFormEncoder(UMConstants.USER_REGISTER_XFORM, user);
+        	XFormEncoder userEncoder = new XFormEncoder(UMConstants.USER_BASEINFO_XFORM, user);
         	userEncoder.setColumnAttribute("loginName", "editable", "false");
             userEncoder.setColumnAttribute("password",  "editable", "false");
             
@@ -211,6 +222,8 @@ public class UserAction extends BaseActionSupport {
             tempMap.put("userName", Environment.getUserName());
             tempMap.put("loginName", Environment.getOperatorName());
             XFormEncoder pwdEncoder = new XFormEncoder(UMConstants.PASSWORD_CHANGE_XFORM, tempMap);
+            userEncoder.setColumnAttribute("userName", "editable", "false");
+            
             print(new String[]{"UserInfo", "PasswordInfo"}, new Object[]{userEncoder, pwdEncoder});
         }
 	}
@@ -243,7 +256,7 @@ public class UserAction extends BaseActionSupport {
     }
     
     /**
-     * 读取在线用户信息
+     * 读取所有在线用户列表信息
      */
     @RequestMapping("/online")
     public void getOnlineUserInfo(HttpServletResponse response) {

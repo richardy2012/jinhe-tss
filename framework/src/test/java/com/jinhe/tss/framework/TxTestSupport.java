@@ -41,7 +41,7 @@ public abstract class TxTestSupport extends AbstractTransactionalJUnit4SpringCon
             dbserver.setPrepareed(true);
         }
         
-        String token = TokenUtil.createToken(new Random().toString(), new Long(12)); 
+        String token = TokenUtil.createToken(new Random().toString(), 12L); 
         IdentityCard card = new IdentityCard(token, new DemoOperator(12L));
         Context.initIdentityInfo(card);
         

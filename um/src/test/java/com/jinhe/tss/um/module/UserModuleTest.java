@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jinhe.tss.framework.Global;
@@ -40,8 +41,8 @@ public class UserModuleTest extends TxSupportTest4UM {
     public void setUp() {
     	Global.setContext(super.applicationContext);
         
-        response = new MockHttpServletResponse();
-		Context.setResponse(response);
+    	request = new MockHttpServletRequest();
+		Context.setResponse(response = new MockHttpServletResponse());
         
         // 初始化虚拟登录用户信息
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
@@ -88,26 +89,28 @@ public class UserModuleTest extends TxSupportTest4UM {
     
     @Test
     public void getUsersByGroup() {
-    	action.getUsersByGroupId(response, "tss", mainGroupId, 1);
-    	
-    	action.getUsersByGroup(response, mainGroupId);
+    	action.getUsersByGroupId(response, mainGroupId, 1);
+    	action.getUserTreeByGroup(response, mainGroupId);
     	
     	List<User> mainUsers  = service.getUsersByGroup(mainGroupId);
         assertEquals(1, mainUsers.size());
         
         UMQueryCondition userQueryCon = new UMQueryCondition();
         userQueryCon.setGroupId(mainGroupId);
-		action.searchUser(response, userQueryCon , "tss", 1);
+        userQueryCon.getPage().setPageNum(1);
+		action.searchUser(response, userQueryCon);
     }
     
     @Test
     public void testUserCRUD() {
     	// 删除用户
-		service.deleteUser(mainGroupId, user1.getId());
+    	action.deleteUser(response, mainGroupId, user1.getId());
 		
 		// 新增用户
 		user1.setId(null);
-		service.createOrUpdateUser(user1 , "" + mainGroupId, "-1");
+		request.addParameter("user2GroupExistTree", "" + mainGroupId);
+    	request.addParameter("user2RoleExistTree", "-1");
+		action.saveUser(response, request, user1);
 		log.debug(user1);
         
         // 注册一个用户
@@ -116,12 +119,12 @@ public class UserModuleTest extends TxSupportTest4UM {
         user2.setUserName("U_JK-R");
         user2.setPassword("123456");
         user2.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN);
-        service.registerUser(user2);
+        action.registerUser(response, user2);
         log.debug(user2);
         
         // 修改用户
         user2.setUserName("JK-2");
-        service.updateUser(user2);
+        action.modifyUserSelf(response, user2);
     }
   
     @Test

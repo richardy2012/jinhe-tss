@@ -83,19 +83,20 @@ public class CacheDisplayAction extends BaseActionSupport {
         
         Set<Cacheable> cachedItems = pool.listItems();
         long requests = strategy.getPoolInstance().getRequests();
-        List<IGridNode> temp = new ArrayList<IGridNode>();
+        List<IGridNode> dataList = new ArrayList<IGridNode>();
         for(Cacheable item : cachedItems) {
             int hit = item.getHit();
             Object thisKey = item.getKey();
+            int hitrate = (requests == 0) ? 0 : Math.round(((float) hit / requests) * 100f);
             
             DefaultGridNode gridNode = new DefaultGridNode();
             gridNode.getAttrs().put("id", thisKey);
             gridNode.getAttrs().put("key", thisKey);
             gridNode.getAttrs().put("code", code);
             gridNode.getAttrs().put("hit", new Integer(hit));
-            gridNode.getAttrs().put("hitRate", ((requests == 0) ? 0 : (((float) hit / requests) * 100f)) + "%");
+			gridNode.getAttrs().put("hitRate", hitrate + "%");
             gridNode.getAttrs().put("remark", item.getValue());
-            temp.add(gridNode);
+            dataList.add(gridNode);
         }
         
         StringBuffer template = new StringBuffer();
@@ -108,7 +109,7 @@ public class CacheDisplayAction extends BaseActionSupport {
         template.append("<column name=\"remark\" caption=\"说明\" mode=\"string\" align=\"center\"/>");
         template.append("</declare><data></data></grid>");
         
-        GridDataEncoder gEncoder = new GridDataEncoder(temp, XMLDocUtil.dataXml2Doc(template.toString()));
+        GridDataEncoder gEncoder = new GridDataEncoder(dataList, XMLDocUtil.dataXml2Doc(template.toString()));
            
         int totalRows = cachedItems.size();
         String pageInfo = generatePageInfo(totalRows, 1, totalRows + 1, totalRows); // 加入分页信息，总是只有一页。

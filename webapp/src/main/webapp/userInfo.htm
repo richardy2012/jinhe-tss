@@ -6,7 +6,6 @@
 
 <link href="framework/css/css.css" rel="stylesheet" type="text/css">
 <link href="framework/css/other.css" rel="stylesheet" type="text/css">
-
 <link href="framework/xform/xform.css" rel="stylesheet" type="text/css">
 <link href="framework/balloon/balloon.css" rel="stylesheet" type="text/css">
 
@@ -73,16 +72,16 @@ URL_CORE = "framework/";
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_INIT = "ums/user!getUserInfo.action";
-    URL_MODIFY_USER_INFO = "ums/user!modifyUserSelf.action";
-    URL_CHECK_PASSWORD = "getStrength.in";
-	URL_CHANGE_PWD = "resetPassword.in";
+    URL_INIT        = "/" + AUTH_PATH + "user/detail";
+    URL_MODIFY_USER = "/" + AUTH_PATH + "user";
+    URL_CHECK_PWD   = "getPasswordStrength.in";
+	URL_CHANGE_PWD  = "resetPassword.in";
 
 	if( IS_TEST ) {
-		URL_INIT = "test/mockdata/register_init.xml";
-		URL_MODIFY_USER_INFO = "test/mockdata/_success.xml";
-		URL_CHECK_PASSWORD = "test/mockdata/password_check.xml";
-		URL_CHANGE_PWD = "test/mockdata/_success.xml";
+		URL_INIT        = "test/mockdata/register_init.xml";
+		URL_MODIFY_USER = "test/mockdata/_success.xml";
+		URL_CHECK_PWD   = "test/mockdata/password_check.xml";
+		URL_CHANGE_PWD  = "test/mockdata/_success.xml";
 	}
 
 	var registerForm;
@@ -123,9 +122,8 @@ URL_CORE = "framework/";
 		Ajax({
 			url : URL_INIT,
 			headers: {"appCode": APP_CODE},
-			params : {"isModifyOrRegister": "modify"},
 			onresult : function() { 
-				var registerXML = this.getNodeValue(XML_REGISTER_INFO);
+				var registerXML = this.getNodeValue(XML_REGISTER_INFO); 
 				Cache.XmlDatas.add(XML_REGISTER_INFO, registerXML);
 				registerForm = $X("registerForm", registerXML);
 
@@ -138,7 +136,7 @@ URL_CORE = "framework/";
 					if(password == null || password == "") return;
 					
 					var loginName = passwordForm.getData("loginName");
-					checkPasswordSecurityLevel(passwordForm, URL_CHECK_PASSWORD, password, loginName);
+					checkPasswordSecurityLevel(passwordForm, URL_CHECK_PWD, password, loginName);
 				}
 			}
 		});
@@ -146,8 +144,8 @@ URL_CORE = "framework/";
 
     function modifyUserInfo() {
 		Ajax({
-			url : URL_MODIFY_USER_INFO,
-			headers : {"appCode": APP_CODE},
+			url : URL_MODIFY_USER,
+			method : "PUT",
 			xformNode : Cache.XmlDatas.get(CACHE_REGISTER_INFO),
 			onsuccess : function() { 
 				window.close();
@@ -170,7 +168,6 @@ URL_CORE = "framework/";
 		
 		Ajax({
 			url : URL_CHANGE_PWD,
-			headers: {"appCode": APP_CODE},
 			params : {"password": oldpassword, "newPassword": password, "userId": userId},
 			onsuccess : function() { 
 				window.close();
@@ -200,7 +197,7 @@ URL_CORE = "framework/";
 				<XForm:Box id="registerForm" baseurl="framework/xform/"><div class="loading"></div></XForm:Box>
 			</div>
 
-			<div class="xformBox"  id="passwordInfo">
+			<div class="xformBox" id="passwordInfo">
 				<XForm:Box id="passwordForm" baseurl="framework/xform/"><div class="loading"></div></XForm:Box>
 			</div>
 			

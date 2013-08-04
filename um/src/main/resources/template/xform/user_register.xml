@@ -21,86 +21,86 @@
 	<layout>
 		<TR>
 			<TD width="50">
-				<label binding="loginName" name="账号"/>
+				<label binding="loginName"/>
 			</TD>
 			<TD>
-				<input binding="loginName" name="账号"/>
+				<input binding="loginName"/>
 			</TD>
 			<TD width="50">
-				<label binding="userName" name="姓名"/>
+				<label binding="userName"/>
 			</TD>
 			<TD>
-				<input binding="userName" name="姓名"/>
+				<input binding="userName"/>
 			</TD>
 		</TR>
 		<TR>
 			<TD width="50">
-				<label binding="sex" name="性别"/>
+				<label binding="sex"/>
 			</TD>
 			<TD>
-				<input binding="sex" name="性别"/>
+				<input binding="sex"/>
 			</TD>
 			<TD width="50">
-				<label binding="birthday" name="出生年月"/>
+				<label binding="birthday"/>
 			</TD>
 			<TD>
-				<input binding="birthday" name="出生年月"/>
+				<input binding="birthday"/>
 			</TD>
 		</TR>
 		<TR>
 			<TD width="50">
-				<label binding="employeeNo" name="员工编号"/>
+				<label binding="employeeNo"/>
 			</TD>
 			<TD>
-				<input binding="employeeNo" name="员工编号"/>
+				<input binding="employeeNo"/>
 			</TD>
 			<TD width="50">
-				<label binding="mail" name="电子邮件"/>
+				<label binding="mail"/>
 			</TD>
 			<TD>
-				<input binding="mail" name="电子邮件"/>
+				<input binding="mail"/>
 			</TD>
 		</TR>
 		<TR>
 			<TD width="50">
-				<label binding="telephone" name="电话"/>
+				<label binding="telephone"/>
 			</TD>
 			<TD>
-				<input binding="telephone" name="电话"/>
+				<input binding="telephone"/>
 			</TD>
 			<TD width="50">
-				<label binding="address" name="地址"/>
+				<label binding="address"/>
 			</TD>
 			<TD>
-				<input binding="address" name="地址"/>
+				<input binding="address"/>
 			</TD>
 		</TR>
 		<TR>
 			<TD width="50">
-				<label binding="password" name="密码"/>
+				<label binding="password"/>
 			</TD>
 			<TD>
-				<input binding="password" name="密码"/>
+				<input binding="password"/>
 			</TD>
 			<TD width="50">
-				<label binding="password" name="密码确认"/>
+				<label binding="password2"/>
 			</TD>
 			<TD>
-				<input binding="password" name="密码确认"/>
+				<input binding="password2"/>
 			</TD>
 		</TR>
 		<TR>
 			<TD width="50">
-				<label binding="passwordQuestion" name="密码提示问题"/>
+				<label binding="passwordQuestion"/>
 			</TD>
 			<TD>
-				<input binding="passwordQuestion" name="密码提示问题"/>
+				<input binding="passwordQuestion"/>
 			</TD>
 			<TD width="50">
-				<label binding="passwordAnswer" name="密码提示答案"/>
+				<label binding="passwordAnswer"/>
 			</TD>
 			<TD>
-				<input binding="passwordAnswer" name="密码提示答案"/>
+				<input binding="passwordAnswer"/>
 			</TD>
 		</TR>
 	</layout>
