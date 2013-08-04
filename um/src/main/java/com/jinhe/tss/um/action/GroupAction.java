@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import com.jinhe.tss.util.EasyUtils;
 public class GroupAction extends ProgressActionSupport {
 
 	@Autowired private IGroupService service;
+	@Autowired private ISyncService  syncService;
 
 	@RequestMapping("/list")
 	public void getAllGroup2Tree(HttpServletResponse response) {
@@ -79,13 +81,13 @@ public class GroupAction extends ProgressActionSupport {
 	/**
 	 * 得到操作权限
 	 */
-	@RequestMapping("/operations/{type}/{resourceId}")
+	@RequestMapping("/operations/{resourceId}")
 	public void getOperation(HttpServletResponse response, 
-			@PathVariable("type") int type, @PathVariable("resourceId") Long resourceId) {
+			@PathVariable("resourceId") Long resourceId) {
 		
-		// 自注册用户组类型:没有任何菜单
-        if (UMConstants.SELF_REGISTER_GROUP_ID.equals(resourceId) || UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN.equals(resourceId)) {
-        	return; 
+        if (UMConstants.SELF_REGISTER_GROUP_ID.equals(resourceId) 
+        		|| UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN.equals(resourceId)) {
+        	return; // 自注册用户组类型:没有任何菜单
         } 
         
         Long operatorId = Environment.getOperatorId();
@@ -107,15 +109,18 @@ public class GroupAction extends ProgressActionSupport {
 	/**
 	 * 获取一个Group对象的明细信息、用户组对用户信息、用户组对角色的信息
 	 */
+	@RequestMapping(value = "/detail/{parentId}/{groupId}/{type}")
 	public void getGroupInfo(HttpServletResponse response, 
-			Long parentId, Long groupId, int groupType) {
+			@PathVariable("parentId") Long parentId, 
+			@PathVariable("groupId") Long groupId, 
+			@PathVariable("type") int type) {
 		
         Map<String, Object> groupAttributes;
 		boolean isNew = UMConstants.DEFAULT_NEW_ID.equals(groupId);
         if(isNew) {
         	groupAttributes = new HashMap<String, Object>();
             groupAttributes.put("parentId", parentId);
-            groupAttributes.put("groupType", groupType);
+            groupAttributes.put("groupType", type);
         } 
         else {
             Group group = service.getGroupById(groupId);
@@ -126,10 +131,10 @@ public class GroupAction extends ProgressActionSupport {
         TreeEncoder usersTreeEncoder = new TreeEncoder(users);
         
         String groupXForm = null;
-        if(Group.MAIN_GROUP_TYPE.equals(groupType)) {
+        if(Group.MAIN_GROUP_TYPE.equals(type)) {
             groupXForm = UMConstants.GROUP_MAIN_XFORM;      // 主用户组
         }
-        if(Group.ASSISTANT_GROUP_TYPE.equals(groupType)) {
+        if(Group.ASSISTANT_GROUP_TYPE.equals(type)) {
             groupXForm = UMConstants.GROUP_ASSISTANT_XFORM; // 辅助用户组
         }
  
@@ -147,11 +152,12 @@ public class GroupAction extends ProgressActionSupport {
 	}
     
     /**
-     * 编辑一个Group对象的明细信息、用户组对用户信息、用户组对角色的信息
+     * 保存一个Group对象的明细信息、用户组对用户信息、用户组对角色的信息
      */
-    public void editGroup(HttpServletResponse response, 
-    		Group group, String group2UserExistTree, String group2RoleExistTree) {
-    	
+	@RequestMapping(method = RequestMethod.POST)
+    public void saveGroup(HttpServletResponse response, HttpServletRequest request, Group group) {
+    	String group2UserExistTree = request.getParameter("group2UserExistTree");
+    	String group2RoleExistTree = request.getParameter("group2RoleExistTree");
         boolean isNew = group.getId() == null;
         if ( isNew ) { // 新建
             service.createNewGroup(group, group2UserExistTree, group2RoleExistTree);
@@ -164,42 +170,48 @@ public class GroupAction extends ProgressActionSupport {
     /**
      * 启用或者停用用户组
      */
-    @RequestMapping(value = "/disable/{id}/{disabled}")
-    public void startOrStopGroup(HttpServletResponse response, Long id, int disabled) {  
-        service.startOrStopGroup(id, disabled);
+    @RequestMapping(value = "/disable/{id}/{state}", method = RequestMethod.POST)
+    public void startOrStopGroup(HttpServletResponse response, 
+    		@PathVariable("id") Long id, @PathVariable("state") int state) {
+    	
+        service.startOrStopGroup(id, state);
         printSuccessMessage();
     }
     
     /**
      * 删除用户组
      */
-    @RequestMapping(value = "/{groupId}/", method = RequestMethod.DELETE)
-    public void deleteGroup(HttpServletResponse response, Long groupId) {
-        service.deleteGroup(groupId);     
+    @RequestMapping(value = "/{id}/", method = RequestMethod.DELETE)
+    public void deleteGroup(HttpServletResponse response, @PathVariable("id") Long id) {
+        service.deleteGroup(id);     
         printSuccessMessage();
     }
     
     /**
      * 用户组的排序
      */
-    @RequestMapping(value = "/sort/{groupId}/{targetId}/{direction}")
-    public void sortGroup(HttpServletResponse response, Long groupId, Long targetId, int direction) {
-        service.sortGroup(groupId, targetId, direction);
+    @RequestMapping(value = "/sort/{id}/{targetId}/{direction}")
+    public void sortGroup(HttpServletResponse response,             
+    		@PathVariable("id") Long id, 
+            @PathVariable("targetId") Long targetId, 
+            @PathVariable("direction") int direction) {
+    	
+        service.sortGroup(id, targetId, direction);
         printSuccessMessage();
     }  
     
-    
-    @Autowired private ISyncService  syncService;
-    
-    @RequestMapping("/{groupId}")
-    public void syncData(HttpServletResponse response, String applicationId, Long groupId, int mode) {
+    @RequestMapping("/sync/{applicationId}/{groupId}")
+    public void syncData(HttpServletResponse response, 
+    		@PathVariable("applicationId") String applicationId, 
+    		@PathVariable("groupId") Long groupId) {
+    	
         Group group = service.getGroupById(groupId);
         String dbGroupId = group.getDbGroupId();
         if ( EasyUtils.isNullOrEmpty(dbGroupId) ) {
             throw new BusinessException("导入组的对应外部应用组的ID（dbGroupId）为空");
         }
         
-        Map<String, Object> datasMap =  syncService.getCompleteSyncGroupData(groupId, applicationId, dbGroupId);
+        Map<String, Object> datasMap = syncService.getCompleteSyncGroupData(groupId, applicationId, dbGroupId);
         
         List<?> groups = (List<?>)datasMap.get("groups");
         List<?> users  = (List<?>)datasMap.get("users");

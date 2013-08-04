@@ -35,7 +35,7 @@ import com.jinhe.tss.util.DateUtil;
 import com.jinhe.tss.util.EasyUtils;
  
 @Controller
-@RequestMapping("role")
+@RequestMapping("/auth/role")
 public class RoleAction extends BaseActionSupport {
 
 	@Autowired private IRoleService roleService;

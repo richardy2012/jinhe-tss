@@ -7,6 +7,7 @@ import org.dom4j.Document;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
@@ -56,6 +57,7 @@ public abstract class TxSupportTest4UM extends AbstractTransactionalJUnit4Spring
     @Autowired protected IH2DBServer dbserver;
     
     protected MockHttpServletResponse response;
+    protected MockHttpServletRequest  request;
     
     @After
     public void tearDown() {
@@ -66,6 +68,7 @@ public abstract class TxSupportTest4UM extends AbstractTransactionalJUnit4Spring
     public void setUp() {
         Global.setContext(super.applicationContext);
         
+        request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
 		Context.setResponse(response);
         

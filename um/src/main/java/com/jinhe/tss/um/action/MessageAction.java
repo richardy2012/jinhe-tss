@@ -21,7 +21,7 @@ import com.jinhe.tss.um.helper.UMQueryCondition;
 import com.jinhe.tss.um.service.IMessageService;
  
 @Controller
-@RequestMapping("message")
+@RequestMapping("/auth/message")
 public class MessageAction extends BaseActionSupport {
 
 	private static final String XFORM_URI       = "template/xform/message.xml";

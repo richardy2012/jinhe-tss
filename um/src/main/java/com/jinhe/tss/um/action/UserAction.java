@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.dom4j.Document;
@@ -73,7 +74,7 @@ public class UserAction extends BaseActionSupport {
         XFormEncoder baseinfoXFormEncoder = new XFormEncoder(baseinfoXForm, map, true, false);
         XFormEncoder authenXFormEncoder   = new XFormEncoder(authenXForm,   map, true, false); 
         
-        print(new String[]{"UserInfo", "AuthenticateInfo", "User2GroupExistTree", "User2RoleTree", "User2RoleExistTree"}, 
+        print(new String[]{"UserInfo", "AuthInfo", "User2GroupExistTree", "User2RoleTree", "User2RoleExistTree"}, 
                 new Object[]{baseinfoXFormEncoder, authenXFormEncoder, groupTree, roleTree, existRoleTree});
     }
 
@@ -88,7 +89,7 @@ public class UserAction extends BaseActionSupport {
 		print("AuthenticateInfo", authXFormEncoder);
 	}
 	
-	@RequestMapping("/auth/unite/{groupId}/{authenticateMethod}")
+	@RequestMapping("/uniteAuth/{groupId}/{authenticateMethod}")
 	public void uniteAuthenticateMethod(HttpServletResponse response, 
 			@PathVariable("groupId") Long groupId, @PathVariable("authMethod") String authMethod) {
 		
@@ -100,7 +101,9 @@ public class UserAction extends BaseActionSupport {
 	 * 新增或修改一个User对象的明细信息、用户对用户组信息、用户对角色的信息
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public void saveUser(HttpServletResponse response, User user, String user2GroupExistTree, String user2RoleExistTree) {
+	public void saveUser(HttpServletResponse response, HttpServletRequest request, User user) {
+		String user2GroupExistTree = request.getParameter("user2GroupExistTree");
+    	String user2RoleExistTree = request.getParameter("user2RoleExistTree");
 		userService.createOrUpdateUser(user, user2GroupExistTree, user2RoleExistTree);
         printSuccessMessage();
 	}
@@ -109,7 +112,11 @@ public class UserAction extends BaseActionSupport {
 	 * 启用或者停用用户
 	 */
 	@RequestMapping(value = "/disable/{groupId}/{id}/{state}")
-	public void startOrStopUser(HttpServletResponse response, Long groupId, Long id, int state) {
+	public void startOrStopUser(HttpServletResponse response, 
+			@PathVariable("groupId") Long groupId, 
+			@PathVariable("id") Long id, 
+			@PathVariable("state")  int state) {
+		
 		userService.startOrStopUser(id, state, groupId);
         printSuccessMessage();
 	}
@@ -118,7 +125,10 @@ public class UserAction extends BaseActionSupport {
 	 * 删除用户
 	 */
 	@RequestMapping(value = "/{groupId}/{userId}", method = RequestMethod.DELETE)
-	public void deleteUser(HttpServletResponse response, Long groupId, Long userId) {
+	public void deleteUser(HttpServletResponse response, 
+			@PathVariable("groupId") Long groupId, 
+			@PathVariable("userId")  Long userId) {
+		
 		userService.deleteUser(groupId, userId);
         printSuccessMessage();
 	}
@@ -144,7 +154,7 @@ public class UserAction extends BaseActionSupport {
 	/**
 	 * 根据用户组的id获取所在用户组的所有用户
 	 */
-	public void getSelectedUsersByGroupId(HttpServletResponse response, Long groupId) {
+	public void getUsersByGroup(HttpServletResponse response, Long groupId) {
 		List<?> users = userService.getUsersByGroup(groupId);
 		print("Group2UserListTree", new TreeEncoder(users));
 	}

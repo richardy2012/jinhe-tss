@@ -34,7 +34,7 @@ import com.jinhe.tss.util.EasyUtils;
  * 应用资源管理相关Action对象
  */
 @Controller
-@RequestMapping("ar")
+@RequestMapping("/auth/resource")
 public class ApplicationResourceAction extends BaseActionSupport {
 
 	@Autowired private IApplicationService applicationService;
@@ -86,15 +86,16 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 */
 	@RequestMapping(value = "/resource/{id}", method = RequestMethod.GET)
 	public void getResourceTypeInfo(HttpServletResponse response, Long id) {
-		XFormEncoder resourceTypeXFormEncoder = null;
-		
 		ResourceType resourceType = applicationService.getResourceTypeById(id);
-        ResourceTypeRoot resourceTypeRoot = applicationService.findResourceTypeRoot(resourceType.getApplicationId(), resourceType.getResourceTypeId());
+        String applicationId  = resourceType.getApplicationId();
+		String resourceTypeId = resourceType.getResourceTypeId();
+		ResourceTypeRoot resourceTypeRoot = applicationService.findResourceTypeRoot(applicationId, resourceTypeId);
 		if( resourceTypeRoot != null) {
 			resourceType.setRootId(resourceTypeRoot.getRootId());
 		}
-		resourceTypeXFormEncoder = new XFormEncoder(UMConstants.RESOURCETYPE_XFORM, resourceType);
-		print("TypeInfo", resourceTypeXFormEncoder);
+		
+		XFormEncoder xformEncoder = new XFormEncoder(UMConstants.RESOURCETYPE_XFORM, resourceType);
+		print("ResourceTypeDetail", xformEncoder);
 	}
 	
 	/**

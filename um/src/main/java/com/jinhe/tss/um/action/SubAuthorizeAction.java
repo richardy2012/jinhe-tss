@@ -30,7 +30,7 @@ import com.jinhe.tss.util.DateUtil;
  * </p>
  */
 @Controller
-@RequestMapping("subauthorize")
+@RequestMapping("/auth/subauthorize")
 public class SubAuthorizeAction extends BaseActionSupport {
 
 	@Autowired private ISubAuthorizeService service;

@@ -19,7 +19,7 @@ import com.jinhe.tss.um.service.IApplicationService;
 import com.jinhe.tss.util.EasyUtils;
 
 @Controller
-@RequestMapping("search")
+@RequestMapping("/authsearch")
 public class GeneralSearchAction extends BaseActionSupport {
 	
 	@Autowired private GeneralSearchService service;

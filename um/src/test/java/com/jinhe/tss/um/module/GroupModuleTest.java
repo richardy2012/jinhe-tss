@@ -3,9 +3,11 @@ package com.jinhe.tss.um.module;
 import static org.junit.Assert.*;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jinhe.tss.framework.Config;
@@ -45,8 +47,8 @@ public class GroupModuleTest extends TxSupportTest4UM {
     public void setUp() {
     	Global.setContext(super.applicationContext);
         
-        response = new MockHttpServletResponse();
-		Context.setResponse(response);
+    	request = new MockHttpServletRequest();
+		Context.setResponse(response = new MockHttpServletResponse());
         
         // 初始化虚拟登录用户信息
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
@@ -79,9 +81,9 @@ public class GroupModuleTest extends TxSupportTest4UM {
         log.debug(users.get(0) + "\n");
     }
     
+    @After
     public void tearDown() {
     	assertTrue(TestUtil.printLogs(logService) > 0);
-    	
     	super.tearDown();
     }
     
@@ -112,7 +114,9 @@ public class GroupModuleTest extends TxSupportTest4UM {
     @Test
     public void testMainGroupCRUD() {
     	
-    	action.editGroup(response, mainGroup1, "", "-1");
+    	request.addParameter("group2UserExistTree", "");
+    	request.addParameter("group2RoleExistTree", "-1");
+    	action.saveGroup(response, request, mainGroup1);
     	
         Group group2 = new Group();
         group2.setParentId(UMConstants.MAIN_GROUP_ID);
@@ -216,7 +220,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
     
     @Test
     public void testGetOperation() {
-    	action.getOperation(response, Group.MAIN_GROUP_TYPE, mainGroupId);
+    	action.getOperation(response, mainGroupId);
     }
     
     @Test
