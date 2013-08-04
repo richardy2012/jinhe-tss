@@ -125,8 +125,10 @@
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<version>2.9.1</version> 
 					<configuration>
-						<!-- <configLocation>config/maven_checks.xml</configLocation> -->
+						<!-- 
+						<configLocation>config/maven_checks.xml</configLocation>
 						<configLocation>tss_checks.xml</configLocation>
+						 -->
 					</configuration>
 				</plugin> 
 				<plugin>
@@ -139,30 +141,6 @@
 					</configuration> 
 				</plugin> 
 
-				<!-- PMD: static code analysis -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-pmd-plugin</artifactId>
-					<version>2.7.1</version>
-					<configuration>
-						<linkXref>true</linkXref>
-						<sourceEncoding>UTF-8</sourceEncoding>
-						<minimumTokens>100</minimumTokens>
-						<targetJdk>1.6</targetJdk>
-						<excludes>
-							<exclude>**/entity/*.java</exclude>
-							<exclude>**/*Test.java</exclude>
-							<exclude>**/*Tests.java</exclude>
-						</excludes>
-						<!--
-						<rulesets>
-							<ruleset>/rulesets/braces.xml</ruleset>
-							<ruleset>/rulesets/naming.xml</ruleset>
-						</rulesets>
-						-->
-					</configuration>
-				</plugin>
-
 				<!-- test report -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -173,7 +151,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>cobertura-maven-plugin</artifactId>
-					<version>2.5.1</version>
+					<version>2.5.2</version>
 				</plugin>
 
 				<!-- java doc -->
@@ -200,10 +178,6 @@
 						<include>**/*Test.java </include> 
 					</includes>
 					<testFailureIgnore>true</testFailureIgnore> 
-					<!-- 
-					<forkMode>never</forkMode>
-					<argLine>-Dfile.encoding=UTF-8</argLine>
-					 -->
                 </configuration>
             </plugin>
 
@@ -293,7 +267,6 @@
 				<enabled>false</enabled>
 			</releases>
 		</repository>
-		<!-- -->
         <repository>
             <id>com.springsource.repository.maven.release</id>  
 			<url>http://maven.springframework.org/release/</url> 

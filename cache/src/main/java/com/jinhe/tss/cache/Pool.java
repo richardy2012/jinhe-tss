@@ -177,6 +177,7 @@ public interface Pool {
 	 * @param customizer
 	 */
 	CacheCustomizer getCustomizer();
+	void setCustomizer(CacheCustomizer obj);
 
 	/**
 	 * 读取缓存策略信息
@@ -184,6 +185,7 @@ public interface Pool {
 	 * @param strategy
 	 */
 	CacheStrategy getCacheStrategy();
+	void setCacheStrategy(CacheStrategy obj);
 	
 	/**
 	 * 初始化池

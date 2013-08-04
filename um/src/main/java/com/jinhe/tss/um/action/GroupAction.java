@@ -79,7 +79,10 @@ public class GroupAction extends ProgressActionSupport {
 	/**
 	 * 得到操作权限
 	 */
-	public void getOperation(HttpServletResponse response, Integer groupType, Long resourceId) {
+	@RequestMapping("/operations/{type}/{resourceId}")
+	public void getOperation(HttpServletResponse response, 
+			@PathVariable("type") int type, @PathVariable("resourceId") Long resourceId) {
+		
 		// 自注册用户组类型:没有任何菜单
         if (UMConstants.SELF_REGISTER_GROUP_ID.equals(resourceId) || UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN.equals(resourceId)) {
         	return; 

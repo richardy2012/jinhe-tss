@@ -98,7 +98,7 @@ public class CacheStrategy {
 	public String paramFile;
 
 	/** 缓存策略的名称 */
-	AbstractPool pool; // 缓存策略里定义的缓存池
+	Pool pool; // 缓存策略里定义的缓存池
 
 	public Pool getPoolInstance() {
 		if (pool != null && pool.getCacheStrategy().equals(this)) {
@@ -112,12 +112,17 @@ public class CacheStrategy {
 		customizer.setCacheStrategy(this);
 		pool.setCustomizer(customizer);
 		
-		Pool proxyPool = Disabler.disableWrapper(pool);
+		try {
+			pool = Disabler.disableWrapper(pool);
+		} catch(Exception e) {
+			// 某些测试环境下mixin IDisable接口时会报repeat interface，直接忽略，不再mixin了
+		}
+		
  
-		// init前需要先设置好customizer，因为初始化需要用到customizer.create()来新建缓存项。
-		proxyPool.init();
+		// 初始化前需要先设置好customizer，需要用到customizer.create()来新建缓存项。
+		pool.init();
 
-		return proxyPool;
+		return pool;
 	}
 
 	public boolean equals(Object o) {

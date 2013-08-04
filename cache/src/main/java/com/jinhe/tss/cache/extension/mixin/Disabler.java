@@ -64,20 +64,23 @@ public class Disabler {
                  * 存数据则不将数据放到缓存池中，直接返回null 
                  */
                 if(CacheStrategy.TRUE.equals(pool.getCacheStrategy().disabled)){
-                    //不进行初始化
+                    // 不进行初始化
                     if (method.getName().equals("init")) 
                         return null;
                     
-                    //如果是调用getObject方法则调用载入器重新载入。参数args[0]为key值
-                    if (method.getName().equals("getObject"))          
+                    // 如果是调用getObject方法则调用载入器重新载入。参数args[0]为key值
+                    if (method.getName().equals("getObject")) {         
                         return pool.reload(new TimeWrapper(args[0], null)); 
+                    }
                     
-                    if (method.getName().equals("putObject"))
+                    if (method.getName().equals("putObject")) {
                         return null; 
+                    }
                     
                     //如果是调用checkOut 方法则调用池算法器创建一个
-                    if (method.getName().equals("checkOut"))          
+                    if (method.getName().equals("checkOut")) {          
                         return pool.getCustomizer().create(); 
+                    }
 
                     if (method.getName().equals("checkIn")){
                         pool.getCustomizer().destroy((Cacheable) args[0]);
