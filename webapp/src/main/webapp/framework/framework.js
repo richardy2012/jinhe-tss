@@ -674,7 +674,7 @@ function delTreeNode(url) {
 	var tree = $T("tree");
 	var treeNode = tree.getActiveTreeNode();
 	Ajax({
-		url : url || URL_DELETE_NODE + treeNode.getId(),
+		url : (url || URL_DELETE_NODE) + treeNode.getId(),
 		method : "DELETE",
 		onsuccess : function() { 
 			var parentNode = treeNode.getParent();
@@ -716,7 +716,7 @@ function stopOrStartTreeNode(url, state, iconName) {
 	var tree = $T("tree");
 	var treeNode = tree.getActiveTreeNode();
 	Ajax({
-		url : url || URL_STOP_NODE + treeNode.getId() + "/" + state,
+		url : (url || URL_STOP_NODE) + treeNode.getId() + "/" + state,
 		onsuccess : function() { 
 			// 刷新父子树节点停用启用状态: 启用上溯，停用下溯
 			var curNode = new XmlNode(treeNode.node);
@@ -740,7 +740,7 @@ function stopOrStartTreeNode(url, state, iconName) {
 	
 	this.refreshTreeNodeState = function(xmlNode) {
         xmlNode.setAttribute("disabled", state);
-        xmlNode.setAttribute("icon", ICON + iconName + (state == "0" ? "" : "_2 ") + ".gif");
+        xmlNode.setAttribute("icon", ICON + iconName + (state == "0" ? "" : "_2") + ".gif");
     }
 }
 
@@ -751,12 +751,14 @@ function sortTreeNode(url, eventObj) {
 	var direction  = eventObj.moveState; // -1: 往上, 1: 往下
 	var movedNodeID = movedNode.getId();
  
-	Ajax({
-		url : url + movedNodeID + "/" + targetNode.getId() + "/" + direction,
-		onsuccess : function() { 
-			 $T("tree").moveTreeNode(movedNode, targetNode, direction);
-		}
-	});
+	if(targetNode) {
+		Ajax({
+			url : url + movedNodeID + "/" + targetNode.getId() + "/" + direction,
+			onsuccess : function() { 
+				 $T("tree").moveTreeNode(movedNode, targetNode, direction);
+			}
+		});
+	}
 }
 
 

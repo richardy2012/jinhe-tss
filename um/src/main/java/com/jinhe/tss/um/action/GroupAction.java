@@ -87,6 +87,8 @@ public class GroupAction extends ProgressActionSupport {
 		
         if (UMConstants.SELF_REGISTER_GROUP_ID.equals(resourceId) 
         		|| UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN.equals(resourceId)) {
+        	
+        	print("Operation", "");
         	return; // 自注册用户组类型:没有任何菜单
         } 
         
@@ -94,7 +96,7 @@ public class GroupAction extends ProgressActionSupport {
         String resourceTypeId = UMConstants.GROUP_RESOURCE_TYPE_ID;
         List<?> operations = PermissionHelper.getInstance().getOperationsByResource(resourceTypeId, resourceId, operatorId);
  
-        print("Operation", "p1,p2," + EasyUtils.list2Str(operations));
+        print("Operation", EasyUtils.list2Str(operations));
     }
 	
 	/**

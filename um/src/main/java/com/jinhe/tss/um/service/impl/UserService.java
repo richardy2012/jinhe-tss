@@ -1,6 +1,7 @@
 package com.jinhe.tss.um.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -70,10 +71,14 @@ public class UserService implements IUserService{
             throw new BusinessException("初始化密码不能为空");
         }
         
-        List<User> userList = groupDao.getUsersByGroupIdDeeply(groupId);
+        List<User> userList;
+        
+        // 如果指定了用户，则只初始化该用户的密码
         if(userId != null && userId.longValue() > 0) {
-        	userList.clear();
-        	userList.add(userDao.getEntity(userId));
+        	userList = Arrays.asList(userDao.getEntity(userId));
+        }
+        else {
+        	userList = groupDao.getUsersByGroupIdDeeply(groupId);
         }
        
         for (User user : userList) {

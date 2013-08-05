@@ -11,9 +11,8 @@ import java.util.List;
 public interface RemoteResourceTypeDao {
 	
 	/**
-	 * <p>
 	 * 获取未补全表名
-	 * </p>
+	 * 
 	 * @param applicationId
 	 * @param resourceTypeId
 	 * @return
@@ -21,9 +20,8 @@ public interface RemoteResourceTypeDao {
 	String getUnSuppliedTable(String applicationId, String resourceTypeId);
 	
 	/**
-	 * <p>
 	 * 获取补全表名
-	 * </p>
+	 * 
 	 * @param applicationId
 	 * @param resourceTypeId
 	 * @return
@@ -31,9 +29,8 @@ public interface RemoteResourceTypeDao {
 	String getSuppliedTable(String applicationId, String resourceTypeId);
 	
 	/**
-	 * <p>
 	 * 获取资源表名
-	 * </p>
+	 * 
 	 * @param applicationId
 	 * @param resourceTypeId
 	 * @return
@@ -41,9 +38,8 @@ public interface RemoteResourceTypeDao {
 	String getResourceTable(String applicationId, String resourceTypeId);
 	
 	/**
-	 * <p>
 	 * 获取资源根节点
-	 * </p>
+	 * 
 	 * @param applicationId
 	 * @param resourceTypeId
 	 * @return
@@ -51,10 +47,8 @@ public interface RemoteResourceTypeDao {
 	Long getResourceRootId(String applicationId, String resourceTypeId);
     
     /**
-     * <p>
-     * 查找同一类资源的权限选项
-     * 只要operationId
-     * </p>
+     * 查找同一类资源的权限选项。只要operationId
+     * 
      * @param applicationId
      * @param resourceTypeId
      * @return

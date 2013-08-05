@@ -41,18 +41,18 @@
     URL_SAVE_GROUP    = "/" + AUTH_PATH + "group";  // POST
     URL_DELETE_GROUP  = "/" + AUTH_PATH + "group/"; 
 	URL_DEL_USER      = "/" + AUTH_PATH + "user/";
-    URL_STOP_GROUP    = "/" + AUTH_PATH + "group/disable"; 
-    URL_SORT_GROUP    = "/" + AUTH_PATH + "group/sort";
-    URL_STOP_USER     = "/" + AUTH_PATH + "user/disable";
+    URL_STOP_GROUP    = "/" + AUTH_PATH + "group/disable/"; 
+    URL_SORT_GROUP    = "/" + AUTH_PATH + "group/sort/";
+    URL_STOP_USER     = "/" + AUTH_PATH + "user/disable/";
 	URL_GET_OPERATION = "/" + AUTH_PATH + "group/operations/"; 
     URL_USER_TREE     = "/" + AUTH_PATH + "user/tree/"; // user/tree/{groupId}
     URL_INIT_PASSWORD = "/" + AUTH_PATH + "user/initpwd/"; // user/initpwd/{groupId}/{userId}/{password}
 
-    URL_SEARCH_SUBAUTH= "/" + AUTH_PATH + "group/list";"ums/generalSearch!searchUserStrategyInfo.action";
-    URL_SEARCH_ROLE   = "/" + AUTH_PATH + "group/list";"ums/generalSearch!searchRolesInfo.action";
-	URL_SYNC_GROUP    = "/" + AUTH_PATH + "group/list";"ums/syncdata!syncData.action";
-    URL_SYNC_PROGRESS = "/" + AUTH_PATH + "group/list";"ums/syncdata!getProgress.action";
-    URL_CANCEL_SYNC   = "/" + AUTH_PATH + "group/list";"ums/syncdata!doConceal.action";
+    URL_SEARCH_SUBAUTH= "/" + AUTH_PATH + "search/subauth/";
+    URL_SEARCH_ROLE   = "/" + AUTH_PATH + "search/roles/";
+	URL_SYNC_GROUP    = "/" + AUTH_PATH + "group/sync/";
+    URL_SYNC_PROGRESS = "/" + AUTH_PATH + "group/progress/";  // {code} GET
+    URL_CANCEL_SYNC   = "/" + AUTH_PATH + "group/progress/";  // {code} DELETE
 	
 	if(IS_TEST) {
 		URL_INIT = "data/group_tree.xml?";
@@ -118,15 +118,15 @@
     function initTreeMenu(){
         var item1 = {
             label:"停用",
-            callback:function() { stopOrStartTreeNode(URL_STOP_NODE, "1", "user_group"); },
+            callback:function() { stopOrStartTreeNode(URL_STOP_GROUP, "1", "user_group"); },
             icon:ICON + "stop.gif",
-            visible:function(){return editable() && isTreeNodeDisabled();}
+            visible:function(){return editable() && !isTreeNodeDisabled();}
         }
         var item2 = {
             label:"启用",
-            callback:function() { stopOrStartTreeNode(URL_STOP_NODE, "0", "user_group"); },
+            callback:function() { stopOrStartTreeNode(URL_STOP_GROUP, "0", "user_group"); },
             icon:ICON + "start.gif",
-            visible:function(){return editable() && !isTreeNodeDisabled();}
+            visible:function(){return editable() && isTreeNodeDisabled();}
         }
         var item3 = {
             label:"编辑",
@@ -152,7 +152,7 @@
         }
         var item8 = {
             label:"浏览用户",
-            callback:showUserList,
+            callback:function() { showUserList(); },
             icon:ICON + "view_list.gif",
             visible:function(){return !isTreeRoot() && isMainGroup() && getOperation("1"); }
         }
@@ -319,7 +319,7 @@
 		}
  
 		Ajax({
-			url : URL_INIT_PASSWORD + treeNode.getId() + "/" + password
+			url : URL_INIT_PASSWORD + treeNode.getId() + "/0/" + password
 		});	     
     }
  
@@ -329,7 +329,7 @@
         var treeNode = $T("tree").getActiveTreeNode();
 		var treeID   = isAddGroup ? newGroupID : treeNode.getId();
 		var treeName = isAddGroup ? "用户组" : treeNode.getName();		
-		var parentID = isAddGroup ? treeID : treeNode.getParent().getId();		
+		var parentID = isAddGroup ? treeNode.getId() : treeNode.getParent().getId();		
 		var groupType = treeNode.getAttribute("groupType");
 
 		var phases = [];
@@ -347,14 +347,14 @@
 		};
 		callback.onTabChange = function(){
 			setTimeout(function(){
-				loadGroupDetailData(treeID, editable, parentID, groupType);
+				loadGroupDetailData(treeID, parentID, groupType);
 			}, TIMEOUT_TAB_CHANGE);
 		};
 		
 		var inf = {};
 		inf.defaultPage = "page1";
 		inf.callback = callback;
-		inf.label = OPERATION_EDIT.replace(/\$label/i, treeName);
+		inf.label = (isAddGroup ? OPERATION_ADD : OPERATION_EDIT).replace(/\$label/i, treeName);
 		inf.SID = CACHE_TREE_NODE_DETAIL + treeID;
 					
 		inf.phases = phases;
@@ -372,7 +372,7 @@
      */
     function loadGroupDetailData(treeID, parentID, groupType) {
 		var p = new HttpRequestParams();
-		p.url = URL_GROUP_DETAIL + treeID + "/" + parentID + "/" + groupType;
+		p.url = URL_GROUP_DETAIL + parentID + "/" + treeID + "/" + groupType;
  
 		var request = new HttpRequest(p);
 		request.onresult = function(){
@@ -445,11 +445,7 @@
  
     /*
      *	保存用户组
-     *	参数：	string:treeID
-                string:parentID     父节点id
-                string:groupType    组类型
-     *	返回值：
-     */
+、   */
     function saveGroup(treeID, parentID, groupType){
         var page1FormObj = $X("page1Form");
         if( !page1FormObj.checkForm() ) {

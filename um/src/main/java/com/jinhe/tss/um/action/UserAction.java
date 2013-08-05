@@ -45,7 +45,8 @@ public class UserAction extends BaseActionSupport {
      */
 	@RequestMapping("/detail/{groupId}/{userId}")
     public void getUserInfoAndRelation(HttpServletResponse response, 
-    		@PathVariable("userId") Long userId, @PathVariable("groupId") Long groupId) {
+    		@PathVariable("userId")  Long userId, 
+    		@PathVariable("groupId") Long groupId) {
 		
         TreeEncoder existRoleTree = new TreeEncoder(null);
         Map<String, Object> data;
@@ -192,7 +193,7 @@ public class UserAction extends BaseActionSupport {
     /**
      * 用户自己修改个人信息
      */
-	@RequestMapping(method = RequestMethod.PUT)
+	@RequestMapping(value = "/self", method = RequestMethod.PUT)
     public void modifyUserSelf(HttpServletResponse response, User user) {
         User old = userService.getUserById(Environment.getOperatorId());
         BeanUtil.setDataToBean(old, user.getAttributesForXForm());
@@ -205,7 +206,7 @@ public class UserAction extends BaseActionSupport {
 	 * 获得用户个人信息(注册信息)。
      * 用于用户修改自己的注册信息和密码时用。
 	 */
-    @RequestMapping("/detail")
+    @RequestMapping("/self/detail")
 	public void getUserInfo(HttpServletResponse response) {
         // 匿名用户,返回空模版给其注册 
         if(Context.getIdentityCard().isAnonymous()) {
