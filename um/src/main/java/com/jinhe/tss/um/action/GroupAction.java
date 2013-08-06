@@ -160,6 +160,7 @@ public class GroupAction extends ProgressActionSupport {
     public void saveGroup(HttpServletResponse response, HttpServletRequest request, Group group) {
     	String group2UserExistTree = request.getParameter("group2UserExistTree");
     	String group2RoleExistTree = request.getParameter("group2RoleExistTree");
+    	
         boolean isNew = group.getId() == null;
         if ( isNew ) { // 新建
             service.createNewGroup(group, group2UserExistTree, group2RoleExistTree);

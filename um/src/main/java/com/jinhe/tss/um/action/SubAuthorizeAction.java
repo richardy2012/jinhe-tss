@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class SubAuthorizeAction extends BaseActionSupport {
 	/**
 	 * 查找策略列表
 	 */
-	@RequestMapping("/")
+	@RequestMapping("/list")
 	public void getSubAuthorizeStrategys2Tree(HttpServletResponse response) {
 		print("RuleTree", new TreeEncoder(service.getStrategyByCreator()));
 	}
@@ -90,9 +91,12 @@ public class SubAuthorizeAction extends BaseActionSupport {
 	 * 修改一个Strategy对象的明细信息、策略对用户信息、策略对用户组、角色对策略的信息
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public void saveSubAuthorizeInfo(HttpServletResponse response, SubAuthorize strategy, 
-			String rule2UserIds, String rule2GroupIds, String rule2RoleIds) {
+	public void saveSubAuthorizeInfo(HttpServletResponse response, HttpServletRequest request, SubAuthorize strategy) {
 		
+		String rule2UserIds  = request.getParameter("rule2UserIds");
+    	String rule2GroupIds = request.getParameter("rule2GroupIds");
+    	String rule2RoleIds  = request.getParameter("rule2RoleIds");
+    	
 		service.saveStrategy(strategy, rule2UserIds, rule2GroupIds, rule2RoleIds);
 		printSuccessMessage();
 	}
@@ -109,7 +113,7 @@ public class SubAuthorizeAction extends BaseActionSupport {
 	/**
 	 * 停用/启用策略
 	 */
-	@RequestMapping(value = "/disable/{id}/{disabled}")
+	@RequestMapping(value = "/disable/{id}/{state}")
 	public void disable(HttpServletResponse response, 
 			@PathVariable("id") Long id, @PathVariable("state") int state) {
 		
