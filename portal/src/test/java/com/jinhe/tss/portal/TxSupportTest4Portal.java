@@ -26,7 +26,7 @@ import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.permission.PermissionService;
 import com.jinhe.tss.um.service.ILoginService;
-import com.jinhe.tss.um.service.IResourceRegisterService;
+import com.jinhe.tss.um.service.IResourceService;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.XMLDocUtil;
 
@@ -48,7 +48,7 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
  
     protected Logger log = Logger.getLogger(this.getClass());    
     
-    @Autowired protected IResourceRegisterService resourceRegisterService;
+    @Autowired protected IResourceService resourceService;
     @Autowired protected ILoginService loginSerivce;
     @Autowired protected PermissionService permissionService;
     @Autowired protected PermissionHelper permissionHelper;
@@ -90,9 +90,9 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
         
         /* 初始化应用系统、资源、权限项 */
         Document doc = XMLDocUtil.createDocByAbsolutePath(TestUtil.getSQLDir() + "/tss-application-config.xml");
-        resourceRegisterService.setInitial(true);
-        resourceRegisterService.applicationResourceRegister(doc, UMConstants.PLATFORM_SYSTEM_APP);
-        resourceRegisterService.setInitial(false);
+        resourceService.setInitial(true);
+        resourceService.applicationResourceRegister(doc, UMConstants.PLATFORM_SYSTEM_APP);
+        resourceService.setInitial(false);
         
         // 门户浏览时，freemarker解析时需要用到request里的参数
         Context.initRequestContext(new MockHttpServletRequest()); 

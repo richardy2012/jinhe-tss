@@ -145,22 +145,21 @@ public final class UMConstants {
 	public static final String ROLEGROUP_XFORM = "template/xform/roleGroup.xml"; 
 	public static final String STRATEGY_XFORM  = "template/xform/strategy.xml"; 
     
-	public static final String RESOURCETYPE_XFORM           = "template/xform/resourceType.xml";        //ResourceType(新建)
-	public static final String APPLICATION_XFORM            = "template/xform/application.xml";         //Application(新建)
-	public static final String OTHER_APPLICATION_XFORM      = "template/xform/application_other.xml";   //其他应用系统(新建)
-	public static final String OPERATION_XFORM              = "template/xform/operation.xml";           //Operation对象
-	public static final String SERACH_PERMISSION_XFORM      = "template/xform/searchpermission.xml";    //查询权限的
-	public static final String AUTH_METHOD_XFORM            = "template/xform/authenticatemethod.xml";  //查询权限转授的
-	public static final String IMPORT_APP_XFORM             = "template/xform/importapplication.xml";   //应用系统导入的
-	public static final String SEARCH_PERMISSION_XFORM = "template/xform/searchPermissionInfo.xml"; //综合查询搜索用户授权信息的
+	public static final String RESOURCETYPE_XFORM      = "template/xform/resourceType.xml";        //ResourceType(新建)
+	public static final String APPLICATION_XFORM       = "template/xform/application.xml";         //Application(新建)
+	public static final String OTHER_APPLICATION_XFORM = "template/xform/application_other.xml";   //其他应用系统(新建)
+	public static final String OPERATION_XFORM         = "template/xform/operation.xml";           //Operation对象
+	public static final String SERACH_PERMISSION_XFORM = "template/xform/searchpermission.xml";    //查询权限的
+	public static final String AUTH_METHOD_XFORM       = "template/xform/authenticatemethod.xml";  //查询权限转授的
+	public static final String IMPORT_APP_XFORM        = "template/xform/importapplication.xml";   //应用系统导入的
     public static final String PASSWORD_FORGET_XFORM   = "template/xform/password_forget.xml";      //密码忘记提示 
     public static final String PASSWORD_CHANGE_XFORM   = "template/xform/password_change.xml";      //密码修改
 
 	/**
 	 * 对象节点 Tree 图标文件的路径定义
 	 */
-	public static final String START_GROUP_TREENODE_ICON        = "../framework/images/user_group.gif";     //Group图标(启用)
-	public static final String STOP_GROUP_TREENODE_ICON       = "../framework/images/user_group_2.gif";     //Group图标(停用)
+	public static final String START_GROUP_TREENODE_ICON      = "../framework/images/user_group.gif";     //Group图标(启用)
+	public static final String STOP_GROUP_TREENODE_ICON      = "../framework/images/user_group_2.gif";     //Group图标(停用)
 	public static final String START_STRATEGY_TREENODE_ICON = "../framework/images/rule.gif";  //权限转授图标(启用)
 	public static final String STOP_STRATEGY_TREENODE_ICON = "../framework/images/rule_2.gif"; //(Admin)图标(停用)
 	public static final String START_USER_GRID_NODE_ICON  = "../framework/images/user.gif";    //User图标(启用)

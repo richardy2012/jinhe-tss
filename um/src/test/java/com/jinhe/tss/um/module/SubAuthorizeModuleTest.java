@@ -71,7 +71,7 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         Calendar calendar = new GregorianCalendar();
         calendar.add(UMConstants.ROLE_LIFE_TYPE, UMConstants.ROLE_LIFE_TIME);
         role.setEndDate(calendar.getTime());
-        roleAction.saveRole(response, role, "", "");
+        roleAction.saveRole(response, request, role);
         Long roleId = role.getId();
         
         login(mainUser.getId(), mainUser.getLoginName()); // 更好登录用户，看其权限
@@ -86,7 +86,10 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         calendar.add(UMConstants.STRATEGY_LIFE_TYPE, UMConstants.STRATEGY_LIFE_TIME);
         strategy.setEndDate(calendar.getTime());
         strategy.setName("转授策略一");
-        action.saveSubAuthorizeInfo(response, strategy, mainUser.getId() + "", mainGroupId + "," + childGroup.getId(), roleId + "");
+        request.addParameter("rule2UserIds", mainUser.getId() + "");
+        request.addParameter("rule2GroupIds", mainGroupId + "," + childGroup.getId());
+        request.addParameter("rule2RoleIds", roleId + "");
+        action.saveSubAuthorizeInfo(response, request, strategy);
         
         Long strategyId = strategy.getId();
         action.getSubAuthorizeStrategyInfo(response, strategyId);

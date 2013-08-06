@@ -62,6 +62,7 @@ public class MessageAction extends BaseActionSupport {
 		printSuccessMessage("删除成功!");
 	}
 	
+	@RequestMapping("/receivers/search/template")
 	public void getSearchUserInfo(HttpServletResponse response) {
 		GridDataEncoder encoder = new GridDataEncoder(null, USER_GRID_URI);
 		XFormTemplet template = new XFormTemplet(SEARCH_USER_URI);
@@ -69,6 +70,7 @@ public class MessageAction extends BaseActionSupport {
 		        new Object[]{template.getTemplet().asXML(), encoder});
 	}
 	
+	@RequestMapping("/receivers/groups")
 	public void getGroupTree(HttpServletResponse response) {
 		List<?> groups = service.getGroupsList();
 		TreeEncoder encoder = new TreeEncoder(groups, new LevelTreeParser());
@@ -76,16 +78,17 @@ public class MessageAction extends BaseActionSupport {
 		print("GroupTree", encoder);
 	}
 	
+	@RequestMapping("/receivers/search")
 	public void searchUsers(HttpServletResponse response, UMQueryCondition condition) {
 		List<?> users = service.getUsersByCondition(condition);
 		GridDataEncoder encoder = new GridDataEncoder(users, USER_GRID_URI);
-		print("SourceList", encoder);
+		print("UserGrid", encoder);
 	}
-	
+ 
+	@RequestMapping("/list/{boxType}")
 	public void getMessageList(HttpServletResponse response, int boxType) {
 		List<?> messages = null;
-		// 信箱類型，分收件箱、發件箱
-		switch (boxType) {
+		switch (boxType) { // 信箱類型，分收件箱、發件箱
     		case 1:	break;
     		case 2:	messages = service.getInboxList(); break;
     		case 4: messages = service.getOutboxList(); break;

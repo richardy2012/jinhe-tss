@@ -17,21 +17,21 @@ import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
-import com.jinhe.tss.um.action.ApplicationResourceAction;
+import com.jinhe.tss.um.action.ResourceAction;
 import com.jinhe.tss.um.dao.IResourceTypeDao;
 import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.um.entity.Operation;
 import com.jinhe.tss.um.entity.ResourceType;
-import com.jinhe.tss.um.service.IApplicationService;
+import com.jinhe.tss.um.service.IResourceService;
 import com.jinhe.tss.util.BeanUtil;
 
 /**
  * 系统、资源、权限项相关模块的单元测试
  */
-public class ApplicationModuleTest extends TxSupportTest4UM {
+public class ResourceModuleTest extends TxSupportTest4UM {
     
-    @Autowired ApplicationResourceAction action;
-    @Autowired IApplicationService service;
+    @Autowired ResourceAction action;
+    @Autowired IResourceService service;
     @Autowired IResourceTypeDao   resourceTypeDao;
     
     @Before
@@ -64,12 +64,10 @@ public class ApplicationModuleTest extends TxSupportTest4UM {
         List<?> apps = service.getApplications();
         assertTrue(apps.size() >= 2);
         
-        action.getAuthenticateApp(response);
-        
         action.editApplication(response, application);
         action.deleteApplication(response, application.getId());
         
-        action.getImportTemplate(response, UMConstants.PLATFORM_SYSTEM_APP);
+        action.getImportTemplate(response);
         
         File file = new File(TestUtil.getSQLDir() + "/um-application-config.xml");
         action.registerApplication(response, UMConstants.PLATFORM_SYSTEM_APP, file);

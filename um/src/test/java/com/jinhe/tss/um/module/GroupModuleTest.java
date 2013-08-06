@@ -21,7 +21,7 @@ import com.jinhe.tss.um.action.GroupAction;
 import com.jinhe.tss.um.dao.IGroupDao;
 import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.User;
-import com.jinhe.tss.um.service.IApplicationService;
+import com.jinhe.tss.um.service.IResourceService;
 import com.jinhe.tss.um.service.IUserService;
 
 /**
@@ -38,7 +38,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
     
 	@Autowired IGroupDao groupDao;
     @Autowired IUserService userService;
-    @Autowired IApplicationService appService;
+    @Autowired IResourceService appService;
     
     Group mainGroup1;
     Long mainGroupId;

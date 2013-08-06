@@ -20,7 +20,7 @@ import com.jinhe.tss.um.action.UserAction;
 import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.UMQueryCondition;
-import com.jinhe.tss.um.service.IApplicationService;
+import com.jinhe.tss.um.service.IResourceService;
 import com.jinhe.tss.um.service.IUserService;
 
 /**
@@ -31,7 +31,7 @@ public class UserModuleTest extends TxSupportTest4UM {
 	@Autowired UserAction action;
     
     @Autowired IUserService service;
-    @Autowired IApplicationService appService;
+    @Autowired IResourceService appService;
     
     Group mainGroup1;
     Long mainGroupId;

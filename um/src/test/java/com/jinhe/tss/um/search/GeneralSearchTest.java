@@ -15,9 +15,6 @@ import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.Role;
 import com.jinhe.tss.um.entity.SubAuthorize;
 import com.jinhe.tss.um.entity.User;
-import com.jinhe.tss.um.service.IApplicationService;
-import com.jinhe.tss.um.service.IRoleService;
-import com.jinhe.tss.um.service.ISubAuthorizeService;
 import com.jinhe.tss.um.service.IUserService;
 
 /**
@@ -29,26 +26,10 @@ public class GeneralSearchTest extends TxSupportTest4UM {
     
     @Autowired RoleAction roleAction;
     @Autowired SubAuthorizeAction strategyAction;
-    
-    @Autowired GeneralSearchService service;
-    @Autowired RemoteSearchService remoteService;
-    @Autowired IApplicationService applicationService;
-    
-    @Autowired ISubAuthorizeService strategyService;
-    @Autowired IRoleService roleService;
     @Autowired IUserService userService;
  
     @Test
     public void testGeneralSearch() {
-        
-        String applicationId = "tss";
-        String resourceTypeId = UMConstants.GROUP_RESOURCE_TYPE_ID;
-    	
-    	action.getAllApplications(UMConstants.MAIN_GROUP_ID);
-    	
-    	action.getResourceTypes(applicationId);
-    	
-    	action.searchPermission(UMConstants.MAIN_GROUP_ID, applicationId, resourceTypeId);
     	
     	 // 新建一个用户组
         Group mainGroup = new Group();
@@ -76,7 +57,7 @@ public class GeneralSearchTest extends TxSupportTest4UM {
         Calendar calendar = new GregorianCalendar();
         calendar.add(UMConstants.ROLE_LIFE_TYPE, UMConstants.ROLE_LIFE_TIME);
         role.setEndDate(calendar.getTime());
-        roleAction.saveRole(response, role, "", "");
+        roleAction.saveRole(response, request, role);
         Long roleId = role.getId();
         
         // 新建转授策略
@@ -86,7 +67,11 @@ public class GeneralSearchTest extends TxSupportTest4UM {
         calendar.add(UMConstants.STRATEGY_LIFE_TYPE, UMConstants.STRATEGY_LIFE_TIME);
         strategy.setEndDate(calendar.getTime());
         strategy.setName("G_转授策略一");
-        strategyAction.saveSubAuthorizeInfo(response, strategy, mainUser.getId() + "", mainGroup.getId() + "", roleId + "");
+        
+        request.addParameter("rule2UserIds", mainUser.getId() + "");
+        request.addParameter("rule2GroupIds", mainGroup.getId() + "");
+        request.addParameter("rule2RoleIds", roleId + "");
+        strategyAction.saveSubAuthorizeInfo(response, request, strategy);
         
     	action.searchUserSubauth(mainGroup.getId());
     	

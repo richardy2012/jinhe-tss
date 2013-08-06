@@ -31,7 +31,7 @@ import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.permission.PermissionService;
 import com.jinhe.tss.um.permission.ResourcePermission;
 import com.jinhe.tss.um.service.ILoginService;
-import com.jinhe.tss.um.service.IResourceRegisterService;
+import com.jinhe.tss.um.service.IResourceService;
 import com.jinhe.tss.util.XMLDocUtil;
 
 /**
@@ -53,7 +53,7 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
  
     Logger log = Logger.getLogger(this.getClass());    
     
-    @Autowired private IResourceRegisterService resourceRegisterService;
+    @Autowired private IResourceService resourceService;
     @Autowired private ResourcePermission resourcePermission;
     @Autowired private ILoginService loginSerivce;
     @Autowired private PermissionService permissionService;
@@ -98,9 +98,9 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
         /* 初始化应用系统、资源、权限项 */
         String sqlpath = TestUtil.getInitSQLDir();
         Document doc = XMLDocUtil.createDocByAbsolutePath(sqlpath + "/../tss-application-config.xml");
-        resourceRegisterService.setInitial(true);
-        resourceRegisterService.applicationResourceRegister(doc, UMConstants.PLATFORM_SYSTEM_APP);
-        resourceRegisterService.setInitial(false);
+        resourceService.setInitial(true);
+        resourceService.applicationResourceRegister(doc, UMConstants.PLATFORM_SYSTEM_APP);
+        resourceService.setInitial(false);
         
         // 补全SQL初始化出来的系统级用户组
         Long[] groupIds = new Long[] {-2L, -3L, -4L, -7L, -8L, -9L};

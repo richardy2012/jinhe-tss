@@ -2,12 +2,14 @@ package com.jinhe.tss.um.service;
 
 import java.util.List;
 
+import org.dom4j.Document;
+
 import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.um.entity.Operation;
 import com.jinhe.tss.um.entity.ResourceType;
 import com.jinhe.tss.um.entity.ResourceTypeRoot;
 
-public interface IApplicationService{
+public interface IResourceService{
 	
 	/**
 	 * <p>
@@ -148,4 +150,20 @@ public interface IApplicationService{
      * 获得登陆用户可访问的应用系统名称列表
      */
     List<?> getApplications();
+    
+    
+    /**********************************  应用、资源类型、权限选项、资源注册接口  ***********************************************/
+    
+	/**
+     * 设置IResourceService的实现类状态为UM初始化数据状态，以区分UM正式运行时的状态。
+	 * @param initial
+	 */
+	void setInitial(boolean initial);
+
+    /**
+     * 导入XML格式的资源配置文件
+     * @param doc
+     * @param applicationType
+     */
+    void applicationResourceRegister(Document doc, String applicationType);
 }

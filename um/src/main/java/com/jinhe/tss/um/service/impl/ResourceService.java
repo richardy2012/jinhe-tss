@@ -19,21 +19,145 @@ import com.jinhe.tss.um.entity.ResourceType;
 import com.jinhe.tss.um.entity.ResourceTypeRoot;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.permission.PermissionService;
-import com.jinhe.tss.um.service.IResourceRegisterService;
+import com.jinhe.tss.um.service.IResourceService;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
- 
-@Service("ResourceRegisterService")
-public class ResourceRegisterService implements IResourceRegisterService{
+
+@Service("ResourceService")
+public class ResourceService implements IResourceService{
 	
 	@Autowired private IApplicationDao    applicationDao;
 	@Autowired private IResourceTypeDao   resourceTypeDao;
 	@Autowired private PermissionService  permissionService;
-	
-	/**
-	 * 如果是UMS在进行初始化操作，则permissionService取applicationContext.xml里配置的UMS本地PermissionService
-     * 否则，permissionService取各应用里配置的PermissionService，比如导入CMS资源配置文件时，则取CMS的PermissionService
+
+    public Object[] findApplicationAndResourceType() {
+        // 应用系统列表
+        List<?> apps = getApplications();
+        
+        // 资源类型列表
+        List<?> resourceTypes = resourceTypeDao.getEntities("from ResourceType o order by o.seqNo");    
+        
+        // 权限选项列表
+        List<?> operations = resourceTypeDao.getEntities("from Operation o order by o.seqNo");    
+        
+        return new Object[]{apps, resourceTypes, operations};
+    }
+
+	public Application getApplication(String applicationId){
+		return applicationDao.getApplication(applicationId);
+	}
+    
+    public Application getApplicationById(Long id) {
+        return applicationDao.getEntity(id);
+    }
+
+    public ResourceType getResourceTypeById(Long id) {
+        return resourceTypeDao.getEntity(id);
+    }
+
+    public ResourceTypeRoot findResourceTypeRoot(String applicationId, String resourceTypeId){
+        return resourceTypeDao.getResourceTypeRoot(applicationId, resourceTypeId);
+    }
+    
+    public Operation getOperationById(Long id) {
+        return (Operation) resourceTypeDao.getEntity(Operation.class, id);
+    }
+
+	public void removeApplication(Long id) {
+		Application application = applicationDao.getEntity(id);
+		applicationDao.clearDirtyData(application.getApplicationId());		
+	}
+
+	public void removeResourceType(Long id) {
+        ResourceType resourceType = resourceTypeDao.getEntity(id);
+		resourceTypeDao.delete(resourceType);	
+		
+        // 删除Operation表
+		List<?> operationList = resourceTypeDao.getEntities("from Operation o where o.resourceTypeId = ?", resourceType.getResourceTypeId());
+		for(Object obj : operationList) {
+		    removeOperation(((Operation)obj).getId());
+		}
+	}
+
+	public void removeOperation(Long id) {
+		Operation operation = getOperationById(id);
+		resourceTypeDao.delete( operation );
+	        
+        // 删除权限选项, 连同删除RoleResourceOperation表中相关数据 
+        ResourceType resourceType = resourceTypeDao.getResourceType(operation.getApplicationId(), operation.getResourceTypeId());
+        String suppliedTable = resourceType.getSuppliedTable();
+        String unSuppliedTable = resourceType.getUnSuppliedTable();
+        resourceTypeDao.deleteAll(resourceTypeDao.getEntities("from " + suppliedTable   + " o where o.operationId = ?", operation.getOperationId()));
+        resourceTypeDao.deleteAll(resourceTypeDao.getEntities("from " + unSuppliedTable + " o where o.operationId = ?", operation.getOperationId()));
+	}
+    
+	public void saveApplication(Application application) {
+		if(null == application.getId()){ // 新建
+			applicationDao.create(application);
+		} 
+		else {
+			applicationDao.update(application);
+		}
+	}
+
+    public Object createResourceType(ResourceType resourceType){
+        resourceTypeDao.create(resourceType);
+		
+		// 保存一个应用系统中一种类型的根节点
+		ResourceTypeRoot resourceTypeRoot = new ResourceTypeRoot();
+		resourceTypeRoot.setApplicationId(resourceType.getApplicationId());
+		resourceTypeRoot.setResourceTypeId(resourceType.getResourceTypeId());
+		resourceTypeRoot.setRootId(resourceType.getRootId());
+		resourceTypeDao.createObject(resourceTypeRoot);
+		
+		return resourceType;
+	}
+    
+    public Object updateResourceType(ResourceType resourceType){
+        String applicationId = resourceType.getApplicationId();
+        String resourceTypeId = resourceType.getResourceTypeId();
+        ResourceTypeRoot resourceTypeRoot = resourceTypeDao.getResourceTypeRoot(applicationId, resourceTypeId);
+        if(null != resourceTypeRoot){
+            resourceTypeRoot.setRootId(resourceType.getRootId());
+        }
+        
+        resourceTypeDao.update(resourceType);
+        return resourceType;
+    }
+    
+    public Operation saveOperation(Operation operation){
+    	resourceTypeDao.createObject(operation);
+        String applicationId = operation.getApplicationId();
+        String resourceTypeId = operation.getResourceTypeId();
+        
+        ResourceTypeRoot resourceTypeRoot = resourceTypeDao.getResourceTypeRoot(applicationId, resourceTypeId);
+        if( resourceTypeRoot != null ){
+            String unSuppliedTable = resourceTypeDao.getUnSuppliedTable(applicationId, resourceTypeId);
+            String suppliedTable = resourceTypeDao.getSuppliedTable(applicationId, resourceTypeId);
+            String resourceTable = resourceTypeDao.getResourceTable(applicationId, resourceTypeId);
+            
+            permissionService = PermissionHelper.getPermissionService(applicationId, permissionService);
+            
+            // 新建的权限选项要将该权限选项赋予管理员角色(id==-1)
+            permissionService.saveRoleResourceOperation(UMConstants.ADMIN_ROLE_ID, resourceTypeRoot.getRootId(), 
+                    operation.getOperationId(), UMConstants.PERMIT_SUB_TREE, unSuppliedTable, suppliedTable, resourceTable);
+        }   
+        return operation;
+    }
+    
+    public void updateOperation(Operation operation) {
+    	resourceTypeDao.update(operation);
+    }
+
+    public List<?> getApplications() {
+    	return applicationDao.getEntities("from Application o order by o.id");
+    }
+    
+    /**
+	 * 如果是UM在进行初始化操作，则permissionService取applicationContext.xml里配置的UM本地PermissionService
+     * 否则，permissionService取各应用里配置的PermissionService。
+     * 比如导入CMS资源配置文件时，则取CMS的PermissionService
 	 */
 	private boolean initial = false; 
 	public void setInitial(boolean initial) { this.initial = initial; }
@@ -105,8 +229,12 @@ public class ResourceRegisterService implements IResourceRegisterService{
         }       
         
         /*****************************  对外部已经注册的资源进行补全操作 ************************************/
-        if(!initial){
-            permissionService = PermissionHelper.getPermissionService(applicationId, permissionService);      
+        
+        PermissionService permissionService;
+        if( initial ) {
+        	permissionService = this.permissionService;
+        } else {
+        	permissionService = PermissionHelper.getPermissionService(applicationId, this.permissionService);      
         }
         
         // 初始化资源类型          
@@ -142,5 +270,5 @@ public class ResourceRegisterService implements IResourceRegisterService{
         // 初始化平台应用系统，应用系统作为一类资源，需要做补全操作的，所以最后保存
         applicationDao.create(application); 
     }
- 
-}	
+}
+	

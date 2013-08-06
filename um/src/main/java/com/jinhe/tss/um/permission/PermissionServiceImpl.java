@@ -16,14 +16,16 @@ import com.jinhe.tss.um.permission.dispaly.ResourceTreeNode;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.MathUtil;
-
-// ===========================================================================
-// 展示外部资源的授权信息时需要的操作：
-// 1. 从um中取到当前用户的角色信息
-// 2. 保存到登录系统的临时表当中
-// 3. 展示资源时关联该临时表
-// ===========================================================================
-
+ 
+/**
+ * ===========================================================================
+ * 展示外部资源的授权信息时需要的操作：
+ * 1. 从UM中取到当前用户的角色信息
+ * 2. 保存到登录系统的临时表当中
+ * 3. 展示资源时关联该临时表
+ * ===========================================================================
+ *
+ */
 @Service("PermissionService")
 public class PermissionServiceImpl implements PermissionService {
 

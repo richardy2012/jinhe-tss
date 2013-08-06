@@ -2,7 +2,6 @@ package com.jinhe.tss.um.action;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,43 +25,27 @@ import com.jinhe.tss.um.entity.Operation;
 import com.jinhe.tss.um.entity.ResourceType;
 import com.jinhe.tss.um.entity.ResourceTypeRoot;
 import com.jinhe.tss.um.helper.ApplicationTreeParser;
-import com.jinhe.tss.um.service.IApplicationService;
-import com.jinhe.tss.um.service.IResourceRegisterService;
-import com.jinhe.tss.util.EasyUtils;
+import com.jinhe.tss.um.service.IResourceService;
 
 /**
  * 应用资源管理相关Action对象
  */
 @Controller
 @RequestMapping("/auth/resource")
-public class ApplicationResourceAction extends BaseActionSupport {
+public class ResourceAction extends BaseActionSupport {
 
-	@Autowired private IApplicationService applicationService;
+	@Autowired private IResourceService resourceService;
  
 	/**
 	 * 获取所有的Applicaton对象并转换成Tree相应的xml数据格式
 	 */
 	@RequestMapping("/apps")
 	public void getAllApplication2Tree(HttpServletResponse response) {
-		Object applications = applicationService.findApplicationAndResourceType();
+		Object applications = resourceService.findApplicationAndResourceType();
 		TreeEncoder treeEncoder = new TreeEncoder(applications, new ApplicationTreeParser());
 		treeEncoder.setNeedRootNode(false);
  
 		print("AppSource", treeEncoder);
-	}
-	
-	/** 获取认证系统 */
-	public void getAuthenticateApp(HttpServletResponse response) {		
-		// 获得登陆用户可访问的应用系统名称列表		
-		List<?> apps = applicationService.getApplications();
-		String[] appEditor = EasyUtils.generateComboedit(apps, "applicationId", "name", "|");
-		
-		StringBuffer sb = new StringBuffer();
-	    sb.append("<column name=\"authenticateAppId\" caption=\"认证系统\" mode=\"string\" editor=\"comboedit\" ");
-	    sb.append(" editorvalue=\"").append(appEditor[0]).append("\" ");
-	    sb.append(" editortext=\"") .append(appEditor[1]).append("\"/>");
-
-	    print("AuthenticateApplication", sb);
 	}
 	
 	/**
@@ -72,7 +55,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	public void getApplicationInfo(HttpServletResponse response, Long id) {
 		XFormEncoder xformEncoder = null;
  
-        Application application = applicationService.getApplicationById(id);
+        Application application = resourceService.getApplicationById(id);
         if(UMConstants.PLATFORM_SYSTEM_APP.equals(application.getApplicationType())){ // 平台应用系统
             xformEncoder = new XFormEncoder(UMConstants.APPLICATION_XFORM, application);                
         } else { // 其他应用系统
@@ -86,10 +69,10 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 */
 	@RequestMapping(value = "/resource/{id}", method = RequestMethod.GET)
 	public void getResourceTypeInfo(HttpServletResponse response, Long id) {
-		ResourceType resourceType = applicationService.getResourceTypeById(id);
+		ResourceType resourceType = resourceService.getResourceTypeById(id);
         String applicationId  = resourceType.getApplicationId();
 		String resourceTypeId = resourceType.getResourceTypeId();
-		ResourceTypeRoot resourceTypeRoot = applicationService.findResourceTypeRoot(applicationId, resourceTypeId);
+		ResourceTypeRoot resourceTypeRoot = resourceService.findResourceTypeRoot(applicationId, resourceTypeId);
 		if( resourceTypeRoot != null) {
 			resourceType.setRootId(resourceTypeRoot.getRootId());
 		}
@@ -104,7 +87,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	@RequestMapping(value = "/operation/{id}", method = RequestMethod.GET)
 	public void getOperationInfo(HttpServletResponse response, Long operationId) {
 		// 编辑操作选项
-		Operation operation = applicationService.getOperationById(operationId);
+		Operation operation = resourceService.getOperationById(operationId);
 		XFormEncoder xformEncoder = new XFormEncoder(UMConstants.OPERATION_XFORM, operation);
 		print("PermissionOption", xformEncoder);
 	}
@@ -115,7 +98,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	@RequestMapping(value = "/application", method = RequestMethod.POST)
 	public void editApplication(HttpServletResponse response, Application application) {
         boolean isNew = application.getId() == null;
-        applicationService.saveApplication(application);   
+        resourceService.saveApplication(application);   
 		doAfterSave(isNew, application, "AppSource");
 	}
 	
@@ -126,10 +109,10 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	public void editResourceType(HttpServletResponse response, ResourceType resourceType) {
         boolean isNew = resourceType.getId() == null;
 		if( isNew ) { // 新建
-			applicationService.createResourceType(resourceType);			
+			resourceService.createResourceType(resourceType);			
 		}
 		else{ // 编辑
-			applicationService.updateResourceType(resourceType);	
+			resourceService.updateResourceType(resourceType);	
 		}
 		doAfterSave(isNew, resourceType, "AppSource");
 	}
@@ -141,10 +124,10 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	public void editOperation(HttpServletResponse response, Operation operation) {
         boolean isNew = operation.getId() == null;
 		if( isNew ) { // 新建，新建的权限选项要将该权限选项赋予管理员角色(id==-1)
-			applicationService.saveOperation(operation);
+			resourceService.saveOperation(operation);
 		}
 		else { // 编辑
-			applicationService.updateOperation(operation);
+			resourceService.updateOperation(operation);
 		}
 		doAfterSave(isNew, operation, "AppSource");
 	}
@@ -154,7 +137,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 */
 	@RequestMapping(value = "/application/{id}", method = RequestMethod.DELETE)
 	public void deleteApplication(HttpServletResponse response, @PathVariable Long id) {
-		applicationService.removeApplication(id);
+		resourceService.removeApplication(id);
 		printSuccessMessage();
 	}
 	
@@ -163,7 +146,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 */
 	@RequestMapping(value = "/resource/{id}", method = RequestMethod.DELETE)
 	public void deleteResourceType(HttpServletResponse response, @PathVariable Long id) {
-		applicationService.removeResourceType(id);
+		resourceService.removeResourceType(id);
         printSuccessMessage();
 	}
 	
@@ -172,17 +155,16 @@ public class ApplicationResourceAction extends BaseActionSupport {
 	 */
 	@RequestMapping(value = "/operation/{id}", method = RequestMethod.DELETE)
 	public void deleteOperation(HttpServletResponse response, @PathVariable Long id) {
-		applicationService.removeOperation(id);
+		resourceService.removeOperation(id);
         printSuccessMessage();
 	}
 	
 	
-	@Autowired private IResourceRegisterService registerService;
-	
 	// 返回一个空的无数据的模板
-	public void getImportTemplate(HttpServletResponse response, String applicationType) {
+	@RequestMapping("/import/template")
+	public void getImportTemplate(HttpServletResponse response) {
     	Map<String, Object> map = new HashMap<String, Object>();
-    	map.put("applicationType", applicationType);
+    	map.put("applicationType", UMConstants.PLATFORM_SYSTEM_APP);
 		XFormEncoder encoder = new XFormEncoder(UMConstants.IMPORT_APP_XFORM, map);
 		print("ImportApplication", encoder);
 	}
@@ -201,7 +183,7 @@ public class ApplicationResourceAction extends BaseActionSupport {
 		
         try {
             Document doc = new SAXReader().read(file);
-            registerService.applicationResourceRegister(doc, applicationType);
+            resourceService.applicationResourceRegister(doc, applicationType);
         } catch (Exception e) {
             log.error("导入失败，请查看日志信息！", e);
             print("SCRIPT", "parent.alert(\"导入失败，请查看日志信息！\");");

@@ -222,7 +222,10 @@ public class RoleAction extends BaseActionSupport {
 	 * 查询应用系统列表，以便挑出资源进行授权
 	 */
 	@RequestMapping("/apps")
-	public void getApplications(HttpServletResponse response, Long roleId, String isRole2Resource) {
+	public void getApplications(HttpServletResponse response, 
+			@PathVariable("roleId") Long roleId, 
+			@PathVariable("isRole2Resource") Integer isRole2Resource) {
+		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("roleId", roleId);
 		map.put("isRole2Resource", isRole2Resource);
@@ -241,7 +244,7 @@ public class RoleAction extends BaseActionSupport {
 	 * 根据应用获得资源类型。 做 应用系统/资源类型/授权级别 三级下拉框时用
 	 */
 	@RequestMapping("/resourceTypes/{applicationId}")
-	public void getResourceTypes(HttpServletResponse response, String applicationId) {
+	public void getResourceTypes(HttpServletResponse response, @PathVariable("applicationId") String applicationId) {
 		List<?> types = roleService.getResourceTypeByAppId(applicationId);
 		String[] resourceTypeEditor = EasyUtils.generateComboedit(types, "resourceTypeId", "name", "|");
 		
@@ -253,28 +256,27 @@ public class RoleAction extends BaseActionSupport {
 		print("ResourceType", sb);
 	}
 
-	@RequestMapping("/permission/{roleId}/{isRole2Resource}/{applicationId}/{resourceType}")
-	public void initSetPermission(HttpServletResponse response, Long roleId, String isRole2Resource, String applicationId, String  resourceType) {
+	@RequestMapping("/permission/initsearch/{roleId}/{isRole2Resource}/{applicationId}/{resourceType}")
+	public void initSetPermission(HttpServletResponse response, HttpServletRequest request, 
+			@PathVariable("roleId") Long roleId, 
+			@PathVariable("isRole2Resource") Integer isRole2Resource) {
+		
 		if( UMConstants.TRUE.equals(isRole2Resource) ) {
 			getApplications(response, roleId, isRole2Resource);
 			return;
 		}
 		
+		String applicationId = request.getParameter("applicationId");
+    	String resourceType  = request.getParameter("resourceType");
+    	applicationId = applicationId == null ? PermissionHelper.getApplicationID() : applicationId;
+    	
 		Map<String, Object> map = new HashMap<String, Object>();
-		applicationId = applicationId == null ? PermissionHelper.getApplicationID() : applicationId;
-        map.put("applicationId", applicationId);
-		map.put("resourceType", resourceType);
 		map.put("roleId", roleId);
 		map.put("isRole2Resource", isRole2Resource);
+		map.put("applicationId", applicationId);
+		map.put("resourceType", resourceType);
 
 		XFormEncoder xFormEncoder = new XFormEncoder(UMConstants.SERACH_PERMISSION_XFORM, map);
-
-		xFormEncoder.setColumnAttribute("applicationId", "editortext", applicationId);
-		xFormEncoder.setColumnAttribute("applicationId", "editorvalue", applicationId);
-
-		xFormEncoder.setColumnAttribute("resourceType", "editortext", resourceType);
-		xFormEncoder.setColumnAttribute("resourceType", "editorvalue", resourceType);
-
 		print("SearchPermission", xFormEncoder);
 	}
 	
@@ -285,7 +287,12 @@ public class RoleAction extends BaseActionSupport {
 	/**
 	 * 获取授权用的矩阵图
 	 */
-	public void getPermissionMatrix(HttpServletResponse response, String permissionRank, String isRole2Resource, String applicationId, String resourceType, Long roleId) {  
+	@RequestMapping("/permission/matrix/{permissionRank}/{isRole2Resource}/{roleId}")
+	public void getPermissionMatrix(HttpServletResponse response, HttpServletRequest request,  
+			@PathVariable("permissionRank") String permissionRank, 
+			@PathVariable("isRole2Resource") Integer isRole2Resource, 
+			@PathVariable("roleId") Long roleId) {  
+		
 	    if( EasyUtils.isNullOrEmpty(permissionRank) ){
             throw new BusinessException("请选择授权级别");
         }
@@ -293,8 +300,11 @@ public class RoleAction extends BaseActionSupport {
 	    List<Long[]> roleUsers = roleService.getRoles4Permission();
 	    Object[] matrixInfo;
 	    
+	    String applicationId = request.getParameter("applicationId");
+    	String resourceType  = request.getParameter("resourceType");
+	    
 	    //  角色对资源授权（“角色维护”菜单，多个资源授权给单个角色）时，生成 资源－操作选项 矩阵
-        if( "1".equals(isRole2Resource) ) {
+	    if( UMConstants.TRUE.equals(isRole2Resource) ) {
             if( EasyUtils.isNullOrEmpty(applicationId) ){
                 throw new BusinessException("请选择应用系统");
             }
@@ -302,6 +312,7 @@ public class RoleAction extends BaseActionSupport {
                 throw new BusinessException("请选择资源类型");
             }
             
+            permissionService = PermissionHelper.getPermissionService(applicationId, permissionService);
             matrixInfo = permissionService.genResource2OperationMatrix(applicationId, resourceType, 
                     roleId, permissionRank, roleUsers);
         } 
@@ -310,7 +321,7 @@ public class RoleAction extends BaseActionSupport {
             if( applicationId == null ) {
                 applicationId = PermissionHelper.getApplicationID();
             }
- 
+            
             permissionService = PermissionHelper.getPermissionService(applicationId, permissionService);
             matrixInfo = permissionService.genRole2OperationMatrix(applicationId, resourceType, 
                     roleId, permissionRank, roleUsers); // 此时roleId其实是资源ID（resourceId）
@@ -324,18 +335,27 @@ public class RoleAction extends BaseActionSupport {
             }
         }       
         
-        TreeEncoder rolesTreeEncoder = new TreeEncoder(matrixInfo[0], new ResourceTreeParser());
-        rolesTreeEncoder.setOptionsEncoder(treeNodeOptionsEncoder);
-        rolesTreeEncoder.setNeedRootNode(false);
+        TreeEncoder treeEncoder = new TreeEncoder(matrixInfo[0], new ResourceTreeParser());
+        treeEncoder.setOptionsEncoder(treeNodeOptionsEncoder);
+        treeEncoder.setNeedRootNode(false);
         
-        print("setPermission", rolesTreeEncoder);
+        print("PermissionMatrix", treeEncoder);
 	}
 	
 	/**
 	 * permissionRank  授权级别(1:普通(10)，2/3:可授权，可授权可传递(11))
 	 * permissions   角色资源权限选项的集合, 当资源对角色授权时:  role1|2224,role2|4022
 	 */
-	public void savePermission(HttpServletResponse response, String permissionRank, String isRole2Resource, String applicationId, String resourceType, Long roleId, String permissions) {
+	@RequestMapping(value = "/permission/{permissionRank}/{isRole2Resource}/{roleId}", method = RequestMethod.POST)
+	public void savePermission(HttpServletResponse response, HttpServletRequest request,  
+			@PathVariable("permissionRank") String permissionRank, 
+			@PathVariable("isRole2Resource") Integer isRole2Resource, 
+			@PathVariable("roleId") Long roleId) {  
+		
+		String applicationId = request.getParameter("applicationId");
+    	String resourceType  = request.getParameter("resourceType");
+    	String permissions  = request.getParameter("permissions");
+    	
 	    if( applicationId == null ) {
             applicationId = PermissionHelper.getApplicationID();
         }
@@ -343,7 +363,7 @@ public class RoleAction extends BaseActionSupport {
         permissionService = PermissionHelper.getPermissionService(applicationId, permissionService);
         
 	    // 角色对资源授权（“角色维护”菜单，多个资源授权给单个角色）
-        if( "1".equals(isRole2Resource) ) {
+        if( UMConstants.TRUE.equals(isRole2Resource) ) {
             permissionService.saveResources2Role(applicationId, resourceType, roleId, permissionRank, permissions);
         } 
         // 资源对角色授权（“资源授予角色”菜单，单个资源授权给多个角色）
