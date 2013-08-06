@@ -5,7 +5,7 @@
     XML_USER_LIST = "SourceList";
  
     XML_USER_INFO = "UserInfo";
-    XML_AUTHENTICATE_INFO = "AuthenticateInfo";
+    XML_AUTHENTICATE_INFO = "AuthInfo";
     XML_USER_TO_GROUP_TREE = "User2GroupTree";
     XML_USER_TO_GROUP_EXIST_TREE = "User2GroupExistTree";
     XML_USER_TO_ROLE_TREE = "User2RoleTree";
@@ -449,7 +449,7 @@
     function saveGroup(treeID, parentID, groupType){
         var page1FormObj = $X("page1Form");
         if( !page1FormObj.checkForm() ) {
-            switchToPhase(ws, "page1");
+            switchToPhase("page1");
             return;
         }
 
@@ -744,11 +744,11 @@
         var page1FormObj = $X("page1Form");
         var page8FormObj = $X("page8Form");
         if( !page1FormObj.checkForm() ) {
-            switchToPhase(ws, "page1");
+            switchToPhase("page1");
             return;
         }
         if( !page8FormObj.checkForm() ){
-            switchToPhase(ws, "page8");
+            switchToPhase("page8");
             return;
         }
 
@@ -757,7 +757,7 @@
         var user2GroupNode = new XmlNode(page2Tree2.getTreeNodeById("_rootId").node);
         var groupType1TreeNode = user2GroupNode.selectSingleNode(".//treeNode[@groupType='1']");
         if( groupType1TreeNode == null ) {
-            switchToPhase(ws, "page2");
+            switchToPhase("page2");
             var balloon = Balloons.create("至少要有一个主用户组");
             balloon.dockTo(page2Tree2.element);
             return;
