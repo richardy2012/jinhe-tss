@@ -103,8 +103,8 @@ public class UserAction extends BaseActionSupport {
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public void saveUser(HttpServletResponse response, HttpServletRequest request, User user) {
-		String user2GroupExistTree = request.getParameter("user2GroupExistTree");
-    	String user2RoleExistTree = request.getParameter("user2RoleExistTree");
+		String user2GroupExistTree = request.getParameter("User2GroupExistTree");
+    	String user2RoleExistTree  = request.getParameter("User2RoleExistTree");
 		userService.createOrUpdateUser(user, user2GroupExistTree, user2RoleExistTree);
         printSuccessMessage();
 	}

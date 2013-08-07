@@ -93,9 +93,9 @@ public class SubAuthorizeAction extends BaseActionSupport {
 	@RequestMapping(method = RequestMethod.POST)
 	public void saveSubAuthorizeInfo(HttpServletResponse response, HttpServletRequest request, SubAuthorize strategy) {
 		
-		String rule2UserIds  = request.getParameter("rule2UserIds");
-    	String rule2GroupIds = request.getParameter("rule2GroupIds");
-    	String rule2RoleIds  = request.getParameter("rule2RoleIds");
+		String rule2UserIds  = request.getParameter("Rule2UserIds");
+    	String rule2GroupIds = request.getParameter("Rule2GroupIds");
+    	String rule2RoleIds  = request.getParameter("Rule2RoleIds");
     	
 		service.saveStrategy(strategy, rule2UserIds, rule2GroupIds, rule2RoleIds);
 		printSuccessMessage();

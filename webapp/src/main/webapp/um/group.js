@@ -449,7 +449,7 @@
     function saveGroup(treeID, parentID, groupType){
         var page1FormObj = $X("page1Form");
         if( !page1FormObj.checkForm() ) {
-            switchToPhase("page1");
+            ws.switchToPhase("page1");
             return;
         }
 
@@ -744,11 +744,11 @@
         var page1FormObj = $X("page1Form");
         var page8FormObj = $X("page8Form");
         if( !page1FormObj.checkForm() ) {
-            switchToPhase("page1");
+            ws.switchToPhase("page1");
             return;
         }
         if( !page8FormObj.checkForm() ){
-            switchToPhase("page8");
+            ws.switchToPhase("page8");
             return;
         }
 
@@ -757,7 +757,7 @@
         var user2GroupNode = new XmlNode(page2Tree2.getTreeNodeById("_rootId").node);
         var groupType1TreeNode = user2GroupNode.selectSingleNode(".//treeNode[@groupType='1']");
         if( groupType1TreeNode == null ) {
-            switchToPhase("page2");
+            ws.switchToPhase("page2");
             var balloon = Balloons.create("至少要有一个主用户组");
             balloon.dockTo(page2Tree2.element);
             return;
