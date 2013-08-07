@@ -50,12 +50,15 @@ public class UserService implements IUserService{
         	groupUserDao.delete(userDao.getGroup2User(groupId, userId));
         } 
         else {
-        	userDao.removeUser(getUserById(userId));		
+        	User entity = userDao.getEntity(userId);
+        	userDao.removeUser(entity);		
         }
 	}
 
 	public User getUserById(Long id) {
-		return userDao.getEntity(id);
+		User entity = userDao.getEntity(id);
+		userDao.evict(entity);
+		return entity;
 	}
 
     public void updateUser(User user) {

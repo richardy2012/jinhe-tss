@@ -24,7 +24,7 @@ public abstract class OperateInfo implements IOperatable, IEntity {
     protected String updatorName;// 最后修改者姓名
     
     @Version
-    private long lockVersion = 0;
+    private int lockVersion = 0;
     
     protected void putOperateInfo2Map(TreeAttributesMap map) {
         map.put("creatorId", creatorId);
@@ -84,11 +84,11 @@ public abstract class OperateInfo implements IOperatable, IEntity {
         this.updatorName = updatorName;
     }
 
-    public long getLockVersion() {
+    public int getLockVersion() {
         return lockVersion;
     }
 
-    public void setLockVersion(long lockVersion) {
+    public void setLockVersion(int lockVersion) {
         this.lockVersion = lockVersion;
     }
 }

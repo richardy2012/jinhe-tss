@@ -78,7 +78,7 @@ public class UserModuleTest extends TxSupportTest4UM {
     
     @After
     public void tearDown() {
-    	assertTrue(TestUtil.printLogs(logService) > 0);
+    	TestUtil.printLogs(logService);
     	super.tearDown();
     }
     
@@ -108,8 +108,8 @@ public class UserModuleTest extends TxSupportTest4UM {
 		
 		// 新增用户
 		user1.setId(null);
-		request.addParameter("user2GroupExistTree", "" + mainGroupId);
-    	request.addParameter("user2RoleExistTree", "-1");
+		request.addParameter("User2GroupExistTree", "" + mainGroupId);
+    	request.addParameter("User2RoleExistTree", "-1");
 		action.saveUser(response, request, user1);
 		log.debug(user1);
         

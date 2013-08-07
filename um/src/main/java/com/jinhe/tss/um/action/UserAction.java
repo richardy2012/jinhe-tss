@@ -30,7 +30,6 @@ import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.UMQueryCondition;
 import com.jinhe.tss.um.service.IUserService;
-import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
 
@@ -195,10 +194,7 @@ public class UserAction extends BaseActionSupport {
      */
 	@RequestMapping(value = "/self", method = RequestMethod.PUT)
     public void modifyUserSelf(HttpServletResponse response, User user) {
-        User old = userService.getUserById(Environment.getOperatorId());
-        BeanUtil.setDataToBean(old, user.getAttributesForXForm());
-        userService.updateUser(old);
-        
+        userService.updateUser(user);
         printSuccessMessage();
     }
 

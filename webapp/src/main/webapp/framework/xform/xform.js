@@ -987,7 +987,9 @@ function validate() {
 		showErrorInfo(errorInfo, this.obj);
 
 		if(this.isInstance != false) {
-			this.setFocus();
+			if(this.setFocus) {
+				this.setFocus();
+			}
 		}
 		if( event ) {
 			event.returnValue = false;

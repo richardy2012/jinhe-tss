@@ -606,7 +606,7 @@ function addTreeNode(fromTree, toTree, checkFunction) {
 			var treeNode = toTree.getTreeNodeById("_rootId");
 			if( treeNode ) {
 				var cloneNode = new XmlNode(curNode.node).cloneNode(false);
-				toTree.insertTreeNodeXml(cloneNode.toXml(),treeNode);
+				toTree.insertTreeNodeXml(cloneNode.toXml(), treeNode);
 			}
 		}
 	}

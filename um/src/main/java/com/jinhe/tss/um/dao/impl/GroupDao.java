@@ -37,7 +37,8 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
     		create(group);
     	} 
     	else {
-    		update(group);
+    		// 因Decode拦截器里保存了一次了，此时group已经是PO状态，再merge会报乐观锁
+    		super.flush();
     	}
     	
 		return group;

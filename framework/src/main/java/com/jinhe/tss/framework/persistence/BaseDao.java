@@ -69,7 +69,7 @@ public abstract class BaseDao<T extends IEntity> implements IDao<T>{
     }
     
     public Object update(Object entity) {
-        em.merge(entity);
+    	em.merge(entity);
         em.flush();
         return entity;
     }

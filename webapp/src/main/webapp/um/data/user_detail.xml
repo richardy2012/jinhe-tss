@@ -84,7 +84,7 @@
           </TR>
         </layout><data><row><loginName><![CDATA[Jon.King]]></loginName><userName><![CDATA[XXX]]></userName><sex><![CDATA[1]]></sex><mail><![CDATA[xxx@xxx.com]]></mail></row></data></xform>
 	</UserInfo>
-	<AuthenticateInfo>
+	<AuthInfo>
         <xform action="null">
             <declare prefix="user">
                 <column name="certificateCategory" caption="证件种类" mode="string" editor="comboedit" editorvalue="1|2" editortext="工作证|身份证"/>
@@ -122,7 +122,7 @@
             <data>
                 <row><authenticateMethod><![CDATA[2]]></authenticateMethod><certificateCategory><![CDATA[2]]></certificateCategory><passwordAnswer><![CDATA[XXX]]></passwordAnswer><certificateNumber><![CDATA[XXX]]></certificateNumber><accountUsefulLife><![CDATA[2006-07-06]]></accountUsefulLife><password><![CDATA[XXX]]></password><accountState><![CDATA[1]]></accountState><passwordQuestion><![CDATA[XXX]]></passwordQuestion></row></data>
         </xform>
-	</AuthenticateInfo>
+	</AuthInfo>
 	<User2GroupExistTree>
 		<actionSet title="" openednodeid="r2">
 			<treeNode id="_rootId" name="全部" icon="../framework/images/icon_group.gif">

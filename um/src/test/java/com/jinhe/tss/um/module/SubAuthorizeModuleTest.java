@@ -86,9 +86,9 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         calendar.add(UMConstants.STRATEGY_LIFE_TYPE, UMConstants.STRATEGY_LIFE_TIME);
         strategy.setEndDate(calendar.getTime());
         strategy.setName("转授策略一");
-        request.addParameter("rule2UserIds", mainUser.getId() + "");
-        request.addParameter("rule2GroupIds", mainGroupId + "," + childGroup.getId());
-        request.addParameter("rule2RoleIds", roleId + "");
+        request.addParameter("Rule2UserIds", mainUser.getId() + "");
+        request.addParameter("Rule2GroupIds", mainGroupId + "," + childGroup.getId());
+        request.addParameter("Rule2RoleIds", roleId + "");
         action.saveSubAuthorizeInfo(response, request, strategy);
         
         Long strategyId = strategy.getId();

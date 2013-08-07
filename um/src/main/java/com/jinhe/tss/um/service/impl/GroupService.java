@@ -32,7 +32,9 @@ public class GroupService implements IGroupService {
 	@Autowired private ResourcePermission resourcePermission;
 
     public Group getGroupById(Long id) {
-        return groupDao.getEntity(id);
+        Group entity = groupDao.getEntity(id);
+        groupDao.evict(entity);
+		return entity;
     }
 
     public List<User> findUsersByGroupId(Long groupId) {

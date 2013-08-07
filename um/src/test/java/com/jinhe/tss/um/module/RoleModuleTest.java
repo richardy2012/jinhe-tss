@@ -74,8 +74,8 @@ public class RoleModuleTest extends TxSupportTest4UM {
         calendar.add(UMConstants.ROLE_LIFE_TYPE, UMConstants.ROLE_LIFE_TIME);
         role1.setEndDate(calendar.getTime());
         
-        request.addParameter("role2UserIds", UMConstants.ADMIN_USER_ID + "," + mainUser.getId());
-        request.addParameter("role2GroupIds", "" + mainGroup.getId());
+        request.addParameter("Role2UserIds", UMConstants.ADMIN_USER_ID + "," + mainUser.getId());
+        request.addParameter("Role2GroupIds", "" + mainGroup.getId());
         action.saveRole(response, request, role1);
         Long role1Id = role1.getId();
         
@@ -104,8 +104,8 @@ public class RoleModuleTest extends TxSupportTest4UM {
         role2.setStartDate(new Date());
         role2.setEndDate(calendar.getTime());
         
-        request.addParameter("role2UserIds", UMConstants.ADMIN_USER_ID + "," + mainUser.getId());
-        request.addParameter("role2GroupIds", "" + mainGroup.getId());
+        request.addParameter("Role2UserIds", UMConstants.ADMIN_USER_ID + "," + mainUser.getId());
+        request.addParameter("Role2GroupIds", "" + mainGroup.getId());
         action.saveRole(response, request, role2);
         Long role2Id = role2.getId();
         action.getAllRole2Tree(response);

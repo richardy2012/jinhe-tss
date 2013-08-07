@@ -114,8 +114,8 @@ public class GroupModuleTest extends TxSupportTest4UM {
     @Test
     public void testMainGroupCRUD() {
     	
-    	request.addParameter("group2UserExistTree", "");
-    	request.addParameter("group2RoleExistTree", "-1");
+    	request.addParameter("Group2UserExistTree", "");
+    	request.addParameter("Group2RoleExistTree", "-1");
     	action.saveGroup(response, request, mainGroup1);
     	
         Group group2 = new Group();

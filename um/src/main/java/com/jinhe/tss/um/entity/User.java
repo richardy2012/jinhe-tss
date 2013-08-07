@@ -244,7 +244,7 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
  
     public Map<String, Object> getAttributesForXForm() {
         Map<String, Object> map = new LinkedHashMap<String, Object>();
-        BeanUtil.addBeanProperties2Map(this, map, "lockVersion");
+        BeanUtil.addBeanProperties2Map(this, map);
         
         map.put("birthday", DateUtil.format(birthday));
         map.put("accountUsefulLife", DateUtil.format(accountUsefulLife));
