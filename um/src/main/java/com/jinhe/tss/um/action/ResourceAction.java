@@ -52,7 +52,7 @@ public class ResourceAction extends BaseActionSupport {
 	 * 获取一个Application对象的明细信息
 	 */
 	@RequestMapping(value = "/app/{id}", method = RequestMethod.GET)
-	public void getApplicationInfo(HttpServletResponse response, Long id) {
+	public void getApplicationInfo(HttpServletResponse response, @PathVariable("id") Long id) {
 		XFormEncoder xformEncoder = null;
  
         Application application = resourceService.getApplicationById(id);
@@ -68,7 +68,7 @@ public class ResourceAction extends BaseActionSupport {
 	 * 获取一个ResourceType对象的明细信息
 	 */
 	@RequestMapping(value = "/resourceType/{id}", method = RequestMethod.GET)
-	public void getResourceTypeInfo(HttpServletResponse response, Long id) {
+	public void getResourceTypeInfo(HttpServletResponse response, @PathVariable("id") Long id) {
 		ResourceType resourceType = resourceService.getResourceTypeById(id);
         String applicationId  = resourceType.getApplicationId();
 		String resourceTypeId = resourceType.getResourceTypeId();
@@ -85,9 +85,9 @@ public class ResourceAction extends BaseActionSupport {
 	 * 获取一个Operation对象的明细信息
 	 */
 	@RequestMapping(value = "/operation/{id}", method = RequestMethod.GET)
-	public void getOperationInfo(HttpServletResponse response, Long operationId) {
+	public void getOperationInfo(HttpServletResponse response, @PathVariable("id") Long id) {
 		// 编辑操作选项
-		Operation operation = resourceService.getOperationById(operationId);
+		Operation operation = resourceService.getOperationById(id);
 		XFormEncoder xformEncoder = new XFormEncoder(UMConstants.OPERATION_XFORM, operation);
 		print("PermissionOption", xformEncoder);
 	}

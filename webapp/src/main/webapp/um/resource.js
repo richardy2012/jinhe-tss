@@ -96,37 +96,32 @@
     }
 
 	function loadInitData() {
-        var p = new HttpRequestParams();
-        p.url = URL_INIT;
-
-        var request = new HttpRequest(p);
-        request.onresult = function() {
-            var mainTreeNode = this.getNodeValue(XML_MAIN_TREE);
-
-			var tree = $T("tree", mainTreeNode);
-			var treeElement = $$("tree");
-
-            treeElement.onTreeNodeDoubleClick = function(eventObj) {
-                var nodeType = getNodeType();
-				var editable = checkTreeNodeEditable();
-		 
-				switch(nodeType) {
-					case "1":
-						editApplication(editable);          
-						break;
-					case "2":
-						viewResourceType();
-						break;
+		Ajax({
+			url : URL_INIT,
+			onresult : function() { 
+				var mainTreeNode = this.getNodeValue(XML_MAIN_TREE);
+				var tree = $T("tree", mainTreeNode);
+				tree.element.onTreeNodeDoubleClick = function(eventObj) {
+					var nodeType = getNodeType();
+					var editable = checkTreeNodeEditable();
+			 
+					switch(nodeType) {
+						case "1":
+							editApplication(editable);          
+							break;
+						case "2":
+							viewResourceType();
+							break;
+					}
 				}
-            }
-            treeElement.onTreeNodeRightClick = function(eventObj) {
-                var treeObj = $$("tree");
-				if( treeObj.contextmenu ) {
-					treeObj.contextmenu.show(eventObj.clientX, eventObj.clientY);                
+				tree.element.onTreeNodeRightClick = function(eventObj) {
+					var treeObj = $$("tree");
+					if( treeObj.contextmenu ) {
+						treeObj.contextmenu.show(eventObj.clientX, eventObj.clientY);                
+					}
 				}
-            }
-        }
-        request.send();
+			}
+		});	
     }
  
 	function createOtherApplication() {
@@ -163,27 +158,25 @@
 		var tab = ws.open(inf);
     }
  
-    function loadAppDetailData(cacheID, editable, parentID) {
-		var p = new HttpRequestParams();
-		p.url = URL_APP_DETAIL;
-		p.setContent("appId", cacheID);            
+    function loadAppDetailData(cacheID, editable, parentID) {          
+		Ajax({
+			url : URL_APP_DETAIL + cacheID,
+			method : "GET",
+			onresult : function() { 
+				var appInfoNode = this.getNodeValue(XML_APPLICATION_DETAIL);
+				Cache.XmlDatas.add(cacheID, appInfoNode);
 
-		var request = new HttpRequest(p);
-		request.onresult = function() {
-			var appInfoNode = this.getNodeValue(XML_APPLICATION_DETAIL);
-			Cache.XmlDatas.add(cacheID, appInfoNode);
-
-			var xform = $X("page1Form", appInfoNode);
-			xform.editable = editable == false ? "false" : "true";
-			
-			// 设置保存按钮操作
-			var page1BtSaveObj = $$("page1BtSave");
-			page1BtSaveObj.disabled = editable==false?true:false;
-			page1BtSaveObj.onclick = function() {
-				saveApp(cacheID, parentID);
+				var xform = $X("page1Form", appInfoNode);
+				xform.editable = editable == false ? "false" : "true";
+				
+				// 设置保存按钮操作
+				var page1BtSaveObj = $$("page1BtSave");
+				page1BtSaveObj.disabled = editable==false?true:false;
+				page1BtSaveObj.onclick = function() {
+					saveApp(cacheID, parentID);
+				}
 			}
-		}
-		request.send();           
+		});	
     }
  
     function saveApp(cacheID, parentID) {
@@ -217,6 +210,8 @@
             request.onsuccess = function() { // 修改，更新树节点名称
 				var name = $X("page1Form").getData("name");
 				modifyTreeNode(cacheID, "name", name, true);
+
+				ws.closeActiveTab();
             }
             request.send();
         }
@@ -247,21 +242,19 @@
     }
  
     function loadTypeData(treeID) { 
-		var p = new HttpRequestParams();
-		p.url = URL_RESOURCE_TYPE;
-		p.setContent("typeId", treeID);            
+		Ajax({
+			url : URL_RESOURCE_TYPE + treeID,
+			method : "GET",
+			onresult : function() { 
+				var typeInfoNode = this.getNodeValue(XML_SOURCE_TYPE_INFO);
 
-		var request = new HttpRequest(p);
-		request.onresult = function() {
-			var typeInfoNode = this.getNodeValue(XML_SOURCE_TYPE_INFO);
-
-			var xform = $X("page1Form", typeInfoNode);
-			xform.editable = "false";
-			
-			// 设置保存按钮操作
-			$$("page1BtSave").disabled = true;
-		}
-		request.send();
+				var xform = $X("page1Form", typeInfoNode);
+				xform.editable = "false";
+				
+				// 设置保存按钮操作
+				$$("page1BtSave").disabled = true;
+			}
+		});	
     }
  
     function getNodeType() {

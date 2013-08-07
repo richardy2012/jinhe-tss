@@ -21,7 +21,7 @@
 	
     /* XMLHTTP请求地址汇总*/
 	URL_INIT        = "/" + AUTH_PATH + "subauthorize/list"; 
-	URL_RULE_DETAIL = "/" + AUTH_PATH + "subauthorize/"; 
+	URL_RULE_DETAIL = "/" + AUTH_PATH + "subauthorize/detail/"; 
 	URL_GROUP_USERS = "/" + AUTH_PATH + "group/users/";  // {groupId}
 	URL_SAVE_RULE   = "/" + AUTH_PATH + "subauthorize"; 
 	URL_STOP_RULE   = "/" + AUTH_PATH + "subauthorize/disable/"; 

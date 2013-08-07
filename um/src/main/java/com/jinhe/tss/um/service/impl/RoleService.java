@@ -114,8 +114,8 @@ public class RoleService implements IRoleService {
 		map.put("RoleInfo", getRoleById(roleId));
 	    map.put("Role2UserTree", groupDao.getVisibleMainUsers(Environment.getOperatorId()));
 	    map.put("Role2GroupTree", getVisibleGroups());
-		map.put("Role2GroupExistTree", roleDao.getUsersByRoleId(roleId));
-		map.put("Role2UserExistTree", roleDao.getGroupsByRoleId(roleId));
+		map.put("Role2GroupExistTree", roleDao.getGroupsByRoleId(roleId));
+		map.put("Role2UserExistTree", roleDao.getUsersByRoleId(roleId));
 		return map;
 	}
 

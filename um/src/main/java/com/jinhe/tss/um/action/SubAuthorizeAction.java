@@ -47,8 +47,8 @@ public class SubAuthorizeAction extends BaseActionSupport {
 	/**
 	 * 获取一个Strategy（策略）对象的明细信息、角色对策略的信息、策略对用户的信息、策略对用户组的信息
 	 */
-	@RequestMapping("/{id}")
-	public void getSubAuthorizeStrategyInfo(HttpServletResponse response, Long id) {
+	@RequestMapping("/detail/{id}")
+	public void getSubAuthorizeStrategyInfo(HttpServletResponse response, @PathVariable("id") Long id) {
 		XFormEncoder ruleXFormEncoder;
         TreeEncoder ruleToGroupTree = null;
         TreeEncoder ruleToUserTree  = null;

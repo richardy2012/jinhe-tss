@@ -381,6 +381,7 @@
 			var group2RoleGridNode = this.getNodeValue(XML_GROUP_TO_ROLE_EXIST_TREE);
  
 			Cache.XmlDatas.add(treeID + "." + XML_GROUP_INFO, groupInfoNode);
+			disableTreeNodes(group2RoleTreeNode, "//treeNode[@isGroup='1']");
 				
 			var page1FormObj = $X("page1Form", groupInfoNode);
 			attachReminder(page1FormObj.element.id, page1FormObj);

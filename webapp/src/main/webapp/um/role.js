@@ -34,7 +34,7 @@
     URL_DELETE_NODE		  = "/" + AUTH_PATH + "role/";  // {id}
 	URL_MOVE_NODE		  = "/" + AUTH_PATH + "role/move/"; // {id}/{toGroupId}
     URL_GROUP_USERS       = "/" + AUTH_PATH + "group/users/";  // {groupId}
-    URL_GET_OPERATION     = "/" + AUTH_PATH + "role/operations";  // {id}
+    URL_GET_OPERATION     = "/" + AUTH_PATH + "role/operations/";  // {id}
 	
 	if(IS_TEST) {
 	    URL_SOURCE_TREE = "data/role_tree.xml?";
