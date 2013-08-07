@@ -20,17 +20,17 @@
 	/*
      *	XMLHTTP请求地址汇总
      */
-    URL_INIT = "ums/appResource!getAllApplication2Tree.action";
-    URL_APPLICATION_DETAIL = "ums/appResource!getApplicationInfo.action";
-    URL_SAVE_APPLICATION = "ums/appResource!editApplication.action";
-    URL_RESOURCE_TYPE = "ums/appResource!getResourceTypeInfo.action";
-    URL_IMPORT_TEMPLATE = "ums/resourceRegister!getImportTemplate.action";
-    URL_IMPORT = "ums/resourceRegister!applicationRegisterByXML.action";
+    URL_INIT		    = "/" + AUTH_PATH + "resource/apps";
+    URL_APP_DETAIL      = "/" + AUTH_PATH + "resource/app/";
+    URL_SAVE_APP        = "/" + AUTH_PATH + "resource/app"; // POST
+    URL_RESOURCE_TYPE   = "/" + AUTH_PATH + "resource/resourceType/";
+    URL_IMPORT_TEMPLATE = "/" + AUTH_PATH + "resource/import/template";
+    URL_IMPORT          = "/" + AUTH_PATH + "resource/register";
 	
 	if(IS_TEST) {
 		URL_INIT = "data/resource_tree.xml";
-		URL_APPLICATION_DETAIL = "data/application.xml";
-		URL_SAVE_APPLICATION = "data/_success.xml";
+		URL_APP_DETAIL = "data/application.xml";
+		URL_SAVE_APP = "data/_success.xml";
 		URL_RESOURCE_TYPE = "data/resourcetype.xml";
 		URL_IMPORT_TEMPLATE = "data/importapplication.xml";
 		URL_IMPORT = "data/_success.xml";
@@ -165,7 +165,7 @@
  
     function loadAppDetailData(cacheID, editable, parentID) {
 		var p = new HttpRequestParams();
-		p.url = URL_APPLICATION_DETAIL;
+		p.url = URL_APP_DETAIL;
 		p.setContent("appId", cacheID);            
 
 		var request = new HttpRequest(p);
@@ -188,7 +188,7 @@
  
     function saveApp(cacheID, parentID) {
         var p = new HttpRequestParams();
-        p.url = URL_SAVE_APPLICATION;
+        p.url = URL_SAVE_APP;
 
         // 是否提交
         var flag = false;

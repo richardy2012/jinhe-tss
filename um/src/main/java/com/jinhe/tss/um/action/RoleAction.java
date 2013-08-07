@@ -69,14 +69,14 @@ public class RoleAction extends BaseActionSupport {
      */
 	@RequestMapping(method = RequestMethod.POST)
     public void saveRole(HttpServletResponse response, HttpServletRequest request, Role role) {
-		String role2UserIds  = request.getParameter("Role2UserIds");
-    	String role2GroupIds = request.getParameter("Role2GroupIds");
-		
         boolean isNew = (role.getId() == null);
+        
         if(UMConstants.TRUE.equals(role.getIsGroup())) {
         	roleService.saveRoleGroup(role);
         }
         else {
+        	String role2UserIds  = request.getParameter("Role2UserIds");
+        	String role2GroupIds = request.getParameter("Role2GroupIds");
         	roleService.saveRole2UserAndRole2Group(role, role2UserIds, role2GroupIds);
         }
         

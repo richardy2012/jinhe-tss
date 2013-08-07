@@ -2,7 +2,6 @@ package com.jinhe.tss.um.action;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +28,7 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.UMQueryCondition;
+import com.jinhe.tss.um.service.IGroupService;
 import com.jinhe.tss.um.service.IUserService;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
@@ -38,6 +38,7 @@ import com.jinhe.tss.util.XMLDocUtil;
 public class UserAction extends BaseActionSupport {
 
 	@Autowired private IUserService userService;
+	@Autowired private IGroupService groupService;
 
     /**
      * 获取一个User（用户）对象的明细信息、用户对用户组信息、用户对角色的信息
@@ -156,16 +157,7 @@ public class UserAction extends BaseActionSupport {
         GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), UMConstants.MAIN_USER_GRID);
         print(new String[]{"SourceList", "PageInfo"}, new Object[]{gridEncoder, users});
     }
-
-	/**
-	 * 根据用户组的id获取所在用户组的所有用户
-	 */
-	@RequestMapping("/tree/{groupId}")
-	public void getUserTreeByGroup(HttpServletResponse response, @PathVariable("groupId") Long groupId) {
-		List<?> users = userService.getUsersByGroup(groupId);
-		print("Group2UserListTree", new TreeEncoder(users));
-	}
-
+ 
 	/**
 	 * 初始化密码
 	 */

@@ -286,10 +286,6 @@ public class UserService implements IUserService{
 		return groupDao.searchUser(qyCondition, pageNum);
     }
     
-    public List<User> getUsersByGroup(Long groupId) {
-        return groupDao.getUsersByGroupId(groupId);
-    }
-    
     // 可供定时器等对象直接调用。 
 	public void overdue() { 
 		try {

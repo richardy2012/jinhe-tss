@@ -25,16 +25,16 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_SOURCE_TREE		  = "/" + AUTH_PATH + "role/list"; "ums/role!getAllRole2Tree.action";
-    URL_ROLE_DETAIL		  = "/" + AUTH_PATH + "role/list"; "ums/role!getRoleInfoAndRelation.action";
-    URL_SAVE_ROLE		  = "/" + AUTH_PATH + "role/list"; "ums/role!saveRole.action";
-    URL_ROLE_GROUP_DETAIL = "/" + AUTH_PATH + "role/list"; "ums/role!getRoleGroupInfo.action";
-    URL_SAVE_ROLE_GROUP   = "/" + AUTH_PATH + "role/list"; "ums/role!saveRoleGroupInfo.action";
-    URL_STOP_NODE		  = "/" + AUTH_PATH + "role/list"; "ums/role!disable.action";
-    URL_DELETE_NODE		  = "/" + AUTH_PATH + "role/list"; "ums/role!delete.action";
-	URL_MOVE_NODE		  = "/" + AUTH_PATH + "role/list"; "ums/role!move.action";
-    URL_GROUP_2_USER_LIST = "/" + AUTH_PATH + "role/list"; "ums/role!getUserByGroupId.action";    
-    URL_GET_OPERATION     = "/" + AUTH_PATH + "role/list"; "ums/role!getOperation.action";
+    URL_SOURCE_TREE		  = "/" + AUTH_PATH + "role/list";
+    URL_ROLE_DETAIL		  = "/" + AUTH_PATH + "role/detail/"; // {id}/{parentId}
+	URL_ROLE_GROUP_DETAIL = "/" + AUTH_PATH + "role/group/"; // {id}/{parentId}
+    URL_SAVE_ROLE		  = "/" + AUTH_PATH + "role";
+	URL_SAVE_ROLE_GROUP   = "/" + AUTH_PATH + "role"; 
+    URL_STOP_NODE		  = "/" + AUTH_PATH + "role/disable/";  // {id}/{state}
+    URL_DELETE_NODE		  = "/" + AUTH_PATH + "role/";  // {id}
+	URL_MOVE_NODE		  = "/" + AUTH_PATH + "role/move/"; // {id}/{toGroupId}
+    URL_GROUP_USERS       = "/" + AUTH_PATH + "group/users/";  // {groupId}
+    URL_GET_OPERATION     = "/" + AUTH_PATH + "role/operations";  // {id}
 	
 	if(IS_TEST) {
 	    URL_SOURCE_TREE = "data/role_tree.xml?";
@@ -44,7 +44,7 @@
 		URL_SAVE_ROLE_GROUP = "data/_success.xml?";
 		URL_STOP_NODE = "data/_success.xml?";
 		URL_DELETE_NODE = "data/_success.xml?";
-		URL_GROUP_2_USER_LIST = "data/group2userlist.xml?";
+		URL_GROUP_USERS = "data/group2userlist.xml?";
 		URL_MOVE_NODE = "data/_success.xml?";
 		URL_GET_OPERATION = "data/operation.xml?";
 	}
@@ -508,7 +508,7 @@
 			$$("page4Tree").onTreeNodeDoubleClick = function(eventObj) {
                 var treeNode = page4Tree.getActiveTreeNode();
 				Ajax({
-					url : URL_GROUP_2_USER_LIST + treeNode.getId(),
+					url : URL_GROUP_USERS + treeNode.getId(),
 					onresult : function() { 
 						var sourceListNode = this.getNodeValue(XML_GROUP_TO_USER_LIST_TREE);
 						$T("page4Tree2", sourceListNode);

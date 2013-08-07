@@ -51,7 +51,7 @@ public class ResourceAction extends BaseActionSupport {
 	/**
 	 * 获取一个Application对象的明细信息
 	 */
-	@RequestMapping(value = "/application/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/{id}", method = RequestMethod.GET)
 	public void getApplicationInfo(HttpServletResponse response, Long id) {
 		XFormEncoder xformEncoder = null;
  
@@ -67,7 +67,7 @@ public class ResourceAction extends BaseActionSupport {
 	/**
 	 * 获取一个ResourceType对象的明细信息
 	 */
-	@RequestMapping(value = "/resource/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/resourceType/{id}", method = RequestMethod.GET)
 	public void getResourceTypeInfo(HttpServletResponse response, Long id) {
 		ResourceType resourceType = resourceService.getResourceTypeById(id);
         String applicationId  = resourceType.getApplicationId();
@@ -95,7 +95,7 @@ public class ResourceAction extends BaseActionSupport {
 	/**
 	 * 编辑一个Application对象的明细信息
 	 */
-	@RequestMapping(value = "/application", method = RequestMethod.POST)
+	@RequestMapping(value = "/app", method = RequestMethod.POST)
 	public void editApplication(HttpServletResponse response, Application application) {
         boolean isNew = application.getId() == null;
         resourceService.saveApplication(application);   
@@ -169,6 +169,7 @@ public class ResourceAction extends BaseActionSupport {
 		print("ImportApplication", encoder);
 	}
 	
+	@RequestMapping("/register")
 	public void registerApplication(HttpServletResponse response, 
 			String applicationType, @RequestParam File file) {
 		

@@ -13,8 +13,94 @@
 <script language="javascript" src="../framework/framework.js"></script>
 <script language="javascript" src="../framework/tree/tree.js"></script>
 
-<script language="javascript" src="messagegrouptree.js"></script>
  
+ <SCRIPT type="text/javascript">
+ <!--
+	/*
+     *	后台响应数据节点名称
+     */
+    XML_MAIN_TREE = "GroupTree";
+    /*
+     *	默认唯一编号名前缀
+     */
+    CACHE_MAIN_TREE = "tree__id";
+
+    /*
+     *	XMLHTTP请求地址汇总
+     */
+	URL_INIT = "data/group_tree.xml";
+
+    URL_INIT = "/" + AUTH_PATH + "message/receivers/groups";  // "ums/message!getGroupTree.action";
+
+    /*
+     *	函数说明：页面初始化
+     *	参数：	
+     *	返回值：
+     */
+    function init(){
+		var p = new HttpRequestParams();
+		p.url = URL_INIT;
+
+		var request = new HttpRequest(p);
+		request.onresult = function(){
+			var groupTreeNode = this.getNodeValue(XML_MAIN_TREE);
+
+			var groupTreeNodeID = CACHE_MAIN_TREE;
+
+			Cache.XmlIslands.add(groupTreeNodeID,groupTreeNode);
+
+			initTree(groupTreeNodeID);
+		}
+		request.send();
+    }
+
+    function initTree(cacheID){
+        var treeObj = $("tree");
+        Public.initHTC(treeObj,"isLoaded","oncomponentready",function(){
+            initTreeData(cacheID);
+        });
+    }
+
+    function initTreeData(cacheID){
+        var xmlIsland = Cache.XmlIslands.get(cacheID);
+        if(null!=xmlIsland){
+            var treeObj = $("tree");
+            treeObj.load(xmlIsland.node);
+
+            treeObj.onTreeNodeActived = function(eventObj){
+				onTreeNodeActived(eventObj);
+            }
+            treeObj.onTreeNodeDoubleClick = function(eventObj){
+                onTreeNodeDoubleClick(eventObj);
+            }
+        }    
+    }
+
+    function onTreeNodeDoubleClick(eventObj){
+        getGroup();
+    }
+
+    function getGroup(){        
+        var treeObj = $("tree");
+        var activeTreeNode = treeObj.getActiveTreeNode();
+        if(null!=activeTreeNode){
+            var id = activeTreeNode.getId();
+            var name = activeTreeNode.getName();
+            var type = activeTreeNode.getAttribute("groupType");
+            var appId = "";
+            if(null==type || ""==type){
+                id = "-4";
+                appId = activeTreeNode.getId();
+            }
+            window.returnValue = {id:id,name:name,type:type,appId:appId};
+            window.close();
+        }
+    }
+
+    window.onload = init;
+
+ //-->
+ </SCRIPT>
 </head>
 
 <body>
@@ -22,14 +108,13 @@
   <table class="full" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td>
-        <!-- tree 开始 -->
         <Tree:TreeBox id="tree" treeType="menu" baseurl="../core/htc/tree/"><div class="loading"></div></Tree:TreeBox>
-        <!-- tree 结束 -->
       </td>
     </tr>
     <tr>
       <td class="t" height="30" align="right">
-        <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> <input type="button" value="确定" class="btStrong" onclick="getGroup()"/>
+        <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> 
+		<input type="button" value="确定" class="btStrong" onclick="getGroup()"/>
       </td>
     </tr>
   </table>

@@ -71,7 +71,7 @@ public class UserModuleTest extends TxSupportTest4UM {
         service.createOrUpdateUser(user1 , "" + mainGroupId, "-1");
         log.debug(user1);
         
-        List<User> users = groupService.findUsersByGroupId(mainGroupId);
+        List<User> users = groupService.getUsersByGroupId(mainGroupId);
         assertEquals(1, users.size());
         log.debug(users.get(0) + "\n");
     }
@@ -90,9 +90,8 @@ public class UserModuleTest extends TxSupportTest4UM {
     @Test
     public void getUsersByGroup() {
     	action.getUsersByGroupId(response, mainGroupId, 1);
-    	action.getUserTreeByGroup(response, mainGroupId);
     	
-    	List<User> mainUsers  = service.getUsersByGroup(mainGroupId);
+    	List<User> mainUsers  = groupService.getUsersByGroupId(mainGroupId);
         assertEquals(1, mainUsers.size());
         
         UMQueryCondition userQueryCon = new UMQueryCondition();

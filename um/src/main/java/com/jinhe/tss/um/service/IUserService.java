@@ -1,6 +1,5 @@
 package com.jinhe.tss.um.service;
 
-import java.util.List;
 import java.util.Map;
 
 import com.jinhe.tss.framework.component.log.Logable;
@@ -154,14 +153,6 @@ public interface IUserService {
      * @return
      */
     PageInfo getUsersByGroupId(Long groupId, Integer pageNum, String orderBy);
-
-    /**
-     * 根据用户组ID获取所有的用户(不分页)
-     * @param groupId
-     * @param groupType
-     * @return
-     */
-    List<User> getUsersByGroup(Long groupId);
     
     /**
      * <p>

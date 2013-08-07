@@ -78,7 +78,7 @@ public class MessageAction extends BaseActionSupport {
 		print("GroupTree", encoder);
 	}
 	
-	@RequestMapping("/receivers/search")
+	@RequestMapping("/receivers")
 	public void searchUsers(HttpServletResponse response, UMQueryCondition condition) {
 		List<?> users = service.getUsersByCondition(condition);
 		GridDataEncoder encoder = new GridDataEncoder(users, USER_GRID_URI);

@@ -86,7 +86,7 @@
 		<operation operationId="8" name="浏览" seqNo="8" description="浏览门户结构" />
 	</resourceType>
 	
-	<resourceType resourceTypeId="12" name="菜单" seqNo="13" description="菜单" 
+	<resourceType resourceTypeId="12" name="菜单导航" seqNo="13" description="菜单导航" 
 		unSuppliedTable="com.jinhe.tss.portal.entity.permission.NavigatorPermissions" 
 		suppliedTable="com.jinhe.tss.portal.entity.permission.NavigatorPermissionsFull" 
 		resourceTable="com.jinhe.tss.portal.entity.permission.NavigatorResourceView">	

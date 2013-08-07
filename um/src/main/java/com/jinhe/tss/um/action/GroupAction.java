@@ -104,7 +104,7 @@ public class GroupAction extends ProgressActionSupport {
 	 */
 	@RequestMapping(value = "/users/{groupId}")
 	public void getUserByGroupId(HttpServletResponse response, @PathVariable("groupId") Long groupId) {
-		List<?> list = service.findUsersByGroupId(groupId);
+		List<?> list = service.getUsersByGroupId(groupId);
 		print("Group2UserListTree", new TreeEncoder(list));
 	}
 	
@@ -129,7 +129,7 @@ public class GroupAction extends ProgressActionSupport {
             groupAttributes = group.getAttributesForXForm();
         }
         
-        List<?> users = service.findUsersByGroupId(id);
+        List<?> users = service.getUsersByGroupId(id);
         TreeEncoder usersTreeEncoder = new TreeEncoder(users);
         
         String groupXForm = null;

@@ -18,7 +18,7 @@ public interface IGroupService {
 	 * @param groupId
 	 * @return
 	 */
-	List<User> findUsersByGroupId(Long groupId);
+	List<User> getUsersByGroupId(Long groupId);
 
 	/**
 	 * <p>

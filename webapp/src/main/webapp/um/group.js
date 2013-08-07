@@ -45,7 +45,7 @@
     URL_SORT_GROUP    = "/" + AUTH_PATH + "group/sort/";
     URL_STOP_USER     = "/" + AUTH_PATH + "user/disable/";
 	URL_GET_OPERATION = "/" + AUTH_PATH + "group/operations/"; 
-    URL_USER_TREE     = "/" + AUTH_PATH + "user/tree/"; // user/tree/{groupId}
+    URL_GROUP_USERS   = "/" + AUTH_PATH + "group/users/";  // {groupId}
     URL_INIT_PASSWORD = "/" + AUTH_PATH + "user/initpwd/"; // user/initpwd/{groupId}/{userId}/{password}
 
     URL_SEARCH_SUBAUTH= "/" + AUTH_PATH + "search/subauth/";
@@ -65,7 +65,7 @@
 		URL_STOP_GROUP = "data/_success.xml?";
 		URL_SORT_GROUP = "data/_success.xml?";
 		URL_STOP_USER = "data/_success.xml?";
-		URL_USER_TREE = "data/userlist.xml?";
+		URL_GROUP_USERS = "data/userlist.xml?";
 		URL_DEL_USER = "data/_success.xml?";
 		URL_INIT_PASSWORD = "data/_success.xml?";
 		URL_GET_OPERATION = "data/operation.xml?";
@@ -394,7 +394,7 @@
 				$$("page4Tree").onTreeNodeDoubleClick = function(eventObj) {
 					var treeNode = page4Tree.getActiveTreeNode();
 					Ajax({
-						url : URL_USER_TREE + treeNode.getId(),
+						url : URL_GROUP_USERS + treeNode.getId(),
 						onresult : function() { 
 							var sourceListNode = this.getNodeValue(XML_GROUP_TO_USER_LIST_TREE);
 							$T("page4Tree2", sourceListNode);

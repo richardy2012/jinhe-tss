@@ -20,17 +20,17 @@
     CACHE_RULE_DETAIL = "rule__id";
 	
     /* XMLHTTP请求地址汇总*/
-	URL_INIT = "data/subauth_tree.xml";
-	URL_RULE_DETAIL = "data/subauth_detail.xml";
-	URL_GROUP_TO_USER_LIST = "data/subauth_userlist.xml";
-	URL_SAVE_RULE = "data/_success.xml";
-	URL_STOP_RULE = "data/_success.xml";
-	URL_DEL_RULE  = "data/_success.xml";
+	URL_INIT        = "/" + AUTH_PATH + "subauthorize/list"; 
+	URL_RULE_DETAIL = "/" + AUTH_PATH + "subauthorize/"; 
+	URL_GROUP_USERS = "/" + AUTH_PATH + "group/users/";  // {groupId}
+	URL_SAVE_RULE   = "/" + AUTH_PATH + "subauthorize"; 
+	URL_STOP_RULE   = "/" + AUTH_PATH + "subauthorize/disable/"; 
+	URL_DEL_RULE    = "/" + AUTH_PATH + "subauthorize/"; 
 	
 	if(IS_TEST) {
 		URL_INIT = "data/subauth_tree.xml?";
 		URL_RULE_DETAIL = "data/subauth_detail.xml?";
-		URL_GROUP_TO_USER_LIST = "data/subauth_users.xml?";
+		URL_GROUP_USERS = "data/subauth_users.xml?";
 		URL_SAVE_RULE = "data/_success.xml?";
 		URL_STOP_RULE = "data/_success.xml?";
 		URL_DEL_RULE  = "data/_success.xml?";
@@ -294,7 +294,7 @@
     function onPage4TreeNodeDoubleClick(eventObj) {
 	    var treeNode = $T("page4Tree").getActiveTreeNode();
 		Ajax({
-			url : URL_GROUP_TO_USER_LIST + treeNode.getId(),
+			url : URL_GROUP_USERS + treeNode.getId(),
 			onresult : function() { 
 				var sourceListNode = this.getNodeValue(XML_GROUP_TO_USER_LIST_TREE);
 				$T("page4Tree2", sourceListNode);

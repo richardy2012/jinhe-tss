@@ -76,7 +76,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
         userService.createOrUpdateUser(user1 , "" + mainGroupId, "-1");
         log.debug(user1 + "\n");
         
-        List<User> users = groupService.findUsersByGroupId(mainGroupId);
+        List<User> users = groupService.getUsersByGroupId(mainGroupId);
         assertEquals(1, users.size());
         log.debug(users.get(0) + "\n");
     }
@@ -182,7 +182,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
         group3.setGroupType( Group.ASSISTANT_GROUP_TYPE );
         groupService.createNewGroup(group3 , "", "-1");
         
-        List<User> users = groupService.findUsersByGroupId(group1.getId());
+        List<User> users = groupService.getUsersByGroupId(group1.getId());
         assertEquals(1, users.size());
         log.debug(users.get(0) + "\n");
         

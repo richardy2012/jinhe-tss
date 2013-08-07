@@ -37,7 +37,7 @@ public class GroupService implements IGroupService {
 		return entity;
     }
 
-    public List<User> findUsersByGroupId(Long groupId) {
+    public List<User> getUsersByGroupId(Long groupId) {
         return groupDao.getUsersByGroupId(groupId);
     }
 

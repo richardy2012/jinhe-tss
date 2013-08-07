@@ -13,12 +13,12 @@
     OPERATION_REPLY = "回复\"$label\"";
  
     /* XMLHTTP请求地址汇总 */
-    URL_INIT = "data/message_init.xml";
-    URL_MESSAGE_LIST = "ums/message!getMessageList.action";
-    URL_MESSAGE_DETAIL = "ums/message!viewMessage.action";
-	URL_MESSAGE_REPLY = "ums/message!getMessageInfo.action";
-    URL_SAVE_MESSAGE = "ums/message!saveMessage.action"; 
-    URL_DEL_MESSAGE = "ums/message!deleteMessage.action";
+    URL_INIT           = "data/message_init.xml";
+    URL_MESSAGE_LIST   = "/" + AUTH_PATH + "message/list";  // {boxType}
+    URL_MESSAGE_DETAIL = "/" + AUTH_PATH + "message/";  // {id}
+	URL_MESSAGE_REPLY  = "/" + AUTH_PATH + "message/reply/"; // {id}
+    URL_SAVE_MESSAGE   = "/" + AUTH_PATH + "message"; // PUT
+    URL_DEL_MESSAGE    = "/" + AUTH_PATH + "message/"; // {id} DELETE
 
 	if(IS_TEST) {
 		URL_INIT = "data/message_init.xml?";
