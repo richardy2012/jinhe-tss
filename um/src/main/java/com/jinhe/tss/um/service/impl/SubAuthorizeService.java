@@ -24,7 +24,7 @@ public class SubAuthorizeService implements ISubAuthorizeService {
 	@Autowired private IRoleDao  roleDao;
 	@Autowired private IGroupDao groupDao;	
 
-	public void deleteStrategy(Long id) {
+	public void deleteSubauth(Long id) {
 		roleDao.deleteStrategy((SubAuthorize) roleDao.getEntity(SubAuthorize.class, id));
 	}
 
@@ -37,7 +37,7 @@ public class SubAuthorizeService implements ISubAuthorizeService {
 		roleDao.update(strategy);
 	}
  
-	public Map<String, Object> getStrategyInfo4Create() {
+	public Map<String, Object> getSubauthInfo4Create() {
 	    Long operatorId = Environment.getOperatorId();
 	    
 		List<?> groups = groupDao.getMainAndAssistantGroups(operatorId); // 用户组
@@ -49,7 +49,7 @@ public class SubAuthorizeService implements ISubAuthorizeService {
 		return map;
 	}
 
-	public Map<String, Object> getStrategyInfo4Update(Long strategyId) {
+	public Map<String, Object> getSubauthInfo4Update(Long strategyId) {
 	    Long operatorId = Environment.getOperatorId();
 	    
         Map<String, Object> map = new HashMap<String, Object>();
@@ -67,7 +67,7 @@ public class SubAuthorizeService implements ISubAuthorizeService {
 	    return roleDao.getEntities("from SubAuthorize o where o.creatorId = ?" , Environment.getOperatorId());
 	}
 
-	public void saveStrategy(SubAuthorize strategy, String userIds, String groupIds, String roleIds) {
+	public void saveSubauth(SubAuthorize strategy, String userIds, String groupIds, String roleIds) {
 		if(strategy.getId() == null) {
 		    roleDao.createObject(strategy);
 		} 

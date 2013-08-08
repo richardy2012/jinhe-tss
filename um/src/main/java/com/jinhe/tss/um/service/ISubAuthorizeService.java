@@ -16,7 +16,7 @@ public interface ISubAuthorizeService {
 	 * </p>
 	 * @param id
 	 */
-	void deleteStrategy(Long id);
+	void deleteSubauth(Long id);
 
 	/**
 	 * <p>
@@ -36,7 +36,7 @@ public interface ISubAuthorizeService {
 	 * 				用来过滤该用户可见的用户组、角色列表
 	 * @return
 	 */
-	Map<String, Object> getStrategyInfo4Create();
+	Map<String, Object> getSubauthInfo4Create();
 	
 	/**
 	 * <p>
@@ -46,7 +46,7 @@ public interface ISubAuthorizeService {
 	 * 			策略id
 	 * @return
 	 */
-	Map<String, Object> getStrategyInfo4Update(Long ruleId);
+	Map<String, Object> getSubauthInfo4Update(Long ruleId);
 
 	/**
 	 * <p>
@@ -67,6 +67,6 @@ public interface ISubAuthorizeService {
 	 * @param groupsIds
 	 * @param roleIds
 	 */
-	void saveStrategy(SubAuthorize strategy, String userIds, String groupsIds, String roleIds);
+	void saveSubauth(SubAuthorize strategy, String userIds, String groupsIds, String roleIds);
 
 }

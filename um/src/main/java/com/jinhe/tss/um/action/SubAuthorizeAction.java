@@ -40,7 +40,7 @@ public class SubAuthorizeAction extends BaseActionSupport {
 	 * 查找策略列表
 	 */
 	@RequestMapping("/list")
-	public void getSubAuthorizeStrategys2Tree(HttpServletResponse response) {
+	public void getSubauth2Tree(HttpServletResponse response) {
 		print("RuleTree", new TreeEncoder(service.getStrategyByCreator()));
 	}
 	
@@ -48,15 +48,15 @@ public class SubAuthorizeAction extends BaseActionSupport {
 	 * 获取一个Strategy（策略）对象的明细信息、角色对策略的信息、策略对用户的信息、策略对用户组的信息
 	 */
 	@RequestMapping("/detail/{id}")
-	public void getSubAuthorizeStrategyInfo(HttpServletResponse response, @PathVariable("id") Long id) {
+	public void getSubauthInfo(HttpServletResponse response, @PathVariable("id") Long id) {
 		XFormEncoder ruleXFormEncoder;
-        TreeEncoder ruleToGroupTree = null;
-        TreeEncoder ruleToUserTree  = null;
-        TreeEncoder ruleToRoleTree  = null;
+        TreeEncoder ruleToGroupTree;
+        TreeEncoder ruleToUserTree;
+        TreeEncoder ruleToRoleTree;
 		
         Map<String, Object> data;
 		if (UMConstants.DEFAULT_NEW_ID.equals(id)) { // 新建策略
-            data = service.getStrategyInfo4Create();
+            data = service.getSubauthInfo4Create();
             
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("startDate", DateUtil.format(new Date()));
@@ -69,12 +69,8 @@ public class SubAuthorizeAction extends BaseActionSupport {
 			ruleXFormEncoder = new XFormEncoder(UMConstants.STRATEGY_XFORM, map);
 		} 
 		else { // 编辑策略
-			data = service.getStrategyInfo4Update(id);
-			
+			data = service.getSubauthInfo4Update(id);
 			ruleXFormEncoder = new XFormEncoder(UMConstants.STRATEGY_XFORM, (SubAuthorize) data.get("RuleInfo"));
-			ruleToGroupTree = new TreeEncoder(data.get("Rule2GroupExistTree"));
-			ruleToUserTree  = new TreeEncoder(data.get("Rule2UserExistTree"));
-			ruleToRoleTree  = new TreeEncoder(data.get("Rule2RoleExistTree"));
 		}
         
 		TreeEncoder groupsTreeEncoder = new TreeEncoder(data.get("Rule2GroupTree"), new LevelTreeParser());
@@ -82,6 +78,10 @@ public class SubAuthorizeAction extends BaseActionSupport {
 
         TreeEncoder rolesTreeEncoder = new TreeEncoder(data.get("Rule2RoleTree"), new LevelTreeParser());
         rolesTreeEncoder.setNeedRootNode(false);
+        
+		ruleToGroupTree = new TreeEncoder(data.get("Rule2GroupExistTree"));
+		ruleToUserTree  = new TreeEncoder(data.get("Rule2UserExistTree"));
+		ruleToRoleTree  = new TreeEncoder(data.get("Rule2RoleExistTree"));
         
 		print(new String[]{"RuleInfo", "Rule2GroupTree", "Rule2RoleTree", "Rule2GroupExistTree", "Rule2UserExistTree", "Rule2RoleExistTree"},
                 new Object[]{ruleXFormEncoder, groupsTreeEncoder, rolesTreeEncoder, ruleToGroupTree, ruleToUserTree, ruleToRoleTree});
@@ -91,13 +91,13 @@ public class SubAuthorizeAction extends BaseActionSupport {
 	 * 修改一个Strategy对象的明细信息、策略对用户信息、策略对用户组、角色对策略的信息
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public void saveSubAuthorizeInfo(HttpServletResponse response, HttpServletRequest request, SubAuthorize strategy) {
+	public void saveSubauth(HttpServletResponse response, HttpServletRequest request, SubAuthorize entity) {
 		
 		String rule2UserIds  = request.getParameter("Rule2UserIds");
     	String rule2GroupIds = request.getParameter("Rule2GroupIds");
     	String rule2RoleIds  = request.getParameter("Rule2RoleIds");
     	
-		service.saveStrategy(strategy, rule2UserIds, rule2GroupIds, rule2RoleIds);
+		service.saveSubauth(entity, rule2UserIds, rule2GroupIds, rule2RoleIds);
 		printSuccessMessage();
 	}
 
@@ -106,7 +106,7 @@ public class SubAuthorizeAction extends BaseActionSupport {
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void delete(HttpServletResponse response, @PathVariable("id") Long id) {
-		service.deleteStrategy(id);
+		service.deleteSubauth(id);
         printSuccessMessage();
 	}
 	

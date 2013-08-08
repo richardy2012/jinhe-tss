@@ -3,7 +3,7 @@
      */
     XML_MAIN_TREE = "AppSource";
     XML_APPLICATION_DETAIL = "AppDetail";
-    XML_SOURCE_TYPE_INFO = "TypeInfo";
+    XML_SOURCE_TYPE_INFO = "ResourceTypeDetail";
     XML_PERMISSION_OPTION_INFO = "PermissionOption";
     XML_IMPORT_APPLICATION = "ImportApplication";
 

@@ -8,16 +8,16 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-	URL_INIT = "ums/role!initSetPermission.action";
-    URL_GET_RESOURCE_TYPE = "ums/role!getResourceTypes.action";
-    URL_PERMISSION = "ums/role!getPermissionMatrix.action";
-    URL_SAVE_ROLE_PERMISSION = "ums/role!savePermission.action";
+	URL_INIT            = "/" + AUTH_PATH + "role/operations/";  // {id}"ums/role!initSetPermission.action";
+    URL_RESOURCE_TYPES  = "/" + AUTH_PATH + "role/operations/";  // {id}"ums/role!getResourceTypes.action";
+    URL_PERMISSION      = "/" + AUTH_PATH + "role/operations/";  // {id}"ums/role!getPermissionMatrix.action";
+    URL_SAVE_PERMISSION = "/" + AUTH_PATH + "role/operations/";  // {id}"ums/role!savePermission.action";
  
 	if(IS_TEST) {
 		URL_INIT = "data/setpermission_init.xml";
-		URL_GET_RESOURCE_TYPE = "data/resourcetype.xml";
+		URL_RESOURCE_TYPES = "data/resourcetype.xml";
 		URL_PERMISSION = "data/setpermission.xml";
-		URL_SAVE_ROLE_PERMISSION = "data/_success.xml";
+		URL_SAVE_PERMISSION = "data/_success.xml";
 
 		window.dialogArguments = {type:"", params: {isRole2Resource: "0"} };
 	}
@@ -44,7 +44,7 @@
             if("0" == params["isRole2Resource"]){
                 //设置用户、用户组权限，自动隐藏应用系统和资源类型字段
 				var hideCells = searchPermissionNode.selectNodes("layout/TR/TD[.//*/@binding='applicationId' or .//*/@binding='resourceType']");
-				for(var i=0;i < hideCells.length; i++){
+				for(var i=0; i < hideCells.length; i++){
 					hideCells[i].setAttribute("style", "display:none");
 				}
             }
@@ -70,7 +70,7 @@
 
     function updateSearchPermissionColumn(applicationId){
         var p = new HttpRequestParams();
-        p.url = URL_GET_RESOURCE_TYPE;
+        p.url = URL_RESOURCE_TYPES;
         p.setContent("applicationId", applicationId);
 
         var request = new HttpRequest(p);
@@ -312,7 +312,7 @@
         var flag = false;
 
         var p = new HttpRequestParams();
-        p.url = URL_SAVE_ROLE_PERMISSION;
+        p.url = URL_SAVE_PERMISSION;
 
         //用户对权限选项
         var role2PermissionNode = Cache.XmlDatas.get(XML_SET_PERMISSION);

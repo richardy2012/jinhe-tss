@@ -25,20 +25,20 @@
 			<TD><input binding="name"/></TD>
 		</TR>
 		<TR>
-			<TD width="100"><label binding="description"/></TD>
-			<TD><input binding="description" style="width:350;"/></TD>
-		</TR>
-		<TR>
 			<TD width="100"><label binding="unSuppliedTable"/></TD>
-			<TD><input binding="unSuppliedTable" style="width:350;"/></TD>
+			<TD><input binding="unSuppliedTable" style="width:500;"/></TD>
 		</TR>
 		<TR>
 			<TD width="100"><label binding="suppliedTable"/></TD>
-			<TD><input binding="suppliedTable" style="width:350;"/></TD>
+			<TD><input binding="suppliedTable" style="width:500;"/></TD>
 		</TR>
 		<TR>
 			<TD width="100"><label binding="resourceTable"/></TD>
-			<TD><input binding="resourceTable" style="width:350;"/></TD>
+			<TD><input binding="resourceTable" style="width:500;"/></TD>
+		</TR>
+		<TR>
+			<TD width="100"><label binding="description"/></TD>
+			<TD><input binding="description" style="width:500;"/></TD>
 		</TR>
 	</layout>
 	<data>

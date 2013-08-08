@@ -143,7 +143,7 @@ public final class UMConstants {
 	
 	public static final String ROLE_XFORM      = "template/xform/role.xml";    
 	public static final String ROLEGROUP_XFORM = "template/xform/roleGroup.xml"; 
-	public static final String STRATEGY_XFORM  = "template/xform/strategy.xml"; 
+	public static final String STRATEGY_XFORM  = "template/xform/subauth.xml"; 
     
 	public static final String RESOURCETYPE_XFORM      = "template/xform/resourceType.xml";        //ResourceType(新建)
 	public static final String APPLICATION_XFORM       = "template/xform/application.xml";         //Application(新建)

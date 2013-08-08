@@ -78,7 +78,7 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         printUserRoleMapping(mainUser.getId(), 1); // 默认只有一个匿名角色
         
         // 开始测试转授策略模块的功能
-        action.getSubAuthorizeStrategyInfo(response, UMConstants.DEFAULT_NEW_ID);
+        action.getSubauthInfo(response, UMConstants.DEFAULT_NEW_ID);
  
         SubAuthorize strategy = new SubAuthorize();
         strategy.setStartDate(new Date());
@@ -89,10 +89,10 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         request.addParameter("Rule2UserIds", mainUser.getId() + "");
         request.addParameter("Rule2GroupIds", mainGroupId + "," + childGroup.getId());
         request.addParameter("Rule2RoleIds", roleId + "");
-        action.saveSubAuthorizeInfo(response, request, strategy);
+        action.saveSubauth(response, request, strategy);
         
         Long strategyId = strategy.getId();
-        action.getSubAuthorizeStrategyInfo(response, strategyId);
+        action.getSubauthInfo(response, strategyId);
         
         login(mainUser.getId(), mainUser.getLoginName()); // 更好登录用户，看其权限
         printUserRoleMapping(mainUser.getId(), 2); // 匿名角色 + 转授所得角色
@@ -107,7 +107,7 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         login(mainUser.getId(), mainUser.getLoginName()); // 更好登录用户，看其权限
         printUserRoleMapping(mainUser.getId(), 2); // 匿名角色 + 转授所得角色（转授策略重新启用）
         
-        action.getSubAuthorizeStrategys2Tree(response);
+        action.getSubauth2Tree(response);
         
         action.delete(response, strategyId);
         
@@ -117,7 +117,7 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         login(mainUser.getId(), mainUser.getLoginName()); // 更好登录用户，看其权限
         printUserRoleMapping(mainUser.getId(), 1); // 匿名角色 （转授策略删除了）
         
-        action.getSubAuthorizeStrategys2Tree(response);
+        action.getSubauth2Tree(response);
     }
     
     protected void printUserRoleMapping(Long userId, int count) {

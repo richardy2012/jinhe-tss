@@ -12,9 +12,9 @@
     XML_RULE_TO_USER_EXIST_TREE = "Rule2UserExistTree";
  
     XML_GROUP_TO_USER_LIST_TREE = "Group2UserListTree";
-    XML_RULE_TO_GROUP_IDS = "rule2GroupIds";
-    XML_RULE_TO_USER_IDS = "rule2UserIds";
-    XML_RULE_TO_ROLE_IDS = "rule2RoleIds";
+    XML_RULE_TO_GROUP_IDS = "Rule2GroupIds";
+    XML_RULE_TO_USER_IDS = "Rule2UserIds";
+    XML_RULE_TO_ROLE_IDS = "Rule2RoleIds";
 
     /* 默认唯一编号名前缀 */
     CACHE_RULE_DETAIL = "rule__id";
@@ -233,12 +233,6 @@
 			disableSingleTreeNode(rule2GroupTreeNode, "//treeNode[@id='-3']");
 
 			Cache.XmlDatas.add(treeID + "." + XML_RULE_INFO, ruleInfoNode);
-			Cache.XmlDatas.add(treeID + "." + XML_RULE_TO_ROLE_TREE, rule2RoleTreeNode);
-			Cache.XmlDatas.add(treeID + "." + XML_RULE_TO_ROLE_EXIST_TREE, rule2RoleExistTreeNode);
-			Cache.XmlDatas.add(treeID + "." + XML_RULE_TO_USER_TREE, rule2UserTreeNode);
-			Cache.XmlDatas.add(treeID + "." + XML_RULE_TO_USER_EXIST_TREE, rule2UserExistTreeNode);
-			Cache.XmlDatas.add(treeID + "." + XML_RULE_TO_GROUP_TREE, rule2GroupTreeNode);
-			Cache.XmlDatas.add(treeID + "." + XML_RULE_TO_GROUP_EXIST_TREE, rule2GroupExistTreeNode);
 
 			var page1FormObj = $X("page1Form", ruleInfoNode);
 			attachReminder("page1Form", page1FormObj);
@@ -324,35 +318,29 @@
 			}
 		}
 
-		//转授角色
-		var rule2RoleNode = Cache.XmlDatas.get(cacheID+"."+XML_RULE_TO_ROLE_EXIST_TREE);
-		if(rule2RoleNode) {
-			var rule2RoleDataIDs = getTreeNodeIds(rule2RoleNode);
-			if(rule2RoleDataIDs.length > 0) {
-				flag = true;
-				p.setContent(XML_RULE_TO_ROLE_IDS, rule2RoleDataIDs.join(","));
-			}
+		// 转授出去的角色
+		var rule2RoleNode = $T("page3Tree2").getXmlRoot();
+		var rule2RoleDataIDs = getTreeNodeIds(rule2RoleNode);
+		if(rule2RoleDataIDs.length > 0) {
+			flag = true;
+			p.setContent(XML_RULE_TO_ROLE_IDS, rule2RoleDataIDs.join(","));
 		}
 
-		//转授给用户
-		var rule2UserNode = Cache.XmlDatas.get(cacheID+"."+XML_RULE_TO_USER_EXIST_TREE);
-		if(rule2UserNode){
-			var rule2UserDataIDs = getTreeNodeIds(rule2UserNode);
-			if(rule2UserDataIDs.length > 0) {
-				flag = true;
-				p.setContent(XML_RULE_TO_USER_IDS, rule2UserDataIDs.join(","));
-			}
+		// 转授给用户
+		var rule2UserNode = $T("page4Tree3").getXmlRoot();
+		var rule2UserDataIDs = getTreeNodeIds(rule2UserNode);
+		if(rule2UserDataIDs.length > 0) {
+			flag = true;
+			p.setContent(XML_RULE_TO_USER_IDS, rule2UserDataIDs.join(","));
 		}
 
 
-		//转授给用户组
-		var rule2GroupNode = Cache.XmlDatas.get(cacheID + "." + XML_RULE_TO_GROUP_EXIST_TREE);
-		if( rule2GroupNode) {
-			var rule2GroupDataIDs = getTreeNodeIds(rule2GroupNode);
-			if(rule2GroupDataIDs.length > 0) {
-				flag = true;
-				p.setContent(XML_RULE_TO_GROUP_IDS, rule2GroupDataIDs.join(","));
-			}
+		// 转授给用户组
+		var rule2GroupNode = $T("page2Tree2").getXmlRoot();
+		var rule2GroupDataIDs = getTreeNodeIds(rule2GroupNode);
+		if(rule2GroupDataIDs.length > 0) {
+			flag = true;
+			p.setContent(XML_RULE_TO_GROUP_IDS, rule2GroupDataIDs.join(","));
 		}
 
 		if( flag ) {

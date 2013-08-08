@@ -71,7 +71,7 @@ public class GeneralSearchTest extends TxSupportTest4UM {
         request.addParameter("rule2UserIds", mainUser.getId() + "");
         request.addParameter("rule2GroupIds", mainGroup.getId() + "");
         request.addParameter("rule2RoleIds", roleId + "");
-        strategyAction.saveSubAuthorizeInfo(response, request, strategy);
+        strategyAction.saveSubauth(response, request, strategy);
         
     	action.searchUserSubauth(mainGroup.getId());
     	

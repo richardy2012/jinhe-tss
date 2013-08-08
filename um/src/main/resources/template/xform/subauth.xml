@@ -4,8 +4,8 @@
 		<column name="name" caption="名称" mode="string" maxLength="20" empty="false" />
 		<column name="description" caption="描述"  maxLength="255" mode="string"/>
  
-		<column name="startDate" caption="开始日期" mode="date" pattern="yyyy-MM-dd" empty="false" />
-		<column name="endDate" caption="结束日期" mode="date" pattern="yyyy-MM-dd" empty="false" />
+		<column name="startDate" caption="开始日期" mode="string" pattern="yyyy-MM-dd" empty="false" />
+		<column name="endDate"   caption="结束日期" mode="string" pattern="yyyy-MM-dd" empty="false" />
  
 	</declare>
 	<layout>
