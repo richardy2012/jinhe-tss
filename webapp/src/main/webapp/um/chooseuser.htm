@@ -18,206 +18,14 @@
 
 <SCRIPT type="text/javascript">
 <!--
-    /*
-     *	后台响应数据节点名称
-     */
-    XML_USER_LIST = "SourceList";
-    XML_EXIST_USER_LIST = "ExistUserList";
-    XML_SEARCH_USER = "SearchUser";
-    /*
-     *	默认唯一编号名前缀
-     */
-    CACHE_MAIN_TREE = "tree__id";
-    /*
-     *	XMLHTTP请求地址汇总
-     */
+
 	URL_INIT = "data/chooseuser_init.xml";
-    URL_SEARCH_USER = "data/chooseuser_search.xml";
 
     URL_INIT = "/" + AUTH_PATH + "receivers/search/template"; 
-    URL_SEARCH_USER = "/" + AUTH_PATH + "message/receivers";
 
- 
     function init(){
-        var params = window.dialogArguments.params;
-
-        var p = new HttpRequestParams();
-        p.url = URL_INIT;
-
-        for(var item in params){
-            p.setContent(item,params[item]);
-        }
-
-        var request = new HttpRequest(p);
-        request.onresult = function(){
-            var existUserNode = this.getNodeValue(XML_EXIST_USER_LIST);
-            var searchUserNode = this.getNodeValue(XML_SEARCH_USER);
-
-            var existUserNodeID = XML_EXIST_USER_LIST;
-            var searchUserNodeID = XML_SEARCH_USER;
-
-            Cache.XmlIslands.add(existUserNodeID,existUserNode);
-            Cache.XmlIslands.add(searchUserNodeID,searchUserNode);
-
-            initChooseUserPages();
-
-        }
-        request.send();
-    }
- 
-    function initChooseUserPages(){
-        var xformObj = $("xform");
-        Public.initHTC(xformObj,"isLoaded","oncomponentready",function(){
-            loadChooseUserInfoFormData();
-
-            //设置xform中搜索按钮操作
-            var page5BtSearchObj = $("page5BtSearch");
-            page5BtSearchObj.onclick = function(){
-                searchUser();
-            }
-        });
-
-        //设置添加按钮操作
-        var btAddObj = $("btAdd");
-        btAddObj.onclick = function(){
-            addUser();
-        }
-        //设置删除按钮操作
-        var btDelObj = $("btDel");
-        btDelObj.onclick = function(){
-            delUser();
-        }
-
-        var grid2Obj = $("grid2");
-        Public.initHTC(grid2Obj,"isLoaded","onload",function(){
-            loadExistUserListData();
-        });
-    }
- 
-    function loadChooseUserInfoFormData(){
-        var xmlIsland = Cache.XmlIslands.get(XML_SEARCH_USER);
-        if(null!=xmlIsland){
-            var xformObj = $("xform");
-            xformObj.load(xmlIsland.node,null,"node");
-        }
-    }
- 
-    function loadExistUserListData(){
-        var grid2Obj = $("grid2");
-        var xmlIsland = Cache.XmlIslands.get(XML_EXIST_USER_LIST);
-        if(null!=xmlIsland){
-            grid2Obj.load(xmlIsland.node,null,"node");
-        }else{
-            var xmlReader = new XmlReader("<grid><declare header=\"radio\"><column name=\"a\"/><column name=\"b\"/></declare><data></data></grid>");
-            var emptyNode = new XmlNode(xmlReader.documentElement);
-            grid2Obj.load(emptyNode.node,null,"node");
-        }
-    }
- 
-    function loadSearchUserListData(){
-        var gridObj = $("grid");
-        var xmlIsland = Cache.XmlIslands.get(XML_USER_LIST);
-        if(null!=xmlIsland){
-            gridObj.load(xmlIsland.node,null,"node");
-        }else{
-            var xmlReader = new XmlReader("<grid><declare header=\"radio\"><column name=\"a\"/><column name=\"b\"/></declare><data></data></grid>");
-            var emptyNode = new XmlNode(xmlReader.documentElement);
-            gridObj.load(emptyNode.node,null,"node");
-        }
-    }
- 
-    function chooseGroup(){
-        //弹出窗口数据从后台获取
-        var xmlIsland = null;
-
-        var group = getGroup();
-        if(null!=group){
-            var xformObj = $("xform");
-            xformObj.updateDataExternal("groupId",group.id);
-            xformObj.updateDataExternal("groupName",group.name);
-        }
-
-    }
-    /*
-     *	函数说明：弹出模态窗口选择用户组
-     *	参数：	string:id               组/用户id
-                XmlNode:xmlIsland       如果有该值，树数据不从后台取
-                string:title            弹出窗口标题
-                string:groupType        用户组类型
-                string:applicationId    用户组所在应用
-                string:type             1:添加组/2:添加用户/3:查看组
-     *	返回值：
-     */
-    function getGroup(){
-        var group = window.showModalDialog("messagegrouptree.htm",{title:"选择用户组"},"dialogWidth:300px;dialogHeight:400px;");
-        return group;
-    }
- 
-    function searchUser(){
-        var xformObj = $("xform");
-        if(false==xformObj.checkForm()){
-            return;
-        }
-        var p = new HttpRequestParams();
-        p.url = URL_SEARCH_USER;
-
-        var xmlIsland = Cache.XmlIslands.get(XML_SEARCH_USER);
-        if(null!=xmlIsland){
-            var dataNode = xmlIsland.selectSingleNode(".//data");
-            if(null!=dataNode){
-                var prefix = xmlIsland.selectSingleNode("./declare").getAttribute("prefix");
-                p.setXFormContent(dataNode,prefix);
-            }
-        }
-
-        var request = new HttpRequest(p);
-        request.onresult = function(){
-            var userListNode = this.getNodeValue(XML_USER_LIST);
-
-            var userListNodeID = XML_USER_LIST;
-
-            Cache.XmlIslands.add(userListNodeID,userListNode);
-
-            loadSearchUserListData();
-        }
-        request.send();
-    }
- 
-    function addUser(){
-        var gridObj = $("grid");
-        var grid2Obj = $("grid2");
-        var arr = gridObj.getSelectedRowsIndexArray_Xml();
-        for(var i=0,iLen=arr.length;i<iLen;i++){
-            var row = gridObj.getRowNode_Xml(arr[i]);
-            row = row.cloneNode(false);
-            row.removeAttribute("_checked");
-            row.removeAttribute("class");
-            var userId = row.getAttribute("userId");
-
-            if(false == checkExistUser(userId)){
-                gridObj.checkRow_Xml(arr[i],false,true);
-                grid2Obj.addRowFromStr(row.xml,false,false);
-            }
-        }
-        if(0 < arr.length){
-            grid2Obj.reload();
-        }
-    }
- 
-    function checkExistUser(userId){
-        var grid2Obj = $("grid2");
-        var row = grid2Obj.getXmlDocument().selectSingleNode("//row[@userId='" + userId + "' and not(@_delete)]");
-        var flag = row==null?false:true;
-        return flag;
-    }
- 
-    function delUser(){
-        var grid2Obj = $("grid2");
-        var arr = grid2Obj.getSelectedRowsIndexArray_Xml();
-        for(var i=0,iLen=arr.length;i<iLen;i++){
-            grid2Obj.delRow_Xml(arr[i]);
-        }    
-    }
+       
+	}
  
     function ok(){
 
@@ -243,7 +51,8 @@
 
             window.returnValue = returnVal;
             window.close();
-        }else{
+        }
+		else {
             alert("请至少选择一个用户");
         }
     }
@@ -257,33 +66,35 @@
 
 <body>
 <div class="mainBox" id="mainBox">
-  <table class="full" border="0" cellspacing="0" cellpadding="0">
-    <tr style="height:21px">
-      <td class="b" colspan="3">
-        <!-- xform 开始 -->
-        <Xform:Form id="xform" baseurl="../core/htc/xform1.2.3/" editable="true" actionbaseurl=""><div class="loading"></div></Xform:Form>
-        <!-- xform 结束 -->
-      </td>
-    </tr>
-    <tr>
-      <td width="320">
-        <!-- grid 开始 -->
-        <Grid2:Grid id="grid" cols="100,100,200" editable="false" baseurl="../core/htc/grid2.1.3/" contextmenu="false" useCookie="true" showHorizontalBarAsNeed="true" rowresizable="false" colresizable="true"  fireDataChangeWhenSetCheckAll="false"><div class="loading"></div></Grid2:Grid>
-        <!-- grid 结束 -->
-      </td>
-      <td class="l r" style="background-color:#E4E6F5;width:18px"><input type="button" class="btWeakS" value=">>" id="btAdd"/><input type="button" class="btWeakS" value="<<" id="btDel"/></td>
-      <td width="320">
-        <!-- grid 开始 -->
-        <Grid2:Grid id="grid2" cols="100,100,200" editable="false" baseurl="../core/htc/grid2.1.3/" contextmenu="false" useCookie="true" showHorizontalBarAsNeed="true" rowresizable="false" colresizable="true"  fireDataChangeWhenSetCheckAll="false"><div class="loading"></div></Grid2:Grid>
-        <!-- grid 结束 -->
-      </td>
-    </tr>
-    <tr>
-      <td class="t" colspan="3" height="30" align="right">
-        <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> <input type="button" value="确定" class="btStrong" onclick="ok()"/>
-      </td>
-    </tr>
-  </table>
+	<table class="full" border="0" cellspacing="0" cellpadding="0">
+	  <tr class="trxx">
+		<td class="r b">&nbsp;※&nbsp;可选用户组：</td>
+		<td class="r b">&nbsp;※&nbsp;可选用户：</td>
+		<td class="r b">&nbsp;</td>
+		<td class="b label">&nbsp;※&nbsp;已有：</td>
+	  </tr>
+	  <tr>
+		<td class="r b" width="30%">
+		  <Tree:Box id="page4Tree" treeType="menu" baseurl="../framework/tree/"><div class="loading"></div></Tree:Box>
+		</td>
+		<td class="r b" width="35%">
+		  <Tree:Box id="page4Tree2" treeType="multi" baseurl="../framework/tree/" selectSelf="false"></Tree:Box>
+		</td>
+		<td class="r b" style="background-color:#E4E6F5;width:18px">
+			<input type="button" class="btWeakS" value=">>" id="page4BtAdd"/>
+			<input type="button" class="btWeakS" value="<<" id="page4BtDel"/>
+		</td>
+		<td class="b">
+		  <Tree:Box id="page4Tree3" treeType="multi" baseurl="../framework/tree/" selectSelf="false"><div class="loading"></div></Tree:Box>
+		</td>
+	  </tr>
+	  <tr height="16" class="trxx">
+		<td colspan="4">
+		  <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> 
+		  <input type="button" value="确定" class="btStrong" onclick="ok()"/>
+		</td>
+	  </tr>
+	</table>
 </div>
 </body>
 </html>

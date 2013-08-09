@@ -9,12 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.persistence.ICommonDao;
 import com.jinhe.tss.framework.sso.Environment;
-import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupDao;
-import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.Message;
-import com.jinhe.tss.um.entity.User;
-import com.jinhe.tss.um.helper.UMQueryCondition;
 import com.jinhe.tss.um.service.IMessageService;
 import com.jinhe.tss.util.EasyUtils;
  
@@ -72,59 +68,9 @@ public class MessageService implements IMessageService {
 		return returnList;
 	}
 	
-	public List<?> getOutboxList(){
-		return getOutMessages(Environment.getOperatorId(), Message.SEND_STATUS);
-	}
- 
-    private List<?> getOutMessages(Long userId, Integer status){
+	public List<?> getOutboxList() {
+		Long userId = Environment.getOperatorId();
+		Integer status = Message.SEND_STATUS;
         return commonDao.getEntities(" from Message m where m.senderId = ? and m.status = ?", userId, status);
-    }
-    
-    public Object[] getGroupUserTreeList() {
-        List<?> groups = groupDao.getVisibleSubGroups(UMConstants.MAIN_GROUP_ID);
-        List<?> relationUsers = groupDao.getUsersAndRelation(Environment.getOperatorId());
-       
-        List<Object> users = new ArrayList<Object>();
-        List<Object> groupUsers = new ArrayList<Object>();
-        if( !EasyUtils.isNullOrEmpty(relationUsers) ){
-            for( Object temp : relationUsers ) {
-                Object[] objs = (Object[]) temp;
-                users.add(objs[0]);
-                groupUsers.add(objs[1]);
-            }
-        }
-        return new Object[]{groups, users, groupUsers};
-    }
-
-    public List<?> getGroupsList() {
-        return groupDao.getVisibleSubGroups(UMConstants.MAIN_GROUP_ID);
-    }
-
-    public List<?> getUsersByCondition(UMQueryCondition condition) {
-        StringBuffer hql = new StringBuffer("select u, g from User u, GroupUser gu, Group g, Group g1 " +
-        		"where g.id = gu.groupId and gu.userId = u.id and g1.id = ? and g.decode like g1.decode||'%'");
-        if( condition.getType() != null && condition.getKeyword() != null ) {
-            switch (condition.getType()) {
-                case 1: hql.append(" and u.loginName like ");   break;
-                case 2: hql.append(" and u.userName like ");    break;
-                case 3: hql.append(" and u.employeeNo like ");  break;
-                case 4: hql.append(" and u.certificateNumber like ");   break;
-                default: break;
-            }
-            hql.append("%" + condition.getKeyword() + "%");
-        }
-        
-        List<User> users = new ArrayList<User>();
-        List<?> list = commonDao.getEntities(hql.toString(), condition.getGroupId());
-        for( Object temp : list ){
-            Object[] objs = (Object[]) temp;
-            User user = (User)objs[0];
-            
-            Group group = (Group)objs[1];
-            user.setGroupId(group.getId());
-            user.setGroupName(group.getName());
-            users.add(user);
-        }
-        return users;
     }
 }

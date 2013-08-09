@@ -83,7 +83,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
     
     @After
     public void tearDown() {
-    	assertTrue(TestUtil.printLogs(logService) > 0);
+    	TestUtil.printLogs(logService);
     	super.tearDown();
     }
     
@@ -143,6 +143,8 @@ public class GroupModuleTest extends TxSupportTest4UM {
         
         log.debug("Testing sort group......");
         action.sortGroup(response, mainGroupId, group2.getId(), 1);
+        
+        action.getVisibleGroup2Tree(response);
         
         Object[] result = groupService.getMainGroupsByOperationId(UMConstants.GROUP_EDIT_OPERRATION);
         List<?> groupIds = (List<?>) result[0];

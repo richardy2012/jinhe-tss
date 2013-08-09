@@ -237,4 +237,7 @@ public class GroupService implements IGroupService {
         return allGroups.size() == canDoGroups.size();
     }
   
+	public List<?> getVisibleSubGroups(Long groupId){
+		return groupDao.getVisibleSubGroups(groupId);
+	}
 }

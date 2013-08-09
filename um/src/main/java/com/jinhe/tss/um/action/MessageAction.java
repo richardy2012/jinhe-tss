@@ -11,13 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
-import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
-import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
-import com.jinhe.tss.framework.web.dispaly.xform.XFormTemplet;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.entity.Message;
-import com.jinhe.tss.um.helper.UMQueryCondition;
 import com.jinhe.tss.um.service.IMessageService;
  
 @Controller
@@ -26,8 +22,6 @@ public class MessageAction extends BaseActionSupport {
 
 	private static final String XFORM_URI       = "template/xform/message.xml";
 	private static final String GRID_URI        = "template/grid/messageGrid.xml";
-	private static final String USER_GRID_URI   = "template/grid/userGrid.xml";
-	private static final String SEARCH_USER_URI = "template/xform/searchUser.xml";
 	
 	@Autowired private IMessageService service;
 	
@@ -61,32 +55,9 @@ public class MessageAction extends BaseActionSupport {
 		service.deleteMessage(id);
 		printSuccessMessage("删除成功!");
 	}
-	
-	@RequestMapping("/receivers/search/template")
-	public void getSearchUserInfo(HttpServletResponse response) {
-		GridDataEncoder encoder = new GridDataEncoder(null, USER_GRID_URI);
-		XFormTemplet template = new XFormTemplet(SEARCH_USER_URI);
-	    print(new String[]{"SearchUser", "ExistUserList"}, 
-		        new Object[]{template.getTemplet().asXML(), encoder});
-	}
-	
-	@RequestMapping("/receivers/groups")
-	public void getGroupTree(HttpServletResponse response) {
-		List<?> groups = service.getGroupsList();
-		TreeEncoder encoder = new TreeEncoder(groups, new LevelTreeParser());
-		encoder.setNeedRootNode(false);
-		print("GroupTree", encoder);
-	}
-	
-	@RequestMapping("/receivers")
-	public void searchUsers(HttpServletResponse response, UMQueryCondition condition) {
-		List<?> users = service.getUsersByCondition(condition);
-		GridDataEncoder encoder = new GridDataEncoder(users, USER_GRID_URI);
-		print("UserGrid", encoder);
-	}
  
 	@RequestMapping("/list/{boxType}")
-	public void getMessageList(HttpServletResponse response, int boxType) {
+	public void getMessageList(HttpServletResponse response, @PathVariable("boxType") int boxType) {
 		List<?> messages = null;
 		switch (boxType) { // 信箱類型，分收件箱、發件箱
     		case 1:	break;

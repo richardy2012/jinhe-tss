@@ -8,10 +8,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.um.TxSupportTest4UM;
-import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.action.MessageAction;
 import com.jinhe.tss.um.entity.Message;
-import com.jinhe.tss.um.helper.UMQueryCondition;
 import com.jinhe.tss.um.service.IMessageService;
 
 /**
@@ -45,13 +43,7 @@ public class MessageModuleTest extends TxSupportTest4UM {
         action.getMessageList(response, 4);
         
         action.deleteMessage(response, messageId);
-        
-        UMQueryCondition condition = new UMQueryCondition();
-        condition.setGroupId(UMConstants.MAIN_GROUP_ID);
-        action.searchUsers(response, condition);
-        
-        action.getSearchUserInfo(response);
-        action.getGroupTree(response);
+ 
     }
 
 }

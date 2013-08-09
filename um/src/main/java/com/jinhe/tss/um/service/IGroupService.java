@@ -116,5 +116,14 @@ public interface IGroupService {
     @Logable(operateTable="用户组织", operateType="删除", 
             operateInfo="删除 (ID: ${args[0]}) 用户组" )
 	void deleteGroup(Long groupId);
+    
+	/**
+	 * <p>
+	 * 根据groupId获得该组下可查看的子节点
+	 * </p>
+	 * @param groupId
+	 * @return
+	 */
+	List<?> getVisibleSubGroups(Long groupId);
 
 }

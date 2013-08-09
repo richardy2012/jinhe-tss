@@ -45,6 +45,14 @@ public class GroupAction extends ProgressActionSupport {
 		
         print("GroupTree", treeEncoder);
 	}
+	
+	@RequestMapping("/visibleList")
+	public void getVisibleGroup2Tree(HttpServletResponse response) {
+		List<?> groups = service.getVisibleSubGroups(UMConstants.MAIN_GROUP_ID);
+		TreeEncoder encoder = new TreeEncoder(groups, new LevelTreeParser());
+		encoder.setNeedRootNode(false);
+		print("GroupTree", encoder);
+	}
 
 	@RequestMapping("/list/{type}/")
     public void getCanAddedGroup2Tree(HttpServletResponse response, @PathVariable("type") int type) {
