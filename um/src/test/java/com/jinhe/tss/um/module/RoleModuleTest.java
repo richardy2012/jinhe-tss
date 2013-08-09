@@ -117,7 +117,7 @@ public class RoleModuleTest extends TxSupportTest4UM {
         
         request.addParameter("applicationId", "tss");
         request.addParameter("resourceType", UMConstants.GROUP_RESOURCE_TYPE_ID);
-        action.initSetPermission(response, request, role1Id, 1);
+        action.initSetPermission(response, request, 1, role1Id);
         action.getApplications(response, role1Id, 1);
         
         action.getResourceTypes(response, "tss");

@@ -8,10 +8,10 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-	URL_INIT            = "/" + AUTH_PATH + "role/operations/";  // {id}"ums/role!initSetPermission.action";
-    URL_RESOURCE_TYPES  = "/" + AUTH_PATH + "role/operations/";  // {id}"ums/role!getResourceTypes.action";
-    URL_PERMISSION      = "/" + AUTH_PATH + "role/operations/";  // {id}"ums/role!getPermissionMatrix.action";
-    URL_SAVE_PERMISSION = "/" + AUTH_PATH + "role/operations/";  // {id}"ums/role!savePermission.action";
+	URL_INIT            = "/" + AUTH_PATH + "role/permission/initsearch/";  // {isRole2Resource}/{roleId}
+    URL_RESOURCE_TYPES  = "/" + AUTH_PATH + "role/resourceTypes/";  // {applicationId}
+    URL_PERMISSION      = "/" + AUTH_PATH + "role/permission/matrix/";  // {permissionRank}/{isRole2Resource}/{roleId}
+    URL_SAVE_PERMISSION = "/" + AUTH_PATH + "role/permission/";  // {permissionRank}/{isRole2Resource}/{roleId} POST
  
 	if(IS_TEST) {
 		URL_INIT = "data/setpermission_init.xml";
@@ -31,7 +31,7 @@
         var params = window.dialogArguments.params;
 
         var p = new HttpRequestParams();
-        p.url = URL_INIT;
+        p.url = URL_INIT + params.isRole2Resource + "/" + params.roleId;
 
         for(var item in params){
             p.setContent(item, params[item]);
@@ -70,8 +70,7 @@
 
     function updateSearchPermissionColumn(applicationId){
         var p = new HttpRequestParams();
-        p.url = URL_RESOURCE_TYPES;
-        p.setContent("applicationId", applicationId);
+        p.url = URL_RESOURCE_TYPES + applicationId;
 
         var request = new HttpRequest(p);
         request.onresult = function(){
@@ -93,25 +92,22 @@
 
     function searchPermission(){
         var xformObj = $X("xform");
-        var applicationId   = xformObj.getData("applicationId")   || "";
-        var resourceType    = xformObj.getData("resourceType")    || "";
-        var permissionRank  = xformObj.getData("permissionRank")  || "";
-        var isRole2Resource = xformObj.getData("isRole2Resource") || "";
-        var roleID = xformObj.getData("roleId") || "";
+        var permissionRank  = xformObj.getData("permissionRank");
+        var isRole2Resource = xformObj.getData("isRole2Resource");
+        var roleID = xformObj.getData("roleId");
+		var applicationId   = xformObj.getData("applicationId");
+        var resourceType    = xformObj.getData("resourceType");
 
         var p = new HttpRequestParams();
-        p.url = URL_PERMISSION;
+        p.url = URL_PERMISSION + permissionRank + "/" + isRole2Resource + "/" + roleID;
         p.setContent("applicationId", applicationId);
         p.setContent("resourceType", resourceType);
-        p.setContent("permissionRank", permissionRank);
-        p.setContent("roleId", roleID);
-        p.setContent("isRole2Resource", isRole2Resource);
 
         var request = new HttpRequest(p);
         request.onresult = function(){
             var role2PermissionNode = this.getNodeValue(XML_SET_PERMISSION);
 
-            //给树节点加搜索条件属性值，以便保存时能取回
+            // 给树节点加搜索条件属性值，以便保存时能取回
             role2PermissionNode.setAttribute("applicationId", applicationId);
             role2PermissionNode.setAttribute("resourceType", resourceType);
             role2PermissionNode.setAttribute("permissionRank", permissionRank);
@@ -309,76 +305,66 @@
     }
  
 	function savePermission(){
-        var flag = false;
-
-        var p = new HttpRequestParams();
-        p.url = URL_SAVE_PERMISSION;
-
-        //用户对权限选项
+        // 用户对权限选项
         var role2PermissionNode = Cache.XmlDatas.get(XML_SET_PERMISSION);
-        if( role2PermissionNode ) {
-            role2PermissionNode = role2PermissionNode.cloneNode(true);
+		role2PermissionNode = role2PermissionNode.cloneNode(true);
 
-            // 取回搜索条件，加入到提交数据
-            var applicationId   = role2PermissionNode.getAttribute("applicationId");
-            var resourceType    = role2PermissionNode.getAttribute("resourceType");
-            var permissionRank  = role2PermissionNode.getAttribute("permissionRank");           
-            var isRole2Resource = role2PermissionNode.getAttribute("isRole2Resource");
-			var roleID = role2PermissionNode.getAttribute("roleId");
-			
-            p.setContent("applicationId", applicationId);
-            p.setContent("resourceType", resourceType);
-            p.setContent("permissionRank", permissionRank);
-            p.setContent("roleId", roleID);
-            p.setContent("isRole2Resource", isRole2Resource);
+		// 取回搜索条件，加入到提交数据
+		var applicationId   = role2PermissionNode.getAttribute("applicationId");
+		var resourceType    = role2PermissionNode.getAttribute("resourceType");
+		var permissionRank  = role2PermissionNode.getAttribute("permissionRank");           
+		var isRole2Resource = role2PermissionNode.getAttribute("isRole2Resource");
+		var roleID = role2PermissionNode.getAttribute("roleId");
+		
+		var p = new HttpRequestParams();
+        p.url = URL_SAVE_PERMISSION + permissionRank + "/" + isRole2Resource + "/" + roleID;
 
-            var nodesStr = [];
-            var optionIds = [];
-            var permissionOptions = role2PermissionNode.selectNodes(".//options/option");
+		p.setContent("applicationId", applicationId);
+		p.setContent("resourceType",  resourceType);
 
-            // 获取option的id名
-            for(var i=0; i < permissionOptions.length; i++){
-                var curOptionID = permissionOptions[i].selectSingleNode("operationId").text;
-                optionIds.push(curOptionID);
-            }
+		var nodesStr = [];
+		var optionIds = [];
+		var permissionOptions = role2PermissionNode.selectNodes(".//options/option");
 
-            var permissionDataNodes = role2PermissionNode.selectNodes(".//treeNode");
-            for(var i=0; i < permissionDataNodes.length; i++){
-                var curNode = permissionDataNodes[i];
-                var curNodeID = curNode.getAttribute("id");
-                var curNodeStr = "";
+		// 获取option的id名
+		for(var i=0; i < permissionOptions.length; i++){
+			var curOptionID = permissionOptions[i].selectSingleNode("operationId").text;
+			optionIds.push(curOptionID);
+		}
 
-                // 按照option的顺序获取值，并拼接字符串
-                for(var j=0; j < optionIds.length; j++){
-                    var curNodeOption = curNode.getAttribute(optionIds[j]);
+		var permissionDataNodes = role2PermissionNode.selectNodes(".//treeNode");
+		for(var i=0; i < permissionDataNodes.length; i++){
+			var curNode = permissionDataNodes[i];
+			var curNodeID = curNode.getAttribute("id");
+			var curNodeStr = "";
 
-                    // 父节点是2(即所有子节点全选中)的，则子节点不需要传2，后台会自动补齐
-                    if("2" == curNodeOption){
-                        var curParentNode = curNode.getParent();
-                        var curParentNodeOption = curParentNode.getAttribute(optionIds[j]);
-                        if("2" == curParentNodeOption){
-                            curNodeOption = "0";
-                        }
-                    }
+			// 按照option的顺序获取值，并拼接字符串
+			for(var j=0; j < optionIds.length; j++){
+				var curNodeOption = curNode.getAttribute(optionIds[j]);
 
-                    curNodeStr += curNodeOption || "0";
-                }
+				// 父节点是2(即所有子节点全选中)的，则子节点不需要传2，后台会自动补齐
+				if("2" == curNodeOption){
+					var curParentNode = curNode.getParent();
+					var curParentNodeOption = curParentNode.getAttribute(optionIds[j]);
+					if("2" == curParentNodeOption){
+						curNodeOption = "0";
+					}
+				}
 
-                // 整行全部标记至少有一个为1或者2才允许提交，都是0的话没必要提交
-                if("0" == isRole2Resource || true == /(1|2)/.test(curNodeStr)){
-                    nodesStr.push(curNodeID + "|" + curNodeStr);                
-                }
-            }
+				curNodeStr += curNodeOption || "0";
+			}
 
-            // 即使一行数据也没有，也要执行提交
-            flag = true;
-            p.setContent(XML_SET_PERMISSION, nodesStr.join(","));
-        }
+			// 整行全部标记至少有一个为1或者2才允许提交，都是0的话没必要提交
+			if("0" == isRole2Resource || true == /(1|2)/.test(curNodeStr)){
+				nodesStr.push(curNodeID + "|" + curNodeStr);                
+			}
+		}
 
-        if( flag ) {
-            var request = new HttpRequest(p);
-            request.send();
-        }
+		// 即使一行数据也没有，也要执行提交
+		p.setContent(XML_SET_PERMISSION, nodesStr.join(","));
+
+		var request = new HttpRequest(p);
+		request.send();
     }
 
     window.onload = init;

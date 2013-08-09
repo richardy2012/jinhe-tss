@@ -28,7 +28,6 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.UMQueryCondition;
-import com.jinhe.tss.um.service.IGroupService;
 import com.jinhe.tss.um.service.IUserService;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
@@ -38,7 +37,6 @@ import com.jinhe.tss.util.XMLDocUtil;
 public class UserAction extends BaseActionSupport {
 
 	@Autowired private IUserService userService;
-	@Autowired private IGroupService groupService;
 
     /**
      * 获取一个User（用户）对象的明细信息、用户对用户组信息、用户对角色的信息

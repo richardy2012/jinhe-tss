@@ -256,10 +256,10 @@ public class RoleAction extends BaseActionSupport {
 		print("ResourceType", sb);
 	}
 
-	@RequestMapping("/permission/initsearch/{roleId}/{isRole2Resource}/{applicationId}/{resourceType}")
+	@RequestMapping("/permission/initsearch/{isRole2Resource}/{roleId}")
 	public void initSetPermission(HttpServletResponse response, HttpServletRequest request, 
-			@PathVariable("roleId") Long roleId, 
-			@PathVariable("isRole2Resource") Integer isRole2Resource) {
+			@PathVariable("isRole2Resource") Integer isRole2Resource, 
+			@PathVariable("roleId") Long roleId) {
 		
 		if( UMConstants.TRUE.equals(isRole2Resource) ) {
 			getApplications(response, roleId, isRole2Resource);
