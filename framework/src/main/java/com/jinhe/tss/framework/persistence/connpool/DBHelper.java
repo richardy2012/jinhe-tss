@@ -51,6 +51,10 @@ public class DBHelper extends ConfigurableContants {
     }
     
     public static long executeCountSQL(Connection connection, String sql, Object...params) {
+    	return (Long) executeQuerySQL(connection, sql, params);
+    }
+    
+    public static Object executeQuerySQL(Connection connection, String sql, Object...params) {
     	PreparedStatement st = null;
         try {
             st = connection.prepareStatement(sql);
@@ -62,9 +66,9 @@ public class DBHelper extends ConfigurableContants {
             	}
             }
             
-            ResultSet resultSet = st.executeQuery();
-            resultSet.next();
-            return resultSet.getLong(1);
+            ResultSet rs = st.executeQuery();
+            rs.next();
+            return rs.getObject(1);
             
         } catch (Exception e) {
             throw new RuntimeException("执行SQL语句时出错！", e);

@@ -40,6 +40,10 @@ public class MessageService implements IMessageService {
  
 	public Message viewMessage(Long id) {
 		Message message = (Message) commonDao.getEntity(Message.class, id);
+		if(message == null) {
+			return null;
+		}
+		
 		if(Message.SEND_STATUS.equals(message.getStatus())){
 			message.setHasRead(Message.HASREAD_STATUS);
 			message.setStatus(Message.READ_STATUS);

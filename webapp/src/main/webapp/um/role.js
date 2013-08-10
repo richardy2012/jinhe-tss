@@ -629,7 +629,7 @@
 			roleId: treeNode.getId(),
 			isRole2Resource: "1"
 		};
-		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:650px;dialogHeight:550px;resizable:no");
+		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:700px;dialogHeight:550px;resizable:no");
     }
     
     /* 授予角色 */
@@ -642,7 +642,7 @@
 			applicationId: "tss",
 			isRole2Resource: "0"
 		};
-		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:650px;dialogHeight:550px;resizable:no");
+		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:700px;dialogHeight:550px;resizable:no");
     }
 
     window.onload = init;

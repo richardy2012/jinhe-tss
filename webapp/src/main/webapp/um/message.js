@@ -13,8 +13,8 @@
     OPERATION_REPLY = "回复\"$label\"";
  
     /* XMLHTTP请求地址汇总 */
-    URL_INIT           = "data/message_init.xml";
-    URL_MESSAGE_LIST   = "/" + AUTH_PATH + "message/list";  // {boxType}
+    URL_INIT           = "data/message_init.xml?";
+    URL_MESSAGE_LIST   = "/" + AUTH_PATH + "message/list/";  // {boxType}
     URL_MESSAGE_DETAIL = "/" + AUTH_PATH + "message/";  // {id}
 	URL_MESSAGE_REPLY  = "/" + AUTH_PATH + "message/reply/"; // {id}
     URL_SAVE_MESSAGE   = "/" + AUTH_PATH + "message"; // PUT
@@ -44,6 +44,7 @@
     function loadInitData(){
 		Ajax({
 			url : URL_INIT,
+			method : "GET", 
 			onresult : function() {  // 移动树节点					
 				var tree = $T("tree", this.getNodeValue(XML_MAIN_TREE));
 				

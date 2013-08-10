@@ -1,24 +1,29 @@
 package com.jinhe.tss.framework.component.param;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.dom4j.Element;
 
+import com.jinhe.tss.cache.Cacheable;
+import com.jinhe.tss.cache.JCache;
+import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.exception.BusinessException;
+import com.jinhe.tss.framework.persistence.connpool.DBHelper;
 import com.jinhe.tss.framework.sso.appserver.AppServer;
 import com.jinhe.tss.framework.sso.appserver.IAppServerStorer;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.XMLDocUtil;
 
 /** 
- * UMS的appServer管理启用参数管理(ParamAppServerStorer)，以免增加应用就要修改appServer.xml文件。
+ * UM的appServer管理启用参数管理(ParamAppServerStorer)，以免增加应用就要修改appServer.xml文件。
  * 
- * 但是PMS/CMS等应用要用到 <bean id="RemoteOnlineUserManager" class="***.HttpInvokerProxyFactory">
- * 这样就要使用到HttpInvokerProxyFactory的配置, 而加载applicationContext.xml时会需要调用ParamAppServerStorer以获取AppServer，
+ * 但是CMS等应用要用到 <bean id="RemoteOnlineUserManager" class="***.HttpInvokerProxyFactory">
+ * 这样就要使用到HttpInvokerProxyFactory的配置, 而加载spring.xml时会需要调用ParamAppServerStorer以获取AppServer，
  * 而ParamAppServerStorer又需要Global获取ParamService，而applicationContext.xml加载完之前Global不可用。
  * 
- * TODO 解决办法，直接通过jdbc读取？
+ * 解决办法，直接通过jdbc读取
  * 
  */
 public class ParamAppServerStorer implements IAppServerStorer {
@@ -38,7 +43,8 @@ public class ParamAppServerStorer implements IAppServerStorer {
     private AppServer createAppServer(String appCode){
         String appServerXML = null;
         try{
-            appServerXML = ParamManager.getValueNoSpring(appCode);
+//            appServerXML = ParamManager.getValueNoSpring(appCode);
+        	appServerXML = getAppServerConfig(appCode);
         }catch(Exception e) { }
         
         if(appServerXML == null) {
@@ -57,8 +63,18 @@ public class ParamAppServerStorer implements IAppServerStorer {
         }
     }
     
-    public static void main(String[] args){
-        System.out.println(new ParamAppServerStorer().getAppServer("UMS"));
+    private String getAppServerConfig(String appCode) {
+    	Pool connectionPool = JCache.getInstance().getConnectionPool();
+		Cacheable connItem = connectionPool.checkOut(0);
+		Connection conn = (Connection) connItem.getValue();
+		try {
+			String sql = "select value from component_param where code = ?";
+			return DBHelper.executeQuerySQL(conn, sql, appCode).toString();
+		} catch (Exception e) {
+			return null;
+		} finally {
+			connectionPool.checkIn(connItem);
+		}
     }
 }
 

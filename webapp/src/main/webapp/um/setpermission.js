@@ -23,110 +23,99 @@
 	}
 	
 
-    function init(){
+    function init() {
         loadInitData();
     }
  
-    function loadInitData(){
+    function loadInitData() {
         var params = window.dialogArguments.params;
+ 
+		Ajax({
+			url : URL_INIT + params.isRole2Resource + "/" + params.roleId,
+			params  : params, 
+			onresult : function() {
+				var searchPermissionNode = this.getNodeValue(XML_SEARCH_PERMISSION);
 
-        var p = new HttpRequestParams();
-        p.url = URL_INIT + params.isRole2Resource + "/" + params.roleId;
-
-        for(var item in params){
-            p.setContent(item, params[item]);
-        }
-
-        var request = new HttpRequest(p);
-        request.onresult = function(){
-            var searchPermissionNode = this.getNodeValue(XML_SEARCH_PERMISSION);
-
-            if("0" == params["isRole2Resource"]){
-                //设置用户、用户组权限，自动隐藏应用系统和资源类型字段
-				var hideCells = searchPermissionNode.selectNodes("layout/TR/TD[.//*/@binding='applicationId' or .//*/@binding='resourceType']");
-				for(var i=0; i < hideCells.length; i++){
-					hideCells[i].setAttribute("style", "display:none");
+				if("0" == params["isRole2Resource"]) {
+					// 设置用户、用户组权限，自动隐藏应用系统和资源类型字段
+					var hideCells = searchPermissionNode.selectNodes("layout/TR/TD[.//*/@binding='applicationId' or .//*/@binding='resourceType']");
+					for(var i=0; i < hideCells.length; i++) {
+						hideCells[i].setAttribute("style", "display:none");
+					}
 				}
-            }
 
-            Cache.XmlDatas.add(XML_SEARCH_PERMISSION, searchPermissionNode);
+				Cache.XmlDatas.add(XML_SEARCH_PERMISSION, searchPermissionNode);
 
-			$X("xform", searchPermissionNode);
-			$$("xform").ondatachange = function(){
-                var name  = event.result.name;
-                var value = event.result.newValue;
-                if("applicationId" == name){
-                    updateSearchPermissionColumn(value);
-                }
-            }
+				var xform = $X("xform", searchPermissionNode);
 
-			// 设置查询按钮操作
-            $$("page3BtSearch").onclick = function() {
-                searchPermission();
-            }
-        }
-        request.send();
+				var appSelect = $$("applicationId");
+				Event.attachEvent(appSelect, "change", function(event) {
+						var value = appSelect.value; 
+						updateSearchPermissionColumn(value);
+					});
+
+				// 设置查询按钮操作
+				$$("page3BtSearch").onclick = function() {
+					searchPermission();
+				}
+			}
+		});
     }
 
-    function updateSearchPermissionColumn(applicationId){
-        var p = new HttpRequestParams();
-        p.url = URL_RESOURCE_TYPES + applicationId;
-
-        var request = new HttpRequest(p);
-        request.onresult = function(){
-            var resourceTypeNode = this.getNodeValue(XML_RESOURCE_TYPE);
-            var name = resourceTypeNode.getAttribute("name");
-            
-            var xmlData = Cache.XmlDatas.get(XML_SEARCH_PERMISSION);
-            if(xmlData) {
-                var oldColumn = xmlData.selectSingleNode(".//column[@name='" + name + "']");
-                var attributes = resourceTypeNode.attributes;
-                for(var i=0; i<attributes.length; i++){
-                    oldColumn.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
-                }
-                loadSearchPermissionData();
-            }
-        }
-        request.send();
+    function updateSearchPermissionColumn(applicationId) {
+		Ajax({
+			url : URL_RESOURCE_TYPES + applicationId,
+			onresult : function() { 
+				var resourceTypeNode = this.getNodeValue(XML_RESOURCE_TYPE);
+				var name = resourceTypeNode.getAttribute("name");
+				
+				var xmlData = Cache.XmlDatas.get(XML_SEARCH_PERMISSION);
+				if( xmlData ) {
+					var oldColumn = xmlData.selectSingleNode(".//column[@name='" + name + "']");
+					var attributes = resourceTypeNode.attributes;
+					for(var i=0; i<attributes.length; i++) {
+						oldColumn.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
+					}
+					loadSearchPermissionData();
+				}
+			}
+		});
     }
 
-    function searchPermission(){
+    function searchPermission() {
         var xformObj = $X("xform");
         var permissionRank  = xformObj.getData("permissionRank");
         var isRole2Resource = xformObj.getData("isRole2Resource");
         var roleID = xformObj.getData("roleId");
 		var applicationId   = xformObj.getData("applicationId");
         var resourceType    = xformObj.getData("resourceType");
+ 
+		Ajax({
+			url : URL_PERMISSION + permissionRank + "/" + isRole2Resource + "/" + roleID,
+			params : {"applicationId": applicationId, "resourceType": resourceType}, 
+			onresult : function() { 
+				var role2PermissionNode = this.getNodeValue(XML_PERMISSION_MATRIX);
 
-        var p = new HttpRequestParams();
-        p.url = URL_PERMISSION + permissionRank + "/" + isRole2Resource + "/" + roleID;
-        p.setContent("applicationId", applicationId);
-        p.setContent("resourceType", resourceType);
+				// 给树节点加搜索条件属性值，以便保存时能取回
+				role2PermissionNode.setAttribute("applicationId", applicationId);
+				role2PermissionNode.setAttribute("resourceType", resourceType);
+				role2PermissionNode.setAttribute("permissionRank", permissionRank);
+				role2PermissionNode.setAttribute("isRole2Resource", isRole2Resource);
+				role2PermissionNode.setAttribute("roleId", roleID);
 
-        var request = new HttpRequest(p);
-        request.onresult = function(){
-            var role2PermissionNode = this.getNodeValue(XML_PERMISSION_MATRIX);
+				Cache.XmlDatas.add(XML_PERMISSION_MATRIX, role2PermissionNode);
 
-            // 给树节点加搜索条件属性值，以便保存时能取回
-            role2PermissionNode.setAttribute("applicationId", applicationId);
-            role2PermissionNode.setAttribute("resourceType", resourceType);
-            role2PermissionNode.setAttribute("permissionRank", permissionRank);
-            role2PermissionNode.setAttribute("isRole2Resource", isRole2Resource);
-			role2PermissionNode.setAttribute("roleId", roleID);
+				if(role2PermissionNode == null) {
+					var xmlReader = new XmlReader("<actionSet></actionSet>");
+					role2PermissionNode = new XmlNode(xmlReader.documentElement);
+				}
 
-            Cache.XmlDatas.add(XML_PERMISSION_MATRIX, role2PermissionNode);
-
-            if(role2PermissionNode == null) {
-				var xmlReader = new XmlReader("<actionSet></actionSet>");
-				role2PermissionNode = new XmlNode(xmlReader.documentElement);
+				var treeObj = $ET("tree", role2PermissionNode);
+				treeObj.element.onExtendNodeChange = function(eventObj) {
+					onExtendNodeChange(eventObj);
+				}
 			}
-
-			var treeObj = $ET("tree", role2PermissionNode);
-			treeObj.element.onExtendNodeChange = function(eventObj) {
-				onExtendNodeChange(eventObj);
-			}
-        }
-        request.send();
+		});
     }
 
     /*
@@ -149,7 +138,7 @@
             dependParent = dependParent.text.replace(/^\s*|\s*$/g, "");
         }
 
-        if(curState != nextState){
+        if(curState != nextState) {
             // 纵向依赖3选中时，直接转入目标状态2(所有子节点)
             if("3" == dependParent && "1" == nextState) {
                 treeNode.changeExtendSelectedState(optionId, shiftKey, "2");
@@ -182,17 +171,17 @@
             }
 
             // 当前节点目标状态是2(所有子节点)时，下溯
-            if("2" == nextState){
+            if("2" == nextState) {
                 setChildsSelectedState(treeNode, optionId, nextState);
             }
 
             // 当前节点目标状态是0或者1，则设置父节点仅此
-            if("0" == nextState || "1" == nextState){
+            if("0" == nextState || "1" == nextState) {
                 setParentSingleState(treeNode, optionId);
             }
 
             //同时按下shift键时
-            if(true==shiftKey){
+            if(true==shiftKey) {
                 setChildsSelectedState(treeNode,optionId,nextState,shiftKey);
             }
         }
@@ -212,14 +201,14 @@
         if( curIds ) {
             curIds = curIds.text.replace(/^\s*|\s*$/g, "");
 			curIds = curIds.split(",");
-			for(var i=0; i < curIds.length; i++){
+			for(var i=0; i < curIds.length; i++) {
 				var curId = curIds[i];
 				if(curId == "") continue;
 
 				var curState = treeNode.getAttribute(curId);
 
 				// 目标状态与当前状态不同(如果当前已经是2，而目标是1则不执行)
-				if(nextState != curState && ("2" != curState || "1" != nextState)){
+				if(nextState != curState && ("2" != curState || "1" != nextState)) {
 					treeNode.changeExtendSelectedState(curId, null, nextState);
 				}
 			}
@@ -241,12 +230,12 @@
             curIds = curIds.text.replace(/^\s*|\s*$/g, "");
 			curIds = curIds.split(",");
 
-			for(var j=0; j < curIds.length; j++){
+			for(var j=0; j < curIds.length; j++) {
 				var curId = curIds[j];
 				if(curId == "") continue;
 
 				var curState = treeNode.getAttribute(curId);
-				if(nextState != curState){
+				if(nextState != curState) {
 					treeNode.changeExtendSelectedState(curId, null, nextState);
 				}
 			}
@@ -259,9 +248,9 @@
                 string:id               当前项id
                 string:nextState        目标状态
 	 */
-	function setParentSelectedState(treeNode, id, nextState){
+	function setParentSelectedState(treeNode, id, nextState) {
         var parentNode = treeNode.getParent();
-        if(parentNode && "treeNode" == parentNode.node.nodeName){
+        if(parentNode && "treeNode" == parentNode.node.nodeName) {
             parentNode.changeExtendSelectedState(id, null, nextState);
         }
     }
@@ -292,23 +281,21 @@
 	 * 设置父节点仅此
 	 * 参数：	treeNode:treeNode       节点对象
                 string:id               当前项id
-                string:nextState        目标状态
 	 */
 	function setParentSingleState(treeNode, id) {
         var parentNode = treeNode.getParent();
         if( parentNode && "treeNode" == parentNode.node.nodeName ) {
             var curState = parentNode.getAttribute(id);
-            if("2" == curState){
+            if("2" == curState) {
                 parentNode.changeExtendSelectedState(id, null, "1");
             }
         }
     }
  
-	function savePermission(){
-        // 用户对权限选项
-        // var role2PermissionNode = Cache.XmlDatas.get(XML_PERMISSION_MATRIX);
-		// role2PermissionNode = role2PermissionNode.cloneNode(true);
+	function savePermission() {
+		if($ET("tree") == null) return;
 
+        // 用户对权限选项
 		var role2PermissionNode = $ET("tree").getXmlRoot();
 
 		// 取回搜索条件，加入到提交数据
@@ -317,38 +304,32 @@
 		var permissionRank  = role2PermissionNode.getAttribute("permissionRank");           
 		var isRole2Resource = role2PermissionNode.getAttribute("isRole2Resource");
 		var roleID = role2PermissionNode.getAttribute("roleId");
-		
-		var p = new HttpRequestParams();
-        p.url = URL_SAVE_PERMISSION + permissionRank + "/" + isRole2Resource + "/" + roleID;
-
-		p.setContent("applicationId", applicationId);
-		p.setContent("resourceType",  resourceType);
 
 		var nodesStr = [];
 		var optionIds = [];
 		var permissionOptions = role2PermissionNode.selectNodes(".//options/option");
 
 		// 获取option的id名
-		for(var i=0; i < permissionOptions.length; i++){
+		for(var i=0; i < permissionOptions.length; i++) {
 			var curOptionID = permissionOptions[i].selectSingleNode("operationId").text;
 			optionIds.push(curOptionID);
 		}
 
 		var permissionDataNodes = role2PermissionNode.selectNodes(".//treeNode");
-		for(var i=0; i < permissionDataNodes.length; i++){
+		for(var i=0; i < permissionDataNodes.length; i++) {
 			var curNode = permissionDataNodes[i];
 			var curNodeID = curNode.getAttribute("id");
 			var curNodeStr = "";
 
 			// 按照option的顺序获取值，并拼接字符串
-			for(var j=0; j < optionIds.length; j++){
+			for(var j=0; j < optionIds.length; j++) {
 				var curNodeOption = curNode.getAttribute(optionIds[j]);
 
 				// 父节点是2(即所有子节点全选中)的，则子节点不需要传2，后台会自动补齐
-				if("2" == curNodeOption){
+				if("2" == curNodeOption) {
 					var curParentNode = curNode.parentNode;
 					var curParentNodeOption = curParentNode.getAttribute(optionIds[j]);
-					if("2" == curParentNodeOption){
+					if("2" == curParentNodeOption) {
 						curNodeOption = "0";
 					}
 				}
@@ -357,16 +338,16 @@
 			}
 
 			// 整行全部标记至少有一个为1或者2才允许提交，都是0的话没必要提交
-			if("0" == isRole2Resource || true == /(1|2)/.test(curNodeStr)){
+			if("0" == isRole2Resource || true == /(1|2)/.test(curNodeStr)) {
 				nodesStr.push(curNodeID + "|" + curNodeStr);                
 			}
 		}
-
-		// 即使一行数据也没有，也要执行提交
-		p.setContent("permissions", nodesStr.join(","));
-
-		var request = new HttpRequest(p);
-		request.send();
+ 
+		// 即使一行数据也没有，也要执行提交 
+		Ajax({
+			url : URL_SAVE_PERMISSION + permissionRank + "/" + isRole2Resource + "/" + roleID,
+			params : {"applicationId": applicationId, "resourceType": resourceType, "permissions":nodesStr.join(",")}
+		});
     }
 
     window.onload = init;

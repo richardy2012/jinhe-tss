@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
+import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.Message;
 import com.jinhe.tss.um.service.IMessageService;
  
@@ -20,8 +21,8 @@ import com.jinhe.tss.um.service.IMessageService;
 @RequestMapping("/auth/message")
 public class MessageAction extends BaseActionSupport {
 
-	private static final String XFORM_URI       = "template/xform/message.xml";
-	private static final String GRID_URI        = "template/grid/messageGrid.xml";
+	private static final String XFORM_URI = "template/xform/message.xml";
+	private static final String GRID_URI  = "template/grid/messageGrid.xml";
 	
 	@Autowired private IMessageService service;
 	
@@ -33,8 +34,12 @@ public class MessageAction extends BaseActionSupport {
 	
 	@RequestMapping("/{id}")
 	public void viewMessage(HttpServletResponse response, @PathVariable("id") Long id) {
-		XFormEncoder messagerEncoder = new XFormEncoder(XFORM_URI, service.viewMessage(id));
-		print("MessageInfo", messagerEncoder);
+		if(UMConstants.DEFAULT_NEW_ID.equals(id)) {
+			print("MessageInfo", new XFormEncoder(XFORM_URI));
+		} else {
+			print("MessageInfo", new XFormEncoder(XFORM_URI, service.viewMessage(id)));
+		}
+		
 	}
 	
     @RequestMapping("/reply/{id}")

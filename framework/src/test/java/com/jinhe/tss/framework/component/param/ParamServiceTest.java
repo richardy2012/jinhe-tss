@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.TxTestSupport;
+import com.jinhe.tss.framework.sso.appserver.AppServer;
 import com.jinhe.tss.util.XMLDocUtil;
 
 public class ParamServiceTest extends TxTestSupport {
@@ -51,6 +52,10 @@ public class ParamServiceTest extends TxTestSupport {
         }
         
         printParams();
+        
+        AppServer appServer = new ParamAppServerStorer().getAppServer("TSS");
+		assertEquals("TSS", appServer.getCode());
+        
         paramService.delete(group.getId());
     }
     

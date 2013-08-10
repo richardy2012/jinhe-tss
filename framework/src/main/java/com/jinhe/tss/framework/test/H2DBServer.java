@@ -15,7 +15,7 @@ public class H2DBServer implements IH2DBServer{
     
     private Server server;  
     
-    public String URL = "jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1"; // Connection关闭时不停用H2 server
+    public String URL = "jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1;LOCK_MODE=0"; // Connection关闭时不停用H2 server
     public String user = "sa";  
     public String password = "123";  
     public static int PORT = 9081;  

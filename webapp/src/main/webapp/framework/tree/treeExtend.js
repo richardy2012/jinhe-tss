@@ -26,6 +26,9 @@ var _TREE_HEAD_HEIGHT = 20;
 
 function $ET(treeId, dataXML) {
 	var tree = TreeCache.get(treeId);
+
+	if( tree == null && dataXML == null ) return;
+
 	if( tree == null || dataXML ) {
 		var element = $$(treeId);
 
