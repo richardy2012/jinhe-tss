@@ -297,89 +297,32 @@
     }
  
     function importApplication() {
-        var treeNode = $T("tree").getActiveTreeNode();
-		var treeID   = treeNode.getId();
-		var treeName = treeNode.getName();
-		var applicationType = treeNode.getAttribute("applicationType");
+		Element.show($$("importDiv"));
 
-		var callback = {};
-		callback.onTabClose = function(eventObj) {
-			delCacheData(eventObj.tab.SID);
-		};
-		callback.onTabChange = function() {
-			setTimeout(function() {
-				loadImportDetailData(treeID, applicationType);
-			}, TIMEOUT_TAB_CHANGE);
-		};
-
-		var inf = {};
-		inf.defaultPage = "page1";
-		inf.label = OPERATION_IMPORT.replace(/\$label/i, treeName);
-		inf.phases = null;
-		inf.callback = callback;
-		inf.SID = CACHE_IMPORT_APPLICATION + treeID;
-		var tab = ws.open(inf);
-    }
-    
-     /*
-     *	导入详细信息加载数据
-     *	参数：	string:treeID               树节点id
-                string:applicationType      应用类型
-     *	返回值：
-     */
-    function loadImportDetailData(treeID, applicationType) {
-		var p = new HttpRequestParams();
-		p.url = URL_IMPORT_TEMPLATE;
-		p.setContent("id", treeID);
-		p.setContent("applicationType",applicationType);
-
-		var request = new HttpRequest(p);
-		request.onresult = function() {
-			var importInfoNode = this.getNodeValue(XML_IMPORT_APPLICATION);
-
-			importInfoNode.setAttribute("action", URL_IMPORT);//action地址
-			var frameName = createUploadFrame();
-			importInfoNode.setAttribute("target", frameName);//提交iframe名
-			importInfoNode.setAttribute("enctype", "multipart/form-data");
-			importInfoNode.setAttribute("method", "POST");
-
-			var importInfoNodeID = cacheID + "." + XML_IMPORT_APPLICATION;
-
-			initImportPages(cacheID,applicationType);
+		$$("closeBt").onclick = function () {
+			Element.hide($$("importDiv"));
 		}
-		request.send();
+        $$("importBt").onclick = function() {
+			var fileValue = $$("sourceXML").value;
+			if( fileValue == null) {
+				 alert("请选择导入文件!");
+				 return;
+			}
 
-		//设置保存按钮操作
-        var page1BtSaveObj = $$("page1BtSave");
-        page1BtSaveObj.disabled = false;
-        page1BtSaveObj.onclick = function() {
-            saveImport();
-        }
-    }
- 
-    function saveImport() {
-        var page1FormObj = $$("page1Form");	
-        var fileName = page1FormObj.getData("filePath");
-        if (fileName == null || fileName == "") {
-            return alert("请选择导入文件!");
-        }
-        else {
-            var fileLength = fileName.length;
-			var subfix = fileName.substring(fileLength-4, fileLength);
+			var length = fileValue.length;
+			var subfix = fileValue.substring(length - 4, length);
             if( subfix != ".xml" ) {
-                return alert("请选择.xml文件导入!");
+                alert("请选择.xml文件导入!");
+				return;
             }
-            else{
-                return page1FormObj.submit();
-            }
+
+            var form = $$("importForm");
+			form.action = URL_IMPORT;
+			form.submit();
+
+			Element.hide($$("importDiv"));
         }
-    }
- 
-    function getFilePath(path) {
-        var page1FormObj = $$("page1Form");
-        page1FormObj.updateDataExternal("filePath", path);
-    }
-	
+   
 
     window.onload = init;
 

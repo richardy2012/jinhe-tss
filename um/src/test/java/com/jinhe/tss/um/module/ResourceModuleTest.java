@@ -67,8 +67,6 @@ public class ResourceModuleTest extends TxSupportTest4UM {
         action.editApplication(response, application);
         action.deleteApplication(response, application.getId());
         
-        action.getImportTemplate(response);
-        
         File file = new File(TestUtil.getSQLDir() + "/um-application-config.xml");
         action.registerApplication(response, UMConstants.PLATFORM_SYSTEM_APP, file);
     }

@@ -1,9 +1,8 @@
 package com.jinhe.tss.um.action;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.dom4j.Document;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
@@ -158,18 +158,8 @@ public class ResourceAction extends BaseActionSupport {
 		resourceService.removeOperation(id);
         printSuccessMessage();
 	}
-	
-	
-	// 返回一个空的无数据的模板
-	@RequestMapping("/import/template")
-	public void getImportTemplate(HttpServletResponse response) {
-    	Map<String, Object> map = new HashMap<String, Object>();
-    	map.put("applicationType", UMConstants.PLATFORM_SYSTEM_APP);
-		XFormEncoder encoder = new XFormEncoder(UMConstants.IMPORT_APP_XFORM, map);
-		print("ImportApplication", encoder);
-	}
-	
-	@RequestMapping("/register")
+ 
+	@RequestMapping("/register0")
 	public void registerApplication(HttpServletResponse response, 
 			String applicationType, @RequestParam File file) {
 		
@@ -192,4 +182,34 @@ public class ResourceAction extends BaseActionSupport {
         }
         print("SCRIPT", "parent.alert(\"导入成功！\");var ws = parent.$(\"ws\");ws.closeActiveTab();parent.loadInitData();");
 	}
+	
+	@RequestMapping("/register")
+	public void register(HttpServletResponse response, HttpServletRequest request,
+			String applicationType, @RequestParam MultipartFile mFile) {
+		
+		if (null == mFile) {
+			throw new BusinessException("没有选择文件，请重新导入！");
+		}
+		
+		String path = request.getSession().getServletContext().getRealPath("/");
+        String fileName = mFile.getOriginalFilename();
+		if (!fileName.endsWith(".xml")) {
+            print("SCRIPT", "parent.alert(\"文件格式不正确，请导入xml文件！\");");
+            return;
+		}
+		
+        File targetFile = new File(path, fileName);
+		
+        try {
+            Document doc = new SAXReader().read(targetFile);
+            resourceService.applicationResourceRegister(doc, applicationType);
+        } catch (Exception e) {
+            log.error("导入失败，请查看日志信息！", e);
+            print("SCRIPT", "parent.alert(\"导入失败，请查看日志信息！\");");
+            return;
+        }
+        print("SCRIPT", "parent.alert(\"导入成功！\"); loadInitData();");
+	}
+	
+	
 }
