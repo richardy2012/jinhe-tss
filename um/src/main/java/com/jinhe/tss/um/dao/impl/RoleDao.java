@@ -105,7 +105,7 @@ public class RoleDao extends TreeSupportDao<Role> implements IRoleDao {
     // 用户的授权信息变动时，拦截器需要调用来收回转授权限的方法
     // ===========================================================================================================
     public void deleteGroupSubAuthorizeInfo(Long groupId, Long roleId){
-        String hql = "select distinct u.id from GroupUser gu where gu.groupId = ? ";
+        String hql = "select distinct userId from GroupUser where groupId = ? ";
         List<?> userIds = getEntities( hql, groupId );
         
         if( userIds.isEmpty() ) return;
@@ -120,9 +120,9 @@ public class RoleDao extends TreeSupportDao<Role> implements IRoleDao {
     }
 
     // 当用户不再拥有的某个角色，则收回这个用户转授出去的授权信息 
-    public void deleteUserSubAuthorizeInfo(Long userId, Long roleId){
+    public void deleteUserSubAuthorizeInfo(Long userId, Long roleId){ 
     	/* 根据创建者获取转授策略ID集合 */
-    	List<?> strategyIds = getEntities( "select r.id from Strategy as r where r.creatorId = ? ", userId ); 
+    	List<?> strategyIds = getEntities( "select id from SubAuthorize where creatorId = ? ", userId ); 
         for(Iterator<?> it = strategyIds.iterator(); it.hasNext();){
             Long strategyId = (Long)it.next();
            

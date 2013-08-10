@@ -11,8 +11,8 @@
     XML_ROLE_LIST = "RoleList";
     XML_ROLE_GROUP_INFO = "RoleGroupInfo";
     XML_GROUP_TO_USER_LIST_TREE = "Group2UserListTree";
-    XML_ROLE_TO_GROUP_IDS = "role2GroupIds";
-    XML_ROLE_TO_USER_IDS = "role2UserIds";
+    XML_ROLE_TO_GROUP_IDS = "Role2GroupIds";
+    XML_ROLE_TO_USER_IDS = "Role2UserIds";
 	
     /*
      *	默认唯一编号名前缀
@@ -347,7 +347,6 @@
 
 			var roleGroupInfoNodeID = treeID + "." + XML_ROLE_GROUP_INFO;
 			Cache.XmlDatas.add(roleGroupInfoNodeID, roleGroupInfoNode);
-			Cache.Variables.add(treeID, [roleGroupInfoNodeID]);
 
 			var xform = $X("page1Form", roleGroupInfoNode);
 			xform.editable = editable == false ? "false" : "true";
@@ -490,10 +489,6 @@
 
 			var roleInfoNodeID  = treeID + "." + XML_ROLE_INFO;
 			Cache.XmlDatas.add(roleInfoNodeID, roleInfoNode);
-			Cache.XmlDatas.add(treeID + "." + XML_ROLE_TO_USER_TREE, role2UserTreeNode);
-			Cache.XmlDatas.add(treeID + "." + XML_ROLE_TO_USER_EXIST_TREE, role2UserExsitInfo);
-			Cache.XmlDatas.add(treeID + "." + XML_ROLE_TO_GROUP_TREE, role2GroupTreeNode);
-			Cache.XmlDatas.add(treeID + "." + XML_ROLE_TO_GROUP_EXIST_TREE, role2GroupExsitInfo);
 
 			var page1FormObj = $X("page1Form", roleInfoNode);
             page1FormObj.editable = editable ? "true" : "false";
@@ -574,7 +569,7 @@
         var p = new HttpRequestParams();
         p.url = URL_SAVE_ROLE;
  
-		//角色基本信息
+		// 角色基本信息
 		var roleInfoNode = Cache.XmlDatas.get(cacheID + "." + XML_ROLE_INFO);
 		if(roleInfoNode) {
 			var roleInfoDataNode = roleInfoNode.selectSingleNode(".//data");
@@ -584,25 +579,21 @@
 			}
 		}
 
-		//角色对用户
-		var role2UserNode = Cache.XmlDatas.get(cacheID + "." + XML_ROLE_TO_USER_EXIST_TREE);
-		if(role2UserNode) {
-			var role2UserDataIDs = getTreeNodeIds(role2UserNode);
-			if(role2UserDataIDs.length > 0) {
-				flag = true;
-				p.setContent(XML_ROLE_TO_USER_IDS, role2UserDataIDs.join(","));
-			}
+		// 角色对用户
+		var role2UserNode = $T("page4Tree3").getXmlRoot();
+		var role2UserDataIDs = getTreeNodeIds(role2UserNode);
+		if(role2UserDataIDs.length > 0) {
+			flag = true;
+			p.setContent(XML_ROLE_TO_USER_IDS, role2UserDataIDs.join(","));
 		}
 
-		//角色对用户组
-		var role2GroupNode = Cache.XmlDatas.get(cacheID + "." + XML_ROLE_TO_GROUP_EXIST_TREE);
-		if(role2GroupNode) {
-			var role2GroupDataIDs = getTreeNodeIds(role2GroupNode);
-			if(role2GroupDataIDs.length > 0) {
-				flag = true;
-				p.setContent(XML_ROLE_TO_GROUP_IDS, role2GroupDataIDs.join(","));
-			}
-		}        
+		// 角色对用户组
+		var role2GroupNode = $T("page2Tree2").getXmlRoot();
+		var role2GroupDataIDs = getTreeNodeIds(role2GroupNode);
+		if(role2GroupDataIDs.length > 0) {
+			flag = true;
+			p.setContent(XML_ROLE_TO_GROUP_IDS, role2GroupDataIDs.join(","));
+		}      
 
         if(flag) {
             var request = new HttpRequest(p);
@@ -615,6 +606,7 @@
 
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
 				appendTreeNode(parentID, treeNode);
+
 				ws.closeActiveTab();
             }
             request.onsuccess = function() {                  
@@ -622,6 +614,8 @@
 				
 				var name = page1FormObj.getData("name");
 				modifyTreeNode(cacheID, "name", name, true); //更新树节点名称
+
+				ws.closeActiveTab();
             }
             request.send();
         }
@@ -635,7 +629,7 @@
 			roleId: treeNode.getId(),
 			isRole2Resource: "1"
 		};
-		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:700px;dialogHeight:500px;resizable:yes");
+		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:650px;dialogHeight:550px;resizable:no");
     }
     
     /* 授予角色 */
@@ -648,7 +642,7 @@
 			applicationId: "tss",
 			isRole2Resource: "0"
 		};
-		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:700px;dialogHeight:500px;resizable:yes");
+		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:650px;dialogHeight:550px;resizable:no");
     }
 
     window.onload = init;

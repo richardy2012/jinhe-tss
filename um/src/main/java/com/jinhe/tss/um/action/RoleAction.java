@@ -226,18 +226,26 @@ public class RoleAction extends BaseActionSupport {
 			@PathVariable("roleId") Long roleId, 
 			@PathVariable("isRole2Resource") Integer isRole2Resource) {
 		
+		List<?> apps = roleService.getPlatformApplication();
+		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("roleId", roleId);
 		map.put("isRole2Resource", isRole2Resource);
+		map.put("permissionRank", UMConstants.LOWER_PERMISSION);
+		map.put("applicationId", UMConstants.TSS_APPLICATION_ID);
+		map.put("resourceType", UMConstants.GROUP_RESOURCE_TYPE_ID);
+		
+		List<?> types = roleService.getResourceTypeByAppId(UMConstants.TSS_APPLICATION_ID);
+		String[] resourceTypeEditor = EasyUtils.generateComboedit(types, "resourceTypeId", "name", "|");
 
 		XFormEncoder xFormEncoder = new XFormEncoder(UMConstants.SERACH_PERMISSION_XFORM, map);
-		
-		List<?> apps = roleService.getPlatformApplication();
 		String[] appEditor = EasyUtils.generateComboedit(apps, "applicationId", "name", "|");
 		xFormEncoder.setColumnAttribute("applicationId", "editorvalue", appEditor[0]);
 		xFormEncoder.setColumnAttribute("applicationId", "editortext",  appEditor[1]);
+		xFormEncoder.setColumnAttribute("resourceType", "editorvalue", resourceTypeEditor[0]);
+		xFormEncoder.setColumnAttribute("resourceType", "editortext",  resourceTypeEditor[1]);
 
-		print("AvailableApps", xFormEncoder);
+		print("SearchPermissionFrom", xFormEncoder);
 	}
 	
 	/**
@@ -253,7 +261,7 @@ public class RoleAction extends BaseActionSupport {
         sb.append(" editorvalue=\"").append(resourceTypeEditor[0]).append("\" ");
         sb.append(" editortext=\"").append(resourceTypeEditor[1]).append("\"/>");
 
-		print("ResourceType", sb);
+		print("ResourceTypeList", sb);
 	}
 
 	@RequestMapping("/permission/initsearch/{isRole2Resource}/{roleId}")
@@ -275,9 +283,10 @@ public class RoleAction extends BaseActionSupport {
 		map.put("isRole2Resource", isRole2Resource);
 		map.put("applicationId", applicationId);
 		map.put("resourceType", resourceType);
+		map.put("permissionRank", UMConstants.LOWER_PERMISSION);
 
 		XFormEncoder xFormEncoder = new XFormEncoder(UMConstants.SERACH_PERMISSION_XFORM, map);
-		print("SearchPermission", xFormEncoder);
+		print("SearchPermissionFrom", xFormEncoder);
 	}
 	
 	// ===========================================================================

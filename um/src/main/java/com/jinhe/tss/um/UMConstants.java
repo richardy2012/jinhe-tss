@@ -173,5 +173,5 @@ public final class UMConstants {
 	public static final String APPLICATION_TREENODE_ICON   = "../framework/images/app.gif";  //Application图标
 	public static final String RESOURCETYPE_TREENODE_ICON = "../framework/images/resource_type.gif";//ResourceType图标
 	public static final String OPERATION_TREENODE_ICON   = "../framework/images/permission.gif";    //权限选项Tree图标
-	public static final String RESOURCE_TREENODE_ICON   = "../framework/images/resource.gif";       //资源Tree图标
+	public static final String RESOURCE_TREENODE_ICON   = "../framework/images/resource1.gif";       //资源Tree图标
 }

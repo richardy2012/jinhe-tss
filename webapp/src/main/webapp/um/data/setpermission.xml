@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
-	<SetPermission>
+	<PermissionMatrix>
 		<actionSet title="" openednodeid="r1.0.1">
 			<options>
 				<option>
@@ -75,5 +75,5 @@
 			<treeNode id="r3" name="资源3" href="" opt101="1" opt102="1" opt103="1" opt104="1" opt105="1" opt108="1" opt109="1" />
 
 		</actionSet>
-	</SetPermission>
+	</PermissionMatrix>
 </Response>

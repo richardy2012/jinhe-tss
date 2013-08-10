@@ -1,9 +1,9 @@
     /*
      *	后台响应数据节点名称
      */
-    XML_SEARCH_PERMISSION = "SearchPermission";
-    XML_RESOURCE_TYPE = "ResourceType";
-    XML_SET_PERMISSION = "SetPermission";
+    XML_SEARCH_PERMISSION = "SearchPermissionFrom";
+    XML_RESOURCE_TYPE = "ResourceTypeList";
+    XML_PERMISSION_MATRIX = "PermissionMatrix";
 
     /*
      *	XMLHTTP请求地址汇总
@@ -14,10 +14,10 @@
     URL_SAVE_PERMISSION = "/" + AUTH_PATH + "role/permission/";  // {permissionRank}/{isRole2Resource}/{roleId} POST
  
 	if(IS_TEST) {
-		URL_INIT = "data/setpermission_init.xml";
-		URL_RESOURCE_TYPES = "data/resourcetype.xml";
-		URL_PERMISSION = "data/setpermission.xml";
-		URL_SAVE_PERMISSION = "data/_success.xml";
+		URL_INIT = "data/setpermission_init.xml?";
+		URL_RESOURCE_TYPES = "data/resourcetypeList.xml?";
+		URL_PERMISSION = "data/setpermission.xml?";
+		URL_SAVE_PERMISSION = "data/_success.xml?";
 
 		window.dialogArguments = {type:"", params: {isRole2Resource: "0"} };
 	}
@@ -105,7 +105,7 @@
 
         var request = new HttpRequest(p);
         request.onresult = function(){
-            var role2PermissionNode = this.getNodeValue(XML_SET_PERMISSION);
+            var role2PermissionNode = this.getNodeValue(XML_PERMISSION_MATRIX);
 
             // 给树节点加搜索条件属性值，以便保存时能取回
             role2PermissionNode.setAttribute("applicationId", applicationId);
@@ -114,7 +114,7 @@
             role2PermissionNode.setAttribute("isRole2Resource", isRole2Resource);
 			role2PermissionNode.setAttribute("roleId", roleID);
 
-            Cache.XmlDatas.add(XML_SET_PERMISSION, role2PermissionNode);
+            Cache.XmlDatas.add(XML_PERMISSION_MATRIX, role2PermissionNode);
 
             if(role2PermissionNode == null) {
 				var xmlReader = new XmlReader("<actionSet></actionSet>");
@@ -306,8 +306,10 @@
  
 	function savePermission(){
         // 用户对权限选项
-        var role2PermissionNode = Cache.XmlDatas.get(XML_SET_PERMISSION);
-		role2PermissionNode = role2PermissionNode.cloneNode(true);
+        // var role2PermissionNode = Cache.XmlDatas.get(XML_PERMISSION_MATRIX);
+		// role2PermissionNode = role2PermissionNode.cloneNode(true);
+
+		var role2PermissionNode = $ET("tree").getXmlRoot();
 
 		// 取回搜索条件，加入到提交数据
 		var applicationId   = role2PermissionNode.getAttribute("applicationId");
@@ -344,7 +346,7 @@
 
 				// 父节点是2(即所有子节点全选中)的，则子节点不需要传2，后台会自动补齐
 				if("2" == curNodeOption){
-					var curParentNode = curNode.getParent();
+					var curParentNode = curNode.parentNode;
 					var curParentNodeOption = curParentNode.getAttribute(optionIds[j]);
 					if("2" == curParentNodeOption){
 						curNodeOption = "0";
@@ -361,7 +363,7 @@
 		}
 
 		// 即使一行数据也没有，也要执行提交
-		p.setContent(XML_SET_PERMISSION, nodesStr.join(","));
+		p.setContent("permissions", nodesStr.join(","));
 
 		var request = new HttpRequest(p);
 		request.send();

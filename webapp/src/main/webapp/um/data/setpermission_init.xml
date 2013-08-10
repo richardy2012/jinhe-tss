@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-	<SearchPermission>
+	<SearchPermissionFrom>
 		<xform>
 			<declare>
 				<column name="applicationId" caption="应用系统" mode="string" editor="comboedit" editorvalue="1|2|3" editortext="CMS|PMS|UMS" empty="false"/>
@@ -26,5 +26,5 @@
                 </row>
 			</data>
 		</xform>
-	</SearchPermission>
+	</SearchPermissionFrom>
 </Response>

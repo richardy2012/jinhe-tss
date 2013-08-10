@@ -1,4 +1,4 @@
-truncate table um_group;
+﻿truncate table um_group;
 
 insert into um_group (ID, NAME, DISABLED, GROUPTYPE, PARENTID, SEQNO, LEVELNO, DECODE, lockVersion)
 values (-1, 'root',     0, 0,  0, 1, 1, '00001', 0);
@@ -8,9 +8,6 @@ values (-2, 'Main-Group',     0, 1,  -1, 1, 2, '0000100001', 0);
 
 insert into um_group (ID, NAME, DISABLED, GROUPTYPE, PARENTID, SEQNO, LEVELNO, DECODE, lockVersion)
 values (-3, 'Assistant-Group',   0, 2,  -1, 2, 2, '0000100002', 0);
-
-insert into um_group (ID, NAME, DISABLED, GROUPTYPE, PARENTID, SEQNO, LEVELNO, DECODE, lockVersion)
-values (-4, 'Other-Group',   0, 3,  -1, 3, 2, '0000100003', 0);
 
 insert into um_group (ID, NAME, DISABLED, GROUPTYPE, PARENTID, SEQNO, LEVELNO, DECODE, lockVersion)
 values (-7, 'Self-Register-Group', 0, 1, -2, 1, 3, '000010000100001', 0);

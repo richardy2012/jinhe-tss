@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.persistence.ICommonDao;
 import com.jinhe.tss.framework.sso.Environment;
-import com.jinhe.tss.um.dao.IGroupDao;
 import com.jinhe.tss.um.entity.Message;
 import com.jinhe.tss.um.service.IMessageService;
 import com.jinhe.tss.util.EasyUtils;
@@ -18,7 +17,6 @@ import com.jinhe.tss.util.EasyUtils;
 public class MessageService implements IMessageService {
 	
 	@Autowired private ICommonDao commonDao;
-	@Autowired private IGroupDao groupDao;
  
 	public void sendMessage(Message message){
 		String[] receiverIds = message.getReceiverIds().split(",");
