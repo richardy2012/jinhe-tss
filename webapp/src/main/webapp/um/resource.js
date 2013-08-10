@@ -25,7 +25,7 @@
     URL_SAVE_APP        = "/" + AUTH_PATH + "resource/app"; // POST
     URL_RESOURCE_TYPE   = "/" + AUTH_PATH + "resource/resourceType/";
     URL_IMPORT_TEMPLATE = "/" + AUTH_PATH + "resource/import/template";
-    URL_IMPORT          = "/" + AUTH_PATH + "resource/register";
+    URL_IMPORT          = "/" + AUTH_PATH + "importapp";
 	
 	if(IS_TEST) {
 		URL_INIT = "data/resource_tree.xml";
@@ -297,10 +297,11 @@
     }
  
     function importApplication() {
-		Element.show($$("importDiv"));
+		var importDiv = $$("importDiv");
+		Element.show(importDiv);
 
 		$$("closeBt").onclick = function () {
-			Element.hide($$("importDiv"));
+			Element.hide(importDiv);
 		}
         $$("importBt").onclick = function() {
 			var fileValue = $$("sourceXML").value;
@@ -320,9 +321,9 @@
 			form.action = URL_IMPORT;
 			form.submit();
 
-			Element.hide($$("importDiv"));
+			Element.hide(importDiv);
         }
-   
+	}
 
     window.onload = init;
 

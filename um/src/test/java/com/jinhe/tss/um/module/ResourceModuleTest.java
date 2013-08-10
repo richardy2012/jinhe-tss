@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.List;
 
 import org.junit.Before;
@@ -14,7 +13,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.sso.context.Context;
-import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.action.ResourceAction;
@@ -66,9 +64,6 @@ public class ResourceModuleTest extends TxSupportTest4UM {
         
         action.editApplication(response, application);
         action.deleteApplication(response, application.getId());
-        
-        File file = new File(TestUtil.getSQLDir() + "/um-application-config.xml");
-        action.registerApplication(response, UMConstants.PLATFORM_SYSTEM_APP, file);
     }
 
     @Test

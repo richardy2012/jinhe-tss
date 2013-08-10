@@ -40,8 +40,4 @@
 	
 	<mvc:resources mapping="/data/**" location="/data/"/> 
 	
-	<!-- 支持上传文件 -->
-    <bean id="multipartResolver" 
-		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
- 
 </beans>
