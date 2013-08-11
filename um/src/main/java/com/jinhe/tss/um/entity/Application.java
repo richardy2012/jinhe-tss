@@ -34,13 +34,14 @@ public class Application extends OperateInfo implements ITreeNode, IXForm {
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "application_sequence")
     private Long    id; 
 	
-	@Column(nullable = false)  
+	@Column(length = 50, nullable = false)  
 	private String  applicationId;   // 应用系统Code
 	
-	@Column(nullable = false)  
+	@Column(length = 50, nullable = false)  
 	private String  name;            // 应用系统名称
 	private String  description;     // 应用系统描述
 	
+	@Column(length = 10)
 	private String  applicationType = UMConstants.PLATFORM_SYSTEM_APP; // 应用系统种类，默认为平台系统
 	
 	private Integer dataSourceType;  // 应用系统用户库接口类型（数据库、LDAP）,0:ldap;1:oracle;2:DB2;3:MySQL

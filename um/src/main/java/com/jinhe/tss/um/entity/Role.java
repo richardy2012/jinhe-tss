@@ -38,7 +38,7 @@ public class Role extends OperateInfo implements ILevelTreeNode, IDecodable, IXF
 	private Long    id;       // 角色主键ID
 	private Long    parentId; // 父节点ID 
 	
-	@Column(nullable = false)  
+	@Column(length = 20, nullable = false)  
 	private String  name;        // 名称:角色名称
 	private String  description; // 描述:对角色的描述
 	private Integer isGroup = UMConstants.FALSE;  // 是否角色组 (1-角色组，0-角色)

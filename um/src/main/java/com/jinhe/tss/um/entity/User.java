@@ -41,7 +41,7 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "user_sequence")
     private Long   id;              // 用户ID：用户主键id号
     
-    @Column(nullable = false)  
+    @Column(length = 50, nullable = false)  
     private String loginName;       // 用户名:即用户登陆系统的帐号
     private String userName;        // 姓名:用户的实际姓名
     private String employeeNo;      // 员工编号

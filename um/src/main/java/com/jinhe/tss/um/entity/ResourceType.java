@@ -37,13 +37,13 @@ public class ResourceType extends OperateInfo implements IEntity, ITreeNode, IXF
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "resourcetype_sequence")
 	private Long    id; 
 	
-	@Column(nullable = false)  
+	@Column(length = 50, nullable = false)  
 	private String  applicationId;  // 应用系统Code 
 	
-	@Column(nullable = false)  
+	@Column(length = 50, nullable = false)  
 	private String  resourceTypeId; // 资源类型Key 
 	
-	@Column(nullable = false)  
+	@Column(length = 50, nullable = false)  
 	private String  name;           // 资源类型名称  
 	private Integer seqNo;          // 资源类型编号 
 	private String  description;    // 描述  

@@ -43,7 +43,7 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 	private Long    id;       // 用户组ID , 用户组主键
 	private Long    parentId; // 父节点ID  
 	
-	@Column(nullable = false)  
+	@Column(length = 20, nullable = false)  
 	private String  name;          // 组名:用户组名称
 	private String  description;   // 描述:用户组信息描述
 	

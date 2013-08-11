@@ -33,16 +33,16 @@ public class Operation implements IEntity, ITreeNode, IXForm, IPermissionOption 
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "Operation_sequence")
 	private Long    id;             // 权限选项ID:权限选项主键
 	
-	@Column(nullable = false)  
+	@Column(length = 50, nullable = false)  
 	private String  name;           // 名称：权限选项名称
 	
-	@Column(nullable = false)  
+	@Column(length = 50, nullable = false)  
 	private String  operationId;    // 操作Id
 	
-	@Column(nullable = false)  
+	@Column(length = 50, nullable = false)  
 	private String  resourceTypeId; // 资源类型ID 
 	
-	@Column(nullable = false)  
+	@Column(length = 50, nullable = false)  
 	private String  applicationId;  // 应用系统ID:主键
 	
 	private Integer seqNo;          // 权限选项序号 
