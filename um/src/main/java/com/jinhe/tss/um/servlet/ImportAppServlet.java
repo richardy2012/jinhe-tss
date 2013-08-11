@@ -22,7 +22,7 @@ import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.service.IResourceService;
 
 @WebServlet(urlPatterns="/auth/importapp")
-@MultipartConfig(maxFileSize = 1024*1024*20)
+@MultipartConfig(location = UMConstants.UPLOAD_PATH, maxFileSize = 1024*1024*20)
 public class ImportAppServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 111131240580072842L;
@@ -41,17 +41,10 @@ public class ImportAppServlet extends HttpServlet {
     		int fromIndex = header.lastIndexOf("=") + 2;
     		String fileName = header.substring(fromIndex, header.lastIndexOf("\""));
     		
-    		// 指定上传的文件的存储目录并确保其存在
-    		String savePath = request.getServletContext().getRealPath("/upload");
-    		File targetDir = new File(savePath);
-    		if( !targetDir.exists()) {
-    			targetDir.mkdirs();
-    		}
-    		String filePath = savePath + "/" + fileName;
+    		// 上传文件(写入磁盘)
+    		part.write(fileName);
     		
-        	// 上传文件(写入磁盘)
-    		part.write(filePath);
-    		
+    		String filePath = UMConstants.UPLOAD_PATH + "/" + fileName;
             File targetFile = new File(filePath);
             Document doc = new SAXReader().read(targetFile);
             
