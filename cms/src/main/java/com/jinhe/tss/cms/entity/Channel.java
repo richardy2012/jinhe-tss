@@ -156,7 +156,6 @@ public class Channel extends OperateInfo implements IXForm, ILevelTreeNode, IDec
 	public TreeAttributesMap getAttributes() {
 		TreeAttributesMap map = new TreeAttributesMap(id, name);
 		map.put("disabled", this.disabled);
-		map.put("seqNo", this.seqNo);
 		map.put("siteId", this.site.getId());
 		map.put("isSite", isSite() ? 1 : 0);
 		map.put("resourceTypeId", getResourceType());

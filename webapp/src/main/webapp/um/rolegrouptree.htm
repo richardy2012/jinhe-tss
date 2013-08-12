@@ -23,7 +23,7 @@
 	}
  
     function init() {
-        var id = window.dialogArguments.id;
+        var id = window.dialogArguments ? window.dialogArguments.id : 0;
 		Ajax({
 			url : URL_INIT,
 			onresult : function() {  // 移动树节点					
