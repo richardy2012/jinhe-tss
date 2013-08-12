@@ -10,24 +10,21 @@
 
 package com.jinhe.tss.portal;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 import com.jinhe.tss.portal.module.ComponentModuleTest;
 import com.jinhe.tss.portal.module.NavigatorModuleTest;
 import com.jinhe.tss.portal.module.PortalFileOperationTest;
 import com.jinhe.tss.portal.module.PortalModuleTest;
  
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+	ComponentModuleTest.class,
+	PortalFileOperationTest.class,
+	PortalModuleTest.class,
+	NavigatorModuleTest.class
+})
 public class AllPortalTests {
-
-	public static Test suite() {
-        TestSuite suite = new TestSuite("All tests from Portal");
-		
-		suite.addTestSuite(ComponentModuleTest.class);
-		suite.addTestSuite(PortalFileOperationTest.class);
-		suite.addTestSuite(PortalModuleTest.class);
-		suite.addTestSuite(NavigatorModuleTest.class);
-		
-		return suite;
-	}
+ 
 }

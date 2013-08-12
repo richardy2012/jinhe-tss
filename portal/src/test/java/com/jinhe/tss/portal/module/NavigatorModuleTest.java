@@ -1,7 +1,10 @@
 package com.jinhe.tss.portal.module;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.test.TestUtil;
@@ -27,6 +30,7 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
     @Autowired IPortalService portalService;
     @Autowired INavigatorService menuService;
  
+    @Test
     public void testMenuModule() {
         // 新建portal
         Theme theme = new Theme();

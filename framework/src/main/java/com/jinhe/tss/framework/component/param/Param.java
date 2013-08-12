@@ -33,7 +33,10 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "param_sequence")
 	private Long   	id;         // 主键
     
+    @Column(length = 50)
 	private String 	code; 		// 参数名称
+    
+    @Column(length = 50)  
 	private String 	name;		// 展示名称
 	
 	@Column(length = 2000)  

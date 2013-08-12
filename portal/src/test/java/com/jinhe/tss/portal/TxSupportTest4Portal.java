@@ -5,11 +5,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit38.AbstractTransactionalJUnit38SpringContextTests;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.jinhe.tss.framework.Global;
@@ -33,7 +34,6 @@ import com.jinhe.tss.util.XMLDocUtil;
 /**
  * Junit Test 类里执行构造函数的时候无事务，即构造函数不在单元测试方法的事物边界内。
  */
-@SuppressWarnings("deprecation")
 @ContextConfiguration(
         locations={
             "classpath:META-INF/portal-test-spring.xml",  
@@ -44,7 +44,7 @@ import com.jinhe.tss.util.XMLDocUtil;
         , inheritLocations = false // 是否要继承父测试用例类中的 Spring 配置文件，默认为 true
       )
 @TransactionConfiguration(defaultRollback = false) // 不自动回滚，否则后续的test中没有初始化的数据
-public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38SpringContextTests { 
+public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4SpringContextTests { 
  
     protected Logger log = Logger.getLogger(this.getClass());    
     
@@ -58,8 +58,8 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
  
     @Autowired protected IComponentService componentService;
     
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         Global.setContext(super.applicationContext);
         Context.setResponse(new MockHttpServletResponse());
         
@@ -116,7 +116,7 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit38S
     /**
      * 初始化默认的修饰器，布局器
      */
-    public void initializeDefaultElement() {
+    private void initializeDefaultElement() {
         // 初始化Portal测试的组件模型存放目录（model目录）及freemarker文件的目录
         String portalTargetPath = TestUtil.getProjectDir() + "/portal/target";
         

@@ -1,5 +1,8 @@
 package com.jinhe.tss.cms;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 import java.util.List;
 

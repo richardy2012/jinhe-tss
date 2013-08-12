@@ -4,12 +4,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.jinhe.tss.framework.exception.BusinessException;
+import com.jinhe.tss.util.MathUtil;
 
 /** 
  * 测试进度条
@@ -24,9 +24,9 @@ public class ProgressTest {
         ProgressManager manager = new ProgressManager(new Progressable(){
             public void execute(Map<String, Object> params, Progress progress) {
                 for(int i = 1; i <= 100; i++) {
-                    // 随即的休眠1--5秒，然后打印出当前循环到的序号，直到100只进度100%完成。
+                    // 随机的休眠1--5秒，然后打印出当前循环到的序号，直到100只进度100%完成。
                     try { 
-                        Thread.sleep(new Random().nextInt(5) * 100); 
+                        Thread.sleep(MathUtil.randomInt(5) * 100); 
                     } catch (InterruptedException e) {
                     }
                     System.out.println(i);

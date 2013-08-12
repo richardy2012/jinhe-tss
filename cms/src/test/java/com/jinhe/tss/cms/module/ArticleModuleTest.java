@@ -1,6 +1,12 @@
 package com.jinhe.tss.cms.module;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
+
+import org.junit.Test;
 
 import com.jinhe.tss.cms.AbstractTestSupport;
 import com.jinhe.tss.cms.entity.Article;
@@ -13,6 +19,7 @@ import com.jinhe.tss.framework.test.TestUtil;
  */
 public class ArticleModuleTest extends AbstractTestSupport {
  
+	@Test
     public void testArticleModule() {
     	// 新建站点
         Channel site = createSite();

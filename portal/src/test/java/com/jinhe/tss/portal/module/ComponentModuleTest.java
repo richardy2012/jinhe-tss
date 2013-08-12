@@ -1,8 +1,13 @@
 package com.jinhe.tss.portal.module;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.List;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.sso.context.Context;
@@ -22,6 +27,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
     
     @Autowired ComponentAction componentAction;
  
+    @Test
     public void testComponentGroupFunctions() {
         componentAction.getComponentParamsConfig(defaultLayoutId, "");
         
@@ -78,6 +84,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         }
     }
 
+    @Test
     public void testDecoratorFunctions() {
     	Component group1 = new Component();
         group1.setName("测试修饰器组1");
@@ -133,6 +140,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
 		assertTrue(TestUtil.printLogs(logService) > 0);
 	}
     
+    @Test
     public void testLayoutFunctions() {
         Component group1 = new Component();
         group1.setName("测试布局组1");
@@ -155,6 +163,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         componentAction.saveElementParamsConfig(id, "");
     }
 
+    @Test
     public void testPortletFunctions() {
         Component group1 = new Component();
         group1.setName("测试portlet组1");

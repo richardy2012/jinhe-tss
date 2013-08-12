@@ -1,5 +1,6 @@
 package com.jinhe.tss.cms.module;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.cms.AbstractTestSupport;
@@ -15,6 +16,7 @@ public class TimerModuleTest extends AbstractTestSupport {
     
 	@Autowired TimerAction timerAction;
  
+	@Test
     public void testArticleModule() {
         // 新建站点、栏目
         Channel site = createSite();

@@ -1,7 +1,11 @@
 package com.jinhe.tss.cms.publish;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import java.util.Set;
+
+import org.junit.Test;
 
 import com.jinhe.tss.cms.AbstractTestSupport;
 import com.jinhe.tss.cms.CMSConstants;
@@ -18,6 +22,7 @@ import com.jinhe.tss.framework.test.TestUtil;
  */
 public class ArticlePublishTest extends AbstractTestSupport {
     
+	@Test
     public void testArticlePublish() {
     	// 新建站点
         Channel site = createSite();

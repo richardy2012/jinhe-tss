@@ -103,7 +103,7 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
         resourceService.setInitial(false);
         
         // 补全SQL初始化出来的系统级用户组
-        Long[] groupIds = new Long[] {-2L, -3L, -4L, -7L, -8L, -9L};
+        Long[] groupIds = new Long[] {-2L, -3L, -7L, -8L, -9L};
         for(Long groupId : groupIds) {
         	resourcePermission.addResource(groupId, UMConstants.GROUP_RESOURCE_TYPE_ID);
         }

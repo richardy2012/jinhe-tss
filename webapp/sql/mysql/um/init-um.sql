@@ -1,4 +1,4 @@
-﻿truncate table um_group;
+truncate table um_group;
 
 insert into um_group (ID, NAME, DISABLED, GROUPTYPE, PARENTID, SEQNO, LEVELNO, DECODE, lockVersion)
 values (-1, 'root',     0, 0,  0, 1, 1, '00001', 0);

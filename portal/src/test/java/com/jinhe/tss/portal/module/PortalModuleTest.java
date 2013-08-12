@@ -1,8 +1,13 @@
 package com.jinhe.tss.portal.module;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.List;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.test.TestUtil;
@@ -28,6 +33,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
     
     @Autowired IPortalService portalService;
  
+    @Test
     public void testPortalModule() {
         Long structureId = BaseActionSupport.DEFAULT_NEW_ID;
         Long parentId = PortalConstants.ROOT_ID;

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.portal.PortalConstants;
@@ -19,6 +20,7 @@ public class PortalFileOperationTest extends TxSupportTest4Portal {
     
 	@Autowired FileAction fileAction;
  
+	@Test
     public void testPortalFileOperation() {
         String modelDir = URLUtil.getWebFileUrl(PortalConstants.PORTAL_MODEL_DIR).getPath();
         FileHelper.createDir(modelDir);

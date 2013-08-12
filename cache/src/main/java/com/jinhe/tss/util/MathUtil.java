@@ -10,6 +10,7 @@
 package com.jinhe.tss.util;
 
 import java.math.BigDecimal;
+import java.util.Random;
 
 /** 
  * <p> MathUtil.java </p> 
@@ -70,5 +71,10 @@ public class MathUtil {
 		}
 		return new Integer(sum);
 	}
+	
+    public static int randomInt(int factor) {
+        Random random = new Random();
+        return random.nextInt(factor);
+    }
 
 }
