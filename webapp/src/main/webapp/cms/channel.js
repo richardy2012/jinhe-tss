@@ -4,18 +4,12 @@
 	XML_SITE_INFO = "SiteInfo";
     XML_MAIN_TREE = "SiteTree";
     XML_ARTICLE_LIST = "ArticleList";
-    XML_ARTICLE_SEARCH = "ArticleSearch";
-    XML_ARTICLE_INFO = "ArticleInfo";
     XML_CHANNEL_INFO = "ChannelInfo";
     XML_CHANNEL_TREE = "ChannelTree";
-    XML_ATTACHS_LIST = "AttachsList";
-    XML_ATTACHS_UPLOAD = "AttachsUpload";
-    XML_ARTICLE_CONTENT = "ArticleContent";
  
     /* 默认唯一编号名前缀 */
  
     CACHE_TREE_NODE_GRID = "treeNodeGrid__id";
-    CACHE_ARTICLE_DETAIL = "article__id";
     CACHE_CHANNEL_DETAIL = "channelDetail__id";
     CACHE_SITE_DETAIL    = "siteDetail__id";
     CACHE_SEARCH_ARTICLE = "searchArticle__id";
@@ -25,10 +19,6 @@
      */
     URL_INIT = "data/site_init.xml";
     URL_ARTICLE_LIST = "data/articlelist.xml";
-    URL_ARTICLE_SEARCH = "data/gridsearch.xml";
-    URL_ARTICLE_DETAIL = "data/article.xml";
-    URL_NEW_ARTICLE_DETAIL = "data/article.xml";
-    URL_SAVE_ARTICLE = "data/_success.xml";
     URL_DEL_ARTICLE = "data/_success.xml";
     URL_MOVE_ARTICLE = "data/_success.xml";
     URL_LOCK_ARTICLE = "data/_success.xml";
@@ -72,63 +62,34 @@
 
         loadInitData();
     }
-    /*
-     *	函数说明：页面初始化加载数据(包括工具条、树)
-     *	参数：	
-     *	返回值：
-     */
-    function loadInitData(){
-        var p = new HttpRequestParams();
-        p.url = URL_INIT;
-
-        var request = new HttpRequest(p);
-        request.onresult = function(){
-            var _operation = this.getNodeValue(XML_OPERATION);
-
-            var siteTreeNode = this.getNodeValue(XML_MAIN_TREE);
-            var siteTreeNodeID = CACHE_MAIN_TREE;
-
-            Cache.XmlIslands.add(siteTreeNodeID,siteTreeNode);
-
-            initTree(siteTreeNodeID);
-        }
-        request.send();
-    }
- 
+  
     function initMenus(){
         var submenu1 = new Menu();//站点
         var submenu2 = new Menu();//栏目
         var submenu3 = new Menu();//文章
         var submenu4 = new Menu();//发布
         
-        //站点相关
         var item1 = {
             label:"新建站点",
             callback:addNewSite,
-            enable:function(){return true;},
             visible:function(){return "_rootId"==getTreeAttribute("id") && true==getOperation("1");}
         }
-        //栏目相关
         var item2 = {
             label:"新建栏目",
             callback:addNewChannel,
-            enable:function(){return true;},
             visible:function(){return "_rootId"!=getTreeAttribute("id") && true==getOperation("2");}
         }
-        //文章相关
         var item3 = {
             label:"新建文章",
             callback:addNewArticle,
-            enable:function(){return true;},
             visible:function(){return "0"==getTreeAttribute("isSite") && "_rootId"!=getTreeAttribute("id") && true==getOperation("3");}
             
         }
-        //发布相关
+
         var item4 = {
             label:"发布",
             callback:null,
             icon:ICON + "icon_publish_source.gif",
-            enable:function(){return true;},
             visible:function(){return "_rootId"!=getTreeAttribute("id") && true==getOperation("4");},
             submenu:submenu4
         }
@@ -136,74 +97,61 @@
             label:"增量发布",
             callback:function(){
                 publishArticle(1);
-            },
-            enable:function(){return true;},
-            visible:function(){return true;}
+            }
         }
         var subitem4b = {
             label:"完全发布",
             callback:function(){
                 publishArticle(2);
-            },
-            enable:function(){return true;},
-            visible:function(){return true;}
+            }
         }
 
-        //公共
         var item5 = {
             label:"编辑",
             callback:editTreeNode,
             icon:ICON + "edit.gif",
-            enable:function(){return true;},
             visible:function(){return "_rootId"!=getTreeAttribute("id") && true==getOperation("5");}
         }
         var item6 = {
             label:"删除",
             callback:delTreeNode,
             icon:ICON + "del.gif",
-            enable:function(){return true;},
             visible:function(){return "_rootId"!=getTreeAttribute("id") && true==getOperation("6");}
         }
         var item7 = { 
             label:"启用",
             callback:startSite,
             icon:ICON + "start.gif",
-            enable:function(){return true;},
             visible:function(){return "0"!=getTreeAttribute("disabled") && "_rootId"!=getTreeAttribute("id") && true==getOperation("8");}
         }
         var item8 = {
             label:"停用",
             callback:stopSite,
             icon:ICON + "stop.gif",
-            enable:function(){return true;},
             visible:function(){return "0"==getTreeAttribute("disabled") && "_rootId"!=getTreeAttribute("id") && true==getOperation("7");}
         }
         var item9 = {
             label:"移动到...",
             callback:moveChannelTo,
             icon:ICON + "move.gif",
-            enable:function(){return true;},
             visible:function(){return "0"==getTreeAttribute("isSite") && true==getOperation("6");}
         }
          var item14 = {
             label:"搜索文章...",
             callback:searchArticle,
             icon:ICON + "search.gif",
-            enable:function(){return true;},
             visible:function(){return "_rootId"!=getTreeAttribute("id") && true==getOperation("16");}
         }
         var item16 = {
             label:"浏览文章",
             callback:showArticleList,
             icon:ICON + "view_list.gif",
-            enable:function(){return true;},
             visible:function(){return "0"==getTreeAttribute("isSite") && "_rootId"!=getTreeAttribute("id") && true==getOperation("14");}
         }
         var item17 = { 
-            label:"启用全部",
+            label:"启用站点",
             callback:startAll,
             icon:ICON + "start_all.gif",
-            enable:function(){return true;},
             visible:function(){return "1"==getTreeAttribute("disabled") && "1"==getTreeAttribute("isSite") && true==getOperation("7");}
         }
          
@@ -237,15 +185,25 @@
         menu1.addItem(item14);
 		menu1.addItem(item16);
 
-        var treeObj = $("tree");
-        //menu1.attachTo(treeObj,"contextmenu");
-        treeObj.contextmenu = menu1;
+        $$("tree").contextmenu = menu1;
     }
-    /*
-     *	函数说明：Grid菜单初始化
-     *	参数：	
-     *	返回值：
-     */
+ 
+    function loadInitData(){
+        var p = new HttpRequestParams();
+        p.url = URL_INIT;
+
+        var request = new HttpRequest(p);
+        request.onresult = function(){
+            var _operation = this.getNodeValue(XML_OPERATION);
+
+            var siteTreeNode = this.getNodeValue(XML_MAIN_TREE);
+            var tree = $T("tree", siteTreeNode); 
+
+            initTree(siteTreeNodeID);
+        }
+        request.send();
+    }
+
     function initGridMenu(){
         var gridObj = $("grid");
 		var item1 = {
@@ -426,188 +384,6 @@
                     //刷新工具条
                     onInactiveRow();
                 }
-            }
-        }
-    }
- 
-    /*
-     *	函数说明：文章相关页加载数据
-     *	参数：	string:cacheID              缓存数据id
-                boolean:editable            是否可编辑(默认true)
-                string:channelID            栏目id
-                string:articleType          文章类型(0表示普通文章/1分发/2转载/3导入)
-                string:workflowStatus       流程状态
-                boolean:isNew               是否新增
-     *	返回值：
-     */
-    function initArticlePages(cacheID,editable,channelID,articleType,workflowStatus,isNew){
-        //分发、转载、导入文章禁止编辑保存
-        setArticlePagesEditable(articleType,workflowStatus,editable);
-
-        var page1FormObj = $("page1Form");
-        Public.initHTC(page1FormObj,"isLoaded","oncomponentready",function(){
-            loadArticleInfoFormData(cacheID);
-        });
-
-        var page2EditorObj = $("page2Editor");
-        Public.initHTC(page2EditorObj,"isLoaded","onload",function(){
-            loadArticleContentData(cacheID);
-        });
-
-        var page3FormObj = $("page3Form");
-        Public.initHTC(page3FormObj,"isLoaded","oncomponentready",function(){
-            loadAttachsUploadFormData(cacheID);
-        });
-
-        //设置翻页按钮显示状态
-        var page1BtPrevObj = $("page1BtPrev");
-        var page2BtPrevObj = $("page2BtPrev");
-        var page3BtPrevObj = $("page3BtPrev");
-        var page1BtNextObj = $("page1BtNext");
-        var page2BtNextObj = $("page2BtNext");
-        var page3BtNextObj = $("page3BtNext");
-        page1BtPrevObj.style.display = "none";
-        page2BtPrevObj.style.display = "";
-        page3BtPrevObj.style.display = "";
-        page1BtNextObj.style.display = "";
-        page2BtNextObj.style.display = "";
-        page3BtNextObj.style.display = "none";
-
-        //设置删除按钮操作
-        var page3BtDel = $("page3BtDel");
-        page3BtDel.onclick  = delPage3GridRow;
-    }
-    /*
-     *	函数说明：设置文章相关页是否禁止编辑保存功能
-     *	参数：	string:articleType          文章类型(0表示普通文章/1分发/2转载/3导入)
-                boolean:editable            是否可编辑(默认true)
-                string:workflowStatus       流程状态
-     *	返回值：
-     */
-    function setArticlePagesEditable(articleType,workflowStatus,editable){
-        var page1FormObj = $("page1Form");
-        var page3FormObj = $("page3Form");
-        var page1BtSaveObj = $("page1BtSave");
-        var page2BtSaveObj = $("page2BtSave");
-        var page3BtSaveObj = $("page3BtSave");
-
-        var page3BtDel = $("page3BtDel");
-
-        workflowStatus = parseInt(workflowStatus);
-        if(("0"!=articleType && "2"!=articleType)|| PUBLISHED_ARTICLE_STATUS<=workflowStatus || -1==workflowStatus || false==editable){
-            page1FormObj.editable = "false";
-            page3FormObj.editable = "false";
-            page1BtSaveObj.disabled = true;
-            page2BtSaveObj.disabled = true;
-            page3BtSaveObj.disabled = true;
-            page3BtDel.disabled = true;
-        }else{
-            page1FormObj.editable = "true";
-            page3FormObj.editable = "true";
-            page1BtSaveObj.disabled = false;
-            page2BtSaveObj.disabled = false;
-            page3BtSaveObj.disabled = false;
-            page3BtDel.disabled = false;
-        }    
-    }
-    /*
-     *	函数说明：文章信息xform加载数据
-     *	参数：	string:cacheID     缓存数据id
-     *	返回值：
-     */
-    function loadArticleInfoFormData(cacheID){
-        var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_ARTICLE_INFO);
-        if(null!=xmlIsland){
-            var page1FormObj = $("page1Form");
-            page1FormObj.load(xmlIsland.node,null,"node");
-            loadPage1FormEvents("article",cacheID);
-        }
-    }
-    /*
-     *	函数说明：将当前文章正文内容更新到对应缓存中
-     *	参数：	string:cacheID     缓存数据id
-     *	返回值：
-     */
-    function updateArticleContentData(cacheID){
-        var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_ARTICLE_CONTENT);
-        if(null!=xmlIsland){
-            var page2EditorObj = $("page2Editor");
-            if(true==page2EditorObj.isLoaded){
-                var html = page2EditorObj.getSourceHTML();
-                Cache.XmlIslands.add(cacheID+"."+XML_ARTICLE_CONTENT,html);
-            }
-        }
-    }
-    /*
-     *	函数说明：文章正文editor加载数据
-     *	参数：	string:cacheID     缓存数据id
-     *	返回值：
-     */
-    function loadArticleContentData(cacheID){
-        var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_ARTICLE_CONTENT);
-        if(null!=xmlIsland){
-            var page2EditorObj = $("page2Editor");
-            page2EditorObj.load(xmlIsland);
-        }
-    }
-    /*
-     *	函数说明：图片附件上传xform加载数据
-     *	参数：	string:cacheID     缓存数据id
-     *	返回值：
-     */
-    function loadAttachsUploadFormData(cacheID){
-        var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_ATTACHS_UPLOAD);
-        if(null!=xmlIsland){
-            var page3FormObj = $("page3Form");
-            page3FormObj.load(xmlIsland.node,null,"node");
-
-            page3FormObj.ondatachange = function(){
-                var name = event.result.name;
-                var newValue = event.result.newValue;
-
-                var targetName = null;
-                var reload = false;
-
-                switch(name){
-                    case "switch1":
-                        targetName = "switch2";
-
-                        //设置本地附件可编辑
-                        page3FormObj.setColumnEditable("file","true");
-                        page3FormObj.setColumnEditable("serverAttach","false");
-
-                        //清空服务器附件
-                        page3FormObj.updateDataExternal("serverAttach","");
-
-                        reload = true;
-                        break;
-                    case "switch2":
-                        targetName = "switch1";
-
-                        //设置服务器附件可编辑
-                        page3FormObj.setColumnEditable("file","false");
-                        page3FormObj.setColumnEditable("serverAttach","true");
-
-                        //清空本地附件
-                        page3FormObj.updateDataExternal("file","");
-
-                        reload = true;
-                        break;
-                    default:
-                        //2007-3-1 离开提醒
-                        attachReminder(cacheID);
-                        break;
-                }
-
-                if(null!=targetName){
-                    page3FormObj.updateDataExternal(targetName,"0",false);
-                }
-                if(true==reload){
-                    page3FormObj.reload();                
-                }
-            }
-            if("false"!=page3FormObj.editable){
-                page3FormObj.updateDataExternal("switch1","1");
             }
         }
     }

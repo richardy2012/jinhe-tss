@@ -30,7 +30,7 @@
 				var groupTreeNode = this.getNodeValue("ChannelTree");
  
 				var tree = $T("tree", groupTreeNode); 
-				$$("tree").onTreeNodeDoubleClick = function(eventObj){
+				tree.element.onTreeNodeDoubleClick = function(eventObj){
 					getGroup();
 				}
 			}
