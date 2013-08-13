@@ -42,7 +42,6 @@ public interface CMSConstants {
     static final Integer ATTACHMENTTYPE_OFFICE  = 2;	// 文章附件OFFICE类型
 
     /* 文章状态 */
-    static final Integer LOCKING_STATUS   = 0; // locked
     static final Integer START_STATUS     = 1; // 编辑中
     static final Integer TOPUBLISH_STATUS = 2; // 待发布
     static final Integer XML_STATUS       = 3; // 已发布生成xml文件

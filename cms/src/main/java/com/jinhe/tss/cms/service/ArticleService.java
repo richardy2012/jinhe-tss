@@ -20,7 +20,6 @@ import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.helper.ArticleHelper;
 import com.jinhe.tss.cms.helper.ArticleQueryCondition;
-import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.util.BeanUtil;
@@ -171,26 +170,6 @@ public class ArticleService implements IArticleService {
         article.setChannel(channel);
         
         articleDao.update(article);
-	}
- 
-    public void lockingArticle(Long articleId) {
-		Article article = getArticleOnly(articleId);
-        if (!CMSConstants.START_STATUS.equals(article.getStatus())) {
-			throw new BusinessException("文章不处于初始状态，不能锁定");
-        }
-		
-		article.setStatus(CMSConstants.LOCKING_STATUS);
-		articleDao.update(article);
-	}
-
-	public void unLockingArticle(Long articleId) {
-        Article article = getArticleOnly(articleId);
-		if ( !CMSConstants.LOCKING_STATUS.equals(article.getStatus()) ) {
-			throw new BusinessException("文章不处于锁定状态，不能解除锁定");
-		}
-		
-		article.setStatus(CMSConstants.START_STATUS);
-		articleDao.update(article);
 	}
  
 	public Article doTopArticle(Long articleId) {

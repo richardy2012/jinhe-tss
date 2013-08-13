@@ -69,22 +69,6 @@ public interface IArticleService {
     Object[] searchArticleList(ArticleQueryCondition condition);
  
     /**
-     * 锁定文章
-     * 
-     * @param articleId
-     */
-    @Logable(operateTable="文章", operateType="锁定", operateInfo="锁定(ID: ${args[0]}) 文章")
-    void lockingArticle(Long articleId);
-
-    /**
-     * 解锁文章
-     * 
-     * @param articleId
-     */
-    @Logable(operateTable="文章", operateType="解锁", operateInfo="解锁(ID: ${args[0]}) 文章")
-    void unLockingArticle(Long articleId);
- 
-    /**
      * 置顶文章
      * 
      * @param articleId

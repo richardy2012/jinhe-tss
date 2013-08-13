@@ -62,10 +62,6 @@ public class ArticleModuleTest extends AbstractTestSupport {
         
         // 移动文章
         articleAction.moveArticle(article.getId(), channel3.getId(), channel2.getId());
-
-        // 锁定、解锁
-        articleAction.lockingArticle(articleId);
-        articleAction.unLockingArticle(articleId);
         
         // 置顶、解除置顶
         articleAction.doOrUndoTopArticle(articleId);

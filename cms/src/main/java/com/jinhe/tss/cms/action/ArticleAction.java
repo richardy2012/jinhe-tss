@@ -132,22 +132,6 @@ public class ArticleAction extends BaseActionSupport {
 	    articleService.moveArticle(articleId, oldChannelId, channelId);
         printSuccessMessage("移动文章成功");
 	}
- 
-	/**
-	 * 文章锁定
-	 */
-	public void lockingArticle(Long articleId) {
-	    articleService.lockingArticle(articleId);
-        printSuccessMessage("锁定文章成功");
-	}
-	
-	/**
-	 * 文章解锁
-	 */
-	public void unLockingArticle(Long articleId) {
-	    articleService.unLockingArticle(articleId);
-        printSuccessMessage("解除锁定成功");
-	}
     
 	/**
 	 * 根据对栏目的权限过滤对文章的权限
