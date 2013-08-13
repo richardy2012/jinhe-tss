@@ -2,13 +2,13 @@
 <Response>
 	<ChannelTree>
 		<actionSet title="" _open="true">
-			<treeNode id="s3" name="Temp站点" icon="../framework/images/site.gif" disabled="1" isSite="1">
-				<treeNode id="r3" name="栏目3" icon="../framework/images/channel.gif" disabled="1" >
-					<treeNode id="r3.1" name="栏目3.1" icon="../framework/images/channel.gif" disabled="1" />
-					<treeNode id="r3.2" name="栏目3.2" icon="../framework/images/channel.gif" disabled="1" />
+			<treeNode id="s3" name="Temp站点" icon="../framework/images/cms/site.gif" disabled="1" isSite="1">
+				<treeNode id="r3" name="栏目3" icon="../framework/images/cms/channel.gif" disabled="1" >
+					<treeNode id="r3.1" name="栏目3.1" icon="../framework/images/cms/channel.gif" disabled="1" />
+					<treeNode id="r3.2" name="栏目3.2" icon="../framework/images/cms/channel.gif" disabled="1" />
 				</treeNode>
-				<treeNode id="r4" name="栏目4" icon="../framework/images/channel_2.gif" disabled="1" />
-				<treeNode id="r5" name="栏目5" icon="../framework/images/channel.gif" disabled="0" />
+				<treeNode id="r4" name="栏目4" icon="../framework/images/cms/channel_2.gif" disabled="1" />
+				<treeNode id="r5" name="栏目5" icon="../framework/images/cms/channel.gif" disabled="0" />
 			</treeNode>
 		</actionSet>
 	</ChannelTree>
