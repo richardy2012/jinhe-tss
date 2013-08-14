@@ -308,6 +308,22 @@ function onClickGridTitle() {
 	Focus.focus("gridTitle");
 }
 
+function onTreeNodeActived(eventObj) {
+	Focus.focus($$("treeTitle").firstChild.id);
+	showTreeNodeInfo();
+}
+
+function onTreeNodeRightClick(eventObj) {
+	var treeObj = $$("tree");
+	var treeNode = eventObj.treeNode;
+
+	showTreeNodeInfo();
+	getTreeOperation(treeNode, function(_operation) {
+		if( treeObj.contextmenu ) {
+			treeObj.contextmenu.show(eventObj.clientX, eventObj.clientY);                
+		}
+	});
+}
 
 /*
  *	获取树操作权限

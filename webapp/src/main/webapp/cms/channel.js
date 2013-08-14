@@ -199,215 +199,7 @@
             var siteTreeNode = this.getNodeValue(XML_MAIN_TREE);
             var tree = $T("tree", siteTreeNode); 
 
-            initTree(siteTreeNodeID);
-        }
-        request.send();
-    }
-
-    function initGridMenu(){
-        var gridObj = $("grid");
-		var item1 = {
-            label:"编辑",
-            callback:editArticleInfo,
-            icon:ICON + "edit.gif",
-            enable:function(){return true},
-            visible:function(){return "4"!=getArticleAttribute("status") && "5"!=getArticleAttribute("status") && "-1"!=getArticleAttribute("status") && "1"!=getArticleAttribute("state") && true==getUserOperation("a_5");}
-        }
-        var item2 = {
-            label:"删除",
-            callback:delArticle,
-            icon:ICON + "del.gif",
-            enable:function(){return true;},
-            visible:function(){return true==getUserOperation("a_3");}
-        }
-        var item3 = {
-            label:"移动到...",
-            callback:moveArticleTo,
-            icon:ICON + "move.gif",
-            enable:function(){return true;},
-            visible:function(){return "0"==getArticleAttribute("state") && true==getUserOperation("a_6");}
-        }
-        var item4 = {
-            label:"置顶",
-            callback:function(){
-                stickArticle("1");
-            },
-            icon:ICON + "stick.gif",
-            enable:function(){return true;},
-            visible:function(){return "1"!=getArticleAttribute("isTop") && true==getUserOperation("a_17");}
-        }
-        var item5 = {
-            label:"解除置顶",
-            callback:function(){
-                stickArticle("0");
-            },
-            icon:ICON + "unstick.gif",
-            enable:function(){return true;},
-            visible:function(){return "1"==getArticleAttribute("isTop") && true==getUserOperation("a_18");}
-        }
-
-        var menu1 = new Menu();
-        menu1.addItem(item1);
-		menu1.addItem(item2);
-		menu1.addItem(item3);
-		menu1.addItem(item4);
-		menu1.addItem(item5);
- 
-        gridObj.contextmenu = menu1;
-    }
- 
-    /*
-     *	函数说明：grid初始化
-     *	参数：	string:id   grid数据相关树节点id
-     *	返回值：
-     */
-    function initGrid(id){
-        var gridObj = $("grid");
-        Public.initHTC(gridObj,"isLoaded","onload",function(){
-            loadGridEvents();
-            loadGridData(id,"1");//默认第一页
-        });
-    }
- 
-    function loadGridEvents(){
-        var gridObj = $("grid");
-
-        gridObj.onclickrow = function(){
-            onClickRow(event);
-        }
-        gridObj.ondblclickrow = function(){
-            onDblClickRow(event);
-        }
-        gridObj.onrightclickrow = function() {
-            onRightClickRow(event);
-        }
-        gridObj.oninactiverow = function() {
-            onInactiveRow(event);
-        }
-        gridObj.onsortrow = function() {
-            onSortRow(event);
-        }
-    }
-    /*
-     *	函数说明：grid加载数据
-     *	参数：	string:treeID       grid数据相关树节点id
-                string:page         页码
-                string:sortName     排序字段
-                string:direction    排序方向
-     *	返回值：
-     */
-    function loadGridData(treeID,page,sortName,direction){
-        var cacheID = CACHE_TREE_NODE_GRID + treeID;
-		var p = new HttpRequestParams();
-		p.url = URL_ARTICLE_LIST;
-		p.setContent("channelId", treeID);
-		p.setContent("page", page);
-		if(null!=sortName && null!=direction){
-			p.setContent("field", sortName);
-			p.setContent("orderType", direction);
-		}
-
-		var request = new HttpRequest(p);
-		request.onresult = function(){
-			var articleListNode = this.getNodeValue(XML_ARTICLE_LIST);
-			var articleListNodeID = cacheID+"."+XML_ARTICLE_LIST;
-
-			var pageListNode = this.getNodeValue(XML_PAGE_LIST);
-			var pageListNodeID = cacheID+"."+XML_PAGE_LIST;
-
-			//给grid节点加上channelId属性表示栏目id
-			articleListNode.setAttribute("channelId", treeID);
-
-			//给当前排序列加上_direction属性
-			if(null!=sortName && null!=direction){
-				var column = articleListNode.selectSingleNode("//column[@name='" + sortName + "']");
-				if(null!=column){
-					column.setAttribute("_direction",direction);
-				}
-			}
-
-			Cache.XmlIslands.add(articleListNodeID,articleListNode);
-			Cache.XmlIslands.add(pageListNodeID,pageListNode);
-			Cache.Variables.add(cacheID,[articleListNodeID,pageListNodeID]);
-
-			loadGridDataFromCache(cacheID);
-		}
-		request.send();
-    }
-    /*
-     *	函数说明：grid从缓存加载数据
-     *	参数：	string:cacheID   grid数据相关树节点id
-     *	返回值：
-     */
-    function loadGridDataFromCache(cacheID){
-        var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_ARTICLE_LIST);
-        if(null!=xmlIsland){
-            var gridObj = $("grid");
-            gridObj.load(xmlIsland.node,null,"node");
-
-            Focus.focus("gridTitle");
-        }
-    }
-
- 
-    /*
-     *	函数说明：显示文章详细信息
-     *	参数：	boolean:editable        是否可编辑(默认true)
-     *	返回值：
-     */
-    function editArticleInfo(editable){
-        var gridObj = $("grid");
-        var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
-        var rowNode = gridObj.getRowNode_Xml(rowIndex);
-        var rowName = gridObj.getNamedNodeValue_Xml(rowIndex,"title");
-        var rowID = rowNode.getAttribute("id");
-        var articleType = rowNode.getAttribute("state");
-        var workflowStatus = rowNode.getAttribute("status");
-
-        //如果grid显示不是搜索结果，则从grid节点取栏目id，否则直接从每行上取
-        var channelId = gridObj.getXmlDocument().getAttribute("channelId");
-        if("search"==channelId){
-            channelId = rowNode.getAttribute("channelId");
-        }
-
-        var returnValue = window.showModalDialog("article.htm",{title:"编辑文章",isNew:false,editable:editable,channelId:channelId,articleType:articleType,articleId:rowID,workflowStatus:workflowStatus},"dialogWidth:900px;dialogHeight:700px;status:yes");
-        if(true==returnValue){
-
-            //如果当前grid显示为此文章所在栏目，则刷新grid
-            var gridObj = $("grid");
-            if(true==gridObj.hasData_Xml()){
-                var tempXmlIsland = new XmlNode(gridObj.getXmlDocument());
-                var tempChannelId = tempXmlIsland.getAttribute("channelId");
-                if(tempChannelId==channelId){
-                    loadGridData(tempChannelId,"1");//默认第一页
-
-                    //刷新工具条
-                    onInactiveRow();
-                }
-            }
-        }
-    }
- 
-    /*
-     *	函数说明：资源树初始化
-     *	参数：	string:cacheID      缓存数据ID
-     *	返回值：
-     */
-    function initTree(cacheID){
-        var treeObj = $("tree");
-        Public.initHTC(treeObj,"isLoaded","oncomponentready",function(){
-            initTreeData(cacheID);
-        });
-    }
-    /*
-     *	函数说明：资源树加载数据
-     *	参数：
-     *	返回值：
-     */
-    function initTreeData(cacheID){
-        var xmlIsland = Cache.XmlIslands.get(cacheID);
-        if(null!=xmlIsland){
-            var treeObj = $("tree");
+            var treeObj = $$("tree");
             treeObj.load(xmlIsland.node);
 
             treeObj.onTreeNodeActived = function(eventObj){
@@ -417,18 +209,35 @@
                 onTreeNodeDoubleClick(eventObj);
             }
             treeObj.onTreeNodeMoved = function(eventObj){
-                onTreeNodeMoved(eventObj);
+                sortChannelTo(eventObj);
             }
             treeObj.onTreeNodeRightClick = function(eventObj){
                 onTreeNodeRightClick(eventObj);
             }
-        }    
+        }
+        request.send();
     }
-    /*
-     *	函数说明：新建站点
-     *	参数：	
-     *	返回值：
-     */
+
+    function onTreeNodeDoubleClick(eventObj){
+        var treeNode = eventObj.treeNode;
+        var id = treeNode.getId();
+        var isSite = treeNode.getAttribute("isSite");
+        getTreeOperation(treeNode, function(_operation) {
+            if("_rootId" == id )  return;
+
+			var canShowArticleList = checkOperation("1", _operation);                
+			if("0"==isSite && canShowArticleList){
+				showArticleList();
+			} 
+			else {
+				var canEdit = checkOperation("5", _operation);
+				if( canEdit ) {
+					editTreeNode();                    
+				}
+			}            
+        });
+    }
+ 
     function addNewSite(){
         var treeID = new Date().valueOf();
         var treeName = "站点";
@@ -703,111 +512,7 @@
             page3GridObj.delRow_Xml(curRowIndex,null,refresh);
         }
     }
-    /*
-     *	函数说明：聚焦初始化
-     *	参数：	
-     *	返回值：
-     */
-    function initFocus(){
-        var treeTitleObj = $("treeTitle");
-        var statusTitleObj = $("statusTitle");
-        var gridTitleObj = $("gridTitle");
 
-        Focus.register(treeTitleObj.firstChild);
-        Focus.register(statusTitleObj.firstChild);
-        Focus.register(gridTitleObj);
-    }
-    /*
-     *	函数说明：事件绑定初始化
-     *	参数：	
-     *	返回值：
-     */
-    function initEvents(){
-        var treeBtRefreshObj = $("treeBtRefresh");
-        var treeTitleBtObj = $("treeTitleBt");
-        var statusTitleBtObj = $("statusTitleBt");
-        var paletteBtObj = $("paletteBt");
-
-        var treeTitleObj = $("treeTitle");
-        var statusTitleObj = $("statusTitle");
-        var gridTitleObj = $("gridTitle");
-        
-        Event.attachEvent(treeBtRefreshObj,"click",onClickTreeBtRefresh);
-        Event.attachEvent(treeTitleBtObj,"click",onClickTreeTitleBt);
-        Event.attachEvent(statusTitleBtObj,"click",onClickStatusTitleBt);
-        Event.attachEvent(paletteBtObj,"click",onClickPaletteBt);
-
-        Event.attachEvent(treeTitleObj,"click",onClickTreeTitle);
-        Event.attachEvent(statusTitleObj,"click",onClickStatusTitle);
-        Event.attachEvent(gridTitleObj,"click",onClickGridTitle);
-    }
-    /*
-     *	函数说明：点击树节点
-     *	参数：	Object:eventObj     模拟事件对象
-     *	返回值：
-     */
-    function onTreeNodeActived(eventObj){
-        var treeTitleObj = $("treeTitle");
-        Focus.focus(treeTitleObj.firstChild.id);
-
-        showTreeNodeStatus({id:"ID",name:"名称",userName:"创建者",creationDate:"创建时间",modifiedUserName:"修改者",modifiedDate:"修改时间"});
- 
-    }
-    /*
-     *	函数说明：双击树节点
-     *	参数：	Object:eventObj     模拟事件对象
-     *	返回值：
-     */
-    function onTreeNodeDoubleClick(eventObj){
-        var treeNode = eventObj.treeNode;
-        var id = getTreeAttribute("id");
-        var isSite = getTreeAttribute("isSite");
-        getTreeOperation(treeNode,function(_operation){
-            if("_rootId"!=id){
-                var canShowArticleList = checkOperation("14",_operation);
-                var canView = checkOperation("12",_operation);
-                var canEdit = checkOperation("5",_operation);
-
-                if("0"==isSite && true == canShowArticleList){
-                    showArticleList();
-                }else{
-                    if(true==canEdit){
-                        editTreeNode();                    
-                    }else if(true==canView){
-                        editTreeNode(false);
-                    }
-                }
-            }
-        });
-    }
-    /*
-     *	函数说明：右击树节点
-     *	参数：	Object:eventObj     模拟事件对象
-     *	返回值：
-     */
-    function onTreeNodeRightClick(eventObj){
-        var treeObj = $("tree");
-        var treeNode = eventObj.treeNode;
-
-        showTreeNodeStatus({id:"ID",name:"名称",userName:"创建者",creationDate:"创建时间",modifiedUserName:"修改者",modifiedDate:"修改时间"});
-
-        var x = eventObj.clientX;
-        var y = eventObj.clientY;
-        getTreeOperation(treeNode,function(_operation){
-            if(null!=treeObj.contextmenu){
-                treeObj.contextmenu.show(x,y);                
-            }
-        });
-    }
-    /*
-     *	函数说明：拖动树节点
-     *	参数：	Object:eventObj     模拟事件对象
-     *	返回值：
-     */
-    function onTreeNodeMoved(eventObj){
-        var movedTreeNode = eventObj.movedTreeNode;	
-        sortChannelTo(eventObj)
-    }
     /*
      *	函数说明：单击grid行
      *	参数：	event:eventObj     事件对象
@@ -1766,6 +1471,190 @@
         }    
     }
 
+
+    function initGridMenu(){
+        var gridObj = $("grid");
+		var item1 = {
+            label:"编辑",
+            callback:editArticleInfo,
+            icon:ICON + "edit.gif",
+            enable:function(){return true},
+            visible:function(){return "4"!=getArticleAttribute("status") && "5"!=getArticleAttribute("status") && "-1"!=getArticleAttribute("status") && "1"!=getArticleAttribute("state") && true==getUserOperation("a_5");}
+        }
+        var item2 = {
+            label:"删除",
+            callback:delArticle,
+            icon:ICON + "del.gif",
+            enable:function(){return true;},
+            visible:function(){return true==getUserOperation("a_3");}
+        }
+        var item3 = {
+            label:"移动到...",
+            callback:moveArticleTo,
+            icon:ICON + "move.gif",
+            enable:function(){return true;},
+            visible:function(){return "0"==getArticleAttribute("state") && true==getUserOperation("a_6");}
+        }
+        var item4 = {
+            label:"置顶",
+            callback:function(){
+                stickArticle("1");
+            },
+            icon:ICON + "stick.gif",
+            enable:function(){return true;},
+            visible:function(){return "1"!=getArticleAttribute("isTop") && true==getUserOperation("a_17");}
+        }
+        var item5 = {
+            label:"解除置顶",
+            callback:function(){
+                stickArticle("0");
+            },
+            icon:ICON + "unstick.gif",
+            enable:function(){return true;},
+            visible:function(){return "1"==getArticleAttribute("isTop") && true==getUserOperation("a_18");}
+        }
+
+        var menu1 = new Menu();
+        menu1.addItem(item1);
+		menu1.addItem(item2);
+		menu1.addItem(item3);
+		menu1.addItem(item4);
+		menu1.addItem(item5);
+ 
+        gridObj.contextmenu = menu1;
+    }
+ 
+    /*
+     *	函数说明：grid初始化
+     *	参数：	string:id   grid数据相关树节点id
+     *	返回值：
+     */
+    function initGrid(id){
+        var gridObj = $("grid");
+        Public.initHTC(gridObj,"isLoaded","onload",function(){
+            loadGridEvents();
+            loadGridData(id,"1");//默认第一页
+        });
+    }
+ 
+    function loadGridEvents(){
+        var gridObj = $("grid");
+
+        gridObj.onclickrow = function(){
+            onClickRow(event);
+        }
+        gridObj.ondblclickrow = function(){
+            onDblClickRow(event);
+        }
+        gridObj.onrightclickrow = function() {
+            onRightClickRow(event);
+        }
+        gridObj.oninactiverow = function() {
+            onInactiveRow(event);
+        }
+        gridObj.onsortrow = function() {
+            onSortRow(event);
+        }
+    }
+    /*
+     *	函数说明：grid加载数据
+     *	参数：	string:treeID       grid数据相关树节点id
+                string:page         页码
+                string:sortName     排序字段
+                string:direction    排序方向
+     *	返回值：
+     */
+    function loadGridData(treeID,page,sortName,direction){
+        var cacheID = CACHE_TREE_NODE_GRID + treeID;
+		var p = new HttpRequestParams();
+		p.url = URL_ARTICLE_LIST;
+		p.setContent("channelId", treeID);
+		p.setContent("page", page);
+		if(null!=sortName && null!=direction){
+			p.setContent("field", sortName);
+			p.setContent("orderType", direction);
+		}
+
+		var request = new HttpRequest(p);
+		request.onresult = function(){
+			var articleListNode = this.getNodeValue(XML_ARTICLE_LIST);
+			var articleListNodeID = cacheID+"."+XML_ARTICLE_LIST;
+
+			var pageListNode = this.getNodeValue(XML_PAGE_LIST);
+			var pageListNodeID = cacheID+"."+XML_PAGE_LIST;
+
+			//给grid节点加上channelId属性表示栏目id
+			articleListNode.setAttribute("channelId", treeID);
+
+			//给当前排序列加上_direction属性
+			if(null!=sortName && null!=direction){
+				var column = articleListNode.selectSingleNode("//column[@name='" + sortName + "']");
+				if(null!=column){
+					column.setAttribute("_direction",direction);
+				}
+			}
+
+			Cache.XmlIslands.add(articleListNodeID,articleListNode);
+			Cache.XmlIslands.add(pageListNodeID,pageListNode);
+			Cache.Variables.add(cacheID,[articleListNodeID,pageListNodeID]);
+
+			loadGridDataFromCache(cacheID);
+		}
+		request.send();
+    }
+    /*
+     *	函数说明：grid从缓存加载数据
+     *	参数：	string:cacheID   grid数据相关树节点id
+     *	返回值：
+     */
+    function loadGridDataFromCache(cacheID){
+        var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_ARTICLE_LIST);
+        if(null!=xmlIsland){
+            var gridObj = $("grid");
+            gridObj.load(xmlIsland.node,null,"node");
+
+            Focus.focus("gridTitle");
+        }
+    }
+
+ 
+    /*
+     *	函数说明：显示文章详细信息
+     *	参数：	boolean:editable        是否可编辑(默认true)
+     *	返回值：
+     */
+    function editArticleInfo(editable){
+        var gridObj = $("grid");
+        var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
+        var rowNode = gridObj.getRowNode_Xml(rowIndex);
+        var rowName = gridObj.getNamedNodeValue_Xml(rowIndex,"title");
+        var rowID = rowNode.getAttribute("id");
+        var articleType = rowNode.getAttribute("state");
+        var workflowStatus = rowNode.getAttribute("status");
+
+        //如果grid显示不是搜索结果，则从grid节点取栏目id，否则直接从每行上取
+        var channelId = gridObj.getXmlDocument().getAttribute("channelId");
+        if("search"==channelId){
+            channelId = rowNode.getAttribute("channelId");
+        }
+
+        var returnValue = window.showModalDialog("article.htm",{title:"编辑文章",isNew:false,editable:editable,channelId:channelId,articleType:articleType,articleId:rowID,workflowStatus:workflowStatus},"dialogWidth:900px;dialogHeight:700px;status:yes");
+        if(true==returnValue){
+
+            //如果当前grid显示为此文章所在栏目，则刷新grid
+            var gridObj = $("grid");
+            if(true==gridObj.hasData_Xml()){
+                var tempXmlIsland = new XmlNode(gridObj.getXmlDocument());
+                var tempChannelId = tempXmlIsland.getAttribute("channelId");
+                if(tempChannelId==channelId){
+                    loadGridData(tempChannelId,"1");//默认第一页
+
+                    //刷新工具条
+                    onInactiveRow();
+                }
+            }
+        }
+    }
 
     window.onload = init;
 

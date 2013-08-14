@@ -262,9 +262,7 @@
 			
 			var treeObj = $$("tree");
 			treeObj.onTreeNodeActived = function(eventObj){
-                var treeTitleObj = $$("treeTitle");
-				Focus.focus(treeTitleObj.firstChild.id);
-				showTreeNodeInfo();
+                onTreeNodeActived(eventObj);
             }
             treeObj.onTreeNodeDoubleClick = function(eventObj){
 				var treeNode = eventObj.treeNode;
@@ -277,15 +275,7 @@
                 sort(eventObj);
             }
             treeObj.onTreeNodeRightClick = function(eventObj){
-                var treeObj = $$("tree");
-				var treeNode = eventObj.treeNode;
-
-				showTreeNodeInfo();
-				getTreeOperation(treeNode, function(_operation) {
-					if( treeObj.contextmenu ) {
-						treeObj.contextmenu.show(eventObj.clientX, eventObj.clientY);                
-					}
-				});
+                onTreeNodeRightClick(eventObj);
             }
         }
         
