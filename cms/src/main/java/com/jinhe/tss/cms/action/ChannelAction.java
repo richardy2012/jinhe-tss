@@ -63,21 +63,19 @@ public class ChannelAction extends ProgressActionSupport {
 	}
 
 	/**
-	 * 新增栏目
+	 * 新增/更新栏目
 	 */
 	public void saveChannel(Channel channel) {
-	    channelService.createChannel(channel);
-		doAfterSave(true, channel, "ChannelTree");
+		if( DEFAULT_NEW_ID.equals(channel.getId()) ) {
+			channelService.createChannel(channel);
+			doAfterSave(true, channel, "ChannelTree");
+		}
+		else {
+			channelService.updateChannel(channel);
+			printSuccessMessage("修改成功！");
+		}
 	}
-
-	/**
-	 * 更新栏目
-	 */
-	public void updateChannel(Channel channel) {
-		channelService.updateChannel(channel);
-		printSuccessMessage("修改成功！");
-	}
-
+ 
 	/**
 	 * 逻辑删除栏目
 	 */
@@ -124,14 +122,13 @@ public class ChannelAction extends ProgressActionSupport {
      */
     public void getSiteChannelTree(Long channelId, String action) {
         TreeEncoder treeEncoder = null;
-        if ("moveArticle".equals(action) || "copyArticle".equals(action)) {
-
+        if ("moveArticle".equals(action)) {
             Object[] object = channelService.selectCanAddArticleParentChannels();
             treeEncoder = new TreeEncoder(object[0], new LevelTreeParser());
             treeEncoder.setRootCanSelect(false);
             treeEncoder.setTranslator(new ChannelCanSelectTranslator((String) object[1], channelId));
 
-        } else if ("moveChannel".equals(action) || ("copyChannel").equals(action)) {
+        } else if ("moveChannel".equals(action)) {
             Object[] object = channelService.selectCanAddChannelParentChannels();
             treeEncoder = new TreeEncoder(object[0], new LevelTreeParser());
             treeEncoder.setRootCanSelect(false);
@@ -164,23 +161,21 @@ public class ChannelAction extends ProgressActionSupport {
     }
 
     /**
-     * 新建站点
+     * 新建或更新站点
      */
     public void saveSite(Channel channel) {
-        channel.setParentId(CMSConstants.HEAD_NODE_ID);
-        channelService.createSite(channel);
+    	if( DEFAULT_NEW_ID.equals(channel.getId()) ) {
+    		channel.setParentId(CMSConstants.HEAD_NODE_ID);
+            channelService.createSite(channel);
 
-        doAfterSave(true, channel, "SiteTree");
+            doAfterSave(true, channel, "SiteTree");
+    	}
+    	else {
+    		channelService.updateSite(channel);
+            printSuccessMessage("修改成功！");
+    	}
     }
-
-    /**
-     * 更新站点信息
-     */
-    public void updateSite(Channel channel) {
-        channelService.updateSite(channel);
-        printSuccessMessage("修改成功！");
-    }
-
+ 
     /**
      * 获得站点的详细信息
      */
@@ -190,7 +185,8 @@ public class ChannelAction extends ProgressActionSupport {
             channel = new Channel();
             channel.setDocPath("doc");
             channel.setImagePath("img");
-        } else {
+        } 
+        else {
             channel = channelService.getSiteById(siteId);
         }
  
@@ -202,18 +198,16 @@ public class ChannelAction extends ProgressActionSupport {
      * 启用栏目
      */
     public void enable(Long id) {
-        channelService.startChannel(id);
+        // 如果启用的是站点，则启用全部子节点
+        if( channelService.getChannelById(id).isSite() ) {
+        	channelService.startSiteAll(id);
+        }
+        else {
+        	 channelService.startChannel(id);
+        }
         printSuccessMessage("启用成功！");
     }
-
-    /**
-     * 启用站点下所有栏目
-     */
-    public void enableSiteAndChannels(Long siteId) {
-        channelService.startSiteAll(siteId);
-        printSuccessMessage("启用成功！");
-    }
-
+ 
     /**
      * 停用站点
      */

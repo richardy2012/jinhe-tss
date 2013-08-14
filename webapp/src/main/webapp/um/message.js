@@ -242,7 +242,7 @@
     function showMessageList() {
         var treeNode = $T("tree").getActiveTreeNode();
 		Ajax({
-			url :URL_MESSAGE_LIST + treeNode.getId(),
+			url : URL_MESSAGE_LIST + treeNode.getId(),
 			onresult : function() {  // 移动树节点					
 				$G("grid", this.getNodeValue(XML_MESSAGE_LIST));
 			}

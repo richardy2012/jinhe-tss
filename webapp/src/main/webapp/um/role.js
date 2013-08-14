@@ -192,43 +192,11 @@
 	function isRoleGroup() {
 		return getTreeAttribute("isGroup") == "1";
 	}
- 
-    function stopOrStartTreeNode(state) {		
-		var tree = $T("tree");
-		var treeNode = tree.getActiveTreeNode();
-		Ajax({
-			url : URL_STOP_NODE + treeNode.getId() + "/" + state,
-			onsuccess : function() { 
-				// 刷新父子树节点停用启用状态: 启用上溯，停用下溯
-				var curNode = new XmlNode(treeNode.node);
-				refreshTreeNodeState(curNode, state);
-		
-				if("1"==state) {
-					var childNodes = curNode.selectNodes(".//treeNode");
-					for(var i=0; i < childNodes.length; i++) {                
-						refreshTreeNodeState(childNodes[i], state);
-					}
-				} else if ("0" == state) {
-					while( curNode && "-6" != curNode.getAttribute("id")) {
-						refreshTreeNodeState(curNode, state);
-						curNode = curNode.getParent();
-					}            
-				}
-				
-				tree.reload(); 
-			}
-		});
-    }
- 
-    function refreshTreeNodeState(xmlNode, state) {
-        var isGroup = xmlNode.getAttribute("isGroup");
-        var img = {
-            "1": "role_group",
-            "0": "role"
-        };
-        xmlNode.setAttribute("icon", ICON + img[isGroup] + (state=="0" ? "" : "_2") + ".gif");
-		xmlNode.setAttribute("disabled", state);
-    }	
+
+	function stopOrStartTreeNode(state) {
+		var iconName = isRoleGroup() ? "um/role_group" : "um/role";
+		stopOrStartTreeNode(state, iconName);
+	}
 	
     /*
      *	删除节点
@@ -238,30 +206,11 @@
     }
 	
 	function moveNodeTo() {
-        var treeObj = $T("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-		var treeNodeID = treeNode.getId();
+        var tree = $T("tree");
+		var treeNodeID = tree.getActiveTreeNode().getId();
 		var targetId = window.showModalDialog("rolegrouptree.htm", {id:treeNodeID}, "dialogWidth:300px;dialogHeight:400px;");
 		if( targetId) {
-			Ajax({
-				url : URL_MOVE_NODE + treeNodeID + "/" + targetId,
-				onsuccess : function() {  // 移动树节点					
-					var xmlNode = new XmlNode(treeNode.node);
-					var parentNode = treeObj.getTreeNodeById(targetId);
-
-					// 父节点停用则下溯
-					var parentNodeState = parentNode.getAttribute("disabled");
-					if("1" == parentNodeState) {
-						refreshTreeNodeState(xmlNode, "1");
-					}
-					parentNode.node.appendChild(treeNode.node);
-					parentNode.node.setAttribute("_open", "true");
-
-					clearOperation(xmlNode);
-
-					treeObj.reload();
-				}
-			});
+			moveTreeNode(tree, treeNodeID, targetId);
 		}
     }
   
@@ -338,32 +287,30 @@
                 string:parentID             父节点id
      */
     function loadRoleGroupDetailData(treeID, editable, parentID) {
-		var p = new HttpRequestParams();
-		p.url = URL_ROLE_GROUP_DETAIL + treeID + "/" + parentID;
+		Ajax({
+			url : URL_ROLE_GROUP_DETAIL + treeID + "/" + parentID,
+			onresult : function() {					
+				var roleGroupInfoNode = this.getNodeValue(XML_ROLE_GROUP_INFO);
 
-		var request = new HttpRequest(p);
-		request.onresult = function() {
-			var roleGroupInfoNode = this.getNodeValue(XML_ROLE_GROUP_INFO);
+				var roleGroupInfoNodeID = treeID + "." + XML_ROLE_GROUP_INFO;
+				Cache.XmlDatas.add(roleGroupInfoNodeID, roleGroupInfoNode);
 
-			var roleGroupInfoNodeID = treeID + "." + XML_ROLE_GROUP_INFO;
-			Cache.XmlDatas.add(roleGroupInfoNodeID, roleGroupInfoNode);
+				var xform = $X("page1Form", roleGroupInfoNode);
+				xform.editable = editable == false ? "false" : "true";
+				
+				// 设置翻页按钮显示状态
+				$$("page1BtPrev").style.display = "none";
+				$$("page1BtNext").style.display = "none";
 
-			var xform = $X("page1Form", roleGroupInfoNode);
-			xform.editable = editable == false ? "false" : "true";
-			
-			// 设置翻页按钮显示状态
-			$$("page1BtPrev").style.display = "none";
-			$$("page1BtNext").style.display = "none";
-
-			//设置保存按钮操作
-			var page1BtSaveObj = $$("page1BtSave");
-			var page2BtSaveObj = $$("page2BtSave");
-			page1BtSaveObj.disabled = page2BtSaveObj.disabled = (editable==false ? true : false)
-			page1BtSaveObj.onclick = page2BtSaveObj.onclick = function() {
-				saveRoleGroup(treeID, parentID);
+				//设置保存按钮操作
+				var page1BtSaveObj = $$("page1BtSave");
+				var page2BtSaveObj = $$("page2BtSave");
+				page1BtSaveObj.disabled = page2BtSaveObj.disabled = (editable==false ? true : false)
+				page1BtSaveObj.onclick = page2BtSaveObj.onclick = function() {
+					saveRoleGroup(treeID, parentID);
+				}
 			}
-		}
-		request.send();
+		});
     }
 
     function saveRoleGroup(cacheID, parentID) {
@@ -400,6 +347,8 @@
 				// 更新树节点名称
 				var name = xform.getData("name");
 				modifyTreeNode(cacheID, "name", name, true);
+
+				ws.closeActiveTab();
             }
             request.send();
         }

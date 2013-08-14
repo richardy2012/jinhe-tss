@@ -29,7 +29,7 @@ public class ChannelModuleTest extends AbstractTestSupport {
         Long siteId = site.getId();
         assertNotNull(siteId);
         
-        channelAction.updateSite(site);
+        channelAction.saveSite(site);
         
         channelAction.getSiteDetail(CMSConstants.DEFAULT_NEW_ID);
         
@@ -46,7 +46,7 @@ public class ChannelModuleTest extends AbstractTestSupport {
         
         channelAction.getChannelDetail(channelId, channel1.getParentId());
         
-        channelAction.updateChannel(channel1);
+        channelAction.saveChannel(channel1);
         
         Channel channel2 = super.createChannel("体育新闻", channel1, siteId);
         Channel channel3 = super.createChannel("NBA战况", channel2, channel2.getId());
@@ -72,7 +72,7 @@ public class ChannelModuleTest extends AbstractTestSupport {
         
         // 停用启用
         channelAction.disable(siteId);
-        channelAction.enableSiteAndChannels(siteId);
+        channelAction.enable(siteId);
         
         channelAction.disable(channelId);
         

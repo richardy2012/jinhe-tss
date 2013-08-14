@@ -738,7 +738,7 @@ function stopOrStartTreeNode(url, state, iconName) {
 			var curNode = new XmlNode(treeNode.node);
 			refreshTreeNodeState(curNode, state);
 	
-			if("1"==state) {
+			if("1" == state) {
 				var childNodes = curNode.selectNodes(".//treeNode");
 				for(var i=0; i < childNodes.length; i++) {                
 					refreshTreeNodeState(childNodes[i], state);
@@ -754,9 +754,9 @@ function stopOrStartTreeNode(url, state, iconName) {
 		}
 	});
 	
-	this.refreshTreeNodeState = function(xmlNode) {
+	this.refreshTreeNodeState = function(xmlNode, state) {
         xmlNode.setAttribute("disabled", state);
-        xmlNode.setAttribute("icon", ICON + iconName + (state == "0" ? "" : "_2") + ".gif");
+        xmlNode.setAttribute("icon", ICON + iconName + "_" + state + ".gif");
     }
 }
 
@@ -775,6 +775,29 @@ function sortTreeNode(url, eventObj) {
 			}
 		});
 	}
+}
+
+// 移动树节点
+function moveTreeNode(tree, id, targetId, url) {
+	Ajax({
+		url : (url || URL_MOVE_NODE) + id + "/" + targetId,
+		onsuccess : function() {  // 移动树节点					
+			var xmlNode = new XmlNode(treeNode.node);
+			var parentNode = tree.getTreeNodeById(targetId);
+
+			// 父节点停用则下溯
+			var parentNodeState = parentNode.getAttribute("disabled");
+			if("1" == parentNodeState) {
+				refreshTreeNodeState(xmlNode, "1");
+			}
+			parentNode.node.appendChild(treeNode.node);
+			parentNode.node.setAttribute("_open", "true");
+
+			clearOperation(xmlNode);
+
+			tree.reload();
+		}
+	});
 }
 
 
