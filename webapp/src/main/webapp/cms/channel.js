@@ -24,7 +24,7 @@
     URL_LOCK_ARTICLE = "data/_success.xml";
     URL_START_ARTICLE = "data/_success.xml";
     URL_RESHIP_ARTICLE = "data/_success.xml";
-    URL_STICK_ARTICLE = "data/_success.xml";
+    URL_SETTOP_ARTICLE = "data/_success.xml";
     URL_SITE_DETAIL ="data/site1.xml";
     URL_SAVE_SITE = "data/_success.xml";
     URL_UPDATE_SITE = "data/_success.xml";
@@ -489,216 +489,111 @@
 		return getTreeAttribute("isSite") == "0";
 	}
 
-    /*
-     *	函数说明：获取树操作权限
-     *	参数：	treeNode:treeNode       treeNode实例
-                function:callback       回调函数
-     *	返回值：
-     */
-    function getTreeOperation(treeNode,callback) { 
-        var id = treeNode.getId();
-        var _operation = treeNode.getAttribute("_operation");
 
-        if(null==_operation || ""==_operation) { //如果节点上还没有_operation属性，则发请求从后台获取信息
-            var p = new HttpRequestParams();
-            p.url = URL_GET_OPERATION;
-            p.setContent("resourceId",id);
+    /* 显示文章列表 */
+    function showArticleList(groupId) {
+        var treeNode = $T("tree").getActiveTreeNode();
+		var treeID = groupId || treeNode.getId();
 
-            var request = new HttpRequest(p);
-            request.onresult = function() { 
-                _operation = this.getNodeValue(XML_OPERATION);
-                treeNode.setAttribute("_operation",_operation);
+		var p = new HttpRequestParams();
+		p.url = URL_USER_LIST + treeID + "/1";
+		var request = new HttpRequest(p);
+		request.onresult = function() {
+			$G("grid", this.getNodeValue(XML_USER_LIST)); 
+			var gridToolBar = $$("gridToolBar");
 
-                if(null!=callback) { 
-                    callback(_operation);
-                }
-            }
-            request.send();            
-        }else{
-            if(null!=callback) { 
-                callback(_operation);
-            }
-        }    
-    }
+			var pageListNode = this.getNodeValue(XML_PAGE_INFO);			
+			initGridToolBar(gridToolBar, pageListNode, function(page) {
+				request.params.url = XML_USER_LIST + treeID + "/" + page;
+				request.onresult = function() {
+					$G("grid", this.getNodeValue(XML_USER_LIST)); 
+				}				
+				request.send();
+			} );
+			
+			var gridElement = $$("grid"); 
+			gridElement.onDblClickRow = function(eventObj) {
+				editUserInfo();
+			}
+			gridElement.onRightClickRow = function() {
+				$$("grid").contextmenu.show(event.clientX, event.clientY);
+			}   
+			gridElement.onScrollToBottom = function () {			
+				var currentPage = gridToolBar.getCurrentPage();
+				if(gridToolBar.getTotalPages() <= currentPage) return;
 
+				var nextPage = parseInt(currentPage) + 1; 
+				request.params.url = XML_USER_LIST + treeID + "/" + nextPage;
+				request.onresult = function() {
+					$G("grid").load(this.getNodeValue(XML_REPORT_DATA), true);
+					initGridToolBar(gridToolBar, this.getNodeValue(XML_PAGE_INFO));
+				}				
+				request.send();
+			}
+		}
+		request.send();
+	}
 
- 
-    function showArticleList() { 
-        var treeObj = $("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode) { 
-            var id = treeNode.getId();
-            initGrid(id);
-        }
-    }
-    /*
-     *	函数说明：新建文章
-     *	参数：	
-     *	返回值：
-     */
     function addNewArticle() { 
         var treeObj = $("tree");
         var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode) { 
-            var channelId = treeNode.getId();
-            var articleType = 0; // 普通文章
-
-            var articleName = "文章";
-            var articleId = new Date().valueOf();
-
-            var returnValue = window.showModalDialog("article.htm",{title:"新建文章",isNew:true,editable:true,channelId:channelId,articleType:articleType,articleId:articleId,workflowStatus:"0"},"dialogWidth:900px;dialogHeight:700px;status:yes");
-            if(true==returnValue) { 
-
-                //如果当前grid显示为此文章所在栏目，则刷新grid
-                var gridObj = $("grid");
-                if(true==gridObj.hasData_Xml()) { 
-                    var tempXmlIsland = new XmlNode(gridObj.getXmlDocument());
-                    var tempChannelId = tempXmlIsland.getAttribute("channelId");
-                    if(tempChannelId==channelId) { 
-                        loadGridData(tempChannelId,"1");//默认第一页
-
-                        //刷新工具条
-                        onInactiveRow();
-                    }
-                }          
-            }
-        }
+		var channelId = treeNode.getId();
+		var articleName = "文章";
+		var articleId = DEFAULT_NEW_ID;
+		var returnValue = window.showModalDialog("article.htm",{title:"新建文章",channelId:channelId,articleId:articleId},"dialogWidth:900px;dialogHeight:700px;status:yes");
+		if( returnValue ) { 
+			showArticleList(channelId); 
+		}
     }
  
-    /*
-     *	函数说明：移动文章
-     *	参数：	
-     *	返回值：
-     */
     function moveArticleTo() { 
-        var gridObj = $("grid");
-        var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
-        var rowNode = gridObj.getRowNode_Xml(rowIndex);
-        var rowID = rowNode.getAttribute("id");
-        var articleType = rowNode.getAttribute("state");
-
-        //如果grid显示不是搜索结果，则从grid节点取栏目id，否则直接从每行上取
-        var oldChannelId = gridObj.getXmlDocument().getAttribute("channelId");
-        if("search"==oldChannelId) { 
-            oldChannelId = rowNode.getAttribute("channelId");
-        }
+        var articleId = $G("grid").getRowAttributeValue("id");;
         var action = "moveArticle";
-        var xmlIsland = null;
-
-        var channelID = window.showModalDialog("channeltree.htm",{id:oldChannelId,xmlIsland:xmlIsland,action:action},"dialogWidth:300px;dialogHeight:400px;");
-        if(null!=channelID) { 
+        var returnObj = window.showModalDialog("channelTree.htm", {action:action}, "dialogWidth:300px;dialogHeight:400px;");
+        if( returnObj ) { 
             var p = new HttpRequestParams();
-            p.url = URL_MOVE_ARTICLE;
-            p.setContent("channelId",channelID.id);
-            p.setContent("articleId",rowID);
-            p.setContent("oldChannelId", oldChannelId);
+            p.url = URL_MOVE_ARTICLE + articleId + "/" + returnObj.id;
 
-            var request = new HttpRequest(p);
+			var request = new HttpRequest(p);
             request.onsuccess = function() { 
-                var toolbarObj = $("gridToolBar");
-                var curPage = toolbarObj.getCurrentPage();
-                toolbarObj.gotoPage(curPage);
-
-                //清除状态信息
-                var block = Blocks.getBlock("statusContainer");
-                if(null!=block) { 
-                    block.clear();
-                }
+                // 删除当前栏目文章列表
+				var channelId = getTreeNodeId();
+				showArticleList(channelId); 
             }
             request.send();
         }
     }
 
- 
-    /*
-     *	函数说明：删除文章
-     *	参数：	
-     *	返回值：
-     */
     function delArticle() { 
-        if(true!=confirm("您确定要删除吗？")) { 
+        if( !confirm("您确定要删除吗？") ) { 
             return;
         }
-        var gridObj = $("grid");
-        var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
-        var rowNode = gridObj.getRowNode_Xml(rowIndex);
-        var rowID = rowNode.getAttribute("id");
-        var state = rowNode.getAttribute("state");
-        var channelId = rowNode.getAttribute("channelId");
-
-        var p = new HttpRequestParams();
-        p.url = URL_DEL_ARTICLE;
-        p.setContent("articleId",rowID);
-        p.setContent("articleType",state);
-        p.setContent("channelId",channelId);
-
-        var request = new HttpRequest(p);
-        request.onsuccess = function() { 
-            var toolbarObj = $("gridToolBar");
-            var curPage = toolbarObj.getCurrentPage();
-            toolbarObj.gotoPage(curPage);
-        }
-        request.send();
-    }
+        
+		var articleId = getArticleAttribute("id");
+		Ajax({
+			url :  URL_DEL_ARTICLE + articleId,
+			onsuccess : function() { 			
+				var channelId = getTreeNodeId();
+				showArticleList(channelId); 
+			}
+		});
+    } 
  
- 
-
-    /*
-     *	函数说明：获取文章属性
-     *	参数：	string:name         文章属性名
-     *	返回值：string:value        文章属性值
-     */
+    /* 获取文章属性 */
     function getArticleAttribute(name) { 
-        var value = null;
-        var gridObj = $("grid");
-        var rowIndex = gridObj.getCurrentRowIndex_Xml()[0];
-        if(null!=rowIndex) { 
-            var rowNode = gridObj.getRowNode_Xml(rowIndex);
-            value = rowNode.getAttribute(name);
-        }
-        return value;
+        return $G("grid").getRowAttributeValue(name);
     }
-     /*
-     *	函数说明：置顶文章
-     *	参数：	string:isTop        是否置顶(1是/0否)
-     *	返回值：
-     */
-    function stickArticle(isTop) { 
 
-        var gridObj = $("grid");
-        var curRowIndex = gridObj.getCurrentRowIndex_Xml()[0];
-        if(null!=curRowIndex) { 
-            var curRowNode = gridObj.getRowNode_Xml(curRowIndex);
-            var curRowID = curRowNode.getAttribute("id");
-
-            //如果grid显示不是搜索结果，则从grid节点取栏目id，否则直接从每行上取
-            var channelId = gridObj.getXmlDocument().getAttribute("channelId");
-            if("search"==channelId) { 
-                channelId = curRowNode.getAttribute("channelId");
-            }
-            var isTop = curRowNode.getAttribute("isTop");
-
-            var p = new HttpRequestParams();
-            p.url = URL_STICK_ARTICLE;
-            p.setContent("articleId",curRowID);
-            p.setContent("isTop",isTop);
-            p.setContent("channelId",channelId);
-
-            var request = new HttpRequest(p);
-            request.onsuccess = function() { 
-
-                gridObj.modifyNamedNode_Xml(curRowIndex,"isTop",isTop);
-
-                var toolbarObj = $("gridToolBar");
-                var curPage = toolbarObj.getCurrentPage();
-                toolbarObj.gotoPage(curPage);
-
-                //刷新工具条
-                onInactiveRow();
-
-            }
-            request.send();
-        }
+    /* 置顶文章 */
+    function setTopArticle(isTop) { 
+		var articleId = getArticleAttribute("id");
+		Ajax({
+			url : URL_SETTOP_ARTICLE + articleId + "/" + isTop,
+			onsuccess : function() { 			
+				var channelId = getTreeNodeId();
+				showArticleList(channelId); 
+			}
+		});
     }
  
     /*
@@ -920,7 +815,7 @@
         var item4 = {
             label:"置顶",
             callback:function() { 
-                stickArticle("1");
+                setTopArticle("1");
             },
             icon:ICON + "stick.gif",
             enable:function() { return true;},
@@ -929,7 +824,7 @@
         var item5 = {
             label:"解除置顶",
             callback:function() { 
-                stickArticle("0");
+                setTopArticle("0");
             },
             icon:ICON + "unstick.gif",
             enable:function() { return true;},
@@ -944,6 +839,15 @@
 		menu1.addItem(item5);
  
         gridObj.contextmenu = menu1;
+    }
+
+	function showArticleList() { 
+        var treeObj = $("tree");
+        var treeNode = treeObj.getActiveTreeNode();
+        if(null!=treeNode) { 
+            var id = treeNode.getId();
+            initGrid(id);
+        }
     }
  
     /*

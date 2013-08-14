@@ -26,7 +26,8 @@
     function init() {
 		Ajax({
 			url : URL_INIT,
-			onresult : function() {  // 移动树节点					
+			params : window.dialogArguments;
+			onresult : function() { 				
 				var groupTreeNode = this.getNodeValue("ChannelTree");
  
 				var tree = $T("tree", groupTreeNode); 

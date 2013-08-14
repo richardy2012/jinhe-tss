@@ -812,32 +812,25 @@
     }
  
     function stopOrStartUser(state) {
-        var rowIndex = $$("grid").selectRowIndex; 
-        if(rowIndex) {
-			var grid = $G("grid");
-            var row = grid.getRowByIndex(rowIndex);
-            var userID = row.getAttribute("id");
+		var userID = $G("grid").getRowAttributeValue("id");
+		if(userID == null) return;
 
-            var p = new HttpRequestParams();
-            p.url = URL_STOP_USER + userID + "/" + state;
-
-            var request = new HttpRequest(p);
-            request.onsuccess = function(){
-                // 成功后设置状态
-                grid.modifyRow(row, "userstate", state);
-                grid.modifyRow(row, "icon", ICON + "user_2.gif");
+		Ajax({
+			url : URL_STOP_USER + userID + "/" + state,
+			onsuccess : function() {  // 移动树节点					
+				// 成功后设置状态
+				grid.modifyRow(row, "userstate", state);
+				grid.modifyRow(row, "icon", ICON + "um/user_" + state + ".gif");
 				
-				if (state == "0") {
-					// 启用组
+				if (state == "0") { // 启用组
 					var treeNode = $T("tree").getTreeNodeById(groupID);
 					if(treeNode) {
 						var xmlNode = new XmlNode(treeNode.node);
 						refreshGroupStates(xmlNode, "0");
 					}
 				}
-            }
-            request.send();
-        }
+			}
+		});
     }  
  
     /* 搜索用户 */

@@ -384,7 +384,6 @@ function checkOperation(code, _operation) {
 	return flag;
 }
 
-
 /*
  *	获取树节点属性
  *	参数：	string:name         属性名
