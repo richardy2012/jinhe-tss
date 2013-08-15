@@ -17,17 +17,17 @@ import com.jinhe.tss.cms.dao.IArticleDao;
 import com.jinhe.tss.cms.dao.IChannelDao;
 import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
-import com.jinhe.tss.cms.entity.TimerStrategy;
 import com.jinhe.tss.cms.helper.ArticleHelper;
 import com.jinhe.tss.cms.lucene.executor.IIndexExecutor;
 import com.jinhe.tss.cms.lucene.executor.IndexExecutorFactory;
+import com.jinhe.tss.cms.timer.TimerStrategy;
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.util.FileHelper;
 
 public class IndexHelper {
     
-    private static Logger log = Logger.getLogger(IndexHelper.class);
+    static Logger log = Logger.getLogger(IndexHelper.class);
  
     /**
      * 获取索引的所有文章地址列表
@@ -35,14 +35,13 @@ public class IndexHelper {
      * @param articleDao
      * @return
      */
-    public static Set<ArticleContent> getIndexableArticles4Lucene(TimerStrategy strategy, 
+    public static Set<ArticleContent> getIndexableArticles(List<Long> channelIds, boolean isIncrement, 
             IChannelDao channelDao, IArticleDao articleDao) {
      
         Set<ArticleContent> articleContentSet = new HashSet<ArticleContent>();
         
-        String[] channelIds = strategy.getContent().split(",");
-        for ( String channelId : channelIds ) {
-            Channel channel = channelDao.getEntity(new Long(channelId));
+        for ( Long channelId : channelIds ) {
+            Channel channel = channelDao.getEntity(channelId);
             Channel site = channelDao.getSiteByChannel(channel.getId()); 
             
             // 过滤栏目下未生成xml文件的文章(并且过滤掉已经过期的文章)
@@ -52,7 +51,7 @@ public class IndexHelper {
                 Long articleId = (Long)objs[0];
                 
                 // 只为当天发布的文章创建索引
-                if( strategy.isIncrement() ){
+                if( isIncrement ){
                     java.util.Calendar calendar = Calendar.getInstance();
                     calendar.add(Calendar.DAY_OF_MONTH, -1);
                     Date yesterday = calendar.getTime();
@@ -79,12 +78,12 @@ public class IndexHelper {
         return articleContentSet;
     }
 
-    public static void createIndex(TimerStrategy tacticIndex, Set<ArticleContent> articleContentSet, Progress progress) {
-        String indexExecutorClass = tacticIndex.getIndexExecutorClass();
+    public static void createIndex(TimerStrategy strategy, Set<ArticleContent> articleContentSet, Progress progress) {
+        String indexExecutorClass = strategy.getExecutorClass();
         IIndexExecutor executor = IndexExecutorFactory.create(indexExecutorClass);
         
         //创建索引文件存放路径
-        String indexPath = tacticIndex.createIndexPath();
+        String indexPath = strategy.getIndexPath();
         File indexDir = new File(indexPath); 
         if( !indexDir.exists() ) {
             FileHelper.createDir(indexPath);
@@ -95,7 +94,7 @@ public class IndexHelper {
         int count = 0;
         try {
             // 如果 不是增量创建索引 或者 tempIndexDir目录为空， 则重新创建索引目录
-            boolean isRecreateIndex = !tacticIndex.isIncrement() || FileHelper.listFiles(tempIndexDir).isEmpty();
+            boolean isRecreateIndex = !strategy.isIncrement() || FileHelper.listFiles(tempIndexDir).isEmpty();
             
             indexWriter = new IndexWriter(tempIndexDir, AnalyzerFactory.createAnalyzer(), isRecreateIndex);
             indexWriter.setMaxBufferedDocs(10); // 设置强制索引document对象后flush

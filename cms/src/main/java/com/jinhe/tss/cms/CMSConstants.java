@@ -48,7 +48,6 @@ public interface CMSConstants {
     static final Integer OVER_STATUS      = 4; // 过期状态
    
     /* 策略类型常量 */
-    static final Integer STRATEGY_TYPE_TIME    = 0; // 时间策略
     static final Integer STRATEGY_TYPE_INDEX   = 1; // 索引策略
     static final Integer STRATEGY_TYPE_PUBLISH = 2; // 发布策略
     static final Integer STRATEGY_TYPE_EXPIRE  = 3; // 文章过期策略
@@ -60,12 +59,6 @@ public interface CMSConstants {
     
     static final String XFORM_ARTICLEUPLOAD    = "template/xform/ArticleUpload.xml";
     static final String XFORM_SEARCH_ARTICLE   = "template/xform/SearchArticle.xml";
-    static final String XFORM_INDEX_STRATEGY   = "template/xform/TacticIndex.xml";
-    static final String XFORM_PUBLISH_STRATEGY = "template/xform/TacticPublish.xml";
-    static final String XFORM_EXPIRE_STRATEGY  = "template/xform/TacticExpire.xml";
-    static final String XFORM_TIME_STRATEGY    = "template/xform/TacticTime.xml";
-    
-    static final String XFORM_STATISTICS_SEARCH = "template/xform/StatisticsSearch.xml";
     
     // Grid 模板
     static final String GRID_TEMPLATE_ARTICLELIST = "template/grid/ArticleList.xml";

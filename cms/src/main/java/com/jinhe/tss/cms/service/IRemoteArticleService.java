@@ -196,13 +196,13 @@ public interface IRemoteArticleService {
         &lt;/Response&gt;<br>
      * </p>
      * 
-     * @param tacticId
+     * @param siteId
      * @param searchStr
      * @param pageNum
      * @param pageSize
      * @return
      */
-    String search(Long tacticId, String searchStr, Integer pageNum, Integer pageSize);
+    String search(Long siteId, String searchStr, Integer pageNum, Integer pageSize);
     
     /**
      * 获取附件信息。附件下载时候使用，由DownloadServlet调用。

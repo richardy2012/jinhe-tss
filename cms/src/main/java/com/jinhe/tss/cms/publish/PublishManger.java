@@ -161,14 +161,12 @@ public class PublishManger implements Progressable {
      * @param paramsMap
      * @return
      */
-    public int getPublishableArticleCount4TimerJob(String channelIdStr, Map<String, Object> paramsMap) {
+    public int getPublishableArticleCount4TimerJob(List<Long> channelIds, Map<String, Object> paramsMap) {
         int total = 0;
-        String[] channelIds = channelIdStr.split(",");
         List<Long> channelIdList = new ArrayList<Long>();
-        for ( String temp : channelIds ) {
-            Long channelId = new Long(temp);
-            
-            try { // 判断是否对该栏目有发布权限
+        for ( Long channelId : channelIds ) {
+            try { 
+            	// 判断是否对该栏目有发布权限
                 checkPublishPermission(channelId);
                 
                 channelIdList.add(channelId);

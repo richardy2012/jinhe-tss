@@ -27,11 +27,12 @@ import com.jinhe.tss.cms.dao.IChannelDao;
 import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
-import com.jinhe.tss.cms.entity.TimerStrategy;
 import com.jinhe.tss.cms.helper.ArticleHelper;
 import com.jinhe.tss.cms.helper.ArticleQueryCondition;
 import com.jinhe.tss.cms.helper.HitRateManager;
 import com.jinhe.tss.cms.lucene.executor.IndexExecutorFactory;
+import com.jinhe.tss.cms.timer.TimerStrategy;
+import com.jinhe.tss.cms.timer.TimerStrategyHolder;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
@@ -277,7 +278,7 @@ public class RemoteArticleService implements IRemoteArticleService {
     protected static final Date DEFAULT_START_DATE = DateUtil.parse("2000-1-1");
     protected static final Date DEFAULT_END_DATE = DateUtil.parse("2099-12-31");
     
-    public String search(Long tacticId, String searchStr, Integer pageNum, Integer pagesize) {
+    public String search(Long siteId, String searchStr, Integer pageNum, Integer pagesize) {
         Date startDate = DEFAULT_START_DATE;
         Date endDate = DEFAULT_END_DATE;
         boolean filterByTime = false; // 是否需要对查询结果集进行按时间段过滤，高级查询的时候用到
@@ -294,25 +295,25 @@ public class RemoteArticleService implements IRemoteArticleService {
                     field = condition[4].split("&");
                 }
             } catch (Exception e) {
-                // do nothing
                 filterByTime = false;
             }
         }
         
-        TimerStrategy tacticIndex = getStrategyById(tacticId);
-        TimerStrategy parent = getStrategyById(tacticIndex.getParentId());
-        tacticIndex.setIndexPath(parent.getIndexPath()); 
+        Channel site = channelDao.getEntity(siteId);
+        TimerStrategy tacticIndex = TimerStrategyHolder.getIndexStrategy();
+        tacticIndex.setSite(site);
         
-        String indexPath = tacticIndex.createIndexPath();
+        String indexPath = tacticIndex.getIndexPath();
         if (!new File(indexPath).exists() || searchStr == null || "".equals(searchStr.trim()))
             return "<Response><ArticleList><rss version=\"2.0\"><channel/></rss></ArticleList></Response>";
         
         org.dom4j.Document doc = DocumentHelper.createDocument();
+        
         // 生成rss格式的xml文件的Head部分
         Element channelElement = doc.addElement("rss").addAttribute("version", "2.0");
         try {
             IndexSearcher searcher = new IndexSearcher(indexPath);
-            Query query = IndexExecutorFactory.create(tacticIndex.getIndexExecutorClass()).createIndexQuery(searchStr);
+            Query query = IndexExecutorFactory.create(tacticIndex.getExecutorClass()).createIndexQuery(searchStr);
             Hits hits = searcher.search(query, new Sort(new SortField("createTime", SortField.STRING, true))); // 按创建时间排序
             
             // 先遍历一边查询结果集，对其按时间段以及权限进行过滤，将过滤后的结果集放入到一个临时list中。
@@ -349,7 +350,6 @@ public class RemoteArticleService implements IRemoteArticleService {
                 if(!checkByField){
                     continue;
                 }
-                // TODO　如果需要对结果集进行权限过滤等操作，则在此处进行
                 
                 list.add(document);
             }
@@ -377,15 +377,7 @@ public class RemoteArticleService implements IRemoteArticleService {
         } 
         return "<Response><ArticleList>" + channelElement.asXML() + "</ArticleList></Response>";
     }
-    
-    protected TimerStrategy getStrategyById(Long strategyId) {
-        Object tacticIndex = articleDao.getEntity(TimerStrategy.class, strategyId);
-        if (tacticIndex == null) {
-            throw new BusinessException("策略ID(" + strategyId + ")在数据库中不存在！");
-        }
-        return (TimerStrategy) tacticIndex;
-    }
-    
+ 
     public AttachmentDTO getAttachmentInfo(Long articleId, Integer seqNo) {
         Attachment att = articleDao.getAttachment(articleId, seqNo);
         if (att == null) {

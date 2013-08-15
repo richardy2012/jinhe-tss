@@ -5,7 +5,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import com.jinhe.tss.cms.entity.TimerStrategy;
+import com.jinhe.tss.cms.timer.TimerStrategy;
 import com.jinhe.tss.framework.component.progress.Progress;
 
 public class IndexHelperTest extends TestCase {

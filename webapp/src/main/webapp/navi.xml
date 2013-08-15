@@ -12,7 +12,6 @@
 
 			<!-- cms -->
             <MenuItem id="cms.1" name="内容管理" href="cms/site.html"/> 
-            <MenuItem id="cms.3" name="定时策略" href="cms/timer.html"/>
 			
 			<MenuItem id="none" name="|"/>
 

@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.cms.AbstractTestSupport;
 import com.jinhe.tss.cms.CMSConstants;
-import com.jinhe.tss.cms.action.TimerAction;
 import com.jinhe.tss.cms.entity.Channel;
-import com.jinhe.tss.cms.entity.TimerStrategy;
+import com.jinhe.tss.cms.timer.TimerAction;
+import com.jinhe.tss.cms.timer.TimerStrategy;
 
 /**
  * 定时策略相关模块的单元测试。
