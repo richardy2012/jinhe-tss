@@ -2,6 +2,7 @@ package com.jinhe.tss.cms.timer;
 
 import java.text.ParseException;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.quartz.CronTrigger;
@@ -15,7 +16,9 @@ import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.dao.IChannelDao;
+import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.TokenUtil;
@@ -48,8 +51,15 @@ public class SchedulerBean {
             
             // 获取所有的定时策略
             Collection<?> strategys = TimerStrategyHolder.getStrategyPool().values();
-            for (Object temp : strategys) {
-                scheduleJob((TimerStrategy) temp);
+            
+            // 给每个站点单独创建一组定时器
+            List<?> sites = channelDao.getEntities("from Channel o where o.id = o.site.id");
+            for(Object site : sites) {
+            	for (Object temp : strategys) {
+                    TimerStrategy strategy = (TimerStrategy) temp;
+                    strategy.setSite((Channel) site);
+					scheduleJob(strategy);
+                }
             }
             
             log.info("定时器管理对象初始化工作完成");
@@ -60,79 +70,65 @@ public class SchedulerBean {
     }
     
     /** 定时任务。*/
-    public class TimerJob implements Job {
-        public void execute(JobExecutionContext context) throws JobExecutionException {
-            //添加管理员的用户信息
+    public abstract class AbstractTimerJob implements Job {
+        public void execute(JobExecutionContext context, Integer id) throws JobExecutionException {
+            // 添加管理员的用户信息
             String token = TokenUtil.createToken("1234567890", UMConstants.ADMIN_USER_ID); 
             IdentityCard card = new IdentityCard(token, OperatorDTO.ADMIN);
             Context.initIdentityInfo(card);
             
-            Collection<?> strategys = TimerStrategyHolder.getStrategyPool().values();
-            for ( Object temp : strategys) {
-                TimerStrategy strategy = (TimerStrategy) temp;
-                
-                // 执行时间策略下的其他策略
-                log.info("定时任务：（" + strategy.name + "）开始执行。");
-                SchedulerBean.this.timerService.excuteStrategy(strategy);
-                log.info("定时任务：（" + strategy.name + "）执行完成。");
-            }
+            TimerStrategy strategy = TimerStrategyHolder.getStrategyPool().get(id);
+            log.info("定时任务：（" + strategy.name + "）开始执行。");
+            SchedulerBean.this.timerService.excuteStrategy(strategy);
+            log.info("定时任务：（" + strategy.name + "）执行完成。");
         }
     }
-    
-	private static String genJobName(Integer timerStrategyId) {
-		return "Job" + timerStrategyId;
-	}
+    public class PublishTimerJob extends AbstractTimerJob {
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+        	super.execute(context, TimerStrategyHolder.DEFAULT_PUBLISH_STRATEGY_ID);
+        }
+    }
+    public class IndexTimerJob extends AbstractTimerJob {
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+        	super.execute(context, TimerStrategyHolder.DEFAULT_INDEX_STRATEGY_ID);
+        }
+    }
+    public class ExpireTimerJob extends AbstractTimerJob {
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+        	super.execute(context, TimerStrategyHolder.DEFAULT_EXPIRE_STRATEGY_ID);
+        }
+    }
 	
-	private static String genTriggerName(Integer timerStrategyId) {
-		return "Trigger" + timerStrategyId;
-	}
-	
-	private static JobDetail createJobDetail(TimerStrategy timerStrategy) {
-		String jobDetailName = genJobName(timerStrategy.id);
-		return new JobDetail(jobDetailName, Scheduler.DEFAULT_GROUP, TimerJob.class);
-	}
-	
-	private static CronTrigger createCronTrigger(TimerStrategy timerStrategy) throws ParseException {
-		String triggerName = genTriggerName(timerStrategy.id);
-		return new CronTrigger(triggerName, Scheduler.DEFAULT_GROUP, timerStrategy.timeDesc);  // 第三个参数为定时时间
-	}
-	
-	private static void scheduleJob(TimerStrategy timerStrategy) {
+	private static void scheduleJob(TimerStrategy strategy) {
 		try {
-	        JobDetail jobDetail = createJobDetail(timerStrategy);
-	        jobDetail.getJobDataMap().put(timerStrategy.id, timerStrategy);
-	       
-			Trigger trigger = createCronTrigger(timerStrategy);
+	        JobDetail jobDetail = createJobDetail(strategy);
+	        jobDetail.getJobDataMap().put(strategy.key(), strategy);
+			Trigger trigger = createCronTrigger(strategy);
 	       
 			scheduler.scheduleJob(jobDetail, trigger);
 			
-	    } catch (SchedulerException e) {
+	    } catch (Exception e) {
 	        throw new BusinessException("初始化索引策略出错!", e);
-	    } catch (java.text.ParseException e) {
-	        throw new BusinessException("初始化索引策略出错!", e);
-	    }
+	    } 
 	}
-
-    /**
-     * 修改触发器和定时任务(带有job任务的回滚功能)
-     * @param newTS
-     * @param oldTS
-     */
-	public static void editTriggerAndJob(TimerStrategy newTS, TimerStrategy oldTS){
-        if(scheduler == null) return;
-        
-        try {
-            scheduleJob(newTS);
-            log.info("成功修改定时任务， 定时器名称为：" + newTS.name);
-        } catch (java.lang.Exception e) {
-            try {
-                scheduleJob(oldTS);
-            } catch(java.lang.Exception e1) {
-                log.error("修改触发器和定时任务时，加入至定时器不成功后回滚又失败", e1);
-            }
-            
-            // job回滚后再抛出异常信息
-            throw new BusinessException("修改定时任务时， 发现时间策略【" + newTS.timeDesc + "】不合法!", e);
-        }
-    }
+	
+	private static JobDetail createJobDetail(TimerStrategy Strategy) {
+		String jobDetailName = "Job" + Strategy.key();
+		Class<?> jobClazz;
+		if(CMSConstants.STRATEGY_TYPE_PUBLISH.equals( Strategy.type) ) {
+			jobClazz = PublishTimerJob.class;
+		}
+		else if(CMSConstants.STRATEGY_TYPE_INDEX.equals( Strategy.type) ) {
+			jobClazz = PublishTimerJob.class;
+		}
+		else {
+			jobClazz = ExpireTimerJob.class;
+		}
+		return new JobDetail(jobDetailName, Scheduler.DEFAULT_GROUP, jobClazz);
+	}
+	
+	private static CronTrigger createCronTrigger(TimerStrategy strategy) throws ParseException {
+		String triggerName = "Trigger" + strategy.key();
+		return new CronTrigger(triggerName, Scheduler.DEFAULT_GROUP, strategy.timeDesc);  // 第三个参数为定时时间
+	}
 }

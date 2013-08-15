@@ -25,7 +25,6 @@ import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.component.progress.ProgressManager;
 import com.jinhe.tss.framework.component.progress.Progressable;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.persistence.ICommonDao;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
 
@@ -40,7 +39,6 @@ public class TimerService implements Progressable, ITimerService {
     
     private final static Set<Object> LOCK = Collections.synchronizedSet(new HashSet<Object>());
 
-    @Autowired private ICommonDao commonDao;
     @Autowired private IChannelDao channelDao;
     @Autowired private IArticleDao articleDao;
 	@Autowired private PublishManger publishManger;

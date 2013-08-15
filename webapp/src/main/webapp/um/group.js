@@ -569,7 +569,7 @@
 				var nextPage = parseInt(currentPage) + 1; 
 				request.params.url = XML_USER_LIST + treeID + "/" + nextPage;
 				request.onresult = function() {
-					$G("grid").load(this.getNodeValue(XML_REPORT_DATA), true);
+					$G("grid").load(this.getNodeValue(XML_USER_LIST), true);
 					initGridToolBar(gridToolBar, this.getNodeValue(XML_PAGE_INFO));
 				}				
 				request.send();

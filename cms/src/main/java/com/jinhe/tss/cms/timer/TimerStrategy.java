@@ -36,5 +36,9 @@ public class TimerStrategy {
 	public void setSite(Channel site) {
 		this.site = site;
 	}
+	
+	public String key() {
+		return this.site.getId() + "-" + this.id;
+	}
 }
 

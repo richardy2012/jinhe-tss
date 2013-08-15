@@ -1,5 +1,7 @@
 package com.jinhe.tss.cms;
 
+import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
+
 /** 
  * CMS常用常量定义
  */
@@ -31,11 +33,7 @@ public interface CMSConstants {
     /** 根结点ID */
     static final Long HEAD_NODE_ID = -1L; 
     
-    static final Long DEFAULT_NEW_ID = -10L;
-    
-    static final String COPY_NAME_PREFIX = "副本_";   // 副本前缀
-    
-    static final Integer DEFAULT_HIT_COUNT = 0;	//默认点击率
+    static final Long DEFAULT_NEW_ID = BaseActionSupport.DEFAULT_NEW_ID;
     
     /* 文章附件 */
     static final Integer ATTACHMENTTYPE_PICTURE = 1;	// 文章附件图片类型

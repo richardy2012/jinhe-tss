@@ -22,15 +22,11 @@
     URL_DEL_ARTICLE = "data/_success.xml";
     URL_MOVE_ARTICLE = "data/_success.xml";
     URL_LOCK_ARTICLE = "data/_success.xml";
-    URL_START_ARTICLE = "data/_success.xml";
-    URL_RESHIP_ARTICLE = "data/_success.xml";
     URL_SETTOP_ARTICLE = "data/_success.xml";
     URL_SITE_DETAIL ="data/site1.xml";
     URL_SAVE_SITE = "data/_success.xml";
-    URL_UPDATE_SITE = "data/_success.xml";
     URL_CHANNEL_DETAIL ="data/channel.xml";
     URL_SAVE_CHANNEL = "data/_success.xml";
-    URL_UPDATE_CHANNEL = "data/_success.xml";
     URL_DEL_NODE = "data/_success.xml";
     URL_MOVE_NODE = "data/_success.xml";
     URL_SORT_NODE = "data/_success.xml";
@@ -46,8 +42,6 @@
 
     URL_SEARCH_ARTICLE = "data/articlelist.xml";
     URL_SAVE_PUBLISH_ARTICLE = "data/_success.xml";
-    URL_UPLOAD_FILE = "data/upload1.htm";
-    URL_UPLOAD_SERVER_FILE = "data/upload2.htm";
  
     function init() { 
         initPaletteResize();
@@ -580,7 +574,7 @@
                 function:callback       回调函数
      *	返回值：
      */
-    function getGridOperation(rowIndex, callback) { 
+    function getGridOperation(callback) { 
 		var channelId = getArticleAttribute("channel.id");
 		if( channelId ) {
 			var channelNode = $T("tree").getTreeNodeById(channelId);
@@ -594,49 +588,39 @@
      *	返回值：
      */
     function publishArticle(category) { 
-        var treeObj = $("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-		var channelId = treeNode.getId();
-
-		var p = new HttpRequestParams();
-		p.url = isSite() ? URL_SITE_PUBLISH_PROGRESS : URL_CHANNEL_PUBLISH_PROGRESS;
-		p.setContent("channelId", channelId);
-		p.setContent("category", category);
-		var request = new HttpRequest(p);
-		request.onresult = function() { 
-			var data = this.getNodeValue("ProgressInfo");
-			var progress = new Progress(URL_GET_PROGRESS, data, URL_CONCEAL_PROGRESS);
-			progress.oncomplete = function() { 
-				// 发布完成：刷新grid
-				showArticleList(channelId); 
+		var channelId = getTreeNodeId();
+		Ajax({
+			url : URL_CHANNEL_PUBLISH_PROGRESS + channelId + "/" + category;,
+			onresult : function() { 			
+				var data = this.getNodeValue("ProgressInfo");
+				var progress = new Progress(URL_GET_PROGRESS, data, URL_CONCEAL_PROGRESS);
+				progress.oncomplete = function() { 
+					// 发布完成：刷新grid
+					showArticleList(channelId); 
+				}
+				progress.start();
 			}
-			progress.start();
-		}
-		request.send();
+		});
     }
 
     function initGridMenu() { 
-        var gridObj = $("grid");
 		var item1 = {
             label:"编辑",
             callback:editArticleInfo,
             icon:ICON + "edit.gif",
-            enable:function() { return true},
-            visible:function() { return "4"!=getArticleAttribute("status") && "5"!=getArticleAttribute("status") && "-1"!=getArticleAttribute("status") && "1"!=getArticleAttribute("state") && true==getUserOperation("a_5");}
+            visible:function() { return "1" == getArticleAttribute("status") && getUserOperation("a_5");}
         }
         var item2 = {
             label:"删除",
             callback:delArticle,
             icon:ICON + "del.gif",
-            enable:function() { return true;},
-            visible:function() { return true==getUserOperation("a_3");}
+            visible:function() { return getUserOperation("a_3");}
         }
         var item3 = {
             label:"移动到...",
             callback:moveArticleTo,
             icon:ICON + "move.gif",
-            enable:function() { return true;},
-            visible:function() { return "0"==getArticleAttribute("state") && true==getUserOperation("a_6");}
+            visible:function() { return getUserOperation("a_6");}
         }
         var item4 = {
             label:"置顶",
@@ -644,8 +628,7 @@
                 setTopArticle("1");
             },
             icon:ICON + "stick.gif",
-            enable:function() { return true;},
-            visible:function() { return "1"!=getArticleAttribute("isTop") && true==getUserOperation("a_17");}
+            visible:function() { return "1" != getArticleAttribute("isTop") && getUserOperation("a_5");}
         }
         var item5 = {
             label:"解除置顶",
@@ -653,8 +636,7 @@
                 setTopArticle("0");
             },
             icon:ICON + "unstick.gif",
-            enable:function() { return true;},
-            visible:function() { return "1"==getArticleAttribute("isTop") && true==getUserOperation("a_18");}
+            visible:function() { return "1" == getArticleAttribute("isTop") && getUserOperation("a_5");}
         }
 
         var menu1 = new Menu();
@@ -664,54 +646,54 @@
 		menu1.addItem(item4);
 		menu1.addItem(item5);
  
-        gridObj.contextmenu = menu1;
+        $$("grid").contextmenu = menu1;
     }
 
-	function showArticleList() { 
-        var treeObj = $("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-        if(null!=treeNode) { 
-            var id = treeNode.getId();
-            showArticleList(id);
-        }
-    }
- 
-     /* 显示文章列表 */
-    function showArticleList(groupId) {
+    /* 显示文章列表 */
+    function showArticleList(channelId) {
         var treeNode = $T("tree").getActiveTreeNode();
-		var treeID = groupId || treeNode.getId();
+		var treeID = channelId || treeNode.getId();
 
 		var p = new HttpRequestParams();
-		p.url = URL_USER_LIST + treeID + "/1";
+		p.url = URL_ARTICLE_LIST + treeID + "/1";
 		var request = new HttpRequest(p);
 		request.onresult = function() {
-			$G("grid", this.getNodeValue(XML_USER_LIST)); 
+			$G("grid", this.getNodeValue(XML_ARTICLE_LIST)); 
 			var gridToolBar = $$("gridToolBar");
 
 			var pageListNode = this.getNodeValue(XML_PAGE_INFO);			
 			initGridToolBar(gridToolBar, pageListNode, function(page) {
-				request.params.url = XML_USER_LIST + treeID + "/" + page;
+				request.params.url = XML_ARTICLE_LIST + treeID + "/" + page;
 				request.onresult = function() {
-					$G("grid", this.getNodeValue(XML_USER_LIST)); 
+					$G("grid", this.getNodeValue(XML_ARTICLE_LIST)); 
 				}				
 				request.send();
 			} );
 			
 			var gridElement = $$("grid"); 
 			gridElement.onDblClickRow = function(eventObj) {
-				editUserInfo();
+				getGridOperation(function(_operation) { 
+					// 检测编辑权限
+					var canEdit = checkOperation("a_5", _operation);
+					if(canEdit) { 
+						editArticleInfo();            
+					}
+				});
 			}
 			gridElement.onRightClickRow = function() {
-				$$("grid").contextmenu.show(event.clientX, event.clientY);
+				Focus.focus("gridTitle");
+				getGridOperation(function(_operation) { 
+					$$("grid").contextmenu.show(event.clientX, event.clientY);
+				});
 			}   
 			gridElement.onScrollToBottom = function () {			
 				var currentPage = gridToolBar.getCurrentPage();
 				if(gridToolBar.getTotalPages() <= currentPage) return;
 
 				var nextPage = parseInt(currentPage) + 1; 
-				request.params.url = XML_USER_LIST + treeID + "/" + nextPage;
+				request.params.url = XML_ARTICLE_LIST + treeID + "/" + nextPage;
 				request.onresult = function() {
-					$G("grid").load(this.getNodeValue(XML_REPORT_DATA), true);
+					$G("grid").load(this.getNodeValue(XML_ARTICLE_LIST), true);
 					initGridToolBar(gridToolBar, this.getNodeValue(XML_PAGE_INFO));
 				}				
 				request.send();
@@ -719,37 +701,7 @@
 		}
 		request.send();
 	}   
-
-	function onClickRow(eventObj) {    
-        Focus.focus("gridTitle");
-    }
  
-    function onDblClickRow(eventObj) { 
-        var rowIndex = eventObj.result.rowIndex_Xml;
-        getGridOperation(rowIndex, function(_operation) { 
-            //检测编辑权限
-            var canEdit = checkOperation("a_5", _operation);
-
-            var gridObj = $("grid");
-            var rowNode = gridObj.getRowNode_Xml(rowIndex);
-            var status = rowNode.getAttribute("status");
-            var state = rowNode.getAttribute("state");
-
-            if(true==canEdit && "4"!=status && "-1"!=status && "5"!=status && "1"!=state) { 
-                editArticleInfo();            
-            }
-        });
-    }
- 
-    function onRightClickRow(eventObj) { 
-        var rowIndex = eventObj.result.rowIndex_Xml;
-        var x = event.clientX;
-        var y = event.clientY;
-
-        getGridOperation(rowIndex,function(_operation) { 
-            addWorkFlowMenu(x,y);  
-        });
-    }
 
     window.onload = init;
 
