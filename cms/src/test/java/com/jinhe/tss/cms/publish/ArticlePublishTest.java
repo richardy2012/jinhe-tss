@@ -2,6 +2,7 @@ package com.jinhe.tss.cms.publish;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.lucene.ArticleContent;
 import com.jinhe.tss.cms.lucene.IndexHelper;
 import com.jinhe.tss.cms.timer.TimerStrategy;
+import com.jinhe.tss.cms.timer.TimerStrategyHolder;
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.test.TestUtil;
 
@@ -76,23 +78,20 @@ public class ArticlePublishTest extends AbstractTestSupport {
         articleAction.getChannelTreeList4Portlet(siteId);
         
         // 创建索引
-        TimerStrategy strategy = new TimerStrategy();
-        strategy.setIndexPath("d:/temp/cms/");
-        strategy.setContent(channel1Id + "," + channel2.getId());
-        strategy.setName("Test TimerStrategy");
-        strategy.setType(CMSConstants.STRATEGY_TYPE_INDEX);
-        channelDao.createObject(strategy);
+        TimerStrategy strategy = TimerStrategyHolder.getIndexStrategy();
+        strategy.setSite(site);
         
-        Set<ArticleContent> content = IndexHelper.getIndexableArticles4Lucene(strategy, channelDao, articleDao);
+        List<Long> channelIdList = Arrays.asList(channel1Id, channel2.getId());
+        Set<ArticleContent> content = IndexHelper.getIndexableArticles(channelIdList, false, channelDao, articleDao);
+        IndexHelper.createIndex(strategy, content, new Progress(list.size()));
+        
+        content = IndexHelper.getIndexableArticles(channelIdList, true, channelDao, articleDao);
         IndexHelper.createIndex(strategy, content, new Progress(list.size()));
         
         // 测试检索文章
-        strategy.setParentId(strategy.getId());
-        
-        Long tacticId = strategy.getId();
-        articleAction.search(tacticId, "矛盾", 1, 10);
-        articleAction.search(tacticId, "过河卒子", 1, 10);
-        articleAction.search(tacticId, "技术创新", 1, 10); // 搜索附件
+        articleAction.search(siteId, "矛盾", 1, 10);
+        articleAction.search(siteId, "过河卒子", 1, 10);
+        articleAction.search(siteId, "技术创新", 1, 10); // 搜索附件
         
         // 最后删除文章、栏目、站点
         super.deleteSite(siteId);

@@ -12,36 +12,35 @@
     CACHE_TREE_NODE_GRID = "treeNodeGrid__id";
     CACHE_CHANNEL_DETAIL = "channelDetail__id";
     CACHE_SITE_DETAIL    = "siteDetail__id";
-    CACHE_SEARCH_ARTICLE = "searchArticle__id";
  
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_INIT = "data/site_init.xml";
-    URL_ARTICLE_LIST = "data/articlelist.xml";
-    URL_DEL_ARTICLE = "data/_success.xml";
-    URL_MOVE_ARTICLE = "data/_success.xml";
-    URL_LOCK_ARTICLE = "data/_success.xml";
-    URL_SETTOP_ARTICLE = "data/_success.xml";
-    URL_SITE_DETAIL ="data/site1.xml";
-    URL_SAVE_SITE = "data/_success.xml";
-    URL_CHANNEL_DETAIL ="data/channel.xml";
-    URL_SAVE_CHANNEL = "data/_success.xml";
-    URL_DEL_NODE = "data/_success.xml";
-    URL_MOVE_NODE = "data/_success.xml";
-    URL_SORT_NODE = "data/_success.xml";
-	URL_STOP_NODE = "data/_success.xml";
-    URL_GET_OPERATION = "data/operation.xml";
-    URL_GET_ARTICLE_OPERATION = "data/operation1.xml";
+    URL_INIT = "data/site_init.xml?";
+    URL_ARTICLE_LIST = "data/articlelist.xml?";
+    URL_DEL_ARTICLE = "data/_success.xml?";
+    URL_MOVE_ARTICLE = "data/_success.xml?";
+    URL_LOCK_ARTICLE = "data/_success.xml?";
+    URL_SETTOP_ARTICLE = "data/_success.xml?";
+    URL_SITE_DETAIL ="data/site1.xml?";
+    URL_SAVE_SITE = "data/_success.xml?";
+    URL_CHANNEL_DETAIL ="data/channel.xml?";
+    URL_SAVE_CHANNEL = "data/_success.xml?";
+    URL_DEL_NODE = "data/_success.xml?";
+    URL_MOVE_NODE = "data/_success.xml?";
+    URL_SORT_NODE = "data/_success.xml?";
+	URL_STOP_NODE = "data/_success.xml?";
+    URL_GET_OPERATION = "data/operation.xml?";
+    URL_GET_ARTICLE_OPERATION = "data/operation1.xml?";
 
-    URL_SITE_PUBLISH_PROGRESS = "data/progress.xml";
-    URL_CHANNEL_PUBLISH_PROGRESS = "data/progress.xml";
-    URL_CANCEL_PUBLISH_PROGRESS = "data/_success.xml";
-	URL_GET_PROGRESS = "data/_success.xml";
-    URL_CONCEAL_PROGRESS = "data/_success.xml";
+    URL_SITE_PUBLISH_PROGRESS = "data/progress.xml?";
+    URL_CHANNEL_PUBLISH_PROGRESS = "data/progress.xml?";
+    URL_CANCEL_PUBLISH_PROGRESS = "data/_success.xml?";
+	URL_GET_PROGRESS = "data/_success.xml?";
+    URL_CONCEAL_PROGRESS = "data/_success.xml?";
 
-    URL_SEARCH_ARTICLE = "data/articlelist.xml";
-    URL_SAVE_PUBLISH_ARTICLE = "data/_success.xml";
+    URL_SEARCH_ARTICLE = "data/articlelist.xml?";
+    URL_SAVE_PUBLISH_ARTICLE = "data/_success.xml?";
  
     function init() { 
         initPaletteResize();
@@ -58,33 +57,28 @@
     }
   
     function initMenus() { 
-        var submenu1 = new Menu();//站点
-        var submenu2 = new Menu();//栏目
-        var submenu3 = new Menu();//文章
-        var submenu4 = new Menu();//发布
-        
         var item1 = {
             label:"新建站点",
             callback:addNewSite,
-            visible:function() { return "_rootId"==getTreeAttribute("id") && true==getOperation("1");}
+            visible:function() { return "_rootId" == getTreeAttribute("id") && getOperation("1");}
         }
         var item2 = {
             label:"新建栏目",
             callback:addNewChannel,
-            visible:function() { return "_rootId"!=getTreeAttribute("id") && true==getOperation("2");}
+            visible:function() { return "0" == getTreeAttribute("isSite") && getOperation("2");}
         }
         var item3 = {
             label:"新建文章",
             callback:addNewArticle,
-            visible:function() { return "0"==getTreeAttribute("isSite") && "_rootId"!=getTreeAttribute("id") && true==getOperation("3");}
-            
+            visible:function() { return "0" == getTreeAttribute("isSite") && getOperation("3");}
         }
 
+		var submenu4 = new Menu(); // 发布
         var item4 = {
             label:"发布",
             callback:null,
             icon:ICON + "icon_publish_source.gif",
-            visible:function() { return "_rootId"!=getTreeAttribute("id") && true==getOperation("4");},
+            visible:function() { return "_rootId" != getTreeAttribute("id") && getOperation("4");},
             submenu:submenu4
         }
         var subitem4a = {
@@ -99,85 +93,58 @@
                 publishArticle(2);
             }
         }
+		submenu4.addItem(subitem4a);
+        submenu4.addItem(subitem4b);
 
         var item5 = {
             label:"编辑",
             callback:editTreeNode,
             icon:ICON + "edit.gif",
-            visible:function() { return "_rootId"!=getTreeAttribute("id") && true==getOperation("5");}
+            visible:function() { return "_rootId" != getTreeAttribute("id") && getOperation("5");}
         }
         var item6 = {
             label:"删除",
-            callback: delTreeNode(URL_DELETE_CHANNEL),
+            callback: function() { delTreeNode(URL_DEL_NODE) },
             icon:ICON + "del.gif",
-            visible:function() { return "_rootId"!=getTreeAttribute("id") && true==getOperation("6");}
+            visible:function() { return "_rootId" != getTreeAttribute("id") && getOperation("6");}
         }
         var item7 = { 
             label:"启用",
-            callback:startSite,
+            callback: function() { stopOrStartTreeNode("0"); },
             icon:ICON + "start.gif",
-            visible:function() { return "0"!=getTreeAttribute("disabled") && "_rootId"!=getTreeAttribute("id") && true==getOperation("8");}
+            visible:function() { return "0" != getTreeAttribute("disabled") && "_rootId" != getTreeAttribute("id") && getOperation("7");}
         }
         var item8 = {
             label:"停用",
-            callback:stopSite,
+            callback: function() { stopOrStartTreeNode("1"); },
             icon:ICON + "stop.gif",
-            visible:function() { return "0"==getTreeAttribute("disabled") && "_rootId"!=getTreeAttribute("id") && true==getOperation("7");}
+            visible:function() { return "0" == getTreeAttribute("disabled") && "_rootId" != getTreeAttribute("id") && getOperation("7");}
         }
         var item9 = {
             label:"移动到...",
             callback:moveChannelTo,
             icon:ICON + "move.gif",
-            visible:function() { return "0"==getTreeAttribute("isSite") && true==getOperation("6");}
+            visible:function() { return "0" == getTreeAttribute("isSite") && getOperation("6");}
         }
-         var item14 = {
-            label:"搜索文章...",
-            callback:searchArticle,
-            icon:ICON + "search.gif",
-            visible:function() { return "_rootId"!=getTreeAttribute("id") && true==getOperation("16");}
-        }
-        var item16 = {
+        var item10 = {
             label:"浏览文章",
             callback:showArticleList,
             icon:ICON + "view_list.gif",
-            visible:function() { return "0"==getTreeAttribute("isSite") && "_rootId"!=getTreeAttribute("id") && true==getOperation("14");}
-        }
-        var item17 = { 
-            label:"启用站点",
-            callback:startAll,
-            icon:ICON + "start_all.gif",
-            visible:function() { return "1"==getTreeAttribute("disabled") && "1"==getTreeAttribute("isSite") && true==getOperation("7");}
-        }
-         
-        
-        submenu4.addItem(subitem4a);
-        submenu4.addItem(subitem4b);
+            visible:function() { return "0" == getTreeAttribute("isSite") && getOperation("1");}
+        }         
 
         var menu1 = new Menu();
-        menu1.addItem(item17);
-        menu1.addItem(item7);
-        menu1.addItem(item8);
-        menu1.addSeparator();
-        menu1.addItem(item15);
-        menu1.addItem(item5);
-        menu1.addItem(item6);
-        menu1.addItem(item9);
-        menu1.addItem(item12);
-        menu1.addItem(item10);
-        menu1.addItem(item11);
-        menu1.addSeparator();
-        menu1.addItem(item1);
+		menu1.addItem(item1);
         menu1.addItem(item2);
         menu1.addItem(item3);
+        menu1.addItem(item5);
+        menu1.addItem(item6);
+		menu1.addItem(item7);
+        menu1.addItem(item8);
+        menu1.addItem(item9);
         menu1.addSeparator();
         menu1.addItem(item4);
-        menu1.addItem(item13);
-        menu1.addItem(item18);
-        menu1.addItem(item19);
-        menu1.addItem(item20);
-        menu1.addSeparator();
-        menu1.addItem(item14);
-		menu1.addItem(item16);
+		menu1.addItem(item10);
 
         $$("tree").contextmenu = menu1;
     }
@@ -194,8 +161,6 @@
             var tree = $T("tree", siteTreeNode); 
 
             var treeObj = $$("tree");
-            treeObj.load(xmlIsland.node);
-
             treeObj.onTreeNodeActived = function(eventObj) { 
                 onTreeNodeActived(eventObj);
             }
@@ -590,7 +555,7 @@
     function publishArticle(category) { 
 		var channelId = getTreeNodeId();
 		Ajax({
-			url : URL_CHANNEL_PUBLISH_PROGRESS + channelId + "/" + category;,
+			url : URL_CHANNEL_PUBLISH_PROGRESS + channelId + "/" + category,
 			onresult : function() { 			
 				var data = this.getNodeValue("ProgressInfo");
 				var progress = new Progress(URL_GET_PROGRESS, data, URL_CONCEAL_PROGRESS);

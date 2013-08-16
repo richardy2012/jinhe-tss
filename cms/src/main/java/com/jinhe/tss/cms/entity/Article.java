@@ -179,8 +179,9 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
 
     public Map<String, Object> getAttributesForXForm() {
         Map<String, Object> map = new LinkedHashMap<String, Object>();
-        BeanUtil.addBeanProperties2Map(this, map);
+        BeanUtil.addBeanProperties2Map(this, map, "channel");
         map.put("id", id);
+        map.put("channel.id", channel.getId());
         
         map.put("createTime", DateUtil.format(createTime));
         if(overdueDate != null) {

@@ -5,15 +5,19 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.timer.TimerStrategy;
+import com.jinhe.tss.cms.timer.TimerStrategyHolder;
 import com.jinhe.tss.framework.component.progress.Progress;
 
 public class IndexHelperTest extends TestCase {
 	
 	public void testCreateIndex() {
-        TimerStrategy tacticIndex = new TimerStrategy();
-        tacticIndex.setId(new Long(23));
-        tacticIndex.setIndexPath("d:/temp/cms/index");
+		Channel site = new Channel();
+		site.setPath("D:/temp/cms");
+		
+        TimerStrategy tacticIndex = TimerStrategyHolder.getIndexStrategy();
+        tacticIndex.setSite(site);
         
         Set<ArticleContent> articleContentSet = new LinkedHashSet<ArticleContent>();
         for(int i = 0; i < 1000; i++ ){

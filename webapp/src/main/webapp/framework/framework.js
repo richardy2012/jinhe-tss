@@ -684,7 +684,7 @@ function showTreeNodeInfo() {
 
 // 删除选中节点，适用于多层结构树
 function delTreeNode(url) {
-	if( !confirm("您确定要删除吗？") )  return;
+	if( !confirm("您确定要删除该节点吗？") )  return;
 
 	var tree = $T("tree");
 	var treeNode = tree.getActiveTreeNode();
@@ -703,7 +703,7 @@ function delTreeNode(url) {
 
 // 删除选中Grid行
 function delGridRow(url) {
-	if( !confirm("您确定要删除吗？") ) return;
+	if( !confirm("您确定要删除该行记录吗？") ) return;
 	
 	var rowIndex = $$("grid").selectRowIndex; 
 	if( rowIndex ) {

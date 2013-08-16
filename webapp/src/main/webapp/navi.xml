@@ -11,7 +11,7 @@
 			<MenuItem id="none" name="|"/>
 
 			<!-- cms -->
-            <MenuItem id="cms.1" name="内容管理" href="cms/site.html"/> 
+            <MenuItem id="cms.1" name="内容管理" href="cms/channel.html"/> 
 			
 			<MenuItem id="none" name="|"/>
 

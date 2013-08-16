@@ -69,6 +69,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
                 "那么，目前的中国是否在重新陷入这个历史的轮回怪圈呢？这倒的确是一个值得商榷的问题。";
         
 		request.addParameter("articleContent", content);
+		request.addParameter("articleId", tempArticleId.toString());
         
 		articleAction.saveArticleInfo(request, channel.getId(), article, "1,2", "false");
         Long articleId = article.getId();

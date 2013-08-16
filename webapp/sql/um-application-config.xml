@@ -6,11 +6,8 @@
 	参数说明:
 	1.applicationId: 应用ID(值要求唯一)
 	2.name: 应用名称
-	3.applicationType: 应用系统类型( -1:平台系统，-2:其他系统. 默认为平台系统 )
-	4.parentId: 父节点id，默认为-1
-	5.dataSourceType：应用系统用户库接口类型(1:ORACLE，2:LDAP，3:DB2)
 -->
-<application applicationId="tss" name="TSS" dataSourceType="1" seqNo="1">
+<application applicationId="tss" name="TSS" seqNo="1">
 	<!-- UM -->
 	<!-- 资源类型节点 -->
 	<!-- 参数说明:
