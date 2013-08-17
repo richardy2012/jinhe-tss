@@ -727,7 +727,7 @@ function delGridRow(url) {
 			state    状态
 			iconName 节点图标
  */
-function stopOrStartTreeNode(url, state, iconName) {		
+function stopOrStartTreeNode(state, iconName, url) {		
 	var tree = $T("tree");
 	var treeNode = tree.getActiveTreeNode();
 	Ajax({

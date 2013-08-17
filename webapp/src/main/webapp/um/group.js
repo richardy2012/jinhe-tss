@@ -118,13 +118,13 @@
     function initTreeMenu(){
         var item1 = {
             label:"停用",
-            callback:function() { stopOrStartTreeNode(URL_STOP_GROUP, "1", "user_group"); },
+            callback:function() { stopOrStartTreeNode(URL_STOP_GROUP, "1", "um/user_group"); },
             icon:ICON + "stop.gif",
             visible:function(){return editable() && !isTreeNodeDisabled();}
         }
         var item2 = {
             label:"启用",
-            callback:function() { stopOrStartTreeNode(URL_STOP_GROUP, "0", "user_group"); },
+            callback:function() { stopOrStartTreeNode(URL_STOP_GROUP, "0", "um/user_group"); },
             icon:ICON + "start.gif",
             visible:function(){return editable() && isTreeNodeDisabled();}
         }

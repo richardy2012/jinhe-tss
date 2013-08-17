@@ -51,13 +51,13 @@
     function initMenus(){       
         var item1 = {
             label:"停用",
-            callback: function() { stopOrStartTreeNode("1"); },
+            callback: function() { stopOrStartTreeNode("1", "um/rule", URL_STOP_RULE); },
             icon:ICON + "stop.gif",
             visible:function(){return !isTreeRoot() && !isTreeNodeDisabled();}
         }
         var item2 = {
             label:"启用",
-            callback: function() { stopOrStartTreeNode("0"); },
+            callback: function() { stopOrStartTreeNode("0", "um/rule", URL_STOP_RULE); },
             icon:ICON + "start.gif",
             visible:function(){return !isTreeRoot() && isTreeNodeDisabled();}
         }
@@ -69,7 +69,7 @@
         }
         var item4 = {
             label:"删除",
-            callback:delRule,
+            callback: function() {  delTreeNode(URL_DEL_RULE); },
             icon:ICON + "del.gif",
             visible:function(){return !isTreeRoot();}
         }
@@ -120,37 +120,6 @@
             }
         }
         request.send();
-    }
-	
-	function stopOrStartTreeNode(state) {		
-		var tree = $T("tree");
-		var treeNode = tree.getActiveTreeNode();
-		Ajax({
-			url : URL_STOP_RULE + treeNode.getId() + "/" + state,
-			onsuccess : function() { 
-				treeNode.setAttribute("disabled", state);
-				treeNode.setAttribute("icon", ICON + "rule" + (state=="0" ? "" : "_2") + ".gif");    
-				tree.reload(); 
-			}
-		});
-    }
- 
-    function delRule() {
-        if( !confirm("您确定要删除吗？") ) return;
-
-        var tree = $T("tree");
-        var treeNode = tree.getActiveTreeNode();
-		Ajax({
-			url : URL_DEL_RULE + treeNode.getId(),
-			method : "DELETE",
-			onsuccess : function() { 
-				var parentNode = treeNode.getParent();
-				if( parentNode ) {
-					tree.setActiveTreeNode(parentNode.getId());
-				}
-				tree.removeTreeNode(treeNode);
-			}
-		});	
     }
  
     function addNewRule(){

@@ -160,20 +160,20 @@ public final class UMConstants {
 	/**
 	 * 对象节点 Tree 图标文件的路径定义
 	 */
-	public static final String START_GROUP_TREENODE_ICON      = "../framework/images/user_group.gif";     //Group图标(启用)
-	public static final String STOP_GROUP_TREENODE_ICON      = "../framework/images/user_group_2.gif";     //Group图标(停用)
-	public static final String START_STRATEGY_TREENODE_ICON = "../framework/images/rule.gif";  //权限转授图标(启用)
-	public static final String STOP_STRATEGY_TREENODE_ICON = "../framework/images/rule_2.gif"; //(Admin)图标(停用)
-	public static final String START_USER_GRID_NODE_ICON  = "../framework/images/user.gif";    //User图标(启用)
-	public static final String STOP_USER_GRID_NODE_ICON  = "../framework/images/user_2.gif";   //User图标(停用)
-	public static final String START_ADMIN_USER_GRID_NODE_ICON  = "../framework/images/admin.gif";     //User(Admin)图标(启用)
-	public static final String STOP_ADMIN_USER_GRID_NODE_ICON  = "../framework/images/admin_2.gif";    //User(Admin)图标(停用)
-	public static final String START_GROUP_ROLE_TREENODE_ICON = "../framework/images/role_group.gif";  //Role组图标(启用)
-	public static final String STOP_GROUP_ROLE_TREENODE_ICON = "../framework/images/role_group_2.gif"; //Role组图标(停用)
-	public static final String START_ROLE_TREENODE_ICON = "../framework/images/role.gif";    //Role图标(启用)
-	public static final String STOP_ROLE_TREENODE_ICON = "../framework/images/role_2.gif";   //Role图标(停用)
-	public static final String APPLICATION_TREENODE_ICON   = "../framework/images/app.gif";  //Application图标
-	public static final String RESOURCETYPE_TREENODE_ICON = "../framework/images/resource_type.gif";//ResourceType图标
-	public static final String OPERATION_TREENODE_ICON   = "../framework/images/permission.gif";    //权限选项Tree图标
-	public static final String RESOURCE_TREENODE_ICON   = "../framework/images/resource1.gif";       //资源Tree图标
+	public static final String START_GROUP_TREENODE_ICON      = "../framework/images/um/user_group_0.gif";     //Group图标(启用)
+	public static final String STOP_GROUP_TREENODE_ICON      = "../framework/images/um/user_group_1.gif";     //Group图标(停用)
+	public static final String START_STRATEGY_TREENODE_ICON = "../framework/images/um/rule_0.gif";  //权限转授图标(启用)
+	public static final String STOP_STRATEGY_TREENODE_ICON = "../framework/images/um/rule_1.gif";  //(Admin)图标(停用)
+	public static final String START_USER_GRID_NODE_ICON  = "../framework/images/um/user_0.gif";    //User图标(启用)
+	public static final String STOP_USER_GRID_NODE_ICON  = "../framework/images/um/user_1.gif";   //User图标(停用)
+	public static final String START_ADMIN_USER_GRID_NODE_ICON  = "../framework/images/um/admin_0.gif";    //User(Admin)图标(启用)
+	public static final String STOP_ADMIN_USER_GRID_NODE_ICON  = "../framework/images/um/admin_1.gif";    //User(Admin)图标(停用)
+	public static final String START_GROUP_ROLE_TREENODE_ICON = "../framework/images/um/role_group_0.gif";  //Role组图标(启用)
+	public static final String STOP_GROUP_ROLE_TREENODE_ICON = "../framework/images/um/role_group_1.gif";  //Role组图标(停用)
+	public static final String START_ROLE_TREENODE_ICON = "../framework/images/um/role_0.gif";    //Role图标(启用)
+	public static final String STOP_ROLE_TREENODE_ICON = "../framework/images/um/role_1.gif";    //Role图标(停用)
+	public static final String APPLICATION_TREENODE_ICON   = "../framework/images/um/app.gif";  //Application图标
+	public static final String RESOURCETYPE_TREENODE_ICON = "../framework/images/um/resource_type.gif";//ResourceType图标
+	public static final String OPERATION_TREENODE_ICON   = "../framework/images/um/permission.gif";    //权限选项Tree图标
+	public static final String RESOURCE_TREENODE_ICON   = "../framework/images/um/resource1.gif";       //资源Tree图标
 }

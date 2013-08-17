@@ -87,13 +87,13 @@
         }
         var item7 = {
             label:"停用",
-            callback:function() { stopOrStartTreeNode("1"); },
+            callback:function() { stopOrStartRole("1"); },
             icon:ICON + "stop.gif",           
             visible:function() {return !isRootNode() && !isTreeNodeDisabled() && getOperation("2");}
         }
         var item8 = {
             label:"启用",
-            callback:function() { stopOrStartTreeNode("0"); },
+            callback:function() { stopOrStartRole("0"); },
             icon:ICON + "start.gif",           
             visible:function() {return !isRootNode() && isTreeNodeDisabled() && getOperation("2");}
         }
@@ -104,7 +104,7 @@
         }
         var item10 = {
             label:"给角色授权",
-            icon:ICON + "role_permission.gif",
+            icon:ICON + "um/role_permission.gif",
             callback:setRolePermission,           
             visible:function() {return isRole() && getOperation("2");}
         }
@@ -193,7 +193,7 @@
 		return getTreeAttribute("isGroup") == "1";
 	}
 
-	function stopOrStartTreeNode(state) {
+	function stopOrStartRole(state) {
 		var iconName = isRoleGroup() ? "um/role_group" : "um/role";
 		stopOrStartTreeNode(state, iconName);
 	}

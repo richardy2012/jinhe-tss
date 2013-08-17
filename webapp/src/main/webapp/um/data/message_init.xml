@@ -2,9 +2,9 @@
 <Response>
 	<MessageTree>
         <actionSet title="">
-            <treeNode id="1" icon="../framework/images/new_message.gif" name="写新消息"></treeNode>
-            <treeNode id="2" icon="../framework/images/receivebox.gif" name="收件箱"></treeNode>
-            <treeNode id="4" icon="../framework/images/sendbox.gif" name="发件箱"></treeNode>
+            <treeNode id="1" icon="../framework/images/um/new_message.gif" name="写新消息"></treeNode>
+            <treeNode id="2" icon="../framework/images/um/receivebox.gif" name="收件箱"></treeNode>
+            <treeNode id="4" icon="../framework/images/um/sendbox.gif" name="发件箱"></treeNode>
         </actionSet>
 	</MessageTree>
 </Response>

@@ -5,10 +5,9 @@
    version="1.0">
  
 	<!-- cms -->	
+	<entity class="com.jinhe.tss.cms.entity.Channel"/>
 	<entity class="com.jinhe.tss.cms.entity.Article"/>
 	<entity class="com.jinhe.tss.cms.entity.Attachment"/>
-	<entity class="com.jinhe.tss.cms.entity.Channel"/>
-	<entity class="com.jinhe.tss.cms.entity.TimerStrategy"/>
  
 	<entity class="com.jinhe.tss.cms.entity.permission.ChannelResourceView"/>
 	<entity class="com.jinhe.tss.cms.entity.permission.ChannelPermissions"/>
