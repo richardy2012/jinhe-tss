@@ -781,11 +781,12 @@ function moveTreeNode(tree, id, targetId, url) {
 	Ajax({
 		url : (url || URL_MOVE_NODE) + id + "/" + targetId,
 		onsuccess : function() {  // 移动树节点					
+			var treeNode = tree.getTreeNodeById(id);
 			var xmlNode = new XmlNode(treeNode.node);
 			var parentNode = tree.getTreeNodeById(targetId);
 
 			// 父节点停用则下溯
-			var parentNodeState = parentNode.getAttribute("disabled");
+			var parentNodeState = parentNode.node.getAttribute("disabled");
 			if("1" == parentNodeState) {
 				refreshTreeNodeState(xmlNode, "1");
 			}

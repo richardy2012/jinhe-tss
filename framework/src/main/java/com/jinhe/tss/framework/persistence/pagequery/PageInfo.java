@@ -114,7 +114,7 @@ public class PageInfo {
     /** 对象与XML之间的转换 */
     public String toString(){
         StringBuffer sb = new StringBuffer();
-        sb.append("<pagelist totalpages=\"").append(getTotalPages());
+        sb.append("<PageList totalpages=\"").append(getTotalPages());
         sb.append("\" totalrecords=\"").append(getTotalRows());
         sb.append("\" currentpage=\"").append(getPageNum());
         sb.append("\" pagesize=\"").append(getPageSize());

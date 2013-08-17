@@ -60,8 +60,6 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
     @ManyToOne(fetch = FetchType.LAZY)
     private Channel channel;      // 文章所属栏目
     
-    private Integer seqNo;
- 
     private Integer isTop = CMSConstants.FALSE;   // 文章是否置顶
     
     @Transient 
@@ -169,10 +167,11 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
     
     public GridAttributesMap getAttributes(GridAttributesMap map) {
         Map<String, Object> attributes = new LinkedHashMap<String, Object>();
-        BeanUtil.addBeanProperties2Map(this, attributes);
+        BeanUtil.addBeanProperties2Map(this, attributes, "channel");
         map.putAll(attributes);
+        map.put("channel.id", channel.getId());
         
-        map.put("icon", "../framework/images/article.gif");
+        map.put("icon", "../framework/images/cms/article_0.gif");
         
         return map;
     }
@@ -221,13 +220,5 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
 
 	public void setChannel(Channel channel) {
 		this.channel = channel;
-	}
-
-	public Integer getSeqNo() {
-		return seqNo;
-	}
-
-	public void setSeqNo(Integer seqNo) {
-		this.seqNo = seqNo;
 	}
 }

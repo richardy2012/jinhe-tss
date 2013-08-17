@@ -26,7 +26,6 @@ public class ArticleModuleTest extends AbstractTestSupport {
         Long siteId = site.getId();
         
         // 新建栏目
-        
         Channel channel1 = super.createChannel("时事评论", site, siteId);
         Channel channel2 = super.createChannel("体育新闻", site, siteId);
         Channel channel3 = super.createChannel("NBA战况", site, channel2.getId());
@@ -60,9 +59,6 @@ public class ArticleModuleTest extends AbstractTestSupport {
         assertNotNull(list);
         assertEquals(1, list.size());
         
-        // 移动文章
-        articleAction.moveArticle(article.getId(), channel3.getId(), channel2.getId());
-        
         // 置顶、解除置顶
         articleAction.doOrUndoTopArticle(articleId);
         articleAction.doOrUndoTopArticle(articleId);
@@ -78,6 +74,9 @@ public class ArticleModuleTest extends AbstractTestSupport {
         condition.setTitle("轮回");
         condition.setChannelId(channelId);
 		articleAction.getArticleList(condition );
+		
+		// 移动文章
+        articleAction.moveArticle(article.getId(), channel3.getId(), channel2.getId());
        
         // 最后删除文章、栏目、站点
         articleAction.deleteArticle(articleId);

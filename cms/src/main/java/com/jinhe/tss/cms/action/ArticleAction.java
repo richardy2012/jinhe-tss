@@ -54,7 +54,7 @@ public class ArticleAction extends BaseActionSupport {
         }
 		GridDataEncoder gEncoder = new GridDataEncoder(articles, CMSConstants.GRID_TEMPLATE_ARTICLELIST);
 
-		print(new String[]{"ArticleList", "PageList"}, new Object[]{gEncoder, pageInfo});
+		print(new String[]{"ArticleList", "PageInfo"}, new Object[]{gEncoder, pageInfo});
 	} 
 	
 	/**
@@ -186,7 +186,7 @@ public class ArticleAction extends BaseActionSupport {
 	public void getArticleList(ArticleQueryCondition condition) {
         Object[] data = articleService.searchArticleList(condition);
 		GridDataEncoder gEncoder = new GridDataEncoder(data[0], CMSConstants.GRID_TEMPLATE_ARTICLELIST);
-        print(new String[]{"ArticleList", "PageList"}, new Object[]{gEncoder, (PageInfo)data[1]});
+        print(new String[]{"ArticleList", "PageInfo"}, new Object[]{gEncoder, (PageInfo)data[1]});
 	}	
 	
 	
@@ -272,7 +272,7 @@ public class ArticleAction extends BaseActionSupport {
      * 全文检索接口。
      * 供门户网站上通过本接口调用全文搜索。
      */
-    public void search(Long tacticId, String searchStr, int page, int pageSize) {
+    public void search(Long siteId, String searchStr, int page, int pageSize) {
     	try {
             if (searchStr != null) {
                 // 处理非法字符
@@ -283,7 +283,7 @@ public class ArticleAction extends BaseActionSupport {
         } catch (Exception e) {
         } 
     	
-        String returnXML = remoteService.search(tacticId, searchStr, page, pageSize);
+        String returnXML = remoteService.search(siteId, searchStr, page, pageSize);
         print(returnXML);
     }
 }

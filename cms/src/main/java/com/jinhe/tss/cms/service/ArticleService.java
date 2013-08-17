@@ -44,7 +44,6 @@ public class ArticleService implements IArticleService {
 	public void createArticle(Article article, Long channelId, String attachList, Long tempArticleId) {
 		Channel channel = channelDao.getEntity(channelId);
 		article.setChannel(channel);
-		article.setSeqNo(articleDao.getChannelArticleNextOrder(channelId));
  
 		// set over date
 		Date calculateOverDate = ArticleHelper.calculateOverDate(article, channel);
@@ -91,7 +90,6 @@ public class ArticleService implements IArticleService {
         Article article = getArticleOnly(articleId);
         Channel channel = channelDao.getEntity(channelId);
         article.setChannel(channel);
-        article.setSeqNo(articleDao.getChannelArticleNextOrder(channelId));
         
         articleDao.saveArticle(article);
     }

@@ -20,6 +20,7 @@ import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.util.DateUtil;
 
 public class TestQuery {
+	
     private static Logger log = Logger.getLogger(TestQuery.class);
 
     public static void main(String[] args) throws IOException, ParseException {

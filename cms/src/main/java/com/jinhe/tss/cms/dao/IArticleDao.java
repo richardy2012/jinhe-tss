@@ -26,15 +26,6 @@ public interface IArticleDao extends IDao<Article> {
 
 	/**
 	 * <p>
-	 * 获取栏目文章关联表中选中栏目ID的最大序号
-	 * </p>
-	 * @param channelId
-	 * @return
-	 */
-	Integer getChannelArticleNextOrder(Long channelId);
-
-	/**
-	 * <p>
 	 * 根据文章ID获取文章附件列表
 	 * </p>
 	 * @param articleId

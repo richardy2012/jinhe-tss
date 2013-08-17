@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grid version="2">
 	<declare sequence="true">
-		<column caption="图标"    name="icon" mode="image" align="center"/>
+		<column caption="图标"   name="icon" mode="image" align="center"/>
 		<column caption="文章编号" name="id" mode="string" display="none"/>
-		<column caption="标题"    name="title" mode="string"/>
-		<column caption="文章状态" name="status" mode="string" editor="comboedit" editorvalue="1|2|3|4|-1|5" editortext="编辑中|已编|已审核|待发布|已发布|已过期" align="center"/>
-		<column caption="作者"    name="author" mode="string" align="center"/>
+		<column caption="标题"   name="title" mode="string"/>
+		<column caption="文章状态" name="status" mode="string" editor="comboedit" editorvalue="1|2|3|4" editortext="编辑中|待发布|已发布|已过期" align="center"/>
+		<column caption="作者"   name="author" mode="string" align="center"/>
 		<column caption="创建日期" name="createTime" mode="date" pattern="yyyy-MM-dd" classType="Date"/>
 		<column caption="发布时间" name="issueDate" mode="date" pattern="yyyy-MM-dd" classType="Date"/>
-		<column caption="修改日期" name="updateTime" mode="date" pattern="yyyy-MM-dd" classType="Date" display="none"/>
-		<column caption="创建者"   name="creatorName" mode="string" display="none"/>
-		<column caption="修改者"   name="updatorName" mode="string" display="none"/>
-		<column caption="文章序号" name="seqNo" mode="string" display="none"/>
-		<column caption="文章来源" name="state" mode="string" editor="comboedit" editorvalue="0|1|2|3" editortext="普通文章|分发文章|转载文章|导入文章" align="center"/>
-		<column caption="文章流程" name="workflowId" mode="string" display="none"/>
-		<column caption="栏目id"  name="channelId" mode="string" display="none"/>
-		<column caption="置顶"    name="isTop" mode="string" editor="comboedit" editortext="是|否" editorvalue="1|0" editable="false" align="center"/>
+		<column caption="创建者"  name="creatorName" mode="string" display="none"/>
+		<column caption="栏目"   name="channel.id" mode="string" display="none"/>
+		<column caption="置顶"   name="isTop" mode="string" editor="comboedit" editortext="是|否" editorvalue="1|0" editable="false" align="center"/>
 		<column caption="过期日期" name="overdueDate" mode="date" pattern="yyyy-MM-dd" classType="Date"/>
 		<column caption="点击次数" name="hitCount" mode="string" align="center"/>
 	</declare>

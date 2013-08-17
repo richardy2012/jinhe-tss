@@ -37,7 +37,7 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
     public void deleteArticle(Article article) {
         Long articleId = article.getId();
         
-        //删除附件
+        // 删除附件
         Map<String, Attachment> attachments = getArticleAttachments(articleId); // 后台查找的新建文章时上传的附件列表
         for ( Attachment attachment : attachments.values() ) {
             // 删除附件 TODO 如果是缩略图则还需删除原图片
@@ -55,16 +55,6 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
         }
         
         super.delete(article);
-    }
- 
-	public Integer getChannelArticleNextOrder(Long channelId) {
-        String hql = "select max(o.seqNo) from Article o where o.channel.id = ?";
-        List<?> list = getEntities(hql, channelId);
-        Integer nextSeqNo = (Integer) list.get(0);
-        if (nextSeqNo == null) {
-        	return 1;
-        }
-        return nextSeqNo + 1;
     }
     
     public Integer getAttachmentNextOrder(Long articleId) {
@@ -117,8 +107,8 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
     
 	public PageInfo getPageList(Long channelId, Integer pageNum, String...orderBy) {
 	    String hql = "select a.id, a.title, a.author, a.issueDate, a.summary, "
-				+ "  a.hitCount, a.creatorName, a.updatorName, a.createTime, a.updateTime,"
-				+ "  a.status, a.seqNo, a.channel.id, a.isTop, a.overdueDate"
+				+ "  a.hitCount, a.creatorName, a.createTime, "
+				+ "  a.status, a.channel, a.isTop, a.overdueDate"
 				+ " from Article a "
 				+ " where a.channel.id = :channelId ";
 		
@@ -130,7 +120,7 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
             condition.getOrderByFields().addAll( Arrays.asList(orderBy) );
         } 
         else {
-            condition.getOrderByFields().add(" a.seqNo desc ");  //  默认按seqNo排序
+            condition.getOrderByFields().add(" a.createTime desc ");  //  默认按seqNo排序
         }
  
 		PaginationQueryByHQL pageQuery = new PaginationQueryByHQL(em, hql, condition);
@@ -139,8 +129,8 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
 	
 	public PageInfo getSearchArticlePageList(ArticleQueryCondition condition) {
 		String hql = "select a.id, a.title, a.author, a.issueDate, a.summary, "
-				+ "  a.hitCount, a.creatorName, a.updatorName, a.createTime, a.updateTime,"
-				+ "  a.status, a.seqNo, a.channel.id, a.isTop, a.overdueDate"
+				+ "  a.hitCount, a.creatorName, a.createTime, "
+				+ "  a.status, a.channel, a.isTop, a.overdueDate"
                 + " from Article a, Temp t"
 				+ " where a.channel.id = t.id "
 				+ " ${author} ${status} ${title} ${createTime}" ;

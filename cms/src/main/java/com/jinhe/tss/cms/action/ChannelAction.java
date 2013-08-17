@@ -66,7 +66,7 @@ public class ChannelAction extends ProgressActionSupport {
 	 * 新增/更新栏目
 	 */
 	public void saveChannel(Channel channel) {
-		if( DEFAULT_NEW_ID.equals(channel.getId()) ) {
+		if( channel.getId() == null ) {
 			channelService.createChannel(channel);
 			doAfterSave(true, channel, "ChannelTree");
 		}
@@ -164,7 +164,7 @@ public class ChannelAction extends ProgressActionSupport {
      * 新建或更新站点
      */
     public void saveSite(Channel channel) {
-    	if( DEFAULT_NEW_ID.equals(channel.getId()) ) {
+    	if( channel.getId() == null ) {
     		channel.setParentId(CMSConstants.HEAD_NODE_ID);
             channelService.createSite(channel);
 

@@ -17,7 +17,7 @@
      *	XMLHTTP请求地址汇总
      */
     URL_INIT = "data/site_init.xml?";
-    URL_ARTICLE_LIST = "data/articlelist.xml?";
+    URL_ARTICLE_LIST = "data/article_list.xml?";
     URL_DEL_ARTICLE = "data/_success.xml?";
     URL_MOVE_ARTICLE = "data/_success.xml?";
     URL_LOCK_ARTICLE = "data/_success.xml?";
@@ -77,7 +77,7 @@
         var item4 = {
             label:"发布",
             callback:null,
-            icon:ICON + "icon_publish_source.gif",
+            icon:ICON + "cms/publish_source.gif",
             visible:function() { return "_rootId" != getTreeAttribute("id") && getOperation("4");},
             submenu:submenu4
         }
@@ -110,13 +110,13 @@
         }
         var item7 = { 
             label:"启用",
-            callback: function() { stopOrStartTreeNode("0"); },
+            callback: function() { stopOrStartChannel("0"); },
             icon:ICON + "start.gif",
             visible:function() { return "0" != getTreeAttribute("disabled") && "_rootId" != getTreeAttribute("id") && getOperation("7");}
         }
         var item8 = {
             label:"停用",
-            callback: function() { stopOrStartTreeNode("1"); },
+            callback: function() { stopOrStartChannel("1"); },
             icon:ICON + "stop.gif",
             visible:function() { return "0" == getTreeAttribute("disabled") && "_rootId" != getTreeAttribute("id") && getOperation("7");}
         }
@@ -147,6 +147,8 @@
 		menu1.addItem(item10);
 
         $$("tree").contextmenu = menu1;
+
+		initGridMenu();
     }
  
     function loadInitData() { 
@@ -436,7 +438,7 @@
 		}
     }
  
-    function stopOrStartTreeNode(state) {
+    function stopOrStartChannel(state) {
 		var iconName = isSite() ? "cms/site" : "cms/channel";
 		stopOrStartTreeNode(state, iconName);
 	}
@@ -543,7 +545,7 @@
 		var channelId = getArticleAttribute("channel.id");
 		if( channelId ) {
 			var channelNode = $T("tree").getTreeNodeById(channelId);
-			getTreeOperation(treeNode, callback, URL_GET_ARTICLE_OPERATION);
+			getTreeOperation(channelNode, callback, URL_GET_ARTICLE_OPERATION);
 		}
     }
   
@@ -628,7 +630,7 @@
 
 			var pageListNode = this.getNodeValue(XML_PAGE_INFO);			
 			initGridToolBar(gridToolBar, pageListNode, function(page) {
-				request.params.url = XML_ARTICLE_LIST + treeID + "/" + page;
+				request.paramObj.url = XML_ARTICLE_LIST + treeID + "/" + page;
 				request.onresult = function() {
 					$G("grid", this.getNodeValue(XML_ARTICLE_LIST)); 
 				}				
@@ -656,7 +658,7 @@
 				if(gridToolBar.getTotalPages() <= currentPage) return;
 
 				var nextPage = parseInt(currentPage) + 1; 
-				request.params.url = XML_ARTICLE_LIST + treeID + "/" + nextPage;
+				request.paramObj.url = XML_ARTICLE_LIST + treeID + "/" + nextPage;
 				request.onresult = function() {
 					$G("grid").load(this.getNodeValue(XML_ARTICLE_LIST), true);
 					initGridToolBar(gridToolBar, this.getNodeValue(XML_PAGE_INFO));

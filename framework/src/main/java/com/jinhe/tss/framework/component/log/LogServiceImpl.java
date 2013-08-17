@@ -24,7 +24,7 @@ public class LogServiceImpl implements LogService {
     }
 
     public Object[] getLogsByCondition(LogQueryCondition condition) {
-        String orderBy = " order by o.operateTime asc";
+        String orderBy = " order by o.operateTime desc";
         return dao.getEntities(condition, "Log", orderBy);
         
     }

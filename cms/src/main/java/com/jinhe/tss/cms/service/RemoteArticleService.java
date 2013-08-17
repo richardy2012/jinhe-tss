@@ -267,7 +267,6 @@ public class RemoteArticleService implements IRemoteArticleService {
         
         Channel channel = channelDao.getEntity(channelId);
         article.setChannel(channel);
-        article.setSeqNo(articleDao.getChannelArticleNextOrder(channelId));
          
         //设置过期时间
         article.setOverdueDate(ArticleHelper.calculateOverDate(article, channel));

@@ -119,7 +119,7 @@ public abstract class BaseActionSupport {
             totalPages ++;
         }       
         
-        StringBuffer sb = new StringBuffer("<pagelist totalpages=\"").append(totalPages).append("\" totalrecords=\"");
+        StringBuffer sb = new StringBuffer("<PageList totalpages=\"").append(totalPages).append("\" totalrecords=\"");
         sb.append(totalRows).append("\" currentpage=\"").append(page).append("\" pagesize=\"").append(pagesize);
         sb.append("\" currentpagerows=\"").append(currentPageRows).append("\" />");
         return sb.toString();

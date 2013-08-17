@@ -34,7 +34,7 @@
      *	XMLHTTP请求地址汇总
      */
     URL_INIT          = "/" + AUTH_PATH + "group/list";
-    URL_USER_LIST     = "/" + AUTH_PATH + "user/list/";    // user/list/{groupId}/{page}
+    URL_USER_GRID     = "/" + AUTH_PATH + "user/list/";    // user/list/{groupId}/{page}
     URL_USER_DETAIL   = "/" + AUTH_PATH + "user/detail/";  // user/detail/{groupId}/{userId}
     URL_GROUP_DETAIL  = "/" + AUTH_PATH + "group/detail/"; // group/detail/{parentId}/{id}/{type}
     URL_SAVE_USER     = "/" + AUTH_PATH + "user";   // POST
@@ -56,7 +56,7 @@
 	
 	if(IS_TEST) {
 		URL_INIT = "data/group_tree.xml?";
-		URL_USER_LIST = "data/user_grid.xml?";
+		URL_USER_GRID = "data/user_grid.xml?";
 		URL_USER_DETAIL = "data/user_detail.xml?";
 		URL_GROUP_DETAIL = "data/group_detail.xml?";
 		URL_SAVE_USER = "data/_success.xml?";
@@ -219,7 +219,6 @@
     }
  
     function initGridMenu(){
-        var gridObj = $$("grid");
         var item1 = {
             label:"停用",
             callback:function() { stopOrStartUser("1"); },
@@ -251,7 +250,7 @@
         menu1.addItem(item3);
         menu1.addItem(item4);
  
-        gridObj.contextmenu = menu1;
+        $$("grid").contextmenu = menu1;
     }
  
     function loadInitData() {
@@ -540,7 +539,7 @@
 		var treeID = groupId || treeNode.getId();
 
 		var p = new HttpRequestParams();
-		p.url = URL_USER_LIST + treeID + "/1";
+		p.url = URL_USER_GRID + treeID + "/1";
 		var request = new HttpRequest(p);
 		request.onresult = function() {
 			$G("grid", this.getNodeValue(XML_USER_LIST)); 
@@ -548,7 +547,7 @@
 
 			var pageListNode = this.getNodeValue(XML_PAGE_INFO);			
 			initGridToolBar(gridToolBar, pageListNode, function(page) {
-				request.params.url = XML_USER_LIST + treeID + "/" + page;
+				request.paramObj.url = URL_USER_GRID + treeID + "/" + page;
 				request.onresult = function() {
 					$G("grid", this.getNodeValue(XML_USER_LIST)); 
 				}				
@@ -567,7 +566,7 @@
 				if(gridToolBar.getTotalPages() <= currentPage) return;
 
 				var nextPage = parseInt(currentPage) + 1; 
-				request.params.url = XML_USER_LIST + treeID + "/" + nextPage;
+				request.paramObj.url = URL_USER_GRID + treeID + "/" + nextPage;
 				request.onresult = function() {
 					$G("grid").load(this.getNodeValue(XML_USER_LIST), true);
 					initGridToolBar(gridToolBar, this.getNodeValue(XML_PAGE_INFO));

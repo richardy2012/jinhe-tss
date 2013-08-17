@@ -21,10 +21,11 @@ public class ChannelModuleTest extends AbstractTestSupport {
     public void testChannelModule() {
         // 新建站点
         Channel site = new Channel();
-        site.setName("交行门户");
+        site.setName("我的门户" + System.currentTimeMillis());
         site.setPath("d:/Temp/cms");
-        site.setDocPath("d:/Temp/cms/doc");
-        site.setImagePath("d:/Temp/cms/img");
+        site.setDocPath("doc");
+        site.setImagePath("img");
+        
         channelAction.saveSite(site);
         Long siteId = site.getId();
         assertNotNull(siteId);
@@ -37,6 +38,7 @@ public class ChannelModuleTest extends AbstractTestSupport {
         
         // 新建栏目
         channelAction.getChannelDetail(CMSConstants.DEFAULT_NEW_ID, siteId);
+        
         Channel channel1 = new Channel();
         channel1.setName("时事评论");
         channel1.setParentId(siteId);

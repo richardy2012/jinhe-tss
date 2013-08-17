@@ -151,11 +151,8 @@ public class ArticleHelper {
         article.setSummary((String) articleInfos[index++]);
         article.setHitCount((Integer) articleInfos[index++]);
         article.setCreatorName((String) articleInfos[index++]);
-        article.setUpdatorName((String) articleInfos[index++]);
         article.setCreateTime((Date) articleInfos[index++]);
-        article.setUpdateTime((Date) articleInfos[index++]);
         article.setStatus((Integer) articleInfos[index++]);
-        article.setSeqNo((Integer) articleInfos[index++]);
         article.setChannel( (Channel)articleInfos[index++] );
         article.setIsTop((Integer) articleInfos[index++]);
         article.setOverdueDate((Date)articleInfos[index++]);

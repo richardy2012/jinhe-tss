@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Channel;
-import com.jinhe.tss.cms.service.ChannelService;
+import com.jinhe.tss.cms.service.IChannelService;
 import com.jinhe.tss.framework.web.mvc.ProgressActionSupport;
  
 @Controller
@@ -14,7 +14,7 @@ import com.jinhe.tss.framework.web.mvc.ProgressActionSupport;
 public class TimerAction extends ProgressActionSupport {
 
 	@Autowired ITimerService timerService;
-	@Autowired ChannelService channelService;
+	@Autowired IChannelService channelService;
 	
     /**
      * 即时执行策略
