@@ -30,12 +30,12 @@ public class ImageProcessor {
 
     /**
      * 构造函数
-     * @param fileName
+     * @param filePath
      *            构造函数参数 源文件（图片）的路径
      * @throws IOException
      */
-    public ImageProcessor(String fileName) throws IOException {
-        File _file = new File(fileName); // 读入文件
+    public ImageProcessor(String filePath) throws IOException {
+        File _file = new File(filePath); // 读入文件
         destFilePath = _file.getParent();
         srcFile = _file.getName();
         

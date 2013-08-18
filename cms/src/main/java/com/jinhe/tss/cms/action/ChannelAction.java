@@ -12,7 +12,7 @@ import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.entity.permission.ChannelPermissionsFull;
 import com.jinhe.tss.cms.entity.permission.ChannelResourceView;
-import com.jinhe.tss.cms.helper.translator.ChannelCanSelectTranslator;
+import com.jinhe.tss.cms.helper.ChannelTreeTranslator;
 import com.jinhe.tss.cms.publish.PublishManger;
 import com.jinhe.tss.cms.service.IChannelService;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeTranslator;
@@ -126,7 +126,7 @@ public class ChannelAction extends ProgressActionSupport {
             Object[] object = channelService.selectCanAddArticleParentChannels();
             treeEncoder = new TreeEncoder(object[0], new LevelTreeParser());
             treeEncoder.setRootCanSelect(false);
-            treeEncoder.setTranslator(new ChannelCanSelectTranslator((String) object[1], channelId));
+            treeEncoder.setTranslator(new ChannelTreeTranslator((String) object[1], channelId));
 
         } else if ("moveChannel".equals(action)) {
             Object[] object = channelService.selectCanAddChannelParentChannels();

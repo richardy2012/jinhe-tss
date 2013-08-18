@@ -498,8 +498,9 @@ public class FileHelper {
             return null;
         
         int index = fileName.lastIndexOf(".");
-        if (index > -1) 
+        if (index > -1) {
             return fileName.substring(index + 1);
+        }
         return "";
     }
     
@@ -582,19 +583,6 @@ public class FileHelper {
 		}
         return file;
 	}
-    
-    /**
-     * 获取文件的扩展名
-     * @param filename
-     * @return
-     */
-    public static String getFileExtension(String filename) {
-        int index = filename.lastIndexOf(".");
-        if(index != -1) {
-        	return filename.substring(index + 1);
-        }
-        return "";
-    }
     
     /**
      * 重命名文件名

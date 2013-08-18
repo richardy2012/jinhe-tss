@@ -57,7 +57,7 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
         super.delete(article);
     }
     
-    public Integer getAttachmentNextOrder(Long articleId) {
+    public Integer getAttachmentIndex(Long articleId) {
         String hql = "select nvl(max(o.id.seqNo), 0) + 1 from Attachment o where o.article.id = ?";
         List<?> list = getEntities(hql, articleId);
         Integer nextSeqNo = (Integer) list.get(0);

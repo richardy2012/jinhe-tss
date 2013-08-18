@@ -88,7 +88,7 @@ public class DownloadServlet extends HttpServlet {
                 out.flush();
             }
         } catch (IOException e) {
-            log.error("下载附件时IO异常,Message:" + e.getMessage() + ".Cause:"+ e.getCause());
+            log.error("下载附件时IO异常，Message:" + e.getMessage(), e);
         } finally {
             if (stream != null) {
                 stream.close();
@@ -100,7 +100,7 @@ public class DownloadServlet extends HttpServlet {
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    doGet(request,response);
+	    doGet(request, response);
 	}
 }
 

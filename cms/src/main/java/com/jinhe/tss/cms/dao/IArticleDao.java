@@ -40,7 +40,7 @@ public interface IArticleDao extends IDao<Article> {
      * @param id
      * @return
      */
-    Integer getAttachmentNextOrder(Long id);
+    Integer getAttachmentIndex(Long id);
     
     /**
      * 获取文章下的指定附件

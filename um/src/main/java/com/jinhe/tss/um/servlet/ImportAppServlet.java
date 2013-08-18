@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 
+import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpEncoder;
@@ -22,7 +23,7 @@ import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.service.IResourceService;
 
 @WebServlet(urlPatterns="/auth/importapp")
-@MultipartConfig(location = UMConstants.UPLOAD_PATH, maxFileSize = 1024*1024*20)
+@MultipartConfig(location = Config.UPLOAD_PATH, maxFileSize = 1024*1024*20)
 public class ImportAppServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 111131240580072842L;
@@ -44,7 +45,7 @@ public class ImportAppServlet extends HttpServlet {
     		// 上传文件(写入磁盘)
     		part.write(fileName);
     		
-    		String filePath = UMConstants.UPLOAD_PATH + "/" + fileName;
+    		String filePath = Config.UPLOAD_PATH + "/" + fileName;
             File targetFile = new File(filePath);
             Document doc = new SAXReader().read(targetFile);
             

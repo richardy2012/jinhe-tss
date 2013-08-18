@@ -10,7 +10,6 @@ import com.jinhe.tss.cache.extension.workqueue.RecordsOutputTask;
 
 /** 
  * 文章点击率统计
- * 
  */
 public class HitRateManager extends OutputRecordsManager{
     
@@ -46,6 +45,6 @@ public class HitRateManager extends OutputRecordsManager{
         super.output(record);
     }
     
-    protected int getMaxSize(){ return 32; }
+    protected int getMaxSize(){ return 10; }
 }
 

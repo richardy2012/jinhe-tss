@@ -29,7 +29,6 @@ public class ArticleQueryCondition extends MacrocodeQueryCondition {
     private Long    channelId;
     private List<Long> channelIds;
     
-    // for search article commonts
     private Long articleId;
     private String keyword;
     

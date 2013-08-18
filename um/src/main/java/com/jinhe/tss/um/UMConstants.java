@@ -9,8 +9,6 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
  */
 public final class UMConstants {
 	
-	public static final String UPLOAD_PATH = "D:/temp/upload";
-
 	public static final Integer TRUE  = new Integer(1); // 是(状态)
 	public static final Integer FALSE = new Integer(0); // 否(状态)
 	
