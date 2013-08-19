@@ -22,9 +22,9 @@
     URL_MOVE_ARTICLE = "data/_success.xml?";
     URL_LOCK_ARTICLE = "data/_success.xml?";
     URL_SETTOP_ARTICLE = "data/_success.xml?";
-    URL_SITE_DETAIL ="data/site1.xml?";
+    URL_SITE_DETAIL ="data/siteDetail.xml?";
     URL_SAVE_SITE = "data/_success.xml?";
-    URL_CHANNEL_DETAIL ="data/channel.xml?";
+    URL_CHANNEL_DETAIL ="data/channelDetail.xml?";
     URL_SAVE_CHANNEL = "data/_success.xml?";
     URL_DEL_NODE = "data/_success.xml?";
     URL_MOVE_NODE = "data/_success.xml?";

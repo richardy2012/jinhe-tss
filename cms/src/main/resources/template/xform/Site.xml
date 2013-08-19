@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
 <declare prefix="channel">
-	<column name="remark" caption="站点描述" mode="string" empty="true" maxLength="255" editor="textarea" />
-	<column name="overdueDate" caption="过期时间" mode="string" empty="true" maxLength="10" editor="comboedit" editorvalue="0|1|2|3|4|5" editortext="一年|六个月|一个季度|一个月|一个星期|一天" />
-	<column name="newArticleRule" caption="新文章规则" mode="number" empty="true" maxLength="10" inputReg="/^\d*$/g" editor="text" />
-	<column name="hotArticleRule" caption="热文章规则" mode="number" empty="true" maxLength="10" inputReg="/^\d*$/g" editor="text" />
-	<column name="docPath" caption="附件上传根路径" mode="string" empty="true" maxLength="50" editor="text" />
-	<column name="imagePath" caption="图片根路径" mode="string" empty="true" maxLength="50" editor="text" />
+	<column name="remark" caption="站点描述" mode="string" maxLength="255" editor="textarea" />
+	<column name="overdueDate" caption="过期时间" mode="string" maxLength="10" editor="comboedit" editorvalue="0|1|2|3|4|5" editortext="一年|六个月|一个季度|一个月|一个星期|一天" />
+	<column name="docPath" caption="附件上传根路径" mode="string" maxLength="50" editor="text" />
+	<column name="imagePath" caption="图片根路径" mode="string" maxLength="50" editor="text" />
 	<column name="path" caption="发布路径" mode="string" empty="false" maxLength="50" editor="text" />
-	<column name="url" caption="统一资源定位" mode="string" empty="true" maxLength="50" editor="text" />
-	<column name="workflowId" caption="工作流" mode="string" empty="false" maxLength="50" editor="comboedit" />
 	<column name="name" caption="名称" mode="string" empty="false" maxLength="50" editor="text" />
 </declare>
 <layout>
@@ -21,16 +17,10 @@
 			<input binding="name" name="名称"/>
 		</TD>
 		<TD width="50">
-			<label binding="workflowId" name="工作流"/>
+			<label binding="overdueDate" name="过期时间"/>
 		</TD>
-		<TD>
-			<input binding="workflowId" name="工作流"/>
-		</TD>
-		<TD width="50">
-			<label binding="url" name="统一资源定位"/>
-		</TD>
-		<TD>
-			<input binding="url" name="统一资源定位"/>
+		<TD colspan="3">
+			<input binding="overdueDate" name="过期时间"/>
 		</TD>
 	</TR>
 	<TR>
@@ -51,26 +41,6 @@
 		</TD>
 		<TD>
 			<input binding="docPath" name="附件上传根路径"/>
-		</TD>
-	</TR>
-	<TR>
-		<TD width="50">
-			<label binding="hotArticleRule" name="热文章规则"/>
-		</TD>
-		<TD>
-			<input binding="hotArticleRule" name="热文章规则"/>
-		</TD>
-		<TD width="50">
-			<label binding="newArticleRule" name="新文章规则"/>
-		</TD>
-		<TD>
-			<input binding="newArticleRule" name="新文章规则"/>
-		</TD>
-		<TD width="50">
-			<label binding="overdueDate" name="过期时间"/>
-		</TD>
-		<TD>
-			<input binding="overdueDate" name="过期时间"/>
 		</TD>
 	</TR>
 	<TR>

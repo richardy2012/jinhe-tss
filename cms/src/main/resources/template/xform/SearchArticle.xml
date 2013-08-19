@@ -9,8 +9,8 @@
 		/>
 			
 		<column name="status" caption="流程状态" mode="string" editor="comboedit" 
-			editorvalue="0|1|2|3|4|-1|5"
-			editortext="所有流程|编辑|已编|已审核|待发布|已发布|已过期"
+			editorvalue="0|1|2|3|4"
+			editortext="所有流程|编辑|待发布|已发布|已过期"
 		/>
 			
 	</declare>
