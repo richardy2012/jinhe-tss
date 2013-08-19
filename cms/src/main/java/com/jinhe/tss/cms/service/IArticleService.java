@@ -1,6 +1,9 @@
 package com.jinhe.tss.cms.service;
 
+import java.io.File;
+
 import com.jinhe.tss.cms.entity.Article;
+import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.helper.ArticleQueryCondition;
 import com.jinhe.tss.framework.component.log.Logable;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
@@ -37,6 +40,18 @@ public interface IArticleService {
      * @return
      */
     Article getArticleById(Long articleId);
+    
+    /**
+     * 文章附件上传后做进一步处理，包括转移目录、重命名及制作缩略图等。
+     * 
+     * @param file
+     * @param articleId
+     * @param channelId
+     * @param type
+     * @param kidName
+     * @return
+     */
+    Attachment processFile(File file, Long articleId, Long channelId, int type, String kidName);
 
     /**
      * 移动文章

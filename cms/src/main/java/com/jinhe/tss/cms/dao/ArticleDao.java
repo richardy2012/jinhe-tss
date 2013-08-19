@@ -58,7 +58,7 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
     }
     
     public Integer getAttachmentIndex(Long articleId) {
-        String hql = "select nvl(max(o.id.seqNo), 0) + 1 from Attachment o where o.article.id = ?";
+        String hql = "select nvl(max(o.id.seqNo), 0) + 1 from Attachment o where o.articleId = ?";
         List<?> list = getEntities(hql, articleId);
         Integer nextSeqNo = (Integer) list.get(0);
         if (nextSeqNo == null) {
@@ -68,19 +68,24 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
     }
     
     public Attachment getAttachment(Long articleId, Integer seqNo) {
-        String hql = " from Attachment o where o.article.id = ? and o.seqNo = ?";
+        String hql = " from Attachment o where o.articleId = ? and o.seqNo = ?";
         List<?> list = getEntities(hql, articleId, seqNo);
         if( list.size() > 0 ) {
-            return (Attachment) list.get(0);
+            Attachment attachment = (Attachment) list.get(0);
+            attachment.setArticle(getEntity(attachment.getArticleId()));
+            
+			return attachment;
         }
         return null;
     }
  
 	public Map<String, Attachment> getArticleAttachments(Long articleId) {
-        List<?> list = getEntities("from Attachment o where o.article.id = ?", articleId);
+        List<?> list = getEntities("from Attachment o where o.articleId = ?", articleId);
 		Map<String, Attachment> map = new LinkedHashMap<String, Attachment>();
 		for ( Object temp : list ) {
 			Attachment attachment = (Attachment) temp;
+			attachment.setArticle(getEntity(attachment.getArticleId()));
+			
 			attachment.setUploadName(attachment.getRelateDownloadUrl()); // 设置附件的下载地址
 			map.put(attachment.getId().toString(), attachment);
 		}

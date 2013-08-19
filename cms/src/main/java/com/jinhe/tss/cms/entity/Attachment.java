@@ -4,9 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -26,7 +24,9 @@ public class Attachment implements IEntity, IGridNode {
     @Id
 	private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    private Long articleId;
+ 
+	@Transient
     private Article article;    // 所属文章
     
     private Integer seqNo;		// 附件序号 PK
@@ -199,5 +199,13 @@ public class Attachment implements IEntity, IGridNode {
 
 	public void setArticle(Article article) {
 		this.article = article;
+	}
+
+	public Long getArticleId() {
+		return articleId;
+	}
+
+	public void setArticleId(Long articleId) {
+		this.articleId = articleId;
 	}
 }

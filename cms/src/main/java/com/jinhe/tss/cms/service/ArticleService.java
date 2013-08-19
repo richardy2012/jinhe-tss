@@ -1,6 +1,7 @@
 package com.jinhe.tss.cms.service;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -20,10 +21,12 @@ import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.helper.ArticleHelper;
 import com.jinhe.tss.cms.helper.ArticleQueryCondition;
+import com.jinhe.tss.cms.helper.ImageProcessor;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
+import com.jinhe.tss.util.FileHelper;
  
 @Service("ArticleService")
 public class ArticleService implements IArticleService {
@@ -40,6 +43,52 @@ public class ArticleService implements IArticleService {
         article.getAttachments().putAll(attachments);
         return article;
     }
+    
+    public Attachment processFile(File file, Long articleId, Long channelId, int type, String kidName) {
+        Channel site = channelDao.getEntity(channelId);
+        String siteRootPath =  ArticleHelper.getAttachmentPath(site, type);
+        File siteRootDir = new File(siteRootPath);
+        
+        // 将附件从上传临时目录剪切到站点指定的附件目录里
+        String fileName = FileHelper.copyFile(siteRootDir, file); 
+		String fileSuffix = FileHelper.getFileSuffix(fileName);
+		
+		// file指向剪切后的地址
+		file = new File(siteRootPath + "/" +fileName); 
+		
+		// 保存附件信息对象
+		Attachment attachment = new Attachment();
+		attachment.setName(kidName);
+		attachment.setType(type);
+		attachment.setFileName(FileHelper.getFileNameNoSuffix(fileName));
+		attachment.setFileExt(fileSuffix);
+		attachment.setUrl(CMSConstants.DOWNLOAD_SERVLET_URL);
+		attachment.setArticleId(articleId);
+		
+		// 对附件进行重命名
+		fileName = System.currentTimeMillis() + fileSuffix;
+		FileHelper.renameFile(file.getPath(), fileName);
+		String newPath = file.getParent() + "/" +fileName;
+		file = new File(newPath);
+
+		if (attachment.isImage()) { // 如果是图片，则为其制作缩略图
+			try {
+				newPath = new ImageProcessor(newPath).resize(0.68);
+			} catch (Exception e) {
+				log.error("制作附近图片的缩略图失败。", e);
+				newPath = file.getPath(); // 如果缩略失败，则还是采用原图片
+			}
+		}
+
+		String year = new SimpleDateFormat("yyyy").format(new Date());
+		int index = newPath.indexOf(year);
+		attachment.setLocalPath(newPath.substring(index).replaceAll("\\\\", "/"));
+		attachment.setUploadDate(new Date());
+		
+		articleDao.createObject(attachment);
+
+		return attachment;
+	}
     
 	public void createArticle(Article article, Long channelId, String attachList, Long tempArticleId) {
 		Channel channel = channelDao.getEntity(channelId);
