@@ -37,11 +37,6 @@ public class ArticlePublishTest extends AbstractTestSupport {
         
         // 开始测试文章模块
         Long tempArticleId = System.currentTimeMillis();
-//        String filePath = site.getPath() + "/" + site.getImagePath() + "/1.jpg";
-//        super.uploadAttachment(channel1Id, tempArticleId, filePath, "JPG附件", CMSConstants.ATTACHMENTTYPE_PICTURE);
-//        
-//        filePath = site.getPath() + "/" + site.getDocPath() + "/1.docx";
-//        super.uploadAttachment(channel1Id, tempArticleId, filePath, "Office附件", CMSConstants.ATTACHMENTTYPE_OFFICE);
         
         Long articleId = super.createArticle(channel1, tempArticleId).getId();
         

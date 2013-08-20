@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.cms.AbstractTestSupport;
 import com.jinhe.tss.cms.entity.Channel;
+import com.jinhe.tss.cms.timer.SchedulerBean;
 import com.jinhe.tss.cms.timer.TimerAction;
 import com.jinhe.tss.cms.timer.TimerStrategyHolder;
 
@@ -14,6 +15,8 @@ import com.jinhe.tss.cms.timer.TimerStrategyHolder;
 public class TimerModuleTest extends AbstractTestSupport {
     
 	@Autowired TimerAction timerAction;
+	
+	@Autowired SchedulerBean schedulerBean;
  
 	@Test
     public void testTimer() {
@@ -26,12 +29,14 @@ public class TimerModuleTest extends AbstractTestSupport {
         Long tempArticleId = System.currentTimeMillis();
 		super.createArticle(channel1, tempArticleId );
 		super.createArticle(channel2, tempArticleId );
-        
          
         // 即时执行策略
         timerAction.excuteStrategy(siteId, TimerStrategyHolder.DEFAULT_PUBLISH_STRATEGY_ID, 1); 
 		timerAction.excuteStrategy(siteId, TimerStrategyHolder.DEFAULT_INDEX_STRATEGY_ID, 0); 
 		timerAction.excuteStrategy(siteId, TimerStrategyHolder.DEFAULT_EXPIRE_STRATEGY_ID, 0); 
+		
+		// 测试定时器
+		schedulerBean.init();
         
         super.deleteSite(siteId);
     }

@@ -44,7 +44,6 @@ import com.jinhe.tss.util.XMLDocUtil;
         locations={
           "classpath:META-INF/framework-spring.xml",  
           "classpath:META-INF/um-spring.xml",
-          "classpath:META-INF/cms-spring.xml",
           "classpath:META-INF/spring.xml"
         } 
       )

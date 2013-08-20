@@ -93,8 +93,8 @@ public class ChannelService implements IChannelService {
     /** 检测输入路径的正确性 */
     private void checkPath(String path, String docPath, String imgPath) {
         checkPath(path,    "站点的发布路径填写错误，不能生成相应的发布文件路径！");
-        checkPath(docPath, "站点的附件上传根路径填写错误，不能生成相应的附件上传根路径路径！");
-        checkPath(imgPath, "站点的图片根路径填写错误，不能生成相应的图片根路径路径！");
+        checkPath(path + "/" + docPath, "站点的附件上传根路径填写错误，不能生成相应的附件上传根路径路径！");
+        checkPath(path + "/" + imgPath, "站点的图片根路径填写错误，不能生成相应的图片根路径路径！");
     }
     
     private void checkPath(String path, String errorMSg){

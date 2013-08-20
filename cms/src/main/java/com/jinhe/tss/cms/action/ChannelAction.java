@@ -15,6 +15,7 @@ import com.jinhe.tss.cms.entity.permission.ChannelResourceView;
 import com.jinhe.tss.cms.helper.ChannelTreeTranslator;
 import com.jinhe.tss.cms.publish.PublishManger;
 import com.jinhe.tss.cms.service.IChannelService;
+import com.jinhe.tss.cms.timer.SchedulerBean;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeTranslator;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
@@ -29,12 +30,17 @@ public class ChannelAction extends ProgressActionSupport {
 
 	@Autowired private IChannelService  channelService;
 	@Autowired private PublishManger    publishManger;
+	@Autowired private SchedulerBean    schedulerBean;
 
 	/**
 	 * 获取所有的栏目树结构
 	 */
 	public void getChannelAll() {
 		List<?> list = channelService.getAllChannels();
+		if(list.size() > 0) {
+			schedulerBean.init();
+		}
+		
 		TreeEncoder channelTreeEncoder = new TreeEncoder(list, new LevelTreeParser());
 		channelTreeEncoder.setNeedRootNode(false);
 		print("ChannelTree", channelTreeEncoder);

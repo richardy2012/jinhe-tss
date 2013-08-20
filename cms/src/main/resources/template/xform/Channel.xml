@@ -13,7 +13,6 @@
 		<TD>
 			<input binding="name" name="栏目名称"/>
 		</TD>
-		</TD>
 		<TD width="50">
 			<label binding="overdueDate" name="过期时间"/>
 		</TD>

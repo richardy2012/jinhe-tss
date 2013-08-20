@@ -15,6 +15,7 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.dao.IChannelDao;
@@ -29,6 +30,7 @@ import com.jinhe.tss.um.helper.dto.OperatorDTO;
 /** 
  * 定时器调度。
  */
+@Component
 public class SchedulerBean {
     
 	protected static Logger log = Logger.getLogger(SchedulerBean.class);
@@ -39,8 +41,7 @@ public class SchedulerBean {
     @Autowired IChannelDao channelDao;
     
     /**
-     * <bean class="com.jinhe.tss.cms.timer.SchedulerManager" init-method="init">
-     * 在创建service时指定了调用本方法进行初始化
+     * 在创建schedulerBean时指定了调用本方法进行初始化
      */
     public void init() {
         if (scheduler != null) return; 
