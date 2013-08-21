@@ -11,16 +11,17 @@ package com.jinhe.tss.util;
 
 /** 
  * <p> Escape.java </p> 
- * 中文字符先按UTF-8编码，后再用GBK解码，有些字符在这过程中不可逆，比如“言彤”的“言”， “傅思”的“傅”（参见main()方法测试）。
+ * <pre>
+ * 中文字符先按UTF-8编码，后再用GBK解码，有些字符在这过程中不可逆，比如“言彤”的“言”， “傅思”的“傅”（参见单元测试）。
  * 解决方法是页面提交数据时候一律用js 的 escape方法编码，然后使用本类解码。
  * 由于js的escape编码出来的如“%25u4F60%25u597D”格式，是没法用常规的URLDecoder.decode()来进行解码的。
  * 本类模仿 js 的 escape 和 unescape 方法实现。
+ * </pre>
  * 
- * @author Jon.King 2009-5-7
- *
+ * @author Jon.King 2006-6-19
  */
-public class Escape{    
-    private final static String[] hex ={ "00", "01", "02", "03", "04", "05",    
+public class Escape {    
+    private final static String[] hex = { "00", "01", "02", "03", "04", "05",    
         "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E", "0F", "10",    
         "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B",    
         "1C", "1D", "1E", "1F", "20", "21", "22", "23", "24", "25", "26",    
@@ -45,7 +46,7 @@ public class Escape{
         "ED", "EE", "EF", "F0", "F1", "F2", "F3", "F4", "F5", "F6", "F7",    
         "F8", "F9", "FA", "FB", "FC", "FD", "FE", "FF" };    
    
-    private final static byte[] val ={ 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,    
+    private final static byte[] val = { 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,    
         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,    
         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,    
         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,    
@@ -147,55 +148,5 @@ public class Escape{
         }
         return sbuf.toString();
     }    
-   
-    public static void main(String[] args) throws Exception{   
-        String teststr = "1234 abcd[]()<+>,.~\\";    
-        System.out.println(escape(teststr));    
-        System.out.println(unescape(escape(teststr)));    
-        
-        teststr = "言彤";    
-        System.out.println(escape(teststr));    
-        System.out.println(unescape(escape(teststr)));    
-        
-        teststr = "傅思";    
-        System.out.println(escape(teststr));    
-        System.out.println(unescape(escape(teststr)));    
-        
-        System.out.println(unescape("傅思"));   
-        
-        printStringByByte("一");
-        printStringByByte("言");
-        printStringByByte("彤");
-        printStringByByte("二");
-        printStringByByte("思");
-        
-        String loginName = "言彤X";
-        System.out.println(loginName = StringUtil.convertCoding(loginName, "UTF-8", "GBK"));
-        System.out.println(loginName = new String(loginName.getBytes("GBK"), "UTF-8"));
-        System.out.println("----------------------------");
-        
-        loginName = "思傅X";
-        System.out.println(loginName = StringUtil.convertCoding(loginName, "UTF-8", "GBK"));
-        System.out.println(loginName = new String(loginName.getBytes("GBK"), "UTF-8"));
-        System.out.println("----------------------------");
-        
-        loginName = "傅思X";
-        System.out.println(loginName = StringUtil.convertCoding(loginName, "UTF-8", "GBK"));
-        System.out.println(loginName = new String(loginName.getBytes("GBK"), "UTF-8"));
-    }
-    
-    static void printStringByByte(String s) throws Exception{
-        byte[] bytes;
-        bytes = s.getBytes("UTF-8");
-        for(int i = 0; i < bytes.length; i++){
-            System.out.print(bytes[i] + " ");
-        }
-        System.out.println("");
-        bytes = s.getBytes("GBK");
-        for(int i = 0; i < bytes.length; i++){
-            System.out.print(bytes[i] + " ");
-        }
-        System.out.println("\n----------------------------");
-    }   
 }    
 

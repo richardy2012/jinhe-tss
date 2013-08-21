@@ -44,11 +44,6 @@ public abstract class ConfigurableContants {
     protected static Properties properties = new Properties();
     
     public static String DEFAULT_PROPERTIES = "application.properties";
-    
-    static {
-        // 默认载入application.properties
-        properties = init(DEFAULT_PROPERTIES);
-    }
 
     protected static Properties init(String propertiesFileName) {
         Properties properties = new Properties();

@@ -56,12 +56,4 @@ public class StringUtil {
         return convertCoding(str, "UTF-8", "GBK");
     }
 
- 
-    public static void main(String[] args) {
-        String str = "Portletyyy~!@#$%^&*()_+-=[]{}\\|;':\",./<>?原型实现模型訾鄣迂蟓";
- 
-        System.out.println(GBKToUTF8(UTF8ToGBK(str)));
-        System.out.println(UTF8ToGBK(GBKToUTF8(str)));
-    }
-
 }

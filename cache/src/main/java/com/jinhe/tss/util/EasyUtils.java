@@ -10,7 +10,6 @@
 package com.jinhe.tss.util;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -105,7 +104,7 @@ public class EasyUtils {
      * @param seperator  分隔符 "|"/","等
      * @return
      */
-    public static String[] generateComboedit(List<?> list, String valueName, String textName, String seperator){
+    public static String[] generateComboedit(Collection<?> list, String valueName, String textName, String seperator){
         StringBuffer value = new StringBuffer();
         StringBuffer text = new StringBuffer();
         for(Object bean : list){
@@ -281,12 +280,4 @@ public class EasyUtils {
 
         return as;
     }
-    
-    public static void main(String[] args){
-        String s = "Jinpujun|English|name|is|JonKinga";
-        System.out.println(split(s, "|").length);
-        System.out.println(EasyUtils.encodeHex(s.getBytes()));
-        System.out.println(new String(EasyUtils.decodeHex(EasyUtils.encodeHex(s.getBytes()))));
-    }
 }
-

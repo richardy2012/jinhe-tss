@@ -232,8 +232,14 @@ public class FileHelper {
 	 */
 	public static List<String> listFilesByType(String suffix, File dir) {
 		List<String> list = new ArrayList<String>();
+		if(dir.isFile()) return list;
+		
 		if (dir.exists()) {
 			String[] files = dir.list();
+			if(files == null) {
+				return list;
+			}
+			
 			for (int i = 0; i < files.length; i++) {
 				String fileName = files[i];
 				if (fileName.endsWith(suffix)) {
@@ -445,11 +451,11 @@ public class FileHelper {
     /**
      * 压缩文件。
      * @param destPath
-     * @param srcFile
+     * @param sourceFile
      * @return
      */
-    public static String exportZip(String destFileName, File sourceFile){
-        String zipFileName = destFileName + "/" + sourceFile.getName() + ".zip";
+    public static String exportZip(String destDir, File sourceFile){
+        String zipFileName = destDir + "/" + sourceFile.getName() + ".zip";
         ZipOutputStream out = null;
         try {
             out = new ZipOutputStream(new FileOutputStream(zipFileName));
@@ -526,16 +532,16 @@ public class FileHelper {
 	 *
 	 * @param src
 	 *            源文件
-	 * @param file
+	 * @param fileDir
 	 *            要覆盖文件的路径
 	 * @return
 	 */
-	public static void wirteOldFile(String src, File file, String fileName) {
+	public static void wirteOldFile(String src, File fileDir, String fileName) {
 		InputStream inStream = null;
 		FileOutputStream outStream = null;
 		inStream = (InputStream) (new ByteArrayInputStream(src.getBytes()));
 		try {
-			outStream = new FileOutputStream(file.toString() + fileName);
+			outStream = new FileOutputStream(fileDir.toString() + "/" +fileName);
 		} catch (FileNotFoundException e) {
 			try {
 				inStream.close();
@@ -613,45 +619,43 @@ public class FileHelper {
         return file.isDirectory();
     }
     
-    /** 
-     * 压缩. 
-     * 压缩指定目录下所有文件，包括子目录 。
-     */  
-     public static void zip(File baseDir) throws Exception {
-         File zipFile = new File(baseDir.getPath() + ".zip");
-         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile));
-         
-         String baseDirName = baseDir.getName();
-         byte[] buf = new byte[1024];
-         int readLen = 0;
-         List<File> fileList = listFilesDeeply( baseDir );
-         for ( File file : fileList) {
-             int index = file.getPath().indexOf(baseDirName);
-             String relatePath = file.getPath().substring(index + baseDirName.length() + 1);
-             
-             ZipEntry ze = new ZipEntry(relatePath);
-             ze.setSize(file.length());
-             ze.setTime(file.lastModified());
-             zos.putNextEntry(ze);
-             
-             InputStream is = new BufferedInputStream(new FileInputStream(file));
-             while ((readLen = is.read(buf, 0, 1024)) != -1) {
-                 zos.write(buf, 0, readLen);
-             }
-             is.close();
-         }
-         zos.close();
-     }
+	/**
+	 * 压缩. 压缩指定目录下所有文件，包括子目录 。
+	 */
+	public static void zip(File baseDir) throws Exception {
+		File zipFile = new File(baseDir.getPath() + ".zip");
+		ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile));
+
+		String baseDirName = baseDir.getName();
+		byte[] buf = new byte[1024];
+		int readLen = 0;
+		List<File> fileList = listFilesDeeply(baseDir);
+		for (File file : fileList) {
+			int index = file.getPath().indexOf(baseDirName);
+			String relatePath = file.getPath().substring(index + baseDirName.length() + 1);
+
+			ZipEntry ze = new ZipEntry(relatePath);
+			ze.setSize(file.length());
+			ze.setTime(file.lastModified());
+			zos.putNextEntry(ze);
+
+			InputStream is = new BufferedInputStream(new FileInputStream(file));
+			while ((readLen = is.read(buf, 0, 1024)) != -1) {
+				zos.write(buf, 0, readLen);
+			}
+			is.close();
+		}
+		zos.close();
+	}
      
-     public static void zip(String baseDir) throws Exception {
-         zip(new File(baseDir));
-    } 
+	public static void zip(String baseDir) throws Exception {
+		zip(new File(baseDir));
+	}
      
-     /** 
-      * 解压缩. 
-      * 将file文件解压到file所在的目录下. 
-      */  
-      public static String upZip(File file) {
+	/**
+	 * 解压缩. 将file文件解压到file所在的目录下.
+	 */
+	public static String upZip(File file) {
 		String zipFileName = file.getName();
 		zipFileName = zipFileName.substring(0, zipFileName.indexOf('.'));
 		File destDir = new File(file.getParent() + "/" + zipFileName);
@@ -662,37 +666,37 @@ public class FileHelper {
 		}
 	}
       
-      /**
-		 * 解压缩. 将file文件解压到destDir目录下.
-		 */  
-      public static String upZip(File file, File destDir) throws Exception {
-        ZipFile zfile = new ZipFile(file);
-        Enumeration<?> zList = zfile.entries();
-        byte[] buf = new byte[1024];
-        while (zList.hasMoreElements()) {
-            ZipEntry ze = (ZipEntry) zList.nextElement();
+	/**
+	 * 解压缩. 将file文件解压到destDir目录下.
+	 */
+	public static String upZip(File file, File destDir) throws Exception {
+		ZipFile zfile = new ZipFile(file);
+		Enumeration<?> zList = zfile.entries();
+		byte[] buf = new byte[1024];
+		while (zList.hasMoreElements()) {
+			ZipEntry ze = (ZipEntry) zList.nextElement();
 			String path = destDir.getPath() + "/" + ze.getName();
 			File subFile = new File(path);
-            if ( ze.isDirectory() ) {
-                subFile.mkdirs();
-                continue;
-            } 
-            else {
-            	subFile.getParentFile().mkdirs();
-            }
-            
-            OutputStream os = new BufferedOutputStream(new FileOutputStream(path));
-            InputStream is = new BufferedInputStream(zfile.getInputStream(ze));
-            int readLen = 0;
-            while ((readLen = is.read(buf, 0, 1024)) != -1) {
-                os.write(buf, 0, readLen);
-            }
-            is.close();
-            os.close();
-        }
-        zfile.close();
-        
-        return destDir.getPath();
-    }  
+			if (ze.isDirectory()) {
+				subFile.mkdirs();
+				continue;
+			} else {
+				subFile.getParentFile().mkdirs();
+			}
+
+			OutputStream os = new BufferedOutputStream(new FileOutputStream(
+					path));
+			InputStream is = new BufferedInputStream(zfile.getInputStream(ze));
+			int readLen = 0;
+			while ((readLen = is.read(buf, 0, 1024)) != -1) {
+				os.write(buf, 0, readLen);
+			}
+			is.close();
+			os.close();
+		}
+		zfile.close();
+
+		return destDir.getPath();
+	}
     
 }

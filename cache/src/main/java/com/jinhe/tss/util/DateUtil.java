@@ -124,10 +124,4 @@ public class DateUtil {
         
         return new SimpleDateFormat(pattern).format(date);
     }
-    
-    public static void main(String[] args){
-        System.out.println(format(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        System.out.println(parse(format(new Date(), "yyyy-MM-dd HH:mm:ss")));
-        System.out.println(formatCare2Second(new Date()));
-    }
 }

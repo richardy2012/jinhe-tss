@@ -86,20 +86,4 @@ public class URLUtil {
         }
         return onePathUrl;
     }
-    
-    /**
-     * 定位项目中lib目录路径
-     * @return
-     */
-    public static URL getLibPath() {
-        URL onePathUrl = getOnePathUrl();
-        String path = onePathUrl.getPath();
-        path = path.substring(0, path.lastIndexOf("WEB-INF") + 7) + "/lib/" ;
-        try {
-            onePathUrl = new URL(onePathUrl.getProtocol(), null, 0, path);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("getLibPath方法定位path: " + path + " 失败", e);
-        }
-        return onePathUrl;
-    }
 }

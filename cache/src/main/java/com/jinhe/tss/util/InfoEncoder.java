@@ -9,14 +9,10 @@
 */
 package com.jinhe.tss.util;
 
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -37,13 +33,9 @@ public class InfoEncoder {
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             cipher.init(Cipher_MODE, deskey);
             return cipher;
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("没有此加/解密算法，加密器初始化失败", e);
-        } catch (NoSuchPaddingException e) {
-            throw new RuntimeException("加/解密器初始化失败", e);
-        } catch (InvalidKeyException e) {
-            throw new RuntimeException("非法的加/解密密匙，加密失败", e);
-        }
+        } catch (Exception e) {
+            throw new RuntimeException("加密器初始化失败", e);
+        } 
     }
 
     /**
@@ -58,11 +50,9 @@ public class InfoEncoder {
         byte[] encryptorData;
         try {
             encryptorData = getCipher(Cipher.ENCRYPT_MODE).doFinal(datasource.getBytes());
-        } catch (BadPaddingException ex) {
-            throw new RuntimeException("非法的加密数据，加密失败:" + datasource, ex);
-        } catch (IllegalBlockSizeException ex) {
-            throw new RuntimeException("加密字符串字节数不对，加密失败:" + datasource, ex);
-        }
+        } catch (Exception ex) {
+            throw new RuntimeException("加密失败:" + datasource, ex);
+        } 
 
         return new Base64Encoder().encode(encryptorData).replaceAll("\\s", "");
     }
@@ -82,11 +72,9 @@ public class InfoEncoder {
         byte[] createDecryptor;
         try {
             createDecryptor = getCipher(Cipher.DECRYPT_MODE).doFinal(decryptorData);
-        } catch (BadPaddingException ex) {
-            throw new RuntimeException("非法的解密数据，解密失败:" + datasource, ex);
-        } catch (IllegalBlockSizeException ex) {
-            throw new RuntimeException("解密字符串字节数不对，解密失败:" + datasource, ex);
-        }
+        } catch (Exception ex) {
+            throw new RuntimeException("解密失败:" + datasource, ex);
+        } 
         return new String(createDecryptor);
     }
 

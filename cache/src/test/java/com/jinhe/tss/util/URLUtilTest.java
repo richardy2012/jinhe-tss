@@ -28,7 +28,6 @@ public class URLUtilTest {
         System.out.println(url.getPath());
         
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println(URLUtil.getLibPath().getPath());
         System.out.println(URLUtil.getClassesPath().getPath());
     }
  
@@ -47,13 +46,6 @@ public class URLUtilTest {
     @Test
     public void testGetClassesPath() {
         URL url = URLUtil.getClassesPath();
-        System.out.println(url);
-        System.out.println(url.getPath()); 
-    }
-    
-    @Test
-    public void testGetLibPath() {
-        URL url = URLUtil.getLibPath();
         System.out.println(url);
         System.out.println(url.getPath()); 
     }

@@ -65,6 +65,11 @@ public class PoolTest {
         
         // 休眠，等待scanPort 80 端口任务完成
         Thread.sleep(3*1000); 
+        
+        apool.release(false);
+        ((Pool)tpool).release(true);
+        
+        Thread.sleep(1*1000); 
     }
     
     private void scanPort(int port) {

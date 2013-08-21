@@ -30,6 +30,11 @@ public class DBHelper extends ConfigurableContants {
     public static final String DB_CONNECTION_USERNAME = "db.connection.username";
     public static final String DB_CONNECTION_PASSWORD = "db.connection.password";
 
+    static {
+        // 默认载入application.properties
+        properties = init(DEFAULT_PROPERTIES);
+    }
+    
     public static Connection getConnection() {
         return getConnection(properties);
     }

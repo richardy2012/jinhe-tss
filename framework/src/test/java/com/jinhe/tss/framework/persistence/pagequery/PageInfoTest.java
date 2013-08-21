@@ -16,12 +16,13 @@ public class PageInfoTest {
     @Before
     public void setUp() {
         page = new PageInfo();
+        page.setPageSize(20);
         page.setTotalRows(0);
     }
  
     @Test
     public void testGetPageSize() {
-        assertEquals("默认值", PageInfo.DEFAULT_PAGESIZE, page.getPageSize());
+        assertEquals("默认值", 20, page.getPageSize());
         page.setPageSize(12);
         assertTrue(12 ==  page.getPageSize());
     }
@@ -100,7 +101,7 @@ public class PageInfoTest {
     	assertTrue("totalRows = 0", page.getPageRows() == 0);
         page.setTotalRows(42);
         page.setPageNum(2);
-        assertEquals("totalRows > 0, pageNum < totalPages", PageInfo.DEFAULT_PAGESIZE, page.getPageRows());
+        assertEquals("totalRows > 0, pageNum < totalPages", 20, page.getPageRows());
         page.setPageNum(3);
         assertTrue("totalRows > 0, pageNum = totalPages", page.getPageRows() == 2);
     }

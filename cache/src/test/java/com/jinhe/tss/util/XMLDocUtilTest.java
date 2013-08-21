@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.dom4j.Document;
 import org.dom4j.Element;
 import org.junit.Test;
 
@@ -30,9 +31,19 @@ public class XMLDocUtilTest {
 
         Element node = XMLDocUtil.map2DataNode(map, "row");
         
-        assertEquals("<row><id><![CDATA[23]]></id><id><![CDATA[&lt;![CDATA[sss]]&gt;]]></id><email><![CDATA[jinpj@g-soft.com.cn]]></email><age><![CDATA[24]]></age><tel><![CDATA[057188889999]]></tel><tel><![CDATA[13588899889]]></tel></row>", node.asXML());
+        String dataXml = "<row><id><![CDATA[23]]></id><id><![CDATA[&lt;![CDATA[sss]]&gt;]]></id><email><![CDATA[jinpj@g-soft.com.cn]]></email><age><![CDATA[24]]></age><tel><![CDATA[057188889999]]></tel><tel><![CDATA[13588899889]]></tel></row>";
+        assertEquals(dataXml, node.asXML());
 
         XMLDocUtil.dataNodes2Map(node);
+        XMLDocUtil.dataNode2Map(node);
+        
+		XMLDocUtil.dataXml2Doc(dataXml);
+		
+		Document doc = XMLDocUtil.createDoc("META-INF/cache.xml");
+		XMLDocUtil.getNodeText(node);
+		
+		XMLDocUtil.selectNodes(doc, "//id");
+		XMLDocUtil.selectNodes(node, "//tel");
     }
     
 	@Test
