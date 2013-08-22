@@ -2,13 +2,11 @@
 <HTML xmlns:Tree xmlns:XForm xmlns:WorkSpace>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>内容栏目管理</title>
+<title>文章管理</title>
 
 <link href="../framework/css/css.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/menu/menu.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/balloon/balloon.css" rel="stylesheet" type="text/css"></link>
-<link href="../framework/workspace/workspace.css" rel="stylesheet" type="text/css"></link>
-<link href="../framework/tree/tree.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/xform/xform.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/grid/grid.css" rel="stylesheet" type="text/css"></link>
 
@@ -17,8 +15,6 @@
 <script language="javascript" src="../framework/framework.js"></script>
 <script language="javascript" src="../framework/menu/menu.js"></script>
 <script language="javascript" src="../framework/balloon/balloon.js"></script>
-<script language="javascript" src="../framework/workspace/workspace.js"></script>
-<script language="javascript" src="../framework/tree/tree.js"></script>
 <script language="javascript" src="../framework/xform/xform.js"></script>
 <script language="javascript" src="../framework/grid/grid.js"></script>
 
@@ -30,6 +26,169 @@
 	background-color:#E4E6F5
   }
 </style>
+
+<script type="text/javascript">
+<!--
+	
+	/*
+     *	XMLHTTP请求地址汇总
+     */
+    URL_ARTICLE_DETAIL = "data/article.xml";
+    URL_NEW_ARTICLE_DETAIL = "data/article.xml";
+    URL_UPLOAD_FILE = "data/upload1.htm";
+    URL_UPLOAD_SERVER_FILE = "data/upload2.htm";
+    URL_SAVE_ARTICLE = "data/_success.xml";
+    URL_SAVE_PUBLISH_ARTICLE = "data/_success.xml";
+
+	function intit() {
+        var channelId = window.dialogArguments.channelId;
+        var articleId = window.dialogArguments.articleId;
+
+		var request = new HttpRequest(p);
+        request.onresult = function(){
+            var articleInfoNode = this.getNodeValue("ArticleInfo");
+            var articleContentNode = this.getNodeValue("ArticleContent");
+            var attachsUploadNode = this.getNodeValue("AttachsUpload");
+            var attachsListNode = this.getNodeValue("AttachsList");
+
+            // 分发、转载、导入文章禁止编辑保存
+            setArticlePagesEditable(articleType,workflowStatus,editable);
+
+            var page1FormObj = $("page1Form");
+            Public.initHTC(page1FormObj,"isLoaded","oncomponentready",function(){
+                loadArticleInfoFormData(articleInfoNode);
+            });
+
+            var page2EditorObj = $("page2Editor");
+            Public.initHTC(page2EditorObj,"isLoaded","onload",function(){
+                loadArticleContentData(articleContentNode);
+            });
+
+            var page3FormObj = $("page3Form");
+            Public.initHTC(page3FormObj,"isLoaded","oncomponentready",function(){
+                loadAttachsUploadFormData(attachsUploadNode);
+            });
+
+            var page3GridObj = $("page3Grid");
+            Public.initHTC(page3GridObj,"isLoaded","onload",function(){
+                loadAttachsListGridData(attachsListNode);
+            });
+
+            $("title1").onclick = collapse;
+            $("title2").onclick = collapse;
+            $("title3").onclick = collapse;
+            $("page3BtDel").onclick  = delPage3GridRow;
+            $("btSave").onclick  = saveArticle;
+            $("btSaveAndPublish").onclick  = saveAndPublishArticle;
+        }
+        request.send();
+	}
+
+	 /*
+     *	函数说明：保存文章
+     *	返回值：
+     */
+    function saveArticle(){
+        var isNew = window.dialogArguments.isNew;
+        var editable = window.dialogArguments.editable;
+        var channelId = window.dialogArguments.channelId;
+        var articleType = window.dialogArguments.articleType;
+        var articleId = window.dialogArguments.articleId;
+        var workflowStatus = window.dialogArguments.workflowStatus;
+
+        var page1FormObj = $("page1Form");
+        var page2EditorObj = $("page2Editor");
+        var page3FormObj = $("page3Form");
+        var page3GridObj = $("page3Grid");
+
+        //校验page1Form数据有效性
+        if(false==page1FormObj.checkForm()){
+            collapse($("title1"),"");
+            return;
+        }
+
+        var p = new HttpRequestParams();
+        p.url = URL_SAVE_ARTICLE;
+              
+        p.setContent("channelId", channelId);
+        //文章基本信息
+        var articleInfoNode = new XmlNode(page1FormObj.getXmlDocument());
+        if(null!=articleInfoNode){
+            var articleInfoDataNode = articleInfoNode.selectSingleNode(".//data");
+            if(null!=articleInfoDataNode){
+                flag = true;
+
+                var prefix = articleInfoNode.selectSingleNode("./declare").getAttribute("prefix");
+                p.setXFormContent(articleInfoDataNode,prefix);
+            }
+        }
+
+		//获取临时文章id
+		var attachsUploadNode = new XmlNode(page3FormObj.getXmlDocument());
+		var attachsUploadRowNode = attachsUploadNode.selectSingleNode(".//data//row");
+		var articleId = attachsUploadRowNode.getCDATA("id");
+		p.setContent("articleId",articleId);
+
+		//文章正文
+		var articleContent = "";
+		var page2EditorObj = $("page2Editor");
+		if(true==page2EditorObj.isLoaded){
+			articleContent = page2EditorObj.getSourceHTML();
+		}else{
+			
+		}
+		p.setContent("ArticleContent",articleContent);
+
+		//文章图片附件
+		var attachsListNode = new XmlNode(page3GridObj.getXmlDocument());
+		if(null!=attachsListNode){
+			var attachsListDataIDs = [];
+			var condition = "";
+			if(true == isNew) {
+				condition = "[@_new and not(@_delete)]";
+			} else {
+				condition = "[@_delete='true']";
+			}
+			var attachsListDataNodes = attachsListNode.selectNodes(".//data//row"+condition);
+			for(var i=0,iLen=attachsListDataNodes.length;i<iLen;i++){
+				var curNode = attachsListDataNodes[i];
+				var curNodeID = curNode.getAttribute("seqNo");
+				if(null!=curNodeID){
+					attachsListDataIDs.push(parseInt(curNodeID));
+				}
+			}
+			if(0<attachsListDataIDs.length){
+				p.setContent("attachList",attachsListDataIDs.join(","));
+			}
+		}
+
+        var request = new HttpRequest(p);
+        //同步按钮状态
+        var btSaveObj = $("btSave");
+        syncButton([btSaveObj],request);
+
+        request.onsuccess = function(){
+            window.returnValue = true;
+            window.close();
+        }
+        request.send();
+    }
+
+     /* 保存并发布文章   */
+    function saveAndPublishArticle(){
+
+	}
+
+	function uploadFile() {
+
+	}
+
+	function deleteFile() {
+
+	}
+
+//-->
+</script>
 
 </head>
 

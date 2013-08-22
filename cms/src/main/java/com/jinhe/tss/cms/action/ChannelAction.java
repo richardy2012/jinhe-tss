@@ -35,6 +35,7 @@ public class ChannelAction extends ProgressActionSupport {
 	/**
 	 * 获取所有的栏目树结构
 	 */
+	@RequestMapping("/list")
 	public void getChannelAll() {
 		List<?> list = channelService.getAllChannels();
 		if(list.size() > 0) {
@@ -47,11 +48,12 @@ public class ChannelAction extends ProgressActionSupport {
 	}
 
 	/**
-	 * 获取栏目xform信息
+	 * 获取栏目详细信息
 	 */
-	public void getChannelDetail(Long channelId, Long parentId) {
+	@RequestMapping("/detail/{id}/{parentId}")
+	public void getChannelDetail(Long id, Long parentId) {
 		Channel channel;
-		if ( CMSConstants.DEFAULT_NEW_ID.equals(channelId) ) {
+		if ( CMSConstants.DEFAULT_NEW_ID.equals(id) ) {
             channel = new Channel();
             
             Channel parent = (Channel) channelService.getChannelById(parentId);
@@ -61,7 +63,7 @@ public class ChannelAction extends ProgressActionSupport {
             channel.setParentId(parentId);
 		} 
 		else {
-			channel = channelService.getChannelById(channelId);
+			channel = channelService.getChannelById(id);
 		}
  
 		XFormEncoder xEncoder = new XFormEncoder(CMSConstants.XFORM_CHANNEL, channel);
