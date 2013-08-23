@@ -17,7 +17,6 @@ import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.helper.ArticleHelper;
 import com.jinhe.tss.cms.publish.PublishManger;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.util.EasyUtils;
 
 @Service("ChannelService")
 public class ChannelService implements IChannelService {
@@ -28,28 +27,19 @@ public class ChannelService implements IChannelService {
     public List<?> getAllSiteChannelList() {
         return channelDao.getAllSiteChannelList();
     }
-    
-    public List<?> getAllChannels() {
-        String hql = "from Channel c where c.id <> c.site.id order by c.decode";
-        return channelDao.getEntities(hql);
-    }
-    
-    public Channel getSiteById(Long siteId) {
-        Channel site = channelDao.getEntity( siteId );
-        if (site == null) {
-            throw new BusinessException("您选中站点不存在，可能已经被删除掉了！");
-        }
-
-        return site;
-    }
-    
+ 
 	public Channel getChannelById(Long id) {
         Channel channel = channelDao.getEntity(id);
         if (channel == null) {
-            throw new BusinessException("选择栏目不存在！id = " + id);
+            throw new BusinessException("选择节点不存在！id = " + id);
         }
         return channel;
 	}
+	
+    public Long getSiteIdByChannelId(Long channelId) {
+        Channel channel = getChannelById(channelId);
+        return channel.getSite().getId();
+    }
 	
 	public Channel createChannel(Channel channel) {
         Long parentId = channel.getParentId();
@@ -164,9 +154,9 @@ public class ChannelService implements IChannelService {
         channelDao.flush();
     }
 
-    public void startSiteAll(Long siteId) {
+    public void enableSite(Long siteId) {
         // 启用站点
-        Channel channel = getSiteById(siteId);
+        Channel channel = channelDao.getEntity(siteId);
         channel.setDisabled(CMSConstants.STATUS_START);
         
         // 启用站点下栏目
@@ -180,7 +170,7 @@ public class ChannelService implements IChannelService {
         channelDao.flush();
     }
  
-    public void startChannel(Long channelId) {
+    public void enableChannel(Long channelId) {
         // 启用所有父亲节点
         List<Channel> parents = channelDao.getParentsById(channelId, CMSConstants.OPERATION_STOP_START);
         for ( Channel parent : parents ) {
@@ -188,26 +178,6 @@ public class ChannelService implements IChannelService {
         }
         channelDao.flush();
     }
- 
-    public Object[] selectCanAddArticleParentChannels() {
-        return selectParentChannelsByOperationId(CMSConstants.OPERATION_ADD_ARTICLE); // 新建文章
-    }
-    
-    public Object[] selectCanAddChannelParentChannels() { 
-        return selectParentChannelsByOperationId(CMSConstants.OPERATION_ADD_CHANNEL); // 新建栏目
-    }
-
-    private Object[] selectParentChannelsByOperationId(String operationId) {
-        List<Long> canAddChannelIds = channelDao.getSiteChannelIDsByOperationId(operationId); 
-        channelDao.insertIds2TempTable( canAddChannelIds );
-        List<?> channels = channelDao.getParentChannel4CanAdd();
-        return new Object[]{channels, EasyUtils.list2Str(canAddChannelIds)};
-    }
-    
-    public List<Channel> getChannelTreeDown(Long channelId) {
-        return channelDao.getChildrenById(channelId, CMSConstants.OPERATION_VIEW);
-    }
-
  
     
     /**************************************************** 以下为栏目（站点）文章发布 *************************************************/
@@ -247,12 +217,8 @@ public class ChannelService implements IChannelService {
         return channelDao.getPublishableArticleCount(channelId);
     }
 
-    public List<Article> getPagePublishableArticleList(Long channelId, int pageNum, Integer pageSize) {
+    public List<Article> getPagePublishableArticleList(Long channelId, int pageNum, int pageSize) {
         return channelDao.getPagePublishableArticleList(channelId, pageNum, pageSize);
     }
     
-    public Long getSiteIdByChannelId(Long channelId) {
-        Channel channel = getChannelById(channelId);
-        return channel.getSite().getId();
-    }
 }

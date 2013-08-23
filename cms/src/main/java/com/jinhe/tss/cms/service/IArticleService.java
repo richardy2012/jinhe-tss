@@ -60,8 +60,8 @@ public interface IArticleService {
      * @param oldChannelId
      * @param channelId
      */
-    @Logable(operateTable="文章", operateType="移动", operateInfo="将(ID: ${args[0]}) 文章，从(ID: ${args[1]}) 栏目下移动到(ID: ${args[2]}) 栏目下")
-    void moveArticle(Long articleId, Long oldChannelId, Long channelId);
+    @Logable(operateTable="文章", operateType="移动", operateInfo="将(ID: ${args[0]}) 文章移动到(ID: ${args[2]}) 栏目下")
+    void moveArticle(Long articleId, Long channelId);
 
     /**
      * 获取栏目下属所有文章列表

@@ -36,7 +36,6 @@ import com.jinhe.tss.cms.timer.TimerStrategyHolder;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
-import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.util.BeanUtil;
@@ -53,64 +52,17 @@ public class RemoteArticleService implements IRemoteArticleService {
     @Autowired protected IArticleDao articleDao;
     @Autowired protected IChannelDao channelDao;
     
-    public String getArticleListByChannel4Rss(Long channelId, Integer page, Integer pageSize) {
-        Channel channel = channelDao.getEntity(channelId);
-        if(channel == null) {
-            throw new BusinessException("ID为：" + channelId + " 的栏目不存在！");
-        }
-        
-        if( !channelDao.checkBrowsePermission(channelId) ) {
-            log.error("用户【" + Environment.getOperatorName() + "】试图访问没有文章浏览权限的栏目【" + channel + "】");
-            channelId = channelId * -1; // 置反channelId值，使查询不到结果
-        }
-        
-        ArticleQueryCondition condition = new ArticleQueryCondition();
-        condition.setChannelId(channelId);
-        condition.getPage().setPageNum(page);
-        condition.getPage().setPageSize(pageSize);
-        condition.setStatus(CMSConstants.XML_STATUS);
-        
-        PageInfo pageInfo = articleDao.getChannelPageArticleList(condition);
-        String baseUrl = Context.getApplicationContext().getCurrentAppServer().getBaseURL();
-            
-        Document doc = org.dom4j.DocumentHelper.createDocument();
-        Element rssElement = doc.addElement("rss").addAttribute("version", "2.0"); 
-        Element channelElement = rssElement.addElement("channel");
-        channelElement.addElement("title").setText(channel.getName());
-        channelElement.addElement("link").setText(baseUrl + "/index.portal");
-        channelElement.addElement("description").setText(channel.getName() + "栏目文章列表");
-        
-        channelElement.addElement("language").setText("zh");
-        channelElement.addElement("copyright").setText("Copyright (c) JinHe S&T Co.ltd ZJ, 2012-2020 ");
-
-        List<?> articleList = pageInfo.getItems();
-        if (articleList != null) {
-            for (int i = 0; i < articleList.size(); i++) {
-                Object[] fields = (Object[]) articleList.get(i);
-                Long articleId = (Long) fields[0];
-
-                Element itemElement = channelElement.addElement("item");
-                itemElement.addElement("id").setText(articleId == null ? "" : articleId.toString());
-                itemElement.addElement("title").setText(fields[2] == null ? "" : fields[2].toString());
-                itemElement.addElement("pubDate").setText(fields[5] == null ? "" : DateUtil.format((Date) fields[5]));
-                itemElement.addElement("link").setText(baseUrl + "/article.portal?isRobot=true&articleId=" + articleId);
-            }
-        }
-        doc.setXMLEncoding("GBK");
-        return doc.asXML();
-    }
-    
-    public String getArticleListXMLByChannel(Long channelId, Integer page, Integer pageSize) { 
+    public String getArticleListXMLByChannel(Long channelId, int page, int pageSize) { 
         String rssXML = getArticleListByChannel(channelId, page, pageSize, false);
         return "<Response><ArticleList>" + rssXML + "</ArticleList></Response>";
     }
     
-    public String getPicArticleListByChannel(Long channelId, Integer page, Integer pageSize) {
+    public String getPicArticleListByChannel(Long channelId, int page, int pageSize) {
         String rssXML = getArticleListByChannel(channelId, page, pageSize, true);
         return "<Response><ArticleList>" + rssXML + "</ArticleList></Response>";
     }
 
-    private String getArticleListByChannel(Long channelId, Integer page, Integer pageSize, boolean isNeedPic) {
+    public String getArticleListByChannel(Long channelId, int page, int pageSize, boolean isNeedPic) {
         Channel channel = channelDao.getEntity(channelId);
         if(channel == null) {
             throw new BusinessException("ID为：" + channelId + " 的栏目不存在！");
@@ -135,7 +87,7 @@ public class RemoteArticleService implements IRemoteArticleService {
         channelElement.addElement("channelName").setText(channel.getName()); 
         channelElement.addElement("totalPageNum").setText(String.valueOf(pageInfo.getTotalPages()));
         channelElement.addElement("totalRows").setText(String.valueOf(pageInfo.getTotalRows()));
-        channelElement.addElement("currentPage").setText(page.toString());
+        channelElement.addElement("currentPage").setText(page + "");
         List<?> articleList = pageInfo.getItems();
         if (articleList != null) {
             for (int i = 0; i < articleList.size(); i++) {
@@ -151,10 +103,10 @@ public class RemoteArticleService implements IRemoteArticleService {
                 }
             }
         }
-        return channelElement.asXML();
+        return "<Response><ArticleList>" + channelElement.asXML() + "</ArticleList></Response>";
     }
 
-    public String queryArticlesByChannelIds(String channelIdStr, Integer page, Integer pageSize){
+    public String queryArticlesByChannelIds(String channelIdStr, int page, int pageSize){
         ArticleQueryCondition condition = new ArticleQueryCondition();
         condition.getPage().setPageNum(page);
         condition.getPage().setPageSize(pageSize);
@@ -174,7 +126,7 @@ public class RemoteArticleService implements IRemoteArticleService {
         return "<Response><ArticleList>" + createReturnXML(pageInfo, channelIds.get(0)) + "</ArticleList></Response>";
     }
     
-    public String queryArticlesDeeplyByChannelId(Long channelId, Integer page, Integer pageSize){
+    public String queryArticlesDeeplyByChannelId(Long channelId, int page, int pageSize){
         ArticleQueryCondition condition = new ArticleQueryCondition();
         condition.getPage().setPageNum(page);
         condition.getPage().setPageSize(pageSize);
@@ -259,7 +211,7 @@ public class RemoteArticleService implements IRemoteArticleService {
         return doc.asXML();
     }
 
-    public void addArticle(String articleXml, Long channelId) {
+    public void importArticle(String articleXml, Long channelId) {
         Document doc = XMLDocUtil.dataXml2Doc(articleXml);
         Element articleNode = (Element) doc.selectSingleNode("//ArticleInfo/Article");
         Article article = new Article();
@@ -277,7 +229,7 @@ public class RemoteArticleService implements IRemoteArticleService {
     protected static final Date DEFAULT_START_DATE = DateUtil.parse("2000-1-1");
     protected static final Date DEFAULT_END_DATE = DateUtil.parse("2099-12-31");
     
-    public String search(Long siteId, String searchStr, Integer pageNum, Integer pagesize) {
+    public String search(Long siteId, String searchStr, int page, int pageSize) {
         Date startDate = DEFAULT_START_DATE;
         Date endDate = DEFAULT_END_DATE;
         boolean filterByTime = false; // 是否需要对查询结果集进行按时间段过滤，高级查询的时候用到
@@ -353,14 +305,12 @@ public class RemoteArticleService implements IRemoteArticleService {
                 list.add(document);
             }
 
-            int page = pageNum.intValue();
-            int pageSize = pagesize.intValue();
             int totalRows = list.size();
             int totalPage = totalRows % pageSize != 0 ? totalRows / pageSize + 1 : totalRows / pageSize;
 
             channelElement.addElement("totalPageNum").setText(String.valueOf(totalPage));
             channelElement.addElement("totalRows").setText(totalRows + "");
-            channelElement.addElement("currentPage").setText(pageNum.toString());
+            channelElement.addElement("currentPage").setText(page + "");
             for (int i = (page - 1) * pageSize; i < totalRows && i < page * pageSize; i++) {
                 org.apache.lucene.document.Document document = list.get(i);
                 
@@ -377,7 +327,7 @@ public class RemoteArticleService implements IRemoteArticleService {
         return "<Response><ArticleList>" + channelElement.asXML() + "</ArticleList></Response>";
     }
  
-    public AttachmentDTO getAttachmentInfo(Long articleId, Integer seqNo) {
+    public AttachmentDTO getAttachmentInfo(Long articleId, int seqNo) {
         Attachment att = articleDao.getAttachment(articleId, seqNo);
         if (att == null) {
             log.error("数据库中没有相应的附件信息！文章ID：" + articleId + ", 序号：" + seqNo);

@@ -211,7 +211,7 @@ public class ArticleService implements IArticleService {
         return article;
     }
  
-    public void moveArticle(Long articleId, Long oldChannelId, Long channelId) {
+    public void moveArticle(Long articleId, Long channelId) {
         Article article = articleDao.getEntity(articleId);
         Channel channel = channelDao.getEntity(channelId);
         article.setChannel(channel);

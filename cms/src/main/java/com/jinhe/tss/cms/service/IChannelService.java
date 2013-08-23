@@ -24,19 +24,6 @@ public interface IChannelService {
      * @return
      */
     List<?> getAllSiteChannelList();
-
-	/**
-	 * <p>
-	 * 获取所有未删除状态的Channel资源
-	 * </p>
-	 * @param condition
-	 * @return List
-	 */
-    @PermissionTag(
-            operation = CMSConstants.OPERATION_VIEW, 
-            resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL
-    )
-	List<?> getAllChannels();
 	
 	/**
 	 * 新增或更新普通栏目
@@ -129,69 +116,34 @@ public interface IChannelService {
 	 * @return
 	 */
 	Channel getChannelById(Long id);
-	
-	/**
-     * <p>
-     * 获取指定站点信息
-     * </p>
-     * @param condition
-     * @return Site
-     */
-    Channel getSiteById(Long siteId);
-
+ 
     /**
      * <p>
      * 停用站点
      * </p>
-     * @param condition
-     * @return boolean
+     * @param id
      */
     @Logable(operateTable="站点栏目", operateType="停用", operateInfo="停用了 （ID ：${args[0]}） 站点")
-    void disable(Long siteId);
+    void disable(Long id);
     
     /**
      * <p>
      * 启用站点及所有子栏目
      * <p>
-     * @param condition
-     * @return
+     * @param siteId
      */
     @Logable(operateTable="站点栏目", operateType="启用", operateInfo="启用了 （ID ：${args[0]}） 站点及其所有子栏目")
-    void startSiteAll(Long siteId);
+    void enableSite(Long siteId);
     
     /**
      * <p>
      * 启用栏目
      * </p>
-     * @param condition
-     * @return boolean
+     * @param id
      */
     @Logable(operateTable="站点栏目", operateType="启用", operateInfo="启用了 （ID ：${args[0]}） 栏目")
-    void startChannel(Long siteId);
-
-    /**
-     * 获取可以新建文章的栏目列表
-     * @return
-     *         [channels, canAddIds]
-     */
-    Object[] selectCanAddArticleParentChannels();
-
-    /**
-     * 获取可以新建子栏目的栏目列表
-     * @return
-     *         [channels, canAddIds]
-     */
-    Object[] selectCanAddChannelParentChannels();
-    
-    /**
-     * <p>
-     * 得到栏目下所有栏目
-     * </p>
-     * @param condition
-     * @return
-     */
-    List<Channel> getChannelTreeDown(Long channelId);
-    
+    void enableChannel(Long id);
+ 
 	/**
 	 * <p>
 	 * 通过栏目id取栏目下所有可发布的文章总数
@@ -210,7 +162,7 @@ public interface IChannelService {
 	 * @param pageSize
 	 * @return
 	 */
-	List<Article> getPagePublishableArticleList(Long channelId, int pageNum, Integer pageSize);
+	List<Article> getPagePublishableArticleList(Long channelId, int pageNum, int pageSize);
 	
 	/**
 	 * <p>

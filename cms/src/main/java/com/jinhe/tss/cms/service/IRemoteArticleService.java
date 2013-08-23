@@ -9,45 +9,7 @@ import com.jinhe.tss.cms.AttachmentDTO;
 public interface IRemoteArticleService {
     
     /**
-     * 获取符合RSS2.0规范的栏目文章列表。
-     * @param channelId
-     * @param page
-     * @param pageSize
-     * @return
-     */
-    String getArticleListByChannel4Rss(Long channelId, Integer page, Integer pageSize);
-    
-    /**
-     * 获得栏目文章列表信息
-     * <p>
-     * &lt;?xml version="1.0" encoding="UTF-8"?&gt;<br>
-     *  &lt;Response&gt;<br>
-     *  &lt;ArticleList&gt;<br>
-     *  &lt;rss&gt;<br>
-     *      &lt;channelName&gt;最新公告&lt;/channelName&gt;<br>
-            &lt;totalPageNum&gt;2&lt;/totalPageNum&gt;<br>
-            &lt;totalRows&gt;32&lt;/totalRows&gt;<br>
-            &lt;currentPage&gt;1&lt;/currentPage&gt;<br>
-            &lt;item&gt;<br>
-                &lt;id&gt;21&lt;/id&gt;<br>
-                &lt;title&gt;文章标题&lt;/title&gt;<br>
-                &lt;author&gt;文章作者&lt;/author&gt;<br>
-                &lt;issueDate&gt;2007-06-08&lt;/IssueDate&gt;<br>
-                &lt;wzrq&gt;2007-06-18&lt;/wzrq&gt;<br>
-                &lt;summary&gt;摘要摘要摘要摘要摘要摘要&lt;/summary&gt;<br>
-                &lt;hitcount&gt;122&lt;/hitcount&gt;<br>
-            &lt;/item&gt;<br>
-        &lt;/rss&gt;<br>
-        &lt;/ArticleList&gt;<br>
-        &lt;/Response&gt;<br>
-     * </p>
-     * 
-     * @return String
-     */
-    String getArticleListXMLByChannel(Long channelId, Integer page, Integer pageSize);
-    
-    /**
-     * 获取图片文章列表
+     * 获取文章(包含附件)列表
      * <p>
      * &lt;?xml version="1.0" encoding="UTF-8"?&gt;<br>
      *  &lt;Response&gt;<br>
@@ -83,7 +45,7 @@ public interface IRemoteArticleService {
      * @param pageSize
      * @return
      */
-    String getPicArticleListByChannel(Long channelId, Integer page, Integer pageSize);
+    String getArticleListByChannel(Long channelId, int page, int pageSize, boolean isNeedPic);
 
     /**
      * <p>
@@ -141,28 +103,30 @@ public interface IRemoteArticleService {
      * </p>
      * @param articleXml
      */
-    void addArticle(String articleXml, Long channelId);
+    void importArticle(String articleXml, Long channelId);
 
     /**
      * 根据栏目ids，获取这些栏目下的所有文章列表。
      * 注：因为本方法调用dao时里需要往临时表temp里写入数据，所以方法名不能以get开头
+     * 
      * @param channelIds
      * @param page
      * @param pageSize
      * @return 
      *        返回数据格式同getArticleListXMLByChannel方法
      */
-    String queryArticlesByChannelIds(String channelIds, Integer page, Integer pageSize);
+    String queryArticlesByChannelIds(String channelIds, int page, int pageSize);
 
     /**
      * 根据栏目id获取文章列表(深度)，取指定栏目以及该栏目下所有子栏目的所有文章列表
+     * 
      * @param channelId
      * @param page
      * @param pageSize
      * @return 
      *        返回数据格式同getArticleListXMLByChannel方法
      */
-    String queryArticlesDeeplyByChannelId(Long channelId, Integer page, Integer pageSize);
+    String queryArticlesDeeplyByChannelId(Long channelId, int page, int pageSize);
     
     /**
      * 获取栏目树，用以显示“当前位置”等地方
@@ -202,7 +166,7 @@ public interface IRemoteArticleService {
      * @param pageSize
      * @return
      */
-    String search(Long siteId, String searchStr, Integer pageNum, Integer pageSize);
+    String search(Long siteId, String searchStr, int pageNum, int pageSize);
     
     /**
      * 获取附件信息。附件下载时候使用，由DownloadServlet调用。
@@ -210,7 +174,7 @@ public interface IRemoteArticleService {
      * @param seqNo
      * @return
      */
-    AttachmentDTO getAttachmentInfo(Long articleId, Integer seqNo);
+    AttachmentDTO getAttachmentInfo(Long articleId, int seqNo);
     
     /**
      * 根据栏目和日期来获取文章列表。

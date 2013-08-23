@@ -37,19 +37,6 @@ public interface IChannelDao extends ITreeSupportDao<Channel> {
 	List<Long> getSiteChannelIDsByOperationId(String operationId);
     
     /**
-     * 根据栏目ID列表获取所有当前用户有查看权限的栏目结点。<br/>
-     * 注：本方法主要用于栏目和文章的新增/移动等操作时需要的栏目树，只取channelIds(存于临时表内)里包含的栏目的父栏目，<br/>
-     * 这样可以把不相干的枝过滤掉。<br/>
-     * <br/>
-     * @return
-     */
-    @PermissionTag(
-	        operation = CMSConstants.OPERATION_VIEW, 
-	        resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL
-	)
-    List<?> getParentChannel4CanAdd();
-    
-    /**
      * <p>
      * 得到所有站点栏目列表
      * </p>

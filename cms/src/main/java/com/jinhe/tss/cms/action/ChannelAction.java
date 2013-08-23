@@ -1,22 +1,21 @@
 package com.jinhe.tss.cms.action;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.entity.permission.ChannelPermissionsFull;
 import com.jinhe.tss.cms.entity.permission.ChannelResourceView;
-import com.jinhe.tss.cms.helper.ChannelTreeTranslator;
 import com.jinhe.tss.cms.publish.PublishManger;
 import com.jinhe.tss.cms.service.IChannelService;
 import com.jinhe.tss.cms.timer.SchedulerBean;
-import com.jinhe.tss.framework.web.dispaly.tree.ITreeTranslator;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
@@ -36,22 +35,22 @@ public class ChannelAction extends ProgressActionSupport {
 	 * 获取所有的栏目树结构
 	 */
 	@RequestMapping("/list")
-	public void getChannelAll() {
-		List<?> list = channelService.getAllChannels();
+	public void getChannelAll(HttpServletResponse response) {
+		List<?> list = channelService.getAllSiteChannelList();
 		if(list.size() > 0) {
 			schedulerBean.init();
 		}
 		
-		TreeEncoder channelTreeEncoder = new TreeEncoder(list, new LevelTreeParser());
-		channelTreeEncoder.setNeedRootNode(false);
-		print("ChannelTree", channelTreeEncoder);
+		TreeEncoder treeEncoder = new TreeEncoder(list, new LevelTreeParser());
+		treeEncoder.setNeedRootNode(false);
+		print("ChannelTree", treeEncoder);
 	}
 
 	/**
 	 * 获取栏目详细信息
 	 */
 	@RequestMapping("/detail/{id}/{parentId}")
-	public void getChannelDetail(Long id, Long parentId) {
+	public void getChannelDetail(HttpServletResponse response, Long id, Long parentId) {
 		Channel channel;
 		if ( CMSConstants.DEFAULT_NEW_ID.equals(id) ) {
             channel = new Channel();
@@ -69,11 +68,31 @@ public class ChannelAction extends ProgressActionSupport {
 		XFormEncoder xEncoder = new XFormEncoder(CMSConstants.XFORM_CHANNEL, channel);
 		print("ChannelInfo", xEncoder);
 	}
+	
+    /**
+     * 获得站点的详细信息
+     */
+	@RequestMapping("/detail/site/{siteId}")
+    public void getSiteDetail(HttpServletResponse response, Long siteId) {
+    	Channel channel;
+        if ( CMSConstants.DEFAULT_NEW_ID.equals(siteId)) {
+            channel = new Channel();
+            channel.setDocPath("doc");
+            channel.setImagePath("img");
+        } 
+        else {
+            channel = channelService.getChannelById(siteId);
+        }
+ 
+        XFormEncoder xEncoder = new XFormEncoder(CMSConstants.XFORM_SITE, channel);
+        print("SiteInfo", xEncoder);
+    }
 
 	/**
 	 * 新增/更新栏目
 	 */
-	public void saveChannel(Channel channel) {
+	@RequestMapping(method = RequestMethod.POST)
+	public void saveChannel(HttpServletResponse response, Channel channel) {
 		if( channel.getId() == null ) {
 			channelService.createChannel(channel);
 			doAfterSave(true, channel, "ChannelTree");
@@ -83,95 +102,12 @@ public class ChannelAction extends ProgressActionSupport {
 			printSuccessMessage("修改成功！");
 		}
 	}
- 
-	/**
-	 * 逻辑删除栏目
-	 */
-	public void deleteSiteOrChannel(Long id) {
-		channelService.deleteChannel(id);
-        printSuccessMessage("删除成功！");
-	}
-
-	/**
-	 * 栏目排序
-	 */
-	public void sortChannel(Long channelId, Long toChannelId, int direction) {
-		channelService.sortChannel(channelId, toChannelId, direction);
-        printSuccessMessage("排序成功！");
-	}
-
-	/**
-	 * 栏目移动
-	 */
-	public void moveChannel(Long channelId, Long toChannelId) {
-		channelService.moveChannel(channelId, toChannelId);
-        printSuccessMessage("移动成功！");
-	}
- 
-	/**
-	 * 带有进度条的栏目发布
-	 * @param category 1:增量发布  2:完全发布
-	 */
-	public void publishChannel(Long channelId, String  category) {
-        String code = publishManger.publishArticle(channelId, category);
-        printScheduleMessage(code);  
-	}
 	
-    /**
-     *  带有进度条的站点发布
-     */
-    public void publishSite(Long channelId, String  category) {
-        String code = publishManger.publishArticle(channelId, category);
-        printScheduleMessage(code);  
-    }
-
-    /**
-     * 获得站点和栏目树(包括所有的树节点过滤情况)
-     */
-    public void getSiteChannelTree(Long channelId, String action) {
-        TreeEncoder treeEncoder = null;
-        if ("moveArticle".equals(action)) {
-            Object[] object = channelService.selectCanAddArticleParentChannels();
-            treeEncoder = new TreeEncoder(object[0], new LevelTreeParser());
-            treeEncoder.setRootCanSelect(false);
-            treeEncoder.setTranslator(new ChannelTreeTranslator((String) object[1], channelId));
-
-        } else if ("moveChannel".equals(action)) {
-            Object[] object = channelService.selectCanAddChannelParentChannels();
-            treeEncoder = new TreeEncoder(object[0], new LevelTreeParser());
-            treeEncoder.setRootCanSelect(false);
-
-            final List<Channel> selectedList = channelService.getChannelTreeDown(channelId);
-
-            final List<String> canAddChannelIds = Arrays.asList(((String) object[1]).split(","));
-
-            // 树栏目是否可选 转换器 (专门为移动节点时的目标树结构用，移动节点的子节点都不可选)
-            treeEncoder.setTranslator(new ITreeTranslator() {
-                public Map<String, Object> translate(Map<String, Object> attributes) {
-                    Object channelId = attributes.get("id");
-                    for (Channel channel : selectedList) {
-                        if (channelId.equals(channel.getId())) {
-                            attributes.put("canselected", "0");
-                        }
-                    }
-
-                    if (!canAddChannelIds.contains(String.valueOf(channelId))) {
-                        attributes.put("canselected", "0");
-                    }
-                    return attributes;
-                }
-            });
-
-        } else {
-            treeEncoder = new TreeEncoder(channelService.getAllSiteChannelList(), new LevelTreeParser());
-        }
-        print("SiteTree", treeEncoder);
-    }
-
     /**
      * 新建或更新站点
      */
-    public void saveSite(Channel channel) {
+	@RequestMapping(value = "/site", method = RequestMethod.POST)
+    public void saveSite(HttpServletResponse response, Channel channel) {
     	if( channel.getId() == null ) {
     		channel.setParentId(CMSConstants.HEAD_NODE_ID);
             channelService.createSite(channel);
@@ -184,34 +120,55 @@ public class ChannelAction extends ProgressActionSupport {
     	}
     }
  
-    /**
-     * 获得站点的详细信息
-     */
-    public void getSiteDetail(Long siteId) {
-    	Channel channel;
-        if ( CMSConstants.DEFAULT_NEW_ID.equals(siteId)) {
-            channel = new Channel();
-            channel.setDocPath("doc");
-            channel.setImagePath("img");
-        } 
-        else {
-            channel = channelService.getSiteById(siteId);
-        }
- 
-        XFormEncoder xEncoder = new XFormEncoder(CMSConstants.XFORM_SITE, channel);
-        print("SiteInfo", xEncoder);
-    }
+	/**
+	 * 逻辑删除栏目
+	 */
+	@RequestMapping(value = "/{id}/", method = RequestMethod.DELETE)
+	public void delete(HttpServletResponse response, Long id) {
+		channelService.deleteChannel(id);
+        printSuccessMessage("删除成功！");
+	}
 
+	/**
+	 * 栏目排序
+	 */
+	@RequestMapping(value = "/sort/{id}/{targetId}/{direction}", method = RequestMethod.POST)
+	public void sortChannel(HttpServletResponse response, Long id, Long targetId, int direction) {
+		channelService.sortChannel(id, targetId, direction);
+        printSuccessMessage("排序成功！");
+	}
+
+	/**
+	 * 栏目移动
+	 */
+	@RequestMapping(value = "/move/{id}/{toParentId}", method = RequestMethod.POST)
+	public void moveChannel(HttpServletResponse response, Long id, Long toParentId) {
+		channelService.moveChannel(id, toParentId);
+        printSuccessMessage("移动成功！");
+	}
+ 
+	/**
+	 * 带有进度条的栏目(站点)发布
+	 * @param category 1:增量发布  2:完全发布
+	 */
+	@RequestMapping(value = "/publish/{id}/{category}", method = RequestMethod.POST)
+	public void publish(HttpServletResponse response, Long id, String category) {
+        String code = publishManger.publishArticle(id, category);
+        printScheduleMessage(code);  
+	}
+ 
     /**
      * 启用栏目
      */
-    public void enable(Long id) {
+	@RequestMapping(value = "/enable/{id}", method = RequestMethod.POST)
+    public void enable(HttpServletResponse response, Long id) {
         // 如果启用的是站点，则启用全部子节点
-        if( channelService.getChannelById(id).isSite() ) {
-        	channelService.startSiteAll(id);
+        Channel channel = channelService.getChannelById(id);
+		if( channel.isSite() ) {
+        	channelService.enableSite(id);
         }
         else {
-        	 channelService.startChannel(id);
+        	 channelService.enableChannel(id);
         }
         printSuccessMessage("启用成功！");
     }
@@ -219,7 +176,8 @@ public class ChannelAction extends ProgressActionSupport {
     /**
      * 停用站点
      */
-    public void disable(Long id) {
+	@RequestMapping(value = "/disable/{id}", method = RequestMethod.POST)
+    public void disable(HttpServletResponse response, Long id) {
         channelService.disable(id);
         printSuccessMessage("停用成功！");
     }
@@ -227,7 +185,8 @@ public class ChannelAction extends ProgressActionSupport {
     /**
      * 根据栏目资源id来获取对栏目的操作权限
      */
-    public void getOperations(Long resourceId) {
+	@RequestMapping("/operations/{resourceId}")
+    public void getOperations(HttpServletResponse response, Long resourceId) {
         List<String> list = PermissionHelper.getInstance().getOperationsByResource(resourceId,
                         ChannelPermissionsFull.class.getName(), ChannelResourceView.class);
 

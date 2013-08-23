@@ -53,7 +53,7 @@ public class ChannelModuleTest extends AbstractTestSupport {
         Channel channel2 = super.createChannel("体育新闻", channel1, siteId);
         Channel channel3 = super.createChannel("NBA战况", channel2, channel2.getId());
         
-        List<?> list = channelService.getAllChannels();
+        List<?> list = channelService.getAllSiteChannelList();
         assertTrue(list.size() >= 3);
         for(Object temp : list) {
             log.debug(temp);
@@ -61,7 +61,7 @@ public class ChannelModuleTest extends AbstractTestSupport {
         
         // 栏目排序
         channelAction.sortChannel(channelId, channel2.getId(), 1);
-        list = channelService.getAllChannels();
+        list = channelService.getAllSiteChannelList();
         for(Object temp : list) {
             log.debug(temp);
         }

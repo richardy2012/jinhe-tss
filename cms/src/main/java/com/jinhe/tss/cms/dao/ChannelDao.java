@@ -43,13 +43,7 @@ public class ChannelDao extends TreeSupportDao<Channel> implements IChannelDao {
     			+ " and v.operationId = ? and v.resourceId = t.id order by t.id";
 		return (List<Long>) getEntities(hql, Environment.getOperatorId(), operationId);
 	}
- 
-    public List<?> getParentChannel4CanAdd() {
-        String hql = "select distinct o from Channel o, Channel t, Temp temp "
-            + " where t.id = temp.id and t.decode like o.decode ||'%' order by o.decode";
-        return getEntities(hql);
-    }
-	
+
     public List<?> getAllSiteChannelList() {
 		return getEntities("from Channel c order by c.decode");
 	}

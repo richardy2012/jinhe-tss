@@ -80,7 +80,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
     
     protected void deleteSite(Long siteId) {
         channelService.deleteChannel(siteId);
-        List<?> list = channelService.getAllChannels();
+        List<?> list = channelService.getAllSiteChannelList();
         assertNotNull(list);
         assertTrue(list.isEmpty());
         
