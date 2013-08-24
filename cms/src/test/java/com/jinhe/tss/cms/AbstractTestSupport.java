@@ -29,7 +29,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
         Channel site = new Channel();
         site.setParentId(CMSConstants.HEAD_NODE_ID);
         site.setName("我的门户" + System.currentTimeMillis());
-        site.setPath("d:/Temp/cms");
+        site.setPath(super.tempDir1.getPath());
         site.setDocPath("doc");
         site.setImagePath("img");
         site = channelService.createChannel(site);
@@ -71,7 +71,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
 		request.addParameter("articleContent", content);
 		request.addParameter("articleId", tempArticleId.toString());
         
-		articleAction.saveArticleInfo(request, channel.getId(), article, "1,2", "false");
+		articleAction.saveArticleInfo(response, request, channel.getId(), article, "1,2", "false");
         Long articleId = article.getId();
         assertNotNull(articleId);
         
@@ -89,7 +89,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
         assertTrue(articles.isEmpty());
     }
     
-    protected List<?> getArticleIdByChannelId(Long channelId) {
+    protected List<?> getArticlesByChannel(Long channelId) {
         String hql = "from Article a where a.channel.id = ? ";
         return channelDao.getEntities(hql, channelId);
     }

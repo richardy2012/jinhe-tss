@@ -13,6 +13,7 @@ import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.helper.ArticleQueryCondition;
 import com.jinhe.tss.framework.test.TestUtil;
+import com.jinhe.tss.um.UMConstants;
 
 /**
  * 文章站点栏目相关模块的单元测试。
@@ -32,56 +33,49 @@ public class ArticleModuleTest extends AbstractTestSupport {
         Long channelId = channel1.getId();
         
         // 开始测试文章模块
-		articleAction.initArticleInfo(channelId);
+		articleAction.initArticleInfo(response, channelId);
         
         Long tempArticleId = System.currentTimeMillis();
-        
-//        Long channel1Id = channel1.getId();
-//        String filePath = site.getPath() + "/" + site.getImagePath() + "/1.jpg";
-//        super.uploadAttachment(channel1Id, tempArticleId, filePath, "JPG附件", CMSConstants.ATTACHMENTTYPE_PICTURE);
-//        
-//        filePath = site.getPath() + "/" + site.getDocPath() + "/1.docx";
-//        super.uploadAttachment(channel1Id, tempArticleId, filePath, "Office附件", CMSConstants.ATTACHMENTTYPE_OFFICE);
-        
-        TestUtil.printEntity(permissionHelper, "Attachment"); 
         
         Article article = super.createArticle(channel1, tempArticleId);
         Long articleId = article.getId();
         
-        TestUtil.printEntity(permissionHelper, "Attachment"); 
-        
-        articleAction.getArticleInfo(articleId);
+        articleAction.getArticleInfo(response, articleId);
         
         // 修改文章
-        articleAction.saveArticleInfo(request, channelId, article, "1,2", "false");
+        articleAction.saveArticleInfo(response, request, channelId, article, "", "false");
         
-        List<?> list = getArticleIdByChannelId(channelId);
+        List<?> list = getArticlesByChannel(channelId);
         assertNotNull(list);
         assertEquals(1, list.size());
         
         // 置顶、解除置顶
-        articleAction.doOrUndoTopArticle(articleId);
-        articleAction.doOrUndoTopArticle(articleId);
+        articleAction.doOrUndoTopArticle(response, articleId);
+        assertEquals(article.getIsTop(), UMConstants.TRUE);
+        
+        articleAction.doOrUndoTopArticle(response, articleId);
+        assertEquals(article.getIsTop(), UMConstants.FALSE);
         
         // 获取搜索文章的查询模板
-        articleAction.getSearchArticleTemplate();
+        articleAction.getSearchArticleTemplate(response);
         
-        articleAction.getChannelArticles(channelId, 1);
+        articleAction.getChannelArticles(response, channelId, 1);
         
-        articleAction.getArticleOperation(channelId);
+        articleAction.getArticleOperation(response, channelId);
         
         ArticleQueryCondition condition = new ArticleQueryCondition();
         condition.setTitle("轮回");
         condition.setChannelId(channelId);
-		articleAction.getArticleList(condition );
+		articleAction.getArticleList(response, condition);
 		
 		// 移动文章
-        articleAction.moveArticle(article.getId(), channel3.getId(), channel2.getId());
+        articleAction.moveArticle(response, article.getId(), channel3.getId());
+        assertEquals(article.getChannel().getId(), channel3.getId());
        
         // 最后删除文章、栏目、站点
-        articleAction.deleteArticle(articleId);
+        articleAction.deleteArticle(response, articleId);
         
-        super.deleteSite(siteId);
+        deleteSite(siteId);
         
         assertTrue(TestUtil.printLogs(logService) > 0);
     }

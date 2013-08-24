@@ -160,13 +160,11 @@ public class ChannelService implements IChannelService {
         channel.setDisabled(CMSConstants.STATUS_START);
         
         // 启用站点下栏目
-        if ( channel.isSite() ) {
-            List<?> list = channelDao.getChannelsBySiteIdNoPermission(siteId);
-            for ( Object entity : list ) {
-                Channel temp = (Channel) entity;
-                temp.setDisabled(CMSConstants.STATUS_START);
-            }
-        } 
+        List<?> list = channelDao.getChannelsBySiteIdNoPermission(siteId);
+        for ( Object entity : list ) {
+            Channel temp = (Channel) entity;
+            temp.setDisabled(CMSConstants.STATUS_START);
+        }
         channelDao.flush();
     }
  

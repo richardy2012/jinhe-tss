@@ -1,7 +1,10 @@
 package com.jinhe.tss.cms.timer;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.jinhe.tss.cms.CMSConstants;
@@ -22,7 +25,11 @@ public class TimerAction extends ProgressActionSupport {
      * @param increment 是否增量操作  0：否  1：是
      */
 	@RequestMapping("/excute/{siteId}/{id}/{increment}")
-    public void excuteStrategy(Long siteId, Integer strategyId, int increment) {
+    public void excuteStrategy(HttpServletResponse response, 
+    		@PathVariable("siteId") Long siteId, 
+    		@PathVariable("strategyId") int strategyId, 
+    		@PathVariable("increment") int increment) {
+		
 		Channel site = channelService.getChannelById(siteId);
 		
         TimerStrategy strategy = TimerStrategyHolder.getStrategyPool().get(strategyId);

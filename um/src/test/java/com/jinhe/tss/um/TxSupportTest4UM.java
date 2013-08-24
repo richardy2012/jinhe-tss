@@ -69,8 +69,7 @@ public abstract class TxSupportTest4UM extends AbstractTransactionalJUnit4Spring
         Global.setContext(super.applicationContext);
         
         request = new MockHttpServletRequest();
-        response = new MockHttpServletResponse();
-		Context.setResponse(response);
+		Context.setResponse(response = new MockHttpServletResponse());
         
         // 初始化虚拟登录用户信息
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);

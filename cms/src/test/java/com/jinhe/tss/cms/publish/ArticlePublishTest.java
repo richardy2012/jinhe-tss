@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.cms.AbstractTestSupport;
 import com.jinhe.tss.cms.CMSConstants;
@@ -14,6 +15,7 @@ import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.lucene.ArticleContent;
 import com.jinhe.tss.cms.lucene.IndexHelper;
+import com.jinhe.tss.cms.timer.TimerAction;
 import com.jinhe.tss.cms.timer.TimerStrategy;
 import com.jinhe.tss.cms.timer.TimerStrategyHolder;
 import com.jinhe.tss.framework.component.progress.Progress;
@@ -23,6 +25,8 @@ import com.jinhe.tss.framework.test.TestUtil;
  * 文章发布相关模块的单元测试。
  */
 public class ArticlePublishTest extends AbstractTestSupport {
+	
+	@Autowired TimerAction timerAction;
     
 	@Test
     public void testArticlePublish() {
@@ -40,9 +44,16 @@ public class ArticlePublishTest extends AbstractTestSupport {
         
         Long articleId = super.createArticle(channel1, tempArticleId).getId();
         
+//      Long channel1Id = channel1.getId();
+//      String filePath = site.getPath() + "/" + site.getImagePath() + "/1.jpg";
+//      super.uploadAttachment(channel1Id, tempArticleId, filePath, "JPG附件", CMSConstants.ATTACHMENTTYPE_PICTURE);
+//      
+//      filePath = site.getPath() + "/" + site.getDocPath() + "/1.docx";
+//      super.uploadAttachment(channel1Id, tempArticleId, filePath, "Office附件", CMSConstants.ATTACHMENTTYPE_OFFICE);
+        
         TestUtil.printEntity(super.permissionHelper, "Attachment"); 
 
-        List<?> list = getArticleIdByChannelId(channel1Id);
+        List<?> list = getArticlesByChannel(channel1Id);
  
         for(Object temp : list) {
             // 编辑 ---> 待发布
@@ -73,6 +84,8 @@ public class ArticlePublishTest extends AbstractTestSupport {
         articleAction.getChannelTreeList4Portlet(siteId);
         
         // 创建索引
+        timerAction.excuteStrategy(response, siteId, strategyId, increment);
+        
         TimerStrategy strategy = TimerStrategyHolder.getIndexStrategy();
         strategy.setSite(site);
         

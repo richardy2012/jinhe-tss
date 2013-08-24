@@ -1,9 +1,12 @@
 package com.jinhe.tss.cms;
 
+import java.io.File;
+import java.net.URL;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.junit.Assert;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -29,6 +32,8 @@ import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.permission.PermissionService;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.um.service.IResourceService;
+import com.jinhe.tss.util.FileHelper;
+import com.jinhe.tss.util.URLUtil;
 import com.jinhe.tss.util.XMLDocUtil;
 
 /**
@@ -60,12 +65,16 @@ public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit4Sprin
     @Autowired protected IChannelDao channelDao;
     @Autowired protected IArticleDao articleDao;
     
+    protected MockHttpServletResponse response;
     protected MockHttpServletRequest request;
+    
+    protected File tempDir1;
+    protected File tempDir2;
     
     @Before
     public void setUp() throws Exception {
         Global.setContext(super.applicationContext);
-        Context.setResponse(new MockHttpServletResponse());
+		Context.setResponse(response = new MockHttpServletResponse());
         
         request = new MockHttpServletRequest();
         Context.initRequestContext(request);
@@ -78,6 +87,14 @@ public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit4Sprin
         init();
         
         dbserver.setPrepareed(true);
+        
+        URL url = URLUtil.getResourceFileUrl("log4j.properties");
+        String log4jPath = url.getPath(); 
+        File classDir = new File(log4jPath).getParentFile();
+        Assert.assertTrue(FileHelper.checkFile(classDir, "log4j.properties"));
+        
+        tempDir1 = FileHelper.createDir(classDir + "/temp1");
+        tempDir1 = FileHelper.createDir(classDir + "/temp1");
     }
  
     /**

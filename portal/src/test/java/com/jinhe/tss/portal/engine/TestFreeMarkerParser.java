@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.xml.sax.InputSource;
 
@@ -22,17 +23,8 @@ import com.jinhe.tss.util.XMLDocUtil;
 
 public class TestFreeMarkerParser {
     
-    public static void main(String[] args) {
-        try{
-            TestFreeMarkerParser.test0();
-            System.exit(0);
-        } catch(Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-    
-    public static void test0() throws Exception {
+    @Test
+    public void test0() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
         Context.initRequestContext(request);
         IdentityCard card = new IdentityCard("token", OperatorDTO.ADMIN);
@@ -46,7 +38,8 @@ public class TestFreeMarkerParser {
         parser.parseTemplateTwice(templateStr, new OutputStreamWriter(System.out));
     }
 
-    public static void test1() throws Exception {
+    @Test
+    public void test1() throws Exception {
         String templateStr = "<#assign manager = statics[\"com.jinhe.tss.portal.engine.FreeMarkerParserTest.StaticManager\"] />" +
                 "<#assign data = manager.listFiles(\"d:/temp\") />" +
                 "${data.get(2)} \n <#list data as file> ${file} \n </#list> ";
@@ -55,7 +48,8 @@ public class TestFreeMarkerParser {
         parser.parseTemplateTwice(templateStr, new OutputStreamWriter(System.out));
     }
     
-    public static void test2() throws Exception {
+    @Test
+    public void test2() throws Exception {
         String div = "<DIV id=span_div_27 style=\"FONT-SIZE: 1px; Z-INDEX: 10; LEFT: 0px; VISIBILITY: hidden;" +
                 " POSITION: relative; TOP: 7px; HEIGHT: 1px\"></DIV>";
         
@@ -76,35 +70,33 @@ public class TestFreeMarkerParser {
         parser.parseTemplateTwice(templateStr, new OutputStreamWriter(System.out));
     }
     
-    public static void test3() throws Exception {
+    @Test
+    public void test3() throws Exception {
         String tempalteStr = "<@common.showMenu menuId=21/>";
         FreemarkerParser parser = new FreemarkerParser(null);
         parser.parseTemplateTwice(tempalteStr, new OutputStreamWriter(System.out));
     }
     
-    public static void initData() throws Exception {
-        FreemarkerParser parser = new FreemarkerParser(null);
+    @Test
+    public void test4() throws Exception {
+    	FreemarkerParser parser = new FreemarkerParser(null);
         parser.getDataModel().put("article", 
                 FreemarkerParser.translateValue(XMLDocUtil.createDoc("com/jinhe/tss/portal/engine/article.xml").asXML()));
         parser.getDataModel().put("articleList", 
                 FreemarkerParser.translateValue(XMLDocUtil.createDoc("com/jinhe/tss/portal/engine/articleList.xml").asXML()));
-    }
-    
-    public static void test4() throws Exception {
-        initData();
         
         String templateStr = "<#assign channel = articleList.ArticleList.channel>" +
                 "<#list channel.item as item>" +
                 "<a href='/pms/article2.Portal?articleId=${item.id}'>* ${item.title}</a><br>\n" +
                 "</#list>";
         
-        FreemarkerParser parser = new FreemarkerParser(null);
         parser.parseTemplateTwice(templateStr, new OutputStreamWriter(System.out));
     }
     
-    public static void test5() throws Exception {
+    @Test
+    public void test5() throws Exception {
         IRemoteArticleService obj = StaticManager.getArticleService();
-        obj.getPicArticleListByChannel(new Long(48), new Integer(1), new Integer(5));
+        obj.getArticleListByChannel(new Long(48), 1, 5, true);
         
         String templateStr = "<@common.getArticleListXML 3, 1, 5/>" +
                 "<@common.doShowArticleList common.doc/>";
@@ -113,7 +105,8 @@ public class TestFreeMarkerParser {
         parser.parseTemplateTwice(templateStr, new OutputStreamWriter(System.out));
     }
     
-    public static void test6() throws Exception {
+    @Test
+    public void test6() throws Exception {
         Map<String, String> map = new HashMap<String, String>();
         map.put("channelId", "12");
         FreemarkerParser parser = new FreemarkerParser(null);
@@ -124,7 +117,8 @@ public class TestFreeMarkerParser {
         parser.parseTemplateTwice(templateStr, new OutputStreamWriter(System.out));
     }
     
-    public static void test7() throws Exception{
+    @Test
+    public void test7() throws Exception{
         Map<String, String> map = new HashMap<String, String>();
         //map.put("channelId", new Long(22));
         map.put("channelId", "22");
@@ -148,6 +142,7 @@ public class TestFreeMarkerParser {
         System.out.println(out.toString());
     }
     
+    
     public static Long increase(Long num){
         return new Long(num.longValue() + 1);
     }
@@ -155,7 +150,6 @@ public class TestFreeMarkerParser {
     public static Long increase(String num){
         return new Long(num);
     }
-    
     
     public static class StaticManager {
         

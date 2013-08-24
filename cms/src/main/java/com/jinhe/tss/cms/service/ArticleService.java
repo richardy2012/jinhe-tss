@@ -221,7 +221,7 @@ public class ArticleService implements IArticleService {
  
 	public Article doTopArticle(Long articleId) {
 	    Article article = getArticleOnly(articleId);
-	    article.setIsTop(article.getIsTop() * -1);
+	    article.setIsTop(article.getIsTop() == 0 ? 1 : 0);
 		articleDao.update(article);
 		
 		return article;

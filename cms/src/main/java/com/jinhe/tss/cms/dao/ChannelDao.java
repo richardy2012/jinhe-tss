@@ -57,7 +57,7 @@ public class ChannelDao extends TreeSupportDao<Channel> implements IChannelDao {
         if(site == null){
             throw new BusinessException("ID为：" + siteId + " 的站点不存在或者已经被删除");
         }
-		return getEntities("from Channel c where c.site.id = c.id and c.decode like ?", site.getDecode() + "%");
+		return getEntities("from Channel c where c.site.id <> c.id and c.decode like ?", site.getDecode() + "%");
 	}
  
 	public List<?> getChildChannels(Long parentId) {

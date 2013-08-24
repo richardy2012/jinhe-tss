@@ -60,7 +60,7 @@ public interface IArticleService {
      * @param oldChannelId
      * @param channelId
      */
-    @Logable(operateTable="文章", operateType="移动", operateInfo="将(ID: ${args[0]}) 文章移动到(ID: ${args[2]}) 栏目下")
+    @Logable(operateTable="文章", operateType="移动", operateInfo="将(ID: ${args[0]}) 文章移动到(ID: ${args[1]}) 栏目下")
     void moveArticle(Long articleId, Long channelId);
 
     /**

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -50,7 +51,10 @@ public class ChannelAction extends ProgressActionSupport {
 	 * 获取栏目详细信息
 	 */
 	@RequestMapping("/detail/{id}/{parentId}")
-	public void getChannelDetail(HttpServletResponse response, Long id, Long parentId) {
+	public void getChannelDetail(HttpServletResponse response, 
+			@PathVariable("id") Long id, 
+			@PathVariable("parentId") Long parentId) {
+		
 		Channel channel;
 		if ( CMSConstants.DEFAULT_NEW_ID.equals(id) ) {
             channel = new Channel();
@@ -73,7 +77,7 @@ public class ChannelAction extends ProgressActionSupport {
      * 获得站点的详细信息
      */
 	@RequestMapping("/detail/site/{siteId}")
-    public void getSiteDetail(HttpServletResponse response, Long siteId) {
+    public void getSiteDetail(HttpServletResponse response, @PathVariable("id") Long siteId) {
     	Channel channel;
         if ( CMSConstants.DEFAULT_NEW_ID.equals(siteId)) {
             channel = new Channel();
@@ -124,7 +128,7 @@ public class ChannelAction extends ProgressActionSupport {
 	 * 逻辑删除栏目
 	 */
 	@RequestMapping(value = "/{id}/", method = RequestMethod.DELETE)
-	public void delete(HttpServletResponse response, Long id) {
+	public void delete(HttpServletResponse response, @PathVariable("id") Long id) {
 		channelService.deleteChannel(id);
         printSuccessMessage("删除成功！");
 	}
@@ -133,7 +137,11 @@ public class ChannelAction extends ProgressActionSupport {
 	 * 栏目排序
 	 */
 	@RequestMapping(value = "/sort/{id}/{targetId}/{direction}", method = RequestMethod.POST)
-	public void sortChannel(HttpServletResponse response, Long id, Long targetId, int direction) {
+	public void sortChannel(HttpServletResponse response, 
+			@PathVariable("id") Long id, 
+			@PathVariable("targetId") Long targetId, 
+			@PathVariable("direction") int direction) {
+		
 		channelService.sortChannel(id, targetId, direction);
         printSuccessMessage("排序成功！");
 	}
@@ -142,7 +150,10 @@ public class ChannelAction extends ProgressActionSupport {
 	 * 栏目移动
 	 */
 	@RequestMapping(value = "/move/{id}/{toParentId}", method = RequestMethod.POST)
-	public void moveChannel(HttpServletResponse response, Long id, Long toParentId) {
+	public void moveChannel(HttpServletResponse response, 
+			@PathVariable("id") Long id, 
+			@PathVariable("toParentId") Long toParentId) {
+		
 		channelService.moveChannel(id, toParentId);
         printSuccessMessage("移动成功！");
 	}
@@ -152,7 +163,10 @@ public class ChannelAction extends ProgressActionSupport {
 	 * @param category 1:增量发布  2:完全发布
 	 */
 	@RequestMapping(value = "/publish/{id}/{category}", method = RequestMethod.POST)
-	public void publish(HttpServletResponse response, Long id, String category) {
+	public void publish(HttpServletResponse response, 
+			@PathVariable("id") Long id, 
+			@PathVariable("category") String category) {
+		
         String code = publishManger.publishArticle(id, category);
         printScheduleMessage(code);  
 	}
@@ -161,7 +175,7 @@ public class ChannelAction extends ProgressActionSupport {
      * 启用栏目
      */
 	@RequestMapping(value = "/enable/{id}", method = RequestMethod.POST)
-    public void enable(HttpServletResponse response, Long id) {
+    public void enable(HttpServletResponse response, @PathVariable("id") Long id) {
         // 如果启用的是站点，则启用全部子节点
         Channel channel = channelService.getChannelById(id);
 		if( channel.isSite() ) {
@@ -177,7 +191,7 @@ public class ChannelAction extends ProgressActionSupport {
      * 停用站点
      */
 	@RequestMapping(value = "/disable/{id}", method = RequestMethod.POST)
-    public void disable(HttpServletResponse response, Long id) {
+    public void disable(HttpServletResponse response, @PathVariable("id") Long id) {
         channelService.disable(id);
         printSuccessMessage("停用成功！");
     }
@@ -186,11 +200,10 @@ public class ChannelAction extends ProgressActionSupport {
      * 根据栏目资源id来获取对栏目的操作权限
      */
 	@RequestMapping("/operations/{resourceId}")
-    public void getOperations(HttpServletResponse response, Long resourceId) {
+    public void getOperations(HttpServletResponse response, @PathVariable("resourceId") Long resourceId) {
         List<String> list = PermissionHelper.getInstance().getOperationsByResource(resourceId,
                         ChannelPermissionsFull.class.getName(), ChannelResourceView.class);
 
-        String permissionAll = "p1,p2,cd1,cd2,cd3,cd4,cd5,ca1,ca2,ca3,ca4,ca5，" + EasyUtils.list2Str(list);
-        print("Operation", permissionAll);
+        print("Operation", EasyUtils.list2Str(list));
     }
 }
