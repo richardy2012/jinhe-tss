@@ -58,6 +58,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
         article.setKeyword("历史 轮回 社会矛盾");
         article.setSummary("历史 轮回 社会矛盾");
         article.setOverdueDate(new Date(System.currentTimeMillis() + 1000*60*60*24*365));
+        article.setChannel(channel);
         
         String content = " 最近几年以来，社会矛盾逐渐成为了中国公众瞩目的焦点---" +
                 "官员腐败，贫富差距扩大化，三农问题，仇富心态，教育改革，房产价格，医疗社保等一系列问题犹如走马灯" +
@@ -71,7 +72,9 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
 		request.addParameter("articleContent", content);
 		request.addParameter("articleId", tempArticleId.toString());
         
-		articleAction.saveArticleInfo(response, request, channel.getId(), article, "1,2", "false");
+		request.addParameter("attachList", "1,2");
+		request.addParameter("isCommit", "false");
+		articleAction.saveArticleInfo(response, request, article);
         Long articleId = article.getId();
         assertNotNull(articleId);
         

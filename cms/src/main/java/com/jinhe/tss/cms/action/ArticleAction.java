@@ -209,7 +209,11 @@ public class ArticleAction extends BaseActionSupport {
      * 根据栏目ids，获取这些栏目下的所有文章列表
      */
     @RequestMapping(value = "/channels/{channelIds}/{page}/{pageSize}", method = RequestMethod.GET)
-    public void getArticleListByChannels(HttpServletResponse response, @PathVariable("id") String channelIds, @PathVariable("id") int page, @PathVariable("id") int pageSize) {
+    public void getArticleListByChannels(HttpServletResponse response, 
+    		@PathVariable("channelIds") String channelIds, 
+    		@PathVariable("page") int page, 
+    		@PathVariable("pageSize") int pageSize) {
+    	
         if ( EasyUtils.isNullOrEmpty(channelIds) ) {
             throw new BusinessException("栏目IDs为空");
         }
@@ -220,8 +224,12 @@ public class ArticleAction extends BaseActionSupport {
     /**
      * 根据栏目id获取文章列表(深度)，取指定栏目以及该栏目下所有子栏目的所有文章列表
      */
-    @RequestMapping(value = "/channelDeeply/{channelIds}/{page}/{pageSize}", method = RequestMethod.GET)
-    public void getArticleListDeeplyByChannel(HttpServletResponse response, @PathVariable("id") Long channelId, @PathVariable("id") int page, @PathVariable("id") int pageSize) {
+    @RequestMapping(value = "/channelDeeply/{channelId}/{page}/{pageSize}", method = RequestMethod.GET)
+    public void getArticleListDeeplyByChannel(HttpServletResponse response, 
+    		@PathVariable("channelId") Long channelId,
+    		@PathVariable("page") int page, 
+    		@PathVariable("pageSize") int pageSize) {
+    	
         String returnXML = remoteService.queryArticlesDeeplyByChannelId(channelId, page, pageSize);
         print(returnXML);
     }
@@ -234,7 +242,11 @@ public class ArticleAction extends BaseActionSupport {
      * @param month
      */
     @RequestMapping(value = "/journal/{channelId}/{year}/{month}", method = RequestMethod.GET)
-    public void getArticleListByChannelAndTime(HttpServletResponse response, @PathVariable("id") Long channelId, @PathVariable("id") String year, @PathVariable("id") String month) {
+    public void getArticleListByChannelAndTime(HttpServletResponse response, 
+    		@PathVariable("channelId") Long channelId, 
+    		@PathVariable("year") String year, 
+    		@PathVariable("month") String month) {
+    	
         String returnXML = remoteService.getArticleListByChannelAndTime(channelId, year, month);
         print(returnXML);
     }
@@ -243,7 +255,7 @@ public class ArticleAction extends BaseActionSupport {
      * 文章的信息展示，并进行相关文章的动态的处理
      */
     @RequestMapping(value = "/xml/{articleId}", method = RequestMethod.GET)
-    public void getArticleXmlInfo(HttpServletResponse response, @PathVariable("id") Long articleId) {
+    public void getArticleXmlInfo(HttpServletResponse response, @PathVariable("articleId") Long articleId) {
         String returnXML = remoteService.getArticleXML(articleId);
         if(returnXML.indexOf(("<Response>")) < 0) {
             returnXML = "<Response>" + returnXML + "</Response>";
@@ -254,8 +266,11 @@ public class ArticleAction extends BaseActionSupport {
     /**
      * 第三方文章数据导入.
      */
-    @RequestMapping(value = "/import/{articleId}", method = RequestMethod.GET)
-    public void importArticle(HttpServletResponse response, String articleXml, @PathVariable("id") Long channelId) {
+    @RequestMapping(value = "/import/{channelId}", method = RequestMethod.GET)
+    public void importArticle(HttpServletResponse response, HttpServletRequest request, 
+    		@PathVariable("channelId") Long channelId) {
+    	
+    	String articleXml = request.getParameter("articleXml");
     	remoteService.importArticle(articleXml, channelId);
     }
     
@@ -263,7 +278,7 @@ public class ArticleAction extends BaseActionSupport {
      * 获取栏目树为portlet做展示
      */
     @RequestMapping(value = "/channelTree/{channelId}", method = RequestMethod.GET)
-    public void getChannelTreeList4Portlet(HttpServletResponse response, @PathVariable("id") Long channelId) {
+    public void getChannelTreeList4Portlet(HttpServletResponse response, @PathVariable("channelId") Long channelId) {
         print("ChannelTree", remoteService.getChannelTree4Portlet(channelId));
     }
     
@@ -272,7 +287,12 @@ public class ArticleAction extends BaseActionSupport {
      * 供门户网站上通过本接口调用全文搜索。
      */
     @RequestMapping(value = "/search/{siteId}/{searchStr}/{page}/{pageSize}", method = RequestMethod.GET)
-    public void search(HttpServletResponse response, @PathVariable("id") Long siteId, String searchStr, @PathVariable("id") int page, @PathVariable("id") int pageSize) {
+    public void search(HttpServletResponse response, HttpServletRequest request, 
+    		@PathVariable("siteId") Long siteId, 
+    		@PathVariable("page") int page, 
+    		@PathVariable("pageSize") int pageSize) {
+    	
+    	String searchStr = request.getParameter("searchStr"); 
     	try {
             if (searchStr != null) {
                 // 处理非法字符

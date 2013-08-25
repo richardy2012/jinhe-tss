@@ -28,7 +28,6 @@ public class UploadServlet extends HttpServlet {
 	
 	protected Logger log = Logger.getLogger(this.getClass());
 	
-	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=utf-8");
         XmlHttpEncoder encoder = new XmlHttpEncoder();

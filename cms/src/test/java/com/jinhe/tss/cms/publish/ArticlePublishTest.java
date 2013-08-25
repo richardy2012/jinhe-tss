@@ -61,30 +61,31 @@ public class ArticlePublishTest extends AbstractTestSupport {
             tempArticle.setStatus(CMSConstants.TOPUBLISH_STATUS);
         }
         
-        // 站点栏目文章发布 category 1:增量发布 2:完全发布   2012.2.2 
+        // 站点栏目文章发布 category 1:增量发布 2:完全发布 
         publishArticle(channel1Id, CMSConstants.PUBLISH_ADD);
         publishArticle(siteId, CMSConstants.PUBLISH_ADD);
         
         publishArticle(channel1Id, CMSConstants.PUBLISH_ALL);
         publishArticle(siteId, CMSConstants.PUBLISH_ALL);
         
-        // 测试 articleAction 2012.2.2
-        articleAction.getArticleListByChannel(channel1Id, 1, 12);
-        articleAction.getPicArticleListByChannel(channel1Id, 1, 12);
-        articleAction.getArticleListByChannelRss(channel1Id, 1, 12);
-        articleAction.getArticleListDeeplyByChannel(channel1Id, 1, 12);
+        // 测试 articleAction 
+        articleAction.getArticleListByChannel(response, channel1Id, 1, 12, false);
+        articleAction.getArticleListByChannel(response, channel1Id, 1, 12, true);
+        articleAction.getArticleListDeeplyByChannel(response, channel1Id, 1, 12);
         
-        articleAction.getArticleListByChannelAndTime(channel1Id, "2012", "02");
+        articleAction.getArticleListByChannelAndTime(response, channel1Id, "2012", "02");
         
         String channelIds = channel1Id + "," + channel2.getId();
-        articleAction.getArticleListByChannels(channelIds, 1, 12);
+        articleAction.getArticleListByChannels(response, channelIds, 1, 12);
         
-        articleAction.getArticleXmlInfo(articleId);
+        articleAction.getArticleXmlInfo(response, articleId);
         
-        articleAction.getChannelTreeList4Portlet(siteId);
+        articleAction.getChannelTreeList4Portlet(response, siteId);
         
         // 创建索引
-        timerAction.excuteStrategy(response, siteId, strategyId, increment);
+        timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_PUBLISH_STRATEGY_ID, 1);
+        timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_INDEX_STRATEGY_ID, 1);
+        timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_EXPIRE_STRATEGY_ID, 1);
         
         TimerStrategy strategy = TimerStrategyHolder.getIndexStrategy();
         strategy.setSite(site);
@@ -97,9 +98,13 @@ public class ArticlePublishTest extends AbstractTestSupport {
         IndexHelper.createIndex(strategy, content, new Progress(list.size()));
         
         // 测试检索文章
-        articleAction.search(siteId, "矛盾", 1, 10);
-        articleAction.search(siteId, "过河卒子", 1, 10);
-        articleAction.search(siteId, "技术创新", 1, 10); // 搜索附件
+        request.addParameter("searchStr", "矛盾");
+        articleAction.search(response, request, siteId, 1, 12);
+        request.addParameter("searchStr", "过河卒子");
+        articleAction.search(response, request, siteId, 1, 12);
+        
+        request.addParameter("searchStr", "技术创新");
+        articleAction.search(response, request, siteId, 1, 12); // 搜索附件
         
         // 最后删除文章、栏目、站点
         super.deleteSite(siteId);

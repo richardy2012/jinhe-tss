@@ -31,9 +31,9 @@ public class TimerModuleTest extends AbstractTestSupport {
 		super.createArticle(channel2, tempArticleId );
          
         // 即时执行策略
-        timerAction.excuteStrategy(siteId, TimerStrategyHolder.DEFAULT_PUBLISH_STRATEGY_ID, 1); 
-		timerAction.excuteStrategy(siteId, TimerStrategyHolder.DEFAULT_INDEX_STRATEGY_ID, 0); 
-		timerAction.excuteStrategy(siteId, TimerStrategyHolder.DEFAULT_EXPIRE_STRATEGY_ID, 0); 
+        timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_PUBLISH_STRATEGY_ID, 1); 
+		timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_INDEX_STRATEGY_ID, 0); 
+		timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_EXPIRE_STRATEGY_ID, 0); 
 		
 		// 测试定时器
 		schedulerBean.init();

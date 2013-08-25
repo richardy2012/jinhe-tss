@@ -43,7 +43,9 @@ public class ArticleModuleTest extends AbstractTestSupport {
         articleAction.getArticleInfo(response, articleId);
         
         // 修改文章
-        articleAction.saveArticleInfo(response, request, channelId, article, "", "false");
+        request.addParameter("attachList", "");
+		request.addParameter("isCommit", "false");
+        articleAction.saveArticleInfo(response, request, article);
         
         List<?> list = getArticlesByChannel(channelId);
         assertNotNull(list);

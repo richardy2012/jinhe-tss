@@ -21,7 +21,7 @@ import com.jinhe.tss.util.EasyUtils;
 /** 
  * <p> DownloadServlet.java </p> 
  * 下载文章附件。传入文章ID以及附件的序号即可下载该附件。
- * 如果是PMS等其它应用配置被servlet，需要这些应用和CMS部署在同一台机器上才行。
+ * 如果是Portal等其它应用配置该servlet，需要这些应用和CMS部署在同一台机器上才行。
  */
 @WebServlet(urlPatterns="/*.download")
 public class DownloadServlet extends HttpServlet {
@@ -55,12 +55,14 @@ public class DownloadServlet extends HttpServlet {
         String docOrPicPath = ""; 
         String fileName = attachment.getFileName();
         String fileExt = attachment.getFileExt();
-	    if(attachment.isImage()){ // 相关图片
-            if("gif".equals(fileExt)){ response.setContentType("image/gif"); }
-            if("jpg".equals(fileExt) || "jpeg".equals(fileExt)){ response.setContentType("image/jpeg"); }
-            if("png".equals(fileExt)){ response.setContentType("image/png"); }
-            if("bmp".equals(fileExt)){ response.setContentType("image/bmp"); }
-            docOrPicPath = attachment.getBasePath()[2];
+	    if(attachment.isImage()) { // 相关图片
+	    	docOrPicPath = attachment.getBasePath()[2];
+	    	 
+            if("gif".equals(fileExt)) { response.setContentType("image/gif"); }
+            if("jpg".equals(fileExt)) { response.setContentType("image/jpeg"); }
+            if("jpeg".equals(fileExt)){ response.setContentType("image/jpeg"); }
+            if("png".equals(fileExt)) { response.setContentType("image/png"); }
+            if("bmp".equals(fileExt)) { response.setContentType("image/bmp"); }
 	        response.reset(); // 设置附件下载页面
 	    }
 	    else if(attachment.isOfficeDoc()){ // 相关附件
