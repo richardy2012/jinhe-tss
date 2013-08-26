@@ -30,7 +30,7 @@ import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.XMLDocUtil;
 
 @Controller
-@RequestMapping("/auth/cache")
+@RequestMapping("/cache")
 public class CacheDisplayAction extends BaseActionSupport {
     
     /** 缓存策略模板目录 */
