@@ -56,18 +56,23 @@ public class ArticlePublishTest extends AbstractTestSupport {
         IMocksControl mocksControl =  EasyMock.createControl();
         HttpServletRequest mockRequest = mocksControl.createMock(HttpServletRequest.class);
         
-        EasyMock.expect(mockRequest.getParameter("articleId")).andReturn(tempArticleId.toString()).atLeastOnce();
-        EasyMock.expect(mockRequest.getParameter("channelId")).andReturn(channel1Id.toString()).atLeastOnce();
-        EasyMock.expect(mockRequest.getParameter("type")).andReturn(CMSConstants.ATTACHMENTTYPE_OFFICE.toString()).atLeastOnce();
+        EasyMock.expect(mockRequest.getParameter("articleId")).andReturn(tempArticleId.toString());
+        EasyMock.expect(mockRequest.getParameter("channelId")).andReturn(channel1Id.toString());
+        EasyMock.expect(mockRequest.getParameter("type")).andReturn(CMSConstants.ATTACHMENTTYPE_OFFICE.toString());
+        EasyMock.expect(mockRequest.getParameter("petName")).andReturn(null);
         
         Part part = mocksControl.createMock(Part.class);
-    	EasyMock.expect(part.getHeader("content-disposition")).andReturn("filename=123.txt").atLeastOnce();
-    	FileHelper.writeFile(new File(Config.UPLOAD_PATH + "123.txt"), "我们爱技术创新。");
+    	EasyMock.expect(part.getHeader("content-disposition")).andReturn("filename=\"123.txt\"").atLeastOnce();
+    	
+    	// 代替part.write()
+    	FileHelper.writeFile(new File(Config.UPLOAD_PATH + "/123.txt"), "我们爱技术创新。");
     	
         UploadServlet upload = new UploadServlet();
         try {
-            EasyMock.expect(mockRequest.getPart("file")).andReturn(part).atLeastOnce();
+            EasyMock.expect(mockRequest.getPart("file")).andReturn(part).anyTimes();
+//            EasyMock.expect(part.write("123.txt"));
             
+            mocksControl.replay(); 
 			upload.doPost(mockRequest, response);
 			
 		} catch (Exception e) {

@@ -4,7 +4,10 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -19,16 +22,17 @@ import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
  */
 @Entity
 @Table(name = "cms_attachment")
+@SequenceGenerator(name = "attach_sequence")
 public class Attachment implements IEntity, IGridNode {
     
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "attach_sequence")
 	private Long id;
     
-    private Long articleId;
- 
 	@Transient
     private Article article;    // 所属文章
     
+	private Long articleId;
     private Integer seqNo;		// 附件序号 PK
     
     @Column(nullable = false)
@@ -154,7 +158,7 @@ public class Attachment implements IEntity, IGridNode {
      * @return 
      */
     public String getDownloadUrl(String baseUrl) {
-        return baseUrl + this.getUrl() + this.getArticle().getId() + "&seqNo=" + getSeqNo();
+        return baseUrl + this.getUrl() + this.getArticleId() + "&seqNo=" + getSeqNo();
     }
     
     /**
@@ -174,7 +178,7 @@ public class Attachment implements IEntity, IGridNode {
      */
     public String getRelateDownloadUrl(){
         String temp = this.getUrl().substring(1); //去掉 '/download.fun?id=' 的 '/'
-        return temp + this.getArticle().getId() + "&seqNo=" + this.getSeqNo();
+        return temp + this.getArticleId() + "&seqNo=" + this.getSeqNo();
     }
 
 	public Long getId() {

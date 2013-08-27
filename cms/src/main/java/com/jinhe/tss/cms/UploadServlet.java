@@ -39,11 +39,14 @@ public class UploadServlet extends HttpServlet {
     		int fromIndex = header.lastIndexOf("=") + 2;
     		String fileName = header.substring(fromIndex, header.lastIndexOf("\""));
     		
-    		// 上传文件(写入磁盘)
-    		part.write(fileName);
-    		
     		String filePath = Config.UPLOAD_PATH + "/" + fileName;
             File targetFile = new File(filePath);
+            
+    		// 上传文件(写入磁盘)
+            if( !targetFile.exists() ) {
+            	targetFile.mkdirs();
+            	part.write(fileName);
+            }
             
             Long articleId = Long.parseLong(request.getParameter("articleId"));
 			Long channelId = Long.parseLong(request.getParameter("channelId"));

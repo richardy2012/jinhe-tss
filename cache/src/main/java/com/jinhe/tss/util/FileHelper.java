@@ -170,7 +170,7 @@ public class FileHelper {
 	 */
 	public static String copyFile(File dir, File file, boolean isUpdate, boolean isCut) {
 		if (!dir.exists()) {
-			dir.mkdir();
+			dir.mkdirs();
 		}
 		String fileName = file.getName();
 		File newFile = new File(dir.getPath() + "/" + fileName);
