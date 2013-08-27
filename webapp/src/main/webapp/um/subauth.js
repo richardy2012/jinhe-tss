@@ -51,13 +51,13 @@
     function initMenus(){       
         var item1 = {
             label:"停用",
-            callback: function() { stopOrStartTreeNode("1", "um/rule", URL_STOP_RULE); },
+            callback: function() { stopOrStartTreeNode("1", URL_STOP_RULE); },
             icon:ICON + "stop.gif",
             visible:function(){return !isTreeRoot() && !isTreeNodeDisabled();}
         }
         var item2 = {
             label:"启用",
-            callback: function() { stopOrStartTreeNode("0", "um/rule", URL_STOP_RULE); },
+            callback: function() { stopOrStartTreeNode("0", URL_STOP_RULE); },
             icon:ICON + "start.gif",
             visible:function(){return !isTreeRoot() && isTreeNodeDisabled();}
         }

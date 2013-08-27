@@ -110,13 +110,13 @@
         }
         var item7 = { 
             label:"启用",
-            callback: function() { stopOrStartChannel("0"); },
+            callback: function() { stopOrStartTreeNode("0"); },
             icon:ICON + "start.gif",
             visible:function() { return "0" != getTreeAttribute("disabled") && "_rootId" != getTreeAttribute("id") && getOperation("7");}
         }
         var item8 = {
             label:"停用",
-            callback: function() { stopOrStartChannel("1"); },
+            callback: function() { stopOrStartTreeNode("1"); },
             icon:ICON + "stop.gif",
             visible:function() { return "0" == getTreeAttribute("disabled") && "_rootId" != getTreeAttribute("id") && getOperation("7");}
         }
@@ -437,11 +437,6 @@
 			moveTreeNode(tree, treeNodeID, targetId); 
 		}
     }
- 
-    function stopOrStartChannel(state) {
-		var iconName = isSite() ? "cms/site" : "cms/channel";
-		stopOrStartTreeNode(state, iconName);
-	}
 
 	function isSite() {
 		return getTreeAttribute("isSite") == "1";

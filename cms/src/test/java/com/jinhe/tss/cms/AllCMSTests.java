@@ -7,7 +7,6 @@ import com.jinhe.tss.cms.lucene.IndexHelperTest;
 import com.jinhe.tss.cms.module.ArticleModuleTest;
 import com.jinhe.tss.cms.module.ChannelModuleTest;
 import com.jinhe.tss.cms.module.TimerModuleTest;
-import com.jinhe.tss.cms.publish.ArticlePublishTest;
  
 
 @RunWith(Suite.class)

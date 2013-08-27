@@ -87,13 +87,13 @@
         }
         var item7 = {
             label:"停用",
-            callback:function() { stopOrStartRole("1"); },
+            callback:function() { stopOrStartTreeNode("1"); },
             icon:ICON + "stop.gif",           
             visible:function() {return !isRootNode() && !isTreeNodeDisabled() && getOperation("2");}
         }
         var item8 = {
             label:"启用",
-            callback:function() { stopOrStartRole("0"); },
+            callback:function() { stopOrStartTreeNode("0"); },
             icon:ICON + "start.gif",           
             visible:function() {return !isRootNode() && isTreeNodeDisabled() && getOperation("2");}
         }
@@ -192,12 +192,7 @@
 	function isRoleGroup() {
 		return getTreeAttribute("isGroup") == "1";
 	}
-
-	function stopOrStartRole(state) {
-		var iconName = isRoleGroup() ? "um/role_group" : "um/role";
-		stopOrStartTreeNode(state, iconName);
-	}
-	
+ 
     /*
      *	删除节点
      */

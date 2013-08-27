@@ -169,28 +169,24 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
 	public void setHidden(Integer hidden) {
 		this.hidden = hidden;
 	}
- 
-    private boolean isStoped(){
-        return ParamConstants.TRUE.equals(this.disabled);
-    }
-    
+  
     public TreeAttributesMap getAttributes() {
         TreeAttributesMap map;
         String icon_path;
         if (ParamConstants.GROUP_PARAM_TYPE.equals(type)) {
             map = new TreeAttributesMap(id, name);
-            icon_path = !isStoped() ? ParamConstants.PARAM_GROUP_START : ParamConstants.PARAM_GROUP_STOP;
+            icon_path = ParamConstants.PARAM_GROUP;
         } 
         else if (ParamConstants.NORMAL_PARAM_TYPE.equals(type)) {
             map = new TreeAttributesMap(id, (EasyUtils.isNullOrEmpty(name)) ? code : name);
             if(ParamConstants.SIMPLE_PARAM_MODE.equals(modality)){
-                icon_path = !isStoped() ? ParamConstants.PARAM_SIMPLE_START : ParamConstants.PARAM_SIMPLE_STOP;
+                icon_path = ParamConstants.PARAM_SIMPLE;
             } 
             else if (ParamConstants.COMBO_PARAM_MODE.equals(modality)){
-                icon_path = !isStoped() ? ParamConstants.PARAM_COMBO_START : ParamConstants.PARAM_COMBO_STOP;
+                icon_path = ParamConstants.PARAM_COMBO;
             } 
             else {
-                icon_path = !isStoped() ? ParamConstants.PARAM_TREE_START : ParamConstants.PARAM_TREE_STOP;
+                icon_path = ParamConstants.PARAM_TREE;
             }
             map.put("code", code);
             map.put("value", value);
@@ -199,10 +195,10 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
         else {
             map = new TreeAttributesMap(id, (EasyUtils.isNullOrEmpty(text)) ? value : text);
             map.put("value", value);
-            icon_path = !isStoped() ? ParamConstants.PARAM_ITEM_START : ParamConstants.PARAM_ITEM_STOP;
+            icon_path = ParamConstants.PARAM_ITEM;
         }
         
-        map.put("icon", icon_path);
+        map.put("icon", icon_path + this.disabled + ".gif");
         map.put("parentId", parentId);
         map.put("disabled", disabled);
         map.put("decode", decode);
