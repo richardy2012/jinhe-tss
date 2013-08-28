@@ -50,8 +50,6 @@ public class ArticlePublishTest extends AbstractTestSupport {
         // 开始测试文章模块
         Long tempArticleId = System.currentTimeMillis();
         
-        Long articleId = super.createArticle(channel1, tempArticleId).getId();
-        
         // 上传附件
         IMocksControl mocksControl =  EasyMock.createControl();
         HttpServletRequest mockRequest = mocksControl.createMock(HttpServletRequest.class);
@@ -70,7 +68,8 @@ public class ArticlePublishTest extends AbstractTestSupport {
         UploadServlet upload = new UploadServlet();
         try {
             EasyMock.expect(mockRequest.getPart("file")).andReturn(part).anyTimes();
-//            EasyMock.expect(part.write("123.txt"));
+            part.write("123.txt");
+            EasyMock.expectLastCall(); // void 类型方法的mock
             
             mocksControl.replay(); 
 			upload.doPost(mockRequest, response);
@@ -81,6 +80,9 @@ public class ArticlePublishTest extends AbstractTestSupport {
 		}
         
         TestUtil.printEntity(super.permissionHelper, "Attachment"); 
+        
+        // 创建文章
+        Long articleId = super.createArticle(channel1, tempArticleId).getId();
 
         List<?> list = getArticlesByChannel(channel1Id);
  
@@ -97,22 +99,8 @@ public class ArticlePublishTest extends AbstractTestSupport {
         publishArticle(channel1Id, CMSConstants.PUBLISH_ALL);
         publishArticle(siteId, CMSConstants.PUBLISH_ALL);
         
-        // 测试 articleAction 
-        articleAction.getArticleListByChannel(response, channel1Id, 1, 12, false);
-        articleAction.getArticleListByChannel(response, channel1Id, 1, 12, true);
-        articleAction.getArticleListDeeplyByChannel(response, channel1Id, 1, 12);
-        
-        articleAction.getArticleListByChannelAndTime(response, channel1Id, "2012", "02");
-        
-        String channelIds = channel1Id + "," + channel2.getId();
-        articleAction.getArticleListByChannels(response, channelIds, 1, 12);
-        
-        articleAction.getArticleXmlInfo(response, articleId);
-        
-        articleAction.getChannelTreeList4Portlet(response, siteId);
-        
         // 创建索引
-        timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_PUBLISH_STRATEGY_ID, 1);
+//        timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_PUBLISH_STRATEGY_ID, 1);
         timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_INDEX_STRATEGY_ID, 1);
         timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_EXPIRE_STRATEGY_ID, 1);
         
@@ -134,6 +122,34 @@ public class ArticlePublishTest extends AbstractTestSupport {
         
         request.addParameter("searchStr", "技术创新");
         articleAction.search(response, request, siteId, 1, 12); // 搜索附件
+        
+        // 测试对外接口
+        articleAction.getArticleInfo(response, articleId);
+        
+        articleAction.getArticleListByChannel(response, channel1Id, 1, 12, false);
+        articleAction.getArticleListByChannel(response, channel1Id, 1, 12, true);
+        articleAction.getArticleListDeeplyByChannel(response, channel1Id, 1, 12);
+        articleAction.getArticleListByChannelAndTime(response, channel1Id, "2012", "02");
+        
+        String channelIds = channel1Id + "," + channel2.getId();
+        articleAction.getArticleListByChannels(response, channelIds, 1, 12);
+        
+        articleAction.getArticleXmlInfo(response, articleId);
+        articleAction.getChannelTreeList4Portlet(response, siteId);
+        
+        // 测试附件下载
+        DownloadServlet download = new DownloadServlet();
+        request.addParameter("id", articleId.toString());
+        request.addParameter("seqNo", "1");
+        try {
+        	
+        	download.init();
+        	download.doPost(request, response);
+        	
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			Assert.assertFalse(e.getMessage(), true);
+		}
         
         // 最后删除文章、栏目、站点
         super.deleteSite(siteId);

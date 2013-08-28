@@ -45,8 +45,8 @@ public class UploadServlet extends HttpServlet {
     		// 上传文件(写入磁盘)
             if( !targetFile.exists() ) {
             	targetFile.mkdirs();
-            	part.write(fileName);
             }
+            part.write(fileName);
             
             Long articleId = Long.parseLong(request.getParameter("articleId"));
 			Long channelId = Long.parseLong(request.getParameter("channelId"));

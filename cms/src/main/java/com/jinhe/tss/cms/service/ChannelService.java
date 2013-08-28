@@ -193,7 +193,7 @@ public class ChannelService implements IChannelService {
 			article.getAttachments().putAll(attachments);
 			
 			// 发布文章，根据文章 创建日期 来设置xml文件的存放路径
-			Channel site = article.getChannel().getSite();
+			Channel site = channelDao.getEntity(article.getChannel().getId()).getSite();
             String publishPath = site.getPath()+ "/" + ArticleHelper.getArticlePublishPath(article);
 			String pubUrl = PublishManger.publishOneArticle(article, publishPath);
 			

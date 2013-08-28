@@ -24,7 +24,6 @@ import com.jinhe.tss.cms.helper.ArticleQueryCondition;
 import com.jinhe.tss.cms.helper.ImageProcessor;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
-import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
  
@@ -58,6 +57,7 @@ public class ArticleService implements IArticleService {
 		
 		// 保存附件信息对象
 		Attachment attachment = new Attachment();
+		attachment.setSeqNo(articleDao.getAttachmentIndex(articleId));
 		attachment.setName(kidName);
 		attachment.setType(type);
 		attachment.setFileName(FileHelper.getFileNameNoSuffix(fileName));
@@ -116,21 +116,18 @@ public class ArticleService implements IArticleService {
             if (attachSeqNos.contains(seqNo.toString())) { // 判断附件在文章保存时是否还存在
 				translatePath(attachment, article, channelId);
 				
-				// 新增附件信息
-				Attachment attach = new Attachment();
-				BeanUtil.copy(attach, attachment);
-				attach.setArticle(article);
-				attach.setSeqNo(seqNo);
+				attachment.setArticleId(article.getId());
+				attachment.setSeqNo(seqNo);
 				
-				articleDao.createObject(attach);
+				articleDao.update(attachment);
 			}
             else {
 				// 删除附件
 				String[] uploadName = ArticleHelper.getAttachUploadPath(channel.getSite(), attachment);
                 new File(uploadName[0]).delete();
+                
+                articleDao.delete(attachment);
 			}
-            //删除老的附件信息
-			articleDao.delete(attachment);
 		}
 	}
 	
