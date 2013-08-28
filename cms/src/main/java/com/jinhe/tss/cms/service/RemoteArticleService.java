@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.search.Hit;
@@ -98,8 +97,8 @@ public class RemoteArticleService implements IRemoteArticleService {
                         (Date) fields[3], (String) fields[4], (Integer) fields[5]);
                 
                 if(isNeedPic){
-                    Map<String, Attachment> attachments = articleDao.getArticleAttachments(articleId);
-                    ArticleHelper.addPicListInfo(itemElement, attachments.values());
+                	List<Attachment> attachments = articleDao.getArticleAttachments(articleId);
+                    ArticleHelper.addPicListInfo(itemElement, attachments);
                 }
             }
         }

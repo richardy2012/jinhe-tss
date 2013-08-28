@@ -90,7 +90,7 @@ public class ArticleAction extends BaseActionSupport {
         XFormEncoder baseXFormEncoder = new XFormEncoder(CMSConstants.XFORM_ARTICLE, article);
         XFormEncoder uploadXFormEncoder = new XFormEncoder(CMSConstants.XFORM_ARTICLEUPLOAD, article);
         
-        List<Attachment> attachmentList = new ArrayList<Attachment>(article.getAttachments().values());
+        List<Attachment> attachmentList = article.getAttachments();
         GridDataEncoder attachmentGridEncoder = new GridDataEncoder(attachmentList, CMSConstants.GRID_ATTACHSLIST);
         
         print(new String[]{"ArticleInfo", "ArticleContent", "AttachsUpload", "AttachsList"}, 

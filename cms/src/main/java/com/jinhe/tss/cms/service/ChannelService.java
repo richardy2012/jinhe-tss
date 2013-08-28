@@ -3,7 +3,6 @@ package com.jinhe.tss.cms.service;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,11 +34,6 @@ public class ChannelService implements IChannelService {
         }
         return channel;
 	}
-	
-    public Long getSiteIdByChannelId(Long channelId) {
-        Channel channel = getChannelById(channelId);
-        return channel.getSite().getId();
-    }
 	
 	public Channel createChannel(Channel channel) {
         Long parentId = channel.getParentId();
@@ -189,8 +183,8 @@ public class ChannelService implements IChannelService {
 			}
 			
 			// 取文章附件列表
-			Map<String, Attachment> attachments = articleDao.getArticleAttachments(article.getId());
-			article.getAttachments().putAll(attachments);
+            List<Attachment> attachments = articleDao.getArticleAttachments(article.getId());
+			article.getAttachments().addAll(attachments);
 			
 			// 发布文章，根据文章 创建日期 来设置xml文件的存放路径
 			Channel site = channelDao.getEntity(article.getChannel().getId()).getSite();
@@ -207,16 +201,16 @@ public class ChannelService implements IChannelService {
         return channelDao.getTotalRows4Publish(channelId, category);
     }
     
-    public List<Article> getPageArticleList(Long channelId, int pageNum, int pageSize, String category) {
-        return channelDao.getPageArticleList4Publish(channelId, category, pageNum, pageSize);
+    public List<Article> getPageArticleList(Long channelId, int page, int pageSize, String category) {
+        return channelDao.getPageArticleList4Publish(channelId, category, page, pageSize);
     }
     
     public Integer getPublishableArticleCount(Long channelId) {
         return channelDao.getPublishableArticleCount(channelId);
     }
 
-    public List<Article> getPagePublishableArticleList(Long channelId, int pageNum, int pageSize) {
-        return channelDao.getPagePublishableArticleList(channelId, pageNum, pageSize);
+    public List<Article> getPagePublishableArticleList(Long channelId, int page, int pageSize) {
+        return channelDao.getPagePublishableArticleList(channelId, page, pageSize);
     }
     
 }

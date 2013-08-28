@@ -1,22 +1,19 @@
 package com.jinhe.tss.cms;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
-
-import org.easymock.EasyMock;
-import org.easymock.IMocksControl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jinhe.tss.cms.entity.Article;
+import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.lucene.ArticleContent;
 import com.jinhe.tss.cms.lucene.IndexHelper;
@@ -24,10 +21,8 @@ import com.jinhe.tss.cms.publish.PublishManger;
 import com.jinhe.tss.cms.timer.TimerAction;
 import com.jinhe.tss.cms.timer.TimerStrategy;
 import com.jinhe.tss.cms.timer.TimerStrategyHolder;
-import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.test.TestUtil;
-import com.jinhe.tss.util.FileHelper;
 
 /**
  * 文章发布相关模块的单元测试。
@@ -51,35 +46,8 @@ public class ArticlePublishTest extends AbstractTestSupport {
         Long tempArticleId = System.currentTimeMillis();
         
         // 上传附件
-        IMocksControl mocksControl =  EasyMock.createControl();
-        HttpServletRequest mockRequest = mocksControl.createMock(HttpServletRequest.class);
-        
-        EasyMock.expect(mockRequest.getParameter("articleId")).andReturn(tempArticleId.toString());
-        EasyMock.expect(mockRequest.getParameter("channelId")).andReturn(channel1Id.toString());
-        EasyMock.expect(mockRequest.getParameter("type")).andReturn(CMSConstants.ATTACHMENTTYPE_OFFICE.toString());
-        EasyMock.expect(mockRequest.getParameter("petName")).andReturn(null);
-        
-        Part part = mocksControl.createMock(Part.class);
-    	EasyMock.expect(part.getHeader("content-disposition")).andReturn("filename=\"123.txt\"").atLeastOnce();
-    	
-    	// 代替part.write()
-    	FileHelper.writeFile(new File(Config.UPLOAD_PATH + "/123.txt"), "我们爱技术创新。");
-    	
-        UploadServlet upload = new UploadServlet();
-        try {
-            EasyMock.expect(mockRequest.getPart("file")).andReturn(part).anyTimes();
-            part.write("123.txt");
-            EasyMock.expectLastCall(); // void 类型方法的mock
-            
-            mocksControl.replay(); 
-			upload.doPost(mockRequest, response);
-			
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			Assert.assertFalse(e.getMessage(), true);
-		}
-        
-        TestUtil.printEntity(super.permissionHelper, "Attachment"); 
+        super.uploadDocFile(channel1Id, tempArticleId);
+        super.uploadImgFile(channel1Id, tempArticleId);
         
         // 创建文章
         Long articleId = super.createArticle(channel1, tempArticleId).getId();
@@ -138,14 +106,18 @@ public class ArticlePublishTest extends AbstractTestSupport {
         articleAction.getChannelTreeList4Portlet(response, siteId);
         
         // 测试附件下载
+        List<Attachment> attachs = articleDao.getArticleAttachments(articleId);
+        assertEquals(2, attachs.size());
+        
         DownloadServlet download = new DownloadServlet();
+        download.init();
         request.addParameter("id", articleId.toString());
-        request.addParameter("seqNo", "1");
+        
         try {
-        	
-        	download.init();
-        	download.doPost(request, response);
-        	
+        	for(Attachment attach : attachs) {
+                request.addParameter("seqNo", attach.getSeqNo().toString());
+            	download.doPost(request, new MockHttpServletResponse());
+        	}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			Assert.assertFalse(e.getMessage(), true);

@@ -73,6 +73,15 @@ public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit4Sprin
     
     @Before
     public void setUp() throws Exception {
+    	
+        URL url = URLUtil.getResourceFileUrl("log4j.properties");
+        String log4jPath = url.getPath(); 
+        File classDir = new File(log4jPath).getParentFile();
+        Assert.assertTrue(FileHelper.checkFile(classDir, "log4j.properties"));
+        
+        tempDir1 = FileHelper.createDir(classDir + "/temp1");
+        tempDir1 = FileHelper.createDir(classDir + "/temp1");
+        
         Global.setContext(super.applicationContext);
 		Context.setResponse(response = new MockHttpServletResponse());
         
@@ -87,14 +96,6 @@ public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit4Sprin
         init();
         
         dbserver.setPrepareed(true);
-        
-        URL url = URLUtil.getResourceFileUrl("log4j.properties");
-        String log4jPath = url.getPath(); 
-        File classDir = new File(log4jPath).getParentFile();
-        Assert.assertTrue(FileHelper.checkFile(classDir, "log4j.properties"));
-        
-        tempDir1 = FileHelper.createDir(classDir + "/temp1");
-        tempDir1 = FileHelper.createDir(classDir + "/temp1");
     }
  
     /**

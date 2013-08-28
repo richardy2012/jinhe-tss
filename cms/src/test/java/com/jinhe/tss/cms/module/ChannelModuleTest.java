@@ -89,6 +89,8 @@ public class ChannelModuleTest extends AbstractTestSupport {
         
         channelAction.getOperations(response, channelId);
         
+        channelAction.getChannelAll(response);
+        
         // 栏目站点删除
         channelAction.delete(response, channel2.getId());
         channelAction.delete(response, siteId);

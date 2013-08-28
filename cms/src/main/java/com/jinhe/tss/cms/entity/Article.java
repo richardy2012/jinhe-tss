@@ -1,7 +1,9 @@
 package com.jinhe.tss.cms.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Column;
@@ -63,7 +65,7 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
     private Integer isTop = CMSConstants.FALSE;   // 文章是否置顶
     
     @Transient 
-    Map<String, Attachment> attachments = new LinkedHashMap<String, Attachment>();  // 存放文章附件列表
+    List<Attachment> attachments = new ArrayList<Attachment>();  // 存放文章附件列表
  
     public String getAuthor() {
         return author;
@@ -198,7 +200,7 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
         return map;
     }
  
-    public Map<String, Attachment> getAttachments() {
+    public List<Attachment> getAttachments() {
         return attachments;
     }
     

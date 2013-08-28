@@ -158,20 +158,11 @@ public interface IChannelService {
 	 * 通过栏目id取栏目下所有可发布文章id
 	 * </p>
 	 * @param channelId
-	 * @param pageNum
+	 * @param page
 	 * @param pageSize
 	 * @return
 	 */
-	List<Article> getPagePublishableArticleList(Long channelId, int pageNum, int pageSize);
-	
-	/**
-	 * <p>
-	 * 通过栏目Id得到站点Id
-	 * </p>
-	 * @param channelId
-	 * @return
-	 */
-	Long getSiteIdByChannelId(Long channelId);
+	List<Article> getPagePublishableArticleList(Long channelId, int page, int pageSize);
 	
 	/**
 	 * <p>
@@ -194,10 +185,10 @@ public interface IChannelService {
     /**
      * 根据页码获取当前页需要发布的文章列表
      * @param channelId
-     * @param pageNum
+     * @param page
      * @param page_site
      * @param category
      * @return
      */
-    List<Article> getPageArticleList(Long channelId, int pageNum, int pageSize, String category);
+    List<Article> getPageArticleList(Long channelId, int page, int pageSize, String category);
 }

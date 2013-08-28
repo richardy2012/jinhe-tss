@@ -67,11 +67,11 @@ public interface IArticleService {
      * 获取栏目下属所有文章列表
      * 
      * @param channelId
-     * @param pageNum
+     * @param page
      * @param orderBy
      * @return
      */
-    PageInfo getChannelArticles(Long channelId, Integer pageNum, String... orderBy);
+    PageInfo getChannelArticles(Long channelId, Integer page, String... orderBy);
     
     /**
      * <p>

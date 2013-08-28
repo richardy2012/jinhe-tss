@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -63,9 +62,9 @@ public class IndexHelper {
                     }
                 }
                 
-                Map<String, Attachment> map = articleDao.getArticleAttachments(articleId);
+                List<Attachment> attachList = articleDao.getArticleAttachments(articleId);
                 StringBuffer buffer = new StringBuffer();
-                for( Attachment attachment : map.values() ){
+                for( Attachment attachment : attachList ){
                     File attachmentPath = new File(ArticleHelper.getAttachUploadPath(site, attachment)[0]);
                     String attachContent = AttachmentIndex.getInstance().disposeAttachment(attachmentPath);
                     buffer.append(attachContent); // 放入附件内容

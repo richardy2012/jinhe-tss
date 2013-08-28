@@ -3,9 +3,7 @@ package com.jinhe.tss.cms.dao;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -38,13 +36,13 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
         Long articleId = article.getId();
         
         // 删除附件
-        Map<String, Attachment> attachments = getArticleAttachments(articleId); // 后台查找的新建文章时上传的附件列表
-        for ( Attachment attachment : attachments.values() ) {
+        List<Attachment> attachments = getArticleAttachments(articleId); // 后台查找的新建文章时上传的附件列表
+        for ( Attachment attachment : attachments ) {
             // 删除附件 TODO 如果是缩略图则还需删除原图片
             Channel site = article.getChannel().getSite();
 			new File( ArticleHelper.getAttachUploadPath(site, attachment)[0] ).delete();
            
-            //删除老的附件信息
+            // 删除老的附件信息
             super.delete(attachment);
         }
         
@@ -79,17 +77,14 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
         return null;
     }
  
-	public Map<String, Attachment> getArticleAttachments(Long articleId) {
-        List<?> list = getEntities("from Attachment o where o.articleId = ?", articleId);
-		Map<String, Attachment> map = new LinkedHashMap<String, Attachment>();
-		for ( Object temp : list ) {
-			Attachment attachment = (Attachment) temp;
-			attachment.setArticle(getEntity(attachment.getArticleId()));
-			
+	@SuppressWarnings("unchecked")
+	public List<Attachment> getArticleAttachments(Long articleId) {
+        List<Attachment> list = (List<Attachment>)getEntities("from Attachment o where o.articleId = ?", articleId);
+		for ( Attachment attachment : list ) {
+			attachment.setArticle(getEntity(articleId));
 			attachment.setUploadName(attachment.getRelateDownloadUrl()); // 设置附件的下载地址
-			map.put(attachment.getId().toString(), attachment);
 		}
-		return map;
+		return list;
 	}
 
 	public List<?> getPublishedArticleByChannel(Long channelId) {

@@ -124,7 +124,7 @@ public class PublishManger implements Progressable {
         
 		// 发布文章对文章附件的处理
 		Element eleAtts = articleNode.addElement("Attachments");
-        ArticleHelper.addPicListInfo(eleAtts, article.getAttachments().values());
+        ArticleHelper.addPicListInfo(eleAtts, article.getAttachments());
         
         // 以 “栏目ID_文章ID.xml” 格式命名文章发布的xml文件
         String fileName = article.getChannel().getId() + "_" + article.getId() + ".xml";

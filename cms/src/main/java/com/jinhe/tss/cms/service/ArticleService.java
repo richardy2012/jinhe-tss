@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -38,8 +37,8 @@ public class ArticleService implements IArticleService {
     public Article getArticleById(Long articleId) {
         Article article = getArticleOnly(articleId);
         
-        Map<String, Attachment> attachments = articleDao.getArticleAttachments(articleId);
-        article.getAttachments().putAll(attachments);
+        List<Attachment> attachments = articleDao.getArticleAttachments(articleId);
+        article.getAttachments().addAll(attachments);
         return article;
     }
     
@@ -66,9 +65,9 @@ public class ArticleService implements IArticleService {
 		attachment.setArticleId(articleId);
 		
 		// 对附件进行重命名
-		fileName = System.currentTimeMillis() + fileSuffix;
-		FileHelper.renameFile(file.getPath(), fileName);
-		String newPath = file.getParent() + "/" +fileName;
+		fileName = System.currentTimeMillis() + "." + fileSuffix;
+		String newPath = file.getParent() + "/" + fileName;
+        file.renameTo(new File(newPath));
 		file = new File(newPath);
 
 		if (attachment.isImage()) { // 如果是图片，则为其制作缩略图
@@ -110,8 +109,8 @@ public class ArticleService implements IArticleService {
             }
         }
 		
-        Map<String, Attachment> attachments = articleDao.getArticleAttachments(tempArticleId); // 后台查找的新建文章时上传的附件列表
-        for ( Attachment attachment : attachments.values() ) {
+		List<Attachment> attachments = articleDao.getArticleAttachments(tempArticleId); // 后台查找的新建文章时上传的附件列表
+        for ( Attachment attachment : attachments ) {
 			Integer seqNo = attachment.getSeqNo();
             if (attachSeqNos.contains(seqNo.toString())) { // 判断附件在文章保存时是否还存在
 				translatePath(attachment, article, channelId);
@@ -130,22 +129,13 @@ public class ArticleService implements IArticleService {
 			}
 		}
 	}
-	
-	// 栏目文章关系
-    public void createChannelArticleRelation(Long channelId, Long articleId) {
-        Article article = getArticleOnly(articleId);
-        Channel channel = channelDao.getEntity(channelId);
-        article.setChannel(channel);
-        
-        articleDao.saveArticle(article);
-    }
-
+ 
 	/**
 	 * 将文章内容中的临时地址替换成真实地址。
      * 主要是将临时生成的附件ID替换成附件所属文章的ID。
 	 */
 	private void translatePath(Attachment attachment, Article article, Long channelId) {
-		// download.fun?id=1216&seqNo=1
+		// download.fun?id=1&seqNo=1
 		String relateDownloadUrl = attachment.getRelateDownloadUrl(); 
         relateDownloadUrl = relateDownloadUrl.replaceAll("&", "&amp;"); //将&替换成&amp;
         
@@ -178,8 +168,8 @@ public class ArticleService implements IArticleService {
                 attachSeqNos.add(st.nextToken());
             }
             
-            Map<String, Attachment> attachments = articleDao.getArticleAttachments(article.getId());
-            for ( Attachment attachment : attachments.values() ) {
+            List<Attachment> attachments = articleDao.getArticleAttachments(article.getId());
+            for ( Attachment attachment : attachments ) {
                 if (!attachSeqNos.contains(attachment.getSeqNo().toString()))
                    continue;
                 
@@ -224,12 +214,12 @@ public class ArticleService implements IArticleService {
 		return article;
 	}
  
-    public PageInfo getChannelArticles(Long channelId, Integer pageNum, String...orderBy) {
+    public PageInfo getChannelArticles(Long channelId, Integer page, String...orderBy) {
        if( !channelDao.checkBrowsePermission(channelId) ) {
             log.error("用户【" + Environment.getOperatorName() + "】试图访问没有文章浏览权限的栏目【" + channelId + "】");
             return new PageInfo();
         }
-        return articleDao.getPageList(channelId, pageNum, orderBy);
+        return articleDao.getPageList(channelId, page, orderBy);
     }
 
 	public Object[] searchArticleList(ArticleQueryCondition condition) {

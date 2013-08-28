@@ -2,7 +2,6 @@ package com.jinhe.tss.cms.dao;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Attachment;
@@ -31,7 +30,7 @@ public interface IArticleDao extends IDao<Article> {
 	 * @param articleId
 	 * @return
 	 */
-	Map<String, Attachment> getArticleAttachments(Long articleId);
+    List<Attachment> getArticleAttachments(Long articleId);
 
     /**
      * <p>

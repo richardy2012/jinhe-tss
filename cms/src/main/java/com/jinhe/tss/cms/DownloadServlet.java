@@ -51,6 +51,8 @@ public class DownloadServlet extends HttpServlet {
         	log.error("附件不存在");
             return;
         }
+        
+        response.reset(); // 设置附件下载页面
 
         String docOrPicPath = ""; 
         String fileName = attachment.getFileName();
@@ -63,12 +65,10 @@ public class DownloadServlet extends HttpServlet {
             if("jpeg".equals(fileExt)){ response.setContentType("image/jpeg"); }
             if("png".equals(fileExt)) { response.setContentType("image/png"); }
             if("bmp".equals(fileExt)) { response.setContentType("image/bmp"); }
-	        response.reset(); // 设置附件下载页面
 	    }
 	    else if(attachment.isOfficeDoc()){ // 相关附件
             docOrPicPath = attachment.getBasePath()[1];
 	        response.setContentType("application/octet-stream");// 设置附件类型
-		    response.reset();// 设置附件下载页面
             
             fileName = (fileExt != null && !"".equals(fileExt)) ? (fileName + "." + fileExt) : fileName;
             response.setHeader("Content-Disposition", "attachment; filename=\"" + EasyUtils.toUtf8String(fileName) + "\"");        

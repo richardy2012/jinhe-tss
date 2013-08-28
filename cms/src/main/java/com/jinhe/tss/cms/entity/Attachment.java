@@ -57,7 +57,7 @@ public class Attachment implements IEntity, IGridNode {
     private String uploadName;  // 上传后生成的下载路径
     
     public String toString(){
-        return "(id:(" + this.id + "), name:" + this.name 
+        return "(id:" + this.id + ", name:" + this.name 
             + ", type:" + this.type + ", localPath:" + this.localPath + ", fileName:" + this.fileName + ")" ; 
     }
  
