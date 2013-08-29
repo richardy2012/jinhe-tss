@@ -150,7 +150,7 @@
 					<version>2.5.2</version>
 					<executions>
                         <execution>
-                            <phase>test</phase>
+                            <phase>install</phase>
                             <goals>
                                 <goal>cobertura</goal>
                             </goals>
@@ -232,6 +232,17 @@
 				<artifactId>dashboard-maven-plugin</artifactId>
 				<version>1.0.0-beta-1</version>
 			</plugin>	
+
+			<plugin>
+	            <groupId>com.atlassian.maven.plugins</groupId>
+	            <artifactId>maven-clover2-plugin</artifactId>
+	            <version>3.0.5</version>
+	            <configuration>
+		          <licenseLocation>D:/project/clover.license</licenseLocation>
+		          <generateHtml>true</generateHtml>
+		          <generateXml>true</generateXml>
+		        </configuration>
+	        </plugin>
  
         </plugins>
     </build>
