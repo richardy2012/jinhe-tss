@@ -22,7 +22,7 @@ public class ArticleHelper {
     public static Date calculateOverDate(Article article, Channel channel){
         //如果文章已经设置了过期日期 或者 栏目上没有过期时间设置，则不需要再给文章设置过期时间
         String overdueDate = channel.getOverdueDate();
-		if( article.getOverdueDate() != null || EasyUtils.isNullOrEmpty(overdueDate) ){
+		if( article.getOverdueDate() == null || EasyUtils.isNullOrEmpty(overdueDate) ){
             return null;
         }
         

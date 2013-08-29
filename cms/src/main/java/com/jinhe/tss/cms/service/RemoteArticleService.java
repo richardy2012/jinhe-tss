@@ -16,6 +16,7 @@ import org.apache.lucene.search.SortField;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,7 @@ import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.DateUtil;
+import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.XMLDocUtil;
 import com.jinhe.tss.util.XmlUtil;
@@ -50,17 +52,7 @@ public class RemoteArticleService implements IRemoteArticleService {
 
     @Autowired protected IArticleDao articleDao;
     @Autowired protected IChannelDao channelDao;
-    
-    public String getArticleListXMLByChannel(Long channelId, int page, int pageSize) { 
-        String rssXML = getArticleListByChannel(channelId, page, pageSize, false);
-        return "<Response><ArticleList>" + rssXML + "</ArticleList></Response>";
-    }
-    
-    public String getPicArticleListByChannel(Long channelId, int page, int pageSize) {
-        String rssXML = getArticleListByChannel(channelId, page, pageSize, true);
-        return "<Response><ArticleList>" + rssXML + "</ArticleList></Response>";
-    }
-
+ 
     public String getArticleListByChannel(Long channelId, int page, int pageSize, boolean isNeedPic) {
         Channel channel = channelDao.getEntity(channelId);
         if(channel == null) {
@@ -93,8 +85,7 @@ public class RemoteArticleService implements IRemoteArticleService {
                 Object[] fields = (Object[]) articleList.get(i);
                 Long articleId = (Long) fields[0];
                 
-                Element itemElement = createArticleElement(channelElement, articleId, (String) fields[1], (String) fields[2], 
-                        (Date) fields[3], (String) fields[4], (Integer) fields[5]);
+                Element itemElement = createArticleElement(channelElement, fields);
                 
                 if(isNeedPic){
                 	List<Attachment> attachments = articleDao.getArticleAttachments(articleId);
@@ -158,23 +149,28 @@ public class RemoteArticleService implements IRemoteArticleService {
         if (articleList != null) {
             for (int i = 0; i < articleList.size(); i++) {
                 Object[] fields = (Object[]) articleList.get(i);
-                createArticleElement(channelElement, (Long) fields[0], (String) fields[1], (String) fields[2], 
-                        (Date) fields[3], (String) fields[4], (Integer) fields[5]);
+                createArticleElement(channelElement, fields);
             }
         }
         return channelElement.asXML();
     }
     
-    private Element createArticleElement(Element channelElement, Object articleId, String title, String author, 
-            Date issueDate, String summary, Integer hitCount) {
+    // fields : a.id, a.title, a.author, a.summary, a.issueDate, a.createTime, a.hitCount, a.isTop
+    private Element createArticleElement(Element channelElement, Object[] fields) {
+    	return createArticleElement(channelElement, (Long) fields[0], (String) fields[1], (String) fields[2], 
+                (Date) fields[4], (String) fields[3], (Integer) fields[6]);
+    }
+    
+    private Element createArticleElement(Element channelElement, 
+    		Object articleId, String title, String author, Date issueDate, String summary, Integer hitCount) {
         
         Element itemElement = channelElement.addElement("item");
-        itemElement.addElement("id").setText(articleId == null ? "" : articleId.toString());
-        itemElement.addElement("title").setText(title == null ? "" : title);
-        itemElement.addElement("author").setText(author == null ? "" : author);
-        itemElement.addElement("issueDate").setText(issueDate == null ? "" : DateUtil.format(issueDate));
-        itemElement.addElement("summary").setText(summary == null ? "" : summary);
-        itemElement.addElement("hitCount").setText(hitCount == null ? "" : hitCount.toString());
+        itemElement.addElement("id").setText(EasyUtils.convertObject2String(articleId));
+        itemElement.addElement("title").setText(EasyUtils.convertObject2String(title));
+        itemElement.addElement("author").setText(EasyUtils.convertObject2String(author));
+        itemElement.addElement("issueDate").setText(DateUtil.format(issueDate));
+        itemElement.addElement("summary").setText(EasyUtils.convertObject2String(summary));
+        itemElement.addElement("hitCount").setText(EasyUtils.convertObject2String(hitCount));
         
         return itemElement;
     }
@@ -378,12 +374,13 @@ public class RemoteArticleService implements IRemoteArticleService {
                     String fileContent = FileHelper.readFile(xmlFile, "UTF-8");
                     articleDoc = XMLDocUtil.dataXml2Doc(XmlUtil.stripNonValidXMLCharacters(fileContent));
                 }
-                Element articleElement = articleDoc.getRootElement();
-                Element idNode = (Element) articleElement.selectSingleNode("//id");
-                Element titleNode = (Element) articleElement.selectSingleNode("//title");
-                Element authorNode = (Element) articleElement.selectSingleNode("//author");
-                Element issueDateNode = (Element) articleElement.selectSingleNode("//issueDate");
-                Element summaryNode = (Element) articleElement.selectSingleNode("//summary");
+                
+                Node articleNode   = articleDoc.getRootElement();
+                Node idNode        = articleNode.selectSingleNode("//id");
+                Node titleNode     = articleNode.selectSingleNode("//title");
+                Node authorNode    = articleNode.selectSingleNode("//author");
+                Node summaryNode   = articleNode.selectSingleNode("//summary");
+                Node issueDateNode = articleNode.selectSingleNode("//issueDate");
                 
                 createArticleElement(channelElement,
                         idNode == null ? null : idNode.getText(), 

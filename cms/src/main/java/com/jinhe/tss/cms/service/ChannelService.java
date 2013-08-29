@@ -193,6 +193,7 @@ public class ChannelService implements IChannelService {
 			
 			// 在文章对象里记录发布路径
 			article.setPubUrl(pubUrl);
+			article.setStatus(CMSConstants.XML_STATUS);
 			articleDao.saveArticle(article);
 		}
 	}

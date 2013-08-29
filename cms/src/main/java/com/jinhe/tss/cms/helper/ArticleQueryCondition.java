@@ -1,14 +1,11 @@
 package com.jinhe.tss.cms.helper;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.persistence.pagequery.MacrocodeQueryCondition;
 
 /** 
@@ -31,8 +28,6 @@ public class ArticleQueryCondition extends MacrocodeQueryCondition {
     
     private Long articleId;
     private String keyword;
-    
-    private Integer daysAgo;
     
     // 是否取全部，否的话只取创建日期为 ARTICLE_DAYS_AGO 内的文章
     private boolean fetchAll = false;   
@@ -69,24 +64,7 @@ public class ArticleQueryCondition extends MacrocodeQueryCondition {
         
         return map;
     }
-
-    // 是否取全部，否的话只取创建日期为 betweenDay 内的文章
-    public void setFetchStartTime(boolean fetchAll) {
-        if(!fetchAll){
-            java.util.Calendar calendar = Calendar.getInstance();
-            
-            // 为了性能，可以將天數設置短一點，只取这个时间段内的文章，太老的文章不去做处理
-            int howlong;
-            try {
-                howlong = Integer.parseInt(ParamConfig.getAttribute("article.days.ago"));
-            } catch(Exception e){
-                howlong = 365; // 默认一年
-            }
-            calendar.add(Calendar.DAY_OF_MONTH, howlong);
-            this.createTime = calendar.getTime();
-        }
-    }
-    
+ 
     public String getAuthor() {
         if(author != null){
             author = "%" + author.trim() + "%";           
@@ -143,20 +121,7 @@ public class ArticleQueryCondition extends MacrocodeQueryCondition {
     public void setFetchAll(boolean fetchAll) {
         this.fetchAll = fetchAll;
     }
-
-    public Integer getDaysAgo() {
-        return daysAgo;
-    }
-
-    public void setDaysAgo(Integer daysAgo) {
-        this.daysAgo = daysAgo;
-        
-        GregorianCalendar gc = new GregorianCalendar();
-        gc.setTime(new Date());
-        gc.add(5, -1 * daysAgo); // daysAgo天前
-        this.createTime = gc.getTime();
-    }
-
+ 
     public String getOrderField() {
         return orderField;
     }

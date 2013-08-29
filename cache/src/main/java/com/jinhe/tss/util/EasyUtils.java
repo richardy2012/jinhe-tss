@@ -59,6 +59,13 @@ public class EasyUtils {
         return rlt;
     }
     
+    public static final String convertObject2String(Object value) {
+        if(value == null) {
+        	return "";
+        }
+        return value.toString();
+    }
+    
     public static boolean isNullOrEmpty(String str) {
         return str == null || "".equals(str.trim());
     }

@@ -107,8 +107,9 @@ public class PublishManger implements Progressable {
         
 		// 生成发布路径
 		File publishDir = new File(publishPath);
-		if (!publishDir.exists())
+		if (!publishDir.exists()) {
 			publishDir.mkdirs();
+		}
 		
 		Document doc = DocumentHelper.createDocument();
 		doc.setXMLEncoding(ArticleHelper.getSystemEncoding()); //一般：windows “GBK” linux “UTF－8”

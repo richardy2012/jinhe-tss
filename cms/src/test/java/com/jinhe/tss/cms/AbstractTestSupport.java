@@ -142,7 +142,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
 	    
 	    EasyMock.expect(mockRequest.getParameter("articleId")).andReturn(articleId.toString());
 	    EasyMock.expect(mockRequest.getParameter("channelId")).andReturn(channelId.toString());
-	    EasyMock.expect(mockRequest.getParameter("type")).andReturn(CMSConstants.ATTACHMENTTYPE_OFFICE.toString());
+	    EasyMock.expect(mockRequest.getParameter("type")).andReturn(CMSConstants.ATTACHMENTTYPE_PICTURE.toString());
 	    EasyMock.expect(mockRequest.getParameter("petName")).andReturn(null);
 	    
 	    try {
