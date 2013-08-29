@@ -16,6 +16,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jinhe.tss.cms.TxSupportTest4CMS;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;
 
@@ -25,10 +26,10 @@ public class ImageProcessorTest {
 	
 	@Before
 	public void setUp() {
-		URL url = URLUtil.getResourceFileUrl("log4j.properties");
+		URL url = URLUtil.getResourceFileUrl(TxSupportTest4CMS.CK_FILE_PATH);
         String log4jPath = url.getPath(); 
         File classDir = new File(log4jPath).getParentFile();
-        Assert.assertTrue(FileHelper.checkFile(classDir, "log4j.properties"));
+        Assert.assertTrue(FileHelper.checkFile(classDir, TxSupportTest4CMS.CK_FILE_PATH));
         
         tempDir1 = FileHelper.createDir(classDir + "/temp1");
 	}

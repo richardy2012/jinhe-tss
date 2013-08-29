@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class FileHelperTest {
+	
+	public static String CK_FILE_PATH = "log4j.properties";
     
 	@Test
     public void testFileHelper() throws Exception {
@@ -16,11 +18,11 @@ public class FileHelperTest {
          System.out.println(File.pathSeparator);
          System.out.println(File.separator);
          
-         URL url = URLUtil.getResourceFileUrl("log4j.properties");
+         URL url = URLUtil.getResourceFileUrl(CK_FILE_PATH);
          String log4jPath = url.getPath(); 
          File classDir = new File(log4jPath).getParentFile();
          
-         Assert.assertTrue(FileHelper.checkFile(classDir, "log4j.properties"));
+         Assert.assertTrue(FileHelper.checkFile(classDir, CK_FILE_PATH));
          
          File tempDir1 = FileHelper.createDir(classDir + "/temp1");
          File tempDir2 = FileHelper.createDir(classDir + "/temp2");

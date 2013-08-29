@@ -71,13 +71,15 @@ public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit4Sprin
     protected File tempDir1;
     protected File tempDir2;
     
+    public static String CK_FILE_PATH = "application.properties";
+    
     @Before
     public void setUp() throws Exception {
     	
-        URL url = URLUtil.getResourceFileUrl("log4j.properties");
+        URL url = URLUtil.getResourceFileUrl(CK_FILE_PATH);
         String log4jPath = url.getPath(); 
         File classDir = new File(log4jPath).getParentFile();
-        Assert.assertTrue(FileHelper.checkFile(classDir, "log4j.properties"));
+        Assert.assertTrue(FileHelper.checkFile(classDir, CK_FILE_PATH));
         
         tempDir1 = FileHelper.createDir(classDir + "/temp1");
         tempDir1 = FileHelper.createDir(classDir + "/temp1");
