@@ -30,6 +30,7 @@ import com.jinhe.tss.framework.web.filter.Filter3Context;
 import com.jinhe.tss.framework.web.filter.Filter4AutoLogin;
 import com.jinhe.tss.framework.web.filter.Filter5HttpProxy;
 import com.jinhe.tss.framework.web.filter.Filter6XmlHttpDecode;
+import com.jinhe.tss.framework.web.filter.Filter7AccessingCheck;
 import com.jinhe.tss.framework.web.listener.SessionDestroyedListener;
 import com.jinhe.tss.framework.web.servlet.Servlet1Login;
 import com.jinhe.tss.framework.web.servlet.Servlet2Logout;
@@ -64,6 +65,7 @@ public class SSOIntegrateTest {
         context.addFilter(Filter4AutoLogin.class, "/*", Handler.DEFAULT);
         context.addFilter(Filter5HttpProxy.class, "/*", Handler.DEFAULT);
         context.addFilter(Filter6XmlHttpDecode.class, "*", Handler.DEFAULT);
+        context.addFilter(Filter7AccessingCheck.class, "*", Handler.DEFAULT);
         
         context.getSessionHandler().addEventListener(new SessionDestroyedListener());
         

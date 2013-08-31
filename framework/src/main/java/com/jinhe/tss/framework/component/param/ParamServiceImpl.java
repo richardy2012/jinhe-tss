@@ -43,7 +43,7 @@ public class ParamServiceImpl implements ParamService {
         Integer type = param.getType();
         if (ParamConstants.NORMAL_PARAM_TYPE.equals(type)) {
             String hql = "select p.id from Param p where p.type = ? and p.code = ?";
-            List<?> list = paramDao.getEntities(hql, new Object[] { ParamConstants.NORMAL_PARAM_TYPE, param.getCode() });
+            List<?> list = paramDao.getEntities(hql, ParamConstants.NORMAL_PARAM_TYPE, param.getCode());
             if (list.size() > flag) {
                 throw new BusinessException("相同参数名称（指CODE）已经存在，请更改参数名称后再保存!");
             }
@@ -111,49 +111,9 @@ public class ParamServiceImpl implements ParamService {
     }
 
     public List<?> copyParam(Long paramId, Long toParamId) {
-        Param param = paramDao.getEntity(paramId);
- 
-        if (param.getParentId().equals(toParamId)) {
-            return copyParamLocal(param);
-        } else {
-            return copyParamTo(param, paramDao.getEntity(toParamId));
-        }
-    }
-
-    private List<?> copyParamLocal(Param copyParam) {
-        List<?> params = paramDao.getChildrenById(copyParam.getId());
-        Map<Long, Long> paramMapping = new HashMap<Long, Long>(); // 复制出来的新节点 与 被复制源节点 建立一一对应关系（ID 对 ID）
-        for (int i = 0; i < params.size(); i++) {
-            Param param = (Param) params.get(i);
-            Long sourceParamId = param.getId();
-           
-            paramDao.evict(param);
-            param.setId(null);
-            if (sourceParamId.compareTo(copyParam.getId()) == 0) { // 复制指定节点
-                if (ParamConstants.GROUP_PARAM_TYPE.equals(copyParam.getType())) {
-                    param.setName(ParamConstants.COPY_PREFIX + copyParam.getName());
-                }
-                else if (ParamConstants.NORMAL_PARAM_TYPE.equals(copyParam.getType())) {
-                    param.setCode(ParamConstants.COPY_PREFIX + copyParam.getCode());
-                    param.setName(ParamConstants.COPY_PREFIX + copyParam.getName());
-                }
-                else {
-                    param.setText(ParamConstants.COPY_PREFIX + copyParam.getText());
-                }
-                param.setSeqNo(paramDao.getNextSeqNo(copyParam.getParentId()));
-            }
-            // 复制指定节点的儿孙节点
-            else {
-                param.setParentId( paramMapping.get(param.getParentId()) );
-            }
-            
-            paramDao.create(param);
-            paramMapping.put(sourceParamId, param.getId());
-        }
-        return params;
-    }
-
-    private List<?> copyParamTo(Param copyParam, Param toParam) {
+        Param copyParam = paramDao.getEntity(paramId);
+        Param toParam   = paramDao.getEntity(toParamId);
+        
         Long copyParamId = copyParam.getId();
         List<?> params = paramDao.getChildrenById(copyParamId);
         Map<Long, Long> paramMapping = new HashMap<Long, Long>(); // 复制出来的新节点 与 被复制源节点 建立一一对应关系（ID 对 ID）
@@ -197,7 +157,6 @@ public class ParamServiceImpl implements ParamService {
                 param.setDisabled(ParamConstants.TRUE); // 如果目标根节点是停用状态，则所有新复制出来的节点也一律为停用状态
             }
             
-            judgeLegit(param, ParamConstants.EDIT_FLAG);
             paramDao.update(param);
         }
     }

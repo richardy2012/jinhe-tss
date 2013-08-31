@@ -2,10 +2,13 @@ package com.jinhe.tss.framework;
 
 import java.util.Random;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
@@ -32,6 +35,9 @@ public abstract class TxTestSupport extends AbstractTransactionalJUnit4SpringCon
     
     @Autowired protected IH2DBServer dbserver;
     
+    protected HttpServletResponse response;
+    protected MockHttpServletRequest request;
+    
     @Before
     public void setUp() throws Exception {
         Global.setContext(super.applicationContext);
@@ -45,7 +51,8 @@ public abstract class TxTestSupport extends AbstractTransactionalJUnit4SpringCon
         IdentityCard card = new IdentityCard(token, new DemoOperator(12L));
         Context.initIdentityInfo(card);
         
-        Context.setResponse(new MockHttpServletResponse());
+        request = new MockHttpServletRequest();
+        Context.setResponse(response = new MockHttpServletResponse());
     }
  
     @After

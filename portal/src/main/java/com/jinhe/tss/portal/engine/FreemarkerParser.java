@@ -65,8 +65,8 @@ public class FreemarkerParser {
     	this();
     	
         //默认freemarker模板文件存放在WEB-INF目录下的freemarker目录里
-        String classpath = URLUtil.getClassesPath().getPath(); 
-        File defaultTemplatePath = new File(classpath + "/../freemarker/");
+        String ftlDir = URLUtil.getResourceFileUrl("freemarker").getPath(); 
+        File defaultTemplatePath = new File(ftlDir);
         templatePath = templatePath != null ? templatePath : defaultTemplatePath;
 
         try {

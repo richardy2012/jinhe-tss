@@ -10,7 +10,7 @@ import com.jinhe.tss.um.permission.filter.PermissionTag;
 public interface INavigatorService {
 
 	/**
-     * 获取所有门户菜单
+     * 获取所有菜单
 	 * @return
 	 */
 	@PermissionTag(

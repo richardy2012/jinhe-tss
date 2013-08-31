@@ -229,10 +229,4 @@ public class GroupModuleTest extends TxSupportTest4UM {
     public void getUserByGroupId() {
     	action.getUserByGroupId(response, UMConstants.MAIN_GROUP_ID);
     }
-    
-    @Test
-    public void syncData() {
-        // 测试用户同步。TODO 进度条需要单独起线程，里面没有事务。
-//        action.syncData(response, applicationId, groupId, mode);
-    }
 }

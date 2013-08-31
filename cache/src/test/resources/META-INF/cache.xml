@@ -3,7 +3,7 @@
 <strategies> 
   <strategy code="taskpool" name="端口扫描任务池"> 
     <poolClass>com.jinhe.tss.cache.extension.ReusablePool</poolClass>  
-    <poolContainerClass>com.jinhe.tss.cache.extension.MapContainer</poolContainerClass>  
+    <poolContainerClass>com.jinhe.tss.cache.extension.EhcacheContainer</poolContainerClass>  
     <cyclelife>5000</cyclelife>  
     <interruptTime>1000</interruptTime>  
 	<poolSize>100</poolSize>  

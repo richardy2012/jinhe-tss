@@ -1,6 +1,7 @@
 package com.jinhe.tss.cache;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.Socket;
 
 import com.jinhe.tss.cache.extension.workqueue.Task;
@@ -9,9 +10,11 @@ import com.jinhe.tss.cache.extension.workqueue.Task;
  * 扫描机器的各个端口，判断各端口是开着还是关闭的。 
  * 
  */
-public class ScannerTask implements Task {
-    
-    final long createTime = System.currentTimeMillis();
+public class ScannerTask implements Task, Serializable{
+ 
+	private static final long serialVersionUID = -578000296494659599L;
+	
+	final long createTime = System.currentTimeMillis();
 	final String host = "127.0.0.1";
     int   port;
     String oldInfo;

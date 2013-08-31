@@ -56,7 +56,8 @@ public class RemoteArticleService implements IRemoteArticleService {
     public String getArticleListByChannel(Long channelId, int page, int pageSize, boolean isNeedPic) {
         Channel channel = channelDao.getEntity(channelId);
         if(channel == null) {
-            throw new BusinessException("ID为：" + channelId + " 的栏目不存在！");
+        	log.error("ID为：" + channelId + " 的栏目不存在！");
+            return "<Response><ArticleList></ArticleList></Response>";
         }
         
         if( !channelDao.checkBrowsePermission(channelId) ) {

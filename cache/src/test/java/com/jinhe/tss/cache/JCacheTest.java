@@ -27,7 +27,6 @@ public class JCacheTest {
 		Pool taskpool = cache.getTaskPool();
 		Cacheable taskItem = taskpool.checkOut(0);
 		assertNotNull(taskItem.getAccessed());
-		assertEquals(5000, taskItem.getCyclelife());
 		assertEquals(1, taskItem.getHit());
 		assertEquals(false, taskItem.isExpired());
 		

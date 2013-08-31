@@ -20,7 +20,7 @@ import com.jinhe.tss.util.Escape;
  *  通过验证是否存在LtpaToken以及username来判断用户是否已经登录OA，如果是，则让其在平台登录。 <br>
  *  
  *  用户在OA系统中登录以后，通过以下地址转入到门户中： <br>
- *  http://ip/tss/login.do?identifier=com.jinhe.tss.um.identification.identifier.LtpaTokenIdentifier&username=AdminX&sso=true <br>
+ *  http://ip/tss/login.do?identifier=com.***.LtpaTokenIdentifier&username=AdminX&sso=true <br>
  *  需要在TSS的application.properties文件中设置SSO成功后调整的页面地址，例如： <br>
  *  sso.index.page = /pms/default.portal <br>
  *  默认login.do只返回成功信息，但如果有sso=true和sso.index.page的配置同时存在，则会自动sendRedirect至sso.index.page页面。
@@ -46,7 +46,8 @@ public class LtpaTokenIdentifier extends BaseUserIdentifier {
         Principal userPrincipal = request.getUserPrincipal();
         if(userPrincipal != null){
             loginName = userPrincipal.getName();
-        } else {
+        } 
+        else {
             loginName = requestContext.getValueFromRequest(LOGIN_NAME);
             if(loginName != null){
                 loginName = Escape.unescape(loginName);

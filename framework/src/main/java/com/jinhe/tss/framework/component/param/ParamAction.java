@@ -146,10 +146,7 @@ public class ParamAction extends BaseActionSupport {
 	        @PathVariable("paramId") Long paramId, 
 	        @PathVariable("toParamId") String toParamId) {
 	    
-        Long targetId = null;
-		if(toParamId != null) {
-            targetId = "_rootId".equals(toParamId) ? ParamConstants.DEFAULT_PARENT_ID : new Long(toParamId);
-		}
+        Long targetId = "_rootId".equals(toParamId) ? ParamConstants.DEFAULT_PARENT_ID : new Long(toParamId);
 		
 		List<?> result = paramService.copyParam(paramId, targetId);
 		TreeEncoder encoder = new TreeEncoder(result, new LevelTreeParser());
