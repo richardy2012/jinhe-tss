@@ -29,12 +29,6 @@ public interface IChannelDao extends ITreeSupportDao<Channel> {
      * @return
      */
     Channel getSiteByChannel(Long channelId);
-	
-	/**
-	 * 获取所有有指定权限ID的栏目ID列表
-	 * @return
-	 */
-	List<Long> getSiteChannelIDsByOperationId(String operationId);
     
     /**
      * <p>
@@ -47,18 +41,6 @@ public interface IChannelDao extends ITreeSupportDao<Channel> {
 	        resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL
 	)
     List<?> getAllSiteChannelList();
-    		
-    /**
-     * <p>
-     * 得到所有启用状态的站点栏目列表
-     * </p>
-     * @return
-     */
-	@PermissionTag(
-	        operation = CMSConstants.OPERATION_VIEW, 
-	        resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL
-	)
-    List<?> getAllStartedSiteChannelList();
     
     /**
      * <p>
@@ -68,17 +50,6 @@ public interface IChannelDao extends ITreeSupportDao<Channel> {
      * @return
      */
     List<?> getChannelsBySiteIdNoPermission(Long siteId);
-
-    /**
-     * <p> 获取某栏目的一级子栏目列表</p>
-     * @param parentId
-     * @return List
-     */
-    @PermissionTag(
-            operation = CMSConstants.OPERATION_VIEW, 
-            resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL
-    )
-    List<?> getChildChannels(Long parentId);
 
 	/**
 	 * <p>
@@ -106,15 +77,6 @@ public interface IChannelDao extends ITreeSupportDao<Channel> {
             filter = PermissionFilter4Branch.class
     )
     List<Channel> getParentsById(Long channelId, String operationId);
-
-	/**
-	 * <p>
-	 *  获得栏目向上的所有栏目列表(没有权限过滤)
-	 * </p>
-	 * @param channelId
-	 * @return
-	 */
-	List<?> getChannelTreeUpNoPermission(Long channelId);
 	
     /**
      * 检查对channelId有没有浏览权限

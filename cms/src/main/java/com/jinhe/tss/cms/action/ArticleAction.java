@@ -68,33 +68,33 @@ public class ArticleAction extends BaseActionSupport {
         initMap.put("isTop", CMSConstants.FALSE);
         initMap.put("author", Environment.getUserName()); // 默认作者为登录者，前台可进行修改
         
-        XFormEncoder baseXFormEncoder = new XFormEncoder(CMSConstants.XFORM_ARTICLE, initMap);
+        XFormEncoder articleInfoXForm = new XFormEncoder(CMSConstants.XFORM_ARTICLE, initMap);
         
         Long tempArticleId = System.currentTimeMillis();
         
         Map<String, Object> initMap4Upload = new HashMap<String, Object>();	
         initMap4Upload.put("id", tempArticleId);
         initMap4Upload.put("channelId", channelId);
-		XFormEncoder attachmentXFormEncoder = new XFormEncoder(CMSConstants.XFORM_ARTICLEUPLOAD, initMap4Upload);
         
-		GridDataEncoder attachmentGridEncoder = new GridDataEncoder(new ArrayList<Object>(), CMSConstants.GRID_ATTACHSLIST);
+		GridDataEncoder attachGrid = new GridDataEncoder(new ArrayList<Object>(), CMSConstants.GRID_ATTACHSLIST);
         
-		print(new String[]{"ArticleInfo", "ArticleContent", "AttachsUpload", "AttachsList"}, 
-                new Object[]{baseXFormEncoder, "<![CDATA[]]>", attachmentXFormEncoder, attachmentGridEncoder});
+		print(new String[]{"ArticleInfo", "ArticleContent", "AttachsList"}, 
+                new Object[]{articleInfoXForm, "<![CDATA[]]>", attachGrid});
 	}
     
 	@RequestMapping(value = "/{articleId}", method = RequestMethod.GET)
     public void getArticleInfo(HttpServletResponse response, @PathVariable("articleId") Long articleId) { 
         Article article = articleService.getArticleById(articleId);
+        String articleContent = article.getContent();
+        article.setContent(null);
  
-        XFormEncoder baseXFormEncoder = new XFormEncoder(CMSConstants.XFORM_ARTICLE, article);
-        XFormEncoder uploadXFormEncoder = new XFormEncoder(CMSConstants.XFORM_ARTICLEUPLOAD, article);
+        XFormEncoder articleInfoXForm = new XFormEncoder(CMSConstants.XFORM_ARTICLE, article);
         
-        List<Attachment> attachmentList = article.getAttachments();
-        GridDataEncoder attachmentGridEncoder = new GridDataEncoder(attachmentList, CMSConstants.GRID_ATTACHSLIST);
+        List<Attachment> attachList = article.getAttachments();
+        GridDataEncoder attachGrid = new GridDataEncoder(attachList, CMSConstants.GRID_ATTACHSLIST);
         
-        print(new String[]{"ArticleInfo", "ArticleContent", "AttachsUpload", "AttachsList"}, 
-                new Object[]{baseXFormEncoder, "<![CDATA[" + article.getContent() + "]]>", uploadXFormEncoder, attachmentGridEncoder});
+        print(new String[]{"ArticleInfo", "ArticleContent", "AttachsList"}, 
+                new Object[]{articleInfoXForm, "<![CDATA[" + articleContent + "]]>", attachGrid});
     }
     
 	/**

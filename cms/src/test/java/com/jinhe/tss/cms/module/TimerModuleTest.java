@@ -1,13 +1,21 @@
 package com.jinhe.tss.cms.module;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.cms.AbstractTestSupport;
+import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Channel;
+import com.jinhe.tss.cms.timer.ITimerService;
 import com.jinhe.tss.cms.timer.SchedulerBean;
 import com.jinhe.tss.cms.timer.TimerAction;
 import com.jinhe.tss.cms.timer.TimerStrategyHolder;
+import com.jinhe.tss.framework.component.progress.Progress;
+import com.jinhe.tss.framework.component.progress.Progressable;
 
 /**
  * 定时策略相关模块的单元测试。
@@ -15,6 +23,7 @@ import com.jinhe.tss.cms.timer.TimerStrategyHolder;
 public class TimerModuleTest extends AbstractTestSupport {
     
 	@Autowired TimerAction timerAction;
+	@Autowired ITimerService timerService;
 	
 	@Autowired SchedulerBean schedulerBean;
  
@@ -37,6 +46,14 @@ public class TimerModuleTest extends AbstractTestSupport {
 		
 		// 测试定时器
 		schedulerBean.init();
+		
+		// 因进度条里无法启动事务，直接调用excute方法来测试
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("type", CMSConstants.STRATEGY_TYPE_PUBLISH);
+		params.put("channelIds", Arrays.asList(siteId));
+		
+		Progress progress = new Progress(100L);
+		((Progressable)timerService).execute(params, progress);
         
         super.deleteSite(siteId);
     }

@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML xmlns:Tree xmlns:XForm xmlns:WorkSpace>
+<HTML xmlns:Tree xmlns:XForm xmlns:Grid>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>文章管理</title>
 
 <link href="../framework/css/css.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/css/dialog.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/menu/menu.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/balloon/balloon.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/xform/xform.css" rel="stylesheet" type="text/css"></link>
@@ -18,7 +19,9 @@
 <script language="javascript" src="../framework/xform/xform.js"></script>
 <script language="javascript" src="../framework/grid/grid.js"></script>
 
-<script language="javascript" src="channel.js"></script>
+<link rel="stylesheet" href="kindeditor-4.1.7/themes/default/default.css" />
+<script language="javascript" src="kindeditor-4.1.7/kindeditor-min.js"></script>
+<script language="javascript" src="kindeditor-4.1.7/lang/zh_CN.js"></script>
 
 <style>
   .trxx {
@@ -34,138 +37,80 @@
      *	XMLHTTP请求地址汇总
      */
     URL_ARTICLE_DETAIL = "data/article.xml";
-    URL_NEW_ARTICLE_DETAIL = "data/article.xml";
-    URL_UPLOAD_FILE = "data/upload1.htm";
-    URL_UPLOAD_SERVER_FILE = "data/upload2.htm";
     URL_SAVE_ARTICLE = "data/_success.xml";
     URL_SAVE_PUBLISH_ARTICLE = "data/_success.xml";
 
-	function intit() {
-        var channelId = window.dialogArguments.channelId;
-        var articleId = window.dialogArguments.articleId;
+	var editor;
+	var channelId = window.dialogArguments ? window.dialogArguments.channelId : null;
+    var articleId = window.dialogArguments ? window.dialogArguments.articleId : null;
+
+	function init() {
+		var p = new HttpRequestParams();
+        p.url = URL_ARTICLE_DETAIL;
 
 		var request = new HttpRequest(p);
+		if(articleId) {
+			p.setContent("articleId", articleId);
+		}
+
         request.onresult = function(){
-            var articleInfoNode = this.getNodeValue("ArticleInfo");
+            var articleInfoNode    = this.getNodeValue("ArticleInfo");
             var articleContentNode = this.getNodeValue("ArticleContent");
-            var attachsUploadNode = this.getNodeValue("AttachsUpload");
-            var attachsListNode = this.getNodeValue("AttachsList");
+            var attachsListNode    = this.getNodeValue("AttachsList");
 
-            // 分发、转载、导入文章禁止编辑保存
-            setArticlePagesEditable(articleType,workflowStatus,editable);
+			// 如果是新增，返回的articleId是个临时值（上传附件时会用到）
+		    articleId =  articleInfoNode.selectSingleNode(".//data//row").getCDATA("id");
 
-            var page1FormObj = $("page1Form");
-            Public.initHTC(page1FormObj,"isLoaded","oncomponentready",function(){
-                loadArticleInfoFormData(articleInfoNode);
-            });
+			$X("articleForm", articleInfoNode);
 
-            var page2EditorObj = $("page2Editor");
-            Public.initHTC(page2EditorObj,"isLoaded","onload",function(){
-                loadArticleContentData(articleContentNode);
-            });
+			KindEditor.ready(function(K) {
+				editor = K.create('textarea[name="content"]', {
+					resizeType : 1
+				});
+			});
+			editor.insertHtml(articleContentNode);
 
-            var page3FormObj = $("page3Form");
-            Public.initHTC(page3FormObj,"isLoaded","oncomponentready",function(){
-                loadAttachsUploadFormData(attachsUploadNode);
-            });
+			$G("attachGrid", attachsListNode);
 
-            var page3GridObj = $("page3Grid");
-            Public.initHTC(page3GridObj,"isLoaded","onload",function(){
-                loadAttachsListGridData(attachsListNode);
-            });
-
-            $("title1").onclick = collapse;
-            $("title2").onclick = collapse;
-            $("title3").onclick = collapse;
-            $("page3BtDel").onclick  = delPage3GridRow;
-            $("btSave").onclick  = saveArticle;
-            $("btSaveAndPublish").onclick  = saveAndPublishArticle;
+            $$("btSave").onclick  = saveArticle;
+            $$("btSaveAndPublish").onclick  = saveAndPublishArticle;
         }
         request.send();
 	}
+ 
+    function saveArticle() {
+        var articleForm = $X("articleForm");
 
-	 /*
-     *	函数说明：保存文章
-     *	返回值：
-     */
-    function saveArticle(){
-        var isNew = window.dialogArguments.isNew;
-        var editable = window.dialogArguments.editable;
-        var channelId = window.dialogArguments.channelId;
-        var articleType = window.dialogArguments.articleType;
-        var articleId = window.dialogArguments.articleId;
-        var workflowStatus = window.dialogArguments.workflowStatus;
-
-        var page1FormObj = $("page1Form");
-        var page2EditorObj = $("page2Editor");
-        var page3FormObj = $("page3Form");
-        var page3GridObj = $("page3Grid");
-
-        //校验page1Form数据有效性
-        if(false==page1FormObj.checkForm()){
-            collapse($("title1"),"");
+        // 校验page1Form数据有效性
+        if( !articleForm.checkForm() ) {
             return;
         }
 
         var p = new HttpRequestParams();
         p.url = URL_SAVE_ARTICLE;
-              
         p.setContent("channelId", channelId);
-        //文章基本信息
-        var articleInfoNode = new XmlNode(page1FormObj.getXmlDocument());
-        if(null!=articleInfoNode){
-            var articleInfoDataNode = articleInfoNode.selectSingleNode(".//data");
-            if(null!=articleInfoDataNode){
-                flag = true;
 
-                var prefix = articleInfoNode.selectSingleNode("./declare").getAttribute("prefix");
-                p.setXFormContent(articleInfoDataNode,prefix);
-            }
-        }
-
-		//获取临时文章id
-		var attachsUploadNode = new XmlNode(page3FormObj.getXmlDocument());
-		var attachsUploadRowNode = attachsUploadNode.selectSingleNode(".//data//row");
-		var articleId = attachsUploadRowNode.getCDATA("id");
-		p.setContent("articleId",articleId);
-
-		//文章正文
-		var articleContent = "";
-		var page2EditorObj = $("page2Editor");
-		if(true==page2EditorObj.isLoaded){
-			articleContent = page2EditorObj.getSourceHTML();
-		}else{
-			
+        // 文章基本信息
+        var articleInfoNode = new XmlNode(articleForm.getXmlDocument());
+		var articleInfoDataNode = articleInfoNode.selectSingleNode(".//data");
+		if( articleInfoDataNode ) {
+			flag = true;
+			p.setXFormContent(articleInfoDataNode);
 		}
-		p.setContent("ArticleContent",articleContent);
 
-		//文章图片附件
-		var attachsListNode = new XmlNode(page3GridObj.getXmlDocument());
-		if(null!=attachsListNode){
-			var attachsListDataIDs = [];
-			var condition = "";
-			if(true == isNew) {
-				condition = "[@_new and not(@_delete)]";
-			} else {
-				condition = "[@_delete='true']";
-			}
-			var attachsListDataNodes = attachsListNode.selectNodes(".//data//row"+condition);
-			for(var i=0,iLen=attachsListDataNodes.length;i<iLen;i++){
-				var curNode = attachsListDataNodes[i];
-				var curNodeID = curNode.getAttribute("seqNo");
-				if(null!=curNodeID){
-					attachsListDataIDs.push(parseInt(curNodeID));
-				}
-			}
-			if(0<attachsListDataIDs.length){
-				p.setContent("attachList",attachsListDataIDs.join(","));
-			}
-		}
+		// 文章正文
+		p.setContent("ArticleContent", $$("content").value);
+
+		// 文章图片附件
+		var attachsSeqNos = "";
+		p.setContent("attachList", attachsSeqNos.join(","));
+
 
         var request = new HttpRequest(p);
-        //同步按钮状态
+       
+		// 同步按钮状态
         var btSaveObj = $("btSave");
-        syncButton([btSaveObj],request);
+        syncButton([btSaveObj], request);
 
         request.onsuccess = function(){
             window.returnValue = true;
@@ -187,9 +132,65 @@
 
 	}
 
+	window.onload = init;
+
 //-->
 </script>
 
 </head>
+
+<body>
+<div class="mainBox" id="mainBox">
+  <table class="full" border="0" cellspacing="1" cellpadding="0">
+    <tr>
+      <td>
+        <div style="width:100%;height:100%;overflow:auto">
+          <table class="hFull" border="0" cellspacing="1" cellpadding="0">
+            <tr>
+              <td valign="top">
+				<XForm:Box id="articleForm" baseurl="../framework/xform/"><div class="loading"></div></XForm:Box>
+              </td>
+            </tr>
+            <tr>
+              <td valign="top" height="400">
+                  <!-- 编辑器 开始 -->
+				  <form>
+					<textarea id="content" name="content" style="width:90%;height:399px;visibility:hidden;"></textarea>
+				  </form>
+                  <!-- 编辑器 结束 -->
+              </td>
+            </tr>
+            <tr>
+				<td>
+				   <Grid:Box id="attachGrid" baseurl="../framework/grid/" width="75%"></Grid:Box>
+				</td>
+            </tr>
+			 <tr>
+				<td style="width:90%;height:200px;">
+					 <form id="uploadForm" method="post" enctype="multipart/form-data">
+						<select name="附件类型">
+							<option name="图片" value="1" selected>
+							<option name="附件" value="2">
+						</select>
+						<input type="file" name="file" id="sourceFile" /> 支持文本类和图片类附件
+						<input type="button" onclick="uploadFile()" value="上传附件" />
+					</form>
+				</td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="t" height="30" align="center">
+        <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> 
+		<input type="button" value="完成" class="btStrong" id="btSave"/> 
+		<input type="button" value="完成并提交" class="btStrongL" id="btSaveAndPublish"/>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>
 
 

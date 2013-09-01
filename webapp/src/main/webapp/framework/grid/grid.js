@@ -22,7 +22,7 @@ var Grid = function(element, data) {
 	this.element = element;
  
 	this.baseurl  = element.baseurl || "";
-	this.iconPath = this.baseurl + "images/"
+	this.iconPath = this.baseurl + "images/";
 	
 	this.element.innerHTML = "<div id='" + this.id + "Box' style='position:absolute;overflow:auto;left:0px;top:0px;z-index:1'></div>";
 	this.gridBox   = $$(this.id + "Box");

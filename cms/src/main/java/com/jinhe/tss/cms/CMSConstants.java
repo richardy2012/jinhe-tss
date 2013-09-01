@@ -54,9 +54,7 @@ public interface CMSConstants {
     static final String XFORM_SITE     = "template/xform/Site.xml";
     static final String XFORM_CHANNEL  = "template/xform/Channel.xml";
     static final String XFORM_ARTICLE  = "template/xform/Article.xml";
-    
-    static final String XFORM_ARTICLEUPLOAD    = "template/xform/ArticleUpload.xml";
-    static final String XFORM_SEARCH_ARTICLE   = "template/xform/SearchArticle.xml";
+    static final String XFORM_SEARCH_ARTICLE = "template/xform/SearchArticle.xml";
     
     // Grid 模板
     static final String GRID_TEMPLATE_ARTICLELIST = "template/grid/ArticleList.xml";

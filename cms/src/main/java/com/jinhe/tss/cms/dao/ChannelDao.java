@@ -35,21 +35,9 @@ public class ChannelDao extends TreeSupportDao<Channel> implements IChannelDao {
         }
         return (Channel) getEntity(Channel.class, channel.getSite().getId());
     }
-	
-	@SuppressWarnings("unchecked")
-    public List<Long> getSiteChannelIDsByOperationId(String operationId) {
-		String hql = "select distinct t.id from Channel t, RoleUserMapping r, ChannelPermissionsFull v"
-    			+ " where v.roleId = r.id.roleId and r.id.userId = ?"
-    			+ " and v.operationId = ? and v.resourceId = t.id order by t.id";
-		return (List<Long>) getEntities(hql, Environment.getOperatorId(), operationId);
-	}
-
+ 
     public List<?> getAllSiteChannelList() {
 		return getEntities("from Channel c order by c.decode");
-	}
-
-    public List<?> getAllStartedSiteChannelList() {
-		return getEntities("from Channel c where c.disabled = 0 order by c.decode");
 	}
 
 	public List<?> getChannelsBySiteIdNoPermission(Long siteId) {
@@ -60,11 +48,6 @@ public class ChannelDao extends TreeSupportDao<Channel> implements IChannelDao {
 		return getEntities("from Channel c where c.site.id <> c.id and c.decode like ?", site.getDecode() + "%");
 	}
  
-	public List<?> getChildChannels(Long parentId) {
-		String hql = " from Channel t where t.parentId = ? and t.site.id <> t.id";
-		return getEntities(hql, parentId);
-	}
-    
     private Channel getChannelById(Long channelId){
         Channel channel = getEntity(channelId);
         if(channel == null){
@@ -81,11 +64,6 @@ public class ChannelDao extends TreeSupportDao<Channel> implements IChannelDao {
 	    return getParentsById(channelId);
 	}
  
-	public List<?> getChannelTreeUpNoPermission(Long channelId) {
-		String hql = "from Channel t where t.site.id <> t.id and ? like t.decode || '%'";
-        return getEntities(hql, getChannelById(channelId).getDecode());
-	}
-	
 	public boolean checkBrowsePermission(Long channelId) {
         String hql = "select distinct v from RoleUserMapping r, ChannelPermissionsFull v " +
                 " where v.id.resourceId= ? and v.id.roleId = r.id.roleId and r.id.userId = ? and v.id.operationId = ?";
