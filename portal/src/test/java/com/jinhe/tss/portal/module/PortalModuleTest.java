@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -47,17 +48,16 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         Structure root = new Structure();
         root.setParentId(parentId);
         root.setType(Structure.TYPE_PORTAL);
-        root.setName("Jon的门户");
+        root.setName("Jon的门户-1");
         root.setSupplement("<page><property><name>Jon的门户</name><description><![CDATA[]]></description></property><script><file><![CDATA[]]></file><code><![CDATA[]]></code></script><style><file><![CDATA[]]></file><code><![CDATA[]]></code></style></page>");
-        root.setDescription("测试门户");
+        root.setDescription("测试门户-2");
         root.setTheme(theme);
         portalAction.save(root, "TempPortalCode"); // create portal root
         
         List<?> list = portalService.getAllStructures();
-        assertTrue(list.size() == 1);
-        root = (Structure) list.get(0);
+        assertTrue(list.size() >= 1);
+
         Long portalId = root.getPortalId();
-        
         structureId = root.getId();
         portalAction.getPortalStructureInfo(structureId, parentId, Structure.TYPE_PORTAL);
   
@@ -76,7 +76,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         createPortletInstance(section2, "portletInstance2", "portletInstance2", portlet);
         
         List<?> data = portalService.getAllStructures();
-        assertEquals(7, data.size());
+        Assert.assertTrue( data.size() >= 7 );
         portalAction.getAllPortals4Tree();
         
         // 测试主题相关
@@ -166,9 +166,8 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         portalAction.removeIssue(issueInfo.getId());
         portalAction.delete(root.getId());
         
-        // 删除复制出来的门户
         data = portalService.getActivePortals();
-        assertTrue(data.size() == 0);
+        assertFalse(data.contains(root));
         
         assertTrue(TestUtil.printLogs(logService) > 0);
     }

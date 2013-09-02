@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,15 +40,19 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         Structure root = new Structure();
         root.setParentId(PortalConstants.ROOT_ID);
         root.setType(Structure.TYPE_PORTAL);
-        root.setName("Jon的门户");
+        root.setName("测试门户4MenuTest");
         root.setTheme(theme);
         portalAction.save(root, "TempPortalCode"); // create portal root
         
         List<?> list = menuService.getAllNavigator();
+        assertTrue(list.size() >= 1);
+        
+        list = menuService.getNavigatorsByPortal(root.getId());
         assertTrue(list.size() == 1);
         Navigator rootMenu = (Navigator) list.get(0);
         Long portalId = rootMenu.getPortalId();
         Long rootMenuId = rootMenu.getId();
+        Assert.assertEquals(root.getId(), portalId);
         
         menuAction.getNavigatorInfo(BaseActionSupport.DEFAULT_NEW_ID, rootMenuId, Navigator.TYPE_MENU);
         menuAction.getNavigatorInfo(rootMenuId, PortalConstants.ROOT_ID, Navigator.TYPE_MENU);

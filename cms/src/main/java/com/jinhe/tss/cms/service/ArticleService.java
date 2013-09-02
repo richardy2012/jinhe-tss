@@ -36,7 +36,6 @@ public class ArticleService implements IArticleService {
  
     public Article getArticleById(Long articleId) {
         Article article = getArticleOnly(articleId);
-        articleDao.evict(article);
         
         List<Attachment> attachments = articleDao.getArticleAttachments(articleId);
         article.getAttachments().addAll(attachments);

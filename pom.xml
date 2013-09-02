@@ -150,7 +150,7 @@
 					<version>2.5.2</version>
 					<executions>
                         <execution>
-                            <phase>install</phase>
+                            <phase>package</phase>
                             <goals>
                                 <goal>cobertura</goal>
                             </goals>
@@ -207,9 +207,11 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.16</version>
 				<configuration>
+					<!-- 并行时，H2数据库数据是共享的，这对某些断言有一定影响
 				    <parallel>methods</parallel>
 				    <threadCount>10</threadCount>
-					<skip>false</skip> <!-- skip junit test -->
+					 -->
+					<skip>false</skip>
 					<includes> 
 						<include>**/*Test.java </include> 
 					</includes>

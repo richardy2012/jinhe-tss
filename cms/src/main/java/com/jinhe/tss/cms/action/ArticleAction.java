@@ -86,9 +86,10 @@ public class ArticleAction extends BaseActionSupport {
     public void getArticleInfo(HttpServletResponse response, @PathVariable("articleId") Long articleId) { 
         Article article = articleService.getArticleById(articleId);
         String articleContent = article.getContent();
-        article.setContent(null);
+        Map<String, Object> attributes = article.getAttributesForXForm();
+        attributes.remove("Content");
  
-        XFormEncoder articleInfoXForm = new XFormEncoder(CMSConstants.XFORM_ARTICLE, article);
+        XFormEncoder articleInfoXForm = new XFormEncoder(CMSConstants.XFORM_ARTICLE, attributes);
         
         List<Attachment> attachList = article.getAttachments();
         GridDataEncoder attachGrid = new GridDataEncoder(attachList, CMSConstants.GRID_ATTACHSLIST);
