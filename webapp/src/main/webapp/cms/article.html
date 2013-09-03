@@ -123,9 +123,10 @@
     function saveAndPublishArticle(){
 
 	}
-
+ 
 	function uploadFile() {
-
+		var map = {"seqNo":"1", "articleId":"1", "uploadName":"download?id=1", "name":"潜龙勿用", "fileName":"飞龙在天", "type":"图片", "fileExt":"jpg"};
+		$G("attachGrid").insertRow(map);
 	}
 
 	function deleteFile() {
@@ -155,25 +156,24 @@
               <td valign="top" height="400">
                   <!-- 编辑器 开始 -->
 				  <form>
-					<textarea id="content" name="content" style="width:90%;height:399px;visibility:hidden;"></textarea>
+					<textarea id="content" name="content" style="width:100%;height:399px;visibility:hidden;"></textarea>
 				  </form>
                   <!-- 编辑器 结束 -->
               </td>
             </tr>
             <tr>
-				<td>
-				   <Grid:Box id="attachGrid" baseurl="../framework/grid/" width="75%"></Grid:Box>
+				<td style="height:120px;">
+				   <Grid:Box id="attachGrid" baseurl="../framework/grid/" width="80%" height="120px"></Grid:Box>
 				</td>
             </tr>
 			 <tr>
-				<td style="width:90%;height:200px;">
+				<td style="width:90%;height:50px;">
 					 <form id="uploadForm" method="post" enctype="multipart/form-data">
-						<select name="附件类型">
-							<option name="图片" value="1" selected>
-							<option name="附件" value="2">
+						附件类型: <select name="">
+							<option value="1" selected>图片</option>
+							<option value="2">附件</option>
 						</select>
-						<input type="file" name="file" id="sourceFile" /> 支持文本类和图片类附件
-						<input type="button" onclick="uploadFile()" value="上传附件" />
+						<input type="file" name="file"/><input type="button" onclick="uploadFile()" value="上传附件" />
 					</form>
 				</td>
             </tr>

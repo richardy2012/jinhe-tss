@@ -185,6 +185,32 @@ Grid.prototype.getRowAttributeValue = function(attrName) {
 	return null;
 }
 
+// 新增一行
+Grid.prototype.insertRow = function(map) {
+	var rowIndex = this.totalRowsNum ++ ;
+	var newRow = this.tbody.insertRow(rowIndex);
+
+	var thList = this.gridBox.childNodes[0].tHead.firstChild.childNodes;
+	for(var i = 0; i < thList.length; i++) {
+		var columnName = thList[i].name;
+
+		var cell = newRow.insertCell(i);
+		cell.setAttribute( "name", columnName );
+
+		var nobr = document.createElement("nobr");
+		cell.appendChild( nobr );		
+
+		if(columnName == "sequence") {
+			nobr.innerText = this.totalRowsNum;
+		}
+	}
+
+	for(var property in map) {
+		newRow.setAttribute(property, map[property]);
+	}
+	this.processDataRow(newRow);
+}
+
 // 删除单行
 Grid.prototype.deleteRow = function(row) {
 	Element.addClass(row, "hidden");
