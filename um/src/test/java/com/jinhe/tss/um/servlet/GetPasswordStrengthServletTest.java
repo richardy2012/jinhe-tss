@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.servlet;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -18,10 +19,11 @@ public class GetPasswordStrengthServletTest extends TxSupportTest4UM {
         request.addParameter(SSOConstants.USER_PASSWORD, "123456");
         
         try {
-            new GetPasswordStrengthServlet().doPost(request, response);
+            GetPasswordStrengthServlet servlet = new GetPasswordStrengthServlet();
+			servlet.doGet(request, response);
             
         } catch (Exception e) {
-            e.printStackTrace();
+        	Assert.assertFalse("Test servlet error:" + e.getMessage(), true);
         }
     }
     

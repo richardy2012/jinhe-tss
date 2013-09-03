@@ -24,13 +24,13 @@ public class Servlet8Empty extends HttpServlet {
     private static final long serialVersionUID = 5470879889942418562L;
 
     Logger log = Logger.getLogger(this.getClass());
+ 
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		
+		doPost(request, response);
+	}
     
-    protected void doGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        
-        doPost(request, response);
-    }
-
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
         

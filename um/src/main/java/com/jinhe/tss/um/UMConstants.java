@@ -28,9 +28,8 @@ public final class UMConstants {
 	/**
 	 * 同步功能相关常量定义
 	 */	
-	public static final String DATA_SOURCE_TYPE_ORACLE = "1";
-	public static final String DATA_SOURCE_TYPE_LDAP   = "2";
-	public static final String DATA_SOURCE_TYPE_DB2    = "3";
+	public static final String DATA_SOURCE_TYPE_LDAP   = "1";
+	public static final String DATA_SOURCE_TYPE_MYSQL  = "2";
 	
 	
 	// ===========================================================================

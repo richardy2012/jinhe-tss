@@ -6,10 +6,9 @@ import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.dto.GroupDTO;
 import com.jinhe.tss.um.helper.dto.UserDTO;
-import com.jinhe.tss.um.syncdata.dao.DB2DataDao;
 import com.jinhe.tss.um.syncdata.dao.IOutDataDao;
 import com.jinhe.tss.um.syncdata.dao.LDAPDataDao;
-import com.jinhe.tss.um.syncdata.dao.OracleDataDao;
+import com.jinhe.tss.um.syncdata.dao.MySQLDataDao;
 import com.jinhe.tss.util.EasyUtils;
 
 public class SyncDataHelper {
@@ -66,17 +65,15 @@ public class SyncDataHelper {
     }
     
     public static IOutDataDao getOutDataDao(Integer dataSourceType) {
-        if (UMConstants.DATA_SOURCE_TYPE_ORACLE.equals(dataSourceType.toString()))
-            return new OracleDataDao();
-        
-        if (UMConstants.DATA_SOURCE_TYPE_LDAP.equals(dataSourceType.toString()))
+        if (UMConstants.DATA_SOURCE_TYPE_LDAP.equals(dataSourceType.toString())) {
             return new LDAPDataDao();
+        }
         
-        if (UMConstants.DATA_SOURCE_TYPE_DB2.equals(dataSourceType.toString()))
-            return new DB2DataDao();
+        if (UMConstants.DATA_SOURCE_TYPE_MYSQL.equals(dataSourceType.toString())) {
+            return new MySQLDataDao();
+        }
         
         throw new BusinessException("同步数据时设置的数据库类型不匹配");
-
     }
 }
 

@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.servlet;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -17,10 +18,11 @@ public class GetLoginInfoServletTest extends TxSupportTest4UM {
         request.addParameter(SSOConstants.LOGINNAME_IN_SESSION, "Admin");
         
         try {
-            new GetLoginInfoServlet().doPost(request, response);
+            GetLoginInfoServlet servlet = new GetLoginInfoServlet();
+			servlet.doGet(request, response);
             
         } catch (Exception e) {
-            e.printStackTrace();
+        	Assert.assertFalse("Test servlet error:" + e.getMessage(), true);
         }
     }
     

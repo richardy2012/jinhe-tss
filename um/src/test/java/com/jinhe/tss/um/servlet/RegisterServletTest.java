@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.servlet;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -32,10 +33,10 @@ public class RegisterServletTest extends TxSupportTest4UM {
         
         try {
             registerServlet.init();
-            registerServlet.doPost(request, response);
+            registerServlet.doGet(request, response);
             
         } catch (Exception e) {
-            e.printStackTrace();
+        	Assert.assertFalse("Test servlet error:" + e.getMessage(), true);
         } finally {
             registerServlet.destroy();
         }

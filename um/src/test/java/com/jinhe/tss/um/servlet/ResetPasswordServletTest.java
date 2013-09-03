@@ -2,6 +2,7 @@ package com.jinhe.tss.um.servlet;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -33,10 +34,10 @@ public class ResetPasswordServletTest extends TxSupportTest4UM {
             request.removeParameter("type");
             request.addParameter("password", "123456");
             request.addParameter("type", "reset");
-            servlet.doPost(request, response);
+            servlet.doGet(request, response);
             
         } catch (Exception e) {
-            e.printStackTrace();
+            Assert.assertFalse("Test servlet error:" + e.getMessage(), true);
         } finally {
             servlet.destroy();
         }

@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.servlet;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -39,10 +40,10 @@ public class GetPasswordServletTest extends TxSupportTest4UM {
             
             request.removeParameter("passwordAnswer");
             request.addParameter("passwordAnswer", "************");
-            getPasswordServlet.doPost(request, response);
+            getPasswordServlet.doGet(request, response);
             
         } catch (Exception e) {
-            e.printStackTrace();
+        	Assert.assertFalse("Test servlet error:" + e.getMessage(), true);
         }
     }
     
