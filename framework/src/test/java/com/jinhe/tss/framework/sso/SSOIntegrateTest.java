@@ -14,16 +14,15 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.log4j.Logger;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.servlet.Context;
 
 import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.sso.servlet.JustRedirectServlet;
-import com.jinhe.tss.framework.sso.servlet.MultiRequestServletTest.SimpleRequestServlet;
+import com.jinhe.tss.framework.sso.servlet.SimpleRequestServlet;
 import com.jinhe.tss.framework.web.filter.Filter1Encoding;
 import com.jinhe.tss.framework.web.filter.Filter2CatchException;
 import com.jinhe.tss.framework.web.filter.Filter3Context;
@@ -47,33 +46,46 @@ public class SSOIntegrateTest {
     
     protected Server tssServer;
     protected Server cmsServer;
+    protected Server xxxServer;
+    
+    HttpClient client; 
     
     @Before
     public void setUp() throws Exception {
-        tssServer = startOneServer(8083, "/tss"); 
-        cmsServer = startOneServer(8081, "/cms"); 
+    	try {
+    		tssServer = startOneServer(8083, "/tss"); 
+            cmsServer = startOneServer(8081, "/cms"); 
+            xxxServer = startOneServer(8082, "/xxx"); 
+            
+    	} catch(Exception e) {
+    	}
+    	
+    	client = new HttpClient(); 
     }
     
     private Server startOneServer(int port, String contextPath) throws Exception {
         Server server = new Server(port); // 设置监听端口为port
-        
-        Context context = new Context(server, contextPath, Context.SESSIONS);
-        
-        context.addFilter(Filter1Encoding.class, "/*", Handler.DEFAULT).setInitParameter("encoding", "UTF-8");
-        context.addFilter(Filter2CatchException.class, "*", Handler.DEFAULT);
-        context.addFilter(Filter3Context.class, "/*", Handler.DEFAULT);
-        context.addFilter(Filter4AutoLogin.class, "/*", Handler.DEFAULT);
-        context.addFilter(Filter5HttpProxy.class, "/*", Handler.DEFAULT);
-        context.addFilter(Filter6XmlHttpDecode.class, "*", Handler.DEFAULT);
-        context.addFilter(Filter7AccessingCheck.class, "*", Handler.DEFAULT);
-        
-        context.getSessionHandler().addEventListener(new SessionDestroyedListener());
-        
-        context.addServlet(Servlet1Login.class, "/login.do"); 
-        context.addServlet(Servlet2Logout.class, "/logout.do"); 
+ 
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.addServlet(Servlet1Login.class, "/login.do");
+        context.addServlet(Servlet2Logout.class, "/logout.in"); 
         context.addServlet(JustRedirectServlet.class, "/rd.do"); 
         context.addServlet(SimpleRequestServlet.class, "/simple.do"); 
         context.addServlet(Servlet8Empty.class, "/*"); // 对应的servlet类，/* 表示任意的url都可以触发
+        
+        context.getSessionHandler().addEventListener(new SessionDestroyedListener());
+        
+        context.addFilter(Filter1Encoding.class, "/*", null).setInitParameter("encoding", "UTF-8");
+        context.addFilter(Filter2CatchException.class, "*", null);
+        context.addFilter(Filter3Context.class, "/*", null);
+        context.addFilter(Filter4AutoLogin.class, "/*", null);
+        context.addFilter(Filter5HttpProxy.class, "/*", null);
+        context.addFilter(Filter6XmlHttpDecode.class, "*", null);
+        context.addFilter(Filter7AccessingCheck.class, "*", null);
+        
+        context.setContextPath(contextPath);
+        
+        server.setHandler(context);
         
         server.start();
         return server;
@@ -83,22 +95,23 @@ public class SSOIntegrateTest {
     public void tearDown() throws Exception {
         tssServer.stop();
         cmsServer.stop();
+        xxxServer.stop();
     }
     
     @Test
-    public void testSSO() throws ServletException, IOException, InterruptedException {
-        HttpClient client = new HttpClient(); 
-        
-        System.out.println("");
+    public void testAnonymous() throws ServletException, IOException, InterruptedException {
         log.info("---------------------------------1、先测试匿名访问------------------------------------------------------");
         PostMethod httppost = new PostMethod("http://localhost:8083/tss/index.html");
         httppost.setRequestHeader(RequestContext.ANONYMOUS_REQUEST, "true");
         excuteRequest(client, httppost);
-        
-        System.out.println("");
+    }
+    
+    @Test
+    public void testLoginFirstTime() throws ServletException, IOException, InterruptedException {
         log.info("--------------------------------- 2、测试首次登录 ------------------------------------------------------");
-        httppost = new PostMethod("http://localhost:8083/tss/login.do");
+        PostMethod httppost = new PostMethod("http://localhost:8083/tss/login.do");
         httppost.setRequestHeader("REQUEST-TYPE", "xmlhttp");
+        
         // 由于XmlHttpDecodeFilter配置在AutoLoginFilter之后，所以登录信息需要放在header里传递
         httppost.setRequestHeader("loginName", "Jon.King");
         httppost.setRequestHeader("password", "123456");
@@ -110,8 +123,7 @@ public class SSOIntegrateTest {
                       "</Request>";
         httppost.setRequestEntity(new StringRequestEntity(body, null, null));
         excuteRequest(client, httppost);
-        
-        System.out.println("\n");
+ 
         log.info("--------------------------------- 3、测试登录后访问 ------------------------------------------------------");
         httppost = new PostMethod("http://localhost:8083/tss/index.html");
         httppost.setRequestHeader("REQUEST-TYPE", "xmlhttp");
@@ -125,8 +137,22 @@ public class SSOIntegrateTest {
             REQUEST-TYPE: xmlhttp
             Cookie: $Version=0; JSESSIONID=uxnvs54t4l5g14yxlx7wuufs6; $Path=/tss
             Cookie: $Version=0; token=+y69xSIFzvaUClV6fMkrA3Fp2EQB9GnWn7Nd1Pv4Fqk4Sd9eEXwHICyxJPD86/KY; $Path=/tss */
-        
-        System.out.println("\n");
+    }
+    
+    @Test
+    public void testCrossApp() throws ServletException, IOException, InterruptedException {
+    	 PostMethod httppost = new PostMethod("http://localhost:8083/tss/login.do");
+         httppost.setRequestHeader("REQUEST-TYPE", "xmlhttp");
+         
+         // 由于XmlHttpDecodeFilter配置在AutoLoginFilter之后，所以登录信息需要放在header里传递
+         httppost.setRequestHeader("loginName", "Jon.King");
+         httppost.setRequestHeader("password", "123456");
+         httppost.setRequestHeader("identifier", "com.jinhe.tss.framework.sso.DemoUserIdentifier");
+         
+         String body = "<Request/>";
+         httppost.setRequestEntity(new StringRequestEntity(body, null, null));
+         excuteRequest(client, httppost);
+         
         log.info("--------------------------------- 4、测试跨应用访问 ------------------------------------------------------");
         httppost = new PostMethod("http://localhost:8083/tss/index.html");
         httppost.setRequestHeader("appCode", "CMS");
@@ -145,23 +171,24 @@ public class SSOIntegrateTest {
         httppost = new PostMethod("http://localhost:8083/tss/rd.do");  // dealWithRedirect
         httppost.setRequestHeader("appCode", "CMS");
         excuteRequest(client, httppost);
-        
-        System.out.println("");
+    }
+    
+    @Test
+    public void testLogout() throws ServletException, IOException, InterruptedException {
         log.info("--------------------------------- 5、测试退出登录(tss/cms里全注销掉) ------------------------------------------------------");
-        httppost = new PostMethod("http://localhost:8083/tss/logout.do");
+        PostMethod httppost = new PostMethod("http://localhost:8083/tss/logout.do");
         httppost.setRequestHeader("appCode", "CMS");
         excuteRequest(client, httppost);
         
         httppost = new PostMethod("http://localhost:8083/tss/logout.do");
         excuteRequest(client, httppost);
-        
-        System.out.println("\n");
+ 
         log.info("--------------------------------- 6、测试註銷后访问，提示重新登录 ------------------------------------------------------");
         httppost = new PostMethod("http://localhost:8083/tss/index.html");
         httppost.setRequestHeader("REQUEST-TYPE", "xmlhttp");
+        String body = "<Request><Param><Name><![CDATA[resourceId]]></Name><Value><![CDATA[10000]]></Value></Param></Request>";
         httppost.setRequestEntity(new StringRequestEntity(body, null, null)); //设置请求内容
         excuteRequest(client, httppost);
- 
     }
 
     protected void excuteRequest(HttpClient client, PostMethod httppost) throws IOException, HttpException {

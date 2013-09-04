@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -20,15 +17,11 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.HandlerList;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.ServletHandler;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.servlet.Servlet3MultiRequest;
@@ -45,45 +38,23 @@ import com.jinhe.tss.util.XMLDocUtil;
  */
 public class MultiRequestServletTest {
 
-    private Server server;
- 
+	private Server server;
+	 
     @Before
     public void setUp() throws Exception {
         
-        server = new Server(); // 设置监听端口为8083
+        server = new Server(8083); // 设置监听端口为8083
         
-        Connector connector = new SelectChannelConnector();
-        connector.setPort(8083);
-        server.setConnectors(new Connector[]{connector});
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.addServlet(Servlet3MultiRequest.class, "/multi");
+        context.addServlet(SimpleRequestServlet.class, "/simple/*");
+        context.setContextPath("/tss");
         
-        Context context = new Context(server, "/tss", Context.SESSIONS);
-        
-        ServletHandler handler = new ServletHandler();
-        handler.addServletWithMapping(Servlet3MultiRequest.class, "/multi"); 
-        handler.addServletWithMapping(SimpleRequestServlet.class, "/simple/*"); 
-        
-        HandlerList handlers = new HandlerList();
-        handlers.addHandler(handler);
-
-        context.setHandler(handlers);
+        server.setHandler(context);
         
         server.start();
     }
     
-    /**
-     * <p> SimpleRequestServlet.java </p>
-     * do nothing，简单的返回请求地址
-     */
-    public static class SimpleRequestServlet extends HttpServlet {
-        private static final long serialVersionUID = -6852492423340779582L;
-        
-        protected void doPost(HttpServletRequest request,
-                HttpServletResponse response) throws ServletException, IOException {
-            
-            response.getWriter().println("<Response><url>" + request.getServletPath() + "</url></Response>");
-        }
-    }
- 
     @After
     public void tearDown() throws Exception {
         server.stop();

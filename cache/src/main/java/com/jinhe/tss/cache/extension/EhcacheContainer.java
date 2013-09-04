@@ -50,7 +50,7 @@ public class EhcacheContainer extends AbstractContainer {
 		try {
 			Element e = cache.get((Serializable) key);
 			if (e != null) {
-				return (Cacheable) e.getValue();
+				return (Cacheable) e.getObjectValue();
 			}
 		} catch (IllegalStateException e) {
 			log.error("EhcachePool->get:IllegalStateException!", e);
