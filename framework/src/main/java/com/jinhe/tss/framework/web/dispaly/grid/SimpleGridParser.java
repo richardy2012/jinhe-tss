@@ -10,7 +10,7 @@ public class SimpleGridParser extends GridParser {
 	/**
 	 * 解析Grid数据
 	 */
-	public GridNode parse(Object data, int dataType) {
+	public GridNode parse(Object data) {
 		if (data == null) {
 			return null;
 		}
@@ -19,7 +19,7 @@ public class SimpleGridParser extends GridParser {
 		
 		List<?> list = (List<?>) data;
         for (Object temp : list) {
-			root.addChild(new GridNode(temp, super.columns, dataType));
+			root.addChild(new GridNode(temp, super.columns));
 		}
 		return root;
 	}

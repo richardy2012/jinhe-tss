@@ -61,26 +61,8 @@ public class CGLIBProfiler implements MethodInterceptor {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(clazz);
         enhancer.setCallbacks(callbacks);
-        enhancer.setCallbackFilter(this.new CallbackFilterImpl(invokeMethods));
-        return enhancer.create();
-    } 
-    
-    /**
-     * 如果构造函数带参数，则调用本方法实现
-     * @param clazz
-     * @param paramTypes
-     * @param params
-     * @param invokeMethods
-     * @return
-     */
-    public Object getProxy(Class<?> clazz, Class<?>[] paramTypes, Object[] params, String[] invokeMethods) {
-        Callback[] callbacks = new Callback[] { this,  NoOp.INSTANCE };
-        
-        Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(clazz);
-        enhancer.setCallbacks(callbacks);
-        enhancer.setCallbackFilter(new CallbackFilterImpl(invokeMethods));
-        return enhancer.create(paramTypes, params);
+        enhancer.setCallbackFilter(this.new CallbackFilterImpl());
+        return enhancer.create(); // enhancer.create(paramTypes, params);
     } 
 
     public Object intercept(Object o, Method method, Object[] args, MethodProxy proxy) throws Throwable {
@@ -94,13 +76,8 @@ public class CGLIBProfiler implements MethodInterceptor {
     
     private class CallbackFilterImpl implements CallbackFilter {  
         
-        private String[] invokeMethods;
         private String[] ignoreMethods = new String[] {"print", "set", "getWriter", "doAfterSave"};
-        
-        public CallbackFilterImpl(String[] invokeMethods){
-            this.invokeMethods = invokeMethods;
-        }
-        
+ 
         /*
          * 定义过滤或者拦截哪些方法，0：拦截 1：不拦截
          */
@@ -114,10 +91,6 @@ public class CGLIBProfiler implements MethodInterceptor {
                 }
                 return 0;
             }
-            
-            if(invokeMethods == null || invokeMethods.length == 0) return 0;
-            
-            if(Arrays.asList(invokeMethods).contains(methodName))  return 0;
             
             return 1;
         }

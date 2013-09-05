@@ -12,7 +12,7 @@ import com.jinhe.tss.util.XMLDocUtil;
  */
 public class XFormDecoder {
 	
-	private static final String XFORM_DATA_ROW_NODE_XPATH = "/data/row";
+	private static final String XFORM_DATA_ROW_NODE_XPATH = "//data/row";
 
 	/**
 	 * 将XML格式的数据设置到新创建的实体中
@@ -27,7 +27,7 @@ public class XFormDecoder {
 		if (dataXml != null) {
 			Document doc = XMLDocUtil.dataXml2Doc(dataXml);
 			Element dataNode = (Element) doc.selectSingleNode(XFORM_DATA_ROW_NODE_XPATH);
-			BeanUtil.setDataToBean(bean, XMLDocUtil.dataNode2Map(dataNode));
+			BeanUtil.setDataToBean(bean, XMLDocUtil.dataNodes2Map(dataNode));
 		}
 		return bean;
 	}

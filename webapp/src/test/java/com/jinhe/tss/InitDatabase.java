@@ -9,7 +9,6 @@ import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.junit.Before;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
@@ -47,7 +46,7 @@ import com.jinhe.tss.util.XMLDocUtil;
           "classpath:META-INF/spring.xml"
         } 
       )
-@TransactionConfiguration(defaultRollback = false) // 不自动回滚，否则后续的test中没有初始化的数据
+@TransactionConfiguration(defaultRollback = false) // 不自动回滚
 public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests { 
  
     Logger log = Logger.getLogger(this.getClass());    
@@ -64,7 +63,7 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
         Global.setContext(super.applicationContext);
     }
     
-    @Test
+//    @Test
     public void initDatabase() {
         log.info("create tss databse schema starting......");
  

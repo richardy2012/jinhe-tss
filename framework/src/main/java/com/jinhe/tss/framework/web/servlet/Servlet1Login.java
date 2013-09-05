@@ -18,7 +18,7 @@ import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
  * 登录部分工作已经在AutoLoginFilter中完成，此处只要返回成功信息即可。
  * </p>
  */
-@WebServlet(name="LoginServlet", urlPatterns="/login.do")
+@WebServlet(name="LoginServlet", urlPatterns="/auth/login.do")
 public class Servlet1Login extends HttpServlet {
     private static final long serialVersionUID = 8087850681949512666L;
 

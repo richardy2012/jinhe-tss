@@ -5,21 +5,19 @@ import com.jinhe.tss.util.EasyUtils;
 /** 
  * 对grid的Column的封装对象。
  * 一个GridColumn是一列，一个GridNode是一行
- * 
  */
 class GridColumn {
     
-	static final String GRID_COLUMN_CLASS_TYPE_STRING  = "String";
-	static final String GRID_COLUMN_CLASS_TYPE_INTEGER = "Integer";
-	static final String GRID_COLUMN_CLASS_TYPE_DOUBLE  = "Double";
-	static final String GRID_COLUMN_CLASS_TYPE_DATE    = "Date";
+	static final String GRID_COLUMN_MODE_STRING  = "string";
+	static final String GRID_COLUMN_MODE_NUMBER  = "number";
+	static final String GRID_COLUMN_MODE_DATE    = "date";
 
-	private String name;      //列名称
-	private String classType; //数据类型，如果为null或""则认为是字符串
-	private String pattern;   //数据格式化格式，如果为""或null则不格式化数据
+	private String name;     // 列名称
+	private String mode;     // 数据类型，如果为空则认为是string
+	private String pattern;  // 数据格式化格式，如果为空则不格式化数据
 
-	public String getClassType() {
-		return classType;
+	public String getMode() {
+		return mode;
 	}
 
 	public String getName() {
@@ -30,11 +28,11 @@ class GridColumn {
 		return pattern;
 	}
 
-	public void setClassType(String classType) {
-		if (  EasyUtils.isNullOrEmpty(classType) ) {
-			classType = GRID_COLUMN_CLASS_TYPE_STRING;
+	public void setMode(String mode) {
+		if (  EasyUtils.isNullOrEmpty(mode) ) {
+			mode = GRID_COLUMN_MODE_STRING;
 		}
-		this.classType = classType;
+		this.mode = mode;
 	}
 
 	public void setName(String name) {

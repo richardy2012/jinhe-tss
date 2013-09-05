@@ -20,8 +20,8 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 public class LogAction extends BaseActionSupport {
 
     /** 日志展示模板路径 */
-    static final String LOG_XFORM_TEMPLET_PATH = "template/log/Log_xform.xml";
-    static final String LOG_GRID_TEMPLET_PATH  = "template/log/Log_grid.xml";
+	public static final String LOG_XFORM_TEMPLET_PATH = "template/log/Log_xform.xml";
+	public static final String LOG_GRID_TEMPLET_PATH  = "template/log/Log_grid.xml";
     
     static final Integer PAGE_SIZE = 50;  
 
@@ -58,22 +58,6 @@ public class LogAction extends BaseActionSupport {
     public void getLogInfo(HttpServletResponse response, @PathVariable long id) {
         Log log = service.getLogById(id);          
         print("LogInfo", new XFormEncoder(LOG_XFORM_TEMPLET_PATH, (IXForm) log));
-    }
-
-    @RequestMapping("/test/1")
-    public String test1(LogQueryCondition condition) {
-        super.printSuccessMessage(condition.getAppCode());
-    	return "XML";
-    }
-    
-    @RequestMapping("/test/3")
-    public void test3(LogQueryCondition condition) {
-        super.printSuccessMessage(condition.getAppCode());
-    }
-
-    @RequestMapping("/test/2")
-    public void test2(HttpServletResponse response, LogQueryCondition condition) {
-    	super.printSuccessMessage(condition.getAppCode());
     }
 }
 

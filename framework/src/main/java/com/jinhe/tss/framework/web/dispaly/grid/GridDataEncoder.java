@@ -18,8 +18,6 @@ public class GridDataEncoder implements IDataEncoder {
     private GridParser parser; //解析器
 
     private Object data; //源数据
-
-    private int dataType; //数据类型
  
     public GridDataEncoder(Object data, String uri) {
         this(data, uri, new SimpleGridParser());
@@ -32,7 +30,6 @@ public class GridDataEncoder implements IDataEncoder {
     public GridDataEncoder(Object data, Document doc, GridParser parser) {
         templet = new GridTemplet(doc);
         this.data = data;
-        this.dataType = GridNode.TYPE_SIMPLE_NODE;
         this.parser = parser;
         parser.setColumns(templet.getColumns());
     }
@@ -40,7 +37,6 @@ public class GridDataEncoder implements IDataEncoder {
     public GridDataEncoder(Object data, String uri, GridParser parser) {
         templet = new GridTemplet(uri);
         this.data = data;
-        this.dataType = GridNode.TYPE_SIMPLE_NODE;
         this.parser = parser;
         parser.setColumns(templet.getColumns());
     }
@@ -51,7 +47,7 @@ public class GridDataEncoder implements IDataEncoder {
     public String toXml() {
         StringBuffer sb = new StringBuffer();
         sb.append(templet.getHeader());
-        GridNode node = parser.parse(data, dataType);
+        GridNode node = parser.parse(data);
         if (node != null) {
             sb.append(node.toXml(GRID_DATA_ROW_NODE_NAME));
         }
@@ -59,21 +55,18 @@ public class GridDataEncoder implements IDataEncoder {
         return sb.toString();
     }
 
-    /**
-     * 获取模板对象
-     */
-    public GridTemplet getTemplet() {
-        return templet;
-    }
-
     public void print(XmlPrintWriter out) {
         out.append(templet.getHeader());
         
-        GridNode node = parser.parse(data, dataType);
+        GridNode node = parser.parse(data);
         if (node != null) {
             out.append(node.toXml(GRID_DATA_ROW_NODE_NAME));
         }
         
         out.append(templet.getFooter());
+    }
+    
+    public GridTemplet getTemplete() {
+    	return this.templet;
     }
 }

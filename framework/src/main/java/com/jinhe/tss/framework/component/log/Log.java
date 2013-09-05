@@ -172,7 +172,7 @@ public class Log implements IEntity, IXForm, IGridNode {
         map.put("id", this.id);
         map.put("appCode", this.appCode);
         map.put("operateTable", this.operateTable);
-        map.put("operateTime", DateUtil.formatCare2Second(this.operateTime));
+        map.put("operateTime", this.operateTime);
         map.put("operationCode", this.operationCode);
         map.put("operatorIP", this.operatorIP);
         map.put("operatorName", this.operatorName);

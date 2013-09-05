@@ -30,8 +30,6 @@ public class PoolPerformanceTest {
             apool = cache.getTaskPool();
             tpool = cache.getThreadPool();
             cyclelife = apool.getCacheStrategy().cyclelife;
-            
-//            ((IDisable)apool).stop();
         } 
         catch (InterruptedException e) {
             log.error(e);

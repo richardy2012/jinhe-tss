@@ -37,7 +37,7 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 应用地址访问权限控制检测过滤器
  * 
  */
-@WebFilter(filterName = "AccessingCheckFilter", urlPatterns = {"*.htm", ".html"})
+@WebFilter(filterName = "AccessingCheckFilter", urlPatterns = {"*.htm", "*.html"})
 public class Filter7AccessingCheck implements Filter {
     
     Log log = LogFactory.getLog(Filter7AccessingCheck.class);

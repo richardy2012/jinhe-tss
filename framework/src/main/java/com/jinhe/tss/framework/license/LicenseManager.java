@@ -65,7 +65,6 @@ public final class LicenseManager {
                 }
                 licenses.add(license);
             } catch(Exception e) {
-            	e.printStackTrace();
                 log.error(e);
             }
         }

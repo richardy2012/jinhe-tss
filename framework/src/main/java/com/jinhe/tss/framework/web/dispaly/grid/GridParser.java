@@ -10,7 +10,7 @@ public abstract class GridParser {
 	/**
 	 * 解析Grid数据
 	 */
-	public abstract GridNode parse(Object data, int dataType);
+	public abstract GridNode parse(Object data);
 
 	/**
 	 * 字段名数组

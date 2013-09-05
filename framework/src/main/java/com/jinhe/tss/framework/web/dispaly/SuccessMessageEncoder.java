@@ -8,7 +8,7 @@ import com.jinhe.tss.framework.Config;
  * 负责处理成功信息的消息编码器。
  * 
  */
-public class SuccessMessageEncoder implements IMessageEncoder {
+public class SuccessMessageEncoder implements IDataEncoder {
 
     private static final Logger log = Logger.getLogger(SuccessMessageEncoder.class);
     
@@ -97,30 +97,5 @@ public class SuccessMessageEncoder implements IMessageEncoder {
      */
     public void print(XmlPrintWriter writer){
         writer.append(toXml());
-    }
-
-    /**
-     * <p>
-     * 将成功信息输出成HTML格式
-     * </p>
-     * @return
-     */
-    public String toHTML(){
-        StringBuffer sb = new StringBuffer();
-        sb.append("<html><head><title>Success Message</title></head><body>");
-        sb.append("<script language=\"JavaScript\">\n");
-        sb.append("var msg = '" + this.message.replaceAll("\\n", "\\\\n").replaceAll("\n", "\\n") + "';\n");
-        sb.append("var description = '" + this.description.replaceAll("\\n", "\\\\n").replaceAll("\n", "\\n") + "';\n");
-        sb.append("if(typeof(alert) == 'function'){\n");
-        sb.append("    alert(msg, description);\n");
-        sb.append("}else if(parent != null && typeof(parent.alert) == 'function'){\n");
-        sb.append("    parent.alert(msg, description);\n");
-        sb.append("}else{\n");
-        sb.append("    msg = '成功信息：' + msg + '\\n明细信息：\\n' + description;\n");
-        sb.append("    alert(msg);\n");
-        sb.append("}\n");
-        sb.append("</script>");
-        sb.append("</body></html>");
-        return sb.toString();
     }
 }

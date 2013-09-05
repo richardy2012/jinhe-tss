@@ -22,7 +22,7 @@ import com.jinhe.tss.framework.Config;
  */
 @WebFilter(filterName = "EncodingFilter",
 	urlPatterns = {"/*"} , 
-	initParams  = {@WebInitParam(name="encoding", value="GBK")}
+	initParams  = {@WebInitParam(name="encoding", value="UTF-8")}
 )
 public class Filter1Encoding implements Filter {
     

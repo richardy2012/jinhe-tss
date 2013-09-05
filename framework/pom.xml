@@ -75,6 +75,12 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>${hibernate.version}</version>
+			<exclusions>
+				<exclusion>
+				  <groupId>org.slf4j</groupId>
+				  <artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!--  Other DEPENDENCIES -->
@@ -106,15 +112,6 @@
 			<artifactId>h2</artifactId>
 			<version>1.2.125</version>
 		</dependency>
-		
-		<!-- TEST dependency
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
-			<version>6.1.26</version>
-			<scope>test</scope>
-		</dependency>
-		 -->
 		
 		<!-- JETTY DEPENDENCIES -->
 		<dependency>

@@ -1,5 +1,9 @@
 package com.jinhe.tss.framework.component.log;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -7,10 +11,14 @@ import com.jinhe.tss.framework.TxTestSupport;
 import com.jinhe.tss.framework.mock.model._Group;
 import com.jinhe.tss.framework.mock.model._User;
 import com.jinhe.tss.framework.mock.service._IUMSerivce;
+import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
+import com.jinhe.tss.framework.web.dispaly.grid.GridDataDecoder;
+import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 
 public class LogActionTest extends TxTestSupport {
 
 	@Autowired private LogAction action;
+	@Autowired private LogService logService;
 
 	@Autowired private _IUMSerivce umSerivce;
  
@@ -41,6 +49,29 @@ public class LogActionTest extends TxTestSupport {
 		}
 		
 		action.queryLogs4Grid(null, new LogQueryCondition(), 1);
+		
+		action.getAllApps4Tree(response);
+		
+		LogQueryCondition condition = new LogQueryCondition();
+		Object[] logsInfo = logService.getLogsByCondition(condition);
+        List<?> logs = (List<?>)logsInfo[0];
+        Assert.assertTrue(logs.size() > 0);
+        action.getLogInfo(response, ((Log)logs.get(0)).getId());
+        
+        // 顺带测试一下Grid的功能
+        GridDataEncoder encoder = new GridDataEncoder(logs, LogAction.LOG_GRID_TEMPLET_PATH);
+        try {
+			encoder.print(new XmlPrintWriter(response.getWriter()));
+		} catch (IOException e) {
+			Assert.fail();
+		}
+        
+        encoder.getTemplete().setColumnAttribute("id", "align", "center");
+        
+        logs = GridDataDecoder.decode(encoder.toXml(), Log.class);
+        Assert.assertTrue(logs.size() > 0);
+        Log log = (Log)logs.get(0);
+		action.getLogInfo(response, log.getId());
 	}
 
 }

@@ -200,6 +200,8 @@ public final class Context {
 		}
 		requestLocal.set(null);
 		responseLocal.set(null);
+		
+		appContext = null;
 	}
 
 	/**

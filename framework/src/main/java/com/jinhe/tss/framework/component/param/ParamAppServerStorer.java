@@ -42,10 +42,11 @@ public class ParamAppServerStorer implements IAppServerStorer {
     
     private AppServer createAppServer(String appCode){
         String appServerXML = null;
-        try{
-//            appServerXML = ParamManager.getValueNoSpring(appCode);
+        try
+        {
         	appServerXML = getAppServerConfig(appCode);
-        }catch(Exception e) { }
+        }
+        catch(Exception e) { }
         
         if(appServerXML == null) {
             throw new BusinessException("参数管理模块中尚没有应用Code为：" + appCode + " 的应用服务配置信息"); 

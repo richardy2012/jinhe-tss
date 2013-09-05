@@ -31,11 +31,9 @@ public class GridTemplet {
     
     private static final String GIRD_DECLARE_COLUMN_XPATH = "/grid/declare//column";
 
-    private static final String GIRD_DECLARE_XPATH = "/grid/declare";
-
     private static final String ATTRIBUTE_NAME = "@name";
 
-    private static final String ATTRIBUTE_CALSS_TYPE = "@classType";
+    private static final String ATTRIBUTE_MODE = "@mode";
 
     private static final String ATTRIBUTE_PATTERN = "@pattern";
     
@@ -73,7 +71,7 @@ public class GridTemplet {
             Node node = columns.get(i);
             items[i] = new GridColumn();
             items[i].setName(node.valueOf(ATTRIBUTE_NAME));
-            items[i].setClassType(node.valueOf(ATTRIBUTE_CALSS_TYPE));
+            items[i].setMode(node.valueOf(ATTRIBUTE_MODE));
             items[i].setPattern(node.valueOf(ATTRIBUTE_PATTERN));
         }
         return items;
@@ -117,14 +115,6 @@ public class GridTemplet {
      */
     public void setColumnAttribute(String columnName, String name, String value) {
         Element column = (Element) doc.selectSingleNode(GIRD_DECLARE_COLUMN_XPATH + "[@name='" + columnName + "']");
-        column.addAttribute(name, value);
-    }
-
-    /**
-     * 设置模板Declear节点属性值
-     */
-    public void setDeclareAttribute(String name, String value) {
-        Element column = (Element) doc.selectSingleNode(GIRD_DECLARE_XPATH);
         column.addAttribute(name, value);
     }
 }

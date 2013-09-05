@@ -55,9 +55,10 @@ public class ExceptionEncoder {
             if (requestContext.isXmlhttpRequest()) {
                 response.setContentType("text/html;charset=gbk");
                 XmlPrintWriter writer = new XmlPrintWriter(response.getWriter());
-                //XMLHTTP，返回XML格式错误信息
+                // XMLHTTP，返回XML格式错误信息
                 errorMessageEncoder.print(writer);
-            } else {
+            } 
+            else {
                 //HTTP，返回HTML格式
                 HttpServletRequest request = requestContext.getRequest();
                 String errorHandle = Config.getAttribute(Config.ERROR_HANDLE);
@@ -65,11 +66,7 @@ public class ExceptionEncoder {
                     request.setAttribute(BUSINESS_EXCEPTION, be);
                     RequestDispatcher rd = request.getRequestDispatcher(errorHandle);
                     rd.forward(request, response);
-                } else {
-                    response.setContentType("text/html;charset=gbk");
-                    XmlPrintWriter writer = new XmlPrintWriter(response.getWriter());
-                    writer.println(errorMessageEncoder.toHTML());
-                }
+                } 
             }
         } catch (Exception e) {
             e.printStackTrace();

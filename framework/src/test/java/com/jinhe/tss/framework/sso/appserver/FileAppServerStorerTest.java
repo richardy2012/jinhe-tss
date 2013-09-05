@@ -18,7 +18,7 @@ public class FileAppServerStorerTest {
     public void testGetAppServer() {
         AppServer server = storer.getAppServer("TSS");
         assertEquals("TSS", server.getCode());
-        assertEquals("http://localhost:8083/tss", server.getBaseURL());
+        assertEquals("http://localhost:8111/tss", server.getBaseURL());
         assertEquals("localhost", server.getDomain());
         assertEquals("TSS", server.getName());
         assertEquals("/tss", server.getPath());

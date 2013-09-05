@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grid version="2">
+<grid>
 	<declare sequence="true">
-		<column caption="用户id" name="subAuthorized2UserId" mode="string" align="center" display="none"/>
-		<column caption="姓名" name="subAuthorized2UserName" mode="string" align="center"/>
-		<column caption="用户所在组ID" name="subAuthorized2GroupId" mode="string" align="center" display="none"/>
-		<column caption="用户所在组" name="subAuthorized2GroupName" mode="string" align="center"/>
-		<column caption="角色id" name="roleId" mode="string" align="center" display="none"/>
-		<column caption="角色名" name="roleName" mode="string" align="center"/>
-		<column caption="转授策略id" name="strategyId" mode="string" align="center" display="none"/>
-		<column caption="转授人id" name="subAuthorizedUserId" mode="string" align="center" display="none"/>
-		<column caption="转授人" name="subAuthorizedUserName" mode="string" align="center"/>
-		<column caption="转授人所在组ID" name="subAuthorizedGroupId" mode="string" align="center" display="none"/>
-		<column caption="转授人所在组" name="subAuthorizedGroupName" mode="string" align="center"/>
+		<column caption="用户id" name="subAuthorized2UserId" display="none"/>
+		<column caption="姓名" name="subAuthorized2UserName" align="center"/>
+		<column caption="用户所在组ID" name="subAuthorized2GroupId"  display="none"/>
+		<column caption="用户所在组" name="subAuthorized2GroupName" align="center"/>
+		<column caption="角色id" name="roleId" display="none"/>
+		<column caption="角色名" name="roleName" align="center"/>
+		<column caption="转授策略id" name="strategyId" display="none"/>
+		<column caption="转授人id" name="subAuthorizedUserId" display="none"/>
+		<column caption="转授人" name="subAuthorizedUserName" align="center"/>
+		<column caption="转授人所在组ID" name="subAuthorizedGroupId" display="none"/>
+		<column caption="转授人所在组" name="subAuthorizedGroupName" align="center"/>
 	</declare>
 	<data>
 	</data>

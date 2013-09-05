@@ -2,7 +2,6 @@ package com.jinhe.tss.framework;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
 
 import com.jinhe.tss.framework.sso.online.IOnlineUserManager;
 
@@ -18,10 +17,6 @@ public class Global {
 	private static ApplicationContext _ctx;
 
 	private static String defaultContextPath = "META-INF/spring.xml";
-
-	private static void initContext(String contextPath) {
-		_ctx = new ClassPathXmlApplicationContext(contextPath);
-	}
  
 	public static synchronized ApplicationContext getContext() {
 		if (_ctx == null) {
@@ -29,23 +24,11 @@ public class Global {
 			if (contextPath != null) {
 				defaultContextPath = contextPath;
 			}
-			initContext(defaultContextPath);
+			_ctx = new ClassPathXmlApplicationContext(defaultContextPath);
 		}
 		return _ctx;
 	}
-
-	public static HibernateTransactionManager getTransactionManager() {
-		return (HibernateTransactionManager) getContext().getBean("transactionManager");
-	}
-
-	public static Object getBaseTxProxy() {
-		return getContext().getBean("baseTxProxy");
-	}
-
-	public static Object getOnlineUserService() {
-		return getContext().getBean("OnlineUserService");
-	}
-
+ 
 	public static IOnlineUserManager getRemoteOnlineUserManager() {
 		return (IOnlineUserManager) getContext().getBean("RemoteOnlineUserManager");
 	}

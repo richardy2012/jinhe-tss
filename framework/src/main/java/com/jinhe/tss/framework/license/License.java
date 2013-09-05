@@ -110,18 +110,5 @@ public final class License extends ConfigurableContants {
         public String toString()  {
             return name;
         }
-
-        public static LicenseType fromString(String type) {
-            if(COMMERCIAL.name.equals(type)) {
-                return COMMERCIAL;
-            }
-            if(EVALUATION.name.equals(type)) {
-                return EVALUATION;
-            }
-            if(ADVANCED.name.equals(type)) {
-                return ADVANCED;
-            }
-            return NON_COMMERCIAL;
-        }
     }
 }

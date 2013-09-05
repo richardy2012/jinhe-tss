@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grid version="2">
-	<declare sequence="true" header="">
-		<column caption="用户图标" name="icon" mode="image" align="center"/>
-		<column caption="用户ID"  name="id" mode="string" display="none"/>
-		<column caption="用户名"  name="loginName" mode="string" align="center"/>
-		<column caption="账号状态" name="disabled" mode="string" align="center" display="none"/>
-		<column caption="姓名"    name="userName" mode="string" align="center"/>
-		<column caption="性别"    name="sex" mode="string" align="center" editor="comboedit" editorvalue="0|1" editortext="男|女"/>
-		<column caption="出生年月" name="birthday" mode="string" align="center" pattern="yyyy-MM-dd" classType="Date"/>
-		<column caption="电子邮件" name="mail" mode="string" align="center"/>
-		<column caption="电话"    name="telephone" mode="string" align="center"/>
-		<column caption="地址"    name="address" mode="string" align="center"/>
-		<column caption="邮编"    name="postalCode" mode="string" align="center"/>
-		<column caption="所在组名称"  name="groupName" mode="string" align="center"/>
-		<column caption="所在组ID"   name="groupId" mode="string" align="center" display="none"/>
-		<column caption="应用系统ID" name="applicationId" mode="string" align="center" display="none"/>
-		<column caption="对应系统用户ID" name="appUserId" mode="string" align="center" display="none"/>
+<grid>
+	<declare sequence="true">
+		<column caption="用户图标"  name="icon" mode="image" align="center"/>
+		<column caption="用户ID"  name="id" display="none"/>
+		<column caption="用户名"   name="loginName" align="center"/>
+		<column caption="账号状态"  name="disabled" display="none"/>
+		<column caption="姓名"    name="userName" align="center"/>
+		<column caption="性别"    name="sex" align="center" editor="comboedit" editorvalue="0|1" editortext="男|女"/>
+		<column caption="出生年月"  name="birthday" mode="date" pattern="yyyy-MM-dd" align="center"/>
+		<column caption="电子邮件"  name="mail" align="center"/>
+		<column caption="电话"    name="telephone" align="center"/>
+		<column caption="地址"    name="address" align="center"/>
+		<column caption="邮编"    name="postalCode" align="center"/>
+		<column caption="所在组名称"  name="groupName" align="center"/>
+		<column caption="所在组ID"   name="groupId" display="none"/>
+		<column caption="应用系统ID" name="applicationId" display="none"/>
+		<column caption="对应系统用户ID" name="appUserId" display="none"/>
 	</declare>
 	<data>
 	</data>

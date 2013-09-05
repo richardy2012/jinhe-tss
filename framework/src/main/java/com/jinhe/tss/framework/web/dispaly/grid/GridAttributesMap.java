@@ -31,13 +31,4 @@ public class GridAttributesMap {
 		}
 		return values;
 	}
-
-	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		for (Map.Entry<String, Object> entry : gridAttibutes.entrySet()) {
-			sb.append(" ").append(entry.getKey()).append("=\"");
-			sb.append(gridAttibutes.get(entry.getValue())).append("\"");
-		}
-		return sb.toString();
-	}
 }

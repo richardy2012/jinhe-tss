@@ -50,9 +50,13 @@
                    <groupId>org.apache.directory.api</groupId>
                    <artifactId>api-ldap-schema-data</artifactId>
                </exclusion>
+               <exclusion>
+                   <groupId>org.apache.directory.jdbm</groupId>
+                   <artifactId>apacheds-jdbm1</artifactId>
+               </exclusion>
           </exclusions>
 	    </dependency>  
-	 
+	    
 	    <dependency>
 	      <groupId>commons-io</groupId>
 	      <artifactId>commons-io</artifactId>

@@ -12,7 +12,7 @@ import com.jinhe.tss.util.BeanUtil;
  * </p>
  *
  */
-public class ErrorMessageEncoder implements IMessageEncoder {
+public class ErrorMessageEncoder implements IDataEncoder {
     
     protected static final Logger log = Logger.getLogger(ErrorMessageEncoder.class);
 
@@ -140,41 +140,6 @@ public class ErrorMessageEncoder implements IMessageEncoder {
         String returnXml = sb.toString();
         log.debug(returnXml);
         return returnXml;
-    }
-
-    /**
-     * <p>
-     * 将错误信息输出成HTML格式
-     * </p>
-     *
-     * @return
-     */
-    public String toHTML() {
-        try {
-            StringBuffer sb = new StringBuffer();
-            sb.append("<html><head><title>Error Message</title></head><body>");
-            sb.append("<script language=\"JavaScript\">\n");
-            sb.append("var msg = '" + this.message.replaceAll("\\n", "\\\\n").replaceAll("\n", "\\\\n") + "';\n");
-            sb.append("var description = '" + this.description.replaceAll("\\n", "\\\\n").replaceAll("\n", "\\\\n") + "';\n");
-            sb.append("if(typeof(alert) == 'function'){\n");
-            sb.append("    alert(msg, description);\n");
-            sb.append("}else if(parent != null && typeof(parent.alert) == 'function'){\n");
-            sb.append("    parent.alert(msg, description);\n");
-            sb.append("}else{\n");
-            sb.append("    msg = '错误信息：' + msg + '\\n明细信息：\\n' + description;\n");
-            sb.append("    alert(msg);\n");
-            sb.append("}\n");
-            sb.append("</script>");
-            sb.append("</body></html>");
-            
-            String returnHtml = sb.toString();
-            log.debug(returnHtml);
-            return returnHtml;
-            
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
-        return "";
     }
  
     public void print(XmlPrintWriter writer) {
