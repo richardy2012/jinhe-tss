@@ -40,6 +40,10 @@ public class Config {
         }
     }
     
+    public static void setProperty(String key, String value) {
+    	propertyMap.put(key, value);
+    }
+    
     /**
      * 获取配置参数
      * @param name

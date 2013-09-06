@@ -28,12 +28,12 @@ public class Servlet8Empty extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		
-		doPost(request, response);
+		log.debug("请求：" + request.getRequestURI() + " 被 dispatche 到 EmptyServlet。");
 	}
     
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
         
-        log.debug("请求：" + request.getRequestURI() + " 被 dispatche 到 EmptyServlet。");
+    	doGet(request, response);
     }
 }

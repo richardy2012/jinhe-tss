@@ -65,11 +65,11 @@ public class SyncDataHelper {
     }
     
     public static IOutDataDao getOutDataDao(Integer dataSourceType) {
-        if (UMConstants.DATA_SOURCE_TYPE_LDAP.equals(dataSourceType.toString())) {
+        if (UMConstants.DATA_SOURCE_TYPE_LDAP.equals(dataSourceType)) {
             return new LDAPDataDao();
         }
         
-        if (UMConstants.DATA_SOURCE_TYPE_MYSQL.equals(dataSourceType.toString())) {
+        if (UMConstants.DATA_SOURCE_TYPE_MYSQL.equals(dataSourceType)) {
             return new MySQLDataDao();
         }
         

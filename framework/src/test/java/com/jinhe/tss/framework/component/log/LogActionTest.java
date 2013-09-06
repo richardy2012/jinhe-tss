@@ -1,7 +1,10 @@
 package com.jinhe.tss.framework.component.log;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,6 +14,7 @@ import com.jinhe.tss.framework.TxTestSupport;
 import com.jinhe.tss.framework.mock.model._Group;
 import com.jinhe.tss.framework.mock.model._User;
 import com.jinhe.tss.framework.mock.service._IUMSerivce;
+import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataDecoder;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
@@ -48,11 +52,22 @@ public class LogActionTest extends TxTestSupport {
 		} catch (InterruptedException e) {
 		}
 		
-		action.queryLogs4Grid(null, new LogQueryCondition(), 1);
-		
 		action.getAllApps4Tree(response);
 		
 		LogQueryCondition condition = new LogQueryCondition();
+		condition.setAppCode("TSS");
+		condition.setOperateTimeFrom(new Date(System.currentTimeMillis() - 1000*10));
+		condition.setOperateTimeTo(new Date());
+		condition.setOperatorName(Environment.getOperatorName());
+		
+		Map<String, Object> conditionsMap = condition.getConditionsMap();
+		conditionsMap.put("operateTimeFrom", new Date(System.currentTimeMillis() - 1000*10));
+		conditionsMap.put("operateTimeTo", new Date());
+		conditionsMap.put("operatorName", Arrays.asList(Environment.getOperatorName()));
+		conditionsMap.put("operatorIP", null);
+		
+		action.queryLogs4Grid(null, condition, 1);
+		
 		Object[] logsInfo = logService.getLogsByCondition(condition);
         List<?> logs = (List<?>)logsInfo[0];
         Assert.assertTrue(logs.size() > 0);

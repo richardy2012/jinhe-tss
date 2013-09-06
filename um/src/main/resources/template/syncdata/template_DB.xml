@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <params>
-	<url>jdbc:oracle:thin:@localhost:1521:myoracle</url>
-	<user>test</user>
-	<password>test</password>
+	<url>jdbc:mysql://localhost:3306/tss</url>
+	<user>root</user>
+	<password>800best@com</password>
 	<groupSql>
 		select distinct g.id, g.parentGroupId as parentId, 
-			g.groupname as groupName, g.grouporder as groupOrder, g.description
-		from tbl_group g start with g.id=:groupId connect by prior g.id = g.parentgroupid 
-		order by g.id
+			g.groupname as groupName, g.seqNo as seqNo, g.description
+		from tbl_group g where g.id=:groupId 
 	</groupSql>
 	<userSql>
 		select distinct u.id, g.id as groupId, u.loginName, u.userName,u.password, 
 			null as sex,null as birthday, null as employeeNo,gu.userorder as userOrder
 		from tbl_group g, tbl_groupuser gu, tbl_user u 
-		where g.id = gu.groupid and gu.userid=u.id 
-			  start with g.id=:groupId connect by prior g.id=g.parentgroupid
+		where g.id = gu.groupid and gu.userid=u.id and g.id=:groupId
 	</userSql>
 	<singleUser>
 		select distinct u.id, null as groupId, u.loginName, u.userName, 
-			u.password, u.sex, u.birthday, u.employeeNo, null as userOrder
+			u.password, u.sex, u.birthday, u.employeeNo
 		from tbl_user u 
 		where u.id = :userId
 	</singleUser>

@@ -31,7 +31,7 @@ import com.jinhe.tss.framework.sso.context.RequestContext;
  *           后者需要的类似用户名、密码、验证方式、token等信息需要从Context中获取。<br/>
  * 
  * 类似在线用户库远程调用可以跳过本过滤器，以防TSS以外平台系统session注销时
- * 调用TSS配置的/remote/OnlineUserService，又会在UM产生一个新的session。
+ * 调用TSS配置的/remote/OnlineUserService，又会在TSS的UM里产生一个新的session。
  * </pre>
  */
 @WebFilter(filterName = "ContextFilter", 

@@ -95,7 +95,7 @@ public class ChannelModuleTest extends AbstractTestSupport {
         channelAction.delete(response, channel2.getId());
         channelAction.delete(response, siteId);
         
-        list = channelDao.getEntities(" from Channel ");
+        list = channelDao.getEntities(" from Channel where site.id = ?", siteId);
         assertTrue(list.size() == 0);
         
         assertTrue(TestUtil.printLogs(logService) > 0);

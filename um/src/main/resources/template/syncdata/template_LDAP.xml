@@ -1,7 +1,7 @@
 <params>
-	<url>ldap://10.100.1.4:390</url>
+	<url>ldap://localhost:390</url>
 	<user>cn=admin</user>
-	<password>shulicq</password>
+	<password>123456</password>
 	<groupSql>
 		&lt;attributes&gt;
 		&lt;applicationId
@@ -10,7 +10,7 @@
 		&lt;parentGroupId defaultValue=""&gt;parentGroupId&lt;/parentGroupId&gt;
 		&lt;groupName defaultValue=""&gt;groupName&lt;/groupName&gt;
 		&lt;description defaultValue=""&gt;description&lt;/description&gt;
-		&lt;groupOrder defaultValue=""&gt;groupOrder&lt;/groupOrder&gt;
+		&lt;seqNo defaultValue=""&gt;seqNo&lt;/seqNo&gt;
 		&lt;/attributes&gt; 
 	</groupSql>
 	<userSql>
@@ -24,7 +24,6 @@
 		&lt;sex defaultValue=""&gt;sex&lt;/sex&gt;
 		&lt;birthday defaultValue=""&gt;birthday&lt;/birthday&gt;
 		&lt;employeeNo defaultValue=""&gt;employeeNo&lt;/employeeNo&gt;
-		&lt;userOrder defaultValue=""&gt;userOrder&lt;/userOrder&gt;
 		&lt;/attributes&gt; 
 	</userSql>
 	<singleUser>
@@ -38,7 +37,6 @@
 		&lt;sex defaultValue=""&gt;sex&lt;/sex&gt;
 		&lt;birthday defaultValue=""&gt;birthday&lt;/birthday&gt;
 		&lt;employeeNo defaultValue=""&gt;employeeNo&lt;/employeeNo&gt;
-		&lt;userOrder defaultValue=""&gt;userOrder&lt;/userOrder&gt;
 		&lt;/attributes&gt; 
 	</singleUser>
 </params>

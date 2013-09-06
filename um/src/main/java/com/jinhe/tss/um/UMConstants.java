@@ -5,7 +5,7 @@ import java.util.Calendar;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 
 /**
- * UMS相关常量定义文件
+ * UM相关常量定义文件
  */
 public final class UMConstants {
 	
@@ -28,8 +28,8 @@ public final class UMConstants {
 	/**
 	 * 同步功能相关常量定义
 	 */	
-	public static final String DATA_SOURCE_TYPE_LDAP   = "1";
-	public static final String DATA_SOURCE_TYPE_MYSQL  = "2";
+	public static final Integer DATA_SOURCE_TYPE_LDAP   = 1;
+	public static final Integer DATA_SOURCE_TYPE_MYSQL  = 2;
 	
 	
 	// ===========================================================================
@@ -43,9 +43,9 @@ public final class UMConstants {
 
     public static final Long NEW_RESOURCE_DEFAULT_PARENT_ID = new Long(0); //新建资源默认的父节点
 	
-    public static String ADMIN_ROLE_NAME = "系统管理员";       //UMS管理员角色
-    public static Long ADMIN_ROLE_ID     = new Long(-1);     //UMS管理员角色的ID
-    public static Long ANONYMOUS_ROLE_ID = new Long(-10000); //UMS匿名角色的ID
+    public static String ADMIN_ROLE_NAME = "系统管理员";         //UM管理员角色
+    public static Long ADMIN_ROLE_ID     = new Long(-1);     //UM管理员角色的ID
+    public static Long ANONYMOUS_ROLE_ID = new Long(-10000); //UM匿名角色的ID
 
     public static final String ADMIN_USER_NAME = "Admin";          //系统管理员的ID(初始化数据库时写死的)
 	public static final Long ADMIN_USER_ID     = new Long(-1);     //系统管理员的ID(初始化数据库时写死的)
