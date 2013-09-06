@@ -68,8 +68,6 @@ public class PoolTest {
         
 //        apool.release(false);
 //        ((Pool)tpool).release(true);
-        
-        Thread.sleep(1*1000); 
     }
     
     private void scanPort(int port) {

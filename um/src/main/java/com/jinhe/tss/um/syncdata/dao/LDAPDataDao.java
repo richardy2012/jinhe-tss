@@ -38,8 +38,8 @@ public class LDAPDataDao implements IOutDataDao {
     
     /** 组需要的属性  */
     public final static String APPLICATION_ID_GROUP = "applicationId";
-    public final static String DESCRIPTION_GROUP = "description";
-    public final static String GROUP_ORDER_GROUP = "groupOrder"; 
+    public final static String DESCRIPTION_GROUP    = "description";
+    public final static String GROUP_ORDER          = "groupOrder"; 
     
     /** 用户需要的属性 */
     public final static String APPLICATION_ID_USER = "applicationId";
@@ -48,7 +48,7 @@ public class LDAPDataDao implements IOutDataDao {
     public final static String SEX_USER            = "sex";
     public final static String BIRTHDAY_USER       = "birthday";
     public final static String EMPLOYEE_NO_USER    = "employeeNo";
-    public final static String USER_ORDER_USER     = "userOrder"; 
+    public final static String USER_ORDER          = "userOrder"; 
  
     private static final String GROUP_FILTER_STR = "OU=*";
     private static final String USER_FILTER_STR  = "CN=*";
@@ -126,19 +126,13 @@ public class LDAPDataDao implements IOutDataDao {
                 group.setParentId(getParentGroupId(dn));
                 
                 Attributes attrs = searchResult.getAttributes();
-                // applictionId
-                if (attrs.get(attributesMap.get(APPLICATION_ID_GROUP)) != null) {
-                    group.setApplicationId(getValueFromAttribute(attrs.get(attributesMap.get(APPLICATION_ID_GROUP))));
-                }else{
-                    group.setApplicationId(defaultValues.get(APPLICATION_ID_GROUP)); 
-                }
                 // description
                 if (attrs.get(attributesMap.get(DESCRIPTION_GROUP)) != null) {
                     group.setDescription(getValueFromAttribute(attrs.get(attributesMap.get(DESCRIPTION_GROUP))));
                 }
                 // groupOrder
-                if (attrs.get(attributesMap.get(GROUP_ORDER_GROUP).toString()) != null) {
-                    group.setSeqNo(Integer.valueOf(getValueFromAttribute(attrs.get(attributesMap.get(GROUP_ORDER_GROUP)))));
+                if (attrs.get(attributesMap.get(GROUP_ORDER).toString()) != null) {
+                    group.setSeqNo(Integer.valueOf(getValueFromAttribute(attrs.get(attributesMap.get(GROUP_ORDER)))));
                 }
                 items.add(group);
             }
@@ -226,8 +220,8 @@ public class LDAPDataDao implements IOutDataDao {
                     user.setEmployeeNo(getValueFromAttribute(attrs.get(param.get(EMPLOYEE_NO_USER))));
                 }
                 // userOrder
-                if (attrs.get(param.get(USER_ORDER_USER).toString()) != null) {
-                    user.setSeqNo(Integer.valueOf(getValueFromAttribute(attrs.get(param.get(USER_ORDER_USER)))));
+                if (attrs.get(param.get(USER_ORDER).toString()) != null) {
+                    user.setSeqNo(Integer.valueOf(getValueFromAttribute(attrs.get(param.get(USER_ORDER)))));
                 } else {
                     Integer seqNo = (Integer)seqNoMap.get(user.getGroupId());
                     user.setSeqNo(seqNo == null ? new Integer(1) : new Integer(seqNo.intValue() + 1));

@@ -54,6 +54,10 @@ public class DateUtil {
     public static Date parse(String str) {
     	if(EasyUtils.isNullOrEmpty(str)) return null;
     	
+    	if(str.indexOf(".") > 0) {
+    		str = str.substring(0, str.indexOf(".")); // 截掉微秒
+    	}
+    	
         Date date = null;
         try {
             if (Pattern.compile(SDF_1_REG).matcher(str).matches()) {

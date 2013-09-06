@@ -10,15 +10,5 @@ public class ParamConfigTest {
 	public void testGetAttribute() {
 		 assertEquals("TSS", ParamConfig.getAttribute("application.code"));
 	}
-	
-	@Test
-	public void testParamManager() {
-//		 ParamManager.getComboParam(code);
-//		 ParamManager.getSimpleParam(code);
-//		 ParamManager.getTreeParam(code);
-//		 
-//		 ParamManager.getValue(code);
-//		 ParamManager.getValueNoSpring(code);
-	}
 
 }

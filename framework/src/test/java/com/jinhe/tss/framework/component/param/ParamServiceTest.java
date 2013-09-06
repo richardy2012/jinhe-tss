@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,6 +33,21 @@ public class ParamServiceTest extends TxTestSupport {
             String value = resources.getString(key);
             addSimpleParam(group.getId(), key, key, value);
         }
+        
+        // test Param Manager
+        String testCode = "application.code";
+		Assert.assertEquals("TSS", ParamManager.getSimpleParam(testCode).getValue());
+        Assert.assertEquals("TSS", ParamManager.getValue(testCode));
+        Assert.assertEquals("TSS", ParamManager.getValueNoSpring(testCode));
+        try {
+        	ParamManager.getValueNoSpring("not-exsits");
+        } catch (Exception e) {
+        	Assert.assertTrue("读取不到参数值则抛出异常", true);
+        }
+        
+        ParamManager.remove(testCode);
+        
+        Assert.assertEquals("TSS", paramService.getSimpleParamValue(testCode));
         
         printParams();
         paramService.delete(group.getId());
@@ -73,14 +89,16 @@ public class ParamServiceTest extends TxTestSupport {
     @Test
     public void testParamFunction() {
         Param paramGroup = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组1");
-        Param comboParam = addComboParam(paramGroup.getId(), "book", "可选书籍");
+        String comboParamCode = "book";
+		Param comboParam = addComboParam(paramGroup.getId(), comboParamCode, "可选书籍");
         
         addParamItem(comboParam.getId(), "Thinking in JAVA", "Thinking in JAVA", ParamConstants.COMBO_PARAM_MODE);
         addParamItem(comboParam.getId(), "Effictive JAVA", "Effictive JAVA", ParamConstants.COMBO_PARAM_MODE);
         addParamItem(comboParam.getId(), "Design Pattern", "Design Pattern", ParamConstants.COMBO_PARAM_MODE);
         
         Param paramGroup2 = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组2");
-        Param treeParam = addTreeParam(paramGroup2.getId(), "group", "组织");
+        String treeParamCode = "group";
+		Param treeParam = addTreeParam(paramGroup2.getId(), treeParamCode, "组织");
         
         Param temp = addParamItem(treeParam.getId(), "group1", "组一", ParamConstants.TREE_PARAM_MODE);
         addParamItem(temp.getId(), "group2", "组二", ParamConstants.TREE_PARAM_MODE);
@@ -95,6 +113,14 @@ public class ParamServiceTest extends TxTestSupport {
         
         printParams();
         
+        // test Param Manager
+        List<Param> list = ParamManager.getComboParam(comboParamCode);
+        Assert.assertEquals(3, list.size());
+        
+        list = ParamManager.getTreeParam(treeParamCode);
+        Assert.assertEquals(3, list.size());
+		 
+		ParamManager.removeAll();
     }
 
     /** 建参数组 */

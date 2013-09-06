@@ -53,11 +53,16 @@ public class LtpaTokenIdentifier extends BaseUserIdentifier {
                 loginName = Escape.unescape(loginName);
             }
         }
-        if(loginName == null) throw new BusinessException("取不到用户，请确认已经配置好SSO！");
+        
+        if(loginName == null) {
+        	throw new BusinessException("取不到用户，请确认已经配置好SSO！");
+        }
         
         IPWDOperator operator = service.getOperatorDTOByLoginName(loginName);
         
-        if (operator == null) throw new BusinessException("用户在UM里不存在！");
+        if (operator == null) {
+        	throw new BusinessException("用户在UM里不存在！");
+        }
         
         return operator;
     }

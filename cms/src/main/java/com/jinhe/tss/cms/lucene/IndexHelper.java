@@ -126,7 +126,7 @@ public class IndexHelper {
                     indexWriter.close();
                 }
             } catch (IOException e) {
-                throw new BusinessException("关闭索引文件错误！", e);
+                log.error("关闭索引文件错误！", e);
             }
         }
 

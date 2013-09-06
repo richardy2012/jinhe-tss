@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jinhe.tss.framework.sso.context.RequestContext;
+import com.jinhe.tss.framework.sso.online.IOnlineUserManager;
 import com.jinhe.tss.framework.sso.servlet.JustRedirectServlet;
 import com.jinhe.tss.framework.sso.servlet.SimpleRequestServlet;
 import com.jinhe.tss.framework.web.filter.Filter1Encoding;
@@ -32,6 +33,7 @@ import com.jinhe.tss.framework.web.filter.Filter5HttpProxy;
 import com.jinhe.tss.framework.web.filter.Filter6XmlHttpDecode;
 import com.jinhe.tss.framework.web.filter.Filter7AccessingCheck;
 import com.jinhe.tss.framework.web.listener.SessionDestroyedListener;
+import com.jinhe.tss.framework.web.rmi.HttpInvokerProxyFactory;
 import com.jinhe.tss.framework.web.servlet.Servlet1Login;
 import com.jinhe.tss.framework.web.servlet.Servlet2Logout;
 import com.jinhe.tss.framework.web.servlet.Servlet8Empty;
@@ -175,6 +177,17 @@ public class SSOIntegrateTest {
         httppost = new PostMethod("http://localhost:8111/tss/rd.do");  // dealWithRedirect
         httppost.setRequestHeader("appCode", "CMS");
         excuteRequest(client, httppost);
+        
+        log.info("--------------------------------- 4.1、测试跨应用HttpInvokerProxy ------------------------------------------------------");
+        HttpInvokerProxyFactory factory = new HttpInvokerProxyFactory();
+        factory.setServiceUrl("/remote/OnlineUserService");
+        factory.setServiceInterface(IOnlineUserManager.class);
+        factory.setAppCode("TSS");
+        
+        IOnlineUserManager remoteObject = (IOnlineUserManager)factory.getObject();
+        Assert.assertNotNull(remoteObject);
+        
+//        remoteObject.getOnlineUserNames();
     	
         log.info("--------------------------------- 5、测试退出登录(tss/cms里全注销掉) ------------------------------------------------------");
         httppost = new PostMethod("http://localhost:8111/tss/logout.in");

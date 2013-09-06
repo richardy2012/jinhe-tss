@@ -95,7 +95,12 @@ public class FileHelper {
      * @param file
      * @param htmlContent
      */
-    public static void writeFile(File file, String content){
+    public static void writeFile(File file, String content) {
+    	File parentFile = file.getParentFile();
+    	if( !parentFile.exists() ) {
+			parentFile.mkdirs();
+    	}
+    	
         try {
             FileWriter fw = new FileWriter(file);
             fw.write(content, 0, content.length());

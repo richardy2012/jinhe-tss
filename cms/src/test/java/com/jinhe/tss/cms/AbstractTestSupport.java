@@ -192,9 +192,11 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
     
     protected void deleteSite(Long siteId) {
         channelService.deleteChannel(siteId);
-        List<?> list = channelService.getAllSiteChannelList();
-        assertNotNull(list);
-        assertTrue(list.isEmpty());
+        try {
+        	channelService.getChannelById( siteId );
+        } catch (Exception e) {
+        	Assert.assertTrue("读取不到则抛出异常", true);
+        }
         
         String hql = "from Article a where a.channel.site.id=? ";
         List<?> articles = channelDao.getEntities(hql, siteId);

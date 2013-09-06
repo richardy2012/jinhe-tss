@@ -57,11 +57,6 @@ public class H2DBServer implements IH2DBServer{
             log.info("关闭H2 database成功.");  
         }  
     }  
-    
-    public static void main(String[] args) {  
-        H2DBServer h2 = new H2DBServer();  
-        h2.stopServer();  
-    }
 
     public boolean isPrepareed() {
         return isPrepareed;
@@ -69,5 +64,9 @@ public class H2DBServer implements IH2DBServer{
 
     public void setPrepareed(boolean isPrepareed) {
         this.isPrepareed = isPrepareed;
-    }  
+    }
+
+	public Connection getH2Connection() {
+		return conn;
+	}  
 }  

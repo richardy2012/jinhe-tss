@@ -1,5 +1,7 @@
 package com.jinhe.tss.framework.test;
 
+import java.sql.Connection;
+
 public interface IH2DBServer {
 
     void stopServer();
@@ -7,5 +9,7 @@ public interface IH2DBServer {
     boolean isPrepareed();
     
     void setPrepareed(boolean isPrepareed);
+    
+    Connection getH2Connection();
     
 }

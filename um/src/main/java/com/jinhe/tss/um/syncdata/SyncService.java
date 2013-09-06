@@ -112,6 +112,7 @@ public class SyncService implements ISyncService, Progressable {
             parentId = (parentId == null) ? UMConstants.MAIN_GROUP_ID : parentId;
             group.setParentId(parentId);
             group.setSeqNo(groupDao.getNextSeqNo(parentId));
+            group.setGroupType(Group.MAIN_GROUP_TYPE);
             
             commonDao.create(group);
             idMapping.put(groupDto.getId(), group.getId()); // 保存对应结果

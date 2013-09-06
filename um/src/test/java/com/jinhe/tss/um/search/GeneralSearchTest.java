@@ -30,23 +30,23 @@ public class GeneralSearchTest extends TxSupportTest4UM {
  
     @Test
     public void testGeneralSearch() {
-    	
-    	 // 新建一个用户组
+    	// 新建一个用户组
         Group mainGroup = new Group();
         mainGroup.setParentId(UMConstants.MAIN_GROUP_ID);
         mainGroup.setName("G_财务部");
         mainGroup.setGroupType( Group.MAIN_GROUP_TYPE );
         groupService.createNewGroup(mainGroup , "", "");
         log.debug(mainGroup);
+        Long groupId = mainGroup.getId();
         
         // 管理员直接在主组下新增用户
-        User mainUser = new User();
-        mainUser.setLoginName("G_JonKing");
-        mainUser.setUserName("G_JK");
-        mainUser.setPassword("123456");
-        mainUser.setGroupId(mainGroup.getId());
-        userService.createOrUpdateUser( mainUser , "" + mainGroup.getId(), "");
-        log.debug(mainUser);
+        User user = new User();
+        user.setLoginName("G_JonKing");
+        user.setUserName("G_JK");
+        user.setPassword("123456");
+		user.setGroupId(groupId);
+        userService.createOrUpdateUser( user , "" + groupId, "");
+        log.debug(user);
  
         // 新建角色
         Role role = new Role();
@@ -57,24 +57,29 @@ public class GeneralSearchTest extends TxSupportTest4UM {
         Calendar calendar = new GregorianCalendar();
         calendar.add(UMConstants.ROLE_LIFE_TYPE, UMConstants.ROLE_LIFE_TIME);
         role.setEndDate(calendar.getTime());
+        
+        request.addParameter("Role2UserIds", UMConstants.ADMIN_USER_ID + "," + user.getId());
+        request.addParameter("Role2GroupIds", "" + groupId);
         roleAction.saveRole(response, request, role);
         Long roleId = role.getId();
-        
+         
         // 新建转授策略
         SubAuthorize strategy = new SubAuthorize();
-        strategy.setStartDate(new Date());
+        strategy.setStartDate(new  Date());
         calendar = new GregorianCalendar();
         calendar.add(UMConstants.STRATEGY_LIFE_TYPE, UMConstants.STRATEGY_LIFE_TIME);
         strategy.setEndDate(calendar.getTime());
         strategy.setName("G_转授策略一");
         
-        request.addParameter("rule2UserIds", mainUser.getId() + "");
-        request.addParameter("rule2GroupIds", mainGroup.getId() + "");
-        request.addParameter("rule2RoleIds", roleId + "");
+        request.addParameter("Rule2UserIds", user.getId() + "");
+        request.addParameter("Rule2GroupIds", groupId + "");
+        request.addParameter("Rule2RoleIds", roleId + "");
         strategyAction.saveSubauth(response, request, strategy);
         
-    	action.searchUserSubauth(mainGroup.getId());
+    	action.searchUserSubauth(groupId);
     	
     	action.searchRolesByGroup(roleId);
+    	
+    	action.searchUsersByRole(roleId);
     }
 }

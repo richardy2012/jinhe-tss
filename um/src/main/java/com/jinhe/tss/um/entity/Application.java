@@ -44,8 +44,10 @@ public class Application extends OperateInfo implements ITreeNode, IXForm {
 	@Column(length = 10)
 	private String  applicationType = UMConstants.PLATFORM_SYSTEM_APP; // 应用系统种类，默认为平台系统
 	
-	private Integer dataSourceType;  // 应用系统用户库接口类型（数据库、LDAP）,0:ldap;1:oracle;2:DB2;3:MySQL
-    private String  paramDesc;       // 参数描述xml格式(连接到其他应用系统的参数集合)
+	private Integer dataSourceType;  // 应用系统用户库接口类型（数据库、LDAP）   1:ldap  2:MySQL
+    
+	@Column(length = 2000)
+	private String  paramDesc;       // 参数描述xml格式(连接到其他应用系统的参数集合)
 
 	public Long getId() {
 		return id;

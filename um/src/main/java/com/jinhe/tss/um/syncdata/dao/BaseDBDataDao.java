@@ -18,17 +18,17 @@ import com.jinhe.tss.util.EasyUtils;
  
 public abstract class BaseDBDataDao implements IOutDataDao {
     
-    protected static String[] groupPropertyNames = new String[]{"id", "parentId", "groupName", "groupOrder", "description"};
+    protected static String[] groupPropertyNames = new String[]{"id", "parentId", "groupName", "seqNo", "description"};
     protected static String[] groupDtoPropertyNames = new String[]{"id", "parentId", "name", "seqNo", "description"};
     
     protected static String[] userPropertyNames = new String[] { "id", "groupId", "loginName", "userName", 
-                "password", "sex", "birthday", "employeeNo", "userOrder" };
+                "password", "sex", "birthday", "employeeNo" };
 
     protected static String[] userDtoPropertyNames = new String[] { "id", "groupId", "loginName", "userName", 
-                "password", "sex", "birthday", "employeeNo", "seqNo" };
+                "password", "sex", "birthday", "employeeNo" };
     
     public List<?> getOtherGroups(Map<String, String> paramsMap, String sql, String groupId) {
-        if(null == sql) {
+        if( sql == null ) {
             return new ArrayList<Object>();
         }
         sql = sql.replaceAll(":groupId", groupId);
