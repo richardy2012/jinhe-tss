@@ -1,16 +1,15 @@
 <params>
-	<url>ldap://localhost:390</url>
-	<user>cn=admin</user>
+	<url>ldap://localhost:10389</url>
+	<user>cn=admin2,ou=RD2,o=JinHe</user>
 	<password>123456</password>
 	<groupSql>
 		&lt;attributes&gt;
-		&lt;applicationId
-		defaultValue="OA"&gt;applicationId&lt;/applicationId&gt;
-		&lt;id defaultValue=""&gt;id&lt;/id&gt;
-		&lt;parentGroupId defaultValue=""&gt;parentGroupId&lt;/parentGroupId&gt;
-		&lt;groupName defaultValue=""&gt;groupName&lt;/groupName&gt;
-		&lt;description defaultValue=""&gt;description&lt;/description&gt;
-		&lt;seqNo defaultValue=""&gt;seqNo&lt;/seqNo&gt;
+			&lt;applicationId defaultValue="OA"&gt;applicationId&lt;/applicationId&gt;
+			&lt;id defaultValue=""&gt;id&lt;/id&gt;
+			&lt;parentGroupId defaultValue=""&gt;parentGroupId&lt;/parentGroupId&gt;
+			&lt;groupName defaultValue=""&gt;groupName&lt;/groupName&gt;
+			&lt;description defaultValue=""&gt;description&lt;/description&gt;
+			&lt;seqNo defaultValue=""&gt;postalCode&lt;/seqNo&gt;
 		&lt;/attributes&gt; 
 	</groupSql>
 	<userSql>

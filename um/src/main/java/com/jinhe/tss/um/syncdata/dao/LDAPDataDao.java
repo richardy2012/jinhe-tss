@@ -2,10 +2,12 @@ package com.jinhe.tss.um.syncdata.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -39,7 +41,7 @@ public class LDAPDataDao implements IOutDataDao {
     /** 组需要的属性  */
     public final static String APPLICATION_ID_GROUP = "applicationId";
     public final static String DESCRIPTION_GROUP    = "description";
-    public final static String GROUP_ORDER          = "groupOrder"; 
+    public final static String GROUP_ORDER          = "seqNo"; 
     
     /** 用户需要的属性 */
     public final static String APPLICATION_ID_USER = "applicationId";
@@ -48,10 +50,12 @@ public class LDAPDataDao implements IOutDataDao {
     public final static String SEX_USER            = "sex";
     public final static String BIRTHDAY_USER       = "birthday";
     public final static String EMPLOYEE_NO_USER    = "employeeNo";
-    public final static String USER_ORDER          = "userOrder"; 
  
-    private static final String GROUP_FILTER_STR = "OU=*";
+    private static final String GROUP_FILTER_STR = "(objectclass=organizationalUnit)";
     private static final String USER_FILTER_STR  = "CN=*";
+    
+    private static final String OU_TAG  = "OU=".toLowerCase();
+    private static final String SN_TAG  = "SN".toLowerCase();
 
     /*  otherAppUserId类似：CN=李文斌,OU=行政政法处,OU=省厅,O=GZCZ   */
     public UserDTO getUser(Map<String, String> paramsMap, String otherAppUserId){
@@ -97,11 +101,11 @@ public class LDAPDataDao implements IOutDataDao {
      * @see com.jinhe.tss.um.syncdata.dao.IOutDataDao#getOtherGroups(java.lang.Object[])
      */
 	public List<?> getOtherGroups(Map<String, String> paramsMap, String attributes, String groupId) {
-        Map<String, String> attributesMap = new HashMap<String, String>();
+        Map<String, String> fieldNames = new HashMap<String, String>();
         Map<String, String> defaultValues = new HashMap<String, String>();
         for (Iterator<?> it = XMLDocUtil.dataXml2Doc(attributes).getRootElement().elementIterator(); it.hasNext();) {
             Element element = (Element) it.next();
-            attributesMap.put(element.getName(), element.getText());
+            fieldNames.put(element.getName(), element.getText());
             defaultValues.put(element.getName(), element.attributeValue(DEFAULT_VALUE));
         }
         
@@ -114,9 +118,9 @@ public class LDAPDataDao implements IOutDataDao {
                 String dn = searchResult.getName();
 
                 // 组合全路径
-                dn = (dn != null && !"".equals(dn)) ? (dn + "," + groupId) : groupId;
+                dn = !EasyUtils.isNullOrEmpty(dn) ? (dn + "," + groupId) : groupId;
                 
-                if (dn.indexOf("OU=") < 0)  continue;
+                if (dn.indexOf(OU_TAG) < 0)  continue;
 
                 GroupDTO group = new GroupDTO();
 
@@ -127,13 +131,13 @@ public class LDAPDataDao implements IOutDataDao {
                 
                 Attributes attrs = searchResult.getAttributes();
                 // description
-                if (attrs.get(attributesMap.get(DESCRIPTION_GROUP)) != null) {
-                    group.setDescription(getValueFromAttribute(attrs.get(attributesMap.get(DESCRIPTION_GROUP))));
-                }
+                String value = getValueFromAttribute(attrs, fieldNames.get(DESCRIPTION_GROUP));
+				group.setDescription(value);
+					
                 // groupOrder
-                if (attrs.get(attributesMap.get(GROUP_ORDER).toString()) != null) {
-                    group.setSeqNo(Integer.valueOf(getValueFromAttribute(attrs.get(attributesMap.get(GROUP_ORDER)))));
-                }
+                value = getValueFromAttribute(attrs, fieldNames.get(GROUP_ORDER));
+				group.setSeqNo(Integer.valueOf(value.trim()));
+                
                 items.add(group);
             }
         } catch (NamingException e) {           
@@ -146,19 +150,18 @@ public class LDAPDataDao implements IOutDataDao {
         String filterString =  otherParams.length > 0 ? (String)otherParams[0] : USER_FILTER_STR;
         
         Document doc = XMLDocUtil.dataXml2Doc(attributes);
-        Map<String, String> param = new HashMap<String, String>();
+        Map<String, String> fieldNames = new HashMap<String, String>();
         Map<String, String> defaultValues = new HashMap<String, String>();
-        Map<String, Integer> seqNoMap = new HashMap<String, Integer>();
         
         for (Iterator<?> it = doc.getRootElement().elementIterator(); it.hasNext();) {
             Element element = (Element) it.next();
-            param.put(element.getName(), element.getText());
+            fieldNames.put(element.getName(), element.getText());
             defaultValues.put(element.getName(), element.attribute(DEFAULT_VALUE).getText());
         }
         
         List<UserDTO> items = new ArrayList<UserDTO>();
-        Map<String, Object> loginNameCache = new HashMap<String, Object> ();
-        Map<String, Object>  dnCache = new HashMap<String, Object> ();
+        Set<String> loginNameCache = new HashSet<String> ();
+        Set<String> dnCache = new HashSet<String> ();
         // 数据查询
         try {
         	DirContext conn =  getConnection(paramsMap);
@@ -169,69 +172,48 @@ public class LDAPDataDao implements IOutDataDao {
                 
                 // 组合全路径
                 dn = dn + "," + groupId;
-                if(dnCache.containsKey(dn))
-                    continue;
+                if(dnCache.contains(dn)) continue;
                 
                 Attributes attrs = sr.getAttributes();
                 
-                if (attrs.get("sn") == null){
+                if (attrs.get(SN_TAG) == null){
                     continue;
                 }
                 
                 UserDTO user = new UserDTO();
                 user.setId(dn);
                 user.setGroupId(getGroupId(dn));                
-                if (attrs.get("sn") != null) {
-                    user.setUserName(getNameValueFromAttribute( attrs.get("sn")));
-                }
+                user.setUserName( getNameValueFromAttribute( attrs, SN_TAG ) );
+                user.setApplicationId(defaultValues.get(APPLICATION_ID_USER));
                 
                 // 获得用户的属性              
-                // applictionId
-                if (attrs.get(param.get(APPLICATION_ID_USER).toString()) != null) {
-                    user.setApplicationId(getValueFromAttribute(attrs.get(param.get(APPLICATION_ID_USER))));
-                }else{
-                    user.setApplicationId(defaultValues.get(APPLICATION_ID_USER).toString());
-                }
                 // loginName
-                if (attrs.get(param.get(LOGIN_NAME_USER).toString()) != null) {
-                    String uid_in_ldap = getNameValueFromAttribute(attrs.get(param.get(LOGIN_NAME_USER)));
-                    // uid简称 有可能重名，重名只导入第一个
-                    if(loginNameCache.containsKey(uid_in_ldap)) {
+                String uid_in_ldap = getNameValueFromAttribute(attrs, fieldNames.get(LOGIN_NAME_USER));
+                if (uid_in_ldap != null) { // uid简称 有可能重名，重名只导入第一个
+                    if(loginNameCache.contains(uid_in_ldap)) {
                         continue;
                     }
                     user.setLoginName(uid_in_ldap);
-                }else{
+                } 
+                else {
                     user.setLoginName(dn);
                 }
                 // password
-                if (attrs.get(param.get(PASSWORD_USER).toString()) != null) {
-                    user.setPassword(getValueFromAttribute(attrs.get(param.get(PASSWORD_USER))));
-                }
-                // sex
-                if (attrs.get(param.get(SEX_USER).toString()) != null) {
-                    user.setSex(getValueFromAttribute(attrs.get(param.get(SEX_USER))));
-                }
-                // birthday
-                if (attrs.get(param.get(BIRTHDAY_USER).toString()) != null) {
-                    user.setBirthday(DateUtil.parse(getValueFromAttribute(attrs.get(param.get(BIRTHDAY_USER)))));
-                }
-                // employeeNo
-                if (attrs.get(param.get(EMPLOYEE_NO_USER).toString()) != null) {
-                    user.setEmployeeNo(getValueFromAttribute(attrs.get(param.get(EMPLOYEE_NO_USER))));
-                }
-                // userOrder
-                if (attrs.get(param.get(USER_ORDER).toString()) != null) {
-                    user.setSeqNo(Integer.valueOf(getValueFromAttribute(attrs.get(param.get(USER_ORDER)))));
-                } else {
-                    Integer seqNo = (Integer)seqNoMap.get(user.getGroupId());
-                    user.setSeqNo(seqNo == null ? new Integer(1) : new Integer(seqNo.intValue() + 1));
-                    seqNoMap.put(user.getGroupId(), user.getSeqNo()); //将排序号放入map中以备下次保存同组的用户时可以取到 ＋ 1
-                }
+                user.setPassword(getValueFromAttribute(attrs, fieldNames.get(PASSWORD_USER)));
                 
-                if(null != user){
+                // sex
+                user.setSex(getValueFromAttribute(attrs, fieldNames.get(SEX_USER)));
+
+                // birthday
+                user.setBirthday(DateUtil.parse(getValueFromAttribute(attrs, fieldNames.get(BIRTHDAY_USER))));
+                    
+                // employeeNo
+                user.setEmployeeNo(getValueFromAttribute(attrs, fieldNames.get(EMPLOYEE_NO_USER)));
+                
+                if( user != null ) {
                     items.add(user);
-                    dnCache.put(dn, null);
-                    loginNameCache.put(user.getLoginName(), null);
+                    dnCache.add(dn);
+                    loginNameCache.add(user.getLoginName());
                 }
             }
         } catch (NamingException e) {           
@@ -274,10 +256,10 @@ public class LDAPDataDao implements IOutDataDao {
      */
     private String getGroupId(String dn) {
         int position = -1;
-        if ((position = dn.indexOf("OU=")) >= 0) {
+        if ((position = dn.indexOf(OU_TAG)) >= 0) {
             return dn.substring(position);
         }
-        if ((position = dn.indexOf("O=")) >= 0) {
+        if ((position = dn.indexOf(OU_TAG)) >= 0) {
             return dn.substring(position);
         } 
         return null;
@@ -290,14 +272,14 @@ public class LDAPDataDao implements IOutDataDao {
      *         OU=省厅,O=GZCZ
      */
     private String getParentGroupId(String dn) {
-        int position = dn.indexOf("OU=");
+        int position = dn.indexOf(OU_TAG);
         if (position >= 0) {
             String selfId = dn.substring(position);
-            if ((position = selfId.indexOf(",OU=")) >= 0) {
+            if ((position = selfId.indexOf("," + OU_TAG)) >= 0) {
                 return selfId.substring(position + 1);
             } 
             //可能","号后面会多一个空格
-            if ((position = selfId.indexOf(", OU=")) >= 0) {
+            if ((position = selfId.indexOf(", " + OU_TAG)) >= 0) {
                 return selfId.substring(position + 2);
             } 
         }
@@ -311,7 +293,7 @@ public class LDAPDataDao implements IOutDataDao {
      *         行政政法处
      */
     private String getGroupName(String dn) {
-        int position = dn.indexOf("OU=");
+        int position = dn.indexOf(OU_TAG);
         if (position >= 0) {
             String temp = dn.substring(position);
             if ((position = temp.indexOf(",")) >= 0) {
@@ -321,12 +303,20 @@ public class LDAPDataDao implements IOutDataDao {
         return null;
     }
     
-    private String getValueFromAttribute(javax.naming.directory.Attribute attr){
+    private String getValueFromAttribute(Attributes attrs, String attrName){
+    	javax.naming.directory.Attribute attr = attrs.get(attrName);
+    	if( attr == null ) {
+    		return null;
+    	}
     	String attrString = attr.toString();
         return attrString.substring(attrString.indexOf(":") + 1);
     }
 
-    private String getNameValueFromAttribute(javax.naming.directory.Attribute attr){
+    private String getNameValueFromAttribute(Attributes attrs, String attrName){
+    	javax.naming.directory.Attribute attr = attrs.get(attrName);
+    	if( attr == null ) {
+    		return null;
+    	}
     	String attrString = attr.toString();
         return attrString.substring(attrString.indexOf(":") + 2);
     }

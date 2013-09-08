@@ -72,6 +72,11 @@ public class GroupDTO implements Serializable {
 	public void setGroupType(Integer groupType) {
 		this.groupType = groupType;
 	}
+	
+	public String toString(){
+		return "Name:[" + name + "] id:[" + id + "] parentId:[" + parentId
+				+ "] seqNo:[" + seqNo + "]";
+	}
 }
 
 	

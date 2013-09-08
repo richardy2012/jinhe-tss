@@ -130,7 +130,8 @@ public class UserDTO {
 	}
 	
 	public String toString(){
-		return "登陆名:["+loginName+"] 姓名:["+userName+"] 员工编号:["+employeeNo+"] 用户所在组id:["+groupId+"]";
+		return "登陆名:[" + loginName + "] 姓名:[" + userName + "] 员工编号:["
+				+ employeeNo + "] 用户所在组id:[" + groupId + "]";
 	}
  
     public Map<String, Object> getDynProperties() {
