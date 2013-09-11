@@ -2,9 +2,12 @@ package com.jinhe.tss.portal.action;
 
 import java.util.Iterator;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.jinhe.tss.framework.component.param.ParamConfig;
@@ -23,7 +26,7 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 门户静态发布
  */
 @Controller
-@RequestMapping("/publish")
+@RequestMapping("/auth/publish")
 public class PublishAction extends ProgressActionSupport {
  
     /**
@@ -31,7 +34,8 @@ public class PublishAction extends ProgressActionSupport {
      * 
      * @param id 需要发布的门户portalId
      */
-    public void staticIssuePortal(Long id) {
+	@RequestMapping("/{id}")
+    public void staticIssuePortal(HttpServletResponse response, @PathVariable("id") Long id) {
         // 发布整个站点
         MagicRobot robot = new MagicRobot(id);
 
@@ -50,8 +54,8 @@ public class PublishAction extends ProgressActionSupport {
      * 
      * @param pageUrl 需要单个发布的页面地址
      */
-    public void staticIssuePortalPage(String  pageUrl) {
-        //发布整个站点
+	@RequestMapping("/page/{pageUrl}")
+    public void staticIssuePortalPage(HttpServletResponse response, String  pageUrl) {
         MagicRobot robot = new MagicRobot(pageUrl);
 
         // 此处总数是个估算值，按100计
@@ -104,7 +108,8 @@ public class PublishAction extends ProgressActionSupport {
      * 
      * @param override 是否覆盖
      */
-    public void ftpUpload2RemoteServer(boolean override) {
+    @RequestMapping("/remote/{override}")
+    public void ftpUpload2RemoteServer(HttpServletResponse response, boolean override) {
         /* 
          * FTP服务器配置相关：
          * 1、首先从系统参数模块读取配置信息，code：ftpConfig，参数化类型为普通参数，解析之；

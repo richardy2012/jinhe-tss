@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -34,7 +36,7 @@ public class FileAction extends BaseActionSupport {
      * @param file
      * @param paramsMap  参数列表 paramsMap['" + param + "']"
      */
-    public void listAvailableFiles(String contextPath, String filter, File file, Map<String, Object> paramsMap){
+    public void listAvailableFiles(HttpServletResponse response, String contextPath, String filter, File file, Map<String, Object> paramsMap){
         String id   = getParamFromMap(paramsMap, "id");  
         String code = getParamFromMap(paramsMap, "code");
         String type = getParamFromMap(paramsMap, "type"); // 判断是何种类型的资源管理
@@ -135,7 +137,7 @@ public class FileAction extends BaseActionSupport {
     /**
      * 下载
      */
-    public void download(String contextPath, String fileNames) {
+    public void download(HttpServletResponse response, String contextPath, String fileNames) {
         if(fileNames == null) return;
         
         // 建立临时文件夹存放要下载的所有文件
@@ -162,7 +164,7 @@ public class FileAction extends BaseActionSupport {
     /**
      * 删除文件（文件夹）
      */
-    public void deleteFile(String contextPath, String fileNames, String folderNames) {
+    public void deleteFile(HttpServletResponse response, String contextPath, String fileNames, String folderNames) {
         List<String> pathList = new ArrayList<String>();
         if(fileNames != null) {
             pathList.addAll(Arrays.asList(fileNames.split(",")));
@@ -187,7 +189,7 @@ public class FileAction extends BaseActionSupport {
     /**
      * 重命名文件（文件夹）
      */
-    public void renameFile(String contextPath, String fileName, String newFileName) {
+    public void renameFile(HttpServletResponse response, String contextPath, String fileName, String newFileName) {
         contextPath = getContextPath(contextPath);
         File newFile = new File(contextPath + newFileName);
         if(newFile.exists()) {
@@ -204,7 +206,7 @@ public class FileAction extends BaseActionSupport {
     /**
      * 新建文件夹 
      */
-    public void addDir(String contextPath, String newFileName){
+    public void addDir(HttpServletResponse response, String contextPath, String newFileName){
         FileHelper.createDir(contextPath + newFileName);
         print("script", "window.parent.loadFileTree();");
     }

@@ -1,4 +1,4 @@
-package com.jinhe.tss.cms;
+package com.jinhe.tss.portal.helper;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,20 +13,21 @@ import javax.servlet.http.Part;
 
 import org.apache.log4j.Logger;
 
-import com.jinhe.tss.cms.entity.Attachment;
-import com.jinhe.tss.cms.service.IArticleService;
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpEncoder;
+import com.jinhe.tss.portal.entity.Component;
+import com.jinhe.tss.portal.service.IComponentService;
+import com.jinhe.tss.util.URLUtil;
 
-@WebServlet(urlPatterns="/auth/cms/upload")
+@WebServlet(urlPatterns="/auth/portal/component/import")
 @MultipartConfig(location = Config.UPLOAD_PATH, maxFileSize = 1024*1024*20)
-public class UploadServlet extends HttpServlet {
-
-	private static final long serialVersionUID = -6423431960248248353L;
+public class ImportComponentServlet extends HttpServlet {
 	
-    Logger log = Logger.getLogger(this.getClass());
+	private static final long serialVersionUID = 3768999662560249210L;
+	
+	Logger log = Logger.getLogger(this.getClass());
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=utf-8");
@@ -48,27 +49,22 @@ public class UploadServlet extends HttpServlet {
             }
             part.write(fileName);
             
-            Long articleId = Long.parseLong(request.getParameter("articleId"));
-			Long channelId = Long.parseLong(request.getParameter("channelId"));
-            int type = Integer.parseInt(request.getParameter("type"));
-			String petName = request.getParameter("petName");
-			if(petName == null) {
-				petName = fileName;
-			}
-			
-            // 保存附件信息
-            IArticleService articleService = (IArticleService) Global.getContext().getBean("ArticleService");
-			Attachment attachObj = articleService.processFile(targetFile, articleId, channelId, type, petName);
+            IComponentService service = (IComponentService) Global.getContext().getBean("ComponentService");
+            Long groupId = Long.parseLong(request.getParameter("groupId"));
+            Component group = service.getComponent(groupId);
+            String desDir = URLUtil.getWebFileUrl(group.getResourceBaseDir()).getPath(); 
             
-            // 向前台返回成功信息
-    		String downloadUrl = attachObj.getRelateDownloadUrl();
-    		Integer seqNo = attachObj.getSeqNo();
-			String script = "<script>parent.addAttachments(" + seqNo + ", " + type + ", '" + downloadUrl + "', " + articleId + ")</script>";
+            Component component = new Component();
+            component.setParentId(group.getId());
+            component.setType(group.getType());
+            ComponentHelper.importComponent(service, targetFile, component, desDir, group.getComponentType() + ".xml");
+            
+			String script = "<script>parent.loadInitData();alert('导入成功!'); ws.closeActiveTab();</script>";
             encoder.put("SCRIPT", script);
         } 
         catch (Exception e) {
-            log.error("上传失败，请查看日志信息！", e);
-            encoder.put("SCRIPT", "alert(\"上传失败，请查看日志信息！\");"); 
+            log.error("导入失败，请查看日志信息！", e);
+            encoder.put("SCRIPT", "alert(\"导入失败，请查看日志信息！\");"); 
         }
         
         encoder.print(new XmlPrintWriter(response.getWriter()));

@@ -1,38 +1,40 @@
 package com.jinhe.tss.portal.action;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.web.dispaly.tree.ITreeTranslator;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
-import com.jinhe.tss.framework.web.dispaly.tree.TreeNode;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.entity.Navigator;
-import com.jinhe.tss.portal.entity.Structure;
+import com.jinhe.tss.portal.helper.PSTreeTranslator4CreateMenu;
 import com.jinhe.tss.portal.helper.StrictLevelTreeParser;
 import com.jinhe.tss.portal.service.INavigatorService;
 import com.jinhe.tss.portal.service.IPortalService;
 
 @Controller
-@RequestMapping("/navigator")
+@RequestMapping("/auth/navigator")
 public class NavigatorAction extends BaseActionSupport {
-	
+
 	@Autowired private INavigatorService service;
 	@Autowired private IPortalService portalService;
     
     /**
-     * <p> 生成单个菜单 </p>
+     * 生成单个菜单
      */
-    public void getNavigatorXML(Long id){
+	@RequestMapping("/xml/{id}")
+    public void getNavigatorXML(HttpServletResponse response, @PathVariable("id") Long id) {
         print("MainMenu", service.getNavigatorXML(id));
     }
     
@@ -42,7 +44,8 @@ public class NavigatorAction extends BaseActionSupport {
      * 菜单依附于门户而存在，要想给某角色授于菜单管理权限，首先要授予门户节点的查看权限。
 	 * </p>
 	 */
-	public void getAllNavigator4Tree(){        
+	@RequestMapping("/list")
+	public void getAllNavigator4Tree(HttpServletResponse response) {        
         List<?> data = service.getAllNavigator();
         TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser());
 		encoder.setNeedRootNode(false);
@@ -50,33 +53,33 @@ public class NavigatorAction extends BaseActionSupport {
 	}
 
 	/**
-	 * <p>
-	 * 单个菜单控件的详细信息
-	 * </p>
+	 * 单个菜单的详细信息
 	 */
-	public void getNavigatorInfo(Long id, Long parentId, int type){
-		XFormEncoder encoder;
-        if( DEFAULT_NEW_ID.equals(id) ){
-        	Map<String, Object> map = new HashMap<String, Object>();
-        	map.put("parentId", parentId);
+	@RequestMapping("/{id}/{type}")
+	public void getNavigatorInfo(HttpServletResponse response, 
+			@PathVariable("id") Long id, 
+			@PathVariable("type") int type) {
+		
+		Map<String, Object> map;
+        if( DEFAULT_NEW_ID.equals(id) ) {
+        	map = new HashMap<String, Object>();
             map.put("target", "_blank");
         	map.put("type", type);
-            encoder = new XFormEncoder("template/xform/MenuXForm" + type + ".xml", map);           
         }
         else {
         	Navigator info = service.getNavigator(id);            
-            encoder = new XFormEncoder("template/xform/MenuXForm" + type + ".xml", info);
+        	map = info.getAttributesForXForm();
         }        
+        XFormEncoder encoder = new XFormEncoder("template/xform/MenuXForm" + type + ".xml", map);;
         
         print(Navigator.TYPE_MENU.equals(type) ? "MenuInfo" : "MenuItemInfo", encoder); 
 	}
 	
 	/**
-	 * <p>
-	 * 保存菜单控件
-	 * </p>
+	 * 保存菜单
 	 */
-	public void save(Navigator navigator){
+	@RequestMapping(method = RequestMethod.POST)
+	public void save(HttpServletResponse response, Navigator navigator) {
         boolean isNew = navigator.getId() == null;
         
         navigator = service.saveNavigator(navigator);
@@ -84,31 +87,35 @@ public class NavigatorAction extends BaseActionSupport {
 	}
 	
 	/**
-	 * <p>
-	 * 删除菜单控件.
-	 * </p>
+	 * 删除菜单
 	 */
-	public void delete(Long id){
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public void delete(HttpServletResponse response, @PathVariable("id") Long id) {
 		service.deleteNavigator(id);	
 		printSuccessMessage();
 	}
 	
 	/**
-	 * <p>
 	 * 停用/启用 菜单Navigator（将其下的disabled属性设为"1"/"0"）
-	 * </p>
 	 */
-	public void disable(Long id, int state){
+    @RequestMapping("/disable/{id}/{state}")
+    public void disable(HttpServletResponse response, 
+    		@PathVariable("id") Long id, 
+    		@PathVariable("state") int state) {
+    	
 		service.disable(id, state);
         printSuccessMessage();
 	}
 	
 	/**
-	 * <p>
 	 * 同组下的Navigator排序
-	 * </p>
 	 */
-	public void sort(Long id, Long targetId, int direction){
+	@RequestMapping(value = "/sort/{id}/{targetId}/{direction}", method = RequestMethod.POST)
+	public void sort(HttpServletResponse response, 
+            @PathVariable("id") Long id, 
+            @PathVariable("targetId") Long targetId,  
+            @PathVariable("direction") int direction) {
+		
 		service.sort(id, targetId, direction);        
         printSuccessMessage();
 	}
@@ -116,18 +123,43 @@ public class NavigatorAction extends BaseActionSupport {
     /**
      * 移动
      */
-    public void move(Long id, Long targetId){
-        if(id.equals(targetId)){
+	@RequestMapping(value = "/move/{id}/{targetId}", method = RequestMethod.POST)
+    public void moveTo(HttpServletResponse response, 
+    		@PathVariable("id") Long id, 
+    		@PathVariable("targetId") Long targetId) {
+		
+        if(id.equals(targetId)) {
             throw new BusinessException("节点不能移动到自身节点下");
         }
         service.moveNavigator(id, targetId);
         printSuccessMessage();
     }
+	
+    /**
+     * 移动的时候用到
+     */
+	@RequestMapping("/tree/{portalId}")
+    public void getPortalNavigatorTree(HttpServletResponse response, 
+    		@PathVariable("id")  Long id, 
+    		@PathVariable("portalId")  final Long portalId) {       
+    	
+        List<?> list = service.getNavigatorsByPortal(portalId);
+        
+        // 过滤移动节点自身
+        Navigator self = service.getNavigator(id);
+        list.remove(self);
+        
+        TreeEncoder encoder = new TreeEncoder(list, new LevelTreeParser());
+        encoder.setNeedRootNode(false);
+        
+        print("MenuTree", encoder);
+    }
     
     /**
      * 根据菜单获取菜单项树
      */
-    public void getNavigatorsByPortal(Long portalId){
+	@RequestMapping("/portalmenu/{portalId}")
+    public void getNavigatorsByPortal(HttpServletResponse response, @PathVariable("portalId") Long portalId) {
         List<?> data = service.getNavigatorsByPortal(portalId);   
 
         TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());
@@ -135,70 +167,16 @@ public class NavigatorAction extends BaseActionSupport {
         print("MenuTree", encoder);
     }
     
-    public void getStructuresByPortal(Long portalId, final int type){
+	@RequestMapping("/portalstructure/{portalId}/{type}")
+    public void getStructuresByPortal(HttpServletResponse response, 
+    		@PathVariable("portalId") Long portalId, 
+    		@PathVariable("type") final int type) {
+    	
         List<?> data = portalService.getStructuresByPortal(portalId);      
         TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());
 
-        encoder.setTranslator(new ITreeTranslator(){
-            public Map<String, Object> translate(Map<String, Object> attributes) {
-                Object psType = attributes.get("type");
-                switch(type){
-                case 3:
-                    if(psType.equals(Structure.TYPE_PORTAL))
-                        attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
-                    break;
-                case 2:
-                    if(psType.equals(Structure.TYPE_PORTAL) || psType.equals(Structure.TYPE_PAGE))
-                        attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
-                    break;
-                case 1:  //此处为菜单替换方式中目标版面项，可以选择版面或者页面
-                    if((psType.equals(Structure.TYPE_PORTAL) || psType.equals(Structure.TYPE_PORTLET_INSTANCE)))
-                        attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
-                    break;
-                case 0:
-                    if(!psType.equals(Structure.TYPE_PORTLET_INSTANCE))
-                        attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
-                    break;
-                default:
-                    throw new BusinessException("取门户树时传的参数不正确！");
-                }
-                return attributes;
-            }            
-        });
+        encoder.setTranslator(new PSTreeTranslator4CreateMenu(type));
         encoder.setNeedRootNode(false);
-        print("SiteTree", encoder);
-    }
-    
-    /**
-     * 移动的时候用到
-     */
-    public void getNavigators4Tree(Long id, final Long portalId) {        
-        List<?> data = service.getNavigatorsByPortal(portalId);
-        
-        //过滤移动节点自身
-        for(Iterator<?> it = data.iterator(); it.hasNext();){
-            Navigator menu = (Navigator) it.next();
-            if(menu.getId().equals(id)){
-                it.remove();
-                break;
-            }
-        }
-        
-        TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());
-        
-        encoder.setTranslator(new ITreeTranslator(){
-            public Map<String, Object> translate(Map<String, Object> attributes) {  
-                if( !attributes.get("portalId").equals(portalId) )
-                    attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
-                
-                if( ((Integer)attributes.get("type")) < 1 )
-                    attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
-                
-                return attributes;
-            }            
-        });
-        encoder.setNeedRootNode(false);
-        
-        print("SiteTree", encoder);
+        print("StructureTree", encoder);
     }
 }

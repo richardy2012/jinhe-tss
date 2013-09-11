@@ -97,28 +97,7 @@ public class ComponentService implements IComponentService {
     public void sort(Long id, Long targetId, int direction) {
         dao.sort(id, targetId, direction);
     }
-
-    public Component copyComponent(Long id, File path) {
-        Component component = getComponent(id);
-        return copyElement(component, path, PortalConstants.COPY_PREFIX);
-    }
-    
-    private Component copyElement(Component component, File path, String prefix) {
-        // 先取到拷贝原本element的资源文件目录
-        File fileDir = FileHelper.findPathByName(path, component.getCode() + component.getId());
-        
-        dao.evict(component);
-        component.setId(null);
-        component.setName(prefix + component.getName());
-        component.setIsDefault(PortalConstants.FALSE);
-        component = saveComponent(component);
-        
-        if (fileDir != null) {
-            FileHelper.copyFolder(fileDir.toString(), path + "/" + component.getCode() + component.getId());
-        }
-        return component;
-    }
-    
+ 
     public void setDecoratorAsDefault(Long decoratorId) {
         List<?> list = dao.getEntities("from Component o where o.type = ? and o.isDefault = 1", Component.DECORATOR_TYPE);
         for ( Object temp : list ) {
@@ -177,17 +156,27 @@ public class ComponentService implements IComponentService {
         Component group = dao.getEntity( groupId );
         Component component = dao.getEntity( id );
         
-        // 如果目标节点和原父节点是同一个，则当"复制"操作处理，name前面加前缀
-        String prefix = "";
-        if(component.getParentId().equals(groupId)) {
-            prefix = PortalConstants.COPY_PREFIX;
-        }
-        
-        component.setParentId(groupId);
-        
         URL resourceUri = URLUtil.getWebFileUrl(group.getResourceBaseDir());
         File path = new File(resourceUri.getPath());
-        copyElement(component, path, prefix);
+
+        // 先取到拷贝源component的资源文件目录
+        File sourceDir = FileHelper.findPathByName(path, component.getCode() + component.getId());
+        
+        dao.evict(component);
+        component.setId(null);
+        component.setParentId(groupId);
+        
+        // 如果目标节点和原父节点是同一个，name前面加前缀
+        if(component.getParentId().equals(groupId)) {
+        	component.setName(PortalConstants.COPY_PREFIX + component.getName());
+        }
+        component.setIsDefault(PortalConstants.FALSE);
+        component = saveComponent(component);
+        
+        if (sourceDir != null) {
+            String destDir = path + "/" + component.getCode() + component.getId(); // component.id已经是个新值了
+			FileHelper.copyFolder(sourceDir.toString(), destDir);
+        }
         
         return component;
     }

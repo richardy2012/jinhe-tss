@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.dom4j.Document;
@@ -42,13 +43,13 @@ import com.jinhe.tss.util.XmlUtil;
 import freemarker.template.TemplateException;
 
 @Controller
-@RequestMapping("/component")
+@RequestMapping("/auth/component")
 public class ComponentAction extends FreeMarkerSupportAction {
  
     @Autowired private IComponentService service;
 
     @RequestMapping("/list")
-    public void getAllComponents4Tree() {
+    public void getAllComponents4Tree(HttpServletResponse response) {
         List<?> data = service.getAllComponentsAndGroups();
         TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());        
         print("SourceTree", encoder);
@@ -57,8 +58,8 @@ public class ComponentAction extends FreeMarkerSupportAction {
     /**
      * 所有启动的组件树型展示.（编辑门户结构的时候用到）
      */
-    @RequestMapping("/list/{type}/enabled")
-    public void getEnabledComponents4Tree(int type) {
+    @RequestMapping("/enabledlist/{type}")
+    public void getEnabledComponents4Tree(HttpServletResponse response, @PathVariable("type") int type) {
         List<?> data = service.getEnabledComponentsAndGroups(type);
         
         TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());        
@@ -78,8 +79,8 @@ public class ComponentAction extends FreeMarkerSupportAction {
     /**
      * 获取组件参数,并拼装成一个xml返回
      */
-    @RequestMapping("/params")
-    public void getDefaultParams4Xml(Long id) {
+    @RequestMapping("/params/{id}")
+    public void getDefaultParams4Xml(HttpServletResponse response, @PathVariable("id") Long id) {
         Component component = service.getComponent(id);
         String elementType = component.getComponentType();
         
@@ -103,7 +104,10 @@ public class ComponentAction extends FreeMarkerSupportAction {
      * 获取组件详细信息.
      */
     @RequestMapping("/{groupId}/{id}")
-    public void getComponentInfo(Long id, Long groupId) {
+    public void getComponentInfo(HttpServletResponse response, 
+    		@PathVariable("id") Long id, 
+    		@PathVariable("groupId") Long groupId) {
+    	
         Component componentGroup = service.getComponent(groupId);
         String templatePath = componentGroup.getTemplatePath();
         
@@ -114,7 +118,8 @@ public class ComponentAction extends FreeMarkerSupportAction {
             encoder = new XFormEncoder(templatePath, map);
         } 
         else { // 修改组件
-            encoder = new XFormEncoder(templatePath, service.getComponent(id));
+            Component component = service.getComponent(id);
+			encoder = new XFormEncoder(templatePath, component);
         }
         print("DetailInfo", encoder);
     }
@@ -122,8 +127,8 @@ public class ComponentAction extends FreeMarkerSupportAction {
     /**
      * 新增元素（组）.
      */
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public void save(Component element) {
+    @RequestMapping(method = RequestMethod.POST)
+    public void save(HttpServletResponse response, Component element) {
         boolean isNew = element.getId() == null ? true : false;      
         element = service.saveComponent(element);
         doAfterSave(isNew, element, "SourceTree");
@@ -133,7 +138,7 @@ public class ComponentAction extends FreeMarkerSupportAction {
      * 删除组件
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public void delete(Long id) {
+    public void delete(HttpServletResponse response, @PathVariable("id") Long id) {
         service.deleteComponent(id);
         printSuccessMessage("删除成功");
     }
@@ -142,7 +147,10 @@ public class ComponentAction extends FreeMarkerSupportAction {
      * 停用/启用 组件（将其disabled属性设为"1"/"0"）
      */
     @RequestMapping("/disable/{id}/{state}")
-    public void disabled(Long id, int state) {
+    public void disable(HttpServletResponse response, 
+    		@PathVariable("id") Long id, 
+    		@PathVariable("state") int state) {
+    	
         service.disableComponent(id, state);
         printSuccessMessage();
     }
@@ -161,21 +169,10 @@ public class ComponentAction extends FreeMarkerSupportAction {
     }
     
     /**
-     * 复制组件
-     */
-    @RequestMapping(value = "/copy/{id}", method = RequestMethod.POST)
-    public void copy(Long id) {    
-        Component component = service.getComponent(id);
-        String desDir = URLUtil.getWebFileUrl(component.getResourceBaseDir()).getPath(); 
-        Component copy =  service.copyComponent(id, new File(desDir));
-        doAfterSave(true, copy, "SourceTree");
-    }
-    
-    /**
      * 设置修饰器为默认修饰器
      */
     @RequestMapping(value = "/decorator/default/{id}", method = RequestMethod.POST)
-    public void setDecoratorAsDefault(Long id) {      
+    public void setDecoratorAsDefault(HttpServletResponse response, @PathVariable("id") Long id) {      
         service.setDecoratorAsDefault(id);
         printSuccessMessage();
     }
@@ -184,46 +181,28 @@ public class ComponentAction extends FreeMarkerSupportAction {
      * 设置布局器为默认布局器
      */      
     @RequestMapping(value = "/layout/default/{id}", method = RequestMethod.POST)
-    public void setLayoutAsDefault(Long id) {      
+    public void setLayoutAsDefault(HttpServletResponse response, @PathVariable("id") Long id) {      
         service.setLayoutAsDefault(id);
         printSuccessMessage();
-    }
-    
-    /**
-     * 获取上传组件的页面
-     */
-    @RequestMapping("/upload")
-    public void getUploadTemplate() {
-        XFormEncoder encoder = new XFormEncoder(PortalConstants.IMPORT_ELEMENT_XFORM_PATH);
-        print("ComponentInfo", encoder);
-    }
-
-    /**
-     * 导入组件
-     */
-    public void importComponent(Long groupId, File file) {
-        Component group = service.getComponent(groupId);
-        String desDir = URLUtil.getWebFileUrl(group.getResourceBaseDir()).getPath(); 
-        
-        Component component = new Component();
-        component.setParentId(groupId);
-        component.setType(group.getType());
-        ComponentHelper.importComponent(service, file, component, desDir, group.getComponentType() + ".xml");
-        
-        printImportSuccessMessage();
     }
  
     /**
      * 导出组件
      */
-    public void exportComponent(Long id) {   
+    @RequestMapping(value = "/export/{id}", method = RequestMethod.GET)
+    public void exportComponent(HttpServletResponse response, @PathVariable("id") Long id) {   
         Component component = service.getComponent(id);
         String desDir = URLUtil.getWebFileUrl(component.getResourceBaseDir()).getPath(); 
         
         ComponentHelper.exportComponent(desDir, component, component.getComponentType() + ".xml");
     }
  
-	public void getComponentGroup(Long id, Long parentId, int type) {
+    @RequestMapping("/{parentId}/{id}/{type}")
+	public void getComponentGroup(HttpServletResponse response, 
+			@PathVariable("id") Long id, 
+			@PathVariable("parentId") Long parentId, 
+			@PathVariable("type") int type) {
+		
 		XFormEncoder encoder;
         if( DEFAULT_NEW_ID.equals(id) ) {  //如果是新增,则返回一个空的无数据的模板
         	Map<String, Object> map = new HashMap<String, Object>();
@@ -240,13 +219,15 @@ public class ComponentAction extends FreeMarkerSupportAction {
 	}
  
 	/**  删除组 */
-	public void deleteComponentGroup(Long id){
+	@RequestMapping(value = "/group/{id}", method = RequestMethod.DELETE)
+	public void deleteComponentGroup(HttpServletResponse response, @PathVariable("id") Long id) {
 		service.deleteComponentGroup(id);		
         printSuccessMessage();
 	}
     
     /** 获取某个组件类型的所有分组 */
-    public void getGroupsByType(int type){
+	@RequestMapping("/groups/{type}")
+    public void getGroupsByType(HttpServletResponse response, @PathVariable("type") int type) {
         List<?> data = service.getComponentGroups(type);
         TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser());
         encoder.setNeedRootNode(false);
@@ -256,7 +237,11 @@ public class ComponentAction extends FreeMarkerSupportAction {
     /**
      * 复制组件到另外一个组
      */
-    public void copyTo(Long id, Long targetId){
+	@RequestMapping(value = "/copyto/{id}/{targetId}", method = RequestMethod.POST)
+    public void copyTo(HttpServletResponse response, 
+    		@PathVariable("id") Long id, 
+    		@PathVariable("targetId") Long targetId) {
+		
         Component component = service.copyTo(id, targetId);                
         doAfterSave(true, component, "SourceTree");
     }
@@ -264,7 +249,11 @@ public class ComponentAction extends FreeMarkerSupportAction {
     /**
      * 移动组件到另外一个组
      */
-    public void moveTo(Long id, Long targetId){
+	@RequestMapping(value = "/move/{id}/{targetId}", method = RequestMethod.POST)
+    public void moveTo(HttpServletResponse response, 
+    		@PathVariable("id") Long id, 
+    		@PathVariable("targetId") Long targetId) {
+		
         service.moveTo(id, targetId);     
         printSuccessMessage();
     }
@@ -272,14 +261,16 @@ public class ComponentAction extends FreeMarkerSupportAction {
     /**********************************************      在线编辑组件参数配置    *******************************************/
     
     /**
-     * 
-     * @param paramsItem  类似 ：bgColor=red 回车 menuId=12
+     * 在线编辑组件参数配置  
      */
-    public void getComponentParamsConfig(Long id, String paramsItem){
+	@RequestMapping("/paramconfig/{id}")
+    public void getComponentParamsConfig(HttpServletResponse response, HttpServletRequest request, 
+    		@PathVariable("id") Long id) {
+		
         Component component = service.getComponent(id);
        
         String configFilePath = URLUtil.getWebFileUrl(component.getResourcePath() + "/" + Component.PARAM_FILE).getFile();
-        if( !new File(configFilePath).exists() ){
+        if( !new File(configFilePath).exists() ) {
             // 如果是第一次配置，且配置参数项不为空，则根据需要的参数项自动生成一个默认模板
             Document doc = DocumentHelper.createDocument();
             Element xformNode = doc.addElement("Response").addElement("ConfigParams").addElement("xform");
@@ -287,12 +278,14 @@ public class ComponentAction extends FreeMarkerSupportAction {
             Element layoutNode = xformNode.addElement("layout");
             xformNode.addElement("data");
             
-            if( !EasyUtils.isNullOrEmpty(paramsItem) ){
+            //  paramsItem 格式类似 ：" bgColor=red \n menuId=12 "
+            String paramsItem = request.getParameter("paramsItem");
+            if( !EasyUtils.isNullOrEmpty(paramsItem) ) {
                 StringTokenizer stk = new StringTokenizer(paramsItem);
-                while(stk.hasMoreTokens()){
+                while(stk.hasMoreTokens()) {
                     String itemName = stk.nextToken(); 
                     int index = itemName.indexOf("=");
-                    if(index > 0){
+                    if(index > 0) {
                         itemName = itemName.substring(0, index);
                         
                         //<column name="tableWidth" caption="XX" mode="string"/>
@@ -331,10 +324,14 @@ public class ComponentAction extends FreeMarkerSupportAction {
         }
     }
     
-    public void saveElementParamsConfig(Long id, String configXML){
+	@RequestMapping(value = "/paramconfig/{id}", method = RequestMethod.POST)
+    public void saveElementParamsConfig(HttpServletResponse response, HttpServletRequest request, 
+    		@PathVariable("id") Long id) {
+		
         Component component = service.getComponent(id);
         String configFile = URLUtil.getWebFileUrl(component.getResourcePath() + "/paramsXForm.xml").getFile();
         
+        String configXML = request.getParameter("configXML");
         Document doc = XMLDocUtil.dataXml2Doc("<Response>\n<ConfigParams>\n" + configXML + "\n</ConfigParams>\n</Response>");
         FileHelper.writeXMLDoc(doc, configFile);
         
@@ -351,7 +348,8 @@ public class ComponentAction extends FreeMarkerSupportAction {
      * @throws IOException
      * @throws TemplateException
      */
-    public void  previewComponent(Long id) throws IOException, TemplateException{
+	@RequestMapping("/preview/{id}")
+    public void  previewComponent(HttpServletResponse response, @PathVariable("id") Long id) throws IOException, TemplateException {
         Component component = service.getComponent(id);
         String componentType = component.getComponentType();
         
@@ -369,8 +367,8 @@ public class ComponentAction extends FreeMarkerSupportAction {
         
         Map<String, String> events = new HashMap<String, String>();
         List<?> eventNodes = doc.selectNodes("/" + componentType + "/events/attach");
-        if(eventNodes != null){
-            for(Iterator<?> it = eventNodes.iterator(); it.hasNext();){
+        if(eventNodes != null) {
+            for(Iterator<?> it = eventNodes.iterator(); it.hasNext();) {
                 Element eventNode = (Element) it.next();
                 events.put(eventNode.attributeValue("event"), eventNode.attributeValue("onevent"));
             }   
@@ -378,8 +376,8 @@ public class ComponentAction extends FreeMarkerSupportAction {
         
         Map<String, String> parameters = new HashMap<String, String>();
         List<?> paramNodes = doc.selectNodes("/" + componentType + "/parameters/param");
-        if(paramNodes != null){
-            for(Iterator<?> it = paramNodes.iterator(); it.hasNext();){
+        if(paramNodes != null) {
+            for(Iterator<?> it = paramNodes.iterator(); it.hasNext();) {
                 Element paramNode = (Element) it.next();
                 parameters.put("#{" + paramNode.attributeValue("name") + "}", paramNode.attributeValue("defaultValue"));
             } 
@@ -430,7 +428,7 @@ public class ComponentAction extends FreeMarkerSupportAction {
             value = MacrocodeCompiler.run(value, parameters);
             
             if ("onload".equals(key)) {
-                onloadEvent.append("window.onload = function(){\n").append(value + "();\n};\n");
+                onloadEvent.append("window.onload = function() {\n").append(value + "();\n};\n");
             } 
             else {
                 sb.append("window." + key + "=" + value + "\n"); 

@@ -95,6 +95,7 @@ public class SyncDataFromLDAPTest extends TxSupportTest4UM {
 		List<?> groups = (List<?>)datasMap.get("groups");
         List<?> users  = (List<?>)datasMap.get("users");
         int totalCount = users.size() + groups.size();
+        Assert.assertTrue(totalCount == 6);
         
         for(Object temp : groups) {
         	log.debug(temp);

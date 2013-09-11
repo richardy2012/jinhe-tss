@@ -1,6 +1,5 @@
 package com.jinhe.tss.portal.service;
 
-import java.io.File;
 import java.util.List;
 
 import com.jinhe.tss.framework.component.log.Logable;
@@ -63,14 +62,6 @@ public interface IComponentService {
      * @param direction
      */
     void sort(Long id, Long targetId, int direction);
-
-    /**
-     * 复制一个组件
-     * @param id
-     * @param path
-     * @return
-     */
-    Component copyComponent(Long id, File path);
 
     /**
      * 将修饰器设置为默认修饰器
