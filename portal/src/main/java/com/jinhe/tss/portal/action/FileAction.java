@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
@@ -25,55 +26,28 @@ import com.jinhe.tss.util.URLUtil;
  * 管理门户、页面、布局器、修饰器、布局器等的附件资源。
  */
 @Controller
-@RequestMapping("/portal/file")
+@RequestMapping("/auth/portal/file")
 public class FileAction extends BaseActionSupport {
  
     /**
      * 列出文件列表
-     * 
-     * @param contextPath  当前操作文件所在目录上下文
-     * @param filter    文件后缀名
-     * @param file
-     * @param paramsMap  参数列表 paramsMap['" + param + "']"
      */
-    public void listAvailableFiles(HttpServletResponse response, String contextPath, String filter, File file, Map<String, Object> paramsMap){
-        String id   = getParamFromMap(paramsMap, "id");  
-        String code = getParamFromMap(paramsMap, "code");
-        String type = getParamFromMap(paramsMap, "type"); // 判断是何种类型的资源管理
-        if(type == null) {
-            throw new BusinessException("没有指定文件类型");
+	@RequestMapping("/list")
+    public void listAvailableFiles(HttpServletResponse response, HttpServletRequest request) {
+        String id   = request.getParameter("id");  
+        String code = request.getParameter("code");
+        String type = request.getParameter("type"); // 判断是何种类型的资源管理
+        String filter = request.getParameter("filter");
+        if(Arrays.asList(Component.TYPE_NAMES).contains(type)) {
+            throw new BusinessException("指定文件类型有误。");
         }
         
         StringBuffer sb = new StringBuffer("<actionSet title=\"\" openednodeid=\"r1.1\">"); 
         
-        // 如果contextPath不为空，则直接使用contextPath值作为根目录；否则根据type值找根目录
-        File baseDir = null;
-        String portalModelDir = URLUtil.getWebFileUrl(PortalConstants.PORTAL_MODEL_DIR).getPath();
-        File portalRootDir = new File(portalModelDir + "/" + code + "_" + id); // 指定门户的资源根目录
-        if( contextPath != null ){
-            contextPath = getContextPath(contextPath);
-            if( (baseDir = new File(contextPath)).equals(portalRootDir) ) {
-                // 不用目录上翻的按钮，以免翻到目录外面去。
-            } 
-            else {
-                // .. 为目录上翻的按钮
-                sb.append("<treeNode id=\"-1\" name=\"..\" icon=\"../framework/images/folder.gif\" />"); 
-            }
-        } 
-        else {
-            if( "site".equalsIgnoreCase(type) ) { // 门户结构
-                baseDir = portalRootDir;        
-            }
-            else if(Arrays.asList(Component.TYPE_NAMES).contains(type)) { // 门户元素
-                String elementPath = URLUtil.getWebFileUrl(PortalConstants.MODEL_DIR + type).getPath();
-                baseDir = new File(elementPath + "/" + code + id); 
-            }
-        }
+        // 根据type值找根目录
+        String elementPath = URLUtil.getWebFileUrl(PortalConstants.MODEL_DIR + type).getPath();
+        File baseDir = new File(elementPath + "/" + code + id); 
                 
-        if(baseDir == null) {
-            throw new BusinessException("路径为空");
-        }
-        
         filter = getFilter(filter);
         List<String> files= sortFile(baseDir, FileHelper.listFilesByType(filter, baseDir));
         
@@ -89,18 +63,7 @@ public class FileAction extends BaseActionSupport {
         }
         sb.append("</actionSet>");      
         
-        String path = file.getPath();
-        contextPath = path.substring(path.lastIndexOf("model") + 6);
-         
-        print(new String[]{"ContextPath", "ResourceTree"}, new Object[]{contextPath, sb});
-    }
- 
-    private String getParamFromMap(Map<String, Object>  paramsMap, String paramName){
-        Object[] objs = (Object[]) paramsMap.get(paramName);
-        if(objs != null && objs.length > 0){
-            return (String) objs[0];
-        }
-        return null;
+        print(new String[] {"ResourceTree", "contextPath"}, new Object[] {sb, baseDir.getPath()});
     }
     
     /* 将子文件夹、文件进行归类，文件夹在前 */
@@ -118,26 +81,13 @@ public class FileAction extends BaseActionSupport {
     }
     
     /**
-     * 上传文件
-     */
-    public void upload(String contextPath, File file) {
-        File baseDir = null;
-        if(contextPath != null){
-            contextPath = getContextPath(contextPath);
-            baseDir = new File(contextPath);
-        }
-        
-        if(baseDir != null && file != null) {
-            FileHelper.copyFile(baseDir, file);
-        }
-        
-        print("script", "window.parent.loadFileTree();");
-    }
-    
-    /**
      * 下载
      */
-    public void download(HttpServletResponse response, String contextPath, String fileNames) {
+    @RequestMapping(method = RequestMethod.GET)
+    public void download(HttpServletResponse response, HttpServletRequest request) {
+    	String contextPath = request.getParameter("contextPath");
+    	String fileNames = request.getParameter("fileNames");
+    	
         if(fileNames == null) return;
         
         // 建立临时文件夹存放要下载的所有文件
@@ -164,7 +114,12 @@ public class FileAction extends BaseActionSupport {
     /**
      * 删除文件（文件夹）
      */
-    public void deleteFile(HttpServletResponse response, String contextPath, String fileNames, String folderNames) {
+    @RequestMapping(method = RequestMethod.DELETE)
+    public void deleteFile(HttpServletResponse response, HttpServletRequest request) {
+    	String contextPath = request.getParameter("contextPath");
+    	String fileNames = request.getParameter("fileNames");
+    	String folderNames = request.getParameter("folderNames");
+    	
         List<String> pathList = new ArrayList<String>();
         if(fileNames != null) {
             pathList.addAll(Arrays.asList(fileNames.split(",")));
@@ -189,8 +144,13 @@ public class FileAction extends BaseActionSupport {
     /**
      * 重命名文件（文件夹）
      */
-    public void renameFile(HttpServletResponse response, String contextPath, String fileName, String newFileName) {
-        contextPath = getContextPath(contextPath);
+    @RequestMapping(method = RequestMethod.PUT)
+    public void renameFile(HttpServletResponse response, HttpServletRequest request) {
+    	String contextPath = request.getParameter("contextPath");
+    	String fileName = request.getParameter("fileName");
+    	String newFileName = request.getParameter("newFileName");
+    	
+    	contextPath = getContextPath(contextPath);
         File newFile = new File(contextPath + newFileName);
         if(newFile.exists()) {
             throw new BusinessException("同名文件(夹)已经存在，重命名失败！");
@@ -206,12 +166,16 @@ public class FileAction extends BaseActionSupport {
     /**
      * 新建文件夹 
      */
-    public void addDir(HttpServletResponse response, String contextPath, String newFileName){
+    @RequestMapping(method = RequestMethod.POST)
+    public void addDir(HttpServletResponse response, HttpServletRequest request){
+    	String contextPath = request.getParameter("contextPath");
+    	String newFileName = request.getParameter("newFileName");
+    	
         FileHelper.createDir(contextPath + newFileName);
         print("script", "window.parent.loadFileTree();");
     }
  
-    private String getContextPath(String contextPath) {
+    public static String getContextPath(String contextPath) {
         String modelDir = URLUtil.getWebFileUrl(PortalConstants.MODEL_DIR).getPath();
         return modelDir + "/" + contextPath + "/";
     }

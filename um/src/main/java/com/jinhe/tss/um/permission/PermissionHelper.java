@@ -71,7 +71,7 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public List<String> getOperationsByResource(Long resourceId, String suppliedTable, Class<? extends AbstractResourcesView> resourceClass) {
+    public List<String> getOperationsByResource(Long resourceId, String suppliedTable, Class<?> resourceClass) {
     	
         List<String> operations = new ArrayList<String>();
     	
@@ -96,25 +96,14 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
      * @param userId
      * @return
      */
-    public List<?> getOperationsByResource(String resourceTypeId, Long resourceId, Long userId) {
-        String suppliedTable = resourceTypeDao.getSuppliedTable(PermissionHelper.getApplicationID(), resourceTypeId);
-        String hql = "select distinct p.operationId from " + suppliedTable + " p, RoleUserMapping ru " +
-                " where p.roleId = ru.id.roleId and p.resourceId = ? and ru.id.userId = ?";
-        return getEntities( hql, resourceId, userId );
-    }
-    
-    /**
-     * 获取用户对一个应用中的一种资源类型中的一个资源拥有的高级（可授权或可授权可传递）权限选项ID集合
-     * @param resourceTypeId
-     * @param resourceId
-     * @param userId
-     * @return
-     */
-    public List<?> getHighOperationsByResource(String resourceTypeId, Long resourceId, Long userId) {
-        String suppliedTable = resourceTypeDao.getSuppliedTable(PermissionHelper.getApplicationID(), resourceTypeId);
-        String hql = "select distinct p.operationId from " + suppliedTable + " p, RoleUserMapping ru " +
-                " where p.roleId = ru.id.roleId and p.resourceId = ? and ru.id.userId = ? and (p.isGrant = 1 or p.isPass = 1)";
-        return getEntities(hql, resourceId, userId);
+    public List<?> getOperationsByResource(String resourceTypeId, Long resourceId) {
+        String applicationId = PermissionHelper.getApplicationID();
+		String suppliedTable = resourceTypeDao.getSuppliedTable(applicationId, resourceTypeId);
+        String resourceTable = resourceTypeDao.getResourceTable(applicationId, resourceTypeId);
+        
+        Class<?> resourceClass = BeanUtil.createClassByName(resourceTable);
+        
+        return getOperationsByResource(resourceId, suppliedTable, resourceClass);
     }
     
     /**
@@ -562,7 +551,6 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
     	IResource resource = (IResource) getEntity(BeanUtil.createClassByName(resourceTable), resourceId);
     	return resource.getParentId();
     }
-    
 }
 
 	

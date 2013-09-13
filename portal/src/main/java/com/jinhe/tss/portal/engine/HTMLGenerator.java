@@ -139,7 +139,7 @@ public class HTMLGenerator {
         this.freemarkerParser = freemarkerParser;
         
         PageNode page;
-        if (id == null) {
+        if (id == null || id == 0) {
             Set<Node> children = portal.getChildren();
             page = children.size() > 0 ? (PageNode) children.toArray()[0] : null;
         } 
@@ -182,18 +182,17 @@ public class HTMLGenerator {
      * <br>
      * @param portal   
      *                 操作门户PortalNode对象<br>
-     * @param id       
-     *                 对应（版面/portlet替换）菜单中的 "版面/Portlet" ID，<br>
-     *                 即即将显示的节点Id<br>
+     * @param contentId       
+     *                 对应（版面/portlet替换）菜单中的 "版面/Portlet" ID， 即即将显示的节点Id<br>
      * @param targetId 
      *                 对应（版面/portlet替换）菜单中的目标版面/页面ID，<br>
      *                 即被取代的区域（对应布局器中targetIndex的区域）所在的页面或版面ID
      */
-    public HTMLGenerator(PortalNode portal, Long id, Long targetId, FreemarkerParser freemarkerParser) {
+    public HTMLGenerator(PortalNode portal, Long contentId, Long targetId, FreemarkerParser freemarkerParser) {
         this.targetId = targetId;
         this.freemarkerParser = freemarkerParser;
         
-        Node content = portal.getNodesMap().get(id);
+        Node content = portal.getNodesMap().get(contentId);
         Node target  = portal.getNodesMap().get(targetId);
         
         if( !(content instanceof IPageElement) ) {

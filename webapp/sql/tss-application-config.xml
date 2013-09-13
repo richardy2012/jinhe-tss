@@ -80,7 +80,6 @@
 		<operation operationId="5" name="排序" seqNo="5" description="排序门户结构" dependId="opt1" />
 		<operation operationId="6" name="停用" seqNo="6" description="停用门户结构" dependId="opt1" dependParent="3"/>
 		<operation operationId="7" name="启用" seqNo="7" description="启用门户结构" dependId="opt1" dependParent="2"/>
-		<operation operationId="8" name="浏览" seqNo="8" description="浏览门户结构" />
 	</resourceType>
 	
 	<resourceType resourceTypeId="12" name="菜单导航" seqNo="13" description="菜单导航" 

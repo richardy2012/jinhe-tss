@@ -29,23 +29,24 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
  
     @Test
     public void testComponentGroupFunctions() {
-        componentAction.getComponentParamsConfig(defaultLayoutId, "");
+    	request.addParameter("paramsItem", "");
+        componentAction.getComponentParamsConfig(response, request, defaultLayoutId);
         
         try {
-            componentAction.previewComponent(defaultLayoutId);
+            componentAction.previewComponent(response, defaultLayoutId);
  
         } catch (Exception e) {
             assertFalse("预览组件出错" + e.getMessage(), true);
         }
  
-        componentAction.getComponentGroup(defaultLayoutId, PortalConstants.ROOT_ID, Component.LAYOUT_TYPE);
+        componentAction.getComponentGroup(response, defaultLayoutId, PortalConstants.ROOT_ID, Component.LAYOUT_TYPE);
         
         Component group1 = new Component();
         group1.setName("测试布局器组1");
         group1.setIsGroup(true);
         group1.setType(Component.LAYOUT_TYPE);
         group1.setParentId(defaultLayoutGroup.getId());   
-        componentAction.save(group1);
+        componentAction.save(response, group1);
         
         Long groupId = group1.getId();
         assertNotNull(groupId);
@@ -55,31 +56,29 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         group2.setIsGroup(true);
         group2.setType(Component.LAYOUT_TYPE);
         group2.setParentId(defaultLayoutGroup.getId());   
-        componentAction.save(group2);
+        componentAction.save(response, group2);
  
-        componentAction.getComponentGroup(BaseActionSupport.DEFAULT_NEW_ID, PortalConstants.ROOT_ID, Component.LAYOUT_TYPE);
+        componentAction.getComponentGroup(response, BaseActionSupport.DEFAULT_NEW_ID, PortalConstants.ROOT_ID, Component.LAYOUT_TYPE);
         
-        componentAction.getGroupsByType(Component.LAYOUT_TYPE);
+        componentAction.getGroupsByType(response, Component.LAYOUT_TYPE);
  
         componentAction.sort(Context.getResponse(), groupId, group2.getId(), -1);
         
-        componentAction.copy(defaultLayoutId);
+        componentAction.copyTo(response, defaultLayoutId, groupId);
         
-        componentAction.getGroupsByType(Component.LAYOUT_TYPE);
-        
-        componentAction.copyTo(defaultLayoutId, groupId);
+        componentAction.getGroupsByType(response, Component.LAYOUT_TYPE);
         
         List<?> groups = componentService.getComponentGroups(Component.LAYOUT_TYPE);
         assertTrue(groups.size() >= 3);
  
-        componentAction.moveTo(defaultLayoutId, ((Component)groups.get(2)).getId());
+        componentAction.moveTo(response, defaultLayoutId, group2.getId());
         
-        componentAction.moveTo(defaultLayoutId, defaultLayoutGroup.getId());  // 移回去
+        componentAction.moveTo(response, defaultLayoutId, defaultLayoutGroup.getId());  // 移回去
         
         for(Object temp : groups) {
             Component group = (Component)temp;
             if( !defaultLayoutGroup.getId().equals(group.getId()) ){
-                componentAction.delete(group.getId());
+                componentAction.delete(response, group.getId());
             }
         }
     }
@@ -91,51 +90,49 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         group1.setIsGroup(true);
         group1.setType(Component.DECORATOR_TYPE);
         group1.setParentId(defaultDecoratorGroup.getId());   
-        componentAction.save(group1);
+        componentAction.save(response, group1);
         
         Long groupId = group1.getId();
         
-        componentAction.getUploadTemplate();
-
-		String file = URLUtil.getResourceFileUrl("testdata/DemoDecorator.zip").getPath();
-		componentAction.importComponent(groupId, new File(file));
+//		String file = URLUtil.getResourceFileUrl("testdata/DemoDecorator.zip").getPath();
+//		componentAction.importComponent(groupId, new File(file));
 
 		List<?> list = componentService.getEnabledComponentsAndGroups(Component.DECORATOR_TYPE);
 		assertTrue(list.size() >= 2);
 		Component decorator1 = (Component) list.get(list.size() - 1);
 		Long id = decorator1.getId();
 		
-		componentAction.exportComponent(id);
-		componentAction.getComponentInfo(id, groupId);
+		componentAction.exportComponent(response, id);
+		componentAction.getComponentInfo(response, id, groupId);
 
 		Component decorator2 = new Component();
 
 		BeanUtil.copy(decorator2, decorator1, "id,code".split(","));
 		decorator2.setName("copy_" + decorator1.getName());
-		componentAction.save(decorator2);
-		componentAction.save(decorator2); // update
+		componentAction.save(response, decorator2);
+		componentAction.save(response, decorator2); // update
 
 		for (int i = 0; i < 5; i++) {
-			componentAction.disabled(id, PortalConstants.TRUE);
-			componentAction.disabled(id, PortalConstants.FALSE);
+			componentAction.disable(response, id, PortalConstants.TRUE);
+			componentAction.disable(response, id, PortalConstants.FALSE);
 		}
 
-		componentAction.setDecoratorAsDefault(id);
-		componentAction.setDecoratorAsDefault(defaultDecoratorId);
+		componentAction.setDecoratorAsDefault(response, id);
+		componentAction.setDecoratorAsDefault(response, defaultDecoratorId);
 
 		componentAction.sort(Context.getResponse(), id, id + 1, 1);
 
-		componentAction.copy(id);
+		componentAction.getEnabledComponents4Tree(response, Component.DECORATOR_TYPE);
+		componentAction.getGroupsByType(response, Component.DECORATOR_TYPE);
 
-		componentAction.getEnabledComponents4Tree(Component.DECORATOR_TYPE);
-		componentAction.getGroupsByType(Component.DECORATOR_TYPE);
+		componentAction.getDefaultParams4Xml(response, id);
+		
+		request.addParameter("configXML", "");
+		componentAction.saveElementParamsConfig(response, request, id);
 
-		componentAction.getDefaultParams4Xml(id);
-		componentAction.saveElementParamsConfig(id, "");
+		componentAction.delete(response, id);
 
-		componentAction.delete(id);
-
-		componentAction.delete(groupId);
+		componentAction.delete(response, groupId);
 
 		assertTrue(TestUtil.printLogs(logService) > 0);
 	}
@@ -147,20 +144,22 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         group1.setIsGroup(true);
         group1.setType(Component.LAYOUT_TYPE);
         group1.setParentId(defaultLayoutGroup.getId());   
-        componentAction.save(group1);
+        componentAction.save(response, group1);
         
         Long groupId = group1.getId();
         
         String file = URLUtil.getResourceFileUrl("testdata/DemoLayout.zip").getPath();
-        componentAction.importComponent(groupId, new File(file));
+        componentAction.importComponent(response, groupId, new File(file));
         
         List<?> list = componentService.getEnabledComponentsAndGroups(Component.LAYOUT_TYPE);
         assertTrue(list.size() >= 2);
         Component layout1 = (Component) list.get(list.size() - 1);
         Long id = layout1.getId();
         
-        componentAction.getDefaultParams4Xml(id);
-        componentAction.saveElementParamsConfig(id, "");
+        componentAction.getDefaultParams4Xml(response, id);
+        
+        request.addParameter("configXML", "");
+		componentAction.saveElementParamsConfig(response, request, id);
     }
 
     @Test
@@ -170,20 +169,20 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         group1.setIsGroup(true);
         group1.setType(Component.PORTLET_TYPE);
         group1.setParentId(PortalConstants.ROOT_ID);   
-        componentAction.save(group1);
+        componentAction.save(response, group1);
         
         Long groupId = group1.getId();
         
         String file = URLUtil.getResourceFileUrl("testdata/DemoPortlet.zip").getPath();
-        componentAction.importComponent(groupId, new File(file));
+        componentAction.importComponent(response, groupId, new File(file));
         
         List<?> list = componentService.getEnabledComponentsAndGroups(Component.PORTLET_TYPE);
         assertTrue(list.size() >= 2);
         Component portlet1 = (Component) list.get(list.size() - 1);
         Long id = portlet1.getId();
         
-        componentAction.getDefaultParams4Xml(id);
-        componentAction.saveElementParamsConfig(id, "");
+        request.addParameter("configXML", "");
+		componentAction.saveElementParamsConfig(response, request, id);
     }
 
 }

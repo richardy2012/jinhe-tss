@@ -5,14 +5,12 @@ import java.util.List;
 import com.jinhe.tss.framework.component.log.Logable;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.engine.model.PortalNode;
-import com.jinhe.tss.portal.entity.IssueInfo;
+import com.jinhe.tss.portal.entity.ReleaseConfig;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
 import com.jinhe.tss.portal.permission.PermissionFilter4Check;
 import com.jinhe.tss.portal.permission.PermissionFilter4Portal;
-import com.jinhe.tss.um.permission.filter.PermissionFilter4CopyTo;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Create;
-import com.jinhe.tss.um.permission.filter.PermissionFilter4Move;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Sort;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Update;
 import com.jinhe.tss.um.permission.filter.PermissionTag;
@@ -29,18 +27,6 @@ public interface IPortalService {
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE)
     List<?> getAllStructures();
 
-    /**
-     * <p>
-     * 获取除portlet实例外的门户结构。
-     * 移动到...，复制到...的时候将调用本方法。
-     * 将根据“新增”操作选项过滤。
-     * </p>
-     */
-    @PermissionTag(
-            operation = PortalConstants.PORTAL_ADD_OPERRATION, 
-            resourceType = PortalConstants.PORTAL_RESOURCE_TYPE)
-    List<?> getTargetStructures();
-    
     /**
      * 获取所有启用门户
      */
@@ -150,27 +136,6 @@ public interface IPortalService {
     void disable(Long id, Integer disabled);
 
     /**
-     * <p>
-     * 跨父节点移动门户结构PortalStructure节点<p></p>
-     * 移动到弹出窗口中选中的门户结构下（一般为"版面"节点），即将移动节点的parentId设为目标的id。<p></p>
-     * 同时设置其排序属性sqpNo，放到最后面<p></p>
-     * 
-     * 前提：用户对被操作的节点及其所有子节点有查看权限。
-     * </p>
-     * 
-     * @param id
-     *          要移动节点的id
-     * @param targetId
-     *          目标节点ID
-     */
-    @Logable(operateTable="门户结构", operateType="移动", operateInfo="移动(ID: ${args[0]})节点到(ID: ${args[1]})节点下")
-    @PermissionTag(
-            operation = PortalConstants.PORTAL_ADD_OPERRATION + "," + PortalConstants.PORTAL_DEL_OPERRATION, 
-            resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
-            filter = PermissionFilter4Move.class)
-    void move(Long id, Long targetId);
-
-    /**
      * * <p>
      * 排序，同节点下的节点排序（一次只能排一个）
      * </p>
@@ -190,30 +155,16 @@ public interface IPortalService {
     void sort(Long id, Long targetId, int direction);
     
     /**
-     * 复制到。。。
-     * @param id
-     * @param targetId
-     * @return
-     */
-    @Logable(operateTable="门户结构", operateType="复制到", operateInfo="复制(ID: ${args[0]})节点到(ID: ${args[1]})下")
-    @PermissionTag(
-            operation = PortalConstants.PORTAL_ADD_OPERRATION, 
-            resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
-            filter = PermissionFilter4CopyTo.class)
-    List<Structure> copyTo(Long id, Long targetId);
-    
-    /**
      * 获取一个门户树的一份拷贝。
      * 方法将会被权限过滤拦截器拦截，用户没有权限的门户结构节点将会被过滤掉。
      * 如果用户是匿名用户，则应该调用本方法，因为匿名用户没有自定义门户。
      * 
      * @param portalId
-     * @param method 
-     *             查看方式  维护预览/浏览/查看  maintain/browse/view
+     * @param themeId 
      * @return
      */
     @PermissionTag(filter = PermissionFilter4Portal.class)
-    PortalNode getPortal(Long portalId, Long themeId, String method);
+    PortalNode getPortal(Long portalId, Long themeId);
     
     
     /****************************   门户相关的（包括门户主题、门户发布等）的相关维护  *************************************************/
@@ -273,33 +224,33 @@ public interface IPortalService {
      * @param visitUrl
      * @return
      */
-    IssueInfo getIssueInfo(String visitUrl);
+    ReleaseConfig getReleaseConfig(String visitUrl);
 
     /**
      * 获取所有的门户发布信息
      * @return
      */
-    List<?> getAllIssues();
+    List<?> getAllReleaseConfigs();
 
     /**
      * 保存发布信息
      * @param issueInfo
      * @return
      */
-    IssueInfo saveIssue(IssueInfo issueInfo);
+    ReleaseConfig saveReleaseConfig(ReleaseConfig issueInfo);
 
     /**
      * 移除发布信息
      * @param id
      */
-    void removeIssue(Long id);
+    void removeReleaseConfig(Long id);
 
     /**
      * 获取发布信息
      * @param id
      * @return
      */
-    IssueInfo getIssueInfo(Long id);
+    ReleaseConfig getReleaseConfig(Long id);
     
     
     //******************************** 以下为门户自定义管理 ***************************************************************

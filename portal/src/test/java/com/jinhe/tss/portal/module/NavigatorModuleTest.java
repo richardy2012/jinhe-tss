@@ -41,8 +41,9 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         root.setParentId(PortalConstants.ROOT_ID);
         root.setType(Structure.TYPE_PORTAL);
         root.setName("测试门户4MenuTest");
+        root.setCode("TempPortalCode");
         root.setTheme(theme);
-        portalAction.save(root, "TempPortalCode"); // create portal root
+        portalAction.save(response, root); // create portal root
         
         List<?> list = menuService.getAllNavigator();
         assertTrue(list.size() >= 1);
@@ -54,8 +55,8 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         Long rootMenuId = rootMenu.getId();
         Assert.assertEquals(root.getId(), portalId);
         
-        menuAction.getNavigatorInfo(BaseActionSupport.DEFAULT_NEW_ID, rootMenuId, Navigator.TYPE_MENU);
-        menuAction.getNavigatorInfo(rootMenuId, PortalConstants.ROOT_ID, Navigator.TYPE_MENU);
+        menuAction.getNavigatorInfo(response, BaseActionSupport.DEFAULT_NEW_ID, Navigator.TYPE_MENU);
+        menuAction.getNavigatorInfo(response, rootMenuId, Navigator.TYPE_MENU);
  
         // 创建各种类型的菜单项
         Navigator menu1 = new Navigator();
@@ -64,7 +65,7 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         menu1.setParentId(rootMenuId);
         menu1.setPortalId(portalId);
         menu1.setContent(root);
-        menuAction.save(menu1);
+        menuAction.save(response, menu1);
         
         Navigator menu2 = new Navigator();
         menu2.setType(Navigator.TYPE_MENU_ITEM_7);
@@ -103,32 +104,32 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         
         // 测试停用启用
         for(int i = 0; i < 2; i++) {
-	        menuAction.disable(rootMenuId, PortalConstants.TRUE);
-	        menuAction.disable(rootMenuId, PortalConstants.FALSE);
+	        menuAction.disable(response, rootMenuId, PortalConstants.TRUE);
+	        menuAction.disable(response, rootMenuId, PortalConstants.FALSE);
         }
         
         // 排序、移动
-        menuAction.sort(menu2.getId(), menu3.getId(), 1);
+        menuAction.sort(response, menu2.getId(), menu3.getId(), 1);
 
-        menuAction.getNavigators4Tree(menu3.getId(), portalId); // 移动的时候用到
+        menuAction.getNavigatorsByPortal(response, portalId); // 移动的时候用到
  
-        menuAction.move(menu3.getId(), menu1.getId());
+        menuAction.moveTo(response, menu3.getId(), menu1.getId());
         
         // 查询
-        menuAction.getAllNavigator4Tree();
+        menuAction.getAllNavigator4Tree(response);
         
-        menuAction.getNavigatorsByPortal(portalId);
+        menuAction.getNavigatorsByPortal(response, portalId);
 
-        menuAction.getStructuresByPortal(portalId, Structure.TYPE_SECTION);
-        menuAction.getStructuresByPortal(portalId, Structure.TYPE_PORTLET_INSTANCE);
+        menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_SECTION);
+        menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_PORTLET_INSTANCE);
         
         // 生成菜单XML格式
-        menuAction.getNavigatorXML(rootMenuId);
+        menuAction.getNavigatorXML(response, rootMenuId);
         
         // 删除
-        menuAction.delete(rootMenuId);
+        menuAction.delete(response, rootMenuId);
         
-        portalAction.delete(portalId);
+        portalAction.delete(response, portalId);
         
         assertTrue(TestUtil.printLogs(logService) > 0);
     }

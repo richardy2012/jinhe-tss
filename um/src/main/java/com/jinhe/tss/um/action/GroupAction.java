@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.jinhe.tss.framework.component.progress.ProgressManager;
 import com.jinhe.tss.framework.component.progress.Progressable;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeTranslator;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
@@ -100,9 +99,8 @@ public class GroupAction extends ProgressActionSupport {
         	return; // 自注册用户组类型:没有任何菜单
         } 
         
-        Long operatorId = Environment.getOperatorId();
         String resourceTypeId = UMConstants.GROUP_RESOURCE_TYPE_ID;
-        List<?> operations = PermissionHelper.getInstance().getOperationsByResource(resourceTypeId, resourceId, operatorId);
+        List<?> operations = PermissionHelper.getInstance().getOperationsByResource(resourceTypeId, resourceId);
  
         print("Operation", EasyUtils.list2Str(operations));
     }

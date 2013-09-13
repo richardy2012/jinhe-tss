@@ -68,8 +68,7 @@ public abstract class TxSupportTest4UM extends AbstractTransactionalJUnit4Spring
     public void setUp() {
         Global.setContext(super.applicationContext);
         
-        request = new MockHttpServletRequest();
-        Context.initRequestContext(request);
+        Context.initRequestContext(request = new MockHttpServletRequest());
         
 		Context.setResponse(response = new MockHttpServletResponse());
         

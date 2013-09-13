@@ -1,14 +1,11 @@
 package com.jinhe.tss.portal.service.impl;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,19 +20,18 @@ import com.jinhe.tss.portal.dao.INavigatorDao;
 import com.jinhe.tss.portal.dao.IPortalDao;
 import com.jinhe.tss.portal.engine.PortalGenerator;
 import com.jinhe.tss.portal.engine.model.PortalNode;
-import com.jinhe.tss.portal.entity.IssueInfo;
+import com.jinhe.tss.portal.entity.ReleaseConfig;
 import com.jinhe.tss.portal.entity.Navigator;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
 import com.jinhe.tss.portal.entity.ThemeInfo;
-import com.jinhe.tss.portal.entity.ThemePersonal;
 import com.jinhe.tss.portal.entity.ThemeInfo.ThemeInfoId;
+import com.jinhe.tss.portal.entity.ThemePersonal;
 import com.jinhe.tss.portal.helper.ComponentHelper;
 import com.jinhe.tss.portal.service.IPortalService;
 import com.jinhe.tss.portal.sso.Filter8PortalPermission;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
-import com.jinhe.tss.util.XMLDocUtil;
  
 @Service("PortalService")
 public class PortalService implements IPortalService {
@@ -56,10 +52,6 @@ public class PortalService implements IPortalService {
         return portalDao.getEntities("from Structure o order by o.decode "); 
     }
 
-    public List<?> getTargetStructures() { 
-        return portalDao.getEntities("from Structure o where o.type <> 3 order by o.decode ");
-    }
-
     public List<?> getActivePortals() { 
         return portalDao.getEntities("from Structure o where o.disabled <> 1 and o.type = 0 order by o.decode ");
     }
@@ -78,11 +70,11 @@ public class PortalService implements IPortalService {
     
    //* *********************************************   读取组装门户所需数据   ********************************************************
     
-    public PortalNode getPortal(Long portalId, Long selectThemeId, String method) {
+    public PortalNode getPortal(Long portalId, Long selectThemeId) {
         Structure portal = portalDao.getEntity(portalId);
         portalDao.evict(portal);
         
-        if( selectThemeId != null ) {
+        if( selectThemeId != null && selectThemeId > 0) {
             portal.setTheme(new Theme(selectThemeId));
         }
         
@@ -177,8 +169,8 @@ public class PortalService implements IPortalService {
         
         // 加载主题信息
         Structure portal = portalDao.getEntity(ps.getPortalId());
-        ThemeInfoId themeInfoId = new ThemeInfoId(portal.getCurrentTheme().getId(), id);
-        ThemeInfo themeInfo = (ThemeInfo) portalDao.getEntity(ThemeInfo.class, themeInfoId);
+        Long currentThemeId = portal.getCurrentTheme().getId();
+        ThemeInfo themeInfo = (ThemeInfo) portalDao.getEntity(ThemeInfo.class, new ThemeInfoId(currentThemeId, id));
         if( themeInfo == null ) {
             // 如果该门户结构在当前主题下找不到主题信息，则取默认的修饰和布局
             themeInfo = new ThemeInfo();
@@ -252,7 +244,7 @@ public class PortalService implements IPortalService {
         ps = portalDao.saveStructure(ps);
         
         if(ps.getCode() == null) {
-            ps.setCode(ps.getPortalId() + "_" + ps.getId());
+            ps.setCode("ps-" + ps.getPortalId() + "-" + ps.getId());
         }
         
         return ps;
@@ -338,163 +330,6 @@ public class PortalService implements IPortalService {
         portalDao.sort(id, targetId, direction);
     }
 
-    public void move(Long psId, Long targetId) {
-        Structure ps = portalDao.getEntity(psId);
-        Structure parent = portalDao.getEntity(targetId);
-        
-        // 判断是否是跨门户移动，如果portalId不相等，则说明是跨门户移动
-        Long targetPortalId = parent.getPortalId();
-        boolean isAcrossPortal = !ps.getPortalId().equals(targetPortalId);
-
-        List<Structure> sons = portalDao.getChildrenById(psId, PortalConstants.PORTAL_DEL_OPERRATION);
-        
-        ps.setSeqNo(portalDao.getNextSeqNo(targetId));
-        ps.setParentId(targetId);
-        portalDao.moveStructure(ps);
-
-        // 如果是跨门户移动，则删除和本子节点相关的菜单和主题信息
-        if( isAcrossPortal ){
-            for( Structure temp : sons ){
-                temp.setPortalId(targetPortalId);
-                portalDao.updateWithoutFlush(temp);
-                clearRelation(temp.getId());
-            }
-            
-            // 如果是跨门户且复制的是页面，则一带将页面的资源复制过去
-            if(ps.isPage()){ 
-                Structure targetPortal = portalDao.getEntity(targetPortalId);
-                Structure sourcePortal = portalDao.getEntity(ps.getPortalId());
-                copyPageResources(sourcePortal, targetPortal, ps.getSupplement());
-            }
-        }
-        
-        // 如果目标节点是停用的，则移动的枝全部停用
-        if(parent.getDisabled().equals(PortalConstants.TRUE)) {
-            disable(psId, PortalConstants.TRUE);
-        }
-    }
-    
-    private void clearRelation(Long id) {
-        portalDao.deleteAll(portalDao.getEntities("from Navigator o where o.targetId = ? or o.contentId = ?", id, id));
-        portalDao.deleteAll(portalDao.getEntities("from ThemeInfo o where o.id.portalStructureId = ?", id));
-    }
-    
-    /* 复制页面下挂载的资源文件，css/js等 */
-    private void copyPageResources(Structure sourcePortal, Structure targetPortal, String supplement){
-        if(supplement == null)  return;
-        
-        File dir = sourcePortal.getPortalResourceFileDir();
-        if( dir.exists() ) {
-            Document doc = XMLDocUtil.dataXml2Doc(supplement);
-            String script = doc.selectSingleNode("//page/script/file").getText();
-            String style  = doc.selectSingleNode("//page/style/file").getText();
-
-            List<String> files = new ArrayList<String>();
-            files.addAll(Arrays.asList(script.split(",")));
-            files.addAll(Arrays.asList(style.split(",")));
-
-            File newDir = targetPortal.getPortalResourceFileDir();
-            for( String jsCssFile : files ){
-                File file = new File(dir.getPath() + "/" + jsCssFile);
-                if(file.isFile()) {
-                    FileHelper.copyFile(newDir, file);
-                }
-            }
-        }
-    }
-
-
-    // * ************************************************************************************************************************
-    // * ***************************    以下为门户结构"复制、复制到"操作   *************************************************************
-    // * ************************************************************************************************************************
-
-    public List<Structure> copyTo(Long id, Long targetId){
-        Structure sourceNode = portalDao.getEntity(id);
-        Structure targetNode = portalDao.getEntity(targetId);
-        Long targetPortalId = targetNode.getPortalId();
-        
-        if( !sourceNode.isPortletInstanse() ) { 
-            // 复制到可见的节点
-            List<Structure> children = portalDao.getChildrenById(id, PortalConstants.PORTAL_VIEW_OPERRATION); 
-            children.remove(sourceNode);
-            sourceNode.compose(children);
-        }
-        portalDao.evict(sourceNode);
-
-        // 是否跨门户复制
-        Long sourcePortalId = sourceNode.getPortalId();
-        boolean isAcrossPortal = targetPortalId.equals(sourcePortalId);
-        if( isAcrossPortal ) {
-            sourceNode.setPortalId(targetPortalId);
-        }
-        
-        //如果目标节点和原父节点是同一个，则当"复制"操作处理，name前面加前缀
-        if(sourceNode.getParentId().equals(targetId)) {
-            sourceNode.setName(PortalConstants.COPY_PREFIX + sourceNode.getName());
-        }
-        sourceNode.setParentId(targetId);
-
-        List<Structure> returnList = new ArrayList<Structure>();
-        boolean isTargetDisableed = PortalConstants.TRUE.equals(targetNode.getDisabled());  // 目标父节点是否为停用状态
-        copyNodeOneByOne(sourceNode, returnList, isAcrossPortal, isTargetDisableed);
-
-        if( isAcrossPortal && sourceNode.isPage() ) {
-            Structure sourcePortalNode = portalDao.getEntity(sourcePortalId);
-            Structure targetPortalNode = portalDao.getEntity(targetPortalId);
-            copyPageResources(sourcePortalNode, targetPortalNode, sourceNode.getSupplement());
-        }
-
-        return returnList;
-    }
-
-    /**
-     * 递归执行逐个复制到
-     * 
-     * @param sourcePs
-     * @param returnList
-     * @param isAcrossPortal
-     *              是否跨门户复制到
-     * @param isTargetDisableed
-     *              目标父节点是否为停用状态
-     */
-    private void copyNodeOneByOne(Structure sourcePs, List<Structure> returnList, 
-            boolean isAcrossPortal, boolean isTargetDisableed) {
-        
-        Long sourceId = sourcePs.getId(); // 复制源的ID
-        
-        sourcePs.setId(null);
-        sourcePs.setCode(null);
-        if(isTargetDisableed) {
-            sourcePs.setDisabled(PortalConstants.TRUE);
-        }
-        Structure newPs = saveStructure(sourcePs);
-        Long targetPortalId = newPs.getPortalId();
-
-        //如果是复制到同一门户下的其他节点，则需要将主题信息一块复制出来。跨门户复制则不需要。
-        if( !isAcrossPortal ) {
-            List<?> themes = portalDao.getThemesByPortal(targetPortalId);
-            for( Object temp : themes ){
-                Theme theme = (Theme) temp;
-                ThemeInfoId themeInfoId = new ThemeInfoId(theme.getId(), sourceId);
-                ThemeInfo info = (ThemeInfo) portalDao.getEntity(ThemeInfo.class, themeInfoId);
-                if(info != null){
-                    portalDao.evict(info);
-                    info.getId().setStructureId(newPs.getId());
-                    portalDao.createObject(info);
-                }
-            }
-        }
-
-        returnList.add(newPs);
-        for( Structure child : sourcePs.getChildren()){
-            portalDao.evict(child);
-            child.setPortalId(targetPortalId);
-            child.setParentId(newPs.getId());
-            copyNodeOneByOne(child, returnList, isAcrossPortal, isTargetDisableed);
-        }
-    }
-    
-    
    /****************************   门户相关的（包括门户主题、门户发布等）的相关维护  *************************************************/
    
     //********************************  以下为主题管理  ***************************************************************
@@ -549,51 +384,51 @@ public class PortalService implements IPortalService {
 
     //********************************  以下为门户发布管理  **************************************************************
 
-    public IssueInfo getIssueInfo(String visitUrl) {
-        List<?> list = portalDao.getEntities("from IssueInfo o where o.visitUrl = ?", visitUrl);
+    public ReleaseConfig getReleaseConfig(String visitUrl) {
+        List<?> list = portalDao.getEntities("from ReleaseConfig o where o.visitUrl = ?", visitUrl);
         if( list.isEmpty() ) {
             throw new BusinessException("访问地址有误，找不到相应的门户发布消息。");
         }
-        return (IssueInfo) list.get(0);
+        return (ReleaseConfig) list.get(0);
     }
 
-    public List<?> getAllIssues() {
-        return portalDao.getEntities( "from IssueInfo o order by o.portal.id " );
+    public List<?> getAllReleaseConfigs() {
+        return portalDao.getEntities( "from ReleaseConfig o order by o.portal.id " );
     }
 
-    public IssueInfo saveIssue(IssueInfo issueInfo) {
-        String visitUrl = issueInfo.getVisitUrl();
+    public ReleaseConfig saveReleaseConfig(ReleaseConfig releaseConfig) {
+        String visitUrl = releaseConfig.getVisitUrl();
         if( !visitUrl.endsWith(Filter8PortalPermission.PORTAL_REDIRECT_URL_SUFFIX) ){
             visitUrl += Filter8PortalPermission.PORTAL_REDIRECT_URL_SUFFIX;
-            issueInfo.setVisitUrl(visitUrl);
+            releaseConfig.setVisitUrl(visitUrl);
         }
         
         List<?> list = portalDao.getEntities("from IssueInfo o where o.visitUrl = ?", visitUrl);
-        if(issueInfo.getId() == null) {
+        if(releaseConfig.getId() == null) {
             if( list.size() > 0) {
                 throw new BusinessException("相同的映射地址已经存在，请更换。");
             }
-            return (IssueInfo) portalDao.createObject(issueInfo);
+            return (ReleaseConfig) portalDao.createObject(releaseConfig);
         } 
         else {
             if( list.size() > 0) {
-                IssueInfo temp = (IssueInfo) list.get(0);
-                if( !temp.getId().equals(issueInfo.getId()) ) {
+                ReleaseConfig temp = (ReleaseConfig) list.get(0);
+                if( !temp.getId().equals(releaseConfig.getId()) ) {
                     throw new BusinessException("相同的映射地址已经存在，请更换。");
                 }
             }
             
-            portalDao.update(issueInfo);
-            return issueInfo ;
+            portalDao.update(releaseConfig);
+            return releaseConfig ;
         }
     }
 
-    public void removeIssue(Long id) {
-        portalDao.delete(IssueInfo.class, id);
+    public void removeReleaseConfig(Long id) {
+        portalDao.delete(ReleaseConfig.class, id);
     }
 
-    public IssueInfo getIssueInfo(Long id) {
-        return (IssueInfo) portalDao.getEntity(IssueInfo.class, id);
+    public ReleaseConfig getReleaseConfig(Long id) {
+        return (ReleaseConfig) portalDao.getEntity(ReleaseConfig.class, id);
     }
     
     //******************************** 以下为门户自定义管理 ***************************************************************

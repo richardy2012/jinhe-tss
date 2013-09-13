@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +18,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
-import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.web.dispaly.grid.DefaultGridNode;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
-import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeTranslator;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
-import com.jinhe.tss.framework.web.dispaly.tree.TreeNode;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.engine.FreeMarkerSupportAction;
@@ -34,11 +32,9 @@ import com.jinhe.tss.portal.engine.HTMLGenerator;
 import com.jinhe.tss.portal.engine.model.PortalNode;
 import com.jinhe.tss.portal.engine.releasehtml.MagicRobot;
 import com.jinhe.tss.portal.engine.releasehtml.SimpleRobot;
-import com.jinhe.tss.portal.entity.IssueInfo;
+import com.jinhe.tss.portal.entity.ReleaseConfig;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
-import com.jinhe.tss.portal.entity.permission.PortalPermissionsFull;
-import com.jinhe.tss.portal.entity.permission.PortalResourceView;
 import com.jinhe.tss.portal.helper.StrictLevelTreeParser;
 import com.jinhe.tss.portal.service.IPortalService;
 import com.jinhe.tss.um.permission.PermissionHelper;
@@ -53,15 +49,16 @@ public class PortalAction extends FreeMarkerSupportAction {
 
     /**
      * 预览门户
-     * 
-     * @param portalId
-     * @param id
-     * @param themeId
-     * @param method  browse/view/maintain
      */
-    public void previewPortal(HttpServletResponse response, Long portalId, Long themeId, String method, Long id)  {     
-        PortalNode portalNode = service.getPortal(portalId, themeId, method);
-        HTMLGenerator gen = new HTMLGenerator(portalNode, id, getFreemarkerParser(portalId));
+    @RequestMapping("/preview/{portalId}")
+    public void previewPortal(HttpServletResponse response, HttpServletRequest request, 
+    		@PathVariable("portalId") Long portalId)  {    
+    	
+    	Long themeId = EasyUtils.convertObject2Long(request.getParameter("themeId"));
+    	Long pageId  = EasyUtils.convertObject2Long(request.getParameter("pageId"));
+    	
+        PortalNode portalNode = service.getPortal(portalId, themeId);
+        HTMLGenerator gen = new HTMLGenerator(portalNode, pageId, getFreemarkerParser(portalId));
 
         printHTML(portalId, gen.toHTML(), false);
     }
@@ -71,9 +68,15 @@ public class PortalAction extends FreeMarkerSupportAction {
      * 用以替换某块指定的区域（targetId对应的版面（或页面）中布局器的替换区域：navigatorContentIndex）。
      * 菜单点击的时候会调用到本方法。
      */
-    public void getPortalXML(HttpServletResponse response, Long portalId, Long themeId, String method, Long id, Long targetId) {
-        PortalNode portalNode = service.getPortal(portalId, themeId, method);
-        HTMLGenerator gen = new HTMLGenerator(portalNode, id, targetId, getFreemarkerParser(portalId));
+    @RequestMapping("/xml/{portalId}/{contentId}/{targetId}")
+    public void getPortalXML(HttpServletResponse response, HttpServletRequest request, 
+    		@PathVariable("portalId")  Long portalId, 
+    		@PathVariable("contentId") Long contentId, 
+    		@PathVariable("targetId")  Long targetId) {
+    	
+    	Long themeId = EasyUtils.convertObject2Long(request.getParameter("themeId"));
+        PortalNode portalNode = service.getPortal(portalId, themeId);
+        HTMLGenerator gen = new HTMLGenerator(portalNode, contentId, targetId, getFreemarkerParser(portalId));
         
         StringBuffer sb = new StringBuffer("<?xml version=\"1.0\" encoding=\"GBK\"?>");
         sb.append("<Response><Portlet>").append(gen.toXML()).append("</Portlet></Response>");
@@ -84,8 +87,11 @@ public class PortalAction extends FreeMarkerSupportAction {
     /**
      * 静态发布匿名访问的门户
      */
-    public void staticIssuePortal(HttpServletResponse response, int type, Long id) {
-        if(type == 1){ // 发布整个站点
+    @RequestMapping("/tohtml/{id}/{type}")
+    public void staticIssuePortal(HttpServletResponse response, 
+    		@PathVariable("id") Long id, @PathVariable("type") int type) {
+    	
+        if(type == 1) { // 发布整个站点
             MagicRobot robot = new MagicRobot(id);
             robot.start();
             String feedback = robot.getFeedback();
@@ -93,7 +99,7 @@ public class PortalAction extends FreeMarkerSupportAction {
             printSuccessMessage(feedback);
             
         } else if(type == 2) { // 只发布当前页
-            String visitUrl = service.getIssueInfo(id).getVisitUrl();
+            String visitUrl = service.getReleaseConfig(id).getVisitUrl();
             new SimpleRobot(visitUrl).start();
             
             printSuccessMessage("页面静态发布门户成功！");
@@ -103,108 +109,23 @@ public class PortalAction extends FreeMarkerSupportAction {
     /**
      * 获取所有的Portal对象（取门户结构PortalStructure）并转换成Tree相应的xml数据格式
      */
+    @RequestMapping("/list")
     public void getAllPortals4Tree(HttpServletResponse response) {
         List<?> data = service.getAllStructures();
         TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser());
         print("SourceTree", encoder);
     }
     
-    public void getOperationsByResource(HttpServletResponse response, Long resourceId) {
+    // resourceId 有可能是："_rootId"， 此时传 0 过来。
+    @RequestMapping("/operations/{resourceId}")
+    public void getOperationsByResource(HttpServletResponse response, @PathVariable("resourceId") Long resourceId) {
         PermissionHelper permissionHelper = PermissionHelper.getInstance();
-        
-        resourceId = resourceId == null ? PortalConstants.ROOT_ID : resourceId;
-        List<String> list = permissionHelper.getOperationsByResource(resourceId, 
-                PortalPermissionsFull.class.getName(), PortalResourceView.class);
-        
-        // 加入授予角色权限
         String portalResourceType = PortalConstants.PORTAL_RESOURCE_TYPE;
-		List<?> highOperations = permissionHelper.getHighOperationsByResource( portalResourceType, resourceId, Environment.getOperatorId() );
-		if( !highOperations.isEmpty() ) {
-            list.add("_1");
-		}
+        
+        resourceId = (resourceId == 0) ? PortalConstants.ROOT_ID : resourceId;
+        List<?> list = permissionHelper.getOperationsByResource(portalResourceType, resourceId);
         
         print("Operation", "p1,p2," + EasyUtils.list2Str(list) );
-    }
-    
-    /**
-     * <p>
-     * 获取除portlet应用外的门户结构，并转换成Tree相应的xml数据格式。
-     * 应该是先取所有有新增权限的节点，再取它们可见的父节点组装成树，可见的父节点将设为不能被选择。
-     * 另外还要过滤掉自身节点为不可选。
-     * 
-     * 移动到...，复制到...的时候将调用本方法。
-     * </p>
-     */
-    @SuppressWarnings("unchecked")
-    public void getActivePortalStructures4Tree(HttpServletResponse response, final Long id) {
-        List<ILevelTreeNode> all = (List<ILevelTreeNode>) service.getAllStructures();
-        List<ILevelTreeNode> targets = (List<ILevelTreeNode>) service.getTargetStructures();
-        
-        final List<Long> targetIds = new ArrayList<Long>();
-        for( ILevelTreeNode temp : targets ){
-            targetIds.add( temp.getId() );
-        }
-   
-        List<ILevelTreeNode> composedTree = composeTargetTree(all, targets);
-        TreeEncoder encoder = new TreeEncoder(composedTree, new StrictLevelTreeParser());
-        
-        final int type = service.getStructure(id).getType();
-        encoder.setTranslator( new ITreeTranslator() { 
-            
-            // 门户结构树转换器：门户结构移动时根据当前节点的type值过滤其它节点是否可以选择
-            public Map<String, Object> translate(Map<String, Object> attributes) {
-                if( id.equals(attributes.get("id"))){
-                    attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
-                } 
-                
-                Integer tempType = (Integer)attributes.get("type");
-                switch(type){
-                case 1: // 移动的是页面，则非门户节点的都不可选
-                    if(Structure.TYPE_PORTAL != tempType) {
-                        attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
-                    }
-                    break;
-                case 2:
-                case 3:
-                    // 移动的是版面或portlet实例，则门户节点不可选
-                    if(Structure.TYPE_PORTAL == tempType) {
-                        attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
-                    }
-                    break;
-                }                                    
-                return attributes;
-            }
-        });
-        encoder.setRootCanSelect(false);
-        print("SourceTree", encoder);
-    }
-    
-    /**
-     * 将断层的节点的所有父节点补齐
-     */
-    private List<ILevelTreeNode> composeTargetTree(List<ILevelTreeNode> all, List<ILevelTreeNode> targets){
-        if(targets == null || targets.isEmpty())
-            return new ArrayList<ILevelTreeNode>();
-        
-        Map<Long, ILevelTreeNode> entitiesMap = new HashMap<Long, ILevelTreeNode>();
-        for( ILevelTreeNode entity : all){
-            entitiesMap.put(entity.getId(), entity);
-        }
-        
-        Map<Long, ILevelTreeNode> targetEntitiesMap = new HashMap<Long, ILevelTreeNode>();
-        for( ILevelTreeNode entity : targets){
-            targetEntitiesMap.put(entity.getId(), entity);
-        }
-        
-        //此处是递归过程，targets会变大，会将断层的节点一直往上取到所有父节点
-        for( ILevelTreeNode entity : targets){
-            Long parentId = entity.getParentId();
-            ILevelTreeNode parent = targetEntitiesMap.get(parentId);
-            if(parent == null && !parentId.equals(PortalConstants.ROOT_ID)){
-                targets.add(parent = entitiesMap.get(parentId));
-            }
-        }
-        return targets;
     }
            
     /**
@@ -213,18 +134,21 @@ public class PortalAction extends FreeMarkerSupportAction {
      * 如果该门户结构是根节点，则要一块取出其对应门户Portal的信息
      * </p>
      */
-    public void getPortalStructureInfo(HttpServletResponse response, Long id, Long parentId, int type){
+    @RequestMapping("/{id}")
+    public void getPortalStructureInfo(HttpServletResponse response, HttpServletRequest request, @PathVariable("id") Long id) {
         XFormEncoder encoder;
         if( DEFAULT_NEW_ID.equals(id) ) { // 如果是新增,则返回一个空的无数据的模板
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("type", type);
-            map.put("parentId", parentId);
+            map.put("type", request.getParameter("type"));
+            map.put("parentId", request.getParameter("parentId"));
             encoder = new XFormEncoder(PortalConstants.PORTALSTRUCTURE_XFORM_PATH, map);           
         }
         else {
             Structure info = service.getStructureWithTheme(id);            
             encoder = new XFormEncoder(PortalConstants.PORTALSTRUCTURE_XFORM_PATH, info);
-            if(info.isRootPortal()){
+            
+            // 如果是门户节点，则带出主题信息列表
+            if( info.isRootPortal() ) {
                 Object[] objs = genComboThemes(info.getPortalId());
                 encoder.setColumnAttribute("currentThemeId", "editorvalue", (String) objs[0]);
                 encoder.setColumnAttribute("currentThemeId", "editortext",  (String) objs[1]);
@@ -234,7 +158,7 @@ public class PortalAction extends FreeMarkerSupportAction {
         print("DetailInfo", encoder);
     }
     
-    private Object[] genComboThemes(Long portalId){
+    private Object[] genComboThemes(Long portalId) {
         List<?> data = service.getThemesByPortal(portalId);
         return EasyUtils.generateComboedit(data, "id", "name", "|");
     }
@@ -244,21 +168,18 @@ public class PortalAction extends FreeMarkerSupportAction {
      * 保存门户结构信息，如果该门户结构PortalStructure是根节点，则要一块保存其门户Portal的信息。
      * </p>
      */    
-    public void save(HttpServletResponse response, Structure ps, String code) {
+    @RequestMapping(method = RequestMethod.POST)
+    public void save(HttpServletResponse response, Structure ps) {
         boolean isNew = (ps.getId() == null);
         
         Structure portalStructure;
         if(isNew) {        
-            ps.setCode("PS" + System.currentTimeMillis()); // 设置code值 = PS ＋ 当前时间
+        	String tempCode = ps.getCode();
             portalStructure = service.createStructure(ps);
             
-            /**
-             * 如果是在新增门户根节点时上传文件，则此时code和Id还没生成。
-             * code值=页面随机生成的一个全局变量（注：code为本action的一个单独属性值），id="null"。<br/>
-             * 待保存门户根节点再将名字重新根据生成 code + portalId 值命名。
-             */
+            /* 如果是在新增门户根节点时上传文件，则此时code和Id还没生成。code值 = 页面随机生成的一个全局变量。 */
             if( ps.getType().equals(Structure.TYPE_PORTAL) ) {
-                File tempDir = Structure.getPortalResourceFileDir(code + "_null");
+                File tempDir = Structure.getPortalResourceFileDir(tempCode);
                 if(tempDir.exists()) {
                     tempDir.renameTo(portalStructure.getPortalResourceFileDir());
                 }
@@ -272,10 +193,7 @@ public class PortalAction extends FreeMarkerSupportAction {
     }
     
     /**
-     * <p>
-     * 删除门户结构PortalStructure 
-     * 如果有子节点，同时删除子节点（递归过程，子节点的子节点......)
-     * </p>
+     * 删除门户结构
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public void delete(HttpServletResponse response, @PathVariable("id") Long id) {
@@ -300,24 +218,6 @@ public class PortalAction extends FreeMarkerSupportAction {
     }
     
     /**
-     * <p>
-     * 跨父节点移动门户结构PortalStructure节点。
-     * 移动到弹出窗口中选中的门户结构下（一般为"门户、页面、版面"节点）。
-     * </p>
-     */
-	@RequestMapping(value = "/move/{id}/{targetId}", method = RequestMethod.POST)
-    public void moveTo(HttpServletResponse response, 
-    		@PathVariable("id") Long id, 
-    		@PathVariable("targetId") Long targetId) {
-		
-		if(id.equals(targetId)){
-            throw new BusinessException("节点不能移动到自身节点下");
-        }
-        service.move(id, targetId);
-        printSuccessMessage();
-    }
-    
-    /**
      * 排序，同层节点排序
      */
     @RequestMapping(value = "/sort/{id}/{targetId}/{direction}", method = RequestMethod.POST)
@@ -329,33 +229,25 @@ public class PortalAction extends FreeMarkerSupportAction {
         service.sort(id, targetId, direction);
         printSuccessMessage();
     }
- 
-    /**
-     * 复制门户节点到不同的父节点下。
-     */
-    public void copyTo(HttpServletResponse response, Long id, Long targetId) {
-        List<?> list = service.copyTo(id, targetId);        
-        TreeEncoder encoder = new TreeEncoder(list, new LevelTreeParser());
-        encoder.setNeedRootNode(false);
-        print("SourceTree", encoder);
-    }
-
+    
     //******************************** 以下为主题管理  ***************************************
     
     /**
      * 获取一个Portal的所有主题
      */
-    public void getThemes4Tree(HttpServletResponse response, Long id){
-        Structure root = service.getStructureWithTheme(id); 
+    @RequestMapping("/theme/list/{portalId}")
+    public void getThemes4Tree(HttpServletResponse response, @PathVariable("portalId") Long portalId) {
+        List<?> themeList = service.getThemesByPortal(portalId);
         
-        List<?> themeList = service.getThemesByPortal(root.getPortalId());
-        TreeEncoder encoder = new TreeEncoder(themeList);
+        Structure root = service.getStructure(portalId); 
         final Long defalutThemeId = root.getTheme().getId();
+        
+        TreeEncoder encoder = new TreeEncoder(themeList);
         encoder.setTranslator(new ITreeTranslator() {
             public Map<String, Object> translate(Map<String, Object> attributes) {
-                if(defalutThemeId.equals(attributes.get("id"))){
+                if(defalutThemeId.equals(attributes.get("id"))) {
                     attributes.put("isDefault", "1");
-                    attributes.put("icon", "../framework/images/default_theme.gif");
+                    attributes.put("icon", "../framework/images/default_theme.gif"); // 默认主题
                 }
                 return attributes;
             }
@@ -366,71 +258,97 @@ public class PortalAction extends FreeMarkerSupportAction {
     /**
      * 将Portal的一套主题另存为。。。
      */    
-    public void saveThemeAs(HttpServletResponse response, Long themeId, String name){
+    @RequestMapping(value ="/theme/{themeId}/{name}", method = RequestMethod.POST)
+    public void saveThemeAs(HttpServletResponse response, 
+    		@PathVariable("themeId") Long themeId, @PathVariable("name") String name) {
+    	
         Theme newTheme = service.saveThemeAs(themeId, name);       
         doAfterSave(true, newTheme, "ThemeList");
     }
     
-    public void renameTheme(HttpServletResponse response, Long themeId, String name){
+    @RequestMapping(value ="/theme/rename/{themeId}/{name}", method = RequestMethod.PUT)
+    public void renameTheme(HttpServletResponse response, 
+    		@PathVariable("themeId") Long themeId, @PathVariable("name") String name) {
+    	
         service.renameTheme(themeId, name);
         printSuccessMessage();
     }
     
-    public void specifyDefaultTheme(HttpServletResponse response, Long portalId, Long themeId){
+    @RequestMapping(value ="/theme/default/{themeId}/{name}", method = RequestMethod.PUT)
+    public void specifyDefaultTheme(HttpServletResponse response, 
+    		@PathVariable("portalId") Long portalId, 
+    		@PathVariable("themeId") Long themeId) {
+    	
          service.specifyDefaultTheme(portalId, themeId);
          printSuccessMessage();
     }
-    public void removeTheme(HttpServletResponse response, Long portalId, Long themeId){
+    
+    @RequestMapping(value = "/theme/{portalId}/{themeId}", method = RequestMethod.DELETE)
+    public void removeTheme(HttpServletResponse response, 
+    		@PathVariable("portalId") Long portalId, 
+    		@PathVariable("themeId") Long themeId) {
+    	
         service.removeTheme(portalId, themeId);
         printSuccessMessage();
     }
     
-    public void savePersonalTheme(HttpServletResponse response, Long portalId, Long themeId){
+    @RequestMapping(value ="/theme/personal/{portalId}/{themeId}", method = RequestMethod.POST)
+    public void savePersonalTheme(HttpServletResponse response, 
+    		@PathVariable("portalId") Long portalId, 
+    		@PathVariable("themeId") Long themeId) {
+    	
         service.savePersonalTheme(portalId, Environment.getOperatorId(), themeId);
         printSuccessMessage("更改主题成功");
     }
     
     //******************************** 以下为门户发布管理 ***************************************
-    public void getAllIssues4Tree(HttpServletResponse response){        
-        TreeEncoder encoder = new TreeEncoder(service.getAllIssues()); 
-        print("IssueTree", encoder);
+    @RequestMapping("/release/list")
+    public void getAllReleaseConfigs4Tree(HttpServletResponse response) {        
+        List<?> list = service.getAllReleaseConfigs();
+		TreeEncoder encoder = new TreeEncoder(list); 
+        print("ReleaseConfigTree", encoder);
     }
     
-    public void getIssueInfoById(HttpServletResponse response, Long id){
+    @RequestMapping("/release/{id}")
+    public void getReleaseConfig(HttpServletResponse response, @PathVariable("id") Long id) {
         XFormEncoder encoder = null;
-        if( DEFAULT_NEW_ID.equals(id) ){
+        if( DEFAULT_NEW_ID.equals(id) ) {
             encoder = new XFormEncoder(PortalConstants.ISSUE_XFORM_TEMPLET_PATH);           
         }
         else{
-            IssueInfo info = service.getIssueInfo(id);            
-            encoder = new XFormEncoder(PortalConstants.ISSUE_XFORM_TEMPLET_PATH, info);
-            Object[] objs = genComboThemes(info.getPortal().getId());
+            ReleaseConfig rconfig = service.getReleaseConfig(id);            
+            encoder = new XFormEncoder(PortalConstants.ISSUE_XFORM_TEMPLET_PATH, rconfig);
+            Object[] objs = genComboThemes(rconfig.getPortal().getId());
             encoder.setColumnAttribute("theme.id", "editorvalue", (String) objs[0]);
             encoder.setColumnAttribute("theme.id", "editortext",  (String) objs[1]);
          
         }        
-        print("IssueInfo", encoder);
+        print("ReleaseConfig", encoder);
     }
     
-    public void saveIssue(HttpServletResponse response, IssueInfo issueInfo){
-        boolean isNew = issueInfo.getId() == null ? true : false;             
-        issueInfo = service.saveIssue(issueInfo);         
-        doAfterSave(isNew, issueInfo, "PublishTree");
+    @RequestMapping(value ="/release", method = RequestMethod.POST)
+    public void saveReleaseConfig(HttpServletResponse response, ReleaseConfig rconfig) {
+        boolean isNew = rconfig.getId() == null ? true : false;             
+        rconfig = service.saveReleaseConfig(rconfig);         
+        doAfterSave(isNew, rconfig, "ReleaseConfigTree");
     }
     
-    public void removeIssue(HttpServletResponse response, Long id){
-        service.removeIssue(id);
+    @RequestMapping(value = "/release/{id}", method = RequestMethod.DELETE)
+    public void removeReleaseConfig(HttpServletResponse response, @PathVariable("id") Long id) {
+        service.removeReleaseConfig(id);
         printSuccessMessage();
     }
     
-    public void getActivePortals4Tree(HttpServletResponse response){
+    @RequestMapping("/activePortals")
+    public void getActivePortals4Tree(HttpServletResponse response) {
         List<?> data = service.getActivePortals();
         TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser());
         encoder.setNeedRootNode(false);
         print("SourceTree", encoder);
     }
     
-    public void getThemesByPortal(HttpServletResponse response, Long portalId){
+    @RequestMapping("/theme4release/{portalId}")
+    public void getThemesByPortal(HttpServletResponse response, @PathVariable("portalId") Long portalId) {
         Object[] objs = genComboThemes(portalId);       
         String returnStr = "<column name=\"themeId\" caption=\"主题\" mode=\"string\" " +
         		" editor=\"comboedit\" editorvalue=\"" + objs[0] + "\" editortext=\"" + objs[1] + "\"/>";
@@ -438,7 +356,8 @@ public class PortalAction extends FreeMarkerSupportAction {
         print("ThemeList", returnStr);
     }
     
-    public void getActivePagesByPortal4Tree(HttpServletResponse response, Long portalId){
+    @RequestMapping("/activePages/{portalId}")
+    public void getActivePagesByPortal4Tree(HttpServletResponse response, @PathVariable("portalId") Long portalId) {
         List<?> data = service.getActivePagesByPortal(portalId);
         TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());
         encoder.setNeedRootNode(false);
@@ -446,27 +365,34 @@ public class PortalAction extends FreeMarkerSupportAction {
     }
        
     //******************************* 以下为门户缓存管理 ***************************************
-    public void cacheManage(HttpServletResponse response, Long portalId) {
+    @RequestMapping("/cache/{portalId}")
+    public void cacheManage(HttpServletResponse response, @PathVariable("portalId") Long portalId) {
         List<?> data = service.getThemesByPortal(portalId);
         StringBuffer sb= new StringBuffer("<actionSet>");
-        for( Object temp : data ){
+        for( Object temp : data ) {
             Theme theme = (Theme) temp;
             sb.append("<cacheItem id=\"").append(theme.getId()).append("\" name=\"").append(theme.getName()).append("\" />");
         }
         print("CacheManage", sb.append("</actionSet>").toString());
     }
     
-    public void flushCache(HttpServletResponse response, Long portalId, Long themeId) {
+    @RequestMapping(value = "/cache/{portalId}/{themeId}", method = RequestMethod.DELETE)
+    public void flushCache(HttpServletResponse response, 
+    		@PathVariable("portalId") Long portalId, 
+    		@PathVariable("themeId") Long themeId) {
+    	
         Pool pool = JCache.getInstance().getCachePool(PortalConstants.PORTAL_CACHE);        
-        pool.removeObject(portalId + "_" + themeId);
+        pool.removeObject(portalId + "-" + themeId);
         printSuccessMessage();
     }
     
     //******************************* 获取门户流量信息 ******************************************
-    public void getFlowRate(HttpServletResponse response, Long portalId) {
+    
+    @RequestMapping("/flowrate/{portalId}")
+    public void getFlowRate(HttpServletResponse response, @PathVariable("portalId") Long portalId) {
         List<?> rateItems = service.getFlowRate(portalId);
         List<IGridNode> gridList = new ArrayList<IGridNode>();
-        for(Iterator<?> it = rateItems.iterator(); it.hasNext();){
+        for(Iterator<?> it = rateItems.iterator(); it.hasNext();) {
             Object[] objs = (Object[]) it.next();
             DefaultGridNode gridNode = new DefaultGridNode();
             gridNode.getAttrs().put("name", objs[0]);

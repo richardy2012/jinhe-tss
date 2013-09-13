@@ -27,7 +27,7 @@ public class PermissionFilter4Navigator implements IPermissionFilter {
         String structureResourceType = PortalConstants.PORTAL_RESOURCE_TYPE;
         
         List<Long> menuPermissions = helper.getResourceIdsByOperation(application, navigatorResourceType, PortalConstants.NAVIGATOR_VIEW_OPERRATION);
-        List<Long> psPermissions   = helper.getResourceIdsByOperation(application, structureResourceType, PortalConstants.PORTAL_BROWSE_OPERRATION);
+        List<Long> psPermissions   = helper.getResourceIdsByOperation(application, structureResourceType, PortalConstants.PORTAL_VIEW_OPERRATION);
         
         for(Iterator<?> it = resources.iterator(); it.hasNext();) { 
             Navigator menu = (Navigator) it.next();

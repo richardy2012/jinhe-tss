@@ -200,11 +200,11 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
     
     public File getPortalResourceFileDir(){
         URL url = URLUtil.getWebFileUrl(PortalConstants.PORTAL_MODEL_DIR);
-        return new File(url.getPath() + "/" + code + "_" + portalId);
+        return new File(url.getPath() + "/" + code);
     }
     
     public static File getPortalResourceFileDir(String code, Long portalId){
-        return getPortalResourceFileDir(code + "_" + portalId);
+        return getPortalResourceFileDir(code);
     }
     
     public static File getPortalResourceFileDir(String path){
@@ -381,7 +381,7 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
     }
     
     public String getDefaultKey() {
-        return (isRootPortal() ? this.id : this.portalId) + "_" + theme.getId();
+        return (isRootPortal() ? this.id : this.portalId) + "-" + theme.getId();
     }
 
     public Theme getTheme() {

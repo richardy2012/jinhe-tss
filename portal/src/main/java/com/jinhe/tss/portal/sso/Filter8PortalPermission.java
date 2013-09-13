@@ -19,7 +19,7 @@ import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.web.RewriteableHttpServletRequest;
 import com.jinhe.tss.portal.PortalConstants;
-import com.jinhe.tss.portal.entity.IssueInfo;
+import com.jinhe.tss.portal.entity.ReleaseConfig;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.service.IPortalService;
 import com.jinhe.tss.um.UMConstants;
@@ -82,7 +82,7 @@ public class Filter8PortalPermission implements Filter {
 			Long portalId = null;
 			if (requestURI.endsWith(PORTAL_REDIRECT_URL_SUFFIX)) {
                 // 发布路径访问方式
-				IssueInfo issueInfo = getIssueInfo(requestURI);
+				ReleaseConfig issueInfo = getIssueInfo(requestURI);
 				req.setAttribute(PORTAL_ISSUE_INFO, issueInfo); // 设置门户真实访问地址，为后续门户发布路径转向过滤器准备相关参数
 				portalId = issueInfo.getPortal().getId();
 			} 
@@ -120,7 +120,7 @@ public class Filter8PortalPermission implements Filter {
 
         String application = UMConstants.TSS_APPLICATION_ID;
         String resourceType = PortalConstants.PORTAL_RESOURCE_TYPE;
-        String operration = PortalConstants.PORTAL_BROWSE_OPERRATION;
+        String operration = PortalConstants.PORTAL_VIEW_OPERRATION;
         Long anonymousId = AnonymousOperator.anonymous.getId();
         List<Long> permissons = helper.getResourceIdsByOperation(application, resourceType, operration, anonymousId);
         
@@ -131,9 +131,9 @@ public class Filter8PortalPermission implements Filter {
 	/**
 	 * 获取发布信息
 	 */
-	private IssueInfo getIssueInfo(String uri) {
+	private ReleaseConfig getIssueInfo(String uri) {
 		String visitUrl = uri.substring(uri.lastIndexOf("/") + 1);
-        IssueInfo info = ((IPortalService) Global.getContext().getBean("PortalService")).getIssueInfo(visitUrl);
+        ReleaseConfig info = ((IPortalService) Global.getContext().getBean("PortalService")).getReleaseConfig(visitUrl);
 		return info;
 	}
 }

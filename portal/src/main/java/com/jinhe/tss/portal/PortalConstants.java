@@ -46,10 +46,9 @@ public interface PortalConstants {
     public final static String PORTAL_ORDER_OPERRATION  = "5"; //Portal排序操作ID
     public final static String PORTAL_STOP_OPERRATION   = "6"; //Portal停用操作ID
     public final static String PORTAL_START_OPERRATION  = "7"; //Portal启用操作ID
-    public final static String PORTAL_BROWSE_OPERRATION = "8"; //Portal浏览操作ID
     
-    public final static String[] PORTAL_OPERRATIONS = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8"};
-    public final static String[] PORTAL_PARENT_OPERRATIONS = new String[]{"p_0", "p_1", "p_2", "p_3", "p_4", "p_5", "p_6", "p_7", "p_8"};
+    public final static String[] PORTAL_OPERRATIONS = new String[]{"0", "1", "2", "3", "4", "5", "6", "7"};
+    public final static String[] PORTAL_PARENT_OPERRATIONS = new String[]{"p_0", "p_1", "p_2", "p_3", "p_4", "p_5", "p_6", "p_7"};
     
     /**
      * 导航栏操作选项 (0表示不判断权限)

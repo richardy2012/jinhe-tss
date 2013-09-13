@@ -3,6 +3,8 @@ package com.jinhe.tss.portal;
 import java.io.File;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.junit.Before;
@@ -58,10 +60,16 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4Sp
  
     @Autowired protected IComponentService componentService;
     
+    protected HttpServletResponse response;
+    protected MockHttpServletRequest request;
+    
     @Before
     public void setUp() throws Exception {
         Global.setContext(super.applicationContext);
-        Context.setResponse(new MockHttpServletResponse());
+        
+        Context.initRequestContext(request = new MockHttpServletRequest());
+        
+        Context.setResponse( response = new MockHttpServletResponse());
         
         // DB数据在一轮跑多个单元测试中初始化一次就够了。
         if( dbserver.isPrepareed() ) {

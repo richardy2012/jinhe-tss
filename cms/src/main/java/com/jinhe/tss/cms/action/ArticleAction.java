@@ -149,7 +149,7 @@ public class ArticleAction extends BaseActionSupport {
 	@RequestMapping("/operations/{channelId}")
 	public void getArticleOperation(HttpServletResponse response, @PathVariable("channelId") Long channelId) {
         PermissionHelper permissionHelper = PermissionHelper.getInstance();
-        List<?> operations = permissionHelper.getOperationsByResource(CMSConstants.RESOURCE_TYPE_CHANNEL, channelId, Environment.getOperatorId());
+        List<?> operations = permissionHelper.getOperationsByResource(CMSConstants.RESOURCE_TYPE_CHANNEL, channelId);
         
         String permissionAll = "p1,p2,";
 		for ( Object operation : operations ) {

@@ -20,22 +20,8 @@ public class PermissionFilter4Portal implements IPermissionFilter {
 	@Override
 	public void doFilter(Object args[], Object returnValue, PermissionTag tag, PermissionHelper helper) {
 		Node node = (Node) returnValue;
-		String method = (String) args[2];
 		
-        String operation;
-        if("maintain".equals(method)) {
-            operation = PortalConstants.PORTAL_EDIT_OPERRATION;
-        }
-        else if("view".equals(method)) {
-            operation = PortalConstants.PORTAL_VIEW_OPERRATION;
-        } 
-        else if("browse".equals(method)) {
-            operation = PortalConstants.PORTAL_BROWSE_OPERRATION;
-        } 
-        else {
-            operation = PortalConstants.PORTAL_BROWSE_OPERRATION;
-        }
-		
+        String operation = PortalConstants.PORTAL_VIEW_OPERRATION;
         List<Long> permitedResourceIds = helper.getResourceIdsByOperation(tag.application(), PortalConstants.PORTAL_RESOURCE_TYPE, operation);
         
         doFiltrate(node, permitedResourceIds);
@@ -61,5 +47,4 @@ public class PermissionFilter4Portal implements IPermissionFilter {
             doFiltrate(child, permitedResouceIds);
         }
     }
-
 }

@@ -156,7 +156,7 @@ public class NavigatorAction extends BaseActionSupport {
     }
     
     /**
-     * 根据菜单获取菜单项树
+     * 根据门户获取菜单项树
      */
 	@RequestMapping("/portalmenu/{portalId}")
     public void getNavigatorsByPortal(HttpServletResponse response, @PathVariable("portalId") Long portalId) {

@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import com.jinhe.tss.framework.exception.BusinessServletException;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.portal.engine.releasehtml.SimpleRobot;
-import com.jinhe.tss.portal.entity.IssueInfo;
+import com.jinhe.tss.portal.entity.ReleaseConfig;
 
 /** 
  * <p> 门户发布地址转发器 </p> 
@@ -44,7 +44,7 @@ public class PortalDispatcher extends HttpServlet {
             HttpServletResponse res = (HttpServletResponse)response;
             ServletContext servletContext = req.getSession().getServletContext();
             
-            IssueInfo issueInfo = (IssueInfo) req.getAttribute(Filter8PortalPermission.PORTAL_ISSUE_INFO);
+            ReleaseConfig issueInfo = (ReleaseConfig) req.getAttribute(Filter8PortalPermission.PORTAL_ISSUE_INFO);
             if (issueInfo == null) {
                 return;
             }
@@ -83,7 +83,7 @@ public class PortalDispatcher extends HttpServlet {
      * @param issueInfo
      * @return
      */
-    private Object getRedirectPath(IssueInfo issueInfo) {
+    private Object getRedirectPath(ReleaseConfig issueInfo) {
         Long portalId = issueInfo.getPortal().getId();
         String redirectPage = "/portal/preview/browse/" + portalId + "?";
         if (issueInfo.getPage() != null) {
