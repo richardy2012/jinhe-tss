@@ -4,7 +4,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.List;
 
 import org.junit.Test;
@@ -94,8 +93,8 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         
         Long groupId = group1.getId();
         
-//		String file = URLUtil.getResourceFileUrl("testdata/DemoDecorator.zip").getPath();
-//		componentAction.importComponent(groupId, new File(file));
+		String file = URLUtil.getResourceFileUrl("testdata/DemoDecorator.zip").getPath();
+		super.importComponent(groupId, file);
 
 		List<?> list = componentService.getEnabledComponentsAndGroups(Component.DECORATOR_TYPE);
 		assertTrue(list.size() >= 2);
@@ -149,7 +148,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         Long groupId = group1.getId();
         
         String file = URLUtil.getResourceFileUrl("testdata/DemoLayout.zip").getPath();
-        componentAction.importComponent(response, groupId, new File(file));
+        super.importComponent(groupId, file);
         
         List<?> list = componentService.getEnabledComponentsAndGroups(Component.LAYOUT_TYPE);
         assertTrue(list.size() >= 2);
@@ -174,7 +173,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         Long groupId = group1.getId();
         
         String file = URLUtil.getResourceFileUrl("testdata/DemoPortlet.zip").getPath();
-        componentAction.importComponent(response, groupId, new File(file));
+        super.importComponent(groupId, file);
         
         List<?> list = componentService.getEnabledComponentsAndGroups(Component.PORTLET_TYPE);
         assertTrue(list.size() >= 2);

@@ -88,7 +88,7 @@ public class PortalAction extends FreeMarkerSupportAction {
      * 静态发布匿名访问的门户
      */
     @RequestMapping("/tohtml/{id}/{type}")
-    public void staticIssuePortal(HttpServletResponse response, 
+    public void staticReleasePortal(HttpServletResponse response, 
     		@PathVariable("id") Long id, @PathVariable("type") int type) {
     	
         if(type == 1) { // 发布整个站点
@@ -99,7 +99,8 @@ public class PortalAction extends FreeMarkerSupportAction {
             printSuccessMessage(feedback);
             
         } else if(type == 2) { // 只发布当前页
-            String visitUrl = service.getReleaseConfig(id).getVisitUrl();
+            ReleaseConfig releaseConfig = service.getReleaseConfig(id);
+			String visitUrl = releaseConfig.getVisitUrl();
             new SimpleRobot(visitUrl).start();
             
             printSuccessMessage("页面静态发布门户成功！");
@@ -110,7 +111,7 @@ public class PortalAction extends FreeMarkerSupportAction {
      * 获取所有的Portal对象（取门户结构PortalStructure）并转换成Tree相应的xml数据格式
      */
     @RequestMapping("/list")
-    public void getAllPortals4Tree(HttpServletResponse response) {
+    public void getAllStructures4Tree(HttpServletResponse response) {
         List<?> data = service.getAllStructures();
         TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser());
         print("SourceTree", encoder);
@@ -135,17 +136,17 @@ public class PortalAction extends FreeMarkerSupportAction {
      * </p>
      */
     @RequestMapping("/{id}")
-    public void getPortalStructureInfo(HttpServletResponse response, HttpServletRequest request, @PathVariable("id") Long id) {
+    public void getStructureInfo(HttpServletResponse response, HttpServletRequest request, @PathVariable("id") Long id) {
         XFormEncoder encoder;
         if( DEFAULT_NEW_ID.equals(id) ) { // 如果是新增,则返回一个空的无数据的模板
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("type", request.getParameter("type"));
             map.put("parentId", request.getParameter("parentId"));
-            encoder = new XFormEncoder(PortalConstants.PORTALSTRUCTURE_XFORM_PATH, map);           
+            encoder = new XFormEncoder(PortalConstants.PORTALSTRUCTURE_XFORM, map);           
         }
         else {
             Structure info = service.getStructureWithTheme(id);            
-            encoder = new XFormEncoder(PortalConstants.PORTALSTRUCTURE_XFORM_PATH, info);
+            encoder = new XFormEncoder(PortalConstants.PORTALSTRUCTURE_XFORM, info);
             
             // 如果是门户节点，则带出主题信息列表
             if( info.isRootPortal() ) {
@@ -313,11 +314,11 @@ public class PortalAction extends FreeMarkerSupportAction {
     public void getReleaseConfig(HttpServletResponse response, @PathVariable("id") Long id) {
         XFormEncoder encoder = null;
         if( DEFAULT_NEW_ID.equals(id) ) {
-            encoder = new XFormEncoder(PortalConstants.ISSUE_XFORM_TEMPLET_PATH);           
+            encoder = new XFormEncoder(PortalConstants.RELEASE_XFORM_TEMPLET);           
         }
         else{
             ReleaseConfig rconfig = service.getReleaseConfig(id);            
-            encoder = new XFormEncoder(PortalConstants.ISSUE_XFORM_TEMPLET_PATH, rconfig);
+            encoder = new XFormEncoder(PortalConstants.RELEASE_XFORM_TEMPLET, rconfig);
             Object[] objs = genComboThemes(rconfig.getPortal().getId());
             encoder.setColumnAttribute("theme.id", "editorvalue", (String) objs[0]);
             encoder.setColumnAttribute("theme.id", "editortext",  (String) objs[1]);

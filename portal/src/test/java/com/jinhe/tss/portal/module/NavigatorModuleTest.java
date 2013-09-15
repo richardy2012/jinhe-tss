@@ -41,7 +41,7 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         root.setParentId(PortalConstants.ROOT_ID);
         root.setType(Structure.TYPE_PORTAL);
         root.setName("测试门户4MenuTest");
-        root.setCode("TempPortalCode");
+        root.setCode(System.currentTimeMillis() + "");
         root.setTheme(theme);
         portalAction.save(response, root); // create portal root
         

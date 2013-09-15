@@ -1,11 +1,10 @@
 package com.jinhe.tss.portal.module;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.TxSupportTest4Portal;
@@ -21,36 +20,48 @@ public class PortalFileOperationTest extends TxSupportTest4Portal {
 	@Autowired FileAction fileAction;
  
 	@Test
-    public void testPortalFileOperation() {
-        String modelDir = URLUtil.getWebFileUrl(PortalConstants.PORTAL_MODEL_DIR).getPath();
+    public void test() {
+        String modelDir = URLUtil.getWebFileUrl(PortalConstants.MODEL_DIR).getPath();
         FileHelper.createDir(modelDir);
         
-        File testFile = new File(modelDir + "/File111.txt");
+        File testFile = new File(modelDir + "/layout/layout12/test.txt");
         FileHelper.writeFile(testFile, "Just Test!");
         
-        Map<String, Object> paramsMap = new HashMap<String, Object>();
-        paramsMap.put("type", new String[] {"site"});
-        paramsMap.put("id",   new String[] {"111"});
-        paramsMap.put("code", new String[] {"File"});
-        fileAction.listAvailableFiles(response, null, "txt", testFile.getParentFile(), paramsMap);
+        request = new MockHttpServletRequest();
+        request.addParameter("type", "layout");
+        request.addParameter("code", "layout12");
+        fileAction.listAvailableFiles(response, request);
         
-        fileAction.listAvailableFiles(response, "portal", "txt", testFile.getParentFile(), paramsMap);
+        request.addParameter("filter", "txt");
+        fileAction.listAvailableFiles(response, request);
         
-        fileAction.download(response, "portal", "File111.txt");
+        request = new MockHttpServletRequest();
+    	request.addParameter("contextPath", "layout/layout12");
+    	request.addParameter("fileNames", "test.txt");
+        fileAction.download(response, request);
         
-//        fileAction.upload("portal", testFile); 
+        File testFile2 = new File(modelDir + "/layout/xxx.txt");
+        FileHelper.writeFile(testFile2, "Just Test 222222!");
         
-        modelDir = URLUtil.getWebFileUrl(PortalConstants.MODEL_DIR + "layout").getPath();
-        testFile = new File(modelDir + "/File111.txt");
-        FileHelper.writeFile(testFile, "Just Test!");
+        super.uploadFile(PortalConstants.MODEL_DIR + "/layout/layout12", testFile2);
         
-        paramsMap.put("type", new String[] {"layout"});
-    	fileAction.listAvailableFiles(response, "layout", "txt", testFile.getParentFile(), paramsMap);
+        request = new MockHttpServletRequest();
+    	request.addParameter("contextPath", "layout/layout12");
+    	request.addParameter("newFileName", "temp");
+    	fileAction.addDir(response, request);
     	
-    	fileAction.addDir(response, "layout", "newFolder");
+    	request = new MockHttpServletRequest();
+    	request.addParameter("contextPath", "layout/layout12");
+    	request.addParameter("fileName", "temp");
+    	request.addParameter("newFileName", "temp2");
+        fileAction.renameFile(response, request);
     	
-        fileAction.renameFile(response, "layout", "File111.txt", "File222.txt");
-    	
-    	fileAction.deleteFile(response, "layout", "File222.txt", "newFolder");
+        request = new MockHttpServletRequest();
+        request.addParameter("contextPath", "layout/layout12");
+    	request.addParameter("fileNames", "xxx.txt");
+    	request.addParameter("folderNames", "temp2");
+    	fileAction.deleteFile(response, request);
     }
+	
+    
 }

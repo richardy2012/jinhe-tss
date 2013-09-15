@@ -209,11 +209,11 @@ public class ComponentAction extends FreeMarkerSupportAction {
         	map.put("parentId", parentId);
         	map.put("type", type);
         	map.put("isGroup", true);
-            encoder = new XFormEncoder(PortalConstants.GROUP_XFORM_TEMPLET_PATH, map);           
+            encoder = new XFormEncoder(PortalConstants.COMPONENT_GROUP_XFORM, map);           
         }
         else {
         	Component group = service.getComponent(id);            
-            encoder = new XFormEncoder(PortalConstants.GROUP_XFORM_TEMPLET_PATH, group);
+            encoder = new XFormEncoder(PortalConstants.COMPONENT_GROUP_XFORM, group);
         }        
         print("GroupDetail", encoder);
 	}

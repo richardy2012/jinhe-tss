@@ -3,10 +3,15 @@ package com.jinhe.tss.portal;
 import java.io.File;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.easymock.EasyMock;
+import org.easymock.IMocksControl;
+import org.junit.Assert;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -15,6 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
+import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.component.log.LogService;
 import com.jinhe.tss.framework.sso.IdentityCard;
@@ -184,5 +190,68 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4Sp
         // 获取登陆用户的权限（拥有的角色）并保存到用户权限（拥有的角色）对应表
         List<Object[]> userRoles = loginSerivce.getUserRolesAfterLogin(userId);
         permissionService.saveUserRolesAfterLogin(userRoles, userId);
+    }
+    
+    protected void importComponent(Long groupId, String filePath) {
+    	ImportComponentServlet servlet = new ImportComponentServlet();
+    	
+    	File file = new File(filePath);
+    	String fileName = file.getName();
+    	
+	    IMocksControl mocksControl =  EasyMock.createControl();
+	    HttpServletRequest mockRequest = mocksControl.createMock(HttpServletRequest.class);
+	    
+	    EasyMock.expect(mockRequest.getParameter("groupId")).andReturn(groupId.toString());
+	    
+	    try {
+	    	Part part = mocksControl.createMock(Part.class);
+	    	EasyMock.expect(mockRequest.getPart("file")).andReturn(part).anyTimes();
+	    	
+	    	// 上传文本文件
+			EasyMock.expect(part.getHeader("content-disposition")).andReturn("filename=\"" + fileName + "\"");
+			
+			// 代替part.write()
+			FileHelper.copyFile(new File(Config.UPLOAD_PATH), file, true, false);
+	        part.write(file.getName());
+	        EasyMock.expectLastCall(); // void 类型方法的mock
+	        
+	        mocksControl.replay(); 
+			servlet.doPost(mockRequest, response);
+			
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			Assert.assertFalse(e.getMessage(), true);
+		}
+    }
+    
+    protected void uploadFile(String contextPath, File file) {
+    	UploadFileServlet servlet = new UploadFileServlet();
+    	
+    	String fileName = file.getName();
+    	
+	    IMocksControl mocksControl =  EasyMock.createControl();
+	    HttpServletRequest mockRequest = mocksControl.createMock(HttpServletRequest.class);
+	    
+	    EasyMock.expect(mockRequest.getParameter("contextPath")).andReturn(contextPath);
+	    
+	    try {
+	    	Part part = mocksControl.createMock(Part.class);
+	    	EasyMock.expect(mockRequest.getPart("file")).andReturn(part).anyTimes();
+	    	
+	    	// 上传文本文件
+			EasyMock.expect(part.getHeader("content-disposition")).andReturn("filename=\"" + fileName + "\"");
+			
+			// 代替part.write()
+			FileHelper.copyFile(new File(Config.UPLOAD_PATH), file, true, false);
+	        part.write(file.getName());
+	        EasyMock.expectLastCall(); // void 类型方法的mock
+	        
+	        mocksControl.replay(); 
+			servlet.doPost(mockRequest, response);
+			
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			Assert.assertFalse(e.getMessage(), true);
+		}
     }
 }

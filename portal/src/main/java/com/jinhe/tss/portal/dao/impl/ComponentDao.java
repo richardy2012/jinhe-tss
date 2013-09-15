@@ -37,7 +37,7 @@ public class ComponentDao extends TreeSupportDao<Component> implements IComponen
         // 删除资源文件
         URL url = URLUtil.getWebFileUrl(obj.getResourceBaseDir());             
         File path = new File(url.getPath());        
-        File fileDir = FileHelper.findPathByName(path, obj.getCode() + obj.getId());
+        File fileDir = FileHelper.findPathByName(path, obj.getCode());
         if (fileDir != null) {
             FileHelper.deleteFile(fileDir);
         }
@@ -53,7 +53,7 @@ public class ComponentDao extends TreeSupportDao<Component> implements IComponen
     }
     
     public Component getDefaultDecorator(){
-        List<?> list = getEntities("from Component o where o.type = ? and o.isDefault = '1'", Component.DECORATOR_TYPE);
+        List<?> list = getEntities("from Component o where o.type = ? and o.isDefault = 1", Component.DECORATOR_TYPE);
         if(list.isEmpty() || list.size() > 1) {
         	throw new BusinessException("没有设定一个默认的修饰器或者存在多个默认修饰器！");
         }

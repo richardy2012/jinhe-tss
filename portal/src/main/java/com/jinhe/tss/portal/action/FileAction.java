@@ -29,24 +29,21 @@ import com.jinhe.tss.util.URLUtil;
 @RequestMapping("/auth/portal/file")
 public class FileAction extends BaseActionSupport {
  
-    /**
-     * 列出文件列表
-     */
 	@RequestMapping("/list")
     public void listAvailableFiles(HttpServletResponse response, HttpServletRequest request) {
-        String id   = request.getParameter("id");  
         String code = request.getParameter("code");
         String type = request.getParameter("type"); // 判断是何种类型的资源管理
         String filter = request.getParameter("filter");
-        if(Arrays.asList(Component.TYPE_NAMES).contains(type)) {
+        if( !Arrays.asList(Component.TYPE_NAMES).contains(type) ) {
             throw new BusinessException("指定文件类型有误。");
         }
         
         StringBuffer sb = new StringBuffer("<actionSet title=\"\" openednodeid=\"r1.1\">"); 
         
         // 根据type值找根目录
-        String elementPath = URLUtil.getWebFileUrl(PortalConstants.MODEL_DIR + type).getPath();
-        File baseDir = new File(elementPath + "/" + code + id); 
+        String contextPath = PortalConstants.MODEL_DIR + type + "/" + code;
+        String elementPath = URLUtil.getWebFileUrl(contextPath).getPath();
+		File baseDir = new File(elementPath); 
                 
         filter = getFilter(filter);
         List<String> files= sortFile(baseDir, FileHelper.listFilesByType(filter, baseDir));
@@ -63,7 +60,7 @@ public class FileAction extends BaseActionSupport {
         }
         sb.append("</actionSet>");      
         
-        print(new String[] {"ResourceTree", "contextPath"}, new Object[] {sb, baseDir.getPath()});
+        print(new String[] {"ResourceTree", "contextPath"}, new Object[] {sb, contextPath});
     }
     
     /* 将子文件夹、文件进行归类，文件夹在前 */
@@ -147,7 +144,7 @@ public class FileAction extends BaseActionSupport {
     @RequestMapping(method = RequestMethod.PUT)
     public void renameFile(HttpServletResponse response, HttpServletRequest request) {
     	String contextPath = request.getParameter("contextPath");
-    	String fileName = request.getParameter("fileName");
+    	String fileName    = request.getParameter("fileName");
     	String newFileName = request.getParameter("newFileName");
     	
     	contextPath = getContextPath(contextPath);
@@ -171,6 +168,7 @@ public class FileAction extends BaseActionSupport {
     	String contextPath = request.getParameter("contextPath");
     	String newFileName = request.getParameter("newFileName");
     	
+    	contextPath = getContextPath(contextPath);
         FileHelper.createDir(contextPath + newFileName);
         print("script", "window.parent.loadFileTree();");
     }

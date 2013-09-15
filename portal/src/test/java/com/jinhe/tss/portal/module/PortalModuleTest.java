@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.List;
 
 import org.junit.Assert;
@@ -40,7 +39,9 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         Long parentId = PortalConstants.ROOT_ID;
         
         // 新建portal
-        portalAction.getPortalStructureInfo(response, structureId, parentId, Structure.TYPE_PORTAL);
+        request.addParameter("type", Structure.TYPE_PORTAL + "");
+        request.addParameter("parentId", parentId + "");
+        portalAction.getStructureInfo(response, request, structureId);
         
         Theme theme = new Theme();
         theme.setName("默认主题");
@@ -52,16 +53,20 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         root.setSupplement("<page><property><name>Jon的门户</name><description><![CDATA[]]></description></property><script><file><![CDATA[]]></file><code><![CDATA[]]></code></script><style><file><![CDATA[]]></file><code><![CDATA[]]></code></style></page>");
         root.setDescription("测试门户-2");
         root.setTheme(theme);
-        portalAction.save(response, root, "TempPortalCode"); // create portal root
+        root.setCode(System.currentTimeMillis() + "");
+        portalAction.save(response, root); // create portal root
         
         List<?> list = portalService.getAllStructures();
         assertTrue(list.size() >= 1);
 
         Long portalId = root.getPortalId();
         structureId = root.getId();
-        portalAction.getPortalStructureInfo(response, structureId, parentId, Structure.TYPE_PORTAL);
+        
+        request.addParameter("type", Structure.TYPE_PORTAL + "");
+        request.addParameter("parentId", parentId + "");
+        portalAction.getStructureInfo(response, request, structureId);
   
-        portalAction.save(response, root, root.getCode()); // update portal root
+        portalAction.save(response, root); // update portal root
         
         // 获取节点操作权限
         portalAction.getOperationsByResource(response, structureId);
@@ -77,7 +82,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         
         List<?> data = portalService.getAllStructures();
         Assert.assertTrue( data.size() >= 7 );
-        portalAction.getAllPortals4Tree(response);
+        portalAction.getAllStructures4Tree(response);
         
         // 测试主题相关
         portalAction.getThemes4Tree(response, portalId);
@@ -103,26 +108,26 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         
         portalAction.getThemesByPortal(response, portalId);
 
-        portalAction.getIssueInfoById(response, BaseActionSupport.DEFAULT_NEW_ID);
+        portalAction.getReleaseConfig(response, BaseActionSupport.DEFAULT_NEW_ID);
         
-        ReleaseConfig issueInfo = new ReleaseConfig();
-        issueInfo.setName("门户发布配置");
-        issueInfo.setPortal(root);
-        issueInfo.setPage(page1);
-        issueInfo.setTheme(defaultTheme);
-        issueInfo.setVisitUrl("default.portal");
-        issueInfo.setRemark("~~~~~~~~~~~~~~~~");
-        portalAction.saveReleaseConfig(response, issueInfo); // create
+        ReleaseConfig rconfig = new ReleaseConfig();
+        rconfig.setName("门户发布配置");
+        rconfig.setPortal(root);
+        rconfig.setPage(page1);
+        rconfig.setTheme(defaultTheme);
+        rconfig.setVisitUrl("default.portal");
+        rconfig.setRemark("~~~~~~~~~~~~~~~~");
+        portalAction.saveReleaseConfig(response, rconfig); // create
         
-        portalAction.getIssueInfoById(response, issueInfo.getId());
+        portalAction.getReleaseConfig(response, rconfig.getId());
         
-        portalAction.saveReleaseConfig(response, issueInfo); // update
+        portalAction.saveReleaseConfig(response, rconfig); // update
         
-        portalAction.getAllIssues4Tree(response);
+        portalAction.getAllReleaseConfigs4Tree(response);
         
         // 测试排序
         portalAction.sort(response, page1.getId(), page2.getId(), 1);
-        portalAction.getAllPortals4Tree(response, );
+        portalAction.getAllStructures4Tree(response);
         
         // 测试停用启用
         portalAction.disable(response, root.getId(), PortalConstants.TRUE);
@@ -130,20 +135,25 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         
         // 测试门户动态浏览、静态发布
         try {
-            portalAction.previewPortal(response, portalId, defaultThemeId, "browse", null);
-            portalAction.previewPortal(response, portalId, defaultThemeId, "browse", page1.getId());
+        	request.addParameter("themeId", defaultThemeId + "");
+            portalAction.previewPortal(response, request, portalId);
             
-            portalAction.getPortalXML(response, portalId, defaultThemeId, "browse", section1.getId(), page1.getId());
+            request.addParameter("themeId", defaultThemeId + "");
+            request.addParameter("pageId", page1.getId() + "");
+            portalAction.previewPortal(response, request, portalId);
+            
+            request.addParameter("themeId", defaultThemeId + "");
+            portalAction.getPortalXML(response, request, portalId, section1.getId(), page1.getId());
         } 
         catch (Exception e) {
             assertFalse(e.getMessage(), true);
         }
         
         // 整站发布 【需要起web服务，通过http请求抓取页面内容】
-        portalAction.staticReleasePortal(response, 1, portalId);
+        portalAction.staticReleasePortal(response, portalId, 1);
         
         // 单页发布
-        portalAction.staticReleasePortal(response, 2, issueInfo.getId());
+        portalAction.staticReleasePortal(response, rconfig.getId(), 2);
         
         // 测试门户缓存管理
         portalAction.cacheManage(response, portalId);
@@ -153,7 +163,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         portalAction.getFlowRate(response, portalId);
         
         // 删除新建的门户
-        portalAction.removeReleaseConfig(response, issueInfo.getId());
+        portalAction.removeReleaseConfig(response, rconfig.getId());
         portalAction.delete(response, root.getId());
         
         data = portalService.getActivePortals();
@@ -209,7 +219,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         group = componentService.saveComponent(group);
         
         String file = URLUtil.getResourceFileUrl("testdata/DemoPortlet.zip").getPath();
-        elementAction.importComponent(response, group.getId(), new File(file));
+        super.importComponent(group.getId(), file);
         
         List<?> list = permissionHelper.getEntities("from Component o where o.type = ? and o.isGroup = ? order by o.decode", 
                 Component.PORTLET_TYPE, false);

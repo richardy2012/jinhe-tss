@@ -167,7 +167,7 @@ public class ComponentHelper {
         try {
 			FileHelper.upZip(importDir, tempDir);
 		} catch (Exception e) {
-			throw new BusinessException("解压文件" + importDir + "到" + desDir + "目录失败!!!", e);
+			throw new BusinessException("解压文件【" + importDir + "】到【" + desDir + "】目录失败!!!", e);
 		}
         
         if ( !FileHelper.checkFile(tempDir, eXMLFile) ) {
@@ -202,7 +202,8 @@ public class ComponentHelper {
         Document doc = XMLDocUtil.dataXml2Doc(component.getDefinition());
         doc.setXMLEncoding(System.getProperty("file.encoding"));
         
-        File filePath = FileHelper.findPathByName(new File(modelPath), component.getCode() + component.getId());
+        String subpath = component.getCode();
+		File filePath = FileHelper.findPathByName(new File(modelPath), subpath);
         if (null != filePath) {
             // 如果在pms/model/layout(docorator or portlet)文件夹下有该导出的xml文件就覆盖该文件,并以zip的形式导出
             exportFileName = elementName + ".zip";

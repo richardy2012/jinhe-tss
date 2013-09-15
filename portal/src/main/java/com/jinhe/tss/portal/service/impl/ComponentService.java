@@ -39,10 +39,6 @@ public class ComponentService implements IComponentService {
 				component.setType(group.getType());
             }
         }
-        component = dao.save(component);
-        if( !component.isGroup() ) {
-        	component.setCode(component.getComponentType() + "-" + component.getId());
-        }
         
         return dao.save(component);
     }
@@ -160,7 +156,7 @@ public class ComponentService implements IComponentService {
         File path = new File(resourceUri.getPath());
 
         // 先取到拷贝源component的资源文件目录
-        File sourceDir = FileHelper.findPathByName(path, component.getCode() + component.getId());
+        File sourceDir = FileHelper.findPathByName(path, component.getCode());
         
         dao.evict(component);
         component.setId(null);
@@ -174,7 +170,7 @@ public class ComponentService implements IComponentService {
         component = saveComponent(component);
         
         if (sourceDir != null) {
-            String destDir = path + "/" + component.getCode() + component.getId(); // component.id已经是个新值了
+            String destDir = path + "/" + component.getCode(); // component.id已经是个新值了
 			FileHelper.copyFolder(sourceDir.toString(), destDir);
         }
         

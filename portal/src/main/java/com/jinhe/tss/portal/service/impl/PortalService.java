@@ -403,7 +403,7 @@ public class PortalService implements IPortalService {
             releaseConfig.setVisitUrl(visitUrl);
         }
         
-        List<?> list = portalDao.getEntities("from IssueInfo o where o.visitUrl = ?", visitUrl);
+        List<?> list = portalDao.getEntities("from ReleaseConfig o where o.visitUrl = ?", visitUrl);
         if(releaseConfig.getId() == null) {
             if( list.size() > 0) {
                 throw new BusinessException("相同的映射地址已经存在，请更换。");

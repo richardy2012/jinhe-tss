@@ -7,7 +7,7 @@
 	<!-- portal -->	
 	<entity class="com.jinhe.tss.portal.entity.Component"/>
 	<entity class="com.jinhe.tss.portal.entity.FlowRate"/>
-	<entity class="com.jinhe.tss.portal.entity.IssueInfo"/>
+	<entity class="com.jinhe.tss.portal.entity.ReleaseConfig"/>
 	<entity class="com.jinhe.tss.portal.entity.Navigator"/>
 	<entity class="com.jinhe.tss.portal.entity.Structure"/>
 	<entity class="com.jinhe.tss.portal.entity.ThemePersonal"/>

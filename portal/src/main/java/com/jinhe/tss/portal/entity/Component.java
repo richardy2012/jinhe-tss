@@ -49,7 +49,6 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
 	
 	@Column(nullable = false)
     private String  name; // 元素名称
-	private String  code; // 元素代码：用于生成元素资源文件目录及访问相对路径
 	
 	/** 
 	 * 元素类别： 1-布局器, 2-修饰器组 3-Portlet组 
@@ -81,7 +80,7 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
     }
     
     public String getResourcePath()    { 
-        return getResourceBaseDir() + this.code; 
+        return getResourceBaseDir() + getCode(); 
     }
     
     public String getTemplatePath()    { 
@@ -104,6 +103,11 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
         return this.type == PORTLET_TYPE;
     }
     
+    // 元素代码：用于生成元素资源文件目录及访问相对路径
+    public String getCode() {
+        return this.getComponentType() + "-" + this.getId();
+    }
+    
     /**
      * 布局器中可以显示区域数量
      * <li> n > 0 － 此布局器有多少个区域可以填充子节点，用于判断是否适用版面
@@ -124,7 +128,7 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
         if(isGroup) {
         	map.put("icon","../framework/images/" + getComponentType() + "_group.gif");
         } else {
-        	map.put("code", code);
+        	map.put("code", this.getCode());
             map.put("isDefault", isDefault);
             map.put("icon", "../framework/images/" 
             		+ (PortalConstants.TRUE.equals(isDefault) ? "default_" : "") + getComponentType() 
@@ -222,14 +226,6 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
  
     public void setSeqNo(Integer seqNo) {
         this.seqNo = seqNo;
-    }
- 
-    public String getCode() {
-        return code;
-    }
- 
-    public void setCode(String code) {
-        this.code = code;
     }
  
     public String getDecode() {
