@@ -15,6 +15,7 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.TxSupportTest4Portal;
 import com.jinhe.tss.portal.action.ComponentAction;
+import com.jinhe.tss.portal.action.NavigatorAction;
 import com.jinhe.tss.portal.action.PortalAction;
 import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.entity.ReleaseConfig;
@@ -30,6 +31,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
     
     @Autowired PortalAction portalAction;
     @Autowired ComponentAction elementAction;
+    @Autowired NavigatorAction menuAction;
     
     @Autowired IPortalService portalService;
  
@@ -84,6 +86,9 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         Assert.assertTrue( data.size() >= 7 );
         portalAction.getAllStructures4Tree(response);
         
+        // 插一个Menu相关的
+        menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_SECTION);
+        
         // 测试主题相关
         portalAction.getThemes4Tree(response, portalId);
         
@@ -99,7 +104,13 @@ public class PortalModuleTest extends TxSupportTest4Portal {
  
         portalAction.renameTheme(response, newTheme.getId(), "Jon的主题");
         portalAction.specifyDefaultTheme(response, portalId, defaultThemeId);
-//        portalAction.removeTheme(portalId, newTheme.getId());
+        try {
+        	portalAction.removeTheme(response, portalId, newTheme.getId());
+        } catch (Exception e) {
+        	Assert.assertTrue("该主题为门户的默认主题或者当前主题，正在使用中，删除失败！", true);
+        }
+        
+        portalAction.savePersonalTheme(response, portalId, defaultThemeId);
         
         // 测试门户发布
         portalAction.getActivePortals4Tree(response);
@@ -148,6 +159,8 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         catch (Exception e) {
             assertFalse(e.getMessage(), true);
         }
+        
+        // TODO 用jetty起一个web服务
         
         // 整站发布 【需要起web服务，通过http请求抓取页面内容】
         portalAction.staticReleasePortal(response, portalId, 1);

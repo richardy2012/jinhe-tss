@@ -30,8 +30,6 @@ public class PortalFileOperationTest extends TxSupportTest4Portal {
         request = new MockHttpServletRequest();
         request.addParameter("type", "layout");
         request.addParameter("code", "layout12");
-        fileAction.listAvailableFiles(response, request);
-        
         request.addParameter("filter", "txt");
         fileAction.listAvailableFiles(response, request);
         
@@ -55,7 +53,12 @@ public class PortalFileOperationTest extends TxSupportTest4Portal {
     	request.addParameter("fileName", "temp");
     	request.addParameter("newFileName", "temp2");
         fileAction.renameFile(response, request);
-    	
+        
+        request = new MockHttpServletRequest();
+        request.addParameter("type", "layout");
+        request.addParameter("code", "layout12");
+        fileAction.listAvailableFiles(response, request);
+        
         request = new MockHttpServletRequest();
         request.addParameter("contextPath", "layout/layout12");
     	request.addParameter("fileNames", "xxx.txt");

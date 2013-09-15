@@ -66,6 +66,7 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         menu1.setPortalId(portalId);
         menu1.setContent(root);
         menuAction.save(response, menu1);
+        menuAction.getNavigatorInfo(response, menu1.getId(), Navigator.TYPE_MENU_ITEM_3);
         
         Navigator menu2 = new Navigator();
         menu2.setType(Navigator.TYPE_MENU_ITEM_7);
@@ -114,6 +115,8 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         menuAction.getNavigatorsByPortal(response, portalId); // 移动的时候用到
  
         menuAction.moveTo(response, menu3.getId(), menu1.getId());
+        
+        menuAction.getPortalNavigatorTree(response, menu2.getId(), portalId);
         
         // 查询
         menuAction.getAllNavigator4Tree(response);

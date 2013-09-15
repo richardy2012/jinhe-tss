@@ -74,10 +74,12 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         
         componentAction.moveTo(response, defaultLayoutId, defaultLayoutGroup.getId());  // 移回去
         
+        componentAction.getAllComponents4Tree(response);
+        
         for(Object temp : groups) {
             Component group = (Component)temp;
             if( !defaultLayoutGroup.getId().equals(group.getId()) ){
-                componentAction.delete(response, group.getId());
+                componentAction.deleteComponentGroup(response, group.getId());
             }
         }
     }
@@ -92,6 +94,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         componentAction.save(response, group1);
         
         Long groupId = group1.getId();
+        componentAction.getComponentInfo(response, BaseActionSupport.DEFAULT_NEW_ID, groupId);
         
 		String file = URLUtil.getResourceFileUrl("testdata/DemoDecorator.zip").getPath();
 		super.importComponent(groupId, file);
@@ -126,7 +129,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
 
 		componentAction.getDefaultParams4Xml(response, id);
 		
-		request.addParameter("configXML", "");
+		request.addParameter("configXML", " bgColor=red \n menuId=12");
 		componentAction.saveElementParamsConfig(response, request, id);
 
 		componentAction.delete(response, id);
@@ -156,6 +159,9 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         Long id = layout1.getId();
         
         componentAction.getDefaultParams4Xml(response, id);
+        
+        componentAction.setLayoutAsDefault(response, id);
+		componentAction.setLayoutAsDefault(response, defaultLayoutId);
         
         request.addParameter("configXML", "");
 		componentAction.saveElementParamsConfig(response, request, id);
