@@ -46,7 +46,7 @@ public class SimpleRobot implements Robot{
             //生成文件名，如 gzcz.portal.html
             String tempFileName = issuePath + "temp/" + genPageName(url, HTML_FILE_SUFFIX);
             //下载页面
-            boolean success = IssueHelper.saveUrlAsLocalFile(url, tempFileName);
+            boolean success = ReleaseHelper.saveUrlAsLocalFile(url, tempFileName);
             if( !success ) return;
             
             // 模板引擎解析没出错才将发布页面正式复制到发布目录下

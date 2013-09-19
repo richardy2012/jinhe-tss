@@ -110,7 +110,7 @@ public class MagicRobot extends SimpleRobot implements FeedbackProgressable {
         
         this.portalId = portalId;
         this.isOnlyPublishPage = false;
-        this.indexPage = Environment.getContextPath() + "/portal!previewPortal.action?portalId=" + portalId;
+        this.indexPage = Environment.getContextPath() + "/auth/portal/preview/" + portalId;
     }
     
     private Progress progress = new Progress(-1);
@@ -226,7 +226,7 @@ public class MagicRobot extends SimpleRobot implements FeedbackProgressable {
         // 如果是单页发布，则存在的文章页也重新发布
         if(!isExsitingFile || isFirstHref || (isExsitingFile && !isArticlePage) || isOnlyPublishPage){
             // 下载页面
-            boolean success = IssueHelper.saveUrlAsLocalFile(url, htmlFileName);
+            boolean success = ReleaseHelper.saveUrlAsLocalFile(url, htmlFileName);
             if(!success) {
                 issueFailedUrls.put(href, "发布页面时抓取HTML内容出错，位于页面：" + parentHref);
                 return;

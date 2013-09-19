@@ -135,7 +135,7 @@ public class ComponentAction extends FreeMarkerSupportAction {
     }
 
     /**
-     * 删除组件
+     * 删除组件(组)
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public void delete(HttpServletResponse response, @PathVariable("id") Long id) {
@@ -197,17 +197,15 @@ public class ComponentAction extends FreeMarkerSupportAction {
         ComponentHelper.exportComponent(desDir, component, component.getComponentType() + ".xml");
     }
  
-    @RequestMapping("/{parentId}/{id}/{type}")
-	public void getComponentGroup(HttpServletResponse response, 
-			@PathVariable("id") Long id, 
-			@PathVariable("parentId") Long parentId, 
-			@PathVariable("type") int type) {
+    @RequestMapping("/{id}")
+	public void getComponentGroup(HttpServletResponse response, HttpServletRequest request, 
+			@PathVariable("id") Long id) {
 		
 		XFormEncoder encoder;
         if( DEFAULT_NEW_ID.equals(id) ) {  //如果是新增,则返回一个空的无数据的模板
         	Map<String, Object> map = new HashMap<String, Object>();
-        	map.put("parentId", parentId);
-        	map.put("type", type);
+        	map.put("type", request.getParameter("type"));
+            map.put("parentId", request.getParameter("parentId"));
         	map.put("isGroup", true);
             encoder = new XFormEncoder(PortalConstants.COMPONENT_GROUP_XFORM, map);           
         }
@@ -218,13 +216,6 @@ public class ComponentAction extends FreeMarkerSupportAction {
         print("GroupDetail", encoder);
 	}
  
-	/**  删除组 */
-	@RequestMapping(value = "/group/{id}", method = RequestMethod.DELETE)
-	public void deleteComponentGroup(HttpServletResponse response, @PathVariable("id") Long id) {
-		service.deleteComponentGroup(id);		
-        printSuccessMessage();
-	}
-    
     /** 获取某个组件类型的所有分组 */
 	@RequestMapping("/groups/{type}")
     public void getGroupsByType(HttpServletResponse response, @PathVariable("type") int type) {

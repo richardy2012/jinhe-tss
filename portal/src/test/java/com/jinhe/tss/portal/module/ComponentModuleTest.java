@@ -38,7 +38,9 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
             assertFalse("预览组件出错" + e.getMessage(), true);
         }
  
-        componentAction.getComponentGroup(response, defaultLayoutId, PortalConstants.ROOT_ID, Component.LAYOUT_TYPE);
+        request.addParameter("type", Component.LAYOUT_TYPE + "");
+        request.addParameter("parentId", PortalConstants.ROOT_ID + "");
+        componentAction.getComponentGroup(response, request, defaultLayoutId);
         
         Component group1 = new Component();
         group1.setName("测试布局器组1");
@@ -57,7 +59,9 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         group2.setParentId(defaultLayoutGroup.getId());   
         componentAction.save(response, group2);
  
-        componentAction.getComponentGroup(response, BaseActionSupport.DEFAULT_NEW_ID, PortalConstants.ROOT_ID, Component.LAYOUT_TYPE);
+        request.addParameter("type", Component.LAYOUT_TYPE + "");
+        request.addParameter("parentId", PortalConstants.ROOT_ID + "");
+        componentAction.getComponentGroup(response, request, BaseActionSupport.DEFAULT_NEW_ID);
         
         componentAction.getGroupsByType(response, Component.LAYOUT_TYPE);
  
@@ -79,7 +83,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         for(Object temp : groups) {
             Component group = (Component)temp;
             if( !defaultLayoutGroup.getId().equals(group.getId()) ){
-                componentAction.deleteComponentGroup(response, group.getId());
+                componentAction.delete(response, group.getId());
             }
         }
     }

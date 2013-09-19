@@ -26,7 +26,7 @@ import com.jinhe.tss.util.FileHelper;
  * 从首页开始发布整个站点。
  * 
  * TODO 存在的问题：1、页面多了会缓存溢出，考虑多线程
- *                2、新开一个HttpUrlConnection，里面的token值如何去掉？
+ *             2、新开一个HttpUrlConnection，里面的token值如何去掉？
  */
 public class PerfectMagicRobot extends SimpleRobot{
     
@@ -101,7 +101,7 @@ public class PerfectMagicRobot extends SimpleRobot{
         //生成文件名
         String htmlFileName = issuePath + genPageName(url, HTML_FILE_SUFFIX);
         //下载页面
-        IssueHelper.saveUrlAsLocalFile(url, htmlFileName);
+        ReleaseHelper.saveUrlAsLocalFile(url, htmlFileName);
         
         //处理页面里的动态地址，发布出相应的静态页面。
         Parser parser = new Parser(htmlFileName);
@@ -246,7 +246,7 @@ public class PerfectMagicRobot extends SimpleRobot{
                 sourceUrl = src;
             }
             String localFile = issuePath + RESOURCES_PATH_NAME + "/" + fileName;
-            if(IssueHelper.saveUrlAsLocalFile(sourceUrl, localFile))
+            if(ReleaseHelper.saveUrlAsLocalFile(sourceUrl, localFile))
                 tagNode.setAttribute(attributeName, RESOURCES_PATH_NAME + "/" + fileName);
             
             list.add(localFile);
@@ -277,7 +277,7 @@ public class PerfectMagicRobot extends SimpleRobot{
                 url = url.substring(1, url.length() - 1);
             }
             String localFile = issuePath + "/" + RESOURCES_PATH_NAME + "/" + url;
-            IssueHelper.saveUrlAsLocalFile(contextPath + "/" + url, localFile);
+            ReleaseHelper.saveUrlAsLocalFile(contextPath + "/" + url, localFile);
             sb.append(RESOURCES_PATH_NAME + "/" + url);
         }
         sb.append(styleCode.substring(previewIndex));

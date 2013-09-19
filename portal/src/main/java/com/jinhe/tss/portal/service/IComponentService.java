@@ -86,12 +86,6 @@ public interface IComponentService {
     void moveTo(Long id, Long groupId);
 
     /**
-     * 删除一个组
-     * @param id
-     */
-    void deleteComponentGroup(Long id);
-
-    /**
      * 获取某个组件类型的所有分组
      * @param type
      * @return

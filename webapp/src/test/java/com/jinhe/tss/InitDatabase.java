@@ -109,15 +109,15 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
     
     /** 初始化默认的修饰器，布局器 */
     private void initPortal() {
-        Component defaultLayoutGroup = new Component();
-        defaultLayoutGroup.setName("默认布局器组");
-        defaultLayoutGroup.setType(Component.LAYOUT_TYPE);
-        defaultLayoutGroup.setParentId(PortalConstants.ROOT_ID);   
-        defaultLayoutGroup = elementService.saveComponent(defaultLayoutGroup);
+        Component layoutGroup = new Component();
+        layoutGroup.setName("布局器组");
+        layoutGroup.setType(Component.LAYOUT_TYPE);
+        layoutGroup.setParentId(PortalConstants.ROOT_ID);   
+        layoutGroup = elementService.saveComponent(layoutGroup);
         
         Component defaultLayout = new Component();
         defaultLayout.setIsDefault(PortalConstants.TRUE);
-        defaultLayout.setParentId(defaultLayoutGroup.getId());   
+        defaultLayout.setParentId(layoutGroup.getId());   
         Document document = XMLDocUtil.createDoc("template/initialize/defaultLayout.xml");
         org.dom4j.Element propertyElement = document.getRootElement().element("property");
         String layoutName = propertyElement.elementText("name");
@@ -126,15 +126,15 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
         defaultLayout.setDefinition(document.asXML());
         elementService.saveComponent(defaultLayout);
         
-        Component defaultDecoratorGroup = new Component();
-        defaultDecoratorGroup.setName("默认修饰器组");
-        defaultDecoratorGroup.setType(Component.DECORATOR_TYPE);
-        defaultDecoratorGroup.setParentId(PortalConstants.ROOT_ID);  
-        defaultDecoratorGroup = elementService.saveComponent(defaultDecoratorGroup);
+        Component decoratorGroup = new Component();
+        decoratorGroup.setName("修饰器组");
+        decoratorGroup.setType(Component.DECORATOR_TYPE);
+        decoratorGroup.setParentId(PortalConstants.ROOT_ID);  
+        decoratorGroup = elementService.saveComponent(decoratorGroup);
         
         Component defaultDecorator = new Component();
         defaultDecorator.setIsDefault(PortalConstants.TRUE);
-        defaultDecorator.setParentId(defaultDecoratorGroup.getId());
+        defaultDecorator.setParentId(decoratorGroup.getId());
         
         document = XMLDocUtil.createDoc("template/initialize/defaultDecorator.xml");
         propertyElement = document.getRootElement().element("property");
@@ -142,6 +142,12 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
         defaultDecorator.setName(decoratorName);
         defaultDecorator.setDefinition(document.asXML());
         elementService.saveComponent(defaultDecorator);
+        
+        Component portletGroup = new Component();
+        portletGroup.setName("portlet组");
+        portletGroup.setType(Component.PORTLET_TYPE);
+        portletGroup.setParentId(PortalConstants.ROOT_ID);   
+        portletGroup = elementService.saveComponent(layoutGroup);
     }
     
     

@@ -45,8 +45,24 @@ public class ComponentService implements IComponentService {
     
     public Component deleteComponent(Long id) {
         Component component = dao.getEntity(id);
+        if(component.isGroup()) {
+        	deleteComponentGroup(id);
+        	return component;
+        }
+        
         checkElementInUse(component);
         return dao.deleteComponent(component);
+    }
+    
+    private void deleteComponentGroup(Long groupId) {
+        // 检查组下是否有元素尚在使用中
+        List<?> components = dao.getComponentsDeeply(groupId);
+        for ( Object component : components ) {
+            checkElementInUse( (Component) component );
+        }
+            
+        Component entity = dao.getEntity( groupId );
+        dao.deleteGroup(entity);
     }
 
     private void checkElementInUse(Component component) {
@@ -133,17 +149,6 @@ public class ComponentService implements IComponentService {
         dao.save(component);  
     }
     
-    public void deleteComponentGroup(Long groupId) {
-        // 检查组下是否有元素尚在使用中
-        List<?> components = dao.getComponentsDeeply(groupId);
-        for ( Object component : components ) {
-            checkElementInUse( (Component) component );
-        }
-            
-        Component entity = dao.getEntity( groupId );
-        dao.deleteGroup(entity);
-    }
- 
     public List<?> getComponentGroups(Integer type){
         return dao.getEntities("from Component t where t.type = ? and isGroup = ? order by t.decode", type, true);
     }

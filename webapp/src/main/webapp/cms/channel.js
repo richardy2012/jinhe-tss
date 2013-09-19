@@ -365,7 +365,7 @@
 		var tab = ws.open(inf);
     }
  
-    function loadChannelDetailData(treeID,editable,parentID,kind,isNew,siteId) { 
+    function loadChannelDetailData(treeID, parentID) { 
 		var treeNode = $T("tree").getActiveTreeNode();
 		Ajax({
 			url : URL_CHANNEL_DETAIL + treeID + "/" + (parentID || 0),
@@ -380,7 +380,7 @@
 
 				// 设置保存按钮操作
 				$$("page1BtSave").onclick = function() { 
-					saveChannel(cacheID,parentID,kind,isNew);
+					saveChannel(cacheID, parentID);
 				}
 			}
 		});
