@@ -152,31 +152,29 @@
     }
  
     function loadInitData() { 
-        var p = new HttpRequestParams();
-        p.url = URL_INIT;
+		Ajax({
+			url : URL_INIT,
+			onresult : function() { 
+				var _operation = this.getNodeValue(XML_OPERATION);
 
-        var request = new HttpRequest(p);
-        request.onresult = function() { 
-            var _operation = this.getNodeValue(XML_OPERATION);
+				var siteTreeNode = this.getNodeValue(XML_MAIN_TREE);
+				var tree = $T("tree", siteTreeNode); 
 
-            var siteTreeNode = this.getNodeValue(XML_MAIN_TREE);
-            var tree = $T("tree", siteTreeNode); 
-
-            var treeObj = $$("tree");
-            treeObj.onTreeNodeActived = function(eventObj) { 
-                onTreeNodeActived(eventObj);
-            }
-            treeObj.onTreeNodeDoubleClick = function(eventObj) { 
-                onTreeNodeDoubleClick(eventObj);
-            }
-            treeObj.onTreeNodeMoved = function(eventObj) { 
-                sort(eventObj);
-            }
-            treeObj.onTreeNodeRightClick = function(eventObj) { 
-                onTreeNodeRightClick(eventObj);
-            }
-        }
-        request.send();
+				var treeObj = $$("tree");
+				treeObj.onTreeNodeActived = function(eventObj) { 
+					onTreeNodeActived(eventObj);
+				}
+				treeObj.onTreeNodeDoubleClick = function(eventObj) { 
+					onTreeNodeDoubleClick(eventObj);
+				}
+				treeObj.onTreeNodeMoved = function(eventObj) { 
+					sort(eventObj);
+				}
+				treeObj.onTreeNodeRightClick = function(eventObj) { 
+					onTreeNodeRightClick(eventObj);
+				}
+			}
+		});
     }
 
     function onTreeNodeDoubleClick(eventObj) { 
@@ -212,9 +210,6 @@
         var treeID = DEFAULT_NEW_ID;
         var treeName = "站点";
         var callback = {};
-        callback.onTabClose = function(eventObj) { 
-            delCacheData(eventObj.tab.SID);
-        };
         callback.onTabChange = function() { 
             setTimeout(function() { 
                 loadSiteDetailData(treeID);
@@ -236,9 +231,6 @@
 		var treeName = treeNode.getName();
 
 		var callback = {};
-		callback.onTabClose = function(eventObj) { 
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function() { 
 			setTimeout(function() { 
 				loadSiteDetailData(treeID,editable);
@@ -315,8 +307,6 @@
     }
 
  
-
- 
     function addNewChannel() { 
         var treeNode = $T("tree").getActiveTreeNode();
 		var parentID = treeNode.getId();
@@ -324,9 +314,6 @@
 		var channelID = DEFAULT_NEW_ID;
 
 		var callback = {};
-		callback.onTabClose = function(eventObj) { 
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function() { 
 			setTimeout(function() { 
 				loadChannelDetailData(channelID, parentID);
@@ -347,9 +334,6 @@
 		var treeName = treeNode.getName();
 
 		var callback = {};
-		callback.onTabClose = function(eventObj) { 
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function() { 
 			setTimeout(function() { 
 				loadChannelDetailData(treeID);

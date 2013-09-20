@@ -195,6 +195,8 @@ Tab.prototype.close = function() {
 	// 执行Tab页上定义的回调方法
 	this.execCallBack("onTabClose");
 
+	delCacheData(this.SID);
+
 	var firstTab = _display.getFirstTab();
 	_display.switchToTab(firstTab);
 }

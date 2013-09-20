@@ -25,32 +25,28 @@
 				</TR>
 				<TR>
 					<TD width="50" valign="top"><label binding="html"/></TD>
-					<TD><textarea binding="html" style="width:100%;height:200"/></TD>
+					<TD><textarea binding="html" style="width:100%;height:250"/></TD>
 				</TR>
 				<TR>
 					<TD width="50" valign="top"><label binding="script"/></TD>
-					<TD><textarea binding="script" style="width:100%;height:100"/></TD>
-				</TR>
-				<TR>
-					<TD width="50" valign="top"><label binding="style"/></TD>
-					<TD><textarea binding="style" style="width:100%;height:80"/></TD>
+					<TD><textarea binding="script" style="width:100%;height:60"/></TD>
 				</TR>
 				<TR>
 					<TD width="50" valign="top"><label binding="prototypeStyle"/></TD>
-					<TD><textarea binding="prototypeStyle" style="width:100%;height:80"/></TD>
+					<TD><textarea binding="prototypeStyle" style="width:100%;height:60"/></TD>
 				</TR>
 				<TR>
 					<TD width="50" valign="top"><label binding="events"/></TD>
-					<TD><textarea binding="events" style="width:100%;height:60"/>注:请按照"事件名=操作"格式书写，例如"onload=${js.layout}.onload"</TD>
+					<TD><textarea binding="events" style="width:100%;height:40"/>注:请按照"事件名=操作"格式书写，例如"onload=${js.layout}.onload"</TD>
 				</TR>
 				<TR>
 					<TD width="50" valign="top"><label binding="parameters"/></TD>
-					<TD><textarea binding="parameters" style="width:100%;height:60"/>注:请按照"参数名=参数值"格式书写，例如"bgColor=#FFFFFF"
+					<TD><textarea binding="parameters" style="width:100%;height:40"/>注:请按照"参数名=参数值"格式书写，例如"bgColor=#FFFFFF"
 						<input type="button" value="配置参数模板" id="page1BtEditPT" onclick="editParamsTemplate(1)" class="btStrongL"/></TD>	
 				</TR>
 				<TR>
 					<TD width="50" valign="top"><label binding="description"/></TD>
-					<TD><textarea binding="description" style="width:100%;height:60"/></TD>
+					<TD><textarea binding="description" style="width:100%;height:40"/></TD>
 				</TR>
 				<TR>
 					<TD width="50"><label binding="version"/></TD>

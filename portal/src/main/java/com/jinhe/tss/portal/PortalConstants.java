@@ -7,8 +7,6 @@ public interface PortalConstants {
     
     public static final Long ROOT_ID = 0L;
  
-    public final static String COPY_PREFIX = "副本_"; // 复制实体时实体名字前缀
-    
     public static final String PORTAL_CACHE    = "portal_tree";    // 门户树缓存池
     public static final String NAVIGATOR_CACHE = "navigator_pool"; // 导航栏缓存池
 
@@ -17,19 +15,12 @@ public interface PortalConstants {
      */
     public static final String PORTALSTRUCTURE_XFORM = "template/xform/Structure.xml";     // 门户结构
     public static final String RELEASE_XFORM_TEMPLET = "template/xform/ReleaseConfig.xml"; // 门户发布信息模板
-    public static final String COMPONENT_GROUP_XFORM = "template/xform/ComponentGroup.xml"; 
 
     /**
      * 资源文件目录
      */
     public static final String MODEL_DIR        = "portal/model/";
     public static final String PORTAL_MODEL_DIR = "/" + MODEL_DIR + "portal";
-    
-    /** 是否启用权限过滤 */
-    public final static boolean isPermissionFiltrate = true;
-    
-    /** 是否注册资源 */
-    public final static boolean isResourceRegister   = true;
     
     /** 项目标识以及资源类型 */
     public final static String PORTAL_RESOURCE_TYPE    = "11";

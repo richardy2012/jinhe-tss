@@ -135,9 +135,6 @@
 		var parentId = treeNode.getParent().getId();
 
 		var callback = {};
-		callback.onTabClose = function(eventObj) {
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function() {
 			setTimeout(function() {
 				loadAppDetailData(treeID, editable, isNew ? parentId : null);
@@ -223,9 +220,6 @@
 		var treeName = treeNode.getName();
 
 		var callback = {};
-		callback.onTabClose = function(eventObj) {
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function() {
 			setTimeout(function() {
 				loadTypeData(treeID);

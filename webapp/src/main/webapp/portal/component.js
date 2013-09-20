@@ -1,33 +1,28 @@
 
     /*
-     *	ºóÌ¨ÏìÓ¦Êı¾İ½ÚµãÃû³Æ
+     *	åå°å“åº”æ•°æ®èŠ‚ç‚¹åç§°
      */
-    XML_GROUP_INFO = "GroupInfo";
+	XML_MAIN_TREE = "SourceTree";
+    XML_SOURCE_DETAIL = "DetailInfo";
 
-
-    /*
-     *	Ä¬ÈÏÎ¨Ò»±àºÅÃûÇ°×º
-     */
-    CACHE_TREE_NODE_GROUP_DETAIL = "treeNodeGroup__id";
- 
 	 /*
-     *	XMLHTTPÇëÇóµØÖ·»ã×Ü
+     *	XMLHTTPè¯·æ±‚åœ°å€æ±‡æ€»
      */
-	URL_SOURCE_TREE      = "data/source_tree.xml";
-    URL_SAVE_GROUP       = "data/_success.xml";
-    URL_SOURCE_SORT      = "data/_success.xml";
-    URL_SOURCE_DETAIL    = "data/component_detail.xml";
-    URL_DELETE_NODE      = "data/_success.xml";
-    URL_SOURCE_DISABLE   = "data/_success.xml";
-    URL_SOURCE_SAVE      = "data/_success.xml";
-    URL_IMPORT_COMPONENT = "data/_success.xml";
-    URL_EXPORT_COMPONENT = "data/_success.xml";
+	URL_SOURCE_TREE      = "data/component_tree.xml?";
+    URL_SAVE_GROUP       = "data/_success.xml?";
+    URL_SOURCE_SORT      = "data/_success.xml?";
+	URL_STOP_NODE        = "data/_success.xml?";
+    URL_SOURCE_DETAIL    = "data/component_detail.xml?";
+    URL_DELETE_NODE      = "data/_success.xml?";
+    URL_SOURCE_DISABLE   = "data/_success.xml?";
+    URL_SOURCE_SAVE      = "data/_success.xml?";
+    URL_IMPORT_COMPONENT = "data/_success.xml?";
+    URL_EXPORT_COMPONENT = "data/_success.xml?";
  
     function init() {
         initPaletteResize();
         initUserInfo();
-        initToolBar();
-        initNaviBar("portal.3");
+        initNaviBar("portal.2");
         initMenus();
         initBlocks();
         initWorkSpace(false);
@@ -38,142 +33,116 @@
     }
  
     function loadInitData() {
-        var p = new HttpRequestParams();
-        p.url = URL_SOURCE_TREE;
+		Ajax({
+			url : URL_SOURCE_TREE,
+			onresult : function() { 
+				var sourceTreeNode = this.getNodeValue(XML_MAIN_TREE);
 
-        var request = new HttpRequest(p);
-        request.onresult = function() {
-            var _operation = this.getNodeValue(XML_OPERATION);
+				Cache.XmlDatas.add(CACHE_MAIN_TREE, sourceTreeNode);
+	 
+				var tree = $T("tree", sourceTreeNode);
 
-            var groupTreeNode = this.getNodeValue(XML_MAIN_TREE);
-            var groupTreeNodeID = CACHE_MAIN_TREE;
-
-            Cache.XmlDatas.add(groupTreeNodeID, groupTreeNode);
- 
-            var treeObj = $T("tree", groupTreeNode);
-
-            treeObj.onTreeNodeActived = function(eventObj) {
-				Focus.focus($$("treeTitle").firstChild.id);
-				showTreeNodeInfo();
-            }
-            treeObj.onTreeNodeDoubleClick = function(eventObj) {
-                var id = getTreeNodeId();
-				if("_rootId" != id && !isGroup()) {
-					 editComponentInfo();            
+				tree.element.onTreeNodeActived = function(eventObj) {
+					Focus.focus($$("treeTitle").firstChild.id);
+					showTreeNodeInfo();
 				}
-            }
-            treeObj.onTreeNodeRightClick = function(eventObj) {
-                showTreeNodeInfo();
-				$T("tree").contextmenu.show(eventObj.clientX, eventObj.clientY);
-            }
-            treeObj.onTreeNodeMoved = function(eventObj) {
-                sortTreeNode(URL_SOURCE_SORT, eventObj);
-            }
-        }
-        request.send();
+				tree.element.onTreeNodeDoubleClick = function(eventObj) {
+					if( !isGroup() ) {
+						 editComponentInfo();            
+					}
+				}
+				tree.element.onTreeNodeRightClick = function(eventObj) {
+					showTreeNodeInfo();
+					$$("tree").contextmenu.show(eventObj.clientX, eventObj.clientY);
+				}
+				tree.element.onTreeNodeMoved = function(eventObj) {
+					sortTreeNode(URL_SOURCE_SORT, eventObj);
+				}
+			}
+		});
     }
  
     function initMenus() {
         var item1 = {
-            label:"ĞÂ½¨",
+            label:"æ–°å»ºç»„ä»¶",
             callback:addNewComponent,
-            enable:function() {return true;},
-            visible:function() {return null!=getTreeNodeType() && true==getOperation("pd1");}
+            visible:function() {return isGroup();}
         }
         var item2 = {
-            label:"É¾³ı",
-            callback:delTreeNode,
-            icon:ICON + "del.gif",
-            enable:function() {return true;},
-            visible:function() {return "_rootId"!=getTreeNodeId() && true==getOperation("pd2");}
+            label:"åˆ é™¤",
+            callback: function() { delTreeNode() },
+            icon:ICON + "icon_del.gif"
         }
         var item3 = {
-            label:"±à¼­",
+            label:"ç¼–è¾‘",
             callback:editTreeNode,
-            icon:ICON + "edit.gif",
-            enable:function() {return true;},
-            visible:function() {return "_rootId"!=getTreeNodeId() && true==getOperation("pd3");}
+            icon:ICON + "edit.gif"
         }
         var item4 = {
-            label:"ÆôÓÃ",
+            label:"å¯ç”¨",
             callback: function() { stopOrStartTreeNode("0"); },
             icon:ICON + "start.gif",
-            enable:function() {return true;},
-            visible:function() {return null!=getGroupId() && isTreeNodeDisabled() && true==getOperation("pd4");}
+            visible:function() {return !isGroup() && isTreeNodeDisabled();}
         }
         var item5 = {
-            label:"Í£ÓÃ",
+            label:"åœç”¨",
             callback: function() { stopOrStartTreeNode("1"); },
             icon:ICON + "stop.gif",
-            enable:function() {return true;},
-            visible:function() {return null!=getGroupId() && !isTreeNodeDisabled() && true==getOperation("pd4");}
+            visible:function() {return !isGroup() && !isTreeNodeDisabled();}
         }
         var item6 = {
-            label:"ĞÂ½¨×é",
+            label:"æ–°å»ºåˆ†ç»„",
             callback:function() {
-                addNewGroup("2");
+                addNewGroup();
             },
-            enable:function() {return true;},
-            visible:function() {return (null!=getTreeNodeType() || "_rootId"==getTreeNodeId()) && true==getOperation("pd5");}
+            visible:function() {return isGroup();}
         }
         var item7 = {
-            label:"µ¼³ö",
+            label:"å¯¼å‡º",
             callback:exportComponent,
             icon:ICON + "export.gif",
-            enable:function() {return true;},
-            visible:function() {return null!=getGroupId() && true==getOperation("pd6");}
+            visible:function() {return !isGroup();}
         }
         var item8 = {
-            label:"µ¼Èë",
+            label:"å¯¼å…¥",
             callback:importComponent,
             icon:ICON + "import.gif",
-            enable:function() {return true;},
-            visible:function() {return null!=getTreeNodeType() && true==getOperation("pd7");}
+            visible:function() {return isGroup();}
         }
-        var item14 = {
-            label:"×ÊÔ´¹ÜÀí",
+        var item9 = {
+            label:"èµ„æºç®¡ç†",
             callback:function() {resourceManage();},
-            icon:ICON + "resource.gif",
-            enable:function() {return true;},
-            visible:function() {return null!=getGroupId() && true==getOperation("pd3");}
+            visible:function() {return !isGroup();}
         }
-		var item15 = {
-            label:"Ô¤ÀÀ",
+		var item10 = {
+            label:"é¢„è§ˆ",
             callback:function() {previewElement(2);},
             icon:ICON + "preview.gif",
-            enable:function() {return true;},
-            visible:function() {return null!=getGroupId() && true==getOperation("2");}
+            
+            visible:function() {return !isGroup();}
         }
-        var treeObj = $T("tree");
 
         var menu1 = new Menu();
-		menu1.addItem(item15);
+		menu1.addItem(item6);
+		menu1.addItem(item1);
+		menu1.addItem(item3);
+        menu1.addItem(item2);
         menu1.addItem(item4);
         menu1.addItem(item5);
         menu1.addSeparator();
-        menu1.addItem(item10);
-        menu1.addSeparator();
-        menu1.addItem(item13);
-        menu1.addItem(item3);
-        menu1.addItem(item2);
-        menu1.addItem(item9);
-        menu1.addItem(item11);
-        menu1.addItem(item12);
-        menu1.addSeparator();
-        menu1.addItem(item1);
-        menu1.addItem(item6);
-        menu1.addSeparator();
-        menu1.addItem(item7);
+	   	menu1.addItem(item7);
         menu1.addItem(item8);
-        menu1.addItem(item14);
-        treeObj.contextmenu = menu1;
+        menu1.addItem(item9);
+        menu1.addItem(item10);
+       
+        $$("tree").contextmenu = menu1;
     }
 
     function getComponentType() {
         return getTreeAttribute("type");
     }
 
-	function isComponentGroup() {
+	function isGroup() {
 		return getTreeAttribute("isGroup") == "true";
 	}
 
@@ -181,8 +150,16 @@
         return getTreeAttribute("groupId");
     }
 
+	function editTreeNode() {
+		if( isGroup() ) {
+			renameGroup();
+		} else {
+			editComponentInfo();
+		}
+	}
+
 	function addNewComponent() {
-        var treeName = "×é¼ş";
+        var treeName = "ç»„ä»¶";
         var treeID = DEFAULT_NEW_ID;
 
         var treeObj = $T("tree");
@@ -190,13 +167,10 @@
 		var parentID = treeNode.getId();
 
 		var callback = {};
-		callback.onTabClose = function(eventObj) {
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function() {
 			setTimeout(function() {
 				loadTreeDetailData(treeID, parentID);
-			},TIMEOUT_TAB_CHANGE);
+			}, TIMEOUT_TAB_CHANGE);
 		};
 
 		var inf = {};
@@ -204,7 +178,7 @@
 		inf.label = OPERATION_ADD.replace(/\$label/i, treeName);
 		inf.phases = null;
 		inf.callback = callback;
-		inf.SID = CACHE_TREE_NODE_DETAIL + treeID;
+		inf.SID = CACHE_TREE_NODE + treeID;
 		var tab = ws.open(inf);
     }
 
@@ -215,9 +189,6 @@
 		var treeName = treeNode.getName();
 
 		var callback = {};
-		callback.onTabClose = function(eventObj) {
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function() {
 			setTimeout(function() {
 				loadTreeDetailData(treeID, getGroupId());
@@ -226,7 +197,7 @@
 
 		var inf = {};
 		inf.label = OPERATION_EDIT.replace(/\$label/i, treeName);
-		inf.SID = CACHE_TREE_NODE_DETAIL + treeID;
+		inf.SID = CACHE_TREE_NODE + treeID;
 		inf.defaultPage = "page1";
 		inf.phases = null;
 		inf.callback = callback;
@@ -235,11 +206,11 @@
 
     function loadTreeDetailData(treeID, parentID) {
 		var p = new HttpRequestParams();
-		p.url = URL_SOURCE_DETAIL +¡¡treeID + "/" + parentID;
+		p.url = URL_SOURCE_DETAIL +ã€€treeID + "/" + parentID;
 
 		var request = new HttpRequest(p);
 		request.onresult = function() {
-			var componentInfoNode = this.getNodeValue(XML_Component_INFO);
+			var componentInfoNode = this.getNodeValue(XML_SOURCE_DETAIL);
 
 			preProcessXml(componentInfoNode);
 
@@ -248,7 +219,7 @@
 			var page1FormObj = $X("page1Form", componentInfoNode);
 			attachReminder(treeID, page1FormObj);
 
-			//ÉèÖÃ±£´æ°´Å¥²Ù×÷
+			//è®¾ç½®ä¿å­˜æŒ‰é’®æ“ä½œ
 			$$("page1BtSave").onclick = function() {
 				saveComponent(treeID, parentID);
 			}
@@ -257,8 +228,8 @@
     }
 
 	/*
-     *	Ô¤ÏÈ´¦ÀíxformÊı¾İµº.
-	 *  Ô¤½âÎödefinition£¬·Ö±ğÉèÖÃµ½script,style,prototypeStyle,html,eventsºÍparametersÉÏ
+     *	é¢„å…ˆå¤„ç†xformæ•°æ®å²›.
+	 *  é¢„è§£ædefinitionï¼Œåˆ†åˆ«è®¾ç½®åˆ°script,style,prototypeStyle,html,eventså’Œparametersä¸Š
      */
     function preProcessXml(dataNode) {
         var rowNode = dataNode.selectSingleNode(".//data/row");
@@ -306,10 +277,10 @@
     }
  
     /*
-     *	±£´æĞŞÊÎ
-     *	²ÎÊı£º	string:cacheID      »º´æÊı¾İid
-                string:parentID     ¸¸½Úµãid
-     *	·µ»ØÖµ£º
+     *	ä¿å­˜ä¿®é¥°
+     *	å‚æ•°ï¼š	string:cacheID      ç¼“å­˜æ•°æ®id
+                string:parentID     çˆ¶èŠ‚ç‚¹id
+     *	è¿”å›å€¼ï¼š
      */
     function saveComponent(cacheID, parentID) {
         var page1FormObj = $("page1Form");
@@ -319,23 +290,23 @@
 
 		var events     = page1FormObj.getData("events");
 		if( true == (/^\=/.test(events)) ) {
-			page1FormObj.showCustomErrorInfo("events", "Çë°´\"ÊÂ¼şÃû=²Ù×÷\"¸ñÊ½ÊéĞ´");
+			page1FormObj.showCustomErrorInfo("events", "è¯·æŒ‰\"äº‹ä»¶å=æ“ä½œ\"æ ¼å¼ä¹¦å†™");
 			return;
 		} 
 
 		var parameters = page1FormObj.getData("parameters");
 		if( true==(/^\=/.test(parameters)) ) {
-			page1FormObj.showCustomErrorInfo("parameters", "Çë°´\"²ÎÊıÃû=²ÎÊıÖµ\"¸ñÊ½ÊéĞ´");
+			page1FormObj.showCustomErrorInfo("parameters", "è¯·æŒ‰\"å‚æ•°å=å‚æ•°å€¼\"æ ¼å¼ä¹¦å†™");
 			return;
 		}
 
         var p = new HttpRequestParams();
         p.url = URL_SOURCE_SAVE;
 
-        //ÊÇ·ñÌá½»
+        //æ˜¯å¦æäº¤
         var flag = false;
  
-		//ĞŞÊÎ»ù±¾ĞÅÏ¢
+		//ä¿®é¥°åŸºæœ¬ä¿¡æ¯
 		var componentInfoNode = Cache.XmlDatas.get(cacheID);
 		if(componentInfoNode) {
 			var componentInfoDataNode = componentInfoNode.selectSingleNode(".//data");
@@ -344,7 +315,7 @@
 
 				var rowNode = componentInfoDataNode.selectSingleNode("row");
 
-				// Æ´½ÓdefinitionÊôĞÔ
+				// æ‹¼æ¥definitionå±æ€§
 				var name           = rowNode.getCDATA("name") || "";
 				var version        = rowNode.getCDATA("version") || "";
 				var script         = rowNode.getCDATA("script") || "";
@@ -382,8 +353,8 @@
 				str[str.length] = "<events>";
 				events = events.split("\n");
 				for(var i =0,iLen=events.length;i<iLen;i++) {
-					var curEvent = events[i].replace(/(^\s*)|(\s*$)/g,"");//È¥µôÃ¿ĞĞÇ°ºó¶àÓà¿Õ¸ñ
-					curEvent = curEvent.convertEntity();//×ª»»ÌØÊâ×Ö·ûÎªÊµÌå
+					var curEvent = events[i].replace(/(^\s*)|(\s*$)/g,"");//å»æ‰æ¯è¡Œå‰åå¤šä½™ç©ºæ ¼
+					curEvent = curEvent.convertEntity();//è½¬æ¢ç‰¹æ®Šå­—ç¬¦ä¸ºå®ä½“
 					var curEventName = curEvent.substring(0,curEvent.indexOf("="));
 					var curEventValue = curEvent.substring(curEvent.indexOf("=")+1);
 					str[str.length] = "<attach event=\""+curEventName+"\" onevent=\""+curEventValue+"\"/>";
@@ -393,8 +364,8 @@
 				str[str.length] = "<parameters>";
 				parameters = parameters.split("\n");
 				for(var i =0,iLen=parameters.length;i<iLen;i++) {
-					var curParam = parameters[i].replace(/(^\s*)|(\s*$)/g,"");//È¥µôÃ¿ĞĞÇ°ºó¶àÓà¿Õ¸ñ
-					curParam = curParam.convertEntity();//×ª»»ÌØÊâ×Ö·ûÎªÊµÌå
+					var curParam = parameters[i].replace(/(^\s*)|(\s*$)/g,"");//å»æ‰æ¯è¡Œå‰åå¤šä½™ç©ºæ ¼
+					curParam = curParam.convertEntity();//è½¬æ¢ç‰¹æ®Šå­—ç¬¦ä¸ºå®ä½“
 					var curParamName = curParam.substring(0,curParam.indexOf("="));
 					var curParamValue = curParam.substring(curParam.indexOf("=")+1);
 					str[str.length] = "<param name=\""+curParamName+"\" defaultValue=\""+curParamValue+"\"/>";
@@ -418,12 +389,12 @@
         if(flag) {
             var request = new HttpRequest(p);
             
-			//Í¬²½°´Å¥×´Ì¬
+			//åŒæ­¥æŒ‰é’®çŠ¶æ€
             var page1BtSaveObj = $$("page1BtSave");
             syncButton([page1BtSaveObj], request);
 
             request.onresult = function() {
-				// ½â³ıÌáĞÑ
+				// è§£é™¤æé†’
 				detachReminder(cacheID);
 
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
@@ -432,10 +403,10 @@
 				ws.closeActiveTab();
             }
             request.onsuccess = function() {
-				// ½â³ıÌáĞÑ
+				// è§£é™¤æé†’
 				detachReminder(cacheID);
 
-				//¸üĞÂÊ÷½ÚµãÃû³Æ
+				//æ›´æ–°æ ‘èŠ‚ç‚¹åç§°
 				var name = page1FormObj.getData("name");
 				modifyTreeNode(cacheID, "name", name, true);
             }
@@ -448,7 +419,7 @@
         var treeNode = treeObj.getActiveTreeNode();
         var id = treeNode.getId();
 
-        var groupName = prompt("ÇëÊäÈë×éÃû³Æ");
+        var groupName = prompt("è¯·è¾“å…¥ç»„åç§°");
 	}
  
 	function addNewGroup() {
@@ -456,11 +427,11 @@
         var treeNode = treeObj.getActiveTreeNode();
         var parentID = treeNode.getId();
 
-        var groupName = prompt("ÇëÊäÈë×éÃû³Æ");
+        var groupName = prompt("è¯·è¾“å…¥ç»„åç§°");
     }
 	
     /*
-     *	Ô¤ÀÀ×é¼ş
+     *	é¢„è§ˆç»„ä»¶
      */
 	function previewElement() {
         var treeObj = $T("tree");
@@ -471,8 +442,8 @@
     }
 
 	/*
-     *	¸ü¸Ä²¼¾ÖÆ÷¡¢×é¼ş¡¢portletµÄ²ÎÊıÅäÖÃÎÄ¼ş
-     *	²ÎÊı£º	int:type       ÀàĞÍ(1:²¼¾ÖÆ÷¡¢2:×é¼ş¡¢3:portlet)
+     *	æ›´æ”¹å¸ƒå±€å™¨ã€ç»„ä»¶ã€portletçš„å‚æ•°é…ç½®æ–‡ä»¶
+     *	å‚æ•°ï¼š	int:type       ç±»å‹(1:å¸ƒå±€å™¨ã€2:ç»„ä»¶ã€3:portlet)
      */
     function editParamsTemplate(type) {
         var page1FormObj = $X("page1Form");
@@ -481,62 +452,27 @@
         var parameters = page1FormObj.getData("parameters") || "";
 
         if(id) {
-            window.showModalDialog("configparams_edit.htm", {id:id,params:parameters,type:type,title:"ÅäÖÃ²ÎÊıÄ£°å"},"dialogWidth:700px;dialogHeight:480px;");
+            window.showModalDialog("configparams_edit.htm", {id:id,params:parameters,type:type,title:"é…ç½®å‚æ•°æ¨¡æ¿"},"dialogWidth:700px;dialogHeight:480px;");
         } else {
-			alert("ÇëÏÈ±£´æ×é¼şºóÔÙÅäÖÃÆä²ÎÊıÄ£°å");
+			alert("è¯·å…ˆä¿å­˜ç»„ä»¶åå†é…ç½®å…¶å‚æ•°æ¨¡æ¿");
 		}
     }
 
-    function upload() {
+    function importComponent() {
         var page1FormObj = $("page1Form");
         var fileName = page1FormObj.getData("filePath");
         if (fileName==null || fileName=="") {
-            return alert("ÇëÑ¡Ôñµ¼ÈëÎÄ¼ş!");
+            return alert("è¯·é€‰æ‹©å¯¼å…¥æ–‡ä»¶!");
         }
         else {
             var fileLength = fileName.length;
             if(fileName.substring(fileLength-4,fileLength)!=".zip" && fileName.substring(fileLength-4,fileLength)!=".xml") {
-                return alert("ÇëÑ¡ÔñzipÑ¹ËõÎÄ¼ş»òÕßXMLÎÄ¼şµ¼Èë!");
+                return alert("è¯·é€‰æ‹©zipå‹ç¼©æ–‡ä»¶æˆ–è€…XMLæ–‡ä»¶å¯¼å…¥!");
             }
             else{
                 return page1FormObj.submit();
             }
         }
-    }
-
-	function importComponent() {
-        var treeName = "×é¼ş";
-
-        var treeObj = $T("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-
-		var treeID;
-		var id = treeNode.getAttribute("id");
-		var groupId = treeNode.getAttribute("groupId");
-
-		if(null == groupId) {
-			treeID = id;
-		}else{
-			treeID = groupId;
-		}
-
-		var callback = {};
-		callback.onTabClose = function(eventObj) {
-			delCacheData(eventObj.tab.SID);
-		};
-		callback.onTabChange = function() {
-			setTimeout(function() {
-				loadUploadDetailData(treeID);
-			},TIMEOUT_TAB_CHANGE);
-		};
-
-		var inf = {};
-		inf.defaultPage = "page1";
-		inf.label = OPERATION_IMPORT.replace(/\$label/i,treeName);
-		inf.phases = null;
-		inf.callback = callback;
-		inf.SID = CACHE_UPLOAD_DETAIL + treeID;
-		var tab = ws.open(inf);
     }
 
     function exportComponent() {
@@ -547,7 +483,7 @@
     }
 
     /*
-     *	´´½¨µ¼³öÓÃiframe
+     *	åˆ›å»ºå¯¼å‡ºç”¨iframe
      */
     function createExportFrame() {
         var frameName = "exportFrame";
@@ -560,7 +496,7 @@
     }
     
     /*
-     *	×é¼ş×ÊÔ´¹ÜÀí
+     *	ç»„ä»¶èµ„æºç®¡ç†
      */
     function resourceManage() {
         var treeObj = $T("tree");
@@ -573,10 +509,10 @@
 			type:getComponentType()
 		};
 	
-		window.showModalDialog("filemanager.html", {params:params, title:"\"" + name + "\"Ïà¹Ø×ÊÔ´¹ÜÀí"},"dialogWidth:400px;dialogHeight:400px;");
+		window.showModalDialog("filemanager.html", {params:params, title:"\"" + name + "\"ç›¸å…³èµ„æºç®¡ç†"},"dialogWidth:400px;dialogHeight:400px;");
     }
 	 
 	window.onload = init;
 
-	// ¹Ø±ÕÒ³Ãæ×Ô¶¯×¢Ïú
+	// å…³é—­é¡µé¢è‡ªåŠ¨æ³¨é”€
     logoutOnClose();

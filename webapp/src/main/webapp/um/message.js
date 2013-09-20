@@ -124,13 +124,10 @@
 		var id = DEFAULT_NEW_ID;
 
 		var callback = {};
-		callback.onTabClose = function(eventObj){
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function(){
 			setTimeout(function(){
 				loadMessage(id);
-			},TIMEOUT_TAB_CHANGE);
+			}, TIMEOUT_TAB_CHANGE);
 		};
 
 		var inf = {};
@@ -151,9 +148,6 @@
         var title = row.getAttribute("title");  
  
         var callback = {};
-        callback.onTabClose = function(eventObj){
-            delCacheData(eventObj.tab.SID);
-        };
         callback.onTabChange = function(){
             setTimeout(function(){
                 loadMessage(id);
@@ -179,9 +173,6 @@
         var title = row.getAttribute("title");   
 
         var callback = {};
-        callback.onTabClose = function(eventObj){
-            delCacheData(eventObj.tab.SID);
-        };
         callback.onTabChange = function(){
             setTimeout(function(){
                 loadReplyMessage(id);

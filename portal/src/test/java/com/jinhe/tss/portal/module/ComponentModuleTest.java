@@ -33,20 +33,17 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         
         try {
             componentAction.previewComponent(response, defaultLayoutId);
- 
         } catch (Exception e) {
             assertFalse("预览组件出错" + e.getMessage(), true);
         }
  
-        request.addParameter("type", Component.LAYOUT_TYPE + "");
-        request.addParameter("parentId", PortalConstants.ROOT_ID + "");
-        componentAction.getComponentGroup(response, request, defaultLayoutId);
+        componentAction.getComponentInfo(response, defaultLayoutId, layoutGroup.getId());
         
         Component group1 = new Component();
         group1.setName("测试布局器组1");
         group1.setIsGroup(true);
         group1.setType(Component.LAYOUT_TYPE);
-        group1.setParentId(defaultLayoutGroup.getId());   
+        group1.setParentId(layoutGroup.getId());   
         componentAction.save(response, group1);
         
         Long groupId = group1.getId();
@@ -56,33 +53,23 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         group2.setName("测试布局器组2");
         group2.setIsGroup(true);
         group2.setType(Component.LAYOUT_TYPE);
-        group2.setParentId(defaultLayoutGroup.getId());   
+        group2.setParentId(layoutGroup.getId());   
         componentAction.save(response, group2);
  
         request.addParameter("type", Component.LAYOUT_TYPE + "");
-        request.addParameter("parentId", PortalConstants.ROOT_ID + "");
-        componentAction.getComponentGroup(response, request, BaseActionSupport.DEFAULT_NEW_ID);
+        componentAction.getComponentInfo(response, BaseActionSupport.DEFAULT_NEW_ID, group1.getId());
         
-        componentAction.getGroupsByType(response, Component.LAYOUT_TYPE);
- 
         componentAction.sort(Context.getResponse(), groupId, group2.getId(), -1);
         
-        componentAction.copyTo(response, defaultLayoutId, groupId);
-        
-        componentAction.getGroupsByType(response, Component.LAYOUT_TYPE);
-        
-        List<?> groups = componentService.getComponentGroups(Component.LAYOUT_TYPE);
+        String hql = "from Component o where o.isGroup = 1 and o.type=? order by o.decode";
+        List<?> groups = permissionHelper.getEntities(hql, Component.LAYOUT_TYPE);
         assertTrue(groups.size() >= 3);
  
-        componentAction.moveTo(response, defaultLayoutId, group2.getId());
-        
-        componentAction.moveTo(response, defaultLayoutId, defaultLayoutGroup.getId());  // 移回去
-        
         componentAction.getAllComponents4Tree(response);
         
         for(Object temp : groups) {
             Component group = (Component)temp;
-            if( !defaultLayoutGroup.getId().equals(group.getId()) ){
+            if( !layoutGroup.getId().equals(group.getId()) ){
                 componentAction.delete(response, group.getId());
             }
         }
@@ -94,7 +81,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         group1.setName("测试修饰器组1");
         group1.setIsGroup(true);
         group1.setType(Component.DECORATOR_TYPE);
-        group1.setParentId(defaultDecoratorGroup.getId());   
+        group1.setParentId(decoratorGroup.getId());   
         componentAction.save(response, group1);
         
         Long groupId = group1.getId();
@@ -123,13 +110,9 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
 			componentAction.disable(response, id, PortalConstants.FALSE);
 		}
 
-		componentAction.setDecoratorAsDefault(response, id);
-		componentAction.setDecoratorAsDefault(response, defaultDecoratorId);
-
 		componentAction.sort(Context.getResponse(), id, id + 1, 1);
 
 		componentAction.getEnabledComponents4Tree(response, Component.DECORATOR_TYPE);
-		componentAction.getGroupsByType(response, Component.DECORATOR_TYPE);
 
 		componentAction.getDefaultParams4Xml(response, id);
 		
@@ -149,7 +132,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         group1.setName("测试布局组1");
         group1.setIsGroup(true);
         group1.setType(Component.LAYOUT_TYPE);
-        group1.setParentId(defaultLayoutGroup.getId());   
+        group1.setParentId(layoutGroup.getId());   
         componentAction.save(response, group1);
         
         Long groupId = group1.getId();
@@ -163,9 +146,6 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         Long id = layout1.getId();
         
         componentAction.getDefaultParams4Xml(response, id);
-        
-        componentAction.setLayoutAsDefault(response, id);
-		componentAction.setLayoutAsDefault(response, defaultLayoutId);
         
         request.addParameter("configXML", "");
 		componentAction.saveElementParamsConfig(response, request, id);

@@ -329,11 +329,8 @@
 		}		
 		
 		var callback = {};
-		callback.onTabClose = function(eventObj){
-			delCacheData(eventObj.tab.SID);
-		};
-		callback.onTabChange = function(){
-			setTimeout(function(){
+		callback.onTabChange = function() {
+			setTimeout(function() {
 				loadGroupDetailData(treeID, parentID, groupType);
 			}, TIMEOUT_TAB_CHANGE);
 		};
@@ -602,9 +599,6 @@
 		phases[3] = {page:"page3",label:"角色"};
 
 		var callback = {};
-		callback.onTabClose = function(eventObj) {
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function(){
 			setTimeout(function(){
 				loadUserDetailData(rowID, groupId);
@@ -849,9 +843,6 @@
 		var groupName = treeNode.getName();
 		
 		var callback = {};
-		callback.onTabClose = function(eventObj){
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function(){
 			setTimeout(function(){
 				var p = new HttpRequestParams();
@@ -883,9 +874,6 @@
 		var groupName = treeNode.getName();
 		
 		var callback = {};
-		callback.onTabClose = function(eventObj){
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function(){
 			setTimeout(function() {
 				var p = new HttpRequestParams();

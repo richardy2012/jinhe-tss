@@ -62,42 +62,4 @@ public interface IComponentService {
      * @param direction
      */
     void sort(Long id, Long targetId, int direction);
-
-    /**
-     * 将修饰器设置为默认修饰器
-     * @param decoratorId
-     */
-    void setDecoratorAsDefault(Long decoratorId);
-
-    /**
-     * 将布局器设置为默认布局器
-     * @param layoutId
-     */
-    void setLayoutAsDefault(Long layoutId);
-
-    /*****************************************************************************************************************
-     ************************************ 以下是对组件（修饰器/布局器/Portlet）组的操作 ************************************* 
-     *****************************************************************************************************************/
-    /**
-     * 移动一个组件到另外一个组
-     * @param id
-     * @param groupId
-     */
-    void moveTo(Long id, Long groupId);
-
-    /**
-     * 获取某个组件类型的所有分组
-     * @param type
-     * @return
-     */
-    List<?> getComponentGroups(Integer type);
-
-    /**
-     * 复制一个组件到另外一个组
-     * @param id
-     * @param groupId
-     * @return
-     */
-    Component copyTo(Long id, Long groupId);
-    
 }

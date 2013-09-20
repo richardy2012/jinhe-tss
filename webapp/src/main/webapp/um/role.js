@@ -224,9 +224,6 @@
 		var treeID = DEFAULT_NEW_ID;
 
 		var callback = {};
-		callback.onTabClose = function(eventObj) {
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function() {
 			setTimeout(function() {
 				loadRoleGroupDetailData(treeID, true, parentID);
@@ -252,9 +249,6 @@
 		var parentID = treeNode.getParent().getId();
 
 		var callback = {};
-		callback.onTabClose = function(eventObj) {
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function() {
 			setTimeout(function() {
 				loadRoleGroupDetailData(treeID, editable, parentID);
@@ -362,9 +356,6 @@
 		var treeID = DEFAULT_NEW_ID;
 
 		var callback = {};
-		callback.onTabClose = function(eventObj) {
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function() {
 			setTimeout(function() {
 				loadRoleDetailData(treeID, true, parentID);
@@ -387,9 +378,6 @@
 		var parentID = treeNode.getParent().getId();
  
 		var callback = {};
-		callback.onTabClose = function(eventObj) {
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function() {
 			setTimeout(function() {
 				loadRoleDetailData(treeID, editable, treeID);

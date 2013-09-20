@@ -132,9 +132,6 @@
         phases[3] = {page:"page2", label:"用户组"};
 
         var callback = {};
-        callback.onTabClose = function(eventObj){
-            delCacheData(eventObj.tab.SID);
-        };
         callback.onTabChange = function(){
             setTimeout(function(){
                 loadRuleDetailData(treeID,true,true);
@@ -164,9 +161,6 @@
 		phases[3] = {page:"page2", label:"用户组"};
 
 		var callback = {};
-		callback.onTabClose = function(eventObj){
-			delCacheData(eventObj.tab.SID);
-		};
 		callback.onTabChange = function(){
 			setTimeout(function(){
 				loadRuleDetailData(treeNodeID);

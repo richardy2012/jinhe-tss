@@ -90,6 +90,7 @@ Public.executeCommand = function(callback, param) {
 	}
 	catch (e)
 	{
+		alert(e.message);
 		returnVal = false;
 	}
 	return returnVal;

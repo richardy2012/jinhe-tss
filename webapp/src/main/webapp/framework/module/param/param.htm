@@ -232,9 +232,6 @@
 			var mode = getTreeNodeMode();
 
             var callback = {};
-            callback.onTabClose = function(eventObj) {
-                delCacheData(eventObj.tab.SID);
-            };
             callback.onTabChange = function() {
                 setTimeout(function() {
                     loadTreeDetailData(treeID, editable, treeID, type, mode);
@@ -280,9 +277,6 @@
             var parentID = treeNode.getId();
 
             var callback = {};
-            callback.onTabClose = function(eventObj) {
-                delCacheData(eventObj.tab.SID);
-            };
             callback.onTabChange = function() {
                 setTimeout(function() {
                     loadTreeDetailData(null, true, parentID, type, mode);

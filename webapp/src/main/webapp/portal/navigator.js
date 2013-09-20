@@ -1,5 +1,5 @@
     /*
-     *	ºóÌ¨ÏìÓ¦Êı¾İ½ÚµãÃû³Æ
+     *	åå°å“åº”æ•°æ®èŠ‚ç‚¹åç§°
      */
     XML_MAIN_TREE = "MenuTree";
 
@@ -9,7 +9,7 @@
     XML_OPERATION = "Operation";
 
     /*
-     *	Ä¬ÈÏÎ¨Ò»±àºÅÃûÇ°×º
+     *	é»˜è®¤å”¯ä¸€ç¼–å·åå‰ç¼€
      */
     CACHE_MENU_DETAIL = "menuDetail__id";
     CACHE_VIEW_MENU_DETAIL = "viewMenuDetail__id";
@@ -18,14 +18,14 @@
     CACHE_MAIN_TREE = "tree__id";
     CACHE_TOOLBAR = "toolbar__id";
     /*
-     *	Ãû³Æ
+     *	åç§°
      */
-    OPERATION_ADD = "ĞÂÔö$label";
-    OPERATION_VIEW = "²é¿´\"$label\"";
-    OPERATION_DEL = "É¾³ı\"$label\"";
-    OPERATION_EDIT = "±à¼­\"$label\"";
+    OPERATION_ADD = "æ–°å¢$label";
+    OPERATION_VIEW = "æŸ¥çœ‹\"$label\"";
+    OPERATION_DEL = "åˆ é™¤\"$label\"";
+    OPERATION_EDIT = "ç¼–è¾‘\"$label\"";
     /*
-     *	XMLHTTPÇëÇóµØÖ·»ã×Ü
+     *	XMLHTTPè¯·æ±‚åœ°å€æ±‡æ€»
      */
     URL_INIT = "data/menu_init.xml";
     URL_MENU_DETAIL = "data/menu1.xml";
@@ -39,41 +39,11 @@
     URL_GET_OPERATION = "data/operation.xml";
 	URL_GET_PS_TREE = "data/sitetree_init.xml";
 	URL_REFLUSH_MENU_CACHE = "data/_success.xml";
-
-    URL_INIT = "pms/navigator!getAllNavigator4Tree.action";
-    URL_MENU_DETAIL = "pms/navigator!getNavigatorInfo.action";
-    URL_MENU_ITEM_DETAIL = "pms/navigator!getNavigatorInfo.action";
-    URL_SAVE_MENU_DETAIL = "pms/navigator!save.action";
-    URL_SAVE_MENU_ITEM_DETAIL = "pms/navigator!save.action";
-    URL_DEL_MENU = "pms/navigator!delete.action";
-    URL_DEL_MENU_ITEM = "pms/navigator!delete.action";
-    URL_SORT_MENU = "pms/navigator!sort.action";
-    URL_MOVE_MENU_ITEM = "pms/navigator!move.action";
-    URL_GET_OPERATION = "data/operation.xml";
-    URL_GET_PS_TREE = "pms/navigator!getPortalStructuresByPortal4Tree.action";
-    URL_REFLUSH_MENU_CACHE = "pms/cache!refresh.action";
-
-    /*
-     *	ÑÓÊ±
-     */
-    TIMEOUT_TAB_CHANGE = 200;
-    /*
-     *	iconÂ·¾¶
-     */
-    ICON = "../platform/images/icon/";
-
-    var toolbar = null;
-
-    /*
-     *	º¯ÊıËµÃ÷£ºÒ³Ãæ³õÊ¼»¯
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
-     */
+ 
     function init(){
         initPaletteResize();
-   //     initUserInfo();
-        initToolBar();
-        initNaviBar("pms.5");
+        initUserInfo();
+        initNaviBar("portal.3");
         initMenus();
         initBlocks();
         initWorkSpace(false);
@@ -83,9 +53,9 @@
         loadInitData();
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÒ³Ãæ³õÊ¼»¯¼ÓÔØÊı¾İ(°üÀ¨¹¤¾ßÌõ¡¢Ê÷)
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šé¡µé¢åˆå§‹åŒ–åŠ è½½æ•°æ®(åŒ…æ‹¬å·¥å…·æ¡ã€æ ‘)
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function loadInitData(){
         var p = new HttpRequestParams();
@@ -105,111 +75,43 @@
         }
         request.send();
     }
-    /*
-     *	º¯ÊıËµÃ÷£º¹¤¾ßÌõ¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:_operation      ²Ù×÷È¨ÏŞ
-     *	·µ»ØÖµ£º
-     */
-    function loadToolBar(_operation){
-        var xmlIsland = Cache.XmlIslands.get(CACHE_TOOLBAR);
-        if(null==xmlIsland){//»¹Ã»ÓĞ¾Í´´½¨
-
-            var str = [];
-            str[str.length] = "<toolbar>";
-
-            //¹«¹²
-            str[str.length] = "    <button id=\"a1\" code=\"p1\" icon=\"" + ICON + "icon_pre.gif\" label=\"ÉÏÒ³\" cmd=\"ws.prevTab()\" enable=\"true\"/>";
-            str[str.length] = "    <button id=\"a2\" code=\"p2\" icon=\"" + ICON + "icon_next.gif\" label=\"ÏÂÒ³\" cmd=\"ws.nextTab()\" enable=\"true\"/>";
-            str[str.length] = "    <separator/>";
-
-            //²Ëµ¥¹ÜÀí
-            str[str.length] = "    <button id=\"b1\" code=\"2\" icon=\"" + ICON + "view.gif\" label=\"²é¿´\" cmd=\"editTreeNode(false)\" enable=\"'0'!=getTreeNodeType()\"/>";
-            str[str.length] = "    <button id=\"b2\" code=\"2\" icon=\"" + ICON + "edit.gif\" label=\"±à¼­\" cmd=\"editTreeNode()\" enable=\"'0'!=getTreeNodeType()\"/>";
-            str[str.length] = "    <button id=\"b3\" code=\"2\" icon=\"" + ICON + "del.gif\" label=\"É¾³ı\" cmd=\"delTreeNode()\" enable=\"'0'!=getTreeNodeType()\"/>";
-            str[str.length] = "    <button id=\"b5\" code=\"2\" icon=\"" + ICON + "move.gif\" label=\"ÒÆ¶¯µ½...\" cmd=\"moveMenuItemTo()\" enable=\"'0'!=getTreeNodeType() &amp;&amp; '1'!=getTreeNodeType()\"/>";
-            str[str.length] = "    <button id=\"b6\" code=\"2\" icon=\"" + ICON + "new_menu.gif\" label=\"ĞÂ½¨²Ëµ¥\" cmd=\"addNewMenu()\" enable=\"'0'==getTreeNodeType()\"/>";
-            str[str.length] = "</toolbar>";
-
-            var xmlReader = new XmlReader(str.join("\r\n"));
-            var xmlNode = new XmlNode(xmlReader.documentElement);
-
-            Cache.XmlIslands.add(CACHE_TOOLBAR,xmlNode);
-            xmlIsland = xmlNode;
-
-            //ÔØÈë¹¤¾ßÌõ
-            toolbar.loadXML(xmlIsland);
-        }
-
-        //¿ØÖÆÏÔÊ¾
-        var buttons = xmlIsland.selectNodes("./button");
-        for(var i=0,iLen=buttons.length;i<iLen;i++){
-            var curButton = buttons[i];
-            var id = curButton.getAttribute("id");
-            var code = curButton.getAttribute("code");
-            var enableStr = curButton.getAttribute("enable");
-
-            var reg = new RegExp("(^"+code+",)|(^"+code+"$)|(,"+code+",)|(,"+code+"$)","gi");
-            var visible = false;
-            if("string"==typeof(_operation)){
-                visible = (true==reg.test(_operation)?true:false);
-            }
-            toolbar.setVisible(id,visible);
-
-            if(true==visible){
-                var enable = Public.execCommand(enableStr);
-                toolbar.enable(id,enable);
-            }
-        }
-    }
-    /*
-     *	º¯ÊıËµÃ÷£º²Ëµ¥³õÊ¼»¯
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
-     */
+ 
     function initMenus(){
-        initTreeMenu();
-    }
-    /*
-     *	º¯ÊıËµÃ÷£ºÊ÷²Ëµ¥³õÊ¼»¯
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
-     */
-    function initTreeMenu(){
         var item1 = {
-            label:"ĞÂ½¨²Ëµ¥",
+            label:"æ–°å»ºèœå•",
             callback:addNewMenu,
             enable:function(){return true;},
             visible:function(){return "0"==getTreeNodeType() && true==getOperation("2");}
         }
         var item2 = {
-            label:"É¾³ı",
+            label:"åˆ é™¤",
             callback:delTreeNode,
             icon:ICON + "del.gif",
             enable:function(){return true;},
             visible:function(){return "0"!=getTreeNodeType() && true==getOperation("2");}
         }
         var item3 = {
-            label:"±à¼­",
+            label:"ç¼–è¾‘",
             callback:editTreeNode,
             icon:ICON + "edit.gif",
             enable:function(){return true;},
             visible:function(){return "0"!=getTreeNodeType() && true==getOperation("2");}
         }
         var item5 = {
-            label:"ĞÂ½¨²Ëµ¥Ïî",
+            label:"æ–°å»ºèœå•é¡¹",
             callback:null,
             enable:function(){return true;},
             visible:function(){return "0"!=getTreeNodeType() && true==getOperation("2");}
         }
         var item6 = {
-            label:"ÒÆ¶¯µ½...",
+            label:"ç§»åŠ¨åˆ°...",
             callback:moveMenuItemTo,
             icon:ICON + "move.gif",
             enable:function(){return true;},
             visible:function(){return "0"!=getTreeNodeType() && "1"!=getTreeNodeType() && true==getOperation("2");}
         }
         var item7 = {
-            label:"²é¿´",
+            label:"æŸ¥çœ‹",
             callback:function(){
                 editTreeNode(false);
             },
@@ -218,7 +120,7 @@
             visible:function(){return "0"!=getTreeNodeType() && true==getOperation("2");}
         }
 		var item8 = {
-            label:"Ë¢ĞÂ²Ëµ¥»º´æ",
+            label:"åˆ·æ–°èœå•ç¼“å­˜",
             callback:flushMenuCache,
             enable:function(){return true;},
             visible:function(){return "0"!=getTreeNodeType() && "1"==getTreeNodeType() && true==getOperation("2");}
@@ -226,31 +128,31 @@
 
         var submenu = new Menu();
 		subItem3 = {
-            label:"ÃÅ»§ÄÚ²¿Á´½Ó",
+            label:"é—¨æˆ·å†…éƒ¨é“¾æ¥",
             callback:function(){addNewMenuItem("3")},
             enable:function(){return true;},
             visible:function(){return true;}        
         }
         subItem4 = {
-            label:"ÆÕÍ¨·½Ê½",
+            label:"æ™®é€šæ–¹å¼",
             callback:function(){addNewMenuItem("4")},
             enable:function(){return true;},
             visible:function(){return true;}        
         }
         subItem5 = {
-            label:"¾Ö²¿Ìæ»»·½Ê½",
+            label:"å±€éƒ¨æ›¿æ¢æ–¹å¼",
             callback:function(){addNewMenuItem("5")},
             enable:function(){return true;},
             visible:function(){return true;}        
         }
         subItem6 = {
-            label:"ĞĞÎª·½Ê½",
+            label:"è¡Œä¸ºæ–¹å¼",
             callback:function(){addNewMenuItem("6")},
             enable:function(){return true;},
             visible:function(){return true;}        
         }
 		subItem7 = {
-            label:"CMSÀ¸Ä¿·½Ê½",
+            label:"CMSæ ç›®æ–¹å¼",
             callback:function(){addNewMenuItem("7")},
             enable:function(){return true;},
             visible:function(){return true;}        
@@ -281,9 +183,9 @@
         treeObj.contextmenu = menu1;
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÇø¿é³õÊ¼»¯
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåŒºå—åˆå§‹åŒ–
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function initBlocks(){
         var paletteObj = $("palette");
@@ -295,16 +197,16 @@
         var statusContainerObj = $("statusContainer");
         Blocks.create(statusContainerObj,statusContainerObj.parentNode,false);
 
-        //×´Ì¬ĞÅÏ¢ÇøÊµÀı¼Ì³ĞWritingBlock¿ÉĞ´¹¦ÄÜ
+        //çŠ¶æ€ä¿¡æ¯åŒºå®ä¾‹ç»§æ‰¿WritingBlockå¯å†™åŠŸèƒ½
         var block = Blocks.getBlock("statusContainer");
         if(null!=block){
             block.inherit(WritingBlock);
         }     
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÏÔÊ¾ÓÃ»§×´Ì¬ĞÅÏ¢
-     *	²ÎÊı£º	number:rowIndex     gridÊı¾İĞĞºÅ
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ˜¾ç¤ºç”¨æˆ·çŠ¶æ€ä¿¡æ¯
+     *	å‚æ•°ï¼š	number:rowIndex     gridæ•°æ®è¡Œå·
+     *	è¿”å›å€¼ï¼š
      */
     function showUserStatus(rowIndex){
         var gridObj = $("grid");
@@ -316,16 +218,16 @@
         var block = Blocks.getBlock("statusContainer");
         if(null!=block){
             block.open();
-            block.writeln("Ãû³Æ",rowName);
+            block.writeln("åç§°",rowName);
             block.writeln("ID",rowID);
-            block.writeln("È¨ÏŞ",rowID);
+            block.writeln("æƒé™",rowID);
             block.close();
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º×ÊÔ´Ê÷³õÊ¼»¯
-     *	²ÎÊı£º	string:cacheID      »º´æÊı¾İID
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šèµ„æºæ ‘åˆå§‹åŒ–
+     *	å‚æ•°ï¼š	string:cacheID      ç¼“å­˜æ•°æ®ID
+     *	è¿”å›å€¼ï¼š
      */
     function initTree(cacheID){
         var treeObj = $("tree");
@@ -334,9 +236,9 @@
         });
     }
     /*
-     *	º¯ÊıËµÃ÷£º×ÊÔ´Ê÷¼ÓÔØÊı¾İ
-     *	²ÎÊı£º
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šèµ„æºæ ‘åŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š
+     *	è¿”å›å€¼ï¼š
      */
     function initTreeData(cacheID){
         var xmlIsland = Cache.XmlIslands.get(cacheID);
@@ -359,9 +261,9 @@
         }    
     }
     /*
-     *	º¯ÊıËµÃ÷£º¾Û½¹³õÊ¼»¯
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šèšç„¦åˆå§‹åŒ–
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function initFocus(){
         var treeTitleObj = $("treeTitle");
@@ -371,9 +273,9 @@
         Focus.register(statusTitleObj.firstChild);
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÊÂ¼ş°ó¶¨³õÊ¼»¯
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šäº‹ä»¶ç»‘å®šåˆå§‹åŒ–
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function initEvents(){
         var treeBtRefreshObj = $("treeBtRefresh");
@@ -393,27 +295,27 @@
         Event.attachEvent(statusTitleObj,"click",onClickStatusTitle);
     }
     /*
-     *	º¯ÊıËµÃ÷£ºµã»÷Ê÷½Úµã
-     *	²ÎÊı£º	Object:eventObj     Ä£ÄâÊÂ¼ş¶ÔÏó
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šç‚¹å‡»æ ‘èŠ‚ç‚¹
+     *	å‚æ•°ï¼š	Object:eventObj     æ¨¡æ‹Ÿäº‹ä»¶å¯¹è±¡
+     *	è¿”å›å€¼ï¼š
      */
     function onTreeNodeActived(eventObj){
         var treeTitleObj = $("treeTitle");
         Focus.focus(treeTitleObj.firstChild.id);
 
-        showTreeNodeStatus({id:"ID",name:"Ãû³Æ",creator:"´´½¨Õß",createTime:"´´½¨Ê±¼ä",modifier:"ĞŞ¸ÄÕß",modifyTime:"ĞŞ¸ÄÊ±¼ä"});
+        showTreeNodeStatus({id:"ID",name:"åç§°",creator:"åˆ›å»ºè€…",createTime:"åˆ›å»ºæ—¶é—´",modifier:"ä¿®æ”¹è€…",modifyTime:"ä¿®æ”¹æ—¶é—´"});
 
         var treeNode = eventObj.treeNode;
-        //·ÀÖ¹ÒòÎªÔØÈë¹¤¾ßÌõÊı¾İ¶øµ¼ÖÂ²»ÏìÓ¦Ë«»÷ÊÂ¼ş
+        //é˜²æ­¢å› ä¸ºè½½å…¥å·¥å…·æ¡æ•°æ®è€Œå¯¼è‡´ä¸å“åº”åŒå‡»äº‹ä»¶
         clearTimeout(window._toolbarTimeout);
         window._toolbarTimeout = setTimeout(function(){
             loadToolBarData(treeNode);
         },0);
     }
     /*
-     *	º¯ÊıËµÃ÷£ºË«»÷Ê÷½Úµã
-     *	²ÎÊı£º	Object:eventObj     Ä£ÄâÊÂ¼ş¶ÔÏó
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåŒå‡»æ ‘èŠ‚ç‚¹
+     *	å‚æ•°ï¼š	Object:eventObj     æ¨¡æ‹Ÿäº‹ä»¶å¯¹è±¡
+     *	è¿”å›å€¼ï¼š
      */
     function onTreeNodeDoubleClick(eventObj){
         var treeNode = eventObj.treeNode;
@@ -428,15 +330,15 @@
         });
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÓÒ»÷Ê÷½Úµã
-     *	²ÎÊı£º	Object:eventObj     Ä£ÄâÊÂ¼ş¶ÔÏó
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå³å‡»æ ‘èŠ‚ç‚¹
+     *	å‚æ•°ï¼š	Object:eventObj     æ¨¡æ‹Ÿäº‹ä»¶å¯¹è±¡
+     *	è¿”å›å€¼ï¼š
      */
     function onTreeNodeRightClick(eventObj){
         var treeObj = $("tree");
         var treeNode = eventObj.treeNode;
 
-        showTreeNodeStatus({id:"ID",name:"Ãû³Æ",creator:"´´½¨Õß",createTime:"´´½¨Ê±¼ä",modifier:"ĞŞ¸ÄÕß",modifyTime:"ĞŞ¸ÄÊ±¼ä"});
+        showTreeNodeStatus({id:"ID",name:"åç§°",creator:"åˆ›å»ºè€…",createTime:"åˆ›å»ºæ—¶é—´",modifier:"ä¿®æ”¹è€…",modifyTime:"ä¿®æ”¹æ—¶é—´"});
 
         var x = eventObj.clientX;
         var y = eventObj.clientY;
@@ -448,17 +350,17 @@
         });
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÍÏ¶¯Ê÷½Úµã
-     *	²ÎÊı£º	Object:eventObj     Ä£ÄâÊÂ¼ş¶ÔÏó
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ‹–åŠ¨æ ‘èŠ‚ç‚¹
+     *	å‚æ•°ï¼š	Object:eventObj     æ¨¡æ‹Ÿäº‹ä»¶å¯¹è±¡
+     *	è¿”å›å€¼ï¼š
      */
     function onTreeNodeMoved(eventObj){
         sortMenuTo(eventObj);
     }
     /*
-     *	º¯ÊıËµÃ÷£º¹¤¾ßÌõÔØÈëÊı¾İ
-     *	²ÎÊı£º	treeNode:treeNode       treeNodeÊµÀı
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå·¥å…·æ¡è½½å…¥æ•°æ®
+     *	å‚æ•°ï¼š	treeNode:treeNode       treeNodeå®ä¾‹
+     *	è¿”å›å€¼ï¼š
      */
     function loadToolBarData(treeNode){
         if(null!=treeNode){
@@ -468,9 +370,9 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º±à¼­²Ëµ¥ĞÅÏ¢
-     *	²ÎÊı£º  boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šç¼–è¾‘èœå•ä¿¡æ¯
+     *	å‚æ•°ï¼š  boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+     *	è¿”å›å€¼ï¼š
      */
     function editMenuInfo(editable){
         var treeObj = $("tree");
@@ -504,12 +406,12 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º²Ëµ¥½ÚµãÊı¾İÏêÏ¸ĞÅÏ¢¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:treeID               Ê÷½Úµãid
-                boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-                string:parentId             ¸¸½Úµãid
-                boolean:isNew               ÊÇ·ñĞÂÔö
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šèœå•èŠ‚ç‚¹æ•°æ®è¯¦ç»†ä¿¡æ¯åŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:treeID               æ ‘èŠ‚ç‚¹id
+                boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+                string:parentId             çˆ¶èŠ‚ç‚¹id
+                boolean:isNew               æ˜¯å¦æ–°å¢
+     *	è¿”å›å€¼ï¼š
      */
     function loadMenuDetailData(treeID,editable,id,portalId,isNew){
         if(false==editable){
@@ -522,7 +424,7 @@
             var p = new HttpRequestParams();
             p.url = URL_MENU_DETAIL;
             p.setContent("id", treeID);
-            //Èç¹ûÊÇĞÂÔö
+            //å¦‚æœæ˜¯æ–°å¢
             if(true==isNew){
                 p.setContent("isNew", 1);
                 p.setContent("portalId", portalId);
@@ -550,12 +452,12 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º²Ëµ¥Ïà¹ØÒ³¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID              »º´æÊı¾İid
-                boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-                string:treeID               ¸¸½Úµãid
-                boolean:isNew               ÊÇ·ñĞÂÔö
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šèœå•ç›¸å…³é¡µåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID              ç¼“å­˜æ•°æ®id
+                boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+                string:treeID               çˆ¶èŠ‚ç‚¹id
+                boolean:isNew               æ˜¯å¦æ–°å¢
+     *	è¿”å›å€¼ï¼š
      */
     function initMenuPages(cacheID,editable,id,isNew){
         var page1FormObj = $("page1Form");
@@ -563,7 +465,7 @@
             loadMenuInfoFormData(cacheID,editable);
         });
 
-        //ÉèÖÃ±£´æ°´Å¥²Ù×÷
+        //è®¾ç½®ä¿å­˜æŒ‰é’®æ“ä½œ
         var page1BtSaveObj = $("page1BtSave");
         page1BtSaveObj.disabled = editable==false?true:false;
         page1BtSaveObj.onclick = function(){
@@ -571,10 +473,10 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º²Ëµ¥ĞÅÏ¢xform¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID              »º´æÊı¾İid
-                boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šèœå•ä¿¡æ¯xformåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID              ç¼“å­˜æ•°æ®id
+                boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+     *	è¿”å›å€¼ï¼š
      */
     function loadMenuInfoFormData(cacheID,editable){
         var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_MENU_INFO);
@@ -583,19 +485,19 @@
             page1FormObj.editable = editable==false?"false":"true";
             page1FormObj.load(xmlIsland.node,null,"node");
 
-            //2007-3-1 Àë¿ªÌáĞÑ
+            //2007-3-1 ç¦»å¼€æé†’
             attachReminder(cacheID,page1FormObj);
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º±£´æ²Ëµ¥
-     *	²ÎÊı£º	string:cacheID      »º´æÊı¾İid
-                string:treeID       ¸¸½Úµãid
-                boolean:isNew       ÊÇ·ñĞÂÔö
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šä¿å­˜èœå•
+     *	å‚æ•°ï¼š	string:cacheID      ç¼“å­˜æ•°æ®id
+                string:treeID       çˆ¶èŠ‚ç‚¹id
+                boolean:isNew       æ˜¯å¦æ–°å¢
+     *	è¿”å›å€¼ï¼š
      */
     function saveMenu(cacheID,parentId,isNew){
-        //Ğ£Ñépage1FormÊı¾İÓĞĞ§ĞÔ
+        //æ ¡éªŒpage1Formæ•°æ®æœ‰æ•ˆæ€§
         var page1FormObj = $("page1Form");
         if(false==page1FormObj.checkForm()){
             switchToPhase(ws,"page1");
@@ -605,13 +507,13 @@
         var p = new HttpRequestParams();
         p.url = URL_SAVE_MENU_DETAIL;
 
-        //ÊÇ·ñÌá½»
+        //æ˜¯å¦æäº¤
         var flag = false;
         
         var groupCache = Cache.Variables.get(cacheID);
         if(null!=groupCache){       
 
-            //²Ëµ¥»ù±¾ĞÅÏ¢
+            //èœå•åŸºæœ¬ä¿¡æ¯
             var menuInfoNode = Cache.XmlIslands.get(cacheID+"."+XML_MENU_INFO);
 
             if(null!=menuInfoNode){
@@ -627,13 +529,13 @@
 
         if(true==flag){
             var request = new HttpRequest(p);
-            //Í¬²½°´Å¥×´Ì¬
+            //åŒæ­¥æŒ‰é’®çŠ¶æ€
             var page1BtSaveObj = $("page1BtSave");
             syncButton([page1BtSaveObj],request);
 
             request.onresult = function(){
                 if(true==isNew){
-                    //½â³ıÌáĞÑ
+                    //è§£é™¤æé†’
                     detachReminder(cacheID);
 
                     var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
@@ -645,10 +547,10 @@
             }
             request.onsuccess = function(){
                 if(true!=isNew){
-                    //½â³ıÌáĞÑ
+                    //è§£é™¤æé†’
                     detachReminder(cacheID);
 
-                    //¸üĞÂÊ÷½ÚµãÃû³Æ
+                    //æ›´æ–°æ ‘èŠ‚ç‚¹åç§°
                     var id = cacheID.trim(CACHE_MENU_DETAIL);
                     var name = page1FormObj.getData("name");
                     modifyTreeNode(id,"name",name,true);
@@ -658,13 +560,13 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºĞÂ½¨²Ëµ¥
-     *	²ÎÊı£º
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ–°å»ºèœå•
+     *	å‚æ•°ï¼š
+     *	è¿”å›å€¼ï¼š
      */
     function addNewMenu(){
         
-        var treeName = "²Ëµ¥";
+        var treeName = "èœå•";
         var treeID = new Date().valueOf();
         
         var treeObj = $("tree");
@@ -695,21 +597,21 @@
     }
 
     /*
-     *	º¯ÊıËµÃ÷£ºÑ¡Ôñµ¼ÈëÎÄ¼ş
-     *	²ÎÊı£º
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šé€‰æ‹©å¯¼å…¥æ–‡ä»¶
+     *	å‚æ•°ï¼š
+     *	è¿”å›å€¼ï¼š
      */
     function getFile(name){
         var page1FormObj = $("page1Form");
         page1FormObj.updateDataExternal(name,"file_id1");
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÉ¾³ıÊ÷½Úµã
-     *	²ÎÊı£º
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåˆ é™¤æ ‘èŠ‚ç‚¹
+     *	å‚æ•°ï¼š
+     *	è¿”å›å€¼ï¼š
      */
     function delTreeNode(){
-        if(true!=confirm("ÄúÈ·¶¨ÒªÉ¾³ıÂğ£¿")){
+        if(true!=confirm("æ‚¨ç¡®å®šè¦åˆ é™¤å—ï¼Ÿ")){
             return;
         }
         if("2"==getTreeNodeType()){
@@ -719,9 +621,9 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÉ¾³ı²Ëµ¥
-     *	²ÎÊı£º
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåˆ é™¤èœå•
+     *	å‚æ•°ï¼š
+     *	è¿”å›å€¼ï¼š
      */
     function delMenu(){
         var treeObj = $("tree");
@@ -739,16 +641,16 @@
                 if(null!=parentNode){
                     treeObj.setActiveTreeNode(parentNode.getId());
                 }
-                //´ÓÊ÷ÉÏÉ¾³ı
+                //ä»æ ‘ä¸Šåˆ é™¤
                 treeObj.removeTreeNode(treeNode);
             }
             request.send();
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÉ¾³ı²Ëµ¥Ïî
-     *	²ÎÊı£º
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåˆ é™¤èœå•é¡¹
+     *	å‚æ•°ï¼š
+     *	è¿”å›å€¼ï¼š
      */
     function delMenuItem(){
         var treeObj = $("tree");
@@ -766,7 +668,7 @@
                 if(null!=parentNode){
                     treeObj.setActiveTreeNode(parentNode.getId());
                 }
-                //´ÓÊ÷ÉÏÉ¾³ı
+                //ä»æ ‘ä¸Šåˆ é™¤
                 treeObj.removeTreeNode(treeNode);
             }
             request.send();
@@ -774,9 +676,9 @@
     }
 
     /*
-     *	º¯ÊıËµÃ÷£ºÍ¬Ò»¸¸½ÚµãÏÂÒÆ¶¯Menu½Úµã
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåŒä¸€çˆ¶èŠ‚ç‚¹ä¸‹ç§»åŠ¨MenuèŠ‚ç‚¹
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function sortMenuTo(eventObj){
         var treeObj = $("tree");
@@ -784,7 +686,7 @@
         var toTreeNode = eventObj.toTreeNode;
         var moveState = eventObj.moveState;
 
-        //Ö»ÔÊĞí²Ëµ¥ÏîÅÅĞò
+        //åªå…è®¸èœå•é¡¹æ’åº
         if("0"==movedTreeNode.getAttribute("type") || "1"==movedTreeNode.getAttribute("type")){
             return;
         }
@@ -793,43 +695,43 @@
         p.url = URL_SORT_MENU;
         p.setContent("targetId",toTreeNode.getId());
         p.setContent("id",movedTreeNode.getId());
-        p.setContent("direction",moveState);//-1Ä¿±êÉÏ·½,1Ä¿±êÏÂ·½
+        p.setContent("direction",moveState);//-1ç›®æ ‡ä¸Šæ–¹,1ç›®æ ‡ä¸‹æ–¹
 
         var request = new HttpRequest(p);
         request.onsuccess = function(){
-            //ÒÆ¶¯Ê÷½Úµã
+            //ç§»åŠ¨æ ‘èŠ‚ç‚¹
             treeObj.moveTreeNode(movedTreeNode, toTreeNode, moveState);
         }
         request.send();
     }
     /*
-     *	º¯ÊıËµÃ÷£º»ñÈ¡½Úµãid
-     *	²ÎÊı£º  
-     *	·µ»ØÖµ£ºstring:id   Ê÷½Úµãid
+     *	å‡½æ•°è¯´æ˜ï¼šè·å–èŠ‚ç‚¹id
+     *	å‚æ•°ï¼š  
+     *	è¿”å›å€¼ï¼šstring:id   æ ‘èŠ‚ç‚¹id
      */
     function getTreeNodeId(){
         return getTreeAttribute("id");
     }
     /*
-     *	º¯ÊıËµÃ÷£º»ñÈ¡½Úµãtype
-     *	²ÎÊı£º  
-     *	·µ»ØÖµ£ºstring:type   Ê÷½Úµãtype
+     *	å‡½æ•°è¯´æ˜ï¼šè·å–èŠ‚ç‚¹type
+     *	å‚æ•°ï¼š  
+     *	è¿”å›å€¼ï¼šstring:type   æ ‘èŠ‚ç‚¹type
      */
     function getTreeNodeType(){
         return getTreeAttribute("type");
     }
     /*
-     *	º¯ÊıËµÃ÷£º»ñÈ¡½Úµãdisabled
-     *	²ÎÊı£º  
-     *	·µ»ØÖµ£ºstring:disabled   Ê÷½Úµãdisabled
+     *	å‡½æ•°è¯´æ˜ï¼šè·å–èŠ‚ç‚¹disabled
+     *	å‚æ•°ï¼š  
+     *	è¿”å›å€¼ï¼šstring:disabled   æ ‘èŠ‚ç‚¹disabled
      */
     function getTreeNodeDisabled(){
         return getTreeAttribute("disabled");
     }
     /*
-     *	º¯ÊıËµÃ÷£º±à¼­Ê÷½Úµã
-     *	²ÎÊı£º	boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šç¼–è¾‘æ ‘èŠ‚ç‚¹
+     *	å‚æ•°ï¼š	boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+     *	è¿”å›å€¼ï¼š
      */
     function editTreeNode(editable){
         if("1"==getTreeNodeType()){
@@ -839,10 +741,10 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºË¢ĞÂÊ÷½ÚµãÍ£ÓÃÆôÓÃ×´Ì¬
-     *	²ÎÊı£º	treeNode:treeNode       treeNodeÊµÀı
-                string:state            Í£/ÆôÓÃ×´Ì¬
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåˆ·æ–°æ ‘èŠ‚ç‚¹åœç”¨å¯ç”¨çŠ¶æ€
+     *	å‚æ•°ï¼š	treeNode:treeNode       treeNodeå®ä¾‹
+                string:state            åœ/å¯ç”¨çŠ¶æ€
+     *	è¿”å›å€¼ï¼š
      */
     function refreshTreeNodeState(treeNode,state){
         treeNode.setAttribute("disabled",state);
@@ -850,13 +752,13 @@
     }
 
     /*
-     *	º¯ÊıËµÃ÷£ºĞÂ½¨²Ëµ¥Ïî
-     *	²ÎÊı£º  string:type     
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šæ–°å»ºèœå•é¡¹
+     *	å‚æ•°ï¼š  string:type     
+     *	è¿”å›å€¼ï¼š
      */
     function addNewMenuItem(type){
         
-        var treeName = "²Ëµ¥Ïî";
+        var treeName = "èœå•é¡¹";
         var treeID = new Date().valueOf();
         
         var treeObj = $("tree");
@@ -885,9 +787,9 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º±à¼­²Ëµ¥ÏîĞÅÏ¢
-     *	²ÎÊı£º  boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šç¼–è¾‘èœå•é¡¹ä¿¡æ¯
+     *	å‚æ•°ï¼š  boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+     *	è¿”å›å€¼ï¼š
      */
     function editMenuItemInfo(editable){
         var treeObj = $("tree");
@@ -921,13 +823,13 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º²Ëµ¥ÏîÏêÏ¸ĞÅÏ¢¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:treeID               Ê÷½Úµãid
-                boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-                string:parentId             ¸¸½Úµãid
-                string:type                 ²Ëµ¥ÏîÀàĞÍ
-                boolean:isNew               ÊÇ·ñĞÂÔö
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šèœå•é¡¹è¯¦ç»†ä¿¡æ¯åŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:treeID               æ ‘èŠ‚ç‚¹id
+                boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+                string:parentId             çˆ¶èŠ‚ç‚¹id
+                string:type                 èœå•é¡¹ç±»å‹
+                boolean:isNew               æ˜¯å¦æ–°å¢
+     *	è¿”å›å€¼ï¼š
      */
     function loadMenuItemDetailData(treeID,editable,parentId,portalId,type,isNew){
         if(false==editable){
@@ -940,7 +842,7 @@
             var p = new HttpRequestParams();
             p.url = URL_MENU_ITEM_DETAIL;
            
-            //Èç¹ûÊÇĞÂÔö
+            //å¦‚æœæ˜¯æ–°å¢
             if(true==isNew){
                 p.setContent("isNew", 1);
                 p.setContent("parentId", parentId);
@@ -969,12 +871,12 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º²Ëµ¥ÏîÏà¹ØÒ³¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID              »º´æÊı¾İid
-                boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-                string:treeID               ¸¸½Úµãid
-                boolean:isNew               ÊÇ·ñĞÂÔö
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šèœå•é¡¹ç›¸å…³é¡µåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID              ç¼“å­˜æ•°æ®id
+                boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+                string:treeID               çˆ¶èŠ‚ç‚¹id
+                boolean:isNew               æ˜¯å¦æ–°å¢
+     *	è¿”å›å€¼ï¼š
      */
     function initMenuItemPages(cacheID,editable,parentId,isNew){
         var page1FormObj = $("page1Form");
@@ -982,7 +884,7 @@
             loadMenuItemInfoFormData(cacheID,editable);
         });
 
-        //ÉèÖÃ±£´æ°´Å¥²Ù×÷
+        //è®¾ç½®ä¿å­˜æŒ‰é’®æ“ä½œ
         var page1BtSaveObj = $("page1BtSave");
         page1BtSaveObj.disabled = editable==false?true:false;
         page1BtSaveObj.onclick = function(){
@@ -990,10 +892,10 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º²Ëµ¥ÏîĞÅÏ¢xform¼ÓÔØÊı¾İ
-     *	²ÎÊı£º	string:cacheID              »º´æÊı¾İid
-                boolean:editable            ÊÇ·ñ¿É±à¼­(Ä¬ÈÏtrue)
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šèœå•é¡¹ä¿¡æ¯xformåŠ è½½æ•°æ®
+     *	å‚æ•°ï¼š	string:cacheID              ç¼“å­˜æ•°æ®id
+                boolean:editable            æ˜¯å¦å¯ç¼–è¾‘(é»˜è®¤true)
+     *	è¿”å›å€¼ï¼š
      */
     function loadMenuItemInfoFormData(cacheID,editable){
         var xmlIsland = Cache.XmlIslands.get(cacheID+"."+XML_MENU_ITEM_INFO);
@@ -1002,19 +904,19 @@
             page1FormObj.editable = editable==false?"false":"true";
             page1FormObj.load(xmlIsland.node,null,"node");
 
-            //2007-3-1 Àë¿ªÌáĞÑ
+            //2007-3-1 ç¦»å¼€æé†’
             attachReminder(cacheID,page1FormObj);
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£º±£´æ²Ëµ¥
-     *	²ÎÊı£º	string:cacheID      »º´æÊı¾İid
-                string:treeID       ¸¸½Úµãid
-                boolean:isNew       ÊÇ·ñĞÂÔö
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šä¿å­˜èœå•
+     *	å‚æ•°ï¼š	string:cacheID      ç¼“å­˜æ•°æ®id
+                string:treeID       çˆ¶èŠ‚ç‚¹id
+                boolean:isNew       æ˜¯å¦æ–°å¢
+     *	è¿”å›å€¼ï¼š
      */
     function saveMenuItem(cacheID,parentId,isNew){
-        //Ğ£Ñépage1FormÊı¾İÓĞĞ§ĞÔ
+        //æ ¡éªŒpage1Formæ•°æ®æœ‰æ•ˆæ€§
         var page1FormObj = $("page1Form");
         if(false==page1FormObj.checkForm()){
             switchToPhase(ws,"page1");
@@ -1024,13 +926,13 @@
         var p = new HttpRequestParams();
         p.url = URL_SAVE_MENU_ITEM_DETAIL;
 
-        //ÊÇ·ñÌá½»
+        //æ˜¯å¦æäº¤
         var flag = false;
         
         var groupCache = Cache.Variables.get(cacheID);
         if(null!=groupCache){       
 
-            //²Ëµ¥Ïî»ù±¾ĞÅÏ¢
+            //èœå•é¡¹åŸºæœ¬ä¿¡æ¯
             var menuItemInfoNode = Cache.XmlIslands.get(cacheID+"."+XML_MENU_ITEM_INFO);
 
             if(null!=menuItemInfoNode){
@@ -1046,13 +948,13 @@
 
         if(true==flag){
             var request = new HttpRequest(p);
-            //Í¬²½°´Å¥×´Ì¬
+            //åŒæ­¥æŒ‰é’®çŠ¶æ€
             var page1BtSaveObj = $("page1BtSave");
             syncButton([page1BtSaveObj],request);
 
             request.onresult = function(){
                 if(true==isNew){
-                    //½â³ıÌáĞÑ
+                    //è§£é™¤æé†’
                     detachReminder(cacheID);
 
                     var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
@@ -1064,10 +966,10 @@
             }
             request.onsuccess = function(){
                 if(true!=isNew){
-                    //½â³ıÌáĞÑ
+                    //è§£é™¤æé†’
                     detachReminder(cacheID);
 
-                    //¸üĞÂÊ÷½ÚµãÃû³Æ
+                    //æ›´æ–°æ ‘èŠ‚ç‚¹åç§°
                     var id = cacheID.trim(CACHE_MENU_ITEM_DETAIL);
                     var name = page1FormObj.getData("name");
                     modifyTreeNode(id,"name",name,true);
@@ -1077,11 +979,11 @@
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºµ¯³ö´°¿ÚÑ¡ÔñÏÔÊ¾ÄÚÈİ
-     *	²ÎÊı£º	string:contentName      xformÁĞÃû
-                string:contentId        xformÁĞÃû
-                string:type             µ¯³ö´°¿ÚÏÔÊ¾Êı¾İÀàĞÍ
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå¼¹å‡ºçª—å£é€‰æ‹©æ˜¾ç¤ºå†…å®¹
+     *	å‚æ•°ï¼š	string:contentName      xformåˆ—å
+                string:contentId        xformåˆ—å
+                string:type             å¼¹å‡ºçª—å£æ˜¾ç¤ºæ•°æ®ç±»å‹
+     *	è¿”å›å€¼ï¼š
      */
     function getContent(contentName,contentId,type){
         var action = URL_GET_PS_TREE;
@@ -1094,7 +996,7 @@
             type:type
         };
 
-        var portlet = window.showModalDialog("sitetree.htm",{params:params,title:"ÇëÑ¡Ôñ²Ëµ¥Ïî¶ÔÓ¦ÄÚÈİ",action:action},"dialogWidth:300px;dialogHeight:400px;");
+        var portlet = window.showModalDialog("sitetree.htm",{params:params,title:"è¯·é€‰æ‹©èœå•é¡¹å¯¹åº”å†…å®¹",action:action},"dialogWidth:300px;dialogHeight:400px;");
         if(null!=portlet){
             page1FormObj.updateDataExternal(contentId, portlet.id);
             page1FormObj.updateDataExternal(contentName, portlet.name);
@@ -1102,25 +1004,25 @@
     }
 
     /*
-     *	º¯ÊıËµÃ÷£ºµ¯³ö´°¿ÚÑ¡ÔñÀ¸Ä¿ID
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šå¼¹å‡ºçª—å£é€‰æ‹©æ ç›®ID
+     *	è¿”å›å€¼ï¼š
      */
 	function getChannel(){
         var action = URL_GET_PS_TREE;
 
 		var page1FormObj = $("page1Form");
 
-        var channel = window.showModalDialog("channeltree.htm",{title:"ÇëÑ¡Ôñ²Ëµ¥Ïî¶ÔÓ¦À¸Ä¿"},"dialogWidth:300px;dialogHeight:400px;");
+        var channel = window.showModalDialog("channeltree.htm",{title:"è¯·é€‰æ‹©èœå•é¡¹å¯¹åº”æ ç›®"},"dialogWidth:300px;dialogHeight:400px;");
         if(null!=channel){
 			page1FormObj.updateDataExternal('name', channel.name);
             page1FormObj.updateDataExternal('url', "${common.articleListUrl}&channelId=" + channel.id);
-            page1FormObj.updateDataExternal('description', "±¾²Ëµ¥Ïî¶ÔÓ¦À¸Ä¿Îª£º" + channel.name);
+            page1FormObj.updateDataExternal('description', "æœ¬èœå•é¡¹å¯¹åº”æ ç›®ä¸ºï¼š" + channel.name);
         }
     }
     /*
-     *	º¯ÊıËµÃ÷£ºÒÆ¶¯²Ëµ¥Ïî½Úµã
-     *	²ÎÊı£º	
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šç§»åŠ¨èœå•é¡¹èŠ‚ç‚¹
+     *	å‚æ•°ï¼š	
+     *	è¿”å›å€¼ï¼š
      */
     function moveMenuItemTo(){
         var treeObj = $("tree");
@@ -1137,7 +1039,7 @@
                 action:"moveTo"
             };
 
-            var menu = window.showModalDialog("sitetree.htm",{params:params,title:"½«\""+name+"\"ÒÆ¶¯µ½",action:action},"dialogWidth:300px;dialogHeight:400px;");
+            var menu = window.showModalDialog("sitetree.htm",{params:params,title:"å°†\""+name+"\"ç§»åŠ¨åˆ°",action:action},"dialogWidth:300px;dialogHeight:400px;");
             if(null!=menu){
                 var p = new HttpRequestParams();
                 p.url = URL_MOVE_MENU_ITEM;
@@ -1147,7 +1049,7 @@
 
                 var request = new HttpRequest(p);
                 request.onsuccess = function(){
-                    //ÒÆ¶¯Ê÷½Úµã
+                    //ç§»åŠ¨æ ‘èŠ‚ç‚¹
                     var curNode = treeObj.getTreeNodeById(id);
                     var parentNode = treeObj.getTreeNodeById(menu.id);
                     parentNode.node.appendChild(curNode.node);
@@ -1164,16 +1066,16 @@
     }
        
     /*
-     *	º¯ÊıËµÃ÷£º»ñÈ¡Ê÷²Ù×÷È¨ÏŞ
-     *	²ÎÊı£º	treeNode:treeNode       treeNodeÊµÀı
-                function:callback       »Øµ÷º¯Êı
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šè·å–æ ‘æ“ä½œæƒé™
+     *	å‚æ•°ï¼š	treeNode:treeNode       treeNodeå®ä¾‹
+                function:callback       å›è°ƒå‡½æ•°
+     *	è¿”å›å€¼ï¼š
      */
     function getTreeOperation(treeNode,callback){
         var id = treeNode.getId();
         var _operation = treeNode.getAttribute("_operation");
 
-        if(null==_operation || ""==_operation){//Èç¹û½ÚµãÉÏ»¹Ã»ÓĞ_operationÊôĞÔ£¬Ôò·¢ÇëÇó´ÓºóÌ¨»ñÈ¡ĞÅÏ¢
+        if(null==_operation || ""==_operation){//å¦‚æœèŠ‚ç‚¹ä¸Šè¿˜æ²¡æœ‰_operationå±æ€§ï¼Œåˆ™å‘è¯·æ±‚ä»åå°è·å–ä¿¡æ¯
             var p = new HttpRequestParams();
             p.url = URL_GET_OPERATION;
             p.setContent("resourceId",id);
@@ -1196,9 +1098,9 @@
     }
 
 	/*
-     *	º¯ÊıËµÃ÷£ºË¢ĞÂ²Ëµ¥»º´æ
-     *	²ÎÊı£º
-     *	·µ»ØÖµ£º
+     *	å‡½æ•°è¯´æ˜ï¼šåˆ·æ–°èœå•ç¼“å­˜
+     *	å‚æ•°ï¼š
+     *	è¿”å›å€¼ï¼š
      */
     function flushMenuCache(){
         var treeObj = $("tree");
@@ -1218,5 +1120,5 @@
 
     window.onload = init;
 
-	//¹Ø±ÕÒ³Ãæ×Ô¶¯×¢Ïú
+	//å…³é—­é¡µé¢è‡ªåŠ¨æ³¨é”€
     logoutOnClose();

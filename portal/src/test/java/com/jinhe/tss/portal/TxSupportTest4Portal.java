@@ -120,10 +120,10 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4Sp
     protected static String MODEL_DECORATOR_DIR;
     protected static String MODEL_PORTLET_DIR;
   
-    protected static Component defaultLayoutGroup;
+    protected static Component layoutGroup;
     protected static Component defaultLayout;
     protected static Long defaultLayoutId;
-    protected static Component defaultDecoratorGroup;
+    protected static Component decoratorGroup;
     protected static Component defaultDecorator;
     protected static Long defaultDecoratorId;
     
@@ -142,16 +142,16 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4Sp
         File freemarkerDir = FileHelper.createDir(portalTargetPath + "/freemarker");
         FileHelper.writeFile(new File(freemarkerDir + "/common.ftl"), "");
         
-        defaultLayoutGroup = new Component();
-        defaultLayoutGroup.setName("布局器组");
-        defaultLayoutGroup.setType(Component.LAYOUT_TYPE);
-        defaultLayoutGroup.setIsGroup(true);
-        defaultLayoutGroup.setParentId(PortalConstants.ROOT_ID);   
-        defaultLayoutGroup = componentService.saveComponent(defaultLayoutGroup);
+        layoutGroup = new Component();
+        layoutGroup.setName("布局器组");
+        layoutGroup.setType(Component.LAYOUT_TYPE);
+        layoutGroup.setIsGroup(true);
+        layoutGroup.setParentId(PortalConstants.ROOT_ID);   
+        layoutGroup = componentService.saveComponent(layoutGroup);
         
         defaultLayout = new Component();
         defaultLayout.setIsDefault(PortalConstants.TRUE);
-        defaultLayout.setParentId(defaultLayoutGroup.getId());   
+        defaultLayout.setParentId(layoutGroup.getId());   
         Document document = XMLDocUtil.createDoc("template/initialize/defaultLayout.xml");
         org.dom4j.Element propertyElement = document.getRootElement().element("property");
         String layoutName = propertyElement.elementText("name");
@@ -161,16 +161,16 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4Sp
         componentService.saveComponent(defaultLayout);
         defaultLayoutId = defaultLayout.getId();
         
-        defaultDecoratorGroup = new Component();
-        defaultDecoratorGroup.setName("修饰器组");
-        defaultDecoratorGroup.setIsGroup(true);
-        defaultDecoratorGroup.setType(Component.DECORATOR_TYPE);
-        defaultDecoratorGroup.setParentId(PortalConstants.ROOT_ID);  
-        defaultDecoratorGroup = componentService.saveComponent(defaultDecoratorGroup);
+        decoratorGroup = new Component();
+        decoratorGroup.setName("修饰器组");
+        decoratorGroup.setIsGroup(true);
+        decoratorGroup.setType(Component.DECORATOR_TYPE);
+        decoratorGroup.setParentId(PortalConstants.ROOT_ID);  
+        decoratorGroup = componentService.saveComponent(decoratorGroup);
         
         defaultDecorator = new Component();
         defaultDecorator.setIsDefault(PortalConstants.TRUE);
-        defaultDecorator.setParentId(defaultDecoratorGroup.getId());
+        defaultDecorator.setParentId(decoratorGroup.getId());
         
         document = XMLDocUtil.createDoc("template/initialize/defaultDecorator.xml");
         propertyElement = document.getRootElement().element("property");

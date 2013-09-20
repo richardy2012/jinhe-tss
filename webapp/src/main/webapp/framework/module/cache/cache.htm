@@ -214,9 +214,6 @@
 			var treeName = treeNode.getName();
 
 			var callback = {};
-			callback.onTabClose = function(eventObj) {
-				delCacheData(eventObj.tab.SID);
-			};
 			callback.onTabChange = function() {
 				setTimeout(function() {
 					showCachePools(treeID);
