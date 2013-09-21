@@ -5,6 +5,7 @@
 		<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>	
 		<column name="content.id" caption="" mode="hidden"/>
 		<column name="content.name" caption="门户结构" mode="function" cmd="getContent('content.name', 'content.id', 3)"/>	
+		<column name="url" caption="栏目URL地址" mode="function" cmd="getChannel()"/>
 		<column name="target" caption="目标区域" mode="string" maxLength="50" empty="false"/>			
 		<column name="description" caption="描述信息" mode="string"/>
 		
@@ -25,6 +26,10 @@
 		<TR>
 			<TD width="100" valign="top"><label binding="content.name"/></TD>
 			<TD><input binding="content.name"/></TD>
+		</TR>
+		<TR>
+			<TD width="80"><label binding="url"/></TD>
+			<TD><input binding="url" type="text" style="width:60%;"/></TD>
 		</TR>
 		<TR>
 			<TD width="100"><label binding="description"/></TD>

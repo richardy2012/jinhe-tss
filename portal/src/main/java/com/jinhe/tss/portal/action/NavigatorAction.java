@@ -153,8 +153,7 @@ public class NavigatorAction extends BaseActionSupport {
      * 移动的时候用到
      */
 	@RequestMapping("/tree/{portalId}")
-    public void getPortalNavigatorTree(HttpServletResponse response, 
-    		@PathVariable("id")  Long id) {       
+    public void getPortalNavigatorTree(HttpServletResponse response, @PathVariable("id") Long id) {       
     	
 		Navigator self = service.getNavigator(id);
 		
@@ -174,18 +173,6 @@ public class NavigatorAction extends BaseActionSupport {
         TreeEncoder encoder = new TreeEncoder(list, new LevelTreeParser());
         encoder.setNeedRootNode(false);
         
-        print("MenuTree", encoder);
-    }
-    
-    /**
-     * 根据门户获取菜单项树
-     */
-	@RequestMapping("/portalmenu/{portalId}")
-    public void getNavigatorsByPortal(HttpServletResponse response, @PathVariable("portalId") Long portalId) {
-        List<?> data = service.getNavigatorsByPortal(portalId);   
-
-        TreeEncoder encoder = new TreeEncoder(data, new LevelTreeParser());
-        encoder.setNeedRootNode(false);
         print("MenuTree", encoder);
     }
     

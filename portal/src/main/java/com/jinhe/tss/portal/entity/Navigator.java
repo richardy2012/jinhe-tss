@@ -164,6 +164,10 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
         }
         
         for ( Navigator entity : list ) {
+        	if(PortalConstants.TRUE.equals(entity.getDisabled())) {
+        		continue; // 过滤掉停用的
+        	}
+        	
             Element node = map.get(entity.getId());
             Element parent = map.get(entity.getParentId());        
             if(parent != null){

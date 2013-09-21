@@ -115,17 +115,13 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         // 排序、移动
         menuAction.sort(response, menu2.getId(), menu3.getId(), 1);
 
-        menuAction.getNavigatorsByPortal(response, portalId); // 移动的时候用到
- 
         menuAction.moveTo(response, menu3.getId(), menu1.getId());
         
-        menuAction.getPortalNavigatorTree(response, menu2.getId());
+        menuAction.getPortalNavigatorTree(response, menu2.getId()); // 移动的时候用到
         
         // 查询
         menuAction.getAllNavigator4Tree(response);
         
-        menuAction.getNavigatorsByPortal(response, portalId);
-
         menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_SECTION);
         menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_PORTLET_INSTANCE);
         

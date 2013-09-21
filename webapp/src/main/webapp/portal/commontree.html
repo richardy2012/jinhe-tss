@@ -17,22 +17,27 @@
 <SCRIPT type="text/javascript">
  <!--
 
-    URL_INIT = "/" + AUTH_PATH + "group/visibleList";
+	var NODE_NAME, URL_INIT;
+	
+	if(window.dialogArguments) {
+		URL_INIT  = window.dialogArguments.service;
+		NODE_NAME = window.dialogArguments.nodename;
+	}
 
 	if(IS_TEST) {
-		URL_INIT = "data/structure_tree.xml";
+		URL_INIT = URL_INIT || "data/structure_tree.xml";
 	}
+
+	NODE_NAME = NODE_NAME || "SourceTree";
  
     function init() {
-		var url = window.dialogArguments.service;
-
 		Ajax({
-			url : url,
+			url : URL_INIT,
 			onresult : function() {  // 移动树节点					
-				var groupTreeNode = this.getNodeValue("SourceTree");
+				var groupTreeNode = this.getNodeValue(NODE_NAME);
  
 				var tree = $T("tree", groupTreeNode); 
-				$$("tree").onTreeNodeDoubleClick = function(eventObj){
+				tree.element.onTreeNodeDoubleClick = function(eventObj){
 					getNode();
 				}
 			}

@@ -408,6 +408,8 @@
 				//更新树节点名称
 				var name = page1FormObj.getData("name");
 				modifyTreeNode(cacheID, "name", name, true);
+
+				ws.closeActiveTab();
             }
             request.send();
         }

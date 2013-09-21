@@ -18,14 +18,15 @@
     URL_SOURCE_TREE      = "data/menu_tree.xml?";
     URL_SOURCE_DETAIL    = "data/menu_detail.xml?";
     URL_SOURCE_SAVE      = "data/_success.xml?";
-    URL_DEL_MENU         = "data/_success.xml?";
     URL_DELETE_NODE      = "data/_success.xml?";
-    URL_SOURCE_SORT      = "data/_success.xml?";
-    URL_SOURCE_MOVE      = "data/_success.xml?";
+    URL_SORT_NODE        = "data/_success.xml?";
+    URL_MOVE_NODE        = "data/_success.xml?";
+	URL_STOP_NODE        = "data/_success.xml?";
     URL_GET_OPERATION    = "data/operation.xml?";
-	URL_GET_PS_TREE      = "data/stuctrue_tree.xml?";
+	URL_GET_PS_TREE      = "data/structure_tree.xml?";
 	URL_GET_CHANNEL_TREE = "data/channel_tree.xml?";
 	URL_FRESH_MENU_CACHE = "data/_success.xml?";
+	URL_GET_MENU_TREE    = "data/menu_tree.xml?";
  
     function init(){
         initPaletteResize();
@@ -60,7 +61,7 @@
         }
         var item4 = {
             label:"移动到...",
-            callback:moveMenuItemTo,
+            callback:moveTo,
             icon:ICON + "move.gif",
             visible: function() {return "1" != getTreeNodeType() && getOperation("2");}
         }
@@ -68,6 +69,18 @@
             label:"刷新菜单缓存",
             callback:flushMenuCache,
             visible: function() {return "1" == getTreeNodeType() && getOperation("2");}
+        }
+		var item7 = {
+            label:"启用",
+            callback: function() { stopOrStartTreeNode("0"); },
+            icon:ICON + "start.gif",
+            visible:function() {return isTreeNodeDisabled();}
+        }
+        var item8 = {
+            label:"停用",
+            callback: function() { stopOrStartTreeNode("1"); },
+            icon:ICON + "stop.gif",
+            visible:function() {return !isTreeNodeDisabled();}
         }
 
         var item5 = {
@@ -108,6 +121,8 @@
         menu1.addItem(item2);
         menu1.addItem(item6);
 		menu1.addItem(item4);
+		menu1.addItem(item7);
+		menu1.addItem(item8);
         menu1.addSeparator();
         menu1.addItem(item1);
         menu1.addItem(item5);
@@ -176,7 +191,7 @@
     }
  
     function onTreeNodeMoved(eventObj){
-		sortTreeNode(URL_SOURCE_SORT, eventObj);
+		sortTreeNode(URL_SORT_NODE, eventObj);
     }
 
 	function addNewMenu(type) {
@@ -247,7 +262,7 @@
 
 			//设置保存按钮操作
 			$$("page1BtSave").onclick = function() {
-				saveMenu(treeID, parentID);
+				saveMenu(treeID, parentId);
 			}
 		}
 		request.send();
@@ -292,6 +307,8 @@
 				// 更新树节点名称
 				var name = page1FormObj.getData("name");
 				modifyTreeNode(cacheID, "name", name, true);
+
+				ws.closeActiveTab();
             }
             request.send();
         }
@@ -309,43 +326,39 @@
         var portalId = page1FormObj.getData("portalId");
 
 		var url = URL_GET_PS_TREE + portalId + "/" + type;
-        var returnVal = window.showModalDialog("commontree.html", {title:"请选择菜单项对应内容", service:url},"dialogWidth:300px;dialogHeight:400px;");
-        if(returnVal) {
-            page1FormObj.updateDataExternal(contentId, returnVal.id);
-            page1FormObj.updateDataExternal(contentName, returnVal.name);
+        var returnObj = window.showModalDialog("commontree.html", {title:"请选择菜单项对应内容", service:url},"dialogWidth:300px;dialogHeight:400px;");
+        if(returnObj) {
+            page1FormObj.updateDataExternal(contentId, returnObj.id);
+            page1FormObj.updateDataExternal(contentName, returnObj.name);
         }
     }
 
-    /*
-     *	选择菜单对应的栏目ID
-     */
+    /*  选择菜单对应的栏目ID  */
 	function getChannel(){
         var url = URL_GET_CHANNEL_TREE;
-        var returnVal = window.showModalDialog("commontree.html", {title:"请选择菜单项对应栏目", service:url},"dialogWidth:300px;dialogHeight:400px;");
-        if(returnVal) {
-			var page1FormObj = $("page1Form");
-			page1FormObj.updateDataExternal('name', returnVal.name);
-            page1FormObj.updateDataExternal('url', "${common.articleListUrl}&channelId=" + returnVal.id);
-            page1FormObj.updateDataExternal('description', "本菜单项对应栏目为：" + returnVal.name);
+        var returnObj = window.showModalDialog("commontree.html", {title:"请选择菜单项对应栏目", service:url, nodename:"ChannelTree"},"dialogWidth:300px;dialogHeight:400px;");
+        if(returnObj) {
+			var page1FormObj = $X("page1Form");
+			page1FormObj.updateDataExternal('name', returnObj.name);
+            page1FormObj.updateDataExternal('url', "${common.articleListUrl}&channelId=" + returnObj.id);
+            page1FormObj.updateDataExternal('description', "本菜单项对应栏目为：" + returnObj.name);
         }
     }
  
-    function moveMenuItemTo(){
+    function moveTo(){
         var tree = $T("tree");
         var treeNode = tree.getActiveTreeNode();
 		var id = treeNode.getId();
 		var name = treeNode.getName();
 
-		var url = "pms/navigator!getNavigators4Tree.action" + id;
-		var returnVal = window.showModalDialog("commontree.html", {title:"将\"" + name + "\"移动到",service:url}, "dialogWidth:300px;dialogHeight:400px;");
-		if(returnVal) {
-			 moveTreeNode(tree, id, returnVal.id, url)
+		var url = URL_GET_MENU_TREE + id;
+		var returnObj = window.showModalDialog("commontree.html", {title:"将\"" + name + "\"移动到",service:url, nodename:"MenuTree"}, "dialogWidth:300px;dialogHeight:400px;");
+		if(returnObj) {
+			 moveTreeNode(tree, id, returnObj.id)
 		}
     }
  
-	/*
-     *	刷新菜单缓存
-     */
+	/* 刷新菜单缓存  */
     function flushMenuCache(){
         var treeObj = $("tree");
         var treeNode = treeObj.getActiveTreeNode();
@@ -359,7 +372,6 @@
 
 		request.send();	
     }
-
 
     window.onload = init;
 
