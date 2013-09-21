@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.jinhe.tss.cache.JCache;
+import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
+import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.entity.Navigator;
 import com.jinhe.tss.portal.helper.PSTreeTranslator4CreateMenu;
 import com.jinhe.tss.portal.helper.StrictLevelTreeParser;
@@ -37,6 +41,14 @@ public class NavigatorAction extends BaseActionSupport {
     public void getNavigatorXML(HttpServletResponse response, @PathVariable("id") Long id) {
         print("MainMenu", service.getNavigatorXML(id));
     }
+	
+    /** 刷新一下参数的缓存 */
+	@RequestMapping("/cache/{key}")
+    public void flushCache(HttpServletResponse response, @PathVariable("key") Object key) {
+		Pool navigatorPool = JCache.getInstance().getCachePool(PortalConstants.NAVIGATOR_CACHE);
+        navigatorPool.removeObject(key);
+        printSuccessMessage();
+    }
     
 	/**
 	 * <p>
@@ -55,24 +67,26 @@ public class NavigatorAction extends BaseActionSupport {
 	/**
 	 * 单个菜单的详细信息
 	 */
-	@RequestMapping("/{id}/{type}")
-	public void getNavigatorInfo(HttpServletResponse response, 
-			@PathVariable("id") Long id, 
-			@PathVariable("type") int type) {
+	@RequestMapping("/{id}")
+	public void getNavigatorInfo(HttpServletResponse response, HttpServletRequest request, 
+			@PathVariable("id") Long id) {
 		
+		Object type;
 		Map<String, Object> map;
         if( DEFAULT_NEW_ID.equals(id) ) {
         	map = new HashMap<String, Object>();
             map.put("target", "_blank");
-        	map.put("type", type);
+            map.put("parentId", request.getParameter("parentId"));
+        	map.put("type", type = request.getParameter("type"));
         }
         else {
         	Navigator info = service.getNavigator(id);            
         	map = info.getAttributesForXForm();
+        	type = info.getType();
         }        
         XFormEncoder encoder = new XFormEncoder("template/xform/MenuXForm" + type + ".xml", map);;
         
-        print(Navigator.TYPE_MENU.equals(type) ? "MenuInfo" : "MenuItemInfo", encoder); 
+        print("MenuInfo", encoder); 
 	}
 	
 	/**
@@ -140,13 +154,21 @@ public class NavigatorAction extends BaseActionSupport {
      */
 	@RequestMapping("/tree/{portalId}")
     public void getPortalNavigatorTree(HttpServletResponse response, 
-    		@PathVariable("id")  Long id, 
-    		@PathVariable("portalId")  final Long portalId) {       
+    		@PathVariable("id")  Long id) {       
     	
-        List<?> list = service.getNavigatorsByPortal(portalId);
+		Navigator self = service.getNavigator(id);
+		
+        Long portalId = self.getPortalId();
+        
+        List<?> list;
+        if(portalId != null) {
+        	list = service.getNavigatorsByPortal(portalId);
+        }
+        else {
+        	list = service.getAllNavigator();
+        }
         
         // 过滤移动节点自身
-        Navigator self = service.getNavigator(id);
         list.remove(self);
         
         TreeEncoder encoder = new TreeEncoder(list, new LevelTreeParser());

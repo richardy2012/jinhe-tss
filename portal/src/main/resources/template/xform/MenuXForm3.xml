@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
-	<declare prefix="navigator">
+	<declare prefix="menu">
 		<column name="id" caption="ID号" mode="hidden" editable="false"/>
 		<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>	
-		<column name="contentId" caption="" mode="hidden" />
-		<column name="contentName" caption="门户结构" mode="function" cmd="getContent('contentName','contentId', 3)"/>	
+		<column name="content.id" caption="" mode="hidden" />
+		<column name="content.name" caption="门户结构" mode="function" cmd="getContent('contentName','contentId', 3)"/>	
 		<column name="target" caption="目标区域" mode="string" maxLength="50" empty="false"/>			
 		<column name="description" caption="描述信息" mode="string"/>
 		

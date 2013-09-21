@@ -3,8 +3,8 @@
 	<declare prefix="navigator">
 		<column name="id" caption="ID号" mode="hidden" editable="false"/>
 		<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>	
-		<column name="contentId" caption="" mode="hidden" />
-		<column name="contentName" caption="显示Portlet" mode="function" cmd="getContent('contentName','contentId', 0)"/>		
+		<column name="content.id" caption="" mode="hidden" />
+		<column name="content.name" caption="显示Portlet" mode="function" cmd="getContent('contentName','contentId', 0)"/>		
 		<column name="methodName" caption="方法名" mode="string" empty="false"/>	
 		<column name="params" caption="参数" mode="string"/>				
 		<column name="description" caption="描述信息" mode="string"/>

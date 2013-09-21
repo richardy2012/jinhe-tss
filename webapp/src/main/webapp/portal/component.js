@@ -295,7 +295,7 @@
 		} 
 
 		var parameters = page1FormObj.getData("parameters");
-		if( true==(/^\=/.test(parameters)) ) {
+		if(  true == (/^\=/.test(parameters) ) ) {
 			page1FormObj.showCustomErrorInfo("parameters", "请按\"参数名=参数值\"格式书写");
 			return;
 		}
@@ -303,7 +303,6 @@
         var p = new HttpRequestParams();
         p.url = URL_SOURCE_SAVE;
 
-        //是否提交
         var flag = false;
  
 		//修饰基本信息

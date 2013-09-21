@@ -55,8 +55,11 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         Long rootMenuId = rootMenu.getId();
         Assert.assertEquals(root.getId(), portalId);
         
-        menuAction.getNavigatorInfo(response, BaseActionSupport.DEFAULT_NEW_ID, Navigator.TYPE_MENU);
-        menuAction.getNavigatorInfo(response, rootMenuId, Navigator.TYPE_MENU);
+        request.addParameter("parentId", rootMenuId + "");
+        request.addParameter("type", Navigator.TYPE_MENU + "");
+        menuAction.getNavigatorInfo(response, request, BaseActionSupport.DEFAULT_NEW_ID);
+        
+        menuAction.getNavigatorInfo(response, request, rootMenuId);
  
         // 创建各种类型的菜单项
         Navigator menu1 = new Navigator();
@@ -66,7 +69,7 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         menu1.setPortalId(portalId);
         menu1.setContent(root);
         menuAction.save(response, menu1);
-        menuAction.getNavigatorInfo(response, menu1.getId(), Navigator.TYPE_MENU_ITEM_3);
+        menuAction.getNavigatorInfo(response, request, menu1.getId());
         
         Navigator menu2 = new Navigator();
         menu2.setType(Navigator.TYPE_MENU_ITEM_7);
@@ -116,7 +119,7 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
  
         menuAction.moveTo(response, menu3.getId(), menu1.getId());
         
-        menuAction.getPortalNavigatorTree(response, menu2.getId(), portalId);
+        menuAction.getPortalNavigatorTree(response, menu2.getId());
         
         // 查询
         menuAction.getAllNavigator4Tree(response);

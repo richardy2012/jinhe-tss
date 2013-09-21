@@ -3,10 +3,10 @@
 	<declare prefix="navigator">
 		<column name="id" caption="ID号" mode="hidden" editable="false"/>
 		<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>	
-		<column name="contentId" caption="" mode="hidden" />
-		<column name="contentName" caption="局部门户结构" mode="function" cmd="getContent('contentName','contentId', 2)"/>	
-		<column name="targetId" caption="" mode="hidden" />
-		<column name="targetName" caption="目标版面/页面" mode="function" cmd="getContent('targetName','targetId', 1)"/>				
+		<column name="content.id" caption="" mode="hidden" />
+		<column name="content.name" caption="局部门户结构" mode="function" cmd="getContent('contentName','contentId', 2)"/>	
+		<column name="target.id" caption="" mode="hidden" />
+		<column name="target.name" caption="目标版面/页面" mode="function" cmd="getContent('targetName','targetId', 1)"/>				
 		<column name="description" caption="描述信息" mode="string"/>
 		
 		<column name="parentId" caption="" mode="hidden"/>
