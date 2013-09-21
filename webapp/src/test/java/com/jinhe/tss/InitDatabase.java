@@ -24,7 +24,9 @@ import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.entity.Component;
+import com.jinhe.tss.portal.entity.Navigator;
 import com.jinhe.tss.portal.service.IComponentService;
+import com.jinhe.tss.portal.service.INavigatorService;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.permission.PermissionService;
@@ -57,6 +59,7 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
     @Autowired private PermissionService permissionService;
     
     @Autowired private IComponentService elementService;
+    @Autowired private INavigatorService navigatorService;
     
     @Before
     public void setUp() throws Exception {
@@ -148,6 +151,12 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
         portletGroup.setType(Component.PORTLET_TYPE);
         portletGroup.setParentId(PortalConstants.ROOT_ID);   
         portletGroup = elementService.saveComponent(layoutGroup);
+        
+        // 新建一个应用菜单组（不依附于门户）
+        Navigator appMenuGroup = new Navigator();
+        appMenuGroup.setName("应用菜单组");
+        appMenuGroup.setType(Navigator.TYPE_MENU);
+        navigatorService.saveNavigator(appMenuGroup);
     }
     
     
