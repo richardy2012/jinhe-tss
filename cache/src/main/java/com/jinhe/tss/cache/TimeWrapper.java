@@ -80,7 +80,6 @@ public class TimeWrapper implements Cacheable, Serializable {
 
 	public synchronized void updateAccessed() {
 		this.accessed = System.currentTimeMillis();
-		this.death = this.accessed + getCyclelife();
 	}
 
 	public long getAccessed() {
@@ -97,10 +96,6 @@ public class TimeWrapper implements Cacheable, Serializable {
 
 	public void update(Object value) {
 		this.value = value;
-	}
-
-	public long getCyclelife() {
-		return this.death - this.accessed;
 	}
 	
 	private static Map<String, Integer> countsMap = new HashMap<String, Integer>();
