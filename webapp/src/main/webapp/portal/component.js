@@ -43,8 +43,7 @@
 				var tree = $T("tree", sourceTreeNode);
 
 				tree.element.onTreeNodeActived = function(eventObj) {
-					Focus.focus($$("treeTitle").firstChild.id);
-					showTreeNodeInfo();
+					onTreeNodeActived(eventObj);
 				}
 				tree.element.onTreeNodeDoubleClick = function(eventObj) {
 					if( !isGroup() ) {
@@ -52,8 +51,7 @@
 					}
 				}
 				tree.element.onTreeNodeRightClick = function(eventObj) {
-					showTreeNodeInfo();
-					$$("tree").contextmenu.show(eventObj.clientX, eventObj.clientY);
+					onTreeNodeRightClick(eventObj);
 				}
 				tree.element.onTreeNodeMoved = function(eventObj) {
 					sortTreeNode(URL_SOURCE_SORT, eventObj);

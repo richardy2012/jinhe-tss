@@ -683,6 +683,30 @@ function showTreeNodeInfo() {
 	);
 }
 
+function onTreeNodeActived(eventObj){
+	 Focus.focus( $$("treeTitle").firstChild.id );
+	 showTreeNodeInfo();
+}
+
+function onTreeNodeRightClick(eventObj, carePermission) {
+	showTreeNodeInfo();
+
+	var menu = $$("tree").contextmenu;
+	if(menu == null) {
+		return;
+	}
+
+	if( carePermission ) {
+        var treeNode = eventObj.treeNode;
+        getTreeOperation(treeNode, function(_operation) {
+			menu.show(eventObj.clientX, eventObj.clientY);
+        });
+	}
+	else {
+		menu.show(eventObj.clientX, eventObj.clientY);
+	}
+}
+
 // 删除选中节点，适用于多层结构树
 function delTreeNode(url) {
 	if( !confirm("您确定要删除该节点吗？") )  return;

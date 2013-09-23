@@ -149,17 +149,16 @@
             var tree = $T("tree", menuTreeNode);
 
             tree.element.onTreeNodeActived = function(eventObj){
-                Focus.focus( $$("treeTitle").firstChild.id );
-				showTreeNodeInfo();
+                onTreeNodeActived(eventObj);
             }
             tree.element.onTreeNodeDoubleClick = function(eventObj){
                 onTreeNodeDoubleClick(eventObj);
             }
             tree.element.onTreeNodeRightClick = function(eventObj){
-                onTreeNodeRightClick(eventObj);
+                onTreeNodeRightClick(eventObj, true);
             }
             tree.element.onTreeNodeMoved = function(eventObj){
-                onTreeNodeMoved(eventObj);
+                sortTreeNode(URL_SORT_NODE, eventObj);
             }
             
         }
@@ -174,24 +173,6 @@
                 editTreeNode();            
             }
         });
-    }
- 
-    function onTreeNodeRightClick(eventObj){
-        var tree = $T("tree");
-        var treeNode = eventObj.treeNode;
-
-        showTreeNodeInfo();
-
-        getTreeOperation(treeNode, function(_operation) {
-			var menu = tree.element.contextmenu;
-            if(menu){
-                menu.show(eventObj.clientX, eventObj.clientY);                
-            }
-        });
-    }
- 
-    function onTreeNodeMoved(eventObj){
-		sortTreeNode(URL_SORT_NODE, eventObj);
     }
 
 	function addNewMenu(type) {

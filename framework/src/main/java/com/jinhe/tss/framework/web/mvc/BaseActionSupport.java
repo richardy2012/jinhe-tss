@@ -19,7 +19,7 @@ import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpEncoder;
  */
 public abstract class BaseActionSupport {
     
-    protected Logger log = Logger.getLogger(this.getClass());
+    public static Logger log = Logger.getLogger(BaseActionSupport.class);
     
     /**
      * 约定新增对象时前台传过来ID统一为 -10；
