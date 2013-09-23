@@ -39,13 +39,6 @@ public interface Cacheable {
 	boolean isExpired();
 
 	/**
-	 * 缓存项的生命周期（单位：ms）
-	 * 
-	 * @param cyclelife
-	 */
-	long getCyclelife();
-
-	/**
 	 * 获取缓存项最后一次被访问的时间
 	 * 
 	 * @return
