@@ -1,7 +1,6 @@
 package com.jinhe.tss.framework.component.param;
 
 import java.sql.Connection;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.dom4j.Element;
@@ -28,22 +27,9 @@ import com.jinhe.tss.util.XMLDocUtil;
  */
 public class ParamAppServerStorer implements IAppServerStorer {
     
-    private Map<String, AppServer> cache = new HashMap<String, AppServer>();
-
     public AppServer getAppServer(String appCode) {
-        AppServer appServer = (AppServer) cache.get(appCode);
-        
-        // ParamManager.valueMap里没有该appCode的值，则有可能是第一次取或这参数更改后缓存刷新了，需要重新生成。
-        if(appServer == null || ParamManager.valueMap.get(appCode) == null){
-            cache.put(appCode, appServer = createAppServer(appCode));
-        } 
-        return appServer;
-    }
-    
-    private AppServer createAppServer(String appCode){
         String appServerXML = null;
-        try
-        {
+        try {
         	appServerXML = getAppServerConfig(appCode);
         }
         catch(Exception e) { }
@@ -59,7 +45,8 @@ public class ParamAppServerStorer implements IAppServerStorer {
             AppServer bean = new AppServer();
             BeanUtil.setDataToBean(bean, attrsMap);
             return bean;
-        }catch(Exception e){
+        } 
+        catch(Exception e) {
             throw new BusinessException("参数管理模块中应用Code为：" + appCode + " 的应用服务配置信息有误，请检查！");
         }
     }

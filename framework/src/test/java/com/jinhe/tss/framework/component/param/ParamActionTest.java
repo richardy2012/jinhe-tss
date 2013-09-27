@@ -1,5 +1,7 @@
 package com.jinhe.tss.framework.component.param;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,8 +33,6 @@ public class ParamActionTest extends TxTestSupport {
 		
 		action.copyParam(response, treeParam.getId(), paramGroup.getId().toString());
 		
-		action.flushParamCache(response, treeParam.getId());
-		
 		action.getCanAddParamsTree(response, treeParam.getId());
 		
 		action.getParamInfo(request, response, ParamConstants.NORMAL_PARAM_TYPE);
@@ -45,6 +45,9 @@ public class ParamActionTest extends TxTestSupport {
 		
 		action.saveParam(response, comboParam);
 		action.initAppConfig(response, "test", "test", "test");
+		
+		assertEquals("<server code=test userDepositoryCode=\"tss\" name=test sessionIdName=\"JSESSIONID\" baseURL=test/>", 
+				ParamConfig.getAttribute("test"));
 		
 		Param paramGroup3 = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组3");
 		action.moveParam(response, treeParam.getId(), paramGroup3.getId().toString());

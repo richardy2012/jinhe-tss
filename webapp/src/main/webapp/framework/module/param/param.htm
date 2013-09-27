@@ -39,7 +39,6 @@
     URL_PARAM_DETAIL  = "/" + NO_AUTH_PATH + "param/detail";
 	URL_SAVE_PARAM    = "/" + NO_AUTH_PATH + "param";
     URL_PARAM_DELETE  = "/" + NO_AUTH_PATH + "param/";
-	URL_FLUSH_CACHE   = "/" + NO_AUTH_PATH + "param/cache/";
     URL_PARAM_DISABLE = "/" + NO_AUTH_PATH + "param/disable/";
     URL_SORT_PARAM    = "/" + NO_AUTH_PATH + "param/sort/";
     URL_COPY_PARAM    = "/" + NO_AUTH_PATH + "param/copy/";
@@ -52,7 +51,6 @@
 		URL_PARAM_DISABLE = "data/_success.xml?";
 		URL_SAVE_PARAM = "data/_success.xml?";
 		URL_SORT_PARAM = "data/_success.xml?";
-		URL_FLUSH_CACHE  = "data/_success.xml?";
 		URL_COPY_PARAM = "data/_success.xml?";
 		URL_MOVE_PARAM_TO = "data/_success.xml?";
 	}
@@ -139,13 +137,6 @@
             },
             visible:function() {return (("1"==getTreeNodeMode() && "1"==getTreeNodeType()) || "2"==getTreeNodeMode());}
         }
-		var item15 = {
-            label:"刷新参数缓存",
-            callback:function() {
-                flushParamCache();
-            },
-            visible:function() {return "1"==getTreeNodeType();}
-        }
 
 
         //新建参数子菜单
@@ -187,9 +178,6 @@
         menu1.addItem(item7);
         menu1.addItem(item1);
         menu1.addItem(item14);
-
-		menu1.addSeparator();
-		menu1.addItem(item15);
 
         $$("tree").contextmenu = menu1;
     }
@@ -401,14 +389,6 @@
  
     function delParam() {
 		 delTreeNode(URL_PARAM_DELETE);
-    }
-
-	function flushParamCache() {
-       Ajax({
-			url : URL_FLUSH_CACHE + getTreeNodeId(),
-			onsuccess : function() { 
-			}
-		});
     }
  
     function getTreeNodeType() {

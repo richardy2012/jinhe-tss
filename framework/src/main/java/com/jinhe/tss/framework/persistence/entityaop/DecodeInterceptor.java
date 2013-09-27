@@ -3,6 +3,7 @@ package com.jinhe.tss.framework.persistence.entityaop;
 import java.util.List;
 
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.stereotype.Component;
 
 import com.jinhe.tss.framework.persistence.IDao;
 import com.jinhe.tss.framework.persistence.IEntity;
@@ -13,6 +14,7 @@ import com.jinhe.tss.util.BeanUtil;
  * entity.decode值维护拦截器.
  * 
  */
+@Component("decodeInterceptor")
 public class DecodeInterceptor extends MatchByDaoMethodNameInterceptor {
 
     @SuppressWarnings("unchecked")

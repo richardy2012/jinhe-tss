@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.cache.Cacheable;
-import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
+import com.jinhe.tss.framework.component.cache.CacheHelper;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.dao.INavigatorDao;
@@ -84,10 +84,11 @@ public class NavigatorService implements INavigatorService {
     	}
     	
     	// 缓存只针对匿名用户访问进行缓存
-        Pool navigatorPool = JCache.getInstance().getCachePool(PortalConstants.NAVIGATOR_CACHE);
-        Cacheable cachedMenu = navigatorPool.getObject(id);
+        Pool navigatorPool = CacheHelper.getNoDeadCache();
+        String key = PortalConstants.NAVIGATOR_CACHE + id;
+        Cacheable cachedMenu = navigatorPool.getObject(key);
         if( cachedMenu == null ){
-        	cachedMenu = navigatorPool.putObject(id, createNavigatorXML(id));
+        	cachedMenu = navigatorPool.putObject(key, createNavigatorXML(id));
         }
         return (String) cachedMenu.getValue();
     }

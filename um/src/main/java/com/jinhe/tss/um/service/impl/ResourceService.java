@@ -70,14 +70,15 @@ public class ResourceService implements IResourceService{
 	}
 
 	public void removeResourceType(Long id) {
-        ResourceType resourceType = resourceTypeDao.getEntity(id);
-		resourceTypeDao.delete(resourceType);	
+		ResourceType resourceType = resourceTypeDao.getEntity(id);
 		
         // 删除Operation表
 		List<?> operationList = resourceTypeDao.getEntities("from Operation o where o.resourceTypeId = ?", resourceType.getResourceTypeId());
 		for(Object obj : operationList) {
 		    removeOperation(((Operation)obj).getId());
 		}
+        
+		resourceTypeDao.delete(resourceType);	
 	}
 
 	public void removeOperation(Long id) {

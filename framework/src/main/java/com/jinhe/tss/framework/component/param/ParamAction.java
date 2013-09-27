@@ -57,13 +57,6 @@ public class ParamAction extends BaseActionSupport {
         
         print("ParamTree", paramTree);
     }
-    
-    /** 刷新一下参数的缓存 */
-	@RequestMapping("/cache/{paramId}")
-    public void flushParamCache(HttpServletResponse response, @PathVariable("paramId") Long paramId) {
-        ParamManager.remove(paramService.getParam(paramId).getCode());       
-        printSuccessMessage();
-    }
 	
 	/** 取参数信息 */
 	@RequestMapping("/detail")

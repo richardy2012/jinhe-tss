@@ -26,6 +26,11 @@ public abstract class OperateInfo implements IOperatable, IEntity {
     @Version
     private int lockVersion = 0;
     
+	public String toString() {
+		return org.apache.commons.lang.builder.ToStringBuilder
+				.reflectionToString(this);
+	}
+    
     protected void putOperateInfo2Map(TreeAttributesMap map) {
         map.put("creatorId", creatorId);
         map.put("creatorName", creatorName);

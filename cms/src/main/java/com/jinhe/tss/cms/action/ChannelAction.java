@@ -39,7 +39,7 @@ public class ChannelAction extends ProgressActionSupport {
 	public void getChannelAll(HttpServletResponse response) {
 		List<?> list = channelService.getAllSiteChannelList();
 		if(list.size() > 0) {
-			schedulerBean.init();
+			schedulerBean.init(); // TODO SchedulerBean在此初始化，此方法不调用岂不是不初始化了？
 		}
 		
 		TreeEncoder treeEncoder = new TreeEncoder(list, new LevelTreeParser());

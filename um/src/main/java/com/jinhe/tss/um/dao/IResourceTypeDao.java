@@ -1,5 +1,7 @@
 package com.jinhe.tss.um.dao;
 
+import com.jinhe.tss.framework.component.cache.CacheLife;
+import com.jinhe.tss.framework.component.cache.Cached;
 import com.jinhe.tss.framework.persistence.IDao;
 import com.jinhe.tss.um.entity.ResourceType;
 import com.jinhe.tss.um.entity.ResourceTypeRoot;
@@ -27,6 +29,7 @@ public interface IResourceTypeDao extends IDao<ResourceType>, RemoteResourceType
 	 * 			资源类型id
 	 * @return
 	 */
+    @Cached(cyclelife = CacheLife.NODEAD)
 	ResourceType getResourceType(String applicationId, String resourceTypeId);
 	
 }

@@ -2,6 +2,9 @@ package com.jinhe.tss.um.permission;
 
 import java.util.List;
 
+import com.jinhe.tss.framework.component.cache.CacheLife;
+import com.jinhe.tss.framework.component.cache.Cached;
+
 /**
  * <p>
  * 获取注册资源未补齐表，补齐表，资源视图，资源根节点等帮助类接口。
@@ -44,6 +47,7 @@ public interface RemoteResourceTypeDao {
 	 * @param resourceTypeId
 	 * @return
 	 */
+	@Cached(cyclelife = CacheLife.NODEAD)
 	Long getResourceRootId(String applicationId, String resourceTypeId);
     
     /**

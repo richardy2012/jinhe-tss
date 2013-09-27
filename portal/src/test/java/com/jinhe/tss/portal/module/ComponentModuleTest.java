@@ -117,7 +117,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
 		componentAction.getDefaultParams4Xml(response, id);
 		
 		request.addParameter("configXML", " bgColor=red \n menuId=12");
-		componentAction.saveElementParamsConfig(response, request, id);
+		componentAction.saveComponentParamsConfig(response, request, id);
 
 		componentAction.delete(response, id);
 
@@ -148,7 +148,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         componentAction.getDefaultParams4Xml(response, id);
         
         request.addParameter("configXML", "");
-		componentAction.saveElementParamsConfig(response, request, id);
+		componentAction.saveComponentParamsConfig(response, request, id);
     }
 
     @Test
@@ -171,7 +171,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         Long id = portlet1.getId();
         
         request.addParameter("configXML", "");
-		componentAction.saveElementParamsConfig(response, request, id);
+		componentAction.saveComponentParamsConfig(response, request, id);
     }
 
 }

@@ -45,9 +45,7 @@ public class ParamServiceTest extends TxTestSupport {
         	Assert.assertTrue("读取不到参数值则抛出异常", true);
         }
         
-        ParamManager.remove(testCode);
-        
-        Assert.assertEquals("TSS", paramService.getSimpleParamValue(testCode));
+        Assert.assertEquals("TSS", paramService.getParam(testCode).getValue());
         
         printParams();
         paramService.delete(group.getId());
@@ -119,8 +117,6 @@ public class ParamServiceTest extends TxTestSupport {
         
         list = ParamManager.getTreeParam(treeParamCode);
         Assert.assertEquals(3, list.size());
-		 
-		ParamManager.removeAll();
     }
 
     /** 建参数组 */

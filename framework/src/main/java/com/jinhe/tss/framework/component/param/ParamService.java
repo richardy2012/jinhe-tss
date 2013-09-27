@@ -1,6 +1,8 @@
 package com.jinhe.tss.framework.component.param;
 
 import java.util.List;
+
+import com.jinhe.tss.framework.component.cache.Cached;
  
 public interface ParamService {
 
@@ -16,19 +18,19 @@ public interface ParamService {
 	/** 取所有参数 */
 	List<?> getAllParams();
 	
-	/** 根据code取参数。供ParamManager使用 */
-	Param getParam(String code);
-	
 	/** 根据ID取参数 */
 	Param getParam(Long id);
 	
-	/** 根据code取简单参数的值 */
-	String getSimpleParamValue(String code);
+	/** 根据code取参数。供ParamManager使用 */
+	@Cached
+	Param getParam(String code);
 	
 	/** 取下拉型参数的值 */
+	@Cached
 	List<Param> getComboParam(String code);
 	
 	/** 取树型参数的值 */
+	@Cached
 	List<Param> getTreeParam(String code);
 	
 	/**

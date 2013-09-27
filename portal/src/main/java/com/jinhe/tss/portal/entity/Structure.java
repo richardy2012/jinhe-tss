@@ -381,7 +381,9 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
     }
     
     public String getDefaultKey() {
-        return (isRootPortal() ? this.id : this.portalId) + "-" + theme.getId();
+		return PortalConstants.PORTAL_CACHE + "-"
+				+ (isRootPortal() ? this.id : this.portalId) + "-"
+				+ theme.getId();
     }
 
     public Theme getTheme() {

@@ -103,10 +103,10 @@ public class ComponentAction extends FreeMarkerSupportAction {
      * 新增元素（组）.
      */
     @RequestMapping(method = RequestMethod.POST)
-    public void save(HttpServletResponse response, Component element) {
-        boolean isNew = element.getId() == null ? true : false;      
-        element = service.saveComponent(element);
-        doAfterSave(isNew, element, "SourceTree");
+    public void save(HttpServletResponse response, Component component) {
+        boolean isNew = component.getId() == null ? true : false;      
+        component = service.saveComponent(component);
+        doAfterSave(isNew, component, "SourceTree");
     }
 
     /**
@@ -162,10 +162,10 @@ public class ComponentAction extends FreeMarkerSupportAction {
     @RequestMapping("/params/{id}")
     public void getDefaultParams4Xml(HttpServletResponse response, @PathVariable("id") Long id) {
         Component component = service.getComponent(id);
-        String elementType = component.getComponentType();
+        String componentType = component.getComponentType();
         
-        StringBuffer sb = new StringBuffer("<" + elementType + " ");
-        String xpath = "//" + elementType + "/parameters/param";
+        StringBuffer sb = new StringBuffer("<" + componentType + " ");
+        String xpath = "//" + componentType + "/parameters/param";
         List<?> parameters = XMLDocUtil.dataXml2Doc(component.getDefinition()).selectNodes(xpath);
         if (parameters != null) {
             for (int i = 0; i < parameters.size(); i++) {
@@ -175,9 +175,9 @@ public class ComponentAction extends FreeMarkerSupportAction {
                 sb.append(name).append("=\"").append(XmlUtil.toFormXml(defaultValue)).append("\" ");
             }
         }
-        sb.append(">").append("model/" + elementType + "/" + component.getCode() + "/" + Component.PARAM_FILE);                    
+        sb.append(">").append("model/" + componentType + "/" + component.getCode() + "/" + Component.PARAM_FILE);                    
 
-        print("ComponentParams", sb.append("</" + elementType + ">").toString());
+        print("ComponentParams", sb.append("</" + componentType + ">").toString());
     }
     
     /**
@@ -245,7 +245,7 @@ public class ComponentAction extends FreeMarkerSupportAction {
     }
     
 	@RequestMapping(value = "/paramconfig/{id}", method = RequestMethod.POST)
-    public void saveElementParamsConfig(HttpServletResponse response, HttpServletRequest request, 
+    public void saveComponentParamsConfig(HttpServletResponse response, HttpServletRequest request, 
     		@PathVariable("id") Long id) {
 		
         Component component = service.getComponent(id);

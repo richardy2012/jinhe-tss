@@ -3,13 +3,11 @@
 	/*
      *	后台响应数据节点名称
      */
-    XML_MAIN_TREE = "SiteTree";
-    XML_SITE_INFO = "SiteInfo";
+    XML_MAIN_TREE = "SourceTree";
+    XML_SITE_INFO = "DetailInfo";
     XML_PREVIEW = "html";
     XML_UPLOAD_INFO = "upload";
-    XML_LAYOUT_PARAMETERS_INFO = "LayoutParameters";
-    XML_DECORATOR_PARAMETERS_INFO = "DecoratorParameters";
-    XML_PORTLET_PARAMETERS_INFO = "PortletParameters";
+    XML_COMPONENT_PARAMETERS = "ComponentParams";
     XML_THEME_MANAGE = "ThemeManage";
     XML_CACHE_MANAGE = "CacheManage";
  
@@ -35,9 +33,7 @@
     URL_STOP_NODE     = "data/_success.xml";
     URL_SORT_NODE     = "data/_success.xml";
     URL_VIEW_SITE     = "portal!previewPortal.action";
-    URL_GET_LAYOUT_PARAMETERS    = "data/layoutparameters.xml";
-    URL_GET_DECORATOR_PARAMETERS = "data/decoratorparameters.xml";
-    URL_GET_PORTLET_PARAMETERS   = "data/portletparameters.xml";
+    URL_GET_COMPONENT_PARAMETERS    = "data/layoutparameters.xml";
     URL_THEME_MANAGE      = "data/thememanage.xml";
     URL_RENAME_THEME      = "data/_success.xml";
     URL_DEL_THEME         = "data/_success.xml";
@@ -71,74 +67,74 @@
         var item1 = {
             label:"新建门户",
             callback:function() {addNewStructure("0");},
-            enable:function() {return true;},
+            
             visible:function() {return "_rootId"==getTreeNodeId() && true==getOperation("4");}
         }
         var item2 = {
             label:"新建页面",
             callback:function() {addNewStructure("1");},
-            enable:function() {return true;},
+            
             visible:function() {return "0"==getStructureType() && true==getOperation("4");}
         }
         var item3 = {
             label:"新建版面",
             callback:function() {addNewStructure("2");},
-            enable:function() {return true;},
+            
             visible:function() {return "3"!=getStructureType() && "0"!=getStructureType() && "_rootId"!=getTreeNodeId() && true==getOperation("4");}
         }
         var item4 = {
             label:"新建portlet实例",
             callback:function() {addNewStructure("3");},
-            enable:function() {return true;},
+            
             visible:function() {return ("1"==getStructureType() || "2"==getStructureType()) && true==getOperation("4");}
         }
         var item7 = {
             label:"删除",
             callback:delSite,
             icon:ICON + "del.gif",
-            enable:function() {return true;},
+            
             visible:function() {return "_rootId"!=getTreeNodeId() && true==getOperation("3");}
         }
         var item8 = {
             label:"编辑",
             callback:editStructure,
             icon:ICON + "edit.gif",
-            enable:function() {return true;},
+            
             visible:function() {return "_rootId"!=getTreeNodeId() && true==getOperation("2");}
         }
         var item9 = {
             label:"停用",
             callback:stopSite,
             icon:ICON + "stop.gif",
-            enable:function() {return true;},
+            
             visible:function() {return !isTreeNodeDisabled() && true==getOperation("6");}
         }
         var item10 = {
             label:"启用",
             callback:startSite,
             icon:ICON + "start.gif",
-            enable:function() {return true;},
+            
             visible:function() {return isTreeNodeDisabled() && true==getOperation("7");}
         }
         var item12 = {
             label:"预览",
             callback:preview,
             icon:ICON + "preview.gif",
-            enable:function() {return true;},
+            
             visible:function() {return "_rootId"!=getTreeNodeId()  && true==getOperation("2");}
         }
         var item13 = {
             label:"主题管理",
             callback:themeManage,
             icon:ICON + "theme.gif",
-            enable:function() {return true;},
+            
             visible:function() {return "0"==getStructureType() && true==getOperation("2");}
         }
          var item15 = {
             label:"缓存管理",
             callback:cacheManage,
             icon:ICON + "cache.gif",
-            enable:function() {return true;},
+            
             visible:function() {return "0"==getStructureType() && true==getOperation("1");}
         }
         var item16 = {
@@ -147,34 +143,34 @@
                 editStructure(false);
             },
             icon:ICON + "view.gif",
-            enable:function() {return true;},
+            
             visible:function() {return "_rootId"!=getTreeNodeId() && true==getOperation("1");}
         }
         var item17 = {
             label:"资源管理",
             callback:function() {resourceManage();},
             icon:ICON + "resource.gif",
-            enable:function() {return true;},
+            
             visible:function() {return "0"==getStructureType() && true==getOperation("2");}
         }
         var item18 = {
             label:"启用门户",
             callback:startSite,
             icon:ICON + "start.gif",
-            enable:function() {return true;},
+            
             visible:function() {return "0"==getStructureType() && isTreeNodeDisabled() && true==getOperation("6");}
         }
         var item19 = {
             label:"门户静态发布",
             callback:staticIssue,
-            enable:function() {return true;},
+            
             visible:function() {return "0"==getStructureType() && true==getOperation("2");}
         }
 
         var item22 = {
             label:"查看页面流量",
             callback:showPageView,
-            enable:function() {return true;},
+            
             visible:function() {return "0"==getStructureType() && true==getOperation("1");}
         }
 		var item24 = {
@@ -182,7 +178,7 @@
             callback:function() {
                remoteIssue("0");
             },
-            enable:function() {return true;},
+            
             visible:function() {return "0"==getStructureType() && true==getOperation("2");}
         }
 		var item25 = {
@@ -190,13 +186,13 @@
 			callback:function() {
                 remoteIssue("1");
             },
-            enable:function() {return true;},
+            
             visible:function() {return "0"==getStructureType() && true==getOperation("2");}
         }
 	    var item26 = {
             label:"页面静态发布",
             callback:staticIssueOnePage,
-            enable:function() {return true;},
+            
             visible:function() {return "0"==getStructureType() && true==getOperation("2");}
         }
 
@@ -610,14 +606,15 @@
     function preview() {
         var treeObj = $T("tree");
         var treeNode = treeObj.getActiveTreeNode();
-		var treeNodePortalID = treeNode.getAttribute("portalId");
+		var portalID = treeNode.getAttribute("portalId");
+		var type = treeNode.getAttribute("type");
 
-		var url	= URL_VIEW_SITE + treeNodePortalID;
-		var siteType = treeNode.getAttribute("type");
-		if("0" != siteType) {
+		var url	= URL_VIEW_SITE + portalID;
+		if("0" != type) {
 			var treeNodeID = treeNode.getId();
 			url += "?pageId=" + treeNodeID;
 		}
+
 		window.open(url);
     }
 
@@ -689,306 +686,179 @@
     /*
      *	布局器加载数据
      */
-    function loadLayoutParameters(layoutID, parametersName) {
-        var page1FormObj = $("page1Form");
-        var parameters = page1FormObj.getData(parametersName);
-
+    function loadLayoutParameters(layoutID) {
         var p = new HttpRequestParams();
-        p.url = URL_GET_LAYOUT_PARAMETERS;
-        p.setContent("layoutId",layoutID);
+        p.url = URL_GET_COMPONENT_PARAMETERS + id;
 
         var request = new HttpRequest(p);
         request.onresult = function() {
-            var layoutParametersNode = this.getNodeValue(XML_LAYOUT_PARAMETERS_INFO);
-
-            updateParameters(parametersName,layoutParametersNode);
+		   var newNode = this.getNodeValue(XML_COMPONENT_PARAMETERS);
+           updateParameters(newNode);
             
             // 允许进行配置
-            var page1BtConfigDefinerObj = $("page1BtConfigDefiner");
-            page1BtConfigDefinerObj.disabled = 0==layoutParametersNode.attributes.length;
+            $$("page1BtConfigDefiner").disabled   = ( 0 == newNode.attributes.length );
+			$$("page1BtConfigDecorator").disabled = ( 0 == newNode.attributes.length );
         }
         request.send();
     }
-    /*
-     *	修饰器加载数据
-     *	参数：	string:decoratorID      修饰器id
-                string:parametersName   xform列名
-     *	返回值：
-     */
-    function loadDecoratorParameters(decoratorID,parametersName) {
-        var page1FormObj = $("page1Form");
-        var parameters = page1FormObj.getData(parametersName);
-
-        var p = new HttpRequestParams();
-        p.url = URL_GET_DECORATOR_PARAMETERS;
-        p.setContent("decoratorId",decoratorID);
-
-        var request = new HttpRequest(p);
-        request.onresult = function() {
-            var decoratorParametersNode = this.getNodeValue(XML_DECORATOR_PARAMETERS_INFO);
-
-            updateParameters(parametersName,decoratorParametersNode);
-            
-            //允许进行配置
-            var page1BtConfigDecoratorObj = $("page1BtConfigDecorator");
-            page1BtConfigDecoratorObj.disabled = 0==decoratorParametersNode.attributes.length;
-        }
-        request.send();
-    }
-    /*
-     *	portlet加载数据
-     *	参数：	string:portletID      修饰器id
-                string:parametersName   xform列名
-     *	返回值：
-     */
-    function loadPortletParameters(portletID,parametersName) {
-        var page1FormObj = $("page1Form");
-        var parameters = page1FormObj.getData(parametersName);
-
-        var p = new HttpRequestParams();
-        p.url = URL_GET_PORTLET_PARAMETERS;
-        p.setContent("id", portletID);
-
-        var request = new HttpRequest(p);
-        request.onresult = function() {
-            var portletParametersNode = this.getNodeValue(XML_PORTLET_PARAMETERS_INFO);
-
-            updateParameters(parametersName,portletParametersNode);
-            
-            //允许进行配置
-            var page1BtConfigDefinerObj = $("page1BtConfigDefiner");
-            page1BtConfigDefinerObj.disabled = 0==portletParametersNode.attributes.length;
-        }
-        request.send();
-    }
+ 
     /*
      *	将parameters字符串解析为xml对象
      *	参数：	string:parameters       xml字符串
      *	返回值：XmlNode:xmlNode         XmlNode实例
      */
     function parseParameters(parameters) {
-        //将parameters字符串解析为xml对象
         var xmlReader = new XmlReader();
         xmlReader.loadXML(parameters);
-        if(null==xmlReader.documentElement) {
+        if(null == xmlReader.documentElement) {
             xmlReader.loadXML("<params/>");
         }
         var xmlNode = new XmlNode(xmlReader.documentElement);
         return xmlNode;    
     }
+
     /*
      *	更新布局器、修饰器的配置参数节点
      *	参数：	string:parametersName   xform列名
                 XmlNode:newNode         XmlNode实例
      *	返回值：
      */
-    function updateParameters(parametersName,newNode) {
-        var page1FormObj = $("page1Form");
-        var parameters = page1FormObj.getData(parametersName)||"";
+    function updateParameters(newNode) {
+		var type = newNode.nodeName;
 
-        var xmlNode = parseParameters(parameters);
-        var type = newNode.nodeName;
-        var oldNode = xmlNode.selectSingleNode("./"+type);
-        if(oldNode) {
-            var attributes = oldNode.attributes;
-            for(var i=0,iLen=attributes.length;i<iLen;i++) {
-               oldNode.removeAttribute(attributes[0].nodeName);
-            }
+		var page1FormObj = $("page1Form");
+		var parameters = page1FormObj.getData("parameters")||"";
+		var xmlNode = parseParameters(parameters);
+		var oldNode = xmlNode.selectSingleNode("./" + type);
 
-            var attributes = newNode.attributes;
-            for(var i=0,iLen=attributes.length;i<iLen;i++) {
-               oldNode.setAttribute(attributes[i].nodeName,attributes[i].nodeValue);
-            }
+		if(oldNode) {
+			var attributes = oldNode.attributes;
+			for(var i=0; i < attributes.length; i++) {
+			   oldNode.removeAttribute(attributes[0].nodeName);
+			}
 
-            if(oldNode.firstChild) {
-                var oldText = new XmlNode(oldNode.firstChild);
-                oldText.removeNode();
-            }
-            if(newNode.firstChild) {
-                var newText = new XmlNode(newNode.firstChild);
-                oldNode.appendChild(newText);
-            }
-        }else{
-            xmlNode.appendChild(newNode);
-        }
+			var attributes = newNode.attributes;
+			for(var i=0; i < attributes.length; i++) {
+			   oldNode.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
+			}
 
-        //更新xform中的parameters值
-        page1FormObj.updateDataExternal(parametersName,xmlNode.toXml());
+			if(oldNode.firstChild) {
+				var oldText = new XmlNode(oldNode.firstChild);
+				oldText.removeNode();
+			}
+			if(newNode.firstChild) {
+				var newText = new XmlNode(newNode.firstChild);
+				oldNode.appendChild(newText);
+			}
+		} 
+		else {
+			xmlNode.appendChild(newNode);
+		}
+
+		// 更新xform中的parameters值
+		page1FormObj.updateDataExternal("parameters", xmlNode.toXml());
     }
+
     /*
      *	更改布局器、修饰器、portlet的配置
      *	参数：	string:paramsType       类型(布局器、修饰器、portlet)
                 string:id               xform列名
                 string:name             xform列名
-                string:parametersName   xform列名
-     *	返回值：
      */
-    function configParams(paramsType,id,name,parametersName) {
+    function configParams(paramsType, id, name) {
         var page1FormObj = $("page1Form");
-        var nameValue = page1FormObj.getData(name)||"";
-        var idValue = page1FormObj.getData(id)||"";
-        var parameters = page1FormObj.getData(parametersName)||"";
+        var nameValue  = page1FormObj.getData(name)||"";
+        var idValue    = page1FormObj.getData(id)||"";
+        var parameters = page1FormObj.getData("parameters") || "";
 
         var xmlNode = parseParameters(parameters);
-        var oldParamsNode = xmlNode.selectSingleNode("./"+paramsType);
+        var oldParamsNode = xmlNode.selectSingleNode("./" + paramsType);
         var oldText = new XmlNode(oldParamsNode.firstChild);
-        if(""!=nameValue && ""!=idValue) {
-            var newParams = window.showModalDialog("configparams.htm",{id:idValue,params:oldParamsNode,type:paramsType,title:"更改\""+nameValue+"\"的配置"},"dialogWidth:250px;dialogHeight:250px;");
-            if(newParams) {
-                var rowReader = new XmlReader(newParams);
-                var rowNode = new XmlNode(rowReader.documentElement);
 
-                var newParamsReader = new XmlReader("<"+paramsType+"/>");
-                var newParamsNode = new XmlNode(newParamsReader.documentElement);
-                var newText = oldText.cloneNode(true);
+		var newParams = window.showModalDialog("configparams.htm", {id:idValue,params:oldParamsNode,type:paramsType,title:"更改\""+nameValue+"\"的配置"},"dialogWidth:250px;dialogHeight:250px;");
+		if(newParams) {
+			var rowReader = new XmlReader(newParams);
+			var rowNode = new XmlNode(rowReader.documentElement);
 
-                //从row节点复制到新参数节点
-                var childs = rowNode.selectNodes("*");
-                for(var i=0,iLen=childs.length;i<iLen;i++) {
-                    var name = childs[i].nodeName;
-                    var value = childs[i].text;
-                    newParamsNode.setAttribute(name,value);
-                }
-                newParamsNode.appendChild(newText);
-                updateParameters(parametersName,newParamsNode);
-            }
-        }
+			var newParamsReader = new XmlReader("<" + paramsType + "/>");
+			var newParamsNode = new XmlNode(newParamsReader.documentElement);
+			var newText = oldText.cloneNode(true);
+
+			// 从row节点复制到新参数节点
+			var childs = rowNode.selectNodes("*");
+			for(var i=0; i < childs.length; i++) {
+				newParamsNode.setAttribute(childs[i].nodeName, childs[i].text);
+			}
+			newParamsNode.appendChild(newText);
+
+			updateParameters(newParamsNode);
+		}
     }
-    /*
-     *	刷新树节点停用启用状态
-     *	参数：	XmlNode:xmlNode         XmlNode实例
-                string:state            停/启用状态
-     *	返回值：
-     */
-    function refreshTreeNodeState(xmlNode,state) {
-        var type = xmlNode.getAttribute("type");
-        var img = {
-            "0":"portal",
-            "1":"page",
-            "2":"section",
-            "3":"portlet_instance"
-        }
-        xmlNode.setAttribute("disabled",state);
-        xmlNode.setAttribute("icon",ICON + img[type]+(state=="1"?"_2":"") + ".gif");       
-    }
+ 
     /*
      *	主题管理
-     *	参数：	
-     *	返回值：
      */
     function themeManage() {
-        var treeObj = $("tree");
+        var treeObj = $T("tree");
         var treeNode = treeObj.getActiveTreeNode();
-        if(treeNode) {
-            var treeID = treeNode.getId();
-            var treeName = treeNode.getName();
-            var portalId = treeNode.getAttribute("portalId");
+		var treeID   = treeNode.getId();
+		var treeName = treeNode.getName();
+		var portalId = treeNode.getAttribute("portalId");
 
-            var callback = {};
-            callback.onTabClose = function(eventObj) {
-                delCacheData(eventObj.tab.SID);
-            };
-            callback.onTabChange = function() {
-                setTimeout(function() {
-                    loadThemeManageData(treeID, portalId);
-                },TIMEOUT_TAB_CHANGE);
-            };
+		var callback = {};
+		callback.onTabChange = function() {
+			setTimeout(function() {
+				loadThemeManageData(treeID, portalId);
+			},TIMEOUT_TAB_CHANGE);
+		};
 
-            var inf = {};
-            inf.defaultPage = "page2";
-            inf.label = OPERATION_SETTING.replace(/\$label/i,treeName);
-            inf.phases = null;
-            inf.callback = callback;
-            inf.SID = CACHE_THEME_MANAGE + treeID;
-            var tab = ws.open(inf);
-        }
+		var inf = {};
+		inf.defaultPage = "page2";
+		inf.label = OPERATION_SETTING.replace(/\$label/i, treeName);
+		inf.phases = null;
+		inf.callback = callback;
+		inf.SID = CACHE_THEME_MANAGE + treeID;
+		var tab = ws.open(inf);
     }
+
     /*
      *	主题管理详细信息加载数据
      *	参数：	string:treeID       树节点id
                 string:portalId     portalId
-     *	返回值：
      */
     function loadThemeManageData(treeID, portalId) {
-        var cacheID = CACHE_THEME_MANAGE + treeID;
-        var treeDetail = Cache.Variables.get(cacheID);
-        if(null==treeDetail) {
-            var p = new HttpRequestParams();
-            p.url = URL_THEME_MANAGE;
-            p.setContent("id", treeID);
+		var p = new HttpRequestParams();
+		p.url = URL_THEME_MANAGE + treeID;
 
-            var request = new HttpRequest(p);
-            request.onresult = function() {
-                var themeManageNode = this.getNodeValue(XML_THEME_MANAGE);
-                var themeManageNodeID = cacheID+"."+XML_THEME_MANAGE;
+		var request = new HttpRequest(p);
+		request.onresult = function() {
+			var themeManageNode = this.getNodeValue(XML_THEME_MANAGE);
+			Cache.XmlDatas.add(treeID + "." + XML_THEME_MANAGE, themeManageNode);
 
-                Cache.XmlDatas.add(themeManageNodeID,themeManageNode);
-                Cache.Variables.add(cacheID,[themeManageNodeID]);
+			var page2TreeObj = $T("page2Tree");
+			page2TreeObj.load(xmlIsland.node);
+			page2TreeObj.research = true;
 
-                initThemeManagePages(cacheID,treeID, portalId);
-            }
-            request.send();
-        }else{
-            initThemeManagePages(cacheID,treeID, portalId);
-        }
+			page2TreeObj.onTreeNodeRightClick = function(eventObj) {
+				onPage2TreeNodeRightClick(eventObj);
+			}
+	 
+			initThemeTreeMenu(treeID, portalId);
+
+			//设置翻页/保存按钮显示状态
+			$$("page2BtPrev").style.display = "none";
+			$$("page2BtNext").style.display = "none";
+			$$("page2BtSave").style.display = "none";
+		}
+		request.send();
     }
-    /*
-     *	主题管理相关页加载数据
-     *	参数：	string:cacheID          缓存数据id
-                string:treeID           树节点id
-     *	返回值：
-     */
-    function initThemeManagePages(cacheID,treeID, portalId) {
-        var page2TreeObj = $("page2Tree");
-        Public.initHTC(page2TreeObj,"isLoaded","oncomponentready",function() {
-            loadThemeManageTreeData(cacheID, portalId);
-            initThemeManageTreeMenu(treeID, portalId);
-        });
-
-        //设置搜索
-        var page2BtSearchObj = $("page2BtSearch");
-        var page2KeywordObj = $("page2Keyword");
-        attachSearchTree(page2TreeObj,page2BtSearchObj,page2KeywordObj);
-
-        //设置翻页按钮显示状态
-        var page2BtPrevObj = $("page2BtPrev");
-        var page2BtNextObj = $("page2BtNext");
-        page2BtPrevObj.style.display = "none";
-        page2BtNextObj.style.display = "none";
-
-        //设置保存按钮操作
-        var page2BtSaveObj = $("page2BtSave");
-        page2BtSaveObj.style.display = "none";
-    }
-    /*
-     *	主题管理tree加载数据
-     *	参数：	string:cacheID     缓存数据id
-     *	返回值：
-     */
-    function loadThemeManageTreeData(cacheID) {
-        var xmlIsland = Cache.XmlDatas.get(cacheID+"."+XML_THEME_MANAGE);
-        if(xmlIsland) {
-            var page2TreeObj = $("page2Tree");
-            page2TreeObj.load(xmlIsland.node);
-            page2TreeObj.research = true;
-
-            page2TreeObj.onTreeNodeRightClick = function(eventObj) {
-                onPage2TreeNodeRightClick(eventObj);
-            }
-        }
-    }
-    /*
-     *	主题管理tree加载数据
-     *	参数：	string:siteID           门户节点id
-     *	返回值：
-     */
-    function initThemeManageTreeMenu(siteID, portalId) {
+ 
+    function initThemeTreeMenu(siteID, portalId) {
         var item1 = {
             label:"更名",
             callback:function() {
                 changeThemeName();
             },
-            enable:function() {return true;},
             visible:function() {return "_rootId"!=getThemeTreeId();}
         }
         var item2 = {
@@ -997,7 +867,6 @@
                 delTheme(portalId);
             },
             icon:ICON + "del.gif",
-            enable:function() {return true;},
             visible:function() {return "_rootId"!=getThemeTreeId();}
         }
         var item3 = {
@@ -1006,7 +875,6 @@
                 copyTheme(portalId);
             },
             icon:ICON + "copy.gif",
-            enable:function() {return true;},
             visible:function() {return "_rootId"!=getThemeTreeId();}
         }
         var item4 = {
@@ -1015,7 +883,6 @@
                 previewTheme(portalId);
             },
             icon:ICON + "preview.gif",
-            enable:function() {return true;},
             visible:function() {return "_rootId"!=getThemeTreeId();}
         }
         var item5 = {
@@ -1023,7 +890,6 @@
             callback:function() {
                 setDefaultTheme(portalId);
             },
-            enable:function() {return true;},
             visible:function() {return "_rootId"!=getThemeTreeId() && "1"!=getThemeAttribute("isDefault");}
         }
 

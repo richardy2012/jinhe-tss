@@ -12,6 +12,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -21,6 +22,7 @@ import freemarker.template.TemplateException;
  * 记录业务日志的拦截器
  * 
  */
+@Component("businessLogInterceptor")
 public class BusinessLogInterceptor implements MethodInterceptor {
 
     protected Logger log = Logger.getLogger(this.getClass());

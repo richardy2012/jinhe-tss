@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
+import com.jinhe.tss.framework.component.cache.CacheHelper;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
@@ -45,8 +45,8 @@ public class NavigatorAction extends BaseActionSupport {
     /** 刷新一下参数的缓存 */
 	@RequestMapping("/cache/{key}")
     public void flushCache(HttpServletResponse response, @PathVariable("key") Object key) {
-		Pool navigatorPool = JCache.getInstance().getCachePool(PortalConstants.NAVIGATOR_CACHE);
-        navigatorPool.removeObject(key);
+		Pool navigatorPool = CacheHelper.getNoDeadCache();;
+        navigatorPool.removeObject(PortalConstants.NAVIGATOR_CACHE + key);
         printSuccessMessage();
     }
     

@@ -3,6 +3,7 @@ package com.jinhe.tss.framework.persistence.entityaop;
 import java.util.Date;
 
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.stereotype.Component;
 
 import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.sso.Environment;
@@ -12,6 +13,7 @@ import com.jinhe.tss.framework.sso.Environment;
  *  对象操作者信息记录拦截器
  * </p>
  */
+@Component("operateInfoInterceptor")
 public class OperateInfoInterceptor extends MatchByDaoMethodNameInterceptor {
 
 	public Object invoke(MethodInvocation invocation) throws Throwable {

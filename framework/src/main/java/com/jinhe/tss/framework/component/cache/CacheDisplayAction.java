@@ -73,7 +73,7 @@ public class CacheDisplayAction extends BaseActionSupport {
      */
     @RequestMapping("/list/{code}")
     public void getCacheStrategyInfo(HttpServletResponse response, @PathVariable String code) {
-        Pool pool = cache.getCachePool(code);
+        Pool pool = cache.getPool(code);
         CacheStrategy strategy = pool.getCacheStrategy();
         Map<String, Object> strategyProperties = new HashMap<String, Object>();
         BeanUtil.addBeanProperties2Map(strategy, strategyProperties);
@@ -122,7 +122,7 @@ public class CacheDisplayAction extends BaseActionSupport {
      */
     @RequestMapping("/item/{code}")
     public void viewCachedItem(HttpServletResponse response, @PathVariable String code, @RequestParam("key") String key){
-        Cacheable item = cache.getCachePool(code).getObject(key);
+        Cacheable item = cache.getPool(code).getObject(key);
         if(item != null) {
             String returnStr = "";
             try{
@@ -143,7 +143,7 @@ public class CacheDisplayAction extends BaseActionSupport {
      */
     @RequestMapping("/release/{code}")
     public void releaseCache(HttpServletResponse response, @PathVariable String code){
-        cache.getCachePool(code).flush();
+        cache.getPool(code).flush();
         printSuccessMessage();
     }
     
@@ -152,7 +152,7 @@ public class CacheDisplayAction extends BaseActionSupport {
      */
     @RequestMapping("/init/{code}")
     public void initPool(HttpServletResponse response, @PathVariable String code){
-        cache.getCachePool(code).init();
+        cache.getPool(code).init();
         printSuccessMessage();
     }
  

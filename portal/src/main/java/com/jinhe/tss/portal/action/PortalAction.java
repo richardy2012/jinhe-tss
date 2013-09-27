@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
+import com.jinhe.tss.framework.component.cache.CacheHelper;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.web.dispaly.grid.DefaultGridNode;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
@@ -382,8 +382,8 @@ public class PortalAction extends FreeMarkerSupportAction {
     		@PathVariable("portalId") Long portalId, 
     		@PathVariable("themeId") Long themeId) {
     	
-        Pool pool = JCache.getInstance().getCachePool(PortalConstants.PORTAL_CACHE);        
-        pool.removeObject(portalId + "-" + themeId);
+        Pool pool = CacheHelper.getLongCache();        
+        pool.removeObject(PortalConstants.PORTAL_CACHE + "-" + portalId + "-" + themeId);
         printSuccessMessage();
     }
     

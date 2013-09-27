@@ -26,8 +26,6 @@ public class ParamServiceImpl implements ParamService {
             paramDao.update(param);
         }
 
-        // 刷新参数缓存 ，如果保存的是缓存项，则需要手动的刷新其所属的参数节点
-        ParamManager.remove(param.getCode());
         return param;
     }
 
@@ -90,9 +88,6 @@ public class ParamServiceImpl implements ParamService {
         for(Object entity : params) {
             Param param = (Param)entity;
             paramDao.delete(param);
-            
-            // 刷新参数缓存，如果删除的是缓存项，则需要手动的刷新其所属的参数节点
-            ParamManager.remove(param.getCode());
         }
     }
 
@@ -168,20 +163,22 @@ public class ParamServiceImpl implements ParamService {
     /* ********************************************* 以下供ParamManager调用 ************************************ */
     
     public Param getParam(String code) {
-        return paramDao.getParamByCode(code);
-    }
-
-    public String getSimpleParamValue(String code) {
-        Param param = paramDao.getParamByCode(code);
-        if (param == null || !ParamConstants.SIMPLE_PARAM_MODE.equals(param.getModality())) {
+    	Param param = paramDao.getParamByCode(code);
+        if (param == null) {
+        	return null;
+        }
+        if (!ParamConstants.SIMPLE_PARAM_MODE.equals(param.getModality())) {
             throw new BusinessException("不是简单参数!");
         }
-        return param.getValue();
+        return param;
     }
 
     public List<Param> getComboParam(String code) {
         Param param = paramDao.getParamByCode(code);
-        if (param == null || !ParamConstants.COMBO_PARAM_MODE.equals(param.getModality())) {
+        if (param == null) {
+        	return null;
+        }
+        if (!ParamConstants.COMBO_PARAM_MODE.equals(param.getModality())) {
             throw new BusinessException("不是下拉型参数!");
         }
         return paramDao.getChildrenByDecode(param.getDecode());
@@ -189,7 +186,10 @@ public class ParamServiceImpl implements ParamService {
 
     public List<Param> getTreeParam(String code) {
         Param param = paramDao.getParamByCode(code);
-        if (param == null || !ParamConstants.TREE_PARAM_MODE.equals(param.getModality())) {
+        if (param == null) {
+        	return null;
+        }
+        if (!ParamConstants.TREE_PARAM_MODE.equals(param.getModality())) {
             throw new BusinessException("不是树型参数!");
         }
         return paramDao.getChildrenByDecode(param.getDecode());

@@ -7,8 +7,8 @@ public interface PortalConstants {
     
     public static final Long ROOT_ID = 0L;
  
-    public static final String PORTAL_CACHE    = "portal_tree";    // 门户树缓存池
-    public static final String NAVIGATOR_CACHE = "navigator_pool"; // 导航栏缓存池
+    public static final String PORTAL_CACHE    = "cache-portal-";    // 门户树缓存
+    public static final String NAVIGATOR_CACHE = "cache-navigator-"; // 导航栏缓存
 
     /**
      * 模板路径

@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.cache.Cacheable;
-import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
+import com.jinhe.tss.framework.component.cache.CacheHelper;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.portal.PortalConstants;
@@ -20,8 +20,8 @@ import com.jinhe.tss.portal.dao.INavigatorDao;
 import com.jinhe.tss.portal.dao.IPortalDao;
 import com.jinhe.tss.portal.engine.PortalGenerator;
 import com.jinhe.tss.portal.engine.model.PortalNode;
-import com.jinhe.tss.portal.entity.ReleaseConfig;
 import com.jinhe.tss.portal.entity.Navigator;
+import com.jinhe.tss.portal.entity.ReleaseConfig;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
 import com.jinhe.tss.portal.entity.ThemeInfo;
@@ -99,7 +99,7 @@ public class PortalService implements IPortalService {
         PortalNode portalNode;
         
         String portalCacheKey = portal.getDefaultKey();
-        Pool pool = JCache.getInstance().getCachePool(PortalConstants.PORTAL_CACHE);
+        Pool pool = CacheHelper.getLongCache();
         Cacheable item = pool.getObject(portalCacheKey);
         if( item != null ) {
             portalNode = (PortalNode) item.getValue();
