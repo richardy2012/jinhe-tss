@@ -36,9 +36,6 @@ public class GridTemplet {
     private static final String ATTRIBUTE_MODE = "@mode";
 
     private static final String ATTRIBUTE_PATTERN = "@pattern";
-    
-    //  Grid模板缓存池
-    private static Pool pool = CacheHelper.getNoDeadCache();
 
     private Document doc; // 模板文件
 
@@ -47,6 +44,7 @@ public class GridTemplet {
             throw new BusinessException("没有定义Gird模板文件的路径！uri = " + uri);
         }
         
+        Pool pool = CacheHelper.getNoDeadCache();
         Cacheable obj = pool.getObject(uri);
         if (obj == null) {
             doc = XMLDocUtil.createDoc(uri);
