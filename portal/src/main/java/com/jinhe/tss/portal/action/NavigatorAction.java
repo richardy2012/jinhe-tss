@@ -45,7 +45,7 @@ public class NavigatorAction extends BaseActionSupport {
     /** 刷新一下参数的缓存 */
 	@RequestMapping("/cache/{key}")
     public void flushCache(HttpServletResponse response, @PathVariable("key") Object key) {
-		Pool navigatorPool = JCache.getInstance().getCachePool(PortalConstants.NAVIGATOR_CACHE);
+		Pool navigatorPool = JCache.getInstance().getPool(PortalConstants.NAVIGATOR_CACHE);
         navigatorPool.removeObject(key);
         printSuccessMessage();
     }

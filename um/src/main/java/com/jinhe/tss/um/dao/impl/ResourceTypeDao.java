@@ -24,8 +24,8 @@ public class ResourceTypeDao extends BaseDao<ResourceType> implements IResourceT
     public static final String RES_TYPE_MAPPING_CACHE = "res_type_mapping";
     public static final String RES_TYPE_ROOT_CACHE  = "res_type_root";
 
-    private Pool cache = JCache.getInstance().getCachePool(RES_TYPE_MAPPING_CACHE);
-    private Pool rootCache = JCache.getInstance().getCachePool(RES_TYPE_ROOT_CACHE);
+    private Pool cache = JCache.getInstance().getPool(RES_TYPE_MAPPING_CACHE);
+    private Pool rootCache = JCache.getInstance().getPool(RES_TYPE_ROOT_CACHE);
     
     private String getCode(String applicationId, String resourceTypeId){
         return applicationId + "_" + resourceTypeId;

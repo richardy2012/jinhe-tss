@@ -99,7 +99,7 @@ public class PortalService implements IPortalService {
         PortalNode portalNode;
         
         String portalCacheKey = portal.getDefaultKey();
-        Pool pool = JCache.getInstance().getCachePool(PortalConstants.PORTAL_CACHE);
+        Pool pool = JCache.getInstance().getPool(PortalConstants.PORTAL_CACHE);
         Cacheable item = pool.getObject(portalCacheKey);
         if( item != null ) {
             portalNode = (PortalNode) item.getValue();

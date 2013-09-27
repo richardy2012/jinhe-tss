@@ -108,7 +108,7 @@ public class JCache {
 	 * @param code
 	 * @return
 	 */
-	public Pool getCachePool(String code) {
+	public Pool getPool(String code) {
 	    if(code == null) return null;
 	    
 		Pool pool = pools.get(code);
@@ -137,15 +137,15 @@ public class JCache {
 	}
 	
 	public IThreadPool getThreadPool() {
-		return (IThreadPool) getCachePool(THREAD_POOL);
+		return (IThreadPool) getPool(THREAD_POOL);
 	}
 	
 	public Pool getConnectionPool() {
-		return getCachePool(CONNECTION_POOL);
+		return getPool(CONNECTION_POOL);
 	}
 	
 	public Pool getTaskPool() {
-		return getCachePool(TASK_POOL);
+		return getPool(TASK_POOL);
 	}
 
 	/**

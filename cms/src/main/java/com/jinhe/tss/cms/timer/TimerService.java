@@ -115,7 +115,7 @@ public class TimerService implements Progressable, ITimerService {
             Object content = params.get("articleContentSet");
             IndexHelper.createIndex(strategy, (Set<ArticleContent>)content, progress); 
         } 
-        else if(CMSConstants.STRATEGY_TYPE_PUBLISH.equals(type)) {
+        else if(CMSConstants.STRATEGY_TYPE_PUBLISH.equals(type)) { // 发布文章
             List<Long> channelIds = (List<Long>) params.get("channelIds");
             publishManger.publishArticle4TimerJob(channelIds, progress);
         }

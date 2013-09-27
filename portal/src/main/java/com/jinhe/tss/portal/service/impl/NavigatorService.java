@@ -84,7 +84,7 @@ public class NavigatorService implements INavigatorService {
     	}
     	
     	// 缓存只针对匿名用户访问进行缓存
-        Pool navigatorPool = JCache.getInstance().getCachePool(PortalConstants.NAVIGATOR_CACHE);
+        Pool navigatorPool = JCache.getInstance().getPool(PortalConstants.NAVIGATOR_CACHE);
         Cacheable cachedMenu = navigatorPool.getObject(id);
         if( cachedMenu == null ){
         	cachedMenu = navigatorPool.putObject(id, createNavigatorXML(id));

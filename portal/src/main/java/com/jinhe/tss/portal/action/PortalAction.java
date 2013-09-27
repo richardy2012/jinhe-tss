@@ -382,7 +382,7 @@ public class PortalAction extends FreeMarkerSupportAction {
     		@PathVariable("portalId") Long portalId, 
     		@PathVariable("themeId") Long themeId) {
     	
-        Pool pool = JCache.getInstance().getCachePool(PortalConstants.PORTAL_CACHE);        
+        Pool pool = JCache.getInstance().getPool(PortalConstants.PORTAL_CACHE);        
         pool.removeObject(portalId + "-" + themeId);
         printSuccessMessage();
     }
