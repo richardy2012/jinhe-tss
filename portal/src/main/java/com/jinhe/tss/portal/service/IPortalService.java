@@ -176,7 +176,7 @@ public interface IPortalService {
      * @param themeName
      */
     @Logable(operateTable="门户主题", operateType="复制", 
-            operateInfo="复制(ID: ${args[1]})主题"
+            operateInfo="复制出名为${args[1]}的新主题(SourceID: ${args[0]})"
         )
     Theme saveThemeAs(Long themeId, String themeName);
 
@@ -189,13 +189,12 @@ public interface IPortalService {
 
     /**
      * 设置默认主题
-     * @param portalId
      * @param themeId
      */
     @Logable(operateTable="门户主题", operateType="设为默认", 
-            operateInfo="将(ID: ${args[1]})主题设置为默认主题"
+            operateInfo="将(ID: ${args[0]})主题设置为默认主题"
         )
-    void specifyDefaultTheme(Long portalId, Long themeId);
+    void specifyDefaultTheme(Long themeId);
 
     /**
      * 删除主题，如果删除的主题是当前门户的默认主题或者当前主题，则删除失败
@@ -203,9 +202,9 @@ public interface IPortalService {
      * @param themeId
      */
     @Logable(operateTable="门户主题", operateType="删除", 
-            operateInfo="删除了(ID: ${args[1]})主题"
+            operateInfo="删除了(ID: ${args[0]})主题"
         )
-    void removeTheme(Long portalId, Long themeId);
+    void removeTheme(Long themeId);
 
     /**
      * 重命名主题名字

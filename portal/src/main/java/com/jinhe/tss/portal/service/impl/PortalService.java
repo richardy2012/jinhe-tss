@@ -334,24 +334,29 @@ public class PortalService implements IPortalService {
    
     //********************************  以下为主题管理  ***************************************************************
     
-    public void specifyDefaultTheme(Long portalId, Long themeId) {
-        Structure portal = portalDao.getEntity(portalId);
-        Theme theme = (Theme) portalDao.getEntity(Theme.class, themeId);
+    private Theme getTheme(Long id) {
+    	return (Theme) portalDao.getEntity(Theme.class, id);
+    }
+    
+    public void specifyDefaultTheme(Long themeId) {
+    	Theme theme = getTheme(themeId);
+        Structure portal = portalDao.getEntity(theme.getPortalId());
         portal.setTheme(theme);
         portalDao.update(portal);
     }
 
-    public void removeTheme(Long portalId, Long themeId) {
-        Structure portal = portalDao.getEntity(portalId);
-        if(themeId.equals(portal.getTheme().getId()) || themeId.equals(portal.getCurrentTheme().getId())) {
+    public void removeTheme(Long themeId) {
+    	Theme theme = getTheme(themeId);
+        Structure portal = portalDao.getEntity(theme.getPortalId());
+        if(theme.equals(portal.getTheme()) || theme.equals(portal.getCurrentTheme())) {
             throw new BusinessException("该主题为门户的默认主题或者当前主题，正在使用中，删除失败！");
         }
 
-        portalDao.delete(portalDao.getEntity(Theme.class, themeId));
+        portalDao.delete(theme);
     }
 
     public Theme saveThemeAs(Long themeId, String themeName){
-        Theme theme = (Theme) portalDao.getEntity(Theme.class, themeId);
+    	Theme theme = getTheme(themeId);
         portalDao.evict(theme);
         theme.setName(themeName);
         theme.setId(null);
@@ -377,7 +382,7 @@ public class PortalService implements IPortalService {
             throw new BusinessException("主题名称不能为空");
         }
         
-        Theme theme = (Theme) portalDao.getEntity(Theme.class, themeId);
+        Theme theme = getTheme(themeId);
         theme.setName(name);
         portalDao.update(theme);
     }

@@ -151,9 +151,9 @@ public class PortalAction extends FreeMarkerSupportAction {
             // 如果是门户节点，则带出主题信息列表
             if( info.isRootPortal() ) {
                 Object[] objs = genComboThemes(info.getPortalId());
-                encoder.setColumnAttribute("currentThemeId", "editorvalue", (String) objs[0]);
-                encoder.setColumnAttribute("currentThemeId", "editortext",  (String) objs[1]);
-                encoder.setColumnAttribute("themeName", "editable", "false");
+                encoder.setColumnAttribute("currentTheme.id", "editorvalue", (String) objs[0]);
+                encoder.setColumnAttribute("currentTheme.id", "editortext",  (String) objs[1]);
+                encoder.setColumnAttribute("theme.name", "editable", "false");
             }           
         }
         print("DetailInfo", encoder);
@@ -248,7 +248,7 @@ public class PortalAction extends FreeMarkerSupportAction {
             public Map<String, Object> translate(Map<String, Object> attributes) {
                 if(defalutThemeId.equals(attributes.get("id"))) {
                     attributes.put("isDefault", "1");
-                    attributes.put("icon", "../framework/images/default_theme.gif"); // 默认主题
+                    attributes.put("icon", "../framework/images/portal/default_theme.gif"); // 默认主题
                 }
                 return attributes;
             }
@@ -275,21 +275,19 @@ public class PortalAction extends FreeMarkerSupportAction {
         printSuccessMessage();
     }
     
-    @RequestMapping(value ="/theme/default/{themeId}/{name}", method = RequestMethod.PUT)
+    @RequestMapping(value ="/theme/default/{themeId}", method = RequestMethod.PUT)
     public void specifyDefaultTheme(HttpServletResponse response, 
-    		@PathVariable("portalId") Long portalId, 
     		@PathVariable("themeId") Long themeId) {
     	
-         service.specifyDefaultTheme(portalId, themeId);
+         service.specifyDefaultTheme(themeId);
          printSuccessMessage();
     }
     
-    @RequestMapping(value = "/theme/{portalId}/{themeId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/theme/{themeId}", method = RequestMethod.DELETE)
     public void removeTheme(HttpServletResponse response, 
-    		@PathVariable("portalId") Long portalId, 
     		@PathVariable("themeId") Long themeId) {
     	
-        service.removeTheme(portalId, themeId);
+        service.removeTheme(themeId);
         printSuccessMessage();
     }
     
@@ -408,6 +406,6 @@ public class PortalAction extends FreeMarkerSupportAction {
         template.append("</declare><data></data></grid>");
         
         GridDataEncoder gEncoder = new GridDataEncoder(gridList, XMLDocUtil.dataXml2Doc(template.toString()));
-        print("PageViewList", gEncoder);
+        print("PageFlowRate", gEncoder);
     }
 }

@@ -2,6 +2,7 @@ package com.jinhe.tss.portal.action;
 
 import java.util.Iterator;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.dom4j.Document;
@@ -54,8 +55,9 @@ public class ReleaseAction extends ProgressActionSupport {
      * 
      * @param pageUrl 需要单个发布的页面地址
      */
-	@RequestMapping("/page/{pageUrl}")
-    public void staticReleasePortalPage(HttpServletResponse response, String  pageUrl) {
+	@RequestMapping("/page")
+    public void staticReleasePortalPage(HttpServletResponse response, HttpServletRequest request) {
+		String  pageUrl = request.getParameter("pageUrl");
         MagicRobot robot = new MagicRobot(pageUrl);
 
         // 此处总数是个估算值，按100计

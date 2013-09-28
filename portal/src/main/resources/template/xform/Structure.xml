@@ -19,8 +19,8 @@
 			<column name="decorator.name" caption="修饰" empty="false" mode="function"
 				cmd="getDecorator('decorator.id', 'decorator.name', 'parameters')"/>
 			
-			<column name="js" caption="js文件" mode="function" cmd="getJs('js')"/>
-			<column name="css" caption="css文件" mode="function" cmd="getCss('css')"/>
+			<column name="js" caption="js文件" mode="string"/>
+			<column name="css" caption="css文件" mode="string"/>
 			<column name="jsCode" caption="js代码" mode="string"/>
 			<column name="cssCode" caption="css代码" mode="string"/>
 			
@@ -39,7 +39,7 @@
                     </TD>
                 </TR>
                 <TR showType="0">
-                    <TD width="50">
+                    <TD width="50" height="26">
                         <label binding="theme.name"/>
                     </TD>
                     <TD>
@@ -47,7 +47,7 @@
                     </TD>
                 </TR>
 				<TR showType="0">
-                    <TD width="50">
+                    <TD width="50" height="26">
                         <label binding="currentTheme.id"/>
                     </TD>
                     <TD>
@@ -82,7 +82,7 @@
                     </TD>
                 </TR>
                 <TR showType="0,1">
-                    <TD width="50" valign="top">
+                    <TD width="50" height="26" valign="top">
                         <label binding="js"/>
                     </TD>
                     <TD>
@@ -90,7 +90,7 @@
                     </TD>
                 </TR>
                 <TR showType="0,1">
-                    <TD width="50" valign="top">
+                    <TD width="50" height="26" valign="top">
                         <label binding="css"/>
                     </TD>
                     <TD>

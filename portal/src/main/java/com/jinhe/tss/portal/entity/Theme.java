@@ -47,7 +47,7 @@ public class Theme extends OperateInfo implements IEntity, ITreeNode {
 
     public TreeAttributesMap getAttributes() {
         TreeAttributesMap map = new TreeAttributesMap(id, name);
-        map.put("icon", "../framework/images/theme.gif");
+        map.put("icon", "../framework/images/portal/theme.gif");
         return map;
     }
  
@@ -97,5 +97,17 @@ public class Theme extends OperateInfo implements IEntity, ITreeNode {
  
     public void setDisabled(Integer disabled) {
         this.disabled = disabled;
+    }
+    
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+
+		final Theme other = (Theme) obj;
+		return other.getId().equals(this.getId());
     }
 }

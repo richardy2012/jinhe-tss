@@ -214,7 +214,7 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
     
     public Map<String, Object> getAttributesForXForm() {
         Map<String, Object> map = new HashMap<String, Object>();
-        BeanUtil.addBeanProperties2Map(this, map, "children, menus, theme, currentTheme, definer, decorator".split(","));
+        BeanUtil.addBeanProperties2Map(this, map, "children,menus,theme,currentTheme,definer,decorator".split(","));
         
         if(theme != null) {
             map.put("theme.id", theme.getId());
