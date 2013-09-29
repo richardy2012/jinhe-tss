@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.jinhe.tss</groupId>
 		<artifactId>tss</artifactId>
-		<version>1.0.0</version>
+		<version>${tss.version}</version>
 	</parent>
 	<artifactId>cache</artifactId>
 	<packaging>jar</packaging>
