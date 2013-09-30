@@ -1069,9 +1069,10 @@
         var treeNode = $T("tree").getActiveTreeNode();
 		var portalId = treeNode.getAttribute("portalId");
 		var params = {
+			service: null,
 			portalId: portalId
 		};
-		window.showModalDialog("commongrid.html",{params:params,title:"查看页面流量"} ,"dialogWidth:400px;dialogHeight:400px;resizable:yes");
+		window.showModalDialog("commongrid.html", {params:params, title:"查看页面流量"} , "dialogWidth:400px;dialogHeight:400px;resizable:yes");
     }
 
 	/********************************************************************************************************************

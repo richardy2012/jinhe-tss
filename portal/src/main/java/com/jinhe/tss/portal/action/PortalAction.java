@@ -349,7 +349,7 @@ public class PortalAction extends FreeMarkerSupportAction {
     @RequestMapping("/theme4release/{portalId}")
     public void getThemesByPortal(HttpServletResponse response, @PathVariable("portalId") Long portalId) {
         Object[] objs = genComboThemes(portalId);       
-        String returnStr = "<column name=\"themeId\" caption=\"主题\" mode=\"string\" " +
+        String returnStr = "<column name=\"theme.id\" caption=\"主题\" mode=\"string\" " +
         		" editor=\"comboedit\" editorvalue=\"" + objs[0] + "\" editortext=\"" + objs[1] + "\"/>";
         
         print("ThemeList", returnStr);
