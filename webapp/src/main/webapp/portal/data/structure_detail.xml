@@ -2,10 +2,10 @@
 <xform>
 		<declare prefix="ps">
 			<column name="id" caption="ID号" mode="hidden" editable="false"/>
-			<column name="parentId" caption="" mode="hidden" editable="false"/>
-			<column name="portalId" caption="" mode="hidden" editable="false"/>
-			<column name="code" caption="" mode="hidden" editable="false"/>
-			<column name="type" caption="" mode="hidden" editable="false"/>
+			<column name="parentId" mode="hidden" editable="false"/>
+			<column name="portalId" mode="hidden" editable="false"/>
+			<column name="code" mode="hidden" editable="false"/>
+			<column name="type" mode="hidden" editable="false"/>
 			<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>
 			
 			<column name="theme.id" mode="hidden" editable="false"/>
@@ -13,18 +13,20 @@
 			<column name="currentTheme.name" mode="hidden" editable="false"/>
 			<column name="currentTheme.id" caption="当前主题" mode="string" editor="comboedit" editorvalue="1" editortext="默认主题"/>
 
-			<column name="definer.id" caption="" mode="hidden" editable="false"/>
-			<column name="definer.name" caption="布局" empty="false" mode="function" cmd="getDefiner('${definerType}', 'definer.id', 'definer.name', 'parameters')"/>
-			<column name="decorator.id" caption="" mode="hidden" editable="false"/>
-			<column name="decorator.name" caption="修饰" empty="false" mode="function" cmd="getDecorator('decorator.id', 'decorator.name', 'parameters')"/>
+			<column name="definer.id" mode="hidden" editable="false"/>
+			<column name="decorator.id" mode="hidden" editable="false"/>
+			<column name="definer.name" caption="布局器" empty="false" mode="function"
+				cmd="getComponent('${definerType}', 'definer.id', 'definer.name', 'parameters')"/>
+			<column name="decorator.name" caption="修饰器" empty="false" mode="function"
+				cmd="getComponent(2, 'decorator.id', 'decorator.name', 'parameters')"/>
 			
 			<column name="js" caption="js文件" mode="string"/>
 			<column name="css" caption="css文件" mode="string"/>
 			<column name="jsCode" caption="js代码" mode="string"/>
 			<column name="cssCode" caption="css代码" mode="string"/>
 			
-			<column name="supplement" caption="补充" mode="string"/>
-			<column name="parameters" caption="" mode="hidden" editable="false"/>
+			<column name="supplement" mode="hidden" />
+			<column name="parameters" mode="hidden" />
 			
 			<column name="description" caption="说明" mode="string"/>
 		</declare>
@@ -59,7 +61,7 @@
                     </TD>
                     <TD>
                         <input binding="definer.name" type="text" style="width:200"/>
-                        <input type="button" value="配置" id="page1BtConfigDefiner" onclick="configParams('layout','definerId','definer.name','parameters')" class="btWeak"/>
+                        <input type="button" value="配置" id="page1BtConfigDefiner" onclick="configParams('layout','definer.id','definer.name','parameters')" class="btWeak"/>
                     </TD>
                 </TR>
                 <TR showType="3">
@@ -68,7 +70,7 @@
                     </TD>
                     <TD>
                         <input binding="definer.name" type="text" style="width:200"/>
-                        <input type="button" value="配置" id="page1BtConfigDefiner" onclick="configParams('portlet','definerId','definer.name','parameters')" class="btWeak"/>
+                        <input type="button" value="配置" id="page1BtConfigDefiner" onclick="configParams('portlet','definer.id','definer.name','parameters')" class="btWeak"/>
                     </TD>
                 </TR>
                 <TR showType="1,2,3">
@@ -121,5 +123,46 @@
                     </TD>
                 </TR>		
             </layout>
-	<data><row><currentTheme.id><![CDATA[1]]></currentTheme.id><createTime><![CDATA[Sat Sep 28 17:57:26 CST 2013]]></createTime><theme.name><![CDATA[默认主题]]></theme.name><seqNo><![CDATA[1]]></seqNo><portalId><![CDATA[1]]></portalId><theme.id><![CDATA[1]]></theme.id><creatorId><![CDATA[-1]]></creatorId><code><![CDATA[1380362246768]]></code><type><![CDATA[0]]></type><levelNo><![CDATA[2]]></levelNo><lockVersion><![CDATA[1]]></lockVersion><id><![CDATA[1]]></id><parentId><![CDATA[0]]></parentId><creatorName><![CDATA[Admin]]></creatorName><decode><![CDATA[0000100001]]></decode><currentTheme.name><![CDATA[默认主题]]></currentTheme.name><description><![CDATA[测试门户-2]]></description><supplement><![CDATA[<page><property><name>Jon的门户</name><description>&lt;![CDATA[]]&gt;</description></property><script><file>&lt;![CDATA[]]&gt;</file><code>&lt;![CDATA[]]&gt;</code></script><style><file>&lt;![CDATA[]]&gt;</file><code>&lt;![CDATA[]]&gt;</code></style></page>]]></supplement><name><![CDATA[Jon的门户-1]]></name><disabled><![CDATA[0]]></disabled></row></data>
+	<data>
+		<row>
+			<currentTheme.id><![CDATA[1]]></currentTheme.id>
+			<createTime><![CDATA[Sat Sep 28 17:57:26 CST 2013]]></createTime>
+			<theme.name><![CDATA[默认主题]]></theme.name>
+			<seqNo><![CDATA[1]]></seqNo>
+			<portalId><![CDATA[1]]></portalId>
+			<theme.id><![CDATA[1]]></theme.id>
+			<creatorId><![CDATA[-1]]></creatorId>
+			<code><![CDATA[1380362246768]]></code>
+			<type><![CDATA[0]]></type>
+			<levelNo><![CDATA[2]]></levelNo>
+			<lockVersion><![CDATA[1]]></lockVersion>
+			<id><![CDATA[1]]></id>
+			<parentId><![CDATA[0]]></parentId>
+			<creatorName><![CDATA[Admin]]></creatorName>
+			<decode><![CDATA[0000100001]]></decode>
+			<currentTheme.name><![CDATA[默认主题]]></currentTheme.name>
+			<description><![CDATA[测试门户-2]]></description>
+			<definer.id><![CDATA[3]]></definer.id>
+			<definer.name><![CDATA[品字布局器]]></definer.name>
+			<decorator.id><![CDATA[8]]></decorator.id>
+			<decorator.name><![CDATA[修饰器（秋）]]></decorator.name>
+			<supplement>
+				<![CDATA[
+				<page>
+					<property><name>Jon的门户</name><description>&lt;![CDATA[]]&gt;</description></property>
+					<script><file>&lt;![CDATA[1.js,2,js]]&gt;</file><code>&lt;![CDATA[alert(123456)]]&gt;</code></script>
+					<style><file>&lt;![CDATA[1.css,2.css]]&gt;</file><code>&lt;![CDATA[.body {size:12px}]]&gt;</code></style>
+				</page>]]>
+			</supplement>
+			<parameters>
+				<![CDATA[
+				<params>
+					<portlet channelId="12">model/portlet/portlet-2/paramsXForm.xml</portlet>
+					<decorator bgColor="#ABCDEF">model/decorator/decorator-8/paramsXForm.xml</decorator>
+				</params>]]>
+			</parameters>
+			<name><![CDATA[Jon的门户-1]]></name>
+			<disabled><![CDATA[0]]></disabled>
+		</row>
+	</data>
 </xform></DetailInfo></Response>

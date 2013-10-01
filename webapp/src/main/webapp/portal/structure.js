@@ -33,7 +33,8 @@
     URL_STOP_NODE     = "data/_success.xml?";
     URL_SORT_NODE     = "data/_success.xml?";
     URL_VIEW_SITE     = "portal!previewPortal.action";
-    URL_GET_COMPONENT_PARAMETERS = "data/layoutparameters.xml?";
+    URL_GET_COMPONENT_PARAMETERS = "data/structure-params.xml?";
+	URL_GET_COMPONENT_TREE = "data/component_tree.xml?";
     URL_THEME_MANAGE      = "data/theme_list.xml?";
     URL_RENAME_THEME      = "data/_success.xml?";
     URL_DEL_THEME         = "data/_success.xml?";
@@ -512,12 +513,12 @@
             case "0":
             case "1":
             case "2":
-                definerNode.setAttribute("caption", "布局");
-                decoratorNode.setAttribute("caption", "修饰");
+                definerNode.setAttribute("caption", "布局器");
+                decoratorNode.setAttribute("caption", "修饰器");
                 break;
             case "3":
                 definerNode.setAttribute("caption", "Portlet");
-                decoratorNode.setAttribute("caption", "修饰");
+                decoratorNode.setAttribute("caption", "修饰器");
                 break;
         }
 
@@ -573,89 +574,31 @@
 
 		window.open(url);
     }
-
-
-    /*
-     *	根据definerType决定要执行的方法
-     */
-    function getDefiner(definerType, definerId, definerName, parametersName) {
-        switch(definerType) {
-            case "0":
-            case "1":
-            case "2":
-                getLayout(definerId,definerName,parametersName);
-                break;
-            case "3":
-                getPortlet(definerId,definerName,parametersName);
-                break;
-        }
-    }
-
-    /*
-     *	获取布局器
-     */
-    function getLayout(definerId, definerName, parametersName) {
+ 
+	function getComponent(type, idField, nameField, parametersName) {
         var page1FormObj = $X("page1Form");
+		var serviceUrl = URL_GET_COMPONENT_TREE + type;
 
-        var layout = window.showModalDialog("layouttree.htm", {title:"请选择布局器"}, "dialogWidth:300px;dialogHeight:400px;");
-        if(layout) {
-            page1FormObj.updateDataExternal(definerId, layout.id);
-            page1FormObj.updateDataExternal(definerName, layout.name);
+        var component = window.showModalDialog("commontree.html", {title:"请选择组件", service:serviceUrl}, "dialogWidth:300px;dialogHeight:400px;");
+        if(component) {
+            page1FormObj.updateDataExternal(idField,   component.id);
+            page1FormObj.updateDataExternal(nameField, component.name);
 
             // 加载布局器配置项
-            loadLayoutParameters(layout.id,parametersName);
+			var p = new HttpRequestParams();
+			p.url = URL_GET_COMPONENT_PARAMETERS + component.id;
+
+			var request = new HttpRequest(p);
+			request.onresult = function() {
+			    var newNode = this.getNodeValue(XML_COMPONENT_PARAMETERS);
+			    updateParameters(newNode);
+				
+				// 允许进行配置
+				$$("page1BtConfigDefiner").disabled   = ( 0 == newNode.attributes.length );
+				$$("page1BtConfigDecorator").disabled = ( 0 == newNode.attributes.length );
+			}
+			request.send();
         }
-    }
-
-    /*
-     *	获取修饰器
-     */
-    function getDecorator(decoratorId,decoratorName,parametersName) {
-        var page1FormObj = $X("page1Form");
-
-        var decorator = window.showModalDialog("decoratortree.htm", {title:"请选择修饰器"}, "dialogWidth:300px;dialogHeight:400px;");
-        if(decorator) {
-            page1FormObj.updateDataExternal(decoratorId, decorator.id);
-            page1FormObj.updateDataExternal(decoratorName, decorator.name);
-
-            // 加载修饰器配置项
-            loadDecoratorParameters(decorator.id,parametersName);
-        } 
-    }
-
-    /*
-     *	获取portlet
-     */
-    function getPortlet(definerId,definerName,parametersName) {
-        var page1FormObj = $X("page1Form");
-
-        var portlet = window.showModalDialog("portlettree.htm", {title:"请选择Portlet"}, "dialogWidth:300px;dialogHeight:400px;");
-        if(portlet) {
-            page1FormObj.updateDataExternal(definerId,portlet.id);
-            page1FormObj.updateDataExternal(definerName,portlet.name);
-
-            //加载portlet配置项
-            loadPortletParameters(portlet.id,parametersName);
-        }
-    }
- 
-    /*
-     *	布局器加载数据
-     */
-    function loadLayoutParameters(layoutID) {
-        var p = new HttpRequestParams();
-        p.url = URL_GET_COMPONENT_PARAMETERS + id;
-
-        var request = new HttpRequest(p);
-        request.onresult = function() {
-		   var newNode = this.getNodeValue(XML_COMPONENT_PARAMETERS);
-           updateParameters(newNode);
-            
-            // 允许进行配置
-            $$("page1BtConfigDefiner").disabled   = ( 0 == newNode.attributes.length );
-			$$("page1BtConfigDecorator").disabled = ( 0 == newNode.attributes.length );
-        }
-        request.send();
     }
  
     /*
@@ -664,12 +607,10 @@
      *	返回值：XmlNode:xmlNode         XmlNode实例
      */
     function parseParameters(parameters) {
-        var xmlReader = new XmlReader();
-        xmlReader.loadXML(parameters);
-        if(null == xmlReader.documentElement) {
-            xmlReader.loadXML("<params/>");
+        var xmlNode = loadXmlToNode(parameters);
+        if(xmlNode == null) {
+			xmlNode = loadXmlToNode("<ComponentParams/>");
         }
-        var xmlNode = new XmlNode(xmlReader.documentElement);
         return xmlNode;    
     }
 
@@ -723,15 +664,16 @@
      */
     function configParams(paramsType, id, name) {
         var page1FormObj = $X("page1Form");
-        var nameValue  = page1FormObj.getData(name)||"";
-        var idValue    = page1FormObj.getData(id)||"";
+        var nameValue  = page1FormObj.getData(name) || "";
+        var idValue    = page1FormObj.getData(id) || "";
         var parameters = page1FormObj.getData("parameters") || "";
 
         var xmlNode = parseParameters(parameters);
         var oldParamsNode = xmlNode.selectSingleNode("./" + paramsType);
         var oldText = new XmlNode(oldParamsNode.firstChild);
 
-		var newParams = window.showModalDialog("configparams.htm", {id:idValue,params:oldParamsNode,type:paramsType,title:"更改\""+nameValue+"\"的配置"},"dialogWidth:250px;dialogHeight:250px;");
+		var newParams = window.showModalDialog("structure-params.html", 
+			{id:idValue, params:oldParamsNode, title:"设置【\"" + nameValue + "】\"的参数"},"dialogWidth:250px;dialogHeight:250px;");
 		if(newParams) {
 			var rowReader = new XmlReader(newParams);
 			var rowNode = new XmlNode(rowReader.documentElement);

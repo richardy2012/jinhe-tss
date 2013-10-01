@@ -1,5 +1,7 @@
 package com.jinhe.tss.portal;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.List;
 
@@ -29,7 +31,9 @@ import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.IH2DBServer;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.portal.entity.Component;
+import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.service.IComponentService;
+import com.jinhe.tss.portal.service.IPortalService;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.permission.PermissionHelper;
@@ -37,6 +41,7 @@ import com.jinhe.tss.um.permission.PermissionService;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.um.service.IResourceService;
 import com.jinhe.tss.util.FileHelper;
+import com.jinhe.tss.util.URLUtil;
 import com.jinhe.tss.util.XMLDocUtil;
 
 /**
@@ -65,6 +70,7 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4Sp
     @Autowired protected IH2DBServer dbserver;
  
     @Autowired protected IComponentService componentService;
+    @Autowired protected IPortalService portalService;
     
     protected HttpServletResponse response;
     protected MockHttpServletRequest request;
@@ -253,5 +259,61 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4Sp
 			log.error(e.getMessage(), e);
 			Assert.assertFalse(e.getMessage(), true);
 		}
+    }
+    
+    protected Structure createPageOrSection(Structure parent, String name, String code, int type) {
+        Structure newps = new Structure();
+        newps.setName(name);
+        newps.setCode(code);
+        newps.setType(type);
+        
+        if(type == 1) {
+            newps.setSupplement("<page><property><name>Jon的门户</name><description><![CDATA[]]></description></property>" +
+            		"<script><file><![CDATA[1.js,2.js]]></file><code><![CDATA[]]></code></script>" +
+            		"<style><file><![CDATA[1.css,2.css]]></file><code><![CDATA[]]></code></style></page>");
+        }
+        newps.setParameters("<params><layout>model/layout/***/paramsXForm.xml</layout><decorator>model/decorator/***/paramsXForm.xml</decorator></params>");
+        
+        newps.setPortalId(parent.getPortalId());
+        newps.setParentId(parent.getId());
+        newps.setDecorator(defaultDecorator);
+        newps.setDefiner(defaultLayout);
+        newps = portalService.createStructure(newps);
+        
+        return newps;
+    }
+    
+    protected Structure createPortletInstance(Structure parent, String name, String code, Component portlet) {
+        Structure newps = new Structure();
+        newps.setName(name);
+        newps.setCode(code);
+        newps.setType(Structure.TYPE_PORTLET_INSTANCE);
+ 
+        newps.setParameters("<params><portlet>model/portlet/***/paramsXForm.xml</portlet><decorator>model/decorator/***/paramsXForm.xml</decorator></params>");
+        
+        newps.setPortalId(parent.getPortalId());
+        newps.setParentId(parent.getId());
+        newps.setDecorator(defaultDecorator);
+        newps.setDefiner(portlet);
+        newps = portalService.createStructure(newps);
+        
+        return newps;
+    }
+    
+    protected Component createTestPortlet() {
+        Component group = new Component();
+        group.setName("测试Portlet组" + System.currentTimeMillis());
+        group.setType(Component.PORTLET_TYPE);
+        group.setParentId(PortalConstants.ROOT_ID);   
+        group = componentService.saveComponent(group);
+        
+        String file = URLUtil.getResourceFileUrl("testdata/DemoPortlet.zip").getPath();
+        importComponent(group.getId(), file);
+        
+        List<?> list = permissionHelper.getEntities("from Component o where o.type = ? and o.isGroup = ? order by o.decode", 
+                Component.PORTLET_TYPE, false);
+        
+        assertTrue(list.size() >= 1);
+        return (Component) list.get(list.size() - 1);
     }
 }

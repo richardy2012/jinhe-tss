@@ -1,10 +1,10 @@
 <xform>
 		<declare prefix="ps">
 			<column name="id" caption="ID号" mode="hidden" editable="false"/>
-			<column name="parentId" caption="" mode="hidden" editable="false"/>
-			<column name="portalId" caption="" mode="hidden" editable="false"/>
-			<column name="code" caption="" mode="hidden" editable="false"/>
-			<column name="type" caption="" mode="hidden" editable="false"/>
+			<column name="parentId" mode="hidden" editable="false"/>
+			<column name="portalId" mode="hidden" editable="false"/>
+			<column name="code" mode="hidden" editable="false"/>
+			<column name="type" mode="hidden" editable="false"/>
 			<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>
 			
 			<column name="theme.id" mode="hidden" editable="false"/>
@@ -12,20 +12,20 @@
 			<column name="currentTheme.name" mode="hidden" editable="false"/>
 			<column name="currentTheme.id" caption="当前主题" mode="string" editor="comboedit" editorvalue="" editortext=""/>
 
-			<column name="definer.id" caption="" mode="hidden" editable="false"/>
-			<column name="definer.name" caption="布局" empty="false" mode="function"
-				cmd="getDefiner('${definerType}', 'definer.id', 'definer.name', 'parameters')"/>
-			<column name="decorator.id" caption="" mode="hidden" editable="false"/>
-			<column name="decorator.name" caption="修饰" empty="false" mode="function"
-				cmd="getDecorator('decorator.id', 'decorator.name', 'parameters')"/>
+			<column name="definer.id" mode="hidden" editable="false"/>
+			<column name="decorator.id" mode="hidden" editable="false"/>
+			<column name="definer.name" caption="布局器" empty="false" mode="function"
+				cmd="getComponent('${definerType}', 'definer.id', 'definer.name', 'parameters')"/>
+			<column name="decorator.name" caption="修饰器" empty="false" mode="function"
+				cmd="getComponent(2, 'decorator.id', 'decorator.name', 'parameters')"/>
 			
 			<column name="js" caption="js文件" mode="string"/>
 			<column name="css" caption="css文件" mode="string"/>
 			<column name="jsCode" caption="js代码" mode="string"/>
 			<column name="cssCode" caption="css代码" mode="string"/>
 			
-			<column name="supplement" caption="补充" mode="string"/>
-			<column name="parameters" caption="" mode="hidden" editable="false"/>
+			<column name="supplement" mode="hidden"/>
+			<column name="parameters" mode="hidden"/>
 			
 			<column name="description" caption="说明" mode="string"/>
 		</declare>
@@ -60,7 +60,7 @@
                     </TD>
                     <TD>
                         <input binding="definer.name" type="text" style="width:200"/>
-                        <input type="button" value="配置" id="page1BtConfigDefiner" onclick="configParams('layout','definerId','definer.name','parameters')" class="btWeak"/>
+                        <input type="button" value="配置" id="page1BtConfigDefiner" onclick="configParams('layout','definer.id','definer.name','parameters')" class="btWeak"/>
                     </TD>
                 </TR>
                 <TR showType="3">
@@ -69,7 +69,7 @@
                     </TD>
                     <TD>
                         <input binding="definer.name" type="text" style="width:200"/>
-                        <input type="button" value="配置" id="page1BtConfigDefiner" onclick="configParams('portlet','definerId','definer.name','parameters')" class="btWeak"/>
+                        <input type="button" value="配置" id="page1BtConfigDefiner" onclick="configParams('portlet','definer.id','definer.name','parameters')" class="btWeak"/>
                     </TD>
                 </TR>
                 <TR showType="1,2,3">

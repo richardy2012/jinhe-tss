@@ -5,6 +5,7 @@
 <title>门户结构参数设置</title>
 
 <link href="../framework/css/css.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/css/dialog.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/balloon/balloon.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/xform/xform.css" rel="stylesheet" type="text/css"></link>
 
@@ -18,54 +19,52 @@
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
-    /*
-     *	后台响应数据节点名称
-     */
+ 
     XML_CONFIG_PARAMS = "ConfigParams";
-
-    /*
-     *	默认唯一编号名前缀
-     */
-    CACHE_CONFIG_PARAMS = "config__id";
 
     function init(){
         var url = "#";
-		var params = window.dialogArguments.params;
-        if( params && params.firstChild){
-            url = params.firstChild.nodeValue;
-        }
+		var params;  // eg: "<decorator bgColor=\"#ABCDEF\">model/decorator/decorator-8/paramsXForm.xml</decorator>";
+ 
+		if(IS_TEST) {
+			params = loadXmlToNode("<decorator bgColor=\"#ABCDEF\">data/paramsXForm.xml</decorator>");
+		}
+		else {
+			params = window.dialogArguments.params;
+		}
+
+		if( params && params.firstChild){
+			url = params.firstChild.nodeValue; // 组件参数配置模板所在目录
+		}
 
         var p = new HttpRequestParams();
         p.url = url;
 
         var request = new HttpRequest(p);
         request.onresult = function(){
-            var configParamsNode = this.getNodeValue(XML_CONFIG_PARAMS);
+            var dataXmlNode = this.getNodeValue(XML_CONFIG_PARAMS);
 
-            preProcessXml(configParamsNode, params);
+            var dataNode = dataXmlNode.selectSingleNode(".//data");
+			var xmlReader = new XmlReader("<row/>");
+			var rowNode = new XmlNode(xmlReader.documentElement);
 
-            Cache.XmlIslands.add(CACHE_CONFIG_PARAMS, configParamsNode);
+			var attributes = params.attributes;
+			for(var i=0; i < attributes.length; i++){
+			   rowNode.setCDATA(attributes[i].nodeName, attributes[i].nodeValue);
+			}
+			dataNode.appendChild(rowNode);
 
-            $X("configParamsForm", configParamsNode);
+            Cache.XmlDatas.add(XML_CONFIG_PARAMS, dataXmlNode);
+
+            $X("configParamsForm", dataXmlNode);
         }
         request.send();    
     }
  
-    function preProcessXml(xmlIsland, params){
-        var dataNode = xmlIsland.selectSingleNode(".//data");
-        var xmlReader = new XmlReader("<row/>");
-        var rowNode = new XmlNode(xmlReader.documentElement);
-        var attributes = params.attributes;
-        for(var i=0; i < attributes.length; i++){
-           rowNode.setCDATA(attributes[i].nodeName, attributes[i].nodeValue);
-        }
-        dataNode.appendChild(rowNode);
-    }
- 
     function getParams(){
-        var xmlIsland = Cache.XmlIslands.get(CACHE_CONFIG_PARAMS);
-        if(xmlIsland){
-            var row = xmlIsland.selectSingleNode(".//data/row");            
+        var dataXmlNode = Cache.dataXmlNodes.get(XML_CONFIG_PARAMS);
+        if(dataXmlNode){
+            var row = dataXmlNode.selectSingleNode(".//data/row");            
             window.returnValue = row.toXml();
         }
         window.close();

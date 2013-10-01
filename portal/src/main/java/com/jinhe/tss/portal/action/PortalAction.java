@@ -30,8 +30,6 @@ import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.engine.FreeMarkerSupportAction;
 import com.jinhe.tss.portal.engine.HTMLGenerator;
 import com.jinhe.tss.portal.engine.model.PortalNode;
-import com.jinhe.tss.portal.engine.releasehtml.MagicRobot;
-import com.jinhe.tss.portal.engine.releasehtml.SimpleRobot;
 import com.jinhe.tss.portal.entity.ReleaseConfig;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
@@ -84,29 +82,6 @@ public class PortalAction extends FreeMarkerSupportAction {
         printHTML(portalId, sb.toString(), false);
     }
 
-    /**
-     * 静态发布匿名访问的门户
-     */
-    @RequestMapping("/tohtml/{id}/{type}")
-    public void staticReleasePortal(HttpServletResponse response, 
-    		@PathVariable("id") Long id, @PathVariable("type") int type) {
-    	
-        if(type == 1) { // 发布整个站点
-            MagicRobot robot = new MagicRobot(id);
-            robot.start();
-            String feedback = robot.getFeedback();
-            
-            printSuccessMessage(feedback);
-            
-        } else if(type == 2) { // 只发布当前页
-            ReleaseConfig releaseConfig = service.getReleaseConfig(id);
-			String visitUrl = releaseConfig.getVisitUrl();
-            new SimpleRobot(visitUrl).start();
-            
-            printSuccessMessage("页面静态发布门户成功！");
-        }
-    }
-    
     /**
      * 获取所有的Portal对象（取门户结构PortalStructure）并转换成Tree相应的xml数据格式
      */

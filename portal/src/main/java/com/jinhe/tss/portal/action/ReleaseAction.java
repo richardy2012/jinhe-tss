@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,10 @@ import com.jinhe.tss.framework.component.progress.Progressable;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.mvc.ProgressActionSupport;
 import com.jinhe.tss.portal.engine.releasehtml.MagicRobot;
+import com.jinhe.tss.portal.engine.releasehtml.SimpleRobot;
 import com.jinhe.tss.portal.engine.releasehtml._FtpClient;
+import com.jinhe.tss.portal.entity.ReleaseConfig;
+import com.jinhe.tss.portal.service.IPortalService;
 import com.jinhe.tss.util.XMLDocUtil;
 
 /** 
@@ -29,7 +33,31 @@ import com.jinhe.tss.util.XMLDocUtil;
 @Controller
 @RequestMapping("/auth/release")
 public class ReleaseAction extends ProgressActionSupport {
- 
+	
+	@Autowired private IPortalService portalService;
+    /**
+     * 静态发布匿名访问的门户
+     */
+    @RequestMapping("/{id}/{type}")
+    public void staticReleasePortal(HttpServletResponse response, 
+    		@PathVariable("id") Long id, @PathVariable("type") int type) {
+    	
+        if(type == 1) { // 发布整个站点
+            MagicRobot robot = new MagicRobot(id);
+            robot.start();
+            String feedback = robot.getFeedback();
+            
+            printSuccessMessage(feedback);
+            
+        } else if(type == 2) { // 只发布当前页
+            ReleaseConfig releaseConfig = portalService.getReleaseConfig(id);
+			String visitUrl = releaseConfig.getVisitUrl();
+            new SimpleRobot(visitUrl).start();
+            
+            printSuccessMessage("页面静态发布门户成功！");
+        }
+    }
+    
     /**
      * 静态发布匿名访问的门户
      * 
@@ -55,7 +83,7 @@ public class ReleaseAction extends ProgressActionSupport {
      * 
      * @param pageUrl 需要单个发布的页面地址
      */
-	@RequestMapping("/page")
+	@RequestMapping("/singlepage")
     public void staticReleasePortalPage(HttpServletResponse response, HttpServletRequest request) {
 		String  pageUrl = request.getParameter("pageUrl");
         MagicRobot robot = new MagicRobot(pageUrl);
