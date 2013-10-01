@@ -18,6 +18,9 @@
     URL_SOURCE_SAVE      = "data/_success.xml?";
     URL_IMPORT_COMPONENT = "data/_success.xml?";
     URL_EXPORT_COMPONENT = "data/_success.xml?";
+	URL_PREVIEW_COMPONENT = "data/component-preview.html?"; // "/auth/component/preview/" + id;
+
+	
  
     function init() {
         initPaletteResize();
@@ -114,9 +117,8 @@
         }
 		var item10 = {
             label:"预览",
-            callback:function() {previewElement(2);},
+            callback:function() {previewElement();},
             icon:ICON + "preview.gif",
-            
             visible:function() {return !isGroup();}
         }
 
@@ -276,17 +278,17 @@
  
     /*
      *	保存修饰
-     *	参数：	string:cacheID      缓存数据id
+     *	参数：	string:treeID      缓存数据id
                 string:parentID     父节点id
      *	返回值：
      */
-    function saveComponent(cacheID, parentID) {
-        var page1FormObj = $("page1Form");
+    function saveComponent(treeID, parentID) {
+        var page1FormObj = $X("page1Form");
         if( !page1FormObj.checkForm()) {
             return;
         }
 
-		var events     = page1FormObj.getData("events");
+		var events = page1FormObj.getData("events");
 		if( true == (/^\=/.test(events)) ) {
 			page1FormObj.showCustomErrorInfo("events", "请按\"事件名=操作\"格式书写");
 			return;
@@ -304,10 +306,10 @@
         var flag = false;
  
 		//修饰基本信息
-		var componentInfoNode = Cache.XmlDatas.get(cacheID);
+		var componentInfoNode = Cache.XmlDatas.get(treeID);
 		if(componentInfoNode) {
 			var componentInfoDataNode = componentInfoNode.selectSingleNode(".//data");
-			if(ComponentInfoDataNode) {
+			if(componentInfoDataNode) {
 				componentInfoDataNode = componentInfoDataNode.cloneNode(true);
 
 				var rowNode = componentInfoDataNode.selectSingleNode("row");
@@ -328,8 +330,8 @@
 				str[str.length] = "<?xml version=\"1.0\" encoding=\"GBK\"?>";
 				str[str.length] = "<" + rootName + ">";
 				str[str.length] = "<property>";
-				str[str.length] = "<name>" + name.convertEntity() + "</name>";
-				str[str.length] = "<version>" + version.convertEntity() + "</version>";
+				str[str.length] = "<name>" + name + "</name>";
+				str[str.length] = "<version>" + version + "</version>";
 				str[str.length] = "<description>";
 				str[str.length] = "<![CDATA[" + description + "]]>";
 				str[str.length] = "</description>";
@@ -349,23 +351,21 @@
 
 				str[str.length] = "<events>";
 				events = events.split("\n");
-				for(var i =0,iLen=events.length;i<iLen;i++) {
+				for(var i =0; i < events.length; i++) {
 					var curEvent = events[i].replace(/(^\s*)|(\s*$)/g,"");//去掉每行前后多余空格
-					curEvent = curEvent.convertEntity();//转换特殊字符为实体
-					var curEventName = curEvent.substring(0,curEvent.indexOf("="));
-					var curEventValue = curEvent.substring(curEvent.indexOf("=")+1);
-					str[str.length] = "<attach event=\""+curEventName+"\" onevent=\""+curEventValue+"\"/>";
+					var curEventName  = curEvent.substring(0,curEvent.indexOf("="));
+					var curEventValue = curEvent.substring(curEvent.indexOf("=") + 1);
+					str[str.length] = "<attach event=\"" + curEventName + "\" onevent=\"" + curEventValue + "\"/>";
 				}
 				str[str.length] = "</events>";
 
 				str[str.length] = "<parameters>";
 				parameters = parameters.split("\n");
-				for(var i =0,iLen=parameters.length;i<iLen;i++) {
-					var curParam = parameters[i].replace(/(^\s*)|(\s*$)/g,"");//去掉每行前后多余空格
-					curParam = curParam.convertEntity();//转换特殊字符为实体
-					var curParamName = curParam.substring(0,curParam.indexOf("="));
-					var curParamValue = curParam.substring(curParam.indexOf("=")+1);
-					str[str.length] = "<param name=\""+curParamName+"\" defaultValue=\""+curParamValue+"\"/>";
+				for(var i =0; i < parameters.length; i++) {
+					var curParam = parameters[i].replace(/(^\s*)|(\s*$)/g,""); // 去掉每行前后多余空格
+					var curParamName  = curParam.substring(0,curParam.indexOf("="));
+					var curParamValue = curParam.substring(curParam.indexOf("=") + 1);
+					str[str.length] = "<param name=\"" + curParamName + "\" defaultValue=\"" + curParamValue + "\"/>";
 				}
 				str[str.length] = "</parameters>";
 				str[str.length] = "</" + rootName + ">";
@@ -392,7 +392,7 @@
 
             request.onresult = function() {
 				// 解除提醒
-				detachReminder(cacheID);
+				detachReminder(treeID);
 
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
 				appendTreeNode(parentID,treeNode);
@@ -401,11 +401,11 @@
             }
             request.onsuccess = function() {
 				// 解除提醒
-				detachReminder(cacheID);
+				detachReminder(treeID);
 
 				//更新树节点名称
 				var name = page1FormObj.getData("name");
-				modifyTreeNode(cacheID, "name", name, true);
+				modifyTreeNode(treeID, "name", name, true);
 
 				ws.closeActiveTab();
             }
@@ -429,14 +429,9 @@
         var groupName = prompt("请输入组名称");
     }
 	
-    /*
-     *	预览组件
-     */
+    /* 预览组件  */
 	function previewElement() {
-        var treeObj = $T("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-		var id = treeNode.getId();
-		var url	= "elementGroup!previewElement.action?id=" + id;
+		var url	= URL_PREVIEW_COMPONENT + getTreeNodeId();
 		window.open(url);
     }
 
@@ -451,14 +446,14 @@
         var parameters = page1FormObj.getData("parameters") || "";
 
         if(id) {
-            window.showModalDialog("configparams_edit.htm", {id:id,params:parameters,type:type,title:"配置参数模板"},"dialogWidth:700px;dialogHeight:480px;");
+            window.showModalDialog("component-params.html", {id:id,params:parameters,title:"配置组件【" + name + "】的参数模板"},"dialogWidth:700px;dialogHeight:480px;");
         } else {
 			alert("请先保存组件后再配置其参数模板");
 		}
     }
 
     function importComponent() {
-        var page1FormObj = $("page1Form");
+        var page1FormObj = $X("page1Form");
         var fileName = page1FormObj.getData("filePath");
         if (fileName==null || fileName=="") {
             return alert("请选择导入文件!");

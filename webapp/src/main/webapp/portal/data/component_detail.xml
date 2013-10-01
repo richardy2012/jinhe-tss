@@ -37,7 +37,7 @@
 				</TR>
 				<TR>
 					<TD width="50" valign="top"><label binding="events"/></TD>
-					<TD><textarea binding="events" style="width:100%;height:40"/>注:请按照"事件名=操作"格式书写，例如"onload=${js.layout}.onload"</TD>
+					<TD><textarea binding="events" style="width:100%;height:40"/>注:请按照"事件名=处理方法"格式书写，例如"onload=${js.layout}.onload"</TD>
 				</TR>
 				<TR>
 					<TD width="50" valign="top"><label binding="parameters"/></TD>
@@ -101,7 +101,19 @@
     </td>
   </tr>
 </table>]]&gt;</html>
-  <events/>
-  <parameters/>
-</decorator>]]></definition><seqNo><![CDATA[1]]></seqNo><creatorId><![CDATA[-1]]></creatorId><type><![CDATA[2]]></type><levelNo><![CDATA[3]]></levelNo><lockVersion><![CDATA[0]]></lockVersion><version><![CDATA[]]></version><id><![CDATA[8]]></id><parentId><![CDATA[7]]></parentId><creatorName><![CDATA[Admin]]></creatorName><decode><![CDATA[000020000200001]]></decode><isDefault><![CDATA[0]]></isDefault><description><![CDATA[]]></description><isGroup><![CDATA[false]]></isGroup><name><![CDATA[banner加导航]]></name><disabled><![CDATA[0]]></disabled></row></data>
+  <events><attach event="onload" onevent="${id}_onLoad"/></events>
+  <parameters>
+	<param name="tableWidth" defaultValue="100%"/>
+    <param name="bgColor" defaultValue="#FFFFFF"/>
+  </parameters>
+</decorator>]]>
+</definition>
+<seqNo><![CDATA[1]]></seqNo>
+<creatorId><![CDATA[-1]]></creatorId>
+<type><![CDATA[2]]></type><levelNo><![CDATA[3]]></levelNo>
+<lockVersion><![CDATA[0]]></lockVersion>
+<version><![CDATA[]]></version><id><![CDATA[8]]></id><parentId><![CDATA[7]]></parentId>
+<creatorName><![CDATA[Admin]]></creatorName><decode><![CDATA[000020000200001]]></decode>
+<isDefault><![CDATA[0]]></isDefault><description><![CDATA[]]></description><isGroup><![CDATA[false]]></isGroup>
+<name><![CDATA[banner加导航]]></name><disabled><![CDATA[0]]></disabled></row></data>
 		</xform></DetailInfo></Response>
