@@ -162,46 +162,9 @@ URL_CORE = "../../";
 
 	var currentPage
 
-    /*
-     *	grid加载数据
-     */
-    function loadGridData(p, page) {
-		p.url = URL_LOG_LIST + page || "1";
-		var request = new HttpRequest(p);
-		request.onresult = function() {
-			$G("grid", this.getNodeValue(XML_LOG_LIST)); 
-			var gridToolBar = $$("gridToolBar");
-
-			var pageListNode = this.getNodeValue(XML_PAGE_INFO);			
-			initGridToolBar(gridToolBar, pageListNode, function(page) {
-				request.paramObj.url = URL_LOG_LIST + page;
-				request.onresult = function() {
-					$G("grid", this.getNodeValue(XML_LOG_LIST)); 
-				}				
-				request.send();
-			} );
-			
-			var gridElement = $$("grid"); 
-			gridElement.onDblClickRow = function(eventObj) {
-				showLogInfo();
-			}
-			gridElement.onRightClickRow = function() {
-				$$("grid").contextmenu.show(event.clientX, event.clientY);
-			}   
-			gridElement.onScrollToBottom = function () {		
-				var currentPage = gridToolBar.getCurrentPage();
-				if(gridToolBar.getTotalPages() <= currentPage) return;
-
-				var nextPage = parseInt(currentPage) + 1; 
-				request.paramObj.url = URL_LOG_LIST + nextPage;
-				request.onresult = function() {
-					$G("grid").load(this.getNodeValue(XML_LOG_LIST), true);
-					initGridToolBar(gridToolBar, this.getNodeValue(XML_PAGE_INFO));
-				}				
-				request.send();
-			}
-		}
-		request.send();
+    /* grid加载数据  */
+    function loadGridData(requestParam, page) {
+		showGrid(URL_LOG_LIST, XML_LOG_LIST, showLogInfo, "grid", page, requestParam);
     }
 	
 	function showLogList() {		

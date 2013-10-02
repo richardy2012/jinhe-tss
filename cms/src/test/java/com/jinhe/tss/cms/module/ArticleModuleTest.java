@@ -63,8 +63,6 @@ public class ArticleModuleTest extends AbstractTestSupport {
         
         articleAction.getChannelArticles(response, channelId, 1);
         
-        articleAction.getArticleOperation(response, channelId);
-        
         ArticleQueryCondition condition = new ArticleQueryCondition();
         condition.setTitle("轮回");
         condition.setChannelId(channelId);

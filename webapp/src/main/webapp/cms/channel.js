@@ -31,7 +31,6 @@
     URL_SORT_NODE = "data/_success.xml?";
 	URL_STOP_NODE = "data/_success.xml?";
     URL_GET_OPERATION = "data/operation.xml?";
-    URL_GET_ARTICLE_OPERATION = "data/operation1.xml?";
 
     URL_SITE_PUBLISH_PROGRESS = "data/progress.xml?";
     URL_CHANNEL_PUBLISH_PROGRESS = "data/progress.xml?";
@@ -65,12 +64,12 @@
         var item2 = {
             label:"新建栏目",
             callback:addNewChannel,
-            visible:function() { return "0" == getTreeAttribute("isSite") && getOperation("2");}
+            visible:function() { return isChannel() && getOperation("2");}
         }
         var item3 = {
             label:"新建文章",
             callback:addNewArticle,
-            visible:function() { return "0" == getTreeAttribute("isSite") && getOperation("3");}
+            visible:function() { return isChannel() && getOperation("3");}
         }
 
 		var submenu4 = new Menu(); // 发布
@@ -105,7 +104,7 @@
         var item6 = {
             label:"删除",
             callback: function() { delTreeNode(URL_DEL_NODE) },
-            icon:ICON + "del.gif",
+            icon:ICON + "icon_del.gif",
             visible:function() { return "_rootId" != getTreeAttribute("id") && getOperation("6");}
         }
         var item7 = { 
@@ -124,13 +123,13 @@
             label:"移动到...",
             callback:moveChannelTo,
             icon:ICON + "move.gif",
-            visible:function() { return "0" == getTreeAttribute("isSite") && getOperation("6");}
+            visible:function() { return isChannel() && getOperation("6");}
         }
         var item10 = {
             label:"浏览文章",
             callback:showArticleList,
             icon:ICON + "view_list.gif",
-            visible:function() { return "0" == getTreeAttribute("isSite") && getOperation("1");}
+            visible:function() { return isChannel() && getOperation("1");}
         }         
 
         var menu1 = new Menu();
@@ -171,7 +170,7 @@
 					sort(eventObj);
 				}
 				treeObj.onTreeNodeRightClick = function(eventObj) { 
-					onTreeNodeRightClick(eventObj);
+					onTreeNodeRightClick(eventObj, true);
 				}
 			}
 		});
@@ -180,12 +179,11 @@
     function onTreeNodeDoubleClick(eventObj) { 
         var treeNode = eventObj.treeNode;
         var id = treeNode.getId();
-        var isSite = treeNode.getAttribute("isSite");
         getTreeOperation(treeNode, function(_operation) {
             if("_rootId" == id )  return;
 
 			var canShowArticleList = checkOperation("1", _operation);                
-			if("0"==isSite && canShowArticleList) { 
+			if( isChannel() && canShowArticleList) { 
 				showArticleList();
 			} 
 			else {
@@ -198,11 +196,10 @@
     }
 
 	function editTreeNode() { 
-        var isSite = getTreeAttribute("isSite");
-        if("1" == isSite) { 
-            editSiteInfo();
-        } else {
+        if( isChannel() ) { 
             editChannelInfo();
+        } else {
+			editSiteInfo();
         }
     }
  
@@ -233,7 +230,7 @@
 		var callback = {};
 		callback.onTabChange = function() { 
 			setTimeout(function() { 
-				loadSiteDetailData(treeID,editable);
+				loadSiteDetailData(treeID);
 			},TIMEOUT_TAB_CHANGE);
 		};
 
@@ -438,7 +435,12 @@
 		}
     }
 
-    function editArticleInfo(editable) { 
+    function editArticleInfo() { 
+		var canEdit = getGridOperation("5");
+		if( !canEdit ) { 
+			return;            
+		}
+
         var articleId = getArticleAttribute("id");
 		var channelId = getArticleAttribute("channel.id");
 
@@ -503,7 +505,7 @@
      *	参数：	string:code     操作码
      *	返回值：是够有权限
      */
-    function getUserOperation(code) {
+    function getGridOperation(code) {
 		var flag = false;
         var channelId = getArticleAttribute("channel.id");
 		if( channelId ) {
@@ -513,25 +515,10 @@
 		}
         return flag;
     }
-
-    /*
-     *	获取grid操作权限：根据用户对文章所在的栏目拥有的权限来判断。
-     *	参数：	number:rowIndex         grid行号
-                function:callback       回调函数
-     *	返回值：
-     */
-    function getGridOperation(callback) { 
-		var channelId = getArticleAttribute("channel.id");
-		if( channelId ) {
-			var channelNode = $T("tree").getTreeNodeById(channelId);
-			getTreeOperation(channelNode, callback, URL_GET_ARTICLE_OPERATION);
-		}
-    }
   
     /*
      *	发布文章
      *	参数：	string:type     完全发布“2”; 增量发布“1”
-     *	返回值：
      */
     function publishArticle(category) { 
 		var channelId = getTreeNodeId();
@@ -554,19 +541,19 @@
             label:"编辑",
             callback:editArticleInfo,
             icon:ICON + "edit.gif",
-            visible:function() { return "1" == getArticleAttribute("status") && getUserOperation("a_5");}
+            visible:function() { return "1" == getArticleAttribute("status") && getGridOperation("5");}
         }
         var item2 = {
             label:"删除",
             callback:delArticle,
-            icon:ICON + "del.gif",
-            visible:function() { return getUserOperation("a_3");}
+            icon:ICON + "icon_del.gif",
+            visible:function() { return getGridOperation("3");}
         }
         var item3 = {
             label:"移动到...",
             callback:moveArticleTo,
             icon:ICON + "move.gif",
-            visible:function() { return getUserOperation("a_6");}
+            visible:function() { return getGridOperation("6");}
         }
         var item4 = {
             label:"置顶",
@@ -574,7 +561,7 @@
                 setTopArticle("1");
             },
             icon:ICON + "stick.gif",
-            visible:function() { return "1" != getArticleAttribute("isTop") && getUserOperation("a_5");}
+            visible:function() { return "1" != getArticleAttribute("isTop") && getGridOperation("5");}
         }
         var item5 = {
             label:"解除置顶",
@@ -582,7 +569,7 @@
                 setTopArticle("0");
             },
             icon:ICON + "unstick.gif",
-            visible:function() { return "1" == getArticleAttribute("isTop") && getUserOperation("a_5");}
+            visible:function() { return "1" == getArticleAttribute("isTop") && getGridOperation("5");}
         }
 
         var menu1 = new Menu();
@@ -597,55 +584,8 @@
 
     /* 显示文章列表 */
     function showArticleList(channelId) {
-        var treeNode = $T("tree").getActiveTreeNode();
-		var treeID = channelId || treeNode.getId();
-
-		var p = new HttpRequestParams();
-		p.url = URL_ARTICLE_LIST + treeID + "/1";
-		var request = new HttpRequest(p);
-		request.onresult = function() {
-			$G("grid", this.getNodeValue(XML_ARTICLE_LIST)); 
-			var gridToolBar = $$("gridToolBar");
-
-			var pageListNode = this.getNodeValue(XML_PAGE_INFO);			
-			initGridToolBar(gridToolBar, pageListNode, function(page) {
-				request.paramObj.url = XML_ARTICLE_LIST + treeID + "/" + page;
-				request.onresult = function() {
-					$G("grid", this.getNodeValue(XML_ARTICLE_LIST)); 
-				}				
-				request.send();
-			} );
-			
-			var gridElement = $$("grid"); 
-			gridElement.onDblClickRow = function(eventObj) {
-				getGridOperation(function(_operation) { 
-					// 检测编辑权限
-					var canEdit = checkOperation("a_5", _operation);
-					if(canEdit) { 
-						editArticleInfo();            
-					}
-				});
-			}
-			gridElement.onRightClickRow = function() {
-				Focus.focus("gridTitle");
-				getGridOperation(function(_operation) { 
-					$$("grid").contextmenu.show(event.clientX, event.clientY);
-				});
-			}   
-			gridElement.onScrollToBottom = function () {			
-				var currentPage = gridToolBar.getCurrentPage();
-				if(gridToolBar.getTotalPages() <= currentPage) return;
-
-				var nextPage = parseInt(currentPage) + 1; 
-				request.paramObj.url = XML_ARTICLE_LIST + treeID + "/" + nextPage;
-				request.onresult = function() {
-					$G("grid").load(this.getNodeValue(XML_ARTICLE_LIST), true);
-					initGridToolBar(gridToolBar, this.getNodeValue(XML_PAGE_INFO));
-				}				
-				request.send();
-			}
-		}
-		request.send();
+		channelId = channelId || getTreeNodeId();
+		showGrid(URL_ARTICLE_LIST + channelId, XML_ARTICLE_LIST, editArticleInfo);
 	}   
  
 

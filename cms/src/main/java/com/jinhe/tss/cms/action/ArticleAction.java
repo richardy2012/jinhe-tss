@@ -28,7 +28,6 @@ import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
-import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.util.EasyUtils;
  
 @Controller
@@ -142,23 +141,7 @@ public class ArticleAction extends BaseActionSupport {
 	    articleService.moveArticle(articleId, channelId);
         printSuccessMessage("移动文章成功");
 	}
-    
-	/**
-	 * 根据对栏目的权限过滤对文章的权限
-	 */
-	@RequestMapping("/operations/{channelId}")
-	public void getArticleOperation(HttpServletResponse response, @PathVariable("channelId") Long channelId) {
-        PermissionHelper permissionHelper = PermissionHelper.getInstance();
-        List<?> operations = permissionHelper.getOperationsByResource(CMSConstants.RESOURCE_TYPE_CHANNEL, channelId);
-        
-        String permissionAll = "p1,p2,";
-		for ( Object operation : operations ) {
-			permissionAll += "a_" + operation + ",";
-		}
-        permissionAll += "cd1,cd2,cd3,cd4,cd5,ca1,ca2,ca3,ca4,ca5";
-	    print("Operation", permissionAll);
-	}
-	
+
 	/**
 	 *  文章置顶和取消置顶
 	 */

@@ -70,7 +70,7 @@
         var item4 = {
             label:"删除",
             callback: function() {  delTreeNode(URL_DEL_RULE); },
-            icon:ICON + "del.gif",
+            icon:ICON + "icon_del.gif",
             visible:function(){return !isTreeRoot();}
         }
         var item5 = {
@@ -112,11 +112,7 @@
                 editRuleInfo();
             }
             treeObj.onTreeNodeRightClick = function(eventObj){
-				showTreeNodeInfo();
-
-				if( treeObj.contextmenu ) {
-					treeObj.contextmenu.show(eventObj.clientX, eventObj.clientY);                
-				}
+				onTreeNodeRightClick(eventObj);
             }
         }
         request.send();

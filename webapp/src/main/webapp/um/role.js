@@ -69,8 +69,8 @@
         }
         var item2 = {
             label:"删除",
-            callback:delTreeNode,
-            icon:ICON + "del.gif",
+            callback: function() { delTreeNode(); },
+            icon:ICON + "icon_del.gif",
             visible:function() {return !isRootNode() && getOperation("2");}
         }
 		var item12 = {
@@ -164,16 +164,7 @@
 				});
             }
             treeObj.onTreeNodeRightClick = function(eventObj) {
-				var treeObj = $$("tree");
-				var treeNode = eventObj.treeNode;
-
-				showTreeNodeInfo();
-
-				getTreeOperation(treeNode, function(_operation) {
-					if(treeObj.contextmenu) {
-						treeObj.contextmenu.show(eventObj.clientX, eventObj.clientY);                
-					}
-				});
+				 onTreeNodeRightClick(eventObj, true);
             }
         }
         request.send();

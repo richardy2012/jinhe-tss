@@ -48,7 +48,7 @@
 			onresult : function() {  // 移动树节点					
 				var tree = $T("tree", this.getNodeValue(XML_MAIN_TREE));
 				
-				var treeElement = $$("tree");
+				var treeElement = tree.element;
 				treeElement.onTreeNodeRightClick = function(eventObj) {
 					if( treeElement.contextmenu ) {
 						treeElement.contextmenu.show(eventObj.clientX, eventObj.clientY);                
@@ -96,7 +96,7 @@
             callback:function() {
                 delGridRow(URL_DEL_MESSAGE);
             },
-            icon:ICON + "del.gif"
+            icon:ICON + "icon_del.gif"
         }
         var item3 = {
             label:"回复",

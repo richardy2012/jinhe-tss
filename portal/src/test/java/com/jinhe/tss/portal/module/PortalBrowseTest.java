@@ -74,6 +74,9 @@ public class PortalBrowseTest extends TxSupportTest4Portal {
             assertFalse(e.getMessage(), true);
         }
         
+        testPageBrowse();
+        testGetPortalXML();
+        
         // 测试门户流量查看
         portalAction.getFlowRate(response, portalId);
     	
@@ -82,8 +85,7 @@ public class PortalBrowseTest extends TxSupportTest4Portal {
         portalAction.flushCache(response, portalId, defaultTheme.getId());
     }
     
-    @Test
-    public void testPageBrowse() {
+    private void testPageBrowse() {
         try {
             request.addParameter("themeId", defaultTheme.getId() + "");
             request.addParameter("pageId", page1.getId() + "");
@@ -102,8 +104,7 @@ public class PortalBrowseTest extends TxSupportTest4Portal {
         portalAction.flushCache(response, portalId, defaultTheme.getId());
     }
     
-    @Test
-    public void testGetPortalXML() {
+    private void testGetPortalXML() {
         try {
             request.addParameter("themeId", defaultTheme.getId() + "");
             portalAction.getPortalXML(response, request, portalId, section1.getId(), page1.getId());

@@ -137,8 +137,8 @@
         var item4 = {
             label:"删除",
             callback:function() { delTreeNode(URL_DELETE_GROUP); },
-            icon:ICON + "del.gif",
-            visible:function(){return editable();}
+            icon:ICON + "icon_del.gif",
+            visible:function() { return editable(); }
         }
         var item6 = {
             label:"新建用户组",
@@ -274,7 +274,7 @@
                 sort(eventObj);
             }
             treeObj.onTreeNodeRightClick = function(eventObj){
-                onTreeNodeRightClick(eventObj);
+                onTreeNodeRightClick(eventObj, true);
             }
         }
         
@@ -532,48 +532,9 @@
  
     /* 显示用户列表 */
     function showUserList(groupId) {
-        var treeNode = $T("tree").getActiveTreeNode();
-		var treeID = groupId || treeNode.getId();
-
-		var p = new HttpRequestParams();
-		p.url = URL_USER_GRID + treeID + "/1";
-		var request = new HttpRequest(p);
-		request.onresult = function() {
-			$G("grid", this.getNodeValue(XML_USER_LIST)); 
-			var gridToolBar = $$("gridToolBar");
-
-			var pageListNode = this.getNodeValue(XML_PAGE_INFO);			
-			initGridToolBar(gridToolBar, pageListNode, function(page) {
-				request.paramObj.url = URL_USER_GRID + treeID + "/" + page;
-				request.onresult = function() {
-					$G("grid", this.getNodeValue(XML_USER_LIST)); 
-				}				
-				request.send();
-			} );
-			
-			var gridElement = $$("grid"); 
-			gridElement.onDblClickRow = function(eventObj) {
-				editUserInfo();
-			}
-			gridElement.onRightClickRow = function() {
-				$$("grid").contextmenu.show(event.clientX, event.clientY);
-			}   
-			gridElement.onScrollToBottom = function () {			
-				var currentPage = gridToolBar.getCurrentPage();
-				if(gridToolBar.getTotalPages() <= currentPage) return;
-
-				var nextPage = parseInt(currentPage) + 1; 
-				request.paramObj.url = URL_USER_GRID + treeID + "/" + nextPage;
-				request.onresult = function() {
-					$G("grid").load(this.getNodeValue(XML_USER_LIST), true);
-					initGridToolBar(gridToolBar, this.getNodeValue(XML_PAGE_INFO));
-				}				
-				request.send();
-			}
-		}
-		request.send();
+		groupId = groupId || getTreeNodeId();
+		showGrid(URL_USER_GRID + groupId, XML_USER_LIST, editUserInfo);
 	}
-
  
     function addNewUser() {
         var treeNode = $T("tree").getActiveTreeNode();

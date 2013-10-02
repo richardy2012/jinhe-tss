@@ -115,10 +115,7 @@
 					}
 				}
 				tree.element.onTreeNodeRightClick = function(eventObj) {
-					var treeObj = $$("tree");
-					if( treeObj.contextmenu ) {
-						treeObj.contextmenu.show(eventObj.clientX, eventObj.clientY);                
-					}
+					onTreeNodeRightClick(eventObj);
 				}
 			}
 		});	

@@ -496,6 +496,55 @@ function initGridToolBar(gridPageBar, pageInfo, callback) {
 	gridPageBar.init();
 }
 
+/* 显示Grid列表 */
+function showGrid(serviceUrl, dataNodeName, editRowFuction, gridName, page, requestParam, pageBar) {
+	pageBar  = pageBar || $$("gridToolBar");
+	gridName = gridName || "grid";
+	page     =  page || "1";
+
+	var p = requestParam || new HttpRequestParams();
+	p.url = serviceUrl + "/" + page;
+
+	var request = new HttpRequest(p);
+	request.onresult = function() {
+		$G(gridName, this.getNodeValue(dataNodeName)); 
+ 
+		var gotoPage = function(page) {
+			request.paramObj.url = serviceUrl + "/" + page;
+			request.onresult = function() {
+				$G(gridName, this.getNodeValue(dataNodeName)); 
+			}				
+			request.send();
+		}
+
+		var pageInfoNode = this.getNodeValue(XML_PAGE_INFO);			
+		initGridToolBar(pageBar, pageInfoNode, gotoPage);
+		
+		var gridElement = $$(gridName); 
+		gridElement.onDblClickRow = function(eventObj) {
+			editRowFuction();
+		}
+		gridElement.onRightClickRow = function() {
+			gridElement.contextmenu.show(event.clientX, event.clientY);
+		}   
+		gridElement.onScrollToBottom = function () {			
+			var currentPage = pageBar.getCurrentPage();
+			if(pageBar.getTotalPages() <= currentPage) return;
+
+			var nextPage = parseInt(currentPage) + 1; 
+			request.paramObj.url = serviceUrl + "/" + nextPage;
+			request.onresult = function() {
+				$G(gridName).load(this.getNodeValue(dataNodeName), true);
+
+				var pageInfoNode = this.getNodeValue(XML_PAGE_INFO);
+				initGridToolBar(pageBar, pageInfoNode, gotoPage);
+			}				
+			request.send();
+		}
+	}
+	request.send();
+}
+
 
 function bindSortHandler(table) {
 	this.rows  = table.tBodies[0].rows;
