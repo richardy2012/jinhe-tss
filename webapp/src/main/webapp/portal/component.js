@@ -19,7 +19,6 @@
     URL_IMPORT_COMPONENT = "data/_success.xml?";
     URL_EXPORT_COMPONENT = "data/_success.xml?";
 	URL_PREVIEW_COMPONENT = "data/component-preview.html?"; // "/auth/component/preview/" + id;
-
 	
  
     function init() {
@@ -453,42 +452,19 @@
     }
 
     function importComponent() {
-        var page1FormObj = $X("page1Form");
-        var fileName = page1FormObj.getData("filePath");
-        if (fileName==null || fileName=="") {
-            return alert("请选择导入文件!");
-        }
-        else {
-            var fileLength = fileName.length;
-            if(fileName.substring(fileLength-4,fileLength)!=".zip" && fileName.substring(fileLength-4,fileLength)!=".xml") {
-                return alert("请选择zip压缩文件或者XML文件导入!");
-            }
-            else{
-                return page1FormObj.submit();
-            }
-        }
-    }
+		function checkFileWrong(subfix) {
+			return subfix != ".xml" && subfix != ".zip";
+		}
+		var importDiv = createImportDiv("只支持XML和zip文件格式导入", checkFileWrong, URL_IMPORT_COMPONENT);
+		Element.show(importDiv);
+    }	
 
     function exportComponent() {
         var frameName = createExportFrame();
         var frameObj = window.frames[frameName];
-
         frameObj.location.href = URL_EXPORT_COMPONENT + getTreeNodeId();
     }
 
-    /*
-     *	创建导出用iframe
-     */
-    function createExportFrame() {
-        var frameName = "exportFrame";
-        var frameObj = $$(frameName);
-        if( frameObj == null ) {
-            frameObj = document.createElement("<iframe name='" + frameName + "' id='" + frameName + "' src='about:blank' style='display:none'></iframe>");
-            document.body.appendChild(frameObj);
-        }
-        return frameName;
-    }
-    
     /*
      *	组件资源管理
      */

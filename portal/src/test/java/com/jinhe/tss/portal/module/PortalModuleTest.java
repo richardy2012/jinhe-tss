@@ -104,6 +104,9 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         portalAction.getActivePortals4Tree(response);
         portalAction.getActivePagesByPortal4Tree(response, portalId);
         portalAction.getThemesByPortal(response, portalId);
+        
+        List<?> themeList = portalService.getThemesByPortal(portalId);
+        assertTrue(themeList.size() > 0);
        
         // test get init template
         portalAction.getReleaseConfig(response, BaseActionSupport.DEFAULT_NEW_ID);
@@ -112,7 +115,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         rconfig.setName("门户发布配置");
         rconfig.setPortal(root);
         rconfig.setPage(page1);
-        rconfig.setTheme(defaultTheme);
+        rconfig.setTheme((Theme) themeList.get(0));
         rconfig.setVisitUrl("default.portal");
         rconfig.setRemark("~~~~~~~~~~~~~~~~");
         portalAction.saveReleaseConfig(response, rconfig); // create
@@ -180,46 +183,4 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         portalAction.disable(response, root.getId(), PortalConstants.TRUE);
         portalAction.disable(response, root.getId(), PortalConstants.FALSE);
     }
- 
-    @Test
-    public void testPortalBrowse() {
-    	// 测试门户动态浏览
-        Long defaultThemeId = defaultTheme.getId();
-        try {
-        	request.addParameter("themeId", defaultThemeId + "");
-            portalAction.previewPortal(response, request, portalId);
-            
-            request.addParameter("themeId", defaultThemeId + "");
-            request.addParameter("pageId", page1.getId() + "");
-            portalAction.previewPortal(response, request, portalId);
-            
-            request.addParameter("themeId", defaultThemeId + "");
-            portalAction.getPortalXML(response, request, portalId, section1.getId(), page1.getId());
-        } 
-        catch (Exception e) {
-        	log.error(e);
-            assertFalse(e.getMessage(), true);
-        }
-        
-        // 测试门户流量查看
-        portalAction.getFlowRate(response, portalId);
-    	
-    	// 测试门户缓存管理
-        portalAction.cacheManage(response, portalId);
-        portalAction.flushCache(response, portalId, defaultTheme.getId());
-    	
-    }
-    
-    @Test
-    public void testRelease() {
-        // TODO 用jetty起一个web服务
-        
-//        // 整站发布 【需要起web服务，通过http请求抓取页面内容】
-//        portalAction.staticReleasePortal(response, portalId, 1);
-//        
-//        // 单页发布
-//        portalAction.staticReleasePortal(response, rconfig.getId(), 2);
-    }
-    
-    
 }

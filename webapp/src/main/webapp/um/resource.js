@@ -291,32 +291,11 @@
     }
  
     function importApplication() {
-		var importDiv = $$("importDiv");
-		Element.show(importDiv);
-
-		$$("closeBt").onclick = function () {
-			Element.hide(importDiv);
+		function checkFileWrong(subfix) {
+			return subfix != ".xml";
 		}
-        $$("importBt").onclick = function() {
-			var fileValue = $$("sourceXML").value;
-			if( fileValue == null) {
-				 alert("请选择导入文件!");
-				 return;
-			}
-
-			var length = fileValue.length;
-			var subfix = fileValue.substring(length - 4, length);
-            if( subfix != ".xml" ) {
-                alert("请选择.xml文件导入!");
-				return;
-            }
-
-            var form = $$("importForm");
-			form.action = URL_IMPORT;
-			form.submit();
-
-			Element.hide(importDiv);
-        }
+		var importDiv = createImportDiv("只支持XML文件格式导入", checkFileWrong, URL_IMPORT);
+		Element.show(importDiv);
 	}
 
     window.onload = init;

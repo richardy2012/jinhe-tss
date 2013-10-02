@@ -983,6 +983,64 @@ function _loadToolBar(_operation, contentXML) {
 	}
 }
 
+/* 创建导入Div */
+function createImportDiv(remark, checkFileWrong, importUrl) {
+	var divObj = $$("importDiv");
+	if( divObj == null ) {
+		divObj = document.createElement("div");    
+		divObj.id = "importDiv";      
+		divObj.style.background = "#BEC6EE";    
+		divObj.style.width = "250px";    
+		divObj.style.height = "100px";   
+		divObj.style.padding = "10px 10px 10px 10px";   
+		divObj.style.fontSize = "12px"; 
+		document.body.appendChild(divObj);
+
+		var str = [];
+		str[str.length] = "<form id='importForm' method='post' enctype='multipart/form-data'>";
+		str[str.length] = "	 <input type='file' name='file' id='sourceFile'/> <br> " + remark + "<br> ";
+		str[str.length] = "	 <input type='button' id='importBt' value='导入' /> ";
+		str[str.length] = "	 <input type='button' id='closeBt'  value='关闭' /> ";
+		str[str.length] = "</form>";
+		divObj.innerHTML = str.join("\r\n");
+
+		$$("closeBt").onclick = function () {
+			Element.hide(importDiv);
+		}
+
+		$$("importBt").onclick = function() {
+			var fileValue = $$("sourceFile").value;
+			if( fileValue == null) {
+				 return alert("请选择导入文件!");				 
+			}
+
+			var length = fileValue.length;
+			var subfix = fileValue.substring(length - 4, length);
+			if( checkFileWrong && checkFileWrong(subfix) ) {
+			   return alert(remark);
+			}
+
+			var form = $$("importForm");
+			form.action = importUrl || URL_IMPORT;
+			form.submit();
+
+			Element.hide(importDiv);
+		}
+	}
+	return divObj;
+}
+
+ /* 创建导出用iframe */
+function createExportFrame() {
+	var frameName = "exportFrame";
+	var frameObj = $$(frameName);
+	if( frameObj == null ) {
+		frameObj = document.createElement("<iframe name='" + frameName + "' id='" + frameName + "' src='about:blank' style='display:none'></iframe>");
+		document.body.appendChild(frameObj);
+	}
+	return frameName;
+}
+
 
 /*
  *	重新封装alert

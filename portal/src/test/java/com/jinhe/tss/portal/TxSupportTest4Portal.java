@@ -301,6 +301,12 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4Sp
     }
     
     protected Component createTestPortlet() {
+    	List<?> list = permissionHelper.getEntities("from Component o where o.type = ? and o.isGroup = ? order by o.decode", 
+                Component.PORTLET_TYPE, false);
+    	if( list != null && list.size() > 0 ) {
+    		return (Component) list.get(list.size() - 1);
+    	}
+    	
         Component group = new Component();
         group.setName("测试Portlet组" + System.currentTimeMillis());
         group.setType(Component.PORTLET_TYPE);
@@ -310,7 +316,7 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4Sp
         String file = URLUtil.getResourceFileUrl("testdata/DemoPortlet.zip").getPath();
         importComponent(group.getId(), file);
         
-        List<?> list = permissionHelper.getEntities("from Component o where o.type = ? and o.isGroup = ? order by o.decode", 
+        list = permissionHelper.getEntities("from Component o where o.type = ? and o.isGroup = ? order by o.decode", 
                 Component.PORTLET_TYPE, false);
         
         assertTrue(list.size() >= 1);

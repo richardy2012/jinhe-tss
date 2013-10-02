@@ -34,16 +34,29 @@ public class FileAction extends BaseActionSupport {
         String code = request.getParameter("code");
         String type = request.getParameter("type"); // 判断是何种类型的资源管理
         String filter = request.getParameter("filter");
+        String contextPath = request.getParameter("contextPath");
         if( !Arrays.asList(Component.TYPE_NAMES).contains(type) ) {
             throw new BusinessException("指定文件类型有误。");
         }
         
         StringBuffer sb = new StringBuffer("<actionSet title=\"\" openednodeid=\"r1.1\">"); 
         
+        // 如果访问的是子目录，则提供目录上翻的按钮
+        if( contextPath != null){
+            sb.append("<treeNode id=\"-1\" name=\"..\" icon=\"../framework/images/folder.gif\" />"); 
+        } 
+        else {
+        	if( type != null) {
+        		contextPath = PortalConstants.MODEL_DIR + type + "/" + code;
+        	}
+        	else { // 默认取门户资源目录根节点
+        		contextPath = PortalConstants.PORTAL_MODEL_DIR + "/" + code;
+        	}
+        }
+        
         // 根据type值找根目录
-        String contextPath = PortalConstants.MODEL_DIR + type + "/" + code;
-        String elementPath = URLUtil.getWebFileUrl(contextPath).getPath();
-		File baseDir = new File(elementPath); 
+        String absolutePath = URLUtil.getWebFileUrl(contextPath).getPath();
+		File baseDir = new File(absolutePath); 
                 
         filter = getFilter(filter);
         List<String> files= sortFile(baseDir, FileHelper.listFilesByType(filter, baseDir));
@@ -114,7 +127,7 @@ public class FileAction extends BaseActionSupport {
     @RequestMapping(method = RequestMethod.DELETE)
     public void deleteFile(HttpServletResponse response, HttpServletRequest request) {
     	String contextPath = request.getParameter("contextPath");
-    	String fileNames = request.getParameter("fileNames");
+    	String fileNames   = request.getParameter("fileNames");
     	String folderNames = request.getParameter("folderNames");
     	
         List<String> pathList = new ArrayList<String>();
