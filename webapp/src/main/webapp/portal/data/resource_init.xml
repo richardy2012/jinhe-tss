@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<ResourceTree>
+		<actionSet title="" openednodeid="r1.1">
+            <treeNode id="-1" name=".." icon="../framework/images/folder.gif"/>
+            <treeNode id="f1" name="aaaaa" isFolder="1" icon="../framework/images/folder.gif"/>
+            <treeNode id="r3" name="bbb.js" icon="../framework/images/file.gif"/>
+            <treeNode id="r1" name="ccc.js" icon="../framework/images/file.gif"/>
+            <treeNode id="r2" name="ddd.js" icon="../framework/images/file.gif"/>
+            <treeNode id="r3" name="eee.js" icon="../framework/images/file.gif"/>
+            <treeNode id="r1" name="fff.js" icon="../framework/images/file.gif"/>
+            <treeNode id="r2" name="ggg.js" icon="../framework/images/file.gif"/>
+            <treeNode id="r3" name="hhh.js" icon="../framework/images/file.gif"/>
+		</actionSet>
+	</ResourceTree>
+	<ContextPath>/websphere/installedApps/linux/pmsEar.ear/pms.war/pms/model/</ContextPath>
+</Response>

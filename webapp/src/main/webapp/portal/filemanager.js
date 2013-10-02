@@ -21,7 +21,7 @@
 	var params;
 
     function loadFileTree(contextPath, filter) {
-        params = window.dialogArguments.params;
+        params =  window.dialogArguments ? window.dialogArguments.params : {};
 
         var p = new HttpRequestParams();
         p.url = URL_INIT;
@@ -29,7 +29,7 @@
             p.setContent(item, params[item]);
         }
         if(contextPath) {
-            p.setContent("contextPath",contextPath);
+            p.setContent("contextPath", contextPath);
         }
         if(filter) {
             p.setContent("filter", filter);
@@ -39,8 +39,6 @@
         request.onresult = function() {
             var dataXmlNode = this.getNodeValue(XML_MAIN_TREE);
             var contextPath = this.getNodeValue(XML_CONTEXT_PATH);
-
-            Cache.XmlIslands.add(XML_MAIN_TREE, dataXmlNode);
 
             var treeObj = $T("tree", dataXmlNode);
 
@@ -175,31 +173,28 @@
 
     /* 下载资源文件  */
     function downloadFiles() {
-        var treeObj = $("tree");
         var fileNames = [];
         var folderNames = [];
-        var selectNodes = treeObj.getSelectedTreeNode();
-        if(0==selectNodes.length) {
-            alert("请先选择要下载的文件");
-            return;
-        }
-        for(var i=0,iLen=selectNodes.length;i<iLen;i++) {
+        var selectNodes = $T("tree").getSelectedTreeNode();
+        if(0 == selectNodes.length) {
+            return alert("请先选择要下载的文件");
+         }
+        for(var i=0; i < selectNodes.length; i++) {
             var selectNode = selectNodes[i];
             var id = selectNode.getId();
             var name = selectNode.getName();
 
             var isFolder = selectNode.getAttribute("isFolder");
-            if("-1"!=id) {
-                if("1"==isFolder) {
+            if("-1" != id) {
+                if("1" == isFolder) {
                     folderNames[folderNames.length] = name;                
-                }else{
+                } else {
                     fileNames[fileNames.length] = name;
                 }
             }
         }
 
-        var boxObj = $("contextPathBox");
-        var contextPath = boxObj.value;
+        var contextPath = $$("contextPathBox").value;
 
         fileNames = fileNames.join(",");
         folderNames = folderNames.join(",");
@@ -209,7 +204,8 @@
         url += "&fileNames=" + fileNames;
         url += "&folderNames=" + folderNames;
 
-        window.frames["downloadFrame"].location.href = url;
+		var frameName = createExportFrame();
+        window.frames[frameName].location.href = url;
     }
 
     /* 新建文件夹  */
@@ -230,13 +226,11 @@
         }
     }
 
-    /*
-     *	过滤文件
-     */
+    /* 过滤文件  */
     function filterFiles() {
         var filter = $$("filterBox").value;
         var contextPath = $$("contextPathBox").value;
-        loadFileTree(contextPath,filter);
+        loadFileTree(contextPath, filter);
     }
 
     window.onload = init;

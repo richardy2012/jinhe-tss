@@ -465,9 +465,7 @@
         frameObj.location.href = URL_EXPORT_COMPONENT + getTreeNodeId();
     }
 
-    /*
-     *	组件资源管理
-     */
+    /* 组件资源管理 */
     function resourceManage() {
         var treeObj = $T("tree");
         var treeNode = treeObj.getActiveTreeNode();
