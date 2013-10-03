@@ -22,10 +22,14 @@ import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.entity.Navigator;
+import com.jinhe.tss.portal.entity.permission.NavigatorPermissionsFull;
+import com.jinhe.tss.portal.entity.permission.NavigatorResourceView;
 import com.jinhe.tss.portal.helper.PSTreeTranslator4CreateMenu;
 import com.jinhe.tss.portal.helper.StrictLevelTreeParser;
 import com.jinhe.tss.portal.service.INavigatorService;
 import com.jinhe.tss.portal.service.IPortalService;
+import com.jinhe.tss.um.permission.PermissionHelper;
+import com.jinhe.tss.util.EasyUtils;
 
 @Controller
 @RequestMapping("/auth/navigator")
@@ -152,11 +156,10 @@ public class NavigatorAction extends BaseActionSupport {
     /**
      * 移动的时候用到
      */
-	@RequestMapping("/tree/{portalId}")
+	@RequestMapping("/tree/{id}")
     public void getPortalNavigatorTree(HttpServletResponse response, @PathVariable("id") Long id) {       
     	
 		Navigator self = service.getNavigator(id);
-		
         Long portalId = self.getPortalId();
         
         List<?> list;
@@ -176,7 +179,7 @@ public class NavigatorAction extends BaseActionSupport {
         print("MenuTree", encoder);
     }
     
-	@RequestMapping("/portalstructure/{portalId}/{type}")
+	@RequestMapping("/pstree/{portalId}/{type}")
     public void getStructuresByPortal(HttpServletResponse response, 
     		@PathVariable("portalId") Long portalId, 
     		@PathVariable("type") final int type) {
@@ -187,5 +190,13 @@ public class NavigatorAction extends BaseActionSupport {
         encoder.setTranslator(new PSTreeTranslator4CreateMenu(type));
         encoder.setNeedRootNode(false);
         print("StructureTree", encoder);
+    }
+	
+	@RequestMapping("/operations/{resourceId}")
+    public void getOperations(HttpServletResponse response, @PathVariable("resourceId") Long resourceId) {
+        List<String> list = PermissionHelper.getInstance().getOperationsByResource(resourceId,
+                        NavigatorPermissionsFull.class.getName(), NavigatorResourceView.class);
+
+        print("Operation", EasyUtils.list2Str(list));
     }
 }

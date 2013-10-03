@@ -14,6 +14,7 @@
 <script language="javascript" src="../framework/core.js"></script>
 <script language="javascript" src="../framework/ajax.js"></script>
 <script language="javascript" src="../framework/framework.js"></script>
+<script language="javascript" src="../framework/progress.js"></script>
 <script language="javascript" src="../framework/menu/menu.js"></script>
 <script language="javascript" src="../framework/balloon/balloon.js"></script>
 <script language="javascript" src="../framework/workspace/workspace.js"></script>
@@ -34,16 +35,27 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-	URL_INIT           = "data/releaseConfig_tree.xml?";
-    URL_NODE_DETAIL    = "data/releaseConfig.xml?";
-    URL_SAVE_NODE      = "data/_success.xml?";
-    URL_DELETE_NODE    = "data/_success.xml?";
-    URL_GET_THEME_LIST = "data/themes4release.xml?";
-	URL_STATIC_ISSUE   = "data/_success.xml?";
-	URL_GET_PORTAL_LIST = "data/structure_tree.xml?";
-	URL_GET_PAGE_LIST   = "data/structure_tree.xml?";
+	URL_INIT            = "/" + AUTH_PATH + "portal/release/list";
+    URL_NODE_DETAIL     = "/" + AUTH_PATH + "portal/release/";
+    URL_SAVE_NODE       = "/" + AUTH_PATH + "portal/release";
+    URL_DELETE_NODE     = "/" + AUTH_PATH + "portal/release";
+    URL_GET_THEME_LIST  = "/" + AUTH_PATH + "portal/theme4release/";
+	URL_GET_PORTAL_LIST = "/" + AUTH_PATH + "portal/activePortals";
+	URL_GET_PAGE_LIST   = "/" + AUTH_PATH + "portal/activePages/";
+	URL_STATIC_ISSUE    = "/" + AUTH_PATH + "portal/release/";
 
-    function init(){
+	if(IS_TEST) {
+		URL_INIT            = "data/releaseConfig_tree.xml?";
+		URL_NODE_DETAIL     = "data/releaseConfig.xml?";
+		URL_SAVE_NODE       = "data/_success.xml?";
+		URL_DELETE_NODE     = "data/_success.xml?";
+		URL_GET_THEME_LIST  = "data/themes4release.xml?";
+		URL_GET_PORTAL_LIST = "data/structure_tree.xml?";
+		URL_GET_PAGE_LIST   = "data/structure_tree.xml?";
+		URL_STATIC_ISSUE    = "data/_success.xml?";
+	}
+
+    function init() {
         initPaletteResize();
         initNaviBar("portal.4");
         initMenus();
@@ -55,28 +67,28 @@
         loadInitData();
     }
   
-    function initMenus(){
+    function initMenus() {
         var item1 = {
             label:"新建访问地址",
             callback:addReleaseConfig,            
-            visible:function(){return "_rootId" == getTreeNodeId();}
+            visible:function() {return "_rootId" == getTreeNodeId();}
         }
         var item2 = {
             label:"删除",
             callback:function() { delTreeNode() },
             icon:ICON + "icon_del.gif",
-            visible:function(){return "_rootId" != getTreeNodeId();}
+            visible:function() {return "_rootId" != getTreeNodeId();}
         }
         var item3 = {
             label:"编辑",
             callback:editReleaseConfig,
             icon:ICON + "edit.gif",
-            visible:function(){return "_rootId" != getTreeNodeId();}
+            visible:function() {return "_rootId" != getTreeNodeId();}
         }
 		var item4 = {
             label:"发布为静态页面",
-            callback:staticIssue,
-            visible:function(){return "_rootId" != getTreeNodeId();}
+            callback:staticRelease,
+            visible:function() {return "_rootId" != getTreeNodeId();}
         }
 
         var menu1 = new Menu();
@@ -88,37 +100,37 @@
         $$("tree").contextmenu = menu1;
     }
  
-    function loadInitData(){
+    function loadInitData() {
         var p = new HttpRequestParams();
         p.url = URL_INIT;
 
         var request = new HttpRequest(p);
-        request.onresult = function(){
+        request.onresult = function() {
             var treeNode = this.getNodeValue(XML_MAIN_TREE);
  
             var tree = $T("tree", treeNode);
 
-            tree.element.onTreeNodeActived = function(eventObj){
+            tree.element.onTreeNodeActived = function(eventObj) {
 				onTreeNodeActived(eventObj);
             }
-            tree.element.onTreeNodeDoubleClick = function(eventObj){
+            tree.element.onTreeNodeDoubleClick = function(eventObj) {
                 editReleaseConfig();
             }
-            tree.element.onTreeNodeRightClick = function(eventObj){
+            tree.element.onTreeNodeRightClick = function(eventObj) {
                 onTreeNodeRightClick(eventObj);
             }
         }
         request.send();
     }
  
-    function editReleaseConfig(){
+    function editReleaseConfig() {
         var treeNode = $T("tree").getActiveTreeNode();
 		var treeID   = treeNode.getId();
 		var treeName = treeNode.getName();
 
 		var callback = {};
-		callback.onTabChange = function(){
-			setTimeout(function(){
+		callback.onTabChange = function() {
+			setTimeout(function() {
 				loadTreeDetailData(treeID);
 			}, TIMEOUT_TAB_CHANGE);
 		};
@@ -132,12 +144,12 @@
 		var tab = ws.open(inf);
     }
  
-    function loadTreeDetailData(treeID){
+    function loadTreeDetailData(treeID) {
 		var p = new HttpRequestParams();
 		p.url = URL_NODE_DETAIL + treeID;
 
 		var request = new HttpRequest(p);
-		request.onresult = function(){
+		request.onresult = function() {
 			var dataXmlNode = this.getNodeValue(XML_NODE_INFO);
 
 			Cache.XmlDatas.add(treeID, dataXmlNode);
@@ -145,7 +157,7 @@
 			var page1FormObj = $X("page1Form", dataXmlNode);
 
 			var portalName = page1FormObj.getData("portal.name");
-			if(null != portalName && "" != portalName){
+			if(null != portalName && "" != portalName) {
 				page1FormObj.setColumnEditable("page.name", "true");
 			} else {
 				page1FormObj.setColumnEditable("page.name", "false");
@@ -159,7 +171,7 @@
     }
  
 
-    function savePublish(treeID){
+    function savePublish(treeID) {
         var page1FormObj = $X("page1Form");
         if(  !page1FormObj.checkForm() ) {
             return;
@@ -173,7 +185,7 @@
  
 		var releaseConfigNode = Cache.XmlDatas.get(treeID);
 		var releaseConfigDataNode = releaseConfigNode.selectSingleNode(".//data");
-		if(releaseConfigDataNode){
+		if(releaseConfigDataNode) {
 			flag = true;
 			p.setXFormContent(releaseConfigDataNode);
 		}
@@ -203,8 +215,8 @@
         var treeID = DEFAULT_NEW_ID;
 
         var callback = {};
-        callback.onTabChange = function(){
-            setTimeout(function(){
+        callback.onTabChange = function() {
+            setTimeout(function() {
                 loadTreeDetailData(treeID);
             }, TIMEOUT_TAB_CHANGE);
         };
@@ -219,7 +231,7 @@
     }
 
     /* 获取门户 */
-    function getPortal(){
+    function getPortal() {
         var portal = window.showModalDialog("commontree.html",{title:"请选择门户",service:URL_GET_PORTAL_LIST},"dialogWidth:300px;dialogHeight:400px;");
         if(portal) {            
 			var page1FormObj = $X("page1Form");
@@ -235,7 +247,7 @@
 			var p = new HttpRequestParams();
 			p.url = URL_GET_THEME_LIST + portal.id;
 			var request = new HttpRequest(p);
-			request.onresult = function(){
+			request.onresult = function() {
 				var column = this.getNodeValue(XML_THEME_LIST);
 				var name = column.getAttribute("name");
 				
@@ -256,7 +268,7 @@
     }
 
     /* 获取页面/版面  */
-    function getPage(){
+    function getPage() {
         var page1FormObj = $X("page1Form");
         var id = page1FormObj.getData("portal.id");
         var page = window.showModalDialog("commontree.html", {title:"请选择页面",service:URL_GET_PAGE_LIST + id}, "dialogWidth:300px;dialogHeight:400px;");
@@ -266,10 +278,8 @@
         }
     }
 
-    /*
-     *	静态发布门户，只发布当前页
-	 */
-    function staticIssue(){       
+    /* 静态发布门户 */
+    function staticRelease() {       
 		var p = new HttpRequestParams();
         p.url = URL_STATIC_ISSUE + getTreeNodeId();
         var request = new HttpRequest(p);

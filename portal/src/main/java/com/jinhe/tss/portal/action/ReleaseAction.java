@@ -31,7 +31,7 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 门户静态发布
  */
 @Controller
-@RequestMapping("/auth/release")
+@RequestMapping("/auth/portal/release")
 public class ReleaseAction extends ProgressActionSupport {
 	
 	@Autowired private IPortalService portalService;
@@ -48,8 +48,8 @@ public class ReleaseAction extends ProgressActionSupport {
             String feedback = robot.getFeedback();
             
             printSuccessMessage(feedback);
-            
-        } else if(type == 2) { // 只发布当前页
+        } 
+        else if(type == 2) { // 只发布当前页
             ReleaseConfig releaseConfig = portalService.getReleaseConfig(id);
 			String visitUrl = releaseConfig.getVisitUrl();
             new SimpleRobot(visitUrl).start();

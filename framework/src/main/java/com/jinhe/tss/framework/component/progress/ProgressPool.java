@@ -35,7 +35,7 @@ public class ProgressPool {
 	/**
 	 * 执行中的带进度反馈的业务对象池
 	 */
-	private static Map<String, FeedbackProgressable> feedbackProgressableMap = new HashMap<String, FeedbackProgressable>();//
+	private static Map<String, FeedbackProgressable> feedbackProgressableMap = new HashMap<String, FeedbackProgressable>();
 	
 	public static void putFPObject(String code, FeedbackProgressable obj){
 	    feedbackProgressableMap.put(code, obj);

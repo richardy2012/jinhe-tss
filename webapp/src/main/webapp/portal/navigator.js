@@ -14,18 +14,18 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_SOURCE_TREE      = "data/menu_tree.xml?";
-    URL_SOURCE_DETAIL    = "data/menu_detail.xml?";
-    URL_SOURCE_SAVE      = "data/_success.xml?";
-    URL_DELETE_NODE      = "data/_success.xml?";
-    URL_SORT_NODE        = "data/_success.xml?";
-    URL_MOVE_NODE        = "data/_success.xml?";
-	URL_STOP_NODE        = "data/_success.xml?";
-    URL_GET_OPERATION    = "data/operation.xml?";
-	URL_GET_PS_TREE      = "data/structure_tree.xml?";
-	URL_GET_CHANNEL_TREE = "data/channel_tree.xml?";
-	URL_FRESH_MENU_CACHE = "data/_success.xml?";
-	URL_GET_MENU_TREE    = "data/menu_tree.xml?";
+    URL_SOURCE_TREE      = "/" + AUTH_PATH + "navigator/list";
+    URL_SOURCE_DETAIL    = "/" + AUTH_PATH + "navigator/";
+    URL_SOURCE_SAVE      = "/" + AUTH_PATH + "navigator";
+    URL_DELETE_NODE      = "/" + AUTH_PATH + "navigator/";
+    URL_SORT_NODE        = "/" + AUTH_PATH + "navigator/sort/";
+    URL_MOVE_NODE        = "/" + AUTH_PATH + "navigator/move/";
+	URL_STOP_NODE        = "/" + AUTH_PATH + "navigator/disable/";
+    URL_GET_OPERATION    = "/" + AUTH_PATH + "navigator/operations/";
+	URL_GET_PS_TREE      = "/" + AUTH_PATH + "navigator/pstree/";
+	URL_GET_CHANNEL_TREE = "/" + AUTH_PATH + "channel/list";
+	URL_FRESH_MENU_CACHE = "/" + AUTH_PATH + "navigator/cache/";
+	URL_GET_MENU_TREE    = "/" + AUTH_PATH + "navigator/tree/";
 
 	if(IS_TEST) {
 		URL_SOURCE_TREE      = "data/menu_tree.xml?";
@@ -148,28 +148,26 @@
     }
  
     function loadInitData() {
-        var p = new HttpRequestParams();
-        p.url = URL_SOURCE_TREE;
+		Ajax({
+			url: URL_SOURCE_TREE,
+			onresult: function() {
+				var dataXmlNode = this.getNodeValue(XML_MAIN_TREE);
+				var tree = $T("tree", dataXmlNode);
 
-        var request = new HttpRequest(p);
-        request.onresult = function() {
-            var dataXmlNode = this.getNodeValue(XML_MAIN_TREE);
-            var tree = $T("tree", dataXmlNode);
-
-            tree.element.onTreeNodeActived = function(eventObj) {
-                onTreeNodeActived(eventObj);
-            }
-            tree.element.onTreeNodeDoubleClick = function(eventObj) {
-                onTreeNodeDoubleClick(eventObj);
-            }
-            tree.element.onTreeNodeRightClick = function(eventObj) {
-                onTreeNodeRightClick(eventObj, true);
-            }
-            tree.element.onTreeNodeMoved = function(eventObj) {
-                sortTreeNode(URL_SORT_NODE, eventObj);
-            }
-        }
-        request.send();
+				tree.element.onTreeNodeActived = function(eventObj) {
+					onTreeNodeActived(eventObj);
+				}
+				tree.element.onTreeNodeDoubleClick = function(eventObj) {
+					onTreeNodeDoubleClick(eventObj);
+				}
+				tree.element.onTreeNodeRightClick = function(eventObj) {
+					onTreeNodeRightClick(eventObj, true);
+				}
+				tree.element.onTreeNodeMoved = function(eventObj) {
+					sortTreeNode(URL_SORT_NODE, eventObj);
+				}
+			}
+		});
     }
  
     function onTreeNodeDoubleClick(eventObj) {
@@ -230,30 +228,30 @@
     }
  
     function loadMenuDetailData(treeID, type, parentId) {
-		var p = new HttpRequestParams();
-		p.url = URL_SOURCE_DETAIL + treeID ;
- 
+		var params = {};
 		if(type ) {
-			p.setContent("type", type);
+			params.type = type;
 		}
 		if(parentId) {
-			p.setContent("parentId", parentId);
+			params.parentId = parentId;
 		}
-		
-		var request = new HttpRequest(p);
-		request.onresult = function() {
-			var menuInfoNode = this.getNodeValue(XML_MENU_INFO);
-			Cache.XmlDatas.add( treeID + "." + XML_MENU_INFO, menuInfoNode );
+	
+		Ajax({
+			url: URL_SOURCE_DETAIL + treeID,
+			params: params,
+			onresult: function() {
+				var menuInfoNode = this.getNodeValue(XML_MENU_INFO);
+				Cache.XmlDatas.add( treeID + "." + XML_MENU_INFO, menuInfoNode );
 
-			var page1FormObj = $X("page1Form", menuInfoNode);
-			attachReminder(treeID, page1FormObj);
+				var page1FormObj = $X("page1Form", menuInfoNode);
+				attachReminder(treeID, page1FormObj);
 
-			//设置保存按钮操作
-			$$("page1BtSave").onclick = function() {
-				saveMenu(treeID, parentId);
+				//设置保存按钮操作
+				$$("page1BtSave").onclick = function() {
+					saveMenu(treeID, parentId);
+				}
 			}
-		}
-		request.send();
+		});
     }
  
     function saveMenu(cacheID, parentId) {
@@ -265,7 +263,7 @@
         var p = new HttpRequestParams();
         p.url = URL_SOURCE_SAVE;
 
-        //是否提交
+        // 是否提交
         var flag = false;
      
 		//菜单基本信息
@@ -278,7 +276,7 @@
 
         if(flag) {
             var request = new HttpRequest(p);
-            // 同步按钮状态
+
             syncButton([$$("page1BtSave")], request); // 同步按钮状态
 
             request.onresult = function() {
@@ -340,7 +338,7 @@
 		var name = treeNode.getName();
 
 		var url = URL_GET_MENU_TREE + id;
-		var returnObj = window.showModalDialog("commontree.html", {title:"将\"" + name + "\"移动到",service:url, nodename:"MenuTree"}, "dialogWidth:300px;dialogHeight:400px;");
+		var returnObj = window.showModalDialog("commontree.html", {title:"将\"" + name + "\"移动到", service:url, nodename:"MenuTree"}, "dialogWidth:300px;dialogHeight:400px;");
 		if(returnObj) {
 			 moveTreeNode(tree, id, returnObj.id)
 		}
@@ -348,17 +346,9 @@
  
 	/* 刷新菜单缓存  */
     function flushMenuCache() {
-        var treeObj = $T("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-       
-		var p = new HttpRequestParams();
-        p.url = URL_FRESH_MENU_CACHE;
-		var treeID = treeNode.getId();
-		p.setContent("key", "cache-navigator-" + treeID);
-		p.setContent("code", "NODEAD");
-		var request = new HttpRequest(p);
-
-		request.send();	
+		Ajax({
+			url: URL_FRESH_MENU_CACHE + getTreeNodeId()
+		});
     }
 
     window.onload = init;

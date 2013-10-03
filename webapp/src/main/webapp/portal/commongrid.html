@@ -31,19 +31,13 @@
 	params = params || {};
 
     function init(){
-        var p = new HttpRequestParams();
-        p.url = URL_INIT;
-        for(var item in params){
-            p.setContent(item, params[item]);
-        }
-
-        var request = new HttpRequest(p);
-        request.onresult = function(){
-            var listNode = this.getNodeValue(NODE_NAME);
-
-            $G("grid", listNode);
-        }
-        request.send();
+		Ajax({
+			url: URL_INIT,
+			params: params,
+			onresult: function() {
+				$G("grid", this.getNodeValue(NODE_NAME));
+			}
+		});
     }
 
     window.onload = init;

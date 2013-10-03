@@ -30,6 +30,7 @@ OPERATION_VIEW = "查看\"$label\"";
 OPERATION_DEL  = "删除\"$label\"";
 OPERATION_EDIT = "编辑\"$label\"";
 OPERATION_SEARCH = "查询\"$label\"";
+OPERATION_SETTING = "设置\"$label\"";
 OPERATION_PERMISSION = "设置\"$label\"权限";
 
 /* 延时 */

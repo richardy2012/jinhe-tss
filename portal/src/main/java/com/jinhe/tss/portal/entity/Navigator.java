@@ -129,9 +129,9 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
         map.put("resourceTypeId", getResourceType());
         
         if(this.type.equals(TYPE_MENU)){
-            map.put("icon", "../framework/images/portal/menu" + disabled + ".gif");
+            map.put("icon", "../framework/images/portal/menu_" + disabled + ".gif");
         } else {
-            map.put("icon", "../framework/images/portal/menu_item" + disabled + ".gif");
+            map.put("icon", "../framework/images/portal/menu_item_" + disabled + ".gif");
         }       
         
         super.putOperateInfo2Map(map);

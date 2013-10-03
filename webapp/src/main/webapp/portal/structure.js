@@ -6,7 +6,6 @@
     XML_MAIN_TREE = "SourceTree";
     XML_SITE_INFO = "DetailInfo";
     XML_PREVIEW = "html";
-    XML_UPLOAD_INFO = "upload";
     XML_COMPONENT_PARAMETERS = "ComponentParams";
     XML_THEME_MANAGE = "ThemeList";
     XML_CACHE_MANAGE = "CacheManage";
@@ -15,39 +14,64 @@
      *	默认唯一编号名前缀
      */
     CACHE_TREE_NODE_DETAIL = "treeNode__id";
-    CACHE_MAIN_TREE = "tree__id";
     CACHE_THEME_MANAGE = "themeManage__id";
     CACHE_CACHE_MANAGE = "cacheManage__id";
-    /*
-     *	名称
-     */
-    OPERATION_SETTING = "设置\"$label\"";
-
+ 
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_SOURCE_TREE   = "data/structure_tree.xml?";
-    URL_SOURCE_DETAIL = "data/structure_detail.xml?";
-    URL_SOURCE_SAVE   = "data/_success.xml?";
-    URL_DELETE_NODE   = "data/_success.xml?";
-    URL_STOP_NODE     = "data/_success.xml?";
-    URL_SORT_NODE     = "data/_success.xml?";
-    URL_VIEW_SITE     = "portal!previewPortal.action";
+    URL_SOURCE_TREE   = "/" + AUTH_PATH + "portal/list";
+    URL_SOURCE_DETAIL = "/" + AUTH_PATH + "portal/";
+    URL_SOURCE_SAVE   = "/" + AUTH_PATH + "portal";
+    URL_DELETE_NODE   = "/" + AUTH_PATH + "portal/";
+    URL_STOP_NODE     = "/" + AUTH_PATH + "portal/disable/";
+    URL_SORT_NODE     = "/" + AUTH_PATH + "portal/sort/";
+    URL_VIEW_SITE     = "/" + AUTH_PATH + "portal/preview/";
     URL_GET_COMPONENT_PARAMETERS = "data/structure-params.xml?";
 	URL_GET_COMPONENT_TREE = "data/component_tree.xml?";
-    URL_THEME_MANAGE      = "data/theme_list.xml?";
-    URL_RENAME_THEME      = "data/_success.xml?";
-    URL_DEL_THEME         = "data/_success.xml?";
-    URL_COPY_THEME        = "data/theme_copy.xml?";
-    URL_PREVIEW_THEME     = "data/_success.xml?";
-    URL_SET_DEFAULT_THEME = "data/_success.xml?";
-    URL_GET_OPERATION     = "data/operation.xml?";
-    URL_FLUSH_CACHE       = "data/_success.xml?";
-    URL_CACHE_MANAGE      = "data/cachemanage.xml?";
-    URL_IMPORT_SITE       = "data/upload1.htm";
+    URL_THEME_MANAGE      = "/" + AUTH_PATH + "portal/theme/list";
+    URL_RENAME_THEME      = "/" + AUTH_PATH + "portal/theme/rename/"; // {themeId}/{name}  PUT
+    URL_DEL_THEME         = "/" + AUTH_PATH + "portal/theme/";
+    URL_COPY_THEME        = "/" + AUTH_PATH + "portal/theme/";  // {themeId}/{name} POST
+    URL_PREVIEW_THEME     = "/" + AUTH_PATH + "portal/preview/"; // {portalId} ? themeId=?
+    URL_SET_DEFAULT_THEME = "/" + AUTH_PATH + "portal/theme/default/";  // {themeId}
+    URL_GET_OPERATION     = "/" + AUTH_PATH + "portal/operations/";
+    URL_FLUSH_CACHE       = "/" + AUTH_PATH + "portal/cache/";
+    URL_CACHE_MANAGE      = "/" + AUTH_PATH + "portal/cache/";
+    URL_GET_FLOW_RATE     = "/" + AUTH_PATH + "portal/flowrate/";
+
+	URL_SYNC_PROGRESS        = "/" + AUTH_PATH + "portal/release/progress/";  // GET
+    URL_CANCEL_SYNC_PROGRESS = "/" + AUTH_PATH + "portal/release/progress/";  // DELETE
+	URL_STATIC_ISSUE_PORATL  = "/" + AUTH_PATH + "portal/release/";
+	URL_STATIC_ISSUE_PAGE    = "/" + AUTH_PATH + "portal/release/singlepage";
+	URL_REMOTE_ISSUE         = "/" + AUTH_PATH + "portal/release/remote/";
  
 	if(IS_TEST) {
-		
+		URL_SOURCE_TREE   = "data/structure_tree.xml?";
+		URL_SOURCE_DETAIL = "data/structure_detail.xml?";
+		URL_SOURCE_SAVE   = "data/_success.xml?";
+		URL_DELETE_NODE   = "data/_success.xml?";
+		URL_STOP_NODE     = "data/_success.xml?";
+		URL_SORT_NODE     = "data/_success.xml?";
+		URL_VIEW_SITE     = "portal!previewPortal.action";
+		URL_GET_COMPONENT_PARAMETERS = "data/structure-params.xml?";
+		URL_GET_COMPONENT_TREE = "data/component_tree.xml?";
+		URL_THEME_MANAGE      = "data/theme_list.xml?";
+		URL_RENAME_THEME      = "data/_success.xml?";
+		URL_DEL_THEME         = "data/_success.xml?";
+		URL_COPY_THEME        = "data/theme_copy.xml?";
+		URL_PREVIEW_THEME     = "data/_success.xml?";
+		URL_SET_DEFAULT_THEME = "data/_success.xml?";
+		URL_GET_OPERATION     = "data/operation.xml?";
+		URL_FLUSH_CACHE       = "data/_success.xml?";
+		URL_CACHE_MANAGE      = "data/cachemanage.xml?";
+		URL_GET_FLOW_RATE     = "data/page_flow_rate.xml?";
+
+		URL_SYNC_PROGRESS        = "data/progress.xml?";
+		URL_CANCEL_SYNC_PROGRESS = "data/_success.xml?";
+		URL_STATIC_ISSUE_PORATL  = "data/_success.xml?";
+		URL_STATIC_ISSUE_PAGE    = "data/_success.xml?";
+		URL_REMOTE_ISSUE         = "data/_success.xml?";
 	}
 
     function init() {
@@ -144,13 +168,13 @@
         }
 		var item13 = {
             label:"门户静态发布",
-            callback:staticIssue,
+            callback:staticRelease,
             visible:function() {return "0" == getStructureType() && getOperation("2");}
         }
 		var item14 = {
             label:"远程发布",
             callback:function() {
-               remoteIssue("0");
+               remoteRelease("false");
             },
 			icon:ICON + "up.gif",
             visible:function() {return "0" == getStructureType() && getOperation("2");}
@@ -158,14 +182,14 @@
 		var item15 = {
             label:"远程发布(完全覆盖)",
 			callback:function() {
-                remoteIssue("1");
+                remoteRelease("true");
             },            
 			icon:ICON + "up.gif",
             visible:function() {return "0" == getStructureType() && getOperation("2");}
         }
 	    var item16 = {
             label:"页面静态发布",
-            callback:staticIssueOnePage,
+            callback:staticReleaseSinglePage,
             visible:function() {return "0" == getStructureType() && getOperation("2");}
         }
 
@@ -199,9 +223,6 @@
         var request = new HttpRequest(p);
         request.onresult = function() {
             var sourceTreeNode = this.getNodeValue(XML_MAIN_TREE);
-
-            Cache.XmlDatas.add(CACHE_MAIN_TREE, sourceTreeNode);
-
             var tree = $T("tree", sourceTreeNode);
 
             tree.element.onTreeNodeActived = function(eventObj) {
@@ -236,27 +257,18 @@
         var treeNode = treeObj.getActiveTreeNode();
 		var treeID   = treeNode.getId();
 		var treeName = treeNode.getName();
-		var treeType = treeNode.getAttribute("type");
-
-		var portalNode = treeNode;
-		if("0" != treeType) { // 如果不是门户节点，则取父节点
-			portalNode = treeNode.getParent();
-		}
-		var portalName = portalNode.getAttribute("code");
-		var portalID = portalNode.getAttribute("portalId");
 
 		var callback = {};
 		callback.onTabChange = function() {
 			setTimeout(function() {
-				loadStructureDetailData(treeID,treeID,treeType,portalID,portalName);
+				loadStructureDetailData(treeID);
 			},TIMEOUT_TAB_CHANGE);
 		};
 
 		var inf = {};
-		inf.label = OPERATION_EDIT.replace(/\$label/i,treeName);
+		inf.label = OPERATION_EDIT.replace(/\$label/i, treeName);
 		inf.SID = CACHE_TREE_NODE_DETAIL + treeID;
 		inf.defaultPage = "page1";
-		inf.phases = null;
 		inf.callback = callback;
 		var tab = ws.open(inf);
     }
@@ -273,14 +285,14 @@
 
 		var request = new HttpRequest(p);
 		request.onresult = function() {
-			var siteInfoNode = this.getNodeValue(XML_SITE_INFO);
+			var dataXmlNode = this.getNodeValue(XML_SITE_INFO);
 
 			// 根据树节点type属性，预先处理xform数据岛
-			preProcessXml(siteInfoNode,treeType);
+			preProcessXml(dataXmlNode,treeType);
 
-			Cache.XmlDatas.add(treeID, siteInfoNode);
+			Cache.XmlDatas.add(treeID, dataXmlNode);
 
-			var page1FormObj = $X("page1Form", siteInfoNode);
+			var page1FormObj = $X("page1Form", dataXmlNode);
 
 			// 离开提醒
 			attachReminder(treeID, page1FormObj);
@@ -307,19 +319,18 @@
         var p = new HttpRequestParams();
         p.url = URL_SOURCE_SAVE;
 
-        //是否提交
+        // 是否提交
         var flag = false;
       
-		//门户基本信息
-		var siteInfoNode = Cache.XmlDatas.get(cacheID);
-		var siteInfoDataNode = siteInfoNode.selectSingleNode(".//data");
-		if(siteInfoDataNode) {
-
-			siteInfoDataNode = siteInfoDataNode.cloneNode(true);
-			var rowNode = siteInfoDataNode.selectSingleNode("row");
+		// 门户基本信息
+		var dataXmlNode = Cache.XmlDatas.get(cacheID);
+		var dataElement = dataXmlNode.selectSingleNode(".//data");
+		if(dataElement) {
+			dataElement = dataElement.cloneNode(true);
+			var rowNode = dataElement.selectSingleNode("row");
 
 			// 门户、页面节点需要拼接supplement属性：将css,js部分拼合成一个xml文档
-			var type = siteInfoNode.getAttribute("type");
+			var type = dataXmlNode.getAttribute("type");
 			if("0"==type || "1"==type) {
 				var rootName = ("0" == type? "portal" : "page");
 				var name    = rowNode.getCDATA("name") || "";
@@ -331,31 +342,22 @@
 				var str = [];
 				str[str.length] = "<" + rootName + ">";
 				str[str.length] = "<property>";
-				str[str.length] = "<name>" + name + "</name>";
-				str[str.length] = "<description>";
-				str[str.length] = "<![CDATA[]]>";
-				str[str.length] = "</description>";
+				str[str.length] = "  <name>" + name + "</name>";
+				str[str.length] = "  <description><![CDATA[]]></description>";
 				str[str.length] = "</property>";
 				str[str.length] = "<script>";
-				str[str.length] = "<file>";
-				str[str.length] = "<![CDATA[" + js + "]]>";
-				str[str.length] = "</file>";
-				str[str.length] = "<code>";
-				str[str.length] = "<![CDATA[" + jsCode + "]]>";
-				str[str.length] = "</code>";
-				str[str.length] = "</"+"script>";
+				str[str.length] = "  <file><![CDATA[" + js + "]]></file>";
+				str[str.length] = "  <code><![CDATA[" + jsCode + "]]></code>";
+				str[str.length] = "</script>";
 				str[str.length] = "<style>";
-				str[str.length] = "<file>";
-				str[str.length] = "<![CDATA[" + css + "]]>";
-				str[str.length] = "</file>";
-				str[str.length] = "<code>";
-				str[str.length] = "<![CDATA[" + cssCode + "]]>";
-				str[str.length] = "</code>";
+				str[str.length] = "  <file><![CDATA[" + css + "]]></file>";
+				str[str.length] = "  <code><![CDATA[" + cssCode + "]]></code>";
 				str[str.length] = "</style>";
 				str[str.length] = "</" + rootName + ">";
 
 				rowNode.setCDATA("supplement",str.join(""));
-			} else {
+			} 
+			else {
 				rowNode.removeCDATA("supplement");
 			}
 			rowNode.removeCDATA("js");
@@ -365,19 +367,17 @@
 
 			flag = true;
 
-			p.setXFormContent(siteInfoDataNode);
-			p.setContent("code",  _TEMP_CODE);
+			p.setXFormContent(dataElement);
+			p.setContent("code", _TEMP_CODE);
 		}
 
         if(flag) {
             var request = new HttpRequest(p);
 
-            //同步按钮状态
-            syncButton([$$("page1BtSave")], request);
+            syncButton([$$("page1BtSave")], request); // 同步按钮状态
 
             request.onresult = function() {
-				// 解除提醒
-				detachReminder(cacheID);
+				detachReminder(cacheID); // 解除提醒
 
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
 				appendTreeNode(parentID,treeNode);
@@ -385,8 +385,7 @@
 				ws.closeActiveTab();
             }
             request.onsuccess = function() {
-				// 解除提醒
-				detachReminder(cacheID);
+				detachReminder(cacheID); // 解除提醒
 
 				// 更新树节点名称
 				var name = page1FormObj.getData("name");
@@ -560,7 +559,6 @@
             case "3":
                 break;
         }
-
     }
  
     function preview() {
@@ -696,20 +694,16 @@
 		}
     }
  
-    /*
-     *	主题管理
-     */
+    /* 主题管理  */
     function themeManage() {
-        var treeObj = $T("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-		var treeID   = treeNode.getId();
+        var treeNode = $T("tree").getActiveTreeNode();
 		var treeName = treeNode.getName();
 		var portalId = treeNode.getAttribute("portalId");
 
 		var callback = {};
 		callback.onTabChange = function() {
 			setTimeout(function() {
-				loadThemeManageData(treeID, portalId);
+				loadThemeManageData(portalId);
 			},TIMEOUT_TAB_CHANGE);
 		};
 
@@ -718,21 +712,16 @@
 		inf.label = OPERATION_SETTING.replace(/\$label/i, treeName);
 		inf.phases = null;
 		inf.callback = callback;
-		inf.SID = CACHE_THEME_MANAGE + treeID;
+		inf.SID = CACHE_THEME_MANAGE + portalId;
 		var tab = ws.open(inf);
     }
 
     /*
      *	主题管理详细信息加载数据
-     *	参数：	string:treeID       树节点id
-                string:portalId     portalId
+     *	参数： string:portalId     portalId
      */
-    function loadThemeManageData(treeID, portalId) {
-		var p = new HttpRequestParams();
-		p.url = URL_THEME_MANAGE + treeID;
-
-		var request = new HttpRequest(p);
-		request.onresult = function() {
+    function loadThemeManageData(portalId) {
+		var onresult = function() {
 			var themeManageNode = this.getNodeValue(XML_THEME_MANAGE);
 			var page2Tree = $T("page2Tree", themeManageNode);
 
@@ -747,7 +736,11 @@
 			$$("page2BtNext").style.display = "none";
 			$$("page2BtSave").style.display = "none";
 		}
-		request.send();
+
+		Ajax({
+			url: URL_THEME_MANAGE + portalId,
+			onresult: onresult
+		});
     }
  
     function initThemeTreeMenu(portalId) {
@@ -813,9 +806,7 @@
         return null;
     }
 
-    /*
-     *	修改主题名
-     */
+    /* 修改主题名 */
     function changeThemeName() {
         var page2TreeObj = $T("page2Tree");
         var treeNode = page2TreeObj.getActiveTreeNode();
@@ -823,8 +814,7 @@
             var treeID = treeNode.getId();
             var treeName = treeNode.getName();
 
-            var newName = prompt("请输入新主题名", treeName, "重新命名\"" + treeName + "\"为", null, 50);
-            newName = newName.replace(/[\s　]/g, "");
+            var newName = "";
             while("" == newName) {
                 alert("请输入至少一个字符，并且不能使用空格(包括全角空格）");
                 newName = prompt("请输入新主题名", treeName, "重新命名\"" + treeName + "\"为", null, 50);
@@ -832,67 +822,53 @@
             }
 
             if(newName && treeName != newName) {
-                var p = new HttpRequestParams();
-                p.url = URL_RENAME_THEME + treeID + "/" + newName;
-                var request = new HttpRequest(p);
-                request.onsuccess = function() {
-                    treeNode.setAttribute("name", newName);
-                    page2TreeObj.reload();
-                }
-                request.send();
+				Ajax({
+					url: URL_RENAME_THEME + treeID + "/" + newName,
+					onsuccess: function() {
+						treeNode.setAttribute("name", newName);
+						page2TreeObj.reload();
+					}
+				});
             }
         }
     }
 
-    /*
-     *	删除主题
-     */
+    /* 删除主题 */
     function delTheme() {
         var page2TreeObj = $T("page2Tree");
         var treeNode = page2TreeObj.getActiveTreeNode();
         if(treeNode) {
             var treeID = treeNode.getId();
-            var treeName = treeNode.getName();
-
-            var p = new HttpRequestParams();
-            p.url = URL_DEL_THEME + treeID;
-
-            var request = new HttpRequest(p);
-            request.onsuccess = function() {
-                page2TreeObj.removeTreeNode(treeNode);
-            }
-            request.send();
+			Ajax({
+				url: URL_DEL_THEME + treeID,
+				onsuccess: function() {
+					page2TreeObj.removeTreeNode(treeNode);
+				}
+			});
         }
     }
 
-    /*
-     *	复制主题
-     */
+    /* 复制主题  */
     function copyTheme(portalId) {
         var page2TreeObj = $T("page2Tree");
         var treeNode = page2TreeObj.getActiveTreeNode();
         if(treeNode) {
             var treeID = treeNode.getId();
             var treeName = treeNode.getName();
-
-            var p = new HttpRequestParams();
 			var newName =  treeName + "_2";
-            p.url = URL_COPY_THEME + treeID + "/" + newName;
 
-            var request = new HttpRequest(p);
-            request.onresult = function() {
-                var themeNode = this.getNodeValue(XML_THEME_MANAGE).selectSingleNode("treeNode");
-                var rootNode = page2TreeObj.getTreeNodeById("_rootId");
-
-                page2TreeObj.insertTreeNodeXml(themeNode.toXml(),rootNode);
-            }
-            request.send();
+			Ajax({
+				url:URL_COPY_THEME + treeID + "/" + newName,
+				onresult: function() {
+					var themeNode = this.getNodeValue(XML_THEME_MANAGE).selectSingleNode("treeNode");
+					var rootNode = page2TreeObj.getTreeNodeById("_rootId");
+					page2TreeObj.insertTreeNodeXml(themeNode.toXml(), rootNode);
+				}
+			});
         }
     }
 
-    /*
-     *	预览主题
-     */
+    /* 预览主题 */
     function previewTheme(portalId) {
         var treeNode = $T("page2Tree").getActiveTreeNode();
         if(treeNode) {
@@ -902,21 +878,15 @@
         }
     }
 
-    /*
-     *	设置默认主题
-     */
+    /* 设置默认主题 */
     function setDefaultTheme() {
         var page2TreeObj = $T("page2Tree");
         var treeNode = page2TreeObj.getActiveTreeNode();
         if(treeNode) {
-            var treeID = treeNode.getId();
+            var treeID  = treeNode.getId();
             var treeName = treeNode.getName();
-
-            var p = new HttpRequestParams();
-            p.url = URL_SET_DEFAULT_THEME + treeID;
-
-            var request = new HttpRequest(p);
-            request.onsuccess = function() {
+ 
+            var onsuccess = function() {
                 // 先清除前次默认主题名称
                 var rootNode = page2TreeObj.getTreeNodeById("_rootId");
                 var defaultThemeNode = new XmlNode(rootNode.node).selectSingleNode(".//treeNode[@isDefault='1']");
@@ -932,22 +902,15 @@
 
                 page2TreeObj.reload();                
             }
-            request.send();
+
+            Ajax({
+				url: URL_SET_DEFAULT_THEME + treeID,
+				onsuccess: onsuccess
+			});
         }
     }
 
-    /*
-     *	刷新缓存
-     */
-    function flushCache(themeId, portalId) {
-        var p = new HttpRequestParams();
-        p.url = URL_FLUSH_CACHE + portalId + "/" + themeId;
-        request.send();
-    }
-
-    /*
-     *	缓存管理
-     */
+    /* 缓存管理  */
     function cacheManage() {
         var treeObj = $T("tree");
         var treeNode = treeObj.getActiveTreeNode();
@@ -965,22 +928,14 @@
 		var inf = {};
 		inf.defaultPage = "page3";
 		inf.label = OPERATION_SETTING.replace(/\$label/i, treeName);
-		inf.phases = null;
 		inf.callback = callback;
 		inf.SID = CACHE_CACHE_MANAGE + treeID;
 		var tab = ws.open(inf);
     }
 
-    /*
-     *	缓存管理详细信息加载数据
-     */
+    /* 缓存管理详细信息加载数据 */
     function loadCacheManageData(treeID, portalId) {
-		var p = new HttpRequestParams();
-		p.url = URL_CACHE_MANAGE;
-		p.setContent("portalId", portalId);
-
-		var request = new HttpRequest(p);
-		request.onresult = function() {
+		var onresult = function() {
 			var cacheManageNode = this.getNodeValue(XML_CACHE_MANAGE);
 
 			var listObj = $$("page3CacheList");
@@ -1004,90 +959,71 @@
 			$$("page3BtNext").style.display = "none";
 			$$("page3BtSave").style.display = "none";
 		}
-		request.send();
+		
+		Ajax({
+			url:  URL_CACHE_MANAGE + portalId,
+			onresult: onresult
+		});
+    }
+
+	/* 刷新缓存  */
+    function flushCache(themeId, portalId) {
+		Ajax({
+			url:  URL_FLUSH_CACHE + portalId + "/" + themeId,
+			method: "DELETE"
+		});
     }
   
-    /*
-     *	查看页面流量
-     */
+    /* 查看页面流量  */
     function showPageFlowRate() {
         var treeNode = $T("tree").getActiveTreeNode();
 		var portalId = treeNode.getAttribute("portalId");
-		var params = {
-			service: null,
-			portalId: portalId
-		};
-		window.showModalDialog("commongrid.html", {params:params, title:"查看页面流量"} , "dialogWidth:400px;dialogHeight:400px;resizable:yes");
+		var url = URL_GET_FLOW_RATE + portalId;
+		window.showModalDialog("commongrid.html", {params:params, service: url, nodename: "PageFlowRate" title:"查看页面流量"} , 
+			"dialogWidth:400px;dialogHeight:400px;resizable:yes");
     }
 
 	/********************************************************************************************************************
      ************************************************** 以下为静态发布相关 *********************************************	
      ********************************************************************************************************************/
-	URL_SYNC_PROGRESS = "data/progress.xml?";
-    URL_CANCEL_SYNC_PROGRESS = "data/_success.xml?";
-	URL_STATIC_ISSUE_PORATL = "data/_success.xml?";
-	URL_STATIC_ISSUE_PAGE = "data/_success.xml?";
-	URL_REMOTE_ISSUE = "data/_success.xml?";
 
-    /*
-     *	静态发布整个门户站点
-     */
-    function staticIssue() {
-        var treeObj = $T("tree");
-        var treeNode = treeObj.getActiveTreeNode();
+    /* 静态发布整个门户站点 */
+    function staticRelease() {
+        var treeNode = $T("tree").getActiveTreeNode();
 		var portalId = treeNode.getAttribute("portalId");
-        p.setContent("id", portalId);
 
-        var p = new HttpRequestParams();
-        p.url = URL_STATIC_ISSUE_PORATL + portalId;
-
-        var request = new HttpRequest(p);
-		request.onresult = function() {
-			var thisObj = this;
-			var data = this.getNodeValue("ProgressInfo");
-			var progress = new Progress(URL_SYNC_PROGRESS, data, URL_CANCEL_SYNC_PROGRESS);
-			progress.oncomplete = function() {
-				// 触发远程上传
-				// remoteIssue("0");
+		Ajax({
+			url: URL_STATIC_ISSUE_PORATL + portalId,
+			onresult: function() {
+				var thisObj = this;
+				var data = this.getNodeValue("ProgressInfo");
+				var progress = new Progress(URL_SYNC_PROGRESS, data, URL_CANCEL_SYNC_PROGRESS);
+				progress.oncomplete = function() {
+					// remoteRelease("false"); // 触发远程上传
+				}
+				progress.start();
 			}
-			progress.start();
-		}
-        request.send();
+		});
     }
 
-	/*
-     *	静态发布门户里指定页面
-     */
-    function staticIssueOnePage() {
+	/* 静态发布门户里指定页面 */
+    function staticReleaseSinglePage() {
         var pageUrl = prompt("请输入要发布的页面地址");
 		if(pageUrl == null || "" == pageUrl) {
 			return alert("页面地址不能为空");
 		}
 
-		var treeNode = $T("tree").getActiveTreeNode();
-        var p = new HttpRequestParams();
-        p.url = URL_STATIC_ISSUE_PAGE;
-        p.setContent("pageUrl", pageUrl);
-
-        var request = new HttpRequest(p);
-
-        request.send();
+		Ajax({
+			url: URL_STATIC_ISSUE_PAGE,
+			params: {"pageUrl": pageUrl}
+		});
     }
    
-	/*
-     *	远程发布
-     *	参数：	string:id               缓存项id
-                string:portalId         portalId
-     *	返回值：
-     */
-	function remoteIssue(override) {
-        var p = new HttpRequestParams();
-        p.url = URL_REMOTE_ISSUE;
-		p.setContent("override", override);
-
-        var request = new HttpRequest(p);
- 
-        request.send();
+	/* 远程发布 */
+	function remoteRelease(override) {
+		Ajax({
+			url: URL_REMOTE_ISSUE + override
+		});
     }
 
 

@@ -205,7 +205,7 @@ public class MagicRobot extends SimpleRobot implements FeedbackProgressable {
         else
             url = contextPath + href;
         
-        //生成文件名
+        // 生成文件名
         String pageName;
         if(portalId != null && (isFirstHref || indexPage.equals(href))){ // 判断是否首页
             pageName = "index" + this.portalId + HTM_FILE_SUFFIX;

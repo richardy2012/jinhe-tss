@@ -677,6 +677,9 @@ function Ajax() {
 	if(arg.waiting) {
 		p.waiting = arg.waiting;
 	}
+	if(arg.async) {
+		p.async = arg.async;
+	}
 	if(arg.relogin) {
 		p.relogin = arg.relogin;
 	}
