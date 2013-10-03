@@ -1,4 +1,4 @@
-IS_TEST = true;
+IS_TEST = false;
 
 /* 
  * 当前应用名 
@@ -61,6 +61,8 @@ document.oncontextmenu = function(eventObj) {
  */
 function initUserInfo() {
 	if( IS_TEST ) return;
+
+	if( Query.get("login") != "true" ) return;
 
 	Ajax({
 		url : "/" + AUTH_PATH + "user/operatorInfo",
@@ -913,11 +915,8 @@ function initBlocks(){
 }
 
 function initFocus(){
-	var treeTitleObj = $$("treeTitle");
-	var statusTitleObj = $$("statusTitle");
-
-	Focus.register(treeTitleObj.firstChild);
-	Focus.register(statusTitleObj.firstChild);
+	Focus.register( $$("treeTitle").firstChild );
+	Focus.register( $$("statusTitle").firstChild );
 }
 
 /*

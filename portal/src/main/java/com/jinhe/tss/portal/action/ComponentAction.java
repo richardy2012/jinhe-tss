@@ -108,6 +108,14 @@ public class ComponentAction extends FreeMarkerSupportAction {
         component = service.saveComponent(component);
         doAfterSave(isNew, component, "SourceTree");
     }
+    
+    @RequestMapping(value = "/rename/{id}/{name}")
+    public void renameGroup(HttpServletResponse response, 
+    		@PathVariable("id") Long id, @PathVariable("name") String name) {
+    	Component component = service.getComponent(id);
+    	component.setName(name);
+        printSuccessMessage("删除成功");
+    }
 
     /**
      * 删除组件(组)

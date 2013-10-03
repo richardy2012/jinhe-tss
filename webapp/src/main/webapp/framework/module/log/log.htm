@@ -25,11 +25,11 @@
 <script language="javascript" src="../../xform/xform.js"></script>
 
 <SCRIPT type="text/javascript">
-<!--
- 
-/* 框架包相对路径 */
-URL_CORE = "../../"; 
-    
+<!-- 
+
+	/* 框架包相对路径 */
+	if(IS_TEST) URL_CORE = "../../"; 
+
     /*
      *	后台响应数据节点名称
      */
@@ -73,26 +73,21 @@ URL_CORE = "../../";
 			label:"浏览日志",
 			callback:showLogList,
 			icon:"images/view_list.gif",
-			enable:function() {return true;},
 			visible:function() {return !isTreeRoot();}
 		}
 		var item2 = {
 			label:"搜索日志",
 			callback:searchLog,
 			icon:"images/search.gif",
-			enable:function() {return true;},
 			visible:function() {return !isTreeRoot();}
 		}
-
-		var treeObj = $$("tree");
 
 		var menu = new Menu();
 		menu.addItem(item1);
 		menu.addItem(item2);
-		treeObj.contextmenu = menu;
+		$$("tree").contextmenu = menu;
 
 		/* Grid菜单初始化  */
-		var gridObj = $$("grid");
 		var item1 = {
 			label:"查看",
 			callback:function() {
@@ -105,7 +100,7 @@ URL_CORE = "../../";
 
 		var menu = new Menu();
 		menu.addItem(item1);
-		gridObj.contextmenu = menu;
+		$$("grid").contextmenu = menu;
     }
 
     function initBlocks() {
@@ -113,7 +108,7 @@ URL_CORE = "../../";
         Blocks.create(paletteObj);
 
         var treeContainerObj = $$("treeContainer");
-        Blocks.create(treeContainerObj,treeContainerObj.parentNode);  
+        Blocks.create(treeContainerObj, treeContainerObj.parentNode);  
     }
 
 	function loadInitData() {
@@ -130,26 +125,16 @@ URL_CORE = "../../";
 				}
             }
             treeElement.onTreeNodeRightClick = function(eventObj) {
-				var treeObj = $$("tree");
-				if(treeObj.contextmenu) {
-					treeObj.contextmenu.show(eventObj.clientX, eventObj.clientY);                
-				}
+				onTreeNodeRightClick(eventObj);
             }
         }
 
         Ajax({url : URL_INIT, onresult : onresult});
     }
-	
-    function getTreeId() {
-        var treeNode = $T("tree").getActiveTreeNode();
-        if( treeNode ) {
-            return treeNode.getId();
-        }
-    }
-	
+ 
     function initFocus() {
-        Focus.register($$("treeTitle").firstChild);
-        Focus.register($$("gridTitle"));
+        Focus.register( $$("treeTitle").firstChild );
+        Focus.register( $$("gridTitle") );
     }
 
     function initEvents() {
@@ -160,15 +145,13 @@ URL_CORE = "../../";
         Event.attachEvent($$("gridTitle"), "click", onClickGridTitle);
     }
 
-	var currentPage
-
     /* grid加载数据  */
     function loadGridData(requestParam, page) {
 		showGrid(URL_LOG_LIST, XML_LOG_LIST, showLogInfo, "grid", page, requestParam);
     }
 	
 	function showLogList() {		
-	    var appCode = getTreeId();
+	    var appCode = getTreeNodeId();
 		var p = new HttpRequestParams();
 		p.setContent("appCode", appCode);
 		loadGridData(p, "1"); 

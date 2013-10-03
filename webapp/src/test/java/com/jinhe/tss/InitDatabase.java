@@ -114,6 +114,7 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
     private void initPortal() {
         Component layoutGroup = new Component();
         layoutGroup.setName("布局器组");
+        layoutGroup.setIsGroup(true);
         layoutGroup.setType(Component.LAYOUT_TYPE);
         layoutGroup.setParentId(PortalConstants.ROOT_ID);   
         layoutGroup = elementService.saveComponent(layoutGroup);
@@ -131,6 +132,7 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
         
         Component decoratorGroup = new Component();
         decoratorGroup.setName("修饰器组");
+        decoratorGroup.setIsGroup(true);
         decoratorGroup.setType(Component.DECORATOR_TYPE);
         decoratorGroup.setParentId(PortalConstants.ROOT_ID);  
         decoratorGroup = elementService.saveComponent(decoratorGroup);
@@ -148,14 +150,16 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
         
         Component portletGroup = new Component();
         portletGroup.setName("portlet组");
+        portletGroup.setIsGroup(true);
         portletGroup.setType(Component.PORTLET_TYPE);
         portletGroup.setParentId(PortalConstants.ROOT_ID);   
-        portletGroup = elementService.saveComponent(layoutGroup);
+        portletGroup = elementService.saveComponent(portletGroup);
         
         // 新建一个应用菜单组（不依附于门户）
         Navigator appMenuGroup = new Navigator();
         appMenuGroup.setName("应用菜单组");
         appMenuGroup.setType(Navigator.TYPE_MENU);
+        appMenuGroup.setParentId(PortalConstants.ROOT_ID);
         navigatorService.saveNavigator(appMenuGroup);
     }
     

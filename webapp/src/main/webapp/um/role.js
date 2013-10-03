@@ -138,11 +138,7 @@
     }
 
 	function loadInitData() {
-        var p = new HttpRequestParams();
-        p.url = URL_SOURCE_TREE;
-
-        var request = new HttpRequest(p);
-        request.onresult = function() {
+        var onresult = function() {
             var roleTreeNode = this.getNodeValue(XML_MAIN_TREE);
 			$T("tree", roleTreeNode);
 			
@@ -167,7 +163,8 @@
 				 onTreeNodeRightClick(eventObj, true);
             }
         }
-        request.send();
+		
+		Ajax({url: URL_SOURCE_TREE, onresult: onresult});
     }
 	
 	/* 是否根节点 */
@@ -396,11 +393,7 @@
                 string:parentID             父节点id
      */
     function loadRoleDetailData(treeID, editable, parentID) {
-		var p = new HttpRequestParams();
-		p.url = URL_ROLE_DETAIL + treeID + "/" + parentID;
-
-		var request = new HttpRequest(p);
-		request.onresult = function() {
+		var onresult = function() {
 			var roleInfoNode = this.getNodeValue(XML_ROLE_INFO);
 			var role2UserTreeNode = this.getNodeValue(XML_ROLE_TO_GROUP_TREE);
 			var role2UserExsitInfo = this.getNodeValue(XML_ROLE_TO_USER_EXIST_TREE);
@@ -478,7 +471,8 @@
 				saveRole(treeID, parentID);
 			}
 		}
-		request.send();
+
+		Ajax({url: URL_ROLE_DETAIL + treeID + "/" + parentID, onresult: onresult});
     }
  
     function saveRole(cacheID, parentID) {

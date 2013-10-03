@@ -8,22 +8,32 @@
 	 /*
      *	XMLHTTP请求地址汇总
      */
-	URL_SOURCE_TREE      = "data/component_tree.xml?";
-    URL_SAVE_GROUP       = "data/_success.xml?";
-    URL_SOURCE_SORT      = "data/_success.xml?";
-	URL_STOP_NODE        = "data/_success.xml?";
-    URL_SOURCE_DETAIL    = "data/component_detail.xml?";
-    URL_DELETE_NODE      = "data/_success.xml?";
-    URL_SOURCE_DISABLE   = "data/_success.xml?";
-    URL_SOURCE_SAVE      = "data/_success.xml?";
-    URL_IMPORT_COMPONENT = "data/_success.xml?";
-    URL_EXPORT_COMPONENT = "data/_success.xml?";
-	URL_PREVIEW_COMPONENT = "data/component-preview.html?"; // "/auth/component/preview/" + id;
+	URL_SOURCE_TREE      = "/" + AUTH_PATH + "component/list";
+    URL_SOURCE_SORT      = "/" + AUTH_PATH + "component/sort/"; // {id}/{targetId}/{direction}
+	URL_STOP_NODE        = "/" + AUTH_PATH + "component/disable/"; // {id}/{state}
+    URL_SOURCE_DETAIL    = "/" + AUTH_PATH + "component/";  // {groupId}/{id}
+    URL_DELETE_NODE      = "/" + AUTH_PATH + "component/";  // {id}
+    URL_SOURCE_SAVE      = "/" + AUTH_PATH + "component";
+	URL_SOURCE_RENAME    = "/" + AUTH_PATH + "component/rename/";
+    URL_IMPORT_COMPONENT = "/" + AUTH_PATH + "component/import";
+    URL_EXPORT_COMPONENT = "/" + AUTH_PATH + "component/export/"; // {id}
+	URL_PREVIEW_COMPONENT= "/" + AUTH_PATH + "component/preview/"; // {id}
 	
+	if(IS_TEST) {
+		URL_SOURCE_TREE      = "data/component_tree.xml?";
+		URL_SOURCE_SORT      = "data/_success.xml?";
+		URL_STOP_NODE        = "data/_success.xml?";
+		URL_SOURCE_DETAIL    = "data/component_detail.xml?";
+		URL_DELETE_NODE      = "data/_success.xml?";
+		URL_SOURCE_SAVE      = "data/_success.xml?";
+		URL_SOURCE_RENAME    = "data/_success.xml?";
+		URL_IMPORT_COMPONENT = "data/_success.xml?";
+		URL_EXPORT_COMPONENT = "data/_success.xml?";
+		URL_PREVIEW_COMPONENT= "data/component-preview.html?"; // "/auth/component/preview/" + id;
+	}
  
     function init() {
         initPaletteResize();
-        initUserInfo();
         initNaviBar("portal.2");
         initMenus();
         initBlocks();
@@ -39,8 +49,6 @@
 			url : URL_SOURCE_TREE,
 			onresult : function() { 
 				var sourceTreeNode = this.getNodeValue(XML_MAIN_TREE);
-
-				Cache.XmlDatas.add(CACHE_MAIN_TREE, sourceTreeNode);
 	 
 				var tree = $T("tree", sourceTreeNode);
 
@@ -138,7 +146,13 @@
     }
 
     function getComponentType() {
-        return getTreeAttribute("type");
+        var type = getTreeAttribute("type");
+		switch(type) {
+			case "1": return "layout";
+			case "2": return "decorator";
+			case "3": return "portlet";
+			default : return null;
+		}
     }
 
 	function isGroup() {
@@ -146,7 +160,7 @@
 	}
 
 	function getGroupId() {
-        return getTreeAttribute("groupId");
+        return getTreeAttribute("parentId");
     }
 
 	function editTreeNode() {
@@ -204,26 +218,24 @@
     }
 
     function loadTreeDetailData(treeID, parentID) {
-		var p = new HttpRequestParams();
-		p.url = URL_SOURCE_DETAIL +　treeID + "/" + parentID;
+		Ajax({
+			url: URL_SOURCE_DETAIL +　parentID + "/" + treeID,
+			onresult: function() {
+				var componentInfoNode = this.getNodeValue(XML_SOURCE_DETAIL);
 
-		var request = new HttpRequest(p);
-		request.onresult = function() {
-			var componentInfoNode = this.getNodeValue(XML_SOURCE_DETAIL);
+				preProcessXml(componentInfoNode);
 
-			preProcessXml(componentInfoNode);
+				Cache.XmlDatas.add(treeID, componentInfoNode);
 
-			Cache.XmlDatas.add(treeID, componentInfoNode);
+				var page1FormObj = $X("page1Form", componentInfoNode);
+				attachReminder(treeID, page1FormObj);
 
-			var page1FormObj = $X("page1Form", componentInfoNode);
-			attachReminder(treeID, page1FormObj);
-
-			//设置保存按钮操作
-			$$("page1BtSave").onclick = function() {
-				saveComponent(treeID, parentID);
+				//设置保存按钮操作
+				$$("page1BtSave").onclick = function() {
+					saveComponent(treeID, parentID);
+				}
 			}
-		}
-		request.send();
+		});
     }
 
 	/*
@@ -386,8 +398,7 @@
             var request = new HttpRequest(p);
             
 			//同步按钮状态
-            var page1BtSaveObj = $$("page1BtSave");
-            syncButton([page1BtSaveObj], request);
+            syncButton([ $$("page1BtSave") ], request);
 
             request.onresult = function() {
 				// 解除提醒
@@ -417,15 +428,38 @@
         var treeNode = treeObj.getActiveTreeNode();
         var id = treeNode.getId();
 
-        var groupName = prompt("请输入组名称");
+        var groupName = prompt("请输入组名称", treeNode.getName());
+		if(groupName == null || groupName == "") {
+			return alert("组名不能为空。");
+		}
+
+		Ajax({
+			url: URL_SOURCE_RENAME + id + "/" + groupName,
+			onresult : function() { 
+				modifyTreeNode(id, "name", groupName, true);
+			}
+		});
 	}
  
 	function addNewGroup() {
         var treeObj = $T("tree");
         var treeNode = treeObj.getActiveTreeNode();
         var parentID = treeNode.getId();
+		var type =  treeNode.getAttribute("type");
 
-        var groupName = prompt("请输入组名称");
+        var groupName = prompt("请输入组名称", "");
+		if(groupName == null || groupName == "") {
+			return alert("组名不能为空。");
+		}
+
+		Ajax({
+			url : URL_SOURCE_SAVE,
+			params: {"name":groupName, "parentId":parentID, "type": type, "isGroup": "true"},
+			onresult : function() { 
+				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
+				appendTreeNode(parentID, treeNode);
+			}
+		});
     }
 	
     /* 预览组件  */

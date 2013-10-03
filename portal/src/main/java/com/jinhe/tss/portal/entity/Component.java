@@ -84,7 +84,7 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
     }
     
     public String getTemplatePath()    { 
-        return "template/xform/" + getComponentType() + ".xml";
+        return "template/xform/C-" + getComponentType() + ".xml";
     }
     
     public String getComponentType()     { 
@@ -126,7 +126,7 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
         map.put("disabled", disabled);
         
         if(isGroup) {
-        	map.put("icon","../framework/images//portal" + getComponentType() + "_group.gif");
+        	map.put("icon","../framework/images/folder.gif");
         } else {
         	map.put("code", this.getCode());
             map.put("icon", "../framework/images/portal/" 

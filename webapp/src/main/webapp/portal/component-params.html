@@ -19,10 +19,15 @@
     /*
      *	后台响应数据节点名称
      */
-    XML_CONFIG_PARAMS = "ComponentParams";
+    XML_CONFIG_PARAMS = "ConfigParams";
  
-	URL_COMPONENT_PARAMS_INFO = "data/component-params.xml?" // /auth/component/paramconfig/{id}
-	URL_COMPONENT_PARAMS_SAVE = "data/_success.xml?" // /auth/component/paramconfig/{id}
+	URL_COMPONENT_PARAMS_INFO = "/" + AUTH_PATH + "component/paramconfig/"; // {id}
+	URL_COMPONENT_PARAMS_SAVE = "/" + AUTH_PATH + "component/paramconfig/"; // {id}
+
+	if(IS_TEST) {
+		URL_COMPONENT_PARAMS_INFO = "data/component-params.xml?";
+		URL_COMPONENT_PARAMS_SAVE = "data/_success.xml?";
+	}
 
 	var ID;
  
@@ -32,31 +37,24 @@
             paramsStr = window.dialogArguments.params;
 			ID =  window.dialogArguments.id;
         }
-
-        var p = new HttpRequestParams();
-        p.url = URL_COMPONENT_PARAMS_INFO + ID;
-		p.setContent("paramsItem", paramsStr);
-
-        var request = new HttpRequest(p);
-        request.onresult = function(){
-            var dataXmlNode = this.getNodeValue(XML_CONFIG_PARAMS);
-			var tempalte = $$("paramTemplate");
-
-            tempalte.value = dataXmlNode.toXml();
-        }
-        request.send();
+ 
+		Ajax({
+			url: URL_COMPONENT_PARAMS_INFO + ID,
+			params: {"paramsItem": paramsStr},
+			method: "GET",
+			onresult: function() {
+				var dataXmlNode = this.getNodeValue(XML_CONFIG_PARAMS);
+				$$("paramTemplate").value = dataXmlNode.toXml();
+			}
+		});
     }
  
     function save() {
         var tempalte = $$("paramTemplate");
-
-	    var url = URL_SAVE;
-        var p = new HttpRequestParams();
-        p.url = URL_COMPONENT_PARAMS_SAVE + id;
-		p.setContent("configXML", tempalte.value);
-
-        var request = new HttpRequest(p);
-        request.send();
+		Ajax( {
+			url: URL_COMPONENT_PARAMS_SAVE + ID,
+			params: {"configXML": tempalte.value}
+		});
     }
 
     window.onload = init;

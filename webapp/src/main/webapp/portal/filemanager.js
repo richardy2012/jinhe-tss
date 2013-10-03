@@ -7,61 +7,62 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-   	URL_INIT           = "data/resource_init.xml?";
-    URL_SAVE_UPLOAD    = "data/_success.xml?";
-    URL_RENAME         = "data/_success.xml?";
-    URL_DEL_FILES      = "data/_success.xml?";
-    URL_DOWNLOAD_FILES = "data/download.zip?";
-    URL_ADD_FOLDER     = "data/_success.xml?";
+   	URL_SOURCE_TREE    = "/" + AUTH_PATH + "portal/file/list";
+    URL_SAVE_UPLOAD    = "/" + AUTH_PATH + "portal/file/upload";
+    URL_RENAME         = "/" + AUTH_PATH + "portal/file";
+    URL_DEL_FILES      = "/" + AUTH_PATH + "portal/file";
+    URL_DOWNLOAD_FILES = "/" + AUTH_PATH + "portal/file";
+    URL_ADD_FOLDER     = "/" + AUTH_PATH + "portal/file";
 
-    function init() {
-        loadFileTree();
-    }
-
+	if(IS_TEST) {
+		URL_SOURCE_TREE    = "data/resource_init.xml?";
+		URL_SAVE_UPLOAD    = "data/_success.xml?";
+		URL_RENAME         = "data/_success.xml?";
+		URL_DEL_FILES      = "data/_success.xml?";
+		URL_DOWNLOAD_FILES = "data/download.zip?";
+		URL_ADD_FOLDER     = "data/_success.xml?";
+	}
+ 
 	var params;
 
     function loadFileTree(contextPath, filter) {
         params =  window.dialogArguments ? window.dialogArguments.params : {};
-
-        var p = new HttpRequestParams();
-        p.url = URL_INIT;
-        for(var item in params) {
-            p.setContent(item, params[item]);
-        }
-        if(contextPath) {
-            p.setContent("contextPath", contextPath);
+		if(contextPath) {
+            params.contextPath = contextPath;
         }
         if(filter) {
-            p.setContent("filter", filter);
+			params.filter = filter;
         }
 
-        var request = new HttpRequest(p);
-        request.onresult = function() {
-            var dataXmlNode = this.getNodeValue(XML_MAIN_TREE);
-            var contextPath = this.getNodeValue(XML_CONTEXT_PATH);
+		Ajax({
+			url: URL_SOURCE_TREE,
+			params: params,
+			onresult: function() {
+				var dataXmlNode = this.getNodeValue(XML_MAIN_TREE);
+				var contextPath = this.getNodeValue(XML_CONTEXT_PATH);
 
-            var treeObj = $T("tree", dataXmlNode);
+				var treeObj = $T("tree", dataXmlNode);
 
-			treeObj.element.onTreeNodeDoubleClick = function(eventObj) {
-                var treeNode = eventObj.treeNode;
-                var id   = treeNode.getId();
-                var name = treeNode.getName();
-                var isFolder = treeNode.getAttribute("isFolder");
-                if("-1" == id) {
-                    var newPath = getParentContextPath(); // 回到夫目录
-                    loadFileTree(newPath);
-                } else if("1" == isFolder) {
-                    var newPath = getFolderContextPath(name); // 进入子目录
-                    loadFileTree(newPath);
-                }
-            }
+				treeObj.element.onTreeNodeDoubleClick = function(eventObj) {
+					var treeNode = eventObj.treeNode;
+					var id   = treeNode.getId();
+					var name = treeNode.getName();
+					var isFolder = treeNode.getAttribute("isFolder");
+					if("-1" == id) {
+						var newPath = getParentContextPath(); // 回到夫目录
+						loadFileTree(newPath);
+					} else if("1" == isFolder) {
+						var newPath = getFolderContextPath(name); // 进入子目录
+						loadFileTree(newPath);
+					}
+				}
 
-			// 显示相对路径
-            var boxObj = $$("contextPathBox");
-			boxObj.value = boxObj.title = contextPath;
-			boxObj.scrollLeft = boxObj.scrollWidth;
-        }
-        request.send();   
+				// 显示相对路径
+				var boxObj = $$("contextPathBox");
+				boxObj.value = boxObj.title = contextPath;
+				boxObj.scrollLeft = boxObj.scrollWidth;
+			}
+		});
     }
  
     /* 获取上级文件夹相对路径 */
@@ -121,18 +122,13 @@
         }
 
         var contextPath = $$("contextPathBox").value;
-
-        var p = new HttpRequestParams();
-        p.url = URL_DEL_FILES;
-        p.setContent("contextPath", contextPath);
-        p.setContent("fileNames", fileNames.join(","));
-        p.setContent("folderNames", folderNames.join(","));
-
-        var request = new HttpRequest(p);
-        request.onsuccess = function() {
-            removeTreeNode($T("tree"), ["-1"]);
-        }
-        request.send();
+		Ajax({
+			url: URL_DEL_FILES,
+			params: {"contextPath": contextPath, "fileNames": fileNames.join(","), "folderNames": folderNames.join(",")},
+			onsuccess: function() {
+				removeTreeNode($T("tree"), ["-1"]);
+			}
+		});
     }
 
     /* 重命名资源文件  */
@@ -154,20 +150,15 @@
 
 		var name = selectNode.getName();
 		var newName = prompt("请输入新的文件（夹）名称", name);
-		if( newName && "" != newName) {
-			var p = new HttpRequestParams();
-			p.url = URL_RENAME;
-			p.setContent("fileName", name);
-			p.setContent("newFileName", newName);
-
+		if( newName && "" != newName) { 
 			var contextPath =  $$("contextPathBox").value;
-			p.setContent("contextPath",contextPath);
-
-			var request = new HttpRequest(p);
-			request.onsuccess = function() {
-				modifyTreeNode(id, "name", newName,true);
-			}
-			request.send();
+			Ajax({
+				url: URL_RENAME,
+				params: {"contextPath": contextPath, "fileNames": name, "folderNames": newName},
+				onsuccess: function() {
+					modifyTreeNode(id, "name", newName, true);
+				}
+			});
 		}
     }
 
@@ -213,16 +204,13 @@
         var contextPath = $$("contextPathBox").value;
         var name = prompt("请输入文件夹名称");
         if( name && "" != name ) {
-            var p = new HttpRequestParams();
-            p.url = URL_ADD_FOLDER;
-            p.setContent("contextPath", contextPath);
-            p.setContent("newFileName", name);
-
-            var request = new HttpRequest(p);
-            request.onsuccess = function() {
-                loadFileTree(contextPath);
-            }
-            request.send();
+			Ajax({
+				url: URL_RENAME,
+				params: {"contextPath": contextPath, "newFileName": name},
+				onsuccess: function() {
+					loadFileTree(contextPath);
+				}
+			});
         }
     }
 
@@ -233,4 +221,4 @@
         loadFileTree(contextPath, filter);
     }
 
-    window.onload = init;
+    window.onload = loadFileTree;

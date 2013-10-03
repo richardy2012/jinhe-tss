@@ -35,7 +35,7 @@ public class FileAction extends BaseActionSupport {
         String type = request.getParameter("type"); // 判断是何种类型的资源管理
         String filter = request.getParameter("filter");
         String contextPath = request.getParameter("contextPath");
-        if( !Arrays.asList(Component.TYPE_NAMES).contains(type) ) {
+        if( type != null && !Arrays.asList(Component.TYPE_NAMES).contains(type) ) {
             throw new BusinessException("指定文件类型有误。");
         }
         

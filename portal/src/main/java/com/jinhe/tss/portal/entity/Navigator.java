@@ -90,7 +90,6 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
     private String description; // 菜单内容的描述信息
 	
     // Portal内部页面引用的菜单内容
-    @Column(nullable = false)
     private Long   portalId;   // 菜单或菜单项所属于门户ID
     
     @ManyToOne

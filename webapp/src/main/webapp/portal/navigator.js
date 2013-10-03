@@ -10,7 +10,6 @@
      */
     CACHE_MENU_DETAIL = "menuDetail_";
     CACHE_MENU_ITEM_DETAIL = "menuItemDetail_";
-    CACHE_MAIN_TREE = "menu_tree_";
 
     /*
      *	XMLHTTP请求地址汇总
@@ -27,10 +26,24 @@
 	URL_GET_CHANNEL_TREE = "data/channel_tree.xml?";
 	URL_FRESH_MENU_CACHE = "data/_success.xml?";
 	URL_GET_MENU_TREE    = "data/menu_tree.xml?";
+
+	if(IS_TEST) {
+		URL_SOURCE_TREE      = "data/menu_tree.xml?";
+		URL_SOURCE_DETAIL    = "data/menu_detail.xml?";
+		URL_SOURCE_SAVE      = "data/_success.xml?";
+		URL_DELETE_NODE      = "data/_success.xml?";
+		URL_SORT_NODE        = "data/_success.xml?";
+		URL_MOVE_NODE        = "data/_success.xml?";
+		URL_STOP_NODE        = "data/_success.xml?";
+		URL_GET_OPERATION    = "data/operation.xml?";
+		URL_GET_PS_TREE      = "data/structure_tree.xml?";
+		URL_GET_CHANNEL_TREE = "data/channel_tree.xml?";
+		URL_FRESH_MENU_CACHE = "data/_success.xml?";
+		URL_GET_MENU_TREE    = "data/menu_tree.xml?";
+	}
  
-    function init(){
+    function init() {
         initPaletteResize();
-        initUserInfo();
         initNaviBar("portal.3");
         initMenus();
         initBlocks();
@@ -41,7 +54,7 @@
         loadInitData();
     }
  
-    function initMenus(){
+    function initMenus() {
         var item1 = {
             label:"新建菜单",
            callback: function() { addNewMenu("1"); },
@@ -130,44 +143,38 @@
         $$("tree").contextmenu = menu1;
     }
 
-	function getTreeNodeType(){
+	function getTreeNodeType() {
         return getTreeAttribute("type");
     }
  
-    function loadInitData(){
+    function loadInitData() {
         var p = new HttpRequestParams();
         p.url = URL_SOURCE_TREE;
 
         var request = new HttpRequest(p);
-        request.onresult = function(){
-            var _operation = this.getNodeValue(XML_OPERATION);
+        request.onresult = function() {
+            var dataXmlNode = this.getNodeValue(XML_MAIN_TREE);
+            var tree = $T("tree", dataXmlNode);
 
-            var menuTreeNode = this.getNodeValue(XML_MAIN_TREE);
-
-            Cache.XmlDatas.add(CACHE_MAIN_TREE, menuTreeNode);
-
-            var tree = $T("tree", menuTreeNode);
-
-            tree.element.onTreeNodeActived = function(eventObj){
+            tree.element.onTreeNodeActived = function(eventObj) {
                 onTreeNodeActived(eventObj);
             }
-            tree.element.onTreeNodeDoubleClick = function(eventObj){
+            tree.element.onTreeNodeDoubleClick = function(eventObj) {
                 onTreeNodeDoubleClick(eventObj);
             }
-            tree.element.onTreeNodeRightClick = function(eventObj){
+            tree.element.onTreeNodeRightClick = function(eventObj) {
                 onTreeNodeRightClick(eventObj, true);
             }
-            tree.element.onTreeNodeMoved = function(eventObj){
+            tree.element.onTreeNodeMoved = function(eventObj) {
                 sortTreeNode(URL_SORT_NODE, eventObj);
             }
-            
         }
         request.send();
     }
  
-    function onTreeNodeDoubleClick(eventObj){
+    function onTreeNodeDoubleClick(eventObj) {
         var treeNode = eventObj.treeNode;
-        getTreeOperation(treeNode, function(_operation){
+        getTreeOperation(treeNode, function(_operation) {
             var hasPermission = checkOperation("2", _operation);
             if( hasPermission ) {
                 editTreeNode();            
@@ -185,8 +192,8 @@
 		var portalId = treeNode.getAttribute("portalId");
 
 		var callback = {};
-		callback.onTabChange = function(){
-			setTimeout(function(){
+		callback.onTabChange = function() {
+			setTimeout(function() {
 				loadMenuDetailData(treeID, type, parentId);
 			},TIMEOUT_TAB_CHANGE);
 		};
@@ -200,15 +207,15 @@
 		var tab = ws.open(inf);
     }
  
-    function editTreeNode(){
+    function editTreeNode() {
         var treeObj = $T("tree");
         var treeNode = treeObj.getActiveTreeNode();
 		var treeID = treeNode.getId();
 		var treeName = treeNode.getName();
 
 		var callback = {};
-		callback.onTabChange = function(){
-			setTimeout(function(){
+		callback.onTabChange = function() {
+			setTimeout(function() {
 				loadMenuDetailData(treeID);
 			}, TIMEOUT_TAB_CHANGE);
 		};
@@ -226,7 +233,7 @@
 		var p = new HttpRequestParams();
 		p.url = URL_SOURCE_DETAIL + treeID ;
  
-		if(type ){
+		if(type ) {
 			p.setContent("type", type);
 		}
 		if(parentId) {
@@ -234,7 +241,7 @@
 		}
 		
 		var request = new HttpRequest(p);
-		request.onresult = function(){
+		request.onresult = function() {
 			var menuInfoNode = this.getNodeValue(XML_MENU_INFO);
 			Cache.XmlDatas.add( treeID + "." + XML_MENU_INFO, menuInfoNode );
 
@@ -249,7 +256,7 @@
 		request.send();
     }
  
-    function saveMenu(cacheID, parentId){
+    function saveMenu(cacheID, parentId) {
         var page1FormObj = $X("page1Form");
         if( !page1FormObj.checkForm() ) {
             return;
@@ -264,17 +271,17 @@
 		//菜单基本信息
 		var menuInfoNode = Cache.XmlDatas.get(cacheID + "." + XML_MENU_INFO);
 		var menuInfoDataNode = menuInfoNode.selectSingleNode(".//data");
-		if(menuInfoDataNode){
+		if(menuInfoDataNode) {
 			flag = true;
 			p.setXFormContent(menuInfoDataNode);
 		}
 
-        if(flag){
+        if(flag) {
             var request = new HttpRequest(p);
             // 同步按钮状态
             syncButton([$$("page1BtSave")], request); // 同步按钮状态
 
-            request.onresult = function(){
+            request.onresult = function() {
 				detachReminder(cacheID); // 解除提醒
 
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
@@ -282,7 +289,7 @@
 
 				ws.closeActiveTab();
             }
-            request.onsuccess = function(){
+            request.onsuccess = function() {
 				detachReminder(cacheID); // 解除提醒
 
 				// 更新树节点名称
@@ -315,7 +322,7 @@
     }
 
     /*  选择菜单对应的栏目ID  */
-	function getChannel(){
+	function getChannel() {
         var url = URL_GET_CHANNEL_TREE;
         var returnObj = window.showModalDialog("commontree.html", {title:"请选择菜单项对应栏目", service:url, nodename:"ChannelTree"},"dialogWidth:300px;dialogHeight:400px;");
         if(returnObj) {
@@ -326,7 +333,7 @@
         }
     }
  
-    function moveTo(){
+    function moveTo() {
         var tree = $T("tree");
         var treeNode = tree.getActiveTreeNode();
 		var id = treeNode.getId();
@@ -340,15 +347,15 @@
     }
  
 	/* 刷新菜单缓存  */
-    function flushMenuCache(){
-        var treeObj = $("tree");
+    function flushMenuCache() {
+        var treeObj = $T("tree");
         var treeNode = treeObj.getActiveTreeNode();
        
 		var p = new HttpRequestParams();
         p.url = URL_FRESH_MENU_CACHE;
 		var treeID = treeNode.getId();
-		p.setContent("key",treeID);
-		p.setContent("code","menu_pool");
+		p.setContent("key", "cache-navigator-" + treeID);
+		p.setContent("code", "NODEAD");
 		var request = new HttpRequest(p);
 
 		request.send();	

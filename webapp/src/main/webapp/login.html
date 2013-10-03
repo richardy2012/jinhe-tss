@@ -26,9 +26,11 @@ URL_CORE = "framework/"
 	
 	CACHE_LOGIN_FORM = "login__id";
 
-    /* XMLHTTP请求地址汇总 */
+    /* 
+	 * XMLHTTP请求地址汇总 
+	 */
 	URL_GET_USER_NAME = "getLoginInfo.in";
-    URL_LOGIN = "login.do";
+    URL_LOGIN = "/" + AUTH_PATH + "login.do";
 
 	if( IS_TEST ) {
 		URL_GET_USER_NAME = "test/mockdata/username.xml";
@@ -134,7 +136,7 @@ URL_CORE = "framework/"
 				loginXForm.setFocus("password");
 			},
 			onsuccess: function(){
-				location.href = "index.html";
+				location.href = "index.html?login=true";
 			}
 		});
     }

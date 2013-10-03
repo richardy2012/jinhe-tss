@@ -46,9 +46,12 @@
     URL_CACHE_MANAGE      = "data/cachemanage.xml?";
     URL_IMPORT_SITE       = "data/upload1.htm";
  
+	if(IS_TEST) {
+		
+	}
+
     function init() {
         initPaletteResize();
-        initUserInfo();
         initNaviBar("portal.1");
         initMenus();
         initBlocks();

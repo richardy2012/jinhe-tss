@@ -16,35 +16,59 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_INIT = "data/site_init.xml?";
-    URL_ARTICLE_LIST = "data/article_list.xml?";
-    URL_DEL_ARTICLE = "data/_success.xml?";
-    URL_MOVE_ARTICLE = "data/_success.xml?";
-    URL_LOCK_ARTICLE = "data/_success.xml?";
-    URL_SETTOP_ARTICLE = "data/_success.xml?";
-    URL_SITE_DETAIL ="data/siteDetail.xml?";
-    URL_SAVE_SITE = "data/_success.xml?";
-    URL_CHANNEL_DETAIL ="data/channelDetail.xml?";
-    URL_SAVE_CHANNEL = "data/_success.xml?";
-    URL_DEL_NODE = "data/_success.xml?";
-    URL_MOVE_NODE = "data/_success.xml?";
-    URL_SORT_NODE = "data/_success.xml?";
-	URL_STOP_NODE = "data/_success.xml?";
-    URL_GET_OPERATION = "data/operation.xml?";
+    URL_SOURCE_TREE    = "/" + AUTH_PATH + "channel/list";
+    URL_ARTICLE_LIST   = "/" + AUTH_PATH + "article/list"; // {channelId}/{page}
+    URL_DEL_ARTICLE    = "/" + AUTH_PATH + "article/list";
+    URL_MOVE_ARTICLE   = "/" + AUTH_PATH + "article/list";
+    URL_LOCK_ARTICLE   = "/" + AUTH_PATH + "article/list";
+    URL_SETTOP_ARTICLE = "/" + AUTH_PATH + "article/list";
+    URL_SITE_DETAIL    = "/" + AUTH_PATH + "channel/list";
+    URL_SAVE_SITE      = "/" + AUTH_PATH + "channel/list";
+    URL_CHANNEL_DETAIL = "/" + AUTH_PATH + "channel/list";
+    URL_SAVE_CHANNEL   = "/" + AUTH_PATH + "channel/list";
+    URL_DEL_NODE       = "/" + AUTH_PATH + "channel/list";
+    URL_MOVE_NODE      = "/" + AUTH_PATH + "channel/list";
+    URL_SORT_NODE      = "/" + AUTH_PATH + "channel/list";
+	URL_STOP_NODE      = "/" + AUTH_PATH + "channel/list";
+    URL_GET_OPERATION  = "/" + AUTH_PATH + "channel/list";
+	URL_SEARCH_ARTICLE = "/" + AUTH_PATH + "channel/list";
 
-    URL_SITE_PUBLISH_PROGRESS = "data/progress.xml?";
-    URL_CHANNEL_PUBLISH_PROGRESS = "data/progress.xml?";
-    URL_CANCEL_PUBLISH_PROGRESS = "data/_success.xml?";
-	URL_GET_PROGRESS = "data/_success.xml?";
-    URL_CONCEAL_PROGRESS = "data/_success.xml?";
+    URL_SITE_PUBLISH_PROGRESS    = "/" + AUTH_PATH + "channel/list";
+    URL_CHANNEL_PUBLISH_PROGRESS = "/" + AUTH_PATH + "channel/list";
+    URL_CANCEL_PUBLISH_PROGRESS  = "/" + AUTH_PATH + "channel/list";
+	URL_GET_PROGRESS             = "/" + AUTH_PATH + "channel/list";
+    URL_CONCEAL_PROGRESS         = "/" + AUTH_PATH + "channel/list";
+    URL_SAVE_PUBLISH_ARTICLE     = "/" + AUTH_PATH + "channel/list";
 
-    URL_SEARCH_ARTICLE = "data/articlelist.xml?";
-    URL_SAVE_PUBLISH_ARTICLE = "data/_success.xml?";
+	if(IS_TEST) {
+		URL_SOURCE_TREE    = "data/site_init.xml?";
+		URL_ARTICLE_LIST   = "data/article_list.xml?";
+		URL_DEL_ARTICLE    = "data/_success.xml?";
+		URL_MOVE_ARTICLE   = "data/_success.xml?";
+		URL_LOCK_ARTICLE   = "data/_success.xml?";
+		URL_SETTOP_ARTICLE = "data/_success.xml?";
+		URL_SITE_DETAIL    = "data/siteDetail.xml?";
+		URL_SAVE_SITE      = "data/_success.xml?";
+		URL_CHANNEL_DETAIL = "data/channelDetail.xml?";
+		URL_SAVE_CHANNEL   = "data/_success.xml?";
+		URL_DEL_NODE       = "data/_success.xml?";
+		URL_MOVE_NODE      = "data/_success.xml?";
+		URL_SORT_NODE      = "data/_success.xml?";
+		URL_STOP_NODE      = "data/_success.xml?";
+		URL_GET_OPERATION  = "data/operation.xml?";
+		URL_SEARCH_ARTICLE = "data/articlelist.xml?";
+
+		URL_SITE_PUBLISH_PROGRESS    = "data/progress.xml?";
+		URL_CHANNEL_PUBLISH_PROGRESS = "data/progress.xml?";
+		URL_CANCEL_PUBLISH_PROGRESS  = "data/_success.xml?";
+		URL_GET_PROGRESS             = "data/_success.xml?";
+		URL_CONCEAL_PROGRESS         = "data/_success.xml?";
+		URL_SAVE_PUBLISH_ARTICLE     = "data/_success.xml?";
+	}
  
     function init() { 
         initPaletteResize();
         initListContainerResize();
-		initUserInfo();
         initNaviBar("cms.1");
         initMenus();
         initBlocks();
@@ -152,7 +176,7 @@
  
     function loadInitData() { 
 		Ajax({
-			url : URL_INIT,
+			url : URL_SOURCE_TREE,
 			onresult : function() { 
 				var _operation = this.getNodeValue(XML_OPERATION);
 

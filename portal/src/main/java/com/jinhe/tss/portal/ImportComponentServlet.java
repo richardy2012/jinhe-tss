@@ -22,7 +22,7 @@ import com.jinhe.tss.portal.helper.ComponentHelper;
 import com.jinhe.tss.portal.service.IComponentService;
 import com.jinhe.tss.util.URLUtil;
 
-@WebServlet(urlPatterns="/auth/portal/component/import")
+@WebServlet(urlPatterns="/auth/component/import")
 @MultipartConfig(location = Config.UPLOAD_PATH, maxFileSize = 1024*1024*20)
 public class ImportComponentServlet extends HttpServlet {
 	
