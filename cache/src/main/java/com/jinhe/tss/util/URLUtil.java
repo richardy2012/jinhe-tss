@@ -38,11 +38,10 @@ public class URLUtil {
 	}
     
     /**
-     * 此处利用了包目录“com/jinhe/tss”来定位。
-     * 另外如websphere下的classes目录默认跑到AppServer/properties了，需要加“com/jinhe/tss”帮助定位
+     * 此处利用了文件“application.properties”来定位。
      */
     private static URL getOnePathUrl(){
-        return URLUtil.getResourceFileUrl("com/jinhe/tss"); 
+        return URLUtil.getResourceFileUrl("application.properties"); 
     }
     
     /**

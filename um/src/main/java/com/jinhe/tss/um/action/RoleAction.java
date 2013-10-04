@@ -213,7 +213,8 @@ public class RoleAction extends BaseActionSupport {
         	print("Operation", "p1,p2," + UMConstants.ROLE_EDIT_OPERRATION);
         }
         else {
-        	List<?> list = PermissionHelper.getInstance().getOperationsByResource(id, RolePermissionsFull.class.getName(), RoleResources.class);
+        	List<?> list = PermissionHelper.getInstance().getOperationsByResource(id, 
+        			RolePermissionsFull.class.getName(), RoleResources.class);
         	print("Operation", "p1,p2," + EasyUtils.list2Str(list));
         }
 	}

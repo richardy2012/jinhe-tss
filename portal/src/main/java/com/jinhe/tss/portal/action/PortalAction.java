@@ -83,7 +83,7 @@ public class PortalAction extends FreeMarkerSupportAction {
     }
 
     /**
-     * 获取所有的Portal对象（取门户结构PortalStructure）并转换成Tree相应的xml数据格式
+     * 获取所有的Portal对象（取门户结构）并转换成Tree相应的xml数据格式
      */
     @RequestMapping("/list")
     public void getAllStructures4Tree(HttpServletResponse response) {
@@ -141,31 +141,31 @@ public class PortalAction extends FreeMarkerSupportAction {
     
     /**
      * <p>
-     * 保存门户结构信息，如果该门户结构PortalStructure是根节点，则要一块保存其门户Portal的信息。
+     * 保存门户结构信息，如果该门户结构是根节点，则要一块保存其门户Portal的信息。
      * </p>
      */    
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
     public void save(HttpServletResponse response, Structure ps) {
         boolean isNew = (ps.getId() == null);
         
-        Structure portalStructure;
+        Structure structure;
         if(isNew) {        
         	String tempCode = ps.getCode();
-            portalStructure = service.createStructure(ps);
+            structure = service.createStructure(ps);
             
             /* 如果是在新增门户根节点时上传文件，则此时code和Id还没生成。code值 = 页面随机生成的一个全局变量。 */
             if( ps.getType().equals(Structure.TYPE_PORTAL) ) {
                 File tempDir = Structure.getPortalResourceFileDir(tempCode);
                 if(tempDir.exists()) {
-                    tempDir.renameTo(portalStructure.getPortalResourceFileDir());
+                    tempDir.renameTo(structure.getPortalResourceFileDir());
                 }
             } 
         } 
         else {
-            portalStructure = service.updateStructure(ps);
+            structure = service.updateStructure(ps);
         }
             
-        doAfterSave(isNew, portalStructure, "SourceTree");
+        doAfterSave(isNew, structure, "SourceTree");
     }
     
     /**
@@ -179,7 +179,7 @@ public class PortalAction extends FreeMarkerSupportAction {
     
     /**
      * <p>
-     * 停用/启用 门户结构PortalStructure（将其下的disabled属性设为"1"/"0"）
+     * 停用/启用 门户结构（将其下的disabled属性设为"1"/"0"）
      * 停用时，如果有子节点，同时停用所有子节点（递归过程，子节点的子节点......)
      * 启用时，如果有父节点且父节点为停用状态，则启用父节点（也是递归过程，父节点的父节点......）
      * </p>

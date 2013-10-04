@@ -22,7 +22,7 @@
      */
     URL_SOURCE_TREE   = "/" + AUTH_PATH + "portal/list";
     URL_SOURCE_DETAIL = "/" + AUTH_PATH + "portal/";
-    URL_SOURCE_SAVE   = "/" + AUTH_PATH + "portal";
+    URL_SOURCE_SAVE   = "/" + AUTH_PATH + "portal/save";
     URL_DELETE_NODE   = "/" + AUTH_PATH + "portal/";
     URL_STOP_NODE     = "/" + AUTH_PATH + "portal/disable/";
     URL_SORT_NODE     = "/" + AUTH_PATH + "portal/sort/";
@@ -217,11 +217,7 @@
     }
 
 	function loadInitData() {
-        var p = new HttpRequestParams();
-        p.url = URL_SOURCE_TREE;
-
-        var request = new HttpRequest(p);
-        request.onresult = function() {
+        var onresult = function() {
             var sourceTreeNode = this.getNodeValue(XML_MAIN_TREE);
             var tree = $T("tree", sourceTreeNode);
 
@@ -238,7 +234,8 @@
                  onTreeNodeRightClick(eventObj, true);
             }
         }
-        request.send();
+
+		Ajax({url: URL_SOURCE_TREE, onresult: onresult});
     }
   
     function onTreeNodeDoubleClick(eventObj) {
@@ -303,13 +300,13 @@
 
 			//设置保存按钮操作
 			$$("page1BtSave").onclick = function() {
-				saveStructure(cacheID,parentID,isNew);
+				saveStructure(treeID, parentID);
 			}
 		}
 		request.send();
     }
 
-    function saveStructure(cacheID, parentID) {
+    function saveStructure(treeID, parentID) {
         var page1FormObj = $X("page1Form");
         if( !page1FormObj.checkForm() ) {
             switchToPhase(ws, "page1");
@@ -323,7 +320,7 @@
         var flag = false;
       
 		// 门户基本信息
-		var dataXmlNode = Cache.XmlDatas.get(cacheID);
+		var dataXmlNode = Cache.XmlDatas.get(treeID);
 		var dataElement = dataXmlNode.selectSingleNode(".//data");
 		if(dataElement) {
 			dataElement = dataElement.cloneNode(true);
@@ -377,7 +374,7 @@
             syncButton([$$("page1BtSave")], request); // 同步按钮状态
 
             request.onresult = function() {
-				detachReminder(cacheID); // 解除提醒
+				detachReminder(treeID); // 解除提醒
 
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
 				appendTreeNode(parentID,treeNode);
@@ -385,11 +382,11 @@
 				ws.closeActiveTab();
             }
             request.onsuccess = function() {
-				detachReminder(cacheID); // 解除提醒
+				detachReminder(treeID); // 解除提醒
 
 				// 更新树节点名称
 				var name = page1FormObj.getData("name");
-				modifyTreeNode(cacheID, "name", name, true);
+				modifyTreeNode(treeID, "name", name, true);
             }
             request.send();
         }		
@@ -409,7 +406,7 @@
               treeName = "版面";
               break;
             case "3":
-              treeName = "portlet实例";
+              treeName = "portlet";
               break;
         }
 
@@ -427,7 +424,6 @@
 		var inf = {};
 		inf.defaultPage = "page1";
 		inf.label = OPERATION_ADD.replace(/\$label/i, treeName);
-		inf.phases = null;
 		inf.callback = callback;
 		inf.SID = CACHE_TREE_NODE_DETAIL + treeID;
 		var tab = ws.open(inf);
@@ -586,19 +582,17 @@
             page1FormObj.updateDataExternal(nameField, component.name);
 
             // 加载布局器配置项
-			var p = new HttpRequestParams();
-			p.url = URL_GET_COMPONENT_PARAMETERS + component.id;
-
-			var request = new HttpRequest(p);
-			request.onresult = function() {
-			    var newNode = this.getNodeValue(XML_COMPONENT_PARAMETERS);
-			    updateParameters(newNode);
-				
-				// 允许进行配置
-				$$("page1BtConfigDefiner").disabled   = ( 0 == newNode.attributes.length );
-				$$("page1BtConfigDecorator").disabled = ( 0 == newNode.attributes.length );
-			}
-			request.send();
+			Ajax({
+				url: URL_GET_COMPONENT_PARAMETERS + component.id,
+				onresult: function() {
+					var newNode = this.getNodeValue(XML_COMPONENT_PARAMETERS);
+					updateParameters(newNode);
+					
+					// 是否允许进行配置
+					$$("page1BtConfigDefiner").disabled   = ( 0 == newNode.attributes.length );
+					$$("page1BtConfigDecorator").disabled = ( 0 == newNode.attributes.length );
+				}
+			});
         }
     }
  
@@ -979,7 +973,7 @@
         var treeNode = $T("tree").getActiveTreeNode();
 		var portalId = treeNode.getAttribute("portalId");
 		var url = URL_GET_FLOW_RATE + portalId;
-		window.showModalDialog("commongrid.html", {params:params, service: url, nodename: "PageFlowRate" title:"查看页面流量"} , 
+		window.showModalDialog("commongrid.html", {params:params, service: url, nodename: "PageFlowRate", title:"查看页面流量"} , 
 			"dialogWidth:400px;dialogHeight:400px;resizable:yes");
     }
 

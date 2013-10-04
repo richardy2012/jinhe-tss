@@ -31,7 +31,7 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 门户静态发布
  */
 @Controller
-@RequestMapping("/auth/portal/release")
+@RequestMapping("/auth/static/release")
 public class ReleaseAction extends ProgressActionSupport {
 	
 	@Autowired private IPortalService portalService;

@@ -25,7 +25,7 @@ import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.util.EasyUtils;
  
 @Controller
-@RequestMapping("channel")
+@RequestMapping("/auth/channel")
 public class ChannelAction extends ProgressActionSupport {
 
 	@Autowired private IChannelService  channelService;

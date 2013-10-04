@@ -4,9 +4,9 @@
 		<column name="id" caption="ID号" mode="hidden" editable="false"/>
 		<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>	
 		<column name="content.id" caption="" mode="hidden" />
-		<column name="content.name" caption="局部门户结构" mode="function" cmd="getContent('contentName','contentId', 2)"/>	
+		<column name="content.name" caption="局部门户结构" mode="function" cmd="getContent('content.name','content.id', 2)"/>	
 		<column name="target.id" caption="" mode="hidden" />
-		<column name="target.name" caption="目标版面/页面" mode="function" cmd="getContent('targetName','targetId', 1)"/>				
+		<column name="target.name" caption="目标版面/页面" mode="function" cmd="getContent('target.name','target.id', 1)"/>				
 		<column name="description" caption="描述信息" mode="string"/>
 		
 		<column name="parentId" caption="" mode="hidden"/>
@@ -20,12 +20,12 @@
 			<TD><input binding="name" type="text"/></TD>
 		</TR>
 		<TR>
-			<TD width="100" valign="top"><label binding="contentName"/></TD>
-			<TD><input binding="contentName"/></TD>
+			<TD width="100" valign="top"><label binding="content.name"/></TD>
+			<TD><input binding="content.name"/></TD>
 		</TR>
 		<TR>
-			<TD width="100" valign="top"><label binding="targetName"/></TD>
-			<TD><input binding="targetName"/></TD>
+			<TD width="100" valign="top"><label binding="target.name"/></TD>
+			<TD><input binding="target.name"/></TD>
 		</TR>
 		<TR>
 			<TD width="100"><label binding="description"/></TD>

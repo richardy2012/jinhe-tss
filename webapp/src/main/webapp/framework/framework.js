@@ -337,11 +337,16 @@ function onTreeNodeRightClick(eventObj) {
 function getTreeOperation(treeNode, callback, url) {
 	url = url || URL_GET_OPERATION;
 	var _operation = treeNode.getAttribute("_operation");
+
+	var treeId = treeNode.getId();
+	if(treeId == "_rootId") {
+		treeId = 0;
+	}
 	
 	// 如果节点上还没有_operation属性，则发请求从后台获取信息
 	if( isNullOrEmpty(_operation) ) { 
 		Ajax({
-			url : url + treeNode.getId(),
+			url : url + treeId,
 			onresult : function() {
 				_operation = this.getNodeValue(XML_OPERATION);
 				treeNode.setAttribute("_operation", _operation);

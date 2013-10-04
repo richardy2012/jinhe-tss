@@ -299,18 +299,6 @@
             return;
         }
 
-		var events = page1FormObj.getData("events");
-		if( true == (/^\=/.test(events)) ) {
-			page1FormObj.showCustomErrorInfo("events", "请按\"事件名=操作\"格式书写");
-			return;
-		} 
-
-		var parameters = page1FormObj.getData("parameters");
-		if(  true == (/^\=/.test(parameters) ) ) {
-			page1FormObj.showCustomErrorInfo("parameters", "请按\"参数名=参数值\"格式书写");
-			return;
-		}
-
         var p = new HttpRequestParams();
         p.url = URL_SOURCE_SAVE;
 
@@ -363,8 +351,11 @@
 				str[str.length] = "<events>";
 				events = events.split("\n");
 				for(var i =0; i < events.length; i++) {
-					var curEvent = events[i].replace(/(^\s*)|(\s*$)/g,"");//去掉每行前后多余空格
-					var curEventName  = curEvent.substring(0,curEvent.indexOf("="));
+					var curEvent = events[i].replace(/(^\s*)|(\s*$)/g, ""); // 去掉每行前后多余空格
+					if(curEvent == "") {
+						continue;
+					}
+					var curEventName  = curEvent.substring(0, curEvent.indexOf("="));
 					var curEventValue = curEvent.substring(curEvent.indexOf("=") + 1);
 					str[str.length] = "<attach event=\"" + curEventName + "\" onevent=\"" + curEventValue + "\"/>";
 				}
@@ -373,8 +364,11 @@
 				str[str.length] = "<parameters>";
 				parameters = parameters.split("\n");
 				for(var i =0; i < parameters.length; i++) {
-					var curParam = parameters[i].replace(/(^\s*)|(\s*$)/g,""); // 去掉每行前后多余空格
-					var curParamName  = curParam.substring(0,curParam.indexOf("="));
+					var curParam = parameters[i].replace(/(^\s*)|(\s*$)/g, ""); // 去掉每行前后多余空格
+					if(curParam == "") {
+						continue;
+					}
+					var curParamName  = curParam.substring(0, curParam.indexOf("="));
 					var curParamValue = curParam.substring(curParam.indexOf("=") + 1);
 					str[str.length] = "<param name=\"" + curParamName + "\" defaultValue=\"" + curParamValue + "\"/>";
 				}
@@ -489,7 +483,9 @@
 		function checkFileWrong(subfix) {
 			return subfix != ".xml" && subfix != ".zip";
 		}
-		var importDiv = createImportDiv("只支持XML和zip文件格式导入", checkFileWrong, URL_IMPORT_COMPONENT);
+
+		var url = URL_IMPORT_COMPONENT + "?groupId=" + getTreeNodeId();
+		var importDiv = createImportDiv("只支持XML和zip文件格式导入", checkFileWrong, url);
 		Element.show(importDiv);
     }	
 

@@ -4,7 +4,7 @@
 		<column name="id" caption="ID号" mode="hidden" editable="false"/>
 		<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>	
 		<column name="content.id" caption="" mode="hidden" />
-		<column name="content.name" caption="门户结构" mode="function" cmd="getContent('contentName','contentId', 3)"/>	
+		<column name="content.name" caption="门户结构" mode="function" cmd="getContent('content.name','content.id', 3)"/>	
 		<column name="target" caption="目标区域" mode="string" maxLength="50" empty="false"/>			
 		<column name="description" caption="描述信息" mode="string"/>
 		
@@ -23,8 +23,8 @@
 			<TD><input binding="target" type="text"/></TD>
 		</TR>
 		<TR>
-			<TD width="100" valign="top"><label binding="contentName"/></TD>
-			<TD><input binding="contentName"/></TD>
+			<TD width="100" valign="top"><label binding="content.name"/></TD>
+			<TD><input binding="content.name"/></TD>
 		</TR>
 		<TR>
 			<TD width="100"><label binding="description"/></TD>

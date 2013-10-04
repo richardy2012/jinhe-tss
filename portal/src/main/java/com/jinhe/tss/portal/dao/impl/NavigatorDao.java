@@ -24,7 +24,7 @@ public class NavigatorDao extends TreeSupportDao<Navigator> implements INavigato
             return create(navigator);
         }
         
-        update(navigator);
+//        update(navigator);
         return navigator;
     }
     

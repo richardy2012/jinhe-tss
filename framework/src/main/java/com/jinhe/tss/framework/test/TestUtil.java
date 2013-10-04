@@ -23,7 +23,7 @@ public class TestUtil {
 	static final String PROJECT_NAME = "jinhe-daodao";
 	
 	public static String getProjectDir() {
-        String path = URLUtil.getResourceFileUrl("com/jinhe/tss").getPath();
+        String path = URLUtil.getResourceFileUrl("application.properties").getPath();
         
         int beginIndex = path.startsWith("/") ? 0 : 1; // linux or windows
         return path.substring(beginIndex, path.indexOf(PROJECT_NAME) + PROJECT_NAME.length());

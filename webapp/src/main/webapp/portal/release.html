@@ -42,7 +42,7 @@
     URL_GET_THEME_LIST  = "/" + AUTH_PATH + "portal/theme4release/";
 	URL_GET_PORTAL_LIST = "/" + AUTH_PATH + "portal/activePortals";
 	URL_GET_PAGE_LIST   = "/" + AUTH_PATH + "portal/activePages/";
-	URL_STATIC_ISSUE    = "/" + AUTH_PATH + "portal/release/";
+	URL_STATIC_RELEASE  = "/" + AUTH_PATH + "static/release/";
 
 	if(IS_TEST) {
 		URL_INIT            = "data/releaseConfig_tree.xml?";
@@ -52,7 +52,7 @@
 		URL_GET_THEME_LIST  = "data/themes4release.xml?";
 		URL_GET_PORTAL_LIST = "data/structure_tree.xml?";
 		URL_GET_PAGE_LIST   = "data/structure_tree.xml?";
-		URL_STATIC_ISSUE    = "data/_success.xml?";
+		URL_STATIC_RELEASE  = "data/_success.xml?";
 	}
 
     function init() {
@@ -281,7 +281,7 @@
     /* 静态发布门户 */
     function staticRelease() {       
 		var p = new HttpRequestParams();
-        p.url = URL_STATIC_ISSUE + getTreeNodeId();
+        p.url = URL_STATIC_RELEASE + getTreeNodeId();
         var request = new HttpRequest(p);
         request.send();
     }
