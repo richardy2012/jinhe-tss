@@ -144,7 +144,7 @@ public class PortalAction extends FreeMarkerSupportAction {
      * 保存门户结构信息，如果该门户结构是根节点，则要一块保存其门户Portal的信息。
      * </p>
      */    
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public void save(HttpServletResponse response, Structure ps) {
         boolean isNew = (ps.getId() == null);
         

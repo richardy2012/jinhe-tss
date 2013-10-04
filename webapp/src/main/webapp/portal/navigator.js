@@ -57,7 +57,7 @@
     function initMenus() {
         var item1 = {
             label:"新建菜单",
-           callback: function() { addNewMenu("1"); },
+            callback: function() { addNewMenu("1"); },
             visible: function() {return "1"==getTreeNodeType() && getOperation("2");}
         }
         var item2 = {
@@ -96,18 +96,20 @@
             visible:function() {return !isTreeNodeDisabled();}
         }
 
-        var item5 = {
-            label:"新建菜单项",
+		var item12 = {
+            label:"新建普通链接",
+			callback: function() { addNewMenu("4"); },
             visible: function() {return getOperation("2");}
         }
+        var item5 = {
+            label:"新建门户导航",
+            visible: function() {return getOperation("2") && !isNullOrEmpty(getTreeAttribute("portalId"));}
+        }
+
         var submenu = new Menu();
 		subItem3 = {
             label:"门户内部链接",
             callback: function() { addNewMenu("3"); }
-        }
-        subItem4 = {
-            label:"普通链接",
-            callback: function() { addNewMenu("4"); }
         }
         subItem5 = {
             label:"局部替换方式",
@@ -122,7 +124,6 @@
             callback: function() { addNewMenu("7"); }
         }
 
-        submenu.addItem(subItem4);
 		submenu.addItem(subItem3);
 		submenu.addItem(subItem7);
         submenu.addItem(subItem6);
@@ -139,6 +140,7 @@
         menu1.addSeparator();
         menu1.addItem(item1);
         menu1.addItem(item5);
+		menu1.addItem(item12);
 
         $$("tree").contextmenu = menu1;
     }
@@ -259,22 +261,15 @@
         if( !page1FormObj.checkForm() ) {
             return;
         }
-
-        var p = new HttpRequestParams();
-        p.url = URL_SOURCE_SAVE;
-
-        // 是否提交
-        var flag = false;
      
-		//菜单基本信息
+		// 菜单基本信息
 		var menuInfoNode = Cache.XmlDatas.get(cacheID + "." + XML_MENU_INFO);
 		var menuInfoDataNode = menuInfoNode.selectSingleNode(".//data");
 		if(menuInfoDataNode) {
-			flag = true;
+			var p = new HttpRequestParams();
+			p.url = URL_SOURCE_SAVE;
 			p.setXFormContent(menuInfoDataNode);
-		}
 
-        if(flag) {
             var request = new HttpRequest(p);
 
             syncButton([$$("page1BtSave")], request); // 同步按钮状态
@@ -310,6 +305,9 @@
     function getContent(contentName, contentId, type) {
 		var page1FormObj = $X("page1Form");
         var portalId = page1FormObj.getData("portalId");
+		if( portalId == null ) {
+			return;
+		}
 
 		var url = URL_GET_PS_TREE + portalId + "/" + type;
         var returnObj = window.showModalDialog("commontree.html", {title:"请选择菜单项对应内容", service:url},"dialogWidth:300px;dialogHeight:400px;");

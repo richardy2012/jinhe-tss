@@ -76,7 +76,7 @@
         var item2 = {
             label:"删除",
             callback:delParam,
-            icon:ICON + "icon_del.gif",
+            icon:ICON + "del.gif",
             visible:function() {return !isTreeRoot();}
         }
         var item3 = {
@@ -345,9 +345,7 @@
 			var paramInfoDataNode = paramInfoNode.selectSingleNode(".//data");
 			if( paramInfoDataNode ) {
 				flag = true;
-
-				var prefix = paramInfoNode.selectSingleNode("./declare").getAttribute("prefix");
-				p.setXFormContent(paramInfoDataNode, prefix);
+				p.setXFormContent(paramInfoDataNode);
 			}
 		}
  

@@ -135,7 +135,6 @@
                 default:
                     return "left";
                     break;
-
             }
         }
 		

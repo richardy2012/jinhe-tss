@@ -37,6 +37,9 @@ public class TreeAttributesMap implements Map<String, Object>{
      * @param value
      */
 	public Object put(String key, Object value) {
+		if(value == null) {
+			return null;
+		}
 		return attributes.put(key, value);
 	}
 

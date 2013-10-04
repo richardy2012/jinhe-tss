@@ -246,16 +246,16 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
         boolean disable = PortalConstants.TRUE.equals(disabled);
         switch (type) {
         case 0:
-            map.put("icon", "../framework/images/portal" + (disable ? "_2" : "") + ".gif");
+            map.put("icon", "../framework/images/portal" + "_" + disable + ".gif");
             break;
         case 1:
-            map.put("icon", "../framework/images/page" + (disable ? "_2" : "") + ".gif");
+            map.put("icon", "../framework/images/page" + "_" + disable + ".gif");
             break;
         case 2:
-            map.put("icon", "../framework/images/section" + (disable ? "_2" : "") + ".gif");
+            map.put("icon", "../framework/images/section" + "_" + disable + ".gif");
             break;
         case 3:
-            map.put("icon", "../framework/images/portlet_instance" + (disable ? "_2" : "") + ".gif");
+            map.put("icon", "../framework/images/portlet_instance" + "_" + disable + ".gif");
             break;
         default:
             break;

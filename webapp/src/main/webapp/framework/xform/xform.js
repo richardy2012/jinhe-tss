@@ -1077,10 +1077,15 @@ function dataNode2Map(dataNode, prefix) {
 	return map;
 }
 
-function xformExtractData(xformNode) {
+function xformExtractData(xformNode, needPrefix) {
 	if( xformNode ) {
 		var dataNode = xformNode.selectSingleNode(".//data");
-		var prefix   = xformNode.selectSingleNode("./declare").getAttribute("prefix");
+
+		var prefix = null;
+		if(needPrefix) {
+			prefix = xformNode.selectSingleNode("./declare").getAttribute("prefix");
+		}
+		
 		return dataNode2Map(dataNode, prefix);
 	}
 	return null;

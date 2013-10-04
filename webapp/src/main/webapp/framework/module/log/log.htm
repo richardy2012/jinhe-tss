@@ -169,7 +169,7 @@
                 var p = new HttpRequestParams();
 				var xmlReader = new XmlReader(condition.dataXml);
 				var dataNode  = new XmlNode(xmlReader.documentElement);
-				p.setXFormContent(dataNode, condition.prefix);
+				p.setXFormContent(dataNode);
 				loadGridData(p, "1"); 
             }
         }

@@ -54,7 +54,6 @@ public class XmlHttpDecoder {
                         String name  = nameNode.getText();
                         String value = valueNode.getText();
                         
-                        name = name.substring(name.indexOf(".") + 1); // 去掉参数前缀，因spring mvc 不支持ognl
                         value = value.replaceAll("&lt;!\\[CDATA\\[", "<![CDATA[").replaceAll("\\]\\]&gt;", "]]>");
                         req.addParameter(name, value);
                     }

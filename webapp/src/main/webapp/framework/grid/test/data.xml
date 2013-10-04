@@ -9,7 +9,7 @@
                 <column caption="用户状态" name="accountState" mode="string" align="center" editor="comboedit" editorvalue="0|1" editortext="停用|启用" width="50px"/>
                 <column caption="姓名" name="userName" mode="string" align="center"/>
                 <column caption="性别" name="sex" mode="string" align="center" editor="comboedit" editorvalue="0|1" editortext="女|男"  width="35px"/>
-                <column caption="出生年月" name="birthday" mode="string" align="center" pattern="yyyy-MM-dd" classType="Date"/>
+                <column caption="出生年月" name="birthday" mode="date" align="center"/>
                 <column caption="电子邮件" name="mail" mode="string" align="center"/>
                 <column caption="电话" name="telephone" mode="number" align="center" width="60px" sortable="true"/>
                 <column caption="所在组名称" name="groupName" mode="string" align="center"/>

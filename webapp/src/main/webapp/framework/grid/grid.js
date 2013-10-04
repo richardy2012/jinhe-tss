@@ -147,7 +147,11 @@ Grid.prototype.processDataRow = function(curRow) {
 			case "number":
 				nobrNodeInCell.innerText = value;
 				cell.setAttribute("title", value);
-				break;                       
+				break;       
+			case "date":
+				nobrNodeInCell.innerText = value;
+				cell.setAttribute("title", value);
+				break;         
 			case "function":                          
 				break;    
 			case "image":          

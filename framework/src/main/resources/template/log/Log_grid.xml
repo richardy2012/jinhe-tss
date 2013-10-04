@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grid>
 	<declare>
-		<column name="id" caption="ID号" mode="number"/>
+		<column name="id" caption="ID号" mode="number" display="none"/>
 		<column name="operatorName"  caption="操作人"   mode="string" />
 		<column name="operatorIP"    caption="操作人IP" mode="string"/>
 		<column name="operationCode" caption="操作类型"  mode="string"/>

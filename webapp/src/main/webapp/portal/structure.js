@@ -22,7 +22,7 @@
      */
     URL_SOURCE_TREE   = "/" + AUTH_PATH + "portal/list";
     URL_SOURCE_DETAIL = "/" + AUTH_PATH + "portal/";
-    URL_SOURCE_SAVE   = "/" + AUTH_PATH + "portal/save";
+    URL_SOURCE_SAVE   = "/" + AUTH_PATH + "portal";
     URL_DELETE_NODE   = "/" + AUTH_PATH + "portal/";
     URL_STOP_NODE     = "/" + AUTH_PATH + "portal/disable/";
     URL_SORT_NODE     = "/" + AUTH_PATH + "portal/sort/";
@@ -248,6 +248,43 @@
             }
         });
     }
+
+	function addNewStructure(treeType) {
+        var treeID = DEFAULT_NEW_ID;
+		var treeName;
+        switch(treeType) {
+            case "0":
+              treeName = "门户";
+              break;
+            case "1":
+              treeName = "页面";
+              break;
+            case "2":
+              treeName = "版面";
+              break;
+            case "3":
+              treeName = "portlet";
+              break;
+        }
+
+        var treeObj = $T("tree");
+        var treeNode = treeObj.getActiveTreeNode();
+		var parentID = treeNode.getId();
+
+		var callback = {};
+		callback.onTabChange = function() {
+			setTimeout(function() {
+				loadStructureDetailData(treeID, parentID, treeType);
+			}, TIMEOUT_TAB_CHANGE);
+		};
+
+		var inf = {};
+		inf.defaultPage = "page1";
+		inf.label = OPERATION_ADD.replace(/\$label/i, treeName);
+		inf.callback = callback;
+		inf.SID = CACHE_TREE_NODE_DETAIL + treeID;
+		var tab = ws.open(inf);
+    }
  
     function editStructure() {
         var treeObj = $T("tree");
@@ -273,6 +310,10 @@
     function loadStructureDetailData(treeID, parentID, treeType) {
 		var p = new HttpRequestParams();
 		p.url = URL_SOURCE_DETAIL + treeID;
+
+		if(parentID == "_rootId") {
+			parentID = 0;
+		}
 
 		// 如果是新增
 		if( treeID == DEFAULT_NEW_ID ) {
@@ -390,43 +431,6 @@
             }
             request.send();
         }		
-    }
- 
-    function addNewStructure(treeType) {
-        var treeID = DEFAULT_NEW_ID;
-		var treeName;
-        switch(treeType) {
-            case "0":
-              treeName = "门户";
-              break;
-            case "1":
-              treeName = "页面";
-              break;
-            case "2":
-              treeName = "版面";
-              break;
-            case "3":
-              treeName = "portlet";
-              break;
-        }
-
-        var treeObj = $T("tree");
-        var treeNode = treeObj.getActiveTreeNode();
-		var parentID = treeNode.getId();
-
-		var callback = {};
-		callback.onTabChange = function() {
-			setTimeout(function() {
-				loadStructureDetailData(treeID, parentID, treeType);
-			}, TIMEOUT_TAB_CHANGE);
-		};
-
-		var inf = {};
-		inf.defaultPage = "page1";
-		inf.label = OPERATION_ADD.replace(/\$label/i, treeName);
-		inf.callback = callback;
-		inf.SID = CACHE_TREE_NODE_DETAIL + treeID;
-		var tab = ws.open(inf);
     }
  
     /*
