@@ -24,16 +24,12 @@
     URL_APP_DETAIL      = "/" + AUTH_PATH + "resource/app/";
     URL_SAVE_APP        = "/" + AUTH_PATH + "resource/app"; // POST
     URL_RESOURCE_TYPE   = "/" + AUTH_PATH + "resource/resourceType/";
-    URL_IMPORT_TEMPLATE = "/" + AUTH_PATH + "resource/import/template";
-    URL_IMPORT          = "/" + AUTH_PATH + "importapp";
 	
 	if(IS_TEST) {
 		URL_INIT = "data/resource_tree.xml";
 		URL_APP_DETAIL = "data/application.xml";
 		URL_SAVE_APP = "data/_success.xml";
 		URL_RESOURCE_TYPE = "data/resourcetype.xml";
-		URL_IMPORT_TEMPLATE = "data/importapplication.xml";
-		URL_IMPORT = "data/_success.xml";
 	}
   
     function init() {
@@ -291,7 +287,9 @@
 		function checkFileWrong(subfix) {
 			return subfix != ".xml";
 		}
-		var importDiv = createImportDiv("只支持XML文件格式导入", checkFileWrong, URL_IMPORT);
+
+		var url = URL_UPLOAD_FILE + "?afterUploadClass=com.jinhe.tss.um.servlet.ImportAppConfig";
+		var importDiv = createImportDiv("只支持XML文件格式导入", checkFileWrong, url);
 		Element.show(importDiv);
 	}
 

@@ -9,6 +9,8 @@ CONTEXTPATH = APPLICATION + "/";
 AUTH_PATH   = CONTEXTPATH + "auth/";
 NO_AUTH_PATH = CONTEXTPATH;
 
+URL_UPLOAD_FILE  = "/" + AUTH_PATH + "file/upload";	
+
 if( IS_TEST ) {
 	URL_CORE = "../framework/";
 } else {

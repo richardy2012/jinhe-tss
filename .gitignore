@@ -10,3 +10,4 @@ build
 .svn
 *.db
 /webapp/src/main/webapp/upload
+/webapp/src/main/webapp/uploadFile

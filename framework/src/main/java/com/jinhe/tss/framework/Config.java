@@ -114,5 +114,5 @@ public class Config {
         return dbDriverName != null && dbDriverName.indexOf("oracle") >= 0;
     }
     
-	public static final String UPLOAD_PATH = "D:/temp/upload"; //getAttribute("upload_path");
+	public static final String UPLOAD_PATH = getAttribute("upload_path");
 }

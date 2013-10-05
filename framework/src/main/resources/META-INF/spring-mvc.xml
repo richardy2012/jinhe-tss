@@ -24,7 +24,8 @@
 	<mvc:resources mapping="/framework/**" location="/framework/"/>  
 	<mvc:resources mapping="/um/**" location="/um/"/>  
 	<mvc:resources mapping="/cms/**" location="/cms/"/>  
-	<mvc:resources mapping="/portal/**" location="/portal/"/>  
+	<mvc:resources mapping="/portal/**" location="/portal/"/> 
+	<mvc:resources mapping="/test/**" location="/test/"/> 
 	
 	<mvc:resources mapping="/ichartjs/**" location="/ichartjs/"/>  
 	

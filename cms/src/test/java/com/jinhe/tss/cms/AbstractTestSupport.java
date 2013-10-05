@@ -15,7 +15,6 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
 
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -30,6 +29,7 @@ import com.jinhe.tss.cms.publish.PublishManger;
 import com.jinhe.tss.cms.service.IArticleService;
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.test.TestUtil;
+import com.jinhe.tss.framework.web.servlet.AfterUpload;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.FileHelper;
 
@@ -100,7 +100,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
     
     // 上传附件
     protected void uploadDocFile(Long channelId, Long articleId) {
-    	UploadServlet upload = new UploadServlet();
+    	AfterUpload upload = new CreateAttach();
     	
 	    IMocksControl mocksControl =  EasyMock.createControl();
 	    HttpServletRequest mockRequest = mocksControl.createMock(HttpServletRequest.class);
@@ -111,19 +111,12 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
 	    EasyMock.expect(mockRequest.getParameter("petName")).andReturn(null);
 	    
 	    try {
-	    	Part part = mocksControl.createMock(Part.class);
-	    	EasyMock.expect(mockRequest.getPart("file")).andReturn(part).anyTimes();
 	    	
-	    	// 上传文本文件
-			EasyMock.expect(part.getHeader("content-disposition")).andReturn("filename=\"123.txt\"");
-			
-			// 代替part.write()
-			FileHelper.writeFile(new File(Config.UPLOAD_PATH + "/123.txt"), "我们爱技术创新。");
-	        part.write("123.txt");
-	        EasyMock.expectLastCall(); // void 类型方法的mock
+			String filepath = Config.UPLOAD_PATH + "/123.txt";
+			FileHelper.writeFile(new File(filepath), "我们爱技术创新。");
 	        
 	        mocksControl.replay(); 
-			upload.doPost(mockRequest, response);
+			upload.processUploadFile(mockRequest, filepath, "123.txt");
 			
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -135,7 +128,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
     
     // 上传图片
     protected void uploadImgFile(Long channelId, Long articleId) {
-    	UploadServlet upload = new UploadServlet();
+    	AfterUpload upload = new CreateAttach();
     	
 	    IMocksControl mocksControl =  EasyMock.createControl();
 	    HttpServletRequest mockRequest = mocksControl.createMock(HttpServletRequest.class);
@@ -146,9 +139,6 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
 	    EasyMock.expect(mockRequest.getParameter("petName")).andReturn(null);
 	    
 	    try {
-	    	Part part = mocksControl.createMock(Part.class);
-	    	EasyMock.expect(mockRequest.getPart("file")).andReturn(part).anyTimes();
-	    	
 			// 先用java创建一张图片
 			int width = 100, height = 100;   
 	        String s = "TSS LOGO";   
@@ -173,14 +163,8 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
 	        g2.drawString(s, (int)x, (int)baseY);   
 	        ImageIO.write(bi, "jpg", file); 
 	        
-	        EasyMock.expect(part.getHeader("content-disposition")).andReturn("filename=\"111.jpg\"");
-			
-			// 代替part.write()
-	        part.write("111.jpg");
-	        EasyMock.expectLastCall();
-	        
 	        mocksControl.replay(); 
-			upload.doPost(mockRequest, response);
+	        upload.processUploadFile(mockRequest, filePath, "111.jpg");
 			
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
