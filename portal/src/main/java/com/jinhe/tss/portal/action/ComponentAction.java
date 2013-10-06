@@ -114,7 +114,9 @@ public class ComponentAction extends FreeMarkerSupportAction {
     		@PathVariable("id") Long id, @PathVariable("name") String name) {
     	Component component = service.getComponent(id);
     	component.setName(name);
-        printSuccessMessage("删除成功");
+    	service.saveComponent(component);
+    	
+        printSuccessMessage("修改成功");
     }
 
     /**

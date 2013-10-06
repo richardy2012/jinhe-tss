@@ -8,7 +8,6 @@
      *	XMLHTTP请求地址汇总
      */
    	URL_SOURCE_TREE    = "/" + AUTH_PATH + "portal/file/list";
-    URL_SAVE_UPLOAD    = "/" + AUTH_PATH + "portal/file/upload";
     URL_RENAME         = "/" + AUTH_PATH + "portal/file";
     URL_DEL_FILES      = "/" + AUTH_PATH + "portal/file";
     URL_DOWNLOAD_FILES = "/" + AUTH_PATH + "portal/file";
@@ -16,7 +15,6 @@
 
 	if(IS_TEST) {
 		URL_SOURCE_TREE    = "data/resource_init.xml?";
-		URL_SAVE_UPLOAD    = "data/_success.xml?";
 		URL_RENAME         = "data/_success.xml?";
 		URL_DEL_FILES      = "data/_success.xml?";
 		URL_DOWNLOAD_FILES = "data/download.zip?";
@@ -80,12 +78,13 @@
     function getFolderContextPath(name) {
         var boxObj = $$("contextPathBox");
         var contextPath = boxObj.value;
-        return contextPath + "/" + name + "/";
+        return contextPath + "/" + name;
     }
  
     function upload() {
         var contextPath =  $$("contextPathBox").value;
-		var url = URL_SAVE_UPLOAD + "?" + contextPath
+		var url = URL_UPLOAD_FILE + "?" + contextPath
+		url += "&afterUploadClass=com.jinhe.tss.portal.helper.MovePortalFile"
 		var importDiv = createImportDiv("", null, url);
 		Element.show(importDiv);
     }
@@ -124,6 +123,7 @@
         var contextPath = $$("contextPathBox").value;
 		Ajax({
 			url: URL_DEL_FILES,
+			method: "DELETE",
 			params: {"contextPath": contextPath, "fileNames": fileNames.join(","), "folderNames": folderNames.join(",")},
 			onsuccess: function() {
 				removeTreeNode($T("tree"), ["-1"]);
@@ -154,7 +154,8 @@
 			var contextPath =  $$("contextPathBox").value;
 			Ajax({
 				url: URL_RENAME,
-				params: {"contextPath": contextPath, "fileNames": name, "folderNames": newName},
+				method: "PUT",
+				params: {"contextPath": contextPath, "fileName": name, "newFileName": newName},
 				onsuccess: function() {
 					modifyTreeNode(id, "name", newName, true);
 				}
@@ -202,10 +203,11 @@
     /* 新建文件夹  */
     function addFolder() {
         var contextPath = $$("contextPathBox").value;
-        var name = prompt("请输入文件夹名称");
+        var name = prompt("请输入文件夹名称", "");
         if( name && "" != name ) {
 			Ajax({
 				url: URL_RENAME,
+				method: "POST",
 				params: {"contextPath": contextPath, "newFileName": name},
 				onsuccess: function() {
 					loadFileTree(contextPath);

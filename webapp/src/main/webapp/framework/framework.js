@@ -212,16 +212,12 @@ function initToolBar() {
 	toolbar = ToolBars.create($$("toolbar"));
 }
 
-/*
- *	点击树刷新按钮
- */
+/* 点击树刷新按钮 */
 function onClickTreeBtRefresh() {
 	loadInitData();
 }
 
-/*
- *	点击树标题按钮
- */
+/* 点击树标题按钮  */
 function onClickTreeTitleBt() {
 	var treeTitleObj = $$("treeTitle");
 	var statusTitleObj = $$("statusTitle");
@@ -992,49 +988,53 @@ function _loadToolBar(_operation, contentXML) {
 
 /* 创建导入Div */
 function createImportDiv(remark, checkFileWrong, importUrl) {
-	var divObj = $$("importDiv");
-	if( divObj == null ) {
-		divObj = document.createElement("div");    
-		divObj.id = "importDiv";      
-		divObj.style.background = "#BEC6EE";    
-		divObj.style.width = "250px";    
-		divObj.style.height = "100px";   
-		divObj.style.padding = "10px 10px 10px 10px";   
-		divObj.style.fontSize = "12px"; 
-		document.body.appendChild(divObj);
+	var importDiv = $$("importDiv");
+	if( importDiv == null ) {
+		importDiv = document.createElement("div");    
+		importDiv.id = "importDiv";      
+		importDiv.style.background = "#BEC6EE";    
+		importDiv.style.width = "250px";    
+		importDiv.style.height = "100px";   
+		importDiv.style.padding = "10px 10px 10px 10px";   
+		importDiv.style.fontSize = "12px"; 
+		document.body.appendChild(importDiv);
 
 		var str = [];
-		str[str.length] = "<form id='importForm' method='post' enctype='multipart/form-data'>";
+		str[str.length] = "<form id='importForm' method='post' target='fileUpload' enctype='multipart/form-data'>";
 		str[str.length] = "	 <input type='file' name='file' id='sourceFile'/> <br> " + remark + "<br> ";
 		str[str.length] = "	 <input type='button' id='importBt' value='导入' /> ";
 		str[str.length] = "	 <input type='button' id='closeBt'  value='关闭' /> ";
 		str[str.length] = "</form>";
-		divObj.innerHTML = str.join("\r\n");
+		str[str.length] = "<iframe width='0px' height='0px' name='fileUpload'></iframe>";
+		
+		importDiv.innerHTML = str.join("\r\n");
 
 		$$("closeBt").onclick = function () {
 			Element.hide(importDiv);
 		}
-
-		$$("importBt").onclick = function() {
-			var fileValue = $$("sourceFile").value;
-			if( fileValue == null) {
-				 return alert("请选择导入文件!");				 
-			}
-
-			var length = fileValue.length;
-			var subfix = fileValue.substring(length - 4, length);
-			if( checkFileWrong && checkFileWrong(subfix) ) {
-			   return alert(remark);
-			}
-
-			var form = $$("importForm");
-			form.action = importUrl || URL_IMPORT;
-			form.submit();
-
-			Element.hide(importDiv);
-		}
 	}
-	return divObj;
+
+	// 每次 importUrl 可能不一样，比如导入门户组件时。不能缓存
+	$$("importBt").onclick = function() {
+		var fileValue = $$("sourceFile").value;
+		if( fileValue == null) {
+			 return alert("请选择导入文件!");				 
+		}
+
+		var length = fileValue.length;
+		var subfix = fileValue.substring(length - 4, length);
+		if( checkFileWrong && checkFileWrong(subfix) ) {
+		   return alert(remark);
+		}
+
+		var form = $$("importForm");
+		form.action = importUrl;
+		form.submit();
+
+		Element.hide(importDiv);
+	}
+
+	return importDiv;
 }
 
  /* 创建导出用iframe */

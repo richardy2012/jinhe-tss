@@ -1,4 +1,4 @@
-package com.jinhe.tss.cms;
+package com.jinhe.tss.cms.publish;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -12,6 +12,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import com.jinhe.tss.cms.AbstractTestSupport;
+import com.jinhe.tss.cms.CMSConstants;
+import com.jinhe.tss.cms.DownloadServlet;
 import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;

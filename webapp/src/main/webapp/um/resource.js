@@ -40,8 +40,10 @@
         initBlocks();
         initWorkSpace();
 
+		Event.attachEvent($$("treeBtRefresh"), "click", onClickTreeBtRefresh);
+
         loadInitData();
-    }
+    } 
   
     function initMenus() {
 	    var item1 = {

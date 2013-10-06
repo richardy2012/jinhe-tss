@@ -1,4 +1,4 @@
-package com.jinhe.tss.portal;
+package com.jinhe.tss.portal.helper;
 
 import java.io.File;
 
@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.web.servlet.AfterUpload;
 import com.jinhe.tss.portal.entity.Component;
-import com.jinhe.tss.portal.helper.ComponentHelper;
 import com.jinhe.tss.portal.service.IComponentService;
 import com.jinhe.tss.util.URLUtil;
 
@@ -33,6 +32,6 @@ public class CreateComponent implements AfterUpload {
         component.setType(group.getType());
         ComponentHelper.importComponent(service, targetFile, component, desDir, eXMLFile);
         
-		return "<script>parent.loadInitData();alert('导入成功!'); ws.closeActiveTab();</script>";
+		return "alert('导入成功!');parent.loadInitData();";
 	}
 }

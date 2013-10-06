@@ -73,7 +73,7 @@ public class FileAction extends BaseActionSupport {
         }
         sb.append("</actionSet>");      
         
-        print(new String[] {"ResourceTree", "contextPath"}, new Object[] {sb, contextPath});
+        print(new String[] {"ResourceTree", "ContextPath"}, new Object[] {sb, contextPath});
     }
     
     /* 将子文件夹、文件进行归类，文件夹在前 */
@@ -97,8 +97,9 @@ public class FileAction extends BaseActionSupport {
     public void download(HttpServletResponse response, HttpServletRequest request) {
     	String contextPath = request.getParameter("contextPath");
     	String fileNames = request.getParameter("fileNames");
+    	String folderNames = request.getParameter("folderNames");
     	
-        if(fileNames == null) return;
+        if(fileNames == null && folderNames == null) return;
         
         // 建立临时文件夹存放要下载的所有文件
         contextPath = getContextPath(contextPath);
@@ -107,14 +108,28 @@ public class FileAction extends BaseActionSupport {
             tempDir.mkdir();
         }
         
-        String[] fNames = fileNames.split(",");
-        for ( String fileName : fNames ) {
-            File file = new File(contextPath + fileName);
-            if (file.exists()) {
-                FileHelper.copyFile(tempDir, file, true, false);  // 拷贝文件至临时文件夹
+        List<File> files = new ArrayList<File>();
+        if(fileNames != null) {
+        	String[] fNames = fileNames.split(",");
+            for ( String fileName : fNames ) {
+                File file = new File(contextPath + fileName);
+                if (file.exists()) {
+                	files.add(file);
+                }
             }
         }
         
+        if(folderNames != null) {
+        	String[] fNames = folderNames.split(",");
+            for ( String folderName : fNames ) {
+                File folder = new File(contextPath + folderName);
+                files.addAll(FileHelper.listFilesDeeply(folder));
+            }
+        }
+        
+        for(File file : files) {
+        	FileHelper.copyFile(tempDir, file, true, false);  // 拷贝文件至临时文件夹
+        }
         String zipFilePath = FileHelper.exportZip(contextPath, tempDir); // 将临时文件夹里的文件打包成zip文件
         FileHelper.deleteFile(tempDir); // 删除临时文件夹
         
@@ -148,7 +163,7 @@ public class FileAction extends BaseActionSupport {
             }
         }
  
-        print("script", "window.parent.loadFileTree();");
+        print("script", "parent.loadFileTree();");
     }
     
     /**
@@ -170,7 +185,7 @@ public class FileAction extends BaseActionSupport {
         if( !file.renameTo(newFile) ) {
         	throw new BusinessException("重命名失败，可能文件正在使用中！");
         }
-        print("script", "window.parent.loadFileTree();");
+        print("script", "parent.loadFileTree();");
     }
     
     /**
@@ -187,7 +202,7 @@ public class FileAction extends BaseActionSupport {
     }
  
     public static String getContextPath(String contextPath) {
-        String modelDir = URLUtil.getWebFileUrl(PortalConstants.MODEL_DIR).getPath();
+        String modelDir = URLUtil.getWebFileUrl("").getPath();
         return modelDir + "/" + contextPath + "/";
     }
  

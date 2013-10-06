@@ -31,6 +31,8 @@ import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.framework.web.servlet.AfterUpload;
 import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.entity.Structure;
+import com.jinhe.tss.portal.helper.CreateComponent;
+import com.jinhe.tss.portal.helper.MovePortalFile;
 import com.jinhe.tss.portal.service.IComponentService;
 import com.jinhe.tss.portal.service.IPortalService;
 import com.jinhe.tss.um.UMConstants;

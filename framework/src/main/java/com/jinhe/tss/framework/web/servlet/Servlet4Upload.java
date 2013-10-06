@@ -57,7 +57,7 @@ public class Servlet4Upload extends HttpServlet {
             String newFileName = System.currentTimeMillis() + "." + subfix;
             String newFilePath = savePath + File.separator + newFileName;
             
-	        part.write(newFilePath); // 写到指定的目录下,jetty先失败
+//	        part.write(newFilePath); // 写到指定的目录下,jetty先失败
 //			part.write(newFileName); // 写到默认上传目录下,jetty下成功
 			
 			writePart(part, newFilePath); // 自定义输出到指定目录
@@ -68,16 +68,17 @@ public class Servlet4Upload extends HttpServlet {
 				script = afterUpload.processUploadFile(request,newFilePath, fileName);
 			}
 	        
-			encoder.put("SCRIPT", script);
+			encoder.put("script", script);
 			
 		} catch (Exception e) {
 			log.error("上传失败，请查看日志信息！", e);
-			encoder.put("SCRIPT", "alert(\"上传失败，请查看日志信息！\");");
+			encoder.put("script", "alert(\"上传失败，请查看日志信息！\");");
 		}
 
 		encoder.print(new XmlPrintWriter(response.getWriter()));
 	}
 
+	// 自定义输出到指定目录
 	private void writePart(Part part, String newFilePath) throws IOException, FileNotFoundException {
 		InputStream is = part.getInputStream();
 		FileOutputStream fos = new FileOutputStream(newFilePath);

@@ -34,7 +34,7 @@ public class CreateAttach implements AfterUpload {
 		// 向前台返回成功信息
 		String downloadUrl = attachObj.getRelateDownloadUrl();
 		Integer seqNo = attachObj.getSeqNo();
-		return "<script>parent.addAttachments(" + seqNo + ", " + type + ", '"
-				+ downloadUrl + "', " + articleId + ")</script>";
+		return "parent.addAttachments(" + seqNo + ", " + type + ", '"
+				+ downloadUrl + "', " + articleId + ")";
 	}
 }

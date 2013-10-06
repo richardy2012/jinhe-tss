@@ -15,7 +15,6 @@
     URL_DELETE_NODE      = "/" + AUTH_PATH + "component/";  // {id}
     URL_SOURCE_SAVE      = "/" + AUTH_PATH + "component";
 	URL_SOURCE_RENAME    = "/" + AUTH_PATH + "component/rename/";
-    URL_IMPORT_COMPONENT = "/" + AUTH_PATH + "component/import";
     URL_EXPORT_COMPONENT = "/" + AUTH_PATH + "component/export/"; // {id}
 	URL_PREVIEW_COMPONENT= "/" + AUTH_PATH + "component/preview/"; // {id}
 	
@@ -27,7 +26,6 @@
 		URL_DELETE_NODE      = "data/_success.xml?";
 		URL_SOURCE_SAVE      = "data/_success.xml?";
 		URL_SOURCE_RENAME    = "data/_success.xml?";
-		URL_IMPORT_COMPONENT = "data/_success.xml?";
 		URL_EXPORT_COMPONENT = "data/_success.xml?";
 		URL_PREVIEW_COMPONENT= "data/component-preview.html?"; // "/auth/component/preview/" + id;
 	}
@@ -429,7 +427,7 @@
 
 		Ajax({
 			url: URL_SOURCE_RENAME + id + "/" + groupName,
-			onresult : function() { 
+			onsuccess : function() { 
 				modifyTreeNode(id, "name", groupName, true);
 			}
 		});
@@ -484,7 +482,8 @@
 			return subfix != ".xml" && subfix != ".zip";
 		}
 
-		var url = URL_IMPORT_COMPONENT + "?groupId=" + getTreeNodeId();
+		var url = URL_UPLOAD_FILE + "?groupId=" + getTreeNodeId();
+		url += "&afterUploadClass=com.jinhe.tss.portal.helper.CreateComponent";
 		var importDiv = createImportDiv("只支持XML和zip文件格式导入", checkFileWrong, url);
 		Element.show(importDiv);
     }	

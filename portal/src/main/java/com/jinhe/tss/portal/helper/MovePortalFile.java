@@ -1,4 +1,4 @@
-package com.jinhe.tss.portal;
+package com.jinhe.tss.portal.helper;
 
 import java.io.File;
 
@@ -29,6 +29,6 @@ public class MovePortalFile implements AfterUpload {
 			FileHelper.copyFile(baseDir, targetFile);
 		}
 
-		return "window.parent.loadFileTree();";
+		return "alert('上传成功!');parent.loadFileTree();";
 	}
 }
