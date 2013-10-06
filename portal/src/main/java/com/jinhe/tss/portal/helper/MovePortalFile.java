@@ -29,6 +29,6 @@ public class MovePortalFile implements AfterUpload {
 			FileHelper.copyFile(baseDir, targetFile);
 		}
 
-		return "alert('上传成功!');parent.loadFileTree();";
+		return "parent.alert('上传成功!');parent.loadFileTree();";
 	}
 }

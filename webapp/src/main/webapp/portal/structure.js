@@ -27,9 +27,9 @@
     URL_STOP_NODE     = "/" + AUTH_PATH + "portal/disable/";
     URL_SORT_NODE     = "/" + AUTH_PATH + "portal/sort/";
     URL_VIEW_SITE     = "/" + AUTH_PATH + "portal/preview/";
-    URL_GET_COMPONENT_PARAMETERS = "data/structure-params.xml?";
-	URL_GET_COMPONENT_TREE = "data/component_tree.xml?";
-    URL_THEME_MANAGE      = "/" + AUTH_PATH + "portal/theme/list";
+    URL_GET_COMPONENT_PARAMETERS =  "/" + AUTH_PATH + "component/params/";  // {id}
+	URL_GET_COMPONENT_TREE =  "/" + AUTH_PATH + "component/enabledlist/";  // {type}
+    URL_THEME_MANAGE      = "/" + AUTH_PATH + "portal/theme/list/";
     URL_RENAME_THEME      = "/" + AUTH_PATH + "portal/theme/rename/"; // {themeId}/{name}  PUT
     URL_DEL_THEME         = "/" + AUTH_PATH + "portal/theme/";
     URL_COPY_THEME        = "/" + AUTH_PATH + "portal/theme/";  // {themeId}/{name} POST
@@ -161,6 +161,11 @@
             icon:ICON + "cache.gif",
             visible:function() {return "0" == getStructureType() && getOperation("2");}
         }
+		var item17 = {
+            label:"资源管理",
+            callback:function() {resourceManage();},
+            visible:function() {return "0" == getStructureType() && getOperation("2");}
+        }
         var item12 = {
             label:"查看页面流量",
             callback:showPageFlowRate,
@@ -202,6 +207,7 @@
         menu1.addItem(item6);
 		menu1.addItem(item7);
         menu1.addItem(item8);
+		menu1.addItem(item17);
         menu1.addSeparator();
         menu1.addItem(item9);
 		menu1.addItem(item12);
@@ -291,11 +297,12 @@
         var treeNode = treeObj.getActiveTreeNode();
 		var treeID   = treeNode.getId();
 		var treeName = treeNode.getName();
+		var treeType = treeNode.getAttribute("type");
 
 		var callback = {};
 		callback.onTabChange = function() {
 			setTimeout(function() {
-				loadStructureDetailData(treeID);
+				loadStructureDetailData(treeID, null, treeType);
 			},TIMEOUT_TAB_CHANGE);
 		};
 
@@ -326,7 +333,7 @@
 			var dataXmlNode = this.getNodeValue(XML_SITE_INFO);
 
 			// 根据树节点type属性，预先处理xform数据岛
-			preProcessXml(dataXmlNode,treeType);
+			preProcessXml(dataXmlNode, treeType);
 
 			Cache.XmlDatas.add(treeID, dataXmlNode);
 
@@ -428,6 +435,8 @@
 				// 更新树节点名称
 				var name = page1FormObj.getData("name");
 				modifyTreeNode(treeID, "name", name, true);
+
+				ws.closeActiveTab();
             }
             request.send();
         }		
@@ -507,22 +516,25 @@
         var decoratorNode = xmlIsland.selectSingleNode(".//column[@name='decorator.name']");
         var rowNode = xmlIsland.selectSingleNode(".//data/row");
 
-        // 根据treeType，给definerNode, decoratorNode节点设置不同属性
-        var layoutCmd = definerNode.getAttribute("cmd");
-        definerNode.setAttribute("cmd", layoutCmd.replace(/\${definerType}/i, treeType));
-
+        var componentType;
         switch(treeType) {
             case "0":
             case "1":
             case "2":
+				componentType = "1";
                 definerNode.setAttribute("caption", "布局器");
                 decoratorNode.setAttribute("caption", "修饰器");
                 break;
             case "3":
+				componentType = "3";
                 definerNode.setAttribute("caption", "Portlet");
                 decoratorNode.setAttribute("caption", "修饰器");
                 break;
         }
+
+		// 根据treeType，给definerNode, decoratorNode节点设置不同属性
+        var layoutCmd = definerNode.getAttribute("cmd");
+        definerNode.setAttribute("cmd", layoutCmd.replace(/\${definerType}/i, componentType));
 
         // 门户、页面类型节点需要预解析supplement属性
         switch(treeType) {
@@ -593,8 +605,13 @@
 					updateParameters(newNode);
 					
 					// 是否允许进行配置
-					$$("page1BtConfigDefiner").disabled   = ( 0 == newNode.attributes.length );
-					$$("page1BtConfigDecorator").disabled = ( 0 == newNode.attributes.length );
+					if(type == "2") {
+						$$("page1BtConfigDecorator").disabled = ( 0 == newNode.attributes.length );
+					}
+					else {
+						$$("page1BtConfigDefiner").disabled   = ( 0 == newNode.attributes.length );
+					}
+					
 				}
 			});
         }
@@ -610,6 +627,8 @@
         if(xmlNode == null) {
 			xmlNode = loadXmlToNode("<ComponentParams/>");
         }
+
+		xmlNode = new XmlNode(xmlNode);
         return xmlNode;    
     }
 
@@ -813,15 +832,20 @@
             var treeName = treeNode.getName();
 
             var newName = "";
+			var oncemore = false;
             while("" == newName) {
-                alert("请输入至少一个字符，并且不能使用空格(包括全角空格）");
-                newName = prompt("请输入新主题名", treeName, "重新命名\"" + treeName + "\"为", null, 50);
-                newName = newName.replace(/[\s　]/g, "");            
+				if(oncemore) {
+					alert("请输入至少一个字符，并且不能使用空格(包括全角空格）");
+				}
+                newName = prompt("请输入新主题名", treeName, "重新命名\"" + treeName + "\"为", null, 50) || "";
+                newName = newName.replace(/[\s　]/g, "");       
+				oncemore = true;
             }
 
             if(newName && treeName != newName) {
 				Ajax({
 					url: URL_RENAME_THEME + treeID + "/" + newName,
+					method: "PUT",
 					onsuccess: function() {
 						treeNode.setAttribute("name", newName);
 						page2TreeObj.reload();
@@ -839,6 +863,7 @@
             var treeID = treeNode.getId();
 			Ajax({
 				url: URL_DEL_THEME + treeID,
+				method: "DELETE",
 				onsuccess: function() {
 					page2TreeObj.removeTreeNode(treeNode);
 				}
@@ -903,6 +928,7 @@
 
             Ajax({
 				url: URL_SET_DEFAULT_THEME + treeID,
+				method: "PUT",
 				onsuccess: onsuccess
 			});
         }
@@ -977,8 +1003,22 @@
         var treeNode = $T("tree").getActiveTreeNode();
 		var portalId = treeNode.getAttribute("portalId");
 		var url = URL_GET_FLOW_RATE + portalId;
-		window.showModalDialog("commongrid.html", {params:params, service: url, nodename: "PageFlowRate", title:"查看页面流量"} , 
+		window.showModalDialog("commongrid.html", {service: url, nodename: "PageFlowRate", title:"查看页面流量"} , 
 			"dialogWidth:400px;dialogHeight:400px;resizable:yes");
+    }
+
+	/* 组件资源管理 */
+    function resourceManage() {
+        var treeObj = $T("tree");
+        var treeNode = treeObj.getActiveTreeNode();
+		var name = treeNode.getName();
+		var code = treeNode.getAttribute("code");
+
+		var params = {
+			code:code
+		};
+	
+		window.showModalDialog("filemanager.html", {params:params, title:"\"" + name + "\"相关资源管理"},"dialogWidth:400px;dialogHeight:400px;");
     }
 
 	/********************************************************************************************************************

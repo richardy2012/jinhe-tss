@@ -3,8 +3,8 @@
 	<PageFlowRate>
         <grid version="2" channelId="3">
             <declare>
-                <column name="url" caption="页面" mode="string" editable="false" align="center"/>
-                <column name="pv" caption="流量" mode="string" editable="false" align="center"/>
+                <column name="url" caption="页面" mode="string" align="center"/>
+                <column name="pv"  caption="流量" mode="string" align="center"/>
 	        </declare>
             <data>
                 <row url="首页" pv="100"/>

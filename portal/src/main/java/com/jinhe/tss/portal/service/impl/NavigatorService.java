@@ -29,6 +29,9 @@ public class NavigatorService implements INavigatorService {
 		    Long parentId = entity.getParentId();
             Integer nextSeqNo = dao.getNextSeqNo(parentId);
             entity.setSeqNo(nextSeqNo);
+            
+            Navigator parent = dao.getEntity(parentId);
+            entity.setPortalId(parent.getPortalId());
 		}
 		
 		return dao.save(entity);
@@ -71,7 +74,8 @@ public class NavigatorService implements INavigatorService {
     public void moveNavigator(Long id, Long targetId) {
         Navigator navigator = dao.getEntity(id);
         
-        navigator.setPortalId(dao.getEntity(targetId).getPortalId());
+        Navigator target = dao.getEntity(targetId);
+		navigator.setPortalId(target.getPortalId());
         navigator.setParentId(targetId);
         navigator.setSeqNo(dao.getNextSeqNo(targetId));
                    

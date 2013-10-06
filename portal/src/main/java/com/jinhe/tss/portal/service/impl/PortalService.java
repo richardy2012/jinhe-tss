@@ -241,11 +241,14 @@ public class PortalService implements IPortalService {
         if(ps.getId() == null) {
             ps.setSeqNo(portalDao.getNextSeqNo(ps.getParentId()));
         }
-        ps = portalDao.saveStructure(ps);
+        portalDao.saveStructure(ps);
         
-        if(ps.getCode() == null) {
+        ps = portalDao.getEntity(ps.getId());
+        String code = ps.getCode();
+        if(code == null || !code.startsWith("ps-")) {
             ps.setCode("ps-" + ps.getPortalId() + "-" + ps.getId());
         }
+        portalDao.saveStructure(ps);
         
         return ps;
     }

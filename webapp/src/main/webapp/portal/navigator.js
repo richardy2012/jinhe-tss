@@ -194,7 +194,7 @@
 		var callback = {};
 		callback.onTabChange = function() {
 			setTimeout(function() {
-				loadMenuDetailData(treeID, type, parentId);
+				loadMenuDetailData(treeID, type, parentId, portalId);
 			},TIMEOUT_TAB_CHANGE);
 		};
 
@@ -229,13 +229,16 @@
 		var tab = ws.open(inf);
     }
  
-    function loadMenuDetailData(treeID, type, parentId) {
+    function loadMenuDetailData(treeID, type, parentId, portalId) {
 		var params = {};
-		if(type ) {
+		if(type) {
 			params.type = type;
 		}
 		if(parentId) {
 			params.parentId = parentId;
+		}
+		if(portalId) {
+			params.portalId = portalId;
 		}
 	
 		Ajax({
@@ -310,7 +313,7 @@
 		}
 
 		var url = URL_GET_PS_TREE + portalId + "/" + type;
-        var returnObj = window.showModalDialog("commontree.html", {title:"请选择菜单项对应内容", service:url},"dialogWidth:300px;dialogHeight:400px;");
+        var returnObj = window.showModalDialog("commontree.html", {title:"请选择菜单项对应内容", service:url, nodename:"StructureTree"},"dialogWidth:300px;dialogHeight:400px;");
         if(returnObj) {
             page1FormObj.updateDataExternal(contentId, returnObj.id);
             page1FormObj.updateDataExternal(contentName, returnObj.name);

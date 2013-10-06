@@ -42,8 +42,11 @@ public class FileAction extends BaseActionSupport {
         StringBuffer sb = new StringBuffer("<actionSet title=\"\" openednodeid=\"r1.1\">"); 
         
         // 如果访问的是子目录，则提供目录上翻的按钮
-        if( contextPath != null){
-            sb.append("<treeNode id=\"-1\" name=\"..\" icon=\"../framework/images/folder.gif\" />"); 
+        if( contextPath != null) {
+        	int indexOfModel = contextPath.indexOf("model");
+			if( indexOfModel > 0 && indexOfModel < contextPath.length() - 6 ) {
+        		sb.append("<treeNode id=\"-1\" name=\"..\" icon=\"../framework/images/folder.gif\" />"); 
+        	}
         } 
         else {
         	if( type != null) {

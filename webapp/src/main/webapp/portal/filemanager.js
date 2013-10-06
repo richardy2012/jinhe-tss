@@ -80,14 +80,6 @@
         var contextPath = boxObj.value;
         return contextPath + "/" + name;
     }
- 
-    function upload() {
-        var contextPath =  $$("contextPathBox").value;
-		var url = URL_UPLOAD_FILE + "?" + contextPath
-		url += "&afterUploadClass=com.jinhe.tss.portal.helper.MovePortalFile"
-		var importDiv = createImportDiv("", null, url);
-		Element.show(importDiv);
-    }
 
     /* 删除资源文件 */
     function delFiles() {
@@ -221,6 +213,14 @@
         var filter = $$("filterBox").value;
         var contextPath = $$("contextPathBox").value;
         loadFileTree(contextPath, filter);
+    }
+
+	function upload() {
+        var contextPath =  $$("contextPathBox").value;
+		var url = URL_UPLOAD_FILE + "?contextPath=" + contextPath
+		url += "&afterUploadClass=com.jinhe.tss.portal.helper.MovePortalFile"
+		var importDiv = createImportDiv("", null, url);
+		Element.show(importDiv);
     }
 
     window.onload = loadFileTree;

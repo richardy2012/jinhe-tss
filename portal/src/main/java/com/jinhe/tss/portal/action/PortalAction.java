@@ -116,7 +116,11 @@ public class PortalAction extends FreeMarkerSupportAction {
         if( DEFAULT_NEW_ID.equals(id) ) { // 如果是新增,则返回一个空的无数据的模板
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("type", request.getParameter("type"));
-            map.put("parentId", request.getParameter("parentId"));
+            
+            Long parentId = Long.parseLong(request.getParameter("parentId"));
+            Structure parent = service.getStructure(parentId);
+			map.put("parentId", parentId);
+			map.put("portalId", parent.getPortalId());
             encoder = new XFormEncoder(PortalConstants.PORTALSTRUCTURE_XFORM, map);           
         }
         else {
@@ -247,7 +251,7 @@ public class PortalAction extends FreeMarkerSupportAction {
     		@PathVariable("themeId") Long themeId, @PathVariable("name") String name) {
     	
         service.renameTheme(themeId, name);
-        printSuccessMessage();
+        printSuccessMessage("重命名成功");
     }
     
     @RequestMapping(value ="/theme/default/{themeId}", method = RequestMethod.PUT)

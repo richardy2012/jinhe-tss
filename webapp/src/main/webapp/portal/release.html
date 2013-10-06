@@ -250,6 +250,8 @@
 			request.onresult = function() {
 				var column = this.getNodeValue(XML_THEME_LIST);
 				var name = column.getAttribute("name");
+
+				page1FormObj.setColumnEditable("page.name", "true");
 				
 				var treeID = page1FormObj.getData("id") || DEFAULT_NEW_ID;
 				var dataXmlNode = Cache.XmlDatas.get(treeID);
@@ -260,8 +262,7 @@
 					oldColumn.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
 				}
 
-				page1FormObj = $X("page1Form", dataXmlNode);
-				page1FormObj.setColumnEditable("page.name", "true");
+				page1FormObj = $X("page1Form", dataXmlNode); // 重新加载xform
 			}
 			request.send();
         }
@@ -271,7 +272,7 @@
     function getPage() {
         var page1FormObj = $X("page1Form");
         var id = page1FormObj.getData("portal.id");
-        var page = window.showModalDialog("commontree.html", {title:"请选择页面",service:URL_GET_PAGE_LIST + id}, "dialogWidth:300px;dialogHeight:400px;");
+        var page = window.showModalDialog("commontree.html", {title:"请选择页面",service:URL_GET_PAGE_LIST + id, nodename: "PageTree"}, "dialogWidth:300px;dialogHeight:400px;");
         if(page) {
             page1FormObj.updateDataExternal("page.id", page.id);
             page1FormObj.updateDataExternal("page.name", page.name);

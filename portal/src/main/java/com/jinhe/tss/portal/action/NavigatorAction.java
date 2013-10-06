@@ -81,6 +81,7 @@ public class NavigatorAction extends BaseActionSupport {
         	map = new HashMap<String, Object>();
             map.put("target", "_blank");
             map.put("parentId", request.getParameter("parentId"));
+            map.put("portalId", request.getParameter("portalId"));
         	map.put("type", type = request.getParameter("type"));
         }
         else {

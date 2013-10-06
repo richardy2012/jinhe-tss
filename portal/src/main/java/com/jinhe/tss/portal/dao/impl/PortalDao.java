@@ -22,7 +22,7 @@ public class PortalDao extends TreeSupportDao<Structure> implements IPortalDao {
             return create(ps);
         } 
     	else {
-            update(ps);
+//            update(ps);
             return ps; 
         }
     }

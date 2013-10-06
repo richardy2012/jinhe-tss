@@ -32,6 +32,6 @@ public class CreateComponent implements AfterUpload {
         component.setType(group.getType());
         ComponentHelper.importComponent(service, targetFile, component, desDir, eXMLFile);
         
-		return "alert('导入成功!');parent.loadInitData();";
+		return "parent.alert('导入成功!');parent.loadInitData();";
 	}
 }

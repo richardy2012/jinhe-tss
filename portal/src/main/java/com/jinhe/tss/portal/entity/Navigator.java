@@ -192,15 +192,14 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
             
             // 页面/版面/Portlet 门户内部链接
             if(type.equals(TYPE_MENU_ITEM_3)){
-                map.put("url", "portal!previewPortal.action?portalId=" + portalId + "&id=" + content.getId());
+                map.put("url", "/auth/portal/preview/" + portalId + "?id=" + content.getId());
             }
         }
         
         // 局部替换方式
         if(type.equals(TYPE_MENU_ITEM_5)) {
             map.put("targetId", toContent.getId());
-            map.put("action", "portal!getPortalXML.action?portalId=" + portalId + "&id=" + content.getId() 
-                    + "&targetId=" + toContent.getId());
+            map.put("action", "/auth/portal/xml/" + portalId + "/" + content.getId() + "/" + toContent.getId());
         }
         
         return XMLDocUtil.map2AttributeNode(map, this.type.equals(TYPE_MENU) ? "Menu" : "MenuItem");

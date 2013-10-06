@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
 	<declare prefix="releaseConfig">
-		<column name="id" caption="ID号" mode="hidden" editable="false"/>
+		<column name="id" caption="ID号" mode="hidden" />
 		<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>
 		<column name="visitUrl" caption="映射地址" mode="string" maxLength="50" inputReg="/^[\u0000-\u00FF]*$/g" empty="false"/>
-		<column name="portal.id" caption="" mode="hidden" editable="false"/>
+		<column name="portal.id" mode="hidden" />
 		<column name="portal.name" caption="对应门户" mode="function" empty="false" cmd="getPortal()"/>
 		<column name="theme.id" caption="主题" mode="string" editor="comboedit" editorvalue="" editortext=""/>
-		<column name="page.id" caption="" mode="hidden" editable="false"/>
+		<column name="page.id" mode="hidden" />
 		<column name="page.name" caption="对应页面/版面" mode="function" cmd="getPage()"/>
 		<column name="remark" caption="说明" mode="string"/>
 	</declare>

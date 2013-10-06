@@ -26,6 +26,6 @@ public class ImportAppConfig implements AfterUpload {
          IResourceService resourceService = (IResourceService) Global.getContext().getBean("ResourceService");
          resourceService.applicationResourceRegister(doc, UMConstants.PLATFORM_SYSTEM_APP);
          
-         return "alert(\"导入成功！\");parent.loadInitData();";
+         return "parent.alert(\"导入成功！\");parent.loadInitData();";
 	}
 }

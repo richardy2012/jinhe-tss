@@ -890,6 +890,7 @@ Mode_Function.prototype.setEditable = function(s) {
 	this.obj.disabled  = (s == "false");
 	this.obj.className = (this.obj.disabled ? "function_disabled" : "function");
 
+	// function图标
 	this.obj.nextSibling.disabled = this.obj.disabled;
 	this.obj.nextSibling.className = (this.obj.disabled ? "bt_disabled" : "");
 	this.obj.editable = s;
