@@ -18,23 +18,36 @@ public class CreateAttach implements AfterUpload {
 	public String processUploadFile(HttpServletRequest request,
 			String filepath, String oldfileName) throws Exception {
 
-		Long articleId = Long.parseLong(request.getParameter("articleId"));
+		Long articleId;
+		try {
+			articleId = Long.parseLong(request.getParameter("articleId"));
+		} catch(Exception e) {
+			articleId = System.currentTimeMillis();
+		}
 		Long channelId = Long.parseLong(request.getParameter("channelId"));
 		int type = Integer.parseInt(request.getParameter("type"));
-		String petName = request.getParameter("petName");
-		if (petName == null) {
-			petName = oldfileName;
+		
+		int separatorIndex = oldfileName.lastIndexOf("\\");
+		if(separatorIndex > 0) {
+			oldfileName = oldfileName.substring(separatorIndex + 1);
+		}
+		separatorIndex = oldfileName.lastIndexOf("/");
+		if(separatorIndex > 0) {
+			oldfileName = oldfileName.substring(separatorIndex + 1);
 		}
 
 		// 保存附件信息
 		File targetFile = new File(filepath);
 		IArticleService articleService = (IArticleService) Global.getContext().getBean("ArticleService");
-		Attachment attachObj = articleService.processFile(targetFile, articleId, channelId, type, petName);
+		Attachment attachObj = articleService.processFile(targetFile, articleId, channelId, type, oldfileName);
 
 		// 向前台返回成功信息
 		String downloadUrl = attachObj.getRelateDownloadUrl();
 		Integer seqNo = attachObj.getSeqNo();
-		return "parent.addAttachments(" + seqNo + ", " + type + ", '"
-				+ downloadUrl + "', " + articleId + ")";
+		String fileName = attachObj.getFileName();
+		String fileExt = attachObj.getFileExt();
+		
+		return "parent.addAttachments(" + seqNo + ", '" + fileName + "', '" 
+				+ fileExt + "', '" + oldfileName + "', '" + downloadUrl + "')";
 	}
 }

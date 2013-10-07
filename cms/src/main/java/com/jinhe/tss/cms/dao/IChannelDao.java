@@ -14,6 +14,8 @@ import com.jinhe.tss.um.permission.filter.PermissionTag;
  * Channel的Dao层接口，定义所有Channel相关的数据库操作接口
  */
 public interface IChannelDao extends ITreeSupportDao<Channel> {
+	
+	Channel updateChannel(Channel channel);
     
     /**
      * 保存移动的节点。

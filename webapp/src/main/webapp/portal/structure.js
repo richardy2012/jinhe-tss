@@ -27,7 +27,7 @@
     URL_STOP_NODE     = "/" + AUTH_PATH + "portal/disable/";
     URL_SORT_NODE     = "/" + AUTH_PATH + "portal/sort/";
     URL_VIEW_SITE     = "/" + AUTH_PATH + "portal/preview/";
-    URL_GET_COMPONENT_PARAMETERS =  "/" + AUTH_PATH + "component/params/";  // {id}
+    URL_GET_COMPONENT_PARAMS =  "/" + AUTH_PATH + "component/params/";     // {id}
 	URL_GET_COMPONENT_TREE =  "/" + AUTH_PATH + "component/enabledlist/";  // {type}
     URL_THEME_MANAGE      = "/" + AUTH_PATH + "portal/theme/list/";
     URL_RENAME_THEME      = "/" + AUTH_PATH + "portal/theme/rename/"; // {themeId}/{name}  PUT
@@ -54,7 +54,7 @@
 		URL_STOP_NODE     = "data/_success.xml?";
 		URL_SORT_NODE     = "data/_success.xml?";
 		URL_VIEW_SITE     = "portal!previewPortal.action";
-		URL_GET_COMPONENT_PARAMETERS = "data/structure-params.xml?";
+		URL_GET_COMPONENT_PARAMS = "data/structure-params.xml?";
 		URL_GET_COMPONENT_TREE = "data/component_tree.xml?";
 		URL_THEME_MANAGE      = "data/theme_list.xml?";
 		URL_RENAME_THEME      = "data/_success.xml?";
@@ -90,91 +90,104 @@
         return getTreeAttribute("type");
     }
 
+	function isPortalNode() {
+		return getStructureType() == "0";
+	}
+	function isPageNode() {
+		return getStructureType() == "1";
+	}
+	function isSectionNode() {
+		return getStructureType() == "2";
+	}
+	function isPortletNode() {
+		return getStructureType() == "3";
+	}
+
     function initMenus() {
         var item1 = {
             label:"新建门户",
             callback:function() { 
 				addNewStructure("0"); 
 			},
-            visible:function() {return "_rootId" == getTreeNodeId() && getOperation("4");}
+            visible:function() {return isTreeRoot() && getOperation("4");}
         }
         var item2 = {
             label:"新建页面",
             callback:function() {
 				addNewStructure("1");
 			},
-            visible:function() {return "0" == getStructureType() && getOperation("4");}
+            visible:function() {return isPortalNode() && getOperation("4");}
         }
         var item3 = {
             label:"新建版面",
             callback:function() {
 				addNewStructure("2");
 			},
-            visible:function() {return ("1"==getStructureType() || "2" == getStructureType()) && getOperation("4");}
+            visible:function() {return (isPageNode() || isSectionNode()) && getOperation("4");}
         }
         var item4 = {
             label:"新建portlet实例",
             callback:function() {
 				addNewStructure("3");
 			},
-            visible:function() {return ("1"==getStructureType() || "2"==getStructureType()) && getOperation("4");}
+            visible:function() {return (isPageNode() || isSectionNode()) && getOperation("4");}
         }
         var item5 = {
             label:"删除",
             callback:function() { delTreeNode() },
             icon:ICON + "icon_del.gif",
-            visible:function() {return "_rootId"!=getTreeNodeId() && getOperation("3");}
+            visible:function() {return !isTreeRoot() && getOperation("3");}
         }
         var item6 = {
             label:"编辑",
             callback:editStructure,
             icon:ICON + "edit.gif",
-            visible:function() {return "_rootId" != getTreeNodeId() && getOperation("2");}
+            visible:function() {return !isTreeRoot() && getOperation("2");}
         }
         var item7 = {
             label:"停用",
             callback: function() { stopOrStartTreeNode("1"); },
             icon:ICON + "stop.gif",
-            visible:function() {return "_rootId" != getTreeNodeId() && !isTreeNodeDisabled() && getOperation("6");}
+            visible:function() {return !isTreeRoot() && !isTreeNodeDisabled() && getOperation("6");}
         }
         var item8 = {
             label:"启用",
             callback: function() { stopOrStartTreeNode("0"); },
             icon:ICON + "start.gif",
-            visible:function() {return "_rootId" != getTreeNodeId() && isTreeNodeDisabled() && getOperation("7");}
+            visible:function() {return !isTreeRoot() && isTreeNodeDisabled() && getOperation("7");}
         }
         var item9 = {
             label:"预览",
             callback:preview,
             icon:ICON + "preview.gif",
-            visible:function() {return "_rootId" != getTreeNodeId()  && getOperation("1");}
+            visible:function() {return !isTreeRoot()  && getOperation("1");}
         }
         var item10 = {
             label:"主题管理",
             callback:themeManage,
             icon:ICON + "portal/theme.gif",
-            visible:function() {return "0" == getStructureType() && getOperation("2");}
+            visible:function() {return isPortalNode() && getOperation("2");}
         }
         var item11 = {
             label:"缓存管理",
             callback:cacheManage,
             icon:ICON + "cache.gif",
-            visible:function() {return "0" == getStructureType() && getOperation("2");}
+            visible:function() {return isPortalNode() && getOperation("2");}
         }
 		var item17 = {
             label:"资源管理",
             callback:function() {resourceManage();},
-            visible:function() {return "0" == getStructureType() && getOperation("2");}
+            visible:function() {return isPortalNode() && getOperation("2");}
         }
         var item12 = {
             label:"查看页面流量",
             callback:showPageFlowRate,
-            visible:function() {return "0" == getStructureType();}
+            visible:function() {return isPortalNode();}
         }
 		var item13 = {
             label:"门户静态发布",
             callback:staticRelease,
-            visible:function() {return "0" == getStructureType() && getOperation("2");}
+            visible:function() {return isPortalNode() && getOperation("2");}
         }
 		var item14 = {
             label:"远程发布",
@@ -182,7 +195,7 @@
                remoteRelease("false");
             },
 			icon:ICON + "up.gif",
-            visible:function() {return "0" == getStructureType() && getOperation("2");}
+            visible:function() {return isPortalNode() && getOperation("2");}
         }
 		var item15 = {
             label:"远程发布(完全覆盖)",
@@ -190,12 +203,12 @@
                 remoteRelease("true");
             },            
 			icon:ICON + "up.gif",
-            visible:function() {return "0" == getStructureType() && getOperation("2");}
+            visible:function() {return isPortalNode() && getOperation("2");}
         }
 	    var item16 = {
             label:"页面静态发布",
             callback:staticReleaseSinglePage,
-            visible:function() {return "0" == getStructureType() && getOperation("2");}
+            visible:function() {return isPortalNode() && getOperation("2");}
         }
 
         var menu1 = new Menu();
@@ -599,7 +612,7 @@
 
             // 加载布局器配置项
 			Ajax({
-				url: URL_GET_COMPONENT_PARAMETERS + component.id,
+				url: URL_GET_COMPONENT_PARAMS + component.id,
 				onresult: function() {
 					var newNode = this.getNodeValue(XML_COMPONENT_PARAMETERS);
 					updateParameters(newNode);

@@ -218,7 +218,7 @@
 	function upload() {
         var contextPath =  $$("contextPathBox").value;
 		var url = URL_UPLOAD_FILE + "?contextPath=" + contextPath
-		url += "&afterUploadClass=com.jinhe.tss.portal.helper.MovePortalFile"
+		url += "&afterUploadClass=com.jinhe.tss.portal.helper.MovePortalFile";
 		var importDiv = createImportDiv("", null, url);
 		Element.show(importDiv);
     }

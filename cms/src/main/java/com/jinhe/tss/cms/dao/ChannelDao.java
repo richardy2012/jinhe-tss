@@ -24,13 +24,18 @@ public class ChannelDao extends TreeSupportDao<Channel> implements IChannelDao {
         super(Channel.class);
     }
 	
+	public Channel updateChannel(Channel channel) {
+//		update(channel);
+		return channel;
+	}
+	
 	public void moveChannel(Channel channel) {
 	    update(channel);
 	}
 	
     public Channel getSiteByChannel(Long channelId) {
         Channel channel = (Channel) getEntity(Channel.class, channelId);
-        if(channel.isSite()) {
+        if(channel.isSiteRoot()) {
             return channel;
         }
         return (Channel) getEntity(Channel.class, channel.getSite().getId());

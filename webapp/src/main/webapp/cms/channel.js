@@ -1,15 +1,12 @@
     /*
      *	后台响应数据节点名称
      */
-	XML_SITE_INFO = "SiteInfo";
-    XML_MAIN_TREE = "SiteTree";
+    XML_MAIN_TREE = "ChannelTree";
     XML_ARTICLE_LIST = "ArticleList";
     XML_CHANNEL_INFO = "ChannelInfo";
-    XML_CHANNEL_TREE = "ChannelTree";
  
     /* 默认唯一编号名前缀 */
  
-    CACHE_TREE_NODE_GRID = "treeNodeGrid__id";
     CACHE_CHANNEL_DETAIL = "channelDetail__id";
     CACHE_SITE_DETAIL    = "siteDetail__id";
  
@@ -17,36 +14,31 @@
      *	XMLHTTP请求地址汇总
      */
     URL_SOURCE_TREE    = "/" + AUTH_PATH + "channel/list";
-    URL_ARTICLE_LIST   = "/" + AUTH_PATH + "article/list"; // {channelId}/{page}
-    URL_DEL_ARTICLE    = "/" + AUTH_PATH + "article/list";
-    URL_MOVE_ARTICLE   = "/" + AUTH_PATH + "article/list";
+    URL_SITE_DETAIL    = "/" + AUTH_PATH + "channel/detail/site/"; //{siteId}
+    URL_SAVE_SITE      = "/" + AUTH_PATH + "channel/site";
+    URL_CHANNEL_DETAIL = "/" + AUTH_PATH + "channel/detail/"; // {id}/{parentId}
+    URL_SAVE_CHANNEL   = "/" + AUTH_PATH + "channel";
+    URL_DEL_NODE       = "/" + AUTH_PATH + "channel/";
+    URL_MOVE_NODE      = "/" + AUTH_PATH + "channel/move/";    // {id}/{toParentId}
+    URL_SORT_NODE      = "/" + AUTH_PATH + "channel/sort/";    // {id}/{targetId}/{direction}
+	URL_STOP_NODE      = "/" + AUTH_PATH + "channel/disable/"; // {id}
+    URL_GET_OPERATION  = "/" + AUTH_PATH + "channel/operations/";   // {resourceId}
+	
+	URL_ARTICLE_LIST   = "/" + AUTH_PATH + "article/list/"; // {channelId}/{page}
+    URL_DEL_ARTICLE    = "/" + AUTH_PATH + "article/";
+    URL_MOVE_ARTICLE   = "/" + AUTH_PATH + "article/move/"; // {articleId}/{channelId}
     URL_LOCK_ARTICLE   = "/" + AUTH_PATH + "article/list";
-    URL_SETTOP_ARTICLE = "/" + AUTH_PATH + "article/list";
-    URL_SITE_DETAIL    = "/" + AUTH_PATH + "channel/list";
-    URL_SAVE_SITE      = "/" + AUTH_PATH + "channel/list";
-    URL_CHANNEL_DETAIL = "/" + AUTH_PATH + "channel/list";
-    URL_SAVE_CHANNEL   = "/" + AUTH_PATH + "channel/list";
-    URL_DEL_NODE       = "/" + AUTH_PATH + "channel/list";
-    URL_MOVE_NODE      = "/" + AUTH_PATH + "channel/list";
-    URL_SORT_NODE      = "/" + AUTH_PATH + "channel/list";
-	URL_STOP_NODE      = "/" + AUTH_PATH + "channel/list";
-    URL_GET_OPERATION  = "/" + AUTH_PATH + "channel/list";
-	URL_SEARCH_ARTICLE = "/" + AUTH_PATH + "channel/list";
+    URL_SETTOP_ARTICLE = "/" + AUTH_PATH + "article/top/";  // {id}
+	URL_SEARCH_ARTICLE = "/" + AUTH_PATH + "article/search/result";  // 暂时没用到，日后加上查询功能
 
-    URL_SITE_PUBLISH_PROGRESS    = "/" + AUTH_PATH + "channel/list";
-    URL_CHANNEL_PUBLISH_PROGRESS = "/" + AUTH_PATH + "channel/list";
-    URL_CANCEL_PUBLISH_PROGRESS  = "/" + AUTH_PATH + "channel/list";
-	URL_GET_PROGRESS             = "/" + AUTH_PATH + "channel/list";
-    URL_CONCEAL_PROGRESS         = "/" + AUTH_PATH + "channel/list";
-    URL_SAVE_PUBLISH_ARTICLE     = "/" + AUTH_PATH + "channel/list";
+    URL_PUBLISH_PROGRESS = "/" + AUTH_PATH + "channel/publish/";   // {id}/{category}
+	URL_SYNC_PROGRESS    = "/" + AUTH_PATH + "channel/progress/";  // GET
+    URL_CONCEAL_PROGRESS = "/" + AUTH_PATH + "channel/progress/";  // DELETE
+
+	URL_CREATE_INDEX     = "/" + AUTH_PATH + "timer/excute/";  // {siteId}/{strategyId}/{increment}
 
 	if(IS_TEST) {
 		URL_SOURCE_TREE    = "data/site_init.xml?";
-		URL_ARTICLE_LIST   = "data/article_list.xml?";
-		URL_DEL_ARTICLE    = "data/_success.xml?";
-		URL_MOVE_ARTICLE   = "data/_success.xml?";
-		URL_LOCK_ARTICLE   = "data/_success.xml?";
-		URL_SETTOP_ARTICLE = "data/_success.xml?";
 		URL_SITE_DETAIL    = "data/siteDetail.xml?";
 		URL_SAVE_SITE      = "data/_success.xml?";
 		URL_CHANNEL_DETAIL = "data/channelDetail.xml?";
@@ -56,14 +48,19 @@
 		URL_SORT_NODE      = "data/_success.xml?";
 		URL_STOP_NODE      = "data/_success.xml?";
 		URL_GET_OPERATION  = "data/operation.xml?";
+
+		URL_ARTICLE_LIST   = "data/article_list.xml?";
+		URL_DEL_ARTICLE    = "data/_success.xml?";
+		URL_MOVE_ARTICLE   = "data/_success.xml?";
+		URL_LOCK_ARTICLE   = "data/_success.xml?";
+		URL_SETTOP_ARTICLE = "data/_success.xml?";
 		URL_SEARCH_ARTICLE = "data/articlelist.xml?";
 
-		URL_SITE_PUBLISH_PROGRESS    = "data/progress.xml?";
-		URL_CHANNEL_PUBLISH_PROGRESS = "data/progress.xml?";
-		URL_CANCEL_PUBLISH_PROGRESS  = "data/_success.xml?";
-		URL_GET_PROGRESS             = "data/_success.xml?";
-		URL_CONCEAL_PROGRESS         = "data/_success.xml?";
-		URL_SAVE_PUBLISH_ARTICLE     = "data/_success.xml?";
+		URL_PUBLISH_PROGRESS = "data/progress.xml?";
+		URL_SYNC_PROGRESS    = "data/_success.xml?";
+		URL_CONCEAL_PROGRESS = "data/_success.xml?";
+
+		URL_CREATE_INDEX     = "data/_success.xml?";
 	}
  
     function init() { 
@@ -78,17 +75,24 @@
 
         loadInitData();
     }
+
+	function isSite() {
+		return getTreeAttribute("isSite") == "1";
+	}
+	function isChannel() {
+		return getTreeAttribute("isSite") == "0";
+	}
   
     function initMenus() { 
         var item1 = {
             label:"新建站点",
             callback:addNewSite,
-            visible:function() { return "_rootId" == getTreeAttribute("id") && getOperation("1");}
+            visible:function() { return isTreeRoot() && getOperation("1");}
         }
         var item2 = {
             label:"新建栏目",
             callback:addNewChannel,
-            visible:function() { return isChannel() && getOperation("2");}
+            visible:function() { return !isTreeRoot() && getOperation("2");}
         }
         var item3 = {
             label:"新建文章",
@@ -99,9 +103,8 @@
 		var submenu4 = new Menu(); // 发布
         var item4 = {
             label:"发布",
-            callback:null,
             icon:ICON + "cms/publish_source.gif",
-            visible:function() { return "_rootId" != getTreeAttribute("id") && getOperation("4");},
+            visible:function() { return !isTreeRoot() && getOperation("4");},
             submenu:submenu4
         }
         var subitem4a = {
@@ -123,25 +126,25 @@
             label:"编辑",
             callback:editTreeNode,
             icon:ICON + "edit.gif",
-            visible:function() { return "_rootId" != getTreeAttribute("id") && getOperation("5");}
+            visible:function() { return !isTreeRoot() && getOperation("5");}
         }
         var item6 = {
             label:"删除",
             callback: function() { delTreeNode(URL_DEL_NODE) },
             icon:ICON + "icon_del.gif",
-            visible:function() { return "_rootId" != getTreeAttribute("id") && getOperation("6");}
+            visible:function() { return !isTreeRoot() && getOperation("6");}
         }
         var item7 = { 
             label:"启用",
             callback: function() { stopOrStartTreeNode("0"); },
             icon:ICON + "start.gif",
-            visible:function() { return "0" != getTreeAttribute("disabled") && "_rootId" != getTreeAttribute("id") && getOperation("7");}
+            visible:function() { return isTreeNodeDisabled() && !isTreeRoot() && getOperation("7");}
         }
         var item8 = {
             label:"停用",
             callback: function() { stopOrStartTreeNode("1"); },
             icon:ICON + "stop.gif",
-            visible:function() { return "0" == getTreeAttribute("disabled") && "_rootId" != getTreeAttribute("id") && getOperation("7");}
+            visible:function() { return !isTreeNodeDisabled() && !isTreeRoot() && getOperation("7");}
         }
         var item9 = {
             label:"移动到...",
@@ -151,10 +154,32 @@
         }
         var item10 = {
             label:"浏览文章",
-            callback:showArticleList,
+            callback: function() { showArticleList(); },
             icon:ICON + "view_list.gif",
             visible:function() { return isChannel() && getOperation("1");}
         }         
+
+		var submenu5 = new Menu(); // 即时建立索引
+        var item11 = {
+            label:"即时建索引",
+            icon:ICON + "cms/time_tactic.gif",
+            visible:function() { return isSite() && getOperation("4");},
+            submenu:submenu5
+        }
+        var subitem5a = {
+            label:"增量索引",
+            callback:function() { 
+                createLuceneIndex(2, 1);
+            }
+        }
+        var subitem5b = {
+            label:"重建索引",
+            callback:function() { 
+                createLuceneIndex(2, 0);
+            }
+        }
+		submenu5.addItem(subitem5a);
+        submenu5.addItem(subitem5b);
 
         var menu1 = new Menu();
 		menu1.addItem(item1);
@@ -168,6 +193,7 @@
         menu1.addSeparator();
         menu1.addItem(item4);
 		menu1.addItem(item10);
+		menu1.addItem(item11);
 
         $$("tree").contextmenu = menu1;
 
@@ -183,7 +209,7 @@
 				var siteTreeNode = this.getNodeValue(XML_MAIN_TREE);
 				var tree = $T("tree", siteTreeNode); 
 
-				var treeObj = $$("tree");
+				var treeObj = tree.element;
 				treeObj.onTreeNodeActived = function(eventObj) { 
 					onTreeNodeActived(eventObj);
 				}
@@ -191,7 +217,7 @@
 					onTreeNodeDoubleClick(eventObj);
 				}
 				treeObj.onTreeNodeMoved = function(eventObj) { 
-					sort(eventObj);
+					sortTreeNode(URL_SORT_NODE, eventObj);
 				}
 				treeObj.onTreeNodeRightClick = function(eventObj) { 
 					onTreeNodeRightClick(eventObj, true);
@@ -271,7 +297,7 @@
 		Ajax({
 			url : URL_SITE_DETAIL + treeID,
 			onresult : function() { 
-				var siteInfoNode = this.getNodeValue(XML_SITE_INFO);
+				var siteInfoNode = this.getNodeValue(XML_CHANNEL_INFO);
 				Cache.XmlDatas.add(treeID, siteInfoNode);
 
 				var xform = $X("page1Form", siteInfoNode);
@@ -322,11 +348,12 @@
 				// 更新树节点名称
 				var name = xform.getData("name");
 				modifyTreeNode(treeID, "name", name, true);
+
+				ws.closeActiveTab();
             }
             request.send();
         }
     }
-
  
     function addNewChannel() { 
         var treeNode = $T("tree").getActiveTreeNode();
@@ -343,7 +370,6 @@
 		var inf = {};
 		inf.defaultPage = "page1";
 		inf.label = OPERATION_ADD.replace(/\$label/i, channelName);
-		inf.phases = null;
 		inf.callback = callback;
 		inf.SID = CACHE_CHANNEL_DETAIL + channelID;
 		var tab = ws.open(inf);
@@ -365,7 +391,6 @@
 		inf.label = OPERATION_EDIT.replace(/\$label/i, treeName);
 		inf.SID = CACHE_CHANNEL_DETAIL + treeID;
 		inf.defaultPage = "page1";
-		inf.phases = null;
 		inf.callback = callback;
 		var tab = ws.open(inf);
     }
@@ -385,13 +410,13 @@
 
 				// 设置保存按钮操作
 				$$("page1BtSave").onclick = function() { 
-					saveChannel(cacheID, parentID);
+					saveChannel(treeID, parentID);
 				}
 			}
 		});
     }
  
-    function saveChannel(cacheID, parentID) { 
+    function saveChannel(treeID, parentID) { 
         // 校验page1Form数据有效性
         var xform = $X("page1Form");
         if( !xform.checkForm() ) return;
@@ -402,7 +427,7 @@
         // 是否提交
         var flag = false;
  
-		var channelInfoNode = Cache.XmlDatas.get(cacheID);
+		var channelInfoNode = Cache.XmlDatas.get(treeID);
 		if(channelInfoNode) { 
 			var channelInfoDataNode = channelInfoNode.selectSingleNode(".//data");
 			if(channelInfoDataNode) { 
@@ -443,17 +468,9 @@
 		}
     }
 
-	function isSite() {
-		return getTreeAttribute("isSite") == "1";
-	}
-	function isChannel() {
-		return getTreeAttribute("isSite") == "0";
-	}
-
     function addNewArticle() { 
-		var articleId = DEFAULT_NEW_ID;
 		var channelId = $T("tree").getActiveTreeNode().getId();
-		var returnValue = window.showModalDialog("article.html",{title:"新建文章",channelId:channelId,articleId:articleId},"dialogWidth:900px;dialogHeight:700px;status:yes");
+		var returnValue = window.showModalDialog("article.html",{title:"新建文章",channelId:channelId,articleId:null},"dialogWidth:900px;dialogHeight:700px;status:yes");
 		if( returnValue ) { 
 			showArticleList(channelId); 
 		}
@@ -479,16 +496,14 @@
         var action = "moveArticle";
         var returnObj = window.showModalDialog("channelTree.html", {action:action}, "dialogWidth:300px;dialogHeight:400px;");
         if( returnObj ) { 
-            var p = new HttpRequestParams();
-            p.url = URL_MOVE_ARTICLE + articleId + "/" + returnObj.id;
-
-			var request = new HttpRequest(p);
-            request.onsuccess = function() { 
-                // 删除当前栏目文章列表
-				var channelId = getTreeNodeId();
-				showArticleList(channelId); 
-            }
-            request.send();
+			Ajax({
+				url: URL_MOVE_ARTICLE + articleId + "/" + returnObj.id,
+				onsuccess: function() {
+					// 刷新当前栏目文章列表
+					var channelId = getTreeNodeId();
+					showArticleList(channelId); 
+				}
+			});
         }
     }
 
@@ -500,6 +515,7 @@
 		var articleId = getArticleAttribute("id");
 		Ajax({
 			url : URL_DEL_ARTICLE + articleId,
+			method: "DELETE",
 			onsuccess : function() { 			
 				var channelId = getTreeNodeId();
 				showArticleList(channelId); 
@@ -516,7 +532,7 @@
     function setTopArticle(isTop) { 
 		var articleId = getArticleAttribute("id");
 		Ajax({
-			url : URL_SETTOP_ARTICLE + articleId + "/" + isTop,
+			url : URL_SETTOP_ARTICLE + articleId,
 			onsuccess : function() { 			
 				var channelId = getTreeNodeId();
 				showArticleList(channelId); 
@@ -547,10 +563,10 @@
     function publishArticle(category) { 
 		var channelId = getTreeNodeId();
 		Ajax({
-			url : URL_CHANNEL_PUBLISH_PROGRESS + channelId + "/" + category,
+			url : URL_PUBLISH_PROGRESS + channelId + "/" + category,
 			onresult : function() { 			
 				var data = this.getNodeValue("ProgressInfo");
-				var progress = new Progress(URL_GET_PROGRESS, data, URL_CONCEAL_PROGRESS);
+				var progress = new Progress(URL_SYNC_PROGRESS, data, URL_CONCEAL_PROGRESS);
 				progress.oncomplete = function() { 
 					// 发布完成：刷新grid
 					showArticleList(channelId); 
@@ -559,6 +575,21 @@
 			}
 		});
     }
+
+	function createLuceneIndex(strategyId, increment) {
+		var siteId = getTreeNodeId();
+		Ajax({
+			url : URL_CREATE_INDEX + siteId + "/" + strategyId + "/" + increment,
+			onresult : function() { 			
+				var data = this.getNodeValue("ProgressInfo");
+				var progress = new Progress(URL_SYNC_PROGRESS, data, URL_CONCEAL_PROGRESS);
+				progress.oncomplete = function() { 
+					alert("索引创建完成。"); 
+				}
+				progress.start();
+			}
+		});
+	}
 
     function initGridMenu() { 
 		var item1 = {

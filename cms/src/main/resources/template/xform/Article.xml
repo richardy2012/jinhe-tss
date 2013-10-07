@@ -5,8 +5,8 @@
 		<column name="author" caption="作者" mode="string" empty="false" maxLength="100" editor="text" />
 		<column name="summary" caption="摘要" mode="string" maxLength="1000" editor="textarea" />
 		<column name="keyword" caption="关键字" mode="string" empty="false" maxLength="255" editor="text" />
-		<column name="issueDate" caption="发布日期" mode="date" pattern="yyyy-MM-dd" empty="true" maxLength="10" editor="text" />
-		<column name="overdueDate" caption="过期日期" mode="date" pattern="yyyy-MM-dd" empty="true" maxLength="10" editor="text" />
+		<column name="issueDate" caption="发布日期" mode="string" pattern="yyyy-MM-dd"/>
+		<column name="overdueDate" caption="过期日期" mode="string" pattern="yyyy-MM-dd"/>
 	</declare>
 	<layout>
 		<TR>

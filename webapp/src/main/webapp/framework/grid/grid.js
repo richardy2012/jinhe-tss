@@ -180,6 +180,7 @@ Grid.prototype.getRowByIndex = function(index) {
 	}
 }
 
+// 获取选中行中指定列的值
 Grid.prototype.getRowAttributeValue = function(attrName) {
 	var rowIndex = this.element.selectRowIndex; 
 	if(rowIndex) {
@@ -187,6 +188,16 @@ Grid.prototype.getRowAttributeValue = function(attrName) {
 		return row.getAttribute(attrName);
 	}
 	return null;
+}
+
+// 获取某一列的值
+Grid.prototype.getColumnValues = function(columnName) {
+	var values = [];
+	for(var i = 0; i < this.rows.length; i++) {
+		var row = this.rows[i];
+		values[i] = row.getAttribute(columnName);
+	}
+	return values;
 }
 
 // 新增一行
@@ -217,12 +228,18 @@ Grid.prototype.insertRow = function(map) {
 
 // 删除单行
 Grid.prototype.deleteRow = function(row) {
-	Element.addClass(row, "hidden");
+	// Element.addClass(row, "hidden");
+	this.tbody.removeChild(row);
 }
 
 Grid.prototype.deleteRowByIndex = function(rowIndex) {
 	var row = this.getRowByIndex(rowIndex);
-	deleteRow(row);
+	this.deleteRow(row);
+}
+
+Grid.prototype.deleteSelectedRow = function() {
+	var rowIndex = this.element.selectRowIndex;
+	this.deleteRowByIndex(rowIndex);
 }
 	
 // 更新单行记录的某个属性值
@@ -233,7 +250,12 @@ Grid.prototype.modifyRow = function(row, propertyName, propertyValue) {
 
 Grid.prototype.modifyRowByIndex = function(rowIndex, propertyName, propertyValue) {
 	var row = this.getRowByIndex(rowIndex);
-	modifyRow(row, propertyName, propertyValue);
+	this.modifyRow(row, propertyName, propertyValue);
+}
+
+Grid.prototype.modifySelectedRow = function(propertyName, propertyValue) {
+	var rowIndex = this.element.selectRowIndex;
+	this.modifyRowByIndex(rowIndex, propertyName, propertyValue);
 }
 
 Grid.prototype.getHighlightRow = function() {

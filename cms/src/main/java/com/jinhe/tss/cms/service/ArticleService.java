@@ -43,7 +43,7 @@ public class ArticleService implements IArticleService {
     }
     
     public Attachment processFile(File file, Long articleId, Long channelId, int type, String kidName) {
-        Channel site = channelDao.getEntity(channelId);
+        Channel site = channelDao.getEntity(channelId).getSite();
         String siteRootPath =  ArticleHelper.getAttachmentPath(site, type);
         File siteRootDir = new File(siteRootPath);
         
@@ -158,9 +158,9 @@ public class ArticleService implements IArticleService {
     
     public void updateArticle(Article article, Long channelId, String attachList) {
     	
-        articleDao.saveArticle(article);
+        articleDao.update(article);
         
-        // 处理附件, attachList为需要删除的附件列表
+        // 处理附件, attachList为剩余的附件列表
         if ( !EasyUtils.isNullOrEmpty(attachList) ) {
             StringTokenizer st = new StringTokenizer(attachList, ",");
             List<String> attachSeqNos = new LinkedList<String>();
@@ -170,8 +170,9 @@ public class ArticleService implements IArticleService {
             
             List<Attachment> attachments = articleDao.getArticleAttachments(article.getId());
             for ( Attachment attachment : attachments ) {
-                if (!attachSeqNos.contains(attachment.getSeqNo().toString()))
+                if (attachSeqNos.contains(attachment.getSeqNo().toString())) {
                    continue;
+                }
                 
                 // 删除附件
                 articleDao.delete(attachment);

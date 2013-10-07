@@ -79,7 +79,7 @@ public class CacheDisplayAction extends BaseActionSupport {
         BeanUtil.addBeanProperties2Map(strategy, strategyProperties);
         
         XFormEncoder xEncoder = new XFormEncoder(CACHESTRATEGY_XFORM_TEMPLET, strategyProperties); 
-        String hitRate = pool.getHitRate() + "%";
+        String hitRate = Math.round(pool.getHitRate()) + "%";
         
         Set<Cacheable> cachedItems = pool.listItems();
         long requests = strategy.getPoolInstance().getRequests();
@@ -103,9 +103,9 @@ public class CacheDisplayAction extends BaseActionSupport {
         template.append("<grid><declare sequence=\"true\">");
         template.append("<column name=\"id\" mode=\"string\" display=\"none\"/>");
         template.append("<column name=\"code\" mode=\"string\" display=\"none\"/>");
-        template.append("<column name=\"key\" caption=\"键值\" mode=\"string\"/>");
-        template.append("<column name=\"hit\" caption=\"点击次数\" mode=\"string\" align=\"center\"/>");
-        template.append("<column name=\"hitRate\" caption=\"点击率\" mode=\"string\" align=\"center\"/>");
+        template.append("<column name=\"key\" caption=\"键值\" mode=\"string\" width=\"240px\" />");
+        template.append("<column name=\"hit\" caption=\"点击次数\" mode=\"string\" width=\"60px\" align=\"center\"/>");
+        template.append("<column name=\"hitRate\" caption=\"点击率\" mode=\"string\" width=\"50px\" align=\"center\"/>");
         template.append("<column name=\"remark\" caption=\"说明\" mode=\"string\" align=\"center\"/>");
         template.append("</declare><data></data></grid>");
         

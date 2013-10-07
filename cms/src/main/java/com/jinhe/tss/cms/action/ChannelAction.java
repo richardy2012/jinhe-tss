@@ -43,7 +43,6 @@ public class ChannelAction extends ProgressActionSupport {
 		}
 		
 		TreeEncoder treeEncoder = new TreeEncoder(list, new LevelTreeParser());
-		treeEncoder.setNeedRootNode(false);
 		print("ChannelTree", treeEncoder);
 	}
 
@@ -62,7 +61,7 @@ public class ChannelAction extends ProgressActionSupport {
             Channel parent = (Channel) channelService.getChannelById(parentId);
             channel.setOverdueDate(parent.getOverdueDate());
             channel.setPublishArticleClassName(parent.getPublishArticleClassName());
-            channel.setSite(parent.isSite() ? parent : parent.getSite());
+            channel.setSite(parent.isSiteRoot() ? parent : parent.getSite());
             channel.setParentId(parentId);
 		} 
 		else {
@@ -77,7 +76,7 @@ public class ChannelAction extends ProgressActionSupport {
      * 获得站点的详细信息
      */
 	@RequestMapping("/detail/site/{siteId}")
-    public void getSiteDetail(HttpServletResponse response, @PathVariable("id") Long siteId) {
+    public void getSiteDetail(HttpServletResponse response, @PathVariable("siteId") Long siteId) {
     	Channel channel;
         if ( CMSConstants.DEFAULT_NEW_ID.equals(siteId)) {
             channel = new Channel();
@@ -89,7 +88,7 @@ public class ChannelAction extends ProgressActionSupport {
         }
  
         XFormEncoder xEncoder = new XFormEncoder(CMSConstants.XFORM_SITE, channel);
-        print("SiteInfo", xEncoder);
+        print("ChannelInfo", xEncoder);
     }
 
 	/**
@@ -116,7 +115,7 @@ public class ChannelAction extends ProgressActionSupport {
     		channel.setParentId(CMSConstants.HEAD_NODE_ID);
             channelService.createSite(channel);
 
-            doAfterSave(true, channel, "SiteTree");
+            doAfterSave(true, channel, "ChannelTree");
     	}
     	else {
     		channelService.updateSite(channel);
@@ -127,7 +126,7 @@ public class ChannelAction extends ProgressActionSupport {
 	/**
 	 * 逻辑删除栏目
 	 */
-	@RequestMapping(value = "/{id}/", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void delete(HttpServletResponse response, @PathVariable("id") Long id) {
 		channelService.deleteChannel(id);
         printSuccessMessage("删除成功！");
@@ -174,23 +173,23 @@ public class ChannelAction extends ProgressActionSupport {
     /**
      * 启用栏目
      */
-	@RequestMapping(value = "/enable/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/disable/{id}/0", method = RequestMethod.POST)
     public void enable(HttpServletResponse response, @PathVariable("id") Long id) {
         // 如果启用的是站点，则启用全部子节点
         Channel channel = channelService.getChannelById(id);
-		if( channel.isSite() ) {
+		if( channel.isSiteRoot() ) {
         	channelService.enableSite(id);
         }
         else {
-        	 channelService.enableChannel(id);
+        	channelService.enableChannel(id);
         }
         printSuccessMessage("启用成功！");
     }
  
     /**
-     * 停用站点
+     * 停用站点/栏目
      */
-	@RequestMapping(value = "/disable/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/disable/{id}/1", method = RequestMethod.POST)
     public void disable(HttpServletResponse response, @PathVariable("id") Long id) {
         channelService.disable(id);
         printSuccessMessage("停用成功！");
@@ -200,9 +199,17 @@ public class ChannelAction extends ProgressActionSupport {
      * 根据栏目资源id来获取对栏目的操作权限
      */
 	@RequestMapping("/operations/{resourceId}")
-    public void getOperations(HttpServletResponse response, @PathVariable("resourceId") Long resourceId) {
-        List<String> list = PermissionHelper.getInstance().getOperationsByResource(resourceId,
-                        ChannelPermissionsFull.class.getName(), ChannelResourceView.class);
+    public void getOperations(HttpServletResponse response, 
+    		@PathVariable("resourceId") Long resourceId) {
+		
+		if(resourceId <= 0) {
+			resourceId = CMSConstants.HEAD_NODE_ID;
+		}
+		
+        PermissionHelper helper = PermissionHelper.getInstance();
+		List<String> list = helper.getOperationsByResource(resourceId,
+                        ChannelPermissionsFull.class.getName(), 
+                        ChannelResourceView.class);
 
         print("Operation", EasyUtils.list2Str(list));
     }

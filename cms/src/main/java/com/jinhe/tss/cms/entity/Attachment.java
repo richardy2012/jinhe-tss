@@ -33,7 +33,7 @@ public class Attachment implements IEntity, IGridNode {
     private Article article;    // 所属文章
     
 	private Long articleId;
-    private Integer seqNo;		// 附件序号 PK
+    private Integer seqNo = 0;	// 附件序号 PK
     
     @Column(nullable = false)
     private Integer type;		// 附件类型	1：图片 2：office文档

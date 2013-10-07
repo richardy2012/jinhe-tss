@@ -46,7 +46,7 @@ Progress.prototype.stop = function() {
 /* 显示进度  */
 Progress.prototype.show = function() {
 	var thisObj = this;
-	var barObj = $(this.id);
+	var barObj = $$(this.id);
 	if(null == barObj) {
 		barObj = Element.createElement("div");
 		barObj.id = this.id;

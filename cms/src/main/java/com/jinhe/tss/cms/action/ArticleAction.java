@@ -31,7 +31,7 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.util.EasyUtils;
  
 @Controller
-@RequestMapping("article")
+@RequestMapping("/auth/article")
 public class ArticleAction extends BaseActionSupport {
 
 	@Autowired private IArticleService articleService;
@@ -39,7 +39,7 @@ public class ArticleAction extends BaseActionSupport {
 	/**
 	 * 获取栏目下文章列表
 	 */
-	@RequestMapping(value = "/list/{channelId}/{page}", method = RequestMethod.GET)
+	@RequestMapping(value = "/list/{channelId}/{page}")
 	public void getChannelArticles(HttpServletResponse response, 
 			@PathVariable("channelId") Long channelId, @PathVariable("page") int page) {
 	    
@@ -61,7 +61,7 @@ public class ArticleAction extends BaseActionSupport {
 	/**
 	 * 初始化文章新增信息
 	 */
-	@RequestMapping(value = "/init/{channelId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/init/{channelId}", method = RequestMethod.GET)
 	public void initArticleInfo(HttpServletResponse response, @PathVariable("channelId") Long channelId) {
         Map<String, Object> initMap = new HashMap<String, Object>();
         initMap.put("isTop", CMSConstants.FALSE);
@@ -101,14 +101,20 @@ public class ArticleAction extends BaseActionSupport {
 	 * 保存文章。
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public void saveArticleInfo(HttpServletResponse response, HttpServletRequest request, Article article) {
+	public void saveArticleInfo(HttpServletResponse response, 
+			HttpServletRequest request, Article article) {
 		
 		String attachList = request.getParameter("attachList");
-        String articleContent = request.getParameter("articleContent");
-        article.setContent(articleContent);
-        
+		String content = request.getParameter("ArticleContent");
+		article.setContent(content);
+		
+        String isCommit = request.getParameter("isCommit");
+        if( Config.TRUE.equalsIgnoreCase(isCommit) ){
+            article.setStatus(CMSConstants.TOPUBLISH_STATUS);
+        }
+		
         Long channelId = article.getChannel().getId();
-        if(article.getId() == null || article.getId().longValue() == 0) {
+        if(article.getId() == null || article.getId() == 0) {
             // 新增的时候上传的附件对象以new Date()为主键，此处的"articleId"就是这个值
             Long articleId = EasyUtils.convertObject2Long(request.getParameter("articleId"));
 	        articleService.createArticle(article, channelId, attachList, articleId); 
@@ -116,11 +122,6 @@ public class ArticleAction extends BaseActionSupport {
 	    else {
 	        articleService.updateArticle(article, channelId, attachList);
 	    }
-        
-        String isCommit = request.getParameter("isCommit");
-        if( Config.TRUE.equalsIgnoreCase(isCommit) ){
-            article.setStatus(CMSConstants.TOPUBLISH_STATUS);
-        }
         
 	    printSuccessMessage();
 	}

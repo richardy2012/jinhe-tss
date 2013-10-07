@@ -48,7 +48,7 @@ public class Servlet4Upload extends HttpServlet {
 	 
 	        File fileSaveDir = new File(savePath);
 	        if ( !fileSaveDir.exists() ) {
-	            fileSaveDir.mkdir();
+	            fileSaveDir.mkdirs();
 	        }
 	 
 	        Part part = request.getPart("file");

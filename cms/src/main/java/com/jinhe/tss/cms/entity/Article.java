@@ -59,7 +59,7 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
 	
     private Integer status = CMSConstants.START_STATUS;	   // 文章的状态 1：编辑中 2：待发布 3：已发布生成xml 4：过期 
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Channel channel;      // 文章所属栏目
     
     private Integer isTop = CMSConstants.FALSE;   // 文章是否置顶

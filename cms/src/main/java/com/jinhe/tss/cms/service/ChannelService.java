@@ -40,21 +40,16 @@ public class ChannelService implements IChannelService {
         Integer nextSeqNo = channelDao.getNextSeqNo(parentId);
 		channel.setSeqNo(nextSeqNo);
 		
+		Channel parent = channelDao.getEntity(parentId);
+        channel.setSite(parent.getSite());
+		
         channel = channelDao.create(channel);
-        
-        if( CMSConstants.HEAD_NODE_ID.equals(parentId) ) {
-            channel.setSite(channel);
-        }
-        else {
-            Channel parent = channelDao.getEntity(parentId);
-            channel.setSite(parent.getSite());
-        }
         
 	    return channel;
     }
 	
 	public Channel updateChannel(Channel channel) {
-		channelDao.update(channel);
+		channelDao.updateChannel(channel);
 	    return channel;
     }
 	
@@ -70,7 +65,7 @@ public class ChannelService implements IChannelService {
     
     public Channel updateSite(Channel site) {
         checkPath(site.getPath(), site.getDocPath(), site.getImagePath());
-        channelDao.update(site);
+        channelDao.updateChannel(site);
         return site;
     }
     
@@ -94,6 +89,12 @@ public class ChannelService implements IChannelService {
 			throw new BusinessException("您没有删除该栏目的足够权限！");
 		}
 		Channel channel = channelDao.getEntity(channelId);
+		
+		// 如果删除的站点，则先把对自己的引用去掉，否则因为有外键存在无法删除
+		if(channel.isSiteRoot()) {
+			channel.setSite(null);
+			channelDao.updateChannel(channel); 
+		}
 		
 		// 先删除栏目下文章
         String hql = "from Article a where a.channel.decode like ?";
@@ -194,7 +195,7 @@ public class ChannelService implements IChannelService {
 			// 在文章对象里记录发布路径
 			article.setPubUrl(pubUrl);
 			article.setStatus(CMSConstants.XML_STATUS);
-			articleDao.saveArticle(article);
+			articleDao.update(article);
 		}
 	}
 

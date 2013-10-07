@@ -40,8 +40,8 @@ public class Channel extends OperateInfo implements IXForm, ILevelTreeNode, IDec
 	private Long    id;
     private String  name;    // 名称(站点或栏目名称)
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Channel site;  // 栏目所在站点ID
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Channel site;  // 栏目所在站点
     
     private String  publishArticleClassName; //发布文章实现类
     
@@ -143,7 +143,7 @@ public class Channel extends OperateInfo implements IXForm, ILevelTreeNode, IDec
 		this.disabled = status;
 	}
  
-	public boolean isSite() {
+	public boolean isSiteRoot() {
 		return this.id.equals(site.getId());
 	}
     
@@ -151,7 +151,10 @@ public class Channel extends OperateInfo implements IXForm, ILevelTreeNode, IDec
 		Map<String, Object> attributes = new HashMap<String, Object>();
 		BeanUtil.addBeanProperties2Map(this, attributes, "site");
 		
-		attributes.put("site.id", site);
+		if(site != null) {
+			attributes.put("site.id", site.getId());
+		}
+		
 		return attributes;
 	}
 
@@ -159,11 +162,11 @@ public class Channel extends OperateInfo implements IXForm, ILevelTreeNode, IDec
 		TreeAttributesMap map = new TreeAttributesMap(id, name);
 		map.put("disabled", this.disabled);
 		map.put("siteId", this.site.getId());
-		map.put("isSite", isSite() ? 1 : 0);
+		map.put("isSite", isSiteRoot() ? 1 : 0);
 		map.put("resourceTypeId", getResourceType());
  
-		String iconName = (isSite() ? "site" : "channel");
-		map.put("icon", "../framework/images/" + iconName + "_" + disabled + ".gif");
+		String iconName = (isSiteRoot() ? "site" : "channel");
+		map.put("icon", "../framework/images/cms/" + iconName + "_" + disabled + ".gif");
         
         super.putOperateInfo2Map(map);
 		return map;

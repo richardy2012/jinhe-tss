@@ -1,21 +1,21 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML xmlns:Tree xmlns:XForm xmlns:Grid>
+<HTML xmlns:XForm xmlns:Grid>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>文章管理</title>
 
 <link href="../framework/css/css.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/css/dialog.css" rel="stylesheet" type="text/css"></link>
-<link href="../framework/menu/menu.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/balloon/balloon.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/menu/menu.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/xform/xform.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/grid/grid.css" rel="stylesheet" type="text/css"></link>
 
 <script language="javascript" src="../framework/core.js"></script>
 <script language="javascript" src="../framework/ajax.js"></script>
 <script language="javascript" src="../framework/framework.js"></script>
-<script language="javascript" src="../framework/menu/menu.js"></script>
 <script language="javascript" src="../framework/balloon/balloon.js"></script>
+<script language="javascript" src="../framework/menu/menu.js"></script>
 <script language="javascript" src="../framework/xform/xform.js"></script>
 <script language="javascript" src="../framework/grid/grid.js"></script>
 
@@ -23,37 +23,40 @@
 <script language="javascript" src="kindeditor-4.1.7/kindeditor-min.js"></script>
 <script language="javascript" src="kindeditor-4.1.7/lang/zh_CN.js"></script>
 
-<style>
-  .trxx {
-	height: 13px;
-	background-color:#E4E6F5
-  }
-</style>
-
 <script type="text/javascript">
 <!--
 	
-	/*
-     *	XMLHTTP请求地址汇总
-     */
-    URL_ARTICLE_DETAIL = "data/article.xml";
-    URL_SAVE_ARTICLE = "data/_success.xml";
-    URL_SAVE_PUBLISH_ARTICLE = "data/_success.xml";
+	/* XMLHTTP请求地址汇总 */
+    URL_ARTICLE_DETAIL = "/" + AUTH_PATH + "article/";       // {articleId}
+	URL_ARTICLE_INIT   = "/" + AUTH_PATH + "article/init/";  // {channelId}
+    URL_SAVE_ARTICLE   = "/" + AUTH_PATH + "article";
+
+	if(IS_TEST) {
+		URL_ARTICLE_DETAIL = "data/article.xml?";
+		URL_ARTICLE_INIT   = "data/article.xml?";
+		URL_SAVE_ARTICLE   = "data/_success.xml?";
+	}
 
 	var editor;
-	var channelId = window.dialogArguments ? window.dialogArguments.channelId : null;
-    var articleId = window.dialogArguments ? window.dialogArguments.articleId : null;
+	var channelId;
+    var articleId;
 
 	function init() {
-		var p = new HttpRequestParams();
-        p.url = URL_ARTICLE_DETAIL;
-
-		var request = new HttpRequest(p);
-		if(articleId) {
-			p.setContent("articleId", articleId);
+		if(window.dialogArguments) {
+			channelId = window.dialogArguments.channelId;
+			articleId = window.dialogArguments.articleId;
 		}
 
-        request.onresult = function(){
+		initGridMenu();
+
+		var url;
+		if(articleId) {
+			url = URL_ARTICLE_DETAIL + articleId;
+		} else {
+			url = URL_ARTICLE_INIT + channelId; 
+		}
+
+        var onresult = function(){
             var articleInfoNode    = this.getNodeValue("ArticleInfo");
             var articleContentNode = this.getNodeValue("ArticleContent");
             var attachsListNode    = this.getNodeValue("AttachsList");
@@ -70,15 +73,22 @@
 			});
 			editor.insertHtml(articleContentNode);
 
-			$G("attachGrid", attachsListNode);
+			var grid = $G("attachGrid", attachsListNode);
+			grid.element.onRightClickRow = function() {
+				grid.element.contextmenu.show(event.clientX, event.clientY);
+			} 
+			grid.element.onDblClickRow = function(eventObj) {
+				deleteAttachment();
+			}
 
             $$("btSave").onclick  = saveArticle;
             $$("btSaveAndPublish").onclick  = saveAndPublishArticle;
         }
-        request.send();
+        
+		Ajax({ url: url, method: "GET", onresult: onresult });
 	}
  
-    function saveArticle() {
+    function saveArticle(isCommit) {
         var articleForm = $X("articleForm");
 
         // 校验page1Form数据有效性
@@ -88,7 +98,7 @@
 
         var p = new HttpRequestParams();
         p.url = URL_SAVE_ARTICLE;
-        p.setContent("channelId", channelId);
+        p.setContent("channel.id", channelId); // 文章所属栏目
 
         // 文章基本信息
         var articleInfoNode = new XmlNode(articleForm.getXmlDocument());
@@ -99,20 +109,23 @@
 		}
 
 		// 文章正文
-		p.setContent("ArticleContent", $$("content").value);
+		p.setContent("ArticleContent", editor.html());
 
 		// 文章图片附件
-		var attachsSeqNos = "";
+		var attachsSeqNos = $G("attachGrid").getColumnValues("seqNo");
 		p.setContent("attachList", attachsSeqNos.join(","));
 
+		// 是否保存并发布文章
+		if(isCommit) {
+			p.setContent("isCommit", "true");
+		}
 
         var request = new HttpRequest(p);
        
 		// 同步按钮状态
-        var btSaveObj = $("btSave");
-        syncButton([btSaveObj], request);
+        syncButton([$$("btSave")], request);
 
-        request.onsuccess = function(){
+        request.onsuccess = function() {
             window.returnValue = true;
             window.close();
         }
@@ -120,18 +133,47 @@
     }
 
      /* 保存并发布文章   */
-    function saveAndPublishArticle(){
-
+    function saveAndPublishArticle() {
+		saveArticle(true);
 	}
  
-	function uploadFile() {
-		var map = {"seqNo":"1", "articleId":"1", "uploadName":"download?id=1", "name":"潜龙勿用", "fileName":"飞龙在天", "type":"图片", "fileExt":"jpg"};
+	function uploadAttachment() {
+		var url = URL_UPLOAD_FILE + "?afterUploadClass=com.jinhe.tss.cms.CreateAttach";
+		url += "&articleId=" + articleId;
+		url += "&channelId=" + channelId;
+		url += "&type=" + $$("fileType").value;
+		
+		var form = $$("uploadForm");
+		form.action = url;
+		form.submit();
+	}
+
+	function addAttachments(seqNo, fileName, fileExt, oldfileName, downloadUrl) {
+		var type = $$("fileType").value;
+		var map = {"seqNo": seqNo, "articleId": articleId, "uploadName": downloadUrl, "name": oldfileName, "fileName": fileName, "type": type, "fileExt": fileExt};
 		$G("attachGrid").insertRow(map);
 	}
 
-	function deleteFile() {
-
+	function deleteAttachment() {
+		if( !confirm("您确定要删除吗？") ) { 
+            return;
+        }
+        
+		$G("attachGrid").deleteSelectedRow();
 	}
+
+	function initGridMenu() { 
+        var item1 = {
+            label:"删除",
+            callback:deleteAttachment,
+            icon:ICON + "icon_del.gif"
+        }
+
+        var menu1 = new Menu();
+        menu1.addItem(item1);
+ 
+        $$("attachGrid").contextmenu = menu1;
+    }
 
 	window.onload = init;
 
@@ -168,13 +210,14 @@
             </tr>
 			 <tr>
 				<td style="width:90%;height:50px;">
-					 <form id="uploadForm" method="post" enctype="multipart/form-data">
-						附件类型: <select name="">
+					 <form id="uploadForm" method="post" target='fileUpload' enctype="multipart/form-data">
+						附件类型: <select id="fileType">
 							<option value="1" selected>图片</option>
 							<option value="2">附件</option>
 						</select>
-						<input type="file" name="file"/><input type="button" onclick="uploadFile()" value="上传附件" />
+						<input type="file" name="file"/><input type="button" onclick="uploadAttachment()" value="上传附件" />
 					</form>
+					<iframe width='0px' height='0px' name='fileUpload'></iframe>
 				</td>
             </tr>
           </table>

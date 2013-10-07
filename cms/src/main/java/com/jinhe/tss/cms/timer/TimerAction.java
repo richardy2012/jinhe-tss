@@ -13,7 +13,7 @@ import com.jinhe.tss.cms.service.IChannelService;
 import com.jinhe.tss.framework.web.mvc.ProgressActionSupport;
  
 @Controller
-@RequestMapping("timer")
+@RequestMapping("/auth/timer")
 public class TimerAction extends ProgressActionSupport {
 
 	@Autowired ITimerService timerService;
@@ -24,7 +24,7 @@ public class TimerAction extends ProgressActionSupport {
      * @param id
      * @param increment 是否增量操作  0：否  1：是
      */
-	@RequestMapping("/excute/{siteId}/{id}/{increment}")
+	@RequestMapping("/excute/{siteId}/{strategyId}/{increment}")
     public void excuteStrategy(HttpServletResponse response, 
     		@PathVariable("siteId") Long siteId, 
     		@PathVariable("strategyId") int strategyId, 

@@ -56,7 +56,7 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
     }
     
     public Integer getAttachmentIndex(Long articleId) {
-        String hql = "select nvl(max(o.id.seqNo), 0) + 1 from Attachment o where o.articleId = ?";
+        String hql = "select max(o.seqNo) + 1 from Attachment o where o.articleId = ?";
         List<?> list = getEntities(hql, articleId);
         Integer nextSeqNo = (Integer) list.get(0);
         if (nextSeqNo == null) {
