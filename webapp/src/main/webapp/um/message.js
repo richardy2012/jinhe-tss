@@ -142,10 +142,8 @@
     }
 	
     function viewMessage(editable) {
-        var rowIndex = $$("grid").selectRowIndex; 
-		var row = $G("grid").getRowByIndex(rowIndex);
-		var id = row.getAttribute("id");   
-        var title = row.getAttribute("title");  
+		var id = $G("grid").getRowAttributeValue("id");   
+        var title = $G("grid").getRowAttributeValue("title");  
  
         var callback = {};
         callback.onTabChange = function(){
@@ -167,10 +165,8 @@
     }
 
 	function replyMessage() {
-        var rowIndex = $$("grid").selectRowIndex; 
-		var row = $G("grid").getRowByIndex(rowIndex);
-		var id = row.getAttribute("id");   
-        var title = row.getAttribute("title");   
+		var id = $G("grid").getRowAttributeValue("id");   
+        var title = $G("grid").getRowAttributeValue("title");   
 
         var callback = {};
         callback.onTabChange = function(){

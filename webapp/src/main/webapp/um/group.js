@@ -154,7 +154,7 @@
             label:"浏览用户",
             callback:function() { showUserList(); },
             icon:ICON + "view_list.gif",
-            visible:function(){return !isTreeRoot() && getOperation("1"); }
+            visible:function(){return !isTreeRoot() && getTreeNodeId() != -2 && getOperation("1"); }
         }
         var item9 = {
             label:"搜索用户...",
@@ -211,7 +211,7 @@
         menu1.addSeparator();
         menu1.addItem(item7);
         menu1.addItem(item8);
-        menu1.addItem(item9);
+        // menu1.addItem(item9);
         menu1.addSeparator();
         menu1.addItem(item12);
 
@@ -267,7 +267,9 @@
 				var treeNode = eventObj.treeNode;
 				showTreeNodeInfo();
 				getTreeOperation(treeNode, function(_operation) {
-					showUserList();
+					if(treeNode.getId() != -2) { // 防止浏览到Admin和匿名用户
+						showUserList();
+					}
 				});
             }
             treeObj.onTreeNodeMoved = function(eventObj){
@@ -518,16 +520,10 @@
     }
 	
     function getUserOperation(code) {
-        var flag = false;
-        var rowIndex = $$("grid").selectRowIndex; 
-        if(rowIndex) {
-            var row = $G("grid").getRowByIndex(rowIndex);
-			var groupId = row.getAttribute("groupId");  
-			var groupNode = $T("tree").getTreeNodeById(groupId);
-            var _operation = groupNode.getAttribute("_operation");
-			flag = checkOperation(code, _operation);
-        }
-        return flag;
+		var groupId   = $G("grid").getRowAttributeValue("groupId");  
+		var groupNode = $T("tree").getTreeNodeById(groupId);
+		var _operation = groupNode.getAttribute("_operation");
+		return checkOperation(code, _operation);
     }
  
     /* 显示用户列表 */
@@ -544,10 +540,8 @@
     }
  
     function editUserInfo() {
-        var rowIndex = $$("grid").selectRowIndex; 
-		var row = $G("grid").getRowByIndex(rowIndex);
-		var rowID = row.getAttribute("id");   
-		var rowName = row.getAttribute("userName");   
+		var rowID   = $G("grid").getRowAttributeValue("id");   
+		var rowName = $G("grid").getRowAttributeValue("userName");   
  
 		loadUserInfo(OPERATION_EDIT, rowID, rowName);
     }
@@ -757,12 +751,7 @@
  
     /* 获取用户状态 */
     function getUserState(){
-		var rowIndex = $$("grid").selectRowIndex; 
-        if(rowIndex) {
-            var row = $G("grid").getRowByIndex(rowIndex);
-            return row.getAttribute("userstate");
-		}
-        return null;   
+        return $G("grid").getRowAttributeValue("userstate"); 
     }
  
     function stopOrStartUser(state) {

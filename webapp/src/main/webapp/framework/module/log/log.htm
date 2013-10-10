@@ -180,9 +180,7 @@
      *	参数：	boolean:editable            是否可编辑(默认true)
      */
     function showLogInfo() {		
-		var rowIndex = $$("grid").selectRowIndex; 
-		var row = $G("grid").getRowByIndex(rowIndex);
-		var rowID = row.getAttribute("id");  
+		var rowID = $G("grid").getRowAttributeValue("id");  
 		var rowName = "日志";
 		
 		var wsContainer = $$("ws").parentElement.parentElement;

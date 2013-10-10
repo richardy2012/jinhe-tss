@@ -21,8 +21,10 @@ public class CacheDisplayActionTest extends TxTestSupport {
 		action.initPool(response, poolCode);
 		
 		action.viewCachedItem(response, poolCode, "WorkThread_3");
-		
 		action.viewCachedItem(response, poolCode, "not-exist-key");
+		
+		action.removeCachedItem(response, poolCode, "WorkThread_3");
+		action.removeCachedItem(response, poolCode, "not-exist-key-2");
 	}
     
 }

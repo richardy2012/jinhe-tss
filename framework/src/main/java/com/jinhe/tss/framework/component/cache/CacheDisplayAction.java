@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jinhe.tss.cache.CacheStrategy;
@@ -121,7 +122,10 @@ public class CacheDisplayAction extends BaseActionSupport {
      * 查看详细的缓存项内容。对象XML格式展示
      */
     @RequestMapping("/item/{code}")
-    public void viewCachedItem(HttpServletResponse response, @PathVariable String code, @RequestParam("key") String key){
+    public void viewCachedItem(HttpServletResponse response, 
+    		@PathVariable String code, 
+    		@RequestParam("key") String key) {
+    	
         Cacheable item = cache.getPool(code).getObject(key);
         if(item != null) {
             String returnStr = "";
@@ -135,6 +139,20 @@ public class CacheDisplayAction extends BaseActionSupport {
         }
         else {
             print("该缓存项已经不存在，已经被清空或是已经被刷新！");
+        }
+    }
+    
+    @RequestMapping(value = "/item/{code}", method = RequestMethod.DELETE)
+    public void removeCachedItem(HttpServletResponse response, 
+    		@PathVariable String code, 
+    		@RequestParam("key") String key) {
+    	
+        Cacheable item = cache.getPool(code).removeObject(key);
+        if(item == null) {
+        	printSuccessMessage("该缓存项已经不存在，已经被清空或是已经被刷新！");
+        } 
+        else {
+        	printSuccessMessage("成功清除。");
         }
     }
     
