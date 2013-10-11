@@ -8,7 +8,7 @@ _TYPE_STRING = "string";
 _TYPE_BOOLEAN = "boolean";
 
 /* 常用方法缩写 */
-$$ = function(id){
+$$ = function(id) {
 	return document.getElementById(id);
 }
 
@@ -73,8 +73,7 @@ Public.checkBrowser();
 
 Public.executeCommand = function(callback, param) {
 	var returnVal;
-	try
-	{
+	try {
 		switch (typeof(callback))
 		{
 		case _TYPE_STRING:
@@ -87,72 +86,11 @@ Public.executeCommand = function(callback, param) {
 			returnVal = callback;
 			break;
 		}
-	}
-	catch (e)
-	{
+	} catch (e) {
 		alert(e.message);
 		returnVal = false;
 	}
 	return returnVal;
-}
-
-/* 显示等待状态 */
-Public.showWaitingLayer = function () {
-	var waitingDiv = $$("_waitingDiv");
-	if(waitingDiv == null) {
-		waitingDiv = document.createElement("div");    
-		waitingDiv.id = "_waitingDiv";    
-		waitingDiv.style.width ="100%";    
-		waitingDiv.style.height = "100%";    
-		waitingDiv.style.position = "absolute";    
-		waitingDiv.style.left = "0px";   
-		waitingDiv.style.top = "0px";   
-		waitingDiv.style.cursor = "wait"; 
-		
-		var waitingFlash = ICON + "images/loadingbar.swf";
- 		var str = [];
-		str[str.length] = "<TABLE width=\"100%\" height=\"100%\"><TR><TD align=\"center\">";
-		str[str.length] = "	 <object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" ";
-		str[str.length] = "		   codebase=\"http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0\" ";
-		str[str.length] = "        width=\"140\" height=\"30\" id=\"loadingbar\" align=\"middle\">";
-		str[str.length] = "		<param name=\"movie\" value=' " + waitingFlash + "' />";
-		str[str.length] = "		<param name=\"quality\" value=\"high\" />";
-		str[str.length] = "		<param name=\"wmode\" value=\"transparent\" />";
-		str[str.length] = "		<embed src=' " + waitingFlash + "' quality=\"high\" ";
-		str[str.length] = "		       wmode=\"transparent\" width=\"140\" height=\"30\" align=\"middle\" ";
-		str[str.length] = "		       type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" />";
-		str[str.length] = "  </object>";
-		str[str.length] = "</TD></TR></TABLE>";
-		waitingDiv.innerHTML = str.join("\r\n");
-
-		var coverDiv = document.createElement("div");  
-		coverDiv.id = "coverDiv";
-		coverDiv.style.width  = "100%";    
-		coverDiv.style.height = "100%";    
-		coverDiv.style.position = "absolute";    
-		coverDiv.style.left = "0px";   
-		coverDiv.style.top  = "0px";   
-		coverDiv.style.zIndex = "10000"; 
-		coverDiv.style.background = "black";   
-		Element.setOpacity(coverDiv, 10);
-
-		document.body.appendChild(waitingDiv);
-		document.body.appendChild(coverDiv);
-	}
-
-	if( waitingDiv ) {
-		waitingDiv.style.display = "block";
-	}
-}
-
-Public.hideWaitingLayer = function() {
-	var waitingDiv = $$("_waitingDiv");
-	if( waitingDiv  ) {
-		setTimeout( function() {
-			waitingDiv.style.display = "none";
-			$$("coverDiv").style.display = "none";
-		}, 100);
-	}
 }
 
 Public.writeTitle = function() {
@@ -686,7 +624,9 @@ Element.setOpacity = function(obj, opacity) {
 	}
 
 	if(window.DOMParser) {
-		obj.style.opacity = opacity / 100;
+		if(obj.style) {
+			obj.style.opacity = opacity / 100;
+		}
 	}
 	else {
 		obj.style.filter = "alpha(opacity=" + opacity + ")";
@@ -796,7 +736,9 @@ Element.attachColResize = function(obj) {
 		ruleElement.style.top  = Element.absTop(element);
 		ruleElement.style.left = Element.absLeft(element) + element.offsetWidth - offsetX;
 		ruleElement.style.backgroundColor = "white";
-		ruleElement.style.filter = "alpha(opacity=0)";		
+		
+		// ruleElement.style.filter = "alpha(opacity=0)";
+		Element.setOpacity(ruleElement, 1); 
 	}
 
 	// 刷新所有resize条的位置
@@ -834,7 +776,7 @@ Element.attachColResize = function(obj) {
  
 	ruleObj.onmousedown = function() {
 		this.style.backgroundColor = "#999999";
-		this.style.filter = "alpha(opacity=50)";
+		Element.setOpacity(this, 50);
 
 		this._isMouseDown = true;
 		this._fromX = event.clientX;
@@ -939,7 +881,6 @@ Event.cancelBubble = function(eventObj) {
  *	参数：	object:srcElement       HTML对象
 			string:eventName        事件名称(不带on前缀)
 			function:listener       回调方法                
- *	返回值：
  */
 Event.attachEvent = function(srcElement, eventName, listener) {
 	if(null == srcElement || null == eventName || null == listener) {
@@ -1060,13 +1001,29 @@ function getXmlDOM() {
 	return xmlDom;
 }
 
+function loadXmlDOM(url) {
+	var xmlDom;
+	if (window.DOMParser) {
+		var xmlhttp = new window.XMLHttpRequest();  
+	    xmlhttp.open("GET", url, false);  
+	    xmlhttp.send(null);  
+	    xmlDom = xmlhttp.responseXML.documentElement;  
+	}
+	else { // Internet Explorer
+		xmlDom = new ActiveXObject("Msxml2.DOMDOCUMENT");
+		xmlDom.async = false;
+		xmlDom.load(url);
+    } 
+	return xmlDom;
+}
+
 
 function XmlReader(text) {
 	this.xmlDom = null;
 
 	if (window.DOMParser) {
 		var parser = new DOMParser();
-		this.xmlDom = parser.parseFromString(text, "text/xml");
+		this.xmlDom = parser.parseFromString(text, "text/xml"); 
 	}
 	else { // Internet Explorer
 		this.xmlDom = new ActiveXObject("Msxml2.DOMDOCUMENT");
@@ -1075,6 +1032,16 @@ function XmlReader(text) {
     } 
 
 	this.documentElement = this.xmlDom.documentElement;
+}
+
+XmlReader.prototype.loadXml = function(text) {
+	if (window.DOMParser) {
+		var parser = new DOMParser();
+		this.xmlDom = parser.parseFromString(text, "text/xml");
+	}
+	else { 
+		this.xmlDom.loadXML(text); 
+    } 
 }
 
 XmlReader.prototype.createElement = function(name) {
@@ -1103,32 +1070,6 @@ XmlReader.prototype.createCDATA = function(data) {
 	return xmlNode;
 }
 
-XmlReader.prototype.load = function(url, async) {
-	if(window.DOMParser) {
-
-	}
-	else {
-		var thisObj = this;
-		this.xmlDom.async = async;
-		this.xmlDom.onreadystatechange = function() {
-			if(thisObj.xmlDom.readyState == 4) {
-				var onloadType = typeof(thisObj.onload);
-				try {
-					if(onloadType == _TYPE_FUNCTION) {
-						thisObj.onload();
-					} 
-					else if(onloadType == _TYPE_STRING) {
-						eval(thisObj.onload);
-					}
-				}
-				catch (e) { }
-			}
-		}
-		this.xmlDom.load(url);
-	}
-
-	this.documentElement = this.xmlDom.documentElement;
-}
 
 /*
  *	获取解析错误
@@ -1329,7 +1270,12 @@ XmlNode.prototype.selectNodes = function(xpath) {
 }
 
 XmlNode.prototype.appendChild = function(xmlNode) {
-	this.node.appendChild(xmlNode.node);
+	if(xmlNode instanceof XmlNode) {
+		this.node.appendChild(xmlNode.node);
+	}
+	else {
+		this.node.appendChild(xmlNode);
+	}
 
 	this.nodeValue = this.node.nodeValue;
 	this.text = this.node.text;
@@ -1549,8 +1495,8 @@ var Block = function(blockObj, associate, visible) {
  *	初始化区块
  */
 Block.prototype.init = function() {
-	this.width  = this.object.currentStyle.width;
-	this.height = this.object.currentStyle.height;
+	this.width  = Element.getCurrentStyle(this.object, "width"); 
+	this.height = Element.getCurrentStyle(this.object, "height"); 
 
 	if(false == this.visible) {
 		this.hide();
@@ -1755,8 +1701,8 @@ Focus.focus = function(id){
 		if(this.lastID) {
 			this.blurItem(this.lastID);
 		}
-		
-		focusObj.style.filter = ""; // 施加聚焦效果
+
+		Element.setOpacity(focusObj, 100); // 施加聚焦效果
 		this.lastID = id;
 	}
 }
@@ -1768,7 +1714,7 @@ Focus.focus = function(id){
 Focus.blurItem = function(id){
 	var focusObj = this.items[id];
 	if(focusObj){
-		focusObj.style.filter = "alpha(opacity=50) gray()";
+		Element.setOpacity(focusObj, 50);
 	}
 }
 

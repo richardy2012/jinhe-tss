@@ -126,7 +126,6 @@ HttpRequest.prototype.setParamValue = function(name, value) {
 
 /*
  *	获取响应数据源代码
- *	参数：	
  *	返回值：string:result       响应数据源代码
  */
 HttpRequest.prototype.getResponseText = function() {
@@ -135,7 +134,6 @@ HttpRequest.prototype.getResponseText = function() {
 
 /*
  *	获取响应数据XML文档对象
- *	参数：	
  *	返回值：XmlReader:xmlReader       XML文档对象
  */
 HttpRequest.prototype.getResponseXml = function() {
@@ -155,19 +153,19 @@ HttpRequest.prototype.getNodeValue = function(name) {
 	if(node == null) return;
 
 	var data;
-	var datas = node.selectNodes("node()");
-	for(var i = 0; i < datas.length; i++) {
-		var temp = datas[i];
-		switch (temp.nodeType)
+	var childNodes = node.selectNodes("node()"); 
+	for(var i = 0; i < childNodes.length; i++) {
+		var childNode = childNodes[i];
+		switch (childNode.nodeType)
 		{
 			case _XML_NODE_TYPE_TEXT:
-				if(temp.nodeValue.replace(/\s*/g, "") != "") {
-					data = temp;
+				if(childNode.nodeValue.replace(/\s*/g, "") != "") {
+					data = childNode;
 				}
 				break;
 			case _XML_NODE_TYPE_ELEMENT:
 			case _XML_NODE_TYPE_CDATA:
-				data = temp;
+				data = childNode;
 				break;
 		}
 		
@@ -222,22 +220,22 @@ HttpRequest.prototype.getNodeValue = function(name) {
 				 response.status       = oThis.xmlhttp.status;
 				 response.statusText   = oThis.xmlhttp.statusText;
 
-				 if(oThis.isAbort != true) {
+				 if(oThis.isAbort) {
+					 Public.hideWaitingLayer();
+
+					 HttpRequests.del(oThis);  // 从队列中去除
+					 oThis.executeCallback();
+				 }
+				 else {
 					 setTimeout( function() {
 						 oThis.abort();
 
 						 Public.hideWaitingLayer();
 						 oThis.onload(response);
-						 
+
 						 HttpRequests.del(oThis); // 从队列中去除
 						 oThis.executeCallback();
 					 }, 100);
-				 }
-				 else {
-					 Public.hideWaitingLayer();
-
-					 HttpRequests.del(oThis);  // 从队列中去除
-					 oThis.executeCallback();
 				 }
 			 }
 		 }
@@ -254,7 +252,7 @@ HttpRequest.prototype.getNodeValue = function(name) {
 	 catch (e) {
 		 Public.hideWaitingLayer();
 
-		 //throw e;
+		 // throw e;
 		 var parserResult = {};
 		 parserResult.dataType = _HTTP_RESPONSE_DATA_TYPE_EXCEPTION;
 		 parserResult.type = 1;
@@ -317,11 +315,9 @@ HttpRequest.prototype.packageContent = function() {
 
 	for(var name in this.paramObj.params) {
 		var value = this.paramObj.params[name];
-		if(value == null) {
-			continue;
+		if(value) {
+			setParamNode(name, value);
 		}
-
-		setParamNode(name, value);
 	}
 
 	var contentStr = contentXml.toXml();
@@ -407,9 +403,10 @@ HttpRequest.prototype.onload = function(response) {
 	}
 
 	// 清除原始文档
-	this.xmlReader.xmlDom.loadXML("");
+	this.xmlReader.loadXml("");
 }
 
+// 定义空方法做为默认的回调方法
 HttpRequest.prototype.ondata = HttpRequest.prototype.onresult = HttpRequest.prototype.onsuccess = HttpRequest.prototype.onexception = function() {
 
 }
@@ -528,7 +525,7 @@ function Message_Success(param, request) {
 	var str = [];
 	str[str.length] = "Success";
 	str[str.length] = "type=\"" + param.type + "\"";
-	str[str.length] = "msg=\"" + param.msg + "\"";
+	str[str.length] = "msg=\""  + param.msg  + "\"";
 	str[str.length] = "description=\"" + param.description + "\"";
 
 	if(param.type != "0" && request.paramObj.type != "0") {

@@ -509,7 +509,5 @@
 		window.showModalDialog("filemanager.html", {params:params, title:"\"" + name + "\"相关资源管理"},"dialogWidth:400px;dialogHeight:400px;");
     }
 	 
-	window.onload = init;
 
-	// 关闭页面自动注销
-    logoutOnClose();
+	window.onload = init;

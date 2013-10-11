@@ -457,13 +457,6 @@
 
     window.onload = init;
 
-	//关闭页面自动注销
-    window.attachEvent("onunload", function() {
-        if(10000 < window.screenTop || 10000 < window.screenLeft) {
-            logout();
-        }
-	});
-
 //-->
 </SCRIPT>
 

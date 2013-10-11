@@ -320,6 +320,3 @@
 	
 
     window.onload = init;
-
-	//关闭页面自动注销
-    logoutOnClose();

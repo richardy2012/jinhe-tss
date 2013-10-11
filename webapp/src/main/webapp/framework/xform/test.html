@@ -47,7 +47,7 @@ URL_CORE = "../";
         str[str.length] = "    <layout>";
         str[str.length] = "        <TR>";
         str[str.length] = "            <TD width=\"50\"><label binding=\"userName\"/></TD>";
-        str[str.length] = "            <TD><input binding=\"userName\" type=\"text\" style=\"width:150px\"/></TD>";
+        str[str.length] = "            <TD><input binding=\"userName\" type=\"text\"  style=\"width:150px\"/></TD>";
         str[str.length] = "        </TR>";
         str[str.length] = "        <TR>";
         str[str.length] = "            <TD width=\"50\"><label binding=\"password\"/></TD>";
@@ -85,6 +85,12 @@ URL_CORE = "../";
 				loginXForm.setFocus("password");
 			});
 		}
+ 
+		Event.attachEvent($$("userName"), "propertychange", function() {
+			if($$("userName").value) {
+				alert($$("userName").value);
+			}
+		});
 	}
 
 	  /*
@@ -182,6 +188,10 @@ URL_CORE = "../";
         loginXForm.resetForm();
         loginXForm.setFocus();
     }
+
+	function ondatachange() {
+		alert("123456");
+	}
 
     window.onload = loadInitData;
 

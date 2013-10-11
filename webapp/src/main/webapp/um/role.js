@@ -562,7 +562,5 @@
 		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:700px;dialogHeight:550px;resizable:no");
     }
 
-    window.onload = init;
 
-    //关闭页面自动注销
-    logoutOnClose();
+	window.onload = init;

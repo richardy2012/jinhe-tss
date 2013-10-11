@@ -21,7 +21,7 @@ var Grid = function(element, data) {
 	this.id = element.id;
 	this.element = element;
  
-	this.baseurl  = element.baseurl || "";
+	this.baseurl  = element.getAttribute("baseurl") || "";
 	this.iconPath = this.baseurl + "images/";
 	
 	this.element.innerHTML = "<div id='" + this.id + "Box' style='position:absolute;overflow:auto;left:0px;top:0px;z-index:1'></div>";
@@ -160,7 +160,7 @@ Grid.prototype.processDataRow = function(curRow) {
 			case "boolean":      
 				var checked = (value =="true") ? "checked" : "";
 				nobrNodeInCell.innerHTML = "<input class='selectHandle' name='" + columnName + "' type='radio' " + checked + "/>";
-				nobrNodeInCell.all.tags("INPUT")[0].disabled = true;
+				nobrNodeInCell.getElementsByTagName("INPUT")[0].disabled = true;
 				break;
 		}							
 	}	

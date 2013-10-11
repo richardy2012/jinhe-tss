@@ -210,7 +210,7 @@ Tab.prototype.dispose = function() {
 
 	delete _display.tabs[this.uniqueID];
 
-	this.object.removeNode(true);
+	Element.removeNode(this.object);
 	
 	Reminder.del(this.SID); // 解除提醒
 
@@ -502,7 +502,7 @@ Phase.prototype.dispose = function() {
 	var curActiveTab = _display.getActiveTab();
 	delete curActiveTab.phases[this.uniqueID];
 
-	this.object.removeNode(true);
+	Element.removeNode(this.object);
 
 	this.label = null;
 	this.object = null;
@@ -813,7 +813,7 @@ Display.prototype.clearTabController = function() {
 	}
 
 	if( this.tabController != null) {
-		this.tabController.removeNode(true);
+		Element.removeNode(this.tabController);
 		this.tabController = null;
 	}
 }
@@ -889,7 +889,7 @@ Display.prototype.createRightBox = function() {
 	  var row = rightBox.insertRow();
 	  row.insertCell();
 	}
-	rightBox.rows(1).height = _SIZE_PHASE_CONTROLLER_HEIGHT;
+	rightBox.rows[1].height = _SIZE_PHASE_CONTROLLER_HEIGHT;
 
 	this.element.appendChild(rightBox);
 	var refChild = this.element.childNodes[1];
@@ -917,7 +917,7 @@ Display.prototype.hideRightBox = function() {
  */
 Display.prototype.createPhaseBox = function() {
 	var phaseBox = this.createElement(WS_TAG_PHASE_BOX, WS_NAMESPACE);
-	this.rightBox.rows(0).cells(0).appendChild(phaseBox);
+	this.rightBox.rows[0].cells[0].appendChild(phaseBox);
 	this.phaseBox = phaseBox;
 }
 /*
@@ -931,17 +931,15 @@ Display.prototype.refreshPhaseController = function() {
 	this.refreshPhaseControllerButtons();
 	this.showRightBox();
 }
-/*
- *	创建Phase标签控制器
- */
+
+/* 创建Phase标签控制器  */
 Display.prototype.createPhaseController = function() {
 	var phaseController = this.createElement(WS_TAG_PHASE_CONTROLLER, WS_NAMESPACE);
-	this.rightBox.rows(1).cells(0).appendChild(phaseController);
+	this.rightBox.rows[1].cells[0].appendChild(phaseController);
 	this.phaseController = phaseController;
 }
-/*
- *	清除Phase标签控制器
- */
+
+/* 清除Phase标签控制器  */
 Display.prototype.clearPhaseController = function() {
 	for(var item in this.buttons) {
 		var button = this.buttons[item];
@@ -951,14 +949,13 @@ Display.prototype.clearPhaseController = function() {
 	}
 
 	if(this.phaseController != null) {
-		this.phaseController.removeNode(true);
+		Element.removeNode(this.phaseController);
 		this.phaseController = null;
 	}
 	this.hideRightBox();
 }
-/*
- *	创建Phase标签控制器按钮
- */
+
+/* 创建Phase标签控制器按钮 */
 Display.prototype.createPhaseControllerButtons = function() {
 	var prevBt = new ControllerButton(_TYPE_PHASE_CONTROLLER_BT, _IMG_PHASE_PREV);
 	var nextBt = new ControllerButton(_TYPE_PHASE_CONTROLLER_BT, _IMG_PHASE_NEXT);
@@ -990,9 +987,8 @@ Display.prototype.createPhaseControllerButtons = function() {
 		}
 	}
 }
-/*
- *	刷新Phase标签控制器按钮
- */
+
+/* 刷新Phase标签控制器按钮  */
 Display.prototype.refreshPhaseControllerButtons = function() {
 	var flag = (this.phaseBox.scrollHeight > this.phaseBox.offsetHeight);
 	for(var item in this.buttons) {
@@ -1065,7 +1061,7 @@ Display.prototype.createElement = function(tagName, ns) {
 		var tempDiv = document.createElement("DIV");
 		tempDiv.innerHTML = "<" + ns + ":" + tagName + "/>";
 		obj = tempDiv.firstChild.cloneNode(false);
-		tempDiv.removeNode(true);
+		Element.removeNode(tempDiv);
 	}
 	return obj;
 

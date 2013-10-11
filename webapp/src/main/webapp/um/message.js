@@ -300,4 +300,3 @@
 
 
     window.onload = init;
-    logoutOnClose();

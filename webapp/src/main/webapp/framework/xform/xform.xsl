@@ -144,7 +144,6 @@
 		<xsl:when expr="getMode()=='number'">
 			<input>
 				<xsl:apply-templates select="@*" />
-				<xsl:attribute name="ancestor"><xsl:eval>uniqueID</xsl:eval></xsl:attribute>
 				<xsl:attribute name="caption"><xsl:eval>getProperty("caption")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="editable"><xsl:eval>getEditable()</xsl:eval></xsl:attribute>
 				<xsl:attribute name="empty"><xsl:eval>getProperty("empty")</xsl:eval></xsl:attribute>
@@ -161,7 +160,6 @@
 		<xsl:when expr="getMode()=='function'">
 			<input type="text">
 				<xsl:apply-templates select="@*" />
-				<xsl:attribute name="ancestor"><xsl:eval>uniqueID</xsl:eval></xsl:attribute>
 				<xsl:attribute name="caption"><xsl:eval>getProperty("caption")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="clickOnly"><xsl:eval>getProperty("clickOnly")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="cmd"><xsl:eval>getProperty("cmd")</xsl:eval></xsl:attribute>
@@ -189,7 +187,6 @@
 <xsl:template match="TD//text()"><xsl:copy/></xsl:template>
 
 <xsl:script>
-	var uniqueID = "";
 	var baseurl  = "";
 	var formEditable = "";
 </xsl:script>
@@ -227,9 +224,7 @@
 			return propValue;
 		}
 	}
-	function addPrefix() {
-		return uniqueID + ".";
-	}
+
 	function getEditable() {
 		if(formEditable == "false") {
 			return "false";

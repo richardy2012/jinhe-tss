@@ -171,7 +171,7 @@
         var subitem12_1 = {
             label:"初始化密码...",
             callback:resetPassword,
-            icon:ICON + "init_password.gif"
+            icon:ICON + "um/init_password.gif"
         }
 		var subitem12_2 = {
             label:"用户同步",
@@ -850,6 +850,3 @@
  
 
     window.onload = init;
-
-	//关闭页面自动注销
-    logoutOnClose();

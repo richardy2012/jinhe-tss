@@ -64,7 +64,7 @@ URL_CORE = "framework/"
         str[str.length] = "        </TR>";
         str[str.length] = "        <TR>";
         str[str.length] = "            <TD width=\"50\">&amp;nbsp;</TD>";
-        str[str.length] = "            <TD><input type=\"button\" class=\"btLogin\" id=\"btCancel\" value=\"重置\" onclick=\"resetForm()\"/><input type=\"button\" class=\"btLogin\" id=\"btLogin\" value=\"登录\" onclick=\"login()\"/></TD>";
+        str[str.length] = "            <TD><input type=\"button\" class=\"btLogin\" id=\"btLogin\" value=\"登录\" onclick=\"login()\"/><input type=\"button\" class=\"btLogin\" id=\"btCancel\" value=\"重置\" onclick=\"resetForm()\"/></TD>";
         str[str.length] = "        </TR>";
         str[str.length] = "    </layout>";
         str[str.length] = "    <data>";
@@ -185,7 +185,7 @@ URL_CORE = "framework/"
 	  <td class="loginContainer">
 		<!-- 登录框 开始 -->
 		<div class="loginBox">
-			<XForm:Box id="loginForm" baseurl="framework/xform/"><div class="loading"></div></XForm:Box>
+			<XForm:Box id="loginForm" baseurl="framework/xform/" caption="用户登录"><div class="loading"></div></XForm:Box>
 		</div>
 		<!-- 登录框 结束 -->
 	  </td>

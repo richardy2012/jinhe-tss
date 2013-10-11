@@ -92,7 +92,7 @@ function logout() {
 
 // 关闭页面时候自动注销
 function logoutOnClose() {
-	window.attachEvent("onuload", function() {
+	Event.attachEvent(window, "unload", function() {
 		if(10*1000 < window < screenTop || 10*1000 < window.screenLeft) {
 			logout();
 		}
@@ -932,6 +932,8 @@ function initEvents() {
 	Event.attachEvent($$("statusTitleBt"), "click", onClickStatusTitleBt);
 	Event.attachEvent($$("treeTitle"),     "click", onClickTreeTitle);
 	Event.attachEvent($$("statusTitle"),   "click", onClickStatusTitle);
+
+	logoutOnClose(); // 关闭页面自动注销
 }
 
 /*
@@ -1048,6 +1050,64 @@ function createExportFrame() {
 	return frameName;
 }
 
+/* 显示等待状态 */
+Public.showWaitingLayer = function () {
+	var waitingDiv = $$("_waitingDiv");
+	if(waitingDiv == null) {
+		waitingDiv = document.createElement("div");    
+		waitingDiv.id = "_waitingDiv";    
+		waitingDiv.style.width ="100%";    
+		waitingDiv.style.height = "100%";    
+		waitingDiv.style.position = "absolute";    
+		waitingDiv.style.left = "0px";   
+		waitingDiv.style.top = "0px";   
+		waitingDiv.style.cursor = "wait"; 
+		
+		var waitingFlash = ICON + "images/loadingbar.swf";
+ 		var str = [];
+		str[str.length] = "<TABLE width=\"100%\" height=\"100%\"><TR><TD align=\"center\">";
+		str[str.length] = "	 <object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" ";
+		str[str.length] = "		   codebase=\"http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0\" ";
+		str[str.length] = "        width=\"140\" height=\"30\" id=\"loadingbar\" align=\"middle\">";
+		str[str.length] = "		<param name=\"movie\" value=' " + waitingFlash + "' />";
+		str[str.length] = "		<param name=\"quality\" value=\"high\" />";
+		str[str.length] = "		<param name=\"wmode\" value=\"transparent\" />";
+		str[str.length] = "		<embed src=' " + waitingFlash + "' quality=\"high\" ";
+		str[str.length] = "		       wmode=\"transparent\" width=\"140\" height=\"30\" align=\"middle\" ";
+		str[str.length] = "		       type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" />";
+		str[str.length] = "  </object>";
+		str[str.length] = "</TD></TR></TABLE>";
+		waitingDiv.innerHTML = str.join("\r\n");
+
+		var coverDiv = document.createElement("div");  
+		coverDiv.id = "coverDiv";
+		coverDiv.style.width  = "100%";    
+		coverDiv.style.height = "100%";    
+		coverDiv.style.position = "absolute";    
+		coverDiv.style.left = "0px";   
+		coverDiv.style.top  = "0px";   
+		coverDiv.style.zIndex = "10000"; 
+		coverDiv.style.background = "black";   
+		Element.setOpacity(coverDiv, 10);
+
+		document.body.appendChild(waitingDiv);
+		document.body.appendChild(coverDiv);
+	}
+
+	if( waitingDiv ) {
+		waitingDiv.style.display = "block";
+	}
+}
+
+Public.hideWaitingLayer = function() {
+	var waitingDiv = $$("_waitingDiv");
+	if( waitingDiv  ) {
+		setTimeout( function() {
+			waitingDiv.style.display = "none";
+			$$("coverDiv").style.display = "none";
+		}, 100);
+	}
+}
 
 /*
  *	重新封装alert
@@ -1068,7 +1128,7 @@ function Alert(info, detail) {
 		params.detail = info;        
 	}
 	params.title = "";
-	window.showModalDialog(URL_CORE + '_info.htm', params, 'dialogwidth:280px; dialogheight:150px; status:yes; help:no;resizable:yes;unadorned:yes');
+	window.showModalDialog(URL_CORE + '_info.htm', params, 'dialogwidth:278px; dialogheight:150px; status:yes; help:no;resizable:yes;unadorned:yes');
 }
 
 /*

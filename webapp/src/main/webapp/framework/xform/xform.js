@@ -22,15 +22,17 @@ var XForm = function(element) {
 	this.element = element;
 	this.form = element.firstChild;
 
-	this.xmlDom = getXmlDOM();
-	this.xslDom = getXmlDOM();
-	this.xslDom.resolveExternals = false;
-
-	this.xmlDoc;
-	
-	this._baseurl  = element.baseurl || "";
+	this._baseurl  = element.getAttribute("baseurl") || "";
 	this._iconPath = this._baseurl + "images/";
 
+	var editable = element.getAttribute("editable") || "true";
+
+	this.xslDom = loadXmlDOM(this._baseurl + "xform.xsl");
+	var xslDomNode = new XmlNode(this.xslDom);
+	xslDomNode.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\nvar baseurl=\"" + this._baseurl + "\";\r\nvar formEditable=\"" + editable + "\";\r\n";
+	this.xslDom.resolveExternals = false;
+
+	this.template;
 	this._columnList = {};
 }
 
@@ -38,33 +40,30 @@ XForm.prototype.load = function(data) {
 	// 隐藏上次的错误信息层
 	hideErrorInfo();
 
-	if("object" != typeof(data) || 1 != data.nodeType) {
-		alert("传入的XForm数据有问题。")	
+	if("object" != typeof(data) || data.nodeType != _XML_NODE_TYPE_ELEMENT) {
+		alert("传入的XForm数据有问题，请检查。")	
 	}
 	
-	this.xmlDoc = new Class_XMLDocument(data.node);
+	this.template = new XFormTemplate(data);
 	
-	if(this.xmlDoc && this.xmlDoc.xmlDom) {
+	if(this.template && this.template._document) {
 		// 修正comboedit类型默认第一项的值
-		this.fixComboeditDefaultValue(this.xmlDoc.Row);
-
-		this.xslDom.load(this._baseurl + "xform.xsl");
-		this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\nvar uniqueID=\"" + this.element.uniqueID 
-		+ "\";\r\nvar baseurl=\"" + this._baseurl + "\";\r\nvar formEditable=\"" + (this.element.editable || "true") + "\";\r\n";
+		this.fixComboeditDefaultValue(this.template.Row);		
 		
-		var htmlStr = this.xmlDoc.transformXML(this.xslDom); // 利用XSL把XML解析成Html
+		var htmlStr = this.template.transformXML(this.xslDom); // 利用XSL把XML解析成Html
 		this.element.innerHTML = htmlStr.replace(/<\/br>/gi, "");
 
 		if(this.form) {
-			this.form.attachEvent('onsubmit', this.checkForm);
-			this.form.attachEvent('onreset', this.resetForm);
+			Event.attachEvent(this.form, "onsubmit", this.checkForm);
+			Event.attachEvent(this.form, "onreset", this.resetForm);
 
 			// 添加标题栏				
-			var theTable = this.form.all.tags("TABLE")[0];
-			if(theTable && this.element.getAttribute("caption")) {
-				var count = theTable.rows(0).cells.length;
-				for(var i = 0; i < theTable.rows(0).cells.length; i++) {
-					count += parseInt(theTable.rows(0).cells(i).colSpan);
+			var theTable = this.element.getElementsByTagName("TABLE")[0];
+			var caption  = this.element.getAttribute("caption")
+			if(theTable && caption) {
+				var count = theTable.rows[0].cells.length;
+				for(var i = 0; i < theTable.rows[0].cells.length; i++) {
+					count += parseInt(theTable.rows[0].cells[i].colSpan);
 				}
 				var captionTR = theTable.insertRow(0);
 				var captionTD = captionTR.insertCell();
@@ -72,18 +71,15 @@ XForm.prototype.load = function(data) {
 				captionTD.id = "titleBox";
 				captionTD.className = "titleBox";
 				captionTD.style.cssText = "font-size:12px;height:19px;background-image:url(" + this._iconPath + "titlebg.gif);background-repeat:no-repeat;";
-				captionTD.innerHTML = this.element.getAttribute("caption");
+				captionTD.innerHTML = caption;
 			}
 		}
 
 		// 绑定各个column对应的编辑方式
 		this.attachEditor();
 	
-		// 触发onload事件
-		var onload = this.element.getAttribute("onload");
-		if(onload) {
-			eval(onload);
-		}
+		// 绑定事件
+		this.attachEvents();
 
 		// 自动聚焦
 		if(this.element.editable != "false") {
@@ -94,7 +90,7 @@ XForm.prototype.load = function(data) {
 
 
 XForm.prototype.attachEvents = function() {
-	// 回车自动聚焦下一个（input、button等）
+	// 回车（keyCode == 13）自动聚焦下一个（input、button等）
 	this.element.onkeydown = function() {
 		var srcElement = event.srcElement;
 		if(window.event.keyCode == 13 && srcElement.tagName.toLowerCase() != "textarea") {
@@ -106,17 +102,14 @@ XForm.prototype.attachEvents = function() {
 		event.cancelBubble = true; // 拖动选择事件取消冒泡
 	}
 
-	var func = this.element.getAttribute("ondatachange");            
-	this.element.ondatachange = function() {
-		if( func ) { func(); } 
-		else { 
-			Reminder.add(this.element.id); // 数据有变化时才添加离开提醒 
-		}
+	var onload = this.element.getAttribute("onload");
+	if(onload) {
+		eval(onload);
 	}
 }
 
 XForm.prototype.attachEditor = function() {
-	var cols = this.xmlDoc.Columns;
+	var cols = this.template.Columns;
 	for(var i = 0; i < cols.length; i++) {
 		var colName   = cols[i].getAttribute("name");
 		var colMode   = cols[i].getAttribute("mode");
@@ -161,11 +154,11 @@ XForm.prototype.checkForm = function() {
 	// 隐藏上次的错误信息层
 	hideErrorInfo();
 
-	if(this.xmlDoc == null) {
+	if(this.template == null) {
 		return true;
 	}
 
-	var cols = this.xmlDoc.Columns;
+	var cols = this.template.Columns;
 	for(var i = 0; i < cols.length; i++) {
 		var colName  = cols[i].getAttribute("name");
 		var _column = this._columnList[colName];
@@ -177,9 +170,9 @@ XForm.prototype.checkForm = function() {
 		else { // layout内不存在时创建虚拟实例执行校验
 			var _columnTemp = {};
 			_columnTemp.obj = {
-				empty: cols[i].getAttribute("empty"),
+				empty:     cols[i].getAttribute("empty"),
 				errorInfo: cols[i].getAttribute("errorInfo"),
-				caption: cols[i].getAttribute("caption"),
+				caption:   cols[i].getAttribute("caption"),
 				submitReg: cols[i].getAttribute("submitReg"),
 				value: this.getColumnValue(colName)
 			};
@@ -191,7 +184,7 @@ XForm.prototype.checkForm = function() {
 		}
 	}
 
-	$$("xml").value = this.xmlDoc.Data.xml;
+	$$("xml").value = this.template.Data.xml;
 
 	return true;
 }
@@ -200,7 +193,7 @@ XForm.prototype.resetForm = function() {
 	//隐藏上次的错误信息层
 	hideErrorInfo();
 
-	var cols = this.xmlDoc.Columns;
+	var cols = this.template.Columns;
 	for(var i = 0; i < cols.length; i++) {
 		var colName = cols[i].getAttribute("name");
 		if(this._columnList[colName]) {
@@ -247,10 +240,10 @@ XForm.prototype.updateDataExternal = function(name, value) {
 	}
 }
 
-XForm.prototype.updateUnbindingDataExternal = function(id, value) {
-	$$(id).value = value;
+XForm.prototype.updateUnbindingDataExternal = function(name, value) {
+	$$(name).value = value;
 
-	var node = this.xmlDoc.Layout.selectSingleNode(".//*[@id='" + id + "']");
+	var node = this.template.Layout.selectSingleNode(".//*[@name='" + name + "']");
 	if(node) {
 		node.setAttribute("value", value);
 	}
@@ -258,7 +251,7 @@ XForm.prototype.updateUnbindingDataExternal = function(id, value) {
 
 XForm.prototype.setEditable = function(status) {
 	if(this.element.editable != status ) {
-		return；
+		return;
 	}
 
 	this.element.editable = status;
@@ -268,7 +261,7 @@ XForm.prototype.setEditable = function(status) {
 		buttonBox.style.display = (status == "true" ? "block": "none");
 	}
 
-	var cols = this.xmlDoc.Columns;
+	var cols = this.template.Columns;
 	for(var i = 0; i < cols.length; i++) {
 		var name = cols[i].getAttribute("name");
 		var _column = _columnList[name];
@@ -291,7 +284,7 @@ XForm.prototype.getData = function(name, replace) {
 }
 
 XForm.prototype.getColumn = function(name) {
-	var _column = this.xmlDoc.columnsMap[name];
+	var _column = this.template.columnsMap[name];
 	if(_column == null) {
 		alert(name + "不存在");
 	}
@@ -310,7 +303,7 @@ XForm.prototype.reloadData = function(rowNode) {
 	// 隐藏上次的错误信息层
 	hideErrorInfo();
 
-	var cols = this.xmlDoc.Columns;  // 以column定义为获取依据
+	var cols = this.template.Columns;  // 以column定义为获取依据
 	for(var i = 0; i < cols.length; i++) {
 		var name  = cols[i].getAttribute("name");
 		var value = rowNode.getAttribute(name);
@@ -319,7 +312,7 @@ XForm.prototype.reloadData = function(rowNode) {
 }
 
 XForm.prototype.fixComboeditDefaultValue = function(rowNode) {
-	var cols = this.xmlDoc.Columns;
+	var cols = this.template.Columns;
 	for(var i = 0; i < cols.length; i++) {
 		var name   = cols[i].getAttribute("name");
 		var empty  = cols[i].getAttribute("empty");
@@ -340,7 +333,7 @@ XForm.prototype.saveAsDefaultValue = function() {
 	//隐藏上次的错误信息层
 	hideErrorInfo();
 
-	var cols = this.xmlDoc.Columns;
+	var cols = this.template.Columns;
 	for(var i = 0; i < cols.length; i++) {
 		var colName = cols[i].getAttribute("name");
 		var _column = _columnList[colName];
@@ -350,7 +343,7 @@ XForm.prototype.saveAsDefaultValue = function() {
 
 XForm.prototype.setFocus = function(name) {
 	if( name == null || name == "") {
-		var column = this.xmlDoc.declare.selectSingleNode("column[(@editable='true' or not(@editable)) and (@display!='none' or not(@display))]");
+		var column = this.template.declare.selectSingleNode("column[(@editable='true' or not(@editable)) and (@display!='none' or not(@display))]");
 		if(column == null) {
 			return;
 		}
@@ -383,7 +376,7 @@ XForm.prototype.showCustomErrorInfo = function(name, str) {
 }
 
 XForm.prototype.getColumnAttribute = function(name, attrName) {
-	var column = this.xmlDoc.columnsMap[name];
+	var column = this.template.columnsMap[name];
 	if( column ) {
 		return column.getAttribute(attrName);
 	}
@@ -404,14 +397,14 @@ XForm.prototype.setLabelContent = function(name, content) {
 }
 
 XForm.prototype.getXmlDocument = function() {
-	return this.xmlDoc.xmlDom;
+	return this.template._document;
 }
 
 /*
  * 获取row节点上与column对应的值
  */
 XForm.prototype.getColumnValue = function(name) {
-	var rowNode = this.xmlDoc.Row;
+	var rowNode = this.template.Row;
 	var node = rowNode.selectSingleNode(name);
 	var nodeValue = (null == node ? null : node.text);
 
@@ -429,11 +422,11 @@ XForm.prototype.setColumnValue = function(name, value) {
 		value = value[0];
 	}
 
-	var rowNode = this.xmlDoc.Row;
+	var rowNode = this.template.Row;
 	var node = rowNode.selectSingleNode(name);
 	if( node == null ) { 
-		node = this.xmlDom.createElement(name); // 创建单值节点
-		rowNode.appendChild(node);
+		node = getXmlDOM().createElement(name); // 创建单值节点
+		rowNode.appendChild(new XmlNode(node));
 	}
 
 	var CDATANode = node.selectSingleNode("cdata()");
@@ -441,7 +434,7 @@ XForm.prototype.setColumnValue = function(name, value) {
 		CDATANode.text = value;
 	}
 	else{
-		var newCDATANode = this.xmlDom.createCDATASection(value);
+		var newCDATANode = getXmlDOM().createCDATASection(value);
 		node.appendChild(newCDATANode);
 	}
 }
@@ -925,34 +918,34 @@ Mode_Hidden.prototype.setFocus = function() {}
 
 
 
-var Class_XMLDocument = function(xmlDom) {
-	this.xmlDom = xmlDom;
+var XFormTemplate = function(data) {
+	this._document = data;
 
 	this.toString = function() {
-		return this.xmlDom ? this.xmlDom.xml : null;
+		return this._document ? this._document.xml : null;
 	}
 
 	this.transformXML = function(xslDom) {			
-		return this.xmlDom.transformNode(xslDom).replace(/&amp;nbsp;/g, "&nbsp;").replace(/\u00A0/g, "&amp;nbsp;");
+		return this._document.node.transformNode(xslDom).replace(/&amp;nbsp;/g, "&nbsp;").replace(/\u00A0/g, "&amp;nbsp;");
 	}
 	
 	this.refresh = function() {
-		if( this.xmlDom ) {
-			this.declare = this.xmlDom.selectSingleNode("./declare");
-			this.Layout  = this.xmlDom.selectSingleNode("./layout");
-			this.Script  = this.xmlDom.selectSingleNode("./script");
-			this.Columns = this.xmlDom.selectNodes("./declare/column");
-			this.Data    = this.xmlDom.selectSingleNode("./data");
+		if( this._document ) {
+			this.declare = this._document.selectSingleNode("./declare");
+			this.Layout  = this._document.selectSingleNode("./layout");
+			this.Script  = this._document.selectSingleNode("./script");
+			this.Columns = this._document.selectNodes("./declare/column");
+			this.Data    = this._document.selectSingleNode("./data");
 			
 			if(this.Data == null) {				
-				var dataNode = getXmlDOM().createElement("data");
-				this.xmlDom.appendChild(dataNode);
+				var dataNode = new XmlNode(getXmlDOM().createElement("data"));
+				this._document.appendChild(dataNode);
 				this.Data = dataNode;
 			}
 			
-			this.Row = this.xmlDom.selectSingleNode("./data/row[0]");
+			this.Row = this._document.selectSingleNode("./data/row[0]");
 			if(this.Row == null) {
-				var rowNode = getXmlDOM().createElement("row");
+				var rowNode = new XmlNode(getXmlDOM().createElement("row"));
 				this.Data.appendChild(rowNode);	
 				this.Row = rowNode;
 			}
