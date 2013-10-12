@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/TR/WD-xsl">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+	xmlns:myfn="http://unmi.cc/fn"
+    xmlns:msxsl="urn:schemas-microsoft-com:xslt" exclude-result-prefixes="msxsl myfn">
+
 <xsl:template match="/">
 	<HTML>
 		<HEAD><TITLE>成绩单</TITLE></HEAD>
@@ -27,23 +30,35 @@
 </xsl:template>
 
 <xsl:template match="@*">
-	<xsl:if expr="this.nodeName == 'style' &amp;&amp; this.selectSingleNode('..').nodeName == 'name'">
-		<xsl:copy><xsl:value-of/></xsl:copy>
+	<xsl:if test="name() = 'style'">
+		<xsl:copy><xsl:value-of select="."/></xsl:copy>
 	</xsl:if>
+	<xsl:value-of select="name(..)"/>
+	<xsl:value-of select="myfn:test('JK')"/>
 </xsl:template>
 
+
 <xsl:template match="name">
-	<xsl:apply-templates select="@*"/><xsl:value-of/>
+	<xsl:apply-templates select="@*"/>
+	<xsl:value-of select="."/>
 </xsl:template>
+
 
 <xsl:template match="english|math|chymest">
 	<xsl:choose>
-		<xsl:when test=".[value()$gt$85]">优秀</xsl:when>
-		<xsl:when test=".[value()$gt$70]">一般</xsl:when>
-		<xsl:when test=".[value()$gt$60]">起格</xsl:when>
+		<xsl:when test=". &gt; 85">优秀</xsl:when>
+		<xsl:when test=". &gt; 70">一般</xsl:when>
+		<xsl:when test=". &gt; 60">起格</xsl:when>
 		<xsl:otherwise>不起格</xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
+
+<msxsl:script implements-prefix="myfn" language="JavaScript">
+	var baseurl  = "www.google.com";
+	function test(name) {
+		return name;
+	}
+</msxsl:script>
 
 </xsl:stylesheet>
 

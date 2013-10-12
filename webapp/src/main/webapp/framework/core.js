@@ -976,6 +976,8 @@ function EventFirer(element, eventName) {
 
 /*********************************** xml文档、节点相关操作  start **********************************/
 
+MSXML_DOCUMENT_VERSION = "Msxml2.DOMDocument.6.0";
+
 /*
  * 将字符串转化成xml节点对象
  */
@@ -989,13 +991,13 @@ function loadXmlToNode(xml) {
 
 function getXmlDOM() {
 	var xmlDom;
-	if (window.DOMParser) {
+	if (window.DOMParser && _BROWSER != _BROWSER_IE) {
 		var parser = new DOMParser();
 		xmlDom = parser.parseFromString("<null/>", "text/xml");
 		xmlDom.parser = parser;
 	}
 	else { // Internet Explorer
-		xmlDom = new ActiveXObject("Msxml2.DOMDOCUMENT");
+		xmlDom = new ActiveXObject(MSXML_DOCUMENT_VERSION);
 		xmlDom.async = false;
     } 
 	return xmlDom;
@@ -1006,11 +1008,12 @@ function loadXmlDOM(url) {
 	if (window.DOMParser) {
 		var xmlhttp = new window.XMLHttpRequest();  
 	    xmlhttp.open("GET", url, false);  
+		try {  xmlhttp.responseType = 'msxml-document';  } catch (e) {  } 
 	    xmlhttp.send(null);  
 	    xmlDom = xmlhttp.responseXML.documentElement;  
 	}
-	else { // Internet Explorer
-		xmlDom = new ActiveXObject("Msxml2.DOMDOCUMENT");
+	else { // < IE10
+		xmlDom = new ActiveXObject(MSXML_DOCUMENT_VERSION);
 		xmlDom.async = false;
 		xmlDom.load(url);
     } 
@@ -1021,12 +1024,12 @@ function loadXmlDOM(url) {
 function XmlReader(text) {
 	this.xmlDom = null;
 
-	if (window.DOMParser) {
+	if (window.DOMParser && _BROWSER != _BROWSER_IE) {
 		var parser = new DOMParser();
 		this.xmlDom = parser.parseFromString(text, "text/xml"); 
 	}
 	else { // Internet Explorer
-		this.xmlDom = new ActiveXObject("Msxml2.DOMDOCUMENT");
+		this.xmlDom = new ActiveXObject(MSXML_DOCUMENT_VERSION);
 		this.xmlDom.async = false;
 		this.xmlDom.loadXML(text); 
     } 
@@ -1216,7 +1219,7 @@ XmlNode.prototype.removeNode = function() {
 
 XmlNode.prototype.selectSingleNode = function(xpath) {
 	var xmlNode = null;
-	if(window.DOMParser) {
+	if(window.DOMParser && _BROWSER != _BROWSER_IE) {
 		var ownerDocument;
 		if(_XML_NODE_TYPE_DOCUMENT == this.nodeType) {
 			ownerDocument = this.node;
@@ -1244,7 +1247,7 @@ XmlNode.prototype.selectSingleNode = function(xpath) {
  */
 XmlNode.prototype.selectNodes = function(xpath) {
 	var xmlNodes = [];
-	if(window.DOMParser) {
+	if(window.DOMParser && _BROWSER != _BROWSER_IE) {
 		var ownerDocument = null;
 		if(_XML_NODE_TYPE_DOCUMENT == this.nodeType) {
 			ownerDocument = this.node;

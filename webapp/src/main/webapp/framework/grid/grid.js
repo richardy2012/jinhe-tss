@@ -45,20 +45,18 @@ Grid.prototype.load = function(data, append) {
 		alert("传入的Grid数据有问题。")	
 	} 
 	
-	this.gridDoc = new Grid_DOCUMENT(data.node);	
-	if( this.gridDoc.xmlDom == null ) return;
+	this.template = new GridTemplate(data.node);	
+	if( this.template.xmlDom == null ) return;
  
 	this.xslDom = getXmlDOM();
 	this.xslDom.resolveExternals = false;
 	this.xslDom.load(this.baseurl + "grid.xsl");
 
-	// 初始化XSL里的变量
+	// 初始化变量
 	var startNum = append ? this.totalRowsNum : 0;
-	this.xslDom.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\n" 
-		+ "; var startNum=" + startNum + ";"
-		+ "; var gridId='" + this.id + "'; \r\n"; 
+	// "; var startNum=" + startNum + ";" + "; var gridId='" + this.id + "'; \r\n"; 
 		
-	var gridTableHtml = this.gridDoc.transformXML(this.xslDom); // 利用XSL把XML解析成Html
+	var gridTableHtml = parseTempalte(template); // 解析成Html
 	
 	if(append) {
 		var tempGridNode = document.createElement("div");
@@ -107,6 +105,30 @@ Grid.prototype.load = function(data, append) {
 	bindSortHandler(this.gridBox.childNodes[0]);
 } 
 
+var GridTemplate = function(xmlDom) {
+	if( xmlDom && xmlDom.xml != "" ) {
+		this.declare = xmlDom.selectSingleNode("./declare");
+		this.script  = xmlDom.selectSingleNode("./script");
+		this.columns = xmlDom.selectNodes("./declare/column");
+		this.data    = xmlDom.selectSingleNode("./data");
+
+		this.columnsMap = {};
+		for(var i = 0; i < this.columns.length; i++) {
+			this.columnsMap[this.columns[i].getAttribute("name")] = this.columns[i];
+		}
+		
+		this.header = this.declare.getAttribute("header");
+		this.hasHeader = (this.header == "radio" || this.header == "checkbox");
+ 
+		this.visibleColumns = this.selectNodes(".//declare//column[(@display!='none') or not(@display)]");
+		this.dataRows = this.selectNodes(".//data//row");
+	}
+}
+
+Grid.prototype.parseTempalte = function(template) {
+	
+}
+
 /*
  * 处理数据行，按各列的属性设置每一行上对应该列的值.
  */
@@ -117,7 +139,7 @@ Grid.prototype.processDataRow = function(curRow) {
 	for(var j=0; j < cells.length; j++) {
 		var cell = cells[j];
 		var columnName = cell.getAttribute("name");
-		var columnNode = this.gridDoc.columnsMap[columnName]; 
+		var columnNode = this.template.columnsMap[columnName]; 
 		if( columnName == null || columnName == "cellsequence" || columnName == "cellheader" || columnNode == null)  {
 			continue;
 		}
@@ -373,44 +395,6 @@ Grid.prototype.attachEventHandler = function() {
         }
 		return false;
     }
-}
-
-
-var Grid_DOCUMENT = function(xmlDom) {
-	this.xmlDom = xmlDom;
-
-	this.transformXML = function(xslDom) {			
-		return this.xmlDom.transformNode(xslDom).replace(/&amp;nbsp;/g, "&nbsp;").replace(/\u00A0/g, "&amp;nbsp;");
-	}
-	
-	this.refresh = function() {
-		this.hasData = (this.xmlDom && this.xmlDom.xml != "");
-		if( this.hasData ) {
-			this.Declare = this.xmlDom.selectSingleNode("./declare");
-			this.Script  = this.xmlDom.selectSingleNode("./script");
-			this.Columns = this.xmlDom.selectNodes("./declare/column");
-			this.Data    = this.xmlDom.selectSingleNode("./data");
-
-			this.columnsMap = {};
-			for(var i = 0; i < this.Columns.length; i++) {
-				this.columnsMap[this.Columns[i].getAttribute("name")] = this.Columns[i];
-			}
-			
-			this.header = this.Declare.getAttribute("header");
-			this.hasHeader = (this.header == "radio" || this.header == "checkbox");
-	 
-			this.VisibleColumns = this.selectNodes(".//declare//column[(@display!='none') or not(@display)]");
-			this.dataRows = this.selectNodes(".//data//row");
-		}
-	}
-
-	this.refresh();
-}
-Grid_DOCUMENT.prototype.selectNodes = function(xpath) {
-	return this.xmlDom.selectNodes(xpath);
-}
-Grid_DOCUMENT.prototype.selectSingleNode = function(xpath) {
-	return this.xmlDom.selectSingleNode(xpath);
 }
 
 

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="report.xsl"?>
 <document style="background-color:#E5E9F2">
-<grade style="font-size:30px">
-<name>大胖</name>
-<english>80</english>
-<math>90</math>
-<chymest>90</chymest>
-</grade>
-<grade>
-<name style="width:200px;font-size:60px">小花</name>
-<english>98</english>
-<math>70</math>
-<chymest>85</chymest>
-</grade>
+	<grade style="font-size:30px">
+		<name>大胖</name>
+		<english>80</english>
+		<math>90</math>
+		<chymest>90</chymest>
+	</grade>
+	<grade>
+		<name style="width:200px;font-size:60px">小花</name>
+		<english>98</english>
+		<math>70</math>
+		<chymest>85</chymest>
+	</grade>
 </document>

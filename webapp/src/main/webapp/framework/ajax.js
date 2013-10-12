@@ -244,10 +244,11 @@ HttpRequest.prototype.getNodeValue = function(name) {
 		 this.setTimeout(); // 增加超时判定
 		 this.packageContent();
 		 this.setCustomRequestHeader();
+
+		 try {  this.xmlhttp.responseType = 'msxml-document';  } catch (e) {  } 
 		 this.xmlhttp.send(this.requestBody);
 
 		 HttpRequests.add(this); // 存入队列
-
 	 }
 	 catch (e) {
 		 Public.hideWaitingLayer();
@@ -503,11 +504,11 @@ function HTTP_Response_Parser(responseText) {
  *  对象名称：XmlHttp对象，负责XmlHttp对象创建
  */
 function XmlHttp() {
-	if(window.ActiveXObject) {
-		return new ActiveXObject("MSXML2.XMLHTTP");
-	} 
-	else if(window.XMLHttpRequest) {
+	if( window.XMLHttpRequest && window.DOMParser) {
 		return new XMLHttpRequest();
+	} 
+	else if(window.ActiveXObject) {
+		return new ActiveXObject("MSXML2.XMLHTTP"); // for IE6
 	} 
 	else {
 		alert("您的浏览器不支持XMLHTTP");

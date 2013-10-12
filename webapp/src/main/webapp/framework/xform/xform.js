@@ -29,8 +29,8 @@ var XForm = function(element) {
 
 	this.xslDom = loadXmlDOM(this._baseurl + "xform.xsl");
 	var xslDomNode = new XmlNode(this.xslDom);
-	xslDomNode.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\nvar baseurl=\"" + this._baseurl + "\";\r\nvar formEditable=\"" + editable + "\";\r\n";
-	this.xslDom.resolveExternals = false;
+	//xslDomNode.selectSingleNode("/xsl:stylesheet/xsl:script").text = "\r\nvar baseurl=\"" + this._baseurl + "\";\r\nvar formEditable=\"" + editable + "\";\r\n";
+	//this.xslDom.resolveExternals = false;
 
 	this.template;
 	this._columnList = {};
