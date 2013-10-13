@@ -24,8 +24,9 @@ var Grid = function(element, data) {
 	this.baseurl  = element.getAttribute("baseurl") || "";
 	this.iconPath = this.baseurl + "images/";
 	
-	this.element.innerHTML = "<div id='" + this.id + "Box' style='position:absolute;overflow:auto;left:0px;top:0px;z-index:1'></div>";
-	this.gridBox   = $$(this.id + "Box");
+	var gridBoxId = this.id + "Box";
+	this.element.innerHTML = "<div id='" + gridBoxId + "' style='position:absolute;overflow:auto;left:0px;top:0px;z-index:1'></div>";
+	this.gridBox   = $$(gridBoxId);
 	this.gridBox.style.height = this.windowHeight = element.height || "100%";
 	this.gridBox.style.width  = this.windowWidth  = element.width  || "100%";
 
@@ -143,18 +144,19 @@ function parseTempalte(template, startNum, gridID) {
 		var sortable = column.getAttribute("sortable") == "true" ? "sortable=\"true\"" : "";
 
 		colgroup.push("<col align=\"" + getAlign(column) + "\" caption=\"" + caption + "\" " + _class + "/>");
-		thead.push("<td width=\"" + width + "\" name=\"" + name + "\" class=\"column\"><nobr>" + caption + "</nobr></td>")
+		thead.push("<td width=\"" + width + "\" name=\"" + name + "\" class=\"column\" " + sortable + "><nobr>" + caption + "</nobr></td>")
 	 }
 
 	 for(var i=0; i < template.dataRows.length; i++) {
 		var row = template.dataRows[i];
 		var _class =  column.getAttribute("class");
+		_class = _class ? "class = \"" + _class + "\"" : "";
 		var index = startNum + i + 1;
 		
-		tbody.push("<tr class=\"" + _class + "\" _index=\"" + index + "\" ");
-		// 把各个属性值复制一份到 tr 的属性上
+		tbody.push("<tr " + _class + " _index=\"" + index + "\" ");
 		for(var name in template.columnsMap) {
-			tbody.push( name + "=\"" + row.getAttribute(name) + "\" ");
+			// 把各个属性值复制一份到 tr 的属性上
+			tbody.push( name + "=\"" + row.getAttribute(name) + "\" "); 
 		}
 		tbody.push(">");
 
@@ -185,29 +187,23 @@ function parseTempalte(template, startNum, gridID) {
 	 htmls.push(colgroup.join(""));
 	 htmls.push(thead.join(""));
 	 htmls.push(tbody.join(""));
-
 	 return htmls.join("");
+}
 
-	 // function define
-	 function getAlign(column) {
-		var align = column.getAttribute("align");
-		if(align) {
-			return align;
-		}
+function getAlign(column) {
+	var align = column.getAttribute("align");
+	if(align) {
+		return align;
+	}
 
-		switch(column.getAttribute("mode")) {
-			case "number":
-				return "right";
-			case "boolean":
-			case "date":
-				return "center";
-			default:
-				return "left";
-		}
-	 }
-
-	function isHighlightCol(column) {
-		return column.getAttribute("highlightCol") == "true";
+	switch(column.getAttribute("mode")) {
+		case "number":
+			return "right";
+		case "boolean":
+		case "date":
+			return "center";
+		default:
+			return "left";
 	}
 }
 

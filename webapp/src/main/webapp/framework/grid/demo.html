@@ -41,6 +41,9 @@ ICON = "../images/";
 				$$("grid").onRightClickRow = function () {
 					grid.element.contextmenu.show(event.clientX, event.clientY);						
 				}
+			},
+			onexception : function() {
+				alert("exception");
 			}
 		});
     }
@@ -116,7 +119,7 @@ ICON = "../images/";
 
 <body>
 
-<table class="full border" border="0" cellspacing="0" cellpadding="0" >
+<table class="full" >
   <tr>
 	<td id="gridTitle">
 	  <span class="icon"></span>用户列表<span class="buttonBox" id="gridToolBar"></span>
@@ -124,9 +127,7 @@ ICON = "../images/";
   </tr>
   <tr>
 	<td>
-	  <Grid:Box id="grid" baseurl="" height="630" width="1000">
-			<div class="loading"/>
-		</Grid:Box>
+		<Grid:Box id="grid" baseurl="" height="630" width="1000"><div class="loading"/></Grid:Box>
 	</td>
   </tr>
 </table>

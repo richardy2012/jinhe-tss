@@ -504,11 +504,11 @@ function HTTP_Response_Parser(responseText) {
  *  对象名称：XmlHttp对象，负责XmlHttp对象创建
  */
 function XmlHttp() {
-	if( window.XMLHttpRequest && window.DOMParser) {
-		return new XMLHttpRequest();
-	} 
-	else if(window.ActiveXObject) {
+	if(window.ActiveXObject) {
 		return new ActiveXObject("MSXML2.XMLHTTP"); // for IE6
+	} 
+	else if( window.XMLHttpRequest && window.DOMParser) {
+		return new XMLHttpRequest();
 	} 
 	else {
 		alert("您的浏览器不支持XMLHTTP");

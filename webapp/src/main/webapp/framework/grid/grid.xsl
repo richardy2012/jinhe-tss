@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/TR/WD-xsl" version="1.0">
     <xsl:template match="/">
 		<table border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
 			<colgroup>
@@ -13,12 +13,8 @@
 					<col>
 						<xsl:attribute name="align">
 							<xsl:choose>
-								<xsl:when test="@align">
-									<xsl:value-of select="@align"/>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:eval>getAlign()</xsl:eval>
-								</xsl:otherwise>
+								<xsl:when test="@align"><xsl:value-of select="@align"/></xsl:when>
+								<xsl:otherwise><xsl:eval>getAlign()</xsl:eval></xsl:otherwise>
 							</xsl:choose>
 						</xsl:attribute>
 						<xsl:attribute name="caption"><xsl:value-of select="@caption"/></xsl:attribute>

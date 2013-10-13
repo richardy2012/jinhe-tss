@@ -71,6 +71,10 @@ Public.checkBrowser = function() {
 }
 Public.checkBrowser();
 
+Public.isIE = function() {
+	return _BROWSER == _BROWSER_IE;
+}
+
 Public.executeCommand = function(callback, param) {
 	var returnVal;
 	try {
@@ -991,14 +995,14 @@ function loadXmlToNode(xml) {
 
 function getXmlDOM() {
 	var xmlDom;
-	if (window.DOMParser && _BROWSER != _BROWSER_IE) {
+	if (Public.isIE()) {
+		xmlDom = new ActiveXObject(MSXML_DOCUMENT_VERSION);
+		xmlDom.async = false;
+	}
+	else {
 		var parser = new DOMParser();
 		xmlDom = parser.parseFromString("<null/>", "text/xml");
 		xmlDom.parser = parser;
-	}
-	else { // Internet Explorer
-		xmlDom = new ActiveXObject(MSXML_DOCUMENT_VERSION);
-		xmlDom.async = false;
     } 
 	return xmlDom;
 }
@@ -1020,30 +1024,29 @@ function loadXmlDOM(url) {
 	return xmlDom;
 }
 
-
 function XmlReader(text) {
 	this.xmlDom = null;
 
-	if (window.DOMParser && _BROWSER != _BROWSER_IE) {
-		var parser = new DOMParser();
-		this.xmlDom = parser.parseFromString(text, "text/xml"); 
-	}
-	else { // Internet Explorer
+	if (Public.isIE()) {
 		this.xmlDom = new ActiveXObject(MSXML_DOCUMENT_VERSION);
 		this.xmlDom.async = false;
 		this.xmlDom.loadXML(text); 
+	}
+	else {
+		var parser = new DOMParser();
+		this.xmlDom = parser.parseFromString(text, "text/xml"); 
     } 
 
 	this.documentElement = this.xmlDom.documentElement;
 }
 
 XmlReader.prototype.loadXml = function(text) {
-	if (window.DOMParser) {
-		var parser = new DOMParser();
-		this.xmlDom = parser.parseFromString(text, "text/xml");
+	if (Public.isIE()) {
+		this.xmlDom.loadXML(text); 
 	}
 	else { 
-		this.xmlDom.loadXML(text); 
+		var parser = new DOMParser();
+		this.xmlDom = parser.parseFromString(text, "text/xml");
     } 
 }
 
@@ -1098,15 +1101,14 @@ XmlReader.prototype.toString = function() {
 }
 
 XmlReader.prototype.toXml = function() {
-	var str = "";
-	if(window.DOMParser) { 
-		var xmlSerializer = new XMLSerializer();
-        str = xmlSerializer.serializeToString(this.xmlDom.documentElement);
+	if (Public.isIE()) {
+		return this.xmlDom.xml;
 	}
 	else {
-		str = this.xmlDom.xml;
+		
+		var xmlSerializer = new XMLSerializer();
+        return xmlSerializer.serializeToString(this.xmlDom.documentElement);
 	}
-	return str;
 }
 
 /*
@@ -1361,12 +1363,12 @@ XmlNode.prototype.toString = function() {
 }
 
 XmlNode.prototype.toXml = function() {
-	if(window.DOMParser) {
-		var xs = new XMLSerializer();
-		return xs.serializeToString(this.node);
+	if (Public.isIE()) {
+		return this.node.xml
 	}
 	else {
-		return this.node.xml
+		var xs = new XMLSerializer();
+		return xs.serializeToString(this.node);
 	}
 }
 

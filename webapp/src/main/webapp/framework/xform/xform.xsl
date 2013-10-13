@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/TR/WD-xsl" version="1.0">
 	
 <xsl:template match="/">
 	<xsl:apply-templates select="*" />
@@ -7,13 +7,13 @@
 
 <xsl:template match="/*">
 	<form>
-		<xsl:if test = "not(@class) or @class=''">
+		<xsl:if test = ".[not(@class) or @class='']">
 			<xsl:attribute name="class">xform</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="not(@method)">
+		<xsl:if expr="this.getAttribute('method') == null">
 			<xsl:attribute name="method">post</xsl:attribute>
 		</xsl:if>
-		<xsl:if test="not(name)">
+		<xsl:if expr="this.getAttribute('name') == null">
 			<xsl:attribute name="name">actionForm</xsl:attribute>
 		</xsl:if>
 
@@ -45,11 +45,11 @@
 
 <xsl:template match="@*">
 	<xsl:choose>
-		<xsl:when test="name() != 'style' or ../@binding = null ">
-			<xsl:copy><xsl:value-of select="."/></xsl:copy>
+		<xsl:when expr="this.nodeName != 'style' || this.selectSingleNode('..').getAttribute('binding') == null">
+			<xsl:copy><xsl:value-of/></xsl:copy>
 		</xsl:when>
-		<xsl:when test="name() = 'style' and ../@binding != null">
-			<xsl:attribute name="defaultStyle"><xsl:value-of select="."/></xsl:attribute>
+		<xsl:when expr="this.nodeName == 'style' &amp;&amp; this.selectSingleNode('..').getAttribute('binding') != null">
+			<xsl:attribute name="defaultStyle"><xsl:value-of/></xsl:attribute>
 		</xsl:when>
 	</xsl:choose>
 </xsl:template>
@@ -60,21 +60,21 @@
 			<xsl:value-of select = "@name"/>
 		</xsl:attribute>
 		<xsl:attribute name="value">
-			<xsl:value-of select="getValue(this.getAttribute('name'))" />
+			<xsl:eval>getValue(this.getAttribute('name'))</xsl:eval>
 		</xsl:attribute>
 	</input>
 </xsl:template>
 
 <xsl:template match="TD//*">
 	<xsl:choose>
-		<xsl:when test = "this.tagName=='label' &amp;&amp; this.getAttribute('binding') != null &amp;&amp; this.getAttribute('binding') != ''">
+		<xsl:when expr = "this.tagName=='label' &amp;&amp; this.getAttribute('binding') != null &amp;&amp; this.getAttribute('binding') != ''">
 			<label>
 				<xsl:attribute name="id">label_<xsl:eval>getProperty("name")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="for"><xsl:eval>getProperty("name")</xsl:eval></xsl:attribute>
 				<xsl:eval>getProperty("caption")</xsl:eval>
 			</label>
 		</xsl:when>
-		<xsl:when test="getMode()=='string' &amp;&amp; getProperty('editor')=='radio'">
+		<xsl:when expr="getMode()=='string' &amp;&amp; getProperty('editor')=='radio'">
 			<xsl:apply-templates select="@*" />
 			<xsl:attribute name="value"><xsl:eval>getValue(this.getAttribute("binding"))</xsl:eval></xsl:attribute>
 			<xsl:attribute name="editable"><xsl:eval>getEditable()</xsl:eval></xsl:attribute>
@@ -82,7 +82,7 @@
 			<xsl:attribute name="editortext"><xsl:eval>getProperty('editortext')</xsl:eval></xsl:attribute>
 			<xsl:attribute name="id"><xsl:eval>getProperty("name")</xsl:eval></xsl:attribute>
 		</xsl:when>
-		<xsl:when test="getMode()=='string' &amp;&amp; getProperty('editor')=='comboedit'">
+		<xsl:when expr="getMode()=='string' &amp;&amp; getProperty('editor')=='comboedit'">
 			<select>
 				<xsl:apply-templates select="@*" />
 				<xsl:attribute name="editable"><xsl:eval>getEditable()</xsl:eval></xsl:attribute>
@@ -94,7 +94,7 @@
 				&amp;nbsp;
 			</select>
 		</xsl:when>
-		<xsl:when test="getMode()=='string' &amp;&amp; (getProperty('editor')=='textarea' || this.tagName=='textarea' || this.getAttribute('type')=='textarea')">
+		<xsl:when expr="getMode()=='string' &amp;&amp; (getProperty('editor')=='textarea' || this.tagName=='textarea' || this.getAttribute('type')=='textarea')">
 			<textarea>
 				<xsl:apply-templates select="@*" />
 				<xsl:attribute name="caption"><xsl:eval>getProperty("caption")</xsl:eval></xsl:attribute>
@@ -110,7 +110,7 @@
 				<xsl:eval>getValue(this.getAttribute("binding"))</xsl:eval>
 			</textarea>
 		</xsl:when>
-		<xsl:when test="getMode()=='string' &amp;&amp; getProperty('editor')=='password'">
+		<xsl:when expr="getMode()=='string' &amp;&amp; getProperty('editor')=='password'">
 			<input>
 				<xsl:apply-templates select="@*[nodeName()!='type']" />
 				<xsl:attribute name="type">password</xsl:attribute>
@@ -126,7 +126,7 @@
 				<xsl:attribute name="value"><xsl:eval>getValue(this.getAttribute("binding"))</xsl:eval></xsl:attribute>
 			</input>
 		</xsl:when>
-		<xsl:when test="getMode()=='string'">
+		<xsl:when expr="getMode()=='string'">
 			<input>
 				<xsl:apply-templates select="@*" />
 				<xsl:attribute name="caption"><xsl:eval>getProperty("caption")</xsl:eval></xsl:attribute>
@@ -141,9 +141,10 @@
 				<xsl:attribute name="value"><xsl:eval>getValue(this.getAttribute("binding"))</xsl:eval></xsl:attribute>
 			</input>
 		</xsl:when>
-		<xsl:when test="getMode()=='number'">
+		<xsl:when expr="getMode()=='number'">
 			<input>
 				<xsl:apply-templates select="@*" />
+				<xsl:attribute name="ancestor"><xsl:eval>uniqueID</xsl:eval></xsl:attribute>
 				<xsl:attribute name="caption"><xsl:eval>getProperty("caption")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="editable"><xsl:eval>getEditable()</xsl:eval></xsl:attribute>
 				<xsl:attribute name="empty"><xsl:eval>getProperty("empty")</xsl:eval></xsl:attribute>
@@ -157,9 +158,10 @@
 				<xsl:attribute name="value"><xsl:eval>getValue(this.getAttribute("binding"))</xsl:eval></xsl:attribute>
 			</input>
 		</xsl:when>
-		<xsl:when test="getMode()=='function'">
+		<xsl:when expr="getMode()=='function'">
 			<input type="text">
 				<xsl:apply-templates select="@*" />
+				<xsl:attribute name="ancestor"><xsl:eval>uniqueID</xsl:eval></xsl:attribute>
 				<xsl:attribute name="caption"><xsl:eval>getProperty("caption")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="clickOnly"><xsl:eval>getProperty("clickOnly")</xsl:eval></xsl:attribute>
 				<xsl:attribute name="cmd"><xsl:eval>getProperty("cmd")</xsl:eval></xsl:attribute>
@@ -175,7 +177,7 @@
 		<xsl:otherwise>
 			<xsl:copy>
 				<xsl:apply-templates select="@*" />
-				<xsl:if test="getEditable()=='false'">
+				<xsl:if expr="getEditable()=='false'">
 					<xsl:attribute name="disabled">true</xsl:attribute>
 				</xsl:if>
 				<xsl:apply-templates/>
@@ -187,6 +189,7 @@
 <xsl:template match="TD//text()"><xsl:copy/></xsl:template>
 
 <xsl:script>
+	var uniqueID = "";
 	var baseurl  = "";
 	var formEditable = "";
 </xsl:script>
@@ -224,7 +227,9 @@
 			return propValue;
 		}
 	}
-
+	function addPrefix() {
+		return uniqueID + ".";
+	}
 	function getEditable() {
 		if(formEditable == "false") {
 			return "false";
