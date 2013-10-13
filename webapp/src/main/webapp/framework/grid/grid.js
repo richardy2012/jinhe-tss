@@ -46,17 +46,13 @@ Grid.prototype.load = function(data, append) {
 	} 
 	
 	this.template = new GridTemplate(data.node);	
-	if( this.template.xmlDom == null ) return;
- 
-	this.xslDom = getXmlDOM();
-	this.xslDom.resolveExternals = false;
-	this.xslDom.load(this.baseurl + "grid.xsl");
+	if( this.template.declare == null ) return;
 
 	// 初始化变量
-	var startNum = append ? this.totalRowsNum : 0;
-	// "; var startNum=" + startNum + ";" + "; var gridId='" + this.id + "'; \r\n"; 
-		
-	var gridTableHtml = parseTempalte(template); // 解析成Html
+	var startNum = append ? this.totalRowsNum : 0;		
+
+	// 解析成Html
+	var gridTableHtml = parseTempalte(this.template, startNum, this.id); 
 	
 	if(append) {
 		var tempGridNode = document.createElement("div");
@@ -111,22 +107,108 @@ var GridTemplate = function(xmlDom) {
 		this.script  = xmlDom.selectSingleNode("./script");
 		this.columns = xmlDom.selectNodes("./declare/column");
 		this.data    = xmlDom.selectSingleNode("./data");
+		this.dataRows = xmlDom.selectNodes(".//data//row") || [];
 
 		this.columnsMap = {};
 		for(var i = 0; i < this.columns.length; i++) {
 			this.columnsMap[this.columns[i].getAttribute("name")] = this.columns[i];
 		}
 		
-		this.header = this.declare.getAttribute("header");
-		this.hasHeader = (this.header == "radio" || this.header == "checkbox");
- 
-		this.visibleColumns = this.selectNodes(".//declare//column[(@display!='none') or not(@display)]");
-		this.dataRows = this.selectNodes(".//data//row");
-	}
+		this.hasHeader    = this.declare.getAttribute("header") == "checkbox";
+		this.needSequence = this.declare.getAttribute("sequence") != "false";
+ 	}
 }
 
-Grid.prototype.parseTempalte = function(template) {
-	
+function parseTempalte(template, startNum, gridID) {
+	 var colgroup = new Array();
+	 var thead = new Array();
+	 var tbody = new Array();
+
+	 colgroup.push("<colgroup>");
+	 thead.push("<thead><tr>");
+	 tbody.push("<tbody class=\"cell\">");
+	 if(template.hasHeader) {
+		colgroup.push("<col align=\"center\"/>");
+		thead.push("<td width=\"50px\" class=\"column\"><input type=\"checkbox\" id=\"headerCheckAll\"/></td>");
+	 }
+	 if(template.needSequence) {
+		colgroup.push("<col align=\"center\" class=\"sequence\" id=\"sequence\"/>");
+		thead.push("<td width=\"50px\" name=\"sequence\" class=\"column\"><nobr>序号</nobr></td>");
+	 }
+	 for(var name in template.columnsMap) {
+		var column = template.columnsMap[name];
+		var width    = column.getAttribute("width");
+		var _class   = column.getAttribute("display") == "none" ?  "class=\"hidden\"" : "";
+		var caption  = column.getAttribute("caption");
+		var sortable = column.getAttribute("sortable") == "true" ? "sortable=\"true\"" : "";
+
+		colgroup.push("<col align=\"" + getAlign(column) + "\" caption=\"" + caption + "\" " + _class + "/>");
+		thead.push("<td width=\"" + width + "\" name=\"" + name + "\" class=\"column\"><nobr>" + caption + "</nobr></td>")
+	 }
+
+	 for(var i=0; i < template.dataRows.length; i++) {
+		var row = template.dataRows[i];
+		var _class =  column.getAttribute("class");
+		var index = startNum + i + 1;
+		
+		tbody.push("<tr class=\"" + _class + "\" _index=\"" + index + "\" ");
+		// 把各个属性值复制一份到 tr 的属性上
+		for(var name in template.columnsMap) {
+			tbody.push( name + "=\"" + row.getAttribute(name) + "\" ");
+		}
+		tbody.push(">");
+
+		if(template.hasHeader) {
+			tbody.push("<td mode=\"cellheader\" name=\"cellheader\"><nobr>");
+			tbody.push("<input class=\"selectHandle\" name=\"" + gridID + "_header\" type=\"checkbox\" >");
+			tbody.push("</nobr></td>")
+		}
+		if(template.needSequence) {
+			tbody.push("<td mode=\"cellsequence\" name=\"cellsequence\"><nobr>" + index + "</nobr></td>");
+		}
+
+		for(var name in template.columnsMap) {
+			var column = template.columnsMap[name];
+			var _class   = column.getAttribute("highlightCol") == "true" ?  "class=\"highlightCol\"" : "";
+
+			tbody.push("<td name=\"" + name + "\" " + _class + "><nobr>" + "TSS" + "</nobr></td>");
+		}
+		tbody.push("</tr>");
+	 }
+
+	 colgroup.push("</colgroup>");
+	 thead.push("</thead></tr>");	 
+	 tbody.push("</tbody>");
+
+	 var htmls = new Array();
+     htmls.push("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"table-layout:fixed\">");
+	 htmls.push(colgroup.join(""));
+	 htmls.push(thead.join(""));
+	 htmls.push(tbody.join(""));
+
+	 return htmls.join("");
+
+	 // function define
+	 function getAlign(column) {
+		var align = column.getAttribute("align");
+		if(align) {
+			return align;
+		}
+
+		switch(column.getAttribute("mode")) {
+			case "number":
+				return "right";
+			case "boolean":
+			case "date":
+				return "center";
+			default:
+				return "left";
+		}
+	 }
+
+	function isHighlightCol(column) {
+		return column.getAttribute("highlightCol") == "true";
+	}
 }
 
 /*
