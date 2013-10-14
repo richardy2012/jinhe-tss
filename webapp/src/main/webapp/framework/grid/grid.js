@@ -42,7 +42,7 @@ var Grid = function(element, data) {
 
 
 Grid.prototype.load = function(data, append) {
-	if("object" != typeof(data) || data.nodeType != 1) {
+	if("object" != typeof(data) || data.nodeType != _XML_NODE_TYPE_ELEMENT) {
 		alert("传入的Grid数据有问题。")	
 	} 
 	

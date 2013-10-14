@@ -42,7 +42,7 @@ XForm.prototype.load = function(data) {
 		// 修正comboedit类型默认第一项的值
 		this.fixComboeditDefaultValue(this.template.dataRows);		
 		
-		this.element.innerHTML = parseTempalte(this.template); // 把XML解析成Html
+		this.element.innerHTML = this.parseTempalte(); // 把XML解析成Html
 
 		// 绑定各个column对应的编辑方式
 		this.attachEditor();
@@ -86,11 +86,9 @@ var XFormTemplate = function(data) {
 	}
 }
 
-
-
-// "\r\nvar baseurl=\"" + this._baseurl + "\";\r\nvar formEditable=\"" + this.editable + "\";\r\n";
 XForm.prototype.parseTempalte = function() {
 	 var htmls = new Array();
+	 var oThis = this;
 
 	 htmls.push("<form class='xform' method='post' name='actionForm'>");
 	 htmls.push("<div class='contentBox'>");
@@ -105,20 +103,33 @@ XForm.prototype.parseTempalte = function() {
 		}
 	 }
 
-	 var layoutTRs = this.layout.selectSingleNode("./TR");
+	 var layoutTRs = this.template.layout.childNodes;
 	 for(var i=0; i < layoutTRs.length; i++) {
 		var trNode = layoutTRs[i];
+		htmls.push("<tr>");
 
-		var layoutTDs = trNode.selectSingleNode("./TD");
+		var layoutTDs = trNode.childNodes;
 		for(var j=0; j < layoutTDs.length; j++) {
 			var tdNode = layoutTDs[j];
+			htmls.push("<td "+ copyNodeAttribute(tdNode) +">");
+
 			var childNodes = tdNode.childNodes;
 			for(var n=0; n < childNodes.length; n++) {
 				var childNode = childNodes[n];
-				var nodeName = childNode.nodeName;
-				var binding = nodeName.getAttribute("binding");
+				if(childNode.nodeType != _XML_NODE_TYPE_ELEMENT) {
+					htmls.push(childNode.nodeValue);
+					continue;
+				}
+
+				var nodeName = childNode.nodeName.toLowerCase();
+				var binding = childNode.getAttribute("binding");
 
 				var column = this.template.columnsMap[binding];
+				if(column == null) {
+					htmls.push(childNode.xml + "&nbsp;");
+					continue;
+				}
+
 				var mode = column.getAttribute("mode");
 				var editor = column.getAttribute("editor");
 				var caption = column.getAttribute("caption");
@@ -131,8 +142,16 @@ XForm.prototype.parseTempalte = function() {
 				else if(mode == "string" && editor == 'comboedit') {
 					htmls.push("<select " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + copyColumnValue(binding) + "></select>");
 				}
+				else if(mode == "string" && nodeName == 'textarea') {
+					htmls.push("<textarea " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + ">" + this.getColumnValue(binding) + "</textarea>");
+				}
+				else if(mode == "string" || mode == "function") {
+					htmls.push("<input " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + copyColumnValue(binding) + "></input>");
+				}
 			}
+			htmls.push("</td>");
 		}	
+		htmls.push("</tr>");
 	 }
 
 	 htmls.push("</table>");
@@ -141,19 +160,24 @@ XForm.prototype.parseTempalte = function() {
 	 htmls.push("</form>");
 	 return htmls.join("");
 
+	 // some private function define
 	 function copyColumnAttribute(column) {
 		var returnVal = "";
 		var attributes = column.attributes;
 		for(var i = 0; i < attributes.length; i++) {
-			var name = attributes[i].nodeName();
-			returnVal += (name == "name" ? "id" : name) + "=\"" + attributes[i].nodeValue + "\"";
+			var name = attributes[i].nodeName;
+			var value = attributes[i].nodeValue;
+			if(name == "editable") {
+				value = oThis.editable || value;
+			}
+			returnVal += (name == "name" ? "id" : name) + "=\"" + value + "\"";
 		}
 		return returnVal;
 	 }
 
 	 function copyColumnValue(columnName) {
-		var value = this.getColumnValue(columnName);
-		return value ? "value=\"" + value + "\"";
+		var value = oThis.getColumnValue(columnName);
+		return value ? "value=\"" + value + "\"" : "";
 	 }
 
 	 function copyNodeAttribute(node) {
@@ -162,10 +186,10 @@ XForm.prototype.parseTempalte = function() {
 		var attributes = node.attributes;
 		for(var i = 0; i < attributes.length; i++) {
 			var attr = attributes[i];
-			if(attr.nodeName() != "style" || !hasBinding) {
-				returnVal += attr.nodeName() + "=\"" + attr.nodeValue + "\"";
+			if(attr.nodeName != "style" || !hasBinding) {
+				returnVal += attr.nodeName + "=\"" + attr.nodeValue + "\"";
 			}
-			if(attr.nodeName() == "style" && hasBinding) {
+			if(attr.nodeName == "style" && hasBinding) {
 				returnVal += "defaultStyle=\"" + attr.nodeValue + "\"";
 			}
 		}
