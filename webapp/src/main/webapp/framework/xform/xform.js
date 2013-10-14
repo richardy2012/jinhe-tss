@@ -51,7 +51,7 @@ XForm.prototype.load = function(data) {
 		this.attachEvents();
 
 		// 自动聚焦
-		if(this.element.editable != "false") {
+		if(this.editable != "false") {
 			this.setFocus();
 		}		
 	}
@@ -86,9 +86,91 @@ var XFormTemplate = function(data) {
 	}
 }
 
-// "\r\nvar baseurl=\"" + this._baseurl + "\";\r\nvar formEditable=\"" + editable + "\";\r\n";
-function parseTempalte(template) {
-	
+
+
+// "\r\nvar baseurl=\"" + this._baseurl + "\";\r\nvar formEditable=\"" + this.editable + "\";\r\n";
+XForm.prototype.parseTempalte = function() {
+	 var htmls = new Array();
+
+	 htmls.push("<form class='xform' method='post' name='actionForm'>");
+	 htmls.push("<div class='contentBox'>");
+	 htmls.push('<table border="0" bordercolor="#D5E1F0" cellspacing="0" cellpadding="0" width="100%" style="border-collapse:collapse;">');
+
+	 for(var name in this.template.columnsMap) {
+		var column = this.template.columnsMap[name];
+		var hidden = column.getAttribute("hidden") == "true";
+		if(hidden) {
+			var value = this.getColumnValue(name);
+			htmls.push('<input type="hidden" value="' + value + '" id="' + name + '"/>');
+		}
+	 }
+
+	 var layoutTRs = this.layout.selectSingleNode("./TR");
+	 for(var i=0; i < layoutTRs.length; i++) {
+		var trNode = layoutTRs[i];
+
+		var layoutTDs = trNode.selectSingleNode("./TD");
+		for(var j=0; j < layoutTDs.length; j++) {
+			var tdNode = layoutTDs[j];
+			var childNodes = tdNode.childNodes;
+			for(var n=0; n < childNodes.length; n++) {
+				var childNode = childNodes[n];
+				var nodeName = childNode.nodeName;
+				var binding = nodeName.getAttribute("binding");
+
+				var column = this.template.columnsMap[binding];
+				var mode = column.getAttribute("mode");
+				var editor = column.getAttribute("editor");
+				var caption = column.getAttribute("caption");
+
+				var type = childNode.getAttribute("type");
+				
+				if(nodeName == "label" && binding && binding != "") {
+					htmls.push("<label id='label_" + binding + "' for= '" + binding + "'>" + caption + "</label>");
+				}
+				else if(mode == "string" && editor == 'comboedit') {
+					htmls.push("<select " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + copyColumnValue(binding) + "></select>");
+				}
+			}
+		}	
+	 }
+
+	 htmls.push("</table>");
+	 htmls.push('<input type="hidden" name="xml" id="xml"/>');
+	 htmls.push("</div>");
+	 htmls.push("</form>");
+	 return htmls.join("");
+
+	 function copyColumnAttribute(column) {
+		var returnVal = "";
+		var attributes = column.attributes;
+		for(var i = 0; i < attributes.length; i++) {
+			var name = attributes[i].nodeName();
+			returnVal += (name == "name" ? "id" : name) + "=\"" + attributes[i].nodeValue + "\"";
+		}
+		return returnVal;
+	 }
+
+	 function copyColumnValue(columnName) {
+		var value = this.getColumnValue(columnName);
+		return value ? "value=\"" + value + "\"";
+	 }
+
+	 function copyNodeAttribute(node) {
+		var returnVal = "";
+		var hasBinding = node.getAttribute("binding") != null;
+		var attributes = node.attributes;
+		for(var i = 0; i < attributes.length; i++) {
+			var attr = attributes[i];
+			if(attr.nodeName() != "style" || !hasBinding) {
+				returnVal += attr.nodeName() + "=\"" + attr.nodeValue + "\"";
+			}
+			if(attr.nodeName() == "style" && hasBinding) {
+				returnVal += "defaultStyle=\"" + attr.nodeValue + "\"";
+			}
+		}
+		return returnVal;
+	 }
 }
 
 
@@ -128,9 +210,6 @@ XForm.prototype.attachEditor = function() {
 				var colEditor = column.getAttribute("editor");
 				if(colEditor == "comboedit") {
 					curInstance = new Mode_ComboEdit(colName, this);
-				}
-				else if(colEditor == "radio") {
-					curInstance = new Mode_Radio(colName, this);
 				}
 				else {
 					curInstance = new Mode_String(colName, this);
@@ -498,9 +577,6 @@ function Mode_ComboEdit(colName, xform) {
 	for(var i=0; i < valueList.length; i++){
 		var value = valueList[i];
 		var lable = textList[i];
-		if( lable == "&#124;" ){
-			lable = "|";
-		}
 
 		var option = new Option();
 		option.value = value;
@@ -521,8 +597,8 @@ function Mode_ComboEdit(colName, xform) {
 	this.obj.onchange = function() {
 		var x = [];
 		for(var i=0; i < this.options.length; i++) {
-			var opt = this.options[i];
-			if(opt.selected) {
+			var option = this.options[i];
+			if(option.selected) {
 				x[x.length] = opt.value;
 			}
 		}
@@ -537,16 +613,17 @@ Mode_ComboEdit.prototype.setValue = function(value) {
 	for(var i = 0; i < valueArray.length; i++){
 		valueList[valueArray[i]] = true;
 	}
-	var isMatch = false;
+
+	var noSelected = true;
 	for(var i=0; i < this.obj.options.length; i++){
 		var opt = this.obj.options[i];
 		if(valueList[opt.value]) {
 			opt.selected = true;
-			isMatch = true;
+			noSelected = false;
 		}
 	}
 
-	if(false == isMatch){
+	if(noSelected){
 		this.obj.selectedIndex = -1;	
 	}
 }
@@ -598,154 +675,25 @@ Mode_ComboEdit.prototype.setFocus = function() {
 
 
 
-
-function Mode_Radio(colName, xform) {
-	this.name = colName;
-	this.obj = $$(colName);
-
-	var tempThis = this;
-	this.obj._value = this.obj.value;
-
-	var tempRadios = "";
-	var valueList = this.obj.editorvalue;
-	var textList = this.obj.editortext;
-	var valueArray = valueList.split('|');
-	for(var i=0; i < valueArray.length; i++ ) {
-		var value = valueArray[i];
-		var tempLable = textList.split('|')[i];
-
-		var tempID   = this.obj.binding + '_radio_' + this.obj.uniqueID + "_" + i;
-		var tempName = this.obj.binding + '_radio_' + this.obj.uniqueID;
-		tempRadios += '<input type="radio" class="radio" id="' + tempID + '" name="' + tempName + '" value="' + value + '"' 
-			+ (this.obj._value == value ? ' checked' : '') + (this.obj.getAttribute('editable') == 'false' ? ' disabled' : '') 
-			+ ' binding="' + this.obj.binding + '">' + '<label for="' + tempID + '">' + tempLable + '</label>';
-	}
-	this.obj.innerHTML = tempRadios;
-	
-	var inputObjs = this.obj.all.tags("INPUT");
-	var tempObj   = this.obj;
-	for(var i=0; i < inputObjs.length; i++) {
-		var inputObj = inputObjs[i];
-		inputObj.style.cssText = tempObj.defaultStyle;
-		inputObj.multipleIndex = tempObj.multipleIndex;
-
-		inputObj.onclick = function() {
-			xform.updateData(this);
-			tempObj._value = this.value;
-		}
-	}
-}
-
-Mode_Radio.prototype.setValue = function(value) {
-	var inputObjs = this.obj.all.tags("INPUT");
-	for(var i=0; i < inputObjs.length; i++) {
-		var inputObj = inputObjs[i];
-		if(inputObj.value == value ) {
-			inputObj.checked = true;
-			this.obj._value = inputObj.value;
-			return;
-		} 
-		else {
-			inputObj.checked = false;
-		}
-	}
-}
-
-Mode_Radio.prototype.setEditable = function(s) {
-	var inputObjs = this.obj.all.tags("INPUT");
-	for(var i=0; i < inputObjs.length; i++) {
-		var inputObj = inputObjs[i];
-		inputObj.disabled = (s == "true" ? false : true);
-	}
-	this.obj.editable = s;
-}
-
-Mode_Radio.prototype.validate = function() {
-	return true;
-}
-
-Mode_Radio.prototype.reset = function() {
-	var inputObjs = this.obj.all.tags("INPUT");
-	for(var i=0; i < inputObjs.length; i++) {
-		var inputObj = inputObjs[i];
-		inputObj.checked = inputObj.defaultChecked;
-	}
-}
-Mode_Radio.prototype.saveAsDefaultValue = function() {
-	var inputObjs = this.obj.all.tags("INPUT");
-	for(var i=0; i < inputObjs.length; i++){
-		var inputObj = inputObjs[i];
-		inputObj.defaultChecked = inputObj.checked;
-	}
-}
-Mode_Radio.prototype.setFocus = function(){
-	var inputObjs = this.obj.all.tags("INPUT");
-	try{
-		inputObjs[0].focus();
-	}catch(e){
-	}
-}
-
-
-
-
-
 function Mode_Function(colName, xform) {
-	this.name = colName;
-	this.obj = $$(colName);
-
-	var tempThis = this;
-	this.obj._value = this.obj.value;
-
-	if(this.obj.clickOnly!="false"){ // 可通过column上clickOnly来控制是否允许可手工输入
-		this.obj.readOnly = true;
-	}
-	
-	//如果不可为空，添加星号
-	if(this.obj.getAttribute('empty') == "false"){
-		this.obj.insertAdjacentHTML("afterEnd", "<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
-	}
-
+	Mode_String.call(this, element);
+ 
 	this.obj.disabled  = (this.obj.getAttribute("editable") == "false");
 	this.obj.className = (this.obj.disabled ? "function_disabled" : "function");
 
+	if(this.obj.clickOnly != "false") { // 可通过column上clickOnly来控制是否允许可手工输入
+		this.obj.readOnly = true;
+	}
+
+	var tempThis = this;
 	waitingForVisible(function() {
 		tempThis.obj.style.width = Math.max(1, tempThis.obj.offsetWidth - 20);
 	}, tempThis.obj);
 
-	this.obj.onblur = function() {
-		if("text" == this.type) {
-			this.value = this.value.replace(/(^\s*)|(\s*$)/g, "");
-		}
-		
-		if(this.value=="" && this.empty=="false"){
-			showErrorInfo("请输入 [" + this.caption.replace(/\s/g, "") + "]", this);
-		} 
-		else if(this.inputReg!="null" && eval(this.inputReg).test(this.value) == false) {
-			showErrorInfo("[" + this.caption.replace(/\s/g,"") + "] 格式不正确，请更正",this);
-		}
-		else{
-			xform.updateData(this);
-		}
-	};
-	this.obj.onpropertychange = function() {
-		if(window.event.propertyName == "value") {
-			if(this.inputReg != "null" && eval(this.inputReg).test(this.value) == false) { // 输入不符合
-				restore(this, this._value);
-			} 
-			else if(this.value.replace(/[^\u0000-\u00FF]/g, "**").length > parseInt(this.maxLength)) {
-				restore(this, this.value.substringB(0, this.maxLength));
-			} 
-			else {
-				this._value = this.value;
-			}
-		}
-	};
-
 	if( !this.obj.disabled ) {
 		var tempThisObj = this.obj;
 
-		//添加点击按钮
+		// 添加点击按钮
 		this.obj.insertAdjacentHTML('afterEnd', '<button style="width:20px;height:18px;background-color:transparent;border:0px;"><img src="' + xform._iconPath + 'function.gif"></button>');
 		var btObj = this.obj.nextSibling; // 动态添加进去的按钮
 		btObj.onclick = function(){
@@ -759,30 +707,16 @@ function Mode_Function(colName, xform) {
 	}	
 }
 
-Mode_Function.prototype.setValue = function(value) {
-	this.obj._value = this.obj.value = value;
-}
-Mode_Function.prototype.setEditable = function(s) {
-	this.obj.disabled  = (s == "false");
+Mode_Function.prototype = Mode_String.prototype;
+
+Mode_Function.prototype.setEditable = function(status) {
+	this.obj.disabled  = (status == "false");
 	this.obj.className = (this.obj.disabled ? "function_disabled" : "function");
 
 	// function图标
-	this.obj.nextSibling.disabled = this.obj.disabled;
+	this.obj.nextSibling.disabled  = this.obj.disabled;
 	this.obj.nextSibling.className = (this.obj.disabled ? "bt_disabled" : "");
-	this.obj.editable = s;
-}
-Mode_Function.prototype.validate = validate;
-Mode_Function.prototype.reset = function() {
-	this.obj.value = this.obj.defaultValue;
-}
-Mode_Function.prototype.saveAsDefaultValue = function() {
-	this.obj.defaultValue = this.obj.value;
-}
-Mode_Function.prototype.setFocus = function() {
-	try {
-		this.obj.focus();
-	} catch(e) {
-	}
+	this.obj.editable = status;
 }
 
 
@@ -858,6 +792,20 @@ function waitingForVisible(func, element) {
 	}
 }
 
+function xformExtractData(xformNode, needPrefix) {
+	if( xformNode ) {
+		var dataNode = xformNode.selectSingleNode(".//data");
+
+		var prefix = null;
+		if(needPrefix) {
+			prefix = xformNode.selectSingleNode("./declare").getAttribute("prefix");
+		}
+		
+		return dataNode2Map(dataNode, prefix);
+	}
+	return null;
+}
+
 function dataNode2Map(dataNode, prefix) {
 	var map = {};
 	if(dataNode && dataNode.nodeName == "data") {
@@ -875,18 +823,4 @@ function dataNode2Map(dataNode, prefix) {
 		}
 	}
 	return map;
-}
-
-function xformExtractData(xformNode, needPrefix) {
-	if( xformNode ) {
-		var dataNode = xformNode.selectSingleNode(".//data");
-
-		var prefix = null;
-		if(needPrefix) {
-			prefix = xformNode.selectSingleNode("./declare").getAttribute("prefix");
-		}
-		
-		return dataNode2Map(dataNode, prefix);
-	}
-	return null;
 }
