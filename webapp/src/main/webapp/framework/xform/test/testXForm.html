@@ -1,0 +1,87 @@
+<HTML xmlns:XForm>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>test XForm</title>
+
+<link href="../xform.css" rel="stylesheet" type="text/css">
+<link href="../../balloon/balloon.css" rel="stylesheet" type="text/css">
+
+<script language="javascript" src="../../core.js"></script>
+<script language="javascript" src="../../ajax.js"></script>
+<script language="javascript" src="../../framework.js"></script>
+<script language="javascript" src="../../balloon/balloon.js"></script>
+
+<script language="javascript" src="../xform.js"></script>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+
+/* 核心包相对路径 */
+URL_CORE = "../../";
+
+    URL_XFORM_DEMO = "_xform_user.xml";
+	URL_SAVE_USER  = "_success.xml";
+
+    function init() {
+		var cacheID = "user1";
+		var onresult = function() {
+			var dataXmlNode = this.getNodeValue("UserInfo");
+			Cache.XmlDatas.add(cacheID, dataXmlNode);
+
+			var userForm = $X("userForm", dataXmlNode);
+
+			userForm.setColumnEditable("loginName", "false");
+
+			$$("btSave").onclick = function() {
+				saveUser(cacheID);
+			}
+		}
+
+		Ajax({ url: URL_XFORM_DEMO, onresult: onresult});
+    }
+ 
+
+    function saveUser(cacheID) {
+        var userForm = $X("userForm");
+        if(  !userForm.checkForm() ) {
+            return;
+        }
+
+        var p = new HttpRequestParams();
+        p.url = URL_SAVE_USER;
+
+        //是否提交
+        var flag = false;
+ 
+		var dataXmlNode = Cache.XmlDatas.get(cacheID);
+		var dataNode = dataXmlNode.selectSingleNode(".//data");
+		if(dataNode) {
+			flag = true;
+			p.setXFormContent(dataNode);
+		}
+
+        if(flag) {
+            var request = new HttpRequest(p);
+
+            syncButton([$$("btSave")], request);
+
+            request.onsuccess = function() {
+				alert("保存成功");
+            }
+            request.send();
+        }
+    }
+
+    window.onload = init;
+
+//-->
+</SCRIPT>
+</head>
+
+<body>
+	<div class="loginBox">
+		<XForm:Box id="userForm" baseurl="../" editable="true"><div class="loading"/></XForm:Box>
+		<input type="button" class="btStrong" value="完成" id="btSave"/>
+	</div>
+</body>
+</html>

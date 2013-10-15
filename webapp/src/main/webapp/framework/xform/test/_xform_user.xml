@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<UserInfo>
+      <xform>
+        <declare prefix="user">
+		  <column name="id" caption="用户ID" mode="hidden"/>
+		  <column name="userName"  caption="姓名" mode="string" empty="false" maxLength="100" />
+          <column name="loginName" caption="帐号" mode="string" empty="false" maxLength="100" />
+          <column name="jianjie"   caption="简介" mode="string" maxLength="400" />
+          <column name="groupName" caption="组织" mode="string" maxLength="10" />
+          <column name="groupId"   caption="组ID" mode="hidden"/>
+          <column name="address"   caption="地址" mode="string" empty="true" maxLength="100" />
+          <column name="postCode"  caption="邮编" mode="string" maxLength="100" inputReg="/^\d{0,10}$/" />
+          <column name="email"     caption="邮件" mode="string" maxLength="100" inputReg="/^\w+@?\w*\.?\w*$/"  />
+          <column name="birthday"  caption="生日" mode="string" pattern="yyyy-MM-dd" maxLength="32" />
+          <column name="sex"       caption="性别" mode="string" clickOnly="false" editor="comboedit" editorvalue="0|1|2" editortext="男|女|其它"/> 
+		  <column name="temp1"     caption="函数" mode="function" cmd="func1()"/>
+        </declare>
+        <layout>
+          <TR>
+              <TD width="50">
+                  <label binding="loginName"/>
+              </TD>
+              <TD>
+                  <input binding="loginName"/>
+              </TD>
+              <TD width="50">
+                  <label binding="userName"/>
+              </TD>
+              <TD>
+                  <input binding="userName"/>
+              </TD>
+          </TR><TR>
+              <TD width="50">
+                  <label binding="sex"/>
+              </TD>
+              <TD>
+                  <input binding="sex"/>
+              </TD>
+              <TD width="50">
+                  <label binding="birthday"/>
+              </TD>
+              <TD>
+                  <input binding="birthday"/>
+              </TD>
+          </TR><TR>
+              <TD width="50">
+                  <label binding="temp1"/>
+              </TD>
+              <TD>
+                  <input binding="temp1"/>
+              </TD>
+              <TD width="50">
+                  <label binding="email"/>
+              </TD>
+              <TD>
+                  <input binding="email"/>
+              </TD>
+          </TR><TR>
+              <TD width="50">
+                  <label binding="groupName"/>
+              </TD>
+              <TD>
+                  <input binding="groupName"/>
+              </TD>
+              <TD width="50">
+                  <label binding="postCode"/>
+              </TD>
+              <TD>
+                  <input binding="postCode"/>
+              </TD>
+          </TR><TR>
+              <TD width="50">
+                  <label binding="address"/>
+              </TD>
+              <TD>
+                  <input binding="address"/>
+              </TD>
+              <TD width="50">
+				  <label binding="address"/>
+              </TD>
+              <TD>
+			      <textarea binding="address" style="width:200px;height:60px"/>
+              </TD>
+          </TR>
+        </layout><data><row><loginName><![CDATA[Jon.King]]></loginName><userName><![CDATA[XXX]]></userName><sex><![CDATA[1]]></sex><mail><![CDATA[xxx@xxx.com]]></mail></row></data></xform>
+	</UserInfo>
+</Response>

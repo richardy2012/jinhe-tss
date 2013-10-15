@@ -101,11 +101,7 @@
     }
  
     function loadInitData() {
-        var p = new HttpRequestParams();
-        p.url = URL_INIT;
-
-        var request = new HttpRequest(p);
-        request.onresult = function() {
+        var onresult = function() {
             var treeNode = this.getNodeValue(XML_MAIN_TREE);
  
             var tree = $T("tree", treeNode);
@@ -120,7 +116,8 @@
                 onTreeNodeRightClick(eventObj);
             }
         }
-        request.send();
+
+        Ajax({ url: URL_INIT, onresult: onresult});
     }
  
     function editReleaseConfig() {
@@ -145,11 +142,7 @@
     }
  
     function loadTreeDetailData(treeID) {
-		var p = new HttpRequestParams();
-		p.url = URL_NODE_DETAIL + treeID;
-
-		var request = new HttpRequest(p);
-		request.onresult = function() {
+		var onresult = function() {
 			var dataXmlNode = this.getNodeValue(XML_NODE_INFO);
 
 			Cache.XmlDatas.add(treeID, dataXmlNode);
@@ -167,7 +160,8 @@
 				savePublish(treeID);
 			}
 		}
-		request.send();
+
+		Ajax({ url: URL_NODE_DETAIL + treeID, onresult: onresult});
     }
  
 
@@ -198,7 +192,6 @@
             request.onresult = function() {
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
 				appendTreeNode("_rootId", treeNode);
-
 				ws.closeActiveTab();
             }
             request.onsuccess = function() {
@@ -281,10 +274,9 @@
 
     /* 静态发布门户 */
     function staticRelease() {       
-		var p = new HttpRequestParams();
-        p.url = URL_STATIC_RELEASE + getTreeNodeId();
-        var request = new HttpRequest(p);
-        request.send();
+		Ajax({
+			url:  URL_STATIC_RELEASE + getTreeNodeId()
+		});
     }
  
 
