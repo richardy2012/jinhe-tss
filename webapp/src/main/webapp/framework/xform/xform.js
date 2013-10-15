@@ -72,7 +72,7 @@ var XFormTemplate = function(data) {
 			this._document.appendChild(this.data);
 		}
 		
-		this.dataRows = this._document.selectSingleNode("./data/row[0]");
+		this.dataRows = this._document.selectSingleNode("./data/row");
 		if(this.dataRows == null) {
 			this.dataRows = new XmlNode(getXmlDOM().createElement("row"));
 			this.data.appendChild(this.dataRows);	
@@ -96,10 +96,11 @@ XForm.prototype.parseTempalte = function() {
 
 	 for(var name in this.template.columnsMap) {
 		var column = this.template.columnsMap[name];
-		var hidden = column.getAttribute("hidden") == "true";
+		var hidden = column.getAttribute("mode") == "hidden";
 		if(hidden) {
 			var value = this.getColumnValue(name);
-			htmls.push('<input type="hidden" value="' + value + '" id="' + name + '"/>');
+			value = value ? "value=\"" + value + "\"" : "";
+			htmls.push('<input type="hidden" ' + value + ' id="' + name + '"/>');
 		}
 	 }
 
@@ -133,20 +134,20 @@ XForm.prototype.parseTempalte = function() {
 				var mode = column.getAttribute("mode");
 				var editor = column.getAttribute("editor");
 				var caption = column.getAttribute("caption");
-
-				var type = childNode.getAttribute("type");
+				var value = this.getColumnValue(binding);
+				var _value = (value ? " value=\"" + value + "\"" : " ");
 				
 				if(nodeName == "label" && binding && binding != "") {
 					htmls.push("<label id='label_" + binding + "' for= '" + binding + "'>" + caption + "</label>");
 				}
 				else if(mode == "string" && editor == 'comboedit') {
-					htmls.push("<select " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + copyColumnValue(binding) + "></select>");
+					htmls.push("<select " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + _value + "></select>");
 				}
 				else if(mode == "string" && nodeName == 'textarea') {
-					htmls.push("<textarea " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + ">" + this.getColumnValue(binding) + "</textarea>");
+					htmls.push("<textarea " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + ">" + (value ? value : "") + "</textarea>");
 				}
 				else if(mode == "string" || mode == "function") {
-					htmls.push("<input " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + copyColumnValue(binding) + "></input>");
+					htmls.push("<input " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + _value + "></input>");
 				}
 			}
 			htmls.push("</td>");
@@ -170,14 +171,9 @@ XForm.prototype.parseTempalte = function() {
 			if(name == "editable") {
 				value = oThis.editable || value;
 			}
-			returnVal += (name == "name" ? "id" : name) + "=\"" + value + "\"";
+			returnVal += (name == "name" ? "id" : name) + "=\"" + value + "\" ";
 		}
 		return returnVal;
-	 }
-
-	 function copyColumnValue(columnName) {
-		var value = oThis.getColumnValue(columnName);
-		return value ? "value=\"" + value + "\"" : "";
 	 }
 
 	 function copyNodeAttribute(node) {
@@ -187,10 +183,10 @@ XForm.prototype.parseTempalte = function() {
 		for(var i = 0; i < attributes.length; i++) {
 			var attr = attributes[i];
 			if(attr.nodeName != "style" || !hasBinding) {
-				returnVal += attr.nodeName + "=\"" + attr.nodeValue + "\"";
+				returnVal += attr.nodeName + "=\"" + attr.nodeValue + "\" ";
 			}
 			if(attr.nodeName == "style" && hasBinding) {
-				returnVal += "defaultStyle=\"" + attr.nodeValue + "\"";
+				returnVal += "style=\"" + attr.nodeValue + "\" ";
 			}
 		}
 		return returnVal;
@@ -467,14 +463,12 @@ XForm.prototype.xml = function() {
 	return xmlDoc.toString();
 }
 
-
-// 定义各种类型的输入框
-
 // 普通文本输入框
 var Mode_String = function(colName, xform) {
 	this.name = colName;
 	this.obj = $$(colName);
 	this.obj._value = this.obj.value; // 备份原值
+	this.inputReg = this.obj.getAttribute("inputReg");
 
 	if(this.obj.getAttribute('empty') == "false") {
 		this.obj.insertAdjacentHTML("afterEnd", "<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
@@ -489,11 +483,10 @@ var Mode_String = function(colName, xform) {
 			this.value = this.value.replace(/(^\s*)|(\s*$)/g, "");
 		}
 
-		var inputReg = this.getAttribute('inputReg');
 		if(this.value == "" && this.empty == "false") {
 			showErrorInfo("请输入 [" + this.caption.replace(/\s/g, "") + "]", this);
 		}
-		else if(this.inputReg && eval(this.inputReg).test(this.value) == false){
+		else if(oThis.inputReg && eval(oThis.inputReg).test(this.value) == false){
 			showErrorInfo("[" + this.caption.replace(/\s/g, "") + "] 格式不正确，请更正。", this);
 		}
 		else {
@@ -520,6 +513,8 @@ Mode_String.prototype = {
 	setValue : function(value) {
 		this.obj._value = this.obj.value = value;
 	},
+
+	validate: validate,
 	
 	setEditable : function(status) {
 		this.obj.editable = status || this.obj.getAttribute("editable");
@@ -532,37 +527,6 @@ Mode_String.prototype = {
 		} else {
 			this.obj.disabled = disabled;        
 		}
-	},
-	
-	validate : function() {
-		var empty = this.obj.empty;
-		var errorInfo = this.obj.errorInfo;
-		var caption = this.obj.caption.replace(/\s/g, "");
-		
-		var value = this.obj.value;
-		if(value == "" && empty == "false") {
-			errorInfo = "[" + caption.replace(/\s/g, "") + "] 不允许为空，请选择。";
-		}
-
-		if(this.inputReg && !eval(this.inputReg).test(value)) {
-			errorInfo = errorInfo || "[" + caption + "] 格式不正确，请更正.";
-		}
-
-		if( errorInfo ) {
-			showErrorInfo(errorInfo, this.obj);
-
-			if(this.isInstance != false) {
-				if(this.setFocus) {
-					this.setFocus();
-				}
-			}
-			if( event ) {
-				event.returnValue = false;
-			}
-			return false;
-		}
-
-		return true;
 	},
 
 	reset : function() {
@@ -580,16 +544,29 @@ Mode_String.prototype = {
 	}
 }
 
-// 自定义方法输入值类型
-function Mode_Function(colName, xform) {
-	Mode_String.call(this, colName, xform);
- 
-	this.obj.disabled  = (this.obj.getAttribute("editable") == "false");
-	this.obj.className = (this.obj.disabled ? "function_disabled" : "function");
 
-	if(this.obj.clickOnly != "false") { // 可通过column上clickOnly来控制是否允许可手工输入
-		this.obj.readOnly = true;
+// 自定义方法输入值类型
+var Mode_Function = function(colName, xform) {
+	this.name = colName;
+	this.obj = $$(colName);
+	this.obj._value = this.obj.value; // 备份原值
+	this.inputReg = this.obj.getAttribute("inputReg");
+
+	if(this.obj.getAttribute('empty') == "false") {
+		this.obj.insertAdjacentHTML("afterEnd", "<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
 	}
+
+	this.setEditable();
+
+	var oThis = this;
+	this.obj.onblur = function() {
+		// function里的 this 为 this.obj
+		if("text" == this.type) {
+			this.value = this.value.replace(/(^\s*)|(\s*$)/g, "");
+		}
+
+		xform.updateData(this);
+	};
 
 	var tempThis = this;
 	waitingForVisible(function() {
@@ -612,25 +589,47 @@ function Mode_Function(colName, xform) {
 		}
 	}	
 }
+ 
+Mode_Function.prototype = {
+	setValue : function(value) {
+		this.obj._value = this.obj.value = value;
+	},
 
-Mode_Function.prototype = Mode_String.prototype;
+	validate: validate,
+	
+	setEditable : function(status) {
+		this.obj.disabled  = (status == "false");
+		this.obj.className = (this.obj.disabled ? "function_disabled" : "function");
 
-Mode_Function.prototype.setEditable = function(status) {
-	this.obj.disabled  = (status == "false");
-	this.obj.className = (this.obj.disabled ? "function_disabled" : "function");
+		// function图标
+		this.obj.nextSibling.disabled  = this.obj.disabled;
+		this.obj.nextSibling.className = (this.obj.disabled ? "bt_disabled" : "");
+		this.obj.editable = status;
 
-	// function图标
-	this.obj.nextSibling.disabled  = this.obj.disabled;
-	this.obj.nextSibling.className = (this.obj.disabled ? "bt_disabled" : "");
-	this.obj.editable = status;
+		this.obj.readOnly = true;
+	},
+
+	reset : function() {
+		this.obj.value = this.obj.defaultValue;
+	},
+
+	saveAsDefaultValue : function() {
+		this.obj.defaultValue = this.obj.value;
+	},
+
+	setFocus : function(){
+		try {
+			this.obj.focus();
+		} catch(e){ }
+	}
 }
 
 
 // 下拉选择框，单选或多选
-function Mode_ComboEdit(colName, xform) {
+var Mode_ComboEdit = function(colName, xform) {
 	this.name = colName;
 	this.obj = $$(colName);
- 	this.obj._value = this.obj.value;
+ 	this.obj._value = this.obj.attributes["value"].nodeValue;
 	this.obj.disabled = (this.obj.getAttribute("editable") == "false");
 
 	var selectedValues = {};
@@ -754,6 +753,36 @@ Mode_Hidden.prototype.saveAsDefaultValue = function() {}
 Mode_Hidden.prototype.setFocus = function() {}
 
 
+function validate() {
+	var empty = this.obj.empty;
+	var errorInfo = this.obj.errorInfo;
+	var caption = this.obj.caption.replace(/\s/g, "");
+	
+	var value = this.obj.value;
+	if(value == "" && empty == "false") {
+		errorInfo = "[" + caption.replace(/\s/g, "") + "] 不允许为空，请选择。";
+	}
+
+	if(this.inputReg && !eval(this.inputReg).test(value)) {
+		errorInfo = errorInfo || "[" + caption + "] 格式不正确，请更正.";
+	}
+
+	if( errorInfo ) {
+		showErrorInfo(errorInfo, this.obj);
+
+		if(this.isInstance != false) {
+			if(this.setFocus) {
+				this.setFocus();
+			}
+		}
+		if( event ) {
+			event.returnValue = false;
+		}
+		return false;
+	}
+
+	return true;
+}
 
 function showErrorInfo(errorInfo, obj) {
 	clearTimeout(200);

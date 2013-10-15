@@ -3,7 +3,7 @@
 	<UserInfo>
       <xform>
         <declare prefix="user">
-		  <column name="id" caption="用户ID" mode="hidden"/>
+		  <column name="id"        caption="ID"   mode="hidden"/>
 		  <column name="userName"  caption="姓名" mode="string" empty="false" maxLength="100" />
           <column name="loginName" caption="帐号" mode="string" empty="false" maxLength="100" />
           <column name="jianjie"   caption="简介" mode="string" maxLength="400" />
@@ -64,25 +64,37 @@
                   <input binding="groupName"/>
               </TD>
               <TD width="50">
+                  <label binding="address"/>
+              </TD>
+              <TD>
+                  <input binding="address" style="width:360px;"/>
+              </TD>
+          </TR><TR>
+		   <TD width="50">
                   <label binding="postCode"/>
               </TD>
               <TD>
                   <input binding="postCode"/>
-              </TD>
-          </TR><TR>
+              </TD>              
               <TD width="50">
-                  <label binding="address"/>
+				  <label binding="jianjie"/>
               </TD>
               <TD>
-                  <input binding="address"/>
-              </TD>
-              <TD width="50">
-				  <label binding="address"/>
-              </TD>
-              <TD>
-			      <textarea binding="address" style="width:200px;height:60px"/>
+			      <textarea binding="jianjie" style="width:300px;height:100px"/>
               </TD>
           </TR>
-        </layout><data><row><loginName><![CDATA[Jon.King]]></loginName><userName><![CDATA[XXX]]></userName><sex><![CDATA[1]]></sex><mail><![CDATA[xxx@xxx.com]]></mail></row></data></xform>
+        </layout>
+		<data>
+			<row>
+				<loginName><![CDATA[Jon.King]]></loginName>
+				<userName><![CDATA[金以渐]]></userName>
+				<groupName><![CDATA[他山石]]></groupName>
+				<sex><![CDATA[2]]></sex>
+				<email><![CDATA[xxx@xxx.com]]></email>
+				<temp1><![CDATA[testFunction]]></temp1>
+			</row>
+		</data>
+	
+	</xform>
 	</UserInfo>
 </Response>

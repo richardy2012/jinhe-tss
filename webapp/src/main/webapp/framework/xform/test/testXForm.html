@@ -39,6 +39,10 @@ URL_CORE = "../../";
 
 		Ajax({ url: URL_XFORM_DEMO, onresult: onresult});
     }
+
+	function func1() {
+		 $X("userForm").updateDataExternal("temp1", "123");
+	}
  
 
     function saveUser(cacheID) {
@@ -66,7 +70,7 @@ URL_CORE = "../../";
             syncButton([$$("btSave")], request);
 
             request.onsuccess = function() {
-				alert("保存成功");
+				alert("成功提交" + dataNode);
             }
             request.send();
         }
