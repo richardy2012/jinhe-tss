@@ -12,8 +12,8 @@
           <column name="address"   caption="地址" mode="string" empty="true" maxLength="100" />
           <column name="postCode"  caption="邮编" mode="string" maxLength="100" inputReg="/^\d{0,10}$/" />
           <column name="email"     caption="邮件" mode="string" maxLength="100" inputReg="/^\w+@?\w*\.?\w*$/"  />
-          <column name="birthday"  caption="生日" mode="string" pattern="yyyy-MM-dd" maxLength="32" />
-          <column name="sex"       caption="性别" mode="string" clickOnly="false" editor="comboedit" editorvalue="0|1|2" editortext="男|女|其它"/> 
+          <column name="birthday"  caption="生日" mode="string" inputReg="/^((?:19|20)\d\d)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/" maxLength="32" />
+          <column name="sex"       caption="性别" mode="string" editor="comboedit" editorvalue="0|1|2" editortext="男|女|其它"/> 
 		  <column name="temp1"     caption="函数" mode="function" cmd="func1()"/>
         </declare>
         <layout>
@@ -41,7 +41,7 @@
                   <label binding="birthday"/>
               </TD>
               <TD>
-                  <input binding="birthday"/>
+                  <input binding="birthday"/> 格式要求：yyyy-MM-dd
               </TD>
           </TR><TR>
               <TD width="50">
@@ -92,6 +92,7 @@
 				<sex><![CDATA[2]]></sex>
 				<email><![CDATA[xxx@xxx.com]]></email>
 				<temp1><![CDATA[testFunction]]></temp1>
+				<birthday><![CDATA[1983-06-06]]></birthday>
 			</row>
 		</data>
 	

@@ -369,7 +369,7 @@ XForm.prototype.setColumnValue = function(name, value) {
 		rowNode.appendChild(node);
 	}
 
-	var CDATANode = node.getCDATA();
+	var CDATANode = node.firstChild;
 	if( CDATANode == null ) {
 		CDATANode = getXmlDOM().createCDATASection(value);
 		node.appendChild(CDATANode);
@@ -421,9 +421,10 @@ XForm.prototype.updateData = function(obj) {
 		var newValue = obj.value;
 	}
 
-	var oldValue = this.getColumnValue(obj.binding);
+	var binding = obj.getAttribute("binding");
+	var oldValue = this.getColumnValue(binding);
 	if(newValue != oldValue && newValue && newValue != "") {
-		this.setColumnValue(obj.binding, newValue);
+		this.setColumnValue(binding, newValue);
 	}
 }
 
@@ -471,7 +472,7 @@ var Mode_String = function(colName, xform) {
 	this.inputReg = this.obj.getAttribute("inputReg");
 
 	if(this.obj.getAttribute('empty') == "false") {
-		this.obj.insertAdjacentHTML("afterEnd", "<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
+		Element.insertHtml('afterEnd', this.obj, "<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
 	}
 
 	this.setEditable();
@@ -483,11 +484,12 @@ var Mode_String = function(colName, xform) {
 			this.value = this.value.replace(/(^\s*)|(\s*$)/g, "");
 		}
 
+		var caption = this.getAttribute("caption");
 		if(this.value == "" && this.empty == "false") {
-			showErrorInfo("请输入 [" + this.caption.replace(/\s/g, "") + "]", this);
+			showErrorInfo("请输入 [" + caption.replace(/\s/g, "") + "]", this);
 		}
 		else if(oThis.inputReg && eval(oThis.inputReg).test(this.value) == false){
-			showErrorInfo("[" + this.caption.replace(/\s/g, "") + "] 格式不正确，请更正。", this);
+			showErrorInfo("[" + caption.replace(/\s/g, "") + "] 格式不正确，请更正。", this);
 		}
 		else {
 			xform.updateData(this);
@@ -553,8 +555,32 @@ var Mode_Function = function(colName, xform) {
 	this.inputReg = this.obj.getAttribute("inputReg");
 
 	if(this.obj.getAttribute('empty') == "false") {
-		this.obj.insertAdjacentHTML("afterEnd", "<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
+		Element.insertHtml('afterEnd', this.obj, "<span style='color:red;position:relative;left:3px;top:-2px'>*</span>");
 	}
+
+	var tempThis = this;
+	waitingForVisible(function() {
+		tempThis.obj.style.width = Math.max(1, tempThis.obj.offsetWidth - 20);
+	}, tempThis.obj);
+
+	if( !this.obj.disabled ) {
+		var tempThisObj = this.obj;
+
+		// 添加点击按钮
+		var html = '<img src="' + xform._iconPath + 'function.gif" style="width:20px;height:18px;background-color:transparent;border:0px;"/>';
+		Element.insertHtml('afterEnd', this.obj, html);
+
+		var btObj = this.obj.nextSibling; // 动态添加进去的按钮
+		btObj.onclick = function() {
+			var cmd = tempThisObj.getAttribute("cmd");
+			try {
+				eval(cmd);
+			} catch(e) {
+				showErrorInfo("运行自定义JavaScript代码<" + cmd + ">出错，异常信息：" + e.description, tempThisObj);
+				throw(e);
+			}
+		}
+	}	
 
 	this.setEditable();
 
@@ -567,27 +593,6 @@ var Mode_Function = function(colName, xform) {
 
 		xform.updateData(this);
 	};
-
-	var tempThis = this;
-	waitingForVisible(function() {
-		tempThis.obj.style.width = Math.max(1, tempThis.obj.offsetWidth - 20);
-	}, tempThis.obj);
-
-	if( !this.obj.disabled ) {
-		var tempThisObj = this.obj;
-
-		// 添加点击按钮
-		this.obj.insertAdjacentHTML('afterEnd', '<button style="width:20px;height:18px;background-color:transparent;border:0px;"><img src="' + xform._iconPath + 'function.gif"></button>');
-		var btObj = this.obj.nextSibling; // 动态添加进去的按钮
-		btObj.onclick = function(){
-			try {
-				eval(tempThisObj.cmd);
-			} catch(e) {
-				showErrorInfo("运行自定义JavaScript代码<" + tempThisObj.cmd + ">出错，异常信息：" + e.description, tempThisObj);
-				throw(e);
-			}
-		}
-	}	
 }
  
 Mode_Function.prototype = {
@@ -638,8 +643,8 @@ var Mode_ComboEdit = function(colName, xform) {
 		selectedValues[ valueArr[i] ] = true;
 	}
 
-	var valueList = this.obj.editorvalue.split('|');
-	var textList  = this.obj.editortext.split('|');
+	var valueList = this.obj.getAttribute("editorvalue").split('|');
+	var textList  = this.obj.getAttribute("editortext").split('|');
 	var selectedIndex = [];
 	for(var i=0; i < valueList.length; i++){
 		var value = valueList[i];
@@ -754,9 +759,9 @@ Mode_Hidden.prototype.setFocus = function() {}
 
 
 function validate() {
-	var empty = this.obj.empty;
-	var errorInfo = this.obj.errorInfo;
-	var caption = this.obj.caption.replace(/\s/g, "");
+	var empty     = this.obj.getAttribute("empty");
+	var errorInfo = this.obj.getAttribute("errorInfo");
+	var caption   = this.obj.getAttribute("caption").replace(/\s/g, "");
 	
 	var value = this.obj.value;
 	if(value == "" && empty == "false") {

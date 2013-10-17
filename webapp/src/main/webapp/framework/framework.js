@@ -42,7 +42,6 @@ TIMEOUT_GRID_SEARCH = 200;
 /* 默认唯一编号名前缀 */
 CACHE_TREE_NODE = "_treeNode_";
 CACHE_MAIN_TREE = "_tree_";
-CACHE_TOOLBAR   = "_toolbar_";
 
 DEFAULT_NEW_ID = "-10";
 
@@ -204,14 +203,7 @@ function initListContainerResize() {
 	var listContainer = $$("listContainer");
 	Element.attachRowResize(listContainer, 8);
 }
-
-
-var toolbar;
  
-function initToolBar() {
-	toolbar = ToolBars.create($$("toolbar"));
-}
-
 /* 点击树刷新按钮 */
 function onClickTreeBtRefresh() {
 	loadInitData();
@@ -948,42 +940,6 @@ function clearOperation(treeNode, clearChildren) {
 		var childs = treeNode.selectNodes(".//treeNode");
 		for(var i=0; i < childs.length; i++) {
 			childs[i].removeAttribute("_operation");
-		}
-	}
-}
-
-/*
- *	工具条加载数据
- *	参数：	string:_operation      操作权限
-			string:contentXML      工具条具体内容
- */
-function _loadToolBar(_operation, contentXML) {
-	var toolbarXML = Cache.XmlDatas.get(CACHE_TOOLBAR);
-	if( toolbarXML == null ) { // 还没有就创建
-		var xmlReader = new XmlReader(contentXML);
-		toolbarXML = new XmlNode(xmlReader.documentElement);
-		Cache.XmlDatas.add(CACHE_TOOLBAR, toolbarXML);
-		toolbar.loadXML(toolbarXML); // 载入工具条
-	}
-
-	// 控制显示
-	var buttons = toolbarXML.selectNodes("./button");
-	for(var i=0; i < buttons.length; i++) {
-		var curButton = buttons[i];
-		var id = curButton.getAttribute("id");
-		var code = curButton.getAttribute("code");
-		var enableStr = curButton.getAttribute("enable");
-		
-		var visible = true;
-		if("string" == typeof(_operation)) {
-			var reg = new RegExp("(^" + code + ",)|(^" + code + "$)|(," + code + ",)|(," + code + "$)", "gi");
-			visible = reg.test(_operation);
-		}
-		toolbar.setVisible(id, visible); // 按钮是否显示
-
-		if( visible ) {
-			var enable = Public.executeCommand(enableStr);
-			toolbar.enable(id, enable); // 按钮是否禁用
 		}
 	}
 }

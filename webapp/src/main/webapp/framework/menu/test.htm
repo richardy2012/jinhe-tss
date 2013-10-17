@@ -10,10 +10,8 @@
 	}
 </style>
 
-<script language="javascript" src="../../test/debug.js"></script>
 <script language="javascript" src="../core.js"></script>
 <script language="javascript" src="../framework.js"></script>
-<script language="javascript" src="../balloon/balloon.js"></script>
 <script language="javascript" src="menu.js"></script>
 
 <script language="javascript">
@@ -24,7 +22,7 @@
 	var item1 = {
 		label:"剪切",
 		callback:function(){alert("剪切")},
-		icon:"icon_cut.gif",
+		icon:"../images/icon_cut.gif",
 		enable:function(){return true;},
 		visible:function(){return true;},
 		bold:true,
@@ -33,14 +31,14 @@
 	var item2 = {
 		label:"复制",
 		callback:function(){alert("复制")},
-		icon:"icon_copy.gif",
+		icon:"../images/icon_copy.gif",
 		enable:function(){return false;},
 		visible:function(){return true;}
 	}
 	var item3 = {
 		label:"粘贴",
 		callback:function(){alert("粘贴")},
-		icon:"icon_paste.gif",
+		icon:"../images/icon_paste.gif",
 		enable:function(){return true;},
 		visible:function(){return true;}
 	}
@@ -65,7 +63,7 @@
 	var item10 = {
 		label:"测试",
 		callback:function(){alert("剪切")},
-		icon:"icon_cut.gif",
+		icon:"../images/icon_cut.gif",
 		enable:function(){return true;},
 		visible:function(){return false;},
 		bold:true
@@ -93,7 +91,7 @@
 	function test(){
 		Debug.print(document.body.innerHTML);
 	}
-	function test2(){
+	function deleteMenuItem(){
 		menu1.delItem(uid1);
 	}
 
@@ -107,7 +105,6 @@ window.onload = function() {
 </head>
 
 <body>
-<input TYPE="button" value="outerHTML" onclick="test()">
-<input TYPE="button" value="删除选项" onclick="test2()">
+<input TYPE="button" value="删除菜单项" onclick="deleteMenuItem()">
 </body>
 </html>

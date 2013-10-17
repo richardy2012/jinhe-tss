@@ -710,8 +710,65 @@ Element.removeClass = function(element, className) {
 	}
 }
 
+/*
+ * where：插入位置。包括beforeBegin,beforeEnd,afterBegin,afterEnd。
+ * el：用于参照插入位置的html元素对象
+ * html：要插入的html代码
+ */
+Element.insertHtml = function(where, el, html) {
+    where = where.toLowerCase();
+    if(el.insertAdjacentHTML){
 
-
+        switch(where){
+            case "beforebegin":
+                el.insertAdjacentHTML('BeforeBegin', html);
+                return el.previousSibling;
+            case "afterbegin":
+                el.insertAdjacentHTML('AfterBegin', html);
+                return el.firstChild;
+            case "beforeend":
+                el.insertAdjacentHTML('BeforeEnd', html);
+                return el.lastChild;
+            case "afterend":
+                el.insertAdjacentHTML('AfterEnd', html);
+                return el.nextSibling;
+        }
+    }
+    var range = el.ownerDocument.createRange();
+    var frag;
+    switch(where){
+         case "beforebegin":
+            range.setStartBefore(el);
+            frag = range.createContextualFragment(html);
+            el.parentNode.insertBefore(frag, el);
+            return el.previousSibling;
+         case "afterbegin":
+            if(el.firstChild){
+                range.setStartBefore(el.firstChild);
+                frag = range.createContextualFragment(html);
+                el.insertBefore(frag, el.firstChild);
+                return el.firstChild;
+             }else{
+                el.innerHTML = html;
+                return el.firstChild;
+             }
+        case "beforeend":
+            if(el.lastChild){
+                range.setStartAfter(el.lastChild);
+                frag = range.createContextualFragment(html);
+                el.appendChild(frag);
+                return el.lastChild;
+            }else{
+                el.innerHTML = html;
+                return el.lastChild;
+            }
+        case "afterend":
+            range.setStartAfter(el);
+            frag = range.createContextualFragment(html);
+            el.parentNode.insertBefore(frag, el.nextSibling);
+            return el.nextSibling;
+    }
+};
 
 
 /* 缓存页面所有的resize拖动条；元素拖动后可能引起了其他元素位置改变，需要刷新其他元素所对应的resize条位置 */

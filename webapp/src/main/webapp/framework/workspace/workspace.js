@@ -1,66 +1,50 @@
-/*
- *	自定义标签名（不含命名空间）
- */
-WS_NAMESPACE = "WorkSpace";
-WS_TAG_PAGE = "Page";
+/* 自定义标签名（不含命名空间） */
+WS_NAMESPACE     = "WorkSpace";
+WS_TAG_PAGE      = "Page";
 WS_TAG_PAGE_STEP = "PageStep";
-WS_TAG_TAB = "Tab";
-WS_TAG_TAB_BOX = "TabBox";
-WS_TAG_TAB_CONTROLLER = "TabCtrl";
-WS_TAG_PHASE = "Phase";
+WS_TAG_TAB       = "Tab";
+WS_TAG_TAB_BOX   = "TabBox";
+WS_TAG_TAB_CTRL  = "TabCtrl";
+WS_TAG_PHASE     = "Phase";
 WS_TAG_PHASE_BOX = "PhaseBox";
-WS_TAG_PHASE_CONTROLLER = "PhaseCtrl";
-WS_TAG_ICON = "Icon";
-WS_TAG_CONTROLLER_BT = "CtrlBt";
-WS_TAG_NOBR = "nobr";
-WS_TAG_DIV = "div";
-WS_TAG_IMG = "img";
-WS_TAG_TABLE = "table";
+WS_TAG_PHASE_CTRL= "PhaseCtrl";
+WS_TAG_ICON      = "Icon";
+WS_TAG_CTRL_BT   = "CtrlBt";
+WS_TAG_NOBR      = "nobr";
+WS_TAG_DIV       = "div";
+WS_TAG_IMG       = "img";
+WS_TAG_TABLE     = "table";
 
-/*
- *	点击Tab到展现内容的时间差(ms)
- */
-_TIMEOUT_TAB_CLICK = 150;
+/* 点击Tab到展现内容的时间差(ms) */
+_TIMEOUT_TAB_CLICK = 100;
 _TIMEOUT_TAB_CLICK_NAME = "ontabclick";
 
-/*
- *	点击Phase到展现内容的时间差(ms)
- */
-_TIMEOUT_PHASE_CLICK = 150;
+/* 点击Phase到展现内容的时间差(ms) */
+_TIMEOUT_PHASE_CLICK = 100;
 _TIMEOUT_PHASE_CLICK_NAME = "onphaseclick";
 
-/*
- *	onresize的时间差(ms)
- */
+/* onresize的时间差(ms)  */
 _TIMEOUT_RESIZE = 20;
 _TIMEOUT_RESIZE_NAME = "onresize";
 
-/*
- *	文字信息
- */
+/* 文字信息 */
 _INFO_CLOSE = "关闭";
 
-/*
- *	图片文件
- */
-_IMG_TAB_FIRST = "icons/bt_tab_first.gif";
-_IMG_TAB_PREV  = "icons/bt_tab_prev.gif";
-_IMG_TAB_NEXT  = "icons/bt_tab_next.gif";
-_IMG_TAB_LAST  = "icons/bt_tab_last.gif";
+/* 图片文件  */
+_IMG_TAB_FIRST   = "icons/bt_tab_first.gif";
+_IMG_TAB_PREV    = "icons/bt_tab_prev.gif";
+_IMG_TAB_NEXT    = "icons/bt_tab_next.gif";
+_IMG_TAB_LAST    = "icons/bt_tab_last.gif";
 _IMG_PHASE_FIRST = "icons/bt_phase_first.gif";
 _IMG_PHASE_PREV  = "icons/bt_phase_prev.gif";
 _IMG_PHASE_NEXT  = "icons/bt_phase_next.gif";
 _IMG_PHASE_LAST  = "icons/bt_phase_last.gif";
 
-/*
- *	控制按钮类型
- */
+/* 控制按钮类型  */
 _TYPE_TAB_CONTROLLER_BT = 1;
 _TYPE_PHASE_CONTROLLER_BT = 2;
 
-/*
- *	尺寸
- */
+/* 尺寸 */
 _SIZE_TAB_WIDTH = 100;
 _SIZE_TAB_MARGIN_LEFT = 0;
 _SIZE_PHASE_HEIGHT = 73;
@@ -68,49 +52,42 @@ _SIZE_PHASE_MARGIN_TOP = 0;
 _SIZE_IMG = 14;
 _SIZE_PHASE_CONTROLLER_HEIGHT = 70;
 
-/*
- *	样式名
- */
+/* 样式名 */
+CSS_CLASS_NO_CLASS = "";
 CSS_CLASS_BOX_HAS_TAB = "hasTab";
 CSS_CLASS_TAB_BOX_HAS_TAB = "hasTab";
-CSS_CLASS_NO_CLASS = "";
+CSS_CLASS_TAB_ACTIVE   = "active";
+CSS_CLASS_PHASE_ACTIVE = "active";
+CSS_CLASS_RIGHT_BOX = "rightBox";
 CSS_CLASS_CONTROLLER_BT_ACTIVE = "active";
 CSS_CLASS_CONTROLLER_BT_INVERT = "invert";
 CSS_CLASS_CONTROLLER_BT_DISABLED = "disabled";
-CSS_CLASS_TAB_ACTIVE = "active";
-CSS_CLASS_PHASE_ACTIVE = "active";
-CSS_CLASS_RIGHT_BOX = "rightBox";
 
 
-
-/*
+/* ***********************************************************************************************
  *	对象名称：Page
- *	职责：负责管理单个子页面的显示隐藏控制
- */
+ *	职责：负责管理单个子页面的显示、隐藏等控制
+ * ***********************************************************************************************/
 function Page(obj) {	
 	this.object = obj;
 	this.id = obj.id;		
 	this.isActive = ( obj.currentStyle.display == "none" ? false : true ); // currentStyle: style 和 runtimeStyle 的结合
 }
-/*
- *	Page隐藏
- */
+
+/* Page隐藏  */
 Page.prototype.hide = function() {
 	this.object.style.display = "none"; // 隐藏对象。与style.visibility = "hidden"不同，其不为被隐藏的对象保留其物理空间
 	this.isActive = false;
 }
-/*
- *	Page显示
- */
+
+/* Page显示 */
 Page.prototype.show = function() {
 	this.object.style.display = "block"; // 此元素将显示为块级元素，此元素前后会带有换行符
 	this.object.scrollTop = 0;
 	this.object.scrollLeft = 0;
 	this.isActive = true;
 }
-/*
- *	以文本方式输出对象信息
- */
+
 Page.prototype.toString = function() {
 	var str = [];
 	str[str.length] = "[Page 对象]";
@@ -118,6 +95,7 @@ Page.prototype.toString = function() {
 	str[str.length] = "visible = \"" + this.isActive + "\"";
 	return str.join("\r\n");
 }
+
 /*
  *	根据id获取Page实例
  *	参数：	string:id     
@@ -126,10 +104,10 @@ Page.getInstance = function(id) {
 	return _display.pages[id];
 }
 
-/*
+/* ***********************************************************************************************
  *	对象名称：Tab
  *	职责：负责生成水平标签页
- */
+ * ***********************************************************************************************/
 function Tab(label, phasesParams, callback) {
 	this.isActive = false;
 	this.label = label;
@@ -166,9 +144,8 @@ function Tab(label, phasesParams, callback) {
 		}		
 	};	
 }
-/*
- *	创建右键菜单
- */
+
+/* 创建右键菜单  */
 Tab.prototype.createContextMenu = function() {
 	if( window.Menu != null ) {
 		var oThis = this;
@@ -183,9 +160,8 @@ Tab.prototype.createContextMenu = function() {
 		menu.attachTo(this.object, "contextmenu");;
 	}
 }
-/*
- *	关闭标签
- */
+
+/* 关闭标签 */
 Tab.prototype.close = function() {
 	if( this.link && this == _display.getActiveTab() ) {
 		this.hideLink();
@@ -200,9 +176,8 @@ Tab.prototype.close = function() {
 	var firstTab = _display.getFirstTab();
 	_display.switchToTab(firstTab);
 }
-/*
- *	释放标签实例
- */
+
+/* 释放标签实例  */
 Tab.prototype.dispose = function() {
 	if(this == _display.getActiveTab()) {
 		this.clearPhases();
@@ -221,9 +196,8 @@ Tab.prototype.dispose = function() {
 	this.phases = {};
 	this.phasesParams = null;
 }
-/*
- *	点击标签
- */
+
+/* 点击标签 */
 Tab.prototype.click = function() {
 	_display.inactiveAllTabs();
 	this.active();
@@ -237,38 +211,34 @@ Tab.prototype.click = function() {
 		this.refreshPhases();
 	}
 }
-/*
- *	显示关联子页面
- */
+
+/* 显示关联子页面  */
 Tab.prototype.showLink = function() {
 	_display.showPage(this.link);
 }
-/*
- *	关闭（隐藏）关联子页面
- */
+
+/* 关闭（隐藏）关联子页面 */
 Tab.prototype.hideLink = function() {
 	_display.hidePage(this.link);
 }
-/*
- *	高亮标签
- */
+
+/* 高亮标签 */
 Tab.prototype.active = function() {
 	this.object.className = CSS_CLASS_TAB_ACTIVE;
 	this.isActive = true;
 }
-/*
- *	低亮标签
- */
+
+/* 低亮标签  */
 Tab.prototype.inactive = function() {
 	this.object.className = CSS_CLASS_NO_CLASS;
 	this.isActive = false;
 }
-/*
- *	将标签与Page对象关联
- */
+
+/* 将标签与Page对象关联 */
 Tab.prototype.linkTo = function(pageInstance) {
 	this.link = pageInstance;
 }
+
 /*
  *	将标签插入指定容器
  *	参数：	object:container		HTML容器对象
@@ -276,9 +246,8 @@ Tab.prototype.linkTo = function(pageInstance) {
 Tab.prototype.dockTo = function(container) {
 	container.appendChild(this.object);
 }
-/*
- *	以文本方式输出对象信息
- */
+
+/* 以文本方式输出对象信息 */
 Tab.prototype.toString = function() {
 	var str = [];
 	str[str.length] = "[Tab 对象]";
@@ -286,13 +255,14 @@ Tab.prototype.toString = function() {
 	str[str.length] = "label = \"" + this.label+ "\"";
 	return str.join("\r\n");
 }
+
 /*
  *	切换到指定Tab页
  *	参数：Phase:phase       Phase实例
 		  或者string:pageId     Page实例id
  */
 Tab.prototype.switchToPhase = function(phase) {
-	if(null == phase) return;
+	if( phase == null ) return;
 
 	switch( typeof(phase) ) {
 		case "object":
@@ -306,9 +276,8 @@ Tab.prototype.switchToPhase = function(phase) {
 			break;        
 	}			
 }
-/*
- *	刷新纵向标签
- */
+
+/* 刷新纵向标签  */
 Tab.prototype.refreshPhases = function() {
 	this.clearPhases();
 	this.createPhases();
@@ -319,9 +288,8 @@ Tab.prototype.refreshPhases = function() {
 		_display.clearPhaseController();
 	}
 }
-/*
- *	清除纵向标签
- */
+
+/* 清除纵向标签  */
 Tab.prototype.clearPhases = function() {
 	for(var item in this.phases) {
 		var phase = this.phases[item];
@@ -329,6 +297,7 @@ Tab.prototype.clearPhases = function() {
 	}
 	_display.phaseBox.innerHTML = "";
 }
+
 /*
  *	创建纵向标签
  *	参数：	object:phases	纵向标签配置
@@ -352,18 +321,16 @@ Tab.prototype.createPhases = function() {
 		this.phases[phase.uniqueID] = phase;
 	}
 }
-/*
- *	低亮所有Phase标签
- */
+
+/* 低亮所有Phase标签 */
 Tab.prototype.inactiveAllPhases = function() {
 	for(var item in this.phases) {
 		var curPhase = this.phases[item];
 		curPhase.inactive();
 	}
 }
-/*
- *	获取激活纵向标签
- */
+
+/* 获取激活纵向标签 */
 Tab.prototype.getActivePhase = function() {
 	for(var item in this.phases) {
 		var curPhase = this.phases[item];
@@ -372,9 +339,8 @@ Tab.prototype.getActivePhase = function() {
 		}
 	}
 }
-/*
- *	根据pageId获取纵向标签
- */
+
+/* 根据pageId获取纵向标签 */
 Tab.prototype.getPhaseByPage = function(pageId) {
 	for(var item in this.phases) {
 		var curPhase = this.phases[item];
@@ -383,9 +349,8 @@ Tab.prototype.getPhaseByPage = function(pageId) {
 		}
 	}
 }
-/*
- *	激活上一个纵向标签
- */
+
+/* 激活上一个纵向标签  */
 Tab.prototype.prevPhase = function() {       
 	var tempPhases = [];
 	var activePhaseIndex = null;
@@ -398,16 +363,15 @@ Tab.prototype.prevPhase = function() {
 	}
 	
 	var phase;
-	if(0 == activePhaseIndex) { //当前激活的是第一个Phase
+	if(0 == activePhaseIndex) { // 当前激活的是第一个Phase，即到顶了
 		phase = tempPhases[activePhaseIndex];
 	} else {
-		phase = tempPhases[activePhaseIndex-1];
+		phase = tempPhases[activePhaseIndex - 1];
 	}
 	this.switchToPhase(phase);
 }
-/*
- *	激活下一个纵向标签
- */
+
+/* 激活下一个纵向标签 */
 Tab.prototype.nextPhase = function() {
 	var tempPhases = [];
 	var activePhaseIndex;
@@ -420,13 +384,14 @@ Tab.prototype.nextPhase = function() {
 	}
 	
 	var phase;
-	if(tempPhases.length - 1 == activePhaseIndex) {//当前激活的是最后一个Phase
+	if(tempPhases.length - 1 == activePhaseIndex) { // 当前激活的是最后一个Phase，即到末尾了
 		phase = tempPhases[activePhaseIndex];
 	} else {
-		phase = tempPhases[activePhaseIndex+1];
+		phase = tempPhases[activePhaseIndex + 1];
 	}
 	this.switchToPhase(phase);
 }
+
 /*
  *	执行回调函数
  *	参数：  string:eventName        事件名称
@@ -437,6 +402,7 @@ Tab.prototype.execCallBack = function(eventName, params) {
 		Public.executeCommand(this.callback[eventName], params);
 	}
 }
+
 /*
  *	切换到指定Tab页
  *	参数：Phase:phase       Phase实例
@@ -448,6 +414,7 @@ Tab.prototype.closePhase = function(pageId) {
 		phase.dispose();
 	}
 }
+
 /*
  *	根据id获取Tab实例
  *	参数：  string:uniqueID 
@@ -456,10 +423,11 @@ Tab.getInstance = function(uniqueID) {
 	return _display.tabs[uniqueID];
 }
 
-/*
+
+/* ***********************************************************************************************
  *	对象名称：Phase
  *	职责：负责生成右侧纵向标签页
- */
+ * ***********************************************************************************************/
 function Phase(label) {
 	this.label = label;
 	this.link;
@@ -483,21 +451,18 @@ function Phase(label) {
 		}		
 	};	
 }
-/*
- *	将标签与Page对象关联
- */
+
+/* 将标签与Page对象关联  */
 Phase.prototype.linkTo = function(pageInstance) {
 	this.link = pageInstance;
 }
-/*
- *	将标签插入指定容器
- */
+
+/* 将标签插入指定容器 */
 Phase.prototype.dockTo = function(container) {
 	container.appendChild(this.object);
 }
-/*
- *	释放纵向标签实例
- */
+
+/* 释放纵向标签实例 */
 Phase.prototype.dispose = function() {
 	var curActiveTab = _display.getActiveTab();
 	delete curActiveTab.phases[this.uniqueID];
@@ -509,9 +474,8 @@ Phase.prototype.dispose = function() {
 	this.uniqueID = null;
 	this.link = null;
 }
-/*
- *	点击标签
- */
+
+/* 点击标签  */
 Phase.prototype.click = function() {
 	var curActiveTab = _display.getActiveTab();
 	curActiveTab.inactiveAllPhases();
@@ -531,9 +495,7 @@ Phase.prototype.click = function() {
 	}, _TIMEOUT_PHASE_CLICK );
 }
 
-/*
- *	将控制标签显示在可见区域内
- */
+/* 将控制标签显示在可见区域内 */
 Phase.prototype.scrollToView = function() {
 	var tempTop = this.object.offsetTop;
 	var tempBottom = this.object.offsetTop + this.object.offsetHeight;
@@ -546,38 +508,33 @@ Phase.prototype.scrollToView = function() {
 		_display.phaseBox.scrollTop = tempBottom - _display.phaseBox.offsetHeight;
 	}
 }
-/*
- *	显示关联子页面
- */
+
+/* 显示关联子页面 */
 Phase.prototype.showLink = function() {
 	_display.showPage(this.link);
 
 	var curActiveTab = _display.getActiveTab();
 	curActiveTab.linkTo(this.link);
 }
-/*
- *	关闭（隐藏）关联子页面
- */
+
+/* 关闭（隐藏）关联子页面  */
 Phase.prototype.hideLink = function() {
 	_display.hidePage(this.link);
 }
-/*
- *	高亮纵向标签
- */
+
+/* 高亮纵向标签 */
 Phase.prototype.active = function() {
 	this.object.className = CSS_CLASS_PHASE_ACTIVE;
 	this.isActive = true;
 }
-/*
- *	低亮纵向标签
- */
+
+/* 低亮纵向标签 */
 Phase.prototype.inactive = function() {
 	this.object.className = CSS_CLASS_NO_CLASS;
 	this.isActive = false;
 }
-/*
- *	以文本方式输出对象信息
- */
+
+/* 以文本方式输出对象信息 */
 Phase.prototype.toString = function() {
 	var str = [];
 	str[str.length] = "[Phase 对象]";
@@ -585,27 +542,25 @@ Phase.prototype.toString = function() {
 	str[str.length] = "label = \"" + this.label+ "\"";
 	return str.join("\r\n");
 }
-/*
- *	根据id获取Phase实例
- */
+
+/* 根据id获取Phase实例 */
 Phase.getInstance = function(uniqueID) {
 	var curActiveTab = _display.getActiveTab();
 	return curActiveTab.phases[uniqueID];
 }
 
 
-/*
+/* ***********************************************************************************************
  *	对象名称：ControllerButton
  *	职责：负责生成控制器按钮
- *
- */
+ * ***********************************************************************************************/
 function ControllerButton(type, imgSrc) {
 	this.type = type;
 	this.imgSrc = imgSrc;
 	this.link;
 	this.enable = true;
  	
-	this.object = _display.createElement(WS_TAG_CONTROLLER_BT, WS_NAMESPACE);
+	this.object = _display.createElement(WS_TAG_CTRL_BT, WS_NAMESPACE);
 	this.uniqueID = this.object.uniqueID;
 
 	var img = _display.createElement(WS_TAG_IMG);
@@ -622,15 +577,13 @@ function ControllerButton(type, imgSrc) {
 		}		
 	};	
 }
-/*
- *	将按钮插入指定容器
- */
+
+/* 将按钮插入指定容器  */
 ControllerButton.prototype.dockTo = function(container) {
 	container.appendChild(this.object);
 }
-/*
- *	释放按钮实例
- */
+
+/* 释放按钮实例  */
 ControllerButton.prototype.dispose = function() {
 	delete _display.buttons[this.uniqueID];
 
@@ -641,6 +594,7 @@ ControllerButton.prototype.dispose = function() {
 	this.object = null;
 	this.link = null;
 }
+
 /*
  *	将按钮与要执行的操作关联
  *	参数：	Function:func   要执行的操作
@@ -648,9 +602,7 @@ ControllerButton.prototype.dispose = function() {
 ControllerButton.prototype.linkTo = function(func) {
 	this.link = func;
 }
-/*
- *	以文本方式输出对象信息
- */
+  
 ControllerButton.prototype.toString = function() {
 	var str = [];
 	str[str.length] = "[ControllerButton 对象]";
@@ -658,6 +610,7 @@ ControllerButton.prototype.toString = function() {
 	str[str.length] = "link = \"" + this.link+ "\"";
 	return str.join("\r\n");
 }
+
 /*
  *	将按钮与要执行的操作关联
  *	参数：	Function:func   要执行的操作
@@ -665,46 +618,39 @@ ControllerButton.prototype.toString = function() {
 ControllerButton.prototype.click = function() {
 	this.link();
 }
-/*
- *	高亮按钮
- */
+
+/* 高亮按钮 */
 ControllerButton.prototype.active = function() {
 	if(this.enable) {
 		this.object.className = CSS_CLASS_CONTROLLER_BT_ACTIVE;
 	}
 }
-/*
- *	低亮按钮
- */
+
+/* 低亮按钮 */
 ControllerButton.prototype.inactive = function() {
 	if( !this.enable ) {
 		this.object.className = CSS_CLASS_NO_CLASS;
 	}
 }
-/*
- *	反白按钮
- */
+
+/* 反白按钮 */
 ControllerButton.prototype.invert = function() {
 	if(this.enable) {
 		this.object.className = CSS_CLASS_CONTROLLER_BT_INVERT;
 	}
 }
-/*
- *	设置按钮是否允许操作
- *	参数：	boolean:enable      是否允许
 
- */
+/* 设置按钮是否允许操作 */
 ControllerButton.prototype.setEnable = function(enable) {
 	this.enable = enable;
 	this.object.className = enable ? CSS_CLASS_NO_CLASS : CSS_CLASS_CONTROLLER_BT_DISABLED;
 }
 
 
-/*
+/* ***********************************************************************************************
  *	对象名称：Display
  *	职责：负责生成整体界面显示
- *
- */
+ * ************************************************************************************************/
 function Display(element) {
 	this.element = element;
 
@@ -723,9 +669,8 @@ function Display(element) {
 	this.hideAllPages();
 	this.createUI();
 }
-/*
- *	获取所有子页面
- */
+
+/* 获取所有子页面 */
 Display.prototype.getAllPages = function() {
 	var childs = this.element.getElementsByTagName(WS_TAG_PAGE);
 	for(var i=0; i < childs.length; i++) {
@@ -733,9 +678,8 @@ Display.prototype.getAllPages = function() {
 		this.pages[curNode.id || curNode.uniqueID] = new Page(curNode);
 	}
 }
-/*
- *	隐藏所有子页面
- */
+
+/* 隐藏所有子页面  */
 Display.prototype.hideAllPages = function() {
 	for(var item in this.pages) {
 		var curPage = this.pages[item];
@@ -744,18 +688,16 @@ Display.prototype.hideAllPages = function() {
 		}
 	}
 }
-/*
- *	创建界面展示
- */
+
+/* 创建界面展示 */
 Display.prototype.createUI = function() {
 	this.createTabBox();
 	this.createRightBox();
 	this.createPhaseBox();
 	this.hideRightBox();
 }
-/*
- *	创建Tab标签的容器
- */
+
+/* 创建Tab标签的容器 */
 Display.prototype.createTabBox = function() {
 	var tabBox = this.createElement(WS_TAG_TAB_BOX, WS_NAMESPACE);
 	var nobr   = this.createElement(WS_TAG_NOBR);
@@ -770,28 +712,17 @@ Display.prototype.createTabBox = function() {
 
 	this.tabBox = tabBox;
 }
-/*
- *	设置有Tab标签的容器样式
- *	参数：boolean:hasTab     容器是否有Tab
- */
-Display.prototype.setHasTabStyle = function(hasTab) {
-	this.tabBox.className = hasTab ? CSS_CLASS_TAB_BOX_HAS_TAB : CSS_CLASS_NO_CLASS;
+
+/* 创建纵向Tab标签的容器 */
+Display.prototype.createPhaseBox = function() {
+	var phaseBox = this.createElement(WS_TAG_PHASE_BOX, WS_NAMESPACE);
+	this.rightBox.rows[0].cells[0].appendChild(phaseBox);
+	this.phaseBox = phaseBox;
 }
-/*
- *	刷新Tab标签控制器
- */
-Display.prototype.refreshTabController = function() {
-	if( this.tabController == null) {
-		this.createTabController();
-		this.createTabControllerButtons();
-	}
-	this.refreshTabControllerButtons();
-}
-/*
- *	创建Tab标签控制器
- */
+
+/* 创建Tab标签控制器 */
 Display.prototype.createTabController = function() {
-	var tabController = this.createElement(WS_TAG_TAB_CONTROLLER, WS_NAMESPACE);
+	var tabController = this.createElement(WS_TAG_TAB_CTRL, WS_NAMESPACE);
 
 	this.element.appendChild(tabController);
 	var refChild = this.element.childNodes[1];
@@ -801,22 +732,7 @@ Display.prototype.createTabController = function() {
 
 	this.tabController = tabController;
 }
-/*
- *	清除Tab标签控制器
- */
-Display.prototype.clearTabController = function() {
-	for(var item in this.buttons) {
-		var button = this.buttons[item];
-		if(button.type == _TYPE_TAB_CONTROLLER_BT) {
-			button.dispose();
-		}
-	}
 
-	if( this.tabController != null) {
-		Element.removeNode(this.tabController);
-		this.tabController = null;
-	}
-}
 /*
  *	创建Tab标签控制器按钮
  */
@@ -899,42 +815,39 @@ Display.prototype.createRightBox = function() {
 
 	this.rightBox = rightBox;
 }
-/*
- *	显示右侧容器
- */
+
+/* 显示右侧容器 */
 Display.prototype.showRightBox = function() {
 	this.rightBox.style.display = "inline";
 }
-/*
- *	隐藏右侧容器
- */
+
+/* 隐藏右侧容器 */
 Display.prototype.hideRightBox = function() {
 	this.rightBox.style.display = "none";
 }
 
-/*
- *	创建纵向Tab标签的容器
- */
-Display.prototype.createPhaseBox = function() {
-	var phaseBox = this.createElement(WS_TAG_PHASE_BOX, WS_NAMESPACE);
-	this.rightBox.rows[0].cells[0].appendChild(phaseBox);
-	this.phaseBox = phaseBox;
-}
-/*
- *	刷新Phase标签控制器
- */
+/* 刷新Phase标签控制器 */
 Display.prototype.refreshPhaseController = function() {
 	if( this.phaseController == null ) {
 		this.createPhaseController();
 		this.createPhaseControllerButtons();
 	}
-	this.refreshPhaseControllerButtons();
+	
+	/* 刷新Phase标签控制器按钮  */
+	var flag = (this.phaseBox.scrollHeight > this.phaseBox.offsetHeight);
+	for(var item in this.buttons) {
+		var button = this.buttons[item];
+		if(button.type == _TYPE_PHASE_CONTROLLER_BT) {
+			button.setEnable(flag);
+		}
+	}
 	this.showRightBox();
 }
+ 
 
 /* 创建Phase标签控制器  */
 Display.prototype.createPhaseController = function() {
-	var phaseController = this.createElement(WS_TAG_PHASE_CONTROLLER, WS_NAMESPACE);
+	var phaseController = this.createElement(WS_TAG_PHASE_CTRL, WS_NAMESPACE);
 	this.rightBox.rows[1].cells[0].appendChild(phaseController);
 	this.phaseController = phaseController;
 }
@@ -988,16 +901,7 @@ Display.prototype.createPhaseControllerButtons = function() {
 	}
 }
 
-/* 刷新Phase标签控制器按钮  */
-Display.prototype.refreshPhaseControllerButtons = function() {
-	var flag = (this.phaseBox.scrollHeight > this.phaseBox.offsetHeight);
-	for(var item in this.buttons) {
-		var button = this.buttons[item];
-		if(button.type == _TYPE_PHASE_CONTROLLER_BT) {
-			button.setEnable(flag);
-		}
-	}
-}
+
 
 /*
  *	打开一个新子页
@@ -1024,6 +928,24 @@ Display.prototype.open = function(inf) {
 	tab.click();
 	return tab;
 }
+
+/* 刷新Tab标签控制器 */
+Display.prototype.refreshTabController = function() {
+	if( this.tabController == null) {
+		this.createTabController();
+		this.createTabControllerButtons();
+	}
+	this.refreshTabControllerButtons();
+}
+
+/*
+ *	设置有Tab标签的容器样式
+ *	参数：boolean:hasTab     容器是否有Tab
+ */
+Display.prototype.setHasTabStyle = function(hasTab) {
+	this.tabBox.className = hasTab ? CSS_CLASS_TAB_BOX_HAS_TAB : CSS_CLASS_NO_CLASS;
+}
+
 /*
  *	根据id查找子页
  *	参数：	string:id		子页id
@@ -1089,6 +1011,24 @@ Display.prototype.switchToTab = function(tab) {
 	}
 	this.refreshTabControllerButtons();
 }
+
+/*
+ *	清除Tab标签控制器
+ */
+Display.prototype.clearTabController = function() {
+	for(var item in this.buttons) {
+		var button = this.buttons[item];
+		if(button.type == _TYPE_TAB_CONTROLLER_BT) {
+			button.dispose();
+		}
+	}
+
+	if( this.tabController != null) {
+		Element.removeNode(this.tabController);
+		this.tabController = null;
+	}
+}
+
 /*
  *	获得第一个Tab
  */
@@ -1182,13 +1122,13 @@ Display.prototype.nextTab = function() {
 }
 
 
-/*  控件名称：标签式工作区
-
-功能说明：	1、动态创建Tab标签
-			2、动态创建纵向Tab标签
-			3、Tab标签控制子页面显示
-			4、双击Tab标签可关闭 
-*/
+/* ***********************************************************************************************
+   控件名称：标签式工作区
+   功能说明：1、动态创建Tab标签
+			 2、动态创建纵向Tab标签
+			 3、Tab标签控制子页面显示
+			 4、双击Tab标签可关闭 
+* ***********************************************************************************************/
 var _display;
 
 var WorkSpace = function(wsElement) {
@@ -1196,60 +1136,51 @@ var WorkSpace = function(wsElement) {
 }
 
  
-/*
- *	打开子页面
- */
+/* 打开子页面  */
 WorkSpace.prototype.open = function(inf) {
 	return _display.open(inf);
 }
-/*
- *	获取当前激活标签
- */
+
+/* 获取当前激活标签 */
 WorkSpace.prototype.getActiveTab = function() {
 	return _display.getActiveTab();
 }
-/*
- *	关闭当前激活标签
- */
+
+/* 关闭当前激活标签 */
 WorkSpace.prototype.closeActiveTab = function() {
 	var tab = this.getActiveTab();
 	if( tab ) {
 		tab.close();
 	}
 }
-/*
- *	激活上一个Tab标签
- */
+
+/* 激活上一个Tab标签 */
 WorkSpace.prototype.prevTab = function() {
 	return _display.prevTab();
 }
-/*
- *	激活下一个Tab标签
- */
+
+/* 激活下一个Tab标签 */
 WorkSpace.prototype.nextTab = function() {
 	return _display.nextTab();
 }
-/*
- *	激活上一个Phase标签
- */
+
+/* 激活上一个Phase标签 */
 WorkSpace.prototype.prevPhase = function() {
 	var tab = this.getActiveTab();
 	if( tab ) {
 		return tab.prevPhase();
 	}
 }
-/*
- *	激活下一个Phase标签
- */
+
+/* 激活下一个Phase标签 */
 WorkSpace.prototype.nextPhase = function() {
 	var tab = this.getActiveTab();
 	if( tab ) {
 		return tab.nextPhase();
 	}
 }
-/*
- *	关闭指定Phase标签
- */
+
+/* 关闭指定Phase标签 */
 WorkSpace.prototype.closePhase = function(pageId) {
 	var tab = this.getActiveTab();
 	if( tab ) {
@@ -1257,10 +1188,7 @@ WorkSpace.prototype.closePhase = function(pageId) {
 	}
 }
 
-/*
- *	函数说明：切换到指定tab页
- *	参数：string:page
- */
+/* 切换到指定tab页  */
 WorkSpace.prototype.switchToPhase = function(page) {
 	var tab = this.getActiveTab();
 	if( tab ) {

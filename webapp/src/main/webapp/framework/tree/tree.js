@@ -44,8 +44,8 @@ var _TREE_NODE_CONTRACT_IMAGE = "images/contract.gif";
 var _TREE_NODE_EXPAND_IMAGE   = "images/expand.gif";
 var _TREE_NODE_LEAF_IMAGE     = "images/leaf.gif";
 var _TREE_ROOT_CONTRACT_IMAGE = "images/root_contract.gif";
-var _TREE_ROOT_EXPAND_IMAGE = "images/root_expand.gif";
-var _TREE_ROOT_NODE_LEAF_IMAGE = "images/root_leaf.gif";
+var _TREE_ROOT_EXPAND_IMAGE   = "images/root_expand.gif";
+var _TREE_ROOT_NODE_LEAF_IMAGE= "images/root_leaf.gif";
 
 /* Tree相关样式名称 */
 var _TREE_WAIT_LOAD_DATA_MSG = '<span style="margin:5 0 0 8;font-size:12px;color:#666">正在加载数据...</span>';
