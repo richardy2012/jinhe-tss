@@ -13,7 +13,6 @@
 </style>
 
 <script language="javascript" src="../core.js"></script>
-<script language="javascript" src="../framework.js"></script>
 <script language="javascript" src="balloon.js"></script>
 
 <script language="javascript">
@@ -21,31 +20,32 @@
 
 URL_CORE = "../";
 
-    function test(obj){
-        var balloon = Balloons.create("["+new Date().toString()+"]<br/>测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试");
-				var x = 500*Math.random();
-				var y = 500*Math.random();
-						//balloon.dockTo(x,y);
-						balloon.dockTo(obj);
+    function test(){
+		var info = "[" + new Date().toString() + "]<br/>测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试";
+        var balloon = Balloons.create(info);
 
-				document.getElementById("cross").style.left = x;
-				document.getElementById("cross").style.top = y;
+		var x = 500 * Math.random();
+		var y = 500 * Math.random();
+
+		var obj = $$("cross");
+		obj.style.left = x;
+		obj.style.top = y;
+
+		// balloon.dockTo(x, y);
+		balloon.dockTo(obj);
     }
 
-    function test2(){
-        Debug.print(document.body.innerHTML);
-    }
 //-->
 </script>
 </head>
 
 <body>
-<div id=cross style="position:absolute;border:1px solid red;width:2px;height:2px;overflow:hidden">&nbsp;</div>
-气球效果演示<br/><br/><br/><br/>
-<input type="button" value="新气球" onclick="test(this)"/>
-<input type="button" value="单个实例" onclick="Balloons.singleInstance=true"/>
-<input type="button" value="多个实例" onclick="Balloons.singleInstance=false"/>
-<input type="button" value="所有气球" onclick="alert(Balloons)"/>
-<input type="button" value="innerHTML" onclick="test2()"/>
+	<div id="cross" style="position:absolute;border:1px solid red;width:2px;height:2px;overflow:hidden">&nbsp;</div>
+	气球效果演示<br/><br/><br/><br/>
+	
+	<input type="button" value="新气球"   onclick="test()"/>
+	<input type="button" value="单个实例" onclick="Balloons.singleInstance=true"/>
+	<input type="button" value="多个实例" onclick="Balloons.singleInstance=false"/>
+	<input type="button" value="所有气球" onclick="alert(Balloons)"/>
 </body>
 </html>

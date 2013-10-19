@@ -708,3 +708,20 @@ function bindSortHandler(table) {
 		}
 	}
 }
+
+// 删除选中Grid行
+function delGridRow(url, gridName) {
+	if( !confirm("您确定要删除该行记录吗？") ) return;
+	
+	var grid = $G(gridName || "grid");
+	var userID = grid.getRowAttributeValue("id");
+	if( userID ) {
+		Ajax({
+			url : url + userID,
+			method : "DELETE",
+			onsuccess : function() { 
+				grid.deleteSelectedRow();
+			}
+		});	
+	}
+}

@@ -128,6 +128,22 @@ var Cache = {};
 Cache.Variables = new Collection();
 Cache.XmlDatas  = new Collection();
 
+/*
+ *	删除缓存(公用)
+ *	参数：	string:cacheID      缓存数据id
+			boolean:flag        是否清除关联的XML数据
+ */
+function delCacheData(cacheID, flag) {
+	var cacheData = Cache.Variables.get(cacheID);
+	Cache.Variables.del(cacheID);
+
+	if( flag ) {
+		for(var i=0; cacheData && i < cacheData.length; i++) {
+			Cache.XmlDatas.del(cacheData[i]);
+		}
+	}
+}
+
 /* 集合类: 类似java Map */
 function Collection() {
 	this.items = {};
@@ -486,7 +502,7 @@ Element.absTop = function(srcElement) {
 			string:ns			命名空间
  *	返回值：object	html对象
  */
-Element.createElement = function(tagName, ns) {
+Element.createNSElement = function(tagName, ns) {
 	var obj;
 	if( ns == null ) {
 		obj = document.createElement(tagName);

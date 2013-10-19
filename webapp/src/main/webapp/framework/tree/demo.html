@@ -4,41 +4,81 @@
 <title>它山石--test Tree</title>
 
 <link href="tree.css" rel="stylesheet" type="text/css">
-<link href="../balloon/balloon.css" rel="stylesheet" type="text/css">
-
-
+<link href="../menu/menu.css" rel="stylesheet" type="text/css">
 
 <script language="javascript" src="../core.js"></script>
 <script language="javascript" src="../ajax.js"></script>
 <script language="javascript" src="../framework.js"></script>
-<script language="javascript" src="../balloon/balloon.js"></script>
-
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-
-URL_CORE = "../";
-   
-//-->
-</SCRIPT>
+<script language="javascript" src="../menu/menu.js"></script>
 <script language="javascript" src="tree.js"></script>
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 
-var tree;
+URL_CORE = "../";
+
+URL_SOURCE_TREE = "test/data.xml?";
+URL_SORT_NODE   = "test/_success.xml?";
+URL_NODE_DELETE = "test/_success.xml?";
 
 function init() {
 		var p = new HttpRequestParams();
-		p.url = "test/data.xml";
+		p.url = URL_SOURCE_TREE;
 
 		var request = new HttpRequest(p);
 		request.onresult = function() {
 				var treeData = this.getNodeValue("ParamTree");
-				var tree1 = $T("tree1", treeData);	
+				var tree1 = $T("tree", treeData);	
 				var tree2 = $T("tree2", treeData);	
+				var tree3 = $T("tree3", treeData);	
+
+				// 测试树控件事件
+				tree1.element.onTreeNodeActived = function(eventObj) {
+
+				}
+				tree1.element.onTreeNodeDoubleClick = function(eventObj) {
+					alert("编辑树节点：" + getTreeAttribute("name"));
+				}
+				tree1.element.onTreeNodeMoved = function(eventObj) {
+					sortTreeNode(URL_SORT_NODE, eventObj);
+				}
+				tree1.element.onTreeNodeRightClick = function(eventObj) {
+					// 显示右键菜单
+					onTreeNodeRightClick(eventObj);
+				}
 		}
 		request.send();
+
+		initMenus();
 }
+
+ function initMenus() {
+        var item1 = {
+            label:"编辑",
+            callback:function() {
+                alert("编辑树节点：" + getTreeAttribute("name"));
+            }
+        }
+        var item2 = {
+            label:"删除",
+            callback:function() {
+                delTreeNode(URL_NODE_DELETE);
+            }
+        }
+        var item3 = {
+            label:"新建",
+            callback:function() {
+               
+            }
+        }
+
+        var menu1 = new Menu();
+        menu1.addItem(item1);
+        menu1.addItem(item2);
+		menu1.addItem(item3);
+
+        $$("tree").contextmenu = menu1;
+    }
 
 window.onload = init;
    
@@ -48,14 +88,20 @@ window.onload = init;
 
 <body>
 
-<div style="display:inline">
-   <span>
-	<Tree:Box id="tree1" treeType="menu" baseurl="" canMoveNode="true" height="400"><div class="loading"></div></Tree:Box>
-   </span>
-   <span>
-	<Tree:Box id="tree2" treeType="multi" baseurl="" canMoveNode="true" height="400" selectSelf="false"><div class="loading"></div></Tree:Box>
-   </span>
-</div>
+ 
+ <table class="full" border="1" height="600">
+	<tr>
+		<td width="300">-菜单树
+			<Tree:Box id="tree" treeType="menu" baseurl="" canMoveNode="true"><div class="loading"></div></Tree:Box>
+		</td>
+		<td width="300">-多选树
+			<Tree:Box id="tree2" treeType="multi" baseurl="" selectSelf="false"><div class="loading"></div></Tree:Box>
+		</td>
+		<td width="300">-单选树
+			<Tree:Box id="tree3" treeType="single" baseurl="" selectSelf="true"><div class="loading"></div></Tree:Box>
+		</td>
+	</tr>
+</table>
 
 </body>
 </html>

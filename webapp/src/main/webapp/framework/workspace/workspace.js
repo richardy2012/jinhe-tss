@@ -117,15 +117,15 @@ function Tab(label, phasesParams, callback) {
 	this.phases = {};
 	this.phasesParams = phasesParams;  
 	
-	this.object = _display.createElement(WS_TAG_TAB, WS_NAMESPACE);
+	this.object = Element.createNSElement(WS_TAG_TAB, WS_NAMESPACE);
 	this.uniqueID = this.object.uniqueID;
 	 
-	var closeIcon = _display.createElement(WS_TAG_ICON, WS_NAMESPACE);
+	var closeIcon = Element.createNSElement(WS_TAG_ICON, WS_NAMESPACE);
 	closeIcon.title = _INFO_CLOSE;
 	closeIcon._tab = this;		
 	this.object.appendChild(closeIcon);
 	
-	var div = _display.createElement(WS_TAG_DIV);
+	var div = Element.createNSElement(WS_TAG_DIV);
 	div.innerText = this.label;
 	div.title = this.label;
 	div.noWrap = true; // 不换行
@@ -433,10 +433,10 @@ function Phase(label) {
 	this.link;
 	this.isActive = false;
 	
-	this.object = _display.createElement(WS_TAG_PHASE,WS_NAMESPACE);
+	this.object = Element.createNSElement(WS_TAG_PHASE, WS_NAMESPACE);
 	this.uniqueID = this.object.uniqueID;
 	
-	var div = _display.createElement(WS_TAG_DIV);
+	var div = Element.createNSElement(WS_TAG_DIV);
 	div.innerText = this.label;
 	div.title = this.label;
 	div.noWrap = true;
@@ -560,10 +560,10 @@ function ControllerButton(type, imgSrc) {
 	this.link;
 	this.enable = true;
  	
-	this.object = _display.createElement(WS_TAG_CTRL_BT, WS_NAMESPACE);
+	this.object = Element.createNSElement(WS_TAG_CTRL_BT, WS_NAMESPACE);
 	this.uniqueID = this.object.uniqueID;
 
-	var img = _display.createElement(WS_TAG_IMG);
+	var img = Element.createNSElement(WS_TAG_IMG);
 	img.src = (_display.element.baseurl || "") + this.imgSrc;
 	img._target = this.object;
 	img.width  = _SIZE_IMG;
@@ -699,8 +699,8 @@ Display.prototype.createUI = function() {
 
 /* 创建Tab标签的容器 */
 Display.prototype.createTabBox = function() {
-	var tabBox = this.createElement(WS_TAG_TAB_BOX, WS_NAMESPACE);
-	var nobr   = this.createElement(WS_TAG_NOBR);
+	var tabBox = Element.createNSElement(WS_TAG_TAB_BOX, WS_NAMESPACE);
+	var nobr   = Element.createNSElement(WS_TAG_NOBR);
 
 	tabBox.appendChild(nobr);
 	this.element.appendChild(tabBox);
@@ -713,16 +713,39 @@ Display.prototype.createTabBox = function() {
 	this.tabBox = tabBox;
 }
 
+/* 创建右侧容器 */
+Display.prototype.createRightBox = function() {
+	var rightBox = Element.createNSElement(WS_TAG_TABLE);
+	rightBox.cellSpacing = 0;
+	rightBox.cellPadding = 0;
+	rightBox.border = 0;
+	rightBox.className = CSS_CLASS_RIGHT_BOX;
+
+	for(var i=0; i < 2; i++) {
+	  var row = rightBox.insertRow();
+	  row.insertCell();
+	}
+	rightBox.rows[1].height = _SIZE_PHASE_CONTROLLER_HEIGHT;
+
+	this.element.appendChild(rightBox);
+	var refChild = this.element.childNodes[1];
+	if(rightBox != refChild && refChild) {
+		this.element.insertBefore(rightBox,refChild);
+	}
+
+	this.rightBox = rightBox;
+}
+
 /* 创建纵向Tab标签的容器 */
 Display.prototype.createPhaseBox = function() {
-	var phaseBox = this.createElement(WS_TAG_PHASE_BOX, WS_NAMESPACE);
+	var phaseBox = Element.createNSElement(WS_TAG_PHASE_BOX, WS_NAMESPACE);
 	this.rightBox.rows[0].cells[0].appendChild(phaseBox);
 	this.phaseBox = phaseBox;
 }
 
 /* 创建Tab标签控制器 */
 Display.prototype.createTabController = function() {
-	var tabController = this.createElement(WS_TAG_TAB_CTRL, WS_NAMESPACE);
+	var tabController = Element.createNSElement(WS_TAG_TAB_CTRL, WS_NAMESPACE);
 
 	this.element.appendChild(tabController);
 	var refChild = this.element.childNodes[1];
@@ -733,9 +756,135 @@ Display.prototype.createTabController = function() {
 	this.tabController = tabController;
 }
 
+
+/* 显示右侧容器 */
+Display.prototype.showRightBox = function() {
+	this.rightBox.style.display = "inline";
+}
+
+/* 隐藏右侧容器 */
+Display.prototype.hideRightBox = function() {
+	this.rightBox.style.display = "none";
+}
+
+/* 刷新Phase标签控制器 */
+Display.prototype.refreshPhaseController = function() {
+	if( this.phaseController == null ) {
+		this.createPhaseController();
+		this.createPhaseControllerButtons();
+	}
+	
+	/* 刷新Phase标签控制器按钮  */
+	var flag = (this.phaseBox.scrollHeight > this.phaseBox.offsetHeight);
+	for(var item in this.buttons) {
+		var button = this.buttons[item];
+		if(button.type == _TYPE_PHASE_CONTROLLER_BT) {
+			button.setEnable(flag);
+		}
+	}
+	this.showRightBox();
+}
+ 
+
+/* 创建Phase标签控制器  */
+Display.prototype.createPhaseController = function() {
+	var phaseController = Element.createNSElement(WS_TAG_PHASE_CTRL, WS_NAMESPACE);
+	this.rightBox.rows[1].cells[0].appendChild(phaseController);
+	this.phaseController = phaseController;
+}
+
+/* 清除Phase标签控制器  */
+Display.prototype.clearPhaseController = function() {
+	for(var item in this.buttons) {
+		var button = this.buttons[item];
+		if(button.type == _TYPE_PHASE_CONTROLLER_BT) {
+			button.dispose();
+		}
+	}
+
+	if(this.phaseController != null) {
+		Element.removeNode(this.phaseController);
+		this.phaseController = null;
+	}
+	this.hideRightBox();
+}
+
+/* 创建Phase标签控制器按钮 */
+Display.prototype.createPhaseControllerButtons = function() {
+	var prevBt = new ControllerButton(_TYPE_PHASE_CONTROLLER_BT, _IMG_PHASE_PREV);
+	var nextBt = new ControllerButton(_TYPE_PHASE_CONTROLLER_BT, _IMG_PHASE_NEXT);
+
+	this.buttons[prevBt.uniqueID] = prevBt;
+	this.buttons[nextBt.uniqueID] = nextBt;
+
+	prevBt.dockTo(this.phaseController);
+	nextBt.dockTo(this.phaseController);
+
+	prevBt.linkTo(function() {
+		_display.phaseBox.scrollTop -= _SIZE_PHASE_HEIGHT + _SIZE_PHASE_MARGIN_TOP;
+	});
+	nextBt.linkTo(function() {
+		_display.phaseBox.scrollTop += _SIZE_PHASE_HEIGHT + _SIZE_PHASE_MARGIN_TOP;
+	});
+	
+	var tab = this.getActiveTab();
+	if(tab == null) return;
+
+	prevBt.object.onclick = function() { 
+		tab.prevPhase();
+	}
+	nextBt.object.onclick = function() { 
+		tab.nextPhase();
+	}
+}
+
 /*
- *	创建Tab标签控制器按钮
+ *	打开一个新子页
+ *	参数：	object:inf 配置参数
+ *	返回值：Tab:tab    Tab标签实例
  */
+Display.prototype.open = function(inf) {
+	var tab = this.getTabBySID(inf.SID);
+	
+	// 不存在同一数据源tab则新建
+	if(null == tab) {             
+		tab = new Tab(inf.label, inf.phases, inf.callback);
+		this.tabs[tab.uniqueID] = tab;
+
+		var page = this.getPage(inf.defaultPage);
+		tab.linkTo(page);
+		tab.dockTo(this.tabBox.firstChild);
+		tab.SID = inf.SID; // 标记数据源
+
+		this.refreshTabController();
+		this.setHasTabStyle(true);
+	}
+	
+	tab.click();
+	return tab;
+}
+
+/* 刷新Tab标签控制器 */
+Display.prototype.refreshTabController = function() {
+	if( this.tabController == null) {
+		this.createTabController();
+		this.createTabControllerButtons();
+	}
+	this.refreshTabControllerButtons();
+}
+
+/* 刷新Tab标签控制器按钮  */
+Display.prototype.refreshTabControllerButtons = function() {
+	var flag = (this.tabBox.scrollWidth > this.tabBox.offsetWidth);
+	for(var item in this.buttons) {
+		var button = this.buttons[item];
+		if(button.type == _TYPE_TAB_CONTROLLER_BT) {
+			button.setEnable(flag);
+		}
+	}
+}
+
+/* 创建Tab标签控制器按钮 */
 Display.prototype.createTabControllerButtons = function() {
 	var firstBt = new ControllerButton(_TYPE_TAB_CONTROLLER_BT, _IMG_TAB_FIRST);
 	var prevBt  = new ControllerButton(_TYPE_TAB_CONTROLLER_BT, _IMG_TAB_PREV);
@@ -779,164 +928,6 @@ Display.prototype.createTabControllerButtons = function() {
 		oThis.nextTab();
 	}
 }
-/*
- *	刷新Tab标签控制器按钮
- */
-Display.prototype.refreshTabControllerButtons = function() {
-	var flag = (this.tabBox.scrollWidth > this.tabBox.offsetWidth);
-	for(var item in this.buttons) {
-		var button = this.buttons[item];
-		if(button.type == _TYPE_TAB_CONTROLLER_BT) {
-			button.setEnable(flag);
-		}
-	}
-}
-/*
- *	创建右侧容器
- */
-Display.prototype.createRightBox = function() {
-	var rightBox = this.createElement(WS_TAG_TABLE);
-	rightBox.cellSpacing = 0;
-	rightBox.cellPadding = 0;
-	rightBox.border = 0;
-	rightBox.className = CSS_CLASS_RIGHT_BOX;
-
-	for(var i=0; i < 2; i++) {
-	  var row = rightBox.insertRow();
-	  row.insertCell();
-	}
-	rightBox.rows[1].height = _SIZE_PHASE_CONTROLLER_HEIGHT;
-
-	this.element.appendChild(rightBox);
-	var refChild = this.element.childNodes[1];
-	if(rightBox != refChild && refChild) {
-		this.element.insertBefore(rightBox,refChild);
-	}
-
-	this.rightBox = rightBox;
-}
-
-/* 显示右侧容器 */
-Display.prototype.showRightBox = function() {
-	this.rightBox.style.display = "inline";
-}
-
-/* 隐藏右侧容器 */
-Display.prototype.hideRightBox = function() {
-	this.rightBox.style.display = "none";
-}
-
-/* 刷新Phase标签控制器 */
-Display.prototype.refreshPhaseController = function() {
-	if( this.phaseController == null ) {
-		this.createPhaseController();
-		this.createPhaseControllerButtons();
-	}
-	
-	/* 刷新Phase标签控制器按钮  */
-	var flag = (this.phaseBox.scrollHeight > this.phaseBox.offsetHeight);
-	for(var item in this.buttons) {
-		var button = this.buttons[item];
-		if(button.type == _TYPE_PHASE_CONTROLLER_BT) {
-			button.setEnable(flag);
-		}
-	}
-	this.showRightBox();
-}
- 
-
-/* 创建Phase标签控制器  */
-Display.prototype.createPhaseController = function() {
-	var phaseController = this.createElement(WS_TAG_PHASE_CTRL, WS_NAMESPACE);
-	this.rightBox.rows[1].cells[0].appendChild(phaseController);
-	this.phaseController = phaseController;
-}
-
-/* 清除Phase标签控制器  */
-Display.prototype.clearPhaseController = function() {
-	for(var item in this.buttons) {
-		var button = this.buttons[item];
-		if(button.type == _TYPE_PHASE_CONTROLLER_BT) {
-			button.dispose();
-		}
-	}
-
-	if(this.phaseController != null) {
-		Element.removeNode(this.phaseController);
-		this.phaseController = null;
-	}
-	this.hideRightBox();
-}
-
-/* 创建Phase标签控制器按钮 */
-Display.prototype.createPhaseControllerButtons = function() {
-	var prevBt = new ControllerButton(_TYPE_PHASE_CONTROLLER_BT, _IMG_PHASE_PREV);
-	var nextBt = new ControllerButton(_TYPE_PHASE_CONTROLLER_BT, _IMG_PHASE_NEXT);
-
-	this.buttons[prevBt.uniqueID] = prevBt;
-	this.buttons[nextBt.uniqueID] = nextBt;
-
-	prevBt.dockTo(this.phaseController);
-	nextBt.dockTo(this.phaseController);
-
-	prevBt.linkTo(function() {
-		_display.phaseBox.scrollTop -= _SIZE_PHASE_HEIGHT + _SIZE_PHASE_MARGIN_TOP;
-	});
-	nextBt.linkTo(function() {
-		_display.phaseBox.scrollTop += _SIZE_PHASE_HEIGHT + _SIZE_PHASE_MARGIN_TOP;
-	});
-	
-	var oThis = this;
-	prevBt.object.onclick = function() { 
-		var tab = oThis.getActiveTab();
-		if( tab ) {
-			tab.prevPhase();
-		}
-	}
-	nextBt.object.onclick = function() { 
-		var tab = oThis.getActiveTab();
-		if( tab ) {
-			tab.nextPhase();
-		}
-	}
-}
-
-
-
-/*
- *	打开一个新子页
- *	参数：	object:inf 配置参数
- *	返回值：Tab:tab    Tab标签实例
- */
-Display.prototype.open = function(inf) {
-	var tab = this.getTabBySID(inf.SID);
-	
-	// 不存在同一数据源tab则新建
-	if(null == tab) {             
-		tab = new Tab(inf.label, inf.phases, inf.callback);
-		this.tabs[tab.uniqueID] = tab;
-
-		var page = this.getPage(inf.defaultPage);
-		tab.linkTo(page);
-		tab.dockTo(this.tabBox.firstChild);
-		tab.SID = inf.SID; // 标记数据源
-
-		this.refreshTabController();
-		this.setHasTabStyle(true);
-	}
-	
-	tab.click();
-	return tab;
-}
-
-/* 刷新Tab标签控制器 */
-Display.prototype.refreshTabController = function() {
-	if( this.tabController == null) {
-		this.createTabController();
-		this.createTabControllerButtons();
-	}
-	this.refreshTabControllerButtons();
-}
 
 /*
  *	设置有Tab标签的容器样式
@@ -968,34 +959,13 @@ Display.prototype.showPage = function(page) {
 Display.prototype.hidePage = function(page) {
 	page.hide();
 }
-/*
- *	创建带命名空间的对象
- *	参数：	string:tagName		对象标签名
-			string:ns			命名空间
- *	返回值：object	html对象
- */
-Display.prototype.createElement = function(tagName, ns) {
-	var obj;
-	if(null == ns) {
-		obj = document.createElement(tagName);
-	} 
-	else {
-		var tempDiv = document.createElement("DIV");
-		tempDiv.innerHTML = "<" + ns + ":" + tagName + "/>";
-		obj = tempDiv.firstChild.cloneNode(false);
-		Element.removeNode(tempDiv);
-	}
-	return obj;
 
-}
-/*
- *	以文本方式输出对象信息
- */
 Display.prototype.toString = function() {
 	var str = [];
 	str[str.length] = "[Display 对象]";
 	return str.join("\r\n");
 }
+
 /*
  *	切换到指定Tab页
  *	参数：Tab:tab   Tab实例
@@ -1012,9 +982,7 @@ Display.prototype.switchToTab = function(tab) {
 	this.refreshTabControllerButtons();
 }
 
-/*
- *	清除Tab标签控制器
- */
+/* 清除Tab标签控制器 */
 Display.prototype.clearTabController = function() {
 	for(var item in this.buttons) {
 		var button = this.buttons[item];
@@ -1029,34 +997,29 @@ Display.prototype.clearTabController = function() {
 	}
 }
 
-/*
- *	获得第一个Tab
- */
+/* 获得第一个Tab */
 Display.prototype.getFirstTab = function() {
 	for(var item in this.tabs) {
 		return this.tabs[item];
 	}
 }
-/*
- *	获得最后一个Tab
- */
+
+/* 获得最后一个Tab */
 Display.prototype.getLastTab = function() {
 	for(var item in this.tabs) {
 	}
 	return this.tabs[item];
 }
-/*
- *	低亮所有标签
- */
+
+/* 低亮所有标签 */
 Display.prototype.inactiveAllTabs = function() {
 	for(var item in this.tabs) {
 		var curTab = this.tabs[item];
 		curTab.inactive();
 	}
 }
-/*
- *	获取当前激活标签
- */
+
+/* 获取当前激活标签 */
 Display.prototype.getActiveTab = function() {
 	for(var item in this.tabs) {
 		var tab = this.tabs[item];
@@ -1065,6 +1028,7 @@ Display.prototype.getActiveTab = function() {
 		}
 	}
 }
+
 /*
  *	根据SID获取Tab
  *	参数：  string:SID 
@@ -1076,9 +1040,8 @@ Display.prototype.getTabBySID = function(SID) {
 		}
 	}
 }
-/*
- *	激活上一个Tab标签
- */
+
+/* 激活上一个Tab标签 */
 Display.prototype.prevTab = function() {       
 	var tempTabs = [];
 	var activeTabIndex;
@@ -1098,9 +1061,8 @@ Display.prototype.prevTab = function() {
 	}
 	this.switchToTab(tab);
 }
-/*
- *	激活下一个Tab标签
- */
+
+/* 激活下一个Tab标签 */
 Display.prototype.nextTab = function() {      
 	var tempTabs = [];
 	var activeTabIndex;
