@@ -32,6 +32,11 @@ function init() {
 				var tree2 = $T("tree2", treeData);	
 				var tree3 = $T("tree3", treeData);	
 
+				tree2.loadDefaultCheckedByIds("2,4,6", true);
+				tree2.loadDefaultCheckedByIds("7,8,10", false);
+
+				tree3.loadDefaultCheckedByIds("5", true);
+
 				// 测试树控件事件
 				tree1.element.onTreeNodeActived = function(eventObj) {
 
@@ -90,15 +95,34 @@ window.onload = init;
 
  
  <table class="full" border="1" height="600">
-	<tr>
+	<tr height="250">
 		<td width="300">-菜单树
 			<Tree:Box id="tree" treeType="menu" baseurl="" canMoveNode="true"><div class="loading"></div></Tree:Box>
 		</td>
 		<td width="300">-多选树
 			<Tree:Box id="tree2" treeType="multi" baseurl="" selectSelf="false"><div class="loading"></div></Tree:Box>
+			<input type="button" value="getIDs" onclick=""/>
 		</td>
 		<td width="300">-单选树
 			<Tree:Box id="tree3" treeType="single" baseurl="" selectSelf="true"><div class="loading"></div></Tree:Box>
+		</td>
+	</tr>
+	<tr height="150">
+		<td>
+			<input type="button" value="getIDs" onclick="alert($T('tree').getIds(false));"/>
+			<input type="button" value="新建节点" onclick=""/>
+			<input type="button" value="修改节点" onclick="modifyTreeNode(6, 'name', '天地玄黄', true);"/>
+			<br/>
+			<br/>
+			<input type="button" value="精确搜索" onclick="$T('tree').searchNode('CMS', true);"/>
+			<input type="button" value="模糊搜索" onclick="$T('tree').searchNode('子组', false);"/>
+			<input type="button" value="下一个" onclick="$T('tree').searchNext();"/>
+		</td>
+		<td>
+			<input type="button" value="getIDs" onclick="alert($T('tree2').getIds(false));"/>
+		</td>
+		<td>
+			<input type="button" value="getIDs" onclick="alert($T('tree3').getIds(false));"/>
 		</td>
 	</tr>
 </table>
