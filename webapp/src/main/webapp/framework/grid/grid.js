@@ -25,7 +25,7 @@ var Grid = function(element, data) {
 	this.iconPath = this.baseurl + "images/";
 	
 	var gridBoxId = this.id + "Box";
-	this.element.innerHTML = "<div id='" + gridBoxId + "' style='position:absolute;overflow:auto;left:0px;top:0px;z-index:1'></div>";
+	this.element.innerHTML = "<div id='" + gridBoxId + "' style='position:relative;overflow:auto;left:0px;top:0px;z-index:1'></div>";
 	this.gridBox   = $$(gridBoxId);
 	this.gridBox.style.height = this.windowHeight = element.height || "100%";
 	this.gridBox.style.width  = this.windowWidth  = element.width  || "100%";
@@ -121,30 +121,26 @@ var GridTemplate = function(xmlDom) {
 }
 
 function parseTempalte(template, startNum, gridID) {
-	 var colgroup = new Array();
 	 var thead = new Array();
 	 var tbody = new Array();
 
-	 colgroup.push("<colgroup>");
 	 thead.push("<thead><tr>");
 	 tbody.push("<tbody class=\"cell\">");
 	 if(template.hasHeader) {
-		colgroup.push("<col align=\"center\"/>");
-		thead.push("<td width=\"50px\" class=\"column\"><input type=\"checkbox\" id=\"headerCheckAll\"/></td>");
+		thead.push("<td width=\"50px\" align=\"center\" class=\"column\"><input type=\"checkbox\" id=\"headerCheckAll\"/></td>");
 	 }
 	 if(template.needSequence) {
-		colgroup.push("<col align=\"center\" class=\"sequence\" id=\"sequence\"/>");
-		thead.push("<td width=\"50px\" name=\"sequence\" class=\"column\"><nobr>序号</nobr></td>");
+		thead.push("<td width=\"50px\" align=\"center\" name=\"sequence\" class=\"column\"><nobr>序号</nobr></td>");
 	 }
 	 for(var name in template.columnsMap) {
 		var column = template.columnsMap[name];
 		var width    = column.getAttribute("width");
-		var _class   = column.getAttribute("display") == "none" ?  "class=\"hidden\"" : "";
+		width = width ? " width=\"" + width + "\" " : "";
+		var _class   = column.getAttribute("display") == "none" ?  "hidden" : "column";
 		var caption  = column.getAttribute("caption");
 		var sortable = column.getAttribute("sortable") == "true" ? "sortable=\"true\"" : "";
-
-		colgroup.push("<col align=\"" + getAlign(column) + "\" caption=\"" + caption + "\" " + _class + "/>");
-		thead.push("<td width=\"" + width + "\" name=\"" + name + "\" class=\"column\" " + sortable + "><nobr>" + caption + "</nobr></td>")
+		var align = " align=\"" + getAlign(column) + "\" ";
+		thead.push("<td " + width + align + " name=\"" + name + "\" class=\"" + _class + "\" " + sortable + "><nobr>" + caption + "</nobr></td>")
 	 }
 
 	 for(var i=0; i < template.dataRows.length; i++) {
@@ -161,30 +157,34 @@ function parseTempalte(template, startNum, gridID) {
 		tbody.push(">");
 
 		if(template.hasHeader) {
-			tbody.push("<td mode=\"cellheader\" name=\"cellheader\"><nobr>");
+			tbody.push("<td align=\"center\" mode=\"cellheader\" name=\"cellheader\"><nobr>");
 			tbody.push("<input class=\"selectHandle\" name=\"" + gridID + "_header\" type=\"checkbox\" >");
 			tbody.push("</nobr></td>")
 		}
 		if(template.needSequence) {
-			tbody.push("<td mode=\"cellsequence\" name=\"cellsequence\"><nobr>" + index + "</nobr></td>");
+			tbody.push("<td align=\"center\" mode=\"cellsequence\" name=\"cellsequence\"><nobr>" + index + "</nobr></td>");
 		}
 
 		for(var name in template.columnsMap) {
 			var column = template.columnsMap[name];
-			var _class   = column.getAttribute("highlightCol") == "true" ?  "class=\"highlightCol\"" : "";
-
-			tbody.push("<td name=\"" + name + "\" " + _class + "><nobr>" + "TSS" + "</nobr></td>");
+			
+			var _class = "";
+			if(column.getAttribute("display") == "none") {
+				_class = "class=\"hidden\"";
+			} 
+			else if(column.getAttribute("highlightCol") == "true") {
+				_class = "class=\"highlightCol\"";
+			}
+			tbody.push("<td align=\"" + getAlign(column) + "\" name=\"" + name + "\" " + _class + "><nobr>" + "TSS" + "</nobr></td>");
 		}
 		tbody.push("</tr>");
 	 }
 
-	 colgroup.push("</colgroup>");
 	 thead.push("</thead></tr>");	 
 	 tbody.push("</tbody>");
 
 	 var htmls = new Array();
      htmls.push("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"table-layout:fixed\">");
-	 htmls.push(colgroup.join(""));
 	 htmls.push(thead.join(""));
 	 htmls.push(tbody.join(""));
 	 return htmls.join("");
@@ -259,7 +259,7 @@ Grid.prototype.processDataRow = function(curRow) {
 				break;    
 			case "boolean":      
 				var checked = (value =="true") ? "checked" : "";
-				nobrNodeInCell.innerHTML = "<input class='selectHandle' name='" + columnName + "' type='radio' " + checked + "/>";
+				nobrNodeInCell.innerHTML = "<form><input class='selectHandle' name='" + columnName + "' type='radio' " + checked + "/></form>";
 				nobrNodeInCell.getElementsByTagName("INPUT")[0].disabled = true;
 				break;
 		}							
@@ -637,8 +637,11 @@ function showGrid(serviceUrl, dataNodeName, editRowFuction, gridName, page, requ
 function bindSortHandler(table) {
 	this.rows  = table.tBodies[0].rows;
 	this.tags  = table.tHead.rows[0].cells;
-	var defaultClass = this.tags[0].className;
-
+	var defaultClass = [];
+	for(var i=0; i < this.tags.length; i++) {
+		defaultClass[i] = this.tags[i].className;
+	}
+	
 	// 将数据行和列转换成二维数组
 	this._2DArray = [];
 	for(var i=0; i < this.rows.length; i++) {
@@ -662,7 +665,7 @@ function bindSortHandler(table) {
 	var direction = 1;
 	function sortHandler() {
 		for(var i=0; i < oThis.tags.length; i++) {
-			oThis.tags[i].className = defaultClass;
+			oThis.tags[i].className = defaultClass[i];
 		}
 
 		if(direction == 1) {

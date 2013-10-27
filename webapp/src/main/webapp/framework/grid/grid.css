@@ -1,6 +1,6 @@
 
 Grid\:Box {
-	position:absolute;
+	position:relative;
 	border:1px solid #96969E;
 	background-color:#FFFFFF;
 	padding-top:0px;
@@ -8,6 +8,15 @@ Grid\:Box {
 	height:100%;
 	font-size:12px;
 	font-family: "宋体";
+}
+
+Grid\:Box .column {
+	text-align:center;
+	border-style:solid;
+	border-color:#FFFFFF #96969E #96969E #FFFFFF;
+	border-width: 1 1 1 1;
+	background-color:#E4E6F5;
+	height:25px;
 }
 
 Grid\:Box .cell {
@@ -20,15 +29,6 @@ Grid\:Box .cell td, Grid\:Box .header td {
 	border-width: 1 1 1 1;
 	overflow:hidden;
 	text-overflow:ellipsis;
-	height:22px;
-}
-
-Grid\:Box .column {
-	text-align:center;
-	border-style:solid;
-	border-color:#FFFFFF #96969E #96969E #FFFFFF;
-	border-width: 1 1 1 1;
-	background-color:#E4E6F5;
 	height:25px;
 }
 
@@ -45,9 +45,8 @@ Grid\:Box .rolloverRow {
 }
 
 Grid\:Box .hidden {
-	display: none;
+	display:none;
 }
-
 
 Grid\:Box .asc {  
 	background: #FFFFCC url(../images/up.gif) no-repeat right 5px;

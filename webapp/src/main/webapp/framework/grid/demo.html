@@ -41,6 +41,9 @@ ICON = "../images/";
 				$$("grid").onRightClickRow = function () {
 					grid.element.contextmenu.show(event.clientX, event.clientY);						
 				}
+				$$("grid").onDblClickRow = function () {
+					alert($G("grid").getRowAttributeValue("id"));				
+				}
 			},
 			onexception : function() {
 				alert("exception");

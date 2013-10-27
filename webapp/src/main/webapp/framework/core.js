@@ -1036,7 +1036,7 @@ function createEventObject() {
 function EventFirer(element, eventName) {
 	var _name = eventName;
 	this.fire = function (event) {
-		var func = element.getAttribute(_name);
+		var func = element.getAttribute(_name) || eval("element." + _name);
 		if( func ) {
 			var funcType = typeof(func);
 			if("string" == funcType) {
