@@ -813,8 +813,8 @@ Element.attachColResize = function(obj) {
 		ruleElement.style.top  = Element.absTop(element);
 		ruleElement.style.left = Element.absLeft(element) + element.offsetWidth - offsetX;
 		ruleElement.style.backgroundColor = "white";
+		ruleElement.style.zIndex = "999"; 
 		
-		// ruleElement.style.filter = "alpha(opacity=0)";
 		Element.setOpacity(ruleElement, 1); 
 	}
 
@@ -903,13 +903,7 @@ Event.timeout = {};
  *	返回值：object:object       HTML对象
  */
 Event.getSrcElement = function(eventObj) {
-	var srcElement = null;
-	if(window.DOMParser) {
-		srcElement = eventObj.target;
-	}
-	else {
-		srcElement = eventObj.srcElement;
-	}
+	var srcElement =  eventObj.target || eventObj.srcElement;
 	return srcElement;
 }
 
@@ -971,7 +965,7 @@ Event.attachEvent = function(srcElement, eventName, listener) {
 		srcElement.attachEvent("on" + eventName, listener);
 	}
 	else {
-		srcElement['on' + type] = listener;
+		srcElement['on' + eventName] = listener;
 	}
 }
 

@@ -24,6 +24,8 @@ ICON = "../images/";
 
     function init() {
 
+		// Element.attachColResize($$("ttt"));
+
 		initGridMenu();
 
 		Ajax({
@@ -122,7 +124,7 @@ ICON = "../images/";
 
 <body>
 
-<table class="full" >
+<table id="ttt" class="full" style="height:430px;width:900px;">
   <tr>
 	<td id="gridTitle">
 	  <span class="icon"></span>用户列表<span class="buttonBox" id="gridToolBar"></span>
@@ -130,7 +132,7 @@ ICON = "../images/";
   </tr>
   <tr>
 	<td>
-		<Grid:Box id="grid" baseurl="" height="630" width="1000"><div class="loading"/></Grid:Box>
+		<Grid:Box id="grid" baseurl="" height="410" width="900" ></Grid:Box>
 	</td>
   </tr>
 </table>

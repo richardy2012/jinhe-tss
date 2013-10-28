@@ -14,7 +14,7 @@ function $G(gridId, data) {
 
 var scrollbarSize = 17;
 var cellWidth = 100; //基本列宽
-var cellHeight = 22; //数据行高
+var cellHeight = 25; //数据行高
 var GRID_SCROLL_DELAY_TIME = 0; // 滚动条的滚动事件延迟时间（毫妙）
 
 var Grid = function(element, data) {
@@ -27,8 +27,15 @@ var Grid = function(element, data) {
 	var gridBoxId = this.id + "Box";
 	this.element.innerHTML = "<div id='" + gridBoxId + "' style='position:relative;overflow:auto;left:0px;top:0px;z-index:1'></div>";
 	this.gridBox   = $$(gridBoxId);
-	this.gridBox.style.height = this.windowHeight = element.height || "100%";
-	this.gridBox.style.width  = this.windowWidth  = element.width  || "100%";
+
+	this.gridBox.style.width  = this.windowWidth  = element.getAttribute("width")  || "100%";
+	var pointHeight = element.getAttribute("height");
+	if( pointHeight ) {
+		this.gridBox.style.height = this.windowHeight = pointHeight;
+	} else {
+		this.gridBox.style.height = "100%";
+		this.windowHeight = Math.max(element.offsetHeight, 500);
+	}
 
 	this.pageSize = Math.floor(this.windowHeight / cellHeight);
 	
@@ -69,6 +76,8 @@ Grid.prototype.load = function(data, append) {
 	else {
 		this.gridBox.innerHTML = ""; // 初始化容器
 		this.gridBox.innerHTML = gridTableHtml.replace(/<\/br>/gi, "") ;
+
+		this.tbody = this.gridBox.childNodes[0].tBodies[0];
 		
 		// 拖动改变列宽
 		Element.ruleObjList = []; // 先清空原来的拖动条
@@ -78,21 +87,25 @@ Grid.prototype.load = function(data, append) {
 		}
 		
 		// 设置隐藏列事件，双击隐藏列
-		var colList = this.gridBox.childNodes[0].childNodes[0].childNodes;
-		for( var i = 0; i < colList.length; i++ ) {
+		for( var i = 0; i < thList.length; i++ ) {
 			var th = thList[i];
 			th.index = i;
+			th.rows = this.tbody.rows;
 			Event.attachEvent(th, "dblclick", function() {
 				var srcElement = Event.getSrcElement(event);
 				while(srcElement.tagName.toLowerCase() != "td") {
 					srcElement = srcElement.parentNode;
 				}
-				colList[srcElement.index].style.display = "none";
+				srcElement.style.display = "none";
+
+				var rows = srcElement.rows;
+				for(var j = 0; j < rows.length; j++ ) {
+					rows[j].childNodes[srcElement.index].style.display = "none";
+				}
 			}) ;
 		}		
 	}
 	
-	this.tbody = this.tbody || this.gridBox.childNodes[0].tBodies[0];
 	this.rows = this.tbody.rows;
 	this.totalRowsNum = this.rows.length;
 	for(var i=startNum; i < this.totalRowsNum; i++) {
@@ -184,7 +197,7 @@ function parseTempalte(template, startNum, gridID) {
 	 tbody.push("</tbody>");
 
 	 var htmls = new Array();
-     htmls.push("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"table-layout:fixed\">");
+     htmls.push("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"table-layout:fixed;\">");
 	 htmls.push(thead.join(""));
 	 htmls.push(tbody.join(""));
 	 return htmls.join("");
@@ -218,11 +231,12 @@ Grid.prototype.processDataRow = function(curRow) {
 		var cell = cells[j];
 		var columnName = cell.getAttribute("name");
 		var columnNode = this.template.columnsMap[columnName]; 
-		if( columnName == null || columnName == "cellsequence" || columnName == "cellheader" || columnNode == null)  {
+		var value = curRow.getAttribute(columnName); // xsl解析后，各行的各个TD值统一记录在了TR上。
+
+		if( columnName == null || columnName == "cellsequence" || columnName == "cellheader" || columnNode == null || value == null)  {
 			continue;
 		}
- 
-		var value = curRow.getAttribute(columnName); // xsl解析后，各行的各个TD值统一记录在了TR上。
+
 		var nobrNodeInCell = cell.childNodes[0];    // nobr 节点
 		var mode = columnNode.getAttribute("mode");
 		switch( mode ) {
@@ -307,11 +321,19 @@ Grid.prototype.insertRow = function(map) {
 
 	var thList = this.gridBox.childNodes[0].tHead.firstChild.childNodes;
 	for(var i = 0; i < thList.length; i++) {
-		var columnName = thList[i].name;
-
+		var columnName = thList[i].getAttribute("name");
+		
 		var cell = newRow.insertCell(i);
 		cell.setAttribute( "name", columnName );
-
+		
+		var column = this.template.columnsMap[columnName];
+		if(column && column.getAttribute("display") == "none" ) {
+			Element.addClass(cell, "hidden");
+		} 
+		else {
+			Element.addClass(cell, "column");
+		}
+		
 		var nobr = document.createElement("nobr");
 		cell.appendChild( nobr );		
 
@@ -399,7 +421,7 @@ Grid.prototype.attachEventHandler = function() {
 	this.element.onkeydown = function() {
 		switch (event.keyCode) {
 		    case 33:	//PageUp
-				oThis.gridBox.scrollTop -= oThis._ageSize * cellHeight;
+				oThis.gridBox.scrollTop -= oThis.pageSize * cellHeight;
 				return false;
 		    case 34:	//PageDown
 				oThis.gridBox.scrollTop += oThis.pageSize * cellHeight;

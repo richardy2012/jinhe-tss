@@ -94,13 +94,13 @@ window.onload = function() {
 	var style = "div#jon{text-indent:20%; padding:5em; width:800px; border:1px blue solid; background-color:red;}";
 	Element.createStyle(style);
 
-	assertEquals(Element.getCurrentStyle($("Jon"), "background-color"), "red");	
-	assertEquals(Element.contains($("Jon"), $("p1")), true);	
+	assertEquals(Element.getCurrentStyle($$("Jon"), "background-color"), "red");	
+	assertEquals(Element.contains($$("Jon"), $$("p1")), true);	
 
-	Element.attachColResize($("Jon"));
-	// Element.attachRowResize($("Jon"));
+	Element.attachColResize($$("Jon"));
+	// Element.attachRowResize($$("Jon"));
 
-	Element.setOpacity($("Jon"), 30);
+	Element.setOpacity($$("Jon"), 30);
 
 }
 
