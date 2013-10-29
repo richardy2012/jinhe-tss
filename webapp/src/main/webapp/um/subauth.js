@@ -20,20 +20,20 @@
     CACHE_RULE_DETAIL = "rule__id";
 	
     /* XMLHTTP请求地址汇总*/
-	URL_INIT        = "/" + AUTH_PATH + "subauthorize/list"; 
-	URL_RULE_DETAIL = "/" + AUTH_PATH + "subauthorize/detail/"; 
-	URL_GROUP_USERS = "/" + AUTH_PATH + "group/users/";  // {groupId}
-	URL_SAVE_RULE   = "/" + AUTH_PATH + "subauthorize"; 
-	URL_STOP_RULE   = "/" + AUTH_PATH + "subauthorize/disable/"; 
-	URL_DEL_RULE    = "/" + AUTH_PATH + "subauthorize/"; 
+	URL_INIT        = AUTH_PATH + "subauthorize/list"; 
+	URL_RULE_DETAIL = AUTH_PATH + "subauthorize/detail/"; 
+	URL_GROUP_USERS = AUTH_PATH + "group/users/";  // {groupId}
+	URL_SAVE_RULE   = AUTH_PATH + "subauthorize"; 
+	URL_STOP_RULE   = AUTH_PATH + "subauthorize/disable/"; 
+	URL_DEL_RULE    = AUTH_PATH + "subauthorize/"; 
 	
 	if(IS_TEST) {
-		URL_INIT = "data/subauth_tree.xml?";
+		URL_INIT        = "data/subauth_tree.xml?";
 		URL_RULE_DETAIL = "data/subauth_detail.xml?";
 		URL_GROUP_USERS = "data/subauth_users.xml?";
-		URL_SAVE_RULE = "data/_success.xml?";
-		URL_STOP_RULE = "data/_success.xml?";
-		URL_DEL_RULE  = "data/_success.xml?";
+		URL_SAVE_RULE   = "data/_success.xml?";
+		URL_STOP_RULE   = "data/_success.xml?";
+		URL_DEL_RULE    = "data/_success.xml?";
 	}
 
     function init(){

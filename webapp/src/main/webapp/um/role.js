@@ -25,28 +25,28 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_SOURCE_TREE		  = "/" + AUTH_PATH + "role/list";
-    URL_ROLE_DETAIL		  = "/" + AUTH_PATH + "role/detail/"; // {id}/{parentId}
-	URL_ROLE_GROUP_DETAIL = "/" + AUTH_PATH + "role/group/"; // {id}/{parentId}
-    URL_SAVE_ROLE		  = "/" + AUTH_PATH + "role";
-	URL_SAVE_ROLE_GROUP   = "/" + AUTH_PATH + "role"; 
-    URL_STOP_NODE		  = "/" + AUTH_PATH + "role/disable/";  // {id}/{state}
-    URL_DELETE_NODE		  = "/" + AUTH_PATH + "role/";  // {id}
-	URL_MOVE_NODE		  = "/" + AUTH_PATH + "role/move/"; // {id}/{toGroupId}
-    URL_GROUP_USERS       = "/" + AUTH_PATH + "group/users/";  // {groupId}
-    URL_GET_OPERATION     = "/" + AUTH_PATH + "role/operations/";  // {id}
+    URL_SOURCE_TREE		  = AUTH_PATH + "role/list";
+    URL_ROLE_DETAIL		  = AUTH_PATH + "role/detail/"; // {id}/{parentId}
+	URL_ROLE_GROUP_DETAIL = AUTH_PATH + "role/group/"; // {id}/{parentId}
+    URL_SAVE_ROLE		  = AUTH_PATH + "role";
+	URL_SAVE_ROLE_GROUP   = AUTH_PATH + "role"; 
+    URL_STOP_NODE		  = AUTH_PATH + "role/disable/";  // {id}/{state}
+    URL_DELETE_NODE		  = AUTH_PATH + "role/";  // {id}
+	URL_MOVE_NODE		  = AUTH_PATH + "role/move/"; // {id}/{toGroupId}
+    URL_GROUP_USERS       = AUTH_PATH + "group/users/";  // {groupId}
+    URL_GET_OPERATION     = AUTH_PATH + "role/operations/";  // {id}
 	
 	if(IS_TEST) {
-	    URL_SOURCE_TREE = "data/role_tree.xml?";
-		URL_ROLE_DETAIL = "data/role_detail.xml?";
-		URL_SAVE_ROLE = "data/_success.xml?";
+	    URL_SOURCE_TREE       = "data/role_tree.xml?";
+		URL_ROLE_DETAIL       = "data/role_detail.xml?";
+		URL_SAVE_ROLE         = "data/_success.xml?";
 		URL_ROLE_GROUP_DETAIL = "data/rolegroup_detail.xml?";
-		URL_SAVE_ROLE_GROUP = "data/_success.xml?";
-		URL_STOP_NODE = "data/_success.xml?";
-		URL_DELETE_NODE = "data/_success.xml?";
-		URL_GROUP_USERS = "data/group2userlist.xml?";
-		URL_MOVE_NODE = "data/_success.xml?";
-		URL_GET_OPERATION = "data/operation.xml?";
+		URL_SAVE_ROLE_GROUP   = "data/_success.xml?";
+		URL_STOP_NODE         = "data/_success.xml?";
+		URL_DELETE_NODE       = "data/_success.xml?";
+		URL_GROUP_USERS       = "data/group2userlist.xml?";
+		URL_MOVE_NODE         = "data/_success.xml?";
+		URL_GET_OPERATION     = "data/operation.xml?";
 	}
  
     function init() {

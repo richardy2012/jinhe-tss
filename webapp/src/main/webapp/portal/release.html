@@ -35,14 +35,14 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-	URL_INIT            = "/" + AUTH_PATH + "portal/release/list";
-    URL_NODE_DETAIL     = "/" + AUTH_PATH + "portal/release/";
-    URL_SAVE_NODE       = "/" + AUTH_PATH + "portal/release";
-    URL_DELETE_NODE     = "/" + AUTH_PATH + "portal/release";
-    URL_GET_THEME_LIST  = "/" + AUTH_PATH + "portal/theme4release/";
-	URL_GET_PORTAL_LIST = "/" + AUTH_PATH + "portal/activePortals";
-	URL_GET_PAGE_LIST   = "/" + AUTH_PATH + "portal/activePages/";
-	URL_STATIC_RELEASE  = "/" + AUTH_PATH + "static/release/";
+	URL_INIT            = AUTH_PATH + "portal/release/list";
+    URL_NODE_DETAIL     = AUTH_PATH + "portal/release/";
+    URL_SAVE_NODE       = AUTH_PATH + "portal/release";
+    URL_DELETE_NODE     = AUTH_PATH + "portal/release";
+    URL_GET_THEME_LIST  = AUTH_PATH + "portal/theme4release/";
+	URL_GET_PORTAL_LIST = AUTH_PATH + "portal/activePortals";
+	URL_GET_PAGE_LIST   = AUTH_PATH + "portal/activePages/";
+	URL_STATIC_RELEASE  = AUTH_PATH + "static/release/";
 
 	if(IS_TEST) {
 		URL_INIT            = "data/releaseConfig_tree.xml?";

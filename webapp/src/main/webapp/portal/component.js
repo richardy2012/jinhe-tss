@@ -8,15 +8,15 @@
 	 /*
      *	XMLHTTP请求地址汇总
      */
-	URL_SOURCE_TREE      = "/" + AUTH_PATH + "component/list";
-    URL_SOURCE_SORT      = "/" + AUTH_PATH + "component/sort/"; // {id}/{targetId}/{direction}
-	URL_STOP_NODE        = "/" + AUTH_PATH + "component/disable/"; // {id}/{state}
-    URL_SOURCE_DETAIL    = "/" + AUTH_PATH + "component/";  // {groupId}/{id}
-    URL_DELETE_NODE      = "/" + AUTH_PATH + "component/";  // {id}
-    URL_SOURCE_SAVE      = "/" + AUTH_PATH + "component";
-	URL_SOURCE_RENAME    = "/" + AUTH_PATH + "component/rename/";
-    URL_EXPORT_COMPONENT = "/" + AUTH_PATH + "component/export/"; // {id}
-	URL_PREVIEW_COMPONENT= "/" + AUTH_PATH + "component/preview/"; // {id}
+	URL_SOURCE_TREE      = AUTH_PATH + "component/list";
+    URL_SOURCE_SORT      = AUTH_PATH + "component/sort/"; // {id}/{targetId}/{direction}
+	URL_STOP_NODE        = AUTH_PATH + "component/disable/"; // {id}/{state}
+    URL_SOURCE_DETAIL    = AUTH_PATH + "component/";  // {groupId}/{id}
+    URL_DELETE_NODE      = AUTH_PATH + "component/";  // {id}
+    URL_SOURCE_SAVE      = AUTH_PATH + "component";
+	URL_SOURCE_RENAME    = AUTH_PATH + "component/rename/";
+    URL_EXPORT_COMPONENT = AUTH_PATH + "component/export/"; // {id}
+	URL_PREVIEW_COMPONENT= AUTH_PATH + "component/preview/"; // {id}
 	
 	if(IS_TEST) {
 		URL_SOURCE_TREE      = "data/component_tree.xml?";

@@ -7,20 +7,96 @@
 		Js层拖动 - www.codefans.net
 	</title>
 	<style>
-		*{margin:0;padding:0;} #zhezhao{ width:100%; height:100%; background:#f00;
-		filter:alpha(opacity:0); opacity:0; z-index:9999; position:absolute; top:0;
-		left:0; display:none; } #div2{ width:200px; height:200px; position:relative;
-		background:#EEEEEE; border:1px solid #f00; } #div1{ width:15px; height:15px;
-		background:#99CC00; position:absolute; right:0px; bottom:0px; cursor:nw-resize;
-		overflow:hidden; font-size:12px; text-align:center; line-height:15px; color:#FFFFFF;
-		float:right; z-index:3; } #right{ width:15px; height:100%; background:#f00;
-		float:right; position:absolute; right:0; top:0; cursor:e-resize; overflow:hidden;
-		filter:alpha(opacity:0); opacity:0; z-index:1; } #bottom{ width:100%; height:15px;
-		background:#f00; position:absolute; left:0; bottom:0; cursor:n-resize;
-		overflow:hidden; filter:alpha(opacity:0); opacity:0; z-index:1; } #div2
-		p{ padding:10px; line-height:24px; font-size:13px; text-indent:24px; color:#996600;
-		} #div2 h2{ width:100%; height:25px; line-height:25px; font-size:14px;
-		background:#CC9900; color:#FFFFFF; text-indent:15px; cursor:move; overflow:hidden;
+		*{
+			margin:0;
+			padding:0;
+		} 
+		
+		#zhezhao{ 
+			 width:100%; 
+			 height:100%; 
+			 background:#f00;
+			 filter:alpha(opacity:0); 
+			 opacity:0; 
+			 z-index:9999; 
+			 position:absolute; 
+			 top:0;
+			 left:0; 
+			 display:none; 
+		} 
+		
+		#div2{ 
+			width:200px; 
+			height:200px; 
+			position:relative;
+			background:#EEEEEE; 
+			border:1px solid #f00; 
+		} 
+		
+		#div1{ 
+			width:15px; 
+			height:15px;
+			background:#99CC00; 
+			position:absolute; 
+			right:0px; 
+			bottom:0px; 
+			cursor:nw-resize;
+			overflow:hidden; 
+			font-size:12px; 
+			text-align:center; 
+			line-height:15px; 
+			color:#FFFFFF;
+			float:right; 
+			z-index:3; 
+		} 
+		
+		#right{ 
+			width:15px; 
+			height:100%; 
+			background:#f00;
+			float:right; 
+			position:absolute; 
+			right:0; 
+			top:0; 
+			cursor:e-resize; 
+			overflow:hidden;
+			filter:alpha(opacity:0); 
+			opacity:0; 
+			z-index:1; 
+		} 
+		
+		#bottom{ 
+			width:100%; 
+			height:15px;
+			background:#f00; 
+			position:absolute; 
+			left:0; 
+			bottom:0; 
+			cursor:n-resize;
+			overflow:hidden; 
+			filter:alpha(opacity:0); 
+			opacity:0; 
+			z-index:1; 
+		} 
+		
+		#div2 p{ 
+			padding:10px; 
+			line-height:24px; 
+			font-size:13px; 
+			text-indent:24px; 
+			color:#996600;
+		} 
+		
+		#div2 h2{ 
+			width:100%; 
+			height:25px; 
+			line-height:25px; 
+			font-size:14px;
+			background:#CC9900; 
+			color:#FFFFFF; 
+			text-indent:15px; 
+			cursor:move; 
+			overflow:hidden;
 		}
 	</style>
 	<script type="text/javascript">
@@ -222,17 +298,13 @@
 			<p>
 				体验不错的JavaScript网页拖动，除了拖动，还可拖动放大，像Windows窗口一样被放大或缩小，只要按住层的右下角，就可以收放自如的放大或缩小。想使用的朋友，可将代码里的Js封装成类，从外部引入想必更合理些。'
 			</p>
-			<div id="right">
-			</div>
-			<div id="div1">
-				拖
-			</div>
-			<div id="bottom">
-			</div>
+			<div id="right"></div>
+			<div id="div1">拖</div>
+			<div id="bottom"></div>
 		</div>
 	</div>
-	<div id="zhezhao">
-	</div>
+
+	<div id="zhezhao"></div>
 </body>
 
 </html>

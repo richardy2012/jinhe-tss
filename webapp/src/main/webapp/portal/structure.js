@@ -20,31 +20,31 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_SOURCE_TREE   = "/" + AUTH_PATH + "portal/list";
-    URL_SOURCE_DETAIL = "/" + AUTH_PATH + "portal/";
-    URL_SOURCE_SAVE   = "/" + AUTH_PATH + "portal";
-    URL_DELETE_NODE   = "/" + AUTH_PATH + "portal/";
-    URL_STOP_NODE     = "/" + AUTH_PATH + "portal/disable/";
-    URL_SORT_NODE     = "/" + AUTH_PATH + "portal/sort/";
-    URL_VIEW_SITE     = "/" + AUTH_PATH + "portal/preview/";
-    URL_GET_COMPONENT_PARAMS =  "/" + AUTH_PATH + "component/params/";     // {id}
-	URL_GET_COMPONENT_TREE =  "/" + AUTH_PATH + "component/enabledlist/";  // {type}
-    URL_THEME_MANAGE      = "/" + AUTH_PATH + "portal/theme/list/";
-    URL_RENAME_THEME      = "/" + AUTH_PATH + "portal/theme/rename/"; // {themeId}/{name}  PUT
-    URL_DEL_THEME         = "/" + AUTH_PATH + "portal/theme/";
-    URL_COPY_THEME        = "/" + AUTH_PATH + "portal/theme/";  // {themeId}/{name} POST
-    URL_PREVIEW_THEME     = "/" + AUTH_PATH + "portal/preview/"; // {portalId} ? themeId=?
-    URL_SET_DEFAULT_THEME = "/" + AUTH_PATH + "portal/theme/default/";  // {themeId}
-    URL_GET_OPERATION     = "/" + AUTH_PATH + "portal/operations/";
-    URL_FLUSH_CACHE       = "/" + AUTH_PATH + "portal/cache/";
-    URL_CACHE_MANAGE      = "/" + AUTH_PATH + "portal/cache/";
-    URL_GET_FLOW_RATE     = "/" + AUTH_PATH + "portal/flowrate/";
+    URL_SOURCE_TREE   = AUTH_PATH + "portal/list";
+    URL_SOURCE_DETAIL = AUTH_PATH + "portal/";
+    URL_SOURCE_SAVE   = AUTH_PATH + "portal";
+    URL_DELETE_NODE   = AUTH_PATH + "portal/";
+    URL_STOP_NODE     = AUTH_PATH + "portal/disable/";
+    URL_SORT_NODE     = AUTH_PATH + "portal/sort/";
+    URL_VIEW_SITE     = AUTH_PATH + "portal/preview/";
+    URL_GET_COMPONENT_PARAMS =  AUTH_PATH + "component/params/";     // {id}
+	URL_GET_COMPONENT_TREE =  AUTH_PATH + "component/enabledlist/";  // {type}
+    URL_THEME_MANAGE      = AUTH_PATH + "portal/theme/list/";
+    URL_RENAME_THEME      = AUTH_PATH + "portal/theme/rename/"; // {themeId}/{name}  PUT
+    URL_DEL_THEME         = AUTH_PATH + "portal/theme/";
+    URL_COPY_THEME        = AUTH_PATH + "portal/theme/";  // {themeId}/{name} POST
+    URL_PREVIEW_THEME     = AUTH_PATH + "portal/preview/"; // {portalId} ? themeId=?
+    URL_SET_DEFAULT_THEME = AUTH_PATH + "portal/theme/default/";  // {themeId}
+    URL_GET_OPERATION     = AUTH_PATH + "portal/operations/";
+    URL_FLUSH_CACHE       = AUTH_PATH + "portal/cache/";
+    URL_CACHE_MANAGE      = AUTH_PATH + "portal/cache/";
+    URL_GET_FLOW_RATE     = AUTH_PATH + "portal/flowrate/";
 
-	URL_SYNC_PROGRESS        = "/" + AUTH_PATH + "portal/release/progress/";  // GET
-    URL_CANCEL_SYNC_PROGRESS = "/" + AUTH_PATH + "portal/release/progress/";  // DELETE
-	URL_STATIC_ISSUE_PORATL  = "/" + AUTH_PATH + "portal/release/";
-	URL_STATIC_ISSUE_PAGE    = "/" + AUTH_PATH + "portal/release/singlepage";
-	URL_REMOTE_ISSUE         = "/" + AUTH_PATH + "portal/release/remote/";
+	URL_SYNC_PROGRESS        = AUTH_PATH + "portal/release/progress/";  // GET
+    URL_CANCEL_SYNC_PROGRESS = AUTH_PATH + "portal/release/progress/";  // DELETE
+	URL_STATIC_ISSUE_PORATL  = AUTH_PATH + "portal/release/";
+	URL_STATIC_ISSUE_PAGE    = AUTH_PATH + "portal/release/singlepage";
+	URL_REMOTE_ISSUE         = AUTH_PATH + "portal/release/remote/";
  
 	if(IS_TEST) {
 		URL_SOURCE_TREE   = "data/structure_tree.xml?";

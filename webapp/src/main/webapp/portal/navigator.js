@@ -14,18 +14,18 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_SOURCE_TREE      = "/" + AUTH_PATH + "navigator/list";
-    URL_SOURCE_DETAIL    = "/" + AUTH_PATH + "navigator/";
-    URL_SOURCE_SAVE      = "/" + AUTH_PATH + "navigator";
-    URL_DELETE_NODE      = "/" + AUTH_PATH + "navigator/";
-    URL_SORT_NODE        = "/" + AUTH_PATH + "navigator/sort/";
-    URL_MOVE_NODE        = "/" + AUTH_PATH + "navigator/move/";
-	URL_STOP_NODE        = "/" + AUTH_PATH + "navigator/disable/";
-    URL_GET_OPERATION    = "/" + AUTH_PATH + "navigator/operations/";
-	URL_GET_PS_TREE      = "/" + AUTH_PATH + "navigator/pstree/";
-	URL_GET_CHANNEL_TREE = "/" + AUTH_PATH + "channel/list";
-	URL_FRESH_MENU_CACHE = "/" + AUTH_PATH + "navigator/cache/";
-	URL_GET_MENU_TREE    = "/" + AUTH_PATH + "navigator/tree/";
+    URL_SOURCE_TREE      = AUTH_PATH + "navigator/list";
+    URL_SOURCE_DETAIL    = AUTH_PATH + "navigator/";
+    URL_SOURCE_SAVE      = AUTH_PATH + "navigator";
+    URL_DELETE_NODE      = AUTH_PATH + "navigator/";
+    URL_SORT_NODE        = AUTH_PATH + "navigator/sort/";
+    URL_MOVE_NODE        = AUTH_PATH + "navigator/move/";
+	URL_STOP_NODE        = AUTH_PATH + "navigator/disable/";
+    URL_GET_OPERATION    = AUTH_PATH + "navigator/operations/";
+	URL_GET_PS_TREE      = AUTH_PATH + "navigator/pstree/";
+	URL_GET_CHANNEL_TREE = AUTH_PATH + "channel/list";
+	URL_FRESH_MENU_CACHE = AUTH_PATH + "navigator/cache/";
+	URL_GET_MENU_TREE    = AUTH_PATH + "navigator/tree/";
 
 	if(IS_TEST) {
 		URL_SOURCE_TREE      = "data/menu_tree.xml?";

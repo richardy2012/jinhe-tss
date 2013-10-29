@@ -6,10 +6,10 @@ IS_TEST = false;
 APP_CODE    = "TSS";
 APPLICATION = APP_CODE.toLowerCase();
 CONTEXTPATH = APPLICATION + "/";
-AUTH_PATH   = CONTEXTPATH + "auth/";
-NO_AUTH_PATH = CONTEXTPATH;
+AUTH_PATH    = "/" + CONTEXTPATH + "auth/";
+NO_AUTH_PATH = "/" + CONTEXTPATH;
 
-URL_UPLOAD_FILE  = "/" + AUTH_PATH + "file/upload";	
+URL_UPLOAD_FILE  = AUTH_PATH + "file/upload";	
 
 if( IS_TEST ) {
 	URL_CORE = "../framework/";

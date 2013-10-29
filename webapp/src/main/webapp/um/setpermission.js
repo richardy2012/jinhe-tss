@@ -8,15 +8,15 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-	URL_INIT            = "/" + AUTH_PATH + "role/permission/initsearch/";  // {isRole2Resource}/{roleId}
-    URL_RESOURCE_TYPES  = "/" + AUTH_PATH + "role/resourceTypes/";  // {applicationId}
-    URL_PERMISSION      = "/" + AUTH_PATH + "role/permission/matrix/";  // {permissionRank}/{isRole2Resource}/{roleId}
-    URL_SAVE_PERMISSION = "/" + AUTH_PATH + "role/permission/";  // {permissionRank}/{isRole2Resource}/{roleId} POST
+	URL_INIT            = AUTH_PATH + "role/permission/initsearch/";  // {isRole2Resource}/{roleId}
+    URL_RESOURCE_TYPES  = AUTH_PATH + "role/resourceTypes/";  // {applicationId}
+    URL_PERMISSION      = AUTH_PATH + "role/permission/matrix/";  // {permissionRank}/{isRole2Resource}/{roleId}
+    URL_SAVE_PERMISSION = AUTH_PATH + "role/permission/";  // {permissionRank}/{isRole2Resource}/{roleId} POST
  
 	if(IS_TEST) {
-		URL_INIT = "data/setpermission_init.xml?";
-		URL_RESOURCE_TYPES = "data/resourcetypeList.xml?";
-		URL_PERMISSION = "data/setpermission.xml?";
+		URL_INIT            = "data/setpermission_init.xml?";
+		URL_RESOURCE_TYPES  = "data/resourcetypeList.xml?";
+		URL_PERMISSION      = "data/setpermission.xml?";
 		URL_SAVE_PERMISSION = "data/_success.xml?";
 
 		window.dialogArguments = {type:"", params: {isRole2Resource: "0"} };

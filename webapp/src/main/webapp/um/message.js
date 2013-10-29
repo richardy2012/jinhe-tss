@@ -14,19 +14,19 @@
  
     /* XMLHTTP请求地址汇总 */
     URL_INIT           = "data/message_init.xml?";
-    URL_MESSAGE_LIST   = "/" + AUTH_PATH + "message/list/";  // {boxType}
-    URL_MESSAGE_DETAIL = "/" + AUTH_PATH + "message/";  // {id}
-	URL_MESSAGE_REPLY  = "/" + AUTH_PATH + "message/reply/"; // {id}
-    URL_SAVE_MESSAGE   = "/" + AUTH_PATH + "message"; // PUT
-    URL_DEL_MESSAGE    = "/" + AUTH_PATH + "message/"; // {id} DELETE
+    URL_MESSAGE_LIST   = AUTH_PATH + "message/list/";  // {boxType}
+    URL_MESSAGE_DETAIL = AUTH_PATH + "message/";  // {id}
+	URL_MESSAGE_REPLY  = AUTH_PATH + "message/reply/"; // {id}
+    URL_SAVE_MESSAGE   = AUTH_PATH + "message"; // PUT
+    URL_DEL_MESSAGE    = AUTH_PATH + "message/"; // {id} DELETE
 
 	if(IS_TEST) {
-		URL_INIT = "data/message_init.xml?";
-		URL_MESSAGE_LIST = "data/message_list.xml?";
+		URL_INIT           = "data/message_init.xml?";
+		URL_MESSAGE_LIST   = "data/message_list.xml?";
 		URL_MESSAGE_DETAIL = "data/message.xml?";
-		URL_MESSAGE_REPLY = "data/message_reply.xml?";
-		URL_SAVE_MESSAGE = "data/_success.xml?";
-		URL_DEL_MESSAGE = "data/_success.xml?";
+		URL_MESSAGE_REPLY  = "data/message_reply.xml?";
+		URL_SAVE_MESSAGE   = "data/_success.xml?";
+		URL_DEL_MESSAGE    = "data/_success.xml?";
 	}
  
     function init(){

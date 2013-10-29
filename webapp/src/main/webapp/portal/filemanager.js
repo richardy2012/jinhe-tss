@@ -7,11 +7,11 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-   	URL_SOURCE_TREE    = "/" + AUTH_PATH + "portal/file/list";
-    URL_RENAME         = "/" + AUTH_PATH + "portal/file";
-    URL_DEL_FILES      = "/" + AUTH_PATH + "portal/file";
-    URL_DOWNLOAD_FILES = "/" + AUTH_PATH + "portal/file";
-    URL_ADD_FOLDER     = "/" + AUTH_PATH + "portal/file";
+   	URL_SOURCE_TREE    = AUTH_PATH + "portal/file/list";
+    URL_RENAME         = AUTH_PATH + "portal/file";
+    URL_DEL_FILES      = AUTH_PATH + "portal/file";
+    URL_DOWNLOAD_FILES = AUTH_PATH + "portal/file";
+    URL_ADD_FOLDER     = AUTH_PATH + "portal/file";
 
 	if(IS_TEST) {
 		URL_SOURCE_TREE    = "data/resource_init.xml?";

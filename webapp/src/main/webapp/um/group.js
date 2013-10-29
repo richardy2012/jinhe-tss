@@ -33,26 +33,26 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_INIT          = "/" + AUTH_PATH + "group/list";
-    URL_USER_GRID     = "/" + AUTH_PATH + "user/list/";    // user/list/{groupId}/{page}
-    URL_USER_DETAIL   = "/" + AUTH_PATH + "user/detail/";  // user/detail/{groupId}/{userId}
-    URL_GROUP_DETAIL  = "/" + AUTH_PATH + "group/detail/"; // group/detail/{parentId}/{id}/{type}
-    URL_SAVE_USER     = "/" + AUTH_PATH + "user";   // POST
-    URL_SAVE_GROUP    = "/" + AUTH_PATH + "group";  // POST
-    URL_DELETE_GROUP  = "/" + AUTH_PATH + "group/"; 
-	URL_DEL_USER      = "/" + AUTH_PATH + "user/";
-    URL_STOP_GROUP    = "/" + AUTH_PATH + "group/disable/"; 
-    URL_SORT_GROUP    = "/" + AUTH_PATH + "group/sort/";
-    URL_STOP_USER     = "/" + AUTH_PATH + "user/disable/";
-	URL_GET_OPERATION = "/" + AUTH_PATH + "group/operations/"; 
-    URL_GROUP_USERS   = "/" + AUTH_PATH + "group/users/";  // {groupId}
-    URL_INIT_PASSWORD = "/" + AUTH_PATH + "user/initpwd/"; // user/initpwd/{groupId}/{userId}/{password}
+    URL_INIT          = AUTH_PATH + "group/list";
+    URL_USER_GRID     = AUTH_PATH + "user/list/";    // user/list/{groupId}/{page}
+    URL_USER_DETAIL   = AUTH_PATH + "user/detail/";  // user/detail/{groupId}/{userId}
+    URL_GROUP_DETAIL  = AUTH_PATH + "group/detail/"; // group/detail/{parentId}/{id}/{type}
+    URL_SAVE_USER     = AUTH_PATH + "user";   // POST
+    URL_SAVE_GROUP    = AUTH_PATH + "group";  // POST
+    URL_DELETE_GROUP  = AUTH_PATH + "group/"; 
+	URL_DEL_USER      = AUTH_PATH + "user/";
+    URL_STOP_GROUP    = AUTH_PATH + "group/disable/"; 
+    URL_SORT_GROUP    = AUTH_PATH + "group/sort/";
+    URL_STOP_USER     = AUTH_PATH + "user/disable/";
+	URL_GET_OPERATION = AUTH_PATH + "group/operations/"; 
+    URL_GROUP_USERS   = AUTH_PATH + "group/users/";  // {groupId}
+    URL_INIT_PASSWORD = AUTH_PATH + "user/initpwd/"; // user/initpwd/{groupId}/{userId}/{password}
 
-    URL_SEARCH_SUBAUTH= "/" + AUTH_PATH + "search/subauth/";
-    URL_SEARCH_ROLE   = "/" + AUTH_PATH + "search/roles/";
-	URL_SYNC_GROUP    = "/" + AUTH_PATH + "group/sync/";
-    URL_SYNC_PROGRESS = "/" + AUTH_PATH + "group/progress/";  // {code} GET
-    URL_CANCEL_SYNC   = "/" + AUTH_PATH + "group/progress/";  // {code} DELETE
+    URL_SEARCH_SUBAUTH= AUTH_PATH + "search/subauth/";
+    URL_SEARCH_ROLE   = AUTH_PATH + "search/roles/";
+	URL_SYNC_GROUP    = AUTH_PATH + "group/sync/";
+    URL_SYNC_PROGRESS = AUTH_PATH + "group/progress/";  // {code} GET
+    URL_CANCEL_SYNC   = AUTH_PATH + "group/progress/";  // {code} DELETE
 	
 	if(IS_TEST) {
 		URL_INIT = "data/group_tree.xml?";

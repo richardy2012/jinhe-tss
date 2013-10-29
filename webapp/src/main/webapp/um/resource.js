@@ -1,15 +1,11 @@
-	/*
-     *	后台响应数据节点名称
-     */
+	/* 后台响应数据节点名称 */
     XML_MAIN_TREE = "AppSource";
     XML_APPLICATION_DETAIL = "AppDetail";
     XML_SOURCE_TYPE_INFO = "ResourceTypeDetail";
     XML_PERMISSION_OPTION_INFO = "PermissionOption";
     XML_IMPORT_APPLICATION = "ImportApplication";
 
-	/*
-     *	默认唯一编号名前缀
-     */
+	/* 默认唯一编号名前缀 */
     CACHE_APPLICATION_DETAIL = "app__id";
     CACHE_VIEW_APPLICATION_DETAIL = "viewApp__id";
     CACHE_VIEW_SOURCE_TYPE = "viewSourceType__id";
@@ -17,18 +13,16 @@
 
     OPERATION_IMPORT = "导入\"$label\"";
 
-	/*
-     *	XMLHTTP请求地址汇总
-     */
-    URL_INIT		    = "/" + AUTH_PATH + "resource/apps";
-    URL_APP_DETAIL      = "/" + AUTH_PATH + "resource/app/";
-    URL_SAVE_APP        = "/" + AUTH_PATH + "resource/app"; // POST
-    URL_RESOURCE_TYPE   = "/" + AUTH_PATH + "resource/resourceType/";
+	/* XMLHTTP请求地址汇总 */
+    URL_INIT		  = AUTH_PATH + "resource/apps";
+    URL_APP_DETAIL    = AUTH_PATH + "resource/app/";
+    URL_SAVE_APP      = AUTH_PATH + "resource/app"; // POST
+    URL_RESOURCE_TYPE = AUTH_PATH + "resource/resourceType/";
 	
 	if(IS_TEST) {
-		URL_INIT = "data/resource_tree.xml";
-		URL_APP_DETAIL = "data/application.xml";
-		URL_SAVE_APP = "data/_success.xml";
+		URL_INIT          = "data/resource_tree.xml";
+		URL_APP_DETAIL    = "data/application.xml";
+		URL_SAVE_APP      = "data/_success.xml";
 		URL_RESOURCE_TYPE = "data/resourcetype.xml";
 	}
   

@@ -13,29 +13,29 @@
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_SOURCE_TREE    = "/" + AUTH_PATH + "channel/list";
-    URL_SITE_DETAIL    = "/" + AUTH_PATH + "channel/detail/site/"; //{siteId}
-    URL_SAVE_SITE      = "/" + AUTH_PATH + "channel/site";
-    URL_CHANNEL_DETAIL = "/" + AUTH_PATH + "channel/detail/"; // {id}/{parentId}
-    URL_SAVE_CHANNEL   = "/" + AUTH_PATH + "channel";
-    URL_DEL_NODE       = "/" + AUTH_PATH + "channel/";
-    URL_MOVE_NODE      = "/" + AUTH_PATH + "channel/move/";    // {id}/{toParentId}
-    URL_SORT_NODE      = "/" + AUTH_PATH + "channel/sort/";    // {id}/{targetId}/{direction}
-	URL_STOP_NODE      = "/" + AUTH_PATH + "channel/disable/"; // {id}
-    URL_GET_OPERATION  = "/" + AUTH_PATH + "channel/operations/";   // {resourceId}
+    URL_SOURCE_TREE    = AUTH_PATH + "channel/list";
+    URL_SITE_DETAIL    = AUTH_PATH + "channel/detail/site/"; //{siteId}
+    URL_SAVE_SITE      = AUTH_PATH + "channel/site";
+    URL_CHANNEL_DETAIL = AUTH_PATH + "channel/detail/"; // {id}/{parentId}
+    URL_SAVE_CHANNEL   = AUTH_PATH + "channel";
+    URL_DEL_NODE       = AUTH_PATH + "channel/";
+    URL_MOVE_NODE      = AUTH_PATH + "channel/move/";    // {id}/{toParentId}
+    URL_SORT_NODE      = AUTH_PATH + "channel/sort/";    // {id}/{targetId}/{direction}
+	URL_STOP_NODE      = AUTH_PATH + "channel/disable/"; // {id}
+    URL_GET_OPERATION  = AUTH_PATH + "channel/operations/";   // {resourceId}
 	
-	URL_ARTICLE_LIST   = "/" + AUTH_PATH + "article/list/"; // {channelId}/{page}
-    URL_DEL_ARTICLE    = "/" + AUTH_PATH + "article/";
-    URL_MOVE_ARTICLE   = "/" + AUTH_PATH + "article/move/"; // {articleId}/{channelId}
-    URL_LOCK_ARTICLE   = "/" + AUTH_PATH + "article/list";
-    URL_SETTOP_ARTICLE = "/" + AUTH_PATH + "article/top/";  // {id}
-	URL_SEARCH_ARTICLE = "/" + AUTH_PATH + "article/search/result";  // 暂时没用到，日后加上查询功能
+	URL_ARTICLE_LIST   = AUTH_PATH + "article/list/"; // {channelId}/{page}
+    URL_DEL_ARTICLE    = AUTH_PATH + "article/";
+    URL_MOVE_ARTICLE   = AUTH_PATH + "article/move/"; // {articleId}/{channelId}
+    URL_LOCK_ARTICLE   = AUTH_PATH + "article/list";
+    URL_SETTOP_ARTICLE = AUTH_PATH + "article/top/";  // {id}
+	URL_SEARCH_ARTICLE = AUTH_PATH + "article/search/result";  // 暂时没用到，日后加上查询功能
 
-    URL_PUBLISH_PROGRESS = "/" + AUTH_PATH + "channel/publish/";   // {id}/{category}
-	URL_SYNC_PROGRESS    = "/" + AUTH_PATH + "channel/progress/";  // GET
-    URL_CONCEAL_PROGRESS = "/" + AUTH_PATH + "channel/progress/";  // DELETE
+    URL_PUBLISH_PROGRESS = AUTH_PATH + "channel/publish/";   // {id}/{category}
+	URL_SYNC_PROGRESS    = AUTH_PATH + "channel/progress/";  // GET
+    URL_CONCEAL_PROGRESS = AUTH_PATH + "channel/progress/";  // DELETE
 
-	URL_CREATE_INDEX     = "/" + AUTH_PATH + "timer/excute/";  // {siteId}/{strategyId}/{increment}
+	URL_CREATE_INDEX     = AUTH_PATH + "timer/excute/";  // {siteId}/{strategyId}/{increment}
 
 	if(IS_TEST) {
 		URL_SOURCE_TREE    = "data/site_init.xml?";
