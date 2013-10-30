@@ -785,96 +785,103 @@ Element.insertHtml = function(where, el, html) {
             return el.nextSibling;
     }
 };
-
-
-/* 缓存页面所有的resize拖动条；元素拖动后可能引起了其他元素位置改变，需要刷新其他元素所对应的resize条位置 */
-Element.ruleObjList = [];
-
+ 
 /*
  * 控制对象拖动改变宽度
- * 参数：	Object:obj			要拖动改变宽度的HTML对象
+ * 参数：	Object:element   要拖动改变宽度的HTML对象
  */
-Element.attachColResize = function(obj) {
-	var offsetX = 3;
+Element.attachColResize = function(element) {
+	var handle = document.createElement("DIV"); // 拖动条
+	handle.style.cssText = "cursor:col-resize;position:relative;overflow:hidden;float:right;top:0px;right:0px;width:3px;height:100%;z-index:3;filter:alpha(opacity:80);opacity:80;background:red;";
+	element.appendChild(handle);
 
-	// 添加resize条
-	var ruleObj = document.createElement("DIV");
-	ruleObj.style.cssText = "cursor:col-resize;position:absolute;overflow:hidden;";
-	document.body.appendChild(ruleObj);
-	setDivPosition(ruleObj, obj);
+	var mouseStart  = 0;  // 鼠标起始位置
+	var handleStart = 0;  // 拖动条起始位置
 
-	ruleObj.target = obj;
-	Element.ruleObjList.push(ruleObj);
+	handle.onmousedown = function(ev) {
+		var oEvent = ev || event;
+		mouseStart  = oEvent.clientX;
+		handleStart = handle.offsetLeft;
 
-    // 计算resize条的坐标值
-	function setDivPosition(ruleElement, element) {
-		ruleElement.style.width = offsetX;
-		ruleElement.style.height = element.offsetHeight;
-		ruleElement.style.top  = Element.absTop(element);
-		ruleElement.style.left = Element.absLeft(element) + element.offsetWidth - offsetX;
-		ruleElement.style.backgroundColor = "white";
-		ruleElement.style.zIndex = "999"; 
-		
-		Element.setOpacity(ruleElement, 1); 
-	}
-
-	// 刷新所有resize条的位置
-	function refreshResizeDivPosition() {
-		for(var i = 0; i < Element.ruleObjList.length; i++) {
-			var ruleElement = Element.ruleObjList[i];
-			setDivPosition(ruleElement, ruleElement.target);
-		}
-	}
-
-	obj.onresize = refreshResizeDivPosition;
-
-	var moveHandler = function() {
-		if(ruleObj._isMouseDown == true) {
-			ruleObj.style.left = Math.max( Element.absLeft(obj), event.clientX - offsetX);
-
-			if (document.addEventListener) {             
-				document.addEventListener("mouseup", stopHandler, true);  
-			}
-		}
-	}
-
-	var stopHandler = function() {
-		ruleObj._isMouseDown = false;
-		obj.style.width = Math.max(1, obj.offsetWidth + event.clientX - ruleObj._fromX); 
-
-		if (ruleObj.releaseCapture) {             
-			ruleObj.releaseCapture();         
-		} 
-		else {
-			document.removeEventListener("mousemove", moveHandler, true);
-			document.removeEventListener("mouseup", stopHandler, true);  
-		}			
-	}
- 
-	ruleObj.onmousedown = function() {
-		this.style.backgroundColor = "#999999";
-		Element.setOpacity(this, 50);
-
-		this._isMouseDown = true;
-		this._fromX = event.clientX;
-
-		if (this.setCapture) {             
-			this.setCapture();    
-		} 
-		else {
-			document.addEventListener("mousemove", moveHandler, true);
+		if (handle.setCapture) {
+			handle.onmousemove = doDrag;
+			handle.onmouseup = stopDrag;
+			handle.setCapture();
+		} else {
+			document.addEventListener("mousemove", doDrag, true);
+			document.addEventListener("mouseup", stopDrag, true);
 		}
 	};
-	ruleObj.onmousemove = function() {
-		moveHandler();
+
+	function doDrag(ev) {
+		var oEvent = ev || event;
+		var _width = oEvent.clientX - mouseStart + handleStart + handle.offsetWidth;
+
+		if (_width < handle.offsetWidth) {
+			_width = handle.offsetWidth;
+		} 
+		else if (_width > document.documentElement.clientWidth - element.offsetLeft) {
+			_width = document.documentElement.clientWidth - element.offsetLeft - 2; // 防止拖出窗体外
+		}
+		element.style.width = _width + "px";
 	};
-	ruleObj.onmouseup = function() { 
-		stopHandler();
+
+	function stopDrag() {
+		if (handle.releaseCapture) {
+			handle.onmousemove = handle.onmouseup = null;
+			handle.releaseCapture();
+		} else {
+			document.removeEventListener("mousemove", doDrag, true);
+			document.removeEventListener("mouseup", stopDrag, true);
+		}
 	};
 }
 
-Element.attachRowResize = function(obj) {
+Element.attachRowResize = function(element) {
+	var handle = document.createElement("DIV"); // 拖动条
+	handle.style.cssText = "cursor:row-resize;position:absolute;overflow:hidden;left:0px;bottom:0px;width:100%;height:3px;z-index:3;filter:alpha(opacity:0);opacity:0;";
+	element.appendChild(handle);
 
+	var mouseStart  = 0;  // 鼠标起始位置
+	var handleStart = 0;  // 拖动条起始位置
+
+	handle.onmousedown = function(ev) {
+		var oEvent = ev || event;
+		mouseStart  = oEvent.clientY;
+		handleStart = handle.offsetTop;
+
+		if (handle.setCapture) {
+			handle.onmousemove = doDrag;
+			handle.onmouseup = stopDrag;
+			handle.setCapture();
+		} else {
+			document.addEventListener("mousemove", doDrag, true);
+			document.addEventListener("mouseup", stopDrag, true);
+		}
+	};
+
+	function doDrag(ev) {
+		var oEvent = ev || event;
+		var _height = oEvent.clientY - mouseStart + handleStart + handle.offsetHeight;
+
+		if (_height < handle.offsetHeight) {
+			_height = handle.offsetHeight;
+		} 
+		else if (_height > document.documentElement.clientHeight - element.offsetTop) {
+			_height = document.documentElement.clientHeight - element.offsetTop - 2; // 防止拖出窗体外
+		}
+		element.style.height = _height + "px";
+	};
+
+	function stopDrag() {
+		if (handle.releaseCapture) {
+			handle.onmousemove = handle.onmouseup = null;
+			handle.releaseCapture();
+		} else {
+			document.removeEventListener("mousemove", doDrag, true);
+			document.removeEventListener("mouseup", stopDrag, true);
+		}
+	};
 }
 
 Element.attachResize = function(obj) {

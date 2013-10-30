@@ -306,8 +306,8 @@
 				var paramInfoNode = this.getNodeValue(XML_PARAM_INFO);
 				Cache.XmlDatas.add(treeID, paramInfoNode);
 				
-				$$("page1Form").editable = editable ? "true" : "false";
 				var xform = $X("page1Form", paramInfoNode);
+				xform.setEditable(editable ? "true" : "false");
 
 				attachReminder(treeID, xform); // 离开提醒
 	 

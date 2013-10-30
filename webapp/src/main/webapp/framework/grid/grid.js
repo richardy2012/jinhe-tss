@@ -24,9 +24,9 @@ var Grid = function(element, data) {
 	this.baseurl  = element.getAttribute("baseurl") || "";
 	this.iconPath = this.baseurl + "images/";
 	
-	var gridBoxId = this.id + "Box";
-	this.element.innerHTML = "<div id='" + gridBoxId + "' style='position:relative;overflow:auto;left:0px;top:0px;z-index:1'></div>";
-	this.gridBox   = $$(gridBoxId);
+	this.gridBoxId = this.id + "Box";
+	this.element.innerHTML = "<div id='" + this.gridBoxId + "' style='position:relative;overflow:auto;left:0px;top:0px;z-index:1'></div>";
+	this.gridBox   = $$(this.gridBoxId);
 
 	this.gridBox.style.width  = this.windowWidth  = element.getAttribute("width")  || "100%";
 	var pointHeight = element.getAttribute("height");
@@ -77,11 +77,12 @@ Grid.prototype.load = function(data, append) {
 		this.gridBox.innerHTML = ""; // 初始化容器
 		this.gridBox.innerHTML = gridTableHtml.replace(/<\/br>/gi, "") ;
 
-		this.tbody = this.gridBox.childNodes[0].tBodies[0];
+		var table  = $$(this.gridBoxId).childNodes[0];
+		this.tbody = table.tBodies[0];
 		
 		// 拖动改变列宽
 		Element.ruleObjList = []; // 先清空原来的拖动条
-		var thList = this.gridBox.childNodes[0].tHead.firstChild.childNodes;
+		var thList = table.tHead.firstChild.childNodes;
 		for( var i = 0; i < thList.length; i++ ) {
 			Element.attachColResize(thList[i]);
 		}
@@ -106,13 +107,15 @@ Grid.prototype.load = function(data, append) {
 		}		
 	}
 	
-	this.rows = this.tbody.rows;
+	var table  = $$(this.gridBoxId).childNodes[0];
+	this.tbody = table.tBodies[0];
+	this.rows  = this.tbody.rows;
 	this.totalRowsNum = this.rows.length;
 	for(var i=startNum; i < this.totalRowsNum; i++) {
 		this.processDataRow(this.rows[i]); // 表格行TR
 	}
 	
-	bindSortHandler(this.gridBox.childNodes[0]);
+	bindSortHandler(table); // table
 } 
 
 var GridTemplate = function(xmlDom) {
@@ -165,7 +168,10 @@ function parseTempalte(template, startNum, gridID) {
 		tbody.push("<tr " + _class + " _index=\"" + index + "\" ");
 		for(var name in template.columnsMap) {
 			// 把各个属性值复制一份到 tr 的属性上
-			tbody.push( name + "=\"" + row.getAttribute(name) + "\" "); 
+			var value = row.getAttribute(name);
+			if(value) {
+				tbody.push( name + "=\"" + row.getAttribute(name) + "\" "); 
+			}
 		}
 		tbody.push(">");
 
@@ -188,7 +194,7 @@ function parseTempalte(template, startNum, gridID) {
 			else if(column.getAttribute("highlightCol") == "true") {
 				_class = "class=\"highlightCol\"";
 			}
-			tbody.push("<td align=\"" + getAlign(column) + "\" name=\"" + name + "\" " + _class + "><nobr>" + "TSS" + "</nobr></td>");
+			tbody.push("<td align=\"" + getAlign(column) + "\" name=\"" + name + "\" " + _class + "><nobr></nobr></td>");
 		}
 		tbody.push("</tr>");
 	 }
@@ -231,11 +237,11 @@ Grid.prototype.processDataRow = function(curRow) {
 		var cell = cells[j];
 		var columnName = cell.getAttribute("name");
 		var columnNode = this.template.columnsMap[columnName]; 
-		var value = curRow.getAttribute(columnName); // xsl解析后，各行的各个TD值统一记录在了TR上。
-
-		if( columnName == null || columnName == "cellsequence" || columnName == "cellheader" || columnNode == null || value == null)  {
+		if( columnName == null || columnName == "cellsequence" || columnName == "cellheader" || columnNode == null)  {
 			continue;
 		}
+
+		var value = curRow.getAttribute(columnName) || " "; // xsl解析后，各行的各个TD值统一记录在了TR上。
 
 		var nobrNodeInCell = cell.childNodes[0];    // nobr 节点
 		var mode = columnNode.getAttribute("mode");

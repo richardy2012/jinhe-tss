@@ -146,7 +146,7 @@ XForm.prototype.parseTempalte = function() {
 				else if(mode == "string" && nodeName == 'textarea') {
 					htmls.push("<textarea " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + ">" + (value ? value : "") + "</textarea>");
 				}
-				else if(mode == "string" || mode == "function") {
+				else if(mode == "string" || mode == "number" || mode == "function") {
 					htmls.push("<input " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + _value + "></input>");
 				}
 			}
@@ -299,7 +299,7 @@ XForm.prototype.setEditable = function(status) {
 
 	for(var colName in this.columnInstanceMap) {		
 		// 如果column上默认定义为不可编辑，则永远不可编辑
-		var column = columnMap[name];
+		var column = this.template.columnsMap[colName];
 		if (column.getAttribute("editable") == "false") continue;
 
 		var curInstance = this.columnInstanceMap[colName];
