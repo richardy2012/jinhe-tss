@@ -128,7 +128,7 @@ public class BeanUtil {
             }
             
             try {
-                if (value.getClass().equals(clazz) || clazz.isAssignableFrom(value.getClass())) { 
+            	if (value.getClass().equals(clazz) || clazz.isAssignableFrom(value.getClass())) { 
                     PropertyUtils.setProperty(bean, propertyName, value);
                 } 
                 else {

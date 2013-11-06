@@ -20,7 +20,7 @@ public class TestUtil {
 	
 	protected static Logger log = Logger.getLogger(TestUtil.class);
 	
-	static final String PROJECT_NAME = "jinhe-daodao";
+	static final String PROJECT_NAME = "jinhe-tss";
 	
 	public static String getProjectDir() {
         String path = URLUtil.getResourceFileUrl("application.properties").getPath();

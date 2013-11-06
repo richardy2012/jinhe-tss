@@ -74,8 +74,6 @@ public class JCacheAccessTest {
 		pool = JCache.getInstance().getPool("SHORT");
 		pool.getCacheStrategy().setAccessMethod(Container.ACCESS_LRU);
 		
-		Assert.assertEquals(0, pool.size());
-		
 		for(int i = 0; i < 10; i++) {
 			pool.putObject(i, i);
  
@@ -151,6 +149,6 @@ public class JCacheAccessTest {
 		}.start();
 		
 		pool.checkIn(item2);
+		
 	}
-
 }

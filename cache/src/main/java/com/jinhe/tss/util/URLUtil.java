@@ -40,8 +40,12 @@ public class URLUtil {
     /**
      * 此处利用了文件“application.properties”来定位。
      */
-    private static URL getOnePathUrl(){
-        return URLUtil.getResourceFileUrl("application.properties"); 
+    private static URL getOnePathUrl() {
+    	URL url = URLUtil.getResourceFileUrl("application.properties"); 
+    	if(url == null) {
+    		url = URLUtil.getResourceFileUrl("com/jinhe/tss"); 
+    	}
+        return url;
     }
     
     /**

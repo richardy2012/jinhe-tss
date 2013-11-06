@@ -150,7 +150,7 @@
 					<version>2.5.2</version>
 					<executions>
                         <execution>
-                            <phase>site</phase>
+                            <phase>install</phase>
                             <goals>
                                 <goal>cobertura</goal>
                             </goals>
@@ -213,7 +213,7 @@
 				    <parallel>methods</parallel>
 				    <threadCount>10</threadCount>
 					 -->
-					<skip>true</skip>
+					<skip>false</skip>
 					<includes> 
 						<include>**/*Test.java </include> 
 					</includes>

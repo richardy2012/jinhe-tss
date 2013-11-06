@@ -23,7 +23,7 @@ public class XFormTest {
 		Log log = new Log();
 		log.setAppCode("TSS");
 		log.setContent("XXXXXXXXXX");
-		log.setId(1L);
+//		log.setId(1L);
 		log.setOperateTime(new Date());
 		
 		XFormEncoder encoder = new XFormEncoder(LogAction.LOG_XFORM_TEMPLET_PATH, log);

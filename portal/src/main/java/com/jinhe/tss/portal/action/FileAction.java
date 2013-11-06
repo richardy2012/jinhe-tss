@@ -205,8 +205,8 @@ public class FileAction extends BaseActionSupport {
     }
  
     public static String getContextPath(String contextPath) {
-        String modelDir = URLUtil.getWebFileUrl("").getPath();
-        return modelDir + "/" + contextPath + "/";
+        String rootPath = URLUtil.getWebFileUrl("").getPath();
+        return rootPath + "/" + contextPath + "/";
     }
  
     private String getFilter(String filter) {

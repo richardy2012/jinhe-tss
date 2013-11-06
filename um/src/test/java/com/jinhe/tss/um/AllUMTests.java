@@ -3,7 +3,6 @@ package com.jinhe.tss.um;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import com.jinhe.tss.um.module.ResourceModuleTest;
 import com.jinhe.tss.um.module.GroupModuleTest;
 import com.jinhe.tss.um.module.MessageModuleTest;
 import com.jinhe.tss.um.module.RoleModuleTest;
@@ -18,6 +17,7 @@ import com.jinhe.tss.um.servlet.ResetPasswordServletTest;
 import com.jinhe.tss.um.sso.FetchPermissionAfterLoginCustomizerTest;
 import com.jinhe.tss.um.sso.UMIdentityTranslatorTest;
 import com.jinhe.tss.um.sso.UMPasswordIdentifierTest;
+import com.jinhe.tss.um.zlast.ResourceModuleTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

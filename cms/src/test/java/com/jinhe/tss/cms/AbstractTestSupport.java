@@ -49,7 +49,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
         site.setPath(super.tempDir1.getPath());
         site.setDocPath("doc");
         site.setImagePath("img");
-        site = channelService.createChannel(site);
+        site = channelService.createSite(site);
         Long siteId = site.getId();
         assertNotNull(siteId);
         
@@ -86,7 +86,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
                 "从而延长了统治时间。这是中国历史所特有的周期性振荡。综观国史，史实让笔者也不得不承认上述说法的合理性。" +
                 "那么，目前的中国是否在重新陷入这个历史的轮回怪圈呢？这倒的确是一个值得商榷的问题。";
         
-		request.addParameter("articleContent", content);
+		request.addParameter("ArticleContent", content);
 		request.addParameter("articleId", tempArticleId.toString());
         
 		request.addParameter("attachList", "1,2,3,4");

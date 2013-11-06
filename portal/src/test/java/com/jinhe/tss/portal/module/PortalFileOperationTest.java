@@ -33,23 +33,25 @@ public class PortalFileOperationTest extends TxSupportTest4Portal {
         request.addParameter("filter", "txt");
         fileAction.listAvailableFiles(response, request);
         
+        String layoutPath = PortalConstants.MODEL_DIR + "layout/layout12";
+        
         request = new MockHttpServletRequest();
-    	request.addParameter("contextPath", "layout/layout12");
+		request.addParameter("contextPath", layoutPath);
     	request.addParameter("fileNames", "test.txt");
         fileAction.download(response, request);
         
         File testFile2 = new File(modelDir + "/layout/xxx.txt");
         FileHelper.writeFile(testFile2, "Just Test 222222!");
         
-        super.uploadFile(PortalConstants.MODEL_DIR + "/layout/layout12", testFile2);
+        super.uploadFile(layoutPath, testFile2);
         
         request = new MockHttpServletRequest();
-    	request.addParameter("contextPath", "layout/layout12");
+    	request.addParameter("contextPath", layoutPath);
     	request.addParameter("newFileName", "temp");
     	fileAction.addDir(response, request);
     	
     	request = new MockHttpServletRequest();
-    	request.addParameter("contextPath", "layout/layout12");
+    	request.addParameter("contextPath", layoutPath);
     	request.addParameter("fileName", "temp");
     	request.addParameter("newFileName", "temp2");
         fileAction.renameFile(response, request);
@@ -60,7 +62,7 @@ public class PortalFileOperationTest extends TxSupportTest4Portal {
         fileAction.listAvailableFiles(response, request);
         
         request = new MockHttpServletRequest();
-        request.addParameter("contextPath", "layout/layout12");
+        request.addParameter("contextPath", layoutPath);
     	request.addParameter("fileNames", "xxx.txt");
     	request.addParameter("folderNames", "temp2");
     	fileAction.deleteFile(response, request);
