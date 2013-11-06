@@ -29,22 +29,22 @@ public abstract class AbstractContainer implements Container {
 	    
 		Object item = null;
 		switch (accessMethod) {
-		case ACCESS_LRU:
+		case ACCESS_LRU: // 找出最近最长时间没有被使用到的缓存对象
 			long lastAccessed = 0;
 			for (Cacheable temp : valueSet()) {
 				long life = System.currentTimeMillis() - temp.getAccessed();
 				if (life > lastAccessed) {
 					lastAccessed = life;
-					item = temp; // 找出最近最长时间使用的
+					item = temp; 
 				}
 			}
 			break;
-		case ACCESS_LFU:
+		case ACCESS_LFU: // 找出最不常使用的
 			int minHit = 999999999;
 			for (Cacheable temp : valueSet()) {
-				if (minHit < temp.getHit()) {
+				if ( temp.getHit() < minHit ) {
 					minHit = temp.getHit();
-					item = temp; // 找出最不常使用的
+					item = temp; 
 				}
 			}
 			break;
