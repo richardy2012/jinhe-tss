@@ -109,7 +109,9 @@ public class JCache {
 	 * @return
 	 */
 	public Pool getPool(String code) {
-	    if(code == null) return null;
+	    if(code == null) {
+	    	return null;
+	    }
 	    
 		Pool pool = pools.get(code);
 		if (pool == null) {
@@ -125,13 +127,7 @@ public class JCache {
 				return pools.get(code); 
 			}
 
-			log.info("找不到相应的缓存池，请确定code值：【" + code + "】是否正确，系统已经初始化一个临时的简单缓存池。");
-
-			CacheStrategy strategy = new CacheStrategy();
-			strategy.code = code;
-			strategy.name = code;
-			strategy.visible = CacheStrategy.FALSE;
-			pools.put(code, pool = strategy.getPoolInstance());
+			log.error("找不到相应的缓存池，请确定code值：【" + code + "】是否正确。");
 		}
 		return pool;
 	}

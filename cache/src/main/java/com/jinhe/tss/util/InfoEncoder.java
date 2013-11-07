@@ -49,7 +49,8 @@ public class InfoEncoder {
     public String createEncryptor(String datasource) {
         byte[] encryptorData;
         try {
-            encryptorData = getCipher(Cipher.ENCRYPT_MODE).doFinal(datasource.getBytes());
+            Cipher cipher = getCipher(Cipher.ENCRYPT_MODE);
+			encryptorData = cipher.doFinal(datasource.getBytes());
         } catch (Exception ex) {
             throw new RuntimeException("加密失败:" + datasource, ex);
         } 
@@ -71,7 +72,8 @@ public class InfoEncoder {
 
         byte[] createDecryptor;
         try {
-            createDecryptor = getCipher(Cipher.DECRYPT_MODE).doFinal(decryptorData);
+            Cipher cipher = getCipher(Cipher.DECRYPT_MODE);
+			createDecryptor = cipher.doFinal(decryptorData);
         } catch (Exception ex) {
             throw new RuntimeException("解密失败:" + datasource, ex);
         } 

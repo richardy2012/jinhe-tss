@@ -18,17 +18,22 @@ public class XmlUtilTest {
  
 	@Test
     public void testToXmlForm() {
+		new XmlUtil();
+		assertEquals("", XmlUtil.toFormXml(null));
         assertEquals("&lt;qqq&amp;www\\&gt;", XmlUtil.toFormXml("<qqq&www\\>"));
     }
     
 	@Test
     public void testReplaceXMLPropertyValue() {
-        assertEquals("&lt;qqq&amp;www\\&gt;", XmlUtil.replaceXMLPropertyValue("<qqq&www\\>"));
+        assertEquals("&lt;qqq&amp;www code=&quot;TSS&quot; \\&gt;", XmlUtil.replaceXMLPropertyValue("<qqq&www code=\"TSS\" \\>"));
     }
     
 	@Test
     public void testStripNonValidXMLCharacters() {
-        System.out.print(XmlUtil.stripNonValidXMLCharacters("<server code=\"TSS\" userDepositoryCode=\"tss\" />"));
+		assertEquals("", XmlUtil.stripNonValidXMLCharacters(null));
+		
+        String value = XmlUtil.stripNonValidXMLCharacters("<server code=\"TSS\" userDepositoryCode=\"tss\" />");
+        assertEquals("<server code=\"TSS\" userDepositoryCode=\"tss\" />", value);
     }
 }
 

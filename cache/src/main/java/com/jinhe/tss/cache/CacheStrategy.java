@@ -11,7 +11,6 @@ package com.jinhe.tss.cache;
 
 import com.jinhe.tss.cache.extension.DefaultCustomizer;
 import com.jinhe.tss.cache.extension.MapContainer;
-import com.jinhe.tss.cache.extension.mixin.Disabler;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
 
@@ -111,13 +110,6 @@ public class CacheStrategy {
 		CacheCustomizer customizer = (CacheCustomizer) BeanUtil.newInstanceByName(customizerClass);
 		customizer.setCacheStrategy(this);
 		pool.setCustomizer(customizer);
-		
-		try {
-			pool = Disabler.disableWrapper(pool);
-		} catch(Exception e) {
-			// 某些测试环境下mixin IDisable接口时会报repeat interface，直接忽略，不再mixin了
-		}
-		
  
 		// 初始化前需要先设置好customizer，需要用到customizer.create()来新建缓存项。
 		pool.init();

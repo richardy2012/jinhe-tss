@@ -1,12 +1,8 @@
 package com.jinhe.tss.cache;
 
-import static org.junit.Assert.*;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.jinhe.tss.cache.extension.mixin.IDisable;
-import com.jinhe.tss.cache.extension.threadpool.IThreadPool;
 
 public class JCacheTest {
 	
@@ -17,53 +13,40 @@ public class JCacheTest {
 		cache = JCache.getInstance();
 	}
 	
+	/**
+	 * 测试简单池
+	 */
 	@Test
-	public void testGetThreadPool() {
-		IThreadPool tpool = cache.getThreadPool();
-		assertNotNull(tpool);
+	public void testJCache() {
+		Assert.assertTrue( cache.listCachePools().size() == 6 );
+		
+		Assert.assertNotNull(cache.getThreadPool());
+		Assert.assertNull(cache.getConnectionPool());
+		Assert.assertNull(cache.getPool(null));
+		Assert.assertNull(cache.getPool("NotExsit"));
 	}
 	
 	@Test
-	public void testGetTaskPool() {
-		Pool taskpool = cache.getTaskPool();
-		Cacheable taskItem = taskpool.checkOut(0);
-		assertNotNull(taskItem.getAccessed());
-		assertEquals(1, taskItem.getHit());
-		assertEquals(false, taskItem.isExpired());
+	public void testAbstractPool() {
+		Pool pool = cache.getTaskPool();
 		
-		Object key = taskItem.getKey();
-		assertNotNull(key);
-		assertNotNull(taskItem.getValue());
+		try {
+			Thread.sleep(3000); // 等待初始化完成
+		} catch (InterruptedException e) {
+		}
 		
-		taskpool.checkIn(taskItem);
+		Assert.assertTrue( pool.listItems().size() == 10 );
+		Assert.assertTrue( pool.listKeys().size() == 10 );
 		
-		taskItem = taskpool.getObject(key);
+		Assert.assertTrue( pool.getHitRate() == 0d );
+		Assert.assertTrue( pool.getRequests() == 0 );
 		
-		taskItem = taskpool.removeObject(key);
+		for(int i = 0; i < 10; i++) {
+			Assert.assertNotNull(pool.remove());
+		}
 		
-		assertTrue(taskpool.getHitRate() > 0);
-	    
-		// test Mixin
-		IDisable poolMixin = (IDisable)taskpool;
-		poolMixin.stop();
+		Assert.assertNotNull(pool.remove());
 		
-		taskItem = taskpool.checkOut(0);
-		assertNotNull(taskItem.getAccessed());
-		assertEquals(0, taskItem.getHit());
-		assertEquals(false, taskItem.isExpired());
-		
-		key = taskItem.getKey();
-		assertNotNull(key);
-		assertNotNull(taskItem.getValue());
-		
-		taskpool.checkIn(taskItem);
-		
-		taskItem = taskpool.getObject(key);
-		
-		taskpool.putObject(key, taskItem.getValue());
-		
-		taskpool.init();
-		
-		poolMixin.start();
+		Assert.assertNull(pool.putObject(null, new Object()));
 	}
 }

@@ -13,9 +13,9 @@ import com.jinhe.tss.cache.extension.threadpool.IThreadPool;
  * 以及ThreadPool的机制（包括worker池和work队列）
  * 
  */
-public class PoolTest {
+public class JCacheFunctionTest {
     
-    protected Logger log = Logger.getLogger(PoolTest.class);
+    protected Logger log = Logger.getLogger(JCacheFunctionTest.class);
     
     private Pool apool;
     private IThreadPool tpool;
@@ -65,9 +65,6 @@ public class PoolTest {
         
         // 休眠，等待scanPort 80 端口任务完成
         Thread.sleep(3*1000); 
-        
-//        apool.release(false);
-//        ((Pool)tpool).release(true);
     }
     
     private void scanPort(int port) {

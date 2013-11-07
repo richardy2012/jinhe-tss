@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
@@ -38,10 +37,8 @@ public class EhcacheContainer extends AbstractContainer {
 		try {
 			CacheManager.getInstance().addCache(name);
 			cache = CacheManager.getInstance().getCache(name);
-		} catch (IllegalStateException e) {
-			log.error("EhcachePool->EhcacheContainer:IllegalStateException!", e);
-		} catch (CacheException e) {
-			log.error("EhcachePool->EhcacheContainer:CacheException!", e);
+		} catch (Exception e) {
+			log.error("pool use EhcacheContainer error", e);
 		}
 	}
 
@@ -52,10 +49,8 @@ public class EhcacheContainer extends AbstractContainer {
 			if (e != null) {
 				return (Cacheable) e.getObjectValue();
 			}
-		} catch (IllegalStateException e) {
-			log.error("EhcachePool->get:IllegalStateException!", e);
-		} catch (CacheException e) {
-			log.error("EhcachePool->get:CacheException!", e);
+		} catch (Exception e) {
+			log.error("EhcacheContainer-->get(key) error", e);
 		}
 		return null;
 	}
@@ -80,10 +75,8 @@ public class EhcacheContainer extends AbstractContainer {
 	public Set<Object> keySet() {
 		try {
 			return new HashSet<Object>(cache.getKeys());
-		} catch (IllegalStateException e) {
-			log.error("EhcachePool->getKeys:IllegalStateException!", e);
-		} catch (CacheException e) {
-			log.error("EhcachePool->getKeys:CacheException!", e);
+		} catch (Exception e) {
+			log.error("EhcacheContainer-->keySet() error", e);
 		}
 		return null;
 	}

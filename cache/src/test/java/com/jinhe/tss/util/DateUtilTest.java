@@ -27,6 +27,22 @@ public class DateUtilTest {
 		
 		Assert.assertTrue(date.after(DateUtil.parse(formatStr)));
 		
+		Assert.assertEquals("", DateUtil.formatCare2Second(null));
+		Assert.assertTrue( DateUtil.format(date, "").length() > 0 );
+		Assert.assertEquals("", DateUtil.format(null, "yyyy-MM-dd HH:mm"));
+		Assert.assertEquals("", DateUtil.formatCare2Second(null));
+		
+		Assert.assertNotNull(DateUtil.parse("2013-11-07 11:26:05"));
+		Assert.assertNotNull(DateUtil.parse("2013/11/07 11:26:05"));
+		Assert.assertNotNull(DateUtil.parse("2013-11-07"));
+		Assert.assertNotNull(DateUtil.parse("2013/11/07"));
+		
+		try {
+			DateUtil.parse("2013/11-07");
+		} catch (Exception e) {
+			Assert.assertTrue("非法日期字符串，解析失败", true);
+		}
+		
 	}
 
 }

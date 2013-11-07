@@ -6,7 +6,7 @@
     <poolContainerClass>com.jinhe.tss.cache.extension.EhcacheContainer</poolContainerClass>  
     <cyclelife>5000</cyclelife>  
     <interruptTime>1000</interruptTime>  
-	<poolSize>100</poolSize>  
+	<poolSize>30</poolSize>  
     <initNum>10</initNum>  
     <disabled>0</disabled>  
     <customizerClass>com.jinhe.tss.cache.ScannerTaskPoolCustomizer</customizerClass>  
@@ -31,6 +31,14 @@
     <cyclelife>5000</cyclelife>  
     <accessMethod>5</accessMethod>  
   </strategy>
+  
+ <strategy code="LONG" name="服务数据缓存（长期）"> 
+    <poolClass>com.jinhe.tss.cache.ObjectPool</poolClass>  
+    <interruptTime>1000</interruptTime>  
+	<poolSize>10</poolSize>  
+    <cyclelife>1000000</cyclelife>  
+    <accessMethod>5</accessMethod>  
+  </strategy>
  
   <strategy code="NODEAD" name="服务数据缓存（不死）"> 
     <poolClass>com.jinhe.tss.cache.ObjectPool</poolClass>  
@@ -38,5 +46,7 @@
     <cyclelife>0</cyclelife>  
     <accessMethod>5</accessMethod>  
   </strategy>
+  
+  <strategy code="SimplePool" name="SimplePool"/>
   
 </strategies>

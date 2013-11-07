@@ -11,6 +11,9 @@ public class URLUtilTest {
 
 	@Test
     public void testGetResourceFileUrl() {
+		URLUtil.getResourceFileUrl(null);
+		URLUtil.getResourceFileUrl("");
+		
         URL url = URLUtil.getResourceFileUrl("log4j.properties");
         System.out.println(url);
         System.out.println(url.getPath()); 

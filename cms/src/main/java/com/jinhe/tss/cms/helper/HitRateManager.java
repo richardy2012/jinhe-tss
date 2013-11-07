@@ -5,8 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.jinhe.tss.cache.extension.workqueue.AbstractTask;
 import com.jinhe.tss.cache.extension.workqueue.OutputRecordsManager;
-import com.jinhe.tss.cache.extension.workqueue.RecordsOutputTask;
+import com.jinhe.tss.framework.persistence.connpool.Output2DBTask;
 
 /** 
  * 文章点击率统计
@@ -25,7 +26,7 @@ public class HitRateManager extends OutputRecordsManager{
     }
     
     protected void excuteTask(List<Object> temp) {
-        RecordsOutputTask task = new RecordsOutputTask() {
+        AbstractTask task = new Output2DBTask() {
             protected void createRecords(Connection conn) throws SQLException {
                 String sql = "update cms_article t set t.hitCount = t.hitCount + 1 where t.id = ?";
                 PreparedStatement pstmt = conn.prepareStatement(sql);

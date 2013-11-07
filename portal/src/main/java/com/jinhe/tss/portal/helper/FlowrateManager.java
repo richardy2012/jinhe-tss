@@ -9,9 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.jinhe.tss.cache.extension.workqueue.OutputRecordsManager;
-import com.jinhe.tss.cache.extension.workqueue.RecordsOutputTask;
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.persistence.connpool.DBHelper;
+import com.jinhe.tss.framework.persistence.connpool.Output2DBTask;
 import com.jinhe.tss.portal.entity.FlowRate;
 
 /** 
@@ -38,7 +38,7 @@ public class FlowrateManager extends OutputRecordsManager{
         tpool.excute(task);
     }
     
-    public static class OutputFlowrateTask extends RecordsOutputTask {
+    public static class OutputFlowrateTask extends Output2DBTask {
 
         protected void createRecords(Connection conn) throws SQLException {
         	String insertSql;

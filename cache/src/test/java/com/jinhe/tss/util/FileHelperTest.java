@@ -29,6 +29,9 @@ public class FileHelperTest {
          File tempFile1 = new File(tempDir1.getPath() + "/1.txt");
          File tempFile2 = new File(tempDir2.getPath() + "/2.txt");
          
+         Assert.assertFalse( FileHelper.isFolder(tempDir1, null) );
+         Assert.assertFalse( FileHelper.isFolder(tempDir1, "1.txt") );
+         
          FileHelper.writeFile(tempFile1, "111111111111");
          FileHelper.writeFile(tempFile2, "222222222222");
          
@@ -36,9 +39,19 @@ public class FileHelperTest {
          
          FileHelper.copyFolder(tempDir2, tempDir1);
          
+         File tempDir1_1 = FileHelper.createDir(classDir + "/temp1/dir1");
+         File tempFile1_1 = new File(tempDir1_1.getPath() + "/11.txt");
+         FileHelper.writeFile(tempFile1_1, "1111111222222211111");
+         Assert.assertTrue(FileHelper.renameFile("temp1/dir1/11.txt", "1_1.txt"));
+         Assert.assertFalse(FileHelper.renameFile("temp1/dir1/22.txt", "2_2.txt"));
+         
          FileHelper.exportZip(tempDir2.getPath(), tempDir1);
          
-         FileHelper.findPathByName(tempDir2, "1.txt");
+         File subDir1 = FileHelper.findPathByName(tempDir1, "dir1");
+         Assert.assertNotNull(subDir1);
+         
+         File subDir2 = FileHelper.findPathByName(tempDir1, "dir2");
+         Assert.assertNull(subDir2);
          
          FileHelper.getFileNameNoSuffix("1.txt");
          FileHelper.getFileSuffix("1.txt");
@@ -61,7 +74,6 @@ public class FileHelperTest {
          
          FileHelper.wirteOldFile(tempFile1.getPath(), tempDir2, "2.txt");
          
-         FileHelper.renameFile(tempFile1.getPath(), "1_1.txt");
          FileHelper.deleteFile(tempDir1);
          FileHelper.deleteFile(tempDir2);
          FileHelper.deleteFile(zipFile);

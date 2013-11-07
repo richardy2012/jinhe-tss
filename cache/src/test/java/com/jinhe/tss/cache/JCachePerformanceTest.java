@@ -12,9 +12,9 @@ import com.jinhe.tss.cache.extension.threadpool.IThreadPool;
  * 
  * 任务池的开关在缓存策略配置文件中设置，disabled（0：启用， 1：停用），比较两种状态下的性能。
  */
-public class PoolPerformanceTest {
+public class JCachePerformanceTest {
     
-    protected Logger log = Logger.getLogger(PoolPerformanceTest.class);
+    protected Logger log = Logger.getLogger(JCachePerformanceTest.class);
     
     private Pool apool;
     private IThreadPool tpool;

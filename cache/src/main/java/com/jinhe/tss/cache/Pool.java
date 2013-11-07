@@ -200,18 +200,11 @@ public interface Pool {
 	void addObjectPoolListener(Listener x);
 
 	/**
-	 * 从事件通知列表里移除指定监听器
-	 * 
-	 * @param x
-	 */
-	void removeObjectPoolListener(Listener x);
-
-	/**
 	 * 根据事件类型触发事件
 	 * 
 	 * @param eventType
 	 */
-	public void firePoolEvent(int eventType);
+	void firePoolEvent(int eventType);
 	
 	/***********************************池命中率统计************************************/
 

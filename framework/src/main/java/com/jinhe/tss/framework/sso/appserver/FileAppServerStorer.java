@@ -53,7 +53,7 @@ public class FileAppServerStorer implements IAppServerStorer {
 	protected Document getConfigDocument() {
 		String fileName = Config.getAttribute(APPSERVERS_CONFIG_FILE);
 		if (fileName != null) {
-			return XMLDocUtil.openDocument(fileName);
+			return XMLDocUtil.createDocByAbsolutePath(fileName);
 		} else {
 			return XMLDocUtil.createDoc(APPSERVERS_CONFIG_FILE_DEFAULT);
 		}

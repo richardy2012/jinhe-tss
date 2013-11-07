@@ -15,10 +15,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-
 /** 
  * 对象池抽象基类，定义通用的方法。
- * 
  */
 public abstract class AbstractPool implements Pool {
     protected Logger log = Logger.getLogger(this.getClass());
@@ -33,9 +31,6 @@ public abstract class AbstractPool implements Pool {
     
     /** 是否已释放 */
     protected boolean released = false;
-    
-    /** 是否异步销毁 */
-    protected boolean asyncDestroy = false;
     
     /** 缓存策略 */
     protected CacheStrategy strategy;
@@ -162,22 +157,9 @@ public abstract class AbstractPool implements Pool {
      * 销毁指定对象（如果有必要的话可采用异步）；
      */
     public void destroyObject(final Cacheable o) {
-        if (o == null)
-            return;
-        
-        // 异步销毁
-        if ( asyncDestroy ) {
-            Thread t = new Thread(new Runnable() {
-                public void run() { 
-                    customizer.destroy(o); 
-                }
-            });
-            t.start();
-        } 
-        else {
-            customizer.destroy(o);
+        if (o != null) {
+        	customizer.destroy(o);
         }
-
     }
     
     public final void releaseAsync(final boolean forced) {
@@ -393,16 +375,7 @@ public abstract class AbstractPool implements Pool {
     public CacheCustomizer getCustomizer(){ 
     	return this.customizer; 
     }
-
-	/**
-	 * 设置是异步还是同步销毁对象。 
-	 * 如果设置为true，那么之后每次销毁对象（过期的对象，或者是最终释放整个池）的时候，允许方法立即返回。
-	 * 当销毁对象很耗费时间的情况下，这种方式将会非常有用。
-	 */
-    public final void setAsyncDestroy(boolean b) { 
-    	asyncDestroy = b; 
-    }
-    
+ 
     public final void firePoolEvent(int eventType) {
         if (listeners.isEmpty()) return;
         
@@ -414,10 +387,6 @@ public abstract class AbstractPool implements Pool {
     
     public final void addObjectPoolListener(Listener x){
         listeners.add(x);
-    }
-
-    public final void removeObjectPoolListener(Listener x){
-        listeners.remove(x);
     }
 }
 

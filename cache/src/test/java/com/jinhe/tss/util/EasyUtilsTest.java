@@ -11,9 +11,20 @@ public class EasyUtilsTest {
 
 	@Test
 	public void test() {
+		
+		Assert.assertTrue(0d == EasyUtils.convertObject2Double("Jon"));
+		Assert.assertTrue(0 == EasyUtils.convertObject2Integer("Jon"));
+		Assert.assertTrue(0l == EasyUtils.convertObject2Long("Jon"));
+		
+		Assert.assertTrue(0d == EasyUtils.convertObject2Double(null));
+		Assert.assertTrue(0 == EasyUtils.convertObject2Integer(null));
+		Assert.assertTrue(0l == EasyUtils.convertObject2Long(null));
+		Assert.assertEquals("", EasyUtils.convertObject2String(null));
+		
 		Assert.assertTrue(EasyUtils.convertObject2Double("1.01") == 1.01d);
 		Assert.assertTrue(EasyUtils.convertObject2Integer("1") == 1);
 		Assert.assertTrue(EasyUtils.convertObject2Long("1") == 1L);
+		Assert.assertEquals("12", EasyUtils.convertObject2String(12));
 
 		Assert.assertTrue(EasyUtils.isNullOrEmpty(""));
 		Assert.assertTrue(!EasyUtils.isNullOrEmpty(new Object()));
@@ -36,6 +47,7 @@ public class EasyUtilsTest {
 
 		Assert.assertEquals("Jon1,Jon2,Jon3", EasyUtils.list2Str(list));
 		Assert.assertEquals("Jon1|Jon2|Jon3", EasyUtils.list2Str(list, "|"));
+		Assert.assertEquals("", EasyUtils.list2Str(null));
 
 		Assert.assertEquals("%E8%BF%87%E6%B2%B3%E5%8D%92%E5%AD%90", EasyUtils.toUtf8String("过河卒子"));
 	}

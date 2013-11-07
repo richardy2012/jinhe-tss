@@ -30,6 +30,8 @@ public class URLUtil {
 	 * @return
 	 */
 	public static URL getResourceFileUrl(String file) {
+		if(file == null) return null;
+		
 		URL url = Loader.getResource(file);
 		if (url == null) {
 			url = ClassLoader.class.getResource(file);

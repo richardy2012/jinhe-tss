@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -49,21 +48,7 @@ public class FileHelper {
      * @return
      */
     public static String readFile(File file) {
-        StringBuffer sb = new StringBuffer();
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-            String data = null;
-            while((data = br.readLine())!=null){
-                sb.append(data).append("\n");
-            }
-            br.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("找不到指定的文件", e);
-        } catch (IOException e) {
-            throw new RuntimeException("读取文件内容时IO异常", e);
-        }
-        return sb.toString();
+        return readFile(file, "UTF-8");
     }
     
     /**
@@ -82,10 +67,8 @@ public class FileHelper {
                 sb.append(data).append("\n");
             }
             br.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("找不到指定的文件", e);
-        } catch (IOException e) {
-            throw new RuntimeException("读取文件内容时IO异常", e);
+        } catch (Exception e) {
+            throw new RuntimeException("读取文件失败", e);
         }
         return sb.toString();
     }
@@ -128,11 +111,7 @@ public class FileHelper {
 		    OutputFormat format = OutputFormat.createPrettyPrint();
 			writer = new XMLWriter(new FileOutputStream(dirFile), format);
 			writer.write(doc);
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException("不支持的编码格式", e);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("文件未找到", e);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new RuntimeException("文件读写失败", e);
 		} finally {
 			try {
@@ -182,22 +161,20 @@ public class FileHelper {
 		if (newFile.exists() && !isUpdate) {
 			throw new RuntimeException("与该文件文件名一样的文件已经存在，请先修改文件名!");
 		}
+		
 		InputStream in;
 		try {
 			in = new FileInputStream(file);
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException("文件找不到!", e);
+			throw new RuntimeException("源文件找不到!", e);
 		}
+		
 		OutputStream out;
 		try {
 			out = new FileOutputStream(newFile);
 		} catch (FileNotFoundException e) {
-			try {
-				in.close();
-			} catch (IOException e1) {
-				throw new RuntimeException("文件输入流关闭失败", e1);
-			}
-			throw new RuntimeException("文件找不到!", e);
+			closeSteam(in, null);
+			throw new RuntimeException("目标文件找不到!", e);
 		}
 		int len = 0;
 		byte[] b = new byte[1024];
@@ -209,18 +186,9 @@ public class FileHelper {
 		} catch (IOException e) {
 			throw new RuntimeException("文件读写失败", e);
 		} finally {
-			try {
-				in.close();
-			} catch (IOException e) {
-				throw new RuntimeException("文件输入流关闭失败", e);
-			} finally {
-				try {
-					out.close();
-				} catch (IOException e) {
-					throw new RuntimeException("文件输出流关闭失败", e);
-				}
-			}
+			closeSteam(in, out);
 		}
+		
 		if (isCut && file.exists()) {
 			file.delete();
 		}
@@ -546,15 +514,11 @@ public class FileHelper {
 		FileOutputStream outStream = null;
 		inStream = (InputStream) (new ByteArrayInputStream(src.getBytes()));
 		try {
-			outStream = new FileOutputStream(fileDir.toString() + "/" +fileName);
+			outStream = new FileOutputStream(fileDir.toString() + "/" + fileName);
 		} catch (FileNotFoundException e) {
-			try {
-				inStream.close();
-			} catch (IOException e1) {
-				throw new RuntimeException("输入流关闭失败", e1);
-			}
 			throw new RuntimeException("文件未找到：" + fileName, e);
 		}
+		
 		int byteread = 0;
 		byte[] buffer = new byte[256];
 		try {
@@ -564,18 +528,22 @@ public class FileHelper {
 		} catch (IOException e) {
 			throw new RuntimeException("数据流读写失败", e);
 		} finally {
+			closeSteam(inStream, outStream);
+		}
+	}
+	
+	private static void closeSteam(InputStream inStream, OutputStream outStream) {
+		try {
+            if(inStream != null)
+                inStream.close();
+		} catch (IOException e) {
+			throw new RuntimeException("输入流关闭失败", e);
+		} finally {
 			try {
-                if(inStream != null)
-                    inStream.close();
+                if(outStream != null)
+                    outStream.close();
 			} catch (IOException e) {
-				throw new RuntimeException("输入流关闭失败", e);
-			} finally {
-				try {
-                    if(outStream != null)
-                        outStream.close();
-				} catch (IOException e) {
-					throw new RuntimeException("输出流关闭失败", e);
-				}
+				throw new RuntimeException("输出流关闭失败", e);
 			}
 		}
 	}

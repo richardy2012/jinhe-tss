@@ -60,29 +60,8 @@ public class XMLDocUtil {
         if (fileUrl == null) {
             throw new RuntimeException("定义的文件没有找到：" + uri);
         }
-		SAXReader saxReader = new SAXReader();
-        try {
-            saxReader.setEncoding("UTF-8");
-            return saxReader.read(fileUrl);
-        } catch (DocumentException e) {
-            try {
-                saxReader.setEncoding("GBK");
-                return saxReader.read(fileUrl);
-            } catch (DocumentException e2) {
-                throw new RuntimeException("读取文件出错：" + fileUrl, e2);
-            }
-        }
-    }
-
-    /**
-     * <p>
-     * 根据绝对路径，打开xml文件
-     * </p>
-     * @param fileName
-     * @return
-     */
-    public static Document openDocument(String fileName) {
-        return createDocByAbsolutePath(fileName);
+        
+        return createDocByAbsolutePath(fileUrl.getPath());
     }
 
     public static Document dataXml2Doc(String dataXml) {

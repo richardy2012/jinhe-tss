@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 
 /** 
  * InvocationHandler基类
- * 
  */
 public abstract class BaseInvocationHandler implements InvocationHandler{
     protected Logger log = Logger.getLogger(this.getClass());
@@ -31,10 +30,6 @@ public abstract class BaseInvocationHandler implements InvocationHandler{
      */
     public BaseInvocationHandler(Object target, String[] invokeMethods){
         this.invokeMethods = invokeMethods;
-        this.target = target;
-    }
-    
-    public BaseInvocationHandler(Object target){
         this.target = target;
     }
     

@@ -4,15 +4,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.jinhe.tss.cache.extension.workqueue.RecordsOutputTask;
 import com.jinhe.tss.framework.Config;
+import com.jinhe.tss.framework.persistence.connpool.Output2DBTask;
 
 /** 
  *　日志输出任务
  * 
  * @author 金普俊 2007-1-8
  */
-public class LogOutputTask extends RecordsOutputTask {
+public class LogOutputTask extends Output2DBTask {
 
     protected void createRecords(Connection conn) throws SQLException {
     	String insertSql;
