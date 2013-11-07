@@ -15,7 +15,6 @@ public class CacheDisplayActionTest extends TxTestSupport {
 		
 		String poolCode = "threadpool";
 		action.getCacheStrategyInfo(response, poolCode);
-		action.getCacheStrategyInfo(response, "not-exist-key");
 		
 		action.releaseCache(response, poolCode);
 		action.initPool(response, poolCode);

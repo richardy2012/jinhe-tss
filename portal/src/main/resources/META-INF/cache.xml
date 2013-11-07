@@ -7,8 +7,6 @@
     <cyclelife>0</cyclelife>  
     <interruptTime>1000</interruptTime>  
     <initNum>5</initNum>  
-    <disabled>0</disabled> <!-- 数据库连接池配置为启用 -->
-	<visible>1</visible>  
     <customizerClass>com.jinhe.tss.framework.persistence.connpool.ConnPoolCustomizer</customizerClass>  
   </strategy>  
   <strategy code="taskpool" name="日志输出任务池"> 
@@ -18,7 +16,6 @@
     <cyclelife>18000000</cyclelife>  
     <interruptTime>100</interruptTime>  
     <initNum>100</initNum>  
-    <disabled>0</disabled>  
     <customizerClass>com.jinhe.tss.framework.component.log.LogOutputTaskPoolCustomizer</customizerClass>  
     <accessMethod>3</accessMethod>  
   </strategy>  
@@ -29,7 +26,6 @@
     <interruptTime>1000</interruptTime>  
 	<poolSize>10</poolSize>  
     <initNum>5</initNum>  
-    <disabled>0</disabled>  
     <customizerClass>com.jinhe.tss.cache.extension.threadpool.ThreadPoolCustomizer</customizerClass>  
     <remark>上次修改时间2007-01-17 23:46:08, 修改人JK</remark> 
   </strategy>  
