@@ -61,7 +61,18 @@ public class XMLDocUtil {
             throw new RuntimeException("定义的文件没有找到：" + uri);
         }
         
-        return createDocByAbsolutePath(fileUrl.getPath());
+		SAXReader saxReader = new SAXReader();
+        try {
+            saxReader.setEncoding("UTF-8");
+            return saxReader.read(fileUrl);
+        } catch (DocumentException e) {
+            try {
+                saxReader.setEncoding("GBK");
+                return saxReader.read(fileUrl);
+            } catch (DocumentException e2) {
+                throw new RuntimeException("读取文件出错：" + fileUrl, e2);
+            }
+        }
     }
 
     public static Document dataXml2Doc(String dataXml) {
