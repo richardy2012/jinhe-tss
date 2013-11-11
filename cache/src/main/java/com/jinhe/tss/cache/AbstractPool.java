@@ -97,7 +97,7 @@ public abstract class AbstractPool implements Pool {
 	 */
     protected Cacheable getObjectOnly(Object key) {
         if (released) {
-            log.error("缓存池【" + getName() + "】已经被释放，所有缓存项都已经被清空!");
+            log.info("getObjectOnly 获取不到，原因：缓存池【" + getName() + "】已经被释放，所有缓存项都已经被清空!");
         }
         
         Cacheable item = getFree().get(key);
