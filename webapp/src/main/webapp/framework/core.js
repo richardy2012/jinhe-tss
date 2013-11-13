@@ -97,15 +97,56 @@ Public.executeCommand = function(callback, param) {
 	return returnVal;
 }
 
-Public.writeTitle = function() {
+/* 显示等待状态 */
+Public.showWaitingLayer = function () {
+	var waitingDiv = $$("_waitingDiv");
+	if(waitingDiv == null) {
+		waitingDiv = document.createElement("div");    
+		waitingDiv.id = "_waitingDiv";    
+		waitingDiv.style.width ="100%";    
+		waitingDiv.style.height = "100%";    
+		waitingDiv.style.position = "absolute";    
+		waitingDiv.style.left = "0px";   
+		waitingDiv.style.top = "0px";   
+		waitingDiv.style.cursor = "wait"; 
+		waitingDiv.style.zIndex = "10000";
+		waitingDiv.style.background = "black";   
+		Element.setOpacity(waitingDiv, 10);
+
+		document.body.appendChild(waitingDiv);
+	}
+
+	if( waitingDiv ) {
+		waitingDiv.style.display = "block";
+	}
+}
+
+Public.hideWaitingLayer = function() {
+	var waitingDiv = $$("_waitingDiv");
+	if( waitingDiv  ) {
+		waitingDiv.style.display = "none";
+	}
+}
+
+Public.initBrowser = function() {
 	if(window.dialogArguments) {
 		var title = window.dialogArguments.title;
 		if( title  ) {
 			document.write("<title>" + title + new Array(100).join("　") + "</title>");
 		}
 	}
+
+	/* 禁止鼠标右键 */
+	document.oncontextmenu = function(eventObj) {
+		eventObj = eventObj || window.event;
+		var srcElement = Event.getSrcElement(eventObj);
+		var tagName = srcElement.tagName.toLowerCase();
+		if("input" != tagName && "textarea" != tagName) {
+			event.returnValue = false;            
+		}
+	}
 }
-Public.writeTitle();
+Public.initBrowser();
 
 
 /* 负责生成对象唯一编号（为了兼容FF） */
@@ -792,7 +833,7 @@ Element.insertHtml = function(where, el, html) {
  */
 Element.attachColResize = function(element) {
 	var handle = document.createElement("DIV"); // 拖动条
-	handle.style.cssText = "cursor:col-resize;position:relative;overflow:hidden;float:right;top:0px;right:0px;width:3px;height:100%;z-index:3;filter:alpha(opacity:80);opacity:80;background:red;";
+	handle.style.cssText = "cursor:col-resize;position:absolute;overflow:hidden;float:right;top:0px;right:0px;width:3px;height:100%;z-index:3;filter:alpha(opacity:80);opacity:80;background:red;";
 	element.appendChild(handle);
 
 	var mouseStart  = 0;  // 鼠标起始位置

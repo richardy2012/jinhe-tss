@@ -1,26 +1,21 @@
 <HTML xmlns:Grid>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>它山石--test Grid</title>
+<title>Grid Demo</title>
 
-<link href="grid.css" rel="stylesheet" type="text/css">
-<link href="../balloon/balloon.css" rel="stylesheet" type="text/css">
-<link href="../menu/menu.css" rel="stylesheet" type="text/css">
-<link href="../css/css.css" rel="stylesheet" type="text/css">
+<link href="../../framework/menu/menu.css" rel="stylesheet" type="text/css">
+<link href="../../framework/css/css.css" rel="stylesheet" type="text/css">
+<link href="../../framework/grid/grid.css" rel="stylesheet" type="text/css">
 
-<script language="javascript" src="../core.js"></script>
-<script language="javascript" src="../ajax.js"></script>
-<script language="javascript" src="../framework.js"></script>
-<script language="javascript" src="../balloon/balloon.js"></script>
-<script language="javascript" src="../menu/menu.js"></script>
-
-<script language="javascript" src="grid.js"></script>
+<script language="javascript" src="../../framework/core.js"></script>
+<script language="javascript" src="../../framework/ajax.js"></script>
+<script language="javascript" src="../../framework/menu/menu.js"></script>
+<script language="javascript" src="../../framework/grid/grid.js"></script>
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
  
-URL_CORE = "../";
-ICON = "../images/";
+ICON = "../../framework/images/";
 
     function init() {
 
@@ -29,7 +24,7 @@ ICON = "../images/";
 		initGridMenu();
 
 		Ajax({
-			url : "test/data.xml",
+			url : "data.xml",
 			onresult : function() {
 				var gridData = this.getNodeValue("SourceList");
 				var grid = $G("grid", gridData);       
@@ -57,7 +52,7 @@ ICON = "../images/";
         var toolbarObj = $$("gridToolBar");
 			initGridToolBar(toolbarObj, gridPage, function(page) {
 				Ajax({
-					url : "test/data.xml",
+					url : "data.xml",
 					onresult : function() {
 						var gridData = this.getNodeValue("SourceList");
 						var grid = $G("grid", gridData);       

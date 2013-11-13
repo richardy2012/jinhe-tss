@@ -46,15 +46,6 @@ CACHE_MAIN_TREE = "_tree_";
 DEFAULT_NEW_ID = "-10";
 
 
-/* 禁止鼠标右键 */
-document.oncontextmenu = function(eventObj) {
-	eventObj = eventObj || window.event;
-	var srcElement = Event.getSrcElement(eventObj);
-	var tagName = srcElement.tagName.toLowerCase();
-	if("input" != tagName && "textarea" != tagName) {
-		event.returnValue = false;            
-	}
-}
 
 /* 用户信息初始化  */
 function initUserInfo() {
@@ -528,64 +519,6 @@ function createExportFrame() {
 	return frameName;
 }
 
-/* 显示等待状态 */
-Public.showWaitingLayer = function () {
-	var waitingDiv = $$("_waitingDiv");
-	if(waitingDiv == null) {
-		waitingDiv = document.createElement("div");    
-		waitingDiv.id = "_waitingDiv";    
-		waitingDiv.style.width ="100%";    
-		waitingDiv.style.height = "100%";    
-		waitingDiv.style.position = "absolute";    
-		waitingDiv.style.left = "0px";   
-		waitingDiv.style.top = "0px";   
-		waitingDiv.style.cursor = "wait"; 
-		
-		var waitingFlash = ICON + "images/loadingbar.swf";
- 		var str = [];
-		str[str.length] = "<TABLE width=\"100%\" height=\"100%\"><TR><TD align=\"center\">";
-		str[str.length] = "	 <object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" ";
-		str[str.length] = "		   codebase=\"http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0\" ";
-		str[str.length] = "        width=\"140\" height=\"30\" id=\"loadingbar\" align=\"middle\">";
-		str[str.length] = "		<param name=\"movie\" value=' " + waitingFlash + "' />";
-		str[str.length] = "		<param name=\"quality\" value=\"high\" />";
-		str[str.length] = "		<param name=\"wmode\" value=\"transparent\" />";
-		str[str.length] = "		<embed src=' " + waitingFlash + "' quality=\"high\" ";
-		str[str.length] = "		       wmode=\"transparent\" width=\"140\" height=\"30\" align=\"middle\" ";
-		str[str.length] = "		       type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" />";
-		str[str.length] = "  </object>";
-		str[str.length] = "</TD></TR></TABLE>";
-		waitingDiv.innerHTML = str.join("\r\n");
-
-		var coverDiv = document.createElement("div");  
-		coverDiv.id = "coverDiv";
-		coverDiv.style.width  = "100%";    
-		coverDiv.style.height = "100%";    
-		coverDiv.style.position = "absolute";    
-		coverDiv.style.left = "0px";   
-		coverDiv.style.top  = "0px";   
-		coverDiv.style.zIndex = "10000"; 
-		coverDiv.style.background = "black";   
-		Element.setOpacity(coverDiv, 10);
-
-		document.body.appendChild(waitingDiv);
-		document.body.appendChild(coverDiv);
-	}
-
-	if( waitingDiv ) {
-		waitingDiv.style.display = "block";
-	}
-}
-
-Public.hideWaitingLayer = function() {
-	var waitingDiv = $$("_waitingDiv");
-	if( waitingDiv  ) {
-		setTimeout( function() {
-			waitingDiv.style.display = "none";
-			$$("coverDiv").style.display = "none";
-		}, 100);
-	}
-}
 
 /*
  *	重新封装alert

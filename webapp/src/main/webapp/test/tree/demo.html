@@ -1,25 +1,22 @@
 <HTML xmlns:Tree>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>它山石--test Tree</title>
+<title>test Tree</title>
 
-<link href="tree.css" rel="stylesheet" type="text/css">
-<link href="../menu/menu.css" rel="stylesheet" type="text/css">
+<link href="../../framework/tree/tree.css" rel="stylesheet" type="text/css">
+<link href="../../framework/menu/menu.css" rel="stylesheet" type="text/css">
 
-<script language="javascript" src="../core.js"></script>
-<script language="javascript" src="../ajax.js"></script>
-<script language="javascript" src="../framework.js"></script>
-<script language="javascript" src="../menu/menu.js"></script>
-<script language="javascript" src="tree.js"></script>
+<script language="javascript" src="../../framework/core.js"></script>
+<script language="javascript" src="../../framework/ajax.js"></script>
+<script language="javascript" src="../../framework/menu/menu.js"></script>
+<script language="javascript" src="../../framework/tree/tree.js"></script>
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 
-URL_CORE = "../";
-
-URL_SOURCE_TREE = "test/data.xml?";
-URL_SORT_NODE   = "test/_success.xml?";
-URL_NODE_DELETE = "test/_success.xml?";
+URL_SOURCE_TREE = "data.xml?";
+URL_SORT_NODE   = "_success.xml?";
+URL_NODE_DELETE = "_success.xml?";
 
 function init() {
 		var p = new HttpRequestParams();
@@ -102,13 +99,13 @@ window.onload = init;
 	<tr height="250">
 		<td width="300">-菜单树
 			<div id="div1"></div>
-			<Tree:Box id="tree" treeType="menu" baseurl="" canMoveNode="true"><div class="loading"></div></Tree:Box>
+			<Tree:Box id="tree" treeType="menu" baseurl="../../framework/tree/" canMoveNode="true"><div class="loading"></div></Tree:Box>
 		</td>
 		<td width="300">-多选树
-			<Tree:Box id="tree2" treeType="multi" baseurl="" selectSelf="false"><div class="loading"></div></Tree:Box>
+			<Tree:Box id="tree2" treeType="multi" baseurl="../../framework/tree/" selectSelf="false"><div class="loading"></div></Tree:Box>
 		</td>
 		<td width="300">-单选树
-			<Tree:Box id="tree3" treeType="single" baseurl="" selectSelf="true"><div class="loading"></div></Tree:Box>
+			<Tree:Box id="tree3" treeType="single" baseurl="../../framework/tree/" selectSelf="true"><div class="loading"></div></Tree:Box>
 		</td>
 	</tr>
 	<tr height="150">

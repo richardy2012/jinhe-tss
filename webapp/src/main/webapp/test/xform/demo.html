@@ -3,24 +3,21 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>test XForm</title>
 
-<link href="../xform.css" rel="stylesheet" type="text/css">
-<link href="../../balloon/balloon.css" rel="stylesheet" type="text/css">
+<link href="../../framework/xform/xform.css" rel="stylesheet" type="text/css">
+<link href="../../framework/balloon/balloon.css" rel="stylesheet" type="text/css">
 
-<script language="javascript" src="../../core.js"></script>
-<script language="javascript" src="../../ajax.js"></script>
-<script language="javascript" src="../../framework.js"></script>
-<script language="javascript" src="../../balloon/balloon.js"></script>
+<script language="javascript" src="../../framework/core.js"></script>
+<script language="javascript" src="../../framework/ajax.js"></script>
+<script language="javascript" src="../../framework/balloon/balloon.js"></script>
+<script language="javascript" src="../../framework/xform/xform.js"></script>
 
-<script language="javascript" src="../xform.js"></script>
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 
-/* 核心包相对路径 */
-URL_CORE = "../../";
-
     URL_XFORM_DEMO = "_xform_user.xml";
 	URL_SAVE_USER  = "_success.xml";
+
 	var cacheID = "user1";
 
     function init() {
@@ -66,9 +63,6 @@ URL_CORE = "../../";
 
         if(flag) {
             var request = new HttpRequest(p);
-
-            syncButton([$$("btSave")], request);
-
             request.onsuccess = function() {
 				alert("成功提交" + dataNode);
             }
@@ -85,7 +79,7 @@ URL_CORE = "../../";
 <body>
     
 	<div class="loginBox">
-		<XForm:Box id="userForm" baseurl="../" editable="true"><div class="loading"></div></XForm:Box>
+		<XForm:Box id="userForm" baseurl="../../framework/xform/" editable="true"><div class="loading"></div></XForm:Box>
 		<input id="btSave" type="button" class="btStrong" value="完成"/>
 	</div>
 	 
