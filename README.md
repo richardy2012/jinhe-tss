@@ -1,5 +1,4 @@
-for my baby mianmian  
-============  
+2013年前代码托管在google code，摘部分提交记录以记之
   
 2013-01-01: use git replace svn, still remain svn; pom adjust；h2/mysql support  
 2012-12-30: tomcat7.0 and eclipse4.2 for JEE  

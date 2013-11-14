@@ -9,7 +9,6 @@ import org.junit.Test;
 import com.jinhe.tss.framework.exception.UserIdentificationException;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.um.TxSupportTest4UM;
-import com.sun.net.httpserver.HttpPrincipal;
 
 public class LtpaTokenIdentifierTest extends TxSupportTest4UM {
 	
@@ -18,7 +17,12 @@ public class LtpaTokenIdentifierTest extends TxSupportTest4UM {
 		super.setUp();
 		
 		request.addParameter(LtpaTokenIdentifier.LTPA_TOKEN_NAME, "ltpaTokenXXXXXXXX");
-		Principal userPrincipal = new HttpPrincipal("Admin", "Admin");
+		Principal userPrincipal = new Principal() {
+			public String getName() {
+				return "Admin";
+			}
+			
+		};
 		request.setUserPrincipal( userPrincipal );
 	}
 	
