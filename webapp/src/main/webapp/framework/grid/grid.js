@@ -14,7 +14,7 @@ function $G(gridId, data) {
 
 var scrollbarSize = 17;
 var cellWidth = 100; //基本列宽
-var cellHeight = 25; //数据行高
+var cellHeight = 22; //数据行高
 var GRID_SCROLL_DELAY_TIME = 0; // 滚动条的滚动事件延迟时间（毫妙）
 
 var Grid = function(element, data) {
@@ -84,7 +84,7 @@ Grid.prototype.load = function(data, append) {
 		Element.ruleObjList = []; // 先清空原来的拖动条
 		var thList = table.tHead.firstChild.childNodes;
 		for( var i = 0; i < thList.length; i++ ) {
-			Element.attachColResize(thList[i]);
+			Element.attachColResizeII(thList[i]);
 		}
 		
 		// 设置隐藏列事件，双击隐藏列
@@ -120,11 +120,11 @@ Grid.prototype.load = function(data, append) {
 
 var GridTemplate = function(xmlDom) {
 	if( xmlDom && xmlDom.xml != "" ) {
-		this.declare = xmlDom.selectSingleNode("./declare");
-		this.script  = xmlDom.selectSingleNode("./script");
-		this.columns = xmlDom.selectNodes("./declare/column");
-		this.data    = xmlDom.selectSingleNode("./data");
-		this.dataRows = xmlDom.selectNodes(".//data//row") || [];
+		this.declare = xmlDom.getElementsByTagName("declare")[0];
+		this.script  = xmlDom.getElementsByTagName("script")[0];
+		this.columns = this.declare.getElementsByTagName("column");
+		this.data    = xmlDom.getElementsByTagName("data")[0];
+		this.dataRows = this.data.getElementsByTagName("row") || [];
 
 		this.columnsMap = {};
 		for(var i = 0; i < this.columns.length; i++) {
@@ -279,7 +279,7 @@ Grid.prototype.processDataRow = function(curRow) {
 				break;    
 			case "boolean":      
 				var checked = (value =="true") ? "checked" : "";
-				nobrNodeInCell.innerHTML = "<form><input class='selectHandle' name='" + columnName + "' type='radio' " + checked + "/></form>";
+				nobrNodeInCell.innerHTML = "<form style='padding:0px;margin:0px;'><input class='selectHandle' name='" + columnName + "' type='radio' " + checked + "/></form>";
 				nobrNodeInCell.getElementsByTagName("INPUT")[0].disabled = true;
 				break;
 		}							

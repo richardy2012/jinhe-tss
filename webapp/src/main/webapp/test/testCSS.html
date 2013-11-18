@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<style>
+
+		#test { 
+			background:#EEEEEE; 
+		} 
+		#test1 { 
+			display:inline;
+			border:1px solid #f00; 
+		} 
+		#test2 { 
+			display:inline;
+			border:1px solid #d00; 
+		} 
+ 
+	</style>
+ 
+</head>
+
+<body>
+
+	<div id="test">
+		<div id="test1">1234</div>
+		<div id="test2">abcd</div>
+	</div>
+
+<div>
+	<b>To:</b> <span id="to"></span><br>
+	<b>From:</b> <span id="from"></span><br>
+	<b>Message:</b> <span id="message"></span>
+</div>
+
+<script>
+txt="<note>";
+txt=txt+"<to>Tove</to>";
+txt=txt+"<from>Jani</from>";
+txt=txt+"<heading>Reminder</heading>";
+txt=txt+"<body>Don't forget me this weekend!</body>";
+txt=txt+"</note>";
+
+if (window.DOMParser)
+  {
+  parser=new DOMParser();
+  xmlDoc=parser.parseFromString(txt,"text/xml");
+  }
+else // Internet Explorer
+  {
+  xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+  xmlDoc.async=false;
+  xmlDoc.loadXML(txt);
+  }
+
+document.getElementById("to").innerHTML=xmlDoc.getElementsByTagName("to")[0].childNodes[0].nodeValue;
+document.getElementById("from").innerHTML=xmlDoc.getElementsByTagName("from")[0].childNodes[0].nodeValue;
+document.getElementById("message").innerHTML=xmlDoc.getElementsByTagName("body")[0].childNodes[0].nodeValue;
+</script>
+
+</body>
+
+</html>
+

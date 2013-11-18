@@ -49,13 +49,13 @@ var Public = {};
 
 /* 浏览器类型 */
 _BROWSER_IE = "IE";
-_BROWSER_FF = "FF";
+_BROWSER_FF = "FIREFOX";
 _BROWSER_OPERA = "OPERA";
 _BROWSER_CHROME = "CHROME";
 _BROWSER = _BROWSER_IE;
 
 Public.checkBrowser = function() {
-	var ua = navigator.userAgent.toUpperCase();
+	var ua = navigator.userAgent.toUpperCase(); 
 	if(ua.indexOf(_BROWSER_IE)!=-1) {
 		_BROWSER = _BROWSER_IE;
 	}
@@ -902,6 +902,52 @@ Element.attachResize = function(element, type) {
 			}
 			element.style.height = _height + "px";
 		}
+	};
+
+	function stopDrag() {
+		if (handle.releaseCapture) {
+			handle.onmousemove = handle.onmouseup = null;
+			handle.releaseCapture();
+		} else {
+			document.removeEventListener("mousemove", doDrag, true);
+			document.removeEventListener("mouseup", stopDrag, true);
+		}
+	};
+}
+
+Element.attachColResizeII = function(element) {
+	var handle = element; // 拖动条(使用自己)
+
+	var mouseStart  = {x:0, y:0};  // 鼠标起始位置
+	var handleStart = {x:0, y:0};  // 拖动条起始位置
+
+	handle.onmousedown = function(ev) {
+		var oEvent = ev || event;
+		mouseStart.x  = oEvent.clientX;
+		handleStart.x = handle.offsetLeft;
+
+		if (handle.setCapture) {
+			handle.onmousemove = doDrag;
+			handle.onmouseup = stopDrag;
+			handle.setCapture();
+		} else {
+			document.addEventListener("mousemove", doDrag, true);
+			document.addEventListener("mouseup", stopDrag, true);
+		}
+	};
+
+	function doDrag(ev) {
+		var oEvent = ev || event;
+
+		var _width = oEvent.clientX - mouseStart.x + handle.offsetWidth;
+		if (_width > document.documentElement.clientWidth - handle.offsetLeft) {
+			_width = document.documentElement.clientWidth - handle.offsetLeft - 2; // 防止拖出窗体外
+		}
+		if (_width < 0) {
+			_width = handle.width;
+		}
+
+		handle.style.width = Math.max(_width, 10) + "px";
 	};
 
 	function stopDrag() {

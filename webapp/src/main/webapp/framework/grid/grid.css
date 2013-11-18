@@ -16,7 +16,7 @@ Grid\:Box .column {
 	border-color:#FFFFFF #96969E #96969E #FFFFFF;
 	border-width: 1 1 1 1;
 	background-color:#E4E6F5;
-	height:25px;
+  height:25px;
 }
 
 Grid\:Box .cell {
@@ -29,7 +29,10 @@ Grid\:Box .cell td, Grid\:Box .header td {
 	border-width: 1 1 1 1;
 	overflow:hidden;
 	text-overflow:ellipsis;
-	height:25px;
+}
+
+Grid\:Box .cell tr {
+  height:22px;
 }
 
 Grid\:Box .highlightCol {
