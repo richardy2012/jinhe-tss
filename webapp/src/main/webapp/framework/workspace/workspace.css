@@ -5,6 +5,7 @@ WorkSpace\:Box {
 	font-size:12px;
 	vertical-align:top;
 	padding-bottom:20px;
+	display:inline-block;
 }
 WorkSpace\:Tab {
 	color:#575B67;
@@ -14,6 +15,7 @@ WorkSpace\:Tab {
 	background-image:url(icons/bg_tab_inactive.gif);
 	cursor:default;
 	position:relative;
+	display:inline-block;
 }
 WorkSpace\:Tab.active {
 	color:#333333;
@@ -73,7 +75,7 @@ WorkSpace\:TabBox {
 	width:100%;
 	height:19px;
 	position:relative;
-	display:inline;
+	display:inline-block;
 	overflow:hidden;
 }
 WorkSpace\:TabBox.hasTab {
@@ -110,62 +112,7 @@ WorkSpace\:PhaseBox {
 	overflow:hidden;
 	cursor:default;
 }
-WorkSpace\:TabCtrl {
-	cursor:default;
-	width:64px;
-	height:18px;
-	margin-left:-64px;
-	display:inline;
-	overflow:hidden;
-	border-bottom:1px solid #999999;
-}
-WorkSpace\:PhaseCtrl {
-	cursor:default;
-	width:20px;
-	height:70px;
-	padding-left:2px;
-	padding-top:2px;
-	display:inline;
-	overflow:hidden;
-}
-WorkSpace\:CtrlBt {
-	cursor:default;
-	font-family:Webdings;
-	font-size:10px;
-	width:16px;
-	height:16px;
-	padding:0px;
-	overflow:hidden;
-	border:1px solid #E7E7E7;
-}
-WorkSpace\:Box.rightBox WorkSpace\:CtrlBt {
-	border:1px solid #BEC5E7;
-}
-WorkSpace\:CtrlBt.active {
-	cursor:default;
-	font-family:Webdings;
-	font-size:10px;
-	width:16px;
-	height:16px;
-	overflow:hidden;
-	border:1px solid #0A246A;
-	background-color:#B6BDD2;
-}
-WorkSpace\:CtrlBt.invert {
-	cursor:default;
-	font-family:Webdings;
-	font-size:10px;
-	width:16px;
-	height:16px;
-	overflow:hidden;
-	border:1px solid #FFFFFF;
-	background-color:#B6BDD2;
-	color:#FFFFFF;
-}
-WorkSpace\:CtrlBt.disabled {
-	filter:alpha(opacity=30);
-	opacity:0.3;
-}
+ 
 WorkSpace\:Page {
 	height:100%;
 	padding:20px;
@@ -176,6 +123,7 @@ WorkSpace\:Page {
 	border-left:1px solid #98989C;
 	border-right:1px solid #98989C;
 	border-bottom:1px solid #98989C;
+	display:block;
 }
 WorkSpace\:Page.tight {
 	padding:0px;
@@ -190,7 +138,6 @@ WorkSpace\:PageStep {
 WorkSpace\:Page Xform\:Form .xform .contentBox td {
 	padding:5px;
 }
-
 
 WorkSpace\:Page .Tree a, WorkSpace\:Page .Tree a.hover {
 	border: 1px solid #F7F8FD;

@@ -4,12 +4,9 @@ WS_TAG_PAGE      = "Page";
 WS_TAG_PAGE_STEP = "PageStep";
 WS_TAG_TAB       = "Tab";
 WS_TAG_TAB_BOX   = "TabBox";
-WS_TAG_TAB_CTRL  = "TabCtrl";
 WS_TAG_PHASE     = "Phase";
 WS_TAG_PHASE_BOX = "PhaseBox";
-WS_TAG_PHASE_CTRL= "PhaseCtrl";
 WS_TAG_ICON      = "Icon";
-WS_TAG_CTRL_BT   = "CtrlBt";
 WS_TAG_NOBR      = "nobr";
 WS_TAG_DIV       = "div";
 WS_TAG_IMG       = "img";
@@ -30,27 +27,12 @@ _TIMEOUT_RESIZE_NAME = "onresize";
 /* 文字信息 */
 _INFO_CLOSE = "关闭";
 
-/* 图片文件  */
-_IMG_TAB_FIRST   = "icons/bt_tab_first.gif";
-_IMG_TAB_PREV    = "icons/bt_tab_prev.gif";
-_IMG_TAB_NEXT    = "icons/bt_tab_next.gif";
-_IMG_TAB_LAST    = "icons/bt_tab_last.gif";
-_IMG_PHASE_FIRST = "icons/bt_phase_first.gif";
-_IMG_PHASE_PREV  = "icons/bt_phase_prev.gif";
-_IMG_PHASE_NEXT  = "icons/bt_phase_next.gif";
-_IMG_PHASE_LAST  = "icons/bt_phase_last.gif";
-
-/* 控制按钮类型  */
-_TYPE_TAB_CONTROLLER_BT = 1;
-_TYPE_PHASE_CONTROLLER_BT = 2;
-
 /* 尺寸 */
 _SIZE_TAB_WIDTH = 100;
 _SIZE_TAB_MARGIN_LEFT = 0;
 _SIZE_PHASE_HEIGHT = 73;
 _SIZE_PHASE_MARGIN_TOP = 0;
 _SIZE_IMG = 14;
-_SIZE_PHASE_CONTROLLER_HEIGHT = 70;
 
 /* 样式名 */
 CSS_CLASS_NO_CLASS = "";
@@ -59,10 +41,6 @@ CSS_CLASS_TAB_BOX_HAS_TAB = "hasTab";
 CSS_CLASS_TAB_ACTIVE   = "active";
 CSS_CLASS_PHASE_ACTIVE = "active";
 CSS_CLASS_RIGHT_BOX = "rightBox";
-CSS_CLASS_CONTROLLER_BT_ACTIVE = "active";
-CSS_CLASS_CONTROLLER_BT_INVERT = "invert";
-CSS_CLASS_CONTROLLER_BT_DISABLED = "disabled";
-
 
 /* ***********************************************************************************************
  *	对象名称：Page
@@ -282,10 +260,8 @@ Tab.prototype.refreshPhases = function() {
 	this.clearPhases();
 	this.createPhases();
 
-	if(null != this.phasesParams) {
-		_display.refreshPhaseController();
-	} else {
-		_display.clearPhaseController();
+	if(this.phasesParams) {
+		_display.showRightBox();
 	}
 }
 
@@ -549,104 +525,6 @@ Phase.getInstance = function(uniqueID) {
 	return curActiveTab.phases[uniqueID];
 }
 
-
-/* ***********************************************************************************************
- *	对象名称：ControllerButton
- *	职责：负责生成控制器按钮
- * ***********************************************************************************************/
-function ControllerButton(type, imgSrc) {
-	this.type = type;
-	this.imgSrc = imgSrc;
-	this.link;
-	this.enable = true;
- 	
-	this.object = Element.createNSElement(WS_TAG_CTRL_BT, WS_NAMESPACE);
-	this.uniqueID = this.object.uniqueID;
-
-	var img = Element.createNSElement(WS_TAG_IMG);
-	img.src = (_display.element.baseurl || "") + this.imgSrc;
-	img._target = this.object;
-	img.width  = _SIZE_IMG;
-	img.height = _SIZE_IMG;
-	this.object.appendChild(img);
-	
-	var oThis = this;
-	this.object.onclick = function() {
-		if (!oThis.isActive) {
-			oThis.click();
-		}		
-	};	
-}
-
-/* 将按钮插入指定容器  */
-ControllerButton.prototype.dockTo = function(container) {
-	container.appendChild(this.object);
-}
-
-/* 释放按钮实例  */
-ControllerButton.prototype.dispose = function() {
-	delete _display.buttons[this.uniqueID];
-
-	this.object.removeNode(true);
-
-	this.imgSrc = null;
-	this.uniqueID = null;
-	this.object = null;
-	this.link = null;
-}
-
-/*
- *	将按钮与要执行的操作关联
- *	参数：	Function:func   要执行的操作
- */
-ControllerButton.prototype.linkTo = function(func) {
-	this.link = func;
-}
-  
-ControllerButton.prototype.toString = function() {
-	var str = [];
-	str[str.length] = "[ControllerButton 对象]";
-	str[str.length] = "uniqueID = \"" + this.uniqueID+ "\"";
-	str[str.length] = "link = \"" + this.link+ "\"";
-	return str.join("\r\n");
-}
-
-/*
- *	将按钮与要执行的操作关联
- *	参数：	Function:func   要执行的操作
- */
-ControllerButton.prototype.click = function() {
-	this.link();
-}
-
-/* 高亮按钮 */
-ControllerButton.prototype.active = function() {
-	if(this.enable) {
-		this.object.className = CSS_CLASS_CONTROLLER_BT_ACTIVE;
-	}
-}
-
-/* 低亮按钮 */
-ControllerButton.prototype.inactive = function() {
-	if( !this.enable ) {
-		this.object.className = CSS_CLASS_NO_CLASS;
-	}
-}
-
-/* 反白按钮 */
-ControllerButton.prototype.invert = function() {
-	if(this.enable) {
-		this.object.className = CSS_CLASS_CONTROLLER_BT_INVERT;
-	}
-}
-
-/* 设置按钮是否允许操作 */
-ControllerButton.prototype.setEnable = function(enable) {
-	this.enable = enable;
-	this.object.className = enable ? CSS_CLASS_NO_CLASS : CSS_CLASS_CONTROLLER_BT_DISABLED;
-}
-
-
 /* ***********************************************************************************************
  *	对象名称：Display
  *	职责：负责生成整体界面显示
@@ -655,9 +533,7 @@ function Display(element) {
 	this.element = element;
 
 	this.tabBox;
-	this.tabController;
 	this.phaseBox;
-	this.phaseController;
 	this.rightBox;
 
 	this.tabs = {};
@@ -721,16 +597,13 @@ Display.prototype.createRightBox = function() {
 	rightBox.border = 0;
 	rightBox.className = CSS_CLASS_RIGHT_BOX;
 
-	for(var i=0; i < 2; i++) {
-	  var row = rightBox.insertRow();
-	  row.insertCell();
-	}
-	rightBox.rows[1].height = _SIZE_PHASE_CONTROLLER_HEIGHT;
+	var row = rightBox.insertRow();
+	row.insertCell();
 
 	this.element.appendChild(rightBox);
 	var refChild = this.element.childNodes[1];
 	if(rightBox != refChild && refChild) {
-		this.element.insertBefore(rightBox,refChild);
+		this.element.insertBefore(rightBox, refChild);
 	}
 
 	this.rightBox = rightBox;
@@ -743,20 +616,6 @@ Display.prototype.createPhaseBox = function() {
 	this.phaseBox = phaseBox;
 }
 
-/* 创建Tab标签控制器 */
-Display.prototype.createTabController = function() {
-	var tabController = Element.createNSElement(WS_TAG_TAB_CTRL, WS_NAMESPACE);
-
-	this.element.appendChild(tabController);
-	var refChild = this.element.childNodes[1];
-	if(tabController != refChild && refChild != null) {
-		this.element.insertBefore(tabController, refChild);
-	}
-
-	this.tabController = tabController;
-}
-
-
 /* 显示右侧容器 */
 Display.prototype.showRightBox = function() {
 	this.rightBox.style.display = "inline";
@@ -765,78 +624,7 @@ Display.prototype.showRightBox = function() {
 /* 隐藏右侧容器 */
 Display.prototype.hideRightBox = function() {
 	this.rightBox.style.display = "none";
-}
-
-/* 刷新Phase标签控制器 */
-Display.prototype.refreshPhaseController = function() {
-	if( this.phaseController == null ) {
-		this.createPhaseController();
-		this.createPhaseControllerButtons();
-	}
-	
-	/* 刷新Phase标签控制器按钮  */
-	var flag = (this.phaseBox.scrollHeight > this.phaseBox.offsetHeight);
-	for(var item in this.buttons) {
-		var button = this.buttons[item];
-		if(button.type == _TYPE_PHASE_CONTROLLER_BT) {
-			button.setEnable(flag);
-		}
-	}
-	this.showRightBox();
-}
- 
-
-/* 创建Phase标签控制器  */
-Display.prototype.createPhaseController = function() {
-	var phaseController = Element.createNSElement(WS_TAG_PHASE_CTRL, WS_NAMESPACE);
-	this.rightBox.rows[1].cells[0].appendChild(phaseController);
-	this.phaseController = phaseController;
-}
-
-/* 清除Phase标签控制器  */
-Display.prototype.clearPhaseController = function() {
-	for(var item in this.buttons) {
-		var button = this.buttons[item];
-		if(button.type == _TYPE_PHASE_CONTROLLER_BT) {
-			button.dispose();
-		}
-	}
-
-	if(this.phaseController != null) {
-		Element.removeNode(this.phaseController);
-		this.phaseController = null;
-	}
-	this.hideRightBox();
-}
-
-/* 创建Phase标签控制器按钮 */
-Display.prototype.createPhaseControllerButtons = function() {
-	var prevBt = new ControllerButton(_TYPE_PHASE_CONTROLLER_BT, _IMG_PHASE_PREV);
-	var nextBt = new ControllerButton(_TYPE_PHASE_CONTROLLER_BT, _IMG_PHASE_NEXT);
-
-	this.buttons[prevBt.uniqueID] = prevBt;
-	this.buttons[nextBt.uniqueID] = nextBt;
-
-	prevBt.dockTo(this.phaseController);
-	nextBt.dockTo(this.phaseController);
-
-	prevBt.linkTo(function() {
-		_display.phaseBox.scrollTop -= _SIZE_PHASE_HEIGHT + _SIZE_PHASE_MARGIN_TOP;
-	});
-	nextBt.linkTo(function() {
-		_display.phaseBox.scrollTop += _SIZE_PHASE_HEIGHT + _SIZE_PHASE_MARGIN_TOP;
-	});
-	
-	var tab = this.getActiveTab();
-	if(tab == null) return;
-
-	prevBt.object.onclick = function() { 
-		tab.prevPhase();
-	}
-	nextBt.object.onclick = function() { 
-		tab.nextPhase();
-	}
-}
+} 
 
 /*
  *	打开一个新子页
@@ -856,77 +644,11 @@ Display.prototype.open = function(inf) {
 		tab.dockTo(this.tabBox.firstChild);
 		tab.SID = inf.SID; // 标记数据源
 
-		this.refreshTabController();
 		this.setHasTabStyle(true);
 	}
 	
 	tab.click();
 	return tab;
-}
-
-/* 刷新Tab标签控制器 */
-Display.prototype.refreshTabController = function() {
-	if( this.tabController == null) {
-		this.createTabController();
-		this.createTabControllerButtons();
-	}
-	this.refreshTabControllerButtons();
-}
-
-/* 刷新Tab标签控制器按钮  */
-Display.prototype.refreshTabControllerButtons = function() {
-	var flag = (this.tabBox.scrollWidth > this.tabBox.offsetWidth);
-	for(var item in this.buttons) {
-		var button = this.buttons[item];
-		if(button.type == _TYPE_TAB_CONTROLLER_BT) {
-			button.setEnable(flag);
-		}
-	}
-}
-
-/* 创建Tab标签控制器按钮 */
-Display.prototype.createTabControllerButtons = function() {
-	var firstBt = new ControllerButton(_TYPE_TAB_CONTROLLER_BT, _IMG_TAB_FIRST);
-	var prevBt  = new ControllerButton(_TYPE_TAB_CONTROLLER_BT, _IMG_TAB_PREV);
-	var nextBt  = new ControllerButton(_TYPE_TAB_CONTROLLER_BT, _IMG_TAB_NEXT);
-	var lastBt  = new ControllerButton(_TYPE_TAB_CONTROLLER_BT, _IMG_TAB_LAST);
-
-	this.buttons[firstBt.uniqueID] = firstBt;
-	this.buttons[prevBt.uniqueID] = prevBt;
-	this.buttons[nextBt.uniqueID] = nextBt;
-	this.buttons[lastBt.uniqueID] = lastBt;
-
-	firstBt.dockTo(this.tabController);
-	prevBt.dockTo(this.tabController);
-	nextBt.dockTo(this.tabController);
-	lastBt.dockTo(this.tabController);
-
-	firstBt.linkTo(function() {
-		_display.tabBox.scrollLeft = 0;
-	});
-	prevBt.linkTo(function() {
-		_display.tabBox.scrollLeft -= _SIZE_TAB_WIDTH + _SIZE_TAB_MARGIN_LEFT;
-	});
-	nextBt.linkTo(function() {
-		_display.tabBox.scrollLeft += _SIZE_TAB_WIDTH + _SIZE_TAB_MARGIN_LEFT;
-	});
-	lastBt.linkTo(function() {
-		_display.tabBox.scrollLeft = _display.tabBox.scrollWidth;
-	});
-	
-	var oThis = this;
-	firstBt.object.onclick = function() { 
-		oThis.getFirstTab().click();
-	}
-	lastBt.object.onclick = function() { 
-		oThis.getLastTab().click();
-	}
-	prevBt.object.onclick = function() { 
-		oThis.prevTab();
-	}
-	nextBt.object.onclick = function() { 
-		oThis.nextTab();
-	}
 }
 
 /*
@@ -960,55 +682,17 @@ Display.prototype.hidePage = function(page) {
 	page.hide();
 }
 
-Display.prototype.toString = function() {
-	var str = [];
-	str[str.length] = "[Display 对象]";
-	return str.join("\r\n");
-}
-
 /*
  *	切换到指定Tab页
  *	参数：Tab:tab   Tab实例
  */
 Display.prototype.switchToTab = function(tab) {
-	if( tab != null ) {
+	if( tab ) {
 		tab.click();
 	} 
 	else {
-		this.clearTabController();
-		this.clearPhaseController();
 		this.setHasTabStyle(false);
 	}
-	this.refreshTabControllerButtons();
-}
-
-/* 清除Tab标签控制器 */
-Display.prototype.clearTabController = function() {
-	for(var item in this.buttons) {
-		var button = this.buttons[item];
-		if(button.type == _TYPE_TAB_CONTROLLER_BT) {
-			button.dispose();
-		}
-	}
-
-	if( this.tabController != null) {
-		Element.removeNode(this.tabController);
-		this.tabController = null;
-	}
-}
-
-/* 获得第一个Tab */
-Display.prototype.getFirstTab = function() {
-	for(var item in this.tabs) {
-		return this.tabs[item];
-	}
-}
-
-/* 获得最后一个Tab */
-Display.prototype.getLastTab = function() {
-	for(var item in this.tabs) {
-	}
-	return this.tabs[item];
 }
 
 /* 低亮所有标签 */
@@ -1041,48 +725,6 @@ Display.prototype.getTabBySID = function(SID) {
 	}
 }
 
-/* 激活上一个Tab标签 */
-Display.prototype.prevTab = function() {       
-	var tempTabs = [];
-	var activeTabIndex;
-	for(var item in this.tabs) {
-		var curTab = this.tabs[item];
-		if( curTab.isActive ) {
-			activeTabIndex = tempTabs.length;
-		}
-		tempTabs[tempTabs.length] = curTab;
-	}
-	
-	var tab;
-	if(0 == activeTabIndex) { // 当前激活的是第一个Tab
-		tab = tempTabs[activeTabIndex];
-	} else { 
-		tab = tempTabs[activeTabIndex - 1];
-	}
-	this.switchToTab(tab);
-}
-
-/* 激活下一个Tab标签 */
-Display.prototype.nextTab = function() {      
-	var tempTabs = [];
-	var activeTabIndex;
-	for(var item in this.tabs) {
-		var curTab = this.tabs[item];
-		if( curTab.isActive ) {
-			activeTabIndex = tempTabs.length;
-		}
-		tempTabs[tempTabs.length] = curTab;
-	}
-	
-	var tab;
-	if(tempTabs.length - 1 == activeTabIndex) { // 当前激活的是最后一个Tab
-	   tab = tempTabs[activeTabIndex];
-	} else {
-		tab = tempTabs[activeTabIndex + 1 ];
-	}
-	this.switchToTab(tab);
-}
-
 
 /* ***********************************************************************************************
    控件名称：标签式工作区
@@ -1096,7 +738,6 @@ var _display;
 var WorkSpace = function(wsElement) {
 	_display = new Display(wsElement);
 }
-
  
 /* 打开子页面  */
 WorkSpace.prototype.open = function(inf) {
@@ -1115,17 +756,7 @@ WorkSpace.prototype.closeActiveTab = function() {
 		tab.close();
 	}
 }
-
-/* 激活上一个Tab标签 */
-WorkSpace.prototype.prevTab = function() {
-	return _display.prevTab();
-}
-
-/* 激活下一个Tab标签 */
-WorkSpace.prototype.nextTab = function() {
-	return _display.nextTab();
-}
-
+ 
 /* 激活上一个Phase标签 */
 WorkSpace.prototype.prevPhase = function() {
 	var tab = this.getActiveTab();
@@ -1150,7 +781,7 @@ WorkSpace.prototype.closePhase = function(pageId) {
 	}
 }
 
-/* 切换到指定tab页  */
+/* 切换到指定Phase  */
 WorkSpace.prototype.switchToPhase = function(page) {
 	var tab = this.getActiveTab();
 	if( tab ) {
