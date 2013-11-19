@@ -71,7 +71,7 @@ Grid.prototype.load = function(data, append) {
 			this.tbody.appendChild(cloneRow);
 		}
 
-		tempGridNode.removeNode(true);
+		Element.removeNode(tempGridNode);
 	}
 	else {
 		this.gridBox.innerHTML = ""; // 初始化容器

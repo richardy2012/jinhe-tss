@@ -75,6 +75,7 @@ Grid\:Box .sorting {
     cursor:default;
 }
 #gridTitle .icon {
+    display:inline-block;
     width: 8px;
     height: 8px;
     font-size: 1px;
@@ -90,32 +91,35 @@ Grid\:Box .sorting {
 }
 
 #gridTitle .button {
+    display:inline-block;
     width: 16px;
     height: 15px;
     background-repeat: no-repeat;
     background-position: center;
     cursor: hand;
-    margin:0 2px;
-  }
-  #gridTitle .refresh {
-    background-image: url(../images/icon_refresh.gif);
-  }
-  #gridTitle .first {
-    background-image: url(../images/first.gif);
-  }
-  #gridTitle .prev {
-    background-image: url(../images/prev.gif);
-  }
-  #gridTitle .next {
-    background-image: url(../images/next.gif);
-  }
-  #gridTitle .last {
-    background-image: url(../images/last.gif);
-  }
+    margin:2 2 2 2px;
+}
+ 
+#gridTitle .refresh {
+  background-image: url(../images/icon_refresh.gif);
+}
+#gridTitle .first {
+  background-image: url(../images/first.gif);
+}
+#gridTitle .prev {
+  background-image: url(../images/prev.gif);
+}
+#gridTitle .next {
+  background-image: url(../images/next.gif);
+}
+#gridTitle .last {
+  background-image: url(../images/last.gif);
+}
 
 #gridTitle select {
     font-size:10px;
     font-family:Verdana;
     position:relative;
-    top:1px;
+    top:-4px;
+    right:1px;
 }

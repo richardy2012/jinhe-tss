@@ -502,14 +502,14 @@ var Element = {};
 Element.removeNode = function(node) {
 	if( node == null ) return;
 
-	if(window.DOMParser) {
+	if(node.removeNode) {
+		node.removeNode(true); // IE支持
+	}
+	else {
 		var parentNode = node.parentNode;
 		if( parentNode  ) {
 			parentNode.removeChild(node);
 		}
-	}
-	else {
-		node.removeNode(true);
 	}
 }
 
