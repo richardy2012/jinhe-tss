@@ -54,14 +54,14 @@ function Page(obj) {
 
 /* Page隐藏  */
 Page.prototype.hide = function() {
-	this.object.style.display = "none"; // 隐藏对象。与style.visibility = "hidden"不同，其不为被隐藏的对象保留其物理空间
+	this.object.style.display = "none"; // 隐藏对象。与style.visibility = "hidden"不同，前者不为被隐藏的对象保留其物理空间
 	this.isActive = false;
 }
 
 /* Page显示 */
 Page.prototype.show = function() {
 	this.object.style.display = "block"; // 此元素将显示为块级元素，此元素前后会带有换行符
-	this.object.scrollTop = 0;
+	this.object.scrollTop  = 0;
 	this.object.scrollLeft = 0;
 	this.isActive = true;
 }
@@ -109,8 +109,6 @@ function Tab(label, phasesParams, callback) {
 	div.noWrap = true; // 不换行
 	div._target = this.object;
 	this.object.appendChild(div);
-
-	this.createContextMenu();
 	
 	var oThis = this;
 	closeIcon.onclick = this.object.ondblclick = function() {
@@ -123,42 +121,14 @@ function Tab(label, phasesParams, callback) {
 	};	
 }
 
-/* 创建右键菜单  */
-Tab.prototype.createContextMenu = function() {
-	if( window.Menu != null ) {
-		var oThis = this;
-		var menu = new Menu();
-		
-		// 新增一个关闭操作菜单项
-		var item = {
-			label: _INFO_CLOSE,
-			callback: function() { oThis.close(); }
-		}
-		menu.addItem(item);
-		menu.attachTo(this.object, "contextmenu");;
-	}
-}
-
 /* 关闭标签 */
 Tab.prototype.close = function() {
-	if( this.link && this == _display.getActiveTab() ) {
-		this.hideLink();
-	}
-	this.dispose();
-
-	// 执行Tab页上定义的回调方法
-	this.execCallBack("onTabClose");
-
-	delCacheData(this.SID);
-
-	var firstTab = _display.getFirstTab();
-	_display.switchToTab(firstTab);
-}
-
-/* 释放标签实例  */
-Tab.prototype.dispose = function() {
-	if(this == _display.getActiveTab()) {
+	var isCloseActiveTab = (this == _display.getActiveTab()); // 如果关闭的是当前激活的Tab，则需要在关闭完成后切换到第一个Tab
+	if( isCloseActiveTab ) {
 		this.clearPhases();
+		if( this.link ) {
+			this.hideLink();
+		}
 	}
 
 	delete _display.tabs[this.uniqueID];
@@ -173,6 +143,15 @@ Tab.prototype.dispose = function() {
 	this.link = null;
 	this.phases = {};
 	this.phasesParams = null;
+
+	// 执行Tab页上定义的回调方法
+	this.execCallBack("onTabClose");
+
+	delCacheData(this.SID);
+
+	if( isCloseActiveTab ) {
+		_display.switchToTab(_display.getFirstTab());
+	}
 }
 
 /* 点击标签 */
@@ -240,29 +219,34 @@ Tab.prototype.toString = function() {
 		  或者string:pageId     Page实例id
  */
 Tab.prototype.switchToPhase = function(phase) {
-	if( phase == null ) return;
-
-	switch( typeof(phase) ) {
-		case "object":
-			phase.click();
-			break;
-		case "string":                    
-			var temp = this.getPhaseByPage(phase);
-			if( temp) {
-				temp.click();
-			}
-			break;        
-	}			
+	if( phase ) {
+		phase.click();
+	}		
 }
 
 /* 刷新纵向标签  */
 Tab.prototype.refreshPhases = function() {
 	this.clearPhases();
-	this.createPhases();
+	
+	if( this.phasesParams == null ) return;
 
-	if(this.phasesParams) {
-		_display.showRightBox();
+	// 重新创建纵向标签
+	for(var i=0; i < this.phasesParams.length; i++) {
+		var param = this.phasesParams[i];
+		var pageId = param.page;
+		var page   = Page.getInstance(pageId);
+
+		var phase  = new Phase(param.label);
+		phase.linkTo(page);
+		phase.dockTo(_display.phaseBox);
+		if(pageId == this.link.id) {
+			phase.active();
+		}
+
+		this.phases[phase.uniqueID] = phase;
 	}
+
+	_display.showRightBox();
 }
 
 /* 清除纵向标签  */
@@ -274,30 +258,6 @@ Tab.prototype.clearPhases = function() {
 	_display.phaseBox.innerHTML = "";
 }
 
-/*
- *	创建纵向标签
- *	参数：	object:phases	纵向标签配置
- */
-Tab.prototype.createPhases = function() {
-	if( this.phasesParams == null ) return;
-	
-	for(var i=0; i < this.phasesParams.length; i++) {
-		var param = this.phasesParams[i];
-		var label = param.label;
-		var pageId = param.page;
-		var phase = new Phase(label);
-		var page = Page.getInstance(pageId);
-
-		phase.linkTo(page);
-		phase.dockTo(_display.phaseBox);
-		if(pageId == this.link.id) {
-			phase.active();
-		}
-
-		this.phases[phase.uniqueID] = phase;
-	}
-}
-
 /* 低亮所有Phase标签 */
 Tab.prototype.inactiveAllPhases = function() {
 	for(var item in this.phases) {
@@ -306,21 +266,11 @@ Tab.prototype.inactiveAllPhases = function() {
 	}
 }
 
-/* 获取激活纵向标签 */
+/* 获取激活的纵向标签 */
 Tab.prototype.getActivePhase = function() {
 	for(var item in this.phases) {
 		var curPhase = this.phases[item];
 		if( curPhase.isActive ) {
-			return curPhase;
-		}
-	}
-}
-
-/* 根据pageId获取纵向标签 */
-Tab.prototype.getPhaseByPage = function(pageId) {
-	for(var item in this.phases) {
-		var curPhase = this.phases[item];
-		if(pageId == curPhase.link.id) {
 			return curPhase;
 		}
 	}
@@ -376,18 +326,6 @@ Tab.prototype.nextPhase = function() {
 Tab.prototype.execCallBack = function(eventName, params) {
 	if( this.callback != null) {
 		Public.executeCommand(this.callback[eventName], params);
-	}
-}
-
-/*
- *	切换到指定Tab页
- *	参数：Phase:phase       Phase实例
-		或string:pageId     Page实例id
- */
-Tab.prototype.closePhase = function(pageId) {
-	var phase = this.getPhaseByPage(pageId);
-	if( phase ) {
-		phase.dispose();
 	}
 }
 
@@ -459,14 +397,16 @@ Phase.prototype.click = function() {
 	this.active();
 	this.scrollToView();
 
-	var thisObj = this;
+	var thisPhase = this;
 
 	//避免切换太快时显示内容跟不上响应
 	clearTimeout( Event.timeout[_TIMEOUT_PHASE_CLICK_NAME] );
 	
 	Event.timeout[_TIMEOUT_PHASE_CLICK_NAME] = setTimeout( function() {
-		if( thisObj.link ) {
-			thisObj.showLink();
+		if( thisPhase.link ) {
+			/* 显示关联子页面 */
+			_display.showPage  (thisPhase.link);
+			curActiveTab.linkTo(thisPhase.link);
 		}
 	}, _TIMEOUT_PHASE_CLICK );
 }
@@ -483,19 +423,6 @@ Phase.prototype.scrollToView = function() {
 	else if(tempBottom > areaBottom) {
 		_display.phaseBox.scrollTop = tempBottom - _display.phaseBox.offsetHeight;
 	}
-}
-
-/* 显示关联子页面 */
-Phase.prototype.showLink = function() {
-	_display.showPage(this.link);
-
-	var curActiveTab = _display.getActiveTab();
-	curActiveTab.linkTo(this.link);
-}
-
-/* 关闭（隐藏）关联子页面  */
-Phase.prototype.hideLink = function() {
-	_display.hidePage(this.link);
 }
 
 /* 高亮纵向标签 */
@@ -537,7 +464,6 @@ function Display(element) {
 	this.rightBox;
 
 	this.tabs = {};
-	this.buttons = {};
 	this.pages = {};
 
 	// 初始化
@@ -682,6 +608,13 @@ Display.prototype.hidePage = function(page) {
 	page.hide();
 }
 
+/* 获得第一个Tab */
+Display.prototype.getFirstTab = function() {
+	for(var item in this.tabs) {
+		return this.tabs[item];
+	}
+}
+
 /*
  *	切换到指定Tab页
  *	参数：Tab:tab   Tab实例
@@ -770,25 +703,6 @@ WorkSpace.prototype.nextPhase = function() {
 	var tab = this.getActiveTab();
 	if( tab ) {
 		return tab.nextPhase();
-	}
-}
-
-/* 关闭指定Phase标签 */
-WorkSpace.prototype.closePhase = function(pageId) {
-	var tab = this.getActiveTab();
-	if( tab ) {
-		tab.closePhase(pageId);
-	}
-}
-
-/* 切换到指定Phase  */
-WorkSpace.prototype.switchToPhase = function(page) {
-	var tab = this.getActiveTab();
-	if( tab ) {
-		var phase = tab.getActivePhase();
-		if( phase && page != phase.link.id) {
-			tab.switchToPhase(page);
-		}
 	}
 }
 
