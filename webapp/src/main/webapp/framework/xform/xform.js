@@ -107,11 +107,15 @@ XForm.prototype.parseTempalte = function() {
 	 var layoutTRs = this.template.layout.childNodes;
 	 for(var i=0; i < layoutTRs.length; i++) {
 		var trNode = layoutTRs[i];
+		if(trNode.nodeType != _XML_NODE_TYPE_ELEMENT) continue;
+
 		htmls.push("<tr>");
 
 		var layoutTDs = trNode.childNodes;
 		for(var j=0; j < layoutTDs.length; j++) {
 			var tdNode = layoutTDs[j];
+			if(tdNode.nodeType != _XML_NODE_TYPE_ELEMENT) continue;
+
 			htmls.push("<td "+ copyNodeAttribute(tdNode) +">");
 
 			var childNodes = tdNode.childNodes;
@@ -374,8 +378,11 @@ XForm.prototype.setColumnValue = function(name, value) {
 		CDATANode = getXmlDOM().createCDATASection(value);
 		node.appendChild(CDATANode);
 	}
-	else{
+	else {
 		CDATANode.text = value;
+		if (CDATANode.textContent) {
+			CDATANode.textContent = value; // chrome
+		}
 	}
 }
 
