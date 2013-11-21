@@ -8,8 +8,7 @@
 
 <style>
 body, td{
-	font-size:12px;
-	/*line-height:14px;*/
+	font-size:15px;
 }
 </style>
 
@@ -30,22 +29,13 @@ body, td{
 		  inf.defaultPage = "page1";
 
 		  var phases = [];
-		  phases[0] = {page: "page1", label: "编辑组信息"};
+		  phases[0] = {page: "page1", label: "组织信息"};
 		  phases[1] = {page: "page2", label: "组对用户"};
 		  phases[2] = {page: "page3", label: "组对角色"};
 		  inf.phases = phases;
 		  inf.callback = null;
 
 		  ws.open(inf);
-	}
-
-	function switchPage(i) {
-			var list = ["page1", "page2"];
-
-			var inf = {SID: list[i]};
-			ws.open(inf);
-
-			var tab = ws.getActiveTab();
 	}
  
 	function openNewTab(i) {
@@ -72,13 +62,13 @@ body, td{
 <BODY>
   <TABLE width="80%" height="80%" border="1" align="center">
     <TR height="60">
-          <TD  colspan="2" >
-				&nbsp;<INPUT TYPE="button" value="ToPage1" onclick="switchPage(0)"/>
+          <TD  colspan="2" style="height:60px;text-align:center;background-color:#F75B67;">
+				<h1>LOGO</h1>
 		  </TD>
     </TR>
 
     <TR>
-      <TD width="120" valign="top">
+      <TD width="120" valign="top" style="background-color:#ffffff;padding-top:10px;">
          <ul>
 			<li><a href=# onclick="openNewTab(1)">资源一</a>
 			<li><a href=# onclick="openNewTab(2)">资源二</a>
@@ -93,17 +83,19 @@ body, td{
       <TD valign = "top">
 			<WorkSpace:Box id="ws" baseurl="../../framework/workspace/">
 				<WorkSpace:Page id = "page1">
-					page1<br/>
-					<a href=# onclick="ws.prevTab(true)">上一标签</a><br/>
-					<a href=# onclick="ws.nextTab(true)">下一标签</a><br/>
+					<h2>Page-1</h2><br/><br/><br/>
+					<a href=# onclick="ws.nextPhase(true)"><h2>下一步</h2></a><br/>
 				</WorkSpace:Page>
 
 				<WorkSpace:Page id = "page2">
-					page2<br/>
-					<a href=# onclick="ws.prevTab(true)">上一标签</a><br/>
-					<a href=# onclick="ws.nextTab(true)">下一标签</a><br/>
-					<a href=# onclick="ws.prevPhase(true)">上一步</a><br/>
-					<a href=# onclick="ws.nextPhase(true)">下一步</a><br/>
+					<h2>Page-2</h2><br/><br/><br/>
+					<a href=# onclick="ws.prevPhase(true)"><h2>上一步</h2></a><br/><br/>
+					<a href=# onclick="ws.nextPhase(true)"><h2>下一步</h2></a><br/>
+				</WorkSpace:Page>
+
+				<WorkSpace:Page id = "page3">
+					<h2>Page-3</h2><br/><br/><br/>
+					<a href=# onclick="ws.prevPhase(true)"><h2>上一步</h2></a><br/>
 				</WorkSpace:Page>
 
 			</WorkSpace:Box>

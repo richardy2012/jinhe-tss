@@ -20,27 +20,15 @@ _TIMEOUT_TAB_CLICK_NAME = "ontabclick";
 _TIMEOUT_PHASE_CLICK = 100;
 _TIMEOUT_PHASE_CLICK_NAME = "onphaseclick";
 
-/* onresize的时间差(ms)  */
-_TIMEOUT_RESIZE = 20;
-_TIMEOUT_RESIZE_NAME = "onresize";
-
 /* 文字信息 */
 _INFO_CLOSE = "关闭";
 
-/* 尺寸 */
-_SIZE_TAB_WIDTH = 100;
-_SIZE_TAB_MARGIN_LEFT = 0;
-_SIZE_PHASE_HEIGHT = 73;
-_SIZE_PHASE_MARGIN_TOP = 0;
-_SIZE_IMG = 14;
-
 /* 样式名 */
-CSS_CLASS_NO_CLASS = "";
-CSS_CLASS_BOX_HAS_TAB = "hasTab";
+CSS_CLASS_NO_CLASS        = "";
 CSS_CLASS_TAB_BOX_HAS_TAB = "hasTab";
-CSS_CLASS_TAB_ACTIVE   = "active";
-CSS_CLASS_PHASE_ACTIVE = "active";
-CSS_CLASS_RIGHT_BOX = "rightBox";
+CSS_CLASS_TAB_ACTIVE      = "active";
+CSS_CLASS_PHASE_ACTIVE    = "active";
+CSS_CLASS_RIGHT_BOX       = "rightBox";
 
 /* ***********************************************************************************************
  *	对象名称：Page
@@ -49,7 +37,7 @@ CSS_CLASS_RIGHT_BOX = "rightBox";
 function Page(obj) {	
 	this.object = obj;
 	this.id = obj.id;		
-	this.isActive = ( obj.currentStyle.display == "none" ? false : true ); // currentStyle: style 和 runtimeStyle 的结合
+	this.isActive = ( getComputedStyle(obj).display == "none" ? false : true ); // computedStyle: style 和 runtimeStyle 的结合
 }
 
 /* Page隐藏  */
@@ -115,7 +103,7 @@ function Tab(label, phasesParams, callback) {
 		oThis.close();
 	};	
 	this.object.onclick = function() {
-		if (!oThis.isActive) {
+		if (!oThis.isActive && oThis.object) {
 			oThis.click();
 		}		
 	};	
@@ -160,8 +148,7 @@ Tab.prototype.click = function() {
 	this.active();
 
 	// 执行Tab页上定义的回调方法
-	var params = {};
-	this.execCallBack("onTabChange", params);
+	this.execCallBack("onTabChange");
 
 	if( this.link ) {
 		this.showLink();
@@ -181,13 +168,13 @@ Tab.prototype.hideLink = function() {
 
 /* 高亮标签 */
 Tab.prototype.active = function() {
-	this.object.className = CSS_CLASS_TAB_ACTIVE;
+	Element.addClass(this.object, CSS_CLASS_TAB_ACTIVE);
 	this.isActive = true;
 }
 
 /* 低亮标签  */
 Tab.prototype.inactive = function() {
-	this.object.className = CSS_CLASS_NO_CLASS;
+	Element.removeClass(this.object, CSS_CLASS_TAB_ACTIVE);
 	this.isActive = false;
 }
 
@@ -427,13 +414,13 @@ Phase.prototype.scrollToView = function() {
 
 /* 高亮纵向标签 */
 Phase.prototype.active = function() {
-	this.object.className = CSS_CLASS_PHASE_ACTIVE;
+	Element.addClass(this.object, CSS_CLASS_PHASE_ACTIVE);
 	this.isActive = true;
 }
 
 /* 低亮纵向标签 */
 Phase.prototype.inactive = function() {
-	this.object.className = CSS_CLASS_NO_CLASS;
+	Element.removeClass(this.object, CSS_CLASS_PHASE_ACTIVE);
 	this.isActive = false;
 }
 
@@ -474,7 +461,7 @@ function Display(element) {
 
 /* 获取所有子页面 */
 Display.prototype.getAllPages = function() {
-	var childs = this.element.getElementsByTagName(WS_TAG_PAGE);
+	var childs = Element.getNSElements(this.element, WS_TAG_PAGE, WS_NAMESPACE);
 	for(var i=0; i < childs.length; i++) {
 		var curNode = childs[i];
 		this.pages[curNode.id || curNode.uniqueID] = new Page(curNode);
@@ -521,7 +508,7 @@ Display.prototype.createRightBox = function() {
 	rightBox.cellSpacing = 0;
 	rightBox.cellPadding = 0;
 	rightBox.border = 0;
-	rightBox.className = CSS_CLASS_RIGHT_BOX;
+	Element.addClass(rightBox, CSS_CLASS_RIGHT_BOX);
 
 	var row = rightBox.insertRow();
 	row.insertCell();
@@ -582,7 +569,11 @@ Display.prototype.open = function(inf) {
  *	参数：boolean:hasTab     容器是否有Tab
  */
 Display.prototype.setHasTabStyle = function(hasTab) {
-	this.tabBox.className = hasTab ? CSS_CLASS_TAB_BOX_HAS_TAB : CSS_CLASS_NO_CLASS;
+	if(hasTab) {
+		Element.addClass(this.tabBox, CSS_CLASS_TAB_BOX_HAS_TAB);
+	} else {
+		Element.removeClass(this.tabBox, CSS_CLASS_TAB_BOX_HAS_TAB);
+	}
 }
 
 /*

@@ -4,7 +4,6 @@ WorkSpace\:Box {
 	overflow:hidden;
 	font-size:12px;
 	vertical-align:top;
-	padding-bottom:20px;
 	display:inline-block;
 }
 WorkSpace\:Tab {
@@ -54,13 +53,13 @@ WorkSpace\:Phase {
 	width:20px;
 	height:73px;
 	overflow:hidden;
+	display: block;
 	background-image:url(icons/bg_phase_inactive.gif);
 }
-WorkSpace\:Phase div{
-	padding:2px 0px 0px 2px;
+WorkSpace\:Phase div {
+	padding:4px 3px 1px 1px;
 	text-align:center;
 	height:73px;
-	display:inline;
 	overflow:hidden;
 	text-overflow:ellipsis;
 	writing-mode:tb-rl;
@@ -70,7 +69,6 @@ WorkSpace\:Phase.active{
 }
 WorkSpace\:TabBox {
 	cursor:default;
-	margin-right:64px;
 	width:100%;
 	height:19px;
 	position:relative;

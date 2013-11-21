@@ -44,6 +44,12 @@ function assertNotNull(result, msg) {
 	}
 }
 
+if(!window.getComputedStyle){
+  window.getComputedStyle = function($target) {
+    return $target.currentStyle;
+  };
+}
+
 /* 对象名称：Public（全局静态对象） */
 var Public = {};
 
@@ -554,13 +560,29 @@ Element.createNSElement = function(tagName, ns) {
 		obj = tempDiv.firstChild.cloneNode(false);
 		Element.removeNode(tempDiv);
 	}
+
+	if (obj.uniqueID == null) {
+		obj.uniqueID = UniqueID.generator(); // 非IE
+	}
 	return obj;
+}
+
+Element.getNSElements = function(element, tagName, ns) {
+	var childs = element.getElementsByTagName(tagName);
+	if ( childs == null || childs.length == 0 ) {
+		childs = element.getElementsByTagName(ns + ":" + tagName);
+	}
+	return childs;
 }
 
 Element.createElement = function(tagName, className) {
 	var element = document.createElement(tagName);
 	if( className ) {
 		Element.addClass(element, className)
+	}
+
+	if (element.uniqueID == null) {
+		element.uniqueID = UniqueID.generator(); // 非IE
 	}
 	return element;
 }
