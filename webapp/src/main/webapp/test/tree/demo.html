@@ -46,7 +46,12 @@ function init() {
 				}
 				tree1.element.onTreeNodeRightClick = function(eventObj) {
 					// 显示右键菜单
-					onTreeNodeRightClick(eventObj);
+					var menu = tree1.element.contextmenu;
+					if(menu == null) {
+						return;
+					}
+
+					menu.show(eventObj.clientX, eventObj.clientY);
 				}
 		}
 		request.send();
@@ -81,8 +86,7 @@ function init() {
 
         $$("tree").contextmenu = menu1;
 
-		alert( $$("div1").offsetWidth );
-		alert( $$("tree").offsetHeight )
+		//alert( $$("tree").offsetHeight )
 		//$$("tree").style.display = "none";
     }
 
@@ -95,20 +99,24 @@ window.onload = init;
 <body>
 
  
- <table class="full" border="1" height="600">
-	<tr height="250">
-		<td width="300">-菜单树
-			<div id="div1"></div>
-			<Tree:Box id="tree" treeType="menu" baseurl="../../framework/tree/" canMoveNode="true"><div class="loading"></div></Tree:Box>
+ <table class="full" border="1" height="450">
+ 	<tr>
+		<td width="300">-菜单树</td>
+		<td width="300">-多选树</td>
+		<td width="300">-单选树</td>
+	</tr>
+	<tr height="350">
+		<td>
+			<Tree:Box id="tree" treeType="menu" baseurl="../../framework/tree/" canMoveNode="true"></Tree:Box>
 		</td>
-		<td width="300">-多选树
-			<Tree:Box id="tree2" treeType="multi" baseurl="../../framework/tree/" selectSelf="false"><div class="loading"></div></Tree:Box>
+		<td>
+			<Tree:Box id="tree2" treeType="multi" baseurl="../../framework/tree/" selectSelf="false"></Tree:Box>
 		</td>
-		<td width="300">-单选树
-			<Tree:Box id="tree3" treeType="single" baseurl="../../framework/tree/" selectSelf="true"><div class="loading"></div></Tree:Box>
+		<td>
+			<Tree:Box id="tree3" treeType="single" baseurl="../../framework/tree/" selectSelf="true"></Tree:Box>
 		</td>
 	</tr>
-	<tr height="150">
+	<tr>
 		<td>
 			<input type="button" value="getIDs" onclick="alert($T('tree').getIds(false));"/>
 			<input type="button" value="新建节点" onclick=""/>
