@@ -313,10 +313,9 @@ var Tree = function(element) {
 		}
  
 		/* 设定文字链接的样式 */
-		this.setClassName = function (className) {		
+		this.setClassName = function (className) {
 			if( isNullOrEmpty(className) ) {
-				this.row.className = "";
-				this.label.removeAttribute("className");
+				this.row.className = this.label.className = "";
 			} 
 			else {
 				this.row.className = this.label.className = className;
@@ -354,7 +353,6 @@ var Tree = function(element) {
 	 ***************       控件一切页面上的元素都有此对象生成和调度（tr对象有Row对象专门处理）****/
 	 
 	var TreeDisplay = function() {
-		// element = element.parentNode;
 		var _windowHeight = Math.max(element.offsetHeight - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_HEIGHT);
 		var _windowWidth  = Math.max(element.offsetWidth  - _TREE_SCROLL_BAR_WIDTH, _TREE_BOX_MIN_WIDTH);
 		var _pageSize     = Math.floor(_windowHeight / _TREE_NODE_HEIGHT);
@@ -725,7 +723,8 @@ var Tree = function(element) {
 	 */
 	this.element.oncontextmenu = function() {
 		var srcElement = window.event.srcElement;
-		window.event.returnValue = false;
+		preventDefault(event);
+
 		var row = getRow(srcElement);
 		if(row instanceof Row) {
 			var treeNode = instanceTreeNode(row.node, treeThis);
@@ -755,7 +754,7 @@ var Tree = function(element) {
 	 */
 	this.element.onclick = function() {
 		var srcElement = window.event.srcElement;
-		window.event.returnValue = false;
+		preventDefault(event);
 
 		var row = getRow(srcElement);
 		if(row instanceof Row) {
@@ -780,7 +779,7 @@ var Tree = function(element) {
 		var srcElement = window.event.srcElement;
 		var row = getRow(srcElement);
 		if( (row instanceof Row) && row.label == srcElement) {
-			row.setClassName(treeThis.getStyleClass(row.node, _TREE_NODE_OVER_STYLE));;
+			row.setClassName(treeThis.getStyleClass(row.node, _TREE_NODE_OVER_STYLE));
 		}
 	}
 
@@ -885,13 +884,13 @@ var Tree = function(element) {
 			window._dataTransfer.moveState = -1;
 			srcElement.runtimeStyle.borderTop = _TREE_NODE_MOVE_TO_LINE_STYLE;
 		}
-		window.event.returnValue = false;
+		preventDefault(event);
 		window.event.dataTransfer.dropEffect = "move";
 	}
 	
 	/* 拖拽元素在目标元素头上移动的时候 */
 	this.element.ondragover = function() { 		
-		window.event.returnValue = false;
+		preventDefault(event);
 	}
 
 	/* 拖动时，鼠标离开节点 */

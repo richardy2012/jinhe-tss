@@ -617,7 +617,7 @@ function Prompt(info, defaultValue, title, protect, maxBytes) {
 /* 捕获页面js报错 */
 function onError(msg, url, line) {
 	alert(msg, "错误:" + msg + "\r\n行:" + line + "\r\n地址:" + url);
-	event.returnValue = true;
+	event.defaultPrevented || event.returnValue = true;
 }
 
 window._alert = window.alert;

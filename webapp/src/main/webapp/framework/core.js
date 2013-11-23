@@ -44,11 +44,6 @@ function assertNotNull(result, msg) {
 	}
 }
 
-if(!window.getComputedStyle){
-  window.getComputedStyle = function($target) {
-    return $target.currentStyle;
-  };
-}
 
 /* 对象名称：Public（全局静态对象） */
 var Public = {};
@@ -148,11 +143,54 @@ Public.initBrowser = function() {
 		var srcElement = Event.getSrcElement(eventObj);
 		var tagName = srcElement.tagName.toLowerCase();
 		if("input" != tagName && "textarea" != tagName) {
-			event.returnValue = false;            
+			preventDefault(event);            
 		}
 	}
 }
 Public.initBrowser();
+
+// -------------------------------------------------- 添加方法，以兼容FireFox、Chrome -----------------------------------------------
+if(!window.getComputedStyle) {
+  window.getComputedStyle = function(target) {
+    return target.currentStyle;
+  };
+}
+
+
+function preventDefault(event) {
+	if (event.preventDefault) {
+		event.preventDefault();
+	} else {
+		event.returnValue = false;
+	}
+}
+
+if ( !Public.isIE() ) {
+	Element.prototype.selectNodes = function(p_xPath) {
+		var m_Evaluator = new XPathEvaluator();
+		var m_Result = m_Evaluator.evaluate(p_xPath, this, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+
+		var m_Nodes = [];
+		if (m_Result) {
+			var m_Element;
+			while (m_Element = m_Result.iterateNext()) {
+				m_Nodes.push(m_Element);
+			}
+		} 
+		return m_Nodes;
+	};
+
+	Element.prototype.selectSingleNode = function(p_xPath) {
+		var m_Evaluator = new XPathEvaluator();
+		var m_Result = m_Evaluator.evaluate(p_xPath, this, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+
+		if (m_Result) {
+			return m_Result.singleNodeValue;
+		} else {
+			return null;
+		}
+	};
+}
 
 
 /* 负责生成对象唯一编号（为了兼容FF） */
