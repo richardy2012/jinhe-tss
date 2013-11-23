@@ -57,7 +57,7 @@ var _TREE_NODE_CHECK_TYPE_STYLE = "checkType";// 节点选择状态图标样式�
  * 如果要修改显示的行高，修改样式文件
  */
 var _TREE_NODE_HEIGHT = 20;	
-var _TREE_SCROLL_BAR_WIDTH = 17; // 滚动条的宽度（象素）
+var _TREE_SCROLL_BAR_WIDTH = 18; // 滚动条的宽度（象素）
 var _TREE_BOX_MIN_WIDTH = 10;    // 树控件显示区最小宽度（象素）
 var _TREE_BOX_MIN_HEIGHT = 22;   // 树控件显示区最小高度（象素）
 
@@ -234,7 +234,7 @@ var Tree = function(element) {
 			if(this.nobr == null) {
 				var tdCell = this.row.cells[0];
 				if(tdCell.firstChild) {
-					tdCell.firstChild.removeNode(true);	
+					Element.removeNode(tdCell.firstChild);
 				}
 				this.nobr = createObjByTagName("nobr");
 				tdCell.appendChild(this.nobr);				
@@ -250,7 +250,7 @@ var Tree = function(element) {
 			
 			if(node == null) {
 				this.setClassName();
-				this.nobr.removeNode(true);			
+				Element.removeNode(this.nobr);			
 				this.nobr = this.line = this.folder = this.icon = this.checkType = this.label = this.node = null;
 				return;
 			}
@@ -375,12 +375,12 @@ var Tree = function(element) {
 		var _rootTableName  = treeId + "RootTable"; 
 
 		// 生成滚动条
-		var vScrollStr = '<div id="' + _vScrollBoxName + '" style="position:absolute;overflow-y:auto;heigth:100%;width:17px;top:0px;right:0px;"><div id="' + _vScrollDivName + '" style="width:1px"></div></div>';
-		var hScrollStr = '<div id="' + _hScrollBoxName + '" style="position:absolute;overflow-x:auto;overflow-y:hidden;heigth:17px;width:100%;bottom:0px;left:0px"><div id="' + _hScrollDivName + '" style="higth:1px"></div></div>';
+		var vScrollStr = '<div class="VScrollBox" id="' + _vScrollBoxName + '"><div id="' + _vScrollDivName + '" style="width:1px"></div></div>';
+		var hScrollStr = '<div class="HScrollBox" id="' + _hScrollBoxName + '"><div id="' + _hScrollDivName + '" style="higth:1px"></div></div>';
 		element.insertAdjacentHTML('afterBegin', vScrollStr + hScrollStr);
  
 		// 生成页面上显示节点的table对象。
-		var tableStr = '<div id="' + _rootBoxName + '" style="position:relative;overflow:hidden;top:0px;left:0px"><table id="' + _rootTableName + '" cellspacing="0"></table></div>';
+		var tableStr = '<div class="RootBox" id="' + _rootBoxName + '"><table id="' + _rootTableName + '" cellspacing="0"></table></div>';
 		element.insertAdjacentHTML('afterBegin', tableStr);
 
 		var _vScrollBox = $$(_vScrollBoxName);
@@ -407,7 +407,7 @@ var Tree = function(element) {
 			}
 			_scrollTimer = window.setTimeout(refresh, _TREE_SCROLL_DELAY_TIME);
 		};
-		_vScrollBox.style.height = _windowHeight; // 设置滚动条的大小
+		_vScrollBox.style.height = _windowHeight; // 设置滚动条的长度
 		_vScrollDiv.style.height = (_totalTreeNodesNum - _pageSize) * _TREE_NODE_HEIGHT + _windowHeight;
 		
 		/* 横向滚动事件 */
@@ -569,11 +569,11 @@ var Tree = function(element) {
 
 			var childNums = node.selectNodes(".//treeNode[../@_open = 'true']").length;
 			if(childNums + 1 > _pageSize || nodeIndex < _startNum  || nodeIndex >= _startNum + _pageSize) {
-				_vScrollBox.style.display = 'block';
+				_vScrollBox.style.display = 'inline';
 				_vScrollBox.scrollTop = nodeIndex * _TREE_NODE_HEIGHT;
 			}
 			else if (nodeIndex + childNums + 1 - _pageSize > _startNum) {
-				_vScrollBox.style.display = 'block';
+				_vScrollBox.style.display = 'inline';
 				_vScrollBox.scrollTop = (nodeIndex + childNums + 1 - _pageSize) * _TREE_NODE_HEIGHT;
 			} 
 			else {
@@ -599,7 +599,7 @@ var Tree = function(element) {
 		/* 刷新页面展示：数据展示框、滚动条等 */
 		function refreshUI() {
 			if(_totalTreeNodesNum > _pageSize) {
-				_vScrollBox.style.display = 'block';
+				_vScrollBox.style.display = 'inline';
 				_hScrollBox.style.width = _windowWidth;
 				_rootBox.style.width = _windowWidth;
 			} else {
@@ -608,7 +608,7 @@ var Tree = function(element) {
 				_rootBox.style.width = _windowWidth + _TREE_SCROLL_BAR_WIDTH;
 			}
 			if(_rootTable.offsetWidth > _windowWidth) {
-				_hScrollBox.style.display = 'block';
+				_hScrollBox.style.display = 'inline-block';
 				_vScrollBox.style.height = _windowHeight;
 				_rootBox.style.height = _windowHeight;
 			}else{
