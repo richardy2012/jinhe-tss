@@ -1750,9 +1750,9 @@ function modifyTreeNode(id, attrName, attrValue, refresh, treeName) {
  */
 function appendTreeNode(id, xmlNode, treeName) {
 	var tree = $T(treeName || "tree");
-	var treeNode = treeObj.getTreeNodeById(id);
+	var treeNode = tree.getTreeNodeById(id);
 	if( treeNode && xmlNode ) {
-		treeObj.insertTreeNodeXml(xmlNode.toXml(), treeNode);
+		tree.insertTreeNodeXml(xmlNode.toXml(), treeNode);
 	}
 }
 

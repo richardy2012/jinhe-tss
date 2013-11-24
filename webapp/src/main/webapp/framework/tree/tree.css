@@ -150,23 +150,6 @@ Tree1\:Box a, Tree1\:Box a.hover {
 	border: 1px solid #F7F8FD;
 }
 
-/*
-Tree\:Box .RootBox {
- 	position: relative;
- 	display: inline;
- 	overflow: hidden;
- 	top: 0px;
- 	left: 0px;
-}
-
-Tree\:Box .VScrollBox {
-	position:relative;
-	display:inline;
-	overflow-y: auto;
-	heigth: 100%;
-	width: 18px;
-}
-*/
 
 Tree\:Box .RootBox {
  	position: relative;

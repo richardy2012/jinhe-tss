@@ -63,7 +63,7 @@ public class FileHelper {
         try {
             br = new BufferedReader(new InputStreamReader(new FileInputStream(file), charSet));
             String data = null;
-            while((data = br.readLine())!=null){
+            while((data = br.readLine()) != null){
                 sb.append(data).append("\n");
             }
             br.close();

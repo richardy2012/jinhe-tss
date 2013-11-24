@@ -641,7 +641,9 @@ Mode_Function.prototype = {
 var Mode_ComboEdit = function(colName, xform) {
 	this.name = colName;
 	this.obj = $$(colName);
- 	this.obj._value = this.obj.attributes["value"].nodeValue;
+	
+	var valueNode = this.obj.attributes["value"];
+ 	this.obj._value = valueNode ? valueNode.nodeValue : "";
 	this.obj.disabled = (this.obj.getAttribute("editable") == "false");
 
 	var selectedValues = {};

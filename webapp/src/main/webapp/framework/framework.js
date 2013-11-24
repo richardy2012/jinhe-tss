@@ -158,13 +158,13 @@ function showWorkSpace() {
 /* 左栏添加左右拖动效果 */
 function initPaletteResize() {
 	var palette = $$("palette");
-	Element.attachColResize(palette, -1);
+	//Element.attachColResize(palette);
 }
 
 /* 添加上下拖动效果 */
 function initListContainerResize() {
 	var listContainer = $$("listContainer");
-	Element.attachRowResize(listContainer, 8);
+	//Element.attachRowResize(listContainer);
 }
  
 /* 点击树刷新按钮 */
@@ -617,7 +617,7 @@ function Prompt(info, defaultValue, title, protect, maxBytes) {
 /* 捕获页面js报错 */
 function onError(msg, url, line) {
 	alert(msg, "错误:" + msg + "\r\n行:" + line + "\r\n地址:" + url);
-	event.defaultPrevented || event.returnValue = true;
+	event.returnValue = true;
 }
 
 window._alert = window.alert;

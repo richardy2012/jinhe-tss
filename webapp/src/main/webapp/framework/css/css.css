@@ -97,7 +97,7 @@
   .panel .header .center {
     height: 7px;
     background-image: url(../images/rec_t.gif);
-    background-repeat: no-repeat;
+    background-repeat: repeat-x;
   }
   .panel .header .right {
     width: 7px;
