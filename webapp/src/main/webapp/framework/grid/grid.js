@@ -33,7 +33,8 @@ var Grid = function(element, data) {
 	if( pointHeight ) {
 		this.gridBox.style.height = this.windowHeight = pointHeight;
 	} else {
-		this.gridBox.style.height = "100%";
+		// this.gridBox.style.height = "100%";
+		this.gridBox.style.height = element.clientHeight; // 固定住grid高度，以免在IE部分版本及FF里被撑开
 		this.windowHeight = Math.max(element.offsetHeight, 500);
 	}
 
@@ -203,7 +204,7 @@ function parseTempalte(template, startNum, gridID) {
 	 tbody.push("</tbody>");
 
 	 var htmls = new Array();
-     htmls.push("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"table-layout:fixed;\">");
+     htmls.push("<table>");
 	 htmls.push(thead.join(""));
 	 htmls.push(tbody.join(""));
 	 return htmls.join("");

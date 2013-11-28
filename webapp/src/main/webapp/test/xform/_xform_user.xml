@@ -4,7 +4,7 @@
       <xform>
         <declare prefix="user">
 		  <column name="id"        caption="ID"   mode="hidden"/>
-		  <column name="userName"  caption="姓名" mode="string" empty="false" maxLength="100" />
+		  <column name="userName"  caption="姓名" mode="string" empty="false" maxLength="100" editable="false"/>
           <column name="loginName" caption="帐号" mode="string" empty="false" maxLength="100" />
           <column name="jianjie"   caption="简介" mode="string" maxLength="400" />
           <column name="groupName" caption="组织" mode="string" maxLength="10" />

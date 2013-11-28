@@ -1,9 +1,9 @@
-IS_TEST = true;
+IS_TEST = false;
 
 /* 
  * 当前应用名 
  */
-APP_CODE    = "TSS";
+APP_CODE    = "DM";
 APPLICATION = APP_CODE.toLowerCase();
 CONTEXTPATH = APPLICATION + "/";
 AUTH_PATH    = "/" + CONTEXTPATH + "auth/";
@@ -164,68 +164,12 @@ function initPaletteResize() {
 /* 添加上下拖动效果 */
 function initListContainerResize() {
 	var listContainer = $$("listContainer");
-	//Element.attachRowResize(listContainer);
+	// Element.attachRowResize(listContainer);
 }
  
 /* 点击树刷新按钮 */
 function onClickTreeBtRefresh() {
 	loadInitData();
-}
-
-/* 点击树标题按钮  */
-function onClickTreeTitleBt() {
-	var treeTitleObj = $$("treeTitle");
-	var statusTitleObj = $$("statusTitle");
-
-	var block = Blocks.getBlock("treeContainer");
-	if( block ) {
-		block.switchTo();
-	}
-	if( block.visible ) {
-		treeTitleObj.firstChild.className = "opened";
-		statusTitleObj.firstChild.className = "opened";
-
-		var block = Blocks.getBlock("statusContainer");
-		if( block ) {
-			block.show();
-		}
-	} else {
-		treeTitleObj.firstChild.className = "closed";
-		statusTitleObj.firstChild.className = "opened";
-
-		var block = Blocks.getBlock("statusContainer");
-		if( block ) {
-			block.show(false);
-		}
-	}
-}
-
-/* 点击状态栏标题按钮  */
-function onClickStatusTitleBt() {
-	var treeTitleObj = $$("treeTitle");
-	var statusTitleObj = $$("statusTitle");
-
-	var block = Blocks.getBlock("statusContainer");
-	if( block ) {
-		block.switchTo();
-	}
-
-	if(block.visible) {
-		statusTitleObj.firstChild.className = "opened";        
-	}
-	else {
-		statusTitleObj.firstChild.className = "closed";
-
-		var block = Blocks.getBlock("treeContainer");
-		if( block && true != block.visible ) {
-			treeTitleObj.firstChild.className = "opened";
-
-			var block = Blocks.getBlock("treeContainer");
-			if( block ) {
-				block.show();
-			}
-		}
-	}
 }
 
 /* 点击左栏控制按钮 */
@@ -251,12 +195,6 @@ function onClickStatusTitle() {
 /* 点击grid标题 */
 function onClickGridTitle() {
 	Focus.focus("gridTitle");
-}
-
-function showTreeNodeInfo() {
-	showTreeNodeStatus(
-		{id:"ID", name:"名称", creatorName:"创建者", createTime:"创建时间", updatorName:"修改者", updateTime:"修改时间"}
-	);
 }
 
 function onTreeNodeActived(eventObj){
@@ -384,7 +322,6 @@ function enableButton(btObj) {
 	btObj.disabled = false;
 }
 
-
 /*
  *	初始化导航条
  *	参数：	string:curId       当前菜单项id
@@ -425,34 +362,12 @@ function initNaviBar(curId, relativePath) {
 	});
 }
 
-function initBlocks(){
-	Blocks.create($$("palette"));
-
-	var treeContainerObj = $$("treeContainer");
-	Blocks.create(treeContainerObj, treeContainerObj.parentNode);
-
-	var statusContainerObj = $$("statusContainer");
-	Blocks.create(statusContainerObj, statusContainerObj.parentNode, false);
-
-	//状态信息区实例继承WritingBlock可写功能
-	var block = Blocks.getBlock("statusContainer");
-	if( block ){
-		block.inherit(WritingBlock);
-	}     
-}
-
-function initFocus(){
-	Focus.register( $$("treeTitle").firstChild );
-	Focus.register( $$("statusTitle").firstChild );
-}
-
 /* 事件绑定初始化 */
 function initEvents() {
 	Event.attachEvent($$("treeBtRefresh"), "click", onClickTreeBtRefresh);
-	Event.attachEvent($$("treeTitleBt"),   "click", onClickTreeTitleBt);
-	Event.attachEvent($$("statusTitleBt"), "click", onClickStatusTitleBt);
 	Event.attachEvent($$("treeTitle"),     "click", onClickTreeTitle);
-	Event.attachEvent($$("statusTitle"),   "click", onClickStatusTitle);
+
+	Focus.register( $$("treeTitle").firstChild );
 
 	logoutOnClose(); // 关闭页面自动注销
 }

@@ -12,6 +12,7 @@ package com.jinhe.tss.cache;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +47,7 @@ public class JCache {
     final static String TASK_POOL = "taskpool";
     
 
-	private static Map<String, Pool> pools = new HashMap<String, Pool>();
+	private static Map<String, Pool> pools = new LinkedHashMap<String, Pool>();
 
 	/** 配置的缓冲池Code列表 */
 	private static List<String> configedPoolCodes = new ArrayList<String>();

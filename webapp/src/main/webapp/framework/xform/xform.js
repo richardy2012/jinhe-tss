@@ -172,8 +172,12 @@ XForm.prototype.parseTempalte = function() {
 		for(var i = 0; i < attributes.length; i++) {
 			var name = attributes[i].nodeName;
 			var value = attributes[i].nodeValue;
+			if(value == null || value == "null") {
+				continue;
+			}
+
 			if(name == "editable") {
-				value = oThis.editable || value;
+				value = value || oThis.editable;
 			}
 			returnVal += (name == "name" ? "id" : name) + "=\"" + value + "\" ";
 		}

@@ -446,7 +446,7 @@ String.prototype.substringB = function(startB, endB){
 		var chr = str.charAt(i);
 		if( true == /[^\u0000-\u00FF]/.test( chr ) ){
 			iByte += 2;
-		}else{
+		} else {
 			iByte ++;
 		}
 	}
@@ -903,7 +903,6 @@ Element.attachRowResize = function(element) {
 	 Element.attachResize(element, "row");
 }
  
-
 Element.attachResize = function(element, type) {
 	var handle = document.createElement("DIV"); // 拖动条
 	if (type == "col") {
@@ -1246,9 +1245,7 @@ function EventFirer(element, eventName) {
 
 MSXML_DOCUMENT_VERSION = "Msxml2.DOMDocument.6.0";
 
-/*
- * 将字符串转化成xml节点对象
- */
+/* 将字符串转化成xml节点对象 */
 function loadXmlToNode(xml) {
 	if(xml == null || xml == "" || xml == "undifined") {
 		return null;
@@ -1340,10 +1337,7 @@ XmlReader.prototype.createCDATA = function(data) {
 	return xmlNode;
 }
 
-
-/*
- *	获取解析错误
- */
+/* 获取解析错误 */
 XmlReader.prototype.getParseError = function() {
 	var parseError = null;
 	if(window.DOMParser) {
@@ -1460,7 +1454,7 @@ XmlNode.prototype.removeCDATA = function(name) {
 
 XmlNode.prototype.cloneNode = function(deep) {
 	var tempNode;
-	if( window.DOMParser ) {
+	if( !Public.isIE() ) {
 		tempNode = new XmlNode(new XmlReader(this.toXml()).documentElement);
 	} else {
 		tempNode = new XmlNode(this.node.cloneNode(deep));
@@ -1470,7 +1464,7 @@ XmlNode.prototype.cloneNode = function(deep) {
 
 XmlNode.prototype.getParent = function() {
 	var xmlNode = null;
-	if( this.node.parentNode  ) {
+	if( this.node.parentNode) {
 		xmlNode = new XmlNode(this.node.parentNode);
 	}
 	return xmlNode;
@@ -1485,7 +1479,7 @@ XmlNode.prototype.removeNode = function() {
 
 XmlNode.prototype.selectSingleNode = function(xpath) {
 	var xmlNode = null;
-	if(window.DOMParser && _BROWSER != _BROWSER_IE) {
+	if(window.DOMParser && !Public.isIE()) {
 		var ownerDocument;
 		if(_XML_NODE_TYPE_DOCUMENT == this.nodeType) {
 			ownerDocument = this.node;
@@ -1513,7 +1507,7 @@ XmlNode.prototype.selectSingleNode = function(xpath) {
  */
 XmlNode.prototype.selectNodes = function(xpath) {
 	var xmlNodes = [];
-	if(window.DOMParser && _BROWSER != _BROWSER_IE) {
+	if(window.DOMParser && !Public.isIE()) {
 		var ownerDocument = null;
 		if(_XML_NODE_TYPE_DOCUMENT == this.nodeType) {
 			ownerDocument = this.node;
@@ -1590,9 +1584,7 @@ XmlNode.prototype.swapNode = function(xmlNode) {
 	}
 }
 
-/*
- *	获取前一个兄弟节点
- */
+/* 获取前一个兄弟节点 */
 XmlNode.prototype.getPrevSibling = function() {
 	var xmlNode = null;
 	if( this.node.previousSibling ) {
@@ -1601,9 +1593,7 @@ XmlNode.prototype.getPrevSibling = function() {
 	return xmlNode;
 }
 
-/*
- * 获取后一个兄弟节点
- */
+/* 获取后一个兄弟节点 */
 XmlNode.prototype.getNextSibling = function() {
 	if( this.node.nextSibling ) {
 		var node = new XmlNode(this.node.nextSibling);
@@ -1665,9 +1655,7 @@ Reminder.remind = function() {
 	}
 }
 
-/*
- * 统计提醒项
- */
+/* 统计提醒项 */
 Reminder.getCount = function() {
 	if( true== this.flag) {
 		return this.count;
@@ -1676,16 +1664,12 @@ Reminder.getCount = function() {
 	}
 }
 
-/*
- * 取消提醒
- */
+/* 取消提醒 */
 Reminder.cancel = function() {
 	this.flag = false;
 }
 
-/*
- * 允许提醒
- */
+/* 允许提醒  */
 Reminder.restore = function() {
 	this.flag = true;
 }
@@ -1712,226 +1696,6 @@ function detachReminder(id) {
 	Reminder.del(id);
 }
 
-
-
-/*
- *	对象名称：Blocks
- *	职责：负责管理所有Block实例
- */
-var Blocks = {};
-Blocks.items = {};
-
-/*
- *	创建区块实例
- *	参数：	Object:blockObj		HTML对象
-			Object:associate	关联的HTML对象
-			boolean:visible		默认显示状态
- *	返回值：
- */
-Blocks.create = function(blockObj, associate, visible) {
-	var block = new Block(blockObj, associate, visible);
-	this.items[block.uniqueID] = block;
-}
-/*
- *	获取区块实例
- *	参数：	string:id		HTML对象id
- *	返回值：Block:block		Block实例
- */
-Blocks.getBlock = function(id) {
-	var block = this.items[id];
-	return block;
-}
-
-
-/*
- *	对象名称：Block
- *	职责：负责控制区块显示隐藏等
- */
-var Block = function(blockObj, associate, visible) {
-	this.object = blockObj;
-	this.uniqueID = this.object.id;
-	this.associate = associate;
-	this.visible = visible || true;
-
-	this.width = null;
-	this.height = null;	
-	this.mode = null;
-
-	this.init();
-}
-
-/*
- *	初始化区块
- */
-Block.prototype.init = function() {
-	this.width  = Element.getCurrentStyle(this.object, "width"); 
-	this.height = Element.getCurrentStyle(this.object, "height"); 
-
-	if(false == this.visible) {
-		this.hide();
-	}
-}
-
-/*
- *	显示详细信息
- *	参数：	boolean:useFixedSize	是否启用固定尺寸显示
- */
-Block.prototype.show = function(useFixedSize) {
-	if( this.associate ) {
-		this.associate.style.display = "";
-	}
-	this.object.style.display = "";
-
-	var width  = "auto";
-	var height = "auto";
-	
-	// 启用固定尺寸
-	if(false != useFixedSize) {
-		width  = this.width || width;
-		height = this.height || height;
-	}
-	this.object.style.width = width;
-	this.object.style.height = height;
-
-	this.visible = true;
-}
-
-/*
- *	隐藏详细信息
- */
-Block.prototype.hide = function() {
-	if(  this.associate){
-		this.associate.style.display = "none";
-	}
-	this.object.style.display = "none";
-
-	this.visible = false;
-}
-
-/*
- *	切换显示隐藏状态
- *	参数：	boolean:visible		是否显示状态（可选，无参数则默认切换下一状态）
- */
-Block.prototype.switchTo = function(visible) {
-	visible = visible || !this.visible;
-
-	if( visible){
-		this.show();	
-	}
-	else {
-		this.hide();
-	}
-}
-
-/*
- *	原型继承
- *	参数：	function:Class		将被继承的类
- */
-Block.prototype.inherit = function(Class) {
-	var inheritClass = new Class();
-	for(var item in inheritClass){
-		this[item] = inheritClass[item];
-	}
-}
-
-
-/*
- *	对象名称：WritingBlock
- *	职责：负责区块内容写入
- *
- */
-function WritingBlock() {
-	this.mode = null;
-	this.line = 0;
-	this.minLine = 3;
-	this.maxLength = 16;
-}
-
-/*
- *	打开分行写入模式
- */
-WritingBlock.prototype.open = function(){
-	this.mode = "line";
-	this.line = 0;
-	this.writeTable();
-}
-
-/*
- *	写入分行模式用的表格
- */
-WritingBlock.prototype.writeTable = function() {
-	var str = [];
-	str[str.length] = "<table class=hfull><tbody>";
-	for(var i = 0;i < this.minLine; i++) {
-		str[str.length] = "<tr>";
-		str[str.length] = "  <td class=bullet>&nbsp;</td>";
-		str[str.length] = "  <td style=\"width: 55px\"></td>";
-		str[str.length] = "  <td></td>";
-		str[str.length] = "</tr>";
-	}
-	str[str.length] = "</tbody></table>";
-
-	this.object.innerHTML = str.join("");    
-}
-
-/*
- *	清除内容
- */
-WritingBlock.prototype.clear = function() {
-	this.object.innerHTML = "";
-}
-
-/*
- *	关闭分行写入模式
- */
-WritingBlock.prototype.close = function() {
-	this.mode = null;
-}
-
-/*
- *	分行写入内容（左右两列）
- *	参数：	string:name     名称
-			string:value    值
- */
-WritingBlock.prototype.writeln = function(name, value) {
-	if("line" == this.mode){
-		var table = this.object.firstChild;
-		if(table && "TABLE" != table.nodeName.toUpperCase()) {
-			this.clear();
-			table = null;
-		}
-		if(null == table) {
-			this.writeTable();
-		}
-
-		// 大于最小行数，则插入新行
-		if(this.line >= this.minLine) {
-			var newrow = table.rows[0].cloneNode(true);
-			table.firstChild.appendChild(newrow);
-		}
-
-		if(value && value.length > this.maxLength) {
-			value = value.substring(0, this.maxLength) + "...";
-		}
-
-		var row = table.rows[this.line];
-		var cells = row.cells;
-		cells[1].innerText = name + ":";
-		cells[2].innerText = value || "-";
-
-		this.line++;
-	}
-}
-
-/*
- *	写入内容
- */
-WritingBlock.prototype.write = function(content) {
-	this.mode = null;
-	this.object.innerHTML = content;
-}
-
-
 /*
  *	对象名称：Focus（全局静态对象）
  *	职责：负责管理所有注册进来对象的聚焦操作
@@ -1948,7 +1712,7 @@ Focus.lastID = null;
 Focus.register = function(focusObj) {
 	var id = focusObj.id;
 
-	//如果id不存在则自动生成一个
+	// 如果id不存在则自动生成一个
 	if(null == id || "" == id) {
 		id = UniqueID.generator();
 		focusObj.id = id;
@@ -1998,4 +1762,3 @@ Focus.unregister = function(id){
 		delete this.items[id];
 	}
 }
-

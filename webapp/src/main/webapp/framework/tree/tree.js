@@ -376,7 +376,7 @@ var Tree = function(element) {
 
 		// 生成滚动条
 		var vScrollStr = '<div class="VScrollBox" id="' + _vScrollBoxName + '"><div id="' + _vScrollDivName + '" style="width:1px"></div></div>';
-		var hScrollStr = '<div class="HScrollBox" id="' + _hScrollBoxName + '"><div id="' + _hScrollDivName + '" style="higth:1px"></div></div>';
+		var hScrollStr = '<div class="HScrollBox" id="' + _hScrollBoxName + '"><div id="' + _hScrollDivName + '" style="height:1px"></div></div>';
 		element.insertAdjacentHTML('afterBegin', vScrollStr + hScrollStr);
  
 		// 生成页面上显示节点的table对象。
@@ -392,8 +392,9 @@ var Tree = function(element) {
 
 		var _Rows = new Array(_pageSize);
 		for(var i = 0; i < _pageSize; i++) {
-			var tr = _rootTable.insertRow();
-			tr.insertCell();
+			var tr = _rootTable.insertRow(i);
+			var cell = tr.insertCell();
+
 			_Rows[i] = new Row(tr, treeThis);
 		}
 		
@@ -818,7 +819,7 @@ var Tree = function(element) {
 
 	/* 拖动完成，触发自定义节点拖动事件 */
 	this.element.ondrop = function() { 		
-		if( !treeThis.isCanMoveNode() ) return;	
+		if( !treeThis.isCanMoveNode() || window._dataTransfer == null) return;
 		
 		var srcElement = window.event.srcElement;
 		stopScrollTree(srcElement, treeThis);
@@ -936,7 +937,7 @@ var Tree = function(element) {
 	 */
 	function getTop(obj, element) {
 		var top = 0;
-		while (obj != element) {
+		while (obj && obj != element && obj != document.body) {
 			top = top + obj.offsetTop;
 			obj = obj.offsetParent;
 		}
@@ -1029,12 +1030,12 @@ Tree.prototype.setActiveTreeNode = function(id) {
  *			parent	    父节点（TreeNode对象）
  * 返回：	true/false
  */
-Tree.prototype.insertTreeNodeXml = function(newNodeXML, parent) {
+Tree.prototype.insertTreeNodeXml = function(newNode, parent) {
 	if( !(parent instanceof TreeNode) ) {
 		return false;
 	}
 	
-	var treeNode = parent.appendChild(newNodeXML);	// 新增子节点
+	var treeNode = parent.appendChild(newNode);	// 新增子节点
 	if( !(treeNode instanceof TreeNode) ) {
 		return false;
 	}
@@ -1473,19 +1474,22 @@ TreeNode.prototype = new function() {
 		return true;
 	}
  
-	this.appendChild = function(xml) {	
-		return _appendChild(xml, this.node);;
+	this.appendChild = function(newNode) {	
+		return this._appendChild(newNode, this.node);
 	}
  
-	this.appendRoot = function(xml) {
-		return _appendChild(xml, this.getXmlRoot());
+	this.appendRoot = function(newNode) {
+		return this._appendChild(newNode, this.getXmlRoot());
 	}
 	
-	function _appendChild(xml, parent) {	
-		var newNode = loadXmlToNode(xml);
+	this._appendChild = function(newNode, parent) {	
 		if( newNode == null || newNode.nodeName != _TREE_NODE ) {
 			alert("TreeNode对象：新增节点xml数据不能正常解析！");
 			return null;
+		}
+
+		if(newNode instanceof XmlNode) {
+			newNode = newNode.node;
 		}
 		
 		parent.appendChild(newNode); // 添加子节点
@@ -1752,7 +1756,7 @@ function appendTreeNode(id, xmlNode, treeName) {
 	var tree = $T(treeName || "tree");
 	var treeNode = tree.getTreeNodeById(id);
 	if( treeNode && xmlNode ) {
-		tree.insertTreeNodeXml(xmlNode.toXml(), treeNode);
+		tree.insertTreeNodeXml(xmlNode, treeNode);
 	}
 }
 
@@ -1874,8 +1878,8 @@ function addTreeNode(fromTree, toTree, checkFunction) {
 			// 排除子节点
 			var treeNode = toTree.getTreeNodeById("_rootId");
 			if( treeNode ) {
-				var cloneNode = new XmlNode(curNode.node).cloneNode(false);
-				toTree.insertTreeNodeXml(cloneNode.toXml(), treeNode);
+				var cloneNode = curNode.node.cloneNode(false);
+				toTree.insertTreeNodeXml(cloneNode, treeNode);
 			}
 		}
 	}
@@ -1901,29 +1905,6 @@ function hasSameAttributeTreeNode(treeObj, attrName, attrValue) {
 		flag.treeNode = treeNode;
 	}
 	return flag;
-}
-
-/* 显示当前树节点信息 */
-function showTreeNodeStatus(params, treeName) {
-	var treeNode = getActiveTreeNode(treeName);
-	if( treeNode ) {
-		var id = treeNode.getId();
-		var block = Blocks.getBlock("statusContainer");
-		if( block && "_rootId" != id ) {
-			block.open();
-
-			for(var item in params) {
-				var name = params[item];
-				var val = treeNode.getAttribute(item);
-				block.writeln(name, val);                
-			}
-
-			block.close();
-		}
-		if( "_rootId" == id ) {
-		   block.hide();
-		}
-	}
 }
 
 // 删除选中节点，适用于多层结构树

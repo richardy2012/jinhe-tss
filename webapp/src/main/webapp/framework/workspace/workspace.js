@@ -1,7 +1,6 @@
 /* 自定义标签名（不含命名空间） */
 WS_NAMESPACE     = "WorkSpace";
 WS_TAG_PAGE      = "Page";
-WS_TAG_PAGE_STEP = "PageStep";
 WS_TAG_TAB       = "Tab";
 WS_TAG_TAB_BOX   = "TabBox";
 WS_TAG_PHASE     = "Phase";
@@ -463,7 +462,8 @@ function Display(element) {
 Display.prototype.getAllPages = function() {
 	var childs = Element.getNSElements(this.element, WS_TAG_PAGE, WS_NAMESPACE);
 	for(var i=0; i < childs.length; i++) {
-		var curNode = childs[i];
+		var curNode = childs[i]; 
+		// curNode.style.height = curNode.offsetHeight - 300;
 		this.pages[curNode.id || curNode.uniqueID] = new Page(curNode);
 	}
 }

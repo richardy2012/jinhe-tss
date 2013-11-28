@@ -115,19 +115,19 @@ WorkSpace\:Page {
 	padding:20px;
 	margin-right:0px;
 	display:none;
-	overflow:auto;
+	overflow:hidden;
 	background-color:#F7F8FD;
 	border-left:1px solid #98989C;
 	border-right:1px solid #98989C;
 	border-bottom:1px solid #98989C;
-	display:block;
+	display:inline-block;
 }
 WorkSpace\:Page.tight {
 	padding:0px;
 }
 WorkSpace\:PageStep {
-	text-align:right;
-	padding:5px;
+	text-align:center;
+	padding:15 0 0 0;
 	width:100%;
 	display:block;
 }
