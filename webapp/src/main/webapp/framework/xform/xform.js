@@ -131,7 +131,7 @@ XForm.prototype.parseTempalte = function() {
 
 				var column = this.template.columnsMap[binding];
 				if(column == null) {
-					htmls.push(childNode.xml);
+					htmls.push(xml2String(childNode));
 					continue;
 				}
 

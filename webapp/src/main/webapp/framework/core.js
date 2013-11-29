@@ -565,7 +565,7 @@ Element.removeNode = function(node) {
 Element.absLeft = function(srcElement) {
 	var absLeft = 0;
 	var tempObj = srcElement;
-	while( tempObj  && tempObj != document.body) {
+	while( tempObj && tempObj.offsetParent && tempObj != document.body) {
 		absLeft += tempObj.offsetLeft - tempObj.offsetParent.scrollLeft;
 		tempObj = tempObj.offsetParent;
 	}
@@ -574,7 +574,7 @@ Element.absLeft = function(srcElement) {
 Element.absTop = function(srcElement) {
 	var absTop = 0;
 	var tempObj = srcElement;
-	while( tempObj  && tempObj != document.body) {
+	while( tempObj && tempObj.offsetParent && tempObj != document.body) {
 		absTop += tempObj.offsetTop - tempObj.offsetParent.scrollTop;
 		tempObj = tempObj.offsetParent;
 	}
@@ -1363,9 +1363,18 @@ XmlReader.prototype.toXml = function() {
 		return this.xmlDom.xml;
 	}
 	else {
-		
 		var xmlSerializer = new XMLSerializer();
         return xmlSerializer.serializeToString(this.xmlDom.documentElement);
+	}
+}
+
+function xml2String(element) {
+	if (Public.isIE()) {
+		return element.xml;
+	}
+	else {
+		var xmlSerializer = new XMLSerializer();
+        return xmlSerializer.serializeToString(element);
 	}
 }
 
@@ -1455,8 +1464,12 @@ XmlNode.prototype.removeCDATA = function(name) {
 XmlNode.prototype.cloneNode = function(deep) {
 	var tempNode;
 	if( !Public.isIE() ) {
+		if(this.nodeType == _XML_NODE_TYPE_TEXT) {
+			return this;
+		}
 		tempNode = new XmlNode(new XmlReader(this.toXml()).documentElement);
-	} else {
+	} 
+	else {
 		tempNode = new XmlNode(this.node.cloneNode(deep));
 	}
 	return tempNode;

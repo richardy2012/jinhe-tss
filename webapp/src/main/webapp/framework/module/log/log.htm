@@ -155,11 +155,10 @@
 		var rowID = $G("grid").getRowAttributeValue("id");  
 		var rowName = "日志" + rowID;
 		
-		var wsContainer = $$("wsTR"); // tr
         var callback = {};
 		callback.onTabClose = function(eventObj){
 			if( ws.noTabOpend() ) {
-				//wsContainer.style.display = "none";
+				//$$("wsTR").style.display = "none";
 			}            
         };
         callback.onTabChange = function() {
@@ -175,8 +174,6 @@
         inf.phases = null;
         inf.callback = callback;
         var tab = ws.open(inf);       
-		
-		wsContainer.style.display = "inline";
     }
 	
     /* 日志详细信息加载数据 */
@@ -252,23 +249,15 @@
 				</td>
 				<td class="groove">
 				  <table class="full">
-					<tr valign="top" height="66%">
-					  <td id="listContainer" class="gridContainer">
-						<!-- 列表区域 开始 -->
-						<table class="full border">
-						  <tr>
-							<td id="gridTitle">
-							  <span class="icon"></span>日志列表<span class="buttonBox" id="gridToolBar"></span>
-							</td>
-						  </tr>
-						  <tr id="gridTR">
-							<td><Grid:Box id="grid" baseurl="../../grid/"></Grid:Box></td>
-						  </tr>
-						</table>
-						<!-- 列表区域 结束 -->
-					  </td>
+					<tr>
+						<td id="gridTitle">
+						  <span class="icon"></span>日志列表<span class="buttonBox" id="gridToolBar"></span>
+						</td>
 					</tr>
-					<tr id="wsTR">
+					<tr id="gridTR">
+						<td><Grid:Box id="grid" baseurl="../../grid/"></Grid:Box></td>
+					</tr>
+					<tr id="wsTR" height="235px">
 					  <td>
 						<WorkSpace:Box id="ws" baseurl="../../workspace/">
 						  <WorkSpace:Page id="page1">
@@ -277,7 +266,8 @@
 						</WorkSpace:Box>
 					  </td>
 					</tr>
-				  </table></td>
+				  </table>
+				 </td>
 			  </tr>
 			</table></td>
 		</tr>

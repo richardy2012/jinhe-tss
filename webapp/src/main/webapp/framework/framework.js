@@ -3,7 +3,7 @@ IS_TEST = false;
 /* 
  * 当前应用名 
  */
-APP_CODE    = "DM";
+APP_CODE    = "TSS";
 APPLICATION = APP_CODE.toLowerCase();
 CONTEXTPATH = APPLICATION + "/";
 AUTH_PATH    = "/" + CONTEXTPATH + "auth/";
