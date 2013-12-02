@@ -1,3 +1,4 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML xmlns:XForm>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -34,7 +35,9 @@
 			saveUser(cacheID);
 		}
 
-		Ajax({ url: URL_XFORM_DEMO, onresult: onresult});
+
+
+		Ajax({ url: URL_XFORM_DEMO, onresult: onresult, onexception: function() { alert("ajax has exception"); } });
     }
 
 	function func1() {

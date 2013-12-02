@@ -507,7 +507,7 @@ function XmlHttp() {
 	if(window.ActiveXObject) {
 		return new ActiveXObject("MSXML2.XMLHTTP"); // for IE6
 	} 
-	else if( window.XMLHttpRequest && window.DOMParser) {
+	else if( window.XMLHttpRequest ) {
 		return new XMLHttpRequest();
 	} 
 	else {

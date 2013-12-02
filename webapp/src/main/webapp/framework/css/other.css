@@ -34,7 +34,7 @@
   .r{
     border-right:1px solid #98989C;
   }
-  /* 文本框样式 */
+
   .txtfield{
     color:#535458;
     font-size:12px;
@@ -55,7 +55,7 @@
   }
 
  
-  /* 登录界面 */
+
   .loginContainer {
     text-align:center;
     padding-top:330px;

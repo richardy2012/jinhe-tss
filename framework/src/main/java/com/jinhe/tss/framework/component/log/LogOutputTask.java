@@ -17,12 +17,12 @@ public class LogOutputTask extends Output2DBTask {
     protected void createRecords(Connection conn) throws SQLException {
     	String insertSql;
     	if( Config.isOracleDatabase() ) {
-            insertSql = "insert into COMPONENT_LOG" +
+            insertSql = "insert into component_log" +
                 "(id, appCode, operatorId, operatorName, operatorIP, operationCode, operateTable, operateTime, content) " +
                 "values(log_sequence.nextval, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
     	else { // DEFAULT 主键自增 
-            insertSql = "insert into COMPONENT_LOG" +
+            insertSql = "insert into component_log" +
                 "(appCode, operatorId, operatorName, operatorIP, operationCode, operateTable, operateTime, content) " +
                 "values(?, ?, ?, ?, ?, ?, ?, ?)"; 
     	}

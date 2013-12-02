@@ -1462,15 +1462,16 @@ XmlNode.prototype.removeCDATA = function(name) {
 }
 
 XmlNode.prototype.cloneNode = function(deep) {
+	if(this.nodeType == _XML_NODE_TYPE_TEXT || this.nodeType == _XML_NODE_TYPE_CDATA) {
+		return this;
+	}
+
 	var tempNode;
-	if( !Public.isIE() ) {
-		if(this.nodeType == _XML_NODE_TYPE_TEXT) {
-			return this;
-		}
-		tempNode = new XmlNode(new XmlReader(this.toXml()).documentElement);
+	if( Public.isIE() ) {
+		tempNode = new XmlNode(this.node.cloneNode(deep));
 	} 
 	else {
-		tempNode = new XmlNode(this.node.cloneNode(deep));
+		tempNode = new XmlNode(new XmlReader(this.toXml()).documentElement);
 	}
 	return tempNode;
 }

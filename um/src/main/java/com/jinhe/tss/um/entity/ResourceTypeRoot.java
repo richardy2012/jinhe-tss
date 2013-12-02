@@ -13,7 +13,7 @@ import com.jinhe.tss.framework.persistence.IEntity;
  * 记录一个应用系统的一类资源的根ID
  */
 @Entity
-@Table(name = "um_ResourceType_Root")
+@Table(name = "um_resourceType_root")
 @SequenceGenerator(name = "resourcetypeRoot_sequence", sequenceName = "resourcetypeRoot_sequence", initialValue = 1000, allocationSize = 10)
 public class ResourceTypeRoot implements IEntity {
 

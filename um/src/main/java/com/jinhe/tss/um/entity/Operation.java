@@ -23,7 +23,7 @@ import com.jinhe.tss.um.permission.dispaly.IPermissionOption;
  * 权限操作选项。如新增、删除等操作
  */
 @Entity
-@Table(name = "um_Operation", uniqueConstraints = { 
+@Table(name = "um_operation", uniqueConstraints = { 
         @UniqueConstraint(columnNames = { "applicationId", "resourceTypeId", "operationId" })
 })
 @SequenceGenerator(name = "Operation_sequence", sequenceName = "Operation_sequence", initialValue = 1000, allocationSize = 10)

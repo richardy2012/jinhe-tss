@@ -10,7 +10,7 @@ import com.jinhe.tss.um.permission.AbstractResourcesView;
  * 门户结构资源视图
  */
 @Entity
-@Table(name = "view_Portal_resources")
+@Table(name = "view_portal_resources")
 public class PortalResourceView extends AbstractResourcesView {
     
     public String getResourceType() {

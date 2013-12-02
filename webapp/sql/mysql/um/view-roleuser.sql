@@ -1,6 +1,6 @@
-drop table VIEW_ROLEUSER;
+drop table view_roleuser;
 
-create view VIEW_ROLEUSER as
+create view view_roleuser as
 select u.id as userId, r.id as roleId
     from um_role r, um_roleuser ru, um_user u
     where r.id = ru.roleid and ru.userid = u.id
