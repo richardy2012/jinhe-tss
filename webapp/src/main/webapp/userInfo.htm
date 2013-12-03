@@ -78,10 +78,10 @@ URL_CORE = "framework/";
 	URL_CHANGE_PWD  = "resetPassword.in";
 
 	if( IS_TEST ) {
-		URL_INIT        = "test/mockdata/register_init.xml";
-		URL_MODIFY_USER = "test/mockdata/_success.xml";
-		URL_CHECK_PWD   = "test/mockdata/password_check.xml";
-		URL_CHANGE_PWD  = "test/mockdata/_success.xml";
+		URL_INIT        = "mockdata/register_init.xml";
+		URL_MODIFY_USER = "mockdata/_success.xml";
+		URL_CHECK_PWD   = "mockdata/password_check.xml";
+		URL_CHANGE_PWD  = "mockdata/_success.xml";
 	}
 
 	var registerForm;
@@ -201,8 +201,8 @@ URL_CORE = "framework/";
 				<XForm:Box id="passwordForm" baseurl="framework/xform/"><div class="loading"></div></XForm:Box>
 			</div>
 			
-			<input type="button" class="btStrong" value="保存" onclick="modifyUserInfo()" id="saveUIButton"/>
-			<input type="button" class="btStrong" value="修改" onclick="changePassword()" id="savePWDButton"/>
+			<input type="button" class="btStrong" value="保存" onclick="modifyUserInfo()" id="saveUIButton"/> 
+			<input type="button" class="btStrong" value="修改" onclick="changePassword()" id="savePWDButton"/> 
 			<input type="button" class="btWeak"   value="关闭" onclick="window.close()"/>
           </td>
         </tr>

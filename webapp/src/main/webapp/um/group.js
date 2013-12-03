@@ -79,13 +79,10 @@
  
     function init() {
         initPaletteResize();
-        initListContainerResize();
         initNaviBar("um.1");
         initMenus();
-        initBlocks();
         initWorkSpace();
         initEvents();
-        initFocus();
 
         loadInitData();
     }
@@ -265,7 +262,6 @@
             }
             treeObj.onTreeNodeDoubleClick = function(eventObj){
 				var treeNode = eventObj.treeNode;
-				showTreeNodeInfo();
 				getTreeOperation(treeNode, function(_operation) {
 					if(treeNode.getId() != -2) { // 防止浏览到Admin和匿名用户
 						showUserList();

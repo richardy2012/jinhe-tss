@@ -34,10 +34,8 @@
         initPaletteResize();
         initNaviBar("portal.2");
         initMenus();
-        initBlocks();
         initWorkSpace(false);
         initEvents();
-        initFocus();
 
         loadInitData();
     }

@@ -65,13 +65,10 @@
  
     function init() { 
         initPaletteResize();
-        initListContainerResize();
         initNaviBar("cms.1");
         initMenus();
-        initBlocks();
         initWorkSpace();
         initEvents();
-        initFocus();
 
         loadInitData();
     }

@@ -20,18 +20,16 @@
     URL_RESOURCE_TYPE = AUTH_PATH + "resource/resourceType/";
 	
 	if(IS_TEST) {
-		URL_INIT          = "data/resource_tree.xml";
-		URL_APP_DETAIL    = "data/application.xml";
-		URL_SAVE_APP      = "data/_success.xml";
-		URL_RESOURCE_TYPE = "data/resourcetype.xml";
+		URL_INIT          = "data/resource_tree.xml?";
+		URL_APP_DETAIL    = "data/application.xml?";
+		URL_SAVE_APP      = "data/_success.xml?";
+		URL_RESOURCE_TYPE = "data/resourcetype.xml?";
 	}
   
     function init() {
         initPaletteResize();
-        initListContainerResize();
         initNaviBar("um.2");
         initMenus();
-        initBlocks();
         initWorkSpace();
 
 		Event.attachEvent($$("treeBtRefresh"), "click", onClickTreeBtRefresh);
@@ -46,27 +44,23 @@
                 editTreeNode(false);
             },
             icon:ICON + "view.gif",
-            enable:function() {return true;},
             visible:function() {return "-1" != getTreeNodeId() && "-2" != getTreeNodeId();}
         }
         var item2 = {
             label:"编辑",
             callback:editTreeNode,
             icon:ICON + "edit.gif",
-            enable:function() {return true;},
             visible:function() {return checkTreeNodeEditable();}
         }
 		var item3 = {
             label:"新建应用",
             callback:createOtherApplication,
-            enable:function() {return true;},
             visible:function() {return "-2" == getTreeNodeId();}
         }
         var item4 = {
             label:"导入",
             callback:importApplication,
             icon:ICON + "import.gif",
-            enable:function() {return true;},
             visible:function() {return "1"==getNodeType() && ("-1"==getTreeNodeId() || "-2"==getTreeNodeId());}
         }
 
@@ -77,14 +71,6 @@
         menu1.addItem(item4);
  
         $$("tree").contextmenu = menu1;
-    }
- 
-    function initBlocks() {
-        var paletteObj = $$("palette");
-        Blocks.create(paletteObj);
-
-        var treeContainerObj = $$("treeContainer");
-        Blocks.create(treeContainerObj, treeContainerObj.parentNode);   
     }
 
 	function loadInitData() {
@@ -153,11 +139,11 @@
 				Cache.XmlDatas.add(cacheID, appInfoNode);
 
 				var xform = $X("page1Form", appInfoNode);
-				xform.editable = editable == false ? "false" : "true";
+				xform.editable = editable ? "true" : "false";
 				
 				// 设置保存按钮操作
 				var page1BtSaveObj = $$("page1BtSave");
-				page1BtSaveObj.disabled = editable==false?true:false;
+				page1BtSaveObj.disabled = !editable;
 				page1BtSaveObj.onclick = function() {
 					saveApp(cacheID, parentID);
 				}
@@ -228,7 +214,7 @@
 		Ajax({
 			url : URL_RESOURCE_TYPE + treeID,
 			method : "GET",
-			onresult : function() { 
+			onresult : function() {
 				var typeInfoNode = this.getNodeValue(XML_SOURCE_TYPE_INFO);
 
 				var xform = $X("page1Form", typeInfoNode);
@@ -265,9 +251,6 @@
         return flag;   
     }
  
-    /*
-     *	编辑树节点
-     */
     function editTreeNode(editable) {
         switch(getNodeType()) {
             case "1":

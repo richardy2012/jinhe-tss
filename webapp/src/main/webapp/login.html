@@ -5,7 +5,6 @@
 
 <title>它山石--登陆</title>
 
-<link href="framework/css/css.css" rel="stylesheet" type="text/css">
 <link href="framework/css/other.css" rel="stylesheet" type="text/css">
 <link href="framework/xform/xform.css" rel="stylesheet" type="text/css">
 <link href="framework/balloon/balloon.css" rel="stylesheet" type="text/css">
@@ -52,20 +51,21 @@ URL_CORE = "framework/"
         str[str.length] = "    </declare>";
         str[str.length] = "    <layout>";
         str[str.length] = "        <TR>";
-        str[str.length] = "            <TD width=\"50\"><label binding=\"userName\"/></TD>";
+        str[str.length] = "            <TD width=\"60\"><label binding=\"userName\"/></TD>";
         str[str.length] = "            <TD><input binding=\"userName\" type=\"text\" style=\"width:150px\"/></TD>";
         str[str.length] = "        </TR>";
         str[str.length] = "        <TR>";
-        str[str.length] = "            <TD width=\"50\"><label binding=\"password\"/></TD>";
+        str[str.length] = "            <TD width=\"60\"><label binding=\"password\"/></TD>";
         str[str.length] = "            <TD><input binding=\"password\" type=\"password\" style=\"width:150px\" onkeydown=\"autoLogin()\"/></TD>";
         str[str.length] = "        </TR>";
         str[str.length] = "        <TR>";
-        str[str.length] = "            <TD width=\"50\">&amp;nbsp;</TD>";
+        str[str.length] = "            <TD width=\"60\">&amp;nbsp;</TD>";
         str[str.length] = "            <TD><a href=\"#\" onclick=\"register()\">新用户注册</a> | <a href=\"#\" onclick=\"forget()\">忘记密码</a></TD>";
         str[str.length] = "        </TR>";
         str[str.length] = "        <TR>";
-        str[str.length] = "            <TD width=\"50\">&amp;nbsp;</TD>";
-        str[str.length] = "            <TD><input type=\"button\" class=\"btLogin\" id=\"btLogin\" value=\"登录\" onclick=\"login()\"/><input type=\"button\" class=\"btLogin\" id=\"btCancel\" value=\"重置\" onclick=\"resetForm()\"/></TD>";
+        str[str.length] = "            <TD width=\"60\">&amp;nbsp;</TD>";
+        str[str.length] = "            <TD><input type=\"button\" class=\"btLogin\" id=\"btLogin\" value=\"登录\" onclick=\"login()\"/> - ";
+        str[str.length] = "                <input type=\"button\" class=\"btLogin\" id=\"btCancel\" value=\"重置\" onclick=\"resetForm()\"/></TD>";
         str[str.length] = "        </TR>";
         str[str.length] = "    </layout>";
         str[str.length] = "    <data>";
@@ -181,16 +181,10 @@ URL_CORE = "framework/"
 </head>
 
 <body>
-	<table class="full" border="0" cellpadding="0" cellspacing="0">
-	<tr> 
-	  <td class="loginContainer">
-		<!-- 登录框 开始 -->
-		<div class="loginBox">
-			<XForm:Box id="loginForm" baseurl="framework/xform/" caption="用户登录"><div class="loading"></div></XForm:Box>
-		</div>
-		<!-- 登录框 结束 -->
-	  </td>
-	</tr>
-	</table>
+
+	<div class="loginBox">
+		<XForm:Box id="loginForm" baseurl="framework/xform/" caption="用户登录"></XForm:Box>
+	</div>
+
 </body>
 </html>

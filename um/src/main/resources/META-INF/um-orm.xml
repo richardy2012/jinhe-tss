@@ -19,8 +19,6 @@
 	<entity class="com.jinhe.tss.um.entity.RoleUser"/>
 	<entity class="com.jinhe.tss.um.entity.SubAuthorize"/>
 	
-	<entity class="com.jinhe.tss.um.entity.Message"/>
-	
 	<entity class="com.jinhe.tss.um.entity.permission.RoleUserMapping"/>
 	<entity class="com.jinhe.tss.um.entity.permission.ViewRoleUser"/>
 	<entity class="com.jinhe.tss.um.entity.permission.ViewRoleUser4SubAuthorize"/>

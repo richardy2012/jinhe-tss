@@ -46,10 +46,8 @@
         initPaletteResize();
         initNaviBar("portal.3");
         initMenus();
-        initBlocks();
         initWorkSpace(false);
         initEvents();
-        initFocus();
 
         loadInitData();
     }
@@ -297,7 +295,6 @@
             request.send();
         }
     }
- 
  
     /*
      *	弹出窗口选择显示内容

@@ -53,10 +53,8 @@
         initPaletteResize();
         initNaviBar("um.3");
         initMenus();
-        initBlocks();
         initWorkSpace(false);
         initEvents();
-        initFocus();
 
         loadInitData();
     }
@@ -147,8 +145,6 @@
             treeObj.onTreeNodeActived = function(eventObj) {
 				var treeTitleObj = $$("treeTitle");
 				Focus.focus(treeTitleObj.firstChild.id);
-
-				showTreeNodeInfo();
             }
             treeObj.onTreeNodeDoubleClick = function(eventObj) {
 				var treeNode = eventObj.treeNode;

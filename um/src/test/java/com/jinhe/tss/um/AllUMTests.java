@@ -4,7 +4,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import com.jinhe.tss.um.module.GroupModuleTest;
-import com.jinhe.tss.um.module.MessageModuleTest;
 import com.jinhe.tss.um.module.RoleModuleTest;
 import com.jinhe.tss.um.module.SubAuthorizeModuleTest;
 import com.jinhe.tss.um.module.UserModuleTest;
@@ -25,7 +24,6 @@ import com.jinhe.tss.um.zlast.ResourceModuleTest;
 	UserModuleTest.class,
 	RoleModuleTest.class,
 	SubAuthorizeModuleTest.class,
-	MessageModuleTest.class,
 	ResourceModuleTest.class,
 	FetchPermissionAfterLoginCustomizerTest.class,
 	UMPasswordIdentifierTest.class,

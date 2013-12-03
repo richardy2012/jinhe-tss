@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
     <Operation>p1,p2</Operation>
-	<SiteTree>
+	<ChannelTree>
         <actionSet title="" _open="true">
             <treeNode name="全部" id="_rootId" _open="true">
               <treeNode isSite="1" siteId="1" creatorName="Admin" updatorName="Admin" type="0" updateTime="2006-11-01 13:11:828" icon="../framework/images/cms/site_0.gif" createTime="2006-09-20 11:09:906" status="0"  disabled="0" name="市局门户网站" id="1" _open="true">
@@ -103,9 +103,7 @@
               <treeNode isSite="0" siteId="2" creatorName="Admin" seqNo="7" articleType="2" icon="../framework/images/cms/channel_0.gif" createTime="2006-11-02 16:11:421" status="0"  disabled="0" name="OA征求意见稿" id="168"></treeNode></treeNode></treeNode>
           </treeNode>
         </actionSet>
-
-
-	</SiteTree>
+       </ChannelTree>
     <ArticleFlow>
         <flow value="f1|f2|f3|f4|f5" text="流程一|流程二|流程三|流程四|流程五"/>
     </ArticleFlow>

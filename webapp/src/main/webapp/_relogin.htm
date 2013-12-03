@@ -4,10 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>重新登录</title>
 
-<link href="framework/css/css.css" rel="stylesheet" type="text/css">
-<link href="framework/css/other.css" rel="stylesheet" type="text/css">
 <link href="framework/css/dialog.css" rel="stylesheet" type="text/css">
-
 <link href="framework/xform/xform.css" rel="stylesheet" type="text/css">
 <link href="framework/balloon/balloon.css" rel="stylesheet" type="text/css">
 
@@ -27,18 +24,13 @@ URL_CORE = "framework/";
      */
     XML_USER_NAME = "UserName";
     XML_CLASS_NAME = "ClassName";
-    /*
-     *	默认唯一编号名前缀
-     */
-    CACHE_LOGIN_FORM = "login__id";
+ 
 
-    /*
-     *	XMLHTTP请求地址汇总
-     */
+    /* XMLHTTP请求地址汇总 */
     URL_GET_USER_NAME = "getLoginInfo.in";
 
 	if(IS_TEST) {
-		URL_GET_USER_NAME = "test/mockdata/username.xml";
+		URL_GET_USER_NAME = "mockdata/username.xml";
 	}
 
     window.onload = function(){
@@ -59,6 +51,11 @@ URL_CORE = "framework/";
         str[str.length] = "            <TD width='50'><label binding='password'/></TD>";
         str[str.length] = "            <TD><input binding='password' type='password' style='width:130px' onkeydown='autoLogin()'/></TD>";
         str[str.length] = "        </TR>";
+        str[str.length] = "        <TR>";
+        str[str.length] = "            <TD width=\"60\">&amp;nbsp;</TD>";
+        str[str.length] = "            <TD><br/><input type=\"button\" class=\"btLogin\" id=\"bt_ok\" value=\"确 定\" onclick=\"ok()\"/> - ";
+        str[str.length] = "                <input type=\"button\" class=\"btLogin\" id=\"bt_cancel\" value=\"取 消\" onclick=\"cancel()\"/></TD>";
+        str[str.length] = "        </TR>";
         str[str.length] = "    </layout>";
         str[str.length] = "    <data>";
         str[str.length] = "        <row/>";
@@ -67,7 +64,6 @@ URL_CORE = "framework/";
 
 		var xmlReader = new XmlReader(str.join(""));
         var loginFormNode = new XmlNode(xmlReader.documentElement);
-        Cache.XmlDatas.add(CACHE_LOGIN_FORM, loginFormNode);
 
         var loginXForm = $X("loginForm", loginFormNode);
 		loginXForm.setFocus("userName");
@@ -123,9 +119,6 @@ URL_CORE = "framework/";
 <body>
 	<div class="dialog">
 		<XForm:Box id="loginForm" baseurl="framework/xform/"><div class="loading"></div></XForm:Box>
-		<br><br>
-		&nbsp;&nbsp;<input type="button" id="bt_cancel" value="取 消" class="btWeak" onclick="cancel()"> 
-		&nbsp;&nbsp;<input type="button" id="bt_ok" value="确 定" class="btStrong" onclick="ok()">
 	</div>
 </body>
 </html>

@@ -32,7 +32,7 @@
 
 <body>
     <!-- 版面 开始 -->
-    <table class="panel"  border="0" cellpadding="0" cellspacing="0">
+    <table class="panel">
       <tr class="header"> 
         <td class="left"></td>
         <td class="center"></td>
@@ -42,9 +42,9 @@
         <td class="left"></td>
         <td class="center">
           <!-- 版面内容 开始 -->
-          <table class="full" border="0" cellpadding="0" cellspacing="0">
+          <table class="full">
             <tr class="hidden"> 
-              <td height="20"><table class="hFull" border="0" cellspacing="0" cellpadding="0">
+              <td height="20"><table class="hFull">
                   <tr> 
                     <td> 
                       <!-- 主菜单 开始 -->
@@ -60,15 +60,14 @@
             </tr>
             <tr> 
               <td valign="top">
-                <table class="full" border="0" cellpadding="0" cellspacing="0">
+                <table class="full">
                   <tr> 
                     <td id="palette">
                       <!-- 左栏 开始 -->
-                      <table class="full border" border="0" cellpadding="0" cellspacing="0">
+                      <table class="full border">
                         <tr id="treeTitle" class="bar"> 
                           <td class="opened">
                             <span class="icon"></span>菜单<span class="button refresh" id="treeBtRefresh" title="刷新"></span>
-							<span class="button collapse" id="treeTitleBt"></span>
                           </td>
                         </tr>
                         <tr>
@@ -76,50 +75,21 @@
                              <Tree:Box id="tree" treeType="menu" baseurl="../framework/tree/" canMoveNode="true"><div class="loading"></div></Tree:Box>
                           </td>
                         </tr>
-                        <tr id="statusTitle" class="bar">
-                          <td class="opened">
-                            <span class="icon"></span>状态信息<span class="button collapse" id="statusTitleBt"></span>
-                          </td>
-                        </tr>
-                        <tr style="display:none">
-                          <td id="statusContainer"></td>
-                        </tr>
                       </table>                        
                       <!-- 左栏 结束 -->
                     </td>
-                    <td>
-                      <table class="full" border="0" cellpadding="0" cellspacing="0">
-                        <tr valign="top">
-                          <!-- 主内容区域 开始 -->
-                          <td class="groove">
-								<!-- 标签区域 开始 -->
-								<WorkSpace:Box id="ws" baseurl="../framework/workspace/">
-								  <!-- page1 开始 -->
-								  <WorkSpace:Page id=page1>
-									<table class="full" border="0" cellspacing="0" cellpadding="0">
-									  <tr valign="top">
-										<td>
-										  <!-- xform 开始 -->
-										  <XForm:Box id="page1Form" baseurl="../framework/xform/"><div class="loading"></div></XForm:Box>
-										  <!-- xform 结束 -->
-										</td>
-									  </tr>
-									  <tr height="20">
-										<td>
-										  <WorkSpace:PageStep>
-											<input type="button" class="btStrong" value="完成" id="page1BtSave"/>
-										  </WorkSpace:PageStep>
-										</td>
-									  </tr>
-									</table>
-								  </WorkSpace:Page>
-								  <!-- page1 结束 -->
-								</WorkSpace:Box>
-								<!-- 标签区域 结束 -->
-                          </td>
-                          <!-- 主要内容区域 结束 -->
-                        </tr>
-                      </table></td>
+                    <td class="groove">
+      								<WorkSpace:Box id="ws" baseurl="../framework/workspace/">
+      								  <!-- page1 开始 -->
+      								  <WorkSpace:Page id=page1>
+        									  <XForm:Box id="page1Form" baseurl="../framework/xform/"></XForm:Box>
+                            <WorkSpace:PageStep>
+                              <input type="button" class="btStrong" value="完成" id="page1BtSave"/>
+                            </WorkSpace:PageStep>
+      								  </WorkSpace:Page>
+      								  <!-- page1 结束 -->
+      								</WorkSpace:Box>
+            				</td>
                   </tr>
                 </table></td>
             </tr>

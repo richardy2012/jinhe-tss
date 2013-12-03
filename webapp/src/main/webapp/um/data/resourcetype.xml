@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><Response><TypeInfo>
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+<ResourceTypeDetail>
 <xform>
 	<declare prefix="resourceType">
 		<column name="resourceTypeId" caption="资源类型ID" mode="string" empty="false"/>
@@ -42,4 +44,6 @@
 		</TR>
 	</layout>
 	<data><row><createTime><![CDATA[2013-07-24 00:21:32.015]]></createTime><rootId><![CDATA[-1]]></rootId><seqNo><![CDATA[1]]></seqNo><applicationId><![CDATA[tss]]></applicationId><creatorId><![CDATA[-1]]></creatorId><unSuppliedTable><![CDATA[com.jinhe.tss.um.entity.permission.unsupplied.GroupPermissions]]></unSuppliedTable><lockVersion><![CDATA[0]]></lockVersion><suppliedTable><![CDATA[com.jinhe.tss.um.entity.permission.supplied.GroupPermissionsFull]]></suppliedTable><id><![CDATA[1]]></id><resourceTypeId><![CDATA[1]]></resourceTypeId><creatorName><![CDATA[Admin]]></creatorName><resourceTable><![CDATA[com.jinhe.tss.um.entity.permission.resources.GroupResources]]></resourceTable><description><![CDATA[用户组织资源类型]]></description><name><![CDATA[用户组]]></name></row></data>
-</xform></TypeInfo></Response>
+</xform>
+</ResourceTypeDetail>
+</Response>

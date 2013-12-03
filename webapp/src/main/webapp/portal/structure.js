@@ -78,10 +78,8 @@
         initPaletteResize();
         initNaviBar("portal.1");
         initMenus();
-        initBlocks();
         initWorkSpace(false);
         initEvents();
-        initFocus();
 
         loadInitData();
     }
@@ -354,10 +352,6 @@
 
 			// 离开提醒
 			attachReminder(treeID, page1FormObj);
-
-			// 设置翻页按钮显示状态
-			$$("page1BtPrev").style.display = "none";
-			$$("page1BtNext").style.display = "none";
 
 			//设置保存按钮操作
 			$$("page1BtSave").onclick = function() {
@@ -762,8 +756,6 @@
 			initThemeTreeMenu(portalId);
 
 			//设置翻页/保存按钮显示状态
-			$$("page2BtPrev").style.display = "none";
-			$$("page2BtNext").style.display = "none";
 			$$("page2BtSave").style.display = "none";
 		}
 
@@ -992,8 +984,6 @@
             listObj.innerHTML = str.join("\r\n");
 
 			// 设置按钮显示状态
-			$$("page3BtPrev").style.display = "none";
-			$$("page3BtNext").style.display = "none";
 			$$("page3BtSave").style.display = "none";
 		}
 		

@@ -35,14 +35,14 @@ URL_CORE = "framework/"
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_INIT = "ums/user!getForgetPasswordInfo.action";
+    URL_INIT   = "um/user!getForgetPasswordInfo.action";
     URL_FORGET = "getPassword.in";
     URL_SET_NEW_PASSWORD = "resetPassword.in";
 
 	if( IS_TEST ) {
-		URL_INIT = "test/mockdata/forget_init.xml";
-		URL_FORGET = "test/mockdata/forget.xml";
-		URL_SET_NEW_PASSWORD = "test/mockdata/_success.xml";
+		URL_INIT   = "mockdata/forget_init.xml";
+		URL_FORGET = "mockdata/forget.xml";
+		URL_SET_NEW_PASSWORD = "mockdata/_success.xml";
 	}
 
 	var forgetForm;
@@ -55,6 +55,10 @@ URL_CORE = "framework/"
 				var forgetXML = this.getNodeValue(XML_FORGET_INFO);
 				Cache.XmlDatas.add(CACHE_FORGET_INFO, forgetXML);
 				forgetForm = $X("forgetForm", forgetXML);
+
+                $$("password").disabled = "disabled";
+                $$("repassword").disabled = "disabled";
+                $$("resetBT").style.visibility = "hidden";
 			}
 		});
     }
@@ -70,8 +74,9 @@ URL_CORE = "framework/"
 				forgetForm.updateDataExternal("userId", userID);
 
 				// 显示设置新密码
-				var newPasswordBox = $$("newPasswordBox");
-				newPasswordBox.style.visibility = "visible";
+				$$("password").disabled = "";
+                $$("repassword").disabled = "";
+                $$("resetBT").style.visibility = "visible";
 			}
 		});
     }
@@ -147,7 +152,7 @@ URL_CORE = "framework/"
 
 <body>
 
-<div class="loginContainer loginBox" style="width:320px; padding:10px 10px">
+<div class="loginBox" style="width:320px; padding:10px 10px">
 	<XForm:Box id="forgetForm" baseurl="framework/xform/"><div class="loading"></div></XForm:Box>
 </div>
 

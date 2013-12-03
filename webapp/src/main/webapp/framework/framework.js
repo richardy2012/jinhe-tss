@@ -199,12 +199,9 @@ function onClickGridTitle() {
 
 function onTreeNodeActived(eventObj){
 	 Focus.focus( $$("treeTitle").firstChild.id );
-	 showTreeNodeInfo();
 }
 
 function onTreeNodeRightClick(eventObj, carePermission, treeName) {
-	showTreeNodeInfo();
-
 	var menu = $$(treeName || "tree").contextmenu;
 	if(menu == null) {
 		return;
