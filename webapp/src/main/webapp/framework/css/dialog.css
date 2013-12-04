@@ -1,8 +1,8 @@
   .dialog{
     background-color:white;
     border:1px solid #98989C;
-    width:100%;
-    height:100%;
+    width:99%;
+    height:96%;
 	  overflow:hidden;
 	  padding:10px,10px;
   }
@@ -15,8 +15,8 @@
   .mainBox{
     background-color:white;
     border:1px solid #98989C;
-    width:100%;
-    height:100%;
+    width:99%;
+    height:96%;
     padding:5px;
   }
 

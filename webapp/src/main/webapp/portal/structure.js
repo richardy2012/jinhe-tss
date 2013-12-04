@@ -196,7 +196,7 @@
             visible:function() {return isPortalNode() && getOperation("2");}
         }
 		var item15 = {
-            label:"远程发布(完全覆盖)",
+            label:"远程发布(覆盖)",
 			callback:function() {
                 remoteRelease("true");
             },            

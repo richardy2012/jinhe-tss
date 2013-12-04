@@ -377,10 +377,10 @@ Array.prototype.push = function(item) {
 
 String.prototype.convertEntry = function() {
 	var str = this;
-	str = str.repalce(/\&/g, "&amp;");
-	str = str.repalce(/\"/g, "&quot;");
-	str = str.repalce(/\</g, "&lt;");
-	str = str.repalce(/\>/g, "&gt;");
+	str = str.replace(/\&/g, "&amp;");
+	str = str.replace(/\"/g, "&quot;");
+	str = str.replace(/\</g, "&lt;");
+	str = str.replace(/\>/g, "&gt;");
 	return str;
 }
 
@@ -1431,9 +1431,14 @@ XmlNode.prototype.removeAttribute = function(name) {
 }
 
 XmlNode.prototype.getCDATA = function(name) {
-	var node = this.selectSingleNode(name + "/node()");
-	if(node ) {
-		return node.nodeValue.revertCDATA();
+	var node = this.node.getElementsByTagName(name)[0];
+
+	if( node == null ) {
+		node = this.selectSingleNode(name + "/node()");
+	}
+	if( node ) {
+		var cdataValue = node.nodeValue || node.textContent;
+		return cdataValue.revertCDATA();
 	}
 }
 
