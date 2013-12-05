@@ -56,7 +56,7 @@ var _TREE_NODE_CHECK_TYPE_STYLE = "checkType";// 节点选择状态图标样式�
  * 节点显示的行高（象素），只用于计算显示的行数，不能控制显示时行的高度
  * 如果要修改显示的行高，修改样式文件
  */
-var _TREE_NODE_HEIGHT = 20;	
+var _TREE_NODE_HEIGHT = 21;	
 var _TREE_SCROLL_BAR_WIDTH = 18; // 滚动条的宽度（象素）
 var _TREE_BOX_MIN_WIDTH  = 200;    // 树控件显示区最小宽度（象素）
 var _TREE_BOX_MIN_HEIGHT = 220;   // 树控件显示区最小高度（象素）
@@ -120,8 +120,8 @@ var Tree = function(element) {
 	this.init = function() {	
 		this.loadData(this.element._dataXML);
 	
-		this.display = new TreeDisplay(this);
-		this.searchObj  = new Search(this);		
+		this.display   = new TreeDisplay();
+		this.searchObj = new Search();		
 		
 		this.reload();
 	

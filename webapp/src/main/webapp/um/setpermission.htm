@@ -22,8 +22,8 @@
 
 <style>
   #xform td {
-      padding-top:0px;
-      padding-bottom:0px;
+      padding-top:5px;
+      padding-left:10px;
   }
   .comment {
     color:#999999;
@@ -37,12 +37,12 @@
   <table class="full">
     <tr>
       <td height=30>
-		<XForm:Box id="xform" baseurl="../framework/xform/"><div class="loading"></div></XForm:Box>
+		    <XForm:Box id="xform" baseurl="../framework/xform/"></XForm:Box>
       </td>
     </tr>
     <tr>
       <td>
-		<Tree:Box id="tree" treeType="menu" baseurl="../framework/tree/"></Tree:Box>
+		    <Tree:Box id="tree" treeType="menu" baseurl="../framework/tree/"></Tree:Box>
       </td>
     </tr>
     <tr>
@@ -61,9 +61,9 @@
       </td>
     </tr>
     <tr>
-      <td class="t" height="30" align="right">
-        <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> 
+      <td class="t" height="30" align="center">
 		    <input type="button" value="确定" class="btStrong" onclick="savePermission()"/>
+        <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> 
       </td>
     </tr>
   </table>

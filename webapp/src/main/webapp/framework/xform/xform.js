@@ -384,7 +384,7 @@ XForm.prototype.setColumnValue = function(name, value) {
 	}
 	else {
 		CDATANode.text = value;
-		if (CDATANode.textContent) {
+		if (CDATANode.textContent || CDATANode.textContent == "") {
 			CDATANode.textContent = value; // chrome
 		}
 	}
@@ -434,7 +434,7 @@ XForm.prototype.updateData = function(obj) {
 
 	var binding = obj.getAttribute("binding");
 	var oldValue = this.getColumnValue(binding);
-	if(newValue != oldValue && newValue && newValue != "") {
+	if(newValue != oldValue) {
 		this.setColumnValue(binding, newValue);
 	}
 }

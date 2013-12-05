@@ -1378,6 +1378,10 @@ function xml2String(element) {
 	}
 }
 
+function getNodeText(node) {
+	return node.text || node.textContent; // 取节点值时，chrome里用textContent
+}
+
 /*
  *  XML节点类型
  */
@@ -1396,7 +1400,7 @@ function XmlNode(node) {
 	this.nodeName = this.node.nodeName;
 	this.nodeType = this.node.nodeType;
 	this.nodeValue = this.node.nodeValue;
-	this.text = this.node.text || this.node.textContent; // 取CDATA节点值时，chrome里用textContent
+	this.text = getNodeText(this.node); // 取CDATA节点值时，chrome里用textContent
 	this.firstChild = this.node.firstChild;
 	this.lastChild = this.node.lastChild;
 	this.childNodes = this.node.childNodes;
