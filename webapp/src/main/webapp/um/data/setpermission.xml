@@ -33,7 +33,7 @@
 				</option>
 				<option>
 					<operationId>opt106</operationId>
-					<operationName>启/停用组</operationName>
+					<operationName>启/停用</operationName>
 					<dependId></dependId>
 					<dependParent>3</dependParent>
 				</option>
