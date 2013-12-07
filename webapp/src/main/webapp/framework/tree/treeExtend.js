@@ -10,15 +10,8 @@ var _TREE_OPTION_ID_NODE = "operationId";
 var _TREE_OPTION_TEXT_NODE = "operationName";
 var _TREE_OPTION_DEPENDID_NODE = "dependId";
 
-/* 节点属性名称 */
-var _TREE_NODE_ATTRIBUTE_MODIFY = "_modify";
-
 /* 权限选项图标路径文件名前缀  */
 var _EXTEND_NODE_ICON = "images/multistate";
-
-/* 标题行高度（主要是显示权限选项列名用） */
-var _TREE_HEAD_HEIGHT = 20;
-
 
 function $ET(treeId, dataXML) {
 	var tree = TreeCache.get(treeId);
@@ -27,13 +20,9 @@ function $ET(treeId, dataXML) {
 
 	if( tree == null || dataXML ) {
 		var element = $$(treeId);
-
-		dataXML = (typeof(dataXML) == 'string') ? dataXML : dataXML.toXml();
-		element._dataXML = dataXML;
- 
-		tree = new ExtendTree(element);
+		element._dataXML = (typeof(dataXML) == 'string') ? dataXML : dataXML.toXml();
 		
-		TreeCache.add(element.id, tree);
+		TreeCache.add(element.id, tree = new ExtendTree(element));
 	}
 
 	return tree;
@@ -416,7 +405,6 @@ TreeNode.prototype.changeExtendSelectedState = function(optionId, shiftKey, next
 	else {
 		if(nextState != curState) {
 			this.setAttribute(optionId, nextState);
-			this.setAttribute(_TREE_NODE_ATTRIBUTE_MODIFY, "1");
 		}
 	}
 

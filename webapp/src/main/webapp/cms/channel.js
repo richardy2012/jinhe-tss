@@ -1,7 +1,7 @@
     /*
      *	后台响应数据节点名称
      */
-    XML_MAIN_TREE = "ChannelTree";
+    XML_MAIN_TREE    = "ChannelTree";
     XML_ARTICLE_LIST = "ArticleList";
     XML_CHANNEL_INFO = "ChannelInfo";
  
@@ -67,7 +67,6 @@
         initPaletteResize();
         initNaviBar("cms.1");
         initMenus();
-        initWorkSpace();
         initEvents();
 
         loadInitData();
@@ -252,42 +251,13 @@
  
     function addNewSite() { 
         var treeID = DEFAULT_NEW_ID;
-        var treeName = "站点";
-        var callback = {};
-        callback.onTabChange = function() { 
-            setTimeout(function() { 
-                loadSiteDetailData(treeID);
-            }, TIMEOUT_TAB_CHANGE);
-        };
-
-        var inf = {};
-        inf.defaultPage = "page1";
-        inf.label = OPERATION_ADD.replace(/\$label/i, treeName);
-        inf.phases = null;
-        inf.callback = callback;
-        inf.SID = CACHE_SITE_DETAIL + treeID;
-        var tab = ws.open(inf);
+        loadSiteDetailData(treeID);
     }
 
     function editSiteInfo() { 
         var treeNode = $T("tree").getActiveTreeNode();
 		var treeID = treeNode.getId();
-		var treeName = treeNode.getName();
-
-		var callback = {};
-		callback.onTabChange = function() { 
-			setTimeout(function() { 
-				loadSiteDetailData(treeID);
-			},TIMEOUT_TAB_CHANGE);
-		};
-
-		var inf = {};
-		inf.label = OPERATION_EDIT.replace(/\$label/i, treeName);
-		inf.SID = CACHE_SITE_DETAIL + treeID;
-		inf.defaultPage = "page1";
-		inf.phases = null;
-		inf.callback = callback;
-		var tab = ws.open(inf);
+		loadSiteDetailData(treeID);
     }
  
     function loadSiteDetailData(treeID) { 
@@ -297,22 +267,28 @@
 				var siteInfoNode = this.getNodeValue(XML_CHANNEL_INFO);
 				Cache.XmlDatas.add(treeID, siteInfoNode);
 
-				var xform = $X("page1Form", siteInfoNode);
-
-				// 设置翻页按钮显示状态
-				$$("page1BtPrev").style.display = $$("page1BtNext").style.display = "none";
+                showChannelForm();
+				var xform = $X("channelForm", siteInfoNode);
 
 				// 设置保存按钮操作
-				$$("page1BtSave").onclick = function() { 
+				$$("channelFormSave").onclick = function() { 
 					saveSite(treeID);
 				}
 			}
 		});
     }
+
+    function showChannelForm() {
+        var formObj = $$("channelFormDiv");
+        Element.show(formObj);
+        $$("channelFormClose").onclick = function() {
+            Element.hide(formObj);
+        }
+    }
  
     function saveSite(treeID) {
-        // 校验page1Form数据有效性
-        var xform = $X("page1Form");
+        // 校验channelForm数据有效性
+        var xform = $X("channelForm");
         if( !xform.checkForm() ) return;
 
         var p = new HttpRequestParams();
@@ -333,20 +309,20 @@
         if( flag ) {
             var request = new HttpRequest(p);
 
-            syncButton([ $$("page1BtSave")], request);
+            syncButton([ $$("channelFormSave")], request);
 
             request.onresult = function() { 
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
 				appendTreeNode("_rootId", treeNode);
 
-				ws.closeActiveTab();
+				Element.hide($$("channelFormDiv"));
             }
             request.onsuccess = function() { 
 				// 更新树节点名称
 				var name = xform.getData("name");
 				modifyTreeNode(treeID, "name", name, true);
 
-				ws.closeActiveTab();
+				Element.hide($$("channelFormDiv"));
             }
             request.send();
         }
@@ -355,58 +331,28 @@
     function addNewChannel() { 
         var treeNode = $T("tree").getActiveTreeNode();
 		var parentID = treeNode.getId();
-		var channelName = "栏目";
 		var channelID = DEFAULT_NEW_ID;
-
-		var callback = {};
-		callback.onTabChange = function() { 
-			setTimeout(function() { 
-				loadChannelDetailData(channelID, parentID);
-			}, TIMEOUT_TAB_CHANGE);
-		};
-		var inf = {};
-		inf.defaultPage = "page1";
-		inf.label = OPERATION_ADD.replace(/\$label/i, channelName);
-		inf.callback = callback;
-		inf.SID = CACHE_CHANNEL_DETAIL + channelID;
-		var tab = ws.open(inf);
+        loadChannelDetailData(channelID, parentID);
     }
  
     function editChannelInfo() { 
 		var treeNode = $T("tree").getActiveTreeNode();
 		var treeID = treeNode.getId();
-		var treeName = treeNode.getName();
-
-		var callback = {};
-		callback.onTabChange = function() { 
-			setTimeout(function() { 
-				loadChannelDetailData(treeID);
-			}, TIMEOUT_TAB_CHANGE);
-		};
-
-		var inf = {};
-		inf.label = OPERATION_EDIT.replace(/\$label/i, treeName);
-		inf.SID = CACHE_CHANNEL_DETAIL + treeID;
-		inf.defaultPage = "page1";
-		inf.callback = callback;
-		var tab = ws.open(inf);
+		loadChannelDetailData(treeID);
     }
  
     function loadChannelDetailData(treeID, parentID) { 
-		var treeNode = $T("tree").getActiveTreeNode();
 		Ajax({
 			url : URL_CHANNEL_DETAIL + treeID + "/" + (parentID || 0),
 			onresult : function() { 
 				var channelInfoNode = this.getNodeValue(XML_CHANNEL_INFO);
 				Cache.XmlDatas.add(treeID, channelInfoNode);
 
-				var xform = $X("page1Form", channelInfoNode);
+                showChannelForm();
+				var xform = $X("channelForm", channelInfoNode);
 
-				// 设置翻页按钮显示状态
-				$$("page1BtPrev").style.display = $$("page1BtNext").style.display = "none";
-
-				// 设置保存按钮操作
-				$$("page1BtSave").onclick = function() { 
+                // 设置保存按钮操作
+				$$("channelFormSave").onclick = function() { 
 					saveChannel(treeID, parentID);
 				}
 			}
@@ -414,8 +360,8 @@
     }
  
     function saveChannel(treeID, parentID) { 
-        // 校验page1Form数据有效性
-        var xform = $X("page1Form");
+        // 校验channelForm数据有效性
+        var xform = $X("channelForm");
         if( !xform.checkForm() ) return;
 
         var p = new HttpRequestParams();
@@ -436,19 +382,19 @@
         if( flag ) { 
             var request = new HttpRequest(p);
  
-            syncButton([$$("page1BtSave")], request);
+            syncButton([$$("channelFormSave")], request);
 
             request.onresult = function() { 
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
 				appendTreeNode(parentID, treeNode);
 
-				ws.closeActiveTab();
+				Element.hide($$("channelFormDiv"));
             }
             request.onsuccess = function() { // 更新树节点名称
 				var name = xform.getData("name");
 				modifyTreeNode(treeID, "name", name, true);
 
-				ws.closeActiveTab();
+				Element.hide($$("channelFormDiv"));
             }
             request.send();
         }

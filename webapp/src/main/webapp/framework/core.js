@@ -1441,7 +1441,7 @@ XmlNode.prototype.getCDATA = function(name) {
 		node = this.selectSingleNode(name + "/node()");
 	}
 	if( node ) {
-		var cdataValue = node.nodeValue || node.textContent;
+		var cdataValue = node.text || node.textContent;
 		return cdataValue.revertCDATA();
 	}
 }

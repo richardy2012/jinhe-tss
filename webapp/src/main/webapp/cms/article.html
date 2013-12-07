@@ -11,6 +11,8 @@
 <link href="../framework/xform/xform.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/grid/grid.css" rel="stylesheet" type="text/css"></link>
 
+<link href="kindeditor-4.1.7/themes/default/default.css" rel="stylesheet" type="text/css"></link>
+
 <script language="javascript" src="../framework/core.js"></script>
 <script language="javascript" src="../framework/ajax.js"></script>
 <script language="javascript" src="../framework/framework.js"></script>
@@ -19,7 +21,6 @@
 <script language="javascript" src="../framework/xform/xform.js"></script>
 <script language="javascript" src="../framework/grid/grid.js"></script>
 
-<link rel="stylesheet" href="kindeditor-4.1.7/themes/default/default.css" />
 <script language="javascript" src="kindeditor-4.1.7/kindeditor-min.js"></script>
 <script language="javascript" src="kindeditor-4.1.7/lang/zh_CN.js"></script>
 
@@ -38,6 +39,10 @@
 	}
 
 	var editor;
+		KindEditor.ready( function(K) {
+			editor = K.create( 'textarea[name="content"]', {resizeType: 1} );				
+		} );
+
 	var channelId;
     var articleId;
 
@@ -65,10 +70,6 @@
 		    articleId =  articleInfoNode.selectSingleNode(".//data//row").getCDATA("id");
 
 			$X("articleForm", articleInfoNode);
-
-			KindEditor.ready( function(K) {
-				editor = K.create( 'textarea[name="content"]', {resizeType: 1} );
-			} );
 			editor.insertHtml(articleContentNode);
 
 			var grid = $G("attachGrid", attachsListNode);
@@ -99,7 +100,7 @@
         p.setContent("channel.id", channelId); // 文章所属栏目
 
         // 文章基本信息
-        var articleInfoNode = new XmlNode(articleForm.getXmlDocument());
+        var articleInfoNode = articleForm.getXmlDocument();
 		var articleInfoDataNode = articleInfoNode.selectSingleNode(".//data");
 		if( articleInfoDataNode ) {
 			flag = true;

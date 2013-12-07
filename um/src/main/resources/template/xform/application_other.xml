@@ -28,7 +28,7 @@
 		</TR>
 		<TR>
 			<TD width="100"><label binding="description"/></TD>
-			<TD><input binding="description" type="text" style="width:100%;height:60"/></TD>
+			<TD><textarea binding="description" style="width:100%;height:60"/></TD>
 		</TR>
 	</layout>
 	<data>

@@ -7,7 +7,6 @@
 <link href="../framework/css/css.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/menu/menu.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/balloon/balloon.css" rel="stylesheet" type="text/css"></link>
-<link href="../framework/workspace/workspace.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/tree/tree.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/xform/xform.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/grid/grid.css" rel="stylesheet" type="text/css"></link>
@@ -18,7 +17,6 @@
 <script language="javascript" src="../framework/progress.js"></script>
 <script language="javascript" src="../framework/menu/menu.js"></script>
 <script language="javascript" src="../framework/balloon/balloon.js"></script>
-<script language="javascript" src="../framework/workspace/workspace.js"></script>
 <script language="javascript" src="../framework/tree/tree.js"></script>
 <script language="javascript" src="../framework/xform/xform.js"></script>
 <script language="javascript" src="../framework/grid/grid.js"></script>
@@ -29,125 +27,88 @@
   #palette {
     width: 280px;
   }
+  #channelFormDiv {
+    display:none;
+    background-color: #BEC6EE;
+    width: 660;    
+    height: 200;  
+    padding: 50px 10px 10px 10px;
+  }
 </style>
 
 </head>
 
 <body>
-    <!-- 版面 开始 -->
-    <table class="panel">
-      <tr class="header"> 
-        <td class="left"></td>
-        <td class="center"></td>
-        <td class="right"></td>
-      </tr>
-      <tr class="body"> 
-        <td class="left"></td>
-        <td class="center">
-          <!-- 版面内容 开始 -->
-          <table class="full">
-            <tr class="hidden"> 
-              <td height="20"><table class="hFull">
-                  <tr> 
-                    <td> 
-                      <!-- 主菜单 开始 -->
-                      <div id="navibar"><div class="loading"></div></div>
-                      <!-- 主菜单 结束 -->
-                    </td>
-                    <td width="150" align="right"></td>
-                  </tr>
-                </table></td>
-            </tr>
-            <tr class="hidden"> 
-              <td class="separator"></td>
-            </tr>
-            <tr> 
-              <td valign="top">
-                <table class="full">
-                  <tr> 
-                    <td id="palette">
-                      <!-- 左栏 开始 -->
-                      <table class="full border">
-                        <tr id="treeTitle" class="bar"> 
-                          <td class="opened">
-                            <span class="icon"></span>站点<span class="button refresh" id="treeBtRefresh" title="刷新">
-                          </td>
-                        </tr>
-                        <tr>
-                          <td id="treeContainer">
-                            <Tree:Box id="tree" treeType="menu" baseurl="../framework/tree/" canMoveNode="true"><div class="loading"></div></Tree:Box>
-                          </td>
-                        </tr>
-                      </table>                        
-                      <!-- 左栏 结束 -->
-                    </td>
-                    <td>
-                      <table class="full">
-                        <tr valign="top">
-            						  <td id="listContainer" class="gridContainer">
-            							<!-- 列表区域 开始 -->
-            							<table class="full border">
-            							  <tr>
-            								<td id="gridTitle">
-            								  <span class="icon"></span>
-            								  文章列表
-            								  <span class="buttonBox" id="gridToolBar"></span>
-            								</td>
-            							  </tr>
-            							  <tr>
-            								<td>
-            								  <Grid:Box id="grid" baseurl="../framework/grid/"></Grid:Box>
-            								</td>
-            							  </tr>
-            							</table>
-            							<!-- 列表区域 结束 -->
-            						  </td>
-            						</tr>
-            						<tr>
-            						  <td class="groove">
-              							<!-- 标签区域 开始 -->
-              							<WorkSpace:Box id="ws" baseurl="../framework/workspace/">
-              							  <!-- page1 开始 -->
-              							  <WorkSpace:Page id=page1>
-              								<table class="full">
-              								  <tr valign="top">
-              									<td>
-              									  <XForm:Box id="page1Form" baseurl="../framework/xform/"><div class="loading"></div></XForm:Box>
-              									</td>
-              								  </tr>
-              								  <tr height="20">
-              									<td>
-              									  <WorkSpace:PageStep>
-              										<input type="button" class="btWeak" value="上一步" id="page1BtPrev" onclick="ws.prevPhase(false)"/>
-              										<input type="button" class="btWeak" value="下一步" id="page1BtNext" onclick="ws.nextPhase(false)"/>
-              										<input type="button" class="btStrong" value="完成" id="page1BtSave"/>							
-              									  </WorkSpace:PageStep>
-              									</td>
-              								  </tr>
-              								</table>
-              							  </WorkSpace:Page>
-              							  <!-- page1 结束 -->
-              																 
-              							</WorkSpace:Box>
-              							<!-- 标签区域 结束 -->
-            						  </td>
-                          <!-- 主要内容区域 结束 -->
-                        </tr>
-                      </table></td>
-                  </tr>
-                </table></td>
-            </tr>
-          </table>            
-          <!-- 版面内容 结束 -->
-        </td>
-        <td class="right"></td>
-      </tr>
-      <tr class="footer"> 
-        <td class="left"></td>
-        <td class="center"></td>
-        <td class="right"></td>
-      </tr>
-    </table>
-    <!-- 版面 结束 -->
+  <table class="panel">
+    <tr class="header"> 
+      <td class="left"></td>
+      <td class="center"></td>
+      <td class="right"></td>
+    </tr>
+    <tr class="body"> 
+      <td class="left"></td>
+      <td class="center">
+        <table class="full">
+          <tr class="hidden"> 
+            <td height="20"><table class="hFull">
+                <tr> 
+                  <td> 
+                    <div id="navibar"><div class="loading"></div></div>
+                  </td>
+                  <td width="150" align="right"></td>
+                </tr>
+              </table></td>
+          </tr>
+          <tr class="hidden"> 
+            <td class="separator"></td>
+          </tr>
+          <tr> 
+            <td valign="top">
+              <table class="full">
+                <tr> 
+                  <td id="palette">
+                    <table class="full border">
+                      <tr id="treeTitle" class="bar"> 
+                        <td class="opened">
+                          <span class="icon"></span>站点<span class="button refresh" id="treeBtRefresh" title="刷新">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td id="treeContainer">
+                          <Tree:Box id="tree" treeType="menu" baseurl="../framework/tree/" canMoveNode="true"><div class="loading"></div></Tree:Box>
+                        </td>
+                      </tr>
+                    </table>                        
+                  </td>
+                  <td id="listContainer" class="groove gridContainer">
+                    <table class="full border">
+                      <tr>
+                        <td id="gridTitle"><span class="icon"></span>文章列表<span class="buttonBox" id="gridToolBar"></span></td>
+                      </tr>
+                      <tr>
+                        <td><Grid:Box id="grid" baseurl="../framework/grid/"></Grid:Box></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table></td>
+          </tr>
+        </table>            
+      </td>
+      <td class="right"></td>
+    </tr>
+    <tr class="footer"> 
+      <td class="left"></td>
+      <td class="center"></td>
+      <td class="right"></td>
+    </tr>
+  </table>
+
+  <div id="channelFormDiv">
+    <XForm:Box id="channelForm" baseurl="../framework/xform/"></XForm:Box>
+    <input type="button" class="btStrong" value="保存" id="channelFormSave"/>      
+    <input type="button" class="btStrong" value="关闭" id="channelFormClose"/>
+  </div>
+
 </body>
 </html>

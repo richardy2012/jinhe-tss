@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
 <declare prefix="channel">
-	<column name="name" caption="栏目名称" mode="string" empty="false" maxLength="50" editor="text" />
-	<column name="overdueDate" caption="过期时间" mode="string" empty="true" maxLength="10" editor="comboedit" editorvalue="0|1|2|3|4|5" editortext="一年|六个月|一个季度|一个月|一个星期|一天" />
-	<column name="remark" caption="栏目描述" mode="string" empty="true" maxLength="255" editor="textarea" />
+	<column name="name" caption="栏目名称" mode="string" empty="false" maxLength="50"/>
+	<column name="overdueDate" caption="过期时间" mode="string" editor="comboedit" editorvalue="0|1|2|3|4|5" editortext="一年|六个月|一个季度|一个月|一个星期|一天"/>
+	<column name="remark" caption="栏目描述" mode="string" maxLength="255"/>
 </declare>
 <layout>
 	<TR>
 		<TD width="50">
-			<label binding="name" name="栏目名称"/>
+			<label binding="name"/>
 		</TD>
 		<TD>
-			<input binding="name" name="栏目名称"/>
+			<input binding="name"/>
 		</TD>
 		<TD width="50">
-			<label binding="overdueDate" name="过期时间"/>
+			<label binding="overdueDate"/>
 		</TD>
 		<TD>
-			<input binding="overdueDate" name="过期时间"/>
+			<input binding="overdueDate"/>
 		</TD>
 	</TR>
 	<TR>
 		<TD width="50">
-			<label binding="remark" name="栏目描述"/>
+			<label binding="remark"/>
 		</TD>
-		<TD colspan="3">
-			<input binding="remark" name="栏目描述" style="width:90%;height:60"/>
+		<TD colspan="2">
+			<textarea binding="remark" style="width:90%;height:60"/>
 		</TD>
 	</TR>
 </layout>
