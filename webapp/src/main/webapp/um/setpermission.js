@@ -180,8 +180,8 @@
                 setParentSingleState(treeNode, optionId);
             }
 
-            //同时按下shift键时
-            if(true==shiftKey) {
+            // 同时按下shift键时
+            if(true == shiftKey) {
                 setChildsSelectedState(treeNode,optionId,nextState,shiftKey);
             }
         }

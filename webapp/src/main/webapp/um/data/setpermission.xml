@@ -18,7 +18,7 @@
 				<option>
 					<operationId>opt103</operationId>
 					<operationName>修改组</operationName>
-					<dependId></dependId>
+					<dependId>opt104</dependId>
 				</option>
 				<option>
 					<operationId>opt104</operationId>
@@ -29,28 +29,28 @@
 				<option>
 					<operationId>opt105</operationId>
 					<operationName>查看用户</operationName>
-					<dependId>opt106,opt107</dependId>
+					<dependId>opt104</dependId>
 				</option>
 				<option>
 					<operationId>opt106</operationId>
 					<operationName>启/停用</operationName>
-					<dependId></dependId>
+					<dependId>opt104</dependId>
 					<dependParent>3</dependParent>
 				</option>
 				<option>
 					<operationId>opt107</operationId>
 					<operationName>组移动</operationName>
-					<dependId></dependId>
+					<dependId>opt104</dependId>
 				</option>
 				<option>
 					<operationId>opt108</operationId>
 					<operationName>组排序</operationName>
-					<dependId></dependId>
+					<dependId>opt104</dependId>
 				</option>
 				<option>
 					<operationId>opt109</operationId>
 					<operationName>组拷贝</operationName>
-					<dependId></dependId>
+					<dependId>opt104</dependId>
 				</option>
 
 			</options>

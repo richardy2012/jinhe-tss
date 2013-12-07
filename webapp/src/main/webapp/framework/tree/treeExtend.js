@@ -40,7 +40,7 @@ function $ET(treeId, dataXML) {
 }
 
 var ExtendTree = function(element) {
-	this._baseUrl    = element.getAttribute(_TREE_BASE_URL); 
+	this._baseUrl = element.getAttribute(_TREE_BASE_URL); 
 	
 	this.element = element;
 	this.element.className = _TREE_STYLE;	
@@ -198,28 +198,8 @@ var ExtendTree = function(element) {
 	    this.row = tr;
 	    this.row.style.height = _TREE_NODE_HEIGHT;
 	    this.node = node;
-
-		/*
-	     * 设定选中状态
-		 *			 0 未选中
-		 *			 1 仅此节点有权限
-		 *			 2 所有子节点有权限
-		 *			 3 未选中禁用
-		 *			 4 选中禁用
-	     */
-	    this.setCellCheckType = function(checkType, value) {
-	        checkType.state = value;
-
-	        value = value || "0";
-	        if("0" == value ) {
-	            var checkedChild = this.node.selectSingleNode(".//treeNode[@" + curOptionID + "='1' or @" + curOptionID + "='2' or @" + curOptionID + "='4']");
-	            if( checkedChild ) {
-	                value = "0_2";
-	            }
-	        }
-	        checkType.src = treeThis._baseUrl + _EXTEND_NODE_ICON + value + ".gif"; // 设定扩展内容checkbox图片地址
-	    }
-
+	    node.optionMap = {};
+	    node.baseUrl = treeThis._baseUrl + _EXTEND_NODE_ICON;
 		
 	    /* 创建扩展内容的所有列内容  */
 	    var _options = treeThis.getOptions();
@@ -233,7 +213,7 @@ var ExtendTree = function(element) {
                 this.node.setAttribute(curOptionID, "0");
             }
 	 		
-			var cell = this.row.insertCell();
+			var cell = this.row.insertCell(i);
             cell.appendChild(getCloneCellCheckbox());
             cell.align = "center";
 			
@@ -241,7 +221,8 @@ var ExtendTree = function(element) {
 	        var checkType = nobr.firstChild;
 	        checkType.id  = curOptionID;
 
-			this.setCellCheckType(checkType, value);
+	        node.optionMap[curOptionID] = checkType;
+			setCellCheckType(node, curOptionID, value);
         }
 	 
 	    /* 加速创建扩展内容checkbox列内容，获取副本对象 */
@@ -261,20 +242,6 @@ var ExtendTree = function(element) {
 	    }
 	}
 
-	/* 
-	 * public方法：根据显示的对象，获取相应的ExtendRow对象
-	 * 参数：	obj	 节点显示在页面上的扩展内容对象
-	 * 返回值：	ExtendRow对象
-	 */
-	function getExtendRow(display, obj) {
-		if(!/^(a|img)$/.test(obj.tagName.toLowerCase())) {
-			return null;
-		}
-
-		var index = getRowIndex(obj) - 1;  // 去掉表头那一行
-		return display.getExtendRowByIndex(index);
-	}
-
 	function TreeDisplay() {
 		element.style.overflow = 'hidden'; // 溢出部分会被隐藏
 		treeThis.setOptions();
@@ -288,7 +255,7 @@ var ExtendTree = function(element) {
 		var treeId = element.id;
 		var _rootBoxName   = treeId + "RootBox"; 
 		var _rootTableName = treeId + "RootTable"; 
-		var tableStr = '<div class="RootBox" id="' + _rootBoxName + '" style="left:10px;top:-6px"><table id="' + _rootTableName + '"></table></div>' +
+		var tableStr = '<div class="RootBox" id="' + _rootBoxName + '" style="left:10px;top:-6px;"><table id="' + _rootTableName + '"></table></div>' +
 		    '<div id="treeExtendBox" style="position:relative;display:inline-block;"><table id="treeExtendTable" class="extendTable"></table></div>';
 		element.innerHTML = tableStr;
 		element.style.overflow = "auto";
@@ -363,9 +330,8 @@ var ExtendTree = function(element) {
 		 
 			var row = getExtendRow(oThis, eventObj);
 			if(row instanceof ExtendRow) {
-				var treeNode = instanceTreeNode(row.getXmlNode());
-				var currentState = treeNode.changeExtendSelectedState(eventObj.id, event.shiftKey);
-				row.setCellCheckType(eventObj, currentState);
+				var treeNode = instanceTreeNode(row.getXmlNode(), treeThis);
+				treeNode.changeExtendSelectedState(eventObj.id, event.shiftKey);				
 			} 
 		}
 	}
@@ -395,19 +361,24 @@ TreeNode.prototype.close = function() {
 
 /*
  * 改变权限项选中状态为下一状态
- * 参数：	id	                        权限项id
+ * 参数：	optionId                    权限项id
 			boolean: shiftKey           是否同时按下shiftKey
+			nextState                   指定的click后的状态，可选
  * 返回：	nextState                   click后的状态，不能超过pState
  */
-TreeNode.prototype.changeExtendSelectedState = function(id, shiftKey) {
-	var curState = this.getAttribute(id);
+TreeNode.prototype.changeExtendSelectedState = function(optionId, shiftKey, nextState) {
+	var curState = this.getAttribute(optionId);
 	var pState   = this.getAttribute("pstate");
-	var nextState; // click后的状态，不能超过pState
+	
+	// nextState 不能超过pState
+	if("2" == nextState && "2" != pState) {
+		nextState = "1";
+	}        
 
 	if("3" == curState || "4" == curState) { // 当前若是禁用状态则不变
 		nextState = curState;
 	}
-	else { // 自动切换状态
+	else if(null == nextState) { // 自动切换状态
 		switch(curState || "") {            
 			case "0":
 			case "":
@@ -431,17 +402,64 @@ TreeNode.prototype.changeExtendSelectedState = function(id, shiftKey) {
 	var eventObj = createEventObject();
 	eventObj.treeNode = this;
 	eventObj.returnValue = true;
-	eventObj.optionId = id;
+	eventObj.optionId = optionId;
 	eventObj.defaultValue = curState || "0";
 	eventObj.newValue = nextState;
 	eventObj.shiftKey = shiftKey;
 	eventObj.type = "_ExtendNodeChange";
 	eventExtendNodeChange.fire(eventObj);
 
-	if(nextState != curState) {
-		this.setAttribute(id, nextState);
-		this.setAttribute(_TREE_NODE_ATTRIBUTE_MODIFY, "1");
+	var flag = true;
+	if(false == eventObj.returnValue) { 
+		flag = false; // 调用语句取消该事件
+	}
+	else {
+		if(nextState != curState) {
+			this.setAttribute(optionId, nextState);
+			this.setAttribute(_TREE_NODE_ATTRIBUTE_MODIFY, "1");
+		}
 	}
 
-	return nextState;
+	// 修改权限项显示图标(只修改open状态的节点)
+	setCellCheckType(this.node, optionId, nextState);
+
+	return {flag:flag, state: flag ? nextState : curState};
+}
+
+/* 
+ * public方法：根据显示的对象，获取相应的ExtendRow对象
+ * 参数：	obj	 节点显示在页面上的扩展内容对象
+ * 返回值：	ExtendRow对象
+ */
+function getExtendRow(display, obj) {
+	if(!/^(a|img)$/.test(obj.tagName.toLowerCase())) {
+		return null;
+	}
+
+	var index = getRowIndex(obj) - 1;  // 去掉表头那一行
+	return display.getExtendRowByIndex(index);
+}
+
+/*
+ * 设定选中状态
+ *			 0 未选中
+ *			 1 仅此节点有权限
+ *			 2 所有子节点有权限
+ *			 3 未选中禁用
+ *			 4 选中禁用
+ */
+function setCellCheckType (node, optionId, value) {
+	if(node.optionMap == null) return;
+
+	var checkType = node.optionMap[optionId];
+    checkType.state = value;
+
+    value = value || "0";
+    if("0" == value ) {
+        var checkedChild = node.selectSingleNode(".//treeNode[@" + optionId + "='1' or @" + optionId + "='2' or @" + optionId + "='4']");
+        if( checkedChild ) {
+            value = "0_2";
+        }
+    }
+    checkType.src = node.baseUrl + value + ".gif"; // 设定扩展内容checkbox图片地址
 }
