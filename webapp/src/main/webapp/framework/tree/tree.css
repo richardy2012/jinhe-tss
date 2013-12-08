@@ -1,7 +1,7 @@
 Tree\:Box{
 	width: 100%;
 	height: 100%;
-	display:inline-block;
+	display:block;
 	scrollbar-face-color: #BEC6EE;
     scrollbar-highlight-color: #C0C4E7;
     scrollbar-shadow-color: #C0C4E7;
@@ -56,8 +56,7 @@ Tree\:Box td {
 Tree\:Box tr.selected td{
 	background-color: #FEF7A9;
 }
-Tree\:Box nobr{
-	/* color: #7F92C5; */
+Tree\:Box nobr {
 	margin: 0px;
 	padding: 0px;
 }
@@ -158,10 +157,10 @@ Tree\:Box .RootBox {
 }
 
 Tree\:Box .VScrollBox {
-	position:relative;
-	display:inline;
+	position: relative;
+	display: inline;
 	overflow-y: auto;
-	heigth: 100%;
+	height: 100%;
 	width: 18px;
 	float:right;
 }

@@ -320,10 +320,10 @@
 		var phases = [];
 		phases[0] = {page:"page1",label:"基本信息"};
 		if( isMainGroup() ) { 
-			phases[1] = {page:"page3",label:"角色"};
+			phases[1] = {page:"page3",label:"拥有角色"};
 		} else {
-			phases[1] = {page:"page4",label:"用户"};
-			phases[2] = {page:"page3",label:"角色"};
+			phases[1] = {page:"page4",label:"用户列表"};
+			phases[2] = {page:"page3",label:"拥有角色"};
 		}		
 		
 		var callback = {};
@@ -422,9 +422,7 @@
 		request.send();
     }
  
-    /*
-     *	保存用户组
-、   */
+    /* 保存用户组 */
     function saveGroup(treeID, parentID, groupType){
         var page1FormObj = $X("page1Form");
         if( !page1FormObj.checkForm() ) {
@@ -546,8 +544,8 @@
 		var phases = [];
 		phases[0] = {page:"page1",label:"基本信息"};
 		phases[1] = {page:"page8",label:"认证信息"};
-		phases[2] = {page:"page2",label:"用户组"};
-		phases[3] = {page:"page3",label:"角色"};
+		phases[2] = {page:"page2",label:"所属组织"};
+		phases[3] = {page:"page3",label:"拥有角色"};
 
 		var callback = {};
 		callback.onTabChange = function(){

@@ -44,21 +44,12 @@
       <td class="center">
         <!-- 版面内容 开始 -->
         <table class="full">
-          <tr class="hidden"> 
-            <td height="20"><table class="hFull">
-                <tr> 
-                  <td> 
-                    <!-- 主菜单 开始 -->
-                    <div id="navibar"><div class="loading"></div></div>
-                    <!-- 主菜单 结束 -->
-                  </td>
-                  <td width="150" align="right">&nbsp;</td>
-                </tr>
-              </table></td>
+          <tr> 
+            <td height="20">
+                <div id="navibar"><div class="loading"></div></div>
+            </td>
           </tr>
-          <tr class="hidden"> 
-            <td class="separator"></td>
-          </tr>
+          <tr><td class="separator"></td></tr>
           <tr> 
             <td valign="top">
               <table class="full">
@@ -92,12 +83,10 @@
                                 <table class="full">
                                   <tr valign="top">
                                     <td>
-                                      <!-- xform 开始 -->
 							                        <XForm:Box id="page1Form" baseurl="../framework/xform/"></XForm:Box>
-                                      <!-- xform 结束 -->
                                     </td>
                                   </tr>
-                                  <tr height="20">
+                                  <tr>
                                     <td>
                                       <WorkSpace:PageStep>
                                         <input type="button" class="btWeak" value="上一步" id="page1BtPrev" onclick="ws.prevPhase(false)"/>
@@ -130,7 +119,7 @@
                                       <Tree:Box id="page2Tree2" treeType="multi" baseurl="../framework/tree/" selectSelf="false"></Tree:Box>
                                     </td>
                                   </tr>
-                                  <tr height="16" class="trxx">
+                                  <tr>
                                     <td colspan="3">
                                       <WorkSpace:PageStep>
                                         <input type="button" class="btWeak" value="上一步" id="page2BtPrev" onclick="ws.prevPhase(false)"/>
@@ -167,7 +156,7 @@
                                       <Tree:Box id="page4Tree3" treeType="multi" baseurl="../framework/tree/" selectSelf="false"></Tree:Box>
                                     </td>
                                   </tr>
-                                  <tr height="16" class="trxx">
+                                  <tr>
                                     <td colspan="4">
                                       <WorkSpace:PageStep>
                                         <input type="button" class="btWeak" value="上一步" id="page4BtPrev" onclick="ws.prevPhase(false)"/>

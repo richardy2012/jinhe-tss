@@ -794,7 +794,7 @@ function validate() {
 			}
 		}
 		if( event ) {
-			event.returnValue = false;
+			preventDefault(event);
 		}
 		return false;
 	}

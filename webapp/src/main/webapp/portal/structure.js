@@ -693,7 +693,7 @@
         var idValue    = page1FormObj.getData(id) || "";
         var parameters = page1FormObj.getData("parameters") || "";
 
-        var xmlNode = parseParameters(parameters);
+        var xmlNode = parseParameters(parameters.revertEntity());
         var oldParamsNode = xmlNode.selectSingleNode("./" + paramsType);
         var oldText = new XmlNode(oldParamsNode.firstChild);
 
@@ -1021,7 +1021,7 @@
 			code:code
 		};
 	
-		window.showModalDialog("filemanager.html", {params:params, title:"\"" + name + "\"相关资源管理"},"dialogWidth:400px;dialogHeight:400px;");
+		window.showModalDialog("filemanager.html", {params:params, title:"\"" + name + "\"相关资源管理"},"dialogWidth:500px;dialogHeight:400px;");
     }
 
 	/********************************************************************************************************************

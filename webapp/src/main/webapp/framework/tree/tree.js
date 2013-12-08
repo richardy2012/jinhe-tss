@@ -380,7 +380,7 @@ var Tree = function(element) {
 		element.insertAdjacentHTML('afterBegin', vScrollStr + hScrollStr);
  
 		// 生成页面上显示节点的table对象。
-		var tableStr = '<div class="RootBox" id="' + _rootBoxName + '"><table id="' + _rootTableName + '" cellspacing="0"></table></div>';
+		var tableStr = '<div class="RootBox" id="' + _rootBoxName + '"><table id="' + _rootTableName + '"></table></div>';
 		element.insertAdjacentHTML('afterBegin', tableStr);
 
 		var _vScrollBox = $$(_vScrollBoxName);
@@ -421,6 +421,7 @@ var Tree = function(element) {
 		// 设置显示节点的table对象的大小
 		_rootBox.style.height = _windowHeight;
 		_rootBox.style.width = _windowWidth;
+		element.style.display = "inline-block";
 
 		/* 当窗口大小改变后，初始化所有相关参数，并且重新计算所要显示的节点。*/
 		element.onresize = function () {

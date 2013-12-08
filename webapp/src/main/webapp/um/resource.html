@@ -25,83 +25,64 @@
 </head>
 
 <body>
- 
-    <!-- 版面 开始 -->
-    <table class="panel">
-      <tr class="header"> 
-        <td class="left"></td>
-        <td class="center"></td>
-        <td class="right"></td>
-      </tr>
-      <tr class="body"> 
-        <td class="left"></td>
-        <td class="center">
-          <!-- 版面内容 开始 -->
-          <table class="full" >
-            <tr class="hidden"> 
-              <td height="20"><table class="hFull">
-                  <tr> 
-                    <td> 
-                      <!-- 主菜单 开始 -->
-                      <div id="navibar"><div class="loading"></div></div>
-                      <!-- 主菜单 结束 -->
-                    </td>
-                    <td width="150" align="right">&nbsp;</td>
-                  </tr>
-                </table></td>
-            </tr>
-            <tr class="hidden"> 
-              <td class="separator"></td>
-            </tr>
-            <tr> 
-              <td valign="top">
-                <table class="full" >
-                  <tr> 
-                    <td id="palette">
-                      <!-- 左栏 开始 -->
-                      <table class="full border" >
-                        <tr id="treeTitle" class="bar"> 
-                          <td class="opened">
-                            <span class="icon"></span>应用资源<span class="button refresh" id="treeBtRefresh" title="刷新"></span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td id="treeContainer">
-                            <!-- tree 开始 -->
-                            <Tree:Box id="tree" treeType="menu" baseurl="../framework/tree/"><div class="loading"></div></Tree:Box>
-                            <!-- tree 结束 -->
-                          </td>
-                        </tr>
-                      </table>                        
-                      <!-- 左栏 结束 -->
-                    </td>
-                    <td class="groove">
-                       <!-- 标签区域 开始 -->
-                        <WorkSpace:Box id="ws" baseurl="../framework/workspace/">
-                          <WorkSpace:Page id=page1>
-                              <XForm:Box id="page1Form" baseurl="../framework/xform/"></XForm:Box>
-                              <WorkSpace:PageStep>
-                                <input type="button" class="btStrong" value="完成" id="page1BtSave"/>
-                              </WorkSpace:PageStep>
-                          </WorkSpace:Page>
-                        </WorkSpace:Box>
-                        <!-- 标签区域 结束 -->
-                    </td>
-                  </tr>
-                </table></td>
-            </tr>
-          </table>            
-          <!-- 版面内容 结束 -->
-        </td>
-        <td class="right"></td>
-      </tr>
-      <tr class="footer"> 
-        <td class="left"></td>
-        <td class="center"></td>
-        <td class="right"></td>
-      </tr>
-    </table>
-    <!-- 版面 结束 -->
+  <table class="panel">
+    <tr class="header"> 
+      <td class="left"></td>
+      <td class="center"></td>
+      <td class="right"></td>
+    </tr>
+    <tr class="body"> 
+      <td class="left"></td>
+      <td class="center">
+        <table class="full" >
+          <tr> 
+            <td height="20">
+                <div id="navibar"><div class="loading"></div></div>
+            </td>
+          </tr>
+          <tr><td class="separator"></td></tr>
+          <tr> 
+            <td valign="top">
+              <table class="full" >
+                <tr> 
+                  <td id="palette">
+                    <table class="full border" >
+                      <tr id="treeTitle" class="bar"> 
+                        <td class="opened">
+                          <span class="icon"></span>应用资源<span class="button refresh" id="treeBtRefresh" title="刷新"></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td id="treeContainer">
+                          <Tree:Box id="tree" treeType="menu" baseurl="../framework/tree/"><div class="loading"></div></Tree:Box>
+                        </td>
+                      </tr>
+                    </table>                        
+                  </td>
+                  <td class="groove">
+                      <WorkSpace:Box id="ws" baseurl="../framework/workspace/">
+                        <WorkSpace:Page id=page1>
+                            <XForm:Box id="page1Form" baseurl="../framework/xform/"></XForm:Box>
+                            <br/>
+                            <WorkSpace:PageStep>
+                              <input type="button" class="btStrong" value="完成" id="page1BtSave"/>
+                            </WorkSpace:PageStep>
+                        </WorkSpace:Page>
+                      </WorkSpace:Box>
+                  </td>
+                </tr>
+              </table></td>
+          </tr>
+        </table>            
+      </td>
+      <td class="right"></td>
+    </tr>
+    <tr class="footer"> 
+      <td class="left"></td>
+      <td class="center"></td>
+      <td class="right"></td>
+    </tr>
+  </table>
 
 </body>
 </html>
