@@ -31,7 +31,9 @@ public class NavigatorService implements INavigatorService {
             entity.setSeqNo(nextSeqNo);
             
             Navigator parent = dao.getEntity(parentId);
-            entity.setPortalId(parent.getPortalId());
+            if(parent != null) {
+            	entity.setPortalId(parent.getPortalId());
+            }
 		}
 		
 		return dao.save(entity);
