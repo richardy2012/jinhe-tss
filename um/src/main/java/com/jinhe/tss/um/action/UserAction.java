@@ -69,12 +69,10 @@ public class UserAction extends BaseActionSupport {
         TreeEncoder groupTree = new TreeEncoder(data.get("User2GroupExistTree"));
  
         Document baseinfoXForm = XMLDocUtil.createDoc(UMConstants.USER_BASEINFO_XFORM);
-        Document authenXForm   = XMLDocUtil.createDoc(UMConstants.USER_AUTHINFO_XFORM);
         XFormEncoder baseinfoXFormEncoder = new XFormEncoder(baseinfoXForm, map, true, false);
-        XFormEncoder authenXFormEncoder   = new XFormEncoder(authenXForm,   map, true, false); 
         
-        print(new String[]{"UserInfo", "AuthInfo", "User2GroupExistTree", "User2RoleTree", "User2RoleExistTree"}, 
-                new Object[]{baseinfoXFormEncoder, authenXFormEncoder, groupTree, roleTree, existRoleTree});
+        print(new String[]{"UserInfo", "User2GroupExistTree", "User2RoleTree", "User2RoleExistTree"}, 
+                new Object[]{baseinfoXFormEncoder, groupTree, roleTree, existRoleTree});
     }
 
 	/**

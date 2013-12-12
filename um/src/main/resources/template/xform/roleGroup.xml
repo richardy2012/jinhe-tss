@@ -11,7 +11,7 @@
 		</TR>
 		<TR>
 			<TD width="50"><label binding="description"/></TD>
-			<TD><textarea binding="description" style="width:100%;height:100"/></TD>
+			<TD><textarea binding="description" style="width:80%;height:100"/></TD>
 		</TR>
 	</layout>
 	<data>

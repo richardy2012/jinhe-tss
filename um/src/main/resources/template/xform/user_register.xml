@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
-	<declare prefix="user">
-		<column name="userName" caption="姓名" mode="string" empty="false" maxLength="100" editor="text"/>
-		<column name="loginName" caption="账号" mode="string" empty="false" maxLength="100" editor="text"/>
-		<column name="address" caption="地址" mode="string" empty="true" maxLength="100" editor="text"/>
-		<column name="telephone" caption="电话" mode="string" empty="true" maxLength="100" editor="text"/>
-		<column name="postalCode" caption="邮编" mode="string" empty="true" maxLength="100" inputReg="/^\d{0,10}$/" editor="text"/>
-		<column name="mail" caption="电子邮件" mode="string" empty="true" maxLength="100"
-			inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/" submitReg="/^[\w\-]+@[\w\-]+(\.[\w\-]+){1,2}$/" editor="text" />
-		<column name="employeeNo" caption="员工编号" mode="string" empty="true" maxLength="100" editor="text"/>
-		<column name="birthday" caption="出生年月" mode="date" empty="true" pattern="yyyy-MM-dd" maxLength="32" editor="text"/>
-		<column name="sex" caption="性别" mode="string" empty="true" maxLength="1" editor="comboedit" editorvalue="0|1" editortext="男|女"/>
-		
-		<column name="password" caption="密码" mode="string" empty="false" maxLength="100" inputReg="/^[\u0000-\u00FF]*$/" editor="password"/>
-		<column name="password2" caption="密码确认" mode="string" empty="false" maxLength="100" inputReg="/^[\u0000-\u00FF]*$/" editor="password"/>
-		<column name="passwordAnswer" caption="密码提示答案" mode="string" empty="false" maxLength="100" editor="text"/>
-		<column name="passwordQuestion" caption="密码提示问题" mode="string" empty="false" maxLength="100" editor="text"/>
-
+	<declare>
+		<column name="userName"  caption="姓名" mode="string" empty="false" maxLength="20"/>
+		<column name="loginName" caption="账号" mode="string" empty="false" maxLength="20"/>
+		<column name="mail"      caption="电子邮件" mode="string" maxLength="50" inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/"/>
+		<column name="password1" caption="密码"   mode="string" empty="false" maxLength="20" inputReg="/^[\u0000-\u00FF]*$/"/>
+		<column name="password2" caption="密码确认" mode="string" empty="false" maxLength="20" inputReg="/^[\u0000-\u00FF]*$/"/>
 	</declare>
 	<layout>
 		<TR>
@@ -24,83 +13,39 @@
 				<label binding="loginName"/>
 			</TD>
 			<TD>
-				<input binding="loginName"/>
+				<input binding="loginName" style="width:250;"/>
 			</TD>
+		</TR>
+		<TR>
 			<TD width="50">
 				<label binding="userName"/>
 			</TD>
 			<TD>
-				<input binding="userName"/>
+				<input binding="userName" style="width:250;"/>
 			</TD>
 		</TR>
 		<TR>
-			<TD width="50">
-				<label binding="sex"/>
-			</TD>
-			<TD>
-				<input binding="sex"/>
-			</TD>
-			<TD width="50">
-				<label binding="birthday"/>
-			</TD>
-			<TD>
-				<input binding="birthday"/>
-			</TD>
-		</TR>
-		<TR>
-			<TD width="50">
-				<label binding="employeeNo"/>
-			</TD>
-			<TD>
-				<input binding="employeeNo"/>
-			</TD>
 			<TD width="50">
 				<label binding="mail"/>
 			</TD>
 			<TD>
-				<input binding="mail"/>
+				<input binding="mail" style="width:250;"/>
 			</TD>
 		</TR>
 		<TR>
 			<TD width="50">
-				<label binding="telephone"/>
+				<label binding="password1"/>
 			</TD>
 			<TD>
-				<input binding="telephone"/>
-			</TD>
-			<TD width="50">
-				<label binding="address"/>
-			</TD>
-			<TD>
-				<input binding="address"/>
+				<input binding="password1" type="password" style="width:250;"/>
 			</TD>
 		</TR>
 		<TR>
-			<TD width="50">
-				<label binding="password"/>
-			</TD>
-			<TD>
-				<input binding="password"/>
-			</TD>
 			<TD width="50">
 				<label binding="password2"/>
 			</TD>
 			<TD>
-				<input binding="password2"/>
-			</TD>
-		</TR>
-		<TR>
-			<TD width="50">
-				<label binding="passwordQuestion"/>
-			</TD>
-			<TD>
-				<input binding="passwordQuestion"/>
-			</TD>
-			<TD width="50">
-				<label binding="passwordAnswer"/>
-			</TD>
-			<TD>
-				<input binding="passwordAnswer"/>
+				<input binding="password2" type="password" style="width:250;"/>
 			</TD>
 		</TR>
 	</layout>

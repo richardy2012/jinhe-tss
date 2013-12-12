@@ -5,7 +5,7 @@
 <title>找回密码</title>
 
 <link href="framework/css/css.css" rel="stylesheet" type="text/css">
-<link href="framework/css/other.css" rel="stylesheet" type="text/css">
+<link href="framework/css/dialog.css" rel="stylesheet" type="text/css">
 <link href="framework/xform/xform.css" rel="stylesheet" type="text/css">
 <link href="framework/balloon/balloon.css" rel="stylesheet" type="text/css">
 
@@ -35,7 +35,7 @@ URL_CORE = "framework/"
     /*
      *	XMLHTTP请求地址汇总
      */
-    URL_INIT   = "um/user!getForgetPasswordInfo.action";
+    URL_INIT   = AUTH_PATH + "user/forgetpwd";
     URL_FORGET = "getPassword.in";
     URL_SET_NEW_PASSWORD = "resetPassword.in";
 
@@ -152,8 +152,8 @@ URL_CORE = "framework/"
 
 <body>
 
-<div class="loginBox" style="width:320px; padding:10px 10px">
-	<XForm:Box id="forgetForm" baseurl="framework/xform/"><div class="loading"></div></XForm:Box>
+<div class="dialog">
+	<XForm:Box id="forgetForm" baseurl="framework/xform/"></XForm:Box>
 </div>
 
 </body>

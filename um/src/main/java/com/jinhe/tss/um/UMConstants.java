@@ -138,7 +138,6 @@ public final class UMConstants {
 	
 	public static final String USER_REGISTER_XFORM  = "template/xform/user_register.xml";  
 	public static final String USER_BASEINFO_XFORM  = "template/xform/user_baseinfo.xml"; 
-	public static final String USER_AUTHINFO_XFORM  = "template/xform/user_authinfo.xml"; 
 	
 	public static final String ROLE_XFORM      = "template/xform/role.xml";    
 	public static final String ROLEGROUP_XFORM = "template/xform/roleGroup.xml"; 

@@ -5,7 +5,6 @@
     XML_USER_LIST = "SourceList";
  
     XML_USER_INFO = "UserInfo";
-    XML_AUTHENTICATE_INFO = "AuthInfo";
     XML_USER_TO_GROUP_TREE = "User2GroupTree";
     XML_USER_TO_GROUP_EXIST_TREE = "User2GroupExistTree";
     XML_USER_TO_ROLE_TREE = "User2RoleTree";
@@ -389,12 +388,10 @@
 			}
 			
 			// 设置翻页按钮显示状态
-			$$("page1BtPrev").style.display = "none";
 			$$("page4BtPrev").style.display = "";
 			$$("page3BtPrev").style.display = "";
 			$$("page1BtNext").style.display = "";
 			$$("page4BtNext").style.display = "";
-			$$("page3BtNext").style.display = "none";
 
 			// 设置保存按钮操作
 			$$("page1BtSave").onclick = $$("page4BtSave").onclick = $$("page3BtSave").onclick = function(){
@@ -543,9 +540,8 @@
 	function loadUserInfo(operationName, rowID, rowName, groupId) {
 		var phases = [];
 		phases[0] = {page:"page1",label:"基本信息"};
-		phases[1] = {page:"page8",label:"认证信息"};
-		phases[2] = {page:"page2",label:"所属组织"};
-		phases[3] = {page:"page3",label:"拥有角色"};
+		phases[1] = {page:"page2",label:"所属组织"};
+		phases[2] = {page:"page3",label:"拥有角色"};
 
 		var callback = {};
 		callback.onTabChange = function(){
@@ -570,7 +566,6 @@
 		var request = new HttpRequest(p);
 		request.onresult = function(){
 			var userInfoNode = this.getNodeValue(XML_USER_INFO);
-			var authenticateInfoNode = this.getNodeValue(XML_AUTHENTICATE_INFO);
 			var user2GroupExistTreeNode = this.getNodeValue(XML_USER_TO_GROUP_EXIST_TREE);
 			var user2GroupTreeNode = Cache.XmlDatas.get(CACHE_MAIN_TREE).cloneNode(true);
 			var user2RoleTreeNode = this.getNodeValue(XML_USER_TO_ROLE_TREE);
@@ -582,13 +577,9 @@
 			disableTreeNodes(user2RoleTreeNode, "//treeNode[@isGroup='1']");
  
 			Cache.XmlDatas.add(userID + "." + XML_USER_INFO, userInfoNode);
-			Cache.XmlDatas.add(userID + "." + XML_AUTHENTICATE_INFO, authenticateInfoNode);
 			
 			var page1FormObj = $X("page1Form", userInfoNode);
 			attachReminder(page1FormObj.element.id, page1FormObj);
-			
-			var page8FormObj = $X("page8Form", authenticateInfoNode);
-			attachReminder(page8FormObj.element.id, page1FormObj);
 			
 			var page3Tree  = $T("page3Tree",  user2RoleTreeNode);
 			var page3Tree2 = $T("page3Tree2", user2RoleGridNode);
@@ -598,17 +589,13 @@
             page2Tree2.groupType = "1"; // 标记当前page2Tree2是主(辅助)用户组
 
 			// 设置翻页按钮显示状态
-			$$("page1BtPrev").style.display = "none";
-			$$("page8BtPrev").style.display = "";
 			$$("page2BtPrev").style.display = "";
 			$$("page3BtPrev").style.display = "";
 			$$("page1BtNext").style.display = "";
-			$$("page8BtNext").style.display = "";
 			$$("page2BtNext").style.display = "";
-			$$("page3BtNext").style.display = "none";
 
 			//设置保存按钮操作
-			$$("page1BtSave").onclick = $$("page8BtSave").onclick = $$("page2BtSave").onclick = $$("page3BtSave").onclick = function(){
+			$$("page1BtSave").onclick = $$("page2BtSave").onclick = $$("page3BtSave").onclick = function(){
 				saveUser(userID, groupId);
 			}
 
@@ -663,13 +650,8 @@
 
     function saveUser(userID, groupId){
         var page1FormObj = $X("page1Form");
-        var page8FormObj = $X("page8Form");
         if( !page1FormObj.checkForm() ) {
             ws.switchToPhase("page1");
-            return;
-        }
-        if( !page8FormObj.checkForm() ){
-            ws.switchToPhase("page8");
             return;
         }
 
@@ -698,13 +680,6 @@
 			p.setXFormContent(userInfoDataNode);
 		}
 
-		//认证基本信息
-		var authenticateInfoNode = Cache.XmlDatas.get(userID + "." + XML_AUTHENTICATE_INFO);
-		if(authenticateInfoNode) {
-			var authenticateInfoDataNode = authenticateInfoNode.selectSingleNode(".//data");
-			p.setXFormContent(authenticateInfoDataNode);
-		}
-
 		//用户对用户组
 		var user2GroupNode = $T("page2Tree2").getXmlRoot();
 		var user2GroupDataIDs = getTreeNodeIds(user2GroupNode);
@@ -727,12 +702,11 @@
 			var request = new HttpRequest(p);
 			
 			//同步按钮状态
-			syncButton([$$("page1BtSave"), $$("page2BtSave"), $$("page3BtSave"), $$("page8BtSave")], request);
+			syncButton([$$("page1BtSave"), $$("page2BtSave"), $$("page3BtSave")], request);
 
 			request.onsuccess = function(){
 				// 解除提醒
 				detachReminder(page1FormObj.element.id);
-				detachReminder(page8FormObj.element.id);
 
 				// 如果当前grid显示为此用户所在组，则刷新grid
 				showUserList(groupId);

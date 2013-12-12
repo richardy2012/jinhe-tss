@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
 	<declare prefix="user">
-		<column name="id" caption="用户ID" mode="hidden" maxLength="10" editor="text"/>
-		<column name="userName"  caption="姓名" mode="string" empty="false" maxLength="100" editor="text"/>
-		<column name="loginName" caption="账号" mode="string" empty="false" maxLength="100" editor="text"/>
-		<column name="password" caption="密码" mode="string" empty="false" maxLength="100" inputReg="/^[\u0000-\u00FF]*$/" editor="password"/>
-		<column name="passwordAnswer" caption="密码提示答案" mode="string" empty="false" maxLength="100" editor="text"/>
-		<column name="passwordQuestion" caption="密码提示问题" mode="string" empty="false" maxLength="100" editor="text"/>
-		<column name="sex" caption="性别" mode="string" empty="true" editor="comboedit" editorvalue="0|1" editortext="男|女"/>
-		<column name="birthday" caption="出生年月" mode="date" empty="true" pattern="yyyy-MM-dd" maxLength="32" editor="text"/>
-		<column name="employeeNo" caption="员工编号" mode="string" empty="true" maxLength="100" editor="text"/>
-		<column name="mail" caption="电子邮件" mode="string" empty="true" maxLength="100"
-			inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/" submitReg="/^[\w\-]+@[\w\-]+(\.[\w\-]+){1,2}$/" editor="text" />
-		<column name="telephone" caption="电话" mode="string" empty="true" maxLength="100" editor="text"/>
-		<column name="address"   caption="地址" mode="string" empty="true" maxLength="100" editor="text"/>
-		<column name="postalCode" caption="邮编" mode="string" empty="true" maxLength="100" inputReg="/^\d{0,10}$/" editor="text"/>
+		<column name="id" mode="hidden"/>
+		<column name="userName"  caption="姓名" mode="string" empty="false" maxLength="20"/>
+		<column name="loginName" caption="账号" mode="string" empty="false" maxLength="20"/>
+		<column name="password"  caption="密码" mode="string" empty="false" maxLength="20" inputReg="/^[\u0000-\u00FF]*$/"/>
+		<column name="passwordQuestion" caption="提示问题" mode="string" empty="false" maxLength="100"/>
+		<column name="passwordAnswer"   caption="提示答案" mode="string" empty="false" maxLength="100"/>
+		<column name="sex" caption="性别" mode="string" editor="comboedit" editorvalue="0|1" editortext="男|女"/>
+		<column name="birthday" caption="出生年月" mode="string" pattern="yyyy-MM-dd" maxLength="32"/>
+		<column name="employeeNo" caption="员工编号" mode="string" maxLength="100"/>
+		<column name="mail" caption="电子邮件" mode="string" maxLength="100" inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/"/>
+		<column name="telephone" caption="电话" mode="string" maxLength="30"/>
+		<column name="address"   caption="地址" mode="string" maxLength="100"/>
+		<column name="postalCode" caption="邮编" mode="string" maxLength="10" inputReg="/^\d{0,10}$/"/>
+		
+		<column name="certificateCategory" caption="证件种类" mode="string" editor="comboedit" editorvalue="1|2" editortext="工作证|身份证"/>
+		<column name="certificateNumber" caption="证件号" mode="string" maxLength="50"/>
+		<column name="accountUsefulLife" caption="账户有效期" mode="string" pattern="yyyy-MM-dd"/>
+		<column name="authenticateMethod" caption="认证方式" mode="string" empty="false" editor="comboedit"
+			editorvalue="com.jinhe.tss.um.sso.UMPasswordIdentifier" editortext="UM本地"/>
 		
 		<column name="groupId" mode="hidden"/>
 		<column name="groupName" mode="hidden"/>
@@ -22,88 +27,46 @@
 	</declare>
 	<layout>
 		<TR>
-			<TD width="50">
-				<label binding="loginName" name="账号"/>
-			</TD>
-			<TD>
-				<input binding="loginName"/>
-			</TD>
-			<TD width="50">
-				<label binding="userName" name="姓名"/>
-			</TD>
-			<TD>
-				<input binding="userName"/>
-			</TD>
+			<TD width="50"><label binding="loginName"/></TD>
+			<TD><input binding="loginName"/></TD>
+			
+			<TD width="50"><label binding="userName"/></TD>
+			<TD><input binding="userName"/></TD>
 		</TR>
 		<TR>
-			<TD width="50">
-				<label binding="sex" name="性别"/>
-			</TD>
-			<TD>
-				<input binding="sex"/>
-			</TD>
-			<TD width="50">
-				<label binding="birthday" name="出生年月"/>
-			</TD>
-			<TD>
-				<input binding="birthday"/>
-			</TD>
+			<TD width="50"><label binding="birthday"/></TD>
+			<TD><input binding="birthday"/></TD>
+			
+			<TD width="50"><label binding="sex"/></TD>
+			<TD><input binding="sex"/></TD>
 		</TR>
 		<TR>
-			<TD width="50">
-				<label binding="employeeNo" name="员工编号"/>
-			</TD>
-			<TD>
-				<input binding="employeeNo"/>
-			</TD>
-			<TD width="50">
-				<label binding="mail" name="电子邮件"/>
-			</TD>
-			<TD>
-				<input binding="mail"/>
-			</TD>
+			<TD width="50"><label binding="employeeNo"/></TD>
+			<TD><input binding="employeeNo"/></TD>
+			
+			<TD width="50"><label binding="telephone"/></TD>
+			<TD><input binding="telephone"/></TD>
 		</TR>
 		<TR>
-			<TD width="50">
-				<label binding="telephone" name="电话"/>
-			</TD>
-			<TD>
-				<input binding="telephone"/>
-			</TD>
-			<TD width="50">
-				<label binding="address" name="地址"/>
-			</TD>
-			<TD>
-				<input binding="address"/>
-			</TD>
+			<TD width="50"><label binding="mail"/></TD>
+			<TD><input binding="mail" style="width:250;"/></TD>
+
+			<TD width="50"><label binding="address"/></TD>
+			<TD><input binding="address" style="width:250;"/></TD>
 		</TR>
 		<TR>
-			<TD width="50">
-				<label binding="password" name="密码"/>
-			</TD>
-			<TD>
-				<input binding="password"/>
-			</TD>
-			<TD width="50">
-				<label binding="postalCode" name="邮编"/>
-			</TD>
-			<TD>
-				<input binding="postalCode"/>
-			</TD>
+			<TD width="50"><label binding="password"/></TD>
+			<TD><input binding="password" type="password"/></TD>
+			
+			<TD width="50"><label binding="authenticateMethod"/></TD>
+			<TD><input binding="authenticateMethod"/></TD>
 		</TR>
 		<TR>
-			<TD width="50">
-				<label binding="passwordQuestion" name="密码提示问题"/>
-			</TD>
-			<TD>
-				<input binding="passwordQuestion"/>
-			</TD>
-			<TD width="50">
-				<label binding="passwordAnswer" name="密码提示答案"/>
-			</TD>
-			<TD>
-				<input binding="passwordAnswer"/>
-			</TD>
+			<TD width="50"><label binding="passwordQuestion"/></TD>
+			<TD><input binding="passwordQuestion" style="width:250;"/></TD>
+
+			<TD width="50"><label binding="passwordAnswer"/></TD>
+			<TD><input binding="passwordAnswer" style="width:250;"/></TD>
 		</TR>
 	</layout>
 </xform>

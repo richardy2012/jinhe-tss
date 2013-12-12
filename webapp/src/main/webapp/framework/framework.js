@@ -54,7 +54,7 @@ function initUserInfo() {
 	if( Query.get("login") != "true" ) return;
 
 	Ajax({
-		url : "/" + AUTH_PATH + "user/operatorInfo",
+		url : AUTH_PATH + "user/operatorInfo",
 		method : "POST",
 		headers : {"appCode": APP_CODE},
 		contents : {"anonymous": "true"}, 

@@ -5,8 +5,7 @@
 <title>用户注册</title>
 
 <link href="framework/css/css.css" rel="stylesheet" type="text/css">
-<link href="framework/css/other.css" rel="stylesheet" type="text/css">
-
+<link href="framework/css/dialog.css" rel="stylesheet" type="text/css">
 <link href="framework/xform/xform.css" rel="stylesheet" type="text/css">
 <link href="framework/balloon/balloon.css" rel="stylesheet" type="text/css">
 
@@ -28,16 +27,11 @@ URL_CORE = "framework/"
 	XML_SECURITY_LEVEL = "SecurityLevel";
 
     /*
-     *	默认唯一编号名前缀
-     */
-    CACHE_REGISTER_INFO = "register__id";
-
-    /*
      *	XMLHTTP请求地址汇总
      */
-    URL_INIT = "ums/user!getUserInfo.action";
-    URL_REGISTER = "ums/user!registerUser.action";
-    URL_CHECK_PASSWORD = "getStrength.in";
+    URL_INIT = AUTH_PATH + "user/self/detail";
+    URL_REGISTER = "register.in";
+    URL_CHECK_PASSWORD = "getPasswordStrength.in";
 
 	if( IS_TEST ) {
 		URL_INIT = "mockdata/register_init.xml";
@@ -56,7 +50,7 @@ URL_CORE = "framework/"
 				Cache.XmlDatas.add(XML_REGISTER_INFO, registerXML);
 				registerForm = $X("registerForm", registerXML);
 
-				$$("password").onblur = function() { 
+				$$("password1").onblur = function() { 
 					var password = this.value;
 					if(password == null || password == "") return;
 					
@@ -72,7 +66,7 @@ URL_CORE = "framework/"
 		Ajax({
 			url : URL_REGISTER,
 			headers : {"appCode": APP_CODE, "anonymous": "true"},
-			xformNode : Cache.XmlDatas.get(CACHE_REGISTER_INFO),
+			xformNode : Cache.XmlDatas.get(XML_REGISTER_INFO),
 			onsuccess : function() { 
 				if( opener ) {  // opener返回对创建该窗口的Window 对象的引用
 					var loginName = registerForm.getData("loginName");
@@ -87,16 +81,16 @@ URL_CORE = "framework/"
     function checkRegisterForm(){
         var flag = true;
 
-        var password = registerForm.getData("password"); 
-		var repassword = prompt("请再输入一边确认密码");
-		if(password != repassword) {
+        var password1 = $$("password1").value; 
+        var password2 = $$("password2").value; 
+		if(password1 != password2) {
 			flag = false;
 			alert("两次密码输入不一致，请重新输入");
 		}
         return flag;
     }
 
-    function resetForm(){
+    function resetForm() {
         registerForm.resetForm();
         registerForm.setFocus();
     }
@@ -108,12 +102,13 @@ URL_CORE = "framework/"
 </head>
 
 <body>
-	<div class="loginContainer loginBox" style="width:500px;padding:10px 10px">
+	<div class="dialog">
 		<XForm:Box id="registerForm" baseurl="framework/xform/"><div class="loading"></div></XForm:Box>
-		<br/>
-		<input type="button" class="btStrong" value="提交" onclick="if( checkRegisterForm() ) { register() }"/>
-		<input type="button" class="btWeak"   value="重置" onclick="resetForm()"/>
-		<input type="button" class="btWeak"   value="关闭" onclick="window.close()"/>
+		<div class="bt">
+			<input type="button" class="btStrong" value="提交" onclick="if( checkRegisterForm() ) { register() }"/>
+			<input type="button" class="btWeak"   value="重置" onclick="resetForm()"/>
+			<input type="button" class="btWeak"   value="关闭" onclick="window.close()"/>
+		</div>
 	</div>
 </body>
 </html>

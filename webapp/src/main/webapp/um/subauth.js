@@ -119,9 +119,9 @@
 
         var phases = [];
         phases[0] = {page:"page1", label:"基本信息"};
-        phases[1] = {page:"page3", label:"角色"};
-        phases[2] = {page:"page4", label:"用户"};
-        phases[3] = {page:"page2", label:"用户组"};
+        phases[1] = {page:"page3", label:"转出角色"};
+        phases[2] = {page:"page4", label:"用户列表"};
+        phases[3] = {page:"page2", label:"用户组织"};
 
         var callback = {};
         callback.onTabChange = function(){
@@ -148,9 +148,9 @@
 
 		var phases = [];
 		phases[0] = {page:"page1", label:"基本信息"};
-		phases[1] = {page:"page3", label:"角色"};
-		phases[2] = {page:"page4", label:"用户"};
-		phases[3] = {page:"page2", label:"用户组"};
+		phases[1] = {page:"page3", label:"转出角色"};
+		phases[2] = {page:"page4", label:"用户列表"};
+		phases[3] = {page:"page2", label:"用户组织"};
 
 		var callback = {};
 		callback.onTabChange = function(){
@@ -204,12 +204,10 @@
             }
 			
 			// 设置翻页按钮显示状态
-			$$("page1BtPrev").style.display = "none";
 			$$("page4BtPrev").style.display = "";
 			$$("page2BtPrev").style.display = "";
 			$$("page1BtNext").style.display = "";
 			$$("page4BtNext").style.display = "";
-			$$("page2BtNext").style.display = "none";
 			
 			// 设置按钮操作
 			$$("page3BtAdd").onclick = function(){

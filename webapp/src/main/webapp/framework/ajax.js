@@ -257,8 +257,7 @@ HttpRequest.prototype.getNodeValue = function(name) {
 		 var parserResult = {};
 		 parserResult.dataType = _HTTP_RESPONSE_DATA_TYPE_EXCEPTION;
 		 parserResult.type = 1;
-		 parserResult.msg = e.description;
-		 parserResult.description = e.description;
+		 parserResult.msg =  parserResult.description = e.description || e.message;
 		 parserResult.source = "";
 
 		 this.onexception(parserResult);
@@ -336,7 +335,12 @@ HttpRequest.prototype.setCustomRequestHeader = function() {
 	for(var item in this.paramObj.header) {									
 		var itemValue = String(this.paramObj.header[item]);
 		if( itemValue != "" ) {
-			this.xmlhttp.setRequestHeader(item, itemValue);
+			try {
+				this.xmlhttp.setRequestHeader(item, itemValue);
+			}
+			catch (e) {
+				// chrome往header里设置中文会报错
+			}
 		}
 	}
 
@@ -710,9 +714,13 @@ function Ajax() {
 	if( arg.onresult ) {
 		request.onresult = arg.onresult;
 	}
-	if( arg.onexception ) {
-		request.onexception = arg.onexception;
+	if( arg.onexception == null ) {
+		arg.onexception = function(errorMsg) {
+			alert(errorMsg.description);
+		};
 	}
+	request.onexception = arg.onexception;
+
 	if( arg.onsuccess ) {
 		request.onsuccess = arg.onsuccess;
 	}

@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.web.dispaly.SuccessMessageEncoder;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
+import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IUserService;
 import com.jinhe.tss.um.sso.UMPasswordIdentifier;
-import com.jinhe.tss.util.DateUtil;
 
 /**
  * <p> 用户注册Servlet </p>
@@ -44,26 +44,16 @@ public class RegisterServlet extends HttpServlet {
  
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = new User();
-        // 设置默认认证方式为UMS本地认证
-        user.setAuthenticateMethod(UMPasswordIdentifier.class.getName());
+        
         // 前台传递的参数
         user.setLoginName(request.getParameter("loginName"));
         user.setPassword(request.getParameter("password"));
         user.setUserName(request.getParameter("userName"));
-        user.setEmployeeNo(request.getParameter("employeeNo"));
-        user.setSex(request.getParameter("sex"));
         user.setMail(request.getParameter("mail"));
-        String birthday = request.getParameter("birthday");
-        user.setAddress(request.getParameter("address"));
-        user.setTelephone(request.getParameter("telephone"));
-        user.setPostalCode(request.getParameter("postalCode"));
-        user.setPasswordQuestion(request.getParameter("passwordQuestion"));
-        user.setPasswordAnswer(request.getParameter("passwordAnswer"));
-        user.setCertificateCategory(request.getParameter("certificateCategory"));
-        user.setCertificateNumber(request.getParameter("certificateNumber"));
-       
-        user.setBirthday(DateUtil.parse(birthday));
 
+        // 设置默认认证方式为UMS本地认证
+        user.setAuthenticateMethod(UMPasswordIdentifier.class.getName());
+        user.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN);
         service.registerUser(user);
 
         response.setContentType("text/html;charset=GBK");

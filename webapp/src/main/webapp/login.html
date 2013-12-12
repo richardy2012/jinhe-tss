@@ -26,11 +26,9 @@ URL_CORE = "framework/"
 	
 	CACHE_LOGIN_FORM = "login__id";
 
-    /* 
-	 * XMLHTTP请求地址汇总 
-	 */
+    /* XMLHTTP请求地址汇总 */
 	URL_GET_USER_NAME = "getLoginInfo.in";
-    URL_LOGIN = "/" + AUTH_PATH + "login.do";
+    URL_LOGIN = AUTH_PATH + "login.do";
 
 	if( IS_TEST ) {
 		URL_GET_USER_NAME = "mockdata/username.xml";
@@ -133,18 +131,17 @@ URL_CORE = "framework/"
 			url: URL_LOGIN,
 			xformNode: Cache.XmlDatas.get(CACHE_LOGIN_FORM),
 			add2Header: true,
-			onexcption: function() {
+			onexception: function(errorMsg) {
 				loginXForm.setFocus("password");
+                alert(errorMsg.description);
 			},
-			onsuccess: function(){
+			onsuccess: function() {
 				location.href = "index.html?login=true";
 			}
 		});
     }
 
-    /*
-     *	回车自动提交
-     */
+    /* 回车自动提交 */
     function autoLogin() {
         if( 13 == event.keyCode ){
             event.returnValue = false;
@@ -160,7 +157,7 @@ URL_CORE = "framework/"
 
     /* 找回密码  */
     function forget() {
-        window.open("forget.htm", "", "width=400, height=400");
+        window.open("forget.html", "", "width=400, height=400");
     }
 
     /* 注册 */

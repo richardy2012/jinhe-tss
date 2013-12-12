@@ -12,15 +12,16 @@
 			<TD><input binding="name"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="description"/></TD>
-			<TD><textarea binding="description" style="width:100%;height:100"/></TD>
-		</TR>
-		<TR>
 			<TD width="50"><label binding="startDate"/></TD>
 			<TD><input binding="startDate"/></TD>
-			
+		</TR>
+		<TR>
 			<TD width="50"><label binding="endDate"/></TD>
 			<TD><input binding="endDate"/></TD>
+		</TR>
+		<TR>
+			<TD width="50"><label binding="description"/></TD>
+			<TD><textarea binding="description" style="width:70%;height:100"/></TD>
 		</TR>
 	</layout>
 	<data/>
