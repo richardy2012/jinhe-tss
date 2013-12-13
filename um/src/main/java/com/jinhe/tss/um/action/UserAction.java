@@ -172,7 +172,7 @@ public class UserAction extends BaseActionSupport {
 	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public void registerUser(HttpServletResponse response, User user) {
-        user.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN);
+        user.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID);
 		userService.registerUser(user);
         printSuccessMessage("用户注册成功！");
 	}

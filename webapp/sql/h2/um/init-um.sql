@@ -12,12 +12,6 @@ values (-3, 'Assistant-Group',   0, 2,  -1, 2, 2, '0000100002', 0);
 insert into um_group (ID, NAME, DISABLED, GROUPTYPE, PARENTID, SEQNO, LEVELNO, DECODE, lockVersion)
 values (-7, 'Self-Register-Group', 0, 1, -2, 1, 3, '000010000100001', 0);
 
-insert into um_group (ID, NAME, DISABLED, GROUPTYPE, PARENTID, SEQNO, LEVELNO, DECODE, lockVersion)
-values (-8, 'Auth-Group', 0, 1, -7, 1, 4, '00001000010000100001', 0);
-
-insert into um_group (ID, NAME, DISABLED, GROUPTYPE, PARENTID, SEQNO, LEVELNO, DECODE, lockVersion)
-values (-9, 'Un-Auth-Group', 0, 1, -7, 2, 4, '00001000010000100002', 0);
-
 commit;
 
 

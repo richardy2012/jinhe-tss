@@ -28,7 +28,12 @@
   	background-color:#E4E6F5;
   }
   .bottomBT {
-    top: 0px;
+    height: 45px;
+    background-color:#E4E6F5;
+  }
+  .bottomBT td {
+    vertical-align:top;
+    padding-top: 3px;
   }
 </style>
 
@@ -161,7 +166,10 @@
                               <td class="r b" width="35%">
                                 <Tree:Box id="page4Tree2" treeType="multi" baseurl="../framework/tree/" selectSelf="false"></Tree:Box>
                               </td>
-                              <td class="r b" style="background-color:#E4E6F5;width:18px"><input type="button" class="btWeakS" value=">>" id="page4BtAdd"/><input type="button" class="btWeakS" value="<<" id="page4BtDel"/></td>
+                              <td class="r b" style="background-color:#E4E6F5;width:18px">
+                                <input type="button" class="btWeakS" value=">>" id="page4BtAdd"/>
+                                <input type="button" class="btWeakS" value="<<" id="page4BtDel"/>
+                              </td>
                               <td class="b">
                                 <Tree:Box id="page4Tree3" treeType="multi" baseurl="../framework/tree/" selectSelf="false"></Tree:Box>
                               </td>

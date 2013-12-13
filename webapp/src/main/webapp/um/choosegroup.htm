@@ -40,7 +40,7 @@
     function getGroup() {        
         var tree = $T("tree");
         var treeNode = tree.getActiveTreeNode();
-		if(treeNode) {
+		    if(treeNode) {
             window.returnValue = {id:treeNode.getId(), name:treeNode.getName()};
             window.close();
         }

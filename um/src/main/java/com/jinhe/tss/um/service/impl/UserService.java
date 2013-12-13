@@ -133,8 +133,8 @@ public class UserService implements IUserService{
         
         userDao.create(user);
         
-        // 自注册用户默认加入到自注册用户组(特殊组)中的未认证用户组
-        createUser2Group(user.getId(), UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN);
+        // 自注册用户默认加入到自注册用户组(特殊组)
+        createUser2Group(user.getId(), UMConstants.SELF_REGISTER_GROUP_ID);
     }
 
     private void checkUserAccout(User user) {

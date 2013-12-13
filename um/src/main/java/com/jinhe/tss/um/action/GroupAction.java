@@ -92,13 +92,6 @@ public class GroupAction extends ProgressActionSupport {
 	public void getOperation(HttpServletResponse response, 
 			@PathVariable("resourceId") Long resourceId) {
 		
-        if (UMConstants.SELF_REGISTER_GROUP_ID.equals(resourceId) 
-        		|| UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN.equals(resourceId)) {
-        	
-        	print("Operation", "");
-        	return; // 自注册用户组类型:没有任何菜单
-        } 
-        
         String resourceTypeId = UMConstants.GROUP_RESOURCE_TYPE_ID;
         List<?> operations = PermissionHelper.getInstance().getOperationsByResource(resourceTypeId, resourceId);
  

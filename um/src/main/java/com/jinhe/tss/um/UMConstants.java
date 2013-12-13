@@ -56,9 +56,6 @@ public final class UMConstants {
 	public static final Long ASSISTANT_GROUP_ID                = new Long(-3); //辅助用户组的ID(初始化数据库时写死的)
 	public static final Long ROLE_ROOT_ID                      = new Long(-6); //角色的ID(视图生成)
 	public static final Long SELF_REGISTER_GROUP_ID            = new Long(-7); //自注册用户组的ID(初始化数据库时写死的)
-	public static final Long SELF_REGISTER_GROUP_ID_AUTHENED   = new Long(-8); //自注册用户组的ID(已认证)(初始化数据库时写死的)
-	public static final Long SELF_REGISTER_GROUP_ID_NOT_AUTHEN = new Long(-9); //自注册用户组的ID(未认证)(初始化数据库时写死的)
-    
 	
 	// ===========================================================================
     // 资源权限相关

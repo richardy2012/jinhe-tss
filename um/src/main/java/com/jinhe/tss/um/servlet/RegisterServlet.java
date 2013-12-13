@@ -53,7 +53,7 @@ public class RegisterServlet extends HttpServlet {
 
         // 设置默认认证方式为UMS本地认证
         user.setAuthenticateMethod(UMPasswordIdentifier.class.getName());
-        user.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID_NOT_AUTHEN);
+        user.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID);
         service.registerUser(user);
 
         response.setContentType("text/html;charset=GBK");

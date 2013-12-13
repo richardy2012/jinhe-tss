@@ -67,9 +67,9 @@
         }
         var item2 = {
             label:"删除",
-            callback: function() { delTreeNode(); },
+            callback: function() { delTreeNode(URL_DELETE_NODE); },
             icon:ICON + "icon_del.gif",
-            visible:function() {return !isRootNode() && getOperation("2");}
+            visible:function() {return !isRootNode() && !isAnonymous() && getOperation("2");}
         }
 		var item12 = {
             label:"查看",
@@ -81,19 +81,19 @@
             label:"编辑",
             callback:function() { editTreeNode(true); },
             icon:ICON + "edit.gif",           
-            visible:function() {return !isRootNode() && getOperation("2");}
+            visible:function() {return !isRootNode() && !isAnonymous() && getOperation("2");}
         }
         var item7 = {
             label:"停用",
             callback:function() { stopOrStartTreeNode("1"); },
             icon:ICON + "stop.gif",           
-            visible:function() {return !isRootNode() && !isTreeNodeDisabled() && getOperation("2");}
+            visible:function() {return !isRootNode() && !isAnonymous() && !isTreeNodeDisabled() && getOperation("2");}
         }
         var item8 = {
             label:"启用",
             callback:function() { stopOrStartTreeNode("0"); },
             icon:ICON + "start.gif",           
-            visible:function() {return !isRootNode() && isTreeNodeDisabled() && getOperation("2");}
+            visible:function() {return !isRootNode() && !isAnonymous() && isTreeNodeDisabled() && getOperation("2");}
         }
         var item9 = {
             label:"新建角色",
@@ -110,12 +110,12 @@
             label:"移动到...",
             callback:moveNodeTo,
             icon:ICON + "move.gif",            
-            visible:function() {return !isRootNode() && getOperation("2");}
+            visible:function() {return !isRootNode() && !isAnonymous() && getOperation("2");}
         }
         var item14 = {
             label:"授予角色",
             callback:setRole2Permission,            
-            visible:function() {return !isRootNode() && getOperation("2");}
+            visible:function() {return !isRootNode() && !isAnonymous() && getOperation("2");}
         }
 
         var menu1 = new Menu();
@@ -164,9 +164,12 @@
     }
 	
 	/* 是否根节点 */
-    function isRootNode(id) {
-        id = id || getTreeNodeId();
-        return ("-6" == id);
+    function isRootNode() {
+        return ("-6" == getTreeNodeId());
+    }
+
+    function isAnonymous() {
+        return ("-10000" == getTreeNodeId());
     }
 	
 	/* 获取节点类型(1角色组/0角色) */
@@ -177,13 +180,6 @@
 		return getTreeAttribute("isGroup") == "1";
 	}
  
-    /*
-     *	删除节点
-     */
-    function delTreeNode() {
-		delTreeNode(URL_DELETE_NODE);
-    }
-	
 	function moveNodeTo() {
         var tree = $T("tree");
 		var treeNodeID = tree.getActiveTreeNode().getId();

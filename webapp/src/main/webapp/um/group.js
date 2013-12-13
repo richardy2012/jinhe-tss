@@ -104,7 +104,7 @@
                 id = treeNode.getId();
             }            
         }
-        return ("-7"==id || "-8"==id || "-9"==id);
+        return ("-7"==id );
     }
 	
 	function editable() {

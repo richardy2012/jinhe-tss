@@ -24,8 +24,16 @@
 
 <style>
   .trxx {
-  	height: 13px;
-  	background-color:#E4E6F5
+    height: 20px;
+    background-color:#E4E6F5;
+  }
+  .bottomBT {
+    height: 45px;
+    background-color:#E4E6F5;
+  }
+  .bottomBT td {
+    vertical-align:top;
+    padding-top: 3px;
   }
 </style>
 
@@ -109,7 +117,7 @@
                                       <Tree:Box id="page2Tree2" treeType="multi" baseurl="../framework/tree/" selectSelf="false"></Tree:Box>
                                     </td>
                                   </tr>
-                                  <tr>
+                                  <tr class="bottomBT">
                                     <td colspan="3">
                                       <WorkSpace:PageStep>
                                         <input type="button" class="btWeak" value="上一步" id="page2BtPrev" onclick="ws.prevPhase(false)"/>
@@ -145,7 +153,7 @@
                                       <Tree:Box id="page4Tree3" treeType="multi" baseurl="../framework/tree/" selectSelf="false"></Tree:Box>
                                     </td>
                                   </tr>
-                                  <tr>
+                                  <tr class="bottomBT">
                                     <td colspan="4">
                                       <WorkSpace:PageStep>
                                         <input type="button" class="btWeak" value="上一步" id="page4BtPrev" onclick="ws.prevPhase(false)"/>

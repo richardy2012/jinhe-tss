@@ -364,7 +364,7 @@ public class RoleAction extends BaseActionSupport {
 		
 		String applicationId = request.getParameter("applicationId");
     	String resourceType  = request.getParameter("resourceType");
-    	String permissions  = request.getParameter("permissions");
+    	String permissions   = request.getParameter("permissions");
     	
 	    if( applicationId == null ) {
             applicationId = PermissionHelper.getApplicationID();

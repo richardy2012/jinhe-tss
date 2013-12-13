@@ -13,7 +13,7 @@
     <poolClass>com.jinhe.tss.cache.extension.ReusablePool</poolClass>  
     <poolContainerClass>com.jinhe.tss.cache.extension.MapContainer</poolContainerClass>    
     <poolSize>1000</poolSize>  
-    <cyclelife>18000000</cyclelife>  
+    <cyclelife>0</cyclelife>  
     <interruptTime>100</interruptTime>  
     <initNum>100</initNum>  
     <customizerClass>com.jinhe.tss.framework.component.log.LogOutputTaskPoolCustomizer</customizerClass>  

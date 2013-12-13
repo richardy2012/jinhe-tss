@@ -49,7 +49,7 @@
 	
 	
 	<!-- CMS -->
-	<resourceType resourceTypeId="21" name="栏目类型" seqNo="21" description="栏目类型资源" 
+	<resourceType resourceTypeId="21" name="内容栏目" seqNo="21" description="栏目类型资源" 
 		unSuppliedTable="com.jinhe.tss.cms.entity.permission.ChannelPermissions" 
 		suppliedTable="com.jinhe.tss.cms.entity.permission.ChannelPermissionsFull" 
 		resourceTable="com.jinhe.tss.cms.entity.permission.ChannelResourceView">
