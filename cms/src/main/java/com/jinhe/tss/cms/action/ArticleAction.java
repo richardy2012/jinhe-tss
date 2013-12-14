@@ -1,6 +1,9 @@
 package com.jinhe.tss.cms.action;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +31,7 @@ import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
+import com.jinhe.tss.util.DateUtil;
 import com.jinhe.tss.util.EasyUtils;
  
 @Controller
@@ -67,14 +71,14 @@ public class ArticleAction extends BaseActionSupport {
         initMap.put("isTop", CMSConstants.FALSE);
         initMap.put("author", Environment.getUserName()); // 默认作者为登录者，前台可进行修改
         
+        // 默认的文章发布日期及过期日期
+        initMap.put("issueDate", DateUtil.format(new Date()));
+        Calendar calendar = new GregorianCalendar();
+        calendar.add(Calendar.YEAR, 1); // 默认一年后过期
+        initMap.put("overdueDate", DateUtil.format(calendar.getTime()));
+        
         XFormEncoder articleInfoXForm = new XFormEncoder(CMSConstants.XFORM_ARTICLE, initMap);
-        
-        Long tempArticleId = System.currentTimeMillis();
-        
-        Map<String, Object> initMap4Upload = new HashMap<String, Object>();	
-        initMap4Upload.put("id", tempArticleId);
-        initMap4Upload.put("channelId", channelId);
-        
+ 
 		GridDataEncoder attachGrid = new GridDataEncoder(new ArrayList<Object>(), CMSConstants.GRID_ATTACHSLIST);
         
 		print(new String[]{"ArticleInfo", "ArticleContent", "AttachsList"}, 
@@ -115,7 +119,7 @@ public class ArticleAction extends BaseActionSupport {
 		
         Long channelId = article.getChannel().getId();
         if(article.getId() == null || article.getId() == 0) {
-            // 新增的时候上传的附件对象以new Date()为主键，此处的"articleId"就是这个值
+            // 新增的时候上传的附件对象以System.currentTimeMillis(参见CreateAttach类)为主键，此处的"articleId"就是这个值
             Long articleId = EasyUtils.convertObject2Long(request.getParameter("articleId"));
 	        articleService.createArticle(article, channelId, attachList, articleId); 
 	    } 

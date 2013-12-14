@@ -150,7 +150,7 @@
             label:"浏览用户",
             callback:function() { showUserList(); },
             icon:ICON + "view_list.gif",
-            visible:function(){return !isTreeRoot() && getTreeNodeId() != -2 && getOperation("1"); }
+            visible:function(){return !isTreeRoot() && getTreeNodeId() != -2 && getTreeNodeId() != -3 && getOperation("1"); }
         }
         var item9 = {
             label:"搜索用户...",

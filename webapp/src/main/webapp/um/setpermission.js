@@ -311,7 +311,8 @@
 
 		// 获取option的id名
 		for(var i=0; i < permissionOptions.length; i++) {
-			var curOptionID = permissionOptions[i].selectSingleNode("operationId").text;
+			var temoNode = permissionOptions[i].selectSingleNode("operationId");
+			var curOptionID = getNodeText(temoNode);
 			optionIds.push(curOptionID);
 		}
 

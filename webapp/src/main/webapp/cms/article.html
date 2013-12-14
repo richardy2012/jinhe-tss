@@ -59,15 +59,13 @@
 			url = URL_ARTICLE_DETAIL + articleId;
 		} else {
 			url = URL_ARTICLE_INIT + channelId; 
+			articleId =  new Date().valueOf(); // 取当前时间作为新文章的临时ID，上传附件时有用
 		}
 
         var onresult = function(){
             var articleInfoNode    = this.getNodeValue("ArticleInfo");
             var articleContentNode = this.getNodeValue("ArticleContent");
             var attachsListNode    = this.getNodeValue("AttachsList");
-
-			// 如果是新增，返回的articleId是个临时值（上传附件时会用到）
-		    articleId =  articleInfoNode.selectSingleNode(".//data//row").getCDATA("id");
 
 			$X("articleForm", articleInfoNode);
 			editor.insertHtml(articleContentNode);
@@ -98,6 +96,7 @@
         var p = new HttpRequestParams();
         p.url = URL_SAVE_ARTICLE;
         p.setContent("channel.id", channelId); // 文章所属栏目
+        p.setContent("articleId", articleId); 
 
         // 文章基本信息
         var articleInfoNode = articleForm.getXmlDocument();
@@ -138,7 +137,7 @@
  
 	function uploadAttachment() {
 		var url = URL_UPLOAD_FILE + "?afterUploadClass=com.jinhe.tss.cms.CreateAttach";
-		url += "&articleId=" + articleId;
+		url += "&articleId=" + articleId;	
 		url += "&channelId=" + channelId;
 		url += "&type=" + $$("fileType").value;
 		
@@ -194,10 +193,10 @@
               </td>
             </tr>
             <tr>
-              <td valign="top" height="400">
+              <td valign="top" height="370">
                   <!-- 编辑器 开始 -->
 				  <form>
-					<textarea id="content" name="content" style="width:100%;height:399px;visibility:hidden;"></textarea>
+					<textarea id="content" name="content" style="width:99%;height:369px;visibility:hidden;"></textarea>
 				  </form>
                   <!-- 编辑器 结束 -->
               </td>

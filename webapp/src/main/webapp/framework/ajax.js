@@ -716,7 +716,7 @@ function Ajax() {
 	}
 	if( arg.onexception == null ) {
 		arg.onexception = function(errorMsg) {
-			alert(errorMsg.description);
+			// alert(errorMsg.description);
 		};
 	}
 	request.onexception = arg.onexception;

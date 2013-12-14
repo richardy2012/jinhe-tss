@@ -21,20 +21,14 @@
 
 URL_CORE = "framework/"
 
-    /*
-     *	后台响应数据节点名称
-     */
+    /* 后台响应数据节点名称  */
     XML_FORGET_INFO = "ForgetInfo";
     XML_USER_ID = "UserId";
 
-    /*
-     *	默认唯一编号名前缀
-     */
+    /* 默认唯一编号名前缀 */
     CACHE_FORGET_INFO = "forget__id";
 
-    /*
-     *	XMLHTTP请求地址汇总
-     */
+    /* XMLHTTP请求地址汇总 */
     URL_INIT   = AUTH_PATH + "user/forgetpwd";
     URL_FORGET = "getPassword.in";
     URL_SET_NEW_PASSWORD = "resetPassword.in";
@@ -81,14 +75,7 @@ URL_CORE = "framework/"
 		});
     }
 
-    function resetForm() {
-        forgetForm.resetForm();
-        forgetForm.setFocus();
-    }
-
-    /*
-     *	检测注册表单是否填写正确。点击“找回”按钮的时候触发
-     */
+    /* 检测注册表单是否填写正确。点击“找回”按钮的时候触发 */
     function checkForgetForm() {
         var flag = true;
         if( false == forgetForm.checkForm()) {
@@ -109,9 +96,7 @@ URL_CORE = "framework/"
         return flag;
     }
 
-    /*
-     *	函数说明：检测新密码
-     */
+    /* 检测新密码 */
     function checkNewPassword() {
         var flag = true;
         var password   = forgetForm.getData("password");
@@ -128,9 +113,7 @@ URL_CORE = "framework/"
         return flag;
     }
 
-    /*
-     *	函数说明：设置新密码
-、     */
+    /* 设置新密码 */
     function setNewPassword() {
 		Ajax({
 			url : URL_SET_NEW_PASSWORD,
@@ -152,9 +135,9 @@ URL_CORE = "framework/"
 
 <body>
 
-<div class="dialog">
-	<XForm:Box id="forgetForm" baseurl="framework/xform/"></XForm:Box>
-</div>
+    <div class="dialog">
+    	<XForm:Box id="forgetForm" baseurl="framework/xform/"></XForm:Box>
+    </div>
 
 </body>
 </html>

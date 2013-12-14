@@ -18,12 +18,7 @@ public class CreateAttach implements AfterUpload {
 	public String processUploadFile(HttpServletRequest request,
 			String filepath, String oldfileName) throws Exception {
 
-		Long articleId;
-		try {
-			articleId = Long.parseLong(request.getParameter("articleId"));
-		} catch(Exception e) {
-			articleId = System.currentTimeMillis();
-		}
+		Long articleId = Long.parseLong(request.getParameter("articleId"));
 		Long channelId = Long.parseLong(request.getParameter("channelId"));
 		int type = Integer.parseInt(request.getParameter("type"));
 		

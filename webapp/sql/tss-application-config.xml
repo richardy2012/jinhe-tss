@@ -54,7 +54,7 @@
 		suppliedTable="com.jinhe.tss.cms.entity.permission.ChannelPermissionsFull" 
 		resourceTable="com.jinhe.tss.cms.entity.permission.ChannelResourceView">
 		
-		<operation operationId="1"  name="查看浏览" seqNo="1" dependId="opt1" />
+		<operation operationId="1"  name="查看浏览" seqNo="1" dependParent="2" />
 		<operation operationId="2"  name="新建栏目" seqNo="2" dependId="opt1" />	
 		<operation operationId="3"  name="新建文章" seqNo="3" dependId="opt1" />	
 		<operation operationId="4"  name="发布文章" seqNo="4" dependId="opt1" dependParent="3"/>

@@ -413,7 +413,7 @@
 
     function addNewArticle() { 
 		var channelId = $T("tree").getActiveTreeNode().getId();
-		var returnValue = window.showModalDialog("article.html",{title:"新建文章",channelId:channelId,articleId:null},"dialogWidth:900px;dialogHeight:700px;status:yes");
+		var returnValue = window.showModalDialog("article.html",{title:"新建文章",channelId:channelId,articleId:null},"dialogWidth:900px;dialogHeight:720px;status:yes");
 		if( returnValue ) { 
 			showArticleList(channelId); 
 		}
@@ -539,7 +539,7 @@
             label:"编辑",
             callback:editArticleInfo,
             icon:ICON + "edit.gif",
-            visible:function() { return "1" == getArticleAttribute("status") && getGridOperation("5");}
+            visible:function() { return getArticleAttribute("status") < 3 && getGridOperation("5");}
         }
         var item2 = {
             label:"删除",

@@ -17,18 +17,20 @@
 <SCRIPT type="text/javascript">
  <!--
 
-    URL_INIT = AUTH_PATH + "channel/list";
+  URL_INIT = AUTH_PATH + "channel/list";
 
 	if(IS_TEST) {
 		URL_INIT = "data/channelTree.xml";
 	}
  
-    function init() {
+  function init() {
 		Ajax({
 			url : URL_INIT,
 			params : window.dialogArguments,
 			onresult : function() { 				
 				var groupTreeNode = this.getNodeValue("ChannelTree");
+
+        disableSingleTreeNode(groupTreeNode, "//treeNode[@id='_rootId']");
  
 				var tree = $T("tree", groupTreeNode); 
 				tree.element.onTreeNodeDoubleClick = function(eventObj){
@@ -36,18 +38,18 @@
 				}
 			}
 		});
-    }
+  }
  
-    function getGroup() {        
-        var tree = $T("tree");
-        var treeNode = tree.getActiveTreeNode();
-		if(treeNode) {
-            window.returnValue = {id:treeNode.getId(), name:treeNode.getName()};
-            window.close();
-        }
-    }
+  function getGroup() {        
+      var tree = $T("tree");
+      var treeNode = tree.getActiveTreeNode();
+	    if(treeNode) {
+          window.returnValue = {id: treeNode.getId(), name: treeNode.getName()};
+          window.close();
+      }
+  }
 
-    window.onload = init;
+  window.onload = init;
 
  //-->
  </SCRIPT>
