@@ -79,7 +79,8 @@ function logout() {
 // 关闭页面时候自动注销
 function logoutOnClose() {
 	Event.attachEvent(window, "unload", function() {
-		if(10*1000 < window < screenTop || 10*1000 < window.screenLeft) {
+		if(event.clientX > document.body.clientWidth && event.clientY < 0 || event.altKey) {
+			alert("close");
 			logout();
 		}
 	});

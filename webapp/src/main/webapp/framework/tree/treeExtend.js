@@ -84,7 +84,8 @@ var ExtendTree = function(element) {
 			for(var i=0; i < this._options.length; i++) {
 				var curOption = this._options[i];
 				var operationId = getNodeText(curOption.selectSingleNode("./operationId"));
-				var dependIds = getNodeText(curOption.selectSingleNode("./dependId")).replace(/^\s*|\s*$/g, "");
+				var dependIds = getNodeText(curOption.selectSingleNode("./dependId")) || "";
+				dependIds = dependIds.replace(/^\s*|\s*$/g, "");
 				
 				if(dependIds == null || dependIds == "") continue;
 

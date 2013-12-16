@@ -118,7 +118,8 @@ public class PortalAction extends FreeMarkerSupportAction {
             map.put("type", request.getParameter("type"));
             
             Long parentId = Long.parseLong(request.getParameter("parentId"));
-			map.put("parentId", parentId);
+            map.put("parentId", parentId);
+            
 			if( !PortalConstants.ROOT_ID.equals(parentId) ) {
 				Structure parent = service.getStructure(parentId);
 				map.put("portalId", parent.getPortalId());

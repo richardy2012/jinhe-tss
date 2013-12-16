@@ -3,11 +3,11 @@
 	<declare prefix="user">
 		<column name="id" mode="hidden"/>
 		<column name="userName"  caption="姓名" mode="string" empty="false" maxLength="20"/>
-		<column name="loginName" caption="账号" mode="string" empty="false" maxLength="20"/>
-		<column name="password"  caption="密码" mode="string" empty="false" maxLength="20" inputReg="/^[\u0000-\u00FF]*$/"/>
+		<column name="loginName" caption="账号" mode="string" empty="false" maxLength="20" editable="false"/>
+		<column name="password"  caption="密码" mode="string" empty="false" maxLength="20" editable="false" inputReg="/^[\u0000-\u00FF]*$/"/>
 		<column name="passwordQuestion" caption="提示问题" mode="string" empty="false" maxLength="100"/>
 		<column name="passwordAnswer"   caption="提示答案" mode="string" empty="false" maxLength="100"/>
-		<column name="sex" caption="性别" mode="string" editor="comboedit" editorvalue="0|1" editortext="男|女"/>
+		<column name="sex" caption="性别" mode="string" editor="comboedit" editorvalue="1|0" editortext="男|女"/>
 		<column name="birthday" caption="出生年月" mode="string" pattern="yyyy-MM-dd" maxLength="32"/>
 		<column name="employeeNo" caption="员工编号" mode="string" maxLength="100"/>
 		<column name="mail" caption="电子邮件" mode="string" maxLength="100" inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/"/>

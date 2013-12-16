@@ -95,7 +95,7 @@ URL_CORE = "framework/";
         var loginName  = loginXForm.getData("loginName") ||"";
         var userName   = loginXForm.getData("userName")  ||"";
         var identifier = loginXForm.getData("identifier")||"";
-        var password   = loginXForm.getData("password")  ||"";
+        var password   = loginXForm.getData("password")  || $$("password").value;
 
         window.returnValue = {loginName:loginName, userName:userName, password:password, identifier:identifier};
         window.close();

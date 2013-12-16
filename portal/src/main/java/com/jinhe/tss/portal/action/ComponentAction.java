@@ -83,17 +83,19 @@ public class ComponentAction extends FreeMarkerSupportAction {
     		@PathVariable("id") Long id, 
     		@PathVariable("groupId") Long groupId) {
     	
-        Component componentGroup = service.getComponent(groupId);
-        String templatePath = componentGroup.getTemplatePath();
-        
         XFormEncoder encoder;
         if ( DEFAULT_NEW_ID.equals(id) ) {   // 新增组件
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("groupId", groupId);
+            
+            Component componentGroup = service.getComponent(groupId);
+            String templatePath = componentGroup.getTemplatePath();
             encoder = new XFormEncoder(templatePath, map);
         } 
         else { // 修改组件
             Component component = service.getComponent(id);
+            Component componentGroup = service.getComponent(component.getParentId());
+            String templatePath = componentGroup.getTemplatePath();
 			encoder = new XFormEncoder(templatePath, component);
         }
         print("DetailInfo", encoder);

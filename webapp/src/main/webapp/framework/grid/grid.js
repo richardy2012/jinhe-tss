@@ -615,7 +615,7 @@ function initGridToolBar(gridPageBar, pageInfo, callback) {
 
 /* 显示Grid列表 */
 function showGrid(serviceUrl, dataNodeName, editRowFuction, gridName, page, requestParam, pageBar) {
-	pageBar  = pageBar || $$("gridToolBar");
+	pageBar  = pageBar  || $$("gridToolBar");
 	gridName = gridName || "grid";
 	page     =  page || "1";
 
@@ -624,6 +624,10 @@ function showGrid(serviceUrl, dataNodeName, editRowFuction, gridName, page, requ
 
 	var request = new HttpRequest(p);
 	request.onresult = function() {
+		if($$(gridName).getAttribute("height") == null) {
+			$$(gridName).setAttribute("height", $$(gridName).clientHeight); // hack for IE11
+		}
+		
 		$G(gridName, this.getNodeValue(dataNodeName)); 
  
 		var gotoPage = function(page) {

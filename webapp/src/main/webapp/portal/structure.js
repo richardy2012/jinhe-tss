@@ -329,14 +329,10 @@
 		var p = new HttpRequestParams();
 		p.url = URL_SOURCE_DETAIL + treeID;
 
-		if(parentID == "_rootId") {
-			parentID = 0;
-		}
-
 		// 如果是新增
 		if( treeID == DEFAULT_NEW_ID ) {
 			p.setContent("type", treeType);
-			p.setContent("parentId", parentID);
+			p.setContent("parentId", parentID == "_rootId" ? "0" : parentID);
 		} 
 
 		var request = new HttpRequest(p);
@@ -432,7 +428,7 @@
 				detachReminder(treeID); // 解除提醒
 
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
-				appendTreeNode(parentID,treeNode);
+				appendTreeNode(parentID, treeNode);
 
 				ws.closeActiveTab();
             }

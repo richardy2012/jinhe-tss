@@ -18,16 +18,17 @@
 		URL_RESOURCE_TYPES  = "data/resourcetypeList.xml?";
 		URL_PERMISSION      = "data/setpermission.xml?";
 		URL_SAVE_PERMISSION = "data/_success.xml?";
-
-		window.dialogArguments = {type:"", params: {isRole2Resource: "0"} };
 	}
-	
 
+	if(true) {
+		window.dialogArguments = {type:"", params: {isRole2Resource: "1", roleId: "3"} };
+	}	
+	
     function init() {
         loadInitData();
     }
  
-    function loadInitData() {
+    function loadInitData() {   	
         var params = window.dialogArguments.params;
  
 		Ajax({

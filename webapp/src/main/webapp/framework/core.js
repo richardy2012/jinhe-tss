@@ -369,12 +369,7 @@ Log.read = function(index) {
 		return this.info[index];
 	}
 }
-
-// 扩展数组，增加数组项
-Array.prototype.push = function(item) {
-	this[this.length] = item;
-}
-
+ 
 String.prototype.convertEntry = function() {
 	var str = this;
 	str = str.replace(/\&/g, "&amp;");
