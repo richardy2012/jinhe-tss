@@ -34,7 +34,7 @@ var Grid = function(element, data) {
 		this.gridBox.style.height = this.windowHeight = pointHeight;
 	} else {
 		// this.gridBox.style.height = "100%";
-		this.gridBox.style.height = element.clientHeight; // 固定住grid高度，以免在IE部分版本及FF里被撑开
+		this.gridBox.style.height = element.clientHeight; // hack 固定住grid高度，以免在IE部分版本及FF里被撑开
 		this.windowHeight = Math.max(element.offsetHeight, 500);
 	}
 

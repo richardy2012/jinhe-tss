@@ -1374,7 +1374,7 @@ function xml2String(element) {
 }
 
 function getNodeText(node) {
-	return node.text || node.textContent; // 取节点值时，chrome里用textContent
+	return node.text || node.textContent || ""; // 取节点值时，chrome里用textContent
 }
 
 /*

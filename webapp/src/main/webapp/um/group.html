@@ -87,29 +87,18 @@
                     <!-- 左栏 结束 -->
                   </td>
                   <td class="groove">
-                    <table class="full" cellspacing="2">
-                      <tr height="53%">
-                        <td id="listContainer" class="gridContainer">
-                          <!-- 列表区域 开始 -->
-                          <table class="full border">
-                            <tr>
-                              <td id="gridTitle">
-                                <span class="icon"></span>用户列表<span class="buttonBox" id="gridToolBar"></span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <Grid:Box id="grid" baseurl="../framework/grid/"></Grid:Box>
-                              </td>
-                            </tr>
-                          </table>
-                          <!-- 列表区域 结束 -->
+                    <table class="full">
+                      <tr>
+                        <td id="gridTitle">
+                          <span class="icon"></span>用户列表<span class="buttonBox" id="gridToolBar"></span>
                         </td>
                       </tr>
                       <tr>
-                        <td class="separator"></td>
+                        <td id="listContainer" class="gridContainer">
+                          <Grid:Box id="grid" baseurl="../framework/grid/"></Grid:Box>
+                        </td>
                       </tr>
-                      <tr>
+                      <tr height="315px">
                         <td>
                           <!-- 标签区域 开始 -->
                           <WorkSpace:Box id="ws" baseurl="../framework/workspace/">

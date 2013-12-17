@@ -20,7 +20,7 @@
 		URL_SAVE_PERMISSION = "data/_success.xml?";
 	}
 
-	if(true) {
+	if(IS_TEST) {
 		window.dialogArguments = {type:"", params: {isRole2Resource: "1", roleId: "3"} };
 	}	
 	
@@ -135,7 +135,7 @@
 
         var option = new XmlNode(treeObj.getOptionById(optionId));
         var dependParent = option.selectSingleNode("dependParent");
-        if( dependParent ) {
+        if( dependParent || dependParent.text ) {
             dependParent = dependParent.text.replace(/^\s*|\s*$/g, "");
         }
 
