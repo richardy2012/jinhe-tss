@@ -76,10 +76,10 @@ public class GeneralSearchTest extends TxSupportTest4UM {
         request.addParameter("Rule2RoleIds", roleId + "");
         strategyAction.saveSubauth(response, request, strategy);
         
-    	action.searchUserSubauth(groupId);
+    	action.searchUserSubauth(response, groupId);
     	
-    	action.searchRolesByGroup(roleId);
+    	action.searchRolesByGroup(response, roleId);
     	
-    	action.searchUsersByRole(roleId);
+    	action.searchUsersByRole(response, roleId);
     }
 }

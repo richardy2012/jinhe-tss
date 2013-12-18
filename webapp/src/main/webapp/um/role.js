@@ -13,7 +13,8 @@
     XML_GROUP_TO_USER_LIST_TREE = "Group2UserListTree";
     XML_ROLE_TO_GROUP_IDS = "Role2GroupIds";
     XML_ROLE_TO_USER_IDS = "Role2UserIds";
-	
+	XML_SEARCH_ROLE_USERS = "ROlE_USERS_RESULT";
+
     /*
      *	默认唯一编号名前缀
      */
@@ -35,6 +36,8 @@
 	URL_MOVE_NODE		  = AUTH_PATH + "role/move/"; // {id}/{toGroupId}
     URL_GROUP_USERS       = AUTH_PATH + "group/users/";  // {groupId}
     URL_GET_OPERATION     = AUTH_PATH + "role/operations/";  // {id}
+
+    URL_SEARCH_ROLE_USERS = AUTH_PATH + "search/role/users/";
 	
 	if(IS_TEST) {
 	    URL_SOURCE_TREE       = "data/role_tree.xml?";
@@ -100,22 +103,27 @@
             callback:addNewRole,           
             visible:function() {return (isRoleGroup() || isRootNode()) && getOperation("2");}
         }
-        var item10 = {
-            label:"给角色授权",
-            icon:ICON + "um/role_permission.gif",
-            callback:setRolePermission,           
-            visible:function() {return isRole() && getOperation("2");}
-        }
         var item11 = {
             label:"移动到...",
             callback:moveNodeTo,
             icon:ICON + "move.gif",            
             visible:function() {return !isRootNode() && !isAnonymous() && getOperation("2");}
         }
-        var item14 = {
+        var item10 = {
+            label:"给角色授权",
+            icon:ICON + "um/role_permission.gif",
+            callback:setRolePermission,           
+            visible:function() {return isRole() && getOperation("2");}
+        }
+        var item12 = {
             label:"授予角色",
             callback:setRole2Permission,            
             visible:function() {return !isRootNode() && !isAnonymous() && getOperation("2");}
+        }
+        var item13 = {
+            label:"已授用户列表",
+            callback:generalSearchRoleUsers,
+            visible:function() {return isRole() && getOperation("2");}
         }
 
         var menu1 = new Menu();
@@ -130,7 +138,8 @@
 		menu1.addItem(item11);
         menu1.addSeparator();    
 		menu1.addItem(item10); 
-        menu1.addItem(item14);
+        menu1.addItem(item12);
+        menu1.addItem(item13);
 
         $$("tree").contextmenu = menu1;
     }
@@ -549,6 +558,18 @@
 			isRole2Resource: "0"
 		};
 		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:800px;dialogHeight:600px;resizable:no");
+    }
+
+    /* 综合查询(所有拥有指定角色的用户列表) */
+    function generalSearchRoleUsers() {
+        var treeNode  = $T("tree").getActiveTreeNode();
+		var roleId   = treeNode.getId();
+		var roleName = treeNode.getName();
+
+        var url = URL_SEARCH_ROLE_USERS + roleId;
+
+        window.showModalDialog("../portal/commongrid.html", {service: url, nodename: XML_SEARCH_ROLE_USERS, title:"查看拥有角色【" + roleName +"】的用户列表"} , 
+            "dialogWidth:300px;dialogHeight:500px;resizable:yes");
     }
 
 

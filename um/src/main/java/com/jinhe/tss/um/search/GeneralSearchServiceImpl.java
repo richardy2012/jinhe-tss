@@ -36,7 +36,8 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
 		List<SubAuthorizedUserRoleDTO> result = new ArrayList<SubAuthorizedUserRoleDTO>();
 		
 		String hql = "select u, r, s, creator from User u, RoleUser ru, Role r, SubAuthorize s, User creator, Temp t " +
-					" where u.id=ru.userId and ru.roleId = r.id and ru.strategyId = s.id and s.creatorId = creator.id and u.id = t.id";
+					" where u.id=ru.userId and ru.roleId = r.id and ru.strategyId = s.id and s.creatorId = creator.id and u.id = t.id" +
+					" order by u.id";
         List<?> list = commonDao.getEntities(hql);
 		for( Object temp : list ) {
 			Object[] objs = (Object[]) temp;
@@ -62,7 +63,8 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
 		hql = "select u, r, s, creator, g " +
 			" from User u, GroupUser gu, Group g, RoleGroup rg, Role r, SubAuthorize s, User creator, Temp t " +
 		    " where u.id = gu.userId and gu.groupId=g.id and g.id=rg.groupId and rg.roleId = r.id  " +
-		    "   and rg.strategyId = s.id and s.creatorId = creator.id and u.id = t.id ";
+		    "   and rg.strategyId = s.id and s.creatorId = creator.id and u.id = t.id " +
+		    " order by u.id";
         list = commonDao.getEntities(hql);
         for( Object temp : list ){
 			Object[] objs = (Object[]) temp;
@@ -95,7 +97,8 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
 	    
         // 再查出这些用户拥有的角色情况
         String hql = "select u, r from User u, Role r, ViewRoleUser ru, Temp t " 
-        	+ " where u.id = ru.id.userId and ru.id.roleId = r.id and u.id = t.id";
+        	+ " where u.id = ru.id.userId and ru.id.roleId = r.id and u.id = t.id" 
+        	+ " order by u.id";
         List<?> list = commonDao.getEntities(hql);
         
         List<UserRoleDTO> returnList = new ArrayList<UserRoleDTO>();

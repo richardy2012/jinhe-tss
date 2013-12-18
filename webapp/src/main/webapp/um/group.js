@@ -26,8 +26,6 @@
     CACHE_GRID_ROW_DETAIL = "row__id";
     CACHE_TREE_NODE_DETAIL = "treeNode__id";
     CACHE_MAIN_TREE = "tree__id";
-    CACHE_SEARCH_SUBAUTH = "CACHE_SEARCH_SUBAUTH";
-    CACHE_SEARCH_ROLE = "CACHE_SEARCH_ROLE";
  
     /*
      *	XMLHTTP请求地址汇总
@@ -182,9 +180,9 @@
             label:"用户角色",
             callback:generalSearchRole
         }
-		 var subitem12_4_2 = {
+		var subitem12_4_2 = {
             label:"用户转授",
-            callback:generalSearchReassign
+            callback:generalSearchSubauth
         }
 
         var submenu12_4 = new Menu();
@@ -247,6 +245,10 @@
         menu1.addItem(item4);
  
         $$("grid").contextmenu = menu1;
+
+        $$("grid").onClickRow = function() {
+            $$("grid").contextmenu.show(event.clientX, event.clientY);
+        }   
     }
  
     function loadInitData() {
@@ -608,7 +610,7 @@
 						"stop":true
 					};
 					var groupType = treeNode.getAttribute("groupType");
-					if( groupType == "1" && hasSameAttributeTreeNode(page2Tree2, "groupType", groupType)){
+					if( groupType == "1" && hasSameAttributeTreeNode(page2Tree2, "groupType", groupType)) {
 						result.error = true;
 						result.message = "一个用户对应主用户组只允许一个";
 						result.stop = true;
@@ -621,12 +623,12 @@
 					return result;
 				});
 			}
-			$$("page3BtAdd").onclick = function(){
-				addTreeNode(page3Tree, page3Tree2, function(treeNode){
+			$$("page3BtAdd").onclick = function() {
+				addTreeNode(page3Tree, page3Tree2, function(treeNode) {
 					var result = {
-						"error":false,
-						"message":"",
-						"stop":true
+						"error": false,
+						"message": "",
+						"stop": true
 					};
 					if( treeNode.getAttribute("isGroup") == "1"){
 						result.error = true;
@@ -719,25 +721,26 @@
  
     /* 获取用户状态 */
     function getUserState(){
-        return $G("grid").getRowAttributeValue("userstate"); 
+        return $G("grid").getRowAttributeValue("disabled"); 
     }
  
     function stopOrStartUser(state) {
-		var userID = $G("grid").getRowAttributeValue("id");
+		var userID  = $G("grid").getRowAttributeValue("id");
+        var groupId = $G("grid").getRowAttributeValue("groupId");  
 		if(userID == null) return;
 
 		Ajax({
-			url : URL_STOP_USER + userID + "/" + state,
+			url : URL_STOP_USER + groupId + "/" + userID + "/" + state,
 			onsuccess : function() {  // 移动树节点					
 				// 成功后设置状态
-				grid.modifyRow(row, "userstate", state);
-				grid.modifyRow(row, "icon", ICON + "um/user_" + state + ".gif");
+				$G("grid").modifySelectedRow("disabled", state);
+				$G("grid").modifySelectedRow("icon", ICON + "um/user_" + state + ".gif");
 				
 				if (state == "0") { // 启用组
-					var treeNode = $T("tree").getTreeNodeById(groupID);
+					var treeNode = $T("tree").getTreeNodeById(groupId);
 					if(treeNode) {
 						var xmlNode = new XmlNode(treeNode.node);
-						refreshGroupStates(xmlNode, "0");
+						refreshTreeNodeState(xmlNode, "0");
 					}
 				}
 			}
@@ -747,7 +750,7 @@
     /* 搜索用户 */
     function searchUser(){
         var treeNode = $T("tree").getActiveTreeNode();
-		var treeID = treeNode.getId();
+		var treeID   = treeNode.getId();
 		var treeName = treeNode.getName();
 
 		window.showModalDialog("searchuser.htm", {groupId:treeID,title:"搜索\"" + treeName + "\"下的用户"}, "dialogWidth:250px;dialogHeight:250px;");
@@ -756,64 +759,26 @@
  
     /* 综合查询(用户角色查询) */
     function generalSearchRole(){
-        var treeNode = $T("tree").getActiveTreeNode();  
-		var groupId = treeNode.getId();
+        var treeNode  = $T("tree").getActiveTreeNode();  
+		var groupId   = treeNode.getId();
 		var groupName = treeNode.getName();
-		
-		var callback = {};
-		callback.onTabChange = function(){
-			setTimeout(function(){
-				var p = new HttpRequestParams();
-				p.url = URL_SEARCH_ROLE;
-				p.setContent("groupId", groupId);
 
-				var request = new HttpRequest(p);
-				request.onresult = function(){
-					var generalSearchGridNode = this.getNodeValue(XML_SEARCH_ROLE);
-					$G("page6Grid", generalSearchGridNode);
-				}
-				request.send();
-			}, TIMEOUT_TAB_CHANGE);
-		};
+        var url = URL_SEARCH_ROLE + groupId;
 
-		var inf = {};
-		inf.defaultPage = "page6";
-		inf.label = "用户角色" + OPERATION_SEARCH.replace(/\$label/i,groupName);
-		inf.phases = null;
-		inf.callback = callback;
-		inf.SID = CACHE_SEARCH_ROLE + groupId;
-		var tab = ws.open(inf);
+        window.showModalDialog("../portal/commongrid.html", {service: url, nodename: XML_SEARCH_ROLE, title:"查看组【" + groupName +"】下用户的角色信息"} , 
+            "dialogWidth:500px;dialogHeight:500px;resizable:yes");
     }
 	
 	/* 综合查询(用户转授查询) */
-    function generalSearchReassign(){
-        var treeNode = $T("tree").getActiveTreeNode();
-		var groupId = treeNode.getId();
+    function generalSearchSubauth() {
+        var treeNode  = $T("tree").getActiveTreeNode();
+		var groupId   = treeNode.getId();
 		var groupName = treeNode.getName();
-		
-		var callback = {};
-		callback.onTabChange = function(){
-			setTimeout(function() {
-				var p = new HttpRequestParams();
-				p.url = URL_SEARCH_SUBAUTH;
-				p.setContent("groupId", groupId);
 
-				var request = new HttpRequest(p);
-				request.onresult = function() {
-					var generalSearchGridNode = this.getNodeValue(XML_SEARCH_SUBAUTH);
-					$G("page6Grid", generalSearchGridNode);
-				}
-				request.send();
-			}, TIMEOUT_TAB_CHANGE);
-		};
+        var url = URL_SEARCH_SUBAUTH + groupId;
 
-		var inf = {};
-		inf.defaultPage = "page6";
-		inf.label = "用户转授" + OPERATION_SEARCH.replace(/\$label/i,groupName);
-		inf.phases = null;
-		inf.callback = callback;
-		inf.SID = CACHE_SEARCH_SUBAUTH + groupId;
-		var tab = ws.open(inf);
+        window.showModalDialog("../portal/commongrid.html", {service: url, nodename: XML_SEARCH_SUBAUTH, title:"查看组【" + groupName +"】下用户的转授信息"} , 
+            "dialogWidth:700px;dialogHeight:500px;resizable:yes");
     }
  
 
