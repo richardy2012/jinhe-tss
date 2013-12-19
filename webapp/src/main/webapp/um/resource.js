@@ -30,9 +30,6 @@
         initPaletteResize();
         initNaviBar("um.2");
         initMenus();
-        initWorkSpace();
-
-		Event.attachEvent($$("treeBtRefresh"), "click", onClickTreeBtRefresh);
 
         loadInitData();
     } 
@@ -105,53 +102,30 @@
  
     function editApplication(editable, isNew) {
         var treeNode = $T("tree").getActiveTreeNode();
-		var treeID = treeNode.getId();
-		var treeName = treeNode.getName();
-		var parentId = treeNode.getParent().getId();
-
-		var callback = {};
-		callback.onTabChange = function() {
-			setTimeout(function() {
-				loadAppDetailData(treeID, editable, isNew ? parentId : null);
-			}, TIMEOUT_TAB_CHANGE);
-		};
-
-		var inf = {};
-		if( editable ) {
-			inf.label = OPERATION_EDIT.replace(/\$label/i, treeName);
-			inf.SID = CACHE_APPLICATION_DETAIL + treeID;
-		} else {
-			inf.label = OPERATION_VIEW.replace(/\$label/i, treeName);
-			inf.SID = CACHE_VIEW_APPLICATION_DETAIL + treeID;
-		}
-		inf.defaultPage = "page1";
-		inf.phases = null;
-		inf.callback = callback;
-		var tab = ws.open(inf);
-    }
- 
-    function loadAppDetailData(cacheID, editable, parentID) {          
+		var treeID   = treeNode.getId();
+		var parentId = isNew ? treeNode.getParent().getId() : null;
+       
 		Ajax({
-			url : URL_APP_DETAIL + cacheID,
+			url : URL_APP_DETAIL + treeID,
 			method : "GET",
 			onresult : function() { 
 				var appInfoNode = this.getNodeValue(XML_APPLICATION_DETAIL);
-				Cache.XmlDatas.add(cacheID, appInfoNode);
+				Cache.XmlDatas.add(treeID, appInfoNode);
 
 				var xform = $X("page1Form", appInfoNode);
 				xform.editable = editable ? "true" : "false";
 				
 				// 设置保存按钮操作
-				var page1BtSaveObj = $$("page1BtSave");
-				page1BtSaveObj.disabled = !editable;
-				page1BtSaveObj.onclick = function() {
-					saveApp(cacheID, parentID);
+				var appSaveBtObj = $$("appSaveBt");
+				appSaveBtObj.disabled = !editable;
+				appSaveBtObj.onclick = function() {
+					saveApp(treeID, parentId);
 				}
 			}
 		});	
     }
  
-    function saveApp(cacheID, parentID) {
+    function saveApp(treeID, parentID) {
         var p = new HttpRequestParams();
         p.url = URL_SAVE_APP;
 
@@ -159,7 +133,7 @@
         var flag = false;
 
         // 应用基本信息
-        var appInfoNode = Cache.XmlDatas.get(cacheID);
+        var appInfoNode = Cache.XmlDatas.get(treeID);
         if( appInfoNode ) {
             var appInfoDataNode = appInfoNode.selectSingleNode(".//data");
             if( appInfoDataNode ) {
@@ -171,19 +145,15 @@
         if( flag ) {
             var request = new HttpRequest(p);
             //同步按钮状态
-            syncButton([$$("page1BtSave")], request);
+            syncButton([$$("appSaveBt")], request);
 
             request.onresult = function() { // 新增
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
 				appendTreeNode(parentID, treeNode);
-
-				ws.closeActiveTab();
             }
             request.onsuccess = function() { // 修改，更新树节点名称
 				var name = $X("page1Form").getData("name");
-				modifyTreeNode(cacheID, "name", name, true);
-
-				ws.closeActiveTab();
+				modifyTreeNode(treeID, "name", name, true);
             }
             request.send();
         }
@@ -192,25 +162,7 @@
     function viewResourceType() {
         var treeNode = $T("tree").getActiveTreeNode();
 		var treeID = treeNode.getId();
-		var treeName = treeNode.getName();
 
-		var callback = {};
-		callback.onTabChange = function() {
-			setTimeout(function() {
-				loadTypeData(treeID);
-			}, TIMEOUT_TAB_CHANGE);
-		};
-
-		var inf = {};
-		inf.label = OPERATION_VIEW.replace(/\$label/i,treeName);
-		inf.SID = CACHE_VIEW_SOURCE_TYPE + treeID;
-		inf.defaultPage = "page1";
-		inf.phases = null;
-		inf.callback = callback;
-		var tab = ws.open(inf);
-    }
- 
-    function loadTypeData(treeID) { 
 		Ajax({
 			url : URL_RESOURCE_TYPE + treeID,
 			method : "GET",
@@ -219,9 +171,6 @@
 
 				var xform = $X("page1Form", typeInfoNode);
 				xform.editable = "false";
-				
-				// 设置保存按钮操作
-				$$("page1BtSave").disabled = true;
 			}
 		});	
     }

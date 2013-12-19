@@ -30,6 +30,11 @@
 			<TD width="100"><label binding="description"/></TD>
 			<TD><textarea binding="description" style="width:100%;height:60"/></TD>
 		</TR>
+		<TR>
+			<TD colspan="2">
+				<br/><input type="button" class="btStrong" value="完成" id="appSaveBt"/>
+			</TD>
+		</TR>
 	</layout>
 	<data>
 	</data>

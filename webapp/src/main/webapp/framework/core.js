@@ -1029,8 +1029,8 @@ Element.attachColResizeII = function(element) {
  * 拖动对象，改变其位置
  * 参数：	Object:element   要拖动的HTML对象
  */
-Element.moveable = function(element) {
-	var handle = element.getElementsByTagName("h2")[0]; // 拖动条
+Element.moveable = function(element, handle) {
+	handle = handle || element.getElementsByTagName("h2")[0] || element; // 拖动条
 	if(handle == null) return;
 
 	var mouseStart  = {x:0, y:0};  // 鼠标起始位置

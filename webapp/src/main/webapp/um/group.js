@@ -79,6 +79,8 @@
         initNaviBar("um.1");
         initMenus();
         initWorkSpace();
+        Element.moveable($$("ws"));
+
         initEvents();
 
         loadInitData();
@@ -333,7 +335,10 @@
 			setTimeout(function() {
 				loadGroupDetailData(treeID, parentID, groupType);
 			}, TIMEOUT_TAB_CHANGE);
+
+             $$("ws").style.display = "block";
 		};
+        callback.onTabClose = onTabClose;
 		
 		var inf = {};
 		inf.defaultPage = "page1";
@@ -542,16 +547,19 @@
 	
 	function loadUserInfo(operationName, rowID, rowName, groupId) {
 		var phases = [];
-		phases[0] = {page:"page1",label:"基本信息"};
-		phases[1] = {page:"page2",label:"所属组织"};
-		phases[2] = {page:"page3",label:"拥有角色"};
+		phases[0] = {page:"page1", label:"基本信息"};
+		phases[1] = {page:"page2", label:"所属组织"};
+		phases[2] = {page:"page3", label:"拥有角色"};
 
 		var callback = {};
-		callback.onTabChange = function(){
-			setTimeout(function(){
+		callback.onTabChange = function() {
+			setTimeout(function() {
 				loadUserDetailData(rowID, groupId);
-			},TIMEOUT_TAB_CHANGE);
+			}, TIMEOUT_TAB_CHANGE);
+
+            $$("ws").style.display = "block";
 		};
+        callback.onTabClose = onTabClose;
 
 		var inf = {};
 		inf.label = operationName.replace(/\$label/i, rowName || "用户");
@@ -561,6 +569,12 @@
 		inf.callback = callback;
 		var tab = ws.open(inf);
 	}
+
+    var onTabClose = function() {
+        if( ws.noTabOpend() ) {
+             $$("ws").style.display = "none";
+        }      
+    }
  
     function loadUserDetailData(userID, groupId) {
 		var p = new HttpRequestParams();

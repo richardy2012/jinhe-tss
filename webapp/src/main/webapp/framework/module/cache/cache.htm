@@ -24,6 +24,7 @@
   #page1FormDiv {
     display:none;
     background-color: #BEC6EE;
+    border:1px solid #416371;
     position: absolute;
     width: 600;    
     height: 320;  
@@ -66,6 +67,8 @@
 		initNaviBar("cache");
 		initMenus();
 		initEvents();
+
+		Element.moveable($$("page1FormDiv"));
 
 		loadInitData();
 	}

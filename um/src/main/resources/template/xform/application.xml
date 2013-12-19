@@ -5,20 +5,24 @@
 		<column name="applicationId" caption="应用系统ID" mode="string" empty="false" maxLength="100"/>
 		<column name="name" caption="名称" mode="string" empty="false" maxLength="100"/>
 		<column name="description" caption="描述" mode="string" maxLength="400"/>
-		<column name="dataSourceType" caption="数据库类型" mode="string" editor="comboedit" editorvalue="0|1|2|3" editortext="LDAP|Oracle|DB2|MySQL" empty="false"/>
 	</declare>
 	<layout>
 		<TR>
 			<TD width="100"><label binding="applicationId"/></TD>
-			<TD><input binding="applicationId" type="text" style="width:150;"/></TD>
+			<TD><input binding="applicationId" type="text" style="width:250;"/></TD>
+		</TR>
+		<TR>
 			<TD width="100"><label binding="name"/></TD>
-			<TD><input binding="name" type="text" style="width:150;"/></TD>
+			<TD><input binding="name" type="text" style="width:300;"/></TD>
 		</TR>
 		<TR>
 			<TD width="100"><label binding="description"/></TD>
-			<TD><input binding="description" type="text" style="width:150;"/></TD>
-			<TD width="100"><label binding="dataSourceType"/></TD>
-			<TD><input binding="dataSourceType" type="text" style="width:150;"/></TD>
+			<TD><input binding="description" type="text" style="width:500;"/></TD>
+		</TR>
+		<TR>
+			<TD colspan="2">
+				<br/><input type="button" class="btStrong" value="完成" id="appSaveBt"/>
+			</TD>
 		</TR>
 	</layout>
 	<data>

@@ -7,7 +7,6 @@
 <link href="../framework/css/css.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/menu/menu.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/balloon/balloon.css" rel="stylesheet" type="text/css"></link>
-<link href="../framework/workspace/workspace.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/tree/tree.css" rel="stylesheet" type="text/css"></link>
 <link href="../framework/xform/xform.css" rel="stylesheet" type="text/css"></link>
 
@@ -16,7 +15,6 @@
 <script language="javascript" src="../framework/framework.js"></script>
 <script language="javascript" src="../framework/menu/menu.js"></script>
 <script language="javascript" src="../framework/balloon/balloon.js"></script>
-<script language="javascript" src="../framework/workspace/workspace.js"></script>
 <script language="javascript" src="../framework/tree/tree.js"></script>
 <script language="javascript" src="../framework/xform/xform.js"></script>
 
@@ -60,15 +58,9 @@
                     </table>                        
                   </td>
                   <td class="groove">
-                      <WorkSpace:Box id="ws" baseurl="../framework/workspace/">
-                        <WorkSpace:Page id=page1>
-                            <XForm:Box id="page1Form" baseurl="../framework/xform/"></XForm:Box>
-                            <br/>
-                            <WorkSpace:PageStep>
-                              <input type="button" class="btStrong" value="完成" id="page1BtSave"/>
-                            </WorkSpace:PageStep>
-                        </WorkSpace:Page>
-                      </WorkSpace:Box>
+                    <div class="dialog">
+                      <XForm:Box id="page1Form" baseurl="../framework/xform/"></XForm:Box>       
+                    </div>
                   </td>
                 </tr>
               </table></td>
