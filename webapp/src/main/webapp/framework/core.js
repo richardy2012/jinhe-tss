@@ -369,6 +369,16 @@ Log.read = function(index) {
 		return this.info[index];
 	}
 }
+
+Array.prototype.contains = function(obj) {  
+    var i = this.length;  
+    while (i--) {  
+        if (this[i] === obj) {  
+            return true;  
+        }  
+    }  
+    return false;  
+}
  
 String.prototype.convertEntry = function() {
 	var str = this;

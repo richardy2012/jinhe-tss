@@ -130,7 +130,6 @@
 		menu1.addItem(item1);
         menu1.addItem(item9);
 		menu1.addSeparator();
-		menu1.addItem(item12);
         menu1.addItem(item3);
         menu1.addItem(item2);  
         menu1.addItem(item7);

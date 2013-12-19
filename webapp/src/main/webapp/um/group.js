@@ -82,6 +82,7 @@
         initEvents();
 
         loadInitData();
+        showUserList(-7);
     }
 
     function initMenus(){
@@ -203,7 +204,7 @@
 		menu1.addItem(item4);
 		menu1.addItem(item6);
         menu1.addSeparator();
-        menu1.addItem(item7);
+        // menu1.addItem(item7);
         menu1.addItem(item8);
         // menu1.addItem(item9);
         menu1.addSeparator();
