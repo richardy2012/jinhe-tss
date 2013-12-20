@@ -13,6 +13,8 @@ public class CacheDisplayActionTest extends TxTestSupport {
 	public void testCacheAction() {
 		action.getAllCacheStrategy4Tree(response);
 		
+		action.getPoolsGrid(response);
+		
 		String poolCode = "threadpool";
 		action.getCacheStrategyInfo(response, poolCode);
 		

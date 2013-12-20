@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.jinhe.tss.cache.AbstractPool;
 import com.jinhe.tss.cache.CacheStrategy;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
@@ -35,7 +36,8 @@ import com.jinhe.tss.util.XMLDocUtil;
 public class CacheDisplayAction extends BaseActionSupport {
     
     /** 缓存策略模板目录 */
-    public final static String CACHESTRATEGY_XFORM_TEMPLET = "template/cache/strategy_xform.xml";
+    final static String CACHESTRATEGY_XFORM_TEMPLET = "template/cache/strategy_xform.xml";
+    final static String POOLS_GRID_TEMPLET = "template/cache/pool_grid.xml";
  
     private static JCache cache = JCache.getInstance();
  
@@ -69,6 +71,39 @@ public class CacheDisplayAction extends BaseActionSupport {
         print("CacheTree", encoder);
     }
     
+    @RequestMapping("/grid")
+    public void getPoolsGrid(HttpServletResponse response) {
+    	List<IGridNode> dataList = new ArrayList<IGridNode>();
+    	 
+    	Set<Entry<String, Pool>> pools = cache.listCachePools(); 
+        for(Entry<String, Pool> entry : pools) {
+            Pool pool = entry.getValue(); 
+            CacheStrategy strategy = pool.getCacheStrategy();
+            
+            DefaultGridNode gridNode = new DefaultGridNode();
+            gridNode.getAttrs().put("code", entry.getKey());
+            gridNode.getAttrs().put("name", pool.getName());
+            gridNode.getAttrs().put("accessMethod", strategy.getAccessMethod());
+            gridNode.getAttrs().put("disabled", strategy.getDisabled());
+            gridNode.getAttrs().put("cyclelife", strategy.getCyclelife());
+            gridNode.getAttrs().put("interruptTime", strategy.getInterruptTime());
+            gridNode.getAttrs().put("poolSize", strategy.getPoolSize());
+            gridNode.getAttrs().put("initNum", strategy.getInitNum());
+            gridNode.getAttrs().put("requests", pool.getRequests());
+            gridNode.getAttrs().put("hitrate", Math.round(pool.getHitRate()) + "%");
+            
+            if(pool instanceof AbstractPool) {
+            	gridNode.getAttrs().put("freeItemNum", ((AbstractPool)pool).getFree().size());
+            	gridNode.getAttrs().put("busyItemNum", ((AbstractPool)pool).getUsing().size());
+            }
+            
+            dataList.add(gridNode);
+        }
+        
+        GridDataEncoder gEncoder = new GridDataEncoder(dataList, POOLS_GRID_TEMPLET);
+        print("PoolGrid", gEncoder);
+    }
+    
     /**
      * 获取缓存策略以及缓存池信息
      */
@@ -97,6 +132,12 @@ public class CacheDisplayAction extends BaseActionSupport {
             gridNode.getAttrs().put("hit", new Integer(hit));
 			gridNode.getAttrs().put("hitRate", hitrate + "%");
             gridNode.getAttrs().put("remark", item.getValue());
+            
+            if(pool instanceof AbstractPool) {
+            	boolean isFree = ( (AbstractPool)pool ).getFree().keySet().contains(thisKey);
+            	gridNode.getAttrs().put("state", isFree ? "0" : "1");
+            }
+            
             dataList.add(gridNode);
         }
         
@@ -107,6 +148,7 @@ public class CacheDisplayAction extends BaseActionSupport {
         template.append("<column name=\"key\" caption=\"键值\" mode=\"string\" width=\"240px\" />");
         template.append("<column name=\"hit\" caption=\"点击次数\" mode=\"string\" width=\"60px\" align=\"center\"/>");
         template.append("<column name=\"hitRate\" caption=\"点击率\" mode=\"string\" width=\"50px\" align=\"center\"/>");
+        template.append("<column name=\"state\" caption=\"状态 \" align=\"center\" mode=\"string\" width=\"60px\" editor=\"comboedit\" editorvalue=\"0|1\" editortext=\"空闲|忙碌\"/>");
         template.append("<column name=\"remark\" caption=\"说明\" mode=\"string\" align=\"center\"/>");
         template.append("</declare><data></data></grid>");
         
