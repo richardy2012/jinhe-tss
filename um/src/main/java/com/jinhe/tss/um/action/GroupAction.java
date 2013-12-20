@@ -208,12 +208,12 @@ public class GroupAction extends ProgressActionSupport {
     		@PathVariable("groupId") Long groupId) {
     	
         Group group = service.getGroupById(groupId);
-        String dbGroupId = group.getDbGroupId();
-        if ( EasyUtils.isNullOrEmpty(dbGroupId) ) {
-            throw new BusinessException("导入组的对应外部应用组的ID（dbGroupId）为空");
+        String fromGroupId = group.getFromGroupId();
+        if ( EasyUtils.isNullOrEmpty(fromGroupId) ) {
+            throw new BusinessException("导入组的对应外部应用组的ID（fromGroupId）为空");
         }
         
-        Map<String, Object> datasMap = syncService.getCompleteSyncGroupData(groupId, applicationId, dbGroupId);
+        Map<String, Object> datasMap = syncService.getCompleteSyncGroupData(groupId, applicationId, fromGroupId);
         
         List<?> groups = (List<?>)datasMap.get("groups");
         List<?> users  = (List<?>)datasMap.get("users");

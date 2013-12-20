@@ -493,17 +493,16 @@
     }
 	
 	/* 同步用户组 */
-    function syncGroup(applicationId) {
+    function syncGroup() {
         var treeNode = $T("tree").getActiveTreeNode();
 		var treeNodeID = treeNode.getId();
 
 		var p = new HttpRequestParams();
 		p.url = URL_SYNC_GROUP;
 
-		var dbGroupId = treeNode.getAttribute("dbGroupId");
-		p.setContent("applicationId", applicationId);
-		p.setContent("groupId", treeNodeID);
-		p.setContent("dbGroupId", dbGroupId);
+        p.setContent("groupId", treeNodeID);
+		p.setContent("applicationId", treeNode.getAttribute("fromApp"));
+		p.setContent("fromGroupId", treeNode.getAttribute("fromGroupId"));
 
 		var request = new HttpRequest(p);
 

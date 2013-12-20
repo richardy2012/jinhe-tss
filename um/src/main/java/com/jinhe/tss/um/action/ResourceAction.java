@@ -46,13 +46,21 @@ public class ResourceAction extends BaseActionSupport {
 	@RequestMapping(value = "/app/{id}", method = RequestMethod.GET)
 	public void getApplicationInfo(HttpServletResponse response, @PathVariable("id") Long id) {
 		XFormEncoder xformEncoder = null;
- 
-        Application application = resourceService.getApplicationById(id);
-        if(UMConstants.PLATFORM_SYSTEM_APP.equals(application.getApplicationType())){ // 平台应用系统
-            xformEncoder = new XFormEncoder(UMConstants.APPLICATION_XFORM, application);                
-        } else { // 其他应用系统
-            xformEncoder = new XFormEncoder(UMConstants.OTHER_APPLICATION_XFORM, application);              
-        }
+		
+		if(UMConstants.DEFAULT_NEW_ID.equals(id)) {
+			Application application = new Application();
+			application.setApplicationType(UMConstants.OTHER_SYSTEM_APP);
+			xformEncoder = new XFormEncoder(UMConstants.OTHER_APPLICATION_XFORM, application);
+    	}
+		else {
+			Application application = resourceService.getApplicationById(id);
+	        if(UMConstants.PLATFORM_SYSTEM_APP.equals(application.getApplicationType())){ // 平台应用系统
+	            xformEncoder = new XFormEncoder(UMConstants.APPLICATION_XFORM, application);                
+	        } else { // 其他应用系统
+	            xformEncoder = new XFormEncoder(UMConstants.OTHER_APPLICATION_XFORM, application);              
+	        }
+		}
+        
 		print("AppDetail", xformEncoder);
 	}
 	

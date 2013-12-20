@@ -205,8 +205,7 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
         map.put("levelNo", levelNo);
         map.put("type", type);
         map.put("mode", modality);
- 
-        super.putOperateInfo2Map(map);
+        
         return map;
     }
 

@@ -50,6 +50,8 @@ public class ResourceModuleTest extends TxSupportTest4UM {
         
         action.getApplicationInfo(response, application.getId());
         
+        action.getApplicationInfo(response, UMConstants.DEFAULT_NEW_ID); // 新增其他应用
+        
         Application application2 = new Application();
         BeanUtil.copy(application2, application);
         application2.setId(null);

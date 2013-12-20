@@ -58,7 +58,8 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 	private Integer disabled = UMConstants.FALSE; // 停用/启用标记
 
 	// 和其他用户管理系统的同步时的对应信息
-	private String  dbGroupId;   // 外部应用用户组id:要同步的系统中对应的节点的编号，针对db数据源、ldap数据源的同步中使用
+	private String  fromApp;
+	private String  fromGroupId;   // 外部应用用户组id:要同步的系统中对应的节点的编号，针对db数据源、ldap数据源的同步中使用
  
 	public Long getId() {
 		return id;
@@ -67,13 +68,21 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 	public void setId(Long id) {
 		this.id = id;
 	}
- 
-	public String getDbGroupId() {
-		return dbGroupId;
+	
+	public String getFromApp() {
+		return fromApp;
+	}
+
+	public void setFromApp(String fromApp) {
+		this.fromApp = fromApp;
 	}
  
-	public void setDbGroupId(String dbGroupId) {
-		this.dbGroupId = dbGroupId;
+	public String getFromGroupId() {
+		return fromGroupId;
+	}
+ 
+	public void setFromGroupId(String fromGroupId) {
+		this.fromGroupId = fromGroupId;
 	}
  
 	public String getDescription() {
@@ -152,7 +161,8 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 		TreeAttributesMap map = new TreeAttributesMap(id, name);
 		map.put("parentId", parentId);
 		map.put("disabled", disabled);
-		map.put("dbGroupId", dbGroupId);
+		map.put("fromApp", fromApp);
+		map.put("fromGroupId", fromGroupId);
 		map.put("groupType", groupType);
 		
 		// 特殊组不显示图标 (特殊组指系统初始化的主用户、辅助用户组等根节点，它们的ID为负值)
@@ -164,7 +174,6 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 			}
 		}
 		
-		super.putOperateInfo2Map(map);
 		return map;
 	}
  
@@ -178,5 +187,4 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
     public String toString(){
         return "(ID:" + this.id + ", Name:" + this.name  + ", Decode:" + this.decode + ")"; 
     }
-
 }

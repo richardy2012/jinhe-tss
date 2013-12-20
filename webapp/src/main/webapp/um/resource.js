@@ -2,21 +2,11 @@
     XML_MAIN_TREE = "AppSource";
     XML_APPLICATION_DETAIL = "AppDetail";
     XML_SOURCE_TYPE_INFO = "ResourceTypeDetail";
-    XML_PERMISSION_OPTION_INFO = "PermissionOption";
-    XML_IMPORT_APPLICATION = "ImportApplication";
-
-	/* 默认唯一编号名前缀 */
-    CACHE_APPLICATION_DETAIL = "app__id";
-    CACHE_VIEW_APPLICATION_DETAIL = "viewApp__id";
-    CACHE_VIEW_SOURCE_TYPE = "viewSourceType__id";
-    CACHE_IMPORT_APPLICATION = "import__id";
-
-    OPERATION_IMPORT = "导入\"$label\"";
 
 	/* XMLHTTP请求地址汇总 */
     URL_INIT		  = AUTH_PATH + "resource/apps";
     URL_APP_DETAIL    = AUTH_PATH + "resource/app/";
-    URL_SAVE_APP      = AUTH_PATH + "resource/app"; // POST
+    URL_SAVE_APP      = AUTH_PATH + "resource/app";  // POST
     URL_RESOURCE_TYPE = AUTH_PATH + "resource/resourceType/";
 	
 	if(IS_TEST) {
@@ -37,28 +27,26 @@
     function initMenus() {
 	    var item1 = {
             label:"查看",
-            callback:function() {
-                editTreeNode(false);
-            },
+            callback:function() { editTreeNode(false); },
             icon:ICON + "view.gif",
-            visible:function() {return "-1" != getTreeNodeId() && "-2" != getTreeNodeId();}
+            visible: function() {return "-1" != getTreeNodeId() && "-2" != getTreeNodeId();}
         }
         var item2 = {
             label:"编辑",
             callback:editTreeNode,
             icon:ICON + "edit.gif",
-            visible:function() {return checkTreeNodeEditable();}
+            visible: function() {return checkTreeNodeEditable();}
         }
 		var item3 = {
             label:"新建应用",
-            callback:createOtherApplication,
-            visible:function() {return "-2" == getTreeNodeId();}
+            callback: function() { getOtherApplication(true); },
+            visible: function() {return "-2" == getTreeNodeId();}
         }
         var item4 = {
             label:"导入",
-            callback:importApplication,
+            callback: importApplication,
             icon:ICON + "import.gif",
-            visible:function() {return "1"==getNodeType() && ("-1"==getTreeNodeId() || "-2"==getTreeNodeId());}
+            visible: function() {return "1" == getNodeType() && "-1" == getTreeNodeId() ;}
         }
 
         var menu1 = new Menu();
@@ -77,17 +65,8 @@
 				var mainTreeNode = this.getNodeValue(XML_MAIN_TREE);
 				var tree = $T("tree", mainTreeNode);
 				tree.element.onTreeNodeDoubleClick = function(eventObj) {
-					var nodeType = getNodeType();
 					var editable = checkTreeNodeEditable();
-			 
-					switch(nodeType) {
-						case "1":
-							editApplication(editable);          
-							break;
-						case "2":
-							viewResourceType();
-							break;
-					}
+					editTreeNode(editable);
 				}
 				tree.element.onTreeNodeRightClick = function(eventObj) {
 					onTreeNodeRightClick(eventObj);
@@ -96,36 +75,28 @@
 		});	
     }
  
-	function createOtherApplication() {
-		editApplication(true, true);
-	}
- 
-    function editApplication(editable, isNew) {
-        var treeNode = $T("tree").getActiveTreeNode();
-		var treeID   = treeNode.getId();
-		var parentId = isNew ? treeNode.getParent().getId() : null;
+    // 平台应用不能编辑
+    function getOtherApplication(isCreate) {
+		var treeID  = isCreate ? DEFAULT_NEW_ID : getTreeNodeId();
        
 		Ajax({
 			url : URL_APP_DETAIL + treeID,
 			method : "GET",
 			onresult : function() { 
-				var appInfoNode = this.getNodeValue(XML_APPLICATION_DETAIL);
-				Cache.XmlDatas.add(treeID, appInfoNode);
+				var appDetailNode = this.getNodeValue(XML_APPLICATION_DETAIL);
+				Cache.XmlDatas.add(treeID, appDetailNode);
 
-				var xform = $X("page1Form", appInfoNode);
-				xform.editable = editable ? "true" : "false";
+				var xform = $X("page1Form", appDetailNode);
 				
 				// 设置保存按钮操作
-				var appSaveBtObj = $$("appSaveBt");
-				appSaveBtObj.disabled = !editable;
-				appSaveBtObj.onclick = function() {
-					saveApp(treeID, parentId);
+				$$("appSaveBt").onclick = function() {
+					saveApp(treeID);
 				}
 			}
 		});	
     }
  
-    function saveApp(treeID, parentID) {
+    function saveApp(treeID) {
         var p = new HttpRequestParams();
         p.url = URL_SAVE_APP;
 
@@ -149,7 +120,7 @@
 
             request.onresult = function() { // 新增
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
-				appendTreeNode(parentID, treeNode);
+				appendTreeNode("-2", treeNode);
             }
             request.onsuccess = function() { // 修改，更新树节点名称
 				var name = $X("page1Form").getData("name");
@@ -160,11 +131,8 @@
     }
  
     function viewResourceType() {
-        var treeNode = $T("tree").getActiveTreeNode();
-		var treeID = treeNode.getId();
-
 		Ajax({
-			url : URL_RESOURCE_TYPE + treeID,
+			url : URL_RESOURCE_TYPE + getTreeNodeId(),
 			method : "GET",
 			onresult : function() {
 				var typeInfoNode = this.getNodeValue(XML_SOURCE_TYPE_INFO);
@@ -178,9 +146,9 @@
     function getNodeType() {
         return getTreeAttribute("nodeType");
     }
- 
-    function getApplicationId() {
-        return getTreeAttribute("applicationId");
+
+    function getApplicationType() {
+        return getTreeAttribute("applicationType");
     }
 	
     /* 检测树节点是否可编辑 */
@@ -188,7 +156,7 @@
         var flag = false;
         switch(getNodeType()) {
             case "1":
-                if("-1" != getTreeNodeId() && "-2" != getTreeNodeId() && "tss" != getApplicationId()) {
+                if(getApplicationType() == ""-2 &&  getTreeNodeId() != "-2") {
                     flag = true;
                 }
                 break;
@@ -203,10 +171,12 @@
     function editTreeNode(editable) {
         switch(getNodeType()) {
             case "1":
-                editApplication(editable);
+            	if(editable) {
+            		getOtherApplication(false);
+            	}
                 break;
             case "2":
-                viewResourceType(editable);
+                viewResourceType();
                 break;
         }
     }

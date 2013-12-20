@@ -146,7 +146,6 @@ public class Role extends OperateInfo implements ILevelTreeNode, IDecodable, IXF
 			}
 		}
 		
-		super.putOperateInfo2Map(map);
 		return map;
 	}
  

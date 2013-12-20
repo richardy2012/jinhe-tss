@@ -50,7 +50,8 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
 		mainGroup.setParentId(UMConstants.MAIN_GROUP_ID);
 		mainGroup.setName("他山石");
 		mainGroup.setGroupType(Group.MAIN_GROUP_TYPE);
-		mainGroup.setDbGroupId("1");
+		mainGroup.setFromApp(UMConstants.TSS_APPLICATION_ID);
+		mainGroup.setFromGroupId("1");
 		
 		groupService.createNewGroup(mainGroup, "", "-1");
 		log.debug(mainGroup + "\n");
@@ -130,8 +131,8 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
  
 	@Test
 	public void testSyncDB() {
-		String dbGroupId = mainGroup.getDbGroupId();
-		Map<String, Object> datasMap = syncService.getCompleteSyncGroupData(mainGroup.getId(), applicationId , dbGroupId);
+		String fromGroupId = mainGroup.getFromGroupId();
+		Map<String, Object> datasMap = syncService.getCompleteSyncGroupData(mainGroup.getId(), applicationId , fromGroupId);
 		List<?> groups = (List<?>)datasMap.get("groups");
         List<?> users  = (List<?>)datasMap.get("users");
         int totalCount = users.size() + groups.size();

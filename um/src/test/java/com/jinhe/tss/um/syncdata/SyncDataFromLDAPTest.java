@@ -73,7 +73,8 @@ public class SyncDataFromLDAPTest extends TxSupportTest4UM {
 		mainGroup.setParentId(UMConstants.MAIN_GROUP_ID);
 		mainGroup.setName("金禾");
 		mainGroup.setGroupType(Group.MAIN_GROUP_TYPE);
-		mainGroup.setDbGroupId("o=JinHe");
+		mainGroup.setFromApp(UMConstants.TSS_APPLICATION_ID);
+		mainGroup.setFromGroupId("o=JinHe");
 		
 		groupService.createNewGroup(mainGroup, "", "-1");
 		Long mainGroupId = mainGroup.getId();
@@ -90,8 +91,8 @@ public class SyncDataFromLDAPTest extends TxSupportTest4UM {
         resourceService.saveApplication(application);
         
         String applicationId = application.getApplicationId();
-		String dbGroupId = mainGroup.getDbGroupId();
-		Map<String, Object> datasMap = syncService.getCompleteSyncGroupData(mainGroupId, applicationId , dbGroupId);
+		String fromGroupId = mainGroup.getFromGroupId();
+		Map<String, Object> datasMap = syncService.getCompleteSyncGroupData(mainGroupId, applicationId , fromGroupId);
 		List<?> groups = (List<?>)datasMap.get("groups");
         List<?> users  = (List<?>)datasMap.get("users");
         int totalCount = users.size() + groups.size();

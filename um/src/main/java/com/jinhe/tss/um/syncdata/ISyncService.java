@@ -11,11 +11,11 @@ public interface ISyncService {
      *              选中进行同步的组ID
      * @param applicationId  
      *              应用ID
-     * @param dbGroupId 
+     * @param fromGroupId 
      *              选中进行同步的组对应外部应用的ID
      * @return
      */
-    Map<String, Object> getCompleteSyncGroupData(Long mainGroupId, String applicationId, String dbGroupId);
+    Map<String, Object> getCompleteSyncGroupData(Long mainGroupId, String applicationId, String fromGroupId);
  
 
 }

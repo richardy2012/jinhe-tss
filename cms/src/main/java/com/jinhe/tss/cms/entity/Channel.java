@@ -168,7 +168,6 @@ public class Channel extends OperateInfo implements IXForm, ILevelTreeNode, IDec
 		String iconName = (isSiteRoot() ? "site" : "channel");
 		map.put("icon", "../framework/images/cms/" + iconName + "_" + disabled + ".gif");
         
-        super.putOperateInfo2Map(map);
 		return map;
 	}
 

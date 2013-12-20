@@ -49,32 +49,33 @@ public class SyncService implements ISyncService, Progressable {
         return param;
     }
     
-    public Map<String, Object> getCompleteSyncGroupData(Long mainGgroupId, String applicationId, String dbGroupId) {
+    public Map<String, Object> getCompleteSyncGroupData(Long mainGgroupId, String applicationId, String fromGroupId) {
         Application application = applicationDao.getApplication(applicationId);
         if(application == null) {
             throw new BusinessException("未找到其它应用系统（" + applicationId + ")配置信息");
         }
         
-        // 保存UM用户组对其它应用用户组 的 ID对应的关系 key:dbGroupId -- value:mainGgroupId
+        // 保存UM用户组对其它应用用户组 的 ID对应的关系 key:fromGroupId -- value:mainGgroupId
         Map<String, Long> idMapping = new HashMap<String, Long>();
         
         // 取已经同步的用户组. 设置父子节点关系时用到（其实只需”同步节点“的父节点 ＋ 子枝）
-        List<?> allGroups = commonDao.getEntitiesByNativeSql("select t.* from um_group t where t.dbGroupId is not null ", Group.class); 
+        List<?> allGroups = commonDao.getEntitiesByNativeSql("select t.* from um_group t where t.fromGroupId is not null ", Group.class); 
         for(Iterator<?> it = allGroups.iterator();it.hasNext();){
             Group group = (Group)it.next();
-            idMapping.put(group.getDbGroupId(), group.getId());
+            idMapping.put(group.getFromGroupId(), group.getId());
         }
 
         Map<String, String> appParams = initParam(application.getParamDesc());
         Integer dataSourceType = application.getDataSourceType();
-        List<?> groups = getGroups(dataSourceType, appParams, dbGroupId); //从其它系统获取需要同步的所有用户组
-        List<?> users  = getUsers (dataSourceType, appParams, dbGroupId); //从其它系统获取需要同步的所有用户
+        List<?> groups = getGroups(dataSourceType, appParams, fromGroupId); //从其它系统获取需要同步的所有用户组
+        List<?> users  = getUsers (dataSourceType, appParams, fromGroupId); //从其它系统获取需要同步的所有用户
         
         Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put("groupId", mainGgroupId);
         paramsMap.put("groups", groups);
         paramsMap.put("users", users);
         paramsMap.put("idMapping", idMapping);
+        paramsMap.put("fromApp", applicationId);
 
         return paramsMap;
     }
@@ -91,24 +92,27 @@ public class SyncService implements ISyncService, Progressable {
     
     @SuppressWarnings("unchecked")
 	public void execute(Map<String, Object> paramsMap, Progress progress) {
+    	String fromApp = (String) paramsMap.get("fromApp");
         Long groupId = (Long)paramsMap.get("groupId");
         List<?> groups = (List<?>)paramsMap.get("groups");
         List<?> users  = (List<?>)paramsMap.get("users");
         Map<String, Long> idMapping = (Map<String, Long>)paramsMap.get("idMapping");
         
         deleteDataInSyncGroup(groupId); // 删除um系统中同步组下的用户组、用户、以及GroupUser
-        syncGroups(groups, idMapping, progress);
+        syncGroups(groups, idMapping, progress, fromApp);
         syncUsers (users, idMapping, progress);
     }
 
-    private void syncGroups(List<?> otherGroups, Map<String, Long> idMapping, Progress progress) {
+    private void syncGroups(List<?> otherGroups, Map<String, Long> idMapping, Progress progress, String fromApp) {
         for (int i = 0; i < otherGroups.size(); i++) {
             GroupDTO groupDto = (GroupDTO) otherGroups.get(i);
             Group group = new Group();
             SyncDataHelper.setGroupByDTO(group, groupDto);
-            group.setDbGroupId(groupDto.getId());
             
-            Long parentId = idMapping.get(groupDto.getParentId()); // 获取其它应用组的父组对应UMS中组的ID
+            group.setFromApp(fromApp);
+            group.setFromGroupId(groupDto.getId());
+            
+            Long parentId = idMapping.get(groupDto.getParentId()); // 获取其它应用组的父组对应UM中组的ID
             parentId = (parentId == null) ? UMConstants.MAIN_GROUP_ID : parentId;
             group.setParentId(parentId);
             group.setSeqNo(groupDao.getNextSeqNo(parentId));
@@ -168,7 +172,6 @@ public class SyncService implements ISyncService, Progressable {
      * 删除同步组下所有数据
      */
     private void deleteDataInSyncGroup(Long groupId) {
- 
         String sql = "select t.* from um_group t, (select g.decode from um_group g where g.id = ?) m "
             + " where t.decode like m.decode||'%' ";
         commonDao.deleteAll(commonDao.getEntitiesByNativeSql(sql, Group.class, groupId));
