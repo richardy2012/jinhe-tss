@@ -28,7 +28,7 @@ import com.jinhe.tss.um.permission.ResourcePermission;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
  
-@Service("SyncData")
+@Service("SyncService")
 public class SyncService implements ISyncService, Progressable {
 	
     @Autowired private ICommonDao commonDao;
@@ -93,12 +93,10 @@ public class SyncService implements ISyncService, Progressable {
     @SuppressWarnings("unchecked")
 	public void execute(Map<String, Object> paramsMap, Progress progress) {
     	String fromApp = (String) paramsMap.get("fromApp");
-        Long groupId = (Long)paramsMap.get("groupId");
         List<?> groups = (List<?>)paramsMap.get("groups");
         List<?> users  = (List<?>)paramsMap.get("users");
         Map<String, Long> idMapping = (Map<String, Long>)paramsMap.get("idMapping");
         
-        deleteDataInSyncGroup(groupId); // 删除um系统中同步组下的用户组、用户、以及GroupUser
         syncGroups(groups, idMapping, progress, fromApp);
         syncUsers (users, idMapping, progress);
     }
@@ -106,11 +104,14 @@ public class SyncService implements ISyncService, Progressable {
     private void syncGroups(List<?> otherGroups, Map<String, Long> idMapping, Progress progress, String fromApp) {
         for (int i = 0; i < otherGroups.size(); i++) {
             GroupDTO groupDto = (GroupDTO) otherGroups.get(i);
-            Group group = new Group();
-            SyncDataHelper.setGroupByDTO(group, groupDto);
+            String fromGroupId = groupDto.getId();
             
+            Group group = new Group();
+            group.setName(groupDto.getName());
+            group.setDisabled(groupDto.getDisabled());
+            group.setDescription(groupDto.getDescription());
             group.setFromApp(fromApp);
-            group.setFromGroupId(groupDto.getId());
+            group.setFromGroupId(fromGroupId);
             
             Long parentId = idMapping.get(groupDto.getParentId()); // 获取其它应用组的父组对应UM中组的ID
             parentId = (parentId == null) ? UMConstants.MAIN_GROUP_ID : parentId;
@@ -118,8 +119,16 @@ public class SyncService implements ISyncService, Progressable {
             group.setSeqNo(groupDao.getNextSeqNo(parentId));
             group.setGroupType(Group.MAIN_GROUP_TYPE);
             
-            commonDao.create(group);
-            idMapping.put(groupDto.getId(), group.getId()); // 保存对应结果
+            // 检查组是否已经存在
+            List<?> temp = commonDao.getEntitiesByNativeSql("select t.* from um_group t where t.fromGroupId=? ", Group.class, fromGroupId);
+            if(temp != null && temp.size() > 0) {
+            	group = (Group) temp.get(0);
+            	deleteDataInSyncGroup(group.getId()); // 删除um系统中同步组下的用户组、用户、以及GroupUser
+            }
+            else {
+            	commonDao.create(group);
+            }
+            idMapping.put(fromGroupId, group.getId()); // 保存对应结果
             
             // 补齐权限
             resourcePermission.addResource(group.getId(), group.getResourceType());
@@ -164,24 +173,14 @@ public class SyncService implements ISyncService, Progressable {
             progress.add(index % 20); // 如果已经同步完，则将总数除以20取余数做为本次完成个数来更新进度信息
         }
     }
-
-    static String queryChildrenByGroupIdSQL = "select g.id from um_group g, (select t.decode from um_group t where t.id = ?) m "
-        + " where g.decode like m.decode||'%'";
     
-    /**
-     * 删除同步组下所有数据
-     */
+    /** 删除同步组下数据 : 包括用户 及 用户和组的对应关系*/
     private void deleteDataInSyncGroup(Long groupId) {
-        String sql = "select t.* from um_group t, (select g.decode from um_group g where g.id = ?) m "
-            + " where t.decode like m.decode||'%' ";
-        commonDao.deleteAll(commonDao.getEntitiesByNativeSql(sql, Group.class, groupId));
-        
-        sql = "select u.* from um_user u, (" + queryChildrenByGroupIdSQL + " ) x, um_groupuser gu"
-            + " where x.id = gu.groupid and u.id = gu.userid ";
+        String sql = "select u.* from um_user u, um_groupuser gu"
+            + " where u.id = gu.userId and gu.groupId=? ";
         commonDao.deleteAll(commonDao.getEntitiesByNativeSql(sql, User.class, groupId));
         
-        sql = "select gu.* from um_groupuser gu, (" + queryChildrenByGroupIdSQL + " ) x, um_user u "
-            + " where gu.groupid = x.id and u.id = gu.userId ";
+        sql = "select gu.* from um_groupuser gu where gu.groupId=? ";
         commonDao.deleteAll(commonDao.getEntitiesByNativeSql(sql, GroupUser.class, groupId));
     }
 }

@@ -11,9 +11,7 @@ public class GroupDTO implements Serializable {
     
     private String  id;       // 用户组主键
 	private String  parentId; // 父节点ID 
-	private Integer seqNo;    // 序号 
 	private String  name;     // 用户组名称
-	private Integer groupType;
 	private String  description;  // 用户组信息描述
 	private Integer disabled;     // 用户组状态
 	
@@ -24,11 +22,7 @@ public class GroupDTO implements Serializable {
 	public String getParentId() {
 		return parentId;
 	}
-	
-	public Integer getSeqNo() {
-		return seqNo;
-	}
-	
+ 
 	public String getName() {
 		return name;
 	}
@@ -49,10 +43,6 @@ public class GroupDTO implements Serializable {
 		this.parentId = parentId;
 	}
 	
-	public void setSeqNo(Integer seqNo) {
-		this.seqNo = seqNo;
-	}
-	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -65,17 +55,8 @@ public class GroupDTO implements Serializable {
 		this.disabled = disabled;
 	}
 
-	public Integer getGroupType() {
-		return groupType;
-	}
-
-	public void setGroupType(Integer groupType) {
-		this.groupType = groupType;
-	}
-	
 	public String toString(){
-		return "Name:[" + name + "] id:[" + id + "] parentId:[" + parentId
-				+ "] seqNo:[" + seqNo + "]";
+		return "Name:[" + name + "] id:[" + id + "] parentId:[" + parentId + "] disabled:[" + disabled + "]";
 	}
 }
 

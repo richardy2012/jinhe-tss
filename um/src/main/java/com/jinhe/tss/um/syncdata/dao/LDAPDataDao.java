@@ -41,12 +41,10 @@ public class LDAPDataDao implements IOutDataDao {
     /** 组需要的属性  */
     public final static String APPLICATION_ID_GROUP = "applicationId";
     public final static String DESCRIPTION_GROUP    = "description";
-    public final static String GROUP_ORDER          = "seqNo"; 
     
     /** 用户需要的属性 */
-    public final static String APPLICATION_ID_USER = "applicationId";
     public final static String LOGIN_NAME_USER     = "loginName";
-    public final static String PASSWORD_USER       = "password";
+    public final static String EAMIL_USER          = "email";
     public final static String SEX_USER            = "sex";
     public final static String BIRTHDAY_USER       = "birthday";
     public final static String EMPLOYEE_NO_USER    = "employeeNo";
@@ -133,10 +131,6 @@ public class LDAPDataDao implements IOutDataDao {
                 // description
                 String value = getValueFromAttribute(attrs, fieldNames.get(DESCRIPTION_GROUP));
 				group.setDescription(value);
-					
-                // groupOrder
-                value = getValueFromAttribute(attrs, fieldNames.get(GROUP_ORDER));
-				group.setSeqNo(Integer.valueOf(value.trim()));
                 
                 items.add(group);
             }
@@ -184,7 +178,6 @@ public class LDAPDataDao implements IOutDataDao {
                 user.setId(dn);
                 user.setGroupId(getGroupId(dn));                
                 user.setUserName( getNameValueFromAttribute( attrs, SN_TAG ) );
-                user.setApplicationId(defaultValues.get(APPLICATION_ID_USER));
                 
                 // 获得用户的属性              
                 // loginName
@@ -198,8 +191,8 @@ public class LDAPDataDao implements IOutDataDao {
                 else {
                     user.setLoginName(dn);
                 }
-                // password
-                user.setPassword(getValueFromAttribute(attrs, fieldNames.get(PASSWORD_USER)));
+                // email
+                user.setEmail(getValueFromAttribute(attrs, fieldNames.get(EAMIL_USER)));
                 
                 // sex
                 user.setSex(getValueFromAttribute(attrs, fieldNames.get(SEX_USER)));

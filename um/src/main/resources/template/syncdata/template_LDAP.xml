@@ -9,17 +9,14 @@
 			&lt;parentGroupId defaultValue=""&gt;parentGroupId&lt;/parentGroupId&gt;
 			&lt;groupName defaultValue=""&gt;groupName&lt;/groupName&gt;
 			&lt;description defaultValue=""&gt;description&lt;/description&gt;
-			&lt;seqNo defaultValue=""&gt;postalCode&lt;/seqNo&gt;
 		&lt;/attributes&gt; 
 	</groupSql>
 	<userSql>
 		&lt;attributes&gt;
-		&lt;applicationId
-		defaultValue="OA"&gt;applicationId&lt;/applicationId&gt;
 		&lt;id defaultValue=""&gt;id&lt;/id&gt;
 		&lt;groupId defaultValue=""&gt;groupId&lt;/groupId&gt;
 		&lt;loginName defaultValue=""&gt;uid&lt;/loginName&gt;
-		&lt;password defaultValue=""&gt;password&lt;/password&gt;
+		&lt;email defaultValue=""&gt;email&lt;/email&gt;
 		&lt;sex defaultValue=""&gt;sex&lt;/sex&gt;
 		&lt;birthday defaultValue=""&gt;birthday&lt;/birthday&gt;
 		&lt;employeeNo defaultValue=""&gt;employeeNo&lt;/employeeNo&gt;
@@ -27,12 +24,10 @@
 	</userSql>
 	<singleUser>
 		&lt;attributes&gt;
-		&lt;applicationId
-		defaultValue="OA"&gt;applicationId&lt;/applicationId&gt;
 		&lt;id defaultValue=""&gt;id&lt;/id&gt;
 		&lt;groupId defaultValue=""&gt;groupId&lt;/groupId&gt;
 		&lt;loginName defaultValue=""&gt;uid&lt;/loginName&gt;
-		&lt;password defaultValue=""&gt;password&lt;/password&gt;
+		&lt;email defaultValue=""&gt;email&lt;/email&gt;
 		&lt;sex defaultValue=""&gt;sex&lt;/sex&gt;
 		&lt;birthday defaultValue=""&gt;birthday&lt;/birthday&gt;
 		&lt;employeeNo defaultValue=""&gt;employeeNo&lt;/employeeNo&gt;

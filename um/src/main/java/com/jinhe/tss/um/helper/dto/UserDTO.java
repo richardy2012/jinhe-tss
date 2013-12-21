@@ -17,7 +17,6 @@ public class UserDTO {
     private String  email;        // 邮件
 	private String  password;     // 密码 
     private String  groupId;      // 对应用户所在组id  
-    private String  applicationId;// 应用系统id
     
     private String  certificate;   // 证件种类 : 1：工作证  2：身份证等
     private String  certificateNo; // 证件号 
@@ -115,14 +114,6 @@ public class UserDTO {
  
 	public void setSeqNo(Integer userOrder) {
 		this.seqNo = userOrder;
-	}
- 
-	public String getApplicationId() {
-		return applicationId;
-	}
- 
-	public void setApplicationId(String applicationId) {
-		this.applicationId = applicationId;
 	}
 	
 	public String toString(){

@@ -8,17 +8,17 @@
 	<user>sa</user>
 	<password>123</password>
 	<groupSql>
-		select distinct g.id, g.parentId, g.name as groupName, g.seqNo, g.description
+		select distinct g.id, g.parentId, g.name as name, g.description
 		from xxx_group g 
-		where g.id=:groupId 
+		where g.id >= :groupId 
 	</groupSql>
 	<userSql>
-		select distinct u.id, u.groupId, u.loginName, u.userName, u.password, u.sex, u.birthday, u.employeeNo
+		select distinct u.id, u.groupId, u.loginName, u.userName, u.email, u.sex, u.birthday, u.employeeNo
 		from xxx_user u 
-		where u.groupId=:groupId
+		where u.groupId >= :groupId
 	</userSql>
 	<singleUser>
-		select distinct u.id, u.groupId, u.loginName, u.userName, u.password, u.sex, u.birthday, u.employeeNo
+		select distinct u.id, u.groupId, u.loginName, u.userName, u.email, u.sex, u.birthday, u.employeeNo
 		from xxx_user u 
 		where u.id = :userId
 	</singleUser>

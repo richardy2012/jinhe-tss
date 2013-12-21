@@ -18,14 +18,9 @@ import com.jinhe.tss.util.EasyUtils;
  
 public abstract class BaseDBDataDao implements IOutDataDao {
     
-    protected static String[] groupPropertyNames = new String[]{"id", "parentId", "groupName", "seqNo", "description"};
-    protected static String[] groupDtoPropertyNames = new String[]{"id", "parentId", "name", "seqNo", "description"};
-    
-    protected static String[] userPropertyNames = new String[] { "id", "groupId", "loginName", "userName", 
-                "password", "sex", "birthday", "employeeNo" };
-
-    protected static String[] userDtoPropertyNames = new String[] { "id", "groupId", "loginName", "userName", 
-                "password", "sex", "birthday", "employeeNo" };
+	// 要求SQL的字段别名 和 DTO里的属性名一致
+    protected static String[] groupDtoPropertyNames = new String[]{"id", "parentId", "name", "description"};
+    protected static String[] userDtoPropertyNames  = new String[]{"id", "groupId", "loginName", "userName", "sex", "birthday", "email", "employeeNo" };
     
     public List<?> getOtherGroups(Map<String, String> paramsMap, String sql, String groupId) {
         if( sql == null ) {
@@ -34,7 +29,7 @@ public abstract class BaseDBDataDao implements IOutDataDao {
         sql = sql.replaceAll(":groupId", groupId);
         
         Connection conn = getConnection(paramsMap);
-        return getDtosBySQL(conn, sql, groupPropertyNames, groupDtoPropertyNames, GroupDTO.class);
+        return getDtosBySQL(conn, sql, groupDtoPropertyNames, GroupDTO.class);
     }
 
     public List<?> getOtherUsers(Map<String, String> paramsMap, String sql, String groupId, Object...otherParams) {
@@ -44,7 +39,7 @@ public abstract class BaseDBDataDao implements IOutDataDao {
         sql = sql.replaceAll(":groupId", groupId);
  
         Connection conn = getConnection(paramsMap);
-        return getDtosBySQL(conn, sql, userPropertyNames, userDtoPropertyNames, UserDTO.class);
+        return getDtosBySQL(conn, sql, userDtoPropertyNames, UserDTO.class);
     }
     
     public UserDTO getUser(Map<String, String> paramsMap, String fromUserId){
@@ -52,7 +47,7 @@ public abstract class BaseDBDataDao implements IOutDataDao {
         sql = sql.replaceAll(":userId", fromUserId);
 
         Connection conn = getConnection(paramsMap);
-        List<?> list = getDtosBySQL(conn, sql, userPropertyNames, userDtoPropertyNames, UserDTO.class);
+        List<?> list = getDtosBySQL(conn, sql, userDtoPropertyNames, UserDTO.class);
         
         if( EasyUtils.isNullOrEmpty(list) ) {
             return null;
@@ -63,7 +58,7 @@ public abstract class BaseDBDataDao implements IOutDataDao {
     
     protected abstract Connection getConnection(Map<String, String> paramsMap);
     
-    protected List<?> getDtosBySQL(Connection conn, String sql, String[] propertyNames, String[] dtoPropertyNames, Class<?> clazz) {
+    protected List<?> getDtosBySQL(Connection conn, String sql, String[] dtoPropertyNames, Class<?> clazz) {
         List<Object> items = new ArrayList<Object>();
         Statement stmt = null;
         try {
@@ -73,8 +68,8 @@ public abstract class BaseDBDataDao implements IOutDataDao {
             while (rs.next()) {
                 Object dto = BeanUtil.newInstance(clazz);
                 Map<String, String> attrsMap = new HashMap<String, String>();
-                for(int i = 0; i < propertyNames.length; i++){
-                    Object value = rs.getObject(propertyNames[i]);
+                for(int i = 0; i < dtoPropertyNames.length; i++){
+                    Object value = rs.getObject(dtoPropertyNames[i]);
                     attrsMap.put(dtoPropertyNames[i], value == null ? null : value.toString());
                 }
                 BeanUtil.setDataToBean(dto, attrsMap);

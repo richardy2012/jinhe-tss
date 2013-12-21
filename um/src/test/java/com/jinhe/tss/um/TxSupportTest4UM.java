@@ -44,7 +44,7 @@ import com.jinhe.tss.util.XMLDocUtil;
 @TransactionConfiguration(defaultRollback = false) // 不自动回滚，否则后续的test中没有初始化的数据
 public abstract class TxSupportTest4UM extends AbstractTransactionalJUnit4SpringContextTests { 
  
-    protected static Logger log = Logger.getLogger(TxSupportTest4UM.class);    
+    protected Logger log = Logger.getLogger(this.getClass());    
     
     @Autowired protected IResourceService resourceService;
     @Autowired protected ResourcePermission resourcePermission;

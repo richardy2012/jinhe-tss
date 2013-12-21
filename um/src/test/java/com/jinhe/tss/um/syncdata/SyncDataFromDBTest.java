@@ -101,7 +101,7 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
                         "employeeNo   VARCHAR2(255 CHAR), " + 
                         "loginName    VARCHAR2(255 CHAR), " + 
                         "userName     VARCHAR2(255 CHAR), " + 
-                        "password     VARCHAR2(255 CHAR) " + 
+                        "email        VARCHAR2(255 CHAR) " + 
                     ");" +
                     " alter table xxx_user add primary key (id); ");
             
@@ -113,6 +113,20 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
             ps.setObject(5, "test test");
             ps.executeUpdate();
             
+            ps.setObject(1, 2L);
+            ps.setObject(2, 1L);
+            ps.setObject(3, 1);
+            ps.setObject(4, "子组1");
+            ps.setObject(5, "test 1");
+            ps.executeUpdate();
+            
+            ps.setObject(1, 3L);
+            ps.setObject(2, 1L);
+            ps.setObject(3, 2);
+            ps.setObject(4, "子组2");
+            ps.setObject(5, "test 2");
+            ps.executeUpdate();
+            
             ps = conn.prepareStatement("insert into xxx_user values (?, ?, ?, ?, ?, ?, ?, ?)");
             ps.setObject(1, 1L);
             ps.setObject(2, 1L);
@@ -121,7 +135,17 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
             ps.setObject(5, "BL00618");
             ps.setObject(6, "JonKing");
             ps.setObject(7, "怒放的生命");
-            ps.setObject(8, "123456");
+            ps.setObject(8, "jinpujun@gmail.com");
+            ps.executeUpdate();
+            
+            ps.setObject(1, 2L);
+            ps.setObject(2, 3L);
+            ps.setObject(3, 1);
+            ps.setObject(4, new Timestamp(new Date().getTime()));
+            ps.setObject(5, "BL00619");
+            ps.setObject(6, "Waitwint");
+            ps.setObject(7, "过河卒子");
+            ps.setObject(8, "waitwind@gmail.com");
             ps.executeUpdate();
             
         } catch (Exception e) {
@@ -137,12 +161,12 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
         List<?> users  = (List<?>)datasMap.get("users");
         int totalCount = users.size() + groups.size();
 	    
-        log.debug("totalCount = " + totalCount);
+        Assert.assertTrue( totalCount == 5); // 三个组 + 两个用户
 		Progress progress = new Progress(totalCount);
 		((Progressable)syncService).execute(datasMap, progress );
 	}
 
-	@Test
+//	@Test
 	public void syncData() {
 		//TODO 进度条需要单独起线程，里面没有事务。
 		try {

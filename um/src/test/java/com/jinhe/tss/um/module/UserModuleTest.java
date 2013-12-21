@@ -51,7 +51,10 @@ public class UserModuleTest extends TxSupportTest4UM {
         
     	// 检查初始化的组是否存在
     	List<?> groups = groupService.findGroups();
-    	GroupModuleTest.printGroups(groups, 4, 1);
+    	for(Object temp : groups) {
+            log.debug(temp);
+        }
+        log.debug("\n");
     	
         mainGroup1 = new Group();
         mainGroup1.setParentId(UMConstants.MAIN_GROUP_ID);

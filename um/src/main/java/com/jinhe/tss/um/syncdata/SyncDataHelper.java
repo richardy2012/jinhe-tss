@@ -2,13 +2,11 @@ package com.jinhe.tss.um.syncdata;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.um.UMConstants;
-import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.User;
-import com.jinhe.tss.um.helper.dto.GroupDTO;
 import com.jinhe.tss.um.helper.dto.UserDTO;
+import com.jinhe.tss.um.syncdata.dao.DBDataDao;
 import com.jinhe.tss.um.syncdata.dao.IOutDataDao;
 import com.jinhe.tss.um.syncdata.dao.LDAPDataDao;
-import com.jinhe.tss.um.syncdata.dao.DBDataDao;
 import com.jinhe.tss.util.EasyUtils;
 
 public class SyncDataHelper {
@@ -22,23 +20,7 @@ public class SyncDataHelper {
     
     public final static String QUERY_GROUP_SQL_NAME = "groupSql";
     public final static String QUERY_USER_SQL_NAME  = "userSql";
-    
-    /**
-     * <p>
-     * 拷贝组DTO到实体对象
-     * 只拷贝部分基本属性
-     * </p>
-     * @param group
-     * @param groupDTO
-     */
-    public static void setGroupByDTO(Group group, GroupDTO groupDTO) {  
-        group.setDescription(groupDTO.getDescription());
-        group.setName(groupDTO.getName());
-        group.setSeqNo(groupDTO.getSeqNo());
-        group.setDisabled(groupDTO.getDisabled());
-        group.setGroupType(groupDTO.getGroupType());
-    }
-    
+ 
     /**
      * <p>
      * 拷贝用户DTO到实体对象

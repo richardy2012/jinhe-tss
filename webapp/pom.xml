@@ -24,6 +24,14 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.6</version>
 		</dependency>
+		
+		<!-- Oracle DB driver 4 sync user & article -->
+		<dependency>
+			<groupId>Oracle</groupId>
+			<artifactId>ojdbc</artifactId>
+			<version>1.4G</version>
+		</dependency>
+		
 	</dependencies>
 	
 	<build>

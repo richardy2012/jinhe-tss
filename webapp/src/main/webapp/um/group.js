@@ -498,25 +498,19 @@
     function syncGroup() {
         var treeNode = $T("tree").getActiveTreeNode();
 		var treeNodeID = treeNode.getId();
+        var applicationId = treeNode.getAttribute("fromApp");
 
-		var p = new HttpRequestParams();
-		p.url = URL_SYNC_GROUP;
-
-        p.setContent("groupId", treeNodeID);
-		p.setContent("applicationId", treeNode.getAttribute("fromApp"));
-		p.setContent("fromGroupId", treeNode.getAttribute("fromGroupId"));
-
-		var request = new HttpRequest(p);
-
-		request.onresult = function(){
+		var onresult = function() {
 			var data = this.getNodeValue("ProgressInfo");
 			var progress = new Progress(URL_SYNC_PROGRESS,data,URL_CANCEL_SYNC);
 			progress.oncomplete = function(){
 				loadInitData();
+                showUserList(treeNodeID);
 			}
 			progress.start();
 		}
-		request.send();
+
+        Ajax({url : URL_SYNC_GROUP + applicationId + "/" + treeNodeID, onresult : onresult});
     }
 	
     function getUserOperation(code) {
