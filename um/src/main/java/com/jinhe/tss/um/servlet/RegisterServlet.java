@@ -49,10 +49,10 @@ public class RegisterServlet extends HttpServlet {
         user.setLoginName(request.getParameter("loginName"));
         user.setPassword(request.getParameter("password"));
         user.setUserName(request.getParameter("userName"));
-        user.setMail(request.getParameter("mail"));
+        user.setEmail(request.getParameter("mail"));
 
         // 设置默认认证方式为UMS本地认证
-        user.setAuthenticateMethod(UMPasswordIdentifier.class.getName());
+        user.setAuthMethod(UMPasswordIdentifier.class.getName());
         user.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID);
         service.registerUser(user);
 

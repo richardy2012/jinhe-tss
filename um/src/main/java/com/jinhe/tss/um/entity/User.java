@@ -42,24 +42,24 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
     private Long   id;              // 用户ID：用户主键id号
     
     @Column(length = 50, nullable = false)  
-    private String loginName;       // 用户名:即用户登陆系统的帐号
-    private String userName;        // 姓名:用户的实际姓名
+    private String loginName;       // 登陆系统帐号
+    private String userName;        // 姓名
     private String employeeNo;      // 员工编号
     private String sex;             // 性别
     private Date   birthday;        // 出生年月
-    private String mail;            // 邮件 
+    private String email;           // 邮件 
     private String telephone;       // 联系电话 
     private String address;         // 地址 
     private String postalCode;      // 邮编 
-    private String certificateNumber;  // 证件号
-    private String certificateCategory;// 证件种类 :  1：工作证  2：身份证等
-    private String password;           // 密码 
-    private String passwordQuestion;   // 密码提示问题 
-    private String passwordAnswer;     // 密码提示答案 
-    private Date   accountUsefulLife;  // 帐户有效期限 ：用户帐户到某个指顶的期限过期
-    private String authenticateMethod = UMPasswordIdentifier.class.getName();// 认证方式,一个实现对应的认证方式的类路径
+    private String certificateNo;   // 证件号
+    private String certificate;     // 证件种类 :  1：工作证  2：身份证等
+    private String password;        // 密码 
+    private String passwordQuestion;// 密码提示问题 
+    private String passwordAnswer;  // 密码提示答案 
+    private Date   accountLife;     // 帐户有效期限 ：用户帐户到某个指顶的期限过期
+    private String authMethod = UMPasswordIdentifier.class.getName();// 认证方式,一个实现对应的认证方式的类路径
     
-    private String  otherAppUserId;  // 外部应用系统用户的ID (用于【平台用户】对应【其他系统用户】，其值可以是LDAP里的DN字符串)
+    private String fromUserId;  // 外部应用系统用户的ID (用于【平台用户】对应【其他系统用户】，其值可以是LDAP里的DN字符串)
     
     private Integer disabled = UMConstants.FALSE; // 帐户状态, 帐户状态(0-停用, 1-启用)
     
@@ -83,12 +83,12 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
         this.disabled = accountState;
     }
  
-    public Date getAccountUsefulLife() {
-        return accountUsefulLife;
+    public Date getAccountLife() {
+        return accountLife;
     }
  
-    public void setAccountUsefulLife(Date accountUsefulLife) {
-        this.accountUsefulLife = accountUsefulLife;
+    public void setAccountLife(Date accountLife) {
+        this.accountLife = accountLife;
     }
  
     public String getAddress() {
@@ -99,12 +99,12 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
         this.address = address;
     }
  
-    public String getAuthenticateMethod() {
-        return authenticateMethod;
+    public String getAuthMethod() {
+        return authMethod;
     }
  
-    public void setAuthenticateMethod(String authenticateMethod) {
-        this.authenticateMethod = authenticateMethod;
+    public void setAuthMethod(String authMethod) {
+        this.authMethod = authMethod;
     }
  
     public Date getBirthday() {
@@ -115,20 +115,20 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
         this.birthday = birthday;
     }
  
-    public String getCertificateCategory() {
-        return certificateCategory;
+    public String getCertificate() {
+        return certificate;
     }
  
-    public void setCertificateCategory(String certificateCategory) {
-        this.certificateCategory = certificateCategory;
+    public void setCertificate(String certificate) {
+        this.certificate = certificate;
     }
  
-    public String getCertificateNumber() {
-        return certificateNumber;
+    public String getCertificateNo() {
+        return certificateNo;
     }
  
-    public void setCertificateNumber(String certificateNumber) {
-        this.certificateNumber = certificateNumber;
+    public void setCertificateNo(String certificateNo) {
+        this.certificateNo = certificateNo;
     }
  
     public String getEmployeeNo() {
@@ -147,20 +147,20 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
         this.loginName = loginName;
     }
  
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
  
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
  
-    public String getOtherAppUserId() {
-        return otherAppUserId;
+    public String getFromUserId() {
+        return fromUserId;
     }
  
-    public void setOtherAppUserId(String otherAppUserId) {
-        this.otherAppUserId = otherAppUserId;
+    public void setFromUserId(String fromUserId) {
+        this.fromUserId = fromUserId;
     }
  
     public String getPassword() {
@@ -247,7 +247,7 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
         BeanUtil.addBeanProperties2Map(this, map);
         
         map.put("birthday", DateUtil.format(birthday));
-        map.put("accountUsefulLife", DateUtil.format(accountUsefulLife));
+        map.put("accountLife", DateUtil.format(accountLife));
         
         return map;
     }

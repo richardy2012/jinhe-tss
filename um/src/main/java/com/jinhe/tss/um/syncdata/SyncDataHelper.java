@@ -49,14 +49,14 @@ public class SyncDataHelper {
      */
     public static void setUserByDTO(User user, UserDTO userDTO) {
         user.setDisabled(userDTO.getDisabled());
-        user.setAccountUsefulLife(userDTO.getAccountUsefulLife());
+        user.setAccountLife(userDTO.getAccountLife());
         user.setBirthday(userDTO.getBirthday());
         user.setEmployeeNo(userDTO.getEmployeeNo());
         user.setLoginName(userDTO.getLoginName());
         user.setPassword(userDTO.getPassword());
         user.setSex(userDTO.getSex());
         user.setUserName(userDTO.getUserName());
-        user.setOtherAppUserId(userDTO.getId());
+        user.setFromUserId(userDTO.getId());
         
         if( EasyUtils.isNullOrEmpty(user.getPassword()) ) {
             user.setPassword(DEFAULT_PWD);

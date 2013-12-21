@@ -37,7 +37,7 @@ public class LoginService implements ILoginService {
 
 	public String[] getLoginInfoByLoginName(String loginName) {
 		User user = getUserByLoginName(loginName);
-		return new String[] { user.getUserName(), user.getAuthenticateMethod() };
+		return new String[] { user.getUserName(), user.getAuthMethod() };
 	}
 	
 	private User getUserByLoginName(String loginName) {
@@ -48,8 +48,8 @@ public class LoginService implements ILoginService {
         else if (UMConstants.TRUE.equals(user.getDisabled())) {
             throw new BusinessException("此帐号(" + loginName + ")已被停用");
         } 
-        else if (user.getAccountUsefulLife() !=  null) {
-            if ( new Date().after(user.getAccountUsefulLife()) ) {
+        else if (user.getAccountLife() !=  null) {
+            if ( new Date().after(user.getAccountLife()) ) {
                 throw new BusinessException("此帐号(" + loginName + ")已过期");
             }
         }

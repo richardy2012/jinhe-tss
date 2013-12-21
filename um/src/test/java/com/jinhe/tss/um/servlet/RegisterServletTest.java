@@ -19,15 +19,15 @@ public class RegisterServletTest extends TxSupportTest4UM {
         request.addParameter("userName", "JinPujun");
         request.addParameter("employeeNo", "JinPujun");
         request.addParameter("sex", "1");
-        request.addParameter("mail", "JinPujun@hotmail.com");
+        request.addParameter("email", "jinpujun@hotmail.com");
         request.addParameter("birthday", "1983-06-22");
         request.addParameter("address", "hangzhou zhejiang");
         request.addParameter("telephone", "88888888");
         request.addParameter("postalCode", "317000");
         request.addParameter("passwordQuestion", "");
         request.addParameter("passwordAnswer", "");
-        request.addParameter("certificateCategory", "");
-        request.addParameter("certificateNumber", "");
+        request.addParameter("certificate", "");
+        request.addParameter("certificateNo", "");
         
         RegisterServlet registerServlet = new RegisterServlet();
         
@@ -41,5 +41,4 @@ public class RegisterServletTest extends TxSupportTest4UM {
             registerServlet.destroy();
         }
     }
-    
 }

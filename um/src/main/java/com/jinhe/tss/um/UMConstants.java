@@ -147,8 +147,8 @@ public final class UMConstants {
 	public static final String SERACH_PERMISSION_XFORM = "template/xform/searchpermission.xml";    //查询权限的
 	public static final String AUTH_METHOD_XFORM       = "template/xform/authenticatemethod.xml";  //查询权限转授的
 	public static final String IMPORT_APP_XFORM        = "template/xform/importapplication.xml";   //应用系统导入的
-    public static final String PASSWORD_FORGET_XFORM   = "template/xform/password_forget.xml";      //密码忘记提示 
-    public static final String PASSWORD_CHANGE_XFORM   = "template/xform/password_change.xml";      //密码修改
+    public static final String PASSWORD_FORGET_XFORM   = "template/xform/password_forget.xml";     //密码忘记提示 
+    public static final String PASSWORD_CHANGE_XFORM   = "template/xform/password_change.xml";     //密码修改
 
 	/**
 	 * 对象节点 Tree 图标文件的路径定义

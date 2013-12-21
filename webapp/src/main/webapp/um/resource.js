@@ -29,7 +29,7 @@
             label:"查看",
             callback:function() { editTreeNode(false); },
             icon:ICON + "view.gif",
-            visible: function() {return "-1" != getTreeNodeId() && "-2" != getTreeNodeId();}
+            visible: function() {return "2" == getNodeType();}
         }
         var item2 = {
             label:"编辑",
@@ -121,10 +121,14 @@
             request.onresult = function() { // 新增
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
 				appendTreeNode("-2", treeNode);
+
+				getOtherApplication(false);
             }
             request.onsuccess = function() { // 修改，更新树节点名称
 				var name = $X("page1Form").getData("name");
 				modifyTreeNode(treeID, "name", name, true);
+
+				getOtherApplication(false);
             }
             request.send();
         }

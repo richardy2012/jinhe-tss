@@ -57,11 +57,11 @@ public class LDAPDataDao implements IOutDataDao {
     private static final String OU_TAG  = "OU=".toLowerCase();
     private static final String SN_TAG  = "SN".toLowerCase();
 
-    /*  otherAppUserId类似：CN=李文斌,OU=行政政法处,OU=省厅,O=GZCZ   */
-    public UserDTO getUser(Map<String, String> paramsMap, String otherAppUserId){
+    /*  fromUserId类似：CN=李文斌,OU=行政政法处,OU=省厅,O=GZCZ   */
+    public UserDTO getUser(Map<String, String> paramsMap, String fromUserId){
         List<?> list = getOtherUsers( paramsMap,  paramsMap.get(SyncDataHelper.SINGLE_USER), 
-                otherAppUserId.substring(otherAppUserId.indexOf(",") + 1),
-                otherAppUserId.substring(0, otherAppUserId.indexOf(",")));
+        		fromUserId.substring(fromUserId.indexOf(",") + 1),
+                fromUserId.substring(0, fromUserId.indexOf(",")));
         
         if(!EasyUtils.isNullOrEmpty(list)) {
             return (UserDTO)list.get(0);

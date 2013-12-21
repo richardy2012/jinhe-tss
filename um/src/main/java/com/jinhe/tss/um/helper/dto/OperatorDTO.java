@@ -17,12 +17,12 @@ public class OperatorDTO implements IPWDOperator, Serializable {
     
     public final static OperatorDTO ADMIN = new OperatorDTO(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
 
-    private Long id;          //用户ID 
-    private String loginName; //用户名: 即用户登陆系统的帐号
-    private String userName;  //姓名: 用户的实际姓名
-    private String password;  //密码
+    private Long id;          // 用户ID 
+    private String loginName; // 用户名: 即用户登陆系统的帐号
+    private String userName;  // 姓名: 用户的实际姓名
+    private String password;  // 密码
  
-    private String authenticateMethod;  //认证方式：0-domino 1-db 2-其他
+    private String authenticateMethod;  //认证方式
     
     public OperatorDTO() {
     }

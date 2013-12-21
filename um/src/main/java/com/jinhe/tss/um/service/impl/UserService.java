@@ -112,10 +112,10 @@ public class UserService implements IUserService{
         return password;
     }
 
-    public void uniteAuthenticateMethod(Long groupId, String authenticateMethod) {
+    public void uniteAuthenticateMethod(Long groupId, String authMethod) {
         List<User> userList = groupDao.getUsersByGroupIdDeeply(groupId);
         for (User user : userList) {
-            user.setAuthenticateMethod(authenticateMethod);
+            user.setAuthMethod(authMethod);
             userDao.update(user);
         }           
     }
@@ -124,12 +124,12 @@ public class UserService implements IUserService{
         checkUserAccout(user);
         
         user.setPassword(InfoEncoder.string2MD5(user.getLoginName() + "_" + user.getPassword()));
-        user.setAuthenticateMethod(UMPasswordIdentifier.class.getName());
+        user.setAuthMethod(UMPasswordIdentifier.class.getName());
 
         // 默认有效期三年
         Calendar cl = new GregorianCalendar();
         cl.add(Calendar.YEAR, 3);
-        user.setAccountUsefulLife(cl.getTime());
+        user.setAccountLife(cl.getTime());
         
         userDao.create(user);
         
@@ -270,7 +270,7 @@ public class UserService implements IUserService{
 	
 	// 判断用户是否过期
 	private boolean isOverdue(Long userId){
-		List<?> list = userDao.getEntities(" from User o where o.id=? and o.accountUsefulLife < ?", userId, new Date());
+		List<?> list = userDao.getEntities(" from User o where o.id=? and o.accountLife < ?", userId, new Date());
 		return !EasyUtils.isNullOrEmpty(list);
 	}
 	
@@ -290,7 +290,7 @@ public class UserService implements IUserService{
 	public void overdue() { 
 		try {
 			Date today = new Date();
-			userDao.executeHQL("update User u set u.disabled = 1 where u.accountUsefulLife < ?", today);
+			userDao.executeHQL("update User u set u.disabled = 1 where u.accountLife < ?", today);
 			userDao.executeHQL("update Role r set r.disabled = 1 where r.endDate < ?", today);
 			userDao.executeHQL("update SubAuthorize s set s.disabled = 1 where s.endDate < ?", today);
 		} catch(Exception e) {

@@ -47,9 +47,9 @@ public abstract class BaseDBDataDao implements IOutDataDao {
         return getDtosBySQL(conn, sql, userPropertyNames, userDtoPropertyNames, UserDTO.class);
     }
     
-    public UserDTO getUser(Map<String, String> paramsMap, String otherAppUserId){
+    public UserDTO getUser(Map<String, String> paramsMap, String fromUserId){
         String sql =  paramsMap.get(SyncDataHelper.SINGLE_USER);
-        sql = sql.replaceAll(":userId", otherAppUserId);
+        sql = sql.replaceAll(":userId", fromUserId);
 
         Connection conn = getConnection(paramsMap);
         List<?> list = getDtosBySQL(conn, sql, userPropertyNames, userDtoPropertyNames, UserDTO.class);

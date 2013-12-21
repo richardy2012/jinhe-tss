@@ -8,7 +8,7 @@
 		<column caption="姓名" name="userName" align="center" width="80px"/>
         <column caption="性别" name="sex" align="center" editor="comboedit" editorvalue="0|1" editortext="女|男"  width="50px"/>
         <column caption="出生年月" name="birthday" mode="date" align="center" width="100px"/>
-        <column caption="电子邮件" name="mail" align="center" width="120px"/>
+        <column caption="电子邮件" name="email" align="center" width="120px"/>
         <column caption="电话" name="telephone" align="center" width="80px"/>
         
 		<column caption="所属组织" name="groupName" align="center" width="100px"/>

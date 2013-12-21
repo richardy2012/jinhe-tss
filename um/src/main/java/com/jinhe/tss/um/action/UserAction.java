@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.dom4j.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,8 +67,7 @@ public class UserAction extends BaseActionSupport {
         // 用户对组
         TreeEncoder groupTree = new TreeEncoder(data.get("User2GroupExistTree"));
  
-        Document baseinfoXForm = XMLDocUtil.createDoc(UMConstants.USER_BASEINFO_XFORM);
-        XFormEncoder baseinfoXFormEncoder = new XFormEncoder(baseinfoXForm, map, true, false);
+        XFormEncoder baseinfoXFormEncoder = new XFormEncoder(UMConstants.USER_BASEINFO_XFORM, map);
         
         print(new String[]{"UserInfo", "User2GroupExistTree", "User2RoleTree", "User2RoleExistTree"}, 
                 new Object[]{baseinfoXFormEncoder, groupTree, roleTree, existRoleTree});
@@ -86,7 +84,7 @@ public class UserAction extends BaseActionSupport {
 		print("AuthenticateInfo", authXFormEncoder);
 	}
 	
-	@RequestMapping("/uniteAuth/{groupId}/{authenticateMethod}")
+	@RequestMapping("/uniteAuth/{groupId}/{authMethod}")
 	public void uniteAuthenticateMethod(HttpServletResponse response, 
 			@PathVariable("groupId") Long groupId, @PathVariable("authMethod") String authMethod) {
 		
@@ -134,9 +132,9 @@ public class UserAction extends BaseActionSupport {
 	 * 搜索用户
 	 */
 	@RequestMapping("/search/{page}")
-	public void searchUser(HttpServletResponse response, UMQueryCondition userQueryCon) {
-		int page = userQueryCon.getPage().getPageNum();
-        PageInfo users = userService.searchUser(userQueryCon, page);
+	public void searchUser(HttpServletResponse response, UMQueryCondition condition) {
+		int page = condition.getPage().getPageNum();
+        PageInfo users = userService.searchUser(condition, page);
         GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), XMLDocUtil.createDoc(UMConstants.MAIN_USER_GRID));
         print(new String[]{"SourceList", "PageInfo"}, new Object[]{gridEncoder, users});
 	}

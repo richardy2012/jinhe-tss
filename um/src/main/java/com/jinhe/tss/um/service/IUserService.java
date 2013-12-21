@@ -86,9 +86,9 @@ public interface IUserService {
      * 统一认证方式
      * </p>
      * @param groupId
-     * @param authenticateMethod
+     * @param authMethod
      */
-    void uniteAuthenticateMethod(Long groupId, String authenticateMethod);
+    void uniteAuthenticateMethod(Long groupId, String authMethod);
 
     /**
      * <p>

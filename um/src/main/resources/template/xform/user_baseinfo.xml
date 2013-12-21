@@ -10,15 +10,15 @@
 		<column name="sex" caption="性别" mode="string" editor="comboedit" editorvalue="1|0" editortext="男|女"/>
 		<column name="birthday" caption="出生年月" mode="string" pattern="yyyy-MM-dd" maxLength="32"/>
 		<column name="employeeNo" caption="员工编号" mode="string" maxLength="100"/>
-		<column name="mail" caption="电子邮件" mode="string" maxLength="100" inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/"/>
+		<column name="email" caption="电子邮件" mode="string" maxLength="100" inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/"/>
 		<column name="telephone" caption="电话" mode="string" maxLength="30"/>
 		<column name="address"   caption="地址" mode="string" maxLength="100"/>
 		<column name="postalCode" caption="邮编" mode="string" maxLength="10" inputReg="/^\d{0,10}$/"/>
 		
-		<column name="certificateCategory" caption="证件种类" mode="string" editor="comboedit" editorvalue="1|2" editortext="工作证|身份证"/>
-		<column name="certificateNumber" caption="证件号" mode="string" maxLength="50"/>
-		<column name="accountUsefulLife" caption="账户有效期" mode="string" pattern="yyyy-MM-dd"/>
-		<column name="authenticateMethod" caption="认证方式" mode="string" empty="false" editor="comboedit"
+		<column name="certificate" caption="证件种类" mode="string" editor="comboedit" editorvalue="1|2" editortext="工作证|身份证"/>
+		<column name="certificateNo" caption="证件号" mode="string" maxLength="50"/>
+		<column name="accountLife" caption="账户有效期" mode="string" pattern="yyyy-MM-dd"/>
+		<column name="authMethod"  caption="认证方式" mode="string" empty="false" editor="comboedit"
 			editorvalue="com.jinhe.tss.um.sso.UMPasswordIdentifier" editortext="UM本地"/>
 		
 		<column name="groupId" mode="hidden"/>
@@ -48,8 +48,8 @@
 			<TD><input binding="telephone"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="mail"/></TD>
-			<TD><input binding="mail" style="width:250;"/></TD>
+			<TD width="50"><label binding="email"/></TD>
+			<TD><input binding="email" style="width:250;"/></TD>
 
 			<TD width="50"><label binding="address"/></TD>
 			<TD><input binding="address" style="width:250;"/></TD>
@@ -58,8 +58,8 @@
 			<TD width="50"><label binding="password"/></TD>
 			<TD><input binding="password" type="password"/></TD>
 			
-			<TD width="50"><label binding="authenticateMethod"/></TD>
-			<TD><input binding="authenticateMethod"/></TD>
+			<TD width="50"><label binding="authMethod"/></TD>
+			<TD><input binding="authMethod"/></TD>
 		</TR>
 		<TR>
 			<TD width="50"><label binding="passwordQuestion"/></TD>

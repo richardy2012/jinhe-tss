@@ -11,7 +11,6 @@ import com.jinhe.tss.util.DateUtil;
 
 /** 
  * 对数据对象操作的操作者信息记录实体
- * 
  */
 @MappedSuperclass
 public abstract class OperateInfo implements IOperatable, IEntity {
@@ -27,8 +26,7 @@ public abstract class OperateInfo implements IOperatable, IEntity {
     private int lockVersion = 0;
     
 	public String toString() {
-		return org.apache.commons.lang.builder.ToStringBuilder
-				.reflectionToString(this);
+		return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);
 	}
     
     protected void putOperateInfo2Map(TreeAttributesMap map) {

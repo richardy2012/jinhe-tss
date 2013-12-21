@@ -79,12 +79,12 @@
         initNaviBar("um.1");
         initMenus();
         initWorkSpace();
-        Element.moveable($$("ws"));
+
+        //Element.moveable($$("ws"));
 
         initEvents();
 
         loadInitData();
-        showUserList(-7);
     }
 
     function initMenus(){
@@ -259,6 +259,8 @@
             var groupTreeNode = this.getNodeValue(XML_MAIN_TREE);
 			Cache.XmlDatas.add(CACHE_MAIN_TREE, groupTreeNode);
             $T("tree", groupTreeNode);
+
+            showUserList(-7);
 			
 			var treeObj = $$("tree");
 			treeObj.onTreeNodeActived = function(eventObj){
@@ -725,7 +727,7 @@
 				detachReminder(page1FormObj.element.id);
 
 				// 如果当前grid显示为此用户所在组，则刷新grid
-				showUserList(groupId);
+				showUserList(groupId || -7);
 	 
 				ws.closeActiveTab();
 			}

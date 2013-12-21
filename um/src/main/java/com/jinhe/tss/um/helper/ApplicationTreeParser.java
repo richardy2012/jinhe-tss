@@ -36,6 +36,13 @@ public class ApplicationTreeParser implements ITreeParser {
 		app.setApplicationType(UMConstants.PLATFORM_SYSTEM_APP);		
 		TreeNode platformParent = new TreeNode(app);	
 		
+		// 增加其他应用系统节点，用以同步其他系统的用户组织。
+		Application otherAppRoot = new Application();
+		otherAppRoot.setId(Long.valueOf(UMConstants.OTHER_SYSTEM_APP));
+		otherAppRoot.setName(UMConstants.OTHER_SYSTEM_NAME);
+		otherAppRoot.setApplicationType(UMConstants.OTHER_SYSTEM_APP);		
+		TreeNode otherAppParent = new TreeNode(otherAppRoot);
+		
 		Map<ResourceType, TreeNode> rtTreeNodeMap = new LinkedHashMap<ResourceType, TreeNode>();
 		if (resourceTypes != null && operations != null) {
 			for (Object resourceTypeObj : resourceTypes) {
@@ -67,16 +74,13 @@ public class ApplicationTreeParser implements ITreeParser {
 			if (UMConstants.PLATFORM_SYSTEM_APP.equals(application.getApplicationType())) {
 				platformParent.addChild(appNode);
 			} 
+			else {
+				otherAppParent.addChild(appNode);
+			}
 		}
 			
 		root.addChild(platformParent);
-		
-		// 增加其他应用系统节点，用以同步其他系统的用户组织。
-		Application otherAppRoot = new Application();
-		otherAppRoot.setId(Long.valueOf(UMConstants.OTHER_SYSTEM_APP));
-		otherAppRoot.setName(UMConstants.OTHER_SYSTEM_NAME);
-		otherAppRoot.setApplicationType(UMConstants.OTHER_SYSTEM_APP);		
-		root.addChild(new TreeNode(otherAppRoot));
+		root.addChild(otherAppParent);
 		
 		return root;
 	}

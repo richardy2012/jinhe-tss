@@ -31,9 +31,9 @@ public interface IOutDataDao {
     /**
      * 获取单个用户信息
      * @param param
-     * @param otherAppUserId
+     * @param fromUserId
      * @return
      */
-    UserDTO getUser(Map<String, String> paramsMap, String otherAppUserId);
+    UserDTO getUser(Map<String, String> paramsMap, String fromUserId);
 }
 

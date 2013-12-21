@@ -3,8 +3,6 @@ package com.jinhe.tss.um.helper.dto;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.jinhe.tss.um.UMConstants;
 
@@ -16,25 +14,23 @@ public class UserDTO {
 	private String  employeeNo;   // 员工编号
 	private String  sex;          // 姓名
 	private Date    birthday;     // 出生年月 
-    private String  mail;         // 邮件
+    private String  email;        // 邮件
 	private String  password;     // 密码 
     private String  groupId;      // 对应用户所在组id  
     private String  applicationId;// 应用系统id
     
-    private String  certificateCategory;// 证件种类 :  1：工作证  2：身份证等
-    private String  certificateNumber;  // 证件号 
+    private String  certificate;   // 证件种类 : 1：工作证  2：身份证等
+    private String  certificateNo; // 证件号 
     
-	private Integer disabled = UMConstants.FALSE;     // 帐户状态 
-	private Date    accountUsefulLife = new Date(); // 帐户有效期限：用户帐户到某个指顶的期限过期
+	private Integer disabled = UMConstants.FALSE; // 帐户状态 
+	private Date    accountLife = new Date();     // 帐户有效期限：用户帐户到某个指顶的期限过期
     
-    private Map<String, Object> dynProperties = new HashMap<String, Object>();
- 
-    public Date getAccountUsefulLife() {
+    public Date getAccountLife() {
         // 默认有效期50年
         Calendar calendar = new GregorianCalendar();
         calendar.add(Calendar.YEAR, 50);
-        accountUsefulLife = calendar.getTime();
-        return accountUsefulLife;
+        accountLife = calendar.getTime();
+        return accountLife;
     }
  
 	public Integer getDisabled() {
@@ -45,8 +41,8 @@ public class UserDTO {
 		this.disabled = accountState;
 	}
  
-	public void setAccountUsefulLife(Date accountUsefulLife) {
-		this.accountUsefulLife = accountUsefulLife;
+	public void setAccountLife(Date accountLife) {
+		this.accountLife = accountLife;
 	}
  
 	public Date getBirthday() {
@@ -134,32 +130,28 @@ public class UserDTO {
 				+ employeeNo + "] 用户所在组id:[" + groupId + "]";
 	}
  
-    public Map<String, Object> getDynProperties() {
-        return dynProperties;
+    public String getEmail() {
+        return email;
     }
  
-    public String getMail() {
-        return mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
  
-    public void setMail(String mail) {
-        this.mail = mail;
+    public String getCertificate() {
+        return certificate;
     }
  
-    public String getCertificateCategory() {
-        return certificateCategory;
+    public void setCertificate(String certificate) {
+        this.certificate = certificate;
     }
  
-    public void setCertificateCategory(String certificateCategory) {
-        this.certificateCategory = certificateCategory;
+    public String getCertificateNo() {
+        return certificateNo;
     }
  
-    public String getCertificateNumber() {
-        return certificateNumber;
-    }
- 
-    public void setCertificateNumber(String certificateNumber) {
-        this.certificateNumber = certificateNumber;
+    public void setCertificateNo(String certificateNo) {
+        this.certificateNo = certificateNo;
     }
 }
 
