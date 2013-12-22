@@ -7,7 +7,6 @@ import com.jinhe.tss.um.helper.dto.UserDTO;
 import com.jinhe.tss.um.syncdata.dao.DBDataDao;
 import com.jinhe.tss.um.syncdata.dao.IOutDataDao;
 import com.jinhe.tss.um.syncdata.dao.LDAPDataDao;
-import com.jinhe.tss.util.EasyUtils;
 
 public class SyncDataHelper {
     
@@ -26,25 +25,24 @@ public class SyncDataHelper {
      * 拷贝用户DTO到实体对象
      * 只拷贝部分基本属性
      * </p>
-     * @param group
-     * @param groupDTO
+     * @param user
+     * @param userDTO
      */
     public static void setUserByDTO(User user, UserDTO userDTO) {
+    	user.setLoginName(userDTO.getLoginName());
+    	user.setUserName(userDTO.getUserName());
         user.setDisabled(userDTO.getDisabled());
         user.setAccountLife(userDTO.getAccountLife());
+        user.setEmail(userDTO.getEmail());
+        user.setSex(userDTO.getSex());
         user.setBirthday(userDTO.getBirthday());
         user.setEmployeeNo(userDTO.getEmployeeNo());
-        user.setLoginName(userDTO.getLoginName());
-        user.setPassword(userDTO.getPassword());
-        user.setSex(userDTO.getSex());
-        user.setUserName(userDTO.getUserName());
-        user.setFromUserId(userDTO.getId());
         
-        if( EasyUtils.isNullOrEmpty(user.getPassword()) ) {
-            user.setPassword(DEFAULT_PWD);
-        }
+        user.setPassword(DEFAULT_PWD);
         user.setPasswordQuestion("?");
         user.setPasswordAnswer( System.currentTimeMillis() + "!" );
+        
+        user.setFromUserId(userDTO.getId());
     }
     
     public static IOutDataDao getOutDataDao(Integer dataSourceType) {

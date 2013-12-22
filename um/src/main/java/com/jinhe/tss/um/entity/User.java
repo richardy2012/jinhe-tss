@@ -35,8 +35,6 @@ import com.jinhe.tss.util.DateUtil;
 @SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence", initialValue = 10000, allocationSize = 10)
 public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
 
-    public final static String entityCode = "um_user";
-    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "user_sequence")
     private Long   id;              // 用户ID：用户主键id号
@@ -258,10 +256,6 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
 		
 		super.putOperateInfo2Map(map);
         return map;
-    }
- 
-    public String getEntityCode() {
-        return User.entityCode;
     }
 
     public Long getGroupId() {

@@ -7,19 +7,15 @@ import java.util.GregorianCalendar;
 import com.jinhe.tss.um.UMConstants;
 
 public class UserDTO {
+	
 	private String  id;           // 用户主键id号
-	private Integer seqNo;        // 排序号
 	private String  loginName;    // 用户登陆系统的帐号
 	private String  userName;     // 用户的实际姓名
 	private String  employeeNo;   // 员工编号
 	private String  sex;          // 姓名
 	private Date    birthday;     // 出生年月 
     private String  email;        // 邮件
-	private String  password;     // 密码 
     private String  groupId;      // 对应用户所在组id  
-    
-    private String  certificate;   // 证件种类 : 1：工作证  2：身份证等
-    private String  certificateNo; // 证件号 
     
 	private Integer disabled = UMConstants.FALSE; // 帐户状态 
 	private Date    accountLife = new Date();     // 帐户有效期限：用户帐户到某个指顶的期限过期
@@ -84,14 +80,6 @@ public class UserDTO {
 		this.loginName = loginName;
 	}
  
-	public String getPassword() {
-		return password;
-	}
- 
-	public void setPassword(String password) {
-		this.password = password;
-	}
- 
 	public String getSex() {
 		return sex;
 	}
@@ -107,14 +95,6 @@ public class UserDTO {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
- 
-	public Integer getSeqNo() {
-		return seqNo;
-	}
- 
-	public void setSeqNo(Integer userOrder) {
-		this.seqNo = userOrder;
-	}
 	
 	public String toString(){
 		return "登陆名:[" + loginName + "] 姓名:[" + userName + "] 员工编号:["
@@ -127,22 +107,6 @@ public class UserDTO {
  
     public void setEmail(String email) {
         this.email = email;
-    }
- 
-    public String getCertificate() {
-        return certificate;
-    }
- 
-    public void setCertificate(String certificate) {
-        this.certificate = certificate;
-    }
- 
-    public String getCertificateNo() {
-        return certificateNo;
-    }
- 
-    public void setCertificateNo(String certificateNo) {
-        this.certificateNo = certificateNo;
     }
 }
 

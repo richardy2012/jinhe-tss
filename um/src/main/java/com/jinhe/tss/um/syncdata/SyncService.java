@@ -28,6 +28,11 @@ import com.jinhe.tss.um.permission.ResourcePermission;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
  
+/**
+ * TODO 遗留问题
+ * 1、如果用户在fromApp中更换的部门，同步时无法自动为其更换部门
+ *
+ */
 @Service("SyncService")
 public class SyncService implements ISyncService, Progressable {
 	
@@ -119,14 +124,12 @@ public class SyncService implements ISyncService, Progressable {
             group.setSeqNo(groupDao.getNextSeqNo(parentId));
             group.setGroupType(Group.MAIN_GROUP_TYPE);
             
-            // 检查组是否已经存在
-            List<?> temp = commonDao.getEntitiesByNativeSql("select t.* from um_group t where t.fromGroupId=? ", Group.class, fromGroupId);
-            if(temp != null && temp.size() > 0) {
-            	group = (Group) temp.get(0);
-            	deleteDataInSyncGroup(group.getId()); // 删除um系统中同步组下的用户组、用户、以及GroupUser
-            }
-            else {
+            // 检查组（和该fromApp下的组对应的组）是否已经存在
+            List<?> temp = groupDao.getEntities("from Group t where t.fromGroupId=? and t.fromApp=?", fromGroupId, fromApp);
+            if(temp == null || temp.isEmpty()) {
             	commonDao.create(group);
+            } else {
+            	group = (Group) temp.get(0);
             }
             idMapping.put(fromGroupId, group.getId()); // 保存对应结果
             
@@ -148,14 +151,32 @@ public class SyncService implements ISyncService, Progressable {
             // 如果用户所属的组不存在，则不导入该用户
             Long mainGroupId = idMapping.get(userDto.getGroupId());
             if(mainGroupId == null) continue;
-
-            User user = new User();
-            SyncDataHelper.setUserByDTO(user, userDto);
-            user.setGroupId(mainGroupId);
-            commonDao.create(user);
-            commonDao.create(new GroupUser(user.getId(), mainGroupId));
             
-            loginNames.add(user.getLoginName());
+            /* 检查相同账号的用户否已经存在: 
+             * 如果是之前同步过的，则只更新字段；
+             * 如果是已经存在的但不是从该fromApp同步过来的，则忽略该fromApp用户；
+             * 如果用户不存在，则新建。
+             */
+            List<?> temp = commonDao.getEntities("from User t where t.loginName=?", userDto.getLoginName());
+            if(temp != null && temp.size() > 0) {
+            	User existUser = (User) temp.get(0);
+            	if( userDto.getId().equals(existUser.getFromUserId()) ) { 
+					existUser.setUserName(userDto.getUserName());
+					if(userDto.getEmail() != null) {
+						existUser.setEmail(userDto.getEmail());
+					}
+            		commonDao.update(existUser);
+            	}
+            }
+            else {
+            	User user = new User();
+                SyncDataHelper.setUserByDTO(user, userDto);
+            	user.setGroupId(mainGroupId);
+                commonDao.create(user);
+                commonDao.create(new GroupUser(user.getId(), mainGroupId));
+            }
+            
+            loginNames.add(userDto.getLoginName());
                 
             updateProgressInfo(progress, otherUsers.size(), i);
         }
@@ -172,15 +193,5 @@ public class SyncService implements ISyncService, Progressable {
         else if(index == total) {
             progress.add(index % 20); // 如果已经同步完，则将总数除以20取余数做为本次完成个数来更新进度信息
         }
-    }
-    
-    /** 删除同步组下数据 : 包括用户 及 用户和组的对应关系*/
-    private void deleteDataInSyncGroup(Long groupId) {
-        String sql = "select u.* from um_user u, um_groupuser gu"
-            + " where u.id = gu.userId and gu.groupId=? ";
-        commonDao.deleteAll(commonDao.getEntitiesByNativeSql(sql, User.class, groupId));
-        
-        sql = "select gu.* from um_groupuser gu where gu.groupId=? ";
-        commonDao.deleteAll(commonDao.getEntitiesByNativeSql(sql, GroupUser.class, groupId));
     }
 }

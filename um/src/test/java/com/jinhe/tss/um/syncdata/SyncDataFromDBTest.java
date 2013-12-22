@@ -25,6 +25,7 @@ import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.action.GroupAction;
 import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.um.entity.Group;
+import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IResourceService;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;
@@ -164,6 +165,16 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
         Assert.assertTrue( totalCount == 5); // 三个组 + 两个用户
 		Progress progress = new Progress(totalCount);
 		((Progressable)syncService).execute(datasMap, progress );
+		
+		List<User> userList = groupService.getUsersByGroupId(mainGroup.getId()); 
+		Assert.assertTrue(userList.size() == 1);
+		User user1 = userList.get(0);
+		Assert.assertEquals("JonKing", user1.getLoginName());
+		Assert.assertEquals("怒放的生命", user1.getUserName());
+		Assert.assertEquals("BL00618", user1.getEmployeeNo());
+		Assert.assertEquals("1", user1.getSex());
+		Assert.assertEquals("jinpujun@gmail.com", user1.getEmail());
+		
 	}
 
 //	@Test

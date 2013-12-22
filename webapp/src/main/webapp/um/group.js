@@ -254,13 +254,13 @@
         }   
     }
  
-    function loadInitData() {
+    function loadInitData(defaultOpenId) {
         var onresult = function(){
             var groupTreeNode = this.getNodeValue(XML_MAIN_TREE);
 			Cache.XmlDatas.add(CACHE_MAIN_TREE, groupTreeNode);
             $T("tree", groupTreeNode);
 
-            showUserList(-7);
+            showUserList(defaultOpenId || -7);
 			
 			var treeObj = $$("tree");
 			treeObj.onTreeNodeActived = function(eventObj){
@@ -499,13 +499,21 @@
         var treeNode = $T("tree").getActiveTreeNode();
 		var treeNodeID = treeNode.getId();
         var applicationId = treeNode.getAttribute("fromApp");
+        var fromGroupId = treeNode.getAttribute("fromGroupId");
+
+        if(applicationId == null || fromGroupId == null) {
+            alert("该组没有配置对应的外部系统及外部系统的组织。");
+            return;
+        }
 
 		var onresult = function() {
 			var data = this.getNodeValue("ProgressInfo");
 			var progress = new Progress(URL_SYNC_PROGRESS,data,URL_CANCEL_SYNC);
-			progress.oncomplete = function(){
-				loadInitData();
-                showUserList(treeNodeID);
+
+            // 完成同步后，重新加载树，打开同步节点，并显示其下用户列表
+			progress.oncomplete = function() {
+				loadInitData(treeNodeID); 
+                openNode(treeNode);                
 			}
 			progress.start();
 		}
