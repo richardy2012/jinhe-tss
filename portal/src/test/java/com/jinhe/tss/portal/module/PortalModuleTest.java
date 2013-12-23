@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
@@ -180,7 +181,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
     @Test
     public void testPortalStartAndStop() {
     	// 测试停用启用
-        portalAction.disable(response, root.getId(), PortalConstants.TRUE);
-        portalAction.disable(response, root.getId(), PortalConstants.FALSE);
+        portalAction.disable(response, root.getId(), ParamConstants.TRUE);
+        portalAction.disable(response, root.getId(), ParamConstants.FALSE);
     }
 }

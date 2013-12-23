@@ -41,6 +41,14 @@ public class NavigatorDao extends TreeSupportDao<Navigator> implements INavigato
         String hql = "from Navigator o where o.disabled <> 1 and o.portalId = ? order by o.decode ";
         return (List<Navigator>) getEntities(hql, portalId);
     }
+
+	public List<Navigator> getChildrenById(Long id, String operationId) {
+		return getChildrenById(id);
+	}
+
+	public List<Navigator> getParentsById(Long id, String operationId) {
+		return getParentsById(id);
+	}
 }
 
 	

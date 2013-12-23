@@ -1,6 +1,6 @@
 package com.jinhe.tss.um.module;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -12,6 +12,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jinhe.tss.framework.Global;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.um.TxSupportTest4UM;
@@ -143,8 +144,8 @@ public class UserModuleTest extends TxSupportTest4UM {
     
     @Test
     public void startOrStopUser() {
-    	action.startOrStopUser(response, mainGroupId, user1.getId(), UMConstants.TRUE);
-        action.startOrStopUser(response, mainGroupId, user1.getId(), UMConstants.FALSE);
+    	action.startOrStopUser(response, mainGroupId, user1.getId(), ParamConstants.TRUE);
+        action.startOrStopUser(response, mainGroupId, user1.getId(), ParamConstants.FALSE);
     }
     
     @Test

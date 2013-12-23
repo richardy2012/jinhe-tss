@@ -10,7 +10,7 @@ import com.jinhe.tss.um.permission.AbstractResourcesView;
  * 站点栏目资源视图 
  */
 @Entity
-@Table(name = "view_Channel_resources")
+@Table(name = "view_channel_resources")
 public class ChannelResourceView extends AbstractResourcesView {
 
 	public String getResourceType() {

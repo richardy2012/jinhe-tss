@@ -23,6 +23,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.component.log.LogService;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
@@ -110,7 +111,7 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4Sp
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
         
         /* 初始化应用系统、资源、权限项 */
-        Document doc = XMLDocUtil.createDocByAbsolutePath(TestUtil.getSQLDir() + "/tss-application-config.xml");
+        Document doc = XMLDocUtil.createDocByAbsolutePath(TestUtil.getSQLDir() + "/tss-resource-config.xml");
         resourceService.setInitial(true);
         resourceService.applicationResourceRegister(doc, UMConstants.PLATFORM_SYSTEM_APP);
         resourceService.setInitial(false);
@@ -157,7 +158,7 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4Sp
         layoutGroup = componentService.saveComponent(layoutGroup);
         
         defaultLayout = new Component();
-        defaultLayout.setIsDefault(PortalConstants.TRUE);
+        defaultLayout.setIsDefault(ParamConstants.TRUE);
         defaultLayout.setParentId(layoutGroup.getId());   
         Document document = XMLDocUtil.createDoc("template/initialize/defaultLayout.xml");
         org.dom4j.Element propertyElement = document.getRootElement().element("property");
@@ -176,7 +177,7 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4Sp
         decoratorGroup = componentService.saveComponent(decoratorGroup);
         
         defaultDecorator = new Component();
-        defaultDecorator.setIsDefault(PortalConstants.TRUE);
+        defaultDecorator.setIsDefault(ParamConstants.TRUE);
         defaultDecorator.setParentId(decoratorGroup.getId());
         
         document = XMLDocUtil.createDoc("template/initialize/defaultDecorator.xml");

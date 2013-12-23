@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeNode;
@@ -42,7 +43,7 @@ public class SubAuthorize extends OperateInfo implements IEntity, ITreeNode, IXF
 	@Column(length = 1000)  
 	private String description;// 描述:对策略的描述
     
-    private Integer disabled = UMConstants.FALSE;// 策略状态 1-停用, 0-启用 
+    private Integer disabled = ParamConstants.FALSE;// 策略状态 1-停用, 0-启用 
  
 	public Long getId() {
 		return id;
@@ -105,7 +106,7 @@ public class SubAuthorize extends OperateInfo implements IEntity, ITreeNode, IXF
 		TreeAttributesMap map = new TreeAttributesMap(id, name);
 		map.put("disabled", disabled);
 
-		if (UMConstants.FALSE.equals(disabled)) {// 启用
+		if (ParamConstants.FALSE.equals(disabled)) {// 启用
 			map.put("icon", UMConstants.START_STRATEGY_TREENODE_ICON);
 		} else {
 			map.put("icon", UMConstants.STOP_STRATEGY_TREENODE_ICON);

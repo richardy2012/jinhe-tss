@@ -9,9 +9,6 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
  */
 public final class UMConstants {
 	
-	public static final Integer TRUE  = new Integer(1); // 是(状态)
-	public static final Integer FALSE = new Integer(0); // 否(状态)
-	
 	/** 有效期设置 */
 	public static final int ROLE_LIFE_TYPE = Calendar.YEAR; //角色有效期的类型(年)
     public static final int ROLE_LIFE_TIME = 50;            //角色有效期(50年)

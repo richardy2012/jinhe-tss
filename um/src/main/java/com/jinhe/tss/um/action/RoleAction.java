@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
@@ -24,8 +25,8 @@ import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.Role;
-import com.jinhe.tss.um.entity.permission.resources.RoleResources;
-import com.jinhe.tss.um.entity.permission.supplied.RolePermissionsFull;
+import com.jinhe.tss.um.entity.permission.RolePermissionsFull;
+import com.jinhe.tss.um.entity.permission.RoleResources;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.permission.PermissionService;
 import com.jinhe.tss.um.permission.dispaly.IPermissionOption;
@@ -71,7 +72,7 @@ public class RoleAction extends BaseActionSupport {
     public void saveRole(HttpServletResponse response, HttpServletRequest request, Role role) {
         boolean isNew = (role.getId() == null);
         
-        if(UMConstants.TRUE.equals(role.getIsGroup())) {
+        if(ParamConstants.TRUE.equals(role.getIsGroup())) {
         	roleService.saveRoleGroup(role);
         }
         else {
@@ -95,7 +96,7 @@ public class RoleAction extends BaseActionSupport {
         if (UMConstants.DEFAULT_NEW_ID.equals(id)) { // 如果是新增，则返回一个空的无数据的模板
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("parentId", parentId);
-            map.put("isGroup", UMConstants.TRUE);
+            map.put("isGroup", ParamConstants.TRUE);
             xFormEncoder = new XFormEncoder(UMConstants.ROLEGROUP_XFORM, map);
         }
         else {
@@ -128,7 +129,7 @@ public class RoleAction extends BaseActionSupport {
         
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("parentId", parentId);
-        map.put("isGroup", UMConstants.FALSE);
+        map.put("isGroup", ParamConstants.FALSE);
         
         // 默认的有效时间
         map.put("startDate", DateUtil.format(new Date()));
@@ -270,7 +271,7 @@ public class RoleAction extends BaseActionSupport {
 			@PathVariable("isRole2Resource") Integer isRole2Resource, 
 			@PathVariable("roleId") Long roleId) {
 		
-		if( UMConstants.TRUE.equals(isRole2Resource) ) {
+		if( ParamConstants.TRUE.equals(isRole2Resource) ) {
 			getApplications(response, roleId, isRole2Resource);
 			return;
 		}
@@ -314,7 +315,7 @@ public class RoleAction extends BaseActionSupport {
     	String resourceType  = request.getParameter("resourceType");
 	    
 	    //  角色对资源授权（“角色维护”菜单，多个资源授权给单个角色）时，生成 资源－操作选项 矩阵
-	    if( UMConstants.TRUE.equals(isRole2Resource) ) {
+	    if( ParamConstants.TRUE.equals(isRole2Resource) ) {
             if( EasyUtils.isNullOrEmpty(applicationId) ){
                 throw new BusinessException("请选择应用系统");
             }
@@ -373,7 +374,7 @@ public class RoleAction extends BaseActionSupport {
         permissionService = PermissionHelper.getPermissionService(applicationId, permissionService);
         
 	    // 角色对资源授权（“角色维护”菜单，多个资源授权给单个角色）
-        if( UMConstants.TRUE.equals(isRole2Resource) ) {
+        if( ParamConstants.TRUE.equals(isRole2Resource) ) {
             permissionService.saveResources2Role(applicationId, resourceType, roleId, permissionRank, permissions);
         } 
         // 资源对角色授权（“资源授予角色”菜单，单个资源授权给多个角色）

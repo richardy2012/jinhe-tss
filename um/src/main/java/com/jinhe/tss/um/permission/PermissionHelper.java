@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.Global;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
@@ -331,16 +332,16 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
 	 * @return
 	 */
 	Integer[] convertRank(String permissionRank) {
-        Integer isGrant = UMConstants.FALSE, isPass = UMConstants.FALSE;
+        Integer isGrant = ParamConstants.FALSE, isPass = ParamConstants.FALSE;
         if (UMConstants.LOWER_PERMISSION.equals(permissionRank)) { // 普通授权
-            isGrant = isPass = UMConstants.FALSE;
+            isGrant = isPass = ParamConstants.FALSE;
         } 
         else if (UMConstants.AUTHORISE_PERMISSION.equals(permissionRank)) { // 可授权
-            isGrant = UMConstants.TRUE;
-            isPass  = UMConstants.FALSE;
+            isGrant = ParamConstants.TRUE;
+            isPass  = ParamConstants.FALSE;
         } 
         else if (UMConstants.PASSON_AUTHORISE_PERMISSION.equals(permissionRank)) { // 可授权可传递
-            isGrant = isPass = UMConstants.TRUE;
+            isGrant = isPass = ParamConstants.TRUE;
         }
         return new Integer[] {isGrant, isPass};
 	}

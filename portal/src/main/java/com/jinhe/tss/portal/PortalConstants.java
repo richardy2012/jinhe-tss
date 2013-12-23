@@ -1,10 +1,7 @@
 package com.jinhe.tss.portal;
  
 public interface PortalConstants {
-    
-    public static final Integer TRUE  = 1;
-    public static final Integer FALSE = 0;
-    
+ 
     public static final Long ROOT_ID = 0L;
  
     public static final String PORTAL_CACHE    = "cache-portal-";    // 门户树缓存
@@ -23,8 +20,8 @@ public interface PortalConstants {
     public static final String PORTAL_MODEL_DIR = "/" + MODEL_DIR + "portal";
     
     /** 项目标识以及资源类型 */
-    public final static String PORTAL_RESOURCE_TYPE    = "11";
-    public final static String NAVIGATOR_RESOURCE_TYPE = "12";
+    public final static String PORTAL_RESOURCE_TYPE    = "4";
+    public final static String NAVIGATOR_RESOURCE_TYPE = "5";
     
     /**
      * 门户结构操作选项 (0表示不判断权限)

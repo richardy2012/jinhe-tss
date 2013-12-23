@@ -7,9 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.service.IChannelService;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.web.mvc.ProgressActionSupport;
  
 @Controller
@@ -33,7 +33,7 @@ public class TimerAction extends ProgressActionSupport {
 		Channel site = channelService.getChannelById(siteId);
 		
         TimerStrategy strategy = TimerStrategyHolder.getStrategyPool().get(strategyId);
-        strategy.isIncrement = (CMSConstants.TRUE == increment);
+        strategy.isIncrement = (ParamConstants.TRUE == increment);
         strategy.setSite(site);
         
         String code = timerService.excuteStrategy(strategy);

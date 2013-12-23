@@ -9,7 +9,7 @@ import com.jinhe.tss.um.permission.AbstractUnSuppliedTable;
  * 门户结构授权表(未补全的表)
  */
 @Entity
-@Table(name = "pms_permission_Portal")
+@Table(name = "portal_permission_portal")
 public class PortalPermissions extends AbstractUnSuppliedTable {
     
 }

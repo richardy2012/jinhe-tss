@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.dao.IComponentDao;
 import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.service.IComponentService;
@@ -62,7 +62,7 @@ public class ComponentService implements IComponentService {
     }
 
     private void checkElementInUse(Component component) {
-        if(PortalConstants.TRUE.equals(component.getIsDefault())) {
+        if(ParamConstants.TRUE.equals(component.getIsDefault())) {
             throw new BusinessException("删除组件为默认的修饰器或布局器，删除失败！");
         }
         
@@ -88,7 +88,7 @@ public class ComponentService implements IComponentService {
  
     public void disableComponent(Long id, Integer disabled) {
         Component component = getComponent(id);
-        if(PortalConstants.TRUE.equals(component.getIsDefault())) {
+        if(ParamConstants.TRUE.equals(component.getIsDefault())) {
             throw new BusinessException("停用组件为默认的修饰器或布局器，停用失败！");
         }
         

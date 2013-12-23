@@ -22,13 +22,11 @@
 	<entity class="com.jinhe.tss.um.entity.permission.RoleUserMapping"/>
 	<entity class="com.jinhe.tss.um.entity.permission.ViewRoleUser"/>
 	<entity class="com.jinhe.tss.um.entity.permission.ViewRoleUser4SubAuthorize"/>
-	
-	<entity class="com.jinhe.tss.um.entity.permission.resources.GroupResources"/>
-	<entity class="com.jinhe.tss.um.entity.permission.unsupplied.GroupPermissions"/>
-	<entity class="com.jinhe.tss.um.entity.permission.supplied.GroupPermissionsFull"/>
-	
-	<entity class="com.jinhe.tss.um.entity.permission.resources.RoleResources"/>
-	<entity class="com.jinhe.tss.um.entity.permission.unsupplied.RolePermissions"/>
-	<entity class="com.jinhe.tss.um.entity.permission.supplied.RolePermissionsFull"/>
+	<entity class="com.jinhe.tss.um.entity.permission.GroupResources"/>
+	<entity class="com.jinhe.tss.um.entity.permission.GroupPermissions"/>
+	<entity class="com.jinhe.tss.um.entity.permission.GroupPermissionsFull"/>
+	<entity class="com.jinhe.tss.um.entity.permission.RoleResources"/>
+	<entity class="com.jinhe.tss.um.entity.permission.RolePermissions"/>
+	<entity class="com.jinhe.tss.um.entity.permission.RolePermissionsFull"/>
 
 </entity-mappings>

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.um.UMConstants;
@@ -194,7 +195,7 @@ public class PermissionServiceImpl implements PermissionService {
 	    
         IUnSuppliedPermission usPermission = permissionHelper.insertUnSuppliedTable(
                 roleId, resourceId, operationId, permissionState, 
-                UMConstants.TRUE, UMConstants.TRUE, unSuppliedTable); // 默认为可授权 且 可传递
+                ParamConstants.TRUE, ParamConstants.TRUE, unSuppliedTable); // 默认为可授权 且 可传递
         
         supplyPermissionIntoSuppliedTable(usPermission, suppliedTable, resourceTable); // 补全
 	}

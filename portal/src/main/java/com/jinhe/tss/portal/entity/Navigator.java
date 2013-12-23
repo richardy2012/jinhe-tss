@@ -19,6 +19,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.dom4j.Element;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
@@ -107,7 +108,7 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
     private String  decode;  // 层码
     private Integer levelNo; // 层次值
 
-    private Integer disabled = PortalConstants.FALSE;  // 是否停用
+    private Integer disabled = ParamConstants.FALSE;  // 是否停用
     
     @Transient 
     private List<Navigator> children = new ArrayList<Navigator>();
@@ -163,7 +164,7 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
         }
         
         for ( Navigator entity : list ) {
-        	if(PortalConstants.TRUE.equals(entity.getDisabled())) {
+        	if(ParamConstants.TRUE.equals(entity.getDisabled())) {
         		continue; // 过滤掉停用的
         	}
         	

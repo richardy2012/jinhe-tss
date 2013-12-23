@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.grid.GridAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
@@ -59,7 +60,7 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
     
     private String fromUserId;  // 外部应用系统用户的ID (用于【平台用户】对应【其他系统用户】，其值可以是LDAP里的DN字符串)
     
-    private Integer disabled = UMConstants.FALSE; // 帐户状态, 帐户状态(0-停用, 1-启用)
+    private Integer disabled = ParamConstants.FALSE; // 帐户状态, 帐户状态(0-停用, 1-启用)
     
     // 以下值展示的时候用
     @Transient private Long   groupId;         // 用户所在组id
@@ -224,13 +225,13 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
         map.put("userstate", disabled);
         
         if (id.equals(UMConstants.ADMIN_USER_ID)) {
-            if (UMConstants.TRUE.equals(disabled)) {
+            if (ParamConstants.TRUE.equals(disabled)) {
                 map.put("icon", UMConstants.STOP_ADMIN_USER_GRID_NODE_ICON);
             } else {
                 map.put("icon", UMConstants.START_ADMIN_USER_GRID_NODE_ICON);
             }
         } else {
-            if (UMConstants.TRUE.equals(disabled)) {
+            if (ParamConstants.TRUE.equals(disabled)) {
                 map.put("icon", UMConstants.STOP_USER_GRID_NODE_ICON);
             } else {
                 map.put("icon", UMConstants.START_USER_GRID_NODE_ICON);

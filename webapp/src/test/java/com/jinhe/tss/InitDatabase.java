@@ -98,7 +98,7 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
     private void initUM() {
         /* 初始化应用系统、资源、权限项 */
         String sqlpath = TestUtil.getInitSQLDir();
-        Document doc = XMLDocUtil.createDocByAbsolutePath(sqlpath + "/../tss-application-config.xml");
+        Document doc = XMLDocUtil.createDocByAbsolutePath(sqlpath + "/../tss-resource-config.xml");
         resourceService.setInitial(true);
         resourceService.applicationResourceRegister(doc, UMConstants.PLATFORM_SYSTEM_APP);
         resourceService.setInitial(false);
@@ -120,7 +120,7 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
         layoutGroup = elementService.saveComponent(layoutGroup);
         
         Component defaultLayout = new Component();
-        defaultLayout.setIsDefault(PortalConstants.TRUE);
+        defaultLayout.setIsDefault(ParamConstants.TRUE);
         defaultLayout.setParentId(layoutGroup.getId());   
         Document document = XMLDocUtil.createDoc("template/initialize/defaultLayout.xml");
         org.dom4j.Element propertyElement = document.getRootElement().element("property");
@@ -138,7 +138,7 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
         decoratorGroup = elementService.saveComponent(decoratorGroup);
         
         Component defaultDecorator = new Component();
-        defaultDecorator.setIsDefault(PortalConstants.TRUE);
+        defaultDecorator.setIsDefault(ParamConstants.TRUE);
         defaultDecorator.setParentId(decoratorGroup.getId());
         
         document = XMLDocUtil.createDoc("template/initialize/defaultDecorator.xml");

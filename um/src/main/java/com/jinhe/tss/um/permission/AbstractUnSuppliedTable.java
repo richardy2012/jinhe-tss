@@ -7,8 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.SequenceGenerator;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.IEntity;
-import com.jinhe.tss.um.UMConstants;
 
 /** 
  * 未补齐表超类
@@ -31,8 +31,8 @@ public abstract class AbstractUnSuppliedTable implements IEntity, IUnSuppliedPer
     protected String  operationId;  // 操作选项Id
     
     protected Integer permissionState;             // 权限维护状态(1-仅此节点,2-该节点及所有下层节点)
-    protected Integer isGrant = UMConstants.FALSE; // 是否可授权（0-不可授权,1-可授权）
-    protected Integer isPass  = UMConstants.FALSE; // 是否可传递（0-不可传递,1-可传递）
+    protected Integer isGrant = ParamConstants.FALSE; // 是否可授权（0-不可授权,1-可授权）
+    protected Integer isPass  = ParamConstants.FALSE; // 是否可传递（0-不可传递,1-可传递）
     
     public String toString() {
     	return "resource = " + resourceId + ", role = " + roleId 

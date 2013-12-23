@@ -26,6 +26,7 @@
          </fileSet> 
      </fileSets> 
  
+ 	<!--
      <dependencySets> 
          <dependencySet> 
 			 <outputDirectory>/lib</outputDirectory>
@@ -35,4 +36,5 @@
 			 </includes>
          </dependencySet> 
      </dependencySets>
+     -->
 </assembly>

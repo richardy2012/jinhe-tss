@@ -1,6 +1,7 @@
 package com.jinhe.tss.um.module;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -9,6 +10,7 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
@@ -91,10 +93,10 @@ public class RoleModuleTest extends TxSupportTest4UM {
         action.getAllRoleGroup2Tree(response);
        
         // 停用角色组
-        action.disable(response, roleGroupId, UMConstants.TRUE);
+        action.disable(response, roleGroupId, ParamConstants.TRUE);
         
         // 启用角色
-        action.disable(response, role1Id, UMConstants.FALSE);
+        action.disable(response, role1Id, ParamConstants.FALSE);
         
         // 再新建一个角色
         Role role2 = new Role();

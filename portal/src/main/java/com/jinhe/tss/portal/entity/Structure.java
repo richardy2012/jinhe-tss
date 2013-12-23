@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
@@ -103,7 +104,7 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
     private String  decode;  // 层码
     private Integer levelNo; // 层次值
 
-    private Integer disabled = PortalConstants.FALSE;  // 是否停用：0－启用；1－停用
+    private Integer disabled = ParamConstants.FALSE;  // 是否停用：0－启用；1－停用
     
     public String toString(){
         return "(id:" + this.id + ", name:" + this.name + 

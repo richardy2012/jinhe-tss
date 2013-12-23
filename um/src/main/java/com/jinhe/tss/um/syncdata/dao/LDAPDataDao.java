@@ -43,11 +43,12 @@ public class LDAPDataDao implements IOutDataDao {
     public final static String DESCRIPTION_GROUP    = "description";
     
     /** 用户需要的属性 */
-    public final static String LOGIN_NAME_USER     = "loginName";
-    public final static String EAMIL_USER          = "email";
-    public final static String SEX_USER            = "sex";
-    public final static String BIRTHDAY_USER       = "birthday";
-    public final static String EMPLOYEE_NO_USER    = "employeeNo";
+    public final static String LOGIN_NAME_USER   = "loginName";
+    public final static String EAMIL_USER        = "email";
+    public final static String SEX_USER          = "sex";
+    public final static String BIRTHDAY_USER     = "birthday";
+    public final static String EMPLOYEE_NO_USER  = "employeeNo";
+    public final static String AUTH_METHOD       = "authMethod";
  
     private static final String GROUP_FILTER_STR = "(objectclass=organizationalUnit)";
     private static final String USER_FILTER_STR  = "CN=*";
@@ -202,6 +203,9 @@ public class LDAPDataDao implements IOutDataDao {
                     
                 // employeeNo
                 user.setEmployeeNo(getValueFromAttribute(attrs, fieldNames.get(EMPLOYEE_NO_USER)));
+                
+                // authMethod
+                user.setEmployeeNo(getValueFromAttribute(attrs, fieldNames.get(AUTH_METHOD)));
                 
                 if( user != null ) {
                     items.add(user);

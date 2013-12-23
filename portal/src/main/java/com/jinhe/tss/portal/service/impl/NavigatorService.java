@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.component.cache.CacheHelper;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.dao.INavigatorDao;
@@ -40,7 +41,7 @@ public class NavigatorService implements INavigatorService {
 	}
 	
 	public void deleteNavigator(Long id){
-        List<Navigator> children = dao.getChildrenById(id);
+        List<Navigator> children = dao.getChildrenById(id, PortalConstants.NAVIGATOR_EDIT_OPERRATION);
         for( Navigator child : children ){
             dao.deleteNavigator(child);
         }
@@ -52,8 +53,8 @@ public class NavigatorService implements INavigatorService {
 	
 	public void disable(Long id, Integer disabled) {
         List<Navigator> list;
-        if(PortalConstants.TRUE.equals(disabled)) {
-            list = dao.getChildrenById(id);            
+        if(ParamConstants.TRUE.equals(disabled)) {
+            list = dao.getChildrenById(id, PortalConstants.NAVIGATOR_EDIT_OPERRATION);
         } 
         else {
             list = dao.getParentsById(id);    

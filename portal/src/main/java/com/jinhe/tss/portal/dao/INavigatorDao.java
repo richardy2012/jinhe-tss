@@ -6,6 +6,7 @@ import com.jinhe.tss.framework.persistence.ITreeSupportDao;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.entity.Navigator;
 import com.jinhe.tss.portal.permission.PermissionFilter4Navigator;
+import com.jinhe.tss.um.permission.filter.PermissionFilter4Branch;
 import com.jinhe.tss.um.permission.filter.PermissionTag;
 
 public interface INavigatorDao extends ITreeSupportDao<Navigator> {
@@ -48,4 +49,14 @@ public interface INavigatorDao extends ITreeSupportDao<Navigator> {
 			operation = PortalConstants.NAVIGATOR_VIEW_OPERRATION, 
 			resourceType = PortalConstants.NAVIGATOR_RESOURCE_TYPE)
     List<Navigator> getMenusByPortal(Long portalId);
+	
+    @PermissionTag(
+            resourceType = PortalConstants.NAVIGATOR_RESOURCE_TYPE,
+            filter = PermissionFilter4Branch.class)
+    List<Navigator> getChildrenById(Long id, String operationId);
+    
+    @PermissionTag(
+            resourceType = PortalConstants.NAVIGATOR_RESOURCE_TYPE,
+            filter = PermissionFilter4Branch.class)
+    List<Navigator> getParentsById(Long id, String operationId);
 }

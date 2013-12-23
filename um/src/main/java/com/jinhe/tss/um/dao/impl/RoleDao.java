@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.TreeSupportDao;
-import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IRoleDao;
 import com.jinhe.tss.um.entity.Role;
 import com.jinhe.tss.um.entity.SubAuthorize;
@@ -26,7 +26,7 @@ public class RoleDao extends TreeSupportDao<Role> implements IRoleDao {
         List<?> roles = getChildrenById(role.getId());
         for(Iterator<?> it = roles.iterator(); it.hasNext(); ){
             Role temp = (Role) it.next();
-            if(UMConstants.FALSE.equals(role.getIsGroup())){
+            if(ParamConstants.FALSE.equals(role.getIsGroup())){
                 Long roleId = temp.getId();
                 deleteAll(getEntities("from RoleUser  ru where ru.roleId = ? ", roleId));
                 deleteAll(getEntities("from RoleGroup rg where rg.roleId = ? ", roleId));

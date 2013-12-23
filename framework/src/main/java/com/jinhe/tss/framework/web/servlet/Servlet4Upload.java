@@ -16,7 +16,7 @@ import javax.servlet.http.Part;
 
 import org.apache.log4j.Logger;
 
-import com.jinhe.tss.framework.Config;
+import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpEncoder;
 import com.jinhe.tss.util.BeanUtil;
@@ -28,6 +28,8 @@ public class Servlet4Upload extends HttpServlet {
 
 	private static final long serialVersionUID = -6423431960248248353L;
 
+	public static final String UPLOAD_PATH = "upload_path";
+
 	Logger log = Logger.getLogger(this.getClass());
 
 	protected void doPost(HttpServletRequest request,
@@ -38,7 +40,7 @@ public class Servlet4Upload extends HttpServlet {
 		XmlHttpEncoder encoder = new XmlHttpEncoder();
 		
 		try {
-			String uploadPath = Config.UPLOAD_PATH;
+			String uploadPath = ParamConfig.getAttribute(UPLOAD_PATH);
 			if( uploadPath == null ) {
 				// gets absolute path of the web application
 				uploadPath = request.getServletContext().getRealPath("");

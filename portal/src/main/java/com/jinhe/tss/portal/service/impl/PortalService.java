@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.component.cache.CacheHelper;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.portal.PortalConstants;
@@ -287,7 +288,7 @@ public class PortalService implements IPortalService {
         Structure ps = portalDao.getEntity(id);
         
         // 删除一个枝
-        List<Structure> branch = portalDao.getChildrenById(id); 
+        List<Structure> branch = portalDao.getChildrenById(id, PortalConstants.PORTAL_DEL_OPERRATION );
         for( Structure node : branch ) {
             portalDao.deleteStructure(node);
         }
@@ -316,7 +317,7 @@ public class PortalService implements IPortalService {
         List<Structure> list;
         
         // 如果是启用或者操作的是门户根节点，则处理操作节点以下的所有子节点
-        if(disabled.equals(PortalConstants.TRUE) || ps.isRootPortal()){
+        if(disabled.equals(ParamConstants.TRUE) || ps.isRootPortal()){
             list = portalDao.getChildrenById(id, PortalConstants.PORTAL_STOP_OPERRATION );
         }  
         else { // 启用向上

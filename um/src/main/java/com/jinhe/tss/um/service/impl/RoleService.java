@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.um.UMConstants;
@@ -69,7 +70,7 @@ public class RoleService implements IRoleService {
         Long operatorId = Environment.getOperatorId();
         
         List<Role> list;
-        if (disabled.equals(UMConstants.FALSE)) {  
+        if (disabled.equals(ParamConstants.FALSE)) {  
 	        list = roleDao.getParentsById(id); // 启用一个节点上的所有父节点
 	        
 	        // 如果将要操作的数量 == 能够操作的数量, 说明对所有组都有操作权限
@@ -93,7 +94,7 @@ public class RoleService implements IRoleService {
         for (Role role : list) {
             if(role.getDisabled().equals(disabled)) continue;
             
-            if (UMConstants.FALSE.equals(disabled) 
+            if (ParamConstants.FALSE.equals(disabled) 
                     && (role.getEndDate() != null && role.getEndDate().getTime() < System.currentTimeMillis()) ) {
 				throw new BusinessException(role.getName() + " 已过期，不能启用");
             }
@@ -141,11 +142,11 @@ public class RoleService implements IRoleService {
         
         // 如果移动到的组是停用状态，那么被移动的组也需要停用
         Role targetRole = roleDao.getEntity(targetId);
-        if(targetRole != null && targetRole.getDisabled().equals(UMConstants.TRUE)) {
+        if(targetRole != null && targetRole.getDisabled().equals(ParamConstants.TRUE)) {
             List<?> list = roleDao.getChildrenById(id);
             for (Object temp : list) {
                 Role role = (Role) temp;
-                role.setDisabled(UMConstants.TRUE);
+                role.setDisabled(ParamConstants.TRUE);
             }
         } 
 	}

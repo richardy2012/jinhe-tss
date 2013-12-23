@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupDao;
@@ -45,7 +46,7 @@ public class LoginService implements ILoginService {
         if (user == null) {
             throw new BusinessException("此帐号(" + loginName + ")不存在");
         } 
-        else if (UMConstants.TRUE.equals(user.getDisabled())) {
+        else if (ParamConstants.TRUE.equals(user.getDisabled())) {
             throw new BusinessException("此帐号(" + loginName + ")已被停用");
         } 
         else if (user.getAccountLife() !=  null) {

@@ -12,6 +12,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
@@ -55,7 +56,7 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 	private Integer levelNo;  // 层次值
 	private Integer seqNo;    // 序号,用户组编号
 
-	private Integer disabled = UMConstants.FALSE; // 停用/启用标记
+	private Integer disabled = ParamConstants.FALSE; // 停用/启用标记
 
 	// 和其他用户管理系统的同步时的对应信息
 	private String  fromApp;
@@ -167,7 +168,7 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 		
 		// 特殊组不显示图标 (特殊组指系统初始化的主用户、辅助用户组等根节点，它们的ID为负值)
 		if (id.longValue() > 0) {
-			if (UMConstants.FALSE.equals(disabled)) {
+			if (ParamConstants.FALSE.equals(disabled)) {
 				map.put("icon", UMConstants.START_GROUP_TREENODE_ICON);
 			} else {
 				map.put("icon", UMConstants.STOP_GROUP_TREENODE_ICON);

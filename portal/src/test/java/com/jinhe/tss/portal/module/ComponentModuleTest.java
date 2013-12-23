@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
@@ -106,8 +107,8 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
 		componentAction.save(response, decorator2); // update
 
 		for (int i = 0; i < 5; i++) {
-			componentAction.disable(response, id, PortalConstants.TRUE);
-			componentAction.disable(response, id, PortalConstants.FALSE);
+			componentAction.disable(response, id, ParamConstants.TRUE);
+			componentAction.disable(response, id, ParamConstants.FALSE);
 		}
 
 		componentAction.sort(Context.getResponse(), id, id + 1, 1);

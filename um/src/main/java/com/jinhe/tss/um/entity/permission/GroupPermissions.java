@@ -1,4 +1,4 @@
-package com.jinhe.tss.um.entity.permission.unsupplied;
+package com.jinhe.tss.um.entity.permission;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

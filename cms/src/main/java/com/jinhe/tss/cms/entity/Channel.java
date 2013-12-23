@@ -16,6 +16,7 @@ import javax.persistence.UniqueConstraint;
 
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.permission.ChannelResourceView;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
@@ -53,7 +54,7 @@ public class Channel extends OperateInfo implements IXForm, ILevelTreeNode, IDec
     private String  remark;      // 站点描述
     
     // 状态值信息
-    private Integer disabled = CMSConstants.FALSE; // 状态 0:启动 1：停用
+    private Integer disabled = ParamConstants.FALSE; // 状态 0:启动 1：停用
     
     // 树结构信息
     private Long    parentId; // 父节点编号 缺省为0，即无父节点

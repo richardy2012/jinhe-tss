@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.jinhe.tss.cms.CMSConstants;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.grid.GridAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
@@ -62,7 +63,7 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
     @ManyToOne(fetch = FetchType.EAGER)
     private Channel channel;      // 文章所属栏目
     
-    private Integer isTop = CMSConstants.FALSE;   // 文章是否置顶
+    private Integer isTop = ParamConstants.FALSE;   // 文章是否置顶
     
     @Transient 
     List<Attachment> attachments = new ArrayList<Attachment>();  // 存放文章附件列表

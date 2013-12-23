@@ -1,6 +1,6 @@
 package com.jinhe.tss.um.helper;
 
-import com.jinhe.tss.um.UMConstants;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 
 /**
  * 定义密码规则。
@@ -64,7 +64,7 @@ public class PasswordRule {
 		int flag = checkAvailable(rule, password);
 		
 		// 如果不允许登录名和密码相同 则将相同的设为不可用
-		if(UMConstants.TRUE.equals(rule.canEq2LoginName) && password.equals(loginName)){
+		if(ParamConstants.TRUE.equals(rule.canEq2LoginName) && password.equals(loginName)){
 			flag = 0;
         }
 		

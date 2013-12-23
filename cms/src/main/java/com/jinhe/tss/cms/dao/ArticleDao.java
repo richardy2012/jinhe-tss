@@ -13,6 +13,7 @@ import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.helper.ArticleHelper;
 import com.jinhe.tss.cms.helper.ArticleQueryCondition;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.BaseDao;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.persistence.pagequery.PaginationQueryByHQL;
@@ -137,7 +138,7 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
         
         String orderField = condition.getOrderField();
 		String orderBy = orderField == null ? null : "a." + orderField;
-        if( orderBy != null && CMSConstants.TRUE.equals(condition.getIsDesc()) ) {
+        if( orderBy != null && ParamConstants.TRUE.equals(condition.getIsDesc()) ) {
             orderBy += " desc ";
         }
         

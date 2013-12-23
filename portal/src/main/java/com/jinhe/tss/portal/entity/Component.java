@@ -12,6 +12,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
@@ -71,8 +72,8 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
     private String  decode;   // 层码
     private Integer levelNo;  // 层次值
     
-    private Integer isDefault = PortalConstants.FALSE; // 是否为默认（修饰器/布局器）
-    private Integer disabled  = PortalConstants.FALSE; // 是否停用
+    private Integer isDefault = ParamConstants.FALSE; // 是否为默认（修饰器/布局器）
+    private Integer disabled  = ParamConstants.FALSE; // 是否停用
     
     
     public String getResourceBaseDir() { 
@@ -130,7 +131,7 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
         } else {
         	map.put("code", this.getCode());
             map.put("icon", "../framework/images/portal/" 
-            		+ (PortalConstants.TRUE.equals(isDefault) ? "default_" : "") + getComponentType() 
+            		+ (ParamConstants.TRUE.equals(isDefault) ? "default_" : "") + getComponentType() 
             		+ "_" + disabled + ".gif");
         }
         

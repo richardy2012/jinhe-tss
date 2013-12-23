@@ -1,7 +1,7 @@
 --用户拥有的所有角色, 包括由组继承下来的角色
-drop table VIEW_ROLEUSER cascade constraints;
+drop table view_roleuser cascade constraints;
 
-create view VIEW_ROLEUSER as
+create view view_roleuser as
 --普通的用户对角色
 select u.id as userId, r.id as roleId
     from um_role r, um_roleuser ru, um_user u

@@ -12,6 +12,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
@@ -245,7 +246,7 @@ public class UserService implements IUserService{
 	
 	public void startOrStopUser(Long userId, Integer disabled, Long groupId) {
 		User user = userDao.getEntity(userId);
-		if ( UMConstants.FALSE.equals(disabled) ) { // 启用用户
+		if ( ParamConstants.FALSE.equals(disabled) ) { // 启用用户
             if( isOverdue(userId) ) {
             	throw new BusinessException("该用户已经过期，不能启用！");
             }
@@ -259,8 +260,8 @@ public class UserService implements IUserService{
 	        }
 	        
 	        // 如果主用户组状态为停用的话，则向上启用该主用户组及其所有父节点
-	        if(UMConstants.TRUE.equals(group.getDisabled())) {
-	            groupService.startOrStopGroup(groupId, UMConstants.FALSE);
+	        if(ParamConstants.TRUE.equals(group.getDisabled())) {
+	            groupService.startOrStopGroup(groupId, ParamConstants.FALSE);
 		    }
 		}
 		 

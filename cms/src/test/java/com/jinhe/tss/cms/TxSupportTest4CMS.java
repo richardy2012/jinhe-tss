@@ -115,7 +115,7 @@ public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit4Sprin
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
         
         /* 初始化应用系统、资源、权限项 */
-        Document doc = XMLDocUtil.createDocByAbsolutePath(TestUtil.getSQLDir() + "/cms-application-config.xml");
+        Document doc = XMLDocUtil.createDocByAbsolutePath(TestUtil.getSQLDir() + "/cms-resource-config.xml");
         resourceService.setInitial(true);
         resourceService.applicationResourceRegister(doc, UMConstants.PLATFORM_SYSTEM_APP);
         resourceService.setInitial(false);

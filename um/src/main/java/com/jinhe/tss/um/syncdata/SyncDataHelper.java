@@ -7,6 +7,7 @@ import com.jinhe.tss.um.helper.dto.UserDTO;
 import com.jinhe.tss.um.syncdata.dao.DBDataDao;
 import com.jinhe.tss.um.syncdata.dao.IOutDataDao;
 import com.jinhe.tss.um.syncdata.dao.LDAPDataDao;
+import com.jinhe.tss.util.EasyUtils;
 
 public class SyncDataHelper {
     
@@ -38,6 +39,9 @@ public class SyncDataHelper {
         user.setBirthday(userDTO.getBirthday());
         user.setEmployeeNo(userDTO.getEmployeeNo());
         
+        if( !EasyUtils.isNullOrEmpty(userDTO.getAuthMethod()) ) {
+        	user.setAuthMethod(userDTO.getAuthMethod());
+        }
         user.setPassword(DEFAULT_PWD);
         user.setPasswordQuestion("?");
         user.setPasswordAnswer( System.currentTimeMillis() + "!" );

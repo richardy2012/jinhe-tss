@@ -1,5 +1,6 @@
 package com.jinhe.tss.cms;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 
 /** 
@@ -7,25 +8,13 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
  */
 public interface CMSConstants {
 	
-    /**
-     * 发布流程控制：控制是否需要生成XML发布文件
-     */
-    static final String PARAM_NAME_PUBLISHFLAG = "publishFlag";
-
+    /** 发布类型 */
     static final String PUBLISH_ADD = "1"; // 增量发布
     static final String PUBLISH_ALL = "2"; // 完全发布
     
-    /**
-     * 布尔型常量
-     */
-    static final String BOOLEAN_TRUE  = "true";
-    static final String BOOLEAN_FALSE = "false";
-    
-    static final Integer TRUE  = 1;
-    static final Integer FALSE = 0;
-    
-    static final Integer STATUS_STOP  = TRUE;  // 站点停止状态
-    static final Integer STATUS_START = FALSE; // 站点启动状态
+    /** 布尔型常量 */
+    static final Integer STATUS_STOP  = ParamConstants.TRUE;  // 站点停止状态
+    static final Integer STATUS_START = ParamConstants.FALSE; // 站点启动状态
    
     /** 下载地址的路径 */
     static final String DOWNLOAD_SERVLET_URL = "/download.fun?id="; 
@@ -61,7 +50,7 @@ public interface CMSConstants {
     static final String GRID_ATTACHSLIST          = "template/grid/AttachsList.xml";
     
     // 资源授权相关
-    static final String RESOURCE_TYPE_CHANNEL  = "21";   // 资源类型  站点栏目
+    static final String RESOURCE_TYPE_CHANNEL  = "3";   // 资源类型  站点栏目
     
     // 栏目资源操作ID
     static final String OPERATION_VIEW        = "1"; // 查看浏览

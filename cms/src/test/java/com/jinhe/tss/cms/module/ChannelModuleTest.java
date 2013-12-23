@@ -11,8 +11,8 @@ import org.junit.Test;
 import com.jinhe.tss.cms.AbstractTestSupport;
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Channel;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.test.TestUtil;
-import com.jinhe.tss.um.UMConstants;
 
 /**
  * 文章站点栏目相关模块的单元测试。
@@ -73,19 +73,19 @@ public class ChannelModuleTest extends AbstractTestSupport {
         
         // 停用启用
         channelAction.disable(response, siteId);
-        assertEquals(site.getDisabled(), UMConstants.TRUE);
-        assertEquals(channel1.getDisabled(), UMConstants.TRUE);
+        assertEquals(site.getDisabled(), ParamConstants.TRUE);
+        assertEquals(channel1.getDisabled(), ParamConstants.TRUE);
         
         channelAction.enable(response, siteId);
-        assertEquals(site.getDisabled(), UMConstants.FALSE);
-        assertEquals(channel1.getDisabled(), UMConstants.FALSE);
+        assertEquals(site.getDisabled(), ParamConstants.FALSE);
+        assertEquals(channel1.getDisabled(), ParamConstants.FALSE);
         
         channelAction.disable(response, channelId);
-        assertEquals(channel1.getDisabled(), UMConstants.TRUE);
+        assertEquals(channel1.getDisabled(), ParamConstants.TRUE);
         
         channelAction.enable(response, channel3.getId());
-        assertEquals(channel1.getDisabled(), UMConstants.FALSE);
-        assertEquals(channel3.getDisabled(), UMConstants.FALSE);
+        assertEquals(channel1.getDisabled(), ParamConstants.FALSE);
+        assertEquals(channel3.getDisabled(), ParamConstants.FALSE);
         
         channelAction.getOperations(response, channelId);
         

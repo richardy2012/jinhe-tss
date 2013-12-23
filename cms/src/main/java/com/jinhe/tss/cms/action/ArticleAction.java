@@ -25,6 +25,7 @@ import com.jinhe.tss.cms.helper.ArticleQueryCondition;
 import com.jinhe.tss.cms.service.IArticleService;
 import com.jinhe.tss.cms.service.IRemoteArticleService;
 import com.jinhe.tss.framework.Config;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
@@ -68,7 +69,7 @@ public class ArticleAction extends BaseActionSupport {
 	@RequestMapping(value = "/init/{channelId}", method = RequestMethod.GET)
 	public void initArticleInfo(HttpServletResponse response, @PathVariable("channelId") Long channelId) {
         Map<String, Object> initMap = new HashMap<String, Object>();
-        initMap.put("isTop", CMSConstants.FALSE);
+        initMap.put("isTop", ParamConstants.FALSE);
         initMap.put("author", Environment.getUserName()); // 默认作者为登录者，前台可进行修改
         
         // 默认的文章发布日期及过期日期

@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import com.jinhe.tss.um.UMConstants;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 
 public class UserDTO {
 	
@@ -17,8 +17,9 @@ public class UserDTO {
     private String  email;        // 邮件
     private String  groupId;      // 对应用户所在组id  
     
-	private Integer disabled = UMConstants.FALSE; // 帐户状态 
+	private Integer disabled = ParamConstants.FALSE; // 帐户状态 
 	private Date    accountLife = new Date();     // 帐户有效期限：用户帐户到某个指顶的期限过期
+	private String  authMethod;
     
     public Date getAccountLife() {
         // 默认有效期50年
@@ -108,6 +109,14 @@ public class UserDTO {
     public void setEmail(String email) {
         this.email = email;
     }
+
+	public String getAuthMethod() {
+		return authMethod;
+	}
+
+	public void setAuthMethod(String authMethod) {
+		this.authMethod = authMethod;
+	}
 }
 
 	

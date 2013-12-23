@@ -27,15 +27,18 @@ import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.publish.PublishManger;
 import com.jinhe.tss.cms.service.IArticleService;
-import com.jinhe.tss.framework.Config;
+import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.framework.web.servlet.AfterUpload;
+import com.jinhe.tss.framework.web.servlet.Servlet4Upload;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.FileHelper;
 
 public class AbstractTestSupport extends TxSupportTest4CMS {
     
-    @Autowired protected ChannelAction channelAction;
+    static String UPLOAD_PATH = ParamConfig.getAttribute(Servlet4Upload.UPLOAD_PATH);;
+    
+	@Autowired protected ChannelAction channelAction;
     @Autowired protected ArticleAction articleAction;
     
     @Autowired protected IArticleService articleService;
@@ -111,8 +114,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
 	    EasyMock.expect(mockRequest.getParameter("petName")).andReturn(null);
 	    
 	    try {
-	    	
-			String filepath = Config.UPLOAD_PATH + "/123.txt";
+			String filepath = UPLOAD_PATH + "/123.txt";
 			FileHelper.writeFile(new File(filepath), "我们爱技术创新。");
 	        
 	        mocksControl.replay(); 
@@ -143,7 +145,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
 			int width = 100, height = 100;   
 	        String s = "TSS LOGO";   
 	        
-	        String filePath = Config.UPLOAD_PATH + "/111.jpg";
+	        String filePath = UPLOAD_PATH + "/111.jpg";
 	        File file = new File(filePath);   
 	           
 	        Font font = new Font("Serif", Font.BOLD, 10);   

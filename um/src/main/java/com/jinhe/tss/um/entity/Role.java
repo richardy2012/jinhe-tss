@@ -13,6 +13,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
@@ -41,7 +42,7 @@ public class Role extends OperateInfo implements ILevelTreeNode, IDecodable, IXF
 	@Column(length = 20, nullable = false)  
 	private String  name;        // 名称:角色名称
 	private String  description; // 描述:对角色的描述
-	private Integer isGroup = UMConstants.FALSE;  // 是否角色组 (1-角色组，0-角色)
+	private Integer isGroup = ParamConstants.FALSE;  // 是否角色组 (1-角色组，0-角色)
 	private Date    startDate; // 开始时间 
 	private Date    endDate;   // 结束时间 
     
@@ -49,7 +50,7 @@ public class Role extends OperateInfo implements ILevelTreeNode, IDecodable, IXF
     private String  decode;  // 层码
     private Integer levelNo; // 层次值
     
-    private Integer disabled = UMConstants.FALSE; // 角色状态
+    private Integer disabled = ParamConstants.FALSE; // 角色状态
  
 	public Long getId() {
 		return id;
@@ -131,15 +132,15 @@ public class Role extends OperateInfo implements ILevelTreeNode, IDecodable, IXF
 		map.put("disabled", disabled);
 		map.put("resourceTypeId", getResourceType());
 
-		if (UMConstants.FALSE.equals(isGroup)) { // 角色
-			if (UMConstants.FALSE.equals(disabled)) {// 启用
+		if (ParamConstants.FALSE.equals(isGroup)) { // 角色
+			if (ParamConstants.FALSE.equals(disabled)) {// 启用
 				map.put("icon", UMConstants.START_ROLE_TREENODE_ICON);
 			} else {// 停用
 				map.put("icon", UMConstants.STOP_ROLE_TREENODE_ICON);
 			}
 		} 
 		else { // 角色组
-			if (UMConstants.FALSE.equals(disabled)) {// 启用
+			if (ParamConstants.FALSE.equals(disabled)) {// 启用
 				map.put("icon", UMConstants.START_GROUP_ROLE_TREENODE_ICON);
 			} else {// 停用
 				map.put("icon", UMConstants.STOP_GROUP_ROLE_TREENODE_ICON);

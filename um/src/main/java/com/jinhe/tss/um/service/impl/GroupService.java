@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.um.UMConstants;
@@ -160,7 +161,7 @@ public class GroupService implements IGroupService {
 
     public void startOrStopGroup(Long groupId, Integer disabled) {
         String applicationId = UMConstants.TSS_APPLICATION_ID;
-        if (UMConstants.TRUE.equals(disabled)) { // 停用            
+        if (ParamConstants.TRUE.equals(disabled)) { // 停用            
             String operationId = UMConstants.GROUP_EDIT_OPERRATION;
             if (!checkSubGroupsPermission(groupId, operationId)) {
                 throw new BusinessException("您对停用节点下的某些资源（用户组）没有停用操作权限，不能停用此节点！");
@@ -180,8 +181,8 @@ public class GroupService implements IGroupService {
             
             for(Iterator<?> it = groups.iterator();it.hasNext();){
                 Group group = (Group) it.next();
-                if(group.getDisabled().equals(UMConstants.TRUE)) {
-                    group.setDisabled(UMConstants.FALSE);
+                if(group.getDisabled().equals(ParamConstants.TRUE)) {
+                    group.setDisabled(ParamConstants.FALSE);
                     groupDao.update(group); 
                 }
             }
@@ -191,7 +192,7 @@ public class GroupService implements IGroupService {
     // 停用组以及组下的子组和所有的用户
     private void stopGroup(Long groupId) {
         Group group = groupDao.getEntity(groupId);
-        groupDao.executeHQL("update Group set disabled = ? where decode like ?", UMConstants.TRUE, group.getDecode() + "%");
+        groupDao.executeHQL("update Group set disabled = ? where decode like ?", ParamConstants.TRUE, group.getDecode() + "%");
        
         /* 
          * 停用主用户组，需要停用组下的用户。停用辅助用户组不停用用户，因为辅助用户组当中的用户是从主用户组中选取的.
@@ -200,8 +201,8 @@ public class GroupService implements IGroupService {
         if ( Group.MAIN_GROUP_TYPE.equals(groupType) ) {
             List<User> users = groupDao.getUsersByGroupIdDeeply(groupId);
             for( User user : users) {
-                if(!UMConstants.TRUE.equals(user.getDisabled())){
-                    user.setDisabled(UMConstants.TRUE);
+                if(!ParamConstants.TRUE.equals(user.getDisabled())){
+                    user.setDisabled(ParamConstants.TRUE);
                 }
             }       
         }

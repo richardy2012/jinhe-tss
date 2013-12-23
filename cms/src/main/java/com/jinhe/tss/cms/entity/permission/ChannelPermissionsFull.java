@@ -9,7 +9,7 @@ import com.jinhe.tss.um.permission.AbstractSuppliedTable;
  * 站点栏目资源权限补齐表
  */
 @Entity
-@Table(name = "cms_permissionFull_Channel")
+@Table(name = "cms_permissionfull_channel")
 public class ChannelPermissionsFull extends AbstractSuppliedTable {
 
 }

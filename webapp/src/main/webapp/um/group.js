@@ -729,7 +729,8 @@
 				detachReminder(page1FormObj.element.id);
 
 				// 如果当前grid显示为此用户所在组，则刷新grid
-				showUserList(groupId || -7);
+                var gridGroupId = $G("grid").getRowAttributeValue("groupId");
+				showUserList(groupId || gridGroupId || -7);
 	 
 				ws.closeActiveTab();
 			}

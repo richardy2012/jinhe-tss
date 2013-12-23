@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
@@ -108,8 +109,8 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         
         // 测试停用启用
         for(int i = 0; i < 2; i++) {
-	        menuAction.disable(response, rootMenuId, PortalConstants.TRUE);
-	        menuAction.disable(response, rootMenuId, PortalConstants.FALSE);
+	        menuAction.disable(response, rootMenuId, ParamConstants.TRUE);
+	        menuAction.disable(response, rootMenuId, ParamConstants.FALSE);
         }
         
         // 排序、移动

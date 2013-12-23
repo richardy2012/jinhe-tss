@@ -12,8 +12,8 @@ import com.jinhe.tss.cms.AbstractTestSupport;
 import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.helper.ArticleQueryCondition;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.test.TestUtil;
-import com.jinhe.tss.um.UMConstants;
 
 /**
  * 文章站点栏目相关模块的单元测试。
@@ -53,10 +53,10 @@ public class ArticleModuleTest extends AbstractTestSupport {
         
         // 置顶、解除置顶
         articleAction.doOrUndoTopArticle(response, articleId);
-        assertEquals(article.getIsTop(), UMConstants.TRUE);
+        assertEquals(article.getIsTop(), ParamConstants.TRUE);
         
         articleAction.doOrUndoTopArticle(response, articleId);
-        assertEquals(article.getIsTop(), UMConstants.FALSE);
+        assertEquals(article.getIsTop(), ParamConstants.FALSE);
         
         // 获取搜索文章的查询模板
         articleAction.getSearchArticleTemplate(response);

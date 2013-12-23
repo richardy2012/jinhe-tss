@@ -9,11 +9,11 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeNode;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
-import com.jinhe.tss.portal.PortalConstants;
 
 /**
  * 主题实体：包括门户结构以及相对应的布局、修饰器等配置信息
@@ -36,7 +36,7 @@ public class Theme extends OperateInfo implements IEntity, ITreeNode {
     private Long    portalId;    // 主题所属的门户ID
 	private String  description; // 主题的描述
 	
-    private Integer disabled = PortalConstants.FALSE;  // 是否停用：0－启用；1－停用
+    private Integer disabled = ParamConstants.FALSE;  // 是否停用：0－启用；1－停用
 
     public Theme() {
     }

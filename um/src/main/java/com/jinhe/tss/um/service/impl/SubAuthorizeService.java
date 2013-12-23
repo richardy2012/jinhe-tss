@@ -7,9 +7,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
-import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupDao;
 import com.jinhe.tss.um.dao.IRoleDao;
 import com.jinhe.tss.um.entity.RoleGroup;
@@ -30,7 +30,7 @@ public class SubAuthorizeService implements ISubAuthorizeService {
 
 	public void disable(Long id, Integer disabled) {
 		SubAuthorize strategy = (SubAuthorize) roleDao.getEntity(SubAuthorize.class, id);
-		if(UMConstants.FALSE.equals(disabled) && strategy.getEndDate().getTime() < System.currentTimeMillis()) {
+		if(ParamConstants.FALSE.equals(disabled) && strategy.getEndDate().getTime() < System.currentTimeMillis()) {
 			throw new BusinessException(strategy.getName() + " 已过期，不能启用");
 		}
 		strategy.setDisabled(disabled);
