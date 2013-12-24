@@ -8,14 +8,7 @@
 			<value>com.jinhe.tss.um.permission.PermissionService</value>
 		</property>
 	</bean>
-	
-	<bean name="/RemoteSearchService" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
-		<property name="service"><ref bean="RemoteSearchService"/></property>
-		<property name="serviceInterface">
-			<value>com.jinhe.tss.um.search.RemoteSearchService</value>
-		</property>
-	</bean>
-	
+ 
 	<bean name="/LoginService" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
 		<property name="service"><ref bean="LoginService"/></property>
 		<property name="serviceInterface">
@@ -24,7 +17,7 @@
 	</bean>	
 	
 	<!-- Remote 获取每种资源类型对应的"未补全表"和"补全表"和"资源表名" --> 
-	<bean name="/RestypeTableMapping" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+	<bean name="/ResourceTypeDaoInUM" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
 		<property name="service"><ref bean="ResourceTypeDao"/></property>
 		<property name="serviceInterface">
 			<value>com.jinhe.tss.um.permission.RemoteResourceTypeDao</value>

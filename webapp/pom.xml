@@ -35,7 +35,10 @@
 	</dependencies>
 	
 	<build>
+		<!--
 		<finalName>tss-${tss.version}</finalName>
+		-->
+		<finalName>tss</finalName>
 		
         <plugins>
 			<plugin>  

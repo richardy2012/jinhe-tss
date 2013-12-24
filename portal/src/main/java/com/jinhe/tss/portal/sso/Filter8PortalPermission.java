@@ -30,8 +30,7 @@ import com.jinhe.tss.um.permission.PermissionHelper;
  * 处理门户是否可以匿名访问的过滤器
  * </p>
  */
-@WebFilter(filterName = "PortalPermissionFilter", 
-		urlPatterns = {"*.action", ".portal"})
+@WebFilter(filterName = "PortalPermissionFilter", urlPatterns = {"/portal/preview/*", "*.portal"})
 public class Filter8PortalPermission implements Filter {
 
 	/**
@@ -47,7 +46,7 @@ public class Filter8PortalPermission implements Filter {
     /**
      * 预览门户的action地址
      */
-    public static final String PORTAL_PREVIEW_ACTION_URL = "portal!previewPortal.action";
+    public static final String PORTAL_PREVIEW_ACTION_URL = "portal/preview/";
     
 	/**
 	 * 发布信息存储属性名称

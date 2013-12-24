@@ -103,7 +103,7 @@ public class FreeMarkerParserTest extends TxSupportTest4Portal {
         
         String templateStr = "<#assign channel = articleList.ArticleList.channel>" +
                 "<#list channel.item as item>" +
-                "<a href='/tss/article2.Portal?articleId=${item.id}'>* ${item.title}</a><br>\n" +
+                "<a href='/tss/article2.portal?articleId=${item.id}'>* ${item.title}</a><br>\n" +
                 "</#list>";
         
         parser.parseTemplateTwice(templateStr, new OutputStreamWriter(System.out));

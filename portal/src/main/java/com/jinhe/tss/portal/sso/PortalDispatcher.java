@@ -29,7 +29,7 @@ import com.jinhe.tss.portal.entity.ReleaseConfig;
  * 此时发布机器人会重新请求该访问地址并带上isRobot=true的参数，过滤器查到该参数则直接将请求地址转换成真实门户浏览地址。
  * </pre>
  */
-@WebServlet(urlPatterns="/*.portal")
+@WebServlet(urlPatterns="*.portal")
 public class PortalDispatcher extends HttpServlet {
  
     static final String IS_ROBOT = "isRobot";

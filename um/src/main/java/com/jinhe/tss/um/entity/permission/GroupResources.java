@@ -11,7 +11,7 @@ import com.jinhe.tss.um.permission.AbstractResourcesView;
  * </p>
  */
 @Entity
-@Table(name = "view_group_resourcs")
+@Table(name = "view_group_resources")
 public class GroupResources extends AbstractResourcesView {
  
     public String getResourceType() {
