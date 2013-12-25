@@ -24,6 +24,15 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 
+	<servlet> 
+		<servlet-name>remote</servlet-name> 
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class> 
+		<load-on-startup>1</load-on-startup> 
+	</servlet> 
+	<servlet-mapping> 
+		<servlet-name>remote</servlet-name> 
+		<url-pattern>/remote/*</url-pattern> 
+	</servlet-mapping>
 	
 	<servlet>
 		<servlet-name>spring-mvc</servlet-name>
@@ -39,8 +48,7 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 	
-
 	<welcome-file-list>
-		<welcome-file>login.htm</welcome-file>
+		<welcome-file>login.html</welcome-file>
 	</welcome-file-list>
 </web-app>

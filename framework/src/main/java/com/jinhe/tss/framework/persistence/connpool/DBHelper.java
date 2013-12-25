@@ -21,7 +21,6 @@ import com.jinhe.tss.util.ConfigurableContants;
 
 /** 
  * 数据库相关常见操作的帮助类。
- * 
  */
 public class DBHelper extends ConfigurableContants {
 
@@ -41,17 +40,16 @@ public class DBHelper extends ConfigurableContants {
     
     public static Connection getConnection(Properties p) {
         Connection conn = null;
+        String url = p.getProperty(DB_CONNECTION_URL);
         try {
             Class.forName(p.getProperty(DB_CONNECTION_DRIVER_CLASS));
-            conn = DriverManager.getConnection(p.getProperty(DB_CONNECTION_URL),
+			conn = DriverManager.getConnection(url,
                     p.getProperty(DB_CONNECTION_USERNAME),
                     p.getProperty(DB_CONNECTION_PASSWORD));
             
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("创建数据库连接时候出错", e);
-        } catch (SQLException e) {
-            throw new RuntimeException("创建数据库连接时候出错", e);
-        }
+        } catch (Exception e) {
+            throw new RuntimeException("创建数据库连接时候出错，url：" + url, e);
+        } 
         return conn;
     }
     
@@ -76,14 +74,14 @@ public class DBHelper extends ConfigurableContants {
             return rs.getObject(1);
             
         } catch (Exception e) {
-            throw new RuntimeException("执行SQL语句时出错！", e);
+            throw new RuntimeException("执行SQL语句时出错，sql：" + sql, e);
         } finally {
             try {
             	if( st != null) {
             		st.close();
             	}
 			} catch (SQLException e) {
-				throw new RuntimeException("执行SQL语句时出错！", e);
+				log.error("执行完SQL后关闭PreparedStatement出错，sql：" + sql, e);
 			}
         }
     }

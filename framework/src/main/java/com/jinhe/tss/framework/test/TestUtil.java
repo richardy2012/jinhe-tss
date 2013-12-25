@@ -42,6 +42,10 @@ public class TestUtil {
     }
     
     public static void excuteSQL(String sqlDir) {  
+    	excuteSQL(sqlDir, true);
+    }
+    
+    public static void excuteSQL(String sqlDir, boolean isTSS) {  
         log.info("正在执行目录：" + sqlDir+ "下的SQL脚本。。。。。。");  
         try {  
             Connection conn = DBHelper.getConnection();
@@ -50,8 +54,8 @@ public class TestUtil {
             List<File> sqlFiles = FileHelper.listFilesByTypeDeeply(".sql", new File(sqlDir));
             for(File sqlFile : sqlFiles) {
             	String fileName = sqlFile.getName();
-				if("roleusermapping-init.sql".equals(fileName)) {
-                    continue;
+				if(isTSS && "roleusermapping-init.sql".equals(fileName)) {
+                    continue; 
                 }
             	
             	log.info("开始执行SQL脚本：" + fileName+ "。");  

@@ -48,3 +48,6 @@ truncate table um_roleuser;
 
 insert into um_roleuser (ID, ROLEID, USERID) values (0, -1, -1);
 commit;
+
+insert into um_roleusermapping(ROLEID, USERID) values (-10000, -10000);
+commit;
