@@ -3,7 +3,6 @@ package com.jinhe.tss.um.service;
 import java.util.List;
 import java.util.Map;
 
-import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.helper.dto.GroupDTO;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
 
@@ -145,6 +144,6 @@ public interface ILoginService {
      * @param roleId
      * @return List
      */
-    List<Group> getGroupsByRoleId(Long roleId);
+    List<GroupDTO> getGroupsByRoleId(Long roleId);
 }
 

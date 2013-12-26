@@ -77,7 +77,8 @@
 					for(var i=0; i<attributes.length; i++) {
 						oldColumn.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
 					}
-					loadSearchPermissionData();
+
+					$X("xform", xmlData);
 				}
 			}
 		});

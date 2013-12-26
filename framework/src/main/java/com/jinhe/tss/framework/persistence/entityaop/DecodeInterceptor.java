@@ -12,7 +12,6 @@ import com.jinhe.tss.util.BeanUtil;
 
 /**
  * entity.decode值维护拦截器.
- * 
  */
 @Component("decodeInterceptor")
 public class DecodeInterceptor extends MatchByDaoMethodNameInterceptor {
@@ -20,33 +19,31 @@ public class DecodeInterceptor extends MatchByDaoMethodNameInterceptor {
     @SuppressWarnings("unchecked")
     public Object invoke(MethodInvocation invocation) throws Throwable {
 	    Object target = invocation.getThis();
-        IDao<IEntity> dao = (IDao<IEntity>) target;
-		Object[] args = invocation.getArguments();
-		if(args == null || !( BeanUtil.isImplInterface(dao.getType(), IDecodable.class)) ) {
-		    return invocation.proceed();
-		}
-		
-        for (int i = 0; i < args.length; i++) {
-            if (args[i] instanceof IDecodable) {
-                String methodName = invocation.getMethod().getName();
-                IDecodable entity = (IDecodable) args[i];
-                
-                switch (judgeManipulateKind(methodName)) {
-                case SAVE:
-                case UPDATE:
+	    String methodName = invocation.getMethod().getName();
+	    
+	    switch (judgeManipulateKind(methodName)) {
+        case SAVE:
+        case UPDATE:
+        	IDao<IEntity> dao = (IDao<IEntity>) target;
+    		Object[] args = invocation.getArguments();
+    		if(args == null || !( BeanUtil.isImplInterface(dao.getType(), IDecodable.class)) ) {
+    		    return invocation.proceed();
+    		}
+    		
+            for (int i = 0; i < args.length; i++) {
+                if (args[i] instanceof IDecodable) {
+                    IDecodable entity = (IDecodable) args[i];
                     String oldDecode = entity.getDecode();
-                    
                     ((ITreeSupportDao<IDecodable>)target).saveDecodeableEntity(entity);
                     
                     // 移动时维护(修复)所有子节点的decode值。不包括节点自身
                     if(methodName.startsWith("move")) {
                         repairChildrenDecode(entity, oldDecode, dao);
                     }
-                    
-                    break;
                 }
-            }
-        }	
+            }	
+        	break;
+        }
         
         return invocation.proceed();
 	}

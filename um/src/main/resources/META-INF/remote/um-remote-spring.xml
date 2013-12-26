@@ -23,7 +23,7 @@
 	<!-- Remote 获取每种资源类型对应的"未补全表"和"补全表"和"资源表名" --> 
 	<bean id="RemoteResourceTypeDao" class="com.jinhe.tss.framework.web.rmi.HttpInvokerProxyFactory">
 		<property name="serviceUrl">
-			<value>/remote/ResourceTypeDaoInUM</value>
+			<value>/remote/ResourceTypeDao</value>
 		</property>
 		<property name="appCode">
 			<value>TSS</value>
