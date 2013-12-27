@@ -16,12 +16,15 @@
 				<include>**/um-remote-spring.xml</include>
 				<include>**/um/UMConstants.class</include>
 				<include>**/um/permission/**/**.class</include>
-				<include>**/um/entity/permission/**.class</include>
-				<include>**/um/helper/**/**.class</include>
+				<include>**/um/entity/Operation.class</include>
+				<include>**/um/entity/permission/RoleUserMapping.class</include>
+				<include>**/um/entity/permission/RoleUserMappingId.class</include>
+				<include>**/um/entity/permission/ViewRoleUser.class</include>
+				<include>**/um/entity/permission/ViewRoleUser4SubAuthorize.class</include>
+				<include>**/um/entity/permission/ViewRoleUserId.class</include>
+				<include>**/um/helper/dto/**.class</include>
 				<include>**/um/sso/*.class</include>
 				<include>**/um/service/ILoginService.class</include>
-				<include>**/search/RemoteSearchServiceImpl.class</include>
-				<include>**/search/RemoteSearchService.class</include>
 			 </includes>
          </fileSet> 
      </fileSets> 

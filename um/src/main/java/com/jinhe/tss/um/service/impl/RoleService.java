@@ -38,11 +38,13 @@ public class RoleService implements IRoleService {
     }
 
     public List<?> getPlatformApplication() {
-		return roleDao.getEntities("from Application o where o.applicationType = ? ", UMConstants.PLATFORM_SYSTEM_APP);
+		String hql = "from Application o where o.applicationType = ? ";
+		return roleDao.getEntities(hql, UMConstants.PLATFORM_SYSTEM_APP);
     }
 
     public List<?> getResourceTypeByAppId(String applicationId) {
-		return resourceTypeDao.getEntities("from ResourceType a where a.applicationId = ? order by a.seqNo", applicationId);
+		String hql = "from ResourceType a where a.applicationId = ? order by a.seqNo";
+		return resourceTypeDao.getEntities(hql, applicationId);
     }
     
     public List<?> getAddableRoleGroups() {

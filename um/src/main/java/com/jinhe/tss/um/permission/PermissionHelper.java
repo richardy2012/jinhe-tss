@@ -394,7 +394,7 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
 	 */
 	public List<ResourceTreeNode> getVisibleResourceTree(String permissionRank, String suppliedTable, String resourceTable) {
 		String hql = "select distinct r.id, r.parentId, r.name, r.decode "
-		    + " from " + resourceTable + " r," + suppliedTable + " p, Temp t " 
+		    + " from " + resourceTable + " r, " + suppliedTable + " p, Temp t " 
 		    + " where p.roleId = t.id and p.resourceId = r.id ";
         hql += genRankCondition4SelectPermission(permissionRank) + " order by r.decode";
 

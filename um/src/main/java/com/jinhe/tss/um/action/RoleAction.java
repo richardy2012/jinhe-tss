@@ -313,6 +313,8 @@ public class RoleAction extends BaseActionSupport {
 	    
 	    String applicationId = request.getParameter("applicationId");
     	String resourceType  = request.getParameter("resourceType");
+    	
+    	PermissionService localPermissionService;
 	    
 	    //  角色对资源授权（“角色维护”菜单，多个资源授权给单个角色）时，生成 资源－操作选项 矩阵
 	    if( ParamConstants.TRUE.equals(isRole2Resource) ) {
@@ -323,8 +325,8 @@ public class RoleAction extends BaseActionSupport {
                 throw new BusinessException("请选择资源类型");
             }
             
-            permissionService = PermissionHelper.getPermissionService(applicationId, permissionService);
-            matrixInfo = permissionService.genResource2OperationMatrix(applicationId, resourceType, 
+            localPermissionService = PermissionHelper.getPermissionService(applicationId, permissionService);
+            matrixInfo = localPermissionService.genResource2OperationMatrix(applicationId, resourceType, 
                     roleId, permissionRank, roleUsers);
         } 
         // 资源对角色授权（“资源授予角色”菜单，单个资源授权给多个角色）时，生成 角色－操作选项 矩阵。
@@ -333,8 +335,8 @@ public class RoleAction extends BaseActionSupport {
                 applicationId = PermissionHelper.getApplicationID();
             }
             
-            permissionService = PermissionHelper.getPermissionService(applicationId, permissionService);
-            matrixInfo = permissionService.genRole2OperationMatrix(applicationId, resourceType, 
+            localPermissionService = PermissionHelper.getPermissionService(applicationId, permissionService);
+            matrixInfo = localPermissionService.genRole2OperationMatrix(applicationId, resourceType, 
                     roleId, permissionRank, roleUsers); // 此时roleId其实是资源ID（resourceId）
         }
         
@@ -371,15 +373,15 @@ public class RoleAction extends BaseActionSupport {
             applicationId = PermissionHelper.getApplicationID();
         }
 	    
-        permissionService = PermissionHelper.getPermissionService(applicationId, permissionService);
+	    PermissionService localPermissionService = PermissionHelper.getPermissionService(applicationId, permissionService);
         
 	    // 角色对资源授权（“角色维护”菜单，多个资源授权给单个角色）
         if( ParamConstants.TRUE.equals(isRole2Resource) ) {
-            permissionService.saveResources2Role(applicationId, resourceType, roleId, permissionRank, permissions);
+        	localPermissionService.saveResources2Role(applicationId, resourceType, roleId, permissionRank, permissions);
         } 
         // 资源对角色授权（“资源授予角色”菜单，单个资源授权给多个角色）
         else {
-            permissionService.saveResource2Roles(applicationId, resourceType, roleId, permissionRank, permissions);
+        	localPermissionService.saveResource2Roles(applicationId, resourceType, roleId, permissionRank, permissions);
         }
         
         printSuccessMessage();

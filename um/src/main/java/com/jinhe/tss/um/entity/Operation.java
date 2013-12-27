@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.entity;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,9 @@ import com.jinhe.tss.um.permission.dispaly.IPermissionOption;
         @UniqueConstraint(columnNames = { "applicationId", "resourceTypeId", "operationId" })
 })
 @SequenceGenerator(name = "Operation_sequence", sequenceName = "Operation_sequence", initialValue = 1000, allocationSize = 10)
-public class Operation implements IEntity, ITreeNode, IXForm, IPermissionOption {
+public class Operation implements IEntity, ITreeNode, IXForm, IPermissionOption, Serializable {
+ 
+	private static final long serialVersionUID = 5488138848801729520L;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "Operation_sequence")

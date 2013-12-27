@@ -35,33 +35,37 @@
 			url : URL_INIT + params.isRole2Resource + "/" + params.roleId,
 			params  : params, 
 			onresult : function() {
-				var searchPermissionNode = this.getNodeValue(XML_SEARCH_PERMISSION);
+				var xmlData = this.getNodeValue(XML_SEARCH_PERMISSION);
+				var isRole2Resource = ("0" == params["isRole2Resource"]);
 
-				if("0" == params["isRole2Resource"]) {
-					// 设置用户、用户组权限，自动隐藏应用系统和资源类型字段
-					var hideCells = searchPermissionNode.selectNodes("layout/TR/TD[.//*/@binding='applicationId' or .//*/@binding='resourceType']");
-					for(var i=0; i < hideCells.length; i++) {
-						hideCells[i].setAttribute("style", "display:none");
-					}
-				}
-
-				Cache.XmlDatas.add(XML_SEARCH_PERMISSION, searchPermissionNode);
-
-				var xform = $X("xform", searchPermissionNode);
-
-				var appSelect = $$("applicationId");
-				Event.attachEvent(appSelect, "change", function(event) {
-						var value = appSelect.value; 
-						updateSearchPermissionColumn(value);
-					});
-
-				// 设置查询按钮操作
-				$$("page3BtSearch").onclick = function() {
-					searchPermission();
-				}
+				Cache.XmlDatas.add(XML_SEARCH_PERMISSION, xmlData);
+				initSearchXForm(xmlData);
 			}
 		});
     }
+
+	function initSearchXForm(xmlData, isRole2Resource) {
+		if(isRole2Resource) {
+			// 设置用户、用户组权限，自动隐藏应用系统和资源类型字段
+			var hideCells = xmlData.selectNodes("layout/TR/TD[.//*/@binding='applicationId' or .//*/@binding='resourceType']");
+			for(var i=0; i < hideCells.length; i++) {
+				hideCells[i].setAttribute("style", "display:none");
+			}
+		}
+
+		var xform = $X("xform", xmlData);
+
+		var appSelect = $$("applicationId");
+		Event.attachEvent(appSelect, "change", function(event) {
+				var value = appSelect.value; 
+				updateSearchPermissionColumn(value);
+			});
+
+		// 设置查询按钮操作
+		$$("page3BtSearch").onclick = function() {
+			searchPermission();
+		}
+	}
 
     function updateSearchPermissionColumn(applicationId) {
 		Ajax({
@@ -78,7 +82,8 @@
 						oldColumn.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
 					}
 
-					$X("xform", xmlData);
+					$X("xform").updateDataExternal("resourceType", "");
+					initSearchXForm(xmlData);
 				}
 			}
 		});
