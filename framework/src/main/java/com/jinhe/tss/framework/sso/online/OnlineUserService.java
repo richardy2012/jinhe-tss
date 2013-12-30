@@ -3,6 +3,8 @@ package com.jinhe.tss.framework.sso.online;
 import java.util.Collection;
 import java.util.Set;
 
+import org.springframework.stereotype.Service;
+
 /**
  * <p> 远程在线用户管理服务 </p>
  * <p>
@@ -14,32 +16,37 @@ import java.util.Set;
  * <br/>  class.name.OnlineManager = com.jinhe.tss.core.sso.online.cache.CacheOnlineUserManager
  * <br/>配置项来初始化并操作在线用户库（上面指定的是"缓存式在线用户库"）.
  * <br/> 
- * <br/>本来可以直接将online.OnlineUserService配置为CacheOnlineUserManager，但通过RemoteOnlineUserManagerService来配置
+ * <br/>本来可以直接将online.OnlineUserService配置为CacheOnlineUserManager，但通过RemoteOnlineUserManager来配置
  * <bt/>则使得在线用户库的配置更加灵活，当需要将CacheOnlineUserManager换成DBOnlineUserManager时，
  * <br/>只需要改动application.properties里的class.name.OnlineManager配置。
  * 
  * </p>
  */
+@Service("OnlineUserService")
 public class OnlineUserService implements IOnlineUserManager {
+	
+	private IOnlineUserManager getOnlineUserManager() {
+		return OnlineUserManagerFactory.getManager();
+	}
 
     public String logout(String appCode, String sessionId) {
-        return OnlineUserManagerFactory.getManager().logout(appCode, sessionId);
+        return getOnlineUserManager().logout(appCode, sessionId);
     }
 
     public boolean isOnline(String token) {
-        return OnlineUserManagerFactory.getManager().isOnline(token);
+        return getOnlineUserManager().isOnline(token);
     }
 
     public void register(String token, String appCode, String sessionId, Long userId, String userName) {
-        OnlineUserManagerFactory.getManager().register(token, appCode, sessionId, userId, userName);
+        getOnlineUserManager().register(token, appCode, sessionId, userId, userName);
     }
 
     public Set<OnlineUser> getOnlineUsersByToken(String token) {
-        return OnlineUserManagerFactory.getManager().getOnlineUsersByToken(token);
+        return getOnlineUserManager().getOnlineUsersByToken(token);
     }
 
     public Collection<String> getOnlineUserNames() {
-        return OnlineUserManagerFactory.getManager().getOnlineUserNames();
+        return getOnlineUserManager().getOnlineUserNames();
     }
 
 }

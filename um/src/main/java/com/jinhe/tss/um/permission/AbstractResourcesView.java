@@ -15,7 +15,7 @@ import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
  * 可授权资源实体的抽象类
  */
 @MappedSuperclass
-public abstract class AbstractResourcesView implements IEntity, IDecodable, ILevelTreeNode, IResource{
+public abstract class AbstractResourcesView implements IEntity, IDecodable, ILevelTreeNode, IResource {
     
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)

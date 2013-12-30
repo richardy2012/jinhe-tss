@@ -76,7 +76,7 @@ public class PortalAction extends FreeMarkerSupportAction {
         PortalNode portalNode = service.getPortal(portalId, themeId);
         HTMLGenerator gen = new HTMLGenerator(portalNode, contentId, targetId, getFreemarkerParser(portalId));
         
-        StringBuffer sb = new StringBuffer("<?xml version=\"1.0\" encoding=\"GBK\"?>");
+        StringBuffer sb = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         sb.append("<Response><Portlet>").append(gen.toXML()).append("</Portlet></Response>");
          
         printHTML(portalId, sb.toString(), false);

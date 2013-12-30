@@ -4,7 +4,6 @@
    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
    version="1.0">
 
-	<entity class="com.jinhe.tss.framework.sso.online.database.DBOnlineUser"/>
 	<entity class="com.jinhe.tss.framework.persistence.Temp"/>
 	<entity class="com.jinhe.tss.framework.component.log.Log"/>
 	<entity class="com.jinhe.tss.framework.component.param.Param"/>

@@ -51,7 +51,7 @@ public class AutoLoginFilterTest {
         
         request.setSession(session);
         request.addHeader(RequestContext.USER_CLIENT_IP, "192.168.0.12");
-        request.setCharacterEncoding("GBK");
+        request.setCharacterEncoding("UTF-8");
         
         Context.initApplicationContext(MockApplicationContext.getDefaultApplicationContext());
        

@@ -322,7 +322,7 @@
 				var rootName       = "Component";
 
 				var str = [];
-				str[str.length] = "<?xml version=\"1.0\" encoding=\"GBK\"?>";
+				str[str.length] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 				str[str.length] = "<" + rootName + ">";
 				str[str.length] = "<property>";
 				str[str.length] = "<name>" + name + "</name>";

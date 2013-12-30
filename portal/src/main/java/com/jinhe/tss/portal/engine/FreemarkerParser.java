@@ -70,7 +70,7 @@ public class FreemarkerParser {
         templatePath = templatePath != null ? templatePath : defaultTemplatePath;
 
         try {
-            cfg.setDefaultEncoding("GBK");
+            cfg.setDefaultEncoding("UTF-8");
             cfg.setDirectoryForTemplateLoading(templatePath);
         } catch (IOException e) {
             log.error(" 读取 freemarker模板文件 " + templatePath + " 时IO异常，装载不成功(" + templatePath.exists() + ")", e);
@@ -95,7 +95,7 @@ public class FreemarkerParser {
      */
     public String parseTemplate(String template) throws IOException, TemplateException{
         Template t = new Template("temp.ftl", new StringReader(template), cfg);
-        t.setEncoding("GBK");
+        t.setEncoding("UTF-8");
         
         Writer out2 = new StringWriter();
         t.process(root, out2);
@@ -116,7 +116,7 @@ public class FreemarkerParser {
         }
         
         Template t = new Template("temp.ftl", new StringReader(template), cfg);
-        t.setEncoding("GBK");
+        t.setEncoding("UTF-8");
         t.process(root, out);
         out.flush();
     }

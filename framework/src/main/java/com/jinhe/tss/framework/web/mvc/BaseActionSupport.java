@@ -35,7 +35,7 @@ public abstract class BaseActionSupport {
     protected XmlPrintWriter getWriter() {
         /* 初始化数据输出流  */
         HttpServletResponse response = Context.getResponse();
-        response.setContentType("text/html;charset=GBK");
+        response.setContentType("text/html;charset=UTF-8");
         try {
             return new XmlPrintWriter(response.getWriter());
         } catch (Exception e) {

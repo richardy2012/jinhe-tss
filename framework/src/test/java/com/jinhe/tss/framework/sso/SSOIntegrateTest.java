@@ -220,7 +220,7 @@ public class SSOIntegrateTest {
             int statusCode = httppost.getStatusCode();
 
             if (statusCode == HttpStatus.SC_OK) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(httppost.getResponseBodyAsStream(), "GBK"));
+                BufferedReader in = new BufferedReader(new InputStreamReader(httppost.getResponseBodyAsStream(), "UTF-8"));
                 StringBuffer buffer = new StringBuffer();
                 String line = "";
                 while ((line = in.readLine()) != null){

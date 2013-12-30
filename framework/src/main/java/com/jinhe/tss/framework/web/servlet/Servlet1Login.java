@@ -40,7 +40,7 @@ public class Servlet1Login extends HttpServlet {
             }
         }
         
-        response.setContentType("text/html;charset=GBK");
+        response.setContentType("text/html;charset=UTF-8");
         XmlPrintWriter writer = new XmlPrintWriter(response.getWriter());
         new SuccessMessageEncoder("登录成功", SuccessMessageEncoder.NO_POPUP_TYPE).print(writer);
     }

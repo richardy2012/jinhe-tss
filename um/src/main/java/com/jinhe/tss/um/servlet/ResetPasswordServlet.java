@@ -42,7 +42,7 @@ public class ResetPasswordServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html;charset=GBK");
+        response.setContentType("text/html;charset=UTF-8");
     	
 		String userId = request.getParameter("userId");
 		String password = request.getParameter("password");

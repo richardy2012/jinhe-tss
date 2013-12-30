@@ -12,6 +12,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import com.jinhe.tss.framework.sso.online.CacheOnlineUserManager;
 import com.jinhe.tss.framework.sso.online.OnlineUser;
 
 /**

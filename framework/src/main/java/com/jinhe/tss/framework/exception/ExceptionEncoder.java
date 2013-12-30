@@ -53,7 +53,7 @@ public class ExceptionEncoder {
                 }
             }
             if (requestContext.isXmlhttpRequest()) {
-                response.setContentType("text/html;charset=gbk");
+                response.setContentType("text/html;charset=UTF-8");
                 XmlPrintWriter writer = new XmlPrintWriter(response.getWriter());
                 // XMLHTTP，返回XML格式错误信息
                 errorMessageEncoder.print(writer);

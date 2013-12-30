@@ -28,7 +28,7 @@ public class Servlet2Logout extends HttpServlet {
         // 只销毁了session。在线用户库里的注销工作在session的SessionDestroyedListener里完成
     	request.getSession().invalidate(); 
         
-        response.setContentType("text/html;charset=GBK");
+        response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         out.print( new SuccessMessageEncoder("注销成功", SuccessMessageEncoder.NO_POPUP_TYPE).toXml());
         out.flush();

@@ -37,7 +37,7 @@ public class Servlet3MultiRequest extends HttpServlet {
 	}
  
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html;charset=GBK");
+        response.setContentType("text/html;charset=UTF-8");
         XmlPrintWriter writer = new XmlPrintWriter(response.getWriter());
         writer.println("<Responses>");
         

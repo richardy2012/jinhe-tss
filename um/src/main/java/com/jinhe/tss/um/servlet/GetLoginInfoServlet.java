@@ -33,7 +33,7 @@ public class GetLoginInfoServlet extends HttpServlet {
         String loginName = request.getParameter(SSOConstants.LOGINNAME_IN_SESSION);
         String[] info = service.getLoginInfoByLoginName(loginName);
 
-        response.setContentType("text/html;charset=GBK");
+        response.setCharacterEncoding("utf-8");
         
         XmlHttpEncoder encoder = new XmlHttpEncoder();
         encoder.put("UserName", info[0]); //返回用户姓名

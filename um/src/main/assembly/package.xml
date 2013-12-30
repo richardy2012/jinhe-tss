@@ -13,7 +13,7 @@
 			 <directory>target/classes</directory>
 			 <outputDirectory>/</outputDirectory>
 			 <includes>
-				<include>**/um-remote-spring.xml</include>
+				<include>META-INF/remote/*.xml</include>
 				<include>**/um/UMConstants.class</include>
 				<include>**/um/permission/**/**.class</include>
 				<include>**/um/entity/Operation.class</include>

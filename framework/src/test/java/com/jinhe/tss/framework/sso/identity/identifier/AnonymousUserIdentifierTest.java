@@ -44,7 +44,7 @@ public class AnonymousUserIdentifierTest {
         Context.initApplicationContext(new MockApplicationContext(storer, "Core"));
         
         request = new MockHttpServletRequest();
-        request.setCharacterEncoding("GBK");
+        request.setCharacterEncoding("UTF-8");
         request.setSession(new MockHttpSession());
         
         Context.initRequestContext(request);

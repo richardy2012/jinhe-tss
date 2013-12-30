@@ -38,7 +38,7 @@ public class RequestContextTest {
     @Test
     public void testCanAnonymous4Header() {
         EasyMock.expect(request.getHeader(RequestContext.ANONYMOUS_REQUEST)).andReturn("true").atLeastOnce();
-        EasyMock.expect(request.getCharacterEncoding()).andReturn("GBK").atLeastOnce();
+        EasyMock.expect(request.getCharacterEncoding()).andReturn("UTF-8").atLeastOnce();
  
         mocksControl.replay(); 
         assertTrue(context.canAnonymous());
@@ -48,7 +48,7 @@ public class RequestContextTest {
     public void testCanAnonymous4Parameter() {
         EasyMock.expect(request.getHeader(RequestContext.ANONYMOUS_REQUEST)).andReturn("").atLeastOnce();
         EasyMock.expect(request.getParameter(RequestContext.ANONYMOUS_REQUEST)).andReturn("true").atLeastOnce();
-        EasyMock.expect(request.getCharacterEncoding()).andReturn("GBK").atLeastOnce();
+        EasyMock.expect(request.getCharacterEncoding()).andReturn("UTF-8").atLeastOnce();
  
         mocksControl.replay(); 
         assertTrue(context.canAnonymous());

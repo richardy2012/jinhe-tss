@@ -1,8 +1,8 @@
 IS_TEST = false;
 
-/* 
- * 当前应用名 
- */
+FROMEWORK_CODE = "TSS";
+
+/*  当前应用名  */
 APP_CODE    = "TSS";
 APPLICATION = APP_CODE.toLowerCase();
 CONTEXTPATH = APPLICATION + "/";
@@ -19,9 +19,7 @@ if( IS_TEST ) {
 
 ICON = URL_CORE + "images/";
 
-/* 
- * 常量定义
- */
+/*  常量定义 */
 XML_OPERATION = "Operation";
 XML_PAGE_INFO = "PageInfo";
 

@@ -38,7 +38,7 @@ public class GetPasswordServlet extends HttpServlet {
 		IUserService service = (IUserService) Global.getContext().getBean("UserService");
 		User user = service.getUserByLoginName(loginName);
 		
-		response.setContentType("text/html;charset=GBK");
+		response.setContentType("text/html;charset=UTF-8");
 		if ( user == null ) {
 			ErrorMessageEncoder encoder = new ErrorMessageEncoder("用户【" + loginName + "】不存在");
 			encoder.print(new XmlPrintWriter(response.getWriter()));

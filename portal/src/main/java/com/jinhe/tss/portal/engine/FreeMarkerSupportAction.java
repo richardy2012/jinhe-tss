@@ -60,7 +60,7 @@ public abstract class FreeMarkerSupportAction extends BaseActionSupport {
             FreemarkerParser parser = getFreemarkerParser(portalId);
             if(parser.isFtlTemplateReady){
                 HttpServletResponse response = Context.getResponse();
-                response.setContentType("text/html;charset=GBK");
+                response.setContentType("text/html;charset=UTF-8");
                 if(parseTwice) { // 是否需要解析两次
                     parser.parseTemplateTwice(template, response.getWriter());
                 } else {

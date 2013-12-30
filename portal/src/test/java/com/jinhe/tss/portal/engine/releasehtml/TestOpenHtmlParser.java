@@ -23,7 +23,7 @@ public class TestOpenHtmlParser {
     public static void testHtmlParser() {
         try {
             Parser parser = new Parser("D:/Temp/Portal/index2.html");
-            parser.setEncoding("GBK");
+            parser.setEncoding("UTF-8");
 
             StringBuffer sb = new StringBuffer();
             

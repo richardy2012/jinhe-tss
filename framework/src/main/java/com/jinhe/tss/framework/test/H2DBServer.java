@@ -25,19 +25,29 @@ public class H2DBServer implements IH2DBServer{
     Connection conn;
     
     public H2DBServer() {
+    	log.info("正在启动H2 database...");  
+    	
+    	
+    	// 此时H2数据库只起来了服务，没有实例
         try {  
-            log.info("正在启动H2 database...");  
-            
-            // 此时H2数据库只起来了服务，没有实例
-            server = Server.createTcpServer(new String[] { "-tcpPort", (PORT++) + ""}).start();  
-            
-            // 在以URL取得连接以后，数据库实例h2db才创建完成
-            Class.forName("org.h2.Driver");  
-            conn = DriverManager.getConnection(URL, user, password);  
-            
-        } catch (Exception e) {  
-            log.info("启动H2 database出错：" + e.toString());  
+            server = Server.createTcpServer(new String[] { "-tcpPort", (PORT) + ""}).start();  
+        } catch (Exception e1) {  
+            try {  
+                server = Server.createTcpServer(new String[] { "-tcpPort", (++PORT) + ""}).start();  
+            } catch (Exception e2) {  
+                log.error("启动H2 database出错：" + e2.toString());  
+                return;
+            }  
         }  
+        
+        try {  
+	    	// 在以URL取得连接以后，数据库实例h2db才创建完成
+	        Class.forName("org.h2.Driver");  
+	        conn = DriverManager.getConnection(URL, user, password);  
+    	} 
+        catch (Exception e) {  
+            log.error("启动H2 database出错：" + e.toString());  
+        } 
     }
  
     

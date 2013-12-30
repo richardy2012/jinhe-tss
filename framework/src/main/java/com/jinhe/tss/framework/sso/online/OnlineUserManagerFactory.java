@@ -6,7 +6,6 @@ import org.apache.commons.logging.LogFactory;
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.sso.SSOConstants;
 import com.jinhe.tss.framework.sso.context.Context;
-import com.jinhe.tss.framework.sso.online.cache.CacheOnlineUserManager;
 import com.jinhe.tss.util.BeanUtil;
 
 /** 

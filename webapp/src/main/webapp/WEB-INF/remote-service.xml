@@ -18,9 +18,9 @@
 	    <property name="serviceInterface" value="com.jinhe.tss.um.permission.RemoteResourceTypeDao"/>
 	</bean>		
 	
-	<!-- Remote 在线用户管理 -->
+	<!-- Remote 在线用户管理，可选有 OnlineUserService or DBOnlineUserManager-->
 	<bean name="OnlineUserServiceExporter" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
-		<property name="service" ref="DBOnlineUserManager"/>
+		<property name="service" ref="OnlineUserService"/>
 	    <property name="serviceInterface" value="com.jinhe.tss.framework.sso.online.IOnlineUserManager"/>
 	</bean>		
  

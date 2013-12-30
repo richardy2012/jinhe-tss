@@ -105,7 +105,7 @@ public class PerfectMagicRobot extends SimpleRobot{
         
         //处理页面里的动态地址，发布出相应的静态页面。
         Parser parser = new Parser(htmlFileName);
-        parser.setEncoding("GBK");
+        parser.setEncoding("UTF-8");
         NodeList list = parser.parse(new LinkRegexFilter(""));
         for (NodeIterator it = list.elements(); it.hasMoreNodes();) {
             LinkTag linkNode = (LinkTag) it.nextNode();
@@ -125,7 +125,7 @@ public class PerfectMagicRobot extends SimpleRobot{
         StringBuffer sb = new StringBuffer();
 
         Parser parser = new Parser (htmlFilePath);
-        parser.setEncoding("GBK");
+        parser.setEncoding("UTF-8");
         NodeList list = parser.parse(null);
         for(NodeIterator outIter = list.elements(); outIter.hasMoreNodes();){
             Node bigNode = outIter.nextNode();

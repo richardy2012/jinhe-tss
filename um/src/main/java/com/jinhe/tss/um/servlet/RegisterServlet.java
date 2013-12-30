@@ -56,7 +56,7 @@ public class RegisterServlet extends HttpServlet {
         user.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID);
         service.registerUser(user);
 
-        response.setContentType("text/html;charset=GBK");
+        response.setContentType("text/html;charset=UTF-8");
         SuccessMessageEncoder encoder = new SuccessMessageEncoder("用户注册成功！", "用户注册成功！");
         encoder.print(new XmlPrintWriter(response.getWriter()));
     }
