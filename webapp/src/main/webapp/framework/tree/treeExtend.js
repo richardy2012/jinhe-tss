@@ -255,7 +255,7 @@ var ExtendTree = function(element) {
 		var _extendTable = $$("treeExtendTable");
 
 		// 设置显示节点的table对象的大小
-		_rootBox.style.width  = 200;
+		_rootBox.style.width  = 240;
 
 		var _Rows, _ExtendRows;
 

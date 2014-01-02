@@ -26,6 +26,10 @@
 					<treeNode type="1" decode="0000300022" parentId="-3" icon="param.gif" disabled="0" levelNo="2" name="子组7" id="13"/>
 					<treeNode type="1" decode="0000300023" parentId="-3" icon="param.gif" disabled="0" levelNo="2" name="子组8" id="14"/>
 					<treeNode type="1" decode="0000300024" parentId="-3" icon="param.gif" disabled="0" levelNo="2" name="子组9" id="15"/>
+                    <treeNode type="1" decode="0000300025" parentId="-3" icon="param.gif" disabled="0" levelNo="2" name="子组8" id="16"/>
+                    <treeNode type="1" decode="0000300026" parentId="-3" icon="param.gif" disabled="0" levelNo="2" name="子组9" id="17"/>
+                    <treeNode type="1" decode="0000300027" parentId="-3" icon="param.gif" disabled="0" levelNo="2" name="子组8" id="18"/>
+                    <treeNode type="1" decode="0000300028" parentId="-3" icon="param.gif" disabled="0" levelNo="2" name="子组9" id="19"/>
                 </treeNode>
             </treeNode>
         </actionSet>
