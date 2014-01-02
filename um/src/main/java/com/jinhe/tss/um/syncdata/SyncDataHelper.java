@@ -4,6 +4,7 @@ import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.dto.UserDTO;
+import com.jinhe.tss.um.sso.UMPasswordIdentifier;
 import com.jinhe.tss.um.syncdata.dao.DBDataDao;
 import com.jinhe.tss.um.syncdata.dao.IOutDataDao;
 import com.jinhe.tss.um.syncdata.dao.LDAPDataDao;
@@ -41,6 +42,8 @@ public class SyncDataHelper {
         
         if( !EasyUtils.isNullOrEmpty(userDTO.getAuthMethod()) ) {
         	user.setAuthMethod(userDTO.getAuthMethod());
+        } else {
+        	user.setAuthMethod(UMPasswordIdentifier.class.getName());
         }
         user.setPassword(DEFAULT_PWD);
         user.setPasswordQuestion("?");

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<params>
+	<url>jdbc:oracle:thin:@ (DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = wmsadg01-vip.800best.com)(PORT = 1521)) (ADDRESS = (PROTOCOL = TCP)(HOST = wmsadg02-vip.800best.com)(PORT = 1521)) (LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(SERVICE_NAME = wms)(FAILOVER_MODE = (TYPE =SELECT)(METHOD = BASIC) (RETRIES = 180)(DELAY = 5))))</url>
+	<driver>oracle.jdbc.driver.OracleDriver</driver>
+	<user>wms</user>
+	<password>wms800best</password>
+	<groupSql>
+	    select distinct g.id, 0 parentId, g.name as name, g.code description
+	    from gv_sys_domain g 
+	    where g.id=:groupId 
+	</groupSql>
+	<userSql>
+	    select distinct u.id, u.domain_id groupId, u.code loginName, u.userName, null sex, null birthday, u.email, u.code employeeNo, 
+	    	'com.jinhe.tss.um.sso.UMPasswordIdentifier' authMethod
+	    from gv_sys_userinfo u 
+	    where u.status_id=3 and u.usertype_id=448 and u.code like 'BL%'
+	      and u.domain_id=:groupId
+	</userSql>
+	<singleUser>
+	    select distinct u.id, u.domain_id groupId, u.code loginName, u.userName, null sex, null birthday, u.email, u.code employeeNo, 
+	    	'com.jinhe.tss.um.sso.UMPasswordIdentifier' authMethod
+	    from gv_sys_userinfo u 
+	    where u.id = :userId
+	</singleUser>
+</params>
