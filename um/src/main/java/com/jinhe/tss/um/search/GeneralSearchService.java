@@ -9,16 +9,6 @@ public interface GeneralSearchService {
  
 	/**
 	 * <p>
-	 * 根据应用系统id获得该应用的所有资源类型
-	 * </p>
-	 * @param applicationId
-	 * 			应用系统id
-	 * @return
-	 */	
-	List<?> getResourceTypeListByApp(String applicationId);
- 
-	/**
-	 * <p>
 	 * 一个组下面所有用户的因转授而获得的角色的情况
 	 * </p>
 	 * @param groupId

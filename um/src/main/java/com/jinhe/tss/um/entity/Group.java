@@ -34,11 +34,7 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
 
 	public static final Integer MAIN_GROUP_TYPE                     = 1; // 主组类型
 	public static final Integer ASSISTANT_GROUP_TYPE                = 2; // 辅助组类型
-
-	public static final Integer SELF_REGISTER_GROUP_TYPE            = 4; // 自注册用户组类型
-	public static final Integer SELF_REGISTER_GROUP_AUTHEN_TYPE     = 5; // 自注册用户组已认证类型
-	public static final Integer SELF_REGISTER_GROUP_NOT_AUTHEN_TYPE = 6; // 自注册用户组未认证类型
-  
+ 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "group_sequence")
 	private Long    id;       // 用户组ID , 用户组主键

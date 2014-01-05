@@ -38,8 +38,6 @@ public final class UMConstants {
 	 */
 	public static final Long DEFAULT_NEW_ID = BaseActionSupport.DEFAULT_NEW_ID; 
 
-    public static final Long NEW_RESOURCE_DEFAULT_PARENT_ID = new Long(0); //新建资源默认的父节点
-	
     public static String ADMIN_ROLE_NAME = "系统管理员";         //UM管理员角色
     public static Long ADMIN_ROLE_ID     = new Long(-1);     //UM管理员角色的ID
     public static Long ANONYMOUS_ROLE_ID = new Long(-10000); //UM匿名角色的ID
@@ -142,8 +140,7 @@ public final class UMConstants {
 	public static final String OTHER_APPLICATION_XFORM = "template/xform/application_other.xml";   //其他应用系统(新建)
 	public static final String OPERATION_XFORM         = "template/xform/operation.xml";           //Operation对象
 	public static final String SERACH_PERMISSION_XFORM = "template/xform/searchpermission.xml";    //查询权限的
-	public static final String AUTH_METHOD_XFORM       = "template/xform/authenticatemethod.xml";  //查询权限转授的
-	public static final String IMPORT_APP_XFORM        = "template/xform/importapplication.xml";   //应用系统导入的
+	public static final String AUTH_METHOD_XFORM       = "template/xform/authenticatemethod.xml";  //设置用户认证方式
     public static final String PASSWORD_FORGET_XFORM   = "template/xform/password_forget.xml";     //密码忘记提示 
     public static final String PASSWORD_CHANGE_XFORM   = "template/xform/password_change.xml";     //密码修改
 

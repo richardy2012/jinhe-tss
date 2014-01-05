@@ -268,7 +268,7 @@ public class ResourceService implements IResourceService{
             }
         }
         
-        // 初始化平台应用系统，应用系统作为一类资源，需要做补全操作的，所以最后保存
+        // 最后保存平台应用系统
         applicationDao.create(application); 
     }
 }

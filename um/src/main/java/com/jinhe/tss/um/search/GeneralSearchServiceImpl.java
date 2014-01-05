@@ -23,10 +23,6 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
 
 	@Autowired private ICommonDao commonDao;
  
-	public List<?> getResourceTypeListByApp(String applicationId) {
-        return commonDao.getEntities("from ResourceType o where o.applicationId = ? order by o.seqNo", applicationId);
-	}
- 
 	// 一个组下面所有用户的因转授而获得的角色的情况
 	public List<SubAuthorizedUserRoleDTO> searchUserSubauthByGroupId(Long groupId){
 	    // 先取出组下所有可见的用户
