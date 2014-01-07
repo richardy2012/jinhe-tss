@@ -5,7 +5,7 @@
     <artifactId>tss</artifactId>
     <packaging>pom</packaging>
     <name>TSS</name>
-    <version>1.0.4</version>
+    <version>2.0</version>
     
     <licenses>
 		<license>
@@ -213,7 +213,7 @@
 				    <parallel>methods</parallel>
 				    <threadCount>10</threadCount>
 					 -->
-					<skip>true</skip>
+					<skip>false</skip>
 					<includes> 
 						<include>**/*Test.java </include> 
 					</includes>

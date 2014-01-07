@@ -14,9 +14,6 @@ public class MockIdentityTranslatorFactory extends IdentityTranslatorFactory {
                     return new DemoOperator(standardUserId);
                 }
  
-                public void savePassword(Long userId, String password) {
-    
-                }
             };
     }
 

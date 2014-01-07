@@ -120,16 +120,7 @@ public interface ILoginService {
      * @return
      */
     List<OperatorDTO> getUsersByGroupId(Long groupId);
-	
-    /**
-     * <p>
-     * 保存其他应用用户密码，以明文的形式保存。
-     * </p>
-     * @param userId
-     * @param password
-     */
-    void savePassword(Long userId, String password);
-
+ 
     /**
      * 根据角色的ID 获取拥有此角色的用户
      * 注：需要同时取出“转授”关联起来的RoleUser。

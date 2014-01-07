@@ -192,20 +192,44 @@ public class LDAPDataDao implements IOutDataDao {
                 else {
                     user.setLoginName(dn);
                 }
+                
                 // email
-                user.setEmail(getValueFromAttribute(attrs, fieldNames.get(EAMIL_USER)));
+                String emailName = fieldNames.get(EAMIL_USER);
+                String emailValue;
+                try {
+                	emailValue = getValueFromAttribute(attrs, emailName);
+                } catch(Exception e) {
+                	emailValue = defaultValues.get(emailName);
+                }
+                user.setEmail(emailValue);
                 
                 // sex
-                user.setSex(getValueFromAttribute(attrs, fieldNames.get(SEX_USER)));
+                String sexName = fieldNames.get(SEX_USER);
+                String sexValue;
+                try {
+                	sexValue = getValueFromAttribute(attrs, sexName);
+                } catch(Exception e) {
+                	sexValue = defaultValues.get(sexName);
+                }
+				user.setSex(sexValue);
 
                 // birthday
-                user.setBirthday(DateUtil.parse(getValueFromAttribute(attrs, fieldNames.get(BIRTHDAY_USER))));
+				String birthdayName = fieldNames.get(BIRTHDAY_USER);
+                String birthdayValue;
+                try {
+                	birthdayValue = getValueFromAttribute(attrs, birthdayName);
+                } catch(Exception e) {
+                	birthdayValue = defaultValues.get(birthdayName);
+                }
+				user.setBirthday(DateUtil.parse(birthdayValue));
                     
                 // employeeNo
-                user.setEmployeeNo(getValueFromAttribute(attrs, fieldNames.get(EMPLOYEE_NO_USER)));
+				String employeeNoName = fieldNames.get(EMPLOYEE_NO_USER);
+                user.setEmployeeNo(defaultValues.get(employeeNoName));
                 
                 // authMethod
-                user.setEmployeeNo(getValueFromAttribute(attrs, fieldNames.get(AUTH_METHOD)));
+                String authMethodName = fieldNames.get(AUTH_METHOD);
+                user.setAuthMethod(defaultValues.get(authMethodName));
                 
                 if( user != null ) {
                     items.add(user);
@@ -318,4 +342,3 @@ public class LDAPDataDao implements IOutDataDao {
         return attrString.substring(attrString.indexOf(":") + 2);
     }
 }
-

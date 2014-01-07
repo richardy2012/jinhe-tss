@@ -11,18 +11,9 @@ public interface IdentityTranslator {
      * <p>
      * 根据标准用户Id获取当前系统对应用户相关信息
      * </p>
-     * @param standardUserId    标准系统用户ID
+     * @param standardUserId    TSS平台用户ID
      * @return
      */
     IOperator translate(Long standardUserId);
-
-    /**
-     * <p>
-     * 设置其他异构应用（Domino等）用户的密码
-     * </p>
-     * @param userId
-     * @param password
-     */
-    void savePassword(Long userId, String password);
 
 }

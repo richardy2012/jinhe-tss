@@ -154,13 +154,7 @@ public class LoginService implements ILoginService {
 		
 		return createOperatorDTO(user);
 	}
-
-	public void savePassword(Long userId, String password) {
-		User user = userDao.getEntity(userId);
-		user.setPassword(password);
-		userDao.update(user);
-	}
-    
+ 
     @SuppressWarnings("unchecked")
     public List<OperatorDTO> getUsersByRoleId(Long roleId) {
         String hql = "select distinct u from RoleUser ru, User u" +

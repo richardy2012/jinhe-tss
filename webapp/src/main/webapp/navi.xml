@@ -3,7 +3,7 @@
 	<NaviInfo>
 		<Menus>
             <!-- um -->
-            <MenuItem id="um.1" name="组织用户" href="um/group.html"/>
+            <MenuItem id="um.1" name="用户管理" href="um/group.html"/>
             <MenuItem id="um.2" name="应用资源" href="um/resource.html"/>
             <MenuItem id="um.3" name="角色授权" href="um/role.html"/>
             <MenuItem id="um.4" name="权限转授" href="um/subauth.html"/>

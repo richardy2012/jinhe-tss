@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <rightConfig url_404="/404.htm">
-	<servlet name="/portal/site.htm" right="-1,Admin,JonKing"/>
-	<servlet name="/portal/layout.htm" right="-1,Admin,JonKing"/>
-	<servlet name="/portal/decorator.htm" right="-1,Admin,JonKing"/>
-	<servlet name="/portal/portlet.htm" right="-1,Admin,JonKing"/>
-	<servlet name="/portal/menu.htm" right="-1,Admin,JonKing"/>
-	<servlet name="/portal/publish.htm" right="-1,Admin,JonKing"/>
+	<servlet right="-1,Admin" name="/portal/site.htm" />
+	<servlet right="-1,Admin" name="/portal/layout.htm"/>
+	<servlet right="-1,Admin" name="/portal/decorator.htm"/>
+	<servlet right="-1,Admin" name="/portal/portlet.htm"/>
+	<servlet right="-1,Admin" name="/portal/menu.htm"/>
+	<servlet right="-1,Admin" name="/portal/publish.htm"/>
 	
-	<servlet name="/framework/module/param/param.htm" right="-1,Admin,JonKing"/>
-	<servlet name="/framework/module/log/log.htm" right="-1,Admin,JonKing"/>
-	<servlet name="/framework/module/cache/cache.htm" right="-1,Admin,JonKing"/>
+	<servlet right="-1,Admin" name="/framework/module/param/param.htm"/>
+	<servlet right="-1,Admin" name="/framework/module/log/log.htm"/>
+	<servlet right="-1,Admin" name="/framework/module/cache/cache.htm"/>
 	
 </rightConfig>

@@ -340,18 +340,22 @@ function initNaviBar(curId, relativePath) {
 				var id   = menuItem.getAttribute("id");
 				var href = menuItem.getAttribute("href");
 				var name = menuItem.getAttribute("name");
-
-				if(href == null) {
+				var onclick = menuItem.getAttribute("onclick");
+				
+				if(href == null && onclick == null) {
 					str[str.length] = name;
 					continue;
 				}
 
-				if( false == /^javascript\:/.test(href) ) {
+				if( href && false == /^javascript\:/.test(href) ) {
 					href = relativePath + href;
 				}
+
+				href = " href='" + (href || "#") + "'";
+				onclick = onclick ? " onclick='" + onclick + "'" : "";
 				
 				var cssStyle = (curId == id) ? "naviActive" : "navi";
-				str[str.length] = "<a href=\"" + href + "\" class=\"" + cssStyle + "\">" + name + "</a>";
+				str[str.length] = "<a " + href + " " + onclick + " class='" + cssStyle + "'>" + name + "</a>";
 			}
 			$$("navibar").innerHTML = str.join(" ");
 			$$("navibar").style.display = "inline";
