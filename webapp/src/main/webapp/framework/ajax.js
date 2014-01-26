@@ -560,7 +560,7 @@ function Message_Exception(param, request) {
 	str[str.length] = "description=\"" + param.description + "\"";
 	str[str.length] = "source=\"" + param.source + "\"";
 
-	if(param.type != "0" && request.paramObj.type != "0") {
+	if(param.type != "0" && request.paramObj.type != "0" && param.msg) {
 		alert(param.msg, str.join("\r\n"));
 	}
 

@@ -446,7 +446,7 @@ function getExtendRow(display, obj) {
  */
 function setCellCheckType (node, optionId, value) {
 	var cellIndex = node.getAttribute(optionId + "-img");
-	if (cellIndex == null) return;
+	if (cellIndex == null || $$(cellIndex) == null) return;
 
 	var checkType = $$(cellIndex).firstChild.firstChild;
     checkType.state = value;

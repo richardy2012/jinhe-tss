@@ -172,7 +172,10 @@
 
     function copy() {
         var detailBox = $$("detailBox");
-        window.clipboardData.setData("text", detailBox.value);
+        if (window.clipboardData) {  
+            window.clipboardData.clearData();  
+            window.clipboardData.setData("Text", detailBox.value);  
+        }
     }
 
 		function yes() {
