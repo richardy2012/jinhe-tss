@@ -96,14 +96,15 @@ public abstract class AbstractPool implements Pool {
 	 * @return
 	 */
     protected Cacheable getObjectOnly(Object key) {
-        if (released) {
-            log.info("getObjectOnly 获取不到，原因：缓存池【" + getName() + "】已经被释放，所有缓存项都已经被清空!");
-        }
-        
         Cacheable item = getFree().get(key);
         if( item == null ) {
         	item = getUsing().get(key);
         }
+        
+        if (item == null && released) {
+            log.debug("getObjectOnly 获取不到，原因：缓存池【" + getName() + "】已经被释放，所有缓存项都已经被清空!");
+        }
+        
 		return item; 
     }
 
@@ -218,9 +219,9 @@ public abstract class AbstractPool implements Pool {
         // 判断对象是否存在using池中，是的话将对象从using池中移出，否则抛出异常
 		Cacheable temp = getUsing().remove(key);
 		if( !item.equals(temp) ) {
-            String errorMsg = "试图返回不是using池中对象到free中，返回失败！ " + getName();
+            String errorMsg = "试图返回不是using池中的对象到free中，返回失败！ " + getName() + "【" + item + " --> " + temp + "】";
 			log.error(errorMsg);
-            throw new RuntimeException(errorMsg);
+//            throw new RuntimeException(errorMsg);
         }
 		
         Object value = item.getValue();
@@ -242,7 +243,9 @@ public abstract class AbstractPool implements Pool {
                 
                 //事件监听器将唤醒所有等待中的线程，包括cleaner线程，checkout，remove等操作的等待线程
                 firePoolEvent(PoolEvent.CHECKIN);
-                log.debug(" 缓存项【" + item.getKey() + "】已经被回收（Check in）！");
+                
+                String currentThread = Thread.currentThread().getName();
+        		log.debug(currentThread + " 缓存项【" + item.getKey() + "】已经被回收（Check in）！");
             } 
             catch (Exception e) {        
             	// 如果不能回收则销毁
@@ -325,7 +328,7 @@ public abstract class AbstractPool implements Pool {
     }  
     
     public final float getHitRate() {
-        return (requests == 0) ? 0 : (((float) hits / requests) * 100f);
+        return (requests == 0) ? 0 : Math.round(((float) hits / requests) * 100f);
     }
     
     public Set<Cacheable> listItems() {

@@ -77,6 +77,8 @@ public abstract class OutputRecordsManager {
      */
     public void flush() {      
         final List<Object> temp = bufferedRecords;
+        
+        //从缓存队列中清空
         bufferedRecords = Collections.synchronizedList(new ArrayList<Object>());
         
         excuteTask(temp);

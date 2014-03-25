@@ -236,7 +236,7 @@
         }
         var item4 = {
             label:"删除",
-            callback: function() { delGridRow(URL_DEL_USER); },
+            callback: function() { delelteUser(); },
             icon:ICON + "del.gif",
             visible:function() { return getUserOperation("2"); }
         }
@@ -252,6 +252,23 @@
         $$("grid").onClickRow = function() {
             $$("grid").contextmenu.show(event.clientX, event.clientY);
         }   
+    }
+
+    function delelteUser() {
+        if( !confirm("您确定要删除该行记录吗？") ) return;
+        
+        var grid = $G("grid");
+        var userID = grid.getRowAttributeValue("id");
+        var groupId = grid.getRowAttributeValue("groupId");
+        if( userID ) {
+            Ajax({
+                url : URL_DEL_USER + groupId + "/" + userID,
+                method : "DELETE",
+                onsuccess : function() { 
+                    grid.deleteSelectedRow();
+                }
+            }); 
+        }
     }
  
     function loadInitData(defaultOpenId) {

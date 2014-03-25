@@ -87,8 +87,9 @@ public class ReusablePool extends ObjectPool {
 			firePoolEvent(PoolEvent.CHECKOUT);
 		}
 		
-		log.debug("Check out end. result: " + (item == null ? " 无对象返回" : item.getKey()) 
-		        + ".【" + getName() + " 的命中率 = " + getHitRate() + "%】");
+		String currentThread = Thread.currentThread().getName();
+		log.debug(currentThread + " Check out : 【" + (item == null ? " 无对象返回" : item.getKey()) 
+		        + "】（" + getName() + ", 命中率 =" + getHitRate() + "%）");
 		return item;
 	}
 }

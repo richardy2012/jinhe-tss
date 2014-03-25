@@ -27,7 +27,7 @@ import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeNode;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
-import com.jinhe.tss.portal.engine.FreeMarkerSupportAction;
+import com.jinhe.tss.portal.engine.FMSupportAction;
 import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.helper.ComponentHelper;
 import com.jinhe.tss.portal.service.IComponentService;
@@ -42,7 +42,7 @@ import freemarker.template.TemplateException;
 
 @Controller
 @RequestMapping("/auth/component")
-public class ComponentAction extends FreeMarkerSupportAction {
+public class ComponentAction extends FMSupportAction {
  
     @Autowired private IComponentService service;
 

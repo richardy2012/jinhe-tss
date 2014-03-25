@@ -129,4 +129,8 @@ public class TimeWrapper implements Cacheable, Serializable {
 	public int hashCode() {
 		return key.hashCode();
 	}
+	
+	public String toString() {
+		return this.getKey().toString();
+	}
 }

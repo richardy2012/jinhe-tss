@@ -27,7 +27,7 @@ import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.portal.PortalConstants;
-import com.jinhe.tss.portal.engine.FreeMarkerSupportAction;
+import com.jinhe.tss.portal.engine.FMSupportAction;
 import com.jinhe.tss.portal.engine.HTMLGenerator;
 import com.jinhe.tss.portal.engine.model.PortalNode;
 import com.jinhe.tss.portal.entity.ReleaseConfig;
@@ -41,7 +41,7 @@ import com.jinhe.tss.util.XMLDocUtil;
 
 @Controller
 @RequestMapping("/auth/portal")
-public class PortalAction extends FreeMarkerSupportAction {
+public class PortalAction extends FMSupportAction {
     
     @Autowired private IPortalService service;
 

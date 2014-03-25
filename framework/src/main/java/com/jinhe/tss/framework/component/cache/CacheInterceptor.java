@@ -17,7 +17,6 @@ public class CacheInterceptor implements MethodInterceptor {
     protected Logger log = Logger.getLogger(this.getClass());
 
     public Object invoke(MethodInvocation invocation) throws Throwable {
-    	Object serviceObj = invocation.getThis();     /* 获取目标对象*/
         Method targetMethod = invocation.getMethod(); /* 获取目标方法 */
         Object[] args = invocation.getArguments();    /* 获取目标方法的参数 */
         
@@ -29,7 +28,8 @@ public class CacheInterceptor implements MethodInterceptor {
 		CacheLife life = annotation.cyclelife();
 		Pool dataCache = JCache.getInstance().getPool(life.toString());
 		
-		String key = serviceObj.getClass().getName() + "." + targetMethod.getName();
+		Class<?> declaringClass = targetMethod.getDeclaringClass();
+		String key = declaringClass.getName() + "." + targetMethod.getName();
         key += "(";
         if(args != null && args.length > 0) {
         	int index = 0;

@@ -1303,7 +1303,7 @@ function XmlReader(text) {
 		this.xmlDom = parser.parseFromString(text, "text/xml"); 
     } 
 
-	this.documentElement = this.xmlDom.documentElement;
+	this.documentElement = this.xmlDom.documentElement || this.xmlDom;
 }
 
 XmlReader.prototype.loadXml = function(text) {

@@ -183,7 +183,7 @@ public class GroupAction extends ProgressActionSupport {
     /**
      * 删除用户组
      */
-    @RequestMapping(value = "/{id}/", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public void deleteGroup(HttpServletResponse response, @PathVariable("id") Long id) {
         service.deleteGroup(id);     
         printSuccessMessage();
