@@ -39,28 +39,25 @@ public class ReusablePool extends ObjectPool {
 	@Override
 	protected Cacheable checkOut() {
 		Cacheable item = null;
-		if (getFree().size() > 0) {
-			boolean valid;
-			// 循环取，直到取出一个正确的或者free List为空为止
-			do {
-				item = remove();
-				if ( valid = customizer.isValid(item) ) {
-					break;
-				} 
-				else {
-					customizer.destroy(item);
-					log.info("将验证没通过的缓存项【" + item + "】销毁");
-				}
-			} while (getFree().size() > 0);
-
-			if ( !valid ) {
+		
+		// 循环取，直到取出一个正确的或者free List为空为止
+		while(getFree().size() > 0) {
+			item = remove();
+			if ( customizer.isValid(item) ) {
+				break;
+			} 
+			else {
+				customizer.destroy(item);
 				item = null;
+				log.info("将验证没通过的缓存项【" + item + "】销毁");
 			}
 		}
+		
 		boolean isHited = (item != null); // 如果对象是从池中取出的，则命中率 hit＋＋
+		logDebug(isHited ? "命中：" + item + "!" : "没有命中！");
 
 		// 如果free池中取不到，如果池中缓存项个数还没达到池的最大值，则新建一个
-		if (item == null) {
+		if ( !isHited ) {
 			int maxSize = strategy.poolSize;
 			if (size() < maxSize || maxSize == 0) {
 				item = customizer.create();
@@ -87,9 +84,9 @@ public class ReusablePool extends ObjectPool {
 			firePoolEvent(PoolEvent.CHECKOUT);
 		}
 		
-		String currentThread = Thread.currentThread().getName();
-		log.debug(currentThread + " Check out : 【" + (item == null ? " 无对象返回" : item.getKey()) 
-		        + "】（" + getName() + ", 命中率 =" + getHitRate() + "%）");
+		logDebug(" check out item : 【" + (item == null ? " 无对象返回" : item.getKey()) 
+		        + "】（" + getName() + ", 命中率 =" + getHitRate() + "%）" + this);
+		
 		return item;
 	}
 }

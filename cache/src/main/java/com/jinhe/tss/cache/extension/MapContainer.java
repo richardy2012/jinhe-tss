@@ -35,50 +35,40 @@ public class MapContainer extends AbstractContainer {
 	}
 
 	public Cacheable get(Object key) {
-		Cacheable o = null;
 		synchronized (map) {
-			o = (Cacheable) map.get(key);
+			return (Cacheable) map.get(key);
 		}
-		return o;
 	}
 
 	public Cacheable put(Object key, Cacheable value) {
 		synchronized (map) {
 			map.put(key, value);
+			return value;
 		}
-		return value;
 	}
 
 	public Cacheable remove(Object key) {
-		Cacheable o = null;
 		synchronized (map) {
-			o = (Cacheable) map.remove(key);
+			return (Cacheable) map.remove(key);
 		}
-		return o;
 	}
 
 	public Set<Object> keySet() {
-	    Set<Object> keySet;
 	    synchronized (map) {
-	        keySet = map.keySet();
+	    	return map.keySet();
 	    }
-        return keySet;
 	}
 
 	public Set<Cacheable> valueSet() {
-        HashSet<Cacheable> valueSet;
         synchronized (map) {
-            valueSet = new HashSet<Cacheable>(map.values());
+        	return new HashSet<Cacheable>(map.values());
         }
-        return valueSet;
     }
 	
 	public Cacheable getByAccessMethod(int accessMethod) {
-	    Cacheable item;
 	    synchronized (map) {
-	        item = super.getByAccessMethod(accessMethod);
+	    	return super.getByAccessMethod(accessMethod);
         }
-        return item;
 	}
 	
     public void clear() {
@@ -88,10 +78,8 @@ public class MapContainer extends AbstractContainer {
     }
 
     public int size() {
-        int size = 0;
         synchronized (map) {
-            size = map.size();
+        	return map.size();
         }
-        return size;
     }
 }

@@ -19,7 +19,23 @@ import org.apache.log4j.Logger;
  * 对象池抽象基类，定义通用的方法。
  */
 public abstract class AbstractPool implements Pool {
+	
     protected Logger log = Logger.getLogger(this.getClass());
+    
+    protected void logDebug(String msg) {
+    	String currentThread = Thread.currentThread().getName();
+    	log.debug(":" + currentThread + ":" + msg);
+    }
+    
+    protected void logInfo(String msg) {
+    	String currentThread = Thread.currentThread().getName();
+    	log.info(":" + currentThread + ":" + msg);
+    }
+    
+    protected void logError(String msg) {
+    	String currentThread = Thread.currentThread().getName();
+    	log.error(":" + currentThread + ":" + msg);
+    }
 
     // 对象池属性
     
@@ -56,14 +72,14 @@ public abstract class AbstractPool implements Pool {
 	public abstract Container getUsing();
 	
 	public String toString() {
-		String display = "缓存池【" + this.getName() + "】的当前快照：";
+		String display = "\n缓存池【" + this.getName() + "】的当前快照：";
 		if( getFree() != null ) {
             display += getFree();
         }
 		if( getUsing() != null ) {
 		    display += getUsing();
 		}
-        return display;
+        return display + "\n";
 	}
  
     public Cacheable getObject(Object key) {
@@ -202,7 +218,7 @@ public abstract class AbstractPool implements Pool {
         }
         
         if(item == null) {
-            String errorMsg = "缓存池【" + getName() + "】已满，且各缓存项都处于使用状态，需要等待。可考虑重新设置缓存策略！";
+            String errorMsg = "缓存池【" + getName() + "】已满，且各缓存项都处于使用状态，需要等待。可考虑修改缓存策略！";
             log.error(errorMsg);
             throw new RuntimeException(errorMsg);
         }
@@ -220,8 +236,7 @@ public abstract class AbstractPool implements Pool {
 		Cacheable temp = getUsing().remove(key);
 		if( !item.equals(temp) ) {
             String errorMsg = "试图返回不是using池中的对象到free中，返回失败！ " + getName() + "【" + item + " --> " + temp + "】";
-			log.error(errorMsg);
-//            throw new RuntimeException(errorMsg);
+            logError(errorMsg);
         }
 		
         Object value = item.getValue();
@@ -244,8 +259,7 @@ public abstract class AbstractPool implements Pool {
                 //事件监听器将唤醒所有等待中的线程，包括cleaner线程，checkout，remove等操作的等待线程
                 firePoolEvent(PoolEvent.CHECKIN);
                 
-                String currentThread = Thread.currentThread().getName();
-        		log.debug(currentThread + " 缓存项【" + item.getKey() + "】已经被回收（Check in）！");
+                logDebug(" 缓存项【" + item.getKey() + "】已经被回收（Check in）！");
             } 
             catch (Exception e) {        
             	// 如果不能回收则销毁
@@ -264,7 +278,7 @@ public abstract class AbstractPool implements Pool {
         synchronized(this) {
             while (item == null  &&  (System.currentTimeMillis() - time < timeout)) {
                 try {
-                    log.debug("池【" + this.getName() + "】Free容器中没有可用的项......等待【" + timeout + "】ms");
+                	logDebug("【" + this.getName() + "】的free容器中没有可用的项......等待【" + timeout + "】ms");
                     wait(timeout);
                     item = checkOut();
                 } 
@@ -282,7 +296,7 @@ public abstract class AbstractPool implements Pool {
     }
     
     public boolean purge() {
-        log.debug("开始清除 【" + this.getName() + "】 池中过期的缓存项 ....... ");
+        log.debug("开始清除 【" + this.getName() + "】 中过期的缓存项 ....... ");
        
         int count = 0;
         for (Cacheable item : getFree().valueSet()) {
@@ -294,7 +308,7 @@ public abstract class AbstractPool implements Pool {
         }
         
         if(count > 0) {
-        	log.debug("共清除了【" + this.getName() + "】 池中【" + count + "】个缓存对象。");
+        	log.debug("共清除了【" + this.getName() + "】 中【" + count + "】个缓存对象。");
         }
         log.debug("清除结束");
         

@@ -25,10 +25,16 @@ public class ThreadPoolCustomizer extends DefaultCustomizer {
     protected Logger log = Logger.getLogger(this.getClass());
   
     public Cacheable create() {
+    	String currentThread = Thread.currentThread().getName();
+    	log.debug(":" + currentThread + ": 开始新建一个工作线程。");
+    	
         IThreadPool tpool = JCache.getInstance().getThreadPool();
         Thread thread = tpool.createWorkThread();
         thread.start();
-        return new TimeWrapper(thread.getName(), thread, strategy.cyclelife);
+        TimeWrapper newThread = new TimeWrapper(thread.getName(), thread, strategy.cyclelife);
+        
+        log.debug(":" + currentThread + ": (" + newThread + ")创建成功！");
+		return newThread;
     }
 
     public boolean isValid(Cacheable o) {
