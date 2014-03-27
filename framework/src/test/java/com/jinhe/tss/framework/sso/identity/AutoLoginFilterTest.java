@@ -150,7 +150,7 @@ public class AutoLoginFilterTest {
         Context.initRequestContext(request);
         
         MockOnlineUserManagerFactory.init();
-        MockIdentityTranslatorFactory.init();
+        MockIdentityGetterFactory.init();
         
         OnlineUserManagerFactory.getManager().register(token, "appCode", "sessionId", new Long(3), null);
         

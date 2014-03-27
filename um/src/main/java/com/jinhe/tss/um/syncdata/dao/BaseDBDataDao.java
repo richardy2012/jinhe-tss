@@ -12,7 +12,6 @@ import java.util.Map;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.um.helper.dto.GroupDTO;
 import com.jinhe.tss.um.helper.dto.UserDTO;
-import com.jinhe.tss.um.syncdata.SyncDataHelper;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
  
@@ -41,21 +40,7 @@ public abstract class BaseDBDataDao implements IOutDataDao {
         Connection conn = getConnection(paramsMap);
         return getDtosBySQL(conn, sql, userDtoPropertyNames, UserDTO.class);
     }
-    
-    public UserDTO getUser(Map<String, String> paramsMap, String fromUserId){
-        String sql =  paramsMap.get(SyncDataHelper.SINGLE_USER);
-        sql = sql.replaceAll(":userId", fromUserId);
-
-        Connection conn = getConnection(paramsMap);
-        List<?> list = getDtosBySQL(conn, sql, userDtoPropertyNames, UserDTO.class);
-        
-        if( EasyUtils.isNullOrEmpty(list) ) {
-            return null;
-        }
-        
-        return (UserDTO)list.get(0);
-    }
-    
+ 
     protected abstract Connection getConnection(Map<String, String> paramsMap);
     
     protected List<?> getDtosBySQL(Connection conn, String sql, String[] dtoPropertyNames, Class<?> clazz) {

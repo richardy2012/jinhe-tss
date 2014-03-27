@@ -3,8 +3,6 @@ package com.jinhe.tss.um.syncdata.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.jinhe.tss.um.helper.dto.UserDTO;
-
 /** 
  * 从外来库同步数据
  */
@@ -28,12 +26,5 @@ public interface IOutDataDao {
      */
     List<?> getOtherUsers(Map<String, String> paramsMap, String sql, String groupId, Object...otherParams);
 
-    /**
-     * 获取单个用户信息
-     * @param param
-     * @param fromUserId
-     * @return
-     */
-    UserDTO getUser(Map<String, String> paramsMap, String fromUserId);
 }
 

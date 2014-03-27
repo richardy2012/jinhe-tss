@@ -12,9 +12,21 @@ public class EasyUtilsTest {
 	@Test
 	public void test() {
 		
-		Assert.assertTrue(0d == EasyUtils.convertObject2Double("Jon"));
-		Assert.assertTrue(0 == EasyUtils.convertObject2Integer("Jon"));
-		Assert.assertTrue(0l == EasyUtils.convertObject2Long("Jon"));
+		try{
+			EasyUtils.convertObject2Double("Jon");
+		} catch ( Exception e) {
+			Assert.assertTrue(e.getMessage(), true);
+		}
+		try{
+			EasyUtils.convertObject2Integer("Jon");
+		} catch ( Exception e) {
+			Assert.assertTrue(e.getMessage(), true);
+		}
+		try{
+			EasyUtils.convertObject2Long("Jon");
+		} catch ( Exception e) {
+			Assert.assertTrue(e.getMessage(), true);
+		}
 		
 		Assert.assertTrue(0d == EasyUtils.convertObject2Double(null));
 		Assert.assertTrue(0 == EasyUtils.convertObject2Integer(null));
@@ -32,6 +44,7 @@ public class EasyUtilsTest {
 
 		String s = "Jinpujun|English|name|is|JonKinga";
 		Assert.assertEquals(5, EasyUtils.split(s, "|").length);
+		Assert.assertNull( EasyUtils.split(null, "|") );
 
 		String encodeHex = EasyUtils.encodeHex(s.getBytes());
 		Assert.assertEquals(s, new String(EasyUtils.decodeHex(encodeHex)));

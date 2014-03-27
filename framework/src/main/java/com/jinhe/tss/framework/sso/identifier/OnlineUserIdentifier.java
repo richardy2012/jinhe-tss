@@ -4,8 +4,8 @@ import com.jinhe.tss.framework.exception.UserIdentificationException;
 import com.jinhe.tss.framework.sso.IOperator;
 import com.jinhe.tss.framework.sso.IUserIdentifier;
 import com.jinhe.tss.framework.sso.IdentityCard;
-import com.jinhe.tss.framework.sso.IdentityTranslator;
-import com.jinhe.tss.framework.sso.IdentityTranslatorFactory;
+import com.jinhe.tss.framework.sso.IdentityGetter;
+import com.jinhe.tss.framework.sso.IdentityGetterFactory;
 import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.online.IOnlineUserManager;
@@ -27,12 +27,13 @@ public class OnlineUserIdentifier implements IUserIdentifier {
         //如果在线，则说明令牌合法，获取用户当前系统相关信息并且重新注册到在线用户库（可能跟原先在线的应用不同,appCode不同）
         IOnlineUserManager onlineUserManager = OnlineUserManagerFactory.getManager();
 		if (onlineUserManager.isOnline(token)) {
-            IdentityTranslator translator = IdentityTranslatorFactory.getTranslator();
-            IOperator operator = translator.translate(TokenUtil.getUserIdFromToken(token));
-            
-            String appCode = Context.getApplicationContext().getCurrentAppCode();
+			String appCode  = Context.getApplicationContext().getCurrentAppCode();
             String sessionId = Context.getRequestContext().getSessionId();
             
+			Long userId = TokenUtil.getUserIdFromToken(token);
+			IdentityGetter translator = IdentityGetterFactory.getTranslator();
+			IOperator operator = translator.getOperator(userId);
+			
             onlineUserManager.register(token, appCode, sessionId, operator.getId(), operator.getUserName());
             return new IdentityCard(token, operator);
         }

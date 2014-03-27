@@ -65,20 +65,6 @@ public interface ILoginService {
      *      登陆用户拥有的所有权限 List(roleId)
      */
     List<Long> getRoleIdsByUserId(Long userId);
-  
-    /**
-     * <p>
-     * 用户之间的转换
-     * </p>
-     * @param userId
-     * 			用户ID
-     * @param applicationId
-     * 			应用系统ID
-     * @return
-     * 		存在:返回用户DTO
-     * 		不存在:返回null(未找到对应的用户)
-     */
-    OperatorDTO translateUser(Long userId, String applicationId);
     
 	/**
 	 * <p>
@@ -86,7 +72,6 @@ public interface ILoginService {
 	 * 不包括主用户组(-2)这个节点
 	 * </p>
 	 * @param userId
-     * 			用户ID
 	 * @return
 	 * 		Object obj[0]=groupId,obj[1]=groupName
 	 */

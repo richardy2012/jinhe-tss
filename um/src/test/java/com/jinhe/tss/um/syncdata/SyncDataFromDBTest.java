@@ -175,6 +175,10 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
 		Assert.assertEquals("1", user1.getSex());
 		Assert.assertEquals("jinpujun@gmail.com", user1.getEmail());
 		
+		// 再增加同步一次，相同账号用户更更新
+		((Progressable)syncService).execute(datasMap, progress );
+		userList = groupService.getUsersByGroupId(mainGroup.getId()); 
+		Assert.assertTrue(userList.size() == 1);
 	}
 
 //	@Test

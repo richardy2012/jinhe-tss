@@ -35,7 +35,7 @@ public class FileAppServerStorer implements IAppServerStorer {
 	private synchronized void init() {
 		Document doc = getConfigDocument();
 		
-		List<Element> list = XMLDocUtil.selectNodes(doc,"/servers/server");
+		List<Element> list = XMLDocUtil.selectNodes(doc, "/servers/server");
 		for (Element appServerNode : list) {
 			 AppServer bean = new AppServer();
 		     BeanUtil.setDataToBean(bean, XMLDocUtil.dataNode2Map(appServerNode));

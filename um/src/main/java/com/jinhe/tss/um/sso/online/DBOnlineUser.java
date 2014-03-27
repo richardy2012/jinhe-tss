@@ -15,7 +15,6 @@ import com.jinhe.tss.framework.sso.online.OnlineUser;
 
 /** 
  * <p> 在线用户信息 </p> 
- * 
  */
 @Entity
 @Table(name="online_user")
@@ -30,39 +29,16 @@ public class DBOnlineUser extends OnlineUser implements IEntity{
     private String clientIp;
     private String userName;
     
-    public DBOnlineUser(){
-        
-    }
-    
+    public DBOnlineUser() { }
+ 
     public DBOnlineUser(Long userId, String sessionId, String appCode, String token, String userName) {
         super(userId, appCode, sessionId, token);
         
-        this.loginTime = new Date();
-        this.clientIp = Environment.getClientIp();
-        this.userName = userName;
+        this.setLoginTime( new Date() );
+        this.setClientIp( Environment.getClientIp() );
+        this.setUserName( userName );
     }
  
-    
-    public int hashCode() {
-        int hash = 1;
-        hash = hash * 31 + this.id.hashCode();
-        hash = hash * 31 + this.userId.hashCode();
-        hash = hash * 31 + this.token.hashCode();
-
-        return hash;
-    }
-
-    public boolean equals(Object obj) {
-        if(obj == null){
-            return false;
-        }
-        if (!(obj instanceof DBOnlineUser)) {
-            return false;
-        }
-        DBOnlineUser temp = (DBOnlineUser) obj;
-        return temp.id == null ? this.id == null : temp.id.equals(this.id);
-    }
-
     public Long getId() {
         return id;
     }
@@ -74,25 +50,24 @@ public class DBOnlineUser extends OnlineUser implements IEntity{
     public Date getLoginTime() {
         return loginTime;
     }
-
-    public void setLoginTime(Date loginTime) {
-        this.loginTime = loginTime;
-    }
-
+ 
     public String getClientIp() {
         return clientIp;
     }
 
-    public void setClientIp(String clientIp) {
-        this.clientIp = clientIp;
-    }
+	public void setLoginTime(Date loginTime) {
+		this.loginTime = loginTime;
+	}
 
-    public String getUserName() {
-        return userName;
-    }
+	public void setClientIp(String clientIp) {
+		this.clientIp = clientIp;
+	}
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
- 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 }

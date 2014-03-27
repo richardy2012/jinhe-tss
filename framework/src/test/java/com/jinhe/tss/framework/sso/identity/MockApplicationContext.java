@@ -30,19 +30,16 @@ public class MockApplicationContext extends ApplicationContext {
         AppServer server1 = new AppServer();
         server1.setCode("TSS");
         server1.setName("TSS");
-        server1.setUserDepositoryCode("tss");
         storer.putAppServer(server1.getCode(), server1);
         
         AppServer server2 = new AppServer();
         server2.setCode("CMS");
         server2.setName("CMS");
-        server2.setUserDepositoryCode("tss");
         storer.putAppServer(server2.getCode(), server2);
         
         AppServer server3 = new AppServer();
         server3.setCode("Domino");
         server3.setName("Domino");
-        server3.setUserDepositoryCode("domino");
         storer.putAppServer(server3.getCode(), server3);
         
         return new MockApplicationContext(storer, server1.getCode());

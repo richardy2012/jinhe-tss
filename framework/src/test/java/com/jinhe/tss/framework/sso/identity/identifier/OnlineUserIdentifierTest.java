@@ -25,7 +25,7 @@ import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.sso.identifier.OnlineUserIdentifier;
 import com.jinhe.tss.framework.sso.identity.MockAppServerStorer;
 import com.jinhe.tss.framework.sso.identity.MockApplicationContext;
-import com.jinhe.tss.framework.sso.identity.MockIdentityTranslatorFactory;
+import com.jinhe.tss.framework.sso.identity.MockIdentityGetterFactory;
 import com.jinhe.tss.framework.sso.identity.MockOnlineUserManagerFactory;
 import com.jinhe.tss.framework.sso.online.OnlineUserManagerFactory;
  
@@ -37,13 +37,12 @@ public class OnlineUserIdentifierTest {
     @Before
     public void setUp() throws Exception {
         MockOnlineUserManagerFactory.init();
-        MockIdentityTranslatorFactory.init();
+        MockIdentityGetterFactory.init();
         
         MockAppServerStorer storer = new MockAppServerStorer();
         AppServer server = new AppServer();
         server.setCode("Core");
         server.setName("Core");
-        server.setUserDepositoryCode("tss");
         storer.putAppServer("Core", server);
         
         Context.initApplicationContext(new MockApplicationContext(storer, "Core"));

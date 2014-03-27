@@ -97,7 +97,6 @@ public class HttpClientHelper {
         
         HttpClient client = this.getHttpClient();
         client.setState(initialState);
-        client.getParams().setParameter("http.protocol.single-cookie-header", targetAppServer.isSingleCookieHeader());
         return client;
     }
 

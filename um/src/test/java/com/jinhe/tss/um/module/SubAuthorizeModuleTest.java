@@ -107,6 +107,16 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         login(mainUser.getId(), mainUser.getLoginName()); // 更好登录用户，看其权限
         printUserRoleMapping(mainUser.getId(), 2); // 匿名角色 + 转授所得角色（转授策略重新启用）
         
+        // 测试用户(组)失去某角色后，转授出去的是否也被顺利收回
+        String role2UserIds = UMConstants.ADMIN_USER_ID + "," + mainUser.getId();
+        String role2GroupIds = "" + mainGroup.getId();
+        roleService.saveRole2UserAndRole2Group(role, role2UserIds, role2GroupIds);
+
+        roleService.saveRole2UserAndRole2Group(role, "", role2GroupIds); // 先从用户上去掉该角色，此时用户通过继承组的角色继续拥有该角色
+        roleService.saveRole2UserAndRole2Group(role, role2UserIds, "");  // 从用户组上去掉该角色，单独授回用户该角色
+        roleService.saveRole2UserAndRole2Group(role, "", "");
+        
+        // 测试删除、策略树读取
         action.getSubauth2Tree(response);
         
         action.delete(response, strategyId);
@@ -118,6 +128,8 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         printUserRoleMapping(mainUser.getId(), 1); // 匿名角色 （转授策略删除了）
         
         action.getSubauth2Tree(response);
+        
+        
     }
     
     protected void printUserRoleMapping(Long userId, int count) {

@@ -65,7 +65,7 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
     
     /**
      * 判断用户输入的密码是否和OA密码的一致，如果是，则将用户的平台里的密码也设置为该密码。
-     * 注 ： 需要在相应的应用里（UMS、PMS、CMS）的系统参数管理模块里增加 oa.ldap.url 参数。
+     * 注 ： 需要在相应的系统参数管理模块里增加 oa.ldap.url 参数。
      * 
      * @param userId
      * @param password
@@ -75,7 +75,7 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
         log.debug("用户登陆时密码在主用户组中验证不通过，转向LDAP进行再次验证。");
         
         // 取主用户的对应用户    
-        IPWDOperator oaUser = service.translateUser(userId, "OA");
+        IPWDOperator oaUser = service.getOperatorDTOByID(userId);
         String oaLdapUrl = ParamConfig.getAttribute("oa.ldap.url");
         
         // 初始化参数设置

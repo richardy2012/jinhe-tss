@@ -23,7 +23,6 @@ public class FileAppServerStorerTest {
         assertEquals("TSS", server.getName());
         assertEquals("/tss", server.getPath());
         assertEquals("JSESSIONID", server.getSessionIdName());
-        assertEquals("tss", server.getUserDepositoryCode());
     }
  
     @Test

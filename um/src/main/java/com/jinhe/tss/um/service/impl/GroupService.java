@@ -14,7 +14,6 @@ import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupDao;
-import com.jinhe.tss.um.dao.IGroupUserDao;
 import com.jinhe.tss.um.dao.IRoleDao;
 import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.GroupUser;
@@ -29,7 +28,6 @@ public class GroupService implements IGroupService {
 
 	@Autowired private IGroupDao groupDao;
 	@Autowired private IRoleDao  roleDao;
-	@Autowired private IGroupUserDao groupUserDao;
 	@Autowired private ResourcePermission resourcePermission;
 
     public Group getGroupById(Long id) {
@@ -118,7 +116,7 @@ public class GroupService implements IGroupService {
                 Long userId = Long.valueOf(temp);
                 if (historyMap.remove(userId) == null) { 
                     GroupUser group2User = new GroupUser(userId, groupId);
-                    groupUserDao.create(group2User);
+                    groupDao.createObject(group2User);
                 } 
             }
         }

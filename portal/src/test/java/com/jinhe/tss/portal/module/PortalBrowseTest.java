@@ -53,6 +53,8 @@ public class PortalBrowseTest extends TxSupportTest4Portal {
          
          portalId = root.getPortalId();
          
+         defaultTheme = (Theme) portalService.getThemesByPortal(portalId).get(0);
+         
          // 新建页面、版面
          page1 = createPageOrSection(root, "页面一", "page1", Structure.TYPE_PAGE);
          page2 = createPageOrSection(root, "页面二", "page2", Structure.TYPE_PAGE);

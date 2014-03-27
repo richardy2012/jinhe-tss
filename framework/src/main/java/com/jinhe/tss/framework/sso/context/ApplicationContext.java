@@ -33,27 +33,6 @@ public class ApplicationContext {
 
     /**
      * <p>
-     * 获取当前系统对应用户库编号
-     * </p>
-     * @return
-     */
-    public String getUserDepositoryCode() {
-        return getUserDepositoryCodeByAppCode(getCurrentAppCode());
-    }
-
-    /**
-     * <p>
-     * 根据应用系统编号获取对应用户库编号
-     * </p>
-     * @param appCode
-     * @return
-     */
-    public String getUserDepositoryCodeByAppCode(String appCode) {
-        return getAppServer(appCode).getUserDepositoryCode();
-    }
-
-    /**
-     * <p>
      * 根据应用系统编号获取应用系统配置信息
      * </p>
      * @param appCode

@@ -1,6 +1,5 @@
 package com.jinhe.tss.um.dao.impl;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -23,10 +22,9 @@ public class RoleDao extends TreeSupportDao<Role> implements IRoleDao {
 	}
     
     public void removeRole(Role role){
-        List<?> roles = getChildrenById(role.getId());
-        for(Iterator<?> it = roles.iterator(); it.hasNext(); ){
-            Role temp = (Role) it.next();
-            if(ParamConstants.FALSE.equals(role.getIsGroup())){
+        List<Role> roles = getChildrenById(role.getId());
+        for( Role temp : roles ){
+            if(ParamConstants.FALSE.equals(temp.getIsGroup())){
                 Long roleId = temp.getId();
                 deleteAll(getEntities("from RoleUser  ru where ru.roleId = ? ", roleId));
                 deleteAll(getEntities("from RoleGroup rg where rg.roleId = ? ", roleId));
@@ -107,27 +105,33 @@ public class RoleDao extends TreeSupportDao<Role> implements IRoleDao {
     public void deleteGroupSubAuthorizeInfo(Long groupId, Long roleId){
         String hql = "select distinct userId from GroupUser where groupId = ? ";
         List<?> userIds = getEntities( hql, groupId );
-        
-        if( userIds.isEmpty() ) return;
-        
-        for( Object userId : userIds){
-            /* 获取用户非转授所得的角色（用户自身拥有(非转授)的角色），如果目标角色不再其列，则删除该角色 */
-            hql = "select r.id from RoleUser ru, Role r where ru.userId = ? and ru.roleId = r.id and ru.strategyId is null";
-            if( !getEntities( hql, userId ).contains(roleId) ) {
-            	deleteUserSubAuthorizeInfo((Long) userId, roleId);
+        for( Object userId : userIds ) {
+            /* 判断用户是否直接被授予该角色（非继承自组，也非转授所得，直接角色关联用户）。
+             * 是的话即使组不再拥有该角色，用户继续单独拥有该角色，则无需删除转授； 否则需删除该角色的转授信息 */
+            hql = "from RoleUser ru where ru.userId = ? and ru.roleId = ? and ru.strategyId is null";
+            if( getEntities( hql, userId, roleId ).isEmpty() ) { // 为空说明用户没有被直接授予该角色
+            	deleteSubAuthorizeInfo((Long) userId, roleId);
             }
+        }
+    }
+    
+    private void deleteSubAuthorizeInfo(Long userId, Long roleId) {
+    	/* 根据创建者获取转授策略ID集合 */
+    	List<?> strategyIds = getEntities( "select id from SubAuthorize where creatorId = ? ", userId ); 
+        for(Object strategyId : strategyIds) {
+            /* 删除转授给用户或用户组的角色关系 */
+            executeHQL( "delete RoleUser o where o.roleId = ? and o.strategyId = ?", roleId, strategyId ); 
+            executeHQL( "delete RoleGroup o where o.roleId = ? and o.strategyId = ?", roleId, strategyId ); 
         }
     }
 
     // 当用户不再拥有的某个角色，则收回这个用户转授出去的授权信息 
-    public void deleteUserSubAuthorizeInfo(Long userId, Long roleId){ 
-    	/* 根据创建者获取转授策略ID集合 */
-    	List<?> strategyIds = getEntities( "select id from SubAuthorize where creatorId = ? ", userId ); 
-        for(Iterator<?> it = strategyIds.iterator(); it.hasNext();){
-            Long strategyId = (Long)it.next();
-           
-            /* 删除角色用户关系 */
-            executeHQL( "delete RoleUser r where r.roleId = ? and r.strategyId = ?", roleId, strategyId ); 
-        }
+    public void deleteUserSubAuthorizeInfo(Long userId, Long roleId) { 
+    	// 判断用户所在用户组是否还拥有该角色，如果是，则无需删除转授。
+    	String hql = " select rg from GroupUser gu, RoleGroup rg " +
+    			" where gu.groupId = rg.groupId and gu.userId = ? and rg.roleId = ? and rg.strategyId is null";
+    	if( getEntities( hql, userId, roleId ).isEmpty() ) {
+    		deleteSubAuthorizeInfo(userId, roleId);
+    	}
     }
 }

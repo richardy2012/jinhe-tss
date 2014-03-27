@@ -56,18 +56,6 @@ public class LDAPDataDao implements IOutDataDao {
     private static final String OU_TAG  = "OU=".toLowerCase();
     private static final String SN_TAG  = "SN".toLowerCase();
 
-    /*  fromUserId类似：CN=李文斌,OU=行政政法处,OU=省厅,O=GZCZ   */
-    public UserDTO getUser(Map<String, String> paramsMap, String fromUserId){
-        List<?> list = getOtherUsers( paramsMap,  paramsMap.get(SyncDataHelper.SINGLE_USER), 
-        		fromUserId.substring(fromUserId.indexOf(",") + 1),
-                fromUserId.substring(0, fromUserId.indexOf(",")));
-        
-        if(!EasyUtils.isNullOrEmpty(list)) {
-            return (UserDTO)list.get(0);
-        }
-        return null;
-    }
-    
     private DirContext getConnection(Map<String, String> map){
     	// 初始化参数设置
         Hashtable<String, String>  env = new Hashtable<String, String> ();

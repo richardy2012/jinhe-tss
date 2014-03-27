@@ -18,7 +18,6 @@ import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupDao;
-import com.jinhe.tss.um.dao.IGroupUserDao;
 import com.jinhe.tss.um.dao.IRoleDao;
 import com.jinhe.tss.um.dao.IUserDao;
 import com.jinhe.tss.um.entity.Group;
@@ -38,7 +37,6 @@ public class UserService implements IUserService{
 	@Autowired private IUserDao  userDao;
 	@Autowired private IRoleDao  roleDao;
 	@Autowired private IGroupDao groupDao;
-	@Autowired private IGroupUserDao groupUserDao;
 	@Autowired private IGroupService groupService;
 
 	public void deleteUser(Long groupId, Long userId) {
@@ -48,7 +46,7 @@ public class UserService implements IUserService{
         
         Group group = groupDao.getEntity(groupId);
         if(Group.ASSISTANT_GROUP_TYPE.equals(group.getGroupType())){
-        	groupUserDao.delete(userDao.getGroup2User(groupId, userId));
+        	groupDao.delete(userDao.getGroup2User(groupId, userId));
         } 
         else {
         	User entity = userDao.getEntity(userId);
@@ -209,8 +207,8 @@ public class UserService implements IUserService{
 
     /* 新建用户对组的关系 */
     private void createUser2Group(Long userId, Long groupId) {
-        GroupUser user2Group = new GroupUser(userId, groupId);
-        groupUserDao.saveGroupUser(user2Group);
+        GroupUser groupUser = new GroupUser(userId, groupId);
+        userDao.createObject(groupUser);
     }
 
     /* 新建用户对角色的关系 */
@@ -294,6 +292,11 @@ public class UserService implements IUserService{
 			userDao.executeHQL("update User u set u.disabled = 1 where u.accountLife < ?", today);
 			userDao.executeHQL("update Role r set r.disabled = 1 where r.endDate < ?", today);
 			userDao.executeHQL("update SubAuthorize s set s.disabled = 1 where s.endDate < ?", today);
+			
+			// TODO 检查用户自身对转授出去的角色是否还有关联，如果没有了，则需要在转授信息里去除这些角色的关联信息。
+			// 1、creatorId --> list<subauth> --> list<roleId>
+			// 2、check userId & roleId 的关系是否还在，不在则删除转授权里的关联
+			
 		} catch(Exception e) {
 			throw new BusinessException("执行停用过期时出错 ", e);
 		}

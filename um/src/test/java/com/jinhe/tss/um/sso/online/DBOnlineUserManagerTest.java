@@ -18,16 +18,24 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.Set;
 
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.sso.online.IOnlineUserManager;
 import com.jinhe.tss.framework.sso.online.OnlineUser;
 import com.jinhe.tss.um.TxSupportTest4UM;
 
 public class DBOnlineUserManagerTest extends TxSupportTest4UM { 
     
-    @Autowired IOnlineUserManager manager;
+    IOnlineUserManager manager;
+    
+    @Before
+    public void setUp() {
+    	super.setUp();
+    	manager = (IOnlineUserManager) Global.getContext().getBean("DBOnlineUserManager");
+    }
     
     @Test
     public final void testDBOnlineUserManager() {
@@ -44,6 +52,12 @@ public class DBOnlineUserManagerTest extends TxSupportTest4UM {
         Set<OnlineUser> userSet = manager.getOnlineUsersByToken("token");
         assertNotNull(userSet);
         assertEquals(3, userSet.size());
+        
+        OnlineUser first = (OnlineUser) userSet.toArray()[0];
+        OnlineUser second = (OnlineUser) userSet.toArray()[1];
+        
+        Assert.assertFalse(first.equals(second));
+        log.debug(first.hashCode());
         
         onlineUserNames = manager.getOnlineUserNames();
         for(String name : onlineUserNames) {

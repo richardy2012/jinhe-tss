@@ -34,7 +34,7 @@ public class EasyUtils {
         try{
             rlt = Double.valueOf(value == null ? "0" : value.toString());
         } catch (Exception e) {
-            log.error(e);
+            throw new RuntimeException("error double value:" + value, e);
         }
         return rlt;
     }
@@ -44,7 +44,7 @@ public class EasyUtils {
         try{
             rlt = Long.valueOf(value == null ? "0" : value.toString());
         } catch (Exception e) {
-            log.error(e);
+        	 throw new RuntimeException("error long value:" + value, e);
         }
         return rlt;
     }
@@ -54,7 +54,7 @@ public class EasyUtils {
         try{
             rlt = Integer.valueOf(value == null ? "0" : value.toString());
         } catch (Exception e) {
-            log.error(e);
+        	 throw new RuntimeException("error int value:" + value, e);
         }
         return rlt;
     }
@@ -225,45 +225,6 @@ public class EasyUtils {
             return 14;
         case 102: // 'f'
             return 15;
-        case 58: // ':'
-        case 59: // ';'
-        case 60: // '<'
-        case 61: // '='
-        case 62: // '>'
-        case 63: // '?'
-        case 64: // '@'
-        case 65: // 'A'
-        case 66: // 'B'
-        case 67: // 'C'
-        case 68: // 'D'
-        case 69: // 'E'
-        case 70: // 'F'
-        case 71: // 'G'
-        case 72: // 'H'
-        case 73: // 'I'
-        case 74: // 'J'
-        case 75: // 'K'
-        case 76: // 'L'
-        case 77: // 'M'
-        case 78: // 'N'
-        case 79: // 'O'
-        case 80: // 'P'
-        case 81: // 'Q'
-        case 82: // 'R'
-        case 83: // 'S'
-        case 84: // 'T'
-        case 85: // 'U'
-        case 86: // 'V'
-        case 87: // 'W'
-        case 88: // 'X'
-        case 89: // 'Y'
-        case 90: // 'Z'
-        case 91: // '['
-        case 92: // '\\'
-        case 93: // ']'
-        case 94: // '^'
-        case 95: // '_'
-        case 96: // '`'
         default:
             return 0;
         }

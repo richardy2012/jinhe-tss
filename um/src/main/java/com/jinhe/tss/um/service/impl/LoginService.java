@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupDao;
 import com.jinhe.tss.um.dao.IUserDao;
 import com.jinhe.tss.um.entity.Group;
@@ -141,19 +140,6 @@ public class LoginService implements ILoginService {
         List<User> users = groupDao.getUsersByGroupId(groupId);
         return translateUserList2DTO(users);
     }
-
-	public OperatorDTO translateUser(Long userId, String userDepositoryCode) {
-		User user = userDao.getEntity(userId);
-		if (user == null) {
-			throw new BusinessException("没有找到编号ID为(" + userId + ")的用户");
-		}
-		
-		if ( !userDepositoryCode.equals(UMConstants.TSS_APPLICATION_ID) ) { 
-		    // TODO 用户登录的不是平台系统，则先设法取出用户对应该平台的信息（比如登录密码等，可考虑存user的某字段里）
-		}
-		
-		return createOperatorDTO(user);
-	}
  
     @SuppressWarnings("unchecked")
     public List<OperatorDTO> getUsersByRoleId(Long roleId) {

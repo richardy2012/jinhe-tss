@@ -37,7 +37,6 @@ public class AnonymousUserIdentifierTest {
         AppServer server = new AppServer();
         server.setCode("Core");
         server.setName("Core");
-        server.setUserDepositoryCode("tss");
         MockAppServerStorer storer = new MockAppServerStorer();
         storer.putAppServer("Core", server);
         

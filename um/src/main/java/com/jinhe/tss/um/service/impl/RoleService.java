@@ -205,10 +205,8 @@ public class RoleService implements IRoleService {
         // historyMap中剩下的就是该删除的了
         roleDao.deleteAll(historyMap.values());
         for(RoleGroup roleGroup : historyMap.values()) {
-        	// 判断是否转授出来的
-    		if (roleGroup.getStrategyId() == null) {
-    			roleDao.deleteGroupSubAuthorizeInfo(roleGroup.getGroupId(), roleGroup.getRoleId());
-    		}
+        	// 用户组已经不再拥有该角色，继承自该组而获得该角色的用户，如有转授该角色出去，则要收回
+        	roleDao.deleteGroupSubAuthorizeInfo(roleGroup.getGroupId(), roleId);
         }
 	}
 
@@ -238,10 +236,8 @@ public class RoleService implements IRoleService {
         // historyMap中剩下的就是该删除的了
         roleDao.deleteAll(historyMap.values());
         for(RoleUser roleUser : historyMap.values()) {
-			// 判断是否转授出来的,转授出来的删除后不收回，因为没有二级转授
-			if (roleUser.getStrategyId() == null) {
-				roleDao.deleteUserSubAuthorizeInfo(roleUser.getUserId(), roleUser.getRoleId());
-			}
+			// 用户已经不再拥有该角色，如有转授该角色出去，则要收回
+        	roleDao.deleteUserSubAuthorizeInfo(roleUser.getUserId(), roleId);
         }
 	}
     

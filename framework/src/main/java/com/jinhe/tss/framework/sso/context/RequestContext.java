@@ -131,7 +131,7 @@ public class RequestContext {
 		HttpSession session = getSession();
 		return session != null ? (IdentityCard) session.getAttribute(IDENTITY_CARD) : null;
 	}
-
+ 
 	/**
 	 * <p>
 	 * 可以使用匿名用户访问此请求，如果用户已登录或自动登录成功，则使用注册用户登录后访问；
@@ -142,21 +142,13 @@ public class RequestContext {
 	public boolean canAnonymous() {
         return "true".equalsIgnoreCase(getValueFromHeaderOrParameter(ANONYMOUS_REQUEST));
 	}
-
-	/**
-	 * <p>
-	 * 销毁
-	 * </p>
-	 */
+ 
 	protected void destroy() {
 		request = null;
 	}
 
 	/**
-	 * <p>
 	 * 获取当前请求用户对应的身份认证对象类名
-	 * </p>
-	 * @return
 	 */
 	public String getUserIdentifierClassName() {
 		return getValueFromHeaderOrParameter(USER_INDENTIFIER);
