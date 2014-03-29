@@ -149,24 +149,6 @@ public class LoginService implements ILoginService {
         List<User> data = (List<User>) groupDao.getEntities( hql, roleId );
         return translateUserList2DTO(data);
     }
-
-    public List<GroupDTO> getGroupsByRoleId(Long roleId) {
-        String hql = "select distinct g from RoleGroup rg, Group g" +
-                " where rg.groupId = g.id and rg.roleId = ? order by g.decode";
-        List<?> groups = groupDao.getEntities( hql, roleId );
-        
-        List<GroupDTO> returnList = new ArrayList<GroupDTO>();
-        for( Object temp : groups ) {
-        	Group group = (Group) temp;
-            GroupDTO dto = new GroupDTO();
-            dto.setId(group.getId().toString());
-            dto.setName(group.getName());
-            dto.setParentId(group.getParentId().toString());
-            returnList.add(dto);
-        }
-        
-        return returnList;
-    }
     
     private List<OperatorDTO> translateUserList2DTO(List<User> users){
         List<OperatorDTO> returnList = new ArrayList<OperatorDTO>();

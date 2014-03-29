@@ -66,6 +66,7 @@ public abstract class PaginationQuery {
         String queryQl = MacrocodeCompiler.run(ql, macrocodes);
  
         PageInfo page = condition.getPage();
+        page.setItems(null); // 清空上次的查询结果，一个condition多次被用来查询的情况
         page.setTotalRows(getTotalRows(queryQl, properties));
         
         // 获取当前页数据记录集

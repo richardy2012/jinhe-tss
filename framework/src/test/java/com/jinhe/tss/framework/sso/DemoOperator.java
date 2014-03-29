@@ -18,7 +18,6 @@ public class DemoOperator implements IOperator {
         attributesMap.put("id", this.userId);
         attributesMap.put("loginName", getLoginName());
         attributesMap.put("userName", getUserName());
-        attributesMap.put("authenticateMethod", getAuthenticateMethod());
     }
 
     public Object getAttribute(String name) {

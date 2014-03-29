@@ -16,7 +16,7 @@ public interface SSOConstants {
     public static final String    APPSERVER_STORER = "class.name.AppServerStorer";
 
     /** 身份转换对象实现类类名 */
-    public static final String IDENTITY_TRANSLATOR = "class.name.IdentityTranslator";
+    public static final String IDENTITY_TRANSLATOR = "class.name.IdentityGetter";
 
     /** 存在session里的用户权限（角色）名称  */
     public static final String USER_RIGHTS_IN_SESSION = "userRights";

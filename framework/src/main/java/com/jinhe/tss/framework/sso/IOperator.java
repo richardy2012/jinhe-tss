@@ -16,7 +16,7 @@ public interface IOperator extends Serializable {
      * </p>
      * @return
      */
-    public Map<String, Object> getAttributesMap();
+    Map<String, Object> getAttributesMap();
 
     /**
      * <p>
@@ -25,7 +25,7 @@ public interface IOperator extends Serializable {
      * @param name
      * @return
      */
-    public Object getAttribute(String name);
+    Object getAttribute(String name);
 
     /**
      * <p>
@@ -33,7 +33,7 @@ public interface IOperator extends Serializable {
      * </p>
      * @return
      */
-    public Long getId();
+    Long getId();
 
     /**
      * <p>
@@ -41,7 +41,7 @@ public interface IOperator extends Serializable {
      * </p>
      * @return
      */
-    public String getLoginName();
+    String getLoginName();
 
     /**
      * <p>
@@ -49,15 +49,7 @@ public interface IOperator extends Serializable {
      * </p>
      * @return
      */
-    public String getUserName();
-
-    /**
-     * <p>
-     * 获取用户认证方式：用户身份识别类全类名
-     * </p>
-     * @return
-     */
-    public String getAuthenticateMethod();
+    String getUserName();
 
     /**
      * <p>
@@ -65,5 +57,5 @@ public interface IOperator extends Serializable {
      * </p>
      * @return
      */
-    public boolean isAnonymous();
+    boolean isAnonymous();
 }

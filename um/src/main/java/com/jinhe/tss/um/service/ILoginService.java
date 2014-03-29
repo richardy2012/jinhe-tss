@@ -73,9 +73,9 @@ public interface ILoginService {
 	 * </p>
 	 * @param userId
 	 * @return
-	 * 		Object obj[0]=groupId,obj[1]=groupName
+	 * 		Object obj[0]=groupId, obj[1]=groupName
 	 */
-    Object getRootGroupByUserId(Long userId);
+    Object[] getRootGroupByUserId(Long userId);
 
     /**
      * <p>
@@ -91,8 +91,8 @@ public interface ILoginService {
 
     /**
      * <p>
-     * 根据组id获取该组下的儿子结点。（供远程调用，需要转换成GroupDTO，Group只限于UMS使用）
-     * 其它基于UMS的应用需要取部门列表的话可以采用本方法获取。
+     * 根据组id获取该组下的儿子结点。（供远程调用，需要转换成GroupDTO，Group只限于TSS使用）
+     * 其它基于TSS的应用需要取部门列表的话可以采用本方法获取。
      * </p>
      * @param groupId
      * @return
@@ -113,13 +113,5 @@ public interface ILoginService {
      * @return List
      */
     List<OperatorDTO> getUsersByRoleId(Long roleId);
-
-    /**
-     * 根据角色的ID 获取拥有此角色的用户组。
-     * 注：需要同时取出“转授”关联起来的RoleGroup。
-     * @param roleId
-     * @return List
-     */
-    List<GroupDTO> getGroupsByRoleId(Long roleId);
 }
 

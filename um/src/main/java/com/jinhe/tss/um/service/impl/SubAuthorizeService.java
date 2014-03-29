@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.service.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class SubAuthorizeService implements ISubAuthorizeService {
 
 	public void disable(Long id, Integer disabled) {
 		SubAuthorize strategy = (SubAuthorize) roleDao.getEntity(SubAuthorize.class, id);
-		if(ParamConstants.FALSE.equals(disabled) && strategy.getEndDate().getTime() < System.currentTimeMillis()) {
+		if(ParamConstants.FALSE.equals(disabled) && strategy.getEndDate().before(new Date()) ) {
 			throw new BusinessException(strategy.getName() + " 已过期，不能启用");
 		}
 		strategy.setDisabled(disabled);
@@ -90,39 +91,29 @@ public class SubAuthorizeService implements ISubAuthorizeService {
      * @param userIdsStr
      */
     private void saveRule2User(SubAuthorize strategy, String roleIdsStr, String userIdsStr) {
-        List<?> roleUsers = roleDao.getRoleUserByStrategy(strategy.getId());
+        Long subauthId = strategy.getId();
+		List<?> roleUsers = roleDao.getRoleUserByStrategy(subauthId);
         Map<String, RoleUser> historyMap = new HashMap<String, RoleUser>(); // 把老的转授记录放入一个map, 以"roleId_userId"为key
         for (Object temp : roleUsers) { 
             RoleUser roleUser = (RoleUser) temp;
             historyMap.put(roleUser.getRoleId() + "_" + roleUser.getUserId(), roleUser);
         }
         
-        String[] roleIds = EasyUtils.isNullOrEmpty(roleIdsStr) ? new String[0] : roleIdsStr.split(",");
-        String[] userIds = EasyUtils.isNullOrEmpty(userIdsStr) ? new String[0] : userIdsStr.split(",");
- 
-        if (userIds.length > 0 && roleIds.length > 0) {
+        if ( !EasyUtils.isNullOrEmpty(roleIdsStr) && !EasyUtils.isNullOrEmpty(userIdsStr)) {
+        	String[] roleIds = roleIdsStr.split(",");
+            String[] userIds = userIdsStr.split(",");
             for (String roleId : roleIds) {
                 for (String userId : userIds) {
-                    saveRoleUser(historyMap, roleId, userId, strategy);
+                    saveRoleUser(historyMap, roleId, userId, subauthId);
                 }
             }
-        } else if (userIds.length == 0) {
-            for (String roleId : roleIds) {
-                saveRoleUser(historyMap, roleId, null, strategy);
-            }
-        }
-        else if (roleIds.length == 0) {
-            for (String userId : userIds) {
-                saveRoleUser(historyMap, null, userId, strategy);
-            }
-        }
+        } 
         
         //老的转授记录中剩下的就是该删除的了
         roleDao.deleteAll(historyMap.values());
     }
     
-    /** roleId, userId 之一有可能为null */
-    private void saveRoleUser(Map<String, RoleUser> historyMap, String roleId, String userId, SubAuthorize strategy){
+    private void saveRoleUser(Map<String, RoleUser> historyMap, String roleId, String userId, Long subauthId){
         // 如果老的转授记录里面有，则从历史记录中移出
         RoleUser roleUser = historyMap.remove(roleId + "_" + userId); 
         
@@ -131,7 +122,7 @@ public class SubAuthorizeService implements ISubAuthorizeService {
             roleUser = new RoleUser();
             roleUser.setRoleId(Long.valueOf(roleId));
             roleUser.setUserId(Long.valueOf(userId));
-            roleUser.setStrategyId(strategy.getId());
+            roleUser.setStrategyId(subauthId);
             roleDao.createObject(roleUser);
         } 
     }
@@ -152,25 +143,15 @@ public class SubAuthorizeService implements ISubAuthorizeService {
 			historyMap.put(roleGroup.getRoleId() + "_" + roleGroup.getGroupId(), roleGroup);
 		}
 		 
-        String[] roleIds  = EasyUtils.isNullOrEmpty(roleIdsStr) ? new String[0] : roleIdsStr.split(",");
-        String[] groupIds = EasyUtils.isNullOrEmpty(groupIdsStr) ? new String[0] : groupIdsStr.split(",");
-        
-        if (groupIds.length > 0 && roleIds.length > 0) {
+        if ( !EasyUtils.isNullOrEmpty(roleIdsStr) && !EasyUtils.isNullOrEmpty(groupIdsStr)) {
+        	String[] roleIds  = roleIdsStr.split(",");
+            String[] groupIds = groupIdsStr.split(",");
             for (String roleId : roleIds) {
                 for (String groupId : groupIds) {
                     saveRoleGroup(historyMap, roleId, groupId, strategy);
                 }
             }
-        } else if (groupIds.length == 0) {
-            for (String roleId : roleIds) {
-                saveRoleGroup(historyMap, roleId, null, strategy);
-            }
-        }
-        else if (roleIds.length == 0) {
-            for (String groupId : groupIds) {
-                saveRoleGroup(historyMap, null, groupId, strategy);
-            }
-        }
+        } 
  
         // 老的转授记录中剩下的就是该删除的了
         roleDao.deleteAll(historyMap.values());

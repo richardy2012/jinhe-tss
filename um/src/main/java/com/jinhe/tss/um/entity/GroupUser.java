@@ -34,8 +34,8 @@ public class GroupUser implements IEntity {
     public GroupUser() { }
     
     public GroupUser(Long userId, Long groupId) {
-        this.userId = userId;
-        this.groupId = groupId;
+        this.setUserId(userId);
+        this.setGroupId(groupId);
     }
  
 	public Long getId() {

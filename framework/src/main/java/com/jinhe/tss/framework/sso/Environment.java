@@ -62,24 +62,6 @@ public class Environment {
     }
 
     /**
-     * <p>
-     * 获取用户对应的身份认证对象
-     * </p>
-     * @return
-     */
-    public static String getIdentifer() {
-        IdentityCard card = Context.getIdentityCard();
-        if (card == null) {
-            return null;
-        }
-        IOperator operator = card.getOperator();
-        if (operator != null) {
-            return operator.getAuthenticateMethod();
-        }
-        return null;
-    }
-
-    /**
      * 获取用户姓名
      * @return
      */

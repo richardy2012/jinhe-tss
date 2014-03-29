@@ -49,7 +49,7 @@ public class OnlineUser {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if ( !(obj instanceof OnlineUser))
             return false;
         
         final OnlineUser other = (OnlineUser) obj;

@@ -102,7 +102,8 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
     
     public List<?> getFatherGroupsByUserId(Long userId){
         Group mainGroup = findMainGroupByUserId(userId);
-        return getParentsById(mainGroup.getId(), UMConstants.MAIN_GROUP_ID);
+        List<Group> parents = getParentsById(mainGroup.getId(), UMConstants.MAIN_GROUP_ID);
+		return parents.subList(1, parents.size()); // 去掉"主用户组"
     }
  
 	public List<?> getVisibleSubGroups(Long groupId){
@@ -166,12 +167,6 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
         return getEntities(hql, new Object[] {"groupIds"}, new Object[]{ groupIds });
 	}
 
-	public List<?> getUsersAndRelation(Long operatorId) {
-        String hql = "select distinct u, gu from User u, GroupUser gu, Group g" +
-                " where u.id = gu.userId  and gu.groupId = g.id and g.groupType = " + Group.MAIN_GROUP_TYPE;
-        return getEntities(hql);
-	}
- 
 	public List<User> getUsersByGroupIdDeeply(Long groupId){
 		List<Group> sonGroups = this.getChildrenById(groupId);
 		List<Long> sonGroupIds = new ArrayList<Long>();
@@ -265,7 +260,7 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
         String hql = "select distinct u, g.id as groupId, g.name as groupName "
             + " from User u, GroupUser gu, Group g " 
             + " where u.id = gu.userId and gu.groupId = g.id and g.id in (:groupIds) " 
-            + " ${loginName} ${userName} ${employeeNo} ${birthday} ${certificateNo} ";
+            + " ${loginName} ${userName} ${employeeNo} ${birthday} ${certificateNo} ${groupName} ";
         
         condition.getPage().setPageNum(pageNum);
         condition.setGroupIds(groupIds);

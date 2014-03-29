@@ -2,9 +2,12 @@ package com.jinhe.tss.um.module;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.um.TxSupportTest4UM;
@@ -35,6 +39,7 @@ public class UserModuleTest extends TxSupportTest4UM {
     @Autowired IResourceService appService;
     
     Group mainGroup1;
+    Group assitantGroup;
     Long mainGroupId;
     User user1;
     
@@ -78,6 +83,14 @@ public class UserModuleTest extends TxSupportTest4UM {
         List<User> users = groupService.getUsersByGroupId(mainGroupId);
         assertEquals(1, users.size());
         log.debug(users.get(0) + "\n");
+        
+        // 建一个辅助用户组
+        assitantGroup = new Group();
+        assitantGroup.setParentId(UMConstants.ASSISTANT_GROUP_ID);
+        assitantGroup.setName("第一纵队");
+        assitantGroup.setGroupType( Group.ASSISTANT_GROUP_TYPE );
+        groupService.createNewGroup(assitantGroup , user1.getId() + "", "-1");
+        log.debug(assitantGroup + "\n");
     }
     
     @After
@@ -102,10 +115,24 @@ public class UserModuleTest extends TxSupportTest4UM {
         userQueryCon.setGroupId(mainGroupId);
         userQueryCon.getPage().setPageNum(1);
 		action.searchUser(response, userQueryCon);
+		
+		userQueryCon.setBirthday(new Date());
+		userQueryCon.setCertificateNo("332624");
+		userQueryCon.setEmployeeNo("");
+		userQueryCon.setGroupIds(Arrays.asList(mainGroupId));
+		userQueryCon.setGroupName("主用户组一");
+		userQueryCon.setLoginName("U_JonKing");
+		userQueryCon.setUserName("U_JK");
+		
+		PageInfo pageInfo = service.searchUser(userQueryCon, 1);
+		Assert.assertTrue(pageInfo.getItems().isEmpty());
     }
     
     @Test
     public void testUserCRUD() {
+    	// 删除用户和辅助用户组的联系
+    	action.deleteUser(response, assitantGroup.getId(), user1.getId());
+    	
     	// 删除用户
     	action.deleteUser(response, mainGroupId, user1.getId());
 		

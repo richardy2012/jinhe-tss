@@ -7,10 +7,15 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
+import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
@@ -31,10 +36,31 @@ public class RoleModuleTest extends TxSupportTest4UM {
     @Autowired IRoleService service;
     @Autowired IUserService userService;
     
-    @Test
-    public void testRoleModule() {
+    Group mainGroup;
+    User mainUser;
+    Long role1Id;
+    Long role2Id;
+    Long roleGroupId;
+    
+    Calendar calendar;
+    
+    @Before
+    public void setUp() {
+    	Global.setContext(super.applicationContext);
+        
+    	request = new MockHttpServletRequest();
+		Context.setResponse(response = new MockHttpServletResponse());
+        
+        // 初始化虚拟登录用户信息
+        login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
+    
+        init();
+        
+        calendar = new GregorianCalendar();
+        calendar.add(UMConstants.ROLE_LIFE_TYPE, UMConstants.ROLE_LIFE_TIME);
+        
         // 新建一个用户组
-        Group mainGroup = new Group();
+        mainGroup = new Group();
         mainGroup.setParentId(UMConstants.MAIN_GROUP_ID);
         mainGroup.setName("财务部");
         mainGroup.setGroupType( Group.MAIN_GROUP_TYPE );
@@ -50,7 +76,7 @@ public class RoleModuleTest extends TxSupportTest4UM {
         log.debug(childGroup);
         
         // 管理员直接在主组下新增用户
-        User mainUser = new User();
+        mainUser = new User();
         mainUser.setLoginName("JonKing");
         mainUser.setUserName("JK");
         mainUser.setPassword("123456");
@@ -64,7 +90,7 @@ public class RoleModuleTest extends TxSupportTest4UM {
         roleGroup.setName("角色组一");
         roleGroup.setParentId(UMConstants.ROLE_ROOT_ID);
         action.saveRole(response, request, roleGroup);
-        Long roleGroupId = roleGroup.getId();
+        roleGroupId = roleGroup.getId();
         
         // 新建角色
         Role role1 = new Role();
@@ -72,31 +98,12 @@ public class RoleModuleTest extends TxSupportTest4UM {
         role1.setName("办公室助理");
         role1.setParentId(roleGroupId);
         role1.setStartDate(new Date());
-        Calendar calendar = new GregorianCalendar();
-        calendar.add(UMConstants.ROLE_LIFE_TYPE, UMConstants.ROLE_LIFE_TIME);
         role1.setEndDate(calendar.getTime());
-        
         request.addParameter("Role2UserIds", UMConstants.ADMIN_USER_ID + "," + mainUser.getId());
         request.addParameter("Role2GroupIds", "" + mainGroup.getId());
         action.saveRole(response, request, role1);
-        Long role1Id = role1.getId();
         
-        // 读取修改角色组的模板
-        action.getRoleGroupInfo(response, roleGroupId, null);
-        
-        // 读取新增或修改角色的模板
-        action.getRoleInfo(response, UMConstants.DEFAULT_NEW_ID, UMConstants.ROLE_ROOT_ID);
-        action.getRoleInfo(response, roleGroupId, null);
-        
-        // 读取角色树形结构
-        action.getAllRole2Tree(response);
-        action.getAllRoleGroup2Tree(response);
-       
-        // 停用角色组
-        action.disable(response, roleGroupId, ParamConstants.TRUE);
-        
-        // 启用角色
-        action.disable(response, role1Id, ParamConstants.FALSE);
+        role1Id = role1.getId();
         
         // 再新建一个角色
         Role role2 = new Role();
@@ -109,14 +116,46 @@ public class RoleModuleTest extends TxSupportTest4UM {
         request.addParameter("Role2UserIds", UMConstants.ADMIN_USER_ID + "," + mainUser.getId());
         request.addParameter("Role2GroupIds", "" + mainGroup.getId());
         action.saveRole(response, request, role2);
-        Long role2Id = role2.getId();
+        role2Id = role2.getId();
         action.getAllRole2Tree(response);
+    }
+    
+    @Test
+    public void testGetRole() {
+        // 读取修改角色组的模板
+        action.getRoleGroupInfo(response, roleGroupId, null);
         
+        // 读取新增或修改角色的模板
+        action.getRoleInfo(response, UMConstants.DEFAULT_NEW_ID, UMConstants.ROLE_ROOT_ID);
+        action.getRoleInfo(response, roleGroupId, null);
+    }
+    
+    @Test
+    public void testDisplayRole() {
+        // 读取角色树形结构
+        action.getAllRole2Tree(response);
+        action.getAllRoleGroup2Tree(response);
+    }
+    
+    @Test
+    public void testDisableRole() {
+        // 停用角色组
+        action.disable(response, roleGroupId, ParamConstants.TRUE);
+        
+        // 启用角色
+        action.disable(response, role1Id, ParamConstants.FALSE);
+    }
+    
+    @Test
+    public void testRoleMove() {
         // 对角色进行移动
         action.move(response, role2Id, UMConstants.ROLE_ROOT_ID);
-        
-        action.getOperation(response, role2Id);
-        
+    }
+    
+    @Test
+    public void testRolePermission() {
+    	action.getOperation(response, role2Id);
+    	
         request.addParameter("applicationId", "tss");
         request.addParameter("resourceType", UMConstants.GROUP_RESOURCE_TYPE_ID);
         action.initSetPermission(response, request, 1, role1Id);
@@ -181,8 +220,11 @@ public class RoleModuleTest extends TxSupportTest4UM {
         printVisibleMainGroups(3); // 主用户组（Main-Group）、 财务部 、财务一部
         
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME); // 换回Admin登录
-        
-        // 删除角色组
+    }
+    
+    @Test
+    public void testDeleteRole() {
+    	 // 删除角色组
         action.delete(response, roleGroupId);
         action.getAllRole2Tree(response);
     }

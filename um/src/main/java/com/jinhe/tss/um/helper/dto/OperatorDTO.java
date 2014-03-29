@@ -22,8 +22,6 @@ public class OperatorDTO implements IPWDOperator, Serializable {
     private String userName;  // 姓名: 用户的实际姓名
     private String password;  // 密码
  
-    private String authenticateMethod;  //认证方式
-    
     public OperatorDTO() {
     }
     
@@ -47,14 +45,6 @@ public class OperatorDTO implements IPWDOperator, Serializable {
 
     public boolean isAnonymous() {
         return AnonymousOperator.anonymous.getId().equals(this.id);
-    }
- 
-    public String getAuthenticateMethod() {
-        return authenticateMethod;
-    }
- 
-    public void setAuthenticateMethod(String authenticateMethod) {
-        this.authenticateMethod = authenticateMethod;
     }
  
     public Long getId() {

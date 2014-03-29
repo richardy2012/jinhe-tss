@@ -54,7 +54,11 @@ public class DBOnlineUserManagerTest extends TxSupportTest4UM {
         assertEquals(3, userSet.size());
         
         OnlineUser first = (OnlineUser) userSet.toArray()[0];
-        OnlineUser second = (OnlineUser) userSet.toArray()[1];
+        DBOnlineUser second = (DBOnlineUser) userSet.toArray()[1];
+        
+        log.debug(second.getId());
+        log.debug(second.getLoginTime());
+        log.debug(second.getUserName());
         
         Assert.assertFalse(first.equals(second));
         log.debug(first.hashCode());

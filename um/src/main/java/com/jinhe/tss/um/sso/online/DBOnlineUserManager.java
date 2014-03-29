@@ -53,13 +53,11 @@ public class DBOnlineUserManager implements IOnlineUserManager {
     public Set<OnlineUser> getOnlineUsersByToken(String token) {
     	String hql = " from DBOnlineUser o where o.token = ? ";
     	
-    	@SuppressWarnings("unchecked")
-    	List<DBOnlineUser> list = (List<DBOnlineUser>) dao.getEntities(hql, new Object[] {token});
+    	List<?> list = dao.getEntities(hql, new Object[] {token});
     	
     	Set<OnlineUser> onlineUsers = new HashSet<OnlineUser>();
-    	for(DBOnlineUser entity : list) {
-    		OnlineUser temp = new OnlineUser(entity.getUserId(), entity.getAppCode(), entity.getSessionId(), entity.getToken());
-    		onlineUsers.add(temp);
+    	for(Object entity : list) {
+    		onlineUsers.add((OnlineUser) entity);
     	}
     	
         return onlineUsers;

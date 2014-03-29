@@ -148,15 +148,6 @@ public interface IGroupDao extends ITreeSupportDao<Group>{
 	 * @return
 	 */
 	List<?> getVisibleMainUsers(Long operatorId);
-	
-	/**
-	 * <p>
-	 * 获取所有操作用户可见的用户 以及 用户和用户组的关系
-	 * </p>
-	 * @param operatorId
-	 * @return
-	 */
-	List<?> getUsersAndRelation(Long operatorId);
 
 	/**
 	 * <p>
