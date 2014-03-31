@@ -12,6 +12,7 @@ import com.jinhe.tss.framework.component.log.LogQueryCondition;
 import com.jinhe.tss.framework.component.log.LogService;
 import com.jinhe.tss.framework.persistence.IDao;
 import com.jinhe.tss.framework.persistence.connpool.DBHelper;
+import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;
@@ -89,10 +90,10 @@ public class TestUtil {
         } 
         
         LogQueryCondition condition = new LogQueryCondition();
-        Object[] result = logService.getLogsByCondition(condition);
         
-        List<?> logs = (List<?>) result[0];
-        Integer logCount = (Integer) result[1];
+        PageInfo result = logService.getLogsByCondition(condition);
+        List<?> logs = result.getItems();
+        Integer logCount = (Integer) result.getTotalRows();
         
         log.debug("本次测试共生成了 " + logCount + " 条日志");
         for(Object temp : logs) {

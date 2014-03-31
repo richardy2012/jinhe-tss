@@ -29,7 +29,7 @@ public interface IComponentService {
      * @param obj
      * @return
      */
-    @Logable(operateTable="门户组件", operateType="新建/修改", operateInfo="新建/修改了 ${returnVal} 节点")
+    @Logable(operateObject="门户组件", operateInfo="新建/修改了 ${returnVal} 节点")
     Component saveComponent(Component obj);
 
     /**
@@ -37,7 +37,7 @@ public interface IComponentService {
      * @param id
      * @return
      */
-    @Logable(operateTable="门户组件", operateType="删除", operateInfo="删除了 ID为 ${args[0]} 的 节点 （${returnVal}）")
+    @Logable(operateObject="门户组件", operateInfo="删除了 ID为 ${args[0]} 的 节点 （${returnVal}）")
     Component deleteComponent(Long id);
 
     /**
@@ -45,7 +45,7 @@ public interface IComponentService {
      * @param id
      * @param state
      */
-    @Logable(operateTable="门户组件", operateType="停用/启用", operateInfo="<#if args[1]=1>停用<#else>启用</#if>了(ID: ${args[0]})节点")
+    @Logable(operateObject="门户组件", operateInfo="<#if args[1]=1>停用<#else>启用</#if>了(ID: ${args[0]})节点")
     void disableComponent(Long id, Integer state);
 
     /**

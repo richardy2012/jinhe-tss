@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.entity;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -167,5 +168,8 @@ public class ResourceType extends OperateInfo implements IEntity, ITreeNode, IXF
 	public int hashCode() {
 	    return (this.applicationId + "_" + this.resourceTypeId).hashCode();
 	}
-
+	
+	public Serializable getPK() {
+		return this.id;
+	}
 }

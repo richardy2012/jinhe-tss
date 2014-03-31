@@ -1,5 +1,7 @@
 package com.jinhe.tss.um.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -60,5 +62,9 @@ public class GroupUser implements IEntity {
  
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+	
+	public Serializable getPK() {
+		return this.id;
 	}
 }

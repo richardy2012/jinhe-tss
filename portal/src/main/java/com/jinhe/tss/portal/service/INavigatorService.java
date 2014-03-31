@@ -23,14 +23,14 @@ public interface INavigatorService {
 	 * @param entity
 	 * @return
 	 */
-	@Logable(operateTable="门户导航栏", operateType="新建/修改", operateInfo=" 新建/修改了 ${returnVal} 节点 ")
+	@Logable(operateObject="门户导航栏", operateInfo=" 新建/修改了 ${returnVal} 节点 ")
 	Navigator saveNavigator(Navigator entity);
 	
 	/**
      * 删除一个菜单或者菜单项
 	 * @param id
 	 */
-	@Logable(operateTable="门户导航栏", operateType="删除", operateInfo=" 删除了 ID为 ${args[0]} 的 节点 ")
+	@Logable(operateObject="门户导航栏", operateInfo=" 删除了 ID为 ${args[0]} 的 节点 ")
 	void deleteNavigator(Long id);
 	
 	/**
@@ -38,7 +38,7 @@ public interface INavigatorService {
 	 * @param id
 	 * @param disabled
 	 */
-	@Logable(operateTable="门户导航栏", operateType="停用/启用", operateInfo="<#if args[1]=1>停用<#else>启用</#if>了(ID: ${args[0]})节点 ")
+	@Logable(operateObject="门户导航栏", operateInfo="<#if args[1]=1>停用<#else>启用</#if>了(ID: ${args[0]})节点 ")
 	void disable(Long id,Integer disabled);
 	
 	/**

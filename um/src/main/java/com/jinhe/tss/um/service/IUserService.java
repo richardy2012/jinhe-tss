@@ -31,7 +31,7 @@ public interface IUserService {
      * 更改用户
      * @param user
      */
-    @Logable(operateTable="用户", operateType="修改", operateInfo="修改用户 ${args[0]}")
+    @Logable(operateObject="用户", operateInfo="修改用户 ${args[0]}")
     void updateUser(User user);
 
     /**
@@ -49,7 +49,7 @@ public interface IUserService {
      * @param groupIdsStr
      * @param roleIdsStr
      */
-    @Logable(operateTable="用户", operateType="新建/修改", 
+    @Logable(operateObject="用户", 
             operateInfo="新建/修改了 ${args[1]} 用户（用户对用户组信息 ${args[2]}、用户对角色的信息 ${args[3]?default(\"\")}）"
         )
     void createOrUpdateUser(User user, String groupIdsStr, String roleIdsStr);
@@ -62,7 +62,7 @@ public interface IUserService {
      * @param groupId
      * @param userId
      */
-    @Logable(operateTable="用户", operateType="删除", 
+    @Logable(operateObject="用户",  
             operateInfo="删除了 (ID:${args[1]}) 用户"
         )
     void deleteUser(Long groupId, Long userId);
@@ -76,7 +76,7 @@ public interface IUserService {
      * @param userId
      * @param initPassword
      */
-    @Logable(operateTable="用户", operateType="初始化密码", 
+    @Logable(operateObject="用户",  
             operateInfo="初始化（组ID:${args[0]}）下（用户ID:${args[1]}）的密码为：${args[2]}"
         )
     void initPasswordByGroupId(Long groupId, Long userId, String initPassword);
@@ -106,9 +106,7 @@ public interface IUserService {
      * </p>
      * @param user
      */
-    @Logable(operateTable="用户", operateType="注册", 
-            operateInfo=" 用户（${args[0]}）完成注册。"
-        )
+    @Logable(operateObject="用户", operateInfo=" 用户（${args[0]}）完成注册。")
     void registerUser(User user);
 
     /**
@@ -120,9 +118,7 @@ public interface IUserService {
      * @param accountState
      * @param groupId
      */
-    @Logable(operateTable="用户", operateType="启用/停用", 
-            operateInfo=" 启用/停用用户 (ID: ${args[1]}) ${args[2]} "
-        )
+    @Logable(operateObject="用户", operateInfo=" 启用/停用用户 (ID: ${args[0]}, status: ${args[1]}) ")
     void startOrStopUser(Long userId, Integer accountState, Long groupId);
 
 	/**
@@ -135,8 +131,7 @@ public interface IUserService {
      * 根据用户组ID获取所有的用户
      * </p>
      * @param groupId
-     * @param pageNum
-     *            当前页数
+     * @param pageNum 当前页数
      * @return
      */
     PageInfo getUsersByGroupId(Long groupId, Integer pageNum);
@@ -146,10 +141,8 @@ public interface IUserService {
      * 根据用户组ID获取所有的用户
      * </p>
      * @param groupId
-     * @param pageNum
-     *            当前页数
-     * @param fields
-     * @param orderType
+     * @param pageNum 当前页数
+     * @param orderBy
      * @return
      */
     PageInfo getUsersByGroupId(Long groupId, Integer pageNum, String orderBy);
@@ -159,10 +152,8 @@ public interface IUserService {
      * 根据条件搜索用户(分页)
      * </p>
      * @param qyCondition
-     * @param userId
-     * @param pageNum
      * @return
      */
-    PageInfo searchUser(UMQueryCondition qyCondition, Integer pageNum);
+    PageInfo searchUser(UMQueryCondition qyCondition);
 
 }

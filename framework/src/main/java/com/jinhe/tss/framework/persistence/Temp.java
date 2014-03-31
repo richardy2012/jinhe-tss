@@ -1,5 +1,7 @@
 package com.jinhe.tss.framework.persistence;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -63,6 +65,10 @@ public class Temp implements IEntity {
     public void setUdf3(String udf3) {
         this.udf3 = udf3;
     }
+
+	public Serializable getPK() {
+		return this.id;
+	}
 }
 
 	

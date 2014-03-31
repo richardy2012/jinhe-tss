@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.entity;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -126,4 +127,7 @@ public class Application extends OperateInfo implements ITreeNode, IXForm {
         return "(id:" + this.id + ", name:" + this.name + ", code:" + this.applicationId + ")"; 
     }
 
+	public Serializable getPK() {
+		return this.id;
+	}
 }

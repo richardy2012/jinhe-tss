@@ -13,6 +13,7 @@ import com.jinhe.tss.framework.TxTestSupport;
 import com.jinhe.tss.framework.mock.model._Group;
 import com.jinhe.tss.framework.mock.model._User;
 import com.jinhe.tss.framework.mock.service._IUMSerivce;
+import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 
 import freemarker.template.TemplateException;
 
@@ -64,9 +65,9 @@ public class BusinessLogTest extends TxTestSupport {
         assertTrue(result.size() > 50);
         
         LogQueryCondition condition = new LogQueryCondition();
-        Object[] logsInfo = logService.getLogsByCondition(condition);
-        assertEquals(50, ((List<?>)logsInfo[0]).size());
-        assertTrue( (Integer)logsInfo[1] >= 180 ); // 还有10条没输出Test就over了
+        PageInfo logsInfo = logService.getLogsByCondition(condition);
+        assertEquals(50, logsInfo.getItems().size());
+        assertTrue( logsInfo.getTotalRows() >= 180 ); // 还有10条没输出Test就over了
     }
 
 }

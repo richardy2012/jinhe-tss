@@ -3,7 +3,6 @@ package com.jinhe.tss.framework.mock.service;
 import java.util.List;
 
 import com.jinhe.tss.framework.component.log.Logable;
-import com.jinhe.tss.framework.mock._UMCondition;
 import com.jinhe.tss.framework.mock.model._Group;
 import com.jinhe.tss.framework.mock.model._GroupRole;
 import com.jinhe.tss.framework.mock.model._Role;
@@ -11,7 +10,7 @@ import com.jinhe.tss.framework.mock.model._User;
 
 public interface _IUMSerivce {
     
-    @Logable(operateTable="用户", operateType="新增", operateInfo="新建了用户：${args[0]?default(\"\")}")
+    @Logable(operateObject="用户", operateInfo="新建了用户：${args[0]?default(\"\")}")
     void createUser(_User user);
 
     void deleteUser(_User user);
@@ -22,7 +21,7 @@ public interface _IUMSerivce {
     
     _User getUser(Long id);
     
-    @Logable(operateTable="用户组", operateType="新增", operateInfo="新建了用户组：${returnVal?default(\"\")}")
+    @Logable(operateObject="用户组", operateInfo="新建了用户组：${returnVal?default(\"\")}")
     _Group createGroup(_Group group);
 
     void deleteGroup(_Group group);
@@ -51,7 +50,7 @@ public interface _IUMSerivce {
 
     void deleteGroupRole(_GroupRole gr);
 
-    List<_GroupRole> queryGroupRole(_UMCondition condition);
+    List<?> queryGroupRole();
  
     List<_Group> getRelationsNodeWhenSort(Long parentId, Integer sourceOrder, Integer targetOrder);
     List<_Group> getChildrenByDecode(String decode);

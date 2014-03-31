@@ -1,6 +1,7 @@
 package com.jinhe.tss.portal.entity;
 
 import java.io.File;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -417,4 +418,8 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
     public void setDecorator(Component decorator) {
         this.decorator = decorator;
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 }

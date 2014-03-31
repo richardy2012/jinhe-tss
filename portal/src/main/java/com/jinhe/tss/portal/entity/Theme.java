@@ -1,5 +1,7 @@
 package com.jinhe.tss.portal.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -110,4 +112,8 @@ public class Theme extends OperateInfo implements IEntity, ITreeNode {
 		final Theme other = (Theme) obj;
 		return other.getId().equals(this.getId());
     }
+	
+	public Serializable getPK() {
+		return this.id;
+	}
 }

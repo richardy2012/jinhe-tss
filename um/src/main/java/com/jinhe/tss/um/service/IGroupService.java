@@ -59,7 +59,7 @@ public interface IGroupService {
 	 * @param userIdsStr
 	 * @param roleIdsStr
 	 */
-    @Logable(operateTable="用户组织", operateType="修改", 
+    @Logable(operateObject="用户组织",  
             operateInfo="编辑 ${args[0]} 用户组的明细信息（用户组对用户信息: ${args[1]} 、用户组对角色的信息: ${args[2]}）"
         )
 	void editExistGroup(Group group, String userIdsStr, String roleIdsStr);
@@ -72,7 +72,7 @@ public interface IGroupService {
 	 * @param userIdsStr
 	 * @param roleIdsStr
 	 */
-    @Logable(operateTable="用户组织", operateType="新建", 
+    @Logable(operateObject="用户组织", 
             operateInfo="新建 ${args[0]} 用户组 （用户组对用户信息: ${args[1]} 、用户组对角色的信息: ${args[2]}）"
         )
 	void createNewGroup(Group group, String userIdsStr, String roleIdsStr);
@@ -84,7 +84,7 @@ public interface IGroupService {
 	 * @param groupId
 	 * @param disabled
 	 */
-    @Logable(operateTable="用户组织", operateType="启用/停用", 
+    @Logable(operateObject="用户组织", 
             operateInfo="启用/停用用户组 (ID: ${args[0]})，(State: ${args[1]})"
         )
 	void startOrStopGroup(Long groupId, Integer disabled);
@@ -99,7 +99,7 @@ public interface IGroupService {
 	 * 			+1/向下
 	 * 			-1/向上
 	 */
-    @Logable(operateTable="用户组织", operateType="排序", 
+    @Logable(operateObject="用户组织", 
             operateInfo="排序(ID: ${args[0]}) 用户组至 (ID: ${args[1]}) 用户组"
         )
 	void sortGroup(Long groupId, Long toGroupId, int direction);
@@ -113,7 +113,7 @@ public interface IGroupService {
 	 * 删除用户组
 	 * @param groupId
 	 */
-    @Logable(operateTable="用户组织", operateType="删除", 
+    @Logable(operateObject="用户组织",  
             operateInfo="删除 (ID: ${args[0]}) 用户组" )
 	void deleteGroup(Long groupId);
     

@@ -1,5 +1,7 @@
 package com.jinhe.tss.framework.mock.model;
 
+import java.io.Serializable;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -21,5 +23,7 @@ public class _GroupRole implements IEntity {
         this.id = id;
     }
 
-   
+	public Serializable getPK() {
+		return this.id;
+	}
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jinhe.tss.framework.mock._UMCondition;
 import com.jinhe.tss.framework.mock.dao._IGroupDAO;
 import com.jinhe.tss.framework.mock.dao._IGroupRoleDAO;
 import com.jinhe.tss.framework.mock.dao._IRoleDAO;
@@ -99,11 +98,9 @@ public class _UMService implements _IUMSerivce {
         return (List<_Role>) roleDAO.getEntities("from _Role");
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public List<_GroupRole> queryGroupRole(_UMCondition condition) {
-        Object[] objs = groupRoleDAO.getEntities(condition, _GroupRole.class.getName());
-        return (List<_GroupRole>) objs[0];
+    public List<?> queryGroupRole() {
+        return groupRoleDAO.getEntities("from _GroupRole");
     }
 
     @Override

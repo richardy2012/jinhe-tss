@@ -1,5 +1,6 @@
 package com.jinhe.tss.cms.entity;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -227,5 +228,9 @@ public class Channel extends OperateInfo implements IXForm, ILevelTreeNode, IDec
 
 	public void setSite(Channel site) {
 		this.site = site;
+	}
+	
+	public Serializable getPK() {
+		return this.id;
 	}
 }

@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -186,4 +187,8 @@ public class Role extends OperateInfo implements ILevelTreeNode, IDecodable, IXF
     public String toString(){
         return "(id:" + this.id + ", name:" + this.name + ")"; 
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 }

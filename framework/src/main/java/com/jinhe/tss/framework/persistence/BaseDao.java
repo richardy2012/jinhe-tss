@@ -25,6 +25,10 @@ public abstract class BaseDao<T extends IEntity> implements IDao<T>{
     
     @PersistenceContext 
     protected EntityManager em; //em.setFlushMode(FlushModeType.COMMIT);
+    
+    public EntityManager em() {
+    	return em;
+    }
 
     protected Class<T> type;
     
@@ -106,18 +110,7 @@ public abstract class BaseDao<T extends IEntity> implements IDao<T>{
             delete(it.next());
         }
     }
-
-    /**
-     * 根据主键值获取对象，延迟方式
-     * @param clazz
-     * @param id
-     * 
-     * @return
-     */
-    public IEntity loadEntity(Class<?> clazz, Serializable id) {
-        return (IEntity) em.find(clazz, id);
-    }
-
+ 
     /**
      * 根据主键值获取对象 
      * @param clazz
@@ -175,61 +168,6 @@ public abstract class BaseDao<T extends IEntity> implements IDao<T>{
             }
         List<?> results = query.getResultList();
         return results == null ? new ArrayList<Object>() : results;
-    }
-    
-    /**
-     * 根据查询条件和分页信息查询对象列表
-     * 注：
-     *    如果是多表查询，则子类中需要重写 Object[] getEntities(...)
-     * @param condition
-     * @param className
-     * @param currentPageNum
-     * @param pagesize
-     * @return
-     */
-    public Object[] getEntities(QueryCondition condition, String className){
-        return getEntities(condition, className, null);
-    }
-    
-    public Object[] getEntities(QueryCondition condition, String className, String others) {
-        int currentPageNum = condition.getCurrentPage(); 
-        int pagesize = condition.getPagesize(); 
-        
-        int firstResult = pagesize * (currentPageNum - 1);
-
-        HQLQueryGenerator generator = new HQLQueryGenerator(condition);
-        generator.addQueryInfo("o", className + " o ");
-        generator.setOthers(others);   // eg: order  by o.commitTime
-        
-        List<?> list = null;
-        try {
-            Query query = generator.getQuery(em);
-            if(pagesize > 0 && currentPageNum >= 0){
-                query.setFirstResult(firstResult);
-                query.setMaxResults(pagesize);
-            }            
-            list = query.getResultList();
-        } catch (Exception e) {
-            throw new BusinessException("按分页取数据时出错！", e);
-        }   
-        return new Object[] { list, new Integer(getTotalRows(condition, className).intValue())};
-    }
-    
-    /**
-     * 或者符合查询条件的总记录数
-     * @param condition
-     * @param className
-     * @return
-     */
-    private Integer getTotalRows(QueryCondition condition, String className) {
-        String hql = "select count(o) from " + className + " o where " + condition.genHQLCondition();
-        try {
-            Query query = em.createQuery(hql);
-            condition.genQueryCondition(query);
-            return EasyUtils.convertObject2Integer(query.getSingleResult());
-        } catch (Exception e) {
-            throw new BusinessException("获取总记录数时出错！", e);
-        }       
     }
     
     /**
@@ -334,7 +272,6 @@ public abstract class BaseDao<T extends IEntity> implements IDao<T>{
                 createObjectWithoutFlush(entity);
             }
         }
-
     }
     
     public void insertIds2TempTable(List<? extends Object[]> list, int idIndex) {
@@ -348,26 +285,24 @@ public abstract class BaseDao<T extends IEntity> implements IDao<T>{
             }
         }
     }
-    
-    public void insertIds2TempTable(Object[] idArray) {
-        clearTempTable();
-        
-        if(idArray != null && idArray.length > 0 ) {
-            for(int i = 0; i < idArray.length; i++){
-                Temp entity = new Temp();
-                entity.setId(new Long(idArray[i].toString()));
-                createObjectWithoutFlush(entity);
-            }
-        }
-    }
-    
+ 
     public void insertEntityIds2TempTable(List<? extends IEntity> list) {
         clearTempTable();
         
         if( !EasyUtils.isNullOrEmpty(list) ) {
             for(IEntity entity : list){
                 Temp temp = new Temp();
-                temp.setId((Long) entity.getId());
+                temp.setId((Long) entity.getPK());
+                createObjectWithoutFlush(temp);
+            }
+        }
+    }
+    
+    public void insert2TempTable(List<Temp> list) {
+        clearTempTable();
+        
+        if( !EasyUtils.isNullOrEmpty(list) ) {
+            for(Temp temp : list){
                 createObjectWithoutFlush(temp);
             }
         }

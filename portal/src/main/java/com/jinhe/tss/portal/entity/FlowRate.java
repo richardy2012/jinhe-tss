@@ -1,5 +1,6 @@
 package com.jinhe.tss.portal.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -66,5 +67,9 @@ public class FlowRate implements IEntity {
     public void setVisitTime(Date visitTime) {
         this.visitTime = visitTime;
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 }
 

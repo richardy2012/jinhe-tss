@@ -21,15 +21,14 @@ public class XFormTest {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		
 		Log log = new Log();
-		log.setAppCode("TSS");
+		log.setOperateTable("用户");
 		log.setContent("XXXXXXXXXX");
-//		log.setId(1L);
 		log.setOperateTime(new Date());
 		
 		XFormEncoder encoder = new XFormEncoder(LogAction.LOG_XFORM_TEMPLET_PATH, log);
 		
 		log = (Log) XFormDecoder.decode(encoder.toXml(), Log.class);
-		Assert.assertEquals("TSS", log.getAppCode());
+		Assert.assertEquals("用户", log.getOperateTable());
 		
 		try {
 			XmlPrintWriter writer = new XmlPrintWriter(response.getWriter());

@@ -1,5 +1,6 @@
 package com.jinhe.tss.portal.entity;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -267,4 +268,8 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
     public void setPortNumber(Integer portNumber) {
         this.portNumber = portNumber;
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 }

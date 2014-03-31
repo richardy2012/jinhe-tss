@@ -1,5 +1,6 @@
 package com.jinhe.tss.cms.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -223,5 +224,9 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
 
 	public void setChannel(Channel channel) {
 		this.channel = channel;
+	}
+	
+	public Serializable getPK() {
+		return this.id;
 	}
 }

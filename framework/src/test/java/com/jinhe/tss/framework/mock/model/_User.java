@@ -1,5 +1,7 @@
 package com.jinhe.tss.framework.mock.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -102,4 +104,8 @@ public class _User extends OperateInfo implements IEntity {
     public void setBirthYear(Integer age) {
         this.birthYear = new Integer(2008 - age);
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 }

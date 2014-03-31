@@ -118,4 +118,8 @@ public class ThemeInfo implements IEntity {
 	        return hash;
 	    }
 	}
+	
+	public Serializable getPK() {
+		return this.id;
+	}
 }

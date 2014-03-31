@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -116,4 +117,7 @@ public class SubAuthorize extends OperateInfo implements IEntity, ITreeNode, IXF
 		return map;
 	}
  
+	public Serializable getPK() {
+		return this.id;
+	}
 }

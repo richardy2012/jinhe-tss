@@ -26,7 +26,7 @@ public interface IRoleService {
 	 * @param userIdsStr
 	 * @param groupIdsStr
 	 */
-    @Logable(operateTable="角色", operateType="新建/修改", 
+    @Logable(operateObject="角色", 
             operateInfo="新建/修改${args[0]}角色（角色对用户信息：${args[1]}、角色对用户组的信息 ：${args[2]}）"
         )
 	void saveRole2UserAndRole2Group(Role role, String userIdsStr, String groupIdsStr);	
@@ -36,7 +36,7 @@ public interface IRoleService {
 	 * @param entity
 	 * @return
 	 */
-    @Logable(operateTable="角色组", operateType="新建/修改", 
+    @Logable(operateObject="角色组", 
             operateInfo="新建/修改了角色组 ${args[0]}"
         )
 	Role saveRoleGroup(Role entity);
@@ -45,7 +45,7 @@ public interface IRoleService {
 	 * 删除角色
 	 * @param id
 	 */
-    @Logable(operateTable="角色", operateType="删除", 
+    @Logable(operateObject="角色", 
             operateInfo="删除 (ID: ${args[0]})角色(组)"
         )
 	void delete(Long id);
@@ -56,7 +56,7 @@ public interface IRoleService {
 	 * @param id
 	 * @param disabled
 	 */
-    @Logable(operateTable="角色", operateType="停用/启动", 
+    @Logable(operateObject="角色", 
             operateInfo="停用或启动 (ID: ${args[0]})角色(组)(disabled: ${args[1]})"
         )
 	void disable(Long id, Integer disabled);
@@ -66,7 +66,7 @@ public interface IRoleService {
 	 * @param id
 	 * @param targetId
 	 */
-    @Logable(operateTable="角色", operateType="移动", 
+    @Logable(operateObject="角色", 
             operateInfo="移动(ID: ${args[0]}) 角色至 (ID: ${args[1]}) 角色组 "
         )
 	void move(Long id, Long targetId);

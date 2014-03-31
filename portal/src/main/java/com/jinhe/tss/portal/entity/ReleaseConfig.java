@@ -1,5 +1,6 @@
 package com.jinhe.tss.portal.entity;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -128,5 +129,9 @@ public class ReleaseConfig implements IEntity, ITreeNode, IXForm {
     public void setPage(Structure page) {
         this.page = page;
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 }
 

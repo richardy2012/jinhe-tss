@@ -54,6 +54,15 @@ public abstract class MacrocodeQueryCondition  {
 		this.orderByFields.add(orderByFields);
 	}
 	
+	public String toConditionString() {
+		StringBuffer buffer = new StringBuffer();
+		Map<String, Object> conditionsMap = getConditionMacrocodes();
+		for(String macro : conditionsMap.keySet()) {
+			buffer.append(macro).append(" ");
+		}
+		return buffer.toString();
+	}
+	
     /**
      * 获取条件查询HQL/SQL条件语句宏代码字典
      * @return Map 

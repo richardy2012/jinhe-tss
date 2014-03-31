@@ -132,9 +132,11 @@ public class UserAction extends BaseActionSupport {
 	 * 搜索用户
 	 */
 	@RequestMapping("/search/{page}")
-	public void searchUser(HttpServletResponse response, UMQueryCondition condition) {
-		int page = condition.getPage().getPageNum();
-        PageInfo users = userService.searchUser(condition, page);
+	public void searchUser(HttpServletResponse response, 
+			UMQueryCondition condition, @PathVariable("page") int page) {
+		
+		condition.getPage().setPageNum(page);
+        PageInfo users = userService.searchUser(condition);
         GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), XMLDocUtil.createDoc(UMConstants.MAIN_USER_GRID));
         print(new String[]{"SourceList", "PageInfo"}, new Object[]{gridEncoder, users});
 	}
@@ -144,8 +146,7 @@ public class UserAction extends BaseActionSupport {
      */
 	@RequestMapping("/list/{groupId}/{page}")
     public void getUsersByGroupId(HttpServletResponse response, 
-    		@PathVariable("groupId") Long groupId, 
-    		@PathVariable("page") int page) {
+    		@PathVariable("groupId") Long groupId, @PathVariable("page") int page) {
     	
         PageInfo users = userService.getUsersByGroupId(groupId, page, " u.id asc ");
         GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), UMConstants.MAIN_USER_GRID);

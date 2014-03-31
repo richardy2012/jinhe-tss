@@ -30,23 +30,4 @@ public class ProgressPool {
 	public static Progress removeSchedule(String code){
 		return progressMap.remove(code);
 	}
-	
-	
-	/**
-	 * 执行中的带进度反馈的业务对象池
-	 */
-	private static Map<String, FeedbackProgressable> feedbackProgressableMap = new HashMap<String, FeedbackProgressable>();
-	
-	public static void putFPObject(String code, FeedbackProgressable obj){
-	    feedbackProgressableMap.put(code, obj);
-    }
-    
-    public static FeedbackProgressable getFPObject(String code){
-        return feedbackProgressableMap.get(code);
-    }
-    
-    public static FeedbackProgressable removeFPObject(String code){
-        return feedbackProgressableMap.remove(code);
-    }
-
 }

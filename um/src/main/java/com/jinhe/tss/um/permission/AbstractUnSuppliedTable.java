@@ -1,5 +1,7 @@
 package com.jinhe.tss.um.permission;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -95,5 +97,9 @@ public abstract class AbstractUnSuppliedTable implements IEntity, IUnSuppliedPer
     public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 }
 

@@ -3,6 +3,7 @@ package com.jinhe.tss.framework.persistence.entityaop;
 import static org.junit.Assert.*;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,6 +14,23 @@ import com.jinhe.tss.framework.mock.service._IUMSerivce;
 public class DecodeInterceptorTest extends TxTestSupport { 
     
     @Autowired _IUMSerivce umSerivce;
+    
+    @Autowired DecodeInterceptor decodeInterceptor;
+    
+    @Before
+    public void setUp() throws Exception {
+    	super.setUp();
+    	
+    	decodeInterceptor.setDeleteKind(null);
+    	decodeInterceptor.setGetKind(null);
+    	decodeInterceptor.setSaveKind(null);
+    	decodeInterceptor.setUpdateKind(null);
+    	
+    	decodeInterceptor.setDeleteKind("del");
+    	decodeInterceptor.setGetKind("fetch");
+    	decodeInterceptor.setSaveKind("put");
+    	decodeInterceptor.setUpdateKind("xxx");
+    }
     
     @Test
     public void testDecodeUtil() {

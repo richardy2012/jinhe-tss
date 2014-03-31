@@ -1,5 +1,7 @@
 package com.jinhe.tss.um.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -56,7 +58,10 @@ public class ResourceTypeRoot implements IEntity {
 	public void setRootId(Long rootId) {
 		this.rootId = rootId;
 	}
-
+	
+	public Serializable getPK() {
+		return this.id;
+	}
 }
 
 	

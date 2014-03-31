@@ -1,5 +1,7 @@
 package com.jinhe.tss.framework.mock.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -127,4 +129,8 @@ public class _Group implements IDecodable, ILevelTreeNode {
     public TreeAttributesMap getAttributes() {
         return new TreeAttributesMap(id, name);
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 }

@@ -30,7 +30,7 @@ public interface IChannelService {
 	 * @param channel
 	 * @return
 	 */
-    @Logable(operateTable="栏目", operateType="新增", operateInfo="新增了 ${args[0]} 节点")
+    @Logable(operateObject="栏目", operateInfo="新增了 ${args[0]} 节点")
     @PermissionTag(
             operation = CMSConstants.OPERATION_ADD_CHANNEL, 
             resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL,
@@ -38,7 +38,7 @@ public interface IChannelService {
     )
 	Channel createChannel(Channel channel);
     
-    @Logable(operateTable="栏目", operateType="修改", operateInfo="修改了 ${args[0]} 节点")
+    @Logable(operateObject="栏目", operateInfo="修改了 ${args[0]} 节点")
     @PermissionTag(
             operation = CMSConstants.OPERATION_EDIT, 
             resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL,
@@ -51,7 +51,7 @@ public interface IChannelService {
      * @param channel
      * @return
      */
-    @Logable(operateTable="站点", operateType="新增", operateInfo="新增了 ${args[0]} 节点")
+    @Logable(operateObject="站点", operateInfo="新增了 ${args[0]} 节点")
     @PermissionTag(
             operation = CMSConstants.OPERATION_ADD_CHANNEL, 
             resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL,
@@ -64,7 +64,7 @@ public interface IChannelService {
      * @param channel
      * @return
      */
-    @Logable(operateTable="站点", operateType="修改", operateInfo="修改了 ${args[0]} 节点")
+    @Logable(operateObject="站点", operateInfo="修改了 ${args[0]} 节点")
     @PermissionTag(
             operation = CMSConstants.OPERATION_EDIT, 
             resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL,
@@ -78,7 +78,7 @@ public interface IChannelService {
 	 * </p>
 	 * @param channelId
 	 */
-    @Logable(operateTable="站点栏目", operateType="删除", operateInfo="删除了 ID为 ${args[0]} 的节点。")
+    @Logable(operateObject="站点栏目", operateInfo="删除了 ID为 ${args[0]} 的节点。")
 	void deleteChannel(Long channelId);
 
 	/**
@@ -86,7 +86,7 @@ public interface IChannelService {
 	 * 移动Channel到站点或栏目下
 	 * </p>
 	 */
-    @Logable(operateTable="站点栏目", operateType="移动", operateInfo="移动(ID: ${args[0]})节点到(ID: ${args[1]})节点下")
+    @Logable(operateObject="站点栏目", operateInfo="移动(ID: ${args[0]})节点到(ID: ${args[1]})节点下")
     @PermissionTag(
             operation = CMSConstants.OPERATION_ADD_CHANNEL + "," + CMSConstants.OPERATION_DELETE, 
             resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL,
@@ -100,7 +100,7 @@ public interface IChannelService {
 	 * @param toChannelId
 	 * @param direction
 	 */
-    @Logable(operateTable="站点栏目", operateType="排序", operateInfo="(ID: ${args[0]})节点移动到了(ID: ${args[1]})节点<#if args[2]=1>的下方<#else>的上方</#if>")
+    @Logable(operateObject="站点栏目", operateInfo="(ID: ${args[0]})节点移动到了(ID: ${args[1]})节点<#if args[2]=1>的下方<#else>的上方</#if>")
     @PermissionTag(
             operation = CMSConstants.OPERATION_ORDER, 
             resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL,
@@ -123,7 +123,7 @@ public interface IChannelService {
      * </p>
      * @param id
      */
-    @Logable(operateTable="站点栏目", operateType="停用", operateInfo="停用了 （ID ：${args[0]}） 站点")
+    @Logable(operateObject="站点栏目", operateInfo="停用了 （ID ：${args[0]}） 站点")
     void disable(Long id);
     
     /**
@@ -132,7 +132,7 @@ public interface IChannelService {
      * <p>
      * @param siteId
      */
-    @Logable(operateTable="站点栏目", operateType="启用", operateInfo="启用了 （ID ：${args[0]}） 站点及其所有子栏目")
+    @Logable(operateObject="站点栏目", operateInfo="启用了 （ID ：${args[0]}） 站点及其所有子栏目")
     void enableSite(Long siteId);
     
     /**
@@ -141,7 +141,7 @@ public interface IChannelService {
      * </p>
      * @param id
      */
-    @Logable(operateTable="站点栏目", operateType="启用", operateInfo="启用了 （ID ：${args[0]}） 栏目")
+    @Logable(operateObject="站点栏目",  operateInfo="启用了 （ID ：${args[0]}） 栏目")
     void enableChannel(Long id);
  
 	/**
@@ -171,7 +171,7 @@ public interface IChannelService {
 	 * @param articleIdList
 	 * @param siteId 
 	 */
-	@Logable(operateTable="站点栏目", operateType="发布", operateInfo="发布文章")
+	@Logable(operateObject="站点栏目", operateInfo="发布文章")
 	void publishArticle(List<Article> articleList);
 
     /**

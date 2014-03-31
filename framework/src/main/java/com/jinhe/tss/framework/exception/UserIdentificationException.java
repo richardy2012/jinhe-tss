@@ -16,23 +16,14 @@ package com.jinhe.tss.framework.exception;
  * </p>
  */
 public class UserIdentificationException extends Exception {
-
-    private static final long serialVersionUID = 9037464113181664556L;
  
+	private static final long serialVersionUID = -4729575896596213410L;
+
     public UserIdentificationException() {
         super();
     }
- 
-    public UserIdentificationException(String message, Throwable cause) {
-        super(message, cause);
-    }
- 
-    public UserIdentificationException(String message) {
+    
+	public UserIdentificationException(String message) {
         super(message);
     }
- 
-    public UserIdentificationException(Throwable cause) {
-        super(cause);
-    }
-
 }

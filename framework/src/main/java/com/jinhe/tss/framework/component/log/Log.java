@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework.component.log;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,9 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.sso.Environment;
-import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.web.dispaly.grid.GridAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
@@ -34,13 +37,13 @@ public class Log implements IEntity, IXForm, IGridNode {
     private Long    id;
     
     @Column(nullable = false)  
-    private String appCode;       // 应用Code
+    private String operateTable;  // 操作的对象
+    private String operationCode; // 操作Code
+    private Date   operateTime;   // 操作时间
+    
     private Long   operatorId;    // 操作者ID
     private String operatorName;  // 操作者Name
     private String operatorIP;    // 操作者IP
-    private String operationCode; // 操作Code
-    private String operateTable;  // 操作的表
-    private Date   operateTime;   // 操作时间
     
     @Column(length = 4000)  
     private String  content;      // 操作内容
@@ -50,39 +53,17 @@ public class Log implements IEntity, IXForm, IGridNode {
     public Log() {
     }
 
-    public Log(String appCode, Long operatorId, String operatorName,
-            String operatorIP, String operationCode, String operateTable,
-            String content) {
-        
-        this.appCode = appCode;
-        this.operatorId = operatorId;
-        this.operatorName = operatorName;
-        this.operatorIP = operatorIP;
-        this.operationCode = operationCode;
-        this.operateTable = operateTable;
-        this.content = content;
-        this.operateTime = new Date();
-    }
-
     public Log(String operationCode, Object entity) {
-        this.appCode = Context.getApplicationContext().getCurrentAppCode();
         if( Environment.getOperatorId() != null) {
-            this.operatorId   = Environment.getOperatorId();
-            this.operatorName = Environment.getOperatorName();
-        } else {
-            this.operatorId   = -1000L;
-            this.operatorName = "anonymous";
-        }
+            this.setOperatorId( Environment.getOperatorId() );
+            this.setOperatorName( Environment.getOperatorName() );
+        } 
         
-        this.operatorIP   = Environment.getClientIp();
+        this.operatorIP    = Environment.getClientIp();
         this.operationCode = operationCode;
-        this.operateTable = entity.getClass().getName();
-        this.content = BeanUtil.toXml(entity);
-        this.operateTime = new Date();
-    }
- 
-    public String getAppCode() {
-        return appCode;
+        this.operateTable  = entity.getClass().getName();
+        this.content       = BeanUtil.toXml(entity);
+        this.operateTime   = new Date();
     }
  
     public String getContent() {
@@ -115,10 +96,6 @@ public class Log implements IEntity, IXForm, IGridNode {
  
     public String getOperateTable() {
         return operateTable;
-    }
- 
-    public void setAppCode(String appCode) {
-        this.appCode = appCode;
     }
  
     public void setContent(String content) {
@@ -156,7 +133,6 @@ public class Log implements IEntity, IXForm, IGridNode {
     public Map<String, Object> getAttributesForXForm() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", this.id);
-        map.put("appCode", this.appCode);
         map.put("content", this.content);
         map.put("operateTable", this.operateTable);
         map.put("operateTime", DateUtil.formatCare2Second(this.operateTime));
@@ -170,7 +146,6 @@ public class Log implements IEntity, IXForm, IGridNode {
     
     public GridAttributesMap getAttributes(GridAttributesMap map) {
         map.put("id", this.id);
-        map.put("appCode", this.appCode);
         map.put("operateTable", this.operateTable);
         map.put("operateTime", this.operateTime);
         map.put("operationCode", this.operationCode);
@@ -180,7 +155,7 @@ public class Log implements IEntity, IXForm, IGridNode {
     }
     
     public String toString() {
-        return appCode + ":" + operatorName + ":" + content;
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
     public Integer getMethodExcuteTime() {
@@ -190,5 +165,9 @@ public class Log implements IEntity, IXForm, IGridNode {
     public void setMethodExcuteTime(Integer methodExcuteTime) {
         this.methodExcuteTime = methodExcuteTime;
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 }
 

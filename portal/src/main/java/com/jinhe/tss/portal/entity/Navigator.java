@@ -1,5 +1,6 @@
 package com.jinhe.tss.portal.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -364,4 +365,8 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
     public void setToContent(Structure toContent) {
         this.toContent = toContent;
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 }	

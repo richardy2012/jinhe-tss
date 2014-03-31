@@ -1,5 +1,7 @@
 package com.jinhe.tss.um.permission;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -88,6 +90,10 @@ public abstract class AbstractResourcesView implements IEntity, IDecodable, ILev
     public Class<?> getParentClass() {
         return getClass();
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 
     public abstract String getResourceType();
 

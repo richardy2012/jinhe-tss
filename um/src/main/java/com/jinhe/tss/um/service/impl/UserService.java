@@ -281,8 +281,8 @@ public class UserService implements IUserService{
         return groupDao.getUsersByGroup(groupId, pageNum, orderBy);
     }
  
-    public PageInfo searchUser(UMQueryCondition qyCondition, Integer pageNum) {
-		return groupDao.searchUser(qyCondition, pageNum);
+    public PageInfo searchUser(UMQueryCondition qyCondition) {
+		return groupDao.searchUser(qyCondition);
     }
     
     // 可供定时器等对象直接调用。 

@@ -42,11 +42,12 @@ public class BusinessLogInterceptor implements MethodInterceptor {
         Logable annotation = targetMethod.getAnnotation(Logable.class); // 取得注释对象
         if (annotation != null) {
 
-            String operateTable = annotation.operateTable();
-            String operateType = annotation.operateType();
+            String operateTable = annotation.operateObject();
             String operateInfo = annotation.operateInfo();
+            
+            String operateMethod = targetMethod.getName();
 
-            Log log = new Log(operateType, parseMacro(operateInfo, args, returnVal));
+            Log log = new Log(operateMethod, parseMacro(operateInfo, args, returnVal));
             log.setOperateTable(operateTable);
             log.setMethodExcuteTime(methodExcuteTime);
 

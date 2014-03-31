@@ -91,8 +91,8 @@ public class BeanUtil {
             PropertyDescriptor d = descr[i];
             String propertyName = d.getName();
             
-            // 既有get又有set方法的属性的值才被读取。id字段很神经，明明有set方法，这里偏取不到，只好特殊处理
-            if ( !propertyName.equals("id") && (d.getWriteMethod() == null || d.getReadMethod() == null)) continue;
+            // 既有get又有set方法的属性的值才被读取 
+            if ( d.getWriteMethod() == null || d.getReadMethod() == null) continue;
             
             if (list.contains(propertyName)) continue;
             

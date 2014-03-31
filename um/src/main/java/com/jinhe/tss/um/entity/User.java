@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -278,4 +279,8 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
     public String toString(){
         return "(ID:" + this.id + ", loginName:" + this.loginName + ")"; 
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 }

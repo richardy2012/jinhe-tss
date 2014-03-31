@@ -1,9 +1,11 @@
 package com.jinhe.tss.framework.mock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,6 +17,7 @@ import com.jinhe.tss.framework.mock.model._GroupRoleId;
 import com.jinhe.tss.framework.mock.model._Role;
 import com.jinhe.tss.framework.mock.model._User;
 import com.jinhe.tss.framework.mock.service._IUMSerivce;
+import com.jinhe.tss.framework.persistence.Temp;
 
 public class UMServiceTest extends TxTestSupport { 
     
@@ -115,7 +118,39 @@ public class UMServiceTest extends TxTestSupport {
         gr.setId(new _GroupRoleId(group.getId(), role.getId()));
         umSerivce.createGroupRole(gr);
         
-        _UMCondition condition = new _UMCondition();
-        assertEquals(1, umSerivce.queryGroupRole(condition).size());
+        assertEquals(1, umSerivce.queryGroupRole().size());
+    }
+    
+    @Test
+    public void testBaseDao() {
+    	_Group group = new _Group();
+        group.setCode("RD");
+        group.setName("研发");
+        umSerivce.createGroup(group);
+        
+        List<Temp> list = new ArrayList<Temp>();
+    	Temp temp = new Temp();
+    	temp.setId(group.getId());
+    	temp.setUdf1(group.getCode());
+    	temp.setUdf2(group.getCode());
+    	temp.setUdf3(group.getName());
+    	list.add(temp);
+    	
+    	userDao.insert2TempTable(list);
+    	
+    	List<?> list2 = userDao.getEntities("from Temp");
+    	Assert.assertTrue(list2.size() == 1);
+    	temp = (Temp) list2.get(0);
+    	Assert.assertEquals(group.getId(), temp.getId());
+    	Assert.assertEquals(group.getCode(), temp.getUdf1());
+    	Assert.assertEquals(group.getCode(), temp.getUdf2());
+    	Assert.assertEquals(group.getName(), temp.getUdf3());
+    	
+    	userDao.executeSQL("update test_group set name = 'XXX' where code = ?", "RD");
+    	userDao.executeSQL("update test_group set name = 'XXX' where code = :code", 
+    			new String[] {"code"}, new Object[] {"RD"});
+    	
+    	userDao.executeHQL("delete _Group where code = ?", "RD");
+    	userDao.executeHQL("delete _Group where code = :code", new String[] {"code"}, new Object[] {"RD"});
     }
 }

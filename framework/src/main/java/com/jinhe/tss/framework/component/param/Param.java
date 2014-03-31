@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework.component.param;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -214,4 +215,8 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
         BeanUtil.addBeanProperties2Map(this, map);
         return map;
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 }

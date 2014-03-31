@@ -1,5 +1,7 @@
 package com.jinhe.tss.um.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -61,5 +63,9 @@ public class RoleGroup implements IEntity {
  
 	public void setStrategyId(Long strategyId) {
 		this.strategyId = strategyId;
+	}
+	
+	public Serializable getPK() {
+		return this.id;
 	}
 }

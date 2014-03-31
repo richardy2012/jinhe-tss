@@ -1,5 +1,7 @@
 package com.jinhe.tss.framework.mock.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -55,4 +57,8 @@ public class _Role implements IEntity {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 }

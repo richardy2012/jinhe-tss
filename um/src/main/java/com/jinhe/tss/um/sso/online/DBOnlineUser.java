@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.sso.online;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -38,6 +39,10 @@ public class DBOnlineUser extends OnlineUser implements IEntity{
         this.setClientIp( Environment.getClientIp() );
         this.setUserName( userName );
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
  
     public Long getId() {
         return id;

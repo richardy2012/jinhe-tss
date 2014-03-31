@@ -56,7 +56,7 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
              *  判断用户输入的密码是否和OA密码的一致，如果是，则将用户的平台里的密码也设置为该密码，并完成本次登录
              *  (适用于UM的用户从第三方导入的情况，因密码是加密的，无法直接导入过来)
              */
-            if(checkPWDInOA(operator.getId(), passport.getPassword())) {
+            if(checkPWDInLDAP(operator.getId(), passport.getPassword())) {
                 return operator;
             }
             throw new UserIdentificationException("用户密码不正确，请重新登录");
@@ -64,14 +64,14 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
     }
     
     /**
-     * 判断用户输入的密码是否和OA密码的一致，如果是，则将用户的平台里的密码也设置为该密码。
+     * 判断用户输入的密码是否和LDAP中的密码一致，如果是，则将用户的平台里的密码也设置为该密码。
      * 注 ： 需要在相应的系统参数管理模块里增加 oa.ldap.url 参数。
      * 
      * @param userId
      * @param password
      * @return
      */
-    boolean checkPWDInOA(Long userId, String password){
+    boolean checkPWDInLDAP(Long userId, String password){
         log.debug("用户登陆时密码在主用户组中验证不通过，转向LDAP进行再次验证。");
         
         // 取主用户的对应用户    

@@ -114,7 +114,7 @@ public class UserModuleTest extends TxSupportTest4UM {
         UMQueryCondition userQueryCon = new UMQueryCondition();
         userQueryCon.setGroupId(mainGroupId);
         userQueryCon.getPage().setPageNum(1);
-		action.searchUser(response, userQueryCon);
+		action.searchUser(response, userQueryCon, 1);
 		
 		userQueryCon.setBirthday(new Date());
 		userQueryCon.setCertificateNo("332624");
@@ -124,7 +124,7 @@ public class UserModuleTest extends TxSupportTest4UM {
 		userQueryCon.setLoginName("U_JonKing");
 		userQueryCon.setUserName("U_JK");
 		
-		PageInfo pageInfo = service.searchUser(userQueryCon, 1);
+		PageInfo pageInfo = service.searchUser(userQueryCon);
 		Assert.assertTrue(pageInfo.getItems().isEmpty());
     }
     

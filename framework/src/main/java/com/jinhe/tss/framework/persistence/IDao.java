@@ -4,12 +4,16 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 /**
  * DAO的一些基本方法
  * 
  * @param <T>
  */
 public interface IDao<T extends IEntity> {
+	
+	EntityManager em();
 	
 	Class<T> getType();
 
@@ -54,14 +58,6 @@ public interface IDao<T extends IEntity> {
     void deleteAll(Collection<?> c);
 
     /**
-     * 根据主键值获取对象，延迟方式
-     * @param clazz
-     * @param id
-     * @return
-     */
-    IEntity loadEntity(Class<?> clazz, Serializable id);
-
-    /**
      * 根据主键值获取对象
      * @param clazz
      * @param id
@@ -90,19 +86,6 @@ public interface IDao<T extends IEntity> {
     List<?> getEntitiesByNativeSql(String nativeSql, Object...params);
  
     /**
-     * 根据查询条件和分页信息查询对象列表
-     * 注：
-     *    如果是多表查询，则子类中需要重写 Object[] getEntities(...)
-     * @param condition
-     * @param className
-     * @param currentPageNum
-     * @param pagesize
-     * @return
-     */
-    Object[] getEntities(QueryCondition condition, String className);
-    Object[] getEntities(QueryCondition condition, String className, String others);
-
-    /**
      * 执行HQL语句，一般为delete、update类型
      * @param hql
      */
@@ -121,8 +104,8 @@ public interface IDao<T extends IEntity> {
      */
     void insertIds2TempTable(List<?> list);
     void insertIds2TempTable(List<? extends Object[]> list, int idIndex);
-    void insertIds2TempTable(Object[] idArray);
     void insertEntityIds2TempTable(List<? extends IEntity> list);
+    void insert2TempTable(List<Temp> list);
     void clearTempTable();
 
 }

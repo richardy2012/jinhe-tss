@@ -18,12 +18,12 @@ public class LogOutputTask extends Output2DBTask {
     	String insertSql;
     	if( Config.isOracleDatabase() ) {
             insertSql = "insert into component_log" +
-                "(id, appCode, operatorId, operatorName, operatorIP, operationCode, operateTable, operateTime, content) " +
+                "(id, operatorId, operatorName, operatorIP, operationCode, operateTable, operateTime, content, methodExcuteTime) " +
                 "values(log_sequence.nextval, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
     	else { // DEFAULT 主键自增 
             insertSql = "insert into component_log" +
-                "(appCode, operatorId, operatorName, operatorIP, operationCode, operateTable, operateTime, content) " +
+                "(operatorId, operatorName, operatorIP, operationCode, operateTable, operateTime, content, methodExcuteTime) " +
                 "values(?, ?, ?, ?, ?, ?, ?, ?)"; 
     	}
         PreparedStatement pstmt = conn.prepareStatement(insertSql); 
@@ -31,7 +31,6 @@ public class LogOutputTask extends Output2DBTask {
             Log dto = (Log) temp;
             
             int index = 1;
-            pstmt.setString(index++, dto.getAppCode());
             pstmt.setLong  (index++, dto.getOperatorId());
             pstmt.setString(index++, dto.getOperatorName());
             pstmt.setString(index++, dto.getOperatorIP());
@@ -39,6 +38,7 @@ public class LogOutputTask extends Output2DBTask {
             pstmt.setString(index++, dto.getOperateTable());
             pstmt.setTimestamp(index++, new java.sql.Timestamp(dto.getOperateTime().getTime()));
             pstmt.setString(index++, dto.getContent());
+            pstmt.setInt(index++, dto.getMethodExcuteTime());
             
             pstmt.execute();
         }

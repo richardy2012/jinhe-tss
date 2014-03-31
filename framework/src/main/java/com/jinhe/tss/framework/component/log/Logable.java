@@ -13,18 +13,13 @@ import java.lang.annotation.RetentionPolicy;
 public @interface Logable {
     
     /**
-     * 操作表
+     * 操作对象
      */
-    String operateTable();
-    
-    /**
-     * 操作类型，CRUD等
-     */
-    String operateType();
+    String operateObject();
     
     /**
      * 操作信息，可带freemarker宏
      */
-    String operateInfo();
+    String operateInfo() default "";
     
 }

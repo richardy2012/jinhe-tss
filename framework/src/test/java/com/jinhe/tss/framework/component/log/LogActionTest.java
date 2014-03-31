@@ -1,10 +1,8 @@
 package com.jinhe.tss.framework.component.log;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,6 +12,7 @@ import com.jinhe.tss.framework.TxTestSupport;
 import com.jinhe.tss.framework.mock.model._Group;
 import com.jinhe.tss.framework.mock.model._User;
 import com.jinhe.tss.framework.mock.service._IUMSerivce;
+import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataDecoder;
@@ -55,21 +54,15 @@ public class LogActionTest extends TxTestSupport {
 		action.getAllApps4Tree(response);
 		
 		LogQueryCondition condition = new LogQueryCondition();
-		condition.setAppCode("TSS");
+		condition.setOperateTable("用户");
 		condition.setOperateTimeFrom(new Date(System.currentTimeMillis() - 1000*10));
 		condition.setOperateTimeTo(new Date());
 		condition.setOperatorName(Environment.getOperatorName());
 		
-		Map<String, Object> conditionsMap = condition.getConditionsMap();
-		conditionsMap.put("operateTimeFrom", new Date(System.currentTimeMillis() - 1000*10));
-		conditionsMap.put("operateTimeTo", new Date());
-		conditionsMap.put("operatorName", Arrays.asList(Environment.getOperatorName()));
-		conditionsMap.put("operatorIP", null);
-		
 		action.queryLogs4Grid(null, condition, 1);
 		
-		Object[] logsInfo = logService.getLogsByCondition(condition);
-        List<?> logs = (List<?>)logsInfo[0];
+		PageInfo logsInfo = logService.getLogsByCondition(condition);
+        List<?> logs = logsInfo.getItems();
         Assert.assertTrue(logs.size() > 0);
         action.getLogInfo(response, ((Log)logs.get(0)).getId());
         
@@ -85,8 +78,6 @@ public class LogActionTest extends TxTestSupport {
         
         logs = GridDataDecoder.decode(encoder.toXml(), Log.class);
         Assert.assertTrue(logs.size() > 0);
-        Log log = (Log)logs.get(0);
-		action.getLogInfo(response, log.getId());
 	}
 
 }

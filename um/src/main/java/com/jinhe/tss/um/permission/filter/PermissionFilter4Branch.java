@@ -26,7 +26,7 @@ public class PermissionFilter4Branch implements IPermissionFilter {
  
         for( Iterator<?> it = resources.iterator(); it.hasNext(); ) {
             IEntity resource = (IEntity)it.next();
-            if( !permitedResourceIds.contains(resource.getId()) ) {
+            if( !permitedResourceIds.contains(resource.getPK()) ) {
                 throw new BusinessException("操作失败，您对被操作节点的子节点（或父节点）至少有一个没有相应操作权限！");
             }
         }

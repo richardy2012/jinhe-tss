@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework.persistence.pagequery;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -10,7 +11,6 @@ import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.persistence.QueryCondition;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.MacrocodeCompiler;
@@ -56,7 +56,7 @@ public abstract class PaginationQuery {
             if (key.startsWith("${") && key.endsWith("}")) {
                 String name = key.substring(2, key.length() - 1);
                 Object value = properties.get(name);
-                if ( QueryCondition.isValueNullOrEmpty(value) ) {
+                if ( isValueNullOrEmpty(value) ) {
                 	it.remove();
                 }
             }
@@ -117,7 +117,7 @@ public abstract class PaginationQuery {
     protected void setProperties4Query(Query query, Map<String, Object> properties) {
         for (Map.Entry<String, Object> entry : properties.entrySet()) {
             Object value = entry.getValue();
-            if ( !QueryCondition.isValueNullOrEmpty(value) ) {
+            if ( !isValueNullOrEmpty(value) ) {
             	query.setParameter( entry.getKey(), value );
             }
         }
@@ -153,5 +153,20 @@ public abstract class PaginationQuery {
      * @return Query对象
      */
     protected abstract Query createQuery(String ql);
-
+    
+    boolean isValueNullOrEmpty(Object value) {
+        if ( value == null ) {
+            return true;
+        }
+        
+        if( value instanceof String && "".equals(value)) {
+            return true;
+        }
+        
+        if( value instanceof Collection<?> && ((Collection<?>)value).isEmpty()) {
+            return true;
+        }
+        
+        return false;
+    }
 }

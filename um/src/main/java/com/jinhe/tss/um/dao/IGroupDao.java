@@ -181,7 +181,7 @@ public interface IGroupDao extends ITreeSupportDao<Group>{
 	
     //******************************************* 按组或按查询条件查询用户 *******************************************
 	
-    PageInfo searchUser(UMQueryCondition condition, Integer pageNum);
+    PageInfo searchUser(UMQueryCondition condition);
     
     /**
      * 根据用户组获取用户

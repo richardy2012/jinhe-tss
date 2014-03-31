@@ -25,7 +25,7 @@ public class OperateInfoInterceptor extends MatchByDaoMethodNameInterceptor {
                    
                     IOperatable operateInfo = (IOperatable) args[i];
                     
-                    if(((IEntity)operateInfo).getId() == null) { // ID为null，说明是新建
+                    if(((IEntity)operateInfo).getPK() == null) { // ID为null，说明是新建
                         operateInfo.setCreateTime(new Date());
                         operateInfo.setCreatorId(Environment.getOperatorId());
                         operateInfo.setCreatorName(Environment.getOperatorName());           

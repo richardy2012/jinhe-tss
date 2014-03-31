@@ -167,4 +167,8 @@ public class Operation implements IEntity, ITreeNode, IXForm, IPermissionOption,
 
 	public void putOptionAttribute(String key, Object value) {	
 	}
+	
+	public Serializable getPK() {
+		return this.id;
+	}
 }

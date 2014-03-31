@@ -25,9 +25,6 @@ public class Config {
 	/** Spring配置文件， 默认为spring/applicationContext.xml */
 	public static final String SPRING_CONTEXT_PATH = "aplication.context";
 
-	/** 系统自定义异常处理servlet属性名（仅限普通HTTP请求，即HTML异常处理模式） */
-	public static final String ERROR_HANDLE = "error.handle.servlet";
-
 	/** session过期时间的配置名称 */
 	public static final String SESSION_CYCLELIFE_CONFIG = "session.cyclelife";
 	

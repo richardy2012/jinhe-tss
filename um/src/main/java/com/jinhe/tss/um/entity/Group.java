@@ -1,5 +1,6 @@
 package com.jinhe.tss.um.entity;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -184,4 +185,8 @@ public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IX
     public String toString(){
         return "(ID:" + this.id + ", Name:" + this.name  + ", Decode:" + this.decode + ")"; 
     }
+    
+	public Serializable getPK() {
+		return this.id;
+	}
 }

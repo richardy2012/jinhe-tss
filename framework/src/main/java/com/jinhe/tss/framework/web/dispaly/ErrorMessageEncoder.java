@@ -20,7 +20,7 @@ public class ErrorMessageEncoder implements IDataEncoder {
 
     private String description = null;
 
-    private int relogin = 0; // 是否需重新登录系统
+    private boolean relogin = false; // 是否需重新登录系统
 
     /**
      * 错误信息类型：
@@ -31,18 +31,14 @@ public class ErrorMessageEncoder implements IDataEncoder {
     private int type = 1;
 
     public ErrorMessageEncoder(String errorMessage) {
-        this(errorMessage, 0);
+        this(errorMessage, false);
     }
 
-    public ErrorMessageEncoder(String errorMessage, int relogin) {
+    public ErrorMessageEncoder(String errorMessage, boolean relogin) {
         this(errorMessage, null, relogin);
     }
-
-    public ErrorMessageEncoder(String errorMessage, String description) {
-        this(errorMessage, description, 0);
-    }
-
-    public ErrorMessageEncoder(String errorMessage, String description, int relogin) {
+ 
+    public ErrorMessageEncoder(String errorMessage, String description, boolean relogin) {
         this.message = errorMessage;
         this.description = description;
         this.relogin = relogin;
@@ -57,7 +53,7 @@ public class ErrorMessageEncoder implements IDataEncoder {
         this.description = getDescription(exception);
         if (BeanUtil.isImplInterface(exception.getClass(), IBusinessException.class)) {
             this.type = 2;
-            this.relogin = ((IBusinessException) exception).getRelogin();
+            this.relogin = ((IBusinessException) exception).needRelogin();
         } else {
             this.type = 3;
         }

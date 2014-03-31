@@ -253,18 +253,19 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
         return page;
     }
     
-    public PageInfo searchUser(UMQueryCondition condition, Integer pageNum) {
+    public PageInfo searchUser(UMQueryCondition condition) {
         List<Long> groupIds = getChildrenGroupIds(condition.getGroupId());
-        if( EasyUtils.isNullOrEmpty(groupIds) ) return null;
+        if( EasyUtils.isNullOrEmpty(groupIds) ) {
+        	return null;
+        } else {
+        	 condition.setGroupIds(groupIds);
+        }
         
         String hql = "select distinct u, g.id as groupId, g.name as groupName "
             + " from User u, GroupUser gu, Group g " 
             + " where u.id = gu.userId and gu.groupId = g.id and g.id in (:groupIds) " 
-            + " ${loginName} ${userName} ${employeeNo} ${birthday} ${certificateNo} ${groupName} ";
+            + condition.toConditionString();
         
-        condition.getPage().setPageNum(pageNum);
-        condition.setGroupIds(groupIds);
- 
         Set<String> set = condition.getIgnoreProperties();
         set.add("groupId");
         

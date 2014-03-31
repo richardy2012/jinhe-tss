@@ -1,5 +1,6 @@
 package com.jinhe.tss.cms.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -211,5 +212,9 @@ public class Attachment implements IEntity, IGridNode {
 
 	public void setArticleId(Long articleId) {
 		this.articleId = articleId;
+	}
+	
+	public Serializable getPK() {
+		return this.id;
 	}
 }

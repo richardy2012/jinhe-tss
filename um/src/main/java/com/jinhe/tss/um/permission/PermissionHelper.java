@@ -528,7 +528,7 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
     public void filtrateResourcesByPermission( List<Long> permitedResourceIds, List<?> resources ){
         for( Iterator<?> it = resources.iterator(); it.hasNext(); ) {
             IEntity resource = (IEntity)it.next();
-            if( !permitedResourceIds.contains(resource.getId()) ) {
+            if( !permitedResourceIds.contains(resource.getPK()) ) {
                 it.remove();
             }
         }

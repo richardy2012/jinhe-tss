@@ -93,14 +93,14 @@ public interface IPortalService {
      * @return
      *            保存成功以后的门户结构实体
      */
-    @Logable(operateTable="门户结构", operateType="新建", operateInfo="新建了 ${returnVal} 节点")
+    @Logable(operateObject="门户结构", operateInfo="新建了 ${returnVal} 节点")
     @PermissionTag(
             operation = PortalConstants.PORTAL_ADD_OPERRATION , 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
             filter = PermissionFilter4Create.class)
     Structure createStructure(Structure ps);
     
-    @Logable(operateTable="门户结构", operateType="修改", operateInfo="修改了 ${returnVal} 节点")
+    @Logable(operateObject="门户结构", operateInfo="修改了 ${returnVal} 节点")
     @PermissionTag(
             operation = PortalConstants.PORTAL_EDIT_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
@@ -116,7 +116,7 @@ public interface IPortalService {
      * @param id
      *          操作节点的ID
      */
-    @Logable(operateTable="门户结构", operateType="删除", operateInfo="删除了(ID: ${args[0]})节点")
+    @Logable(operateObject="门户结构", operateInfo="删除了(ID: ${args[0]})节点")
     void deleteStructure(Long id);
 
     /**
@@ -132,7 +132,7 @@ public interface IPortalService {
      * @param disabled
      *          停用或者启用（1/0）
      */
-    @Logable(operateTable="门户结构", operateType="停用/启用", operateInfo="<#if args[1]=1>停用<#else>启用</#if>了(ID: ${args[0]})节点")
+    @Logable(operateObject="门户结构", operateInfo="<#if args[1]=1>停用<#else>启用</#if>了(ID: ${args[0]})节点")
     void disable(Long id, Integer disabled);
 
     /**
@@ -147,7 +147,7 @@ public interface IPortalService {
      * @param direction
      *          方向
      */
-    @Logable(operateTable="门户结构", operateType="排序", operateInfo="(ID: ${args[0]})节点移动到了(ID: ${args[1]})节点<#if args[2]=1>之下<#else>之上</#if>")
+    @Logable(operateObject="门户结构", operateInfo="(ID: ${args[0]})节点移动到了(ID: ${args[1]})节点<#if args[2]=1>之下<#else>之上</#if>")
     @PermissionTag(
             operation = PortalConstants.PORTAL_ORDER_OPERRATION, 
             resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
@@ -175,9 +175,7 @@ public interface IPortalService {
      * @param themeId 
      * @param themeName
      */
-    @Logable(operateTable="门户主题", operateType="复制", 
-            operateInfo="复制出名为${args[1]}的新主题(SourceID: ${args[0]})"
-        )
+    @Logable(operateObject="门户主题", operateInfo="复制出名为${args[1]}的新主题(SourceID: ${args[0]})")
     Theme saveThemeAs(Long themeId, String themeName);
 
     /**
@@ -191,9 +189,7 @@ public interface IPortalService {
      * 设置默认主题
      * @param themeId
      */
-    @Logable(operateTable="门户主题", operateType="设为默认", 
-            operateInfo="将(ID: ${args[0]})主题设置为默认主题"
-        )
+    @Logable(operateObject="门户主题", operateInfo="将(ID: ${args[0]})主题设置为默认主题")
     void specifyDefaultTheme(Long themeId);
 
     /**
@@ -201,9 +197,7 @@ public interface IPortalService {
      * @param portalId
      * @param themeId
      */
-    @Logable(operateTable="门户主题", operateType="删除", 
-            operateInfo="删除了(ID: ${args[0]})主题"
-        )
+    @Logable(operateObject="门户主题", operateInfo="删除了(ID: ${args[0]})主题")
     void removeTheme(Long themeId);
 
     /**
@@ -211,9 +205,7 @@ public interface IPortalService {
      * @param themeId
      * @param name
      */
-    @Logable(operateTable="门户主题", operateType="重命名", 
-            operateInfo="将(ID: ${args[0]})主题重新命名为 ${args[1]}"
-        )
+    @Logable(operateObject="门户主题", operateInfo="将(ID: ${args[0]})主题重新命名为 ${args[1]}")
     void renameTheme(Long themeId, String name);
     
     
@@ -260,9 +252,7 @@ public interface IPortalService {
      * @param userId
      * @param themeId
      */
-    @Logable(operateTable="门户主题", operateType="门户自定义操作", 
-            operateInfo="重新设置了 ID为 ${args[0]} 的门户的自定义主题 "
-        )
+    @Logable(operateObject="门户主题", operateInfo="重新设置了 ID为 ${args[0]} 的门户的自定义主题 ")
     void savePersonalTheme(Long portalId, Long userId, Long themeId);
     
     //***********************************  门户流量统计获取 ***************************************************************

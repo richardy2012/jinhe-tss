@@ -4,6 +4,6 @@ import java.io.Serializable;
 
 public interface IEntity {
     
-    Serializable getId();
+    Serializable getPK();
     
 }

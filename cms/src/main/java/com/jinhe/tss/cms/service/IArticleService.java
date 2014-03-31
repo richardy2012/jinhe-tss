@@ -19,10 +19,10 @@ public interface IArticleService {
      * @param tempArticleId
      *            新增的时候上传的附件对象以new Date()为主键，此处的tempArticleId就是这个值
      */
-    @Logable(operateTable="文章", operateType="新增", operateInfo="新增文章 ${args[0]} 到(ID: ${args[1]}) 栏目下")
+    @Logable(operateObject="文章", operateInfo="新增文章 ${args[0]} 到(ID: ${args[1]}) 栏目下")
     void createArticle(Article article, Long channelId, String attachList, Long tempArticleId);
 
-    @Logable(operateTable="文章", operateType="修改", operateInfo="修改文章 ${args[0]}")
+    @Logable(operateObject="文章", operateInfo="修改文章 ${args[0]}")
     void updateArticle(Article article, Long channelId, String attachList);
 
     /**
@@ -30,7 +30,7 @@ public interface IArticleService {
      * 
      * @param articleId
      */
-    @Logable(operateTable="文章", operateType="删除", operateInfo="删除了文章: ${returnVal} ")
+    @Logable(operateObject="文章", operateInfo="删除了文章: ${returnVal} ")
     Article deleteArticle(Long articleId);
 
     /**
@@ -60,7 +60,7 @@ public interface IArticleService {
      * @param oldChannelId
      * @param channelId
      */
-    @Logable(operateTable="文章", operateType="移动", operateInfo="将(ID: ${args[0]}) 文章移动到(ID: ${args[1]}) 栏目下")
+    @Logable(operateObject="文章", operateInfo="将(ID: ${args[0]}) 文章移动到(ID: ${args[1]}) 栏目下")
     void moveArticle(Long articleId, Long channelId);
 
     /**
@@ -88,6 +88,6 @@ public interface IArticleService {
      * 
      * @param articleId
      */
-    @Logable(operateTable="文章", operateType="置顶", operateInfo="置顶/取消置顶文章(${returnVal})")
+    @Logable(operateObject="文章", operateInfo="置顶/取消置顶文章(${returnVal})")
     Article doTopArticle(Long articleId); 
 }
