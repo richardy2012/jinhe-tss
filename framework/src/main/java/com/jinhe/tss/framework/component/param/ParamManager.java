@@ -5,9 +5,11 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 
+import com.jinhe.tss.cache.Cacheable;
+import com.jinhe.tss.cache.JCache;
+import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.persistence.connpool._Connection;
 
 /**
  *  调用参数管理功能入口
@@ -73,11 +75,14 @@ public class ParamManager {
     }
     
     public static String getValueNoSpring(String code){
-        String value = null;
         String sql = "select p.value from component_param p where p.type = " + ParamConstants.NORMAL_PARAM_TYPE
                    + " and p.code='" + code + "' and p.hidden <> 1 and p.disabled <> 1";
         
-        Connection conn = _Connection.getInstanse().getConnection();
+        Pool connectionPool = JCache.getInstance().getConnectionPool();
+		Cacheable connItem = connectionPool.checkOut(0);
+		Connection conn = (Connection) connItem.getValue();
+		
+		String value = null;
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -91,7 +96,7 @@ public class ParamManager {
         } catch(Exception e){
             throw new BusinessException("读取code:" + code + " 的参数出错", e);
         } finally {
-            _Connection.getInstanse().releaseConnection(conn);
+        	connectionPool.checkIn(connItem);
         }
         return value;
     }

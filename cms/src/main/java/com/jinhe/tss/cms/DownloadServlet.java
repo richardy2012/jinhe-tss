@@ -57,18 +57,22 @@ public class DownloadServlet extends HttpServlet {
         String docOrPicPath = ""; 
         String fileName = attachment.getFileName();
         String fileExt = attachment.getFileExt();
+        
+        if("gif".equals(fileExt)) { response.setContentType("image/gif"); }
+        else if("png".equals(fileExt)) { response.setContentType("image/png"); }
+        else if("bmp".equals(fileExt)) { response.setContentType("image/bmp"); }
+        else if("jpg".equals(fileExt) || "jpeg".equals(fileExt)) {
+        	response.setContentType("image/jpeg"); 
+        }
+        else {
+        	response.setContentType("application/octet-stream"); // 设置附件类型
+        }
+        
 	    if(attachment.isImage()) { // 相关图片
 	    	docOrPicPath = attachment.getBasePath()[2];
-	    	 
-            if("gif".equals(fileExt)) { response.setContentType("image/gif"); }
-            if("jpg".equals(fileExt)) { response.setContentType("image/jpeg"); }
-            if("jpeg".equals(fileExt)){ response.setContentType("image/jpeg"); }
-            if("png".equals(fileExt)) { response.setContentType("image/png"); }
-            if("bmp".equals(fileExt)) { response.setContentType("image/bmp"); }
 	    }
 	    else if(attachment.isOfficeDoc()){ // 相关附件
             docOrPicPath = attachment.getBasePath()[1];
-	        response.setContentType("application/octet-stream");// 设置附件类型
             
             fileName = (fileExt != null && !"".equals(fileExt)) ? (fileName + "." + fileExt) : fileName;
             response.setHeader("Content-Disposition", "attachment; filename=\"" + EasyUtils.toUtf8String(fileName) + "\"");        

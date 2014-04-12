@@ -76,8 +76,12 @@ public class Filter3Context implements Filter {
             
 			Context.destroy(); // 请求结束后销毁Context
 		} 
+		catch (BusinessServletException e) {
+			throw e;
+		}
 		catch (Exception e) {
 			throw new BusinessServletException(e);
 		}
+		
 	}
 }

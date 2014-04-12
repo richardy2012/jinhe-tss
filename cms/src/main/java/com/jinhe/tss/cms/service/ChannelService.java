@@ -14,7 +14,7 @@ import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.helper.ArticleHelper;
-import com.jinhe.tss.cms.publish.PublishManger;
+import com.jinhe.tss.cms.publish.PublishUtil;
 import com.jinhe.tss.framework.exception.BusinessException;
 
 @Service("ChannelService")
@@ -190,7 +190,7 @@ public class ChannelService implements IChannelService {
 			// 发布文章，根据文章 创建日期 来设置xml文件的存放路径
 			Channel site = channelDao.getEntity(article.getChannel().getId()).getSite();
             String publishPath = site.getPath()+ "/" + ArticleHelper.getArticlePublishPath(article);
-			String pubUrl = PublishManger.publishOneArticle(article, publishPath);
+			String pubUrl = PublishUtil.publishOneArticle(article, publishPath);
 			
 			// 在文章对象里记录发布路径
 			article.setPubUrl(pubUrl);

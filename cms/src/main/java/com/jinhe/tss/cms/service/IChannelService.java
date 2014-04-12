@@ -166,7 +166,8 @@ public interface IChannelService {
 	
 	/**
 	 * <p>
-	 * 发布文章
+	 * 发布文章.
+	 * 供PublishManager调用，没法直接在Manager里实现，因其没有事务，需要借助service的事务。
 	 * </p>
 	 * @param articleIdList
 	 * @param siteId 

@@ -57,7 +57,10 @@ public class Log implements IEntity, IXForm, IGridNode {
         if( Environment.getOperatorId() != null) {
             this.setOperatorId( Environment.getOperatorId() );
             this.setOperatorName( Environment.getOperatorName() );
-        } 
+        } else {
+        	this.setOperatorId( -1000L );
+            this.setOperatorName( "匿名用户" );
+        }
         
         this.operatorIP    = Environment.getClientIp();
         this.operationCode = operationCode;
@@ -151,6 +154,7 @@ public class Log implements IEntity, IXForm, IGridNode {
         map.put("operationCode", this.operationCode);
         map.put("operatorIP", this.operatorIP);
         map.put("operatorName", this.operatorName);
+        map.put("methodExcuteTime", this.methodExcuteTime);
         return map;
     }
     

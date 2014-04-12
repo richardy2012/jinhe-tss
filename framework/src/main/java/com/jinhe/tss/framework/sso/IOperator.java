@@ -20,15 +20,6 @@ public interface IOperator extends Serializable {
 
     /**
      * <p>
-     * 获取用户相关属性
-     * </p>
-     * @param name
-     * @return
-     */
-    Object getAttribute(String name);
-
-    /**
-     * <p>
      * 获取用户ID
      * </p>
      * @return

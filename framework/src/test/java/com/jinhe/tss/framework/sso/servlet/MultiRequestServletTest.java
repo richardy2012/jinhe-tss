@@ -31,7 +31,7 @@ import com.jinhe.tss.util.XMLDocUtil;
 /**
  * <p>
  * servlet请求合并测试对象。
- * 先将合并的总请求发到MultiRequestServlet，然后MultiRequestServlet解析总的请求，
+ * 先将合并的总请求发到Servlet3MultiRequest，然后Servlet3MultiRequest解析总的请求，
  * 将一个个子请求分离出来分别执行（这里子请求一律重新请求到SimpleRequestServlet），
  * 再将每个子请求的返回结果合并为一个总的结果（响应）。
  * </p>

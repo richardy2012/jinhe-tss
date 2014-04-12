@@ -55,7 +55,7 @@ public class PortalDispatcher extends HttpServlet {
              * 这样也有助于隐藏实际的链接。在有些情况下，比如，需要跳转到一个其它服务器上的资源，则必须使用 
              * HttpServletResponse.sendRedirect()方法。
              */
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             throw new BusinessServletException(e);
         }
     }

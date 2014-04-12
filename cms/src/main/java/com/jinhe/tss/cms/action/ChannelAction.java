@@ -60,7 +60,6 @@ public class ChannelAction extends ProgressActionSupport {
             
             Channel parent = (Channel) channelService.getChannelById(parentId);
             channel.setOverdueDate(parent.getOverdueDate());
-            channel.setPublishArticleClassName(parent.getPublishArticleClassName());
             channel.setSite(parent.isSiteRoot() ? parent : parent.getSite());
             channel.setParentId(parentId);
 		} 

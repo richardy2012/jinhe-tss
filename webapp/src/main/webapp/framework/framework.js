@@ -174,12 +174,17 @@ function onClickTreeBtRefresh() {
 
 /* 点击左栏控制按钮 */
 function onClickPaletteBt() {
-	var block = Blocks.getBlock("palette");
-	if( block ) {
-		block.switchTo();
-	}
+	$$("openLeftBarIcon").style.display = "none";
 	
-	$$("paletteBt").className = block.visible ? "icon" : "iconClosed";
+	$$("closeLeftBarIcon").onclick = function() {
+		$$("palette").style.display = "none";
+		$$("openLeftBarIcon").style.display = "";
+	}	
+
+	$$("openLeftBarIcon").onclick = function() {
+		$$("palette").style.display = "";
+		$$("openLeftBarIcon").style.display = "none";
+	}
 }
 
 /* 点击树标题  */

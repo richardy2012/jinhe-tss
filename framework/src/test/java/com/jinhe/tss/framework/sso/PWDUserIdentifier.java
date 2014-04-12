@@ -14,6 +14,8 @@ public class PWDUserIdentifier extends BaseUserIdentifier {
         PWDOperator operator = new PWDOperator(1L);
         
         PasswordPassport passport = new PasswordPassport();
+        log.debug(passport.toString());
+        
         if(passport.getLoginName().equals(operator.getLoginName()) && 
                 passport.getPassword().equals(operator.getPassword()) ) {
             

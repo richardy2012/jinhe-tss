@@ -20,6 +20,9 @@ public class BusinessServletException extends ServletException implements IBusin
     public BusinessServletException(Exception e) {
         super(e.getMessage());
         initCause(e);
+        if(e instanceof IBusinessException) {
+        	this.relogin = ((IBusinessException)e).needRelogin();
+    	}
     }
  
     public BusinessServletException(Exception e, boolean relogin) {

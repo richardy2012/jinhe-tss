@@ -40,5 +40,9 @@ public class TimerStrategy {
 	public String key() {
 		return this.site.getId() + "-" + this.id;
 	}
+
+	public void setExecutorClass(String executorClass) {
+		this.executorClass = executorClass;
+	}
 }
 

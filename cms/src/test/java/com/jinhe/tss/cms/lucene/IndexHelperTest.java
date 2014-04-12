@@ -6,6 +6,7 @@ import java.util.Set;
 import org.junit.Test;
 
 import com.jinhe.tss.cms.entity.Channel;
+import com.jinhe.tss.cms.lucene.executor.KeywordIndexExecutor;
 import com.jinhe.tss.cms.timer.TimerStrategy;
 import com.jinhe.tss.cms.timer.TimerStrategyHolder;
 import com.jinhe.tss.framework.component.progress.Progress;
@@ -27,6 +28,9 @@ public class IndexHelperTest {
             articleContentSet.add(bean);
         }
         
+        IndexHelper.createIndex(tacticIndex, articleContentSet, new Progress(1000));
+        
+        tacticIndex.setExecutorClass(KeywordIndexExecutor.class.getName());
         IndexHelper.createIndex(tacticIndex, articleContentSet, new Progress(1000));
 	}
 

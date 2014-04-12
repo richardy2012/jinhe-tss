@@ -35,21 +35,6 @@ public class XmlHttpEncoder implements IDataEncoder {
 
     /**
      * <p>
-     * 设置返回参数
-     * </p>
-     * @param name  参数名
-     * @param value 参数值
-     * @param onlyText  是否为纯字符串
-     */
-    public void put(String name, String value, boolean onlyText) {
-        if (onlyText) {
-            value = "<![CDATA[" + value + "]]>";
-        }
-        put(name, value);
-    }
-
-    /**
-     * <p>
      * 输出XML信息<br>
      * 如果在调试模式下，输出调试信息，即请求返回数据
      * </p>

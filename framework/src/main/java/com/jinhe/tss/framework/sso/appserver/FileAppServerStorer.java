@@ -18,8 +18,7 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 应用访问配置信息管理器（类型：XML文件）
  * </p>
  * <servers>
- *   <server code="TSS" userDepositoryCode="tss" name="TSS" sessionIdName="JSESSIONID" 
- *     description="2......" baseURL="http://localhost:8088/tss"/>
+ *   <server code="TSS" name="TSS" sessionIdName="JSESSIONID" baseURL="http://localhost:8088/tss"/>
  * </servers>
  */
 public class FileAppServerStorer implements IAppServerStorer {

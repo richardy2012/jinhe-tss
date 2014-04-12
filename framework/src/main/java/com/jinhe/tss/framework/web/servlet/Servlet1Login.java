@@ -22,15 +22,15 @@ import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 public class Servlet1Login extends HttpServlet {
     private static final long serialVersionUID = 8087850681949512666L;
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	doGet(request, response);
     }
 
     /**
      * 登录部分工作已经在AutoLoginFilter中完成，此处只要返回成功信息即可
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 如果是从其它系统单点登录到平台（TSS），则自动转到配置的门户首页地址
         if(request.getParameter("sso") != null){
             String ssoIndex = Config.getAttribute("sso.index.page");

@@ -192,7 +192,6 @@ public class HttpInvokerProxyFactory extends HttpInvokerProxyFactoryBean {
                 Cookie cookie = new Cookie(cookieDomain, RequestContext.USER_TOKEN, token, cookiePath, null, secure);
                 initialState.addCookie(cookie);
             }
-
 	    }
 	}
 }

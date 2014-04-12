@@ -12,10 +12,21 @@ import com.jinhe.tss.util.BeanUtil;
 public class AppServerStorerFactory {
 
     private static AppServerStorerFactory factory;
+    
+    private AppServerStorerFactory() {
+    }
+    
+    /**
+     * 工厂类实例化
+     */
+    public static AppServerStorerFactory newInstance() {
+        if (factory == null) {
+            factory = new AppServerStorerFactory();
+        }
+        return factory;
+    }
 
     private static IAppServerStorer appServerStorer;
-
-    private AppServerStorerFactory() {}
 
     /**
      * <p>
@@ -35,18 +46,5 @@ public class AppServerStorerFactory {
             }
         }
         return appServerStorer;
-    }
-
-    /**
-     * <p>
-     * 工厂类实例化
-     * </p>
-     * @return
-     */
-    public static AppServerStorerFactory newInstance() {
-        if (factory == null) {
-            factory = new AppServerStorerFactory();
-        }
-        return factory;
     }
 }

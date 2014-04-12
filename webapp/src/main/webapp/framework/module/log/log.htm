@@ -59,7 +59,6 @@
 		loadInitData();
 
 		var p = new HttpRequestParams();
-		p.setContent("appCode", APP_CODE);
 		loadGridData(p, "1"); 
     }
  
@@ -127,9 +126,9 @@
     }
 	
 	function showLogList() {		
-	    var appCode = getTreeNodeId();
+	    var treeID = getTreeNodeId();
 		var p = new HttpRequestParams();
-		p.setContent("appCode", appCode);
+		p.setContent("operateTable", treeID);
 		loadGridData(p, "1"); 
     }
 

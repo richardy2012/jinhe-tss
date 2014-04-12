@@ -26,12 +26,8 @@ public class PasswordPassport {
         RequestContext requestContext = Context.getRequestContext();
         this.loginName = requestContext.getValueFromHeaderOrParameter(SSOConstants.LOGINNAME_IN_SESSION);
         this.password  = requestContext.getValueFromHeaderOrParameter(SSOConstants.USER_PASSWORD);
-        if (loginName == null) {
-            throw new UserIdentificationException("登录名不能为空，请重新登录");
-        }
-        
-        if (password == null) {
-            throw new UserIdentificationException("密码不能为空，请重新登录");
+        if (loginName == null || password == null) {
+            throw new UserIdentificationException("账号或密码不能为空，请重新登录。");
         }
     }
 

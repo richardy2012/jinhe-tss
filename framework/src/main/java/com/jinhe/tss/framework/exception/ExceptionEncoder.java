@@ -1,6 +1,5 @@
 package com.jinhe.tss.framework.exception;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.SocketException;
@@ -27,7 +26,7 @@ public class ExceptionEncoder {
  
     static IExceptionConvertor convertor = ExceptionConvertorFactory.getConvertor();
 
-    public static void encodeException(ServletResponse response, Exception be) throws IOException {
+    public static void encodeException(ServletResponse response, Exception be) {
     	 RequestContext requestContext = Context.getRequestContext();
          if( requestContext == null ) return;
     	

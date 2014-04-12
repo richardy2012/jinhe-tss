@@ -33,7 +33,7 @@ public class LogAction extends BaseActionSupport {
         StringBuffer sb = new StringBuffer("<actionSet><treeNode name=\"全部\" id=\"_rootId\">");
         for(Iterator<?> it = data.iterator(); it.hasNext();){
             String operateObject = (String) it.next();
-            sb.append("<treeNode id=\"" + operateObject + "\" name=\"" + operateObject + "\" icon=\"images/app.gif\"/>");
+            sb.append("<treeNode id=\"" + operateObject + "\" name=\"" + operateObject + "\" icon=\"images/folder.gif\"/>");
         }
         print("ObjectTree", sb.append("</treeNode></actionSet>"));
     }

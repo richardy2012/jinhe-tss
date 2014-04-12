@@ -34,7 +34,7 @@ public class OnlineUserIdentifier implements IUserIdentifier {
 			IdentityGetter translator = IdentityGetterFactory.getTranslator();
 			IOperator operator = translator.getOperator(userId);
 			
-            onlineUserManager.register(token, appCode, sessionId, operator.getId(), operator.getUserName());
+            onlineUserManager.register(token, appCode, sessionId, userId, operator.getUserName());
             return new IdentityCard(token, operator);
         }
 		

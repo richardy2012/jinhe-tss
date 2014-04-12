@@ -98,7 +98,7 @@ public class Filter8PortalPermission implements Filter {
 				if (canPortalBrowseByAnonymous(portalId))
 					req.setHeader(RequestContext.ANONYMOUS_REQUEST, Config.TRUE);
             
-		} catch (RuntimeException e) {
+		} catch (Exception e) {
 			throw new BusinessServletException(e);
 		}
 		chain.doFilter(req, response);

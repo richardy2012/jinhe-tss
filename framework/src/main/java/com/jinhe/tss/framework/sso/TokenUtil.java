@@ -41,21 +41,4 @@ public class TokenUtil {
 		}
 		return null;
 	}
-	
-	/**
-	 * <p>
-	 * 根据用户令牌获取SessionId
-	 * </p>
-	 * @param token
-	 * @return
-	 */
-	public static Long getSessionIdFromToken(String token) {
-		if (token != null) {
-			String originalToken = infoEncoder.createDecryptor(token);
-			int index = originalToken.indexOf(",");
-			String sessionId = originalToken.substring(0, index);
-			return new Long(sessionId);
-		}
-		return null;
-	}
 }

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -20,12 +21,12 @@ import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.lucene.ArticleContent;
 import com.jinhe.tss.cms.lucene.IndexHelper;
-import com.jinhe.tss.cms.publish.PublishManger;
 import com.jinhe.tss.cms.timer.TimerAction;
 import com.jinhe.tss.cms.timer.TimerStrategy;
 import com.jinhe.tss.cms.timer.TimerStrategyHolder;
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.test.TestUtil;
+import com.jinhe.tss.util.DateUtil;
 
 /**
  * 文章发布相关模块的单元测试。
@@ -70,6 +71,12 @@ public class ArticlePublishTest extends AbstractTestSupport {
         publishArticle(channel1Id, CMSConstants.PUBLISH_ALL);
         publishArticle(siteId, CMSConstants.PUBLISH_ALL);
         
+//        try {
+//        	channelAction.publish(response, channel1Id, CMSConstants.PUBLISH_ALL);
+//        } catch(Exception e) {
+//        	Assert.fail("没有事务");
+//        }
+        
         // 创建索引
 //        timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_PUBLISH_STRATEGY_ID, 1);
         timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_INDEX_STRATEGY_ID, 1);
@@ -97,10 +104,29 @@ public class ArticlePublishTest extends AbstractTestSupport {
         // 测试对外接口
         articleAction.getArticleInfo(response, articleId);
         
+        request.addParameter("articleXml", 
+           "<ArticleInfo>" + 
+	           "<Article>" + 
+		           "<title><![CDATA[文章一]]></title>" + 
+		           "<author><![CDATA[斯蒂芬]]></author>" + 
+		           "<keyword><![CDATA[公认的]]></keyword>" + 
+		           "<status><![CDATA[-1]]></status>" + 
+		           "<type><![CDATA[2]]></type>" + 
+		           "<typeName><![CDATA[报表]]></typeName>" + 
+		           "<wzrq><![CDATA[2007-06-06]]></wzrq>" + 
+		           "<content><![CDATA[正文正文正文正文正文正文正文正文]]></content>" + 
+	           "</Article>" + 
+           "</ArticleInfo>");
+        articleAction.importArticle(response, request, channel1Id);
+        
         articleAction.getArticleListByChannel(response, channel1Id, 1, 12, false);
         articleAction.getArticleListByChannel(response, channel1Id, 1, 12, true);
         articleAction.getArticleListDeeplyByChannel(response, channel1Id, 1, 12);
-        articleAction.getArticleListByChannelAndTime(response, channel1Id, "2012", "02");
+        
+        String todayStr = DateUtil.format(new Date());
+        String year = todayStr.substring(0, 4);
+        String month = todayStr.substring(5, 7);
+        articleAction.getArticleListByChannelAndTime(response, channel1Id, year, month);
         
         String channelIds = channel1Id + "," + channel2.getId();
         articleAction.getArticleListByChannels(response, channelIds, 1, 12);
@@ -148,5 +174,4 @@ public class ArticlePublishTest extends AbstractTestSupport {
             channelService.publishArticle(pageArticleList);
         }
     }
-    
 }

@@ -587,13 +587,6 @@ function Message_Exception(param, request) {
 			request.send();
 		}
 	}
-	else if(param.relogin == "2" ) { // 单点登录应用跳转，需要输入用户在目标系统中的密码
-		var loginObj = window.showModalDialog(URL_CORE + "../_relogin.htm", {title:"请重新输入密码"},"dialogWidth:250px;dialogHeight:150px;resizable:yes");
-		if( loginObj ) {
-			request.paramObj.setHeader("pwd", loginObj.password);
-			request.send();
-		}
-	}
 }
 
 

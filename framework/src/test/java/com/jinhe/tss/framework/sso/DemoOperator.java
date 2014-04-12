@@ -19,19 +19,11 @@ public class DemoOperator implements IOperator {
         attributesMap.put("loginName", getLoginName());
         attributesMap.put("userName", getUserName());
     }
-
-    public Object getAttribute(String name) {
-        return attributesMap.get(name);
-    }
-
+ 
     public Map<String, Object> getAttributesMap() {
         return attributesMap;
     }
-
-    public String getAuthenticateMethod() {
-        return DemoUserIdentifier.class.getName();
-    }
-
+ 
     public Long getId() {
         return userId;
     }

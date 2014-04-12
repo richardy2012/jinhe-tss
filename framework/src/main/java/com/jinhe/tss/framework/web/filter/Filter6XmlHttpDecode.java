@@ -86,7 +86,7 @@ public class Filter6XmlHttpDecode implements Filter {
             
             chain.doFilter(httpRequest, response);
         } 
-        catch (RuntimeException e) {
+        catch (Exception e) {
             throw new BusinessServletException(e);
         }
     }

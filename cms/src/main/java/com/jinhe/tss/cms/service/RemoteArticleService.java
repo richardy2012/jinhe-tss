@@ -221,38 +221,16 @@ public class RemoteArticleService implements IRemoteArticleService {
         
         articleDao.saveArticle(article);
     }
-    
-    protected static final Date DEFAULT_START_DATE = DateUtil.parse("2000-1-1");
-    protected static final Date DEFAULT_END_DATE = DateUtil.parse("2099-12-31");
-    
+
     public String search(Long siteId, String searchStr, int page, int pageSize) {
-        Date startDate = DEFAULT_START_DATE;
-        Date endDate = DEFAULT_END_DATE;
-        boolean filterByTime = false; // 是否需要对查询结果集进行按时间段过滤，高级查询的时候用到
-        String[] field = null;
-        if(searchStr != null && searchStr.indexOf("@advancedSearch") >= 0){
-            // 查询条件（searchStr）格式为 ： + 杭州 + 零售信贷 , 2000-1-1, 2099-12-31, @advancedSearch, title:杭州&author:零售信贷&
-            String[] condition = searchStr.split(",");
-            try {
-                searchStr = condition[0]; 
-                startDate = DateUtil.parse(condition[1].trim());
-                endDate = DateUtil.parse(condition[2].trim());
-                filterByTime = !DEFAULT_START_DATE.equals(startDate) || !DEFAULT_END_DATE.equals(endDate);
-                if(condition[4] != null){
-                    field = condition[4].split("&");
-                }
-            } catch (Exception e) {
-                filterByTime = false;
-            }
-        }
-        
         Channel site = channelDao.getEntity(siteId);
         TimerStrategy tacticIndex = TimerStrategyHolder.getIndexStrategy();
         tacticIndex.setSite(site);
         
         String indexPath = tacticIndex.getIndexPath();
-        if (!new File(indexPath).exists() || searchStr == null || "".equals(searchStr.trim()))
+        if (!new File(indexPath).exists() || searchStr == null || "".equals(searchStr.trim())) {
             return "<Response><ArticleList><rss version=\"2.0\"><channel/></rss></ArticleList></Response>";
+        }
         
         org.dom4j.Document doc = DocumentHelper.createDocument();
         
@@ -263,42 +241,11 @@ public class RemoteArticleService implements IRemoteArticleService {
             Query query = IndexExecutorFactory.create(tacticIndex.getExecutorClass()).createIndexQuery(searchStr);
             Hits hits = searcher.search(query, new Sort(new SortField("createTime", SortField.STRING, true))); // 按创建时间排序
             
-            // 先遍历一边查询结果集，对其按时间段以及权限进行过滤，将过滤后的结果集放入到一个临时list中。
+            // 先遍历一边查询结果集，对其权限进行过滤，将过滤后的结果集放入到一个临时list中。
             List<org.apache.lucene.document.Document> list = new ArrayList<org.apache.lucene.document.Document>();
             for (Iterator<?> it = hits.iterator(); it.hasNext(); ) {
                 Hit hit = (Hit) it.next();
-                org.apache.lucene.document.Document document = hit.getDocument();
-                
-                // 按时间段对查询结果集进行过滤
-                if(filterByTime){
-                    Date createTime = document.get("createTime") == null ? null : DateUtil.parse(document.get("createTime"));
-                    startDate = startDate == null ? DEFAULT_START_DATE : startDate;
-                    endDate = endDate == null ? DEFAULT_END_DATE : endDate;
-                    if(createTime == null || createTime.before(startDate) || createTime.after(endDate)){
-                       continue;
-                    }
-                }
-                boolean checkByField = true;
-                if(field != null){
-                    for(int i = 0; i < field.length; i++){
-                        String nv = field[i];
-                        try {
-                            String fieldName  = nv.substring(0, nv.indexOf(":")).trim();
-                            String fieldValue = nv.substring(nv.indexOf(":") + 1).trim();
-                            // 如果搜索的字段在索引里没有，或者没有包含搜索字段的关键字，则过滤掉
-                            if(document.get(fieldName) == null || document.get(fieldName).indexOf(fieldValue) == -1){
-                                checkByField = false;
-                                break;
-                            }
-                        }catch(Exception e){
-                        }
-                    }
-                }
-                if(!checkByField){
-                    continue;
-                }
-                
-                list.add(document);
+                list.add(hit.getDocument());
             }
 
             int totalRows = list.size();
@@ -311,7 +258,7 @@ public class RemoteArticleService implements IRemoteArticleService {
                 org.apache.lucene.document.Document document = list.get(i);
                 
                 // 生成rss格式的xml文件的搜索出来的内容
-                Long articleId = document.get("id") == null ? null : Long.valueOf(document.get("id"));
+                Object articleId = document.get("id");
                 Date issueDate = document.get("issueDate") == null ? null : DateUtil.parse(document.get("issueDate"));
                 createArticleElement(channelElement, articleId, document.get("title"), document.get("author"), 
                         issueDate, document.get("summary"), 0);

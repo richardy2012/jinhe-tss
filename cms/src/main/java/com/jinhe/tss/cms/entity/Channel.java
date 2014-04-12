@@ -45,8 +45,6 @@ public class Channel extends OperateInfo implements IXForm, ILevelTreeNode, IDec
     @ManyToOne(fetch = FetchType.EAGER)
     private Channel site;  // 栏目所在站点
     
-    private String  publishArticleClassName; //发布文章实现类
-    
 	private String  path;        // 发布路径
 	private String  imagePath;   // 图片上传根路径
 	private String  docPath;     // 附件上传根路径
@@ -213,15 +211,7 @@ public class Channel extends OperateInfo implements IXForm, ILevelTreeNode, IDec
         }
         return getClass();
 	}
-
-	public String getPublishArticleClassName() {
-		return publishArticleClassName;
-	}
-
-	public void setPublishArticleClassName(String publishArticleClassName) {
-		this.publishArticleClassName = publishArticleClassName;
-	}
-
+ 
 	public Channel getSite() {
 		return site;
 	}

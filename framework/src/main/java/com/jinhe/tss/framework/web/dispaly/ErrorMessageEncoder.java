@@ -129,7 +129,7 @@ public class ErrorMessageEncoder implements IDataEncoder {
         sb.append("<Response><Error>");
         sb.append("<msg><![CDATA[").append(this.message).append("]]></msg>");
         sb.append("<description><![CDATA[").append(description).append("]]></description>");
-        sb.append("<relogin>").append(this.relogin).append("</relogin>");
+        sb.append("<relogin>").append(this.relogin ? 1 : 0).append("</relogin>");
         sb.append("<type>").append(this.type).append("</type>");
         sb.append("</Error></Response>");
         

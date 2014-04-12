@@ -35,16 +35,8 @@ public class AnonymousOperator implements IOperator {
     public boolean isAnonymous() {
         return true;
     }
-
-    public Object getAttribute(String name) {
-        return null;
-    }
-
+ 
     public Map<String, Object> getAttributesMap() {
-        return null;
-    }
-
-    public String getAuthenticateMethod() {
         return null;
     }
 }

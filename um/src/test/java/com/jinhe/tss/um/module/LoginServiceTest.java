@@ -111,6 +111,6 @@ public class LoginServiceTest extends TxSupportTest4UM {
 		List<OperatorDTO> users2 = loginSerivce.getUsersByRoleId(role1Id);
 		Assert.assertTrue(users1.size() == 1); // JK
 		Assert.assertTrue(users2.size() == 2); // Admin, JK
-		Assert.assertEquals("JK", users1.get(0).getAttribute("userName"));
+		Assert.assertEquals("JK", users1.get(0).getAttributesMap().get("userName"));
 	}
 }

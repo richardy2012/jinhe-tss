@@ -1,21 +1,17 @@
 package com.jinhe.tss.framework.component.param;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.dom4j.Document;
-import org.dom4j.Element;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.TxTestSupport;
-import com.jinhe.tss.framework.sso.appserver.AppServer;
-import com.jinhe.tss.util.XMLDocUtil;
 
 public class ParamServiceTest extends TxTestSupport {
     
@@ -48,28 +44,6 @@ public class ParamServiceTest extends TxTestSupport {
         Assert.assertEquals("TSS", paramService.getParam(testCode).getValue());
         
         printParams();
-        paramService.delete(group.getId());
-    }
-    
-    /** 导入应用服务配置文件 appServers.xml */
-    @Test
-    public void testImportAppServerConfig(){
-        Param group = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "应用服务配置");
-        
-        Document doc = XMLDocUtil.createDoc("appServers.xml");
-        List<?> elements = doc.getRootElement().elements();
-        for (Iterator<?> it = elements.iterator(); it.hasNext();) {
-            Element element = (Element) it.next();
-            String name = element.attributeValue("name");
-            String code = element.attributeValue("code");
-            addSimpleParam(group.getId(), code, name, element.asXML());
-        }
-        
-        printParams();
-        
-        AppServer appServer = new ParamAppServerStorer().getAppServer("TSS");
-		assertEquals("TSS", appServer.getCode());
-        
         paramService.delete(group.getId());
     }
     
