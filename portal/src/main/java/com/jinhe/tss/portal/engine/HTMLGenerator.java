@@ -262,13 +262,10 @@ public class HTMLGenerator {
     private StringBuffer formatScriptLinks() {
         StringBuffer sb = new StringBuffer();
         // 默认挂载的js
-        String commonJSPath = Environment.getContextPath() + "/core/js/";
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "common.js\"></script>\n");
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "element.js\"></script>\n");
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "event.js\"></script>\n");
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "xml.js\"></script>\n");
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "xmlhttp.js\"></script>\n");
-        sb.append("<script language=\"javascript\" src=\"" + Environment.getContextPath() + "/pms/js/diy.js\"></script>\n");
+        String commonJSPath = Environment.getContextPath() + "/framework/";
+        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "core.js\"></script>\n");
+        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "ajax.js\"></script>\n");
+//        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "framework.js\"></script>\n");
         
         for ( String filePath : scriptFiles ) {
             sb.append("<script language=\"javascript\" src=\"" + (portalResourseDir + filePath) + "\"></script>\n");

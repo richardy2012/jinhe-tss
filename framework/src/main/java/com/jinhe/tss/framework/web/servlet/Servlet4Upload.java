@@ -67,7 +67,7 @@ public class Servlet4Upload extends HttpServlet {
 			String script = "alert('upload sucess!')";
 			if(afterUploadClass != null) {
 				AfterUpload afterUpload = (AfterUpload) BeanUtil.newInstanceByName(afterUploadClass);
-				script = afterUpload.processUploadFile(request,newFilePath, fileName);
+				script = afterUpload.processUploadFile(request, newFilePath, fileName);
 			}
 	        
 			encoder.put("script", script);

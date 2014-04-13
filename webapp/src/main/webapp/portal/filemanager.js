@@ -20,11 +20,15 @@
 		URL_DOWNLOAD_FILES = "data/download.zip?";
 		URL_ADD_FOLDER     = "data/_success.xml?";
 	}
- 
-	var params;
+
+    var params;
+    function init() {
+        params =  window.dialogArguments ? window.dialogArguments.params : {};
+
+        loadFileTree();
+    }
 
     function loadFileTree(contextPath, filter) {
-        params =  window.dialogArguments ? window.dialogArguments.params : {};
 		if(contextPath) {
             params.contextPath = contextPath;
         }
@@ -223,4 +227,4 @@
 		Element.show(importDiv);
     }
 
-    window.onload = loadFileTree;
+    window.onload = init;

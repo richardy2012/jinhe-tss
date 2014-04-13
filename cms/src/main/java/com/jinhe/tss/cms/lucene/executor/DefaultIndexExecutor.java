@@ -41,8 +41,7 @@ public class DefaultIndexExecutor implements IIndexExecutor {
     protected final static String FIELD_CONTENTS   = "contents";
     
     public void createIndex(ArticleContent bean, IndexWriter indexWriter) throws CorruptIndexException, IOException {
-        if ( !bean.checkPubUrl() )
-            return;
+        if ( !bean.checkPubUrl() ) return;
         
         // 从发布的xml文件中获取用以创建索引的内容信息
         String publishPath = bean.getPubUrl();

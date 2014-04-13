@@ -432,10 +432,12 @@ function createImportDiv(remark, checkFileWrong, importUrl) {
  /* 创建导出用iframe */
 function createExportFrame() {
 	var frameName = "exportFrame";
-	var frameObj = $$(frameName);
-	if( frameObj == null ) {
-		frameObj = document.createElement("<iframe name='" + frameName + "' id='" + frameName + "' src='about:blank' style='display:none'></iframe>");
-		document.body.appendChild(frameObj);
+	if( $$(frameName) == null ) {
+		var exportDiv = document.createElement("div"); 
+		exportDiv.style.display = "none";
+		document.body.appendChild(exportDiv);
+
+		exportDiv.innerHTML = "<iframe name='" + frameName + "' id='" + frameName + "' src='about:blank' style='display:none'></iframe>";
 	}
 	return frameName;
 }

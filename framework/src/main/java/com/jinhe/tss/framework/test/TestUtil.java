@@ -23,6 +23,10 @@ public class TestUtil {
 	
 	static final String PROJECT_NAME = "jinhe-tss";
 	
+	public static String getTempDir() {
+		return System.getProperty("java.io.tmpdir");
+	}
+	
 	public static String getProjectDir() {
         String path = URLUtil.getResourceFileUrl("application.properties").getPath();
         
