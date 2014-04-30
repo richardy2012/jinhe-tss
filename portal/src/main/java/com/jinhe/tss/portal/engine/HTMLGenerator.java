@@ -265,7 +265,6 @@ public class HTMLGenerator {
         String commonJSPath = Environment.getContextPath() + "/framework/";
         sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "core.js\"></script>\n");
         sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "ajax.js\"></script>\n");
-//        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "framework.js\"></script>\n");
         
         for ( String filePath : scriptFiles ) {
             sb.append("<script language=\"javascript\" src=\"" + (portalResourseDir + filePath) + "\"></script>\n");

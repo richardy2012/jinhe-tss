@@ -79,9 +79,9 @@ public class Filter7AccessingCheck implements Filter {
         String servletPath = req.getRequestURI().substring(req.getContextPath().length());
         AccessingChecker checker = AccessingChecker.getInstance();
         
-        log.info("权限检测：" + servletPath);
+        log.debug("权限检测：" + servletPath);
         if (!checker.checkPermission(userRights, servletPath)) {
-            log.info("权限检测失败");
+            log.debug("权限检测失败");
             
             if(checker.get404URL() != null){
                 ((HttpServletResponse)response).sendRedirect(checker.get404URL());
@@ -89,7 +89,7 @@ public class Filter7AccessingCheck implements Filter {
             } 
             throw new BusinessServletException("访问控制检测失败，您无权访问本页面");
         }
-        log.info("权限检测通过");
+        log.debug("权限检测通过");
         chain.doFilter(request, response);
     }
 

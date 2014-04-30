@@ -166,6 +166,20 @@ function initListContainerResize() {
 	var listContainer = $$("listContainer");
 	// Element.attachRowResize(listContainer);
 }
+
+/* 事件绑定初始化 */
+function initEvents() {
+	Event.attachEvent($$("treeBtRefresh"), "click", onClickTreeBtRefresh);
+	Event.attachEvent($$("treeTitle"),     "click", onClickTreeTitle);
+
+	Focus.register( $$("treeTitle").firstChild );
+
+	if($$("openLeftBarIcon")) {
+		onClickPaletteBt();
+	}
+
+	logoutOnClose(); // 关闭页面自动注销
+}
  
 /* 点击树刷新按钮 */
 function onClickTreeBtRefresh() {
@@ -366,16 +380,6 @@ function initNaviBar(curId, relativePath) {
 			$$("navibar").style.display = "inline";
 		}
 	});
-}
-
-/* 事件绑定初始化 */
-function initEvents() {
-	Event.attachEvent($$("treeBtRefresh"), "click", onClickTreeBtRefresh);
-	Event.attachEvent($$("treeTitle"),     "click", onClickTreeTitle);
-
-	Focus.register( $$("treeTitle").firstChild );
-
-	logoutOnClose(); // 关闭页面自动注销
 }
 
 /* 创建导入Div */

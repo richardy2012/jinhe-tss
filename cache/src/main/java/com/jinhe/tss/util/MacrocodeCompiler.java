@@ -110,14 +110,19 @@ public class MacrocodeCompiler {
      * #{title}:Portlet名称
      * </p>
      * 
-     * @param code
+     * @param script
      *            String 包含宏代码、变量等的字符串
      * @param macrocodes
      *            Map 宏代码、值对应表
-     * @return String 宏代码、变量执行后的字符串
+     *  @param ignoreNull
+     *  		    是否忽略值为空的宏，是的话不解析该宏
+     * @return String 
+     * 			   宏代码、变量执行后的字符串
      */
-    public static String run(String code, Map<String, ? extends Object> macrocodes) {
-        List<String> segment = compile(code);
+    public static String run(String script, Map<String, ? extends Object> macrocodes, boolean ignoreNull) {
+    	if(macrocodes == null) return script;
+    	
+    	List<String> segment = compile(script);
         if (segment == null) return ""; 
         
         StringBuffer sb = new StringBuffer();
@@ -125,19 +130,29 @@ public class MacrocodeCompiler {
             if (item == null) continue;
             
             if (item.length() > 3
-            		&& isMacroStartTag(item.charAt(0)) && isStartSymbol(item.charAt(1)) && isEndSymbol(item.charAt(item.length() - 1))
-                    && macrocodes != null) {
+            		&& isMacroStartTag(item.charAt(0)) 
+            		&& isStartSymbol(item.charAt(1)) 
+            		&& isEndSymbol(item.charAt(item.length() - 1)) ) {
                 
                 Object macro = macrocodes.get(item);
                 if (macro != null) {
                     sb.append(macro);
                 }  
+                else {
+                	if( ignoreNull ) {
+                		sb.append(item); // 放回去，不解析
+                	}
+                }
             } 
             else {
                 sb.append(item);
             }
         }
         return sb.toString();
+    }
+    
+    public static String run(String script, Map<String, ? extends Object> macrocodes) {
+        return run(script, macrocodes, false);
     }
     
     /**  是否宏代码标记 '$' or '#'  */

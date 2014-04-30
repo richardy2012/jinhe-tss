@@ -18,7 +18,7 @@ public class MacrocodeCompilerTest {
             + "             <tr>    "
             + "                 <td>${js.content}</td>"
             + "             </tr>"
-            + "         </table>";
+            + "         </table>${ignore}";
 
         Map<String, Object> macro = new HashMap<String, Object>();
         macro.put("${portlet.id}", "1001");
@@ -40,8 +40,10 @@ public class MacrocodeCompilerTest {
         		"                     <td>作为下一代的网页语言，HTML5 拥有很多让人期待已久的新特性，它可以说是近十年来 Web 标准最巨大的飞跃。</td>" +
         		"             </tr>" +
         		"         </table>";
-        assertEquals(result, MacrocodeCompiler.run(code, macro));
-        assertEquals("test|test", MacrocodeCompiler.run("test${d}", macro));
+        assertEquals( result, MacrocodeCompiler.run(code, macro) );
+        assertEquals( result + "${ignore}", MacrocodeCompiler.run(code, macro, true) );
+        
+        assertEquals( "test|test", MacrocodeCompiler.run("test${d}", macro));
     }
 
 }

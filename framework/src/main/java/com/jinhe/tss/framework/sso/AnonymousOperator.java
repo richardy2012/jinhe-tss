@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework.sso;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -37,6 +38,6 @@ public class AnonymousOperator implements IOperator {
     }
  
     public Map<String, Object> getAttributesMap() {
-        return null;
+        return new HashMap<String, Object>();
     }
 }
