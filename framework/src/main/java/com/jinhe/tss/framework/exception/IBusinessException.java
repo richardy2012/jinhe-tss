@@ -13,4 +13,9 @@ public interface IBusinessException {
 	 * @return 
 	 */
 	boolean needRelogin();
+	
+	/**
+     * 是否打印异常stack
+     */
+	boolean needPrint();
 }

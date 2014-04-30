@@ -4,7 +4,7 @@
 		<column name="userName"  caption="姓名" mode="string" empty="false" maxLength="20"/>
 		<column name="loginName" caption="账号" mode="string" empty="false" maxLength="20"/>
 		<column name="email"     caption="电子邮件" mode="string" maxLength="50" inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/"/>
-		<column name="password1" caption="密码"   mode="string" empty="false" maxLength="20" inputReg="/^[\u0000-\u00FF]*$/"/>
+		<column name="password" caption="密码"   mode="string" empty="false" maxLength="20" inputReg="/^[\u0000-\u00FF]*$/"/>
 		<column name="password2" caption="密码确认" mode="string" empty="false" maxLength="20" inputReg="/^[\u0000-\u00FF]*$/"/>
 	</declare>
 	<layout>
@@ -34,10 +34,10 @@
 		</TR>
 		<TR>
 			<TD width="50">
-				<label binding="password1"/>
+				<label binding="password"/>
 			</TD>
 			<TD>
-				<input binding="password1" type="password" style="width:250;"/>
+				<input binding="password" type="password" style="width:250;"/>
 			</TD>
 		</TR>
 		<TR>

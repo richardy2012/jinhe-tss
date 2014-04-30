@@ -11,7 +11,9 @@ package com.jinhe.tss.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -38,6 +40,14 @@ public class DateUtil {
     private static final String SDF_4_REG = "^\\d{2,4}\\/\\d{1,2}\\/\\d{1,2}$";
 
     private static final SimpleDateFormat SDF_4 = new SimpleDateFormat("yyyy/MM/dd");
+    
+    private static final String SDF_5_REG = "^\\d{2,4}\\/\\d{1,2}\\/\\d{1,2} \\d{1,2}:\\d{1,2}$";
+
+    private static final SimpleDateFormat SDF_5 = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+    
+    private static final String SDF_6_REG = "^\\d{2,4}\\-\\d{1,2}\\-\\d{1,2} \\d{1,2}:\\d{1,2}$";
+
+    private static final SimpleDateFormat SDF_6 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     /**
      * <p>
@@ -46,6 +56,8 @@ public class DateUtil {
      * <li>yyyy-MM-dd
      * <li>yyyy/MM/dd HH:mm:ss
      * <li>yyyy/MM/dd
+     * <li>yyyy-MM-dd HH:mm
+     * <li>yyyy/MM/dd HH:mm
      * </p>
      * 
      * @param str
@@ -58,20 +70,16 @@ public class DateUtil {
     		str = str.substring(0, str.indexOf(".")); // 截掉微秒
     	}
     	
+    	List<String> sdfRegArray = Arrays.asList(SDF_1_REG, SDF_2_REG, SDF_3_REG, SDF_4_REG, SDF_5_REG, SDF_6_REG);
+    	List<SimpleDateFormat> sdfArray = Arrays.asList(SDF_1, SDF_2, SDF_3, SDF_4, SDF_5, SDF_6);
+    	
         Date date = null;
         try {
-            if (Pattern.compile(SDF_1_REG).matcher(str).matches()) {
-                date = SDF_1.parse(str);
-            } 
-            else if (Pattern.compile(SDF_2_REG).matcher(str).matches()) {
-                date = SDF_2.parse(str);
-            }
-            else if (Pattern.compile(SDF_3_REG).matcher(str).matches()){
-                date = SDF_3.parse(str);
-            }
-            else if(Pattern.compile(SDF_4_REG).matcher(str).matches()){
-                date = SDF_4.parse(str);
-            }
+        	for(int index = 0; index < sdfRegArray.size(); index ++) {
+        		 if (Pattern.compile(sdfRegArray.get(index)).matcher(str).matches()) {
+                     return sdfArray.get(index).parse(str);
+                 } 
+        	}
         } catch (ParseException e) {
             throw new RuntimeException("非法日期字符串，解析失败：" + str, e);
         }

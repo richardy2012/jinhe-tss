@@ -44,7 +44,7 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
         try {
             operator = service.getOperatorDTOByLoginName(passport.getLoginName());
         } catch (BusinessException e) {
-            throw new UserIdentificationException(e.getMessage()); // 转换为 UserIdentificationException 抛出，防止在日志里输出
+        	throw new BusinessException(e.getMessage(), false);
         }
         
         String password = InfoEncoder.string2MD5(passport.getLoginName() + "_" + passport.getPassword());
@@ -59,7 +59,8 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
             if(checkPWDInLDAP(operator.getId(), passport.getPassword())) {
                 return operator;
             }
-            throw new UserIdentificationException("用户密码不正确，请重新登录");
+            
+            throw new BusinessException("用户密码不正确，请重新登录", false);
         }
     }
     

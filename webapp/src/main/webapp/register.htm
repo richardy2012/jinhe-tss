@@ -52,6 +52,8 @@ URL_CORE = "framework/"
 
 				$$("password1").onblur = function() { 
 					var password = this.value;
+					registerForm.updateDataExternal("password", password);
+
 					if(password == null || password == "") return;
 					
 					var loginName = registerForm.getData("loginName");
@@ -81,7 +83,7 @@ URL_CORE = "framework/"
     function checkRegisterForm(){
         var flag = true;
 
-        var password1 = $$("password1").value; 
+        var password1 = $$("password").value; 
         var password2 = $$("password2").value; 
 		if(password1 != password2) {
 			flag = false;

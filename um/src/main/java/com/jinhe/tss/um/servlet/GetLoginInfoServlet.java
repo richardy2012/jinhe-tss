@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.jinhe.tss.framework.Global;
+import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.SSOConstants;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpEncoder;
@@ -31,14 +32,18 @@ public class GetLoginInfoServlet extends HttpServlet {
         ILoginService service = (ILoginService) Global.getContext().getBean("LoginService");
         
         String loginName = request.getParameter(SSOConstants.LOGINNAME_IN_SESSION);
-        String[] info = service.getLoginInfoByLoginName(loginName);
-
-        response.setCharacterEncoding("utf-8");
-        
-        XmlHttpEncoder encoder = new XmlHttpEncoder();
-        encoder.put("UserName", info[0]); //返回用户姓名
-        encoder.put("ClassName", info[1]); //返回身份认证器类名：全路径
-        encoder.print(new XmlPrintWriter(response.getWriter()));
+        try {
+        	String[] info = service.getLoginInfoByLoginName(loginName);
+            XmlHttpEncoder encoder = new XmlHttpEncoder();
+            encoder.put("UserName",  info[0]); //返回用户姓名
+            encoder.put("ClassName", info[1]); //返回身份认证器类名：全路径
+            
+            response.setCharacterEncoding("utf-8");
+            encoder.print(new XmlPrintWriter(response.getWriter()));
+        } 
+        catch(BusinessException e) {
+        	throw new BusinessException(e.getMessage(), false); // 无需打印登录异常
+        }
     }
 
 }

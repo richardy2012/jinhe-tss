@@ -37,6 +37,9 @@ public class DateUtilTest {
 		Assert.assertNotNull(DateUtil.parse("2013-11-07"));
 		Assert.assertNotNull(DateUtil.parse("2013/11/07"));
 		
+		Assert.assertNotNull(DateUtil.parse("2013/11/07 11:26"));
+		Assert.assertEquals(DateUtil.parse("2013-11-07 11:26"), DateUtil.parse("2013/11/07 11:26"));
+		
 		try {
 			DateUtil.parse("2013/11-07");
 		} catch (Exception e) {

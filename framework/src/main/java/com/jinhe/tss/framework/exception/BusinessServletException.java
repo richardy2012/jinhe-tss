@@ -16,12 +16,19 @@ public class BusinessServletException extends ServletException implements IBusin
      *  true-需要重新登录平台；
 	 */
     private boolean relogin = false;
+    
+    /**
+     * 是否打印异常stack
+     */
+    private boolean neddPrint = true;
  
     public BusinessServletException(Exception e) {
         super(e.getMessage());
         initCause(e);
         if(e instanceof IBusinessException) {
-        	this.relogin = ((IBusinessException)e).needRelogin();
+        	IBusinessException be = (IBusinessException)e;
+			this.relogin = be.needRelogin();
+        	this.neddPrint = be.needPrint();
     	}
     }
  
@@ -43,4 +50,8 @@ public class BusinessServletException extends ServletException implements IBusin
     public boolean needRelogin() {
         return this.relogin;
     }
+
+	public boolean needPrint() {
+		return !this.relogin && this.neddPrint;
+	}
 }

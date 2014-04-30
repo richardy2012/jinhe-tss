@@ -39,8 +39,7 @@ public class ExceptionEncoder {
             if(be instanceof IBusinessException){
                 IBusinessException e = (IBusinessException) be;
                 
-                // 如果是提示登录相关的异常（relogin = true），不需要在控制台打印出来。
-				if( !e.needRelogin()) { 
+				if( e.needPrint() ) { 
                     printErrorMessage(be);
                     // 输出调试信息
                     log.debug("-----------------------  Exception  -----------------------");
@@ -48,6 +47,9 @@ public class ExceptionEncoder {
                     log.debug(errorMsgEncoder.toXml());
                     log.debug("--------------------- End of Exception --------------------");
                 }
+				else {
+					log.warn(be.getMessage());
+				}
             }
             
             if (requestContext.isXmlhttpRequest()) {
