@@ -372,6 +372,9 @@ public class RoleAction extends BaseActionSupport {
 	    if( applicationId == null ) {
             applicationId = PermissionHelper.getApplicationID();
         }
+	    if(permissions == null) {
+    		permissions = "";
+    	}
 	    
 	    PermissionService localPermissionService = PermissionHelper.getPermissionService(applicationId, permissionService);
         

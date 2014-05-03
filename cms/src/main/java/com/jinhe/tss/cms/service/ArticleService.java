@@ -135,7 +135,7 @@ public class ArticleService implements IArticleService {
      * 主要是将临时生成的附件ID替换成附件所属文章的ID。
 	 */
 	private void translatePath(Attachment attachment, Article article, Long channelId) {
-		// download.fun?id=1&seqNo=1
+		// download?id=1&seqNo=1
 		String relateDownloadUrl = attachment.getRelateDownloadUrl(); 
         relateDownloadUrl = relateDownloadUrl.replaceAll("&", "&amp;"); //将&替换成&amp;
         

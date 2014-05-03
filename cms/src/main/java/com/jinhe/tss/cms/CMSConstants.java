@@ -17,7 +17,7 @@ public interface CMSConstants {
     static final Integer STATUS_START = ParamConstants.FALSE; // 站点启动状态
    
     /** 下载地址的路径 */
-    static final String DOWNLOAD_SERVLET_URL = "/download.fun?id="; 
+    static final String DOWNLOAD_SERVLET_URL = "/download?id="; 
     
     /** 根结点ID */
     static final Long HEAD_NODE_ID = -1L; 

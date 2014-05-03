@@ -184,7 +184,7 @@ public class ArticleAction extends BaseActionSupport {
     /**
      * 获取栏目的文章列表
      */
-    @RequestMapping(value = "/articleList/{channelId}/{page}/{pageSize}/{needPic}", method = RequestMethod.GET)
+    @RequestMapping(value = "/list/xml/{channelId}/{page}/{pageSize}/{needPic}", method = RequestMethod.GET)
     public void getArticleListByChannel(HttpServletResponse response, 
     		@PathVariable("channelId") Long channelId, 
     		@PathVariable("page") int page, 

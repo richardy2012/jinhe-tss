@@ -289,12 +289,10 @@ public class ComponentAction extends FMSupportAction {
         
         org.dom4j.Node htmlNode = doc.selectSingleNode("/" + componentType + "/html");
         org.dom4j.Node scriptNode = doc.selectSingleNode("/" + componentType + "/script");
-        org.dom4j.Node prototypeStyleNode = doc.selectSingleNode("/" + componentType + "/prototypeStyle");
         org.dom4j.Node styleNode = doc.selectSingleNode("/" + componentType + "/style");
         
         String html = (htmlNode == null? null : htmlNode.getText());
         String script = (scriptNode == null? null : scriptNode.getText());
-        String prototypeStyle = (prototypeStyleNode == null? null : prototypeStyleNode.getText());
         String style = (styleNode == null? null : styleNode.getText());
         
         Map<String, String> events = new HashMap<String, String>();
@@ -319,7 +317,7 @@ public class ComponentAction extends FMSupportAction {
         parameters.put("${basepath}", Environment.getContextPath() + "/" + component.getResourcePath() + "/");
 
         // 直接预览门户组件
-        String data = toHTML(html, script, prototypeStyle, style, events, parameters);
+        String data = toHTML(html, script, style, events, parameters);
         if(component.isportlet()) {
             printHTML(data); // 如果是预览portlet，则需要执行模板引擎解析
         } else {
@@ -327,25 +325,21 @@ public class ComponentAction extends FMSupportAction {
         }
     }
     
-    private String toHTML(String html, String script, String prototypeStyle, String style, 
+    private String toHTML(String html, String script, String style, 
             Map<String, String> events, Map<String, String> parameters) {
         
         StringBuffer sb = new StringBuffer("<html>\n<head>\n");               
-        sb.append("<style>\n").append(MacrocodeCompiler.run(prototypeStyle, parameters));
-        sb.append(MacrocodeCompiler.run(style, parameters)).append("\n</style>\n");        
+        sb.append("<style>\n").append(MacrocodeCompiler.run(style, parameters, true)).append("\n</style>\n");        
         
-        String commonJSPath = Environment.getContextPath() + "/core/js/";
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "common.js\"></script>\n");
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "element.js\"></script>\n");
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "event.js\"></script>\n");
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "xml.js\"></script>\n");
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "xmlhttp.js\"></script>\n");
+        String commonJSPath = Environment.getContextPath() + "/framework/";
+        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "core.js\"></script>\n");
+        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "ajax.js\"></script>\n");
         
         sb.append("<script language=\"javascript\">\n");
-        sb.append(MacrocodeCompiler.run(script, parameters));
+        sb.append(MacrocodeCompiler.run(script, parameters, true));
         sb.append("\n").append(getEvents4HTML(events, parameters)).append("\n</script>\n");
         sb.append("</head>\n<body>\n");
-        sb.append(MacrocodeCompiler.run(html, parameters));
+        sb.append(MacrocodeCompiler.run(html, parameters, true));
         sb.append("\n</body></html>");
         
         return sb.toString();
@@ -357,7 +351,7 @@ public class ComponentAction extends FMSupportAction {
         for( Entry<String, String> entry : events.entrySet() ) {
             String key = entry.getKey();
             String value = entry.getValue();
-            value = MacrocodeCompiler.run(value, parameters);
+            value = MacrocodeCompiler.run(value, parameters, true);
             
             if ("onload".equals(key)) {
                 onloadEvent.append("window.onload = function() {\n").append(value + "();\n};\n");

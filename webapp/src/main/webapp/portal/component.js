@@ -141,8 +141,8 @@
         $$("tree").contextmenu = menu1;
     }
 
-    function getComponentType() {
-        var type = getTreeAttribute("type");
+    function getComponentType(type) {
+        type = type || getTreeAttribute("type");
 		switch(type) {
 			case "1": return "layout";
 			case "2": return "decorator";
@@ -214,6 +214,8 @@
     }
 
     function loadTreeDetailData(treeID, parentID) {
+    	if(treeID == null) return;
+    	
 		Ajax({
 			url: URL_SOURCE_DETAIL +　parentID + "/" + treeID,
 			onresult: function() {
@@ -236,7 +238,7 @@
 
 	/*
      *	预先处理xform数据岛.
-	 *  预解析definition，分别设置到script,style,prototypeStyle,html,events和parameters上
+	 *  预解析definition，分别设置到script,style,html,events和parameters上
      */
     function preProcessXml(dataNode) {
         var rowNode = dataNode.selectSingleNode(".//data/row");
@@ -247,7 +249,6 @@
             var definitionNode = new XmlNode(xmlReader.documentElement);
             var scriptNode = definitionNode.selectSingleNode("./script/node()");
             var styleNode = definitionNode.selectSingleNode("./style/node()");
-            var prototypeStyleNode = definitionNode.selectSingleNode("./prototypeStyle/node()");
             var htmlNode = definitionNode.selectSingleNode("./html/node()");
             var eventsNode = definitionNode.selectNodes("./events/*");
             var parametersNode = definitionNode.selectNodes("./parameters/*");
@@ -257,9 +258,6 @@
             }
             if(styleNode) {
                 rowNode.setCDATA("style", styleNode.nodeValue);
-            }
-            if(prototypeStyleNode) {
-                rowNode.setCDATA("prototypeStyle", prototypeStyleNode.nodeValue);
             }
             if(htmlNode) {
                 rowNode.setCDATA("html", htmlNode.nodeValue);
@@ -314,12 +312,12 @@
 				var version        = rowNode.getCDATA("version") || "";
 				var script         = rowNode.getCDATA("script") || "";
 				var style          = rowNode.getCDATA("style") || "";
-				var prototypeStyle = rowNode.getCDATA("prototypeStyle") || "";
 				var html           = rowNode.getCDATA("html") || "";
 				var events         = rowNode.getCDATA("events") || "";
 				var parameters     = rowNode.getCDATA("parameters") || "";
 				var description    = rowNode.getCDATA("description") || "";
-				var rootName       = "Component";
+				var type           = rowNode.getCDATA("type") || "";
+				var rootName       = getComponentType(type);
 
 				var str = [];
 				str[str.length] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -337,9 +335,6 @@
 				str[str.length] = "<style>";
 				str[str.length] = "<![CDATA[" + style + "]]>";
 				str[str.length] = "</style>";
-				str[str.length] = "<prototypeStyle>";
-				str[str.length] = "<![CDATA[" + prototypeStyle + "]]>";
-				str[str.length] = "</prototypeStyle>";
 				str[str.length] = "<html>";
 				str[str.length] = "<![CDATA[" + html + "]]>";
 				str[str.length] = "</html>";
@@ -374,7 +369,6 @@
 				rowNode.setCDATA("definition", str.join(""));
 				rowNode.removeCDATA("script");
 				rowNode.removeCDATA("style");
-				rowNode.removeCDATA("prototypeStyle");
 				rowNode.removeCDATA("html");
 				rowNode.removeCDATA("events");
 				rowNode.removeCDATA("parameters");

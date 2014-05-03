@@ -28,10 +28,10 @@ public interface IRemoteArticleService {
                 &lt;summary&gt;摘要摘要摘要摘要摘要摘要&lt;/summary&gt;<br>
                 &lt;hitcount&gt;122&lt;/hitcount&gt;<br>
                 &lt;Attachment type="image"&gt;
-                    &lt;url&gt;&lt;![CDATA[http://localhost:8088/cms/download.fun?id=12&seqNo=1]]&gt;&lt;/url&gt;
+                    &lt;url&gt;&lt;![CDATA[http://localhost:8088/cms/download?id=12&seqNo=1]]&gt;&lt;/url&gt;
                 &lt;/Attachment&gt;
                 &lt;Attachment type="file"&gt;
-                    &lt;url&gt;&lt;![CDATA[http://localhost:8088/cms/download.fun?id=12&seqNo=2]]&gt;&lt;/url&gt;
+                    &lt;url&gt;&lt;![CDATA[http://localhost:8088/cms/download?id=12&seqNo=2]]&gt;&lt;/url&gt;
                 &lt;/Attachment&gt;
             &lt;/item&gt;<br>
         &lt;/rss&gt;<br>

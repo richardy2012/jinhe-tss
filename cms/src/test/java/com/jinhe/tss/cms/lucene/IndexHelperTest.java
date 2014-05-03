@@ -15,13 +15,14 @@ import com.jinhe.tss.cms.timer.TimerStrategyHolder;
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.util.FileHelper;
+import com.jinhe.tss.util.URLUtil;
 
 public class IndexHelperTest {
 	
 	@Test
 	public void testCreateIndex() {
 		Channel site = new Channel();
-		site.setPath("D:/temp/cms");
+		site.setPath(URLUtil.getClassesPath().getPath() + "/temp");
 		
         TimerStrategy tacticIndex = TimerStrategyHolder.getIndexStrategy();
         tacticIndex.setSite(site);

@@ -185,6 +185,8 @@ public class RemoteArticleService implements IRemoteArticleService {
     
     public String getArticleXML(Long articleId) {
         Article article = articleDao.getEntity(articleId);
+        if(article == null) return "";
+        
         Document articleDoc;
         String pubUrl = article.getPubUrl();
         try{

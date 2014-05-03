@@ -16,6 +16,11 @@ public class RoleDao extends TreeSupportDao<Role> implements IRoleDao {
 	public RoleDao() {
 		super(Role.class);
 	}
+	
+	public Role refreshRole(Role role) {
+		update(role);
+		return role;
+	}
 
 	public Role moveRole(Role role) {
 		return create(role);

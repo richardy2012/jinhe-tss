@@ -158,12 +158,11 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
         }
         
         Map<Long, Element> map = new HashMap<Long, Element>();
-        Element root = this.genMenuNode();
-        
         for ( Navigator entity : list ) {
             map.put(entity.getId(), entity.genMenuNode());
         }
         
+        Element root = null;
         for ( Navigator entity : list ) {
         	if(ParamConstants.TRUE.equals(entity.getDisabled())) {
         		continue; // 过滤掉停用的
@@ -173,7 +172,10 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
             Element parent = map.get(entity.getParentId());        
             if(parent != null){
                 parent.add(node);
-            }            
+            } 
+            else {
+            	root = node;
+            }
         }
         return root;
     }

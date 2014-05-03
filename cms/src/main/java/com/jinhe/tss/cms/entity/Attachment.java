@@ -47,7 +47,7 @@ public class Attachment implements IEntity, IGridNode {
     private String fileExt;		// 文件后缀	.gif
     
     @Column(nullable = false)
-    private String url;         // 值默认为 "/download.fun?id="
+    private String url;         // 值默认为 "/download?id="
     
     @Column(nullable = false)
     private String localPath;
@@ -154,7 +154,7 @@ public class Attachment implements IEntity, IGridNode {
 	}
     
     /**
-     * 返回格式类似：http://localhost:8088/cms/download.fun?id=1216&seqNo=1 
+     * 返回格式类似：http://localhost:8088/cms/download?id=1216&seqNo=1 
      * @param baseUrl
      * @return 
      */
@@ -163,7 +163,7 @@ public class Attachment implements IEntity, IGridNode {
     }
     
     /**
-     * 绝对地址，返回格式类似：http://localhost:8088/cms/download.fun?id=1216&seqNo=1 
+     * 绝对地址，返回格式类似：http://localhost:8088/cms/download?id=1216&seqNo=1 
      * @param baseUrl
      * @return 
      */
@@ -173,12 +173,12 @@ public class Attachment implements IEntity, IGridNode {
     }
     
     /**
-     * 相对地址，返回格式类似：download.fun?id=1216&seqNo=1 
+     * 相对地址，返回格式类似：download?id=1216&seqNo=1 
      * @param baseUrl
      * @return 
      */
     public String getRelateDownloadUrl(){
-        String temp = this.getUrl().substring(1); //去掉 '/download.fun?id=' 的 '/'
+        String temp = this.getUrl().substring(1); //去掉 '/download?id=' 的 '/'
         return temp + this.getArticleId() + "&seqNo=" + this.getSeqNo();
     }
 

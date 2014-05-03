@@ -15,30 +15,42 @@ public class H2DBServer implements IH2DBServer{
     
     private Server server;  
     
+    public static int DEFAULT_PORT = 9081;  
+    
     public String URL = "jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1;LOCK_MODE=0"; // Connection关闭时不停用H2 server
     public String user = "sa";  
     public String password = "123";  
-    public static int PORT = 9081;  
     
     boolean isPrepareed = false;
+    public int port; 
     
     Connection conn;
     
     public H2DBServer() {
-    	log.info("正在启动H2 database...");  
+    	port = DEFAULT_PORT; 
+    	log.info("正在启动H2 database, 尝试端口号：" + port);  
     	
+    	// 此时H2数据库只起来了服务，没有实例。
+    	// 支持部署多个web应用时，启动多个不同端口的H2实例
+    	while(server == null) {
+    		try {  
+                server = Server.createTcpServer("-tcpPort", String.valueOf(port)).start();  
+            } catch (Exception e) {  
+                log.warn("启动H2（createTcpServer）时出错：" + e.getMessage() + "。将尝试以其他端口号重启。");  
+                
+                port ++;
+                if(port > 9888) {
+        			return;
+        		}
+            } 
+    	} 
     	
-    	// 此时H2数据库只起来了服务，没有实例
-        try {  
-            server = Server.createTcpServer(new String[] { "-tcpPort", (PORT) + ""}).start();  
-        } catch (Exception e1) {  
-            try {  
-                server = Server.createTcpServer(new String[] { "-tcpPort", (++PORT) + ""}).start();  
-            } catch (Exception e2) {  
-                log.error("启动H2 database出错：" + e2.toString());  
-                return;
-            }  
-        }  
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		}
+    	
+    	log.info("启动H2 成功 ，端口号：" + port);  
         
         try {  
 	    	// 在以URL取得连接以后，数据库实例h2db才创建完成
@@ -46,14 +58,14 @@ public class H2DBServer implements IH2DBServer{
 	        conn = DriverManager.getConnection(URL, user, password);  
     	} 
         catch (Exception e) {  
-            log.error("启动H2 database出错：" + e.toString());  
+            log.error("建立H2连接时出错：" + e.toString());  
         } 
     }
  
     
     public void stopServer() {  
         if (server != null) {  
-            log.info("正在关闭H2 database...");  
+            log.info("正在关闭H2 database...端口号：" + port);  
             
             try {
                 conn.close();
@@ -64,7 +76,7 @@ public class H2DBServer implements IH2DBServer{
             server.shutdown();
             server.stop();
             
-            log.info("关闭H2 database成功.");  
+            log.info("关闭H2 database成功...端口号：" + port);  
         }  
     }  
 

@@ -96,7 +96,7 @@ public class ArticleHelper {
     /**
      * 得到图片,附件路径及下载路径
      * String[]{E:/cms/hzjh/docPath/2008/07/18/1216386988375.txt,
-     *          http://localhost:8088/cms/download.fun?id=1216&amp;seqNo=1}
+     *          http://localhost:8088/cms/download?id=1216&amp;seqNo=1}
      */
     public static String[] getAttachUploadPath(Channel site, Attachment attachment) {
         String filePath = site.getPath() + "/" + site.getAttanchmentPath(attachment) + "/" + attachment.getLocalPath();

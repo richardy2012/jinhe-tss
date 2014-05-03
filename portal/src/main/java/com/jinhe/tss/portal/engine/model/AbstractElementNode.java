@@ -22,10 +22,9 @@ public abstract class AbstractElementNode extends AbstractSubNode {
     protected PortalNode portal; // 所属Portal节点对象
     protected PageNode   page;   // 所属页面节点对象
     
-    protected String html;           // HTML代码
-    protected String script;         // Script代码
-    protected String style;          // style代码
-    protected String prototypeStyle; // 修饰器/布局器/portlet【公用的Style代码】
+    protected String html;       // HTML代码
+    protected String script;     // Script代码
+    protected String style;      // style代码
     
     protected Map<String, String> events = new HashMap<String, String>();     // 事件定义：onload/onunload
     protected Map<String, String> parameters = new HashMap<String, String>(); // 自定义参数的默认值列表 + 动态配置的参数
@@ -36,7 +35,6 @@ public abstract class AbstractElementNode extends AbstractSubNode {
     public String getHtml()   { return html; }
     public String getScript() { return script; }
     public String getStyle()  { return style; }
-    public String getPrototypeStyle() { return prototypeStyle; }
     
     public PageNode getPage()     { return page; }
     public PortalNode getPortal() { return portal; }
@@ -91,12 +89,10 @@ public abstract class AbstractElementNode extends AbstractSubNode {
         org.dom4j.Node htmlNode    = doc.selectSingleNode("/" + elementName + "/html");
         org.dom4j.Node scriptNode  = doc.selectSingleNode("/" + elementName + "/script");
         org.dom4j.Node styleNode   = doc.selectSingleNode("/" + elementName + "/style");
-        org.dom4j.Node ptStyleNode = doc.selectSingleNode("/" + elementName + "/prototypeStyle");
         
         this.html   = XMLDocUtil.getNodeText(htmlNode);
         this.script = XMLDocUtil.getNodeText(scriptNode);
         this.style  = XMLDocUtil.getNodeText(styleNode);
-        this.prototypeStyle = XMLDocUtil.getNodeText(ptStyleNode);
         
         List<org.dom4j.Element> eventNodes = XMLDocUtil.selectNodes(doc, "/" + elementName + "/events/attach");
         if(eventNodes != null){

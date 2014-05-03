@@ -5,7 +5,6 @@
 	</property>
 	<script><![CDATA[]]></script>
 	<style><![CDATA[]]></style>
-	<prototypeStyle><![CDATA[]]></prototypeStyle>
 	<html>
 		<![CDATA[<table id=${id} width="100%" cellSpacing=0 cellpadding=0 border=0 class="decorator">
 		  <tbody>

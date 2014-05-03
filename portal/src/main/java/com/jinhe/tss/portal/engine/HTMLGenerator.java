@@ -69,14 +69,7 @@ public class HTMLGenerator {
      * 页面样式表列表：页面下所有显示元素使用到的样式表脚本
      */
     private List<String> styleCodes = new NoNullLinkedList<String>();
-
-    /**
-     * 页面样式表列表：页面下所有显示同原型元素使用到的样式表脚本（同原型公用的样式）。
-     * 注意：此处用 Map 存放原型样式脚本，{组件ID, 样式}，这样如果一个组件在某个页面上多次被引用到，
-     * 原型样式CSS 输出一次就可以了 （使用Map同组件的原型样式将会相互覆盖，只留一份）。
-     */
-    private Map<Long, String> prototypeStyleCodes = new NoNullHashMap<Long, String>();
-
+ 
     /**
      * 事件脚本
      */
@@ -337,12 +330,7 @@ public class HTMLGenerator {
      * @return StringBuffer
      */
     public StringBuffer formatStyleCodes() {
-        StringBuffer sb = new StringBuffer();       
-        for (  String prototypeStyle : prototypeStyleCodes.values() ) {
-            sb.append(prototypeStyle).append("\n");
-        }
-        sb.append("\n");
-        
+        StringBuffer sb = new StringBuffer();               
         for ( String style : styleCodes ) {
             sb.append(style).append("\n");
         }
@@ -484,7 +472,6 @@ public class HTMLGenerator {
         	
             HTMLGenerator.this.scriptCodes.add(MacrocodeContainerFactory.newInstance(node.getScript(), node).compile());
             HTMLGenerator.this.styleCodes.add (MacrocodeContainerFactory.newInstance(node.getStyle(),  node).compile());
-            HTMLGenerator.this.prototypeStyleCodes.put(id, MacrocodeContainerFactory.newInstance(node.getPrototypeStyle(), node).compile());
             
             // 创建页面修饰器上下文关系的初始化代码
             HTMLGenerator.this.initCodes.add(appentElementType("D" + parentId, "Decorator"));  
@@ -530,7 +517,6 @@ public class HTMLGenerator {
             HTMLGenerator.this.keyword.add(node.getName());
             HTMLGenerator.this.scriptCodes.add(MacrocodeContainerFactory.newInstance(node.getScript(), node).compile());
             HTMLGenerator.this.styleCodes.add (MacrocodeContainerFactory.newInstance(node.getStyle(),  node).compile());
-            HTMLGenerator.this.prototypeStyleCodes.put(id, MacrocodeContainerFactory.newInstance(node.getPrototypeStyle(), node).compile());
             
             // 创建页面Portlet上下文关系的初始化代码
             HTMLGenerator.this.initCodes.add(appentElementType("P" + parentId, "Portlet"));  
@@ -557,7 +543,6 @@ public class HTMLGenerator {
 
             HTMLGenerator.this.scriptCodes.add(MacrocodeContainerFactory.newInstance(node.getScript(), node).compile());
             HTMLGenerator.this.styleCodes.add (MacrocodeContainerFactory.newInstance(node.getStyle(),  node).compile());
-            HTMLGenerator.this.prototypeStyleCodes.put(id, MacrocodeContainerFactory.newInstance(node.getPrototypeStyle(), node).compile());
             
             // 创建页面布局器上下文关系的初始化代码
             HTMLGenerator.this.initCodes.add(appentElementType("L" + parentId, "Layout"));  
@@ -720,20 +705,7 @@ public class HTMLGenerator {
         	return toHTML();
         }
     }
-
-    
-    /**
-     * 非空值HashMap对象，所有元素值不可能为空
-     */
-    private class NoNullHashMap<K, V> extends HashMap<K, V> {
-        private static final long serialVersionUID = -4073320799481823860L;
-
-        /* 覆写HashMap的put方法，如果值为空，则不放入map中  */
-        public V put(K key, V value) {
-            return EasyUtils.isNullOrEmpty(value) ? null : super.put(key, value);
-        }
-    }
-
+ 
     /**
      * 非空值LinkedList对象，所有元素不可能为空
      */
