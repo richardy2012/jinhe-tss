@@ -50,7 +50,7 @@ URL_CORE = "framework/"
 				Cache.XmlDatas.add(XML_REGISTER_INFO, registerXML);
 				registerForm = $X("registerForm", registerXML);
 
-				$$("password1").onblur = function() { 
+				$$("password").onblur = function() { 
 					var password = this.value;
 					registerForm.updateDataExternal("password", password);
 

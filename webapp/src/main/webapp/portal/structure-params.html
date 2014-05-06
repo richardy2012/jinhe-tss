@@ -24,31 +24,32 @@
 
     function init(){
         var url = "#";
-		var params;  // eg: "<decorator bgColor=\"#ABCDEF\">model/decorator/decorator-8/paramsXForm.xml</decorator>";
+		var paramsXML;  // eg: "<decorator bgColor=\"#ABCDEF\">model/decorator/decorator-8/paramsXForm.xml</decorator>";
  
 		if(IS_TEST) {
-			params = loadXmlToNode("<decorator bgColor=\"#ABCDEF\">data/paramsXForm.xml</decorator>");
+			paramsXML = loadXmlToNode("<decorator menuBgColor=\"#ABCDEF\">data/paramsXForm.xml</decorator>");
 		}
 		else {
-			params = window.dialogArguments.params;
+			paramsXML = window.dialogArguments.paramsXML;
 		}
 
-		if( params && params.firstChild){
-			url = params.firstChild.nodeValue; // 组件参数配置模板所在目录
+		if( paramsXML && paramsXML.firstChild){
+			url = paramsXML.firstChild.nodeValue; // 组件参数配置模板所在目录
 		}
 
         var p = new HttpRequestParams();
         p.url = url;
+        p.method = "GET";
 
         var request = new HttpRequest(p);
-        request.onresult = function(){
+        request.onresult = function() {
             var dataXmlNode = this.getNodeValue(XML_CONFIG_PARAMS);
 
             var dataNode = dataXmlNode.selectSingleNode(".//data");
 			var xmlReader = new XmlReader("<row/>");
 			var rowNode = new XmlNode(xmlReader.documentElement);
 
-			var attributes = params.attributes;
+			var attributes = paramsXML.attributes;
 			for(var i=0; i < attributes.length; i++){
 			   rowNode.setCDATA(attributes[i].nodeName, attributes[i].nodeValue);
 			}

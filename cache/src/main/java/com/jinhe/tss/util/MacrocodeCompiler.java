@@ -175,7 +175,7 @@ public class MacrocodeCompiler {
      * @return ${key}
      */
     public static String createMacroCode(String key){
-        return MACROCODE_SYMBOL + NAME_START_SYMBOL + key + NAME_END_SYMBOL;
+        return MACROCODE_SYMBOL + (NAME_START_SYMBOL + key) + NAME_END_SYMBOL;
     }
     
     /**
@@ -184,6 +184,6 @@ public class MacrocodeCompiler {
      * @return  #{key}
      */
     public static String createVariable(String key){
-        return VARIABLE_SYMBOL + NAME_START_SYMBOL + key + NAME_END_SYMBOL;
+        return VARIABLE_SYMBOL + (NAME_START_SYMBOL + key) + NAME_END_SYMBOL;
     }
 }

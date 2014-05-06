@@ -24,14 +24,16 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 包括组件导入、导出等操作。
  */
 public class ComponentHelper {   
+	
+	public static String CP_ROOT_NODE_NAME = "ComponentParams";
     
     /**
      * 从参数配置中获取布局器、修饰器、portlet的参数。
      * 参数的存放形式是:
-     *  <params>
+     *  <ComponentParams>
      *     <portlet action="">model/portlet/gg299/paramsXForm.xml</portlet>
      *     <decorator moreUrl="">model/decorator/shyggxshq334/paramsXForm.xml</decorator>
-     *  </params>
+     *  </ComponentParams>
      *  
      * 通过本方法可以获取到portlet实例或者修饰器实例相关的参数。
      * 
@@ -41,11 +43,11 @@ public class ComponentHelper {
      */
     static String getComponentConfig(String typeName, String params){
         if(params == null) {
-            params = "<params><layout/><portlet/><decorator/></params>";
+            params = "<" + CP_ROOT_NODE_NAME + "><layout/><portlet/><decorator/></" + CP_ROOT_NODE_NAME + ">";
         }
         
         Document paramsDoc = XMLDocUtil.dataXml2Doc(params);
-        return paramsDoc.selectSingleNode("/params//" + typeName).asXML();
+        return paramsDoc.selectSingleNode("/" + CP_ROOT_NODE_NAME + "//" + typeName).asXML();
     }
     
     public static String getPortletConfig(String params){

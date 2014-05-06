@@ -63,7 +63,7 @@ public abstract class PaginationQuery {
         }
         
         // 解析带了宏定义的QL语句
-        String queryQl = MacrocodeCompiler.run(ql, macrocodes);
+        String queryQl = MacrocodeCompiler.run(ql, macrocodes, false);
  
         PageInfo page = condition.getPage();
         page.setItems(null); // 清空上次的查询结果，一个condition多次被用来查询的情况

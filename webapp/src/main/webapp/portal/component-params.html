@@ -29,12 +29,12 @@
 
 	var ID;
  
-    function init(){
-		var paramsStr = "test=123456 \n menuId=12";
-        if(window.dialogArguments) {
-            paramsStr = window.dialogArguments.params;
-			ID =  window.dialogArguments.id;
-        }
+  function init() {
+	  var paramsStr = "test=123456 \n menuId=12";
+    if(window.dialogArguments) {
+        paramsStr = window.dialogArguments.params;
+			  ID =  window.dialogArguments.id;
+    }
  
 		Ajax({
 			url: URL_COMPONENT_PARAMS_INFO + ID,
@@ -45,17 +45,17 @@
 				$$("paramTemplate").value = dataXmlNode.toXml();
 			}
 		});
-    }
+  }
  
-    function save() {
-        var tempalte = $$("paramTemplate");
+  function save() {
+    var tempalte = $$("paramTemplate");
 		Ajax( {
 			url: URL_COMPONENT_PARAMS_SAVE + ID,
 			params: {"configXML": tempalte.value}
 		});
-    }
+  }
 
-    window.onload = init;
+  window.onload = init;
 //-->
 </SCRIPT>
 

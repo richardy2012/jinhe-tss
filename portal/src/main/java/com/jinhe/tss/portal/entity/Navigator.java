@@ -21,7 +21,6 @@ import javax.persistence.UniqueConstraint;
 import org.dom4j.Element;
 
 import com.jinhe.tss.framework.component.param.ParamConstants;
-import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
@@ -50,30 +49,30 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
     public static final Integer TYPE_MENU        = 1;
     
     /**
-     * 普通URL方式: url = www.google.com
+     * 普通链接: url = www.google.com
      */
     public static final Integer TYPE_MENU_ITEM_4 = 4;
     
     /**
-     * CMS栏目方式: url = ${common.articleListUrl}&channelId=38
+     * 栏目链接: url = ${common.articleListUrl}&channelId=38
      */
     public static final Integer TYPE_MENU_ITEM_7 = 7;
     
     /**
-     * 行为方式: params = appCode:\'UMS\',redirect:\'http://${PT_ip}/ums/redirect.html\',url:\'ums/permission.htm\'
+     * 脚本跳转: params = appCode:\'UMS\',redirect:\'http://${PT_ip}/ums/redirect.html\',url:\'ums/permission.htm\'
      *         methodName = jumpTo（方法可定义在门户外挂文件或门户元素上）, contentId = 16, contentName = IFrame
      */
     public static final Integer TYPE_MENU_ITEM_6 = 6;
     
     /**
-     * 页面/版面/Portlet 门户内部链接: contentId=66
-     * 读取时再解析成 url = portal!previewPortal.action?portalId=" + portalId + "&id=" + contentId 
+     * 门户内部链接（页面/版面/Portlet） : contentId=66
+     * 读取时再解析成 url = "/tss/portal/preview/{portalId}?id=" + contentId 
      */
     public static final Integer TYPE_MENU_ITEM_3 = 3;
     
     /**
-     * 局部替换方式: contentId=66, targetId=88
-     * 读取时再解析成 url = portal!getPortalXML.action?portalId=" + portalId + "&id=" + contentId + "&targetId=" + targetId
+     * 局部替换: contentId=66, targetId=88
+     * 读取时再解析成 url = "/tss/portal/xml/{portalId}/{contentId}/{targetId}" 
      */
     public static final Integer TYPE_MENU_ITEM_5 = 5;
     
@@ -153,10 +152,6 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
      * @param list
      */    
     public Element compose2Tree(List<Navigator> list){
-        if( !this.type.equals(TYPE_MENU) ){
-            throw new BusinessException("非[菜单]不能进行组装菜单操作!");
-        }
-        
         Map<Long, Element> map = new HashMap<Long, Element>();
         for ( Navigator entity : list ) {
             map.put(entity.getId(), entity.genMenuNode());

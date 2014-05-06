@@ -23,7 +23,7 @@ import com.jinhe.tss.util.EasyUtils;
  * 下载文章附件。传入文章ID以及附件的序号即可下载该附件。
  * 如果是Portal等其它应用配置该servlet，需要这些应用和CMS部署在同一台机器上才行。
  */
-@WebServlet(urlPatterns="*download")
+@WebServlet(urlPatterns="/download")
 public class DownloadServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -6788424017181628016L;

@@ -39,12 +39,6 @@
     URL_FLUSH_CACHE       = AUTH_PATH + "portal/cache/";
     URL_CACHE_MANAGE      = AUTH_PATH + "portal/cache/";
     URL_GET_FLOW_RATE     = AUTH_PATH + "portal/flowrate/";
-
-	URL_SYNC_PROGRESS        = AUTH_PATH + "portal/release/progress/";  // GET
-    URL_CANCEL_SYNC_PROGRESS = AUTH_PATH + "portal/release/progress/";  // DELETE
-	URL_STATIC_ISSUE_PORATL  = AUTH_PATH + "portal/release/";
-	URL_STATIC_ISSUE_PAGE    = AUTH_PATH + "portal/release/singlepage";
-	URL_REMOTE_ISSUE         = AUTH_PATH + "portal/release/remote/";
  
 	if(IS_TEST) {
 		URL_SOURCE_TREE   = "data/structure_tree.xml?";
@@ -66,12 +60,6 @@
 		URL_FLUSH_CACHE       = "data/_success.xml?";
 		URL_CACHE_MANAGE      = "data/cachemanage.xml?";
 		URL_GET_FLOW_RATE     = "data/page_flow_rate.xml?";
-
-		URL_SYNC_PROGRESS        = "data/progress.xml?";
-		URL_CANCEL_SYNC_PROGRESS = "data/_success.xml?";
-		URL_STATIC_ISSUE_PORATL  = "data/_success.xml?";
-		URL_STATIC_ISSUE_PAGE    = "data/_success.xml?";
-		URL_REMOTE_ISSUE         = "data/_success.xml?";
 	}
 
     function init() {
@@ -182,32 +170,6 @@
             callback:showPageFlowRate,
             visible:function() {return isPortalNode();}
         }
-		var item13 = {
-            label:"门户静态发布",
-            callback:staticRelease,
-            visible:function() {return isPortalNode() && getOperation("2");}
-        }
-		var item14 = {
-            label:"远程发布",
-            callback:function() {
-               remoteRelease("false");
-            },
-			icon:ICON + "up.gif",
-            visible:function() {return isPortalNode() && getOperation("2");}
-        }
-		var item15 = {
-            label:"远程发布(覆盖)",
-			callback:function() {
-                remoteRelease("true");
-            },            
-			icon:ICON + "up.gif",
-            visible:function() {return isPortalNode() && getOperation("2");}
-        }
-	    var item16 = {
-            label:"页面静态发布",
-            callback:staticReleaseSinglePage,
-            visible:function() {return isPortalNode() && getOperation("2");}
-        }
 
         var menu1 = new Menu();
         menu1.addItem(item1);
@@ -224,11 +186,6 @@
 		menu1.addItem(item12);
 		menu1.addItem(item10);
 		menu1.addItem(item11);
-        menu1.addSeparator();
-		menu1.addItem(item13);
-		menu1.addItem(item16);
-		menu1.addItem(item14);
-		menu1.addItem(item15);
 		       
         $$("tree").contextmenu = menu1;
     }
@@ -693,8 +650,10 @@
         var oldParamsNode = xmlNode.selectSingleNode("./" + paramsType);
         var oldText = new XmlNode(oldParamsNode.firstChild);
 
-		var newParams = window.showModalDialog("structure-params.html", 
-			{id:idValue, params:oldParamsNode, title:"设置【\"" + nameValue + "】\"的参数"},"dialogWidth:250px;dialogHeight:250px;");
+        var title = "设置【\"" + nameValue + "】\"的参数";
+		var newParams = window.showModalDialog("structure-params.html", {paramsXML:oldParamsNode, title:title}, 
+            "dialogWidth:250px;dialogHeight:250px;");
+
 		if(newParams) {
 			var rowReader = new XmlReader(newParams);
 			var rowNode = new XmlNode(rowReader.documentElement);
@@ -1018,49 +977,6 @@
 		};
 	
 		window.showModalDialog("filemanager.html", {params:params, title:"\"" + name + "\"相关资源管理"},"dialogWidth:500px;dialogHeight:400px;");
-    }
-
-	/********************************************************************************************************************
-     ************************************************** 以下为静态发布相关 *********************************************	
-     ********************************************************************************************************************/
-
-    /* 静态发布整个门户站点 */
-    function staticRelease() {
-        var treeNode = $T("tree").getActiveTreeNode();
-		var portalId = treeNode.getAttribute("portalId");
-
-		Ajax({
-			url: URL_STATIC_ISSUE_PORATL + portalId,
-			onresult: function() {
-				var thisObj = this;
-				var data = this.getNodeValue("ProgressInfo");
-				var progress = new Progress(URL_SYNC_PROGRESS, data, URL_CANCEL_SYNC_PROGRESS);
-				progress.oncomplete = function() {
-					// remoteRelease("false"); // 触发远程上传
-				}
-				progress.start();
-			}
-		});
-    }
-
-	/* 静态发布门户里指定页面 */
-    function staticReleaseSinglePage() {
-        var pageUrl = prompt("请输入要发布的页面地址");
-		if(pageUrl == null || "" == pageUrl) {
-			return alert("页面地址不能为空");
-		}
-
-		Ajax({
-			url: URL_STATIC_ISSUE_PAGE,
-			params: {"pageUrl": pageUrl}
-		});
-    }
-   
-	/* 远程发布 */
-	function remoteRelease(override) {
-		Ajax({
-			url: URL_REMOTE_ISSUE + override
-		});
     }
 
 

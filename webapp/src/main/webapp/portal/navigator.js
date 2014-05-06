@@ -110,15 +110,15 @@
             callback: function() { addNewMenu("3"); }
         }
         subItem5 = {
-            label:"局部替换方式",
+            label:"局部替换",
             callback: function() { addNewMenu("5"); }
         }
         subItem6 = {
-            label:"行为方式",
+            label:"定制脚本跳转",
             callback: function() { addNewMenu("6"); }
         }
 		subItem7 = {
-            label:"CMS栏目",
+            label:"CMS栏目链接",
             callback: function() { addNewMenu("7"); }
         }
 

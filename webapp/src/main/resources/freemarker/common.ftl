@@ -8,10 +8,10 @@
 <#assign articleService = Global.getContext().getBean("RemoteArticleService")/>
 
 <#assign defaultPageUrl  = "/tss/index.portal"/>
-<#assign articleListUrl  = "/tss/articleList.portal"/>
-<#assign articlePageUrl  = "/tss/articlePage.portal"/>
-<#assign searchResultUrl = "/tss/searchResult.portal"/>
-<#assign afterLoginUrl   = "/tss/afterLogin.portal"/>
+<#assign articleListUrl  = "/tss/articleList.portal?"/>
+<#assign articlePageUrl  = "/tss/articlePage.portal?"/>
+<#assign searchResultUrl = "/tss/searchResult.portal?"/>
+<#assign afterLoginUrl   = "/tss/afterLogin.portal?"/>
 
 <#macro getMenuXML menuId>
 	<#assign data = menuService.getNavigatorXML(menuId) />

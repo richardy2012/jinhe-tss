@@ -86,7 +86,7 @@ public class ComponentAction extends FMSupportAction {
         XFormEncoder encoder;
         if ( DEFAULT_NEW_ID.equals(id) ) {   // 新增组件
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("groupId", groupId);
+            map.put("parentId", groupId);
             
             Component componentGroup = service.getComponent(groupId);
             String templatePath = componentGroup.getTemplatePath();

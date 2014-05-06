@@ -413,7 +413,7 @@ public class HTMLGenerator {
                 
                 HTMLGenerator.this.initCodes.add(appentElementIndex(id, targetIndex));
                 HTMLGenerator.this.initCodes.add(appentElementCIndex(id, 0));
-                HTMLGenerator.this.initCodes.add("document.getElementById('" + targetId + "').subset[" + targetIndex + "] = [document.getElementById('" + id + "')];\n");
+                HTMLGenerator.this.initCodes.add("$$('" + targetId + "').subset[" + targetIndex + "] = [$$('" + id + "')];\n");
             }
             
             createIPageElement(node);
@@ -435,16 +435,16 @@ public class HTMLGenerator {
  
         // 以下这些信息输出到html里为了万一页面出错时检查用
         private String appentElementType( Object id, String type ) { // 定义门户结构的类型
-        	return "document.getElementById('" + id + "').type = '" + type + "';\n"; 
+        	return "$$('" + id + "').type = '" + type + "';\n"; 
         }
         private String appentElementParent( Object id, Long parentId ) { // 定义门户结构父子关系
-        	return "document.getElementById('" + id + "').parent = document.getElementById('" + parentId + "');\n";  
+        	return "$$('" + id + "').parent = $$('" + parentId + "');\n";  
         }
         private String appentElementIndex( Object id, int index ) {
-        	return "document.getElementById('" + id + "').index = " + index + ";\n";
+        	return "$$('" + id + "').index = " + index + ";\n";
         }
         private String appentElementCIndex( Object id, int cIndex ) {
-        	return "document.getElementById('" + id + "').cIndex = " + cIndex + ";\n";
+        	return "$$('" + id + "').cIndex = " + cIndex + ";\n";
         }
  
         /**
@@ -458,7 +458,7 @@ public class HTMLGenerator {
             HTMLGenerator.this.styleCodes.add(node.getStyleCode());
             
             HTMLGenerator.this.initCodes.add(appentElementType(node.getId(), "Page"));  
-            HTMLGenerator.this.initCodes.add("document.getElementById('" + node.getId() + "').portalId = " + node.getPortalId() + ";\n");
+            HTMLGenerator.this.initCodes.add("$$('" + node.getId() + "').portalId = " + node.getPortalId() + ";\n");
             
             this.htmlFragments.add("<body id=\"" + node.getId() + "\">" + new Element(node.getDecoratorNode()) + "</body>");
         }
@@ -476,8 +476,8 @@ public class HTMLGenerator {
             // 创建页面修饰器上下文关系的初始化代码
             HTMLGenerator.this.initCodes.add(appentElementType("D" + parentId, "Decorator"));  
             HTMLGenerator.this.initCodes.add(appentElementParent("D" + parentId, parentId)); 
-            HTMLGenerator.this.initCodes.add("document.getElementById('"  + parentId + "').decorator = document.getElementById('D" + parentId + "');\n");
-            HTMLGenerator.this.initCodes.add("document.getElementById('D" + parentId + "').decoratorId = " + id + ";\n");
+            HTMLGenerator.this.initCodes.add("$$('"  + parentId + "').decorator = $$('D" + parentId + "');\n");
+            HTMLGenerator.this.initCodes.add("$$('D" + parentId + "').decoratorId = " + id + ";\n");
             
             // 添加事件
             appendEventCodes(node); 
@@ -521,8 +521,8 @@ public class HTMLGenerator {
             // 创建页面Portlet上下文关系的初始化代码
             HTMLGenerator.this.initCodes.add(appentElementType("P" + parentId, "Portlet"));  
             HTMLGenerator.this.initCodes.add(appentElementParent("P" + parentId, parentId)); 
-            HTMLGenerator.this.initCodes.add("document.getElementById('"  + parentId + "').portlet = document.getElementById('P" + parentId + "');\n");
-            HTMLGenerator.this.initCodes.add("document.getElementById('P" + parentId + "').portletId = " + id + ";\n");
+            HTMLGenerator.this.initCodes.add("$$('"  + parentId + "').portlet = $$('P" + parentId + "');\n");
+            HTMLGenerator.this.initCodes.add("$$('P" + parentId + "').portletId = " + id + ";\n");
             
             // 添加事件
             appendEventCodes(node); 
@@ -547,8 +547,8 @@ public class HTMLGenerator {
             // 创建页面布局器上下文关系的初始化代码
             HTMLGenerator.this.initCodes.add(appentElementType("L" + parentId, "Layout"));  
             HTMLGenerator.this.initCodes.add(appentElementParent("L" + parentId, parentId)); 
-            HTMLGenerator.this.initCodes.add("document.getElementById('"  + parentId + "').layout = document.getElementById('L" + parentId + "');\n");
-            HTMLGenerator.this.initCodes.add("document.getElementById('L" + parentId + "').layoutId = " + id + ";\n");
+            HTMLGenerator.this.initCodes.add("$$('"  + parentId + "').layout = $$('L" + parentId + "');\n");
+            HTMLGenerator.this.initCodes.add("$$('L" + parentId + "').layoutId = " + id + ";\n");
             
             appendEventCodes(node); // 事件           
                        
@@ -579,10 +579,10 @@ public class HTMLGenerator {
          * <p>
          * 获取布局器所在版面（或页面）与子节点的父子关系定义脚本
          * <pre>
-         * document.getElementById('P1').subset = [
-         *        [document.getElementById('child1'), document.getElementById('child2')],
-         *        [document.getElementById('child3')],
-         *        [document.getElementById('child4')]
+         * $$('P1').subset = [
+         *        [$$('child1'), $$('child2')],
+         *        [$$('child3')],
+         *        [$$('child4')]
          *     ]
          * </pre>
          * </p>
@@ -592,7 +592,7 @@ public class HTMLGenerator {
          */
         private String getChildrenRelations(List<List<String>> childIds, Long parentId) {
             StringBuffer sb = new StringBuffer();
-            sb.append("document.getElementById('" + parentId + "').subset = [");
+            sb.append("$$('" + parentId + "').subset = [");
             for (int i = 0; i < childIds.size(); i++) {
                 if (i > 0) sb.append(", \n");
                 
@@ -600,7 +600,7 @@ public class HTMLGenerator {
                 sb.append("[");
                 for (int j = 0; j < items.size(); j++) {
                     if (j > 0) sb.append(", \n");
-                    sb.append("document.getElementById('" + items.get(j) + "')");
+                    sb.append("$$('" + items.get(j) + "')");
                 }
                 sb.append("]");
             }

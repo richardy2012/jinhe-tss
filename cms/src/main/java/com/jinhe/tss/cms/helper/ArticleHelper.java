@@ -30,10 +30,10 @@ public class ArticleHelper {
         calendar.setTime(new Date());
         switch (overdueDate.charAt(0)) {
         case '0':
-            calendar.add(Calendar.YEAR, 1);
+            calendar.add(Calendar.YEAR, 100);
             break;
         case '1':
-            calendar.add(Calendar.MONTH, 6);
+        	calendar.add(Calendar.YEAR, 1);
             break;
         case '2':
             calendar.add(Calendar.MONTH, 3);

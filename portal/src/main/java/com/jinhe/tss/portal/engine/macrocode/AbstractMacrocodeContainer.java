@@ -26,7 +26,7 @@ public abstract class AbstractMacrocodeContainer {
      * @return String 
      */
     public String compile() {
-        return MacrocodeCompiler.run(code, macrocodes);
+        return MacrocodeCompiler.run(code, macrocodes, true);
     }
     
     public String toString() {

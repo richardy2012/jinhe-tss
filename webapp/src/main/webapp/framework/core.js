@@ -80,6 +80,10 @@ Public.isIE = function() {
 	return _BROWSER == _BROWSER_IE;
 }
 
+Public.isChrome = function() {
+	return _BROWSER == _BROWSER_CHROME;
+}
+
 Public.executeCommand = function(callback, param) {
 	var returnVal;
 	try {
@@ -1282,6 +1286,8 @@ function loadXmlToNode(xml) {
 	if(xml == null || xml == "" || xml == "undifined") {
 		return null;
 	}
+
+	xml = xml.revertEntity();
 	var xr = new XmlReader(xml);
 	return xr.documentElement;
 }
