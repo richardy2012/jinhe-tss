@@ -61,7 +61,7 @@ public abstract class AbstractElementNode extends AbstractSubNode {
         //先放入元素自定义参数的默认值(parse()方法里已经放进去了)，然后再放入具体门户结构上定义的参数以覆盖默认的（如下）
     	if(parametersOnPs != null) {
     	    Document paramsDoc = XMLDocUtil.dataXml2Doc(parametersOnPs);
-            org.dom4j.Element paramsNode = (org.dom4j.Element) paramsDoc.selectSingleNode("/params/" + element.getComponentType());
+            org.dom4j.Element paramsNode = (org.dom4j.Element) paramsDoc.selectSingleNode("//" + element.getComponentType());
         	Map<String, String> configParamsMap = XMLDocUtil.dataNode2Map(paramsNode);
             if(configParamsMap != null) {
                 getParameters().putAll(configParamsMap);

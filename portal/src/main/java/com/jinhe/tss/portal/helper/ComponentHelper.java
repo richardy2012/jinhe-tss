@@ -47,7 +47,7 @@ public class ComponentHelper {
         }
         
         Document paramsDoc = XMLDocUtil.dataXml2Doc(params);
-        return paramsDoc.selectSingleNode("/" + CP_ROOT_NODE_NAME + "//" + typeName).asXML();
+        return paramsDoc.selectSingleNode("//" + typeName).asXML();
     }
     
     public static String getPortletConfig(String params){
@@ -58,26 +58,16 @@ public class ComponentHelper {
         return getComponentConfig(Component.DECORATOR, params);
     }
     
-    public static String getLayoutConfig(String params){
-        return getComponentConfig(Component.LAYOUT, params);
-    }
-    
     /**
      * 重新组合参数，上面方法的逆过程。
      * @param layoutConfig
      * @param decoratorConfig
      * @return
      */
-    public static String createPageOrSectionConfig(String layoutConfig, String decoratorConfig){
-        StringBuffer sb  = new StringBuffer("<params>");
-        sb.append(layoutConfig).append(decoratorConfig);
-        return sb.append("</params>").toString();
-    }
-    
     public static String createPortletInstanseConfig(String portletConfig, String decoratorConfig){
-        StringBuffer sb  = new StringBuffer("<params>");
+        StringBuffer sb  = new StringBuffer("<" + CP_ROOT_NODE_NAME + ">");
         sb.append(portletConfig).append(decoratorConfig);
-        return sb.append("</params>").toString();
+        return sb.append("</" + CP_ROOT_NODE_NAME + ">").toString();
     }
     
     

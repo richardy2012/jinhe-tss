@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Response>
+  <ConfigParams>
+    <xform>
+      <declare>
+        <column name="img" caption="背景图片" mode="string"/>
+      </declare>
+      <layout>
+        <TR>
+          <TD width="50"><label binding="img"/></TD>
+          <TD><input binding="img" type="text"/></TD>
+        </TR>
+      </layout>
+      <data></data>
+    </xform>
+  </ConfigParams>
+</Response>

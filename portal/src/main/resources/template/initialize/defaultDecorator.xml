@@ -6,7 +6,7 @@
 	<script><![CDATA[]]></script>
 	<style><![CDATA[]]></style>
 	<html>
-		<![CDATA[<table id=${id} width="100%" cellSpacing=0 cellpadding=0 border=0 class="decorator">
+		<![CDATA[<table id=${id} class="decorator">
 		  <tbody>
 			<tr>
 			  <td>

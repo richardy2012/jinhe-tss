@@ -102,7 +102,7 @@
                         <label binding="jsCode"/>
                     </TD>
                     <TD>
-                        <textarea binding="jsCode" type="text" style="width:100%;height:100"/>
+                        <textarea binding="jsCode" type="text" style="width:100%;height:150"/>
                     </TD>
                 </TR>
                 <TR showType="0,1">
@@ -110,7 +110,7 @@
                         <label binding="cssCode"/>
                     </TD>
                     <TD>
-                        <textarea binding="cssCode" type="text" style="width:100%;height:100"/>
+                        <textarea binding="cssCode" type="text" style="width:100%;height:180"/>
                     </TD>
                 </TR>
                 <TR>
@@ -118,7 +118,7 @@
                         <label binding="description"/>
                     </TD>
                     <TD>
-                        <textarea binding="description" type="text" style="width:100%;height:100"/>
+                        <textarea binding="description" type="text" style="width:100%;height:50"/>
                     </TD>
                 </TR>		
             </layout>

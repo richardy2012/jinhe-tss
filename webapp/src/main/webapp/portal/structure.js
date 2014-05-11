@@ -585,7 +585,7 @@
     function parseParameters(parameters) {
         var xmlNode = loadXmlToNode(parameters);
         if(xmlNode == null) {
-			xmlNode = loadXmlToNode("<ComponentParams/>");
+			xmlNode = loadXmlToNode("< " + XML_COMPONENT_PARAMETERS + "/>");
         }
 
 		xmlNode = new XmlNode(xmlNode);

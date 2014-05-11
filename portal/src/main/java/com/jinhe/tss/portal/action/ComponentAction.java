@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeTranslator;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
@@ -94,6 +95,9 @@ public class ComponentAction extends FMSupportAction {
         } 
         else { // 修改组件
             Component component = service.getComponent(id);
+            if(component == null) {
+            	throw new BusinessException("组件不存在，或已经被删除，修改失败！ID = " + id);
+            }
             Component componentGroup = service.getComponent(component.getParentId());
             String templatePath = componentGroup.getTemplatePath();
 			encoder = new XFormEncoder(templatePath, component);
@@ -262,6 +266,10 @@ public class ComponentAction extends FMSupportAction {
 		
         Component component = service.getComponent(id);
         String configFile = URLUtil.getWebFileUrl(component.getResourcePath() + "/paramsXForm.xml").getFile();
+        File cfFileDir = new File(configFile).getParentFile();
+        if( !cfFileDir.exists() ) {
+        	cfFileDir.mkdirs();
+        }
         
         String configXML = request.getParameter("configXML");
         Document doc = XMLDocUtil.dataXml2Doc("<Response>\n<ConfigParams>\n" + configXML + "\n</ConfigParams>\n</Response>");

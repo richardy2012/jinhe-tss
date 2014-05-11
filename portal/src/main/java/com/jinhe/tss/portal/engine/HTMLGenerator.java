@@ -151,13 +151,14 @@ public class HTMLGenerator {
         }
         
         if (page != null) {
-            dom = new Element(page);
             title = portal.getName() + "-" + page.getName();
             keyword.add(portal.getName());
             scriptFiles.addAll(portal.getScriptFiles());
             styleFiles.addAll(portal.getStyleFiles());
             scriptCodes.add(portal.getScriptCode());
             styleCodes.add(portal.getStyleCode());
+            
+            dom = new Element(page);
             
             // 此处加入页面流量统计
             FlowrateManager.getInstanse().output(new FlowRate(page.getId(), Environment.getClientIp()));

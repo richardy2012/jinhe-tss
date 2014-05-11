@@ -63,7 +63,7 @@
     }
  
     function getParams(){
-        var dataXmlNode = Cache.dataXmlNodes.get(XML_CONFIG_PARAMS);
+        var dataXmlNode = Cache.XmlDatas.get(XML_CONFIG_PARAMS);
         if(dataXmlNode){
             var row = dataXmlNode.selectSingleNode(".//data/row");            
             window.returnValue = row.toXml();

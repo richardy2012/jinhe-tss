@@ -107,6 +107,7 @@ Public.executeCommand = function(callback, param) {
 }
 
 /* 显示等待状态 */
+var waitingLayerCount = 0;
 Public.showWaitingLayer = function () {
 	var waitingDiv = $$("_waitingDiv");
 	if(waitingDiv == null) {
@@ -128,11 +129,15 @@ Public.showWaitingLayer = function () {
 	if( waitingDiv ) {
 		waitingDiv.style.display = "block";
 	}
+
+	waitingLayerCount ++;
 }
 
 Public.hideWaitingLayer = function() {
+	waitingLayerCount --;
+
 	var waitingDiv = $$("_waitingDiv");
-	if( waitingDiv  ) {
+	if( waitingDiv && waitingLayerCount <= 0 ) {
 		waitingDiv.style.display = "none";
 	}
 }
@@ -1479,7 +1484,13 @@ XmlNode.prototype.getCDATA = function(name) {
 		node = this.selectSingleNode(name + "/node()");
 	}
 	if( node ) {
-		var cdataValue = node.text || node.textContent;
+		var cdataValue = node.text;
+		if(cdataValue == null) {
+			cdataValue = node.textContent;
+		}
+		if(cdataValue == null) {
+			cdataValue = "";
+		}
 		return cdataValue.revertCDATA();
 	}
 }

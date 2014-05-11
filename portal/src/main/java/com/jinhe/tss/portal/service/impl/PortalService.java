@@ -183,11 +183,11 @@ public class PortalService implements IPortalService {
         
         // 如果是portlet实例，则取主题的修饰器参数和门户结构上的portlet参数做为新的参数配置。（portlet参数不分主题，只保存在门户结构表中）。
         if( ps.isPortletInstanse() ) {
-            String portletParam = ComponentHelper.getPortletConfig(ps.getParameters());
+            String portletParam   = ComponentHelper.getPortletConfig(ps.getParameters());
             String docoratorParam = ComponentHelper.getDecoratorConfig(themeInfo.getParameters());
             ps.setParameters(ComponentHelper.createPortletInstanseConfig(portletParam, docoratorParam));
         } 
-        // 只有不是portlet实例才直接用主题表中的参数信息（页面、版面的布局修饰器等信息）
+        // 只有非portlet实例才直接用主题表中的参数信息（页面、版面的布局修饰器等信息）
         else {
             ps.setDefiner(themeInfo.getLayout());
             ps.setParameters(themeInfo.getParameters());
@@ -265,10 +265,11 @@ public class PortalService implements IPortalService {
         
         Structure portal = portalDao.getEntity(ps.getPortalId());
         Long currentThemeId = portal.getCurrentTheme().getId();
-
-        ThemeInfo info = new ThemeInfo();
-        info.setId(new ThemeInfoId(currentThemeId, ps.getId()));
         
+        ThemeInfoId tiId = new ThemeInfoId(currentThemeId, ps.getId());
+        
+        ThemeInfo info = new ThemeInfo();
+		info.setId(tiId);
         info.setDecorator(ps.getDecorator());
         
         if( ps.isPage() || ps.isSection() ) { // 页面、版面
@@ -281,7 +282,11 @@ public class PortalService implements IPortalService {
          */
         info.setParameters(ps.getParameters());
         
-        portalDao.createObject(info);
+        if(portalDao.getEntity(ThemeInfo.class, tiId) != null) {
+        	 portalDao.update(info);
+        } else {
+        	 portalDao.createObject(info);
+        }
     }
 
     public void deleteStructure(Long id) {
