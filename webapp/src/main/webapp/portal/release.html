@@ -42,7 +42,6 @@
     URL_GET_THEME_LIST  = AUTH_PATH + "portal/theme4release/";
 	URL_GET_PORTAL_LIST = AUTH_PATH + "portal/activePortals";
 	URL_GET_PAGE_LIST   = AUTH_PATH + "portal/activePages/";
-	URL_STATIC_RELEASE  = AUTH_PATH + "static/release/";
 
 	if(IS_TEST) {
 		URL_INIT            = "data/releaseConfig_tree.xml?";
@@ -52,7 +51,6 @@
 		URL_GET_THEME_LIST  = "data/themes4release.xml?";
 		URL_GET_PORTAL_LIST = "data/structure_tree.xml?";
 		URL_GET_PAGE_LIST   = "data/structure_tree.xml?";
-		URL_STATIC_RELEASE  = "data/_success.xml?";
 	}
 
     function init() {
@@ -83,17 +81,11 @@
             icon:ICON + "edit.gif",
             visible:function() {return "_rootId" != getTreeNodeId();}
         }
-		var item4 = {
-            label:"发布为静态页面",
-            callback:staticRelease,
-            visible:function() {return "_rootId" != getTreeNodeId();}
-        }
 
         var menu1 = new Menu();
         menu1.addItem(item1);
         menu1.addItem(item2);
         menu1.addItem(item3);
-		menu1.addItem(item4);
 
         $$("tree").contextmenu = menu1;
     }
@@ -269,14 +261,6 @@
             page1FormObj.updateDataExternal("page.name", page.name);
         }
     }
-
-    /* 静态发布门户 */
-    function staticRelease() {       
-		Ajax({
-			url:  URL_STATIC_RELEASE + getTreeNodeId()
-		});
-    }
- 
 
     window.onload = init;
 	

@@ -58,7 +58,7 @@ public class PortalAction extends FMSupportAction {
         PortalNode portalNode = service.getPortal(portalId, themeId);
         HTMLGenerator gen = new HTMLGenerator(portalNode, pageId, getFreemarkerParser(portalId));
 
-        printHTML(portalId, gen.toHTML(), false);
+        printHTML(portalId, gen.toHTML(), true);
     }
     
     /**

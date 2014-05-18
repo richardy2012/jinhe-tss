@@ -16,6 +16,7 @@ import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.portal.PortalConstants;
+import com.jinhe.tss.portal.PortalDispatcher;
 import com.jinhe.tss.portal.dao.IComponentDao;
 import com.jinhe.tss.portal.dao.INavigatorDao;
 import com.jinhe.tss.portal.dao.IPortalDao;
@@ -30,7 +31,6 @@ import com.jinhe.tss.portal.entity.ThemeInfo.ThemeInfoId;
 import com.jinhe.tss.portal.entity.ThemePersonal;
 import com.jinhe.tss.portal.helper.ComponentHelper;
 import com.jinhe.tss.portal.service.IPortalService;
-import com.jinhe.tss.portal.sso.Filter8PortalPermission;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
  
@@ -412,8 +412,8 @@ public class PortalService implements IPortalService {
 
     public ReleaseConfig saveReleaseConfig(ReleaseConfig releaseConfig) {
         String visitUrl = releaseConfig.getVisitUrl();
-        if( !visitUrl.endsWith(Filter8PortalPermission.PORTAL_REDIRECT_URL_SUFFIX) ){
-            visitUrl += Filter8PortalPermission.PORTAL_REDIRECT_URL_SUFFIX;
+        if( !visitUrl.endsWith(PortalDispatcher.PORTAL_REDIRECT_URL_SUFFIX) ){
+            visitUrl += PortalDispatcher.PORTAL_REDIRECT_URL_SUFFIX;
             releaseConfig.setVisitUrl(visitUrl);
         }
         

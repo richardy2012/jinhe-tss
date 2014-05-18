@@ -66,13 +66,13 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
     
     /**
      * 门户内部链接（页面/版面/Portlet） : contentId=66
-     * 读取时再解析成 url = "/tss/portal/preview/{portalId}?id=" + contentId 
+     * 读取时再解析成 url = "/tss/auth/portal/preview/{portalId}?id=" + contentId 
      */
     public static final Integer TYPE_MENU_ITEM_3 = 3;
     
     /**
      * 局部替换: contentId=66, targetId=88
-     * 读取时再解析成 url = "/tss/portal/xml/{portalId}/{contentId}/{targetId}" 
+     * 读取时再解析成 url = "/tss/auth/portal/xml/{portalId}/{contentId}/{targetId}" 
      */
     public static final Integer TYPE_MENU_ITEM_5 = 5;
     
@@ -191,14 +191,14 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
             
             // 页面/版面/Portlet 门户内部链接
             if(type.equals(TYPE_MENU_ITEM_3)){
-                map.put("url", "/auth/portal/preview/" + portalId + "?id=" + content.getId());
+                map.put("url", "/tss/auth/portal/preview/" + portalId + "?id=" + content.getId());
             }
         }
         
         // 局部替换方式
         if(type.equals(TYPE_MENU_ITEM_5)) {
             map.put("targetId", toContent.getId());
-            map.put("action", "/auth/portal/xml/" + portalId + "/" + content.getId() + "/" + toContent.getId());
+            map.put("action", "/tss/auth/portal/xml/" + portalId + "/" + content.getId() + "/" + toContent.getId());
         }
         
         return XMLDocUtil.map2AttributeNode(map, this.type.equals(TYPE_MENU) ? "Menu" : "MenuItem");

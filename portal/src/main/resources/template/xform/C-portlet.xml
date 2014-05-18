@@ -16,37 +16,37 @@
 	<layout>
 		<TR>
 			<TD width="50"><label binding="name"/></TD>
-			<TD><input binding="name" type="text"/></TD>
+			<TD><input binding="name" type="text" style="width:400"/></TD>
 		</TR>
 		<TR>
 			<TD width="50" valign="top"><label binding="html"/></TD>
-			<TD><textarea binding="html" style="width:100%;height:200"/></TD>
+			<TD><textarea binding="html" style="width:95%;height:180"/></TD>
 		</TR>
 		<TR>
 			<TD width="50" valign="top"><label binding="script"/></TD>
-			<TD><textarea binding="script" style="width:100%;height:120"/></TD>
+			<TD><textarea binding="script" style="width:95%;height:100"/></TD>
 		</TR>
 		<TR>
 			<TD width="50" valign="top"><label binding="style"/></TD>
-			<TD><textarea binding="style" style="width:100%;height:100"/></TD>
+			<TD><textarea binding="style" style="width:95%;height:80"/></TD>
 		</TR>
 		
 		<TR>
 			<TD width="50" valign="top"><label binding="events"/></TD>
-			<TD><textarea binding="events" style="width:100%;height:40"/>注:请按照"事件名=处理方法"格式书写，例如"onload=${js.layout}.onload"</TD>
+			<TD><textarea binding="events" style="width:60%;height:40"/>注:请按照"事件名=处理方法"格式书写，例如"onload=${js.layout}.onload"</TD>
 		</TR>
 		<TR>
 			<TD width="50" valign="top"><label binding="parameters"/></TD>
-			<TD><textarea binding="parameters" style="width:100%;height:40"/>注:请按照"参数名=参数值"格式书写，例如"bgColor=#FFFFFF"
+			<TD><textarea binding="parameters" style="width:60%;height:40"/>注:请按照"参数名=参数值"格式书写，例如"bgColor=#FFFFFF"
 				<input type="button" value="配置参数模板" id="page1BtEditPT" onclick="editParamsTemplate(3)" class="btStrongL"/></TD>					
 		</TR>
 		<TR>
 			<TD width="50" valign="top"><label binding="description"/></TD>
-			<TD><textarea binding="description" style="width:100%;height:20"/></TD>
+			<TD><textarea binding="description" style="width:95%;height:20"/></TD>
 		</TR>
 		<TR>
 			<TD width="50"><label binding="version"/></TD>
-			<TD><input binding="version" type="text"/></TD>
+			<TD><input binding="version" type="text" style="width:400"/></TD>
 		</TR>
 	</layout>
 	<data>
