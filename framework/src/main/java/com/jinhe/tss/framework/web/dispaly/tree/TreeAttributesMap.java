@@ -40,6 +40,10 @@ public class TreeAttributesMap implements Map<String, Object>{
 		if(value == null) {
 			return null;
 		}
+		if(value instanceof String) {
+			value = value.toString().replace('&', '|'); // & 会导致树节点无法显示
+		}
+		
 		return attributes.put(key, value);
 	}
 

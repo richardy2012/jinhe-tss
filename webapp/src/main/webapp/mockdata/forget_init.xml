@@ -27,7 +27,6 @@
 					<TD width="100"></TD>
 					<TD>
 					   <input type="button" class="btWeak" value="关闭" onclick="window.close()"/> 
-					   <input type="button" class="btWeak" value="重置" onclick="resetForm()"/> 
 					   <input type="button" class="btStrong" value="找回" onclick="if(checkForgetForm()) { getPassword(); }"/>
 					</TD>
 				</TR>

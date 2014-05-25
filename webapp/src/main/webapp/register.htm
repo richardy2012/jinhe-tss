@@ -92,11 +92,6 @@ URL_CORE = "framework/"
         return flag;
     }
 
-    function resetForm() {
-        registerForm.resetForm();
-        registerForm.setFocus();
-    }
-
     window.onload = init;
 
 //-->
@@ -108,7 +103,6 @@ URL_CORE = "framework/"
 		<XForm:Box id="registerForm" baseurl="framework/xform/"><div class="loading"></div></XForm:Box>
 		<div class="bt">
 			<input type="button" class="btStrong" value="提交" onclick="if( checkRegisterForm() ) { register() }"/>
-			<input type="button" class="btWeak"   value="重置" onclick="resetForm()"/>
 			<input type="button" class="btWeak"   value="关闭" onclick="window.close()"/>
 		</div>
 	</div>
