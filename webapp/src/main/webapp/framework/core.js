@@ -12,10 +12,6 @@ $$ = function(id) {
 	return document.getElementById(id);
 }
 
-$ = function(id) {
-	return document.getElementById(id);
-}
-
 var bind = function(object, fun) {
 	return function() {
 		return fun.apply(object, arguments);
@@ -348,6 +344,7 @@ Query.parse = function(queryString) {
 }
 
 Query.init = function(queryString) {
+	this.items = {}; // 先清空
 	queryString = queryString || window.location.search.substring(1);
 	this.parse(queryString);
 }
@@ -1707,7 +1704,6 @@ var Reminder = {};
 
 Reminder.items = {};   // 提醒项
 Reminder.count = 0;
-Reminder.flag  = true; // 是否要提醒
 
 Reminder.add = function(id) {
 	if( null == this.items[id] ) {
@@ -1717,7 +1713,7 @@ Reminder.add = function(id) {
 }
 
 Reminder.del = function(id) {
-	if( this.items[id] ) {
+	if(  this.items[id] ) {
 		delete this.item[id];
 		this.count --;
 	}
@@ -1731,23 +1727,15 @@ Reminder.remind = function() {
 
 /* 统计提醒项 */
 Reminder.getCount = function() {
-	if( true== this.flag) {
-		return this.count;
-	} else {
-		return 0;
-	}
+	return this.count;
 }
 
 /* 取消提醒 */
-Reminder.cancel = function() {
-	this.flag = false;
+Reminder.reset = function() {
+	this.items = {};   // 提醒项
+	this.count = 0;
 }
-
-/* 允许提醒  */
-Reminder.restore = function() {
-	this.flag = true;
-}
-
+ 
 window.onbeforeunload = function() {
 	var count = Reminder.getCount();
 	if(count > 0) {            
@@ -1768,7 +1756,8 @@ function attachReminder(id, xform) {
 }
 
 function detachReminder(id) {
-	Reminder.del(id);
+	// Reminder.del(id);
+	Reminder.reset();
 }
 
 /*
