@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 /**
  * <p>
  * 时间、字符串转换工具
+ * 注： SimpleDateFormat为非线程安全。
  * </p>
  */
 public class DateUtil {
@@ -26,28 +27,11 @@ public class DateUtil {
     public static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd";
 
     private static final String SDF_1_REG = "^\\d{2,4}\\-\\d{1,2}\\-\\d{1,2} \\d{1,2}:\\d{1,2}:\\d{1,2}$";
-
-    public static final SimpleDateFormat SDF_1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     private static final String SDF_2_REG = "^\\d{2,4}\\-\\d{1,2}\\-\\d{1,2}$";
-
-    private static final SimpleDateFormat SDF_2 = new SimpleDateFormat(DEFAULT_DATE_PATTERN);
-
     private static final String SDF_3_REG = "^\\d{2,4}\\/\\d{1,2}\\/\\d{1,2} \\d{1,2}:\\d{1,2}:\\d{1,2}$";
-
-    private static final SimpleDateFormat SDF_3 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
     private static final String SDF_4_REG = "^\\d{2,4}\\/\\d{1,2}\\/\\d{1,2}$";
-
-    private static final SimpleDateFormat SDF_4 = new SimpleDateFormat("yyyy/MM/dd");
-    
     private static final String SDF_5_REG = "^\\d{2,4}\\/\\d{1,2}\\/\\d{1,2} \\d{1,2}:\\d{1,2}$";
-
-    private static final SimpleDateFormat SDF_5 = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-    
     private static final String SDF_6_REG = "^\\d{2,4}\\-\\d{1,2}\\-\\d{1,2} \\d{1,2}:\\d{1,2}$";
-
-    private static final SimpleDateFormat SDF_6 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     /**
      * <p>
@@ -71,6 +55,13 @@ public class DateUtil {
     	}
     	
     	List<String> sdfRegArray = Arrays.asList(SDF_1_REG, SDF_2_REG, SDF_3_REG, SDF_4_REG, SDF_5_REG, SDF_6_REG);
+    	
+    	SimpleDateFormat SDF_1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat SDF_2 = new SimpleDateFormat(DEFAULT_DATE_PATTERN);
+        SimpleDateFormat SDF_3 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat SDF_4 = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat SDF_5 = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+        SimpleDateFormat SDF_6 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     	List<SimpleDateFormat> sdfArray = Arrays.asList(SDF_1, SDF_2, SDF_3, SDF_4, SDF_5, SDF_6);
     	
         Date date = null;
@@ -111,7 +102,7 @@ public class DateUtil {
     public static String formatCare2Second(Date date) {
         if(date == null) return "";
         
-        return SDF_1.format(date);
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
     }
 
     /**
