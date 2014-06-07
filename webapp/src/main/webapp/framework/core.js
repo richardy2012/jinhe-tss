@@ -12,6 +12,10 @@ $$ = function(id) {
 	return document.getElementById(id);
 }
 
+$ = function(id) {
+	return document.getElementById(id);
+}
+
 var bind = function(object, fun) {
 	return function() {
 		return fun.apply(object, arguments);

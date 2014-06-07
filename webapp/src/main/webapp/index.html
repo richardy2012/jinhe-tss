@@ -6,7 +6,6 @@
 
 <script language="javascript" src="framework/core.js"></script>
 <script language="javascript" src="framework/ajax.js"></script>
-<script language="javascript" src="framework/framework.js"></script>
 
 <style>
 
@@ -94,20 +93,93 @@ table.full {
 	display:block; 
 	background:#00BFFF; 
 	color:#000; 
-	font-size:bold;
 } 
 .menu ul li:hover ul li a:hover { 
 	background:#AFEEEE; 
-	color:#000; 
-	font-size:bold;
+	color:#FFF; 
 } 
+
+
+/* relogin相关 */
+.popupBox {
+	background-color:white;
+	border:1px solid #98989C;
+	margin-left: auto;
+	margin-right: auto;
+	position: absolute;
+	top:1;
+	left: -100;
+	right: -100;
+	z-Index: 10001;
+}  
+#relogin_box {
+    width:260px;
+}
+ 
+#relogin_box form {
+  padding:10px;
+  font-family:"宋体";
+}
+#relogin_box h1 {
+  line-height:30px;
+  font-size:15px;
+  margin:0px;
+  padding:0px 5px;
+  border-bottom:1px solid #009999;
+}
+#relogin_box span {
+  display:block;
+  margin:10px 0px;
+  padding:0px 5px;
+}
+#relogin_box span.bottonBox {
+  text-align: center;
+}
+#relogin_box span input {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+}
 
 </style>
 
 <script LANGUAGE="JavaScript">
 <!--
+	
+	APP_CODE    = "TSS";
+	APPLICATION = APP_CODE.toLowerCase();
+	CONTEXTPATH = APPLICATION + "/";
+	
+	DEFAULT_IDENTIFIER = "com.jinhe.tss.um.sso.UMPasswordIdentifier";
 
-	window.onload = initUserInfo;
+	/* 用户信息初始化  */
+	window.onload = function() {
+		Ajax({
+			url : "auth/user/operatorInfo",
+			method : "POST",
+			headers : {"appCode": APP_CODE},
+			contents : {"anonymous": "true"}, 
+			onresult : function() {
+				var userName = this.getNodeValue("name");
+				$$("userInfo").innerText = userName;
+				
+				turn2IFrame("um/group.html");
+			}
+		});
+	}
+	
+	function logout() {
+		Ajax({
+			url : "logout.in",
+			method : "GET",
+			onsuccess : function() { 
+				Cookie.del("token", "");
+				Cookie.del("token", "/");
+				Cookie.del("token", "/" + APPLICATION);
+				Cookie.del("token", "/" + CONTEXTPATH);
+				location.href = "login.html";
+			}
+		});
+	}
 
 	function turn2IFrame(ahref) {
 		if (ahref != "#") {
@@ -125,7 +197,7 @@ table.full {
 		<div class="logo"></div>
 		<div class="menu"> 
 			<ul> 
-				<li><a href="#" onclick="window.open('userInfo.htm','','width=700,height=220');">【<span id="userInfo">个人信息</span>】</a> </li>
+				<li><a href="#" onclick="window.open('userInfo.htm','','width=700,height=220');">【<span id="userInfo">个人信息</span>】</a></li>
 				<li><a href="#" onclick="window.open('password.htm','','width=400,height=200');">修改密码</a></li>
 				<li><a class="hide" href="#">系统辅助</a> 	 
 					<ul> 
@@ -158,7 +230,7 @@ table.full {
 	</tr>
 	<tr> 
 	    <td>
-		  <iframe src="um/group.html" id="iframeSrc" width="100%" height="100%" frameborder="0"/>
+		  <iframe src="" id="iframeSrc" width="100%" height="100%" frameborder="0"/>
 		</td>
 	</tr>
 </table>

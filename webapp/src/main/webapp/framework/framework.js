@@ -60,25 +60,6 @@ function showOnlineUser() {
 	});
 }
 
-
-/* 用户信息初始化  */
-function initUserInfo() {
-	if( IS_TEST ) return;
-
-	if( Query.get("login") != "true" ) return;
-
-	Ajax({
-		url : AUTH_PATH + "user/operatorInfo",
-		method : "POST",
-		headers : {"appCode": APP_CODE},
-		contents : {"anonymous": "true"}, 
-		onresult : function() {
-			var userName = this.getNodeValue("name");
-			$$("userInfo").innerText = userName;
-		}
-	});
-}
-
 function logout() {
 	Ajax({
 		url : URL_CORE + "../logout.in",
