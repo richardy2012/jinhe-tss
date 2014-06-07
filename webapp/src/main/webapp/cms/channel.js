@@ -65,7 +65,6 @@
  
     function init() { 
         initPaletteResize();
-        initNaviBar("cms.1");
         initMenus();
         initEvents();
 

@@ -44,7 +44,6 @@
  
     function init() {
         initPaletteResize();
-        initNaviBar("portal.3");
         initMenus();
         initWorkSpace(false);
         initEvents();

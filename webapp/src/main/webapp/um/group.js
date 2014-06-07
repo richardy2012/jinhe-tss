@@ -73,10 +73,8 @@
 		URL_CANCEL_SYNC = "data/_success.xml?";
 	}
  
- 
     function init() {
         initPaletteResize();
-        initNaviBar("um.1");
         initMenus();
         initWorkSpace();
 

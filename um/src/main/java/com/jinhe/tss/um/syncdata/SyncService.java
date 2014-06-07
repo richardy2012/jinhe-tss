@@ -113,7 +113,9 @@ public class SyncService implements ISyncService, Progressable {
             
             Group group = new Group();
             group.setName(groupDto.getName());
-            group.setDisabled(groupDto.getDisabled());
+            if(groupDto.getDisabled() != null) {
+            	group.setDisabled(groupDto.getDisabled());
+            }
             group.setDescription(groupDto.getDescription());
             group.setFromApp(fromApp);
             group.setFromGroupId(fromGroupId);

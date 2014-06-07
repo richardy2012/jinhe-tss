@@ -18,7 +18,6 @@
   
     function init() {
         initPaletteResize();
-        initNaviBar("um.2");
         initMenus();
 
         loadInitData();

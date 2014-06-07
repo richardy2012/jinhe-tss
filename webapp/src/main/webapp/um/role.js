@@ -54,7 +54,6 @@
  
     function init() {
         initPaletteResize();
-        initNaviBar("um.3");
         initMenus();
         initWorkSpace(false);
         initEvents();

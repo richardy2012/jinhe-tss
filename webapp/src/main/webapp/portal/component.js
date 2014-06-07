@@ -32,7 +32,6 @@
  
     function init() {
         initPaletteResize();
-        initNaviBar("portal.2");
         initMenus();
         initWorkSpace(false);
         initEvents();

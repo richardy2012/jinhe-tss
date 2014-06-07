@@ -77,56 +77,6 @@
     text-decoration: none;
   }
 
-  /* 顶部 */
-  .top td{
-    background-image: url(../images/blue_top.gif);
-  }
-  .top .logo {
-    width: 571px;
-    height: 41px;
-    background-image: url(../images/title.jpg);
-  }
-  /* 系统功能 */
-  .system {
-    color: #D0E8FF;
-    text-align:right;
-    padding-right:16px;
-    padding-top:24px;
-    position:relative;
-  }
-
-  .system a:link {
-    color: #D0E8FF;
-  }
-  .system a:active {
-    color: #D0E8FF;
-  }
-  .system a:visited {
-    color: #D0E8FF;
-  }
-  .system a:hover {
-    text-decoration: underline;
-  }
-  /* 导航条 */
-  a.navi:link,a.navi:visited,a.navi:active,a.navi:hover{
-    color: #000000;
-    text-align: center;
-    vertical-align: middle;
-    height: 18px;
-    padding: 2px 3px 0px 3px;
-	  margin:0px 2px;
-  }
-  a.naviActive:link,a.naviActive:visited,a.naviActive:active,a.naviActive:hover{
-    color: #000000;
-    text-align: center;
-    vertical-align: middle;
-    height: 18px;
-    padding: 2px 3px 0px 3px;
-	  margin:0px 2px;
-    background-color: #ACB5F2;
-    border: 1px solid #6868B0;
-  }
-
   .panel {
     width: 100%;
     height: 100%;
@@ -203,7 +153,7 @@
     position: relative;
     background-image: url(../images/title_opened.gif);
     background-repeat: repeat-x;
-    border-left: 1px solid #E5E8F5;
+
   }
   /* 左栏树标题横条折叠状态 */
   #palette .bar .closed{

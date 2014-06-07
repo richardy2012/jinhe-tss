@@ -37,12 +37,16 @@
 		
 		<TR>
 			<TD width="50" valign="top"><label binding="events"/></TD>
-			<TD><textarea binding="events" style="width:60%;height:40"/>注:请按照"事件名=处理方法"格式书写，例如"onload=${js.layout}.onload"</TD>
+			<TD><textarea binding="events" style="width:70%;height:40"/>
+				<br/>注:请按照"事件名=处理方法"格式书写，例如"onload=${js.layout}.onload"
+			</TD>
 		</TR>
 		<TR>
 			<TD width="50" valign="top"><label binding="parameters"/></TD>
-			<TD><textarea binding="parameters" style="width:60%;height:40"/>注:请按照"参数名=参数值"格式书写，例如"bgColor=#FFFFFF"
-				<input type="button" value="配置参数模板" id="page1BtEditPT" onclick="editParamsTemplate(1)" class="btStrongL"/></TD>	
+			<TD><textarea binding="parameters" style="width:70%;height:40"/>
+				<input type="button" value="配置参数模板" id="page1BtEditPT" onclick="editParamsTemplate(1)" class="btStrongL"/>
+				<br/>注:请按照"参数名=参数值"格式书写，例如"bgColor=#FFFFFF，不能含有空格。
+			</TD>	
 		</TR>
 		<TR>
 			<TD width="50" valign="top"><label binding="description"/></TD>
