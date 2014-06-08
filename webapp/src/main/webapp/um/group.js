@@ -159,7 +159,7 @@
         }
 
         var item12 = {
-            label:"高级功能",
+            label:"辅助功能",
             callback:null,
             visible:function() {return isMainGroup() && editable();}
         }

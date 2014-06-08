@@ -20,15 +20,15 @@
 		</TR>
 		<TR>
 			<TD width="50" valign="top"><label binding="html"/></TD>
-			<TD><textarea binding="html" style="width:95%;height:120"/></TD>
+			<TD><textarea binding="html" style="width:95%;height:150"/></TD>
 		</TR>
 		<TR>
 			<TD width="50" valign="top"><label binding="script"/></TD>
-			<TD><textarea binding="script" style="width:95%;height:60"/></TD>
+			<TD><textarea binding="script" style="width:95%;height:80"/></TD>
 		</TR>
 		<TR>
 			<TD width="50" valign="top"><label binding="style"/></TD>
-			<TD><textarea binding="style" style="width:95%;height:100"/></TD>
+			<TD><textarea binding="style" style="width:95%;height:150"/></TD>
 		</TR>
 		<TR>
 			<TD width="50" valign="top"><label binding="events"/></TD>
@@ -40,7 +40,7 @@
 			<TD width="50" valign="top"><label binding="parameters"/></TD>
 			<TD><textarea binding="parameters" style="width:70%;height:40"/>
 				<input type="button" value="配置参数模板" id="page1BtEditPT" onclick="editParamsTemplate(2)" class="btStrongL"/>
-				<br/>注:请按照"参数名=参数值"格式书写，例如"bgColor=#FFFFFF，不能含有空格。
+				<br/>注:请按照"参数名=参数值"格式书写，例如"bgColor=#FFFFFF"，不能含有空格。
 			</TD>	
 		</TR>
 		<TR>

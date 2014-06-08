@@ -353,7 +353,7 @@ function createImportDiv(remark, checkFileWrong, importUrl) {
 		var str = [];
 		str[str.length] = "<form id='importForm' method='post' target='fileUpload' enctype='multipart/form-data'>";
 		str[str.length] = "	 <input type='file' name='file' id='sourceFile'/> <br> " + remark + "<br> ";
-		str[str.length] = "	 <input type='button' id='importBt' value='导入' /> ";
+		str[str.length] = "	 <input type='button' id='importBt' value='上传' /> ";
 		str[str.length] = "	 <input type='button' id='closeBt'  value='关闭' /> ";
 		str[str.length] = "</form>";
 		str[str.length] = "<iframe width='0px' height='0px' name='fileUpload'></iframe>";
