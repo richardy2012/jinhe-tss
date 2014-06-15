@@ -1,6 +1,9 @@
 package com.jinhe.tss.portal.service.impl;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +13,13 @@ import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.component.cache.CacheHelper;
 import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.sso.appserver.AppServer;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.dao.INavigatorDao;
 import com.jinhe.tss.portal.entity.Navigator;
 import com.jinhe.tss.portal.service.INavigatorService;
+import com.jinhe.tss.util.MacrocodeCompiler;
 
 @Service("NavigatorService")
 public class NavigatorService implements INavigatorService {
@@ -104,9 +109,18 @@ public class NavigatorService implements INavigatorService {
 		Navigator navigator = getNavigator(id);   
 		List<Navigator> menuItems = dao.getMenuItemListByMenu(id);
 		
+		// 解析地址参数中 ${APP_URL}等信息，取 AppServer的配置信息。
+		Collection<AppServer> appservers = Context.getApplicationContext().getAppServers();
+		Map<String, Object> macros = new HashMap<String, Object>();
+		for(AppServer appserver : appservers) {
+			macros.put("${" + appserver.getCode() + "_URL}", appserver.getBaseURL());
+		}
+	 
 		Element node = navigator.compose2Tree(menuItems);
-		String menuStr = node == null ? "<MainMenu/>" : node.asXML();
-		return menuStr;
+		if(node == null) {
+			return "<MainMenu/>";
+		}
+		return MacrocodeCompiler.run(node.asXML(), macros, true);
 	}
 }
 

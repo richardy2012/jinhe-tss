@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework.sso.appserver;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.dom4j.Element;
@@ -14,8 +15,14 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 
  */
 public class ParamAppServerStorer implements IAppServerStorer {
+	
+	 private Map<String, AppServer> cache; 
     
     public AppServer getAppServer(String appCode) {
+    	if(cache.get(appCode) != null) {
+    		return cache.get(appCode);
+    	}
+    	
         String appServerXML = null;
         try {
         	// 读取appServer配置不依赖Spring容器，因某些bean初始化本身就要用到AppServer
@@ -33,11 +40,17 @@ public class ParamAppServerStorer implements IAppServerStorer {
 
             AppServer bean = new AppServer();
             BeanUtil.setDataToBean(bean, attrsMap);
+            
+            cache.put(appCode, bean);
             return bean;
         } 
         catch(Exception e) {
             throw new BusinessException("参数管理模块中应用Code为：" + appCode + " 的应用服务配置信息有误，请检查！");
         }
     }
+    
+	public Collection<AppServer> getAppServers() {
+		return cache.values();
+	}
 }
 

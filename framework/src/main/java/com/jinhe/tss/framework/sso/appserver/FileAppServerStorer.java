@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework.sso.appserver;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,5 +73,9 @@ public class FileAppServerStorer implements IAppServerStorer {
 					+ Context.getApplicationContext().getCurrentAppCode() + "】中没有应用【"+ code + "】的相关访问配置信息");
 		}
 		return appServer;
+	}
+ 
+	public Collection<AppServer> getAppServers() {
+		return cache.values();
 	}
 }

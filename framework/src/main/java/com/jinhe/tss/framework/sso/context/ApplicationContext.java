@@ -1,5 +1,7 @@
 package com.jinhe.tss.framework.sso.context;
 
+import java.util.Collection;
+
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.sso.appserver.AppServer;
 import com.jinhe.tss.framework.sso.appserver.AppServerStorerFactory;
@@ -50,5 +52,9 @@ public class ApplicationContext {
      */
     public AppServer getCurrentAppServer() {
         return getAppServer(getCurrentAppCode());
+    }
+    
+    public Collection<AppServer> getAppServers() {
+        return storer.getAppServers();
     }
 }

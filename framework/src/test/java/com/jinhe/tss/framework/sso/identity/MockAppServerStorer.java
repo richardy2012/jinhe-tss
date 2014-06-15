@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework.sso.identity;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,4 +47,7 @@ public class MockAppServerStorer implements IAppServerStorer {
         return appServer;
     }
 
+	public Collection<AppServer> getAppServers() {
+		return servers.values();
+	}
 }
