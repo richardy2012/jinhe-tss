@@ -39,6 +39,9 @@ public abstract class AbstractPool implements Pool {
 
     // 对象池属性
     
+    /** 命中数 */
+    protected Integer size = 0;
+    
     /** 请求数 */
     protected long requests;
     
@@ -124,7 +127,7 @@ public abstract class AbstractPool implements Pool {
 		return item; 
     }
 
-    public Cacheable putObject(Object key, Object value) {
+    public synchronized Cacheable putObject(Object key, Object value) {
 		if (key == null) {
 			return null;
 		}
@@ -137,9 +140,11 @@ public abstract class AbstractPool implements Pool {
 			// 缓存项放入缓存池的同时也设置了其生命周期
 			Cacheable newItem = new TimeWrapper(key, value, strategy.cyclelife);
 			newItem = getFree().put(key, newItem);
+			size ++;
 			
 			// 事件监听器将唤醒所有等待中的线程，包括cleaner线程，checkout，remove等方法的等待线程
 			firePoolEvent(PoolEvent.PUT_IN);
+ 
 			return newItem;
 		}
 	}
@@ -173,9 +178,13 @@ public abstract class AbstractPool implements Pool {
     /**
      * 销毁指定对象（如果有必要的话可采用异步）；
      */
-    public void destroyObject(final Cacheable o) {
+    public synchronized void destroyObject(final Cacheable o) {
         if (o != null) {
-        	customizer.destroy(o);
+    		customizer.destroy(o);
+        	logDebug("对象" + o + "被成功销毁");
+        	
+    		size --;
+    		logDebug( (getFree().size() + getUsing().size()) + " --------(1)------ " + size());
         }
     }
     
@@ -198,34 +207,33 @@ public abstract class AbstractPool implements Pool {
         return item;
     }
     
-    public Cacheable checkOut(long timeout) {
+    public synchronized Cacheable checkOut(long timeout) {
         if(timeout <= 0) {
             timeout = strategy.interruptTime;
         }
         
         long time = System.currentTimeMillis();
         Cacheable item =  checkOut();
-        synchronized(this) {
-            while (item == null  &&  (System.currentTimeMillis() - time < timeout)) {
-                try {
-                    log.debug("缓存池【" + getName() + "】中没有可用的缓存项......等待 " + timeout + "（毫秒）");
-                    wait(timeout);
-                    item = checkOut();
-                } catch (InterruptedException e) { 
-                    log.error("检出时等待被中断", e); 
-                }
+        while (item == null  &&  (System.currentTimeMillis() - time < timeout)) {
+            try {
+                log.debug("缓存池【" + getName() + "】中没有可用的缓存项......等待 " + timeout + "（毫秒）");
+                wait(timeout); // wait需要结合synchronized，线程wait后会先释放对象锁，待wait时间（timeout）到了或其他线程notify后再收回对象锁，继续执行。
+                item = checkOut();
+            } 
+            catch (InterruptedException e) { 
+                log.error("checkOut时等待被中断", e); 
             }
         }
         
         if(item == null) {
-            String errorMsg = "缓存池【" + getName() + "】已满，且各缓存项都处于使用状态，需要等待。可考虑修改缓存策略！";
+            String errorMsg = "缓存池【" + getName() + "】已满，且各缓存项都处于使用状态，等待超时(" + timeout + ")。可考虑修改缓存策略！";
             log.error(errorMsg);
             throw new RuntimeException(errorMsg);
         }
         return item;
     }
 
-    public void checkIn(Cacheable item) {
+    public synchronized void checkIn(Cacheable item) {
         if (item == null) {
             log.error("试图返回空的缓存项。");
             return;
@@ -243,7 +251,10 @@ public abstract class AbstractPool implements Pool {
         
         //如果池已满，则销毁对象，否则则放回池中
         int maxSize = strategy.poolSize;
-        if (maxSize > 0 && size() >= maxSize) {
+        if (maxSize > 0 && size() > maxSize) {
+        	logDebug(getName() + "【" + item + "】 checkIn时池已满了，正将被销毁。");
+        	
+        	logDebug( (getFree().size() + getUsing().size()) + " --------(0)------- " + size());
             destroyObject(item);
         } 
         else {
@@ -269,22 +280,20 @@ public abstract class AbstractPool implements Pool {
         }
     }   
     
-    public Cacheable remove() {
+    public synchronized Cacheable remove() {
         Cacheable item = getFree().getByAccessMethod(strategy.accessMethod);
         
         //如果free池中取不到，则要等using池中的缓存对象返回到free中。线程等待
         long timeout = strategy.interruptTime;
         long time = System.currentTimeMillis();
-        synchronized(this) {
-            while (item == null  &&  (System.currentTimeMillis() - time < timeout)) {
-                try {
-                	logDebug("【" + this.getName() + "】的free容器中没有可用的项......等待【" + timeout + "】ms");
-                    wait(timeout);
-                    item = checkOut();
-                } 
-                catch (InterruptedException e) { 
-                    log.error("等待移除缓存项时线程被中断，移除失败。", e); 
-                }
+        while (item == null  &&  (System.currentTimeMillis() - time < timeout)) {
+            try {
+            	logDebug("【" + this.getName() + "】的free容器中没有可用的项......等待【" + timeout + "】ms");
+                wait(timeout);
+                item = getFree().getByAccessMethod(strategy.accessMethod);
+            } 
+            catch (InterruptedException e) { 
+                log.error("等待移除缓存项时线程被中断，移除失败。", e); 
             }
         }
         

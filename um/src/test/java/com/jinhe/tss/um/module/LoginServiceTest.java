@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -101,8 +100,8 @@ public class LoginServiceTest extends TxSupportTest4UM {
 		Assert.assertTrue(1 ==  roleIds.get(0));
 		
 		Object[] rootGroup = loginSerivce.getRootGroupByUserId(userId);
-		Map<Integer, Object[]> fatherGroups = loginSerivce.getGroupsByUserId(userId);
-		Assert.assertEquals(fatherGroups.get(1)[1], rootGroup[1]);
+		List<Object[]> fatherGroups = loginSerivce.getGroupsByUserId(userId);
+		Assert.assertEquals(fatherGroups.get(0)[1], rootGroup[1]);
 		
 		List<GroupDTO> groups = loginSerivce.getGroupTreeByGroupId(groupId);
 		Assert.assertTrue(groups.size() == 2);

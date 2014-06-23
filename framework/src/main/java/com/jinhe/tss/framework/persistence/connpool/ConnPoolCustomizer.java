@@ -26,7 +26,7 @@ public class ConnPoolCustomizer extends DefaultCustomizer {
     
 	public Cacheable create() {
 		Connection conn = _Connection.getInstanse(strategy.paramFile).getConnection();
-		String cacheKey = TimeWrapper.createRandomKey("Connection");
+		String cacheKey = TimeWrapper.createSequenceKey("Connection");
 		
 		// 包装新创建的Connection，赋予其生命周期。
 		return  new TimeWrapper(cacheKey, conn, strategy.cyclelife);

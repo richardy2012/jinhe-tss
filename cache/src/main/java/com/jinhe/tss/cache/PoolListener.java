@@ -12,7 +12,6 @@ package com.jinhe.tss.cache;
 
 /**
  * 缓存池监听器。
- * 
  */
 public class PoolListener implements Listener {
 
@@ -35,7 +34,10 @@ public class PoolListener implements Listener {
 				break;
 			case PoolEvent.MAX_POOL_LIMIT_EXCEEDED:
 				// 如果缓存池容量已超过极限，则启动移除销毁
-				pool.getCustomizer().destroy( pool.remove() ); 
+				Cacheable item = pool.remove();
+				if(item != null) {
+					pool.destroyObject( item ); 
+				}
 				break;
 			case PoolEvent.MAX_POOL_LIMIT_REACHED:
 				// 如果缓存池容量已经到达极限，则启动缓存清理
@@ -91,8 +93,6 @@ public class PoolListener implements Listener {
 
 	/*
 	 * 只要是ObjectPoolListener的实例，都返回true
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object o) {
 		if (o instanceof PoolListener) {
@@ -103,8 +103,6 @@ public class PoolListener implements Listener {
 
 	/*
 	 * 所有的ObjectPoolListener实例返回相同的hashCode
-	 * 
-	 * @see java.lang.Object#hashCode()
 	 */
 	public int hashCode() {
 		return 123456789;

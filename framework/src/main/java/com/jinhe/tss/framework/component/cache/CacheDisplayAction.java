@@ -189,11 +189,13 @@ public class CacheDisplayAction extends BaseActionSupport {
     		@PathVariable String code, 
     		@RequestParam("key") String key) {
     	
-        Cacheable item = cache.getPool(code).removeObject(key);
+        Pool pool = cache.getPool(code);
+		Cacheable item = pool.removeObject(key);
         if(item == null) {
         	printSuccessMessage("该缓存项已经不存在，已经被清空或是已经被刷新！");
         } 
         else {
+        	pool.destroyObject(item);
         	printSuccessMessage("成功清除。");
         }
     }
@@ -215,6 +217,5 @@ public class CacheDisplayAction extends BaseActionSupport {
         cache.getPool(code).init();
         printSuccessMessage();
     }
- 
 }
 

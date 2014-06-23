@@ -24,12 +24,12 @@ public abstract class TaskPoolCustomizer extends DefaultCustomizer {
         String taskClassName = getTaskClass();
 		Task task = (Task)BeanUtil.newInstanceByName(taskClassName);
 		
-        String key = TimeWrapper.createRandomKey("Task");
+        String key = TimeWrapper.createSequenceKey("Task");
         return new TimeWrapper(key, task, strategy.cyclelife);
     }
     
     public Cacheable reloadCacheObject(Cacheable item) {
-    	return item;
+    	return create();
     }
 
     public boolean isValid(Cacheable o) {

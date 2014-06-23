@@ -60,7 +60,7 @@ public class ThreadPool extends ReusablePool implements IThreadPool{
     }
     
     public Thread createWorkThread() {
-    	String threadName = TimeWrapper.createRandomKey("WorkThread");
+    	String threadName = TimeWrapper.createSequenceKey("WorkThread");
         return new ThreadPoolWorker(threadName);
     }
     

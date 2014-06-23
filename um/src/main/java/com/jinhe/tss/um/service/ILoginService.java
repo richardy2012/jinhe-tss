@@ -1,7 +1,6 @@
 package com.jinhe.tss.um.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.jinhe.tss.framework.component.log.Logable;
 import com.jinhe.tss.um.helper.dto.GroupDTO;
@@ -85,11 +84,10 @@ public interface ILoginService {
      * </p>
      * @param userId
      * @return
-     * 		Map:
-     * 		key = Integer(x) / value = Object[](groupId, groupName)
+     * 		List: Object[](groupId, groupName)
      *		层次是从上向下,依次类推
      */
-    Map<Integer, Object[]> getGroupsByUserId(Long userId);
+    List<Object[]> getGroupsByUserId(Long userId);
 
     /**
      * <p>

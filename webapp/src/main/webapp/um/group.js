@@ -314,14 +314,9 @@
 	/* 初始化密码  */
     function resetPassword(){
         var treeNode = $T("tree").getActiveTreeNode();
-		var password = "";
-		var first = true;
-		while(password == "") {
-			if( !first ) {
-				alert("密码不能为空");
-			}
-			password = prompt("请输入新密码", "", "初始化'" + treeNode.getName() + "'的密码", true);
-			first = false;
+		var password = prompt("请输入新密码", "", "初始化'" + treeNode.getName() + "'的密码", true);
+		if(password == null || password == "") {
+			return;
 		}
  
 		Ajax({

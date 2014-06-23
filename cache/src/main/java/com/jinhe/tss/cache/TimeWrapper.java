@@ -11,6 +11,7 @@
 package com.jinhe.tss.cache;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -98,15 +99,15 @@ public class TimeWrapper implements Cacheable, Serializable {
 		this.value = value;
 	}
 	
-	private static Map<String, Integer> countsMap = new HashMap<String, Integer>();
-
 	/**
-	 * 创建一个指定前缀 + 当前时间 ＋ 随机值 的 key
+	 * 创建一个指定前缀 + 当前序号的 key
 	 * 
 	 * @param prefix
 	 * @return
 	 */
-	public static String createRandomKey(String prefix) {
+	static Map<String, Integer> countsMap = Collections.synchronizedMap(new HashMap<String, Integer>());
+	
+	public static synchronized String createSequenceKey(String prefix) {
 	    Integer count = countsMap.get(prefix);
 	    if(count == null) {
 	        countsMap.put(prefix, count = 1);

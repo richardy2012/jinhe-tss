@@ -29,6 +29,8 @@ public class JCacheTest {
 	@Test
 	public void testAbstractPool() {
 		Pool pool = cache.getTaskPool();
+		pool.release(true);
+		pool.init();
 		
 		try {
 			Thread.sleep(3000); // 等待初始化完成
@@ -45,7 +47,7 @@ public class JCacheTest {
 			Assert.assertNotNull(pool.remove());
 		}
 		
-		Assert.assertNotNull(pool.remove());
+		Assert.assertNull(pool.remove());
 		
 		Assert.assertNull(pool.putObject(null, new Object()));
 	}

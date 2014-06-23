@@ -102,6 +102,7 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
                         "employeeNo   VARCHAR2(255 CHAR), " + 
                         "loginName    VARCHAR2(255 CHAR), " + 
                         "userName     VARCHAR2(255 CHAR), " + 
+                        "password     VARCHAR2(255 CHAR), " + 
                         "email        VARCHAR2(255 CHAR) " + 
                     ");" +
                     " alter table xxx_user add primary key (id); ");
@@ -128,7 +129,7 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
             ps.setObject(5, "test 2");
             ps.executeUpdate();
             
-            ps = conn.prepareStatement("insert into xxx_user values (?, ?, ?, ?, ?, ?, ?, ?)");
+            ps = conn.prepareStatement("insert into xxx_user values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             ps.setObject(1, 1L);
             ps.setObject(2, 1L);
             ps.setObject(3, 1);
@@ -136,7 +137,8 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
             ps.setObject(5, "BL00618");
             ps.setObject(6, "JonKing");
             ps.setObject(7, "怒放的生命");
-            ps.setObject(8, "jinpujun@gmail.com");
+            ps.setObject(8, "123456");
+            ps.setObject(9, "jinpujun@gmail.com");
             ps.executeUpdate();
             
             ps.setObject(1, 2L);
@@ -146,7 +148,8 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
             ps.setObject(5, "BL00619");
             ps.setObject(6, "Waitwint");
             ps.setObject(7, "过河卒子");
-            ps.setObject(8, "waitwind@gmail.com");
+            ps.setObject(8, "123456");
+            ps.setObject(9, "waitwind@gmail.com");
             ps.executeUpdate();
             
         } catch (Exception e) {

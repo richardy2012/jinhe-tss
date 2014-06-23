@@ -20,6 +20,7 @@ public class UserDTO {
 	private Integer disabled = ParamConstants.FALSE; // 帐户状态 
 	private Date    accountLife = new Date();     // 帐户有效期限：用户帐户到某个指顶的期限过期
 	private String  authMethod;
+	private String 	password;
     
     public Date getAccountLife() {
         // 默认有效期50年
@@ -116,6 +117,14 @@ public class UserDTO {
 
 	public void setAuthMethod(String authMethod) {
 		this.authMethod = authMethod;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }
 

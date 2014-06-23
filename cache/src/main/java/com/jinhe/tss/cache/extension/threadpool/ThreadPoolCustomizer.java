@@ -38,10 +38,14 @@ public class ThreadPoolCustomizer extends DefaultCustomizer {
     }
 
     public boolean isValid(Cacheable o) {
+    	if(o == null) return false;
+    	
         return ((Thread)o.getValue()).isAlive(); 
     }
 
     public void destroy(Cacheable o) {
+    	if(o == null) return;
+    	
         Thread poolWorker = (Thread) o.getValue();
         try {
             poolWorker.join(50); //等待线程死亡
@@ -52,7 +56,7 @@ public class ThreadPoolCustomizer extends DefaultCustomizer {
     }
 
 	public Cacheable reloadCacheObject(Cacheable item) {
-		return item;
+		return create();
 	}
 }
 

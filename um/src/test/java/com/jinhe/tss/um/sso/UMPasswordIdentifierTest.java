@@ -71,7 +71,7 @@ public class UMPasswordIdentifierTest extends TxSupportTest4UM {
 		try {
 			indentifier.identify();
 
-		} catch (UserIdentificationException e) {
+		} catch (Exception e) {
 			assertTrue(e.getMessage(), true);
 		}
 	}

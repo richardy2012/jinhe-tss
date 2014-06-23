@@ -15,7 +15,7 @@ import com.jinhe.tss.um.service.ILoginService;
 
 /**
  * <p>
- * 登录后将UMS中相关用户对角色信息复制到本地应用的数据库中
+ * 登录后将TSS中相关用户对角色信息复制到本地应用的数据库中
  * </p>
  */
 public class FetchPermissionAfterLoginCustomizer implements ILoginCustomizer {

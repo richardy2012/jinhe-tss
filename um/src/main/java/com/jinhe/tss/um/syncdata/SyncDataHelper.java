@@ -9,6 +9,7 @@ import com.jinhe.tss.um.syncdata.dao.DBDataDao;
 import com.jinhe.tss.um.syncdata.dao.IOutDataDao;
 import com.jinhe.tss.um.syncdata.dao.LDAPDataDao;
 import com.jinhe.tss.util.EasyUtils;
+import com.jinhe.tss.util.InfoEncoder;
 
 public class SyncDataHelper {
     
@@ -45,7 +46,12 @@ public class SyncDataHelper {
         } else {
         	user.setAuthMethod(UMPasswordIdentifier.class.getName());
         }
-        user.setPassword(DEFAULT_PWD);
+        
+        if(userDTO.getPassword() != null) {
+        	user.setPassword(userDTO.getPassword().toUpperCase());
+        } else {
+        	user.setPassword(InfoEncoder.string2MD5(DEFAULT_PWD));
+        }
         user.setPasswordQuestion("?");
         user.setPasswordAnswer( System.currentTimeMillis() + "!" );
         

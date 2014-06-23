@@ -12,6 +12,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.jinhe.tss.cms.service.IRemoteArticleService;
 import com.jinhe.tss.framework.sso.IdentityCard;
+import com.jinhe.tss.framework.sso.context.ApplicationContext;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.TxSupportTest4Portal;
@@ -29,6 +30,8 @@ public class FreeMarkerParserTest extends TxSupportTest4Portal {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
+		
+		Context.initApplicationContext(new ApplicationContext());
  
 		menu = new Navigator();
         menu.setType(Navigator.TYPE_MENU);

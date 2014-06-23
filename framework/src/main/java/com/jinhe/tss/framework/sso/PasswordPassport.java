@@ -1,6 +1,6 @@
 package com.jinhe.tss.framework.sso;
 
-import com.jinhe.tss.framework.exception.UserIdentificationException;
+import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.context.RequestContext;
 
@@ -22,12 +22,12 @@ public class PasswordPassport {
     /**
      * 默认构造函数
      */
-    public PasswordPassport() throws UserIdentificationException {
+    public PasswordPassport() throws BusinessException {
         RequestContext requestContext = Context.getRequestContext();
         this.loginName = requestContext.getValueFromHeaderOrParameter(SSOConstants.LOGINNAME_IN_SESSION);
         this.password  = requestContext.getValueFromHeaderOrParameter(SSOConstants.USER_PASSWORD);
         if (loginName == null || password == null) {
-            throw new UserIdentificationException("账号或密码不能为空，请重新登录。");
+            throw new BusinessException("账号或密码不能为空，请重新登录。");
         }
     }
 

@@ -4,10 +4,15 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import junit.framework.Assert;
+
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * cache的free、using分池策略导致多并发情形下，size计算不准，当缓存对象在两个池之间移动时，size()方法将会统计不到这些对象
+ */
 public class MultiThreadTest {
 	
 	private Logger log = Logger.getLogger(this.getClass());
@@ -26,14 +31,13 @@ public class MultiThreadTest {
 	
 	@Test
 	public void testMultiThreadCheckOutAndIn() {
-//		final Pool pool = cache.getTaskPool();
 		final Pool pool = (Pool) cache.getThreadPool();
 		
 		final CountDownLatch begin = new CountDownLatch(1);
-		final CountDownLatch end = new CountDownLatch(50);
+		final CountDownLatch end = new CountDownLatch(100); // 总请求次数
 		final ExecutorService exec = Executors.newFixedThreadPool(20); // 线程数
 
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 100; i++) {
 			Runnable run = new Runnable() {
 				public void run() {
 					try {
@@ -60,5 +64,12 @@ public class MultiThreadTest {
 		} catch (InterruptedException e) {
 		}
 		exec.shutdown();
+		
+		/**
+		 * 总共请求100次，线程池阀值10，初始化5，所以除了新建5个，其余都直接命中，命中率95%。
+		 */
+		System.out.println("@ " + pool.getHitRate());
+		System.out.println("@ " + pool.getRequests());
+		Assert.assertTrue(pool.getHitRate() == 95.0f);
 	}
 }

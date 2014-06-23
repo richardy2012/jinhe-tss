@@ -13,7 +13,6 @@ import com.jinhe.tss.util.BeanUtil;
 
 /**
  * 缓存对象池
- * 
  */
 public class ObjectPool extends AbstractPool implements Cleaner {
 
@@ -251,7 +250,7 @@ public class ObjectPool extends AbstractPool implements Cleaner {
 						}
 					}
 				} catch (InterruptedException e) {
-					log.debug("运行cleaner线程时出错！", e);
+					log.debug("运行cleaner线程时出错！sleep(" + interval + ")", e);
 				}
 			}
 		}
@@ -308,7 +307,9 @@ public class ObjectPool extends AbstractPool implements Cleaner {
 	}
 
 	public final int size() {
-		return (free == null ? 0 : free.size())
-				+ (using == null ? 0 : using.size());
+//		return (free == null ? 0 : free.size())
+//				+ (using == null ? 0 : using.size());
+		
+		return size;
 	}
 }

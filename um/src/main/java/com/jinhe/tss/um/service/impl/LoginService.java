@@ -3,7 +3,6 @@ package com.jinhe.tss.um.service.impl;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -111,12 +110,12 @@ public class LoginService implements ILoginService {
 		return new Object[] {group.getId(), group.getName()};
 	}
 
-	public Map<Integer, Object[]> getGroupsByUserId(Long userId) {
+	public List<Object[]> getGroupsByUserId(Long userId) {
 		List<?> list = groupDao.getFatherGroupsByUserId(userId);
-		Map<Integer, Object[]> result = new HashMap<Integer, Object[]>();
+		List<Object[]> result = new ArrayList<Object[]>();
 		for (int i = 1; i < list.size() + 1; i++) {
 			Group group = (Group) list.get(i - 1);
-			result.put(i, new Object[] {group.getId(), group.getName()});
+			result.add(new Object[] {group.getId(), group.getName()});
 		}
 		return result;
 	}

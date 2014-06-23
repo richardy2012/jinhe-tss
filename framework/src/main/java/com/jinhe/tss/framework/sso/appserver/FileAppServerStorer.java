@@ -28,6 +28,11 @@ public class FileAppServerStorer implements IAppServerStorer {
 	private static final String APPSERVERS_CONFIG_FILE_DEFAULT = "appServers.xml";
 
     private Map<String, AppServer> cache;
+    
+    public FileAppServerStorer() {
+        cache = new HashMap<String, AppServer>();
+		init();
+    }
 
 	/**
 	 * 初始化文件应用服务器列表
@@ -63,10 +68,6 @@ public class FileAppServerStorer implements IAppServerStorer {
 	 * 根据应用服务器编号获取应用服务器对象
 	 */
 	public AppServer getAppServer(String code) {
-		if (cache == null) {
-            cache = new HashMap<String, AppServer>();
-			init();
-		}
 		AppServer appServer = (AppServer) cache.get(code);
 		if (appServer == null) {
 			throw new BusinessException("系统【"

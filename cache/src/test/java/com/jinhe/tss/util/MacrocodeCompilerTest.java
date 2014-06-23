@@ -41,7 +41,7 @@ public class MacrocodeCompilerTest {
         		"             </tr>" +
         		"         </table>";
         assertEquals( result, MacrocodeCompiler.run(code, macro, false) );
-        assertEquals( result + "${ignore}", MacrocodeCompiler.run(code, macro) );
+        assertEquals( result + "${ignore}", MacrocodeCompiler.run(code, macro, true) );
         
         assertEquals( "test|test", MacrocodeCompiler.run("test${d}", macro));
     }

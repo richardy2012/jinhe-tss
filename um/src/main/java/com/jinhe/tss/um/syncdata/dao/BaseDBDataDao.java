@@ -19,7 +19,7 @@ public abstract class BaseDBDataDao implements IOutDataDao {
     
 	// 要求SQL的字段别名 和 DTO里的属性名一致
     protected static String[] groupDtoPropertyNames = new String[]{"id", "parentId", "name", "description"};
-    protected static String[] userDtoPropertyNames  = new String[]{"id", "groupId", "loginName", "userName", "sex", "birthday", "email", "employeeNo", "authMethod" };
+    protected static String[] userDtoPropertyNames  = new String[]{"id", "groupId", "loginName", "password", "userName", "sex", "birthday", "email", "employeeNo", "authMethod" };
     
     public List<?> getOtherGroups(Map<String, String> paramsMap, String sql, String groupId) {
         if( sql == null ) {

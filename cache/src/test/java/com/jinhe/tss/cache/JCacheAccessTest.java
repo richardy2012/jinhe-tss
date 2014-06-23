@@ -56,6 +56,7 @@ public class JCacheAccessTest {
 		item = pool.remove();
 		Assert.assertNotNull(item);
 		Assert.assertEquals(9, item.getValue()); // 最后一个元素命中率最低
+		pool.destroyObject(item); // 销毁，只有这样size才会减一
 		
 		// 测试池阀值，maxSize=10 （9被remove掉，当前配的存取方式是 LFU）
 		pool.putObject(9, 9);
@@ -90,6 +91,7 @@ public class JCacheAccessTest {
 		Cacheable item = pool.remove();
 		Assert.assertNotNull(item);
 		Assert.assertEquals(0, item.getValue()); // 第一个元素最老
+		pool.destroyObject(item); // 销毁，只有这样size才会减一
 		
 		// 测试池阀值，maxSize=10 （9被remove掉，当前配的存取方式是 LFU）
 		pool.putObject(10, 10);

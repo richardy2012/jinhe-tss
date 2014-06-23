@@ -1,6 +1,7 @@
 package com.jinhe.tss.framework.sso.appserver;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.dom4j.Element;
@@ -16,7 +17,7 @@ import com.jinhe.tss.util.XMLDocUtil;
  */
 public class ParamAppServerStorer implements IAppServerStorer {
 	
-	 private Map<String, AppServer> cache; 
+	private Map<String, AppServer> cache = new HashMap<String, AppServer>(); 
     
     public AppServer getAppServer(String appCode) {
     	if(cache.get(appCode) != null) {

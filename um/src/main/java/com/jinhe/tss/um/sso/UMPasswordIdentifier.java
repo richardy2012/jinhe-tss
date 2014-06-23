@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.exception.UserIdentificationException;
 import com.jinhe.tss.framework.sso.IOperator;
 import com.jinhe.tss.framework.sso.IPWDOperator;
 import com.jinhe.tss.framework.sso.PasswordPassport;
@@ -38,7 +37,7 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
     
     ILoginService service = (ILoginService) Global.getContext().getBean("LoginService");
     
-    protected IOperator validate() throws UserIdentificationException {
+    protected IOperator validate() throws BusinessException {
         PasswordPassport passport = new PasswordPassport();
         IPWDOperator operator = null;
         try {

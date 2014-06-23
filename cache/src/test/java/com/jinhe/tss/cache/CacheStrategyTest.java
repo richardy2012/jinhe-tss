@@ -59,5 +59,10 @@ public class CacheStrategyTest {
 		strategy2.setCustomizerClass("com.jinhe.tss.cache.ScannerTaskPoolCustomizer");
 		
 		strategy.fireEventIfChanged(strategy2);
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		}
 	}
 }

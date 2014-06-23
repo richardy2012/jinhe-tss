@@ -11,10 +11,10 @@ import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.component.progress.Progressable;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.persistence.ICommonDao;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IApplicationDao;
 import com.jinhe.tss.um.dao.IGroupDao;
@@ -36,7 +36,6 @@ import com.jinhe.tss.util.XMLDocUtil;
 @Service("SyncService")
 public class SyncService implements ISyncService, Progressable {
 	
-    @Autowired private ICommonDao commonDao;
     @Autowired private IGroupDao  groupDao;
     @Autowired private IApplicationDao  applicationDao;
     @Autowired private ResourcePermission resourcePermission;
@@ -64,7 +63,7 @@ public class SyncService implements ISyncService, Progressable {
         Map<String, Long> idMapping = new HashMap<String, Long>();
         
         // 取已经同步的用户组. 设置父子节点关系时用到（其实只需”同步节点“的父节点 ＋ 子枝）
-        List<?> allGroups = commonDao.getEntitiesByNativeSql("select t.* from um_group t where t.fromGroupId is not null ", Group.class); 
+        List<?> allGroups = groupDao.getEntitiesByNativeSql("select t.* from um_group t where t.fromGroupId is not null ", Group.class); 
         for(Iterator<?> it = allGroups.iterator();it.hasNext();){
             Group group = (Group)it.next();
             idMapping.put(group.getFromGroupId(), group.getId());
@@ -129,9 +128,10 @@ public class SyncService implements ISyncService, Progressable {
             // 检查组（和该fromApp下的组对应的组）是否已经存在
             List<?> temp = groupDao.getEntities("from Group t where t.fromGroupId=? and t.fromApp=?", fromGroupId, fromApp);
             if(temp == null || temp.isEmpty()) {
-            	commonDao.create(group);
+            	groupDao.saveGroup(group);
             } else {
             	group = (Group) temp.get(0);
+            	groupDao.saveGroup(group); // TODO 临时用一下，补齐decode值
             }
             idMapping.put(fromGroupId, group.getId()); // 保存对应结果
             
@@ -159,7 +159,7 @@ public class SyncService implements ISyncService, Progressable {
              * 如果是已经存在的但不是从该fromApp同步过来的，则忽略该fromApp用户；
              * 如果用户不存在，则新建。
              */
-            List<?> temp = commonDao.getEntities("from User t where t.loginName=?", userDto.getLoginName());
+            List<?> temp = groupDao.getEntities("from User t where t.loginName=?", userDto.getLoginName());
             if(temp != null && temp.size() > 0) {
             	User existUser = (User) temp.get(0);
             	if( userDto.getId().equals(existUser.getFromUserId()) ) { 
@@ -167,15 +167,19 @@ public class SyncService implements ISyncService, Progressable {
 					if(userDto.getEmail() != null) {
 						existUser.setEmail(userDto.getEmail());
 					}
-            		commonDao.update(existUser);
+					if(userDto.getPassword() != null) {
+						existUser.setPassword(userDto.getPassword().toUpperCase());
+					}
+					existUser.setDisabled(ParamConstants.FALSE);
+					groupDao.update(existUser);
             	}
             }
             else {
             	User user = new User();
                 SyncDataHelper.setUserByDTO(user, userDto);
             	user.setGroupId(mainGroupId);
-                commonDao.create(user);
-                commonDao.create(new GroupUser(user.getId(), mainGroupId));
+            	groupDao.createObject(user);
+            	groupDao.createObject(new GroupUser(user.getId(), mainGroupId));
             }
             
             loginNames.add(userDto.getLoginName());
@@ -186,7 +190,7 @@ public class SyncService implements ISyncService, Progressable {
     
     /** 更新进度信息 */
     private void updateProgressInfo(Progress progress, long total, int index){
-        commonDao.flush();
+    	groupDao.flush();
         
         index = index + 1; // index 从0开始计数
         if(index % 20 == 0) {

@@ -47,7 +47,7 @@ public class ReusablePool extends ObjectPool {
 				break;
 			} 
 			else {
-				customizer.destroy(item);
+				super.destroyObject(item);
 				item = null;
 				log.info("将验证没通过的缓存项【" + item + "】销毁");
 			}
@@ -60,11 +60,16 @@ public class ReusablePool extends ObjectPool {
 		if ( !isHited ) {
 			int maxSize = strategy.poolSize;
 			if (size() < maxSize || maxSize == 0) {
+				logDebug( (getFree().size() + getUsing().size()) + " +++++++++++++ " + size() + " " + maxSize);
 				item = customizer.create();
+		        	
 				if ( !customizer.isValid(item) ) {
 					String errorMsg = getName() + "池【" + getName() + "】没能创建一个新的有效的缓存项。";
 					log.debug(errorMsg);
 					throw new RuntimeException(errorMsg);
+				} 
+				else {
+					size ++;
 				}
 			}
 		}
