@@ -20,6 +20,7 @@ import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
 import com.jinhe.tss.portal.service.INavigatorService;
 import com.jinhe.tss.portal.service.IPortalService;
+import com.jinhe.tss.um.UMConstants;
 
 /**
  * 导航栏模块的单元测试。
@@ -122,6 +123,7 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         
         // 查询
         menuAction.getAllNavigator4Tree(response);
+        menuAction.getOperations(response, rootMenuId);
         
         menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_SECTION);
         menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_PORTLET_INSTANCE);
@@ -129,7 +131,16 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         // 生成菜单XML格式
         menuAction.getNavigatorXML(response, rootMenuId);
         
+        // 匿名用户读取菜单（缓存）
+        login(UMConstants.ANONYMOUS_USER_ID, "ANONYMOUS");
+        menuAction.getNavigatorXML(response, rootMenuId);
+        menuAction.getNavigatorXML(response, rootMenuId); // 访问两边以测试是否缓存成功
+        
+        menuAction.flushCache(response, rootMenuId);
+        
         // 删除
+        login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
+        
         menuAction.delete(response, rootMenuId);
         
         portalAction.delete(response, portalId);

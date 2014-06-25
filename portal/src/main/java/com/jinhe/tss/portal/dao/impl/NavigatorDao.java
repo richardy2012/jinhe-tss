@@ -14,11 +14,7 @@ public class NavigatorDao extends TreeSupportDao<Navigator> implements INavigato
 	public NavigatorDao() {
 		super(Navigator.class);
 	}
-
-	public Navigator move(Navigator navigator) {
-        return save(navigator);
-    }
-
+ 
     public Navigator save(Navigator navigator) {
     	if(navigator.getId() == null) {    
             return create(navigator);
@@ -44,10 +40,6 @@ public class NavigatorDao extends TreeSupportDao<Navigator> implements INavigato
 
 	public List<Navigator> getChildrenById(Long id, String operationId) {
 		return getChildrenById(id);
-	}
-
-	public List<Navigator> getParentsById(Long id, String operationId) {
-		return getParentsById(id);
 	}
 }
 

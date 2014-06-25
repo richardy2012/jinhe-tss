@@ -81,8 +81,8 @@ public class ThemeInfo implements IEntity {
 	    }
 	    
 	    public ThemeInfoId(Long themeId, Long structureId){
-	        this.themeId = themeId;
-	        this.structureId = structureId;
+	        this.setThemeId(themeId);
+	        this.setStructureId(structureId);
 	    }
 	  
 	    public Long getThemeId() {
@@ -111,10 +111,8 @@ public class ThemeInfo implements IEntity {
 	    }
 
 	    public int hashCode() {
-	        int hash = 1;
-	        hash = hash * 31 + this.themeId.hashCode();
+	        int hash = 31 + this.themeId.hashCode();
 	        hash = hash * 31 + this.structureId.hashCode();
-
 	        return hash;
 	    }
 	}

@@ -61,12 +61,5 @@ public interface IComponentDao extends ITreeSupportDao<Component>{
      * @return
      */
     List<?> getComponentsDeeply(Long groupId);
-    
-    /**
-     * 只获取当前组下的元素，不包括子组下的元素。
-     * @param groupId
-     * @return
-     */
-    List<?> getComponents( Long groupId );
 }
 

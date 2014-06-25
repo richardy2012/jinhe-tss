@@ -31,9 +31,9 @@ public class ThemePersonal implements IEntity {
     }
     
     public ThemePersonal(Long portalId, Long userId, Long themeId) {
-        this.portalId = portalId;
-        this.themeId = themeId;
-        this.userId = userId;
+        this.setPortalId(portalId);
+        this.setThemeId(themeId);
+        this.setUserId(userId);
     }
  
     public Long getId() {

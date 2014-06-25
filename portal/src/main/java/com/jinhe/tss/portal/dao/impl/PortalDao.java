@@ -30,11 +30,7 @@ public class PortalDao extends TreeSupportDao<Structure> implements IPortalDao {
     public void deleteStructure(Structure ps) {
         super.delete(em.merge(ps));
     }
-    
-    public Structure moveStructure(Structure ps){
-        return saveStructure(ps);
-    }
- 
+
     public List<Structure> getParentsById(Long id, String operationId) {
         return getParentsById(id);
     }
@@ -57,7 +53,7 @@ public class PortalDao extends TreeSupportDao<Structure> implements IPortalDao {
     }
     
     public List<?> getThemesByPortal(Long portalId) {
-        return getEntities("from Theme o where o.portalId = ? and o.disabled <> 1 order by o.id", portalId);
+        return getEntities("from Theme o where o.portalId = ? order by o.id", portalId);
     }
     
     public ThemePersonal getPersonalTheme(Long portalId) {

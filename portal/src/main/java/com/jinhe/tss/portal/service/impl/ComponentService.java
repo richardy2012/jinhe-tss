@@ -70,7 +70,7 @@ public class ComponentService implements IComponentService {
         String hql = null;
         switch (group.getType()) {
         case Component.PORTLET_TYPE:  // Portlet组
-            hql = "from Structure t where t.definerId = ? and t.type = 3 ";
+            hql = "from Structure t where t.definer.id = ? and t.type = 3 ";
             break;
         case Component.LAYOUT_TYPE:   // 布局器组
             hql = "select t from Structure t, ThemeInfo ti where t.id = ti.id.structureId and ti.layout.id = ? ";

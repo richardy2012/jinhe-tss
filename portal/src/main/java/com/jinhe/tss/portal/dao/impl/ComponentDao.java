@@ -46,16 +46,16 @@ public class ComponentDao extends TreeSupportDao<Component> implements IComponen
  
     public Component getDefaultLayout(){
         List<?> list = getEntities("from Component o where o.type = ? and o.isDefault = 1", Component.LAYOUT_TYPE);
-        if(list.isEmpty() || list.size() > 1) {
-        	throw new BusinessException("没有设定一个默认的布局器或者存在多个默认布局器！");
+        if(list.isEmpty()) {
+        	throw new BusinessException("没有设定一个默认的布局器！");
         }
         return (Component) list.get(0);
     }
     
     public Component getDefaultDecorator(){
         List<?> list = getEntities("from Component o where o.type = ? and o.isDefault = 1", Component.DECORATOR_TYPE);
-        if(list.isEmpty() || list.size() > 1) {
-        	throw new BusinessException("没有设定一个默认的修饰器或者存在多个默认修饰器！");
+        if(list.isEmpty()) {
+        	throw new BusinessException("没有设定一个默认的修饰器！");
         }
         return (Component) list.get(0);
     }
@@ -99,10 +99,4 @@ public class ComponentDao extends TreeSupportDao<Component> implements IComponen
         String hql = "from Component t where t.decode like ?  and t.decode <> ? order by t.decode";
         return getEntities(hql, group.getDecode() + "%", group.getDecode());
     }
-    
-    public List<?> getComponents( Long groupId ) {
-        String hql = "from Component t where t.parentId = ? order by t.decode";
-        return getEntities(hql, groupId);
-    }
- 
 }

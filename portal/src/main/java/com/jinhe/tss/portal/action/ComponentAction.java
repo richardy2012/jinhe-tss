@@ -294,14 +294,10 @@ public class ComponentAction extends FMSupportAction {
         String componentType = component.getComponentType();
         
         Document doc = XMLDocUtil.dataXml2Doc(component.getDefinition());
-        
-        org.dom4j.Node htmlNode = doc.selectSingleNode("/" + componentType + "/html");
-        org.dom4j.Node scriptNode = doc.selectSingleNode("/" + componentType + "/script");
-        org.dom4j.Node styleNode = doc.selectSingleNode("/" + componentType + "/style");
-        
-        String html = (htmlNode == null? null : htmlNode.getText());
-        String script = (scriptNode == null? null : scriptNode.getText());
-        String style = (styleNode == null? null : styleNode.getText());
+ 
+        String html   = doc.selectSingleNode("/" + componentType + "/html").getText();
+        String script = doc.selectSingleNode("/" + componentType + "/script").getText();
+        String style  = doc.selectSingleNode("/" + componentType + "/style").getText();
         
         Map<String, String> events = new HashMap<String, String>();
         List<?> eventNodes = doc.selectNodes("/" + componentType + "/events/attach");

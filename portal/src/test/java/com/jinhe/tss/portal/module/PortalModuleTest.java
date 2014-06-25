@@ -69,7 +69,11 @@ public class PortalModuleTest extends TxSupportTest4Portal {
          Structure section2 = createPageOrSection(page2, "版面二", "section2", Structure.TYPE_SECTION);
          Component portlet = createTestPortlet();
          createPortletInstance(section1, "portletInstance1", "portletInstance1", portlet);
-         createPortletInstance(section2, "portletInstance2", "portletInstance2", portlet);
+         Structure temp = createPortletInstance(section2, "portletInstance2", "portletInstance2", portlet);
+         
+         portalAction.getStructureInfo(response, request, root.getId());
+         portalAction.getStructureInfo(response, request, page1.getId());
+         portalAction.getStructureInfo(response, request, temp.getId());
     }
     
     @Test
@@ -121,9 +125,42 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         rconfig.setRemark("~~~~~~~~~~~~~~~~");
         portalAction.saveReleaseConfig(response, rconfig); // create
         
-        portalAction.getReleaseConfig(response, rconfig.getId()); // load exsited config
-        
+        rconfig.setVisitUrl("default");
         portalAction.saveReleaseConfig(response, rconfig); // update
+        
+        ReleaseConfig rconfig2 = new ReleaseConfig();
+        rconfig2.setName("门户发布配置-2");
+        rconfig2.setPortal(root);
+        rconfig2.setPage(page1);
+        rconfig2.setTheme((Theme) themeList.get(0));
+        rconfig2.setVisitUrl("default.portal");
+        try {
+        	 portalAction.saveReleaseConfig(response, rconfig); // create
+		} catch(Exception e) {
+			Assert.assertTrue("发布地址已经存在", true);
+			
+			rconfig2.setVisitUrl("default2.portal");
+			portalAction.saveReleaseConfig(response, rconfig);
+		}
+        
+        try {
+        	rconfig2.setVisitUrl("default");
+       	 	portalAction.saveReleaseConfig(response, rconfig); // update
+		} catch(Exception e) {
+			Assert.assertTrue("发布地址已经存在", true);
+		}
+        
+        // 按发布地址读取发布配置信息
+        rconfig = portalService.getReleaseConfig("default.portal");
+        Assert.assertNotNull(rconfig);
+        
+		try {
+			portalService.getReleaseConfig("index.portal");
+		} catch(Exception e) {
+			Assert.assertTrue("发布地址不存在", true);
+		}
+        
+        portalAction.getReleaseConfig(response, rconfig.getId()); // load exsited config
         
         portalAction.getAllReleaseConfigs4Tree(response);
         

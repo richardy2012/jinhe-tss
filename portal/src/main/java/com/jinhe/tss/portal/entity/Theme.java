@@ -11,7 +11,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeNode;
@@ -33,13 +32,10 @@ public class Theme extends OperateInfo implements IEntity, ITreeNode {
 	
 	@Column(nullable = false)
 	private String  name;   // 主题名称
-	private Integer seqNo;  // 顺序号
 	
     private Long    portalId;    // 主题所属的门户ID
 	private String  description; // 主题的描述
 	
-    private Integer disabled = ParamConstants.FALSE;  // 是否停用：0－启用；1－停用
-
     public Theme() {
     }
     
@@ -77,14 +73,6 @@ public class Theme extends OperateInfo implements IEntity, ITreeNode {
 		this.name = name;
 	}
  
-	public Integer getSeqNo() {
-		return seqNo;
-	}
- 
-	public void setSeqNo(Integer seqNo) {
-		this.seqNo = seqNo;
-	}
- 
     public Long getPortalId() {
         return portalId;
     }
@@ -93,14 +81,6 @@ public class Theme extends OperateInfo implements IEntity, ITreeNode {
         this.portalId = portalId;
     }
  
-    public Integer getDisabled() {
-        return disabled;
-    }
- 
-    public void setDisabled(Integer disabled) {
-        this.disabled = disabled;
-    }
-    
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

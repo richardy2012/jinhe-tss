@@ -29,6 +29,7 @@ public class PortalBrowseTest extends TxSupportTest4Portal {
     Structure page1;
     Structure page2;
     Structure section1;
+    Structure portletInstance4;
     Theme defaultTheme;
     
     @Before
@@ -63,6 +64,8 @@ public class PortalBrowseTest extends TxSupportTest4Portal {
          Component portlet = createTestPortlet();
          createPortletInstance(section1, "portletInstance1", "portletInstance1", portlet);
          createPortletInstance(section2, "portletInstance2", "portletInstance2", portlet);
+         createPortletInstance(section2, "portletInstance3", "portletInstance3", portlet);
+         portletInstance4 = createPortletInstance(section2, "portletInstance4", "portletInstance4", portlet);
     }
     
     @Test
@@ -97,6 +100,17 @@ public class PortalBrowseTest extends TxSupportTest4Portal {
         	e.printStackTrace();
             assertFalse(e.getMessage(), true);
         }
+        
+        // 重复访问，以出发流量记录
+        for(int i = 0; i < 50; i++) {
+        	portalAction.previewPortal(response, request, portalId);
+        }
+        
+        request.addParameter("pageId", section1.getId() + "");
+        portalAction.previewPortal(response, request, portalId);
+        
+        request.addParameter("pageId", portletInstance4.getId() + "");
+        portalAction.previewPortal(response, request, portalId);
  
         // 测试门户流量查看
         portalAction.getFlowRate(response, portalId);

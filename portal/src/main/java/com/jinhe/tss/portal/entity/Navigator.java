@@ -1,7 +1,6 @@
 package com.jinhe.tss.portal.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.dom4j.Element;
@@ -109,18 +107,7 @@ public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, I
     private Integer levelNo; // 层次值
 
     private Integer disabled = ParamConstants.FALSE;  // 是否停用
-    
-    @Transient 
-    private List<Navigator> children = new ArrayList<Navigator>();
-
-    public List<Navigator> getChildren(){
-        return this.children;
-    }
-    
-    public void addChild(Navigator navigator){
-        this.children.add(navigator);
-    }
-    
+ 
     public TreeAttributesMap getAttributes() {
         TreeAttributesMap map = new TreeAttributesMap(id, name);
         map.put("parentId", parentId);

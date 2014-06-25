@@ -4,7 +4,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.List;
+
+import junit.framework.Assert;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +19,10 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.TxSupportTest4Portal;
 import com.jinhe.tss.portal.action.ComponentAction;
+import com.jinhe.tss.portal.dao.IComponentDao;
 import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.util.BeanUtil;
+import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;
 
 /**
@@ -26,20 +31,11 @@ import com.jinhe.tss.util.URLUtil;
 public class ComponentModuleTest extends TxSupportTest4Portal {
     
     @Autowired ComponentAction componentAction;
+    
+    @Autowired IComponentDao componentDao;
  
     @Test
     public void testComponentGroupFunctions() {
-    	request.addParameter("paramsItem", "");
-        componentAction.getComponentParamsConfig(response, request, defaultLayoutId);
-        
-        try {
-            componentAction.previewComponent(response, defaultLayoutId);
-        } catch (Exception e) {
-            assertFalse("预览组件出错" + e.getMessage(), true);
-        }
- 
-        componentAction.getComponentInfo(response, defaultLayoutId, layoutGroup.getId());
-        
         Component group1 = new Component();
         group1.setName("测试布局器组1");
         group1.setIsGroup(true);
@@ -74,6 +70,9 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
                 componentAction.delete(response, group.getId());
             }
         }
+        
+        Assert.assertNotNull(componentDao.getDefaultDecorator());
+        Assert.assertNotNull(componentDao.getDefaultLayout());
     }
 
     @Test
@@ -146,10 +145,37 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         Component layout1 = (Component) list.get(list.size() - 1);
         Long id = layout1.getId();
         
+        request.addParameter("paramsItem", "tableWidth=1000 \n column1Width=300 \n column1Width=700");
+        componentAction.getComponentParamsConfig(response, request, id);
+        
+        String configFilePath = URLUtil.getWebFileUrl(layout1.getResourcePath() + "/" + Component.PARAM_FILE).getFile();
+        FileHelper.deleteFile(new File(configFilePath));
+        componentAction.getComponentParamsConfig(response, request, id);
+        
+        try {
+            componentAction.previewComponent(response, id);
+        } catch (Exception e) {
+            assertFalse("预览组件出错" + e.getMessage(), true);
+        }
+        
         componentAction.getDefaultParams4Xml(response, id);
         
         request.addParameter("configXML", "");
 		componentAction.saveComponentParamsConfig(response, request, id);
+		
+		componentAction.delete(response, id);
+		
+		try {
+			componentAction.delete(response, defaultLayoutId);
+		} catch(Exception e) {
+			Assert.assertTrue("删除默认的布局器失败", true);
+		}
+		
+		try {
+			componentAction.disable(response, defaultLayoutId, ParamConstants.TRUE);
+		} catch(Exception e) {
+			Assert.assertTrue("停用默认的布局器失败", true);
+		}
     }
 
     @Test
@@ -171,8 +197,16 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         Component portlet1 = (Component) list.get(list.size() - 1);
         Long id = portlet1.getId();
         
+        try {
+            componentAction.previewComponent(response, id);
+        } catch (Exception e) {
+            assertFalse("预览组件出错" + e.getMessage(), true);
+        }
+        
         request.addParameter("configXML", "");
 		componentAction.saveComponentParamsConfig(response, request, id);
+		
+		componentAction.delete(response, id);
     }
 
 }

@@ -70,6 +70,6 @@ public class MultiThreadTest {
 		 */
 		System.out.println("@ " + pool.getHitRate());
 		System.out.println("@ " + pool.getRequests());
-		Assert.assertTrue(pool.getHitRate() == 95.0f);
+		Assert.assertTrue(pool.getHitRate() >= 95.0f);
 	}
 }

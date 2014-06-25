@@ -3,11 +3,9 @@ package com.jinhe.tss.portal.entity;
 import java.io.File;
 import java.io.Serializable;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Column;
@@ -22,7 +20,6 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import com.jinhe.tss.framework.component.param.ParamConstants;
-import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
@@ -37,6 +34,16 @@ import com.jinhe.tss.util.URLUtil;
 
 /**
  * 门户结构实体：自引用结构，不同的节点分别代表Portal、页面、版面、Portlet实例等
+ * <br>
+ * |-门户_1 <br>
+ * ........|- 页面_1 <br>
+ * ................|- portlet应用_1_1 <br>
+ * ................|- 版面_1_1 <br>
+ * ..........................|- 版面_1_1_2 <br>
+ * ......................................|- portlet应用_1_1_2_1 <br>
+ * ..........................|- portlet应用_1_1_2 <br>
+ * ........|- 页面_1 <br>
+ * ........|- 页面_2 <br>
  */
 @Entity
 @Table(name = "portal_structure", uniqueConstraints = { 
@@ -128,78 +135,6 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
     public boolean isSection()    { return TYPE_SECTION == this.type.intValue(); }
     public boolean isPortletInstanse() { return TYPE_PORTLET_INSTANCE == this.type.intValue(); }
 
-    /**
-     * 将一个门户结构节点下所有的子节点递归放入到各自的父节点下
-     * 
-     * <br>
-     * |-门户_1 <br>
-     * ........|- 页面_1 <br>
-     * ................|- portlet应用_1_1 <br>
-     * ................|- 版面_1_1 <br>
-     * ..........................|- 版面_1_1_2 <br>
-     * ......................................|- portlet应用_1_1_2_1 <br>
-     * ..........................|- portlet应用_1_1_2 <br>
-     * ........|- 页面_1 <br>
-     * ........|- 页面_2 <br>
-     * 
-     * @param list
-     */
-    public void compose(List<Structure> list){
-        if(this.type.equals(TYPE_PORTLET_INSTANCE)){
-            throw new BusinessException("当前门户结构是portlet实例,不能进行该操作!");
-        }
-
-        Map<Long, Structure> map = new HashMap<Long, Structure>();
-        map.put(this.getId(), this);
-
-        for ( Structure entity : list ) {
-            map.put(entity.getId(), entity);
-        }
-        
-        for ( Structure entity : list ) {
-            Long parentId = entity.getParentId();
-            Structure parent = map.get(parentId);
-
-            if (parentId.equals(this.id)) {
-                this.addChild(entity);
-            } else {
-                parent.addChild(entity);
-            }
-        }
-    }
-    
-    @Transient private List<Navigator> menus = new ArrayList<Navigator>();
-    
-    public List<Navigator> getMenus(){
-        return this.menus;
-    }
-    
-    /**
-     * |-门户 <br>
-     * ........|- 菜单 <br>
-     * ................|- 菜单项 <br>
-     * ........................|- 菜单项 <br>
-     * 
-     * @param list
-     */
-    public void composeMenus(List<Navigator> list){
-        Map<Long, Navigator> map = new HashMap<Long, Navigator>();
-
-        for ( Navigator entity : list ) {
-            map.put(entity.getId(), entity);
-        }
-        
-        for ( Navigator entity : list ) {
-            if(Navigator.TYPE_MENU.equals(entity.getType())){
-                this.getMenus().add(entity);
-            } 
-            else {
-                Navigator parent = map.get(entity.getParentId());
-                parent.addChild(entity);
-            }            
-        }
-    }
-    
     public File getPortalResourceFileDir(){
         URL url = URLUtil.getWebFileUrl(PortalConstants.PORTAL_MODEL_DIR);
         return new File(url.getPath() + "/" + code);

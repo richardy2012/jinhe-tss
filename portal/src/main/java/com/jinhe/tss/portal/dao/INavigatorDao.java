@@ -19,13 +19,6 @@ public interface INavigatorDao extends ITreeSupportDao<Navigator> {
     Navigator save(Navigator navigator);
     
     /**
-     * 移动一个菜单项。
-     * @param navigator
-     * @return
-     */
-    Navigator move(Navigator navigator);
-    
-    /**
      * 删除一个导航栏。
      * @param navigator
      */
@@ -54,9 +47,4 @@ public interface INavigatorDao extends ITreeSupportDao<Navigator> {
             resourceType = PortalConstants.NAVIGATOR_RESOURCE_TYPE,
             filter = PermissionFilter4Branch.class)
     List<Navigator> getChildrenById(Long id, String operationId);
-    
-    @PermissionTag(
-            resourceType = PortalConstants.NAVIGATOR_RESOURCE_TYPE,
-            filter = PermissionFilter4Branch.class)
-    List<Navigator> getParentsById(Long id, String operationId);
 }

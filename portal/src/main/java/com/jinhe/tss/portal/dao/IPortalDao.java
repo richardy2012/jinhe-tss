@@ -24,14 +24,6 @@ public interface IPortalDao extends ITreeSupportDao<Structure>{
      * @param ps
      */
     void deleteStructure(Structure ps);
-    
-    /**
-     * 本方法是为了资源权限补齐拦截器ResourcePermissionInterceptor能拦截到门户结构的移动保存操作，
-     * 从而可以对移动的资源根据新的父节点进行权限补齐处理。
-     * @param ps
-     * @return
-     */
-    Structure moveStructure(Structure ps);
 
     /**
      * 根据父亲节点获取所有子节点。

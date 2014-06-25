@@ -31,9 +31,9 @@ public class FlowRate implements IEntity {
     }
     
     public FlowRate(Long pageId, String ip){
-        this.pageId = pageId;
-        this.ip = ip;
-        this.visitTime = new Date();
+        this.setPageId(pageId);
+        this.setIp(ip);
+        this.setVisitTime(new Date());
     }
  
     public Long getId() {
