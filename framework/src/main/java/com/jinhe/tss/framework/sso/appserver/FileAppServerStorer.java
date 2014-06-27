@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -23,6 +24,8 @@ import com.jinhe.tss.util.XMLDocUtil;
  * </servers>
  */
 public class FileAppServerStorer implements IAppServerStorer {
+	
+	Logger log = Logger.getLogger(FileAppServerStorer.class);
 
 	private static final String APPSERVERS_CONFIG_FILE = "application.servers.file";
 	private static final String APPSERVERS_CONFIG_FILE_DEFAULT = "appServers.xml";
@@ -38,7 +41,18 @@ public class FileAppServerStorer implements IAppServerStorer {
 	 * 初始化文件应用服务器列表
 	 */
 	private synchronized void init() {
-		Document doc = getConfigDocument();
+		Document doc; 
+		try {
+			doc = getConfigDocument();
+		} 
+		catch(Exception e) {
+			log.info("can't find appServer.xml");
+			return;
+		}
+		
+		if(cache.size() > 0) {
+			return; // 如果已经被其他线程初始化，则不再重复初始化
+		}
 		
 		List<Element> list = XMLDocUtil.selectNodes(doc, "/servers/server");
 		for (Element appServerNode : list) {

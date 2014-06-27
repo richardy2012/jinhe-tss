@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -113,8 +114,6 @@ public class Filter7AccessingCheck implements Filter {
 }
 
 /** 
- * <p> PermissionChecker.java </p> 
- * 
  * 权限检测器。
  * 
  * 权限配置文件格式： 
@@ -126,6 +125,8 @@ public class Filter7AccessingCheck implements Filter {
  * @author Jon.King 2008/12/19 10:59:06
  */
 class AccessingChecker {
+	
+	Logger log = Logger.getLogger(AccessingChecker.class);
 
     /** 权限配置文件 */
     private static final String RIGHT_CONFIG_FILE_NAME = "META-INF/right-config.xml";
@@ -136,7 +137,7 @@ class AccessingChecker {
     
     private AccessingChecker() {
         try {
-            rightsMap = parser(RIGHT_CONFIG_FILE_NAME);
+            rightsMap = parser();
         } catch (Exception e) {
             throw new BusinessException("权限配置初始化失败！", e);
         }
@@ -201,14 +202,17 @@ class AccessingChecker {
      * @return
      * @throws Exception
      */
-    private Map<String, Set<String>> parser(String configFile) throws Exception {
+    private Map<String, Set<String>> parser() throws Exception {
         Map<String, Set<String>> rightsMap = new HashMap<String, Set<String>>();
-
-        if (configFile == null || "".equals(configFile)) {
-            return rightsMap;
-        }
+ 
+		Document doc; 
+		try {
+			doc = XMLDocUtil.createDoc(RIGHT_CONFIG_FILE_NAME);
+		} 
+		catch(Exception e) {
+			return rightsMap;
+		}
         
-        Document doc = XMLDocUtil.createDoc(configFile);
         Element root = doc.getRootElement();
         THE_404_URL = root.attributeValue("url_404");
         
