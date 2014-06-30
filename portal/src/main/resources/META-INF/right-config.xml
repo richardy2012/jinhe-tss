@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<rightConfig url_404="/404.htm">
+<rightConfig url_404="/tss/404.htm">
 	<servlet right="-1,Admin" name="/portal/site.htm" />
 	<servlet right="-1,Admin" name="/portal/layout.htm"/>
 	<servlet right="-1,Admin" name="/portal/decorator.htm"/>

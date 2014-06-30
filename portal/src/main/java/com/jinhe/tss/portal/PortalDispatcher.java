@@ -38,6 +38,8 @@ public class PortalDispatcher extends HttpServlet {
 	 * 发布路径的后缀名
 	 */
 	public static final String PORTAL_REDIRECT_URL_SUFFIX = ".portal";
+	
+	public static final String THE_404_URL = "/tss/404.html";
  
     
     Logger log = Logger.getLogger(this.getClass());
@@ -47,7 +49,7 @@ public class PortalDispatcher extends HttpServlet {
             String requestURI = request.getRequestURI();
 			ReleaseConfig issueInfo = getIssueInfo(requestURI);
 			if(issueInfo == null) {
-				response.sendRedirect("/404.html");
+				response.sendRedirect(THE_404_URL);
 			}
 			
 			// 检测相应门户是否可以使用匿名用户访问
@@ -60,7 +62,7 @@ public class PortalDispatcher extends HttpServlet {
 	            rd.forward(request, response); // 控制权转发
 			}
 			else {
-				response.sendRedirect("/404.html");
+				response.sendRedirect(THE_404_URL);
 			}
 			 
             /* 

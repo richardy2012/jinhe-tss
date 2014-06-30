@@ -1,6 +1,7 @@
 IS_TEST = false;
 
 FROMEWORK_CODE = "TSS";
+SYSTEM_TITLE = "百世快运BI";  // 它山石应用支撑平台
 
 /*  当前应用名  */
 APP_CODE    = "TSS";

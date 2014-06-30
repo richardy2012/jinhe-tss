@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ftpServers>
-	<ftpServer url="192.168.0.31" userName="root" password="password">
-		<filePath localDir="d:/project/jinhe-dao/target/html" remoteDir="temp/html"/>
-		<filePath localDir="d:/project/jinhe-dao/target/core" remoteDir="temp/core"/>
-		<filePath localDir="d:/project/jinhe-dao/target/portal/model" remoteDir="temp/model"/>
-		<filter-pattern>index,articleList</filter-pattern>
-	</ftpServer>
-</ftpServers>
