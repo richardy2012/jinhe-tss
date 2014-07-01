@@ -44,6 +44,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>  
 		<jdk.version>1.6</jdk.version>
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 	</properties>
 
 	<dependencyManagement>
@@ -247,9 +248,106 @@
 		          <generateXml>true</generateXml>
 		        </configuration>
 	        </plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo>
+									process log4j.properties: set
+									log4j.logger.com.jinhe.dm to ${log.level};
+								</echo>
+								<replaceregexp file="${basedir}/target/classes/log4j.properties"
+									match="log4j\.logger\.com\.jinhe\.dm=debug"
+									replace="log4j\.logger\.com\.jinhe\.dm=${log.level}"
+									byline="true" />
+
+								<echo>
+									process application.properties: set last.package.time to
+									${maven.build.timestamp};
+								</echo>
+								<replaceregexp
+									file="${basedir}/target/classes/application.properties" match="last\.package\.time = yyyy-MM-dd hh:mi:ss"
+									replace="last\.package\.time = ${maven.build.timestamp}"
+									byline="true" />
+								<echo>
+									process application.properties: set localhost:3306/dms to ${db.url};
+								</echo>
+								<replaceregexp
+									file="${basedir}/target/classes/application.properties" match="localhost:3306\/dms"
+									replace="${db.url}" byline="true" />
+								<echo>
+									process application.properties: set environment to ${environment};
+								</echo>
+								<replaceregexp
+									file="${basedir}/target/classes/application.properties" match="environment = dev"
+									replace="environment = ${environment}" byline="true" />
+									
+								<echo>
+									process appServers.xml: set tomcat.url to ${tomcat.url};
+								</echo>
+								<replaceregexp
+									file="${basedir}/target/classes/appServers.xml" match="localhost:8088"
+									replace="${tomcat.url}" byline="true" />
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>ant</groupId>
+						<artifactId>ant-nodeps</artifactId>
+						<version>1.6.5</version>
+					</dependency>
+					<dependency>
+						<groupId>ant</groupId>
+						<artifactId>ant-apache-regexp</artifactId>
+						<version>1.6.5</version>
+					</dependency>
+				</dependencies>
+			</plugin>
  
         </plugins>
     </build>
+
+	<profiles>
+		<profile>
+			<id>prod</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<log.level>info</log.level>
+				<db.url>127.0.0.1:3306/tss</db.url>
+				<environment>prod</environment>
+				<tomcat.url>bl00618-l:8088</tomcat.url>
+			</properties>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<log.level>debug</log.level>
+				<db.url>127.0.0.1:3306/tss</db.url>
+				<environment>dev</environment>
+				<tomcat.url>localhost:8088</tomcat.url>
+			</properties>
+		</profile>
+	</profiles>
 
 	<distributionManagement>
 		<site>

@@ -47,8 +47,8 @@ import com.jinhe.tss.framework.sso.identifier.OnlineUserIdentifier;
  *
  */
 @WebFilter(filterName = "AutoLoginFilter", 
-		urlPatterns = {"/auth/*", "*.do"}, initParams = {
-		@WebInitParam(name="ignoreServletPaths", value="login.in,logout.in")
+		urlPatterns = {"/auth/*", "*.do", "*.portal"}, 
+		initParams  = {@WebInitParam(name="ignoreServletPaths", value="login.in,logout.in")
 })
 public class Filter4AutoLogin implements Filter {
 	private static Logger log = Logger.getLogger(Filter4AutoLogin.class);
@@ -76,6 +76,11 @@ public class Filter4AutoLogin implements Filter {
 	                return;
 	            }
 	        }
+			
+			// 门户允许匿名访问
+			if(servletPath.indexOf(".portal") > 0) {
+				Context.getRequestContext().getRequest().setHeader(RequestContext.ANONYMOUS_REQUEST, "true");
+			}
             
 			log.debug("current request path: " + servletPath);
 		    IdentityCard card = authenticate();
