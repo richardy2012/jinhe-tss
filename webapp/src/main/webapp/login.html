@@ -3,6 +3,8 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>系统登陆</title>
+        <link rel="shortcut icon" href="framework/images/tss.ico">
+		<link rel="Bookmark" href="framework/images/tss.ico">
         
         <link href="framework/css/css.css" rel="stylesheet" type="text/css">
 
@@ -127,7 +129,9 @@ body {
             var value = this.value;
             if(value == null || value == "") return;
  
- 			delete loginNameObj.identifier;
+ 			if(loginNameObj.identifier) {
+				delete loginNameObj.identifier;
+			}
             Ajax({
                 url: URL_GET_USER_NAME,
                 headers: {"appCode": FROMEWORK_CODE},
