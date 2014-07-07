@@ -5,7 +5,6 @@ import java.util.Map;
 import com.jinhe.tss.framework.component.log.Logable;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.um.entity.User;
-import com.jinhe.tss.um.helper.UMQueryCondition;
  
 public interface IUserService {
     
@@ -151,9 +150,11 @@ public interface IUserService {
      * <p>
      * 根据条件搜索用户(分页)
      * </p>
-     * @param qyCondition
+     * @param groupId
+     * @param searchStr
+     * @param page
      * @return
      */
-    PageInfo searchUser(UMQueryCondition qyCondition);
+    PageInfo searchUser(Long groupId, String searchStr, int page);
 
 }

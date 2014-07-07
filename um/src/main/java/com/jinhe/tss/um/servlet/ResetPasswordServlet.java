@@ -15,7 +15,6 @@ import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IUserService;
 import com.jinhe.tss.util.EasyUtils;
-import com.jinhe.tss.util.InfoEncoder;
 
 /**
  * <p> 修改密码Servlet </p>
@@ -60,14 +59,14 @@ public class ResetPasswordServlet extends HttpServlet {
         
         String verifyOrReset = request.getParameter("type");
         if( !"reset".equals(verifyOrReset) ) { 
-            String oldPassword = InfoEncoder.string2MD5(user.getLoginName() + "_" + password);
+            String oldPassword = user.encodePassword(password);
 			if(!user.getPassword().equals(oldPassword)){
             	throw new BusinessException("旧密码输入不正确");
             }
         }
         
 		// 更新密码
-		user.setPassword(InfoEncoder.string2MD5(user.getLoginName() + "_" + (newPassword == null ? password : newPassword)));
+		user.setPassword( user.encodePassword(newPassword == null ? password : newPassword) );
 		service.updateUser(user);
         
 		SuccessMessageEncoder encoder = new SuccessMessageEncoder("设置新密码成功！");

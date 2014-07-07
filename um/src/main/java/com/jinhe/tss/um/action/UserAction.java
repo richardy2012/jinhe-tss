@@ -26,10 +26,8 @@ import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.User;
-import com.jinhe.tss.um.helper.UMQueryCondition;
 import com.jinhe.tss.um.service.IUserService;
 import com.jinhe.tss.util.EasyUtils;
-import com.jinhe.tss.util.XMLDocUtil;
 
 @Controller
 @RequestMapping("/auth/user") 
@@ -133,11 +131,10 @@ public class UserAction extends BaseActionSupport {
 	 */
 	@RequestMapping("/search/{page}")
 	public void searchUser(HttpServletResponse response, 
-			UMQueryCondition condition, @PathVariable("page") int page) {
+			@PathVariable("page") int page, Long groupId, String searchStr) {
 		
-		condition.getPage().setPageNum(page);
-        PageInfo users = userService.searchUser(condition);
-        GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), XMLDocUtil.createDoc(UMConstants.MAIN_USER_GRID));
+        PageInfo users = userService.searchUser(groupId, searchStr, page);
+        GridDataEncoder gridEncoder = new GridDataEncoder(users.getItems(), UMConstants.MAIN_USER_GRID);
         print(new String[]{"SourceList", "PageInfo"}, new Object[]{gridEncoder, users});
 	}
 

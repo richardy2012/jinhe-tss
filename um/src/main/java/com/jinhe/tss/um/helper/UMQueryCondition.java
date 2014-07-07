@@ -18,7 +18,6 @@ public class UMQueryCondition extends MacrocodeQueryCondition {
 	private String loginName;  // 用户名
 	private String userName;   // 姓名
 	private String employeeNo; // 员工编号
-	private String groupName;  // 组名
 	private Date   birthday;   // 出生年月
 	private String certificateNo; // 证件号
 	
@@ -29,7 +28,6 @@ public class UMQueryCondition extends MacrocodeQueryCondition {
         map.put("${employeeNo}", " and u.employeeNo like :employeeNo");
         map.put("${birthday}",   " and u.birthday >= :birthday");
         map.put("${certificateNo}", " and u.certificateNo like :certificateNo");
-        map.put("${groupName}",   " and g.name = :groupName");
         return map;
     }
 
@@ -96,13 +94,5 @@ public class UMQueryCondition extends MacrocodeQueryCondition {
  
 	public void setGroupIds(Collection<Long> groupIds) {
 		this.groupIds = groupIds;
-	}
- 
-	public String getGroupName() {
-		return groupName;
-	}
- 
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
 	}
 }

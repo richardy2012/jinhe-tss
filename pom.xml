@@ -283,10 +283,10 @@
 									replace="last\.package\.time = ${maven.build.timestamp}"
 									byline="true" />
 								<echo>
-									process application.properties: set localhost:3306/dms to ${db.url};
+									process application.properties: set localhost:3306/tss to ${db.url};
 								</echo>
 								<replaceregexp
-									file="${basedir}/target/classes/application.properties" match="localhost:3306\/dms"
+									file="${basedir}/target/classes/application.properties" match="localhost:3306\/tss"
 									replace="${db.url}" byline="true" />
 								<echo>
 									process application.properties: set environment to ${environment};
@@ -332,7 +332,7 @@
 				<log.level>info</log.level>
 				<db.url>127.0.0.1:3306/tss_btr</db.url>
 				<environment>prod</environment>
-				<tomcat.url>btrbi.800best.com:8888</tomcat.url>
+				<tomcat.url>172.20.121.19:8082</tomcat.url>
 			</properties>
 		</profile>
 		<profile>

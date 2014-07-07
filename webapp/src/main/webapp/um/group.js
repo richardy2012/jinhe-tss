@@ -19,6 +19,7 @@
  
     XML_SEARCH_SUBAUTH = "SUBAUTH_RESULT";
     XML_SEARCH_ROLE = "ROLE_RESULT";
+    XML_SEARCH_USER = "USER_RESULT";
  
     /*
      *	默认唯一编号名前缀
@@ -45,8 +46,9 @@
     URL_GROUP_USERS   = AUTH_PATH + "group/users/";  // {groupId}
     URL_INIT_PASSWORD = AUTH_PATH + "user/initpwd/"; // user/initpwd/{groupId}/{userId}/{password}
 
-    URL_SEARCH_SUBAUTH= AUTH_PATH + "search/subauth/";
+    URL_SEARCH_USER   = AUTH_PATH + "user/search";
     URL_SEARCH_ROLE   = AUTH_PATH + "search/roles/";
+    URL_SEARCH_SUBAUTH= AUTH_PATH + "search/subauth/";
 	URL_SYNC_GROUP    = AUTH_PATH + "group/sync/";
     URL_SYNC_PROGRESS = AUTH_PATH + "group/progress/";  // {code} GET
     URL_CANCEL_SYNC   = AUTH_PATH + "group/progress/";  // {code} DELETE
@@ -66,8 +68,10 @@
 		URL_DEL_USER = "data/_success.xml?";
 		URL_INIT_PASSWORD = "data/_success.xml?";
 		URL_GET_OPERATION = "data/operation.xml?";
-		URL_SEARCH_SUBAUTH = "data/group_search_subauth.xml?";
+		
+		URL_SEARCH_USER = "data/user_search.xml?";
 		URL_SEARCH_ROLE = "data/group_search_role.xml?";
+		URL_SEARCH_SUBAUTH = "data/group_search_subauth.xml?";
 		URL_SYNC_GROUP = "data/progress.xml?";
 		URL_SYNC_PROGRESS = "data/progress.xml?";
 		URL_CANCEL_SYNC = "data/_success.xml?";
@@ -206,7 +210,7 @@
         menu1.addSeparator();
         // menu1.addItem(item7);
         menu1.addItem(item8);
-        // menu1.addItem(item9);
+        menu1.addItem(item9);
         menu1.addSeparator();
         menu1.addItem(item12);
 
@@ -781,8 +785,18 @@
         var treeNode = $T("tree").getActiveTreeNode();
 		var treeID   = treeNode.getId();
 		var treeName = treeNode.getName();
+		
+		var searchStr = prompt("请输入查询条件", "", "查询'" + treeName + "'下用户", true);
+		if(searchStr == null || searchStr == "") {
+			return;
+		}
 
-		window.showModalDialog("searchuser.htm", {groupId:treeID,title:"搜索\"" + treeName + "\"下的用户"}, "dialogWidth:250px;dialogHeight:250px;");
+		var requestParam = new HttpRequestParams();
+		requestParam.setContent("groupId", treeID);
+		requestParam.setContent("searchStr", searchStr);
+		showGrid(URL_SEARCH_USER, XML_USER_LIST, editUserInfo, "grid", 1, requestParam);
+
+		// window.showModalDialog("../portal/commongrid.html", {service: url, nodename: XML_SEARCH_USER, title:"搜索\"" + treeName + "\"组下的用户"}, "dialogWidth:800px;dialogHeight:300px;");
     }
 
  
@@ -794,7 +808,7 @@
 
         var url = URL_SEARCH_ROLE + groupId;
 
-        window.showModalDialog("../portal/commongrid.html", {service: url, nodename: XML_SEARCH_ROLE, title:"查看组【" + groupName +"】下用户的角色信息"} , 
+        window.showModalDialog("../portal/commongrid.html", {service: url, nodename: XML_SEARCH_ROLE, title:"查看【" + groupName +"】组下用户的角色信息"} , 
             "dialogWidth:500px;dialogHeight:500px;resizable:yes");
     }
 	

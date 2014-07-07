@@ -110,22 +110,29 @@ public class UserModuleTest extends TxSupportTest4UM {
     	
     	List<User> mainUsers  = groupService.getUsersByGroupId(mainGroupId);
         assertEquals(1, mainUsers.size());
-        
-        UMQueryCondition userQueryCon = new UMQueryCondition();
+       
+		action.searchUser(response, 1, mainGroupId, "U_JK");
+		
+		PageInfo pageInfo = service.searchUser(mainGroupId, "U_JK", 1);
+		Assert.assertTrue(pageInfo.getItems().size() > 0);
+		
+		pageInfo = service.searchUser(mainGroupId, "金", 1);
+		Assert.assertTrue(pageInfo.getItems().size() == 0);
+    }
+    
+    @Test
+    public void getUMQueryCondition() {
+		UMQueryCondition userQueryCon = new UMQueryCondition();
         userQueryCon.setGroupId(mainGroupId);
         userQueryCon.getPage().setPageNum(1);
-		action.searchUser(response, userQueryCon, 1);
-		
 		userQueryCon.setBirthday(new Date());
 		userQueryCon.setCertificateNo("332624");
 		userQueryCon.setEmployeeNo("");
 		userQueryCon.setGroupIds(Arrays.asList(mainGroupId));
-		userQueryCon.setGroupName("主用户组一");
 		userQueryCon.setLoginName("U_JonKing");
 		userQueryCon.setUserName("U_JK");
 		
-		PageInfo pageInfo = service.searchUser(userQueryCon);
-		Assert.assertTrue(pageInfo.getItems().isEmpty());
+		userQueryCon.toConditionString();
     }
     
     @Test

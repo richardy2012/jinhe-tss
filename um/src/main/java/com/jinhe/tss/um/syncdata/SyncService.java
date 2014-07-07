@@ -167,9 +167,6 @@ public class SyncService implements ISyncService, Progressable {
 					if(userDto.getEmail() != null) {
 						existUser.setEmail(userDto.getEmail());
 					}
-					if(userDto.getPassword() != null) {
-						existUser.setPassword(userDto.getPassword().toUpperCase());
-					}
 					existUser.setDisabled(ParamConstants.FALSE);
 					groupDao.update(existUser);
             	}

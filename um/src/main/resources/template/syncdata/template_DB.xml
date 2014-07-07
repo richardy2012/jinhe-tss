@@ -13,12 +13,12 @@
 		where g.id >= :groupId 
 	</groupSql>
 	<userSql>
-		select distinct u.id, u.groupId, u.loginName, u.userName, u.password, u.email, u.sex, u.birthday, u.employeeNo, null authMethod
+		select distinct u.id, u.groupId, u.loginName, '111111' as password, u.userName, u.email, u.sex, u.birthday, u.employeeNo, null authMethod
 		from xxx_user u 
 		where u.groupId >= :groupId
 	</userSql>
 	<singleUser>
-		select distinct u.id, u.groupId, u.loginName, u.userName, u.password, u.email, u.sex, u.birthday, u.employeeNo, null authMethod
+		select distinct u.id, u.groupId, u.loginName, '111111' as password, u.userName, u.email, u.sex, u.birthday, u.employeeNo, null authMethod
 		from xxx_user u 
 		where u.id = :userId
 	</singleUser>

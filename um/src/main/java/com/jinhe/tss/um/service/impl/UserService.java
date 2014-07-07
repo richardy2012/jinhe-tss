@@ -29,7 +29,6 @@ import com.jinhe.tss.um.service.IGroupService;
 import com.jinhe.tss.um.service.IUserService;
 import com.jinhe.tss.um.sso.UMPasswordIdentifier;
 import com.jinhe.tss.util.EasyUtils;
-import com.jinhe.tss.util.InfoEncoder;
 
 @Service("UserService")
 public class UserService implements IUserService{
@@ -84,33 +83,12 @@ public class UserService implements IUserService{
         }
        
         for (User user : userList) {
-            String md5Password = InfoEncoder.string2MD5(user.getLoginName() + "_" + initPassword);
+            String md5Password = user.encodePassword(initPassword);
 			user.setPassword(md5Password);  // 主用户组进行密码初始化时加密密码
             userDao.initUser(user);
         }
     }
     
-    /**
-     * 主用户组下且是新建的用户或密码已修改的用户，则对用户名＋密码进行MD5加密 
-     * @param user
-     * @param password
-     * @return
-     */
-    private String createUserPwd(User user, String password) {
-        // 新建
-        if( user.getId() == null ){
-            return InfoEncoder.string2MD5(user.getLoginName() + "_" + password);
-        } 
-                  
-        // 编辑：如果密码改变, 则重新加密
-        User older = userDao.getEntity(user.getId());
-        userDao.evict(older);
-        if (!password.equals(older.getPassword())) {
-            return InfoEncoder.string2MD5(user.getLoginName() + "_" + password);
-        }    
-        return password;
-    }
-
     public void uniteAuthenticateMethod(Long groupId, String authMethod) {
         List<User> userList = groupDao.getUsersByGroupIdDeeply(groupId);
         for (User user : userList) {
@@ -122,7 +100,7 @@ public class UserService implements IUserService{
     public void registerUser(User user) {
         checkUserAccout(user);
         
-        user.setPassword(InfoEncoder.string2MD5(user.getLoginName() + "_" + user.getPassword()));
+        user.setPassword(user.encodePassword(user.getPassword()));
         user.setAuthMethod(UMPasswordIdentifier.class.getName());
 
         // 默认有效期三年
@@ -142,21 +120,31 @@ public class UserService implements IUserService{
         }
     }
     
+	/* 
+	 * 新建的用户或密码已修改的用户，则对用户名＋密码进行MD5加密 
+	 */
 	public void createOrUpdateUser(User user, String groupIdsStr, String roleIdsStr) {
-        // 加密密码
-        user.setPassword(createUserPwd(user, user.getPassword())); 
-        
-        if( user.getId()== null ) {
+        Long userId = user.getId();
+        String password = user.getPassword();
+        if( userId== null ) {
             checkUserAccout(user);  //新建用户需要检测登陆名是否重复
+            
+            user.setPassword(user.encodePassword(password));
             user = userDao.create(user);
         } else {
+        	User older = userDao.getEntity(userId);
+            userDao.evict(older);
+            if ( !password.equals(older.getPassword()) ) { // 密码被修改
+            	user.setPassword(user.encodePassword(password));
+            }    
+             
             userDao.update(user);
         }
         
         saveUser2Group(user.getId(), groupIdsStr);
         saveUser2Role (user.getId(), roleIdsStr);
 	}
-    
+	
     /** 用户对组 */
     private void saveUser2Group(Long userId, String groupIdsStr) {
         List<?> user2Groups = userDao.findUser2GroupByUserId(userId);
@@ -281,8 +269,21 @@ public class UserService implements IUserService{
         return groupDao.getUsersByGroup(groupId, pageNum, orderBy);
     }
  
-    public PageInfo searchUser(UMQueryCondition qyCondition) {
-		return groupDao.searchUser(qyCondition);
+    public PageInfo searchUser(Long groupId, String searchStr, int page) {
+    	UMQueryCondition condition = new UMQueryCondition();
+    	condition.getPage().setPageNum(page);
+    	condition.setGroupId(groupId);
+    	
+    	condition.setLoginName(searchStr);
+    	PageInfo result = groupDao.searchUser(condition);
+    	if( result.getItems().size() > 0 ) {
+    		return result;
+    	}
+    	
+    	condition.setLoginName(null);
+    	condition.setUserName(searchStr);
+    	result = groupDao.searchUser(condition);
+    	return result;
     }
     
     // 可供定时器等对象直接调用。 

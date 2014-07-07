@@ -9,12 +9,11 @@ import com.jinhe.tss.um.syncdata.dao.DBDataDao;
 import com.jinhe.tss.um.syncdata.dao.IOutDataDao;
 import com.jinhe.tss.um.syncdata.dao.LDAPDataDao;
 import com.jinhe.tss.util.EasyUtils;
-import com.jinhe.tss.util.InfoEncoder;
 
 public class SyncDataHelper {
     
 	public final static String DRIVER = "driver";
-	public final static String DEFAULT_PWD = "123456";
+	public final static String DEFAULT_PWD = "111111";
     public final static String URL = "url";
     public final static String USERNAME = "user";
     public final static String PASSWORD = "password";
@@ -47,11 +46,11 @@ public class SyncDataHelper {
         	user.setAuthMethod(UMPasswordIdentifier.class.getName());
         }
         
-        if(userDTO.getPassword() != null) {
-        	user.setPassword(userDTO.getPassword().toUpperCase());
-        } else {
-        	user.setPassword(InfoEncoder.string2MD5(DEFAULT_PWD));
+        String userPassword = userDTO.getPassword();
+        if(userPassword == null) {
+        	userPassword = DEFAULT_PWD;
         }
+        user.setPassword(user.encodePassword(userPassword));
         user.setPasswordQuestion("?");
         user.setPasswordAnswer( System.currentTimeMillis() + "!" );
         

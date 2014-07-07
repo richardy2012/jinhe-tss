@@ -21,9 +21,9 @@ import com.jinhe.tss.framework.sso.IPWDOperator;
 import com.jinhe.tss.framework.sso.PasswordPassport;
 import com.jinhe.tss.framework.sso.appserver.AppServer;
 import com.jinhe.tss.framework.sso.identifier.BaseUserIdentifier;
+import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.util.EasyUtils;
-import com.jinhe.tss.util.InfoEncoder;
 
 /**
  * <p>
@@ -46,7 +46,7 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
         	throw new BusinessException(e.getMessage(), false);
         }
         
-        String password = InfoEncoder.string2MD5(passport.getLoginName() + "_" + passport.getPassword());
+        String password = User.encodePassword(passport.getLoginName(), passport.getPassword());
         if (password.equals(operator.getPassword())) {
             return operator;
         } 
