@@ -5,14 +5,10 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jinhe.tss.framework.TxTestSupport;
-
-public class ParamActionTest extends TxTestSupport {
+public class ParamActionTest extends TxTestSupportParam {
 	
 	@Autowired private ParamAction action;
 
-    @Autowired private ParamService paramService;
- 
     @Test
 	public void testParamAction() {
 		Param paramGroup = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组1");
@@ -65,52 +61,4 @@ public class ParamActionTest extends TxTestSupport {
 		
 		action.get2Tree(response);
 	}
-	
-    /** 建参数组 */
-    private Param addParamGroup(Long parentId, String name) {
-        Param param = new Param();
-        param.setName(name);
-        param.setParentId(parentId);
-        param.setType(ParamConstants.GROUP_PARAM_TYPE);
-        
-        return paramService.saveParam(param);
-    }
-
-    /** 下拉型参数 */
-    private Param addComboParam(Long parentId, String code, String name) {
-        Param param = new Param();
-        param.setCode(code);
-        param.setName(name);
-        param.setParentId(parentId);
-        param.setType(ParamConstants.NORMAL_PARAM_TYPE);
-        param.setModality(ParamConstants.COMBO_PARAM_MODE);
-        paramService.saveParam(param);
-        return param;
-    }
-    
-    /** 树型参数 */
-    private Param addTreeParam(Long parentId, String code, String name) {
-        Param param = new Param();
-        param.setCode(code);
-        param.setName(name);
-        param.setParentId(parentId);
-        param.setType(ParamConstants.NORMAL_PARAM_TYPE);
-        param.setModality(ParamConstants.TREE_PARAM_MODE);
-        paramService.saveParam(param);
-        return param;
-    }
-
-    /** 新建设参数项 */
-    private Param addParamItem(Long parentId, String value, String text, Integer mode) {
-        Param param = new Param();
-        param.setValue(value);
-        param.setText(text);
-        param.setParentId(parentId);
-        param.setType(ParamConstants.ITEM_PARAM_TYPE);
-        param.setModality(mode);
-        paramService.saveParam(param);
-        return param;
-    }
-
-    
 }
