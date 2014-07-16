@@ -52,6 +52,8 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
         site.setPath(super.tempDir1.getPath());
         site.setDocPath("doc");
         site.setImagePath("img");
+        site.setOverdueDate("0");
+        
         site = channelService.createSite(site);
         Long siteId = site.getId();
         assertNotNull(siteId);

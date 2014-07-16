@@ -14,9 +14,10 @@ import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.entity.permission.ChannelPermissionsFull;
 import com.jinhe.tss.cms.entity.permission.ChannelResourceView;
+import com.jinhe.tss.cms.job.IndexJob;
 import com.jinhe.tss.cms.publish.PublishManger;
 import com.jinhe.tss.cms.service.IChannelService;
-import com.jinhe.tss.cms.timer.SchedulerBean;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
@@ -30,7 +31,6 @@ public class ChannelAction extends ProgressActionSupport {
 
 	@Autowired private IChannelService  channelService;
 	@Autowired private PublishManger    publishManger;
-	@Autowired private SchedulerBean    schedulerBean;
 
 	/**
 	 * 获取所有的栏目树结构
@@ -38,10 +38,6 @@ public class ChannelAction extends ProgressActionSupport {
 	@RequestMapping("/list")
 	public void getChannelAll(HttpServletResponse response) {
 		List<?> list = channelService.getAllSiteChannelList();
-		if(list.size() > 0) {
-			schedulerBean.init(); // TODO SchedulerBean在此初始化，此方法不调用岂不是不初始化了？
-		}
-		
 		TreeEncoder treeEncoder = new TreeEncoder(list, new LevelTreeParser());
 		print("ChannelTree", treeEncoder);
 	}
@@ -156,19 +152,6 @@ public class ChannelAction extends ProgressActionSupport {
         printSuccessMessage("移动成功！");
 	}
  
-	/**
-	 * 带有进度条的栏目(站点)发布
-	 * @param category 1:增量发布  2:完全发布
-	 */
-	@RequestMapping(value = "/publish/{id}/{category}", method = RequestMethod.POST)
-	public void publish(HttpServletResponse response, 
-			@PathVariable("id") Long id, 
-			@PathVariable("category") String category) {
-		
-        String code = publishManger.publishArticle(id, category);
-        printScheduleMessage(code);  
-	}
- 
     /**
      * 启用栏目
      */
@@ -211,5 +194,35 @@ public class ChannelAction extends ProgressActionSupport {
                         ChannelResourceView.class);
 
         print("Operation", EasyUtils.list2Str(list));
+    }
+	
+	/**
+	 * 带有进度条的栏目(站点)发布
+	 * @param category 1:增量发布  2:完全发布
+	 */
+	@RequestMapping(value = "/publish/{id}/{category}", method = RequestMethod.POST)
+	public void publish(HttpServletResponse response, 
+			@PathVariable("id") Long id, 
+			@PathVariable("category") String category) {
+		
+        String code = publishManger.publishArticle(id, category);
+        printScheduleMessage(code);  
+	}
+	
+    /**
+     * 即时执行策略
+     * @param id
+     * @param increment 是否增量操作  0：否  1：是
+     */
+	@RequestMapping("/index/{siteId}/{increment}")
+    public void createIndex(HttpServletResponse response, 
+    		@PathVariable("siteId") Long siteId, 
+    		@PathVariable("increment") int increment) {
+		
+        boolean isIncrement = (ParamConstants.TRUE == increment);
+        
+        String code = new IndexJob().createIndex(siteId, isIncrement);
+        
+        printScheduleMessage(code);  
     }
 }

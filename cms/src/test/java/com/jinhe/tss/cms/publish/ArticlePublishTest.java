@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jinhe.tss.cms.AbstractTestSupport;
@@ -19,11 +18,9 @@ import com.jinhe.tss.cms.DownloadServlet;
 import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
+import com.jinhe.tss.cms.job.JobStrategy;
 import com.jinhe.tss.cms.lucene.ArticleContent;
 import com.jinhe.tss.cms.lucene.IndexHelper;
-import com.jinhe.tss.cms.timer.TimerAction;
-import com.jinhe.tss.cms.timer.TimerStrategy;
-import com.jinhe.tss.cms.timer.TimerStrategyHolder;
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.util.DateUtil;
@@ -32,8 +29,6 @@ import com.jinhe.tss.util.DateUtil;
  * 文章发布相关模块的单元测试。
  */
 public class ArticlePublishTest extends AbstractTestSupport {
-	
-	@Autowired TimerAction timerAction;
 	
 	@Test
     public void testArticlePublish() {
@@ -78,12 +73,10 @@ public class ArticlePublishTest extends AbstractTestSupport {
 //        }
         
         // 创建索引
-//        timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_PUBLISH_STRATEGY_ID, 1);
-        timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_INDEX_STRATEGY_ID, 1);
-        timerAction.excuteStrategy(response, siteId, TimerStrategyHolder.DEFAULT_EXPIRE_STRATEGY_ID, 1);
+        channelAction.createIndex(response, siteId, 1);
         
-        TimerStrategy strategy = TimerStrategyHolder.getIndexStrategy();
-        strategy.setSite(site);
+        JobStrategy strategy = JobStrategy.getIndexStrategy();
+        strategy.site = site;
         
         List<Long> channelIdList = Arrays.asList(channel1Id, channel2.getId());
         Set<ArticleContent> content = IndexHelper.getIndexableArticles(channelIdList, false, channelDao, articleDao);
@@ -131,7 +124,11 @@ public class ArticlePublishTest extends AbstractTestSupport {
         String channelIds = channel1Id + "," + channel2.getId();
         articleAction.getArticleListByChannels(response, channelIds, 1, 12);
         
-        articleAction.getArticleXmlInfo(response, articleId);
+        // 多次点击文章，触发HitRateManager
+        for(int i = 0; i < 100; i++) {
+        	articleAction.getArticleXmlInfo(response, articleId);
+        }
+        
         articleAction.getChannelTreeList4Portlet(response, siteId);
         
         // 测试附件下载
@@ -162,7 +159,7 @@ public class ArticlePublishTest extends AbstractTestSupport {
         // 判断是否对该栏目有发布权限
         publishManger.checkPublishPermission(channelId);
         
-        int totalRows = channelService.getTotalRows4Publish(channelId, category);       
+        int totalRows = channelService.getPublishableArticlesDeeplyCount(channelId, category);       
         int totalPageNum = totalRows / PublishManger.PAGE_SIZE ;
         if( totalRows % PublishManger.PAGE_SIZE > 0 ) {
             totalPageNum = totalPageNum + 1;
@@ -170,7 +167,7 @@ public class ArticlePublishTest extends AbstractTestSupport {
             
         // 分页发布文章
         for (int k = 0; k < totalPageNum; k++) {
-            List<Article> pageArticleList = channelService.getPageArticleList(channelId, k + 1, PublishManger.PAGE_SIZE, category);
+            List<Article> pageArticleList = channelService.getPagePublishableArticlesDeeply(channelId, k + 1, PublishManger.PAGE_SIZE, category);
             channelService.publishArticle(pageArticleList);
         }
     }

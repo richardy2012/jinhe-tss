@@ -30,9 +30,8 @@ import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.helper.ArticleHelper;
 import com.jinhe.tss.cms.helper.ArticleQueryCondition;
 import com.jinhe.tss.cms.helper.HitRateManager;
+import com.jinhe.tss.cms.job.JobStrategy;
 import com.jinhe.tss.cms.lucene.executor.IndexExecutorFactory;
-import com.jinhe.tss.cms.timer.TimerStrategy;
-import com.jinhe.tss.cms.timer.TimerStrategyHolder;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
@@ -225,9 +224,8 @@ public class RemoteArticleService implements IRemoteArticleService {
     }
 
     public String search(Long siteId, String searchStr, int page, int pageSize) {
-        Channel site = channelDao.getEntity(siteId);
-        TimerStrategy tacticIndex = TimerStrategyHolder.getIndexStrategy();
-        tacticIndex.setSite(site);
+        JobStrategy tacticIndex = JobStrategy.getIndexStrategy();
+        tacticIndex.site = channelDao.getEntity(siteId);
         
         String indexPath = tacticIndex.getIndexPath();
         if (!new File(indexPath).exists() || searchStr == null || "".equals(searchStr.trim())) {
@@ -240,7 +238,7 @@ public class RemoteArticleService implements IRemoteArticleService {
         Element channelElement = doc.addElement("rss").addAttribute("version", "2.0");
         try {
             IndexSearcher searcher = new IndexSearcher(indexPath);
-            Query query = IndexExecutorFactory.create(tacticIndex.getExecutorClass()).createIndexQuery(searchStr);
+            Query query = IndexExecutorFactory.create(tacticIndex.executorClass).createIndexQuery(searchStr);
             Hits hits = searcher.search(query, new Sort(new SortField("createTime", SortField.STRING, true))); // 按创建时间排序
             
             // 先遍历一边查询结果集，对其权限进行过滤，将过滤后的结果集放入到一个临时list中。

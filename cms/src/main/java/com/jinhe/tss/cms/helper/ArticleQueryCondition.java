@@ -26,11 +26,7 @@ public class ArticleQueryCondition extends MacrocodeQueryCondition {
     private Long    channelId;
     private List<Long> channelIds;
     
-    private Long articleId;
     private String keyword;
-    
-    // 是否取全部，否的话只取创建日期为 ARTICLE_DAYS_AGO 内的文章
-    private boolean fetchAll = false;   
     
     private String orderField;  // 排序字段
     private Integer isDesc;     // 是否降序排序
@@ -42,7 +38,7 @@ public class ArticleQueryCondition extends MacrocodeQueryCondition {
         if(channelIds == null){
             super.getIgnoreProperties().add("channelIds");
         }
-        if(createTime == null){
+        if(getCreateTime() == null){
             super.getIgnoreProperties().add("createTime");
         }
         
@@ -57,6 +53,8 @@ public class ArticleQueryCondition extends MacrocodeQueryCondition {
         Map<String, Object> map =  new HashMap<String, Object>();
         map.put("${title}",  " and a.title  like :title");
         map.put("${author}", " and a.author like :author");
+        map.put("${keyword}", " and a.keyword like :keyword");
+        
         map.put("${status}", " and a.status = :status");
         map.put("${createTime}", " and a.createTime > :createTime");
         
@@ -113,14 +111,6 @@ public class ArticleQueryCondition extends MacrocodeQueryCondition {
     public void setChannelIds(List<Long> channelIds) {
         this.channelIds = channelIds;
     }
-
-    public boolean isFetchAll() {
-        return fetchAll;
-    }
-
-    public void setFetchAll(boolean fetchAll) {
-        this.fetchAll = fetchAll;
-    }
  
     public String getOrderField() {
         return orderField;
@@ -145,12 +135,8 @@ public class ArticleQueryCondition extends MacrocodeQueryCondition {
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
 	}
-	
-	public Long getArticleId() {
-		return articleId;
-	}
-	
-	public void setArticleId(Long articleId) {
-		this.articleId = articleId;
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 }

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -31,6 +32,10 @@ public class ArticleModuleTest extends AbstractTestSupport {
         Channel channel2 = super.createChannel("体育新闻", site, siteId);
         Channel channel3 = super.createChannel("NBA战况", site, channel2.getId());
         Long channelId = channel1.getId();
+        
+        channel2.setOverdueDate("3");
+        channel2.setOverdueDate("4");
+        channel3.setOverdueDate("5");
         
         // 开始测试文章模块
 		articleAction.initArticleInfo(response, channelId);
@@ -66,6 +71,14 @@ public class ArticleModuleTest extends AbstractTestSupport {
         ArticleQueryCondition condition = new ArticleQueryCondition();
         condition.setTitle("轮回");
         condition.setChannelId(channelId);
+		articleAction.getArticleList(response, condition);
+		
+		condition.setChannelId(channelId);
+		condition.setCreateTime(new Date());
+		condition.setIsDesc(ParamConstants.TRUE);
+		condition.setAuthor("Jon.King");
+		condition.setKeyword("历史 轮回");
+		condition.setOrderField("author");
 		articleAction.getArticleList(response, condition);
 		
 		// 移动文章

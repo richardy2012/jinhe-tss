@@ -1,6 +1,5 @@
 package com.jinhe.tss.cms.publish;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,12 +19,12 @@ import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.permission.PermissionHelper;
 
 /**
- * 文章发布，以及全文检索索引发布
+ * 文章发布（带进度条实现）
  */
 @Component("PublishManger")
 public class PublishManger implements Progressable {
 
-    public static final int PAGE_SIZE = 100; // 每页记录个数
+    public static final int PAGE_SIZE = 100; // 按页发布，每页记录数
 
     @Autowired private IChannelService channelService;
     
@@ -53,7 +52,7 @@ public class PublishManger implements Progressable {
 		// 判断是否对该栏目有发布权限
 		checkPublishPermission(channelId);
         
-        int totalRows = channelService.getTotalRows4Publish(channelId, category);       
+        int totalRows = channelService.getPublishableArticlesDeeplyCount(channelId, category);       
         int totalPageNum = totalRows / PAGE_SIZE ;
         if( totalRows % PAGE_SIZE > 0 ) {
             totalPageNum = totalPageNum + 1;
@@ -75,7 +74,7 @@ public class PublishManger implements Progressable {
         
         // 分页发布文章
         for (int page = 1; page <= totalPageNum; page++) {
-            List<Article> pageArticleList = channelService.getPageArticleList(channelId, page, PAGE_SIZE, category);
+            List<Article> pageArticleList = channelService.getPagePublishableArticlesDeeply(channelId, page, PAGE_SIZE, category);
             
             channelService.publishArticle(pageArticleList);
             progress.add(pageArticleList.size());
@@ -84,54 +83,5 @@ public class PublishManger implements Progressable {
         if( !progress.isCompleted() ) {
             progress.add(8888888); // 通过设置一个大数（远大于总数）来使进度完成
         }
-    }
-
-    /**
-     * 文章发布，用于定时发布（也可用于手动即时发布调用）
-     * @param channelIds
-     * @param progress
-     */
-    public void publishArticle4TimerJob(List<Long> channelIds, Progress progress) {
-        for ( Long channelId : channelIds ) {
-            int totalRows = channelService.getPublishableArticleCount(channelId);       
-            int totalPageNum = totalRows / PAGE_SIZE ;
-            if( totalRows % PAGE_SIZE > 0 ) {
-                totalPageNum = totalPageNum + 1;
-            }
-            
-            for (int page = 1; page <= totalPageNum; page++) { // 逐页发布文章
-                List<Article> articleList = channelService.getPagePublishableArticleList(channelId, page, PAGE_SIZE);
-                channelService.publishArticle(articleList);
-                
-                progress.add(articleList.size()); // 更新进度条信息进度条
-            }
-        }
-    }
-    
-    /**
-     * 获取可发布的文章总数量，用于进度条计算。
-     * @param channelIdStr
-     * @param paramsMap
-     * @return
-     */
-    public int getPublishableArticleCount4TimerJob(List<Long> channelIds, Map<String, Object> paramsMap) {
-        int total = 0;
-        List<Long> channelIdList = new ArrayList<Long>();
-        for ( Long channelId : channelIds ) {
-            try { 
-            	// 判断是否对该栏目有发布权限
-                checkPublishPermission(channelId);
-                
-                channelIdList.add(channelId);
-                total += channelService.getPublishableArticleCount(channelId);
-                
-            } catch (Exception e) {
-                // do nothing
-            }
-        }
-        
-        paramsMap.put("channelIds", channelIdList);
-        
-        return total;
     }
 }

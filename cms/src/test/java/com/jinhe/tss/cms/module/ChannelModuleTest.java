@@ -27,6 +27,7 @@ public class ChannelModuleTest extends AbstractTestSupport {
         site.setPath(super.tempDir1.getPath());
         site.setDocPath("doc");
         site.setImagePath("img");
+        site.setOverdueDate("0");
         
         channelAction.saveSite(response, site);
         Long siteId = site.getId();
@@ -53,6 +54,9 @@ public class ChannelModuleTest extends AbstractTestSupport {
         
         Channel channel2 = super.createChannel("体育新闻", channel1, siteId);
         Channel channel3 = super.createChannel("NBA战况", channel2, channel2.getId());
+        
+        channel2.setOverdueDate("1");
+        channel3.setOverdueDate("2");
         
         List<?> list = channelService.getAllSiteChannelList();
         assertTrue(list.size() >= 3);

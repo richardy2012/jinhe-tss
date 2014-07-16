@@ -78,7 +78,7 @@ public class ChannelDao extends TreeSupportDao<Channel> implements IChannelDao {
  
     //-------------------------------------------------- 文章发布相关 －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
     
-    public int getTotalRows4Publish(Long channelId, String category ) {
+    public int getPublishableArticlesDeeplyCount(Long channelId, String category ) {
         String decode = getChannelById(channelId).getDecode();
         
         String hql = "select count(*) from Article a where a.channel.decode like ?  and ";
@@ -98,7 +98,7 @@ public class ChannelDao extends TreeSupportDao<Channel> implements IChannelDao {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Article> getPageArticleList4Publish(Long channelId, String category, int pageNum, int pageSize) {
+    public List<Article> getPagePublishableArticlesDeeply(Long channelId, String category, int pageNum, int pageSize) {
         String decode = getChannelById(channelId).getDecode();
         
         String hql = "from Article a where a.channel.decode like ? and ";
@@ -120,15 +120,9 @@ public class ChannelDao extends TreeSupportDao<Channel> implements IChannelDao {
         
         return query.getResultList();
     }
-    
-    public Integer getPublishableArticleCount(Long channelId) {
-        String hql = "select count(*) from Article a where a.channel.id = ? and a.status = ?";
-        List<?> list = getEntities(hql, channelId, CMSConstants.TOPUBLISH_STATUS);
-        return EasyUtils.convertObject2Integer(list.get(0));
-    }
-
+ 
     @SuppressWarnings("unchecked")
-    public List<Article> getPagePublishableArticleList(Long channelId, int pageNum, int pageSize) {
+    public List<Article> getPagePublishableArticles(Long channelId, int pageNum, int pageSize) {
         String hql = "from Article a where a.channel.id = ? and a.status = ? ";
         
         Query query = em.createQuery(hql);

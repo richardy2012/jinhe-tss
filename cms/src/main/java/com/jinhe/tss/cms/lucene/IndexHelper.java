@@ -17,9 +17,9 @@ import com.jinhe.tss.cms.dao.IChannelDao;
 import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.helper.ArticleHelper;
+import com.jinhe.tss.cms.job.JobStrategy;
 import com.jinhe.tss.cms.lucene.executor.IIndexExecutor;
 import com.jinhe.tss.cms.lucene.executor.IndexExecutorFactory;
-import com.jinhe.tss.cms.timer.TimerStrategy;
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.util.FileHelper;
@@ -77,8 +77,8 @@ public class IndexHelper {
         return articleContentSet;
     }
 
-    public static void createIndex(TimerStrategy strategy, Set<ArticleContent> articleContentSet, Progress progress) {
-        String indexExecutorClass = strategy.getExecutorClass();
+    public static void createIndex(JobStrategy strategy, Set<ArticleContent> articleContentSet, Progress progress) {
+        String indexExecutorClass = strategy.executorClass;
         IIndexExecutor executor = IndexExecutorFactory.create(indexExecutorClass);
         
         //创建索引文件存放路径
@@ -93,7 +93,7 @@ public class IndexHelper {
         int count = 0;
         try {
             // 如果 不是增量创建索引 或者 tempIndexDir目录为空， 则重新创建索引目录
-            boolean isRecreateIndex = !strategy.isIncrement() || FileHelper.listFiles(tempIndexDir).isEmpty();
+            boolean isRecreateIndex = !strategy.isIncrement || FileHelper.listFiles(tempIndexDir).isEmpty();
             
             indexWriter = new IndexWriter(tempIndexDir, AnalyzerFactory.createAnalyzer(), isRecreateIndex);
             indexWriter.setMaxBufferedDocs(10); // 设置强制索引document对象后flush

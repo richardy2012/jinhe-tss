@@ -1,0 +1,97 @@
+package com.jinhe.tss.cms.job;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import com.jinhe.tss.cms.AbstractTestSupport;
+import com.jinhe.tss.cms.CMSConstants;
+import com.jinhe.tss.cms.entity.Article;
+import com.jinhe.tss.cms.entity.Channel;
+import com.jinhe.tss.cms.lucene.ArticleContent;
+import com.jinhe.tss.framework.component.progress.Progress;
+import com.jinhe.tss.framework.component.progress.Progressable;
+
+/**
+ * 定时策略相关模块的单元测试。
+ */
+public class CMSJobsTest extends AbstractTestSupport {
+	
+	Long siteId;
+	
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+ 
+    	// 新建站点
+        Channel site = createSite();
+        siteId = site.getId();
+        
+        // 新建栏目
+        Channel channel1 = super.createChannel("时事评论", site, siteId);
+        Long channel1Id = channel1.getId();
+        super.createChannel("环球新闻", site, channel1Id);
+        
+        // 开始测试文章模块
+        Long tempArticleId = System.currentTimeMillis();
+        
+        // 上传附件
+        super.uploadDocFile(channel1Id, tempArticleId);
+        super.uploadImgFile(channel1Id, tempArticleId);
+        
+        // 创建文章
+        super.createArticle(channel1, tempArticleId).getId();
+
+        List<?> list = getArticlesByChannel(channel1Id);
+ 
+        for(Object temp : list) {
+            // 编辑 ---> 待发布
+            Article tempArticle = (Article)temp;
+            tempArticle.setStatus(CMSConstants.TOPUBLISH_STATUS);
+        }
+    }
+	
+	@Test
+    public void testExpireJob() {
+        String jobConfig = siteId.toString();
+        new ExpireJob().excuteJob(jobConfig);
+	}
+	
+	@Test
+    public void testPublishJob() {
+        String jobConfig = siteId.toString();
+        new PublishJob().excuteJob(jobConfig);
+    }
+	
+	@Test
+    public void testIndexJob() {
+		// 因进度条里无法启动事务，直接调用excute方法来测试
+		List<Long> channelIds = channelService.getAllEnabledChannelIds(siteId);
+    	Set<ArticleContent> data = channelService.getIndexableArticles(channelIds, true);
+    	
+    	Map<String, Object> paramsMap = new HashMap<String, Object>();
+        paramsMap.put("data", data); 
+        paramsMap.put("siteId", siteId);
+  
+        IndexJob indexJob = new IndexJob();
+		((Progressable)indexJob).execute(paramsMap, new Progress(data.size()));
+    }
+	
+	@Test
+    public void testIndexJob2() {
+        String jobConfig = siteId.toString();
+        
+        IndexJob indexJob = new IndexJob();
+		indexJob.excuteJob(jobConfig);
+    }
+	
+	@Test
+    public void testIndexJob3() {
+        // 即时执行策略
+        channelAction.createIndex(response, siteId, 0); 
+    }
+}

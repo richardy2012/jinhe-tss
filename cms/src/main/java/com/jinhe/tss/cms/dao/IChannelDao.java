@@ -85,16 +85,7 @@ public interface IChannelDao extends ITreeSupportDao<Channel> {
      * @param channelId
      * @return
      */
-    public boolean checkBrowsePermission(Long channelId);
- 
-    /**
-     * <p>
-     * 通过栏目ID取栏目下所有可发布的文章总数
-     * </p>
-     * @param channelId
-     * @return
-     */
-    Integer getPublishableArticleCount(Long channelId);
+    boolean checkBrowsePermission(Long channelId);
     
     /**
      * <p>
@@ -105,7 +96,7 @@ public interface IChannelDao extends ITreeSupportDao<Channel> {
      * @param pageSize
      * @return
      */
-    List<Article> getPagePublishableArticleList(Long channelId, int pageNum, int pageSize);
+    List<Article> getPagePublishableArticles(Long channelId, int pageNum, int pageSize);
     
     /**
      * 获取需要发布的总文章数
@@ -113,7 +104,7 @@ public interface IChannelDao extends ITreeSupportDao<Channel> {
      * @param category   1:增量发布 2: 完全发布
      * @return
      */
-    int getTotalRows4Publish(Long channelId, String category );
+    int getPublishableArticlesDeeplyCount(Long channelId, String category );
 
     /**
      * 根据页码获取当前页需要发布的文章列表
@@ -124,5 +115,5 @@ public interface IChannelDao extends ITreeSupportDao<Channel> {
      * @param decode
      * @return
      */
-    List<Article> getPageArticleList4Publish(Long channelId, String category, int pageNum, int pageSize);
+    List<Article> getPagePublishableArticlesDeeply(Long channelId, String category, int pageNum, int pageSize);
 }

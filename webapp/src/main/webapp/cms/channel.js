@@ -35,7 +35,7 @@
 	URL_SYNC_PROGRESS    = AUTH_PATH + "channel/progress/";  // GET
     URL_CONCEAL_PROGRESS = AUTH_PATH + "channel/progress/";  // DELETE
 
-	URL_CREATE_INDEX     = AUTH_PATH + "timer/excute/";  // {siteId}/{strategyId}/{increment}
+	URL_CREATE_INDEX     = AUTH_PATH + "channel/index/";  // {siteId}/{increment}
 
 	if(IS_TEST) {
 		URL_SOURCE_TREE    = "data/site_init.xml?";
@@ -164,13 +164,13 @@
         var subitem5a = {
             label:"增量索引",
             callback:function() { 
-                createLuceneIndex(2, 1);
+                createLuceneIndex(1);
             }
         }
         var subitem5b = {
             label:"重建索引",
             callback:function() { 
-                createLuceneIndex(2, 0);
+                createLuceneIndex(0);
             }
         }
 		submenu5.addItem(subitem5a);
@@ -518,10 +518,10 @@
 		});
     }
 
-	function createLuceneIndex(strategyId, increment) {
+	function createLuceneIndex(increment) {
 		var siteId = getTreeNodeId();
 		Ajax({
-			url : URL_CREATE_INDEX + siteId + "/" + strategyId + "/" + increment,
+			url : URL_CREATE_INDEX + siteId + "/" + increment,
 			onresult : function() { 			
 				var data = this.getNodeValue("ProgressInfo");
 				var progress = new Progress(URL_SYNC_PROGRESS, data, URL_CONCEAL_PROGRESS);

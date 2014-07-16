@@ -1,10 +1,13 @@
 package com.jinhe.tss.cms.service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Channel;
+import com.jinhe.tss.cms.lucene.ArticleContent;
 import com.jinhe.tss.framework.component.log.Logable;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Create;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Move;
@@ -151,7 +154,7 @@ public interface IChannelService {
 	 * @param channelId
 	 * @return
 	 */
-	Integer getPublishableArticleCount(Long channelId);
+	Integer getPublishableArticlesCount(Long channelId);
 
 	/**
 	 * <p>
@@ -162,7 +165,7 @@ public interface IChannelService {
 	 * @param pageSize
 	 * @return
 	 */
-	List<Article> getPagePublishableArticleList(Long channelId, int page, int pageSize);
+	List<Article> getPagePublishableArticles(Long channelId, int page, int pageSize);
 	
 	/**
 	 * <p>
@@ -181,7 +184,7 @@ public interface IChannelService {
      * @param category   1:增量发布 2: 完全发布
      * @return
      */
-    int getTotalRows4Publish(Long channelId, String category);
+    int getPublishableArticlesDeeplyCount(Long channelId, String category);
 
     /**
      * 根据页码获取当前页需要发布的文章列表
@@ -191,5 +194,20 @@ public interface IChannelService {
      * @param category
      * @return
      */
-    List<Article> getPageArticleList(Long channelId, int page, int pageSize, String category);
+    List<Article> getPagePublishableArticlesDeeply(Long channelId, int page, int pageSize, String category);
+    
+    /**
+     * <p>
+     * 获取过期文章列表。
+     * 比较过期时间是早于当前时间，以及文章是否为”已发布“状态。其他状态没必要设置为过期。
+     * </p>
+     * @param now
+     * @param channelId
+     * @return
+     */
+    List<Article> getExpireArticlePuburlList(Date now, Long channelId);
+    
+    List<Long> getAllEnabledChannelIds(Long siteId);
+    
+    Set<ArticleContent> getIndexableArticles(List<Long> channelIds, boolean isIncrement);
 }

@@ -7,11 +7,10 @@ import java.util.Set;
 import org.junit.Test;
 
 import com.jinhe.tss.cms.entity.Channel;
+import com.jinhe.tss.cms.job.JobStrategy;
 import com.jinhe.tss.cms.lucene.executor.DefaultIndexExecutor;
 import com.jinhe.tss.cms.lucene.executor.KeywordIndexExecutor;
 import com.jinhe.tss.cms.lucene.executor.TitleIndexExecutor;
-import com.jinhe.tss.cms.timer.TimerStrategy;
-import com.jinhe.tss.cms.timer.TimerStrategyHolder;
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.util.FileHelper;
@@ -24,8 +23,8 @@ public class IndexHelperTest {
 		Channel site = new Channel();
 		site.setPath(URLUtil.getClassesPath().getPath() + "/temp");
 		
-        TimerStrategy tacticIndex = TimerStrategyHolder.getIndexStrategy();
-        tacticIndex.setSite(site);
+        JobStrategy tacticIndex = JobStrategy.getIndexStrategy();
+        tacticIndex.site = site;
         
         String tmpDir = TestUtil.getTempDir() ;
         String path = tmpDir + "/123.xml";
@@ -39,13 +38,13 @@ public class IndexHelperTest {
         
         IndexHelper.createIndex(tacticIndex, articleContentSet, new Progress(1000));
         
-        tacticIndex.setExecutorClass(DefaultIndexExecutor.class.getName());
+        tacticIndex.executorClass = DefaultIndexExecutor.class.getName();
         IndexHelper.createIndex(tacticIndex, articleContentSet, new Progress(1000));
         
-        tacticIndex.setExecutorClass(TitleIndexExecutor.class.getName());
+        tacticIndex.executorClass = TitleIndexExecutor.class.getName();
         IndexHelper.createIndex(tacticIndex, articleContentSet, new Progress(1000));
         
-        tacticIndex.setExecutorClass(KeywordIndexExecutor.class.getName());
+        tacticIndex.executorClass = KeywordIndexExecutor.class.getName();
         IndexHelper.createIndex(tacticIndex, articleContentSet, new Progress(1000));
 	}
 

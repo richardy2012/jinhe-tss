@@ -3,6 +3,7 @@ package com.jinhe.tss.cms.service;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,11 @@ import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.helper.ArticleHelper;
+import com.jinhe.tss.cms.lucene.ArticleContent;
+import com.jinhe.tss.cms.lucene.IndexHelper;
 import com.jinhe.tss.cms.publish.PublishUtil;
 import com.jinhe.tss.framework.exception.BusinessException;
+import com.jinhe.tss.util.EasyUtils;
 
 @Service("ChannelService")
 public class ChannelService implements IChannelService {
@@ -199,20 +203,40 @@ public class ChannelService implements IChannelService {
 		}
 	}
 
-    public int getTotalRows4Publish(Long channelId, String category ) {
-        return channelDao.getTotalRows4Publish(channelId, category);
+    public int getPublishableArticlesDeeplyCount(Long channelId, String category ) {
+        return channelDao.getPublishableArticlesDeeplyCount(channelId, category);
     }
     
-    public List<Article> getPageArticleList(Long channelId, int page, int pageSize, String category) {
-        return channelDao.getPageArticleList4Publish(channelId, category, page, pageSize);
+    public List<Article> getPagePublishableArticlesDeeply(Long channelId, int page, int pageSize, String category) {
+        return channelDao.getPagePublishableArticlesDeeply(channelId, category, page, pageSize);
     }
     
-    public Integer getPublishableArticleCount(Long channelId) {
-        return channelDao.getPublishableArticleCount(channelId);
+    public Integer getPublishableArticlesCount(Long channelId) {
+        String hql = "select count(*) from Article a where a.channel.id = ? and a.status = ?";
+        List<?> list = channelDao.getEntities(hql, channelId, CMSConstants.TOPUBLISH_STATUS);
+        return EasyUtils.convertObject2Integer(list.get(0));
     }
 
-    public List<Article> getPagePublishableArticleList(Long channelId, int page, int pageSize) {
-        return channelDao.getPagePublishableArticleList(channelId, page, pageSize);
+    public List<Article> getPagePublishableArticles(Long channelId, int page, int pageSize) {
+        return channelDao.getPagePublishableArticles(channelId, page, pageSize);
     }
     
+	@SuppressWarnings("unchecked")
+	public List<Long> getAllEnabledChannelIds(Long siteId) {
+		String hql = "select o.id from Channel o where o.id <> o.site.id and o.disabled <> 1 and o.site.id = ?";
+		return (List<Long>) channelDao.getEntities(hql, siteId);
+	}
+	
+    @SuppressWarnings("unchecked")
+	public List<Article> getExpireArticlePuburlList(Date now, Long channelId) {
+        String hql = "from Article a " +
+                " where a.channel.id = ? and a.status = ? and a.overdueDate <= ? ";
+        
+        // 需要过期的文章为”已发布“状态的文章。其他状态没必要设置为过期
+        return (List<Article>) channelDao.getEntities(hql, channelId, CMSConstants.XML_STATUS, now);
+    }
+    
+    public Set<ArticleContent> getIndexableArticles(List<Long> channelIds, boolean isIncrement) {
+    	return IndexHelper.getIndexableArticles(channelIds, isIncrement, channelDao, articleDao);
+    }
 }

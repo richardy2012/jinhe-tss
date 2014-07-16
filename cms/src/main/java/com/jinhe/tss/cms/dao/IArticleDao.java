@@ -1,6 +1,5 @@
 package com.jinhe.tss.cms.dao;
 
-import java.util.Date;
 import java.util.List;
 
 import com.jinhe.tss.cms.entity.Article;
@@ -101,15 +100,4 @@ public interface IArticleDao extends IDao<Article> {
      * @param article
      */
     void deleteArticle(Article article);
-    
-    /**
-     * <p>
-     * 获取过期文章列表。
-     * 比较过期时间是早于当前时间，以及文章是否为”已发布“状态。其他状态没必要设置为过期。
-     * </p>
-     * @param now
-     * @param channelId
-     * @return
-     */
-    List<Article> getExpireArticlePuburlList(Date now, Long channelId);
 }

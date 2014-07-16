@@ -7,6 +7,7 @@ import com.jinhe.tss.framework.TxTestSupport;
 public class TxTestSupportParam extends TxTestSupport {
     
     @Autowired protected ParamService paramService;
+    @Autowired protected ParamAction paramAction;
 
     /** 建参数组 */
     protected Param addParamGroup(Long parentId, String name) {
