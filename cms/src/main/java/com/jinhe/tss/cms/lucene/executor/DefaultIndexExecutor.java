@@ -31,7 +31,7 @@ import com.jinhe.tss.util.XmlUtil;
  * 默认索引执行器：根据文章的所有字段来创建索引。
  * 
  */
-public class DefaultIndexExecutor implements IIndexExecutor {
+public class DefaultIndexExecutor implements IndexExecutor {
     
     protected Logger log = Logger.getLogger(this.getClass());
     

@@ -33,7 +33,7 @@ public class ImageProcessorTest {
         
         tempDir1 = FileHelper.createDir(classDir + "/temp1");
 	}
-	
+    
 	@Test
 	public void testResize() {
 		try {
@@ -65,6 +65,8 @@ public class ImageProcessorTest {
 	        // 测试缩略图
 			ImageProcessor imageProcessor = new ImageProcessor(filePath);
 			imageProcessor.resize(0.68);
+			
+			imageProcessor.resizeFix(20, 20);
 		} 
 		catch (IOException e) {
 			Assert.assertFalse(e.getMessage(), true);

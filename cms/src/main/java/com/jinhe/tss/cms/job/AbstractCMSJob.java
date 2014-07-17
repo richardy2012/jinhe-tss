@@ -24,7 +24,6 @@ public abstract class AbstractCMSJob extends AbstractJob {
         log.info("开始执行定时策略【" + strategy.name + "】");
         
         try {
-        	
         	String[] jobConfigs = EasyUtils.split(jobConfig, ","); 
         	for(int i = 0; i < jobConfigs.length; i++) {
         		excuteCMSJob(jobConfigs[i]);

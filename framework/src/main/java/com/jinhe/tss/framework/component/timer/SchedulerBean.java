@@ -24,6 +24,8 @@ import com.jinhe.tss.util.EasyUtils;
 
 /** 
  * 定时器调度。
+ * 
+ * 新增或删除一个job失败,不影响其它job的生成和删除。
  */
 @Component
 public class SchedulerBean {
@@ -105,7 +107,7 @@ public class SchedulerBean {
 				configsMap.put(code, value);
 			} 
 			catch (Exception e) {
-				throw new BusinessException("初始化定时Job【" + jobName + "】失败, config = " + value, e);
+				log.error("初始化定时Job【" + jobName + "】失败, config = " + value, e);
 			}  
 		}
 		
@@ -127,7 +129,7 @@ public class SchedulerBean {
 			log.info(" scheduler.deleteJob: " + jobName + " successed." );
 		} 
 		catch (SchedulerException e) {
-			throw new BusinessException("删除定时Job：" + jobName + "失败", e);
+			log.error("删除定时Job：" + jobName + "失败", e);
 		}
     }
 }

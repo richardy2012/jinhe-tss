@@ -18,7 +18,7 @@ import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.helper.ArticleHelper;
 import com.jinhe.tss.cms.job.JobStrategy;
-import com.jinhe.tss.cms.lucene.executor.IIndexExecutor;
+import com.jinhe.tss.cms.lucene.executor.IndexExecutor;
 import com.jinhe.tss.cms.lucene.executor.IndexExecutorFactory;
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.exception.BusinessException;
@@ -79,7 +79,7 @@ public class IndexHelper {
 
     public static void createIndex(JobStrategy strategy, Set<ArticleContent> articleContentSet, Progress progress) {
         String indexExecutorClass = strategy.executorClass;
-        IIndexExecutor executor = IndexExecutorFactory.create(indexExecutorClass);
+        IndexExecutor executor = IndexExecutorFactory.create(indexExecutorClass);
         
         //创建索引文件存放路径
         String indexPath = strategy.getIndexPath();

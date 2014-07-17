@@ -24,7 +24,6 @@ public class ExpireJob extends AbstractCMSJob {
         List<Article> expireList = new ArrayList<Article>();
 		List<Long> channelIds = channelService.getAllEnabledChannelIds(siteId);
         for ( Long channelId : channelIds ) {
-            
 			expireList.addAll(channelService.getExpireArticlePuburlList(new Date(), channelId));
         }
         

@@ -8,12 +8,12 @@ public class IndexExecutorFactory {
     private IndexExecutorFactory() {
     }
 
-    public static IIndexExecutor create(String className) {
+    public static IndexExecutor create(String className) {
         if ( EasyUtils.isNullOrEmpty( className )) {
             return new DefaultIndexExecutor();
         }
         
-        return (IIndexExecutor) BeanUtil.newInstanceByName(className);
+        return (IndexExecutor) BeanUtil.newInstanceByName(className);
     }
 }
 

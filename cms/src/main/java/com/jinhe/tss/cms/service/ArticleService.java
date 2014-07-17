@@ -94,7 +94,7 @@ public class ArticleService implements IArticleService {
 		article.setChannel(channel);
  
 		// set over date
-		Date calculateOverDate = ArticleHelper.calculateOverDate(article, channel);
+		Date calculateOverDate = ArticleHelper.calculateOverDate(channel);
         if( calculateOverDate != null ) {
 			article.setOverdueDate(calculateOverDate);
         }
@@ -131,27 +131,31 @@ public class ArticleService implements IArticleService {
 	}
  
 	/**
-	 * 将文章内容中的临时地址替换成真实地址。
+	 * 将文章正文中的临时地址替换成真实地址。
      * 主要是将临时生成的附件ID替换成附件所属文章的ID。
 	 */
 	private void translatePath(Attachment attachment, Article article, Long channelId) {
 		// download?id=1&seqNo=1
-		String relateDownloadUrl = attachment.getRelateDownloadUrl(); 
-        relateDownloadUrl = relateDownloadUrl.replaceAll("&", "&amp;"); //将&替换成&amp;
+		String downloadUrl = attachment.getRelateDownloadUrl(); 
+        downloadUrl = downloadUrl.replaceAll("&", "&amp;"); //将&替换成&amp;
         
+        int indexOfAmp = downloadUrl.indexOf("&amp;");
+        
+        // 修改正文中的地址链接
 		StringBuffer sb = new StringBuffer(article.getContent());
-		int index = sb.indexOf(relateDownloadUrl);
+		int index = sb.indexOf(downloadUrl);
 		while (index != -1) {
 			StringBuffer buffer = new StringBuffer();
-			int idIndex = relateDownloadUrl.indexOf("?id=");
-			String realAttUploadName;
+			int idIndex = downloadUrl.indexOf("?id=");
+			String realNameAfterUpload;
 			if (idIndex != -1) {
-				realAttUploadName = relateDownloadUrl.substring(0, idIndex + 4);
-				realAttUploadName += article.getId() + relateDownloadUrl.substring(relateDownloadUrl.indexOf("&amp;"));
-				buffer.append(sb.substring(0, index)).append(realAttUploadName).append(sb.substring(index + relateDownloadUrl.length()));
+				realNameAfterUpload = downloadUrl.substring(0, idIndex + 4);
+				
+				realNameAfterUpload += article.getId() + downloadUrl.substring(indexOfAmp);
+				buffer.append(sb.substring(0, index)).append(realNameAfterUpload).append(sb.substring(index + downloadUrl.length()));
 				sb = buffer;
 			}
-			index = sb.indexOf(relateDownloadUrl);
+			index = sb.indexOf(downloadUrl);
 		}
 		article.setContent(sb.toString());
 	}

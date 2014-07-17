@@ -15,9 +15,9 @@ import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.helper.ArticleHelper;
+import com.jinhe.tss.cms.job.PublishUtil;
 import com.jinhe.tss.cms.lucene.ArticleContent;
 import com.jinhe.tss.cms.lucene.IndexHelper;
-import com.jinhe.tss.cms.publish.PublishUtil;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.util.EasyUtils;
 

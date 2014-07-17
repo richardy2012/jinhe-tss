@@ -1,5 +1,6 @@
 package com.jinhe.tss.cms.job;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,8 @@ import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.lucene.ArticleContent;
+import com.jinhe.tss.cms.lucene.executor.KeywordIndexExecutor;
+import com.jinhe.tss.cms.lucene.executor.TitleIndexExecutor;
 import com.jinhe.tss.framework.component.progress.Progress;
 import com.jinhe.tss.framework.component.progress.Progressable;
 
@@ -22,6 +25,7 @@ import com.jinhe.tss.framework.component.progress.Progressable;
 public class CMSJobsTest extends AbstractTestSupport {
 	
 	Long siteId;
+	Long channel1Id;
 	
     @Before
     public void setUp() throws Exception {
@@ -33,7 +37,7 @@ public class CMSJobsTest extends AbstractTestSupport {
         
         // 新建栏目
         Channel channel1 = super.createChannel("时事评论", site, siteId);
-        Long channel1Id = channel1.getId();
+        channel1Id = channel1.getId();
         super.createChannel("环球新闻", site, channel1Id);
         
         // 开始测试文章模块
@@ -57,6 +61,14 @@ public class CMSJobsTest extends AbstractTestSupport {
 	
 	@Test
     public void testExpireJob() {
+		List<?> list = getArticlesByChannel(channel1Id);
+		 
+        for(Object temp : list) {
+            Article tempArticle = (Article)temp;
+            tempArticle.setOverdueDate(new Date());
+            tempArticle.setStatus(CMSConstants.XML_STATUS);
+        }
+		
         String jobConfig = siteId.toString();
         new ExpireJob().excuteJob(jobConfig);
 	}
@@ -87,11 +99,11 @@ public class CMSJobsTest extends AbstractTestSupport {
         
         IndexJob indexJob = new IndexJob();
 		indexJob.excuteJob(jobConfig);
-    }
-	
-	@Test
-    public void testIndexJob3() {
-        // 即时执行策略
-        channelAction.createIndex(response, siteId, 0); 
+		
+		JobStrategy.getIndexStrategy().executorClass = TitleIndexExecutor.class.getName();
+		indexJob.excuteJob(jobConfig);
+		
+		JobStrategy.getIndexStrategy().executorClass = KeywordIndexExecutor.class.getName();
+		indexJob.excuteJob(jobConfig);
     }
 }

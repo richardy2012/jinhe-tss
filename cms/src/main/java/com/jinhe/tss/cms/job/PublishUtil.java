@@ -1,4 +1,4 @@
-package com.jinhe.tss.cms.publish;
+package com.jinhe.tss.cms.job;
 
 import java.io.File;
 import java.util.Map;

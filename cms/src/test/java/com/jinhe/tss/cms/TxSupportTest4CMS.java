@@ -82,7 +82,7 @@ public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit4Sprin
         Assert.assertTrue(FileHelper.checkFile(classDir, CK_FILE_PATH));
         
         tempDir1 = FileHelper.createDir(classDir + "/temp1");
-        tempDir1 = FileHelper.createDir(classDir + "/temp1");
+        tempDir2 = FileHelper.createDir(classDir + "/temp2");
         
         Global.setContext(super.applicationContext);
 		Context.setResponse(response = new MockHttpServletResponse());

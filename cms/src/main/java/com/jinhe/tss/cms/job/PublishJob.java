@@ -3,7 +3,6 @@ package com.jinhe.tss.cms.job;
 import java.util.List;
 
 import com.jinhe.tss.cms.entity.Article;
-import com.jinhe.tss.cms.publish.PublishManger;
 import com.jinhe.tss.cms.service.IChannelService;
 import com.jinhe.tss.util.EasyUtils;
 

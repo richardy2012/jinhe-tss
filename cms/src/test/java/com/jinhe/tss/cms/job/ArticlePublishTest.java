@@ -1,11 +1,13 @@
-package com.jinhe.tss.cms.publish;
+package com.jinhe.tss.cms.job;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -22,6 +24,7 @@ import com.jinhe.tss.cms.job.JobStrategy;
 import com.jinhe.tss.cms.lucene.ArticleContent;
 import com.jinhe.tss.cms.lucene.IndexHelper;
 import com.jinhe.tss.framework.component.progress.Progress;
+import com.jinhe.tss.framework.component.progress.Progressable;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.util.DateUtil;
 
@@ -34,6 +37,8 @@ public class ArticlePublishTest extends AbstractTestSupport {
     public void testArticlePublish() {
     	// 新建站点
         Channel site = createSite();
+        site.setPath(super.tempDir2.getPath());
+        
         Long siteId = site.getId();
         
         // 新建栏目
@@ -66,11 +71,11 @@ public class ArticlePublishTest extends AbstractTestSupport {
         publishArticle(channel1Id, CMSConstants.PUBLISH_ALL);
         publishArticle(siteId, CMSConstants.PUBLISH_ALL);
         
-//        try {
-//        	channelAction.publish(response, channel1Id, CMSConstants.PUBLISH_ALL);
-//        } catch(Exception e) {
-//        	Assert.fail("没有事务");
-//        }
+        try {
+        	channelAction.publish(response, channel1Id, CMSConstants.PUBLISH_ALL);
+        } catch(Exception e) {
+        	Assert.assertTrue("没有事务", true);
+        }
         
         // 创建索引
         channelAction.createIndex(response, siteId, 1);
@@ -159,16 +164,13 @@ public class ArticlePublishTest extends AbstractTestSupport {
         // 判断是否对该栏目有发布权限
         publishManger.checkPublishPermission(channelId);
         
-        int totalRows = channelService.getPublishableArticlesDeeplyCount(channelId, category);       
-        int totalPageNum = totalRows / PublishManger.PAGE_SIZE ;
-        if( totalRows % PublishManger.PAGE_SIZE > 0 ) {
-            totalPageNum = totalPageNum + 1;
-        }
-            
-        // 分页发布文章
-        for (int k = 0; k < totalPageNum; k++) {
-            List<Article> pageArticleList = channelService.getPagePublishableArticlesDeeply(channelId, k + 1, PublishManger.PAGE_SIZE, category);
-            channelService.publishArticle(pageArticleList);
-        }
+        int totalRows = channelService.getPublishableArticlesDeeplyCount(channelId, category);   
+       
+        Map<String, Object> paramsMap = new HashMap<String, Object>();
+        paramsMap.put("channelId", channelId);
+        paramsMap.put("category", category);
+        paramsMap.put("totalRows", totalRows);
+        
+        ((Progressable)publishManger).execute(paramsMap, new Progress(totalRows));
     }
 }

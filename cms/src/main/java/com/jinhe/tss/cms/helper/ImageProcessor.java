@@ -10,7 +10,6 @@ import javax.imageio.ImageIO;
 
 /**
  * 制作图片文件的缩略图
- * 
  */
 public class ImageProcessor {
     
@@ -23,10 +22,6 @@ public class ImageProcessor {
 
     private int width;
     private int height;
-
-    public static void main(String[] args) throws Exception {
-        new ImageProcessor("D:\\Temp\\cms\\1.jpg").resize(0.68);   //resizeFix(300, 500);
-    }
 
     /**
      * 构造函数

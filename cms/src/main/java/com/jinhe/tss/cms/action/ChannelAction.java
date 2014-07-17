@@ -15,7 +15,7 @@ import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.entity.permission.ChannelPermissionsFull;
 import com.jinhe.tss.cms.entity.permission.ChannelResourceView;
 import com.jinhe.tss.cms.job.IndexJob;
-import com.jinhe.tss.cms.publish.PublishManger;
+import com.jinhe.tss.cms.job.PublishManger;
 import com.jinhe.tss.cms.service.IChannelService;
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;

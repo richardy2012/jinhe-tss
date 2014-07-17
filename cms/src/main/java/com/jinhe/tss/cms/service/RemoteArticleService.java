@@ -218,7 +218,7 @@ public class RemoteArticleService implements IRemoteArticleService {
         article.setChannel(channel);
          
         //设置过期时间
-        article.setOverdueDate(ArticleHelper.calculateOverDate(article, channel));
+        article.setOverdueDate(ArticleHelper.calculateOverDate(channel));
         
         articleDao.saveArticle(article);
     }
@@ -331,14 +331,18 @@ public class RemoteArticleService implements IRemoteArticleService {
                 Node issueDateNode = articleNode.selectSingleNode("//issueDate");
                 
                 createArticleElement(channelElement,
-                        idNode == null ? null : idNode.getText(), 
-                		titleNode == null ? null : titleNode.getText(), 
-                		authorNode == null ? null : authorNode.getText(), 
-                		issueDateNode == null ? null : DateUtil.parse(issueDateNode.getText()), 
-                        summaryNode == null ? null : summaryNode.getText(), 
+                		getText(idNode), 
+                		getText(titleNode), 
+                		getText(authorNode),
+                		DateUtil.parse(getText(issueDateNode)), 
+                		getText(summaryNode), 
                         null);
             }
         }
         return "<Response><ArticleList>" + channelElement.asXML() + "</ArticleList></Response>";
+    }
+    
+    private String getText(Node node) {
+    	return node == null ? null : node.getText();
     }
 }
