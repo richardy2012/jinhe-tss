@@ -34,7 +34,7 @@ public class SchedulerBean {
 	
 	static final String TIMER_PARAM_CODE = "TIMER_PARAM_CODE";
 	
-	static long initCyclelife = 1000 * 60 * 15;
+	static long initCyclelife = 1000 * 30; // 30秒
 	
     private static Scheduler scheduler;
     
@@ -45,6 +45,9 @@ public class SchedulerBean {
     }
  
     public SchedulerBean(final long initCyclelife) {
+    	
+    	log.info("SchedulerBean is starting....." + initCyclelife);
+    	
     	try {
 			scheduler = StdSchedulerFactory.getDefaultScheduler();
 			scheduler.start();
@@ -71,10 +74,17 @@ public class SchedulerBean {
     }
     
     public void init() {
-    	log.info("SchedulerBean init begin...");
-    	
-        List<Param> list = ParamManager.getComboParam(TIMER_PARAM_CODE);
-        if(list.isEmpty()) return;
+        List<Param> list = null;
+        try {
+        	list = ParamManager.getComboParam(TIMER_PARAM_CODE);
+        } catch(Exception e) {
+        	log.error("定时任务配置有误", e);
+        }
+        if( EasyUtils.isNullOrEmpty(list) ) {
+        	return;
+        }
+        
+        log.info("SchedulerBean init begin...");
         
         List<String> jobCodes = new ArrayList<String>();
 		for(Param param : list) {
