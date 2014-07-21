@@ -12,6 +12,11 @@ import com.jinhe.tss.framework.component.progress.ProgressManager;
 import com.jinhe.tss.framework.component.progress.Progressable;
 import com.jinhe.tss.util.EasyUtils;
 
+/**
+ * 创建文章索引的定时JOB
+ * 
+ * com.jinhe.tss.cms.job.IndexJob | 0 07 * * * ? | 4,V5
+ */
 public class IndexJob extends AbstractCMSJob implements Progressable {
 
 	protected void excuteCMSJob(String jobConfig) {

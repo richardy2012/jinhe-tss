@@ -84,7 +84,7 @@ public class SchedulerBean {
         	return;
         }
         
-        log.info("SchedulerBean init begin...");
+        log.debug("SchedulerBean init begin...");
         
         List<String> jobCodes = new ArrayList<String>();
 		for(Param param : list) {
@@ -104,7 +104,7 @@ public class SchedulerBean {
 			String configs[] = EasyUtils.split(value, "|"); // jobClassName | timeDescr | customizeConfig
 			Class<?> jobClazz = BeanUtil.createClassByName(configs[0].trim());
 			JobDetail jobDetail = new JobDetail(jobName, Scheduler.DEFAULT_GROUP, jobClazz);
-			jobDetail.getJobDataMap().put(code, configs[2].trim());
+			jobDetail.getJobDataMap().put(jobName, configs[2].trim());
 			
 			String triggerName = "Trigger-" + code;
 			Trigger trigger;
@@ -121,14 +121,13 @@ public class SchedulerBean {
 			}  
 		}
 		
-		
 		Set<String> deleteJobCodes = new HashSet<String>(configsMap.keySet());
 		deleteJobCodes.removeAll(jobCodes);
 		for(String code : deleteJobCodes) {
 			deleteJob(code);
 		}
         
-        log.info("SchedulerBean init end.");
+        log.debug("SchedulerBean init end.");
     }
     
     private void deleteJob(String code) {

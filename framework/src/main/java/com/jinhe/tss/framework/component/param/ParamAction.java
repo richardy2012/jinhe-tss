@@ -81,10 +81,15 @@ public class ParamAction extends BaseActionSupport {
         XFormEncoder xformEncoder;
         String paramIdValue = request.getParameter("paramId");
         if( paramIdValue == null ){
-            Map<String, Object> map = new HashMap<String, Object>();
-            
             String parentIdValue = request.getParameter("parentId"); 
-            Long parentId = parentIdValue == null ? ParamConstants.DEFAULT_PARENT_ID : EasyUtils.convertObject2Long(parentIdValue);
+            Long parentId;
+            try {
+            	parentId = EasyUtils.convertObject2Long(parentIdValue);
+            } catch (Exception e) {
+            	parentId = ParamConstants.DEFAULT_PARENT_ID; // null or "_rootId"
+            }
+            
+            Map<String, Object> map = new HashMap<String, Object>();
             map.put("parentId", parentId);
             map.put("type", type);
             map.put("modality", mode);

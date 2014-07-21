@@ -3,7 +3,7 @@
 	<declare prefix="param">	
 		<column caption="id" name="id" mode="string" display="none"/>
 		<column name="text" caption="显示值" mode="string" maxLength="200" empty="true"/>
-		<column name="value" caption="参数值" mode="string" maxLength="200" empty="true"/>
+		<column name="value" caption="参数值" mode="string" maxLength="2000" empty="true"/>
 		<column name="description" caption="描述" mode="string" maxLength="400"/>
 	</declare>
 	<layout>
@@ -13,11 +13,11 @@
 		</TR>
 		<TR>
 			<TD width="100"><label binding="value"/></TD>
-			<TD><input binding="value" type="text" style="width:100%;"/></TD>
+			<TD><textarea binding="value" style="width:100%;height:120"/></TD>
 		</TR>
 		<TR>
 			<TD width="100" valign="top"><label binding="description"/></TD>
-			<TD><textarea binding="description" style="width:100%;height:100"/></TD>
+			<TD><textarea binding="description" style="width:100%;height:50"/></TD>
 		</TR>
 	</layout>
 	<data>

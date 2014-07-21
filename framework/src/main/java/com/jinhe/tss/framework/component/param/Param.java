@@ -190,12 +190,10 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
                 icon_path = ParamConstants.PARAM_TREE;
             }
             map.put("code", code);
-            map.put("value", value);
             map.put("text", text);
         } 
         else {
             map = new TreeAttributesMap(id, (EasyUtils.isNullOrEmpty(text)) ? value : text);
-            map.put("value", value);
             icon_path = ParamConstants.PARAM_ITEM;
         }
         
