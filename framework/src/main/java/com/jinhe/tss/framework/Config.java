@@ -28,6 +28,9 @@ public class Config {
 	/** session过期时间的配置名称 */
 	public static final String SESSION_CYCLELIFE_CONFIG = "session.cyclelife";
 	
+	/** 是否启用定时Job */
+	public static final String ENABLE_JOB = "job.enable";
+	
     private static ResourceBundle resources = null;
     private static Map<String, Object> propertyMap = new HashMap<String, Object>(); //存放属性 name/value
     

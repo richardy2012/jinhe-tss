@@ -16,6 +16,7 @@ import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.stereotype.Component;
 
+import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.exception.BusinessException;
@@ -45,6 +46,10 @@ public class SchedulerBean {
     }
  
     public SchedulerBean(final long initCyclelife) {
+    	// 根据配置决定是否启用定时Job
+    	if( !Config.TRUE.equals(Config.getAttribute(Config.ENABLE_JOB)) ) {
+    		return;
+    	}
     	
     	log.info("SchedulerBean is starting....." + initCyclelife);
     	
