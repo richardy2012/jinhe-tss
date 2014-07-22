@@ -13,6 +13,9 @@ import com.jinhe.tss.util.FileHelper;
 
 /** 
  * 文章过期处理（删除已过期的文章生成的xml文件） 
+ * 
+ * com.jinhe.tss.cms.job.ExpireJob | 0 07 * * * ? | 4,12
+ * 
  */
 public class ExpireJob extends AbstractCMSJob {
 

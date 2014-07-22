@@ -6,6 +6,9 @@ import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.service.IChannelService;
 import com.jinhe.tss.util.EasyUtils;
 
+/**
+ * com.jinhe.tss.cms.job.PublishJob | 0 07 * * * ? | 4,12
+ */
 public class PublishJob extends AbstractCMSJob {
 
 	private static final int PAGE_SIZE = PublishManger.PAGE_SIZE;

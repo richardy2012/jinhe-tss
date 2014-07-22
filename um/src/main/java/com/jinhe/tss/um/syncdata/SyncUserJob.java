@@ -12,6 +12,7 @@ import com.jinhe.tss.util.EasyUtils;
 
 /**
  * 自动同步用户
+ * 
  * com.jinhe.tss.um.syncdata.SyncUserJob | 0 06 * * * ? | 4,V5
  * 
  */
