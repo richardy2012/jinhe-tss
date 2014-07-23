@@ -61,6 +61,13 @@ public class EasyUtilsTest {
 		Assert.assertEquals("Jon1,Jon2,Jon3", EasyUtils.list2Str(list));
 		Assert.assertEquals("Jon1|Jon2|Jon3", EasyUtils.list2Str(list, "|"));
 		Assert.assertEquals("", EasyUtils.list2Str(null));
+		
+		Collection<String> list2 = new ArrayList<String>();
+		list2.add("");
+		list2.add(null);
+		list2.add("Jon3");
+		list2.add("");
+		Assert.assertEquals(",,Jon3,", EasyUtils.list2Str(list2));
 
 		Assert.assertEquals("%E8%BF%87%E6%B2%B3%E5%8D%92%E5%AD%90", EasyUtils.toUtf8String("过河卒子"));
 	}

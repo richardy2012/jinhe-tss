@@ -93,11 +93,12 @@ public class EasyUtils {
         if( isNullOrEmpty(list) ) return "";
         
         StringBuffer sb = new StringBuffer();
+        int index = 0;
         for(Object obj : list){
-            if(sb.length() > 0) {
+            if(index++ > 0) {
                 sb.append(seperator);
             }
-            sb.append(obj);
+            sb.append(obj == null ? "" : obj);
         }
         return sb.toString();
     }
