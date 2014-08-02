@@ -11,7 +11,7 @@
           <column name="groupId"   caption="组ID" mode="hidden"/>
           <column name="address"   caption="地址" mode="string" empty="true" maxLength="100" />
           <column name="postCode"  caption="邮编" mode="string" maxLength="100" inputReg="/^\d{0,10}$/" />
-          <column name="email"     caption="邮件" mode="string" maxLength="100" inputReg="/^\w+@?\w*\.?\w*$/"  />
+          <column name="email"     caption="邮件" mode="string" maxLength="100" inputReg="/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/"  />
           <column name="birthday"  caption="生日" mode="string" inputReg="/^((?:19|20)\d\d)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/" maxLength="32" />
           <column name="sex"       caption="性别" mode="string" editor="comboedit" editorvalue="0|1|2" editortext="男|女|其它" empty="false" onchange="f2"/> 
           <column name="sex2"      caption="性别" mode="string" editor="comboedit" editorvalue="0|1|2" editortext="男|女|其它" editable="false"/> 

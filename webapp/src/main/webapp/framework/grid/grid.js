@@ -711,6 +711,11 @@ function bindSortHandler(table) {
 		sort(direction, this._colIndex);
 		direction = direction * -1;
 
+		//去掉所有的html标记 
+		function killHTML(str) {
+			return str.replace(/<[^>]+>/g, "");
+		}
+
 		function sort(direction, columnIndex) {
 			this._2DArray.sort(function(a, b) {
 				var x = killHTML( a[columnIndex] ).replace(/,/g, '');

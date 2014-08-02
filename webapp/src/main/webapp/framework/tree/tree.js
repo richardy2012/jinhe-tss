@@ -377,11 +377,11 @@ var Tree = function(element) {
 		// 生成滚动条
 		var vScrollStr = '<div class="VScrollBox" id="' + _vScrollBoxName + '"><div id="' + _vScrollDivName + '" style="width:1px"></div></div>';
 		var hScrollStr = '<div class="HScrollBox" id="' + _hScrollBoxName + '"><div id="' + _hScrollDivName + '" style="height:1px"></div></div>';
-		element.insertAdjacentHTML('afterBegin', vScrollStr + hScrollStr);
+		Element.insertHtml('afterBegin', element, vScrollStr + hScrollStr);
  
 		// 生成页面上显示节点的table对象。
 		var tableStr = '<div class="RootBox" id="' + _rootBoxName + '"><table id="' + _rootTableName + '"></table></div>';
-		element.insertAdjacentHTML('afterBegin', tableStr);
+		Element.insertHtml('afterBegin', element, tableStr);
 
 		var _vScrollBox = $$(_vScrollBoxName);
 		var _vScrollDiv = $$(_vScrollDivName);

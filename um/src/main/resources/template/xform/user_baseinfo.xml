@@ -10,7 +10,7 @@
 		<column name="sex" caption="性别" mode="string" editor="comboedit" editorvalue="1|0" editortext="男|女"/>
 		<column name="birthday" caption="出生年月" mode="string" pattern="yyyy-MM-dd" maxLength="32"/>
 		<column name="employeeNo" caption="员工编号" mode="string" maxLength="100"/>
-		<column name="email" caption="电子邮件" mode="string" maxLength="100" inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/"/>
+		<column name="email" caption="电子邮件" mode="string" maxLength="100" inputReg="/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/"/>
 		<column name="telephone" caption="电话" mode="string" maxLength="30"/>
 		<column name="address"   caption="地址" mode="string" maxLength="100"/>
 		<column name="postalCode" caption="邮编" mode="string" maxLength="10" inputReg="/^\d{0,10}$/"/>

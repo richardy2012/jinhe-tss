@@ -444,7 +444,7 @@ function myAlert(info, detail) {
 
 	var gif = "icon_alert.gif";
 	infoBox.innerText = info.replace(/[\r\n]/g,"");
-	infoBox.insertAdjacentHTML("afterBegin", "<img src='" + ICON + gif + "' hspace='5' align='left'>");
+	Element.insertHtml("afterBegin", infoBox, "<img src='" + ICON + gif + "' hspace='5' align='left'>");
 
 	if(detail) detail = convertToString(detail);
 	if(detail && detail != "") {

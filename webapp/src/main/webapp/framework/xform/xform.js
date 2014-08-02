@@ -10,9 +10,9 @@ function $X(xformId, data) {
 
 	if( xform == null || data ) {
 		xform = new XForm($$(xformId));
-		xform.load(data);
-
 		XFormCache.add(xformId, xform);	
+
+		xform.load(data);
 	}
 	
 	return xform;
