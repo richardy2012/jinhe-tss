@@ -40,6 +40,7 @@ public class PortalDispatcher extends HttpServlet {
 	public static final String PORTAL_REDIRECT_URL_SUFFIX = ".portal";
 	
 	public static final String THE_404_URL = "/tss/404.html";
+	public static final String THE_LOGIN_URL = "/tss/login.html";
  
     
     Logger log = Logger.getLogger(this.getClass());
@@ -62,7 +63,7 @@ public class PortalDispatcher extends HttpServlet {
 	            rd.forward(request, response); // 控制权转发
 			}
 			else {
-				response.sendRedirect(THE_404_URL);
+				response.sendRedirect(THE_LOGIN_URL);
 			}
 			 
             /* 

@@ -1932,7 +1932,9 @@ function delTreeNode(url, treeName) {
  *	参数：	url      请求地址
 			state    状态
  */
-function stopOrStartTreeNode(state, url, treeName) {		
+function stopOrStartTreeNode(state, url, treeName) {	
+	if( state == "1" && !confirm("您确定要停用该节点吗？") )  return;
+		
 	var tree = $T(treeName || "tree");
 	var treeNode = tree.getActiveTreeNode();
 	Ajax({
