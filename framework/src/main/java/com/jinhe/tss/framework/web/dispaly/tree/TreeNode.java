@@ -18,27 +18,20 @@ public class TreeNode {
     public static final String DISABLED = "0";  // disabled
     public static final String ENABLED  = "1";  // enabled
 
-    public static final String TREENODE_ATTRIBUTE_CANSELECTED = "canselected"; // 可选
-    public static final String TREENODE_ATTRIBUTE_DISPLAY = "display"; // 是否显示
+    public static final String TREENODE_ATTR_CANSELECTED = "canselected"; // 可选
+    public static final String TREENODE_ATTR_DISPLAY = "display"; // 是否显示
 
-    public static final String TREENODE_ATTRIBUTE_ID   = "id";  
-    public static final String TREENODE_ATTRIBUTE_NAME = "name";
+    public static final String TREENODE_ATTR_ID   = "id";  
+    public static final String TREENODE_ATTR_NAME = "name";
 
     Map<String, Object> attributes; // 节点属性
 
     List<TreeNode> children = new ArrayList<TreeNode>(); // 子节点：TreeNode对象
-    
-    /**
-     * 构造器，用于空节点
-     */
+
     public TreeNode() { 
         attributes = new HashMap<String, Object>();
     }
 
-    /**
-     * 构造器
-     * @param item
-     */
     public TreeNode(ITreeNode item) {
         attributes = item.getAttributes();
         if(attributes == null) {
@@ -47,7 +40,7 @@ public class TreeNode {
     }
     
     public Object getId() {
-        return attributes.get(TREENODE_ATTRIBUTE_ID);
+        return attributes.get(TREENODE_ATTR_ID);
     }
     
     /**
@@ -57,9 +50,9 @@ public class TreeNode {
      * @param display
      */
     void initTreeNode(String id, String name, boolean display) {
-        attributes.put(TREENODE_ATTRIBUTE_ID, id);
-        attributes.put(TREENODE_ATTRIBUTE_NAME, name);
-        attributes.put(TREENODE_ATTRIBUTE_DISPLAY, display ? ENABLED : DISABLED);
+        attributes.put(TREENODE_ATTR_ID, id);
+        attributes.put(TREENODE_ATTR_NAME, name);
+        attributes.put(TREENODE_ATTR_DISPLAY, display ? ENABLED : DISABLED);
     }
 
     /**
@@ -96,11 +89,12 @@ public class TreeNode {
     }
     
     boolean isRootNode() {
-        return TreeEncoder.TREE_ROOT_NODE_ID.equals(attributes.get(TreeNode.TREENODE_ATTRIBUTE_ID));
+        Object treeNodeId = attributes.get(TreeNode.TREENODE_ATTR_ID);
+		return TreeEncoder.TREE_ROOT_NODE_ID.equals(treeNodeId);
     }
     
     boolean display() {
-        Object display = attributes.get(TreeNode.TREENODE_ATTRIBUTE_DISPLAY);
+        Object display = attributes.get(TreeNode.TREENODE_ATTR_DISPLAY);
 		return display == null || ENABLED.equals(display);
     }
 
@@ -124,14 +118,14 @@ public class TreeNode {
      * 禁止选择
      */
     public void disabled() {
-        attributes.put(TREENODE_ATTRIBUTE_CANSELECTED, DISABLED);
+        attributes.put(TREENODE_ATTR_CANSELECTED, DISABLED);
     }
 
     /**
      * 启用选择
      */
     public void enabled() {
-        attributes.put(TREENODE_ATTRIBUTE_CANSELECTED, ENABLED);
+        attributes.put(TREENODE_ATTR_CANSELECTED, ENABLED);
     }
     
     /**
@@ -143,5 +137,4 @@ public class TreeNode {
     public void setAttribute(String name, String value){
         attributes.put(name, value);
     }
-
 }

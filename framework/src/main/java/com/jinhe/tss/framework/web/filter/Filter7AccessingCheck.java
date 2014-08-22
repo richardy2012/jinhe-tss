@@ -52,9 +52,10 @@ public class Filter7AccessingCheck implements Filter {
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
-        if(!checkIp(request.getRemoteAddr())) {
-            log.info("黑名单（" + request.getRemoteAddr() + "）用户试图访问系统被拒绝。");
-            throw new BusinessServletException("您的ip" + request.getRemoteAddr() + " 地址在黑名单里，如有疑问请联系管理员！");
+        String ip = request.getRemoteAddr();
+		if( !checkIp(ip) ) {
+            log.info("黑名单（" + ip + "）用户试图访问系统被拒绝。");
+            throw new BusinessServletException("您的ip" + ip + " 地址在黑名单里，如有疑问请联系管理员！");
         }
         
         HttpSession session = req.getSession(false);
@@ -62,7 +63,8 @@ public class Filter7AccessingCheck implements Filter {
             chain.doFilter(request, response);
             return;
         }
-        //检测权限
+        
+        // 检测权限
         List<Object> userRights = new ArrayList<Object>();
         try {
             List<?> userRightsInSession = (List<?>) session.getAttribute(SSOConstants.USER_RIGHTS_IN_SESSION);
@@ -118,8 +120,8 @@ public class Filter7AccessingCheck implements Filter {
  * 
  * 权限配置文件格式： 
  * <rightConfig>
- *      <servlet name="test.do" right="权限ID1,权限ID2,Admin"/>
- *      <servlet name="param!*.action" right="权限ID1,权限ID3,Admin,JonKing"/>
+ *      <servlet name="param.htm" right="权限ID1,权限ID2,Admin"/>
+ *      <servlet name="cache.htm" right="权限ID1,权限ID3,Admin,JonKing"/>
  * </rightConfig> 
  * 
  * @author Jon.King 2008/12/19 10:59:06

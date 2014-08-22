@@ -19,8 +19,8 @@ public class TreeAttributesMap implements Map<String, Object>{
      * @param name
      */
     public TreeAttributesMap(Object id, Object name){
-        attributes.put(TreeNode.TREENODE_ATTRIBUTE_ID, id);
-        attributes.put(TreeNode.TREENODE_ATTRIBUTE_NAME, name);
+        attributes.put(TreeNode.TREENODE_ATTR_ID, id);
+        attributes.put(TreeNode.TREENODE_ATTR_NAME, name);
     }
     
     /**

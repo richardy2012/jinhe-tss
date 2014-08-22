@@ -68,7 +68,7 @@ public class ComponentAction extends FMSupportAction {
         encoder.setTranslator( new ITreeTranslator() {
             public Map<String, Object> translate(Map<String, Object> attributes) {
                 if( Boolean.TRUE.equals(attributes.get("isGroup")) ) { // 使得组节点不可选
-                    attributes.put(TreeNode.TREENODE_ATTRIBUTE_CANSELECTED, "0"); 
+                    attributes.put(TreeNode.TREENODE_ATTR_CANSELECTED, "0"); 
                 }
                 return attributes;
             }           
