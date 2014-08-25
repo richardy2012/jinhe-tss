@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML xmlns:XForm>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>门户结构参数设置</title>
+
+<link href="../framework/css/css.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/css/dialog.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/balloon/balloon.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/xform/xform.css" rel="stylesheet" type="text/css"></link>
+
+<script language="javascript" src="../framework/core.js"></script>
+<script language="javascript" src="../framework/ajax.js"></script>
+<script language="javascript" src="../framework/framework.js"></script>
+<script language="javascript" src="../framework/balloon/balloon.js"></script>
+<script language="javascript" src="../framework/xform/xform.js"></script>
+
+<script language="javascript" src="structure.js"></script>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+ 
+    XML_CONFIG_PARAMS = "ConfigParams";
+
+    function init(){
+        var url = "#";
+		var paramsXML;  // eg: "<decorator bgColor=\"#ABCDEF\">model/decorator/decorator-8/paramsXForm.xml</decorator>";
+ 
+		if(IS_TEST) {
+			paramsXML = loadXmlToNode("<decorator menuBgColor=\"#ABCDEF\">data/paramsXForm.xml</decorator>");
+		}
+		else {
+			paramsXML = window.dialogArguments.paramsXML;
+		}
+
+		if( paramsXML && paramsXML.firstChild){
+			url = paramsXML.firstChild.nodeValue; // 组件参数配置模板所在目录
+		}
+
+        var p = new HttpRequestParams();
+        p.url = url;
+        p.method = "GET";
+
+        var request = new HttpRequest(p);
+        request.onresult = function() {
+            var dataXmlNode = this.getNodeValue(XML_CONFIG_PARAMS);
+
+            var dataNode = dataXmlNode.selectSingleNode(".//data");
+			var xmlReader = new XmlReader("<row/>");
+			var rowNode = new XmlNode(xmlReader.documentElement);
+
+			var attributes = paramsXML.attributes;
+			for(var i=0; i < attributes.length; i++){
+			   rowNode.setCDATA(attributes[i].nodeName, attributes[i].nodeValue);
+			}
+			dataNode.appendChild(rowNode);
+
+            Cache.XmlDatas.add(XML_CONFIG_PARAMS, dataXmlNode);
+
+            $X("configParamsForm", dataXmlNode);
+        }
+        request.send();    
+    }
+ 
+    function getParams(){
+        var dataXmlNode = Cache.XmlDatas.get(XML_CONFIG_PARAMS);
+        if(dataXmlNode){
+            var row = dataXmlNode.selectSingleNode(".//data/row");            
+            window.returnValue = row.toXml();
+        }
+        window.close();
+    }
+
+    window.onload = init;
+
+//-->
+</SCRIPT>
+
+</head>
+
+<body>
+<div class="mainBox" id="mainBox">
+  <table class="full">
+    <tr valign="top">
+      <td class="b">
+	    <XForm:Box id="configParamsForm" baseurl="../framework/xform/"></XForm:Box>
+      </td>
+    </tr>
+    <tr height="30">
+      <td align="right">
+        <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> 
+		<input type="button" value="确定" class="btStrong" onclick="getParams()"/>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

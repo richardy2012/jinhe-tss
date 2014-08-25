@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<layout>
+  <property>
+    <name>首页4行布局</name>
+    <portNumber>4</portNumber>
+    <version/>
+    <description><![CDATA[]]></description>
+  </property>
+  <script><![CDATA[/********************************************\
+*函数说明 : 读取CMS内容并建立浮动菜单       * 
+*作    者 : 史纯华                          * 
+*日    期 : 2006/10/31                      *
+\********************************************/
+function ${id}_onLoad(){
+    //建立DIV对象及内部结构
+    var divObj = $("float_Layer");
+    divObj.style.visibility = "hidden";
+    divObj.style.right = "3px";
+    divObj.style.position = "absolute";
+    divObj.style.zIndex = "100";
+
+    var str = [];
+    str[str.length] = "<table border=0 width=90 cellSpacing=0 cellPadding=0>";
+    str[str.length] = "		<tr>";
+    str[str.length] = "			<td><img src='${basepath}#{season}/float_top.jpg' width='90' height='88' border='0'/></td>";
+    str[str.length] = "		</tr>";
+    str[str.length] = "		<tr>";
+    str[str.length] = "			<td style='padding-left:3px' valign=top background='${basepath}#{season}/float_bg.jpg'>";
+    str[str.length] = "			<table width=86 border=0 cellSpacing=0 cellPadding=0 style='table-layout:fixed;'>";
+    str[str.length] = "				<tbody id='float_menu_tbody'></tbody>";
+    str[str.length] = "			</table>";
+    str[str.length] = "			</td>";
+    str[str.length] = "		</tr>";
+    str[str.length] = "		<tr>";
+    str[str.length] = "			<td><img src='${basepath}#{season}/float_bottom.jpg' width='90' height='11' border='0'/></td>";
+    str[str.length] = "		</tr>";
+
+    divObj.innerHTML = str.join("");
+    
+    //定义DIV大小
+    var divHeight = 100;
+    var divWidth = 40;
+
+    //创建DIV内内容
+    
+    var obj = $("float_menu_tbody");
+    obj.data = "";
+
+    //创建内容
+    obj.load = function(links){
+        var thisObj = this;
+
+        if(links.length > 0){
+            for(var i = 0,iLen=links.length; i < iLen; i++){
+                var link = links[i];
+                obj.createLink(link,i);
+            }
+        }else{
+            var tr = Element.createElement("tr");
+            var td = Element.createElement("td");
+            td.innerHTML = "-无菜单-";
+            td.style.height = "30px";
+            td.style.textAlign = "center";
+            td.style.width = "86px";
+            tr.appendChild(td);
+            obj.appendChild(tr);
+        }
+    }
+
+    obj.createLink = function(link, id){
+        var thisObj = this;
+
+        var name = link.split(",")[0];
+        var value = link.split(",")[1];
+        var power = link.split(",")[2];
+
+        name = name.replace(/(^\s*)|(\s*$)/g,"");
+        value = value.replace(/(^\s*)|(\s*$)/g,"");
+        power = power.replace(/(^\s*)|(\s*$)/g,"");
+
+        if("" != name && "" != value && "" != power){
+            if((window.username != null && window.username != "ANONYMOUS") || "0" == power){
+                var tr = Element.createElement("tr");
+                var td = Element.createElement("td");
+                var span = Element.createElement("div");
+                td.appendChild(span);
+                tr.appendChild(td);
+                thisObj.appendChild(tr);
+
+                span.title = name;
+                span.innerHTML = " " + name;
+
+                td.className = "floatTd";
+                span.className = "floatSpan";
+                span.id = "span_floatMenu_" + id;
+                thisObj.attachEvents(id, value);
+            }
+        }
+
+        //如果过滤后无内容,给出提示
+        if("" != thisObj.innerHTML){
+            //显示对象
+            divObj.style.visibility = "visible";
+
+            setInterval(function (){
+                var secHeight = document.body.clientHeight;
+                var secWidth = document.body.clientWidth;
+                var secTop = document.body.scrollTop;
+                var secLeft = document.body.scrollLeft;
+                with(divObj.style){
+                    top = (secHeight/2 - divHeight/2) + secTop + "px";
+                }
+            },10);
+        }
+        divHeight = divObj.offsetHeight;
+    }
+    obj.attachEvents = function(id,value){
+        var span = $("span_floatMenu_" + id);
+        
+        span.parentNode.onmouseover = function(){
+            this.className = "floatTd_over";
+        }
+        span.parentNode.onmouseout = function(){
+            this.className = "floatTd";
+        }
+        span.parentNode.onclick = function(){
+            if(value.indexOf("javascript") != -1){
+                var exp = value.replace(/^javascript\:/i,"");
+                obj.custom(exp);
+            }else if(value.indexOf("{") == -1){
+                window.open(value);
+            }else{
+                //由于文章编辑器中是以","间隔字符,所以在文章中使用"|",并在这里将其替换为","
+                var re = /\|/gim;       // 创建正则表达式样式。
+                var paramStr = value.replace(re,",");
+                obj.open(paramStr);
+
+            }
+        }
+        
+    }
+
+//***************************************入口 BEGIN***********************************************
+  obj.open = function(paramStr){
+      if(""==paramStr){
+          return;
+      }
+      
+      var params = {};
+      eval("params = " + paramStr);
+
+      var loginName = params.loginName;
+      if(null!=params.translate && null!=params.url){
+          var p = new HttpRequestParams();
+          p.url = params.translate;
+          p.setContent("targetAppCode", params.appCode);
+          var request = new HttpRequest(p);
+
+          request.onexception = function(){
+              alert("该系统无此对应用户!")
+          }
+          request.onresult = function(){
+              var token = this.getNodeValue("token");
+              var identifer = this.getNodeValue("identifer");
+              var lname = this.getNodeValue("loginName");
+              var password = this.getNodeValue("password");
+              var url = null;
+              if("0"==params.type){
+                  url = params.url + "&token=" + escape(token) + "&identifer=" + escape(identifer);
+              }else{
+                  if(null!=lname && null!=password){
+                      url = params.url + "&loginName=" + escape(lname) + "&password=" + escape(password);
+                  }
+              }
+              window.open(url);
+          }
+          request.send();
+      }
+  }
+//****************************************入口 OVER*****************************************************
+
+    obj.getXmlDocument = function(){
+        return this.data;
+    }
+    obj.custom = function(exp){
+        eval("obj."+exp);
+    }
+    obj.jumpToOldSystem = function(appUrl){
+        var p = new HttpRequestParams();
+        p.url = "group!getUserInfos4JH.action";
+		p.setHeader("appCode", "TSS");
+
+        var request = new HttpRequest(p);
+
+        request.onresult = function(){
+            var params = this.getNodeValue("UserInfo");
+            window.open(appUrl + "?" + params);
+        }
+        request.send();
+    }
+
+    //浮动菜单配置
+    var links = [];
+    links[0] = "总行门户,http://intranet.bankcomm.com/,0";
+    links[1] = "分行原门户,http://182.8.190.172:8888/,0";
+    links[2] = "OA系统,http://oa.hangzhou.bankcomm.com/,0";
+    links[3] = "Shibor利率栏,http://182.8.50.55:7001/shibor/Query.jsp,0";
+    links[4] = "个人网银入口,https://pbank.bankcomm.com/personbank/index.jsp,0";
+    links[5] = "新版考核系统,javascript:jumpToOldSystem('http://182.8.50.20:9080/BA/login!login.action'),1";
+    links[6] = "资金管理系统,http://182.8.3.75/money,0";
+    links[7] = "固定资产,javascript:jumpToOldSystem('http://182.8.50.20/zcfz/logon.do'),0";
+    links[8] = "宏观信息网,http://182.1.128.208/index/index.asp,0";
+    links[9] = "资产负债表,http://182.8.50.14/zcfz/index.jsp,1";
+    links[10] = "业务分析,http://182.8.50.14/portal/sportal?p_window=801,1";
+    links[11] = "门户管理,/pms,1";
+    links[12] = "下载中心,/pms/pms/portal!previewPortal.action?portalId=22&id=612&menuId=283,1";
+    links[13] = "客户系统,#,0";
+    links[14] = "个人网银演示,/CMS2.0/privateBankDEMO/index.htm,0";
+
+    obj.load(links);
+}]]></script>
+  <style><![CDATA[#${id} .bothBorther{ border-left:#666666 solid 1px;border-right:#666666 solid 1px;}
+#${id} .floatTd{ width:86px;height:20px;cursor:pointer;cursor:hand;}
+#${id} .floatSpan{font-size:12px;text-overflow:clip;overflow:hidden;width:82px;vertical-align:
+  middle;white-space: nowrap;padding-top:3px;padding-left:3px;}
+#${id} .floatTd_over{width:86px;height:20px;cursor:pointer;cursor:hand;background-color:#78c97c;}]]></style>
+  <prototypeStyle><![CDATA[]]></prototypeStyle>
+  <html><![CDATA[<table id=${id} border="0" cellspacing="0" cellpadding="0" width="100%" height="100%">
+  <tr>
+    <td align=center height="199">
+	  <div id="float_Layer"></div>
+      <table border=0 cellspacing=0 cellpadding=0 width=800 class="bothBorther">
+        <tr><td>${port0}</td></tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td align=center valign=top>
+      <table border=0 cellspacing=0 cellpadding=0 width=800 height=100% class="bothBorther">
+        <tr><td valign=top>${port1}</td></tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td align=center valign=top height="80">
+      <table border=0 cellspacing=0 cellpadding=0 width=800 class="bothBorther">
+        <tr><td>${port2}</td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<div>${port3}</div>]]></html>
+  <events>
+    <attach event="onload" onevent="${id}_onLoad"/>
+  </events>
+  <parameters>
+    <param name="season" defaultValue="summer"/>
+  </parameters>
+</layout>

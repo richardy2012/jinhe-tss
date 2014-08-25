@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML xmlns:Tree xmlns:XForm xmlns:WorkSpace>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>权限设置</title>
+
+<link href="../framework/css/css.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/css/dialog.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/balloon/balloon.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/tree/tree.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/xform/xform.css" rel="stylesheet" type="text/css"></link>
+
+<script language="javascript" src="../framework/core.js"></script>
+<script language="javascript" src="../framework/ajax.js"></script>
+<script language="javascript" src="../framework/framework.js"></script>
+<script language="javascript" src="../framework/balloon/balloon.js"></script>
+<script language="javascript" src="../framework/tree/tree.js"></script>
+<script language="javascript" src="../framework/tree/treeExtend.js"></script>
+<script language="javascript" src="../framework/xform/xform.js"></script>
+
+<script language="javascript" src="setpermission.js"></script>
+
+<style>
+  #xform td {
+      padding-top:5px;
+      padding-left:10px;
+  }
+  .comment {
+    color:#999999;
+  }
+</style>
+
+</head>
+
+<body>
+<div class="mainBox" id="mainBox">
+  <table class="full">
+    <tr>
+      <td style="height:30px;">
+		    <XForm:Box id="xform" baseurl="../framework/xform/"></XForm:Box>
+      </td>
+    </tr>
+    <tr>
+      <td>
+		    <Tree:Box id="tree" treeType="menu" baseurl="../framework/tree/"></Tree:Box>
+      </td>
+    </tr>
+    <tr>
+      <td height="40" class="comment">&nbsp;&nbsp;说明：鼠标点击切换状态，通常情况下是 &lt;未选中&gt; → &lt;仅此节点&gt; → &lt;所有子节点&gt; → &lt;未选中&gt; 循环<br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;节点状态 (
+        <img src="../framework/tree/images/multistate0.gif"   align=absmiddle> 未选中 
+        <img src="../framework/tree/images/multistate0_2.gif" align=absmiddle> 未选中但有子节点选中 
+        <img src="../framework/tree/images/multistate1.gif"   align=absmiddle> 仅此节点 
+        <img src="../framework/tree/images/multistate2.gif"   align=absmiddle> 所有子节点 
+        <img src="../framework/tree/images/multistate3.gif"   align=absmiddle> 未选中禁用 
+        <img src="../framework/tree/images/multistate4.gif"   align=absmiddle> 已选中禁用
+        )
+		<!--
+		<br/>&nbsp;&nbsp;鼠标点击同时按下shift键，可以将所有(未禁用的)子节点设置为与当前节点相同状态
+		-->
+      </td>
+    </tr>
+    <tr>
+      <td class="t" height="30" align="center">
+		    <input type="button" value="确定" class="btStrong" onclick="savePermission()"/>
+        <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> 
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

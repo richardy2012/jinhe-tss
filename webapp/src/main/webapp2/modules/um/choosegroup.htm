@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML xmlns:Tree>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>选择用户组</title>
+
+<link href="../framework/css/css.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/css/dialog.css" rel="stylesheet" type="text/css"></link>
+<link href="../framework/tree/tree.css" rel="stylesheet" type="text/css"></link>
+
+
+<script language="javascript" src="../framework/core.js"></script>
+<script language="javascript" src="../framework/ajax.js"></script>
+<script language="javascript" src="../framework/framework.js"></script>
+<script language="javascript" src="../framework/tree/tree.js"></script>
+
+<SCRIPT type="text/javascript">
+ <!--
+
+  URL_INIT = AUTH_PATH + "group/visibleList";
+
+	if(IS_TEST) {
+		URL_INIT = "data/group_tree.xml";
+	}
+ 
+    function init() {
+		Ajax({
+			url : URL_INIT,
+			onresult : function() {  // 移动树节点					
+				var groupTreeNode = this.getNodeValue("GroupTree");
+ 
+				var tree = $T("tree", groupTreeNode); 
+				$$("tree").onTreeNodeDoubleClick = function(eventObj){
+					getGroup();
+				}
+			}
+		});
+    }
+ 
+    function getGroup() {        
+        var tree = $T("tree");
+        var treeNode = tree.getActiveTreeNode();
+		    if(treeNode) {
+            window.returnValue = {id:treeNode.getId(), name:treeNode.getName()};
+            window.close();
+        }
+    }
+
+    window.onload = init;
+
+ //-->
+ </SCRIPT>
+</head>
+
+<body>
+<div class="mainBox" id="mainBox">
+  <table class="full">
+    <tr>
+      <td>
+        <Tree:Box id="tree" treeType="menu" baseurl="../framework/tree/"></Tree:Box>
+      </td>
+    </tr>
+    <tr>
+      <td class="t" height="30" align="right">
+        <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> 
+		    <input type="button" value="确定" class="btStrong" onclick="getGroup()"/>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>
