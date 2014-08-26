@@ -6,74 +6,27 @@
 <link rel="shortcut icon" href="images/tss.ico">
 <link rel="Bookmark" href="images/tss.ico">
 
-<link href="tools/tssJS/css/tss.css" rel="stylesheet">
+<link href="tools/tssJS/css/tss.common.css" rel="stylesheet">
 <link href="css/css.css" rel="stylesheet">
 
-<script src="tools/tssJS/tssJS.js"></script>
-<script src="tools/tssJS/tssAjax.js"></script>
+<script src="tools/tssJS/tssJS.all.js"></script>
 
 <style>
 
 /* 顶部 */
-.top {
-	height: 41px;
-    background-image: url(images/blue_top.gif);
-}
-.top .logo {
-    width: 571px;
-    height: 41px;
-    background-image: url(images/title.jpg);
-}
+.top { height: 41px; background-image: url(images/panel/blue_top.gif); }
+.top .logo { width: 571px; height: 41px; background-image: url(images/panel/title.jpg); }
 
-.menu { 
-	margin:1px 0px; 
-	position:absolute;
-	top:10px;
-	right:3px;
-} 
-.menu ul { 
-	list-style-type: none; 
-} 
-.menu ul li { 
-	float:left; 
-	position:relative; 
-} 
-.menu ul li a, .menu ul li a:visited { 
-	display:block; 
-	text-align:center; 
-	text-decoration:none; 
-	width:88px; 
-	height:25px; 
-	color:#000; 
-	border:1px solid #fff; 
-	border-width:0px 0px 0px 0px; 
-	background:#00BFFF; 
-	line-height:25px; 
-	font-size:11px; 
-} 
-.menu ul li ul { 
-	display: none; 
-} 
-.menu ul li:hover a { 
-	color:#fff; 
-	background:#AFEEEE; 
-} 
-.menu ul li:hover ul { 
-	display:block; 
-	position:absolute; 
-	top:25px; 
-	left:0; 
-	width:88px; 
-} 
-.menu ul li:hover ul li a { 
-	display:block; 
-	background:#00BFFF; 
-	color:#000; 
-} 
-.menu ul li:hover ul li a:hover { 
-	background:#AFEEEE; 
-	color:FFF; 
-} 
+.menu { margin:1px 0px; position:absolute; top:10px; right:3px; font-size:11px; } 
+.menu ul { list-style-type: none; } 
+.menu ul li { float:left; position:relative; width:88px; text-align:center; } 
+.menu ul li a, .menu ul li a:visited { display:block; height:25px; line-height:25px; 
+	color:#000; background:#00BFFF; border:1px solid #fff; border-width:0px 0px 1px 0px; } 
+.menu ul li ul { display: none; } 
+.menu ul li:hover a { color:#fff; background:#AFEEEE; } 
+.menu ul li:hover ul { display:block; position:absolute; top:25px; left:0; width:88px; } 
+.menu ul li:hover ul li a { display:block; background:#00BFFF; color:#000; } 
+.menu ul li:hover ul li a:hover { background:#AFEEEE; color:#FFF; } 
 
 </style>
 
@@ -138,7 +91,7 @@
 	<div class="menu"> 
 		<ul> 
 			<li><a href="#" onclick="window.open('modules/um/userInfo.htm','','width=700,height=220');">【<span id="userInfo">个人信息</span>】</a></li>
-			<li><a href="#" onclick="window.open('modules/umpassword.htm','','width=400,height=200');">修改密码</a></li>
+			<li><a href="#" onclick="window.open('modules/um/password.htm','','width=400,height=200');">修改密码</a></li>
 			<li><a href="#">用户权限</a> 	 
 				<ul> 
 					<li><a href="#" onclick="turn2IFrame('modules/um/group.html')">用户管理</a> </li> 

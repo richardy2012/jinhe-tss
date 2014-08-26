@@ -6,14 +6,12 @@
 .pika-title { position: relative; text-align: center;}
 .pika-label { display: inline-block; position: relative; overflow: hidden; padding: 5px 3px; font-size: 14px; line-height: 20px; font-weight: bold; }
 .pika-title select { cursor: pointer; position: absolute; z-index: 9998; left: 0; top: 5px; opacity: 0; }
-
 .pika-prev,.pika-next { display:block; cursor:pointer; position:relative; width:20px; height:30px; text-indent:20px; white-space: nowrap; opacity: .5;
     background-color: transparent;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: 75% 75%;
 }
-
 .pika-prev:hover, .pika-next:hover { opacity: 1;}
 .pika-prev, .is-rtl .pika-next {
     float: left;

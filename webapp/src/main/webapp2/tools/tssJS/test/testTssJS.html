@@ -4,13 +4,11 @@
 	<meta charset="UTF-8" />
 	<title>tssJS test</title>
 
-	<script src="../tssJS.js"></script>
+	<script src="../src/tssJS.js"></script>
  
 	<style>
 
-		.cc {
-			width: 250px;
-		}
+		.cc { width: 250px; }
 	
 	</style>
 
@@ -80,8 +78,8 @@
  	}); 
  	$.assertEquals("9", array2[0].y, "$.grep() error.");
 
- 	$.assertEquals("_default_id_0", $.getUniqueID(), "$.getUniqueID() error.");
- 	$.assertEquals("_default_id_1", $.getUniqueID(), "$.getUniqueID() error.");
+ 	$.assertEquals("_0", $.getUniqueID(), "$.getUniqueID() error.");
+ 	$.assertEquals("_1", $.getUniqueID(), "$.getUniqueID() error.");
 
  	console.log((new Date()).format("yyyy-MM-dd"));
  
