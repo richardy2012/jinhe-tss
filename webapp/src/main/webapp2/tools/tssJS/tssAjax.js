@@ -504,15 +504,13 @@
 			var reloginBox = $("#relogin_box")[0];
 			if(reloginBox == null) {
 				var boxHtml = [];
-				boxHtml[boxHtml.length] = "    <form>";
-				boxHtml[boxHtml.length] = "      <h1>重新登录</h1>";
-				boxHtml[boxHtml.length] = "      <span> 用户名：<input type='text' id='loginName' placeholder='请输入您的账号'/> </span>";
-				boxHtml[boxHtml.length] = "      <span> 密&nbsp; 码：<input type='password' id='password' placeholder='请输入您的密码' /> </span>";
-				boxHtml[boxHtml.length] = "      <span class='bottonBox'>";
-				boxHtml[boxHtml.length] = "      	<input type='button' class='btLogin' id='bt_login' value='确 定'/>&nbsp;&nbsp;";
-				boxHtml[boxHtml.length] = "      	<input type='button' id='bt_cancel' value='取 消'/>";
-				boxHtml[boxHtml.length] = "      </span>";
-				boxHtml[boxHtml.length] = "    </form>";
+				boxHtml[boxHtml.length] = "<h1>重新登录</h1>";
+				boxHtml[boxHtml.length] = "<span> 用户名：<input type='text' id='loginName' placeholder='请输入您的账号'/> </span>";
+				boxHtml[boxHtml.length] = "<span> 密&nbsp; 码：<input type='password' id='password' placeholder='请输入您的密码' /> </span>";
+				boxHtml[boxHtml.length] = "<span class='bottonBox'>";
+				boxHtml[boxHtml.length] = "  <input type='button' class='btLogin' id='bt_login' value='确 定'/>&nbsp;&nbsp;";
+				boxHtml[boxHtml.length] = "  <input type='button' id='bt_cancel' value='取 消'/>";
+				boxHtml[boxHtml.length] = "</span>";
 
 				reloginBox = $.createElement("div", "popupBox");    
 				reloginBox.id = "relogin_box";    

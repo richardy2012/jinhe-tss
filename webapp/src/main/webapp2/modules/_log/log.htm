@@ -1,43 +1,39 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML xmlns:ToolBar xmlns:WorkSpace xmlns:Tree xmlns:Grid xmlns:XForm>
+<!DOCTYPE HTML>
+<HTML xmlns:WorkSpace xmlns:Tree xmlns:Grid xmlns:Form>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>日志查询</title>
 
-<link href="../../css/css.css" rel="stylesheet" type="text/css"></link>
-<link href="../../menu/menu.css" rel="stylesheet" type="text/css"></link>
-<link href="../../balloon/balloon.css" rel="stylesheet" type="text/css"></link>
-<link href="../../workspace/workspace.css" rel="stylesheet" type="text/css"></link>
-<link href="../../tree/tree.css" rel="stylesheet" type="text/css"></link>
-<link href="../../grid/grid.css" rel="stylesheet" type="text/css"></link>
-<link href="../../xform/xform.css" rel="stylesheet" type="text/css"></link>
+<link href="../../tools/tssJS/css/tss.css" rel="stylesheet">
+<link href="../../css/css.css" rel="stylesheet">
+<link href="../../tools/tssJS/css/JMenu.css" rel="stylesheet">
+<link href="../../tools/tssJS/css/JBalloon.css" rel="stylesheet">
+<link href="../../tools/tssJS/css/JWorkspace.css" rel="stylesheet">
+<link href="../../tools/tssJS/css/tssCalendar.css" rel="stylesheet">
+<link href="../../tools/tssJS/css/tssForm.css" rel="stylesheet">
+<link href="../../tools/tssJS/css/tssTree.css" rel="stylesheet">
+<link href="../../tools/tssJS/css/tssGrid.css" rel="stylesheet">
 
-<script language="javascript" src="../../core.js"></script>
-<script language="javascript" src="../../ajax.js"></script>
-<script language="javascript" src="../../framework.js"></script>
-<script language="javascript" src="../../menu/menu.js"></script>
-<script language="javascript" src="../../balloon/balloon.js"></script>
-<script language="javascript" src="../../workspace/workspace.js"></script>
-<script language="javascript" src="../../tree/tree.js"></script>
-<script language="javascript" src="../../grid/grid.js"></script>
-<script language="javascript" src="../../xform/xform.js"></script>
+<script src="../../tools/tssJS/tssJS.js"></script>
+<script src="../../tools/tssJS/tssAjax.js"></script>
+<script src="../../tools/tssJS/ui/JMenu.js"></script>
+<script src="../../tools/tssJS/ui/JBalloon.js"></script>
+<script src="../../tools/tssJS/ui/JWorkspace.js"></script>
+<script src="../../tools/tssJS/ui/tssCalendar.js"></script>
+<script src="../../tools/tssJS/ui/tssForm.js"></script>
+<script src="../../tools/tssJS/ui/tssTree.js"></script>
+<script src="../../tools/tssJS/ui/tssGrid.js"></script>
+
+<script src="../../tools/tssUtils.js"></script>
 
 <SCRIPT type="text/javascript">
 <!-- 
-
-	/* 框架包相对路径 */
-	if(IS_TEST) URL_CORE = "../../"; 
-
-    /*
-     *	后台响应数据节点名称
-     */
+    /* 后台响应数据节点名称 */
     XML_MAIN_TREE = "ObjectTree";
-    XML_LOG_LIST = "LogList";
-    XML_LOG_INFO = "LogInfo";
+    XML_LOG_LIST  = "LogList";
+    XML_LOG_INFO  = "LogInfo";
  
-    /*
-     *	XMLHTTP请求地址汇总
-     */
+    /* XMLHTTP请求地址汇总 */
 	URL_INIT       = NO_AUTH_PATH + "log/objects";
     URL_LOG_LIST   = NO_AUTH_PATH + "log/";
     URL_LOG_DETAIL = NO_AUTH_PATH + "log/item/";
@@ -103,9 +99,6 @@
             var tree = $T("tree", this.getNodeValue(XML_MAIN_TREE));
 
 			var treeElement = $$("tree");
-            treeElement.onTreeNodeActived = function(eventObj) {
-                Focus.focus($$("treeTitle").firstChild.id);
-            }
             treeElement.onTreeNodeDoubleClick = function(eventObj) {
                if( !isTreeRoot() ) {
 					showLogList();
@@ -212,44 +205,44 @@
 	<td class="left"></td>
 	<td class="center">
 	  <!-- 版面内容 开始 -->
-	  <table class="full">
+	  <table class="content">
 		<tr> 
 		  <td valign="top">
-			<table class="full">
+			<table>
 			  <tr> 
 				<td id="palette">
 				  <!-- 左栏 开始 -->
-				  <table class="full border">
-					<tr id="treeTitle" class="bar"> 
-					  <td class="opened">
+				  <table class="border">
+					<tr class="bar"> 
+					  <td>
 						<span class="icon"></span>操作对象<span class="button refresh" id="treeBtRefresh" title="刷新"></span>
-						<span id="closeLeftBarIcon"></span>
+						<span class="paletteSwitch" id="closeLeftBar"></span>
 					  </td>
 					</tr>
 					<tr>
-					  <td id="treeContainer">
-						<Tree:Box id="tree" treeType="menu" baseurl="../../tree/"><div class="loading"></div></Tree:Box>
+					  <td class="treeBox">
+						<Tree:Box id="tree"><div class="loading"></div></Tree:Box>
 					  </td>
 					</tr>
 				  </table>                        
 				  <!-- 左栏 结束 -->
 				</td>
 				<td class="groove">
-				  <table class="full">
+				  <table>
 					<tr>
 						<td id="gridTitle">
-						  <span id="openLeftBarIcon"></span>
+						  <span class="paletteSwitch" id="openLeftBar"></span>
 						  <span class="icon"></span>日志列表<span class="buttonBox" id="gridToolBar"></span>
 						</td>
 					</tr>
 					<tr id="gridTR">
-						<td><Grid:Box id="grid" baseurl="../../grid/"></Grid:Box></td>
+						<td><Grid:Box id="grid"></Grid:Box></td>
 					</tr>
 					<tr id="wsTR" height="235px">
 					  <td>
-						<WorkSpace:Box id="ws" baseurl="../../workspace/">
+						<WorkSpace:Box id="ws">
 						  <WorkSpace:Page id="page1">
-							 <XForm:Box id="page1Form" baseurl="../../xform/" editable="false"></XForm:Box>
+							 <Form:Box id="page1Form" editable="false"></Form:Box>
 						  </WorkSpace:Page>
 						</WorkSpace:Box>
 					  </td>

@@ -1,46 +1,48 @@
-IS_TEST = true;
 
-FROMEWORK_CODE = "TSS";
-SYSTEM_TITLE = "百世快运BI";  // 它山石应用支撑平台
+/*********************** 系统配置 开始 **********************************/
+ var
+	IS_TEST = true,
 
-/*  当前应用名  */
-APP_CODE    = "TSS";
-APPLICATION = APP_CODE.toLowerCase();
-CONTEXTPATH = APPLICATION + "/";
-AUTH_PATH    = "/" + CONTEXTPATH + "auth/";
-NO_AUTH_PATH = "/" + CONTEXTPATH;
+	FROMEWORK_CODE = "TSS",    /* 当前框架名 */
+	APP_CODE       = "TSS",    /* 当前应用名 */
+	SYSTEM_TITLE   = "百世快运BI"; 
 
-URL_UPLOAD_FILE  = AUTH_PATH + "file/upload";	
+/*********************** 系统配置 END **********************************/
+ var
+	APPLICATION  = APP_CODE.toLowerCase(),
+	CONTEXTPATH  = APPLICATION + "/",
 
-if( IS_TEST ) {
-	URL_CORE = "../tssJS/";
-} else {
-	URL_CORE = "/" + APPLICATION + "/tssJS/";  // 界面核心包相对路径
-} 
-ICON =  URL_CORE + "../images/";
+	NO_AUTH_PATH = "/" + CONTEXTPATH,
+	AUTH_PATH    = NO_AUTH_PATH + "auth/",
+	URL_UPLOAD_FILE  = AUTH_PATH + "file/upload",	
+
+	URL_CORE = IS_TEST ? "../../tools/tssJS/" : "/" + APPLICATION + "/tools/tssJS/",  // 界面核心包相对路径
+	ICON  =  URL_CORE + "../images/";
+
+/*********************** 和工作区Workspace相关 的 公用函数 **********************************/
 
 /*  常量定义 */
-XML_OPERATION = "Operation";
-XML_PAGE_INFO = "PageInfo";
-OPERATION_ADD  = "新建$label";
-OPERATION_VIEW = "查看\"$label\"";
-OPERATION_DEL  = "删除\"$label\"";
-OPERATION_EDIT = "编辑\"$label\"";
-OPERATION_SEARCH = "查询\"$label\"";
-OPERATION_IMPORT = "导入\"$label\"";
-OPERATION_SETTING = "设置\"$label\"";
+OPERATION_ADD        = "新建\"$label\"";
+OPERATION_VIEW       = "查看\"$label\"";
+OPERATION_DEL        = "删除\"$label\"";
+OPERATION_EDIT 		 = "编辑\"$label\"";
+OPERATION_SEARCH 	 = "查询\"$label\"";
+OPERATION_IMPORT 	 = "导入\"$label\"";
+OPERATION_SETTING    = "设置\"$label\"";
 OPERATION_PERMISSION = "设置\"$label\"权限";
 
-/* 延时 */
+/* Tab页切换延时 */
 TIMEOUT_TAB_CHANGE = 200;
 
-/* 默认唯一编号名前缀 */
+/* 默认新增节点ID */
+DEFAULT_NEW_ID = "-10";
+
+/* Grid、Tree等 */
+XML_OPERATION = "Operation";
+XML_PAGE_INFO = "PageInfo";
 CACHE_TREE_NODE = "_treeNode_";
 CACHE_MAIN_TREE = "_tree_";
 
-DEFAULT_NEW_ID = "-10";
-
-/*********************** 和工作区Workspace相关 的 公用函数 **********************************/
 var ws;
 function initWorkSpace() {
 	ws = new WorkSpace("ws");
@@ -270,7 +272,7 @@ function myAlert(info, detail) {
 		boxHtml[boxHtml.length] = "  <table class='full' style='table-layout:fixed'>";
 		boxHtml[boxHtml.length] = "    <tr>";
 		boxHtml[boxHtml.length] = "      <td valign='top' style='position:relative'>";
-		boxHtml[boxHtml.length] = "        <img src='" + ICON + "icon_alert.gif' hspace='5' align='left'>";
+		boxHtml[boxHtml.length] = "        <span id='alertIcon'>";
 		boxHtml[boxHtml.length] = "        <div id='infoBox'></div>";
 		boxHtml[boxHtml.length] = "        <textarea id='detailBox' class='t' readOnly></textarea>";
 		boxHtml[boxHtml.length] = "      </td>";
@@ -352,7 +354,7 @@ function myAlert(info, detail) {
 })();
 
 
-var Reminder = {
+var Reminder = function() {
 	this.items = {};   // 提醒项
 	this.count = 0;
 
