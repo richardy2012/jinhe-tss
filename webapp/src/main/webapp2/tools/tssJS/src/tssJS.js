@@ -540,7 +540,7 @@
         //设置显示
         show: function() {
             for (var i = 0; i < this.length; i++) {
-                this[i].style.display = 'block';
+                this[i].style.display = '';
             }
             return this;
         },

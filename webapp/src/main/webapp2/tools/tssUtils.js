@@ -65,10 +65,26 @@ function initPaletteResize() {
  
 /* 事件绑定初始化 */
 function initEvents() {
-	$.Event.addEvent($1("treeBtRefresh"), "click", onClickTreeBtRefresh);
+	/* 点击树刷新按钮 */
+	$.Event.addEvent($(".refreshTreeBT")[0], "click", function() { loadInitData(); });
 
-	if($1("openLeftBar")) {
-		onClickPaletteBt();
+	/* 点击左栏控制按钮 */
+	if($1("paletteOpen")) {
+		$("#paletteOpen").hide();
+	
+		$("#paletteClose").click(function() {
+			$("#palette").hide();
+			$("#paletteOpen").show();
+			$(".panel .header>td:nth-child(2)").hide();
+			$(".panel .footer>td:nth-child(2)").hide();
+		});	
+
+		$("#paletteOpen").click(function() { 
+			$("#palette").show();
+			$("#paletteOpen").hide();
+			$(".panel .header>td:nth-child(2)").show();
+			$(".panel .footer>td:nth-child(2)").show();
+		});
 	}
 
 	// 关闭页面自动注销
@@ -77,26 +93,6 @@ function initEvents() {
 			logout();
 		}
 	});
-}
- 
-/* 点击树刷新按钮 */
-function onClickTreeBtRefresh() {
-	loadInitData();
-}
-
-/* 点击左栏控制按钮 */
-function onClickPaletteBt() {
-	$1("openLeftBar").style.display = "none";
-	
-	$1("closeLeftBar").onclick = function() {
-		$1("palette").style.display = "none";
-		$1("openLeftBar").style.display = "";
-	}	
-
-	$1("openLeftBar").onclick = function() {
-		$1("palette").style.display = "";
-		$1("openLeftBar").style.display = "none";
-	}
 }
  
 function onTreeNodeActived(eventObj) { }
