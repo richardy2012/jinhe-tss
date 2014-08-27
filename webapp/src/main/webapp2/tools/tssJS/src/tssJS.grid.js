@@ -47,9 +47,9 @@
     },
 
     bindAdjustTHHandler = function(table) {
-        var _TH;
+
         $("thead tr td", table).each(function(i, th) {
-            
+            // 双击隐藏列
             th.ondblclick = function() {
                 $(th).css("display", "none");
                 $("tbody tr", table).each( function(j, row) {
@@ -58,37 +58,28 @@
             };
 
             th.onmousedown = function() {
-                _TH = this;
-                if(event.offsetX > _TH.offsetWidth - 5) {
-                    _TH.mouseDown = true;
-                    _TH.oldX = event.x;
-                    _TH.oldWidth = _TH.offsetWidth;
+                if(event.offsetX > this.offsetWidth - 5) {
+                    this.mouseDown = true;
+                    this.oldX = event.x;
+                    this.oldWidth = this.offsetWidth;
                 }
             };
 
             // 结束宽度调整 
             th.onmouseup = function() {
-                _TH = _TH || this;
-                _TH.mouseDown = false;
-                $(_TH).css("cursor", "default");
+                this.mouseDown = false;
+                $(this).css("cursor", "default");
             };
 
-            th.onmousemove = function() {
-                if(event.offsetX > this.offsetWidth - 5) {
+            th.onmousemove = function(ev) {
+                var colseToEdge = ev.offsetX > this.offsetWidth - 7;
+                $(this).css("cursor", colseToEdge ? "col-resize" : "default");
+                
+                if( !!this.mouseDown ) {
                     $(this).css("cursor", "col-resize");
-                } else {
-                    $(this).css("cursor", "default");
-                }
 
-                _TH = _TH || this;
-                if(!!_TH.mouseDown) {
-                    $(_TH).css("cursor", "default");
-                    if(_TH.oldWidth + event.x > _TH.oldX) {
-                        _TH.width = _TH.oldWidth + (event.x - _TH.oldX);
-
-                        $(_TH).css("width", (_TH.oldWidth + event.x - _TH.oldX) + "px");
-                        $(_TH).css("cursor", "col-resize");
-                    }
+                    var distance = (event.x - this.oldX);
+                    $(this).css("width", (this.oldWidth + distance) + "px");
                 }
             }
         });

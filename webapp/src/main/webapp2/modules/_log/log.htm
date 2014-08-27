@@ -93,9 +93,8 @@
 		$.showGrid(URL_LOG_LIST, XML_LOG_LIST, showLogInfo, "grid", page, requestParam);
     }
 	
-	function showLogList() {		
-	    var treeID = getTreeNodeId();
-		var params = {"operateTable": treeID};
+	function showLogList() {
+		var params = {"operateTable": getTreeNodeId()};
 		loadGridData(params, "1"); 
     }
 
