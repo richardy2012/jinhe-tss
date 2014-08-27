@@ -17,7 +17,7 @@ Grid\:Box .sorting { background: #F0EFE5; }
 
 /* grid列表标题栏 */
 #gridTitle { color:#0a1755; font-size:12px; font-weight:bold; height:21px; padding-left:8px; background-color:#BEC6EE; border-bottom:1px solid #96969E; position:relative;}
-#gridTitle .icon { display:inline-block; width:8px; height:8px; margin-right: 5px;}
+#gridTitle .icon { display:inline-block; width:8px; height:8px; margin-right:5px; background-image: url(../images/minus.gif);}
 #gridTitle .buttonBox { position: absolute; top: 0px; right:0px; }
 #gridTitle .button  { display:inline-block; width:16px; height:15px; background-repeat:no-repeat; background-position:center; cursor:hand; margin:2px; }
 #gridTitle .refresh { background-image: url(../images/icon_refresh.gif); }

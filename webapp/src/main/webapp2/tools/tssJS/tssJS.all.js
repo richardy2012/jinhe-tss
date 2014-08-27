@@ -3779,7 +3779,7 @@
 
     var Grid = function(element, data) {
         this.id = element.id;
-        this.gridBox = this.element = element;
+        this.gridBox = this.element = this.el = element;
         this.gridBox.innerHTML = "";
 
         // Grid控件上禁用默认右键
@@ -3790,13 +3790,12 @@
         this.gridBox.style.width = element.getAttribute("width")  || "100%";
 
         var pointHeight = element.getAttribute("height");
-        if( pointHeight ) {
-            this.gridBox.style.height = this.windowHeight = pointHeight;
-        } else {
-            this.gridBox.style.height = element.clientHeight; // hack 固定住grid高度，以免在IE部分版本及FF里被撑开
-            this.windowHeight = Math.max(element.offsetHeight, 500);
+        if( pointHeight == null ) {
+            pointHeight = element.clientHeight; // hack 固定住grid高度，以免在IE部分版本及FF里被撑开
         }
-
+        $(this.gridBox).css("height", pointHeight + "px");
+        
+        this.windowHeight = pointHeight;
         this.pageSize = Math.floor(this.windowHeight / cellHeight);
         
         this.load(data);    
@@ -3856,11 +3855,13 @@
             for(var j=0; j < cells.length; j++) {
                 var cell = cells[j];
 
-                if(this.template.hasHeader && j == 0) {
+                var hasHeader = this.template.hasHeader;
+                if(hasHeader && j == 0) {
                     cell.setAttribute("name", "cellheader");
                     cell.innerHTML = '<input name="' + this.id + '_cb" type="checkbox" >';
                     continue;
-                } else if(this.template.needSequence && j <= 1) {
+                } 
+                else if(this.template.needSequence && ((!hasHeader && j == 0) || (hasHeader && j == 1)) ) {
                     cell.setAttribute("name", "sequence");
                     cell.innerText = curRow.getAttribute("_index");
                     continue;
@@ -4036,7 +4037,7 @@
             this.gridBox.onscroll = function() {
                  // 判断是否到达底部 
                  if(this.scrollHeight - this.scrollTop <= this.clientHeight) {
-                    var eventFirer = new $.EventFirer(oThis, "onScrollToBottom");
+                    var eventFirer = new $.EventFirer(oThis.el, "onScrollToBottom");
                     eventFirer.fire();
                  }
             };
@@ -4103,7 +4104,7 @@
                         };
 
                         gridBox.selectRowIndex = rowIndex;
-                        var eventFirer = new $.EventFirer(oThis, firerName);
+                        var eventFirer = new $.EventFirer(gridBox, firerName);
                         eventFirer.fire(oEvent);  // 触发右键事件
                     }   
                 }       
@@ -4214,39 +4215,39 @@
     $.showGrid = function(serviceUrl, dataNodeName, editRowFuction, gridName, page, requestParam, pageBar) {
         pageBar  = pageBar  || $1("gridToolBar");
         gridName = gridName || "grid";
-        page     =  page || "1";
-        var XML_PAGE_INFO = "PageInfo";
+        page     = page || "1";
 
-        var request = new $.HttpRequest(p);
+        var request = new $.HttpRequest();
         request.url = serviceUrl + "/" + page;
         request.params = requestParam || [];
 
         request.onresult = function() {
-            var grid = $1(gridName);
-            if(grid.getAttribute("height") == null) {
-                grid.setAttribute("height", grid.clientHeight); // hack for IE11
+            var gridBox = $1(gridName);
+            if(gridBox.getAttribute("height") == null) {
+                gridBox.setAttribute("height", gridBox.clientHeight); // hack for IE11
             }
             
-            $.G(gridName, this.getNodeValue(dataNodeName)); 
+            var grid = $.G(gridName, this.getNodeValue(dataNodeName)); 
      
             var gotoPage = function(page) {
                 request.url = serviceUrl + "/" + page;
                 request.onresult = function() {
                     $.G(gridName, this.getNodeValue(dataNodeName)); 
+                    $.initGridToolBar(pageBar, this.getNodeValue("PageInfo"), gotoPage);
                 }               
                 request.send();
             }
 
-            var pageInfoNode = this.getNodeValue(XML_PAGE_INFO);            
-            initGridToolBar(pageBar, pageInfoNode, gotoPage);
+            var pageInfoNode = this.getNodeValue("PageInfo");            
+            $.initGridToolBar(pageBar, pageInfoNode, gotoPage);
             
-            grid.onDblClickRow = function(eventObj) {
+            gridBox.onDblClickRow = function(eventObj) {
                 editRowFuction();
             }
-            grid.onRightClickRow = function() {
-                this.contextmenu.show(event.clientX, event.clientY);
+            gridBox.onRightClickRow = function() {
+                gridBox.contextmenu.show(event.clientX, event.clientY);
             }   
-            grid.onScrollToBottom = function () {           
+            gridBox.onScrollToBottom = function () {           
                 var currentPage = pageBar.getCurrentPage();
                 if(pageBar.getTotalPages() <= currentPage) return;
 
@@ -4255,7 +4256,7 @@
                 request.onresult = function() {
                     $.G(gridName).load(this.getNodeValue(dataNodeName), true);
 
-                    var pageInfoNode = this.getNodeValue(XML_PAGE_INFO);
+                    var pageInfoNode = this.getNodeValue("PageInfo");
                     $.initGridToolBar(pageBar, pageInfoNode, gotoPage);
                 }               
                 request.send();

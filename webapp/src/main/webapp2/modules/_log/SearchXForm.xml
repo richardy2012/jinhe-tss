@@ -12,7 +12,7 @@
 			</declare>
 			<layout>
 				<TR>
-					<TD width="50"><label binding="operatorName"/></TD>
+					<TD width="88"><label binding="operatorName"/></TD>
 					<TD><input binding="operatorName"/></TD>
 				</TR>
 				<TR>

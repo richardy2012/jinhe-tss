@@ -33,13 +33,13 @@
 				var gridPage = this.getNodeValue("PageInfo");
 				createGridToolBar(gridPage);			
 
-				grid.onScrollToBottom = function () {
+				grid.el.onScrollToBottom = function () {
 					grid.load(gridData, true);
 				}
-				grid.onRightClickRow = function () {
+				grid.el.onRightClickRow = function () {
 					grid.element.contextmenu.show(event.clientX, event.clientY);						
 				}
-				grid.onDblClickRow = function () {
+				grid.el.onDblClickRow = function () {
 					alert($.G("grid").getColumnValue("id"));				
 				}
 			},

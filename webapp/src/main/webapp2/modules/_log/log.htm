@@ -36,12 +36,9 @@
 		initEvents();
 
 		loadInitData();
-
-		var p = new HttpRequestParams();
-		loadGridData(p, "1"); 
+		loadGridData({}, "1"); 
     }
  
-    /* 菜单初始化 */
     function initMenus() {
 		/* 树菜单初始化  */
 		var item1 = {
@@ -57,87 +54,74 @@
 			visible:function() {return !isTreeRoot();}
 		}
 
-		var menu = new Menu();
+		var menu = new $.Menu();
 		menu.addItem(item1);
 		menu.addItem(item2);
-		$$("tree").contextmenu = menu;
+		$1("tree").contextmenu = menu;
 
 		/* Grid菜单初始化  */
-		var item1 = {
+		var item3 = {
 			label:"查看",
-			callback:function() {
-					showLogInfo(false);
+			callback: function() {
+				showLogInfo(false);
 			},
-			icon:"images/view.gif",
-			enable:function() {return true;},
-			visible:function() {return true;}
+			icon:"images/view.gif"
 		}
 
-		var menu = new Menu();
-		menu.addItem(item1);
-		$$("grid").contextmenu = menu;
+		var menu2 = new $.Menu();
+		menu2.addItem(item3);
+		$1("grid").contextmenu = menu2;
     }
 
 	function loadInitData() {
-        var onresult = function() {
-            var tree = $T("tree", this.getNodeValue(XML_MAIN_TREE));
-
-			var treeElement = $$("tree");
-            treeElement.onTreeNodeDoubleClick = function(eventObj) {
-               if( !isTreeRoot() ) {
-					showLogList();
-				}
-            }
-            treeElement.onTreeNodeRightClick = function(eventObj) {
-				onTreeNodeRightClick(eventObj);
-            }
-        }
-
-        Ajax({url : URL_INIT, onresult : onresult});
+        $.ajax({
+        	url : URL_INIT, 
+        	onresult : function() {
+	            var tree = $.T("tree", this.getNodeValue(XML_MAIN_TREE));
+	            tree.onTreeNodeDoubleClick = function(eventObj) {
+	               if( !isTreeRoot() ) { showLogList(); }
+	            }
+	            tree.onTreeNodeRightClick = function(eventObj) {
+					onTreeNodeRightClick(eventObj);
+	            }
+	        }
+        });
     }
 
     /* grid加载数据  */
     function loadGridData(requestParam, page) {
-		showGrid(URL_LOG_LIST, XML_LOG_LIST, showLogInfo, "grid", page, requestParam);
+		$.showGrid(URL_LOG_LIST, XML_LOG_LIST, showLogInfo, "grid", page, requestParam);
     }
 	
 	function showLogList() {		
 	    var treeID = getTreeNodeId();
-		var p = new HttpRequestParams();
-		p.setContent("operateTable", treeID);
-		loadGridData(p, "1"); 
+		var params = {"operateTable": treeID};
+		loadGridData(params, "1"); 
     }
 
     function searchLog() {
-        var treeNode = $T("tree").getActiveTreeNode();
+        var treeNode = $.T("tree").getActiveTreeNode();
         if( treeNode ) {
-            var treeID = treeNode.getId();
-            var treeName = treeNode.getName();
-            var condition = window.showModalDialog("searchlog.htm", {applicationId:treeID, title:"搜索\"" + treeName + "\"下的日志"}, "dialogWidth:250px;dialogHeight:250px;");
+            var treeID = treeNode.id;
+            var treeName = treeNode.name;
+            var condition = window.showModalDialog("searchlog.htm", {operateTable:treeID, title:"搜索\"" + treeName + "\"下的日志"}, "dialogWidth:330px;dialogHeight:370px;");
+            
             if( condition ) { 
-                Cache.Variables.add("condition", condition);
-				
-                var p = new HttpRequestParams();
-				var xmlReader = new XmlReader(condition.dataXml);
-				var dataNode  = new XmlNode(xmlReader.documentElement);
-				p.setXFormContent(dataNode);
-				loadGridData(p, "1"); 
+                $.cache.Variables["condition"] = condition;
+				loadGridData(condition, "1"); 
             }
         }
     }
 
-    /*
-     *	显示日志详细信息
-     *	参数：	boolean:editable            是否可编辑(默认true)
-     */
+    /* 显示日志详细信息 */
     function showLogInfo() {		
-		var rowID = $G("grid").getRowAttributeValue("id");  
+		var rowID = $.G("grid").getColumnValue("id");  
 		var rowName = "日志" + rowID;
 		
         var callback = {};
 		callback.onTabClose = function(eventObj){
 			if( ws.noTabOpend() ) {
-				//$$("wsTR").style.display = "none";
+				// $("wsTR").css("display", "none");
 			}            
         };
         callback.onTabChange = function() {
@@ -147,7 +131,7 @@
         };
 
         var inf = {};
-		inf.label = OPERATION_VIEW.replace(/\$label/i, rowName);
+		inf.label = rowName;
         inf.SID = "viewRow_" + rowID;
         inf.defaultPage = "page1";
         inf.phases = null;
@@ -155,21 +139,16 @@
         var tab = ws.open(inf);       
     }
 	
-    /* 日志详细信息加载数据 */
     function loadLogDetailData(logId) {
-		Ajax({
+		$.ajax({
 			url : URL_LOG_DETAIL + logId,
 			onresult : function() { 
-				var logInfoNode = this.getNodeValue(XML_LOG_INFO);
-				var page1FormObj = $X("page1Form", logInfoNode);
+				$.F("page1Form", this.getNodeValue(XML_LOG_INFO));
 			}
 		});
     }
 	
-	
     window.onload = init;
-
-	logoutOnClose(); // 关闭页面自动注销
 
 //-->
 </SCRIPT>
@@ -180,72 +159,59 @@
 
 <!-- 版面 开始 -->
 <table class="panel" >
-  <tr class="header"> 
-	<td class="left"></td>
-	<td class="center"></td>
-	<td class="right"></td>
-  </tr>
+  <tr class="header"> <td/><td/><td/> </tr>
   <tr class="body"> 
-	<td class="left"></td>
-	<td class="center">
-	  <!-- 版面内容 开始 -->
-	  <table class="content">
-		<tr> 
-		  <td valign="top">
-			<table>
-			  <tr> 
-				<td id="palette">
-				  <!-- 左栏 开始 -->
-				  <table class="border">
-					<tr class="bar"> 
-					  <td>
-						<span class="icon"></span>操作对象<span class="button refresh" id="treeBtRefresh" title="刷新"></span>
-						<span class="paletteSwitch" id="closeLeftBar"></span>
-					  </td>
-					</tr>
-					<tr>
-					  <td class="treeBox">
-						<Tree:Box id="tree"><div class="loading"></div></Tree:Box>
-					  </td>
-					</tr>
-				  </table>                        
-				  <!-- 左栏 结束 -->
-				</td>
-				<td class="groove">
-				  <table>
-					<tr>
-						<td id="gridTitle">
-						  <span class="paletteSwitch" id="openLeftBar"></span>
-						  <span class="icon"></span>日志列表<span class="buttonBox" id="gridToolBar"></span>
-						</td>
-					</tr>
-					<tr id="gridTR">
-						<td><Grid:Box id="grid"></Grid:Box></td>
-					</tr>
-					<tr id="wsTR" height="235px">
-					  <td>
-						<WorkSpace:Box id="ws">
-						  <WorkSpace:Page id="page1">
-							 <Form:Box id="page1Form" editable="false"></Form:Box>
-						  </WorkSpace:Page>
-						</WorkSpace:Box>
-					  </td>
-					</tr>
-				  </table>
-				 </td>
-			  </tr>
-			</table></td>
-		</tr>
-	  </table>            
-	  <!-- 版面内容 结束 -->
+	<td/>
+	<td valign="top">
+	    <!-- 版面内容 开始 -->
+		<table class="content">
+		  <tr> 
+			<td id="palette">
+			  <!-- 左栏 开始 -->
+			  <table class="border">
+				<tr class="bar"> 
+				  <td>
+					<span class="icon"></span>操作对象<span class="button refresh" id="treeBtRefresh" title="刷新"></span>
+					<span class="paletteSwitch" id="closeLeftBar"></span>
+				  </td>
+				</tr>
+				<tr>
+				  <td class="treeBox">
+					<Tree:Box id="tree"><div class="loading"></div></Tree:Box>
+				  </td>
+				</tr>
+			  </table>                        
+			  <!-- 左栏 结束 -->
+			</td>
+			<td class="groove">
+			  <table>
+				<tr>
+					<td id="gridTitle">
+					  <span class="paletteSwitch" id="openLeftBar"></span>
+					  <span class="icon"></span>日志列表<span class="buttonBox" id="gridToolBar"></span>
+					</td>
+				</tr>
+				<tr id="gridTR">
+					<td><Grid:Box id="grid"></Grid:Box></td>
+				</tr>
+				<tr id="wsTR" height="235px">
+				  <td>
+					<WorkSpace:Box id="ws">
+					  <WorkSpace:Page id="page1">
+						 <Form:Box id="page1Form" editable="false"></Form:Box>
+					  </WorkSpace:Page>
+					</WorkSpace:Box>
+				  </td>
+				</tr>
+			  </table>
+			</td>
+		  </tr>
+		</table>      
+	    <!-- 版面内容 结束 -->
 	</td>
-	<td class="right"></td>
+	<td/>
   </tr>
-  <tr class="footer"> 
-	<td class="left"></td>
-	<td class="center"></td>
-	<td class="right"></td>
-  </tr>
+  <tr class="footer"> <td/><td/><td/> </tr>
 </table>
 <!-- 版面 结束 -->
 

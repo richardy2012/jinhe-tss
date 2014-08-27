@@ -22,14 +22,14 @@
 /*********************** 和工作区Workspace相关 的 公用函数 **********************************/
 
 /*  常量定义 */
-OPERATION_ADD        = "新建\"$label\"";
-OPERATION_VIEW       = "查看\"$label\"";
-OPERATION_DEL        = "删除\"$label\"";
-OPERATION_EDIT 		 = "编辑\"$label\"";
-OPERATION_SEARCH 	 = "查询\"$label\"";
-OPERATION_IMPORT 	 = "导入\"$label\"";
-OPERATION_SETTING    = "设置\"$label\"";
-OPERATION_PERMISSION = "设置\"$label\"权限";
+OPERATION_ADD        = "新建[$label]";
+OPERATION_VIEW       = "查看[$label]";
+OPERATION_DEL        = "删除[$label]";
+OPERATION_EDIT 		 = "编辑[$label]";
+OPERATION_SEARCH 	 = "查询[$label]";
+OPERATION_IMPORT 	 = "导入[$label]";
+OPERATION_SETTING    = "设置[$label]";
+OPERATION_PERMISSION = "设置[$label]权限";
 
 /* Tab页切换延时 */
 TIMEOUT_TAB_CHANGE = 200;
@@ -45,7 +45,7 @@ CACHE_MAIN_TREE = "_tree_";
 
 var ws;
 function initWorkSpace() {
-	ws = new WorkSpace("ws");
+	ws = new $.WorkSpace("ws");
 	 
 	var tr = ws.element.parentNode.parentNode;
 	$1("ws").onTabCloseAll = function(event) { /* 隐藏tab页工作区 */
@@ -65,9 +65,9 @@ function initPaletteResize() {
  
 /* 事件绑定初始化 */
 function initEvents() {
-	Event.attachEvent($1("treeBtRefresh"), "click", onClickTreeBtRefresh);
+	$.Event.addEvent($1("treeBtRefresh"), "click", onClickTreeBtRefresh);
 
-	if($1("openLeftBarIcon")) {
+	if($1("openLeftBar")) {
 		onClickPaletteBt();
 	}
 
@@ -86,16 +86,16 @@ function onClickTreeBtRefresh() {
 
 /* 点击左栏控制按钮 */
 function onClickPaletteBt() {
-	$1("openLeftBarIcon").style.display = "none";
+	$1("openLeftBar").style.display = "none";
 	
-	$1("closeLeftBarIcon").onclick = function() {
+	$1("closeLeftBar").onclick = function() {
 		$1("palette").style.display = "none";
-		$1("openLeftBarIcon").style.display = "";
+		$1("openLeftBar").style.display = "";
 	}	
 
-	$1("openLeftBarIcon").onclick = function() {
+	$1("openLeftBar").onclick = function() {
 		$1("palette").style.display = "";
-		$1("openLeftBarIcon").style.display = "none";
+		$1("openLeftBar").style.display = "none";
 	}
 }
  
@@ -269,10 +269,10 @@ function myAlert(info, detail) {
 	var messageBox = $1("X-messageBox");
 	if(messageBox == null) {
 		var boxHtml = [];
-		boxHtml[boxHtml.length] = "  <table class='full' style='table-layout:fixed'>";
+		boxHtml[boxHtml.length] = "  <table style='table-layout:fixed'>";
 		boxHtml[boxHtml.length] = "    <tr>";
 		boxHtml[boxHtml.length] = "      <td valign='top' style='position:relative'>";
-		boxHtml[boxHtml.length] = "        <span id='alertIcon'>";
+		boxHtml[boxHtml.length] = "        <div id='alertIcon'></div>";
 		boxHtml[boxHtml.length] = "        <div id='infoBox'></div>";
 		boxHtml[boxHtml.length] = "        <textarea id='detailBox' class='t' readOnly></textarea>";
 		boxHtml[boxHtml.length] = "      </td>";
@@ -308,7 +308,7 @@ function myAlert(info, detail) {
 
 	bt_ok.onclick = closeMessage;
 
-	$.Event.attachEvent(document, "keydown", function(eventObj) {
+	$.Event.addEvent(document, "keydown", function(eventObj) {
         if(27 == eventObj.keyCode) { // ESC 退出
            closeMessage();
         }
@@ -327,10 +327,10 @@ function myAlert(info, detail) {
 	/* 禁止鼠标右键 */
 	document.oncontextmenu = function(eventObj) {
 		eventObj = eventObj || window.event;
-		var srcElement = Event.getSrcElement(eventObj);
+		var srcElement = $.Event.getSrcElement(eventObj);
 		var tagName = srcElement.tagName.toLowerCase();
 		if("input" != tagName && "textarea" != tagName) {
-			preventDefault(event);            
+			$.Event.cancel(event);            
 		}
 	}
 
@@ -399,7 +399,7 @@ function detachReminder(id) {
 /*********************** Tree 的 公用函数 **********************************/
 
 function getActiveTreeNode(treeName) {
-	return $T(treeName || "tree").getActiveTreeNode();
+	return $.T(treeName || "tree").getActiveTreeNode();
 }
 
 function getTreeAttribute(name, treeName) {
@@ -433,7 +433,7 @@ function isTreeRoot() {
 			string:attrValue        属性值
  */
 function modifyTreeNode(id, attrName, attrValue, treeName) {
-	var tree = $T(treeName || "tree");
+	var tree = $.T(treeName || "tree");
 	var treeNode = tree.getTreeNodeById(id);
 	if( treeNode ) {
 		treeNode.attrs[attrName] = attrValue;
@@ -445,7 +445,7 @@ function modifyTreeNode(id, attrName, attrValue, treeName) {
 
 /* 添加子节点 */
 function appendTreeNode(id, xmlNode, treeName) {
-	var tree = $T(treeName || "tree");
+	var tree = $.T(treeName || "tree");
 	var treeNode = tree.getTreeNodeById(id);
 	if( treeNode && xmlNode ) {
 		tree.addTreeNode(xmlNode);
@@ -492,10 +492,12 @@ function removeTreeNode(tree, excludeIds) {
 function addTreeNode(fromTree, toTree, checkFunction) {	
 	var reload = false;
 	var selectedNodes = fromTree.getCheckedNodes(false);	
+
+	var _break = false;
 	selectedNodes.each(function(i, curNode) {
 		var curNode = selectedNodes[i];
-		if( !curNode.isEnable() ) {
-			continue;  // 过滤不可选择的节点
+		if( _break || !curNode.isEnable() ) {
+			return;  // 过滤不可选择的节点
 		}
 
 		if( checkFunction ) {
@@ -506,9 +508,9 @@ function addTreeNode(fromTree, toTree, checkFunction) {
 					balloon.dockTo(toTree.el); // 显示错误信息
 				}
 				if( result.stop ) {
-					return;
+					_break = true;
 				}
-				continue;
+				return;
 			}
 		}
 
@@ -527,7 +529,7 @@ function addTreeNode(fromTree, toTree, checkFunction) {
 function delTreeNode(url, treeName) {
 	if( !confirm("您确定要删除该节点吗？") )  return;
 
-	var tree = $T(treeName || "tree");
+	var tree = $.T(treeName || "tree");
 	var treeNode = tree.getActiveTreeNode();
 	$.ajax({
 		url : (url || URL_DELETE_NODE) + treeNode.id,
@@ -547,7 +549,7 @@ function delTreeNode(url, treeName) {
 function stopOrStartTreeNode(state, url, treeName) {	
 	if( state == "1" && !confirm("您确定要停用该节点吗？") )  return;
 		
-	var tree = $T(treeName || "tree");
+	var tree = $.T(treeName || "tree");
 	var treeNode = tree.getActiveTreeNode();
 	Ajax({
 		url : (url || URL_STOP_NODE) + treeNode.id + "/" + state,

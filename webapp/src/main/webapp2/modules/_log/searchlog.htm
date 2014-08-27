@@ -36,15 +36,14 @@
     	});
     }
  
-	// 搜索信息
     function getCondition(){
         var condition = {};       
-        var formXML = $.cache.XmlDatas.get(XML_MAIN_FORM);
+        var formXML = $.cache.XmlDatas[XML_MAIN_FORM];
         if( formXML ) {
-            var dataNode = formXML.querySelector("data");
-            if(dataNode){
-                condition.dataXml = $.XML.toXml(dataNode);
-            }
+            var nodes = formXML.querySelectorAll("data row *");
+            $.each(nodes, function(i, node){
+                condition[node.nodeName] = $.XML.getText(node);
+            });
         }
         window.returnValue = condition;
         window.close();
