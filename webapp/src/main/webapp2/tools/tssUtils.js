@@ -664,11 +664,21 @@ Element.show = function(element) {
 	element.style.top  = "70px";    
 	element.style.zIndex = "999"; 
 
-	Element.setOpacity(element, 95);
-},
+	$.setOpacity(element, 95);
+}, 
 
-Element.attachColResize = function(element) {
-	var handle = element; // 拖动条(使用自己)
+Element.attachResize = function(element, type) {
+	var handle = document.createElement("DIV"); // 拖动条
+	var cssText = "position:absolute;overflow:hidden;z-index:3;";
+	if (type == "col") {
+		handle.style.cssText = cssText + "cursor:col-resize;top:0px;right:0px;width:3px;height:100%;";
+	} else if(type == "row") {
+		handle.style.cssText = cssText + "cursor:row-resize;left:0px;bottom:0px;width:100%;height:3px;";
+	} else {
+		handle.style.cssText = cssText + "cursor:nw-resize;right:0px;bottom:0px;width:8px;height:8px;background:#99CC00";
+	}
+	
+	element.appendChild(handle);
 
 	var mouseStart  = {x:0, y:0};  // 鼠标起始位置
 	var handleStart = {x:0, y:0};  // 拖动条起始位置
@@ -676,40 +686,45 @@ Element.attachColResize = function(element) {
 	handle.onmousedown = function(ev) {
 		var oEvent = ev || event;
 		mouseStart.x  = oEvent.clientX;
+		mouseStart.y  = oEvent.clientY;
 		handleStart.x = handle.offsetLeft;
+		handleStart.y = handle.offsetTop;
 
-		if (handle.setCapture) {
-			handle.onmousemove = doDrag;
-			handle.onmouseup = stopDrag;
-			handle.setCapture();
-		} else {
-			document.addEventListener("mousemove", doDrag, true);
-			document.addEventListener("mouseup", stopDrag, true);
-		}
+		document.addEventListener("mousemove", doDrag, true);
+		document.addEventListener("mouseup", stopDrag, true);
 	};
 
 	function doDrag(ev) {
 		var oEvent = ev || event;
 
-		var _width = oEvent.clientX - mouseStart.x + handle.offsetWidth;
-		if (_width > document.documentElement.clientWidth - handle.offsetLeft) {
-			_width = document.documentElement.clientWidth - handle.offsetLeft - 2; // 防止拖出窗体外
-		}
-		if (_width < 0) {
-			_width = handle.width;
+		// 水平移动距离
+		if (type == "col" || type == null) {
+			var _width = oEvent.clientX - mouseStart.x + handleStart.x + handle.offsetWidth;
+			if (_width < handle.offsetWidth) {
+				_width = handle.offsetWidth;
+			} 
+			else if (_width > document.documentElement.clientWidth - element.offsetLeft) {
+				_width = document.documentElement.clientWidth - element.offsetLeft - 2; // 防止拖出窗体外
+			}
+			element.style.width = _width + "px";
 		}
 
-		handle.style.width = Math.max(_width, 10) + "px";
+		// 垂直移动距离
+		if (type == "row" || type == null) {
+			var _height = oEvent.clientY - mouseStart.y + handleStart.y + handle.offsetHeight;
+			if (_height < handle.offsetHeight) {
+				_height = handle.offsetHeight;
+			} 
+			else if (_height > document.documentElement.clientHeight - element.offsetTop) {
+				_height = document.documentElement.clientHeight - element.offsetTop - 2; // 防止拖出窗体外
+			}
+			element.style.height = _height + "px";
+		}
 	};
 
 	function stopDrag() {
-		if (handle.releaseCapture) {
-			handle.onmousemove = handle.onmouseup = null;
-			handle.releaseCapture();
-		} else {
-			document.removeEventListener("mousemove", doDrag, true);
-			document.removeEventListener("mouseup", stopDrag, true);
-		}
+		document.removeEventListener("mousemove", doDrag, true);
+		document.removeEventListener("mouseup", stopDrag, true);
 	};
 }
 
