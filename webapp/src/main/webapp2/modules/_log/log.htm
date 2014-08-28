@@ -78,11 +78,11 @@
         	url : URL_INIT, 
         	onresult : function() {
 	            var tree = $.T("tree", this.getNodeValue(XML_MAIN_TREE));
-	            tree.onTreeNodeDoubleClick = function(eventObj) {
+	            tree.onTreeNodeDoubleClick = function(ev) {
 	               if( !isTreeRoot() ) { showLogList(); }
 	            }
-	            tree.onTreeNodeRightClick = function(eventObj) {
-					onTreeNodeRightClick(eventObj);
+	            tree.onTreeNodeRightClick = function(ev) {
+					onTreeNodeRightClick(ev);
 	            }
 	        }
         });

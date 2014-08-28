@@ -182,9 +182,6 @@
 
             // 获取对象的类型
             type: function(obj) {
-                // 通过核心API创建一个对象，不需要new关键字
-                // 普通函数不行
-                // 调用Object.prototype.toString方法，生成 "[object Xxx]"格式的字符串
                 // class2type[ "[object " + name + "]" ] = name.toLowerCase();
                 return obj == null ? String(obj) : class2type[toString.call(obj)] || "object";
             },
@@ -212,7 +209,7 @@
                     return null;
                 }
 
-                // Make sure leading/trailing whitespace is removed (IE can't handle it)
+                // Make sure leading/trailing whitespace is removed 
                 data = tssJS.trim(data);
 
                 // 原生JSON API。反序列化是JSON.stringify(object)
@@ -322,8 +319,7 @@
                 var ret = [],
                 retVal;
 
-                for (var i = 0,
-                length = elems.length; i < length; i++) {
+                for (var i = 0, length = elems.length; i < length; i++) {
                     retVal = !!callback(elems[i], i);
                     if (retVal) {
                         ret.push(elems[i]);
