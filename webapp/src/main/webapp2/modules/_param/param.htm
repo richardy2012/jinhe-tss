@@ -208,13 +208,11 @@
 				inf.label = OPERATION_EDIT.replace(/\$label/i, treeName);
             } else {
                 inf.label = OPERATION_VIEW.replace(/\$label/i, treeName);
-                
             }
 			inf.SID = treeID;
             inf.defaultPage = "page1";
-            inf.phases = null;
             inf.callback = callback;
-            var tab = ws.open(inf);
+            ws.open(inf);
         }
     }
 

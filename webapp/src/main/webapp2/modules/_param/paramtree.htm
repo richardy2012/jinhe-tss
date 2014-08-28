@@ -14,9 +14,7 @@
 <script language="javascript" src="../../tree/tree.js"></script>
 
 <SCRIPT LANGUAGE="JavaScript">
-<!--
-
-	URL_CORE = "../../";
+<!-- 
 	
 	URL_INIT = NO_AUTH_PATH + "param/list/";
 	
@@ -59,20 +57,12 @@
 </head>
 
 <body>
-<div class="mainBox" id="mainBox">
-  <table class="full"  border="0" cellspacing="0" cellpadding="0">
-    <tr valign="top">
-      <td>
-		<Tree:Box id="tree" treeType="menu" baseurl="../../tree/"><div class="loading"></div></Tree:Box>
-      </td>
-    </tr>
-    <tr>
-      <td class="t" height="30" align="right">
-		<input type="button" value="确定" class="btStrong" onclick="getTargetParent()"/>
-        <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> 
-      </td>
-    </tr>
-  </table>
-</div>
+	<div class="dialog">
+	  	<Tree:Box id="tree"></Tree:Box>
+	    <div class="bts">
+	       <input type="button" value="确定" class="btStrong" onclick="getTargetParent()"/>
+       	   <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> 
+	    </div>
+	</div>
 </body>
 </html>

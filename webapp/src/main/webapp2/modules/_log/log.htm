@@ -100,16 +100,9 @@
 
     function searchLog() {
         var treeNode = $.T("tree").getActiveTreeNode();
-        if( treeNode ) {
-            var treeID = treeNode.id;
-            var treeName = treeNode.name;
-            var condition = window.showModalDialog("searchlog.htm", {operateTable:treeID, title:"搜索\"" + treeName + "\"下的日志"}, "dialogWidth:330px;dialogHeight:370px;");
-            
-            if( condition ) { 
-                $.cache.Variables["condition"] = condition;
-				loadGridData(condition, "1"); 
-            }
-        }
+        popupForm("SearchXForm.xml", "SearchLog", {operateTable: treeNode.id}, function(condition) {
+        	loadGridData(condition, "1"); 
+        });
     }
 
     /* 显示日志详细信息 */

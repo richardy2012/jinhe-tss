@@ -20,27 +20,27 @@
 	<layout>
 		<TR>
 			<TD width="80"><label binding="name"/></TD>
-			<TD><input binding="name" type="text"/></TD>
+			<TD><input binding="name"/></TD>
 			<TD width="80"><label binding="code"/></TD>
-			<TD><input binding="code" type="text"/></TD>
+			<TD><input binding="code"/></TD>
 		</TR>
 		<TR>
-			<TD width="80"><label binding="disabled"/></TD>
-			<TD><input binding="disabled" type="text"/></TD>
-			<TD width="80"><label binding="accessMethod"/></TD>
-			<TD><input binding="accessMethod" type="text"/></TD>
+			<TD><label binding="disabled"/></TD>
+			<TD><input binding="disabled"/></TD>
+			<TD><label binding="accessMethod"/></TD>
+			<TD><input binding="accessMethod"/></TD>
 		</TR>
 		<TR>
-			<TD width="80"><label binding="poolSize"/></TD>
-			<TD><input binding="poolSize" type="text" style="width:100;"/></TD>
-			<TD width="80"><label binding="initNum"/></TD>
-			<TD><input binding="initNum" type="text" style="width:100;"/></TD>
+			<TD><label binding="poolSize"/></TD>
+			<TD><input binding="poolSize" style="width:100px;"/></TD>
+			<TD><label binding="initNum"/></TD>
+			<TD><input binding="initNum" style="width:100px;"/></TD>
 		</TR>
 		<TR>
-			<TD width="80"><label binding="cyclelife"/></TD>
-			<TD><input binding="cyclelife" type="text" style="width:100;"/>ms</TD>
-			<TD width="80"><label binding="interruptTime"/></TD>
-			<TD><input binding="interruptTime" type="text" style="width:100;"/>ms</TD>
+			<TD><label binding="cyclelife"/></TD>
+			<TD><input binding="cyclelife" style="width:100px;"/>ms</TD>
+			<TD><label binding="interruptTime"/></TD>
+			<TD><input binding="interruptTime" style="width:100px;"/>ms</TD>
 		</TR>
 		<TR>
             <TD colspan="4"> *注: 0或空表示不限制</TD>
@@ -49,24 +49,24 @@
             <TD colspan="4"><hr class="b" noshade="true" size="1"/></TD>
         </TR>
 		<TR>
-			<TD width="80"><label binding="poolClass"/></TD>
-			<TD colspan="3"><input binding="poolClass" type="text" style="width:88%;"/></TD>
+			<TD><label binding="poolClass"/></TD>
+			<TD colspan="3"><input binding="poolClass" style="width:88%;"/></TD>
 		</TR>
 		<TR>
-			<TD width="80"><label binding="poolContainerClass"/></TD>
-			<TD colspan="3"><input binding="poolContainerClass" type="text" style="width:88%;"/></TD>
+			<TD><label binding="poolContainerClass"/></TD>
+			<TD colspan="3"><input binding="poolContainerClass" style="width:88%;"/></TD>
 		</TR>
 		<TR>
-			<TD width="80"><label binding="customizerClass"/></TD>
-			<TD colspan="3"><input binding="customizerClass" type="text" style="width:88%;"/></TD>
+			<TD><label binding="customizerClass"/></TD>
+			<TD colspan="3"><input binding="customizerClass" style="width:88%;"/></TD>
 		</TR>
 		<TR>
-			<TD width="80"><label binding="paramFile"/></TD>
-			<TD colspan="3"><input binding="paramFile" type="text" style="width:88%;"/></TD>
+			<TD><label binding="paramFile"/></TD>
+			<TD colspan="3"><input binding="paramFile" style="width:88%;"/></TD>
 		</TR>
 		<TR>
-			<TD width="80" valign="top"><label binding="remark"/></TD>
-			<TD colspan="3"><textarea binding="remark" style="width:88%;height:100"/></TD>
+			<TD><label binding="remark"/></TD>
+			<TD colspan="3"><textarea binding="remark" style="width:88%;height:40px"/></TD>
 		</TR>
 	</layout>
 	<data>

@@ -380,17 +380,17 @@
 				    .addClass("checkstate_" + this.checkState + "_" + this.disabled);
 			},
 
-			getAttribute: function(name) {
-				return this.attrs["name"];
-			},
+            getAttribute: function(name) {
+                return this.attrs[name];
+            },
 
-			setAttribute: function(name, value) {
-				if(value) {
-					this.attrs["name"] = value;
-				} else {
-					delete this.attrs["name"];
-				}
-			}
+            setAttribute: function(name, value) {
+                if(value) {
+                    this.attrs[name] = value;
+                } else {
+                    delete this.attrs[name];
+                }
+            }
 		};
 		/********************************************* 定义树节点TreeNode end *********************************************/
 

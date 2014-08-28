@@ -379,7 +379,7 @@ var Reminder = function() {
 /* 给xform等添加离开提醒 */
 function attachReminder(id, form) {
 	if( form ) {
-		form.element.ondatachange = function(eventObj) {
+		form.box.ondatachange = function(eventObj) {
 			Reminder.add(eventObj.id); // 数据有变化时才添加离开提醒
 		}
 	}
@@ -547,7 +547,7 @@ function stopOrStartTreeNode(state, url, treeName) {
 		
 	var tree = $.T(treeName || "tree");
 	var treeNode = tree.getActiveTreeNode();
-	Ajax({
+	$.ajax({
 		url : (url || URL_STOP_NODE) + treeNode.id + "/" + state,
 		onsuccess : function() { 
 			// 刷新父子树节点停用启用状态: 启用上溯，停用下溯
@@ -569,6 +569,8 @@ function stopOrStartTreeNode(state, url, treeName) {
 }
 
 function refreshTreeNodeState(treeNode, state) {
+	treeNode.setAttribute("disabled", state);
+
 	var iconPath = treeNode.getAttribute("icon");
 	iconPath = iconPath.replace( /_[0,1].gif/gi, "_" + state + ".gif"); 
 	
@@ -784,4 +786,82 @@ Element.moveable = function(element, handle) {
 			document.removeEventListener("mouseup", stopDrag, true);
 		}
 	};
+}
+
+// 弹出选择树
+function popupTree(url, nodeName, params, callback) {
+	var boxName = "popupTree_" + $.getUniqueID();
+	var el = $.createElement("div", "dialog");
+	el.innerHTML = '<Tree:Box id="' + boxName + '"><div class="loading"></div></Tree:Box>' + 
+	    '<div class="bts">' + 
+	       '<input type="button" value="确定" class="btStrong" onclick="doCallback()"/>' + 
+       	   '<input type="button" value="关闭" class="btWeak" onclick="$.removeNode(el)"/>' +  
+	    '</div>';
+	document.body.appendChild(el);
+
+	params = params || {};
+	$.ajax({
+		url: url,
+		params: params,
+		onresult : function() { 
+			var tree = $.T(boxName, this.getNodeValue(nodeName));		
+			tree.onTreeNodeDoubleClick = function(ev) {
+				doCallback();
+			}
+		}
+	});
+
+	function doCallback() {
+		var treeNode = getActiveTreeNode(boxName);
+		if( treeNode ) {
+			$.removeNode(el); 
+			callback(treeNode);
+		}
+	}
+}
+
+function popupForm(url, nodeName, params, callback) {
+	var boxName = "popupForm_" + $.getUniqueID();
+	var el = $.createElement("div", "dialog");
+	el.innerHTML = '<Form:Box id="' + boxName + '"><div class="loading"></div></Form:Box>' + 
+	    '<div class="bts">' + 
+	       '<input type="button" value="确定" class="btStrong" onclick="doCallback()"/>' + 
+       	   '<input type="button" value="关闭" class="btWeak" onclick="$.removeNode(el)"/>' +  
+	    '</div>';
+	document.body.appendChild(el);
+
+	params = params || {};
+
+	$.ajax({
+		url : url,
+		method : "GET",
+		onresult : function() {
+			var formXML = this.getNodeValue(nodeName);
+			var rowNode = formXML.querySelector("data row");
+			$.each(params, function(key, value) {
+				$.XML.setCDATA(rowNode, key, value);
+			});
+
+			$.cache.XmlDatas[nodeName] = formXML;
+			$.F(boxName, formXML);
+		}
+	});
+
+	function doCallback() {
+		var condition = {};       
+        var formXML = $.cache.XmlDatas[nodeName];
+        if( formXML ) {
+            var nodes = formXML.querySelectorAll("data row *");
+            $.each(nodes, function(i, node){
+                condition[node.nodeName] = $.XML.getText(node);
+            });
+        }
+
+        $.removeNode(el); 
+        callback(condition);
+	}
+}
+
+function popupGrid(url, nodeName, params, callback) {
+
 }

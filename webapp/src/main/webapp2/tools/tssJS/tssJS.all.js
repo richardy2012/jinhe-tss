@@ -3780,7 +3780,7 @@
         if( pointHeight == null ) {
             pointHeight = element.clientHeight; // hack 固定住grid高度，以免在IE部分版本及FF里被撑开
         }
-        $(this.gridBox).css("height", pointHeight + "px");
+        // $(this.gridBox).css("height", pointHeight + "px");
         
         this.windowHeight = pointHeight;
         this.pageSize = Math.floor(this.windowHeight / cellHeight);
@@ -4655,14 +4655,14 @@
             },
 
             getAttribute: function(name) {
-                return this.attrs["name"];
+                return this.attrs[name];
             },
 
             setAttribute: function(name, value) {
                 if(value) {
-                    this.attrs["name"] = value;
+                    this.attrs[name] = value;
                 } else {
-                    delete this.attrs["name"];
+                    delete this.attrs[name];
                 }
             }
         };

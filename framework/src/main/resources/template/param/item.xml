@@ -13,11 +13,11 @@
 		</TR>
 		<TR>
 			<TD width="100"><label binding="value"/></TD>
-			<TD><textarea binding="value" style="width:100%;height:120"/></TD>
+			<TD><textarea binding="value" style="width:100%;height:120px"/></TD>
 		</TR>
 		<TR>
 			<TD width="100" valign="top"><label binding="description"/></TD>
-			<TD><textarea binding="description" style="width:100%;height:50"/></TD>
+			<TD><textarea binding="description" style="width:100%;height:50px"/></TD>
 		</TR>
 	</layout>
 	<data>
