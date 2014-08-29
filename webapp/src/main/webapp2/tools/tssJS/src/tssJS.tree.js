@@ -106,22 +106,29 @@
 			 */
 			_TREE_NODE_CHECK_STATE = "checkState",  
 
-		clickSwich = function(node) {
-			node.opened = !node.opened;
 
-			var styles = ["node_close", "node_open"],
-				index = node.opened ? 0 : 1;
+        clickSwich = function(node) {
+            node.opened = !node.opened;
 
-			$(node.li.switchIcon).removeClass(styles[index]).addClass(styles[++index % 2]);
+            var styles = ["node_close", "node_open"],
+                index = node.opened ? 0 : 1;
 
-			if(node.li.ul) {
-				if(node.opened) {
-					$(node.li.ul).removeClass("hidden");
-				} else {
-					$(node.li.ul).addClass("hidden");
-				}
-			}
-		},
+            $(node.li.switchIcon).removeClass(styles[index]).addClass(styles[++index % 2]);
+
+            if(node.li.ul) {
+                if(node.opened) {
+                    $(node.li.ul).removeClass("hidden");
+                    var parent = node;
+                    while(parent = parent.parent) {
+                        $(parent.li.ul).removeClass("hidden");
+                        $(parent.li.switchIcon).removeClass(styles[0]).addClass(styles[1]);
+                    }
+                } 
+                else {
+                    $(node.li.ul).addClass("hidden");
+                }
+            }
+        },
 
 		/* 根据现有状态改成下一个选择状态，0-->2,  1|2-->0, 同时改变子节点及父节点的check状态 */
 		checkNode = function(node, excludeDisabledNode) {

@@ -4391,7 +4391,13 @@
             if(node.li.ul) {
                 if(node.opened) {
                     $(node.li.ul).removeClass("hidden");
-                } else {
+                    var parent = node;
+                    while(parent = parent.parent) {
+                        $(parent.li.ul).removeClass("hidden");
+                        $(parent.li.switchIcon).removeClass(styles[0]).addClass(styles[1]);
+                    }
+                } 
+                else {
                     $(node.li.ul).addClass("hidden");
                 }
             }

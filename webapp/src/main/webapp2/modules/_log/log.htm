@@ -100,7 +100,7 @@
 
     function searchLog() {
         var treeNode = $.T("tree").getActiveTreeNode();
-        popupForm("SearchXForm.xml", "SearchLog", {operateTable: treeNode.id}, function(condition) {
+        popupForm("SearchForm.xml", "SearchLog", {operateTable: treeNode.id}, function(condition) {
         	loadGridData(condition, "1"); 
         });
     }

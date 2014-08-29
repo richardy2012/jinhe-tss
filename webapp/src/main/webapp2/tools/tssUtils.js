@@ -798,6 +798,7 @@ function popupTree(url, nodeName, params, callback) {
        	   '<input type="button" value="关闭" class="btWeak" onclick="$.removeNode(el)"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
+	$(el).center(300, 400).css("width", "300px").css("height", "300px");
 
 	params = params || {};
 	$.ajax({
@@ -808,16 +809,21 @@ function popupTree(url, nodeName, params, callback) {
 			tree.onTreeNodeDoubleClick = function(ev) {
 				doCallback();
 			}
+
+			function doCallback(){
+				var treeNode = getActiveTreeNode(boxName);
+				if( treeNode ) {
+					removeDialog();
+					callback(treeNode);
+				}
+			}
+
+			$(".bts .btStrong", el).click(doCallback);
+			$(".bts .btWeak", el).click(function(){
+				removeDialog();
+			});
 		}
 	});
-
-	function doCallback() {
-		var treeNode = getActiveTreeNode(boxName);
-		if( treeNode ) {
-			$.removeNode(el); 
-			callback(treeNode);
-		}
-	}
 }
 
 function popupForm(url, nodeName, params, callback) {
@@ -825,10 +831,11 @@ function popupForm(url, nodeName, params, callback) {
 	var el = $.createElement("div", "dialog");
 	el.innerHTML = '<Form:Box id="' + boxName + '"><div class="loading"></div></Form:Box>' + 
 	    '<div class="bts">' + 
-	       '<input type="button" value="确定" class="btStrong" onclick="doCallback()"/>' + 
-       	   '<input type="button" value="关闭" class="btWeak" onclick="$.removeNode(el)"/>' +  
+	       '<input type="button" value="确定" class="btStrong"/>' + 
+       	   '<input type="button" value="关闭" class="btWeak"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
+	$(el).center(300, 400);
 
 	params = params || {};
 
@@ -844,22 +851,28 @@ function popupForm(url, nodeName, params, callback) {
 
 			$.cache.XmlDatas[nodeName] = formXML;
 			$.F(boxName, formXML);
+
+			$(".bts .btStrong", el).click(function(){
+				var condition = {};       
+		        var formXML = $.cache.XmlDatas[nodeName];
+	            var nodes = formXML.querySelectorAll("data row *");
+	            $.each(nodes, function(i, node){
+	                condition[node.nodeName] = $.XML.getText(node);
+	            });
+
+		        removeDialog();
+		        callback(condition);
+			});
+
+			$(".bts .btWeak", el).click(function(){
+				removeDialog();
+			});
 		}
 	});
+}
 
-	function doCallback() {
-		var condition = {};       
-        var formXML = $.cache.XmlDatas[nodeName];
-        if( formXML ) {
-            var nodes = formXML.querySelectorAll("data row *");
-            $.each(nodes, function(i, node){
-                condition[node.nodeName] = $.XML.getText(node);
-            });
-        }
-
-        $.removeNode(el); 
-        callback(condition);
-	}
+function removeDialog() {
+	$.removeNode($(".dialog")[0]); 
 }
 
 function popupGrid(url, nodeName, params, callback) {

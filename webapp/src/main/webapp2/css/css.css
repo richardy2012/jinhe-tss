@@ -76,6 +76,8 @@ WorkSpace\:Page .Tree a, WorkSpace\:Page .Tree a.hover { border: 1px solid #F7F8
 #relogin_box span.bottonBox { text-align: center; }
 #relogin_box span input { background-color: #f0f0f0; border: 1px solid #ccc;}
 
-.dialog { border:1px solid #98989C; margin-left:auto; margin-right:auto; height:99%; overflow:hidden; padding:10px; }
+.dialog { border:1px solid #98989C; background-color:red; margin: 0 auto 0 auto; overflow:auto; padding:5px; position: absolute; top:100px;}
 .dialog Form\:Box { padding-left: 10px;  padding-top: 10px;}
+.dialog Tree\:Box { height: 80%; }
 .dialog .bts { padding-left: 10px; padding-top: 10px;}
+.dialog .bts input { margin:0 10px; }

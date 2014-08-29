@@ -33,6 +33,7 @@
     URL_SORT_PARAM    = NO_AUTH_PATH + "param/sort/";
     URL_COPY_PARAM    = NO_AUTH_PATH + "param/copy/";
     URL_MOVE_PARAM_TO = NO_AUTH_PATH + "param/move/";
+    URL_POPUP_TREE    = NO_AUTH_PATH + "param/list/";
 	
 	if(IS_TEST) {
 		URL_INIT = "data/param_init.xml?";
@@ -43,6 +44,7 @@
 		URL_SORT_PARAM = "data/_success.xml?";
 		URL_COPY_PARAM = "data/_success.xml?";
 		URL_MOVE_PARAM_TO = "data/_success.xml?";
+        URL_POPUP_TREE = "data/paramtree_init.xml?";
 	}
 
     function init() {
@@ -383,17 +385,16 @@
 		var id  = treeNode.id;
 		var pId = treeNode.parent.id;
 
-		var target = window.showModalDialog("paramtree.htm", {params:{id:id, parentID: pId}, title:"将【\"" + treeNode.name + "\"】复制到"}, "dialogWidth:300px;dialogHeight:400px;");
-		
-		if( target ) {
-			$.ajax({
-				url : URL_COPY_PARAM + id + "/" + target.id,
-				onresult : function() { 
-					var newNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
+        var params = {id:id, parentID: pId};
+        popupTree(URL_POPUP_TREE, "ParamTree", params, function(target) {
+            $.ajax({
+                url : URL_COPY_PARAM + id + "/" + target.id,
+                onresult : function() { 
+                    var newNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
                     tree.addTreeNode(newNode, target)
-				}
-			});
-		}
+                }
+            });
+        });
     }
  
     function moveParamTo() {
