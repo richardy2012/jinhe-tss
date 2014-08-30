@@ -253,7 +253,7 @@
                     if(tssJS.isFunction(callback)) {
                         returnVal = callback(param);
                     }
-                    else {
+                    else if(callback) {
                         var rightKH = callback.indexOf(")");
                         if(rightKH < 0 && param) {
                             callback = callback + "('" + param + "')";
@@ -2973,13 +2973,13 @@
     
         this.dataNode =  $("data", dataXML)[0];
         if(this.dataNode == null) {             
-            this.dataNode = $.XML.createElement("data");
+            this.dataNode = $.XML.createNode("data");
             this.sourceXML.appendChild(this.dataNode);
         }
         
         this.rowNode = $("row", this.dataNode)[0];;
         if(this.rowNode == null) {
-            this.rowNode = $.XML.createElement("row");
+            this.rowNode = $.XML.createNode("row");
             this.dataNode.appendChild(this.rowNode);    
         }
         

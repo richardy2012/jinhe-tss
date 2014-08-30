@@ -44,7 +44,7 @@
 		URL_SORT_PARAM = "data/_success.xml?";
 		URL_COPY_PARAM = "data/_success.xml?";
 		URL_MOVE_PARAM_TO = "data/_success.xml?";
-        URL_POPUP_TREE = "data/paramtree_init.xml?";
+        URL_POPUP_TREE = "data/param_init.xml?";
 	}
 
     function init() {
@@ -69,7 +69,9 @@
         }
         var item3 = {
             label:"编辑",
-            callback:editParamInfo,
+            callback:function() {
+                editParamInfo(true);
+            },
             icon:ICON + "edit.gif",
             visible:function() {return !isTreeRoot();}
         }
@@ -176,7 +178,7 @@
 				var tree = $.T("tree", this.getNodeValue(XML_MAIN_TREE)); 
 
 				tree.onTreeNodeDoubleClick = function(ev) {
-					if( !isTreeRoot() ) { editParamInfo(); }
+					if( !isTreeRoot() ) { editParamInfo(false); }
 				}
 				tree.onTreeNodeMoved = function(ev) {
 					sortTreeNode(URL_SORT_PARAM, eventObj);
@@ -288,7 +290,7 @@
 
 				attachReminder(treeID, form); // 离开提醒
 	 
-				$("page1BtSave").click( function() {
+				$("#page1BtSave").click( function() {
 					saveParam(treeID, parentID, type);
 				} );
 			}
@@ -307,21 +309,20 @@
             return;
         }
  
-        var request = new $.HttpRequest(p);
+        var request = new $.HttpRequest();
         request.url = URL_SAVE_PARAM;
 
         var paramInfoNode = $.cache.XmlDatas[cacheID];
-        var paramInfoDataNode = paramInfoNode.querySelector("data");
-        request.setFormContent();
+        var dataNode = paramInfoNode.querySelector("data");
+        request.setFormContent(dataNode);
         request.addParam("type", type);
        
         syncButton([$1("page1BtSave")], request); // 同步按钮状态
 		detachReminder(cacheID); // 解除提醒
 
         request.onresult = function() {                  
-			var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
+			var treeNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
 			appendTreeNode(parentID, treeNode);
-
 			ws.closeActiveTab();
         }
 
@@ -403,11 +404,10 @@
 		var id  = treeNode.id;
         var pId = treeNode.parent.id;
 
-		var target = window.showModalDialog("paramtree.htm", {params: {id:id, parentID:pId}, title:"将\"" + treeNode.name + "\"移动到"},"dialogWidth:300px;dialogHeight:400px;");
-
-		if(target) {
-			moveTreeNode(tree, id, target.id, URL_MOVE_PARAM_TO);
-		}
+        var params = {id:id, parentID: pId};
+        popupTree(URL_POPUP_TREE, "ParamTree", params, function(target) {
+            moveTreeNode(tree, id, target.id, URL_MOVE_PARAM_TO);
+        });
     }
 
     window.onload = init;

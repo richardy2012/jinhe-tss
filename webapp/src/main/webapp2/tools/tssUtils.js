@@ -17,7 +17,7 @@
 	URL_UPLOAD_FILE  = AUTH_PATH + "file/upload",	
 
 	URL_CORE = IS_TEST ? "../../tools/tssJS/" : "/" + APPLICATION + "/tools/tssJS/",  // 界面核心包相对路径
-	ICON  =  URL_CORE + "../images/";
+	ICON  =  URL_CORE + "images/";
 
 /*********************** 和工作区Workspace相关 的 公用函数 **********************************/
 
@@ -376,20 +376,22 @@ var Reminder = function() {
 	}
 };
 
+var reminder = new Reminder();
+
 /* 给xform等添加离开提醒 */
 function attachReminder(id, form) {
 	if( form ) {
 		form.box.ondatachange = function(eventObj) {
-			Reminder.add(eventObj.id); // 数据有变化时才添加离开提醒
+			reminder.add(eventObj.id); // 数据有变化时才添加离开提醒
 		}
 	}
 	else {
-		Reminder.add(id);
+		reminder.add(id);
 	}
 }
 
 function detachReminder(id) {
-	Reminder.reset();
+	reminder.reset();
 } 
 
 /*********************** Tree 的 公用函数 **********************************/
@@ -434,7 +436,7 @@ function modifyTreeNode(id, attrName, attrValue, treeName) {
 	if( treeNode ) {
 		treeNode.attrs[attrName] = attrValue;
 		if(attrName == "name") {
-			treeNode.li.a.innerText = activeNode.li.a.title = attrValue;
+			treeNode.li.a.innerText = treeNode.li.a.title = attrValue;
 		}
 	}
 }

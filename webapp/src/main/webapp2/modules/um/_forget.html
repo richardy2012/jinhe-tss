@@ -1,25 +1,25 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html xmlns:XForm>
+<!DOCTYPE html>
+<html xmlns:Form> 
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>找回密码</title>
 
-<link href="framework/css/css.css" rel="stylesheet" type="text/css">
-<link href="framework/css/dialog.css" rel="stylesheet" type="text/css">
-<link href="framework/xform/xform.css" rel="stylesheet" type="text/css">
-<link href="framework/balloon/balloon.css" rel="stylesheet" type="text/css">
+<link href="../../tools/tssJS/css/tss.all.css" rel="stylesheet">
+<link href="../../css/css.css" rel="stylesheet">
 
-<script language="javascript" src="framework/core.js"></script>
-<script language="javascript" src="framework/ajax.js"></script>
-<script language="javascript" src="framework/framework.js"></script>
-<script language="javascript" src="framework/balloon/balloon.js"></script>
-<script language="javascript" src="framework/xform/xform.js"></script>
+<script src="../../tools/tssJS/tssJS.all.js"></script>
+<script src="../../tools/tssUtils.js"></script>
 
+<style type="text/css">
+
+  body { margin: 3px; font-size: 12px; background-color:#E7E7E7; overflow:hidden; }
+
+  .dialog { width:300px;height:300px;position:relative;overflow:hidden; }
+
+</style>
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
-
-URL_CORE = "framework/"
 
     /* 后台响应数据节点名称  */
     XML_FORGET_INFO = "ForgetInfo";
@@ -34,43 +34,43 @@ URL_CORE = "framework/"
     URL_SET_NEW_PASSWORD = "resetPassword.in";
 
 	if( IS_TEST ) {
-		URL_INIT   = "mockdata/forget_init.xml";
-		URL_FORGET = "mockdata/forget.xml";
-		URL_SET_NEW_PASSWORD = "mockdata/_success.xml";
+		URL_INIT   = "data/_forget_init.xml";
+		URL_FORGET = "data/_forget.xml";
+		URL_SET_NEW_PASSWORD = "data/_success.xml";
 	}
 
 	var forgetForm;
 
     function init() {
-		Ajax({
+		$.ajax({
 			url : URL_INIT,
 			headers : {"appCode": FROMEWORK_CODE, "anonymous": "true"},
 			onresult : function() { 
 				var forgetXML = this.getNodeValue(XML_FORGET_INFO);
-				Cache.XmlDatas.add(CACHE_FORGET_INFO, forgetXML);
-				forgetForm = $X("forgetForm", forgetXML);
+				$.cache.XmlDatas[CACHE_FORGET_INFO] = forgetXML;
+				forgetForm = $.F("forgetForm", forgetXML);
 
-                $$("password").disabled = "disabled";
-                $$("repassword").disabled = "disabled";
-                $$("resetBT").style.visibility = "hidden";
+                $1("password").disabled = "disabled";
+                $1("repassword").disabled = "disabled";
+                $1("resetBT").style.visibility = "hidden";
 			}
 		});
     }
     
 	// 如果用户输入的密码问题答案正确，则返回该用户的UserID并允许其重新设置新密码
     function getPassword() {
-		Ajax({
+		$.ajax({
 			url : URL_FORGET,
 			headers : {"appCode": FROMEWORK_CODE, "anonymous": "true"},
-			xformNode : Cache.XmlDatas.get(CACHE_FORGET_INFO),
+			formNode : $.cache.XmlDatas[CACHE_FORGET_INFO].querySelector("data"),
 			onresult : function() { 
 				var userID = this.getNodeValue(XML_USER_ID);
 				forgetForm.updateDataExternal("userId", userID);
 
 				// 显示设置新密码
-				$$("password").disabled = "";
-                $$("repassword").disabled = "";
-                $$("resetBT").style.visibility = "visible";
+                $1("password").disabled = "";
+                $1("repassword").disabled = "";
+                $1("resetBT").style.visibility = "visible";
 			}
 		});
     }
@@ -115,11 +115,11 @@ URL_CORE = "framework/"
 
     /* 设置新密码 */
     function setNewPassword() {
-		Ajax({
+		$.ajax({
 			url : URL_SET_NEW_PASSWORD,
-			headers : {"appCode": FROMEWORK_CODE, "anonymous": "true"},
+			headers: {"appCode": FROMEWORK_CODE, "anonymous": "true"},
 			params : {"type": "reset"},
-			xformNode : Cache.XmlDatas.get(CACHE_FORGET_INFO),
+			formNode : $.cache.XmlDatas[CACHE_FORGET_INFO].querySelector("data"),
 			onsuccess : function() { 
 				window.close();
 			}
@@ -136,7 +136,7 @@ URL_CORE = "framework/"
 <body>
 
     <div class="dialog">
-    	<XForm:Box id="forgetForm" baseurl="framework/xform/"></XForm:Box>
+    	<Form:Box id="forgetForm" baseurl="framework/xform/"></Form:Box>
     </div>
 
 </body>
