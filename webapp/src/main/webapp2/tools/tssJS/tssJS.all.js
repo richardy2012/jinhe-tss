@@ -3718,10 +3718,10 @@
 
             thead.push('<thead><tr>');
             if(this.hasHeader) {
-                thead.push('<td name="cellheader"><input type="checkbox" id="checkAll"/></td>');
+                thead.push('<td name="cellheader" style="width:30px"><input type="checkbox" id="checkAll"/></td>');
             }
             if(this.needSequence) {
-                thead.push('<td name="sequence">序号</td>');
+                thead.push('<td name="sequence" style="width:30px">序号</td>');
             }
             $.each(this.columnsMap, function(name, column) {
                 var caption = column.getAttribute("caption");
