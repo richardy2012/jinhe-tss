@@ -45,7 +45,8 @@
         loadInitData();
     }
   
-    function initMenus(){       
+    function initMenus() {  
+    	ICON = "images/"     
         var item1 = {
             label:"停用",
             callback: function() { stopOrStartTreeNode("1", URL_STOP_RULE); },
@@ -183,8 +184,15 @@
 			var page4Tree  = $.T("page4Tree",  rule2UserTreeNode);
 			var page4Tree3 = $.T("page4Tree3", rule2UserExistTreeNode);
 			
-			$1("page4Tree").onTreeNodeDoubleClick = function(ev){
-                onPage4TreeNodeDoubleClick(ev);
+			page4Tree.onTreeNodeDoubleClick = function(ev){
+                var treeNode = page4Tree.getActiveTreeNode();
+				$.ajax({
+					url : URL_GROUP_USERS + treeNode.id,
+					onresult : function() { 
+						var sourceListNode = this.getNodeValue(XML_GROUP_TO_USER_LIST_TREE);
+						$.T("page4Tree2", sourceListNode);
+					}
+				});	
             }
 			
 			// 设置翻页按钮显示状态
@@ -220,17 +228,6 @@
 		}
 		request.send();
     }
- 
-    function onPage4TreeNodeDoubleClick(ev) {
-	    var treeNode = $.T("page4Tree").getActiveTreeNode();
-		$.ajax({
-			url : URL_GROUP_USERS + treeNode.id,
-			onresult : function() { 
-				var sourceListNode = this.getNodeValue(XML_GROUP_TO_USER_LIST_TREE);
-				$.T("page4Tree2", sourceListNode);
-			}
-		});	
-    }
 
     function saveRule(cacheID) {
         // 校验page1Form数据有效性
@@ -250,15 +247,15 @@
 
 		// 转授出去的角色
 		var rule2RoleIDs = $.T("page3Tree2").getAllNodeIds();
-		request.setContent(XML_RULE_TO_ROLE_IDS, rule2RoleIDs.join(","));
+		request.addParam(XML_RULE_TO_ROLE_IDS, rule2RoleIDs.join(","));
 
 		// 转授给用户
 		var rule2UserIDs = $.T("page4Tree3").getAllNodeIds();
-		request.setContent(XML_RULE_TO_USER_IDS, rule2UserIDs.join(","));
+		request.addParam(XML_RULE_TO_USER_IDS, rule2UserIDs.join(","));
 
 		// 转授给用户组
 		var rule2GroupIDs = $.T("page2Tree2").getAllNodeIds();
-		request.setContent(XML_RULE_TO_GROUP_IDS, rule2GroupIDs.join(","));
+		request.addParam(XML_RULE_TO_GROUP_IDS, rule2GroupIDs.join(","));
 		
 		//同步按钮状态
 		syncButton([$1("page1BtSave"), $1("page2BtSave"), $1("page3BtSave"), $1("page4BtSave")], request);

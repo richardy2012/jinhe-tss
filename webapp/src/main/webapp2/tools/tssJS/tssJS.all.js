@@ -4768,7 +4768,7 @@
             this.removeTreeNode(from); // 将from从其原parent.children里剔除
 
             from.parent = to;
-            to.parent.children.push(from);
+            to.children.push(from);
 
             to.li.ul.appendChild(from.li);
         },
