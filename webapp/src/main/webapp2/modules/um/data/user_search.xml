@@ -19,7 +19,8 @@
 				<column caption="对应系统用户ID" name="appUserId" display="none"/>
 			</declare>
 			<data>
-				<row icon="../framework/images/um/user_0.gif" id="1" loginName="BL00550" disabled="0" userName="陈涛" sex="" birthday="" email="" telephone="" groupName="WMS管理员组" groupId="1" applicationId="" appUserId=""/><row icon="../framework/images/um/user_0.gif" id="2" loginName="BL00015" disabled="0" userName="陈鹏" sex="" birthday="" email="pchen@800best.com" telephone="" groupName="WMS管理员组" groupId="1" applicationId="" appUserId=""/>
+				<row icon="images/user_0.gif" id="1" loginName="BL00550" disabled="0" userName="陈涛" sex="" birthday="" email="" telephone="" groupName="WMS管理员组" groupId="1" applicationId="" appUserId=""/>
+				<row icon="images/user_0.gif" id="2" loginName="BL00015" disabled="0" userName="陈鹏" sex="" birthday="" email="pchen@800best.com" telephone="" groupName="WMS管理员组" groupId="1" applicationId="" appUserId=""/>
 			</data>
 		</grid>
 	</SourceList>

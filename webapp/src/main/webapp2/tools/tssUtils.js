@@ -424,6 +424,16 @@ function isTreeRoot() {
 	return getTreeNodeId() == "_root";
 }
 
+function hasSameAttributeTreeNode(tree, attr, value) {
+	var result = false;
+	tree.getAllNodes().each(function(i, node) {
+		if(node.getAttribute(attr) == value) {
+			result = true;
+		}
+	});
+	return result;
+}
+
 /*
  *	修改树节点属性
  *	参数：  string:id               树节点id
@@ -466,7 +476,7 @@ function getTreeNodeIds(xmlNode) {
 function disableTreeNodes(treeXML, selector) {
 	var nodeLsit = treeXML.querySelectorAll(selector);
 	for(var i = 0; i < nodeLsit.length; i++) {
-		nodeLsit[i].setAttribute("disabled", "0");
+		nodeLsit[i].setAttribute("disabled", "1");
 	}
 }
  			
@@ -502,7 +512,7 @@ function addTreeNode(fromTree, toTree, checkFunction) {
 			var result = checkFunction(curNode);
 			if( result && result.error ) {
 				if( result.message ) {
-					var balloon = $.Balloon(result.message);
+					var balloon = new $.Balloon(result.message);
 					balloon.dockTo(toTree.el); // 显示错误信息
 				}
 				if( result.stop ) {
@@ -512,9 +522,8 @@ function addTreeNode(fromTree, toTree, checkFunction) {
 			}
 		}
 
-		var id = curNode.getId();
-		var theSameNode = toTree.el.querySelector("li[nodeId='" + id + "']");
-		if("_root" != id && theSameNode == null) {
+		var theSameNode = toTree.el.querySelector("li[nodeId='" + curNode.id + "']");
+		if("_root" != curNode.id && theSameNode == null) {
 			var parent = toTree.getTreeNodeById("_root");
 			if( parent ) {
 				toTree.addTreeNode(curNode.attrs, parent);
@@ -574,10 +583,12 @@ function refreshTreeNodeState(treeNode, state) {
 	treeNode.setAttribute("disabled", state);
 
 	var iconPath = treeNode.getAttribute("icon");
-	iconPath = iconPath.replace( /_[0,1].gif/gi, "_" + state + ".gif"); 
+	if(iconPath) {
+		iconPath = iconPath.replace( /_[0,1].gif/gi, "_" + state + ".gif"); 
 	
-	treeNode.setAttribute("icon", iconPath);
-	treeNode.li.selfIcon.css("backgroundImage", "url(" + iconPath + ")");
+		treeNode.setAttribute("icon", iconPath);
+		treeNode.li.selfIcon.css("backgroundImage", "url(" + iconPath + ")");
+	}
 }
 
 // 对同层的树节点进行排序

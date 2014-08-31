@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><Response><AppDetail>
 <xform>
-	<declare prefix="application">
+	<declare>
 		<column name="applicationType" caption="应用系统类型" mode="string" display="none"/>
 		<column name="applicationId" caption="应用系统ID" mode="string" empty="false" maxLength="100"/>
 		<column name="name" caption="名称" mode="string" empty="false" maxLength="100"/>
@@ -10,15 +10,15 @@
 	<layout>
 		<TR>
 			<TD width="100"><label binding="applicationId"/></TD>
-			<TD><input binding="applicationId" type="text" style="width:150;"/></TD>
+			<TD><input binding="applicationId" type="text" style="width:150px;"/></TD>
 			<TD width="100"><label binding="name"/></TD>
-			<TD><input binding="name" type="text" style="width:150;"/></TD>
+			<TD><input binding="name" type="text" style="width:150px;"/></TD>
 		</TR>
 		<TR>
-			<TD width="100"><label binding="description"/></TD>
-			<TD><input binding="description" type="text" style="width:150;"/></TD>
-			<TD width="100"><label binding="dataSourceType"/></TD>
-			<TD><input binding="dataSourceType" type="text" style="width:150;"/></TD>
+			<TD><label binding="description"/></TD>
+			<TD><input binding="description" type="text" style="width:150px;"/></TD>
+			<TD><label binding="dataSourceType"/></TD>
+			<TD><input binding="dataSourceType" type="text" style="width:150px;"/></TD>
 		</TR>
 	</layout>
 	<data><row><createTime><![CDATA[2013-07-24 00:21:32.171]]></createTime><applicationId><![CDATA[tss]]></applicationId><creatorId><![CDATA[-1]]></creatorId><applicationType><![CDATA[-1]]></applicationType><lockVersion><![CDATA[0]]></lockVersion><id><![CDATA[1]]></id><creatorName><![CDATA[Admin]]></creatorName><name><![CDATA[TSS]]></name><dataSourceType><![CDATA[1]]></dataSourceType></row></data>

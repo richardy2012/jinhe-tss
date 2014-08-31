@@ -5,9 +5,4 @@
 		<description><![CDATA[ 您填写的数据已经保存入数据库，以下省略N字... ]]></description>
 		<type>1</type>
 	</Success>
-	<!-- <AppSource>
-		<actionSet title="">
-            <treeNode applicationType="1" applicationId="pms" icon="../platform/images/icon/app.gif" appType="1" name="PMS" id="107"/>
-		</actionSet>
-	</AppSource> -->
 </Response>

@@ -47,7 +47,7 @@
 		URL_SAVE_ROLE_GROUP   = "data/_success.xml?";
 		URL_STOP_NODE         = "data/_success.xml?";
 		URL_DELETE_NODE       = "data/_success.xml?";
-		URL_GROUP_USERS       = "data/group2userlist.xml?";
+		URL_GROUP_USERS       = "data/userlist.xml?";
 		URL_MOVE_NODE         = "data/_success.xml?";
 		URL_GET_OPERATION     = "data/operation.xml?";
 	}

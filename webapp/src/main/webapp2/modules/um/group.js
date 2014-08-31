@@ -388,7 +388,8 @@
 			if( !isMainGroup() ) { // 辅助用户组
 				var page4Tree3 = $.T("page4Tree3", group2UserGridNode);
 				var page4Tree  = $.T("page4Tree",  group2UserTreeNode);
-				$1("page4Tree").onTreeNodeDoubleClick = function(eventObj) {
+				
+                page4Tree.onTreeNodeDoubleClick = function(eventObj) {
 					var treeNode = page4Tree.getActiveTreeNode();
 					$.ajax({
 						url : URL_GROUP_USERS + treeNode.id,
@@ -450,14 +451,14 @@
 
 		// 用户组对用户
 		if( !isMainGroup() ) {
-			var group2UserDataIDs = $.T("page4Tree3").getCheckedIds();
+			var group2UserDataIDs = $.T("page4Tree3").getAllNodeIds();
 			if(group2UserDataIDs.length > 0) {
 				request.addParam(XML_GROUP_TO_USER_EXIST_TREE, group2UserDataIDs.join(","));
 			}
 		}
 
 		// 用户组对角色
-		var group2RoleDataIDs = $.T("page3Tree2").getCheckedIds();
+		var group2RoleDataIDs = $.T("page3Tree2").getAllNodeIds();
 		if( group2RoleDataIDs.length > 0) {
 			request.addParam(XML_GROUP_TO_ROLE_EXIST_TREE, group2RoleDataIDs.join(","));
 		}
@@ -577,15 +578,14 @@
 			var user2RoleTreeNode = this.getNodeValue(XML_USER_TO_ROLE_TREE);
 			var user2RoleGridNode = this.getNodeValue(XML_USER_TO_ROLE_EXIST_TREE);
 			
-			// 过滤掉辅助用户组 和系统级用户组 和 角色组
-			disableTreeNodes(user2GroupTreeNode, "treeNode[groupType='2']");
-			disableTreeNodes(user2GroupTreeNode, "treeNode[id < 0]");
+			// 过滤掉 系统级用户组 和 角色组
+			disableTreeNodes(user2GroupTreeNode, "treeNode[id^='-']");
 			disableTreeNodes(user2RoleTreeNode,  "treeNode[isGroup='1']");
  
 			$.cache.XmlDatas[userID + "." + XML_USER_INFO] = userInfoNode;
 			
 			var page1Form = $.F("page1Form", userInfoNode);
-			attachReminder(page1Form.element.id, page1Form);
+			attachReminder(page1Form.box.id, page1Form);
 			
 			var page3Tree  = $.T("page3Tree",  user2RoleTreeNode);
 			var page3Tree2 = $.T("page3Tree2", user2RoleGridNode);
@@ -616,14 +616,10 @@
 					var groupType = treeNode.getAttribute("groupType");
 					if( groupType == "1" && hasSameAttributeTreeNode(page2Tree2, "groupType", groupType)) {
 						result.error = true;
-						result.message = "一个用户对应主用户组只允许一个";
+						result.message = "一个用户只能对应一个主用户组。";
 						result.stop = true;
 					}
-					if( groupType == "2"){
-						result.error = true;
-						result.message = "此处只能选择主用户组下的组织";
-						result.stop = true;
-					}
+
 					return result;
 				});
 			}
@@ -663,12 +659,10 @@
 
         // 校验用户对组page2Tree2数据有效性
         var page2Tree2 = $.T("page2Tree2");
-        var user2GroupNode = new XmlNode(page2Tree2.getTreeNodeById("_root").node);
-        var mainGroupRoot = user2GroupNode.querySelector("treeNode[groupType='1']");
-        if( mainGroupRoot == null ) {
+        if( !hasSameAttributeTreeNode(page2Tree2, 'groupType', '1') ) {
             ws.switchToPhase("page2");
-            var balloon = new $.Balloon("至少要有一个主用户组");
-            balloon.dockTo(page2Tree2.element);
+            var balloon = new $.Balloon("至少要属于一个主用户组。");
+            balloon.dockTo(page2Tree2.el);
             return;
         }
 
@@ -677,21 +671,26 @@
  
 		// 用户基本信息
 		var userInfoNode = $.cache.XmlDatas[userID + "." + XML_USER_INFO];
-		var userInfoDataNode = userInfoNode.selectSingleNode(".//data");
+		var userInfoDataNode = userInfoNode.querySelector("data");
 		request.setFormContent(userInfoDataNode);
  
 		//用户对用户组
-		var user2GroupDataIDs = $.T("page2Tree2").getCheckedIds();
+		var user2GroupDataIDs = $.T("page2Tree2").getAllNodeIds();
 		if( user2GroupDataIDs.length > 0 ) {
 			request.addParam(XML_USER_TO_GROUP_EXIST_TREE, user2GroupDataIDs.join(","));
 
 			// 主用户组id
-			var mainGroupId = mainGroupRoot.getAttribute("id");
+            var mainGroupId;
+            page2Tree2.getAllNodes().each(function(i, node){
+                if(node.getAttribute('groupType') == '1') {
+                    mainGroupId = node.id;
+                }
+            });
 			request.addParam("mainGroupId", mainGroupId);
 		}
 
 		//用户对角色
-		var user2RoleDataIDs = $.T("page3Tree2").getCheckedIds();
+		var user2RoleDataIDs = $.T("page3Tree2").getAllNodeIds();
 		if( user2RoleDataIDs.length > 0) {
 			request.addParam(XML_USER_TO_ROLE_EXIST_TREE, user2RoleDataIDs.join(","));
 		}
@@ -701,7 +700,7 @@
 
 		request.onsuccess = function(){
 			// 解除提醒
-			detachReminder(page1Form.element.id);
+			detachReminder(page1Form.box.id);
 
 			// 如果当前grid显示为此用户所在组，则刷新grid
             var gridGroupId = $.G("grid").getColumnValue("groupId");

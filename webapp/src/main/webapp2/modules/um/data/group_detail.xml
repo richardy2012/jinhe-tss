@@ -1,42 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
 	<GroupInfo>
-	<xform action="null">
+	<xform>
 		<declare prefix="group">			
-			<column name="name" caption="名称" mode="string" empty="false" maxLength="50" editor="text"/>
-			<column name="description" caption="描述" mode="string" empty="true" maxLength="255" editor="textarea"/>
+			<column name="name" caption="名称" mode="string" empty="false" maxLength="50"/>
+			<column name="description" caption="描述" mode="string" maxLength="255" editor="textarea"/>
 		</declare>
 			
 	    <layout>
 		<TR>
-			<TD width="60">
-				<label binding="name" name="名称"/>
-			</TD>
-			<TD>
-				<input binding="name" name="名称"/>
-			</TD>
+			<TD width="60"><label binding="name"/></TD>
+			<TD><input binding="name"/></TD>
 		</TR>
 		<TR>
-			<TD>
-				<label binding="description" name="描述"/>
-			</TD>
-			<TD>
-				<input binding="description" name="描述" style="width:80%;height:80px;"/>
-			</TD>
+			<TD><label binding="description"/></TD>
+			<TD><input binding="description" style="width:80%;height:80px;"/></TD>
 		</TR>
 		</layout>
 		<data><row><name><![CDATA[研发部]]></name><description><![CDATA[test 用户组]]></description></row></data></xform>
 	</GroupInfo>
 	<Group2UserExistTree>
-        <actionSet title="" openednodeid="r2">
-            <treeNode id="_rootId" name="全部" icon="images/user_0.gif">
+        <actionSet>
+            <treeNode id="_root" name="全部" icon="images/user_0.gif" _open="true">
                 <treeNode id="1" name="用户x1.1" icon="images/user_0.gif"/>
 				<treeNode id="1" name="用户x1.3" icon="images/user_0.gif"/>
             </treeNode>
         </actionSet>
 	</Group2UserExistTree>
 	<Group2RoleTree>
-		<actionSet title="" openednodeid="r2">
+		<actionSet>
 			<treeNode id="r1" name="角色组1" icon="images/role_group_0.gif" isGroup="1">
 				<treeNode id="r1.1" name="角色组1.1" icon="images/role_group_0.gif" isGroup="1">
 					<treeNode id="r1.1.1" name="角色1.1.1" icon="images/role_0.gif" isGroup="0"/>
@@ -71,8 +63,8 @@
 		</actionSet>
 	</Group2RoleTree>
 	<Group2RoleExistTree>
-        <actionSet title="" openednodeid="r2">
-            <treeNode id="_rootId" name="全部" icon="images/role_0.gif">
+        <actionSet>
+            <treeNode id="_root" name="全部" icon="images/role_0.gif" _open="true">
                 <treeNode id="r1.1.1" name="角色1.1.1" icon="images/role_0.gif"/>
 				<treeNode id="r2.10" name="角色r2.10" icon="images/role_0.gif"/>
             </treeNode>

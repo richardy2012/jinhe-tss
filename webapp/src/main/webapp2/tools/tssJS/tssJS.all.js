@@ -4834,6 +4834,26 @@
                     this.checkNode(li.node, false);
                 }
             } 
+        },
+
+        getAllNodes: function() {
+            var lis = this.el.querySelectorAll("li[nodeId]");
+            var nodes = [];
+            $.each(lis, function(i, li) {
+                if(li.node.id != "_root") {
+                     nodes.push(li.node);
+                }
+            });
+            return nodes;
+        },
+
+        getAllNodeIds: function() {
+            var nodes = this.getAllNodes();
+            var nodeIds = [];
+            nodes.each(function(i, node){
+                nodeIds.push(node.id);
+            });
+            return nodeIds;
         }
     };
 

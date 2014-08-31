@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
 	<PermissionMatrix>
-		<actionSet title="" openednodeid="r1.0.1">
+		<actionSet>
 			<options>
 				<option>
 					<operationId>opt101</operationId>

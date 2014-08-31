@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Response>
 	<SourceList>
-		<grid version="2">
+		<grid>
 			<declare sequence="true" header="checkbox">
-				<column caption="姓名" name="userName" mode="string" align="center"/>
-				<column caption="" name="userId" mode="string" align="center" display="none"/>
-				<column caption="所在组" name="groupName" mode="string" align="center"/>
+				<column caption="姓名" name="userName" mode="string"/>
+				<column name="userId" mode="string" display="none"/>
+				<column caption="所在组" name="groupName" mode="string"/>
 			</declare>
 			<data>
 				<row id="1" groupName="用户组1.1" userName="用户1.1" userId="1"/>
