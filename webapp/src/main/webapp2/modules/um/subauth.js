@@ -17,7 +17,7 @@
     XML_RULE_TO_ROLE_IDS = "Rule2RoleIds";
 
     /* 默认唯一编号名前缀 */
-    CACHE_RULE_DETAIL = "rule__id";
+    CACHE_RULE_DETAIL = "_rule_id";
 	
     /* XMLHTTP请求地址汇总*/
 	URL_INIT        = AUTH_PATH + "subauthorize/list"; 
@@ -77,7 +77,7 @@
             visible:function(){return !isTreeRoot();}
         }
 
-        var menu1 = new Menu();
+        var menu1 = new $.Menu();
         menu1.addItem(item1);
         menu1.addItem(item2);
         menu1.addSeparator();
@@ -86,29 +86,18 @@
         menu1.addSeparator();
         menu1.addItem(item3);
 
-        $$("tree").contextmenu = menu1;
+        $1("tree").contextmenu = menu1;
     }
  
     function loadInitData(){
-        var p = new HttpRequestParams();
-        p.url = URL_INIT;
-
-        var request = new HttpRequest(p);
+        var request = new $.HttpRequest();
+        request.url = URL_INIT;
         request.onresult = function(){
             var ruleTreeNode = this.getNodeValue(XML_MAIN_TREE);			
-			$T("tree", ruleTreeNode);
+			var tree = $.T("tree", ruleTreeNode);
 			
-			var treeObj = $$("tree");
-			treeObj.onTreeNodeActived = function(eventObj){
-				var treeTitleObj = $$("treeTitle");
-				Focus.focus(treeTitleObj.firstChild.id);
-            }
-            treeObj.onTreeNodeDoubleClick = function(eventObj){
-                editRuleInfo();
-            }
-            treeObj.onTreeNodeRightClick = function(eventObj){
-				onTreeNodeRightClick(eventObj);
-            }
+			tree.onTreeNodeDoubleClick = function(ev) { editRuleInfo(); }
+            tree.onTreeNodeRightClick = function(ev) { onTreeNodeRightClick(ev); }
         }
         request.send();
     }
@@ -135,15 +124,15 @@
         inf.phases = phases;
         inf.callback = callback;
         inf.SID = CACHE_RULE_DETAIL + treeID;
-        var tab = ws.open(inf);
+        ws.open(inf);
     }
 
     function editRuleInfo() {
 		if( isTreeRoot() ) return;
 		
-		var treeNode = $T("tree").getActiveTreeNode();
-		var treeNodeID = treeNode.getId();
-		var treeNodeName = treeNode.getName();
+		var treeNode = $.T("tree").getActiveTreeNode();
+		var treeNodeID = treeNode.id;
+		var treeNodeName = treeNode.name;
 
 		var phases = [];
 		phases[0] = {page:"page1", label:"基本信息"};
@@ -164,152 +153,122 @@
 		inf.defaultPage = "page1";
 		inf.phases = phases;
 		inf.callback = callback;
-		var tab = ws.open(inf);
+		ws.open(inf);
     }
  
     function loadRuleDetailData(treeID) {
-		var p = new HttpRequestParams();
-		p.url = URL_RULE_DETAIL + treeID;
-		
-		var request = new HttpRequest(p);
+		var request = new $.HttpRequest();
+		request.url = URL_RULE_DETAIL + treeID;
 		request.onresult = function(){
-			var ruleInfoNode = this.getNodeValue(XML_RULE_INFO);
-			var rule2RoleTreeNode = this.getNodeValue(XML_RULE_TO_ROLE_TREE);
-			var rule2RoleExistTreeNode = this.getNodeValue(XML_RULE_TO_ROLE_EXIST_TREE);
-			var rule2UserTreeNode = this.getNodeValue(XML_RULE_TO_GROUP_TREE);
-			var rule2UserExistTreeNode = this.getNodeValue(XML_RULE_TO_USER_EXIST_TREE);
-			var rule2GroupTreeNode = this.getNodeValue(XML_RULE_TO_GROUP_TREE);
-			var rule2GroupExistTreeNode = this.getNodeValue(XML_RULE_TO_GROUP_EXIST_TREE);
+			var ruleInfoNode            = this.getNodeValue(XML_RULE_INFO);
+			var rule2RoleTreeNode       = this.getNodeValue(XML_RULE_TO_ROLE_TREE);
+			var rule2RoleExistTreeNode  = this.getNodeValue(XML_RULE_TO_ROLE_EXIST_TREE);
+			var rule2UserTreeNode       = this.getNodeValue(XML_RULE_TO_GROUP_TREE);
+			var rule2UserExistTreeNode  = this.getNodeValue(XML_RULE_TO_USER_EXIST_TREE);
+			var rule2GroupTreeNode      = this.getNodeValue(XML_RULE_TO_GROUP_TREE);
+			var rule2GroupExistTreeNode = this.getNodeValue(XML_RULE_TO_GROUP_EXIST_TREE);			
 			
+			disableTreeNodes(rule2RoleTreeNode,  "treeNode[isGroup='1']");
+			disableTreeNodes(rule2GroupTreeNode, "treeNode[id='-2']");
+			disableTreeNodes(rule2GroupTreeNode, "treeNode[id='-3']");
+
+			$.cache.XmlDatas[treeID + "." + XML_RULE_INFO] = ruleInfoNode;
+
+			var page1FormObj = $.F("page1Form", ruleInfoNode);
+
+			var page3Tree  = $.T("page3Tree",  rule2RoleTreeNode);
+			var page3Tree2 = $.T("page3Tree2", rule2RoleExistTreeNode);
+			var page2Tree  = $.T("page2Tree",  rule2GroupTreeNode);
+			var page2Tree2 = $.T("page2Tree2", rule2GroupExistTreeNode);			
+			var page4Tree  = $.T("page4Tree",  rule2UserTreeNode);
+			var page4Tree3 = $.T("page4Tree3", rule2UserExistTreeNode);
 			
-			disableTreeNodes(rule2RoleTreeNode, "//treeNode[@isGroup='1']");
-			disableSingleTreeNode(rule2GroupTreeNode, "//treeNode[@id='-2']");
-			disableSingleTreeNode(rule2GroupTreeNode, "//treeNode[@id='-3']");
-
-			Cache.XmlDatas.add(treeID + "." + XML_RULE_INFO, ruleInfoNode);
-
-			var page1FormObj = $X("page1Form", ruleInfoNode);
-			attachReminder("page1Form", page1FormObj);
-
-			var page3Tree  = $T("page3Tree",  rule2RoleTreeNode);
-			var page3Tree2 = $T("page3Tree2", rule2RoleExistTreeNode);
-			var page2Tree  = $T("page2Tree",  rule2GroupTreeNode);
-			var page2Tree2 = $T("page2Tree2", rule2GroupExistTreeNode);			
-			var page4Tree  = $T("page4Tree",  rule2UserTreeNode);
-			var page4Tree3 = $T("page4Tree3", rule2UserExistTreeNode);
-			
-			$$("page4Tree").onTreeNodeDoubleClick = function(eventObj){
-                onPage4TreeNodeDoubleClick(eventObj);
+			$1("page4Tree").onTreeNodeDoubleClick = function(ev){
+                onPage4TreeNodeDoubleClick(ev);
             }
 			
 			// 设置翻页按钮显示状态
-			$$("page4BtPrev").style.display = "";
-			$$("page2BtPrev").style.display = "";
-			$$("page1BtNext").style.display = "";
-			$$("page4BtNext").style.display = "";
+			$("#page4BtPrev").show();
+			$("#page2BtPrev").show();
+			$("#page1BtNext").show();
+			$("#page4BtNext").show();
 			
 			// 设置按钮操作
-			$$("page3BtAdd").onclick = function(){
+			$1("page3BtAdd").onclick = function(){
 				addTreeNode(page3Tree, page3Tree2);
 			}
-			$$("page3BtDel").onclick = function(){
-				removeTreeNode($T("page3Tree2"));
+			$1("page3BtDel").onclick = function(){
+				removeTreeNode($.T("page3Tree2"));
 			}
-			$$("page2BtAdd").onclick = function(){
+			$1("page2BtAdd").onclick = function(){
 				addTreeNode(page2Tree, page2Tree2);
 			}
-			$$("page2BtDel").onclick = function(){
-				removeTreeNode($T("page2Tree2"));
+			$1("page2BtDel").onclick = function(){
+				removeTreeNode($.T("page2Tree2"));
 			}
-			$$("page4BtAdd").onclick = function(){
-				addTreeNode($T("page4Tree2"), page4Tree3);
+			$1("page4BtAdd").onclick = function(){
+				addTreeNode($.T("page4Tree2"), page4Tree3);
 			}
-			$$("page4BtDel").onclick = function(){
-				 removeTreeNode($T("page4Tree3"));
+			$1("page4BtDel").onclick = function(){
+				 removeTreeNode($.T("page4Tree3"));
 			}
 
 			// 设置保存按钮操作
-			$$("page1BtSave").onclick = $$("page2BtSave").onclick = $$("page3BtSave").onclick = $$("page4BtSave").onclick = function(){
+			$1("page1BtSave").onclick = $1("page2BtSave").onclick = $1("page3BtSave").onclick = $1("page4BtSave").onclick = function(){
 				saveRule(treeID);
 			}
 		}
 		request.send();
- 
     }
  
-    function onPage4TreeNodeDoubleClick(eventObj) {
-	    var treeNode = $T("page4Tree").getActiveTreeNode();
-		Ajax({
-			url : URL_GROUP_USERS + treeNode.getId(),
+    function onPage4TreeNodeDoubleClick(ev) {
+	    var treeNode = $.T("page4Tree").getActiveTreeNode();
+		$.ajax({
+			url : URL_GROUP_USERS + treeNode.id,
 			onresult : function() { 
 				var sourceListNode = this.getNodeValue(XML_GROUP_TO_USER_LIST_TREE);
-				$T("page4Tree2", sourceListNode);
+				$.T("page4Tree2", sourceListNode);
 			}
 		});	
     }
 
     function saveRule(cacheID) {
         // 校验page1Form数据有效性
-        var page1FormObj = $X("page1Form");
+        var page1FormObj = $.F("page1Form");
         if( !page1FormObj.checkForm() ) {
             switchToPhase(ws, "page1");
             return;
         }
 
-        var p = new HttpRequestParams();
-        p.url = URL_SAVE_RULE;
-		var flag = false;
+        var request = new $.HttpRequest();
+        request.url = URL_SAVE_RULE;
  
 		// 策略基本信息
-		var ruleInfoNode = Cache.XmlDatas.get(cacheID+"."+XML_RULE_INFO);
-		if(ruleInfoNode){
-			var ruleInfoDataNode = ruleInfoNode.selectSingleNode(".//data");
-			if(ruleInfoDataNode){
-				flag = true;
-				p.setXFormContent(ruleInfoDataNode);
-			}
-		}
+		var ruleInfoNode = $.cache.XmlDatas[cacheID + "." + XML_RULE_INFO];
+		var ruleInfoDataNode = ruleInfoNode.querySelector("data");
+		request.setFormContent(ruleInfoDataNode);
 
 		// 转授出去的角色
-		var rule2RoleNode = $T("page3Tree2").getXmlRoot();
-		var rule2RoleDataIDs = getTreeNodeIds(rule2RoleNode);
-		if(rule2RoleDataIDs.length > 0) {
-			flag = true;
-			p.setContent(XML_RULE_TO_ROLE_IDS, rule2RoleDataIDs.join(","));
-		}
+		var rule2RoleIDs = $.T("page3Tree2").getAllNodeIds();
+		request.setContent(XML_RULE_TO_ROLE_IDS, rule2RoleIDs.join(","));
 
 		// 转授给用户
-		var rule2UserNode = $T("page4Tree3").getXmlRoot();
-		var rule2UserDataIDs = getTreeNodeIds(rule2UserNode);
-		if(rule2UserDataIDs.length > 0) {
-			flag = true;
-			p.setContent(XML_RULE_TO_USER_IDS, rule2UserDataIDs.join(","));
-		}
-
+		var rule2UserIDs = $.T("page4Tree3").getAllNodeIds();
+		request.setContent(XML_RULE_TO_USER_IDS, rule2UserIDs.join(","));
 
 		// 转授给用户组
-		var rule2GroupNode = $T("page2Tree2").getXmlRoot();
-		var rule2GroupDataIDs = getTreeNodeIds(rule2GroupNode);
-		if(rule2GroupDataIDs.length > 0) {
-			flag = true;
-			p.setContent(XML_RULE_TO_GROUP_IDS, rule2GroupDataIDs.join(","));
+		var rule2GroupIDs = $.T("page2Tree2").getAllNodeIds();
+		request.setContent(XML_RULE_TO_GROUP_IDS, rule2GroupIDs.join(","));
+		
+		//同步按钮状态
+		syncButton([$1("page1BtSave"), $1("page2BtSave"), $1("page3BtSave"), $1("page4BtSave")], request);
+
+		request.onsuccess = function(){	
+			loadInitData();
+			ws.closeActiveTab();
 		}
 
-		if( flag ) {
-			var request = new HttpRequest(p);
-			
-			//同步按钮状态
-			syncButton([$$("page1BtSave"), $$("page2BtSave"), $$("page3BtSave"), $$("page4BtSave")], request);
-
-			request.onsuccess = function(){	
-				detachReminder(cacheID); // 解除提醒
-				loadInitData();
-				ws.closeActiveTab();
-			}
-
-			request.send();
-		}
+		request.send();
 	}
 	
-
     window.onload = init;

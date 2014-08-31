@@ -18,10 +18,10 @@
     /*
      *	默认唯一编号名前缀
      */
-    CACHE_ROLE_GROUP_DETAIL = "roleGroup__id";
-    CACHE_VIEW_ROLE_GROUP_DETAIL = "viewRoleGroup__id";
-    CACHE_ROLE_DETAIL = "role__id";
-    CACHE_VIEW_ROLE_DETAIL = "viewRole__id";
+    CACHE_ROLE_GROUP_DETAIL = "_roleGroup_id";
+    CACHE_VIEW_ROLE_GROUP_DETAIL = "_viewRoleGroup_id";
+    CACHE_ROLE_DETAIL = "_role_id";
+    CACHE_VIEW_ROLE_DETAIL = "_viewRole_id";
  
     /*
      *	XMLHTTP请求地址汇总
@@ -38,6 +38,7 @@
     URL_GET_OPERATION     = AUTH_PATH + "role/operations/";  // {id}
 
     URL_SEARCH_ROLE_USERS = AUTH_PATH + "search/role/users/";
+    URL_POPUP_TREE = AUTH_PATH + "role/groups";
 	
 	if(IS_TEST) {
 	    URL_SOURCE_TREE       = "data/role_tree.xml?";
@@ -50,6 +51,8 @@
 		URL_GROUP_USERS       = "data/userlist.xml?";
 		URL_MOVE_NODE         = "data/_success.xml?";
 		URL_GET_OPERATION     = "data/operation.xml?";
+
+		URL_POPUP_TREE = "data/rolegroup_tree.xml";
 	}
  
     function init() {
@@ -62,6 +65,7 @@
     }
 
     function initMenus() {
+    	ICON = "images/"
         var item1 = {
             label:"新建角色组",
             callback:addNewRoleGroup,           
@@ -110,7 +114,7 @@
         }
         var item10 = {
             label:"给角色授权",
-            icon:ICON + "um/role_permission.gif",
+            icon:ICON + "role_permission.gif",
             callback:setRolePermission,           
             visible:function() {return isRole() && getOperation("2");}
         }
@@ -125,7 +129,7 @@
             visible:function() {return isRole() && getOperation("2");}
         }
 
-        var menu1 = new Menu();
+        var menu1 = new $.Menu();
 		menu1.addItem(item1);
         menu1.addItem(item9);
 		menu1.addSeparator();
@@ -139,22 +143,16 @@
         menu1.addItem(item12);
         menu1.addItem(item13);
 
-        $$("tree").contextmenu = menu1;
+        $1("tree").contextmenu = menu1;
     }
 
 	function loadInitData() {
         var onresult = function() {
             var roleTreeNode = this.getNodeValue(XML_MAIN_TREE);
-			$T("tree", roleTreeNode);
-			
-			var treeObj = $$("tree");
+			var tree = $.T("tree", roleTreeNode);
 
-            treeObj.onTreeNodeActived = function(eventObj) {
-				var treeTitleObj = $$("treeTitle");
-				Focus.focus(treeTitleObj.firstChild.id);
-            }
-            treeObj.onTreeNodeDoubleClick = function(eventObj) {
-				var treeNode = eventObj.treeNode;
+            tree.onTreeNodeDoubleClick = function(ev) {
+				var treeNode = ev.treeNode;
 				getTreeOperation(treeNode, function(_operation) {            
 					if( !isRootNode() ) {
 						var canEdit = checkOperation("4", _operation);
@@ -162,12 +160,10 @@
 					}
 				});
             }
-            treeObj.onTreeNodeRightClick = function(eventObj) {
-				 onTreeNodeRightClick(eventObj, true);
-            }
+            tree.onTreeNodeRightClick = function(ev) { onTreeNodeRightClick(ev, true); }
         }
 		
-		Ajax({url: URL_SOURCE_TREE, onresult: onresult});
+		$.ajax({url: URL_SOURCE_TREE, onresult: onresult});
     }
 	
 	/* 是否根节点 */
@@ -188,12 +184,15 @@
 	}
  
 	function moveNodeTo() {
-        var tree = $T("tree");
-		var treeNodeID = tree.getActiveTreeNode().getId();
-		var targetId = window.showModalDialog("rolegrouptree.htm", {id:treeNodeID}, "dialogWidth:300px;dialogHeight:400px;");
-		if( targetId) {
-			moveTreeNode(tree, treeNodeID, targetId);
-		}
+		var tree = $.T("tree");
+        var treeNode = tree.getActiveTreeNode();
+		var id  = treeNode.id;
+        var pId = treeNode.parent.id;
+
+        var params = {id:id, parentID: pId};
+		popupTree(URL_POPUP_TREE, "GroupTree", params, function(target) {
+            moveTreeNode(tree, id, target.id);
+        });
     }
   
     function editTreeNode(editable) {
@@ -205,8 +204,8 @@
     }
 
 	function addNewRoleGroup() {
-        var treeNode = $T("tree").getActiveTreeNode();
-		var parentID = treeNode.getId();
+        var treeNode = $.T("tree").getActiveTreeNode();
+		var parentID = treeNode.id;
 		var treeName = "角色组";
 		var treeID = DEFAULT_NEW_ID;
 
@@ -220,20 +219,16 @@
 		var inf = {};
 		inf.defaultPage = "page1";
 		inf.label = OPERATION_ADD.replace(/\$label/i, treeName);
-		inf.phases = null;
 		inf.callback = callback;
 		inf.SID = CACHE_ROLE_GROUP_DETAIL + treeID;
-		var tab = ws.open(inf);
+		ws.open(inf);
     }
 	
-    /*
-     *	编辑角色组信息
-     */
     function editRoleGroupInfo(editable) {
-        var treeNode = $T("tree").getActiveTreeNode();
-		var treeID = treeNode.getId();
-		var treeName = treeNode.getName();
-		var parentID = treeNode.getParent().getId();
+        var treeNode = $.T("tree").getActiveTreeNode();
+		var treeID = treeNode.id;
+		var treeName = treeNode.name;
+		var parentID = treeNode.parent.id;
 
 		var callback = {};
 		callback.onTabChange = function() {
@@ -263,23 +258,23 @@
                 string:parentID             父节点id
      */
     function loadRoleGroupDetailData(treeID, editable, parentID) {
-		Ajax({
+		$.ajax({
 			url : URL_ROLE_GROUP_DETAIL + treeID + "/" + parentID,
 			onresult : function() {					
 				var roleGroupInfoNode = this.getNodeValue(XML_ROLE_GROUP_INFO);
 
 				var roleGroupInfoNodeID = treeID + "." + XML_ROLE_GROUP_INFO;
-				Cache.XmlDatas.add(roleGroupInfoNodeID, roleGroupInfoNode);
+				$.cache.XmlDatas[roleGroupInfoNodeID] = roleGroupInfoNode;
 
-				var xform = $X("page1Form", roleGroupInfoNode);
+				var xform = $.F("page1Form", roleGroupInfoNode);
 				xform.editable = editable == false ? "false" : "true";
 				
 				// 设置翻页按钮显示状态
-				$$("page1BtNext").style.display = "none";
+				$1("page1BtNext").style.display = "none";
 
 				//设置保存按钮操作
-				var page1BtSaveObj = $$("page1BtSave");
-				var page2BtSaveObj = $$("page2BtSave");
+				var page1BtSaveObj = $1("page1BtSave");
+				var page2BtSaveObj = $1("page2BtSave");
 				page1BtSaveObj.disabled = page2BtSaveObj.disabled = (editable==false ? true : false)
 				page1BtSaveObj.onclick = page2BtSaveObj.onclick = function() {
 					saveRoleGroup(treeID, parentID);
@@ -289,7 +284,7 @@
     }
 
     function saveRoleGroup(cacheID, parentID) {
-		var xform = $X("page1Form");	
+		var xform = $.F("page1Form");	
 		if( !xform.checkForm() ) return;
 	
         var flag = false;
@@ -298,7 +293,7 @@
         p.url = URL_SAVE_ROLE_GROUP;
  
 		// 角色组基本信息
-		var roleGroupInfoNode = Cache.XmlDatas.get(cacheID + "." + XML_ROLE_GROUP_INFO);
+		var roleGroupInfoNode = $.cache.XmlDatas[cacheID + "." + XML_ROLE_GROUP_INFO];
 		if( roleGroupInfoNode ) {
 			var roleGroupInfoDataNode = roleGroupInfoNode.selectSingleNode(".//data");
 			if( roleGroupInfoDataNode ) {
@@ -308,9 +303,9 @@
 		}        
  
         if( flag ) {
-            var request = new HttpRequest(p);
+            var request = new $.HttpRequest();
             // 同步按钮状态
-            syncButton([$$("page1BtSave"), $$("page2BtSave")], request);
+            syncButton([$1("page1BtSave"), $1("page2BtSave")], request);
 
             request.onresult = function() {
 				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
@@ -336,8 +331,8 @@
 	phases[2] = {page:"page2", label:"用户组织"};
 	
 	function addNewRole() {
-        var treeNode = $T("tree").getActiveTreeNode();
-		var parentID = treeNode.getId();
+        var treeNode = $.T("tree").getActiveTreeNode();
+		var parentID = treeNode.id;
 		var treeName = "角色";
 		var treeID = DEFAULT_NEW_ID;
 
@@ -358,10 +353,10 @@
     }
 
     function editRoleInfo(editable) {
-        var treeNode = $T("tree").getActiveTreeNode();
-		var treeID = treeNode.getId();
-		var treeName = treeNode.getName();
-		var parentID = treeNode.getParent().getId();
+        var treeNode = $.T("tree").getActiveTreeNode();
+		var treeID = treeNode.id;
+		var treeName = treeNode.name;
+		var parentID = treeNode.parent.id;
  
 		var callback = {};
 		callback.onTabChange = function() {
@@ -381,7 +376,7 @@
 		inf.defaultPage = "page1";
 		inf.phases = phases;
 		inf.callback = callback;
-		var tab = ws.open(inf);
+		ws.open(inf);
     }
 	
     /*
@@ -393,153 +388,119 @@
     function loadRoleDetailData(treeID, editable, parentID) {
 		var onresult = function() {
 			var roleInfoNode = this.getNodeValue(XML_ROLE_INFO);
-			var role2UserTreeNode = this.getNodeValue(XML_ROLE_TO_GROUP_TREE);
-			var role2UserExsitInfo = this.getNodeValue(XML_ROLE_TO_USER_EXIST_TREE);
-			var role2GroupTreeNode = this.getNodeValue(XML_ROLE_TO_GROUP_TREE);
+			var role2UserTreeNode   = this.getNodeValue(XML_ROLE_TO_GROUP_TREE);
+			var role2UserExsitInfo  = this.getNodeValue(XML_ROLE_TO_USER_EXIST_TREE);
+			var role2GroupTreeNode  = this.getNodeValue(XML_ROLE_TO_GROUP_TREE);
 			var role2GroupExsitInfo = this.getNodeValue(XML_ROLE_TO_GROUP_EXIST_TREE);
  
-			disableSingleTreeNode(role2GroupTreeNode, "//treeNode[@id='-2']");
-			disableSingleTreeNode(role2GroupTreeNode, "//treeNode[@id='-3']");
+			disableTreeNodes(role2GroupTreeNode, "treeNode[id='-2']");
+			disableTreeNodes(role2GroupTreeNode, "treeNode[id='-3']");
 
 			var roleInfoNodeID  = treeID + "." + XML_ROLE_INFO;
-			Cache.XmlDatas.add(roleInfoNodeID, roleInfoNode);
+			$.cache.XmlDatas[roleInfoNodeID] = roleInfoNode;
 
-			var page1FormObj = $X("page1Form", roleInfoNode);
+			var page1FormObj = $.F("page1Form", roleInfoNode);
             page1FormObj.editable = editable ? "true" : "false";
 
-			attachReminder(roleInfoNodeID, page1FormObj);
-
-			var page4Tree  = $T("page4Tree",  role2UserTreeNode);
-			var page4Tree3 = $T("page4Tree3", role2UserExsitInfo);
-			var page2Tree  = $T("page2Tree",  role2GroupTreeNode);
-			var page2Tree2 = $T("page2Tree2", role2GroupExsitInfo);
+			var page4Tree  = $.T("page4Tree",  role2UserTreeNode);
+			var page4Tree3 = $.T("page4Tree3", role2UserExsitInfo);
+			var page2Tree  = $.T("page2Tree",  role2GroupTreeNode);
+			var page2Tree2 = $.T("page2Tree2", role2GroupExsitInfo);
 					
-			$$("page4Tree").onTreeNodeDoubleClick = function(eventObj) {
+			page4Tree.onTreeNodeDoubleClick = function(ev) {
                 var treeNode = page4Tree.getActiveTreeNode();
-				Ajax({
-					url : URL_GROUP_USERS + treeNode.getId(),
+				$.ajax({
+					url : URL_GROUP_USERS + treeNode.id,
 					onresult : function() { 
 						var sourceListNode = this.getNodeValue(XML_GROUP_TO_USER_LIST_TREE);
-						$T("page4Tree2", sourceListNode);
+						$.T("page4Tree2", sourceListNode);
 					}
 				});	
             }
 			
-			 //设置翻页按钮显示状态
-			$$("page4BtPrev").style.display = "";
-			$$("page2BtPrev").style.display = "";
-			$$("page1BtNext").style.display = "";
-			$$("page4BtNext").style.display = "";
+			// 设置翻页按钮显示状态
+			$("#page4BtPrev").show();
+			$("#page2BtPrev").show();
+			$("#page1BtNext").show();
+			$("#page4BtNext").show();
 
-			var disabled = editable==false;
+			var disabled = (editable == false);
 			
 			// 设置按钮操作
-			var page2BtAddObj = $$("page2BtAdd");
-			page2BtAddObj.disabled = disabled;
-			page2BtAddObj.onclick = function() {
+			$1("page2BtAdd").onclick = function() {
 				addTreeNode(page2Tree, page2Tree2);
 			}
-
-			var page2BtDelObj = $$("page2BtDel");
-			page2BtDelObj.disabled = disabled;
-			page2BtDelObj.onclick = function() {
-				removeTreeNode($T("page2Tree2")); // 删除page2里tree节点
+			$1("page2BtAdd").onclick = function() {
+				removeTreeNode($.T("page2Tree2")); // 删除page2里tree节点
 			}
-
-			var page4BtAddObj = $$("page4BtAdd");
-			page4BtAddObj.disabled = disabled;
-			page4BtAddObj.onclick = function() {
-				 addTreeNode($T("page4Tree2"), page4Tree3);
+			$1("page4BtAdd").onclick = function() {
+				addTreeNode($.T("page4Tree2"), page4Tree3);
 			}
-
-			var page4BtDelObj = $$("page4BtDel");
-			page4BtDelObj.disabled = disabled;
-			page4BtDelObj.onclick = function() {
-				 removeTreeNode($T("page4Tree3")); // 删除page4里tree节点
+			$1("page4BtDel").onclick = function() {
+				removeTreeNode($.T("page4Tree3")); // 删除page4里tree节点
 			}
 
 			// 设置保存按钮操作
-			var page1BtSaveObj = $$("page1BtSave");
-			var page2BtSaveObj = $$("page2BtSave");
-			var page4BtSaveObj = $$("page4BtSave");
+			var page1BtSaveObj = $1("page1BtSave");
+			var page2BtSaveObj = $1("page2BtSave");
+			var page4BtSaveObj = $1("page4BtSave");
 			page1BtSaveObj.disabled = page2BtSaveObj.disabled = page4BtSaveObj.disabled = disabled;
 			page1BtSaveObj.onclick = page2BtSaveObj.onclick = page4BtSaveObj.onclick = function() {
 				saveRole(treeID, parentID);
 			}
 		}
 
-		Ajax({url: URL_ROLE_DETAIL + treeID + "/" + parentID, onresult: onresult});
+		$.ajax({url: URL_ROLE_DETAIL + treeID + "/" + parentID, onresult: onresult});
     }
  
     function saveRole(cacheID, parentID) {
         // 校验page1Form数据有效性
-        var page1FormObj = $X("page1Form");
+        var page1FormObj = $.F("page1Form");
         if( !page1FormObj.checkForm() ) {
             switchToPhase(ws, "page1");
             return;
         }
 
-        var p = new HttpRequestParams();
-        p.url = URL_SAVE_ROLE;
+        var request = new $.HttpRequest();
+        request.url = URL_SAVE_ROLE;
  
 		// 角色基本信息
-		var roleInfoNode = Cache.XmlDatas.get(cacheID + "." + XML_ROLE_INFO);
-		if(roleInfoNode) {
-			var roleInfoDataNode = roleInfoNode.selectSingleNode(".//data");
-			if(roleInfoDataNode) {
-				flag = true;
-				p.setXFormContent(roleInfoDataNode);
-			}
-		}
+		var roleInfoNode = $.cache.XmlDatas[cacheID + "." + XML_ROLE_INFO];
+		var roleInfoDataNode = roleInfoNode.querySelector("data");
+		request.setFormContent(roleInfoDataNode);
 
 		// 角色对用户
-		var role2UserNode = $T("page4Tree3").getXmlRoot();
-		var role2UserDataIDs = getTreeNodeIds(role2UserNode);
-		if(role2UserDataIDs.length > 0) {
-			flag = true;
-			p.setContent(XML_ROLE_TO_USER_IDS, role2UserDataIDs.join(","));
-		}
+		var role2UserIDs = $.T("page4Tree3").getAllNodeIds();
+		request.addParam(XML_ROLE_TO_USER_IDS, role2UserIDs.join(","));
 
 		// 角色对用户组
-		var role2GroupNode = $T("page2Tree2").getXmlRoot();
-		var role2GroupDataIDs = getTreeNodeIds(role2GroupNode);
-		if(role2GroupDataIDs.length > 0) {
-			flag = true;
-			p.setContent(XML_ROLE_TO_GROUP_IDS, role2GroupDataIDs.join(","));
-		}      
+		var role2GroupIDs = $.T("page2Tree2").getAllNodeIds();
+		request.addParam(XML_ROLE_TO_GROUP_IDS, role2GroupIDs.join(","));
 
-        if(flag) {
-            var request = new HttpRequest(p);
-			
-            // 同步按钮状态
-            syncButton([$$("page1BtSave"), $$("page2BtSave"), $$("page4BtSave")], request);
+        // 同步按钮状态
+        syncButton([$1("page1BtSave"), $1("page2BtSave"), $1("page4BtSave")], request);
 
-            request.onresult = function() {                   
-				detachReminder(cacheID); //解除提醒
+        request.onresult = function() {                   
+			var treeNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
+			appendTreeNode(parentID, treeNode);
 
-				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
-				appendTreeNode(parentID, treeNode);
-
-				ws.closeActiveTab();
-            }
-            request.onsuccess = function() {                  
-				detachReminder(cacheID);  //解除提醒
-				
-				var name = page1FormObj.getData("name");
-				modifyTreeNode(cacheID, "name", name, true); //更新树节点名称
-
-				ws.closeActiveTab();
-            }
-            request.send();
+			ws.closeActiveTab();
         }
+        request.onsuccess = function() {                  
+			var name = page1FormObj.getData("name");
+			modifyTreeNode(cacheID, "name", name); //更新树节点名称
+
+			ws.closeActiveTab();
+        }
+        request.send();
     }		
 
     /* 角色权限设置 */
     function setRolePermission() {
-        var treeNode = $T("tree").getActiveTreeNode();		
-		var title = "设置\"" + treeNode.getName() + "\"权限";
+        var treeNode = $.T("tree").getActiveTreeNode();		
+		var title = "设置\"" + treeNode.name + "\"权限";
 		var params = {
-			roleId: treeNode.getId(),
+			roleId: treeNode.id,
 			isRole2Resource: "1"
 		};
 		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:800px;dialogHeight:600px;resizable:no");
@@ -547,10 +508,10 @@
     
     /* 授予角色 */
     function setRole2Permission() {
-        var treeNode = $T("tree").getActiveTreeNode();
-		var title = "授予\"" + treeNode.getName() + "\"角色";
+        var treeNode = $.T("tree").getActiveTreeNode();
+		var title = "授予\"" + treeNode.name + "\"角色";
 		var params = {
-			roleId: treeNode.getId(),
+			roleId: treeNode.id,
 			resourceType: "2",
 			applicationId: "tss",
 			isRole2Resource: "0"
@@ -560,15 +521,10 @@
 
     /* 综合查询(所有拥有指定角色的用户列表) */
     function generalSearchRoleUsers() {
-        var treeNode  = $T("tree").getActiveTreeNode();
-		var roleId   = treeNode.getId();
-		var roleName = treeNode.getName();
-
-        var url = URL_SEARCH_ROLE_USERS + roleId;
-
-        window.showModalDialog("../portal/commongrid.html", {service: url, nodename: XML_SEARCH_ROLE_USERS, title:"查看拥有角色【" + roleName +"】的用户列表"} , 
-            "dialogWidth:300px;dialogHeight:500px;resizable:yes");
+        var treeNode = getActiveTreeNode();
+        var title = "拥有角色【" + treeNode.name +"】的用户列表";
+        var url = URL_SEARCH_ROLE_USERS + treeNode.id;
+        popupGrid(url, XML_SEARCH_ROLE_USERS, title);
     }
-
 
 	window.onload = init;

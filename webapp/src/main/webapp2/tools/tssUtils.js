@@ -25,7 +25,7 @@
 OPERATION_ADD        = "新建[$label]";
 OPERATION_VIEW       = "查看[$label]";
 OPERATION_DEL        = "删除[$label]";
-OPERATION_EDIT 		 = "编辑[$label]";
+OPERATION_EDIT 		 = "修改[$label]";
 OPERATION_SEARCH 	 = "查询[$label]";
 OPERATION_IMPORT 	 = "导入[$label]";
 OPERATION_SETTING    = "设置[$label]";
@@ -66,7 +66,9 @@ function initPaletteResize() {
 /* 事件绑定初始化 */
 function initEvents() {
 	/* 点击树刷新按钮 */
-	$.Event.addEvent($(".refreshTreeBT")[0], "click", function() { loadInitData(); });
+	var refreshTreeBT = $(".refreshTreeBT")[0];
+	refreshTreeBT.title = "刷新";
+	$.Event.addEvent(refreshTreeBT, "click", function() { loadInitData(); });
 
 	/* 点击左栏控制按钮 */
 	if($1("paletteOpen")) {
@@ -888,6 +890,34 @@ function removeDialog() {
 	$.removeNode($(".dialog")[0]); 
 }
 
-function popupGrid(url, nodeName, params, callback) {
+function popupGrid(url, nodeName, title, params) {
+	var boxName = "popupGrid_" + $.getUniqueID();
+	var el = $.createElement("div", "dialog");
+	el.innerHTML = '<h1>' + title + '</h1>' +
+		'<Grid:Box id="' + boxName + '"><div class="loading"></div></Grid:Box>' + 
+	    '<div class="bts">' + 
+       	   '<input type="button" value="关闭" class="btWeak"/>' +  
+	    '</div>';
+	document.body.appendChild(el);
+	$(el).center(300, 400);
 
+	$.ajax({
+		url: url,
+		params: params || {},
+		onresult: function() {
+			$.G(boxName, this.getNodeValue(nodeName));
+
+			$(".bts .btWeak", el).click(function(){
+				removeDialog();
+			});
+		}
+	});
+}
+
+function popupGroupTree(callback) {
+	var url = AUTH_PATH + "group/visibleList";
+	if(IS_TEST) {
+		url = "data/group_tree.xml";
+	}
+	popupTree(url, "GroupTree", {}, callback)
 }

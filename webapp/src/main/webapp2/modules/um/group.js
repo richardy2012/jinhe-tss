@@ -63,12 +63,12 @@
 		URL_INIT_PASSWORD = "data/_success.xml?";
 		URL_GET_OPERATION = "data/operation.xml?";
 		
-		URL_SEARCH_USER = "data/user_search.xml?";
-		URL_SEARCH_ROLE = "data/group_search_role.xml?";
-		URL_SEARCH_SUBAUTH = "data/group_search_subauth.xml?";
-		URL_SYNC_GROUP = "data/_progress.xml?";
+		URL_SEARCH_USER    = "data/user_search.xml?";
+		URL_SEARCH_ROLE    = "data/user_grid.xml?";
+		URL_SEARCH_SUBAUTH = "data/user_grid.xml?";
+		URL_SYNC_GROUP    = "data/_progress.xml?";
 		URL_SYNC_PROGRESS = "data/_progress.xml?";
-		URL_CANCEL_SYNC = "data/_success.xml?";
+		URL_CANCEL_SYNC   = "data/_success.xml?";
 	}
  
     function init() {
@@ -273,37 +273,31 @@
 
             showUserList(defaultOpenId || -7);
 
-			tree.onTreeNodeActived = function(eventObj){
-                onTreeNodeActived(eventObj);
-            }
-            tree.onTreeNodeDoubleClick = function(eventObj){
-				var treeNode = eventObj.treeNode;
+			tree.onTreeNodeActived = function(ev){ onTreeNodeActived(ev); }
+            tree.onTreeNodeDoubleClick = function(ev){
+				var treeNode = ev.treeNode;
 				getTreeOperation(treeNode, function(_operation) {
 					if(treeNode.id != -2) { // 防止浏览到Admin和匿名用户
 						showUserList();
 					}
 				});
             }
-            tree.onTreeNodeMoved = function(eventObj){
-                sort(eventObj);
-            }
-            tree.onTreeNodeRightClick = function(eventObj){
-                onTreeNodeRightClick(eventObj, true);
-            }
+            tree.onTreeNodeMoved = function(ev){ sort(ev); }
+            tree.onTreeNodeRightClick = function(ev){ onTreeNodeRightClick(ev, true); }
         }
         
 		$.ajax({url : URL_INIT, method : "GET", onresult : onresult});
     }
  
-	function sort(eventObj) {
-		var movedNode  = eventObj.movedTreeNode;
+	function sort(ev) {
+		var movedNode  = ev.dragNode;
 		var movedNodeID = movedNode.id;		
 		if("-2" == movedNodeID || "-3" == movedNodeID ) {
 			alert("不能移动此节点!");
 			return;
 		}
 
-		sortTreeNode(URL_SORT_GROUP, eventObj);
+		sortTreeNode(URL_SORT_GROUP, ev);
 	}
  
 	/* 初始化密码  */
@@ -389,7 +383,7 @@
 				var page4Tree3 = $.T("page4Tree3", group2UserGridNode);
 				var page4Tree  = $.T("page4Tree",  group2UserTreeNode);
 				
-                page4Tree.onTreeNodeDoubleClick = function(eventObj) {
+                page4Tree.onTreeNodeDoubleClick = function(ev) {
 					var treeNode = page4Tree.getActiveTreeNode();
 					$.ajax({
 						url : URL_GROUP_USERS + treeNode.id,
@@ -451,17 +445,13 @@
 
 		// 用户组对用户
 		if( !isMainGroup() ) {
-			var group2UserDataIDs = $.T("page4Tree3").getAllNodeIds();
-			if(group2UserDataIDs.length > 0) {
-				request.addParam(XML_GROUP_TO_USER_EXIST_TREE, group2UserDataIDs.join(","));
-			}
+			var group2UserIDs = $.T("page4Tree3").getAllNodeIds();
+			request.addParam(XML_GROUP_TO_USER_EXIST_TREE, group2UserIDs.join(","));
 		}
 
 		// 用户组对角色
-		var group2RoleDataIDs = $.T("page3Tree2").getAllNodeIds();
-		if( group2RoleDataIDs.length > 0) {
-			request.addParam(XML_GROUP_TO_ROLE_EXIST_TREE, group2RoleDataIDs.join(","));
-		}
+		var group2RoleIDs = $.T("page3Tree2").getAllNodeIds();
+		request.addParam(XML_GROUP_TO_ROLE_EXIST_TREE, group2RoleIDs.join(","));
 		
         // 同步按钮状态
         syncButton([$1("page1BtSave"), $1("page4BtSave"), $1("page3BtSave")], request);
@@ -675,25 +665,21 @@
 		request.setFormContent(userInfoDataNode);
  
 		//用户对用户组
-		var user2GroupDataIDs = $.T("page2Tree2").getAllNodeIds();
-		if( user2GroupDataIDs.length > 0 ) {
-			request.addParam(XML_USER_TO_GROUP_EXIST_TREE, user2GroupDataIDs.join(","));
+		var user2GroupIDs = $.T("page2Tree2").getAllNodeIds();
+		request.addParam(XML_USER_TO_GROUP_EXIST_TREE, user2GroupIDs.join(","));
 
-			// 主用户组id
-            var mainGroupId;
-            page2Tree2.getAllNodes().each(function(i, node){
-                if(node.getAttribute('groupType') == '1') {
-                    mainGroupId = node.id;
-                }
-            });
-			request.addParam("mainGroupId", mainGroupId);
-		}
+		// 主用户组id
+        var mainGroupId;
+        page2Tree2.getAllNodes().each(function(i, node){
+            if(node.getAttribute('groupType') == '1') {
+                mainGroupId = node.id;
+            }
+        });
+		request.addParam("mainGroupId", mainGroupId);
 
 		//用户对角色
-		var user2RoleDataIDs = $.T("page3Tree2").getAllNodeIds();
-		if( user2RoleDataIDs.length > 0) {
-			request.addParam(XML_USER_TO_ROLE_EXIST_TREE, user2RoleDataIDs.join(","));
-		}
+		var user2RoleIDs = $.T("page3Tree2").getAllNodeIds();
+		request.addParam(XML_USER_TO_ROLE_EXIST_TREE, user2RoleIDs.join(","));
 		
 		//同步按钮状态
 		syncButton([$1("page1BtSave"), $1("page2BtSave"), $1("page3BtSave")], request);
@@ -738,7 +724,6 @@
 		});
     }  
  
-    /* 搜索用户 */
     function searchUser(){
         var treeNode = $.T("tree").getActiveTreeNode();
 		var treeID   = treeNode.id;
@@ -755,26 +740,18 @@
  
     /* 综合查询(用户角色查询) */
     function generalSearchRole(){
-        var treeNode  = $.T("tree").getActiveTreeNode();  
-		var groupId   = treeNode.id;
-		var groupName = treeNode.name;
-
-        var url = URL_SEARCH_ROLE + groupId;
-
-        window.showModalDialog("../portal/commongrid.html", {service: url, nodename: XML_SEARCH_ROLE, title:"查看【" + groupName +"】组下用户的角色信息"} , 
-            "dialogWidth:500px;dialogHeight:500px;resizable:yes");
+        var treeNode = getActiveTreeNode();
+        var title = "查看【" + treeNode.name +"】组下用户的角色信息";
+        var url = URL_SEARCH_ROLE + treeNode.id;
+        popupGrid(url, XML_SEARCH_ROLE);
     }
 	
 	/* 综合查询(用户转授查询) */
     function generalSearchSubauth() {
-        var treeNode  = $.T("tree").getActiveTreeNode();
-		var groupId   = treeNode.id;
-		var groupName = treeNode.name;
-
-        var url = URL_SEARCH_SUBAUTH + groupId;
-
-        window.showModalDialog("../portal/commongrid.html", {service: url, nodename: XML_SEARCH_SUBAUTH, title:"查看组【" + groupName +"】下用户的转授信息"} , 
-            "dialogWidth:700px;dialogHeight:500px;resizable:yes");
+        var treeNode = getActiveTreeNode();
+        var title = "查看组【" + treeNode.name +"】下用户的转授角色信息";
+        var url = URL_SEARCH_SUBAUTH + treeNode.id;
+        popupGrid(url, XML_SEARCH_SUBAUTH);
     }
  
     window.onload = init;

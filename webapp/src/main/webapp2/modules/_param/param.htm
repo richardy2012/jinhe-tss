@@ -181,7 +181,7 @@
 					if( !isTreeRoot() ) { editParamInfo(false); }
 				}
 				tree.onTreeNodeMoved = function(ev) {
-					sortTreeNode(URL_SORT_PARAM, eventObj);
+					sortTreeNode(URL_SORT_PARAM, ev);
 				}
 				tree.onTreeNodeRightClick = function(ev) {
 					tree.el.contextmenu.show(ev.clientX, ev.clientY); 
@@ -427,9 +427,9 @@
         <div>
             <div class="bar">
                 <span class="icon"></span>参数列表
-                <span class="refreshTreeBT" title="刷新"></span>
+                <span class="refreshTreeBT"></span>
             </div>
-            <Tree:Box id="tree"><div class="loading"></div></Tree:Box>
+            <Tree:Box id="tree" moveable="true"><div class="loading"></div></Tree:Box>
         </div> 
 	</td>
 	<td class="groove"> 

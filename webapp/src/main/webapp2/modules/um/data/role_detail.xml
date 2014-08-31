@@ -5,20 +5,25 @@
 			<declare>
 				<column name="id" caption="ID号" mode="string" editable="false"/>
 				<column name="name" caption="名称" mode="string"/>
-				<column name="remarks" caption="说明" mode="string" empty="false"/>
+				<column name="youxiaoqi" caption="有效期" mode="date"/>
+				<column name="remark" caption="说明" mode="string" empty="false"/>
 			</declare>
 			<layout>
 				<TR>
 					<TD width="50"><label binding="id"/></TD>
-					<TD><input binding="id" type="text"/></TD>
+					<TD><input binding="id"/></TD>
 				</TR>
 				<TR>
-					<TD width="50"><label binding="name"/></TD>
-					<TD><input binding="name" type="text"/></TD>
+					<TD><label binding="name"/></TD>
+					<TD><input binding="name"/></TD>
 				</TR>
 				<TR>
-					<TD width="50" valign="top"><label binding="remarks"/></TD>
-					<TD><textarea binding="remarks" style="width:100%;height:100"/></TD>
+					<TD><label binding="youxiaoqi"/></TD>
+					<TD><input binding="youxiaoqi"/></TD>
+				</TR>
+				<TR>
+					<TD valign="top"><label binding="remark"/></TD>
+					<TD><textarea binding="remark" style="width:100%;height:100px;"/></TD>
 				</TR>
 			</layout>
 			<data>
@@ -32,7 +37,7 @@
 	</RoleInfo>
 	<Role2UserTree>
 		<actionSet>
-			<treeNode id="-2" name="主用户组" icon="images/user_group_0.gif" groupType="1">
+			<treeNode id="-2" name="主用户组" icon="images/user_group_0.gif" groupType="1" _open="true">
 				<treeNode id="r1.1" name="用户组1.1" icon="images/user_group_0.gif" groupType="1">
 					<treeNode id="r1.1.1" name="用户组1.1.1" icon="images/user_group_0.gif" groupType="1"/>
 					<treeNode id="r1.1.1" name="用户组1.1.2" icon="images/user_group_0.gif" groupType="1"/>
@@ -57,14 +62,14 @@
 	</Role2UserTree>
 	<Role2UserExistTree>
         <actionSet>
-            <treeNode id="_root" name="全部" icon="images/icon_user.gif">
-                <treeNode id="1" name="用户1" icon="images/icon_user.gif"/>
+            <treeNode id="_root" name="全部" icon="images/user_0.gif" _open="true">
+                <treeNode id="1" name="用户1" icon="images/user_0.gif"/>
             </treeNode>
         </actionSet>
 	</Role2UserExistTree>
     <Role2GroupTree>    
 		<actionSet>
-            <treeNode id="-2" name="主用户组" icon="images/user_group_0.gif" groupType="1">
+            <treeNode id="-2" name="主用户组" icon="images/user_group_0.gif" groupType="1" _open="true">
                 <treeNode id="r1.1" name="用户组1.1" icon="images/user_group_0.gif" groupType="1">
                     <treeNode id="r1.1.1" name="用户组1.1.1" icon="images/user_group_0.gif" groupType="1"/>
                     <treeNode id="r1.1.2" name="用户组1.1.2" icon="images/user_group_0.gif" groupType="1"/>
@@ -85,7 +90,7 @@
                 <treeNode id="r1.15" name="用户组1.15" icon="images/user_group_0.gif" groupType="1"/>
                 <treeNode id="r1.16" name="用户组1.16" icon="images/user_group_0.gif" groupType="1"/>
             </treeNode>
-            <treeNode id="-3" name="辅助用户组" icon="images/user_group_0.gif" groupType="2">
+            <treeNode id="-3" name="辅助用户组" icon="images/user_group_0.gif" groupType="2" _open="true">
                 <treeNode id="r2.1" name="用户组2.1" icon="images/user_group_0.gif" disabled="0" groupType="2"/>
                 <treeNode id="r2.2" name="用户组2.2" icon="images/user_group_0.gif" disabled="0" groupType="2"/>
                 <treeNode id="r2.3" name="用户组2.3" icon="images/user_group_0.gif" groupType="2"/>
@@ -97,7 +102,7 @@
     </Role2GroupTree>
 	<Role2GroupExistTree>
         <actionSet>
-            <treeNode id="_root" name="全部" icon="images/icon_user.gif">
+            <treeNode id="_root" name="全部" icon="images/user_group_0.gif" _open="true">
                 <treeNode id="r1.1.1" name="用户组1.1.1" icon="images/user_group_0.gif" groupType="1"/>
             </treeNode>
         </actionSet>
