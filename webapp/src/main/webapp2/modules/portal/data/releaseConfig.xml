@@ -13,51 +13,29 @@
 	</declare>
 	<layout>
 		<TR>
-			<TD width="80">
-				<label binding="name"/>
-			</TD>
-			<TD>
-				<input binding="name"/>
-			</TD>
+			<TD width="80"><label binding="name"/></TD>
+			<TD><input binding="name"/></TD>
 		</TR>
 		<TR>
-			<TD>
-				<label binding="visitUrl"/>
-			</TD>
-			<TD>
-				<input binding="visitUrl"/>
-			</TD>
+			<TD><label binding="visitUrl"/></TD>
+			<TD><input binding="visitUrl"/></TD>
 		</TR>
 		<TR>
-			<TD>
-				<label binding="portal.name"/>
-			</TD>
-			<TD>
-				<input binding="portal.name"/>
-			</TD>
+			<TD><label binding="portal.name"/></TD>
+			<TD><input binding="portal.name"/></TD>
 		</TR>
 		<TR>
-			<TD>
-				<label binding="theme.id"/>
-			</TD>
-			<TD>
-				<input binding="theme.id"/>
-			</TD>
+			<TD><label binding="theme.id"/></TD>
+			<TD><input binding="theme.id"/></TD>
 		</TR>
 		<TR>
-			<TD>
-				<label binding="page.name"/>
-			</TD>
-			<TD>
-				<input binding="page.name"/>
-			</TD>
+			<TD><label binding="page.name"/></TD>
+			<TD><input binding="page.name"/></TD>
 		</TR>
 		<TR>
+			<TD><label binding="remark"/></TD>
 			<TD>
-				<label binding="remark"/>
-			</TD>
-			<TD>
-				<textarea binding="remark" style="width:88%;height:60"/>
+				<textarea binding="remark" style="width:88%;height:60px;"/>
 			</TD>
 		</TR>
 	</layout>

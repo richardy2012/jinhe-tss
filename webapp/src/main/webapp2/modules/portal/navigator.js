@@ -28,7 +28,7 @@ if(IS_TEST) {
 	URL_MOVE_NODE        = "data/_success.xml?";
 	URL_STOP_NODE        = "data/_success.xml?";
 	URL_GET_OPERATION    = "data/_operation.xml?";
-	URL_GET_PS_TREE      = "data/structure_tree.xml?";
+	URL_GET_PS_TREE      = "data/structure_tree2.xml?";
 	URL_GET_CHANNEL_TREE = "data/channel_tree.xml?";
 	URL_FRESH_MENU_CACHE = "data/_success.xml?";
 	URL_GET_MENU_TREE    = "data/menu_tree.xml?";
@@ -93,7 +93,7 @@ function initMenus() {
     }
     var item5 = {
         label:"新建门户导航",
-        visible: function() {return getOperation("2") && !isNullOrEmpty(getTreeAttribute("portalId"));}
+        visible: function() {return getOperation("2") && !$.isNullOrEmpty(getTreeAttribute("portalId"));}
     }
 
     var submenu = new $.Menu();

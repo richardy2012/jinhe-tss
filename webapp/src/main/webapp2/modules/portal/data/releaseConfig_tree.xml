@@ -3,7 +3,7 @@
 	<ReleaseConfigTree>
 		<actionSet>
 			<treeNode id="_rootId" name="全部" _open="true">
-				<treeNode id="1" icon="images/portal/url.gif" name="门户发布配置"></treeNode>
+				<treeNode id="1" icon="images/url.gif" name="门户发布配置"></treeNode>
 			</treeNode>
 		</actionSet>
 	</ReleaseConfigTree>

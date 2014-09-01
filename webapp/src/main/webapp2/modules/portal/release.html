@@ -35,7 +35,7 @@
 		URL_DELETE_NODE     = "data/_success.xml?";
 		URL_GET_THEME_LIST  = "data/themes4release.xml?";
 		URL_GET_PORTAL_LIST = "data/structure_tree.xml?";
-		URL_GET_PAGE_LIST   = "data/structure_tree.xml?";
+		URL_GET_PAGE_LIST   = "data/structure_page_tree.xml?";
 	}
 
     function init() {
@@ -115,9 +115,9 @@
 
 			var portalName = page1Form.getData("portal.name");
 			if( !$.isNullOrEmpty(portalName) ) {
-				page1Form.setColumnEditable("page.name", "true");
+				page1Form.setEditable("page.name", "true");
 			} else {
-				page1Form.setColumnEditable("page.name", "false");
+				page1Form.setEditable("page.name", "false");
 			}
 
 			$1("page1BtSave").onclick = function() {
@@ -138,7 +138,7 @@
         request.url = URL_SAVE_NODE;
  
 		var dataNode = $.cache.XmlDatas[treeID].querySelector("data");
-		p.setFormContent(dataNode);   
+		request.setFormContent(dataNode);   
 
         syncButton([$1("page1BtSave")], request);
 
@@ -180,11 +180,10 @@
             var page1Form = $.F("page1Form");
             page1Form.updateDataExternal("page.id", "");
             page1Form.updateDataExternal("page.name","");
-
             page1Form.updateDataExternal("theme.id", "");
 
             page1Form.updateDataExternal("portal.id", portal.id);
-            page1Form.updateDataExternal("portal.name", portal.name, true);
+            page1Form.updateDataExternal("portal.name", portal.name);
 
             // 获取门户对应主题列表
             var request = new $.HttpRequest();
@@ -193,16 +192,15 @@
                 var column = this.getNodeValue(XML_THEME_LIST);
                 var name = column.getAttribute("name");
 
-                page1Form.setColumnEditable("page.name", "true");
+                page1Form.setEditable("page.name", "true");
                 
                 var treeID = page1Form.getData("id") || DEFAULT_NEW_ID;
                 var dataXmlNode = $.cache.XmlDatas[treeID];
 
                 var oldColumn = dataXmlNode.querySelector("column[name='" + name + "']");
-                var attributes = column.attributes;
-                for(var i=0; i < attributes.length; i++) {
-                    oldColumn.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
-                }
+                $.each(column.attributes, function(i, attr) {
+                    oldColumn.setAttribute(attr.nodeName, attr.value);
+                });
 
                 page1Form = $.F("page1Form", dataXmlNode); // 重新加载xform
             }

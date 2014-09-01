@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
 	<ChannelTree>
-		<actionSet _open="true">
-			<treeNode id="s3" name="Temp站点" icon="../cms/images/site_0.gif" disabled="1" isSite="1">
+		<actionSet>
+			<treeNode id="s3" name="Temp站点" icon="../cms/images/site_0.gif" disabled="1" isSite="1" _open="true">
 				<treeNode id="r3" name="栏目3" icon="../cms/images/channel_0.gif" disabled="1" >
 					<treeNode id="r3.1" name="栏目3.1" icon="../cms/images/channel_0.gif" disabled="1" />
 					<treeNode id="r3.2" name="栏目3.2" icon="../cms/images/channel_0.gif" disabled="1" />

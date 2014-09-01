@@ -234,13 +234,13 @@ function preProcessXml(dataNode) {
     var parametersNode = definitionNode.querySelectorAll("parameters *");
 
     if(scriptNode) {
-        rowNode.setCDATA("script", scriptNode.nodeValue);
+        $.XML.setCDATA(rowNode, "script", $.XML.getText(scriptNode));
     }
     if(styleNode) {
-        rowNode.setCDATA("style", styleNode.nodeValue);
+        $.XML.setCDATA(rowNode, "style", $.XML.getText(styleNode));
     }
     if(htmlNode) {
-        rowNode.setCDATA("html", htmlNode.nodeValue);
+        $.XML.setCDATA(rowNode, "html", $.XML.getText(htmlNode));
     }
     if(eventsNode) {
         var events = [];
@@ -248,7 +248,7 @@ function preProcessXml(dataNode) {
             var curNode = eventsNode[i];
             events[i] = curNode.getAttribute("event") + "=" + curNode.getAttribute("onevent");
         }
-        rowNode.setCDATA("events", events.join("\r\n"));
+        $.XML.setCDATA(rowNode, "events", events.join("\r\n"));
     }
     if(parametersNode) {
         var parameters = [];
@@ -256,7 +256,7 @@ function preProcessXml(dataNode) {
             var curNode = parametersNode[i];
             parameters[i] = curNode.getAttribute("name") + "=" + curNode.getAttribute("defaultValue");
         }
-        rowNode.setCDATA("parameters", parameters.join("\r\n"));
+        $.XML.setCDATA(rowNode, "parameters", parameters.join("\r\n"));
     }
 }
  
@@ -270,7 +270,7 @@ function saveComponent(treeID, parentID) {
     request.url = URL_SOURCE_SAVE;
 
 	//修饰基本信息
-	var componentInfoNode = $.cache.XmlDatas[treeID);
+	var componentInfoNode = $.cache.XmlDatas[treeID];
 	var dataNode = componentInfoNode.querySelector("data");
 	dataNode = dataNode.cloneNode(true);
 

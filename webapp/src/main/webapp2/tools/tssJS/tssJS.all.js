@@ -426,7 +426,7 @@
     window.tssJS = window.$ = _tssJS;
 
     window.$1 = window.$$ = function(id) {
-        return $("#" + id)[0];
+        return $("#" + id.replace(/\./gi, "\\."))[0];
     }
 
 })(window);
@@ -1056,7 +1056,7 @@
                     pnode.appendChild(cdateNode);
                 }
                 else {
-                    oldNode.firstChild.removeNode();
+                    $.removeNode(oldNode.firstChild);
                     oldNode.appendChild(cdateNode);
                 }
             },
@@ -2994,7 +2994,7 @@
 
         /* 获取row节点上与column对应的值 */
         getFieldValue: function(name) {
-            var node = this.rowNode.querySelector(name);
+            var node = this.rowNode.querySelector(name.replace(/\./gi, "\\."));
             if( node ) {
                 return $.XML.getText(node).convertEntry();
             }
@@ -3232,7 +3232,7 @@
         /* 设置row节点上与field column对应的值 */
         setFieldValue: function(name, value) {
             var rowNode = this.template.rowNode;
-            var node = rowNode.querySelector(name);
+            var node = rowNode.querySelector(name.replace(/\./gi, "\\."));
             if( node == null ) { 
                 rowNode.appendChild(node = $.XML.createNode(name)); // 创建单值节点
             }

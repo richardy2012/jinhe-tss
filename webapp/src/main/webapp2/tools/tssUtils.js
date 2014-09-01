@@ -343,7 +343,7 @@ function myAlert(info, detail) {
 
 	// 离开提醒
 	window.onbeforeunload = function() {
-		var count = Reminder.count;
+		var count = reminder.count;
 		if(count > 0) {            
 			return "当前有 <" + count + "> 项修改未保存，您确定要离开吗？";
 		}
@@ -383,7 +383,7 @@ var reminder = new Reminder();
 /* 给xform等添加离开提醒 */
 function attachReminder(id, form) {
 	if( form ) {
-		form.box.ondatachange = function(eventObj) {
+		form.ondatachange = function(eventObj) {
 			reminder.add(eventObj.id); // 数据有变化时才添加离开提醒
 		}
 	}
@@ -813,7 +813,7 @@ function popupTree(url, nodeName, params, callback) {
        	   '<input type="button" value="关闭" class="btWeak" onclick="$.removeNode(el)"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
-	$(el).center(300, 400).css("width", "300px").css("height", "300px");
+	$(el).center(300, 300).css("width", "300px").css("height", "300px");
 
 	params = params || {};
 	$.ajax({
@@ -850,7 +850,7 @@ function popupForm(url, nodeName, params, callback) {
        	   '<input type="button" value="关闭" class="btWeak"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
-	$(el).center(300, 400);
+	$(el).center(300, 300);
 
 	params = params || {};
 
@@ -899,7 +899,7 @@ function popupGrid(url, nodeName, title, params) {
        	   '<input type="button" value="关闭" class="btWeak"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
-	$(el).center(300, 400);
+	$(el).center(300, 300);
 
 	$.ajax({
 		url: url,
