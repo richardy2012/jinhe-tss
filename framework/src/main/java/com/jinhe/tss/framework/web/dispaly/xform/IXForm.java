@@ -14,5 +14,5 @@ public interface IXForm {
      * 
 	 * @return Map
 	 */
-	Map<String, Object> getAttributesForXForm();
+	Map<String, Object> getAttributes4XForm();
 }

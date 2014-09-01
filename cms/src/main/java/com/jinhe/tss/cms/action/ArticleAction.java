@@ -90,7 +90,7 @@ public class ArticleAction extends BaseActionSupport {
     public void getArticleInfo(HttpServletResponse response, @PathVariable("articleId") Long articleId) { 
         Article article = articleService.getArticleById(articleId);
         String articleContent = article.getContent();
-        Map<String, Object> attributes = article.getAttributesForXForm();
+        Map<String, Object> attributes = article.getAttributes4XForm();
         attributes.remove("Content");
  
         XFormEncoder articleInfoXForm = new XFormEncoder(CMSConstants.XFORM_ARTICLE, attributes);

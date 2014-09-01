@@ -48,7 +48,7 @@ public class ParamServiceTest extends TxTestSupportParam {
         
         for(Object temp :list) {
             Param p = (Param) temp;
-            log.debug(p.getAttributesForXForm());
+            log.debug(p.getAttributes4XForm());
         }
     }
     

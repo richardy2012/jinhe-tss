@@ -2,7 +2,7 @@
 <grid>
 	<declare sequence="true">
 		<column caption="用户ID" name="id" display="none"/>
-		<column caption="用户名" name="userName" align="center"/>
+		<column caption="用户名" name="userName"/>
 	</declare>
 	<data>
 	</data>

@@ -180,7 +180,7 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
         return map;
     }
 
-    public Map<String, Object> getAttributesForXForm() {
+    public Map<String, Object> getAttributes4XForm() {
         Map<String, Object> map = new LinkedHashMap<String, Object>();
         BeanUtil.addBeanProperties2Map(this, map, "channel");
         map.put("id", id);

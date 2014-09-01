@@ -125,7 +125,7 @@ public class GroupAction extends ProgressActionSupport {
         } 
         else {
             Group group = service.getGroupById(id);
-            groupAttributes = group.getAttributesForXForm();
+            groupAttributes = group.getAttributes4XForm();
         }
         
         List<?> users = service.getUsersByGroupId(id);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
-	<declare prefix="strategy">
+	<declare>
 		<column name="name" caption="名称" mode="string" maxLength="20" empty="false" />
 		<column name="description" caption="描述"  maxLength="255" mode="string"/>
 		<column name="startDate" caption="开始日期" mode="string" pattern="yyyy-MM-dd" empty="false" />
@@ -10,19 +10,19 @@
 	<layout>
 		<TR>
 			<TD width="50"><label binding="name"/></TD>
-			<TD><input binding="name" type="text"/></TD>
+			<TD><input binding="name"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="startDate"/></TD>
-			<TD><input binding="startDate" type="text"/></TD>
+			<TD><label binding="startDate"/></TD>
+			<TD><input binding="startDate"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="endDate"/></TD>
-			<TD><input binding="endDate" type="text"/></TD>
+			<TD><label binding="endDate"/></TD>
+			<TD><input binding="endDate"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="description"/></TD>
-			<TD><textarea binding="description" style="width:100%;height:100"/></TD>
+			<TD><label binding="description"/></TD>
+			<TD><textarea binding="description" style="width:100%;height:100px;"/></TD>
 		</TR>
 	</layout>
 	<data>

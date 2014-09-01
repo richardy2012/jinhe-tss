@@ -11,19 +11,19 @@
       <layout>
         <TR>
           <TD width="50"><label binding="bgIMG"/></TD>
-          <TD><input binding="bgIMG" type="text"/></TD>
+          <TD><input binding="bgIMG"/></TD>
         </TR>
         <TR>
-          <TD width="50"><label binding="logo"/></TD>
-          <TD><input binding="logo" type="text"/></TD>
+          <TD><label binding="logo"/></TD>
+          <TD><input binding="logo"/></TD>
         </TR>
 		    <TR>
-          <TD width="50"><label binding="menuBgColor"/></TD>
-          <TD><input binding="menuBgColor" type="text"/></TD>
+          <TD><label binding="menuBgColor"/></TD>
+          <TD><input binding="menuBgColor"/></TD>
         </TR>
 	      <TR>
-          <TD width="50"><label binding="subMenuBgColor"/></TD>
-          <TD><input binding="subMenuBgColor" type="text"/></TD>
+          <TD><label binding="subMenuBgColor"/></TD>
+          <TD><input binding="subMenuBgColor"/></TD>
         </TR>
       </layout>
       <data/>

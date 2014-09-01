@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
-	<declare prefix="role">
+	<declare>
 		<column name="name" caption="名称" mode="string" maxLength="20" empty="false" />
 		<column name="description" caption="描述" maxLength="255" mode="string"/>
-		<column name="startDate" caption="开始日期" mode="string" pattern="yyyy-MM-dd" empty="false" />
-		<column name="endDate"   caption="结束日期" mode="string" pattern="yyyy-MM-dd" empty="false" />
+		<column name="startDate" caption="开始日期" mode="date" pattern="yyyy-MM-dd" empty="false" />
+		<column name="endDate" caption="结束日期" mode="date" pattern="yyyy-MM-dd" empty="false" />
 	</declare>
 	<layout>
 		<TR>
@@ -12,16 +12,16 @@
 			<TD><input binding="name"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="startDate"/></TD>
+			<TD><label binding="startDate"/></TD>
 			<TD><input binding="startDate"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="endDate"/></TD>
+			<TD><label binding="endDate"/></TD>
 			<TD><input binding="endDate"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="description"/></TD>
-			<TD><textarea binding="description" style="width:70%;height:100"/></TD>
+			<TD><label binding="description"/></TD>
+			<TD><textarea binding="description" style="width:70%;height:100px"/></TD>
 		</TR>
 	</layout>
 	<data/>

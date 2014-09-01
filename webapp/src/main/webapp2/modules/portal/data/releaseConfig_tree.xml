@@ -1,7 +1,10 @@
-﻿<?xml version="1.0" encoding="UTF-8"?><Response><ReleaseConfigTree><actionSet>
-
-<treeNode id="_rootId" name="全部" display="1">
-	<treeNode id="1" icon="../framework/images/portal/url.gif" name="门户发布配置"></treeNode>
-</treeNode>
-
-</actionSet></ReleaseConfigTree></Response>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<ReleaseConfigTree>
+		<actionSet>
+			<treeNode id="_rootId" name="全部" _open="true">
+				<treeNode id="1" icon="images/portal/url.gif" name="门户发布配置"></treeNode>
+			</treeNode>
+		</actionSet>
+	</ReleaseConfigTree>
+</Response>

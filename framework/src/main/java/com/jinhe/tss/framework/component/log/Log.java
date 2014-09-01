@@ -133,7 +133,7 @@ public class Log implements IEntity, IXForm, IGridNode {
         this.operateTable = table;
     }
     
-    public Map<String, Object> getAttributesForXForm() {
+    public Map<String, Object> getAttributes4XForm() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", this.id);
         map.put("content", this.content);

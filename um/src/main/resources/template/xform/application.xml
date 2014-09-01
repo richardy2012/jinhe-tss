@@ -9,19 +9,20 @@
 	<layout>
 		<TR>
 			<TD width="100"><label binding="applicationId"/></TD>
-			<TD><input binding="applicationId" type="text" style="width:250;"/></TD>
+			<TD><input binding="applicationId" style="width:250;"/></TD>
 		</TR>
 		<TR>
-			<TD width="100"><label binding="name"/></TD>
-			<TD><input binding="name" type="text" style="width:300;"/></TD>
+			<TD><label binding="name"/></TD>
+			<TD><input binding="name" style="width:300px;"/></TD>
 		</TR>
 		<TR>
-			<TD width="100"><label binding="description"/></TD>
-			<TD><input binding="description" type="text" style="width:500;"/></TD>
+			<TD><label binding="description"/></TD>
+			<TD><input binding="description" style="width:500px;"/></TD>
 		</TR>
 		<TR>
 			<TD colspan="2">
-				<br/><input type="button" class="btStrong" value="完成" id="appSaveBt"/>
+				<br/>
+				<input type="button" class="btStrong" value="完成" id="appSaveBt"/>
 			</TD>
 		</TR>
 	</layout>

@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grid version="2">
+<grid>
 	<declare sequence="true">		
 		<column caption="文章编号" name="id" mode="string" display="none"/>
 		<column caption="栏目编号" name="channel.id" mode="string" display="none"/>
-		<column caption="图标"   name="icon" mode="image" align="center" width="35px"/>
+		<column caption="图标"   name="icon" mode="image" width="35px"/>
 		<column caption="标题"   name="title" mode="string" width="400px"/>
-		<column caption="文章状态" name="status" mode="string" width="60px" editor="comboedit" editorvalue="1|2|3|4" editortext="编辑中|待发布|已发布|已过期" align="center"/>
-		<column caption="作者"   name="author" mode="string" width="100px" align="center"/>
+		<column caption="文章状态" name="status" mode="string" width="60px" editor="comboedit" editorvalue="1|2|3|4" editortext="编辑中|待发布|已发布|已过期"/>
+		<column caption="作者"   name="author" mode="string" width="100px"/>
 		<column caption="创建日期" name="createTime" mode="date" pattern="yyyy-MM-dd" width="80px" />
 		<column caption="发布时间" name="issueDate" mode="date" pattern="yyyy-MM-dd"  width="80px" />
-		<column caption="创建者"  name="creatorName" mode="string" display="none"/>		
-		<column caption="置顶"   name="isTop" mode="string" width="35px" editor="comboedit" editortext="是|否" editorvalue="1|0" align="center"/>
 		<column caption="过期日期" name="overdueDate" mode="date" pattern="yyyy-MM-dd" width="80px" />
-		<column caption="点击次数" name="hitCount" mode="string" align="center" width="50px" />
+		<column caption="置顶"   name="isTop" mode="string" width="35px" editor="comboedit" editortext="是|否" editorvalue="1|0"/>
+		<column caption="点击次数" name="hitCount" mode="string" width="50px" />
 	</declare>
 	<data/>
 </grid>

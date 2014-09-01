@@ -5,58 +5,32 @@
 		<column name="author" caption="作者" mode="string" empty="false" maxLength="50"/>
 		<column name="summary" caption="摘要" mode="string" maxLength="500"/>
 		<column name="keyword" caption="关键字" mode="string" empty="false" maxLength="100"/>
-		<column name="issueDate" caption="发布日期" mode="string" inputReg="/^((?:19|20)\d\d)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/"/>
-		<column name="overdueDate" caption="过期日期" mode="string" inputReg="/^((?:19|20)\d\d)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/"/>
+		<column name="issueDate" caption="发布日期" mode="date"/>
+		<column name="overdueDate" caption="过期日期" mode="date"/>
 	</declare>
 	<layout>
 		<TR>
-			<TD width="50">
-				<label binding="title"/>
-			</TD>
-			<TD>
-				<input binding="title" style="width:80%"/>
-			</TD>
-			<TD width="50">
-				<label binding="subtitle"/>
-			</TD>
-			<TD>
-				<input binding="subtitle" style="width:80%"/>
-			</TD>
+			<TD width="50"><label binding="title"/></TD>
+			<TD><input binding="title" style="width:80%"/></TD>
+			<TD width="50"><label binding="subtitle"/></TD>
+			<TD><input binding="subtitle" style="width:80%"/></TD>
 		</TR>
 		<TR>
-			<TD width="50">
-				<label binding="author"/>
-			</TD>
-			<TD>
-				<input binding="author"/>
-			</TD>
-			<TD width="50">
-				<label binding="issueDate"/>
-			</TD>
-			<TD>
-				<input binding="issueDate"/>
-			</TD>
+			<TD><label binding="author"/></TD>
+			<TD><input binding="author"/></TD>
+			<TD><label binding="issueDate"/></TD>
+			<TD><input binding="issueDate"/></TD>
 		</TR>
 		<TR>
-			<TD width="50">
-				<label binding="keyword"/>
-			</TD>
-			<TD>
-				<input binding="keyword" style="width:80%"/>
-			</TD>
-			<TD width="50">
-				<label binding="overdueDate"/>
-			</TD>
-			<TD>
-				<input binding="overdueDate"/>
-			</TD>
+			<TD><label binding="keyword"/></TD>
+			<TD><input binding="keyword" style="width:80%"/></TD>
+			<TD><label binding="overdueDate"/></TD>
+			<TD><input binding="overdueDate"/></TD>
 		</TR>
 		<TR>
-			<TD width="50">
-				<label binding="summary"/>
-			</TD>
+			<TD><label binding="summary"/></TD>
 			<TD colspan="3">
-				<textarea binding="summary" style="width:80%;height:50"/>
+				<textarea binding="summary" style="width:80%;height:50px;"/>
 			</TD>
 		</TR>
 	</layout>

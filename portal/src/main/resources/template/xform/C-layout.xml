@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
-	<declare prefix="layout">
-		<column name="id" caption="ID号" mode="hidden" editable="false"/>
+	<declare>
+		<column name="id" mode="hidden"/>
 		<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>
 		<column name="description" caption="备注" mode="string"/>
         <column name="portNumber" caption="窗口数" mode="string" maxLength="4" inputReg="/^\-?\d*$/" empty="false"/>
@@ -16,45 +16,45 @@
 	<layout>
 		<TR>
 			<TD width="50"><label binding="name"/></TD>
-			<TD><input binding="name" type="text" style="width:400"/></TD>
+			<TD><input binding="name" style="width:400px"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="portNumber"/></TD>
-			<TD><input binding="portNumber" type="text"/>注:个数范围为-999 ~ 9999 个</TD>
+			<TD><label binding="portNumber"/></TD>
+			<TD><input binding="portNumber"/>注:个数范围为-999 ~ 9999 个</TD>
 		</TR>
 		<TR>
-			<TD width="50" valign="top"><label binding="html"/></TD>
-			<TD><textarea binding="html" style="width:95%;height:150"/></TD>
+			<TD valign="top"><label binding="html"/></TD>
+			<TD><textarea binding="html" style="width:95%;height:150px"/></TD>
 		</TR>
 		<TR>
-			<TD width="50" valign="top"><label binding="script"/></TD>
-			<TD><textarea binding="script" style="width:95%;height:100"/></TD>
+			<TD valign="top"><label binding="script"/></TD>
+			<TD><textarea binding="script" style="width:95%;height:100px"/></TD>
 		</TR>
 		<TR>
-			<TD width="50" valign="top"><label binding="style"/></TD>
-			<TD><textarea binding="style" style="width:95%;height:100"/></TD>
+			<TD valign="top"><label binding="style"/></TD>
+			<TD><textarea binding="style" style="width:95%;height:100px"/></TD>
 		</TR>
 		
 		<TR>
-			<TD width="50" valign="top"><label binding="events"/></TD>
-			<TD><textarea binding="events" style="width:70%;height:40"/>
+			<TD valign="top"><label binding="events"/></TD>
+			<TD><textarea binding="events" style="width:70%;height:40px"/>
 				<br/>注:请按照"事件名=处理方法"格式书写，例如"onload=${js.layout}.onload"
 			</TD>
 		</TR>
 		<TR>
-			<TD width="50" valign="top"><label binding="parameters"/></TD>
-			<TD><textarea binding="parameters" style="width:70%;height:40"/>
+			<TD valign="top"><label binding="parameters"/></TD>
+			<TD><textarea binding="parameters" style="width:70%;height:40px"/>
 				<input type="button" value="配置参数模板" id="page1BtEditPT" onclick="editParamsTemplate(1)" class="btStrongL"/>
 				<br/>注:请按照"参数名=参数值"格式书写，例如"bgColor=#FFFFFF"，不能含有空格。
 			</TD>	
 		</TR>
 		<TR>
-			<TD width="50" valign="top"><label binding="description"/></TD>
-			<TD><textarea binding="description" style="width:95%;height:20"/></TD>
+			<TD valign="top"><label binding="description"/></TD>
+			<TD><textarea binding="description" style="width:95%;height:20px"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="version"/></TD>
-			<TD><input binding="version" type="text" style="width:400"/></TD>
+			<TD><label binding="version"/></TD>
+			<TD><input binding="version" style="width:400px"/></TD>
 		</TR>
 	</layout>
 	<data>

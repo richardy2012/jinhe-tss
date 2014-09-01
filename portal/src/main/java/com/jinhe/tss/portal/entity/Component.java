@@ -140,7 +140,7 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
         return map;
     }
 
-    public Map<String, Object> getAttributesForXForm() {
+    public Map<String, Object> getAttributes4XForm() {
         Map<String, Object> map = new HashMap<String, Object>();
         BeanUtil.addBeanProperties2Map(this, map);
 

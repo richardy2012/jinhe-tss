@@ -82,7 +82,7 @@ public class ReleaseConfig implements IEntity, ITreeNode, IXForm {
         this.remark = reamrk;
     }
     
-    public Map<String, Object> getAttributesForXForm() {
+    public Map<String, Object> getAttributes4XForm() {
         Map<String, Object> map = new HashMap<String, Object>();
         BeanUtil.addBeanProperties2Map(this, map, "portal", "theme", "page");
         

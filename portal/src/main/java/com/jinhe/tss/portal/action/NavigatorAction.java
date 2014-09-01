@@ -86,7 +86,7 @@ public class NavigatorAction extends BaseActionSupport {
         }
         else {
         	Navigator info = service.getNavigator(id);            
-        	map = info.getAttributesForXForm();
+        	map = info.getAttributes4XForm();
         	type = info.getType();
         }        
         XFormEncoder encoder = new XFormEncoder("template/xform/MenuXForm" + type + ".xml", map);;

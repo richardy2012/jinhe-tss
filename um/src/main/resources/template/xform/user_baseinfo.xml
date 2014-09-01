@@ -8,7 +8,7 @@
 		<column name="passwordQuestion" caption="提示问题" mode="string" empty="false" maxLength="100"/>
 		<column name="passwordAnswer"   caption="提示答案" mode="string" empty="false" maxLength="100"/>
 		<column name="sex" caption="性别" mode="string" editor="comboedit" editorvalue="1|0" editortext="男|女"/>
-		<column name="birthday" caption="出生年月" mode="string" pattern="yyyy-MM-dd" maxLength="32"/>
+		<column name="birthday" caption="出生年月" mode="date" pattern="yyyy-MM-dd" maxLength="32"/>
 		<column name="employeeNo" caption="员工编号" mode="string" maxLength="100"/>
 		<column name="email" caption="电子邮件" mode="string" maxLength="100" inputReg="/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/"/>
 		<column name="telephone" caption="电话" mode="string" maxLength="30"/>
@@ -17,13 +17,13 @@
 		
 		<column name="certificate" caption="证件种类" mode="string" editor="comboedit" editorvalue="1|2" editortext="工作证|身份证"/>
 		<column name="certificateNo" caption="证件号" mode="string" maxLength="50"/>
-		<column name="accountLife" caption="账户有效期" mode="string" pattern="yyyy-MM-dd"/>
+		<column name="accountLife" caption="账户有效期" mode="date" pattern="yyyy-MM-dd"/>
 		<column name="authMethod"  caption="认证方式" mode="string" empty="false" editor="comboedit"
 			editorvalue="com.jinhe.tss.um.sso.UMPasswordIdentifier" editortext="UM本地"/>
 		
 		<column name="groupId" mode="hidden"/>
 		<column name="groupName" mode="hidden"/>
-		<column name="disabled"  mode="hidden" />
+		<column name="disabled"  mode="hidden"/>
 	</declare>
 	<layout>
 		<TR>
@@ -34,39 +34,39 @@
 			<TD><input binding="userName"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="birthday"/></TD>
+			<TD><label binding="birthday"/></TD>
 			<TD><input binding="birthday"/></TD>
 			
-			<TD width="50"><label binding="sex"/></TD>
+			<TD><label binding="sex"/></TD>
 			<TD><input binding="sex"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="employeeNo"/></TD>
+			<TD><label binding="employeeNo"/></TD>
 			<TD><input binding="employeeNo"/></TD>
 			
-			<TD width="50"><label binding="telephone"/></TD>
+			<TD><label binding="telephone"/></TD>
 			<TD><input binding="telephone"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="email"/></TD>
-			<TD><input binding="email" style="width:250;"/></TD>
+			<TD><label binding="email"/></TD>
+			<TD><input binding="email" style="width:250px;"/></TD>
 
-			<TD width="50"><label binding="address"/></TD>
-			<TD><input binding="address" style="width:250;"/></TD>
+			<TD><label binding="address"/></TD>
+			<TD><input binding="address" style="width:250px;"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="password"/></TD>
+			<TD><label binding="password"/></TD>
 			<TD><input binding="password" type="password"/></TD>
 			
-			<TD width="50"><label binding="authMethod"/></TD>
+			<TD><label binding="authMethod"/></TD>
 			<TD><input binding="authMethod"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="passwordQuestion"/></TD>
-			<TD><input binding="passwordQuestion" style="width:250;"/></TD>
+			<TD><label binding="passwordQuestion"/></TD>
+			<TD><input binding="passwordQuestion" style="width:250px;"/></TD>
 
-			<TD width="50"><label binding="passwordAnswer"/></TD>
-			<TD><input binding="passwordAnswer" style="width:250;"/></TD>
+			<TD><label binding="passwordAnswer"/></TD>
+			<TD><input binding="passwordAnswer" style="width:250px;"/></TD>
 		</TR>
 	</layout>
 </xform>

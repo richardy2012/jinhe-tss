@@ -149,7 +149,7 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
         return new File(url.getPath() + "/" + path);
     }
     
-    public Map<String, Object> getAttributesForXForm() {
+    public Map<String, Object> getAttributes4XForm() {
         Map<String, Object> map = new HashMap<String, Object>();
         BeanUtil.addBeanProperties2Map(this, map, "children,theme,currentTheme,menus,definer,decorator".split(","));
         

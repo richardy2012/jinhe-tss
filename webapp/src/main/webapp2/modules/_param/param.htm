@@ -10,10 +10,6 @@
 <script src="../../tools/tssJS/tssJS.all.js"></script>
 <script src="../../tools/tssUtils.js"></script>
 
-<style>
-  #palette { width: 250px; }
-</style> 
-
 <SCRIPT type="text/javascript">
 <!--
 	
@@ -420,31 +416,31 @@
 <body>
 
 <table class="panel" >
-   <tr class="header"> <td/><td/><td/><td/> </tr>
-   <tr class="body"> 
-    <td/>
-	<td id="palette">
-        <div>
-            <div class="bar">
-                <span class="icon"></span>参数列表
-                <span class="refreshTreeBT"></span>
-            </div>
-            <Tree:Box id="tree" moveable="true"><div class="loading"></div></Tree:Box>
-        </div> 
-	</td>
-	<td class="groove"> 
-		<WorkSpace:Box id="ws">
-		  <WorkSpace:Page id="page1">
-			  <Form:Box id="page1Form"><div class="loading"></div></Form:Box>
-			  <WorkSpace:PageStep>
-				<input type="button" class="btStrong" value="完成" id="page1BtSave"/>
-			  </WorkSpace:PageStep>
-		  </WorkSpace:Page>
-		</WorkSpace:Box>
-	</td>
-    <td/>
-  </tr>
-  <tr class="footer"> <td/><td/><td/><td/> </tr>
+    <tr class="header"> <td/><td/><td/><td/> </tr>
+    <tr class="body"> 
+        <td/>
+        <td id="palette">
+            <div>
+                <div class="bar">
+                    <span class="icon"></span>参数列表
+                    <span class="refreshTreeBT"></span>
+                </div>
+                <Tree:Box id="tree" moveable="true"><div class="loading"></div></Tree:Box>
+            </div> 
+        </td>
+        <td class="groove"> 
+        	<WorkSpace:Box id="ws">
+        	  <WorkSpace:Page id="page1">
+        		  <Form:Box id="page1Form"><div class="loading"></div></Form:Box>
+        		  <WorkSpace:PageStep>
+        			<input type="button" class="btStrong" value="完成" id="page1BtSave"/>
+        		  </WorkSpace:PageStep>
+        	  </WorkSpace:Page>
+        	</WorkSpace:Box>
+        </td>
+        <td/>
+    </tr>
+    <tr class="footer"> <td/><td/><td/><td/> </tr>
 </table>
 
 </body>

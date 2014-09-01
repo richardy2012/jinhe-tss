@@ -233,7 +233,6 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         BeanUtil.addBeanProperties2Map(this, properties);
         map.putAll(properties);
-        map.put("userstate", disabled);
         
         if (id.equals(UMConstants.ADMIN_USER_ID)) {
             if (ParamConstants.TRUE.equals(disabled)) {
@@ -252,7 +251,7 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
         return map;
     }
  
-    public Map<String, Object> getAttributesForXForm() {
+    public Map<String, Object> getAttributes4XForm() {
         Map<String, Object> map = new LinkedHashMap<String, Object>();
         BeanUtil.addBeanProperties2Map(this, map);
         

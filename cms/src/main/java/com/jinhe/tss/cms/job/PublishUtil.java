@@ -37,7 +37,7 @@ public class PublishUtil {
 		doc.setXMLEncoding(ArticleHelper.getSystemEncoding()); //一般：windows “GBK” linux “UTF－8”
 		Element articleNode = doc.addElement("Article");
 		
-        Map<String, Object> articleAttributes = article.getAttributesForXForm(); // 包含文章的所有属性
+        Map<String, Object> articleAttributes = article.getAttributes4XForm(); // 包含文章的所有属性
         articleAttributes.remove("content");
 		addValue2XmlNode(articleNode, articleAttributes);
 		

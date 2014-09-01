@@ -1,64 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
-	<declare prefix="releaseConfig">
-		<column name="id" caption="ID号" mode="hidden" />
+	<declare>
+		<column name="id" mode="hidden" />
 		<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>
 		<column name="visitUrl" caption="映射地址" mode="string" maxLength="50" inputReg="/^[\u0000-\u00FF]*$/g" empty="false"/>
-		<column name="portal.id" mode="hidden" />
+		<column name="portal.id" mode="hidden"/>
 		<column name="portal.name" caption="对应门户" mode="function" empty="false" cmd="getPortal()"/>
 		<column name="theme.id" caption="主题" mode="string" editor="comboedit" editorvalue="" editortext=""/>
-		<column name="page.id" mode="hidden" />
+		<column name="page.id" mode="hidden"/>
 		<column name="page.name" caption="对应页面/版面" mode="function" cmd="getPage()"/>
 		<column name="remark" caption="说明" mode="string"/>
 	</declare>
 	<layout>
 		<TR>
-			<TD width="80">
-				<label binding="name"/>
-			</TD>
-			<TD>
-				<input binding="name" type="text"/>
-			</TD>
+			<TD width="80"><label binding="name"/></TD>
+			<TD><input binding="name"/></TD>
 		</TR>
 		<TR>
-			<TD width="80">
-				<label binding="visitUrl"/>
-			</TD>
-			<TD>
-				<input binding="visitUrl" type="text"/>
-			</TD>
+			<TD><label binding="visitUrl"/></TD>
+			<TD><input binding="visitUrl"/></TD>
 		</TR>
 		<TR>
-			<TD width="80">
-				<label binding="portal.name"/>
-			</TD>
-			<TD>
-				<input binding="portal.name" type="text"/>
-			</TD>
+			<TD><label binding="portal.name"/></TD>
+			<TD><input binding="portal.name"/></TD>
 		</TR>
 		<TR>
-			<TD width="80">
-				<label binding="theme.id"/>
-			</TD>
-			<TD>
-				<input binding="theme.id" type="text"/>
-			</TD>
+			<TD><label binding="theme.id"/></TD>
+			<TD><input binding="theme.id"/></TD>
 		</TR>
 		<TR>
-			<TD width="80">
-				<label binding="page.name"/>
-			</TD>
-			<TD>
-				<input binding="page.name" type="text"/>
-			</TD>
+			<TD><label binding="page.name"/></TD>
+			<TD><input binding="page.name"/></TD>
 		</TR>
 		<TR>
-			<TD width="80">
-				<label binding="remark"/>
-			</TD>
-			<TD>
-				<textarea binding="remark" type="text" style="width:88%;height:60"/>
-			</TD>
+			<TD><label binding="remark"/></TD>
+			<TD><textarea binding="remark" style="width:88%;height:60px"/></TD>
 		</TR>
 	</layout>
 	<data>

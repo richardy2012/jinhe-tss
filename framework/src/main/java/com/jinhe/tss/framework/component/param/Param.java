@@ -200,15 +200,13 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
         map.put("icon", icon_path + this.disabled + ".gif");
         map.put("parentId", parentId);
         map.put("disabled", disabled);
-        map.put("decode", decode);
-        map.put("levelNo", levelNo);
         map.put("type", type);
         map.put("mode", modality);
         
         return map;
     }
 
-    public Map<String, Object> getAttributesForXForm() {
+    public Map<String, Object> getAttributes4XForm() {
         Map<String, Object> map = new HashMap<String, Object>();
         BeanUtil.addBeanProperties2Map(this, map);
         return map;

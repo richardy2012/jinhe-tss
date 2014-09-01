@@ -42,7 +42,7 @@ public class XFormEncoder implements IDataEncoder {
      *          XForm数据实体
      */
     public XFormEncoder(String templetURL, IXForm entity) {
-        this(templetURL, entity == null ? null : entity.getAttributesForXForm());
+        this(templetURL, entity == null ? null : entity.getAttributes4XForm());
     }
  
     /**

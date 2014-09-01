@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Response>
 	<PageFlowRate>
-        <grid version="2" channelId="3">
+        <grid>
             <declare>
                 <column name="url" caption="页面" mode="string" align="center"/>
                 <column name="pv"  caption="流量" mode="string" align="center"/>

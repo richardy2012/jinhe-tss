@@ -3,8 +3,8 @@
 	<declare sequence="true">
 		<column caption="角色ID" name="roleId" display="none"/>
 		<column caption="用户ID" name="userId" display="none"/>
-		<column caption="姓名"   name="userName" align="center"/>
-		<column caption="角色名"  name="roleName" align="center"/>
+		<column caption="姓名"   name="userName"/>
+		<column caption="角色名"  name="roleName"/>
 		<column caption="描述"   name="description" align="left"/>
 	</declare>
 	<data>

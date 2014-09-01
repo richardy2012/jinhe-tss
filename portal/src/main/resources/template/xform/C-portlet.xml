@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
-	<declare prefix="portlet">
-		<column name="id" caption="ID号" mode="hidden" editable="false"/>
+	<declare>
+		<column name="id" mode="hidden"/>
 		<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>
 		<column name="description" caption="备注" mode="string"/>
-        
         <column name="script" caption="JS脚本" mode="string"/>
         <column name="style" caption="CSS样式" mode="string"/>
         <column name="html" caption="HTML片段" mode="string" empty="false"/>
@@ -16,41 +15,41 @@
 	<layout>
 		<TR>
 			<TD width="50"><label binding="name"/></TD>
-			<TD><input binding="name" type="text" style="width:400"/></TD>
+			<TD><input binding="name" style="width:400px"/></TD>
 		</TR>
 		<TR>
-			<TD width="50" valign="top"><label binding="html"/></TD>
-			<TD><textarea binding="html" style="width:95%;height:180"/></TD>
+			<TD valign="top"><label binding="html"/></TD>
+			<TD><textarea binding="html" style="width:95%;height:180px"/></TD>
 		</TR>
 		<TR>
-			<TD width="50" valign="top"><label binding="script"/></TD>
-			<TD><textarea binding="script" style="width:95%;height:150"/></TD>
+			<TD valign="top"><label binding="script"/></TD>
+			<TD><textarea binding="script" style="width:95%;height:150px"/></TD>
 		</TR>
 		<TR>
-			<TD width="50" valign="top"><label binding="style"/></TD>
-			<TD><textarea binding="style" style="width:95%;height:80"/></TD>
+			<TD valign="top"><label binding="style"/></TD>
+			<TD><textarea binding="style" style="width:95%;height:80px"/></TD>
 		</TR>
 		
 		<TR>
-			<TD width="50" valign="top"><label binding="events"/></TD>
-			<TD><textarea binding="events" style="width:70%;height:40"/>
+			<TD valign="top"><label binding="events"/></TD>
+			<TD><textarea binding="events" style="width:70%;height:40px"/>
 				<br/>注:请按照"事件名=处理方法"格式书写，例如"onload=${js.layout}.onload"
 			</TD>
 		</TR>
 		<TR>
-			<TD width="50" valign="top"><label binding="parameters"/></TD>
-			<TD><textarea binding="parameters" style="width:70%;height:40"/>
+			<TD valign="top"><label binding="parameters"/></TD>
+			<TD><textarea binding="parameters" style="width:70%;height:40px"/>
 				<input type="button" value="配置参数模板" id="page1BtEditPT" onclick="editParamsTemplate(3)" class="btStrongL"/>
 				<br/>注:请按照"参数名=参数值"格式书写，例如"bgColor=#FFFFFF"，不能含有空格。
 			</TD>					
 		</TR>
 		<TR>
-			<TD width="50" valign="top"><label binding="description"/></TD>
-			<TD><textarea binding="description" style="width:95%;height:20"/></TD>
+			<TD valign="top"><label binding="description"/></TD>
+			<TD><textarea binding="description" style="width:95%;height:20px"/></TD>
 		</TR>
 		<TR>
-			<TD width="50"><label binding="version"/></TD>
-			<TD><input binding="version" type="text" style="width:400"/></TD>
+			<TD><label binding="version"/></TD>
+			<TD><input binding="version" style="width:400px"/></TD>
 		</TR>
 	</layout>
 	<data>

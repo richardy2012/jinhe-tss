@@ -4,49 +4,29 @@
 		<column name="userName"  caption="姓名" mode="string" empty="false" maxLength="20"/>
 		<column name="loginName" caption="账号" mode="string" empty="false" maxLength="20"/>
 		<column name="email"     caption="电子邮件" mode="string" maxLength="50" inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/"/>
-		<column name="password" caption="密码"   mode="string" empty="false" maxLength="20" inputReg="/^[\u0000-\u00FF]*$/"/>
+		<column name="password"  caption="密码"   mode="string" empty="false" maxLength="20" inputReg="/^[\u0000-\u00FF]*$/"/>
 		<column name="password2" caption="密码确认" mode="string" empty="false" maxLength="20" inputReg="/^[\u0000-\u00FF]*$/"/>
 	</declare>
 	<layout>
 		<TR>
-			<TD width="50">
-				<label binding="loginName"/>
-			</TD>
-			<TD>
-				<input binding="loginName" style="width:250;"/>
-			</TD>
+			<TD width="50"><label binding="loginName"/></TD>
+			<TD><input binding="loginName" style="width:250px;"/></TD>
 		</TR>
 		<TR>
-			<TD width="50">
-				<label binding="userName"/>
-			</TD>
-			<TD>
-				<input binding="userName" style="width:250;"/>
-			</TD>
+			<TD><label binding="userName"/></TD>
+			<TD><input binding="userName" style="width:250px;"/></TD>
 		</TR>
 		<TR>
-			<TD width="50">
-				<label binding="email"/>
-			</TD>
-			<TD>
-				<input binding="email" style="width:250;"/>
-			</TD>
+			<TD><label binding="email"/></TD>
+			<TD><input binding="email" style="width:250px;"/></TD>
 		</TR>
 		<TR>
-			<TD width="50">
-				<label binding="password"/>
-			</TD>
-			<TD>
-				<input binding="password" type="password" style="width:250;"/>
-			</TD>
+			<TD><label binding="password"/></TD>
+			<TD><input binding="password" type="password" style="width:250px;"/></TD>
 		</TR>
 		<TR>
-			<TD width="50">
-				<label binding="password2"/>
-			</TD>
-			<TD>
-				<input binding="password2" type="password" style="width:250;"/>
-			</TD>
+			<TD><label binding="password2"/></TD>
+			<TD><input binding="password2" type="password" style="width:250px;"/></TD>
 		</TR>
 	</layout>
 </xform>

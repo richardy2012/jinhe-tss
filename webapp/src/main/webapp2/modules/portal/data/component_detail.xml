@@ -16,36 +16,36 @@
 			<layout>
 				<TR>
 					<TD width="50"><label binding="name"/></TD>
-					<TD><input binding="name" type="text"/></TD>
+					<TD><input binding="name"/></TD>
 				</TR>
 				<TR>
-					<TD width="50" valign="top"><label binding="html"/></TD>
-					<TD><textarea binding="html" style="width:100%;height:250"/></TD>
+					<TD><label binding="html"/></TD>
+					<TD><textarea binding="html" style="width:100%;height:250px"/></TD>
 				</TR>
 				<TR>
-					<TD width="50" valign="top"><label binding="script"/></TD>
-					<TD><textarea binding="script" style="width:100%;height:100"/></TD>
+					<TD><label binding="script"/></TD>
+					<TD><textarea binding="script" style="width:100%;height:100px"/></TD>
 				</TR>
 				<TR>
-					<TD width="50" valign="top"><label binding="style"/></TD>
-					<TD><textarea binding="style" style="width:100%;height:100"/></TD>
+					<TD><label binding="style"/></TD>
+					<TD><textarea binding="style" style="width:100%;height:100px"/></TD>
 				</TR>
 				<TR>
-					<TD width="50" valign="top"><label binding="events"/></TD>
-					<TD><textarea binding="events" style="width:100%;height:40"/>注:请按照"事件名=处理方法"格式书写，例如"onload=${js.layout}.onload"</TD>
+					<TD><label binding="events"/></TD>
+					<TD><textarea binding="events" style="width:100%;height:40px"/>注:请按照"事件名=处理方法"格式书写，例如"onload=${js.layout}.onload"</TD>
 				</TR>
 				<TR>
-					<TD width="50" valign="top"><label binding="parameters"/></TD>
-					<TD><textarea binding="parameters" style="width:100%;height:40"/>注:请按照"参数名=参数值"格式书写，例如"bgColor=#FFFFFF"
+					<TD><label binding="parameters"/></TD>
+					<TD><textarea binding="parameters" style="width:100%;height:40px"/>注:请按照"参数名=参数值"格式书写，例如"bgColor=#FFFFFF"
 						<input type="button" value="配置参数模板" id="page1BtEditPT" onclick="editParamsTemplate(2)" class="btStrongL"/></TD>	
 				</TR>
 				<TR>
-					<TD width="50" valign="top"><label binding="description"/></TD>
-					<TD><textarea binding="description" style="width:100%;height:40"/></TD>
+					<TD><label binding="description"/></TD>
+					<TD><textarea binding="description" style="width:100%;height:40px"/></TD>
 				</TR>
 				<TR>
-					<TD width="50"><label binding="version"/></TD>
-					<TD><input binding="version" type="text"/></TD>
+					<TD><label binding="version"/></TD>
+					<TD><input binding="version" /></TD>
 				</TR>
 			</layout>
 			<data><row><portNumber><![CDATA[0]]></portNumber><createTime><![CDATA[Fri Sep 20 16:11:15 CST 2013]]></createTime><definition><![CDATA[<?xml version="1.0" encoding="UTF-8"?>

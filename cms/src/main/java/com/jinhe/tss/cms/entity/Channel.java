@@ -147,7 +147,7 @@ public class Channel extends OperateInfo implements IXForm, ILevelTreeNode, IDec
 		return this.id.equals(site.getId());
 	}
     
-	public Map<String, Object> getAttributesForXForm() {
+	public Map<String, Object> getAttributes4XForm() {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 		BeanUtil.addBeanProperties2Map(this, attributes, "site");
 		

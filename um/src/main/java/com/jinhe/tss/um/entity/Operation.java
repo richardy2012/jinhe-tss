@@ -145,7 +145,7 @@ public class Operation implements IEntity, ITreeNode, IXForm, IPermissionOption,
 		return map;
 	}
 
-	public Map<String, Object> getAttributesForXForm() {
+	public Map<String, Object> getAttributes4XForm() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("id", id);
 		map.put("name", name);
