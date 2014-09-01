@@ -1,18 +1,13 @@
-    /*
-     *	后台响应数据节点名称
-     */
+    /* 后台响应数据节点名称 */
     XML_MAIN_TREE    = "ChannelTree";
     XML_ARTICLE_LIST = "ArticleList";
     XML_CHANNEL_INFO = "ChannelInfo";
  
     /* 默认唯一编号名前缀 */
+    CACHE_CHANNEL_DETAIL = "_channelDetail_id";
+    CACHE_SITE_DETAIL    = "_siteDetail_id";
  
-    CACHE_CHANNEL_DETAIL = "channelDetail__id";
-    CACHE_SITE_DETAIL    = "siteDetail__id";
- 
-    /*
-     *	XMLHTTP请求地址汇总
-     */
+    /* XMLHTTP请求地址汇总 */
     URL_SOURCE_TREE    = AUTH_PATH + "channel/list";
     URL_SITE_DETAIL    = AUTH_PATH + "channel/detail/site/"; //{siteId}
     URL_SAVE_SITE      = AUTH_PATH + "channel/site";
@@ -22,6 +17,7 @@
     URL_MOVE_NODE      = AUTH_PATH + "channel/move/";    // {id}/{toParentId}
     URL_SORT_NODE      = AUTH_PATH + "channel/sort/";    // {id}/{targetId}/{direction}
 	URL_STOP_NODE      = AUTH_PATH + "channel/disable/"; // {id}
+    URL_POPUP_TREE     = AUTH_PATH + "channel/list";
     URL_GET_OPERATION  = AUTH_PATH + "channel/operations/";   // {resourceId}
 	
 	URL_ARTICLE_LIST   = AUTH_PATH + "article/list/"; // {channelId}/{page}
@@ -47,7 +43,8 @@
 		URL_MOVE_NODE      = "data/_success.xml?";
 		URL_SORT_NODE      = "data/_success.xml?";
 		URL_STOP_NODE      = "data/_success.xml?";
-		URL_GET_OPERATION  = "data/operation.xml?";
+        URL_POPUP_TREE     = "data/channelTree.xml"; 
+		URL_GET_OPERATION  = "data/_operation.xml?";
 
 		URL_ARTICLE_LIST   = "data/article_list.xml?";
 		URL_DEL_ARTICLE    = "data/_success.xml?";
@@ -64,6 +61,7 @@
 	}
  
     function init() { 
+        ICON = "images/";
         initPaletteResize();
         initMenus();
         initEvents();
@@ -95,10 +93,10 @@
             visible:function() { return isChannel() && getOperation("3");}
         }
 
-		var submenu4 = new Menu(); // 发布
+		var submenu4 = new $.Menu(); // 发布
         var item4 = {
             label:"发布",
-            icon:ICON + "cms/publish_source.gif",
+            icon:ICON + "publish_source.gif",
             visible:function() { return !isTreeRoot() && getOperation("4");},
             submenu:submenu4
         }
@@ -120,7 +118,7 @@
         var item5 = {
             label:"编辑",
             callback:editTreeNode,
-            icon:ICON + "edit.gif",
+            icon:ICON + "icon_edit.gif",
             visible:function() { return !isTreeRoot() && getOperation("5");}
         }
         var item6 = {
@@ -132,32 +130,32 @@
         var item7 = { 
             label:"启用",
             callback: function() { stopOrStartTreeNode("0"); },
-            icon:ICON + "start.gif",
+            icon:ICON + "icon_start.gif",
             visible:function() { return isTreeNodeDisabled() && !isTreeRoot() && getOperation("7");}
         }
         var item8 = {
             label:"停用",
             callback: function() { stopOrStartTreeNode("1"); },
-            icon:ICON + "stop.gif",
+            icon:ICON + "icon_stop.gif",
             visible:function() { return !isTreeNodeDisabled() && !isTreeRoot() && getOperation("7");}
         }
         var item9 = {
             label:"移动到...",
             callback:moveChannelTo,
-            icon:ICON + "move.gif",
+            icon:ICON + "icon_move.gif",
             visible:function() { return isChannel() && getOperation("6");}
         }
         var item10 = {
             label:"浏览文章",
             callback: function() { showArticleList(); },
-            icon:ICON + "view_list.gif",
+            icon:ICON + "icon_view_list.gif",
             visible:function() { return isChannel() && getOperation("1");}
         }         
 
-		var submenu5 = new Menu(); // 即时建立索引
+		var submenu5 = new $.Menu(); // 即时建立索引
         var item11 = {
             label:"即时建索引",
-            icon:ICON + "cms/time_tactic.gif",
+            icon:ICON + "time_tactic.gif",
             visible:function() { return isSite() && getOperation("4");},
             submenu:submenu5
         }
@@ -176,7 +174,7 @@
 		submenu5.addItem(subitem5a);
         submenu5.addItem(subitem5b);
 
-        var menu1 = new Menu();
+        var menu1 = new $.Menu();
 		menu1.addItem(item1);
         menu1.addItem(item2);
         menu1.addItem(item3);
@@ -190,54 +188,37 @@
 		menu1.addItem(item10);
 		menu1.addItem(item11);
 
-        $$("tree").contextmenu = menu1;
+        $1("tree").contextmenu = menu1;
 
 		initGridMenu();
     }
  
     function loadInitData() { 
-		Ajax({
+		$.ajax({
 			url : URL_SOURCE_TREE,
 			onresult : function() { 
-				var _operation = this.getNodeValue(XML_OPERATION);
+				var tree = $.T("tree", this.getNodeValue(XML_MAIN_TREE)); 
+				tree.onTreeNodeMoved = function(ev) { sortTreeNode(URL_SORT_NODE, ev); }
+				tree.onTreeNodeRightClick = function(ev) { onTreeNodeRightClick(ev, true); }
+                tree.onTreeNodeDoubleClick = function(ev) {
+                    var treeNode = getActiveTreeNode();
+                    getTreeOperation(treeNode, function(_operation) {
+                        if("_root" == treeNode.id )  return;
 
-				var siteTreeNode = this.getNodeValue(XML_MAIN_TREE);
-				var tree = $T("tree", siteTreeNode); 
-
-				var treeObj = tree.element;
-				treeObj.onTreeNodeActived = function(eventObj) { 
-					onTreeNodeActived(eventObj);
-				}
-				treeObj.onTreeNodeDoubleClick = function(eventObj) { 
-					onTreeNodeDoubleClick(eventObj);
-				}
-				treeObj.onTreeNodeMoved = function(eventObj) { 
-					sortTreeNode(URL_SORT_NODE, eventObj);
-				}
-				treeObj.onTreeNodeRightClick = function(eventObj) { 
-					onTreeNodeRightClick(eventObj, true);
-				}
+                        var canShowArticleList = checkOperation("1", _operation);                
+                        if( isChannel() && canShowArticleList) { 
+                            showArticleList();
+                        } 
+                        else {
+                            var canEdit = checkOperation("5", _operation);
+                            if( canEdit ) {
+                                editTreeNode();                    
+                            }
+                        }            
+                    }); 
+                }
 			}
 		});
-    }
-
-    function onTreeNodeDoubleClick(eventObj) { 
-        var treeNode = eventObj.treeNode;
-        var id = treeNode.getId();
-        getTreeOperation(treeNode, function(_operation) {
-            if("_rootId" == id )  return;
-
-			var canShowArticleList = checkOperation("1", _operation);                
-			if( isChannel() && canShowArticleList) { 
-				showArticleList();
-			} 
-			else {
-				var canEdit = checkOperation("5", _operation);
-				if( canEdit ) {
-					editTreeNode();                    
-				}
-			}            
-        });
     }
 
 	function editTreeNode() { 
@@ -249,28 +230,25 @@
     }
  
     function addNewSite() { 
-        var treeID = DEFAULT_NEW_ID;
-        loadSiteDetailData(treeID);
+        loadSiteDetailData(DEFAULT_NEW_ID);
     }
 
     function editSiteInfo() { 
-        var treeNode = $T("tree").getActiveTreeNode();
-		var treeID = treeNode.getId();
-		loadSiteDetailData(treeID);
+		loadSiteDetailData(getTreeNodeId());
     }
  
     function loadSiteDetailData(treeID) { 
-		Ajax({
+		$.ajax({
 			url : URL_SITE_DETAIL + treeID,
 			onresult : function() { 
 				var siteInfoNode = this.getNodeValue(XML_CHANNEL_INFO);
-				Cache.XmlDatas.add(treeID, siteInfoNode);
+				$.cache.XmlDatas[treeID] = siteInfoNode;
 
                 showChannelForm();
-				var xform = $X("channelForm", siteInfoNode);
+				$.F("channelForm", siteInfoNode);
 
 				// 设置保存按钮操作
-				$$("channelFormSave").onclick = function() { 
+				$1("channelFormSave").onclick = function() { 
 					saveSite(treeID);
 				}
 			}
@@ -278,80 +256,63 @@
     }
 
     function showChannelForm() {
-        var formObj = $$("channelFormDiv");
+        var formObj = $1("channelFormDiv");
         Element.show(formObj);
-        $$("channelFormClose").onclick = function() {
-            Element.hide(formObj);
+        $1("channelFormClose").onclick = function() {
+            $(formObj).hide();
         }
     }
  
     function saveSite(treeID) {
-        // 校验channelForm数据有效性
-        var xform = $X("channelForm");
+        var xform = $.F("channelForm");
         if( !xform.checkForm() ) return;
-
-        var p = new HttpRequestParams();
-        p.url = URL_SAVE_SITE;
-
-        //是否提交
-        var flag = false;
  
-		var siteInfoNode = Cache.XmlDatas.get(treeID);
-		if( siteInfoNode ) {
-			var dataNode = siteInfoNode.selectSingleNode(".//data");
-			if( dataNode ) {
-				flag = true;                    
-				p.setXFormContent(dataNode);
-			}
-		}
- 
-        if( flag ) {
-            var request = new HttpRequest(p);
+        var request = new $.HttpRequest();
+        request.url = URL_SAVE_SITE;
 
-            syncButton([ $$("channelFormSave")], request);
+        var siteInfoNode = $.cache.XmlDatas[treeID];
+        var dataNode = siteInfoNode.querySelector("data");  
+        request.setFormContent(dataNode);
 
-            request.onresult = function() { 
-				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
-				appendTreeNode("_rootId", treeNode);
+        syncButton([ $1("channelFormSave")], request);
 
-				Element.hide($$("channelFormDiv"));
-            }
-            request.onsuccess = function() { 
-				// 更新树节点名称
-				var name = xform.getData("name");
-				modifyTreeNode(treeID, "name", name, true);
+        request.onresult = function() { 
+			var treeNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
+			appendTreeNode("_root", treeNode);
 
-				Element.hide($$("channelFormDiv"));
-            }
-            request.send();
+			$("channelFormDiv").hide();
         }
+        request.onsuccess = function() { 
+			var name = xform.getData("name");
+			modifyTreeNode(treeID, "name", name);
+
+			$("channelFormDiv").hide();
+        }
+        request.send();
     }
  
     function addNewChannel() { 
-        var treeNode = $T("tree").getActiveTreeNode();
-		var parentID = treeNode.getId();
+		var parentID  = getTreeNodeId();
 		var channelID = DEFAULT_NEW_ID;
         loadChannelDetailData(channelID, parentID);
     }
  
     function editChannelInfo() { 
-		var treeNode = $T("tree").getActiveTreeNode();
-		var treeID = treeNode.getId();
-		loadChannelDetailData(treeID);
+		loadChannelDetailData(getTreeNodeId());
     }
  
     function loadChannelDetailData(treeID, parentID) { 
-		Ajax({
+		$.ajax({
 			url : URL_CHANNEL_DETAIL + treeID + "/" + (parentID || 0),
 			onresult : function() { 
 				var channelInfoNode = this.getNodeValue(XML_CHANNEL_INFO);
-				Cache.XmlDatas.add(treeID, channelInfoNode);
+				$.cache.XmlDatas[treeID] = channelInfoNode;
 
                 showChannelForm();
-				var xform = $X("channelForm", channelInfoNode);
+				var xform = $.F("channelForm", channelInfoNode);
 
                 // 设置保存按钮操作
-				$$("channelFormSave").onclick = function() { 
+				$1("channelFormSave").onclick = function() { 
 					saveChannel(treeID, parentID);
 				}
 			}
@@ -359,60 +320,64 @@
     }
  
     function saveChannel(treeID, parentID) { 
-        // 校验channelForm数据有效性
-        var xform = $X("channelForm");
+        var xform = $.F("channelForm");
         if( !xform.checkForm() ) return;
-
-        var p = new HttpRequestParams();
-         p.url = URL_SAVE_CHANNEL;
-        
-        // 是否提交
-        var flag = false;
  
-		var channelInfoNode = Cache.XmlDatas.get(treeID);
-		if(channelInfoNode) { 
-			var channelInfoDataNode = channelInfoNode.selectSingleNode(".//data");
-			if(channelInfoDataNode) { 
-				flag = true;
-				p.setXFormContent(channelInfoDataNode);
-			}
-		}
- 
-        if( flag ) { 
-            var request = new HttpRequest(p);
- 
-            syncButton([$$("channelFormSave")], request);
+        var request = new $.HttpRequest();
+        request.url = URL_SAVE_CHANNEL;
 
-            request.onresult = function() { 
-				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
-				appendTreeNode(parentID, treeNode);
+        var channelInfoNode = $.cache.XmlDatas[treeID];
+        var channelInfoDataNode = channelInfoNode.querySelector("data");
+        p.setXFormContent(channelInfoDataNode);
 
-				Element.hide($$("channelFormDiv"));
-            }
-            request.onsuccess = function() { // 更新树节点名称
-				var name = xform.getData("name");
-				modifyTreeNode(treeID, "name", name, true);
+        syncButton([$1("channelFormSave")], request);
 
-				Element.hide($$("channelFormDiv"));
-            }
-            request.send();
+        request.onresult = function() { 
+			var treeNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
+			appendTreeNode(parentID, treeNode);
+
+			$("channelFormDiv").hide();
         }
+        request.onsuccess = function() { // 更新树节点名称
+			var name = xform.getData("name");
+			modifyTreeNode(treeID, "name", name);
+
+			$("channelFormDiv").hide();
+        }
+        request.send();
     }
  
     function moveChannelTo() { 
-        var tree = $T("tree");
-		var treeNodeID = tree.getActiveTreeNode().getId();
-		var action = "moveChannel";
-		var returnObj = window.showModalDialog("channelTree.html", {id:treeNodeID, action:action}, "dialogWidth:300px;dialogHeight:400px;");
-		if( returnObj ) { 
-			targetId = returnObj.id;
-			moveTreeNode(tree, treeNodeID, targetId); 
-		}
+        var tree = $.T("tree");
+        var treeNode = tree.getActiveTreeNode();
+        var id  = treeNode.id;
+        var pId = treeNode.parent.id;
+
+        var params = {id:id, parentID: pId};
+        popupTree(URL_POPUP_TREE, "ChannelTree", params, function(target) {
+            if(target.id == "_root") {
+                return alert("栏目不能移动到根节点下。");
+            }
+            moveTreeNode(tree, id, target.id, URL_MOVE_PARAM_TO);
+        });
+    }
+
+    function moveArticleTo() { 
+        var articleId = getArticleAttribute("id");;
+        popupTree(URL_POPUP_TREE, "ChannelTree", {}, function(target) {
+             $.ajax({
+                url: URL_MOVE_ARTICLE + articleId + "/" + target.id,
+                onsuccess: function() {
+                    var channelId = getTreeNodeId();
+                    showArticleList(channelId); // 刷新当前栏目文章列表
+                }
+            });
+        });
     }
 
     function addNewArticle() { 
-		var channelId = $T("tree").getActiveTreeNode().getId();
-		var returnValue = window.showModalDialog("article.html",{title:"新建文章",channelId:channelId,articleId:null},"dialogWidth:900px;dialogHeight:720px;status:yes");
+		var channelId = getTreeNodeId();
+		var returnValue = showModalDialog("article.html",{title:"新建文章", channelId:channelId, articleId:null}, "dialogWidth:900px;dialogHeight:720px;status:yes");
 		if( returnValue ) { 
 			showArticleList(channelId); 
 		}
@@ -420,42 +385,24 @@
 
     function editArticleInfo() { 
 		var canEdit = getGridOperation("5");
-		if( !canEdit ) { 
-			return;            
-		}
+		if( !canEdit ) return;            
 
         var articleId = getArticleAttribute("id");
 		var channelId = getArticleAttribute("channel.id");
 
-        var returnValue = window.showModalDialog("article.html",{title:"编辑文章",channelId:channelId,articleId:articleId},"dialogWidth:900px;dialogHeight:700px;status:yes");
+        var returnValue = showModalDialog("article.html",{title:"编辑文章", channelId:channelId, articleId:articleId}, "dialogWidth:900px;dialogHeight:700px;status:yes");
         if(returnValue) { 
 			showArticleList(channelId);
         }
     }
- 
-    function moveArticleTo() { 
-        var articleId = getArticleAttribute("id");;
-        var action = "moveArticle";
-        var returnObj = window.showModalDialog("channelTree.html", {action:action}, "dialogWidth:300px;dialogHeight:400px;");
-        if( returnObj ) { 
-			Ajax({
-				url: URL_MOVE_ARTICLE + articleId + "/" + returnObj.id,
-				onsuccess: function() {
-					// 刷新当前栏目文章列表
-					var channelId = getTreeNodeId();
-					showArticleList(channelId); 
-				}
-			});
-        }
-    }
 
     function delArticle() { 
-        if( !confirm("您确定要删除吗？") ) { 
+        if( !confirm("您确定要删除该文章吗？") ) { 
             return;
         }
         
 		var articleId = getArticleAttribute("id");
-		Ajax({
+		$.ajax({
 			url : URL_DEL_ARTICLE + articleId,
 			method: "DELETE",
 			onsuccess : function() { 			
@@ -467,13 +414,13 @@
  
     /* 获取文章属性 */
     function getArticleAttribute(name) { 
-        return $G("grid").getRowAttributeValue(name);
+        return $.G("grid").getColumnValue(name);
     }
 
     /* 置顶文章 */
     function setTopArticle(isTop) { 
 		var articleId = getArticleAttribute("id");
-		Ajax({
+		$.ajax({
 			url : URL_SETTOP_ARTICLE + articleId,
 			onsuccess : function() { 			
 				var channelId = getTreeNodeId();
@@ -491,7 +438,7 @@
 		var flag = false;
         var channelId = getArticleAttribute("channel.id");
 		if( channelId ) {
-			var channelNode = $T("tree").getTreeNodeById(channelId);
+			var channelNode = $.T("tree").getTreeNodeById(channelId);
 			var _operation = channelNode.getAttribute("_operation");
 			flag = checkOperation(code, _operation);
 		}
@@ -504,14 +451,13 @@
      */
     function publishArticle(category) { 
 		var channelId = getTreeNodeId();
-		Ajax({
+		$.ajax({
 			url : URL_PUBLISH_PROGRESS + channelId + "/" + category,
 			onresult : function() { 			
 				var data = this.getNodeValue("ProgressInfo");
 				var progress = new Progress(URL_SYNC_PROGRESS, data, URL_CONCEAL_PROGRESS);
 				progress.oncomplete = function() { 
-					// 发布完成：刷新grid
-					showArticleList(channelId); 
+					showArticleList(channelId); // 发布完成：刷新grid
 				}
 				progress.start();
 			}
@@ -520,7 +466,7 @@
 
 	function createLuceneIndex(increment) {
 		var siteId = getTreeNodeId();
-		Ajax({
+		$.ajax({
 			url : URL_CREATE_INDEX + siteId + "/" + increment,
 			onresult : function() { 			
 				var data = this.getNodeValue("ProgressInfo");
@@ -537,7 +483,7 @@
 		var item1 = {
             label:"编辑",
             callback:editArticleInfo,
-            icon:ICON + "edit.gif",
+            icon:ICON + "icon_edit.gif",
             visible:function() { return getArticleAttribute("status") < 3 && getGridOperation("5");}
         }
         var item2 = {
@@ -549,7 +495,7 @@
         var item3 = {
             label:"移动到...",
             callback:moveArticleTo,
-            icon:ICON + "move.gif",
+            icon:ICON + "icon_move.gif",
             visible:function() { return getGridOperation("6");}
         }
         var item4 = {
@@ -569,21 +515,20 @@
             visible:function() { return "1" == getArticleAttribute("isTop") && getGridOperation("5");}
         }
 
-        var menu1 = new Menu();
+        var menu1 = new $.Menu();
         menu1.addItem(item1);
 		menu1.addItem(item2);
 		menu1.addItem(item3);
 		menu1.addItem(item4);
 		menu1.addItem(item5);
  
-        $$("grid").contextmenu = menu1;
+        $1("grid").contextmenu = menu1;
     }
 
     /* 显示文章列表 */
     function showArticleList(channelId) {
 		channelId = channelId || getTreeNodeId();
-		showGrid(URL_ARTICLE_LIST + channelId, XML_ARTICLE_LIST, editArticleInfo);
+		$.showGrid(URL_ARTICLE_LIST + channelId, XML_ARTICLE_LIST, editArticleInfo);
 	}   
  
-
     window.onload = init;

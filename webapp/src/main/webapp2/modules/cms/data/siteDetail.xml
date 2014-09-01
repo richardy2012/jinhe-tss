@@ -10,45 +10,25 @@
 </declare>
 <layout>
 	<TR>
-		<TD width="50">
-			<label binding="name"/>
-		</TD>
-		<TD colspan="3">
-			<input binding="name"/>
-		</TD>
-		<TD width="50">
-			<label binding="overdueDate"/>
-		</TD>
-		<TD>
-			<input binding="overdueDate"/>
-		</TD>
+		<TD width="50"><label binding="name"/></TD>
+		<TD colspan="3"><input binding="name"/></TD>
+		<TD width="50"><label binding="overdueDate"/></TD>
+		<TD><input binding="overdueDate"/></TD>
 	</TR>
 	<TR>
-		<TD width="50">
-			<label binding="path"/>
-		</TD>
-		<TD>
-			<input binding="path"/>
-		</TD>
-		<TD width="50">
-			<label binding="imagePath"/>
-		</TD>
-		<TD>
-			<input binding="imagePath"/>
-		</TD>
-		<TD width="50">
-			<label binding="docPath"/>
-		</TD>
-		<TD>
-			<input binding="docPath"/>
-		</TD>
+		<TD><label binding="path"/></TD>
+		<TD><input binding="path"/></TD>
+		<TD><label binding="imagePath"/></TD>
+		<TD><input binding="imagePath"/></TD>
+		<TD><label binding="docPath"/></TD>
+		<TD><input binding="docPath"/></TD>
 	</TR>
 	<TR>
-		<TD width="50">
+		<TD>
 			<label binding="remark"/>
 		</TD>
 		<TD colspan="5">
-			<textarea binding="remark" style="width:100%;height:100"/>
+			<textarea binding="remark" style="width:100%;height:100px;"/>
 		</TD>
 	</TR>
 </layout>		
