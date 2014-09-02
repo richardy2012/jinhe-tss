@@ -475,9 +475,9 @@ function importComponent() {
 }	
 
 function exportComponent() {
+	var url = URL_EXPORT_COMPONENT + getTreeNodeId();
     var frameName = createExportFrame();
-    var frameObj = window.frames[frameName];
-    frameObj.location.href = URL_EXPORT_COMPONENT + getTreeNodeId();
+    $1(frameName).setAttribute("src", url);
 }
 
 /* 组件资源管理 */
@@ -485,7 +485,7 @@ function resourceManage() {
     var treeNode = getActiveTreeNode();
 	var code = treeNode.getAttribute("code");
 	var type = getComponentType();
-	window.open("filemanager.html?code=" + code + "&type=" + type, 'newwindow', 'height=288, width=404');
+	window.open("filemanager.html?code=" + code + "&type=" + type, 'newwindow', 'height=288, width=444');
 }
  
 

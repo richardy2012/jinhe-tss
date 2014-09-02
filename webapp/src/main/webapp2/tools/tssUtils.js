@@ -458,7 +458,7 @@ function appendTreeNode(id, xmlNode, treeName) {
 	var tree = $.T(treeName || "tree");
 	var treeNode = tree.getTreeNodeById(id);
 	if( treeNode && xmlNode ) {
-		tree.addTreeNode(xmlNode);
+		tree.addTreeNode(xmlNode, treeNode);
 	}
 }
 

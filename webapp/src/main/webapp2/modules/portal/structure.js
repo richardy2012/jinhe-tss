@@ -537,7 +537,7 @@ function updateParameters(newNode) {
 
 		if(oldNode.firstChild) {
 			var oldText = oldNode.firstChild;
-			oldText.removeNode();
+			$.removeNode(oldText);
 		}
 		if(newNode.firstChild) {
 			var newText = newNode.firstChild;
@@ -697,8 +697,8 @@ function getThemeAttribute(attrName) {
 
 /* 修改主题名 */
 function changeThemeName() {
-    var page2tree = $.T("page2Tree");
-    var treeNode = page2tree.getActiveTreeNode();
+    var page2Tree = $.T("page2Tree");
+    var treeNode = page2Tree.getActiveTreeNode();
     if(treeNode) {
         var treeID = treeNode.id;
         var treeName = treeNode.name;
@@ -720,7 +720,7 @@ function changeThemeName() {
 				method: "PUT",
 				onsuccess: function() {
 					treeNode.setAttribute("name", newName);
-                    modifyTreeNode(treeID, "name", newName, "page2tree");
+                    modifyTreeNode(treeID, "name", newName, "page2Tree");
 				}
 			});
         }
@@ -729,15 +729,15 @@ function changeThemeName() {
 
 /* 删除主题 */
 function delTheme() {
-    var page2tree = $.T("page2Tree");
-    var treeNode = page2tree.getActiveTreeNode();
+    var page2Tree = $.T("page2Tree");
+    var treeNode = page2Tree.getActiveTreeNode();
     if(treeNode) {
         var treeID = treeNode.id;
 		$.ajax({
 			url: URL_DEL_THEME + treeID,
 			method: "DELETE",
 			onsuccess: function() {
-				page2tree.removeTreeNode(treeNode);
+				page2Tree.removeTreeNode(treeNode);
 			}
 		});
     }
@@ -745,8 +745,8 @@ function delTheme() {
 
 /* 复制主题  */
 function copyTheme(portalId) {
-    var page2tree = $.T("page2Tree");
-    var treeNode = page2tree.getActiveTreeNode();
+    var page2Tree = $.T("page2Tree");
+    var treeNode = page2Tree.getActiveTreeNode();
     if(treeNode) {
         var treeID = treeNode.id;
         var treeName = treeNode.name;
@@ -756,8 +756,8 @@ function copyTheme(portalId) {
 			url: URL_COPY_THEME + treeID + "/" + newName,
 			onresult: function() {
 				var xmlNode = this.getNodeValue(XML_THEME_MANAGE).querySelector("treeNode");
-				var rootNode = page2tree.getTreeNodeById("_root");
-                appendTreeNode("_root", xmlNode);
+				var rootNode = page2Tree.getTreeNodeById("_root");
+                appendTreeNode("_root", xmlNode, "page2Tree");
 			}
 		});
     }
@@ -774,26 +774,26 @@ function previewTheme(portalId) {
 
 /* 设置默认主题 */
 function setDefaultTheme() {
-    var page2tree = $.T("page2Tree");
-    var treeNode = page2tree.getActiveTreeNode();
+    var page2Tree = $.T("page2Tree");
+    var treeNode = page2Tree.getActiveTreeNode();
     if(treeNode) {
         $.ajax({
 			url: URL_SET_DEFAULT_THEME + treeNode.id,
 			method: "PUT",
 			onsuccess: function() {
                 // 先清除前次默认主题名称
-                page2tree.getAllNodes.each(function(i, node) {
+                page2Tree.getAllNodes().each(function(i, node) {
                     if(node.getAttribute('isDefault') == '1') {
                         node.setAttribute("icon", ICON + "theme.gif");
                         node.setAttribute("isDefault", "0");
+                        node.li.selfIcon.css("backgroundImage", "url(" + ICON + "theme.gif" + ")");
                     }
                 })
 
                 // 修改当前节点名称及属性
                 treeNode.setAttribute("icon", ICON + "default_theme.gif");
-                treeNode.setAttribute("isDefault", "1");
-
-                page2tree.reload();                
+                treeNode.setAttribute("isDefault", "1");    
+                treeNode.li.selfIcon.css("backgroundImage", "url(" + ICON + "default_theme.gif" + ")");        
             }
 		});
     }
@@ -873,7 +873,7 @@ function showPageFlowRate() {
 function resourceManage() {
     var treeNode = getActiveTreeNode();
 	var code = treeNode.getAttribute("code");
-	window.open("filemanager.html?code=" + code, 'newwindow', 'height=288, width=404');
+	window.open("filemanager.html?code=" + code, 'newwindow', 'height=288, width=444');
 }
 
 window.onload = init;

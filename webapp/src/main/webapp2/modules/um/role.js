@@ -260,7 +260,10 @@
     function loadRoleGroupDetailData(treeID, editable, parentID) {
 		$.ajax({
 			url : URL_ROLE_GROUP_DETAIL + treeID + "/" + parentID,
-			onresult : function() {					
+			onresult : function() {		
+				$("#authframe").hide();
+        		$(ws.element).show();
+
 				var roleGroupInfoNode = this.getNodeValue(XML_ROLE_GROUP_INFO);
 
 				var roleGroupInfoNodeID = treeID + "." + XML_ROLE_GROUP_INFO;
@@ -387,6 +390,9 @@
      */
     function loadRoleDetailData(treeID, editable, parentID) {
 		var onresult = function() {
+        	$("#authframe").hide();
+        	$(ws.element).show();
+
 			var roleInfoNode = this.getNodeValue(XML_ROLE_INFO);
 			var role2UserTreeNode   = this.getNodeValue(XML_ROLE_TO_GROUP_TREE);
 			var role2UserExsitInfo  = this.getNodeValue(XML_ROLE_TO_USER_EXIST_TREE);
@@ -495,28 +501,35 @@
         request.send();
     }		
 
+
+    var globalValiable; // 用来存放传递给iframe页面的信息
+
     /* 角色权限设置 */
     function setRolePermission() {
-        var treeNode = $.T("tree").getActiveTreeNode();		
-		var title = "设置\"" + treeNode.name + "\"权限";
-		var params = {
-			roleId: treeNode.id,
-			isRole2Resource: "1"
-		};
-		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:800px;dialogHeight:600px;resizable:no");
+        var treeNode = getActiveTreeNode();	
+        globalValiable = {};	
+        globalValiable.roleId = treeNode.id;
+        globalValiable.isRole2Resource = "1";
+        globalValiable.title = "设置角色【" + treeNode.name + "】对资源的权限";
+
+        $(ws.element).hide();
+        $("#authframe").show();
+        $1("authframe").setAttribute("src", "setpermission.html");
     }
     
     /* 授予角色 */
     function setRole2Permission() {
-        var treeNode = $.T("tree").getActiveTreeNode();
-		var title = "授予\"" + treeNode.name + "\"角色";
-		var params = {
-			roleId: treeNode.id,
-			resourceType: "2",
-			applicationId: "tss",
-			isRole2Resource: "0"
-		};
-		window.showModalDialog("setpermission.htm", {params:params, title:title, type:"role"},"dialogWidth:800px;dialogHeight:600px;resizable:no");
+        var treeNode = getActiveTreeNode();
+        globalValiable = {};
+        globalValiable.roleId = treeNode.id;
+        globalValiable.resourceType = "2";
+        globalValiable.applicationId = "tss";
+        globalValiable.isRole2Resource = "0";
+        globalValiable.title = "把【" + treeNode.name + "】作为资源授予角色";
+
+		$(ws.element).hide();
+        $("#authframe").show();
+        $1("authframe").setAttribute("src", "setpermission.html");
     }
 
     /* 综合查询(所有拥有指定角色的用户列表) */
