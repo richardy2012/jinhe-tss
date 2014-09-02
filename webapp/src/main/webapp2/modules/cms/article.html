@@ -10,8 +10,20 @@
 <script src="../../tools/tssJS/tssJS.all.js"></script>
 <script src="../../tools/tssUtils.js"></script>
 
-<script language="javascript" src="kindeditor-4.1.7/kindeditor-min.js"></script>
-<script language="javascript" src="kindeditor-4.1.7/lang/zh_CN.js"></script>
+<script language="javascript" src="../../tools/kindeditor417/kindeditor-min.js"></script>
+<script language="javascript" src="../../tools/kindeditor417/lang/zh_CN.js"></script>
+
+<style type="text/css">
+	body { overflow: auto; height: 98%;}
+	.article {border: 1px solid #98989C; background-color:#fff; margin: 2px; padding: 3px; }
+	.article .summary {background-color: #AFEEEE; }
+	.article .content {height: 500px; }
+	.article .attach {height: 100px; background-color: #AFEEEE; }
+	.article .upload {background-color: #90EE90; padding: 5px 0 5px 10px; }
+	.article .bts { border-top: 1px solid #98989C; padding: 5px 0 5px 10px; text-align: center;}
+	.article .bts input { margin-right:20px; }
+	
+</style>
 
 <script type="text/javascript">
 <!--
@@ -36,9 +48,10 @@
     var articleId;
 
 	function init() {
-		if(window.dialogArguments) {
-			channelId = window.dialogArguments.channelId;
-			articleId = window.dialogArguments.articleId;
+		if(window.parent) {
+			var globalValiable = window.parent.globalValiable;
+			channelId = globalValiable.channelId;
+			articleId = globalValiable.articleId;
 		}
 
 		initGridMenu();
@@ -48,7 +61,7 @@
 			url = URL_ARTICLE_DETAIL + articleId;
 		} else {
 			url = URL_ARTICLE_INIT + channelId; 
-			articleId =  new Date().valueOf(); // 取当前时间作为新文章的临时ID，上传附件时有用
+			articleId = $.now(); // 取当前时间作为新文章的临时ID，上传附件时有用
 		}
 
         var onresult = function(){
@@ -56,10 +69,10 @@
             var articleContentNode = this.getNodeValue("ArticleContent");
             var attachsListNode    = this.getNodeValue("AttachsList");
 
-			$X("articleForm", articleInfoNode);
+			$.F("articleForm", articleInfoNode);
 			editor.insertHtml(articleContentNode);
 
-			var grid = $G("attachGrid", attachsListNode);
+			var grid = $.G("attachGrid", attachsListNode);
 			grid.element.onRightClickRow = function() {
 				grid.element.contextmenu.show(event.clientX, event.clientY);
 			} 
@@ -67,54 +80,45 @@
 				deleteAttachment();
 			}
 
-            $$("btSave").onclick  = saveArticle;
-            $$("btSaveAndPublish").onclick  = saveAndPublishArticle;
+            $1("btSave").onclick  = saveArticle;
+            $1("btSaveAndPublish").onclick  = saveAndPublishArticle;
         }
         
-		Ajax({ url: url, method: "GET", onresult: onresult });
+		$.ajax({ url: url, method: "GET", onresult: onresult });
 	}
  
     function saveArticle(isCommit) {
-        var articleForm = $X("articleForm");
+        var articleForm = $.F("articleForm");
+        if( !articleForm.checkForm() ) return;
 
-        // 校验page1Form数据有效性
-        if( !articleForm.checkForm() ) {
-            return;
-        }
-
-        var p = new HttpRequestParams();
-        p.url = URL_SAVE_ARTICLE;
-        p.setContent("channel.id", channelId); // 文章所属栏目
-        p.setContent("articleId", articleId); 
+        var request = new $.HttpRequest();
+        request.url = URL_SAVE_ARTICLE;
+        request.addParam("channel.id", channelId); // 文章所属栏目
+        request.addParam("articleId", articleId); 
 
         // 文章基本信息
-        var articleInfoNode = articleForm.getXmlDocument();
-		var articleInfoDataNode = articleInfoNode.selectSingleNode(".//data");
-		if( articleInfoDataNode ) {
-			flag = true;
-			p.setXFormContent(articleInfoDataNode);
-		}
+        var articleInfoNode = articleForm.tempalte.sourceXML;
+		var dataNode = articleInfoNode.querySelector("data");
+		request.setFormContent(dataNode);
 
 		// 文章正文
-		p.setContent("ArticleContent", editor.html());
+		request.addParam("ArticleContent", editor.html());
 
 		// 文章图片附件
-		var attachsSeqNos = $G("attachGrid").getColumnValues("seqNo");
-		p.setContent("attachList", attachsSeqNos.join(","));
+		var attachsSeqNos = $.G("attachGrid").getColumnValues("seqNo");
+		request.addParam("attachList", attachsSeqNos.join(","));
 
 		// 是否保存并发布文章
 		if(isCommit) {
-			p.setContent("isCommit", "true");
+			request.addParam("isCommit", "true");
 		}
-
-        var request = new HttpRequest(p);
        
 		// 同步按钮状态
-        syncButton([$$("btSave")], request);
+        syncButton([$1("btSave")], request);
 
         request.onsuccess = function() {
-            window.returnValue = true;
-            window.close();
+           // 刷新框架页的对应栏目的文章列表
+           window.parent.showArticleList(channelId); 
         }
         request.send();
     }
@@ -128,25 +132,31 @@
 		var url = URL_UPLOAD_FILE + "?afterUploadClass=com.jinhe.tss.cms.CreateAttach";
 		url += "&articleId=" + articleId;	
 		url += "&channelId=" + channelId;
-		url += "&type=" + $$("fileType").value;
+		url += "&type=" + $1("fileType").value;
 		
-		var form = $$("uploadForm");
+		var form = $1("uploadForm");
 		form.action = url;
 		form.submit();
 	}
 
 	function addAttachments(seqNo, fileName, fileExt, oldfileName, downloadUrl) {
-		var type = $$("fileType").value;
-		var map = {"seqNo": seqNo, "articleId": articleId, "uploadName": downloadUrl, "name": oldfileName, "fileName": fileName, "type": type, "fileExt": fileExt};
-		$G("attachGrid").insertRow(map);
+		var type = $1("fileType").value;
+		var map = {
+			"seqNo": seqNo, 
+			"articleId": articleId, 
+			"uploadName": downloadUrl, 
+			"name": oldfileName, 
+			"fileName": fileName, 
+			"type": type, 
+			"fileExt": fileExt
+		};
+		$.G("attachGrid").insertRow(map);
 	}
 
 	function deleteAttachment() {
-		if( !confirm("您确定要删除吗？") ) { 
-            return;
-        }
+		if( !confirm("您确定要删除吗？") ) return;
         
-		$G("attachGrid").deleteSelectedRow();
+		$.G("attachGrid").deleteSelectedRow();
 	}
 
 	function initGridMenu() { 
@@ -156,10 +166,10 @@
             icon:ICON + "icon_del.gif"
         }
 
-        var menu1 = new Menu();
+        var menu1 = new $.Menu();
         menu1.addItem(item1);
  
-        $$("attachGrid").contextmenu = menu1;
+        $1("attachGrid").contextmenu = menu1;
     }
 
 	window.onload = init;
@@ -170,55 +180,34 @@
 </head>
 
 <body>
-<div class="mainBox" id="mainBox">
-  <table class="full" cellspacing="1">
-    <tr>
-      <td>
-        <div style="width:100%;height:100%;overflow:auto">
-          <table class="hFull" cellspacing="1">
-            <tr>
-              <td valign="top">
-				<XForm:Box id="articleForm" baseurl="../framework/xform/"><div class="loading"></div></XForm:Box>
-              </td>
-            </tr>
-            <tr>
-              <td valign="top" height="370">
-                  <!-- 编辑器 开始 -->
-				  <form>
-					<textarea id="content" name="content" style="width:99%;height:369px;visibility:hidden;"></textarea>
-				  </form>
-                  <!-- 编辑器 结束 -->
-              </td>
-            </tr>
-            <tr>
-				<td style="height:120px;">
-				   <Grid:Box id="attachGrid" baseurl="../framework/grid/" width="80%" height="120px"></Grid:Box>
-				</td>
-            </tr>
-			 <tr>
-				<td style="width:90%;height:50px;">
-					 <form id="uploadForm" method="post" target='fileUpload' enctype="multipart/form-data">
-						附件类型: <select id="fileType">
-							<option value="1" selected>图片</option>
-							<option value="2">附件</option>
-						</select>
-						<input type="file" name="file"/><input type="button" onclick="uploadAttachment()" value="上传附件" />
-					</form>
-					<iframe width='0px' height='0px' name='fileUpload'></iframe>
-				</td>
-            </tr>
-          </table>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td class="t" height="30" align="center">
-        <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> 
-		<input type="button" value="完成" class="btStrong" id="btSave"/> 
-		<input type="button" value="完成并提交" class="btStrongL" id="btSaveAndPublish"/>
-      </td>
-    </tr>
-  </table>
-</div>
+
+	<div class="article">
+		<div class="summary">
+			<Form:Box id="articleForm"></Form:Box>
+		</div>
+		<div class="content">
+			<textarea id="content" name="content" style="width:100%;height:500px;visibility:hidden;"></textarea>
+		</div>
+		<div class="attach">
+			<Grid:Box id="attachGrid"></Grid:Box>
+		</div>
+		<div class="upload">
+			<form id="uploadForm" method="post" target='fileUpload' enctype="multipart/form-data">
+				附件类型: 
+				<select id="fileType">
+					<option value="1" selected>图片</option>
+					<option value="2">附件</option>
+				</select>
+				<input type="file" name="file"/><input type="button" class="btStrongL" onclick="uploadAttachment()" value="上传附件" />
+			</form>
+			<iframe width='0' height='0' name='fileUpload' style='display:none;'></iframe>
+		</div>
+		<div class="bts">
+			<input type="button" value="完成" class="btStrong" id="btSave"/> 
+			<input type="button" value="完成并提交" class="btStrongL" id="btSaveAndPublish"/>
+			<input type="button" value="关闭" class="btWeak" onclick="window.close()"/>
+		</div>
+	</div>
+
 </body>
 </html>

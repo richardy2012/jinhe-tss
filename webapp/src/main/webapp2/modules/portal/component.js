@@ -416,17 +416,51 @@ function previewElement() {
  *	更改布局器、组件、portlet的参数配置文件
  *	参数：	int:type       类型(1:布局器、2:组件、3:portlet)
  */
+XML_CONFIG_PARAMS = "ConfigParams";
+
+URL_COMPONENT_PARAMS_INFO = AUTH_PATH + "component/paramconfig/"; // {id}
+URL_COMPONENT_PARAMS_SAVE = AUTH_PATH + "component/paramconfig/"; // {id}
+
+if(IS_TEST) {
+	URL_COMPONENT_PARAMS_INFO = "data/component-params.xml?";
+	URL_COMPONENT_PARAMS_SAVE = "data/_success.xml?";
+}
+
 function editParamsTemplate(type) {
     var page1Form = $.F("page1Form");
     var id         = page1Form.getData("id") ;
 	var name       = page1Form.getData("name") || "";
     var parameters = page1Form.getData("parameters") || "";
-
-    if(id) {
-        window.showModalDialog("component-params.html", {id:id,params:parameters,title:"配置组件【" + name + "】的参数模板"},"dialogWidth:700px;dialogHeight:480px;");
-    } else {
-		alert("请先保存组件后再配置其参数模板");
+    if(id == null) {
+		return alert("请先保存组件后再配置其参数模板");
 	}
+
+	$(".cp").show().center(300, 300);
+
+	$.ajax({
+		url: URL_COMPONENT_PARAMS_INFO + id,
+		params: {"paramsItem": parameters},
+		method: "GET",
+		onresult: function() {
+			var dataXmlNode = this.getNodeValue(XML_CONFIG_PARAMS);
+			$1("paramTemplate").value = $.XML.toXml(dataXmlNode);
+			$('.cp>h2').html("配置组件【" + name + "】的参数模板");
+		}
+	});
+
+	$(".cp .bts .btStrong").click(function(){
+		$.ajax( {
+			url: URL_COMPONENT_PARAMS_SAVE + id,
+			params: {"configXML": $1("paramTemplate").value},
+			onsuccess: function() {
+				$(".cp").hide();
+			}
+		});
+	});
+
+	$(".cp .bts .btWeak").click(function(){
+		$(".cp").hide();
+	});
 }
 
 function importComponent() {
@@ -448,17 +482,10 @@ function exportComponent() {
 
 /* 组件资源管理 */
 function resourceManage() {
-    var tree = $.T("tree");
-    var treeNode = tree.getActiveTreeNode();
-	var name = treeNode.name;
+    var treeNode = getActiveTreeNode();
 	var code = treeNode.getAttribute("code");
-
-	var params = {
-		code:code,
-		type:getComponentType()
-	};
-
-	window.showModalDialog("filemanager.html", {params:params, title:"\"" + name + "\"相关资源管理"},"dialogWidth:500px;dialogHeight:500px;");
+	var type = getComponentType();
+	window.open("filemanager.html?code=" + code + "&type=" + type, 'newwindow', 'height=288, width=404');
 }
  
 

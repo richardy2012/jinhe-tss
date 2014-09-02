@@ -375,25 +375,25 @@
         });
     }
 
+    var globalValiable = {}; // 用来存放传递给iframe页面的信息
     function addNewArticle() { 
-		var channelId = getTreeNodeId();
-		var returnValue = showModalDialog("article.html",{title:"新建文章", channelId:channelId, articleId:null}, "dialogWidth:900px;dialogHeight:720px;status:yes");
-		if( returnValue ) { 
-			showArticleList(channelId); 
-		}
+        globalValiable.channelId = getTreeNodeId();
+
+        $("#grid").hide();
+        $("#articleFrame").show();
+        $1("articleFrame").setAttribute("src", "article.html");
     }
 
     function editArticleInfo() { 
 		var canEdit = getGridOperation("5");
 		if( !canEdit ) return;            
 
-        var articleId = getArticleAttribute("id");
-		var channelId = getArticleAttribute("channel.id");
+        globalValiable.articleId = getArticleAttribute("id");
+		globalValiable.channelId = getArticleAttribute("channel.id");
 
-        var returnValue = showModalDialog("article.html",{title:"编辑文章", channelId:channelId, articleId:articleId}, "dialogWidth:900px;dialogHeight:700px;status:yes");
-        if(returnValue) { 
-			showArticleList(channelId);
-        }
+        $("#grid").hide();
+        $("#articleFrame").show();
+        $1("articleFrame").setAttribute("src", "article.html");
     }
 
     function delArticle() { 
@@ -527,6 +527,9 @@
 
     /* 显示文章列表 */
     function showArticleList(channelId) {
+        $("#grid").show();
+        $("#articleFrame").hide();
+
 		channelId = channelId || getTreeNodeId();
 		$.showGrid(URL_ARTICLE_LIST + channelId, XML_ARTICLE_LIST, editArticleInfo);
 	}   

@@ -13,14 +13,8 @@
 <script language="javascript" src="channel.js"></script>
 
 <style>
-  #channelFormDiv {
-    display:none;
-    background-color: #BEC6EE;
-    border:1px solid #416371;
-    width: 660px;    
-    height: 200px;  
-    padding: 50px 10px 10px 10px;
-  }
+  #channelFormDiv { display:none; background-color:#BEC6EE; border:1px solid #416371; width:660px; height:200px;  padding: 50px 10px 10px 10px; }
+  #articleFrame { height: 100%; width: 100%;}
 </style>
 
 </head>
@@ -45,10 +39,15 @@
           <tr>
             <td id="gridTitle">
               <span class="paletteSwitch" id="paletteOpen"></span><span class="icon"></span>
-              文章列表<span class="buttonBox" id="gridToolBar"></span>
+              文章<span class="buttonBox" id="gridToolBar"></span>
             </td>
           </tr>
-          <tr><td><Grid:Box id="grid"></Grid:Box></td></tr>
+          <tr>
+            <td>
+              <Grid:Box id="grid"></Grid:Box>
+              <iframe id="articleFrame" style="display:none" frameborder="0"></iframe>
+            </td>
+          </tr>
         </table>
       </td>
       <td/>

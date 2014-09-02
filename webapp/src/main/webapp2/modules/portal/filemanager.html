@@ -11,11 +11,20 @@
 <script src="../../tools/tssUtils.js"></script>
 
 <style>
-    .label { padding-left:3px; } 
-    .btBox { text-align:right; padding-right:3px; } 
-    .btImg { width:20px; height:18px; background-color:#F6F6F6; border:0px; } 
-    #contextPathBox { color:#999999; background-color:#F6F6F6; width:85%; border:0px; } 
-    #filterBox { width:80px; padding-left:3px; }
+    .dialog { border:1px solid #98989C; background-color:#fff; overflow:auto; padding:5px;}
+
+    .operation {height: 30px; vertical-align:bottom; padding-top: 3px;}
+    .operation span { width:20px; height:18px; display: inline-block; padding-left:3px; background-repeat:no-repeat;} 
+    .operation .download {background-image:url(images/icon_download.gif); }
+    .operation .rename   {background-image:url(images/icon_rename.gif); }
+    .operation .remove   {background-image:url(images/icon_del.gif); }
+    .operation .newfolder{background-image:url(images/icon_folder_new.gif); }
+
+    .operation #contextPath{ color:#999999; background-color:#F6F6F6; width:160px; border:1px; } 
+    .operation #fileFilter { width:40px; padding-left:3px; }
+
+    .dialog>div:nth-child(2) { background-color: #E7E7E7;} 
+   
 </style>
 
 <SCRIPT type="text/javascript">
@@ -25,28 +34,35 @@
     XML_CONTEXT_PATH = "ContextPath";
 
     /* XMLHTTP请求地址汇总 */
-    URL_SOURCE_TREE = AUTH_PATH + "portal/file/list";
-    URL_RENAME = AUTH_PATH + "portal/file";
-    URL_DEL_FILES = AUTH_PATH + "portal/file";
+    URL_SOURCE_TREE    = AUTH_PATH + "portal/file/list";
+    URL_RENAME_FILE    = AUTH_PATH + "portal/file";
+    URL_DEL_FILES      = AUTH_PATH + "portal/file";
     URL_DOWNLOAD_FILES = AUTH_PATH + "portal/file";
-    URL_ADD_FOLDER = AUTH_PATH + "portal/file";
+    URL_ADD_FOLDER     = AUTH_PATH + "portal/file";
 
     if (IS_TEST) {
-        URL_SOURCE_TREE = "data/resource_init.xml?";
-        URL_RENAME = "data/_success.xml?";
-        URL_DEL_FILES = "data/_success.xml?";
+        URL_SOURCE_TREE    = "data/resource_init.xml?";
+        URL_RENAME_FILE    = "data/_success.xml?";
+        URL_DEL_FILES      = "data/_success.xml?";
         URL_DOWNLOAD_FILES = "data/download.zip?";
-        URL_ADD_FOLDER = "data/_success.xml?";
+        URL_ADD_FOLDER     = "data/_success.xml?";
     }
 
-    var params;
-    function init() {
-        params = window.dialogArguments ? window.dialogArguments.params: {};
+    var code = $.Query.get("code"), 
+        type = $.Query.get("type");
 
+    function init() {
         loadFileTree();
+
+        $(".dialog").center(400, 300);
+        $(".operation .download").click(downloadFiles);
+        $(".operation .rename").click(renameFile);
+        $(".operation .remove").click(delFiles);
+        $(".operation .newfolder").click(addFolder);
     }
 
     function loadFileTree(contextPath, filter) {
+        var params = {};
         if (contextPath) {
             params.contextPath = contextPath;
         }
@@ -54,19 +70,19 @@
             params.filter = filter;
         }
 
-        Ajax({
+        $.ajax({
             url: URL_SOURCE_TREE,
             params: params,
             onresult: function() {
                 var dataXmlNode = this.getNodeValue(XML_MAIN_TREE);
                 var contextPath = this.getNodeValue(XML_CONTEXT_PATH);
 
-                var treeObj = $T("tree", dataXmlNode);
+                var tree = $.T("tree", dataXmlNode);
 
-                treeObj.element.onTreeNodeDoubleClick = function(eventObj) {
-                    var treeNode = eventObj.treeNode;
-                    var id = treeNode.getId();
-                    var name = treeNode.getName();
+                tree.onTreeNodeDoubleClick = function(ev) {
+                    var treeNode = ev.treeNode;
+                    var id = treeNode.id;
+                    var name = treeNode.name;
                     var isFolder = treeNode.getAttribute("isFolder");
                     if ("-1" == id) {
                         var newPath = getParentContextPath(); // 回到夫目录
@@ -78,17 +94,16 @@
                 }
 
                 // 显示相对路径
-                var boxObj = $$("contextPathBox");
-                boxObj.value = boxObj.title = contextPath;
-                boxObj.scrollLeft = boxObj.scrollWidth;
+                var pathEl = $1("contextPath");
+                pathEl.value = pathEl.title = contextPath;
             }
         });
     }
 
     /* 获取上级文件夹相对路径 */
     function getParentContextPath() {
-        var boxObj = $$("contextPathBox");
-        var contextPath = boxObj.value;
+        var pathEl = $1("contextPath");
+        var contextPath = pathEl.value;
         var newPath = contextPath.replace(/[^//]*\/?$/, "");
         if (newPath == "") {
             return null
@@ -98,44 +113,41 @@
 
     /* 获取当前文件夹相对路径  */
     function getFolderContextPath(name) {
-        var boxObj = $$("contextPathBox");
-        var contextPath = boxObj.value;
+        var pathEl = $1("contextPath");
+        var contextPath = pathEl.value;
         return contextPath + "/" + name;
     }
 
     /* 删除资源文件 */
     function delFiles() {
-        var selectNodes = $T("tree").getSelectedTreeNode();
-
-        if (0 == selectNodes.length) {
+        var checkedNodes = $.T("tree").getCheckedNodes();
+        if ( checkedNodes.length == 0 ) {
             return alert("请先选择要删除的文件");
         }
-        if (0 < selectNodes.length && !confirm("您确定要删除吗？")) {
+        if ( checkedNodes.length > 0 && !confirm("您确定要删除吗？")) {
             return;
         }
 
         var fileNames = [];
         var folderNames = [];
-
-        for (var i = 0; i < selectNodes.length; i++) {
-            var selectNode = selectNodes[i];
-            var id = selectNode.getId();
-            var name = selectNode.getName();
-            var isFolder = selectNode.getAttribute("isFolder");
-            if ("-1" != id) {
+        checkedNodes.each(function(i, node){
+            var name = node.name;
+            var isFolder = node.getAttribute("isFolder");
+            if ("-1" != node.id) {
                 if ("1" == isFolder) {
-                    folderNames[folderNames.length] = name;
+                    folderNames.push(name);
                 } else {
-                    fileNames[fileNames.length] = name;
+                    fileNames.push(name);
                 }
             }
-        }
-        if (0 == fileNames.length && 0 == folderNames.length) {
+        });
+ 
+        if ( fileNames.length == 0 && folderNames.length == 0 ) {
             return;
         }
 
-        var contextPath = $$("contextPathBox").value;
-        Ajax({
+        var contextPath = $1("contextPath").value;
+        $.ajax({
             url: URL_DEL_FILES,
             method: "DELETE",
             params: {
@@ -144,34 +156,33 @@
                 "folderNames": folderNames.join(",")
             },
             onsuccess: function() {
-                removeTreeNode($T("tree"), ["-1"]);
+                removeTreeNode($.T("tree"), ["-1"]);
             }
         });
     }
 
     /* 重命名资源文件  */
     function renameFile() {
-        var selectNodes = $T("tree").getSelectedTreeNode(false);
-        var len = selectNodes.length;
-        if (0 == len) {
+        var checkedNodes = $.T("tree").getCheckedNodes();
+        if (checkedNodes.length == 0) {
             return alert("请先选择要重命名的文件");
         }
-        if (1 < len) {
+        if (checkedNodes.length > 1) {
             return alert("一次只能对一个文件重命名");
         }
 
-        var selectNode = selectNodes[0];
-        var id = selectNode.getId();
+        var selectNode = checkedNodes[0];
+        var id = selectNode.id;
         if ("-1" == id) {
             return;
         }
 
-        var name = selectNode.getName();
+        var name = selectNode.name;
         var newName = prompt("请输入新的文件（夹）名称", name);
-        if (newName && "" != newName) {
-            var contextPath = $$("contextPathBox").value;
-            Ajax({
-                url: URL_RENAME,
+        if ( !$.isNullOrEmpty(newName) ) {
+            var contextPath = $1("contextPath").value;
+            $.ajax({
+                url: URL_RENAME_FILE,
                 method: "PUT",
                 params: {
                     "contextPath": contextPath,
@@ -179,7 +190,7 @@
                     "newFileName": newName
                 },
                 onsuccess: function() {
-                    modifyTreeNode(id, "name", newName, true);
+                    modifyTreeNode(id, "name", newName);
                 }
             });
         }
@@ -187,36 +198,29 @@
 
     /* 下载资源文件  */
     function downloadFiles() {
-        var fileNames = [];
-        var folderNames = [];
-        var selectNodes = $T("tree").getSelectedTreeNode();
-        if (0 == selectNodes.length) {
+        var checkedNodes = $.T("tree").getCheckedNodes();
+        if ( checkedNodes.length == 0 ) {
             return alert("请先选择要下载的文件");
         }
-        for (var i = 0; i < selectNodes.length; i++) {
-            var selectNode = selectNodes[i];
-            var id = selectNode.getId();
-            var name = selectNode.getName();
-
-            var isFolder = selectNode.getAttribute("isFolder");
-            if ("-1" != id) {
+ 
+        var fileNames = [];
+        var folderNames = [];
+        checkedNodes.each(function(i, node){
+            var name = node.name;
+            var isFolder = node.getAttribute("isFolder");
+            if ("-1" != node.id) {
                 if ("1" == isFolder) {
-                    folderNames[folderNames.length] = name;
+                    folderNames.push(name);
                 } else {
-                    fileNames[fileNames.length] = name;
+                    fileNames.push(name);
                 }
             }
-        }
-
-        var contextPath = $$("contextPathBox").value;
-
-        fileNames = fileNames.join(",");
-        folderNames = folderNames.join(",");
-
+        });
+ 
         var url = URL_DOWNLOAD_FILES;
-        url += "?contextPath=" + contextPath;
-        url += "&fileNames=" + fileNames;
-        url += "&folderNames=" + folderNames;
+        url += "?contextPath=" + $1("contextPath").value;
+        url += "&fileNames=" + fileNames.join(",");
+        url += "&folderNames=" + folderNames.join(",");
 
         var frameName = createExportFrame();
         window.frames[frameName].location.href = url;
@@ -224,11 +228,11 @@
 
     /* 新建文件夹  */
     function addFolder() {
-        var contextPath = $$("contextPathBox").value;
+        var contextPath = $1("contextPath").value;
         var name = prompt("请输入文件夹名称", "");
-        if (name && "" != name) {
-            Ajax({
-                url: URL_RENAME,
+        if ( !$.isNullOrEmpty(name) ) {
+            $.ajax({
+                url: URL_RENAME_FILE,
                 method: "POST",
                 params: {
                     "contextPath": contextPath,
@@ -243,14 +247,16 @@
 
     /* 过滤文件  */
     function filterFiles() {
-        var filter = $$("filterBox").value;
-        var contextPath = $$("contextPathBox").value;
+        var filter = $1("filterBox").value;
+        var contextPath = $1("contextPath").value;
         loadFileTree(contextPath, filter);
     }
 
     function upload() {
-        var contextPath = $$("contextPathBox").value;
-        var url = URL_UPLOAD_FILE + "?contextPath=" + contextPath url += "&afterUploadClass=com.jinhe.tss.portal.helper.MovePortalFile";
+        var contextPath = $1("contextPath").value;
+        var url = URL_UPLOAD_FILE + "?contextPath=" + contextPath; 
+        url += "&afterUploadClass=com.jinhe.tss.portal.helper.MovePortalFile";
+
         var importDiv = createImportDiv("", null, url);
         Element.show(importDiv);
     }
@@ -262,51 +268,25 @@
 </head>
 
 <body>
-    <div class="mainBox">
-        <table class="full">
-            <tr valign="top" height="20">
-                <td class="btBox">
-                    资源
-                    <input type="text" id="filterBox" value="*.*">
-                    <input type="button" class="btWeak" value="过滤" onclick="filterFiles()"/>
-                </td>
-            </tr>
-            <tr style="height:25px;">
-                <td style="padding-left:3px;">
-                    路径&nbsp;
-                    <input type="text" id="contextPathBox" readOnly="true" />
-                </td>
-                <td align="center" style="width:120px;right:10px;">
-                    <button class="btImg" onclick="downloadFiles()">
-                        <img src="../framework/images/download.gif" title="下载" />
-                    </button>
-                    <button class="btImg" onclick="renameFile()">
-                        <img src="../framework/images/rename.gif" title="重命名" />
-                    </button>
-                    <button class="btImg" onclick="delFiles()">
-                        <img src="../framework/images/icon_del.gif" title="删除" />
-                    </button>
-                    <button class="btImg" onclick="addFolder()">
-                        <img src="../framework/images/new_folder.gif" title="新建文件夹" />
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <Tree:Box id="tree" treeType="multi" baseurl="../framework/tree/">
-                    </Tree:Box>
-                </td>
-            </tr>
-            <tr style="height:25px;">
-                <td align="right">
-                    <input type="button" value="上传附件" class="btStrongL" onclick="upload()"
-                    />
-                    <input type="button" value="关闭" class="btStrong" onclick="window.close()"
-                    />
-                </td>
-            </tr>
-        </table>
+    <div class="dialog">
+        <div class="operation" >路径: 
+            <input type="text" id="contextPath" readOnly="true"/>
+            <input type="text" id="fileFilter" value="*.*">
+            <input type="button" class="btWeak" value="过滤" onclick="filterFiles()"/>&nbsp;
+            <span class="download" title="下载"></span>
+            <span class="rename" title="重命名"></span>
+            <span class="remove" title="删除"></span>
+            <span class="newfolder" title="新建目录"></span>
+        </div>
+        <div>
+            <Tree:Box id="tree" treeType="multi"></Tree:Box>
+        </div>
+        <div class="bts">
+            <input type="button" value="上传附件" class="btStrongL" onclick="upload()"/>
+            <input type="button" value="关闭" class="btStrong" onclick="window.close()"/>
+        </div>
     </div>
+ 
 </body>
 
 </html>

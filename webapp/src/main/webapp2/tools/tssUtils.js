@@ -198,15 +198,15 @@ function createImportDiv(remark, checkFileWrong, importUrl) {
 	if( importDiv == null ) {
 		importDiv = $.createElement("div");    
 		importDiv.id = "importDiv";      
-		$(importDiv).css("background", "#BEC6EE").css("width", "250px").css("height", "100px")
+		$(importDiv).css("background", "#E7E7E7").css("width", "250px").css("height", "100px")
 			.css("padding", "10px 10px 10px 10px").css("fontSize", "12px"); 
 		document.body.appendChild(importDiv);
 
 		var str = [];
 		str[str.length] = "<form id='importForm' method='post' target='fileUpload' enctype='multipart/form-data'>";
-		str[str.length] = "	 <input type='file' name='file' id='sourceFile'/> <br> " + remark + "<br> ";
-		str[str.length] = "	 <input type='button' id='importBt' value='上传' /> ";
-		str[str.length] = "	 <input type='button' id='closeBt'  value='关闭' /> ";
+		str[str.length] = "	 <input type='file' name='file' id='sourceFile' /> <br> " + remark + "<br><br><br> ";
+		str[str.length] = "	 <input type='button' id='importBt' value='上传' class='btStrong'/> ";
+		str[str.length] = "	 <input type='button' id='closeBt'  value='关闭' class='btWeak'/> ";
 		str[str.length] = "</form>";
 		str[str.length] = "<iframe width='0px' height='0px' name='fileUpload'></iframe>";
 		
@@ -805,7 +805,9 @@ Element.moveable = function(element, handle) {
 
 // 弹出选择树
 function popupTree(url, nodeName, params, callback) {
-	var boxName = "popupTree_" + $.getUniqueID();
+	removeDialog();
+
+	var boxName = "popupTree";
 	var el = $.createElement("div", "dialog");
 	el.innerHTML = '<Tree:Box id="' + boxName + '"><div class="loading"></div></Tree:Box>' + 
 	    '<div class="bts">' + 
@@ -813,13 +815,15 @@ function popupTree(url, nodeName, params, callback) {
        	   '<input type="button" value="关闭" class="btWeak" onclick="$.removeNode(el)"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
-	$(el).center(300, 300).css("width", "300px").css("height", "300px");
+	$(el).center(300, 300).css("width", "300px").css("height", "300px").css("zIndex", "10001");
 
 	params = params || {};
 	$.ajax({
 		url: url,
 		params: params,
 		onresult : function() { 
+			$.showWaitingLayer();
+
 			var tree = $.T(boxName, this.getNodeValue(nodeName));		
 			tree.onTreeNodeDoubleClick = function(ev) {
 				doCallback();
@@ -841,16 +845,19 @@ function popupTree(url, nodeName, params, callback) {
 	});
 }
 
-function popupForm(url, nodeName, params, callback) {
-	var boxName = "popupForm_" + $.getUniqueID();
+function popupForm(url, nodeName, params, callback, title) {
+	removeDialog();
+
+	var boxName = "popupForm";
 	var el = $.createElement("div", "dialog");
-	el.innerHTML = '<Form:Box id="' + boxName + '"><div class="loading"></div></Form:Box>' + 
+	el.innerHTML = '<h2>' + title + '</h2>' +
+		'<Form:Box id="' + boxName + '"><div class="loading"></div></Form:Box>' + 
 	    '<div class="bts">' + 
 	       '<input type="button" value="确定" class="btStrong"/>' + 
        	   '<input type="button" value="关闭" class="btWeak"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
-	$(el).center(300, 300);
+	$(el).center(300, 300).css("zIndex", "10001");
 
 	params = params || {};
 
@@ -858,8 +865,14 @@ function popupForm(url, nodeName, params, callback) {
 		url : url,
 		method : "GET",
 		onresult : function() {
+			$.showWaitingLayer();
+
 			var formXML = this.getNodeValue(nodeName);
 			var rowNode = formXML.querySelector("data row");
+			if(rowNode == null) {
+				rowNode = $.XML.toNode("<row/>");
+				formXML.querySelector("data").appendChild(rowNode);
+			}
 			$.each(params, function(key, value) {
 				$.XML.setCDATA(rowNode, key, value);
 			});
@@ -887,19 +900,25 @@ function popupForm(url, nodeName, params, callback) {
 }
 
 function removeDialog() {
-	$.removeNode($(".dialog")[0]); 
+	if($(".dialog").length > 0) {
+		$(".dialog").each(function(i, el){
+			$.removeNode(el);
+			$.hideWaitingLayer();
+		}); 
+	}
 }
 
 function popupGrid(url, nodeName, title, params) {
-	var boxName = "popupGrid_" + $.getUniqueID();
+	removeDialog();
+	var boxName = "popupGrid";
 	var el = $.createElement("div", "dialog");
-	el.innerHTML = '<h1>' + title + '</h1>' +
+	el.innerHTML = '<h2>' + title + '</h2>' +
 		'<Grid:Box id="' + boxName + '"><div class="loading"></div></Grid:Box>' + 
 	    '<div class="bts">' + 
        	   '<input type="button" value="关闭" class="btWeak"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
-	$(el).center(300, 300);
+	$(el).center(600, 400).css("width", "600px").css("height", "auto");
 
 	$.ajax({
 		url: url,

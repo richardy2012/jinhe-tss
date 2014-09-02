@@ -551,8 +551,8 @@
 
         // 设置物体居中
         center: function(width, height) {
-            var top  = ($.getInner().height - (width || 100) ) / 2;
-            var left = ($.getInner().width - (height || 100) ) / 2;
+            var top  = ($.getInner().height - (height || 100) ) / 2;
+            var left = ($.getInner().width - (width || 100) ) / 2;
             for (var i = 0; i < this.length; i++) {
                 this[i].style.position = "absolute";
                 this[i].style.top  = top + 'px';
@@ -3384,7 +3384,11 @@
             }
             else { 
                 var funcIcon = $.createElement("span", "functionBt"); // 添加点击按钮
-                this.el.parentNode.appendChild(funcIcon);
+                if(this.el.nextSibling) {
+                    this.el.parentNode.insertBefore(funcIcon, this.el.nextSibling);
+                } else {
+                    this.el.parentNode.appendChild(funcIcon);
+                }               
  
                 var cmd = this.el.getAttribute("cmd");
                 funcIcon.onclick = function() {

@@ -10,7 +10,7 @@
       </declare>
       <layout>
         <TR>
-          <TD width="50"><label binding="bgIMG"/></TD>
+          <TD width="80"><label binding="bgIMG"/></TD>
           <TD><input binding="bgIMG"/></TD>
         </TR>
         <TR>

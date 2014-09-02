@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
-	<ComponentParams>
+	<ConfigParams>
         <xform>
             <declare>	
                 <column name="bgColor" caption="背景色" mode="string"/>
@@ -19,5 +19,5 @@
             <data>
             </data>
         </xform>
-	</ComponentParams>
+	</ConfigParams>
 </Response>

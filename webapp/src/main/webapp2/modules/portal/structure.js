@@ -272,96 +272,84 @@ function saveStructure(treeID, parentID) {
         return;
     }
 
-    var p = new HttpRequestParams();
-    p.url = URL_SOURCE_SAVE;
+    var request = new $.HttpRequest();
+    request.url = URL_SOURCE_SAVE;
 
-    // 是否提交
-    var flag = false;
-  
-	// 门户基本信息
-	var dataXmlNode = $.cache.XmlDatas[treeID);
-	var dataElement = dataXmlNode.selectSingleNode(".//data");
-	if(dataElement) {
-		dataElement = dataElement.cloneNode(true);
-		var rowNode = dataElement.selectSingleNode("row");
+    if( treeID == DEFAULT_NEW_ID ) {
+        request.addParam("code", $.now());
+    }
 
-		// 门户、页面节点需要拼接supplement属性：将css,js部分拼合成一个xml文档
-		var type = dataXmlNode.getAttribute("type");
-		if("0"==type || "1"==type) {
-			var rootName = ("0" == type? "portal" : "page");
-			var name    = rowNode.getCDATA("name") || "";
-			var js      = rowNode.getCDATA("js") || "";
-			var jsCode  = rowNode.getCDATA("jsCode") || "";
-			var css     = rowNode.getCDATA("css") || "";
-			var cssCode = rowNode.getCDATA("cssCode") || "";
-			
-			var str = [];
-			str[str.length] = "<" + rootName + ">";
-			str[str.length] = "<property>";
-			str[str.length] = "  <name>" + name + "</name>";
-			str[str.length] = "  <description><![CDATA[]]></description>";
-			str[str.length] = "</property>";
-			str[str.length] = "<script>";
-			str[str.length] = "  <file><![CDATA[" + js + "]]></file>";
-			str[str.length] = "  <code><![CDATA[" + jsCode + "]]></code>";
-			str[str.length] = "</script>";
-			str[str.length] = "<style>";
-			str[str.length] = "  <file><![CDATA[" + css + "]]></file>";
-			str[str.length] = "  <code><![CDATA[" + cssCode + "]]></code>";
-			str[str.length] = "</style>";
-			str[str.length] = "</" + rootName + ">";
+	var dataXmlNode = $.cache.XmlDatas[treeID];
+	var dataNode = dataXmlNode.querySelector("data");
+	dataNode = dataNode.cloneNode(true);
+	var rowNode = dataNode.querySelector("row");
 
-			rowNode.setCDATA("supplement",str.join(""));
-		} 
-		else {
-			rowNode.removeCDATA("supplement");
-		}
-		rowNode.removeCDATA("js");
-		rowNode.removeCDATA("jsCode");
-		rowNode.removeCDATA("css");
-		rowNode.removeCDATA("cssCode");
+	// 门户、页面节点需要拼接supplement属性：将css,js部分拼合成一个xml文档
+	var type = dataXmlNode.getAttribute("type");
+	if("0" == type || "1" == type) {
+		var rootName = ("0" == type? "portal" : "page");
+		var name    = $.XML.getCDATA(rowNode, "name") || "";
+		var js      = $.XML.getCDATA(rowNode, "js") || "";
+		var jsCode  = $.XML.getCDATA(rowNode, "jsCode") || "";
+		var css     = $.XML.getCDATA(rowNode, "css") || "";
+		var cssCode = $.XML.getCDATA(rowNode, "cssCode") || "";
+		
+		var str = [];
+		str[str.length] = "<" + rootName + ">";
+		str[str.length] = "<property>";
+		str[str.length] = "  <name>" + name + "</name>";
+		str[str.length] = "  <description><![CDATA[]]></description>";
+		str[str.length] = "</property>";
+		str[str.length] = "<script>";
+		str[str.length] = "  <file><![CDATA[" + js + "]]></file>";
+		str[str.length] = "  <code><![CDATA[" + jsCode + "]]></code>";
+		str[str.length] = "</script>";
+		str[str.length] = "<style>";
+		str[str.length] = "  <file><![CDATA[" + css + "]]></file>";
+		str[str.length] = "  <code><![CDATA[" + cssCode + "]]></code>";
+		str[str.length] = "</style>";
+		str[str.length] = "</" + rootName + ">";
 
-		flag = true;
-
-		p.setXFormContent(dataElement);
-		p.setContent("code", $.now());
+		$.XML.setCDATA(rowNode, "supplement",str.join(""));
+	} 
+	else {
+		$.XML.removeCDATA(rowNode, "supplement");
 	}
+	$.XML.removeCDATA(rowNode, "js");
+	$.XML.removeCDATA(rowNode, "jsCode");
+	$.XML.removeCDATA(rowNode, "css");
+	$.XML.removeCDATA(rowNode, "cssCode");
 
-    if(flag) {
-        var request = new $.HttpRequest();
+	request.setFormContent(dataNode);
+ 
+    syncButton([$1("page1BtSave")], request); // 同步按钮状态
 
-        syncButton([$1("page1BtSave")], request); // 同步按钮状态
+    request.onresult = function() {
+		detachReminder(treeID); // 解除提醒
 
-        request.onresult = function() {
-			detachReminder(treeID); // 解除提醒
+		var xmlNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
+		appendTreeNode(parentID, xmlNode);
 
-			var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
-			appendTreeNode(parentID, treeNode);
+		ws.closeActiveTab();
+    }
+    request.onsuccess = function() {
+		detachReminder(treeID); // 解除提醒
 
-			ws.closeActiveTab();
-        }
-        request.onsuccess = function() {
-			detachReminder(treeID); // 解除提醒
+		var name = page1Form.getData("name");
+		modifyTreeNode(treeID, "name", name); // 更新树节点名称
 
-			// 更新树节点名称
-			var name = page1Form.getData("name");
-			modifyTreeNode(treeID, "name", name, true);
-
-			ws.closeActiveTab();
-        }
-        request.send();
-    }		
+		ws.closeActiveTab();
+    }
+    request.send();	
 }
 
-/*
- *	根据树节点type属性，预先处理xform数据岛
- */
+/* 根据树节点type属性，预先处理xform数据 */
 function preProcessXml(xmlIsland, treeType) {
     // 在根节点上加type属性，用于saveStructure时判断
     xmlIsland.setAttribute("type", treeType);
 
     // 清除有showType属性，但与当前treeType不匹配的节点
-    var showTypeNodes = xmlIsland.selectNodes(".//*[@showType]");
+    var showTypeNodes = xmlIsland.querySelectorAll("*[showType]");
     for(var i=0; i < showTypeNodes.length; i++) {
         var curNode = showTypeNodes[i];
         var showType = curNode.getAttribute("showType").split(",");
@@ -373,59 +361,57 @@ function preProcessXml(xmlIsland, treeType) {
             }
         }
         if(flag) {
-            curNode.removeNode();			
+            $.removeNode(curNode);			
         }
     }
 
-    //控制配置按钮可见性
-    var rowNode = xmlIsland.selectSingleNode(".//row");
-    var definerName   = rowNode.getCDATA("definer.name")||"";
-    var decoratorName = rowNode.getCDATA("decorator.name")||"";
+    // 控制配置按钮可见性
+    var rowNode = xmlIsland.querySelector("data>row");
+    var definerName   = $.XML.getCDATA(rowNode, "definer.name")||"";
+    var decoratorName = $.XML.getCDATA(rowNode, "decorator.name")||"";
 
-    var page1BtConfigDefinerNode   = xmlIsland.selectSingleNode(".//*[@id='page1BtConfigDefiner']");
-    var page1BtConfigDecoratorNode = xmlIsland.selectSingleNode(".//*[@id='page1BtConfigDecorator']");
+    var configDefinerBtNode   = xmlIsland.querySelector("*[id='configDefinerBt']");
+    var configDecoratorBtNode = xmlIsland.querySelector("*[id='configDecoratorBt']");
 
-    var parameters = rowNode.getCDATA("parameters")||"";
-    if("" != parameters) {
-        var xmlReader = new XmlReader(parameters);
-        var xmlNode = new XmlNode(xmlReader.documentElement);
-        var portletParams = xmlNode.selectSingleNode("portlet/@*");
-        var layoutParams = xmlNode.selectSingleNode("layout/@*");
-        var decoratorParams = xmlNode.selectSingleNode("decorator/@*");
+    var parameters = $.XML.getCDATA(rowNode, "parameters");
+    if(parameters) {
+        var xmlNode = $.XML.toNode(parameters);
+        var portletParams   = xmlNode.querySelector("portlet");
+        var layoutParams    = xmlNode.querySelector("layout");
+        var decoratorParams = xmlNode.querySelector("decorator");
 
-        if(page1BtConfigDefinerNode) {
+        if(configDefinerBtNode) {
             switch(treeType) {
                 case "0":
                 case "1":
                 case "2":
-                    if(null == layoutParams) {
-                        page1BtConfigDefinerNode.setAttribute("disabled", "true");                
+                    if(layoutParams == null) {
+                        configDefinerBtNode.setAttribute("disabled", "true");                
                     }
                     break;
                 case "3":
-                    if(null == portletParams) {
-                        page1BtConfigDefinerNode.setAttribute("disabled", "true");
+                    if(portletParams == null) {
+                        configDefinerBtNode.setAttribute("disabled", "true");
                     }
                     break;
             }
         }
-        if( page1BtConfigDecoratorNode && (""==decoratorName || null == decoratorParams)) {
-            page1BtConfigDecoratorNode.setAttribute("disabled", "true");
+        if( configDecoratorBtNode && (decoratorName == "" || decoratorParams == null)) {
+            configDecoratorBtNode.setAttribute("disabled", "true");
         }
     } 
 	else {
-        if(page1BtConfigDefinerNode) {
-            page1BtConfigDefinerNode.setAttribute("disabled", "true"); 
+        if(configDefinerBtNode) {
+            configDefinerBtNode.setAttribute("disabled", "true"); 
         }
-        if(page1BtConfigDecoratorNode) {
-            page1BtConfigDecoratorNode.setAttribute("disabled", "true");
+        if(configDecoratorBtNode) {
+            configDecoratorBtNode.setAttribute("disabled", "true");
         }
     }
 
-
-    var definerNode = xmlIsland.selectSingleNode(".//column[@name='definer.name']");
-    var decoratorNode = xmlIsland.selectSingleNode(".//column[@name='decorator.name']");
-    var rowNode = xmlIsland.selectSingleNode(".//data/row");
+    var definerNode   = xmlIsland.querySelector("column[name='definer.name']");
+    var decoratorNode = xmlIsland.querySelector("column[name='decorator.name']");
+    var rowNode = xmlIsland.querySelector("data>row");
 
     var componentType;
     switch(treeType) {
@@ -452,30 +438,28 @@ function preProcessXml(xmlIsland, treeType) {
         case "0":
         case "1":
             // 预解析supplement，分别设置到js,css,jsCode和cssCode上
-            var supplement = rowNode.getCDATA("supplement") || "";
-            var xmlReader = new XmlReader(supplement);
-
-            if(xmlReader.documentElement) {
-                var supplementNode = new XmlNode(xmlReader.documentElement);
-                var jsNode = supplementNode.selectSingleNode("./script/file/node()");
-                var cssNode = supplementNode.selectSingleNode("./style/file/node()");
-                var jsCodeNode = supplementNode.selectSingleNode("./script/code/node()");
-                var cssCodeNode = supplementNode.selectSingleNode("./style/code/node()");
+            var supplement = $.XML.getCDATA(rowNode, "supplement");
+            if(supplement) {
+                var supplementNode = $.XML.toNode(supplement);
+                var jsNode      = supplementNode.querySelector("script>file");
+                var cssNode     = supplementNode.querySelector("style>file");
+                var jsCodeNode  = supplementNode.querySelector("script>code");
+                var cssCodeNode = supplementNode.querySelector("style>code");
 
                 if(jsNode) {
-                    rowNode.setCDATA("js", jsNode.nodeValue);
+                    $.XML.setCDATA(rowNode, "js", $.XML.getText(jsNode));
                 }
                 if(cssNode) {
-                    rowNode.setCDATA("css", cssNode.nodeValue);
+                    $.XML.setCDATA(rowNode, "css", $.XML.getText(cssNode));
                 }
                 if(jsCodeNode) {
-                    rowNode.setCDATA("jsCode", jsCodeNode.nodeValue);
+                    $.XML.setCDATA(rowNode, "jsCode", $.XML.getText(jsCodeNode));
                 }
                 if(cssCodeNode) {
-                    rowNode.setCDATA("cssCode", cssCodeNode.nodeValue);
+                    $.XML.setCDATA(rowNode, "cssCode", $.XML.getText(cssCodeNode));
                 }
             }
-            rowNode.removeCDATA("supplement");
+           $.XML.removeCDATA(rowNode, "supplement");
 
             break;
         case "2":
@@ -513,9 +497,9 @@ function getComponent(type, idField, nameField, parametersName) {
                 // 是否允许进行配置
                 var disabled = ( 0 == newNode.attributes.length );
                 if(type == "2") {
-                    $1("page1BtConfigDecorator").disabled = disabled;
+                    $1("configDecoratorBt").disabled = disabled;
                 } else {
-                    $1("page1BtConfigDefiner").disabled = disabled;
+                    $1("configDefinerBt").disabled = disabled;
                 }
                 
             }
@@ -573,38 +557,39 @@ function updateParameters(newNode) {
  *	参数：	string:paramsType       类型(布局器、修饰器、portlet)
             string:id               xform列名
             string:name             xform列名
+    eg: "<decorator bgColor=\"#ABCDEF\">model/decorator/decorator-8/paramsXForm.xml</decorator>";
  */
 function configParams(paramsType, id, name) {
     var page1Form = $.F("page1Form");
     var nameValue  = page1Form.getData(name) || "";
-    var idValue    = page1Form.getData(id) || "";
-    var parameters = page1Form.getData("parameters") || "";
+    var parameters = page1Form.getData("parameters");
+    if($.isNullOrEmpty(parameters)) return;
 
     var xmlNode = parseParameters(parameters.revertEntity());
-    var oldParamsNode = xmlNode.selectSingleNode("./" + paramsType);
-    var oldText = new XmlNode(oldParamsNode.firstChild);
+    var oldParamsNode = xmlNode.querySelector(paramsType);
 
     var title = "设置【\"" + nameValue + "】\"的参数";
-	var newParams = window.showModalDialog("structure-params.html", {paramsXML:oldParamsNode, title:title}, 
-        "dialogWidth:250px;dialogHeight:250px;");
+    var url = "#";
+    if( oldParamsNode && oldParamsNode.firstChild){
+        url = $.XML.getText(oldParamsNode.firstChild); // 组件参数配置模板所在目录
+    } else {
+        return;
+    }
 
-	if(newParams) {
-		var rowReader = new XmlReader(newParams);
-		var rowNode = new XmlNode(rowReader.documentElement);
+    var _params = {};
+    $.each(oldParamsNode.attributes, function(i, attr){
+        _params[attr.nodeName] = attr.value;
+    });
+    popupForm(url, "ConfigParams", _params, function(condition) {
+        var newParamsNode = $.XML.toNode("<" + paramsType + "/>")
+        $.each(condition, function(key, value){
+            newParamsNode.setAttribute(key, value); // 复制到新参数节点
+        });
 
-		var newParamsReader = new XmlReader("<" + paramsType + "/>");
-		var newParamsNode = new XmlNode(newParamsReader.documentElement);
-		var newText = oldText.cloneNode(true);
+        newParamsNode.appendChild(oldParamsNode.firstChild);
+        updateParameters(newParamsNode);
 
-		// 从row节点复制到新参数节点
-		var childs = rowNode.selectNodes("*");
-		for(var i=0; i < childs.length; i++) {
-			newParamsNode.setAttribute(childs[i].nodeName, childs[i].text);
-		}
-		newParamsNode.appendChild(newText);
-
-		updateParameters(newParamsNode);
-	}
+    }, title);
 }
 
 /* 主题管理  */
@@ -630,22 +615,20 @@ function themeManage() {
 
 /* 主题管理详细信息加载数据 */
 function loadThemeManageData(portalId) {
-	var onresult = function() {
-		var themeManageNode = this.getNodeValue(XML_THEME_MANAGE);
-		var page2Tree = $.T("page2Tree", themeManageNode);
-
-		page2tree.onTreeNodeRightClick = function(ev) {
-			page2tree.contextmenu.show(ev.clientX, ev.clientY);
-		}
- 
-		initThemeTreeMenu(portalId);
-
-		$("page2BtSave").hide();
-	}
-
 	$.ajax({
 		url: URL_THEME_MANAGE + portalId,
-		onresult: onresult
+		onresult: function() {
+            var themeManageNode = this.getNodeValue(XML_THEME_MANAGE);
+            var page2Tree = $.T("page2Tree", themeManageNode);
+
+            page2Tree.onTreeNodeRightClick = function(ev) {
+                page2Tree.el.contextmenu.show(ev.clientX, ev.clientY);
+            }
+     
+            initThemeTreeMenu(portalId);
+
+            $("#page2BtSave").hide();
+        }
 	});
 }
 
@@ -664,7 +647,7 @@ function initThemeTreeMenu(portalId) {
     var item3 = {
         label:"复制",
         callback:copyTheme,
-        icon:ICON + "copy.gif",
+        icon:ICON + "icon_copy.gif",
         visible:function() {return !isThemeRootNode();}
     }
     var item4 = {
@@ -794,30 +777,24 @@ function setDefaultTheme() {
     var page2tree = $.T("page2Tree");
     var treeNode = page2tree.getActiveTreeNode();
     if(treeNode) {
-        var treeID  = treeNode.id;
-        var treeName = treeNode.name;
-
-        var onsuccess = function() {
-            // 先清除前次默认主题名称
-            var rootNode = page2tree.getTreeNodeById("_root");
-            var defaultThemeNode = new XmlNode(rootNode.node).selectSingleNode(".//treeNode[@isDefault='1']");
-            if(defaultThemeNode) {
-                var name = defaultThemeNode.getAttribute("name");
-                defaultThemeNode.setAttribute("icon", ICON + "portal/theme.gif");
-                defaultThemeNode.setAttribute("isDefault", "0");
-            }
-
-            // 修改当前节点名称及属性
-            treeNode.setAttribute("icon", ICON + "portal/default_theme.gif");
-            treeNode.setAttribute("isDefault", "1");
-
-            page2tree.reload();                
-        }
-
         $.ajax({
-			url: URL_SET_DEFAULT_THEME + treeID,
+			url: URL_SET_DEFAULT_THEME + treeNode.id,
 			method: "PUT",
-			onsuccess: onsuccess
+			onsuccess: function() {
+                // 先清除前次默认主题名称
+                page2tree.getAllNodes.each(function(i, node) {
+                    if(node.getAttribute('isDefault') == '1') {
+                        node.setAttribute("icon", ICON + "theme.gif");
+                        node.setAttribute("isDefault", "0");
+                    }
+                })
+
+                // 修改当前节点名称及属性
+                treeNode.setAttribute("icon", ICON + "default_theme.gif");
+                treeNode.setAttribute("isDefault", "1");
+
+                page2tree.reload();                
+            }
 		});
     }
 }
@@ -852,22 +829,22 @@ function loadCacheManageData(treeID, portalId) {
 
 		var listObj = $1("page3CacheList");
 		var str = [];
-        str[str.length] = "<table border=\"0\" cellspacing=\"\" cellpadding=\"3\">";
+        str[str.length] = "<table>";
 
-        var cacheItems = cacheManageNode.selectNodes("cacheItem");
+        var cacheItems = cacheManageNode.querySelectorAll("cacheItem");
         for(var i=0; i < cacheItems.length; i++) {
             var cacheItem = cacheItems[i];
             var name = cacheItem.getAttribute("name");
             var id = cacheItem.getAttribute("id");
-            str[str.length] = "<tr><td class=\"t\" width=\"200\">" + name + 
-				"</td><td class=\"t\"><input type=\"button\" class=\"btWeak\" value=\"刷新\" onclick=\"flushCache('" + id + "','" + portalId + "')\"/></td></tr>";
+            str[str.length] = "<tr height='30'><td class='b' width='30%'>" + name + 
+				"</td><td class='b'><input type='button' class='btWeak' value='刷新' onclick='flushCache(" + id + ", " + portalId + ")'/></td></tr>";
         }
         str[str.length] = "</table>";
 
         listObj.innerHTML = str.join("\r\n");
 
 		// 设置按钮显示状态
-		$("page3BtSave").hide();
+		$("#page3BtSave").hide();
 	}
 	
 	$.ajax({
@@ -894,17 +871,9 @@ function showPageFlowRate() {
 
 /* 组件资源管理 */
 function resourceManage() {
-    var tree = $.T("tree");
-    var treeNode = tree.getActiveTreeNode();
-	var name = treeNode.name;
+    var treeNode = getActiveTreeNode();
 	var code = treeNode.getAttribute("code");
-
-	var params = {
-		code:code
-	};
-
-	window.showModalDialog("filemanager.html", {params:params, title:"\"" + name + "\"相关资源管理"},"dialogWidth:500px;dialogHeight:400px;");
+	window.open("filemanager.html?code=" + code, 'newwindow', 'height=288, width=404');
 }
-
 
 window.onload = init;
