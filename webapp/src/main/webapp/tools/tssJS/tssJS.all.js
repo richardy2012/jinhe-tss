@@ -1224,6 +1224,10 @@
             return this.responseXML;
         },
 
+        getResponseJSON: function() {
+            return $.parseJSON(this.responseText);
+        },
+
         /*
          *  获取响应数据XML文档指定节点对象值
          *  参数： string:name             指定节点名
@@ -1232,7 +1236,7 @@
         getNodeValue: function(name) {
             if(this.responseXML == null) return;
 
-            var node = this.responseXML.querySelector(_XML_NODE_RESPONSE_ROOT + " " + name);
+            var node = this.responseXML.querySelector(_XML_NODE_RESPONSE_ROOT + ">" + name);
             if(node == null) return;
 
             var data;
