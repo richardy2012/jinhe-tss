@@ -12,7 +12,7 @@ import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 public class TreeEncoder implements IDataEncoder {
     
 	static final String TREE_NODE_NAME = "treeNode";
-	static final String TREE_ROOT_NODE_ID = "_rootId";
+	static final String TREE_ROOT_NODE_ID = "_root";
 	static final String TREE_ROOT_NODE_NAME = "全部";
 
     /** 默认节点属性转换器：没有任何转换 */

@@ -86,7 +86,7 @@ public class ParamAction extends BaseActionSupport {
             try {
             	parentId = EasyUtils.convertObject2Long(parentIdValue);
             } catch (Exception e) {
-            	parentId = ParamConstants.DEFAULT_PARENT_ID; // null or "_rootId"
+            	parentId = ParamConstants.DEFAULT_PARENT_ID; // null or "_root"
             }
             
             Map<String, Object> map = new HashMap<String, Object>();
@@ -144,7 +144,7 @@ public class ParamAction extends BaseActionSupport {
 	        @PathVariable("paramId") Long paramId, 
 	        @PathVariable("toParamId") String toParamId) {
 	    
-        Long targetId = "_rootId".equals(toParamId) ? ParamConstants.DEFAULT_PARENT_ID : new Long(toParamId);
+        Long targetId = "_root".equals(toParamId) ? ParamConstants.DEFAULT_PARENT_ID : new Long(toParamId);
 		
 		List<?> result = paramService.copyParam(paramId, targetId);
 		TreeEncoder encoder = new TreeEncoder(result, new LevelTreeParser());
@@ -158,7 +158,7 @@ public class ParamAction extends BaseActionSupport {
 	        @PathVariable("paramId") Long paramId, 
 	        @PathVariable("toParamId") String toParamId) {
 	    
-		Long targetId = "_rootId".equals(toParamId) ? ParamConstants.DEFAULT_PARENT_ID : new Long(toParamId);
+		Long targetId = "_root".equals(toParamId) ? ParamConstants.DEFAULT_PARENT_ID : new Long(toParamId);
 		paramService.move(paramId, targetId);
 		printSuccessMessage();
 	}

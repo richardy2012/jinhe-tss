@@ -30,7 +30,7 @@ public class LogAction extends BaseActionSupport {
     public void getAllApps4Tree(HttpServletResponse response) {
         List<?> data = service.getAllOperateObjects();
         
-        StringBuffer sb = new StringBuffer("<actionSet><treeNode name=\"全部\" id=\"_rootId\">");
+        StringBuffer sb = new StringBuffer("<actionSet><treeNode name=\"全部\" id=\"_root\">");
         for(Iterator<?> it = data.iterator(); it.hasNext();){
             String operateObject = (String) it.next();
             sb.append("<treeNode id=\"" + operateObject + "\" name=\"" + operateObject + "\" icon=\"images/folder.gif\"/>");

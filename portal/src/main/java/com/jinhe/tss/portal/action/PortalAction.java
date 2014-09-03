@@ -92,7 +92,7 @@ public class PortalAction extends FMSupportAction {
         print("SourceTree", encoder);
     }
     
-    // resourceId 有可能是："_rootId"， 此时传 0 过来。
+    // resourceId 有可能是："_root"， 此时传 0 过来。
     @RequestMapping("/operations/{resourceId}")
     public void getOperationsByResource(HttpServletResponse response, @PathVariable("resourceId") Long resourceId) {
         PermissionHelper permissionHelper = PermissionHelper.getInstance();
