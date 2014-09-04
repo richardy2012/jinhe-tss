@@ -14,14 +14,14 @@
 
 <style>
   
-  body { overflow: auto; height: 98%;}
-  .box {border: 1px solid #98989C; background-color:#fff; margin: 2px; padding: 3px; }
+  body { overflow: auto; height: 98%; margin: 0 auto 0 auto;}
+  .box { width: 800px; border: 1px solid #98989C; background-color:#fff; margin: 2px; padding: 0px;}
   .box .bts { border-top: 1px solid #98989C; padding: 5px 0 5px 10px; text-align: center;}
   .box .bts input { margin-right:20px; }
 
-  .box #xform { height: 30px;background-color: #90EE90; }
-  .box #tree { height: 300px; }
-  .box #xform td { padding-top:5px;  padding-left:10px; }
+  .box Form\:Box { height: 30px; background-color: #90EE90; text-align: center;}
+  .box Tree\:Box { height: 300px; }
+  .box Form\:Box td { padding-top:5px;  padding-left:10px; }
   .box .comment { color:#999999;text-align: center; }
 
 </style>
@@ -29,10 +29,11 @@
 <body>
 
 <div class="box">
-  <Form:Box id="xform"></Form:Box>
-  <Tree:Box id="tree"></Tree:Box>
+  <Form:Box id="permissionForm"></Form:Box>
+  <Tree:Box id="permissionTree"></Tree:Box>
 
-  <div class="comment">&nbsp;&nbsp;说明：鼠标点击切换状态，通常情况下是 &lt;未选中&gt; → &lt;仅此节点&gt; → &lt;所有子节点&gt; → &lt;未选中&gt; 循环<br/>
+  <div class="comment">
+    &nbsp;&nbsp;说明：鼠标点击切换状态，通常情况下是 &lt;未选中&gt; → &lt;仅此节点&gt; → &lt;所有子节点&gt; → &lt;未选中&gt; 循环<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;节点状态 (
     <img src="images/multistate0.gif"   align=absmiddle> 未选中 
     <img src="images/multistate0_2.gif" align=absmiddle> 未选中但有子节点选中 
@@ -47,7 +48,6 @@
   </div>
   <div class="bts">
     <input type="button" value="确定" class="btStrong" onclick="savePermission()"/>
-    <input type="button" value="关闭" class="btWeak" onclick="window.close()"/> 
   </div>
 </div>
 

@@ -1002,7 +1002,7 @@
             },
 
             getText: function(node) {
-                return node.text || node.textContent || ""; // chrome 用 textContent
+                return (node.text || node.textContent || "").trim(); // chrome 用 textContent
             },
 
             setText: function(node, textValue) {
@@ -3444,8 +3444,8 @@
         var selectedValues = this.value2List(this.el._value);
         var selectedIndex = [];
 
-        var valueList = this.el.getAttribute("editorvalue").split('|');
-        var textList  = this.el.getAttribute("editortext").split('|');
+        var valueList = (this.el.getAttribute("editorvalue") || "").split('|');
+        var textList  = (this.el.getAttribute("editortext")  || "").split('|');
         for(var i=0; i < valueList.length; i++) {
             var value = valueList[i];
             this.el.options[i] = new Option(textList[i], value);
@@ -4345,7 +4345,7 @@
 
         // 定义Tree私有方法
         var tThis = this;
-        var loadXML = function(node, parent) {
+        var loadXML = function(node) {
             var xmlNodes = node.querySelectorAll("treeNode");
             var parents = {};
             $.each(xmlNodes, function(i, xmlNode) {

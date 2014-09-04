@@ -11,7 +11,7 @@ URL_SAVE_PERMISSION = AUTH_PATH + "role/permission/";  // {permissionRank}/{isRo
 
 if(IS_TEST) {
 	URL_INIT            = "data/setpermission_init.xml?";
-	URL_RESOURCE_TYPES  = "data/resourcetypeList.xml?";
+	URL_RESOURCE_TYPES  = "data/resourcetypeList.json?";
 	URL_PERMISSION      = "data/setpermission.xml?";
 	URL_SAVE_PERMISSION = "data/_success.xml?";
 }
@@ -27,56 +27,50 @@ function init() {
 			var isRole2Resource = ("0" == params["isRole2Resource"]);
 
 			$.cache.XmlDatas[XML_SEARCH_PERMISSION] = xmlData;
-			initSearchXForm(xmlData);
-		}
-	});
-}
-
-function initSearchXForm(xmlData, isRole2Resource) {
-	if(isRole2Resource) {
-		// 设置用户、用户组权限，自动隐藏应用系统和资源类型字段
-		var hideCells = xmlData.selectNodes("layout/TR/TD[binding='applicationId' or binding='resourceType']");
-		for(var i=0; i < hideCells.length; i++) {
-			hideCells[i].setAttribute("style", "display:none");
-		}
-	}
-
-	var xform = $.F("xform", xmlData);
- 
-
-	// 设置查询按钮操作
-	$1("page3BtSearch").onclick = function() {
-		searchPermission();
-	}
-}
-
-function getResourceTypes(applicationId) {
-	$.ajax({
-		url : URL_RESOURCE_TYPES + applicationId,
-		onresult : function() { 
-			var resourceTypeNode = this.getNodeValue(XML_RESOURCE_TYPE);
-			var name = resourceTypeNode.getAttribute("name");
 			
-			var xmlData = $.cache.XmlDatas[XML_SEARCH_PERMISSION];
-			if( xmlData ) {
-				var oldColumn = xmlData.querySelector("column[@name='" + name + "']");
-				var attributes = resourceTypeNode.attributes;
-				for(var i=0; i<attributes.length; i++) {
-					oldColumn.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
-				}
+			if(isRole2Resource) {
+				// 设置用户、用户组权限，自动隐藏应用系统和资源类型字段
+				var hideCells = xmlData.querySelectorAll("layout>TR>TD[binding='applicationId' or binding='resourceType']");
+				$.each(hideCells, function(i, cell){
+					cell.setAttribute("style", "display:none");
+				});
+			}
 
-				$.F("xform").updateDataExternal("resourceType", "");
-				initSearchXForm(xmlData);
+			var xform = $.F("permissionForm", xmlData);		 
+
+			// 设置查询按钮操作
+			$1("page3BtSearch").onclick = function() {
+				searchPermission();
 			}
 		}
 	});
 }
 
+function getResourceTypes(applicationId) {
+	$.ajax({
+		url : URL_RESOURCE_TYPES + applicationId,
+		type : "json",
+		ondata : function() { 
+			var result = this.getResponseJSON();
+			if( result && result.length > 0) {
+				var sEl = $1("resourceType");
+				sEl.options.length = 0; // 先清空
+				for(var i = 0; i < result.length; i++) {
+					sEl.options[i] = new Option(result[i].name, result[i].id);
+				}
+
+				// 设置为默认选中第一个
+				$.F("permissionForm").updateDataExternal("resourceType", sEl.options[0].value);
+			}				
+		}
+	});
+}
+
 function searchPermission() {
-    var xformObj = $.F("xform");
+    var xformObj = $.F("permissionForm");
     var permissionRank  = xformObj.getData("permissionRank");
     var isRole2Resource = xformObj.getData("isRole2Resource");
-    var roleID = xformObj.getData("roleId");
+    var roleID          = xformObj.getData("roleId");
 	var applicationId   = xformObj.getData("applicationId");
     var resourceType    = xformObj.getData("resourceType");
 
@@ -342,3 +336,239 @@ function savePermission() {
 }
 
 window.onload = init;
+
+
+
+
+;(function($, factory) {
+
+    $.PTree = factory($);
+
+    var TreeCache = {};
+
+    $.PT = function(id, data) {
+        var tree = TreeCache[id];
+        if( tree == null || data ) {
+            tree = new $.PTree($1(id), data);
+            TreeCache[id] = tree;   
+        }
+        
+        return tree;
+    }
+
+})(tssJS, function($) {
+
+    'use strict';
+
+    var PTree = function(el, data) {
+        this.el = el;
+        this.root;
+        this._options = {};
+
+        this.init = function() {
+            loadXML(data);
+
+            $(this.el).html("");
+
+            var ul = $.createElement("ul");
+            var li = root.toHTMLTree();
+            ul.appendChild(li);
+            this.el.appendChild(ul);
+        }
+
+        // 定义Tree私有方法
+        var tThis = this;
+        var loadXML = function(data) {
+            var nodes = data.querySelectorAll("treeNode");
+            var parents = {};
+            $.each(nodes, function(i, xmlNode) {
+                var nodeAttrs = {};
+                $.each(xmlNode.attributes, function(j, attr) {
+                    nodeAttrs[attr.nodeName] = attr.value;
+                });
+
+                var parentId = xmlNode.parentNode.getAttribute(_TREE_NODE_ID);
+                var parent = parents[parentId];
+                var treeNode = new TreeNode(nodeAttrs, parent);
+
+                if(parent == null && treeNode.id == "_root") {
+                    tThis.root = treeNode;
+                }   
+                parents[treeNode.id] = treeNode;
+            });
+
+            var optionNodes = data.querySelectorAll("options>option");
+            $.each(optionNodes, function(i, node) {
+            	var _option = new _Option(node);
+            	tThis._options[_option.id] = _option;
+            });
+
+            $.each(tThis._options, function(id, _option) {
+            	if(_option.dependId) {
+            		tThis._options[_option.dependId].dependers.push(_option);
+            	}
+            });
+        };
+
+        // 树控件上禁用默认右键和选中文本（默认双击会选中节点文本）
+        this.el.oncontextmenu = this.el.onselectstart = function(_event) {
+            $.Event.cancel(_event || window.event);
+        }   
+
+        var _Option = function(node) {
+        	this.id = $.XML.getText( node.querySelector("operationId") );
+        	this.name = $.XML.getText( node.querySelector("operationName") );
+        	this.dependId = $.XML.getText( node.querySelector("dependId") );
+        	this.dependParent = $.XML.getText( node.querySelector("dependParent") );
+
+        	this.dependers = []; // 横向依赖我的。双向维护横向依赖。
+        };    
+
+        var 
+            _TREE_NODE = "treeNode",
+            _TREE_NODE_ID = "id",
+            _TREE_NODE_NAME = "name",
+            _TREE_ROOT_NODE_ID = "_root",  /* “全部”节点的ID值  */ 
+
+        clickSwich = function(node) {
+            node.opened = !node.opened;
+
+            var styles = ["node_close", "node_open"],
+                index = node.opened ? 0 : 1;
+
+            $(node.li.switchIcon).removeClass(styles[index]).addClass(styles[++index % 2]);
+
+            if(node.li.ul) {
+                if(node.opened) {
+                    $(node.li.ul).removeClass("hidden");
+                    var parent = node;
+                    while(parent = parent.parent) {
+                        $(parent.li.ul).removeClass("hidden");
+                        $(parent.li.switchIcon).removeClass(styles[0]).addClass(styles[1]);
+                    }
+                } 
+                else {
+                    $(node.li.ul).addClass("hidden");
+                }
+            }
+        },
+
+        TreeNode = function(attrs, parent) {            
+            this.id   = attrs[_TREE_NODE_ID];
+            this.name = attrs[_TREE_NODE_NAME];
+            this.opened = (attrs._open == "true");
+            this.attrs = attrs;
+
+            // 维护成可双向树查找
+            this.children = [];
+          
+            if(parent) {
+            	this.parent = parent;
+                this.level = this.parent.level + 1;
+                this.parent.children.push(this);
+            } else {
+                this.level = 1;
+            }               
+
+            this.toHTMLTree = function() {
+                var stack = [];
+                stack.push(this);
+
+                var current, currentEl, rootEl, ul;
+                while(stack.length > 0) {
+                    current = stack.pop();
+                    var currentEl = current.toHTMLEl();
+                    if(rootEl == null) {
+                        rootEl = currentEl;
+                    }
+                    else {
+                        ul = rootEl.querySelector("ul[pID ='" + current.parent.id + "']");
+                        ul.pNode = current;
+                        ul.insertBefore(currentEl, ul.firstChild);
+                    }
+
+                    current.children.each(function(i, child) {
+                        stack.push(child);
+                    });
+                }
+
+                return rootEl;
+            };
+        };
+
+        TreeNode.prototype = {
+            toHTMLEl: function() {
+                var li = $.createElement("li");
+                li.setAttribute("nodeID", this.id);
+                li.node = this;
+                this.li = li;
+
+                // 节点打开、关闭开关
+                li.switchIcon = $.createElement("span", "switch");
+                li.appendChild(li.switchIcon);
+
+                // 自定义图标
+                var selfIcon = $.createElement("div", "selfIcon");
+                li.appendChild(selfIcon);
+                li.selfIcon = $(selfIcon);
+
+                // 节点名称
+                li.a = $.createElement("a");
+                li.a.innerText = li.a.title = this.name;
+                li.appendChild(li.a);
+                if( !this.isEnable() ) {
+                    this.disable();
+                }
+
+                // 每个节点都可能成为父节点
+                li.ul = $.createElement("ul");
+                li.ul.setAttribute("pID", this.id);
+                li.appendChild(li.ul);
+
+                if(this.children.length > 0) {                  
+                    this.opened = !this.opened;
+                    clickSwich(this);
+
+                    li.selfIcon.addClass("folder");
+                }
+                else { // is leaf
+                    $(li.switchIcon).addClass("node_leaf").css("cursor", "default");
+                    li.selfIcon.addClass("leaf");
+                }
+
+                // 添加事件
+                var nThis = this;
+                $(li.switchIcon).click( function() { clickSwich(nThis); } );
+
+                return li;
+            },
+
+            active: function() {
+                $.each(tThis.el.querySelectorAll("li"), function(i, li) {
+                    $(li.a).removeClass("active");
+                });
+
+                $(this.li.a).addClass("active");
+            },
+
+            openNode: function() {
+                clickSwich(this);
+            },
+
+        };
+        /********************************************* 定义树节点TreeNode end *********************************************/
+
+        tThis.init();
+        tThis.searcher = new Searcher(tThis);
+
+        tThis.checkNode = checkNode;
+        tThis.TreeNode = TreeNode;
+    };
+
+    PTree.prototype = {
+
+
+    };
+
+    return Tree;
+});

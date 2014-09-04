@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
@@ -237,15 +238,10 @@ public class RoleAction extends BaseActionSupport {
 		map.put("applicationId", UMConstants.TSS_APPLICATION_ID);
 		map.put("resourceType", UMConstants.GROUP_RESOURCE_TYPE_ID);
 		
-		List<?> types = roleService.getResourceTypeByAppId(UMConstants.TSS_APPLICATION_ID);
-		String[] resourceTypeEditor = EasyUtils.generateComboedit(types, "resourceTypeId", "name", "|");
-
 		XFormEncoder xFormEncoder = new XFormEncoder(UMConstants.SERACH_PERMISSION_XFORM, map);
 		String[] appEditor = EasyUtils.generateComboedit(apps, "applicationId", "name", "|");
 		xFormEncoder.setColumnAttribute("applicationId", "editorvalue", appEditor[0]);
 		xFormEncoder.setColumnAttribute("applicationId", "editortext",  appEditor[1]);
-		xFormEncoder.setColumnAttribute("resourceType", "editorvalue", resourceTypeEditor[0]);
-		xFormEncoder.setColumnAttribute("resourceType", "editortext",  resourceTypeEditor[1]);
 
 		print("SearchPermissionFrom", xFormEncoder);
 	}
@@ -254,16 +250,9 @@ public class RoleAction extends BaseActionSupport {
 	 * 根据应用获得资源类型。 做 应用系统/资源类型/授权级别 三级下拉框时用
 	 */
 	@RequestMapping("/resourceTypes/{applicationId}")
-	public void getResourceTypes(HttpServletResponse response, @PathVariable("applicationId") String applicationId) {
-		List<?> types = roleService.getResourceTypeByAppId(applicationId);
-		String[] resourceTypeEditor = EasyUtils.generateComboedit(types, "resourceTypeId", "name", "|");
-		
-		StringBuffer sb = new StringBuffer();
-        sb.append("<column name=\"resourceType\" caption=\"资源类型\" mode=\"string\" editor=\"comboedit\" ");
-        sb.append(" editorvalue=\"").append(resourceTypeEditor[0]).append("\" ");
-        sb.append(" editortext=\"").append(resourceTypeEditor[1]).append("\"/>");
-
-		print("ResourceTypeList", sb);
+	@ResponseBody
+	public Object getResourceTypes(HttpServletResponse response, @PathVariable("applicationId") String applicationId) {
+		return roleService.getResourceTypeByAppId(applicationId);
 	}
 
 	@RequestMapping("/permission/initsearch/{isRole2Resource}/{roleId}")
