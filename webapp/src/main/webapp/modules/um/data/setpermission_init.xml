@@ -3,7 +3,7 @@
 	<SearchPermissionFrom>
 		<xform>
 			<declare>
-				<column name="applicationId" caption="应用系统" mode="string" editor="comboedit" editorvalue="1|2|3" editortext="CMS|PMS|UMS" empty="false"/>
+				<column name="applicationId" caption="应用系统" mode="string" editor="comboedit" editorvalue="1|2" editortext="TSS|DMS" empty="false" onChange="getResourceTypes"/>
 				<column name="resourceType" caption="资源类型" mode="string" editor="comboedit" editorvalue="" editortext="" empty="false"/>
 				<column name="permissionRank" caption="授权级别" mode="string" editor="comboedit" editorvalue="1|2|3" editortext="普通|可授权|可授权并传递" empty="false"/>
                 <column name="roleId" caption="ID" mode="string"/>

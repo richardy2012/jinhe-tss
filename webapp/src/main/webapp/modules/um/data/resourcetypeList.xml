@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8"?><Response><ResourceTypeList><column name="resourceType" caption="资源类型" mode="string" editor="comboedit"  editorvalue="1|2|3|4|5"  editortext="用户组|角色|内容栏目|门户结构|菜单导航"/></ResourceTypeList></Response>
