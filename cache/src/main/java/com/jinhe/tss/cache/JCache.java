@@ -34,7 +34,7 @@ public class JCache {
 	protected Logger log = Logger.getLogger(this.getClass());
 	
 	/** 缓存策略文件目录 */
-    final static String STRATEGY_PATH = "META-INF/cache.xml";
+    final static String STRATEGY_PATH = "tss/cache.xml";
     
     /** 缓存策略节点名称 */
     final static String STRATEGY_NODE_NAME = "/strategies/strategy";

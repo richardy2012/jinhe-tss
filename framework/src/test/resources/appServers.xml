@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<servers>
-	<server code="TSS" userDepositoryCode="tss" name="TSS" sessionIdName="JSESSIONID" baseURL="http://localhost:8111/tss"/>
-	<server code="CMS" userDepositoryCode="tss" name="CMS" sessionIdName="JSESSIONID" baseURL="http://localhost:8112/cms"/>
-	<server code="XXX" userDepositoryCode="tss" name="XXX" sessionIdName="JSESSIONID" baseURL="http://localhost:8113/xxx"/>
-	<server code="DOMINO" userDepositoryCode="domino" name="OA" sessionIdName="DomAuthSessId" baseURL="http://192.168.0.12:81"/>
-</servers>

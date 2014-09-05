@@ -48,19 +48,12 @@ var ExtendTree = function(element) {
 	 
 	    /* 加速创建扩展内容checkbox列内容，获取副本对象 */
 	    function getCloneCellCheckbox() {
-	        if(window._tempCloneCellCheckbox == null) {		
+ 	  
 	            var checkType = Element.createElement("img", _TREE_EXTEND_CHECK_ICON_STYLE);
 	            checkType.align = "absmiddle";
-				var nobr = Element.createElement("nobr");
-	            nobr.appendChild(checkType);
-	            window._tempCloneCellCheckbox = nobr;
-	        }
-	        return window._tempCloneCellCheckbox.cloneNode(true); // 缓存起来
+ 
 	    }
-
-	    this.getXmlNode = function () {
-	        return this.node;
-	    }
+ 
 	}
 
 

@@ -26,7 +26,7 @@ public class ParamAppServerStorerTest extends TxTestSupport {
     public void testImportAppServerConfig(){
         Param group = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "应用服务配置");
         
-        Document doc = XMLDocUtil.createDoc("appServers.xml");
+        Document doc = XMLDocUtil.createDoc("tss/appServers.xml");
         List<?> elements = doc.getRootElement().elements();
         for (Iterator<?> it = elements.iterator(); it.hasNext();) {
             Element element = (Element) it.next();

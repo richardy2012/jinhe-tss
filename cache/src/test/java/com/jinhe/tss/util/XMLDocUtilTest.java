@@ -54,7 +54,7 @@ public class XMLDocUtilTest {
 			Assert.assertTrue("定义的文件没有找到", true);
 		}
 		
-		Document doc = XMLDocUtil.createDoc("META-INF/cache.xml");
+		Document doc = XMLDocUtil.createDoc("tss/cache.xml");
 		XMLDocUtil.getNodeText(node);
 		
 		XMLDocUtil.selectNodes(doc, "//id");

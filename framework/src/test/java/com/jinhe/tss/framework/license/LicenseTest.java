@@ -20,6 +20,8 @@ import org.junit.Test;
 import com.jinhe.tss.util.FileHelper;
 
 public class LicenseTest {
+	
+	private String licenceName = "cpu.license";
     
 	@Test
     public void testLicense() {
@@ -34,13 +36,13 @@ public class LicenseTest {
         // 第二步：根据产品、版本、Mac地址、有效期等信息，签名产生注册号，并将该注册号复制到license文件中。
         License license = null;
         try {
-            license = License.fromConfigFile("cpu.license");
+            license = License.fromConfigFile(licenceName);
             LicenseFactory.sign(license);
         } catch (Exception e) {
             assertTrue(e.getMessage(), false);
         }
         
-        FileHelper.writeFile(new File(LicenseFactory.LICENSE_DIR + "/cpu.license"), license.toString());
+        FileHelper.writeFile(new File(LicenseFactory.LICENSE_DIR + "/" + licenceName), license.toString());
         System.out.println(license);
         
         // 第三步：利用公钥对license进行合法性验证。可以在软件代码的重要模块中加入下面的验证，比如登录模块等。

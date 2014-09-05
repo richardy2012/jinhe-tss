@@ -28,7 +28,7 @@ public class FileAppServerStorer implements IAppServerStorer {
 	Logger log = Logger.getLogger(FileAppServerStorer.class);
 
 	private static final String APPSERVERS_CONFIG_FILE = "application.servers.file";
-	private static final String APPSERVERS_CONFIG_FILE_DEFAULT = "appServers.xml";
+	private static final String DEFAULT_CONFIG_FILE = "tss/appServers.xml";
 
     private Map<String, AppServer> cache;
     
@@ -74,7 +74,7 @@ public class FileAppServerStorer implements IAppServerStorer {
 		if (fileName != null) {
 			return XMLDocUtil.createDocByAbsolutePath(fileName);
 		} else {
-			return XMLDocUtil.createDoc(APPSERVERS_CONFIG_FILE_DEFAULT);
+			return XMLDocUtil.createDoc(DEFAULT_CONFIG_FILE);
 		}
 	}
 

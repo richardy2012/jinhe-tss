@@ -94,9 +94,9 @@ function searchPermission() {
 				role2PermissionNode = new XmlNode(xmlReader.documentElement);
 			}
 
-			var treeObj = $ET("tree", role2PermissionNode);
-			treeObj.element.onExtendNodeChange = function(eventObj) {
-				onExtendNodeChange(eventObj);
+			var tree = $.PT("permissionTree", role2PermissionNode);
+			tree.onExtendNodeChange = function(ev) {
+				onExtendNodeChange(ev);
 			}
 		}
 	});
@@ -107,26 +107,23 @@ function searchPermission() {
  *            选中状态：1仅此选中 / 2当前及所有子节点选中 / 0未选
  *            纵向依赖：2选中上溯，取消下溯 / 3选中下溯，取消上溯
  */
-function onExtendNodeChange(eventObj) {
-    var treeObj = $ET("tree");
+function onExtendNodeChange(ev) {
+    var tree = $.PT("permissionTree");
 
-    var treeNode  = eventObj.treeNode;
-	var curState  = eventObj.defaultValue;
-	var nextState = eventObj.newValue;
-	var optionId  = eventObj.optionId;
-    var shiftKey  = eventObj.shiftKey;
+    var treeNode  = ev.treeNode;
+	var curState  = ev.defaultValue;
+	var nextState = ev.newValue;
+	var optionId  = ev.optionId;
+    var shiftKey  = ev.shiftKey;
 
-    var option = new XmlNode(treeObj.getOptionById(optionId));
-    var dependParent = option.selectSingleNode("dependParent");
-    if( dependParent || dependParent.text ) {
-        dependParent = dependParent.text.replace(/^\s*|\s*$/g, "");
-    }
+    var option = tree.getOptionById(optionId);
+    var dependParent = option.dependParent;
 
     if(curState != nextState) {
         // 纵向依赖3选中时，直接转入目标状态2(所有子节点)
         if("3" == dependParent && "1" == nextState) {
             treeNode.changeExtendSelectedState(optionId, shiftKey, "2");
-            eventObj.returnValue = false; // 阻止原先设置为1的操作
+            ev.returnValue = false; // 阻止原先设置为1的操作
             return;
         }
 
@@ -134,7 +131,7 @@ function onExtendNodeChange(eventObj) {
         if("1" == nextState) {
             setDependSelectedState(treeNode, optionId, nextState); // 仅此选中时同时选中依赖项
         } 
-		else if("2 "== nextState) {
+		else if("2" == nextState) {
             setDependSelectedState(treeNode, optionId, nextState); // 所有子节点选中时同时选中依赖项
         } 
 		else if("0" == nextState) {
@@ -165,8 +162,8 @@ function onExtendNodeChange(eventObj) {
         }
 
         // 同时按下shift键时
-        if(true == shiftKey) {
-            setChildsSelectedState(treeNode,optionId,nextState,shiftKey);
+        if( shiftKey ) {
+            setChildsSelectedState(treeNode, optionId, nextState, true);
         }
     }
 }
@@ -174,27 +171,20 @@ function onExtendNodeChange(eventObj) {
 /*
  * 设置横向依赖项选中状态
  * 参数：	treeNode:treeNode       节点对象
-            string:id               当前项id
+            string:optionId         当前项id
             string:nextState        目标状态
  */
-function setDependSelectedState(treeNode, id, nextState) {
-    var treeObj = $ET("tree");
-    var curOption = new XmlNode(treeObj.getOptionById(id));
+function setDependSelectedState(treeNode, optionId, nextState) {
+    var tree = $.PT("permissionTree");
+    var curOption = tree.getOptionById(optionId);
 
-    var curIds = curOption.selectSingleNode("dependId");
-    if( curIds ) {
-        curIds = curIds.text.replace(/^\s*|\s*$/g, "");
-		curIds = curIds.split(",");
-		for(var i=0; i < curIds.length; i++) {
-			var curId = curIds[i];
-			if(curId == "") continue;
+    var dependId = curOption.dependId;
+    if( dependId ) {
+		var curState = treeNode.getAttribute(dependId);
 
-			var curState = treeNode.getAttribute(curId);
-
-			// 目标状态与当前状态不同(如果当前已经是2，而目标是1则不执行)
-			if(nextState != curState && ("2" != curState || "1" != nextState)) {
-				treeNode.changeExtendSelectedState(curId, null, nextState);
-			}
+		// 目标状态与当前状态不同(如果当前已经是2，而目标是1则不执行)
+		if(nextState != curState && ("2" != curState || "1" != nextState)) {
+			treeNode.changeExtendSelectedState(dependId, null, nextState);
 		}
     }
 }
@@ -202,74 +192,54 @@ function setDependSelectedState(treeNode, id, nextState) {
 /*
  * 设置横向被依赖项选中状态
  * 参数：	treeNode:treeNode       节点对象
-            string:id               当前项id
+            string:optionId         当前项id
             string:nextState        目标状态
  */
-function setDependedSelectedState(treeNode, id, nextState) {
-    var treeObj = $ET("tree");
-    var curOption = new XmlNode(treeObj.getOptionById(id));
+function setDependedSelectedState(treeNode, optionId, nextState) {
+    var tree = $.PT("permissionTree");
+    var curOption = tree.getOptionById(optionId);
 
-    var curIds = curOption.selectSingleNode("dependedId");
-    if(curIds) {
-        curIds = curIds.text.replace(/^\s*|\s*$/g, "");
-		curIds = curIds.split(",");
-
-		for(var j=0; j < curIds.length; j++) {
-			var curId = curIds[j];
-			if(curId == "") continue;
-
-			var curState = treeNode.getAttribute(curId);
-			if(nextState != curState) {
-				treeNode.changeExtendSelectedState(curId, null, nextState);
-			}
+    var dependId = curOption.dependId;
+    if( dependId ) {
+		var curState = treeNode.getAttribute(dependId);
+		if(nextState != curState) {
+			treeNode.changeExtendSelectedState(dependId, null, nextState);
 		}
-    }
+	}
 }
 
 /*
  * 设置父节点依赖项选中状态
  * 参数：	treeNode:treeNode       节点对象
-            string:id               当前项id
+            string:optionId         当前项id
             string:nextState        目标状态
  */
-function setParentSelectedState(treeNode, id, nextState) {
-    var parentNode = treeNode.getParent();
-    if(parentNode && "treeNode" == parentNode.node.nodeName) {
-        parentNode.changeExtendSelectedState(id, null, nextState);
+function setParentSelectedState(treeNode, optionId, nextState) {
+    var parentNode = treeNode.parent;
+    if( parentNode ) {
+        parentNode.changeExtendSelectedState(optionId, null, nextState);
     }
 }
 
 /*
  * 设置子节点依赖项选中状态
  * 参数：	treeNode:treeNode       节点对象
-            string:id               当前项id
+            string:optionId         当前项id
             string:nextState        目标状态
             boolean:shiftKey        是否按下shift键
  */
-function setChildsSelectedState(treeNode, id, nextState, shiftKey) {
-    var treeObj = $ET("tree");
-    var childs = treeNode.node.selectNodes("treeNode");
-    if( childs.length > 0 ) {
-        for(var i=0; i < childs.length; i++) {
-            var child = childs[i];
-            var childId = child.getAttribute("id");
-            if(childId ) {
-                var childNode = treeObj.getTreeNodeById(childId);
-				childNode.changeExtendSelectedState(id, shiftKey, nextState);
-            }
-        }
-    }
+function setChildsSelectedState(treeNode, optionId, nextState, shiftKey) {
+    var tree = $.PT("permissionTree");
+    treeNode.children.each( function(i, child) {
+    	child.changeExtendSelectedState(optionId, shiftKey, nextState);
+    } );
 }
 
-/*
- * 设置父节点仅此
- * 参数：	treeNode:treeNode       节点对象
-            string:id               当前项id
- */
-function setParentSingleState(treeNode, id) {
-    var parentNode = treeNode.getParent();
-    if( parentNode && "treeNode" == parentNode.node.nodeName ) {
-        var curState = parentNode.getAttribute(id);
+/* 设置父节点仅此 */
+function setParentSingleState(treeNode, optionId) {
+    var parentNode = treeNode.parent;
+    if( parentNode ) {
+        var curState = parentNode.getAttribute(optionId);
         if("2" == curState) {
             parentNode.changeExtendSelectedState(id, null, "1");
         }
@@ -277,61 +247,48 @@ function setParentSingleState(treeNode, id) {
 }
 
 function savePermission() {
-	if($ET("tree") == null) return;
+	var tree = $.PT("permissionTree");
 
     // 用户对权限选项
-	var role2PermissionNode = $ET("tree").getXmlRoot();
+	var role2PermissionNode = $.cache.XmlDatas[XML_PERMISSION_MATRIX];
 
 	// 取回搜索条件，加入到提交数据
 	var applicationId   = role2PermissionNode.getAttribute("applicationId");
 	var resourceType    = role2PermissionNode.getAttribute("resourceType");
 	var permissionRank  = role2PermissionNode.getAttribute("permissionRank");           
 	var isRole2Resource = role2PermissionNode.getAttribute("isRole2Resource");
-	var roleID = role2PermissionNode.getAttribute("roleId");
+	var roleID          = role2PermissionNode.getAttribute("roleId");
 
-	var nodesStr = [];
-	var optionIds = [];
-	var permissionOptions = role2PermissionNode.selectNodes(".//options/option");
-
-	// 获取option的id名
-	for(var i=0; i < permissionOptions.length; i++) {
-		var temoNode = permissionOptions[i].selectSingleNode("operationId");
-		var curOptionID = getNodeText(temoNode);
-		optionIds.push(curOptionID);
-	}
-
-	var permissionDataNodes = role2PermissionNode.selectNodes(".//treeNode");
-	for(var i=0; i < permissionDataNodes.length; i++) {
-		var curNode = permissionDataNodes[i];
-		var curNodeID = curNode.getAttribute("id");
-		var curNodeStr = "";
-
-		// 按照option的顺序获取值，并拼接字符串
-		for(var j=0; j < optionIds.length; j++) {
-			var curNodeOption = curNode.getAttribute(optionIds[j]);
+	var nodesPermissions = [];
+	tree.getAllNodes().each(function(i, curNode) {
+		var curNodeOptionStates = "";
+		$.each(tree._options, function(_optionId, _option) {
+			var curNodeOptionState = curNode.getAttribute(_optionId);
 
 			// 父节点是2(即所有子节点全选中)的，则子节点不需要传2，后台会自动补齐
-			if("2" == curNodeOption) {
-				var curParentNode = curNode.parentNode;
-				var curParentNodeOption = curParentNode.getAttribute(optionIds[j]);
-				if("2" == curParentNodeOption) {
-					curNodeOption = "0";
+			if( curNodeOptionState == "2" ) {
+				if(curNode.parent && curNode.parent.getAttribute(_optionId) == "2") {
+					curNodeOptionState = "0";
 				}
 			}
 
-			curNodeStr += curNodeOption || "0";
-		}
-
+			curNodeOptionStates += curNodeOptionState || "0";
+		} );
+ 
 		// 整行全部标记至少有一个为1或者2才允许提交，都是0的话没必要提交
-		if("0" == isRole2Resource || true == /(1|2)/.test(curNodeStr)) {
-			nodesStr.push(curNodeID + "|" + curNodeStr);                
+		if("0" == isRole2Resource || true == /(1|2)/.test(curNodeOptionStates)) {
+			nodesPermissions.push(curNode.id + "|" + curNodeOptionStates);                
 		}
-	}
+	});
 
 	// 即使一行数据也没有，也要执行提交 
 	$.ajax({
 		url : URL_SAVE_PERMISSION + permissionRank + "/" + isRole2Resource + "/" + roleID,
-		params : {"applicationId": applicationId, "resourceType": resourceType, "permissions":nodesStr.join(",")}
+		params : {
+			"applicationId": applicationId, 
+			"resourceType": resourceType, 
+			"permissions":nodesPermissions.join(",")
+		}
 	});
 }
 
@@ -360,9 +317,18 @@ window.onload = init;
 
     'use strict';
 
-    var PTree = function(el, data) {
+    var _Option = function(node) {
+    	this.id = $.XML.getText( node.querySelector("operationId") );
+    	this.name = $.XML.getText( node.querySelector("operationName") );
+    	this.dependId = $.XML.getText( node.querySelector("dependId") );
+    	this.dependParent = $.XML.getText( node.querySelector("dependParent") );
+
+    	this.dependers = []; // 横向依赖我的。双向维护横向依赖。
+    },
+
+    PTree = function(el, data) {
         this.el = el;
-        this.root;
+        this.rootList = [];
         this._options = {};
 
         this.init = function() {
@@ -371,12 +337,13 @@ window.onload = init;
             $(this.el).html("");
 
             var ul = $.createElement("ul");
-            var li = root.toHTMLTree();
-            ul.appendChild(li);
+            this.rootList.each(function(i, root){
+                var li = root.toHTMLTree();
+                ul.appendChild(li);
+            });
             this.el.appendChild(ul);
         }
 
-        // 定义Tree私有方法
         var tThis = this;
         var loadXML = function(data) {
             var nodes = data.querySelectorAll("treeNode");
@@ -391,8 +358,8 @@ window.onload = init;
                 var parent = parents[parentId];
                 var treeNode = new TreeNode(nodeAttrs, parent);
 
-                if(parent == null && treeNode.id == "_root") {
-                    tThis.root = treeNode;
+                if(parent == null) {
+                    tThis.rootList.push(treeNode);
                 }   
                 parents[treeNode.id] = treeNode;
             });
@@ -415,20 +382,10 @@ window.onload = init;
             $.Event.cancel(_event || window.event);
         }   
 
-        var _Option = function(node) {
-        	this.id = $.XML.getText( node.querySelector("operationId") );
-        	this.name = $.XML.getText( node.querySelector("operationName") );
-        	this.dependId = $.XML.getText( node.querySelector("dependId") );
-        	this.dependParent = $.XML.getText( node.querySelector("dependParent") );
-
-        	this.dependers = []; // 横向依赖我的。双向维护横向依赖。
-        };    
-
         var 
             _TREE_NODE = "treeNode",
             _TREE_NODE_ID = "id",
             _TREE_NODE_NAME = "name",
-            _TREE_ROOT_NODE_ID = "_root",  /* “全部”节点的ID值  */ 
 
         clickSwich = function(node) {
             node.opened = !node.opened;
@@ -516,9 +473,6 @@ window.onload = init;
                 li.a = $.createElement("a");
                 li.a.innerText = li.a.title = this.name;
                 li.appendChild(li.a);
-                if( !this.isEnable() ) {
-                    this.disable();
-                }
 
                 // 每个节点都可能成为父节点
                 li.ul = $.createElement("ul");
@@ -536,19 +490,20 @@ window.onload = init;
                     li.selfIcon.addClass("leaf");
                 }
 
-                // 添加事件
+                // 添加option（权限操作项）
                 var nThis = this;
+                var _optionBox = $.createElement("span");
+                $.each(tThis._options, function(id, _option) {
+                	// var optionCheckBox = $.createElement("img");
+                	$(_optionBox).html($(_optionBox).html() + _option.name + ",");
+
+                });
+                li.appendChild(_optionBox);
+
+                // 添加事件
                 $(li.switchIcon).click( function() { clickSwich(nThis); } );
 
                 return li;
-            },
-
-            active: function() {
-                $.each(tThis.el.querySelectorAll("li"), function(i, li) {
-                    $(li.a).removeClass("active");
-                });
-
-                $(this.li.a).addClass("active");
             },
 
             openNode: function() {
@@ -559,16 +514,15 @@ window.onload = init;
         /********************************************* 定义树节点TreeNode end *********************************************/
 
         tThis.init();
-        tThis.searcher = new Searcher(tThis);
-
-        tThis.checkNode = checkNode;
         tThis.TreeNode = TreeNode;
     };
 
     PTree.prototype = {
-
+    	getOption: function(optionId) {
+    		return this._options[optionId];
+    	}
 
     };
 
-    return Tree;
+    return PTree;
 });

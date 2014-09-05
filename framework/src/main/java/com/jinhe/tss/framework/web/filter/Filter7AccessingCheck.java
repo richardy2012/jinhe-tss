@@ -131,7 +131,7 @@ class AccessingChecker {
 	Logger log = Logger.getLogger(AccessingChecker.class);
 
     /** 权限配置文件 */
-    private static final String RIGHT_CONFIG_FILE_NAME = "META-INF/right-config.xml";
+    private static final String RIGHT_CONFIG_FILE_NAME = "tss/right-config.xml";
     
     private static Map<String, Set<String>> rightsMap;
     

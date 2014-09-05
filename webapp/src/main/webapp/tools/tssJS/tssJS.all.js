@@ -1002,7 +1002,7 @@
             },
 
             getText: function(node) {
-                return (node.text || node.textContent || "").trim(); // chrome 用 textContent
+                return node ? (node.text || node.textContent || "").trim() : ""; // chrome 用 textContent
             },
 
             setText: function(node, textValue) {
