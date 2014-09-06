@@ -4418,7 +4418,7 @@
 
     $.T = function(id, data) {
         var tree = TreeCache[id];
-        if( tree == null || data ) {
+        if( tree == null && data ) {
             tree = new $.Tree($1(id), data);
             TreeCache[id] = tree;   
         }

@@ -5,9 +5,9 @@ XML_PERMISSION_MATRIX = "PermissionMatrix";
 
 /* XMLHTTP请求地址汇总 */
 URL_INIT            = AUTH_PATH + "role/permission/initsearch/";  // {isRole2Resource}/{roleId}
-URL_RESOURCE_TYPES  = AUTH_PATH + "role/resourceTypes/";  // {applicationId}
-URL_PERMISSION      = AUTH_PATH + "role/permission/matrix/";  // {permissionRank}/{isRole2Resource}/{roleId}
-URL_SAVE_PERMISSION = AUTH_PATH + "role/permission/";  // {permissionRank}/{isRole2Resource}/{roleId} POST
+URL_RESOURCE_TYPES  = AUTH_PATH + "role/resourceTypes/";         // {applicationId}
+URL_PERMISSION      = AUTH_PATH + "role/permission/matrix/";    // {permissionRank}/{isRole2Resource}/{roleId}
+URL_SAVE_PERMISSION = AUTH_PATH + "role/permission/";          // {permissionRank}/{isRole2Resource}/{roleId} POST
 
 if(IS_TEST) {
 	URL_INIT            = "data/setpermission_init.xml?";
@@ -18,6 +18,15 @@ if(IS_TEST) {
  
 function init() {	
     var params = {};
+
+    var globalValiable = window.parent.globalValiable;
+    if(globalValiable) {
+        params.roleId = globalValiable.roleId;
+        params.resourceType = globalValiable.resourceType;
+        params.applicationId = globalValiable.applicationId;
+        params.isRole2Resource = globalValiable.isRole2Resource;
+        $(".box h2").html(globalValiable.title);
+    }
 
 	$.ajax({
 		url : URL_INIT + params.isRole2Resource + "/" + params.roleId,
@@ -89,11 +98,6 @@ function searchPermission() {
 
 			$.cache.XmlDatas[XML_PERMISSION_MATRIX] = role2PermissionNode;
 
-			if(role2PermissionNode == null) {
-				var xmlReader = new XmlReader("<actionSet></actionSet>");
-				role2PermissionNode = new XmlNode(xmlReader.documentElement);
-			}
-
 			$.PT("permissionTree", role2PermissionNode);
 		}
 	});
@@ -101,6 +105,7 @@ function searchPermission() {
 
 function savePermission() {
 	var tree = $.PT("permissionTree");
+    if(tree == null) return;
 
     // 用户对权限选项
 	var role2PermissionNode = $.cache.XmlDatas[XML_PERMISSION_MATRIX];
@@ -113,14 +118,15 @@ function savePermission() {
 	var roleID          = role2PermissionNode.getAttribute("roleId");
 
 	var nodesPermissions = [];
-	tree.getAllNodes().each(function(i, curNode) {
+	$.each($("li[nodeId]", tree.el), function(i, li) {
+        var curNode = li.node;
 		var curNodeOptionStates = "";
 		$.each(tree._options, function(_optionId, _option) {
 			var curNodeOptionState = curNode.attrs[_optionId];
 
 			// 父节点是2(即所有子节点全选中)的，则子节点不需要传2，后台会自动补齐
 			if( curNodeOptionState == "2" ) {
-				if(curNode.parent && curNode.parent.getAttribute(_optionId) == "2") {
+				if(curNode.parent && curNode.parent.attrs[_optionId] == "2") {
 					curNodeOptionState = "0";
 				}
 			}
@@ -158,7 +164,7 @@ window.onload = init;
 
     $.PT = function(id, data) {
         var tree = TreeCache[id];
-        if( tree == null || data ) {
+        if( tree == null && data ) {
             tree = new $.PTree($1(id), data);
             TreeCache[id] = tree;   
         }
@@ -251,9 +257,9 @@ window.onload = init;
             nextState = curState;
         }
         else if(nextState == null ) { // 自动切换状态
-            switch(curState || "") {            
+            switch(curState || "0") {            
                 case "0":
-                case "":
+                case "10":
                     nextState = "1";
                     break;
                 case "1":
@@ -278,42 +284,53 @@ window.onload = init;
         var option = optionChecker.option;
         var optionId = option.id;
         var dependParent = option.dependParent;
-        
-        
 
-        // // 纵向依赖
-        // if( dependParent ) {
-        //     if(("2" == dependParent && "1" == nextState) || ("3" == dependParent && "0" == nextState)) {                   
-        //         setParentSelectedState(treeNode, optionId, nextState);  // 纵向依赖2选中或者3取消时，上溯
-        //     }
-        //     else if("2" == dependParent && "2" == nextState) {                   
-        //         setParentSelectedState(treeNode, optionId, "1"); // 纵向依赖2选中，上溯，父节点半勾
-        //     }
-        //     else if(("2" == dependParent && "0" == nextState) || ("3" == dependParent && "1" == nextState)) {                   
-        //         setChildsSelectedState(treeNode, optionId, nextState); // 纵向依赖2取消或者3选中时，下溯
-        //     }
-        // }
+        // 当前节点目标状态是2(所有子节点)时，下溯
+        if("2" == nextState) {
+            $("li[nodeId]", treeNode.li).each(function(i, li){
+                var optionChecker = $(".optionBox span[oid='" + optionId + "']", li)[0];
+                setOptionCheckState(optionChecker, "2");
+            });
+        }
 
-        // // 当前节点目标状态是2(所有子节点)时，下溯
-        // if("2" == nextState) {
-        //     setChildsSelectedState(treeNode, optionId, nextState);
-        // }
+        if("1" == nextState && dependParent == "3") { // 纵向向下依赖，下溯
+            $("li[nodeId]", treeNode.li).each(function(i, li){
+                var optionChecker = $(".optionBox span[oid='" + optionId + "']", li)[0];
+                if(optionChecker.state != "2") {
+                    setOptionCheckState(optionChecker, "1");
+                }
+            });
+        }
 
-        // // 当前节点目标状态是0或者1，则设置父节点仅此
-        // if("0" == nextState || "1" == nextState) {
-        //     setParentSingleState(treeNode, optionId);
-        // }
+        /* 当前节点目标状态是0或者1，如果父节点原来为全选，则设置父节点仅此选中; 
+         * 当前节点目标状态是1，如果父节点原来为未选，则设置父节点子节点有选中 */
+        if("0" == nextState || "1" == nextState) {
+            var parent = treeNode;
+            while(parent = parent.parent) {
+                var optionChecker = $(".optionBox span[oid='" + optionId + "']", parent.li)[0];
+                if(optionChecker.state == "2") {
+                    setOptionCheckState(optionChecker, "1");
+                }
+                else if( optionChecker.state == "0" && "1" == nextState ) {
+                    setOptionCheckState(optionChecker, dependParent == "2" ? "1" : "10");
+                }
+            }
+        }
 
-        // // 同时按下shift键时
-        // if( shiftKey ) {
-        //     setChildsSelectedState(treeNode, optionId, nextState, true);
-        // }
+        // 同时按下shift键时
+        if( shiftKey ) {
+            $("li[nodeId]", treeNode.li).each(function(i, li){
+                var optionChecker = $(".optionBox span[oid='" + optionId + "']", li)[0];
+                setOptionCheckState(optionChecker, nextState);
+            });
+        }
     },
 
     PTree = function(el, data) {
         this.el = el;
         this.rootList = [];
         this._options = {};
+        this.optionNum = 0;
 
         this.init = function() {
             loadXML(data);
@@ -323,7 +340,7 @@ window.onload = init;
             var headEl = $.createElement("div", "optionTitle");
             $.each(this._options, function(id, _option) {
             	var optionTitle = $.createElement("span");
-            	$(optionTitle).html(_option.name);
+            	$(optionTitle).html(_option.name).css("width", 550/tThis.optionNum + "px");
             	headEl.appendChild(optionTitle);
 
             });
@@ -361,6 +378,7 @@ window.onload = init;
             $.each(optionNodes, function(i, node) {
             	var _option = new _Option(node);
             	tThis._options[_option.id] = _option;
+                tThis.optionNum ++;
             });
 
             $.each(tThis._options, function(id, _option) {
@@ -415,10 +433,7 @@ window.onload = init;
           
             if(parent) {
             	this.parent = parent;
-                this.level = this.parent.level + 1;
                 this.parent.children.push(this);
-            } else {
-                this.level = 1;
             }               
 
             this.toHTMLTree = function() {
@@ -458,14 +473,10 @@ window.onload = init;
                 li.switchIcon = $.createElement("span", "switch");
                 li.appendChild(li.switchIcon);
 
-                // 自定义图标
-                var selfIcon = $.createElement("div", "selfIcon");
-                li.appendChild(selfIcon);
-                li.selfIcon = $(selfIcon);
-
                 // 节点名称
                 li.a = $.createElement("a");
-                li.a.innerText = li.a.title = this.name;
+                li.a.innerText = (this.name.length > 15 ? this.name.substring(0, 15) + "..." : this.name);
+                li.a.title = this.name;
                 li.appendChild(li.a);
 
                 // 每个节点都可能成为父节点
@@ -476,12 +487,9 @@ window.onload = init;
                 if(this.children.length > 0) {                  
                     this.opened = !this.opened;
                     clickSwich(this);
-
-                    li.selfIcon.addClass("folder");
                 }
                 else { // is leaf
                     $(li.switchIcon).addClass("node_leaf").css("cursor", "default");
-                    li.selfIcon.addClass("leaf");
                 }
 
                 // 添加option（权限操作项）
@@ -493,16 +501,16 @@ window.onload = init;
                     optionChecker.option = _option;
                     optionChecker.node = nThis;
 
-                	var checkState = nThis.attrs[_optionId] || "0";
-                	$(optionChecker).html(_option.name)
-                		.css("backgroundImage", "url(images/optionState" + checkState + ".gif)");
+                	optionChecker.state = nThis.attrs[_optionId] || "0";
+
+                	$(optionChecker).html(_option.name).css("width", 550/tThis.optionNum + "px")
+                		.css("backgroundImage", "url(images/optionState" + optionChecker.state + ".gif)");
                 	optionBox.appendChild(optionChecker);
 
                     $(optionChecker).click(function(ev) {
                         var shiftKey = (ev || event).shiftKey; // 是否同时按下shiftKey
                         changeOptionCheckState(ev, optionChecker, shiftKey);
                     });
-
                 });
                 li.insertBefore(optionBox, li.ul);
 
@@ -520,14 +528,6 @@ window.onload = init;
         /********************************************* 定义树节点TreeNode end *********************************************/
 
         tThis.init();
-        tThis.TreeNode = TreeNode;
-    };
-
-    PTree.prototype = {
-    	getOption: function(optionId) {
-    		return this._options[optionId];
-    	}
-
     };
 
     return PTree;

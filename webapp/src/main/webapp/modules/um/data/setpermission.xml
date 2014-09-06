@@ -56,7 +56,7 @@
 			</options>
 			<treeNode id="r1" name="资源1" pstate="2">
 				<treeNode id="r1.0" name="资源1.0" pstate="2">
-					<treeNode id="r1.0.1" name="资源1.0.1" pstate="2"/>
+					<treeNode id="r1.0.1" name="资源1.0.1--长长长长长长长长长长长长长长长长长长长长长长长" pstate="2"/>
 					<treeNode id="r1.0.2" name="资源1.0.2" pstate="2"/>
 					<treeNode id="r1.0.3" name="资源1.0.3" pstate="2"/>
 				</treeNode>
@@ -70,7 +70,7 @@
 			</treeNode>
 
 			<treeNode id="r2" name="资源2" pstate="2" opt103="1">
-				<treeNode id="r2.1" name="资源2.1" pstate="2" opt104="1"/>
+				<treeNode id="r2.1" name="资源2.1--长长长长长长长长长长长长长长长长长长长长长长长" pstate="2" opt104="1"/>
 			</treeNode>
 			<treeNode id="r3" name="资源3" opt101="1" opt102="1" opt103="1" opt104="1" opt105="1" opt108="1" opt109="1" />
 
