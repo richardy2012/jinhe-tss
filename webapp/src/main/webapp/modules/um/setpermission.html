@@ -24,6 +24,15 @@
   .box Form\:Box td { padding-top:5px;  padding-left:10px; }
   .box .comment { color:#999999;text-align: center; }
 
+  Tree\:Box .optionTitle { height: 20px; }
+  Tree\:Box .optionBox {float: right; width: 550px; margin: 0px;}
+  Tree\:Box .optionTitle span, 
+  Tree\:Box .optionBox span { float: right; width: 60px; height: 18px; margin: 0px; text-align: center;}  
+  Tree\:Box .optionBox span { text-indent: -9999px; background: no-repeat center;}
+
+  Tree\:Box li:hover { background-color: yellow; }
+  Tree\:Box li a:hover { text-decoration: none; }
+
 </style>
 </head>
 <body>
@@ -35,12 +44,12 @@
   <div class="comment">
     &nbsp;&nbsp;说明：鼠标点击切换状态，通常情况下是 &lt;未选中&gt; → &lt;仅此节点&gt; → &lt;所有子节点&gt; → &lt;未选中&gt; 循环<br/>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;节点状态 (
-    <img src="images/multistate0.gif"   align=absmiddle> 未选中 
-    <img src="images/multistate0_2.gif" align=absmiddle> 未选中但有子节点选中 
-    <img src="images/multistate1.gif"   align=absmiddle> 仅此节点 
-    <img src="images/multistate2.gif"   align=absmiddle> 所有子节点 
-    <img src="images/multistate3.gif"   align=absmiddle> 未选中禁用 
-    <img src="images/multistate4.gif"   align=absmiddle> 已选中禁用
+    <img src="images/optionState0.gif"   align=absmiddle> 未选中 
+    <img src="images/optionState10.gif" align=absmiddle> 未选中但有子节点选中 
+    <img src="images/optionState1.gif"   align=absmiddle> 仅此节点 
+    <img src="images/optionState2.gif"   align=absmiddle> 所有子节点 
+    <img src="images/optionState3.gif"   align=absmiddle> 未选中禁用 
+    <img src="images/optionState4.gif"   align=absmiddle> 已选中禁用
     )
 		<!--
 		<br/>&nbsp;&nbsp;鼠标点击同时按下shift键，可以将所有(未禁用的)子节点设置为与当前节点相同状态

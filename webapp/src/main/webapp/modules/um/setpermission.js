@@ -102,150 +102,6 @@ function searchPermission() {
 	});
 }
 
-/*
- *  函数说明：点击更改权限
- *            选中状态：1仅此选中 / 2当前及所有子节点选中 / 0未选
- *            纵向依赖：2选中上溯，取消下溯 / 3选中下溯，取消上溯
- */
-function onExtendNodeChange(ev) {
-    var tree = $.PT("permissionTree");
-
-    var treeNode  = ev.treeNode;
-	var curState  = ev.defaultValue;
-	var nextState = ev.newValue;
-	var optionId  = ev.optionId;
-    var shiftKey  = ev.shiftKey;
-
-    var option = tree.getOptionById(optionId);
-    var dependParent = option.dependParent;
-
-    if(curState != nextState) {
-        // 纵向依赖3选中时，直接转入目标状态2(所有子节点)
-        if("3" == dependParent && "1" == nextState) {
-            treeNode.changeExtendSelectedState(optionId, shiftKey, "2");
-            ev.returnValue = false; // 阻止原先设置为1的操作
-            return;
-        }
-
-        // 横向依赖
-        if("1" == nextState) {
-            setDependSelectedState(treeNode, optionId, nextState); // 仅此选中时同时选中依赖项
-        } 
-		else if("2" == nextState) {
-            setDependSelectedState(treeNode, optionId, nextState); // 所有子节点选中时同时选中依赖项
-        } 
-		else if("0" == nextState) {
-            setDependedSelectedState(treeNode, optionId, nextState); // 取消时同时取消被依赖项
-        }
-
-        // 纵向依赖
-        if( dependParent ) {
-            if(("2" == dependParent && "1" == nextState) || ("3" == dependParent && "0" == nextState)) {                   
-                setParentSelectedState(treeNode, optionId, nextState);  // 纵向依赖2选中或者3取消时，上溯
-            }
-			else if("2" == dependParent && "2" == nextState) {                   
-                setParentSelectedState(treeNode, optionId, "1"); // 纵向依赖2选中，上溯，父节点半勾
-            }
-			else if(("2" == dependParent && "0" == nextState) || ("3" == dependParent && "1" == nextState)) {                   
-                setChildsSelectedState(treeNode, optionId, nextState); // 纵向依赖2取消或者3选中时，下溯
-            }
-        }
-
-        // 当前节点目标状态是2(所有子节点)时，下溯
-        if("2" == nextState) {
-            setChildsSelectedState(treeNode, optionId, nextState);
-        }
-
-        // 当前节点目标状态是0或者1，则设置父节点仅此
-        if("0" == nextState || "1" == nextState) {
-            setParentSingleState(treeNode, optionId);
-        }
-
-        // 同时按下shift键时
-        if( shiftKey ) {
-            setChildsSelectedState(treeNode, optionId, nextState, true);
-        }
-    }
-}
-
-/*
- * 设置横向依赖项选中状态
- * 参数：	treeNode:treeNode       节点对象
-            string:optionId         当前项id
-            string:nextState        目标状态
- */
-function setDependSelectedState(treeNode, optionId, nextState) {
-    var tree = $.PT("permissionTree");
-    var curOption = tree.getOptionById(optionId);
-
-    var dependId = curOption.dependId;
-    if( dependId ) {
-		var curState = treeNode.getAttribute(dependId);
-
-		// 目标状态与当前状态不同(如果当前已经是2，而目标是1则不执行)
-		if(nextState != curState && ("2" != curState || "1" != nextState)) {
-			treeNode.changeExtendSelectedState(dependId, null, nextState);
-		}
-    }
-}
-
-/*
- * 设置横向被依赖项选中状态
- * 参数：	treeNode:treeNode       节点对象
-            string:optionId         当前项id
-            string:nextState        目标状态
- */
-function setDependedSelectedState(treeNode, optionId, nextState) {
-    var tree = $.PT("permissionTree");
-    var curOption = tree.getOptionById(optionId);
-
-    var dependId = curOption.dependId;
-    if( dependId ) {
-		var curState = treeNode.getAttribute(dependId);
-		if(nextState != curState) {
-			treeNode.changeExtendSelectedState(dependId, null, nextState);
-		}
-	}
-}
-
-/*
- * 设置父节点依赖项选中状态
- * 参数：	treeNode:treeNode       节点对象
-            string:optionId         当前项id
-            string:nextState        目标状态
- */
-function setParentSelectedState(treeNode, optionId, nextState) {
-    var parentNode = treeNode.parent;
-    if( parentNode ) {
-        parentNode.changeExtendSelectedState(optionId, null, nextState);
-    }
-}
-
-/*
- * 设置子节点依赖项选中状态
- * 参数：	treeNode:treeNode       节点对象
-            string:optionId         当前项id
-            string:nextState        目标状态
-            boolean:shiftKey        是否按下shift键
- */
-function setChildsSelectedState(treeNode, optionId, nextState, shiftKey) {
-    var tree = $.PT("permissionTree");
-    treeNode.children.each( function(i, child) {
-    	child.changeExtendSelectedState(optionId, shiftKey, nextState);
-    } );
-}
-
-/* 设置父节点仅此 */
-function setParentSingleState(treeNode, optionId) {
-    var parentNode = treeNode.parent;
-    if( parentNode ) {
-        var curState = parentNode.getAttribute(optionId);
-        if("2" == curState) {
-            parentNode.changeExtendSelectedState(id, null, "1");
-        }
-    }
-}
-
 function savePermission() {
 	var tree = $.PT("permissionTree");
 
@@ -326,6 +182,28 @@ window.onload = init;
     	this.dependers = []; // 横向依赖我的。双向维护横向依赖。
     },
 
+	/*
+	 * 设定选中状态
+	 *			 0 未选中
+	 *			 1 仅此节点有权限
+	 *			 2 所有子节点有权限
+	 *			 3 未选中禁用
+	 *			 4 选中禁用
+	 */
+	setCellCheckType = function(node, optionId, value) {
+		var checkType = $$(cellIndex).firstChild.firstChild;
+	    checkType.state = value;
+
+	    value = value || "0";
+	    if("0" == value ) {
+	        var checkedChild = node.selectSingleNode(".//treeNode[@" + optionId + "='1' or @" + optionId + "='2' or @" + optionId + "='4']");
+	        if( checkedChild ) {
+	            value = "0_2";
+	        }
+	    }
+	    checkType.src = node.getAttribute("baseUrl") + value + ".gif"; // 设定扩展内容checkbox图片地址
+	},
+
     PTree = function(el, data) {
         this.el = el;
         this.rootList = [];
@@ -334,7 +212,16 @@ window.onload = init;
         this.init = function() {
             loadXML(data);
 
-            $(this.el).html("");
+            $(this.el).html("");         
+
+            var headEl = $.createElement("div", "optionTitle");
+            $.each(this._options, function(id, _option) {
+            	var optionTitle = $.createElement("span");
+            	$(optionTitle).html(_option.name);
+            	headEl.appendChild(optionTitle);
+
+            });
+            this.el.appendChild(headEl);
 
             var ul = $.createElement("ul");
             this.rootList.each(function(i, root){
@@ -492,13 +379,16 @@ window.onload = init;
 
                 // 添加option（权限操作项）
                 var nThis = this;
-                var _optionBox = $.createElement("span");
-                $.each(tThis._options, function(id, _option) {
-                	// var optionCheckBox = $.createElement("img");
-                	$(_optionBox).html($(_optionBox).html() + _option.name + ",");
+                var optionBox = $.createElement("span", "optionBox");
+                $.each(tThis._options, function(_optionId, _option) {
+                	var optionCheckBox = $.createElement("span");
+                	var checkState = nThis.attrs[_optionId] || "0";
+                	$(optionCheckBox).html(_option.name)
+                		.css("backgroundImage", "url(images/optionState" + checkState + ".gif)");
+                	optionBox.appendChild(optionCheckBox);
 
                 });
-                li.appendChild(_optionBox);
+                li.insertBefore(optionBox, li.ul);
 
                 // 添加事件
                 $(li.switchIcon).click( function() { clickSwich(nThis); } );
@@ -509,6 +399,72 @@ window.onload = init;
             openNode: function() {
                 clickSwich(this);
             },
+
+            /*
+			 * 改变权限项选中状态为下一状态
+			 * 参数：	optionId                    权限项id
+				    boolean: shiftKey           是否同时按下shiftKey
+					nextState                   指定的click后的状态，可选
+			 * 返回：	nextState                   click后的状态，不能超过pState
+			 */
+			changeExtendSelectedState = function(optionId, shiftKey, nextState) {
+				var curState = this.node.getAttribute(optionId);
+				var pState   = this.node.getAttribute("pstate");
+				
+				// nextState 不能超过pState
+				if("2" == nextState && "2" != pState) {
+					nextState = "1";
+				}        
+
+				if("3" == curState || "4" == curState) { // 当前若是禁用状态则不变
+					nextState = curState;
+				}
+				else if(null == nextState) { // 自动切换状态
+					switch(curState || "") {            
+						case "0":
+						case "":
+							nextState = "1";
+							break;
+						case "1":
+							if("2" == pState) {
+								nextState = "2";
+							} else {
+								nextState = "0";
+							}
+							break;
+						case "2":
+							nextState = "0";
+							break;
+					}        
+				}
+
+				// 扩展项（权限项）状态改变（该事件在serpermission.js里响应）
+				var eventExtendNodeChange = new EventFirer($$("tree"), "onExtendNodeChange"); 
+				var eventObj = createEventObject();
+				eventObj.treeNode = this;
+				eventObj.returnValue = true;
+				eventObj.optionId = optionId;
+				eventObj.defaultValue = curState || "0";
+				eventObj.newValue = nextState;
+				eventObj.shiftKey = shiftKey;
+				eventObj.type = "_ExtendNodeChange";
+				eventExtendNodeChange.fire(eventObj);
+
+				var flag = true;
+				if(false == eventObj.returnValue) { 
+					flag = false; // 调用语句取消该事件
+				}
+				else {
+					if(nextState != curState) {
+						this.node.setAttribute(optionId, nextState);
+					}
+				}
+
+				// 修改权限项显示图标(只修改open状态的节点)
+				setCellCheckType(this.node, optionId, nextState);
+
+				return {flag:flag, state: flag ? nextState : curState};
+			}
 
         };
         /********************************************* 定义树节点TreeNode end *********************************************/
@@ -526,3 +482,147 @@ window.onload = init;
 
     return PTree;
 });
+
+/*
+ *  函数说明：点击更改权限
+ *            选中状态：1仅此选中 / 2当前及所有子节点选中 / 0未选
+ *            纵向依赖：2选中上溯，取消下溯 / 3选中下溯，取消上溯
+ */
+function onExtendNodeChange(ev) {
+    var tree = $.PT("permissionTree");
+
+    var treeNode  = ev.treeNode;
+	var curState  = ev.defaultValue;
+	var nextState = ev.newValue;
+	var optionId  = ev.optionId;
+    var shiftKey  = ev.shiftKey;
+
+    var option = tree.getOptionById(optionId);
+    var dependParent = option.dependParent;
+
+    if(curState != nextState) {
+        // 纵向依赖3选中时，直接转入目标状态2(所有子节点)
+        if("3" == dependParent && "1" == nextState) {
+            treeNode.changeExtendSelectedState(optionId, shiftKey, "2");
+            ev.returnValue = false; // 阻止原先设置为1的操作
+            return;
+        }
+
+        // 横向依赖
+        if("1" == nextState) {
+            setDependSelectedState(treeNode, optionId, nextState); // 仅此选中时同时选中依赖项
+        } 
+		else if("2" == nextState) {
+            setDependSelectedState(treeNode, optionId, nextState); // 所有子节点选中时同时选中依赖项
+        } 
+		else if("0" == nextState) {
+            setDependedSelectedState(treeNode, optionId, nextState); // 取消时同时取消被依赖项
+        }
+
+        // 纵向依赖
+        if( dependParent ) {
+            if(("2" == dependParent && "1" == nextState) || ("3" == dependParent && "0" == nextState)) {                   
+                setParentSelectedState(treeNode, optionId, nextState);  // 纵向依赖2选中或者3取消时，上溯
+            }
+			else if("2" == dependParent && "2" == nextState) {                   
+                setParentSelectedState(treeNode, optionId, "1"); // 纵向依赖2选中，上溯，父节点半勾
+            }
+			else if(("2" == dependParent && "0" == nextState) || ("3" == dependParent && "1" == nextState)) {                   
+                setChildsSelectedState(treeNode, optionId, nextState); // 纵向依赖2取消或者3选中时，下溯
+            }
+        }
+
+        // 当前节点目标状态是2(所有子节点)时，下溯
+        if("2" == nextState) {
+            setChildsSelectedState(treeNode, optionId, nextState);
+        }
+
+        // 当前节点目标状态是0或者1，则设置父节点仅此
+        if("0" == nextState || "1" == nextState) {
+            setParentSingleState(treeNode, optionId);
+        }
+
+        // 同时按下shift键时
+        if( shiftKey ) {
+            setChildsSelectedState(treeNode, optionId, nextState, true);
+        }
+    }
+}
+
+/*
+ * 设置横向依赖项选中状态
+ * 参数：	treeNode:treeNode       节点对象
+            string:optionId         当前项id
+            string:nextState        目标状态
+ */
+function setDependSelectedState(treeNode, optionId, nextState) {
+    var tree = $.PT("permissionTree");
+    var curOption = tree.getOptionById(optionId);
+
+    var dependId = curOption.dependId;
+    if( dependId ) {
+		var curState = treeNode.getAttribute(dependId);
+
+		// 目标状态与当前状态不同(如果当前已经是2，而目标是1则不执行)
+		if(nextState != curState && ("2" != curState || "1" != nextState)) {
+			treeNode.changeExtendSelectedState(dependId, null, nextState);
+		}
+    }
+}
+
+/*
+ * 设置横向被依赖项选中状态
+ * 参数：	treeNode:treeNode       节点对象
+            string:optionId         当前项id
+            string:nextState        目标状态
+ */
+function setDependedSelectedState(treeNode, optionId, nextState) {
+    var tree = $.PT("permissionTree");
+    var curOption = tree.getOptionById(optionId);
+
+    var dependId = curOption.dependId;
+    if( dependId ) {
+		var curState = treeNode.getAttribute(dependId);
+		if(nextState != curState) {
+			treeNode.changeExtendSelectedState(dependId, null, nextState);
+		}
+	}
+}
+
+/*
+ * 设置父节点依赖项选中状态
+ * 参数：	treeNode:treeNode       节点对象
+            string:optionId         当前项id
+            string:nextState        目标状态
+ */
+function setParentSelectedState(treeNode, optionId, nextState) {
+    var parentNode = treeNode.parent;
+    if( parentNode ) {
+        parentNode.changeExtendSelectedState(optionId, null, nextState);
+    }
+}
+
+/*
+ * 设置子节点依赖项选中状态
+ * 参数：	treeNode:treeNode       节点对象
+            string:optionId         当前项id
+            string:nextState        目标状态
+            boolean:shiftKey        是否按下shift键
+ */
+function setChildsSelectedState(treeNode, optionId, nextState, shiftKey) {
+    var tree = $.PT("permissionTree");
+    treeNode.children.each( function(i, child) {
+    	child.changeExtendSelectedState(optionId, shiftKey, nextState);
+    } );
+}
+
+/* 设置父节点仅此 */
+function setParentSingleState(treeNode, optionId) {
+    var parentNode = treeNode.parent;
+    if( parentNode ) {
+        var curState = parentNode.getAttribute(optionId);
+        if("2" == curState) {
+            parentNode.changeExtendSelectedState(id, null, "1");
+        }
+    }
+}

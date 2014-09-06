@@ -490,12 +490,12 @@
 
 		var onresult = function() {
 			var data = this.getNodeValue("ProgressInfo");
-			var progress = new Progress(URL_SYNC_PROGRESS,data,URL_CANCEL_SYNC);
+			var progress = new $.Progress(URL_SYNC_PROGRESS, data, URL_CANCEL_SYNC);
 
             // 完成同步后，重新加载树，打开同步节点，并显示其下用户列表
 			progress.oncomplete = function() {
 				loadInitData(treeNodeID); 
-                openNode(treeNode);                
+                treeNode.openNode();                
 			}
 			progress.start();
 		}
