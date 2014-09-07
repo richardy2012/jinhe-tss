@@ -182,16 +182,16 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
 
         switch (type) {
         case 0:
-            map.put("icon", "../framework/images/portal/portal" + "_" + disabled + ".gif");
+            map.put("icon", "images/portal" + "_" + disabled + ".gif");
             break;
         case 1:
-            map.put("icon", "../framework/images/portal/page" + "_" + disabled + ".gif");
+            map.put("icon", "images/page" + "_" + disabled + ".gif");
             break;
         case 2:
-            map.put("icon", "../framework/images/portal/section" + "_" + disabled + ".gif");
+            map.put("icon", "images/section" + "_" + disabled + ".gif");
             break;
         case 3:
-            map.put("icon", "../framework/images/portal/portlet_instance" + "_" + disabled + ".gif");
+            map.put("icon", "images/portlet_instance" + "_" + disabled + ".gif");
             break;
         default:
             break;

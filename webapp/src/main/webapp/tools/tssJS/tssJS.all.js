@@ -1308,7 +1308,7 @@
         this.type   = "xml"; // "xml or json"
         this.async  = true;
         this.params = {};
-        this.header = {};
+        this.headers = {};
         this.waiting = false;
 
         this.responseText;
@@ -1326,7 +1326,7 @@
 
         /* 设置请求头信息  */
         setHeader: function(name, value) {
-            this.header[name] = value;
+            this.headers[name] = value;
         },
 
         addParam: function(name, value) {
@@ -1502,9 +1502,10 @@
             this.xmlhttp.setRequestHeader("CONTENT-TYPE", "application/octet-stream");
 
             // 设置header里存放的参数到requestHeader中
-            $.each(this.header, function(item, itemValue) {
+            var oThis = this;
+            $.each(this.headers, function(item, itemValue) {
                 try {
-                    this.xmlhttp.setRequestHeader( item, String(itemValue) );
+                    oThis.xmlhttp.setRequestHeader( item, String(itemValue) );
                 } catch (e) { // chrome往header里设置中文会报错
                 }
             });
@@ -1707,10 +1708,10 @@
         if(info.relogin == "1") {
             /* 重新登录前，先清除token cookie，防止在门户iframe登录平台应用（如DMS），而'/tss'目录下的token依旧是过期的，
              * 这样再次点击菜单（需redirect.html跳转的菜单）时还是会要求重新登录。 */
-            Cookie.del("token", "");
-            Cookie.del("token", "/");
-            Cookie.del("token", "/" + FROMEWORK_CODE.toLowerCase());
-            Cookie.del("token", "/" + CONTEXTPATH);
+            $.Cookie.del("token", "");
+            $.Cookie.del("token", "/");
+            $.Cookie.del("token", "/" + FROMEWORK_CODE.toLowerCase());
+            $.Cookie.del("token", "/" + CONTEXTPATH);
             
             popupMessage(info.msg);
             relogin(request);
@@ -1730,10 +1731,10 @@
             if(reloginBox == null) {
                 var boxHtml = [];
                 boxHtml[boxHtml.length] = "<h1>重新登录</h1>";
-                boxHtml[boxHtml.length] = "<span> 用户名：<input type='text' id='loginName' placeholder='请输入您的账号'/> </span>";
+                boxHtml[boxHtml.length] = "<span> 账&nbsp; 号：<input type='text' id='loginName' placeholder='请输入您的账号'/> </span>";
                 boxHtml[boxHtml.length] = "<span> 密&nbsp; 码：<input type='password' id='password' placeholder='请输入您的密码' /> </span>";
                 boxHtml[boxHtml.length] = "<span class='bottonBox'>";
-                boxHtml[boxHtml.length] = "  <input type='button' class='btLogin' id='bt_login' value='确 定'/>&nbsp;&nbsp;";
+                boxHtml[boxHtml.length] = "  <input type='button' id='bt_login'  value='确 定'/>&nbsp;&nbsp;";
                 boxHtml[boxHtml.length] = "  <input type='button' id='bt_cancel' value='取 消'/>";
                 boxHtml[boxHtml.length] = "</span>";
 
@@ -1742,10 +1743,14 @@
                 reloginBox.innerHTML = boxHtml.join("");
 
                 document.body.appendChild(reloginBox);
+
+                $("#bt_cancel").click(function() {
+                    reloginBox.style.display = "none";
+                });
             }
 
-            // 显示登录框
-            reloginBox.style.display = "block";
+            $(reloginBox).show(); // 显示登录框
+
             var loginNameObj = $("#loginName")[0];
             var passwordObj  = $("#password")[0];
             loginNameObj.focus();
@@ -1759,10 +1764,10 @@
                     delete loginNameObj.identifier;
                 }
                 
-                Ajax({
+                $.ajax({
                     url: "/" + CONTEXTPATH + "getLoginInfo.in",
-                    headers:  {"appCode": FROMEWORK_CODE || 'TSS'},
-                    contents: {"loginName": value},
+                    headers:{"appCode": FROMEWORK_CODE || 'TSS'},
+                    params: {"loginName": value},
                     onexcption: function() {
                         loginNameObj.focus();
                     },
@@ -1773,12 +1778,6 @@
                 });
             }
 
-            $("#bt_cancel").click(function() {
-                reloginBox.style.display = "none";
-            });
-
-            $("#bt_login").click(doLogin);
-
             $.Event.addEvent(document, "keydown", function(eventObj) {
                 if(13 == eventObj.keyCode) { // enter
                     $.Event.cancel(event);
@@ -1787,11 +1786,13 @@
                     setTimeout(doLogin, 10);
                 }
             });
+
+            $("#bt_login").click( function() { doLogin(); } );
             
             var doLogin = function() {
-                var loginName = loginNameObj.value;
-                var password  = passwordObj.value;
                 var identifier = loginNameObj.identifier;
+                var loginName  = loginNameObj.value;
+                var password   = passwordObj.value;
                 
                 if( "" == loginName ) {
                     popupMessage("请输入账号");
@@ -1812,8 +1813,7 @@
                 request.setHeader("password",  password);
                 request.setHeader("identifier", identifier);
                 request.send();
-
-                reloginBox.style.display = "none";
+                $(reloginBox).hide();
             }
         }
     }   
@@ -4345,6 +4345,7 @@
         var request = new $.HttpRequest();
         request.url = serviceUrl + "/" + page;
         request.params = requestParam || [];
+        request.waiting = true;
 
         request.onresult = function() {
             var gridBox = $1(gridName);
@@ -4418,7 +4419,9 @@
 
     $.T = function(id, data) {
         var tree = TreeCache[id];
-        if( tree == null && data ) {
+        if( tree == null && data == null ) return tree;
+
+        if( tree == null || data ) {
             tree = new $.Tree($1(id), data);
             TreeCache[id] = tree;   
         }
@@ -4618,6 +4621,7 @@
                 this.parent.children.push(this);
             } else {
                 this.level = 1;
+                this.opened = true; // 默认打开第一层
             }               
 
             this.toHTMLTree = function() {

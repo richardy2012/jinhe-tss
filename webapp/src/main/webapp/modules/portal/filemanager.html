@@ -81,7 +81,7 @@
                 var tree = $.T("tree", dataXmlNode);
 
                 tree.onTreeNodeDoubleClick = function(ev) {
-                    var treeNode = ev.treeNode;
+                    var treeNode = getActiveTreeNode();
                     var id = treeNode.id;
                     var name = treeNode.name;
                     var isFolder = treeNode.getAttribute("isFolder");

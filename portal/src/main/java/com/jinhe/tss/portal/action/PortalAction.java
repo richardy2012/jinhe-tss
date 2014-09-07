@@ -230,7 +230,7 @@ public class PortalAction extends FMSupportAction {
             public Map<String, Object> translate(Map<String, Object> attributes) {
                 if(defalutThemeId.equals(attributes.get("id"))) {
                     attributes.put("isDefault", "1");
-                    attributes.put("icon", "../framework/images/portal/default_theme.gif"); // 默认主题
+                    attributes.put("icon", "images/default_theme.gif"); // 默认主题
                 }
                 return attributes;
             }

@@ -1,7 +1,7 @@
 
 /*********************** 系统配置 开始 **********************************/
  var
-	IS_TEST = true,
+	IS_TEST = false,
 
 	FROMEWORK_CODE = "TSS",    /* 当前框架名 */
 	APP_CODE       = "TSS",    /* 当前应用名 */
@@ -69,6 +69,10 @@ function closePalette() {
 	$(".panel .header>td:nth-child(2)").hide();
 	$(".panel .footer>td:nth-child(2)").hide();
 }
+
+window.onresize = function() {
+	$("#palette #tree").css("height", (document.body.offsetHeight - 45) + "px");
+}
  
 /* 事件绑定初始化 */
 function initEvents() {
@@ -76,6 +80,8 @@ function initEvents() {
 	var refreshTreeBT = $(".refreshTreeBT")[0];
 	refreshTreeBT.title = "刷新";
 	$.Event.addEvent(refreshTreeBT, "click", function() { loadInitData(); });
+
+	$("#palette #tree").css("height", (document.body.offsetHeight - 45) + "px");
 
 	/* 点击左栏控制按钮 */
 	if($1("paletteOpen")) {
@@ -276,7 +282,7 @@ function myAlert(info, detail) {
 		boxHtml[boxHtml.length] = "      </td>";
 		boxHtml[boxHtml.length] = "    </tr>";
 		boxHtml[boxHtml.length] = "    <tr>";
-		boxHtml[boxHtml.length] = "      <td align='center' height='30' class='t'>";
+		boxHtml[boxHtml.length] = "      <td align='center' height='30'>";
 		boxHtml[boxHtml.length] = "    		<input type='button' id='bt_ok' value='确 定' class='btStrong' onclick='closeMessage()'>";
 		boxHtml[boxHtml.length] = "      </td>";
 		boxHtml[boxHtml.length] = "    </tr>";
@@ -356,7 +362,7 @@ var Reminder = function() {
 	this.items = {};   // 提醒项
 	this.count = 0;
 
-	this.add = function() {
+	this.add = function(id) {
 		if( null == this.items[id] ) {
 			this.items[id] = true;
 			this.count ++;

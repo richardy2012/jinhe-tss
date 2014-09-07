@@ -146,7 +146,7 @@ public class ResourceType extends OperateInfo implements IEntity, ITreeNode, IXF
 		map.put("resourceTypeId", resourceTypeId);
 		map.put("applicationId", applicationId);
 		
-		map.put("icon", "../framework/images/icon_r02.gif");
+		map.put("icon", "images/resource_type.gif");
 		super.putOperateInfo2Map(map);
 		return map;
 	}

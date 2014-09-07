@@ -39,10 +39,14 @@ function init() {
 			
 			if(isRole2Resource) {
 				// 设置用户、用户组权限，自动隐藏应用系统和资源类型字段
-				var hideCells = xmlData.querySelectorAll("layout>TR>TD[binding='applicationId' or binding='resourceType']");
-				$.each(hideCells, function(i, cell){
-					cell.setAttribute("style", "display:none");
-				});
+                $("layout>TR>TD", xmlData).each(function(i, cell){
+                    if($("[binding]", cell).length == 0) return;
+
+                    var binding = $("[binding]", cell)[0].getAttribute("binding");
+                    if( binding == 'applicationId' || binding == 'resourceType') {
+                        cell.setAttribute("style", "display:none");
+                    }
+                });
 			}
 
 			var xform = $.F("permissionForm", xmlData);		 

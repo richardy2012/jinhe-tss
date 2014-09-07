@@ -208,10 +208,10 @@ public class HTMLGenerator {
      */
     public String toHTML() {
         StringBuffer sb = new StringBuffer();
-        sb.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n");
-        sb.append("<HTML xmlns:TSS>\n");
+        sb.append("<!DOCTYPE HTML>\n");
+        sb.append("<HTML xmlns:TSS xmlns:WorkSpace xmlns:Tree xmlns:Grid xmlns:Form>\n");
         sb.append("<HEAD>\n");
-        sb.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=gb2312\">\n");
+        sb.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
         sb.append("<TITLE>").append(title).append("</TITLE>\n");
         sb.append(formatKeywords());
         sb.append(formatStyleLinks());
@@ -244,8 +244,12 @@ public class HTMLGenerator {
      */
     private StringBuffer formatStyleLinks() {
         StringBuffer sb = new StringBuffer();
+        // 默认挂载的css
+        String commonCSSPath = Environment.getContextPath() + "/tools/tssJS/css/";
+        sb.append("<link href=\"" + commonCSSPath + "tss.all.css rel=\"stylesheet\">\n");
+        
         for ( String filePath : styleFiles ) {
-            sb.append("<link href=\"" + (portalResourseDir + filePath) + "\" rel=\"stylesheet\" type=\"text/css\">\n");
+            sb.append("<link href=\"" + (portalResourseDir + filePath) + "\" rel=\"stylesheet\">\n");
         }
         return sb;
     }
@@ -256,9 +260,8 @@ public class HTMLGenerator {
     private StringBuffer formatScriptLinks() {
         StringBuffer sb = new StringBuffer();
         // 默认挂载的js
-        String commonJSPath = Environment.getContextPath() + "/framework/";
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "core.js\"></script>\n");
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "ajax.js\"></script>\n");
+        String commonJSPath = Environment.getContextPath() + "/tools/tssJS/";
+        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "tssJS.all.js\"></script>\n");
         
         for ( String filePath : scriptFiles ) {
             sb.append("<script language=\"javascript\" src=\"" + (portalResourseDir + filePath) + "\"></script>\n");
@@ -404,16 +407,16 @@ public class HTMLGenerator {
                 HTMLGenerator.this.keyword.add(node.getName());
                 
                 // 创建页面元素（包括版面和portletInstance）上下文关系的初始化代码， 定义门户结构关系
-                HTMLGenerator.this.initCodes.add(appentElementType(id, elementType)); 
-                HTMLGenerator.this.initCodes.add(appentElementParent(id, node.getParent().getId())); 
+                HTMLGenerator.this.initCodes.add(appendElementType(id, elementType)); 
+                HTMLGenerator.this.initCodes.add(appendElementParent(id, node.getParent().getId())); 
             }
             else {
                 // 创建页面上版面/Portlet实例对象上下文关系的修正代码
-                HTMLGenerator.this.initCodes.add(appentElementType(id, elementType));  
-                HTMLGenerator.this.initCodes.add(appentElementParent(id, node.getParent().getId())); 
+                HTMLGenerator.this.initCodes.add(appendElementType(id, elementType));  
+                HTMLGenerator.this.initCodes.add(appendElementParent(id, node.getParent().getId())); 
                 
-                HTMLGenerator.this.initCodes.add(appentElementIndex(id, targetIndex));
-                HTMLGenerator.this.initCodes.add(appentElementCIndex(id, 0));
+                HTMLGenerator.this.initCodes.add(appendElementIndex(id, targetIndex));
+                HTMLGenerator.this.initCodes.add(appendElementCIndex(id, 0));
                 HTMLGenerator.this.initCodes.add("$$('" + targetId + "').subset[" + targetIndex + "] = [$$('" + id + "')];\n");
             }
             
@@ -435,16 +438,16 @@ public class HTMLGenerator {
         }
  
         // 以下这些信息输出到html里为了万一页面出错时检查用
-        private String appentElementType( Object id, String type ) { // 定义门户结构的类型
+        private String appendElementType( Object id, String type ) { // 定义门户结构的类型
         	return "$$('" + id + "').type = '" + type + "';\n"; 
         }
-        private String appentElementParent( Object id, Long parentId ) { // 定义门户结构父子关系
+        private String appendElementParent( Object id, Long parentId ) { // 定义门户结构父子关系
         	return "$$('" + id + "').parent = $$('" + parentId + "');\n";  
         }
-        private String appentElementIndex( Object id, int index ) {
+        private String appendElementIndex( Object id, int index ) {
         	return "$$('" + id + "').index = " + index + ";\n";
         }
-        private String appentElementCIndex( Object id, int cIndex ) {
+        private String appendElementCIndex( Object id, int cIndex ) {
         	return "$$('" + id + "').cIndex = " + cIndex + ";\n";
         }
  
@@ -458,7 +461,7 @@ public class HTMLGenerator {
             HTMLGenerator.this.scriptCodes.add(node.getScriptCode());
             HTMLGenerator.this.styleCodes.add(node.getStyleCode());
             
-            HTMLGenerator.this.initCodes.add(appentElementType(node.getId(), "Page"));  
+            HTMLGenerator.this.initCodes.add(appendElementType(node.getId(), "Page"));  
             HTMLGenerator.this.initCodes.add("$$('" + node.getId() + "').portalId = " + node.getPortalId() + ";\n");
             
             this.htmlFragments.add("<body id=\"" + node.getId() + "\">" + new Element(node.getDecoratorNode()) + "</body>");
@@ -475,8 +478,8 @@ public class HTMLGenerator {
             HTMLGenerator.this.styleCodes.add (MacrocodeContainerFactory.newInstance(node.getStyle(),  node).compile());
             
             // 创建页面修饰器上下文关系的初始化代码
-            HTMLGenerator.this.initCodes.add(appentElementType("D" + parentId, "Decorator"));  
-            HTMLGenerator.this.initCodes.add(appentElementParent("D" + parentId, parentId)); 
+            HTMLGenerator.this.initCodes.add(appendElementType("D" + parentId, "Decorator"));  
+            HTMLGenerator.this.initCodes.add(appendElementParent("D" + parentId, parentId)); 
             HTMLGenerator.this.initCodes.add("$$('"  + parentId + "').decorator = $$('D" + parentId + "');\n");
             HTMLGenerator.this.initCodes.add("$$('D" + parentId + "').decoratorId = " + id + ";\n");
             
@@ -520,8 +523,8 @@ public class HTMLGenerator {
             HTMLGenerator.this.styleCodes.add (MacrocodeContainerFactory.newInstance(node.getStyle(),  node).compile());
             
             // 创建页面Portlet上下文关系的初始化代码
-            HTMLGenerator.this.initCodes.add(appentElementType("P" + parentId, "Portlet"));  
-            HTMLGenerator.this.initCodes.add(appentElementParent("P" + parentId, parentId)); 
+            HTMLGenerator.this.initCodes.add(appendElementType("P" + parentId, "Portlet"));  
+            HTMLGenerator.this.initCodes.add(appendElementParent("P" + parentId, parentId)); 
             HTMLGenerator.this.initCodes.add("$$('"  + parentId + "').portlet = $$('P" + parentId + "');\n");
             HTMLGenerator.this.initCodes.add("$$('P" + parentId + "').portletId = " + id + ";\n");
             
@@ -546,8 +549,8 @@ public class HTMLGenerator {
             HTMLGenerator.this.styleCodes.add (MacrocodeContainerFactory.newInstance(node.getStyle(),  node).compile());
             
             // 创建页面布局器上下文关系的初始化代码
-            HTMLGenerator.this.initCodes.add(appentElementType("L" + parentId, "Layout"));  
-            HTMLGenerator.this.initCodes.add(appentElementParent("L" + parentId, parentId)); 
+            HTMLGenerator.this.initCodes.add(appendElementType("L" + parentId, "Layout"));  
+            HTMLGenerator.this.initCodes.add(appendElementParent("L" + parentId, parentId)); 
             HTMLGenerator.this.initCodes.add("$$('"  + parentId + "').layout = $$('L" + parentId + "');\n");
             HTMLGenerator.this.initCodes.add("$$('L" + parentId + "').layoutId = " + id + ";\n");
             
@@ -563,8 +566,8 @@ public class HTMLGenerator {
             for (int i = 0; i < childIds.size(); i++) {
                 List<?> items = childIds.get(i);
                 for (int j = 0; j < items.size(); j++) {
-                    HTMLGenerator.this.initCodes.add(appentElementIndex(items.get(j), i));
-                    HTMLGenerator.this.initCodes.add(appentElementCIndex(items.get(j), j));
+                    HTMLGenerator.this.initCodes.add(appendElementIndex(items.get(j), i));
+                    HTMLGenerator.this.initCodes.add(appendElementCIndex(items.get(j), j));
                 }
             }
             

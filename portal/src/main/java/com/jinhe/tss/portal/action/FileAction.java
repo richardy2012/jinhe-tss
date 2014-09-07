@@ -72,7 +72,7 @@ public class FileAction extends BaseActionSupport {
             if(isFolder) {
                 sb.append("\" isFolder=\"").append("1");
             }
-            sb.append("\" icon=\"../framework/images/" + (isFolder ? "folder.gif" : "file.gif") + "\"/>");
+            sb.append("\" icon=\"images/" + (isFolder ? "folder.gif" : "file.gif") + "\"/>");
         }
         sb.append("</actionSet>");      
         

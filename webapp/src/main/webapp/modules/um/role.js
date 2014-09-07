@@ -152,7 +152,7 @@
 			var tree = $.T("tree", roleTreeNode);
 
             tree.onTreeNodeDoubleClick = function(ev) {
-				var treeNode = ev.treeNode;
+				var treeNode = getActiveTreeNode();
 				getTreeOperation(treeNode, function(_operation) {            
 					if( !isRootNode() ) {
 						var canEdit = checkOperation("4", _operation);

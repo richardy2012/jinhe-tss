@@ -175,7 +175,7 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
         map.putAll(attributes);
         map.put("channel.id", channel.getId());
         
-        map.put("icon", "../framework/images/cms/article_0.gif");
+        map.put("icon", "images/article_0.gif");
         
         return map;
     }

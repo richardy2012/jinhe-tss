@@ -128,10 +128,10 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
         map.put("disabled", disabled);
         
         if(isGroup) {
-        	map.put("icon","../framework/images/folder.gif");
+        	map.put("icon","images/folder.gif");
         } else {
         	map.put("code", this.getCode());
-            map.put("icon", "../framework/images/portal/" 
+            map.put("icon", "images/" 
             		+ (ParamConstants.TRUE.equals(isDefault) ? "default_" : "") + getComponentType() 
             		+ "_" + disabled + ".gif");
         }

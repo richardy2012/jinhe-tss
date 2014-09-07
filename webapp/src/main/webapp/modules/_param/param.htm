@@ -286,6 +286,7 @@
 
 				attachReminder(treeID, form); // 离开提醒
 	 
+                $("#page1BtSave")[0].disabled = !editable;
 				$("#page1BtSave").click( function() {
 					saveParam(treeID, parentID, type);
 				} );

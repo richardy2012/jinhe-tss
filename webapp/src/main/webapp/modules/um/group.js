@@ -275,7 +275,7 @@
 
 			tree.onTreeNodeActived = function(ev){ onTreeNodeActived(ev); }
             tree.onTreeNodeDoubleClick = function(ev){
-				var treeNode = ev.treeNode;
+				var treeNode = getActiveTreeNode();
 				getTreeOperation(treeNode, function(_operation) {
 					if(treeNode.id != -2) { // 防止浏览到Admin和匿名用户
 						showUserList();

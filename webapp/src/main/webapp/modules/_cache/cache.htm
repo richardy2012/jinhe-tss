@@ -17,8 +17,6 @@
     border:1px solid #416371;
     width: 600px;    
     height: 320px;  
-    margin-left: 200px;
-    margin-top: 200px;
     padding: 10px;
 }
 
@@ -192,11 +190,11 @@
 				var hitRateData = this.getNodeValue(XML_HIT_RATE);
 				$("#poolHitRate").html("『 " + treeNode.name + "-命中率：" + hitRateData + " 』")
 					.click( function() {
-						var formObj = $1("cacheStrategyDiv");
-				        Element.show(formObj);
+						var formObj = $("#cacheStrategyDiv");
+				        formObj.css("display", "block").center(600, 320);
 
 				        $("#cacheStrategyClose").click( function() {
-				            $(formObj).hide();
+				            formObj.hide();
 				        });
 					});
 			}
