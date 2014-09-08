@@ -925,6 +925,7 @@ function popupGrid(url, nodeName, title, params) {
 	    '</div>';
 	document.body.appendChild(el);
 	$(el).center(600, 400).css("width", "600px").css("height", "auto");
+	$("#" + boxName, el).css("minHeight", "200px").css("maxHeight", "400px");
 
 	$.ajax({
 		url: url,

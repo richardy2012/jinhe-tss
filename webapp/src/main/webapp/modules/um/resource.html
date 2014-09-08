@@ -39,6 +39,7 @@
         function init() {
             initPaletteResize();
             initMenus();
+            initEvents();
 
             loadInitData();
         }
@@ -176,7 +177,7 @@
             var flag = false;
             switch (getNodeType()) {
             case "1":
-                if (getApplicationType() == "2" && getTreeNodeId() != "-2") {
+                if (getApplicationType() == "-2" && getTreeNodeId() != "-2") {
                     flag = true;
                 }
                 break;
@@ -240,7 +241,7 @@
                 </div>
             </td>
             <td class="groove">
-                <Form:Box id="page1Form"></Form:Box>
+                <Form:Box id="page1Form" style="background-color:#fff;padding:3px;"></Form:Box>
             </td>
             <td/>
         </tr>

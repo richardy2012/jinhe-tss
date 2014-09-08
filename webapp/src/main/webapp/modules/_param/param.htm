@@ -389,7 +389,7 @@
                 url : URL_COPY_PARAM + id + "/" + target.id,
                 onresult : function() { 
                     var newNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
-                    tree.addTreeNode(newNode, target)
+                    appendTreeNode(target.id, newNode);
                 }
             });
         });

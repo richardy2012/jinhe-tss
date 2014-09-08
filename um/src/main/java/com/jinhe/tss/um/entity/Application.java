@@ -107,6 +107,10 @@ public class Application extends OperateInfo implements ITreeNode, IXForm {
 	}
  
 	public TreeAttributesMap getAttributes() {
+		Object id = this.id;
+		if(UMConstants.PLATFORM_SYSTEM_APP.equals(applicationType)) {
+			id = "tssApp" + this.id;
+		}
 		TreeAttributesMap map = new TreeAttributesMap(id, name);
 		
 		map.put("code", applicationId);

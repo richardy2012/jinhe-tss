@@ -309,7 +309,8 @@
 		}
  
 		$.ajax({
-			url : URL_INIT_PASSWORD + treeNode.id + "/0/" + password
+			url : URL_INIT_PASSWORD + treeNode.id + "/0/" + password, 
+            waiting: true
 		});	     
     }
  
@@ -743,7 +744,7 @@
         var treeNode = getActiveTreeNode();
         var title = "查看【" + treeNode.name +"】组下用户的角色信息";
         var url = URL_SEARCH_ROLE + treeNode.id;
-        popupGrid(url, XML_SEARCH_ROLE);
+        popupGrid(url, XML_SEARCH_ROLE, title);
     }
 	
 	/* 综合查询(用户转授查询) */
@@ -751,7 +752,7 @@
         var treeNode = getActiveTreeNode();
         var title = "查看组【" + treeNode.name +"】下用户的转授角色信息";
         var url = URL_SEARCH_SUBAUTH + treeNode.id;
-        popupGrid(url, XML_SEARCH_SUBAUTH);
+        popupGrid(url, XML_SEARCH_SUBAUTH, title);
     }
  
     window.onload = init;

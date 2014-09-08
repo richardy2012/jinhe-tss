@@ -264,8 +264,6 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
     public TreeAttributesMap getAttributes() {
         TreeAttributesMap map = new TreeAttributesMap(id, userName);
         map.put("groupId", groupId);
-		
-		super.putOperateInfo2Map(map);
         return map;
     }
 

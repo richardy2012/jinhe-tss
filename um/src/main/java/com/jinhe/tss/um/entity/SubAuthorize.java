@@ -113,7 +113,6 @@ public class SubAuthorize extends OperateInfo implements IEntity, ITreeNode, IXF
 			map.put("icon", UMConstants.STOP_STRATEGY_TREENODE_ICON);
 		}
 		
-		super.putOperateInfo2Map(map);
 		return map;
 	}
  

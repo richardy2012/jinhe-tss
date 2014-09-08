@@ -889,11 +889,12 @@
             },
 
             /* 取消事件 */
-            cancel: function(event) { 
-                if (event.preventDefault) {
-                    event.preventDefault();
+            cancel: function(ev) { 
+                ev = ev || event;
+                if (ev.preventDefault) {
+                    ev.preventDefault();
                 } else {
-                    event.returnValue = false;
+                    ev.returnValue = false;
                 }
             },
 
@@ -3735,7 +3736,7 @@
         }
     },
 
-    bindAdjustTHHandler = function(table) {
+    bindAdjustTHHandler = function(table) { 
 
         $("thead tr td", table).each(function(i, th) {
             // 双击隐藏列
@@ -3774,7 +3775,7 @@
         });
     },
 
-    bindSortHandler = function(table) {
+    bindSortHandler = function(table) { 
         var rows = [];
         var tbody = $("tbody", table)[0];
         $("tr", tbody).each( function(i, row) {
@@ -3887,7 +3888,8 @@
                 var columnsMap = oThis.columnsMap;
                 for(var name in columnsMap) {
                     var value  = row.getAttribute(name) || "";
-                    tbody.push('<td name="' + name + '" value="' + value + '">' + value + '</td>');
+                    var _class = columnsMap[name].getAttribute("display")  == "none" ? ' class="hidden"' : '';
+                    tbody.push('<td name="' + name + '" value="' + value + '" ' + _class + '>' + value + '</td>');
                 }
 
                 tbody.push("</tr>");
@@ -3922,7 +3924,7 @@
         
         this.windowHeight = pointHeight;
         this.pageSize = Math.floor(this.windowHeight / cellHeight);
-        
+  
         this.load(data);    
 
         // 添加Grid事件处理
@@ -3940,7 +3942,7 @@
 
             this.template = new XMLTempalte(data);  
             var gridTableHtml = this.template.toHTML(startNum); // 解析成Html
-            
+          
             if(append) {
                 var tempParent = $.createElement("div");
                 $(tempParent).html(gridTableHtml);
@@ -3954,13 +3956,13 @@
                 $(this.gridBox).html(gridTableHtml);
                 this.tbody = $("tbody", this.gridBox)[0];
             }
-            
+          
             var table  = $("table", this.gridBox)[0];
             this.totalRowsNum = this.tbody.rows.length;
             for(var i = startNum; i < this.totalRowsNum; i++) {
                 this.processDataRow(this.tbody.rows[i]); // 表格行TR
             }
-            
+           
             bindAdjustTHHandler(table);
             bindSortHandler(table);
         }, 
@@ -4003,15 +4005,12 @@
                 return;
             } 
 
-            if(column.getAttribute("display") == "none") {
-                $(cell).addClass("hidden");
-            } 
-            else if(column.getAttribute("highlight") == "true") {
+            if(column.getAttribute("highlight") == "true") {
                 $(cell).addClass("highlightCol");
             }
             $(cell).css("text-align", getAlign(column));
 
-            var value = cell.getAttribute("value") || cell.innerText;
+            var value = cell.getAttribute("value") ;
             var mode  = column.getAttribute("mode") || "string";
             switch( mode ) {
                 case "string":
@@ -4438,8 +4437,8 @@
         _TREE_TYPE_SINGLE = "single",
         _TREE_TYPE_MULTI  = "multi",
 
-        _TREE_NODE_MOVEABLE = "moveable",    // 是否可以移动树节点，默认false
-        _TREE_NODE_CHECK_SELF = "justSelf",  // 选中节点时只改变自己的选择状态，与父、子节点无关
+        _TREE_NODE_MOVEABLE = "moveable",      // 是否可以移动树节点，默认false
+        _TREE_NODE_CHECK_SELF = "selectSelf",  // 选中节点时只改变自己的选择状态，与父、子节点无关
 
     Tree = function(el, data) {
         /*  自定义事件 */

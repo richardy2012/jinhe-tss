@@ -102,7 +102,7 @@ public class ReleaseConfig implements IEntity, ITreeNode, IXForm {
     
     public TreeAttributesMap getAttributes() {
         TreeAttributesMap map = new TreeAttributesMap(id, name);
-        map.put("icon", "../framework/images/portal/url.gif");
+        map.put("icon", "images/url.gif");
         return map;
     }
 

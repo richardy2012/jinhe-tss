@@ -48,9 +48,9 @@
         	doLogin(loginNameObj, passwordObj);
         };
  
-        $.Event.addEvent(document, "keydown", function(eventObj) {
-            if(13 == eventObj.keyCode) { // enter
-                $.Event.cancel();
+        $.Event.addEvent(document, "keydown", function(ev) {
+            if(13 == ev.keyCode) { // enter
+                $.Event.cancel(ev);
                 $1("bt_login").focus();
 
                 setTimeout(function() {
