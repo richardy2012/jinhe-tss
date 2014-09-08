@@ -436,7 +436,7 @@
 			$1("page2BtAdd").onclick = function() {
 				addTreeNode(page2Tree, page2Tree2);
 			}
-			$1("page2BtAdd").onclick = function() {
+			$1("page2BtDel").onclick = function() {
 				removeTreeNode($.T("page2Tree2")); // 删除page2里tree节点
 			}
 			$1("page4BtAdd").onclick = function() {

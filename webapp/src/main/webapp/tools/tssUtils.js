@@ -614,6 +614,8 @@ function sortTreeNode(url, ev) {
 
 // 移动树节点
 function moveTreeNode(tree, id, targetId, url) {
+	if(id == targetId) return;
+	
 	$.ajax({
 		url : (url || URL_MOVE_NODE) + id + "/" + targetId,
 		onsuccess : function() {  				

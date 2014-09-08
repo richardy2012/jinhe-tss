@@ -235,8 +235,6 @@ public class RoleAction extends BaseActionSupport {
 		map.put("roleId", roleId);
 		map.put("isRole2Resource", isRole2Resource);
 		map.put("permissionRank", UMConstants.LOWER_PERMISSION);
-		map.put("applicationId", UMConstants.TSS_APPLICATION_ID);
-		map.put("resourceType", UMConstants.GROUP_RESOURCE_TYPE_ID);
 		
 		XFormEncoder xFormEncoder = new XFormEncoder(UMConstants.SERACH_PERMISSION_XFORM, map);
 		String[] appEditor = EasyUtils.generateComboedit(apps, "applicationId", "name", "|");

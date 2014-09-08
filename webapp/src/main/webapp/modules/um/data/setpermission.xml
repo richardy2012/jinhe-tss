@@ -58,7 +58,13 @@
 				<treeNode id="r1.0" name="资源1.0" pstate="2">
 					<treeNode id="r1.0.1" name="资源1.0.1--长长长长长长长长长长长长长长长长长长长长长长长" pstate="2"/>
 					<treeNode id="r1.0.2" name="资源1.0.2" pstate="2"/>
-					<treeNode id="r1.0.3" name="资源1.0.3" pstate="2"/>
+					<treeNode id="r1.0.3" name="资源1.0.3" pstate="2">
+						<treeNode id="r1.0.3.1" name="资源1.0.3.1" pstate="2"/>
+						<treeNode id="r1.0.3.2" name="资源1.0.3.2--长长长长长长长长长长长长长长长长长长长长长" pstate="2"/>
+						<treeNode id="r1.0.3.3" name="资源1.0.3.3" pstate="2">
+							<treeNode id="r1.0.3.3.1" name="资源1.0.3.3.1--长长长长长长长长长长长长长长长长长长长长长" pstate="2"/>
+						</treeNode>
+					</treeNode>
 				</treeNode>
 				<treeNode id="r1.1" name="资源1.1" pstate="2"/>
 				<treeNode id="r1.11" name="资源1.11" pstate="2"/>

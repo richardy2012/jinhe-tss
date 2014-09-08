@@ -280,13 +280,12 @@
 			var treeNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
 			appendTreeNode("_root", treeNode);
 
-			$("channelFormDiv").hide();
+			$("#channelFormDiv").hide();
         }
         request.onsuccess = function() { 
-			var name = xform.getData("name");
-			modifyTreeNode(treeID, "name", name);
+			modifyTreeNode(treeID, "name", xform.getData("name"));
 
-			$("channelFormDiv").hide();
+			$("#channelFormDiv").hide();
         }
         request.send();
     }
@@ -327,8 +326,8 @@
         request.url = URL_SAVE_CHANNEL;
 
         var channelInfoNode = $.cache.XmlDatas[treeID];
-        var channelInfoDataNode = channelInfoNode.querySelector("data");
-        p.setXFormContent(channelInfoDataNode);
+        var dataNode = channelInfoNode.querySelector("data");
+        request.setFormContent(dataNode);
 
         syncButton([$1("channelFormSave")], request);
 
@@ -336,13 +335,13 @@
 			var treeNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
 			appendTreeNode(parentID, treeNode);
 
-			$("channelFormDiv").hide();
+			$("#channelFormDiv").hide();
         }
         request.onsuccess = function() { // 更新树节点名称
 			var name = xform.getData("name");
 			modifyTreeNode(treeID, "name", name);
 
-			$("channelFormDiv").hide();
+			$("#channelFormDiv").hide();
         }
         request.send();
     }
@@ -358,7 +357,7 @@
             if(target.id == "_root") {
                 return alert("栏目不能移动到根节点下。");
             }
-            moveTreeNode(tree, id, target.id, URL_MOVE_PARAM_TO);
+            moveTreeNode(tree, id, target.id, URL_MOVE_NODE);
         });
     }
 
@@ -484,7 +483,7 @@
             label:"编辑",
             callback:editArticleInfo,
             icon:ICON + "icon_edit.gif",
-            visible:function() { return getArticleAttribute("status") < 3 && getGridOperation("5");}
+            visible:function() { return getGridOperation("5");}
         }
         var item2 = {
             label:"删除",

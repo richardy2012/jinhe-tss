@@ -69,7 +69,8 @@ function getResourceTypes(applicationId) {
 				var sEl = $1("resourceType");
 				sEl.options.length = 0; // 先清空
 				for(var i = 0; i < result.length; i++) {
-					sEl.options[i] = new Option(result[i].name, result[i].id);
+                    var item = result[i];
+					sEl.options[i] = new Option(item.name||item[1], item.id||item[0]);
 				}
 
 				// 设置为默认选中第一个
@@ -168,7 +169,9 @@ window.onload = init;
 
     $.PT = function(id, data) {
         var tree = TreeCache[id];
-        if( tree == null && data ) {
+        if( tree == null && data == null ) return null;
+
+        if( tree == null || data ) {
             tree = new $.PTree($1(id), data);
             TreeCache[id] = tree;   
         }

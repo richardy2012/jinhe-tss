@@ -4899,11 +4899,12 @@
          *          to      目标节点TreeNode对象
          */
         moveTreeNode: function(from, to) {
-            var temp = to;
-            while(temp == to.parent) {
-                if(temp == from) {
+            var parent = to;
+            while(parent) {
+                if(parent == from) {
                     return alert("不能向自己的内部节点移动。"); // 不能移动到子节点里
                 }
+                parent = to.parent;
             }
 
             this.removeTreeNode(from); // 将from从其原parent.children里剔除
