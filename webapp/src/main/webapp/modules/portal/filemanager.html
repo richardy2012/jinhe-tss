@@ -63,7 +63,7 @@
     }
 
     function loadFileTree(contextPath, filter) {
-        var params = {};
+        var params = {"code": code, "type": type};
         if (contextPath) {
             params.contextPath = contextPath;
         }

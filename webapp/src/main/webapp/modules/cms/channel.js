@@ -454,7 +454,7 @@
 			url : URL_PUBLISH_PROGRESS + channelId + "/" + category,
 			onresult : function() { 			
 				var data = this.getNodeValue("ProgressInfo");
-				var progress = new Progress(URL_SYNC_PROGRESS, data, URL_CONCEAL_PROGRESS);
+				var progress = new $.Progress(URL_SYNC_PROGRESS, data, URL_CONCEAL_PROGRESS);
 				progress.oncomplete = function() { 
 					showArticleList(channelId); // 发布完成：刷新grid
 				}
@@ -469,7 +469,7 @@
 			url : URL_CREATE_INDEX + siteId + "/" + increment,
 			onresult : function() { 			
 				var data = this.getNodeValue("ProgressInfo");
-				var progress = new Progress(URL_SYNC_PROGRESS, data, URL_CONCEAL_PROGRESS);
+				var progress = new $.Progress(URL_SYNC_PROGRESS, data, URL_CONCEAL_PROGRESS);
 				progress.oncomplete = function() { 
 					alert("索引创建完成。"); 
 				}

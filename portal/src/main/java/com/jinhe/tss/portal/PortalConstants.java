@@ -16,7 +16,7 @@ public interface PortalConstants {
     /**
      * 资源文件目录
      */
-    public static final String MODEL_DIR        = "portal/model/";
+    public static final String MODEL_DIR        = "modules/portal/model/";
     public static final String PORTAL_MODEL_DIR = "/" + MODEL_DIR + "portal";
     
     /** 项目标识以及资源类型 */

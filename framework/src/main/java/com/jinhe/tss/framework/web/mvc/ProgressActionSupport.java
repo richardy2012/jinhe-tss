@@ -29,8 +29,10 @@ public class ProgressActionSupport extends BaseActionSupport {
 	@RequestMapping(value = "/progress/{code}", method = RequestMethod.DELETE)
 	public void doConceal(HttpServletResponse response, @PathVariable("code") String code) {
 		Progress progress = (Progress) ProgressPool.getSchedule(code);
-		progress.setIsConceal(true); // 设置中止标志
-		printScheduleMessage(code);
+		if(progress != null) {
+			progress.setIsConceal(true); // 设置中止标志
+			printScheduleMessage(code);
+		}
 	}
 
 	protected void printScheduleMessage(String code) {
