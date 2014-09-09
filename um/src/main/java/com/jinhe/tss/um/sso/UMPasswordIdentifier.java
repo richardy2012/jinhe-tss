@@ -21,9 +21,9 @@ import com.jinhe.tss.framework.sso.IPWDOperator;
 import com.jinhe.tss.framework.sso.PasswordPassport;
 import com.jinhe.tss.framework.sso.appserver.AppServer;
 import com.jinhe.tss.framework.sso.identifier.BaseUserIdentifier;
-import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.util.EasyUtils;
+import com.jinhe.tss.util.InfoEncoder;
 
 /**
  * <p>
@@ -37,6 +37,11 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
     
     ILoginService service = (ILoginService) Global.getContext().getBean("LoginService");
     
+    /** 对用户密码进行加密 */
+    public static String encodePassword(String loginName, String password) {
+    	return InfoEncoder.string2MD5(loginName + "_" + password);
+    }
+    
     protected IOperator validate() throws BusinessException {
         PasswordPassport passport = new PasswordPassport();
         IPWDOperator operator = null;
@@ -46,7 +51,7 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
         	throw new BusinessException(e.getMessage(), false);
         }
         
-        String password = User.encodePassword(passport.getLoginName(), passport.getPassword());
+        String password = encodePassword(passport.getLoginName(), passport.getPassword());
         if (password.equals(operator.getPassword())) {
             return operator;
         } 

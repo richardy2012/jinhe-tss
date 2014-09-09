@@ -136,7 +136,6 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
             		+ "_" + disabled + ".gif");
         }
         
-        super.putOperateInfo2Map(map);
         return map;
     }
 

@@ -224,7 +224,7 @@
         url += "&folderNames=" + folderNames.join(",");
 
         var frameName = createExportFrame();
-        window.frames[frameName].location.href = url;
+   		$1(frameName).setAttribute("src", url);
     }
 
     /* 新建文件夹  */
@@ -248,7 +248,7 @@
 
     /* 过滤文件  */
     function filterFiles() {
-        var filter = $1("filterBox").value;
+        var filter = $1("fileFilter").value;
         var contextPath = $1("contextPath").value;
         loadFileTree(contextPath, filter);
     }
@@ -284,7 +284,7 @@
         </div>
         <div class="bts">
             <input type="button" value="上传附件" class="btStrongL" onclick="upload()"/>
-            <input type="button" value="关闭" class="btStrong" onclick="window.close()"/>
+            <input type="button" value="关闭" class="btWeak" onclick="window.close()"/>
         </div>
     </div>
  

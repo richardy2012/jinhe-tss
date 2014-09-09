@@ -197,7 +197,6 @@ public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, I
             break;
         }
         
-        super.putOperateInfo2Map(map);
         return map;
     }
     

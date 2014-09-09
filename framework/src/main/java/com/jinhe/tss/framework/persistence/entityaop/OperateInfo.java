@@ -6,8 +6,6 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
 import com.jinhe.tss.framework.persistence.IEntity;
-import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
-import com.jinhe.tss.util.DateUtil;
 
 /** 
  * 对数据对象操作的操作者信息记录实体
@@ -28,16 +26,6 @@ public abstract class OperateInfo implements IOperatable, IEntity {
 	public String toString() {
 		return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);
 	}
-    
-    protected void putOperateInfo2Map(TreeAttributesMap map) {
-        map.put("creatorId", creatorId);
-        map.put("creatorName", creatorName);
-        map.put("createTime", DateUtil.format(createTime));
-        
-        map.put("updatorId", updatorId);
-        map.put("updatorName", updatorName);
-        map.put("updateTime", DateUtil.format(updateTime));
-    }
  
     public Long getCreatorId() {
         return creatorId;

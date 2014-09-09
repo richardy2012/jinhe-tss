@@ -335,9 +335,8 @@ public class ComponentAction extends FMSupportAction {
         StringBuffer sb = new StringBuffer("<html>\n<head>\n");               
         sb.append("<style>\n").append(MacrocodeCompiler.run(style, parameters, true)).append("\n</style>\n");        
         
-        String commonJSPath = Environment.getContextPath() + "/framework/";
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "core.js\"></script>\n");
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "ajax.js\"></script>\n");
+        String commonJSPath = Environment.getContextPath() + "/tools/tssJS/";
+        sb.append("<script src=\"" + commonJSPath + "tssJS.all.js\"></script>\n");
         
         sb.append("<script language=\"javascript\">\n");
         sb.append(MacrocodeCompiler.run(script, parameters, true));

@@ -1030,8 +1030,9 @@
             },
 
             createCDATA: function(data) {
+                data = String(data).convertCDATA();
                 if(window.DOMParser) {
-                    return $.XML.toNode("<root><![CDATA[" + data + "]]></root>").firstChild;
+                    return $.parseXML("<root><![CDATA[" + data + "]]></root>").documentElement.firstChild;
                 }
                 else {
                     return $.XML.EMPTY_XML_DOM.createCDATASection(data);

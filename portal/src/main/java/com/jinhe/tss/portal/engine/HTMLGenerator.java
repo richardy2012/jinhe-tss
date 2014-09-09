@@ -261,10 +261,10 @@ public class HTMLGenerator {
         StringBuffer sb = new StringBuffer();
         // 默认挂载的js
         String commonJSPath = Environment.getContextPath() + "/tools/tssJS/";
-        sb.append("<script language=\"javascript\" src=\"" + commonJSPath + "tssJS.all.js\"></script>\n");
+        sb.append("<script src=\"" + commonJSPath + "tssJS.all.js\"></script>\n");
         
         for ( String filePath : scriptFiles ) {
-            sb.append("<script language=\"javascript\" src=\"" + (portalResourseDir + filePath) + "\"></script>\n");
+            sb.append("<script src=\"" + (portalResourseDir + filePath) + "\"></script>\n");
         }
         return sb;
     }

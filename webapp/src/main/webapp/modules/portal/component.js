@@ -40,16 +40,10 @@ function loadInitData() {
 		onresult : function() { 
 			var tree = $.T("tree", this.getNodeValue(XML_MAIN_TREE));
 			tree.onTreeNodeDoubleClick = function(ev) {
-				if( !isGroup() ) {
-					 editComponentInfo();            
-				}
+				if( !isGroup() ) { editComponentInfo(); }
 			}
-			tree.onTreeNodeRightClick = function(ev) {
-				onTreeNodeRightClick(ev);
-			}
-			tree.onTreeNodeMoved = function(ev) {
-				sortTreeNode(URL_SOURCE_SORT, ev);
-			}
+			tree.onTreeNodeRightClick = function(ev) { onTreeNodeRightClick(ev); }
+			tree.onTreeNodeMoved = function(ev) { sortTreeNode(URL_SOURCE_SORT, ev); }
 		}
 	});
 }
@@ -335,7 +329,7 @@ function saveComponent(treeID, parentID) {
 	str[str.length] = "</parameters>";
 	str[str.length] = "</" + rootName + ">";
 
-	$.XML.setCDATA(rowNode, "definition", str.join(""));
+	$.XML.setCDATA(rowNode, "definition", str.join("\n"));
 	$.XML.removeCDATA(rowNode, "script");
 	$.XML.removeCDATA(rowNode, "style");
 	$.XML.removeCDATA(rowNode, "html");
@@ -471,7 +465,7 @@ function importComponent() {
 	var url = URL_UPLOAD_FILE + "?groupId=" + getTreeNodeId();
 	url += "&afterUploadClass=com.jinhe.tss.portal.helper.CreateComponent";
 	var importDiv = createImportDiv("只支持XML和zip文件格式导入", checkFileWrong, url);
-	Element.show(importDiv);
+	$(importDiv).show().css("position", "absolute").css("left", "100px").css("top", event.clientY + "px");
 }	
 
 function exportComponent() {
