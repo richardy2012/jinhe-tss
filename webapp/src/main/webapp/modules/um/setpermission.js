@@ -90,6 +90,7 @@ function searchPermission() {
 	$.ajax({
 		url : URL_PERMISSION + permissionRank + "/" + isRole2Resource + "/" + roleID,
 		params : {"applicationId": applicationId, "resourceType": resourceType}, 
+        waiting: true,
 		onresult : function() { 
 			var role2PermissionNode = this.getNodeValue(XML_PERMISSION_MATRIX);
 
@@ -440,7 +441,9 @@ window.onload = init;
             if(parent) {
             	this.parent = parent;
                 this.parent.children.push(this);
-            }               
+            } else {
+                this.opened = true;
+            }              
 
             this.toHTMLTree = function() {
                 var stack = [];
@@ -481,7 +484,7 @@ window.onload = init;
 
                 // 节点名称
                 li.a = $.createElement("a");
-                li.a.innerText = (this.name.length > 15 ? this.name.substring(0, 15) + "..." : this.name);
+                li.a.innerText = (this.name.length > 15 ? this.name.substring(0, 12) + "..." : this.name);
                 li.a.title = this.name;
                 li.appendChild(li.a);
 
