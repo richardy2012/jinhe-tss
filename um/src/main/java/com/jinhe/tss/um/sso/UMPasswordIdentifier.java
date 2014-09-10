@@ -7,10 +7,6 @@ import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
 
 import com.jinhe.tss.framework.Global;
@@ -19,7 +15,6 @@ import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.IOperator;
 import com.jinhe.tss.framework.sso.IPWDOperator;
 import com.jinhe.tss.framework.sso.PasswordPassport;
-import com.jinhe.tss.framework.sso.appserver.AppServer;
 import com.jinhe.tss.framework.sso.identifier.BaseUserIdentifier;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.util.EasyUtils;
@@ -97,8 +92,6 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
             ctx = new InitialDirContext(env);
             log.info("用户【" + oaUser.getLoginName() + "】的密码在LDAP中验证通过。");
             
-            modifyPTUserPassword(userId, password);
-            
             return true; // 如果连接成功则返回True
         } 
         catch (Exception e) {
@@ -112,41 +105,5 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
                 }
             }
         }
-    }
-
-    /**
-     * 调用UM里修改密码的接口（resetPassword.in）来修改用户在平台下（主用户组和其他用户组）的密码。
-     * @param userId
-     * @param password
-     */
-    void modifyPTUserPassword(Long userId, String password) {
-        try {
-            HttpClient httpClient = new HttpClient(); // 构造HttpClient的实例
-            
-            AppServer appServer = com.jinhe.tss.framework.sso.context.Context.getApplicationContext().getAppServer("TSS");
-            PostMethod postMethod = new PostMethod(appServer.getBaseURL() + "/resetPassword.in");
-            // 填入各个表单域的值
-            NameValuePair[] params = { new NameValuePair("userId", userId.toString()), 
-                                       new NameValuePair("checkOldPassword", "false"), 
-                                       new NameValuePair("password", password), 
-                                       new NameValuePair("newPassword", password) };
-            // 将表单的值放入postMethod中
-            postMethod.setRequestBody(params);
-            // 执行postMethod
-            try {
-                int statusCode = httpClient.executeMethod(postMethod);
-                if(statusCode == HttpStatus.SC_OK){
-                    // 读取内容
-                    byte[] responseBody = postMethod.getResponseBody();
-                    log.info(new String(responseBody));
-                }
-            } catch (Exception e) {
-                log.error("执行请求修改密码的Servlet时出错！", e);
-            } finally {
-                postMethod.releaseConnection();
-            }
-        } catch (Exception e) {
-            log.error("UMPasswordIdentifier 执行 checkPWDInOA 方法时出错！", e);
-        } 
     }
 }

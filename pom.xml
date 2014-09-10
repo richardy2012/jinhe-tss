@@ -364,7 +364,7 @@
 			<properties>
 				<log.level>debug</log.level>
 				<job.enable>true</job.enable>
-				<db.url>127.0.0.1:3306/tss</db.url>
+				<db.url>127.0.0.1:3306/btr_tss</db.url>
 				<environment>uat</environment>
 				<tomcat.url>bl00618-l:8088</tomcat.url>
 			</properties>
@@ -379,6 +379,19 @@
 				<job.enable>true</job.enable>
 				<db.url>127.0.0.1:3306/tss</db.url>
 				<environment>dev</environment>
+				<tomcat.url>localhost:8088</tomcat.url>
+			</properties>
+		</profile>
+		<profile>
+			<id>dev4wms</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<log.level>debug</log.level>
+				<job.enable>true</job.enable>
+				<db.url>127.0.0.1:3306/wms_bi</db.url>
+				<environment>wms_tss_dev</environment>
 				<tomcat.url>localhost:8088</tomcat.url>
 			</properties>
 		</profile>

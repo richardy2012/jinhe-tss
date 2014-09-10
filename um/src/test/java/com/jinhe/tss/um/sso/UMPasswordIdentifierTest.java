@@ -10,7 +10,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 
 import com.jinhe.tss.framework.exception.UserIdentificationException;
-import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.SSOConstants;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.um.TxSupportTest4UM;
@@ -43,11 +42,6 @@ public class UMPasswordIdentifierTest extends TxSupportTest4UM {
 		UMPasswordIdentifier indentifier = new UMPasswordIdentifier();
 
 		try {
-			IdentityCard card = indentifier.identify();
-			
-			Long userId = card.getOperator().getId();
-			indentifier.modifyPTUserPassword(userId, "abcdef");
-			
 			request.addParameter(SSOConstants.USER_PASSWORD, "abcdef");
 			indentifier.identify();
 

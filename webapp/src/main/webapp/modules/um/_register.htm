@@ -25,8 +25,8 @@
 
     /* XMLHTTP请求地址汇总 */
     URL_INIT = AUTH_PATH + "user/self/detail";
-    URL_REGISTER = "register.in";
-    URL_CHECK_PASSWORD = "getPasswordStrength.in";
+    URL_REGISTER = NO_AUTH_PATH + "register.in";
+    URL_CHECK_PASSWORD = NO_AUTH_PATH + "getPasswordStrength.in";
 
 	if( IS_TEST ) {
 		URL_INIT = "data/_register_init.xml";
