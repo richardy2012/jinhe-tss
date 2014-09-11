@@ -23,7 +23,7 @@ public class FetchPermissionAfterLoginCustomizerTest extends TxSupportTest4UM {
 		 
 		 Context.initRequestContext(request);
 		 
-		 new FetchPermissionAfterLoginCustomizer().execute();
+		 new FetchPermissionAfterLogin().execute();
 		 
 		 List<?> roleIds = (List<?>)session.getAttribute(SSOConstants.USER_RIGHTS_IN_SESSION);
 		 assertTrue( roleIds.size() > 0 );

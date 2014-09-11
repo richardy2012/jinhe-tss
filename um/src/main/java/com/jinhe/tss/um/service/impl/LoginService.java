@@ -33,6 +33,14 @@ public class LoginService implements ILoginService {
 
 	@Autowired private IUserDao userDao;
 	@Autowired private IGroupDao groupDao;
+	
+	public void resetPassword(Long userId, String password) {
+		User user = userDao.getEntity(userId);
+        if(user != null) {
+        	user.setPassword( user.encodePassword(password) );
+        	userDao.update(user);
+        }
+	}
 
 	public String[] getLoginInfoByLoginName(String loginName) {
 		User user = getUserByLoginName(loginName);

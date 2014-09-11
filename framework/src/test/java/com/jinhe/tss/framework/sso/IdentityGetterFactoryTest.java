@@ -8,7 +8,7 @@ public class IdentityGetterFactoryTest {
 	
 	@Test
 	public void test() {
-		IdentityGetter instance = IdentityGetterFactory.getTranslator();
+		IdentityGetter instance = IdentityGetterFactory.getInstance();
 		Assert.assertNotNull(instance);
 	}
 

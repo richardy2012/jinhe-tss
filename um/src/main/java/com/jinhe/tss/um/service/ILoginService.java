@@ -26,6 +26,14 @@ public interface ILoginService {
 	@Logable(operateObject = "用户登录", operateInfo = "${args[0]}正在进行登录验证。")
     String[] getLoginInfoByLoginName(String loginName);
     
+	/**
+	 * 重新设置密码。
+	 * 
+	 * @param userId
+	 * @param password
+	 */
+	void resetPassword(Long userId, String password);
+	
     /**
      * <p>
      * 根据用户ID获取用户信息

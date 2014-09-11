@@ -15,5 +15,14 @@ public interface IdentityGetter {
      * @return
      */
     IOperator getOperator(Long standardUserId);
+    
+    /**
+     * 自定义身份认证方法，如果用本地的账号密码验证不能通过，则会继续采用本处方法再次进行认证。
+     * 
+     * @param operator
+     * @param password
+     * @return
+     */
+    boolean indentify(IPWDOperator operator, String password);
 
 }

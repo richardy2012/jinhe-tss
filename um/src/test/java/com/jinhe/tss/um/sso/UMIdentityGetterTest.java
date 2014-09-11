@@ -6,7 +6,7 @@ import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.sso.IdentityGetter;
 import com.jinhe.tss.um.TxSupportTest4UM;
 
-public class UMIdentityTranslatorTest extends TxSupportTest4UM {
+public class UMIdentityGetterTest extends TxSupportTest4UM {
 	
 	@Test
 	public void testTranslator() {

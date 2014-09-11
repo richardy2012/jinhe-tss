@@ -1,7 +1,10 @@
 package com.jinhe.tss.um.sso;
 
+import org.apache.log4j.Logger;
+
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.sso.IOperator;
+import com.jinhe.tss.framework.sso.IPWDOperator;
 import com.jinhe.tss.framework.sso.IdentityGetter;
 import com.jinhe.tss.um.service.ILoginService;
 
@@ -11,8 +14,10 @@ import com.jinhe.tss.um.service.ILoginService;
  * </p>
  */
 public class UMIdentityGetter implements IdentityGetter {
+	
+	protected Logger log = Logger.getLogger(this.getClass());
     
-    ILoginService service = (ILoginService) Global.getContext().getBean("LoginService");
+	protected ILoginService service = (ILoginService) Global.getContext().getBean("LoginService");
 
     /**
 	 * <p>
@@ -23,5 +28,9 @@ public class UMIdentityGetter implements IdentityGetter {
 	 */
 	public IOperator getOperator(Long userId) {
 		return service.getOperatorDTOByID(userId);
+	}
+
+	public boolean indentify(IPWDOperator operator, String password) {
+		return false;
 	}
 }

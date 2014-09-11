@@ -31,8 +31,8 @@ public class OnlineUserIdentifier implements IUserIdentifier {
             String sessionId = Context.getRequestContext().getSessionId();
             
 			Long userId = TokenUtil.getUserIdFromToken(token);
-			IdentityGetter translator = IdentityGetterFactory.getTranslator();
-			IOperator operator = translator.getOperator(userId);
+			IdentityGetter ig = IdentityGetterFactory.getInstance();
+			IOperator operator = ig.getOperator(userId);
 			
             onlineUserManager.register(token, appCode, sessionId, userId, operator.getUserName());
             return new IdentityCard(token, operator);

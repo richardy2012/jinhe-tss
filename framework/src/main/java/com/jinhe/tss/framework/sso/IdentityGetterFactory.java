@@ -18,7 +18,7 @@ public class IdentityGetterFactory {
      * 获取身份转换对象
      * @return
      */
-    public static IdentityGetter getTranslator() {
+    public static IdentityGetter getInstance() {
         if (getter == null) {
             String configValue = Config.getAttribute(SSOConstants.IDENTITY_TRANSLATOR);
             if (configValue != null) {

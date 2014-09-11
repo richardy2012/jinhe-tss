@@ -14,7 +14,7 @@ import com.jinhe.tss.um.servlet.GetPasswordStrengthServletTest;
 import com.jinhe.tss.um.servlet.RegisterServletTest;
 import com.jinhe.tss.um.servlet.ResetPasswordServletTest;
 import com.jinhe.tss.um.sso.FetchPermissionAfterLoginCustomizerTest;
-import com.jinhe.tss.um.sso.UMIdentityTranslatorTest;
+import com.jinhe.tss.um.sso.UMIdentityGetterTest;
 import com.jinhe.tss.um.sso.UMPasswordIdentifierTest;
 import com.jinhe.tss.um.zlast.ResourceModuleTest;
 
@@ -27,7 +27,7 @@ import com.jinhe.tss.um.zlast.ResourceModuleTest;
 	ResourceModuleTest.class,
 	FetchPermissionAfterLoginCustomizerTest.class,
 	UMPasswordIdentifierTest.class,
-	UMIdentityTranslatorTest.class,
+	UMIdentityGetterTest.class,
 	GetLoginInfoServletTest.class,
 	GetPasswordServletTest.class,
 	GetPasswordStrengthServletTest.class,
