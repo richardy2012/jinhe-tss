@@ -32,8 +32,8 @@ public class XmlUtilTest {
     public void testStripNonValidXMLCharacters() {
 		assertEquals("", XmlUtil.stripNonValidXMLCharacters(null));
 		
-        String value = XmlUtil.stripNonValidXMLCharacters("<server code=\"TSS\" userDepositoryCode=\"tss\" />");
-        assertEquals("<server code=\"TSS\" userDepositoryCode=\"tss\" />", value);
+        String value = XmlUtil.stripNonValidXMLCharacters("<server code=\"TSS\" name=\"tss\" />");
+        assertEquals("<server code=\"TSS\" name=\"tss\" />", value);
     }
 }
 

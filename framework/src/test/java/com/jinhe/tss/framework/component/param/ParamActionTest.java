@@ -42,7 +42,7 @@ public class ParamActionTest extends TxTestSupportParam {
 		action.saveParam(response, comboParam);
 		action.initAppConfig(response, "test", "test", "test");
 		
-		assertEquals("<server code=test userDepositoryCode=\"tss\" name=test sessionIdName=\"JSESSIONID\" baseURL=test/>", 
+		assertEquals("<server code=test framework=\"tss\" name=test sessionIdName=\"JSESSIONID\" baseURL=test/>", 
 				ParamConfig.getAttribute("test"));
 		
 		Param paramGroup3 = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组3");

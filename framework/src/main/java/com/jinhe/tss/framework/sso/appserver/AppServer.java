@@ -4,7 +4,7 @@ package com.jinhe.tss.framework.sso.appserver;
  * <p>
  * 应用系统对象，包含应用系统的相关信息
  * 类似：
- * <server code="TSS"  name="他山石" sessionIdName="JSESSIONID" baseURL="http://localhost:8088/tss"/>
+ * <server code="TSS"  name="它山石" sessionIdName="JSESSIONID" baseURL="http://localhost:8088/tss"/>
  * <server code="DEMO" name="Demo" sessionIdName="JSESSIONID" baseURL="http://localhost:8088/demo"/>
  * </p>
  */

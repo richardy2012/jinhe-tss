@@ -186,7 +186,7 @@ public class ParamAction extends BaseActionSupport {
             param.setParentId(ParamConstants.DEFAULT_PARENT_ID);
             paramService.saveParam(param);
         }
-        param.setValue("<server code=" + code + " userDepositoryCode=\"tss\" name="
+        param.setValue("<server code=" + code + " framework=\"tss\" name="
                 + code + " sessionIdName=\"JSESSIONID\" baseURL=" + value  + "/>");
         paramService.saveParam(param);
        
