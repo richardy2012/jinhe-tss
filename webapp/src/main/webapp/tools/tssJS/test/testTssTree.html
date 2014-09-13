@@ -101,7 +101,8 @@ function initMenus() {
             alert("编辑树节点：" + $.T("tree").getActiveTreeNodeAttr("name"));
 
             activeNode.attrs["name"] = "天地玄黄";
-            activeNode.li.a.innerText = activeNode.li.a.title = "天地玄黄";
+            activeNode.li.a.title = "天地玄黄";
+            $(activeNode.li.a).html("天地玄黄");
         }
     }
     var item2 = {

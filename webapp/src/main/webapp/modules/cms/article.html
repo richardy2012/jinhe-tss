@@ -15,10 +15,10 @@
 
 <style type="text/css">
 	body { overflow: auto; height: 98%;}
-	.article { border: 1px solid #98989C; background-color:#fff; margin: 2px; padding: 3px; }
+	.article { border: 1px solid #98989C; background-color:#fff; margin: 2px; padding: 3px; height: 100%;}
 	.article .summary { background-color: #AFEEEE; }
-	.article .content { height: 440px; }
-	.article .attach  { height: auto; }
+	.article .content { height: 400px; }
+	.article .attach  { height: 100px; }
 	.article .upload  { background-color: #90EE90; padding: 5px 0 5px 10px; }
 	.article .bts { border-top: 1px solid #98989C; padding: 5px 0 5px 10px; text-align: center; }
 	.article .bts input { margin-right:20px; }
@@ -186,18 +186,18 @@
 			<Form:Box id="articleForm"></Form:Box>
 		</div>
 		<div class="content">
-			<textarea id="content" name="content" style="width:100%;height:500px;visibility:hidden;"></textarea>
+			<textarea id="content" name="content" style="width:100%;height:400px;visibility:hidden;"></textarea>
 		</div>
 		<div class="upload">
 			<form id="uploadForm" method="post" target='fileUpload' enctype="multipart/form-data">
 				附件类型: 
 				<select id="fileType">
 					<option value="1" selected>图片</option>
-					<option value="2">附件</option>
+					<option value="2">文档</option>
 				</select>
 				<input type="file" name="file"/><input type="button" class="btStrongL" onclick="uploadAttachment()" value="上传附件" />
 			</form>
-			<iframe width='0' height='0' name='fileUpload' style='display:none;'></iframe>
+			<iframe name='fileUpload' style='display:none;'></iframe>
 		</div>
 		<div class="attach">
 			<Grid:Box id="attachGrid"></Grid:Box>

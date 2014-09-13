@@ -10,13 +10,13 @@ URL_PERMISSION      = AUTH_PATH + "role/permission/matrix/";    // {permissionRa
 URL_SAVE_PERMISSION = AUTH_PATH + "role/permission/";          // {permissionRank}/{isRole2Resource}/{roleId} POST
 
 if(IS_TEST) {
-	URL_INIT            = "data/setpermission_init.xml?";
-	URL_RESOURCE_TYPES  = "data/resourcetypeList.json?";
-	URL_PERMISSION      = "data/setpermission.xml?";
-	URL_SAVE_PERMISSION = "data/_success.xml?";
+    URL_INIT            = "data/setpermission_init.xml?";
+    URL_RESOURCE_TYPES  = "data/resourcetypeList.json?";
+    URL_PERMISSION      = "data/setpermission.xml?";
+    URL_SAVE_PERMISSION = "data/_success.xml?";
 }
  
-function init() {	
+function init() {   
     var params = {};
     if( window.parent ) {
         var globalValiable = window.parent.globalValiable;
@@ -27,17 +27,17 @@ function init() {
         $(".box h2").html(globalValiable.title);
     }
 
-	$.ajax({
-		url : URL_INIT + params.isRole2Resource + "/" + params.roleId,
-		params  : params, 
-		onresult : function() {
-			var xmlData = this.getNodeValue(XML_SEARCH_PERMISSION);
-			var isRole2Resource = ("0" == params["isRole2Resource"]);
+    $.ajax({
+        url : URL_INIT + params.isRole2Resource + "/" + params.roleId,
+        params  : params, 
+        onresult : function() {
+            var xmlData = this.getNodeValue(XML_SEARCH_PERMISSION);
+            var isRole2Resource = ("0" == params["isRole2Resource"]);
 
-			$.cache.XmlDatas[XML_SEARCH_PERMISSION] = xmlData;
-			
-			if(isRole2Resource) {
-				// 设置用户、用户组权限，自动隐藏应用系统和资源类型字段
+            $.cache.XmlDatas[XML_SEARCH_PERMISSION] = xmlData;
+            
+            if(isRole2Resource) {
+                // 设置用户、用户组权限，自动隐藏应用系统和资源类型字段
                 $("layout>TR>TD", xmlData).each(function(i, cell){
                     if($("[binding]", cell).length == 0) return;
 
@@ -46,37 +46,37 @@ function init() {
                         cell.setAttribute("style", "display:none");
                     }
                 });
-			}
+            }
 
-			var xform = $.F("permissionForm", xmlData);		 
+            var xform = $.F("permissionForm", xmlData);      
 
-			// 设置查询按钮操作
-			$1("page3BtSearch").onclick = function() {
-				searchPermission();
-			}
-		}
-	});
+            // 设置查询按钮操作
+            $1("page3BtSearch").onclick = function() {
+                searchPermission();
+            }
+        }
+    });
 }
 
 function getResourceTypes(applicationId) {
-	$.ajax({
-		url : URL_RESOURCE_TYPES + applicationId,
-		type : "json",
-		ondata : function() { 
-			var result = this.getResponseJSON();
-			if( result && result.length > 0) {
-				var sEl = $1("resourceType");
-				sEl.options.length = 0; // 先清空
-				for(var i = 0; i < result.length; i++) {
+    $.ajax({
+        url : URL_RESOURCE_TYPES + applicationId,
+        type : "json",
+        ondata : function() { 
+            var result = this.getResponseJSON();
+            if( result && result.length > 0) {
+                var sEl = $1("resourceType");
+                sEl.options.length = 0; // 先清空
+                for(var i = 0; i < result.length; i++) {
                     var item = result[i];
-					sEl.options[i] = new Option(item.name||item[1], item.id||item[0]);
-				}
+                    sEl.options[i] = new Option(item.name||item[1], item.id||item[0]);
+                }
 
-				// 设置为默认选中第一个
-				$.F("permissionForm").updateDataExternal("resourceType", sEl.options[0].value);
-			}				
-		}
-	});
+                // 设置为默认选中第一个
+                $.F("permissionForm").updateDataExternal("resourceType", sEl.options[0].value);
+            }               
+        }
+    });
 }
 
 function searchPermission() {
@@ -84,76 +84,76 @@ function searchPermission() {
     var permissionRank  = xformObj.getData("permissionRank");
     var isRole2Resource = xformObj.getData("isRole2Resource");
     var roleID          = xformObj.getData("roleId");
-	var applicationId   = xformObj.getData("applicationId");
+    var applicationId   = xformObj.getData("applicationId");
     var resourceType    = xformObj.getData("resourceType");
 
-	$.ajax({
-		url : URL_PERMISSION + permissionRank + "/" + isRole2Resource + "/" + roleID,
-		params : {"applicationId": applicationId, "resourceType": resourceType}, 
+    $.ajax({
+        url : URL_PERMISSION + permissionRank + "/" + isRole2Resource + "/" + roleID,
+        params : {"applicationId": applicationId, "resourceType": resourceType}, 
         waiting: true,
-		onresult : function() { 
-			var role2PermissionNode = this.getNodeValue(XML_PERMISSION_MATRIX);
+        onresult : function() { 
+            var role2PermissionNode = this.getNodeValue(XML_PERMISSION_MATRIX);
 
-			// 给树节点加搜索条件属性值，以便保存时能取回
-			role2PermissionNode.setAttribute("applicationId", applicationId);
-			role2PermissionNode.setAttribute("resourceType", resourceType);
-			role2PermissionNode.setAttribute("permissionRank", permissionRank);
-			role2PermissionNode.setAttribute("isRole2Resource", isRole2Resource);
-			role2PermissionNode.setAttribute("roleId", roleID);
+            // 给树节点加搜索条件属性值，以便保存时能取回
+            role2PermissionNode.setAttribute("applicationId", applicationId);
+            role2PermissionNode.setAttribute("resourceType", resourceType);
+            role2PermissionNode.setAttribute("permissionRank", permissionRank);
+            role2PermissionNode.setAttribute("isRole2Resource", isRole2Resource);
+            role2PermissionNode.setAttribute("roleId", roleID);
 
-			$.cache.XmlDatas[XML_PERMISSION_MATRIX] = role2PermissionNode;
+            $.cache.XmlDatas[XML_PERMISSION_MATRIX] = role2PermissionNode;
 
-			$.PT("permissionTree", role2PermissionNode);
-		}
-	});
+            $.PT("permissionTree", role2PermissionNode);
+        }
+    });
 }
 
 function savePermission() {
-	var tree = $.PT("permissionTree");
+    var tree = $.PT("permissionTree");
     if(tree == null) return;
 
     // 用户对权限选项
-	var role2PermissionNode = $.cache.XmlDatas[XML_PERMISSION_MATRIX];
+    var role2PermissionNode = $.cache.XmlDatas[XML_PERMISSION_MATRIX];
 
-	// 取回搜索条件，加入到提交数据
-	var applicationId   = role2PermissionNode.getAttribute("applicationId");
-	var resourceType    = role2PermissionNode.getAttribute("resourceType");
-	var permissionRank  = role2PermissionNode.getAttribute("permissionRank");           
-	var isRole2Resource = role2PermissionNode.getAttribute("isRole2Resource");
-	var roleID          = role2PermissionNode.getAttribute("roleId");
+    // 取回搜索条件，加入到提交数据
+    var applicationId   = role2PermissionNode.getAttribute("applicationId");
+    var resourceType    = role2PermissionNode.getAttribute("resourceType");
+    var permissionRank  = role2PermissionNode.getAttribute("permissionRank");           
+    var isRole2Resource = role2PermissionNode.getAttribute("isRole2Resource");
+    var roleID          = role2PermissionNode.getAttribute("roleId");
 
-	var nodesPermissions = [];
-	$.each($("li[nodeId]", tree.el), function(i, li) {
+    var nodesPermissions = [];
+    $.each($("li[nodeId]", tree.el), function(i, li) {
         var curNode = li.node;
-		var curNodeOptionStates = "";
-		$.each(tree._options, function(_optionId, _option) {
-			var curNodeOptionState = curNode.attrs[_optionId];
+        var curNodeOptionStates = "";
+        $.each(tree._options, function(_optionId, _option) {
+            var curNodeOptionState = curNode.attrs[_optionId];
 
-			// 父节点是2(即所有子节点全选中)的，则子节点不需要传2，后台会自动补齐
-			if( curNodeOptionState == "2" ) {
-				if(curNode.parent && curNode.parent.attrs[_optionId] == "2") {
-					curNodeOptionState = "0";
-				}
-			}
+            // 父节点是2(即所有子节点全选中)的，则子节点不需要传2，后台会自动补齐
+            if( curNodeOptionState == "2" ) {
+                if(curNode.parent && curNode.parent.attrs[_optionId] == "2") {
+                    curNodeOptionState = "0";
+                }
+            }
 
-			curNodeOptionStates += curNodeOptionState || "0";
-		} );
+            curNodeOptionStates += curNodeOptionState || "0";
+        } );
  
-		// 整行全部标记至少有一个为1或者2才允许提交，都是0的话没必要提交
-		if("0" == isRole2Resource || true == /(1|2)/.test(curNodeOptionStates)) {
-			nodesPermissions.push(curNode.id + "|" + curNodeOptionStates);                
-		}
-	});
+        // 整行全部标记至少有一个为1或者2才允许提交，都是0的话没必要提交
+        if("0" == isRole2Resource || true == /(1|2)/.test(curNodeOptionStates)) {
+            nodesPermissions.push(curNode.id + "|" + curNodeOptionStates);                
+        }
+    });
 
-	// 即使一行数据也没有，也要执行提交 
-	$.ajax({
-		url : URL_SAVE_PERMISSION + permissionRank + "/" + isRole2Resource + "/" + roleID,
-		params : {
-			"applicationId": applicationId, 
-			"resourceType": resourceType, 
-			"permissions":nodesPermissions.join(",")
-		}
-	});
+    // 即使一行数据也没有，也要执行提交 
+    $.ajax({
+        url : URL_SAVE_PERMISSION + permissionRank + "/" + isRole2Resource + "/" + roleID,
+        params : {
+            "applicationId": applicationId, 
+            "resourceType": resourceType, 
+            "permissions":nodesPermissions.join(",")
+        }
+    });
 }
 
 window.onload = init;
@@ -184,34 +184,34 @@ window.onload = init;
     'use strict';
 
     var _Option = function(node) {
-    	this.id = $.XML.getText( node.querySelector("operationId") );
-    	this.name = $.XML.getText( node.querySelector("operationName") );
-    	this.dependId = $.XML.getText( node.querySelector("dependId") );
-    	this.dependParent = $.XML.getText( node.querySelector("dependParent") );
+        this.id = $.XML.getText( node.querySelector("operationId") );
+        this.name = $.XML.getText( node.querySelector("operationName") );
+        this.dependId = $.XML.getText( node.querySelector("dependId") );
+        this.dependParent = $.XML.getText( node.querySelector("dependParent") );
 
-    	this.dependers = []; // 横向依赖我的。双向维护横向依赖。
+        this.dependers = []; // 横向依赖我的。双向维护横向依赖。
     },
 
-	/*
-	 * 设定选中状态
-	 *			 0 未选中
-	 *			 1 仅此节点有权限
-	 *			 2 所有子节点有权限
-	 *			 3 未选中禁用
-	 *			 4 选中禁用
-	 */
-	setOptionCheckState = function(optionChecker, nextState) {
-		optionChecker.state = nextState;
+    /*
+     * 设定选中状态
+     *           0 未选中
+     *           1 仅此节点有权限
+     *           2 所有子节点有权限
+     *           3 未选中禁用
+     *           4 选中禁用
+     */
+    setOptionCheckState = function(optionChecker, nextState) {
+        optionChecker.state = nextState;
         optionChecker.node.attrs[optionChecker.option.id] = nextState;
 
-	    nextState = nextState || "0";
+        nextState = nextState || "0";
         $(optionChecker).css("backgroundImage", "url(images/optionState" + nextState + ".gif)");
 
         // 横向依赖
         if("1" == nextState) { setDependSelectedState(optionChecker, nextState); } // 仅此选中时同时选中依赖项
         if("2" == nextState) { setDependSelectedState(optionChecker, nextState); } // 所有子节点选中时同时选中依赖项
         if("0" == nextState) { setDependedSelectedState(optionChecker, nextState); } // 取消时同时取消被依赖项
-	},
+    },
 
     /* 设置横向依赖项选中状态 */
     setDependSelectedState = function(optionChecker, nextState) {
@@ -346,9 +346,9 @@ window.onload = init;
 
             var headEl = $.createElement("div", "optionTitle");
             $.each(this._options, function(id, _option) {
-            	var optionTitle = $.createElement("span");
-            	$(optionTitle).html(_option.name).css("width", 550/tThis.optionNum + "px");
-            	headEl.appendChild(optionTitle);
+                var optionTitle = $.createElement("span");
+                $(optionTitle).html(_option.name).css("width", 550/tThis.optionNum + "px");
+                headEl.appendChild(optionTitle);
 
             });
             this.el.appendChild(headEl);
@@ -383,15 +383,15 @@ window.onload = init;
 
             var optionNodes = data.querySelectorAll("options>option");
             $.each(optionNodes, function(i, node) {
-            	var _option = new _Option(node);
-            	tThis._options[_option.id] = _option;
+                var _option = new _Option(node);
+                tThis._options[_option.id] = _option;
                 tThis.optionNum ++;
             });
 
             $.each(tThis._options, function(id, _option) {
-            	if(_option.dependId) {
-            		tThis._options[_option.dependId].dependers.push(_option);
-            	}
+                if(_option.dependId) {
+                    tThis._options[_option.dependId].dependers.push(_option);
+                }
             });
         };
 
@@ -439,7 +439,7 @@ window.onload = init;
             this._options = tThis._options;
           
             if(parent) {
-            	this.parent = parent;
+                this.parent = parent;
                 this.parent.children.push(this);
             } else {
                 this.opened = true;
@@ -484,8 +484,7 @@ window.onload = init;
 
                 // 节点名称
                 li.a = $.createElement("a");
-                li.a.innerText = (this.name.length > 15 ? this.name.substring(0, 12) + "..." : this.name);
-                li.a.title = this.name;
+                $(li.a).html(this.name.length > 15 ? this.name.substring(0, 12) + "..." : this.name).title(this.name);
                 li.appendChild(li.a);
 
                 // 每个节点都可能成为父节点
@@ -505,16 +504,16 @@ window.onload = init;
                 var nThis = this;
                 var optionBox = $.createElement("span", "optionBox");
                 $.each(tThis._options, function(_optionId, _option) {
-                	var optionChecker = $.createElement("span");
+                    var optionChecker = $.createElement("span");
                     optionChecker.setAttribute("oid", _optionId);
                     optionChecker.option = _option;
                     optionChecker.node = nThis;
 
-                	optionChecker.state = nThis.attrs[_optionId] || "0";
+                    optionChecker.state = nThis.attrs[_optionId] || "0";
 
-                	$(optionChecker).html(_option.name).css("width", 550/tThis.optionNum + "px")
-                		.css("backgroundImage", "url(images/optionState" + optionChecker.state + ".gif)");
-                	optionBox.appendChild(optionChecker);
+                    $(optionChecker).html(_option.name).css("width", 550/tThis.optionNum + "px")
+                        .css("backgroundImage", "url(images/optionState" + optionChecker.state + ".gif)");
+                    optionBox.appendChild(optionChecker);
 
                     $(optionChecker).click(function(ev) {
                         var shiftKey = (ev || event).shiftKey; // 是否同时按下shiftKey

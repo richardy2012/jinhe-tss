@@ -382,16 +382,43 @@
 				<tomcat.url>localhost:8088</tomcat.url>
 			</properties>
 		</profile>
+
+		<profile>
+			<id>prod4wms1</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<log.level>info</log.level>
+				<job.enable>true</job.enable>
+				<db.url>10.8.10.30:3306/dm_wmsx</db.url>
+				<environment>tss4wms_prod</environment>
+				<tomcat.url>10.8.73.168:8888</tomcat.url>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod4wms2</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<log.level>info</log.level>
+				<job.enable>false</job.enable>
+				<db.url>10.8.10.30:3306/dm_wmsx</db.url>
+				<environment>tss4wms_prod</environment>
+				<tomcat.url>10.8.73.178:8888</tomcat.url>
+			</properties>
+		</profile>
 		<profile>
 			<id>dev4wms</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
 				<log.level>debug</log.level>
 				<job.enable>true</job.enable>
 				<db.url>127.0.0.1:3306/wms_bi</db.url>
-				<environment>wms_tss_dev</environment>
+				<environment>tss4wms_dev</environment>
 				<tomcat.url>localhost:8088</tomcat.url>
 			</properties>
 		</profile>
