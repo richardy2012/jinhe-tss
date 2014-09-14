@@ -9,7 +9,7 @@
 	<layout>
 		<TR>
 			<TD width="50"><label binding="name"/></TD>
-			<TD><input binding="name"/></TD>
+			<TD><input binding="name" style="width:50%;"/></TD>
 		</TR>
 		<TR>
 			<TD><label binding="startDate"/></TD>
