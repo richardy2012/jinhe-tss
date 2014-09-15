@@ -5,7 +5,7 @@
 
 	FROMEWORK_CODE = "TSS",    /* 当前框架名 */
 	APP_CODE       = "TSS",    /* 当前应用名 */
-	SYSTEM_TITLE   = "百世快运BI"; 
+	SYSTEM_TITLE   = "百世物流BI"; 
 
 /*********************** 系统配置 END **********************************/
  var

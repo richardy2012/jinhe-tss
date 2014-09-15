@@ -384,7 +384,7 @@
 		</profile>
 
 		<profile>
-			<id>prod4wms1</id>
+			<id>prod4wms168</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
@@ -397,7 +397,7 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>prod4wms2</id>
+			<id>prod4wms178</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>

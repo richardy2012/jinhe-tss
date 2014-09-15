@@ -107,8 +107,8 @@
         }
 
         // 平台应用不能编辑
-        function getOtherApplication(isCreate) {
-            var treeID = isCreate ? DEFAULT_NEW_ID: getTreeNodeId();
+        function getOtherApplication(isCreate, treeID) {
+            treeID = treeID || (isCreate ? DEFAULT_NEW_ID: getTreeNodeId());
             $.ajax({
                 url: URL_APP_DETAIL + treeID,
                 method: "GET",
@@ -140,9 +140,9 @@
             syncButton([$1("appSaveBt")], request); // 同步按钮状态
 
             request.onresult = function() { // 新增
-                var treeNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
-                appendTreeNode("-2", treeNode);
-                getOtherApplication(false);
+                var xmlNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
+                appendTreeNode("-2", xmlNode);
+                getOtherApplication(false, xmlNode.getAttribute("id"));
             }
             request.onsuccess = function() { // 修改，更新树节点名称
                 var name = xform.getData("name");
