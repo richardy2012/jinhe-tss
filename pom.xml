@@ -289,12 +289,21 @@
 									file="${basedir}/target/classes/application.properties" match="last\.package\.time = yyyy-MM-dd hh:mi:ss"
 									replace="last\.package\.time = ${maven.build.timestamp}"
 									byline="true" />
+
 								<echo>
-									process application.properties: set localhost:3306/tss to ${db.url};
+									process application.properties:  set db.connection.username to ${db.username}, 
+									db.connection.password to ${db.password}, db.connection.url to ${db.url};
 								</echo>
+								<replaceregexp
+									file="${basedir}/target/classes/application.properties" 
+									match="username root" replace="username ${db.username}" byline="true" />
+								<replaceregexp
+									file="${basedir}/target/classes/application.properties" 
+									match="800best@com" replace="${db.password}" byline="true" />	
 								<replaceregexp
 									file="${basedir}/target/classes/application.properties" match="localhost:3306\/tss"
 									replace="${db.url}" byline="true" />
+
 								<echo>
 									process application.properties: set environment to ${environment};
 								</echo>
@@ -338,6 +347,8 @@
 			<properties>
 				<log.level>info</log.level>
 				<job.enable>false</job.enable>
+				<db.username>root</db.username>
+				<db.password>800best@com</db.password>
 				<db.url>127.0.0.1:3306/tss_btr</db.url>
 				<environment>prod</environment>
 				<tomcat.url>172.20.121.19:8082</tomcat.url>
@@ -364,6 +375,8 @@
 			<properties>
 				<log.level>debug</log.level>
 				<job.enable>true</job.enable>
+				<db.username>root</db.username>
+				<db.password>800best@com</db.password>
 				<db.url>127.0.0.1:3306/btr_tss</db.url>
 				<environment>uat</environment>
 				<tomcat.url>bl00618-l:8088</tomcat.url>
@@ -377,6 +390,8 @@
 			<properties>
 				<log.level>debug</log.level>
 				<job.enable>true</job.enable>
+				<db.username>root</db.username>
+				<db.password>800best@com</db.password>
 				<db.url>127.0.0.1:3306/tss</db.url>
 				<environment>dev</environment>
 				<tomcat.url>localhost:8088</tomcat.url>
@@ -391,6 +406,8 @@
 			<properties>
 				<log.level>info</log.level>
 				<job.enable>true</job.enable>
+				<db.username>wmsxProd</db.username>
+				<db.password>wmsdata@800best</db.password>
 				<db.url>10.8.10.30:3306/dm_wmsx</db.url>
 				<environment>tss4wms_prod</environment>
 				<tomcat.url>10.8.73.168:8888</tomcat.url>
@@ -404,6 +421,8 @@
 			<properties>
 				<log.level>info</log.level>
 				<job.enable>false</job.enable>
+				<db.username>wmsxProd</db.username>
+				<db.password>wmsdata@800best</db.password>
 				<db.url>10.8.10.30:3306/dm_wmsx</db.url>
 				<environment>tss4wms_prod</environment>
 				<tomcat.url>10.8.73.178:8888</tomcat.url>
@@ -417,9 +436,11 @@
 			<properties>
 				<log.level>debug</log.level>
 				<job.enable>true</job.enable>
+				<db.username>root</db.username>
+				<db.password>800best@com</db.password>
 				<db.url>127.0.0.1:3306/wms_bi</db.url>
 				<environment>tss4wms_dev</environment>
-				<tomcat.url>localhost:8088</tomcat.url>
+				<tomcat.url>bl00618:8088</tomcat.url>
 			</properties>
 		</profile>
 	</profiles>
