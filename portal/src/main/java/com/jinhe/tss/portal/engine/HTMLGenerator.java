@@ -211,7 +211,8 @@ public class HTMLGenerator {
         sb.append("<!DOCTYPE HTML>\n");
         sb.append("<HTML xmlns:TSS xmlns:WorkSpace xmlns:Tree xmlns:Grid xmlns:Form>\n");
         sb.append("<HEAD>\n");
-        sb.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
+        sb.append("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"/>\n");
+        sb.append("<meta charset=\"UTF-8\">\n");
         sb.append("<TITLE>").append(title).append("</TITLE>\n");
         sb.append(formatKeywords());
         sb.append(formatStyleLinks());

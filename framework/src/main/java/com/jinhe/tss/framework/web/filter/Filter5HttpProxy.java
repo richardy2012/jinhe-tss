@@ -27,7 +27,7 @@ import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.sso.appserver.AppServer;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.context.RequestContext;
-import com.jinhe.tss.framework.web.rmi.HttpClientHelper;
+import com.jinhe.tss.framework.web.rmi.HttpClientUtil;
 
 /**
  * <pre>
@@ -75,7 +75,7 @@ public class Filter5HttpProxy implements Filter {
 			} 
 			else {
 				AppServer targetAppServer = Context.getApplicationContext().getAppServer(targetAppCode);
-				log.info("向目标应用：" + targetAppServer.getName() + "（" + targetAppServer.getCode() + "）" + "转发请求。appCode=" + currentAppCode);
+				log.debug("向目标应用：" + targetAppServer.getName() + "（" + targetAppServer.getCode() + "）" + "转发请求。appCode=" + currentAppCode);
 				
 				proxy4ForeignApplication(targetAppServer, (HttpServletResponse) response);
 			}
@@ -95,8 +95,7 @@ public class Filter5HttpProxy implements Filter {
 	 * @throws BusinessServletException
 	 */
 	private void proxy4ForeignApplication(AppServer appServer, HttpServletResponse response) throws IOException, BusinessServletException {
-		HttpClientHelper hcHelper = HttpClientHelper.instance();
-        HttpClient client = hcHelper.getHttpClient(appServer); // 创建HttpClient对象
+        HttpClient client = HttpClientUtil.getHttpClient(appServer); // 创建HttpClient对象
 		HttpState httpState = client.getState();
 		
 		/* 设置用户令牌相关Cookie，包括一个token Cookie和一个 sessionId Cookie */
@@ -111,7 +110,7 @@ public class Filter5HttpProxy implements Filter {
             httpState.addCookie(new Cookie(domain, currentAppCode, Environment.getSessionId(), path, null, isSecure)); // TSS = JSessionId
         }
 		
-		HttpMethod httpMethod = hcHelper.getHttpMethod(appServer); // 创建HttpPost对象（等价于一个Post Http Request）
+		HttpMethod httpMethod = HttpClientUtil.getHttpMethod(appServer); // 创建HttpPost对象（等价于一个Post Http Request）
 		try {
 			// 请求
             int statusCode = client.executeMethod(httpMethod);
@@ -196,7 +195,7 @@ public class Filter5HttpProxy implements Filter {
         }
         
         // 转发返回的Header信息
-        Header contentType = httpMethod.getRequestHeader(HttpClientHelper.CONTENT_TYPE);
+        Header contentType = httpMethod.getRequestHeader(HttpClientUtil.CONTENT_TYPE);
         if(contentType != null) {
             response.setContentType(contentType.getValue());
         }

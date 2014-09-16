@@ -409,7 +409,7 @@
 				<db.username>wmsxProd</db.username>
 				<db.password>wmsdata@800best</db.password>
 				<db.url>10.8.10.30:3306/dm_wmsx</db.url>
-				<environment>tss4wms_prod</environment>
+				<environment>tss4wms_168</environment>
 				<tomcat.url>10.8.73.168:8888</tomcat.url>
 			</properties>
 		</profile>
@@ -424,7 +424,7 @@
 				<db.username>wmsxProd</db.username>
 				<db.password>wmsdata@800best</db.password>
 				<db.url>10.8.10.30:3306/dm_wmsx</db.url>
-				<environment>tss4wms_prod</environment>
+				<environment>tss4wms_178</environment>
 				<tomcat.url>10.8.73.178:8888</tomcat.url>
 			</properties>
 		</profile>

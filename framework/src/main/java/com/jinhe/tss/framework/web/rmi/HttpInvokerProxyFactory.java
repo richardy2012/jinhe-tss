@@ -99,7 +99,7 @@ public class HttpInvokerProxyFactory extends HttpInvokerProxyFactoryBean {
 	        log.debug(Context.getApplicationContext().getCurrentAppCode() + "【远程调用】调用：" + config.getServiceUrl());
 	        
 	        /* 调用远程接口时，在前台发来的请求（request1）的里开启一个新的请求（request2 即 HttpClient），在JAVA端实现远程调用其他应用里的接口 */
-	        HttpClient client = HttpClientHelper.instance().getHttpClient();
+	        HttpClient client = HttpClientUtil.getHttpClient();
 	        
 	        HttpState httpState = client.getState();
 	        setRequestCookies(httpState);
@@ -118,7 +118,7 @@ public class HttpInvokerProxyFactory extends HttpInvokerProxyFactoryBean {
 	                // 处理返回信息
 	                result = super.readRemoteInvocationResult(httpPost.getResponseBodyAsStream(), config.getCodebaseUrl());
 	                // 设置单点登录返回的cookie信息
-	                HttpClientHelper.transmitReturnCookies(httpState.getCookies(), targetAppServer);
+	                HttpClientUtil.transmitReturnCookies(httpState.getCookies(), targetAppServer);
 	            } else {
 	                throw new BusinessException(targetAppServer.getName() + "（" + targetAppServer.getCode() + "）连接错误，" +
 	                		"错误代码：" + statusCode + "\n链接地址：" + config.getServiceUrl());
