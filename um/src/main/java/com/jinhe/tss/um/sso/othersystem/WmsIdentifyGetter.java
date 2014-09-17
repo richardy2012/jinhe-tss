@@ -21,7 +21,7 @@ public class WmsIdentifyGetter extends UMIdentityGetter implements IdentityGette
     public boolean indentify(IPWDOperator operator, String password) {
         log.debug("用户登陆时密码在主用户组中验证不通过，转向WMS进行再次验证。");
         
-        String loginName = operator.getLoginName();
+        String loginName = operator.getLoginName().toUpperCase();
         password = InfoEncoder.string2MD5(password).toLowerCase();
         
         Properties p = new Properties();
@@ -31,7 +31,7 @@ public class WmsIdentifyGetter extends UMIdentityGetter implements IdentityGette
         p.setProperty(DBHelper.DB_CONNECTION_PASSWORD, "wms800best");
         
         String sql = "select id from GV_SYS_ACCOUNT t " +
-        		" where t.loginName = ? and t.password = ? and t.status_id = 3";
+        		" where upper(t.loginName) = ? and t.password = ? and t.status_id = 3";
  
         Connection connection = DBHelper.getConnection(p);
         try {

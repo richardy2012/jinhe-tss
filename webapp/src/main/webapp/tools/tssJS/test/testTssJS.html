@@ -209,7 +209,7 @@
 
 	var xmlNode4 = $.XML.appendCDATA("test", "1<>2");
 	$.assertEquals("<test><![CDATA[1<>2]]></test>",$.XML.toString(xmlNode4));
-	$.assertEquals("1<>2", $.XML.getCDATA(xmlNode4, "test"));
+	$.assertEquals("1<>2", $.XML.getText(xmlNode4));
 
 	var xmlNode5 = $.XML.toNode("<p></p>")
 	$.XML.setCDATA(xmlNode5, "test", "3<>4");

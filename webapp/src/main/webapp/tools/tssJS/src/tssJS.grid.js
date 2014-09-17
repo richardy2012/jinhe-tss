@@ -46,7 +46,7 @@
         }
     },
 
-    bindAdjustTHHandler = function(table) {
+    bindAdjustTHHandler = function(table) { 
 
         $("thead tr td", table).each(function(i, th) {
             // 双击隐藏列
@@ -58,9 +58,9 @@
             };
 
             th.onmousedown = function() {
-                if(event.offsetX > this.offsetWidth - 5) {
+                if(window.event.offsetX > this.offsetWidth - 5) {
                     this.mouseDown = true;
-                    this.oldX = event.x;
+                    this.oldX = window.event.x;
                     this.oldWidth = this.offsetWidth;
                 }
             };
@@ -72,20 +72,21 @@
             };
 
             th.onmousemove = function(ev) {
+                ev = ev || window.event;
                 var colseToEdge = ev.offsetX > this.offsetWidth - 7;
                 $(this).css("cursor", colseToEdge ? "col-resize" : "default");
                 
                 if( !!this.mouseDown ) {
                     $(this).css("cursor", "col-resize");
 
-                    var distance = (event.x - this.oldX);
+                    var distance = (ev.x - this.oldX);
                     $(this).css("width", (this.oldWidth + distance) + "px");
                 }
             }
         });
     },
 
-    bindSortHandler = function(table) {
+    bindSortHandler = function(table) { 
         var rows = [];
         var tbody = $("tbody", table)[0];
         $("tr", tbody).each( function(i, row) {
@@ -109,8 +110,8 @@
 
                     var columnIndex = this._colIndex;
                     rows.sort(function(row1, row2) {
-                        var x = row1.cells[columnIndex].innerText;
-                        var y = row2.cells[columnIndex].innerText;
+                        var x = row1.cells[columnIndex].innerText || row1.cells[columnIndex].textContent;
+                        var y = row2.cells[columnIndex].innerText || row2.cells[columnIndex].textContent;
                         var compareValue;
                         if( isNaN(x) ) {
                             compareValue = x.localeCompare(y);
@@ -167,10 +168,10 @@
 
             thead.push('<thead><tr>');
             if(this.hasHeader) {
-                thead.push('<td name="cellheader"><input type="checkbox" id="checkAll"/></td>');
+                thead.push('<td name="cellheader" style="width:30px"><input type="checkbox" id="checkAll"/></td>');
             }
             if(this.needSequence) {
-                thead.push('<td name="sequence">序号</td>');
+                thead.push('<td name="sequence" style="width:30px">序号</td>');
             }
             $.each(this.columnsMap, function(name, column) {
                 var caption = column.getAttribute("caption");
@@ -198,7 +199,8 @@
                 var columnsMap = oThis.columnsMap;
                 for(var name in columnsMap) {
                     var value  = row.getAttribute(name) || "";
-                    tbody.push('<td name="' + name + '" value="' + value + '">' + value + '</td>');
+                    var _class = columnsMap[name].getAttribute("display")  == "none" ? ' class="hidden"' : '';
+                    tbody.push('<td name="' + name + '" value="' + value + '" ' + _class + '>' + value + '</td>');
                 }
 
                 tbody.push("</tr>");
@@ -226,14 +228,14 @@
         this.gridBox.style.width = element.getAttribute("width")  || "100%";
 
         var pointHeight = element.getAttribute("height");
-        if( pointHeight == null ) {
-            pointHeight = element.clientHeight; // hack 固定住grid高度，以免在IE部分版本及FF里被撑开
+        if( pointHeight == null || pointHeight == '0' ) {
+            pointHeight = element.clientHeight || element.parentNode.clientHeight; 
         }
-        // $(this.gridBox).css("height", pointHeight + "px");
+        $(this.gridBox).css("height", pointHeight + "px"); // hack 固定住grid高度，以免在IE部分版本及FF里被撑开
         
         this.windowHeight = pointHeight;
         this.pageSize = Math.floor(this.windowHeight / cellHeight);
-        
+  
         this.load(data);    
 
         // 添加Grid事件处理
@@ -251,7 +253,7 @@
 
             this.template = new XMLTempalte(data);  
             var gridTableHtml = this.template.toHTML(startNum); // 解析成Html
-            
+          
             if(append) {
                 var tempParent = $.createElement("div");
                 $(tempParent).html(gridTableHtml);
@@ -265,13 +267,13 @@
                 $(this.gridBox).html(gridTableHtml);
                 this.tbody = $("tbody", this.gridBox)[0];
             }
-            
+          
             var table  = $("table", this.gridBox)[0];
             this.totalRowsNum = this.tbody.rows.length;
             for(var i = startNum; i < this.totalRowsNum; i++) {
                 this.processDataRow(this.tbody.rows[i]); // 表格行TR
             }
-            
+           
             bindAdjustTHHandler(table);
             bindSortHandler(table);
         }, 
@@ -299,7 +301,7 @@
                 } 
                 else if(this.template.needSequence && ((!hasHeader && j == 0) || (hasHeader && j == 1)) ) {
                     cell.setAttribute("name", "sequence");
-                    cell.innerText = curRow.getAttribute("_index");
+                    $(cell).html(curRow.getAttribute("_index"));
                     continue;
                 }
 
@@ -314,15 +316,14 @@
                 return;
             } 
 
-            if(column.getAttribute("display") == "none") {
-                $(cell).addClass("hidden");
-            } 
-            else if(column.getAttribute("highlight") == "true") {
+            if(column.getAttribute("highlight") == "true") {
                 $(cell).addClass("highlightCol");
             }
             $(cell).css("text-align", getAlign(column));
 
-            var value = cell.getAttribute("value") || cell.innerText;
+            var value = cell.getAttribute("value") ;
+            if(value == null) return;
+
             var mode  = column.getAttribute("mode") || "string";
             switch( mode ) {
                 case "string":
@@ -339,7 +340,7 @@
                         });
                     }
                     
-                    cell.innerText = cell.title = value;                            
+                    $(cell).html(value).title(value);                          
                     break;
                 case "number":  
                 case "date":
@@ -414,7 +415,12 @@
                 cell.setAttribute( "name", colName );
 
                 if(map[colName]) {
-                    cell.innerText = map[colName];
+                    $(cell).html(map[colName]);
+                    cell.setAttribute( "value", map[colName] );
+                }
+
+                if($(th).hasClass("hidden")) {
+                    $(cell).addClass("hidden");
                 }
             });
  
@@ -483,7 +489,7 @@
             };
             
             this.gridBox.onkeydown = function() {
-                switch (event.keyCode) {
+                switch (window.event.keyCode) {
                     case 33:    //PageUp
                         oThis.gridBox.scrollTop -= oThis.pageSize * cellHeight;
                         return false;
@@ -511,24 +517,24 @@
                 }
             };
          
-            this.gridBox.onclick = function() { // 单击行
-                fireClickRowEvent(this, event, "onClickRow");
+            this.gridBox.onclick = function(ev) { // 单击行
+                fireClickRowEvent(this, ev, "onClickRow");
             };
 
-            this.gridBox.ondblclick = function() { // 双击行
-                fireClickRowEvent(this, event, "onDblClickRow");
+            this.gridBox.ondblclick = function(ev) { // 双击行
+                fireClickRowEvent(this, ev, "onDblClickRow");
             };
 
-            this.gridBox.oncontextmenu = function() {
-                fireClickRowEvent(this, event, "onRightClickRow"); // 触发右键事件
+            this.gridBox.oncontextmenu = function(ev) {
+                fireClickRowEvent(this, ev, "onRightClickRow"); // 触发右键事件
             };
 
             // 触发自定义事件
-            function fireClickRowEvent(gridBox, event, firerName) {
-                var _srcElement = event.srcElement;
-                if( notOnGridHead(_srcElement) ) { // 确保点击处不在表头
+            function fireClickRowEvent(gridBox, ev, firerName) {
+                var _srcElement = $.Event.getSrcElement(ev);
+                if( _srcElement && notOnGridHead(_srcElement) ) { // 确保点击处不在表头
                     var trObj = _srcElement;
-                    while( trObj.tagName.toLowerCase() != "tr" ) {
+                    while( trObj && trObj.tagName.toLowerCase() != "tr" ) {
                         trObj = trObj.parentElement;
                     }
 
@@ -536,7 +542,8 @@
                         var rowIndex = parseInt( trObj.getAttribute("_index") );
                         var oEvent = $.Event.createEventObject();
                         oEvent.result = {
-                            rowIndex: rowIndex
+                            rowIndex: rowIndex,
+                            ev: ev
                         };
 
                         gridBox.selectRowIndex = rowIndex;
@@ -655,7 +662,8 @@
 
         var request = new $.HttpRequest();
         request.url = serviceUrl + "/" + page;
-        request.params = requestParam || [];
+        request.params = requestParam || {};
+        request.waiting = true;
 
         request.onresult = function() {
             var gridBox = $1(gridName);
@@ -677,11 +685,12 @@
             var pageInfoNode = this.getNodeValue("PageInfo");            
             $.initGridToolBar(pageBar, pageInfoNode, gotoPage);
             
-            gridBox.onDblClickRow = function(eventObj) {
+            gridBox.onDblClickRow = function(evObj) {
                 editRowFuction();
             }
-            gridBox.onRightClickRow = function() {
-                gridBox.contextmenu.show(event.clientX, event.clientY);
+            gridBox.onRightClickRow = function(evObj) {
+                var ev = evObj.result.ev || window.event;
+                gridBox.contextmenu.show(ev.clientX, ev.clientY);
             }   
             gridBox.onScrollToBottom = function () {           
                 var currentPage = pageBar.getCurrentPage();
