@@ -28,8 +28,8 @@ public class ParamManager {
     public static Param getSimpleParam(String code){
     	try{
             return getService().getParam(code);
-    	} catch (ClassCastException e) {
-			throw new BusinessException("获取参数信息失败，指定的code：" + code + " 不是简单型参数!");
+    	} catch (Exception e) {
+    		throw new BusinessException("获取指定的code：" + code + " 参数信息失败!", e);
 		}
     }
     
@@ -41,8 +41,8 @@ public class ParamManager {
 	public static List<Param> getComboParam(String code){
     	try{
             return getService().getComboParam(code);
-    	}catch (ClassCastException e) {
-    		throw new BusinessException("获取参数信息失败，指定的code：" + code + " 不是下拉型参数!");
+    	} catch (Exception e) {
+    		throw new BusinessException("获取指定的code：" + code + " 参数信息失败!", e);
 		}
     }
     
@@ -54,9 +54,8 @@ public class ParamManager {
 	public static List<Param> getTreeParam(String code){
     	try{
             return getService().getTreeParam(code);
-            
-    	} catch (ClassCastException e) {
-    		throw new BusinessException("获取参数信息失败，指定的code：" + code + " 不是树型参数!");
+    	} catch (Exception e) {
+    		throw new BusinessException("获取指定的code：" + code + " 参数信息失败!", e);
 		}
     }
     

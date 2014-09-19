@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework.component.param;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeTranslator;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
@@ -193,5 +195,35 @@ public class ParamAction extends BaseActionSupport {
         String msg = "当前应用里设置【" + code + "】应用配置信息成功";
         printSuccessMessage(msg);
     }
-    
+	
+	/*************************************** 以下为Param的json格式服务，供前台调用 *************************************/
+	
+	/** 系统配置参数 */
+	@RequestMapping(value = "/json/simple/{code}", method = RequestMethod.GET)
+	@ResponseBody
+	public Object getSimpleParam2Json(HttpServletRequest request, HttpServletResponse response, 
+			@PathVariable("code") String code) {
+		return ParamConfig.getAttribute(code);
+	}
+	
+	/** 获取下拉类型/树型参数列表  */
+	@RequestMapping(value = "/json/combo/{code}", method = RequestMethod.GET)
+	@ResponseBody
+	public Object getComboParam2Json(HttpServletRequest request, HttpServletResponse response, 
+			@PathVariable("code") String code, boolean isTree) {
+    	try{
+			List<Param> list = isTree ? paramService.getTreeParam(code) 
+					: paramService.getComboParam(code);
+			if(list != null) {
+				List<Object[]> result = new ArrayList<Object[]>();
+				for (Param param : list) {
+					result.add(new Object[] { param.getId(), param.getText(), param.getParentId() });
+				}
+				return result;
+			}
+    	} catch (Exception e) {
+    		log.warn("获取参数信息失败!code=" + code + ", " + e.getMessage());
+		}
+    	return "";
+    }
 }	

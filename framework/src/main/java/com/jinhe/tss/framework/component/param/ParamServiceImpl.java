@@ -168,7 +168,7 @@ public class ParamServiceImpl implements ParamService {
         	return null;
         }
         if (!ParamConstants.SIMPLE_PARAM_MODE.equals(param.getModality())) {
-            throw new BusinessException("不是简单参数!");
+            throw new BusinessException(code + "不是简单型参数!");
         }
         return param;
     }
@@ -179,7 +179,7 @@ public class ParamServiceImpl implements ParamService {
         	return null;
         }
         if (!ParamConstants.COMBO_PARAM_MODE.equals(param.getModality())) {
-            throw new BusinessException("不是下拉型参数!");
+            throw new BusinessException(code + "不是下拉型参数!");
         }
         return paramDao.getChildrenByDecode(param.getDecode());
     }
@@ -190,7 +190,7 @@ public class ParamServiceImpl implements ParamService {
         	return null;
         }
         if (!ParamConstants.TREE_PARAM_MODE.equals(param.getModality())) {
-            throw new BusinessException("不是树型参数!");
+            throw new BusinessException(code + "不是树型参数!");
         }
         return paramDao.getChildrenByDecode(param.getDecode());
     }
