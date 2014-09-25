@@ -29,11 +29,22 @@
 <!--
     URL_GET_USER_NAME = "getLoginInfo.in";
     URL_LOGIN = AUTH_PATH + "login.do";
+    URL_SYS_TITLE = "param/json/simple/sysTitle";
 
     window.alert = _alert;
     
     window.onload = function() {
-    	$("#sys_title").html(SYSTEM_TITLE || "它山石应用支撑平台");
+        $.ajax({
+            url: URL_SYS_TITLE,
+            method: 'GET',
+            ondata: function() {
+                var title = this.getResponseJSON();
+                if( title && title.length > 0 ) {
+                    $("#sys_title").html(title[0]);
+                }
+            }
+        });
+
 		var loginNameObj = $1("loginName");
 		var passwordObj  = $1("password");
 	
@@ -140,7 +151,7 @@
 </head>
 <body>
     <div id="login_box">
-        <h1 id="sys_title"></h1>
+        <h1 id="sys_title">Welcome</h1>
         <span>
             <input type="text" id="loginName" placeholder="请输入您的账号" />
         </span>

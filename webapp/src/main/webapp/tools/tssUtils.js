@@ -4,8 +4,7 @@
 	IS_TEST = false,
 
 	FROMEWORK_CODE = "TSS",    /* 当前框架名 */
-	APP_CODE       = "TSS",    /* 当前应用名 */
-	SYSTEM_TITLE = "百世WMSDATA (QQ群：319279664)"; /* 百世WMSDATA (QQ群：319279664) | 百世物流BI */
+	APP_CODE       = "TSS";    /* 当前应用名 */
 
 /*********************** 系统配置 END **********************************/
  var

@@ -203,7 +203,7 @@ public class ParamAction extends BaseActionSupport {
 	@ResponseBody
 	public Object getSimpleParam2Json(HttpServletRequest request, HttpServletResponse response, 
 			@PathVariable("code") String code) {
-		return ParamConfig.getAttribute(code);
+		return new Object[] { ParamConfig.getAttribute(code) };
 	}
 	
 	/** 获取下拉类型/树型参数列表  */
