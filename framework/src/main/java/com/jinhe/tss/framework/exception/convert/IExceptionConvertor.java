@@ -6,6 +6,6 @@ package com.jinhe.tss.framework.exception.convert;
  */
 public interface IExceptionConvertor {
 
-    public Exception convert(Exception be);
+    Exception convert(Exception be);
 
 }

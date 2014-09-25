@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -72,34 +73,24 @@ public class Config {
     @SuppressWarnings("unchecked")
     public static Set<String> getAttributesSet(String name){
         Set<String> set = (Set<String>) propertyMap.get(name);
-        if(set == null){
-            set = new HashSet<String>();
-            getBundle();
+        if(set == null) {
+        	getBundle();
+        	propertyMap.put(name, set = new HashSet<String>());
+            
             try{
 	            String valueStr = resources.getString(name);
-	            String[] values = new String[0];
-	            if(valueStr != null)
-	                values = valueStr.split(",");
-	            
-                for(int i = 0; i < values.length; i++)
-                    set.add(values[i]);
-                
-	            propertyMap.put(name, set);
-            }catch(MissingResourceException exception){
+	            if(valueStr != null) {
+	            	String[] values = valueStr.split(",");
+	            	set.addAll(Arrays.asList(values));
+	            }
+            } 
+            catch(MissingResourceException exception){
             	return null;
             }
         }
         return set;
     }
-    
-    /**
-     * 清楚系统参数缓存信息
-     */
-    public static void remove(){
-        resources = null;
-        propertyMap.clear();
-    }
-    
+ 
     static String dbDriverName = Config.getAttribute("db.connection.driver_class");
     
     public static boolean isH2Database() {
@@ -108,9 +99,5 @@ public class Config {
     
     public static boolean isMysqlDatabase() {
         return dbDriverName != null && dbDriverName.indexOf("mysql") >= 0;
-    }
-    
-    public static boolean isOracleDatabase() {
-        return dbDriverName != null && dbDriverName.indexOf("oracle") >= 0;
     }
 }

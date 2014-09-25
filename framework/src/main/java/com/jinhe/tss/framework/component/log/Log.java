@@ -50,23 +50,16 @@ public class Log implements IEntity, IXForm, IGridNode {
     
     private Integer methodExcuteTime; // 方法执行时间（单位: 微秒）
     
-    public Log() {
-    }
+    public Log() { }
 
     public Log(String operationCode, Object entity) {
-        if( Environment.getOperatorId() != null) {
-            this.setOperatorId( Environment.getOperatorId() );
-            this.setOperatorName( Environment.getOperatorName() );
-        } else {
-        	this.setOperatorId( -1000L );
-            this.setOperatorName( "匿名用户" );
-        }
-        
-        this.operatorIP    = Environment.getClientIp();
-        this.operationCode = operationCode;
-        this.operateTable  = entity.getClass().getName();
-        this.content       = BeanUtil.toXml(entity);
-        this.operateTime   = new Date();
+    	this.setOperatorId( Environment.getOperatorId() );
+        this.setOperatorName( Environment.getOperatorName() );
+        this.setOperatorIP( Environment.getClientIp() );
+        this.setOperationCode( operationCode );
+        this.setOperateTable ( entity.getClass().getName() );
+        this.setContent      ( BeanUtil.toXml(entity) );
+        this.setOperateTime  ( new Date() );
     }
  
     public String getContent() {

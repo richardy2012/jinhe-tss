@@ -64,6 +64,7 @@ public class TxTestSupportParam extends TxTestSupport {
         param.setParentId(parentId);
         param.setType(ParamConstants.ITEM_PARAM_TYPE);
         param.setModality(mode);
+        param.setDescription("I'm a param item.");
         paramService.saveParam(param);
         return param;
     }

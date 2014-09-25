@@ -142,7 +142,7 @@ public interface Pool {
 	 * 
 	 * @param o
 	 */
-	void destroyObject(final Cacheable o);
+	void destroyObject(Cacheable o);
 
 	/**
 	 * 释放所有池中的连接，并且关闭池。
@@ -151,7 +151,7 @@ public interface Pool {
 	 * 			  true: 强制销毁这些连接然后返回, <br/>
 	 *            fasle:等所有连接都返回再释放）
 	 */
-	void release(final boolean forced);
+	void release(boolean forced);
 
 	/**
 	 * 异步释放所有池中的连接，并且关闭池。  <br/>
@@ -162,7 +162,7 @@ public interface Pool {
 	 * 			  true: 强制销毁这些连接然后返回,  <br/>
 	 *            fasle:等所有连接都返回再释放）
 	 */
-	void releaseAsync(final boolean forced);
+	void releaseAsync(boolean forced);
 	
 	/**
 	 * 刷新缓存，清除池中所有缓存项
@@ -172,7 +172,7 @@ public interface Pool {
 	/************************************缓存池策略配置及监听**********************************/
 
 	/**
-	 * 读取池的自定义类
+	 * 设置/读取池的自定义类
 	 * 
 	 * @param customizer
 	 */
@@ -180,7 +180,7 @@ public interface Pool {
 	void setCustomizer(CacheCustomizer obj);
 
 	/**
-	 * 读取缓存策略信息
+	 * 设置/读取缓存策略信息
 	 * 
 	 * @param strategy
 	 */

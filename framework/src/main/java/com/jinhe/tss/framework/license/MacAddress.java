@@ -2,7 +2,6 @@ package com.jinhe.tss.framework.license;
 
 /** 
  * <p> 读取机器的Mac地址 </p> 
- * 
  */
 public class MacAddress {
 

@@ -7,7 +7,7 @@ import com.jinhe.tss.util.BeanUtil;
 
 /**
  * 因IEntity接口里定义了  Serializable getId();
- * 导致使用反射机制处理ID值时异常，没有写方法 
+ * 导致使用反射机制处理ID值时异常，没有"写方法" 
  *
  */
 public class EntityIDTest {

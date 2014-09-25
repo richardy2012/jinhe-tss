@@ -22,7 +22,7 @@ import java.util.Map;
 public class TimeWrapper implements Cacheable, Serializable {
 
 	private static final long serialVersionUID = 430479804348050166L;
-
+	
 	private Object key, value;
 	private long death = 0; // 如果death = 0，则元素永不过期
 	private long accessed; // 记录元素最后一次被访问的时间
@@ -43,32 +43,29 @@ public class TimeWrapper implements Cacheable, Serializable {
 		this.key = key;
 		this.value = value;
 		
-		accessed = System.currentTimeMillis();
+		this.accessed = System.currentTimeMillis();
 		setCyclelife(cycleLife);
 	}
 
 	public Object getKey() {
-		return key;
+		return this.key;
 	}
 
 	public Object getValue() {
-		return value;
+		return this.value;
 	}
 
 	/**
 	 * 设置元素的有效期。
 	 * 
-	 * @param expiryTime
+	 * @param cycleLife
 	 */
-	 synchronized void setCyclelife(long expiryTime) {
-		if (expiryTime < 0) {
-			throw new RuntimeException("缓存项的生命周期值不能小于0");
-		} 
-		else if (expiryTime > 0) {
-			this.death = System.currentTimeMillis() + expiryTime;
+	synchronized void setCyclelife(long cycleLife) {
+		if (cycleLife > 0) {
+			this.death = System.currentTimeMillis() + cycleLife;
 		}
 		else {
-			death = 0;
+			this.death = 0;  // cycleLife <= 0  ==> 永不过期
 		}
 	}
 
@@ -76,7 +73,7 @@ public class TimeWrapper implements Cacheable, Serializable {
 	 * 判断元素是否已过期。如果death＝0，则元素永不过期
 	 */
 	public synchronized boolean isExpired() {
-		return death > 0 && System.currentTimeMillis() > death;
+		return this.death > 0 && System.currentTimeMillis() > this.death;
 	}
 
 	public synchronized void updateAccessed() {
@@ -84,15 +81,15 @@ public class TimeWrapper implements Cacheable, Serializable {
 	}
 
 	public long getAccessed() {
-		return accessed;
+		return this.accessed;
 	}
 
 	public int getHit() {
-		return hit;
+		return this.hit;
 	}
 
 	public void addHit() {
-		hit++;
+		this.hit++;
 	}
 
 	public void update(Object value) {
@@ -128,7 +125,7 @@ public class TimeWrapper implements Cacheable, Serializable {
 	}
 
 	public int hashCode() {
-		return key.hashCode();
+		return this.key.hashCode();
 	}
 	
 	public String toString() {

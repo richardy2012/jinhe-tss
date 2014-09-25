@@ -86,5 +86,19 @@ public class ParamServiceTest extends TxTestSupportParam {
         
         list = ParamManager.getTreeParam(treeParamCode);
         Assert.assertEquals(3, list.size());
+        
+        Param simpleParam = addSimpleParam(ParamConstants.DEFAULT_PARENT_ID, "test1", "test1", "test1");
+        Assert.assertEquals("test1", simpleParam.getName());
+        
+        simpleParam.setName(null);
+        simpleParam.setHidden(1);
+        paramService.saveParam(simpleParam);
+        Assert.assertEquals("test1", simpleParam.getCode());
+        
+        try {
+        	addSimpleParam(ParamConstants.DEFAULT_PARENT_ID, "test1", "test1", "test1");
+        } catch(Exception e) {
+        	log.debug(e.getMessage());
+        }
     }
 }

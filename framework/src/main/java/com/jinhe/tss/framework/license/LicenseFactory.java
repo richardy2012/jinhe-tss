@@ -21,6 +21,12 @@ public class LicenseFactory {
     static String LICENSE_DIR = URLUtil.getClassesPath().getPath();
     static String PRIVATE_KEY_FILE = LICENSE_DIR + "/private.key";
     static String PUBLIC_KEY_FILE  = LICENSE_DIR + "/public.key";
+    
+    // 密钥算法  
+    public static final String KEY_ALGORITHM = "DSA";  
+      
+    // 验证算法 
+    public static final String SIGN_ALGORITHM = "SHA1withDSA";  
 
     /**
      * 用私钥对license进行数据签名
@@ -29,11 +35,11 @@ public class LicenseFactory {
      */
     public static synchronized void sign(License license) throws Exception {
         String privateKey = FileHelper.readFile(new File(PRIVATE_KEY_FILE));
-        KeyFactory keyFactory = KeyFactory.getInstance("DSA");
+        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
         PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(EasyUtils.decodeHex(privateKey.trim()));
         PrivateKey privKey = keyFactory.generatePrivate(privKeySpec);
         
-        Signature sig = Signature.getInstance("SHA1withDSA");
+        Signature sig = Signature.getInstance(SIGN_ALGORITHM);
         sig.initSign(privKey);
         sig.update(license.getFingerprint());
         
@@ -41,13 +47,13 @@ public class LicenseFactory {
     }
 
     /**
-     * 生成公钥、私钥对。公钥公开，注意保管好私钥（如果泄露，则有可能被hacker随意创建license）
+     * 生成公钥、私钥对。
+     * 公钥公开，注意保管好私钥（如果泄露，则有可能被hacker随意创建license）
      * @throws Exception
      */
     public static void generateKey() throws Exception {
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
-        SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-        keyGen.initialize(1024, random);
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance(KEY_ALGORITHM);
+        keyGen.initialize(1024, new SecureRandom());
         KeyPair pair = keyGen.generateKeyPair();
         PrivateKey priv = pair.getPrivate();
         PublicKey pub = pair.getPublic();

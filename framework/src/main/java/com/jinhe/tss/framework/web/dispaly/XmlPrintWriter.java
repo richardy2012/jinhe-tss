@@ -4,7 +4,6 @@ import java.io.PrintWriter;
 
 /** 
  * Xml数据输出流
- * 
  */
 public class XmlPrintWriter {
 
@@ -33,12 +32,5 @@ public class XmlPrintWriter {
 	 */
 	public void flush() {
 		out.flush();
-	}
-
-	/**
-	 * 关闭输出流
-	 */
-	public void close() {
-		out.close();
 	}
 }

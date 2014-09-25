@@ -90,17 +90,7 @@ public class PoolListener implements Listener {
 			((Cleaner) pool).initCleaner();
 		}
 	}
-
-	/*
-	 * 只要是ObjectPoolListener的实例，都返回true
-	 */
-	public boolean equals(Object o) {
-		if (o instanceof PoolListener) {
-			return true;
-		}
-		return false;
-	}
-
+ 
 	/*
 	 * 所有的ObjectPoolListener实例返回相同的hashCode
 	 */

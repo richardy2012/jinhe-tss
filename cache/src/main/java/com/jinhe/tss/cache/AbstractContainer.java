@@ -61,11 +61,6 @@ public abstract class AbstractContainer implements Container {
 		
 		return (Cacheable)item;
 	}
-
-	public Cacheable removeByAccessMethod(int accessMethod) {
-		Cacheable o = getByAccessMethod(accessMethod);
-		return remove(o.getKey());
-	}
  
 	public String toString() {
 		StringBuffer sb = new StringBuffer();

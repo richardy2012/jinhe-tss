@@ -58,6 +58,8 @@ public class LogActionTest extends TxTestSupport {
 		condition.setOperateTimeFrom(new Date(System.currentTimeMillis() - 1000*10));
 		condition.setOperateTimeTo(new Date());
 		condition.setOperatorName(Environment.getOperatorName());
+		condition.setOperatorIP(null);
+		condition.setOperationCode(null);
 		
 		action.queryLogs4Grid(null, condition, 1);
 		
@@ -65,6 +67,8 @@ public class LogActionTest extends TxTestSupport {
         List<?> logs = logsInfo.getItems();
         Assert.assertTrue(logs.size() > 0);
         action.getLogInfo(response, ((Log)logs.get(0)).getId());
+        
+        Assert.assertNotNull(((Log)logs.get(0)).getPK());
         
         // 顺带测试一下Grid的功能
         GridDataEncoder encoder = new GridDataEncoder(logs, LogAction.LOG_GRID_TEMPLET_PATH);

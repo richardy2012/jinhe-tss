@@ -70,8 +70,6 @@ public interface Container {
 	 */
 	Cacheable remove(Object key);
 
-	Cacheable removeByAccessMethod(int accessMethod);
-
 	/**
 	 * 获取池容器中的所有key列表
 	 * 

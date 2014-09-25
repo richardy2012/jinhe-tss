@@ -16,8 +16,6 @@ import com.jinhe.tss.util.BeanUtil;
  */
 public class ObjectPool extends AbstractPool implements Cleaner {
 
-	// 对象池属性
-	
 	/**
 	 * 空闲的对象池
 	 */
@@ -32,8 +30,7 @@ public class ObjectPool extends AbstractPool implements Cleaner {
 	private Cleaner cleaner; // 清理器
 	private InitThread initer;
 
-	public ObjectPool() {
-	}
+	public ObjectPool() { }
 
 	/**
 	 * 初始化指定数量的对象放入池中。<br/>
@@ -49,24 +46,25 @@ public class ObjectPool extends AbstractPool implements Cleaner {
 
 		String containerClass = strategy.poolContainerClass;
 		Class<?> collectionType = BeanUtil.createClassByName(containerClass);
-		if ( !Container.class.isAssignableFrom(collectionType) )
-			throw new RuntimeException("指定的池集合类类型非法: "
-					+ collectionType.getName() + " (必须实现Container接口)");
+		if ( Container.class.isAssignableFrom(collectionType) ) {
+			ContainerFactory factory = ContainerFactory.getInstance();
+			String freePoolName = strategy.code + "_free";
+			free = free != null ? free : factory.create(containerClass, freePoolName);
+			
+			String usingPoolName = strategy.code + "_using";
+			using = using != null ? using : factory.create(containerClass, usingPoolName);
+			
+			// 为缓存池添加一个监听器
+			addObjectPoolListener( new PoolListener() ); 
 
-		ContainerFactory factory = ContainerFactory.getInstance();
-		String freePoolName = strategy.code + "_free";
-		free = free != null ? free : factory.create(containerClass, freePoolName);
-		
-		String usingPoolName = strategy.code + "_using";
-		using = using != null ? using : factory.create(containerClass, usingPoolName);
-		
-		// 为缓存池添加一个监听器
-		addObjectPoolListener( new PoolListener() ); 
+			startInitThread( strategy.initNum );
+			initCleaner();
 
-		startInitThread( strategy.initNum );
-		initCleaner();
-
-		log.info("缓存池【" + strategy.name + "】初始化成功！");
+			log.info("缓存池【" + strategy.name + "】初始化成功！");
+		}
+		else {
+			throw new RuntimeException("指定的容器类型非法: " + containerClass + "。 (需实现Container接口)");
+		}
 	}
 
 	/**
@@ -283,9 +281,7 @@ public class ObjectPool extends AbstractPool implements Cleaner {
 				try {
 					Cacheable item = customizer.create();
 					if (item == null) {
-						String errorMsg = ObjectPool.this.getName() + "初始化时无法创建对象";
-						log.error(errorMsg);
-						throw new RuntimeException(errorMsg);
+						throw new RuntimeException(ObjectPool.this.getName() + "初始化时无法创建对象");
 					} else {
 						putObject(item.getKey(), item.getValue());
 					}
@@ -307,9 +303,6 @@ public class ObjectPool extends AbstractPool implements Cleaner {
 	}
 
 	public final int size() {
-//		return (free == null ? 0 : free.size())
-//				+ (using == null ? 0 : using.size());
-		
 		return size;
 	}
 }

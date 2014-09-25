@@ -73,13 +73,6 @@ public class TreeSupportDao<T extends IDecodable> extends BaseDao<T> implements 
      * @return
      */
     @SuppressWarnings("unchecked")
-    public List<T> getChildrenExcludeSelfById(Long id){
-        String hql = "select o from " + entityName + " o, " + entityName + " o1 " +
-                " where o.decode like o1.decode||'%' and o.decode <> o1.decode and o1.id=? order by o.decode";
-        return (List<T>)getEntities(hql, id);
-    }
-    
-    @SuppressWarnings("unchecked")
     public List<T> getChildrenExcludeSelfByDocode(String decode){
         String hql = "select o from " + entityName + " o " + 
                 " where o.decode like ? and o.decode <> ? order by o.decode";

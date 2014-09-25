@@ -14,7 +14,6 @@ import com.jinhe.tss.framework.web.dispaly.SuccessMessageEncoder;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IUserService;
-import com.jinhe.tss.util.EasyUtils;
 
 /**
  * <p> 修改密码Servlet </p>
@@ -46,11 +45,7 @@ public class ResetPasswordServlet extends HttpServlet {
 		String userId = request.getParameter("userId");
 		String password = request.getParameter("password");
         String newPassword = request.getParameter("newPassword");
-        
-        if(EasyUtils.isNullOrEmpty(userId)) {
-        	 throw new BusinessException("修改密码时用户ID不能为空");
-        }
-        
+
 		Long id = Long.valueOf(userId);
 		User user = service.getUserById(id);
         if(user == null) {

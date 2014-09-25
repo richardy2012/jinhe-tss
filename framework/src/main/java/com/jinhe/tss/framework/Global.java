@@ -24,7 +24,7 @@ public class Global {
 			if (contextPath != null) {
 				defaultContextPath = contextPath;
 			}
-			_ctx = new ClassPathXmlApplicationContext(defaultContextPath);
+			_ctx = new ClassPathXmlApplicationContext(defaultContextPath.split(","));
 		}
 		return _ctx;
 	}

@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.persistence.connpool.Output2DBTask;
 
 /** 
@@ -15,17 +14,10 @@ import com.jinhe.tss.framework.persistence.connpool.Output2DBTask;
 public class LogOutputTask extends Output2DBTask {
 
     protected void createRecords(Connection conn) throws SQLException {
-    	String insertSql;
-    	if( Config.isOracleDatabase() ) {
-            insertSql = "insert into component_log" +
-                "(id, operatorId, operatorName, operatorIP, operationCode, operateTable, operateTime, content, methodExcuteTime) " +
-                "values(log_sequence.nextval, ?, ?, ?, ?, ?, ?, ?, ?)";
-        }
-    	else { // DEFAULT 主键自增 
-            insertSql = "insert into component_log" +
+    	String insertSql = "insert into component_log" +
                 "(operatorId, operatorName, operatorIP, operationCode, operateTable, operateTime, content, methodExcuteTime) " +
                 "values(?, ?, ?, ?, ?, ?, ?, ?)"; 
-    	}
+
         PreparedStatement pstmt = conn.prepareStatement(insertSql); 
         for ( Object temp : records ) {
             Log dto = (Log) temp;

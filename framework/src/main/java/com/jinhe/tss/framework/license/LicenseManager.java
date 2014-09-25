@@ -32,7 +32,9 @@ public final class LicenseManager {
     private final Log log = LogFactory.getLog(getClass());
     
     private static LicenseManager instance = new LicenseManager();
+    
     private LicenseManager(){ }
+    
     public static synchronized LicenseManager getInstance() {
         return instance;
     }
@@ -40,16 +42,16 @@ public final class LicenseManager {
     private List<License> licenses;
 
     public void loadLicenses() {
-        if(licenses != null)
-            return;
+        if(licenses != null) return;
         
         licenses = new ArrayList<License>();
         String files[] = new File(LicenseFactory.LICENSE_DIR).list();
         for(int i = 0; i < files.length; i++){
             String filename = files[i];
             File file = new File(LicenseFactory.LICENSE_DIR, filename);
-            if(file.isDirectory() || !filename.startsWith("cpu") || !filename.endsWith(".license"))
+            if(file.isDirectory() || !filename.endsWith(".license")) {
                 continue;
+            }
             
             try {
                 License license = License.fromConfigFile(filename);
@@ -63,8 +65,10 @@ public final class LicenseManager {
                     log.error("license文件 \"" + file.getName() + "\" 不合法.");
                     continue; 
                 }
+                
                 licenses.add(license);
-            } catch(Exception e) {
+            } 
+            catch(Exception e) {
                 log.error(e);
             }
         }
@@ -74,17 +78,7 @@ public final class LicenseManager {
         }
         return;
     }
-    
-    /**
-     * 重新载入licenses
-     */
-    public void reloadLicenses() {
-        if(licenses != null)
-            licenses.clear();
-        licenses = null;
-        loadLicenses();
-    }
-
+ 
     /**
      * 验证产品和版本号是否和license中信息匹配
      * @param product
@@ -119,7 +113,7 @@ public final class LicenseManager {
             for( License license : licenses ) {
                 int hasVersion = Integer.parseInt(license.version.substring(0, 1));
                 if(license.product.equals(product) && hasVersion >= needsVersion) {
-                    return license.licenseType.name;
+                    return license.licenseType;
                 }
             }
         }
@@ -137,20 +131,21 @@ public final class LicenseManager {
      */
     boolean validate(License license) throws Exception {
         String macAddress = license.macAddress;
-        if(macAddress != null && macAddress.length() > 0) {
+        if( !EasyUtils.isNullOrEmpty(macAddress) ) {
             String curMacAddress = MacAddress.getMacAddress();
             if( !macAddress.equals(curMacAddress) ) {
                 return false;
             }
         }
+        
         File keyFile = new File(LicenseFactory.PUBLIC_KEY_FILE);
         String publicKey = FileHelper.readFile(keyFile).trim();
 
         X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(EasyUtils.decodeHex(publicKey));
-        KeyFactory keyFactory = KeyFactory.getInstance("DSA");
+        KeyFactory keyFactory = KeyFactory.getInstance(LicenseFactory.KEY_ALGORITHM);
         java.security.PublicKey pubKey = keyFactory.generatePublic(pubKeySpec);
         
-        Signature sig = Signature.getInstance("DSA");
+        Signature sig = Signature.getInstance(LicenseFactory.KEY_ALGORITHM);
         sig.initVerify(pubKey);
         sig.update(license.getFingerprint());
         return sig.verify(EasyUtils.decodeHex(license.licenseSignature));

@@ -92,22 +92,21 @@ public class _Connection extends ConfigurableContants {
 	    #hibernate.connection.username db2  <br/>
 	    #hibernate.connection.password db2  <br/>
 	 */
-	class DatasourceConnectionProvider implements IConnectionProvider {
+	static class DatasourceConnectionProvider implements IConnectionProvider {
 		public Connection getConnection(Properties p) {
 			try {
+				String user = p.getProperty(Environment.USER);
+				String pass = p.getProperty(Environment.PASS);
+				
 				String jndiName = p.getProperty(Environment.DATASOURCE);
 				DataSource ds = (DataSource) NamingHelper.getInitialContext(p).lookup(jndiName);
 				if (ds == null) {
 					throw new RuntimeException("Could not find datasource: " + jndiName);
 				}
 
-				String user = p.getProperty(Environment.USER);
-				String pass = p.getProperty(Environment.PASS);
-
 				return ds.getConnection(user, pass);
 				
 			} catch (Exception e) {
-				log.fatal("从数据源获取连接时出错", e);
 				throw new RuntimeException("从数据源获取连接时出错", e);
 			}
 		}

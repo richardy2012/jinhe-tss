@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.jinhe.tss.cache.extension.workqueue.OutputRecordsManager;
-import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.persistence.connpool.DBHelper;
 import com.jinhe.tss.framework.persistence.connpool.Output2DBTask;
 import com.jinhe.tss.portal.entity.FlowRate;
@@ -41,13 +40,7 @@ public class FlowrateManager extends OutputRecordsManager{
     public static class OutputFlowrateTask extends Output2DBTask {
 
         protected void createRecords(Connection conn) throws SQLException {
-        	String insertSql;
-        	if( Config.isOracleDatabase() ) {
-        	    insertSql = "insert into portal_flowrate(id, pagedId, ip, visitTime) values(pms_flowrate.nextval, ?, ?, ?)";
-        	} 
-        	else {
-        	    insertSql = "insert into portal_flowrate(pageId, ip, visitTime) values(?, ?, ?)";
-        	}
+        	String insertSql = "insert into portal_flowrate(pageId, ip, visitTime) values(?, ?, ?)";
             
             PreparedStatement pstmt = conn.prepareStatement(insertSql);
             for (Iterator<?> it = records.iterator(); it.hasNext();) {

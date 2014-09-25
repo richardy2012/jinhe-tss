@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.util.EasyUtils;
 
 @Service("ParamService")
 public class ParamServiceImpl implements ParamService {
@@ -49,22 +48,12 @@ public class ParamServiceImpl implements ParamService {
         }
 
         String hql = "select p.id from Param p where p.parentId=" + param.getParentId();
-        if (ParamConstants.GROUP_PARAM_TYPE.equals(param.getType())) { // 参数组不能同名
+        if (ParamConstants.GROUP_PARAM_TYPE.equals(type)) { // 参数组不能同名
             hql += " and p.name='" + param.getName() + "'";
-        }
-        else if (ParamConstants.NORMAL_PARAM_TYPE.equals(param.getType())) {
-            if (EasyUtils.isNullOrEmpty(param.getName())) {
-                param.setName(param.getCode());
-            }
-            hql += " and (p.name='" + param.getName() + "' or p.code='" + param.getCode() + "')";
-        }
-        else {
-            if (EasyUtils.isNullOrEmpty(param.getText())) {
-                param.setText(param.getValue());
-            }
+        } else {
             Param parentParam = paramDao.getEntity(param.getParentId());
             param.setModality(parentParam.getModality());
-            hql += " and (p.value='" + param.getValue() + "' or p.text='" + param.getText() + "')";
+            hql += " and p.text='" + param.getText() + "' ";
         }
 
         if (paramDao.getEntities(hql).size() > flag) {
@@ -125,10 +114,9 @@ public class ParamServiceImpl implements ParamService {
             else {
                 param.setParentId(paramMapping.get(param.getParentId()));
             }
-
-            if (ParamConstants.TRUE.equals(toParam.getDisabled())) {
-                param.setDisabled(toParam.getDisabled()); // 如果目标根节点是停用状态，则所有新复制出来的节点也一律为停用状态
-            }
+            
+            // 如果目标根节点是停用状态，则所有新复制出来的节点也一律为停用状态
+            param.setDisabled(toParam.getDisabled()); 
 
             judgeLegit(param, ParamConstants.EDIT_FLAG);
             
@@ -148,9 +136,8 @@ public class ParamServiceImpl implements ParamService {
                 param.setParentId(toParamId);
             }
             
-            if (ParamConstants.TRUE.equals(toParam.getDisabled())) {
-                param.setDisabled(ParamConstants.TRUE); // 如果目标根节点是停用状态，则所有新复制出来的节点也一律为停用状态
-            }
+            // 如果目标根节点是停用状态，则所有新复制出来的节点也一律为停用状态
+            param.setDisabled(toParam.getDisabled()); 
             
             paramDao.update(param);
         }

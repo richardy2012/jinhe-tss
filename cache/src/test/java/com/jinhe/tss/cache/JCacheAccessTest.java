@@ -152,5 +152,13 @@ public class JCacheAccessTest {
 		
 		pool.checkIn(item2);
 		
+		pool.checkIn(null);
+		
+		pool.releaseAsync(true);
+		
+		try {
+			Thread.sleep(10 * 1000);
+		} catch (InterruptedException e) {
+		}
 	}
 }

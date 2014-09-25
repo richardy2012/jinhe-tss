@@ -49,7 +49,6 @@ public interface ITreeSupportDao<T extends IDecodable> extends IDao<T> {
      * @param id
      * @return
      */
-    List<T> getChildrenExcludeSelfById(Long id);
     List<T> getChildrenExcludeSelfByDocode(String decode);
 
     /**

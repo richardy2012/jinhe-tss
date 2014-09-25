@@ -26,12 +26,7 @@ public abstract class AbstractPool implements Pool {
     	String currentThread = Thread.currentThread().getName();
     	log.debug(":" + currentThread + ":" + msg);
     }
-    
-    protected void logInfo(String msg) {
-    	String currentThread = Thread.currentThread().getName();
-    	log.info(":" + currentThread + ":" + msg);
-    }
-    
+ 
     protected void logError(String msg) {
     	String currentThread = Thread.currentThread().getName();
     	log.error(":" + currentThread + ":" + msg);
@@ -235,7 +230,7 @@ public abstract class AbstractPool implements Pool {
 
     public synchronized void checkIn(Cacheable item) {
         if (item == null) {
-            log.error("试图返回空的缓存项。");
+        	logError("试图返回空的缓存项。");
             return;
         }
         Object key = item.getKey();
@@ -243,8 +238,7 @@ public abstract class AbstractPool implements Pool {
         // 判断对象是否存在using池中，是的话将对象从using池中移出，否则抛出异常
 		Cacheable temp = getUsing().remove(key);
 		if( !item.equals(temp) ) {
-            String errorMsg = "试图返回不是using池中的对象到free中，返回失败！ " + getName() + "【" + item + " --> " + temp + "】";
-            logError(errorMsg);
+            logError("试图返回不是using池中的对象到free中，返回失败！ " + getName() + "【" + item + " --> " + temp + "】");
         }
 		
         Object value = item.getValue();
@@ -394,12 +388,12 @@ public abstract class AbstractPool implements Pool {
         this.strategy = strategy; 
     }
     
+    public CacheCustomizer getCustomizer() { 
+    	return this.customizer; 
+    }
+    
     public void setCustomizer(CacheCustomizer customizer) { 
     	this.customizer = customizer; 
-    }
-
-    public CacheCustomizer getCustomizer(){ 
-    	return this.customizer; 
     }
  
     public final void firePoolEvent(int eventType) {
