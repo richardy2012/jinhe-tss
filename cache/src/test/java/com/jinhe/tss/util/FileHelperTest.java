@@ -23,6 +23,7 @@ public class FileHelperTest {
          File classDir = new File(log4jPath).getParentFile();
          
          Assert.assertTrue(FileHelper.checkFile(classDir, CK_FILE_PATH));
+         Assert.assertTrue(FileHelper.checkFile(classDir, "log4j.properties.haha") == false);
          
          File tempDir1 = FileHelper.createDir(classDir + "/temp1");
          File tempDir2 = FileHelper.createDir(classDir + "/temp2");
@@ -53,8 +54,13 @@ public class FileHelperTest {
          File subDir2 = FileHelper.findPathByName(tempDir1, "dir2");
          Assert.assertNull(subDir2);
          
-         FileHelper.getFileNameNoSuffix("1.txt");
-         FileHelper.getFileSuffix("1.txt");
+         Assert.assertEquals("1", FileHelper.getFileNameNoSuffix("1.txt"));
+         Assert.assertEquals("1", FileHelper.getFileNameNoSuffix("1"));
+         Assert.assertNull(FileHelper.getFileNameNoSuffix(null));
+         
+         Assert.assertEquals("txt", FileHelper.getFileSuffix("1.txt"));
+         Assert.assertEquals("", FileHelper.getFileSuffix("1"));
+         Assert.assertNull(FileHelper.getFileSuffix(null));
          
          FileHelper.listFileNamesByTypeDeeply("txt", tempDir2);
          FileHelper.listFiles(tempDir2);

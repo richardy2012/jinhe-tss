@@ -48,29 +48,29 @@ import com.jinhe.tss.framework.sso.identifier.OnlineUserIdentifier;
  */
 @WebFilter(filterName = "AutoLoginFilter", 
 		urlPatterns = {"/auth/*", "*.do", "*.portal"}, 
-		initParams  = {@WebInitParam(name="ignoreServletPaths", value="login.in,logout.in")
+		initParams  = {@WebInitParam(name="ignorePaths", value="login.in,logout.in")
 })
 public class Filter4AutoLogin implements Filter {
 	private static Logger log = Logger.getLogger(Filter4AutoLogin.class);
 
-	private Set<String> ignoreServletPaths = new HashSet<String>();
+	private Set<String> ignorePaths = new HashSet<String>();
  
 	public void init(FilterConfig filterConfig) throws ServletException {
-		String paths = filterConfig.getInitParameter("ignoreServletPaths");
+		String paths = filterConfig.getInitParameter("ignorePaths");
 		if (paths != null) {
-			ignoreServletPaths.addAll(Arrays.asList(paths.split(",")));
+			ignorePaths.addAll(Arrays.asList(paths.split(",")));
 		}
 		log.info("AutoLoginFilter init! appCode=" + Context.getApplicationContext().getCurrentAppCode());
 	}
  
 	public void destroy() {
-		ignoreServletPaths = null;
+		ignorePaths = null;
 	}
  
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		try {
             String servletPath = RequestContext.getServletPath((HttpServletRequest)request);
-			for(String ignore : ignoreServletPaths) {
+			for(String ignore : ignorePaths) {
 	            if(servletPath.toLowerCase().endsWith(ignore.toLowerCase())) {
 	                chain.doFilter(request, response);
 	                return;
@@ -183,8 +183,7 @@ public class Filter4AutoLogin implements Filter {
 		try {
             customizer.execute();
 		} catch (Throwable e) {
-			String customizerName = customizer.getClass().getName();
-            String msg = "自定义登录操作（" + customizerName + "）失败，请先检查数据源配置是否正确。";
+            String msg = "自定义登录操作（" + customizer.getClass().getName() + "）执行失败，请先检查数据源配置等是否正确。";
             log.error(msg, e);
             throw new BusinessException(msg, e);
 		}

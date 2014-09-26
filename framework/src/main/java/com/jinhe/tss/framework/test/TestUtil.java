@@ -82,7 +82,6 @@ public class TestUtil {
             stat.close();  
             conn.close();  
         } catch (Exception e) {  
-            e.printStackTrace();  
             throw new RuntimeException("目录：" + sqlDir+ "下的SQL脚本执行出错：", e);
         }
     }

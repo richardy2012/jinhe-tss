@@ -5,15 +5,12 @@ package com.jinhe.tss.framework.sso.context;
  * 支持上下文管理的线程类
  * </p>
  */
-public class ContextSupportThread extends Thread {
-	/**
-	 * 用户令牌
-	 */
+public abstract class ContextSupportThread extends Thread {
+	
+	/** 用户令牌 */
 	private String token;
 
-	/**
-	 * 构造函数
-	 */
+	/** 构造函数  */
 	public ContextSupportThread() {
 		super();
 		token = Context.getToken();
@@ -45,8 +42,6 @@ public class ContextSupportThread extends Thread {
 	 * 线程自定义运行入口
 	 * </p>
 	 */
-	public void runSupportContext(){
-		super.run();
-	}
+	public abstract void runSupportContext();
 }
 

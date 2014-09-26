@@ -71,7 +71,6 @@ public class BeanUtil {
                 Object value = PropertyUtils.getProperty(from, d.getName());
                 PropertyUtils.setProperty(to, d.getName(), value);
             } catch (Exception e) {
-                log.error("属性名：" + d.getName() + " 在实体间拷贝时出错", e);
                 throw new RuntimeException("属性名：" + d.getName() + " 在实体间拷贝时出错", e);
             }
         }
@@ -136,7 +135,6 @@ public class BeanUtil {
                     		clazz.getConstructor( String.class ).newInstance( value ));
                 }
             } catch (Exception e) {
-                log.error("属性名：" + propertyName + " 设置到实体中时出错", e);
                 throw new RuntimeException( "属性名：" + propertyName + " 设置到实体中时出错", e);
             }
         }

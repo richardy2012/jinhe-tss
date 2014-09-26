@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
-import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.util.BeanUtil;
@@ -27,7 +26,6 @@ public class FileAppServerStorer implements IAppServerStorer {
 	
 	Logger log = Logger.getLogger(FileAppServerStorer.class);
 
-	private static final String APPSERVERS_CONFIG_FILE = "application.servers.file";
 	private static final String DEFAULT_CONFIG_FILE = "tss/appServers.xml";
 
     private Map<String, AppServer> cache;
@@ -43,10 +41,9 @@ public class FileAppServerStorer implements IAppServerStorer {
 	private synchronized void init() {
 		Document doc; 
 		try {
-			doc = getConfigDocument();
+			doc = XMLDocUtil.createDoc(DEFAULT_CONFIG_FILE);
 		} 
 		catch(Exception e) {
-			log.info("can't find appServer.xml");
 			return;
 		}
 		
@@ -62,22 +59,6 @@ public class FileAppServerStorer implements IAppServerStorer {
 		}
 	}
  
-	/**
-	 * <p>
-	 * 获取配置文件内容
-	 * </p>
-	 *
-	 * @return
-	 */
-	protected Document getConfigDocument() {
-		String fileName = Config.getAttribute(APPSERVERS_CONFIG_FILE);
-		if (fileName != null) {
-			return XMLDocUtil.createDocByAbsolutePath(fileName);
-		} else {
-			return XMLDocUtil.createDoc(DEFAULT_CONFIG_FILE);
-		}
-	}
-
 	/**
 	 * 根据应用服务器编号获取应用服务器对象
 	 */

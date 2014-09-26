@@ -1,7 +1,6 @@
 package com.jinhe.tss.framework.web.servlet;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,53 +34,51 @@ public class Servlet4Upload extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		
-		String afterUploadClass = request.getParameter("afterUploadClass");
-		response.setContentType("text/html;charset=utf-8");
 		XmlHttpEncoder encoder = new XmlHttpEncoder();
-		
 		try {
-			String uploadPath = ParamConfig.getAttribute(UPLOAD_PATH);
-			if( uploadPath == null ) {
-				// gets absolute path of the web application
-				uploadPath = request.getServletContext().getRealPath("");
-			}
-	        
-	        String savePath = uploadPath + File.separator + "uploadFile";
-	 
-	        File fileSaveDir = new File(savePath);
-	        if ( !fileSaveDir.exists() ) {
-	            fileSaveDir.mkdirs();
-	        }
-	 
 	        Part part = request.getPart("file");
-            String fileName = extractFileName(part);
-            String subfix = FileHelper.getFileSuffix(fileName);
-            String newFileName = System.currentTimeMillis() + "." + subfix;
-            String newFilePath = savePath + File.separator + newFileName;
-            
-//	        part.write(newFilePath); // 写到指定的目录下,jetty先失败
-//			part.write(newFileName); // 写到默认上传目录下,jetty下成功
-			
-			writePart(part, newFilePath); // 自定义输出到指定目录
-	        
-			String script = "alert('upload sucess!')";
-			if(afterUploadClass != null) {
-				AfterUpload afterUpload = (AfterUpload) BeanUtil.newInstanceByName(afterUploadClass);
-				script = afterUpload.processUploadFile(request, newFilePath, fileName);
+			String script = doUpload(request, part); // 自定义输出到指定目录
+			if(script != null) {
+				encoder.put("script", script);
 			}
-	        
-			encoder.put("script", script);
-			
 		} catch (Exception e) {
 			log.error("上传失败，请查看日志信息！", e);
 			encoder.put("script", "alert(\"上传失败，请查看日志信息！\");");
 		}
 
+		response.setContentType("text/html;charset=utf-8");
 		encoder.print(new XmlPrintWriter(response.getWriter()));
 	}
-
-	// 自定义输出到指定目录
-	private void writePart(Part part, String newFilePath) throws IOException, FileNotFoundException {
+	
+	String doUpload(HttpServletRequest request, Part part) throws Exception {
+		String uploadPath = ParamConfig.getAttribute(UPLOAD_PATH);
+		if( uploadPath == null ) { // gets absolute path of the web application
+			uploadPath = request.getServletContext().getRealPath("");
+		}
+		
+        String savePath = uploadPath + File.separator + "uploadFile";
+   	 
+        File fileSaveDir = new File(savePath);
+        if ( !fileSaveDir.exists() ) {
+            fileSaveDir.mkdirs();
+        }
+        
+		// 获取上传的文件真实名字(含后缀)
+		String contentDisp = part.getHeader("content-disposition");
+		String fileName = "";
+		String[] items = contentDisp.split(";");
+		for (String item : items) {
+			if (item.trim().startsWith("filename")) {
+				fileName = item.substring(item.indexOf("=") + 2, item.length() - 1);
+				break;
+			}
+		}
+		
+		String subfix = FileHelper.getFileSuffix(fileName);
+        String newFileName = System.currentTimeMillis() + "." + subfix;
+        String newFilePath = savePath + File.separator + newFileName;
+        
+        // 自定义输出到指定目录
 		InputStream is = part.getInputStream();
 		FileOutputStream fos = new FileOutputStream(newFilePath);
 		int data = 0;
@@ -90,17 +87,12 @@ public class Servlet4Upload extends HttpServlet {
 		}
 		fos.close();
 		is.close();
-	}
-
-	// 获取上传的文件真实名字(含后缀)
-	private String extractFileName(Part part) {
-		String contentDisp = part.getHeader("content-disposition");
-		String[] items = contentDisp.split(";");
-		for (String item : items) {
-			if (item.trim().startsWith("filename")) {
-				return item.substring(item.indexOf("=") + 2, item.length() - 1);
-			}
+		
+		String afterUploadClass = request.getParameter("afterUploadClass");
+		if(afterUploadClass != null) {
+			AfterUpload afterUpload = (AfterUpload) BeanUtil.newInstanceByName(afterUploadClass);
+			return afterUpload.processUploadFile(request, newFilePath, fileName);
 		}
-		return "";
+		return null;
 	}
 }

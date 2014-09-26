@@ -94,7 +94,6 @@ public final class Context {
         if(card != null){
             setToken(card.getToken());
         }
-        //log.debug("完成初始化应用【" + Config.getAttribute(ApplicationContext.APPLICATION_CODE) + "】里当前请求的RequestContext。");
 	}
 
     /**

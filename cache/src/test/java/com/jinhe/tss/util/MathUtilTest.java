@@ -15,6 +15,8 @@ public class MathUtilTest {
 		
 		assertTrue(1.21d == MathUtil.multiply(1.1d, 1.1d));
 		
+		assertTrue(0d == MathUtil.multiply(null, null));
+		
 		int value = MathUtil.randomInt(10);
 		
 		assertTrue(value >= 0);

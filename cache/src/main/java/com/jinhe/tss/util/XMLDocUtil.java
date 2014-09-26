@@ -41,12 +41,7 @@ public class XMLDocUtil {
             saxReader.setEncoding("UTF-8");
             return saxReader.read(file);
         } catch (DocumentException e) {
-            try {
-                saxReader.setEncoding("GBK");
-                return saxReader.read(file);
-            } catch (DocumentException e2) {
-                throw new RuntimeException("读取文件出错：" + file, e2);
-            }
+        	throw new RuntimeException("读取文件出错：" + file, e);
         }
     }
     
@@ -66,12 +61,7 @@ public class XMLDocUtil {
             saxReader.setEncoding("UTF-8");
             return saxReader.read(fileUrl);
         } catch (DocumentException e) {
-            try {
-                saxReader.setEncoding("GBK");
-                return saxReader.read(fileUrl);
-            } catch (DocumentException e2) {
-                throw new RuntimeException("读取文件出错：" + fileUrl, e2);
-            }
+        	throw new RuntimeException("读取文件出错：" + fileUrl, e);
         }
     }
 

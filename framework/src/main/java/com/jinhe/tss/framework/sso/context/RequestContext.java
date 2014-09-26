@@ -47,12 +47,10 @@ public class RequestContext {
 	 * 被合并的请求标记，即子请求标记：值为true的为子请求，否则为正常请求
 	 */
 	public static final String MULTI_REQUEST = "Multi-Request";
-
-	private static final String REQUEST_TYPE  = "REQUEST-TYPE";  //HTTP请求类型参数名
-	private static final String XMLHTTP_REQUEST  = "xmlhttp";    //XMLHTTP请求的请求类型参数值
-	private static final String OTHER_APP_PASSWORD  = "pwd";     //登录其他系统是要求输入的密码的参数名
-    private static final String PROXY_REAL_PATH  = "realPath";   //需要转发请求的真实访问路径属性名
-    private static final String USER_INDENTIFIER = "identifier"; //用户身份认证类名属性名
+	public static final String REQUEST_TYPE  = "REQUEST-TYPE";  // HTTP请求类型参数名
+	public static final String XMLHTTP_REQUEST  = "xmlhttp";    // XMLHTTP请求的请求类型参数值
+	public static final String PROXY_REAL_PATH  = "realPath";   // 需要转发请求的真实访问路径属性名
+	public static final String USER_INDENTIFIER = "identifier"; // 用户身份认证类名属性名
 
     /**
 	 * 获取当前请求HttpServletRequest对象
@@ -284,15 +282,5 @@ public class RequestContext {
 	 */
 	public boolean isSecure() {
 		return request.isSecure();
-	}
-
-	/**
-	 * <p>
-	 * 获取为登录其他应用系统用户重新输入的密码
-	 * </p>
-	 * @return
-	 */
-	public String getPWD() {
-		return getValueFromHeaderOrParameter(OTHER_APP_PASSWORD);
 	}
 }

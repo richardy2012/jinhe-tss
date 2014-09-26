@@ -2,6 +2,7 @@ package com.jinhe.tss.framework.sso.appserver;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Assert;
 import org.junit.Test;
  
 public class AppServerTest  {
@@ -26,6 +27,13 @@ public class AppServerTest  {
         
         server.setBaseURL("http://127.0.0.1:8088/tss");
         assertEquals("127.0.0.1", server.getDomain());
+        
+        server = new AppServer();
+        Assert.assertNull( server.getDomain() );
+        Assert.assertNull( server.getPath() );
+        
+        server.setBaseURL("http://127.0.0.1");
+        assertEquals("/", server.getPath());
     }
 
 }

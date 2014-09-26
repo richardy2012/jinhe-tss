@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,8 +39,24 @@ public class ParamAppServerStorerTest extends TxTestSupport {
         List<?> list = paramService.getAllParams();
         assertTrue(list.size() > 0);
         
-        AppServer appServer = new ParamAppServerStorer().getAppServer("TSS");
+        ParamAppServerStorer paramAppServerStorer = new ParamAppServerStorer();
+		AppServer appServer = paramAppServerStorer.getAppServer("TSS");
 		assertEquals("TSS", appServer.getCode());
+		
+		appServer = paramAppServerStorer.getAppServer("TSS");
+		assertEquals("TSS", appServer.getCode());
+		
+		appServer = paramAppServerStorer.getAppServer("CMS");
+		assertEquals("CMS", appServer.getCode());
+		
+		try {
+			appServer = paramAppServerStorer.getAppServer("NOT_EXISTS");
+			Assert.fail();
+		} catch(Exception e) {
+			log.debug(e.getMessage());
+		}
+		
+		assertEquals(2, paramAppServerStorer.getAppServers().size());
         
         paramService.delete(group.getId());
     }

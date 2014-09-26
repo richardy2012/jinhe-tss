@@ -32,16 +32,12 @@ public class H2DBServer implements IH2DBServer{
     	
     	// 此时H2数据库只起来了服务，没有实例。
     	// 支持部署多个web应用时，启动多个不同端口的H2实例
-    	while(server == null) {
+    	while(server == null && port < 9888) {
     		try {  
                 server = Server.createTcpServer("-tcpPort", String.valueOf(port)).start();  
             } catch (Exception e) {  
                 log.warn("启动H2（createTcpServer）时出错：" + e.getMessage() + "。将尝试以其他端口号重启。");  
-                
                 port ++;
-                if(port > 9888) {
-        			return;
-        		}
             } 
     	} 
     	
@@ -70,8 +66,7 @@ public class H2DBServer implements IH2DBServer{
             try {
                 conn.close();
             } catch (SQLException e) {
-                log.info("关闭H2 database连接出错：" + e.toString());  
-                throw new RuntimeException(e);  
+                throw new RuntimeException("关闭H2 database连接出错：" + e.toString(), e);  
             }  
             server.shutdown();
             server.stop();

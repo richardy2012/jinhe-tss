@@ -26,7 +26,6 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
-import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.exception.BusinessServletException;
 import com.jinhe.tss.framework.sso.SSOConstants;
@@ -47,16 +46,10 @@ public class Filter7AccessingCheck implements Filter {
         log.info("AccessingCheckFilter init! appCode=" + Context.getApplicationContext().getCurrentAppCode());
     }
  
-    public void destroy() {
-    }
+    public void destroy() { }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
-        String ip = request.getRemoteAddr();
-		if( !checkIp(ip) ) {
-            log.info("黑名单（" + ip + "）用户试图访问系统被拒绝。");
-            throw new BusinessServletException("您的ip" + ip + " 地址在黑名单里，如有疑问请联系管理员！");
-        }
         
         HttpSession session = req.getSession(false);
         if(session == null){
@@ -94,24 +87,6 @@ public class Filter7AccessingCheck implements Filter {
         }
         log.debug("权限检测通过");
         chain.doFilter(request, response);
-    }
-
-    public final static String LIMITED_IP_LIST = "limited_ip_list";
-    
-    /**
-     * 检查ip地址是否在受限的黑名单里。
-     * @param remoteAddr
-     * @return 
-     *        不受限：true  受限：false
-     */
-    private boolean checkIp(String remoteAddr) {
-        String limitedIPs; 
-        try{
-            limitedIPs = ParamManager.getValue(LIMITED_IP_LIST); // 格式为ip1,ip2,ip3....
-        } catch (Exception e){
-            limitedIPs = null;
-        }
-        return limitedIPs == null || limitedIPs.indexOf(remoteAddr) == -1;
     }
 }
 
@@ -220,12 +195,8 @@ class AccessingChecker {
         
         for (Iterator<?> it = root.elementIterator("servlet"); it.hasNext();) {
             Element servletNode = (Element) it.next();
-            
             String name = servletNode.attributeValue("name");
-            if (name == null || "".equals(name)) {
-                continue;
-            }
-            
+ 
             String role = servletNode.attributeValue("right");
             if ( !EasyUtils.isNullOrEmpty(role) ) {
                 Set<String> rightSet = new HashSet<String>();

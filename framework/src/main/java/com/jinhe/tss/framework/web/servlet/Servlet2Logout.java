@@ -20,8 +20,8 @@ public class Servlet2Logout extends HttpServlet {
 
     private static final long serialVersionUID = 807941967787932751L;
  
-    protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
-        doPost(arg0, arg1);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

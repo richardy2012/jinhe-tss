@@ -5,11 +5,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -22,6 +25,7 @@ import org.junit.Test;
 
 import com.jinhe.tss.framework.sso.AnonymousOperator;
 import com.jinhe.tss.framework.sso.IdentityCard;
+import com.jinhe.tss.framework.web.RewriteableHttpServletRequest;
 import com.jinhe.tss.framework.web.filter.Filter3Context;
 
 /**
@@ -53,7 +57,7 @@ public class ContextFilterTest {
         session = mocksControl.createMock(HttpSession.class); // EasyMock.createMock(HttpSession.class);
         
         EasyMock.expect(request.getSession()).andReturn(session).times(0, 8);
-        EasyMock.expect(request.getHeader(RequestContext.USER_CLIENT_IP)).andReturn("127.0.0.1").times(0, 3);
+        EasyMock.expect(request.getHeader(RequestContext.USER_CLIENT_IP)).andReturn("127.0.0.1").times(0, 8);
         EasyMock.expect(request.getContextPath()).andReturn("/tss");
         EasyMock.expect(request.getRequestURI()).andReturn("/tss/login.do");
         
@@ -101,7 +105,20 @@ public class ContextFilterTest {
         EasyMock.expect(session.getAttribute(RequestContext.USER_TOKEN)).andReturn("token").times(0, 3);
         final IdentityCard identityCard = new IdentityCard("token", AnonymousOperator.anonymous);
         EasyMock.expect(session.getAttribute(RequestContext.IDENTITY_CARD)).andReturn(identityCard).times(0, 3);
+        
+        Enumeration<String> e = new Enumeration<String>() {
+			public String nextElement() {
+				return null;
+			}
+			public boolean hasMoreElements() {
+				return false;
+			}
+		};
+        EasyMock.expect(request.getHeaders(RequestContext.USER_CLIENT_IP)).andReturn(e).times(0, 8);	
+        EasyMock.expect(request.getParameterMap()).andReturn(new HashMap<String, String[]>()).times(0, 8);	
 
+        EasyMock.expect(request.getParameter("userName")).andReturn("J.K").times(0, 3);
+        
         session.setAttribute(RequestContext.IDENTITY_CARD, identityCard);
 
         mocksControl.replay(); // 让mock 准备重放记录的数据
@@ -111,9 +128,18 @@ public class ContextFilterTest {
             public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
                 HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-                assertTrue(Context.getRequestContext().getRequest() instanceof HttpServletRequest);
+                RewriteableHttpServletRequest requestWrap = Context.getRequestContext().getRequest();
+				assertTrue(requestWrap instanceof HttpServletRequest);
                 assertEquals(httpServletRequest.getSession(), Context.getRequestContext().getSession());
                 assertEquals(identityCard, Context.getRequestContext().getIdentityCard());
+                
+                assertEquals("127.0.0.1", requestWrap.getHeader(RequestContext.USER_CLIENT_IP));
+                assertEquals("J.K", requestWrap.getParameter("userName"));
+                
+                assertEquals(false, requestWrap.getHeaders(RequestContext.USER_CLIENT_IP).hasMoreElements());
+                assertEquals(false, requestWrap.getParameterNames().hasMoreElements());
+                assertNull( requestWrap.getParameterValues("userName") );
+                requestWrap.addCookie(new Cookie("test", "test"));
             }
 
         });

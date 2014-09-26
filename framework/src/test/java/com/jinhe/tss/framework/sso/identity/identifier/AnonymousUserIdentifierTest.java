@@ -13,6 +13,7 @@ import org.springframework.mock.web.MockHttpSession;
 
 import com.jinhe.tss.framework.exception.UserIdentificationException;
 import com.jinhe.tss.framework.sso.AnonymousOperator;
+import com.jinhe.tss.framework.sso.IOperator;
 import com.jinhe.tss.framework.sso.IUserIdentifier;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.appserver.AppServer;
@@ -66,8 +67,14 @@ public class AnonymousUserIdentifierTest {
             fail("UserIdentificationException");
         }
         assertNotNull(card);
+        assertEquals(AnonymousOperator.anonymous.getId(), card.getId());
         assertEquals(AnonymousOperator.anonymous.getUserName(), card.getUserName());
         assertTrue(OnlineUserManagerFactory.getManager().isOnline(card.getToken()));
+        
+        IOperator anonymousOperator = card.getOperator();
+        assertTrue(anonymousOperator instanceof AnonymousOperator);
+        assertTrue( ((AnonymousOperator)anonymousOperator).isAnonymous() );
+        assertTrue( ((AnonymousOperator)anonymousOperator).getAttributesMap().isEmpty() );
     }
 
     @Test

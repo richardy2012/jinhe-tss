@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.Global;
+import com.jinhe.tss.framework.component.progress.Progress;
+import com.jinhe.tss.framework.component.progress.ProgressPool;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.TestUtil;
@@ -223,5 +226,21 @@ public class GroupModuleTest extends TxSupportTest4UM {
     @Test
     public void getUserByGroupId() {
     	action.getUserByGroupId(response, UMConstants.MAIN_GROUP_ID);
+    }
+    
+    @Test
+    public void getProgressActionSupport() {
+    	String code = "123456";
+    	ProgressPool.putSchedule(code, new Progress(100));
+    	
+    	action.getProgress(response, code);
+    	try {
+    		action.doConceal(response, code);
+    		Assert.fail();
+    	} 
+    	catch(Exception e) {
+    		Assert.assertTrue(true);
+    	}
+    	
     }
 }

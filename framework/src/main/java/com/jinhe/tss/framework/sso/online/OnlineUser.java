@@ -23,65 +23,28 @@ public class OnlineUser {
     /** 令牌：包含标准用户ID、平台SessionID和令牌的生成时间 */
     protected String token;
     
-    public OnlineUser() {
-        
-    }
+    public OnlineUser() { }
  
     public OnlineUser(Long userId, String appCode, String sessionId, String token) {
-        this.userId = userId;
-        this.appCode = appCode;
-        this.sessionId = sessionId;
-        this.token = token;
+        this.setUserId(userId);
+        this.setAppCode(appCode);
+        this.setSessionId(sessionId);
+        this.setToken(token);
     }
 
     public int hashCode() {
-        final int PRIME = 31;
-        int result = 1;
-        result = PRIME * result + ((appCode == null) ? 0 : appCode.hashCode());
-        result = PRIME * result + ((sessionId == null) ? 0 : sessionId.hashCode());
-        result = PRIME * result + ((token == null) ? 0 : token.hashCode());
-        result = PRIME * result + ((userId == null) ? 0 : userId.hashCode());
-        return result;
+        return toString().hashCode();
     }
 
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
+        if (obj == null) {
             return false;
-        if ( !(obj instanceof OnlineUser))
-            return false;
-        
-        final OnlineUser other = (OnlineUser) obj;
-        if (appCode == null) {
-            if (other.appCode != null)
-                return false;
-        } else if (!appCode.equals(other.appCode))
-            return false;
-        
-        if (sessionId == null) {
-            if (other.sessionId != null)
-                return false;
-        } else if (!sessionId.equals(other.sessionId))
-            return false;
-        
-        if (token == null) {
-            if (other.token != null)
-                return false;
-        } else if (!token.equals(other.token))
-            return false;
-        
-        if (userId == null) {
-            if (other.userId != null)
-                return false;
-        } else if (!userId.equals(other.userId))
-            return false;
-        
-        return true;
+        }
+        return this.toString().equals(obj.toString());
     }
     
     public String toString() {
-        return userId + ":" + appCode + ":" + sessionId + ":" + token;
+        return getUserId() + ":" + getAppCode() + ":" + getSessionId() + ":" + getToken();
     }
 
     public String getAppCode() {
@@ -114,5 +77,4 @@ public class OnlineUser {
     public void setToken(String token) {
         this.token = token;
     }
-
 }

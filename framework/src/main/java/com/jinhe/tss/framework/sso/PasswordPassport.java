@@ -38,14 +38,4 @@ public class PasswordPassport {
     public String getLoginName() {
         return loginName;
     }
-
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("\n----------- Passport --------------");
-        sb.append("\nClassName: ").append(this.getClass().getName());
-        sb.append("\nUserName: ").append(this.loginName);
-        sb.append("\nPassword: ").append(this.password);
-        sb.append("\n------------- End -----------------");
-        return sb.toString();
-    }
 }

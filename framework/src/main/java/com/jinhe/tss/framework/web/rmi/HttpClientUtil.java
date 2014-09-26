@@ -115,8 +115,8 @@ public class HttpClientUtil {
             realPath = URLDecoder.decode(realPath, "UTF-8");
             int index = realPath.indexOf("?");
             if (index > -1) {
-                realPath = realPath.substring(0, index);
                 queryString = realPath.substring(index + 1);
+                realPath    = realPath.substring(0, index);
             }
         }
         String newurl = appServer.getBaseURL() + realPath;
@@ -199,5 +199,4 @@ public class HttpClientUtil {
             request.addCookie(cookie); 
         }
     }
-	
 }

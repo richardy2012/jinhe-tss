@@ -205,14 +205,8 @@ public class FileHelper {
 	 */
 	public static List<String> listFilesByType(String suffix, File dir) {
 		List<String> list = new ArrayList<String>();
-		if(dir.isFile()) return list;
-		
-		if (dir.exists()) {
+		if (dir.isDirectory() && dir.exists()) {
 			String[] files = dir.list();
-			if(files == null) {
-				return list;
-			}
-			
 			for (int i = 0; i < files.length; i++) {
 				String fileName = files[i];
 				if (fileName.endsWith(suffix)) {
@@ -376,10 +370,6 @@ public class FileHelper {
 	 *
 	 * @return
 	 */
-	public static void copyFolder(String fromDir, String toDir) {
-	    copyFolder(new File(fromDir), new File(toDir));
-	}
-	
     public static void copyFolder(File fromDir, File toDir) {
         copyFilesInDir("", fromDir, toDir, false);
     }
@@ -473,8 +463,8 @@ public class FileHelper {
      * @return
      */
     public static String getFileSuffix(String fileName) {
-        if (null == fileName) 
-            return null;
+    	 if ( fileName == null )
+             return null;
         
         int index = fileName.lastIndexOf(".");
         if (index > -1) {
@@ -489,7 +479,7 @@ public class FileHelper {
      * @return
      */
     public static String getFileNameNoSuffix(String fileName) {
-        if (null == fileName)
+        if ( fileName == null )
             return null;
         
         int index = fileName.lastIndexOf(".");
@@ -620,11 +610,7 @@ public class FileHelper {
 		}
 		zos.close();
 	}
-     
-	public static void zip(String baseDir) throws Exception {
-		zip(new File(baseDir));
-	}
-     
+ 
 	/**
 	 * 解压缩. 将file文件解压到file所在的目录下.
 	 */

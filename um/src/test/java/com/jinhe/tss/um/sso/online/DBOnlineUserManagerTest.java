@@ -38,7 +38,7 @@ public class DBOnlineUserManagerTest extends TxSupportTest4UM {
     }
     
     @Test
-    public final void testDBOnlineUserManager() {
+    public void testDBOnlineUserManager() {
         Collection<String> onlineUserNames = manager.getOnlineUserNames();
         for(String name : onlineUserNames) {
             log.debug(name);

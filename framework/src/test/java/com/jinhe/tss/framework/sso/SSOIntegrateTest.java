@@ -5,8 +5,10 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Random;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -20,7 +22,10 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
+import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.sso.online.IOnlineUserManager;
 import com.jinhe.tss.framework.sso.servlet.JustRedirectServlet;
@@ -82,12 +87,11 @@ public class SSOIntegrateTest {
         
         context.addFilter(Filter1Encoding.class, "/*", null).setInitParameter("encoding", "UTF-8");
         context.addFilter(Filter2CatchException.class, "*", null);
-        context.addFilter(Filter3Context.class, "/*", null);
+        context.addFilter(Filter3Context.class, "/*", null).setInitParameter("ignorePaths", "js,htm,html,jpg,png,gif,ico,css,xml,swf");
         context.addFilter(Filter4AutoLogin.class, "/auth/*", null);
         context.addFilter(Filter5HttpProxy.class, "/*", null);
         context.addFilter(Filter6XmlHttpDecode.class, "/*", null);
         context.addFilter(Filter7AccessingCheck.class, "*.html", null);
-//        context.addFilter(Filter2CatchException.class, "*", null);
         
         context.setContextPath(contextPath);
         
@@ -187,7 +191,26 @@ public class SSOIntegrateTest {
         IOnlineUserManager remoteObject = (IOnlineUserManager)factory.getObject();
         Assert.assertNotNull(remoteObject);
         
-//        remoteObject.getOnlineUserNames();
+        try {
+            String token = TokenUtil.createToken(new Random().toString(), 12L); 
+            IdentityCard card = new IdentityCard(token, new DemoOperator(12L));
+            Context.initIdentityInfo(card);
+            
+            MockHttpServletRequest request = new MockHttpServletRequest();
+            Cookie[] cookies = new Cookie[3];
+    		cookies[0] = new Cookie("TSS", "TSS");
+    		cookies[1] = new Cookie("JSESSIONID", "1234567890");
+    		cookies[2] = new Cookie("XXX", "XXX");
+    		request.setCookies(cookies);
+    		
+            Context.initRequestContext(request);
+            Context.setResponse(new MockHttpServletResponse());
+            
+        	remoteObject.getOnlineUserNames();
+        }
+        catch(Exception e) {
+        	log.error("-- remote invoke -- : " + e.getMessage());
+        }
     	
         log.info("--------------------------------- 5、测试退出登录(tss/cms里全注销掉) ------------------------------------------------------");
         httppost = new PostMethod("http://localhost:8111/tss/logout.in");

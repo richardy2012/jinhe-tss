@@ -35,32 +35,32 @@ import com.jinhe.tss.framework.sso.context.RequestContext;
  * </pre>
  */
 @WebFilter(filterName = "ContextFilter", 
-		urlPatterns = {"/*"}, initParams = {
-		@WebInitParam(name="ignoreServletPaths", value="/remote/OnlineUserService,js,htm,html,jpg,png,gif,ico,css,xml,swf")
-})
+		urlPatterns = {"/*"}, 
+		initParams  = {@WebInitParam(name="ignorePaths", value="/remote/OnlineUserService,js,htm,html,jpg,png,gif,ico,css,xml,swf")}
+)
 public class Filter3Context implements Filter {
 	
 	private static Logger log = Logger.getLogger(Filter3Context.class);
 
-    private Set<String> ignoreServletPaths = new HashSet<String>();
+    private Set<String> ignorePaths = new HashSet<String>();
      
     public void init(FilterConfig filterConfig) throws ServletException {
-        String paths = filterConfig.getInitParameter("ignoreServletPaths");
+        String paths = filterConfig.getInitParameter("ignorePaths");
         if (paths != null) {
-            ignoreServletPaths.addAll(Arrays.asList(paths.split(",")));
+        	ignorePaths.addAll(Arrays.asList(paths.split(",")));
         }
-        log.info("ContextFilter init! appCode=" + Context.getApplicationContext().getCurrentAppCode());
+        log.info("ContextFilter init! appCode=" + Context.getApplicationContext().getCurrentAppCode() + ", ignorePaths=" + paths);
     }
  
     public void destroy() {
-        ignoreServletPaths = null;
+    	ignorePaths = null;
     }
  
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
         
         String servletPath = RequestContext.getServletPath((HttpServletRequest)request);
-        for(String ignore : ignoreServletPaths) {
+        for(String ignore : ignorePaths) {
             if(servletPath.toLowerCase().endsWith(ignore.toLowerCase())) {
                 chain.doFilter(request, response);
                 return;

@@ -72,7 +72,7 @@ public class JCacheAccessTest {
 	
 	@Test
 	public void testPoolAccessLRU() {
-		pool = JCache.getInstance().getPool("SHORT");
+		pool = JCache.getInstance().getPool("SHORT-2");
 		pool.getCacheStrategy().setAccessMethod(Container.ACCESS_LRU);
 		
 		for(int i = 0; i < 10; i++) {
@@ -113,7 +113,7 @@ public class JCacheAccessTest {
 	 */
 	@Test
 	public void testPoolCyclelife() {
-		pool = JCache.getInstance().getPool("SHORT");
+		pool = JCache.getInstance().getPool("SHORT-3");
 		pool.getCacheStrategy().setAccessMethod(Container.ACCESS_RANDOM);
 		
 		Assert.assertEquals(0, pool.size());

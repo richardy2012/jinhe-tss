@@ -142,7 +142,6 @@ public class EasyUtils {
                 try {
                     b = Character.toString(c).getBytes("utf-8");
                 } catch (Exception ex) {
-                    System.out.println(ex);
                     b = new byte[0];
                 }
                 for (int j = 0; j < b.length; j++) {

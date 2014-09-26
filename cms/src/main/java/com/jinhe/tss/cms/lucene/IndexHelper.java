@@ -142,7 +142,11 @@ public class IndexHelper {
         }
         
         // 覆盖更新后的索引文件到索引目录。注： 索引文件不从Temp目录下删除，下次更新索引时接着往该索引文件后添加。
-        FileHelper.copyFilesInDir("", tempIndexDir, indexDir, false);
+        try {
+        	FileHelper.copyFolder(tempIndexDir, indexDir);
+        } catch(Exception e) {
+        	log.error(e.getMessage(), e);
+        }
     }
 }
 
