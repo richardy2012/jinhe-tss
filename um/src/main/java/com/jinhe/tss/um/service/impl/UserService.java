@@ -260,11 +260,7 @@ public class UserService implements IUserService{
 		List<?> list = userDao.getEntities(" from User o where o.id=? and o.accountLife < ?", userId, new Date());
 		return !EasyUtils.isNullOrEmpty(list);
 	}
-	
-    public PageInfo getUsersByGroupId(Long groupId, Integer pageNum) {
-        return groupDao.getUsersByGroup(groupId, pageNum);
-    }
-
+ 
     public PageInfo getUsersByGroupId(Long groupId, Integer pageNum, String orderBy) {
         return groupDao.getUsersByGroup(groupId, pageNum, orderBy);
     }
@@ -288,18 +284,13 @@ public class UserService implements IUserService{
     
     // 可供定时器等对象直接调用。 
 	public void overdue() { 
-		try {
-			Date today = new Date();
-			userDao.executeHQL("update User u set u.disabled = 1 where u.accountLife < ?", today);
-			userDao.executeHQL("update Role r set r.disabled = 1 where r.endDate < ?", today);
-			userDao.executeHQL("update SubAuthorize s set s.disabled = 1 where s.endDate < ?", today);
-			
-			// TODO 检查用户自身对转授出去的角色是否还有关联，如果没有了，则需要在转授信息里去除这些角色的关联信息。
-			// 1、creatorId --> list<subauth> --> list<roleId>
-			// 2、check userId & roleId 的关系是否还在，不在则删除转授权里的关联
-			
-		} catch(Exception e) {
-			throw new BusinessException("执行停用过期时出错 ", e);
-		}
+		Date today = new Date();
+		userDao.executeHQL("update User u set u.disabled = 1 where u.accountLife < ?", today);
+		userDao.executeHQL("update Role r set r.disabled = 1 where r.endDate < ?", today);
+		userDao.executeHQL("update SubAuthorize s set s.disabled = 1 where s.endDate < ?", today);
+		
+		// TODO 检查用户自身对转授出去的角色是否还有关联，如果没有了，则需要在转授信息里去除这些角色的关联信息。
+		// 1、creatorId --> list<subauth> --> list<roleId>
+		// 2、check userId & roleId 的关系是否还在，不在则删除转授权里的关联
 	}
 }

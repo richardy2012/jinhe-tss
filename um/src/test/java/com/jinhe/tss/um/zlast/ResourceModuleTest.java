@@ -87,6 +87,12 @@ public class ResourceModuleTest extends TxSupportTest4UM {
         ResourceType resourceType = service.getResourceTypeById(rt.getId());
         action.editResourceType(response, resourceType);
         
+        ResourceType newOne = new ResourceType();
+        BeanUtil.copy(newOne, resourceType);
+        newOne.setId(null);
+        newOne.setResourceTypeId("testRT-1");
+        action.editResourceType(response, newOne);
+        
         action.deleteResourceType(response, rt.getId());
         
         ResourceTypeRoot rtr = resourceTypeDao.getResourceTypeRoot(applicationId, resourceTypeId);
@@ -115,6 +121,12 @@ public class ResourceModuleTest extends TxSupportTest4UM {
         operationPO.setSeqNo(1);
         operationPO.setDescription("unit tset");
 		action.editOperation(response, operationPO);
+		
+		Operation newOne = new Operation();
+        BeanUtil.copy(newOne, operationPO);
+        newOne.setId(null);
+        newOne.setResourceTypeId("testOperation-1");
+        action.editOperation(response, newOne);
         
         action.getOperationInfo(response, operationId);
         action.deleteOperation(response, operationId);

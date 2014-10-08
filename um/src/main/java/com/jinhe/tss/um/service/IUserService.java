@@ -124,16 +124,6 @@ public interface IUserService {
 	 * 处理过期用户
 	 */
 	void overdue();
-	
-    /**
-     * <p>
-     * 根据用户组ID获取所有的用户
-     * </p>
-     * @param groupId
-     * @param pageNum 当前页数
-     * @return
-     */
-    PageInfo getUsersByGroupId(Long groupId, Integer pageNum);
 
     /**
      * <p>

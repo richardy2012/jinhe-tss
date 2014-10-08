@@ -82,17 +82,10 @@ public class ComponentHelper {
      */
     public static void importComponent(IComponentService service, File file, Component component, 
     		String desDir, String eXMLFile) {
-    	
-        if (null == file) {
-            throw new BusinessException("导入文件为空！");
-        }
-        
+ 
         String fileName = file.getName();
         if (fileName.endsWith(".xml")) {
-            Component element = importXml(service, component, file);
-            if (element == null) {      
-                throw new BusinessException(fileName + "不符合" + eXMLFile + "导入文件规范!!");   
-            }
+            importXml(service, component, file);
         } 
         else if (fileName.endsWith(".zip")) {
             importZip(service, component, file, desDir, eXMLFile);
@@ -113,19 +106,9 @@ public class ComponentHelper {
         	reader.setEncoding("UTF-8");
             document = reader.read(file);
         } catch (Exception e) {
-            try{
-            	reader = new SAXReader();
-            	reader.setEncoding("GBK");
-                document = reader.read(file);
-            }catch (Exception e2) {
-            	try{
-                	reader = new SAXReader();
-                    document = reader.read(file);
-                }catch (Exception e3) {
-                    throw new BusinessException("文件的编码存在问题，请换成GBK或者UTF-8再重新导入！", e3);
-                }
-            }
+        	throw new BusinessException("文件的编码存在问题，请换成UTF-8再重新导入！", e);
         }
+        
         try {
             org.dom4j.Element rootElement = document.getRootElement();
             if(!rootElement.getName().equals(component.getComponentType())) {
@@ -142,6 +125,7 @@ public class ComponentHelper {
         } catch (Exception e) {
             throw new BusinessException("导入文件可能不是规定的" + component.getClass().getName() + "导入文件", e);
         }
+        
         return service.saveComponent(component);
     }
     
