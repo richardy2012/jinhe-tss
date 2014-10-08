@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import com.jinhe.tss.um.dao.IResourceTypeDao;
 import com.jinhe.tss.um.entity.Application;
 import com.jinhe.tss.um.entity.Operation;
 import com.jinhe.tss.um.entity.ResourceType;
+import com.jinhe.tss.um.entity.ResourceTypeRoot;
 import com.jinhe.tss.um.service.IResourceService;
 import com.jinhe.tss.util.BeanUtil;
 
@@ -30,7 +32,7 @@ public class ResourceModuleTest extends TxSupportTest4UM {
     
     @Autowired ResourceAction action;
     @Autowired IResourceService service;
-    @Autowired IResourceTypeDao   resourceTypeDao;
+    @Autowired IResourceTypeDao resourceTypeDao;
     
     @Before
     public void setUp() {
@@ -70,11 +72,11 @@ public class ResourceModuleTest extends TxSupportTest4UM {
 
     @Test
     public void testResourceType() {
-        String applicationId = UMConstants.TSS_APPLICATION_ID;
+        String applicationId = UMConstants.TSS_APPLICATION_ID.toUpperCase();
         String resourceTypeId = UMConstants.ROLE_RESOURCE_TYPE_ID;
 
         String hql = " from ResourceType o where upper(o.applicationId) = ? and o.resourceTypeId = ?";
-		List<?> list = resourceTypeDao.getEntities(hql, applicationId.toUpperCase(), resourceTypeId);
+		List<?> list = resourceTypeDao.getEntities(hql, applicationId, resourceTypeId);
 		assertTrue(list.size() > 0);
  
 		ResourceType rt = (ResourceType) list.get(0);
@@ -86,6 +88,12 @@ public class ResourceModuleTest extends TxSupportTest4UM {
         action.editResourceType(response, resourceType);
         
         action.deleteResourceType(response, rt.getId());
+        
+        ResourceTypeRoot rtr = resourceTypeDao.getResourceTypeRoot(applicationId, resourceTypeId);
+        Assert.assertNotNull(rtr);
+        Assert.assertEquals(UMConstants.TSS_APPLICATION_ID, rtr.getApplicationId());
+        Assert.assertEquals(resourceTypeId, rtr.getResourceTypeId());
+        Assert.assertEquals(rtr.getPK(), rtr.getId());
     }
     
     @Test
@@ -101,7 +109,11 @@ public class ResourceModuleTest extends TxSupportTest4UM {
         
 		Operation operationPO = service.getOperationById(operationId);
         assertEquals(operation, operationPO);
+        assertEquals(operation.getId(), operationPO.getPK());
         
+        operationPO.setName(operationPO.getName());
+        operationPO.setSeqNo(1);
+        operationPO.setDescription("unit tset");
 		action.editOperation(response, operationPO);
         
         action.getOperationInfo(response, operationId);

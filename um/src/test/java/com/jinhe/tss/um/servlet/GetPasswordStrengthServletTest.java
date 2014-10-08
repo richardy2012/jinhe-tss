@@ -26,5 +26,4 @@ public class GetPasswordStrengthServletTest extends TxSupportTest4UM {
         	Assert.assertFalse("Test servlet error:" + e.getMessage(), true);
         }
     }
-    
 }

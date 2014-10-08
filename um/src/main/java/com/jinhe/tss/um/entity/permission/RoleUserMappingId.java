@@ -32,22 +32,15 @@ public class RoleUserMappingId implements Serializable {
 	}
 
 	public boolean equals(Object obj) {
-        if(obj != null && obj instanceof RoleUserMappingId){
-            RoleUserMappingId object = (RoleUserMappingId) obj;
-            return this.roleId.equals(object.getRoleId())
-                    && this.userId.equals(object.getUserId());
-        }
-		return false;
+		return this.toString().equals(obj.toString());
 	}
 
 	public int hashCode() {
-		return (this.roleId + "_" + this.userId).hashCode();
+		return toString().hashCode();
 	}
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("roleId=").append(roleId).append(", userId=").append(userId);
-		return sb.toString();
+		return "roleId=" + roleId + ",userId=" + userId;
 	}
 }
 

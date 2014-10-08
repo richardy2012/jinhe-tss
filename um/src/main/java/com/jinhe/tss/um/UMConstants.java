@@ -151,16 +151,14 @@ public final class UMConstants {
 	public static final String STOP_GROUP_TREENODE_ICON      = "images/user_group_1.gif";     //Group图标(停用)
 	public static final String START_STRATEGY_TREENODE_ICON = "images/rule_0.gif";  //权限转授图标(启用)
 	public static final String STOP_STRATEGY_TREENODE_ICON = "images/rule_1.gif";  //(Admin)图标(停用)
-	public static final String START_USER_GRID_NODE_ICON  = "images/user_0.gif";    //User图标(启用)
-	public static final String STOP_USER_GRID_NODE_ICON  = "images/user_1.gif";   //User图标(停用)
-	public static final String START_ADMIN_USER_GRID_NODE_ICON  = "images/admin_0.gif";    //User(Admin)图标(启用)
-	public static final String STOP_ADMIN_USER_GRID_NODE_ICON  = "images/admin_1.gif";    //User(Admin)图标(停用)
-	public static final String START_GROUP_ROLE_TREENODE_ICON = "images/role_group_0.gif";  //Role组图标(启用)
-	public static final String STOP_GROUP_ROLE_TREENODE_ICON = "images/role_group_1.gif";  //Role组图标(停用)
-	public static final String START_ROLE_TREENODE_ICON = "images/role_0.gif";    //Role图标(启用)
-	public static final String STOP_ROLE_TREENODE_ICON = "images/role_1.gif";    //Role图标(停用)
-	public static final String APPLICATION_TREENODE_ICON   = "images/app.gif";  //Application图标
-	public static final String RESOURCETYPE_TREENODE_ICON = "images/resource_type.gif";//ResourceType图标
+	public static final String START_USER_GRID_NODE_ICON  = "images/user_0.gif";  //User图标(启用)
+	public static final String STOP_USER_GRID_NODE_ICON  = "images/user_1.gif";  //User图标(停用)
+	public static final String START_GROUP_ROLE_TREENODE_ICON = "images/role_group_0.gif"; //角色组图标(启用)
+	public static final String STOP_GROUP_ROLE_TREENODE_ICON = "images/role_group_1.gif";  //角色组图标(停用)
+	public static final String START_ROLE_TREENODE_ICON = "images/role_0.gif";   //角色图标(启用)
+	public static final String STOP_ROLE_TREENODE_ICON = "images/role_1.gif";    //角色图标(停用)
+	public static final String APPLICATION_TREENODE_ICON   = "images/app.gif";   //应用图标
+	public static final String RESOURCETYPE_TREENODE_ICON = "images/resource_type.gif";//资源图标
 	public static final String OPERATION_TREENODE_ICON   = "images/permission.gif";    //权限选项Tree图标
-	public static final String RESOURCE_TREENODE_ICON   = "images/resource1.gif";       //资源Tree图标
+	public static final String RESOURCE_TREENODE_ICON   = "images/resource1.gif";      //资源Tree图标
 }

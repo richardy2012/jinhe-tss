@@ -43,12 +43,7 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
     	
 		return group;
 	}
-    
-    public Group moveGroup(Group group) {
-        update(group);
-		return group;
-	}
-    
+ 
 	public Group removeGroup(Group group) {
         List<?> groups = getChildrenById(group.getId()); //列表中包含了Group本身
         List<?> users = getUsersByGroupIdDeeply(group.getId());

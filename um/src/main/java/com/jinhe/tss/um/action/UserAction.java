@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
-import com.jinhe.tss.framework.sso.AnonymousOperator;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.online.OnlineUserManagerFactory;
@@ -224,14 +223,8 @@ public class UserAction extends BaseActionSupport {
     public void getOperatorInfo(HttpServletResponse response) {
         XmlHttpEncoder encoder = new XmlHttpEncoder();
         encoder.put("id", Environment.getOperatorId());
-        if(Context.getIdentityCard().isAnonymous()){
-            encoder.put("loginName", AnonymousOperator.anonymous.getLoginName());
-            encoder.put("name", AnonymousOperator.anonymous.getLoginName());
-        }
-        else {
-            encoder.put("loginName", Environment.getOperatorName());
-            encoder.put("name", Environment.getUserName());
-        }
+        encoder.put("loginName", Environment.getOperatorName());
+        encoder.put("name", Environment.getUserName());
         
         encoder.print(getWriter());
     }

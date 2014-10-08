@@ -57,7 +57,7 @@ public class GroupAction extends ProgressActionSupport {
     public void getCanAddedGroup2Tree(HttpServletResponse response, @PathVariable("type") int type) {
         String operationId = UMConstants.GROUP_EDIT_OPERRATION;
         
-        TreeEncoder treeEncoder;
+        TreeEncoder treeEncoder = null;
         if ( Group.MAIN_GROUP_TYPE.equals(type) ) {
         	// 用户可能只对某些子组有权限，需要把这些子组的父节点也找出来，以组成一棵完成的组织结构树
         	Object[] objs = service.getMainGroupsByOperationId(operationId); 
@@ -77,12 +77,11 @@ public class GroupAction extends ProgressActionSupport {
         	Object[] objs = service.getAssistGroupsByOperationId(operationId);
             treeEncoder = new TreeEncoder(objs[1], new LevelTreeParser());
         }
-        else {
-            throw new BusinessException("参数groupType值有误！groupType=" + type);
-        }
         
-        treeEncoder.setNeedRootNode(false);
-        print("GroupTree", treeEncoder);
+        if(treeEncoder != null) {
+        	treeEncoder.setNeedRootNode(false);
+            print("GroupTree", treeEncoder);
+        }
     }
 	
 	/**

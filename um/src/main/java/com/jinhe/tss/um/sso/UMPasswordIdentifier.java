@@ -51,7 +51,11 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
              */
             IdentityGetter ig = IdentityGetterFactory.getInstance();
             if(ig.indentify(operator, password)) {
-            	service.resetPassword(operator.getId(), password);
+            	try {
+            		service.resetPassword(operator.getId(), password);
+            	} catch(Exception e) {
+            		log.error("设置用户密码为第三方应用里的密码时出错了：" + e.getMessage());
+            	}
             	return operator;
             }
             

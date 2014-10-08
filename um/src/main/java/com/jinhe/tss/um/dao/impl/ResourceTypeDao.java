@@ -22,11 +22,7 @@ public class ResourceTypeDao extends BaseDao<ResourceType> implements IResourceT
         List<?> list = getEntities(hql, applicationId.toUpperCase(), resourceTypeId );
         return list.size() > 0 ? (ResourceTypeRoot)list.get(0) : null;
 	}
-	
-    public Long getResourceRootId(String applicationId, String resourceTypeId) {
-        return getResourceTypeRoot(applicationId, resourceTypeId).getRootId();
-    }
-    
+ 
     public ResourceType getResourceType(String applicationId, String resourceTypeId) {
     	String hql = " from ResourceType o where upper(o.applicationId) = ? and o.resourceTypeId = ?";
 		List<?> list = getEntities(hql, applicationId.toUpperCase(), resourceTypeId);

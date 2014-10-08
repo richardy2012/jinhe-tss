@@ -52,32 +52,15 @@ public class ResourceTreeNode implements ILevelTreeNode, IPermissionOption, Seri
     public Map<String, Object> getOptionAttributes() {
         return optionInfoMap;
     }
-    
-
-    public Long getParentResourceId() {
-        return parentResourceId;
-    }
-
-    public void setParentResourceId(Long parentResourceId) {
-        this.parentResourceId = parentResourceId;
-    }
-
+ 
     public Long getResourceId() {
         return resourceId;
     }
-
-    public void setResourceId(Long resourceId) {
-        this.resourceId = resourceId;
-    }
-
+ 
     public String getResourceName() {
         return resourceName;
     }
-
-    public void setResourceName(String resourceName) {
-        this.resourceName = resourceName;
-    }
-
+ 
     public Long getParentId() {
         return parentResourceId;
     }

@@ -38,9 +38,10 @@ public class UserModuleTest extends TxSupportTest4UM {
     @Autowired IUserService service;
     @Autowired IResourceService appService;
     
-    Group mainGroup1;
+    Group mainGroup;
+    Long  mainGroupId;
+    
     Group assitantGroup;
-    Long mainGroupId;
     User user1;
     
     @Before
@@ -62,14 +63,14 @@ public class UserModuleTest extends TxSupportTest4UM {
         }
         log.debug("\n");
     	
-        mainGroup1 = new Group();
-        mainGroup1.setParentId(UMConstants.MAIN_GROUP_ID);
-        mainGroup1.setName("主用户组一");
-        mainGroup1.setGroupType( Group.MAIN_GROUP_TYPE );
-        groupService.createNewGroup(mainGroup1 , "", "-1");
-        log.debug(mainGroup1 + "\n");
+        mainGroup = new Group();
+        mainGroup.setParentId(UMConstants.MAIN_GROUP_ID);
+        mainGroup.setName("主用户组一");
+        mainGroup.setGroupType( Group.MAIN_GROUP_TYPE );
+        groupService.createNewGroup(mainGroup , "", "-1");
+        log.debug(mainGroup + "\n");
         
-        mainGroupId = mainGroup1.getId();
+        mainGroupId = mainGroup.getId();
         
         // 管理员直接在主组下新增用户
         user1 = new User();
@@ -77,6 +78,11 @@ public class UserModuleTest extends TxSupportTest4UM {
         user1.setUserName("U_JK");
         user1.setPassword("123456");
 		user1.setGroupId(mainGroupId);
+		user1.setAddress("ZheJiang HZ");
+		user1.setCertificate("身份证");
+		user1.setCertificateNo("332624******");
+		user1.setPostalCode("210000");
+		user1.setTelephone("88819585");
         service.createOrUpdateUser(user1 , "" + mainGroupId, "-1");
         log.debug(user1);
         
@@ -170,10 +176,12 @@ public class UserModuleTest extends TxSupportTest4UM {
         action.getUserInfoAndRelation(response, user1.getId(), mainGroupId); // 获取编辑用户模板
         
         action.getOnlineUserInfo(response);
-        action.getOperatorInfo(response);
+        
         action.getUserInfo(response);
         
         action.getForgetPasswordInfo(response);
+        
+        action.getOperatorInfo(response);
     }
     
     @Test

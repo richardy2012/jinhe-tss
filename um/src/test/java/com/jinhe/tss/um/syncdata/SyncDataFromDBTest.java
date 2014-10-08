@@ -184,13 +184,27 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
 		Assert.assertTrue(userList.size() == 1);
 	}
 
-//	@Test
+	@Test
 	public void syncData() {
-		//TODO 进度条需要单独起线程，里面没有事务。
+		String fromGroupId = mainGroup.getFromGroupId();
+		mainGroup.setFromGroupId(null);
 		try {
 			groupAction.syncData(response, applicationId, mainGroup.getId());
 		} catch (Exception e) {
-			Assert.assertTrue("进度条需要单独起线程，里面没有事务", true);
+			Assert.assertTrue("导入组的对应外部应用组的ID（fromGroupId）为空", true);
+		}
+		
+		//TODO 进度条需要单独起线程，里面没有事务。
+		try {
+			mainGroup.setFromGroupId(fromGroupId);
+			groupAction.syncData(response, applicationId, mainGroup.getId());
+		} catch (Exception e) {
+			Assert.assertTrue("进度条需要单独起线程，里面没有事务.no transaction is in progress", true);
+		}
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
 		}
 	}
 }

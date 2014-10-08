@@ -86,6 +86,8 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         calendar.add(UMConstants.STRATEGY_LIFE_TYPE, UMConstants.STRATEGY_LIFE_TIME);
         strategy.setEndDate(calendar.getTime());
         strategy.setName("转授策略一");
+        strategy.setDescription("unit test");
+        
         request.addParameter("Rule2UserIds", mainUser.getId() + "");
         request.addParameter("Rule2GroupIds", mainGroupId + "," + childGroup.getId());
         request.addParameter("Rule2RoleIds", roleId + "");
@@ -98,6 +100,7 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         printUserRoleMapping(mainUser.getId(), 2); // 匿名角色 + 转授所得角色
         
         action.disable(response, strategyId, 1);
+        action.getSubauth2Tree(response);
         
         login(mainUser.getId(), mainUser.getLoginName()); // 更好登录用户，看其权限
         printUserRoleMapping(mainUser.getId(), 1); // 匿名角色 （转授策略停用了）

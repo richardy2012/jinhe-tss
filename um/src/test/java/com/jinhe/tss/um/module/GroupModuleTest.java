@@ -109,6 +109,24 @@ public class GroupModuleTest extends TxSupportTest4UM {
         log.debug(roles.get(0) + "\n");
     }
     
+    @Test 
+    public void testDeleteGroupAndUsers() {
+    	Group mg = new Group();
+        mg.setParentId(UMConstants.MAIN_GROUP_ID);
+        mg.setName("主用户组-T1");
+        mg.setGroupType( Group.MAIN_GROUP_TYPE );
+        groupService.createNewGroup(mg , "", "-1");
+        
+        User user1 = new User();
+        user1.setLoginName("JonKing-T");
+        user1.setUserName("JK");
+        user1.setPassword("123456");
+        user1.setGroupId(mg.getId());
+        userService.createOrUpdateUser(user1 , "" + mg.getId(), "-1");
+        
+        action.deleteGroup(response, mg.getId());
+    }
+    
     @Test
     public void testMainGroupCRUD() {
     	
@@ -216,6 +234,8 @@ public class GroupModuleTest extends TxSupportTest4UM {
     public void testGetGroupInfo() {
         action.getGroupInfo(response, UMConstants.MAIN_GROUP_ID, UMConstants.DEFAULT_NEW_ID, Group.MAIN_GROUP_TYPE);
         action.getGroupInfo(response, UMConstants.MAIN_GROUP_ID, mainGroupId, Group.MAIN_GROUP_TYPE);
+        
+        action.getGroupInfo(response, UMConstants.ASSISTANT_GROUP_ID, UMConstants.DEFAULT_NEW_ID, Group.ASSISTANT_GROUP_TYPE);
     }
     
     @Test

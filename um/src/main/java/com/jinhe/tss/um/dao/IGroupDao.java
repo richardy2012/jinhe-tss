@@ -41,16 +41,6 @@ public interface IGroupDao extends ITreeSupportDao<Group>{
 	List<?> findRolesByGroupId(Long groupId);
 	
 	/**
-	 * <p>
-     * 移动组资源。
-     * PermissionInterceptor将会拦截本方法。
-	 * 移动改变了父节点,必须改变roleResOpt关系, 来补齐
-	 * </p>
-	 * @param group
-	 */
-    Group moveGroup(Group group);
-	
-	/**
 	 * 根据用户组的id获取用户组对用户的信息
 	 * @param groupId
 	 * @return List

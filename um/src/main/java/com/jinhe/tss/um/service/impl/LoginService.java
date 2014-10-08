@@ -48,7 +48,7 @@ public class LoginService implements ILoginService {
 	}
 	
 	private User getUserByLoginName(String loginName) {
-       User user = userDao.getUserByLoginName(loginName);
+        User user = userDao.getUserByLoginName(loginName);
         if (user == null) {
             throw new BusinessException("此帐号(" + loginName + ")不存在");
         } 
@@ -60,6 +60,7 @@ public class LoginService implements ILoginService {
                 throw new BusinessException("此帐号(" + loginName + ")已过期");
             }
         }
+        userDao.evict(user);
         return user;
 	}
 

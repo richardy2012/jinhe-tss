@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,12 @@ import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.action.RoleAction;
+import com.jinhe.tss.um.dao.IRoleDao;
 import com.jinhe.tss.um.entity.Group;
+import com.jinhe.tss.um.entity.GroupUser;
 import com.jinhe.tss.um.entity.Role;
+import com.jinhe.tss.um.entity.RoleGroup;
+import com.jinhe.tss.um.entity.RoleUser;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IRoleService;
 import com.jinhe.tss.um.service.IUserService;
@@ -112,17 +117,32 @@ public class RoleModuleTest extends TxSupportTest4UM {
         role2.setParentId(roleGroupId);
         role2.setStartDate(new Date());
         role2.setEndDate(calendar.getTime());
+        role2.setDescription("unit test");
         
         request.addParameter("Role2UserIds", UMConstants.ADMIN_USER_ID + "," + mainUser.getId());
         request.addParameter("Role2GroupIds", "" + mainGroup.getId());
         action.saveRole(response, request, role2);
         role2Id = role2.getId();
         action.getAllRole2Tree(response);
+        
+        action.disable(response, role2.getId(), ParamConstants.TRUE);
+        
+        Role roleGroup2 = new Role();
+        roleGroup2.setIsGroup(1);
+        roleGroup2.setName("角色组-2");
+        roleGroup2.setParentId(UMConstants.ROLE_ROOT_ID);
+        roleGroup2.setDisabled(ParamConstants.TRUE);
+        action.saveRole(response, request, roleGroup2);
+        
+        action.getAllRole2Tree(response);
+        
+        action.disable(response, role2.getId(), ParamConstants.FALSE);
     }
     
     @Test
     public void testGetRole() {
         // 读取修改角色组的模板
+    	action.getRoleGroupInfo(response, UMConstants.DEFAULT_NEW_ID, UMConstants.ROLE_ROOT_ID);
         action.getRoleGroupInfo(response, roleGroupId, null);
         
         // 读取新增或修改角色的模板
@@ -154,11 +174,13 @@ public class RoleModuleTest extends TxSupportTest4UM {
     
     @Test
     public void testRolePermission() {
+    	action.getOperation(response, UMConstants.ANONYMOUS_ROLE_ID);
     	action.getOperation(response, role2Id);
     	
         request.addParameter("applicationId", "tss");
         request.addParameter("resourceType", UMConstants.GROUP_RESOURCE_TYPE_ID);
         action.initSetPermission(response, request, 1, role1Id);
+        action.initSetPermission(response, request, 2, role1Id);
         action.getApplications(response, role1Id, 1);
         
         action.getResourceTypes(response, "tss");
@@ -222,8 +244,35 @@ public class RoleModuleTest extends TxSupportTest4UM {
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME); // 换回Admin登录
     }
     
+    
+    @Autowired private IRoleDao roleDao;
+    
     @Test
     public void testDeleteRole() {
+    	List<?> list1 = roleDao.getEntities("from GroupUser");
+    	List<?> list2 = roleDao.getEntities("from RoleUser");
+    	List<?> list3 = roleDao.getEntities("from RoleGroup");
+    	if(list1.size() > 0) {
+    		GroupUser gu = (GroupUser) list1.get(0);
+    		Assert.assertEquals(gu.getId(), gu.getPK());
+    		Assert.assertNotNull(gu.getUserId());
+    		Assert.assertNotNull(gu.getGroupId());
+    	}
+    	
+    	if(list2.size() > 0) {
+    		RoleUser ru = (RoleUser) list2.get(0);
+    		Assert.assertEquals(ru.getId(), ru.getPK());
+    		Assert.assertNotNull(ru.getUserId());
+    		Assert.assertNotNull(ru.getRoleId());
+    	}
+    	
+    	if(list3.size() > 0) {
+    		RoleGroup rg = (RoleGroup) list3.get(0);
+    		Assert.assertEquals(rg.getId(), rg.getPK());
+    		Assert.assertNotNull(rg.getRoleId());
+    		Assert.assertNotNull(rg.getGroupId());
+    	}
+    	
     	 // 删除角色组
         action.delete(response, roleGroupId);
         action.getAllRole2Tree(response);

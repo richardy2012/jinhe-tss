@@ -18,15 +18,6 @@ public interface IRoleDao extends ITreeSupportDao<Role> {
     void removeRole(Role role);
     
     /**
-     * 更新角色。
-     * 不直接调用dao.update(entity)方法，以避开decodeInterceptor和permissionInterceptor等的拦截。
-     * 
-     * @param role
-     * @return
-     */
-    Role refreshRole(Role role);
-    
-    /**
      * <p>
      * 移动角色资源。
      * PermissionInterceptor将会拦截本方法。

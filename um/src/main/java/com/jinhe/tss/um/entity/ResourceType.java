@@ -156,14 +156,6 @@ public class ResourceType extends OperateInfo implements IEntity, ITreeNode, IXF
 		return map;
 	}
  
-	public boolean equals(Object obj) {
-	    if(obj instanceof ResourceType) {
-	        ResourceType temp = (ResourceType)obj;
-            return this.applicationId.equals(temp.getApplicationId()) && this.resourceTypeId.equals(temp.getResourceTypeId());
-	    }
-	    return false;
-	}
-	
 	public int hashCode() {
 	    return (this.applicationId + "_" + this.resourceTypeId).hashCode();
 	}
