@@ -170,6 +170,23 @@ public class RoleModuleTest extends TxSupportTest4UM {
     public void testRoleMove() {
         // 对角色进行移动
         action.move(response, role2Id, UMConstants.ROLE_ROOT_ID);
+        
+        action.move(response, role2Id, service.getRoleById(role2Id).getParentId());
+        
+        try {
+        	action.move(response, role2Id, role2Id);
+        	Assert.fail("该抛异常而没有抛！");
+        } catch (Exception e) {
+        	Assert.assertTrue("不能向自己里面的枝节点移动", true);
+        }
+        
+        service.disable(roleGroupId, ParamConstants.TRUE);
+        action.move(response, role2Id, roleGroupId);
+        
+        service.disable(roleGroupId, ParamConstants.FALSE);
+        Role roleGroup = service.getRoleById(roleGroupId);
+        roleGroup.setDescription("unit test");
+        service.saveRoleGroup(roleGroup);
     }
     
     @Test

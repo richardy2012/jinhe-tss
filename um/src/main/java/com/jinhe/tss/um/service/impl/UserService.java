@@ -40,7 +40,7 @@ public class UserService implements IUserService{
 
 	public void deleteUser(Long groupId, Long userId) {
         if(Environment.getOperatorId().equals(userId)) {
-            throw new BusinessException("当前用户正在使用中，无法删除！");
+            throw new BusinessException("当前用户正在使用中，无法自我删除！");
         }
         
         Group group = groupDao.getEntity(groupId);
@@ -116,7 +116,7 @@ public class UserService implements IUserService{
 
     private void checkUserAccout(User user) {
         if(userDao.getUserByLoginName(user.getLoginName()) != null) {
-            throw new BusinessException("相同登陆账号已经存在,请更换.");
+            throw new BusinessException("相同登陆账号已经存在,请更换账号.");
         }
     }
     

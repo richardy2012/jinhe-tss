@@ -111,5 +111,7 @@ public class LoginServiceTest extends TxSupportTest4UM {
 		Assert.assertTrue(users1.size() == 1); // JK
 		Assert.assertTrue(users2.size() == 2); // Admin, JK
 		Assert.assertEquals("JK", users1.get(0).getAttributesMap().get("userName"));
+		
+		loginSerivce.resetPassword(userId, "abc123456=11");
 	}
 }

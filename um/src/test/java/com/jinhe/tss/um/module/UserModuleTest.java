@@ -27,6 +27,8 @@ import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.UMQueryCondition;
 import com.jinhe.tss.um.service.IResourceService;
 import com.jinhe.tss.um.service.IUserService;
+import com.jinhe.tss.util.BeanUtil;
+import com.jinhe.tss.util.DateUtil;
 
 /**
  * 用户相关模块的单元测试
@@ -83,7 +85,7 @@ public class UserModuleTest extends TxSupportTest4UM {
 		user1.setCertificateNo("332624******");
 		user1.setPostalCode("210000");
 		user1.setTelephone("88819585");
-        service.createOrUpdateUser(user1 , "" + mainGroupId, "-1");
+        service.createOrUpdateUser(user1, "" + mainGroupId, "-1");
         log.debug(user1);
         
         List<User> users = groupService.getUsersByGroupId(mainGroupId);
@@ -148,6 +150,14 @@ public class UserModuleTest extends TxSupportTest4UM {
     	
     	// 删除用户
     	action.deleteUser(response, mainGroupId, user1.getId());
+    	
+    	// 删除系统管理员
+    	try {
+    		action.deleteUser(response, UMConstants.MAIN_GROUP_ID, UMConstants.ADMIN_USER_ID);
+        	Assert.fail("该抛异常而没有抛！");
+        } catch (Exception e) {
+        	Assert.assertTrue("当前用户正在使用中，无法自我删除！", true);
+        }
 		
 		// 新增用户
 		user1.setId(null);
@@ -168,6 +178,17 @@ public class UserModuleTest extends TxSupportTest4UM {
         // 修改用户
         user2.setUserName("JK-2");
         action.modifyUserSelf(response, user2);
+        
+        // 注册一个同名用户
+        User user3 = new User();
+        BeanUtil.copy(user3, user2);
+        user3.setId(null);
+    	try {
+    		action.registerUser(response, user3);
+        	Assert.fail("该抛异常而没有抛！");
+        } catch (Exception e) {
+        	Assert.assertTrue("相同登陆账号已经存在,请更换账号.", true);
+        }
     }
   
     @Test
@@ -188,6 +209,24 @@ public class UserModuleTest extends TxSupportTest4UM {
     public void startOrStopUser() {
     	action.startOrStopUser(response, mainGroupId, user1.getId(), ParamConstants.TRUE);
         action.startOrStopUser(response, mainGroupId, user1.getId(), ParamConstants.FALSE);
+        
+        action.startOrStopUser(response, mainGroupId, user1.getId(), ParamConstants.TRUE);
+        
+        Long assistantGroupId = assitantGroup.getId();
+		groupService.startOrStopGroup(assistantGroupId, ParamConstants.TRUE);
+		groupService.startOrStopGroup(mainGroupId, ParamConstants.TRUE);
+		
+        action.startOrStopUser(response, assistantGroupId, user1.getId(), ParamConstants.FALSE);
+        
+        user1 = service.getUserById(user1.getId());
+        user1.setAccountLife(DateUtil.parse("2012-12-12"));
+        service.createOrUpdateUser(user1,  "" + mainGroupId, "-1");
+        try {
+        	action.startOrStopUser(response, assistantGroupId, user1.getId(), ParamConstants.FALSE);
+        	Assert.fail("该抛异常而没有抛！");
+        } catch (Exception e) {
+        	Assert.assertTrue("该用户已经过期，不能启用！", true);
+        }
     }
     
     @Test

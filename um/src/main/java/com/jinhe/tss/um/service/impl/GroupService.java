@@ -92,11 +92,13 @@ public class GroupService implements IGroupService {
         
         saveGroupToRole(group.getId(), roleIdsStr);
         
-        // 主用户组中组对用户的关系不能随便更改，所以不能调用saveGroupToUser
-        if (Group.MAIN_GROUP_TYPE.equals(group.getGroupType())) return;
-        
-        // 只有辅助用户组可以选择组对应的用户(group2UserExistTree有效)，可以调用saveGroupToUser方法       
-        saveGroupToUser(group.getId(), userIdsStr);
+        /* 主用户组中组对用户的关系不能随便更改，所以不能调用saveGroupToUser
+         * 只有辅助用户组可以选择组对应的用户(group2UserExistTree有效)，可以调用saveGroupToUser方法 。
+         */
+        Integer groupType = group.getGroupType();
+		if (Group.ASSISTANT_GROUP_TYPE.equals(groupType)) {
+			saveGroupToUser(group.getId(), userIdsStr);
+		}
     }
     
     /** 组对用户：先把该组对应的用户都找到，再把提交上来的用户和找到的数据比较，多的做增加操作。 */
@@ -174,7 +176,7 @@ public class GroupService implements IGroupService {
                     Environment.getOperatorId());
             
             if (groups.size() > canDoGroups.size()) {
-                throw new BusinessException("节点之上有用户组没有启用操作权限，不能启用此节点！");
+                throw new BusinessException("对节点的父节点没有启用权限，不能启用此节点！");
             }
             
             for(Iterator<?> it = groups.iterator();it.hasNext();){
@@ -193,7 +195,8 @@ public class GroupService implements IGroupService {
         groupDao.executeHQL("update Group set disabled = ? where decode like ?", ParamConstants.TRUE, group.getDecode() + "%");
        
         /* 
-         * 停用主用户组，需要停用组下的用户。停用辅助用户组不停用用户，因为辅助用户组当中的用户是从主用户组中选取的.
+         * 停用主用户组，需要停用组下的用户。
+         * 停用辅助用户组，不停用用户，因为辅助用户组当中的用户是从主用户组中选取的.
          */
         Integer groupType = group.getGroupType();
         if ( Group.MAIN_GROUP_TYPE.equals(groupType) ) {
@@ -208,7 +211,7 @@ public class GroupService implements IGroupService {
 
     public void deleteGroup(Long groupId) {
         if(groupDao.isOperatorInGroup(groupId, Environment.getOperatorId()))
-            throw new BusinessException("当前用户在要操作的组中，不能删除此节点！");
+            throw new BusinessException("当前用户在要删除的组中，删除失败！");
         
         Group group = groupDao.getEntity(groupId);
         String operationId = UMConstants.GROUP_EDIT_OPERRATION;

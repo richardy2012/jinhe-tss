@@ -232,27 +232,6 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
      * 针对TSS特有的操作不宜放在本接口里，比如读取角色信息等。
      */
     
-	/**
-	 * <p>
-	 * 资源对角色授权时,删除以前指定角色对指定资源拥有的授权信息
-	 * </p>
-     * @param resourceId
-     * @param roleId
-     * @param permissionRank
-     * @param unSuppliedTable
-     * @param suppliedTable
-     * @param resourceTable
-     */
-    public void deletePermissionByResourceRole(Long resourceId, Long roleId,
-            String permissionRank, String unSuppliedTable, String suppliedTable, String resourceTable) {
-        
-        // 先取出未补齐表里的授权记录，根据这些记录的PermissionState值，来判断在删除补全表时是否删除子节点的权限
-        String rankCondition = genRankCondition4DeleletePermission(permissionRank);
-        String hql = " from " + unSuppliedTable + " p where p.roleId = ? and p.resourceId = ? " + rankCondition;
-        List<?> exsitUsPermissions = getEntities(hql, roleId, resourceId);
-        deleteExistPermission(exsitUsPermissions, rankCondition, suppliedTable, resourceTable);
-    }
-    
     /**
      * <p>
      * 批量删除指定角色拥有的资源授权信息。 授权时使用。
@@ -358,7 +337,8 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
         if (UMConstants.LOWER_PERMISSION.equals(permissionRank)) {
             return " and p.isGrant=1 "; // 普通授权 : isGrant = 1
         }
-        if(UMConstants.AUTHORISE_PERMISSION.equals(permissionRank) || UMConstants.PASSON_AUTHORISE_PERMISSION.equals(permissionRank)) {
+        if(UMConstants.AUTHORISE_PERMISSION.equals(permissionRank) 
+        		|| UMConstants.PASSON_AUTHORISE_PERMISSION.equals(permissionRank)) {
             return " and p.isGrant=1 and p.isPass=1";  // 可授权授权且可传递授权 : isGrant = 1 and isPass = 1
         }
         return "";
@@ -513,18 +493,7 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
     
     /**
      * 把用户没有指定操作权限的资源给过滤点，资源列表里只留下有指定操作权限的。
-     * @param suppliedTable
-     *              资源的授权表
-     * @param resources
-     *              资源列表
-     * @param operationId
-     *              指定的操作权限
      */
-    public void filtrateResourcesByPermission(String suppliedTable, List<?> resources, String operationId){
-        List<Long> permitedResourceIds = getResourceIdsByOperation(suppliedTable, operationId);
-        filtrateResourcesByPermission(permitedResourceIds, resources);
-    }
-    
     public void filtrateResourcesByPermission( List<Long> permitedResourceIds, List<?> resources ){
         for( Iterator<?> it = resources.iterator(); it.hasNext(); ) {
             IEntity resource = (IEntity)it.next();

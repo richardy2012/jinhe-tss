@@ -79,7 +79,7 @@ public class RoleService implements IRoleService {
 	        String operationId = UMConstants.ROLE_EDIT_OPERRATION;
 	        List<?> temp = resourcePermission.getParentResourceIds(appId, resourceTypeId, id, operationId, operatorId);
 	        if (temp.size() < list.size()) {
-	            throw new BusinessException("节点之上有角色没有启用操作权限，不能启用此节点！");
+	            throw new BusinessException("对某个父节点没有启用操作权限，不能启用此节点！");
 	        }
 		} 
 		else { 
@@ -89,17 +89,13 @@ public class RoleService implements IRoleService {
             String operationId = UMConstants.ROLE_EDIT_OPERRATION;
             List<?> temp = resourcePermission.getSubResourceIds(appId, resourceTypeId, id, operationId, operatorId);
             if (temp.size() < list.size()) {
-                throw new BusinessException("节点下有角色没有停用操作权限，不能停用此节点！");
+                throw new BusinessException("对部分子节点没有停用操作权限，不能停用此节点！");
             }
 		}
 		
         for (Role role : list) {
             if(role.getDisabled().equals(disabled)) continue;
             
-            if (ParamConstants.FALSE.equals(disabled) 
-                    && (role.getEndDate() != null && role.getEndDate().getTime() < System.currentTimeMillis()) ) {
-				throw new BusinessException(role.getName() + " 已过期，不能启用");
-            }
 			role.setDisabled(disabled);
 			roleDao.update(role);
         }
@@ -142,15 +138,15 @@ public class RoleService implements IRoleService {
         
         roleDao.moveRole(movedRole); //被拦截调整整个移动枝的decode值, 同时拦截资源补齐调整
         
-        // 如果移动到的组是停用状态，那么被移动的组也需要停用
-        Role targetRole = roleDao.getEntity(targetId);
-        if(targetRole != null && targetRole.getDisabled().equals(ParamConstants.TRUE)) {
-            List<?> list = roleDao.getChildrenById(id);
+        // 如果移动到的组是停用状态，那么被移动的角色（组）也需要停用
+        Role target  = roleDao.getEntity(targetId);
+        Integer targetState = target.getDisabled();
+		if(target != null && ParamConstants.TRUE.equals(targetState)) {
+			List<?> list = roleDao.getChildrenById(id);
             for (Object temp : list) {
-                Role role = (Role) temp;
-                role.setDisabled(ParamConstants.TRUE);
+                ((Role) temp).setDisabled(ParamConstants.TRUE);
             }
-        } 
+        }
 	}
 
     public Role saveRoleGroup(Role entity) {

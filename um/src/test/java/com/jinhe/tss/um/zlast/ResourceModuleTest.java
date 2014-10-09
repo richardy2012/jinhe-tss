@@ -125,7 +125,7 @@ public class ResourceModuleTest extends TxSupportTest4UM {
 		Operation newOne = new Operation();
         BeanUtil.copy(newOne, operationPO);
         newOne.setId(null);
-        newOne.setResourceTypeId("testOperation-1");
+        newOne.setOperationId("testOperation-1");
         action.editOperation(response, newOne);
         
         action.getOperationInfo(response, operationId);
