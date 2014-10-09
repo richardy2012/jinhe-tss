@@ -20,10 +20,8 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import com.jinhe.tss.framework.component.param.ParamConstants;
-import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
-import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.portal.PortalConstants;
@@ -50,7 +48,7 @@ import com.jinhe.tss.util.URLUtil;
         @UniqueConstraint(name="MULTI_NAME_Structure", columnNames = { "parentId", "name" })
 })
 @SequenceGenerator(name = "structure_sequence", sequenceName = "structure_sequence", initialValue = 1)
-public class Structure extends OperateInfo implements IEntity, ILevelTreeNode, IXForm, IResource, IDecodable {
+public class Structure extends OperateInfo implements IXForm, IResource, IDecodable {
     
     public static final int TYPE_PORTAL           = 0; //Portal节点
     public static final int TYPE_PAGE             = 1; //页面节点

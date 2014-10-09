@@ -16,7 +16,6 @@ import javax.persistence.UniqueConstraint;
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
-import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.um.UMConstants;
@@ -31,7 +30,7 @@ import com.jinhe.tss.util.BeanUtil;
         @UniqueConstraint(name = "MULTI_NAME_GROUP", columnNames = { "parentId", "name" })
 })
 @SequenceGenerator(name = "group_sequence", sequenceName = "group_sequence", initialValue = 1000, allocationSize = 10)
-public class Group extends OperateInfo implements ILevelTreeNode, IDecodable, IXForm, IResource {
+public class Group extends OperateInfo implements IDecodable, IXForm, IResource {
 
 	public static final Integer MAIN_GROUP_TYPE                     = 1; // 主组类型
 	public static final Integer ASSISTANT_GROUP_TYPE                = 2; // 辅助组类型

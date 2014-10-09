@@ -359,7 +359,7 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
 				" where t.id = p.roleId and p.resourceId = r.id and r.decode like ? ";
 		hql += genRankCondition4SelectPermission(permissionRank);
 
-		IDecodable resource = (IDecodable) getEntity(BeanUtil.createClassByName(resourceTable), resourceId);
+		IResource resource = (IResource) getEntity(BeanUtil.createClassByName(resourceTable), resourceId);
 		return getEntities(hql, resource.getDecode() + "%").size();
 	}
 

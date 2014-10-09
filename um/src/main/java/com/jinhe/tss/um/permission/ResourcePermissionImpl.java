@@ -1,6 +1,5 @@
 package com.jinhe.tss.um.permission;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +44,9 @@ public class ResourcePermissionImpl extends TreeSupportDao<IDecodable> implement
             // 子节点的权限跟父节点的一模一样
             PermissionHelper.getInstance().insertSuppliedTable(parentPermission, resource, suppliedTable);
             
-            /* 如果permission的授权状态为PERMIT_NODE_SELF（即仅此节点，不向下传递），则相应的在未补齐表中加入一条当前新增节点授权记录
-                 删除的时候用的到，参考com.jinhe.tss.um.permission.impl.PermissionDao.deleteOldPermission()方法 */
+            /* 如果permission的授权状态为PERMIT_NODE_SELF（即仅此节点，不向下传递），
+             * 则相应的在未补齐表中加入一条当前新增节点授权记录 删除的时候用的到，
+             * 参考com.jinhe.tss.um.permission.impl.PermissionDao.deleteOldPermission()方法 */
             if(permissionState.equals(UMConstants.PERMIT_NODE_SELF)){
                 PermissionHelper.getInstance().insertUnSuppliedTable(parentPermission, resourceId, unSuppliedTable);
             }
@@ -79,28 +79,18 @@ public class ResourcePermissionImpl extends TreeSupportDao<IDecodable> implement
 		}
 	}
 
-    public List<?> getResourceIds(String applicationId, String resourceTypeId, String operationId, Long userId) {
-        String suppliedTable = resourceTypeDao.getSuppliedTable(applicationId, resourceTypeId);
-        String hql = "select distinct t.resourceId from " + suppliedTable + " t, RoleUserMapping ru " +
-                " where t.roleId = ru.id.roleId and t.operationId = ? and ru.id.userId = ?";
-        return getEntities(hql, operationId, userId);
-    }
- 
 	public List<?> getParentResourceIds(String applicationId, String resourceTypeId, Long resourceId, 
             String operationId, Long operatorId){	
 	    
         String resourceTable = resourceTypeDao.getResourceTable(PermissionHelper.getApplicationID(), resourceTypeId);
         Class<?> resourceClazz = BeanUtil.createClassByName(resourceTable);
-        IDecodable decodable = (IDecodable) getEntity(resourceClazz, resourceId);
-        if(decodable == null)  {  //如果资源表中找不到了该id对应的资源，则可能该资源已经被删除
-            return new ArrayList<Object>();
-        }
+        IResource resource = (IResource) getEntity(resourceClazz, resourceId);
         
         String suppliedTable = resourceTypeDao.getSuppliedTable(applicationId, resourceTypeId);
         String hql = "select distinct t.id from " + resourceClazz.getName() + " t, RoleUserMapping r, " + suppliedTable + " v" +
             " where t.id = v.resourceId and v.roleId = r.id.roleId and r.id.userId = ? and v.operationId = ? and ? like t.decode || '%'";
         
-        return getEntities(hql, operatorId, operationId, decodable.getDecode());
+        return getEntities(hql, operatorId, operationId, resource.getDecode());
 	}
 
 	public List<?> getSubResourceIds(String applicationId, String resourceTypeId, Long resourceId, 
@@ -108,15 +98,12 @@ public class ResourcePermissionImpl extends TreeSupportDao<IDecodable> implement
 	    
 	    String resourceTable = resourceTypeDao.getResourceTable(applicationId, resourceTypeId);
 	    Class<?> resourceClazz = BeanUtil.createClassByName(resourceTable);
-	    IDecodable decodable = (IDecodable) getEntity(resourceClazz, resourceId);
-        if(decodable == null)  {  //如果资源表中找不到了该id对应的资源，则可能该资源已经被删除
-            return new ArrayList<Object>();
-        }
+	    IResource resource = (IResource) getEntity(resourceClazz, resourceId);
         
         String suppliedTable = resourceTypeDao.getSuppliedTable(applicationId, resourceTypeId);
         String hql = "select distinct t.id from " + resourceTable + " t, RoleUserMapping r, " + suppliedTable + " v" +
             " where t.id = v.resourceId and v.roleId = r.id.roleId and r.id.userId = ? and v.operationId = ? and t.decode like ?";
         
-        return getEntities(hql, operatorId, operationId, decodable.getDecode() + "%");	
+        return getEntities(hql, operatorId, operationId, resource.getDecode() + "%");	
 	}
 }

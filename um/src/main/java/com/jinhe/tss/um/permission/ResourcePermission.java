@@ -24,22 +24,6 @@ public interface ResourcePermission {
     
 	/**
 	 * <p>
-	 * 添加资源时的根据其所有父亲节点的权限补全当前新增资源节点的权限信息，只将父节点permissionState==2的权限信息复制过来。<br/>
-     * 
-	 * 补全过程是这样的：<br/>
-	 * 1.找到资源的所有父节点<br/>
-	 * 2.从"未补全的表"里面查找每个父节点的授权信息.<br/>
-	 * 3.如果哪个父节点的某个授权信息的permissionState==2，则让新增的资源拥有和父节点一样的授权信息.(即:往"补全的表"里面插入数据,重复的不插入)<br/>
-	 * </p>
-     * @param resourceId     资源
-     * @param resourceTypeId 资源类型
-     * @deprecated 参考比较另一方法addResource()。<br/>
-     *
-	 */
-//	void addResource2(Long resourceId, String resourceTypeId);
-	
-	/**
-	 * <p>
 	 * 删除资源时的补全过程。
      * 只需处理删除节点本身的授权信息即可
      *（通常应用在删除节点的时候会一块删除其子节点，每删一次都要调用本方法一次的）
@@ -57,19 +41,7 @@ public interface ResourcePermission {
 	 * @param resourceTypeId 资源类型
 	 */
 	void updateResource(Long resourceId, String resourceTypeId);
-
-	/**
-	 * <p>
-	 * 获取用户对一个应用中的一种资源类型的某个权限选项所拥有的资源ID集合
-	 * </p>
-     * @param applicationId  应用
-     * @param resourceTypeId 资源类型
-     * @param operationId    权限选项
-     * @param operatorId     登录用户
-     * @return
-     */
-    List<?> getResourceIds(String applicationId, String resourceTypeId, String operationId, Long operatorId);
-
+ 
 	/**
 	 * <p>
 	 * 获取用户对一个应用中的一种资源类型的一个资源的所有“父节点”的某个权限选项所拥有的资源ID集合

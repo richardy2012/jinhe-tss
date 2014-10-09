@@ -19,10 +19,8 @@ import javax.persistence.UniqueConstraint;
 import org.dom4j.Element;
 
 import com.jinhe.tss.framework.component.param.ParamConstants;
-import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
-import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.portal.PortalConstants;
@@ -39,7 +37,7 @@ import com.jinhe.tss.util.XMLDocUtil;
         @UniqueConstraint(name="MULTI_NAME_MENU", columnNames = { "parentId", "name" })
 })
 @SequenceGenerator(name = "navigator_sequence", sequenceName = "navigator_sequence", initialValue = 1)
-public class Navigator extends OperateInfo implements IEntity, ILevelTreeNode, IXForm, IDecodable, IResource {
+public class Navigator extends OperateInfo implements IXForm, IDecodable, IResource {
 
     /**
      * 菜单组

@@ -9,32 +9,24 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 import com.jinhe.tss.framework.persistence.IEntity;
-import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
-import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 
 /** 
  * 可授权资源实体的抽象类
  */
 @MappedSuperclass
-public abstract class AbstractResourcesView implements IEntity, IDecodable, ILevelTreeNode, IResource {
+public abstract class AbstractResourcesView implements IEntity, IResource {
     
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long    id;       // 主键Id
-    protected Long    parentId; // 父节点ID 
+    protected Long   id;       // 主键Id
+    protected Long   parentId; // 父节点ID 
     
     @Column(nullable = false)  
-    protected String  name;   // 名称:资源名称
+    protected String name;   // 名称:资源名称
     
-    protected Integer seqNo;  // 资源编号 
-    protected String  decode; // 层码
-    protected Integer levelNo;// 层次值
-    
-    public String toString() {
-    	return "id = " + id + ", parentId = " + parentId + ", name = " + name ;
-    }
- 
+    protected String decode; // 层码
+
     public Long getId() {
         return id;
     }
@@ -58,18 +50,6 @@ public abstract class AbstractResourcesView implements IEntity, IDecodable, ILev
     public void setName(String name) {
         this.name = name;
     }
-
-    public TreeAttributesMap getAttributes() {
-        return new TreeAttributesMap(id, name);
-    }
- 
-    public Integer getSeqNo() {
-        return seqNo;
-    }
- 
-    public void setSeqNo(Integer userOrder) {
-        this.seqNo = userOrder;
-    }
  
     public String getDecode() {
         return decode;
@@ -79,23 +59,16 @@ public abstract class AbstractResourcesView implements IEntity, IDecodable, ILev
         this.decode = decode;
     }
  
-    public Integer getLevelNo() {
-        return levelNo;
-    }
- 
-    public void setLevelNo(Integer levelNo) {
-        this.levelNo = levelNo;
-    }
-
-    public Class<?> getParentClass() {
-        return getClass();
-    }
-    
 	public Serializable getPK() {
 		return this.id;
 	}
 
-    public abstract String getResourceType();
-
+	public Integer getSeqNo() {
+		return null;
+	}
+	
+    public TreeAttributesMap getAttributes() {
+        return new TreeAttributesMap(id, name);
+    }
 }
 

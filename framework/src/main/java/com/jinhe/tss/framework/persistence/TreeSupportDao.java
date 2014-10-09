@@ -203,9 +203,18 @@ public class TreeSupportDao<T extends IDecodable> extends BaseDao<T> implements 
         if(parentId != null ) { // 找的到父节点的处理（资源试图中将 "全部" 节点id = 0注册进来）
             IEntity parentNode = getEntity(entity.getParentClass(), parentId);
             if(parentNode != null) {
-                IDecodable parent = (IDecodable) parentNode;
-                levelNo = (parent.getLevelNo() == null ? 0 : parent.getLevelNo()) + 1; // 层级加一
-                decode = DecodeUtil.getDecode(parent.getDecode(), entity.getSeqNo(), sectSize);             
+            	String parentDecode;
+            	if(parentNode instanceof IDecodable) {
+            		IDecodable parent = (IDecodable) parentNode;
+            		levelNo = (parent.getLevelNo() == null ? 0 : parent.getLevelNo()) + 1; // 层级加一
+            		parentDecode = parent.getDecode();
+            	} 
+            	else { // parent可能是root（作为资源根节点，AbstractResourceView没有继承IDecode）
+            		levelNo = 2; // 默认为第二级，root为第一级
+            		parentDecode = (String) BeanUtil.getPropertyValue(parentNode, "decode"); // "00001"
+            	}
+                
+                decode = DecodeUtil.getDecode(parentDecode, entity.getSeqNo(), sectSize);             
             }
         }
         entity.setDecode(decode);

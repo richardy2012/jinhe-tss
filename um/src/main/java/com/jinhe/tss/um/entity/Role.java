@@ -17,7 +17,6 @@ import javax.persistence.UniqueConstraint;
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
-import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.um.UMConstants;
@@ -33,7 +32,7 @@ import com.jinhe.tss.util.DateUtil;
         @UniqueConstraint(name = "MULTI_NAME_ROLE", columnNames = { "parentId", "name", "isGroup" })
 })
 @SequenceGenerator(name = "role_sequence", sequenceName = "role_sequence", initialValue = 1000, allocationSize = 10)
-public class Role extends OperateInfo implements ILevelTreeNode, IDecodable, IXForm, IResource {
+public class Role extends OperateInfo implements IDecodable, IXForm, IResource {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "role_sequence")

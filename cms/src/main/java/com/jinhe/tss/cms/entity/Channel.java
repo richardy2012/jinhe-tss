@@ -21,7 +21,6 @@ import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
-import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.um.permission.IResource;
@@ -35,7 +34,7 @@ import com.jinhe.tss.util.BeanUtil;
         @UniqueConstraint(name="MULTI_NAME_CHANNEL", columnNames = { "PARENTID", "name" })
     })
 @SequenceGenerator(name = "channel_sequence", sequenceName = "channel_sequence", initialValue = 1, allocationSize = 1)
-public class Channel extends OperateInfo implements IXForm, ILevelTreeNode, IDecodable, IResource {
+public class Channel extends OperateInfo implements IXForm, IDecodable, IResource {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "channel_sequence")

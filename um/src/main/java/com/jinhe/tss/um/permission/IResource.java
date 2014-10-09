@@ -1,28 +1,27 @@
 package com.jinhe.tss.um.permission;
 
+import com.jinhe.tss.framework.persistence.IEntity;
+import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
+
 /**
  * <p>
  * 所有"资源视图实体"需要实现的接口。
  * （PermissionInterceptor 将根据本接口判断是否对资源进行自动补齐）
  * </p>
  */
-public interface IResource {
-	
-	/** 资源id  */
-	Long getId();
-	
-	/** 资源排序号 */
-	Integer getSeqNo();
-	
-	/** 资源父节点id */
-	Long getParentId();
+public interface IResource extends ILevelTreeNode, IEntity {
 	
 	/** 资源名称 */
 	String getName();
 	
+	/** 资源排序号 */
+	Integer getSeqNo();
+	
+    /** 资源decode */
+    String getDecode();
+	
 	/** 资源类型 */
 	String getResourceType();
-	
 }
 
 	
