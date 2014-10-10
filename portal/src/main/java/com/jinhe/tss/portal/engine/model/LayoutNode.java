@@ -1,7 +1,5 @@
 package com.jinhe.tss.portal.engine.model;
 
-import java.util.Map;
-
 import com.jinhe.tss.portal.entity.Component;
 
 /**
@@ -32,16 +30,7 @@ public class LayoutNode extends AbstractElementNode {
         
         this.portNumber = obj.getPortNumber();
     }
-    
-    public LayoutNode(Component obj, SubNode parent, Map<String, String> configedParameters) {
-        super(obj, parent);
-        getParameters().putAll(configedParameters);
-    }
-    
-    public LayoutNode(Component obj, SubNode parent) {
-        super(obj, parent);
-    }
-
+ 
     public Object clone() {
         LayoutNode copy = (LayoutNode) super.clone();
         return copy;

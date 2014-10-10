@@ -47,6 +47,9 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         root.setTheme(theme);
         portalAction.save(response, root); // create portal root
         
+//        Structure page2 = createPageOrSection(root, "页面二-2", "page2-2", Structure.TYPE_PAGE);
+//        createPageOrSection(page2, "版面二-2", "section2-2", Structure.TYPE_SECTION);
+        
         List<?> list = menuService.getAllNavigator();
         assertTrue(list.size() >= 1);
         
@@ -70,6 +73,8 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         menu1.setParentId(rootMenuId);
         menu1.setPortalId(portalId);
         menu1.setContent(root);
+        menu1.setTarget("_blank");
+        menu1.setDescription("unit test");
         menuAction.save(response, menu1);
         menuAction.getNavigatorInfo(response, request, menu1.getId());
         
@@ -127,6 +132,8 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         
         menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_SECTION);
         menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_PORTLET_INSTANCE);
+        menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_PAGE);
+        menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_PORTAL);
         
         // 生成菜单XML格式
         menuAction.getNavigatorXML(response, rootMenuId);
@@ -143,7 +150,7 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         
         menuAction.delete(response, rootMenuId);
         
-        portalAction.delete(response, portalId);
+        portalAction.delete(response, root.getId());
         
         assertTrue(TestUtil.printLogs(logService) > 0);
     }

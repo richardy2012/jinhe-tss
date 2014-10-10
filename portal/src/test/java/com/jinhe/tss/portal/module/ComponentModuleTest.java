@@ -43,6 +43,8 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         group1.setParentId(layoutGroup.getId());   
         componentAction.save(response, group1);
         
+        componentAction.renameGroup(response, group1.getId(), "测试布局器组-1");
+        
         Long groupId = group1.getId();
         assertNotNull(groupId);
         

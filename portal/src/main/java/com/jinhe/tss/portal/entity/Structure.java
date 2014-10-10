@@ -137,11 +137,7 @@ public class Structure extends OperateInfo implements IXForm, IResource, IDecoda
         URL url = URLUtil.getWebFileUrl(PortalConstants.PORTAL_MODEL_DIR);
         return new File(url.getPath() + "/" + code);
     }
-    
-    public static File getPortalResourceFileDir(String code, Long portalId){
-        return getPortalResourceFileDir(code);
-    }
-    
+ 
     public static File getPortalResourceFileDir(String path){
         URL url = URLUtil.getWebFileUrl(PortalConstants.PORTAL_MODEL_DIR);
         return new File(url.getPath() + "/" + path);

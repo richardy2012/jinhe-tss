@@ -1,9 +1,6 @@
 package com.jinhe.tss.portal.engine.macrocode;
 
-import com.jinhe.tss.portal.engine.FreemarkerParser;
 import com.jinhe.tss.portal.engine.model.PortletNode;
-
-import freemarker.template.TemplateException;
 
 /**
  * <p> Portlet宏代码运行容器 </p>
@@ -47,32 +44,7 @@ public class PortletMacrocodeContainer extends AbstractMacrocodeContainer{
         // 获取Portlet实例所应用的修饰器在页面上对应的对象： document.getElementById('Dxxx')
         macrocodes.put(JS_DECORATOR_MACROCODE, "document.getElementById('D" + node.getParent().getId() + "')");
     }
-    
-    /**
-     * <p>
-     * 转成执行结果：宏、变量解析后的执行结果代码。
-     * 同时用Freemarker模板引擎解析该portlet，如果出错则返回出错信息。
-     * </p>
-     * @return String 
-     */
-    public String toString() {
-        String htmlCode = super.toString();
-        try {
-            FreemarkerParser freemarkerParser = ((PortletNode)this.node).getFreemarkerParser();
-            if(freemarkerParser != null){
-                htmlCode = freemarkerParser.parseTemplate(htmlCode);
-            }
-            return htmlCode;
-        } catch (Exception e) {
-            String errorInfo = "Portlet:" + node.getName() + " 执行Freemarker引擎解析时候出错,错误信息:(" + e.getMessage() + ")<br/>";
-            if(e instanceof TemplateException){
-                errorInfo = errorInfo + ((TemplateException)e).getFTLInstructionStack();
-            }
-            log.error(errorInfo + "\n" + htmlCode);
-            return errorInfo;
-        } 
-    }
-
+ 
     //特殊，区别修饰器、布局器
     protected String getParentElement() {
         // 获取PortletInstance所在版面【node.getParent().getParent()】在页面（HTML DOCUMENT）上对应的对象 （版面在页面上的对象）

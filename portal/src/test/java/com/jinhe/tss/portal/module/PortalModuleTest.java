@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
@@ -19,10 +20,12 @@ import com.jinhe.tss.portal.TxSupportTest4Portal;
 import com.jinhe.tss.portal.action.ComponentAction;
 import com.jinhe.tss.portal.action.NavigatorAction;
 import com.jinhe.tss.portal.action.PortalAction;
+import com.jinhe.tss.portal.dao.IPortalDao;
 import com.jinhe.tss.portal.entity.Component;
 import com.jinhe.tss.portal.entity.ReleaseConfig;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
+import com.jinhe.tss.portal.entity.ThemePersonal;
 
 /**
  * 门户结构相关模块的单元测试。
@@ -32,6 +35,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
     @Autowired PortalAction portalAction;
     @Autowired ComponentAction elementAction;
     @Autowired NavigatorAction menuAction;
+    @Autowired IPortalDao portalDao;
     
     Long portalId;
     Structure root;
@@ -97,6 +101,14 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         } catch (Exception e) {
         	Assert.assertTrue("该主题为门户的默认主题或者当前主题，正在使用中，删除失败！", true);
         }
+        
+        portalService.savePersonalTheme(portalId, Environment.getOperatorId(), defaultThemeId);
+        ThemePersonal pt = portalDao.getPersonalTheme(portalId);
+        Assert.assertNotNull(pt);
+        Assert.assertEquals(pt.getId(), pt.getPK());
+        Assert.assertEquals(portalId, pt.getPortalId());
+        Assert.assertEquals(defaultThemeId, pt.getThemeId());
+        Assert.assertEquals(Environment.getOperatorId(), pt.getUserId());
     }
     
     @Test
@@ -129,23 +141,29 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         portalAction.saveReleaseConfig(response, rconfig); // update
         
         ReleaseConfig rconfig2 = new ReleaseConfig();
+        rconfig2.setId(null);
         rconfig2.setName("门户发布配置-2");
         rconfig2.setPortal(root);
         rconfig2.setPage(page1);
         rconfig2.setTheme((Theme) themeList.get(0));
         rconfig2.setVisitUrl("default.portal");
         try {
-        	 portalAction.saveReleaseConfig(response, rconfig); // create
+        	 portalAction.saveReleaseConfig(response, rconfig2); // create
+        	 Assert.fail("should throw exception but didn't.");
 		} catch(Exception e) {
 			Assert.assertTrue("发布地址已经存在", true);
 			
 			rconfig2.setVisitUrl("default2.portal");
-			portalAction.saveReleaseConfig(response, rconfig);
+			portalAction.saveReleaseConfig(response, rconfig2);
 		}
+        Assert.assertNotNull(rconfig2.getTheme());
+        Assert.assertNotNull(rconfig2.getPage());
+        Assert.assertNotNull(rconfig2.getPK());
         
         try {
         	rconfig2.setVisitUrl("default");
-       	 	portalAction.saveReleaseConfig(response, rconfig); // update
+       	 	portalAction.saveReleaseConfig(response, rconfig2); // update
+       	 	Assert.fail("should throw exception but didn't.");
 		} catch(Exception e) {
 			Assert.assertTrue("发布地址已经存在", true);
 		}
@@ -156,6 +174,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         
 		try {
 			portalService.getReleaseConfig("index.portal");
+			Assert.fail("should throw exception but didn't.");
 		} catch(Exception e) {
 			Assert.assertTrue("发布地址不存在", true);
 		}
@@ -219,6 +238,8 @@ public class PortalModuleTest extends TxSupportTest4Portal {
     public void testPortalStartAndStop() {
     	// 测试停用启用
         portalAction.disable(response, root.getId(), ParamConstants.TRUE);
+        
+        portalAction.disable(response, page1.getId(), ParamConstants.FALSE);
         portalAction.disable(response, root.getId(), ParamConstants.FALSE);
     }
 }

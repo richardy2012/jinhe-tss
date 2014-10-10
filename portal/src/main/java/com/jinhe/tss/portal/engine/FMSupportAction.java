@@ -51,33 +51,29 @@ public abstract class FMSupportAction extends BaseActionSupport {
     }
     
     protected void printHTML(Long portalId, String template, boolean parseTwice){
-        if( !Config.TRUE.equalsIgnoreCase(ParamConfig.getAttribute(USE_FREEMARKER)) ){
-            print(template);
-            return;
+        if( Config.TRUE.equals(ParamConfig.getAttribute(USE_FREEMARKER)) ){
+	        try {
+	            FreemarkerParser parser = getFreemarkerParser(portalId);
+	            if(parser.isFtlTemplateReady){
+	                HttpServletResponse response = Context.getResponse();
+	                response.setContentType("text/html;charset=UTF-8");
+	                if(parseTwice) { // 是否需要解析两次
+	                    parser.parseTemplateTwice(template, response.getWriter());
+	                } else {
+	                    parser.parseTemplate(template, response.getWriter());
+	                }
+	                return;
+	            }
+	        } catch (Exception e) {
+	            String errorInfo = "执行Freemarker引擎解析时候出错,请联系管理员！<br/>错误信息:(" + e.getMessage() + ")<br/>";
+	            if(e instanceof TemplateException){
+	                print(errorInfo + ((TemplateException)e).getFTLInstructionStack() + template);
+	            } else {
+	                print(errorInfo + e);
+	            }
+	            return;
+	        } 
         }
-        
-        try {
-            FreemarkerParser parser = getFreemarkerParser(portalId);
-            if(parser.isFtlTemplateReady){
-                HttpServletResponse response = Context.getResponse();
-                response.setContentType("text/html;charset=UTF-8");
-                if(parseTwice) { // 是否需要解析两次
-                    parser.parseTemplateTwice(template, response.getWriter());
-                } else {
-                    parser.parseTemplate(template, response.getWriter());
-                }
-                return;
-            }
-        } catch (Exception e) {
-            log.error("执行Freemarker引擎解析时候出错", e);
-            String errorInfo = "执行Freemarker引擎解析时候出错,请联系管理员！<br/>错误信息:(" + e.getMessage() + ")<br/>";
-            if(e instanceof TemplateException){
-                print(errorInfo + ((TemplateException)e).getFTLInstructionStack() + template);
-            }else {
-                print(errorInfo + e);
-            }
-            return;
-        } 
         
         print(template);
     }
@@ -85,7 +81,7 @@ public abstract class FMSupportAction extends BaseActionSupport {
 	protected FreemarkerParser getFreemarkerParser(Long portalId) {
         HttpServletRequest  request = Context.getRequestContext().getRequest();
         
-        //设置门户资源路进为Freemarker模板路径
+        // 设置门户资源路进为Freemarker模板路径
         FreemarkerParser parser = new FreemarkerParser(getPortalResourcesPath(portalId));
         if(parser.isFtlTemplateReady){
         	

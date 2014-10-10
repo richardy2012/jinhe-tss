@@ -1,7 +1,5 @@
 package com.jinhe.tss.portal.engine.model;
 
-import java.util.Map;
-
 import com.jinhe.tss.portal.entity.Component;
 
 /**
@@ -20,15 +18,6 @@ public class DecoratorNode extends AbstractElementNode {
      */
     public DecoratorNode(Component obj, SubNode parent, String parametersOnPs){
         super(obj, parent, parametersOnPs);
-    }
-    
-    public DecoratorNode(Component obj, SubNode parent, Map<String, String> configedParameters) {
-        super(obj, parent);
-        getParameters().putAll(configedParameters);
-    }
-    
-    public DecoratorNode(Component obj, SubNode parent) {
-        super(obj, parent);
     }
     
     public Object clone(){

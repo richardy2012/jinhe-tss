@@ -109,11 +109,7 @@ public abstract class AbstractElementNode extends AbstractSubNode {
         } 
         return doc;
     }
-    
-    public Component getElement() {
-        return element;
-    }
-    
+ 
     public String  getResourcePath(){
         return element.getResourcePath();
     }

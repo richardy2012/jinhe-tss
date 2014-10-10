@@ -13,7 +13,6 @@ import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.um.helper.dto.GroupDTO;
 import com.jinhe.tss.um.helper.dto.UserDTO;
 import com.jinhe.tss.util.BeanUtil;
-import com.jinhe.tss.util.EasyUtils;
  
 public abstract class BaseDBDataDao implements IOutDataDao {
     
@@ -22,9 +21,6 @@ public abstract class BaseDBDataDao implements IOutDataDao {
     protected static String[] userDtoPropertyNames  = new String[]{"id", "groupId", "loginName", "password", "userName", "sex", "birthday", "email", "employeeNo", "authMethod" };
     
     public List<?> getOtherGroups(Map<String, String> paramsMap, String sql, String groupId) {
-        if( sql == null ) {
-            return new ArrayList<Object>();
-        }
         sql = sql.replaceAll(":groupId", groupId);
         
         Connection conn = getConnection(paramsMap);
@@ -32,9 +28,6 @@ public abstract class BaseDBDataDao implements IOutDataDao {
     }
 
     public List<?> getOtherUsers(Map<String, String> paramsMap, String sql, String groupId, Object...otherParams) {
-        if( EasyUtils.isNullOrEmpty(sql) ) { 
-        	return new ArrayList<Object>();
-        }
         sql = sql.replaceAll(":groupId", groupId);
  
         Connection conn = getConnection(paramsMap);
@@ -75,7 +68,6 @@ public abstract class BaseDBDataDao implements IOutDataDao {
                     conn = null;                
                 }
             } catch (SQLException e) {
-                throw new BusinessException("关闭数据库连接失败！", e);
             }
         }
         return items;

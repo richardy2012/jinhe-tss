@@ -71,14 +71,13 @@ public class ComponentDao extends TreeSupportDao<Component> implements IComponen
             delete(temp); //删除组
         }
         
-        if(groupIds.isEmpty()) return;
-        
-        // 删除元素
-        String hql = "from Component t where t.parentId in (:groupIds)";
-        List<?> elements =  getEntities(hql, new Object[]{"groupIds"}, new Object[]{groupIds});
-        
-        for ( Object temp : elements ) {
-            deleteComponent((Component) temp);
+        if(groupIds.size() > 0) {
+        	// 删除元素
+	        String hql = "from Component t where t.parentId in (:groupIds)";
+	        List<?> elements =  getEntities(hql, new Object[]{"groupIds"}, new Object[]{groupIds});
+	        for ( Object temp : elements ) {
+	            deleteComponent((Component) temp);
+	        }
         }
     }
  

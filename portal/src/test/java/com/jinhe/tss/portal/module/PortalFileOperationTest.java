@@ -2,6 +2,7 @@ package com.jinhe.tss.portal.module;
 
 import java.io.File;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -38,6 +39,7 @@ public class PortalFileOperationTest extends TxSupportTest4Portal {
         request = new MockHttpServletRequest();
 		request.addParameter("contextPath", layoutPath);
     	request.addParameter("fileNames", "test.txt");
+    	request.addParameter("folderNames", "1,2,3");
         fileAction.download(response, request);
         
         File testFile2 = new File(modelDir + "/layout/xxx.txt");
@@ -60,6 +62,18 @@ public class PortalFileOperationTest extends TxSupportTest4Portal {
         request.addParameter("type", "layout");
         request.addParameter("code", "layout12");
         fileAction.listAvailableFiles(response, request);
+        
+        request = new MockHttpServletRequest();
+        request.addParameter("contextPath", layoutPath);
+        fileAction.listAvailableFiles(response, request);
+        
+        request = new MockHttpServletRequest();
+        request.addParameter("type", "wrongType");
+		try {
+			fileAction.listAvailableFiles(response, request);
+			Assert.fail("should throw exception but didn't.");
+		} catch (Exception e) {
+		}
         
         request = new MockHttpServletRequest();
         request.addParameter("contextPath", layoutPath);

@@ -15,8 +15,6 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
-import javax.naming.directory.InvalidSearchControlsException;
-import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
@@ -241,19 +239,12 @@ public class LDAPDataDao implements IOutDataDao {
      * @return
      */
     private NamingEnumeration<SearchResult> ldapSearch(DirContext ctx, String searchBase, String filterString) {
-        if (ctx == null)
-            return null;
-
         SearchControls constraints = new SearchControls();
         constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);
         try {
             return ctx.search(searchBase, filterString, constraints);
-        } catch (InvalidSearchFilterException e1){
-            throw new BusinessException("Filter不合法", e1);
-        } catch (InvalidSearchControlsException e2){
-            throw new BusinessException("Constrains不合法", e2);
-        } catch (NamingException e) {
-            throw new BusinessException("外部组ID不合法", e);
+        } catch (Exception e) {
+            throw new BusinessException("ldap search failed, please check parameters!", e);
         } 
     }
 

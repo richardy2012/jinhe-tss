@@ -70,6 +70,7 @@ public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit4Sprin
     
     protected File tempDir1;
     protected File tempDir2;
+    protected File tempDir3;
     
     public static String CK_FILE_PATH = "application.properties";
     
@@ -83,6 +84,7 @@ public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit4Sprin
         
         tempDir1 = FileHelper.createDir(classDir + "/temp1");
         tempDir2 = FileHelper.createDir(classDir + "/temp2");
+        tempDir3 = FileHelper.createDir(classDir + "/temp3");
         
         Global.setContext(super.applicationContext);
 		Context.setResponse(response = new MockHttpServletResponse());

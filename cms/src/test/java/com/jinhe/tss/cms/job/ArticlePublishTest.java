@@ -37,7 +37,7 @@ public class ArticlePublishTest extends AbstractTestSupport {
     public void testArticlePublish() {
     	// 新建站点
         Channel site = createSite();
-        site.setPath(super.tempDir2.getPath());
+        site.setPath(super.tempDir3.getPath());
         
         Long siteId = site.getId();
         
@@ -89,7 +89,7 @@ public class ArticlePublishTest extends AbstractTestSupport {
         
         content = IndexHelper.getIndexableArticles(channelIdList, true, channelDao, articleDao);
         IndexHelper.createIndex(strategy, content, new Progress(list.size()));
-        
+ 
         // 测试检索文章
         request.addParameter("searchStr", "矛盾");
         articleAction.search(response, request, siteId, 1, 12);

@@ -8,8 +8,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -112,24 +112,16 @@ public class HTMLGenerator {
     private Element dom = new Element();
     
     /**
-     * freemarker解析器
-     */
-    private FreemarkerParser freemarkerParser;
-    
-    /**
      * HTML页面生成器构造函数：用于生成完整页面HTML代码<br>
      * <br>
      * @param portal
      *            门户结构PortalNode节点 
      * @param id
      *            所要显示门户结构中某节点ID，可能是page、section or portletInstance
-     * @param freemarkerParser
-     * 			  freemarker解析器
      */
-    public HTMLGenerator(PortalNode portal, Long id, FreemarkerParser freemarkerParser) {
+    public HTMLGenerator(PortalNode portal, Long id) {
         this.title = portal.getName();
         this.portalResourseDir = getPortalResourceDir(portal);
-        this.freemarkerParser = freemarkerParser;
         
         PageNode page;
         if (id == null || id == 0) {
@@ -182,9 +174,8 @@ public class HTMLGenerator {
      *                 对应（版面/portlet替换）菜单中的目标版面/页面ID，<br>
      *                 即被取代的区域（对应布局器中targetIndex的区域）所在的页面或版面ID
      */
-    public HTMLGenerator(PortalNode portal, Long contentId, Long targetId, FreemarkerParser freemarkerParser) {
+    public HTMLGenerator(PortalNode portal, Long contentId, Long targetId) {
         this.targetId = targetId;
-        this.freemarkerParser = freemarkerParser;
         
         Node content = portal.getNodesMap().get(contentId);
         Node target  = portal.getNodesMap().get(targetId);
@@ -533,7 +524,6 @@ public class HTMLGenerator {
             appendEventCodes(node); 
             
             this.htmlFragments.add("\n<!-- (Portlet)" + node.getName() + " start-->\n");
-            node.setFreemarkerParser(freemarkerParser);
             this.htmlFragments.add(MacrocodeContainerFactory.newInstance(node.getHtml(), node).compile());
             this.htmlFragments.add("\n<!-- (Portlet)" + node.getName() + " end-->\n");
         }

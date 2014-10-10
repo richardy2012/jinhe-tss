@@ -49,7 +49,7 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
 		
 		mainGroup = new Group();
 		mainGroup.setParentId(UMConstants.MAIN_GROUP_ID);
-		mainGroup.setName("他山石");
+		mainGroup.setName("他山石" + System.currentTimeMillis());
 		mainGroup.setGroupType(Group.MAIN_GROUP_TYPE);
 		mainGroup.setFromApp(UMConstants.TSS_APPLICATION_ID);
 		mainGroup.setFromGroupId("1");
@@ -170,7 +170,7 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
 		((Progressable)syncService).execute(datasMap, progress );
 		
 		List<User> userList = groupService.getUsersByGroupId(mainGroup.getId()); 
-		Assert.assertTrue(userList.size() == 1);
+		Assert.assertTrue(userList.size() >= 1);
 		User user1 = userList.get(0);
 		Assert.assertEquals("JonKing", user1.getLoginName());
 		Assert.assertEquals("怒放的生命", user1.getUserName());
@@ -181,7 +181,12 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
 		// 再增加同步一次，相同账号用户更更新
 		((Progressable)syncService).execute(datasMap, progress );
 		userList = groupService.getUsersByGroupId(mainGroup.getId()); 
-		Assert.assertTrue(userList.size() == 1);
+		Assert.assertTrue(userList.size() >= 1);
+		
+		// testSyncUserJob
+		SyncUserJob job = new SyncUserJob();
+        String jobConfig = mainGroup.getId() + ",tss";
+		job.excuteJob(jobConfig);
 	}
 
 	@Test
@@ -190,6 +195,7 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
 		mainGroup.setFromGroupId(null);
 		try {
 			groupAction.syncData(response, applicationId, mainGroup.getId());
+			Assert.fail("should throw exception but didn't.");
 		} catch (Exception e) {
 			Assert.assertTrue("导入组的对应外部应用组的ID（fromGroupId）为空", true);
 		}

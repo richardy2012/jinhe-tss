@@ -28,11 +28,7 @@ public abstract class AbstractMacrocodeContainer {
     public String compile() {
         return MacrocodeCompiler.run(code, macrocodes, true);
     }
-    
-    public String toString() {
-        return compile();
-    }
-    
+ 
     /**
      * 布局器、修饰器、Portlet资源文件所在的相对路径
      */
@@ -155,12 +151,11 @@ public abstract class AbstractMacrocodeContainer {
      */
     protected Map<String, Object> getParameters() {
         Map<String, String> paramsMap = node.getParameters();
-        if (paramsMap == null || paramsMap.isEmpty()) 
-            return new HashMap<String, Object>();
-        
         Map<String, Object> params = new HashMap<String, Object>();
-        for( Entry<String, String> entry : paramsMap.entrySet() ) {
-            params.put(MacrocodeCompiler.createVariable(entry.getKey()), entry.getValue());
+        if (paramsMap != null && !paramsMap.isEmpty()) {
+        	for( Entry<String, String> entry : paramsMap.entrySet() ) {
+	            params.put(MacrocodeCompiler.createVariable(entry.getKey()), entry.getValue());
+	        }
         }
         return params;
     }

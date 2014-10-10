@@ -56,7 +56,7 @@ public class PortalAction extends FMSupportAction {
     	Long pageId  = EasyUtils.convertObject2Long(request.getParameter("pageId"));
     	
         PortalNode portalNode = service.getPortal(portalId, themeId);
-        HTMLGenerator gen = new HTMLGenerator(portalNode, pageId, getFreemarkerParser(portalId));
+        HTMLGenerator gen = new HTMLGenerator(portalNode, pageId);
 
         printHTML(portalId, gen.toHTML(), true);
     }
@@ -74,7 +74,7 @@ public class PortalAction extends FMSupportAction {
     	
     	Long themeId = EasyUtils.convertObject2Long(request.getParameter("themeId"));
         PortalNode portalNode = service.getPortal(portalId, themeId);
-        HTMLGenerator gen = new HTMLGenerator(portalNode, contentId, targetId, getFreemarkerParser(portalId));
+        HTMLGenerator gen = new HTMLGenerator(portalNode, contentId, targetId);
         
         StringBuffer sb = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         sb.append("<Response><Portlet>").append(gen.toXML()).append("</Portlet></Response>");
