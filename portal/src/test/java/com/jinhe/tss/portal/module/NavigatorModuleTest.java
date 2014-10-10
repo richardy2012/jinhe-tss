@@ -47,9 +47,6 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         root.setTheme(theme);
         portalAction.save(response, root); // create portal root
         
-//        Structure page2 = createPageOrSection(root, "页面二-2", "page2-2", Structure.TYPE_PAGE);
-//        createPageOrSection(page2, "版面二-2", "section2-2", Structure.TYPE_SECTION);
-        
         List<?> list = menuService.getAllNavigator();
         assertTrue(list.size() >= 1);
         

@@ -218,7 +218,10 @@ public class PortalModuleTest extends TxSupportTest4Portal {
     
     @Test
     public void testPortalMenu() {
-    	menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_SECTION);
+        menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_SECTION);
+        menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_PORTLET_INSTANCE);
+        menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_PAGE);
+        menuAction.getStructuresByPortal(response, portalId, Structure.TYPE_PORTAL);
     }
     
     @Test
