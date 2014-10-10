@@ -37,6 +37,7 @@
         $.ajax({
             url: URL_SYS_TITLE,
             method: 'GET',
+            type: "json",
             ondata: function() {
                 var title = this.getResponseJSON();
                 if( title && title.length > 0 ) {
