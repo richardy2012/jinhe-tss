@@ -72,10 +72,10 @@ public class Filter7AccessingCheck implements Filter {
         }catch(Exception e){
         }
         
-        String servletPath = req.getRequestURI().substring(req.getContextPath().length());
-        AccessingChecker checker = AccessingChecker.getInstance();
-        
+        String servletPath = req.getServletPath();
         log.debug("权限检测：" + servletPath);
+        
+        AccessingChecker checker = AccessingChecker.getInstance();
         if (!checker.checkPermission(userRights, servletPath)) {
             log.debug("权限检测失败");
             

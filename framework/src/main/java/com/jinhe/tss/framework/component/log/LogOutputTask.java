@@ -15,15 +15,15 @@ public class LogOutputTask extends Output2DBTask {
 
     protected void createRecords(Connection conn) throws SQLException {
     	String insertSql = "insert into component_log" +
-                "(operatorId, operatorName, operatorIP, operationCode, operateTable, operateTime, content, methodExcuteTime) " +
-                "values(?, ?, ?, ?, ?, ?, ?, ?)"; 
+                "(operatorId, operatorName, operatorIP, operationCode, operateTable, operateTime, content, methodExcuteTime, operatorBrowser) " +
+                "values(?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
 
         PreparedStatement pstmt = conn.prepareStatement(insertSql); 
         for ( Object temp : records ) {
             Log dto = (Log) temp;
             
             int index = 1;
-            pstmt.setLong  (index++, dto.getOperatorId());
+            pstmt.setLong  (index++, dto.getOperatorId() == null ? 0L : dto.getOperatorId());
             pstmt.setString(index++, dto.getOperatorName());
             pstmt.setString(index++, dto.getOperatorIP());
             pstmt.setString(index++, dto.getOperationCode());
@@ -31,6 +31,7 @@ public class LogOutputTask extends Output2DBTask {
             pstmt.setTimestamp(index++, new java.sql.Timestamp(dto.getOperateTime().getTime()));
             pstmt.setString(index++, dto.getContent());
             pstmt.setInt(index++, dto.getMethodExcuteTime());
+            pstmt.setString(index++, dto.getOperatorBrowser());
             
             pstmt.execute();
         }

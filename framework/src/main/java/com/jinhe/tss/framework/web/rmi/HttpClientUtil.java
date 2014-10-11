@@ -109,7 +109,7 @@ public class HttpClientUtil {
         String realPath = requestContext.getRealPath();
         String queryString = null;
         if ( EasyUtils.isNullOrEmpty(realPath) ) {
-            realPath = request.getServletPath(); //request.getRequestURI().substring(request.getContextPath().length());
+            realPath = request.getServletPath(); // 老的写法有问题：request.getRequestURI().substring(request.getContextPath().length());
             queryString = request.getQueryString();
         } else {
             realPath = URLDecoder.decode(realPath, "UTF-8");

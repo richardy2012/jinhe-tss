@@ -66,21 +66,13 @@ public class RequestContext {
 	}
     
     /**
-     * <p>
      * 获取请求ServletPath（相对路径 /login.do, /logout.in 等）
-     * 注：不宜采用本class的request(RewriteableHttpServletRequest)属性，有些情况RequestContext并不会被初始化。
-     * </p>
      *
      * @param request
      * @return
      */
     public static String getServletPath(HttpServletRequest request) {
-        String contextPath = request.getContextPath(); // http://ip:8088/tss
-        String servletPath = request.getRequestURI();  // http://ip:8088/tss/login.do
-        if (contextPath.length() > 1) {
-            servletPath = servletPath.substring(contextPath.length());
-        }
-        return servletPath; // login.do
+        return request.getServletPath();
     }
 
 	/**

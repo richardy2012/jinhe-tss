@@ -23,13 +23,19 @@ public class BusinessServletException extends ServletException implements IBusin
     private boolean neddPrint = true;
  
     public BusinessServletException(Exception e) {
-        super(e.getMessage());
+    	super(e.getMessage());
+    	
+    	if( !(e instanceof IBusinessException) 
+    			&& (e.getCause() instanceof IBusinessException)) {
+    		e = (Exception) e.getCause();
+    	}
+    	
         initCause(e);
         if(e instanceof IBusinessException) {
         	IBusinessException be = (IBusinessException)e;
 			this.relogin = be.needRelogin();
         	this.neddPrint = be.needPrint();
-    	}
+    	} 
     }
  
     public BusinessServletException(Exception e, boolean relogin) {

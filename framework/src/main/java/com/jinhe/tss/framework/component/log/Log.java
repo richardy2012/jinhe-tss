@@ -18,6 +18,8 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.sso.Environment;
+import com.jinhe.tss.framework.sso.context.Context;
+import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.web.dispaly.grid.GridAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
@@ -44,6 +46,7 @@ public class Log implements IEntity, IXForm, IGridNode {
     private Long   operatorId;    // 操作者ID
     private String operatorName;  // 操作者Name
     private String operatorIP;    // 操作者IP
+    private String operatorBrowser;  // 操作者浏览器类型
     
     @Column(length = 4000)  
     private String  content;      // 操作内容
@@ -60,6 +63,11 @@ public class Log implements IEntity, IXForm, IGridNode {
         this.setOperateTable ( entity.getClass().getName() );
         this.setContent      ( BeanUtil.toXml(entity) );
         this.setOperateTime  ( new Date() );
+        
+        RequestContext rc = Context.getRequestContext();
+        if(rc != null && rc.getRequest() != null) {
+        	this.setOperatorBrowser(rc.getRequest().getHeader("USER-AGENT"));
+        }
     }
  
     public String getContent() {
@@ -130,11 +138,7 @@ public class Log implements IEntity, IXForm, IGridNode {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", this.id);
         map.put("content", this.content);
-        map.put("operateTable", this.operateTable);
         map.put("operateTime", DateUtil.formatCare2Second(this.operateTime));
-        map.put("operationCode", this.operationCode);
-        map.put("operatorId", this.operatorId);
-        map.put("operatorIP", this.operatorIP);
         map.put("operatorName", this.operatorName);
         
         return map;
@@ -148,6 +152,8 @@ public class Log implements IEntity, IXForm, IGridNode {
         map.put("operatorIP", this.operatorIP);
         map.put("operatorName", this.operatorName);
         map.put("methodExcuteTime", this.methodExcuteTime);
+        map.put("operatorBrowser", this.getOperatorBrowser());
+        
         return map;
     }
     
@@ -165,6 +171,14 @@ public class Log implements IEntity, IXForm, IGridNode {
     
 	public Serializable getPK() {
 		return this.id;
+	}
+
+	public String getOperatorBrowser() {
+		return operatorBrowser;
+	}
+
+	public void setOperatorBrowser(String operatorBrowser) {
+		this.operatorBrowser = operatorBrowser;
 	}
 }
 

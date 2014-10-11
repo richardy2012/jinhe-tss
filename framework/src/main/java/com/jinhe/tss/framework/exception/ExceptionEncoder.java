@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.exception.convert.ExceptionConvertorFactory;
 import com.jinhe.tss.framework.exception.convert.IExceptionConvertor;
+import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.web.dispaly.ErrorMessageEncoder;
@@ -27,8 +28,8 @@ public class ExceptionEncoder {
     static IExceptionConvertor convertor = ExceptionConvertorFactory.getConvertor();
 
     public static void encodeException(ServletResponse response, Exception be) {
-    	 RequestContext requestContext = Context.getRequestContext();
-         if( requestContext == null ) return;
+    	RequestContext requestContext = Context.getRequestContext();
+        if( requestContext == null ) return;
     	
     	try {
             if (!response.isCommitted() && !requestContext.isMultiRequest()) {
@@ -39,16 +40,21 @@ public class ExceptionEncoder {
             if(be instanceof IBusinessException){
                 IBusinessException e = (IBusinessException) be;
                 
-				if( e.needPrint() ) { 
+                long theadId = Thread.currentThread().getId();
+                String userName = Environment.getUserName();
+				if(userName != null) {
+					log.warn(theadId + "出现异常, 当前登陆用户【" + userName + "】");
+                }
+                
+				if( e.needPrint() ) {
                     printErrorMessage(be);
-                    // 输出调试信息
                     log.debug("-----------------------  Exception  -----------------------");
                     log.debug("AppCode: " + Config.getAttribute(Config.APPLICATION_CODE));
                     log.debug(errorMsgEncoder.toXml());
                     log.debug("--------------------- End of Exception --------------------");
                 }
 				else {
-					log.warn(be.getMessage());
+					log.warn(be.getMessage() + ", request url:" + requestContext.getRequest().getServletPath() + ", " + theadId);
 				}
             }
             
@@ -58,8 +64,7 @@ public class ExceptionEncoder {
                 // XMLHTTP，返回XML格式错误信息
                 errorMsgEncoder.print(writer);
             } 
-            else {
-                // HTTP 
+            else { // HTTP 
             	response.getWriter().println(be);
             }
         } catch (Exception e) {
