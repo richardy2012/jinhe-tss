@@ -58,6 +58,7 @@ public class Filter7AccessingCheckTest {
     @Test
     public final void testDenied() throws IOException, ServletException {
 		EasyMock.expect(request.getRequestURI()).andReturn("/tss/login.do");
+		EasyMock.expect(request.getServletPath()).andReturn("/login.do");
 		
 		response.sendRedirect("/404.html");
 		EasyMock.expectLastCall();
@@ -77,6 +78,7 @@ public class Filter7AccessingCheckTest {
     @Test
     public final void testCheckOK() throws IOException, ServletException {
     	EasyMock.expect(request.getRequestURI()).andReturn("/tss/login.do").times(0, 3);
+    	EasyMock.expect(request.getServletPath()).andReturn("/login.do").times(0, 3);;
     	EasyMock.expect(
 				session.getAttribute(SSOConstants.LOGINNAME_IN_SESSION))
 				.andReturn("J.K").times(0, 3);

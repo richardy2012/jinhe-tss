@@ -152,7 +152,7 @@ public class Navigator extends OperateInfo implements IXForm, IDecodable, IResou
             if(parent != null){
                 parent.add(node);
             } 
-            else {
+            else if(root == null) {
             	root = node;
             }
         }

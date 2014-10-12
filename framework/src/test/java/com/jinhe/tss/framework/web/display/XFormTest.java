@@ -28,7 +28,7 @@ public class XFormTest {
 		XFormEncoder encoder = new XFormEncoder(LogAction.LOG_XFORM_TEMPLET_PATH, log);
 		
 		log = (Log) XFormDecoder.decode(encoder.toXml(), Log.class);
-		Assert.assertEquals("用户", log.getOperateTable());
+		Assert.assertEquals("XXXXXXXXXX", log.getContent());
 		
 		try {
 			XmlPrintWriter writer = new XmlPrintWriter(response.getWriter());
