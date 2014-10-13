@@ -7,7 +7,7 @@
 		<column name="methodExcuteTime" caption="执行时长"  mode="string"/>
 		<column name="operatorName"  caption="操作人"   mode="string" />
 		<column name="operatorIP"    caption="操作人IP" mode="string"/>
-		<column name="operatorBrowser"  caption="浏览器" mode="string"/>
+		<column name="operatorBrowser"  caption="浏览器" mode="string" width="200px"/>
 		<column name="operateTime"   caption="操作时间"  mode="date" pattern="yyyy-MM-dd HH:mm:ss"/>
 	</declare>			
 	<data>

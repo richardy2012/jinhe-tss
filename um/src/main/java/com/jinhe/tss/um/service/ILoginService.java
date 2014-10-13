@@ -2,6 +2,7 @@ package com.jinhe.tss.um.service;
 
 import java.util.List;
 
+import com.jinhe.tss.framework.component.cache.Cached;
 import com.jinhe.tss.framework.component.log.Logable;
 import com.jinhe.tss.um.helper.dto.GroupDTO;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
@@ -23,6 +24,7 @@ public interface ILoginService {
      * @param loginName 用户登录名
      * @return String[] {用户名:String,身份认证器类名（全路径）:String}
      */
+	@Cached
 	@Logable(operateObject = "用户登录", operateInfo = "${args[0]}正在进行登录验证。")
     String[] getLoginInfoByLoginName(String loginName);
     
@@ -41,6 +43,7 @@ public interface ILoginService {
      * @param id 用户ID
      * @return OperatorDTO 用户信息DTO
      */
+	@Cached
     OperatorDTO getOperatorDTOByID(Long id);
     
     /**
@@ -50,6 +53,7 @@ public interface ILoginService {
      * @param loginName 用户登录名
      * @return OperatorDTO 用户信息DTO
      */
+	@Cached
     OperatorDTO getOperatorDTOByLoginName(String loginName);
     
     /**
