@@ -9,7 +9,7 @@ public class BusinessException extends RuntimeException implements IBusinessExce
     private static final long serialVersionUID = 1759438185530697479L;
  
     public BusinessException(String msg) {
-        super(msg);
+        this(msg, false);
     }
     
     public BusinessException(String msg, boolean neddPrint) {
