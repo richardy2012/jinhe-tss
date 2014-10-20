@@ -151,8 +151,11 @@ function savePermission() {
         params : {
             "applicationId": applicationId, 
             "resourceType": resourceType, 
-            "permissions":nodesPermissions.join(",")
-        }
+            "permissions": nodesPermissions.join(",")
+        },
+		onsuccess: function() {
+			searchPermission();
+		}
     });
 }
 
