@@ -64,12 +64,12 @@ public class Filter6XmlHttpDecode implements Filter {
                     requestBody = getRequestBody(is = request.getInputStream());
                     doc = XMLDocUtil.dataXml2Doc(requestBody);
                 } catch (IOException e) {
-                    throw new BusinessException("获取请求数据流失败.requestBody = " + requestBody, e);
+                    throw new BusinessException("获取请求数据流失败.requestBody = " + requestBody + ", " + e.getMessage());
                 } catch (Exception e) {
                     try {
                         doc = XMLDocUtil.dataXml2Doc(XmlUtil.stripNonValidXMLCharacters(requestBody));
                     } catch (Exception e1) {
-                        throw new BusinessException("解析xml请求数据流失败.requestBody = " + requestBody, e1);
+                        throw new BusinessException("解析xml请求数据流失败.requestBody = " + requestBody+ ", " + e1.getMessage());
                     }
                 } finally {
                     try {
