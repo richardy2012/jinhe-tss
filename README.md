@@ -1,40 +1,54 @@
-2013年前代码托管在google code，摘部分提交记录以记之
-  
-2013-01-01: use git replace svn, still remain svn; pom adjust；h2/mysql support  
-2012-12-30: tomcat7.0 and eclipse4.2 for JEE  
-2012-12-29: transfer to servlet 3.0，use annotation config web framework  
-2012-12-21: framework refactor  
-2012-12-19: test cache's function and performance  
-2012-12-09: 缓存池代码code review及部分重构; test cache  
-  
-  
-2012-04-07: 完成自动化持续构建，包括生成项目网站，代码质量分析报告，代码bug报告，单元测试报告，测试覆盖率报告等  
-2012-04-04: 不再使用Ant自动构建测试，重新使用Maven来跑测试，绕了一圈又回到了原点，为了hudson，一切为了CI。  
-2012-03-05: 用clover统计测试覆盖率  
-2012-03-02: depoly tss to tomcat6014。  
-2012-02-29: Test one by one,  
-            Test by Ant,  
-            Test for Init DB,  
-            Over!  
-            完成database schema及数据初始化.  
-2012-02-27: 使用Ant执行单元测试，生成测试报告  
-2012-02-25: TSS单元测试完结  
-2012-02-20: 完成对门户结构的基本测试  
-2012-02-17: 完成对portlet模块的单元测试；完成对门户布局器、修饰器模块的单元测试  
-2012-01-14: 完成对UM项目的代码重构及测试  
-2011-09-22: 改用标准JPA实现数据存取，所有实体和DAO进行改造  
-2011-09-13: 开始对Core项目重构后的代码进行单元测试  
-2011-08-28: 在线用户库模块代码重构  
-2011-08-27: 单点登录SSO模块代码重构  
-2011-08-12: 代码开始交由Google code 托管  
-2011-08-17 ----- 2012-01-01：  
-   1、升级：Ant --> Maven2   
-	    Spring1.2 --> Spring3.0   
-	    Hibernate --> JPA2.0  
-	    JDK1.6 --> JDK1.6  
-	    普通测试 --> TDD  
-   2、重构Framework后台代码  
-   3、理清并统一权限过滤机制;瘦身：去掉一些不常用的功能操作  
-   4、引入内存数据库H2作为单元测试数据库  
-   5、单元测试：完善重点模块的单元测试，SSO、Cache、全文检索(lucene)、权限、门户机制等  
-   6、Servlet测试：引入jetty作为内嵌web服务器测试web层
+欢迎来到它山石!
+============
+
+**它山石**是一个由个人开发并维护的应用基础平台，专注于提供快速开发各类应用软件所需的技术框架及常用功能组件，以此为基础，应用开发者可以专注于业务逻辑本身的开发，从而极大的减轻开发工作量，同时还能把不同的应用无缝衔接到统一的基础平台之上，自动实现**统一用户登陆（SSO）、统一资源授权、统一聚合展示（门户）。**  目前提供的常用功能组件有：
+
+- 它山石技术框架，包括后端框架和前端框架
+- 统一用户管理（UM）
+- 门户管理（Portal）
+- 内容管理（CMS）
+- 数据缓存管理
+- 系统参数管理
+- 系统日志管理
+
+
+
+
+###它山石技术框架
+-------------
+
+主要开发语言为JAVA和javascript，数据库支持MySQL、H2、Oracle。后端采用hibernate3.5 + spring3.2 + spring mvc。
+
+- Hibernate负责对业务对象进行持久化和常用查询，同时提供自定义的数据库连接池，允许同时对多数据源进行访问。
+- Spring提供IOC容器及AOP机制，对业务操作对象的生成、依赖注入、事务、权限过滤、日志搜集、缓存等进行统一管理，。
+- Spring MVC将后端服务发布成web服务，采用restful风格的接口定义形式。
+- Freemarker提供模板引擎解析功能
+- 前后端交换一律采用AJAX，数据格式同时支持XML和JSON
+- 前端框架采用独立的自主开发的它山石web框架，使用纯HTML5 + CSS3 + Javascript，提供统一的界面样式布局，及菜单、Tree、Grid、Form等常用组件,且组件数据的格式和后端接口服务提供的一致。
+
+> **Note:**
+
+> - 技术框架最大特色是量身定制，较少采用各类流行但体量庞大的框架，从而最大限度的实现易维护、易扩展.
+> - 前后端充分解耦合，开发时各自独立进行、互不依赖，只需彼此约定好数据格式，前端直接依据模拟数据文件进行开发，待后端开发好正式的接口服务，前端将 **数据服务地址** 由模拟文件替换为后端正式的服务地址即可.
+
+#### 统一用户管理（UM）
+
+The document panel is accessible using the <i class="icon-folder-open"></i> button in the navigation bar. You can create a new document by clicking <i class="icon-file"></i> **New document** in the document panel.
+
+#### 门户管理（Portal）
+
+All your local documents are listed in the document panel. You can switch from one to another by clicking a document in the list or you can toggle documents using <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd>.
+
+#### 内容管理（CMS）
+
+You can rename the current document by clicking the document title in the navigation bar.
+
+#### 数据缓存管理
+
+You can delete the current document by clicking <i class="icon-trash"></i> **Delete document** in the document panel.
+
+#### 系统参数管理
+
+You can save the current document to a file by clicking <i class="icon-hdd"></i> **Export to disk** from the <i class="icon-provider-stackedit"></i> menu panel.
+
+#### 系统日志管理
