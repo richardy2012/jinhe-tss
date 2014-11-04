@@ -32,7 +32,7 @@ public class ParamAction extends BaseActionSupport {
 	/** 树型展示所有已配置参数 */
 	@RequestMapping("/list")
 	public void get2Tree(HttpServletResponse response) {
-		List<?> allParams = paramService.getAllParams();
+		List<?> allParams = paramService.getAllParams(false);
 		TreeEncoder treeEncoder = new TreeEncoder(allParams, new LevelTreeParser());
 		print("ParamTree", treeEncoder);
 	}

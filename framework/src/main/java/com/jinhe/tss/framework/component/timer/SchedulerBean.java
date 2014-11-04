@@ -114,10 +114,11 @@ public class SchedulerBean {
 			String triggerName = "Trigger-" + code;
 			Trigger trigger;
 			try {
-				trigger = new CronTrigger(triggerName, Scheduler.DEFAULT_GROUP, configs[1].trim()); // 第三个参数为定时时间
+				String scheduleTime = configs[1].trim();
+				trigger = new CronTrigger(triggerName, Scheduler.DEFAULT_GROUP, scheduleTime); // 第三个参数为定时时间
 				scheduler.scheduleJob(jobDetail, trigger);
 				
-				log.info(" scheduler.scheduleJob: " + jobName + " successed." );
+				log.info(" scheduler.scheduleJob: " + jobName + " successed. scheduleTime=" + scheduleTime );
 				
 				configsMap.put(code, value);
 			} 

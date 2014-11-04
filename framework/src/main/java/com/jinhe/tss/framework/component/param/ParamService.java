@@ -16,7 +16,7 @@ public interface ParamService {
 	void delete(Long paramId);
 
 	/** 取所有参数 */
-	List<?> getAllParams();
+	List<?> getAllParams(boolean includeHidden);
 	
 	/** 根据ID取参数 */
 	Param getParam(Long id);

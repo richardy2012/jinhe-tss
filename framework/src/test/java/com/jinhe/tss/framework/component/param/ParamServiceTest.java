@@ -43,7 +43,7 @@ public class ParamServiceTest extends TxTestSupportParam {
     }
     
     private void printParams() {
-        List<?> list = paramService.getAllParams();
+        List<?> list = paramService.getAllParams(false);
         assertTrue(list.size() > 0);
         
         for(Object temp :list) {

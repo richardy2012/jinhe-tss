@@ -80,8 +80,8 @@ public class ParamServiceImpl implements ParamService {
         }
     }
 
-    public List<?> getAllParams() {
-        return paramDao.getAllParam();
+    public List<?> getAllParams(boolean includeHidden) {
+        return paramDao.getAllParam(includeHidden);
     }
 
     public Param getParam(Long id) {

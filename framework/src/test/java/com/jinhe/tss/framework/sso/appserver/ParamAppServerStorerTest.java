@@ -36,7 +36,7 @@ public class ParamAppServerStorerTest extends TxTestSupport {
             addSimpleParam(group.getId(), code, name, element.asXML());
         }
         
-        List<?> list = paramService.getAllParams();
+        List<?> list = paramService.getAllParams(true);
         assertTrue(list.size() > 0);
         
         ParamAppServerStorer paramAppServerStorer = new ParamAppServerStorer();
