@@ -3,9 +3,11 @@ package com.jinhe.tss.framework.component.param;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.TxTestSupport;
+import com.jinhe.tss.framework.component.log.LogService;
 
 public class TxTestSupportParam extends TxTestSupport {
     
+	@Autowired protected LogService logService;
     @Autowired protected ParamService paramService;
     @Autowired protected ParamAction paramAction;
 

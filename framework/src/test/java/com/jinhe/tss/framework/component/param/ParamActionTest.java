@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jinhe.tss.framework.test.TestUtil;
+
 public class ParamActionTest extends TxTestSupportParam {
 	
 	@Autowired private ParamAction action;
@@ -67,5 +69,7 @@ public class ParamActionTest extends TxTestSupportParam {
 		action.delParam(response, paramGroup2.getId());
 		
 		action.get2Tree(response);
+		
+		TestUtil.printLogs(logService);
 	}
 }
