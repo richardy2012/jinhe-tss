@@ -50,9 +50,17 @@ public class Filter7AccessingCheck implements Filter {
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
+        String servletPath = req.getServletPath();
+        
+        AccessingChecker checker = AccessingChecker.getInstance();
         
         HttpSession session = req.getSession(false);
-        if(session == null){
+        if(session == null) {
+        	// 如果链接配置了权限检测，则提示先进行登录
+        	if( checker.isNeedPermission(servletPath) ) {
+        		log.warn("试图匿名访问" + servletPath + "失败。");
+        		throw new BusinessServletException("您无权访问本页面，请先进行登录！");
+        	}
             chain.doFilter(request, response);
             return;
         }
@@ -72,10 +80,7 @@ public class Filter7AccessingCheck implements Filter {
         }catch(Exception e){
         }
         
-        String servletPath = req.getServletPath();
-        log.debug("权限检测：" + servletPath);
-        
-        AccessingChecker checker = AccessingChecker.getInstance();
+        log.debug("权限检测开始：" + servletPath);
         if (!checker.checkPermission(userRights, servletPath)) {
             log.debug("权限检测失败");
             
@@ -108,9 +113,9 @@ class AccessingChecker {
     /** 权限配置文件 */
     private static final String RIGHT_CONFIG_FILE_NAME = "tss/right-config.xml";
     
-    private static Map<String, Set<String>> rightsMap;
+    static Map<String, Set<String>> rightsMap;
     
-    private static String THE_404_URL; 
+    static String THE_404_URL; 
     
     private AccessingChecker() {
         try {
@@ -127,6 +132,10 @@ class AccessingChecker {
             instance = new AccessingChecker();
         }
         return instance;
+    }
+    
+    boolean isNeedPermission(String servletPath) {
+    	return rightsMap.containsKey(servletPath);
     }
         
     /**
