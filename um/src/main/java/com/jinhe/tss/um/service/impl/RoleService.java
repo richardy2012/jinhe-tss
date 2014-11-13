@@ -168,7 +168,7 @@ public class RoleService implements IRoleService {
             role = roleDao.create(role);
         } 
         else {
-//            roleDao.update(role);
+            roleDao.update(role);
         }
         
         saveRole2User(role.getId(), userIdsStr);   // 角色对用户

@@ -243,8 +243,10 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
 	 * @param resourceTable
 	 */
 	public void deletePermissionByRole(Long roleId, String permissionRank, String unSuppliedTable, String suppliedTable, String resourceTable) {
-	    /* 先按 "角色" 把要删除的记录的permissionState保存下来，用来在删除补全表时做判断。
-	     * 删除只删除本级别的,其他级别已经授权过的不要改变 */
+	    /* 
+	     * 先按 "角色" 把要删除的记录的permissionState保存下来，用来在删除补全表时做判断。
+	     * 删除只删除本级别的,其他级别已经授权过的不要改变 
+	     */
         String rankCondition = genRankCondition4DeleletePermission(permissionRank);
         List<?> exsitUsPermissions = getEntities(" from " + unSuppliedTable + " p where p.roleId = ? " + rankCondition, roleId);
         deleteExistPermission(exsitUsPermissions, rankCondition, suppliedTable, resourceTable);

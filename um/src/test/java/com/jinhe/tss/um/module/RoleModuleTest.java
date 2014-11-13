@@ -258,6 +258,13 @@ public class RoleModuleTest extends TxSupportTest4UM {
         
         printVisibleMainGroups(3); // 主用户组（Main-Group）、 财务部 、财务一部
         
+        // 清除授权
+        action.clearPermission(response, request, "2", 0, resourceId);
+        action.clearPermission(response, request, "2", 1, role1Id);
+        action.clearPermission(response, request, "2", 1, role2Id);
+        
+        printVisibleMainGroups(0);
+        
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME); // 换回Admin登录
     }
     

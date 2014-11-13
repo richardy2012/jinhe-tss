@@ -148,7 +148,8 @@ public class TreeSupportDao<T extends IDecodable> extends BaseDao<T> implements 
         T sourceItem = getEntity(id);
         T targetItem = getEntity(targetId);
         
-        if(!sourceItem.getParentId().equals(targetItem.getParentId())) {
+        Long parentId = sourceItem.getParentId();
+		if(!parentId.equals(targetItem.getParentId())) {
             throw new BusinessException("排序节点和目标节点不属于同一层的节点（父节点不一致），不能排序。");
         }
         
@@ -157,7 +158,7 @@ public class TreeSupportDao<T extends IDecodable> extends BaseDao<T> implements 
         int tag = (sourceSeqNo < targetSeqNo ? 1 : -1);
     
         List<T> returnList = new ArrayList<T>();
-        List<T> list = getRelationsNodeWhenSort(sourceItem.getParentId(), sourceSeqNo, targetSeqNo);
+        List<T> list = getRelationsNodeWhenSort(parentId, sourceSeqNo, targetSeqNo);
         for (T temp : list) {
             temp.setSeqNo(temp.getSeqNo() - tag);
             saveItem4Sort(temp, returnList);
@@ -166,6 +167,20 @@ public class TreeSupportDao<T extends IDecodable> extends BaseDao<T> implements 
         targetItem.setSeqNo(targetSeqNo - (direction + tag) / 2);
         saveItem4Sort(sourceItem, returnList);
         saveItem4Sort(targetItem, returnList);
+        
+        /* 取出所有兄弟节点，按【1 --> size】的顺序重新进行排序设定，
+         * 以消除存在相同序号的兄弟节点出现（相同序号则decode也相同，授权时打全勾会引起混乱，因为会把相同decode的兄弟节点及它的所有子节点都带上了）。
+         */
+        @SuppressWarnings("unchecked")
+		List<T> sibling = (List<T>) getEntities("from " + entityName + " o where o.parentId = ? order by o.seqNo", parentId);
+        int currentSeqNo = 1;
+        for (T temp : sibling) {
+        	if(currentSeqNo != temp.getSeqNo()) {
+        		temp.setSeqNo(currentSeqNo);
+                saveItem4Sort(temp, returnList);
+        	}
+        	currentSeqNo ++;
+        }
         
         return returnList; // 返回后
     }

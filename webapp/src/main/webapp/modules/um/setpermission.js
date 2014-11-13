@@ -159,8 +159,32 @@ function savePermission() {
     });
 }
 
-window.onload = init;
+function clearPermission() {
+    var tree = $.PT("permissionTree");
+    if(tree == null) return;
 
+    // 取回搜索条件，加入到提交数据
+	var role2PermissionNode = $.cache.XmlDatas[XML_PERMISSION_MATRIX];
+    var applicationId   = role2PermissionNode.getAttribute("applicationId");
+    var resourceType    = role2PermissionNode.getAttribute("resourceType");
+    var permissionRank  = role2PermissionNode.getAttribute("permissionRank");           
+    var isRole2Resource = role2PermissionNode.getAttribute("isRole2Resource");
+    var roleID          = role2PermissionNode.getAttribute("roleId");
+
+    $.ajax({
+        url : URL_SAVE_PERMISSION + permissionRank + "/" + isRole2Resource + "/" + roleID,
+		method : "DELETE",
+        params : {
+            "applicationId": applicationId, 
+            "resourceType": resourceType
+        },
+		onsuccess: function() {
+			searchPermission();
+		}
+    });
+}
+
+window.onload = init;
 
 
 

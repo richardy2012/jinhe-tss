@@ -37,6 +37,21 @@ public class PermissionServiceImpl implements PermissionService {
 		permissionHelper.executeHQL("delete " + permissionTable);
 	}
 	
+	public void clearPermissionByRole(String appId, String resourceTypeId, 
+			String permissionRank, Long roleId, Integer isRole2Resource) {
+		
+		String unSuppliedTable = remoteResourceTypeDao.getUnSuppliedTable(appId, resourceTypeId); //"未补全的表名"
+        String suppliedTable = remoteResourceTypeDao.getSuppliedTable(appId, resourceTypeId);    //"补全的表名"
+		
+		String rankCondition = permissionHelper.genRankCondition4DeleletePermission(permissionRank);
+		String field = ParamConstants.TRUE.equals(isRole2Resource) ? "roleId" : "resourceId";
+ 
+        permissionHelper.executeHQL("delete " + unSuppliedTable + " p where" + " p." + field + "=? " + rankCondition, roleId);
+        permissionHelper.executeHQL("delete " + suppliedTable + " p where" + " p." + field + "=? " + rankCondition, roleId);
+        
+        permissionHelper.flush();
+	}
+	
 	public void saveResources2Role(String appId, String resourceTypeId, Long roleId, String permissionRank, String permissions) {
         String unSuppliedTable = remoteResourceTypeDao.getUnSuppliedTable(appId, resourceTypeId); //"未补全的表名"
         String suppliedTable = remoteResourceTypeDao.getSuppliedTable(appId, resourceTypeId);    //"补全的表名"

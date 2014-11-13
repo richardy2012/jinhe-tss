@@ -376,4 +376,23 @@ public class RoleAction extends BaseActionSupport {
         
         printSuccessMessage();
 	}
+	
+	@RequestMapping(value = "/permission/{permissionRank}/{isRole2Resource}/{roleId}", method = RequestMethod.DELETE)
+	public void clearPermission(HttpServletResponse response, HttpServletRequest request,  
+			@PathVariable("permissionRank") String permissionRank, 
+			@PathVariable("isRole2Resource") Integer isRole2Resource, 
+			@PathVariable("roleId") Long roleId) {  
+		
+		String applicationId = request.getParameter("applicationId");
+    	String resourceType  = request.getParameter("resourceType");
+    	
+	    if( applicationId == null ) {
+            applicationId = PermissionHelper.getApplicationID();
+        }
+
+	    PermissionService localPermissionService = PermissionHelper.getPermissionService(applicationId, permissionService);
+	    localPermissionService.clearPermissionByRole(applicationId, resourceType, permissionRank, roleId, isRole2Resource);
+ 
+        printSuccessMessage();
+	}
 }

@@ -15,6 +15,18 @@ public interface PermissionService {
 	 * @param tableName
 	 */
 	void clearPermissionData(String tableName);
+	
+	/**
+	 * 清除某个角色对某类资源的授权信息  或 清除某个资源对所有角色的授权信息
+	 * 
+	 * @param applicationId
+	 * @param resourceType
+	 * @param permissionRank
+	 * @param roleId
+	 * @param isRole2Resource
+	 */
+	void clearPermissionByRole(String applicationId, String resourceType,
+			String permissionRank, Long roleId, Integer isRole2Resource);
 
 	/**
 	 * <p>
