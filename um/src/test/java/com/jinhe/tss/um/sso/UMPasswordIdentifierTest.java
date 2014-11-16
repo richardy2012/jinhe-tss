@@ -3,6 +3,7 @@ package com.jinhe.tss.um.sso;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,7 @@ public class UMPasswordIdentifierTest extends TxSupportTest4UM {
 		
 		try {
 			indentifier.identify();
-
+			Assert.fail("should throw exception but didn't.");
 		} catch (Exception e) {
 			assertTrue(e.getMessage(), true);
 		}

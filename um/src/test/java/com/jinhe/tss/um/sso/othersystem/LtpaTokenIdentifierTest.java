@@ -17,6 +17,7 @@ public class LtpaTokenIdentifierTest extends TxSupportTest4UM {
 		
 		try {
 			indentifier.identify();
+			Assert.fail("should throw exception but didn't.");
 		}  catch (UserIdentificationException e) {
 			Assert.assertTrue("LtpaToken为空，用户可能还没有登录OA，请重新登录", true);
 		}
@@ -24,6 +25,7 @@ public class LtpaTokenIdentifierTest extends TxSupportTest4UM {
 		request.addParameter(LtpaTokenIdentifier.LTPA_TOKEN_NAME, "ltpaTokenXXXXXXXX");
 		try {
 			indentifier.identify();
+			Assert.fail("should throw exception but didn't.");
 		}  catch (UserIdentificationException e) {
 			Assert.assertTrue("取不到用户，请确认已经配置好SSO！", true);
 		}
@@ -31,6 +33,7 @@ public class LtpaTokenIdentifierTest extends TxSupportTest4UM {
 		request.addParameter(LtpaTokenIdentifier.LOGIN_NAME, "AdminXXX");
 		try {
 			indentifier.identify();
+			Assert.fail("should throw exception but didn't.");
 		}  catch (UserIdentificationException e) {
 			Assert.assertTrue("用户在UM里不存在！", true);
 		}

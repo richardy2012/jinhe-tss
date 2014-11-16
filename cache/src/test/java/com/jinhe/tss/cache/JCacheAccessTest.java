@@ -132,6 +132,7 @@ public class JCacheAccessTest {
 		
 		try {
 			pool.checkOut(0);
+			Assert.fail("should throw exception but didn't.");
 		} catch(Exception e) {
 			Assert.assertTrue("缓存池【服务数据缓存（短期）】已满，且各缓存项都处于使用状态，需要等待。可考虑重新设置缓存策略！", true);
 		}

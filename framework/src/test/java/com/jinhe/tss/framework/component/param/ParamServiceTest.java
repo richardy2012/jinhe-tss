@@ -32,6 +32,7 @@ public class ParamServiceTest extends TxTestSupportParam {
         Assert.assertEquals("TSS", ParamManager.getValueNoSpring(testCode));
         try {
         	ParamManager.getValueNoSpring("not-exsits");
+        	Assert.fail("should throw exception but didn't.");
         } catch (Exception e) {
         	Assert.assertTrue("读取不到参数值则抛出异常", true);
         }

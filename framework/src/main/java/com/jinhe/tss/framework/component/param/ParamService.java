@@ -64,4 +64,6 @@ public interface ParamService {
 	
 	/** 取可以添加参数或者参数组的参数组 */
 	List<?> getCanAddGroups();
+	
+	List<Param> getParamsByParentCode(String code);
 }

@@ -5,6 +5,8 @@ import com.jinhe.tss.cache.Pool;
 
 public class CacheHelper {
 	
+	public final static String CACHE_PARAM = "CACHE_PARAM";
+	
 	public static Pool getShorterCache() {
 		return JCache.getInstance().getPool(CacheLife.SHORTER.toString());
 	}

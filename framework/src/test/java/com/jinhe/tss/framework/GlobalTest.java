@@ -11,6 +11,7 @@ public class GlobalTest {
 		
 		try {
 			Global.getRemoteOnlineUserManager();
+			Assert.fail("should throw exception but didn't.");
 		} catch(Exception e) {
 			Assert.assertTrue("不存在", true);
 		}

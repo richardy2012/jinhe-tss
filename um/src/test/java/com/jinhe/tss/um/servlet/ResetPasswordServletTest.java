@@ -26,6 +26,7 @@ public class ResetPasswordServletTest extends TxSupportTest4UM {
             servlet.init();
             try {
                 servlet.doPost(request, response);
+                Assert.fail("should throw exception but didn't.");
             } catch (Exception e) {
                 assertTrue("旧密码输入不正确", true);
             } 

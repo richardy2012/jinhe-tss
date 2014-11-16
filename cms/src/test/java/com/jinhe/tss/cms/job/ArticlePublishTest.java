@@ -73,6 +73,7 @@ public class ArticlePublishTest extends AbstractTestSupport {
         
         try {
         	channelAction.publish(response, channel1Id, CMSConstants.PUBLISH_ALL);
+        	Assert.fail("should throw exception but didn't.");
         } catch(Exception e) {
         	Assert.assertTrue("没有事务", true);
         }

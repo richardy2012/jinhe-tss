@@ -175,7 +175,7 @@ public class RoleModuleTest extends TxSupportTest4UM {
         
         try {
         	action.move(response, role2Id, role2Id);
-        	Assert.fail("该抛异常而没有抛！");
+        	Assert.fail("should throw exception but didn't.");
         } catch (Exception e) {
         	Assert.assertTrue("不能向自己里面的枝节点移动", true);
         }

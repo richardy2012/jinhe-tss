@@ -98,6 +98,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         portalAction.specifyDefaultTheme(response, defaultThemeId);
         try {
         	portalAction.removeTheme(response, newTheme.getId());
+        	Assert.fail("should throw exception but didn't.");
         } catch (Exception e) {
         	Assert.assertTrue("该主题为门户的默认主题或者当前主题，正在使用中，删除失败！", true);
         }

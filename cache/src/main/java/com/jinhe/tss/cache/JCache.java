@@ -47,7 +47,7 @@ public class JCache {
     final static String TASK_POOL = "taskpool";
     
 
-	private static Map<String, Pool> pools = new LinkedHashMap<String, Pool>();
+	public static Map<String, Pool> pools = new LinkedHashMap<String, Pool>();
 
 	/** 配置的缓冲池Code列表 */
 	private static List<String> configedPoolCodes = new ArrayList<String>();
@@ -71,7 +71,7 @@ public class JCache {
 		}
 		return cache;
 	}
-
+ 
 	/**
 	 * 根据缓存策略文件里的配置初始化各个缓存池。
 	 */

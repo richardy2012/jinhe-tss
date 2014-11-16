@@ -154,7 +154,7 @@ public class UserModuleTest extends TxSupportTest4UM {
     	// 删除系统管理员
     	try {
     		action.deleteUser(response, UMConstants.MAIN_GROUP_ID, UMConstants.ADMIN_USER_ID);
-        	Assert.fail("该抛异常而没有抛！");
+    		Assert.fail("should throw exception but didn't.");
         } catch (Exception e) {
         	Assert.assertTrue("当前用户正在使用中，无法自我删除！", true);
         }
@@ -223,7 +223,7 @@ public class UserModuleTest extends TxSupportTest4UM {
         service.createOrUpdateUser(user1,  "" + mainGroupId, "-1");
         try {
         	action.startOrStopUser(response, assistantGroupId, user1.getId(), ParamConstants.FALSE);
-        	Assert.fail("该抛异常而没有抛！");
+        	Assert.fail("should throw exception but didn't.");
         } catch (Exception e) {
         	Assert.assertTrue("该用户已经过期，不能启用！", true);
         }

@@ -9,6 +9,9 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +23,9 @@ import com.jinhe.tss.cache.CacheStrategy;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
+import com.jinhe.tss.framework.component.param.Param;
+import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.component.param.ParamService;
 import com.jinhe.tss.framework.web.dispaly.grid.DefaultGridNode;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
@@ -34,12 +40,92 @@ import com.jinhe.tss.util.XMLDocUtil;
 @Controller
 @RequestMapping("/cache")
 public class CacheDisplayAction extends BaseActionSupport {
+	
+	protected Logger log = Logger.getLogger(this.getClass());
     
     /** 缓存策略模板目录 */
     final static String CACHESTRATEGY_XFORM_TEMPLET = "template/cache/strategy_xform.xml";
     final static String POOLS_GRID_TEMPLET = "template/cache/pool_grid.xml";
  
     private static JCache cache = JCache.getInstance();
+    
+    @Autowired ParamService paramService;
+ 
+    /**
+     * 检查是否有缓存相关的配置存在于系统参数中，有的话对其单独加载
+     */
+    @RequestMapping(value = "/init", method = RequestMethod.POST)
+    public void init() {
+    	Param cacheParamGroup = paramService.getParam(CacheHelper.CACHE_PARAM);
+    	List<Param> cacheParams = paramService.getParamsByParentCode(CacheHelper.CACHE_PARAM);
+    	if(cacheParamGroup == null) {
+    		initCacheParamGroup();
+    		return;
+    	}
+    	
+    	for(Param item : cacheParams) {
+    		String cacheCode   = item.getCode();
+    		String cacheConfig = item.getValue();
+    		CacheStrategy strategy = refreshCacheStrategy(cacheCode, cacheConfig);
+    		CacheStrategy newStrategy = new CacheStrategy();
+    		BeanUtil.copy(newStrategy, strategy);
+    		JCache.pools.put(cacheCode, newStrategy.getPoolInstance()); 
+    	}
+    }
+    
+    private void initCacheParamGroup() {
+    	Param param = new Param();
+        param.setName("缓存池配置");
+        param.setCode(CacheHelper.CACHE_PARAM);
+        param.setParentId(ParamConstants.DEFAULT_PARENT_ID);
+        param.setType(ParamConstants.GROUP_PARAM_TYPE);
+		paramService.saveParam(param);
+    }
+    
+    private CacheStrategy refreshCacheStrategy(String cacheCode, String newConfig) {
+    	CacheStrategy strategy = cache.getPool(cacheCode).getCacheStrategy();
+    	try {  
+  			ObjectMapper objectMapper = new ObjectMapper();
+  			
+  			@SuppressWarnings("unchecked")
+			Map<String, String> attrsMap = objectMapper.readValue(newConfig, Map.class);
+			BeanUtil.setDataToBean(strategy, attrsMap);
+		} catch (Exception e) {  
+			log.error("CACHE_PARAM【" + cacheCode + "】的参数配置有误。\n" + newConfig, e);
+  	    } 
+    	return strategy;
+    }
+    
+    @RequestMapping(method = RequestMethod.POST)
+    public void modifyCacheConfig(HttpServletResponse response, String cacheCode, String jsonData) {
+		CacheStrategy strategy = refreshCacheStrategy(cacheCode, jsonData);
+		cache.getPool(cacheCode).setCacheStrategy(strategy);
+		
+		// 将更新信息保存到系统参数模块
+		Param cacheParamGroup = paramService.getParam(CacheHelper.CACHE_PARAM);
+		if(cacheParamGroup == null) {
+    		initCacheParamGroup();
+    	}
+		
+		Param cacheParam = null;
+		List<Param> cacheParams = paramService.getParamsByParentCode(CacheHelper.CACHE_PARAM);
+		for(Param temp : cacheParams) {
+			if(temp.getCode().equals(cacheCode)) {
+				cacheParam = temp;
+				break;
+			}
+		}
+		if(cacheParam == null) {
+			cacheParam = new Param();
+			cacheParam.setCode(cacheCode);
+			cacheParam.setName(strategy.getName());
+			cacheParam.setParentId(cacheParamGroup.getId());
+			cacheParam.setType(ParamConstants.NORMAL_PARAM_TYPE);
+			cacheParam.setModality(ParamConstants.SIMPLE_PARAM_MODE);
+		}
+		cacheParam.setValue(jsonData);
+        paramService.saveParam(cacheParam);
+    }
  
     /**
      * 树型展示所有缓存池

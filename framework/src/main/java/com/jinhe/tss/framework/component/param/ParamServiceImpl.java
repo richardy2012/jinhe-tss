@@ -146,6 +146,14 @@ public class ParamServiceImpl implements ParamService {
     public List<?> getCanAddGroups() {
         return paramDao.getCanAddGroups();
     }
+    
+    public List<Param> getParamsByParentCode(String code) {
+        Param parent = paramDao.getParamByCode(code);
+        if (parent == null) {
+        	return null;
+        }
+        return paramDao.getChildrenByDecode(parent.getDecode());
+    }
 
     /* ********************************************* 以下供ParamManager调用 ************************************ */
     
@@ -153,9 +161,6 @@ public class ParamServiceImpl implements ParamService {
     	Param param = paramDao.getParamByCode(code);
         if (param == null) {
         	return null;
-        }
-        if (!ParamConstants.SIMPLE_PARAM_MODE.equals(param.getModality())) {
-            throw new BusinessException(code + "不是简单型参数!");
         }
         return param;
     }

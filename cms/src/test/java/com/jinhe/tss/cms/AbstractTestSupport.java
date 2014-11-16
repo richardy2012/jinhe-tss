@@ -183,6 +183,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
         channelService.deleteChannel(siteId);
         try {
         	channelService.getChannelById( siteId );
+        	Assert.fail("should throw exception but didn't.");
         } catch (Exception e) {
         	Assert.assertTrue("读取不到则抛出异常", true);
         }
