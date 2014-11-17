@@ -101,7 +101,10 @@ public class ThreadPool extends ReusablePool implements IThreadPool{
                         // 设置线程池、缓存项的命中率
                         ThreadPool.this.addRequests(); // 如此可以引用到外围类的实例
                         ThreadPool.this.addHits();
-                        ThreadPool.this.getObjectOnly(getName()).addHit();
+                        Cacheable worker = ThreadPool.this.getObjectOnly(getName());
+                        if(worker != null) {
+                        	worker.addHit();
+                        }
                     }
                 } catch (RuntimeException e) {
                     log.error("ThreadPoolWorker执行任务时候出错", e);

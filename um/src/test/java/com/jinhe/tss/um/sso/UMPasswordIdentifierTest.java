@@ -1,6 +1,5 @@
 package com.jinhe.tss.um.sso;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Assert;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 
-import com.jinhe.tss.framework.exception.UserIdentificationException;
 import com.jinhe.tss.framework.sso.SSOConstants;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.um.TxSupportTest4UM;
@@ -46,8 +44,8 @@ public class UMPasswordIdentifierTest extends TxSupportTest4UM {
 			request.addParameter(SSOConstants.USER_PASSWORD, "abcdef");
 			indentifier.identify();
 
-		} catch (UserIdentificationException e) {
-			assertFalse(e.getMessage(), true);
+		} catch (Exception e) {
+			assertTrue(e.getMessage(), true);
 		}
 	}
 	

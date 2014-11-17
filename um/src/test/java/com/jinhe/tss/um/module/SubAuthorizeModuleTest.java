@@ -115,6 +115,7 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         String role2GroupIds = "" + mainGroup.getId();
         roleService.saveRole2UserAndRole2Group(role, role2UserIds, role2GroupIds);
 
+        role = roleService.getRoleById(role.getId());
         roleService.saveRole2UserAndRole2Group(role, "", role2GroupIds); // 先从用户上去掉该角色，此时用户通过继承组的角色继续拥有该角色
         roleService.saveRole2UserAndRole2Group(role, role2UserIds, "");  // 从用户组上去掉该角色，单独授回用户该角色
         roleService.saveRole2UserAndRole2Group(role, "", "");

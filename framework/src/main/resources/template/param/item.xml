@@ -2,8 +2,8 @@
 <xform>
 	<declare>	
 		<column name="id" mode="string" display="none"/>
-		<column name="text" caption="显示值" mode="string" maxLength="200" empty="true"/>
-		<column name="value" caption="参数值" mode="string" maxLength="2000" empty="true"/>
+		<column name="text" caption="显示值" mode="string" maxLength="200" empty="false"/>
+		<column name="value" caption="参数值" mode="string" maxLength="2000" empty="false"/>
 		<column name="description" caption="描述" mode="string" maxLength="400"/>
 	</declare>
 	<layout>

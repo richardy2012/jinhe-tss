@@ -50,12 +50,18 @@ public class CacheDisplayAction extends BaseActionSupport {
     private static JCache cache = JCache.getInstance();
     
     @Autowired ParamService paramService;
+    
+    private static boolean hasInited = false;
  
     /**
      * 检查是否有缓存相关的配置存在于系统参数中，有的话对其单独加载
      */
     @RequestMapping(value = "/init", method = RequestMethod.POST)
     public void init() {
+    	if(hasInited) return;
+    	
+    	hasInited = true;
+    	
     	Param cacheParamGroup = paramService.getParam(CacheHelper.CACHE_PARAM);
     	List<Param> cacheParams = paramService.getParamsByParentCode(CacheHelper.CACHE_PARAM);
     	if(cacheParamGroup == null) {
@@ -125,6 +131,8 @@ public class CacheDisplayAction extends BaseActionSupport {
 		}
 		cacheParam.setValue(jsonData);
         paramService.saveParam(cacheParam);
+        
+        printSuccessMessage();
     }
  
     /**
@@ -159,6 +167,8 @@ public class CacheDisplayAction extends BaseActionSupport {
     
     @RequestMapping("/grid")
     public void getPoolsGrid(HttpServletResponse response) {
+    	init();
+    	
     	List<IGridNode> dataList = new ArrayList<IGridNode>();
     	 
     	Set<Entry<String, Pool>> pools = cache.listCachePools(); 

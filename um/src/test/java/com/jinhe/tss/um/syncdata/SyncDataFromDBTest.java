@@ -134,8 +134,8 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
             ps.setObject(2, 1L);
             ps.setObject(3, 1);
             ps.setObject(4, new Timestamp(new Date().getTime()));
-            ps.setObject(5, "BL00618");
-            ps.setObject(6, "JonKing");
+            ps.setObject(5, "BL00618-001");
+            ps.setObject(6, "JonKing-001");
             ps.setObject(7, "怒放的生命");
             ps.setObject(8, "123456");
             ps.setObject(9, "jinpujun@gmail.com");
@@ -159,8 +159,9 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
  
 	@Test
 	public void testSyncDB() {
+		Long mainGroupId = mainGroup.getId();
 		String fromGroupId = mainGroup.getFromGroupId();
-		Map<String, Object> datasMap = syncService.getCompleteSyncGroupData(mainGroup.getId(), applicationId , fromGroupId);
+		Map<String, Object> datasMap = syncService.getCompleteSyncGroupData(mainGroupId, applicationId , fromGroupId);
 		List<?> groups = (List<?>)datasMap.get("groups");
         List<?> users  = (List<?>)datasMap.get("users");
         int totalCount = users.size() + groups.size();
@@ -169,23 +170,23 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
 		Progress progress = new Progress(totalCount);
 		((Progressable)syncService).execute(datasMap, progress );
 		
-		List<User> userList = groupService.getUsersByGroupId(mainGroup.getId()); 
+		List<User> userList = groupService.getUsersByGroupId(mainGroupId); 
 		Assert.assertTrue(userList.size() >= 1);
 		User user1 = userList.get(0);
-		Assert.assertEquals("JonKing", user1.getLoginName());
+		Assert.assertEquals("JonKing-001", user1.getLoginName());
 		Assert.assertEquals("怒放的生命", user1.getUserName());
-		Assert.assertEquals("BL00618", user1.getEmployeeNo());
+		Assert.assertEquals("BL00618-001", user1.getEmployeeNo());
 		Assert.assertEquals("1", user1.getSex());
 		Assert.assertEquals("jinpujun@gmail.com", user1.getEmail());
 		
 		// 再增加同步一次，相同账号用户更更新
 		((Progressable)syncService).execute(datasMap, progress );
-		userList = groupService.getUsersByGroupId(mainGroup.getId()); 
+		userList = groupService.getUsersByGroupId(mainGroupId); 
 		Assert.assertTrue(userList.size() >= 1);
 		
 		// testSyncUserJob
 		SyncUserJob job = new SyncUserJob();
-        String jobConfig = mainGroup.getId() + ",tss";
+        String jobConfig = mainGroupId + ",tss";
 		job.excuteJob(jobConfig);
 	}
 
