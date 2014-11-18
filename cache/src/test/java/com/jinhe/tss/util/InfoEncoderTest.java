@@ -16,6 +16,16 @@ public class InfoEncoderTest {
         
         String md5PWD = InfoEncoder.string2MD5("Admin_123456");
         assertEquals("E5E0A2593A3AE4C038081D5F113CEC78", md5PWD);
+        
+        String testValue = "Jon.King!@#$%^&*()";
+        int key = 31;
+        String encodeValue = InfoEncoder.simpleEncode(testValue, key);
+        System.out.println(encodeValue);
+        assertEquals(testValue, InfoEncoder.simpleEncode(encodeValue, key));
+        
+        System.out.println('X' ^ 't' ^ 't');
+		System.out.println('!' ^ 't' ^ 't');
+        
     }
 
 }

@@ -93,7 +93,9 @@
                     loginNameObj.focus();
                 },
                 onresult: function(){
-                    loginNameObj.identifier = this.getNodeValue("ClassName");
+                    loginNameObj.identifier = this.getNodeValue("identifier");
+                    loginNameObj.randomKey  = this.getNodeValue("randomKey");
+                    
                     passwordObj.focus();
                 }
             });
@@ -101,9 +103,11 @@
     }
 
     var doLogin = function(loginNameObj, passwordObj) {
-        var loginName = loginNameObj.value;
+    	var identifier = loginNameObj.identifier;
+    	var randomKey  = loginNameObj.randomKey;
+    	
+        var loginName  = loginNameObj.value;
         var password   = passwordObj.value;
-        var identifier = loginNameObj.identifier;
         
         if( "" == loginName ) {
             alert("请输入账号");
@@ -124,8 +128,8 @@
             url: URL_LOGIN,
             headers : {
                 "appCode": FROMEWORK_CODE, 
-                "loginName": loginName, 
-                "password": password, 
+                "loginName": $.encode(loginName, randomKey), 
+                "password": $.encode(password, randomKey), 
                 "identifier": identifier
             },
             onexception: function(errorMsg) {

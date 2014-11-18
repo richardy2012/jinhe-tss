@@ -3,6 +3,7 @@ package com.jinhe.tss.framework.sso;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.context.RequestContext;
+import com.jinhe.tss.util.InfoEncoder;
 
 /**
  * <p>
@@ -24,11 +25,19 @@ public class PasswordPassport {
      */
     public PasswordPassport() throws BusinessException {
         RequestContext requestContext = Context.getRequestContext();
-        this.loginName = requestContext.getValueFromHeaderOrParameter(SSOConstants.LOGINNAME_IN_SESSION);
-        this.password  = requestContext.getValueFromHeaderOrParameter(SSOConstants.USER_PASSWORD);
+        String loginName = requestContext.getValueFromHeaderOrParameter(SSOConstants.LOGINNAME_IN_SESSION);
+        String password  = requestContext.getValueFromHeaderOrParameter(SSOConstants.USER_PASSWORD);
         if (loginName == null || password == null) {
             throw new BusinessException("账号或密码不能为空，请重新登录。");
         }
+        
+        Integer randomKey = (Integer) requestContext.getSession().getAttribute(SSOConstants.RANDOM_KEY);
+        if(randomKey == null) {
+        	randomKey = 100;
+        }
+        
+        this.loginName = InfoEncoder.simpleEncode(loginName, randomKey);
+        this.password = InfoEncoder.simpleEncode(password, randomKey);
     }
 
     public String getPassword() {

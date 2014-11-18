@@ -110,4 +110,13 @@ public class InfoEncoder {
             return str;
         }
     }
+    
+    public static String simpleEncode(String info, int key) {
+		char a[] = new char[info.length()];
+		for (int i = 0; i < info.length(); i++) {
+			a[i] = (char) (info.charAt(i) ^ key % 127);
+		}
+
+		return new String(a);
+    }
 }
