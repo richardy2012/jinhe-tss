@@ -36,15 +36,15 @@ public class PasswordPassport {
         	randomKey = 100;
         }
         
-        this.loginName = InfoEncoder.simpleEncode(loginName, randomKey);
-        this.password = InfoEncoder.simpleEncode(password, randomKey);
+        this.loginName = InfoEncoder.simpleDecode(loginName, randomKey);
+        this.password = InfoEncoder.simpleDecode(password, randomKey);
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public String getLoginName() {
-        return loginName;
+        return this.loginName;
     }
 }

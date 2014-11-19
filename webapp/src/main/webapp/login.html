@@ -27,24 +27,34 @@
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
+
+/*********************** 应用配置 开始 **********************************/
+ var 
+ 	indexPage = "admin.portal";    /* 登录成功后调整到的页面 */
+ 
+ function setSysTitle() {
+ 	$.ajax({
+        url: "param/json/simple/sysTitle",
+        method: 'GET',
+        type: "json",
+        ondata: function() {
+            var title = this.getResponseJSON();
+            if( title && title.length > 0 ) {
+                $("#sys_title").html(title[0]);
+            }
+        }
+    });
+ }
+
+/*********************** 应用配置 END **********************************/
+
     URL_GET_USER_NAME = "getLoginInfo.in";
     URL_LOGIN = AUTH_PATH + "login.do";
-    URL_SYS_TITLE = "param/json/simple/sysTitle";
 
     window.alert = _alert;
     
     window.onload = function() {
-        $.ajax({
-            url: URL_SYS_TITLE,
-            method: 'GET',
-            type: "json",
-            ondata: function() {
-                var title = this.getResponseJSON();
-                if( title && title.length > 0 ) {
-                    $("#sys_title").html(title[0]);
-                }
-            }
-        });
+        setSysTitle();
 
 		var loginNameObj = $1("loginName");
 		var passwordObj  = $1("password");
@@ -53,6 +63,10 @@
              this.style.backgroundColor = "white";
         }
 
+		var defaultUserName = $.Cookie.getValue("iUserName");
+		if( defaultUserName ) {
+	        loginNameObj.value = defaultUserName;
+	    }
         loginNameObj.focus();
 
         var loginButton = $1("bt_login");
@@ -87,7 +101,6 @@
 			}
             $.ajax({
                 url: URL_GET_USER_NAME,
-                headers: {"appCode": FROMEWORK_CODE},
                 params:  {"loginName": value},
                 onexcption: function() {
                     loginNameObj.focus();
@@ -127,7 +140,6 @@
         $.ajax({
             url: URL_LOGIN,
             headers : {
-                "appCode": FROMEWORK_CODE, 
                 "loginName": $.encode(loginName, randomKey), 
                 "password": $.encode(password, randomKey), 
                 "identifier": identifier
@@ -136,7 +148,8 @@
                 passwordObj.focus();
             },
             onsuccess: function() {
-                location.href = "admin.portal"; // "index.html";
+            	$.Cookie.setValue("iUserName", loginName);
+                location.href = indexPage;
             }
         });
     }

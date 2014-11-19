@@ -11,6 +11,8 @@ package com.jinhe.tss.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -112,9 +114,19 @@ public class InfoEncoder {
     }
     
     public static String simpleEncode(String info, int key) {
-		char a[] = new char[info.length()];
+		List<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < info.length(); i++) {
-			a[i] = (char) (info.charAt(i) ^ key % 127);
+			list.add( (info.charAt(i) ^ key % 127) );
+		}
+
+		return EasyUtils.list2Str(list, "X");
+    }
+    
+    public static String simpleDecode(String info, int key) {
+		String[] charCodes = info.split("X");
+		char a[] = new char[charCodes.length];
+		for (int i = 0; i < charCodes.length; i++) {
+			a[i] = (char) ( Integer.parseInt(charCodes[i]) ^ key % 127);
 		}
 
 		return new String(a);
