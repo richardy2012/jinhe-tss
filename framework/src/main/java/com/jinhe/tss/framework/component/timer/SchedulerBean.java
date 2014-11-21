@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.component.param.Param;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.util.BeanUtil;
@@ -93,6 +94,10 @@ public class SchedulerBean {
         
         List<String> jobCodes = new ArrayList<String>();
 		for(Param param : list) {
+			if(ParamConstants.TRUE.equals(param.getDisabled())) {
+				continue; // 停用的定时配置不要
+			}
+			
 			String code  = param.getText();
 			String value = param.getValue();
 			
