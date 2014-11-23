@@ -36,7 +36,7 @@ public class SchedulerBean {
     
 	protected Logger log = Logger.getLogger(this.getClass());
 	
-	static final String TIMER_PARAM_CODE = "TIMER_PARAM_CODE";
+	public static final String TIMER_PARAM_CODE = "TIMER_PARAM_CODE";
 	
 	static long initCyclelife = 1000 * 30; // 30秒
 	

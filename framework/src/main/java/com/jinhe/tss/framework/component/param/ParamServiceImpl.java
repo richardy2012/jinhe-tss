@@ -155,7 +155,7 @@ public class ParamServiceImpl implements ParamService {
         return paramDao.getChildrenByDecode(parent.getDecode());
     }
 
-    /* ********************************************* 以下供ParamManager调用 ************************************ */
+    /* ************************  以下供ParamManager调用(不适合Param CRUD相关模块调用，因为配置了Cache) ************************** */
     
     public Param getParam(String code) {
     	Param param = paramDao.getParamByCode(code);
