@@ -28,6 +28,8 @@ import com.jinhe.tss.util.EasyUtils;
  * 定时器调度。
  * 
  * 新增或删除一个job失败,不影响其它job的生成和删除。
+ * 
+ * TODO 记录执行结果到componeng-Log
  */
 @Component
 public class SchedulerBean {

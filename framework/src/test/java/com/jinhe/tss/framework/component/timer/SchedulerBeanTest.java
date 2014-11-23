@@ -8,6 +8,7 @@ import com.jinhe.tss.framework.component.cache.CacheHelper;
 import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.component.param.TxTestSupportParam;
+import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.util.EasyUtils;
 
 public class SchedulerBeanTest extends TxTestSupportParam {
@@ -26,10 +27,10 @@ public class SchedulerBeanTest extends TxTestSupportParam {
 		Param item1 = addParamItem(cpId, jobConfig + ",param2=1", "Job1", ParamConstants.COMBO_PARAM_MODE);
 		Param item2 = addParamItem(cpId, jobConfig + ",param2=2", "Job2", ParamConstants.COMBO_PARAM_MODE);
         
-		SchedulerBean scheduler = new SchedulerBean(1000*20);
+		SchedulerBean scheduler = new SchedulerBean(1000*15);
 		Assert.assertNotNull(scheduler);
 		
-		try { Thread.sleep(1000*80); } catch (InterruptedException e) { }
+		try { Thread.sleep(1000*70); } catch (InterruptedException e) { }
 		
 		// 修改、新增、删除定时配置
 		item1.setValue(jobConfig + "1");
@@ -37,11 +38,13 @@ public class SchedulerBeanTest extends TxTestSupportParam {
 		paramService.delete(item2.getId());
 		addParamItem(cpId, jobConfig + ",param2=3", "Job3", ParamConstants.COMBO_PARAM_MODE);
 		
-		// 清楚service method cache
+		// 清除service method cache
 		Pool shortCache = CacheHelper.getShortCache();
 		shortCache.removeObject("com.jinhe.tss.framework.component.param.ParamService.getComboParam(TIMER_PARAM_CODE)");
 		
 		try { Thread.sleep(1000*80); } catch (InterruptedException e) { }
+		
+		TestUtil.printLogs(logService);
 	}
 	
 	@Test

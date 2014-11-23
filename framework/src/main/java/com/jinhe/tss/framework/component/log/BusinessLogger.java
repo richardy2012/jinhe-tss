@@ -14,7 +14,7 @@ import com.jinhe.tss.framework.component.param.ParamConfig;
  * 跟业务操作相关的日志记录器
  * 
  */
-@Component
+@Component("BusinessLogger")
 public class BusinessLogger extends OutputRecordsManager implements IBusinessLogger{
    
     private Pool apool;
