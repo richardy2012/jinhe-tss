@@ -28,9 +28,13 @@ public class Global {
 		}
 		return _ctx;
 	}
+	
+	public static Object getBean(String beanId) {
+		return getContext().getBean(beanId);
+	}
  
 	public static IOnlineUserManager getRemoteOnlineUserManager() {
-		return (IOnlineUserManager) getContext().getBean("RemoteOnlineUserManager");
+		return (IOnlineUserManager) getBean("RemoteOnlineUserManager");
 	}
 
 	public static synchronized void setContext(ApplicationContext context) {

@@ -19,7 +19,7 @@ public class CreateComponent implements AfterUpload {
 	public String processUploadFile(HttpServletRequest request,
 			String filepath, String oldfileName) throws Exception {
             
-        IComponentService service = (IComponentService) Global.getContext().getBean("ComponentService");
+        IComponentService service = (IComponentService) Global.getBean("ComponentService");
         Long groupId = Long.parseLong(request.getParameter("groupId"));
         Component group = service.getComponent(groupId);
         String desDir = URLUtil.getWebFileUrl(group.getResourceBaseDir()).getPath(); 

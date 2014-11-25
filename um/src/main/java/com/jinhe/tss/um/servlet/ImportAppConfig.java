@@ -23,7 +23,7 @@ public class ImportAppConfig implements AfterUpload {
 		 File targetFile = new File(filepath);
          Document doc = new SAXReader().read(targetFile);
          
-         IResourceService resourceService = (IResourceService) Global.getContext().getBean("ResourceService");
+         IResourceService resourceService = (IResourceService) Global.getBean("ResourceService");
          resourceService.applicationResourceRegister(doc, UMConstants.PLATFORM_SYSTEM_APP);
          
          return "parent.alert(\"导入成功！\");parent.loadInitData();";

@@ -33,7 +33,7 @@ public class CreateAttach implements AfterUpload {
 
 		// 保存附件信息
 		File targetFile = new File(filepath);
-		IArticleService articleService = (IArticleService) Global.getContext().getBean("ArticleService");
+		IArticleService articleService = (IArticleService) Global.getBean("ArticleService");
 		Attachment attachObj = articleService.processFile(targetFile, articleId, channelId, type, oldfileName);
 
 		// 向前台返回成功信息

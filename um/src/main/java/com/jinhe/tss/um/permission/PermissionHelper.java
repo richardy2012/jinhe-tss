@@ -39,7 +39,7 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
     
     
     public static PermissionHelper getInstance(){
-        return (PermissionHelper) Global.getContext().getBean("permissionHelper");
+        return (PermissionHelper) Global.getBean("permissionHelper");
     }
     
     /**

@@ -20,8 +20,8 @@ import com.jinhe.tss.um.service.ILoginService;
  */
 public class FetchPermissionAfterLogin implements ILoginCustomizer {
     
-    ILoginService loginSerivce = (ILoginService) Global.getContext().getBean("LoginService");
-    PermissionService permissionService = (PermissionService) Global.getContext().getBean("PermissionService");
+    ILoginService loginSerivce = (ILoginService) Global.getBean("LoginService");
+    PermissionService permissionService = (PermissionService) Global.getBean("PermissionService");
 
     public void execute() {
         

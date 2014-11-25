@@ -17,7 +17,7 @@ import com.jinhe.tss.framework.exception.BusinessException;
 public class ParamManager {
 
     private static ParamService getService() {
-        return (ParamService) Global.getContext().getBean("ParamService");
+        return (ParamService) Global.getBean("ParamService");
     }
     
     /**

@@ -30,7 +30,7 @@ public class RegisterServlet extends HttpServlet {
     private IUserService service;
  
 	public void init() {
-		service = (IUserService) Global.getContext().getBean("UserService");
+		service = (IUserService) Global.getBean("UserService");
 	}
 	
 	public void destroy() {

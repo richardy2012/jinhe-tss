@@ -17,6 +17,9 @@ import com.jinhe.tss.util.EasyUtils;
  * 
  */
 public class SyncUserJob extends AbstractJob {
+	
+	ISyncService syncService = (ISyncService) Global.getBean("SyncService");
+	IGroupService groupService = (IGroupService) Global.getBean("GroupService");
  
 	/* 
 	 * jobConfig的格式为 : 
@@ -25,9 +28,6 @@ public class SyncUserJob extends AbstractJob {
 	 */
 	protected void excuteJob(String jobConfig) {
 		log.info("开始用户信息自动同步......");
-		
-		ISyncService syncService = (ISyncService) Global.getContext().getBean("SyncService");
-		IGroupService groupService = (IGroupService) Global.getContext().getBean("GroupService");
 		
 		String[] jobConfigs = EasyUtils.split(jobConfig, "\n");
 		

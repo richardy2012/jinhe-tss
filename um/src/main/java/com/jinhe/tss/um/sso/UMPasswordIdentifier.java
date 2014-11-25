@@ -23,7 +23,7 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
     
     protected Logger log = Logger.getLogger(this.getClass());
     
-    ILoginService service = (ILoginService) Global.getContext().getBean("LoginService");
+    ILoginService service = (ILoginService) Global.getBean("LoginService");
     
     /** 对用户密码进行加密 */
     public static String encodePassword(String loginName, String password) {

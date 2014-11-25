@@ -35,7 +35,7 @@ public class GetPasswordServlet extends HttpServlet {
 		String passwordAnswer   = request.getParameter("passwordAnswer");
 		String passwordQuestion = request.getParameter("passwordQuestion");
 		
-		IUserService service = (IUserService) Global.getContext().getBean("UserService");
+		IUserService service = (IUserService) Global.getBean("UserService");
 		User user = service.getUserByLoginName(loginName);
 		
 		response.setContentType("text/html;charset=UTF-8");

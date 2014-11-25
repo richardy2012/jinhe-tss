@@ -32,7 +32,7 @@ public class ResetPasswordServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -740569423483772472L;
     
-    IUserService service = (IUserService) Global.getContext().getBean("UserService");
+    IUserService service = (IUserService) Global.getBean("UserService");
  
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {

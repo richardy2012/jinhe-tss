@@ -33,7 +33,7 @@ public class DownloadServlet extends HttpServlet {
     IRemoteArticleService service;
     
     public void init() {
-    	service = (IRemoteArticleService) Global.getContext().getBean("RemoteArticleService");
+    	service = (IRemoteArticleService) Global.getBean("RemoteArticleService");
     }
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

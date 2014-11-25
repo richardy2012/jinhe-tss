@@ -29,7 +29,6 @@ import com.jinhe.tss.util.EasyUtils;
  * 
  * 新增或删除一个job失败,不影响其它job的生成和删除。
  * 
- * TODO 记录执行结果到componeng-Log
  */
 @Component
 public class SchedulerBean {
@@ -38,7 +37,7 @@ public class SchedulerBean {
 	
 	public static final String TIMER_PARAM_CODE = "TIMER_PARAM_CODE";
 	
-	static long initCyclelife = 1000 * 30; // 30秒
+	static long initCyclelife = 1000 * 180; // 3分钟
 	
     private static Scheduler scheduler;
     
@@ -60,7 +59,7 @@ public class SchedulerBean {
 			scheduler = StdSchedulerFactory.getDefaultScheduler();
 			scheduler.start();
 		} catch (SchedulerException e) {
-            throw new BusinessException("初始化索引策略出错!", e);
+            throw new BusinessException("初始化定时策略出错!", e);
         } 
     	
     	configsMap = new HashMap<String, String>();

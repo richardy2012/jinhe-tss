@@ -35,11 +35,11 @@ public abstract class AbstractCMSJob extends AbstractJob {
 	}
  
 	protected IChannelService getChannelService() {
-		return (IChannelService) Global.getContext().getBean("ChannelService");
+		return (IChannelService) Global.getBean("ChannelService");
 	}
 	
 	protected IArticleService getArticleService() {
-		return (IArticleService) Global.getContext().getBean("ArticleService");
+		return (IArticleService) Global.getBean("ArticleService");
 	}
 	
 	protected abstract void excuteCMSJob(String jobConfig);

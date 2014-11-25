@@ -30,12 +30,12 @@ public class StaticManager {
     
     public static INavigatorService getNavigatorService(){
         initWebContent();
-        return (INavigatorService) Global.getContext().getBean("NavigatorService");
+        return (INavigatorService) Global.getBean("NavigatorService");
     }
     
     public static IRemoteArticleService getArticleService(){
         initWebContent();
-        return (IRemoteArticleService) Global.getContext().getBean("RemoteArticleService");
+        return (IRemoteArticleService) Global.getBean("RemoteArticleService");
     }
 
     public static List<String> listFiles(String dirName){

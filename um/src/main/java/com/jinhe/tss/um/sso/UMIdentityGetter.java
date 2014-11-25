@@ -17,7 +17,7 @@ public class UMIdentityGetter implements IdentityGetter {
 	
 	protected Logger log = Logger.getLogger(this.getClass());
     
-	protected ILoginService service = (ILoginService) Global.getContext().getBean("LoginService");
+	protected ILoginService service = (ILoginService) Global.getBean("LoginService");
 
     /**
 	 * <p>

@@ -30,7 +30,7 @@ public class GetLoginInfoServlet extends HttpServlet {
     }
  
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ILoginService service = (ILoginService) Global.getContext().getBean("LoginService");
+        ILoginService service = (ILoginService) Global.getBean("LoginService");
         
         String loginName = request.getParameter(SSOConstants.LOGINNAME_IN_SESSION);
         try {

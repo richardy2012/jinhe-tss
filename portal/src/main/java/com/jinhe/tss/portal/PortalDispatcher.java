@@ -107,7 +107,7 @@ public class PortalDispatcher extends HttpServlet {
 	 */
 	private ReleaseConfig getIssueInfo(String uri) {
 		String visitUrl = uri.substring(uri.lastIndexOf("/") + 1);
-        IPortalService portalService = (IPortalService) Global.getContext().getBean("PortalService");
+        IPortalService portalService = (IPortalService) Global.getBean("PortalService");
 		ReleaseConfig info = portalService.getReleaseConfig(visitUrl);
 		return info;
 	}

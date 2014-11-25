@@ -31,7 +31,7 @@ public class LtpaTokenIdentifier extends BaseUserIdentifier {
     public final static String LTPA_TOKEN_NAME = "LtpaToken";
     public final static String LOGIN_NAME = "username";
     
-    ILoginService service = (ILoginService) Global.getContext().getBean("LoginService");
+    ILoginService service = (ILoginService) Global.getBean("LoginService");
  
     protected IOperator validate() throws UserIdentificationException {
         RequestContext requestContext = Context.getRequestContext();

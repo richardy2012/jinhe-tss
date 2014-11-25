@@ -30,7 +30,7 @@ public class LogOutputTask extends Output2DBTask {
             pstmt.setString(index++, dto.getOperateTable());
             pstmt.setTimestamp(index++, new java.sql.Timestamp(dto.getOperateTime().getTime()));
             pstmt.setString(index++, dto.getContent());
-            pstmt.setInt(index++, dto.getMethodExcuteTime());
+            pstmt.setInt(index++, dto.getMethodExcuteTime() == null ? 0 : dto.getMethodExcuteTime());
             pstmt.setString(index++, dto.getOperatorBrowser());
             
             pstmt.execute();
