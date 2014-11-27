@@ -68,7 +68,7 @@ public class ExceptionEncoder {
             	response.getWriter().println(be);
             }
         } catch (Exception e) {
-            log.error("ExceptionEncoder.encodeException时出错", e);
+            log.error("ExceptionEncoder.encodeException时出错：" + e.getMessage());
         }
     }
 

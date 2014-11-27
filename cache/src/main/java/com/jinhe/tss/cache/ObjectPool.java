@@ -247,8 +247,8 @@ public class ObjectPool extends AbstractPool implements Cleaner {
 							pool.wait(); 
 						}
 					}
-				} catch (InterruptedException e) {
-					log.debug("运行cleaner线程时出错！sleep(" + interval + ")", e);
+				} catch (Exception e) {
+					log.error(ObjectPool.this.getName() + "运行cleaner线程时出错！sleep(" + interval + ")", e);
 				}
 			}
 		}
