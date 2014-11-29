@@ -25,7 +25,7 @@ import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.portal.PortalConstants;
-import com.jinhe.tss.portal.entity.permission.PortalResourceView;
+import com.jinhe.tss.portal.entity.permission.PortalResource;
 import com.jinhe.tss.um.permission.IResource;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.URLUtil;
@@ -200,7 +200,7 @@ public class Structure extends OperateInfo implements IXForm, IResource, IDecoda
     
     public Class<?> getParentClass() {
         if(this.parentId.equals(PortalConstants.ROOT_ID)) {
-            return PortalResourceView.class;
+            return PortalResource.class;
         }
         return getClass();
     }

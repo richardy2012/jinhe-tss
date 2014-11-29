@@ -75,6 +75,7 @@ public final class UMConstants {
     /**
      * 授权模式
      */
+    public static final String IGNORE_PERMISSION           = "0"; // 不关心授权模式
     public static final String LOWER_PERMISSION            = "1"; // 普通授权
     public static final String AUTHORISE_PERMISSION        = "2"; // 可授权授权
     public static final String PASSON_AUTHORISE_PERMISSION = "3"; // 可传递授权

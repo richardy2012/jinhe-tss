@@ -15,18 +15,7 @@ public interface IRoleDao extends ITreeSupportDao<Role> {
      * 删除其他和 Role 相关的数据信息:roleGroup, roleUser, 转授的。
      * @param role
      */
-    void removeRole(Role role);
-    
-    /**
-     * <p>
-     * 移动角色资源。
-     * PermissionInterceptor将会拦截本方法。
-     * 移动改变了父节点,必须改变roleResOpt关系, 来补齐
-     * </p>
-     * @param moveItem
-     * @return
-     */
-    Role moveRole(Role moveItem);
+	List<Role> removeRole(Role role);
 
 	/**
 	 * 根据角色的id获取所在拥有此角色的用户

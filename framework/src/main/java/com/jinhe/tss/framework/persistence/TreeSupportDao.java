@@ -245,4 +245,13 @@ public class TreeSupportDao<T extends IDecodable> extends BaseDao<T> implements 
             returnList.add(entity);
         }
     }
+    
+	public void moveEntity(T entity) {
+	    update(entity);
+	}
+	
+	public T refreshEntity(T entity) {
+    	super.update(entity);
+        return entity;
+    }
 }

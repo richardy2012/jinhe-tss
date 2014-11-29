@@ -13,14 +13,12 @@
 		name:  资源类型名称
 		seqNo: 资源类型的顺序
 		description: 资源类型描述
-		unSuppliedTable: 角色资源权限未补全的表的类路径
-		suppliedTable: 角色资源权限补全的表的类路径
+		permissionTable: 角色资源权限表的类路径
 		resourceTable: 资源表的类路径 
 	-->
 	<resourceType resourceTypeId="21" name="内容栏目" seqNo="21" description="栏目类型资源" 
-		unSuppliedTable="com.jinhe.tss.cms.entity.permission.ChannelPermissions" 
-		suppliedTable="com.jinhe.tss.cms.entity.permission.ChannelPermissionsFull" 
-		resourceTable="com.jinhe.tss.cms.entity.permission.ChannelResourceView">
+		permissionTable="com.jinhe.tss.cms.entity.permission.ChannelPermission" 
+		resourceTable="com.jinhe.tss.cms.entity.permission.ChannelResource">
 		
 		<operation operationId="1"  name="查看浏览" seqNo="1" dependParent="2"  />
 		<operation operationId="2"  name="新建栏目" seqNo="2" dependId="opt1" />	

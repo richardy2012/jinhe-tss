@@ -27,56 +27,65 @@ public class ResourcePermissionImpl extends TreeSupportDao<IDecodable> implement
  
     public void addResource(Long resourceId, String resourceTypeId) {
         flush();
-        String unSuppliedTable = resourceTypeDao.getUnSuppliedTable(PermissionHelper.getApplicationID(), resourceTypeId);
-        String suppliedTable  = resourceTypeDao.getSuppliedTable(PermissionHelper.getApplicationID(), resourceTypeId);
-        String resourceTable = resourceTypeDao.getResourceTable(PermissionHelper.getApplicationID(), resourceTypeId);
+        String applicationID = PermissionHelper.getApplicationID();
+		String permissionTable = resourceTypeDao.getPermissionTable(applicationID, resourceTypeId);
+        String resourceTable = resourceTypeDao.getResourceTable(applicationID, resourceTypeId);
 
         IResource resource = (IResource) getEntity(BeanUtil.createClassByName(resourceTable), resourceId);
         if(resource == null) {
-            throw new BusinessException("权限补齐时找不到资源对象，请检查资源视图（" + resourceTable + "）中是否包含该对象？或者是否过滤掉了？");
+            throw new BusinessException("权限补齐时找不到资源对象，请检查资源视图（" + resourceTable + "）中是否包含该对象？是否过滤掉了？");
         }
         
-        List<?> parentPermissions = getEntities("from " + suppliedTable + " t where t.resourceId = ?", resource.getParentId()); 
+        String hql = "from " + permissionTable + " t where t.resourceId = ? and t.permissionState = ?";
+		List<?> parentPermissions = getEntities(hql, resource.getParentId(), UMConstants.PERMIT_SUB_TREE); 
         for (Object temp : parentPermissions) {
-            ISuppliedPermission parentPermission = (ISuppliedPermission) temp;
-            Integer permissionState = parentPermission.getPermissionState();
-            
-            // 子节点的权限跟父节点的一模一样
-            PermissionHelper.getInstance().insertSuppliedTable(parentPermission, resource, suppliedTable);
-            
-            /* 如果permission的授权状态为PERMIT_NODE_SELF（即仅此节点，不向下传递），
-             * 则相应的在未补齐表中加入一条当前新增节点授权记录 删除的时候用的到，
-             * 参考com.jinhe.tss.um.permission.impl.PermissionDao.deleteOldPermission()方法 */
-            if(permissionState.equals(UMConstants.PERMIT_NODE_SELF)){
-                PermissionHelper.getInstance().insertUnSuppliedTable(parentPermission, resourceId, unSuppliedTable);
-            }
+        	AbstractPermission parentPermission = (AbstractPermission) temp;
+            PermissionHelper.getInstance().createPermission(parentPermission, resource, permissionTable);
         }
     }
 
 	public void delResource(Long resourceId, String resourceTypeId){	
         flush();
         
-        String unSuppliedTable = resourceTypeDao.getUnSuppliedTable(PermissionHelper.getApplicationID(), resourceTypeId);
-        String suppliedTable  = resourceTypeDao.getSuppliedTable(PermissionHelper.getApplicationID(), resourceTypeId);
-        executeHQL("delete " + suppliedTable + " t where t.resourceId = ?", resourceId);    // 删除授权视图(补齐的表)
-        executeHQL("delete " + unSuppliedTable + " t where t.resourceId = ?", resourceId);  // 删除授权表（未补齐表）   
+        String applicationID = PermissionHelper.getApplicationID();
+		String permissionTable  = resourceTypeDao.getPermissionTable(applicationID, resourceTypeId);
+        executeHQL("delete " + permissionTable + " t where t.resourceId = ?", resourceId);    // 删除该资源的所有授权信息
 	}
  
-	public void updateResource(Long resourceId, String resourceTypeId){
-		String suppliedTable = resourceTypeDao.getSuppliedTable(PermissionHelper.getApplicationID(), resourceTypeId);
-		String resourceTable = resourceTypeDao.getResourceTable(PermissionHelper.getApplicationID(), resourceTypeId);
+	public void moveResource(Long resourceId, String resourceTypeId){
+		String applicationID = PermissionHelper.getApplicationID();
+		String permissionTable = resourceTypeDao.getPermissionTable(applicationID, resourceTypeId);
+		String resourceTable = resourceTypeDao.getResourceTable(applicationID, resourceTypeId);
 		
-		List<?> children = getChildrenById(resourceTable, resourceId);
+		List<?> subTree = getChildrenById(resourceTable, resourceId); // 连同自身节点
 		
-		// 先删除已经存在的关系
-		for (Object child : children) {
-			executeHQL("delete " + suppliedTable + " t where t.resourceId = ?", ((IResource) child).getId());
-		}	
+		IResource resource = (IResource) getEntity(BeanUtil.createClassByName(resourceTable), resourceId);
+		String hql = "from " + permissionTable + " t where t.resourceId = ?";
+		List<?> parentPermissions = getEntities(hql, resource.getParentId()); 
 		
-		// 建立新的关系
-		for(Object child : children){	
-			addResource(((IResource) child).getId(), resourceTypeId);			
+		String deleteHQL = "delete " + permissionTable + " t where t.resourceId = ? and t.roleId = ? " +
+				" and t.operationId = ? and t.isGrant = ? and t.isPass = ?";
+		
+		for (Object temp : parentPermissions) {
+        	AbstractPermission parentPermission = (AbstractPermission) temp;
+        	Integer parentPermissionState = parentPermission.getPermissionState();
+        	
+        	// 判断移动后的父节点对各个操作权限的授权是否为全勾；如果为全勾，则移动过去整枝节点的授权状态都为全勾。
+        	if(parentPermissionState.equals(UMConstants.PERMIT_SUB_TREE)) {
+        		for (Object node : subTree) {
+        			IResource child = (IResource) node;
+        			
+        			// 先删除已经存在的资源操作的权限
+					executeHQL(deleteHQL, child.getId(), parentPermission.getRoleId(), 
+							parentPermission.getOperationId(), parentPermission.getIsGrant(), parentPermission.getIsPass());
+        		
+        			// 重新按（祖）父节点的权限（全勾）进行授权
+        			PermissionHelper.getInstance().createPermission(parentPermission, child, permissionTable);			
+        		}
+        	}
+        	// 如果父节点是半勾，则移动过来的整枝权限不变
 		}
+		// TODO 子节点有权限的操作项而继父节点没有的，暂不予处理。如果要保持界面上统一（子节点有勾选的，父节点也必然被勾选）的话，需要考虑删除子节点的这类权限
 	}
 
 	public List<?> getParentResourceIds(String applicationId, String resourceTypeId, Long resourceId, 
@@ -86,8 +95,8 @@ public class ResourcePermissionImpl extends TreeSupportDao<IDecodable> implement
         Class<?> resourceClazz = BeanUtil.createClassByName(resourceTable);
         IResource resource = (IResource) getEntity(resourceClazz, resourceId);
         
-        String suppliedTable = resourceTypeDao.getSuppliedTable(applicationId, resourceTypeId);
-        String hql = "select distinct t.id from " + resourceClazz.getName() + " t, RoleUserMapping r, " + suppliedTable + " v" +
+        String permissionTable = resourceTypeDao.getPermissionTable(applicationId, resourceTypeId);
+        String hql = "select distinct t.id from " + resourceClazz.getName() + " t, RoleUserMapping r, " + permissionTable + " v" +
             " where t.id = v.resourceId and v.roleId = r.id.roleId and r.id.userId = ? and v.operationId = ? and ? like t.decode || '%'";
         
         return getEntities(hql, operatorId, operationId, resource.getDecode());
@@ -100,8 +109,8 @@ public class ResourcePermissionImpl extends TreeSupportDao<IDecodable> implement
 	    Class<?> resourceClazz = BeanUtil.createClassByName(resourceTable);
 	    IResource resource = (IResource) getEntity(resourceClazz, resourceId);
         
-        String suppliedTable = resourceTypeDao.getSuppliedTable(applicationId, resourceTypeId);
-        String hql = "select distinct t.id from " + resourceTable + " t, RoleUserMapping r, " + suppliedTable + " v" +
+        String permissionTable = resourceTypeDao.getPermissionTable(applicationId, resourceTypeId);
+        String hql = "select distinct t.id from " + resourceTable + " t, RoleUserMapping r, " + permissionTable + " v" +
             " where t.id = v.resourceId and v.roleId = r.id.roleId and r.id.userId = ? and v.operationId = ? and t.decode like ?";
         
         return getEntities(hql, operatorId, operationId, resource.getDecode() + "%");	

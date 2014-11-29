@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jinhe.tss.framework.persistence.entityaop.MatchByDaoMethodNameInterceptor;
 
 /**
- * 资源自动注册、补齐等维护操作的拦截器。 </br>
- * 拦截资源注册、修改、删除等操作，根据权限模型中依赖关系对被操作的资源进行权限修复。 </br>
+ * 资源变动时候自动维护授权信息的拦截器。 </br>
+ * 拦截资源新增、移动、删除等操作，根据权限模型中依赖关系对被操作的资源进行权限修复。 </br>
  */
 public class ResourcePermissionInterceptor extends MatchByDaoMethodNameInterceptor {
     
@@ -52,9 +52,7 @@ public class ResourcePermissionInterceptor extends MatchByDaoMethodNameIntercept
 			// 移动资源
 			case MOVE: 
 	            returnObj = invocation.proceed();
-	            if(returnObj != null && returnObj instanceof IResource) {
-	                moveResource((IResource)returnObj); // 拦截移动资源的权限重新补齐操作需要在整个枝移动保存完成后。
-	            }
+	            moveResource(resource); // 拦截移动资源的权限重新补齐操作需要在整个枝移动保存完成后。
 	            return returnObj;
 	        // 删除资源
 			case DELETE:
@@ -80,7 +78,7 @@ public class ResourcePermissionInterceptor extends MatchByDaoMethodNameIntercept
 		String resourceType = resource.getResourceType();
 		if(resourceId == null || resourceType == null) return;
 		
-		resourcePermission.updateResource(resourceId, resourceType);
+		resourcePermission.moveResource(resourceId, resourceType);
 	}
 
 	/** 删除一个注册资源 */

@@ -60,15 +60,15 @@ public class CacheDisplayAction extends BaseActionSupport {
     public void init() {
     	if(hasInited) return;
     	
-    	hasInited = true;
-    	
     	Param cacheParamGroup = paramService.getParam(CacheHelper.CACHE_PARAM);
-    	List<Param> cacheParams = paramService.getParamsByParentCode(CacheHelper.CACHE_PARAM);
     	if(cacheParamGroup == null) {
     		initCacheParamGroup();
     		return;
     	}
     	
+    	hasInited = true;
+    	
+    	List<Param> cacheParams = paramService.getParamsByParentCode(CacheHelper.CACHE_PARAM);
     	for(Param item : cacheParams) {
     		String cacheCode   = item.getCode();
     		String cacheConfig = item.getValue();
@@ -79,13 +79,13 @@ public class CacheDisplayAction extends BaseActionSupport {
     	}
     }
     
-    private void initCacheParamGroup() {
+    private Param initCacheParamGroup() {
     	Param param = new Param();
         param.setName("缓存池配置");
         param.setCode(CacheHelper.CACHE_PARAM);
         param.setParentId(ParamConstants.DEFAULT_PARENT_ID);
         param.setType(ParamConstants.GROUP_PARAM_TYPE);
-		paramService.saveParam(param);
+		return paramService.saveParam(param);
     }
     
     private CacheStrategy refreshCacheStrategy(String cacheCode, String newConfig) {
@@ -110,7 +110,7 @@ public class CacheDisplayAction extends BaseActionSupport {
 		// 将更新信息保存到系统参数模块
 		Param cacheParamGroup = paramService.getParam(CacheHelper.CACHE_PARAM);
 		if(cacheParamGroup == null) {
-    		initCacheParamGroup();
+			cacheParamGroup = initCacheParamGroup();
     	}
 		
 		Param cacheParam = null;

@@ -24,7 +24,7 @@ import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.portal.PortalConstants;
-import com.jinhe.tss.portal.entity.permission.NavigatorResourceView;
+import com.jinhe.tss.portal.entity.permission.NavigatorResource;
 import com.jinhe.tss.um.permission.IResource;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.XMLDocUtil;
@@ -206,7 +206,7 @@ public class Navigator extends OperateInfo implements IXForm, IDecodable, IResou
     
     public Class<?> getParentClass() {
         if(this.parentId.equals(PortalConstants.ROOT_ID)) {
-            return NavigatorResourceView.class;
+            return NavigatorResource.class;
         }
         return getClass();
     }

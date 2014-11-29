@@ -38,7 +38,6 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
     	} 
     	else {
     		// 因Decode拦截器里保存了一次了，此时group已经是PO状态，再merge会报乐观锁
-    		super.flush();
     	}
     	
 		return group;
@@ -103,9 +102,9 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
  
 	public List<?> getVisibleSubGroups(Long groupId){
 		Group group = getEntity(groupId);
-        String suppliedTable = resourceTypeDao.getSuppliedTable(UMConstants.TSS_APPLICATION_ID, group.getResourceType());
+        String permissionTable = resourceTypeDao.getPermissionTable(UMConstants.TSS_APPLICATION_ID, group.getResourceType());
         
-        String hql = PermissionHelper.permissionHQL(entityName, suppliedTable, " and o.decode like ? ", true);
+        String hql = PermissionHelper.permissionHQL(entityName, permissionTable, " and o.decode like ? ", true);
         return getEntities(hql, Environment.getOperatorId(), UMConstants.GROUP_VIEW_OPERRATION, group.getDecode() + "%" );
 	}
  
@@ -117,9 +116,9 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
 	}
 	
 	public List<Group> getGroupsByType(Long operatorId, String operationId, Integer groupType) {
-        String suppliedTable = resourceTypeDao.getSuppliedTable(UMConstants.TSS_APPLICATION_ID, UMConstants.GROUP_RESOURCE_TYPE_ID);
+        String permissionTable = resourceTypeDao.getPermissionTable(UMConstants.TSS_APPLICATION_ID, UMConstants.GROUP_RESOURCE_TYPE_ID);
         
-        String hql = PermissionHelper.permissionHQL(entityName, suppliedTable);
+        String hql = PermissionHelper.permissionHQL(entityName, permissionTable);
         List<?> allGroups = getEntities(hql, operatorId, operationId);
         
         List<Group> resultList = new ArrayList<Group>();
@@ -135,9 +134,9 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
 	public List<?> getParentGroupByGroupIds(List<Long> groupIds, Long operatorId, String operationId) {
         if( EasyUtils.isNullOrEmpty(groupIds)) return new ArrayList<Group>();
         
-		String suppliedTable = resourceTypeDao.getSuppliedTable(UMConstants.TSS_APPLICATION_ID, UMConstants.GROUP_RESOURCE_TYPE_ID);
+		String permissionTable = resourceTypeDao.getPermissionTable(UMConstants.TSS_APPLICATION_ID, UMConstants.GROUP_RESOURCE_TYPE_ID);
 		
-		String hql = "select distinct o " + PermissionHelper.formatHQLFrom(entityName, suppliedTable) + " , Group child " +
+		String hql = "select distinct o " + PermissionHelper.formatHQLFrom(entityName, permissionTable) + " , Group child " +
 		        PermissionHelper.permissionConditionII() + " and child.id in (:groupIds) and child.decode like o.decode||'%'" + PermissionHelper.ORDER_BY;
 		
 		return getEntities(hql, new Object[]{"operatorId", "operationId", "groupIds"}, new Object[]{operatorId, operationId, groupIds});

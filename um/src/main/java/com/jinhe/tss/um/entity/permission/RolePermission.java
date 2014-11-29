@@ -3,13 +3,13 @@ package com.jinhe.tss.um.entity.permission;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.jinhe.tss.um.permission.AbstractSuppliedTable;
+import com.jinhe.tss.um.permission.AbstractPermission;
 
 /**
  * 角色应用资源操作表(补全的表)
  */
 @Entity
-@Table(name = "um_permissionfull_role")
-public class RolePermissionsFull extends AbstractSuppliedTable {
+@Table(name = "um_permission_role")
+public class RolePermission extends AbstractPermission {
 
 }

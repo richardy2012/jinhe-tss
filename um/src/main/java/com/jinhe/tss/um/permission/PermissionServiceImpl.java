@@ -40,25 +40,22 @@ public class PermissionServiceImpl implements PermissionService {
 	public void clearPermissionByRole(String appId, String resourceTypeId, 
 			String permissionRank, Long roleId, Integer isRole2Resource) {
 		
-		String unSuppliedTable = remoteResourceTypeDao.getUnSuppliedTable(appId, resourceTypeId); //"未补全的表名"
-        String suppliedTable = remoteResourceTypeDao.getSuppliedTable(appId, resourceTypeId);    //"补全的表名"
+        String permissionTable = remoteResourceTypeDao.getPermissionTable(appId, resourceTypeId);
 		
 		String rankCondition = permissionHelper.genRankCondition4DeleletePermission(permissionRank);
 		String field = ParamConstants.TRUE.equals(isRole2Resource) ? "roleId" : "resourceId";
  
-        permissionHelper.executeHQL("delete " + unSuppliedTable + " p where" + " p." + field + "=? " + rankCondition, roleId);
-        permissionHelper.executeHQL("delete " + suppliedTable + " p where" + " p." + field + "=? " + rankCondition, roleId);
+        permissionHelper.executeHQL("delete " + permissionTable + " p where" + " p." + field + "=? " + rankCondition, roleId);
         
         permissionHelper.flush();
 	}
 	
 	public void saveResources2Role(String appId, String resourceTypeId, Long roleId, String permissionRank, String permissions) {
-        String unSuppliedTable = remoteResourceTypeDao.getUnSuppliedTable(appId, resourceTypeId); //"未补全的表名"
-        String suppliedTable = remoteResourceTypeDao.getSuppliedTable(appId, resourceTypeId);    //"补全的表名"
-        String resourceTable = remoteResourceTypeDao.getResourceTable(appId, resourceTypeId);   //"资源表的表名或视图名"
+        String permissionTable = remoteResourceTypeDao.getPermissionTable(appId, resourceTypeId);// 资源权限的表名
+        String resourceTable = remoteResourceTypeDao.getResourceTable(appId, resourceTypeId);   // 资源表的表名或视图名
         List<?> operationIds = remoteResourceTypeDao.getOperationIds(appId, resourceTypeId);
         
-		permissionHelper.deletePermissionByRole(roleId, permissionRank, unSuppliedTable, suppliedTable, resourceTable);
+		permissionHelper.deletePermissionByRole(roleId, permissionRank, permissionTable, resourceTable);
        
 		Integer[] isGrantAndPass = permissionHelper.convertRank(permissionRank);
         String[] resources2opts = permissions.split(",");
@@ -74,17 +71,16 @@ public class PermissionServiceImpl implements PermissionService {
             	
             	// 只有打上了半勾 或 全勾，才生成授权信息。其他状态均无授权信息生成
                 if (UMConstants.PERMIT_NODE_SELF.equals(permissionState) || UMConstants.PERMIT_SUB_TREE.equals(permissionState)) {
-                    // 新建一条未补全授权记录，如此本节点权限被收回的时候，子节点的权限才能被一并收回
-					IUnSuppliedPermission usPermission = (IUnSuppliedPermission) BeanUtil.newInstanceByName(unSuppliedTable);
+                    // 创建一条未补全授权对象，用以后续补全权限
+                	AbstractPermission usPermission = (AbstractPermission) BeanUtil.newInstanceByName(permissionTable);
 					usPermission.setRoleId(roleId);
 					usPermission.setResourceId(resourceId);
 					usPermission.setOperationId((String) operationIds.get(i));
 					usPermission.setPermissionState(permissionState);
 					usPermission.setIsGrant(isGrantAndPass[0]);
 					usPermission.setIsPass(isGrantAndPass[1]);
-					permissionHelper.createObjectWithoutFlush(usPermission); // 保存到未补齐表
 					
-					supplyPermissionIntoSuppliedTable(usPermission, suppliedTable, resourceTable);    
+					supplyPermission(usPermission, permissionTable, resourceTable);    
 				}
             }
 		}
@@ -98,30 +94,30 @@ public class PermissionServiceImpl implements PermissionService {
      * 如果permissionState==PERMIT_NODE_SELF，则只对自身节点在补齐表里加一条记录。 <br/>
      * </p>
      * @param usPermission
-     * @param suppliedTable
+     * @param permissionTable
      * @param resourceTable
      */
-    private void supplyPermissionIntoSuppliedTable(IUnSuppliedPermission usPermission, String suppliedTable, String resourceTable) {
+    private void supplyPermission(AbstractPermission usPermission, String permissionTable, String resourceTable) {
         Long resourceId = usPermission.getResourceId();
+        
+        // 如果是授予整枝节点，则补全表的所有子节点
 		if (usPermission.getPermissionState().equals(UMConstants.PERMIT_SUB_TREE)) { 
-		    // 如果是授予整枝节点，则补全表的所有子节点
             List<?> resources = permissionHelper.getChildrenById(resourceTable, resourceId);
-            for (Object childResource : resources ) {
-            	permissionHelper.insertSuppliedTable(usPermission, (IResource) childResource, suppliedTable);
+            for (Object child : resources ) {
+            	permissionHelper.createPermission(usPermission, (IResource) child, permissionTable);
             }
         } else {// 补全表的单个节点
             IResource resource = (IResource) permissionHelper.getEntity(BeanUtil.createClassByName(resourceTable), resourceId);
-            permissionHelper.insertSuppliedTable(usPermission, resource, suppliedTable);
+            permissionHelper.createPermission(usPermission, resource, permissionTable);
         }
     }
 	
 	public void saveResource2Roles(String appId, String resourceTypeId, Long resourceId, String permissionRank, String permissions) {
-        String unSuppliedTable = remoteResourceTypeDao.getUnSuppliedTable(appId, resourceTypeId); //"未补全的表名"
-        String suppliedTable = remoteResourceTypeDao.getSuppliedTable(appId, resourceTypeId);    //"补全的表名"
-        String resourceTable = remoteResourceTypeDao.getResourceTable(appId, resourceTypeId);   //"资源表的表名或视图名"
+        String permissionTable = remoteResourceTypeDao.getPermissionTable(appId, resourceTypeId); // 资源权限的表名
+        String resourceTable = remoteResourceTypeDao.getResourceTable(appId, resourceTypeId);    // 资源表的表名或视图名
         List<?> operations   = remoteResourceTypeDao.getOperations(appId, resourceTypeId);
         
-        permissionHelper.deletePermissionByResource(resourceId, permissionRank, unSuppliedTable, suppliedTable, resourceTable);
+        permissionHelper.deletePermissionByResource(resourceId, permissionRank, permissionTable, resourceTable);
  
 		Integer[] isGrantAndPass = permissionHelper.convertRank(permissionRank);
         String[] resources2opts = permissions.split(",");
@@ -142,7 +138,7 @@ public class PermissionServiceImpl implements PermissionService {
             	// 只有打上了半勾 或 全勾，才生成授权信息。其他状态均无授权信息生成
                 if (UMConstants.PERMIT_NODE_SELF.equals(permissionState) || UMConstants.PERMIT_SUB_TREE.equals(permissionState)) { 
                 	// 新增当前资源节点的授权信息
-                	createAndSupplyPermission(unSuppliedTable, suppliedTable, resourceTable, roleId, resourceId, operationId, permissionState, isGrantAndPass);
+                	createAndSupplyPermission(permissionTable, resourceTable, roleId, resourceId, operationId, permissionState, isGrantAndPass);
                 	
                 	// 权限项横向依赖的id，格式如： opt12
                 	String dependId = operation.getDependId(); 
@@ -159,9 +155,10 @@ public class PermissionServiceImpl implements PermissionService {
                     	List<?> parentResources = permissionHelper.getParentsById(resourceTable, resourceId);
                         for(Object temp : parentResources){
                             IResource parent = (IResource) temp;
-                            createAndSupplyPermission(unSuppliedTable, suppliedTable, resourceTable, roleId, parent.getId(), operationId, UMConstants.PERMIT_NODE_SELF, isGrantAndPass);
-                            if(dependId != null) { // 补上针对【横向依赖权限选项】的授权信息，比如授了“启用”权限，需要把“启用”依赖的“查看”权限也一起授予（要启用首先要能看到呗）。
-                                createAndSupplyPermission(unSuppliedTable, suppliedTable, resourceTable, roleId, parent.getId(), dependId, UMConstants.PERMIT_NODE_SELF, isGrantAndPass);
+                            Long parentId = parent.getId();
+							createAndSupplyPermission(permissionTable, resourceTable, roleId, parentId, operationId, UMConstants.PERMIT_NODE_SELF, isGrantAndPass);
+                            if(dependId != null) { // 补上针对【横向依赖权限选项】的授权信息，比如授了“启用”权限，需要把“启用”依赖的“查看”权限也一起授予（要启用首先要有查看权限）。
+                                createAndSupplyPermission(permissionTable, resourceTable, roleId, parentId, dependId, UMConstants.PERMIT_NODE_SELF, isGrantAndPass);
                             }
                         }
                     }
@@ -177,9 +174,10 @@ public class PermissionServiceImpl implements PermissionService {
                     	List<?> childResources = permissionHelper.getChildrenById(resourceTable, resourceId);
                     	for(Object temp :childResources ){
                             IResource child = (IResource) temp;
-                            createAndSupplyPermission(unSuppliedTable, suppliedTable, resourceTable, roleId, child.getId(), operationId, UMConstants.PERMIT_NODE_SELF, isGrantAndPass);
+                            Long childId = child.getId();
+							createAndSupplyPermission(permissionTable, resourceTable, roleId, childId, operationId, UMConstants.PERMIT_NODE_SELF, isGrantAndPass);
                             if(dependId != null) {  // 补上针对【横向依赖权限选项】的授权信息，比如授了“停用”权限，需要把“停用”依赖的“查看”权限也一起授予（要停用首先要能看到呗）。
-                                createAndSupplyPermission(unSuppliedTable, suppliedTable, resourceTable, roleId, child.getId(), dependId, UMConstants.PERMIT_NODE_SELF, isGrantAndPass);
+                                createAndSupplyPermission(permissionTable, resourceTable, roleId, childId, dependId, UMConstants.PERMIT_NODE_SELF, isGrantAndPass);
                             }
                         }
                     }
@@ -188,10 +186,10 @@ public class PermissionServiceImpl implements PermissionService {
 		}
 	}
  
-    private void createAndSupplyPermission(String unSuppliedTable, String suppliedTable, String resourceTable, 
+    private void createAndSupplyPermission(String permissionTable, String resourceTable, 
     		Long roleId, Long resourceId, String operationId, Integer permissionState, Integer[] isGrantAndPass){
     	
-        IUnSuppliedPermission usPermission = (IUnSuppliedPermission)BeanUtil.newInstanceByName(unSuppliedTable);
+    	AbstractPermission usPermission = (AbstractPermission)BeanUtil.newInstanceByName(permissionTable);
         usPermission.setRoleId(roleId);
         usPermission.setResourceId(resourceId);
         usPermission.setOperationId(operationId);
@@ -199,20 +197,18 @@ public class PermissionServiceImpl implements PermissionService {
 		usPermission.setIsGrant(isGrantAndPass[0]);
 		usPermission.setIsPass(isGrantAndPass[1]);
        
-        permissionHelper.createObjectWithoutFlush(usPermission); //保存到未补齐表
-        
-        supplyPermissionIntoSuppliedTable(usPermission, suppliedTable, resourceTable);    
+        supplyPermission(usPermission, permissionTable, resourceTable);    
     }
 
     // 创建角色、资源、权限选项关联关系。 添加权限选项，给管理员添加最大权限时使用
 	public void saveRoleResourceOperation(Long roleId, Long resourceId, String operationId, Integer permissionState, 
-			String unSuppliedTable, String suppliedTable, String resourceTable) {
+			String permissionTable, String resourceTable) {
 	    
-        IUnSuppliedPermission usPermission = permissionHelper.insertUnSuppliedTable(
+		AbstractPermission usPermission = permissionHelper.createUnPermission(
                 roleId, resourceId, operationId, permissionState, 
-                ParamConstants.TRUE, ParamConstants.TRUE, unSuppliedTable); // 默认为可授权 且 可传递
+                ParamConstants.TRUE, ParamConstants.TRUE, permissionTable); // 默认为可授权 且 可传递
         
-        supplyPermissionIntoSuppliedTable(usPermission, suppliedTable, resourceTable); // 补全
+        supplyPermission(usPermission, permissionTable, resourceTable); // 补全
 	}
     
     // *******************************************************************************************************
@@ -226,21 +222,21 @@ public class PermissionServiceImpl implements PermissionService {
 		permissionHelper.insertIds2TempTable(roleUsers, 1);
 		
 		/* ----------------------------------------- 获取角色对资源授权矩阵数据 -----------------------------------------------*/
-        String suppliedTable = remoteResourceTypeDao.getSuppliedTable(appId, resourceTypeId);    // "补全的表名"
-        String resourceTable = remoteResourceTypeDao.getResourceTable(appId, resourceTypeId);   // "资源表的表名或视图名"
+        String permissionTable = remoteResourceTypeDao.getPermissionTable(appId, resourceTypeId);// 资源权限的表名
+        String resourceTable = remoteResourceTypeDao.getResourceTable(appId, resourceTypeId);   // 资源表的表名或视图名
 		List<?> operations   = remoteResourceTypeDao.getOperations(appId, resourceTypeId);     // 此类资源的所有操作选项
         
         // 用户资源树,resourceId是没有重复的,并且还有parentResourceId
-        List<ResourceTreeNode> visibleResourceTree = permissionHelper.getVisibleResourceTree(permissionRank, suppliedTable, resourceTable);
+        List<ResourceTreeNode> visibleResourceTree = permissionHelper.getVisibleResourceTree(permissionRank, permissionTable, resourceTable);
         
         // 当前用户拥有的补全的用户资源权限信息，将登录用户拥有的资源权限列表和授权级别进行映射。
         // 即把用户拥有的权限取出以部分或全部授予选中的角色，界面上体现为是否能在对应位置打勾
-        List<SuppliedPermissionDTO> exsitPermissions = permissionHelper.getAllResourcePermissions(permissionRank, suppliedTable);
+        List<PermissionDTO> exsitPermissions = permissionHelper.getAllResourcePermissions(permissionRank, permissionTable);
         Map<String, Integer> userPermissionMappingRank = userPermissionMappingRank(exsitPermissions); // 这是登录用户能拿出来授权的【针对当前资源列表】的权限
         
         // 将选中角色（角色树上选中来【角色权限设置】的那个节点 ）拥有的资源授权信息和授权级别进行映射。
         // 目的是把角色对资源已有的权限信息展示到界面上，界面上体现为对应的位置已经打上勾。
-        List<?> roleResList = permissionHelper.getEntities("from " + suppliedTable + " p where p.roleId = ? ",  roleId);
+        List<?> roleResList = permissionHelper.getEntities("from " + permissionTable + " p where p.roleId = ? ",  roleId);
         Map<String, Integer[]> rolePermissionMappingRank = rolePermissionMappingRank(roleResList); // 这是【被授权角色】已经拥有的对【当前资源列表】的权限。
     
         // 将用户可见的资源和其【permissionState：权限维护状态(1-仅此节点，2-该节点及所有下层节点)】进行映射。
@@ -249,7 +245,7 @@ public class PermissionServiceImpl implements PermissionService {
         for (ResourceTreeNode resource : visibleResourceTree) {
             Long resourceId = resource.getResourceId();
             int totalCount = permissionHelper.getChildrenById(resourceTable, resourceId).size();
-            int permitedCount = permissionHelper.getVisibleChildrenNumByPermissionRank(resourceId, permissionRank, suppliedTable, resourceTable);
+            int permitedCount = permissionHelper.getVisibleChildrenNumByPermissionRank(resourceId, permissionRank, permissionTable, resourceTable);
             
             // 用户是否对此资源的所有的子节点拥有权限，是的话可以打“全勾”
             Integer permissionState = permitedCount == totalCount ? UMConstants.PERMIT_SUB_TREE : UMConstants.PERMIT_NODE_SELF;
@@ -336,9 +332,9 @@ public class PermissionServiceImpl implements PermissionService {
      * 这是登录用户能拿出来授权的【针对当前资源或资源列表】的权限。<br/>
      * key:resourceId_operationId / value:isGrant+isPass(角色为选中的唯一一个) <br/>
      */
-    private Map<String, Integer> userPermissionMappingRank(List<SuppliedPermissionDTO> permissionList) {
+    private Map<String, Integer> userPermissionMappingRank(List<PermissionDTO> permissionList) {
         Map<String, Integer> mapping = new HashMap<String, Integer>();
-        for (SuppliedPermissionDTO dto : permissionList) {
+        for (PermissionDTO dto : permissionList) {
             Integer grantAndPass = MathUtil.addInteger(dto.getIsGrant(), dto.getIsPass());  // 0 or 1 or 2
             
             String key = dto.getResourceId() + "_" + dto.getOperationId();
@@ -362,7 +358,7 @@ public class PermissionServiceImpl implements PermissionService {
         if(permissionList == null) return mapping;
         
         for ( Object temp : permissionList ) {
-            ISuppliedPermission permission = (ISuppliedPermission) temp;
+        	AbstractPermission permission = (AbstractPermission) temp;
             Integer grantAndPass = MathUtil.addInteger(permission.getIsGrant(), permission.getIsPass());  // 0 or 1 or 2
             
             String key = permission.getRoleId()  + "_" + permission.getResourceId()  + "_" + permission.getOperationId();
@@ -385,17 +381,17 @@ public class PermissionServiceImpl implements PermissionService {
 		permissionHelper.insertIds2TempTable(roleUsers, 1);
         
 		/* ----------------------------------------- 获取资源对角色授权矩阵数据 -----------------------------------------------*/
-		String suppliedTable = remoteResourceTypeDao.getSuppliedTable(appId, resourceTypeId); // "补全的表名"
+		String permissionTable = remoteResourceTypeDao.getPermissionTable(appId, resourceTypeId); // "补全的表名"
         String resourceTable = remoteResourceTypeDao.getResourceTable(appId, resourceTypeId); // "资源表的表名或视图名"
 		List<?> operations   = remoteResourceTypeDao.getOperations(appId, resourceTypeId);    // 此类资源的所有操作选项
 		
 		// 从UM里读取Role本身作为一种资源的相关信息
         String tssAppId = UMConstants.TSS_APPLICATION_ID;
         String roleResourceTable = remoteResourceTypeDao.getResourceTable(tssAppId, UMConstants.ROLE_RESOURCE_TYPE_ID); // 角色资源表名
-        String roleSuppliedTable = remoteResourceTypeDao.getSuppliedTable(tssAppId, UMConstants.ROLE_RESOURCE_TYPE_ID); // 角色资源补全表名
+        String rolePermissionTable = remoteResourceTypeDao.getPermissionTable(tssAppId, UMConstants.ROLE_RESOURCE_TYPE_ID); // 角色资源补全表名
         
         /* 获取登录用户对UM中的【角色资源】中有“角色权限设置”权限的那些个角色的ID集合（用于生成【资源授予角色】时的角色树） */
-        String hql = "select distinct p.resourceId from " + roleSuppliedTable + " p, RoleUserMapping ru " +
+        String hql = "select distinct p.resourceId from " + rolePermissionTable + " p, RoleUserMapping ru " +
                 " where p.roleId = ru.id.roleId and p.operationId = ? and ru.id.userId = ?";
         List<?> setableRoleIds = permissionHelper.getEntities(hql, UMConstants.ROLE_EDIT_OPERRATION, Environment.getOperatorId());
         
@@ -405,20 +401,20 @@ public class PermissionServiceImpl implements PermissionService {
         List<?> setableRolesPermissionsOnSelectedResource = null;
         if ( !EasyUtils.isNullOrEmpty(setableRoleIds) ){ // 获取用户的角色树
             hql = "select distinct o.id, o.parentId, o.name, o.decode from "
-                + roleResourceTable + " o, " + roleSuppliedTable + " p where p.resourceId = o.id and o.id in (:ids)"
+                + roleResourceTable + " o, " + rolePermissionTable + " p where p.resourceId = o.id and o.id in (:ids)"
                 + permissionHelper.genRankCondition4SelectPermission(permissionRank) + " order by o.decode";
 
             List<?> list = permissionHelper.getEntities(hql, new Object[]{"ids"}, new Object[]{setableRoleIds});
             setableRoleTree = ResourceTreeNode.genResourceTreeNodeList(list);  // 角色作为资源的树
             
-            hql = "from " + suppliedTable + " p where p.roleId in (:roleIds) and p.resourceId = :resourceId ";
+            hql = "from " + permissionTable + " p where p.roleId in (:roleIds) and p.resourceId = :resourceId ";
             setableRolesPermissionsOnSelectedResource = permissionHelper.getEntities(hql,  
                     new Object[]{"roleIds", "resourceId"}, new Object[]{setableRoleIds, resourceId});
         }
 		
         // 取出当前用户拥有的对【当前资源】的权限信息，将登录用户拥有的资源（仅指resourceId）权限列表和授权级别进行映射。
         // 即把用户拥有的【对此资源的权限】取出以部分或全部授予【角色树上的角色】，界面上体现为是否能在对应位置打勾
-		List<SuppliedPermissionDTO> exsitPermissions = permissionHelper.getOneResourcePermissions(permissionRank, suppliedTable, resourceId);
+		List<PermissionDTO> exsitPermissions = permissionHelper.getOneResourcePermissions(permissionRank, permissionTable, resourceId);
 		Map<String, Integer> userPermissionMappingRank = userPermissionMappingRank(exsitPermissions); // 这是登录用户能拿出来授权的【针对当前资源】的权限
  
         // 将选中资源（资源树上选中来【授予角色】的那个节点 ）被拥有的资源授权信息和授权级别进行映射。
@@ -429,7 +425,7 @@ public class PermissionServiceImpl implements PermissionService {
 		// 以用于判断用户是否对【此资源的所有的子节点】拥有权限，是的话可以打“全勾”；否则只能打“半勾”。
 		Map<Long, Integer> resourceMappingRank = new HashMap<Long, Integer>();
         int totalCount = permissionHelper.getChildrenById(resourceTable, resourceId).size();
-        int permitedCount = permissionHelper.getVisibleChildrenNumByPermissionRank(resourceId, permissionRank, suppliedTable, resourceTable);
+        int permitedCount = permissionHelper.getVisibleChildrenNumByPermissionRank(resourceId, permissionRank, permissionTable, resourceTable);
         Integer permissionState = permitedCount == totalCount ? UMConstants.PERMIT_SUB_TREE : UMConstants.PERMIT_NODE_SELF;
         resourceMappingRank.put(resourceId, permissionState);
         

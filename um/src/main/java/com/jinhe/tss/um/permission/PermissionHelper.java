@@ -23,9 +23,9 @@ import com.jinhe.tss.um.permission.dispaly.ResourceTreeNode;
 import com.jinhe.tss.util.BeanUtil;
 
 /**
- * 操作资源表时相关的补全操作和删除操作。
- * PermissionHelper 配置到各个应用中。
- * 负责处理基于TSS框架的应用里的资源表、权限表（包括补齐和未补齐）的操作。
+ * 操作资源表时相关的权限补齐操作和删除操作。
+ * 
+ * PermissionHelper 配置到各个应用中，负责处理基于TSS框架的应用里的资源表、权限表的操作。
  * 针对TSS特有的操作不宜放在本接口里，比如读取角色信息等。
  */
 @Component("permissionHelper")
@@ -67,16 +67,16 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
     /**
      * 获取当前用户对点击资源节点（以及父节点）的操作权限
      * @param resourceId
-     * @param suppliedTable
+     * @param permissionTable
      * @param resourceClass
      * @return
      */
     @SuppressWarnings("unchecked")
-    public List<String> getOperationsByResource(Long resourceId, String suppliedTable, Class<?> resourceClass) {
+    public List<String> getOperationsByResource(Long resourceId, String permissionTable, Class<?> resourceClass) {
     	
         List<String> operations = new ArrayList<String>();
     	
-        String hql = "select distinct p.id.operationId from " + suppliedTable + " p, RoleUserMapping ru "  +
+        String hql = "select distinct p.id.operationId from " + permissionTable + " p, RoleUserMapping ru "  +
                 " where p.id.resourceId = ? and p.id.roleId = ru.id.roleId and ru.id.userId = ? ";  
         List<String> operationsOnResource = (List<String>) getEntities(hql, resourceId, Environment.getOperatorId());
         operations.addAll(operationsOnResource);  // 用户对指定节点的操作权限
@@ -99,28 +99,28 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
      */
     public List<?> getOperationsByResource(String resourceTypeId, Long resourceId) {
         String applicationId = PermissionHelper.getApplicationID();
-		String suppliedTable = resourceTypeDao.getSuppliedTable(applicationId, resourceTypeId);
+		String permissionTable = resourceTypeDao.getPermissionTable(applicationId, resourceTypeId);
         String resourceTable = resourceTypeDao.getResourceTable(applicationId, resourceTypeId);
         
         Class<?> resourceClass = BeanUtil.createClassByName(resourceTable);
         
-        return getOperationsByResource(resourceId, suppliedTable, resourceClass);
+        return getOperationsByResource(resourceId, permissionTable, resourceClass);
     }
     
     /**
-     *  新增一条授权信息（未补齐表）
+     * 创建一条授权信息（未补齐）
      * @param roleId
      * @param resourceId
      * @param operationId
      * @param permissionState
      * @param isGrant
      * @param isPass
-     * @param suppliedTable
+     * @param permissionTable
      */
-    public IUnSuppliedPermission insertUnSuppliedTable(Long roleId, Long resourceId, String operationId, 
-            Integer permissionState, Integer isGrant, Integer isPass, String suppliedTable) {
+    public AbstractPermission createUnPermission(Long roleId, Long resourceId, String operationId, 
+            Integer permissionState, Integer isGrant, Integer isPass, String permissionTable) {
         
-        IUnSuppliedPermission usPermission = (IUnSuppliedPermission) BeanUtil.newInstanceByName(suppliedTable);         
+    	AbstractPermission usPermission = (AbstractPermission) BeanUtil.newInstanceByName(permissionTable);         
         usPermission.setRoleId(roleId);
         usPermission.setResourceId(resourceId);
         usPermission.setOperationId(operationId);
@@ -128,59 +128,43 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
         usPermission.setIsGrant(isGrant);
         usPermission.setIsPass(isPass);
         
-        return (IUnSuppliedPermission) createObject(usPermission);
-    }
-    
-    public IUnSuppliedPermission insertUnSuppliedTable(IUnSuppliedPermission permission, Long resourceId, String suppliedTable) {
-        IUnSuppliedPermission usPermission = (IUnSuppliedPermission) BeanUtil.newInstanceByName(suppliedTable);         
-        usPermission.setRoleId(permission.getRoleId());
-        usPermission.setOperationId(permission.getOperationId());
-        usPermission.setPermissionState(permission.getPermissionState());
-        usPermission.setIsGrant(permission.getIsGrant());
-        usPermission.setIsPass(permission.getIsPass());
-        
-        usPermission.setResourceId(resourceId);
-        
-        return (IUnSuppliedPermission) createObject(usPermission);
+        return usPermission;
     }
 
     /**
-     * 根据已有授权信息，新增一条授权信息（补齐表）。 新增前会先判断授权信息是否已经存在。
-     * @param permission 
-     * 				节点的未补齐授权信息 或 父节点授权信息
+     * 根据已有授权信息，新增一条授权信息。 新增前会先判断授权信息是否已经存在。
+     * @param exsitPermission 
+     * 				节点的未补齐授权信息 或 父（祖）节点授权信息
      * @param resource 
      * 				节点资源
-     * @param suppliedTable
-     * 				补齐表实体
+     * @param permissionTable
      * 
      * TODO 保存权限前要在当前授权级别的上一级去查找有没有已经授过的，如果授过的，则删掉。
      *      保存当前授权级别(一个资源对同一个权限选项只能有一种授权级别)
      */
-    public void insertSuppliedTable(IUnSuppliedPermission permission, IResource resource, String suppliedTable){
-        insertSuppliedTable(permission, resource, BeanUtil.createClassByName(suppliedTable));
-    }
-    
-    public void insertSuppliedTable(IUnSuppliedPermission permission, IResource resource, Class<?> suppliedTableClass){
-        Long resourceId = resource.getId(); 
-        String operationId = permission.getOperationId(); 
-        Long roleId = permission.getRoleId();
-        Integer permissionState = permission.getPermissionState();
-        Integer isGrant = permission.getIsGrant(); 
-        Integer isPass = permission.getIsPass();
+    public void createPermission(AbstractPermission exsitPermission, IResource resource, String permissionTable){
+        String operationId = exsitPermission.getOperationId(); 
+        Long roleId = exsitPermission.getRoleId();
+        Integer permissionState = exsitPermission.getPermissionState();
+        Integer isGrant = exsitPermission.getIsGrant(); 
+        Integer isPass = exsitPermission.getIsPass();
         
     	//先判断授权信息是否已经存在
-        String hql = "from " + suppliedTableClass.getName() + " t  where t.resourceId = ? and t.operationId = ?"
+        Class<?> permissionTableClass = BeanUtil.createClassByName(permissionTable);
+        String hql = "from " + permissionTableClass.getName() + " t  where t.resourceId = ? and t.operationId = ?"
                 + " and t.roleId = ? and t.permissionState = ? and t.isGrant = ? and t.isPass = ?";
+        
+        Long resourceId = resource.getId(); 
         List<?> list = getEntities(hql, new Object[]{resourceId, operationId, roleId, permissionState, isGrant, isPass});
         if( list.size() == 0 ){
-            ISuppliedPermission newPermission = (ISuppliedPermission) BeanUtil.newInstance(suppliedTableClass);   
-            newPermission.setResourceId(resourceId);
+        	AbstractPermission newPermission = (AbstractPermission) BeanUtil.newInstance(permissionTableClass);   
             newPermission.setOperationId(operationId);
             newPermission.setRoleId(roleId);
             newPermission.setPermissionState(permissionState);
             newPermission.setIsGrant(isGrant);
             newPermission.setIsPass(isPass);
             
+            newPermission.setResourceId(resourceId);
             newPermission.setResourceName(resource.getName());
             
             createObjectWithoutFlush(newPermission);
@@ -191,8 +175,8 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
     
     public static final String ORDER_BY = " order by o.decode ";
 
-    public static String formatHQLFrom(String entityName, String suppliedTable) {
-        return " from " + entityName + " o, RoleUserMapping ru, " + suppliedTable + " p ";
+    public static String formatHQLFrom(String entityName, String permissionTable) {
+        return " from " + entityName + " o, RoleUserMapping ru, " + permissionTable + " p ";
     }
 
     public static String permissionCondition() {
@@ -205,20 +189,20 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
     
     /**
      * 生成的HQL如下：
-     * select distinct o from entityName o, RoleUserMapping ru, suppliedTable p
+     * select distinct o from entityName o, RoleUserMapping ru, permissionTable p
      * where ru.id.roleId = p.roleId and ru.id.userId = ? and o.id = p.resourceId and p.operationId = ?
      * order by o.decode
      */
-    public static String permissionHQL(String entityName, String suppliedTable) {
-        return permissionHQL(entityName, suppliedTable, true);
+    public static String permissionHQL(String entityName, String permissionTable) {
+        return permissionHQL(entityName, permissionTable, true);
     }
     
-    public static String permissionHQL(String entityName, String suppliedTable, boolean isLevelTree) {
-        return permissionHQL(entityName, suppliedTable, "", isLevelTree);
+    public static String permissionHQL(String entityName, String permissionTable, boolean isLevelTree) {
+        return permissionHQL(entityName, permissionTable, "", isLevelTree);
     }
 
-    public static String permissionHQL(String entityName, String suppliedTable, String conditon, boolean isLevelTree) {
-        String hql = "select distinct o " + formatHQLFrom(entityName, suppliedTable) + permissionCondition() + conditon;
+    public static String permissionHQL(String entityName, String permissionTable, String conditon, boolean isLevelTree) {
+        String hql = "select distinct o " + formatHQLFrom(entityName, permissionTable) + permissionCondition() + conditon;
         if(isLevelTree) {
             hql += ORDER_BY;
         }
@@ -235,74 +219,65 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
     /**
      * <p>
      * 批量删除指定角色拥有的资源授权信息。 授权时使用。
+     * 
+     * 删除只删除本级别的，其他级别已经授权过的不要改变 。
      * </p>
 	 * @param roleId
 	 * @param permissionRank
-	 * @param unSuppliedTable
-	 * @param suppliedTable
+	 * @param permissionTable
 	 * @param resourceTable
 	 */
-	public void deletePermissionByRole(Long roleId, String permissionRank, String unSuppliedTable, String suppliedTable, String resourceTable) {
-	    /* 
-	     * 先按 "角色" 把要删除的记录的permissionState保存下来，用来在删除补全表时做判断。
-	     * 删除只删除本级别的,其他级别已经授权过的不要改变 
-	     */
+	public void deletePermissionByRole(Long roleId, String permissionRank, String permissionTable, String resourceTable) {
         String rankCondition = genRankCondition4DeleletePermission(permissionRank);
-        List<?> exsitUsPermissions = getEntities(" from " + unSuppliedTable + " p where p.roleId = ? " + rankCondition, roleId);
-        deleteExistPermission(exsitUsPermissions, rankCondition, suppliedTable, resourceTable);
+        List<?> exsitPermissions = getEntities(" from " + permissionTable + " p where p.roleId = ? " + rankCondition, roleId);
+        deleteExistPermission(exsitPermissions, rankCondition, permissionTable, resourceTable);
 	}
 	
     /**
      * <p>
      * 批量删除指定资源相关授权信息。 授权时使用。
+     * 
+     * 先按 "资源" 把要删除的记录的permissionState保存下来，用来在删除补全表时做判断。
+	 * 删除只删除本级别的,其他级别已经授权过的不变
      * </p>
 	 * @param resourceId
 	 * @param permissionRank
-	 * @param unSuppliedTable
-	 * @param suppliedTable
+	 * @param permissionTable
 	 * @param resourceTable
 	 */
-	public void deletePermissionByResource(Long resourceId, String permissionRank, String unSuppliedTable, String suppliedTable, String resourceTable) {
-	    /* 先按 "资源" 把要删除的记录的permissionState保存下来，用来在删除补全表时做判断。
-	     * 删除只删除本级别的,其他级别已经授权过的不要改变 */
+	public void deletePermissionByResource(Long resourceId, String permissionRank, String permissionTable, String resourceTable) {
         String rankCondition = genRankCondition4DeleletePermission(permissionRank);
-        List<?> exsitUsPermissions = getEntities(" from " + unSuppliedTable + " p where p.resourceId = ? " + rankCondition, resourceId);
-        deleteExistPermission(exsitUsPermissions, rankCondition, suppliedTable, resourceTable);
+        List<?> exsitPermissions = getEntities(" from " + permissionTable + " p where p.resourceId = ? " + rankCondition, resourceId);
+        deleteExistPermission(exsitPermissions, rankCondition, permissionTable, resourceTable);
 	}
     
     // 根据这些记录的PermissionState值，来判断在删除补全表时是否删除子节点的权限
-    private void deleteExistPermission(List<?> exsitUsPermissions, String rankCondition, String suppliedTable, String resourceTable){
-        deleteAll(exsitUsPermissions);
-        
-        for ( Object temp : exsitUsPermissions ) {
-            IUnSuppliedPermission usPermission = (IUnSuppliedPermission) temp;
-            Long roleId = usPermission.getRoleId();
-            Long resourceId = usPermission.getResourceId();
-            String operationId = usPermission.getOperationId();
+    private void deleteExistPermission(List<?> exsitPermissions, String rankCondition, String permissionTable, String resourceTable){
+    	deleteAll(exsitPermissions);
+    	
+    	for ( Object temp : exsitPermissions ) {
+        	AbstractPermission permission = (AbstractPermission) temp;
+            Long roleId = permission.getRoleId();
+            Long resourceId = permission.getResourceId();
+            String operationId = permission.getOperationId();
             
-            // 如果授权状态是2(即PERMIT_SUB_TREE), 说明【其所有子节点的权限都】由该节点自动产生，需删除补全表中【其所有子节点】对应【该角色】【该权限项】的授权信息
-            if (usPermission.getPermissionState().equals(UMConstants.PERMIT_SUB_TREE)) { 
+            // 如果授权状态是2(即PERMIT_SUB_TREE), 说明【其所有子节点的权限都】由该节点自动产生，需删除权限表中【其所有子节点】对应【该角色】【该权限项】的授权信息
+            if (permission.getPermissionState().equals(UMConstants.PERMIT_SUB_TREE)) { 
                 List<?> childResources = getChildrenById(resourceTable, resourceId);
                 for (Object child : childResources) {
-                    IResource childResource = (IResource) child;
-                    delSuppliedPermission(suppliedTable, childResource.getId(), roleId, operationId, rankCondition);
+                    String hql = "delete " + permissionTable + " p where" + " p.resourceId=? and p.roleId=? and p.operationId=? ";
+                    executeHQL(hql + rankCondition, ((IResource) child).getId(), roleId, operationId);
                 }
             } 
-            // 删除补全表的单个节点
-            else { 
-                delSuppliedPermission(suppliedTable, resourceId, roleId, operationId, rankCondition);
-            }
         }
         
         flush();
     }
-
-    private void delSuppliedPermission(String suppliedTable, Long resourceId, Long roleId, String operationId, String rankCondition) {
-        String hql = "delete " + suppliedTable + " p where" + " p.resourceId=? and p.roleId=? and p.operationId=? " + rankCondition;
-        executeHQL(hql, resourceId, roleId, operationId);
-    }
-    
+ 
     String genRankCondition4DeleletePermission(String permissionRank){
+    	if( UMConstants.IGNORE_PERMISSION.equals(permissionRank) ) {
+    		return "";
+    	}
         Integer[] isGrantAndPass = convertRank(permissionRank);
         return " and p.isGrant = " + isGrantAndPass[0] + " and p.isPass = " + isGrantAndPass[1];
     }
@@ -352,12 +327,12 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
 	 * </p>
 	 * @param resourceId
 	 * @param permissionRank
-	 * @param suppliedTable
+	 * @param permissionTable
 	 * @param resourceTable
 	 * @return
 	 */
-	public int getVisibleChildrenNumByPermissionRank(Long resourceId, String permissionRank, String suppliedTable, String resourceTable) {
-		String hql = "select distinct r.id from " + resourceTable + " r, " + suppliedTable + " p, Temp t " +
+	public int getVisibleChildrenNumByPermissionRank(Long resourceId, String permissionRank, String permissionTable, String resourceTable) {
+		String hql = "select distinct r.id from " + resourceTable + " r, " + permissionTable + " p, Temp t " +
 				" where t.id = p.roleId and p.resourceId = r.id and r.decode like ? ";
 		hql += genRankCondition4SelectPermission(permissionRank);
 
@@ -370,13 +345,13 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
 	 * 获取用户资源树（根据登陆用户拥有的权限过滤，Temp临时表中保存了登陆用户的roleIds）
 	 * </p>
 	 * @param permissionRank
-	 * @param suppliedTable
+	 * @param permissionTable
 	 * @param resourceTable
 	 * @return
 	 */
-	public List<ResourceTreeNode> getVisibleResourceTree(String permissionRank, String suppliedTable, String resourceTable) {
+	public List<ResourceTreeNode> getVisibleResourceTree(String permissionRank, String permissionTable, String resourceTable) {
 		String hql = "select distinct r.id, r.parentId, r.name, r.decode "
-		    + " from " + resourceTable + " r, " + suppliedTable + " p, Temp t " 
+		    + " from " + resourceTable + " r, " + permissionTable + " p, Temp t " 
 		    + " where p.roleId = t.id and p.resourceId = r.id ";
         hql += genRankCondition4SelectPermission(permissionRank) + " order by r.decode";
 
@@ -388,16 +363,16 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
 	 * 获取补全的用户资源权限列表（根据登陆用户拥有的权限过滤，Temp临时表中保存了登陆用户的roleIds）
 	 * </p>
      * @param permissionRank
-     * @param suppliedTable
+     * @param permissionTable
      * @return
      */
-    public List<SuppliedPermissionDTO> getAllResourcePermissions(String permissionRank, String suppliedTable) {
+    public List<PermissionDTO> getAllResourcePermissions(String permissionRank, String permissionTable) {
         String hql = "select distinct p.resourceId, p.operationId, p.permissionState, max(p.isGrant), max(p.isPass), p.roleId"
-                + " from " + suppliedTable + " p , Temp t " 
+                + " from " + permissionTable + " p , Temp t " 
                 + " where p.roleId = t.id " + genRankCondition4SelectPermission(permissionRank) 
                 + " group by p.resourceId, p.operationId, p.permissionState, p.roleId";
         
-        return SuppliedPermissionDTO.genPermissionDTOList(getEntities(hql));
+        return PermissionDTO.genPermissionDTOList(getEntities(hql));
     }
 
 	/**
@@ -405,17 +380,17 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
 	 * 获取用户对一个资源的权限信息
 	 * </p>
 	 * @param permissionRank
-	 * @param suppliedTable
+	 * @param permissionTable
 	 * @param resourceId
 	 * @return
 	 */
-	public List<SuppliedPermissionDTO> getOneResourcePermissions(String permissionRank, String suppliedTable, Long resourceId) {
+	public List<PermissionDTO> getOneResourcePermissions(String permissionRank, String permissionTable, Long resourceId) {
 		String hql = "select distinct p.resourceId, p.operationId, p.permissionState, max(p.isGrant), max(p.isPass), p.roleId"
-				+ " from " + suppliedTable + " p, Temp t " 
+				+ " from " + permissionTable + " p, Temp t " 
 				+ " where  p.roleId = t.id and p.resourceId = ? " + genRankCondition4SelectPermission(permissionRank) 
 				+ " group by p.resourceId, p.operationId, p.permissionState, p.roleId";
 
-		return SuppliedPermissionDTO.genPermissionDTOList(getEntities(hql, resourceId));
+		return PermissionDTO.genPermissionDTOList(getEntities(hql, resourceId));
 	}
 
 	// ===========================================================================
@@ -465,7 +440,7 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
 	
     /**
      * 获取操作用户有指定操作权限（维护、浏览、查看等）的所有某类型资源ID列表
-     * @param suppliedTable 
+     * @param permissionTable 
      *                  资源权限表
      * @param operation    
      *                  操作权限
@@ -474,14 +449,14 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public List<Long> getResourceIdsByOperation(String suppliedTable, String operation, Long operatorId){
-        String hql = "select distinct p.id.resourceId from RoleUserMapping ur, " + suppliedTable + " p" +
+    public List<Long> getResourceIdsByOperation(String permissionTable, String operation, Long operatorId){
+        String hql = "select distinct p.id.resourceId from RoleUserMapping ur, " + permissionTable + " p" +
               " where p.operationId = ? and p.roleId = ur.id.roleId and ur.id.userId = ? ";
         return (List<Long>) getEntities( hql, operation, operatorId );
     }
     
-    public List<Long> getResourceIdsByOperation(String suppliedTable, String operationId){
-        return getResourceIdsByOperation(suppliedTable, operationId, Environment.getOperatorId());
+    public List<Long> getResourceIdsByOperation(String permissionTable, String operationId){
+        return getResourceIdsByOperation(permissionTable, operationId, Environment.getOperatorId());
     }
     
     public List<Long> getResourceIdsByOperation(String appId, String resourceTypeId, String operationId){
@@ -489,8 +464,8 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
     }
     
     public List<Long> getResourceIdsByOperation(String appId, String resourceTypeId, String operationId, Long operatorId){
-        String suppliedTable = resourceTypeDao.getSuppliedTable(appId, resourceTypeId);
-		return getResourceIdsByOperation(suppliedTable, operationId, operatorId);
+        String permissionTable = resourceTypeDao.getPermissionTable(appId, resourceTypeId);
+		return getResourceIdsByOperation(permissionTable, operationId, operatorId);
     }
     
     /**
@@ -506,8 +481,8 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
     }
     
     public void filtrateResourcesByPermission(String appId, String resourceTypeId, String operationId, List<?> resources){
-        String suppliedTable = resourceTypeDao.getSuppliedTable(appId, resourceTypeId);
-        List<Long> permitedResourceIds = getResourceIdsByOperation(suppliedTable, operationId);
+        String permissionTable = resourceTypeDao.getPermissionTable(appId, resourceTypeId);
+        List<Long> permitedResourceIds = getResourceIdsByOperation(permissionTable, operationId);
         filtrateResourcesByPermission(permitedResourceIds, resources);
     }
     

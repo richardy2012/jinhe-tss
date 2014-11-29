@@ -28,6 +28,9 @@ import com.jinhe.tss.um.entity.Role;
 import com.jinhe.tss.um.entity.RoleGroup;
 import com.jinhe.tss.um.entity.RoleUser;
 import com.jinhe.tss.um.entity.User;
+import com.jinhe.tss.um.entity.permission.GroupPermission;
+import com.jinhe.tss.um.entity.permission.GroupResource;
+import com.jinhe.tss.um.entity.permission.ViewRoleUser;
 import com.jinhe.tss.um.service.IRoleService;
 import com.jinhe.tss.um.service.IUserService;
 
@@ -226,8 +229,23 @@ public class RoleModuleTest extends TxSupportTest4UM {
         action.savePermission(response, request, "2", 1, role1Id);
         action.getPermissionMatrix(response, request, "2", 1, role1Id);
         
-        TestUtil.printEntity(super.permissionHelper, "GroupPermissions");
-        TestUtil.printEntity(super.permissionHelper, "GroupPermissionsFull");
+        // 检查资源和权限对象
+        TestUtil.printEntity(super.permissionHelper, GroupPermission.class.getName());
+        List<?> list = super.permissionHelper.getEntities("from " + GroupPermission.class.getName());
+        for(Object temp : list) {
+        	GroupPermission gp = (GroupPermission) temp;
+        	Assert.assertEquals(gp.getId(), gp.getPK());
+        	Assert.assertNotNull(gp.getResourceName());
+        }
+        list = super.permissionHelper.getEntities("from " + GroupResource.class.getName());
+        for(Object temp : list) {
+        	GroupResource gr = (GroupResource) temp;
+        	Assert.assertEquals(gr.getAttributes().get("id"), gr.getPK());
+        	Assert.assertNotNull(gr.getName());
+        	Assert.assertNotNull(gr.getDecode());
+        	Assert.assertNotNull(gr.getParentId());
+        	Assert.assertEquals(UMConstants.GROUP_RESOURCE_TYPE_ID, gr.getResourceType());
+        }
         
         // 二、单个资源授权给多个角色。当资源对角色进行授权时, roleId表示resourceId
         Long resourceId = mainGroup.getId(); // 当资源对角色进行授权时, roleId表示resourceId
@@ -245,8 +263,7 @@ public class RoleModuleTest extends TxSupportTest4UM {
         action.savePermission(response, request, "2", 0, resourceId);
         action.getPermissionMatrix(response, request, "2", 0, resourceId);
         
-        TestUtil.printEntity(super.permissionHelper, "GroupPermissions");
-        TestUtil.printEntity(super.permissionHelper, "GroupPermissionsFull");
+        TestUtil.printEntity(super.permissionHelper, "GroupPermission");
         
         // 界面上操作授权时，每一次都会把之前产生的授权信息也传递回来；而本测试没有第一步资源给角色1的授权信息加上，相当于删除了第一步的授权信息
         
@@ -266,6 +283,15 @@ public class RoleModuleTest extends TxSupportTest4UM {
         printVisibleMainGroups(0);
         
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME); // 换回Admin登录
+        
+        list = super.permissionHelper.getEntities("from " + ViewRoleUser.class.getName());
+        for(Object temp : list) {
+        	ViewRoleUser vru = (ViewRoleUser) temp;
+        	Assert.assertNotNull(vru.getId().getRoleId());
+        	Assert.assertNotNull(vru.getId().getRoleId());
+        	Assert.assertTrue(vru.equals(vru));
+        	log.debug(vru.getId());
+        }
     }
     
     

@@ -4,29 +4,20 @@ import java.util.List;
 
 /**
  * <p>
- * 获取注册资源未补齐表，补齐表，资源视图，资源根节点等帮助类接口。
+ * 获取角色资源权限表，资源视图，资源根节点等帮助类接口。
  * 提供接口主要为授权时提供本接口实现类对象的远程访问(供其他应用调用)。
  * </p>
  */
 public interface RemoteResourceTypeDao {
-	
+ 
 	/**
-	 * 获取未补全表名
+	 * 获取资源权限表名
 	 * 
 	 * @param applicationId
 	 * @param resourceTypeId
 	 * @return
 	 */
-	String getUnSuppliedTable(String applicationId, String resourceTypeId);
-	
-	/**
-	 * 获取补全表名
-	 * 
-	 * @param applicationId
-	 * @param resourceTypeId
-	 * @return
-	 */
-	String getSuppliedTable(String applicationId, String resourceTypeId);
+	String getPermissionTable(String applicationId, String resourceTypeId);
 	
 	/**
 	 * 获取资源表名

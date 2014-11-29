@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.exception.ExceptionEncoder;
+import com.jinhe.tss.framework.sso.context.Context;
 
 /**
  * <p> 异常过滤器 </p>
@@ -30,8 +31,14 @@ public class Filter2CatchException implements Filter {
             FilterChain chain) throws IOException, ServletException {
         try {
             chain.doFilter(request, response);
-        } catch (Exception e) {
+        } 
+        catch (Exception e) {
             ExceptionEncoder.encodeException(response, e); // 捕获异常并转换成XML输出
+        } finally {
+        	// 出现异常后，Filter3Context将每一机会销毁Context，需要在此销毁Context
+        	if(Context.getToken() != null) {
+        		Context.destroy(); 
+        	}
         }
     }
  

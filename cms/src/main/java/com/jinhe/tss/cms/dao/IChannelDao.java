@@ -18,14 +18,6 @@ public interface IChannelDao extends ITreeSupportDao<Channel> {
 	Channel updateChannel(Channel channel);
     
     /**
-     * 保存移动的节点。
-     * 本方法是为了资源权限补齐拦截器ResourcePermissionInterceptor能拦截到门户结构的移动保存操作，
-     * 从而可以对移动的资源根据新的父节点进行权限补齐处理。
-     * @param channel
-     */
-    void moveChannel(Channel channel);
-    
-    /**
      * 根据栏目Id获取到站点对象
      * @param channelId
      * @return

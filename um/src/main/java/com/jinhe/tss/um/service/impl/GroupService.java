@@ -88,7 +88,7 @@ public class GroupService implements IGroupService {
 	}
     
     public void editExistGroup(Group group, String userIdsStr, String roleIdsStr) {
-        groupDao.saveGroup(group);
+        groupDao.refreshEntity(group);
         
         saveGroupToRole(group.getId(), roleIdsStr);
         

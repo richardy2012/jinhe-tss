@@ -15,11 +15,20 @@
 	<context:annotation-config />
 	
 	<context:property-placeholder location="classpath:application.properties"/>
+	<!--
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName"><value>${db.connection.driver_class}</value></property>
 		<property name="url"><value>${db.connection.url}</value></property>
 		<property name="username"><value>${db.connection.username}</value></property>
 		<property name="password"><value>${db.connection.password}</value></property>
+	</bean>
+	-->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${db.connection.driver_class}" />
+		<property name="jdbcUrl" value="${db.connection.url}" />
+		<property name="user" value="${db.connection.username}" />
+		<property name="password" value="${db.connection.password}" />
+		<property name="maxPoolSize" value="10" />
 	</bean>
 	
 	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />

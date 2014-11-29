@@ -82,5 +82,19 @@ public interface ITreeSupportDao<T extends IDecodable> extends IDao<T> {
      * @param entity
      */
     void saveDecodeableEntity(T entity);
-
+    
+    /**
+     * 保存移动的节点。
+     * 本方法是为了资源权限补齐拦截器ResourcePermissionInterceptor能拦截到移动保存操作， 
+     * 从而可以对移动的资源根据新的父节点进行权限补齐处理。
+     * 
+     * @param entity
+     */
+    void moveEntity(T entity);
+    
+    /**
+     * 不直接调用dao.update(entity)方法，以避开decodeInterceptor和permissionInterceptor等的拦截。
+     * TODO operateInfoInteceptor也将拦截不到，导致无法设置更新时间等信息
+     */
+    T refreshEntity(T entity);
 }

@@ -87,7 +87,7 @@ public class NavigatorService implements INavigatorService {
         navigator.setParentId(targetId);
         navigator.setSeqNo(dao.getNextSeqNo(targetId));
                    
-        dao.save(navigator);
+        dao.moveEntity(navigator);
     }
     
     public String getNavigatorXML(Long id) {

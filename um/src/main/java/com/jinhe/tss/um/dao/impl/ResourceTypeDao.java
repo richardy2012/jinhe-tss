@@ -32,12 +32,8 @@ public class ResourceTypeDao extends BaseDao<ResourceType> implements IResourceT
         return (ResourceType) list.get(0);
     }
  
-    public String getUnSuppliedTable(String applicationId, String resourceTypeId) {
-        return getResourceType(applicationId, resourceTypeId).getUnSuppliedTable();
-    }
- 
-    public String getSuppliedTable(String applicationId, String resourceTypeId) {
-        return getResourceType(applicationId, resourceTypeId).getSuppliedTable();
+    public String getPermissionTable(String applicationId, String resourceTypeId) {
+        return getResourceType(applicationId, resourceTypeId).getPermissionTable();
     }
  
     public String getResourceTable(String applicationId, String resourceTypeId) {

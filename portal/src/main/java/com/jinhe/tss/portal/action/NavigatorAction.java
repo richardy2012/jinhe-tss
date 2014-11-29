@@ -22,8 +22,8 @@ import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.entity.Navigator;
-import com.jinhe.tss.portal.entity.permission.NavigatorPermissionsFull;
-import com.jinhe.tss.portal.entity.permission.NavigatorResourceView;
+import com.jinhe.tss.portal.entity.permission.NavigatorPermission;
+import com.jinhe.tss.portal.entity.permission.NavigatorResource;
 import com.jinhe.tss.portal.helper.PSTreeTranslator4CreateMenu;
 import com.jinhe.tss.portal.helper.StrictLevelTreeParser;
 import com.jinhe.tss.portal.service.INavigatorService;
@@ -196,7 +196,7 @@ public class NavigatorAction extends BaseActionSupport {
 	@RequestMapping("/operations/{resourceId}")
     public void getOperations(HttpServletResponse response, @PathVariable("resourceId") Long resourceId) {
         List<String> list = PermissionHelper.getInstance().getOperationsByResource(resourceId,
-                        NavigatorPermissionsFull.class.getName(), NavigatorResourceView.class);
+                        NavigatorPermission.class.getName(), NavigatorResource.class);
 
         print("Operation", EasyUtils.list2Str(list));
     }

@@ -101,12 +101,11 @@ public interface PermissionService {
 	 * @param resourceId 资源
 	 * @param operationId 权限选项
 	 * @param permissionState 权限关联状态 1-仅仅当前节点 2-包含所有的子节点
-	 * @param unSuppliedTable
-	 * @param suppliedTable
+	 * @param permissionTable
 	 * @param resourceTable
 	 */
 	void saveRoleResourceOperation(Long roleId, Long resourceId, String operationId, Integer permissionState, 
-	        String unSuppliedTable, String suppliedTable, String resourceTable);
+	        String permissionTable, String resourceTable);
 
 	// ===========================================================================
 	// 登陆相关方法

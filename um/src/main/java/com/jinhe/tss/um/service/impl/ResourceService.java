@@ -38,7 +38,7 @@ public class ResourceService implements IResourceService{
         // 资源类型列表
         List<?> resourceTypes = resourceTypeDao.getEntities("from ResourceType o order by o.seqNo");    
         
-        // 权限选项列表
+        // 操作项列表
         List<?> operations = resourceTypeDao.getEntities("from Operation o order by o.seqNo");    
         
         return new Object[]{apps, resourceTypes, operations};
@@ -87,14 +87,13 @@ public class ResourceService implements IResourceService{
 	        
         // 删除权限选项, 连同删除RoleResourceOperation表中相关数据 
         ResourceType resourceType = resourceTypeDao.getResourceType(operation.getApplicationId(), operation.getResourceTypeId());
-        String suppliedTable = resourceType.getSuppliedTable();
-        String unSuppliedTable = resourceType.getUnSuppliedTable();
-        resourceTypeDao.deleteAll(resourceTypeDao.getEntities("from " + suppliedTable   + " o where o.operationId = ?", operation.getOperationId()));
-        resourceTypeDao.deleteAll(resourceTypeDao.getEntities("from " + unSuppliedTable + " o where o.operationId = ?", operation.getOperationId()));
+        String permissionTable = resourceType.getPermissionTable();
+        String operationId = operation.getOperationId();
+		resourceTypeDao.deleteAll(resourceTypeDao.getEntities("from " + permissionTable   + " o where o.operationId = ?", operationId));
 	}
     
 	public void saveApplication(Application application) {
-		if(null == application.getId()){ // 新建
+		if( application.getId() == null ){ // 新建
 			applicationDao.create(application);
 		} 
 		else {
@@ -119,7 +118,7 @@ public class ResourceService implements IResourceService{
         String applicationId = resourceType.getApplicationId();
         String resourceTypeId = resourceType.getResourceTypeId();
         ResourceTypeRoot resourceTypeRoot = resourceTypeDao.getResourceTypeRoot(applicationId, resourceTypeId);
-        if(null != resourceTypeRoot){
+        if( resourceTypeRoot != null ){
             resourceTypeRoot.setRootId(resourceType.getRootId());
         }
         
@@ -134,15 +133,14 @@ public class ResourceService implements IResourceService{
         
         ResourceTypeRoot resourceTypeRoot = resourceTypeDao.getResourceTypeRoot(applicationId, resourceTypeId);
         if( resourceTypeRoot != null ){
-            String unSuppliedTable = resourceTypeDao.getUnSuppliedTable(applicationId, resourceTypeId);
-            String suppliedTable = resourceTypeDao.getSuppliedTable(applicationId, resourceTypeId);
+            String permissionTable = resourceTypeDao.getPermissionTable(applicationId, resourceTypeId);
             String resourceTable = resourceTypeDao.getResourceTable(applicationId, resourceTypeId);
             
             permissionService = PermissionHelper.getPermissionService(applicationId, permissionService);
             
             // 新建的权限选项要将该权限选项赋予管理员角色(id==-1)
             permissionService.saveRoleResourceOperation(UMConstants.ADMIN_ROLE_ID, resourceTypeRoot.getRootId(), 
-                    operation.getOperationId(), UMConstants.PERMIT_SUB_TREE, unSuppliedTable, suppliedTable, resourceTable);
+                    operation.getOperationId(), UMConstants.PERMIT_SUB_TREE, permissionTable, resourceTable);
         }   
         return operation;
     }
@@ -158,7 +156,7 @@ public class ResourceService implements IResourceService{
     /**
 	 * 如果是UM在进行初始化操作，则permissionService取applicationContext.xml里配置的UM本地PermissionService
      * 否则，permissionService取各应用里配置的PermissionService。
-     * 比如导入CMS资源配置文件时，则取CMS的PermissionService
+     * 比如导入DMS资源配置文件时，则取DMS的PermissionService
 	 */
 	private boolean initial = false; 
 	public void setInitial(boolean initial) { this.initial = initial; }
@@ -207,7 +205,7 @@ public class ResourceService implements IResourceService{
             application.setApplicationType(applicationType);            
         }
         
-        /*****************************  仅仅把外部资源注册进来,不进行补全操作 *******************************/
+        /*****************************  仅仅把外部资源注册进来,不进行权限补全操作 *******************************/
         
         // 根据应用删除上次因导入失败产生的脏数据
         applicationDao.clearDirtyData(applicationId);
@@ -242,14 +240,11 @@ public class ResourceService implements IResourceService{
         for (ResourceType resourceType : resourceTypeList) {
             /* 保存资源类型，同时还要为该类型资源建立一个根节点，以资源类型名字作为根节点名字 */  
             String resourceTypeId = resourceType.getResourceTypeId();
-            
-            String unSuppliedTable = resourceTypeDao.getUnSuppliedTable(applicationId, resourceTypeId);
-            String suppliedTable = resourceTypeDao.getSuppliedTable(applicationId, resourceTypeId);
+            String permissionTable = resourceTypeDao.getPermissionTable(applicationId, resourceTypeId);
             
             String initPermission = Config.getAttribute("initPermission");
             if(Config.TRUE.equalsIgnoreCase(initPermission)) {
-                permissionService.clearPermissionData(unSuppliedTable);
-                permissionService.clearPermissionData(suppliedTable);    
+                permissionService.clearPermissionData(permissionTable);    
             }
         }
         
@@ -259,12 +254,11 @@ public class ResourceService implements IResourceService{
             String resourceTypeId = operation.getResourceTypeId();
             ResourceTypeRoot resourceTypeRoot = resourceTypeDao.getResourceTypeRoot(applicationId, resourceTypeId);
             if( resourceTypeRoot != null ) {
-                String unSuppliedTable = resourceTypeDao.getUnSuppliedTable(applicationId, resourceTypeId);
-                String suppliedTable   = resourceTypeDao.getSuppliedTable(applicationId, resourceTypeId);
+                String permissionTable = resourceTypeDao.getPermissionTable(applicationId, resourceTypeId);
                 String resourceTable   = resourceTypeDao.getResourceTable(applicationId, resourceTypeId);
                 permissionService.saveRoleResourceOperation(UMConstants.ADMIN_ROLE_ID, resourceTypeRoot.getRootId(), 
                         operation.getOperationId(), UMConstants.PERMIT_SUB_TREE, 
-                        unSuppliedTable, suppliedTable, resourceTable);
+                        permissionTable, resourceTable);
             }
         }
         

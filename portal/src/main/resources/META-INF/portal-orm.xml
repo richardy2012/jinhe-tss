@@ -14,12 +14,10 @@
 	<entity class="com.jinhe.tss.portal.entity.Theme"/>
 	<entity class="com.jinhe.tss.portal.entity.ThemeInfo"/>
  
-	<entity class="com.jinhe.tss.portal.entity.permission.NavigatorResourceView"/>
-	<entity class="com.jinhe.tss.portal.entity.permission.NavigatorPermissions"/>
-	<entity class="com.jinhe.tss.portal.entity.permission.NavigatorPermissionsFull"/>
+	<entity class="com.jinhe.tss.portal.entity.permission.NavigatorResource"/>
+	<entity class="com.jinhe.tss.portal.entity.permission.NavigatorPermission"/>
 	
-	<entity class="com.jinhe.tss.portal.entity.permission.PortalResourceView"/>
-	<entity class="com.jinhe.tss.portal.entity.permission.PortalPermissions"/>
-	<entity class="com.jinhe.tss.portal.entity.permission.PortalPermissionsFull"/>
+	<entity class="com.jinhe.tss.portal.entity.permission.PortalResource"/>
+	<entity class="com.jinhe.tss.portal.entity.permission.PortalPermission"/>
 
 </entity-mappings>

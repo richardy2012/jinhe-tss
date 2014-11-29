@@ -14,9 +14,12 @@ import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupDao;
 import com.jinhe.tss.um.dao.IResourceTypeDao;
 import com.jinhe.tss.um.dao.IRoleDao;
+import com.jinhe.tss.um.entity.ResourceType;
 import com.jinhe.tss.um.entity.Role;
 import com.jinhe.tss.um.entity.RoleGroup;
 import com.jinhe.tss.um.entity.RoleUser;
+import com.jinhe.tss.um.permission.PermissionHelper;
+import com.jinhe.tss.um.permission.PermissionService;
 import com.jinhe.tss.um.permission.ResourcePermission;
 import com.jinhe.tss.um.service.IRoleService;
 import com.jinhe.tss.util.EasyUtils;
@@ -63,7 +66,30 @@ public class RoleService implements IRoleService {
 			throw new BusinessException("没有删除角色组权限，不能删除此节点！");
 		}
 		
-		roleDao.removeRole(roleDao.getEntity(roleId));
+		 // 删除角色（组）及其所有子节点
+		List<Role> subRoles = roleDao.removeRole(roleDao.getEntity(roleId));
+		
+		// Portal、CMS、DMS等其他基于平台应用的相关授权也需一并删除
+        for( Role temp : subRoles ){
+            if(ParamConstants.TRUE.equals(temp.getIsGroup())){
+               continue;
+            }
+            
+            Long childRoleId = temp.getId();
+            List<?> resourceTypes = resourceTypeDao.getEntities("from ResourceType o order by o.seqNo");    
+    		for(Object obj : resourceTypes) {
+    			ResourceType rt = (ResourceType) obj;
+    			String rtAppId = rt.getApplicationId();
+				if(rtAppId.equals(UMConstants.TSS_APPLICATION_ID)) {
+    				roleDao.deleteAll(roleDao.getEntities("from " + rt.getPermissionTable() + " where roleId = ? ", childRoleId));
+    			}
+    			else {
+    				PermissionService permissionService = PermissionHelper.getPermissionService(rtAppId, null);
+    				permissionService.clearPermissionByRole(rtAppId, rt.getResourceTypeId(), 
+    						UMConstants.IGNORE_PERMISSION, childRoleId, ParamConstants.TRUE);
+    			}
+    		}
+        }
 	}
     
 	public void disable(Long id, Integer disabled) {
@@ -136,7 +162,7 @@ public class RoleService implements IRoleService {
         movedRole.setSeqNo(roleDao.getNextSeqNo(targetId));
         movedRole.setParentId(targetId);
         
-        roleDao.moveRole(movedRole); //被拦截调整整个移动枝的decode值, 同时拦截资源补齐调整
+        roleDao.moveEntity(movedRole); //被拦截调整整个移动枝的decode值, 同时拦截资源补齐调整
         
         // 如果移动到的组是停用状态，那么被移动的角色（组）也需要停用
         Role target  = roleDao.getEntity(targetId);

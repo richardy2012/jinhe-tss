@@ -129,7 +129,7 @@ public class ChannelService implements IChannelService {
         Channel channel = channelDao.getEntity(channelId);
         channel.setSeqNo(channelDao.getNextSeqNo(targetId));
         channel.setParentId(targetId);
-        channelDao.moveChannel(channel);
+        channelDao.moveEntity(channel);
         
         Channel target  = channelDao.getEntity(targetId);
         List<Channel> children = channelDao.getChildrenById(channelId);

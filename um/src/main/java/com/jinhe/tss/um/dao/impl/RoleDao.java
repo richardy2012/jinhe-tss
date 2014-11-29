@@ -17,30 +17,18 @@ public class RoleDao extends TreeSupportDao<Role> implements IRoleDao {
 		super(Role.class);
 	}
  
-	public Role moveRole(Role role) {
-		return create(role);
-	}
-    
-    public void removeRole(Role role){
+    public List<Role> removeRole(Role role){
         List<Role> roles = getChildrenById(role.getId());
         for( Role temp : roles ){
             if(ParamConstants.FALSE.equals(temp.getIsGroup())){
                 Long roleId = temp.getId();
                 deleteAll(getEntities("from RoleUser  ru where ru.roleId = ? ", roleId));
                 deleteAll(getEntities("from RoleGroup rg where rg.roleId = ? ", roleId));
-                
-                //-- 补全表 --
-                deleteAll(getEntities("from GroupPermissionsFull   where roleId = ? ", roleId));
-                deleteAll(getEntities("from RolePermissionsFull    where roleId = ? ", roleId));
-                
-                //-- 未全表 --
-                deleteAll(getEntities("from GroupPermissions   where roleId = ? ", roleId));
-                deleteAll(getEntities("from RolePermissions    where roleId = ? ", roleId));
-                
-                // TODO Portal、CMS、其他基于平台应用的相关授权也需一并删除
             }
         }
         deleteAll(roles);
+        
+        return roles;
     }
  
 	public List<?> getUsersByRoleId(Long roleId) {

@@ -24,10 +24,10 @@ public class OnlineUserIdentifier implements IUserIdentifier {
     public IdentityCard identify() throws UserIdentificationException {
         String token = Context.getRequestContext().getUserToken();
         
-        //如果在线，则说明令牌合法，获取用户当前系统相关信息并且重新注册到在线用户库（可能跟原先在线的应用不同,appCode不同）
+        // 如果在线，则说明令牌合法，获取用户当前系统相关信息并且重新注册到在线用户库（可能跟原先在线的应用不同,appCode不同）
         IOnlineUserManager onlineUserManager = OnlineUserManagerFactory.getManager();
 		if (onlineUserManager.isOnline(token)) {
-			String appCode  = Context.getApplicationContext().getCurrentAppCode();
+			String appCode   = Context.getApplicationContext().getCurrentAppCode();
             String sessionId = Context.getRequestContext().getSessionId();
             
 			Long userId = TokenUtil.getUserIdFromToken(token);
@@ -38,7 +38,7 @@ public class OnlineUserIdentifier implements IUserIdentifier {
             return new IdentityCard(token, operator);
         }
 		
-        //用户不在线说明token令牌是伪造的或是已经过期的，返回null，表示验证不通过。
+        // 用户不在线说明token令牌是伪造的或是已经过期的，返回null，表示验证不通过。
         return null;
     }
 }

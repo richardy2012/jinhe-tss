@@ -14,6 +14,7 @@ import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IUserService;
+import com.jinhe.tss.util.InfoEncoder;
 
 public class UMPasswordIdentifierTest extends TxSupportTest4UM {
 	
@@ -34,19 +35,18 @@ public class UMPasswordIdentifierTest extends TxSupportTest4UM {
 		MockHttpSession session = new MockHttpSession();
 		request.setSession(session);
 
-		request.addParameter(SSOConstants.LOGINNAME_IN_SESSION, "Admin");
-		request.addParameter(SSOConstants.USER_PASSWORD, "123456");
+		request.addParameter(SSOConstants.LOGINNAME_IN_SESSION, InfoEncoder.simpleEncode("Admin", 100));
+		request.addParameter(SSOConstants.USER_PASSWORD, InfoEncoder.simpleEncode("123456", 100));
 
 		Context.initRequestContext(request);
 		UMPasswordIdentifier indentifier = new UMPasswordIdentifier();
-
+		
 		try {
-			request.addParameter(SSOConstants.USER_PASSWORD, "abcdef");
 			indentifier.identify();
 
 		} catch (Exception e) {
-			assertTrue(e.getMessage(), true);
-		}
+			Assert.assertFalse(e.getMessage(), true);
+		} 
 	}
 	
 	@Test
@@ -55,8 +55,8 @@ public class UMPasswordIdentifierTest extends TxSupportTest4UM {
 		MockHttpSession session = new MockHttpSession();
 		request.setSession(session);
 
-		request.addParameter(SSOConstants.LOGINNAME_IN_SESSION, "Admin");
-		request.addParameter(SSOConstants.USER_PASSWORD, "wrongpassword");
+		request.addParameter(SSOConstants.LOGINNAME_IN_SESSION, InfoEncoder.simpleEncode("Admin", 100));
+		request.addParameter(SSOConstants.USER_PASSWORD, InfoEncoder.simpleEncode("wrongpassword", 100));
 
 		Context.initRequestContext(request);
 		UMPasswordIdentifier indentifier = new UMPasswordIdentifier();

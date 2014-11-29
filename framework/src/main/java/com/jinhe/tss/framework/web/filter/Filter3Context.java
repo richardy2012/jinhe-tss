@@ -69,11 +69,14 @@ public class Filter3Context implements Filter {
         
         log.debug("current request path: " + servletPath);
 		try {
+			// 保险起见，初始化前先尝试销毁ThreadLocal里变量，防止web容器的连接池里维护的连接中ThreadLocal里变量没有销毁
+			Context.destroy(); 
+			
 			Context.initRequestContext((HttpServletRequest) request);
 			Context.setResponse((HttpServletResponse) response); 
             
 			chain.doFilter(request, Context.getResponse()); // 使用转换后的response
-            
+			
 			Context.destroy(); // 请求结束后销毁Context
 		} 
 		catch (BusinessServletException e) {
@@ -82,6 +85,5 @@ public class Filter3Context implements Filter {
 		catch (Exception e) {
 			throw new BusinessServletException(e);
 		}
-		
 	}
 }

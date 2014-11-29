@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.jinhe.tss.cms.CMSConstants;
-import com.jinhe.tss.cms.entity.permission.ChannelResourceView;
+import com.jinhe.tss.cms.entity.permission.ChannelResource;
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
@@ -206,7 +206,7 @@ public class Channel extends OperateInfo implements IXForm, IDecodable, IResourc
     
 	public Class<?> getParentClass() {
         if(this.parentId.equals(CMSConstants.HEAD_NODE_ID)) {
-            return ChannelResourceView.class;
+            return ChannelResource.class;
         }
         return getClass();
 	}

@@ -31,7 +31,7 @@ public class CacheDisplayActionTest extends TxTestSupportParam {
 		action.removeCachedItem(response, poolCode, "WorkThread_6");
 		action.removeCachedItem(response, poolCode, "not-exist-key-2");
 	}
-    
+ 
     @Test
 	public void testModifyCacheConfig() {
 		action.init();
@@ -66,6 +66,8 @@ public class CacheDisplayActionTest extends TxTestSupportParam {
 		jCache.getConnectionPool().checkOut(0);
 		
 		action2.getCacheStrategyInfo(response, "connectionpool");
+		
+		action.init();
 	}
     
 }

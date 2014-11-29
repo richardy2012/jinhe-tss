@@ -9,8 +9,7 @@
 	<entity class="com.jinhe.tss.cms.entity.Article"/>
 	<entity class="com.jinhe.tss.cms.entity.Attachment"/>
  
-	<entity class="com.jinhe.tss.cms.entity.permission.ChannelResourceView"/>
-	<entity class="com.jinhe.tss.cms.entity.permission.ChannelPermissions"/>
-	<entity class="com.jinhe.tss.cms.entity.permission.ChannelPermissionsFull"/>
+	<entity class="com.jinhe.tss.cms.entity.permission.ChannelResource"/>
+	<entity class="com.jinhe.tss.cms.entity.permission.ChannelPermission"/>
 
 </entity-mappings>

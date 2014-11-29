@@ -23,8 +23,7 @@ import com.jinhe.tss.util.BeanUtil;
 
 /**
  * 资源类型域对象
- * unSuppliedTable 
- * suppliedTable 
+ * permissionTable 
  * resourceTable 
  */
 @Entity
@@ -52,10 +51,7 @@ public class ResourceType extends OperateInfo implements IEntity, ITreeNode, IXF
     private Long   rootId;          // 根节点ID
     
     @Column(nullable = false) 
-    private String unSuppliedTable;// 角色资源权限未补全的表的类路径
-    
-    @Column(nullable = false) 
-    private String suppliedTable;  // 角色资源权限补全的表的类路径
+    private String permissionTable; // 角色资源权限表的类路径
     
     @Column(nullable = false) 
     private String resourceTable;  // 资源表的类路径
@@ -116,24 +112,16 @@ public class ResourceType extends OperateInfo implements IEntity, ITreeNode, IXF
 		this.rootId = rootId;
 	}
  
-	public String getUnSuppliedTable() {
-		return unSuppliedTable;
-	}
- 
-	public String getSuppliedTable() {
-		return suppliedTable;
+	public String getPermissionTable() {
+		return permissionTable;
 	}
  
 	public String getResourceTable() {
 		return resourceTable;
 	}
  
-	public void setUnSuppliedTable(String unSuppliedTable) {
-        this.unSuppliedTable = unSuppliedTable;
-    }
-
-    public void setSuppliedTable(String suppliedTable) {
-        this.suppliedTable = suppliedTable;
+    public void setPermissionTable(String permissionTable) {
+        this.permissionTable = permissionTable;
     }
 
     public void setResourceTable(String resourceTable) {

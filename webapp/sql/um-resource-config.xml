@@ -2,18 +2,16 @@
 <application applicationId="tss" name="TSS">
 	<!-- UM -->
 	<resourceType resourceTypeId="1" name="用户组" seqNo="1" description="用户组织资源类型"
-		unSuppliedTable="com.jinhe.tss.um.entity.permission.GroupPermissions"
-		suppliedTable="com.jinhe.tss.um.entity.permission.GroupPermissionsFull"
-		resourceTable="com.jinhe.tss.um.entity.permission.GroupResources">
+		permissionTable="com.jinhe.tss.um.entity.permission.GroupPermission"
+		resourceTable="com.jinhe.tss.um.entity.permission.GroupResource">
  
 		<operation operationId="1" name="查看" seqNo="1" dependParent="2" />
 		<operation operationId="2" name="管理" seqNo="2" dependId="opt1" />
 	</resourceType>
 
 	<resourceType resourceTypeId="2" name="角色" seqNo="2" description="角色资源类型"
-		unSuppliedTable="com.jinhe.tss.um.entity.permission.RolePermissions"
-		suppliedTable="com.jinhe.tss.um.entity.permission.RolePermissionsFull"
-		resourceTable="com.jinhe.tss.um.entity.permission.RoleResources">
+		permissionTable="com.jinhe.tss.um.entity.permission.RolePermission"
+		resourceTable="com.jinhe.tss.um.entity.permission.RoleResource">
 
 		<operation operationId="1" name="查看" seqNo="1" dependParent="2" />
 		<operation operationId="2" name="管理" seqNo="2" dependId="opt1" />

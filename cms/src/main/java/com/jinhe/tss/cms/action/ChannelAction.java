@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Channel;
-import com.jinhe.tss.cms.entity.permission.ChannelPermissionsFull;
-import com.jinhe.tss.cms.entity.permission.ChannelResourceView;
+import com.jinhe.tss.cms.entity.permission.ChannelPermission;
+import com.jinhe.tss.cms.entity.permission.ChannelResource;
 import com.jinhe.tss.cms.job.IndexJob;
 import com.jinhe.tss.cms.job.PublishManger;
 import com.jinhe.tss.cms.service.IChannelService;
@@ -190,8 +190,8 @@ public class ChannelAction extends ProgressActionSupport {
 		
         PermissionHelper helper = PermissionHelper.getInstance();
 		List<String> list = helper.getOperationsByResource(resourceId,
-                        ChannelPermissionsFull.class.getName(), 
-                        ChannelResourceView.class);
+                        ChannelPermission.class.getName(), 
+                        ChannelResource.class);
 
         print("Operation", EasyUtils.list2Str(list));
     }

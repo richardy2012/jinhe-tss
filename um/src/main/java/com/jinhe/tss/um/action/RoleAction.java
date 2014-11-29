@@ -26,8 +26,8 @@ import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.Role;
-import com.jinhe.tss.um.entity.permission.RolePermissionsFull;
-import com.jinhe.tss.um.entity.permission.RoleResources;
+import com.jinhe.tss.um.entity.permission.RolePermission;
+import com.jinhe.tss.um.entity.permission.RoleResource;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.permission.PermissionService;
 import com.jinhe.tss.um.permission.dispaly.IPermissionOption;
@@ -216,7 +216,7 @@ public class RoleAction extends BaseActionSupport {
         }
         else {
         	List<?> list = PermissionHelper.getInstance().getOperationsByResource(id, 
-        			RolePermissionsFull.class.getName(), RoleResources.class);
+        			RolePermission.class.getName(), RoleResource.class);
         	print("Operation", "p1,p2," + EasyUtils.list2Str(list));
         }
 	}
