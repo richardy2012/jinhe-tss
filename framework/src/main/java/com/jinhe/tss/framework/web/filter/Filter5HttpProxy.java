@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import com.jinhe.tss.framework.exception.BusinessServletException;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.sso.appserver.AppServer;
+import com.jinhe.tss.framework.sso.context.ApplicationContext;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.web.rmi.HttpClientUtil;
@@ -61,20 +62,21 @@ public class Filter5HttpProxy implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
 		try {
 			RequestContext requestContext = Context.getRequestContext();
-			if( requestContext == null  ) {
+			ApplicationContext appContext = Context.getApplicationContext();
+			if( requestContext == null || appContext == null ) {
 			    chain.doFilter(request, response);
 			    return;
 			}
 			
-            String targetAppCode  = requestContext.getAppCode();  //被请求的目标应用Code
-			String currentAppCode = Context.getApplicationContext().getCurrentAppCode(); //发送请求当前应用Code
+            String targetAppCode  = requestContext.getAppCode();    // 被请求的目标应用Code
+			String currentAppCode = appContext.getCurrentAppCode(); // 发送请求当前应用Code
 			
 			// 没有取到被请求的应用Code，或者被请求的应用为当前应用，则直接请求本应用
 			if (targetAppCode == null || targetAppCode.equals(currentAppCode)) {
 				chain.doFilter(request, response);
 			} 
 			else {
-				AppServer targetAppServer = Context.getApplicationContext().getAppServer(targetAppCode);
+				AppServer targetAppServer = appContext.getAppServer(targetAppCode);
 				log.debug("向目标应用：" + targetAppServer.getName() + "（" + targetAppServer.getCode() + "）" + "转发请求。appCode=" + currentAppCode);
 				
 				proxy4ForeignApplication(targetAppServer, (HttpServletResponse) response);
