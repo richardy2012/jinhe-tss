@@ -31,13 +31,17 @@ public class PasswordPassport {
             throw new BusinessException("账号或密码不能为空，请重新登录。");
         }
         
-        Integer randomKey = (Integer) requestContext.getSession().getAttribute(SSOConstants.RANDOM_KEY);
+        Object randomKey = requestContext.getSession().getAttribute(SSOConstants.RANDOM_KEY);
+        if(randomKey == null) {
+        	randomKey = requestContext.getValueFromHeaderOrParameter(SSOConstants.RANDOM_KEY);
+        }
         if(randomKey == null) {
         	randomKey = 100;
         }
+        randomKey = Integer.parseInt(randomKey.toString());
         
-        this.loginName = InfoEncoder.simpleDecode(loginName, randomKey);
-        this.password = InfoEncoder.simpleDecode(password, randomKey);
+        this.loginName = InfoEncoder.simpleDecode(loginName, (int) randomKey);
+        this.password = InfoEncoder.simpleDecode(password, (int) randomKey);
     }
 
     public String getPassword() {
