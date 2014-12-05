@@ -38,10 +38,10 @@ public class PasswordPassport {
         if(randomKey == null) {
         	randomKey = 100;
         }
-        randomKey = Integer.parseInt(randomKey.toString());
+        int _randomKey = Integer.parseInt(randomKey.toString());
         
-        this.loginName = InfoEncoder.simpleDecode(loginName, (int) randomKey);
-        this.password = InfoEncoder.simpleDecode(password, (int) randomKey);
+        this.loginName = InfoEncoder.simpleDecode(loginName, _randomKey);
+        this.password = InfoEncoder.simpleDecode(password, _randomKey);
     }
 
     public String getPassword() {
