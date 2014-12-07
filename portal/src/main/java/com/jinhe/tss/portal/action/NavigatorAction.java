@@ -17,6 +17,7 @@ import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.component.cache.CacheHelper;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
+import com.jinhe.tss.framework.web.dispaly.tree.StrictLevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
@@ -25,7 +26,6 @@ import com.jinhe.tss.portal.entity.Navigator;
 import com.jinhe.tss.portal.entity.permission.NavigatorPermission;
 import com.jinhe.tss.portal.entity.permission.NavigatorResource;
 import com.jinhe.tss.portal.helper.PSTreeTranslator4CreateMenu;
-import com.jinhe.tss.portal.helper.StrictLevelTreeParser;
 import com.jinhe.tss.portal.service.INavigatorService;
 import com.jinhe.tss.portal.service.IPortalService;
 import com.jinhe.tss.um.permission.PermissionHelper;
@@ -63,7 +63,7 @@ public class NavigatorAction extends BaseActionSupport {
 	@RequestMapping("/list")
 	public void getAllNavigator4Tree(HttpServletResponse response) {        
         List<?> data = service.getAllNavigator();
-        TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser());
+        TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser(PortalConstants.ROOT_ID));
 		encoder.setNeedRootNode(false);
         print("MenuTree", encoder);
 	}

@@ -77,17 +77,28 @@ public class ChannelModuleTest extends AbstractTestSupport {
         
         // 停用启用
         channelAction.disable(response, siteId);
+        
+        site = channelService.getChannelById(siteId);
+        channel1 = channelService.getChannelById(channel1.getId());
         assertEquals(site.getDisabled(), ParamConstants.TRUE);
         assertEquals(channel1.getDisabled(), ParamConstants.TRUE);
         
         channelAction.enable(response, siteId);
+        
+        site = channelService.getChannelById(siteId);
+        channel1 = channelService.getChannelById(channel1.getId());
         assertEquals(site.getDisabled(), ParamConstants.FALSE);
         assertEquals(channel1.getDisabled(), ParamConstants.FALSE);
         
         channelAction.disable(response, channelId);
+        
+        channel1 = channelService.getChannelById(channel1.getId());
         assertEquals(channel1.getDisabled(), ParamConstants.TRUE);
         
         channelAction.enable(response, channel3.getId());
+        
+        channel1 = channelService.getChannelById(channel1.getId());
+        channel3 = channelService.getChannelById(channel3.getId());
         assertEquals(channel1.getDisabled(), ParamConstants.FALSE);
         assertEquals(channel3.getDisabled(), ParamConstants.FALSE);
         

@@ -24,6 +24,7 @@ import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeTranslator;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
+import com.jinhe.tss.framework.web.dispaly.tree.StrictLevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.portal.PortalConstants;
@@ -33,7 +34,6 @@ import com.jinhe.tss.portal.engine.model.PortalNode;
 import com.jinhe.tss.portal.entity.ReleaseConfig;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
-import com.jinhe.tss.portal.helper.StrictLevelTreeParser;
 import com.jinhe.tss.portal.service.IPortalService;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.util.EasyUtils;
@@ -88,7 +88,7 @@ public class PortalAction extends FMSupportAction {
     @RequestMapping("/list")
     public void getAllStructures4Tree(HttpServletResponse response) {
         List<?> data = service.getAllStructures();
-        TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser());
+        TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser(PortalConstants.ROOT_ID));
         print("SourceTree", encoder);
     }
     
@@ -323,7 +323,7 @@ public class PortalAction extends FMSupportAction {
     @RequestMapping("/activePortals")
     public void getActivePortals4Tree(HttpServletResponse response) {
         List<?> data = service.getActivePortals();
-        TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser());
+        TreeEncoder encoder = new TreeEncoder(data, new StrictLevelTreeParser(PortalConstants.ROOT_ID));
         encoder.setNeedRootNode(false);
         print("SourceTree", encoder);
     }
