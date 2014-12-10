@@ -91,10 +91,4 @@ public interface ITreeSupportDao<T extends IDecodable> extends IDao<T> {
      * @param entity
      */
     void moveEntity(T entity);
-    
-    /**
-     * 不直接调用dao.update(entity)方法，以避开decodeInterceptor和permissionInterceptor等的拦截。
-     * TODO operateInfoInteceptor也将拦截不到，导致无法设置更新时间等信息
-     */
-    T refreshEntity(T entity);
 }

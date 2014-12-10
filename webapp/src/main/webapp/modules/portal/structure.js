@@ -527,8 +527,12 @@ function updateParameters(newNode) {
 	var oldNode = xmlNode.querySelector(type);
 
 	if(oldNode) {
+		var attrNames = [];
         $.each(oldNode.attributes, function(i, attr) {
-            oldNode.removeAttribute(attr.nodeName);
+            attrNames.push(attr.nodeName);
+        });
+		attrNames.each(function(i, attrName) {
+            oldNode.removeAttribute(attrName);
         });
 
         $.each(newNode.attributes, function(i, attr) {

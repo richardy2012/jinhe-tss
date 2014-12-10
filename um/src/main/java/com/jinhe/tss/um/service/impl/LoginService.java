@@ -37,8 +37,10 @@ public class LoginService implements ILoginService {
 	public void resetPassword(Long userId, String password) {
 		User user = userDao.getEntity(userId);
         if(user != null) {
-        	user.setPassword( user.encodePassword(password) );
-        	userDao.update(user);
+        	String md5Password = user.encodePassword(password);
+        	user.setPassword( md5Password );
+        	userDao.refreshEntity(user);
+//        	userDao.executeSQL("update um_user set password = ? where id = ?", md5Password, userId);
         }
 	}
 
