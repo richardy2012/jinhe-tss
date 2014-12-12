@@ -25,7 +25,7 @@
 	XML_SECURITY_LEVEL = "SecurityLevel";
 
     /* XMLHTTP请求地址汇总 */
-    URL_INIT = AUTH_PATH + "user/self/detail";
+    URL_INIT = AUTH_PATH + "user/register/form";
     URL_REGISTER = NO_AUTH_PATH + "register.in";
     URL_CHECK_PASSWORD = NO_AUTH_PATH + "getPasswordStrength.in";
 
@@ -79,7 +79,7 @@
         var flag = true;
 
         var password1 = $1("password").value; 
-        var password2 = $1("repassword").value; 
+        var password2 = $1("password2").value; 
 		if(password1 != password2) {
 			flag = false;
 			alert("两次密码输入不一致，请重新输入");

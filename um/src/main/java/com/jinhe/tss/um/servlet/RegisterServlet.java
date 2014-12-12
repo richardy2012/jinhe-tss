@@ -11,10 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.web.dispaly.SuccessMessageEncoder;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
-import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IUserService;
-import com.jinhe.tss.um.sso.UMPasswordIdentifier;
 
 /**
  * <p> 用户注册Servlet </p>
@@ -49,11 +47,8 @@ public class RegisterServlet extends HttpServlet {
         user.setLoginName(request.getParameter("loginName"));
         user.setPassword(request.getParameter("password"));
         user.setUserName(request.getParameter("userName"));
-        user.setEmail(request.getParameter("mail"));
-
-        // 设置默认认证方式为UMS本地认证
-        user.setAuthMethod(UMPasswordIdentifier.class.getName());
-        user.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID);
+        user.setEmail(request.getParameter("email"));
+        
         service.registerUser(user);
 
         response.setContentType("text/html;charset=UTF-8");

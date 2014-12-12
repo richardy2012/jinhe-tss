@@ -100,6 +100,7 @@ public class UserService implements IUserService{
     public void registerUser(User user) {
         checkUserAccout(user);
         
+        user.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID);
         user.setPassword(user.encodePassword(user.getPassword()));
         user.setAuthMethod(UMPasswordIdentifier.class.getName());
 

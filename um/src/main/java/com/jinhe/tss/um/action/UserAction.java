@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
-import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.online.OnlineUserManagerFactory;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
@@ -167,7 +166,6 @@ public class UserAction extends BaseActionSupport {
 	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public void registerUser(HttpServletResponse response, User user) {
-        user.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID);
 		userService.registerUser(user);
         printSuccessMessage("用户注册成功！");
 	}
@@ -187,25 +185,24 @@ public class UserAction extends BaseActionSupport {
 	 */
     @RequestMapping("/self/detail")
 	public void getUserInfo(HttpServletResponse response) {
-        // 匿名用户,返回空模版给其注册 
-        if(Context.getIdentityCard().isAnonymous()) {
-            print("UserInfo", new XFormEncoder(UMConstants.USER_REGISTER_XFORM, new User()));
-        }
-        else {
-        	User user = userService.getUserById(Environment.getOperatorId());
-        	XFormEncoder userEncoder = new XFormEncoder(UMConstants.USER_BASEINFO_XFORM, user);
-        	userEncoder.setColumnAttribute("loginName", "editable", "false");
-            userEncoder.setColumnAttribute("password",  "editable", "false");
-            
-            Map<String, Object> tempMap = new HashMap<String, Object>();
-            tempMap.put("userId", Environment.getOperatorId());
-            tempMap.put("userName", Environment.getUserName());
-            tempMap.put("loginName", Environment.getOperatorName());
-            XFormEncoder pwdEncoder = new XFormEncoder(UMConstants.PASSWORD_CHANGE_XFORM, tempMap);
-            userEncoder.setColumnAttribute("userName", "editable", "false");
-            
-            print(new String[]{"UserInfo", "PasswordInfo"}, new Object[]{userEncoder, pwdEncoder});
-        }
+    	User user = userService.getUserById(Environment.getOperatorId());
+    	XFormEncoder userEncoder = new XFormEncoder(UMConstants.USER_BASEINFO_XFORM, user);
+    	userEncoder.setColumnAttribute("loginName", "editable", "false");
+        userEncoder.setColumnAttribute("password",  "editable", "false");
+        
+        Map<String, Object> tempMap = new HashMap<String, Object>();
+        tempMap.put("userId", Environment.getOperatorId());
+        tempMap.put("userName", Environment.getUserName());
+        tempMap.put("loginName", Environment.getOperatorName());
+        XFormEncoder pwdEncoder = new XFormEncoder(UMConstants.PASSWORD_CHANGE_XFORM, tempMap);
+        userEncoder.setColumnAttribute("userName", "editable", "false");
+        
+        print(new String[]{"UserInfo", "PasswordInfo"}, new Object[]{userEncoder, pwdEncoder});
+	}
+    
+    @RequestMapping("/register/form")
+	public void getRegisterForm(HttpServletResponse response) {
+    	print("UserInfo", new XFormEncoder(UMConstants.USER_REGISTER_XFORM, new User()));
 	}
     
     /**

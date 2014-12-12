@@ -171,7 +171,6 @@ public class UserModuleTest extends TxSupportTest4UM {
         user2.setLoginName("U_JonKing-R");
         user2.setUserName("U_JK-R");
         user2.setPassword("123456");
-        user2.setGroupId(UMConstants.SELF_REGISTER_GROUP_ID);
         action.registerUser(response, user2);
         log.debug(user2);
         
@@ -199,6 +198,8 @@ public class UserModuleTest extends TxSupportTest4UM {
         action.getOnlineUserInfo(response);
         
         action.getUserInfo(response);
+        
+        action.getRegisterForm(response);
         
         action.getForgetPasswordInfo(response);
         

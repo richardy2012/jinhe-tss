@@ -5,7 +5,7 @@
             <declare>
                 <column name="loginName" caption="账号" mode="string" maxLength="100" empty="false"/>
                 <column name="password" caption="密码" mode="string" maxLength="100" empty="false" inputReg="/^[\u0000-\u00FF]*$/" />
-                <column name="repassword" caption="确认密码" mode="string" maxLength="100" empty="false"/>
+                <column name="password2" caption="确认密码" mode="string" maxLength="100" empty="false"/>
                 <column name="userName" caption="姓名" mode="string" maxLength="100" empty="false"/>
                 <column name="employeeNo" caption="员工号" maxLength="100" mode="string"/>
                 <column name="sex" caption="性别" mode="string" editor="comboedit" editorvalue="0|1" editortext="男|女"/>
@@ -33,8 +33,8 @@
                     <TD><input binding="certificateCategory"/></TD>
                 </TR>
                 <TR>
-                    <TD><label binding="repassword"/></TD>
-                    <TD><input binding="repassword" type="password" style="width:120px;"/></TD>
+                    <TD><label binding="password2"/></TD>
+                    <TD><input binding="password2" type="password" style="width:120px;"/></TD>
                     <TD><label binding="certificateNumber"/></TD>
                     <TD><input binding="certificateNumber" style="width:120px;"/></TD>
                 </TR>
