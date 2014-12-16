@@ -612,7 +612,7 @@ function moveTreeNode(tree, id, targetId, url) {
 		url : (url || URL_MOVE_NODE) + id + "/" + targetId,
 		onsuccess : function() {  				
 			var treeNode = tree.getTreeNodeById(id);
-			var parent   = tree.getTreeNodeById(targetId);
+			var parent   = tree.getTreeNodeById(targetId == '0' ? '_root' : targetId);
 			tree.moveTreeNode(treeNode, parent); // 移动树节点	
 
 			// 父节点停用则下溯
@@ -674,7 +674,7 @@ function checkPasswordSecurityLevel(formObj, url, password, loginName) {
 }
 
 /*********************** 临时 公用函数 **********************************/
-Element.show = function(element) {
+Element.show = function(element, opacity) {
 	if(element) {
 		element.style.display = "block"; 
 		element.style.position = "absolute";  
@@ -682,7 +682,7 @@ Element.show = function(element) {
 		element.style.top  = "70px";    
 		element.style.zIndex = "999"; 
 	
-		$.setOpacity(element, 95);
+		$.setOpacity(element, opacity || 95);
 	}
 }, 
 

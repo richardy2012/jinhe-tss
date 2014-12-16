@@ -6,16 +6,7 @@
     <packaging>pom</packaging>
     <name>TSS</name>
     <version>2.2.0</version>
-    
-    <licenses>
-		<license>
-			<name>Apache 2</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-			<comments>A business-friendly OSS license</comments>
-		</license>
-	</licenses>
-	
+ 
 	<organization>
 		<name>Jin He</name>
 		<url>http://www.llrtss.com</url>
@@ -24,12 +15,11 @@
 
 	<developers>
 		<developer>
-			<id>Jon</id>
+			<id>Jon.King</id>
 			<name>Jon.King</name>
 			<email>jinpujun@gmail.com</email>
-			<url>http://www.jinpujun.com</url>
+			<url>http://www.llrtss.com</url>
 			<organization>Jin He</organization>
-			<organizationUrl>http://www.jinpujun.com</organizationUrl>
 			<roles>
 				<role>developer</role>
 			</roles>
@@ -120,7 +110,7 @@
 
 		<pluginManagement>
 			<plugins>
-				<!-- checkstyle、findbugs -->
+				<!-- checkstyle锟斤拷findbugs -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
@@ -210,10 +200,6 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.16</version>
 				<configuration>
-					<!-- 并行时，H2数据库数据是共享的，这对某些断言有一定影响
-				    <parallel>methods</parallel>
-				    <threadCount>10</threadCount>
-					 -->
 					<skip>false</skip>
 					<includes> 
 						<include>**/*Test.java </include> 
@@ -310,6 +296,14 @@
 								<replaceregexp
 									file="${basedir}/target/classes/application.properties" match="environment = dev"
 									replace="environment = ${environment}" byline="true" />
+								
+								<echo>
+									process application.properties: set identityGetter to ${identityGetter};
+								</echo>
+								<replaceregexp
+									file="${basedir}/target/classes/application.properties" 
+									match="IdentityGetter = com\.jinhe\.tss\.um\.sso\.UMIdentityGetter"
+									replace="IdentityGetter = ${identityGetter}" byline="true" />
 									
 								<echo>
 									process appServers.xml: set tomcat.url to ${tomcat.url};
@@ -352,6 +346,7 @@
 				<db.url>127.0.0.1:3306/tss_btr</db.url>
 				<environment>prod</environment>
 				<tomcat.url>10.8.72.80:8888</tomcat.url>
+				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
 			</properties>
 		</profile>
 		<profile>
@@ -367,6 +362,7 @@
 				<db.url>127.0.0.1:3306/tss_btr</db.url>
 				<environment>prod-job</environment>
 				<tomcat.url>10.8.72.80:8888</tomcat.url>
+				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
 			</properties>
 		</profile>
 		<profile>
@@ -382,6 +378,7 @@
 				<db.url>127.0.0.1:3306/btr_tss</db.url>
 				<environment>uat</environment>
 				<tomcat.url>bl00618-l</tomcat.url>
+				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
 			</properties>
 		</profile>
 		<profile>
@@ -397,6 +394,7 @@
 				<db.url>127.0.0.1:3306/tss_btr</db.url>
 				<environment>dev</environment>
 				<tomcat.url>localhost:8088</tomcat.url>
+				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
 			</properties>
 		</profile>
 
@@ -413,6 +411,7 @@
 				<db.url>10.8.10.30:3306/dm_wmsx</db.url>
 				<environment>tss4wms-prod</environment>
 				<tomcat.url>wmsdata.800best.com</tomcat.url>
+				<identityGetter>com.jinhe.tss.um.sso.othersystem.WmsIdentifyGetter</identityGetter>
 			</properties>
 		</profile>
 		<profile>
@@ -428,14 +427,15 @@
 				<db.url>127.0.0.1:3306/wms_bi</db.url>
 				<environment>tss4wms-dev</environment>
 				<tomcat.url>bl00618</tomcat.url>
+				<identityGetter>com.jinhe.tss.um.sso.othersystem.WmsIdentifyGetter</identityGetter>
 			</properties>
 		</profile>
 	</profiles>
 
 	<distributionManagement>
 		<site>
-			<id>www.jinpujun.com</id>      
-			<url>file://</url>  <!-- \target\staging\localhost -->
+			<id>www.llrtss.com</id>      
+			<url>file://</url>
 		</site>
 	</distributionManagement>
 
