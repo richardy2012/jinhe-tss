@@ -11,6 +11,8 @@ public class PasswordRuleTest {
 		
 		Assert.assertEquals(PasswordRule.UNQUALIFIED_LEVEL, PasswordRule.getStrengthLevel("123456", "admin"));
 		
+		Assert.assertEquals(PasswordRule.UNQUALIFIED_LEVEL, PasswordRule.getStrengthLevel("111111", "BL00618"));
+		
 		Assert.assertEquals(PasswordRule.LOW_LEVEL, PasswordRule.getStrengthLevel("1234567890", "jonking"));
 		Assert.assertEquals(PasswordRule.MEDIUM_LEVEL, PasswordRule.getStrengthLevel("j1234567890", "jonking"));
 		Assert.assertEquals(PasswordRule.HIGHER_LEVEL, PasswordRule.getStrengthLevel("ax=1234567890", "jonking"));

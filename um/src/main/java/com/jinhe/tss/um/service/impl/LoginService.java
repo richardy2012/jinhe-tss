@@ -11,10 +11,13 @@ import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
+import com.jinhe.tss.framework.sso.IOperator;
+import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.um.dao.IGroupDao;
 import com.jinhe.tss.um.dao.IUserDao;
 import com.jinhe.tss.um.entity.Group;
 import com.jinhe.tss.um.entity.User;
+import com.jinhe.tss.um.helper.PasswordRule;
 import com.jinhe.tss.um.helper.dto.GroupDTO;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.service.ILoginService;
@@ -39,6 +42,16 @@ public class LoginService implements ILoginService {
         if(user != null) {
         	String md5Password = user.encodePassword(password);
         	user.setPassword( md5Password );
+        	
+        	// 计算用户的密码强度，必要的时候强制用户重新设置密码
+        	int strengthLevel = PasswordRule.getStrengthLevel(password, user.getLoginName());
+        	user.setPasswordStrength(strengthLevel);
+        	
+        	if(Context.isOnline()) {
+        		IOperator operator = Context.getIdentityCard().getOperator();
+        		operator.getAttributesMap().put("passwordStrength", strengthLevel);
+        	}
+        	
         	userDao.refreshEntity(user);
 //        	userDao.executeSQL("update um_user set password = ? where id = ?", md5Password, userId);
         }

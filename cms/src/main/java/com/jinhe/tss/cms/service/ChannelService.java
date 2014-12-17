@@ -214,7 +214,7 @@ public class ChannelService implements IChannelService {
     public Integer getPublishableArticlesCount(Long channelId) {
         String hql = "select count(*) from Article a where a.channel.id = ? and a.status = ?";
         List<?> list = channelDao.getEntities(hql, channelId, CMSConstants.TOPUBLISH_STATUS);
-        return EasyUtils.convertObject2Integer(list.get(0));
+        return EasyUtils.obj2Int(list.get(0));
     }
 
     public List<Article> getPagePublishableArticles(Long channelId, int page, int pageSize) {

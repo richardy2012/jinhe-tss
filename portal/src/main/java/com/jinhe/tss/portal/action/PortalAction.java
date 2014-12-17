@@ -52,8 +52,8 @@ public class PortalAction extends FMSupportAction {
     public void previewPortal(HttpServletResponse response, HttpServletRequest request, 
     		@PathVariable("portalId") Long portalId)  {    
     	
-    	Long themeId = EasyUtils.convertObject2Long(request.getParameter("themeId"));
-    	Long pageId  = EasyUtils.convertObject2Long(request.getParameter("pageId"));
+    	Long themeId = EasyUtils.obj2Long(request.getParameter("themeId"));
+    	Long pageId  = EasyUtils.obj2Long(request.getParameter("pageId"));
     	
         PortalNode portalNode = service.getPortal(portalId, themeId);
         HTMLGenerator gen = new HTMLGenerator(portalNode, pageId);
@@ -72,7 +72,7 @@ public class PortalAction extends FMSupportAction {
     		@PathVariable("contentId") Long contentId, 
     		@PathVariable("targetId")  Long targetId) {
     	
-    	Long themeId = EasyUtils.convertObject2Long(request.getParameter("themeId"));
+    	Long themeId = EasyUtils.obj2Long(request.getParameter("themeId"));
         PortalNode portalNode = service.getPortal(portalId, themeId);
         HTMLGenerator gen = new HTMLGenerator(portalNode, contentId, targetId);
         

@@ -19,12 +19,12 @@ public class PermissionDTO {
 	private Integer isPass;         // 是否可传递（0-不可传递,1-可传递）
 	
 	public PermissionDTO(Object[] permissionInfo) {
-	    this.resourceId      = EasyUtils.convertObject2Long( permissionInfo[0] );
+	    this.resourceId      = EasyUtils.obj2Long( permissionInfo[0] );
 	    this.operationId     = (String) permissionInfo[1];
-        this.permissionState = EasyUtils.convertObject2Integer( permissionInfo[2] );
-        this.isGrant         = EasyUtils.convertObject2Integer( permissionInfo[3] );
-        this.isPass          = EasyUtils.convertObject2Integer( permissionInfo[4] );
-        this.roleId          = EasyUtils.convertObject2Long( permissionInfo[5] );
+        this.permissionState = EasyUtils.obj2Int( permissionInfo[2] );
+        this.isGrant         = EasyUtils.obj2Int( permissionInfo[3] );
+        this.isPass          = EasyUtils.obj2Int( permissionInfo[4] );
+        this.roleId          = EasyUtils.obj2Long( permissionInfo[5] );
 	}
 	
 	public static List<PermissionDTO> genPermissionDTOList(List<?> permissionList){

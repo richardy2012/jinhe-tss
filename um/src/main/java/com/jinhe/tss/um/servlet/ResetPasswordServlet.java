@@ -13,6 +13,7 @@ import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.SuccessMessageEncoder;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 import com.jinhe.tss.um.entity.User;
+import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.um.service.IUserService;
 
 /**
@@ -32,7 +33,8 @@ public class ResetPasswordServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -740569423483772472L;
     
-    IUserService service = (IUserService) Global.getBean("UserService");
+    IUserService userService = (IUserService) Global.getBean("UserService");
+    ILoginService loginService = (ILoginService) Global.getBean("LoginService");
  
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
@@ -47,7 +49,7 @@ public class ResetPasswordServlet extends HttpServlet {
         String newPassword = request.getParameter("newPassword");
 
 		Long id = Long.valueOf(userId);
-		User user = service.getUserById(id);
+		User user = userService.getUserById(id);
         if(user == null) {
             throw new BusinessException("修改密码时找不到用户ID为" + id + "用户，可能已被删除，请联系管理员");
         }
@@ -61,8 +63,7 @@ public class ResetPasswordServlet extends HttpServlet {
         }
         
 		// 更新密码
-		user.setPassword( user.encodePassword(newPassword == null ? password : newPassword) );
-		service.updateUser(user);
+        loginService.resetPassword(id, newPassword);
         
 		SuccessMessageEncoder encoder = new SuccessMessageEncoder("设置新密码成功！");
 		encoder.print(new XmlPrintWriter(response.getWriter()));

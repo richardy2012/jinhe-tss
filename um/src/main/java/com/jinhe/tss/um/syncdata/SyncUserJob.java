@@ -35,7 +35,7 @@ public class SyncUserJob extends AbstractJob {
 			String info[] = EasyUtils.split(jobConfigs[i], ",");
 			if(info.length < 2) continue;
 			 
-			Long groupId = EasyUtils.convertObject2Long(info[0]);
+			Long groupId = EasyUtils.obj2Long(info[0]);
 			Group group = groupService.getGroupById(groupId);
 	        String fromGroupId = group.getFromGroupId();
 	        if ( EasyUtils.isNullOrEmpty(fromGroupId) ) {

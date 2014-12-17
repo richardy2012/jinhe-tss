@@ -36,7 +36,7 @@ public class LdapIdentifyGetter extends UMIdentityGetter implements IdentityGett
         Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         env.put(Context.SECURITY_AUTHENTICATION, "simple");
-		env.put(Context.PROVIDER_URL, EasyUtils.convertObject2String(oaLdapUrl));
+		env.put(Context.PROVIDER_URL, EasyUtils.obj2String(oaLdapUrl));
         env.put(Context.SECURITY_PRINCIPAL, oaUser.getLoginName());
         env.put(Context.SECURITY_CREDENTIALS, password);
 

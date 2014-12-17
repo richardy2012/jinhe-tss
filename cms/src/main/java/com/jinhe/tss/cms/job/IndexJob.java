@@ -20,7 +20,7 @@ import com.jinhe.tss.util.EasyUtils;
 public class IndexJob extends AbstractCMSJob implements Progressable {
 
 	protected void excuteCMSJob(String jobConfig) {
-        Long siteId = EasyUtils.convertObject2Long(jobConfig.trim());
+        Long siteId = EasyUtils.obj2Long(jobConfig.trim());
 		Set<ArticleContent> data = getData(siteId, true);
                 
 		JobStrategy strategy = getJobStrategy();

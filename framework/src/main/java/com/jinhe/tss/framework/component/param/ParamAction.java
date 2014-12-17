@@ -86,7 +86,7 @@ public class ParamAction extends BaseActionSupport {
             String parentIdValue = request.getParameter("parentId"); 
             Long parentId;
             try {
-            	parentId = EasyUtils.convertObject2Long(parentIdValue);
+            	parentId = EasyUtils.obj2Long(parentIdValue);
             } catch (Exception e) {
             	parentId = ParamConstants.DEFAULT_PARENT_ID; // null or "_root"
             }
@@ -98,7 +98,7 @@ public class ParamAction extends BaseActionSupport {
             xformEncoder = new XFormEncoder(uri, map);
         } 
         else {
-        	Param param = paramService.getParam(EasyUtils.convertObject2Long(paramIdValue));
+        	Param param = paramService.getParam(EasyUtils.obj2Long(paramIdValue));
             xformEncoder = new XFormEncoder(uri, param);
         }
         print("ParamInfo", xformEncoder);

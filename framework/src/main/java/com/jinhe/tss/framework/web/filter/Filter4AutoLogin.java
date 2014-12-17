@@ -97,6 +97,8 @@ public class Filter4AutoLogin implements Filter {
 	            setCookie((HttpServletResponse)response, RequestContext.USER_TOKEN, card.getToken());
 	        }
 			
+		    // TODO 可在此处 检查用户的密码强度，太弱的话强制要求修改密码
+		    
 			chain.doFilter(request, response);
 			
 		} catch (UserIdentificationException e) {

@@ -24,7 +24,7 @@ public class GetPasswordStrengthServlet extends HttpServlet {
 		String loginName = request.getParameter("loginName");
 		String password  = request.getParameter("password");
 		
-		String level = PasswordRule.getStrengthLevel(password, loginName);
+		Object level = PasswordRule.getStrengthLevel(password, loginName);
 		
 		response.setContentType("text/html;charset=UTF-8");
 		XmlHttpEncoder encoder = new XmlHttpEncoder();

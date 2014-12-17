@@ -21,7 +21,7 @@ public class ExpireJob extends AbstractCMSJob {
 
 	protected void excuteCMSJob(String jobConfig) {
 		
-        Long siteId = EasyUtils.convertObject2Long(jobConfig.trim());
+        Long siteId = EasyUtils.obj2Long(jobConfig.trim());
         IChannelService channelService = getChannelService();
         
         List<Article> expireList = new ArrayList<Article>();

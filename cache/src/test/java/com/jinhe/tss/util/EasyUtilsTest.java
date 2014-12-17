@@ -18,25 +18,25 @@ public class EasyUtilsTest {
 			Assert.assertTrue(e.getMessage(), true);
 		}
 		try{
-			EasyUtils.convertObject2Integer("Jon");
+			EasyUtils.obj2Int("Jon");
 		} catch ( Exception e) {
 			Assert.assertTrue(e.getMessage(), true);
 		}
 		try{
-			EasyUtils.convertObject2Long("Jon");
+			EasyUtils.obj2Long("Jon");
 		} catch ( Exception e) {
 			Assert.assertTrue(e.getMessage(), true);
 		}
 		
 		Assert.assertTrue(0d == EasyUtils.convertObject2Double(null));
-		Assert.assertTrue(0 == EasyUtils.convertObject2Integer(null));
-		Assert.assertTrue(0l == EasyUtils.convertObject2Long(null));
-		Assert.assertEquals("", EasyUtils.convertObject2String(null));
+		Assert.assertTrue(0 == EasyUtils.obj2Int(null));
+		Assert.assertTrue(0l == EasyUtils.obj2Long(null));
+		Assert.assertEquals("", EasyUtils.obj2String(null));
 		
 		Assert.assertTrue(EasyUtils.convertObject2Double("1.01") == 1.01d);
-		Assert.assertTrue(EasyUtils.convertObject2Integer("1") == 1);
-		Assert.assertTrue(EasyUtils.convertObject2Long("1") == 1L);
-		Assert.assertEquals("12", EasyUtils.convertObject2String(12));
+		Assert.assertTrue(EasyUtils.obj2Int("1") == 1);
+		Assert.assertTrue(EasyUtils.obj2Long("1") == 1L);
+		Assert.assertEquals("12", EasyUtils.obj2String(12));
 
 		Assert.assertTrue(EasyUtils.isNullOrEmpty(""));
 		Assert.assertTrue(!EasyUtils.isNullOrEmpty(new Object()));

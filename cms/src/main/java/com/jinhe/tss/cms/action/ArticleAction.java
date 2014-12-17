@@ -121,7 +121,7 @@ public class ArticleAction extends BaseActionSupport {
         Long channelId = article.getChannel().getId();
         if(article.getId() == null || article.getId() == 0) {
             // 新增的时候上传的附件对象以System.currentTimeMillis(参见CreateAttach类)为主键，此处的"articleId"就是这个值
-            Long articleId = EasyUtils.convertObject2Long(request.getParameter("articleId"));
+            Long articleId = EasyUtils.obj2Long(request.getParameter("articleId"));
 	        articleService.createArticle(article, channelId, attachList, articleId); 
 	    } 
 	    else {

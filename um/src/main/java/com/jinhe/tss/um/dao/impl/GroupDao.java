@@ -201,7 +201,7 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
         for (Object temp : users) {
             Object[] objs = (Object[]) temp;
             User user = (User) objs[0];
-            user.setGroupId( EasyUtils.convertObject2Long(objs[1]) );
+            user.setGroupId( EasyUtils.obj2Long(objs[1]) );
             user.setGroupName((String) objs[2]);
             result.add(user);
         }    

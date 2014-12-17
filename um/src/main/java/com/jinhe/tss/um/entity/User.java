@@ -53,10 +53,13 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
     private String postalCode;      // 邮编 
     private String certificateNo;   // 证件号
     private String certificate;     // 证件种类 :  1：工作证  2：身份证等
-    private String password;        // 密码 
-    private String passwordQuestion;// 密码提示问题 
-    private String passwordAnswer;  // 密码提示答案 
     private Date   accountLife;     // 帐户有效期限 ：用户帐户到某个指顶的期限过期
+    
+    private String  password;         // 密码 
+    private String  passwordQuestion; // 密码提示问题 
+    private String  passwordAnswer;   // 密码提示答案 
+    private Integer passwordStrength; // 密码强度
+    
     private String authMethod = UMPasswordIdentifier.class.getName();// 认证方式,一个实现对应的认证方式的类路径
     
     private String fromUserId;  // 外部应用系统用户的ID (用于【平台用户】对应【其他系统用户】，其值可以是LDAP里的DN字符串)
@@ -190,6 +193,14 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
     public void setPasswordQuestion(String passwordQuestion) {
         this.passwordQuestion = passwordQuestion;
     }
+    
+	public Integer getPasswordStrength() {
+		return passwordStrength;
+	}
+
+	public void setPasswordStrength(Integer passwordStrength) {
+		this.passwordStrength = passwordStrength;
+	}
  
     public String getPostalCode() {
         return postalCode;

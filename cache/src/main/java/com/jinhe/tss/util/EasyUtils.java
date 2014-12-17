@@ -39,7 +39,7 @@ public class EasyUtils {
         return rlt;
     }
     
-    public static final Long convertObject2Long(Object value) {
+    public static final Long obj2Long(Object value) {
         Long rlt = 0L;
         try{
             rlt = Long.valueOf(value == null ? "0" : value.toString());
@@ -49,7 +49,7 @@ public class EasyUtils {
         return rlt;
     }
     
-    public static final Integer convertObject2Integer(Object value) {
+    public static final Integer obj2Int(Object value) {
         Integer rlt = 0;
         try{
             rlt = Integer.valueOf(value == null ? "0" : value.toString());
@@ -59,7 +59,7 @@ public class EasyUtils {
         return rlt;
     }
     
-    public static final String convertObject2String(Object value) {
+    public static final String obj2String(Object value) {
         if(value == null) {
         	return "";
         }

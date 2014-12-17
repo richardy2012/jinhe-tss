@@ -23,6 +23,7 @@
 				<include>**/um/entity/permission/ViewRoleUser4SubAuthorize.class</include>
 				<include>**/um/entity/permission/ViewRoleUserId.class</include>
 				<include>**/um/helper/dto/**.class</include>
+				<include>**/um/helper/PasswordRule.class</include>
 				<include>**/um/sso/*.class</include>
 				<include>**/um/servlet/GetLoginInfoServlet.class</include>
 				<include>**/um/service/ILoginService.class</include>

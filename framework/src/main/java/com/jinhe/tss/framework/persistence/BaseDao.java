@@ -273,7 +273,7 @@ public abstract class BaseDao<T extends IEntity> implements IDao<T>{
         if( !EasyUtils.isNullOrEmpty(list) ) {
             for(Object id : list){
                 Temp entity = new Temp();
-                entity.setId(EasyUtils.convertObject2Long(id));
+                entity.setId(EasyUtils.obj2Long(id));
                 createObjectWithoutFlush(entity);
             }
         }

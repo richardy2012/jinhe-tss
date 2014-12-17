@@ -142,7 +142,7 @@ public abstract class PaginationQuery {
     	
         Query query = this.createQuery(sumHql); 
         setProperties4Query(query, properties);
-        return EasyUtils.convertObject2Integer(query.getSingleResult());
+        return EasyUtils.obj2Int(query.getSingleResult());
     }
 
     /**

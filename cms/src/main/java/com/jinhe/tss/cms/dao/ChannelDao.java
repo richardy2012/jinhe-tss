@@ -90,7 +90,7 @@ public class ChannelDao extends TreeSupportDao<Channel> implements IChannelDao {
             list = getEntities(hql, decode + "%", CMSConstants.TOPUBLISH_STATUS);
         }
  
-        return EasyUtils.convertObject2Integer(list.get(0));
+        return EasyUtils.obj2Int(list.get(0));
     }
 
     @SuppressWarnings("unchecked")

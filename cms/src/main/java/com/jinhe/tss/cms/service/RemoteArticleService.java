@@ -165,12 +165,12 @@ public class RemoteArticleService implements IRemoteArticleService {
     		Object articleId, String title, String author, Date issueDate, String summary, Integer hitCount) {
         
         Element itemElement = channelElement.addElement("item");
-        itemElement.addElement("id").setText(EasyUtils.convertObject2String(articleId));
-        itemElement.addElement("title").setText(EasyUtils.convertObject2String(title));
-        itemElement.addElement("author").setText(EasyUtils.convertObject2String(author));
+        itemElement.addElement("id").setText(EasyUtils.obj2String(articleId));
+        itemElement.addElement("title").setText(EasyUtils.obj2String(title));
+        itemElement.addElement("author").setText(EasyUtils.obj2String(author));
         itemElement.addElement("issueDate").setText(DateUtil.format(issueDate));
-        itemElement.addElement("summary").setText(EasyUtils.convertObject2String(summary));
-        itemElement.addElement("hitCount").setText(EasyUtils.convertObject2String(hitCount));
+        itemElement.addElement("summary").setText(EasyUtils.obj2String(summary));
+        itemElement.addElement("hitCount").setText(EasyUtils.obj2String(hitCount));
         
         return itemElement;
     }

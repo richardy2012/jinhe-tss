@@ -132,7 +132,7 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
 		for( Object temp :list ){
 			Object[] objs = (Object[]) temp;
 			User user = new User();
-			user.setId( EasyUtils.convertObject2Long(objs[0]) );
+			user.setId( EasyUtils.obj2Long(objs[0]) );
 			user.setUserName((String)objs[1]);
 			result.add(user);
 		}

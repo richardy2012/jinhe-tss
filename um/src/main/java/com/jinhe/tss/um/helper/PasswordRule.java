@@ -7,10 +7,10 @@ import com.jinhe.tss.framework.component.param.ParamConstants;
  */
 public class PasswordRule {
 	
-	public static final String UNQUALIFIED_LEVEL = "0";	//不可用
-	public static final String LOW_LEVEL         = "1";	//低
-	public static final String MEDIUM_LEVEL      = "2";	//中
-	public static final String HIGHER_LEVEL      = "3";	//高
+	public static final int UNQUALIFIED_LEVEL = 0;	//不可用
+	public static final int LOW_LEVEL         = 1;	//低
+	public static final int MEDIUM_LEVEL      = 2;	//中
+	public static final int HIGHER_LEVEL      = 3;	//高
 	
 	private int leastLength;		 // 最短长度
 	private int leastStrength;	     // 最低强度
@@ -58,7 +58,7 @@ public class PasswordRule {
         return strengthValue;
     }
     
-	public static String getStrengthLevel(String password, String loginName) {
+	public static int getStrengthLevel(String password, String loginName) {
 		PasswordRule rule = getDefaultPasswordRule();
 
 		int flag = checkAvailable(rule, password);

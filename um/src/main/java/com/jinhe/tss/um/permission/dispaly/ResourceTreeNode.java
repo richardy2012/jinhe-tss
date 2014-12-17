@@ -20,8 +20,8 @@ public class ResourceTreeNode implements ILevelTreeNode, IPermissionOption, Seri
     private String resourceName;   // 资源名称
 
     public ResourceTreeNode(Object[] resourceInfo) {
-        this.resourceId = EasyUtils.convertObject2Long(resourceInfo[0]);
-        this.parentResourceId = EasyUtils.convertObject2Long(resourceInfo[1]);
+        this.resourceId = EasyUtils.obj2Long(resourceInfo[0]);
+        this.parentResourceId = EasyUtils.obj2Long(resourceInfo[1]);
         this.resourceName = (String) resourceInfo[2];
     }
 

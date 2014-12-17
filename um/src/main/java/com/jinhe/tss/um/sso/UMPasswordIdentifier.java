@@ -23,7 +23,7 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
     
     protected Logger log = Logger.getLogger(this.getClass());
     
-    ILoginService service = (ILoginService) Global.getBean("LoginService");
+    ILoginService loginservice = (ILoginService) Global.getBean("LoginService");
     
     /** 对用户密码进行加密 */
     public static String encodePassword(String loginName, String password) {
@@ -32,34 +32,34 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
     
     protected IOperator validate() throws BusinessException {
         PasswordPassport passport = new PasswordPassport();
-        IPWDOperator operator = null;
-        try {
-            operator = service.getOperatorDTOByLoginName(passport.getLoginName());
+        String loginName = passport.getLoginName();
+        String password = passport.getPassword();
+        
+        IPWDOperator operator;
+		try {
+            operator = loginservice.getOperatorDTOByLoginName(loginName);
         } catch (BusinessException e) {
         	throw new BusinessException(e.getMessage(), false);
         }
-        
-        String password = passport.getPassword();
-		String md5Password = encodePassword(passport.getLoginName(), password);
-        if (md5Password.equals(operator.getPassword())) {
-            return operator;
-        } 
-        else {
+       
+		String md5Password = encodePassword(loginName, password);
+        if ( !md5Password.equals(operator.getPassword()) ) {
             /*
              *  判断用户输入的密码是否和第三方系统的密码的一致，如果是，则将用户的平台里的密码也设置为该密码，并完成本次登录
              *  (适用于UM的用户从第三方导入的情况，因密码是加密的，无法直接导入过来)
              */
             IdentityGetter ig = IdentityGetterFactory.getInstance();
-            if(ig.indentify(operator, password)) {
-            	try {
-            		service.resetPassword(operator.getId(), password);
-            	} catch(Exception e) {
-            		log.error("设置用户密码为第三方应用里的密码时出错了：" + e.getMessage());
-            	}
-            	return operator;
+            if( !ig.indentify(operator, password) ) {
+            	throw new BusinessException("用户密码不正确，请重新登录", false);
             }
-            
-            throw new BusinessException("用户密码不正确，请重新登录", false);
         }
+        
+        try {
+        	// 设置一下密码强度，同时也可以将第三方的密码设置到UM中
+    		loginservice.resetPassword(operator.getId(), password); 
+    	} catch(Exception e) {
+    		log.error("resetPassword时出错了：" + e.getMessage());
+    	}
+    	return operator;
     }
 }
