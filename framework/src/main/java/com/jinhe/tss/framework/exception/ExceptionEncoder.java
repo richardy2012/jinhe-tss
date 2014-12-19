@@ -42,7 +42,7 @@ public class ExceptionEncoder {
                 
                 long theadId = Thread.currentThread().getId();
                 String userName = Environment.getUserName();
-				if(userName != null) {
+				if( userName != null && !e.needRelogin() ) {
 					log.warn(theadId + "出现异常, 当前登陆用户【" + userName + "】");
                 }
                 

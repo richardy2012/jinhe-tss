@@ -123,9 +123,9 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
 	 * 查询角色授予的用户列表（包括直接授予用户的和授予组时组下的所有用户）
 	 */
 	public List<User> searchUsersByRole(Long roleId){
-		String sql = "select u.id, u.userName from um_User u, um_RoleUser ru where u.id=ru.userId and ru.roleId = ? " + 
+		String sql = "select u.id, u.userName from um_user u, um_roleuser ru where u.id=ru.userId and ru.roleId = ? " + 
 				    " union" + 
-				    " select u.id, u.userName from um_User u, um_GroupUser gu, um_RoleGroup rg where u.id = gu.userId and gu.groupId=rg.groupId and rg.roleId = ?";
+				    " select u.id, u.userName from um_user u, um_groupuser gu, um_rolegroup rg where u.id = gu.userId and gu.groupId=rg.groupId and rg.roleId = ?";
 		
 		List<?> list = commonDao.getEntitiesByNativeSql(sql, roleId, roleId);
 		List<User> result = new ArrayList<User>();

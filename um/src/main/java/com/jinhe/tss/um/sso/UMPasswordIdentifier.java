@@ -50,7 +50,7 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
              */
             IdentityGetter ig = IdentityGetterFactory.getInstance();
             if( !ig.indentify(operator, password) ) {
-            	throw new BusinessException("用户密码不正确，请重新登录", false);
+            	throw new BusinessException("用户密码不正确，请重新登录，注意账号区分大小写", false);
             }
         }
         
