@@ -34,7 +34,7 @@ public class DBOnlineUserManagerTest extends TxSupportTest4UM {
     @Before
     public void setUp() {
     	super.setUp();
-    	manager = (IOnlineUserManager) Global.getBean("DBOnlineUserManager");
+    	manager = (IOnlineUserManager) Global.getBean("DBOnlineUserManagerService");
     }
     
     @Test

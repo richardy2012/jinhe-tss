@@ -36,13 +36,13 @@ import com.jinhe.tss.framework.sso.identifier.OnlineUserIdentifier;
  * <p> 自动登录过滤器 </p>
  *
  * <pre>
- * 身份认证：<br/>
- *      检验用户身份是否合法，如果合法顺利通过；<br/>
- *      如果不合法，通过判断是否登录其他系统，使用单点登录方式自动登录系统，并顺利通过；<br/>
- *      如果不能使用单点登录方式登录，判断是否可以匿名访问，如果可以，使用匿名用户登录，并顺利通过；<br/>
- *      如果不能匿名访问或过程中出现错误信息，则抛出异常，返回客户端<br/>
- * 关于匿名访问：<br/>
- *      将匿名用户和普通用户完全一样处理<br/>
+ * 身份认证：
+ *      检验用户身份是否合法，如果合法顺利通过；
+ *      如果不合法，通过判断是否登录其他系统，使用单点登录方式自动登录系统，并顺利通过；
+ *      如果不能使用单点登录方式登录，判断是否可以匿名访问，如果可以，使用匿名用户登录，并顺利通过；
+ *      如果不能匿名访问或过程中出现错误信息，则抛出异常，返回客户端
+ * 关于匿名访问：
+ *      将匿名用户和普通用户完全一样处理
  * </pre>
  *
  */
@@ -109,7 +109,8 @@ public class Filter4AutoLogin implements Filter {
 	}
 
     /**
-     * 验证用户的登录信息，确认当前请求的用户是否已经已经登录（根据token和在线用户库判断），或者登录信息是否正确（userIdentifierClassName != null时，一般为初次登录）
+     * 验证用户的登录信息，确认当前请求的用户是否已经已经登录（根据token和在线用户库判断），
+     * 或者登录信息是否正确（userIdentifierClassName != null时，一般为初次登录）
      */
     private IdentityCard authenticate() throws UserIdentificationException {
         String currentAppCode = Context.getApplicationContext().getCurrentAppCode();
@@ -158,12 +159,12 @@ public class Filter4AutoLogin implements Filter {
     }
 
 	/**
-	 * <p>
-	 * 验证用户是否合法，包括正常登录、通过在线用户库单点登录、匿名用户登录等的身份验证。 <br/>
-	 * 1、如果身份合法，返回身份证对象； <br/>
-	 * 2、如果验证过程中产生需要重新登录的情况，都抛出UserIdentificationException异常 <br/>
-	 * 3、如果用户Token在在线用户库里没注册，说明Token令牌是伪造的或是已经过期的，返回null，表示验证不通过（见OnlineUserIdentifier）。<br/>
-	 * </p>
+	 * <pre>
+	 * 验证用户是否合法，包括正常登录、通过在线用户库单点登录、匿名用户登录等的身份验证。 
+	 * 1、如果身份合法，返回身份证对象； 
+	 * 2、如果验证过程中产生需要重新登录的情况，都抛出UserIdentificationException异常 
+	 * 3、如果用户Token在在线用户库里没注册，说明Token令牌是伪造的或是已经过期的，返回null，表示验证不通过（见OnlineUserIdentifier）。
+	 * </pre>
 	 *
 	 * @param userIdentifierClassName 身份验证器对象全类名
 	 * @return

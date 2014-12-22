@@ -3,8 +3,8 @@
  * ==================================================================  
  * TSS 
  * ================================================================== 
- * mailTo:jinpujun@hotmail.com
- * Copyright (c) Jon.King, 2012-2015 
+ * mailTo:jinpujun@gmail.com
+ * Copyright (c) Jon.King, 2015-2018 
  * ================================================================== 
  */
 package com.jinhe.tss.cache;
@@ -15,23 +15,25 @@ import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
 
 /**
- * 缓存策略 
- * <br/>不变区
- * <br/>  code
- * <br/>  name
- * <br/>可变区
- * <br/>  普通，不触发池事件
- * <br/>    accessMethod
- * <br/>    disabled
- * <br/>    interruptTime
- * <br/>    remark
- * <br/>  触发池事件STRATEGY_CHANGED_CYCLELIFE
- * <br/>    cyclelife
- * <br/>  如果变小了则触发池事件STRATEGY_CHANGED_SIZE_REDUCE，处理同PUT_IN事件；大了不管
- * <br/>    poolSize
- * <br/>  严重，触发池事件STRATEGY_CHANGED_RESET，重新初始化池
- * <br/>    poolClass
- * <br/>    poolCollectionClass
+ * <pre>
+ * 缓存策略: 
+ *     不变区
+ *       code
+ *       name
+ *     可变区
+ *       普通，不触发池事件
+ *         accessMethod
+ *         disabled
+ *         interruptTime
+ *         remark
+ *       触发池事件STRATEGY_CHANGED_CYCLELIFE
+ *         cyclelife
+ *       如果变小了则触发池事件STRATEGY_CHANGED_SIZE_REDUCE，处理同PUT_IN事件；大了不管
+ *         poolSize
+ *       严重，触发池事件STRATEGY_CHANGED_RESET，重新初始化池
+ *         poolClass
+ *         poolCollectionClass
+ * </pre>
  */
 public class CacheStrategy {
     

@@ -15,11 +15,11 @@ import com.jinhe.tss.framework.web.wrapper.AvoidRepeatHttpServletResponseWrapper
 
 /**
  * <p> 应用上下文环境静态对象 </p>
- * <p>
- * 利用线程变量（ThreadLocal）保存用户每次请求的request、response、身份证、令牌等信息，<br/>
- * 以便其它地方程序需要获取这些信息的时候可以方便的通过Environment或者Context对象获取。<br/>
- * 这些信息在ContextFilter中完成设置，所以ContexFilter需在AutoLoginFilter、HttpProxyFilter等filter之前配置好。<br/>
- * </p>
+ * <pre>
+ * 利用线程变量（ThreadLocal）保存用户每次请求的request、response、身份证、令牌等信息，
+ * 以便其它地方程序需要获取这些信息的时候可以方便的通过Environment或者Context对象获取。
+ * 这些信息在ContextFilter中完成设置，所以ContexFilter需在AutoLoginFilter、HttpProxyFilter等filter之前配置好。
+ * </pre>
  */
 public final class Context {
     
@@ -41,17 +41,21 @@ public final class Context {
 	private static ThreadLocal<HttpServletResponse> responseLocal = new ThreadLocal<HttpServletResponse>();
 
 	/**
-	 * 用户令牌，基于request（每次请求）。<br/>
-     * 令牌信息（基于session不变）本应该只存放与session中即可，<br/>
-     * 为了满足非web情况（也就是无session时）线程可以方便的存放令牌，故有此tokenLocal，类似cardsMap作用<br/>
+	 * <pre>
+	 * 用户令牌，基于request（每次请求）。
+     * 令牌信息（基于session不变）本应该只存放与session中即可，
+     * 为了满足非web情况（也就是无session时）线程可以方便的存放令牌，故有此tokenLocal，类似cardsMap作用
+     * </pre>
 	 */
 	private static ThreadLocal<String> tokenLocal = new ThreadLocal<String>();
     
     /**
-     * 用来存放card，当类似CMS中定时器操作时，也需要Context.initIdentityInfo(card)来设置用户信息，而这种情况下<br/>
-     * 没有servlet请求所以没法生成RequestContext，也就无法往session里存放card信息，故由此Map。当用户退出session销毁时，<br/>
-     * 调用destroyIdentityCard(token)。<br/>
-     * TODO 有隐患：如上述情况放入进来的card，如何去除？<br/>
+     * <pre>
+     * 用来存放card，当类似CMS中定时器操作时，也需要Context.initIdentityInfo(card)来设置用户信息，而这种情况下
+     * 没有servlet请求所以没法生成RequestContext，也就无法往session里存放card信息，故由此Map。当用户退出session销毁时，
+     * 调用destroyIdentityCard(token)。
+     * </pre>
+     * TODO 有隐患：如上述情况放入进来的card，如何去除？
      */
     private static Map<String, IdentityCard> cardsMap = new HashMap<String, IdentityCard>(); 
 
@@ -107,13 +111,13 @@ public final class Context {
     }
 
     /**
-     * <p>
-     * 获取用户令牌。不管是web环境请求还是直接执行JAVA方法，<br/>
-     * 前者会在ContexFilter调用到initRequestContext来设置tokenLocal(如果是首次登陆，则登陆成功后会调用initIdentityInfo)；<br/>
-     * 后者需要手动创建一个IdentityCard对象，然后调用initIdentityInfo方法来设置tokenLocal。<br/>
-     * 这些操作都需要在第一步执行（所以ContexFilter需在AutoLoginFilter、HttpProxyFilter等filter之前配置）。<br/>
-     * 如此可保证每次需要调用Context.getToken时token都已经存在在tokenLocal中。<br/>
-     * </p>
+     * <pre>
+     * 获取用户令牌。不管是web环境请求还是直接执行JAVA方法，
+     * 前者会在ContexFilter调用到initRequestContext来设置tokenLocal(如果是首次登陆，则登陆成功后会调用initIdentityInfo)；
+     * 后者需要手动创建一个IdentityCard对象，然后调用initIdentityInfo方法来设置tokenLocal。
+     * 这些操作都需要在第一步执行（所以ContexFilter需在AutoLoginFilter、HttpProxyFilter等filter之前配置）。
+     * 如此可保证每次需要调用Context.getToken时token都已经存在在tokenLocal中。
+     * </pre>
      * @see Context.initRequestContext(HttpServletRequest request)
      * @see Context.initIdentityInfo(IdentityCard card) 
      * @return
@@ -133,8 +137,10 @@ public final class Context {
     }
     
     /**
-     * 用户登陆成功后初始化用户的身份证信息。将身份证放入到session中，同时也放入到cardsMap中（非web情况即无session时该map会用到），<br/>
-     * 最后还需将令牌信息放入到tokenLocal中。<br/>
+     * <pre>
+     * 用户登陆成功后初始化用户的身份证信息。将身份证放入到session中，同时也放入到cardsMap中（非web情况即无session时该map会用到），
+     * 最后还需将令牌信息放入到tokenLocal中。
+     * </pre>
      * @param card
      */
     public static void initIdentityInfo(IdentityCard card) {
@@ -163,8 +169,10 @@ public final class Context {
     }
     
     /**
+     * <pre>
      * 获取用户的身份证对象。web环境下存放在session里和cardsMap里。
      * 非web环境（单元测试环境、定时器操作等）只存放与cardsMap中。
+     * </pre>
      * @see Environment.getOperatorId()
      * @return
      */
@@ -214,10 +222,10 @@ public final class Context {
 	}
 
 	/**
-	 * <p>
+	 * <pre>
 	 * 设置response的值。
 	 * 将response封装成AvoidRepeatHttpServletResponseWrapper，可防止写入同名的cookie。
-	 * </p>
+	 * </pre>
 	 * @param 将response的值赋值给response
 	 */
 	public static void setResponse(HttpServletResponse response) {

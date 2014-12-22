@@ -7,7 +7,7 @@ package com.jinhe.tss.framework.sso;
 public interface SSOConstants {
     
     /** 配置文件中在线用户管理类属性名 */
-    public static final String      ONLINE_MANAGER = "class.name.OnlineManager";
+    public static final String      ONLINE_MANAGER = "bean.onlineManager";
 
     /** 配置文件中用户登录自定义器属性名 */
     public static final String    LOGIN_COSTOMIZER = "class.name.LoginCostomizer";

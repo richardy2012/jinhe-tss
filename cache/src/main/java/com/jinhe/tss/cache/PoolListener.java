@@ -3,8 +3,8 @@
  * ==================================================================  
  * TSS 
  * ================================================================== 
- * mailTo:jinpujun@hotmail.com
- * Copyright (c) Jon.King, 2012-2015 
+ * mailTo:jinpujun@gmail.com
+ * Copyright (c) Jon.King, 2015-2018  
  * ================================================================== 
  */
 
@@ -77,10 +77,11 @@ public class PoolListener implements Listener {
 	}
 
 	/**
-	 * 缓存策略的一般内容改变，包括对象生命周期值等。<br/>
+	 * <pre>
+	 * 缓存策略的一般内容改变，包括对象生命周期值等。
 	 * 
 	 * 不更新池中已存在缓存项的生命周期，后续新进来的缓存对象将使用新的生命周期值。
-	 * 
+	 * </pre>
 	 * @param pool
 	 */
 	private void cyclelifeChanged(Pool pool) {

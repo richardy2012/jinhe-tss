@@ -1,13 +1,13 @@
 package com.jinhe.tss.um.sso.online;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.jinhe.tss.framework.persistence.ICommonDao;
 import com.jinhe.tss.framework.sso.online.IOnlineUserManager;
@@ -17,12 +17,11 @@ import com.jinhe.tss.framework.sso.online.OnlineUser;
  * <p> 在线用户库（数据库） </p>
  * 
  */
-@Service("DBOnlineUserManager")
-@Transactional
+@Service("DBOnlineUserManagerService")
 public class DBOnlineUserManager implements IOnlineUserManager {
 	
 	@Autowired private ICommonDao dao;
-
+ 
     /*
      * 根据 SessionId，应用Code 找到用户并将用户的sessionId置为Null，表示已经注销。
      * 不删除用户记录，方便以后查询用户的登录历史。
@@ -32,15 +31,15 @@ public class DBOnlineUserManager implements IOnlineUserManager {
         List<?> entityList = dao.getEntities(hql, new Object[] {appCode, sessionId});
         
         String token = null;
-        if(entityList.size() > 0) {
-        	for(Object entity : entityList) {
-        		DBOnlineUser temp = (DBOnlineUser) entity;
-            	token = temp.getToken();
-        		temp.setToken(null);
-        		temp.setSessionId(null);
-        		dao.create(temp);
-        	}
-        }
+    	for(Object entity : entityList) {
+    		DBOnlineUser ou = (DBOnlineUser) dao.delete(entity);
+        	token = ou.getToken();
+    	}
+    	
+    	long nowLong = new Date().getTime(); // 将参考日期转换为毫秒时间
+        Date time = new Date(nowLong - (long) (72 * 60 * 60 * 1000)); // 加上时间差毫秒数
+    	dao.deleteAll(dao.getEntities(" from DBOnlineUser o where o.loginTime < ?", time));
+    	
 		return token;
     }
 
@@ -74,7 +73,7 @@ public class DBOnlineUserManager implements IOnlineUserManager {
      */
     public void register(String token, String appCode, String sessionId, Long userId, String userName) {
     	DBOnlineUser entity = new DBOnlineUser(userId, sessionId, appCode, token, userName);
-		dao.create(entity);       
+    	dao.create(entity);       
     }
 
 }

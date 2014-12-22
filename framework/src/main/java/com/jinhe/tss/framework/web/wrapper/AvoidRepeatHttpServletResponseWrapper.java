@@ -3,11 +3,10 @@
  * ==================================================================  
  * TSS 
  * ================================================================== 
- * mailTo:jinpujun@hotmail.com
- * Copyright (c) Jon.King, 2009-2012 
+ * mailTo:jinpujun@gmail.com
+ * Copyright (c) Jon.King, 2015-2018  
  * ================================================================== 
 */
-
 package com.jinhe.tss.framework.web.wrapper;
 
 import java.util.HashSet;

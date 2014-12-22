@@ -3,8 +3,8 @@
  * ==================================================================  
  * TSS 
  * ================================================================== 
- * mailTo:jinpujun@hotmail.com
- * Copyright (c) Jon.King, 2012-2015 
+ * mailTo:jinpujun@gmail.com
+ * Copyright (c) Jon.King, 2015-2018 
  * ================================================================== 
  */
 
@@ -15,22 +15,24 @@ import com.jinhe.tss.cache.ObjectPool;
 import com.jinhe.tss.cache.PoolEvent;
 
 /**
- * 缓存项要求可重复利用的，即缓存项的value对象实现了Reusable接口。 <br/>
- * 适合用于线程池，连接池，任务池等。 <br/>
+ * <pre>
+ * 缓存项要求可重复利用的，即缓存项的value对象实现了Reusable接口。
+ * 适合用于线程池，连接池，任务池等。
  * 
- * 在该类中，缓存池中的对象由算法类的create()方法生成， <br/>
+ * 在该类中，缓存池中的对象由算法类的create()方法生成，
  * 在缓存池初始化以及check-out时对象不够的情况下创建新的对象。
- * 
+ * </pre>
  */
 public class ReusablePool extends ObjectPool {
 	
 	/**
-	 * 将元素从free池中取出，放入using池中，并返回该元素。 <br/>
+	 * <pre>
+	 * 将元素从free池中取出，放入using池中，并返回该元素。
 	 * 
-	 * 如果没有空置的元素可以获取，则一个新的元素将会创建出来，除非到了池的上限值。 <br/>
+	 * 如果没有空置的元素可以获取，则一个新的元素将会创建出来，除非到了池的上限值。
 	 * 
 	 * 如果一个空置的元素是错误的，它将被移出对象池，将会重新获取另外一个元素出来。
-	 * 
+	 * </pre>
 	 * @return 
 	 * 		池中的元素，如果没有可用对象返回null
 	 * @exception PoolException

@@ -3,8 +3,8 @@
  * ==================================================================  
  * TSS 
  * ================================================================== 
- * mailTo:jinpujun@hotmail.com
- * Copyright (c) Jon.King, 2012-2015 
+ * mailTo:jinpujun@gmail.com
+ * Copyright (c) Jon.King, 2015-2018 
  * ================================================================== 
  */
 package com.jinhe.tss.cache;
@@ -13,9 +13,11 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * 缓存池容器接口. <br/>
- * 该接口中定义了池的基本操作. <br/>
+ * <pre>
+ * 缓存池容器接口. 
+ * 该接口中定义了池的基本操作. 
  * 用户可以通过实现该接口来自定义池容器的实现.
+ * </pre>
  */
 public interface Container {
 

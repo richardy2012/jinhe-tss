@@ -20,7 +20,7 @@ import com.jinhe.tss.framework.sso.online.OnlineUser;
 @Entity
 @Table(name="online_user")
 @SequenceGenerator(name = "online_user_sequence", sequenceName = "online_user_sequence", initialValue = 1000, allocationSize = 10)
-public class DBOnlineUser extends OnlineUser implements IEntity{
+public class DBOnlineUser extends OnlineUser implements IEntity {
 	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "online_user_sequence")

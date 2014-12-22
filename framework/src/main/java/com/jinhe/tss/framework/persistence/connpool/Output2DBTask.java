@@ -3,8 +3,8 @@
  * ==================================================================  
  * TSS 
  * ================================================================== 
- * mailTo:jinpujun@hotmail.com
- * Copyright (c) Jon.King, 2012-2015 
+ * mailTo:jinpujun@gmail.com
+ * Copyright (c) Jon.King, 2015-2018  
  * ================================================================== 
  */
 package com.jinhe.tss.framework.persistence.connpool;
@@ -18,9 +18,10 @@ import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.cache.extension.workqueue.AbstractTask;
 
 /**
- * 输出记录到数据库的任务抽象超类。<br/>
+ * <pre>
+ * 输出记录到数据库的任务抽象超类。
  * 类似日志输出、访问量输出可以通过继承该超类实现。
- * 
+ * </pre>
  */
 public abstract class Output2DBTask extends AbstractTask {
 

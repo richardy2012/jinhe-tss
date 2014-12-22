@@ -4,9 +4,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.jinhe.tss.framework.Config;
+import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.sso.SSOConstants;
 import com.jinhe.tss.framework.sso.context.Context;
-import com.jinhe.tss.util.BeanUtil;
 
 /** 
  * <p>
@@ -21,15 +21,16 @@ public class OnlineUserManagerFactory {
 
     public static IOnlineUserManager getManager() {
         if (manager == null) {
-            String className = Config.getAttribute(SSOConstants.ONLINE_MANAGER);
-            if (className == null) {
-				manager = new CacheOnlineUserManager(); // 默认使用Cache在线用户库
+            String onlineManager = Config.getAttribute(SSOConstants.ONLINE_MANAGER);
+            if (onlineManager == null) {
+				manager = new OnlineUserManagerProxy(); // 基于平台的应用无需配置，默认为在线用户库代理
 			} 
             else {
-				manager = (IOnlineUserManager) BeanUtil.newInstanceByName(className);
+				manager = (IOnlineUserManager) Global.getBean(onlineManager);
 			}
             
-            log.info("应用【" + Context.getApplicationContext().getCurrentAppCode() + "】里在线用户库【" + manager.getClass().getName() + "】初始化成功！");
+            String currentAppCode = Context.getApplicationContext().getCurrentAppCode();
+			log.info("应用【" + currentAppCode + "】里在线用户库【" + manager.getClass().getName() + "】初始化成功！");
         }
         
         return manager;

@@ -73,9 +73,11 @@ public class CacheDisplayAction extends BaseActionSupport {
     		String cacheCode   = item.getCode();
     		String cacheConfig = item.getValue();
     		CacheStrategy strategy = refreshCacheStrategy(cacheCode, cacheConfig);
-    		CacheStrategy newStrategy = new CacheStrategy();
-    		BeanUtil.copy(newStrategy, strategy);
-    		JCache.pools.put(cacheCode, newStrategy.getPoolInstance()); 
+    		if(strategy != null) {
+    			CacheStrategy newStrategy = new CacheStrategy();
+        		BeanUtil.copy(newStrategy, strategy);
+        		JCache.pools.put(cacheCode, newStrategy.getPoolInstance()); 
+    		}
     	}
     }
     
@@ -89,7 +91,12 @@ public class CacheDisplayAction extends BaseActionSupport {
     }
     
     private CacheStrategy refreshCacheStrategy(String cacheCode, String newConfig) {
-    	CacheStrategy strategy = cache.getPool(cacheCode).getCacheStrategy();
+    	Pool pool = cache.getPool(cacheCode);
+    	if(pool == null) {
+    		return null;
+    	}
+    	
+		CacheStrategy strategy = pool.getCacheStrategy();
     	try {  
   			ObjectMapper objectMapper = new ObjectMapper();
   			

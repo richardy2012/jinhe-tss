@@ -19,13 +19,14 @@ import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.MathUtil;
  
 /**
+ * <pre>
  * ===========================================================================
  * 展示外部资源的授权信息时需要的操作：
  * 1. 从UM中取到当前用户的角色信息
  * 2. 保存到登录系统的临时表当中
  * 3. 展示资源时关联该临时表
  * ===========================================================================
- *
+ * </pre>
  */
 @Service("PermissionService")
 public class PermissionServiceImpl implements PermissionService {
@@ -87,12 +88,12 @@ public class PermissionServiceImpl implements PermissionService {
 	}
 	
     /**
-     * <p>
-     * 保存角色资源权限表后补全的操作。 <br/>
-     * 这里的补全操作是这样的: <br/> 
-     * 如果对资源的授权状态permissionState==PERMIT_SUB_TREE，那么要找到该资源所有子节点，并且授予相应的权限选项； <br/>
-     * 如果permissionState==PERMIT_NODE_SELF，则只对自身节点在补齐表里加一条记录。 <br/>
-     * </p>
+     * <pre>
+     * 保存角色资源权限表后补全的操作。 
+     * 这里的补全操作是这样的:  
+     * 如果对资源的授权状态permissionState==PERMIT_SUB_TREE，那么要找到该资源所有子节点，并且授予相应的权限选项； 
+     * 如果permissionState==PERMIT_NODE_SELF，则只对自身节点在补齐表里加一条记录。 
+     * </pre>
      * @param usPermission
      * @param permissionTable
      * @param resourceTable
@@ -260,6 +261,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     /**
      * 循环资源树(visibleResourceTree)和操作权限列(operations)，在权限项上打钩或者disable，生成最终的二维树 
+     * 
      * @param isRoleId
      *              选中授权的节点是否为角色，true：角色【角色权限设置】，false：资源【资源授予角色】
      * @param selectNodeId
@@ -328,9 +330,11 @@ public class PermissionServiceImpl implements PermissionService {
     }
     
     /**
-     * 将登录用户拥有的资源权限列表和授权级别进行映射。<br/> 
-     * 这是登录用户能拿出来授权的【针对当前资源或资源列表】的权限。<br/>
-     * key:resourceId_operationId / value:isGrant+isPass(角色为选中的唯一一个) <br/>
+     * <pre>
+     * 将登录用户拥有的资源权限列表和授权级别进行映射。 
+     * 这是登录用户能拿出来授权的【针对当前资源或资源列表】的权限。
+     * key:resourceId_operationId / value:isGrant+isPass(角色为选中的唯一一个)
+     * </pre> 
      */
     private Map<String, Integer> userPermissionMappingRank(List<PermissionDTO> permissionList) {
         Map<String, Integer> mapping = new HashMap<String, Integer>();
@@ -348,9 +352,11 @@ public class PermissionServiceImpl implements PermissionService {
     }
     
     /**
-     * 将选中角色拥有的资源权限列表和授权级别进行映射。<br/>
-     * 这是【被授权角色或角色列表】已经拥有的对【当前资源或资源列表】的权限。<br/>
-     * key:roleId_resourceId_operationId / value:isGrant+isPass  <br/>
+     * <pre>
+     * 将选中角色拥有的资源权限列表和授权级别进行映射。
+     * 这是【被授权角色或角色列表】已经拥有的对【当前资源或资源列表】的权限。
+     * key:roleId_resourceId_operationId / value:isGrant+isPass 
+     * </pre> 
      */
     private Map<String, Integer[]> rolePermissionMappingRank(List<?> permissionList) {
         Map<String, Integer[]> mapping = new HashMap<String, Integer[]>();

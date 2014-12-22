@@ -3,8 +3,8 @@
  * ==================================================================  
  * TSS 
  * ================================================================== 
- * mailTo:jinpujun@hotmail.com
- * Copyright (c) Jon.King, 2012-2015 
+ * mailTo:jinpujun@gmail.com
+ * Copyright (c) Jon.King, 2015-2018 
  * ================================================================== 
 */
 package com.jinhe.tss.cache.extension.threadpool;
@@ -20,14 +20,15 @@ import com.jinhe.tss.cache.extension.ReusablePool;
 import com.jinhe.tss.cache.extension.workqueue.Task;
 
 /** 
- * 采用缓存池机制实现的线程池。<br/>
- * 通过继承并扩展ReusablePool来实现。<br/>
+ * <pre>
+ * 采用缓存池机制实现的线程池。
+ * 通过继承并扩展ReusablePool来实现。
  * 
- * 每次运行excute()方法，都会唤醒free池中的工作线程。<br/>
- * 对池中的所有线程来说，它们都共享池的工作队列。<br/>
- * 所以工作队列要求能实现同步，通过Collections.synchronizedList(list)实现。<br/>
- * 如果队列不为空的话，那么线程将反复的执行，来完成工作队列中的每个工作，直到工作队列为空。<br/>
- * 
+ * 每次运行excute()方法，都会唤醒free池中的工作线程。
+ * 对池中的所有线程来说，它们都共享池的工作队列。
+ * 所以工作队列要求能实现同步，通过Collections.synchronizedList(list)实现。
+ * 如果队列不为空的话，那么线程将反复的执行，来完成工作队列中的每个工作，直到工作队列为空。
+ * </pre>
  */
 public class ThreadPool extends ReusablePool implements IThreadPool{  
     

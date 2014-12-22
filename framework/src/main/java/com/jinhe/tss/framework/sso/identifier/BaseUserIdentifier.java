@@ -23,6 +23,7 @@ public abstract class BaseUserIdentifier implements IUserIdentifier {
 	public IdentityCard identify() throws UserIdentificationException {
 		// 验证通行证
 		IOperator operator = validate();
+		
 		// 如果合法，注册在线用户，并获取相关用户信息对象，放入身份对象
 		if (operator != null) {
 			String appCode   = Context.getApplicationContext().getCurrentAppCode();

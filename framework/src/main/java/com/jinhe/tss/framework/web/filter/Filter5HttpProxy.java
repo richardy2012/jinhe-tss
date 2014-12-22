@@ -32,21 +32,21 @@ import com.jinhe.tss.framework.web.rmi.HttpClientUtil;
 
 /**
  * <pre>
- * 在HEAD或参数中获取当前请求设置的目标地址所在应用CODE值，如果此CODE值为当前应用CODE，则直接放行；<br/>
- * 否则根据此CODE值获取对应的应用地址，将访问地址重新改写后（如果是登陆用户则在Header中添加令牌），<br/>
- * 然后通过HttpClient开源工具包以HTTP方式请求新地址，将返回的结果设置到本次请求的响应。<br/>
- * <br/>
- * 因为本filter无法拦截到访问地址为html（比如OA的首页）的页面（目前配置了拦截.action/.do/.in），所以每次调用html页面前，<br/>
- * 可以先发一个 OA/test.do?.... 这样的虚拟请求，以先完成OA等应用的登陆过程，同时取到OA登陆成功返回的token，亦访问OA页面的时使用。<br/>
- * <br/>
- * 转发的时候把第一次转发过来header头带的appCode值去掉，理论上不会有二次转发的可能。<br/>
- * 去掉可以解决这样的问题：当系统1的CMS要访问系统2、系统3等的CMS抓取文章数据时，可以在系统1的CMS的appServer.xml将其它系统的CMS的Code  <br/>
- * 按别名来配置（比如CMS2、CMS3），这样就可以将请求转发到真实的地址。而转发的时候去掉appCode，防止目标应用接到转发请求时再次转发请求。 <br/>
- * 因为如果 appCode=CMS2 转发到 系统2的CMS（appCode=CMS）上的话，CMS2 != CMS，系统2会再次转发该请求。 <br/>
+ * 在HEAD或参数中获取当前请求设置的目标地址所在应用CODE值，如果此CODE值为当前应用CODE，则直接放行；
+ * 否则根据此CODE值获取对应的应用地址，将访问地址重新改写后（如果是登陆用户则在Header中添加令牌），
+ * 然后通过HttpClient开源工具包以HTTP方式请求新地址，将返回的结果设置到本次请求的响应。
+ * 
+ * 因为本filter无法拦截到访问地址为html（比如OA的首页）的页面（目前配置了拦截.action/.do/.in），所以每次调用html页面前，
+ * 可以先发一个 OA/test.do?.... 这样的虚拟请求，以先完成OA等应用的登陆过程，同时取到OA登陆成功返回的token，亦访问OA页面的时使用。
+ * 
+ * 转发的时候把第一次转发过来header头带的appCode值去掉，理论上不会有二次转发的可能。
+ * 去掉可以解决这样的问题：当系统1的CMS要访问系统2、系统3等的CMS抓取文章数据时，可以在系统1的CMS的appServer.xml将其它系统的CMS的Code  
+ * 按别名来配置（比如CMS2、CMS3），这样就可以将请求转发到真实的地址。而转发的时候去掉appCode，防止目标应用接到转发请求时再次转发请求。 
+ * 因为如果 appCode=CMS2 转发到 系统2的CMS（appCode=CMS）上的话，CMS2 != CMS，系统2会再次转发该请求。 
  * @see HttpMethod com.jinhe.tss.core.proxy.HttpClientHelper.getHttpMethod(AppServer appServer)
- * <br/>
- * 注：HttpProxyFilter需要配置在XMLHttpDecodeFilter之前，因为转发请求时将XMLHttp请求的参数流直接转发。<br/>
- * 而如果先把XML参数流解析了，则因为该流是一次读完的（读了就没了），转发的时候将不复存在。<br/>
+ * 
+ * 注：HttpProxyFilter需要配置在XMLHttpDecodeFilter之前，因为转发请求时将XMLHttp请求的参数流直接转发。
+ * 而如果先把XML参数流解析了，则因为该流是一次读完的（读了就没了），转发的时候将不复存在。
  * </pre>
  *
  */

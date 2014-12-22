@@ -4,7 +4,7 @@
  * TSS 
  * ================================================================== 
  * mailTo:jinpujun@gmail.com
- * Copyright (c) Jon.King, 2012-2015 
+ * Copyright (c) Jon.King, 2015-2018  
  * ================================================================== 
  */
 package com.jinhe.tss.framework.persistence.connpool;
@@ -17,10 +17,11 @@ import com.jinhe.tss.cache.TimeWrapper;
 import com.jinhe.tss.cache.extension.DefaultCustomizer;
 
 /**
+ * <pre>
  * 数据库连接池自定义类。<br/>
  * 
  * 在本类中定义了如何创建、验证、销毁数据库连接。
- * 
+ * </pre>
  */
 public class ConnPoolCustomizer extends DefaultCustomizer {
     

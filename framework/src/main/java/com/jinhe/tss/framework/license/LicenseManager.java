@@ -15,17 +15,17 @@ import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
 
 /** 
- * <p> 
- * <br/>1、应用程序可以创建以及验证绑定给用户、系统等实体的license。
- * <br/>2、licenses可以是永久性的或者临时性的（在某个特定时期内有效）
- * <br/>3、共享应用程序可以配置试用期licenses
+ * <pre> 
+ * 1、应用程序可以创建以及验证绑定给用户、系统等实体的license。
+ * 2、licenses可以是永久性的或者临时性的（在某个特定时期内有效）
+ * 3、共享应用程序可以配置试用期licenses
  * 
- * <br/>4、licenses的验证由JAVA Security API提供的数字签名机制来实现。
- * <br/>   通过生成公钥/私钥对来分别对licenses进行签名和校验。
+ * 4、licenses的验证由JAVA Security API提供的数字签名机制来实现。
+ *    通过生成公钥/私钥对来分别对licenses进行签名和校验。
  * 
- * <br/>5、license安装模块需要用特殊机制对其进行保护，以防被反编译轻易破解。
- * <br/>   可以使用java代码编译混淆器、自定义类装载器来实现。
- * </p> 
+ * 5、license安装模块需要用特殊机制对其进行保护，以防被反编译轻易破解。
+ *    可以使用java代码编译混淆器、自定义类装载器来实现。
+ * </pre>
  */
 public final class LicenseManager {
 
@@ -121,10 +121,11 @@ public final class LicenseManager {
     }
 
     /**
+     * <pre>
      * 验证license是否合法。
      * 首先验证Mac地址是否有改变，有的话则非法。（防止用户自由拷贝软件）。
      * 然后根据公钥验证签名是否合法。
-     * 
+     * </pre>
      * @param license
      * @return
      * @throws Exception

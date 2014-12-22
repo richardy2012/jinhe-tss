@@ -26,9 +26,9 @@ import com.jinhe.tss.framework.sso.context.RequestContext;
  * <p> 请求上下文对象（RequestContext）相关过滤器  </p>
  *
  * <pre>
- * 初始化及销毁上下文对象（UserContext、RequestContext等）。 <br/>
+ * 初始化及销毁上下文对象（UserContext、RequestContext等）。 
  * 过滤器顺序：本filter应该配置AutoLoginFilter之前，
- *           后者需要的类似用户名、密码、验证方式、token等信息需要从Context中获取。<br/>
+ *           后者需要的类似用户名、密码、验证方式、token等信息需要从Context中获取。
  * 
  * 类似在线用户库远程调用可以跳过本过滤器，以防TSS以外平台系统session注销时
  * 调用TSS配置的/remote/OnlineUserService，又会在TSS的UM里产生一个新的session。

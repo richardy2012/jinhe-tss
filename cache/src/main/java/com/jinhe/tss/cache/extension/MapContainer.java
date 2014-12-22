@@ -3,8 +3,8 @@
  * ==================================================================  
  * TSS 
  * ================================================================== 
- * mailTo:jinpujun@hotmail.com
- * Copyright (c) Jon.King, 2009-2012 
+ * mailTo:jinpujun@gmail.com
+ * Copyright (c) Jon.King, 2015-2018 
  * ================================================================== 
  */
 
@@ -20,10 +20,13 @@ import com.jinhe.tss.cache.AbstractContainer;
 import com.jinhe.tss.cache.Cacheable;
 
 /**
- * 为了MapContainer能适用多线程，其每步对 map 的操作都必须锁定 map。 <br/>
  * 
- * map本身不支持同步，需要调用Collections.synchronizedMap使其支持。ehcache则没有这个问题。
+ * <pre>
+ * 为了MapContainer能适用多线程，其每步对 map 的操作都必须锁定 map。
  * 
+ * map本身不支持同步，需要调用Collections.synchronizedMap使其支持。
+ * ehcache则没有这个问题。
+ * </pre>
  */
 public class MapContainer extends AbstractContainer {
 

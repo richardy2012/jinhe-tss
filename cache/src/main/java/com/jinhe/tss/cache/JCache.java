@@ -3,8 +3,8 @@
  * ==================================================================  
  * TSS 
  * ================================================================== 
- * mailTo:jinpujun@hotmail.com
- * Copyright (c) Jon.King, 2012-2015 
+ * mailTo:jinpujun@gmail.com
+ * Copyright (c) Jon.King, 2015-2018 
  * ================================================================== 
  */
 package com.jinhe.tss.cache;
@@ -103,9 +103,10 @@ public class JCache {
 	}
 
 	/**
-	 * 根据指定code值获取一个缓存池。  <br/>
+	 * <pre>
+	 * 根据指定code值获取一个缓存池。 
 	 * 如果获取不到，初始化一个临时的不可见的简单缓存池。
-	 * 
+	 * </pre>
 	 * @param code
 	 * @return
 	 */

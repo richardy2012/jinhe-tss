@@ -104,11 +104,11 @@ public interface IRoleDao extends ITreeSupportDao<Role> {
     List<?> getRoleGroupByStrategy(Long strategyId);
     
     /**
-     * <p>
+     * <pre>
      * 返回用户被转授予的角色列表：用户拥有的角色以及用户所在组拥有的角色（供转授使用）<br/>
      * 用户只能对自身拥有的角色进行转授，如果是因为转授而获得的角色不能再转授。 <br/>
      * 停用的角色虽然可以转授出去，但是使用时会过滤掉的。 <br/>
-     * </p>
+     * </pre>
      * @param userId
      * @return
      */

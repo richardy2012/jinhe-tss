@@ -6,21 +6,23 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.stereotype.Component;
 
 /**
  * <p> Cache在线用户库 </p>
+ * <pre>
+ *  包含了 3个Map：
+ *  	1、tokenMap     ： key:token            , value:Set[OnlineUser] 
+ *  	2、sessionIdMap ： key:appCode_sessionId, value:OnlineUser（含有token）
+ *  	3、usersMap     ： key:userId           , value:userName  用来统计在线用户信息
  *
- * <br/> 包含了 3个Map：
- * <br/> 1、tokenMap     ： key:token                , value:Set[OnlineUser] 
- * <br/> 2、sessionIdMap ： key:appCode+"_"+sessionId, value:OnlineUser（含有token）
- * <br/> 3、usersMap     ： key:userId               , value:userName  用来统计在线用户信息
- *
- * <br/> 一个令牌可以在多个应用中使用，所以会有多个在线用户信息。
- * <br/> 而一个session（对应一个打开状态的页面）在一个应用里只有一个在线用户信息
- * <br/>（但有可能多个用户在这页面登陆过， 如此sessionIdMap只保存最后一个登陆的用户），
- * <br/> 页面刷新时sessionId不变，但如果超时后刷新重新登陆后（或者换个用户登陆），token将会发生变化（将重新生成）。
- *
+ *  一个令牌可以在多个应用中使用，所以会有多个在线用户信息。
+ *  而一个session（对应一个打开状态的页面）在一个应用里只有一个在线用户信息
+ * （但有可能多个用户在这页面登陆过， 如此sessionIdMap只保存最后一个登陆的用户），
+ *  页面刷新时sessionId不变，但如果超时后刷新重新登陆后（或者换个用户登陆），token将会发生变化（将重新生成）。
+ * </pre>
  */
+@Component("CacheOnlineUserManager")
 public class CacheOnlineUserManager implements IOnlineUserManager {
 
     protected Map<String, Set<OnlineUser>> tokenMap = new HashMap<String, Set<OnlineUser>>();

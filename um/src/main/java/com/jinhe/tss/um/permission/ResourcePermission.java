@@ -8,34 +8,34 @@ import java.util.List;
 public interface ResourcePermission {
     
     /**
-     * <p>
-     * 添加资源时的根据其父亲节点的权限补全当前新增资源节点的权限信息，如果父亲节点打的是全勾（即包含所有子节点），那么当前新增节点也设置为全勾。<br/>
+     * <pre>
+     * 添加资源时的根据其父亲节点的权限补全当前新增资源节点的权限信息，如果父亲节点打的是全勾（即包含所有子节点），那么当前新增节点也设置为全勾。
      * 
-     * 自动授权过程是这样的：<br/>
-     * 1.找到资源的授权状态为全勾的父节点<br/>
-     * 2.存在的话设置当前新增节点也为全勾。<br/>
-     * </p>
+     * 自动授权过程是这样的：
+     * 1.找到资源的授权状态为全勾的父节点
+     * 2.存在的话设置当前新增节点也为全勾。
+     * </pre>
      * @param resourceId     资源
      * @param resourceTypeId 资源类型
      */
     void addResource(Long resourceId, String resourceTypeId);
     
 	/**
-	 * <p>
+	 * <pre>
 	 * 删除资源时的清除其相关授权信息。
      * 只需处理删除节点本身的授权信息即可
      *（通常应用在删除节点的时候会一块删除其子节点，每删一次都要调用本方法一次的）
-	 * </p>
+	 * </pre>
 	 * @param resourceId     资源
 	 * @param resourceTypeId 资源类型
 	 */
 	void delResource(Long resourceId, String resourceTypeId);
 	
 	/**
-	 * <p>
+	 * <pre>
 	 * 资源被移动后的权限信息设置。
 	 * 如果移动后的父亲节点授权状态为全勾，则移动过去整枝节点的授权状态都为全勾。
-	 * </p>
+	 * </pre>
 	 * @param resourceId     资源
 	 * @param resourceTypeId 资源类型
 	 */

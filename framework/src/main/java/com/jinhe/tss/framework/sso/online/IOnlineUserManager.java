@@ -34,7 +34,7 @@ public interface IOnlineUserManager {
     /**
      * <p>
      * 销毁在线用户或访问应用：根据应用Code，SessionId销毁相应的记录。
-     * 注：一次只注销一个应用，即一次登录、多次登出。用户有可能不想退出一次性退出全部应用。
+     * 注：一次只注销一个应用，即一次登录、多次登出，因为在每个应用都生成了一个不同的token（给了多把钥匙，一把把归还）。
      * SessionDestroyedListener，此监听器会在session超时时自动销毁在线用户信息。
      * </p>
      *

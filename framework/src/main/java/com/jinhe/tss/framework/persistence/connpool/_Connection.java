@@ -4,7 +4,7 @@
  * TSS 
  * ================================================================== 
  * mailTo:jinpujun@gmail.com
- * Copyright (c) Jon.King, 2012-2015 
+ * Copyright (c) Jon.King, 2015-2018  
  * ================================================================== 
  */
 package com.jinhe.tss.framework.persistence.connpool;
@@ -87,10 +87,12 @@ public class _Connection extends ConfigurableContants {
 	}
 
 	/**
-	 *  ## JNDI Datasource <br/>
-	    #hibernate.connection.datasource jdbc/tss  <br/>
-	    #hibernate.connection.username db2  <br/>
-	    #hibernate.connection.password db2  <br/>
+	 * <pre>
+	 *  ## JNDI Datasource 
+	 *  hibernate.connection.datasource jdbc/tss  
+	 *  hibernate.connection.username db2  
+	 *  hibernate.connection.password db2  
+	 * </pre>
 	 */
 	static class DatasourceConnectionProvider implements IConnectionProvider {
 		public Connection getConnection(Properties p) {

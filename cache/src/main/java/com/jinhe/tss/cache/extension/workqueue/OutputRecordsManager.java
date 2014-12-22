@@ -3,8 +3,8 @@
  * ==================================================================  
  * TSS 
  * ================================================================== 
- * mailTo:jinpujun@hotmail.com
- * Copyright (c) Jon.King, 2012-2015 
+ * mailTo:jinpujun@gmail.com
+ * Copyright (c) Jon.King, 2015-2018 
  * ================================================================== 
 */
 package com.jinhe.tss.cache.extension.workqueue;
@@ -19,15 +19,16 @@ import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.extension.threadpool.IThreadPool;
 
 /** 
- * <br/>输出记录类操作的管理类超类。 
- * <br/>可输出日志、点击率、访问量等信息。
+ * <pre>
+ * 输出记录类操作的管理类超类。 
+ * 可输出日志、点击率、访问量等信息。
  * 
- * <br/>本超类中设置了一个存放记录的缓存，当缓存中的记录数到达最大值时，
- * <br/>则会把缓存中的记录交给一个RecordsOutputTask任务，并调用工作线程池来执行该任务。
- * <br/>
- * <br/>本超类中同时还启用了一个守护的记录输出进程，当距离上次输出记录的时间达到最长等待时间时，
- * <br/>则不管缓存是否已满只要有记录就都强制输出。
+ * 本超类中设置了一个存放记录的缓存，当缓存中的记录数到达最大值时，
+ * 则会把缓存中的记录交给一个RecordsOutputTask任务，并调用工作线程池来执行该任务。
  * 
+ * 本超类中同时还启用了一个守护的记录输出进程，当距离上次输出记录的时间达到最长等待时间时，
+ * 则不管缓存是否已满只要有记录就都强制输出。
+ * </pre>
  */
 public abstract class OutputRecordsManager {
 	

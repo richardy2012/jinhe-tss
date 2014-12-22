@@ -3,8 +3,8 @@
  * ==================================================================  
  * TSS 
  * ================================================================== 
- * mailTo:jinpujun@hotmail.com
- * Copyright (c) Jon.King, 2012-2015 
+ * mailTo:jinpujun@gmail.com
+ * Copyright (c) Jon.King, 2015-2018  
  * ================================================================== 
  */
 package com.jinhe.tss.cache;
@@ -12,9 +12,11 @@ package com.jinhe.tss.cache;
 import com.jinhe.tss.util.BeanUtil;
 
 /**
- * 简单的缓存对象池，适合简单的缓存需求。 <br/>
+ * <pre>
+ * 简单的缓存对象池，适合简单的缓存需求。
  * 
  * 例如：模板、参数值等。
+ * </pre>
  */
 public class SimplePool extends AbstractPool {
 

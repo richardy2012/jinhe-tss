@@ -3,8 +3,8 @@
  * ==================================================================  
  * TSS 
  * ================================================================== 
- * mailTo:jinpujun@hotmail.com
- * Copyright (c) Jon.King, 2012-2015 
+ * mailTo:jinpujun@gmail.com
+ * Copyright (c) Jon.King, 2015-2018 
  * ================================================================== 
  */
 package com.jinhe.tss.cache;
@@ -33,12 +33,13 @@ public class ObjectPool extends AbstractPool implements Cleaner {
 	public ObjectPool() { }
 
 	/**
-	 * 初始化指定数量的对象放入池中。<br/>
+	 * <pre>
+	 * 初始化指定数量的对象放入池中。
 	 * 
-	 * 本方法将产生一个新的线程来初始化这些对象。 <br/>
+	 * 本方法将产生一个新的线程来初始化这些对象。
 	 * 
 	 * 本方法跟release()方法是相对立的。
-	 * 
+	 * </pre>
 	 * @param num
 	 */
 	public final void init() {

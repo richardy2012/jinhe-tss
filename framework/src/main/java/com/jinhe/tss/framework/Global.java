@@ -33,6 +33,7 @@ public class Global {
 		return getContext().getBean(beanId);
 	}
  
+	// 配置在um-remote.xml里
 	public static IOnlineUserManager getRemoteOnlineUserManager() {
 		return (IOnlineUserManager) getBean("RemoteOnlineUserManager");
 	}
