@@ -153,6 +153,7 @@ function savePermission() {
             "resourceType": resourceType, 
             "permissions": nodesPermissions.join(",")
         },
+        waiting: true,
 		onsuccess: function() {
 			searchPermission();
 		}
@@ -178,6 +179,7 @@ function clearPermission() {
             "applicationId": applicationId, 
             "resourceType": resourceType
         },
+        waiting: true,
 		onsuccess: function() {
 			searchPermission();
 		}

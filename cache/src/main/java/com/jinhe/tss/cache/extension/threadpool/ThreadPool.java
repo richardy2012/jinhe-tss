@@ -44,7 +44,7 @@ public class ThreadPool extends ReusablePool implements IThreadPool{
         excute(null, new TimeWrapper(task, task));
     }
 
-    public void excute(Pool taskpool, Cacheable task) {
+    public synchronized void excute(Pool taskpool, Cacheable task) {
         this.taskpool = taskpool;
         
         // 如果池中工作线程都已被销毁，则重新开始初始化（注：单单size()=0，有可能正在初始化）。

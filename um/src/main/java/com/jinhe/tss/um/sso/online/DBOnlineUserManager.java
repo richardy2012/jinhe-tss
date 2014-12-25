@@ -36,8 +36,9 @@ public class DBOnlineUserManager implements IOnlineUserManager {
         	token = ou.getToken();
     	}
     	
-    	long nowLong = new Date().getTime(); // 将参考日期转换为毫秒时间
-        Date time = new Date(nowLong - (long) (72 * 60 * 60 * 1000)); // 加上时间差毫秒数
+    	// 将三天前的在线信息删除（应该都是漏删除的了）
+    	long nowLong = new Date().getTime(); 
+        Date time = new Date(nowLong - (long) (72 * 60 * 60 * 1000)); 
     	dao.deleteAll(dao.getEntities(" from DBOnlineUser o where o.loginTime < ?", time));
     	
 		return token;
@@ -64,7 +65,7 @@ public class DBOnlineUserManager implements IOnlineUserManager {
 
     @SuppressWarnings("unchecked")
 	public Collection<String> getOnlineUserNames() {
-    	String hql = "select distinct o.userName from DBOnlineUser o where o.token is not null ";
+    	String hql = "select distinct o.userName from DBOnlineUser o";
         return (Collection<String>) dao.getEntities(hql);
     }
 
