@@ -3,12 +3,19 @@ package com.jinhe.tss.framework.exception;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.SocketException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletResponse;
 
 import org.apache.log4j.Logger;
 
 import com.jinhe.tss.framework.Config;
+import com.jinhe.tss.framework.Global;
+import com.jinhe.tss.framework.component.log.IBusinessLogger;
+import com.jinhe.tss.framework.component.log.Log;
+import com.jinhe.tss.framework.component.param.ParamConfig;
+import com.jinhe.tss.framework.component.timer.MailUtil;
 import com.jinhe.tss.framework.exception.convert.ExceptionConvertorFactory;
 import com.jinhe.tss.framework.exception.convert.IExceptionConvertor;
 import com.jinhe.tss.framework.sso.Environment;
@@ -17,6 +24,7 @@ import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.web.dispaly.ErrorMessageEncoder;
 import com.jinhe.tss.framework.web.dispaly.IDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
+import com.jinhe.tss.util.EasyUtils;
 
 /**
  * 异常信息编码器
@@ -107,6 +115,37 @@ public class ExceptionEncoder {
     private static void printStackTrace(Throwable be) {
         StringWriter writer = new StringWriter();
         be.printStackTrace(new PrintWriter(writer)); // 将异常信息输出至 字符串流StringWriter
-        log.error(writer.toString());
+        String stackTrace = writer.toString();
+		log.error(stackTrace);
+		
+		// 记录异常信息到日志里
+		String errorMessage = be.getMessage();
+		Log excuteLog = new Log(errorMessage, stackTrace);
+    	excuteLog.setOperateTable("系统异常");
+        ((IBusinessLogger) Global.getBean("BusinessLogger")).output(excuteLog);
+        
+        // 对指定了关键字的错误异常进行邮件提醒
+        String errorKeyword = ParamConfig.getAttribute("error.keyword");
+        if( EasyUtils.isNullOrEmpty(errorKeyword) ) {
+        	errorKeyword = "java.lang.OutOfMemoryError";
+        } else {
+        	errorKeyword += ",java.lang.OutOfMemoryError";
+        }
+        List<String> errorKeywords = Arrays.asList(errorKeyword.split(","));
+        
+        boolean hitted = false;
+        for(String ek : errorKeywords) {
+        	if(stackTrace.indexOf(ek) >= 0) {
+        		hitted = true;
+        		break;
+        	}
+        }
+        
+        if(hitted) {
+        	MailUtil.send("紧急情况，请速查看详细日志：" + errorMessage, stackTrace);
+        }
     }
+    
+    public final static String ERROR_KEYWORD = "error.keyword";
+    
 }

@@ -15,7 +15,7 @@ public abstract class AbstractJob implements Job {
 	
 	protected Logger log = Logger.getLogger(this.getClass());
 	
-	IBusinessLogger businessLogger = (IBusinessLogger) Global.getBean("BusinessLogger");;
+	IBusinessLogger businessLogger = (IBusinessLogger) Global.getBean("BusinessLogger");
 	
     public void execute(JobExecutionContext context) throws JobExecutionException {
     	JobDetail jobDetail = context.getJobDetail();

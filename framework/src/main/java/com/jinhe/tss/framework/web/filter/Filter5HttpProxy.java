@@ -138,7 +138,6 @@ public class Filter5HttpProxy implements Filter {
 	/**
 	 * <p>
 	 * 处理请求自动转向问题
-     * TODO 转向时未处理request-type/realIp等参数，一般来说不需要处理（需要时再处理）
 	 * </p>
 	 * @param appServer
 	 * @param response
