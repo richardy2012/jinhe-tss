@@ -333,6 +333,25 @@
     </build>
 
 	<profiles>
+		<!-- eg: mvn clean install  -Pxxx -Dmaven.test.skip=true -->
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<log.level>debug</log.level>
+				<job.enable>true</job.enable>
+				<db.username>root</db.username>
+				<db.password>800best@com</db.password>
+				<db.url>127.0.0.1:3306/tss</db.url>
+				<environment>dev</environment>
+				<tomcat.url>localhost:8088</tomcat.url>
+				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
+			</properties>
+		</profile>
+
+		<!-- for btrBI -->
 		<profile>
 			<id>prod</id>
 			<activation>
@@ -381,23 +400,8 @@
 				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
 			</properties>
 		</profile>
-		<profile>
-			<id>dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<log.level>debug</log.level>
-				<job.enable>true</job.enable>
-				<db.username>root</db.username>
-				<db.password>800best@com</db.password>
-				<db.url>127.0.0.1:3306/tss_btr</db.url>
-				<environment>dev</environment>
-				<tomcat.url>localhost:8088</tomcat.url>
-				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
-			</properties>
-		</profile>
 
+		<!-- for wmsBI -->
 		<profile>
 			<id>prod4wms</id>
 			<activation>

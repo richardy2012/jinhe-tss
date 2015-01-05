@@ -40,7 +40,7 @@ import com.jinhe.tss.util.XMLDocUtil;
  * 初始化数据库。
  * 
  * 需使用 src/main/resources目录下的配置文件，比如persistence.xml, application.properties等。
- * 初始化时需要把applicationContext.xml 里 <property name="generateDdl" value="true"/> 设为true
+ * 初始化时需要把spring.xml 里 <property name="generateDdl" value="true"/> 设为true
  */
 @ContextConfiguration(
         locations={
@@ -189,7 +189,7 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
  
         Param paramGroup = addParam(ParamConstants.DEFAULT_PARENT_ID, "应用服务配置");
         
-        Document doc = XMLDocUtil.createDoc("appServers.xml");
+        Document doc = XMLDocUtil.createDoc("tss/appServers.xml");
         List<?> elements = doc.getRootElement().elements();
         for (Iterator<?> it = elements.iterator(); it.hasNext();) {
             org.dom4j.Element element = (org.dom4j.Element) it.next();

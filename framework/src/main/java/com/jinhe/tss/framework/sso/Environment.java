@@ -36,6 +36,14 @@ public class Environment {
         }
         return card.getLoginName();
     }
+    
+    public static Object getOperatorInfo(String field) {
+        IdentityCard card = Context.getIdentityCard();
+        if ( card != null && card.getOperator() != null ) {
+        	return card.getOperator().getAttributesMap().get(field);
+        }
+        return null;
+    }
 
     /**
      * <p>
