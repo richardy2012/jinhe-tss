@@ -221,7 +221,7 @@ public class ArticleService implements IArticleService {
  
     public PageInfo getChannelArticles(Long channelId, Integer page, String...orderBy) {
        if( !channelDao.checkBrowsePermission(channelId) ) {
-            log.error("用户【" + Environment.getOperatorName() + "】试图访问没有文章浏览权限的栏目【" + channelId + "】");
+            log.error("用户【" + Environment.getUserCode() + "】试图访问没有文章浏览权限的栏目【" + channelId + "】");
             return new PageInfo();
         }
         return articleDao.getPageList(channelId, page, orderBy);

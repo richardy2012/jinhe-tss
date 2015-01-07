@@ -57,7 +57,7 @@ public class LogActionTest extends TxTestSupport {
 		condition.setOperateTable("用户");
 		condition.setOperateTimeFrom(new Date(System.currentTimeMillis() - 1000*10));
 		condition.setOperateTimeTo(new Date());
-		condition.setOperatorName(Environment.getOperatorName());
+		condition.setOperatorName(Environment.getUserCode());
 		condition.setOperatorIP(null);
 		condition.setOperationCode(null);
 		

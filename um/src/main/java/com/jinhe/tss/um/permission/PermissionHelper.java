@@ -78,11 +78,11 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
     	
         String hql = "select distinct p.id.operationId from " + permissionTable + " p, RoleUserMapping ru "  +
                 " where p.id.resourceId = ? and p.id.roleId = ru.id.roleId and ru.id.userId = ? ";  
-        List<String> operationsOnResource = (List<String>) getEntities(hql, resourceId, Environment.getOperatorId());
+        List<String> operationsOnResource = (List<String>) getEntities(hql, resourceId, Environment.getUserId());
         operations.addAll(operationsOnResource);  // 用户对指定节点的操作权限
         
         ILevelTreeNode resource = (ILevelTreeNode) getEntity(resourceClass, resourceId);
-        List<?> parentOperations = getEntities(hql, resource.getParentId(), Environment.getOperatorId()); 
+        List<?> parentOperations = getEntities(hql, resource.getParentId(), Environment.getUserId()); 
         for(Object oprationId : parentOperations){
             operations.add("p_" + oprationId);  // 指定节点的父节点的操作权限，加"p_"
         }
@@ -458,11 +458,11 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
     }
     
     public List<Long> getResourceIdsByOperation(String permissionTable, String operationId){
-        return getResourceIdsByOperation(permissionTable, operationId, Environment.getOperatorId());
+        return getResourceIdsByOperation(permissionTable, operationId, Environment.getUserId());
     }
     
     public List<Long> getResourceIdsByOperation(String appId, String resourceTypeId, String operationId){
-		return getResourceIdsByOperation(appId, resourceTypeId, operationId, Environment.getOperatorId());
+		return getResourceIdsByOperation(appId, resourceTypeId, operationId, Environment.getUserId());
     }
     
     public List<Long> getResourceIdsByOperation(String appId, String resourceTypeId, String operationId, Long operatorId){

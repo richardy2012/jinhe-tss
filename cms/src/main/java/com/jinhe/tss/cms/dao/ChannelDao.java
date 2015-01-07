@@ -68,7 +68,7 @@ public class ChannelDao extends TreeSupportDao<Channel> implements IChannelDao {
 	public boolean checkBrowsePermission(Long channelId) {
         String hql = "select distinct v from RoleUserMapping r, ChannelPermission v " +
                 " where v.id.resourceId= ? and v.id.roleId = r.id.roleId and r.id.userId = ? and v.id.operationId = ?";
-        List<?> list = getEntities(hql, channelId, Environment.getOperatorId(), CMSConstants.OPERATION_VIEW);
+        List<?> list = getEntities(hql, channelId, Environment.getUserId(), CMSConstants.OPERATION_VIEW);
         return list.size() > 0 ;
     }
  

@@ -278,7 +278,7 @@ public class PortalAction extends FMSupportAction {
     		@PathVariable("portalId") Long portalId, 
     		@PathVariable("themeId") Long themeId) {
     	
-        service.savePersonalTheme(portalId, Environment.getOperatorId(), themeId);
+        service.savePersonalTheme(portalId, Environment.getUserId(), themeId);
         printSuccessMessage("更改主题成功");
     }
     

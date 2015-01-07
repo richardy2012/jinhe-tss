@@ -150,7 +150,7 @@ public class GroupModuleTest extends TxSupportTest4UM {
         group3.setGroupType( Group.MAIN_GROUP_TYPE );
         groupService.createNewGroup(group3 , "", "-1");
  
-        List<Group> groups = groupDao.getGroupsByType(Environment.getOperatorId(), 
+        List<Group> groups = groupDao.getGroupsByType(Environment.getUserId(), 
         		UMConstants.GROUP_VIEW_OPERRATION, Group.MAIN_GROUP_TYPE);
         for(Group temp : groups) {
         	temp.setName(temp.getName() + "...");

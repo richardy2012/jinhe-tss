@@ -103,13 +103,13 @@ public class PortalModuleTest extends TxSupportTest4Portal {
         	Assert.assertTrue("该主题为门户的默认主题或者当前主题，正在使用中，删除失败！", true);
         }
         
-        portalService.savePersonalTheme(portalId, Environment.getOperatorId(), defaultThemeId);
+        portalService.savePersonalTheme(portalId, Environment.getUserId(), defaultThemeId);
         ThemePersonal pt = portalDao.getPersonalTheme(portalId);
         Assert.assertNotNull(pt);
         Assert.assertEquals(pt.getId(), pt.getPK());
         Assert.assertEquals(portalId, pt.getPortalId());
         Assert.assertEquals(defaultThemeId, pt.getThemeId());
-        Assert.assertEquals(Environment.getOperatorId(), pt.getUserId());
+        Assert.assertEquals(Environment.getUserId(), pt.getUserId());
     }
     
     @Test

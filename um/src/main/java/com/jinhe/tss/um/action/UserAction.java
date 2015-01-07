@@ -185,15 +185,15 @@ public class UserAction extends BaseActionSupport {
 	 */
     @RequestMapping("/self/detail")
 	public void getUserInfo(HttpServletResponse response) {
-    	User user = userService.getUserById(Environment.getOperatorId());
+    	User user = userService.getUserById(Environment.getUserId());
     	XFormEncoder userEncoder = new XFormEncoder(UMConstants.USER_BASEINFO_XFORM, user);
     	userEncoder.setColumnAttribute("loginName", "editable", "false");
         userEncoder.setColumnAttribute("password",  "editable", "false");
         
         Map<String, Object> tempMap = new HashMap<String, Object>();
-        tempMap.put("userId", Environment.getOperatorId());
+        tempMap.put("userId", Environment.getUserId());
         tempMap.put("userName", Environment.getUserName());
-        tempMap.put("loginName", Environment.getOperatorName());
+        tempMap.put("loginName", Environment.getUserCode());
         XFormEncoder pwdEncoder = new XFormEncoder(UMConstants.PASSWORD_CHANGE_XFORM, tempMap);
         userEncoder.setColumnAttribute("userName", "editable", "false");
         
@@ -219,8 +219,8 @@ public class UserAction extends BaseActionSupport {
     @RequestMapping("/operatorInfo")
     public void getOperatorInfo(HttpServletResponse response) {
         XmlHttpEncoder encoder = new XmlHttpEncoder();
-        encoder.put("id", Environment.getOperatorId());
-        encoder.put("loginName", Environment.getOperatorName());
+        encoder.put("id", Environment.getUserId());
+        encoder.put("loginName", Environment.getUserCode());
         encoder.put("name", Environment.getUserName());
         
         encoder.print(getWriter());

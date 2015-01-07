@@ -83,7 +83,7 @@ public class AutoLoginFilterTest {
         
         filter.doFilter(request, response, chain);
         assertNotNull(Context.getRequestContext().getIdentityCard());
-        assertEquals(testPasswordOperator.getLoginName(), Environment.getOperatorName());
+        assertEquals(testPasswordOperator.getLoginName(), Environment.getUserCode());
         assertEquals(MockFilterChain.RESPONSE_BODY_STRING, response.getContentAsString());
     }
  
@@ -94,7 +94,7 @@ public class AutoLoginFilterTest {
         filter.doFilter(request, response, chain);
 
         assertNotNull(Context.getRequestContext().getIdentityCard());
-        assertEquals(AnonymousOperator.anonymous.getLoginName(), Environment.getOperatorName());
+        assertEquals(AnonymousOperator.anonymous.getLoginName(), Environment.getUserCode());
         assertEquals(MockFilterChain.RESPONSE_BODY_STRING, response.getContentAsString());
     }
  
@@ -120,7 +120,7 @@ public class AutoLoginFilterTest {
         Context.initRequestContext(request);
         filter.doFilter(request, response, chain);
         
-        assertEquals(AnonymousOperator.anonymous.getLoginName(), Environment.getOperatorName());
+        assertEquals(AnonymousOperator.anonymous.getLoginName(), Environment.getUserCode());
         assertEquals(MockFilterChain.RESPONSE_BODY_STRING, response.getContentAsString());
     }
  
@@ -157,7 +157,7 @@ public class AutoLoginFilterTest {
         filter.doFilter(request, response, chain);
         
         assertNotNull(Context.getToken());
-        assertEquals(new Long(operator.getId().longValue() + 1), Environment.getOperatorId());
+        assertEquals(new Long(operator.getId().longValue() + 1), Environment.getUserId());
         assertEquals(MockFilterChain.RESPONSE_BODY_STRING, response.getContentAsString());
     }
  
@@ -183,7 +183,7 @@ public class AutoLoginFilterTest {
         filter.doFilter(request, response, chain);
 
         assertNotNull(Context.getRequestContext().getIdentityCard());
-        assertEquals(AnonymousOperator.anonymous.getLoginName(), Environment.getOperatorName());
+        assertEquals(AnonymousOperator.anonymous.getLoginName(), Environment.getUserCode());
         assertEquals(MockFilterChain.RESPONSE_BODY_STRING, response.getContentAsString());
     }
 }

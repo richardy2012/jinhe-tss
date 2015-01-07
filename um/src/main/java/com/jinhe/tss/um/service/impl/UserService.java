@@ -39,7 +39,7 @@ public class UserService implements IUserService{
 	@Autowired private IGroupService groupService;
 
 	public void deleteUser(Long groupId, Long userId) {
-        if(Environment.getOperatorId().equals(userId)) {
+        if(Environment.getUserId().equals(userId)) {
             throw new BusinessException("当前用户正在使用中，无法自我删除！");
         }
         

@@ -130,7 +130,7 @@ public class PortalDispatcher extends HttpServlet {
         String resourceType = PortalConstants.PORTAL_RESOURCE_TYPE;
         String operration = PortalConstants.PORTAL_VIEW_OPERRATION;
         
-        Long operatorId = Environment.getOperatorId();
+        Long operatorId = Environment.getUserId();
         if(operatorId == null) {
         	operatorId = AnonymousOperator.anonymous.getId();
         }

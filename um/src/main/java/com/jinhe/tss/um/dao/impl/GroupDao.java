@@ -105,7 +105,7 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
         String permissionTable = resourceTypeDao.getPermissionTable(UMConstants.TSS_APPLICATION_ID, group.getResourceType());
         
         String hql = PermissionHelper.permissionHQL(entityName, permissionTable, " and o.decode like ? ", true);
-        return getEntities(hql, Environment.getOperatorId(), UMConstants.GROUP_VIEW_OPERRATION, group.getDecode() + "%" );
+        return getEntities(hql, Environment.getUserId(), UMConstants.GROUP_VIEW_OPERRATION, group.getDecode() + "%" );
 	}
  
 	public List<?> getMainAndAssistantGroups(Long operatorId) {

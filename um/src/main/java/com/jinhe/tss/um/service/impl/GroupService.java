@@ -49,7 +49,7 @@ public class GroupService implements IGroupService {
     }
 
     public List<?> findGroups() {
-    	Long operatorId = Environment.getOperatorId();
+    	Long operatorId = Environment.getUserId();
         List<?> mainAndAssistantGroups = groupDao.getMainAndAssistantGroups(operatorId);
         
         return mainAndAssistantGroups;
@@ -64,7 +64,7 @@ public class GroupService implements IGroupService {
     }
     
     private Object[] getGroupsByGroupTypeAndOperationId(Integer groupType, String operationId) {
-    	Long operatorId = Environment.getOperatorId();
+    	Long operatorId = Environment.getUserId();
     	
         List<?> groups = groupDao.getGroupsByType(operatorId, operationId, groupType);  
         List<Long> groupIds = new ArrayList<Long>();
@@ -173,7 +173,7 @@ public class GroupService implements IGroupService {
             List<?> groups = groupDao.getParentsById(groupId);
             String operationId = UMConstants.GROUP_EDIT_OPERRATION;
             List<?> canDoGroups = resourcePermission.getParentResourceIds(applicationId, UMConstants.GROUP_RESOURCE_TYPE_ID, groupId, operationId, 
-                    Environment.getOperatorId());
+                    Environment.getUserId());
             
             if (groups.size() > canDoGroups.size()) {
                 throw new BusinessException("对节点的父节点没有启用权限，不能启用此节点！");
@@ -210,7 +210,7 @@ public class GroupService implements IGroupService {
     }
 
     public void deleteGroup(Long groupId) {
-        if(groupDao.isOperatorInGroup(groupId, Environment.getOperatorId()))
+        if(groupDao.isOperatorInGroup(groupId, Environment.getUserId()))
             throw new BusinessException("当前用户在要删除的组中，删除失败！");
         
         Group group = groupDao.getEntity(groupId);
@@ -233,7 +233,7 @@ public class GroupService implements IGroupService {
         String applicationId = UMConstants.TSS_APPLICATION_ID;
         List<?> allGroups = groupDao.getChildrenById(groupId);
         List<?> canDoGroups = resourcePermission.getSubResourceIds(applicationId, UMConstants.GROUP_RESOURCE_TYPE_ID, 
-                groupId, operationId, Environment.getOperatorId());
+                groupId, operationId, Environment.getUserId());
         
         //如果将要操作的数量==能够操作的数量,说明对所有组都有操作权限,则返回true
         return allGroups.size() == canDoGroups.size();

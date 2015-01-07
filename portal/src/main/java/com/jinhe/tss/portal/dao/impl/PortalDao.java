@@ -58,7 +58,7 @@ public class PortalDao extends TreeSupportDao<Structure> implements IPortalDao {
     
     public ThemePersonal getPersonalTheme(Long portalId) {
         String hql = "from ThemePersonal o where o.userId = ? and o.portalId = ?";
-        List<?> list = getEntities(hql, Environment.getOperatorId(), portalId);
+        List<?> list = getEntities(hql, Environment.getUserId(), portalId);
         if( !list.isEmpty() ) {
             return (ThemePersonal) list.get(0);
         }

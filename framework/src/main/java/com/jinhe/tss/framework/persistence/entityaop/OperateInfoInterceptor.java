@@ -27,13 +27,13 @@ public class OperateInfoInterceptor extends MatchByDaoMethodNameInterceptor {
                     
                     if(((IEntity)operateInfo).getPK() == null) { // ID为null，说明是新建
                         operateInfo.setCreateTime(new Date());
-                        operateInfo.setCreatorId(Environment.getOperatorId());
-                        operateInfo.setCreatorName(Environment.getOperatorName());           
+                        operateInfo.setCreatorId(Environment.getUserId());
+                        operateInfo.setCreatorName(Environment.getUserCode());           
                     } 
                     else {
                         operateInfo.setUpdateTime(new Date());
-                        operateInfo.setUpdatorId(Environment.getOperatorId());
-                        operateInfo.setUpdatorName(Environment.getOperatorName());   
+                        operateInfo.setUpdatorId(Environment.getUserId());
+                        operateInfo.setUpdatorName(Environment.getUserCode());   
                     }
                 }
             }

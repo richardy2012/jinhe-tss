@@ -11,7 +11,7 @@ public class UMIdentityGetterTest extends TxSupportTest4UM {
 	@Test
 	public void testTranslator() {
 		 IdentityGetter translator = new UMIdentityGetter();
-		 translator.getOperator(Environment.getOperatorId());
+		 translator.getOperator(Environment.getUserId());
 	}
 
 }

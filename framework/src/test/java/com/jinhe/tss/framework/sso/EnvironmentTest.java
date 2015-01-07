@@ -13,13 +13,13 @@ public class EnvironmentTest {
 		
 		Assert.assertNull(Environment.getClientIp());
 		Assert.assertEquals("/tss", Environment.getContextPath());
-		Assert.assertNull(Environment.getOperatorName());
+		Assert.assertNull(Environment.getUserCode());
 		Assert.assertNull(Environment.getSessionId());
 		
 		Assert.assertNull(Environment.getUserName());
-		Assert.assertNull(Environment.getOperatorId());
+		Assert.assertNull(Environment.getUserId());
 		
-		Assert.assertNull(Environment.getOperatorInfo("fromUserId"));
+		Assert.assertNull(Environment.getUserInfo("fromUserId"));
 		
 		Assert.assertNull(TokenUtil.getUserIdFromToken(null));
 		

@@ -9,13 +9,11 @@ import com.jinhe.tss.framework.sso.context.RequestContext;
  * </p>
  */
 public class Environment {
+	
     /**
-     * <p>
      * 获取用户ID信息
-     * </p>
-     * @return
      */
-    public static Long getOperatorId() {
+    public static Long getUserId() {
         IdentityCard card = Context.getIdentityCard();
         if (card == null) {
             return null;
@@ -24,12 +22,9 @@ public class Environment {
     }
 
     /**
-     * <p>
      * 获取用户账号（LoginName）
-     * </p>
-     * @return
      */
-    public static String getOperatorName() {
+    public static String getUserCode() {
         IdentityCard card = Context.getIdentityCard();
         if (card == null) {
             return null;
@@ -37,7 +32,18 @@ public class Environment {
         return card.getLoginName();
     }
     
-    public static Object getOperatorInfo(String field) {
+    /**
+     * 获取用户姓名
+     */
+    public static String getUserName() {
+        IdentityCard card = Context.getIdentityCard();
+        if (card == null) {
+            return null;
+        }
+        return card.getUserName();
+    }
+    
+    public static Object getUserInfo(String field) {
         IdentityCard card = Context.getIdentityCard();
         if ( card != null && card.getOperator() != null ) {
         	return card.getOperator().getAttributesMap().get(field);
@@ -46,10 +52,7 @@ public class Environment {
     }
 
     /**
-     * <p>
      * 获取当前SessionID
-     * </p>
-     * @return
      */
     public static String getSessionId() {
         RequestContext requestContext = Context.getRequestContext();
@@ -60,32 +63,14 @@ public class Environment {
     }
 
     /**
-     * <p>
      * 获取令牌
-     * </p>
-     * @return
      */
     public static String getToken() {
         return Context.getToken();
     }
 
     /**
-     * 获取用户姓名
-     * @return
-     */
-    public static String getUserName() {
-        IdentityCard card = Context.getIdentityCard();
-        if (card == null) {
-            return null;
-        }
-        return card.getUserName();
-    }
-
-    /**
-     * <p>
      * 获取用户客户端IP
-     * </p>
-     * @return
      */
     public static String getClientIp() {
         RequestContext requestContext = Context.getRequestContext();
@@ -96,10 +81,7 @@ public class Environment {
     }
     
     /**
-     * <p>
      * 获取应用系统上下文根路径(即发布路径)，一般为"/tss"
-     * </p>
-     * @return
      */
     public static String getContextPath(){
         return Context.getApplicationContext().getCurrentAppServer().getPath();

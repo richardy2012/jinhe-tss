@@ -59,7 +59,7 @@ public class RoleService implements IRoleService {
         String applicationId  = UMConstants.TSS_APPLICATION_ID;
         String resourceTypeId = UMConstants.ROLE_RESOURCE_TYPE_ID;
         String operationId    = UMConstants.ROLE_EDIT_OPERRATION;
-        Long operatorId = Environment.getOperatorId();
+        Long operatorId = Environment.getUserId();
         List<?> permitedSubNodeIds = resourcePermission.getSubResourceIds(applicationId, resourceTypeId, roleId, operationId, operatorId);
         List<?> allSubNodes = roleDao.getChildrenById(roleId);
 		if ( allSubNodes.size() < permitedSubNodeIds.size() ) {
@@ -95,7 +95,7 @@ public class RoleService implements IRoleService {
 	public void disable(Long id, Integer disabled) {
         String appId = UMConstants.TSS_APPLICATION_ID;
         String resourceTypeId = UMConstants.ROLE_RESOURCE_TYPE_ID;
-        Long operatorId = Environment.getOperatorId();
+        Long operatorId = Environment.getUserId();
         
         List<Role> list;
         if (disabled.equals(ParamConstants.FALSE)) {  
@@ -129,7 +129,7 @@ public class RoleService implements IRoleService {
  
 	public Map<String, Object> getInfo4CreateNewRole() {
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("Role2UserTree", groupDao.getVisibleMainUsers(Environment.getOperatorId()));
+		map.put("Role2UserTree", groupDao.getVisibleMainUsers(Environment.getUserId()));
 		map.put("Role2GroupTree", getVisibleGroups());
 		return map;
 	}
@@ -137,7 +137,7 @@ public class RoleService implements IRoleService {
 	public Map<String, Object> getInfo4UpdateExistRole(Long roleId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("RoleInfo", getRoleById(roleId));
-	    map.put("Role2UserTree", groupDao.getVisibleMainUsers(Environment.getOperatorId()));
+	    map.put("Role2UserTree", groupDao.getVisibleMainUsers(Environment.getUserId()));
 	    map.put("Role2GroupTree", getVisibleGroups());
 		map.put("Role2GroupExistTree", roleDao.getGroupsByRoleId(roleId));
 		map.put("Role2UserExistTree", roleDao.getUsersByRoleId(roleId));
@@ -145,7 +145,7 @@ public class RoleService implements IRoleService {
 	}
 
     private List<?> getVisibleGroups() {
-        return groupDao.getMainAndAssistantGroups(Environment.getOperatorId());
+        return groupDao.getMainAndAssistantGroups(Environment.getUserId());
     }
 
 	public void move(Long id, Long targetId) {
@@ -271,6 +271,6 @@ public class RoleService implements IRoleService {
     @SuppressWarnings("unchecked")
 	public List<Long[]> getRoles4Permission(){
         String hql = "select distinct t.id.userId, t.id.roleId from ViewRoleUser t where t.id.userId = ?";
-        return (List<Long[]>) roleDao.getEntities(hql, Environment.getOperatorId() );  
+        return (List<Long[]>) roleDao.getEntities(hql, Environment.getUserId() );  
     }
 }
