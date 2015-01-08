@@ -289,42 +289,31 @@
     function saveRoleGroup(cacheID, parentID) {
 		var xform = $.F("page1Form");	
 		if( !xform.checkForm() ) return;
-	
-        var flag = false;
 
-        var p = new HttpRequestParams();
-        p.url = URL_SAVE_ROLE_GROUP;
+		var request = new $.HttpRequest();
+        request.url = URL_SAVE_ROLE_GROUP;
  
 		// 角色组基本信息
 		var roleGroupInfoNode = $.cache.XmlDatas[cacheID + "." + XML_ROLE_GROUP_INFO];
-		if( roleGroupInfoNode ) {
-			var roleGroupInfoDataNode = roleGroupInfoNode.selectSingleNode(".//data");
-			if( roleGroupInfoDataNode ) {
-				flag = true;
-				p.setXFormContent(roleGroupInfoDataNode);
-			}
-		}        
+		var dataNode = roleGroupInfoNode.querySelector("data");
+		request.setFormContent(dataNode);
  
-        if( flag ) {
-            var request = new $.HttpRequest();
-            // 同步按钮状态
-            syncButton([$1("page1BtSave"), $1("page2BtSave")], request);
+		// 同步按钮状态
+		syncButton([$1("page1BtSave"), $1("page2BtSave")], request);
 
-            request.onresult = function() {
-				var treeNode = this.getNodeValue(XML_MAIN_TREE).selectSingleNode("treeNode");
-				appendTreeNode(parentID,treeNode);
- 
-				ws.closeActiveTab();
-            }
-            request.onsuccess = function() {
-				// 更新树节点名称
-				var name = xform.getData("name");
-				modifyTreeNode(cacheID, "name", name, true);
+		request.onresult = function() {
+			var treeNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
+			appendTreeNode(parentID, treeNode);
 
-				ws.closeActiveTab();
-            }
-            request.send();
-        }
+			ws.closeActiveTab();
+		}
+		request.onsuccess = function() {
+			// 更新树节点名称
+			modifyTreeNode(cacheID, "name", xform.getData("name"));
+
+			ws.closeActiveTab();
+		}
+		request.send();
     }
 	
 	
