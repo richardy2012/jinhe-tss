@@ -1,8 +1,10 @@
 package com.jinhe.tss.framework.sso.online;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,7 +32,7 @@ public class CacheOnlineUserManager implements IOnlineUserManager {
     protected Map<Long, String> usersMap = new HashMap<Long, String>();
  
     public String logout(String appCode, String sessionId) {
-        //删除当前sessionId在当前应用中登陆后产生的在线用户信息
+        // 删除当前sessionId在当前应用中登陆后产生的在线用户信息
         OnlineUser userInfo = (OnlineUser) sessionIdMap.remove(getSessionIdMapKey(appCode, sessionId));
         
         if (userInfo == null) return null;
@@ -49,6 +51,22 @@ public class CacheOnlineUserManager implements IOnlineUserManager {
         
         return token;
     }
+    
+	public void logout(Long userId) {
+		List<OnlineUser> list = new ArrayList<OnlineUser>();
+		for(OnlineUser ou : sessionIdMap.values()) {
+			if(userId.equals( ou.getUserId() )) {
+				list.add(ou);
+			}
+		}
+		
+		for(OnlineUser ou : list) {
+			sessionIdMap.remove(getSessionIdMapKey(ou.getAppCode(), ou.getSessionId()));
+			tokenMap.remove(ou.getToken());
+		}
+		
+		usersMap.remove(userId);
+	}
  
     public  Set<OnlineUser> getOnlineUsersByToken(String token) {
         return tokenMap.get(token);

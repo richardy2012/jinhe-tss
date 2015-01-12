@@ -173,7 +173,7 @@ public final class Context {
      * 获取用户的身份证对象。web环境下存放在session里和cardsMap里。
      * 非web环境（单元测试环境、定时器操作等）只存放与cardsMap中。
      * </pre>
-     * @see Environment.getOperatorId()
+     * @see Environment.getUserId()
      * @return
      */
     public static IdentityCard getIdentityCard(){

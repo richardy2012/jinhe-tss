@@ -81,7 +81,7 @@ public class DBOnlineUserManagerTest extends TxSupportTest4UM {
         assertTrue(manager.isOnline("token"));
         assertFalse(manager.isOnline("NotLoginToken"));
         
-        // testDelete
+        // test logout
         assertEquals(3, manager.getOnlineUsersByToken("token").size());
 
         manager.logout("TSS1", "sessionId1");
@@ -89,6 +89,10 @@ public class DBOnlineUserManagerTest extends TxSupportTest4UM {
         
         manager.logout("TSS", "sessionId3");
         assertEquals(2, manager.getOnlineUsersByToken("token").size());
+        
+        manager.logout(2L);
+        manager.logout(3L);
+        manager.logout(4L);
     }
 
 }

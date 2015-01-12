@@ -51,7 +51,7 @@ public class FreeMarkerParserTest extends TxSupportTest4Portal {
         
         String templateStr = "<#assign Environment = statics[\"com.jinhe.tss.framework.sso.Environment\"] />" +
                 "<#setting number_format=\"0\">" +
-                "${Environment.getOperatorId()?string.number}";
+                "${Environment.getUserId()?string.number}";
         
         FreemarkerParser parser = new FreemarkerParser(null);
         parser.parseTemplateTwice(templateStr, new OutputStreamWriter(System.out));

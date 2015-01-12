@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.persistence.ICommonDao;
+import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.sso.online.IOnlineUserManager;
 import com.jinhe.tss.framework.sso.online.OnlineUser;
 
@@ -21,17 +22,41 @@ import com.jinhe.tss.framework.sso.online.OnlineUser;
 public class DBOnlineUserManager implements IOnlineUserManager {
 	
 	@Autowired private ICommonDao dao;
+	
+    /*     
+     * 如果在线用户库中没有相同的用户存在， 则在在线用户库中添加此记录
+     */
+    public void register(String token, String appCode, String sessionId, Long userId, String userName) {
+    	DBOnlineUser entity = new DBOnlineUser(userId, sessionId, appCode, token, userName);
+    	dao.create(entity);       
+    }
+
+	public void logout(Long userId) {
+		String hql = " from DBOnlineUser o where o.userId = ? ";
+        List<?> list = dao.getEntities(hql, userId);
+        
+		// 只删除同一ip的登录信息
+        String clientIp = Environment.getClientIp();
+		for(Object temp : list) {
+			DBOnlineUser ou = (DBOnlineUser) temp;
+			
+			if(clientIp != null && clientIp.equals(ou.getClientIp())) {
+				dao.delete(ou);
+			} else if(clientIp == null || ou.getClientIp() == null ) {
+				dao.delete(ou);
+			}
+		}
+	}
  
     /*
      * 根据 SessionId，应用Code 找到用户并将用户的sessionId置为Null，表示已经注销。
-     * 不删除用户记录，方便以后查询用户的登录历史。
      */
     public String logout(String appCode, String sessionId) {
-    	String hql = " from DBOnlineUser o where o.appCode = ? and o.sessionId = ?  ";
-        List<?> entityList = dao.getEntities(hql, new Object[] {appCode, sessionId});
+    	String hql = " from DBOnlineUser o where o.appCode = ? and o.sessionId = ? ";
+        List<?> list = dao.getEntities(hql, appCode, sessionId);
         
         String token = null;
-    	for(Object entity : entityList) {
+    	for(Object entity : list) {
     		DBOnlineUser ou = (DBOnlineUser) dao.delete(entity);
         	token = ou.getToken();
     	}
@@ -67,14 +92,6 @@ public class DBOnlineUserManager implements IOnlineUserManager {
 	public Collection<String> getOnlineUserNames() {
     	String hql = "select distinct o.userName from DBOnlineUser o";
         return (Collection<String>) dao.getEntities(hql);
-    }
-
-    /*     
-     * 如果在线用户库中没有相同的用户存在， 则在在线用户库中添加此记录
-     */
-    public void register(String token, String appCode, String sessionId, Long userId, String userName) {
-    	DBOnlineUser entity = new DBOnlineUser(userId, sessionId, appCode, token, userName);
-    	dao.create(entity);       
     }
 
 }

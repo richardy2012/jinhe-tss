@@ -32,6 +32,10 @@ public class OnlineUserManagerProxy implements IOnlineUserManager {
     public String logout(String appCode, String sessionId) {
         return Global.getRemoteOnlineUserManager().logout(appCode, sessionId);
     }
+    
+	public void logout(Long userId) {
+		Global.getRemoteOnlineUserManager().logout(userId);
+	}
  
     public boolean isOnline(String token) {
         return Global.getRemoteOnlineUserManager().isOnline(token);

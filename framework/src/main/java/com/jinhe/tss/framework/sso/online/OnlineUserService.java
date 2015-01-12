@@ -48,4 +48,8 @@ public class OnlineUserService implements IOnlineUserManager {
         return getOnlineUserManager().getOnlineUserNames();
     }
 
+	public void logout(Long userId) {
+		getOnlineUserManager().logout(userId);
+	}
+
 }

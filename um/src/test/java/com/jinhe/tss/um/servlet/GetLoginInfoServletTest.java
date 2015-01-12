@@ -22,6 +22,7 @@ public class GetLoginInfoServletTest extends TxSupportTest4UM {
 			servlet.doGet(request, response);
             
         } catch (Exception e) {
+        	e.printStackTrace();
         	Assert.assertFalse("Test servlet error:" + e.getMessage(), true);
         }
     }

@@ -33,6 +33,12 @@
     <customizerClass>com.jinhe.tss.cache.extension.threadpool.ThreadPoolCustomizer</customizerClass>  
   </strategy>  
   
+  <strategy code="SHORTER" name="服务数据缓存（更短）"> 
+    <poolClass>com.jinhe.tss.cache.ObjectPool</poolClass>  
+    <poolSize>1000</poolSize>  
+    <cyclelife>60000</cyclelife>  
+    <accessMethod>5</accessMethod>  
+  </strategy>
   <strategy code="SHORT" name="服务数据缓存（短期）"> 
     <poolClass>com.jinhe.tss.cache.ObjectPool</poolClass>  
     <poolSize>1000</poolSize>  
