@@ -146,6 +146,11 @@ public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrap
 		if (superCookies != null) {
 			for (int i = superCookies.length - 1; i >= 0; i--) {
 				Cookie cookie = superCookies[i];
+				
+				// 过滤一些不正常的值，比如%22打头的token
+				String value = cookie.getValue();
+				if( value.startsWith("%22") && !value.endsWith("%22") ) continue;
+				
 				cookiesMap.put(cookie.getName(), cookie);
 			}
 		}

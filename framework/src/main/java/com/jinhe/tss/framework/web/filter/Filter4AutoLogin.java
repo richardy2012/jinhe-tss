@@ -136,7 +136,9 @@ public class Filter4AutoLogin implements Filter {
     	
     	/* 如果请求中带的token和session中的token一致，说明此token已成功登陆过，pass直接访问 */
 		if (token.equals(Context.getRequestContext().getAgoToken())) {
-	        log.debug(currentAppCode + "【登录模块】已在线，直接访问");
+	        /* 保存Cookie信息到客户端(redirect.html里通过发一个header里带token的request到login.do来实现单点登录)  */
+            setCookie(Context.getResponse(), RequestContext.USER_TOKEN, token);
+            log.debug(currentAppCode + "【登录模块】已在线，直接访问");
         } 
 		else {
             /* 

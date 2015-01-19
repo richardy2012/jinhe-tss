@@ -80,6 +80,7 @@ public class AutoLoginFilterTest {
         
         Context.initRequestContext(request);
         Context.initIdentityInfo(card);
+        Context.setResponse(response);
         
         filter.doFilter(request, response, chain);
         assertNotNull(Context.getRequestContext().getIdentityCard());

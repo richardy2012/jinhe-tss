@@ -28,13 +28,12 @@ public class Servlet2Logout extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	
-    	request.getSession().invalidate(); // 销毁session 
-    	
     	Long userId = Environment.getUserId();
     	if(userId != null) {
     		OnlineUserManagerFactory.getManager().logout(userId);
     	}
+    	
+    	request.getSession().invalidate(); // 销毁session 
         
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();

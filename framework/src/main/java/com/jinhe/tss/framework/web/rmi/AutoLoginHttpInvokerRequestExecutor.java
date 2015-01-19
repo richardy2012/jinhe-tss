@@ -133,7 +133,7 @@ public class AutoLoginHttpInvokerRequestExecutor extends AbstractHttpInvokerRequ
             }
         }
         
-        // 设置User Token Cookies信息; TODO 为何不直接转发？是担心request.cookie里不一定有，所以这里统一转发？
+        // 设置User Token Cookies信息;
         String token = Context.getToken();
         if (token != null) {
             Cookie cookie = new Cookie(cookieDomain, RequestContext.USER_TOKEN, token, cookiePath, null, secure);
