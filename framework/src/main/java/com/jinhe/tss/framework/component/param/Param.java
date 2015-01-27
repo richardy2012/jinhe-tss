@@ -54,6 +54,8 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
 	
 	private Integer disabled = ParamConstants.FALSE;// 停用/启用标记
 	private Integer hidden   = ParamConstants.FALSE;// 是否是系统的
+	
+	private String 	udf1;
  
 	public String getName() {
 		return name;
@@ -214,5 +216,13 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
     
 	public Serializable getPK() {
 		return this.id;
+	}
+
+	public String getUdf1() {
+		return udf1;
+	}
+
+	public void setUdf1(String udf1) {
+		this.udf1 = udf1;
 	}
 }

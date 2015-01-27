@@ -118,7 +118,16 @@ public class ParamAction extends BaseActionSupport {
         paramService.saveParam(param);
         doAfterSave(isnew, param, "ParamTree");
     }
-	
+    
+    /**  新建、编辑 */
+    @RequestMapping(value = "/value", method = RequestMethod.POST)
+    public void saveParamValue(HttpServletResponse response, String code, String value) {
+    	Param param = paramService.getParam(code);
+    	param.setValue(value);
+    	paramService.saveParam(param);
+    	
+    	printSuccessMessage();
+    }
     
 	/** 停用、启用参数 */
 	@RequestMapping(value = "/disable/{paramId}/{disabled}", method = RequestMethod.POST)

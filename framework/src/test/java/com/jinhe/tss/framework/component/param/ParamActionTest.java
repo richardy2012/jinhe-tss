@@ -47,6 +47,9 @@ public class ParamActionTest extends TxTestSupportParam {
 		assertEquals("<server code=test framework=\"tss\" name=test sessionIdName=\"JSESSIONID\" baseURL=test/>", 
 				ParamConfig.getAttribute("test"));
 		
+		action.saveParamValue(response, "test", "test test");
+		assertEquals("test test", ParamConfig.getAttribute("test"));
+		
 		Param paramGroup3 = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组3");
 		action.moveParam(response, treeParam.getId(), paramGroup3.getId().toString());
 		

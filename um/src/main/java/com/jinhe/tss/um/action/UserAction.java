@@ -173,7 +173,7 @@ public class UserAction extends BaseActionSupport {
     /**
      * 用户自己修改个人信息
      */
-	@RequestMapping(value = "/self", method = RequestMethod.PUT)
+	@RequestMapping(value = "/self", method = RequestMethod.POST)
     public void modifyUserSelf(HttpServletResponse response, User user) {
         userService.updateUser(user);
         printSuccessMessage();
