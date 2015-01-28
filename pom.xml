@@ -434,6 +434,24 @@
 				<identityGetter>com.jinhe.tss.um.sso.othersystem.WmsIdentifyGetter</identityGetter>
 			</properties>
 		</profile>
+		
+		<profile>
+			<id>temp4wms</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<log.level>debug</log.level>
+				<job.enable>false</job.enable>
+				<db.username>root</db.username>
+				<db.password>800best@com</db.password>
+				<db.url>bl00618:3306/wms_bi</db.url>
+				<environment>tss4wms-temp</environment>
+				<tomcat.url>10.45.9.172</tomcat.url>
+				<identityGetter>com.jinhe.tss.um.sso.othersystem.WmsIdentifyGetter</identityGetter>
+			</properties>
+		</profile>
+		
 	</profiles>
 
 	<distributionManagement>

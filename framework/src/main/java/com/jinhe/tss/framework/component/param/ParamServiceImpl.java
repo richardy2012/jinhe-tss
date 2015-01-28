@@ -3,10 +3,14 @@ package com.jinhe.tss.framework.component.param;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jinhe.tss.cache.JCache;
+import com.jinhe.tss.cache.Pool;
+import com.jinhe.tss.framework.component.cache.CacheLife;
 import com.jinhe.tss.framework.exception.BusinessException;
 
 @Service("ParamService")
@@ -23,6 +27,16 @@ public class ParamServiceImpl implements ParamService {
         else {
             judgeLegit(param, ParamConstants.EDIT_FLAG);
             paramDao.update(param);
+            
+            // 修改完成后，刷新缓存，如果已经被缓存的话
+            Pool dataCache = JCache.getInstance().getPool(CacheLife.SHORT.toString());
+            Set<Object> keys = dataCache.listKeys();
+            for(Object key : keys) {
+            	String _key = key.toString();
+            	if(_key.indexOf(".ParamService.") > 0 && _key.indexOf(param.getCode()) > 0) {
+            		dataCache.removeObject(key);
+            	}
+            }
         }
 
         return param;

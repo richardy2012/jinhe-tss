@@ -18,11 +18,11 @@
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="value"/></TD>
-			<TD><textarea binding="value" style="width:100%;height:60px"/></TD>
+			<TD><textarea binding="value" style="width:100%;height:300px"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="description"/></TD>
-			<TD><textarea binding="description" style="width:100%;height:100px"/></TD>
+			<TD><textarea binding="description" style="width:100%;height:50px"/></TD>
 		</TR>
 	</layout>
 	<data>

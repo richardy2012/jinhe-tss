@@ -56,6 +56,8 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
 	private Integer hidden   = ParamConstants.FALSE;// 是否是系统的
 	
 	private String 	udf1;
+	private String 	udf2;
+	private String 	udf3;
  
 	public String getName() {
 		return name;
@@ -224,5 +226,21 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
 
 	public void setUdf1(String udf1) {
 		this.udf1 = udf1;
+	}
+
+	public String getUdf2() {
+		return udf2;
+	}
+
+	public void setUdf2(String udf2) {
+		this.udf2 = udf2;
+	}
+
+	public String getUdf3() {
+		return udf3;
+	}
+
+	public void setUdf3(String udf3) {
+		this.udf3 = udf3;
 	}
 }
