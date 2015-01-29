@@ -27,6 +27,9 @@ public class ParamActionTest extends TxTestSupportParam {
         addParamItem(temp.getId(), "group2", "IT部", ParamConstants.TREE_PARAM_MODE);
         addParamItem(treeParam.getId(), "group3", "财务部", ParamConstants.TREE_PARAM_MODE);
         
+        temp.setDescription("update param item");
+        action.saveParam(response, temp); // update param item
+        
 		action.get2Tree(response);
 		
 		action.copyParam(response, treeParam.getId(), paramGroup.getId().toString());

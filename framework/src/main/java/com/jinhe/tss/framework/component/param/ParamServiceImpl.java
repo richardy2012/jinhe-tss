@@ -26,16 +26,38 @@ public class ParamServiceImpl implements ParamService {
         }
         else {
             judgeLegit(param, ParamConstants.EDIT_FLAG);
+            if(param.getLockVersion() == 0) { // 非param.htm维护系统参数的情况
+            	Param old = paramDao.getEntity(param.getId());
+            	param.setLockVersion(old.getLockVersion());
+            	param.setCreateTime(old.getCreateTime());
+            	param.setCreatorId(old.getCreatorId());
+            	param.setCreatorName(old.getCreatorName());
+            }
             paramDao.update(param);
             
             // 修改完成后，刷新缓存，如果已经被缓存的话
-            Pool dataCache = JCache.getInstance().getPool(CacheLife.SHORT.toString());
-            Set<Object> keys = dataCache.listKeys();
-            for(Object key : keys) {
-            	String _key = key.toString();
-            	if(_key.indexOf(".ParamService.") > 0 && _key.indexOf(param.getCode()) > 0) {
-            		dataCache.removeObject(key);
+            String paramCode = null;
+            if(ParamConstants.NORMAL_PARAM_TYPE.equals(param.getType())) {
+            	paramCode = param.getCode();
+            } else if(ParamConstants.ITEM_PARAM_TYPE.equals(param.getType())) {
+            	List<Param> parents = paramDao.getParentsById(param.getId()); 
+            	for(Param temp: parents) {
+            		if(ParamConstants.NORMAL_PARAM_TYPE.equals(temp.getType())) {
+                    	paramCode = temp.getCode();
+                    	break;
+                    }
             	}
+            }
+            
+            if(paramCode != null) {
+            	Pool dataCache = JCache.getInstance().getPool(CacheLife.SHORT.toString());
+                Set<Object> keys = dataCache.listKeys();
+                for(Object key : keys) {
+                	String _key = key.toString();
+                	if(_key.indexOf(".ParamService.") > 0 && _key.indexOf(paramCode) > 0) {
+                		dataCache.removeObject(key);
+                	}
+                }
             }
         }
 
