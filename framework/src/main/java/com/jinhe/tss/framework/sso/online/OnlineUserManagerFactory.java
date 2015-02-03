@@ -26,7 +26,10 @@ public class OnlineUserManagerFactory {
 				manager = new OnlineUserManagerProxy(); // 基于平台的应用无需配置，默认为在线用户库代理
 			} 
             else {
-				manager = (IOnlineUserManager) Global.getBean(onlineManager);
+            	try {
+            		manager = (IOnlineUserManager) Global.getBean(onlineManager);
+            	} catch(Exception e) {
+            	}
 			}
             
             String currentAppCode = Context.getApplicationContext().getCurrentAppCode();

@@ -443,11 +443,11 @@
 			<properties>
 				<log.level>debug</log.level>
 				<job.enable>false</job.enable>
-				<db.username>root</db.username>
-				<db.password>800best@com</db.password>
-				<db.url>bl00618:3306/wms_bi</db.url>
+				<db.username>wmsxProd</db.username>
+				<db.password>wmsdata@800best</db.password>
+				<db.url>10.8.10.30:3306/dm_wmsx</db.url>
 				<environment>tss4wms-temp</environment>
-				<tomcat.url>10.45.9.172</tomcat.url>
+				<tomcat.url>10.45.9.172:8088</tomcat.url>
 				<identityGetter>com.jinhe.tss.um.sso.othersystem.WmsIdentifyGetter</identityGetter>
 			</properties>
 		</profile>

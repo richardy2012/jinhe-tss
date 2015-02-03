@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.sso.context.Context;
+import com.jinhe.tss.framework.sso.online.IOnlineUserManager;
 import com.jinhe.tss.framework.sso.online.OnlineUserManagerFactory;
 import com.jinhe.tss.util.EasyUtils;
 
@@ -47,11 +48,12 @@ public class SessionDestroyedListener implements HttpSessionListener {
                 "有效期为：" + event.getSession().getMaxInactiveInterval() + " 秒 ");
         
         // 注销在线用户库中对应记录信息，去除登陆用户身份证card信息
-        if(Context.isOnline()) {
-        	String token = OnlineUserManagerFactory.getManager().logout(appCode, sessionId);
-            if(token != null) {
+    	IOnlineUserManager ouManager = OnlineUserManagerFactory.getManager();
+    	if(ouManager != null) {
+    		String token = ouManager.logout(appCode, sessionId);
+    		if(token != null) {
             	Context.destroyIdentityCard(token);
             }
-        }
+    	}
     }
 }
