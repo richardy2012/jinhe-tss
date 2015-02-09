@@ -257,24 +257,23 @@
 								</echo>
 								<replaceregexp file="${basedir}/target/classes/log4j.properties"
 									match="log4j\.logger\.com\.jinhe\.tss=debug"
-									replace="log4j\.logger\.com\.jinhe\.tss=${log.level}"
-									byline="true" />
+									replace="log4j\.logger\.com\.jinhe\.tss=${log.level}" byline="true" />
 
 								<echo>
 									process application.properties: set job.enable to ${job.enable};
 								</echo>
 								<replaceregexp
-									file="${basedir}/target/classes/application.properties" match="job.enable = true"
-									replace="job.enable = ${job.enable}" byline="true" />
+									file="${basedir}/target/classes/application.properties" 
+									match="job.enable = true" replace="job.enable = ${job.enable}" byline="true" />
 
 								<echo>
 									process application.properties: set last.package.time to
 									${maven.build.timestamp};
 								</echo>
 								<replaceregexp
-									file="${basedir}/target/classes/application.properties" match="last\.package\.time = yyyy-MM-dd hh:mi:ss"
-									replace="last\.package\.time = ${maven.build.timestamp}"
-									byline="true" />
+									file="${basedir}/target/classes/application.properties" 
+									match="last\.package\.time = yyyy-MM-dd hh:mi:ss"
+									replace="last\.package\.time = ${maven.build.timestamp}" byline="true" />
 
 								<echo>
 									process application.properties:  set db.connection.username to ${db.username}, 
@@ -287,14 +286,15 @@
 									file="${basedir}/target/classes/application.properties" 
 									match="800best@com" replace="${db.password}" byline="true" />	
 								<replaceregexp
-									file="${basedir}/target/classes/application.properties" match="localhost:3306\/tss"
-									replace="${db.url}" byline="true" />
+									file="${basedir}/target/classes/application.properties" 
+									match="localhost:3306\/tss" replace="${db.url}" byline="true" />
 
 								<echo>
 									process application.properties: set environment to ${environment};
 								</echo>
 								<replaceregexp
-									file="${basedir}/target/classes/application.properties" match="environment = dev"
+									file="${basedir}/target/classes/application.properties" 
+									match="environment = dev"
 									replace="environment = ${environment}" byline="true" />
 								
 								<echo>
@@ -309,8 +309,8 @@
 									process appServers.xml: set tomcat.url to ${tomcat.url};
 								</echo>
 								<replaceregexp
-									file="${basedir}/target/classes/tss/appServers.xml" match="localhost:8088"
-									replace="${tomcat.url}" byline="true" />
+									file="${basedir}/target/classes/tss/appServers.xml" 
+									match="localhost:8088" replace="${tomcat.url}" byline="true" />
 							</tasks>
 						</configuration>
 					</execution>
@@ -340,12 +340,12 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
+				<environment>dev</environment>
 				<log.level>debug</log.level>
 				<job.enable>true</job.enable>
 				<db.username>root</db.username>
 				<db.password>800best@com</db.password>
 				<db.url>127.0.0.1:3306/tss</db.url>
-				<environment>dev</environment>
 				<tomcat.url>localhost:8088</tomcat.url>
 				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
 			</properties>
@@ -358,12 +358,12 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
+				<environment>prod</environment>
 				<log.level>info</log.level>
 				<job.enable>false</job.enable>
 				<db.username>root</db.username>
 				<db.password>800best@com</db.password>
 				<db.url>127.0.0.1:3306/tss_btr</db.url>
-				<environment>prod</environment>
 				<tomcat.url>10.8.72.80:8888</tomcat.url>
 				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
 			</properties>
@@ -374,12 +374,12 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
+				<environment>prod-job</environment>
 				<log.level>info</log.level>
 				<job.enable>true</job.enable>
 				<db.username>root</db.username>
 				<db.password>800best@com</db.password>
 				<db.url>127.0.0.1:3306/tss_btr</db.url>
-				<environment>prod-job</environment>
 				<tomcat.url>10.8.72.80:8888</tomcat.url>
 				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
 			</properties>
@@ -390,12 +390,12 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
+				<environment>uat</environment>
 				<log.level>debug</log.level>
 				<job.enable>true</job.enable>
 				<db.username>root</db.username>
 				<db.password>800best@com</db.password>
 				<db.url>127.0.0.1:3306/btr_tss</db.url>
-				<environment>uat</environment>
 				<tomcat.url>bl00618-l</tomcat.url>
 				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
 			</properties>
@@ -408,12 +408,12 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
+				<environment>tss4wms-prod</environment>
 				<log.level>info</log.level>
 				<job.enable>false</job.enable>
 				<db.username>wmsxProd</db.username>
 				<db.password>wmsdata@800best</db.password>
 				<db.url>10.8.10.30:3306/dm_wmsx</db.url>
-				<environment>tss4wms-prod</environment>
 				<tomcat.url>wmsdata.800best.com</tomcat.url>
 				<identityGetter>com.jinhe.tss.um.sso.othersystem.WmsIdentifyGetter</identityGetter>
 			</properties>
@@ -424,12 +424,12 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
+				<environment>tss4wms-dev</environment>
 				<log.level>debug</log.level>
 				<job.enable>false</job.enable>
 				<db.username>root</db.username>
 				<db.password>800best@com</db.password>
 				<db.url>127.0.0.1:3306/wms_bi</db.url>
-				<environment>tss4wms-dev</environment>
 				<tomcat.url>bl00618</tomcat.url>
 				<identityGetter>com.jinhe.tss.um.sso.othersystem.WmsIdentifyGetter</identityGetter>
 			</properties>
@@ -441,12 +441,12 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
+				<environment>tss4wms-temp</environment>
 				<log.level>debug</log.level>
 				<job.enable>false</job.enable>
 				<db.username>wmsxProd</db.username>
 				<db.password>wmsdata@800best</db.password>
 				<db.url>10.8.10.30:3306/dm_wmsx</db.url>
-				<environment>tss4wms-temp</environment>
 				<tomcat.url>10.45.9.172:8088</tomcat.url>
 				<identityGetter>com.jinhe.tss.um.sso.othersystem.WmsIdentifyGetter</identityGetter>
 			</properties>

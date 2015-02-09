@@ -17,6 +17,19 @@ import com.jinhe.tss.framework.exception.BusinessException;
 public class ParamServiceImpl implements ParamService {
 
     @Autowired private ParamDao paramDao;
+    
+    public void delete(Long id) {
+        // 一并删除子节点
+        List<?> children = paramDao.getChildrenById(id);
+        for(Object entity : children) {
+            Param item = (Param)entity;
+            paramDao.delete(item);
+            
+            if(id.equals(item.getId())) {
+            	refreshCache(item);
+            }
+        }
+    }
 
     public Param saveParam(Param param) {
         if (null == param.getId()) {
@@ -34,34 +47,40 @@ public class ParamServiceImpl implements ParamService {
             	param.setCreatorName(old.getCreatorName());
             }
             paramDao.update(param);
-            
-            // 修改完成后，刷新缓存，如果已经被缓存的话
-            String paramCode = null;
-            if(ParamConstants.NORMAL_PARAM_TYPE.equals(param.getType())) {
-            	paramCode = param.getCode();
-            } else if(ParamConstants.ITEM_PARAM_TYPE.equals(param.getType())) {
-            	List<Param> parents = paramDao.getParentsById(param.getId()); 
-            	for(Param temp: parents) {
-            		if(ParamConstants.NORMAL_PARAM_TYPE.equals(temp.getType())) {
-                    	paramCode = temp.getCode();
-                    	break;
-                    }
-            	}
-            }
-            
-            if(paramCode != null) {
-            	Pool dataCache = JCache.getInstance().getPool(CacheLife.SHORT.toString());
-                Set<Object> keys = dataCache.listKeys();
-                for(Object key : keys) {
-                	String _key = key.toString();
-                	if(_key.indexOf(".ParamService.") > 0 && _key.indexOf(paramCode) > 0) {
-                		dataCache.removeObject(key);
-                	}
-                }
-            }
         }
+        
+        refreshCache(param);
 
         return param;
+    }
+    
+    /**
+     * 删除或修改完成后，刷新缓存，如果已经被缓存的话。 对于下拉或树形参数，新增参数项也需要刷新
+     */
+    private void refreshCache(Param param) {
+        String paramCode = null;
+        if(ParamConstants.NORMAL_PARAM_TYPE.equals(param.getType())) {
+        	paramCode = param.getCode();
+        } else if(ParamConstants.ITEM_PARAM_TYPE.equals(param.getType())) {
+        	List<Param> parents = paramDao.getParentsById(param.getId()); 
+        	for(Param temp: parents) {
+        		if(ParamConstants.NORMAL_PARAM_TYPE.equals(temp.getType())) {
+                	paramCode = temp.getCode();
+                	break;
+                }
+        	}
+        }
+        
+        if(paramCode != null) {
+        	Pool dataCache = JCache.getInstance().getPool(CacheLife.SHORT.toString());
+            Set<Object> keys = dataCache.listKeys();
+            for(Object key : keys) {
+            	String _key = key.toString();
+            	if(_key.indexOf(".ParamService.") > 0 && _key.indexOf(paramCode) > 0) {
+            		dataCache.removeObject(key);
+            	}
+            }
+        }
     }
 
     /**
@@ -105,15 +124,6 @@ public class ParamServiceImpl implements ParamService {
             paramDao.updateWithoutFlush(param);
         }
         paramDao.flush();
-    }
-
-    public void delete(Long id) {
-        // 一并删除子节点
-        List<?> params = paramDao.getChildrenById(id);
-        for(Object entity : params) {
-            Param param = (Param)entity;
-            paramDao.delete(param);
-        }
     }
 
     public List<?> getAllParams(boolean includeHidden) {
