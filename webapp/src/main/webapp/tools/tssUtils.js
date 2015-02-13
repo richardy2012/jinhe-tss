@@ -595,6 +595,8 @@ function refreshTreeNodeState(treeNode, state) {
 function sortTreeNode(url, ev) {
 	var dragNode = ev.dragNode;
 	var destNode = ev.destNode;
+	
+	if(dragNode.id === destNode.id) return;
  
 	$.ajax({
 		url : url + dragNode.id + "/" + destNode.id + "/-1",
