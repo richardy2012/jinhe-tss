@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<HTML xmlns:WorkSpace xmlns:Tree xmlns:Grid xmlns:Form>
+<HTML xmlns:Tree xmlns:Grid>
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>    
 <meta charset="UTF-8">
@@ -15,7 +15,9 @@
 
 <style>
   #channelFormDiv { display:none; background-color:#BEC6EE; border:1px solid #416371; 
-      width:660px; height:200px; padding: 50px 10px 10px 10px; }
+      width:680px; height:200px; padding: 10px 10px 10px 10px; }
+
+  #channelFormDiv input { margin: 10px; }
       
   #articleFrame { height: 100%; width: 100%;}
 </style>
@@ -34,7 +36,7 @@
                     <span class="refreshTreeBT"></span>
                     <span class="paletteSwitch" id="paletteClose"></span>
                 </div>
-                <Tree:Box id="tree" moveable="true"><div class="loading"></div></Tree:Box>
+                <Tree id="tree" moveable="true"><div class="loading"></div></Tree>
             </div> 
       </td>
       <td class="groove gridContainer">
@@ -47,7 +49,7 @@
           </tr>
           <tr>
             <td class="hasframe">
-              <Grid:Box id="grid"></Grid:Box>
+              <Grid id="grid"></Grid>
               <iframe id="articleFrame" style="display:none" frameborder="0"></iframe>
             </td>
           </tr>
@@ -59,7 +61,7 @@
   </table>
 
   <div id="channelFormDiv">
-    <Form:Box id="channelForm"></Form:Box>
+    <div id="channelForm"></div>
     <input type="button" class="btStrong" value="保存" id="channelFormSave"/>      
     <input type="button" class="btWeak" value="关闭" id="channelFormClose"/>
   </div>

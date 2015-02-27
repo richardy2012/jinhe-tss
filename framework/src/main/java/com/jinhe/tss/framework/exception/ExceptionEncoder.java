@@ -125,7 +125,7 @@ public class ExceptionEncoder {
         ((IBusinessLogger) Global.getBean("BusinessLogger")).output(excuteLog);
         
         // 对指定了关键字的错误异常进行邮件提醒
-        String errorKeyword = ParamConfig.getAttribute("error.keyword");
+        String errorKeyword = ParamConfig.getAttribute(ERROR_KEYWORD);
         if( EasyUtils.isNullOrEmpty(errorKeyword) ) {
         	errorKeyword = "java.lang.OutOfMemoryError";
         } else {

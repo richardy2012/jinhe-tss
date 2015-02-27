@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<HTML xmlns:WorkSpace xmlns:Tree xmlns:Grid xmlns:Form>
+<HTML xmlns:Grid>
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>    
 <meta charset="UTF-8">
@@ -49,7 +49,7 @@
     var articleId;
 
 	function init() {
-		if(window.parent) {
+		if(window.parent && window.parent.globalValiable) {
 			var globalValiable = window.parent.globalValiable;
 			channelId = globalValiable.channelId;
 			articleId = globalValiable.articleId;
@@ -184,7 +184,7 @@
 
 	<div class="article">
 		<div class="summary">
-			<Form:Box id="articleForm"></Form:Box>
+			<div id="articleForm"></div>
 		</div>
 		<div class="content">
 			<textarea id="content" name="content" style="width:100%;height:400px;visibility:hidden;"></textarea>
@@ -201,7 +201,7 @@
 			<iframe name='fileUpload' style='display:none;'></iframe>
 		</div>
 		<div class="attach">
-			<Grid:Box id="attachGrid"></Grid:Box>
+			<Grid id="attachGrid"></Grid>
 		</div>
 		<div class="bts">
 			<input type="button" value="完成" class="btStrong" id="btSave"/> 

@@ -652,8 +652,8 @@
         var page2Tree2 = $.T("page2Tree2");
         if( !hasSameAttributeTreeNode(page2Tree2, 'groupType', '1') ) {
             ws.switchToPhase("page2");
-            var balloon = new $.Balloon("至少要属于一个主用户组。");
-            balloon.dockTo(page2Tree2.el);
+           
+            $(page2Tree2.el).notice("至少要属于一个主用户组。");
             return;
         }
 

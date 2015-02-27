@@ -44,7 +44,7 @@
             <TD colspan="4"> *注: 0或空表示不限制</TD>
         </TR>
         <TR>
-            <TD colspan="4"><hr class="b" noshade="true" size="1"/></TD>
+            <TD colspan="4"><hr noshade="true" size="1"/></TD>
         </TR>
 		<TR>
 			<TD><label binding="poolClass"/></TD>

@@ -1,7 +1,7 @@
 
 /*********************** 系统配置 开始 **********************************/
  var
-	IS_TEST = false,
+	IS_TEST = true,
 
 	FROMEWORK_CODE = "TSS",    /* 当前框架名 */
 	APP_CODE       = "TSS";    /* 当前应用名 */
@@ -512,8 +512,7 @@ function addTreeNode(fromTree, toTree, checkFunction) {
 			var result = checkFunction(curNode);
 			if( result && result.error ) {
 				if( result.message ) {
-					var balloon = new $.Balloon(result.message);
-					balloon.dockTo(toTree.el); // 显示错误信息
+					$(toTree.el).notice(result.message); // 显示错误信息
 				}
 				if( result.stop ) {
 					_break = true;
@@ -814,13 +813,13 @@ function popupTree(url, nodeName, params, callback) {
 
 	var boxName = "popupTree";
 	var el = $.createElement("div", "popupItem");
-	el.innerHTML = '<Tree:Box id="' + boxName + '"><div class="loading"></div></Tree:Box>' + 
+	el.innerHTML = '<Tree id="' + boxName + '"><div class="loading"></div></Tree>' + 
 	    '<div class="bts">' + 
 	       '<input type="button" value="确定" class="btStrong" onclick="doCallback()"/>' + 
        	   '<input type="button" value="关闭" class="btWeak" onclick="$.removeNode(el)"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
-	$(el).addClass("dialog").center(300, 300).css("width", "300px").css("height", "300px").css("zIndex", "10001");
+	$(el).addClass("dialog").css("width", "300px").css("height", "300px").center(300, 400).css("zIndex", "999");
 
 	$(".bts .btWeak", el).click(removeDialog);
 
@@ -855,13 +854,13 @@ function popupForm(url, nodeName, params, callback, title) {
 	var boxName = "popupForm";
 	var el = $.createElement("div", "popupItem");
 	el.innerHTML = '<h2>' + title + '</h2>' +
-		'<Form:Box id="' + boxName + '"><div class="loading"></div></Form:Box>' + 
+		'<div id="' + boxName + '"><div class="loading"></div></div>' + 
 	    '<div class="bts">' + 
 	       '<input type="button" value="确定" class="btStrong"/>' + 
        	   '<input type="button" value="关闭" class="btWeak"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
-	$(el).addClass("dialog").center(300, 300).css("zIndex", "10001");
+	$(el).addClass("dialog").center(300, 300).css("zIndex", "999");
 
 	$(".bts .btWeak", el).click(removeDialog);
 
@@ -915,13 +914,13 @@ function popupGrid(url, nodeName, title, params) {
 	var boxName = "popupGrid";
 	var el = $.createElement("div", "popupItem");
 	el.innerHTML = '<h2>' + title + '</h2>' +
-		'<Grid:Box id="' + boxName + '"><div class="loading"></div></Grid:Box>' + 
+		'<Grid id="' + boxName + '"><div class="loading"></div></Grid>' + 
 	    '<div class="bts">' + 
        	   '<input type="button" value="关闭" class="btWeak"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
-	$(el).addClass("dialog").center(600, 400).css("width", "600px").css("height", "auto");
-	$("#" + boxName, el).css("minHeight", "200px").css("maxHeight", "400px");
+	$(el).addClass("dialog").css("width", "600px").css("height", "auto");
+	$("#" + boxName, el).css("minHeight", "200px").css("maxHeight", "400px").center();
 
 	$(".bts .btWeak", el).click(removeDialog);
 

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<HTML xmlns:WorkSpace xmlns:Tree xmlns:Grid xmlns:Form>
+<HTML xmlns:WorkSpace xmlns:Tree xmlns:Grid>
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>    
 <meta charset="UTF-8">
@@ -163,7 +163,7 @@
 			<span class="refreshTreeBT"></span>
 			<span class="paletteSwitch" id="paletteClose"></span>
 		</div>
-		<Tree:Box id="tree"><div class="loading"></div></Tree:Box>
+		<Tree id="tree"><div class="loading"></div></Tree>
 	  </div> 
 	</td>
 	<!-- 左栏 结束 -->
@@ -176,13 +176,13 @@
 			</td>
 		</tr>
 		<tr id="gridTR">
-			<td><Grid:Box id="grid"></Grid:Box></td>
+			<td><Grid id="grid"></Grid></td>
 		</tr>
 		<tr id="wsTR" height="235px">
 		  <td>
 			<WorkSpace:Box id="ws">
 			  <WorkSpace:Page id="page1">
-				 <Form:Box id="page1Form" editable="false"></Form:Box>
+				 <div id="page1Form" editable="false"></div>
 			  </WorkSpace:Page>
 			</WorkSpace:Box>
 		  </td>
