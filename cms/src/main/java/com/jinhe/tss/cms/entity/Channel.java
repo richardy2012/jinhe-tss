@@ -25,6 +25,7 @@ import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.um.permission.IResource;
 import com.jinhe.tss.util.BeanUtil;
+import com.jinhe.tss.util.EasyUtils;
 
 /**
  * 站点、栏目类
@@ -62,6 +63,14 @@ public class Channel extends OperateInfo implements IXForm, IDecodable, IResourc
     private String  decode;   // 层码
     private Integer levelNo;  // 层次值
 
+	public Long getId() {
+		return id;
+	}
+ 
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
 	public void setDecode(String decode) {
 		this.decode = decode;
 	}
@@ -71,6 +80,9 @@ public class Channel extends OperateInfo implements IXForm, IDecodable, IResourc
 	}
  
 	public String getDocPath() {
+		if(EasyUtils.isNullOrEmpty(docPath)) {
+			return CMSConstants.DEFAULT_DOC_PATH;
+		}
 		return docPath;
 	}
  
@@ -78,15 +90,10 @@ public class Channel extends OperateInfo implements IXForm, IDecodable, IResourc
 		this.docPath = docPath;
 	}
  
-	public Long getId() {
-		return id;
-	}
- 
-	public void setId(Long id) {
-		this.id = id;
-	}
- 
 	public String getImagePath() {
+		if(EasyUtils.isNullOrEmpty(imagePath)) {
+			return CMSConstants.DEFAULT_IMG_PATH;
+		}
 		return imagePath;
 	}
  
@@ -180,10 +187,10 @@ public class Channel extends OperateInfo implements IXForm, IDecodable, IResourc
     
     public String getAttanchmentPath(Attachment attanchment){
         if (attanchment.isImage()) {
-            return this.imagePath;
+            return this.getImagePath();
         }
         if (attanchment.isOfficeDoc()) {
-            return this.docPath;
+            return this.getDocPath();
         }
         throw new BusinessException("指定类型的附件路径不存在");
     }

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
-	<declare prefix="resourceType">
+	<declare>
 		<column name="resourceTypeId" caption="资源类型ID" mode="string" empty="false"/>
 		<column name="rootId" caption="根节点ID" mode="number" inputReg="/^\-?\d*$/" empty="false"/>
 		<column name="name" caption="名称" mode="string" empty="false"/>
 		<column name="description" caption="描述" mode="string"/>
-		<column name="unSuppliedTable" caption="未补全的表名" mode="string" empty="false"/>
-		<column name="suppliedTable" caption="补全的表名" mode="string" empty="false"/>
-		<column name="resourceTable" caption="资源的表名" mode="string" empty="false"/>
- 
+		<column name="permissionTable" caption="权限表名" mode="string" empty="false"/>
+		<column name="resourceTable" caption="资源表名" mode="string" empty="false"/>
 	</declare>
 	<layout>
 		<TR>
@@ -24,12 +22,8 @@
 			<TD><input binding="name"/></TD>
 		</TR>
 		<TR>
-			<TD><label binding="unSuppliedTable"/></TD>
-			<TD><input binding="unSuppliedTable" style="width:500px;"/></TD>
-		</TR>
-		<TR>
-			<TD><label binding="suppliedTable"/></TD>
-			<TD><input binding="suppliedTable" style="width:500px;"/></TD>
+			<TD><label binding="permissionTable"/></TD>
+			<TD><input binding="permissionTable" style="width:500px;"/></TD>
 		</TR>
 		<TR>
 			<TD><label binding="resourceTable"/></TD>

@@ -24,6 +24,9 @@ public interface CMSConstants {
     
     static final Long DEFAULT_NEW_ID = BaseActionSupport.DEFAULT_NEW_ID;
     
+    static final String DEFAULT_DOC_PATH = "doc";
+    static final String DEFAULT_IMG_PATH = "img";
+    
     /* 文章附件 */
     static final Integer ATTACHMENTTYPE_PICTURE = 1;	// 文章附件图片类型
     static final Integer ATTACHMENTTYPE_OFFICE  = 2;	// 文章附件OFFICE类型
