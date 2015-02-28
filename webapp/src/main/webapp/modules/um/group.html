@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<HTML xmlns:WorkSpace xmlns:Tree xmlns:Grid xmlns:Form>
+<HTML xmlns:WorkSpace xmlns:Tree xmlns:Grid>
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>    
 <meta charset="UTF-8">
@@ -20,12 +20,12 @@
   .bottomBT td { vertical-align:top; padding-top: 3px; }
 
   #ws { 
-    z-index: 200; display: none; width: 800px; height: 500px;
-    position: absolute; top:100px; left:320px;
+    z-index: 200; display: none; width: 800px; height: 500px; 
+    position: absolute; top:120px; left:220px;
     border-radius: 3px; border-bottom:1px solid #416371;
-    background-color: #90EE90;
+    background-color: transparent;
   }
-  #ws Tree\:Box { height:425px; }
+  #ws Tree { height:425px; }
 
 </style>
 
@@ -45,7 +45,7 @@
             <span class="refreshTreeBT"></span>
             <span class="paletteSwitch" id="paletteClose"></span>
           </div>
-          <Tree:Box id="tree" moveable="true"><div class="loading"></div></Tree:Box>
+          <Tree id="tree" moveable="true"><div class="loading"></div></Tree>
         </div> 
       </td>
       <td class="groove">
@@ -55,7 +55,7 @@
             <span class="icon"></span>用户列表<span class="buttonBox" id="gridToolBar"></span>
           </td>
           <tr>
-            <td><Grid:Box id="grid"></Grid:Box></td>
+            <td><Grid id="grid"></Grid></td>
           </tr>
         </table>                                
       </td>
@@ -68,7 +68,7 @@
   <WorkSpace:Box id="ws">
     <!-- page1 开始 -->
     <WorkSpace:Page id="page1">
-      <Form:Box id="page1Form"></Form:Box><br/><br/>
+      <div id="page1Form"></div><br/><br/>
       <WorkSpace:PageStep>
         <input type="button" class="btWeak" value="下一步" id="page1BtNext" onclick="ws.nextPhase(false)"/>
         <input type="button" class="btStrong" value="完成" id="page1BtSave"/>
@@ -86,14 +86,14 @@
         </tr>
         <tr>
           <td class="r b" width="49%">
-            <Tree:Box id="page2Tree" treeType="multi" selectSelf="true"></Tree:Box>
+            <Tree id="page2Tree" treeType="multi" selectSelf="true"></Tree>
           </td>
           <td class="r b" style="background-color:#E4E6F5;width:18px">
             <input type="button" class="btWeakS" value=">>" id="page2BtAdd"/>
             <input type="button" class="btWeakS" value="<<" id="page2BtDel"/>
           </td>
           <td class="b">
-            <Tree:Box id="page2Tree2" treeType="multi" selectSelf="false"></Tree:Box>
+            <Tree id="page2Tree2" treeType="multi" selectSelf="false"></Tree>
           </td>
         </tr>
         <tr class="bottomBT">
@@ -119,14 +119,14 @@
         </tr>
         <tr>
           <td class="r b" width="49%">
-            <Tree:Box id="page3Tree" treeType="multi"></Tree:Box>
+            <Tree id="page3Tree" treeType="multi"></Tree>
           </td>
           <td class="r b" style="background-color:#E4E6F5;width:18px">
             <input type="button" class="btWeakS" value=">>" id="page3BtAdd"/>
             <input type="button" class="btWeakS" value="<<" id="page3BtDel"/>
           </td>
           <td class="b">
-            <Tree:Box id="page3Tree2" treeType="multi" selectSelf="false"></Tree:Box>
+            <Tree id="page3Tree2" treeType="multi" selectSelf="false"></Tree>
           </td>
         </tr>
         <tr class="bottomBT">
@@ -152,17 +152,17 @@
         </tr>
         <tr>
           <td class="r b" width="36%">
-            <Tree:Box id="page4Tree"></Tree:Box>
+            <Tree id="page4Tree"></Tree>
           </td>
           <td class="r b" width="29%">
-            <Tree:Box id="page4Tree2" treeType="multi" selectSelf="false"></Tree:Box>
+            <Tree id="page4Tree2" treeType="multi" selectSelf="false"></Tree>
           </td>
           <td class="r b" style="background-color:#E4E6F5;width:18px">
             <input type="button" class="btWeakS" value=">>" id="page4BtAdd"/>
             <input type="button" class="btWeakS" value="<<" id="page4BtDel"/>
           </td>
           <td class="b">
-            <Tree:Box id="page4Tree3" treeType="multi" selectSelf="false"></Tree:Box>
+            <Tree id="page4Tree3" treeType="multi" selectSelf="false"></Tree>
           </td>
         </tr>
         <tr class="bottomBT">

@@ -233,7 +233,7 @@
         // 校验page1Form数据有效性
         var page1FormObj = $.F("page1Form");
         if( !page1FormObj.checkForm() ) {
-            switchToPhase(ws, "page1");
+            ws.switchToPhase("page1");
             return;
         }
 

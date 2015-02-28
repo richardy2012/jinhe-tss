@@ -3,34 +3,34 @@
 	<RoleInfo>
 		<xform>
 			<declare>
-				<column name="id" caption="ID号" mode="string" editable="false"/>
-				<column name="name" caption="名称" mode="string"/>
-				<column name="youxiaoqi" caption="有效期" mode="date"/>
-				<column name="remark" caption="说明" mode="string" empty="false"/>
-			</declare>
-			<layout>
-				<TR>
-					<TD width="50"><label binding="id"/></TD>
-					<TD><input binding="id"/></TD>
-				</TR>
-				<TR>
-					<TD><label binding="name"/></TD>
-					<TD><input binding="name"/></TD>
-				</TR>
-				<TR>
-					<TD><label binding="youxiaoqi"/></TD>
-					<TD><input binding="youxiaoqi"/></TD>
-				</TR>
-				<TR>
-					<TD valign="top"><label binding="remark"/></TD>
-					<TD><textarea binding="remark" style="width:100%;height:100px;"/></TD>
-				</TR>
-			</layout>
+                <column name="name" caption="名称" mode="string" maxLength="20" empty="false" />
+                <column name="description" caption="描述" maxLength="255" mode="string"/>
+                <column name="startDate" caption="开始日期" mode="date" empty="false" />
+                <column name="endDate" caption="结束日期" mode="date" empty="false" />
+            </declare>
+            <layout>
+                <TR>
+                    <TD width="50"><label binding="name"/></TD>
+                    <TD><input binding="name" style="width:50%;"/></TD>
+                </TR>
+                <TR>
+                    <TD><label binding="startDate"/></TD>
+                    <TD><input binding="startDate"/></TD>
+                </TR>
+                <TR>
+                    <TD><label binding="endDate"/></TD>
+                    <TD><input binding="endDate"/></TD>
+                </TR>
+                <TR>
+                    <TD><label binding="description"/></TD>
+                    <TD><textarea binding="description" style="width:70%;height:100px"/></TD>
+                </TR>
+            </layout>
 			<data>
 				<row>
                   <id><![CDATA[2]]></id>
                   <name><![CDATA[角色1]]></name>
-                  <remarks><![CDATA[测试角色编辑]]></remarks>
+                  <description><![CDATA[测试角色编辑]]></description>
                 </row>
 			</data>
 		</xform>

@@ -2,16 +2,13 @@
 <Response>
 <ResourceTypeDetail>
 <xform>
-	<declare prefix="resourceType">
+	<declare>
 		<column name="resourceTypeId" caption="资源类型ID" mode="string" empty="false"/>
 		<column name="rootId" caption="根节点ID" mode="number" inputReg="/^\-?\d*$/" empty="false"/>
 		<column name="name" caption="名称" mode="string" empty="false"/>
 		<column name="description" caption="描述" mode="string"/>
-		
-		<column name="unSuppliedTable" caption="未补全的表名" mode="string" empty="false"/>
-		<column name="suppliedTable" caption="补全的表名" mode="string" empty="false"/>
-		<column name="resourceTable" caption="资源的表名" mode="string" empty="false"/>
- 
+		<column name="permissionTable" caption="权限表名" mode="string" empty="false"/>
+		<column name="resourceTable" caption="资源表名" mode="string" empty="false"/>
 	</declare>
 	<layout>
 		<TR>
@@ -27,23 +24,19 @@
 			<TD><input binding="name"/></TD>
 		</TR>
 		<TR>
-			<TD><label binding="description"/></TD>
-			<TD><input binding="description" style="width:350;"/></TD>
-		</TR>
-		<TR>
-			<TD><label binding="unSuppliedTable"/></TD>
-			<TD><input binding="unSuppliedTable" style="width:350;"/></TD>
-		</TR>
-		<TR>
-			<TD><label binding="suppliedTable"/></TD>
-			<TD><input binding="suppliedTable" style="width:350;"/></TD>
+			<TD><label binding="permissionTable"/></TD>
+			<TD><input binding="permissionTable" style="width:500px;"/></TD>
 		</TR>
 		<TR>
 			<TD><label binding="resourceTable"/></TD>
-			<TD><input binding="resourceTable" style="width:350;"/></TD>
+			<TD><input binding="resourceTable" style="width:500px;"/></TD>
+		</TR>
+		<TR>
+			<TD><label binding="description"/></TD>
+			<TD><input binding="description" style="width:500px;"/></TD>
 		</TR>
 	</layout>
-	<data><row><createTime><![CDATA[2013-07-24 00:21:32.015]]></createTime><rootId><![CDATA[-1]]></rootId><seqNo><![CDATA[1]]></seqNo><applicationId><![CDATA[tss]]></applicationId><creatorId><![CDATA[-1]]></creatorId><unSuppliedTable><![CDATA[com.jinhe.tss.um.entity.permission.unsupplied.GroupPermissions]]></unSuppliedTable><lockVersion><![CDATA[0]]></lockVersion><suppliedTable><![CDATA[com.jinhe.tss.um.entity.permission.supplied.GroupPermissionsFull]]></suppliedTable><id><![CDATA[1]]></id><resourceTypeId><![CDATA[1]]></resourceTypeId><creatorName><![CDATA[Admin]]></creatorName><resourceTable><![CDATA[com.jinhe.tss.um.entity.permission.resources.GroupResources]]></resourceTable><description><![CDATA[用户组织资源类型]]></description><name><![CDATA[用户组]]></name></row></data>
+	<data><row><createTime><![CDATA[2013-07-24 00:21:32.015]]></createTime><rootId><![CDATA[-1]]></rootId><seqNo><![CDATA[1]]></seqNo><applicationId><![CDATA[tss]]></applicationId><creatorId><![CDATA[-1]]></creatorId><lockVersion><![CDATA[0]]></lockVersion><permissionTable><![CDATA[com.jinhe.tss.um.entity.permission.GroupPermission]]></permissionTable><id><![CDATA[1]]></id><resourceTypeId><![CDATA[1]]></resourceTypeId><creatorName><![CDATA[Admin]]></creatorName><resourceTable><![CDATA[com.jinhe.tss.um.entity.permission.GroupResource]]></resourceTable><description><![CDATA[用户组织资源类型]]></description><name><![CDATA[用户组]]></name></row></data>
 </xform>
 </ResourceTypeDetail>
 </Response>

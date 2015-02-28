@@ -919,8 +919,8 @@ function popupGrid(url, nodeName, title, params) {
        	   '<input type="button" value="关闭" class="btWeak"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
-	$(el).addClass("dialog").css("width", "600px").css("height", "auto");
-	$("#" + boxName, el).css("minHeight", "200px").css("maxHeight", "400px").center();
+	$(el).addClass("dialog").css("width", "600px").css("height", "auto").center();
+	$("#" + boxName, el).css("minHeight", "200px").css("maxHeight", "400px");
 
 	$(".bts .btWeak", el).click(removeDialog);
 

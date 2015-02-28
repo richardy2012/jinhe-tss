@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<HTML xmlns:WorkSpace xmlns:Tree xmlns:Grid xmlns:Form>
+<HTML xmlns:WorkSpace xmlns:Tree xmlns:Grid>
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>    
 <meta charset="UTF-8">
@@ -26,13 +26,13 @@
               <span class="icon"></span>门户组件
               <span class="refreshTreeBT"></span>
           </div>
-          <Tree:Box id="tree" moveable="true"><div class="loading"></div></Tree:Box>
+          <Tree id="tree" moveable="true"><div class="loading"></div></Tree>
       </div> 
     </td> 
     <td class="groove">
       <WorkSpace:Box id="ws">
         <WorkSpace:Page id="page1">
-            <Form:Box id="page1Form"><div class="loading"></div></Form:Box>    
+            <div id="page1Form"></div>    
             <WorkSpace:PageStep>
               <input type="button" class="btStrong" value="完成" id="page1BtSave"/>
             </WorkSpace:PageStep>

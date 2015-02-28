@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<HTML xmlns:WorkSpace xmlns:Tree xmlns:Grid xmlns:Form>
+<HTML xmlns:Tree xmlns:Grid>
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>    
 <meta charset="UTF-8">
@@ -20,22 +20,20 @@
   .box .bts { border-top: 1px solid #98989C; padding: 5px 0 5px 10px; text-align: center;}
   .box .bts input { margin-right:20px; }
 
-  .box Form\:Box { height: 30px; background-color: #90EE90; text-align: center;}
-  .box Tree\:Box { height: 500px; }
-  .box Form\:Box td { padding-top:5px;  padding-left:10px; }
+  .box .tssForm { height: 30px; background-color: #90EE90; text-align: center;}
+  .box Tree { height: 500px; }
+  .box .tssForm td { padding-top:5px;  padding-left:10px; }
   .box .comment { color:#999999;text-align: center; }
   .box h2{ width:100%; height:21px; line-height:21px; color: #555555;
     background: url(../../images/panel/title_bg.gif) repeat-x; text-indent:5px;}
 
-  Tree\:Box .optionTitle { height: 20px; }
-  Tree\:Box .optionBox {float: right; width: 550px; margin: 0px;}
-  Tree\:Box .optionTitle span, Tree\:Box .optionBox span { float: right; width: 60px; height: 18px; margin: 0px; 
-    text-align: center;}  
-  Tree\:Box .optionBox span { text-indent: -9999px; background: no-repeat center;}
-
-  Tree\:Box li a { width: auto; }
-  Tree\:Box li:hover>:nth-child(3), Tree\:Box li:hover>:nth-child(2) { background-color: yellow; }
-  Tree\:Box li a:hover { text-decoration: none; }
+  Tree .optionTitle { height: 20px; }
+  Tree .optionBox {float: right; width: 550px; margin: 0px;}
+  Tree .optionTitle span, Tree .optionBox span { float: right; width: 60px; height: 18px; margin: 0; text-align: center;}  
+  Tree .optionBox span { text-indent: -9999px; background: no-repeat center;}
+  Tree li a { width: auto; }
+  Tree li:hover>:nth-child(3), Tree li:hover>:nth-child(2) { background-color: yellow; }
+  Tree li a:hover { text-decoration: none; }
 
 </style>
 </head>
@@ -43,8 +41,8 @@
 
 <div class="box">
   <h2></h2>
-  <Form:Box id="permissionForm"></Form:Box>
-  <Tree:Box id="permissionTree"></Tree:Box>
+  <div id="permissionForm"></div>
+  <Tree id="permissionTree"></Tree>
 
   <div class="comment">
     &nbsp;&nbsp;说明：鼠标点击切换状态，通常情况下是 &lt;未选中&gt; → &lt;仅此节点&gt; → &lt;所有子节点&gt; → &lt;未选中&gt; 循环<br/>

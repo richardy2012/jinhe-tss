@@ -14,7 +14,7 @@
 		</TR>
 		<TR>
 			<TD><label binding="description"/></TD>
-			<TD><input binding="description" style="width:80%;height:80px;"/></TD>
+			<TD><textarea binding="description" style="width:80%;height:80px;"/></TD>
 		</TR>
 		</layout>
 		<data><row><name><![CDATA[研发部]]></name><description><![CDATA[test 用户组]]></description></row></data></xform>
