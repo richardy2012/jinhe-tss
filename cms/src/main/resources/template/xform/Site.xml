@@ -11,7 +11,7 @@
 	<layout>
 		<TR>
 			<TD width="80"><label binding="name"/></TD>
-			<TD><input binding="name"/></TD>
+			<TD><input binding="name" style="width:90%;"/></TD>
 		</TR>
 		<TR>
 			<TD><label binding="overdueDate"/></TD>
@@ -19,7 +19,7 @@
 		</TR>
 		<TR>
 			<TD><label binding="path"/></TD>
-			<TD><input binding="path"  title='指定一个安装环境的目录'/></TD>
+			<TD><input binding="path" style="width:90%;" title='指定一个安装环境的目录'/></TD>
 		</TR>
 		<TR>
 			<TD><label binding="remark"/></TD>

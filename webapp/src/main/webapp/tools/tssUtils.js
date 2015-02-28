@@ -71,7 +71,7 @@ function closePalette() {
 
 window.onresize = function() {
 	$("#palette #tree").css("height", (document.body.offsetHeight - 45) + "px");
-	$(".panel .groove #ws Tree\\:Box").css("height", (document.body.offsetHeight - 112) + "px");	
+	$(".panel .groove #ws Tree").css("height", (document.body.offsetHeight - 112) + "px");	
 }
  
 /* 事件绑定初始化 */

@@ -8,7 +8,7 @@
 	<layout>
 		<TR>
 			<TD width="80"><label binding="name"/></TD>
-			<TD><input binding="name"/></TD>
+			<TD><input binding="name" style="width:90%;"/></TD>
 		</TR>
 		<TR>
 			<TD><label binding="overdueDate"/></TD>
