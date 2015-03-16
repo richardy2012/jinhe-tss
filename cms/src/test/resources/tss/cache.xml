@@ -31,7 +31,6 @@
     <initNum>5</initNum>  
     <disabled>0</disabled>  
     <customizerClass>com.jinhe.tss.cache.extension.threadpool.ThreadPoolCustomizer</customizerClass>  
-    <remark>上次修改时间2007-01-17 23:46:08, 修改人JK</remark> 
   </strategy>  
 
   <strategy code="SHORT" name="服务数据缓存（短期）"> 

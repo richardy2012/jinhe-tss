@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application applicationId="tss" name="TSS">
+	<!-- UM -->
+	<resourceType resourceTypeId="1" name="用户组" seqNo="1" description="用户组织资源类型"
+		permissionTable="com.jinhe.tss.um.entity.permission.GroupPermission"
+		resourceTable="com.jinhe.tss.um.entity.permission.GroupResource">
+ 
+		<operation operationId="1" name="查看" seqNo="1" dependParent="2" />
+		<operation operationId="2" name="管理" seqNo="2" dependId="opt1" />
+	</resourceType>
+
+	<resourceType resourceTypeId="2" name="角色" seqNo="2" description="角色资源类型"
+		permissionTable="com.jinhe.tss.um.entity.permission.RolePermission"
+		resourceTable="com.jinhe.tss.um.entity.permission.RoleResource">
+
+		<operation operationId="1" name="查看" seqNo="1" dependParent="2" />
+		<operation operationId="2" name="管理" seqNo="2" dependId="opt1" />
+	</resourceType>
+
+	<resourceTypeRoot applicationId="tss" resourceTypeId="1" rootId="-1"/>
+	<resourceTypeRoot applicationId="tss" resourceTypeId="2" rootId="-6"/>
+	
+	<!-- DM -->
+	<resourceType resourceTypeId="D1" name="数据报表" seqNo="21" description="数据报表资源" 
+		permissionTable="com.jinhe.dm.report.permission.ReportPermission" 
+		resourceTable="com.jinhe.dm.report.permission.ReportResource">
+		
+		<operation operationId="1"  name="查看报表" seqNo="1" dependParent="2"  />
+		<operation operationId="2"  name="维护报表" seqNo="2" dependId="opt1" />	
+		<operation operationId="3"  name="删除报表" seqNo="3" dependId="opt1" dependParent="3"/>
+		<operation operationId="4"  name="停用启用" seqNo="4" dependId="opt1" dependParent="2,3"/>
+	</resourceType>
+	<resourceTypeRoot applicationId="tss" resourceTypeId="D1" rootId="0"/>
+	
+	<!-- 
+	<resourceType resourceTypeId="D2" name="数据录入" seqNo="22" description="数据录入资源" 
+		permissionTable="com.jinhe.dm.record.permission.RecordPermission" 
+		resourceTable="com.jinhe.dm.record.permission.RecordResource">
+		
+		<operation operationId="1"  name="查看录入" seqNo="1" dependParent="2"  />
+		<operation operationId="2"  name="维护录入" seqNo="2" dependId="opt1" />	
+		<operation operationId="3"  name="删除录入" seqNo="3" dependId="opt1" dependParent="3"/>
+	
+	</resourceType>
+	<resourceTypeRoot applicationId="tss" resourceTypeId="D2" rootId="0"/>
+	-->
+	 
+</application>

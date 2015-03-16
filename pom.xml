@@ -5,7 +5,7 @@
     <artifactId>tss</artifactId>
     <packaging>pom</packaging>
     <name>TSS</name>
-    <version>3.0.0</version>
+    <version>3.2</version>
  
 	<organization>
 		<name>Jin He</name>
@@ -28,7 +28,7 @@
 	</developers>
     
    	<properties>
-		<tss.version>3.0.0</tss.version>
+		<tss.version>3.2</tss.version>
 		<spring.version>3.2.0.RELEASE</spring.version>
 		<hibernate.version>3.5.1-Final</hibernate.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
@@ -64,6 +64,11 @@
 				<artifactId>portal</artifactId>
 				<version>${tss.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.jinhe.tss</groupId>
+				<artifactId>dm</artifactId>
+				<version>${tss.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -94,6 +99,7 @@
 			<version>2.3</version>
 			<scope>test</scope>
 		</dependency>
+		
 		<!-- Used to fix "java.lang.NoSuchFieldError: fFeatures" error when running test. -->
 		<dependency>
             <groupId>xerces</groupId>
@@ -253,11 +259,11 @@
 							<tasks>
 								<echo>
 									process log4j.properties: set
-									log4j.logger.com.jinhe.dm to ${log.level};
+									log4j.logger.com.jinhe to ${log.level};
 								</echo>
 								<replaceregexp file="${basedir}/target/classes/log4j.properties"
-									match="log4j\.logger\.com\.jinhe\.tss=debug"
-									replace="log4j\.logger\.com\.jinhe\.tss=${log.level}" byline="true" />
+									match="log4j\.logger\.com\.jinhe=debug"
+									replace="log4j\.logger\.com\.jinhe=${log.level}" byline="true" />
 
 								<echo>
 									process application.properties: set job.enable to ${job.enable};
@@ -481,6 +487,7 @@
 		<module>um</module>
 		<module>cms</module>
 		<module>portal</module>
+		<module>dm</module>
 		<module>webapp</module>
     </modules>
 

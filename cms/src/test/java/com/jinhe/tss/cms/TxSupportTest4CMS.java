@@ -103,7 +103,7 @@ public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit4Sprin
     }
  
     /**
-     * 初始化CMS的动态属性相关模板
+     * 初始化CMS
      */
     protected void init() {
     	// 初始化数据库脚本

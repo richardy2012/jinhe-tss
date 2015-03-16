@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
+import com.jinhe.dm.DMConstants;
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamConstants;
@@ -91,6 +92,7 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
         permissionService.saveUserRolesAfterLogin(userRoles, UMConstants.ADMIN_USER_ID);
         
         initUM();
+        initDM();
         initPortal();
         
         importSystemProperties();
@@ -114,6 +116,15 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
         for(Long groupId : groupIds) {
         	resourcePermission.addResource(groupId, UMConstants.GROUP_RESOURCE_TYPE_ID);
         }
+    }
+    
+    // 数据源配置
+    private void initDM() {
+    	Param group = addParam(ParamConstants.DEFAULT_PARENT_ID, "数据源配置");
+        addParam(group.getId(), DMConstants.DEFAULT_CONN_POOL, "默认数据源", "connectionpool");
+        
+        Param dlParam = addParam(group.getId(), DMConstants.DATASOURCE_LIST, "数据源列表");
+        addParamItem(dlParam.getId(), "connectionpool", "本地数据源", ParamConstants.COMBO_PARAM_MODE);
     }
     
     /** 初始化默认的修饰器，布局器 */

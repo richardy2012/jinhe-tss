@@ -1,0 +1,25 @@
+1、有展示页面和SQL，没有查询条件，点击查询时SQL不会执行？
+      可以在展示页面后面加上一串 "?type=x"，这样可以触发SQL执行
+      
+2、写SQL需要注意的地方？
+  SQL如果分成多行书写，当想要注释掉中间某一行时候，不能用"--"来注释，这样发到后台执行时，会把改行后面的记录全部注释掉。
+       可以用 /* ... */来注释，或直接删除改行
+       
+3、如果select的字段有oracle的TIMESTAMP类型的字段，转换为json时会报错，需要先用to_char函数先转换为字符串类型。
+       
+       
+打包注意：
+0、BtrBI的10.8.73.80机器安裝的是JDK6，打包只能用JDK1.6, 1.7會出錯
+
+1、更改portal/model下Logo图标（BTR 、WMS）  
+  D:\project\TSS\jinhe-tss\webapp\src\main\webapp\modules\portal\model\portlet\portlet-23
+  
+2、TSS/webapp application.properties
+  #class.name.IdentityGetter = com.jinhe.tss.um.sso.UMIdentityGetter
+   class.name.IdentityGetter = com.jinhe.tss.um.sso.othersystem.WmsIdentifyGetter
+   
+   
+update um_resourcetype set applicationId='tss';
+update um_resourcetype_root set applicationId='tss';
+update um_operation set applicationId='tss';
+DELETE FROM um_application WHERE applicationId='dms';

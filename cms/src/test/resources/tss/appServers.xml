@@ -2,5 +2,4 @@
 <servers>
 	<server code="TSS" framework="tss" name="TSS" sessionIdName="JSESSIONID" baseURL="http://localhost:8083/tss"/>
 	<server code="CMS" framework="tss" name="CMS" sessionIdName="JSESSIONID" baseURL="http://localhost:8081/cms"/>
-	<server code="DOMINO" framework="domino" name="OA" sessionIdName="DomAuthSessId" baseURL="http://192.168.0.182:81"/>
 </servers>

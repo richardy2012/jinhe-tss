@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    
+	<parent>
+		<groupId>com.jinhe.tss</groupId>
+		<artifactId>tss</artifactId>
+		<version>3.2</version>
+	</parent>
+
+    <artifactId>dm</artifactId>
+    <packaging>jar</packaging>
+    <name>dm</name>
+
+	<dependencies>
+		<!-- TSS dependency -->
+		<dependency>
+			<groupId>com.jinhe.tss</groupId>
+			<artifactId>um</artifactId>
+		</dependency>
+ 
+		<!-- DB driver dependency -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.6</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>Oracle</groupId>
+			<artifactId>ojdbc</artifactId>
+			<version>1.4G</version>
+		</dependency>
+ 
+	</dependencies>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>   
+		</plugins>
+	</reporting>
+
+</project>
