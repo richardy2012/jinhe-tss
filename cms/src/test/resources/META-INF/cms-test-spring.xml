@@ -26,8 +26,5 @@
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 	  <property name="entityManagerFactory" ref="entityManagerFactory" /><!-- 注入实体管理工厂bean到事务管理bean -->
 	</bean>
-	
-	<!-- 事务声明方式是注解 -->
-    <tx:annotation-driven transaction-manager="transactionManager" />
-	 
+ 
 </beans>

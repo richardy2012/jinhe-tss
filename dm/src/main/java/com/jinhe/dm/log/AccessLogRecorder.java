@@ -59,7 +59,7 @@ public class AccessLogRecorder extends OutputRecordsManager {
                 paramsMapList.add(paramsMap);
             }
 
-            String script = SqlConfig.getWMSSQL("saveAccessLog", 1);
+            String script = SqlConfig.getScript("saveAccessLog", 1);
             SQLExcutor.excuteBatch(script, paramsMapList, DMConstants.LOCAL_CONN_POOL);
         }
     }

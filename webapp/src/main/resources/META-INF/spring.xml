@@ -43,7 +43,7 @@
 		<property name="beanNames"> <value>*Service</value> </property>
 		<property name="interceptorNames">
 			<list>
-				<!-- 先注释掉，会和spring test的自动回滚矛盾，导致回滚不了。发布时再采用此方法声明事务 -->
+				<!-- 如在framework-spring.xml里配置，跑单元测试时会和spring test的自动回滚矛盾，导致回滚不了。 -->
 				<value>transactionInterceptor</value> 
 			</list>
 		</property>

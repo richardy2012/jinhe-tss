@@ -26,7 +26,7 @@ public class SqlConfig {
 	
 	static Map<String, Object> sqlNestFmParams = new HashMap<String, Object>(); // SQL嵌套解析用
 	
-	public static String getWMSSQL(String reportName, int index) {
+	public static String getScript(String reportName, int index) {
 		Cacheable cacheItem = cache.getObject(reportName);
 		if(cacheItem == null) {
 			File sqlDir = new File(URLUtil.getResourceFileUrl("script").getPath());

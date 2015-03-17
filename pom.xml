@@ -211,6 +211,9 @@
 						<include>**/*Test.java </include> 
 					</includes>
 					<testFailureIgnore>true</testFailureIgnore> 
+					<argLine>
+						-Xms256m -Xmx1024m -XX:MaxPermSize=256M
+					</argLine>
                 </configuration>
             </plugin>
 
@@ -304,14 +307,6 @@
 									replace="environment = ${environment}" byline="true" />
 								
 								<echo>
-									process application.properties: set identityGetter to ${identityGetter};
-								</echo>
-								<replaceregexp
-									file="${basedir}/target/classes/application.properties" 
-									match="IdentityGetter = com\.jinhe\.tss\.um\.sso\.UMIdentityGetter"
-									replace="IdentityGetter = ${identityGetter}" byline="true" />
-									
-								<echo>
 									process appServers.xml: set tomcat.url to ${tomcat.url};
 								</echo>
 								<replaceregexp
@@ -353,111 +348,9 @@
 				<db.password>800best@com</db.password>
 				<db.url>127.0.0.1:3306/tss</db.url>
 				<tomcat.url>localhost:8088</tomcat.url>
-				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
 			</properties>
 		</profile>
 
-		<!-- for btrBI -->
-		<profile>
-			<id>prod</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<environment>prod</environment>
-				<log.level>info</log.level>
-				<job.enable>false</job.enable>
-				<db.username>root</db.username>
-				<db.password>800best@com</db.password>
-				<db.url>127.0.0.1:3306/tss_btr</db.url>
-				<tomcat.url>10.8.72.80:8888</tomcat.url>
-				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
-			</properties>
-		</profile>
-		<profile>
-			<id>prod-job</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<environment>prod-job</environment>
-				<log.level>info</log.level>
-				<job.enable>true</job.enable>
-				<db.username>root</db.username>
-				<db.password>800best@com</db.password>
-				<db.url>127.0.0.1:3306/tss_btr</db.url>
-				<tomcat.url>10.8.72.80:8888</tomcat.url>
-				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
-			</properties>
-		</profile>
-		<profile>
-			<id>uat</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<environment>uat</environment>
-				<log.level>debug</log.level>
-				<job.enable>true</job.enable>
-				<db.username>root</db.username>
-				<db.password>800best@com</db.password>
-				<db.url>127.0.0.1:3306/btr_tss</db.url>
-				<tomcat.url>bl00618-l</tomcat.url>
-				<identityGetter>com.jinhe.tss.um.sso.UMIdentityGetter</identityGetter>
-			</properties>
-		</profile>
-
-		<!-- for wmsBI -->
-		<profile>
-			<id>prod4wms</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<environment>tss4wms-prod</environment>
-				<log.level>info</log.level>
-				<job.enable>false</job.enable>
-				<db.username>wmsxProd</db.username>
-				<db.password>wmsdata@800best</db.password>
-				<db.url>10.8.10.30:3306/dm_wmsx</db.url>
-				<tomcat.url>wmsdata.800best.com</tomcat.url>
-				<identityGetter>com.jinhe.tss.um.sso.othersystem.WmsIdentifyGetter</identityGetter>
-			</properties>
-		</profile>
-		<profile>
-			<id>dev4wms</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<environment>tss4wms-dev</environment>
-				<log.level>debug</log.level>
-				<job.enable>false</job.enable>
-				<db.username>root</db.username>
-				<db.password>800best@com</db.password>
-				<db.url>127.0.0.1:3306/wms_bi</db.url>
-				<tomcat.url>bl00618</tomcat.url>
-				<identityGetter>com.jinhe.tss.um.sso.othersystem.WmsIdentifyGetter</identityGetter>
-			</properties>
-		</profile>
-		
-		<profile>
-			<id>temp4wms</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<environment>tss4wms-temp</environment>
-				<log.level>debug</log.level>
-				<job.enable>false</job.enable>
-				<db.username>wmsxProd</db.username>
-				<db.password>wmsdata@800best</db.password>
-				<db.url>10.8.10.30:3306/dm_wmsx</db.url>
-				<tomcat.url>10.45.9.172:8088</tomcat.url>
-				<identityGetter>com.jinhe.tss.um.sso.othersystem.WmsIdentifyGetter</identityGetter>
-			</properties>
-		</profile>
-		
 	</profiles>
 
 	<distributionManagement>

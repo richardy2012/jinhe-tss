@@ -131,7 +131,7 @@ public class SQLExcutor {
     }
     
     public void excuteQuery(String sqlCollection, int index, Map<Integer, Object> paramsMap) {
-    	String sql = SqlConfig.getWMSSQL(sqlCollection, index);
+    	String sql = SqlConfig.getScript(sqlCollection, index);
         excuteQuery(sql, paramsMap, 0, 0);
     }
 

@@ -118,7 +118,7 @@ public class IndexHelper {
                 it.remove(); // 把已经创建完索引的文章从articleContentSet中去掉，好让垃圾回收站及节约内存时回收
             }
         } catch (Exception e) {
-            throw new BusinessException("读取索引文件出错！", e);
+            throw new BusinessException("创建索引文件出错！tempPath=" + tempIndexDir, e);
         } finally {
             progress.add(count); // 确保最后一次进度信息更新
             try {

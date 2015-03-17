@@ -19,8 +19,8 @@ URL_MOVE_SOURCE    = AUTH_PATH + "rp/move/";
 URL_GET_OPERATION  = AUTH_PATH + "rp/operations/";  // {id}
 
 URL_REPORT_DATA    = NO_AUTH_PATH + "display/";
-URL_REPORT_JSON    = NO_AUTH_PATH + "display/json/";
-URL_REPORT_EXPORT  = NO_AUTH_PATH + "display/export/";
+URL_REPORT_JSON    = NO_AUTH_PATH + "api/json/";
+URL_REPORT_EXPORT  = NO_AUTH_PATH + "data/export/";
 
 URL_REPORT_JOB     = AUTH_PATH + "rp/schedule";
 

@@ -35,7 +35,7 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
  * http://localhost:9000/dm/display/12/1/100
  */
 @Controller
-@RequestMapping("/display")
+@RequestMapping( {"/display", "/data", "/api"} )
 public class Display extends BaseActionSupport {
     
     @Autowired private ReportService reportService;

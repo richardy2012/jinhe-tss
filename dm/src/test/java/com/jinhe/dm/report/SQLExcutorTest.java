@@ -17,7 +17,7 @@ public class SQLExcutorTest extends TxTestSupport4DM {
     
     @Test
     public void debugSQL() {     
-        String sql = SqlConfig.getWMSSQL("test1", 1);
+        String sql = SqlConfig.getScript("test1", 1);
         
         HttpServletResponse response = Context.getResponse();
         MockHttpServletRequest  request = new MockHttpServletRequest();
