@@ -1,6 +1,9 @@
 package com.jinhe.tss.framework.persistence.pagequery;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 分页信息结果
@@ -23,7 +26,7 @@ public class PageInfo {
 
     /** 获取记录集 */
     public List<?> getItems() {
-        return items;
+        return items == null ? new ArrayList<Object>() : items;
     }
 
     /** 设置记录集 */
@@ -125,5 +128,13 @@ public class PageInfo {
         sb.append("\" pagerecords=\"").append(getPageRows());
         sb.append("\"/>");
         return sb.toString();
+    }
+    
+    public Map<String, Integer> toJson() {
+    	Map<String, Integer> map = new HashMap<String, Integer>();
+    	map.put("page", getPageNum());
+    	map.put("pagesize", getPageSize());
+    	map.put("total", getTotalRows());
+        return map;
     }
 }

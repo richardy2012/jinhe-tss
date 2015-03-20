@@ -112,6 +112,8 @@ public class PageInfoTest {
                 + "currentpage=\"1\" pagesize=\"20\" firstpage=\"1\" prepage=\"0\" "
                 + "nextpage=\"0\" lastpage=\"0\" pagerecords=\"0\"/>";
         assertEquals("totalRows = 0", xml, page.toString());
+        
+        assertTrue(0 == page.toJson().get("total"));
     }
 
     @Test

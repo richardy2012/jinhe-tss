@@ -63,6 +63,10 @@ public abstract class MacrocodeQueryCondition  {
 		return buffer.toString();
 	}
 	
+	public String toString() {
+		return toConditionString();
+	}
+	
     /**
      * 获取条件查询HQL/SQL条件语句宏代码字典
      * @return Map 
