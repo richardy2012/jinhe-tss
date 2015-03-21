@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD Demo</title>
+    <link rel="stylesheet" type="text/css" href="../../tools/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../tools/easyui/themes/icon.css">
+
+    <script type="text/javascript" src="../../tools/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../../tools/easyui/jquery.easyui.min.js"></script>
+
+    <style type="text/css">
+        body {
+            margin: 2px;
+        }
+        #fm{
+            margin:0;
+            padding:10px 30px;
+        }
+        .ftitle{
+            font-size:14px;
+            font-weight:bold;
+            padding:5px 0;
+            margin-bottom:10px;
+            border-bottom:1px solid #ccc;
+        }
+        .fitem{
+            margin-bottom:5px;
+        }
+        .fitem label{
+            display:inline-block;
+            width:80px;
+        }
+        .fitem input{
+            width:160px;
+        }
+    </style>
+
+</head>
+<body>
+    <table id="dg" title="数据列表" class="easyui-datagrid" 
+        url="../../demo/"
+        toolbar="#toolbar" pagination="true"
+        rownumbers="true" fitColumns="true" fit="true" singleSelect="true">
+        <thead>
+            <tr>
+                <th field="id" width="50">ID</th>
+                <th field="name" width="50">名称</th>
+                <th field="code" width="50">编码</th>
+                <th field="udf1" width="50">自定义1</th>
+                <th field="udf2" width="50">自定义2</th>
+                <th field="udf3" width="50">自定义3</th>
+            </tr>
+        </thead>
+    </table>
+
+    <div id="toolbar">
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newUser()">新建</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editUser()">修改</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyUser()">删除</a>
+    </div>
+
+    <div id="dlg" class="easyui-dialog" style="width:400px;height:300px;padding:10px 20px;" closed="true" buttons="#dlg-buttons">
+        <div class="ftitle">详细信息</div>
+        <form id="fm" method="post" novalidate>
+            <input name="id" type="hidden">
+            <div class="fitem">
+                <label>名称:</label>
+                <input name="name" class="easyui-textbox" required="true">
+            </div>
+            <div class="fitem">
+                <label>编码:</label>
+                <input name="code" class="easyui-textbox" required="true">
+            </div>
+            <div class="fitem">
+                <label>自定义1:</label>
+                <input name="udf1" class="easyui-textbox">
+            </div>
+            <div class="fitem">
+                <label>自定义2:</label>
+                <input name="udf2" class="easyui-textbox">
+            </div>
+            <div class="fitem">
+                <label>自定义3:</label>
+                <input name="udf3" class="easyui-textbox" validType="email">
+            </div>
+        </form>
+    </div>
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveUser()" style="width:90px">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">取消</a>
+    </div>
+
+<script type="text/javascript">
+
+var url;
+function newUser(){
+    $('#dlg').dialog('open').dialog('setTitle','新增').dialog('center');
+    $('#fm').form('clear');
+    url = '../../demo';
+}
+
+function editUser(){
+    var row = $('#dg').datagrid('getSelected');
+    if (row){
+        $('#dlg').dialog('open').dialog('setTitle','修改').dialog('center');
+        $('#fm').form('load', row);
+        url = '../../demo?id=' + row.id;
+    }
+}
+
+function saveUser(){
+    $('#fm').form('submit',{
+        url: url,
+        onSubmit: function(){
+            return $(this).form('validate');
+        },
+        success: function(result){
+            var result = eval('('+result+')');
+            if (result.errorMsg){
+                $.messager.show({
+                    title: 'Error',
+                    msg: result.errorMsg
+                });
+            } else {
+                $('#dlg').dialog('close'); // close the dialog
+                $('#dg').datagrid('reload'); // reload the user data
+            }
+        }
+    });
+}
+
+function destroyUser(){
+    var row = $('#dg').datagrid('getSelected');
+    if (row){
+        $.messager.confirm('Confirm','Are you sure you want to destroy this user?', function(r){
+            if (r) {
+                $.ajax({
+                     url: '../../demo/' + row.id,
+                     type: 'DELETE',
+                     success: function(result) {
+                        if (result.errorMsg){
+                            $.messager.show({ // show error message
+                                title: 'Error',
+                                msg: result.errorMsg
+                            });
+                        } else {
+                            $('#dg').datagrid('reload'); // reload the user data
+                        }
+                     }
+                });
+            }
+        });
+    }
+}
+</script>
+
+</body>
+</html>

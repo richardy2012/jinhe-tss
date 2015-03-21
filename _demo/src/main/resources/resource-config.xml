@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application applicationId="cwp" name="Demo系统">
+
+	<resourceType resourceTypeId="R1" name="XX资源" seqNo="31" description="XX资源" 
+		permissionTable="com.jinhe.tss.demo.resource.XXPermission" 
+		resourceTable="com.jinhe.tss.demo.resource.XXResource">
+		
+		<operation operationId="1"  name="查看" seqNo="1" dependParent="2"  />
+		<operation operationId="2"  name="新增修改" seqNo="2" dependId="opt1" />	
+		<operation operationId="3"  name="删除" seqNo="3" dependId="opt1" dependParent="3"/>
+	
+	</resourceType>
+	
+	<resourceTypeRoot applicationId="cwp" resourceTypeId="R1" rootId="0"/>
+	
+</application>

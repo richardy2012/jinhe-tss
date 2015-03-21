@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xform>
+	<declare>	
+		<column name="id"    caption="XXID" mode="number" editable="false"/>
+		<column name="name"  caption="XX名称" maxLength="30" empty="false"/>
+		<column name="udf1"  caption="自定义1" maxLength="200"/>
+		<column name="udf2"  caption="自定义2" maxLength="200"/>
+		<column name="udf3"  caption="自定义3" maxLength="200"/>
+	</declare>
+	<layout>
+		<TR>
+			<TD width="80"><label binding="id"/></TD>
+			<TD><input binding="id" style="width:50px;"/></TD>
+		</TR>
+		<TR>
+			<TD><label binding="name"/></TD>
+			<TD><input binding="name" style="width:50%;"/></TD>
+		</TR>
+		<TR>
+			<TD><label binding="udf1"/></TD>
+			<TD><input binding="udf1" style="width:80%;"/></TD>
+		</TR>
+		<TR>
+			<TD><label binding="udf2"/></TD>
+			<TD><input binding="udf2" style="width:80%;"/></TD>
+		</TR>
+		<TR>
+			<TD><label binding="udf3"/></TD>
+			<TD><input binding="udf3" style="width:80%;"/></TD>
+		</TR>
+	</layout>
+	<data/>
+</xform>

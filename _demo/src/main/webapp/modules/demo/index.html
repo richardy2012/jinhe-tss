@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="百世，云仓，门户">
+    <meta name="author" content="百世">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>百世云仓portal</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../tools/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="../../tools/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <style>
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    background-color: #eee;
+    background-image: url(images/bg.png);
+}
+ 
+/*Navbar*/
+.navbar {
+    margin: 0px;
+}
+.navbar .brand {
+  text-shadow: none; color: #fff; font-family: georgia, serif; 
+}
+
+.navbar .navbar-inner {
+  background: #4d5b76;
+  padding: 0em 1em;
+  margin: 0px;
+  border-radius: 0px;
+  border: 0px;
+}
+
+.navbar .nav {
+  margin: 0em;
+  margin-right: -1em;
+}
+.navbar .nav > li > a {
+  color: #fff;
+  text-shadow: none;
+}
+.navbar .nav > li:hover {
+  background-color: #444;
+}
+.navbar .nav > li > a:hover {
+  color: #fff;
+}
+.navbar .dropdown-menu a:hover {
+  background: none;
+  color: #000;
+}
+.navbar .nav li.dropdown.open > .dropdown-toggle {
+  background-color: #444;
+  color: #fff;
+}
+
+
+/*Navigation*/
+.sidebar-nav {
+  width: 240px;
+  position: absolute;
+  float: left;
+  border-top: none;
+  border-left: none;
+  margin: 0em;
+}
+.sidebar-nav .nav-header {
+  border-top: 1px solid #ffffff;
+  border-bottom: 1px solid #c8c8cb;
+  border-left: none;
+  color: #333;
+  display: block;
+  background: #efeff0;
+  font-weight: normal;
+  font-size: 1em;
+  line-height: 2.5em;
+  padding: 0em .25em;
+  margin-bottom: 0px;
+  text-shadow: none;
+  text-transform: none;
+}
+.sidebar-nav .nav-header .label {
+  float: right;
+  margin-top: .5em;
+  margin-right: .25em;
+  line-height: 1.5em;
+}
+.sidebar-nav .nav-header:hover {
+  background: #efeff0;
+}
+.sidebar-nav .nav-header.collapsed .icon-chevron-up::before {
+  content: "\f078";
+}
+.sidebar-nav .nav-header .icon-chevron-up {
+  float: right;
+}
+.sidebar-nav .nav-header .label {
+  float: right;
+  margin-top: .7em;
+  line-height: 1.5em;
+}
+.sidebar-nav .nav-header i[class^="icon-"] {
+  margin-right: .75em;
+}
+.sidebar-nav .nav-list {
+  margin: 0px;
+  border: 0px;
+  background: #f6f6f6;
+}
+.sidebar-nav .nav-list  > li > a:hover {
+  background: #e0e0e8;
+}
+.sidebar-nav .nav-list  > .active > a,
+.sidebar-nav .nav-list  > .active > a:hover {
+  background: #d2d2dd;
+  color: #555;
+  text-shadow: none;
+}
+.sidebar-nav .nav-list  > .active > a:hover {
+  background: #c3c3d2;
+}
+.sidebar-nav .nav-list  > li > a {
+  color: #444;
+  padding: .5em 1em;
+}
+.sidebar-nav .nav-list.collapse.in {
+  border-bottom: 1px solid #ccc;
+}
+
+.content {
+  min-width: 400px;
+  position: relative;
+  min-height: 600px;
+  background: #fff;
+  margin-left: 240px;
+  border-left: 1px solid #cccccc;
+ 
+}
+
+    </style>
+
+    <script type="text/javascript">
+        window.onload = function () {
+            $('.content').css('height', (document.body.offsetHeight - 45) + 'px');
+        }
+
+    </script>
+ 
+  </head>
+
+  <body>
+
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="index.html">百世云仓Portal</a>
+            <ul class="nav pull-right">
+ 
+                <li id="fat-menu" class="dropdown">
+                    <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="icon-user" style="background-color: #fff"></i> BL00618
+                        <i class="icon-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a tabindex="-1" href="#">我的账号</a></li>
+                        <li class="divider"></li>
+                        <li><a tabindex="-1" class="visible-phone" href="#">修改密码</a></li>
+                        <li class="divider visible-phone"></li>
+                        <li><a tabindex="-1" href="login.html">退出</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="sidebar-nav">
+        <a href="#menu1" class="nav-header" data-toggle="collapse"><i class="icon-dashboard"></i>系统管理</a>
+        <ul id="menu1" class="nav nav-list collapse in">
+            <li><a href="#">总览</a></li>
+            <li><a href="#">系统参数</a></li>
+            <li><a href="#">角色权限</a></li>
+            <li><a href="#">菜单按钮</a></li>
+        </ul>
+
+        <a href="#menu2" class="nav-header" data-toggle="collapse">
+            <i class="icon-briefcase"></i>会员信息管理<span class="label label-info">+3</span>
+        </a>
+        <ul id="menu2" class="nav nav-list collapse">
+            <li><a href="#">我的资料</a></li>
+            <li><a href="#">修改密码</a></li>
+            <li><a href="#">实名认证</a></li>
+        </ul>
+
+        <a href="#menu3" class="nav-header collapsed" data-toggle="collapse"><i class="icon-exclamation-sign"></i>报价管理</a>
+        <ul id="menu3" class="nav nav-list collapse">
+            <li><a href="#">产品标准报价</a></li>
+            <li><a href="#">客户询价</a></li>
+            <li><a href="#">百世向客户报价</a></li>
+            <li><a href="#">向物流供应商报价</a></li>
+        </ul>
+
+        <a href="#menu4" class="nav-header" data-toggle="collapse"><i class="icon-legal"></i>客户账户管理</a>
+        <ul id="menu4" class="nav nav-list collapse">
+            <li><a href="#">我的账户</a></li>
+            <li><a href="#">充值</a></li>
+        </ul>
+
+        <a href="#menu5" class="nav-header" data-toggle="collapse"><i class="icon-legal"></i>基础资料维护</a>
+        <ul id="menu5" class="nav nav-list collapse">
+            <li><a href="#">报价服务项配置</a></li>
+            <li><a href="#">价格条款</a></li>
+        </ul>
+
+        <a href="#" class="nav-header" ><i class="icon-question-sign"></i>帮助</a>
+        <a href="#" class="nav-header" ><i class="icon-comment"></i>联系百世</a>
+    </div>
+
+
+    <div class="content" style="background-color:#fff; padding:1px;">
+        <iframe src="crud.html" style="width:100%;height:100%;" frameborder="0"></iframe>
+    </div>
+
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../tools/jquery/jquery.min.js"></script>
+    <script src="../../tools/bootstrap/js/bootstrap.js"></script>
+  </body>
+</html>

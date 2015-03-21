@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html> 
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>    
+<meta charset="UTF-8">
+<title>系统登陆</title>
+<link rel="shortcut icon" href="images/tss.ico">
+<link rel="Bookmark" href="images/tss.ico">
+
+<link href="tools/tssJS/css/tss.common.css" rel="stylesheet">
+
+<script src="tools/tssJS/tssJS.all.js"></script>
+<script src="tools/tssUtils.js"></script>
+
+<style type="text/css">
+	body {
+	    background-image: url(data:image/png;base64,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);
+	    background-color: #222222;
+	}
+    #login_box { position:relative; top:220px; width:352px; margin:0px auto; font-family:"微软雅黑"; padding:10px; }
+    #login_box h1 { line-height:30px;  font-size:15px; padding:0px 5px; color: #FFFFFF; border-bottom:1px solid #009999; }
+    #login_box span { display:block; margin:20px 0px; padding:0px 5px; font-size: 16px;}
+    #loginName, #password { width:320px; height:25px; background-color:#f0f0f0; border:1px solid #ccc; line-height:15px; border-radius:3px; font-size: 16px; }
+    #login_box span.bottonBox { margin:10px 0px; }        
+    #bt_login { width:320px; height:30px; background: #0C6F73; color: #FFFFFF; font-size: 16px; cursor: pointer;
+        box-shadow: #3a3c42 0 1px 0 inset; border-radius: 3px; border: 1px solid #88D0E7; }
+    #bt_login:hover { font-weight: bold; }
+
+</style>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+
+/*********************** 应用配置 开始 **********************************/
+ var 
+ 	indexPage = "admin.portal";    /* 登录成功后调整到的页面 */
+ 
+ function setSysTitle() {
+ 	$.ajax({
+        url: "param/json/simple/sysTitle",
+        method: 'GET',
+        type: "json",
+        ondata: function() {
+            var title = this.getResponseJSON();
+            if( title && title.length > 0 ) {
+                $("#sys_title").html(title[0]);
+            }
+        }
+    });
+ }
+
+/*********************** 应用配置 END **********************************/
+
+    URL_GET_USER_NAME = "getLoginInfo.in";
+    URL_LOGIN = AUTH_PATH + "login.do";
+
+    window.alert = _alert;
+    
+    window.onload = function() {
+        setSysTitle();
+
+		var loginNameObj = $1("loginName");
+		var passwordObj  = $1("password");
+	
+        loginNameObj.onfocus = passwordObj.onfocus = function() {
+             this.style.backgroundColor = "white";
+        }
+
+		var defaultUserName = $.Cookie.getValue("iUserName");
+		if( defaultUserName ) {
+	        loginNameObj.value = defaultUserName;
+	    }
+        loginNameObj.focus();
+
+        var loginButton = $1("bt_login");
+
+        loginButton.onclick = function() {
+        	doLogin(loginNameObj, passwordObj);
+        };
+ 
+        $.Event.addEvent(document, "keydown", function(ev) {
+            if(13 == ev.keyCode) { // enter
+                $.Event.cancel(ev);
+                $1("bt_login").focus();
+
+                setTimeout(function() {
+                    doLogin(loginNameObj, passwordObj);
+                }, 10);
+            }
+        });
+
+        passwordObj.onblur = function() { 
+            this.style.backgroundColor = "#f0f0f0";
+        }
+
+        loginNameObj.onblur = function() { 
+            this.style.backgroundColor = "#f0f0f0";
+
+            var value = this.value;
+            if(value == null || value == "") return;
+ 
+ 			if(loginNameObj.identifier) {
+				delete loginNameObj.identifier;
+			}
+            $.ajax({
+                url: URL_GET_USER_NAME,
+                params:  {"loginName": value},
+                onexcption: function() {
+                    loginNameObj.focus();
+                },
+                onresult: function(){
+                    loginNameObj.identifier = this.getNodeValue("identifier");
+                    loginNameObj.randomKey  = this.getNodeValue("randomKey");
+                    
+                    passwordObj.focus();
+                }
+            });
+        }
+    }
+
+    var doLogin = function(loginNameObj, passwordObj) {
+    	var identifier = loginNameObj.identifier;
+    	var randomKey  = loginNameObj.randomKey;
+    	
+        var loginName  = loginNameObj.value;
+        var password   = passwordObj.value;
+        
+        if( "" == loginName ) {
+            alert("请输入账号");
+            loginNameObj.focus();
+            return;
+        } 
+        else if( "" == password ) {
+            alert("请输入密码");
+            passwordObj.focus();
+            return;
+        }
+        else if( identifier == null ) {
+            alert("无法登录，用户配置可能有误，请联系管理员。");
+            return;
+        } 
+
+        $.ajax({
+            url: URL_LOGIN,
+            headers : {
+                "loginName": $.encode(loginName, randomKey), 
+                "password": $.encode(password, randomKey), 
+                "identifier": identifier
+            },
+            onexception: function(errorMsg) {
+                passwordObj.focus();
+            },
+            onsuccess: function() {
+            	$.Cookie.setValue("iUserName", loginName);
+                location.href = indexPage;
+            }
+        });
+    }
+
+    /* 找回密码  */
+    function forget() {
+        window.open("modules/um/forget.html", "", "width=400, height=250");
+    }
+
+    /* 注册 */
+    function register() {
+        window.open("modules/um/register.htm", "", "width=400, height=250");
+    }
+
+//-->
+</SCRIPT>
+</head>
+<body>
+    <div id="login_box">
+        <h1 id="sys_title">Welcome</h1>
+        <span>
+            <input type="text" id="loginName" placeholder="请输入您的账号" />
+        </span>
+        <span>
+            <input type="password" id="password" placeholder="请输入您的密码"/>
+        </span>
+        <span class='bottonBox'>
+            <input type='button' class='btLogin' id='bt_login' value='登 陆 系 统'/>
+        </span>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html> 
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>    
+	<meta charset="UTF-8">
+	<title>版本信息</title>
+	<link rel="shortcut icon" href="images/tss.ico">
+	<link rel="Bookmark" href="images/tss.ico">
+
+	<script src="tools/tssJS/tssJS.all.js"></script>
+
+	<STYLE type="text/css">
+		#version {
+			padding-top:100px;
+			padding-left:100px;
+			font-size: 38px;
+		}
+	</STYLE>
+</head>
+
+<body>
+  
+  <div id="version"></div>
+
+  <SCRIPT LANGUAGE="JavaScript">
+	<!--
+		$.ajax({
+			url : "framework/version",
+			method : "GET",
+			type : "json",
+			ondata : function() {
+				var result = eval(this.getResponseText()); 
+				if( result ) {	 
+					$("#version").html( "打包时间：" + result[0] + ",  环境：" + result[1] ); 
+				}				
+			}
+		});
+	//-->
+	</SCRIPT>
+
+</body>
+</html>

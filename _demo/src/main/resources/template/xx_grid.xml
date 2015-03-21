@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grid>
+	<declare sequence="true">
+        <column caption="ID" name="id" display="none"/>
+		<column caption="名称" name="name" width="80px" sortable="true" highlightCol="true"/>
+		<column caption="自定义1" name="udf1" width="80px"/>
+		<column caption="自定义2" name="udf2" width="80px"/>
+		<column caption="自定义3" name="udf3" width="80px"/>
+        <column caption="创建人" name="creatorName" width="80px"/>
+        <column caption="创建时间" name="createTime" mode="date" width="100px"/>
+	</declare>
+	<data>
+	</data>
+</grid>
