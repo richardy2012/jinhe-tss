@@ -6,7 +6,6 @@
 				<column name="id"     caption="报表ID"  mode="number" editable="false"/>
 				<column name="name"   caption="报表名称" mode="string" maxLength="30" empty="true"/>
 				<column name="script" caption="报表脚本" mode="string" maxLength="4000"/>
-				<column name="param"  caption="报表参数" mode="string" maxLength="1000"/>
 				<column name="datasource"  caption="数据源"  mode="string" 
 					editor="comboedit" editorvalue="connectionpool-1|connectionpool-2" editortext="数据源1|数据源2"/>
 				<column name="displayUri"  caption="展示页面" mode="string" maxLength="200"/>
@@ -27,14 +26,7 @@
 				</TR>
 				<TR>
 					<TD valign="top"><label binding="script"/></TD>
-					<TD><textarea binding="script" style="width:99%;height:250px"/></TD>
-				</TR>
-				<TR>
-					<TD valign="top">
-						<label binding="param"/><br/><br/>
-						<input type="button" value="配置" onclick="configParams()" class="btStrong"/>
-					</TD>
-					<TD><textarea binding="param" style="width:99%;height:100px"/></TD>
+					<TD><textarea binding="script" style="width:99%;height:100px"/></TD>
 				</TR>
 				<TR>
 					<TD><label binding="datasource"/></TD>

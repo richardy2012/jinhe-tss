@@ -28,7 +28,7 @@ URL_SORT_SOURCE    = AUTH_PATH + "xx/sort/";
 URL_MOVE_SOURCE    = AUTH_PATH + "xx/move/";
 URL_GET_OPERATION  = AUTH_PATH + "xx/operations/";  // {id}
 
-if(true) {
+if(IS_TEST) {
     URL_SOURCE_TREE    = "data/xx_tree.xml?";
     URL_SOURCE_LIST    = "data/xx_grid.xml?";
     URL_SOURCE_DETAIL  = "data/xx1.xml?";
@@ -55,43 +55,43 @@ function initMenus() {
     var item1 = {
         label:"查看",
         callback: function() {
-            showDetail(false, true);
+            showDetail(true);
         },
-        icon: ICON + "icon_view.gif",
+        icon: "images/icon_view.gif",
         visible:function() {return !isTreeRoot() && getOperation("1"); }
     }
     var item2 = {
         label:"修改",
         callback: function() {
-            showDetail(false, false);
+            showDetail();
         },
         icon: ICON + "icon_edit.gif",
-        visible:function() {return !isTreeRoot() && !isTreeNodeDisabled() && getOperation("2"); }
+        visible:function() {return !isTreeRoot() && getOperation("2"); }
     }
     var item3 = {
         label:"新增",
         callback: function() {
-            showDetail(true, false, "1");
+            showDetail(false, true);
         },
         icon: ICON + "icon_new.gif",
-        visible:function() {return (isReportGroup() || isTreeRoot()) && !isTreeNodeDisabled() && getOperation("2");}
+        visible:function() {return getOperation("2");}
     }
     var item4 = {
         label:"删除",
-        callback:deleteReport,
+        callback:deleteSource,
         icon: ICON + "icon_del.gif",
         visible:function() {return !isTreeRoot() && getOperation("3");}
     }
     var item5 = {
         label:"移动到",
-        callback:moveReport,
+        callback:moveSource,
         icon: ICON + "icon_move.gif",
         visible:function() {return !isTreeRoot() && getOperation("2");}
     }
     var item6 = {
         label:"搜索",
         callback:search,
-        icon: ICON + "search.gif",
+        icon: ICON + "icon_search.gif",
         visible:function() { return !isTreeRoot(); }
     }
 
@@ -110,7 +110,7 @@ function initMenus() {
     var item3 = {
         label:"查看",
         callback: showDetail,
-        icon: ICON + "icon_view.gif"
+        icon: "images/icon_view.gif"
     }
 
     var menu2 = new $.Menu();
@@ -124,8 +124,10 @@ function loadInitData() {
 
         tree.onTreeNodeDoubleClick = function(ev) {
             var treeNode = getActiveTreeNode();
-            getTreeOperation(treeNode, function(_operation) {            
-                showDetail(false, false);
+            getTreeOperation(treeNode, function(_operation) {    
+                if(getOperation("2")) {
+                    showDetail();
+                }       
             });
         }
         tree.onTreeNodeRightClick = function(ev) {
@@ -138,12 +140,12 @@ function loadInitData() {
         }
     }
 
-    $.ajax({url : URL_SOURCE_TREE, onresult : onresult});
+    $.ajax({url: URL_SOURCE_TREE, onresult: onresult});
 }
 
 /* grid加载数据  */
-function loadGridData(requestParam, page) {
-    $.showGrid(URL_LOG_LIST, XML_LOG_LIST, showLogInfo, "grid", page, requestParam);
+function loadGridData(params, page) {
+    $.showGrid(URL_SOURCE_LIST, XML_SOURCE_LIST, showDetail, "grid", page, params);
 }
 
 function showGrid() {
@@ -153,28 +155,31 @@ function showGrid() {
 
 function search() {
     var treeNode = $.T("tree").getActiveTreeNode();
-    popupForm("SearchForm.xml", "search", {operateTable: treeNode.id}, function(condition) {
+    popupForm("data/search_form.xml", "search", {operateTable: treeNode.id}, function(condition) {
         loadGridData(condition, "1"); 
-    }, "日志查询");
+    }, "资源查询");
 }
 
-/* 显示日志详细信息 */
-function showLogInfo() {    
+/* 显示资源详细信息 */
+function showDetail(readonly, isCreate) {    
     var rowID = $.G("grid").getColumnValue("id");  
-    var rowName = "日志" + rowID;
+    var rowName = "资源" + rowID;
 
     var callback = {};
     callback.onTabClose = function(eventObj){
         if( ws.noTabOpend() ) {
-            // $("wsTR").css("display", "none");
+            $("#ws").hide();
         }            
     };
 
     callback.onTabChange = function() {
         setTimeout(function() {
-            loadLogDetailData(rowID);
+            loadDetailData(rowID);
         }, TIMEOUT_TAB_CHANGE);
     };
+
+    $("#ws input[type='button']").hide(); //.attr('disabled', readonly ? "true" : "");
+    $("#page1Form").attr('editable', readonly ? "false" : "true");
 
     var inf = {};
     inf.label = rowName;
@@ -182,62 +187,36 @@ function showLogInfo() {
     inf.defaultPage = "page1";
     inf.phases = null;
     inf.callback = callback;
-    var tab = ws.open(inf);       
+    var tab = ws.open(inf);   
+
+    $("#ws").show(true);    
 }
 
-function loadLogDetailData(logId) {
+function loadDetailData(sourceId, isCreate) {
     $.ajax({
-      url : URL_LOG_DETAIL + logId,
-      onresult : function() { 
-        $.F("page1Form", this.getNodeValue(XML_LOG_INFO));
-      }
-    });
-}
-
-function showDetail(isCreate, readonly, type) { 
-    var treeNode = $.T("tree").getActiveTreeNode();
-    var treeNodeID = treeNode.id;
-    type = type || treeNode.getAttribute("type") ;
-    
-    $("#searchFormDiv").hide();
-    Element.show($1("reportFormDiv"));
-    
-    var params = {};
-    if( isCreate ) {
-        params["parentId"] = treeNodeID; // 新增
-        readonly = false;
-    } else {
-        params["reportId"] = treeNodeID; // 修改                  
-    }
-
-    $1("sourceSave").disabled = readonly ? "true" : "";
-
-    $.ajax({
-        url : URL_SOURCE_DETAIL + "/" + type,
-        params : params,
+        url : URL_SOURCE_DETAIL + (isCreate ? '' : sourceId),
         onresult : function() { 
             var sourceInfoNode = this.getNodeValue(XML_SOURCE_INFO);
-            $.cache.XmlDatas[treeNodeID] = sourceInfoNode;
-            
-            $1("reportForm").editable = readonly ? "false" : "true";
-            var xform = $.F("reportForm", sourceInfoNode);
-        
+            $.cache.XmlDatas[sourceId] = sourceInfoNode;
+
+            var xform = $.F("page1Form", sourceInfoNode);
+            if(isCreate) {
+                xform.parentId = sourceId;
+            }
+
             // 设置保存/关闭按钮操作
-            $1("closeReportForm").onclick = function() {
-                closeReportFormDiv();
+            $1("page1BtCancel").onclick = function() {
+                ws.closeActiveTab();
             }
-            $1("sourceSave").onclick = function() {
-                saveReport(treeNodeID);
+            $1("page1BtSave").onclick = function() {
+                saveSource(sourceId);
             }
-        },
-        onexception : function() { 
-            closeReportFormDiv();
         }
     });
 }
 
-function saveReport(treeNodeID) {
-    var xform = $.F("reportForm");  
+function saveSource(treeNodeID) {
+    var xform = $.F("page1Form");  
     if( !xform.checkForm() ) return;
 
     var request = new $.HttpRequest();
@@ -246,35 +225,36 @@ function saveReport(treeNodeID) {
     var sourceInfoNode = $.cache.XmlDatas[treeNodeID];
     var dataNode = sourceInfoNode.querySelector("data");
     request.setFormContent(dataNode);
+    if(xform.parentId) {
+        request.addParam("parentId", (xform.parentId == '_root' ? '0' : xform.parentId));
+    }
 
-    syncButton([$1("sourceSave")], request); // 同步按钮状态
+    syncButton([$1("page1BtSave")], request); // 同步按钮状态
 
     request.onresult = function() { // 新增结果返回              
         var xmlNode = this.getNodeValue(XML_SOURCE_TREE).querySelector("treeNode");
         appendTreeNode(treeNodeID, xmlNode);
-        closeReportFormDiv();
+        ws.closeActiveTab();
     }
     request.onsuccess = function() { // 更新
         modifyTreeNode(treeNodeID, "name", xform.getData("name"));
-        modifyTreeNode(treeNodeID, "param", xform.getData("param"));
-        modifyTreeNode(treeNodeID, "displayUri", xform.getData("displayUri"));
-        
-        closeReportFormDiv();
-        delete $.cache.Variables["treeNodeID_SF"];
+        ws.closeActiveTab();
     }
     request.send();
 }
 
-function deleteReport()  { delTreeNode(URL_DELETE_SOURCE); }
+function deleteSource()  { 
+    delTreeNode(URL_DELETE_SOURCE); 
+}
 
-function moveReport() {
+function moveSource() {
     var tree = $.T("tree");
     var treeNode = tree.getActiveTreeNode();
     var id  = treeNode.id;
     var pId = treeNode.parent.id;
 
-    var params = {id:id, parentID: pId};
-    popupTree(URL_GROUPS_TREE, "SourceTree", params, function(target) {
+    var params = {id: id, parentID: pId};
+    popupTree(URL_SOURCE_TREE, XML_SOURCE_TREE, params, function(target) {
         var targetId = (target.id == '_root' ? '0' : target.id);
         moveTreeNode(tree, id, targetId, URL_MOVE_SOURCE);
     });
@@ -308,25 +288,25 @@ window.onload = init;
   <!-- 左栏 结束 -->
   <td class="groove">
     <table>
-    <tr>
-      <td id="gridTitle">
-        <span class="paletteSwitch" id="paletteOpen"></span>
-        <span class="icon"></span>资源列表<span class="buttonBox" id="gridToolBar"></span>
-      </td>
-    </tr>
-    <tr id="gridTR">
-      <td><Grid id="grid"></Grid></td>
-    </tr>
-    <tr id="wsTR" height="235px">
-      <td>
-      <WorkSpace:Box id="ws">
-        <WorkSpace:Page id="page1">
-         <div id="page1Form" editable="false"></div>
-        </WorkSpace:Page>
-      </WorkSpace:Box>
-      </td>
-    </tr>
+        <tr>
+          <td id="gridTitle">
+            <span class="paletteSwitch" id="paletteOpen"></span>
+            <span class="icon"></span>资源列表<span class="buttonBox" id="gridToolBar"></span>
+          </td>
+        </tr>
+        <tr>
+          <td id="gridContainer"><Grid id="grid"></Grid></td>
+        </tr>
     </table>
+    <WorkSpace:Box id="ws" class="hiddenWS" style="height:350px;">
+        <WorkSpace:Page id="page1">
+            <div id="page1Form" editable="true"></div>
+            <WorkSpace:PageStep>
+                <input type="button" class="btStrong" value="完成" id="page1BtSave"/>&nbsp;
+                <input type="button" class="btWeak" value="取消" id="page1BtCancel"/>
+            </WorkSpace:PageStep>
+        </WorkSpace:Page>
+    </WorkSpace:Box>
   </td>
   <td/>
   </tr>

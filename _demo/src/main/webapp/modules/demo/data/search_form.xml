@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    <SearchLog>
+    <search>
     	<xform>
 			<declare>
 				<column name="operatorName" caption="操作人" mode="string" />
@@ -40,5 +40,5 @@
                 <row/>
 			</data>
 		</xform>
-    </SearchLog>
+    </search>
 </Response>
