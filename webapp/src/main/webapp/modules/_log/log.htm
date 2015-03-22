@@ -112,11 +112,6 @@
 		var rowName = "日志" + rowID;
 		
         var callback = {};
-		callback.onTabClose = function(eventObj){
-			if( ws.noTabOpend() ) {
-				// $("wsTR").css("display", "none");
-			}            
-        };
         callback.onTabChange = function() {
             setTimeout(function() {
                 loadLogDetailData(rowID);
@@ -129,7 +124,9 @@
         inf.defaultPage = "page1";
         inf.phases = null;
         inf.callback = callback;
-        var tab = ws.open(inf);       
+        var tab = ws.open(inf);   
+
+        $("#ws").show(true);    
     }
 	
     function loadLogDetailData(logId) {
@@ -175,19 +172,15 @@
 			  <span class="icon"></span>日志列表<span class="buttonBox" id="gridToolBar"></span>
 			</td>
 		</tr>
-		<tr id="gridTR">
-			<td><Grid id="grid"></Grid></td>
-		</tr>
-		<tr id="wsTR" height="235px">
-		  <td>
-			<WorkSpace:Box id="ws">
-			  <WorkSpace:Page id="page1">
-				 <div id="page1Form" editable="false"></div>
-			  </WorkSpace:Page>
-			</WorkSpace:Box>
-		  </td>
+		<tr>
+			<td id="gridContainer"><Grid id="grid"></Grid></td>
 		</tr>
 	  </table>
+	  <WorkSpace:Box id="ws" class="hiddenWS" style="height:235px;">
+		  <WorkSpace:Page id="page1">
+			 <div id="page1Form" editable="false"></div>
+		  </WorkSpace:Page>
+	  </WorkSpace:Box>
 	</td>
 	<td/>
   </tr>

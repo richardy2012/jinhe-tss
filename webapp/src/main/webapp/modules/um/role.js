@@ -77,12 +77,6 @@
             icon:ICON + "icon_del.gif",
             visible:function() {return !isRootNode() && !isAnonymous() && getOperation("2");}
         }
-		var item12 = {
-            label:"查看",
-            callback:function() { editTreeNode(false); },
-            icon:ICON + "view.gif",           
-            visible:function() {return isRole() && getOperation("1");}
-        }
         var item3 = {
             label:"编辑",
             callback:function() { editTreeNode(true); },
@@ -273,7 +267,7 @@
 				xform.editable = editable == false ? "false" : "true";
 				
 				// 设置翻页按钮显示状态
-				$1("page1BtNext").style.display = "none";
+				$("#page1BtNext").hide();
 
 				//设置保存按钮操作
 				var page1BtSaveObj = $1("page1BtSave");

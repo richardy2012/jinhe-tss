@@ -32,6 +32,17 @@ div.groove { border-left: 1px solid #D1D1D1; border-top: 1px solid #D1D1D1; padd
 .panel .body td.groove .hasframe { height: 100%; }
 .panel .body td.groove #ws .hastree { vertical-align: top; }
 
+.panel .body td.groove { position: relative; }
+.panel .body td.groove .hiddenWS {
+    display: none;
+    position: absolute;
+    bottom: 0px;
+    min-height: 100px;
+    z-index: 100;
+}
+.panel .body td.groove WorkSpace\:Page { border: 0; }
+.panel .body td.groove #gridContainer { vertical-align: top; }
+
 /* 左栏 */
 #palette { width:300px; padding-right:5px; }
 #palette>div { width:295px; height:100%; border: 1px solid #96969E; position:relative; }

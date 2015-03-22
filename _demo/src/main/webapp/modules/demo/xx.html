@@ -175,11 +175,17 @@ function showDetail(readonly, isCreate) {
     callback.onTabChange = function() {
         setTimeout(function() {
             loadDetailData(rowID);
+            
+            if(readonly) {
+                $("#ws input[type='button']").hide(); 
+            } else {
+                $("#ws input[type='button']").show(); 
+            }
+            
+            $("#page1Form").attr('editable', readonly ? "false" : "true");
+
         }, TIMEOUT_TAB_CHANGE);
     };
-
-    $("#ws input[type='button']").hide(); //.attr('disabled', readonly ? "true" : "");
-    $("#page1Form").attr('editable', readonly ? "false" : "true");
 
     var inf = {};
     inf.label = rowName;
