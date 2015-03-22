@@ -32,7 +32,6 @@
 	</resourceType>
 	<resourceTypeRoot applicationId="tss" resourceTypeId="D1" rootId="0"/>
 	
-	<!-- 
 	<resourceType resourceTypeId="D2" name="数据录入" seqNo="22" description="数据录入资源" 
 		permissionTable="com.jinhe.dm.record.permission.RecordPermission" 
 		resourceTable="com.jinhe.dm.record.permission.RecordResource">
@@ -43,6 +42,6 @@
 	
 	</resourceType>
 	<resourceTypeRoot applicationId="tss" resourceTypeId="D2" rootId="0"/>
-	-->
+	
 	 
 </application>

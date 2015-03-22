@@ -1,7 +1,5 @@
 package com.jinhe.tss.demo;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -18,11 +16,11 @@ import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.IH2DBServer;
+import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.permission.PermissionHelper;
-import com.jinhe.tss.um.permission.PermissionService;
-import com.jinhe.tss.um.service.ILoginService;
+import com.jinhe.tss.util.URLUtil;
 
 @ContextConfiguration(
 	  locations={
@@ -40,8 +38,6 @@ public abstract class TxTestSupport extends AbstractTransactionalJUnit4SpringCon
     @Autowired protected IH2DBServer dbserver;
     
     @Autowired protected ParamService paramService;
-    @Autowired protected ILoginService loginSerivce;
-    @Autowired protected PermissionService permissionService;
     @Autowired protected PermissionHelper permissionHelper;
     
     protected MockHttpServletRequest request;
@@ -73,9 +69,11 @@ public abstract class TxTestSupport extends AbstractTransactionalJUnit4SpringCon
     }
     
     private void init() {
+    	String sqlPath = URLUtil.getResourceFileUrl("sql/mysql").getPath();
+        TestUtil.excuteSQL(sqlPath, false);
+        
     	// 初始化虚拟登录用户信息
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
- 
     }
     
     protected void login(Long userId, String loginName) {
@@ -83,9 +81,5 @@ public abstract class TxTestSupport extends AbstractTransactionalJUnit4SpringCon
     	String token = TokenUtil.createToken("1234567890", userId); 
         IdentityCard card = new IdentityCard(token, loginUser);
         Context.initIdentityInfo(card);
-        
-        // 获取登陆用户的权限（拥有的角色）并保存到用户权限（拥有的角色）对应表
-        List<Object[]> userRoles = loginSerivce.getUserRolesAfterLogin(userId);
-        permissionService.saveUserRolesAfterLogin(userRoles, userId);
     }
 }

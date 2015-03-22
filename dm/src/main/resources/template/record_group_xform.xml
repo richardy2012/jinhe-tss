@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xform>
+	<declare>	
+		<column caption="id" name="id" mode="string" display="none"/>
+		<column name="name" caption="数据录入分组" mode="string" maxLength="30" empty="false"/>
+		<column name="remark" caption="描述" mode="string" maxLength="400"/>
+	</declare>
+	<layout>
+		<TR>
+			<TD width="100"><label binding="name"/></TD>
+			<TD><input binding="name" style="width:50%;"/></TD>
+		</TR>
+		<TR>
+			<TD valign="top"><label binding="remark"/></TD>
+			<TD><textarea binding="remark" style="width:80%;height:60px"/></TD>
+		</TR>
+	</layout>
+	<data/>
+</xform>

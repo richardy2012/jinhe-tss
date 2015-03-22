@@ -10,7 +10,7 @@ import com.jinhe.dm.TxTestSupport4DM;
 import com.jinhe.dm.data.sqlquery.SqlConfig;
 import com.jinhe.tss.framework.sso.context.Context;
 
-public class SQLExcutorTest extends TxTestSupport4DM {
+public class SqlDebugTest extends TxTestSupport4DM {
     
     @Autowired private ReportAction action;
     @Autowired private Display display;

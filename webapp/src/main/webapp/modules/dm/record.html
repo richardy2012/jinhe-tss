@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<HTML xmlns:Tree xmlns:Grid>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>    
+<meta charset="UTF-8">
+<title>数据录入</title>
+
+<link href="../../tools/tssJS/css/tss.all.css" rel="stylesheet">
+<link href="../../css/css.css" rel="stylesheet">
+
+<script src="../../tools/tssJS/tssJS.all.js"></script>
+<script src="../../tools/tssJS/tssJS.json2Form.js"></script>
+<script src="../../tools/tssJS/tssJS.jsonp.js"></script>
+<script src="../../tools/tssUtils.js"></script>
+
+<script language="javascript" src="record.js"></script>
+<script language="javascript" src="customize.js"></script>
+
+<style>
+
+  .Formbox { display:none; background-color:#BEC6EE; border:1px solid #416371; border-radius: 5px; }
+
+  #searchFormDiv { width:500px; height:450px; font-size: 12px; padding: 10px; overflow: auto; }
+  #searchFormDiv .buttonBox { margin: 20px 10px 10px 55px;  }
+  
+  #reportFormDiv { width: 78%; height: 500; padding: 10px; }
+  #scheduleFormDiv { width: 50%; padding: 10px;}
+
+#reportParamsDiv { width: 466px; height: 300px; padding: 5px; }
+#reportParamsDiv Tree, #reportParamsDiv form { background-color:#fff; display:inline-block; }
+#reportParamsDiv Tree { width:152px; height:250px; overflow-y: auto; }
+#reportParamsDiv form { width:285px; height:290px; padding:5px; position:absolute; top:5px; left:176px; }
+
+#reportParamsDiv .required {
+    color: red;
+    width: 10px;
+    display: inline-block;
+ 	text-align: right;
+}
+#reportParamsDiv label {
+	display: inline-block;
+    width: 60px;
+    text-align: right;
+    line-height: 28px;
+    color: #CC99CC;
+}
+#reportParamsDiv input[type=text] {
+    width: 200px;
+    height: 18px;
+    line-height: 18px;
+    border: 1px solid #bababa;
+    border-radius: 3px;
+}
+#reportParamsDiv input[type=range] {
+    width: 178px;
+    margin-right: 5px;
+}
+#reportParamsDiv select {
+    border: 1px solid #bababa;
+    height: 20px;
+    width: 100px;
+    border-radius: 3px;
+}
+hr { height:4px; border:none; border-top: 1px dashed #555555; }
+#reportParamsDiv .bts { margin-left:10px; padding-top:3px; position:absolute; top:270px; left:0; }
+
+</style>
+
+</head>
+
+<body>
+
+<table class="panel" >
+  <tr class="header"> <td/><td/><td/><td/> </tr>
+  <tr class="body"> 
+	<td/>
+	<!-- 左栏 开始 -->
+	<td id="palette">
+	  <div>
+	  	<div class="bar">
+			<span class="icon"></span>报表树
+			<span class="refreshTreeBT"></span>
+			<span class="paletteSwitch" id="paletteClose"></span>
+		</div>
+		<Tree id="tree" moveable="true"><div class="loading"></div></Tree>
+	  </div> 
+	</td>
+	<td class="groove">
+	  	<table>
+		  <tr>
+			<td id="gridTitle">
+			  <span class="paletteSwitch" id="paletteOpen"></span>
+			  <span class="icon"></span><span class="buttonBox" id="gridToolBar"></span>
+			</td>
+		  </tr>
+		  <tr>
+			<td class="hasframe" id="gridContainer">
+			   <Grid id="grid"></Grid>
+			   <iframe id="chatFrame" style="display:none;width:100%;height:100%;" frameborder="0"></iframe>
+			</td>
+		  </tr>
+		</table>				
+	</td>
+	<td/>
+  </tr>
+  <tr class="footer"> <td/><td/><td/><td/> </tr>
+</table>
+
+<div id="reportFormDiv" class="dialog Formbox">
+	<div id="reportForm"></div>
+	<div class="bts">
+		<input type="button" class="btStrong" value="保存" id="sourceSave"/>
+		<input type="button" class="btWeak" value="关闭" id="closeReportForm"/>
+	</div>
+</div>
+
+<div id="reportParamsDiv" class="dialog Formbox">
+	<Tree id="paramTree" moveable="true"></Tree>
+	<form id="paramForm">
+		<label>参数名称：</label><input type="text" id="_label" /><em class="required">*</em>
+		<br><label>参数类型：</label>
+		<select id="_type">
+			<option value="string">字符串</option>
+			<option value="number">数字</option>
+			<option value="date">日期</option>
+			<option value="datetime">日期时间</option>
+            <option value="hidden">隐藏</option>
+		</select> 
+		<br><label>是否必填：</label>
+		<select id="_nullable">
+			<option value="false">是</option>
+			<option value="true">否</option>
+		</select>  
+		<br><label>默认值：</label><input type="text" id="_defaultValue" placeholder="为参数添加一个默认值"/>
+		
+		<div id="selectRelation">
+			<label>校验正则：</label><input type="text" id="_checkReg" />
+
+			<br><label>宽度：</label> 
+			<input type="range" id="_width" min="100" max="350" value="250" step="10"/><span id="_width_">250</span>px
+
+			<br><label>高度：</label>
+			<input type="range" id="_height" min="18" max="180" value="18" step="1"/><span id="_height_">18</span>px
+					
+			<hr>
+			<label>下拉列表：</label><input type="text" id="_options" placeholder="格式：1|2, A|B 或 数据服务地址"/>
+			<br><label>是否多选：</label>
+			<select id="_multiple">
+				<option value="true">是</option>
+				<option value="false">否</option>
+			</select> 
+			<br><label>联动方法：</label><input type="text" id="_onchange" />
+		</div>
+
+		<input type="hidden" id="_isMacrocode" />
+	</form>
+	<div class="bts">
+		<input type="button" class="btStrong" value="完成" onclick="saveConfigParams()"/>
+		<input type="button" class="btWeak" value="关闭" onclick="closeConfigParams()"/>
+	</div>
+</div>
+
+<iframe id="downloadFrame" style="display:none"></iframe>
+
+</body>
+</html>

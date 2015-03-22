@@ -110,6 +110,16 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         menu3.setToContent(root);
         menuService.saveNavigator(menu3);
         
+        Navigator menu4 = new Navigator();
+        menu4.setType(Navigator.TYPE_MENU_ITEM_2);
+        menu4.setName("按钮1");
+        menu4.setCode("button1");
+        menu4.setParentId(rootMenuId);
+        menu4.setPortalId(portalId);
+        menuService.saveNavigator(menu4);
+        
+        Assert.assertEquals(menu4.getCode(), menuService.getNavigator(menu4.getId()).getCode());
+        
         // 测试停用启用
         for(int i = 0; i < 2; i++) {
 	        menuAction.disable(response, rootMenuId, ParamConstants.TRUE);

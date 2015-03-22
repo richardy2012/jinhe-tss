@@ -1,4 +1,4 @@
-package com.jinhe.dm.report;
+package com.jinhe.dm.other;
 
 import java.util.LinkedHashMap;
 import java.util.List;

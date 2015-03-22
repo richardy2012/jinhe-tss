@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xform>
+	<declare>	
+		<column name="id"     caption="数据录入ID"  mode="number" editable="false"/>
+		<column name="name"   caption="数据录入名称" mode="string" maxLength="30" empty="false"/>
+		<column name="param"  caption="数据录入参数" mode="string" maxLength="2000"/>
+		<column name="datasource"  caption="数据源"  mode="string" editor="comboedit"/>
+		<column name="remark" caption="数据录入简介" mode="string" maxLength="400"/>
+	</declare>
+	<layout>
+		<TR>
+			<TD width="80"><label binding="id"/></TD>
+			<TD><input binding="id" style="width:50px;"/></TD>
+		</TR>
+		<TR>
+			<TD><label binding="name"/></TD>
+			<TD><input binding="name" style="width:50%;"/></TD>
+		</TR>
+		<TR>
+			<TD valign="top">
+				<label binding="param"/><br/><br/>
+				<input type="button" value="配置" onclick="configParams()" class="btStrong"/>
+			</TD>
+			<TD><textarea binding="param" style="width:98%;height:200px"/></TD>
+		</TR>
+		<TR>
+			<TD><label binding="datasource"/></TD>
+			<TD><input binding="datasource" style="width:50%;"/></TD>
+		</TR>
+		<TR>
+			<TD valign="top"><label binding="remark"/></TD>
+			<TD><textarea binding="remark" style="width:95%;height:30px"/></TD>
+		</TR>
+	</layout>
+	<data/>
+</xform>

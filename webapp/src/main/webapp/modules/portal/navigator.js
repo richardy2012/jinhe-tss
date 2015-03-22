@@ -91,6 +91,11 @@ function initMenus() {
 		callback: function() { addNewMenu("4"); },
         visible: function() {return getOperation("2");}
     }
+    var item13 = {
+        label:"新建按钮",
+        callback: function() { addNewMenu("2"); },
+        visible: function() {return getOperation("2");}
+    }
     var item5 = {
         label:"新建门户导航",
         visible: function() {return getOperation("2") && !$.isNullOrEmpty(getTreeAttribute("portalId"));}
@@ -131,6 +136,7 @@ function initMenus() {
     menu1.addItem(item1);
     menu1.addItem(item5);
 	menu1.addItem(item12);
+    menu1.addItem(item13);
 
     $1("tree").contextmenu = menu1;
 }

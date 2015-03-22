@@ -28,7 +28,7 @@ import com.jinhe.tss.util.EasyUtils;
 @Service("ReportService")
 public class ReportServiceImpl implements ReportService {
 	
-	private Logger logger = Logger.getLogger(this.getClass());
+	private Logger log = Logger.getLogger(this.getClass());
     
     @Autowired ReportDao reportDao;
     
@@ -271,7 +271,7 @@ public class ReportServiceImpl implements ReportService {
 				Date dateObj = DateUtil.parse(paramValue);
 				return new java.sql.Timestamp(dateObj.getTime());
 			} catch(Exception e) {
-				logger.error("Date type param'value【" + paramValue + "】  is wrong. " + e.getMessage());
+				log.error("Date type param'value【" + paramValue + "】  is wrong. " + e.getMessage());
 				return null;
 			}
   		}

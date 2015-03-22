@@ -45,6 +45,11 @@ public class Navigator extends OperateInfo implements IXForm, IDecodable, IResou
     public static final Integer TYPE_MENU        = 1;
     
     /**
+     * 普通按钮
+     */
+    public static final Integer TYPE_MENU_ITEM_2 = 2;
+    
+    /**
      * 普通链接: url = www.google.com
      */
     public static final Integer TYPE_MENU_ITEM_4 = 4;
@@ -78,10 +83,11 @@ public class Navigator extends OperateInfo implements IXForm, IDecodable, IResou
 	
 	@Column(nullable = false)
 	private String  name;       // 菜单（项）名称
+	private String  code;       // 菜单（项）code
 	private Integer type;       // 类型  参考 TYPE_MENU_X
 	private Long   parentId;    // 菜单项对应菜单
     private String url;         // url地址                     
-    private String target  ;    // 目标区域，_blank/_self  等  
+    private String target;      // 目标区域，_blank/_self 等  
     
     @Column(length = 1000)
     private String description; // 菜单内容的描述信息
@@ -163,6 +169,7 @@ public class Navigator extends OperateInfo implements IXForm, IDecodable, IResou
         Map<String, Object> map = new LinkedHashMap<String, Object>();
         map.put("id", id);
         map.put("name", name);
+        map.put("code", code);
         map.put("type", type);
         
         map.put("url", url);
@@ -349,5 +356,13 @@ public class Navigator extends OperateInfo implements IXForm, IDecodable, IResou
     
 	public Serializable getPK() {
 		return this.id;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 }	

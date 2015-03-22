@@ -175,11 +175,12 @@ function showDetail(readonly, isCreate) {
     callback.onTabChange = function() {
         setTimeout(function() {
             loadDetailData(rowID);
-            
+
+            var $buttons = $("#ws input[type='button']");
             if(readonly) {
-                $("#ws input[type='button']").hide(); 
+                $buttons.hide(); 
             } else {
-                $("#ws input[type='button']").show(); 
+                $buttons.show(); 
             }
             
             $("#page1Form").attr('editable', readonly ? "false" : "true");

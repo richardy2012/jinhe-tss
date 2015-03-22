@@ -5,8 +5,13 @@
    version="1.0">
 
 	<entity class="com.jinhe.dm.log.AccessLog"/>
+	
 	<entity class="com.jinhe.dm.report.Report"/>
 	<entity class="com.jinhe.dm.report.permission.ReportPermission"/>
 	<entity class="com.jinhe.dm.report.permission.ReportResource"/>
+	
+	<entity class="com.jinhe.dm.record.Record"/>
+	<entity class="com.jinhe.dm.record.permission.RecordPermission"/>
+	<entity class="com.jinhe.dm.record.permission.RecordResource"/>
 	
 </entity-mappings>
