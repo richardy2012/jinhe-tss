@@ -6,18 +6,13 @@
        可以用 /* ... */来注释，或直接删除改行
        
 3、如果select的字段有oracle的TIMESTAMP类型的字段，转换为json时会报错，需要先用to_char函数先转换为字符串类型。
+
+4、使用param模块来管理脚本片段时，不能带${paramX}，因Freemarker解析发生在判断参数是否为isMacrocode之后，所以会导致判断有误，
+  如非写到param模块，则需要为参数显式的加上 isMacrocode = true
        
        
 打包注意：
-0、BtrBI的10.8.73.80机器安裝的是JDK6，打包只能用JDK1.6, 1.7會出錯
-
-1、更改portal/model下Logo图标（BTR 、WMS）  
-  D:\project\TSS\jinhe-tss\webapp\src\main\webapp\modules\portal\model\portlet\portlet-23
-  
-2、TSS/webapp application.properties
-  #class.name.IdentityGetter = com.jinhe.tss.um.sso.UMIdentityGetter
-   class.name.IdentityGetter = com.jinhe.tss.um.sso.othersystem.WmsIdentifyGetter
-   
+0、BtrBI的10.8.73.80机器安裝的是JDK6，打包只能用JDK1.6, 1.7會出錯  
    
    
 1、执行脚本   

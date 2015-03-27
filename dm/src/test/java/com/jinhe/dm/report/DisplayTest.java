@@ -40,7 +40,7 @@ public class DisplayTest extends TxTestSupport4DM {
         report1.setName("report-1");
         report1.setScript(" select id, name from dm_report " +
         		" where id > ? " +
-        		"  <#if param2??> and type <> ${param2} <#else> and type = 1 </#if> " +
+        		"  <#if param2??> and type <> ? <#else> and type = 1 </#if> " +
         		"  and (createTime > ? or createTime > ?) " +
         		"  and name in (${param5})");
         
@@ -98,6 +98,12 @@ public class DisplayTest extends TxTestSupport4DM {
 		display.exportAsCSV(request, new MockHttpServletResponse(), reportId, 1, 1); // 测试导出超阀值
     }
     
+    /**
+     * 执行SQL时出错了:Parameter "#4" is not set; SQL statement:
+		 select id, name from dm_report  where id > ? and type <> ? and (createTime > ? or createTime > ?)   and name in ('report-1','report-1')
+		   数据源：jdbc:h2:mem:h2db,
+		   参数：{1=0, 2=2013-10-01 00:00:00.0, 3=2013-10-01 11:11:11.0},
+     */
     @Test
     public void testReportDisplayWithError() {        
         HttpServletResponse response = Context.getResponse();

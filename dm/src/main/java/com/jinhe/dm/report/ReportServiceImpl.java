@@ -24,6 +24,7 @@ import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.util.DateUtil;
 import com.jinhe.tss.util.EasyUtils;
+import com.jinhe.tss.util.MacrocodeCompiler;
 
 @Service("ReportService")
 public class ReportServiceImpl implements ReportService {
@@ -132,6 +133,31 @@ public class ReportServiceImpl implements ReportService {
         }
     }
     
+    private Map<String, Object> getFreemarkerDataMap( Object loginUserId ) {
+    	Map<String, Object> fmDataMap = new HashMap<String, Object>();
+        
+      	// 加入登陆用户的信息
+      	fmDataMap.put(DMConstants.USER_ID, loginUserId);
+      	fmDataMap.put(DMConstants.USER_CODE, Environment.getUserCode());
+		Object fromUserId = Environment.getUserInfo("fromUserId");
+		if (fromUserId != null) {
+			fmDataMap.put(DMConstants.FROM_USER_ID, fromUserId);
+		}
+		
+		// 将常用的script片段（权限过滤等）存至param模块，这里取出来加入fmDataMap
+		List<Param> macroParams = ParamManager.getComboParam(DMConstants.SCRIPT_MACRO);
+		if(macroParams != null) {
+			for(Param p : macroParams) {
+				String key = p.getText();
+				if( !fmDataMap.containsKey(key) ) {
+					fmDataMap.put(key, p.getValue());
+				}
+			}
+		}
+		
+		return fmDataMap;
+    }
+    
     @SuppressWarnings("unchecked")
   	public SQLExcutor queryReport(Long reportId, Map<String, String> requestMap, int page, int pagesize, Object loginUserId) {
 		Report report = this.getReport(reportId);
@@ -142,10 +168,20 @@ public class ReportServiceImpl implements ReportService {
 			throw new BusinessException("报表【" + report.getName() + "】的脚本没有任何内容，无法查询。");
 		}
           
-      	Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
-      	Map<String, Object> fmDataMap = new HashMap<String, Object>();
-        fmDataMap.putAll(requestMap);
+		// 宏代码池
+      	Map<String, Object> fmDataMap = getFreemarkerDataMap(loginUserId);
       	
+		/* 先预解析，以判断request参数是否用做了宏代码。后续还将有一次解析，以支持宏嵌套。 
+		 * eg： ${GetWHListByLogonUser} --> param里的script宏（... user_id = ${fromUserId}) ... ）
+		 * 这里先把  ${GetWHListByLogonUser} 解析出来，下面会接着解析${fromUserId} */
+      	reportScript = MacrocodeCompiler.run(reportScript, fmDataMap, true); 
+      	
+      	// 加入所有request请求带的参数
+      	fmDataMap.putAll(requestMap);
+      	
+      	// 过滤掉用于宏解析（ ${paramX} ）后的request参数
+     	Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
+		
       	if( !EasyUtils.isNullOrEmpty(paramsConfig) ) {
       		List<LinkedHashMap<Object, Object>> list;
       		try {  
@@ -216,25 +252,6 @@ public class ReportServiceImpl implements ReportService {
   	        }
       	}
       	
-      	// 加入登陆用户的信息
-      	fmDataMap.put(DMConstants.USER_ID, loginUserId);
-      	fmDataMap.put(DMConstants.USER_CODE, Environment.getUserCode());
-		Object fromUserId = Environment.getUserInfo("fromUserId");
-		if (fromUserId != null) {
-			fmDataMap.put(DMConstants.FROM_USER_ID, fromUserId);
-		}
-		
-		// 将常用的script片段（权限过滤等）存至param模块，这里取出来加入fmDataMap
-		List<Param> macroParams = ParamManager.getComboParam(DMConstants.SCRIPT_MACRO);
-		if(macroParams != null) {
-			for(Param p : macroParams) {
-				String key = p.getText();
-				if( !fmDataMap.containsKey(key) ) {
-					fmDataMap.put(key, p.getValue());
-				}
-			}
-		}
-      	
         // 结合 requestMap 进行 freemarker解析 sql，允许指定sql预处理类。
       	ScriptPreCheator scriptPreCheator = ScriptPreCheatorFactory.getPreCheator();
       	if(scriptPreCheator == null) {
@@ -242,9 +259,6 @@ public class ReportServiceImpl implements ReportService {
       	} else {
       		reportScript = scriptPreCheator.preCheat(reportScript, fmDataMap);
       	}
-      	
-      	// 再次解析，以支持宏嵌套。 eg： ${GetWHListByLogonUser} --> param里的script宏（... user_id = ${fromUserId}) ... ）
-      	reportScript = SOUtil.freemarkerParse(reportScript, fmDataMap); 
           
 		SQLExcutor excutor = new SQLExcutor(false);
 		String datasource = report.getDatasource();

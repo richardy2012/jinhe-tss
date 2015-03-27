@@ -17,7 +17,7 @@ public abstract class MacrocodeQueryCondition  {
     PageInfo page;  
     
     /**
-     * 排序字段，格式如 {"o.decode asc", "u.createdTime desc"}
+     * 排序字段，格式如 ["o.decode asc", "u.createdTime desc"]
      */
     List<String> orderByFields;  
     
