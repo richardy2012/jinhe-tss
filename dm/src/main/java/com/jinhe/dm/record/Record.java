@@ -52,6 +52,7 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     
     private String  datasource; // 保存至哪个数据源
     
+    @Column(name = "rctable")
     private String  table;  // 保存至哪个表
     
     @Column(length = 2000)  

@@ -33,7 +33,12 @@ public class ReportJobTest extends TxTestSupport4DM {
         
         String jobConfig = report1.getId() + ":报表一:pjjin@800best.com,BL00618:param1=0,param2=0,param3=today-0\n" + 
         		           report1.getId() + ":报表一:BL00618,pjjin@800best.com:param1=0,param3=today-1";
-		job.excuteJob(jobConfig);
+		try{
+        	job.excuteJob(jobConfig);
+		} catch(Exception e) {
+        	log.error(e.getCause());
+        	
+        }
 	}
 	
     protected String getDefaultSource(){

@@ -14,7 +14,7 @@
 打包注意：
 0、BtrBI的10.8.73.80机器安裝的是JDK6，打包只能用JDK1.6, 1.7會出錯  
    
-   
+一、DMS合并至TSS   
 1、执行脚本   
 update um_resourcetype set applicationId='tss';
 update um_resourcetype_root set applicationId='tss';
@@ -22,6 +22,14 @@ update um_operation set applicationId='tss';
 DELETE FROM um_application WHERE applicationId='dms';
 
 2、导出dms，再导入到tss里 （wmsdata不需要）
+  然后，补回tss的param list
+INSERT INTO `component_param` (`id`, `createTime`, `creatorId`, `creatorName`, `lockVersion`, `updateTime`, `updatorId`, `updatorName`, `code`, `decode`, `description`, `disabled`, `hidden`, `levelNo`, `modality`, `name`, `parentId`, `seqNo`, `text`, `type`, `value`) VALUES('19','2014-07-23 00:00:06','-1','Admin','0',NULL,NULL,NULL,NULL,'00003',NULL,'0','0','1',NULL,'定时配置','0','3',NULL,'0',NULL);
+INSERT INTO `component_param` (`id`, `createTime`, `creatorId`, `creatorName`, `lockVersion`, `updateTime`, `updatorId`, `updatorName`, `code`, `decode`, `description`, `disabled`, `hidden`, `levelNo`, `modality`, `name`, `parentId`, `seqNo`, `text`, `type`, `value`) VALUES('20','2014-07-23 00:00:41','-1','Admin','0',NULL,NULL,NULL,'TIMER_PARAM_CODE','0000300001',NULL,'0','0','2','1','定时JOB','19','1',NULL,'1',NULL);
+INSERT INTO `component_param` (`id`, `createTime`, `creatorId`, `creatorName`, `lockVersion`, `updateTime`, `updatorId`, `updatorName`, `code`, `decode`, `description`, `disabled`, `hidden`, `levelNo`, `modality`, `name`, `parentId`, `seqNo`, `text`, `type`, `value`) VALUES('21','2014-07-23 00:01:13','-1','Admin','0',NULL,NULL,NULL,NULL,'000030000100001',NULL,'0','0','3','1',NULL,'20','1','用户同步','2','com.jinhe.tss.um.syncdata.SyncUserJob | 0 0 02 * * ? | 4,V5');
+INSERT INTO `component_param` (`id`, `createTime`, `creatorId`, `creatorName`, `lockVersion`, `updateTime`, `updatorId`, `updatorName`, `code`, `decode`, `description`, `disabled`, `hidden`, `levelNo`, `modality`, `name`, `parentId`, `seqNo`, `text`, `type`, `value`) VALUES('22','2014-07-23 00:00:00','-1','Admin','1','2014-07-23 00:22:41','-1','Admin',NULL,'000030000100002',NULL,'0','0','3','1',NULL,'20','2','内容索引','2','com.jinhe.tss.cms.job.IndexJob | 0 18 01 * * ? | 1');
+INSERT INTO `component_param` (`id`, `createTime`, `creatorId`, `creatorName`, `lockVersion`, `updateTime`, `updatorId`, `updatorName`, `code`, `decode`, `description`, `disabled`, `hidden`, `levelNo`, `modality`, `name`, `parentId`, `seqNo`, `text`, `type`, `value`) VALUES('23','2014-07-23 00:00:00','-1','Admin','1','2014-07-23 00:22:49','-1','Admin',NULL,'000030000100003',NULL,'0','0','3','1',NULL,'20','3','文章发布','2','com.jinhe.tss.cms.job.PublishJob | 0 08 01 * * ? | 1');
+INSERT INTO `component_param` (`id`, `createTime`, `creatorId`, `creatorName`, `lockVersion`, `updateTime`, `updatorId`, `updatorName`, `code`, `decode`, `description`, `disabled`, `hidden`, `levelNo`, `modality`, `name`, `parentId`, `seqNo`, `text`, `type`, `value`) VALUES('24','2014-07-23 00:00:00','-1','Admin','1','2014-07-23 00:22:55','-1','Admin',NULL,'000030000100004',NULL,'0','0','3','1',NULL,'20','4','文章过期','2','com.jinhe.tss.cms.job.ExpireJob | 0 02 01 * * ? | 1');
+INSERT INTO `component_param` (`id`, `createTime`, `creatorId`, `creatorName`, `lockVersion`, `updateTime`, `updatorId`, `updatorName`, `code`, `decode`, `description`, `disabled`, `hidden`, `levelNo`, `modality`, `name`, `parentId`, `seqNo`, `text`, `type`, `value`) VALUES('25','2014-10-13 23:10:50','-1','Admin','0',NULL,NULL,NULL,'sysTitle','0000100012',NULL,'0','0','2','0','系统名称','2','12',NULL,'1','百世物流BI');
 
 3、修改portal menu里的《首页》《数据报表》，  删除 DM的log、cache、param的菜单
 
@@ -34,4 +42,35 @@ DELETE FROM um_application WHERE applicationId='dms';
 6、btrbi里注意ichart.html的路径变了， template/ichart.html，发布时注意调试“访问统计”
 
 
+二、新增record资源
+1、资源配置
+INSERT INTO `um_resourcetype_root`(`id`, `applicationId`, `resourceTypeId`, `rootId`)
+	VALUES (7, 'tss', 'D2', 0);
+        
+INSERT INTO `um_resourcetype`(`id`, `lockVersion`, `applicationId`, `description`, `name`, `resourceTypeId`, `rootId`, `seqNo`, 
+			`resourceTable`, `permissionTable`)
+VALUES (7, 0, 'tss', '数据录入资源', '数据录入', 'D2', 0, 22,
+        'com.jinhe.dm.record.permission.RecordResource', 'com.jinhe.dm.record.permission.RecordPermission');
+        
+INSERT INTO `um_operation`(`id`, `applicationId`, `dependId`, `dependParent`, `name`, `operationId`, `resourceTypeId`, `seqNo`)
+VALUES (27, 'tss', null, '2', '查看录入', '1', 'D2', '1');
+
+INSERT INTO `um_operation`(`id`, `applicationId`, `dependId`, `dependParent`, `name`, `operationId`, `resourceTypeId`, `seqNo`)
+VALUES (28, 'tss', 'opt1', null, '维护录入', '2', 'D2', '2');
+
+INSERT INTO `um_operation`(`id`, `applicationId`, `dependId`, `dependParent`, `name`, `operationId`, `resourceTypeId`, `seqNo`)
+VALUES (29, 'tss', 'opt1', '2,3', '删除录入', '3', 'D2', '3');
   
+  
+INSERT INTO `dm_permission_record` (`id`, `isGrant`, `isPass`, `operationId`, `permissionState`, `resourceId`, `roleId`, `resourceName`) VALUES('1','1','1','1','2','0','-1','root');
+INSERT INTO `dm_permission_record` (`id`, `isGrant`, `isPass`, `operationId`, `permissionState`, `resourceId`, `roleId`, `resourceName`) VALUES('2','1','1','2','2','0','-1','root');
+INSERT INTO `dm_permission_record` (`id`, `isGrant`, `isPass`, `operationId`, `permissionState`, `resourceId`, `roleId`, `resourceName`) VALUES('3','1','1','3','2','0','-1','root');
+
+
+2、初始化资源视图
+drop table view_record_resource;
+
+CREATE VIEW view_record_resource AS
+SELECT 0 as id, 'root' as name, -1 as parentId, '00001' as decode FROM dual
+UNION
+SELECT id, name, parentId, decode FROM dm_record;

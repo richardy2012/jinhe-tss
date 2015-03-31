@@ -47,21 +47,21 @@ function initMenus() {
 	var item2 = {
 		label:"修改录入表",
 		callback: function() {
-			loadRecordDetail(false, false);
+			loadRecordDetail(false, "1");
 		},
 		visible:function() { return !isTreeRoot() && getOperation("2"); }
 	}
 	var item3 = {
 		label:"新增录入表",
 		callback: function() {
-			loadRecordDetail(true, false, "1");
+			loadRecordDetail(true, "1");
 		},
 		visible:function() {return (isRecordGroup() || isTreeRoot()) && getOperation("2");}
 	}
 	var item4 = {
 		label:"新增分组",
 		callback: function() {
-			loadRecordDetail(true, false, "0");
+			loadRecordDetail(true, "0");
 		},
 		icon: ICON + "icon_folder_new.gif",
 		visible:function() {return (isRecordGroup() || isTreeRoot()) && getOperation("2");}
@@ -82,9 +82,9 @@ function initMenus() {
 	var menu = new $.Menu();
 	menu.addItem(item1);
 	menu.addSeparator();
-	menu.addItem(item2);
 	menu.addItem(item3);
 	menu.addItem(item4);
+	menu.addItem(item2);
 	menu.addItem(item5);
 	menu.addItem(item6);
 	
@@ -110,7 +110,7 @@ function loadInitData() {
 					showRecord();
 				}
 				if( isRecordGroup() && getOperation("2") ) {
-					loadRecordDetail(false, false);
+					loadRecordDetail(false, "0");
 				}
 			});
 		}
