@@ -6,6 +6,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jinhe.tss.util.EasyUtils;
+
 @Service("RecordService")
 public class RecordServiceImpl implements RecordService {
 	
@@ -37,6 +39,12 @@ public class RecordServiceImpl implements RecordService {
         else {
         	recordDao.refreshEntity(record);
         }
+		
+		if( EasyUtils.isNullOrEmpty(record.getTable()) ) {
+			record.setTable("dm_rc_" + record.getId());
+			recordDao.refreshEntity(record);
+		}
+		
         return record;
 	}
 

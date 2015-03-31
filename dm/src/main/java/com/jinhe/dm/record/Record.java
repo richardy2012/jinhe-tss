@@ -47,13 +47,27 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     @Column(length = 100, nullable = false)
     private String  name;       // 展示名称
     
-    @Column(length = 2000)  
-    private String  param;      // 录入配置
+    @Column(nullable = false)
+    private Integer type;       // 0：数据录入分组   1: 数据录入
     
     private String  datasource; // 保存至哪个数据源
     
-    @Column(nullable = false)
-    private Integer type;  // 种类  0：数据录入分组   1: 数据录入
+    private String  table;  // 保存至哪个表
+    
+    @Column(length = 2000)  
+    private String define;  // 录入字段定义
+    
+    /** 定制的录入界面: 可以自己定制录入表单和展示表格 */
+    private String customizePage;
+    
+    /** 定制的JS方法： 用于校验，自动计算等  */
+    @Column(length = 2000)  
+    private String customizeJS;
+    
+    /** 定制的SQL, 查询出可供当前登陆账号查看、编辑、删除的记录集  */
+    @Column(length = 2000)  
+    private String customizeSQL;
+   
     private String  remark; 
     
     private Long    parentId;  // 父节点
@@ -81,19 +95,12 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     public TreeAttributesMap getAttributes() {
         TreeAttributesMap map = new TreeAttributesMap(id, name);;
        
-        String icon_path;
-        if (TYPE0 == type) {
-            icon_path = "images/folder.gif";
-        } 
-        else {
-            icon_path = "images/record.gif";
-        } 
-        map.put("icon", icon_path);
         map.put("parentId", parentId);
         map.put("type", type);
         if(TYPE1 == type) {
-            map.put("param", param);
+            map.put("customizePage", customizePage);
         }
+        map.put("icon", "images/" + (TYPE0 == type ? "folder" : "record") + ".gif");
  
         return map;
     }
@@ -134,15 +141,7 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public String getParam() {
-		return param;
-	}
-
-	public void setParam(String param) {
-		this.param = param;
-	}
-
+ 
 	public Integer getType() {
 		return type;
 	}
@@ -189,5 +188,45 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
 
 	public void setLevelNo(Integer levelNo) {
 		this.levelNo = levelNo;
+	}
+
+	public String getTable() {
+		return table;
+	}
+
+	public void setTable(String table) {
+		this.table = table;
+	}
+
+	public String getDefine() {
+		return define;
+	}
+
+	public void setDefine(String define) {
+		this.define = define;
+	}
+
+	public String getCustomizePage() {
+		return customizePage;
+	}
+
+	public void setCustomizePage(String customizePage) {
+		this.customizePage = customizePage;
+	}
+
+	public String getCustomizeJS() {
+		return customizeJS;
+	}
+
+	public void setCustomizeJS(String customizeJS) {
+		this.customizeJS = customizeJS;
+	}
+
+	public String getCustomizeSQL() {
+		return customizeSQL;
+	}
+
+	public void setCustomizeSQL(String customizeSQL) {
+		this.customizeSQL = customizeSQL;
 	}
 }

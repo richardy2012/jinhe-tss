@@ -14,55 +14,57 @@
 <script src="../../tools/tssUtils.js"></script>
 
 <script language="javascript" src="record.js"></script>
-<script language="javascript" src="customize.js"></script>
 
 <style>
 
-  .Formbox { display:none; background-color:#BEC6EE; border:1px solid #416371; border-radius: 5px; }
+#palette { width:220px; }
+#palette Tree { overflow-y: auto; }
+.panel .body>td:nth-child(3)  { background-color: #fff; }
 
-  #searchFormDiv { width:500px; height:450px; font-size: 12px; padding: 10px; overflow: auto; }
-  #searchFormDiv .buttonBox { margin: 20px 10px 10px 55px;  }
-  
-  #reportFormDiv { width: 78%; height: 500; padding: 10px; }
-  #scheduleFormDiv { width: 50%; padding: 10px;}
+.bts { padding-left: 10px; padding-top: 10px;}
 
-#reportParamsDiv { width: 466px; height: 300px; padding: 5px; }
-#reportParamsDiv Tree, #reportParamsDiv form { background-color:#fff; display:inline-block; }
-#reportParamsDiv Tree { width:152px; height:250px; overflow-y: auto; }
-#reportParamsDiv form { width:285px; height:290px; padding:5px; position:absolute; top:5px; left:176px; }
+.Formbox { display:none; background-color:#BEC6EE; border:1px solid #416371; border-radius: 5px; }
 
-#reportParamsDiv .required {
+#recordFormDiv { width: 96%; height: 100%; padding: 10px; display: none; }
+
+#recordDefinesDiv { width: 466px; height: 350px; padding: 5px; }
+#recordDefinesDiv Tree, #recordDefinesDiv form { background-color:#fff; display:inline-block; }
+#recordDefinesDiv Tree { width:152px; height:90%; overflow-y: auto; }
+#recordDefinesDiv form { width:285px; height:95%; padding:5px; position:absolute; top:5px; left:176px; }
+
+#recordDefinesDiv .required {
     color: red;
     width: 10px;
     display: inline-block;
  	text-align: right;
 }
-#reportParamsDiv label {
+#recordDefinesDiv label {
 	display: inline-block;
     width: 60px;
     text-align: right;
     line-height: 28px;
     color: #CC99CC;
 }
-#reportParamsDiv input[type=text] {
+#recordDefinesDiv input[type=text] {
     width: 200px;
     height: 18px;
     line-height: 18px;
     border: 1px solid #bababa;
-    border-radius: 3px;
+    border-radius: 2px;
+    padding-left: 2px;
 }
-#reportParamsDiv input[type=range] {
+#recordDefinesDiv input[type=range] {
     width: 178px;
     margin-right: 5px;
 }
-#reportParamsDiv select {
+#recordDefinesDiv select {
     border: 1px solid #bababa;
     height: 20px;
     width: 100px;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 hr { height:4px; border:none; border-top: 1px dashed #555555; }
-#reportParamsDiv .bts { margin-left:10px; padding-top:3px; position:absolute; top:270px; left:0; }
+#recordDefinesDiv .bts { margin-left:10px; padding-top:3px; position:absolute; bottom:5px; left:0; }
 
 </style>
 
@@ -78,7 +80,7 @@ hr { height:4px; border:none; border-top: 1px dashed #555555; }
 	<td id="palette">
 	  <div>
 	  	<div class="bar">
-			<span class="icon"></span>报表树
+			<span class="icon"></span>资源树
 			<span class="refreshTreeBT"></span>
 			<span class="paletteSwitch" id="paletteClose"></span>
 		</div>
@@ -86,37 +88,23 @@ hr { height:4px; border:none; border-top: 1px dashed #555555; }
 	  </div> 
 	</td>
 	<td class="groove">
-	  	<table>
-		  <tr>
-			<td id="gridTitle">
-			  <span class="paletteSwitch" id="paletteOpen"></span>
-			  <span class="icon"></span><span class="buttonBox" id="gridToolBar"></span>
-			</td>
-		  </tr>
-		  <tr>
-			<td class="hasframe" id="gridContainer">
-			   <Grid id="grid"></Grid>
-			   <iframe id="chatFrame" style="display:none;width:100%;height:100%;" frameborder="0"></iframe>
-			</td>
-		  </tr>
-		</table>				
+	  	<iframe id="chatFrame" style="display:none; width:100%;height:100%;" frameborder="0"></iframe>	
+        <div id="recordFormDiv">
+            <div id="recordForm"></div>
+            <div class="bts">
+                <input type="button" class="btStrong" value="保存" id="sourceSave"/> &nbsp;
+                <input type="button" class="btWeak" value="关闭" id="closeRecordForm"/>
+            </div>
+        </div>	
 	</td>
 	<td/>
   </tr>
   <tr class="footer"> <td/><td/><td/><td/> </tr>
 </table>
 
-<div id="reportFormDiv" class="dialog Formbox">
-	<div id="reportForm"></div>
-	<div class="bts">
-		<input type="button" class="btStrong" value="保存" id="sourceSave"/>
-		<input type="button" class="btWeak" value="关闭" id="closeReportForm"/>
-	</div>
-</div>
-
-<div id="reportParamsDiv" class="dialog Formbox">
-	<Tree id="paramTree" moveable="true"></Tree>
-	<form id="paramForm">
+<div id="recordDefinesDiv" class="dialog Formbox">
+	<Tree id="fieldTree" moveable="true"></Tree>
+	<form id="defineForm">
 		<label>参数名称：</label><input type="text" id="_label" /><em class="required">*</em>
 		<br><label>参数类型：</label>
 		<select id="_type">
@@ -135,9 +123,10 @@ hr { height:4px; border:none; border-top: 1px dashed #555555; }
 		
 		<div id="selectRelation">
 			<label>校验正则：</label><input type="text" id="_checkReg" />
+            <label>出错提示：</label><input type="text" id="_errorMsg" />
 
 			<br><label>宽度：</label> 
-			<input type="range" id="_width" min="100" max="350" value="250" step="10"/><span id="_width_">250</span>px
+			<input type="range" id="_width" min="100" max="600" value="250" step="10"/><span id="_width_">250</span>px
 
 			<br><label>高度：</label>
 			<input type="range" id="_height" min="18" max="180" value="18" step="1"/><span id="_height_">18</span>px
@@ -151,16 +140,12 @@ hr { height:4px; border:none; border-top: 1px dashed #555555; }
 			</select> 
 			<br><label>联动方法：</label><input type="text" id="_onchange" />
 		</div>
-
-		<input type="hidden" id="_isMacrocode" />
 	</form>
 	<div class="bts">
-		<input type="button" class="btStrong" value="完成" onclick="saveConfigParams()"/>
-		<input type="button" class="btWeak" value="关闭" onclick="closeConfigParams()"/>
+		<input type="button" class="btStrong" value="完成" onclick="saveDefine()"/>
+		<input type="button" class="btWeak" value="关闭" onclick="closeDefine()"/>
 	</div>
 </div>
-
-<iframe id="downloadFrame" style="display:none"></iframe>
 
 </body>
 </html>

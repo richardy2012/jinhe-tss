@@ -80,10 +80,11 @@ input[type=text]:focus, textarea:focus {
 .timeAera { font-size: 12px; font-weight: bold; margin: 10px 5px; line-height: 20px; vertical-align: top;}
 .timeAera input[type=range] { width: 120px;  margin-right: 5px; }
 .timeAera button { width: 50px; float:right; margin-right:70px; background-color:#FF9933; border:1px solid #dedede; letter-spacing:3px; }
+
 .tssForm { width:100%; display:block; font-size:12px; } 
-.tssForm table { width:100%; border-width: 0; }
+.tssForm table { width:100%; }
 .tssForm td { padding:3px 2px; border-width: 0; }
-.tssForm input, .tssForm textarea { color:#535458; font-size:12px; border:1px solid #ABAAAF; background-color:#ECEFF8; }
+.tssForm input:not([type='button']), .tssForm textarea, .tssForm select { border:1px solid #ABAAAF; background-color:#ECEFF8; padding-left:2px; }
 .tssForm input { height:18px; }
 .tssForm textarea { word-break:break-all; }
 .tssForm select {  font-size:12px; height:18px; }

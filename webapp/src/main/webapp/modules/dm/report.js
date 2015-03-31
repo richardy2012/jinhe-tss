@@ -25,9 +25,9 @@ URL_REPORT_EXPORT  = NO_AUTH_PATH + "data/export/";
 URL_REPORT_JOB     = AUTH_PATH + "rp/schedule";
 
 if(IS_TEST) {
-	URL_SOURCE_TREE    = "data/SOURCE_TREE.xml?";
-	URL_GROUPS_TREE    = "data/GROUPS_TREE.xml?";
-	URL_SOURCE_DETAIL  = "data/SOURCE_DETAIL.xml?";
+	URL_SOURCE_TREE    = "data/report_tree.xml?";
+	URL_GROUPS_TREE    = "data/groups_tree.xml?";
+	URL_SOURCE_DETAIL  = "data/report_detail.xml?";
 	URL_SAVE_SOURCE    = "data/_success.xml?";
 	URL_DELETE_SOURCE  = "data/_success.xml?";
 	URL_DISABLE_SOURCE = "data/_success.xml?";
@@ -37,8 +37,8 @@ if(IS_TEST) {
 
 	URL_GET_OPERATION  = "data/_operation.xml?";
 
-	URL_REPORT_DATA    = "data/REPORT_DATA.xml?";
-	URL_REPORT_JSON    = "data/REPORT_JSON.txt?";
+	URL_REPORT_DATA    = "data/report_data.xml?";
+	URL_REPORT_JSON    = "data/report_data.json?";
 	URL_REPORT_EXPORT  = "data/_success.xml?";  
 
 	URL_REPORT_JOB     = "data/report_schedule.json";
@@ -702,7 +702,7 @@ function closeConfigParams() {
 	$("#reportParamsDiv").hide();
 }
 
-var REPORT_PARAM_FIELDS = ['label', 'type', 'nullable', 'defaultValue', 'checkReg', 'width', 'height', 'options', 'multiple', 'onchange', 'isMacrocode'];
+var REPORT_PARAM_FIELDS = ['label', 'type', 'nullable', 'defaultValue', 'checkReg', 'errorMsg', 'width', 'height', 'options', 'multiple', 'onchange', 'isMacrocode'];
 
 function editParamConfig() {
 	var paramTree = $.T("paramTree");
@@ -715,10 +715,10 @@ function editParamConfig() {
 		if(field === 'type') {
 			fieldValue = fieldValue.toLowerCase();
 			if(fieldValue == "date" || fieldValue == "datetime") {
-				$("#selectRelation").css("display", "none");
+				$("#optionalBox").css("display", "none");
 			}
 			else {
-				$("#selectRelation").css("display", "block");
+				$("#optionalBox").css("display", "block");
 			}
 		}
 
@@ -794,10 +794,10 @@ function editParamConfig() {
     				if(newValue != "hidden") {
     					$1("_defaultValue").setAttribute("placeholder", "日期类型示例：today-3");
     				}
-					$("#selectRelation").css("display", "none");
+					$("#optionalBox").css("display", "none");
     			}
 				else {
-					$("#selectRelation").css("display", "block");
+					$("#optionalBox").css("display", "block");
 				}
     		}
     		activeNode.setAttribute("value", JSON.stringify(valuesMap));

@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.TxTestSupport4DM;
 import com.jinhe.tss.framework.component.log.LogQueryCondition;
 import com.jinhe.tss.framework.component.log.LogService;
@@ -45,7 +46,12 @@ public class RecordTest extends TxTestSupport4DM {
         record1.setType(Record.TYPE1);
         record1.setParentId(group1.getId());
         record1.setName("record-1");
-        record1.setParam("id:1");
+        record1.setDatasource(DMConstants.DEFAULT_CONN_POOL);
+        record1.setTable("");
+        record1.setDefine("id:1");
+        record1.setCustomizePage("../xx.html");
+        record1.setCustomizeJS(" function() f1() { } ");
+        record1.setCustomizeSQL("");
         record1.setRemark("test record");
         action.saveRecord(response, record1);
         

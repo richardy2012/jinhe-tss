@@ -52,7 +52,7 @@ public class RecordAction extends BaseActionSupport {
     public void getRecord(HttpServletRequest request, HttpServletResponse response, @PathVariable("type") int type) {
         String uri = null;
         if(Record.TYPE0 == type) {
-            uri = "template/record_group_xform.xml";
+            uri = "template/group_xform.xml";
         } else {
             uri = "template/record_xform.xml";
         }

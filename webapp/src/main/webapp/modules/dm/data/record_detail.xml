@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<SourceInfo>
 <xform>
 	<declare>	
 		<column name="id"     caption="数据录入ID"  mode="number" editable="false"/>
-		<column name="name"   caption="数据录入名称" maxLength="30" empty="false"/>
-		<column name="datasource" caption="目标数据库"  editor="comboedit"/>
+		<column name="name"   caption="数据录入名" maxLength="30" empty="false"/>
+		<column name="datasource" caption="目标数据库" editor="comboedit"/>
 		<column name="table"  caption="目标数据表" maxLength="100"/>
 		<column name="define" caption="表字段定义" maxLength="2000"/>
 		
-		<column name="customizePage" caption="定制页面" maxLength="100"/>
+		<column name="customizePage" caption="定制页" maxLength="100"/>
 		<column name="customizeJS" caption="定制JS" maxLength="2000"/>
 		<column name="customizeSQL" caption="定制SQL" maxLength="2000"/>
 		
@@ -20,15 +22,7 @@
 		</TR>
 		<TR>
 			<TD><label binding="name"/></TD>
-			<TD><input binding="name" style="width:50%;"/></TD>
-		</TR>
-		<TR>
-			<TD><label binding="datasource"/></TD>
-			<TD><input binding="datasource" style="width:50%;"/></TD>
-		</TR>
-		<TR>
-			<TD><label binding="table"/></TD>
-			<TD><input binding="table" style="width:50%;"/></TD>
+			<TD><input binding="name" style="width:200px;"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top">
@@ -38,16 +32,24 @@
 			<TD><textarea binding="define" style="width:98%;height:200px"/></TD>
 		</TR>
 		<TR>
+			<TD><label binding="datasource"/></TD>
+			<TD><input binding="datasource" style="width:250px;"/></TD>
+		</TR>
+		<TR>
+			<TD><label binding="table"/></TD>
+			<TD><input binding="table" style="width:250px;"/></TD>
+		</TR>
+		<TR>
 			<TD><label binding="customizePage"/></TD>
 			<TD><input binding="customizePage" style="width:50%;"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="customizeJS"/></TD>
-			<TD><textarea binding="customizeJS" style="width:95%;height:100px"/></TD>
+			<TD><textarea binding="customizeJS" style="width:95%;height:60px"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="customizeSQL"/></TD>
-			<TD><textarea binding="customizeSQL" style="width:95%;height:50px"/></TD>
+			<TD><textarea binding="customizeSQL" style="width:95%;height:60px"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="remark"/></TD>
@@ -56,3 +58,5 @@
 	</layout>
 	<data/>
 </xform>
+	</SourceInfo>
+</Response>

@@ -1,7 +1,7 @@
 
 /*********************** 系统配置 开始 **********************************/
  var
-	IS_TEST = false,
+	IS_TEST = true,
 
 	FROMEWORK_CODE = "TSS",    /* 当前框架名 */
 	APP_CODE       = "TSS";    /* 当前应用名 */
@@ -193,7 +193,7 @@ function syncButton(btObjs, request) {
 		btEl.disabled = true;
 	});
 
-	request.ondata = function() {
+	request.ondata = request.onexception = function() {
 		btObjs.each(function(i, btEl){
 			btEl.disabled = false;
 		});

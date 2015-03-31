@@ -75,7 +75,7 @@ public class ReportAction extends BaseActionSupport {
     public void getReport(HttpServletRequest request, HttpServletResponse response, @PathVariable("type") int type) {
         String uri = null;
         if(Report.TYPE0 == type) {
-            uri = "template/report_group_xform.xml";
+            uri = "template/group_xform.xml";
         } else {
             uri = "template/report_xform.xml";
         }
