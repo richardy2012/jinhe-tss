@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
 	<declare>
-		<column name="userName"  caption="姓名" mode="string" empty="false" maxLength="20"/>
-		<column name="loginName" caption="账号" mode="string" empty="false" maxLength="20"/>
-		<column name="email"     caption="电子邮件" mode="string" maxLength="50" inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/"/>
-		<column name="password"  caption="密码"   mode="string" empty="false" maxLength="20" inputReg="/^[\u0000-\u00FF]*$/"/>
-		<column name="password2" caption="密码确认" mode="string" empty="false" maxLength="20" inputReg="/^[\u0000-\u00FF]*$/"/>
+		<column mode="string" empty="false" maxLength="20" name="userName"  caption="姓名" />
+		<column mode="string" empty="false" maxLength="20" name="loginName" caption="账号"/>
+		<column mode="string" empty="false" maxLength="50" name="email"     caption="电子邮件" inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/"/>
+		<column mode="string" empty="false" maxLength="20" name="password"  caption="密码"   inputReg="/^[\u0000-\u00FF]*$/"/>
+		<column mode="string" empty="false" maxLength="20" name="password2" caption="密码确认" inputReg="/^[\u0000-\u00FF]*$/"/>
 	</declare>
 	<layout>
 		<TR>

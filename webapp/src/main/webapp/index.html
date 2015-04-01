@@ -51,7 +51,7 @@
 				$("#userInfo").html(userName);
 				
 				resizeIFrame();
-				turn2IFrame("modules/um/group.html");
+				turn2IFrame("modules/dm/record.html");
 			}
 		});
 	}
@@ -91,6 +91,13 @@
 	<div class="logo"></div>
 	<div class="menu"> 
 		<ul> 
+			<li><a href="#">数据管理</a> 	 
+				<ul> 
+					<li><a href="#" onclick="turn2IFrame('modules/dm/report.html')">数据报表</a> </li> 
+					<li><a href="#" onclick="turn2IFrame('modules/dm/record.html')">数据录入</a> </li>
+					<li><a href="#" onclick="turn2IFrame('modules/cms/channel.html')">栏目内容</a></li> 
+				</ul> 
+			</li>  
 			<li><a href="#">用户权限</a> 	 
 				<ul> 
 					<li><a href="#" onclick="turn2IFrame('modules/um/group.html')">用户管理</a> </li> 
@@ -99,13 +106,6 @@
 					<li><a href="#" onclick="turn2IFrame('modules/um/subauth.html')">权限转授</a> </li> 
 				</ul> 
 			</li> 
-			<li><a href="#">数据管理</a> 	 
-				<ul> 
-					<li><a href="#" onclick="turn2IFrame('modules/dm/report.html')">数据报表</a> </li> 
-					<li><a href="#" onclick="turn2IFrame('modules/dm/record.html')">数据录入</a> </li>
-				</ul> 
-			</li>  
-			<li><a href="#" onclick="turn2IFrame('modules/cms/channel.html')">内容管理</a></li> 
 			<li><a href="#">门户管理</a> 	 
 				<ul> 
 					<li><a href="#" onclick="turn2IFrame('modules/portal/structure.html')">门户结构</a> </li> 

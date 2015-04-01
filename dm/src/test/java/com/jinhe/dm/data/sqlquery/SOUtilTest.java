@@ -1,20 +1,34 @@
 package com.jinhe.dm.data.sqlquery;
 
 import java.util.Date;
+import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Test;
 	
 public class SOUtilTest {
 	
 	@Test
 	public void testSOUtil() {
-		CustomerSO temp = new CustomerSO();
-		temp.id = "1200";
-		temp.xxCodes = "x1,x2";
-		temp.birthday = new Date();
+		CustomerSO so = new CustomerSO();
+		so.id = "1200";
+		so.xxCodes = "x1,x2";
+		so.birthday = new Date();
 		
-		System.out.println(SOUtil.getProperties(temp));
-		System.out.println(SOUtil.generateQueryParametersMap(temp));
+		Map<String, Object> map = SOUtil.getProperties(so, "id");
+		Assert.assertNull(map.get("id"));
+		Assert.assertEquals("'x1','x2'", map.get("xxCodes"));
+		
+		System.out.println(so.toString());
+		System.out.println(SOUtil.generateQueryParametersMap(so));
+		
+		String script = "my id is ${id}";
+		script = SOUtil.freemarkerParse(script, so);
+		Assert.assertEquals("my id is 1200", script);
+		
+		Assert.assertEquals("'s1','s2','s3'", SOUtil.insertSingleQuotes("s1,s2,s3"));
+		Assert.assertEquals("'s1'", SOUtil.insertSingleQuotes("s1"));
+		Assert.assertNull(SOUtil.insertSingleQuotes(null));
 	}
 	
 	public class CustomerSO extends AbstractSO {

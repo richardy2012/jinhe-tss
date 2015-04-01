@@ -1,5 +1,6 @@
 package com.jinhe.dm.data;
 
+import java.util.Date;
 import java.util.List;
 
 import com.jinhe.dm.data.sqlquery.AbstractVO;
@@ -16,6 +17,7 @@ public class InvSnapshotVO extends AbstractVO {
 	private String locationCode;
 	private String zoneCode;
 	private Double qtyUom;
+	private Date day;
 
 	public String getWhCode() {
 		return whCode;
@@ -63,5 +65,13 @@ public class InvSnapshotVO extends AbstractVO {
 
 	public void setQtyUom(Double qtyUom) {
 		this.qtyUom = qtyUom;
+	}
+
+	public Date getDay() {
+		return day;
+	}
+
+	public void setDay(Date day) {
+		this.day = day;
 	}
 }
