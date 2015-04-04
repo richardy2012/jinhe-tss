@@ -69,6 +69,13 @@ function closePalette() {
 	$(".panel .footer>td:nth-child(2)").hide();
 }
 
+function openPalette() {
+	$("#palette").show();
+	$("#paletteOpen").hide();
+	$(".panel .header>td:nth-child(2)").show();
+	$(".panel .footer>td:nth-child(2)").show();
+}
+
 window.onresize = function() {
 	$("#palette #tree").css("height", (document.body.offsetHeight - 45) + "px");
 	$(".panel .groove #ws Tree").css("height", (document.body.offsetHeight - 112) + "px");	
@@ -85,15 +92,18 @@ function initEvents() {
 
 	/* 点击左栏控制按钮 */
 	var paletteOpen = $("#paletteOpen");
-	if(paletteOpen.length > 0) {
+	var paletteClose = $("#paletteClose");
+
+	if( paletteClose.length ) {
+		paletteClose.click(closePalette);	
+	}
+
+	if( paletteOpen.length ) {
 		paletteOpen.hide();
-		$("#paletteClose").click(closePalette);	
-		paletteOpen.click(function() { 
-			$("#palette").show();
-			paletteOpen.hide();
-			$(".panel .header>td:nth-child(2)").show();
-			$(".panel .footer>td:nth-child(2)").show();
-		});
+		paletteOpen.click(openPalette);
+	} 
+	else if( paletteClose.length ) {
+		$.leftbar(openPalette, openPalette);
 	}
 
 	// 关闭页面自动注销

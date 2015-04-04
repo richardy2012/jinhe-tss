@@ -171,12 +171,12 @@
 
     /* 找回密码  */
     function forget() {
-        window.open("modules/um/forget.html", "", "width=400, height=250");
+        window.open("modules/um/_forget.html", "", "width=300, height=250");
     }
 
     /* 注册 */
     function register() {
-        window.open("modules/um/_register.htm", "", "width=400, height=250");
+        window.open("modules/um/_register.htm", "", "width=400, height=208");
     }
 
 //-->
@@ -189,7 +189,7 @@
             <input type="text" id="loginName" placeholder="请输入您的账号" /> <a href='#' onclick='register()'>注册</a>
         </span>
         <span>
-            <input type="password" id="password" placeholder="请输入您的密码"/> <a href='#' onclick='register()'>忘记密码</a>
+            <input type="password" id="password" placeholder="请输入您的密码"/> <a href='#' onclick='forget()'>忘记密码</a>
         </span>
         <span class='bottonBox'>
             <input type='button' class='btLogin' id='bt_login' value='登 陆 系 统'/>

@@ -44,7 +44,7 @@ div.groove { border-left: 1px solid #D1D1D1; border-top: 1px solid #D1D1D1; padd
 .panel .body td.groove #gridContainer { vertical-align: top; }
 
 /* 左栏 */
-#palette { width:300px; padding-right:5px; }
+#palette { width:300px; padding-right:3px; }
 #palette>div { width:98%; height:100%; border: 1px solid #96969E; position:relative; }
 #palette>div .bar { color: #555555; font-weight: bold; padding: 2px 0 0 4px; height: 20px; background: url(../images/panel/title_bg.gif) repeat-x; }
 #palette>div .bar .icon { width:8px; height:8px; margin-right:5px; display:inline-block; background: url(../images/panel/title_icon.gif) no-repeat center;}
