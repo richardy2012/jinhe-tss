@@ -10,12 +10,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
+import com.jinhe.tss.portal.PortalDispatcher;
 import com.jinhe.tss.portal.TxSupportTest4Portal;
 import com.jinhe.tss.portal.action.ComponentAction;
 import com.jinhe.tss.portal.action.NavigatorAction;
@@ -181,8 +183,21 @@ public class PortalModuleTest extends TxSupportTest4Portal {
 		}
         
         portalAction.getReleaseConfig(response, rconfig.getId()); // load exsited config
-        
         portalAction.getAllReleaseConfigs4Tree(response);
+        
+        // test PortalDispatcher
+        PortalDispatcher dispatcher = new PortalDispatcher();
+        try {
+        	request.setRequestURI("http://localhost:8088/tss/default.portal");
+        	dispatcher.doPost(request, new MockHttpServletResponse());
+        	
+        	request.setRequestURI("http://localhost:8088/tss/index.portal");
+        	dispatcher.doPost(request, new MockHttpServletResponse());
+        	
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			Assert.assertFalse(e.getMessage(), true);
+		}
         
         portalAction.removeReleaseConfig(response, rconfig.getId());
     }

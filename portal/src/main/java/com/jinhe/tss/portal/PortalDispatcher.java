@@ -51,6 +51,7 @@ public class PortalDispatcher extends HttpServlet {
 			ReleaseConfig issueInfo = getIssueInfo(requestURI);
 			if(issueInfo == null) {
 				response.sendRedirect(THE_404_URL);
+				return;
 			}
 			
 			// 检测相应门户是否可以使用匿名用户访问
@@ -108,8 +109,13 @@ public class PortalDispatcher extends HttpServlet {
 	private ReleaseConfig getIssueInfo(String uri) {
 		String visitUrl = uri.substring(uri.lastIndexOf("/") + 1);
         IPortalService portalService = (IPortalService) Global.getBean("PortalService");
-		ReleaseConfig info = portalService.getReleaseConfig(visitUrl);
-		return info;
+        try {
+        	return portalService.getReleaseConfig(visitUrl);
+        } 
+        catch(Exception e) {
+        	log.error("portal release url was error：" + uri + ", " + e.getMessage());
+        	return null;
+        }
 	}
 
     /**
