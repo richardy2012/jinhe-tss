@@ -29,6 +29,9 @@ public class SOUtilTest {
 		Assert.assertEquals("'s1','s2','s3'", SOUtil.insertSingleQuotes("s1,s2,s3"));
 		Assert.assertEquals("'s1'", SOUtil.insertSingleQuotes("s1"));
 		Assert.assertNull(SOUtil.insertSingleQuotes(null));
+		
+		so.xxCodes = "";
+		Assert.assertNull(SOUtil.getProperties(so, "id").get("xxCodes"));
 	}
 	
 	public class CustomerSO extends AbstractSO {

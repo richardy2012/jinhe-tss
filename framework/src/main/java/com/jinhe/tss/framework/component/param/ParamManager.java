@@ -75,7 +75,7 @@ public class ParamManager {
     
     public static String getValueNoSpring(String code){
         String sql = "select p.value from component_param p where p.type = " + ParamConstants.NORMAL_PARAM_TYPE
-                   + " and p.code='" + code + "' and p.hidden <> 1 and p.disabled <> 1";
+                   + " and p.code='" + code + "' and p.disabled <> 1";
         
         Pool connectionPool = JCache.getInstance().getConnectionPool();
 		Cacheable connItem = connectionPool.checkOut(0);

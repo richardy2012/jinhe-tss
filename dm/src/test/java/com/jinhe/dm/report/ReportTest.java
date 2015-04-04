@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.TxTestSupport4DM;
 import com.jinhe.tss.framework.component.log.LogQueryCondition;
 import com.jinhe.tss.framework.component.log.LogService;
@@ -50,6 +51,8 @@ public class ReportTest extends TxTestSupport4DM {
         report1.setName("report-1");
         report1.setScript("select * from dm_report where id = ?");
         report1.setParam("id:1");
+        report1.setDatasource(DMConstants.DEFAULT_CONN_POOL);
+        report1.setDisplayUri("template/ichart.html");
         report1.setRemark("test report");
         action.saveReport(response, report1);
         
@@ -67,6 +70,9 @@ public class ReportTest extends TxTestSupport4DM {
         action.move(response, report1.getId(), group2.getId());
         
         action.getAllReport(response);
+        
+        // test permission 
+        action.getOperations(response, report1.getId());
         
         // test report schedule
         Long reportId = report1.getId();

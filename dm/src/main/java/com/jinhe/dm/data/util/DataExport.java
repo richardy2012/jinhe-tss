@@ -40,16 +40,16 @@ public class DataExport {
     	Map<String, Object> rlt = new HashMap<String, Object>();
         rlt.put("total", voList.size());
 
-        page = page < 1 ? 1 : page;
-        rows = rows < 1 ? 50 : rows;
+        page = Math.max(1, page);
+        rows = Math.max(1, rows);
         int fromLine = (page - 1) * rows;
         int toLine = page * rows;
         if (fromLine <= voList.size()) {
-            toLine = voList.size() < toLine ? voList.size() : toLine;
+            toLine = Math.min(voList.size(), toLine);
             rlt.put("rows", voList.subList(fromLine, toLine));
         }
         
-        if(voList != null && voList.size() > 0) {
+        if(voList.size() > 0) {
         	rlt.put("headerNames", voList.get(0).displayHeaderNames());
         }
 

@@ -127,6 +127,10 @@ public class GroupByUtilTest {
         Assert.assertEquals("{W1={C1={L1=2, L2=2}, C2={L1=2, L2=3}}}", 
         		GroupByUtil.getCount(voList, "skuCode", "whCode", "customerCode", "locationCode").toString());
    
+        
+        Object[] result = GroupByUtil.getSumTopx(voList, 3, "qtyUom", "skuCode");
+        Assert.assertTrue(((List<?> )result[0]).size() > 0);
+        Assert.assertTrue(((List<?> )result[1]).size() > 0);
 	}
 
 }

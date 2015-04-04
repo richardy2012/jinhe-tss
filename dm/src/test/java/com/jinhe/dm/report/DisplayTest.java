@@ -46,8 +46,9 @@ public class DisplayTest extends TxTestSupport4DM {
         
         String paramsConfig = "[ {'label':'报表ID', 'type':'Number', 'nullable':'false', 'jsonUrl':'../xxx/list', 'multiple':'true'}," +
         		"{'label':'报表类型', 'type':'String'}," +
-        		"{'label':'起始时间', 'type':'date', 'nullable':'false'}, " +
+        		"{'label':'起始时间', 'type':'date', 'nullable':'false', 'defaultValue':'today-10'}, " +
         		"{'label':'结束时间', 'type':'date', 'nullable':'false'}," +
+        		"{'label':'隐藏值', 'type':'hidden'}," +
         		"{'label':'组织列表', 'type':'String', 'nullable':'false'}]"	;
         report1.setParam(paramsConfig);
         
@@ -72,11 +73,21 @@ public class DisplayTest extends TxTestSupport4DM {
         request = new MockHttpServletRequest();
         request.addParameter("param1", "0");
         request.addParameter("param3", "today - 100");
-        request.addParameter("param4", "2013/10/01 11:11:11");
+        request.addParameter("param4", "today + 10");
         request.addParameter("param5", "report-1,report-1");
         display.showAsJson(request, report1.getName());
         
+        // test nocache
+        request.addParameter("noCache", "noCache");
+        display.showAsJson(request, report1.getName());
+        request.removeParameter("noCache");
         
+        // test jsonp
+        request.addParameter("jsonpCallback", "func1");
+        display.showAsJson(request, report1.getName());
+        request.removeParameter("jsonpCallback");
+        
+        // 测试导出超阀值(导出时，前台限定50万行，超过该值将提示要求缩短查询条件，分批导出)
         Report reportGruop = new Report();
         reportGruop.setName("reportGruop1");
         reportGruop.setParentId(Report.DEFAULT_PARENT_ID);
@@ -95,7 +106,7 @@ public class DisplayTest extends TxTestSupport4DM {
         request.addParameter("param3", "2013-10-01");
         request.addParameter("param4", "2013/10/01 11:11:11");
         request.addParameter("param5", "reportGruop1,reportGruop2");
-		display.exportAsCSV(request, new MockHttpServletResponse(), reportId, 1, 1); // 测试导出超阀值
+		display.exportAsCSV(request, new MockHttpServletResponse(), reportId, 1, 1); // 阀值为1
     }
     
     /**

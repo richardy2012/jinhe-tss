@@ -145,7 +145,7 @@ public class GroupByUtil {
      * @param dimension
      * @return
      */
-    public static Object getSumTopx(List<?> voList, int topx, String field, String dimension) {
+    public static Object[] getSumTopx(List<?> voList, int topx, String field, String dimension) {
     	// 按 Field 进行数量汇总，汇总后再按从多到少进行排序
     	Map<String, ?> skuQtys = GroupByUtil.getSum(voList, field, dimension);
     	List<Object[]> list = new ArrayList<Object[]>();

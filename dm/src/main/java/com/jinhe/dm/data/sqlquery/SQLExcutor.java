@@ -99,11 +99,10 @@ public class SQLExcutor {
             while (st.hasMoreElements()) {
                 displayName = st.nextToken().trim(); 
             }
-            if(EasyUtils.isNullOrEmpty(displayName)) {
-                continue;
-            }
             
-            selectFields.add(displayName);
+            if( !EasyUtils.isNullOrEmpty(displayName) ) {
+            	selectFields.add(displayName);
+            }
         }
     }
 
