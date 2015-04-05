@@ -76,8 +76,10 @@ public class SQLExcutorH2Test {
 		Assert.assertTrue(ex.result.size() == 1);
 		
 		Map<Integer, Object> paramsMap2 = new HashMap<Integer, Object>();
-		paramsMap.put(1, 10);
+		paramsMap2.put(1, 10);
 		SQLExcutor.excute("delete from x_group where id=?", paramsMap2, DMConstants.LOCAL_CONN_POOL);
+		ex.excuteQuery("select id, name from x_group where id=10", DMConstants.LOCAL_CONN_POOL);
+		Assert.assertTrue(ex.result.size() == 0);
 		
 		// test excuteBatch
 		String sql3 = "insert into x_group values (?, ?, ?, ?, ?)";
@@ -178,8 +180,6 @@ public class SQLExcutorH2Test {
             ps.setObject(7, "怒放的生命");
             ps.setObject(8, "123456");
             ps.setObject(9, "jinpujun@gmail.com");
-            ps.executeUpdate();
-  
             ps.executeUpdate();
             
         } catch (Exception e) {

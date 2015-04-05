@@ -60,10 +60,10 @@
 #recordDefinesDiv select {
     border: 1px solid #bababa;
     height: 20px;
-    width: 100px;
+    width: 70px;
     border-radius: 2px;
 }
-hr { height:4px; border:none; border-top: 1px dashed #555555; }
+hr { height:8px; border:none; border-top: 1px dashed #555555; margin-top: 3px; }
 #recordDefinesDiv .bts { margin-left:10px; padding-top:3px; position:absolute; bottom:5px; left:0; }
 
 </style>
@@ -105,8 +105,9 @@ hr { height:4px; border:none; border-top: 1px dashed #555555; }
 <div id="recordDefinesDiv" class="dialog Formbox">
 	<Tree id="fieldTree" moveable="true"></Tree>
 	<form id="defineForm">
-		<label>参数名称：</label><input type="text" id="_label" /><em class="required">*</em>
-		<br><label>参数类型：</label>
+		<label>字段名称：</label><input type="text" id="_label" /><em class="required">*</em>
+		<label>字段Code：</label><input type="text" id="_code" />
+		<br><label>字段类型:</label>
 		<select id="_type">
 			<option value="string">字符串</option>
 			<option value="number">数字</option>
@@ -114,7 +115,7 @@ hr { height:4px; border:none; border-top: 1px dashed #555555; }
 			<option value="datetime">日期时间</option>
             <option value="hidden">隐藏</option>
 		</select> 
-		<br><label>是否必填：</label>
+		<label>是否必填:</label>
 		<select id="_nullable">
 			<option value="false">是</option>
 			<option value="true">否</option>

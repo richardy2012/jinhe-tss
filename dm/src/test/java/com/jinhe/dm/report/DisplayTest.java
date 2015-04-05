@@ -49,7 +49,7 @@ public class DisplayTest extends TxTestSupport4DM {
         		"{'label':'起始时间', 'type':'date', 'nullable':'false', 'defaultValue':'today-10'}, " +
         		"{'label':'结束时间', 'type':'date', 'nullable':'false'}," +
         		"{'label':'隐藏值', 'type':'hidden'}," +
-        		"{'label':'组织列表', 'type':'String', 'nullable':'false'}]"	;
+        		"{'label':'组织列表', 'type':'String', 'nullable':'false'}]";
         report1.setParam(paramsConfig);
         
         report1.setRemark("test report");

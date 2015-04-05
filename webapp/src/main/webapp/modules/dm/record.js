@@ -315,7 +315,7 @@ function closeDefine() {
 	$("#recordDefinesDiv").hide();
 }
 
-var RECORD_PARAM_FIELDS = ['label', 'type', 'nullable', 'defaultValue', 'checkReg', 'errorMsg', 'width', 'height', 'options', 'multiple', 'onchange'];
+var RECORD_PARAM_FIELDS = ['label', 'code', 'type', 'nullable', 'defaultValue', 'checkReg', 'errorMsg', 'width', 'height', 'options', 'multiple', 'onchange'];
 
 function editFieldConfig() {
 	var fieldTree = $.T("fieldTree");
