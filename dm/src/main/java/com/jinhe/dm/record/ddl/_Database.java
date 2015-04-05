@@ -1,5 +1,6 @@
 package com.jinhe.dm.record.ddl;
 
+import java.util.List;
 import java.util.Map;
 
 import com.jinhe.dm.record.Record;
@@ -15,4 +16,6 @@ public interface _Database {
 	void update(Integer id, Map<String, String> valuesMap);
 	
 	void delete(Integer id);
+	
+	List<Map<String, Object>> select();
 }

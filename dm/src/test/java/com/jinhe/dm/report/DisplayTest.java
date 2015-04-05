@@ -14,7 +14,7 @@ import com.jinhe.tss.framework.sso.context.Context;
 public class DisplayTest extends TxTestSupport4DM {
     
     @Autowired private ReportAction action;
-    @Autowired private Display display;
+    @Autowired private _Reporter display;
     
     @Test
     public void testJson2CSV() {   

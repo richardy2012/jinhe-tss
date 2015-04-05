@@ -24,12 +24,14 @@ public class EasyUtils {
     static Logger log = Logger.getLogger(EasyUtils.class);
     
     /**
-     * 将对象转换成Double。用于SQL取出的数据类型字段处理，因为double 单元测试环境下取出的是BigDecimal，jobss下取出的是Double。
+     * 将对象转换成Double。
+     * 用于SQL取出的数据类型字段处理，因为double 单元测试环境下取出的是BigDecimal，jobss下取出的是Double。
      * 统一转为String再转回Double。
+     * 
      * @param value
      * @return
      */
-    public static final Double convertObject2Double(Object value) {
+    public static final Double obj2Double(Object value) {
         Double rlt = 0D;
         try{
             rlt = Double.valueOf(value == null ? "0" : value.toString());

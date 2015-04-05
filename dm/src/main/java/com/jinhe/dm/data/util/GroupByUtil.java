@@ -30,7 +30,7 @@ public class GroupByUtil {
     	
     	Map<String, Object> resultMap = new HashMap<String, Object>();
         for (Object vo : voList) {
-            Double value = EasyUtils.convertObject2Double(BeanUtil.getPropertyValue(vo, field));
+            Double value = EasyUtils.obj2Double(BeanUtil.getPropertyValue(vo, field));
             
             Map<String, Object> parentMap = resultMap;
             Map<String, Object> sonMap = resultMap;
@@ -155,8 +155,8 @@ public class GroupByUtil {
 
 		Collections.sort(list, new Comparator<Object[]>() {   
 		    public int compare(Object[] o1, Object[] o2) {      
-		        Double value1 = EasyUtils.convertObject2Double(o1[1]);
-				Double value2 = EasyUtils.convertObject2Double(o2[1]);
+		        Double value1 = EasyUtils.obj2Double(o1[1]);
+				Double value2 = EasyUtils.obj2Double(o2[1]);
 				return value2.intValue() - value1.intValue(); 
 		    }
 		});

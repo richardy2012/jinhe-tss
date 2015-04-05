@@ -767,7 +767,7 @@ function editParamConfig() {
     		var newValue = fieldEl.value;
 			if( $.isNullOrEmpty(newValue) ) {
 				if(field === 'label') {
-					return alert("参数名称不能为空");
+					return $(fieldEl).notice("参数名称不能为空");
 				}
 				delete valuesMap[field];
 			}

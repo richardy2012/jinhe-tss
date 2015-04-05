@@ -310,13 +310,14 @@ public class SQLExcutor {
     		boolean autoCommit = conn.getAutoCommit();
             conn.setAutoCommit(false);
             
-    		log.debug(" excute  sql: " + sql);
+    		log.info(" excute  sql: " + sql);
 			conn.createStatement().execute(sql);
 			conn.commit();
 			
 			conn.setAutoCommit(autoCommit);
 			
 		} catch (SQLException e) {
+			log.error("执行SQL时出错了。sql : " + sql, e);
 			throw new BusinessException("执行SQL时出错了。sql : " + sql, e);
 		} 
     }

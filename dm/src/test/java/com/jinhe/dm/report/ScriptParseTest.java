@@ -15,7 +15,7 @@ import com.jinhe.tss.framework.sso.context.Context;
 public class ScriptParseTest extends TxTestSupport4DM {
     
     @Autowired private ReportAction action;
-    @Autowired private Display display;
+    @Autowired private _Reporter display;
 
     @Test
     public void test1() {      

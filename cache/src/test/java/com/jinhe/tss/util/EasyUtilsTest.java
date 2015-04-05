@@ -13,7 +13,7 @@ public class EasyUtilsTest {
 	public void test() {
 		
 		try{
-			EasyUtils.convertObject2Double("Jon");
+			EasyUtils.obj2Double("Jon");
 		} catch ( Exception e) {
 			Assert.assertTrue(e.getMessage(), true);
 		}
@@ -28,12 +28,12 @@ public class EasyUtilsTest {
 			Assert.assertTrue(e.getMessage(), true);
 		}
 		
-		Assert.assertTrue(0d == EasyUtils.convertObject2Double(null));
+		Assert.assertTrue(0d == EasyUtils.obj2Double(null));
 		Assert.assertTrue(0 == EasyUtils.obj2Int(null));
 		Assert.assertTrue(0l == EasyUtils.obj2Long(null));
 		Assert.assertEquals("", EasyUtils.obj2String(null));
 		
-		Assert.assertTrue(EasyUtils.convertObject2Double("1.01") == 1.01d);
+		Assert.assertTrue(EasyUtils.obj2Double("1.01") == 1.01d);
 		Assert.assertTrue(EasyUtils.obj2Int("1") == 1);
 		Assert.assertTrue(EasyUtils.obj2Long("1") == 1L);
 		Assert.assertEquals("12", EasyUtils.obj2String(12));

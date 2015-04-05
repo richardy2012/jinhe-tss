@@ -36,7 +36,7 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
  */
 @Controller
 @RequestMapping( {"/display", "/data", "/api"} )
-public class Display extends BaseActionSupport {
+public class _Reporter extends BaseActionSupport {
     
     @Autowired private ReportService reportService;
     
@@ -227,7 +227,7 @@ public class Display extends BaseActionSupport {
 		// 方法的访问日志记录成败不影响方法的正常访问，所以对记录日志过程中各种可能异常进行try catch
         try {
             AccessLog log = new AccessLog();
-            log.setClassName(Display.class.getSimpleName());
+            log.setClassName(_Reporter.class.getSimpleName());
     		log.setMethodName(methodName);
     		log.setMethodCnName(methodCnName);
             log.setAccessTime(new Date(start));

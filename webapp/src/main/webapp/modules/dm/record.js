@@ -358,7 +358,10 @@ function editFieldConfig() {
     		var newValue = fieldEl.value;
 			if( $.isNullOrEmpty(newValue) ) {
 				if(field === 'label') {
-					return alert("新建字段名称不能为空");
+					return $(fieldEl).notice("新建字段名称不能为空");
+				}
+				if(field === 'code') {
+					return $(fieldEl).notice("新建字段CODE不能为空");
 				}
 				delete valuesMap[field];
 			}

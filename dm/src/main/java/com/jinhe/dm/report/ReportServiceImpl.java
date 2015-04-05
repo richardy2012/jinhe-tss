@@ -17,6 +17,7 @@ import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.data.sqlquery.SOUtil;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.data.util._DateUtil;
+import com.jinhe.dm.record.ddl._Util;
 import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.component.param.ParamManager;
@@ -29,7 +30,7 @@ import com.jinhe.tss.util.MacrocodeCompiler;
 @Service("ReportService")
 public class ReportServiceImpl implements ReportService {
 	
-	private Logger log = Logger.getLogger(this.getClass());
+	Logger log = Logger.getLogger(this.getClass());
     
     @Autowired ReportDao reportDao;
     
@@ -245,7 +246,7 @@ public class ReportServiceImpl implements ReportService {
 				}
 				// 判断参数是否只用于freemarker解析
 				else if ( !"true".equals(isMacrocode) ) {
-					Object value = preTreatParamValue(paramValue, paramType);
+					Object value = _Util.preTreatValue(paramValue, paramType);
 					paramsMap.put(paramsMap.size() + 1, value);
 				}
 				fmDataMap.put(paramKy, paramValue);
@@ -270,27 +271,5 @@ public class ReportServiceImpl implements ReportService {
 
 		return excutor;
   	}
-
-  	private Object preTreatParamValue(String paramValue, Object paramType) {
-  		if(paramType == null || paramValue == null) {
-  			return paramValue;
-  		}
-  		
-  		paramType = paramType.toString().toLowerCase();
-  		if("number".equals(paramType)) {
-  			return EasyUtils.obj2Int(paramValue);
-  		}
-  		else if("date".equals(paramType) || "datetime".equals(paramType)) {
-			try {
-				Date dateObj = DateUtil.parse(paramValue);
-				return new java.sql.Timestamp(dateObj.getTime());
-			} catch(Exception e) {
-				log.error("Date type param'value【" + paramValue + "】  is wrong. " + e.getMessage());
-				return null;
-			}
-  		}
-  		else {
-  			return paramValue;
-  		}
-  	} 
+ 
 }
