@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.dom4j.Document;
 
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.record.Record;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.util.EasyUtils;
+import com.jinhe.tss.util.XMLDocUtil;
 
 public class _MySQL implements _Database {
 	
@@ -22,21 +24,27 @@ public class _MySQL implements _Database {
 	List<Map<Object, Object>> fields;
 	List<String> fieldCodes;
 	List<String> fieldTypes;
+	List<String> fieldNames;
+	
+	String customizeSQL;
 	
 	public _MySQL(Record record) {
 		this.recordName = record.getName();
 		this.datasource = record.getDatasource();
 		this.table = record.getTable();
 		this.fields = parseJson(record.getDefine());
+		this.customizeSQL = record.getCustomizeSQL();
 		initFieldCodes();
 	}
 	
 	private void initFieldCodes() {
 		this.fieldCodes = new ArrayList<String>();
 		this.fieldTypes = new ArrayList<String>();
+		this.fieldNames = new ArrayList<String>();
 		for(Map<Object, Object> fDefs : this.fields) {
 			this.fieldCodes.add((String) fDefs.get("code"));
 			this.fieldTypes.add((String) fDefs.get("type"));
+			this.fieldNames.add((String) fDefs.get("label"));
 		}
 	}
 	
@@ -102,6 +110,7 @@ public class _MySQL implements _Database {
 	public void updateTable(Record _new) {
 		String datasource = _new.getDatasource();
 		String table = _new.getTable();
+		this.customizeSQL = _new.getCustomizeSQL();
 		
 		if(!datasource.equals(this.datasource) || !table.equals(this.table)) {
 			this.datasource = datasource;
@@ -196,16 +205,34 @@ public class _MySQL implements _Database {
 		String updateSQL = "delete from " + this.table + " where id=" + id;
 		SQLExcutor.excute(updateSQL, this.datasource);
 	}
-
+	
 	public List<Map<String, Object>> select() {
+		 return this.select(1, 100);
+	}
+
+	public List<Map<String, Object>> select(int page, int pagesize) {
 		Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
 		paramsMap.put(1, Environment.getUserCode());
 		
 		String selectSQL = "select " + EasyUtils.list2Str(this.fieldCodes) + 
 				",createtime,creator,updatetime,updator,version,id from " + this.table + " where creator = ?";
 		SQLExcutor ex = new SQLExcutor(false);
-		ex.excuteQuery(selectSQL, paramsMap, this.datasource);
+		ex.excuteQuery(selectSQL, paramsMap, page, pagesize, this.datasource);
 		
 		return ex.result;
+	}
+
+	public Document getGridTemplate() {
+		StringBuffer sb = new StringBuffer();
+        sb.append("<grid><declare sequence=\"true\">");
+        
+        int index = 0; 
+        for(String filed : fieldNames) {
+            sb.append("<column name=\"" + fieldCodes.get(index++) + "\" mode=\"string\" caption=\"" + filed + "\" />");
+        }
+
+        sb.append("</declare><data></data></grid>");
+        
+    	return XMLDocUtil.dataXml2Doc(sb.toString());
 	}
 }

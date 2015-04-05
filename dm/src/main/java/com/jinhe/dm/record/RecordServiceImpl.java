@@ -6,6 +6,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jinhe.dm.record.ddl._Database;
+import com.jinhe.dm.record.ddl._MySQL;
 import com.jinhe.tss.util.EasyUtils;
 
 @Service("RecordService")
@@ -32,19 +34,26 @@ public class RecordServiceImpl implements RecordService {
 	}
 
 	public Record saveRecord(Record record) {
+		if( EasyUtils.isNullOrEmpty(record.getTable()) ) {
+			record.setTable("dm_rc_" + record.getName().hashCode());
+		}
+		
 		if ( record.getId() == null ) {
             record.setSeqNo(recordDao.getNextSeqNo(record.getParentId()));
             recordDao.create(record);
+            
+            _Database _db = new _MySQL(record);
+            _db.createTable();
         }
         else {
+        	Record _old = recordDao.getEntity(record.getId());
+			_Database _db = new _MySQL(_old);
+        	
         	recordDao.refreshEntity(record);
+        	
+        	_db.updateTable(record);
         }
-		
-		if( EasyUtils.isNullOrEmpty(record.getTable()) ) {
-			record.setTable("dm_rc_" + record.getId());
-			recordDao.refreshEntity(record);
-		}
-		
+ 
         return record;
 	}
 

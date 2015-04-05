@@ -15,14 +15,15 @@ import com.jinhe.dm.record.ddl._MySQL;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
+import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
 
 public class _MySQLTest {
 	
 	@Before
 	public void setUp() {
-		OperatorDTO loginUser = new OperatorDTO(12L, "JK");
-    	String token = TokenUtil.createToken("1234567890", 12L); 
+		OperatorDTO loginUser = new OperatorDTO(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
+    	String token = TokenUtil.createToken("1234567890", UMConstants.ADMIN_USER_ID); 
         IdentityCard card = new IdentityCard(token, loginUser);
         Context.initIdentityInfo(card);
 	}
@@ -41,7 +42,19 @@ public class _MySQLTest {
 		_Database _db = new _MySQL(record);
 		_db.createTable();
 		
+		// test update table with change table name
+		record = new Record();
+		record.setDatasource(DMConstants.LOCAL_CONN_POOL);
+		record.setTable("x_tbl_3");
+		record.setDefine(tblDefine);
+		
+		_db.updateTable(record);
+		
 		// test update table with row = 0
+		tblDefine = "[ {'label':'类型', 'code':'f1', 'type':'number', 'nullable':'false'}," +
+        		"{'label':'名称', 'code':'f2', 'type':'string'}," +
+        		"{'label':'时间', 'code':'f3', 'type':'datetime', 'nullable':'false'}," +
+        		"{'label':'UDF', 'code':'f5', 'type':'string'}]";
 		record = new Record();
 		record.setDatasource(DMConstants.LOCAL_CONN_POOL);
 		record.setTable("x_tbl_3");
@@ -80,7 +93,7 @@ public class _MySQLTest {
 		
 		// test update table with row > 0
 		tblDefine = "[ {'label':'类型', 'code':'f1', 'type':'number', 'nullable':'false'}," +
-        		"{'label':'名称', 'code':'f2', 'type':'string'}," +
+        		"{'label':'名称', 'code':'f2', 'type':'string', 'height':'180px'}," +
         		"{'label':'时间2', 'code':'f4', 'type':'datetime', 'nullable':'false'}]";
 		
 		record = new Record();
