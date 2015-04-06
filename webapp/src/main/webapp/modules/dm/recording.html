@@ -32,27 +32,40 @@
 /* 后台响应数据节点名称 */
 XML_SOURCE_LIST = "RecordData";
 
-var recordId = 1, recordName = "RC1";
-
 /* XMLHTTP请求地址汇总 */
-URL_SOURCE_LIST   = AUTH_PATH + "xx/grid/";
-URL_SAVE_SOURCE   = AUTH_PATH + "xx";
-URL_DELETE_SOURCE = AUTH_PATH + "xx/";
-URL_GET_DEFINES   = AUTH_PATH + "xx/";
+URL_SOURCE_LIST   = AUTH_PATH + "xdata/xml/";
+URL_SAVE_SOURCE   = AUTH_PATH + "xdata/";
+URL_DELETE_SOURCE = AUTH_PATH + "xdata/";
+URL_GET_DEFINES   = AUTH_PATH + "xdata/define/";
 
-if(true) {
+var recordId = 1, recordName = "数据录入";
+
+$(function() {
+    var globalValiable = window.parent.globalValiable;
+    if(globalValiable) {
+        recordId   = globalValiable.id;
+        recordName = globalValiable.name;
+
+        init();
+        return;
+    }
+
+    // just Test
     URL_SOURCE_LIST   = "data/data_grid.xml?";
     URL_SAVE_SOURCE   = "data/_success.xml?";
     URL_DELETE_SOURCE = "data/_success.xml?";
     URL_GET_DEFINES   = "data/record_define.json?";
-}
+
+    init();
+});
 
 /* 页面初始化 */
 function init() {
     initMenus();
     initWorkSpace();
 
-    loadGridData({}, "1"); 
+    loadGridData({}, 1); 
+    $("#rcTitle").html(recordName + "列表");
 }
 
 function initMenus() {
@@ -81,12 +94,12 @@ function initMenus() {
 
 /* grid加载数据  */
 function loadGridData(params, page) {
-    $.showGrid(URL_SOURCE_LIST, XML_SOURCE_LIST, showDetail, "grid", page, params);
+    $.showGrid(URL_SOURCE_LIST + recordId, XML_SOURCE_LIST, showDetail, "grid", page, params);
 }
 
 /* 显示资源详细信息 */
 function showDetail(isCreate) {    
-    var rowID = isCreate ? 0 : $.G("grid").getColumnValue("id");  
+    var rowID = isCreate ? '_new' : $.G("grid").getColumnValue("id");  
     var rowName = recordName + rowID;
 
     var callback = {};
@@ -119,16 +132,18 @@ function loadDetailData(rowID) {
         ondata: function() {
             var defines = this.getResponseJSON();
 
-            if(rowID) {
+            if(rowID != '_new') {
                 var grid = $.G("grid");
                 defines.each(function(i, field){
                     field.defaultValue = grid.getColumnValue(field.code);
                 });
             }
         
-            var $form = $.json2Form("page1Form", defines);
+            var xform = $.json2Form("page1Form", defines);
 
-            attachReminder(rowID, $form); // 离开提醒
+            $.cache.XmlDatas[rowID] = xform.template.dataNode;
+
+            attachReminder(rowID, xform); // 离开提醒
 
             // 设置保存/关闭按钮操作
             $1("page1BtCancel").onclick = function() {
@@ -146,42 +161,45 @@ function saveSource(rowID) {
     if( !xform.checkForm() ) return;
 
     var request = new $.HttpRequest();
-    request.url = URL_SAVE_SOURCE;
+    request.url = URL_SAVE_SOURCE + recordId;
 
-    var sourceInfoNode = $.cache.XmlDatas[treeNodeID];
-    var dataNode = sourceInfoNode.querySelector("data");
-    request.setFormContent(dataNode);
-    if(xform.parentId) {
-        request.addParam("parentId", (xform.parentId == '_root' ? '0' : xform.parentId));
+    var dataNode = $.cache.XmlDatas[rowID];
+    // request.setFormContent(dataNode);
+    var nodes = dataNode.querySelectorAll("row *");
+    for(var i = 0; i < nodes.length; i++) {
+        var node = nodes[i];
+        request.addParam("row." + node.nodeName, $.XML.getText(node));
+    }
+
+    if(rowID != '_new') {
+       request.url += "/" + rowID;
     }
 
     syncButton([$1("page1BtSave")], request); // 同步按钮状态
     detachReminder(rowID); // 解除提醒
 
-    request.onresult = function() { // 新增结果返回              
- 
-        ws.closeActiveTab();
-    }
     request.onsuccess = function() { // 更新
-
+        loadGridData({}, $1("GridPageList").value || 1); 
         ws.closeActiveTab();
     }
     request.send();
 }
 
-function insert()  { 
-
-}
-
-function update()  { 
-
-}
-
 function remove()  { 
-
+    if( !confirm("您确定要删除该行记录吗？") ) return;
+        
+    var grid = $.G("grid");
+    var rowID  = grid.getColumnValue("id");
+    if( rowID ) {
+        $.ajax({
+            url : URL_DELETE_SOURCE + recordId + "/" + rowID,
+            method : "DELETE",
+            onsuccess : function() { 
+                grid.deleteSelectedRow();
+            }
+        }); 
+    }
 }
-     
-window.onload = init;
 
 // ------------------------------------------------- 多级下拉选择联动 ------------------------------------------------
 /*
@@ -215,8 +233,9 @@ function getNextLevelOption(nextIndex, serviceID, currParam, currParamValue) {
     <table>
         <tr>
           <td id="gridTitle">
-            <span class="icon"></span>资源列表&nbsp;
-            <input type="button" class="btStrong" value="新增" id="insertBT"/>
+            <span class="icon"></span><span id="rcTitle">资源列表</span>&nbsp;
+            <input type="button" class="btStrong" value="新增" id="insertBT" onclick="showDetail(true)"/>&nbsp;
+            <input type="button" class="btStrong" value="刷新" id="refreshBT" onclick="loadGridData({}, 1)"/>
             <span class="buttonBox" id="gridToolBar"></span>
           </td>
         </tr>

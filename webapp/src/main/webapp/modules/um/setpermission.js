@@ -18,7 +18,7 @@ if(IS_TEST) {
  
 function init() {   
     var params = {};
-    if( window.parent ) {
+    if( window.parent != window.self ) {
         var globalValiable = window.parent.globalValiable;
         params.roleId = globalValiable.roleId;
         params.resourceType = globalValiable.resourceType;

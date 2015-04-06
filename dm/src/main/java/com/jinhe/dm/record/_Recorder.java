@@ -26,7 +26,7 @@ import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 
 @Controller
-@RequestMapping("/auth/data")
+@RequestMapping("/auth/xdata")
 public class _Recorder extends BaseActionSupport {
 	
 	@Autowired RecordService recordService;
@@ -55,14 +55,15 @@ public class _Recorder extends BaseActionSupport {
         return getDB(recordId).getFields();
     }
 	
-    @RequestMapping("/{recordId}/{page}/{pagesize}")
+	public static final int PAGE_SIZE = 50;
+	
+    @RequestMapping("/xml/{recordId}/{page}")
     public void showAsGrid(HttpServletRequest request, HttpServletResponse response, 
             @PathVariable("recordId") Long recordId, 
-            @PathVariable("page") int page,
-            @PathVariable("pagesize") int pagesize) {
+            @PathVariable("page") int page) {
  
         _Database _db = getDB(recordId);
-        List<Map<String, Object>> result = _db.select(page, pagesize);
+        List<Map<String, Object>> result = _db.select(page, PAGE_SIZE);
         
         List<IGridNode> temp = new ArrayList<IGridNode>();
 		for(Map<String, Object> item : result) {
@@ -73,30 +74,26 @@ public class _Recorder extends BaseActionSupport {
         GridDataEncoder gEncoder = new GridDataEncoder(temp, _db.getGridTemplate());
         
         PageInfo pageInfo = new PageInfo();
-        pageInfo.setPageSize(pagesize);
+        pageInfo.setPageSize(PAGE_SIZE);
         pageInfo.setTotalRows(result.size());
         pageInfo.setPageNum(page);
         
         print(new String[] {"RecordData", "PageInfo"}, new Object[] {gEncoder, pageInfo});
     }
     
-    @RequestMapping("/json/{recordId}/{page}/{pagesize}")
+    @RequestMapping("/json/{recordId}/{page}")
     @ResponseBody
-    public List<Map<String, Object>> showAsJSON(@PathVariable("recordId") Long recordId, 
-            @PathVariable("page") int page, @PathVariable("pagesize") int pagesize) {
- 
+    public List<Map<String, Object>> showAsJSON(@PathVariable("recordId") Long recordId, @PathVariable("page") int page) {
         _Database _db = getDB(recordId);
-        List<Map<String, Object>> result = _db.select(page, pagesize);
-        
-        return result;
+        return _db.select(page, PAGE_SIZE);
     }
 	
     @RequestMapping(value = "/{recordId}", method = RequestMethod.POST)
     public void create(HttpServletResponse response, 
     		@PathVariable("recordId") Long recordId, 
-    		Map<String, String> valuesMap) {
+    		Map<String, String> row) {
     	
-		getDB(recordId).insert(valuesMap );
+		getDB(recordId).insert(row);
         printSuccessMessage();
     }
     
@@ -104,9 +101,9 @@ public class _Recorder extends BaseActionSupport {
     public void update(HttpServletResponse response, 
     		@PathVariable("recordId") Long recordId, 
     		@PathVariable("id") Integer id,
-    		Map<String, String> valuesMap) {
+    		Map<String, String> row) {
     	
-		getDB(recordId).update(id, valuesMap);
+		getDB(recordId).update(id, row);
         printSuccessMessage();
     }
     

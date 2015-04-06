@@ -227,7 +227,8 @@ public class _MySQL implements _Database {
 		
 		String selectSQL = !EasyUtils.isNullOrEmpty(this.customizeSQL) ? this.customizeSQL :
 				"select " + EasyUtils.list2Str(this.fieldCodes) + 
-					",createtime,creator,updatetime,updator,version,id from " + this.table + " where creator = ?";
+					",createtime,creator,updatetime,updator,version,id from " + this.table + 
+					" where creator = ? order by id desc ";
 		
 		SQLExcutor ex = new SQLExcutor(false);
 		ex.excuteQuery(selectSQL, paramsMap, page, pagesize, this.datasource);

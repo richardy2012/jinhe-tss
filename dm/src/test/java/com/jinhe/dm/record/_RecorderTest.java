@@ -54,8 +54,8 @@ public class _RecorderTest extends TxTestSupport4DM {
 		recorder.create(response, recordId, valuesMap);
 		recorder.update(response, recordId, 1, valuesMap);
 		
-		recorder.showAsGrid(request, response, recordId, 1, 12);
-		recorder.showAsJSON(recordId, 1, 12);
+		recorder.showAsGrid(request, response, recordId, 1);
+		recorder.showAsJSON(recordId, 1);
 		
 		recorder.delete(response, recordId, 1);
 	}

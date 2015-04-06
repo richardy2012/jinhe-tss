@@ -135,7 +135,7 @@ public class ReportAction extends BaseActionSupport {
 		List<Param> jobParamItems = paramService.getParamsByParentCode(SchedulerBean.TIMER_PARAM_CODE);
 		if(jobParamItems != null) {
 			for(Param temp : jobParamItems) {
-				if(jobCode.equals(temp.getDescription())) {
+				if(jobCode.equals(temp.getUdf1())) {
 					paramService.delete(temp.getId());
 				}
 			}
@@ -209,7 +209,7 @@ public class ReportAction extends BaseActionSupport {
 		String jobCode = "ReportJob-" + reportId;
 		List<Param> jobParamItems = paramService.getParamsByParentCode(SchedulerBean.TIMER_PARAM_CODE);
 		for(Param temp : jobParamItems) {
-			if(jobCode.equals(temp.getDescription())) {
+			if(jobCode.equals(temp.getUdf1())) {
 				jobParamItem = temp;
 				break;
 			}
@@ -217,7 +217,7 @@ public class ReportAction extends BaseActionSupport {
 		if(jobParamItem == null) {
 			jobParamItem = new Param();
 			jobParamItem.setText(reportService.getReport(reportId).getName() + "-" + reportId);
-			jobParamItem.setDescription(jobCode);
+			jobParamItem.setUdf1(jobCode);
 			jobParamItem.setParentId(jobParam.getId());
 			jobParamItem.setType(ParamConstants.ITEM_PARAM_TYPE);
 			jobParamItem.setModality(jobParam.getModality());
@@ -235,7 +235,7 @@ public class ReportAction extends BaseActionSupport {
 		List<Param> jobParamItems = paramService.getParamsByParentCode(SchedulerBean.TIMER_PARAM_CODE);
 		if(jobParamItems != null) {
 			for(Param temp : jobParamItems) {
-				if(jobCode.equals(temp.getDescription())) {
+				if(jobCode.equals(temp.getUdf1())) {
 					String value = temp.getValue();
 					return EasyUtils.split(value, "|");
 				}

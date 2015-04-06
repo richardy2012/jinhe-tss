@@ -45,6 +45,8 @@ DELETE FROM um_application WHERE applicationId='dms';
        
 6、btrbi里注意ichart.html的路径变了， template/ichart.html，发布时注意调试“访问统计”
 
+7、UPDATE component_param p SET p.`udf1` = p.`description` 
+WHERE p.`parentId` = (SELECT id FROM (SELECT t.id FROM component_param t WHERE t.code = 'TIMER_PARAM_CODE') t)
 
 二、新增record资源
 1、资源配置
