@@ -583,7 +583,7 @@ function scheduleReport() {
                 }
 			}	
 
-			scheduleForm = $.json2Form("scheduleForm", JSON.stringify(scheduleTemplate) );
+			scheduleForm = $.json2Form("scheduleForm", scheduleTemplate);
 			$.cache.XmlDatas["scheduleFormXML"] = scheduleForm.template.sourceXML;
 
 			scheduleForm.reportId = treeNode.id;

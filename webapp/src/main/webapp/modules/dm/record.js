@@ -184,6 +184,7 @@ function saveRecord(treeNodeID) {
 	}
 	request.onsuccess = function() { // 更新
 		modifyTreeNode(treeNodeID, "name", xform.getData("name"));
+		modifyTreeNode(treeNodeID, "define", xform.getData("define"));
 		modifyTreeNode(treeNodeID, "customizePage", xform.getData("customizePage"));
 		
 		closeRecordFormDiv();

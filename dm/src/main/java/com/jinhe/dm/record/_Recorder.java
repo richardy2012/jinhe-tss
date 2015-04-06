@@ -12,9 +12,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.dm.record.ddl._Database;
 import com.jinhe.dm.record.ddl._MySQL;
+import com.jinhe.tss.cache.Cacheable;
+import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.component.cache.CacheHelper;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.web.dispaly.grid.DefaultGridNode;
@@ -29,14 +32,28 @@ public class _Recorder extends BaseActionSupport {
 	@Autowired RecordService recordService;
 	
 	private _Database getDB(Long recordId) {
+		Pool cache = CacheHelper.getLongCache();
+		
 		String cacheKey = "_db_record_" + recordId;
-		_Database _db = (_Database) CacheHelper.getLongerCache().getObject(cacheKey);
-		if(_db == null) {
+		Cacheable cacheItem = cache.getObject(cacheKey);
+				
+		_Database _db;
+		if(cacheItem == null) {
 			Record record = recordService.getRecord(recordId);
-			CacheHelper.getLongerCache().putObject(cacheKey, _db = new _MySQL(record));
+			cache.putObject(cacheKey, _db = new _MySQL(record));
 		}
+		else{
+			_db = (_Database) cacheItem.getValue();
+		}
+		
 		return _db;
 	}
+	
+	@RequestMapping("/define/{recordId}")
+    @ResponseBody
+    public Object getDefine(@PathVariable("recordId") Long recordId) {
+        return getDB(recordId).getFields();
+    }
 	
     @RequestMapping("/{recordId}/{page}/{pagesize}")
     public void showAsGrid(HttpServletRequest request, HttpServletResponse response, 
@@ -61,6 +78,17 @@ public class _Recorder extends BaseActionSupport {
         pageInfo.setPageNum(page);
         
         print(new String[] {"RecordData", "PageInfo"}, new Object[] {gEncoder, pageInfo});
+    }
+    
+    @RequestMapping("/json/{recordId}/{page}/{pagesize}")
+    @ResponseBody
+    public List<Map<String, Object>> showAsJSON(@PathVariable("recordId") Long recordId, 
+            @PathVariable("page") int page, @PathVariable("pagesize") int pagesize) {
+ 
+        _Database _db = getDB(recordId);
+        List<Map<String, Object>> result = _db.select(page, pagesize);
+        
+        return result;
     }
 	
     @RequestMapping(value = "/{recordId}", method = RequestMethod.POST)

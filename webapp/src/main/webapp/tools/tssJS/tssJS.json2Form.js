@@ -138,8 +138,8 @@
 		}
 	}
 
-	$.json2Form = function(formId, jsonTemplate, buttonBox) {
-		var infos = jsonTemplate ? $.parseJSON(jsonTemplate) : [];
+	$.json2Form = function(formId, defines, buttonBox) {
+		var infos = defines ? (typeof(defines) === "string" ? $.parseJSON(defines) : defines) : [];
 
 		var columns = [];
 		var layouts = [];

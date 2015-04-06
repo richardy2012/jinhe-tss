@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response><RecordData>
+<grid>
+	<declare sequence="true">
+		<column name="f1" mode="string" caption="类型"/>
+		<column name="f2" mode="string" caption="名称"/>
+		<column name="f3" mode="string" caption="时间"/>
+		<column name="createtime" mode="string" caption="创建时间"/>
+		<column name="creator" mode="string" caption="创建人"/>
+		<column name="updatetime" mode="string" caption="最后更新时间"/>
+		<column name="updator" mode="string" caption="最后更新人"/>
+		<column name="version" mode="string" caption="修改次数"/>
+		<column name="id" display="none"/>
+	</declare>
+	<data>
+		<row f1="10.9" f2="just test" f3="2015-04-05 00:00:00.0" createtime="2015-04-06 07:51:07.579" creator="Admin" updatetime="2015-04-06 07:51:07.595" updator="Admin" version="1" id="1"/>
+		<row f1="12.9" f2="just test2" f3="2015-04-04 00:00:00.0" createtime="2015-04-06 07:51:07.579" creator="Admin" version="0" id="2"/>
+	</data>
+</grid>
+</RecordData>
+<PageInfo>
+	<pagelist totalpages="1" totalrecords="1" currentpage="1" pagesize="12" firstpage="1" prepage="0" nextpage="0" lastpage="1" pagerecords="1"/>
+</PageInfo>
+</Response>
+
+ 

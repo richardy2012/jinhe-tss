@@ -148,11 +148,6 @@ function loadGridData(params, page) {
     $.showGrid(URL_SOURCE_LIST, XML_SOURCE_LIST, showDetail, "grid", page, params);
 }
 
-function showGrid() {
-    var params = {"operateTable": getTreeNodeId()};
-    loadGridData(params, "1"); 
-}
-
 function search() {
     var treeNode = $.T("tree").getActiveTreeNode();
     popupForm("data/search_form.xml", "search", {operateTable: treeNode.id}, function(condition) {

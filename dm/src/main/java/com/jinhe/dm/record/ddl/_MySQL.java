@@ -21,6 +21,7 @@ public class _MySQL implements _Database {
 	String recordName;
 	String datasource;
 	String table;
+	
 	List<Map<Object, Object>> fields;
 	List<String> fieldCodes;
 	List<String> fieldTypes;
@@ -50,6 +51,10 @@ public class _MySQL implements _Database {
 	
 	@SuppressWarnings("unchecked")
 	private List<Map<Object, Object>> parseJson(String define) {
+		if(EasyUtils.isNullOrEmpty(define)) {
+			return new ArrayList<Map<Object,Object>>();
+		}
+		
 		define = define.replaceAll("'", "\"");
 		
 		try {  
@@ -69,7 +74,13 @@ public class _MySQL implements _Database {
    	    } 
 	}
 	
+	public List<Map<Object, Object>> getFields() {
+		return this.fields;
+	}
+	
 	public void createTable() {
+		if(this.fields.isEmpty()) return;
+		
 		StringBuffer createDDL = new StringBuffer("create table if not exists " + table + " ( ");
    		for(Map<Object, Object> fDefs : fields) {
 			String code = (String) fDefs.get("code");
@@ -96,7 +107,7 @@ public class _MySQL implements _Database {
 			createDDL.append( ", " );
    		}
    		
-   		createDDL.append("`createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, ");
+   		createDDL.append("`createtime` TIMESTAMP NOT NULL, ");
 		createDDL.append("`creator` varchar(50) NOT NULL, ");
 		createDDL.append("`updatetime` TIMESTAMP, ");
 		createDDL.append("`updator` varchar(50), ");
@@ -214,8 +225,10 @@ public class _MySQL implements _Database {
 		Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
 		paramsMap.put(1, Environment.getUserCode());
 		
-		String selectSQL = "select " + EasyUtils.list2Str(this.fieldCodes) + 
-				",createtime,creator,updatetime,updator,version,id from " + this.table + " where creator = ?";
+		String selectSQL = !EasyUtils.isNullOrEmpty(this.customizeSQL) ? this.customizeSQL :
+				"select " + EasyUtils.list2Str(this.fieldCodes) + 
+					",createtime,creator,updatetime,updator,version,id from " + this.table + " where creator = ?";
+		
 		SQLExcutor ex = new SQLExcutor(false);
 		ex.excuteQuery(selectSQL, paramsMap, page, pagesize, this.datasource);
 		
@@ -230,7 +243,13 @@ public class _MySQL implements _Database {
         for(String filed : fieldNames) {
             sb.append("<column name=\"" + fieldCodes.get(index++) + "\" mode=\"string\" caption=\"" + filed + "\" />");
         }
-
+        sb.append("<column name=\"createtime\" mode=\"string\" caption=\"创建时间\" />");
+        sb.append("<column name=\"creator\" mode=\"string\" caption=\"创建人\" />");
+        sb.append("<column name=\"updatetime\" mode=\"string\" caption=\"最后更新时间\" />");
+        sb.append("<column name=\"updator\" mode=\"string\" caption=\"最后更新人\" />");
+        sb.append("<column name=\"version\" mode=\"string\" caption=\"修改次数\" />");
+        sb.append("<column name=\"id\" display=\"none\"/>");
+        
         sb.append("</declare><data></data></grid>");
         
     	return XMLDocUtil.dataXml2Doc(sb.toString());

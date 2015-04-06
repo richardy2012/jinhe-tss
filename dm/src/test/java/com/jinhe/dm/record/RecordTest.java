@@ -46,9 +46,11 @@ public class RecordTest extends TxTestSupport4DM {
         record1.setType(Record.TYPE1);
         record1.setParentId(group1.getId());
         record1.setName("record-1");
-        record1.setDatasource(DMConstants.DEFAULT_CONN_POOL);
+        record1.setDatasource(DMConstants.LOCAL_CONN_POOL);
         record1.setTable("");
-        record1.setDefine("id:1");
+        record1.setDefine("[ {'label':'类型', 'code':'f1', 'type':'number', 'nullable':'false'}," +
+        		"{'label':'名称', 'code':'f2', 'type':'string'}," +
+        		"{'label':'时间', 'code':'f3', 'type':'datetime', 'nullable':'false'}]");
         record1.setCustomizePage("../xx.html");
         record1.setCustomizeJS(" function() f1() { } ");
         record1.setCustomizeSQL("");

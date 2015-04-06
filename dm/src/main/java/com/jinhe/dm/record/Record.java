@@ -100,6 +100,7 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
         map.put("type", type);
         if(TYPE1 == type) {
             map.put("customizePage", customizePage);
+            map.put("define", define);
         }
         map.put("icon", "images/" + (TYPE0 == type ? "folder" : "record") + ".gif");
  

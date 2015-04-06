@@ -35,15 +35,17 @@ public class RecordServiceImpl implements RecordService {
 
 	public Record saveRecord(Record record) {
 		if( EasyUtils.isNullOrEmpty(record.getTable()) ) {
-			record.setTable("dm_rc_" + record.getName().hashCode());
+			record.setTable("dm_rc_" + Math.abs(record.getName().hashCode()));
 		}
 		
 		if ( record.getId() == null ) {
             record.setSeqNo(recordDao.getNextSeqNo(record.getParentId()));
             recordDao.create(record);
             
-            _Database _db = new _MySQL(record);
-            _db.createTable();
+            if(Record.TYPE1 == record.getType()) {
+            	_Database _db = new _MySQL(record);
+            	_db.createTable();
+            }
         }
         else {
         	Record _old = recordDao.getEntity(record.getId());
@@ -51,7 +53,9 @@ public class RecordServiceImpl implements RecordService {
         	
         	recordDao.refreshEntity(record);
         	
-        	_db.updateTable(record);
+        	if(Record.TYPE1 == record.getType()) {
+        		_db.updateTable(record);
+        	}
         }
  
         return record;

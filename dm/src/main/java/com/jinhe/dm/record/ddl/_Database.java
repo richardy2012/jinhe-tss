@@ -24,4 +24,6 @@ public interface _Database {
 	List<Map<String, Object>> select(int page, int pagesize);
 
 	Document getGridTemplate();
+	
+	List<Map<Object, Object>> getFields();
 }
