@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.record.permission.RecordPermission;
 import com.jinhe.dm.record.permission.RecordResource;
+import com.jinhe.tss.framework.component.cache.CacheHelper;
 import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
@@ -99,6 +100,10 @@ public class RecordAction extends BaseActionSupport {
     public void saveRecord(HttpServletResponse response, Record record) {
         boolean isnew = (null == record.getId());
         recordService.saveRecord(record);
+        
+		String cacheKey = "_db_record_" + record.getId();
+		CacheHelper.getLongCache().removeObject(cacheKey);
+		
         doAfterSave(isnew, record, "SourceTree");
     }
     

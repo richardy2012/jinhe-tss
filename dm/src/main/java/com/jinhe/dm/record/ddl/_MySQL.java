@@ -91,9 +91,12 @@ public class _MySQL implements _Database {
 			createDDL.append( "`" + code + "` " ); 
 			if("number".equals(type)) {
 				createDDL.append( " float " ); 
-			} else if("date".equals(type) || "datetime".equals(type)) {
-				createDDL.append( " TIMESTAMP " ); 
-			} else {
+			} else if("datetime".equals(type)) {
+				createDDL.append( " datetime " ); 
+			} else if("date".equals(type)) {
+				createDDL.append( " date " ); 
+			}
+			else {
 				int height = 255;
 				if( !EasyUtils.isNullOrEmpty(_height) ) {
 					height = Math.max(1, Integer.parseInt(_height.replace("px", ""))/18) * 255;
@@ -109,7 +112,7 @@ public class _MySQL implements _Database {
    		
    		createDDL.append("`createtime` TIMESTAMP NOT NULL, ");
 		createDDL.append("`creator` varchar(50) NOT NULL, ");
-		createDDL.append("`updatetime` TIMESTAMP, ");
+		createDDL.append("`updatetime` TIMESTAMP null, ");
 		createDDL.append("`updator` varchar(50), ");
 		createDDL.append("`version` int(5), ");
    		createDDL.append("`id` int(11) not null AUTO_INCREMENT, ");

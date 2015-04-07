@@ -1,8 +1,5 @@
 package com.jinhe.dm.record;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,20 +41,22 @@ public class _RecorderTest extends TxTestSupport4DM {
 
 	@Test
 	public void test() {
-		Map<String, String> valuesMap = new HashMap<String, String>();
-		valuesMap.put("f1", "10.9");
-		valuesMap.put("f2", "just test");
-		valuesMap.put("f3", "2015-04-05");
-		
 		Assert.assertNotNull(recorder.getDefine(recordId));
 		
-		recorder.create(response, recordId, valuesMap);
-		recorder.update(response, recordId, 1, valuesMap);
+		request.addParameter("f1", "10.9");
+		request.addParameter("f2", "just test");
+		request.addParameter("f3", "2015-04-05");
+		recorder.create(request, response, recordId);
+		recorder.update(request, response, recordId, 1);
+		
+		Assert.assertTrue(recorder.getDB(recordId).select().size() == 1);
 		
 		recorder.showAsGrid(request, response, recordId, 1);
 		recorder.showAsJSON(recordId, 1);
 		
 		recorder.delete(response, recordId, 1);
+		
+		Assert.assertTrue(recorder.getDB(recordId).select().size() == 0);
 	}
 	
 }

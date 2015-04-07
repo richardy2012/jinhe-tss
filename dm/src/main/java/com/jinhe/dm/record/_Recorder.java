@@ -1,6 +1,7 @@
 package com.jinhe.dm.record;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class _Recorder extends BaseActionSupport {
 	
 	@Autowired RecordService recordService;
 	
-	private _Database getDB(Long recordId) {
+	_Database getDB(Long recordId) {
 		Pool cache = CacheHelper.getLongCache();
 		
 		String cacheKey = "_db_record_" + recordId;
@@ -89,22 +90,35 @@ public class _Recorder extends BaseActionSupport {
     }
 	
     @RequestMapping(value = "/{recordId}", method = RequestMethod.POST)
-    public void create(HttpServletResponse response, 
-    		@PathVariable("recordId") Long recordId, 
-    		Map<String, String> row) {
+    public void create(HttpServletRequest request, HttpServletResponse response, 
+    		@PathVariable("recordId") Long recordId) {
     	
+    	Map<String, String> row = getRequestMap(request);
 		getDB(recordId).insert(row);
         printSuccessMessage();
     }
     
     @RequestMapping(value = "/{recordId}/{id}", method = RequestMethod.POST)
-    public void update(HttpServletResponse response, 
+    public void update(HttpServletRequest request, HttpServletResponse response, 
     		@PathVariable("recordId") Long recordId, 
-    		@PathVariable("id") Integer id,
-    		Map<String, String> row) {
+    		@PathVariable("id") Integer id) {
     	
+    	Map<String, String> row = getRequestMap(request);
 		getDB(recordId).update(id, row);
         printSuccessMessage();
+    }
+    
+    private Map<String, String> getRequestMap(HttpServletRequest request) {
+    	Map<String, String[]> parameterMap = request.getParameterMap();
+    	Map<String, String> requestMap = new HashMap<String, String>();
+    	for(String key : parameterMap.keySet()) {
+    		String[] values = parameterMap.get(key);
+    		if(values != null && values.length > 0) {
+    			requestMap.put( key, values[0] );
+    		}
+    	}
+    	
+    	return requestMap;
     }
     
     @RequestMapping(value = "/{recordId}/{id}", method = RequestMethod.DELETE)

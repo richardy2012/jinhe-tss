@@ -32,7 +32,7 @@ public class _MySQLTest {
 	public void test() {
 		String tblDefine = "[ {'label':'类型', 'code':'f1', 'type':'number', 'nullable':'false'}," +
         		"{'label':'名称', 'code':'f2', 'type':'string'}," +
-        		"{'label':'时间', 'code':'f3', 'type':'datetime', 'nullable':'false'}]";
+        		"{'label':'时间', 'code':'f3', 'type':'date', 'nullable':'false'}]";
 		
 		Record record = new Record();
 		record.setDatasource(DMConstants.LOCAL_CONN_POOL);
