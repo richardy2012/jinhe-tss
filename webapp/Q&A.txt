@@ -40,7 +40,7 @@ DELETE FROM um_application WHERE applicationId='dms';
 4、wmsdata里有远程调用接口 dmsRemoteService for wmsx， 配在spring-mvc.xml里
       需修改wmsx的spring-remote.xml文件 dms改为tss，然后重启wmsx
       
-5、创建一个空的dms目录，里面放index.html 和 login.html， 自动跳转至 http://wmsdata.800best.com/tss/login.htm （保险起见 复制一个 login.htm 文件）
+5、wmsdata创建一个空的dms目录，里面放index.html 和 login.html， 自动跳转至 http://wmsdata.800best.com/tss/login.htm （保险起见 复制一个 login.htm 文件）
        修改发布目录下 ROOT/index.html, 跳转至 tss/login.html
        
 6、btrbi里注意ichart.html的路径变了， template/ichart.html，发布时注意调试“访问统计”

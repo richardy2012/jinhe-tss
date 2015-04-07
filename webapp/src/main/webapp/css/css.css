@@ -86,9 +86,9 @@ WorkSpace\:Page .Tree a, WorkSpace\:Page .Tree a.hover { border: 1px solid #F7F8
 #relogin_box { width:260px;  padding:10px; }
 #relogin_box h1 { line-height:30px; font-size:15px; padding:0px 5px; border-bottom:1px solid #009999; }
 #relogin_box span { display:block; margin:10px 0px; padding:0px 5px; font-size: 14px; } 
-#relogin_box #loginName, #relogin_box #password { width:160px; height: 20px; font-size: 14px;}
+#relogin_box #loginName, #relogin_box #password { width:160px; height: 20px; font-size: 14px; background-color: #f0f0f0; border: 1px solid #ccc; }
 #relogin_box span.bottonBox { padding-left: 36px; }
-#relogin_box span input { background-color: #f0f0f0; border: 1px solid #ccc; margin-left: 10px;}
+#relogin_box span input { margin-left: 10px;}
 
 .dialog { border:1px solid #98989C; background-color:#fff; margin: 0 auto 0 auto; overflow:auto; padding:5px; position: absolute; top:100px;}
 .dialog .tssForm { padding-top: 10px;}

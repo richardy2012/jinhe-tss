@@ -111,18 +111,19 @@ public class _Reporter extends BaseActionSupport {
 		SQLExcutor excutor = reportService.queryReport(reportId, requestMap, page, pagesize, getLoginUserId(requestMap));
 		
 		String fileName = reportId + "-" + System.currentTimeMillis() + ".csv";
-        String exportPath = DataExport.getExportPath() + "/" + fileName;
+        String exportPath;
         
         // 如果导出数据超过了pageSize（前台为导出设置的pageSize为50万），则不予导出并给与提示
 		if(pagesize > 0 && excutor.count > pagesize) {
 			List<Object[]> result = new ArrayList<Object[]>();
 			result.add(new Object[] {"您当前查询导出的数据有" + excutor.count + "行, 超过了单次能导出行数的上限【" + pagesize + "行】，请缩短你的查询范围，分批导出。"});
 			
+			exportPath = DataExport.getExportPath() + "/" + fileName;
 			DataExport.exportCSV(exportPath, result, Arrays.asList("result"));
 		}
 		else {
 			// 先输出查询结果到服务端的导出文件中
-	        DataExport.exportCSV(exportPath, excutor.result, excutor.selectFields);
+			exportPath = DataExport.exportCSV(fileName, excutor.result, excutor.selectFields);
 		}
         
         // 下载上一步生成的附件

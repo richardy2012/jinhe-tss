@@ -2,6 +2,7 @@ package com.jinhe.dm.report.timer;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import com.jinhe.tss.framework.component.timer.MailUtil;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.service.ILoginService;
+import com.jinhe.tss.util.DateUtil;
 import com.jinhe.tss.util.EasyUtils;
 
 /**
@@ -31,42 +33,15 @@ public class ReportJob extends AbstractJob {
 	
 	ReportService reportService = (ReportService) Global.getBean("ReportService");
 	ILoginService loginService  = (ILoginService) Global.getBean("LoginService");
-
-	/* 
-	 * jobConfig的格式为
-	 *  
-	 *  1:报表一:x1@x.com
-     *  2:报表二:x2@x.com
-	 *	3:报表三:x3@x.com,x4@x.com:param1=a,param2=b
-	 *  
+	
+	/**
+	 * 收件人对报表的映射，当一组收件人对应多个报表时，将这些报表合并成一个邮件发送
 	 */
-	protected void excuteJob(String jobConfig) {
-		
-		String[] jobConfigs = EasyUtils.split(jobConfig, "\n");
-		
-		for(int i = 0; i < jobConfigs.length; i++) {
-			String reportInfo[] = EasyUtils.split(jobConfigs[i], ":");
-			Long reportId = EasyUtils.obj2Long(reportInfo[0]);
-			String title = reportInfo[1];
-			String receiver[] = getEmails( reportInfo[2].trim().split(",") );
-			if(receiver == null || receiver.length == 0) {
-				continue;
-			}
-					
-	    	Map<String, String> paramsMap = new HashMap<String, String>();
-	    	if(reportInfo.length > 3) {
-	    		String[] params = reportInfo[3].split(",");
-	    		for(String param : params) {
-	    			String[] keyValue = param.split("=");
-	    			paramsMap.put(keyValue[0].trim(), keyValue[1].trim());
-	    		}
-	    	}
-	        SQLExcutor excutor = reportService.queryReport(reportId, paramsMap, 0, 0, null);
-	        
-	        send(title, receiver, excutor.result, excutor.selectFields);
-		}
+	class ReceiverReports {
+		List<String> reportTitles = new ArrayList<String>();
+		List<SQLExcutor> reportResults = new ArrayList<SQLExcutor>();
 	}
-
+	
 	private String[] getEmails(String[] receiver) {
 		// 将登陆账号转换成该用户的邮箱
 		List<String> emails = new ArrayList<String>();
@@ -91,8 +66,59 @@ public class ReportJob extends AbstractJob {
 		
 		return receiver;
 	}
+
+	/* 
+	 * jobConfig的格式为
+	 *  
+	 *  1:报表一:x1@x.com
+     *  2:报表二:x2@x.com
+	 *	3:报表三:x3@x.com,x4@x.com:param1=a,param2=b
+	 */
+	protected void excuteJob(String jobConfig) {
+		
+		String[] jobConfigs = EasyUtils.split(jobConfig, "\n");
+		
+		Map<String, ReceiverReports> map = new HashMap<String, ReportJob.ReceiverReports>();
+		
+		for(int i = 0; i < jobConfigs.length; i++) {
+			String reportInfo[] = EasyUtils.split(jobConfigs[i], ":");
+			
+			String receiverStr = reportInfo[2].trim();
+			ReceiverReports rr = map.get(receiverStr);
+			if(rr == null) {
+				map.put(receiverStr, rr = new ReceiverReports());
+			}
+			
+			String title = reportInfo[1];
+	        rr.reportTitles.add(title);
+					
+	        Long reportId = EasyUtils.obj2Long(reportInfo[0]);
+	    	Map<String, String> paramsMap = new HashMap<String, String>();
+	    	if(reportInfo.length > 3) {
+	    		String[] params = reportInfo[3].split(",");
+	    		for(String param : params) {
+	    			String[] keyValue = param.split("=");
+	    			paramsMap.put(keyValue[0].trim(), keyValue[1].trim());
+	    		}
+	    	}
+	        SQLExcutor ex = reportService.queryReport(reportId, paramsMap, 0, 0, null);  
+	        rr.reportResults.add(ex);
+		}
+		
+		for(String receiverStr : map.keySet()) {
+			String receiver[] = getEmails( receiverStr.split(",") );
+			if(receiver == null || receiver.length == 0) {
+				continue;
+			}
+			
+			ReceiverReports rr = map.get(receiverStr);
+			send(receiver, rr);
+		}
+	}
 	
-	private void send(String title, String receiver[], List<Map<String, Object>> data, List<String> fields) {
+	private void send(String[] receiver, ReceiverReports rr) {
+		String title = EasyUtils.list2Str(rr.reportTitles);
+		
 		JavaMailSenderImpl sender = (JavaMailSenderImpl) MailUtil.getMailSender();
 		MimeMessage mailMessage = sender.createMimeMessage();
 		
@@ -111,49 +137,62 @@ public class ReportJob extends AbstractJob {
 			html.append("	table { border-collapse:collapse; border-spacing:0; }");
 			html.append("	td { line-height: 1.42857143; vertical-align: top;  border: 1px solid black; text-align: left;}");
 			html.append("	td { margin:0; padding:0; padding: 2px 2px 2px 2px; font-family: 微软雅黑; font-size: 15px;}");
+			html.append("	thead td { background-color:#E4E6F5; font-weight: bold; }");
 			html.append("</style>");
 			html.append("</head>");
 			html.append("<body>");
 			
-			if(data.size() > 100) {
-				html.append("<h1>详细见附件</h1>");
-			} else {
-				html.append("<table>");
-				if(fields != null) {
-					html.append("<tr>");
-	            	for(String field : fields) {
-	            		html.append("<td>").append("&nbsp;").append(field).append("&nbsp;").append("</td>");
-	            	}
-	            	html.append("</tr>");
-	            }
-	        	for( Map<String,Object> row : data) {
-	        		html.append("<tr>");
-	        		for(String field : fields) {
-	            		html.append("<td>").append(row.get(field)).append("</td>");
-	            	}
-	        		html.append("</tr>");
-	        	}
-				html.append("</table>");
+			int index = 0;
+			for(SQLExcutor ex : rr.reportResults) {
+				buildEmailContent(rr.reportTitles.get(index++), ex, messageHelper, html);
 			}
 			
 			html.append("</body>");
 			html.append("</html>");
-			
-			messageHelper.setText(html.toString(), true);
 			log.debug(html);
-			
-			// 附件内容
-			String fileName = title + "-" + System.currentTimeMillis() + ".csv";
-	        String exportPath = DataExport.getExportPath() + "/" + fileName;
-	        DataExport.exportCSV(exportPath, data, fields);
-	        
-			fileName = MimeUtility.encodeWord(fileName); // 使用MimeUtility.encodeWord()来解决附件名称的中文问题
-			messageHelper.addAttachment(MimeUtility.encodeWord(fileName), new File(exportPath));
-			
+			messageHelper.setText(html.toString(), true);
 			sender.send(mailMessage);
 		} 
 		catch (Exception e) {
 			throw new BusinessException("发送报表邮件时出错了：", e);
 		}
+	}
+
+	private void buildEmailContent(String title, SQLExcutor ex,
+			MimeMessageHelper messageHelper, StringBuffer html) throws Exception {
+		
+		if(ex.result.size() > 100) {
+			html.append("<h1>报表【" + title + "】的内容详细请参见附件。</h1>");
+		} 
+		else {
+			html.append("<h1>" + title + "</h1>");
+			html.append("<table>");
+			if(ex.selectFields != null) {
+				html.append("<thead><tr>");
+		    	for(String field : ex.selectFields) {
+		    		html.append("<td>").append("&nbsp;").append(field).append("&nbsp;").append("</td>");
+		    	}
+		    	html.append("</tr></thead>");
+		    	
+		    	html.append("<tbody>");
+		    	for( Map<String, Object> row : ex.result) {
+					html.append("<tr>");
+					for(String field : ex.selectFields) {
+			    		html.append("<td>").append(row.get(field)).append("</td>");
+			    	}
+					html.append("</tr>");
+				}
+		    	html.append("</tbody>");
+		    }
+			
+			html.append("</table><br>");
+		}
+		
+		// 附件内容
+		String fileName = title + "-" + DateUtil.format(new Date()) + ".csv";
+		String exportPath = DataExport.exportCSV(fileName, ex.result, ex.selectFields);
+		
+		fileName = MimeUtility.encodeWord(fileName); // 使用MimeUtility.encodeWord()来解决附件名称的中文问题
+		messageHelper.addAttachment(MimeUtility.encodeWord(fileName), new File(exportPath));
 	}
 }

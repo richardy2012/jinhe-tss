@@ -117,14 +117,16 @@ public class DataExport {
     	DataExport.exportCSV(path, list, fields);
     }
  
-    public static void exportCSV(String path, List<Map<String, Object>> data, List<String> fields) {
+    public static String exportCSV(String fileName, List<Map<String, Object>> data, List<String> fields) {
     	List<Object[]> list = new ArrayList<Object[]>();
-
         for (Map<String, Object> row : data) {
         	list.add( row.values().toArray() );
         }
         
-    	exportCSV(path, list, fields);
+        String exportPath = DataExport.getExportPath() + "/" + fileName;
+    	exportCSV(exportPath, list, fields);
+    	
+    	return exportPath;
     }
     
     public static void exportCSV(String path, Collection<Object[]> data, List<String> fields) {
