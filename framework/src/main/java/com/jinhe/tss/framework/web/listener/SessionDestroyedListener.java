@@ -50,10 +50,14 @@ public class SessionDestroyedListener implements HttpSessionListener {
         // 注销在线用户库中对应记录信息，去除登陆用户身份证card信息
     	IOnlineUserManager ouManager = OnlineUserManagerFactory.getManager();
     	if(ouManager != null) {
-    		String token = ouManager.logout(appCode, sessionId);
-    		if(token != null) {
-            	Context.destroyIdentityCard(token);
-            }
+    		try {
+    			String token = ouManager.logout(appCode, sessionId);
+    			if(token != null) {
+                	Context.destroyIdentityCard(token);
+                }
+    		} catch(Exception e) {
+    			log.error("注销过期session时出错了：" + e.getMessage());
+    		}
     	}
     }
 }

@@ -80,6 +80,7 @@ public class ReportJob extends AbstractJob {
 		
 		Map<String, ReceiverReports> map = new HashMap<String, ReportJob.ReceiverReports>();
 		
+		// 收件人一致的定时报表合并起来发送
 		for(int i = 0; i < jobConfigs.length; i++) {
 			String reportInfo[] = EasyUtils.split(jobConfigs[i], ":");
 			

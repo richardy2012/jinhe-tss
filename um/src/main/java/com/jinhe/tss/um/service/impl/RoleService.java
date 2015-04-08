@@ -46,7 +46,7 @@ public class RoleService implements IRoleService {
     }
 
     public List<?> getResourceTypeByAppId(String applicationId) {
-		String hql = "select resourceTypeId as id, name from ResourceType a where a.applicationId = ? order by a.seqNo";
+		String hql = "select resourceTypeId as id, name from ResourceType a where a.applicationId = ? order by a.seqNo desc";
 		return resourceTypeDao.getEntities(hql, applicationId);
     }
     

@@ -33,6 +33,11 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 
 /**
  * http://localhost:9000/dm/display/12/1/100
+ * 
+ * 默认情况下，相同登陆用户，执行相同查询条件的查询结果会被缓存3分钟。
+ * 如要避开缓存，方式有两种， url?noCache=true 或者
+ * {'label':'是否缓存','type':'hidden','name':'noCache','defaultValue':'true'}
+ * 
  */
 @Controller
 @RequestMapping( {"/display", "/data", "/api"} )
@@ -65,8 +70,12 @@ public class _Reporter extends BaseActionSupport {
     	return requestMap;
     }
     
+    /**
+     * 避开缓存的方式有两种， url?noCache=true 或者
+     * {'label':'是否缓存','type':'hidden','name':'noCache','defaultValue':'true'}
+     */
     private Object getLoginUserId(Map<String, String> requestMap) {
-    	if(requestMap.containsKey("noCache")) {
+    	if(requestMap.containsKey("noCache") || requestMap.containsValue("noCache")) {
     		return System.currentTimeMillis(); // 如果传入的参数要求不取缓存的数据，则返回当前时间戳作为userID，以触发缓存更新。
     	}
         return Environment.getUserId();
