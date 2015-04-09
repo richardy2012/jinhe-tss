@@ -3,9 +3,12 @@ package com.jinhe.dm.report.timer;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.TxTestSupport4DM;
 import com.jinhe.dm.report.Report;
 import com.jinhe.dm.report.ReportService;
+import com.jinhe.tss.framework.component.param.Param;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 
 public class ReportJobTest extends TxTestSupport4DM {
 	
@@ -13,6 +16,10 @@ public class ReportJobTest extends TxTestSupport4DM {
 
 	@Test
 	public void testReportJob() {
+		
+		Param paramL = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, DMConstants.EMAIL_MACRO, "常用收件人组");
+        addParamItem(paramL.getId(), "pjjin@800best.com", "JK", ParamConstants.COMBO_PARAM_MODE);
+        
         Report report1 = new Report();
         report1.setType(Report.TYPE1);
         report1.setParentId(Report.DEFAULT_PARENT_ID);
@@ -31,7 +38,7 @@ public class ReportJobTest extends TxTestSupport4DM {
         
         ReportJob job = new ReportJob();
         
-        String jobConfig = report1.getId() + ":报表一:pjjin@800best.com,BL00618:param1=0,param2=0,param3=today-0\n" + 
+        String jobConfig = report1.getId() + ":报表一:pjjin@800best.com,BL00618,-1@tssRole,-2@tssGroup,${JK}:param1=0,param2=0,param3=today-0\n" + 
         		           report1.getId() + ":报表二:BL00618,pjjin@800best.com:param1=0,param3=today-1\n" +
         		           report1.getId() + ":报表三:BL00618,pjjin@800best.com:param1=0,param3=today-1";
 		try{

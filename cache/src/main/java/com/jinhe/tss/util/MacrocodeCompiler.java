@@ -10,6 +10,7 @@
 package com.jinhe.tss.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -125,6 +126,18 @@ public class MacrocodeCompiler {
     	List<String> segment = compile(script);
         if (segment == null) return ""; 
         
+        // 对macrocodes进行预处理，没有以$、#打头的Key，改成以${key}
+        Map<String, Object> copy = new HashMap<String, Object>();
+        for(String key : macrocodes.keySet()) {
+        	char firstChar = key.charAt(0);
+        	if(isMacroStartTag(firstChar)) {
+        		copy.put(key, macrocodes.get(key));
+        	}
+        	else {
+        		copy.put(createMacroCode(key), macrocodes.get(key));
+        	}
+        }
+        
         StringBuffer sb = new StringBuffer();
         for(String item : segment) {
             if (item == null) continue;
@@ -134,7 +147,7 @@ public class MacrocodeCompiler {
             		&& isStartSymbol(item.charAt(1)) 
             		&& isEndSymbol(item.charAt(item.length() - 1)) ) {
                 
-                Object macro = macrocodes.get(item);
+                Object macro = copy.get(item);
                 if (macro != null) {
                     sb.append(macro);
                 }  

@@ -3,15 +3,15 @@ package com.jinhe.dm.report;
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.util.BeanUtil;
  
-public class ScriptPreCheatorFactory {
+public class ScriptParserFactory {
     
-    protected static ScriptPreCheator instance;
+    protected static ScriptParser instance;
  
-    public static ScriptPreCheator getPreCheator() {
+    public static ScriptParser getParser() {
         if (instance == null) {
             String configValue = Config.getAttribute("script_precheator");
             if (configValue != null) {
-                instance = (ScriptPreCheator) BeanUtil.newInstanceByName(configValue);
+                instance = (ScriptParser) BeanUtil.newInstanceByName(configValue);
             } else {
                 return null;
             }

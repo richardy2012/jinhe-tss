@@ -9,6 +9,7 @@ public interface DMConstants {
     final static String TEMP_EXPORT_PATH  = "TEMP_EXPORT_PATH";
     
     final static String SCRIPT_MACRO = "ReportScriptMacros";
+    final static String EMAIL_MACRO  = "EmailMacros";
     
     final static String USER_ID = "userId";
     final static String USER_CODE = "userCode";

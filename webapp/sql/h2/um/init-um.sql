@@ -31,8 +31,8 @@ commit;
 truncate table um_user;
 
 --系统管理员ID=-1，初始化密码为123456
-insert into um_user (ID, DISABLED, ACCOUNTLIFE, AUTHMETHOD, LOGINNAME, PASSWORD, USERNAME, lockVersion)
-values (-1, 0, SYSDATE + 365*50, 'com.jinhe.tss.um.sso.UMPasswordIdentifier', 'Admin', 'E5E0A2593A3AE4C038081D5F113CEC78', 'Admin', 0);
+insert into um_user (ID, DISABLED, ACCOUNTLIFE, AUTHMETHOD, LOGINNAME, PASSWORD, USERNAME, lockVersion, email)
+values (-1, 0, SYSDATE + 365*50, 'com.jinhe.tss.um.sso.UMPasswordIdentifier', 'Admin', 'E5E0A2593A3AE4C038081D5F113CEC78', 'Admin', 0, 'pjjin@800best.com');
 
 --匿名用户ID=-10000
 insert into um_user (ID, DISABLED, ACCOUNTLIFE, AUTHMETHOD, LOGINNAME, PASSWORD, USERNAME, lockVersion)

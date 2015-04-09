@@ -12,13 +12,15 @@ import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.record.ddl._Database;
 import com.jinhe.dm.record.ddl._MySQL;
+import com.jinhe.dm.record.ddl._Oracle;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
+import com.jinhe.tss.util.EasyUtils;
 
-public class _MySQLTest {
+public class _DatabaseTest {
 	
 	@Before
 	public void setUp() {
@@ -29,23 +31,42 @@ public class _MySQLTest {
 	}
 	
 	@Test
-	public void test() {
+	public void testMySQL() {
+		testDB("MySQL", DMConstants.LOCAL_CONN_POOL); // 暂通过H2模拟
+	}
+	
+	@Test
+	public void testOracle() {
+		testDB("Oracle", DMConstants.LOCAL_CONN_POOL); // 暂通过H2模拟
+	}
+	
+	private _Database getDB(String type, Record record) {
+		if("Oracle".equals(type)) {
+			return new _Oracle(record);
+		}
+		if("MySQL".equals(type)) {
+			return new _MySQL(record);
+		}
+		return null;
+	}
+	
+	private void testDB(String type, String datasource) {
 		String tblDefine = "[ {'label':'类型', 'code':'f1', 'type':'number', 'nullable':'false'}," +
         		"{'label':'名称', 'code':'f2', 'type':'string'}," +
         		"{'label':'时间', 'code':'f3', 'type':'date', 'nullable':'false'}]";
 		
 		Record record = new Record();
-		record.setDatasource(DMConstants.LOCAL_CONN_POOL);
-		record.setTable("x_tbl_2");
+		record.setDatasource(datasource);
+		record.setTable(type + "_tbl_2");
 		record.setDefine(tblDefine);
 		
-		_Database _db = new _MySQL(record);
+		_Database _db = getDB(type, record);
 		_db.createTable();
 		
 		// test update table with change table name
 		record = new Record();
-		record.setDatasource(DMConstants.LOCAL_CONN_POOL);
-		record.setTable("x_tbl_3");
+		record.setDatasource(datasource);
+		record.setTable(type + "_tbl_3");
 		record.setDefine(tblDefine);
 		
 		_db.updateTable(record);
@@ -56,8 +77,8 @@ public class _MySQLTest {
         		"{'label':'时间', 'code':'f3', 'type':'datetime', 'nullable':'false'}," +
         		"{'label':'UDF', 'code':'f5', 'type':'string'}]";
 		record = new Record();
-		record.setDatasource(DMConstants.LOCAL_CONN_POOL);
-		record.setTable("x_tbl_3");
+		record.setDatasource(datasource);
+		record.setTable(type + "_tbl_3");
 		record.setDefine(tblDefine);
 		
 		_db.updateTable(record);
@@ -73,10 +94,10 @@ public class _MySQLTest {
 		Assert.assertTrue(result.size() == 1);
 		
 		Map<String, Object> row = result.get(0);
-		Integer id = (Integer) row.get("id");
+		Integer id = EasyUtils.obj2Int( row.get("id") );
 		Assert.assertEquals(10.9, row.get("f1"));
 		Assert.assertNotNull(row.get("createtime"));
-		Assert.assertEquals(0, row.get("version"));
+		Assert.assertEquals(0, EasyUtils.obj2Int( row.get("version") ).intValue());
 		
 		// test update
 		valuesMap = new HashMap<String, String>();
@@ -89,7 +110,7 @@ public class _MySQLTest {
 		Assert.assertEquals(12.0, row.get("f1"));
 		Assert.assertEquals("just test", row.get("f2"));
 		Assert.assertNotNull(row.get("updatetime"));
-		Assert.assertEquals(1, row.get("version"));
+		Assert.assertEquals(1, EasyUtils.obj2Int( row.get("version") ).intValue());
 		
 		// test update table with row > 0
 		tblDefine = "[ {'label':'类型', 'code':'f1', 'type':'number', 'nullable':'false'}," +
@@ -97,8 +118,8 @@ public class _MySQLTest {
         		"{'label':'时间2', 'code':'f4', 'type':'datetime', 'nullable':'false'}]";
 		
 		record = new Record();
-		record.setDatasource(DMConstants.LOCAL_CONN_POOL);
-		record.setTable("x_tbl_3");
+		record.setDatasource(datasource);
+		record.setTable(type + "_tbl_3");
 		record.setDefine(tblDefine);
 		
 		_db.updateTable(record);
@@ -106,7 +127,7 @@ public class _MySQLTest {
 		Assert.assertTrue(result.size() == 0);
 		
 		SQLExcutor ex = new SQLExcutor(false);
-		ex.excuteQuery("select id from x_tbl_3_old", DMConstants.LOCAL_CONN_POOL);
+		ex.excuteQuery("select id from " + type + "_tbl_3_" + record.getLockVersion(), datasource);
 		Assert.assertTrue(ex.result.size() == 1);
 		
 		// test insert
@@ -118,7 +139,7 @@ public class _MySQLTest {
 		
 		result = _db.select();
 		Assert.assertTrue(result.size() == 1);
-		id = (Integer) row.get("id");
+		id = EasyUtils.obj2Int( result.get(0).get("id") );
 		
 		// test delete
 		_db.delete(id);

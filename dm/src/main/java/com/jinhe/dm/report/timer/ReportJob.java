@@ -4,8 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
@@ -13,10 +15,13 @@ import javax.mail.internet.MimeUtility;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.data.util.DataExport;
 import com.jinhe.dm.report.ReportService;
 import com.jinhe.tss.framework.Global;
+import com.jinhe.tss.framework.component.param.Param;
+import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.component.timer.AbstractJob;
 import com.jinhe.tss.framework.component.timer.MailUtil;
 import com.jinhe.tss.framework.exception.BusinessException;
@@ -24,10 +29,15 @@ import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.util.DateUtil;
 import com.jinhe.tss.util.EasyUtils;
+import com.jinhe.tss.util.MacrocodeCompiler;
 
 /**
  * com.jinhe.dm.report.timer.ReportJob | 0 36 10 * * ? | 268:各省日货量流向:pjjin@800best.com,BL01037:param1=today-1
  * 261:各省生产货量:BL00618,BL01037:param1=today-0
+ * 262:报表三:BL00618,BL01037:param1=0,param3=today-1
+ * 
+ * 收件人支持方式有：email、账号、角色、用户组、参数定义，分别如下
+ * pjjin@800best.com,BL01037,-1@tssRole,-2@tssGroup,${JK}
  */
 public class ReportJob extends AbstractJob {
 	
@@ -42,22 +52,39 @@ public class ReportJob extends AbstractJob {
 		List<SQLExcutor> reportResults = new ArrayList<SQLExcutor>();
 	}
 	
-	private String[] getEmails(String[] receiver) {
+	/**
+	 * 支持loginName，email，角色，用户组，辅助组、参数宏
+	 */
+	private String[] getEmails(String receiverStr) {
+		Map<String, Object> fmDataMap = new HashMap<String, Object>();
+		List<Param> macroParams = ParamManager.getComboParam(DMConstants.EMAIL_MACRO);
+		if(macroParams != null) {
+			for(Param p : macroParams) {
+				fmDataMap.put(p.getText(), p.getValue());
+			}
+		}
+		
+		receiverStr = MacrocodeCompiler.run(receiverStr, fmDataMap, true);
+		String[] receiver = receiverStr.split(",");
+		
 		// 将登陆账号转换成该用户的邮箱
-		List<String> emails = new ArrayList<String>();
+		Set<String> emails = new HashSet<String>();
 		for(int j = 0; j < receiver.length; j++) {
 			String temp = receiver[j];
 			
 			// 判断配置的是否已经是email，如不是，作为loginName处理
-			// TODO 增强，能发给用户组、辅助组 或 角色
-			if(temp.indexOf("@") < 0) {
-				try {
-					OperatorDTO user = loginService.getOperatorDTOByLoginName(temp);
-					emails.add( (String) user.getAttribute("email") );
-				} catch(Exception e) {
-				}
+			if(temp.endsWith("@tssRole")) {
+				List<OperatorDTO> list = loginService.getUsersByRoleId(parseID(temp));
+				addUsersEmail2List(list, emails);
+			} 
+			else if(temp.endsWith("@tssGroup")) {
+				List<OperatorDTO> list = loginService.getUsersByGroupId(parseID(temp));
+				addUsersEmail2List(list, emails);
+			} 
+			else if(temp.indexOf("@") < 0) {
+				addUserEmail2List(temp, emails);
 			}
-			else {
+			else if(temp.indexOf("@") > 0 && temp.indexOf(".") > 0) {
 				emails.add(temp);
 			}
 		}
@@ -65,6 +92,36 @@ public class ReportJob extends AbstractJob {
 		receiver = emails.toArray(receiver);
 		
 		return receiver;
+	}
+	
+	private Long parseID(String temp) {
+		try {
+			return EasyUtils.obj2Long( temp.split("@")[0] );
+		} catch(Exception e) {
+			return 0L;
+		}
+	}
+	
+	private void addUserEmail2List(String loginName, Set<String> emails) {
+		try {
+			OperatorDTO user = loginService.getOperatorDTOByLoginName(loginName);
+			addUserEmail2List(user, emails);
+		} 
+		catch(Exception e) {
+		}
+	}
+	
+	private void addUserEmail2List(OperatorDTO user, Set<String> emails) {
+		String email = (String) user.getAttribute("email");
+		if( !EasyUtils.isNullOrEmpty(email) ) {
+			emails.add( email );
+		}
+	}
+	
+	private void addUsersEmail2List(List<OperatorDTO> list, Set<String> emails) {
+		for(OperatorDTO user : list) {
+			addUserEmail2List(user, emails);
+		}
 	}
 
 	/* 
@@ -107,7 +164,7 @@ public class ReportJob extends AbstractJob {
 		}
 		
 		for(String receiverStr : map.keySet()) {
-			String receiver[] = getEmails( receiverStr.split(",") );
+			String receiver[] = getEmails( receiverStr );
 			if(receiver == null || receiver.length == 0) {
 				continue;
 			}
