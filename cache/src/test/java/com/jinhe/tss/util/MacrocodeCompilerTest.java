@@ -5,12 +5,27 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 
 public class MacrocodeCompilerTest {
+	
+	@Test
+    public void testRunLoop() {
+		String script = "${X0}";
+		Map<String, Object> macrocodes = new HashMap<String, Object>();
+		for(int i = 0; i < 10; i++) {
+			macrocodes.put("X" + i, "${X" + (i+1) + "}");
+		}
+		macrocodes.put("X10", "This Loop End!");
+		
+		String result = MacrocodeCompiler.runLoop(script, macrocodes);
+		Assert.assertEquals("This Loop End!", result);
+	}
     
 	@Test
-    public void testMacrocodeCompiler() {
+    public void testRun() {
         String code = "<table id=\"${portlet.id}\" description=\"修饰器\">"
             + "             <tr>"
             + "                 <td>#{title}</td>"

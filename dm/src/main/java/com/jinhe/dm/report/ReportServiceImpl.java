@@ -175,7 +175,7 @@ public class ReportServiceImpl implements ReportService {
 		/* 先预解析，以判断request参数是否用做了宏代码。后续还将有一次解析，以支持宏嵌套。 
 		 * eg： ${GetWHListByLogonUser} --> param里的script宏（... user_id = ${fromUserId}) ... ）
 		 * 这里先把  ${GetWHListByLogonUser} 解析出来，下面会接着解析${fromUserId} */
-      	reportScript = MacrocodeCompiler.run(reportScript, fmDataMap, true); 
+      	reportScript = MacrocodeCompiler.runLoop(reportScript, fmDataMap, true); 
       	
       	// 加入所有request请求带的参数
       	fmDataMap.putAll(requestMap);

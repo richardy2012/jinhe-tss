@@ -238,7 +238,7 @@ function showRecord() {
     closeDefine();
 
 	var customizePage  = (treeNode.getAttribute("customizePage") || "").trim(); 
-	customizePage = customizePage || 'recording.html';
+	customizePage = customizePage || 'recorder.html';
 	$("#chatFrame").show().attr("src", customizePage);
 }  
 

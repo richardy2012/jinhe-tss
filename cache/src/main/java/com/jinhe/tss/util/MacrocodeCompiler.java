@@ -168,6 +168,25 @@ public class MacrocodeCompiler {
         return run(script, macrocodes, false);
     }
     
+    /**
+     * 支持无限宏嵌套，直到所有嵌套都被解析完成。
+     * TODO 谨防闭环式死循环出现，如果循环100次还没结束，则跳出。
+     */
+    public static String runLoop(String script, Map<String, ? extends Object> macrocodes, boolean ignoreNull) {
+    	String current = script, pre = null;
+    	int count = 0;
+    	while(current != null && !current.equals(pre) && count++ < 100) {
+    		pre = current;
+    		current = run(current, macrocodes, ignoreNull);
+    	}
+    	
+    	return current;
+    }
+    
+    public static String runLoop(String script, Map<String, ? extends Object> macrocodes) {
+    	return runLoop(script, macrocodes, true);
+    }
+    
     /**  是否宏代码标记 '$' or '#'  */
     private static boolean isMacroStartTag(char c){
         return c == MACROCODE_SYMBOL || c == VARIABLE_SYMBOL;

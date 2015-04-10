@@ -44,86 +44,6 @@ public class ReportJob extends AbstractJob {
 	ReportService reportService = (ReportService) Global.getBean("ReportService");
 	ILoginService loginService  = (ILoginService) Global.getBean("LoginService");
 	
-	/**
-	 * 收件人对报表的映射，当一组收件人对应多个报表时，将这些报表合并成一个邮件发送
-	 */
-	class ReceiverReports {
-		List<String> reportTitles = new ArrayList<String>();
-		List<SQLExcutor> reportResults = new ArrayList<SQLExcutor>();
-	}
-	
-	/**
-	 * 支持loginName，email，角色，用户组，辅助组、参数宏
-	 */
-	private String[] getEmails(String receiverStr) {
-		Map<String, Object> fmDataMap = new HashMap<String, Object>();
-		List<Param> macroParams = ParamManager.getComboParam(DMConstants.EMAIL_MACRO);
-		if(macroParams != null) {
-			for(Param p : macroParams) {
-				fmDataMap.put(p.getText(), p.getValue());
-			}
-		}
-		
-		receiverStr = MacrocodeCompiler.run(receiverStr, fmDataMap, true);
-		String[] receiver = receiverStr.split(",");
-		
-		// 将登陆账号转换成该用户的邮箱
-		Set<String> emails = new HashSet<String>();
-		for(int j = 0; j < receiver.length; j++) {
-			String temp = receiver[j];
-			
-			// 判断配置的是否已经是email，如不是，作为loginName处理
-			if(temp.endsWith("@tssRole")) {
-				List<OperatorDTO> list = loginService.getUsersByRoleId(parseID(temp));
-				addUsersEmail2List(list, emails);
-			} 
-			else if(temp.endsWith("@tssGroup")) {
-				List<OperatorDTO> list = loginService.getUsersByGroupId(parseID(temp));
-				addUsersEmail2List(list, emails);
-			} 
-			else if(temp.indexOf("@") < 0) {
-				addUserEmail2List(temp, emails);
-			}
-			else if(temp.indexOf("@") > 0 && temp.indexOf(".") > 0) {
-				emails.add(temp);
-			}
-		}
-		receiver = new String[emails.size()];
-		receiver = emails.toArray(receiver);
-		
-		return receiver;
-	}
-	
-	private Long parseID(String temp) {
-		try {
-			return EasyUtils.obj2Long( temp.split("@")[0] );
-		} catch(Exception e) {
-			return 0L;
-		}
-	}
-	
-	private void addUserEmail2List(String loginName, Set<String> emails) {
-		try {
-			OperatorDTO user = loginService.getOperatorDTOByLoginName(loginName);
-			addUserEmail2List(user, emails);
-		} 
-		catch(Exception e) {
-		}
-	}
-	
-	private void addUserEmail2List(OperatorDTO user, Set<String> emails) {
-		String email = (String) user.getAttribute("email");
-		if( !EasyUtils.isNullOrEmpty(email) ) {
-			emails.add( email );
-		}
-	}
-	
-	private void addUsersEmail2List(List<OperatorDTO> list, Set<String> emails) {
-		for(OperatorDTO user : list) {
-			addUserEmail2List(user, emails);
-		}
-	}
-
 	/* 
 	 * jobConfig的格式为
 	 *  
@@ -139,7 +59,10 @@ public class ReportJob extends AbstractJob {
 		
 		// 收件人一致的定时报表合并起来发送
 		for(int i = 0; i < jobConfigs.length; i++) {
+			if(EasyUtils.isNullOrEmpty(jobConfigs[i])) continue;
+			
 			String reportInfo[] = EasyUtils.split(jobConfigs[i], ":");
+			if(reportInfo.length <= 2) continue;
 			
 			String receiverStr = reportInfo[2].trim();
 			ReceiverReports rr = map.get(receiverStr);
@@ -252,5 +175,86 @@ public class ReportJob extends AbstractJob {
 		
 		fileName = MimeUtility.encodeWord(fileName); // 使用MimeUtility.encodeWord()来解决附件名称的中文问题
 		messageHelper.addAttachment(MimeUtility.encodeWord(fileName), new File(exportPath));
+	}
+	
+	
+	/**
+	 * 收件人对报表的映射，当一组收件人对应多个报表时，将这些报表合并成一个邮件发送
+	 */
+	class ReceiverReports {
+		List<String> reportTitles = new ArrayList<String>();
+		List<SQLExcutor> reportResults = new ArrayList<SQLExcutor>();
+	}
+	
+	/**
+	 * 支持loginName，email，角色，用户组，辅助组、参数宏
+	 */
+	private String[] getEmails(String receiverStr) {
+		Map<String, Object> fmDataMap = new HashMap<String, Object>();
+		List<Param> macroParams = ParamManager.getComboParam(DMConstants.EMAIL_MACRO);
+		if(macroParams != null) {
+			for(Param p : macroParams) {
+				fmDataMap.put(p.getText(), p.getValue());
+			}
+		}
+		
+		receiverStr = MacrocodeCompiler.runLoop(receiverStr, fmDataMap, true);
+		String[] receiver = receiverStr.split(",");
+		
+		// 将登陆账号转换成该用户的邮箱
+		Set<String> emails = new HashSet<String>();
+		for(int j = 0; j < receiver.length; j++) {
+			String temp = receiver[j];
+			
+			// 判断配置的是否已经是email，如不是，作为loginName处理
+			if(temp.endsWith("@tssRole")) {
+				List<OperatorDTO> list = loginService.getUsersByRoleId(parseID(temp));
+				addUsersEmail2List(list, emails);
+			} 
+			else if(temp.endsWith("@tssGroup")) {
+				List<OperatorDTO> list = loginService.getUsersByGroupId(parseID(temp));
+				addUsersEmail2List(list, emails);
+			} 
+			else if(temp.indexOf("@") < 0) {
+				addUserEmail2List(temp, emails);
+			}
+			else if(temp.indexOf("@") > 0 && temp.indexOf(".") > 0) {
+				emails.add(temp);
+			}
+		}
+		receiver = new String[emails.size()];
+		receiver = emails.toArray(receiver);
+		
+		return receiver;
+	}
+	
+	private Long parseID(String temp) {
+		try {
+			return EasyUtils.obj2Long( temp.split("@")[0] );
+		} catch(Exception e) {
+			return 0L;
+		}
+	}
+	
+	private void addUserEmail2List(String loginName, Set<String> emails) {
+		try {
+			OperatorDTO user = loginService.getOperatorDTOByLoginName(loginName);
+			addUserEmail2List(user, emails);
+		} 
+		catch(Exception e) {
+		}
+	}
+	
+	private void addUserEmail2List(OperatorDTO user, Set<String> emails) {
+		String email = (String) user.getAttribute("email");
+		if( !EasyUtils.isNullOrEmpty(email) ) {
+			emails.add( email );
+		}
+	}
+	
+	private void addUsersEmail2List(List<OperatorDTO> list, Set<String> emails) {
+		for(OperatorDTO user : list) {
+			addUserEmail2List(user, emails);
+		}
 	}
 }

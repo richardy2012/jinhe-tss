@@ -1,22 +1,30 @@
 package com.jinhe.dm.record.ddl;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.dom4j.Document;
 
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.record.Record;
+import com.jinhe.tss.cache.Cacheable;
+import com.jinhe.tss.cache.JCache;
+import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
 
 public abstract class _Database {
+	
+	static Logger log = Logger.getLogger(_Database.class);
 	
 	String recordName;
 	String datasource;
@@ -228,5 +236,42 @@ public abstract class _Database {
 	
 	public List<Map<Object, Object>> getFields() {
 		return this.fields;
+	}
+	
+	public static String getDBType(String datasource) {
+		Pool connpool = JCache.getInstance().getPool(datasource);
+        Cacheable connItem = connpool.checkOut(0);
+        Connection conn = (Connection) connItem.getValue();
+        
+		try {
+			String driveName = conn.getMetaData().getDriverName();
+			log.debug(" database diverName: 【 " + driveName + "】。");
+			
+			for(String type : DB_TYPE) {
+				if (driveName.startsWith(type)) {
+		            return type;
+		        }
+			}
+		} catch (SQLException e) {
+		}
+        
+        return null;
+	}
+	
+	public static String[] DB_TYPE = new String[] {"MySQL", "Oracle"};
+	
+	public static _Database getDB(Record record) {
+		String type = getDBType(record.getDatasource());
+		return getDB(type, record);
+	}
+	
+	public static _Database getDB(String type, Record record) {
+		if(DB_TYPE[0].equals(type)) {
+			return new _MySQL(record);
+		}
+		if(DB_TYPE[1].equals(type)) {
+			return new _Oracle(record);
+		}
+		return null;
 	}
 }

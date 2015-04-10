@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.dm.record.ddl._Database;
-import com.jinhe.dm.record.ddl._MySQL;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.component.cache.CacheHelper;
@@ -41,7 +40,7 @@ public class _Recorder extends BaseActionSupport {
 		_Database _db;
 		if(cacheItem == null) {
 			Record record = recordService.getRecord(recordId);
-			cache.putObject(cacheKey, _db = new _MySQL(record));
+			cache.putObject(cacheKey, _db = _Database.getDB(record));
 		}
 		else{
 			_db = (_Database) cacheItem.getValue();

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jinhe.dm.record.ddl._Database;
-import com.jinhe.dm.record.ddl._MySQL;
 import com.jinhe.tss.util.EasyUtils;
 
 @Service("RecordService")
@@ -43,13 +42,13 @@ public class RecordServiceImpl implements RecordService {
             recordDao.create(record);
             
             if(Record.TYPE1 == record.getType()) {
-            	_Database _db = new _MySQL(record);
+            	_Database _db = _Database.getDB(record);
             	_db.createTable();
             }
         }
         else {
         	Record _old = recordDao.getEntity(record.getId());
-			_Database _db = new _MySQL(_old);
+			_Database _db = _Database.getDB(_old);
         	
         	recordDao.refreshEntity(record);
         	

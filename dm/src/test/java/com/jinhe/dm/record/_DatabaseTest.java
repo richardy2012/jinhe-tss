@@ -11,8 +11,6 @@ import org.junit.Test;
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.record.ddl._Database;
-import com.jinhe.dm.record.ddl._MySQL;
-import com.jinhe.dm.record.ddl._Oracle;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
@@ -40,16 +38,6 @@ public class _DatabaseTest {
 		testDB("Oracle", DMConstants.LOCAL_CONN_POOL); // 暂通过H2模拟
 	}
 	
-	private _Database getDB(String type, Record record) {
-		if("Oracle".equals(type)) {
-			return new _Oracle(record);
-		}
-		if("MySQL".equals(type)) {
-			return new _MySQL(record);
-		}
-		return null;
-	}
-	
 	private void testDB(String type, String datasource) {
 		String tblDefine = "[ {'label':'类型', 'code':'f1', 'type':'number', 'nullable':'false'}," +
         		"{'label':'名称', 'code':'f2', 'type':'string'}," +
@@ -60,7 +48,7 @@ public class _DatabaseTest {
 		record.setTable(type + "_tbl_2");
 		record.setDefine(tblDefine);
 		
-		_Database _db = getDB(type, record);
+		_Database _db = _Database.getDB(type, record);
 		_db.createTable();
 		
 		// test update table with change table name
