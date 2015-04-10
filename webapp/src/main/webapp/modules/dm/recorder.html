@@ -22,7 +22,6 @@
         position: fixed;
         right: 0;
         top: 1px;
-        z-index: 2;
     }
 
 </style>
@@ -197,6 +196,10 @@ function remove()  {
     }
 }
 
+function showQueryForm() {
+
+}
+
 // ------------------------------------------------- 多级下拉选择联动 ------------------------------------------------
 /*
  *  多级下拉选择联动
@@ -228,7 +231,7 @@ function getNextLevelOption(nextL, serviceID, currParam, currParamValue) {
           <td id="gridTitle">
             <span class="icon"></span><span id="rcTitle">资源列表</span>&nbsp;
             <input type="button" class="btStrong" value="新增" id="insertBT" onclick="showDetail(true)"/>&nbsp;
-            <input type="button" class="btStrong" value="刷新" id="refreshBT" onclick="loadGridData({}, 1)"/>
+            <input type="button" class="btStrong" value="查询" id="queryBT" onclick="showQueryForm()"/>
             <span class="buttonBox" id="gridToolBar"></span>
           </td>
         </tr>

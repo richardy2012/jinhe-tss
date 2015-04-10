@@ -1,5 +1,6 @@
 package com.jinhe.dm.record.ddl;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -26,7 +27,7 @@ public class _Util {
   		else if("date".equals(type) || "datetime".equals(type)) {
 			try {
 				Date dateObj = DateUtil.parse(value);
-				return new java.sql.Timestamp(dateObj.getTime());
+				return new Timestamp(dateObj.getTime());
 			} catch(Exception e) {
 				log.error("Date type param'value【" + value + "】  is wrong. " + e.getMessage());
 				return null;
@@ -36,4 +37,12 @@ public class _Util {
   			return value;
   		}
   	} 
+  	
+  	// oracle的TIMESTAMP类型的字段，转换为json时会报错，需要先转换为字符串
+  	public static Object preTreatValue(Object value) {
+  		if(value != null && value.getClass().getName().indexOf("oracle.sql.TIMESTAMP") >=0 ) {
+  			return value.toString();
+  		}
+  		return value;
+  	}
 }

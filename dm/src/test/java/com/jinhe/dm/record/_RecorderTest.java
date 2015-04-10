@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.TxTestSupport4DM;
@@ -32,9 +33,6 @@ public class _RecorderTest extends TxTestSupport4DM {
 		record.setTable("x_tbl_12");
 		record.setDefine(tblDefine);
 		
-		String customizeSQL = "select f1,f2,f3,createtime,creator,updatetime,updator,version,id from x_tbl_12 where creator = ?";
-		record.setCustomizeSQL(customizeSQL);
-		
 		recordService.saveRecord(record);
 		recordId = record.getId();
 	}
@@ -51,8 +49,10 @@ public class _RecorderTest extends TxTestSupport4DM {
 		
 		Assert.assertTrue(recorder.getDB(recordId).select().size() == 1);
 		
+		request = new MockHttpServletRequest();
+		request.addParameter("f2", "just test"); // test as query condition
 		recorder.showAsGrid(request, response, recordId, 1);
-		recorder.showAsJSON(recordId, 1);
+		recorder.showAsJSON(request, recordId, 1);
 		
 		recorder.delete(response, recordId, 1);
 		

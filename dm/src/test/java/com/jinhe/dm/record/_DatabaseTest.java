@@ -125,11 +125,22 @@ public class _DatabaseTest {
 		valuesMap.put("f4", "2015-04-05");
 		_db.insert(valuesMap);
 		
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("f2", "just test");
+		params.put("creator", UMConstants.ADMIN_USER_NAME);
+		result = _db.select(1, 10, params);
+		Assert.assertTrue(result.size() == 1);
+		
+		params.put("f2", "no test");
+		params.put("updator", UMConstants.ADMIN_USER_NAME);
+		result = _db.select(1, 10, params);
+		Assert.assertTrue(result.size() == 0);
+		
+		// test delete
 		result = _db.select();
 		Assert.assertTrue(result.size() == 1);
 		id = EasyUtils.obj2Int( result.get(0).get("id") );
 		
-		// test delete
 		_db.delete(id);
 		Assert.assertTrue(_db.select().size() == 0);
 	}

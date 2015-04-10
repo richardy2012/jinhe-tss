@@ -189,17 +189,7 @@ public class _Reporter extends BaseActionSupport {
         SQLExcutor excutor = reportService.queryReport(reportId, requestMap, 0, 0, getLoginUserId(requestMap));
         
         outputAccessLog(reportId, "showAsJson", requestMap, start);
-        
-        // oracle的TIMESTAMP类型的字段，转换为json时会报错，需要先转换为字符串
-        for(Map<String, Object> row : excutor.result){
-        	for(Map.Entry<String, Object> entry : row.entrySet()) {
-        		Object value = entry.getValue();
-				if(value != null && value.getClass().getName().indexOf("Timestamp") >=0 ) {
-        			row.put(entry.getKey(), value.toString());
-        		}
-        	}
-        }
-        
+ 
         // 如果定义了jsonpCallback参数，则为jsonp调用
         String jsonpCallback = request.getParameter("jsonpCallback");
 		if(jsonpCallback != null) {

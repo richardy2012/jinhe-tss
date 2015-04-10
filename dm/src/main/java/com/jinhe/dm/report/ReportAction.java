@@ -43,9 +43,26 @@ public class ReportAction extends BaseActionSupport {
     @Autowired private ReportService reportService;
     @Autowired private ILoginService loginService;
     
-    @RequestMapping("/all")
+    @RequestMapping("/")
     public void getAllReport(HttpServletResponse response) {
-	    // add 2014.12.17 检查用户的密码强度，太弱的话强制要求修改密码
+	    checkPwdSecurity();
+    	
+        List<?> list = reportService.getAllReport();
+        TreeEncoder treeEncoder = new TreeEncoder(list, new StrictLevelTreeParser(Report.DEFAULT_PARENT_ID));
+        print("SourceTree", treeEncoder);
+    }
+    
+    @RequestMapping("/{type}")
+    public void getReportsByType(HttpServletResponse response, @PathVariable("type") int type) {
+	    checkPwdSecurity();
+    	
+        List<?> list = reportService.getAllReport();
+        TreeEncoder treeEncoder = new TreeEncoder(list, new StrictLevelTreeParser(Report.DEFAULT_PARENT_ID));
+        print("SourceTree", treeEncoder);
+    }
+
+    // add 2014.12.17 检查用户的密码强度，太弱的话强制要求修改密码
+	private void checkPwdSecurity() {
     	Object strengthLevel = null;
     	try {
     		Long operatorId = Environment.getUserId();
@@ -57,11 +74,7 @@ public class ReportAction extends BaseActionSupport {
     	if(strengthLevel != null && EasyUtils.obj2Int(strengthLevel) <= PasswordRule.LOW_LEVEL) {
 			throw new BusinessException("您的密码过于简单，请点右上角【修改密码】菜单重置密码后，再进行访问！");
 		}
-    	
-        List<?> list = reportService.getAllReport();
-        TreeEncoder treeEncoder = new TreeEncoder(list, new StrictLevelTreeParser(Report.DEFAULT_PARENT_ID));
-        print("SourceTree", treeEncoder);
-    }
+	}
     
     @RequestMapping("/groups")
     public void getAllReportGroups(HttpServletResponse response) {

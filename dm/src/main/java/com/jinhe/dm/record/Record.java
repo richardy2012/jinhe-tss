@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -55,7 +56,7 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     @Column(name = "rctable")
     private String  table;  // 保存至哪个表
     
-    @Column(length = 2000)  
+    @Lob 
     private String define;  // 录入字段定义
     
     /** 定制的录入界面: 可以自己定制录入表单和展示表格 */
@@ -64,10 +65,6 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     /** 定制的JS方法： 用于校验，自动计算等  */
     @Column(length = 2000)  
     private String customizeJS;
-    
-    /** 定制的SQL, 查询出可供当前登陆账号查看、编辑、删除的记录集  */
-    @Column(length = 2000)  
-    private String customizeSQL;
    
     private String  remark; 
     
@@ -222,13 +219,5 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
 
 	public void setCustomizeJS(String customizeJS) {
 		this.customizeJS = customizeJS;
-	}
-
-	public String getCustomizeSQL() {
-		return customizeSQL;
-	}
-
-	public void setCustomizeSQL(String customizeSQL) {
-		this.customizeSQL = customizeSQL;
 	}
 }

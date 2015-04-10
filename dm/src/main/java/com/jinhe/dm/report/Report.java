@@ -49,10 +49,10 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
     @Column(length = 100, nullable = false)
     private String  name;       // 展示名称
     
-    @Column(length = 2000)  
+    @Column(length = 4000)  
     private String  script;     // SQL
     
-    @Column(length = 1000)  
+    @Column(length = 2000)  
     private String  param;      // 参数配置
     
     private String  datasource; // 单独为报表指定数据源

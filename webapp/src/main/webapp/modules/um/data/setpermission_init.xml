@@ -11,12 +11,15 @@
 			</declare>
 			<layout>
 				<TR>
-					<TD width="50"><label binding="applicationId"/></TD>
-					<TD width="150"><input binding="applicationId"/></TD>
-					<TD width="50"><label binding="resourceType"/></TD>
-					<TD width="150"><input binding="resourceType"/></TD>
-					<TD width="50"><label binding="permissionRank"/></TD>
-					<TD width="150"><input binding="permissionRank"/></TD>
+					<TD><label binding="applicationId"/></TD>
+					<TD><input binding="applicationId"/></TD>
+					
+					<TD><label binding="resourceType"/></TD>
+					<TD><input binding="resourceType"/></TD>
+					
+					<TD><label binding="permissionRank"/></TD>
+					<TD><input binding="permissionRank"/></TD>
+					
 					<TD><input type="button" class="btWeak" value="查询" id="page3BtSearch"/></TD>
 				</TR>
 			</layout>

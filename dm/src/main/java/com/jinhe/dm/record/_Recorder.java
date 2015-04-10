@@ -63,7 +63,8 @@ public class _Recorder extends BaseActionSupport {
             @PathVariable("page") int page) {
  
         _Database _db = getDB(recordId);
-        List<Map<String, Object>> result = _db.select(page, PAGE_SIZE);
+        
+        List<Map<String, Object>> result = _db.select(page, PAGE_SIZE, getRequestMap(request));
         
         List<IGridNode> temp = new ArrayList<IGridNode>();
 		for(Map<String, Object> item : result) {
@@ -83,9 +84,11 @@ public class _Recorder extends BaseActionSupport {
     
     @RequestMapping("/json/{recordId}/{page}")
     @ResponseBody
-    public List<Map<String, Object>> showAsJSON(@PathVariable("recordId") Long recordId, @PathVariable("page") int page) {
+    public List<Map<String, Object>> showAsJSON(HttpServletRequest request, 
+    		@PathVariable("recordId") Long recordId, @PathVariable("page") int page) {
+    	
         _Database _db = getDB(recordId);
-        return _db.select(page, PAGE_SIZE);
+        return _db.select(page, PAGE_SIZE, getRequestMap(request));
     }
 	
     @RequestMapping(value = "/{recordId}", method = RequestMethod.POST)

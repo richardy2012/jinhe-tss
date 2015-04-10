@@ -44,9 +44,9 @@ public class _Oracle extends _Database {
 			createDDL.append( ", " );
    		}
    		
-   		createDDL.append("createtime TIMESTAMP NOT NULL, ");
+   		createDDL.append("createtime date NOT NULL, ");
 		createDDL.append("creator varchar(50) NOT NULL, ");
-		createDDL.append("updatetime TIMESTAMP null, ");
+		createDDL.append("updatetime date null, ");
 		createDDL.append("updator varchar(50), ");
 		createDDL.append("version NUMBER(5), ");
    		createDDL.append("id NUMBER(11) not null");

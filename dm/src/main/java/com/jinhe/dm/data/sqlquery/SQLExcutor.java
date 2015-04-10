@@ -20,6 +20,7 @@ import java.util.StringTokenizer;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
+import com.jinhe.dm.record.ddl._Util;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
@@ -256,7 +257,8 @@ public class SQLExcutor {
 						}
 	                }
 	                
-	                rowData.put(columnName, rs.getObject(index));
+	                Object value = rs.getObject(index);
+					rowData.put(columnName, _Util.preTreatValue(value));
                 }
 
                 result.add(rowData);

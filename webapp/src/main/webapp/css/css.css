@@ -33,13 +33,6 @@ div.groove { border-left: 1px solid #D1D1D1; border-top: 1px solid #D1D1D1; padd
 .panel .body td.groove #ws .hastree { vertical-align: top; }
 
 .panel .body td.groove { position: relative; }
-.panel .body td.groove .hiddenWS {
-    display: none;
-    position: absolute;
-    bottom: 0px;
-    min-height: 100px;
-    z-index: 100;
-}
 .panel .body td.groove WorkSpace\:Page { border: 0; }
 .panel .body td.groove #gridContainer, .gridContainer { vertical-align: top; }
 
@@ -99,3 +92,11 @@ WorkSpace\:Page .Tree a, WorkSpace\:Page .Tree a.hover { border: 1px solid #F7F8
 
 #importDiv {border:1px solid #98989C; background-color: #E7E7E7;}
 #importDiv input[type='button'] { padding: 0 10px 0 10px; margin-left: 30px;}
+
+.hiddenWS {
+    display: none;
+    position: absolute;
+    bottom: 0px;
+    min-height: 100px;
+    z-index: 100;
+}

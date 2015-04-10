@@ -2,6 +2,7 @@ package com.jinhe.dm.record.ddl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,14 +36,11 @@ public abstract class _Database {
 	List<String> fieldTypes;
 	List<String> fieldNames;
 	
-	String customizeSQL;
-	
 	public _Database(Record record) {
 		this.recordName = record.getName();
 		this.datasource = record.getDatasource();
 		this.table = record.getTable();
 		this.fields = parseJson(record.getDefine());
-		this.customizeSQL = record.getCustomizeSQL();
 		this.initFieldCodes();
 	}
 	
@@ -91,7 +89,6 @@ public abstract class _Database {
 	public void updateTable(Record _new) {
 		String datasource = _new.getDatasource();
 		String table = _new.getTable();
-		this.customizeSQL = _new.getCustomizeSQL();
 		
 		if(!datasource.equals(this.datasource) || !table.equals(this.table)) {
 			this.datasource = datasource;
@@ -156,7 +153,7 @@ public abstract class _Database {
 			valueTags += "?,";
 			fieldTags += field + ",";
 		}
-		paramsMap.put(++index, new Date());
+		paramsMap.put(++index, new Timestamp(new Date().getTime())); 
 		paramsMap.put(++index, Environment.getUserCode());
 		paramsMap.put(++index, 0);
 		
@@ -196,17 +193,33 @@ public abstract class _Database {
 	}
 	
 	public List<Map<String, Object>> select() {
-		 return this.select(1, 100);
+		 return this.select(1, 100, new HashMap<String, String>());
 	}
 
-	public List<Map<String, Object>> select(int page, int pagesize) {
+	public List<Map<String, Object>> select(int page, int pagesize, Map<String, String> params) {
 		Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
 		paramsMap.put(1, Environment.getUserCode());
 		
-		String selectSQL = !EasyUtils.isNullOrEmpty(this.customizeSQL) ? this.customizeSQL :
-				"select " + EasyUtils.list2Str(this.fieldCodes) + 
+		String condition = "";
+		if(params != null) {
+			for(String key : params.keySet()) {
+				String value = params.get(key);
+				if(EasyUtils.isNullOrEmpty(value)) continue;
+				
+				if(this.fieldCodes.contains(key) || "updator".equals(key)) {
+					condition += " and " + key + " = ? ";
+					paramsMap.put(paramsMap.size() + 1, value);
+				}
+				
+				if( "creator".equals(key) ) {
+					paramsMap.put(1, value); // 替换登录账号，允许查询其它创建的数据
+				}
+			}
+		}
+		
+		String selectSQL = "select " + EasyUtils.list2Str(this.fieldCodes) + 
 					",createtime,creator,updatetime,updator,version,id from " + this.table + 
-					" where creator = ? order by id desc ";
+					" where creator = ? " + condition + " order by id desc ";
 		
 		SQLExcutor ex = new SQLExcutor(false);
 		ex.excuteQuery(selectSQL, paramsMap, page, pagesize, this.datasource);
@@ -253,12 +266,15 @@ public abstract class _Database {
 		        }
 			}
 		} catch (SQLException e) {
-		}
+			
+		} finally {
+            connpool.checkIn(connItem); // 返回连接到连接池
+        }
         
         return null;
 	}
 	
-	public static String[] DB_TYPE = new String[] {"MySQL", "Oracle"};
+	public static String[] DB_TYPE = new String[] {"MySQL", "Oracle", "H2"};
 	
 	public static _Database getDB(Record record) {
 		String type = getDBType(record.getDatasource());
@@ -269,9 +285,11 @@ public abstract class _Database {
 		if(DB_TYPE[0].equals(type)) {
 			return new _MySQL(record);
 		}
-		if(DB_TYPE[1].equals(type)) {
+		else if(DB_TYPE[1].equals(type)) {
 			return new _Oracle(record);
 		}
-		return null;
+		else {
+			return new _H2(record);
+		}
 	}
 }
