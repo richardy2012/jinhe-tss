@@ -54,8 +54,8 @@ div.groove { border-left: 1px solid #D1D1D1; border-top: 1px solid #D1D1D1; padd
 .btStrongS { color: #2F2469; width: 18px; height: 18px; border: 0; background-image: url(../images/button/strong_short.gif); }
 .btStrongL { color: #2F2469; width: 90px; height: 18px; border: 0; background-image: url(../images/button/strong_long.gif); }
 
-.loading { width:53px; height:20px;	background-image:url(../images/loading.gif); background-repeat:no-repeat; background-position:3px 3px; }
-.separator { height:6px; background-image:url(../images/sep_line.gif);background-repeat:repeat-x;background-position: center;overflow: hidden;}
+.loading { width:53px; height:20px;	background:url(../images/loading.gif) no-repeat 3px 3px; }
+.separator { height:6px; background:url(../images/sep_line.gif) repeat-x center; overflow: hidden;}
 
 .l { border-left:  1px solid #98989C; }
 .t { border-top:   1px solid #98989C; }
@@ -73,7 +73,7 @@ WorkSpace\:Page .Tree a, WorkSpace\:Page .Tree a.hover { border: 1px solid #F7F8
 #infoBox   {  width:280px; padding-top:10px; font-size:14px; font-weight:bold; overflow:hidden; display:inline-block;}
 #detailBox {  width:99%; height:120px; line-height:18px; margin-top:5px; padding-top:5px; display:none; }
 #bt_showDetail { display:none; position:absolute; right:3px; bottom:0px; height:20px; }
-#alertIcon { display:inline-block; width:32px; height:32px; background-image:url(../images/icon_alert.gif); background-repeat:no-repeat;}
+#alertIcon { display:inline-block; width:32px; height:35px; background:url(../images/icon_alert.gif) no-repeat bottom;}
 
 /* relogin相关 */
 #relogin_box { width:260px;  padding:10px; }
@@ -90,13 +90,26 @@ WorkSpace\:Page .Tree a, WorkSpace\:Page .Tree a.hover { border: 1px solid #F7F8
 .dialog .bts input { margin-right:10px; }
 .dialog h2 { width:100%; height:25px; line-height:25px; font-size:14px; background:#CC9900; color:#FFFFFF; text-indent:15px;}
 
-#importDiv {border:1px solid #98989C; background-color: #E7E7E7;}
-#importDiv input[type='button'] { padding: 0 10px 0 10px; margin-left: 30px;}
-
 .hiddenWS {
     display: none;
     position: absolute;
     bottom: 0px;
     min-height: 100px;
     z-index: 100;
+}
+
+#importDiv {border:1px solid #98989C; background-color: #E7E7E7; height: 260px; width: 276px; padding:10px;}
+#importDiv input[type='button'] { margin-left: 40px; margin-top: 5px; }
+#importDiv h2 { font-size: 20px; position: absolute; z-index: 2; }
+.fileUpload {
+	height: 236px; width: 256px;
+	position: relative;
+	background: url(../images/upload.png);
+}
+.fileUpload input[type='file'] {
+	height: 236px; width: 256px;
+	overflow: hidden;
+	position: absolute;
+	cursor: pointer;
+	opacity:0; filter:alpha(opacity=0);
 }
