@@ -212,7 +212,7 @@ public abstract class _Database {
 				}
 				
 				if( "creator".equals(key) ) {
-					paramsMap.put(1, value); // 替换登录账号，允许查询其它创建的数据
+					paramsMap.put(1, value); // 替换登录账号，允许查询其它创建的数据; TODO 增加权限控制，针对特定权限开发查看他人录入数据
 				}
 			}
 		}

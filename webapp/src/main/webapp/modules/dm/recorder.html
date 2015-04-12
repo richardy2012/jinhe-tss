@@ -14,6 +14,7 @@
 <script src="../../tools/tssUtils.js"></script>
 
 <style type="text/css">
+    body { overflow-x:auto; }
 
     #ws {
         width: 40%;
@@ -26,7 +27,7 @@
     }
 
     #page1Form {
-        height: 80%;
+        height: 85%;
         overflow: auto; 
     }
 
@@ -83,7 +84,7 @@ function init() {
     });
 
     loadGridData({}, 1); 
-    $("#rcTitle").html(recordName + "列表");
+    $("#rcTitle").html("【" + recordName + "】");
 }
 
 function initMenus() {
@@ -152,15 +153,7 @@ function loadDetailData(rowID) {
         });
     }
 
-    var buttonBox = [];
-    buttonBox[buttonBox.length] = '<TR>';
-    buttonBox[buttonBox.length] = "  <TD colspan='2' height='46'><div class='buttonBox'>";
-    buttonBox[buttonBox.length] = '    <input type="button" class="btStrong" value="完成" id="page1BtSave"/> - ';
-    buttonBox[buttonBox.length] = '    <input type="button" class="btWeak" value="取消" id="page1BtCancel"/>';
-    buttonBox[buttonBox.length] = '  </div></TD>';
-    buttonBox[buttonBox.length] = '</TR>';
-
-    var xform = $.json2Form("page1Form", recordDefine, buttonBox.join(""));
+    var xform = $.json2Form("page1Form", recordDefine);
 
     $.cache.XmlDatas[rowID] = xform.template.dataNode;
 
@@ -200,19 +193,19 @@ function saveSource(rowID) {
 }
 
 function remove()  { 
-	$.confirm("您确定要删除该行记录吗？", "删除确认", function(){
-		var grid = $.G("grid");
-	    var rowID  = grid.getColumnValue("id");
-	    if( rowID ) {
-	        $.ajax({
-	            url : URL_DELETE_SOURCE + recordId + "/" + rowID,
-	            method : "DELETE",
-	            onsuccess : function() { 
-	                grid.deleteSelectedRow();
-	            }
-	        }); 
-	    }
-	});
+    $.confirm("您确定要删除该行记录吗？", "删除确认", function(){
+        var grid = $.G("grid");
+        var rowID  = grid.getColumnValue("id");
+        if( rowID ) {
+            $.ajax({
+                url : URL_DELETE_SOURCE + recordId + "/" + rowID,
+                method : "DELETE",
+                onsuccess : function() { 
+                    grid.deleteSelectedRow();
+                }
+            }); 
+        }
+    });
 }
 
 function showQueryForm() {
@@ -246,6 +239,8 @@ function showQueryForm() {
             paramsConfig.push(copy);
         }
     });
+    paramsConfig.push({"label": "创建人", "name": "p_creator"});
+    paramsConfig.push({"label": "修改人", "name": "p_updator"});
 
     var searchForm = $.json2Form("searchForm", paramsConfig, buttonBox.join(""));
 
@@ -285,7 +280,7 @@ function showQueryForm() {
 function getNextLevelOption(nextL, serviceID, currParam, currParamValue) {
     if(nextL == null || serviceID == null || currParam == null || $.isNullOrEmpty(currParamValue)) return;
 
-	var dreg = /^[1-9]+[0-9]*]*$/;
+    var dreg = /^[1-9]+[0-9]*]*$/;
 
     // serviceID maybe is ID of record, maybe a serviceUrl
     var url = dreg.test(serviceID) ? '../../data/json/' + serviceID : serviceID;
@@ -317,6 +312,11 @@ function getNextLevelOption(nextL, serviceID, currParam, currParamValue) {
     <WorkSpace:Box id="ws" class="hiddenWS">
         <WorkSpace:Page id="page1">
             <div id="page1Form" editable="true"></div>
+            <WorkSpace:PageStep>
+                <br>
+                <input type="button" class="btStrong" value="完成" id="page1BtSave"/>&nbsp;
+                <input type="button" class="btWeak" value="取消" id="page1BtCancel"/>
+            </WorkSpace:PageStep>
         </WorkSpace:Page>
     </WorkSpace:Box>
 

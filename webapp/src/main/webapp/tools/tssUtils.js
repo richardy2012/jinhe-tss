@@ -63,14 +63,14 @@ function initPaletteResize() {
 }
 
 function closePalette() {
-	$("#palette").hide();
+	$("#palette").hide().removeClass("opend");;
 	$("#paletteOpen").show();
 	$(".panel .header>td:nth-child(2)").hide();
 	$(".panel .footer>td:nth-child(2)").hide();
 }
 
 function openPalette() {
-	$("#palette").show();
+	$("#palette").show().addClass("opend");
 	$("#paletteOpen").hide();
 	$(".panel .header>td:nth-child(2)").show();
 	$(".panel .footer>td:nth-child(2)").show();
@@ -91,6 +91,7 @@ function initEvents() {
 	window.onresize();
 
 	/* 点击左栏控制按钮 */
+	$("#palette").addClass("opend");
 	var paletteOpen = $("#paletteOpen");
 	var paletteClose = $("#paletteClose");
 
@@ -103,7 +104,13 @@ function initEvents() {
 		paletteOpen.click(openPalette);
 	} 
 	else if( paletteClose.length ) {
-		$.leftbar(openPalette, openPalette);
+		$.leftbar(function(){
+			if($("#palette").hasClass("opend")){
+				closePalette();
+			} else {
+				openPalette();
+			}
+		});
 	}
 
 	// 关闭页面自动注销

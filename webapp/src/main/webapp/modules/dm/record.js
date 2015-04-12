@@ -48,12 +48,19 @@ function initMenus() {
 		icon: ICON + "icon_edit.gif",
 		visible:function() {return isRecord() && getOperation("1");}
 	}
-	var item2 = {
+	var item21 = {
+		label:"修改分组",
+		callback: function() {
+			loadRecordDetail(false, "0");
+		},
+		visible:function() { return isRecordGroup() && getOperation("2"); }
+	}
+	var item22 = {
 		label:"修改录入表",
 		callback: function() {
 			loadRecordDetail(false, "1");
 		},
-		visible:function() { return !isTreeRoot() && getOperation("2"); }
+		visible:function() { return isRecord() && getOperation("2"); }
 	}
 	var item3 = {
 		label:"新增录入表",
@@ -71,7 +78,7 @@ function initMenus() {
 		visible:function() {return (isRecordGroup() || isTreeRoot()) && getOperation("2");}
 	}
 	var item5 = {
-		label:"删除录入表",
+		label:"删除",
 		callback:deleteRecord,
 		icon: ICON + "icon_del.gif",
 		visible:function() {return !isTreeRoot() && getOperation("3");}
@@ -80,13 +87,13 @@ function initMenus() {
 		label:"移动到",
 		callback:moveRecord,
 		icon: ICON + "icon_move.gif",
-		visible:function() {return !isTreeRoot() && getOperation("2");}
+		visible:function() {return isRecord() && getOperation("2");}
 	}
 	var item7 = {
         label:"授予角色",
         icon:"../um/" + ICON + "role_permission.gif",
         callback:setRole2Permission,   
-        visible:function() {return !isTreeRoot() && getOperation("2");}
+        visible:function() {return getOperation("2");}
     }
 
 	var menu = new $.Menu();
@@ -94,7 +101,8 @@ function initMenus() {
 	menu.addSeparator();
 	menu.addItem(item3);
 	menu.addItem(item4);
-	menu.addItem(item2);
+	menu.addItem(item21);
+	menu.addItem(item22);
 	menu.addItem(item5);
 	menu.addItem(item6);
 	menu.addSeparator();
@@ -233,7 +241,7 @@ function showRecord() {
 	globalValiable.id = treeNode.id;
 	globalValiable.name  = treeNode.name;
 
-	// closePalette(); // 关闭左栏
+	closePalette(); // 关闭左栏
 	$("#recordFormDiv").hide();
     closeDefine();
 
@@ -246,7 +254,7 @@ function showRecord() {
 function setRole2Permission() {
     var treeNode = getActiveTreeNode();
     globalValiable = {};
-    globalValiable.roleId = treeNode.id;
+    globalValiable.roleId = treeNode.id == '_root' ? "0" : treeNode.id;
     globalValiable.resourceType = "D2";
     globalValiable.applicationId = "tss";
     globalValiable.isRole2Resource = "0";

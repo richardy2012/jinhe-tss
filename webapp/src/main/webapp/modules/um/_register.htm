@@ -14,7 +14,7 @@
 <style>
 
 	body { margin: 3px; font-size: 12px; background-color:#E7E7E7; overflow:hidden; }
-	.dialog { width:550px; height:200px; position:relative; overflow:hidden; padding:10px; top:0; }
+	.dialog { width:440px; height:250px; position:relative; overflow:hidden; padding:10px; top:0; }
 
 </style>
 
@@ -77,6 +77,11 @@
     /* 检测注册表单是否填写正确 */
     function checkRegisterForm(){
         var flag = true;
+
+		if( !registerForm.checkForm()) {
+			flag = false;
+			return;
+		}
 
         var password1 = $1("password").value; 
         var password2 = $1("password2").value; 

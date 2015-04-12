@@ -90,12 +90,13 @@ public class ReportAction extends BaseActionSupport {
 		int index = 1;
  		for (File file : files) {
 			String treeName = "../" + rtd.substring(8);
-			if( !file.getParent().equals(reportTLDir) ) {
-				treeName +=  "/" + file.getParent();
+			File parentFile = file.getParentFile();
+			if( !parentFile.equals(reportTLDir) ) {
+				treeName +=  "/" + parentFile.getName();
 			}
 			treeName +=  "/" + file.getName();
 			
-			sb.append("<treeNode id=\"").append(index++).append("\" name=\"").append(treeName).append("/>");
+			sb.append("<treeNode id=\"").append(index++).append("\" name=\"").append(treeName).append("\"/>");
 		}
  		
  		// dm/template 下
@@ -103,7 +104,7 @@ public class ReportAction extends BaseActionSupport {
  		files = FileHelper.listFilesByTypeDeeply("html", reportTLDir);
  		for (File file : files) {
 			String treeName = "../dm/template/" + file.getName();
-			sb.append("<treeNode id=\"").append(index++).append("\" name=\"").append(treeName).append("/>");
+			sb.append("<treeNode id=\"").append(index++).append("\" name=\"").append(treeName).append("\"/>");
 		}
 		
         print("SourceTree", sb);

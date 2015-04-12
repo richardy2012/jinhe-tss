@@ -15,6 +15,8 @@
     body { background-color: #fff; }
     .dialog { border:0px solid #98989C; background-color:#fff; overflow:auto; padding:5px;}
 
+    .dialog Tree { height: 220px; }
+
     .operation {height: 30px; vertical-align:bottom; padding-top: 3px;}
     .operation span { width:20px; height:18px; display: inline-block; padding-left:3px; background-repeat:no-repeat;} 
     .operation .download {background-image:url(images/icon_download.gif); }
@@ -128,38 +130,38 @@
         }
 
         $.confirm("您确定要删除选中的文件吗？", "删除确认", function(){
-			var fileNames = [];
-	        var folderNames = [];
-	        checkedNodes.each(function(i, node){
-	            var name = node.name;
-	            var isFolder = node.getAttribute("isFolder");
-	            if ("-1" != node.id) {
-	                if ("1" == isFolder) {
-	                    folderNames.push(name);
-	                } else {
-	                    fileNames.push(name);
-	                }
-	            }
-	        });
-	 
-	        if ( fileNames.length == 0 && folderNames.length == 0 ) {
-	            return;
-	        }
-	
-	        var contextPath = $1("contextPath").value;
-	        $.ajax({
-	            url: URL_DEL_FILES,
-	            method: "DELETE",
-	            params: {
-	                "contextPath": contextPath,
-	                "fileNames": fileNames.join(","),
-	                "folderNames": folderNames.join(",")
-	            },
-	            onsuccess: function() {
-	                removeTreeNode($.T("tree"), ["-1"]);
-	            }
-	        });
-		});
+            var fileNames = [];
+            var folderNames = [];
+            checkedNodes.each(function(i, node){
+                var name = node.name;
+                var isFolder = node.getAttribute("isFolder");
+                if ("-1" != node.id) {
+                    if ("1" == isFolder) {
+                        folderNames.push(name);
+                    } else {
+                        fileNames.push(name);
+                    }
+                }
+            });
+     
+            if ( fileNames.length == 0 && folderNames.length == 0 ) {
+                return;
+            }
+    
+            var contextPath = $1("contextPath").value;
+            $.ajax({
+                url: URL_DEL_FILES,
+                method: "DELETE",
+                params: {
+                    "contextPath": contextPath,
+                    "fileNames": fileNames.join(","),
+                    "folderNames": folderNames.join(",")
+                },
+                onsuccess: function() {
+                    removeTreeNode($.T("tree"), ["-1"]);
+                }
+            });
+        });
     }
 
     /* 重命名资源文件  */
@@ -180,8 +182,8 @@
 
         var name = selectNode.name;
         $.prompt("请输入新的文件（夹）名称", "信息输入", function(newName) {
- 			if ( $.isNullOrEmpty(newName) ) return alert("名称不能为空。");
- 			
+            if ( $.isNullOrEmpty(newName) ) return alert("名称不能为空。");
+            
             var contextPath = $1("contextPath").value;
             $.ajax({
                 url: URL_RENAME_FILE,
@@ -195,7 +197,7 @@
                     modifyTreeNode(id, "name", newName);
                 }
             });
-		}, name);
+        }, name);
         
         
     }
@@ -227,14 +229,14 @@
         url += "&folderNames=" + folderNames.join(",");
 
         var frameName = createExportFrame();
-   		$1(frameName).setAttribute("src", url);
+        $1(frameName).setAttribute("src", url);
     }
 
     /* 新建文件夹  */
     function addFolder() {
         $.prompt("请输入新的文件夹名称", "信息输入", function(name) {
- 			if ( $.isNullOrEmpty(name) ) return alert("名称不能为空。");;
- 			
+            if ( $.isNullOrEmpty(name) ) return alert("名称不能为空。");;
+            
             var contextPath = $1("contextPath").value;
             $.ajax({
                 url: URL_RENAME_FILE,
@@ -247,7 +249,7 @@
                     loadFileTree(contextPath);
                 }
             });
-		});
+        });
     }
 
     /* 过滤文件  */

@@ -15,7 +15,7 @@
 
   body { margin: 3px; font-size: 12px; background-color:#E7E7E7; overflow:hidden; }
 
-  .dialog { width:300px;height:200px;position:relative;overflow:hidden; padding:10px; top:0; }
+  .dialog { width:440px;height:250px;position:relative;overflow:hidden; padding:10px; top:0; }
 
 </style>
 
@@ -34,46 +34,46 @@
     URL_FORGET = NO_AUTH_PATH + "getPassword.in";
     URL_RESET  = NO_AUTH_PATH + "resetPassword.in";
 
-	if( IS_TEST ) {
-		URL_INIT   = "data/_forget_init.xml";
-		URL_FORGET = "data/_forget.xml";
-		URL_RESET  = "data/_success.xml";
-	}
+    if( IS_TEST ) {
+        URL_INIT   = "data/_forget_init.xml";
+        URL_FORGET = "data/_forget.xml";
+        URL_RESET  = "data/_success.xml";
+    }
 
-	var forgetForm;
+    var forgetForm;
 
     function init() {
-		$.ajax({
-			url : URL_INIT,
-			headers : {"appCode": FROMEWORK_CODE, "anonymous": "true"},
-			onresult : function() { 
-				var forgetXML = this.getNodeValue(XML_FORGET_INFO);
-				$.cache.XmlDatas[CACHE_FORGET_INFO] = forgetXML;
-				forgetForm = $.F("forgetForm", forgetXML);
+        $.ajax({
+            url : URL_INIT,
+            headers : {"appCode": FROMEWORK_CODE, "anonymous": "true"},
+            onresult : function() { 
+                var forgetXML = this.getNodeValue(XML_FORGET_INFO);
+                $.cache.XmlDatas[CACHE_FORGET_INFO] = forgetXML;
+                forgetForm = $.F("forgetForm", forgetXML);
 
                 $1("password").disabled = "disabled";
                 $1("repassword").disabled = "disabled";
                 $1("resetBT").style.visibility = "hidden";
-			}
-		});
+            }
+        });
     }
     
-	// 如果用户输入的密码问题答案正确，则返回该用户的UserID并允许其重新设置新密码
+    // 如果用户输入的密码问题答案正确，则返回该用户的UserID并允许其重新设置新密码
     function getPassword() {
-		$.ajax({
-			url : URL_FORGET,
-			headers : {"appCode": FROMEWORK_CODE, "anonymous": "true"},
-			formNode : $.cache.XmlDatas[CACHE_FORGET_INFO].querySelector("data"),
-			onresult : function() { 
-				var userID = this.getNodeValue(XML_USER_ID);
-				forgetForm.updateDataExternal("userId", userID);
+        $.ajax({
+            url : URL_FORGET,
+            headers : {"appCode": FROMEWORK_CODE, "anonymous": "true"},
+            formNode : $.cache.XmlDatas[CACHE_FORGET_INFO].querySelector("data"),
+            onresult : function() { 
+                var userID = this.getNodeValue(XML_USER_ID);
+                forgetForm.updateDataExternal("userId", userID);
 
-				// 显示设置新密码
+                // 显示设置新密码
                 $1("password").disabled = "";
                 $1("repassword").disabled = "";
                 $1("resetBT").style.visibility = "visible";
-			}
-		});
+            }
+        });
     }
 
     /* 检测注册表单是否填写正确。点击“找回”按钮的时候触发 */
@@ -82,7 +82,7 @@
         if( false == forgetForm.checkForm()) {
             flag = false;
         }
-		else {
+        else {
             var loginName = forgetForm.getData("loginName")||"";
             var question  = forgetForm.getData("passwordQuestion")||"";
             var answer    = forgetForm.getData("passwordAnswer")||"";
@@ -107,7 +107,7 @@
             flag = false;
             forgetForm.showCustomErrorInfo("repassword", "两次密码输入不一致，请重新输入");
         }
-		else if(null == password || "" == password) {
+        else if(null == password || "" == password) {
             flag = false;
             forgetForm.showCustomErrorInfo("password", "密码不能为空");
         }
@@ -116,15 +116,15 @@
 
     /* 设置新密码 */
     function setNewPassword() {
-		$.ajax({
-			url : URL_RESET,
-			headers: {"appCode": FROMEWORK_CODE, "anonymous": "true"},
-			params : {"type": "reset"},
-			formNode : $.cache.XmlDatas[CACHE_FORGET_INFO].querySelector("data"),
-			onsuccess : function() { 
-				window.close();
-			}
-		});
+        $.ajax({
+            url : URL_RESET,
+            headers: {"appCode": FROMEWORK_CODE, "anonymous": "true"},
+            params : {"type": "reset"},
+            formNode : $.cache.XmlDatas[CACHE_FORGET_INFO].querySelector("data"),
+            onsuccess : function() { 
+                window.close();
+            }
+        });
     }
 
     window.onload = init;
@@ -137,7 +137,7 @@
 <body>
 
     <div class="dialog">
-    	<div id="forgetForm"></div>
+        <div id="forgetForm"></div>
     </div>
 
 </body>

@@ -45,7 +45,7 @@ div.groove { border-left: 1px solid #D1D1D1; border-top: 1px solid #D1D1D1; padd
 #palette>div .bar .paletteSwitch, #gridTitle .paletteSwitch { position: absolute; top: 1px; width: 18px; height: 18px; cursor: hand;}
 #paletteClose { background: url(../images/panel/palette_opened.gif) no-repeat; right: 0px;}
 #paletteOpen  { background: url(../images/panel/palette_closed.gif) no-repeat; left: 0px;}
-#palette #tree { background-color: #fff; height:auto; min-height:90%; max-width： 285px; }
+#palette #tree { background-color: #fff; height:auto; min-height:90%; max-width:285px; }
 
 .btWeak    { color: #403756; width: 50px; height: 18px; border: 0; background-image: url(../images/button/weak.gif); }
 .btWeakS   { color: #403756; width: 18px; height: 18px; border: 0; background-image: url(../images/button/weak_short.gif); }
