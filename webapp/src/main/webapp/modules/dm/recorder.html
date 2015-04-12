@@ -181,19 +181,19 @@ function saveSource(rowID) {
 }
 
 function remove()  { 
-    if( !confirm("您确定要删除该行记录吗？") ) return;
-        
-    var grid = $.G("grid");
-    var rowID  = grid.getColumnValue("id");
-    if( rowID ) {
-        $.ajax({
-            url : URL_DELETE_SOURCE + recordId + "/" + rowID,
-            method : "DELETE",
-            onsuccess : function() { 
-                grid.deleteSelectedRow();
-            }
-        }); 
-    }
+	$.confirm("您确定要删除该行记录吗？", "删除确认", function(){
+		var grid = $.G("grid");
+	    var rowID  = grid.getColumnValue("id");
+	    if( rowID ) {
+	        $.ajax({
+	            url : URL_DELETE_SOURCE + recordId + "/" + rowID,
+	            method : "DELETE",
+	            onsuccess : function() { 
+	                grid.deleteSelectedRow();
+	            }
+	        }); 
+	    }
+	});
 }
 
 function showQueryForm() {

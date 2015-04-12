@@ -155,9 +155,9 @@
 	}
 
 	function deleteAttachment() {
-		if( !confirm("您确定要删除吗？") ) return;
-        
-		$.G("attachGrid").deleteSelectedRow();
+		$.confirm("您确定要删除该附件吗？", "删除确认", function(){
+			$.G("attachGrid").deleteSelectedRow();
+		});
 	}
 
 	function initGridMenu() { 

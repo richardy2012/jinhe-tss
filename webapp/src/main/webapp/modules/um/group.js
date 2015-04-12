@@ -249,20 +249,20 @@
     }
 
     function delelteUser() {
-        if( !confirm("您确定要删除该行记录吗？") ) return;
-        
-        var grid = $.G("grid");
-        var userID  = grid.getColumnValue("id");
-        var groupId = grid.getColumnValue("groupId");
-        if( userID ) {
-            $.ajax({
-                url : URL_DEL_USER + groupId + "/" + userID,
-                method : "DELETE",
-                onsuccess : function() { 
-                    grid.deleteSelectedRow();
-                }
-            }); 
-        }
+	    $.confirm("您确定要删除该用户记录吗？", "删除确认", function(){
+			var grid = $.G("grid");
+	        var userID  = grid.getColumnValue("id");
+	        var groupId = grid.getColumnValue("groupId");
+	        if( userID ) {
+	            $.ajax({
+	                url : URL_DEL_USER + groupId + "/" + userID,
+	                method : "DELETE",
+	                onsuccess : function() { 
+	                    grid.deleteSelectedRow();
+	                }
+	            }); 
+	        }
+		});
     }
  
     function loadInitData(defaultOpenId) {
@@ -303,15 +303,14 @@
 	/* 初始化密码  */
     function resetPassword(){
         var treeNode = $.T("tree").getActiveTreeNode();
-		var password = prompt("请输入新密码", "", "初始化'" + treeNode.name + "'的密码", true);
-		if(password == null || password == "") {
-			return;
-		}
- 
-		$.ajax({
-			url : URL_INIT_PASSWORD + treeNode.id + "/0/" + password, 
-            waiting: true
-		});	     
+		$.prompt("请输入新密码", "初始化'" + treeNode.name + "'的密码", function(value) {
+ 			if ( $.isNullOrEmpty(value) ) return alert("密码不能为空。");
+ 			
+            $.ajax({
+				url : URL_INIT_PASSWORD + treeNode.id + "/0/" + value, 
+	            waiting: true
+			});
+		});
     }
  
     function editGroupInfo(newGroupID) { 
@@ -730,13 +729,12 @@
 		var treeID   = treeNode.id;
 		var treeName = treeNode.name;
 		
-		var searchStr = prompt("请输入查询条件", "", "查询'" + treeName + "'下用户", true);
-		if(searchStr == null || searchStr == "") {
-			return;
-		}
-
-		var params = {"groupId": treeID, "searchStr": searchStr};
-		$.showGrid(URL_SEARCH_USER, XML_USER_LIST, editUserInfo, "grid", 1, params);
+		$.prompt("请输入查询条件", "查询'" + treeName + "'下用户", function(value) {
+ 			if ( $.isNullOrEmpty(value) ) return alert("条件不能为空。");
+ 			
+            var params = {"groupId": treeID, "searchStr": value};
+			$.showGrid(URL_SEARCH_USER, XML_USER_LIST, editUserInfo, "grid", 1, params);
+		});
     }
  
     /* 综合查询(用户角色查询) */

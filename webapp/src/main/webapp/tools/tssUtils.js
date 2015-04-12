@@ -1,7 +1,7 @@
 
 /*********************** 系统配置 开始 **********************************/
  var
-	IS_TEST = false,
+	IS_TEST = true,
 
 	FROMEWORK_CODE = "TSS",    /* 当前框架名 */
 	APP_CODE       = "TSS";    /* 当前应用名 */
@@ -267,61 +267,6 @@ function createExportFrame() {
 	}
 	return frameName;
 }
-
-
-/*
- *	重新封装alert
- *	参数：	string:info     简要信息
-			string:detail   详细信息
- */
-function myAlert(info, detail) {
-	if(info == null) {
-		return;
-	}	
-
-	var messageBox = $1("X-messageBox");
-	if(messageBox == null) {
-		var boxHtml = [];
-		boxHtml[boxHtml.length] = "  <table style='table-layout:fixed'>";
-		boxHtml[boxHtml.length] = "    <tr>";
-		boxHtml[boxHtml.length] = "      <td valign='top' style='position:relative'>";
-		boxHtml[boxHtml.length] = "        <div id='alertIcon'></div>";
-		boxHtml[boxHtml.length] = "        <div id='infoBox'></div>";
-		boxHtml[boxHtml.length] = "        <textarea id='detailBox' class='t' readOnly></textarea>";
-		boxHtml[boxHtml.length] = "      </td>";
-		boxHtml[boxHtml.length] = "    </tr>";
-		boxHtml[boxHtml.length] = "    <tr>";
-		boxHtml[boxHtml.length] = "      <td align='center' height='30'>";
-		boxHtml[boxHtml.length] = "    		<input type='button' value='确 定' class='btStrong'>";
-		boxHtml[boxHtml.length] = "      </td>";
-		boxHtml[boxHtml.length] = "    </tr>";
-		boxHtml[boxHtml.length] = "  </table>";
-
-		messageBox = $.createElement("div", "popupBox");    
-		messageBox.id = "X-messageBox";    
- 		$(messageBox).html(boxHtml.join("\n"));
-		document.body.appendChild(messageBox);
-	}
-	$(messageBox).show(true);
-   
-    $("#infoBox", messageBox).html( info.replace(/[\r\n]/g,"") );
-
-	var detailBox = $("#detailBox", messageBox);
-	detailBox.hide();
-	if( !$.isNullOrEmpty(detail) ) {
-		detailBox[0].value = detail.toString ? detail.toString() : "[object]";
-		detailBox.show(true);
-		$(messageBox).css("height", "200px");
-	}
-
-	$(".btStrong", messageBox).click(function() { $(messageBox).hide(); }).focus();
-
-	$.Event.addEvent(document, "keydown", function(ev) {
-        if(27 == ev.keyCode) { // ESC 退出
-           $(messageBox).hide();
-        }
-    });
-}
  
 (function() {
 	if(window.dialogArguments && window.dialogArguments.title) {
@@ -339,7 +284,7 @@ function myAlert(info, detail) {
 	}
 
 	window._alert = window.alert;
-	window.alert = myAlert;
+	window.alert = $.alert;
 
 	/* 捕获页面js报错 */
 	window.onerror = function(msg, url, line) {
@@ -542,18 +487,18 @@ function addTreeNode(fromTree, toTree, checkFunction) {
 
 // 删除选中树节点
 function delTreeNode(url, treeName) {
-	if( !confirm("您确定要删除该节点吗？") )  return;
-
-	var tree = $.T(treeName || "tree");
-	var treeNode = tree.getActiveTreeNode();
-	$.ajax({
-		url : (url || URL_DELETE_NODE) + treeNode.id,
-		method : "DELETE",
-		onsuccess : function() { 
-			tree.removeTreeNode(treeNode);
-			tree.setActiveTreeNode(treeNode.parent.id);
-		}
-	});	
+	$.confirm("您确定要删除该节点吗？", "删除确认", function(){
+		var tree = $.T(treeName || "tree");
+		var treeNode = tree.getActiveTreeNode();
+		$.ajax({
+			url : (url || URL_DELETE_NODE) + treeNode.id,
+			method : "DELETE",
+			onsuccess : function() { 
+				tree.removeTreeNode(treeNode);
+				tree.setActiveTreeNode(treeNode.parent.id);
+			}
+		});	
+	});
 }
 
 /*
@@ -562,29 +507,36 @@ function delTreeNode(url, treeName) {
 			state    状态
  */
 function stopOrStartTreeNode(state, url, treeName) {	
-	if( state == "1" && !confirm("您确定要停用该节点吗？") )  return;
+	if( state == "1" ) {
+		$.confirm("您确定要停用该节点吗？", "停用确认", callback);
+	}
+	else {
+		callback();
+	}
 		
-	var tree = $.T(treeName || "tree");
-	var treeNode = tree.getActiveTreeNode();
-	$.ajax({
-		url : (url || URL_STOP_NODE) + treeNode.id + "/" + state,
-		onsuccess : function() { 
-			// 刷新父子树节点停用启用状态: 启用上溯，停用下溯
-			refreshTreeNodeState(treeNode, state);
-	
-			if("1" == state) {
- 				treeNode.children.each(function(i, child){
- 					refreshTreeNodeState(child, state);
- 				});
-			} else if ("0" == state) {
-				var parent = treeNode.parent;
-				while( parent && parent.id != "_root") {
-					refreshTreeNodeState(parent, state);
-					parent = parent.parent;
-				}            
+	function callback() {
+		var tree = $.T(treeName || "tree");
+		var treeNode = tree.getActiveTreeNode();
+		$.ajax({
+			url : (url || URL_STOP_NODE) + treeNode.id + "/" + state,
+			onsuccess : function() { 
+				// 刷新父子树节点停用启用状态: 启用上溯，停用下溯
+				refreshTreeNodeState(treeNode, state);
+		
+				if("1" == state) {
+	 				treeNode.children.each(function(i, child){
+	 					refreshTreeNodeState(child, state);
+	 				});
+				} else if ("0" == state) {
+					var parent = treeNode.parent;
+					while( parent && parent.id != "_root") {
+						refreshTreeNodeState(parent, state);
+						parent = parent.parent;
+					}            
+				}
 			}
-		}
-	});
+		});
+	}
 }
 
 function refreshTreeNodeState(treeNode, state) {

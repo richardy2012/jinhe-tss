@@ -396,18 +396,16 @@
     }
 
     function delArticle() { 
-        if( !confirm("您确定要删除该文章吗？") ) { 
-            return;
-        }
-        
-		var articleId = getArticleAttribute("id");
-		$.ajax({
-			url : URL_DEL_ARTICLE + articleId,
-			method: "DELETE",
-			onsuccess : function() { 			
-				var channelId = getTreeNodeId();
-				showArticleList(channelId); 
-			}
+        $.confirm("您确定要删除该文章吗？", "删除确认", function(){
+			var articleId = getArticleAttribute("id");
+			$.ajax({
+				url : URL_DEL_ARTICLE + articleId,
+				method: "DELETE",
+				onsuccess : function() { 			
+					var channelId = getTreeNodeId();
+					showArticleList(channelId); 
+				}
+			});
 		});
     } 
  
