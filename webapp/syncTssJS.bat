@@ -4,6 +4,7 @@ xcopy /Y ..\..\jinhe-tss-JS\src\tssJS.jsonp.js  src\main\webapp\tools\tssJS\
 
 xcopy /Y ..\..\jinhe-tss-JS\tss.all.css  src\main\webapp\tools\tssJS\css\
 xcopy /Y ..\..\jinhe-tss-JS\css\tss.common.css  src\main\webapp\tools\tssJS\css\
+xcopy /Y ..\..\jinhe-tss-JS\css\tss.button.css  src\main\webapp\tools\tssJS\css\
 xcopy /Y ..\..\jinhe-tss-JS\css\tss.message.css  src\main\webapp\tools\tssJS\css\
 xcopy /Y ..\..\jinhe-tss-JS\css\tss.tool.css  src\main\webapp\tools\tssJS\css\
 xcopy /Y /S ..\..\jinhe-tss-JS\images  src\main\webapp\tools\tssJS\images\

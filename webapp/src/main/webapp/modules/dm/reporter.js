@@ -37,6 +37,7 @@ function showGridChart(displayUri, hiddenTree) {
     else {
         $("#grid").show();
         $("#gridTitle").show();
+        $("#gridTitle .title").html("报表【" + getTreeNodeName() + "】查询结果");
     }
 }
 

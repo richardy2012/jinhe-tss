@@ -19,11 +19,15 @@
 				</TR>
 				<TR>
 					<TD><label binding="name"/></TD>
-					<TD><input binding="name" style="width:50%;"/></TD>
+					<TD><input binding="name" style="width:40%;"/></TD>
 				</TR>
 				<TR>
 					<TD><label binding="displayUri"/></TD>
-					<TD><input binding="displayUri" style="width:80%;"/></TD>
+					<TD>
+						<input binding="displayUri" style="width:40%;margin-right:10px;"/>
+						<input type="button" value="选择展示模板" onclick="selectTL()" class="btWeakL" style="margin-right:10px;"/>
+						<input type="button" value="上传模板" onclick="uploadTL()" class="btWeakL"/>
+					</TD>
 				</TR>
 				<TR>
 					<TD valign="top"><label binding="script"/></TD>
@@ -38,7 +42,7 @@
 				</TR>
 				<TR>
 					<TD><label binding="datasource"/></TD>
-					<TD><input binding="datasource" style="width:50%;"/></TD>
+					<TD><input binding="datasource" style="width:250px;"/></TD>
 				</TR>
 				<TR>
 					<TD valign="top"><label binding="remark"/></TD>

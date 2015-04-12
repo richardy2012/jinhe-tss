@@ -877,7 +877,7 @@ function showPageFlowRate() {
 function resourceManage() {
     var treeNode = getActiveTreeNode();
 	var code = treeNode.getAttribute("code");
-	window.open("filemanager.html?code=" + code, 'newwindow', 'height=288, width=444');
+	window.open("filemanager.html?code=" + code, 'newwindow', 'height=360, width=500');
 }
 
 window.onload = init;

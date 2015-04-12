@@ -1,5 +1,6 @@
 package com.jinhe.dm.report;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,8 @@ import com.jinhe.tss.um.helper.PasswordRule;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.util.EasyUtils;
+import com.jinhe.tss.util.FileHelper;
+import com.jinhe.tss.util.URLUtil;
 
 @Controller
 @RequestMapping("/auth/rp")
@@ -70,11 +73,41 @@ public class ReportAction extends BaseActionSupport {
 			strengthLevel = operator.getAttributesMap().get("passwordStrength");
     	} catch(Exception e) {
     		// do nothing
-    	}
+     	}
     	if(strengthLevel != null && EasyUtils.obj2Int(strengthLevel) <= PasswordRule.LOW_LEVEL) {
 			throw new BusinessException("您的密码过于简单，请点右上角【修改密码】菜单重置密码后，再进行访问！");
 		}
 	}
+	
+    @RequestMapping("/template")
+    public void getReportTLs(HttpServletResponse response) {
+    	StringBuffer sb = new StringBuffer("<actionSet>"); 
+    	
+    	// btr or wms 目录下
+    	String rtd = DMConstants.getReportTLDir();
+ 		File reportTLDir = new File(URLUtil.getWebFileUrl(rtd).getPath());
+		List<File> files = FileHelper.listFilesByTypeDeeply("html", reportTLDir);
+		int index = 1;
+ 		for (File file : files) {
+			String treeName = "../" + rtd.substring(8);
+			if( !file.getParent().equals(reportTLDir) ) {
+				treeName +=  "/" + file.getParent();
+			}
+			treeName +=  "/" + file.getName();
+			
+			sb.append("<treeNode id=\"").append(index++).append("\" name=\"").append(treeName).append("/>");
+		}
+ 		
+ 		// dm/template 下
+ 		reportTLDir = new File(URLUtil.getWebFileUrl("modules/" + DMConstants.REPORT_TL_DIR_DEFAULT).getPath());
+ 		files = FileHelper.listFilesByTypeDeeply("html", reportTLDir);
+ 		for (File file : files) {
+			String treeName = "../dm/template/" + file.getName();
+			sb.append("<treeNode id=\"").append(index++).append("\" name=\"").append(treeName).append("/>");
+		}
+		
+        print("SourceTree", sb);
+    }
     
     @RequestMapping("/groups")
     public void getAllReportGroups(HttpServletResponse response) {

@@ -17,6 +17,10 @@
 			<groupId>com.jinhe.tss</groupId>
 			<artifactId>cms</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.jinhe.tss</groupId>
+			<artifactId>dm</artifactId>
+		</dependency>
 		
 		<!--  portal DEPENDENCIES -->
  

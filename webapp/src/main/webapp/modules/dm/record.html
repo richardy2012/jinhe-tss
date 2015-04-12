@@ -27,7 +27,7 @@
 
 #recordFormDiv { width: 96%; height: 100%; padding: 10px; display: none; }
 
-#recordDefinesDiv { width: 466px; height: 350px; padding: 5px; }
+#recordDefinesDiv { width: 466px; height: 370px; padding: 5px; }
 #recordDefinesDiv Tree, #recordDefinesDiv form { background-color:#fff; display:inline-block; }
 #recordDefinesDiv Tree { width:152px; height:90%; overflow-y: auto; }
 #recordDefinesDiv form { width:285px; height:95%; padding:5px; position:absolute; top:5px; left:176px; }
@@ -106,7 +106,7 @@ hr { height:8px; border:none; border-top: 1px dashed #555555; margin-top: 3px; }
 	<Tree id="fieldTree" moveable="true"></Tree>
 	<form id="defineForm">
 		<label>字段名称：</label><input type="text" id="_label" /><em class="required">*</em>
-		<label>字段Code：</label><input type="text" id="_code" placeholder="一律小写字母或数字"/><em class="required">*</em>
+		<label>字段编码：</label><input type="text" id="_code" placeholder="一律小写字母或数字"/><em class="required">*</em>
 		<br><label>字段类型:</label>
 		<select id="_type">
 			<option value="string">字符串</option>
@@ -121,7 +121,12 @@ hr { height:8px; border:none; border-top: 1px dashed #555555; margin-top: 3px; }
 			<option value="true">否</option>
 		</select>  
 		<br><label>默认值：</label><input type="text" id="_defaultValue" placeholder="为参数添加一个默认值"/>
-		
+		<br><label>作为条件：</label>
+		<select id="_isparam">
+			<option value="true">是</option>
+			<option value="false">否</option>
+		</select> 
+
 		<div id="selectRelation">
 			<label>校验正则：</label><input type="text" id="_checkReg" />
             <label>出错提示：</label><input type="text" id="_errorMsg" />

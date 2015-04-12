@@ -82,5 +82,14 @@ public class PortalFileOperationTest extends TxSupportTest4Portal {
     	fileAction.deleteFile(response, request);
     }
 	
-    
+	@Test
+    public void test2() {
+        request = new MockHttpServletRequest();
+        request.addParameter("type", "reportTL");
+        request.addParameter("filter", "html");
+        fileAction.listAvailableFiles(response, request);
+        
+        request.addParameter("code", "noExsits");
+        fileAction.listAvailableFiles(response, request);
+	}
 }

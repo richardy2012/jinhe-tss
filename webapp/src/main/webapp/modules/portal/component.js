@@ -467,7 +467,7 @@ function importComponent() {
 	var url = URL_UPLOAD_FILE + "?groupId=" + getTreeNodeId();
 	url += "&afterUploadClass=com.jinhe.tss.portal.helper.CreateComponent";
 	var importDiv = createImportDiv("只支持XML和zip文件格式导入", checkFileWrong, url);
-	$(importDiv).show().css("position", "absolute").css("left", "100px").css("top", event.clientY + "px");
+	$(importDiv).show().center();
 }	
 
 function exportComponent() {
@@ -481,7 +481,7 @@ function resourceManage() {
     var treeNode = getActiveTreeNode();
 	var code = treeNode.getAttribute("code");
 	var type = getComponentType();
-	window.open("filemanager.html?code=" + code + "&type=" + type, 'newwindow', 'height=288, width=444');
+	window.open("filemanager.html?code=" + code + "&type=" + type, 'newwindow', 'height=360, width=500');
 }
  
 

@@ -7,6 +7,7 @@
 
 <link href="../../css/css.css" rel="stylesheet">
 <link href="../../tools/tssJS/css/tss.all.css" rel="stylesheet">
+<link href="../../tools/tssJS/css/tss.button.css" rel="stylesheet">
 
 <script src="../../tools/tssJS/tssJS.all.js"></script>
 <script src="../../tools/tssJS/tssJS.json2Form.js"></script>
@@ -24,6 +25,16 @@
         top: 1px;
     }
 
+    #page1Form {
+        height: 80%;
+        overflow: auto; 
+    }
+
+    .Formbox { display:none; background-color:#BEC6EE; border:1px solid #416371; border-radius: 5px; }
+    #searchFormDiv { display: none; width:500px; height:400px; padding: 10px; overflow: auto; }
+    #searchFormDiv .buttonBox { margin: 20px 10px 10px 55px;  }
+    #searchFormDiv h3 { font-size: 120%; margin-bottom: 10px; }
+
 </style>
 
 <SCRIPT type="text/javascript">
@@ -38,7 +49,7 @@ URL_SAVE_SOURCE   = AUTH_PATH + "xdata/";
 URL_DELETE_SOURCE = AUTH_PATH + "xdata/";
 URL_GET_DEFINES   = AUTH_PATH + "xdata/define/";
 
-var recordId = 1, recordName = "数据录入";
+var recordId = 1, recordName = "数据录入", recordDefine;
 
 $(function() {
     var globalValiable = window.parent.globalValiable;
@@ -63,6 +74,13 @@ $(function() {
 function init() {
     initMenus();
     initWorkSpace();
+
+    $.ajax({
+        url : URL_GET_DEFINES + recordId,
+        ondata: function() {
+            recordDefine = this.getResponseJSON();
+        }
+    });
 
     loadGridData({}, 1); 
     $("#rcTitle").html(recordName + "列表");
@@ -127,33 +145,34 @@ function showDetail(isCreate) {
 }
 
 function loadDetailData(rowID) {
-    $.ajax({
-        url : URL_GET_DEFINES + recordId,
-        ondata: function() {
-            var defines = this.getResponseJSON();
+    if(rowID != '_new') {
+        var grid = $.G("grid");
+        recordDefine.each(function(i, field){
+            field.defaultValue = grid.getColumnValue(field.code);
+        });
+    }
 
-            if(rowID != '_new') {
-                var grid = $.G("grid");
-                defines.each(function(i, field){
-                    field.defaultValue = grid.getColumnValue(field.code);
-                });
-            }
-        
-            var xform = $.json2Form("page1Form", defines);
+    var buttonBox = [];
+    buttonBox[buttonBox.length] = '<TR>';
+    buttonBox[buttonBox.length] = "  <TD colspan='2' height='46'><div class='buttonBox'>";
+    buttonBox[buttonBox.length] = '    <input type="button" class="btStrong" value="完成" id="page1BtSave"/> - ';
+    buttonBox[buttonBox.length] = '    <input type="button" class="btWeak" value="取消" id="page1BtCancel"/>';
+    buttonBox[buttonBox.length] = '  </div></TD>';
+    buttonBox[buttonBox.length] = '</TR>';
 
-            $.cache.XmlDatas[rowID] = xform.template.dataNode;
+    var xform = $.json2Form("page1Form", recordDefine, buttonBox.join(""));
 
-            attachReminder(rowID, xform); // 离开提醒
+    $.cache.XmlDatas[rowID] = xform.template.dataNode;
 
-            // 设置保存/关闭按钮操作
-            $1("page1BtCancel").onclick = function() {
-                ws.closeActiveTab();
-            }
-            $1("page1BtSave").onclick = function() {
-                saveSource(rowID);
-            }
-        }
-    });
+    attachReminder(rowID, xform); // 离开提醒
+
+    // 设置保存/关闭按钮操作
+    $1("page1BtCancel").onclick = function() {
+        ws.closeActiveTab();
+    }
+    $1("page1BtSave").onclick = function() {
+        saveSource(rowID);
+    }
 }
 
 function saveSource(rowID) {
@@ -197,7 +216,62 @@ function remove()  {
 }
 
 function showQueryForm() {
+    if($.cache.XmlDatas["searchFormXML"]) {
+        $("#searchFormDiv").show(true).center(1000, 400);
+        return;
+    }
 
+    var buttonBox = [];
+    buttonBox[buttonBox.length] = "        <TR>";
+    buttonBox[buttonBox.length] = "          <TD colspan='2' height='46'><div class='buttonBox'>";
+    buttonBox[buttonBox.length] = "             <input type='button' class='btStrong' id='btSearch' value='查询'/> - ";
+    buttonBox[buttonBox.length] = "             <input type='button' class='btWeak' id='btCloseSearch' value='关闭'/>";
+    buttonBox[buttonBox.length] = "          </div></TD>";
+    buttonBox[buttonBox.length] = "        </TR>";
+
+    var paramsConfig = [];
+    recordDefine.each(function(i, field){
+        if(field.isparam === 'true') {
+            var copy = {};
+            for (var name in field) {
+                copy[name] = field[name];
+            }
+            delete copy["nullable"];
+            delete copy["height"];
+            delete copy["width"];
+            delete copy["defaultValue"];
+            delete copy["onchange"];
+            delete copy["multiple"];
+            copy.name = "p_" + (copy.name || copy.code);
+            paramsConfig.push(copy);
+        }
+    });
+
+    var searchForm = $.json2Form("searchForm", paramsConfig, buttonBox.join(""));
+
+    $("#searchFormDiv").show(true).center(1000, 400);
+    $("#searchFormDiv h3").html("查询【" + recordName + "】的录入数据");
+
+    $.cache.XmlDatas["searchFormXML"] = searchForm.template.sourceXML;
+    
+    $1("btSearch").onclick = function () {
+        if( searchForm.checkForm() ) {
+            $("#searchFormDiv").hide();
+            var searchFormXML = $.cache.XmlDatas["searchFormXML"];
+            var dataNode = searchFormXML.querySelector("data");
+        
+            var params = {};
+            var nodes = dataNode.querySelectorAll("row *");
+            for(var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+                params[node.nodeName.substring(2)] = $.XML.getText(node);
+            }
+            loadGridData(params, 1);
+        }
+    }
+    $1("btCloseSearch").onclick = function () {
+        $("#searchFormDiv").hide();
+    }
 }
 
 // ------------------------------------------------- 多级下拉选择联动 ------------------------------------------------
@@ -230,8 +304,8 @@ function getNextLevelOption(nextL, serviceID, currParam, currParamValue) {
         <tr>
           <td id="gridTitle">
             <span class="icon"></span><span id="rcTitle">资源列表</span>&nbsp;
-            <input type="button" class="btStrong" value="新增" id="insertBT" onclick="showDetail(true)"/>&nbsp;
-            <input type="button" class="btStrong" value="查询" id="queryBT" onclick="showQueryForm()"/>
+            <input type="button" class="btStrong" value="新 增" onclick="showDetail(true)"/>&nbsp;
+            <input type="button" class="btStrong" value="查 询" onclick="showQueryForm()"/>
             <span class="buttonBox" id="gridToolBar"></span>
           </td>
         </tr>
@@ -243,13 +317,13 @@ function getNextLevelOption(nextL, serviceID, currParam, currParamValue) {
     <WorkSpace:Box id="ws" class="hiddenWS">
         <WorkSpace:Page id="page1">
             <div id="page1Form" editable="true"></div>
-            <WorkSpace:PageStep>
-                <br>
-                <input type="button" class="btStrong" value="完成" id="page1BtSave"/>&nbsp;
-                <input type="button" class="btWeak" value="取消" id="page1BtCancel"/>
-            </WorkSpace:PageStep>
         </WorkSpace:Page>
     </WorkSpace:Box>
+
+    <div id="searchFormDiv" class="Formbox">
+        <h3></h3>
+        <div id="searchForm"></div>
+    </div>
 
 </body>
 </html>

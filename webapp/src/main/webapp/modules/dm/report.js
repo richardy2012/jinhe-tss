@@ -618,3 +618,14 @@ function setRole2Permission() {
 
 	showGridChart("../um/setpermission.html", false);
 }
+
+function selectTL() {
+    popupTree(AUTH_PATH + "rp/template", "SourceTree", {}, function(target) {
+        $.F("reportForm").updateDataExternal("displayUri", target.name);
+    });
+}
+
+function uploadTL() {
+	var type = "reportTL";
+	window.open("../portal/filemanager.html?type=" + type, 'newwindow', 'height=360, width=500');
+}

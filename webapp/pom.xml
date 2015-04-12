@@ -17,11 +17,6 @@
 			<groupId>com.jinhe.tss</groupId>
 			<artifactId>portal</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.jinhe.tss</groupId>
-			<artifactId>dm</artifactId>
-		</dependency>
-		
 	</dependencies>
 	
 	<build>

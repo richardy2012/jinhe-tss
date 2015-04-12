@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework.component.param;
 
+
 /**
  * 参数管理常量
  */

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.jinhe.dm.DMConstants;
+import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.portal.PortalConstants;
@@ -35,26 +37,32 @@ public class FileAction extends BaseActionSupport {
         String type = request.getParameter("type"); // 判断是何种类型的资源管理
         String filter = request.getParameter("filter");
         String contextPath = request.getParameter("contextPath");
-        if( type != null && !Arrays.asList(Component.TYPE_NAMES).contains(type) ) {
-            throw new BusinessException("指定文件类型有误。");
-        }
         
         StringBuffer sb = new StringBuffer("<actionSet title=\"\" openednodeid=\"r1.1\">"); 
         
         // 如果访问的是子目录，则提供目录上翻的按钮
         if( contextPath != null) {
         	int indexOfModel = contextPath.indexOf("model");
-			if( indexOfModel > 0 && indexOfModel < contextPath.length() - 6 ) {
+        	String tlDir = ParamConfig.getAttribute(DMConstants.REPORT_TL_DIR);
+			if( (indexOfModel > 0 && indexOfModel < contextPath.length() - 6) 
+					|| contextPath.indexOf(tlDir) > 0 ) {
         		sb.append("<treeNode id=\"-1\" name=\"..\" icon=\"../framework/images/folder.gif\" />"); 
         	}
         } 
         else {
-        	if( type != null) {
-        		contextPath = PortalConstants.MODEL_DIR + type + "/" + code;
+        	if( Arrays.asList(Component.TYPE_NAMES).contains(type) ) {
+        		contextPath = PortalConstants.MODEL_DIR + type;
         	}
-        	else { // 默认取门户资源目录根节点
-        		contextPath = PortalConstants.PORTAL_MODEL_DIR + "/" + code;
+        	else if( DMConstants.REPORT_TL_TYPE.equals(type) ) { // 报表模板资源
+        		contextPath = DMConstants.getReportTLDir();
         	}
+        	else if(type == null) { // 默认取门户资源目录根节点
+        		contextPath = PortalConstants.PORTAL_MODEL_DIR;
+        	}
+        	
+            if( !EasyUtils.isNullOrEmpty(code) ) {
+            	contextPath = contextPath + "/" + code;
+    		}
         }
         
         // 根据type值找根目录
