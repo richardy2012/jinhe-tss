@@ -27,9 +27,9 @@ public abstract class _Database {
 	
 	static Logger log = Logger.getLogger(_Database.class);
 	
-	String recordName;
-	String datasource;
-	String table;
+	public String recordName;
+	public String datasource;
+	public String table;
 	
 	List<Map<Object, Object>> fields;
 	List<String> fieldCodes;
@@ -87,11 +87,11 @@ public abstract class _Database {
 	}
 	
 	public void updateTable(Record _new) {
-		String datasource = _new.getDatasource();
+		String newDS = _new.getDatasource();
 		String table = _new.getTable();
 		
-		if(!datasource.equals(this.datasource) || !table.equals(this.table)) {
-			this.datasource = datasource;
+		if(!newDS.equals(this.datasource) || !table.equals(this.table)) {
+			this.datasource = newDS;
 			this.table = table;
 			createTable();
 			return;
@@ -126,14 +126,14 @@ public abstract class _Database {
 			ex.excuteQuery("select id from " + this.table, this.datasource);
 			if(ex.result.size() == 0 ) {
 				try {
-					dropTable(this.table, datasource);
+					dropTable(this.table, newDS);
 				} catch(Exception e) {
 					// 如果表不存在导致删表失败（oracle），则忽略
 				}
 			}
 			else {
 				String oldTable = this.table + "_" + _new.getLockVersion();
-				SQLExcutor.excute("alter table " + this.table + " rename to " + oldTable, datasource);
+				SQLExcutor.excute("alter table " + this.table + " rename to " + oldTable, newDS);
 			}
 			
 			this.fields = newFields;

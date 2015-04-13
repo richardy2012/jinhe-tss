@@ -48,8 +48,13 @@ public class RecordServiceImpl implements RecordService {
         }
         else {
         	Record _old = recordDao.getEntity(record.getId());
-			_Database _db = _Database.getDB(_old);
+        	recordDao.evict(_old);
         	
+        	String oldDatasource = _old.getDatasource();
+        	_old.setDatasource(record.getDatasource());
+			_Database _db = _Database.getDB(_old); // 数据库类型从MySQL变成了Oracle，这里获取到的将是_Oracle
+			_db.datasource = oldDatasource;
+			
         	recordDao.refreshEntity(record);
         	
         	if(Record.TYPE1 == record.getType()) {
