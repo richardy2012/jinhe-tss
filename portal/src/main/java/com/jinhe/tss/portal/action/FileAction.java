@@ -110,7 +110,7 @@ public class FileAction extends BaseActionSupport {
     	String fileNames = request.getParameter("fileNames");
     	String folderNames = request.getParameter("folderNames");
     	
-        if(fileNames == null && folderNames == null) return;
+        if( EasyUtils.isNullOrEmpty(fileNames) && EasyUtils.isNullOrEmpty(folderNames)) return;
         
         // 建立临时文件夹存放要下载的所有文件
         contextPath = getContextPath(contextPath);
@@ -120,7 +120,7 @@ public class FileAction extends BaseActionSupport {
         }
         
         List<File> files = new ArrayList<File>();
-        if(fileNames != null) {
+        if( !EasyUtils.isNullOrEmpty(fileNames) ) {
         	String[] fNames = fileNames.split(",");
             for ( String fileName : fNames ) {
                 File file = new File(contextPath + fileName);
@@ -130,7 +130,7 @@ public class FileAction extends BaseActionSupport {
             }
         }
         
-        if(folderNames != null) {
+        if( !EasyUtils.isNullOrEmpty(folderNames) ) {
         	String[] fNames = folderNames.split(",");
             for ( String folderName : fNames ) {
                 File folder = new File(contextPath + folderName);

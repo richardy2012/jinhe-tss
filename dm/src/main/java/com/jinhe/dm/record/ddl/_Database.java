@@ -179,7 +179,7 @@ public abstract class _Database {
 			}
 			n++;
 		}
-		paramsMap.put(++index, new Date());
+		paramsMap.put(++index, new Timestamp(new Date().getTime()));
 		paramsMap.put(++index, Environment.getUserCode());
 		paramsMap.put(++index, id);
 		

@@ -47,12 +47,12 @@ public class XXAction extends BaseActionSupport {
 		print(new String[]{"SourceList", "PageInfo"}, new Object[]{gridEncoder, pageInfo});
     }
  
-    @RequestMapping(value = "/{id}")
-    public void getXX(HttpServletResponse response, @PathVariable("type") String id) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public void getXX(HttpServletResponse response, @PathVariable("id") String id) {
     	XFormEncoder xformEncoder;
         String uri = "template/xx_xform.xml";
         
-        if( id == null) {
+        if( "new".equals(id) ) {
             xformEncoder = new XFormEncoder(uri);
         } 
         else {
@@ -95,9 +95,9 @@ public class XXAction extends BaseActionSupport {
         printSuccessMessage();
     }
     
-	@RequestMapping("/operations/{id}")
-    public void getOperations(HttpServletResponse response, @PathVariable("resourceId") Long id) {
-        List<String> list = PermissionHelper.getInstance().getOperationsByResource(id,
+	@RequestMapping("/operations/{resourceId}")
+    public void getOperations(HttpServletResponse response, @PathVariable("resourceId") Long resourceId) {
+        List<String> list = PermissionHelper.getInstance().getOperationsByResource(resourceId,
                         XXPermission.class.getName(), XXResource.class);
 
         print("Operation", EasyUtils.list2Str(list));

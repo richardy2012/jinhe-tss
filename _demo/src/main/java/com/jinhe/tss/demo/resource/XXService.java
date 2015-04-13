@@ -11,14 +11,14 @@ public interface XXService {
     XX getXX(Long id);
     
     @PermissionTag(
-    		application = XX.RESOURCE_TYPE,
+    		application = XX.APPLICATION,
     		resourceType = XX.RESOURCE_TYPE,
 	        operation = XX.OPERATION_VIEW
 	)
     List<XX> getAll();
 
     @PermissionTag(
-    		application = XX.RESOURCE_TYPE,
+    		application = XX.APPLICATION,
             resourceType = XX.RESOURCE_TYPE,
             operation = XX.OPERATION_EDIT , 
             filter = PermissionFilter4Create.class)

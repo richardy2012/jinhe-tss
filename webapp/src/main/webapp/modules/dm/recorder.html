@@ -99,15 +99,10 @@ function initMenus() {
         callback: remove,
         icon: "images/icon_del.gif"
     }
-    var item3 = {
-        label:"新增",
-        callback: function() { showDetail(true); }
-    }
 
     var menu = new $.Menu();
     menu.addItem(item1);
     menu.addItem(item2);
-    menu.addItem(item3);
     $1("grid").contextmenu = menu;
 }
 

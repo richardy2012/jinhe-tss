@@ -9,7 +9,7 @@ import com.jinhe.tss.um.permission.filter.PermissionTag;
 public interface XXDao extends ITreeSupportDao<XX> {
 	
     @PermissionTag(
-    		application = XX.RESOURCE_TYPE,
+    		application = XX.APPLICATION,
     		resourceType = XX.RESOURCE_TYPE,
             filter = PermissionFilter4Branch.class)
     List<XX> getChildrenById(Long id, String operationId);

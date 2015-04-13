@@ -1,10 +1,10 @@
 
 /*********************** 系统配置 开始 **********************************/
  var
-	IS_TEST = true,
+	IS_TEST = false,
 
 	FROMEWORK_CODE = "TSS",    /* 当前框架名 */
-	APP_CODE       = "TSS";    /* 当前应用名 */
+	APP_CODE       = "CWP";    /* 当前应用名 */
 
 /*********************** 系统配置 END **********************************/
  var
@@ -63,10 +63,17 @@ function initPaletteResize() {
 }
 
 function closePalette() {
-	$("#palette").hide();
+	$("#palette").hide().removeClass("opend");;
 	$("#paletteOpen").show();
 	$(".panel .header>td:nth-child(2)").hide();
 	$(".panel .footer>td:nth-child(2)").hide();
+}
+
+function openPalette() {
+	$("#palette").show().addClass("opend");
+	$("#paletteOpen").hide();
+	$(".panel .header>td:nth-child(2)").show();
+	$(".panel .footer>td:nth-child(2)").show();
 }
 
 window.onresize = function() {
@@ -84,15 +91,25 @@ function initEvents() {
 	window.onresize();
 
 	/* 点击左栏控制按钮 */
+	$("#palette").addClass("opend");
 	var paletteOpen = $("#paletteOpen");
-	if(paletteOpen.length > 0) {
+	var paletteClose = $("#paletteClose");
+
+	if( paletteClose.length ) {
+		paletteClose.click(closePalette);	
+	}
+
+	if( paletteOpen.length ) {
 		paletteOpen.hide();
-		$("#paletteClose").click(closePalette);	
-		paletteOpen.click(function() { 
-			$("#palette").show();
-			paletteOpen.hide();
-			$(".panel .header>td:nth-child(2)").show();
-			$(".panel .footer>td:nth-child(2)").show();
+		paletteOpen.click(openPalette);
+	} 
+	else if( paletteClose.length ) {
+		$.leftbar(function(){
+			if($("#palette").hasClass("opend")){
+				closePalette();
+			} else {
+				openPalette();
+			}
 		});
 	}
 
@@ -193,7 +210,7 @@ function syncButton(btObjs, request) {
 		btEl.disabled = true;
 	});
 
-	request.ondata = function() {
+	request.ondata = request.onexception = function() {
 		btObjs.each(function(i, btEl){
 			btEl.disabled = false;
 		});
@@ -206,19 +223,18 @@ function createImportDiv(remark, checkFileWrong, importUrl) {
 	if( importDiv == null ) {
 		importDiv = $.createElement("div");    
 		importDiv.id = "importDiv";      
-		$(importDiv).css("background", "#E7E7E7").css("width", "250px").css("height", "100px")
-			.css("padding", "10px 10px 10px 10px").css("fontSize", "12px"); 
 		document.body.appendChild(importDiv);
 
 		var str = [];
+		str[str.length] = "<h2>"+remark+"</h2>";
 		str[str.length] = "<form id='importForm' method='post' target='fileUpload' enctype='multipart/form-data'>";
-		str[str.length] = "	 <input type='file' name='file' id='sourceFile' /> <br> " + remark + "<br><br><br> ";
-		str[str.length] = "	 <input type='button' id='importBt' value='上传' class='btStrong'/> ";
+		str[str.length] = "	 <div class='fileUpload'> <input type='file' name='file' id='sourceFile' onchange=\"$('#importDiv h2').html(this.value)\" /> </div> ";
+		str[str.length] = "	 <input type='button' id='importBt' value='上   传' class='btStrongL'/> ";
 		str[str.length] = "	 <input type='button' id='closeBt'  value='关闭' class='btWeak'/> ";
 		str[str.length] = "</form>";
 		str[str.length] = "<iframe width='0px' height='0px' name='fileUpload'></iframe>";
 		
-		importDiv.innerHTML = str.join("\r\n");
+		$(importDiv).html(str.join("\r\n")).center();
 
 		$("#closeBt").click( function () {
 			$(importDiv).hide();
@@ -228,14 +244,14 @@ function createImportDiv(remark, checkFileWrong, importUrl) {
 	// 每次 importUrl 可能不一样，比如导入门户组件时。不能缓存
 	$("#importBt").click( function() {
 		var fileValue = $1("sourceFile").value;
-		if( fileValue == null) {
-			 return alert("请选择导入文件!");				 
+		if( !fileValue ) {
+			 return $("#importDiv h2").notice("请选择导入文件!");				 
 		}
 
 		var length = fileValue.length;
 		var subfix = fileValue.substring(length - 4, length);
 		if( checkFileWrong && checkFileWrong(subfix) ) {
-		   return alert(remark);
+		   return $("#importDiv h2").notice(remark);
 		}
 
 		var form = $1("importForm");
@@ -258,61 +274,6 @@ function createExportFrame() {
 	}
 	return frameName;
 }
-
-
-/*
- *	重新封装alert
- *	参数：	string:info     简要信息
-			string:detail   详细信息
- */
-function myAlert(info, detail) {
-	if(info == null) {
-		return;
-	}	
-
-	var messageBox = $1("X-messageBox");
-	if(messageBox == null) {
-		var boxHtml = [];
-		boxHtml[boxHtml.length] = "  <table style='table-layout:fixed'>";
-		boxHtml[boxHtml.length] = "    <tr>";
-		boxHtml[boxHtml.length] = "      <td valign='top' style='position:relative'>";
-		boxHtml[boxHtml.length] = "        <div id='alertIcon'></div>";
-		boxHtml[boxHtml.length] = "        <div id='infoBox'></div>";
-		boxHtml[boxHtml.length] = "        <textarea id='detailBox' class='t' readOnly></textarea>";
-		boxHtml[boxHtml.length] = "      </td>";
-		boxHtml[boxHtml.length] = "    </tr>";
-		boxHtml[boxHtml.length] = "    <tr>";
-		boxHtml[boxHtml.length] = "      <td align='center' height='30'>";
-		boxHtml[boxHtml.length] = "    		<input type='button' value='确 定' class='btStrong'>";
-		boxHtml[boxHtml.length] = "      </td>";
-		boxHtml[boxHtml.length] = "    </tr>";
-		boxHtml[boxHtml.length] = "  </table>";
-
-		messageBox = $.createElement("div", "popupBox");    
-		messageBox.id = "X-messageBox";    
- 		$(messageBox).html(boxHtml.join("\n"));
-		document.body.appendChild(messageBox);
-	}
-	$(messageBox).show(true);
-   
-    $("#infoBox", messageBox).html( info.replace(/[\r\n]/g,"") );
-
-	var detailBox = $("#detailBox", messageBox);
-	detailBox.hide();
-	if( !$.isNullOrEmpty(detail) ) {
-		detailBox[0].value = detail.toString ? detail.toString() : "[object]";
-		detailBox.show(true);
-		$(messageBox).css("height", "200px");
-	}
-
-	$(".btStrong", messageBox).click(function() { $(messageBox).hide(); }).focus();
-
-	$.Event.addEvent(document, "keydown", function(ev) {
-        if(27 == ev.keyCode) { // ESC 退出
-           $(messageBox).hide();
-        }
-    });
-}
  
 (function() {
 	if(window.dialogArguments && window.dialogArguments.title) {
@@ -330,7 +291,7 @@ function myAlert(info, detail) {
 	}
 
 	window._alert = window.alert;
-	window.alert = myAlert;
+	window.alert = $.alert;
 
 	/* 捕获页面js报错 */
 	window.onerror = function(msg, url, line) {
@@ -533,18 +494,18 @@ function addTreeNode(fromTree, toTree, checkFunction) {
 
 // 删除选中树节点
 function delTreeNode(url, treeName) {
-	if( !confirm("您确定要删除该节点吗？") )  return;
-
-	var tree = $.T(treeName || "tree");
-	var treeNode = tree.getActiveTreeNode();
-	$.ajax({
-		url : (url || URL_DELETE_NODE) + treeNode.id,
-		method : "DELETE",
-		onsuccess : function() { 
-			tree.removeTreeNode(treeNode);
-			tree.setActiveTreeNode(treeNode.parent.id);
-		}
-	});	
+	$.confirm("您确定要删除该节点吗？", "删除确认", function(){
+		var tree = $.T(treeName || "tree");
+		var treeNode = tree.getActiveTreeNode();
+		$.ajax({
+			url : (url || URL_DELETE_NODE) + treeNode.id,
+			method : "DELETE",
+			onsuccess : function() { 
+				tree.removeTreeNode(treeNode);
+				tree.setActiveTreeNode(treeNode.parent.id);
+			}
+		});	
+	});
 }
 
 /*
@@ -553,29 +514,36 @@ function delTreeNode(url, treeName) {
 			state    状态
  */
 function stopOrStartTreeNode(state, url, treeName) {	
-	if( state == "1" && !confirm("您确定要停用该节点吗？") )  return;
+	if( state == "1" ) {
+		$.confirm("您确定要停用该节点吗？", "停用确认", callback);
+	}
+	else {
+		callback();
+	}
 		
-	var tree = $.T(treeName || "tree");
-	var treeNode = tree.getActiveTreeNode();
-	$.ajax({
-		url : (url || URL_STOP_NODE) + treeNode.id + "/" + state,
-		onsuccess : function() { 
-			// 刷新父子树节点停用启用状态: 启用上溯，停用下溯
-			refreshTreeNodeState(treeNode, state);
-	
-			if("1" == state) {
- 				treeNode.children.each(function(i, child){
- 					refreshTreeNodeState(child, state);
- 				});
-			} else if ("0" == state) {
-				var parent = treeNode.parent;
-				while( parent && parent.id != "_root") {
-					refreshTreeNodeState(parent, state);
-					parent = parent.parent;
-				}            
+	function callback() {
+		var tree = $.T(treeName || "tree");
+		var treeNode = tree.getActiveTreeNode();
+		$.ajax({
+			url : (url || URL_STOP_NODE) + treeNode.id + "/" + state,
+			onsuccess : function() { 
+				// 刷新父子树节点停用启用状态: 启用上溯，停用下溯
+				refreshTreeNodeState(treeNode, state);
+		
+				if("1" == state) {
+	 				treeNode.children.each(function(i, child){
+	 					refreshTreeNodeState(child, state);
+	 				});
+				} else if ("0" == state) {
+					var parent = treeNode.parent;
+					while( parent && parent.id != "_root") {
+						refreshTreeNodeState(parent, state);
+						parent = parent.parent;
+					}            
+				}
 			}
-		}
-	});
+		});
+	}
 }
 
 function refreshTreeNodeState(treeNode, state) {
@@ -689,122 +657,11 @@ Element.show = function(element, opacity) {
 }, 
 
 Element.attachResize = function(element, type) {
-	var handle = document.createElement("DIV"); // 拖动条
-	var cssText = "position:absolute;overflow:hidden;z-index:3;";
-	if (type == "col") {
-		handle.style.cssText = cssText + "cursor:col-resize;top:0px;right:0px;width:3px;height:100%;";
-	} else if(type == "row") {
-		handle.style.cssText = cssText + "cursor:row-resize;left:0px;bottom:0px;width:100%;height:3px;";
-	} else {
-		handle.style.cssText = cssText + "cursor:nw-resize;right:0px;bottom:0px;width:8px;height:8px;background:#99CC00";
-	}
-	
-	element.appendChild(handle);
-
-	var mouseStart  = {x:0, y:0};  // 鼠标起始位置
-	var handleStart = {x:0, y:0};  // 拖动条起始位置
-
-	handle.onmousedown = function(ev) {
-		var oEvent = ev || event;
-		mouseStart.x  = oEvent.clientX;
-		mouseStart.y  = oEvent.clientY;
-		handleStart.x = handle.offsetLeft;
-		handleStart.y = handle.offsetTop;
-
-		document.addEventListener("mousemove", doDrag, true);
-		document.addEventListener("mouseup", stopDrag, true);
-	};
-
-	function doDrag(ev) {
-		var oEvent = ev || event;
-
-		// 水平移动距离
-		if (type == "col" || type == null) {
-			var _width = oEvent.clientX - mouseStart.x + handleStart.x + handle.offsetWidth;
-			if (_width < handle.offsetWidth) {
-				_width = handle.offsetWidth;
-			} 
-			else if (_width > document.documentElement.clientWidth - element.offsetLeft) {
-				_width = document.documentElement.clientWidth - element.offsetLeft - 2; // 防止拖出窗体外
-			}
-			element.style.width = _width + "px";
-		}
-
-		// 垂直移动距离
-		if (type == "row" || type == null) {
-			var _height = oEvent.clientY - mouseStart.y + handleStart.y + handle.offsetHeight;
-			if (_height < handle.offsetHeight) {
-				_height = handle.offsetHeight;
-			} 
-			else if (_height > document.documentElement.clientHeight - element.offsetTop) {
-				_height = document.documentElement.clientHeight - element.offsetTop - 2; // 防止拖出窗体外
-			}
-			element.style.height = _height + "px";
-		}
-	};
-
-	function stopDrag() {
-		document.removeEventListener("mousemove", doDrag, true);
-		document.removeEventListener("mouseup", stopDrag, true);
-	};
+	 $(element).resize(type);
 }
 
-/*
- * 拖动对象，改变其位置
- * 参数：	Object:element   要拖动的HTML对象
- */
 Element.moveable = function(element, handle) {
-	handle = handle || element.getElementsByTagName("h2")[0] || element; // 拖动条
-	if(handle == null) return;
-
-	var mouseStart  = {x:0, y:0};  // 鼠标起始位置
-	var elementStart = {x:0, y:0};  // 拖动条起始位置
-
-	handle.onmousedown = function(ev) {
-		var oEvent = ev || event;
-		mouseStart.x  = oEvent.clientX;
-		mouseStart.y  = oEvent.clientY;
-		elementStart.x = element.offsetLeft;
-		elementStart.y = element.offsetTop;
-
-		if (handle.setCapture) {
-			handle.onmousemove = doDrag;
-			handle.onmouseup = stopDrag;
-			handle.setCapture();
-		} else {
-			document.addEventListener("mousemove", doDrag, true);
-			document.addEventListener("mouseup", stopDrag, true);
-		}
-	};
-
-	function doDrag(ev) {
-		var oEvent = ev || event;
-
-		var x = oEvent.clientX - mouseStart.x + elementStart.x;
-		var y = oEvent.clientY - mouseStart.y + elementStart.y;
-		if (x < 0) {
-			x = 0;
-		} else if (x > document.documentElement.clientWidth - element.offsetWidth) {
-			x = document.documentElement.clientWidth - element.offsetWidth;
-		}
-		if (y < 0) {
-			y = 0;
-		} else if (y > document.documentElement.clientHeight - element.offsetHeight) {
-			y = document.documentElement.clientHeight - element.offsetHeight;
-		}
-		element.style.left = x + "px";
-		element.style.top  = y + "px";
-	};
-
-	function stopDrag() {
-		if (handle.releaseCapture) {
-			handle.onmousemove = handle.onmouseup = null;
-			handle.releaseCapture();
-		} else {
-			document.removeEventListener("mousemove", doDrag, true);
-			document.removeEventListener("mouseup", stopDrag, true);
-		}
-	};
+	$(element).drag(handle);
 }
 
 // 弹出选择树

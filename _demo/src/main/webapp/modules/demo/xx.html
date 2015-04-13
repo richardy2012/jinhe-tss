@@ -158,7 +158,7 @@ function search() {
 /* 显示资源详细信息 */
 function showDetail(readonly, isCreate) {    
     var rowID = $.G("grid").getColumnValue("id");  
-    var rowName = "资源" + rowID;
+    var rowName = "资源" + (rowID ? rowID : "_NEW");
 
     var callback = {};
     callback.onTabClose = function(eventObj){
@@ -169,7 +169,7 @@ function showDetail(readonly, isCreate) {
 
     callback.onTabChange = function() {
         setTimeout(function() {
-            loadDetailData(rowID);
+            loadDetailData(rowID, isCreate);
 
             var $buttons = $("#ws input[type='button']");
             if(readonly) {
@@ -196,7 +196,8 @@ function showDetail(readonly, isCreate) {
 
 function loadDetailData(sourceId, isCreate) {
     $.ajax({
-        url : URL_SOURCE_DETAIL + (isCreate ? '' : sourceId),
+        url : URL_SOURCE_DETAIL + (isCreate ? 'new' : sourceId),
+		method : "GET", 
         onresult : function() { 
             var sourceInfoNode = this.getNodeValue(XML_SOURCE_INFO);
             $.cache.XmlDatas[sourceId] = sourceInfoNode;

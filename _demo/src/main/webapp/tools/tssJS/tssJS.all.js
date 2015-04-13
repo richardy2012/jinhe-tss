@@ -529,24 +529,24 @@
         },
 
         // 设置innerHTML
-        html: function(str) {
+        html: function() {
             for (var i = 0; i < this.length; i++) {
                 var el = this[i];
                 if (arguments.length == 0) {
                     return el.innerHTML;
                 }
-                el.innerHTML = str;
+                el.innerHTML = arguments[0];
             }
             return this;
         },
 
         // 设置XML node text
-        text: function(value) {
+        text: function() {
             for (var i = 0; i < this.length; i++) {
                 if (arguments.length == 0) {
                     return $.XML.getText( this[i] );
                 }
-                $.XML.setText(this[i], value);  
+                $.XML.setText(this[i], arguments[0]);  
             }
             return this;
         },
@@ -554,6 +554,13 @@
         appendChild: function(el) {
             if ( this.length > 0 ) {
                 this[0].appendChild(el);
+            }
+            return this;
+        },
+
+        remove: function() {
+            for (var i = 0; i < this.length; i++) {
+                $.removeNode(this[i]);
             }
             return this;
         },
@@ -639,7 +646,6 @@
                 width  = this[0].clientWidth;
                 height = this[0].clientHeight;
             }
-
             var left = ($.getInner().width - (width || 0) ) / 2;
             var top  = ($.getInner().height - (height || 0) ) / 2;
             return this.position(left, top);
@@ -657,6 +663,17 @@
                     return el.getAttribute(name);
                 }
                 el.setAttribute(name, value);
+            }
+            return this;
+        },
+
+        value: function() {
+            if ( this.length > 0 ) {
+                var el = this[0];
+                if (arguments.length == 0) {
+                    return el.value;
+                }
+                el.value = arguments[0];
             }
             return this;
         }
@@ -720,10 +737,13 @@
             };
         },
 
-        createElement: function(tagName, className) {
+        createElement: function(tagName, className, id) {
             var el = document.createElement(tagName);
             if (className) {
                 $(el).addClass(className)
+            }
+            if(id) {
+                el.id = id;
             }
             return el;
         },
@@ -774,6 +794,7 @@
         },
 
         waitingLayerCount: 0,
+        waitingLayerZIndex: 998,
 
         showWaitingLayer: function () {
             var waitingObj = $("#_waiting");
@@ -795,7 +816,7 @@
         },
 
         hideWaitingLayer: function() {
-            $.waitingLayerCount --;
+            $.waitingLayerCount && $.waitingLayerCount --;
 
             var waitingObj = $("#_waiting");
             if( waitingObj.length > 0 && $.waitingLayerCount <= 0 ) {
@@ -1171,7 +1192,7 @@
         request.onresult = arg.onresult || request.onresult;
         request.onsuccess = arg.onsuccess || request.onsuccess;
         request.onexception = arg.onexception || function(errorMsg) {
-            // alert(errorMsg.description); // 遇到异常却看不到任何信息，可尝试放开这里的注释
+            console.log(errorMsg.description); // 遇到异常却看不到任何信息，可尝试放开这里的注释
         };
 
         request.send();
@@ -1205,6 +1226,10 @@
     /* HTTP超时(1分钟) */
     _HTTP_TIMEOUT = 3*60*1000,
 
+    popupMessage = function (msg) {
+        ($.alert || alert)(msg);
+    },
+
  
     /*
      *  XMLHTTP请求对象，负责发起XMLHTTP请求并接收响应数据。例:
@@ -1234,7 +1259,7 @@
             this.xmlhttp = new XMLHttpRequest();
         } 
         else {
-            alert("您的浏览器版本过旧，不支持XMLHttpRequest，请先升级浏览器。");
+            popupMessage("您的浏览器版本过旧，不支持XMLHttpRequest，请先升级浏览器。");
         }
     };
 
@@ -1574,17 +1599,13 @@
     Message_Success = function(info, request) {
         request.ondata();
 
-        var str = [];
-        str[str.length] = "Success";
-        str[str.length] = "msg=\""  + info.msg  + "\"";
-
         if( info.type != "0" ) {
             
-            alert(info.msg, str.join("\r\n"));
+            popupMessage(info.msg);
 
             // 3秒后自动自动隐藏成功提示信息
             setTimeout(function() {
-                $("#X-messageBox").css("display", "none");
+                $("#alert_box").hide();
             }, 3000);
         }
 
@@ -1595,7 +1616,7 @@
      *  对象名称：Message_Exception对象
      *  职责：负责处理异常信息
      *
-     *  注意：本对象除了展示异常信息（通过alert方法，window.alert=Alert，Alert在framework.js里做了重新定义）外，
+     *  注意：本对象除了展示异常信息外，
      *  还可以根据是否需要重新登录来再一次发送request请求，注意此处参数Message_Exception(param, request)，该
      *  request依然还是上一次发送返回异常信息的request，将登陆信息加入后（loginName/pwd等，通过_relogin.htm页面获得），
      *  再一次发送该request请求，从而通过AutoLoginFilter的验证，取回业务数据。  
@@ -1615,7 +1636,8 @@
         str[str.length] = "source=\"" + (info.source || "") + "\"";
 
         if( info.msg && info.type != "0" && info.relogin != "1") {
-            alert(info.msg, str.join("\r\n"));
+            popupMessage(info.msg);
+            console.log(str.join("\r\n"))
         }
 
         request.onexception(info);
@@ -1628,47 +1650,41 @@
             $.Cookie.del("token", "/");
             $.Cookie.del("token", "/" + FROMEWORK_CODE.toLowerCase());
             $.Cookie.del("token", "/" + CONTEXTPATH);
-            
-            popupMessage(info.msg);
-            relogin(request);
+
+            relogin(request, info.msg);
         }
 
-        function popupMessage(msg) {
-            if(window._alert) {
-                _alert(msg);
-            }
-            else {
-                alert(msg);
-            }
-        }
-
-        function relogin(request) {
+        function relogin(request, msg) {
             var reloginBox = $("#relogin_box")[0];
             if(reloginBox == null) {
                 var boxHtml = [];
                 boxHtml[boxHtml.length] = "<h1>重新登录</h1>";
-                boxHtml[boxHtml.length] = "<span> 账&nbsp; 号：<input type='text' id='loginName' placeholder='请输入您的账号'/> </span>";
-                boxHtml[boxHtml.length] = "<span> 密&nbsp; 码：<input type='password' id='password' placeholder='请输入您的密码' /> </span>";
+                boxHtml[boxHtml.length] = "<span> <input type='text' id='loginName' placeholder='请输入您的账号'/> </span>";
+                boxHtml[boxHtml.length] = "<span> <input type='password' id='password' placeholder='请输入您的密码' /> </span>";
                 boxHtml[boxHtml.length] = "<span class='bottonBox'>";
-                boxHtml[boxHtml.length] = "  <input type='button' id='bt_login'  class='btStrong' value='确 定'/>&nbsp;&nbsp;";
-                boxHtml[boxHtml.length] = "  <input type='button' id='bt_cancel' class='btWeak' value='取 消'/>";
+                boxHtml[boxHtml.length] = "  <input type='button' id='bt_login'  value='确  定'/>&nbsp;&nbsp;";
+                boxHtml[boxHtml.length] = "  <input type='button' id='bt_cancel' value='取  消'/>";
                 boxHtml[boxHtml.length] = "</span>";
 
-                reloginBox = $.createElement("div", "popupBox");    
-                reloginBox.id = "relogin_box";    
-                reloginBox.innerHTML = boxHtml.join("");
-
+                reloginBox = $.createElement("div", "popupBox", "relogin_box");    
                 document.body.appendChild(reloginBox);
+                $(reloginBox).html(boxHtml.join(""));
 
                 $("#bt_cancel").click(function() {
-                    reloginBox.style.display = "none";
+                    $(reloginBox).hide();
                 });
 
                 var defaultUserName = $.Cookie.getValue("iUserName");
                 if( defaultUserName ) {
-                    $1("loginName").value = defaultUserName;
+                    $("#loginName").value(defaultUserName);
                 }
             }
+
+            var title = "重新登录";
+            if(msg) {
+                title += "，因" + msg.substring(0, 10) + (msg.length > 10 ? "..." : "");
+            }
+            $("h1", reloginBox).html(title);
 
             $(reloginBox).show(); // 显示登录框
 
@@ -1771,7 +1787,7 @@
 
             var feedback = data.querySelector("feedback");
             if( feedback ) {
-                alert($.XML.getText(feedback));
+                $.alert($.XML.getText(feedback));
             }
         },
 
@@ -1877,7 +1893,9 @@
 
     $.Progress = Progress;
 
-})(tssJS);;(function($, factory) {
+})(tssJS);
+/* tip, 提示气泡 */
+;(function($, factory) {
 
     $.Bubble = $.Balloon = factory($);
 
@@ -1946,6 +1964,117 @@
 
     return Bubble;
 });
+
+
+(function($) {
+
+    var popupBox = function(title, callback) {
+            var $box = $("#alert_box");
+            if($box.length > 0) {
+                $box.remove();
+            }
+
+            var boxEl = $.createElement("div", "moveable", "alert_box");
+            document.body.appendChild(boxEl);
+
+            var html = [];
+            html.push('  <h1 class="title"></h1>');
+            html.push('  <span class="close"></span>');
+            html.push('  <div class="content">');
+            html.push('    <div class="message"></div>');
+            html.push('    <div class="btbox"><input type="button" value="确 定" class="ok"></div>');
+            html.push('  </div>');
+
+            $box = $(boxEl).html(html.join("\n")).show().drag();
+            $(".close", boxEl).click(closeBox);
+            $("h1", boxEl).html(title).addClass("text2");
+            $(".content .message", boxEl).addClass("text1");
+
+            $(boxEl).center(360, 300);   
+            callback && $.showWaitingLayer();
+
+            $.Event.addEvent(document, "keydown", function(ev) {
+                if(27 == ev.keyCode) { // ESC 退出
+                   closeBox();
+                }
+            });
+
+            return $box[0];
+        },
+
+        closeBox = function() {
+            $("#alert_box").hide().remove();
+            $.hideWaitingLayer();
+        };
+
+
+    // content：内容，title：对话框标题，callback：回调函数    
+    $.alert = function(content, title, callback) {
+        var boxEl = popupBox(title || '提示', callback);
+        $(".content", boxEl).addClass("alert");
+        $(".content .message", boxEl).html(content);
+
+        function ok() {
+            closeBox();
+            callback && callback();
+        }
+        $(".btbox .ok", boxEl).click(ok);
+        $.Event.addEvent(document, "keydown", function(ev) {
+            if(13 == ev.keyCode) { // Enter
+               setTimeout(ok, 10);
+            }
+        });
+    };
+
+    // content：内容，title：对话框标题，callback：回调函数
+    $.confirm = function(content, title, callback, cancelCallback){
+        var boxEl = popupBox(title || '确认框', callback);
+        $(".content", boxEl).addClass("confirm");
+        $(".content .message", boxEl).html(content || '你确认此操作吗?');
+        $(".btbox", boxEl).html($(".btbox", boxEl).html() + '<input type="button" value="取 消" class="cancel">');
+
+        function ok(result) {
+            closeBox();
+            if(result) {
+                callback && callback();
+            } else {
+                cancelCallback && cancelCallback();
+            }
+        }
+        $(".btbox .ok", boxEl).click(function() { ok(true); });
+        $(".btbox .cancel", boxEl).click(function() { ok(false); });
+        $.Event.addEvent(document, "keydown", function(ev) {
+            if(13 == ev.keyCode) { // Enter
+               setTimeout( function() { ok(true); }, 10);
+            }
+        });
+    };
+
+    // content：内容，deinput：输入框的默认值，title：对话框标题，callback：回调函数
+    $.prompt = function(content, title, callback, deinput){
+        var boxEl = popupBox(title || '输入框', callback);
+        $(".content", boxEl).addClass("prompt");
+        $(".content .message", boxEl).html( (content || "请输入：") + ':<br><input type="text">' );
+        $(".content .message input", boxEl).value(deinput || '');
+        $(".btbox", boxEl).html($(".btbox", boxEl).html() + '<input type="button" value="取 消" class="cancel">');       
+
+        function ok() {
+            var value = $(".content .message input", boxEl).value();
+
+            closeBox();
+            callback && callback(value);
+        }
+        $(".btbox .ok", boxEl).click(ok);
+        $(".btbox .cancel", boxEl).click(closeBox);
+
+        $.Event.addEvent(document, "keydown", function(ev) {
+            if(13 == ev.keyCode) { // Enter
+               setTimeout(ok, 10);
+            }
+        });
+    };
+
+})(tssJS);
 
 /* 右键菜单 */
 ;(function ($, factory) {
@@ -3136,10 +3265,10 @@
 
     'use strict';
 
-    var showErrorInfo = function(errorInfo, obj) {
+    var showErrorInfo = function(errorMsg, obj) {
         setTimeout(function() {
             if( $.Balloon ) {
-                $(obj).notice(errorInfo);
+                $(obj).notice(errorMsg);
             }
         }, 100);
     },
@@ -3149,21 +3278,22 @@
     },
 
     validate = function() {
-        var empty     = this.el.getAttribute("empty");
-        var errorInfo = this.el.getAttribute("errorInfo");
-        var caption   = this.el.getAttribute("caption").replace(/\s/g, "");
-        var inputReg  = this.el.getAttribute("inputReg");
+        var empty    = this.el.getAttribute("empty");
+        var caption  = this.el.getAttribute("caption").replace(/\s/g, "");
+        var checkReg = this.el.getAttribute("checkReg") || this.el.getAttribute("inputReg");
         
+        var errorMsg;
         var value = this.el.value;
         if(value == "" && empty == "false") {
-            errorInfo = "[" + caption.replace(/\s/g, "") + "] 不允许为空。";
+            errorMsg = "[" + caption.replace(/\s/g, "") + "] 不允许为空。";
         }
-        if(inputReg && !eval(inputReg).test(value)) {
-            errorInfo = errorInfo || "[" + caption + "] 格式不正确，请更正.";
+        if(checkReg && !eval(checkReg).test(value)) {
+            errorMsg = this.el.getAttribute("errorMsg");
+            errorMsg = errorMsg || "[" + caption + "] 格式不正确，请更正.";
         }
 
-        if( errorInfo ) {
-            showErrorInfo(errorInfo, this.el);
+        if( errorMsg ) {
+            showErrorInfo(errorMsg, this.el);
 
             if( !!this.isInstance ) {
                 this.setFocus();
@@ -3285,7 +3415,7 @@
                             continue;
                         }
 
-                        var mode    = column.getAttribute("mode");
+                        var mode    = column.getAttribute("mode") || 'string';
                         var editor  = column.getAttribute("editor");
                         var caption = column.getAttribute("caption");
                         var value   = this.getFieldValue(binding);
@@ -3359,7 +3489,7 @@
 
         load: function(dataXML) {
             if("object" != typeof(dataXML) || dataXML.nodeType != $.XML._NODE_TYPE_ELEMENT) {
-                return alert("传入的Form数据有问题，请检查。");
+                return $.alert("传入的Form数据有问题，请检查。");
             }
             
             this.template = new XMLTemplate(dataXML);   
@@ -3393,15 +3523,6 @@
                 var fieldObj;
                 var fieldType = field.getAttribute("mode");
                 switch(fieldType) {
-                    case "string":
-                        var colEditor = field.getAttribute("editor");
-                        if(colEditor == "comboedit") {
-                            fieldObj = new ComboField(fieldName, this);
-                        }
-                        else {
-                            fieldObj = new StringField(fieldName, this);
-                        }
-                        break;
                     case "number":
                         fieldObj = new StringField(fieldName, this);
                         break;
@@ -3414,6 +3535,16 @@
                         break;
                     case "hidden":
                         fieldObj = new HiddenFiled(fieldName, this);
+                        break;
+                    case "string":
+                    default:
+                        var colEditor = field.getAttribute("editor");
+                        if(colEditor == "comboedit") {
+                            fieldObj = new ComboField(fieldName, this);
+                        }
+                        else {
+                            fieldObj = new StringField(fieldName, this);
+                        }
                         break;
                 }
 
@@ -3545,7 +3676,7 @@
         getFieldConfig: function(name, attrName) {
             var field = this.template.fieldsMap[name];
             if( field == null ) {
-                return alert("指定的字段[" + name + "]不存在");
+                return $.alert("指定的字段[" + name + "]不存在");
             }
             return field.getAttribute(attrName);
         },
@@ -4057,7 +4188,7 @@
     Grid.prototype = {
         load: function(data, append) {
             if("object" != typeof(data) || data.nodeType != $.XML._NODE_TYPE_ELEMENT) {
-                alert("传入的Grid数据有问题。")  
+                $.alert("传入的Grid数据有问题。")  
             } 
 
             // 初始化变量
@@ -4138,7 +4269,22 @@
 
             var mode  = column.getAttribute("mode") || "string";
             switch( mode ) {
+                case "number":  
+                case "date":
+                    cell.title = value;
+                    break;         
+                case "function":                          
+                    break;    
+                case "image":          
+                    cell.innerHTML = "<img src='" + value + "'/>";
+                    break;    
+                case "boolean":      
+                    var checked = (value =="true") ? "checked" : "";
+                    cell.innerHTML = "<form><input class='selectHandle' type='radio' " + checked + "/></form>";
+                    cell.querySelector("input").disabled = true;
+                    break;
                 case "string":
+                default:
                     var editor = column.getAttribute("editor");
                     var editortext = column.getAttribute("editortext");
                     var editorvalue = column.getAttribute("editorvalue");
@@ -4153,20 +4299,6 @@
                     }
                     
                     $(cell).html(value).title(value);                          
-                    break;
-                case "number":  
-                case "date":
-                    cell.title = value;
-                    break;         
-                case "function":                          
-                    break;    
-                case "image":          
-                    cell.innerHTML = "<img src='" + value + "'/>";
-                    break;    
-                case "boolean":      
-                    var checked = (value =="true") ? "checked" : "";
-                    cell.innerHTML = "<form><input class='selectHandle' type='radio' " + checked + "/></form>";
-                    cell.querySelector("input").disabled = true;
                     break;
             }                           
         },
@@ -5073,7 +5205,7 @@
             var parent = to;
             while(parent) {
                 if(parent == from) {
-                    return alert("不能向自己的内部节点移动。"); // 不能移动到子节点里
+                    return $.alert("不能向自己的内部节点移动。"); // 不能移动到子节点里
                 }
                 parent = parent.parent;
             }
@@ -5176,7 +5308,7 @@
 
         this.search = function(searchStr) {
             if($.isNullOrEmpty(searchStr)) {
-                return alert("查询条件不能为空！");
+                return $.alert("查询条件不能为空！");
             }
 
             if(lastSearchStr == searchStr) {
@@ -5735,3 +5867,197 @@
 
     return WorkSpace;
 }); 
+
+/*
+ *  左栏
+ */
+;(function($) {
+ 
+    $.leftbar = function(fn1, fn2) {
+
+        var closeLeftbar = function() {
+                $(".leftbar").removeClass("leftbar-open").addClass("leftbar-hidden");
+            },
+            showLeftbar = function() {
+                $(".leftbar").removeClass("leftbar-hidden").addClass("leftbar-open");
+            };
+
+        var barWidth = 30, f = 0;
+
+        this.init = function() {
+            this.createInDomTree();
+
+            $(".leftbar-menu").toggle(fn1, fn2 || fn1);
+            $(document).addEvent("mousemove", this.onMouseMove);
+        };
+
+        this.createInDomTree = function() {
+            var el = $.createElement("div", "leftbar");
+            $(el).addClass("leftbar-hidden");
+            $(el).html('<div class="leftbar-menu"><span>&nbsp;</span></div>');
+
+            document.body.appendChild(el);
+        };
+        
+        this.onMouseMove = function(ev) {
+            ev.stopImmediatePropagation();
+
+            var _x = ev.clientX > 0 ? ev.clientX : 1, 
+                i = parseInt(100 / parseInt(document.body.clientWidth / _x, 10), 10), 
+                s = !1;
+
+            if (Math.abs(i - f) < 5)
+                return;
+
+            $(".leftbar").hasClass("leftbar-open") && _x > barWidth && closeLeftbar();
+
+            if (i >= 10 && i <= 50) {
+                var o = barWidth * i * 12 / 100;
+                f > i ? s = barWidth - o : s = -o;
+                s = Math.ceil(s);
+                s > 0 && (s = 0)
+            } 
+            else {
+                i > 50 ? s = -parseInt(barWidth, 10) : i >= 0 && i < 10 && (s = 0);
+            }
+            
+            if (s === 0) {
+                showLeftbar();
+            }
+            f = i;
+        };
+
+        this.init();
+    }
+
+})(tssJS);
+
+
+/*
+ *  drag / resize
+ */
+tssJS(function() {
+    // 钩子
+    $(".moveable").each(function(i, el){
+        $(el).drag();
+    });
+
+    $(".resizable").each(function(i, el){
+        $(el).resize().resize("col").resize("row");
+    })
+});
+
+tssJS.fn.extend({
+    drag: function(handle) {
+        var element = this[0];
+        handle = handle || $("h1", element)[0] || $("h2", element)[0] || element; // 拖动条
+        if(handle == null) return;
+
+        var mouseStart  = {x:0, y:0};  // 鼠标起始位置
+        var elementStart = {x:0, y:0};  // 拖动条起始位置
+
+        handle.onmousedown = function(ev) {
+            var oEvent = ev || event;
+            mouseStart.x  = oEvent.clientX;
+            mouseStart.y  = oEvent.clientY;
+            elementStart.x = element.offsetLeft;
+            elementStart.y = element.offsetTop;
+
+            if (handle.setCapture) {
+                handle.onmousemove = doDrag;
+                handle.onmouseup = stopDrag;
+                handle.setCapture();
+            } else {
+                document.addEventListener("mousemove", doDrag, true);
+                document.addEventListener("mouseup", stopDrag, true);
+            }
+        };
+
+        function doDrag(ev) {
+            ev = ev || event;
+
+            var x = ev.clientX - mouseStart.x + elementStart.x;
+            var y = ev.clientY - mouseStart.y + elementStart.y;
+
+            element.style.left = x + "px";
+            element.style.top  = y + "px";
+        };
+
+        function stopDrag() {
+            if (handle.releaseCapture) {
+                handle.onmousemove = handle.onmouseup = null;
+                handle.releaseCapture();
+            } else {
+                document.removeEventListener("mousemove", doDrag, true);
+                document.removeEventListener("mouseup", stopDrag, true);
+            }
+        };
+
+        return this;
+    },
+
+    resize: function(type) {
+        var element = this[0];
+
+        var handle = document.createElement("DIV"); // 拖动条
+        var cssText = "position:absolute;overflow:hidden;z-index:3;";
+        if (type == "col") {
+            handle.style.cssText = cssText + "cursor:col-resize;top:0px;right:0px;width:3px;height:100%;";
+        } else if(type == "row") {
+            handle.style.cssText = cssText + "cursor:row-resize;left:0px;bottom:0px;width:100%;height:3px;";
+        } else {
+            handle.style.cssText = cssText + "cursor:nw-resize;right:0px;bottom:0px;width:8px;height:8px;background:#99CC00";
+        }
+        
+        element.appendChild(handle);
+
+        var mouseStart  = {x:0, y:0};  // 鼠标起始位置
+        var handleStart = {x:0, y:0};  // 拖动条起始位置
+
+        handle.onmousedown = function(ev) {
+            var oEvent = ev || event;
+            mouseStart.x  = oEvent.clientX;
+            mouseStart.y  = oEvent.clientY;
+            handleStart.x = handle.offsetLeft;
+            handleStart.y = handle.offsetTop;
+
+            document.addEventListener("mousemove", doDrag, true);
+            document.addEventListener("mouseup", stopDrag, true);
+        };
+
+        function doDrag(ev) {
+            var oEvent = ev || event;
+
+            // 水平移动距离
+            if (type == "col" || type == null) {
+                var _width = oEvent.clientX - mouseStart.x + handleStart.x + handle.offsetWidth;
+                if (_width < handle.offsetWidth) {
+                    _width = handle.offsetWidth;
+                } 
+                else if (_width > document.documentElement.clientWidth - element.offsetLeft) {
+                    _width = document.documentElement.clientWidth - element.offsetLeft - 2; // 防止拖出窗体外
+                }
+                element.style.width = _width + "px";
+            }
+
+            // 垂直移动距离
+            if (type == "row" || type == null) {
+                var _height = oEvent.clientY - mouseStart.y + handleStart.y + handle.offsetHeight;
+                if (_height < handle.offsetHeight) {
+                    _height = handle.offsetHeight;
+                } 
+                else if (_height > document.documentElement.clientHeight - element.offsetTop) {
+                    _height = document.documentElement.clientHeight - element.offsetTop - 2; // 防止拖出窗体外
+                }
+                element.style.height = _height + "px";
+            }
+        };
+
+        function stopDrag() {
+            document.removeEventListener("mousemove", doDrag, true);
+            document.removeEventListener("mouseup", stopDrag, true);
+        };
+
+        return this;
+    }
+});
