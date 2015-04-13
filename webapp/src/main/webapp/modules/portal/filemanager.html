@@ -13,16 +13,17 @@
 
 <style>
     body { background-color: #fff; }
-    .dialog { border:0px solid #98989C; background-color:#fff; overflow:auto; padding:5px;}
+    .dialog { border:0px solid #98989C; background-color:#003399; overflow:auto; padding:5px;}
 
-    .dialog Tree { height: 220px; }
+    .dialog Tree { height: 275px; }
 
-    .operation {height: 30px; vertical-align:bottom; padding-top: 3px;}
-    .operation span { width:20px; height:18px; display: inline-block; padding-left:3px; background-repeat:no-repeat;} 
+    .operation { height: 30px; vertical-align:bottom; padding-top: 3px; color: #fff; font-size: 15px;}
+    .operation span { width:20px; height:18px; display: inline-block; padding-left:3px; background-repeat:no-repeat; } 
     .operation .download {background-image:url(images/icon_download.gif); }
     .operation .rename   {background-image:url(images/icon_rename.gif); }
     .operation .remove   {background-image:url(images/icon_del.gif); }
     .operation .newfolder{background-image:url(images/icon_folder_new.gif); }
+    .operation input { background-color:#fff; }
 
     .operation #contextPath{ color:#999999; background-color:#F6F6F6; width:160px; border:1px; } 
     .operation #fileFilter { width:40px; padding-left:3px; }
@@ -58,7 +59,7 @@
     function init() {
         loadFileTree();
 
-        $(".dialog").center(424, 278);
+        $(".dialog").center();
         $(".operation .download").click(downloadFiles);
         $(".operation .rename").click(renameFile);
         $(".operation .remove").click(delFiles);
