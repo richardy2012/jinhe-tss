@@ -2,7 +2,6 @@ package com.jinhe.tss.portal.module;
 
 import java.io.File;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -55,7 +54,8 @@ public class PortalFileOperationTest extends TxSupportTest4Portal {
     	request = new MockHttpServletRequest();
     	request.addParameter("contextPath", layoutPath);
     	request.addParameter("fileName", "temp");
-    	request.addParameter("newFileName", "temp2");
+    	String newFileName = "D" + System.currentTimeMillis();
+    	request.addParameter("newFileName", newFileName);
         fileAction.renameFile(response, request);
         
         request = new MockHttpServletRequest();
@@ -69,16 +69,12 @@ public class PortalFileOperationTest extends TxSupportTest4Portal {
         
         request = new MockHttpServletRequest();
         request.addParameter("type", "wrongType");
-		try {
-			fileAction.listAvailableFiles(response, request);
-			Assert.fail("should throw exception but didn't.");
-		} catch (Exception e) {
-		}
+        fileAction.listAvailableFiles(response, request);
         
         request = new MockHttpServletRequest();
         request.addParameter("contextPath", layoutPath);
     	request.addParameter("fileNames", "xxx.txt");
-    	request.addParameter("folderNames", "temp2");
+    	request.addParameter("folderNames", newFileName);
     	fileAction.deleteFile(response, request);
     }
 	

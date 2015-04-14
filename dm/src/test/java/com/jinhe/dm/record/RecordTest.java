@@ -42,6 +42,7 @@ public class RecordTest extends TxTestSupport4DM {
         group2.setName("record-group-2");
         action.saveRecord(response, group2);
         
+        // test create record
         Record record1 = new Record();
         record1.setType(Record.TYPE1);
         record1.setParentId(group1.getId());
@@ -56,6 +57,10 @@ public class RecordTest extends TxTestSupport4DM {
         record1.setRemark("test record");
         action.saveRecord(response, record1);
         
+        // test update record
+        record1.setTable("x_tbl_test");
+        action.saveRecord(response, record1);
+        
         action.getAllRecord(response);
         action.getAllRecordGroups(response);
         
@@ -66,6 +71,9 @@ public class RecordTest extends TxTestSupport4DM {
         action.move(response, record1.getId(), group2.getId());
         
         action.getAllRecord(response);
+        
+        // test permission
+        action.getOperations(response, record1.getId());
         
         action.delete(response, record1.getId());
         action.getAllRecord(response);

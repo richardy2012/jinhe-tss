@@ -1,6 +1,9 @@
 package com.jinhe.dm;
 
 import com.jinhe.tss.framework.component.param.ParamConfig;
+import com.jinhe.tss.framework.component.param.ParamManager;
+import com.jinhe.tss.framework.sso.Environment;
+import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.util.EasyUtils;
 
 public final class DMConstants {
@@ -33,4 +36,17 @@ public final class DMConstants {
 		return "modules/" + tlDir;
 	}
     
+	public static boolean isAdmin() {
+		return UMConstants.ADMIN_USER_NAME.equals(Environment.getUserCode());
+	}
+	
+	public static String getDS(String ds) {
+		if( ds == null ) {
+            try {
+                return ParamManager.getValue(DMConstants.DEFAULT_CONN_POOL).trim(); // 默认数据源
+            } catch (Exception e) {
+            }
+        }
+		return ds;
+	}
 }

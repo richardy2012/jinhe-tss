@@ -15,7 +15,6 @@ import javax.persistence.Table;
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.report.permission.ReportResource;
 import com.jinhe.tss.framework.component.param.ParamConstants;
-import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
@@ -140,13 +139,7 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
         this.script = script;
     }
     public String getDatasource() {
-        if( datasource == null ) {
-            try {
-                return ParamManager.getValue(DMConstants.DEFAULT_CONN_POOL).trim(); // 默认数据源
-            } catch (Exception e) {
-            }
-        }
-        return datasource;
+        return DMConstants.getDS(datasource);
     }
     public void setDatasource(String datasource) {
         this.datasource = datasource;

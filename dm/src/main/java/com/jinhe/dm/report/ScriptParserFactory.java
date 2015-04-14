@@ -12,9 +12,7 @@ public class ScriptParserFactory {
             String configValue = Config.getAttribute("script_precheator");
             if (configValue != null) {
                 instance = (ScriptParser) BeanUtil.newInstanceByName(configValue);
-            } else {
-                return null;
-            }
+            } 
         }
         return instance;
     }

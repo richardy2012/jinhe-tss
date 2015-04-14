@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.dom4j.Document;
 
+import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.record.Record;
 import com.jinhe.tss.cache.Cacheable;
@@ -200,7 +201,8 @@ public abstract class _Database {
 		Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
 		paramsMap.put(1, Environment.getUserCode());
 		
-		String condition = "";
+		// TODO 增加权限控制，针对特定权限开发查看他人录入数据, '000' <> ? <==> 忽略创建人这个查询条件
+		String condition = DMConstants.isAdmin() ? " '000' <> ? " : " creator = ? ";
 		if(params != null) {
 			for(String key : params.keySet()) {
 				String value = params.get(key);
@@ -212,14 +214,14 @@ public abstract class _Database {
 				}
 				
 				if( "creator".equals(key) ) {
-					paramsMap.put(1, value); // 替换登录账号，允许查询其它创建的数据; TODO 增加权限控制，针对特定权限开发查看他人录入数据
+					paramsMap.put(1, value); // 替换登录账号，允许查询其它人创建的数据; 
 				}
 			}
 		}
 		
 		String selectSQL = "select " + EasyUtils.list2Str(this.fieldCodes) + 
 					",createtime,creator,updatetime,updator,version,id from " + this.table + 
-					" where creator = ? " + condition + " order by id desc ";
+					" where " + condition + " order by id desc ";
 		
 		SQLExcutor ex = new SQLExcutor(false);
 		ex.excuteQuery(selectSQL, paramsMap, page, pagesize, this.datasource);

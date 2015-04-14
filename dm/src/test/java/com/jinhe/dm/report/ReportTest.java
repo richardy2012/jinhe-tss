@@ -1,5 +1,6 @@
 package com.jinhe.dm.report;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,8 @@ import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.timer.SchedulerBean;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.context.Context;
+import com.jinhe.tss.util.FileHelper;
+import com.jinhe.tss.util.URLUtil;
 
 public class ReportTest extends TxTestSupport4DM {
     
@@ -102,5 +105,28 @@ public class ReportTest extends TxTestSupport4DM {
         for(Object temp : logs) {
             log.debug(temp);
         }
+    }
+    
+    @Test
+    public void testReportTLs() {
+    	String rtd = DMConstants.getReportTLDir();
+ 		File reportTLDir = new File(URLUtil.getWebFileUrl(rtd).getPath());
+ 		File newFile = new File(reportTLDir.getPath() + "/1.html");
+ 		FileHelper.writeFile(newFile, "111111111111");
+ 		
+ 		File tempDir1 = FileHelper.createDir(reportTLDir.getPath() + "/temp1");
+ 		newFile = new File(tempDir1.getPath() + "/2.html");
+ 		FileHelper.writeFile(newFile, "222222222222");
+        
+        reportTLDir = new File(URLUtil.getWebFileUrl("modules/" + DMConstants.REPORT_TL_DIR_DEFAULT).getPath());
+        newFile = new File(reportTLDir.getPath() + "/3.html");
+        FileHelper.writeFile(newFile, "333333333333");
+ 		
+    	action.getReportTLs(response);
+    }
+    
+    @Test
+    public void testReporter() {
+    	action.getReportsByType(response, 1);
     }
 }
