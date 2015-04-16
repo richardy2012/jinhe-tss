@@ -18,7 +18,7 @@
 
 <script type="text/javascript">
  
-URL_SOURCE_TREE = AUTH_PATH + "rp/all";
+URL_SOURCE_TREE = AUTH_PATH + "rp/my";
 
 if(IS_TEST) {
     URL_SOURCE_TREE = "data/report_tree.xml?";
@@ -40,7 +40,7 @@ function loadInitData() {
                 showReport();
             }
             if( isReportGroup()) {
-                // 打开或关闭树枝
+                treeNode.openNode(); // 打开或关闭树枝
             }
         }
     }

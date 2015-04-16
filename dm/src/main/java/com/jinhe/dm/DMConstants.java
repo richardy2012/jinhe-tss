@@ -1,5 +1,7 @@
 package com.jinhe.dm;
 
+import java.util.regex.Pattern;
+
 import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.sso.Environment;
@@ -48,5 +50,10 @@ public final class DMConstants {
             }
         }
 		return ds;
+	}
+	
+	static Pattern cnPattern = Pattern.compile("[\u4e00-\u9fa5]");
+	public static boolean hasCNChar(String str) {
+		return cnPattern.matcher(str).find();
 	}
 }

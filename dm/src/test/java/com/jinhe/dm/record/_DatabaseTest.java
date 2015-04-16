@@ -44,6 +44,7 @@ public class _DatabaseTest {
         		"{'label':'时间', 'code':'f3', 'type':'date', 'nullable':'false'}]";
 		
 		Record record = new Record();
+		record.setId(1L);
 		record.setDatasource(datasource);
 		record.setTable(type + "_tbl_2");
 		record.setDefine(tblDefine);
@@ -53,6 +54,7 @@ public class _DatabaseTest {
 		
 		// test update table with change table name
 		record = new Record();
+		record.setId(2L);
 		record.setDatasource(datasource);
 		record.setTable(type + "_tbl_3");
 		record.setDefine(tblDefine);
@@ -65,6 +67,7 @@ public class _DatabaseTest {
         		"{'label':'时间', 'code':'f3', 'type':'datetime', 'nullable':'false'}," +
         		"{'label':'UDF', 'code':'f5', 'type':'string'}]";
 		record = new Record();
+		record.setId(3L);
 		record.setDatasource(datasource);
 		record.setTable(type + "_tbl_3");
 		record.setDefine(tblDefine);
@@ -106,6 +109,7 @@ public class _DatabaseTest {
         		"{'label':'时间2', 'code':'f4', 'type':'datetime', 'nullable':'false'}]";
 		
 		record = new Record();
+		record.setId(4L);
 		record.setDatasource(datasource);
 		record.setTable(type + "_tbl_3");
 		record.setDefine(tblDefine);

@@ -11,7 +11,8 @@ import com.jinhe.tss.util.XmlUtil;
 
 /**
  * 树节点对象
- *
+ * 
+ * _open = "true" 默认打开
  */
 public class TreeNode {
 	

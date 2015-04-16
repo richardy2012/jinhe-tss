@@ -37,7 +37,7 @@ public class DisplayTest extends TxTestSupport4DM {
         Report report1 = new Report();
         report1.setType(Report.TYPE1);
         report1.setParentId(Report.DEFAULT_PARENT_ID);
-        report1.setName("report-1");
+        report1.setName("报表一");
         report1.setScript(" select id, name from dm_report " +
         		" where id > ? " +
         		"  <#if param2??> and type <> ? <#else> and type = 1 </#if> " +
@@ -60,7 +60,7 @@ public class DisplayTest extends TxTestSupport4DM {
         request.addParameter("param2", "0");
         request.addParameter("param3", "2013-10-01");
         request.addParameter("param4", "2013/10/01 11:11:11");
-        request.addParameter("param5", "report-1,report-1");
+        request.addParameter("param5", "报表一,report-1");
         
         Long reportId = report1.getId();
         display.showAsGrid(request, response, reportId, 1, 10);
@@ -107,6 +107,12 @@ public class DisplayTest extends TxTestSupport4DM {
         request.addParameter("param4", "2013/10/01 11:11:11");
         request.addParameter("param5", "reportGruop1,reportGruop2");
 		display.exportAsCSV(request, new MockHttpServletResponse(), reportId, 1, 1); // 阀值为1
+		
+        // test Customize report tree
+		for(int i = 0; i < 30; i++) {
+			display.showAsJson(request, report1.getName());
+		}
+        action.getCustomizeReports(response);
     }
     
     /**

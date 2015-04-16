@@ -40,7 +40,17 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
     public static final String OPERATION_EDIT    = "2"; // 维护
     public static final String OPERATION_DELETE  = "3"; // 删除
     public static final String OPERATION_DISABLE = "4"; // 停用启用
- 
+    
+    public Report() {
+    }
+    
+    public Report(Long groupId, String groupName) {
+    	this.id = groupId;
+    	this.name = groupName;
+    	this.type = TYPE0;
+    	this.parentId = DEFAULT_PARENT_ID;
+    }
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "report_sequence")
     private Long    id;         // 主键
@@ -162,6 +172,10 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
         if(TYPE1 == type) {
             map.put("param", param);
             map.put("displayUri", displayUri);
+        }
+        
+        if( this.id.longValue() < 0 ) {
+        	map.put("_open", "true");
         }
  
         return map;

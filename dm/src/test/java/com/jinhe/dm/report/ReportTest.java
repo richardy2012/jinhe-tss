@@ -124,9 +124,4 @@ public class ReportTest extends TxTestSupport4DM {
  		
     	action.getReportTLs(response);
     }
-    
-    @Test
-    public void testReporter() {
-    	action.getReportsByType(response, 1);
-    }
 }

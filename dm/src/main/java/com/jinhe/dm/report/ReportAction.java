@@ -1,6 +1,9 @@
 package com.jinhe.dm.report;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.dm.DMConstants;
+import com.jinhe.dm.data.sqlquery.SQLExcutor;
+import com.jinhe.dm.data.util._DateUtil;
 import com.jinhe.dm.report.permission.ReportPermission;
 import com.jinhe.dm.report.permission.ReportResource;
 import com.jinhe.dm.report.timer.ReportJob;
@@ -35,6 +40,7 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.helper.PasswordRule;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.service.ILoginService;
+import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;
@@ -55,13 +61,97 @@ public class ReportAction extends BaseActionSupport {
         print("SourceTree", treeEncoder);
     }
     
-    @RequestMapping("/{type}")
-    public void getReportsByType(HttpServletResponse response, @PathVariable("type") int type) {
+    @RequestMapping("/my")
+    public void getCustomizeReports(HttpServletResponse response) {
 	    checkPwdSecurity();
-    	
-        List<?> list = reportService.getAllReport();
-        TreeEncoder treeEncoder = new TreeEncoder(list, new StrictLevelTreeParser(Report.DEFAULT_PARENT_ID));
+	    
+	    List<Report> list = reportService.getAllReport();
+	    
+	    // 查出过去30天个人和整站访问Top10的报表名称
+	    List<String> topSelf = getTops(true);
+	    List<String> topX = getTops(false);
+	    Long selfGroupId = -2L, topGroupId = -3L, newGroupId = -4L;
+	    		
+	    List<Report> result = new ArrayList<Report>();
+	    if(topSelf.size() > 0) {
+	    	result.add(new Report(selfGroupId, "您最近访问报表"));
+	    	for(String temp : topSelf) {
+	    		for(Report report : list) {
+		    		if(temp.equals(report.getName()) && !ParamConstants.TRUE.equals(report.getDisabled())) {
+		        		result.add(cloneReport(selfGroupId, report));
+		        		break;
+		    		}
+		    	}
+	    	}
+	    }
+	    if(topX.size() > 0) {
+	    	result.add(new Report(topGroupId, "近期热门报表"));
+	    	for(String temp : topX) {
+	    		for(Report report : list) {
+		    		if(temp.equals(report.getName()) && !ParamConstants.TRUE.equals(report.getDisabled())) {
+		        		result.add(cloneReport(topGroupId, report));
+		        		break;
+		    		}
+		    	}
+	    	}
+	    }
+	    
+	    result.add(new Report(newGroupId, "近期新出报表"));
+	    List<Report> latest = new ArrayList<Report>();
+    	for(Report report : list) {
+    		if(ParamConstants.TRUE.equals(report.getDisabled()))  continue;
+ 
+    		if(Report.TYPE1 == report.getType() 
+    				&& report.getCreateTime().after(_DateUtil.subDays(_DateUtil.today(), 10))
+    				&& DMConstants.hasCNChar(report.getName())) {
+    			
+    			latest.add(cloneReport(newGroupId, report));
+    		}
+    		
+    		result.add(report);
+    	}
+    	Collections.sort(latest, new Comparator<Report>() {
+            public int compare(Report r1, Report r2) {
+                return r2.getId().intValue() - r1.getId().intValue();
+            }
+        });
+    	result.addAll(latest);
+       
+        TreeEncoder treeEncoder = new TreeEncoder(result, new StrictLevelTreeParser(Report.DEFAULT_PARENT_ID));
         print("SourceTree", treeEncoder);
+    }
+
+	private Report cloneReport(Long topGroupId, Report report) {
+		Report clone = new Report();
+		BeanUtil.copy(clone, report);
+		clone.setParentId(topGroupId);
+		return clone;
+	}
+ 
+    private List<String> getTops(boolean onlySelf) {
+    	String sql = "select methodCnName name, count(*) value, max(l.accessTime) lastTime " +
+	    		" from dm_access_log l " +
+	    		" where l.accessTime >= ? " + (onlySelf ? " and l.userId = ?" : "") +
+	    		" group by methodCnName " +
+	    		" order by " + (onlySelf ? "lastTime" : "value")  + " desc";
+	    SQLExcutor ex = new SQLExcutor(false);
+	    Map<Integer, Object> params = new HashMap<Integer, Object>();
+	    params.put(1, _DateUtil.subDays(_DateUtil.today(), 30));
+	    if(onlySelf) {
+	    	params.put(2, Environment.getUserId());
+	    }
+		ex.excuteQuery(sql, params , DMConstants.LOCAL_CONN_POOL);
+	    
+	    List<String> tops = new ArrayList<String>();
+	    for( Map<String, Object> row : ex.result){
+	    	if(tops.size() < 8) {
+	    		String reportName = (String) row.get("name");
+	    	    if(DMConstants.hasCNChar(reportName)) {
+	    	    	tops.add(reportName);
+	    	    }
+	    	}
+	    }
+	    return tops;
     }
 
     // add 2014.12.17 检查用户的密码强度，太弱的话强制要求修改密码

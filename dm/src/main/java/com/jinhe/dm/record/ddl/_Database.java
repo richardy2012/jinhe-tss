@@ -16,11 +16,14 @@ import org.dom4j.Document;
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.record.Record;
+import com.jinhe.dm.record.permission.RecordPermission;
+import com.jinhe.dm.record.permission.RecordResource;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
+import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
 
@@ -28,6 +31,7 @@ public abstract class _Database {
 	
 	static Logger log = Logger.getLogger(_Database.class);
 	
+	public Long recordId;
 	public String recordName;
 	public String datasource;
 	public String table;
@@ -38,6 +42,7 @@ public abstract class _Database {
 	List<String> fieldNames;
 	
 	public _Database(Record record) {
+		this.recordId = record.getId();
 		this.recordName = record.getName();
 		this.datasource = record.getDatasource();
 		this.table = record.getTable();
@@ -201,8 +206,16 @@ public abstract class _Database {
 		Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
 		paramsMap.put(1, Environment.getUserCode());
 		
-		// TODO 增加权限控制，针对特定权限开发查看他人录入数据, '000' <> ? <==> 忽略创建人这个查询条件
-		String condition = DMConstants.isAdmin() ? " '000' <> ? " : " creator = ? ";
+		// TODO 增加权限控制，针对有編輯权限的允許查看他人录入数据, '000' <> ? <==> 忽略创建人这个查询条件
+		boolean canEdit = DMConstants.isAdmin();
+		try {
+			List<String> permissions = PermissionHelper.getInstance().getOperationsByResource(recordId,
+	                RecordPermission.class.getName(), RecordResource.class);
+			canEdit = canEdit || permissions.contains(Record.OPERATION_EDIT);
+		} catch(Exception e) {
+		}
+		String condition = canEdit ? " '000' <> ? " : " creator = ? ";
+		
 		if(params != null) {
 			for(String key : params.keySet()) {
 				String value = params.get(key);

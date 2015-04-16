@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jinhe.dm.TxTestSupport4DM;
 import com.jinhe.dm.data.sqlquery.AbstractSO;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
+import com.jinhe.dm.report.ReportAction;
 
 public class AccessLogTest extends TxTestSupport4DM {
 	
 	@Autowired XXService service;
+	@Autowired private ReportAction action;
 	
 	@Test
 	public void test() throws InterruptedException {
