@@ -21,7 +21,7 @@
 		<xform>
 			<declare>
 				<column name="keyword" caption="关键字" mode="string"/>
-				<column name="type" caption="类型" mode="string" editor="comboedit" editorvalue="loginName|userName|employeeNo|certificateNumber" editortext="登录名|姓名|员工号|证件号"/>
+				<column name="type" caption="类型" mode="combo" values="loginName|userName|employeeNo|certificateNumber" texts="登录名|姓名|员工号|证件号"/>
 				<column name="groupId" caption="组id" mode="string"/>
                 <column name="groupType" caption="组类型" mode="string"/>
 				<column name="groupName" caption="选择组" mode="function" cmd="chooseManualMappingGroup('groupId','groupName','groupType')"/>

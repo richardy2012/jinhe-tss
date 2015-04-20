@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?><Response><ReleaseConfig>
+<?xml version="1.0" encoding="UTF-8"?><Response><ReleaseConfig>
 <xform>
 	<declare>
 		<column name="id" caption="ID号" mode="hidden" editable="false"/>
@@ -6,7 +6,7 @@
 		<column name="visitUrl" caption="映射地址" mode="string" maxLength="50" inputReg="/^[\u0000-\u00FF]*$/g" empty="false"/>
 		<column name="portal.id" caption="" mode="hidden" editable="false"/>
 		<column name="portal.name" caption="对应门户" mode="function" empty="false" cmd="getPortal()"/>
-		<column name="theme.id" caption="主题" mode="string" editor="comboedit" editorvalue="1|2" editortext="默认主题|Jon的主题"/>
+		<column name="theme.id" caption="主题" mode="combo" values="1|2" texts="默认主题|Jon的主题"/>
 		<column name="page.id" caption="" mode="hidden" editable="false"/>
 		<column name="page.name" caption="对应页面/版面" mode="function" cmd="getPage()"/>
 		<column name="remark" caption="说明" mode="string"/>

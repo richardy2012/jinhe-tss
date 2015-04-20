@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework.web.dispaly.xform;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.dom4j.tree.DefaultElement;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.IDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
+import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
 
 /**
@@ -81,6 +83,18 @@ public class XFormEncoder implements IDataEncoder {
             throw new BusinessException("名为：" + columnName + "的字段在XFORM模板里不存在，设置属性失败，请联系管理员编辑模板！");
         }
         column.addAttribute(name, value);
+    }
+    
+    public void fixCombo(String field, Collection<?> list, String v, String n, String seperator){
+    	if(list == null) return;
+    	
+    	String[] objs = EasyUtils.list2Combo(list, "value", "text", "|");
+        this.setColumnAttribute(field, "values", objs[0]);
+        this.setColumnAttribute(field, "texts", objs[1]);
+    }
+    
+    public void fixCombo(String field, Collection<?> list){
+    	fixCombo(field, list, "value", "text", "|");
     }
 
     public String toXml() {

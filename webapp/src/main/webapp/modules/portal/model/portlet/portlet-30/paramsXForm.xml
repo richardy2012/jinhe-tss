@@ -6,8 +6,7 @@
 				<column name="channelId" caption="栏目ID" mode="string"/>
 				<column name="pageSize" caption="显示条数" mode="string"/>
 				<column name="columns" caption="列顺序" mode="string"/>
-				<column name="needPageInfo" caption="是否显示分页信息" mode="string" empty="true" maxLength="1" 
-				        editor="comboedit" editorvalue="true|false" editortext="是|否"/>
+				<column name="needPageInfo" caption="是否显示分页信息" mode="combo" values="true|false" texts="是|否"/>
 			</declare>
 			<layout>
 				<TR>

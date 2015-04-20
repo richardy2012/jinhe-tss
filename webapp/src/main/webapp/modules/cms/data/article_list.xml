@@ -9,13 +9,13 @@
 		<column caption="图标" name="icon" mode="image"/>
 		<column caption="文章编号" name="id" mode="string" display="none"/>
 		<column caption="标题" name="title" mode="string"/>
-		<column caption="文章状态" name="status" mode="string" editor="comboedit" editorvalue="1|2|3|4" editortext="编辑中|待发布|已发布|已过期"/>
+		<column caption="文章状态" name="status" mode="combo" values="1|2|3|4" texts="编辑中|待发布|已发布|已过期"/>
 		<column caption="作者" name="author" mode="string"/>
 		<column caption="创建日期" name="createTime" mode="string" />
 		<column caption="发布时间" name="issueDate" mode="string" />
 		<column caption="创建者" name="creatorName" mode="string" display="none"/>
 		<column caption="栏目" name="channel.id" mode="string" display="none"/>
-		<column caption="置顶" name="isTop" mode="string" editor="comboedit" editortext="是|否" editorvalue="1|0" editable="false"/>
+		<column caption="置顶" name="isTop" mode="combo" texts="是|否" values="1|0" editable="false"/>
 		<column caption="过期日期" name="overdueDate" mode="string" />
 		<column caption="点击次数" name="hitCount" mode="string"/>
 	</declare>

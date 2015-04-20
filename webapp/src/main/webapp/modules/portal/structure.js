@@ -707,27 +707,19 @@ function changeThemeName() {
         var treeID = treeNode.id;
         var treeName = treeNode.name;
 
-        var newName = "";
-		var oncemore = false;
-        while("" == newName) {
-			if(oncemore) {
-				alert("请输入至少一个字符，并且不能使用空格(包括全角空格）");
-			}
-            newName = prompt("请输入新主题名", treeName, "重新命名\"" + treeName + "\"为", null, 50) || "";
-            newName = newName.replace(/[\s　]/g, "");       
-			oncemore = true;
-        }
-
-        if(newName && treeName != newName) {
+		$.prompt("请输入新主题名",  "重新命名【" + treeName + "】为", function(value) {
+ 			if ( $.isNullOrEmpty(value) ) return alert("主题名不能为空。");
+ 			
+			var newName = value.replace(/[\s　]/g, "");
 			$.ajax({
 				url: URL_RENAME_THEME + treeID + "/" + newName,
 				method: "PUT",
 				onsuccess: function() {
 					treeNode.setAttribute("name", newName);
-                    modifyTreeNode(treeID, "name", newName, "page2Tree");
+					modifyTreeNode(treeID, "name", newName, "page2Tree");
 				}
 			});
-        }
+		});       
     }
 }
 

@@ -4,7 +4,7 @@
   <ConfigParams> 
     <xform> 
       <declare> 
-        <column name="season" caption="季节" mode="string" editor="comboedit" editorvalue="spring|summer|autumn|winter" editortext="春|夏|秋|冬" empty="false"/> 
+        <column name="season" caption="季节" mode="combo" values="spring|summer|autumn|winter" texts="春|夏|秋|冬" empty="false"/> 
       </declare>  
       <layout> 
         <TR> 

@@ -3,7 +3,7 @@
 <declare>
 	<column name="name" caption="站点名称" mode="string" empty="false"/>
 	<column name="remark" caption="站点描述" mode="string" maxLength="255"/>
-	<column name="overdueDate" caption="文章过期时间" mode="string" editor="comboedit" editorvalue="0|1|2|3|4|5" editortext="一年|六个月|一个季度|一个月|一个星期|一天"/>
+	<column name="overdueDate" caption="文章过期时间" mode="combo" values="0|1|2|3|4|5" texts="一年|六个月|一个季度|一个月|一个星期|一天"/>
 	<column name="path" caption="发布路径" mode="string" empty="false"/>
 	<column name="docPath" caption="附件路径" mode="hidden"/>
 	<column name="imagePath" caption="图片路径" mode="hidden"/>	

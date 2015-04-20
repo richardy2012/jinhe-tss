@@ -54,7 +54,7 @@ public class EasyUtilsTest {
 		list.add(new User(2, "Jon2"));
 		list.add(new User(3, "Jon3"));
 		
-		String[] result = EasyUtils.generateComboedit(list, "id", "name", "|");
+		String[] result = EasyUtils.list2Combo(list, "id", "name", "|");
 		Assert.assertEquals("1|2|3", result[0]);
 		Assert.assertEquals("Jon1|Jon2|Jon3", result[1]);
 

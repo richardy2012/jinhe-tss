@@ -106,15 +106,16 @@ public class EasyUtils {
     }
     
     /**
-     * 生成下拉所需要的editorvalue, editortext
-     * 用法如： EasyUtils.generateComboedit(list, "year", "name", "|")。
+     * 生成下拉所需要的value和 text
+     * 用法如： EasyUtils.list2Combo(list, "year", "name", "|")
+     * 
      * @param list
      * @param valueName 实体value属性名称
      * @param textName  实体text 属性名称
      * @param seperator  分隔符 "|"/","等
      * @return
      */
-    public static String[] generateComboedit(Collection<?> list, String valueName, String textName, String seperator){
+    public static String[] list2Combo(Collection<?> list, String valueName, String textName, String seperator){
         StringBuffer value = new StringBuffer();
         StringBuffer text = new StringBuffer();
         for(Object bean : list){
@@ -127,7 +128,7 @@ public class EasyUtils {
         }
         return new String[]{value.toString(), text.toString()};
     }
-  
+    
     /**
      * 转换utf8字符集
      * @param str

@@ -5,7 +5,7 @@
 		<column name="name"   caption="报表名称" mode="string" maxLength="30" empty="false"/>
 		<column name="script" caption="报表脚本" mode="string" maxLength="4000"/>
 		<column name="param"  caption="报表参数" mode="string" maxLength="2000"/>
-		<column name="datasource"  caption="数据源"  mode="string" editor="comboedit"/>
+		<column name="datasource"  caption="数据源"  mode="combo"/>
 		<column name="displayUri"  caption="展示页面" mode="string" maxLength="200"/>
 		<column name="remark" caption="报表简介" mode="string" maxLength="400"/>
 	</declare>

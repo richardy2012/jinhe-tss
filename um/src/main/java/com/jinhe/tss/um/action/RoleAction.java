@@ -236,12 +236,10 @@ public class RoleAction extends BaseActionSupport {
 		map.put("isRole2Resource", isRole2Resource);
 		map.put("permissionRank", UMConstants.LOWER_PERMISSION);
 		
-		XFormEncoder xFormEncoder = new XFormEncoder(UMConstants.SERACH_PERMISSION_XFORM, map);
-		String[] appEditor = EasyUtils.generateComboedit(apps, "applicationId", "name", "|");
-		xFormEncoder.setColumnAttribute("applicationId", "editorvalue", appEditor[0]);
-		xFormEncoder.setColumnAttribute("applicationId", "editortext",  appEditor[1]);
+		XFormEncoder xform = new XFormEncoder(UMConstants.SERACH_PERMISSION_XFORM, map);
+		xform.fixCombo("applicationId", apps, "applicationId", "name", "|");	
 
-		print("SearchPermissionFrom", xFormEncoder);
+		print("SearchPermissionFrom", xform);
 	}
 	
 	/**

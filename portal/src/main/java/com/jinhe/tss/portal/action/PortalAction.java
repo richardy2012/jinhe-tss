@@ -132,18 +132,12 @@ public class PortalAction extends FMSupportAction {
             
             // 如果是门户节点，则带出主题信息列表
             if( info.isRootPortal() ) {
-                Object[] objs = genComboThemes(info.getPortalId());
-                encoder.setColumnAttribute("currentTheme.id", "editorvalue", (String) objs[0]);
-                encoder.setColumnAttribute("currentTheme.id", "editortext",  (String) objs[1]);
+                List<?> data = service.getThemesByPortal(info.getPortalId());
+                encoder.fixCombo("currentTheme.id", data, "id", "name", "|");
                 encoder.setColumnAttribute("theme.name", "editable", "false");
             }           
         }
         print("DetailInfo", encoder);
-    }
-    
-    private Object[] genComboThemes(Long portalId) {
-        List<?> data = service.getThemesByPortal(portalId);
-        return EasyUtils.generateComboedit(data, "id", "name", "|");
     }
     
     /**
@@ -299,14 +293,14 @@ public class PortalAction extends FMSupportAction {
         else{
             ReleaseConfig rconfig = service.getReleaseConfig(id);            
             encoder = new XFormEncoder(PortalConstants.RELEASE_XFORM_TEMPLET, rconfig);
-            Object[] objs = genComboThemes(rconfig.getPortal().getId());
-            encoder.setColumnAttribute("theme.id", "editorvalue", (String) objs[0]);
-            encoder.setColumnAttribute("theme.id", "editortext",  (String) objs[1]);
-         
+            
+            Long portalId = rconfig.getPortal().getId();
+            List<?> data = service.getThemesByPortal(portalId);
+            encoder.fixCombo("theme.id", data, "id", "name", "|");
         }        
         print("ReleaseConfig", encoder);
     }
-    
+ 
     @RequestMapping(value ="/release", method = RequestMethod.POST)
     public void saveReleaseConfig(HttpServletResponse response, ReleaseConfig rconfig) {
         boolean isNew = rconfig.getId() == null ? true : false;             
@@ -330,9 +324,10 @@ public class PortalAction extends FMSupportAction {
     
     @RequestMapping("/theme4release/{portalId}")
     public void getThemesByPortal(HttpServletResponse response, @PathVariable("portalId") Long portalId) {
-        Object[] objs = genComboThemes(portalId);       
+        List<?> data = service.getThemesByPortal(portalId);
+        Object[] objs = EasyUtils.list2Combo(data, "id", "name", "|");
         String returnStr = "<column name=\"theme.id\" caption=\"主题\" mode=\"string\" " +
-        		" editor=\"comboedit\" editorvalue=\"" + objs[0] + "\" editortext=\"" + objs[1] + "\"/>";
+        		" values=\"" + objs[0] + "\" texts=\"" + objs[1] + "\"/>";
         
         print("ThemeList", returnStr);
     }

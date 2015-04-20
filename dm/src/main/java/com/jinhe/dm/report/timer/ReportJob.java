@@ -82,7 +82,7 @@ public class ReportJob extends AbstractJob {
 	    			paramsMap.put(keyValue[0].trim(), keyValue[1].trim());
 	    		}
 	    	}
-	        SQLExcutor ex = reportService.queryReport(reportId, paramsMap, 0, 0, null);  
+	        SQLExcutor ex = reportService.queryReport(reportId, paramsMap, 0, 0, System.currentTimeMillis());  
 	        rr.reportResults.add(ex);
 		}
 		

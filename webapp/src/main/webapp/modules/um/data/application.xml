@@ -5,7 +5,7 @@
 		<column name="applicationId" caption="应用系统ID" mode="string" empty="false" maxLength="100"/>
 		<column name="name" caption="名称" mode="string" empty="false" maxLength="100"/>
 		<column name="description" caption="描述" mode="string" maxLength="400"/>
-		<column name="dataSourceType" caption="数据库类型" mode="string" editor="comboedit" editorvalue="1|2" editortext="LDAP|关系数据库" empty="false"/>
+		<column name="dataSourceType" caption="数据库类型" mode="combo" values="1|2" texts="LDAP|关系数据库" empty="false"/>
 		<column name="paramDesc" caption="参数描述(XML格式)" mode="string" maxLength="4000" empty="false"/>
 	</declare>
 	<layout>

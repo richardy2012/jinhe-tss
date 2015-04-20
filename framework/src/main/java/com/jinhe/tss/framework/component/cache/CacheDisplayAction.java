@@ -251,7 +251,7 @@ public class CacheDisplayAction extends BaseActionSupport {
         template.append("<column name=\"key\" caption=\"键值\" mode=\"string\" width=\"200px\" />");
         template.append("<column name=\"hit\" caption=\"命中次数\" mode=\"string\" width=\"60px\" />");
         template.append("<column name=\"hitRate\" caption=\"命中率\" mode=\"string\" width=\"50px\" />");
-        template.append("<column name=\"state\" caption=\"状态 \" mode=\"string\" width=\"50px\" editor=\"comboedit\" editorvalue=\"0|1\" editortext=\"空闲|忙碌\"/>");
+        template.append("<column name=\"state\" caption=\"状态 \" mode=\"string\" width=\"50px\" values=\"0|1\" texts=\"空闲|忙碌\"/>");
         template.append("<column name=\"remark\" caption=\"说明\" mode=\"string\" width=\"100px\"/>");
         template.append("</declare><data></data></grid>");
         

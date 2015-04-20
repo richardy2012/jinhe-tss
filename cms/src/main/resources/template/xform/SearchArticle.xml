@@ -3,14 +3,8 @@
 	<declare>
 		<column name="title" caption="标题" mode="string"/>
 		<column name="author" caption="作者" mode="string"/>
-		<column name="time" caption="创建时间" mode="string" editor="comboedit" 
-			editorvalue="0|1|2|3" 
-			editortext="所有时间|今天|三天内|一周内"
-		/>
-		<column name="status" caption="流程状态" mode="string" editor="comboedit" 
-			editorvalue="0|1|2|3|4"
-			editortext="所有流程|编辑|待发布|已发布|已过期"
-		/>
+		<column name="time" caption="创建时间" mode="combo" values="0|1|2|3" texts="所有时间|今天|三天内|一周内"/>
+		<column name="status" caption="流程状态" mode="combo" values="0|1|2|3|4" texts="所有流程|编辑|待发布|已发布|已过期"/>
 	</declare>
 	<layout>
 		<TR>

@@ -11,11 +11,11 @@
           <column name="groupId" caption="所在组ID" mode="hidden" maxLength="100"/>
           <column name="disabled" caption="账号状态" mode="hidden" maxLength="32"/>
           <column name="address" caption="地址" mode="string" maxLength="100"/>
-          <column name="postalCode" caption="邮编" mode="string" maxLength="100" inputReg="/^\d{0,10}$/"/>
-          <column name="mail" caption="电子邮件" mode="string" maxLength="100" inputReg="/^\w+@?\w*\.?\w*$/" submitReg="/^\w+@\w+\.\w+(.\w+)?$/"/>
+          <column name="postalCode" caption="邮编" mode="string" maxLength="100" inputReg="^\d{0,10}$"/>
+          <column name="mail" caption="电子邮件" mode="string" maxLength="100" inputReg="\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"/>
           <column name="employeeNo" caption="员工编号" mode="string" maxLength="100"/>
           <column name="birthday" caption="出生年月" mode="date"/>
-          <column name="sex" caption="性别" mode="string" maxLength="1" editor="comboedit" editorvalue="0|1" editortext="男|女"/> 
+          <column name="sex" caption="性别" mode="combo" values="0|1" texts="男|女"/> 
         </declare>
         <layout>
           <TR>
@@ -49,13 +49,13 @@
 	<AuthInfo>
         <xform>
             <declare>
-                <column name="certificateCategory" caption="证件种类" mode="string" editor="comboedit" editorvalue="1|2" editortext="工作证|身份证"/>
+                <column name="certificateCategory" caption="证件种类" mode="combo" values="1|2" texts="工作证|身份证"/>
                 <column name="certificateNumber" caption="证件号" mode="string" empty="false"/>
                 <column name="password" caption="密　　码" mode="string" empty="false"/>
                 <column name="passwordQuestion" caption="密码提示问题" mode="string" empty="false"/>
                 <column name="passwordAnswer" caption="密码提示答案" mode="string" empty="false"/>
                 <column name="accountUsefulLife" caption="帐户有效期限" mode="string" pattern="yyyy-MM-dd" empty="false"/>
-                <column name="authenticateMethod" caption="认证方式" mode="string" editor="comboedit" editorvalue="1|2" editortext="本地|LDAP"/>
+                <column name="authenticateMethod" caption="认证方式" mode="combo" values="1|2" texts="本地|LDAP"/>
             </declare>
             <layout>
                 <TR>

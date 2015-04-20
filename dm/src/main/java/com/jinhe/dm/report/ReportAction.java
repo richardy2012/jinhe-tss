@@ -240,16 +240,10 @@ public class ReportAction extends BaseActionSupport {
         }
         
         if( Report.TYPE1 == type ) {
-            List<Param> datasources = null;
             try {
-                datasources = ParamManager.getComboParam(DMConstants.DATASOURCE_LIST);
+            	List<Param> datasources = ParamManager.getComboParam(DMConstants.DATASOURCE_LIST);
+                xformEncoder.fixCombo("datasource", datasources);	
             } catch (Exception e) {
-            }
-            
-            if(datasources != null) {
-            	 Object[] objs = EasyUtils.generateComboedit(datasources, "value", "text", "|");
-                 xformEncoder.setColumnAttribute("datasource", "editorvalue", (String) objs[0]);
-                 xformEncoder.setColumnAttribute("datasource", "editortext",  (String) objs[1]);
             }
         }
  

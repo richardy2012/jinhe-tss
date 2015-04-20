@@ -3,8 +3,8 @@
 	<declare>
 		<column name="code"          caption="键值 "    align="center" mode="string" width="150px"/>
 		<column name="name"          caption="名称 "    align="center" mode="string" width="150px"/>
-		<column name="accessMethod"  caption="存取方式"  align="center" mode="string" editor="comboedit" editorvalue="1|2|3|4|5" editortext="FIFO|LIFO|RANDOM|LRU|LFU"/>
-		<column name="disabled"      caption="状态 "    align="center" mode="string" editor="comboedit" editorvalue="0|1" editortext="启用|停用"/>
+		<column name="accessMethod"  caption="存取方式"  align="center" mode="string" values="1|2|3|4|5" texts="FIFO|LIFO|RANDOM|LRU|LFU"/>
+		<column name="disabled"      caption="状态 "    align="center" mode="string" values="0|1" texts="启用|停用"/>
 		<column name="cyclelife"     caption="生命周期(ms)"  align="center" mode="string"/>
 		<column name="interruptTime" caption="等待时间(ms)"  align="center" mode="string"/>
 		<column name="poolSize"      caption="池容量 "   align="center" mode="string"/>

@@ -6,7 +6,7 @@
 		<column caption="下载地址" name="uploadName" mode="string" display="none"/>
 		<column caption="名称" name="name" mode="string"/>
 		<column caption="文件名" name="fileName" mode="string"/>
-		<column caption="类型" name="type" mode="string" editor="comboedit" editorvalue="1|2" editortext="图片|附件"/>
+		<column caption="类型" name="type" mode="string" values="1|2" texts="图片|附件"/>
 		<column caption="文件后缀" name="fileExt" mode="string" display="none"/>
 	</declare>
 	<data>

@@ -11,7 +11,7 @@
 			<column name="theme.id" mode="hidden" editable="false"/>
 			<column name="theme.name" caption="默认主题" mode="string" maxLength="50" empty="false" editable="false"/>
 			<column name="currentTheme.name" mode="hidden" editable="false"/>
-			<column name="currentTheme.id" caption="当前主题" mode="string" editor="comboedit" editorvalue="1" editortext="默认主题"/>
+			<column name="currentTheme.id" caption="当前主题" mode="combo" values="1" texts="默认主题"/>
 
 			<column name="definer.id" mode="hidden" editable="false"/>
 			<column name="decorator.id" mode="hidden" editable="false"/>

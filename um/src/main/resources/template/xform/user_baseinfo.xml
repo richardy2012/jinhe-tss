@@ -2,24 +2,24 @@
 <xform>
 	<declare prefix="user">
 		<column name="id" mode="hidden"/>
-		<column name="userName"  caption="姓名" mode="string" empty="false" maxLength="20"/>
-		<column name="loginName" caption="账号" mode="string" empty="false" maxLength="20" editable="false"/>
-		<column name="password"  caption="密码" mode="string" empty="false" maxLength="20" inputReg="^[\u0000-\u00FF]*$"/>
-		<column name="passwordQuestion" caption="提示问题" mode="string" empty="false" maxLength="100"/>
-		<column name="passwordAnswer"   caption="提示答案" mode="string" empty="false" maxLength="100"/>
-		<column name="sex" caption="性别" mode="string" editor="comboedit" editorvalue="1|0" editortext="男|女"/>
+		<column name="userName"  caption="姓名" empty="false" maxLength="20"/>
+		<column name="loginName" caption="账号" empty="false" maxLength="20" editable="false"/>
+		<column name="password"  caption="密码" empty="false" maxLength="20" inputReg="^[\u0000-\u00FF]*$"/>
+		<column name="passwordQuestion" caption="提示问题" empty="false" maxLength="100"/>
+		<column name="passwordAnswer"   caption="提示答案" empty="false" maxLength="100"/>
+		<column name="sex" caption="性别" mode="combo" values="1|0" texts="男|女"/>
 		<column name="birthday" caption="出生年月" mode="date" pattern="yyyy-MM-dd" maxLength="32"/>
-		<column name="employeeNo" caption="员工编号" mode="string" maxLength="100"/>
-		<column name="email" caption="电子邮件" mode="string" maxLength="100" inputReg="/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/"/>
-		<column name="telephone" caption="电话" mode="string" maxLength="30"/>
-		<column name="address"   caption="地址" mode="string" maxLength="100"/>
-		<column name="postalCode" caption="邮编" mode="string" maxLength="10" inputReg="/^\d{0,10}$/"/>
+		<column name="employeeNo" caption="员工编号" maxLength="100"/>
+		<column name="email" caption="电子邮件" maxLength="100" inputReg="\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"/>
+		<column name="telephone" caption="电话" maxLength="30"/>
+		<column name="address"   caption="地址" maxLength="100"/>
+		<column name="postalCode" caption="邮编" maxLength="10" inputReg="^\d{0,10}$"/>
 		
-		<column name="certificate" caption="证件种类" mode="string" editor="comboedit" editorvalue="1|2" editortext="工作证|身份证"/>
-		<column name="certificateNo" caption="证件号" mode="string" maxLength="50"/>
+		<column name="certificate" caption="证件种类" mode="combo" values="1|2" texts="工作证|身份证"/>
+		<column name="certificateNo" caption="证件号" maxLength="50"/>
 		<column name="accountLife" caption="账户有效期" mode="date" pattern="yyyy-MM-dd"/>
-		<column name="authMethod"  caption="认证方式" mode="string" empty="false" editor="comboedit"
-			editorvalue="com.jinhe.tss.um.sso.UMPasswordIdentifier" editortext="UM本地"/>
+		<column name="authMethod"  caption="认证方式" mode="combo" empty="false"
+			values="com.jinhe.tss.um.sso.UMPasswordIdentifier" texts="UM本地"/>
 		
 		<column name="groupId" mode="hidden"/>
 		<column name="groupName" mode="hidden"/>
