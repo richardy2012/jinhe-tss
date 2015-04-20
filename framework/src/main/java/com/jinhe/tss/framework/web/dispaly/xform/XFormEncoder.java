@@ -88,7 +88,7 @@ public class XFormEncoder implements IDataEncoder {
     public void fixCombo(String field, Collection<?> list, String v, String n, String seperator){
     	if(list == null) return;
     	
-    	String[] objs = EasyUtils.list2Combo(list, "value", "text", "|");
+    	String[] objs = EasyUtils.list2Combo(list, v, n, seperator);
         this.setColumnAttribute(field, "values", objs[0]);
         this.setColumnAttribute(field, "texts", objs[1]);
     }
