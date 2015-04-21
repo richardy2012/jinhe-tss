@@ -18,8 +18,8 @@
 		<column name="certificate" caption="证件种类" mode="combo" values="1|2" texts="工作证|身份证"/>
 		<column name="certificateNo" caption="证件号" maxLength="50"/>
 		<column name="accountLife" caption="账户有效期" mode="date" pattern="yyyy-MM-dd"/>
-		<column name="authMethod"  caption="认证方式" mode="combo" empty="false"
-			values="com.jinhe.tss.um.sso.UMPasswordIdentifier" texts="UM本地"/>
+		<column name="authMethod"  caption="认证方式" mode="combo" 
+			values="com.jinhe.tss.um.sso.UMPasswordIdentifier" texts="UM本地" empty="false"/>
 		
 		<column name="groupId" mode="hidden"/>
 		<column name="groupName" mode="hidden"/>

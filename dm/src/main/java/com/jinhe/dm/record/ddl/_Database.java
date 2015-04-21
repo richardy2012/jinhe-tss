@@ -266,7 +266,12 @@ public abstract class _Database {
 		return this.fields;
 	}
 	
+	private static Map<String, String> dsMappingType = new HashMap<String, String>();
+	
 	public static String getDBType(String datasource) {
+		String result = dsMappingType.get(datasource);
+		if(result != null) return result;
+		
 		Pool connpool = JCache.getInstance().getPool(datasource);
         Cacheable connItem = connpool.checkOut(0);
         Connection conn = (Connection) connItem.getValue();
@@ -277,7 +282,8 @@ public abstract class _Database {
 			
 			for(String type : DB_TYPE) {
 				if (driveName.startsWith(type)) {
-		            return type;
+					dsMappingType.put(datasource, result = type);
+		            return result;
 		        }
 			}
 		} catch (SQLException e) {

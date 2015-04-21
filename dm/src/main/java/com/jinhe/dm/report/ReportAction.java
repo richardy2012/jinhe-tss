@@ -67,7 +67,7 @@ public class ReportAction extends BaseActionSupport {
 	    
 	    List<Report> list = reportService.getAllReport();
 	    
-	    // 查出过去30天个人和整站访问Top10的报表名称
+	    // 查出过去100天个人和整站访问Top10的报表名称
 	    List<String> topSelf = getTops(true);
 	    List<String> topX = getTops(false);
 	    Long selfGroupId = -2L, topGroupId = -3L, newGroupId = -4L;
@@ -136,7 +136,7 @@ public class ReportAction extends BaseActionSupport {
 	    		" order by " + (onlySelf ? "lastTime" : "value")  + " desc";
 	    SQLExcutor ex = new SQLExcutor(false);
 	    Map<Integer, Object> params = new HashMap<Integer, Object>();
-	    params.put(1, _DateUtil.subDays(_DateUtil.today(), 30));
+	    params.put(1, _DateUtil.subDays(_DateUtil.today(), 100));
 	    if(onlySelf) {
 	    	params.put(2, Environment.getUserId());
 	    }

@@ -306,7 +306,7 @@ function testRestfulReportService() {
 			type : "json",
 			waiting : true,
 			ondata : function() { 
-				alert("调试接口：" + url + "，返回结果：", this.getResponseText());
+				alert(this.getResponseText(), "调试接口：" + url + "，返回结果：");
 			}
 		});
 	}
@@ -556,7 +556,7 @@ function editParamConfig() {
     		}
     		if(field === 'options' && newValue) {
     			newValue = newValue.replace(/，/ig, ',') // 替换中文逗号
-    			if(newValue.indexOf('|') < 0 && newValue.indexOf(',') < 0) {
+    			if(newValue.indexOf('|') < 0 && newValue.indexOf('/') >= 0) {
     				delete valuesMap['options'];
     				valuesMap['jsonUrl'] = newValue;
     			}

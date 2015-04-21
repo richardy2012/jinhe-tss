@@ -41,6 +41,8 @@
   
   b、创建一个空的dms目录，里面放index.html 和 login.html， 自动跳转至 http://wmsdata.800best.com/tss/login.htm （保险起见 复制一个 login.htm 文件）
  	 修改发布目录下 ROOT/index.html, 跳转至 tss/login.html
+ 	 
+  c、 修改掉带checkReg的report的param，去掉首位的'/'。 SELECT * FROM dm_report t WHERE t.param LIKE '%Reg%'
        
 二、新增record资源
 1、资源配置
