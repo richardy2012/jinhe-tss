@@ -111,7 +111,6 @@ public class ArticleAction extends BaseActionSupport {
 		
 		String attachList = request.getParameter("attachList");
 		String content = request.getParameter("ArticleContent");
-		article.setContent(content);
 		
         String isCommit = request.getParameter("isCommit");
         if( Config.TRUE.equalsIgnoreCase(isCommit) ){
@@ -121,12 +120,17 @@ public class ArticleAction extends BaseActionSupport {
         Long channelId = article.getChannel().getId();
         if(article.getId() == null || article.getId() == 0) {
             // 新增的时候上传的附件对象以System.currentTimeMillis(参见CreateAttach类)为主键，此处的"articleId"就是这个值
-            Long articleId = EasyUtils.obj2Long(request.getParameter("articleId"));
+            String articleIdStr = request.getParameter("articleId");
+			Long articleId = EasyUtils.obj2Long(articleIdStr);
 	        articleService.createArticle(article, channelId, attachList, articleId); 
+	        
+	        // 修复文章正文里图片/附件的下载地址
+	        if(content != null) {
+	        	content = content.replaceAll(articleIdStr, article.getId().toString());
+	        }
 	    } 
-	    else {
-	        articleService.updateArticle(article, channelId, attachList);
-	    }
+    	article.setContent(content);
+        articleService.updateArticle(article, channelId, attachList);
         
 	    printSuccessMessage();
 	}

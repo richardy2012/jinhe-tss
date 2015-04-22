@@ -34,6 +34,7 @@ public class Attachment implements IEntity, IGridNode {
     private Article article;    // 所属文章
     
 	private Long articleId;
+	
     private Integer seqNo = 0;	// 附件序号 PK
     
     @Column(nullable = false)
@@ -135,41 +136,24 @@ public class Attachment implements IEntity, IGridNode {
     }
     
     public GridAttributesMap getAttributes(GridAttributesMap map) {
+    	map.put("articleId", getArticleId());
         map.put("seqNo", getSeqNo());
-        if(fileName != null){
-            map.put("fileName", fileName.substring(fileName.indexOf("_") + 1));
-        }
-        map.put("fileExt", fileExt == null ? "" : fileExt.toLowerCase());
-        map.put("uploadName", uploadName);
+        map.put("fileName", fileName);
+        map.put("fileExt", fileExt);
         map.put("type", type);
         map.put("name", name);
+        map.put("relationUrl", this.getRelationUrl());
         return map;
     }
  
-	public String getUploadName() {
-		return uploadName;
-	}
-	public void setUploadName(String uploadName) {
-		this.uploadName = uploadName;
-	}
-    
     /**
-     * 返回格式类似：http://localhost:8088/cms/download?id=1216&seqNo=1 
-     * @param baseUrl
-     * @return 
-     */
-    public String getDownloadUrl(String baseUrl) {
-        return baseUrl + this.getUrl() + this.getArticleId() + "&seqNo=" + getSeqNo();
-    }
-    
-    /**
-     * 绝对地址，返回格式类似：http://localhost:8088/cms/download?id=1216&seqNo=1 
+     * 绝对地址，返回格式类似：http://localhost:8088/tss/download?id=1216&seqNo=1 
      * @param baseUrl
      * @return 
      */
     public String getDownloadUrl(){
         String baseUrl = Context.getApplicationContext().getCurrentAppServer().getBaseURL();
-        return this.getDownloadUrl(baseUrl);
+        return baseUrl + this.getUrl() + this.getArticleId() + "&seqNo=" + getSeqNo();
     }
     
     /**
@@ -177,7 +161,7 @@ public class Attachment implements IEntity, IGridNode {
      * @param baseUrl
      * @return 
      */
-    public String getRelateDownloadUrl(){
+    public String getRelationUrl(){
         String temp = this.getUrl().substring(1); //去掉 '/download?id=' 的 '/'
         return temp + this.getArticleId() + "&seqNo=" + this.getSeqNo();
     }

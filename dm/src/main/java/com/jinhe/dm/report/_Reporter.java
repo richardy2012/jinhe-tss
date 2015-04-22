@@ -168,7 +168,8 @@ public class _Reporter extends BaseActionSupport {
     }
     
     /**
-     * report可能是report的ID 也 可能是 Name
+     * report可能是report的ID 也 可能是 Name.
+     * 注：一次最多能取10万行。
      */
     @RequestMapping("/json/{report}")
     @ResponseBody
@@ -186,7 +187,7 @@ public class _Reporter extends BaseActionSupport {
     	
     	long start = System.currentTimeMillis();
     	Map<String, String> requestMap = getRequestMap(request, false);
-        SQLExcutor excutor = reportService.queryReport(reportId, requestMap, 0, 0, getLoginUserId(requestMap));
+        SQLExcutor excutor = reportService.queryReport(reportId, requestMap, 0, 100000, getLoginUserId(requestMap));
         
         outputAccessLog(reportId, "showAsJson", requestMap, start);
  

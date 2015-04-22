@@ -710,7 +710,7 @@ function popupForm(url, nodeName, params, callback, title) {
 
 	var boxName = "popupForm";
 	var el = $.createElement("div", "popupItem");
-	el.innerHTML = '<h2>' + title + '</h2>' +
+	el.innerHTML = '<h2>' + title + '：</h2>' +
 		'<div id="' + boxName + '"><div class="loading"></div></div>' + 
 	    '<div class="bts">' + 
 	       '<input type="button" value="确定" class="btStrong"/>' + 
@@ -776,7 +776,7 @@ function popupGrid(url, nodeName, title, params) {
        	   '<input type="button" value="关闭" class="btWeak"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
-	$(el).addClass("dialog").css("width", "600px").css("height", "auto").center();
+	$(el).addClass("dialog").css("width", "600px").css("height", "auto").center(600, 400);
 	$("#" + boxName, el).css("minHeight", "200px").css("maxHeight", "400px");
 
 	$(".bts .btWeak", el).click(removeDialog);

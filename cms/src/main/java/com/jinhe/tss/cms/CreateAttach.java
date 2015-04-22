@@ -37,7 +37,7 @@ public class CreateAttach implements AfterUpload {
 		Attachment attachObj = articleService.processFile(targetFile, articleId, channelId, type, oldfileName);
 
 		// 向前台返回成功信息
-		String downloadUrl = attachObj.getRelateDownloadUrl();
+		String downloadUrl = attachObj.getRelationUrl();
 		Integer seqNo = attachObj.getSeqNo();
 		String fileName = attachObj.getFileName();
 		String fileExt = attachObj.getFileExt();

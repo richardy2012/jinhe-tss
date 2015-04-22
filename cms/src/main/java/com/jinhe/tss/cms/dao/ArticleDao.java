@@ -83,7 +83,6 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
         List<Attachment> list = (List<Attachment>)getEntities("from Attachment o where o.articleId = ?", articleId);
 		for ( Attachment attachment : list ) {
 			attachment.setArticle(getEntity(articleId));
-			attachment.setUploadName(attachment.getRelateDownloadUrl()); // 设置附件的下载地址
 		}
 		return list;
 	}

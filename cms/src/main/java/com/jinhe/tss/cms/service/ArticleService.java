@@ -136,7 +136,7 @@ public class ArticleService implements IArticleService {
 	 */
 	private void translatePath(Attachment attachment, Article article, Long channelId) {
 		// download?id=1&seqNo=1
-		String downloadUrl = attachment.getRelateDownloadUrl(); 
+		String downloadUrl = attachment.getRelationUrl(); 
         downloadUrl = downloadUrl.replaceAll("&", "&amp;"); //将&替换成&amp;
         
         int indexOfAmp = downloadUrl.indexOf("&amp;");

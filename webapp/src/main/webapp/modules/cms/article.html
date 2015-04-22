@@ -11,18 +11,25 @@
 <script src="../../tools/tssJS/tssJS.all.js"></script>
 <script src="../../tools/tssUtils.js"></script>
 
-<script src="../../tools/kindeditor417/kindeditor-min.js"></script>
-<script src="../../tools/kindeditor417/lang/zh_CN.js"></script>
+<script src="../../tools/kindeditor/kindeditor-min.js"></script>
+<script src="../../tools/kindeditor/lang/zh_CN.js"></script>
 
 <style type="text/css">
-	body { overflow: auto; height: 98%;}
-	.article { border: 1px solid #98989C; background-color:#fff; margin: 2px; padding: 3px; height: 100%;}
-	.article .summary { background-color: #AFEEEE; }
+	body { overflow: auto; height: auto;}
+	.article { border: 1px solid #98989C; background-color:#fff; margin: 0px; padding: 1px; height: 100%;}
+	.article .summary { background-color: #99CCCC; padding: 3px; }
 	.article .content { height: 400px; }
 	.article .attach  { height: 100px; }
-	.article .upload  { background-color: #90EE90; padding: 5px 0 5px 10px; }
+	.article .upload  { background-color: #99CCCC; padding: 5px 0 5px 10px; }
 	.article .bts { border-top: 1px solid #98989C; padding: 5px 0 5px 10px; text-align: center; }
 	.article .bts input { margin-right:20px; }
+
+	.ke-icon-imageSelf {
+		background-image: url(../../tools/kindeditor/themes/default/default.png);
+		background-position: 0px -496px;
+		width: 16px;
+		height: 16px;
+	}
 	
 </style>
 
@@ -34,16 +41,72 @@
 	URL_ARTICLE_INIT   = AUTH_PATH + "article/init/";  // {channelId}
     URL_SAVE_ARTICLE   = AUTH_PATH + "article";
 
-	if(IS_TEST) {
+	if(window.parent == window.self) {
 		URL_ARTICLE_DETAIL = "data/article.xml?";
 		URL_ARTICLE_INIT   = "data/article.xml?";
 		URL_SAVE_ARTICLE   = "data/_success.xml?";
 	}
 
+	// 自定义插件 #1
+	KindEditor.lang({
+		imageSelf : '插入文章附件'
+	});
+	KindEditor.plugin('imageSelf', function(K) {
+		var self = this, name = 'imageSelf';
+		self.clickToolbar(name, function() {
+			var html = [];
+			html.push('<div style="margin:20px;">');
+			html.push('附件：<select id="attachSelector">');
+			$("#attachGrid tbody>tr").each(function(i, row){
+				var name = $('td[name=name]', row).attr('value');
+				var url = $('td[name=uploadName]', row).attr('value');
+				var type = $('td[name=type]', row).attr('value');
+				html.push('<option value="' + (type + "," + url + ", " + name) + '">' + $('td[name=name]', row).attr('value') + '</option>');
+			});
+			html.push('</select>');
+			html.push('&nbsp;添加说明：<input id="attachRemark">');
+			html.push('</div>');
+			self.createDialog({
+				name : 'imageSelf',
+				width : 450,
+				title : '选择要插入的图片或文档',
+				body : html.join('\n'),
+				yesBtn : {
+					name : "插入",
+					click : function(e) {
+						var html;
+						var title = $("#attachRemark").value();
+						var attach = $("#attachSelector").value();
+						if(!attach) {
+							return alert("您没有选择附件，请选择一个再点插入");
+						}
+						attach = attach.split(',');
+						if(attach[0] == '1') {
+							title = title || attach[2];
+							html = '<img class="imgAttach" src="' + attach[1] + '" alt="' + title + '"></img>';
+						} else {
+							html = '<a class="docAttach" href="' + attach[1] + '" target="_blank">' + title + '</a>';
+						} 
+						self.insertHtml(html);
+						self.select().hideDialog().focus();
+					}
+				}
+			});
+		});
+	});
+
 	var editor;
-		KindEditor.ready( function(K) {
-			editor = K.create( 'textarea[name="content"]', {resizeType: 1} );				
-		} );
+	KindEditor.ready( function(K) {
+		editor = K.create('textarea[name="content"]', {
+				resizeType: 1,
+				allowPreviewEmoticons : false,
+				allowImageUpload : false,
+				items : [
+					'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'lineheight',
+					'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+					'insertunorderedlist', '|', 'emoticons', /*'image',*/ 'imageSelf', 'table', 'baidumap', '|', 'preview', 'source', 'fullscreen', 'quickformat']
+			});				
+	} );
 
 	var channelId;
     var articleId;
@@ -98,7 +161,7 @@
         request.addParam("articleId", articleId); 
 
         // 文章基本信息
-        var articleInfoNode = articleForm.tempalte.sourceXML;
+        var articleInfoNode = articleForm.template.sourceXML;
 		var dataNode = articleInfoNode.querySelector("data");
 		request.setFormContent(dataNode);
 
@@ -145,10 +208,10 @@
 		var map = {
 			"seqNo": seqNo, 
 			"articleId": articleId, 
-			"uploadName": downloadUrl, 
-			"name": oldfileName, 
-			"fileName": fileName, 
 			"type": type, 
+			"name": oldfileName, 
+			"relationUrl": downloadUrl, 
+			"fileName": fileName, 
 			"fileExt": fileExt
 		};
 		$.G("attachGrid").insertRow(map);

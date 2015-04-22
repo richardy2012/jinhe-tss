@@ -9,7 +9,7 @@ URL_RESOURCE_TYPES  = AUTH_PATH + "role/resourceTypes/";         // {application
 URL_PERMISSION      = AUTH_PATH + "role/permission/matrix/";    // {permissionRank}/{isRole2Resource}/{roleId}
 URL_SAVE_PERMISSION = AUTH_PATH + "role/permission/";          // {permissionRank}/{isRole2Resource}/{roleId} POST
 
-if(IS_TEST) {
+if(window.parent == window.self) {
     URL_INIT            = "data/setpermission_init.xml?";
     URL_RESOURCE_TYPES  = "data/resourcetypeList.json?";
     URL_PERMISSION      = "data/setpermission.xml?";
