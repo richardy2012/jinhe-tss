@@ -120,6 +120,13 @@ function initEvents() {
 			logout();
 		}
 	});
+	$.Event.addEvent(document, "keydown", function(ev) {
+		var srcElement = $.Event.getSrcElement(ev);
+		var tagName = srcElement.tagName.toLowerCase();
+		if(13 == ev.keyCode && "textarea" != tagName) { // enter
+			$.Event.cancel(ev);
+		}
+	});
 }
  
 function onTreeNodeActived(ev) { }

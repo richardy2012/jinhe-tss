@@ -30,6 +30,12 @@
 		width: 16px;
 		height: 16px;
 	}
+	.imageSelf {
+		width: 250px;
+		height: 22px;
+		line-height: 22px;
+		margin-top: 5px;
+	}
 	
 </style>
 
@@ -56,15 +62,15 @@
 		self.clickToolbar(name, function() {
 			var html = [];
 			html.push('<div style="margin:20px;">');
-			html.push('附件：<select id="attachSelector">');
+			html.push('可选附件：<select class="imageSelf" id="attachSelector">');
 			$("#attachGrid tbody>tr").each(function(i, row){
 				var name = $('td[name=name]', row).attr('value');
-				var url = $('td[name=uploadName]', row).attr('value');
+				var url  = NO_AUTH_PATH + $('td[name=relationUrl]', row).attr('value');
 				var type = $('td[name=type]', row).attr('value');
 				html.push('<option value="' + (type + "," + url + ", " + name) + '">' + $('td[name=name]', row).attr('value') + '</option>');
 			});
 			html.push('</select>');
-			html.push('&nbsp;添加说明：<input id="attachRemark">');
+			html.push('<br/>添加说明：<input class="imageSelf" id="attachRemark">');
 			html.push('</div>');
 			self.createDialog({
 				name : 'imageSelf',
@@ -104,7 +110,7 @@
 				items : [
 					'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'lineheight',
 					'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-					'insertunorderedlist', '|', 'emoticons', /*'image',*/ 'imageSelf', 'table', 'baidumap', '|', 'preview', 'source', 'fullscreen', 'quickformat']
+					'insertunorderedlist', '|', /*'image',*/ 'imageSelf', 'table', 'baidumap', '|', 'source', 'fullscreen', 'quickformat', 'preview']
 			});				
 	} );
 
