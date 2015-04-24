@@ -187,7 +187,7 @@ public class _Reporter extends BaseActionSupport {
     	
     	long start = System.currentTimeMillis();
     	Map<String, String> requestMap = getRequestMap(request, false);
-        SQLExcutor excutor = reportService.queryReport(reportId, requestMap, 0, 100000, getLoginUserId(requestMap));
+        SQLExcutor excutor = reportService.queryReport(reportId, requestMap, 1, 100000, getLoginUserId(requestMap));
         
         outputAccessLog(reportId, "showAsJson", requestMap, start);
  

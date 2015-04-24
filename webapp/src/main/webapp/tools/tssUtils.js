@@ -58,9 +58,7 @@ function initWorkSpace() {
 }
 
 /* 左栏添加左右拖动效果 */
-function initPaletteResize() {
-	// Element.attachColResize($1("palette"));
-}
+function initPaletteResize() { }
 
 function closePalette() {
 	$("#palette").hide().removeClass("opend");;
@@ -83,10 +81,9 @@ window.onresize = function() {
  
 /* 事件绑定初始化 */
 function initEvents() {
-	/* 点击树刷新按钮 */
-	var refreshTreeBT = $(".refreshTreeBT");
-	refreshTreeBT.title("刷新");
-	$.Event.addEvent(refreshTreeBT[0], "click", function() { loadInitData(); });
+	/* 树节点查找 和 刷新 */
+	$(".refreshTreeBT").title("刷新").click(loadInitData);
+	$("#palette .search input[type=button]").click(searchTree);
 
 	window.onresize();
 
@@ -120,13 +117,13 @@ function initEvents() {
 			logout();
 		}
 	});
-	$.Event.addEvent(document, "keydown", function(ev) {
-		var srcElement = $.Event.getSrcElement(ev);
-		var tagName = srcElement.tagName.toLowerCase();
-		if(13 == ev.keyCode && "textarea" != tagName) { // enter
-			$.Event.cancel(ev);
-		}
-	});
+}
+
+function searchTree() {
+	var key = $("#searchKey").value();
+	if(key) {
+		$.T('tree').searchNode(key);
+	}
 }
  
 function onTreeNodeActived(ev) { }

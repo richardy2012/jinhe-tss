@@ -189,7 +189,7 @@ CREATE TABLE `component_log` (
   `operatorId` bigint(20) DEFAULT NULL,
   `operatorName` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -198,7 +198,7 @@ CREATE TABLE `component_log` (
 
 LOCK TABLES `component_log` WRITE;
 /*!40000 ALTER TABLE `component_log` DISABLE KEYS */;
-INSERT INTO `component_log` VALUES (1,'<string>新建/修改了 (id:1, name:布局器组) 节点</string>',11,'门户组件','2015-01-05 18:23:17','saveComponent',NULL,NULL,-1,'Admin'),(2,'<string>新建/修改了 (id:2, name:默认布局器) 节点</string>',3,'门户组件','2015-01-05 18:23:17','saveComponent',NULL,NULL,-1,'Admin'),(3,'<string>新增/修改了系统参数：com.jinhe.tss.framework.component.param.Param@6fad2ccb[id=8,code=db.connection.url,name=db.connection.url,value=jdbc:mysql://localhost:3306/tss,text=&lt;null&gt;,modality=0,type=1,description=&lt;null&gt;,parentId=2,seqNo=6,decode=0000100006,levelNo=2,disabled=0,hidden=0,creatorId=-1,createTime=2015-01-05 18:23:17.0,creatorName=Admin,updatorId=&lt;null&gt;,updateTime=&lt;null&gt;,updatorName=&lt;null&gt;,lockVersion=0]</string>',4,'系统参数','2015-01-05 18:23:17','saveParam',NULL,NULL,-1,'Admin'),(4,'<string>新建/修改了 (id:3, name:修饰器组) 节点</string>',4,'门户组件','2015-01-05 18:23:17','saveComponent',NULL,NULL,-1,'Admin'),(5,'<string>新增/修改了系统参数：com.jinhe.tss.framework.component.param.Param@2c703723[id=9,code=session.cyclelife,name=session.cyclelife,value=1800,text=&lt;null&gt;,modality=0,type=1,description=&lt;null&gt;,parentId=2,seqNo=7,decode=0000100007,levelNo=2,disabled=0,hidden=0,creatorId=-1,createTime=2015-01-05 18:23:17.0,creatorName=Admin,updatorId=&lt;null&gt;,updateTime=&lt;null&gt;,updatorName=&lt;null&gt;,lockVersion=0]</string>',3,'系统参数','2015-01-05 18:23:17','saveParam',NULL,NULL,-1,'Admin');
+INSERT INTO `component_log` VALUES (1,'<string>新增/修改了系统参数：com.jinhe.tss.framework.component.param.Param@4777face[id=2,code=&lt;null&gt;,name=数据源配置,value=&lt;null&gt;,text=&lt;null&gt;,modality=&lt;null&gt;,type=0,description=&lt;null&gt;,parentId=0,seqNo=1,decode=00001,levelNo=1,disabled=0,hidden=0,udf1=&lt;null&gt;,udf2=&lt;null&gt;,udf3=&lt;null&gt;,creatorId=-1,createTime=2015-04-23 14:20:56.0,creatorName=Admin,updatorId=&lt;null&gt;,updateTime=&lt;null&gt;,updatorName=&lt;null&gt;,lockVersion=0]</string>',0,'系统参数','2015-04-23 14:20:56','saveParam',NULL,NULL,-1,'Admin'),(2,'<string>新增/修改了系统参数：com.jinhe.tss.framework.component.param.Param@413f04a[id=3,code=default_conn_pool,name=默认数据源,value=connectionpool,text=&lt;null&gt;,modality=0,type=1,description=&lt;null&gt;,parentId=2,seqNo=1,decode=0000100001,levelNo=2,disabled=0,hidden=0,udf1=&lt;null&gt;,udf2=&lt;null&gt;,udf3=&lt;null&gt;,creatorId=-1,createTime=2015-04-23 14:20:56.0,creatorName=Admin,updatorId=&lt;null&gt;,updateTime=&lt;null&gt;,updatorName=&lt;null&gt;,lockVersion=0]</string>',16,'系统参数','2015-04-23 14:20:56','saveParam',NULL,NULL,-1,'Admin'),(3,'<string>新增/修改了系统参数：com.jinhe.tss.framework.component.param.Param@21f9c7a1[id=8,code=upload_path,name=upload_path,value=D:/temp/upload,text=&lt;null&gt;,modality=0,type=1,description=&lt;null&gt;,parentId=6,seqNo=2,decode=0000200002,levelNo=2,disabled=0,hidden=0,udf1=&lt;null&gt;,udf2=&lt;null&gt;,udf3=&lt;null&gt;,creatorId=-1,createTime=2015-04-23 14:20:56.0,creatorName=Admin,updatorId=&lt;null&gt;,updateTime=&lt;null&gt;,updatorName=&lt;null&gt;,lockVersion=0]</string>',0,'系统参数','2015-04-23 14:20:56','saveParam',NULL,NULL,-1,'Admin'),(4,'<string>新增/修改了系统参数：com.jinhe.tss.framework.component.param.Param@62f72d3[id=4,code=datasource_list,name=数据源列表,value=&lt;null&gt;,text=&lt;null&gt;,modality=1,type=1,description=&lt;null&gt;,parentId=2,seqNo=2,decode=0000100002,levelNo=2,disabled=0,hidden=0,udf1=&lt;null&gt;,udf2=&lt;null&gt;,udf3=&lt;null&gt;,creatorId=-1,createTime=2015-04-23 14:20:56.0,creatorName=Admin,updatorId=&lt;null&gt;,updateTime=&lt;null&gt;,updatorName=&lt;null&gt;,lockVersion=0]</string>',0,'系统参数','2015-04-23 14:20:56','saveParam',NULL,NULL,-1,'Admin'),(5,'<string>新增/修改了系统参数：com.jinhe.tss.framework.component.param.Param@1e03753a[id=9,code=class.name.LoginCostomizer,name=class.name.LoginCostomizer,value=com.jinhe.tss.um.sso.FetchPermissionAfterLogin,text=&lt;null&gt;,modality=0,type=1,description=&lt;null&gt;,parentId=6,seqNo=3,decode=0000200003,levelNo=2,disabled=0,hidden=0,udf1=&lt;null&gt;,udf2=&lt;null&gt;,udf3=&lt;null&gt;,creatorId=-1,createTime=2015-04-23 14:20:56.0,creatorName=Admin,updatorId=&lt;null&gt;,updateTime=&lt;null&gt;,updatorName=&lt;null&gt;,lockVersion=0]</string>',1,'系统参数','2015-04-23 14:20:56','saveParam',NULL,NULL,-1,'Admin'),(6,'<string>新增/修改了系统参数：com.jinhe.tss.framework.component.param.Param@b186271[id=5,code=&lt;null&gt;,name=&lt;null&gt;,value=connectionpool,text=本地数据源,modality=1,type=2,description=&lt;null&gt;,parentId=4,seqNo=1,decode=000010000200001,levelNo=3,disabled=0,hidden=0,udf1=&lt;null&gt;,udf2=&lt;null&gt;,udf3=&lt;null&gt;,creatorId=-1,createTime=2015-04-23 14:20:56.0,creatorName=Admin,updatorId=&lt;null&gt;,updateTime=&lt;null&gt;,updatorName=&lt;null&gt;,lockVersion=0]</string>',15,'系统参数','2015-04-23 14:20:56','saveParam',NULL,NULL,-1,'Admin'),(7,'<string>新增/修改了系统参数：com.jinhe.tss.framework.component.param.Param@7fe8d4fb[id=10,code=email.to,name=email.to,value=pjjin@800best.com,text=&lt;null&gt;,modality=0,type=1,description=&lt;null&gt;,parentId=6,seqNo=4,decode=0000200004,levelNo=2,disabled=0,hidden=0,udf1=&lt;null&gt;,udf2=&lt;null&gt;,udf3=&lt;null&gt;,creatorId=-1,createTime=2015-04-23 14:20:56.0,creatorName=Admin,updatorId=&lt;null&gt;,updateTime=&lt;null&gt;,updatorName=&lt;null&gt;,lockVersion=0]</string>',0,'系统参数','2015-04-23 14:20:56','saveParam',NULL,NULL,-1,'Admin'),(8,'<string>新建/修改了 (id:1, name:布局器组) 节点</string>',15,'门户组件','2015-04-23 14:20:56','saveComponent',NULL,NULL,-1,'Admin'),(9,'<string>新增/修改了系统参数：com.jinhe.tss.framework.component.param.Param@38ddfe2[id=11,code=email.server,name=email.server,value=hzsmtp1.800best.com,text=&lt;null&gt;,modality=0,type=1,description=&lt;null&gt;,parentId=6,seqNo=5,decode=0000200005,levelNo=2,disabled=0,hidden=0,udf1=&lt;null&gt;,udf2=&lt;null&gt;,udf3=&lt;null&gt;,creatorId=-1,createTime=2015-04-23 14:20:56.0,creatorName=Admin,updatorId=&lt;null&gt;,updateTime=&lt;null&gt;,updatorName=&lt;null&gt;,lockVersion=0]</string>',0,'系统参数','2015-04-23 14:20:56','saveParam',NULL,NULL,-1,'Admin');
 /*!40000 ALTER TABLE `component_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -230,9 +230,12 @@ CREATE TABLE `component_param` (
   `seqNo` int(11) DEFAULT NULL,
   `text` varchar(255) DEFAULT NULL,
   `type` int(11) DEFAULT NULL,
+  `udf1` varchar(255) DEFAULT NULL,
+  `udf2` varchar(255) DEFAULT NULL,
+  `udf3` varchar(255) DEFAULT NULL,
   `value` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -241,8 +244,180 @@ CREATE TABLE `component_param` (
 
 LOCK TABLES `component_param` WRITE;
 /*!40000 ALTER TABLE `component_param` DISABLE KEYS */;
-INSERT INTO `component_param` VALUES (1,NULL,NULL,NULL,0,NULL,NULL,NULL,'0','00000',NULL,NULL,1,NULL,NULL,'0',NULL,NULL,'0',NULL,'0'),(2,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,NULL,'00001',NULL,0,0,1,NULL,'系统参数',0,1,NULL,0,NULL),(3,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'log_flush_max_size','0000100001',NULL,0,0,2,0,'log_flush_max_size',2,1,NULL,1,'12'),(4,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'upload_path','0000100002',NULL,0,0,2,0,'upload_path',2,2,NULL,1,'D:/temp/upload'),(5,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'class.name.LoginCostomizer','0000100003',NULL,0,0,2,0,'class.name.LoginCostomizer',2,3,NULL,1,'com.jinhe.tss.um.sso.FetchPermissionAfterLogin'),(6,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'bean.onlineManager','0000100004',NULL,0,0,2,0,'bean.onlineManager',2,4,NULL,1,'DBOnlineUserManagerService'),(7,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'application.code','0000100005',NULL,0,0,2,0,'application.code',2,5,NULL,1,'TSS'),(8,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'db.connection.url','0000100006',NULL,0,0,2,0,'db.connection.url',2,6,NULL,1,'jdbc:mysql://localhost:3306/tss'),(9,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'session.cyclelife','0000100007',NULL,0,0,2,0,'session.cyclelife',2,7,NULL,1,'1800'),(10,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'class.name.IdentityGetter','0000100008',NULL,0,0,2,0,'class.name.IdentityGetter',2,8,NULL,1,'com.jinhe.tss.um.sso.UMIdentityGetter'),(11,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'db.connection.password','0000100009',NULL,0,0,2,0,'db.connection.password',2,9,NULL,1,'800best@com'),(12,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'db.connection.driver_class','0000100010',NULL,0,0,2,0,'db.connection.driver_class',2,10,NULL,1,'com.mysql.jdbc.Driver'),(13,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'environment','0000100011',NULL,0,0,2,0,'environment',2,11,NULL,1,'dev'),(14,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'last.package.time','0000100012',NULL,0,0,2,0,'last.package.time',2,12,NULL,1,'yyyy-MM-dd hh:mi:ss'),(15,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'db.connection.username','0000100013',NULL,0,0,2,0,'db.connection.username',2,13,NULL,1,'root'),(16,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'useFreemarker','0000100014',NULL,0,0,2,0,'useFreemarker',2,14,NULL,1,'true'),(17,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'job.enable','0000100015',NULL,0,0,2,0,'job.enable',2,15,NULL,1,'true'),(18,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,NULL,'00002',NULL,0,0,1,NULL,'应用服务配置',0,2,NULL,0,NULL),(19,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'TSS','0000200001',NULL,0,0,2,0,'TSS',18,1,NULL,1,'<server code=\"TSS\" framework=\"tss\" name=\"TSS\" sessionIdName=\"JSESSIONID\" baseURL=\"http://localhost:8088/tss\"/>'),(20,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'DMS','0000200002',NULL,0,0,2,0,'DMS',18,2,NULL,1,'<server code=\"DMS\" framework=\"tss\" name=\"DMS\" sessionIdName=\"JSESSIONID\" baseURL=\"http://localhost:8088/dms\"/>');
+INSERT INTO `component_param` VALUES (1,NULL,NULL,NULL,0,NULL,NULL,NULL,'0','00000',NULL,NULL,1,NULL,NULL,'0',NULL,NULL,'0',NULL,NULL,NULL,NULL,'0'),(2,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,NULL,'00001',NULL,0,0,1,NULL,'数据源配置',0,1,NULL,0,NULL,NULL,NULL,NULL),(3,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'default_conn_pool','0000100001',NULL,0,0,2,0,'默认数据源',2,1,NULL,1,NULL,NULL,NULL,'connectionpool'),(4,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'datasource_list','0000100002',NULL,0,0,2,1,'数据源列表',2,2,NULL,1,NULL,NULL,NULL,NULL),(5,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,NULL,'000010000200001',NULL,0,0,3,1,NULL,4,1,'本地数据源',2,NULL,NULL,NULL,'connectionpool'),(6,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,NULL,'00002',NULL,0,0,1,NULL,'系统参数',0,2,NULL,0,NULL,NULL,NULL,NULL),(7,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'log_flush_max_size','0000200001',NULL,0,0,2,0,'log_flush_max_size',6,1,NULL,1,NULL,NULL,NULL,'12'),(8,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'upload_path','0000200002',NULL,0,0,2,0,'upload_path',6,2,NULL,1,NULL,NULL,NULL,'D:/temp/upload'),(9,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'class.name.LoginCostomizer','0000200003',NULL,0,0,2,0,'class.name.LoginCostomizer',6,3,NULL,1,NULL,NULL,NULL,'com.jinhe.tss.um.sso.FetchPermissionAfterLogin'),(10,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'email.to','0000200004',NULL,0,0,2,0,'email.to',6,4,NULL,1,NULL,NULL,NULL,'pjjin@800best.com'),(11,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'email.server','0000200005',NULL,0,0,2,0,'email.server',6,5,NULL,1,NULL,NULL,NULL,'hzsmtp1.800best.com'),(12,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'bean.onlineManager','0000200006',NULL,0,0,2,0,'bean.onlineManager',6,6,NULL,1,NULL,NULL,NULL,'DBOnlineUserManagerService'),(13,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'application.code','0000200007',NULL,0,0,2,0,'application.code',6,7,NULL,1,NULL,NULL,NULL,'TSS'),(14,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'db.connection.url','0000200008',NULL,0,0,2,0,'db.connection.url',6,8,NULL,1,NULL,NULL,NULL,'jdbc:mysql://127.0.0.1:3306/tss'),(15,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'session.cyclelife','0000200009',NULL,0,0,2,0,'session.cyclelife',6,9,NULL,1,NULL,NULL,NULL,'1800'),(16,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'class.name.IdentityGetter','0000200010',NULL,0,0,2,0,'class.name.IdentityGetter',6,10,NULL,1,NULL,NULL,NULL,'com.jinhe.tss.um.sso.UMIdentityGetter'),(17,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'db.connection.password','0000200011',NULL,0,0,2,0,'db.connection.password',6,11,NULL,1,NULL,NULL,NULL,'800best@com'),(18,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'db.connection.driver_class','0000200012',NULL,0,0,2,0,'db.connection.driver_class',6,12,NULL,1,NULL,NULL,NULL,'com.mysql.jdbc.Driver'),(19,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'environment','0000200013',NULL,0,0,2,0,'environment',6,13,NULL,1,NULL,NULL,NULL,'dev'),(20,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'email.from','0000200014',NULL,0,0,2,0,'email.from',6,14,NULL,1,NULL,NULL,NULL,'BtrBI@800best.com'),(21,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'last.package.time','0000200015',NULL,0,0,2,0,'last.package.time',6,15,NULL,1,NULL,NULL,NULL,'2015-04-22 19:17:43'),(22,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'db.connection.username','0000200016',NULL,0,0,2,0,'db.connection.username',6,16,NULL,1,NULL,NULL,NULL,'root'),(23,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'useFreemarker','0000200017',NULL,0,0,2,0,'useFreemarker',6,17,NULL,1,NULL,NULL,NULL,'true'),(24,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'job.enable','0000200018',NULL,0,0,2,0,'job.enable',6,18,NULL,1,NULL,NULL,NULL,'true'),(25,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'error.keyword','0000200019',NULL,0,0,2,0,'error.keyword',6,19,NULL,1,NULL,NULL,NULL,'java.sql.SQLException'),(26,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,NULL,'00003',NULL,0,0,1,NULL,'应用服务配置',0,3,NULL,0,NULL,NULL,NULL,NULL),(27,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'TSS','0000300001',NULL,0,0,2,0,'TSS',26,1,NULL,1,NULL,NULL,NULL,'<server code=\"TSS\" framework=\"tss\" name=\"TSS\" sessionIdName=\"JSESSIONID\" baseURL=\"http://localhost:8088/tss\"/>'),(28,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'CWP','0000300002',NULL,0,0,2,0,'CWP',26,2,NULL,1,NULL,NULL,NULL,'<server code=\"CWP\" framework=\"tss\" name=\"CWP\" sessionIdName=\"JSESSIONID\" baseURL=\"http://localhost:8088/cwp\"/>');
 /*!40000 ALTER TABLE `component_param` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `dm_access_log`
+--
+
+DROP TABLE IF EXISTS `dm_access_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dm_access_log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `accessTime` datetime DEFAULT NULL,
+  `className` varchar(255) NOT NULL,
+  `ip` varchar(255) DEFAULT NULL,
+  `methodCnName` varchar(255) NOT NULL,
+  `methodName` varchar(100) NOT NULL,
+  `params` longtext,
+  `runningTime` bigint(20) DEFAULT NULL,
+  `userId` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dm_access_log`
+--
+
+LOCK TABLES `dm_access_log` WRITE;
+/*!40000 ALTER TABLE `dm_access_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `dm_access_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `dm_permission_record`
+--
+
+DROP TABLE IF EXISTS `dm_permission_record`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dm_permission_record` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `isGrant` int(11) DEFAULT NULL,
+  `isPass` int(11) DEFAULT NULL,
+  `operationId` varchar(255) NOT NULL,
+  `permissionState` int(11) DEFAULT NULL,
+  `resourceId` bigint(20) NOT NULL,
+  `resourceName` varchar(255) DEFAULT NULL,
+  `roleId` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dm_permission_record`
+--
+
+LOCK TABLES `dm_permission_record` WRITE;
+/*!40000 ALTER TABLE `dm_permission_record` DISABLE KEYS */;
+INSERT INTO `dm_permission_record` VALUES (1,1,1,'1',2,0,'root',-1),(2,1,1,'2',2,0,'root',-1),(3,1,1,'3',2,0,'root',-1);
+/*!40000 ALTER TABLE `dm_permission_record` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `dm_permission_report`
+--
+
+DROP TABLE IF EXISTS `dm_permission_report`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dm_permission_report` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `isGrant` int(11) DEFAULT NULL,
+  `isPass` int(11) DEFAULT NULL,
+  `operationId` varchar(255) NOT NULL,
+  `permissionState` int(11) DEFAULT NULL,
+  `resourceId` bigint(20) NOT NULL,
+  `resourceName` varchar(255) DEFAULT NULL,
+  `roleId` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dm_permission_report`
+--
+
+LOCK TABLES `dm_permission_report` WRITE;
+/*!40000 ALTER TABLE `dm_permission_report` DISABLE KEYS */;
+INSERT INTO `dm_permission_report` VALUES (1,1,1,'1',2,0,'root',-1),(2,1,1,'2',2,0,'root',-1),(3,1,1,'3',2,0,'root',-1),(4,1,1,'4',2,0,'root',-1);
+/*!40000 ALTER TABLE `dm_permission_report` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `dm_record`
+--
+
+DROP TABLE IF EXISTS `dm_record`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dm_record` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `createTime` datetime DEFAULT NULL,
+  `creatorId` bigint(20) DEFAULT NULL,
+  `creatorName` varchar(255) DEFAULT NULL,
+  `lockVersion` int(11) NOT NULL,
+  `updateTime` datetime DEFAULT NULL,
+  `updatorId` bigint(20) DEFAULT NULL,
+  `updatorName` varchar(255) DEFAULT NULL,
+  `customizeJS` longtext,
+  `customizePage` varchar(255) DEFAULT NULL,
+  `datasource` varchar(255) DEFAULT NULL,
+  `decode` varchar(255) DEFAULT NULL,
+  `define` longtext,
+  `levelNo` int(11) DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  `parentId` bigint(20) DEFAULT NULL,
+  `remark` varchar(255) DEFAULT NULL,
+  `seqNo` int(11) DEFAULT NULL,
+  `rctable` varchar(255) DEFAULT NULL,
+  `type` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dm_record`
+--
+
+LOCK TABLES `dm_record` WRITE;
+/*!40000 ALTER TABLE `dm_record` DISABLE KEYS */;
+/*!40000 ALTER TABLE `dm_record` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `dm_report`
+--
+
+DROP TABLE IF EXISTS `dm_report`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dm_report` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `createTime` datetime DEFAULT NULL,
+  `creatorId` bigint(20) DEFAULT NULL,
+  `creatorName` varchar(255) DEFAULT NULL,
+  `lockVersion` int(11) NOT NULL,
+  `updateTime` datetime DEFAULT NULL,
+  `updatorId` bigint(20) DEFAULT NULL,
+  `updatorName` varchar(255) DEFAULT NULL,
+  `datasource` varchar(255) DEFAULT NULL,
+  `decode` varchar(255) DEFAULT NULL,
+  `disabled` int(11) DEFAULT NULL,
+  `displayUri` varchar(255) DEFAULT NULL,
+  `levelNo` int(11) DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  `param` longtext,
+  `parentId` bigint(20) DEFAULT NULL,
+  `remark` varchar(255) DEFAULT NULL,
+  `script` longtext,
+  `seqNo` int(11) DEFAULT NULL,
+  `type` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dm_report`
+--
+
+LOCK TABLES `dm_report` WRITE;
+/*!40000 ALTER TABLE `dm_report` DISABLE KEYS */;
+/*!40000 ALTER TABLE `dm_report` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -314,7 +489,7 @@ CREATE TABLE `portal_component` (
 
 LOCK TABLES `portal_component` WRITE;
 /*!40000 ALTER TABLE `portal_component` DISABLE KEYS */;
-INSERT INTO `portal_component` VALUES (1,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'00001',NULL,NULL,0,0,'',1,'布局器组',0,0,1,1,NULL),(2,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'0000100001','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<layout>\n	<property>\n		<name>默认布局器</name>\n		<portNumber>-1</portNumber>\n	</property>\n	<html>\n		<![CDATA[\n			<table id=\"${id}\">\n				<tr>\n					<td>${port0}</td>\n				</tr>\n			</table>\n		]]>\n	</html>\n</layout>',NULL,0,1,'\0',2,'默认布局器',1,-1,1,1,NULL),(3,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'00002',NULL,NULL,0,0,'',1,'修饰器组',0,0,2,2,NULL),(4,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'0000200001','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<decorator>\n	<property>\n		<name>默认修饰器</name>\n	</property>\n	<script><![CDATA[]]></script>\n	<style><![CDATA[]]></style>\n	<html>\n		<![CDATA[<table id=${id} class=\"decorator\">\n		  <tbody>\n			<tr>\n			  <td>\n				${content}\n			  </td>\n			</tr>\n		  </tbody>\n		</table>]]>\n	</html>\n	<events/>\n	<parameters/>\n</decorator>',NULL,0,1,'\0',2,'默认修饰器',3,0,1,2,NULL),(5,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'00003',NULL,NULL,0,0,'',1,'portlet组',0,0,3,3,NULL);
+INSERT INTO `portal_component` VALUES (1,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'00001',NULL,NULL,0,0,'',1,'布局器组',0,0,1,1,NULL),(2,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'0000100001','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<layout>\n	<property>\n		<name>默认布局器</name>\n		<portNumber>-1</portNumber>\n	</property>\n	<html>\n		<![CDATA[\n			<table id=\"${id}\">\n				<tr>\n					<td>${port0}</td>\n				</tr>\n			</table>\n		]]>\n	</html>\n</layout>',NULL,0,1,'\0',2,'默认布局器',1,-1,1,1,NULL),(3,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'00002',NULL,NULL,0,0,'',1,'修饰器组',0,0,2,2,NULL),(4,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'0000200001','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<decorator>\n	<property>\n		<name>默认修饰器</name>\n	</property>\n	<script><![CDATA[]]></script>\n	<style><![CDATA[]]></style>\n	<html>\n		<![CDATA[<table id=${id} class=\"decorator\">\n		  <tbody>\n			<tr>\n			  <td>\n				${content}\n			  </td>\n			</tr>\n		  </tbody>\n		</table>]]>\n	</html>\n	<events/>\n	<parameters/>\n</decorator>',NULL,0,1,'\0',2,'默认修饰器',3,0,1,2,NULL),(5,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'00003',NULL,NULL,0,0,'',1,'portlet组',0,0,3,3,NULL);
 /*!40000 ALTER TABLE `portal_component` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -359,6 +534,7 @@ CREATE TABLE `portal_navigator` (
   `updateTime` datetime DEFAULT NULL,
   `updatorId` bigint(20) DEFAULT NULL,
   `updatorName` varchar(255) DEFAULT NULL,
+  `code` varchar(255) DEFAULT NULL,
   `decode` varchar(255) DEFAULT NULL,
   `description` longtext,
   `disabled` int(11) DEFAULT NULL,
@@ -378,8 +554,8 @@ CREATE TABLE `portal_navigator` (
   UNIQUE KEY `parentId` (`parentId`,`name`),
   KEY `FKDD021644D7745F02` (`content_id`),
   KEY `FKDD021644E31CCFBD` (`toContent_id`),
-  CONSTRAINT `FKDD021644D7745F02` FOREIGN KEY (`content_id`) REFERENCES `portal_structure` (`id`),
-  CONSTRAINT `FKDD021644E31CCFBD` FOREIGN KEY (`toContent_id`) REFERENCES `portal_structure` (`id`)
+  CONSTRAINT `FKDD021644E31CCFBD` FOREIGN KEY (`toContent_id`) REFERENCES `portal_structure` (`id`),
+  CONSTRAINT `FKDD021644D7745F02` FOREIGN KEY (`content_id`) REFERENCES `portal_structure` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -389,7 +565,7 @@ CREATE TABLE `portal_navigator` (
 
 LOCK TABLES `portal_navigator` WRITE;
 /*!40000 ALTER TABLE `portal_navigator` DISABLE KEYS */;
-INSERT INTO `portal_navigator` VALUES (1,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'0000100001',NULL,0,2,NULL,'应用菜单组',NULL,0,NULL,1,NULL,1,NULL,NULL,NULL);
+INSERT INTO `portal_navigator` VALUES (1,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,NULL,'0000100001',NULL,0,2,NULL,'应用菜单组',NULL,0,NULL,1,NULL,1,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `portal_navigator` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -473,8 +649,8 @@ CREATE TABLE `portal_release_config` (
   KEY `FKCF1E12AD78D9CB08` (`theme_id`),
   KEY `FKCF1E12ADA44A22F` (`portal_id`),
   KEY `FKCF1E12AD97CA712C` (`page_id`),
-  CONSTRAINT `FKCF1E12AD78D9CB08` FOREIGN KEY (`theme_id`) REFERENCES `portal_theme` (`id`),
   CONSTRAINT `FKCF1E12AD97CA712C` FOREIGN KEY (`page_id`) REFERENCES `portal_structure` (`id`),
+  CONSTRAINT `FKCF1E12AD78D9CB08` FOREIGN KEY (`theme_id`) REFERENCES `portal_theme` (`id`),
   CONSTRAINT `FKCF1E12ADA44A22F` FOREIGN KEY (`portal_id`) REFERENCES `portal_structure` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -524,9 +700,9 @@ CREATE TABLE `portal_structure` (
   KEY `FKB8C019602EF1582E` (`definer_id`),
   KEY `FKB8C0196078D9CB08` (`theme_id`),
   KEY `FKB8C01960FB50FF81` (`currentTheme_id`),
+  CONSTRAINT `FKB8C01960FB50FF81` FOREIGN KEY (`currentTheme_id`) REFERENCES `portal_theme` (`id`),
   CONSTRAINT `FKB8C019602EF1582E` FOREIGN KEY (`definer_id`) REFERENCES `portal_component` (`id`),
-  CONSTRAINT `FKB8C0196078D9CB08` FOREIGN KEY (`theme_id`) REFERENCES `portal_theme` (`id`),
-  CONSTRAINT `FKB8C01960FB50FF81` FOREIGN KEY (`currentTheme_id`) REFERENCES `portal_theme` (`id`)
+  CONSTRAINT `FKB8C0196078D9CB08` FOREIGN KEY (`theme_id`) REFERENCES `portal_theme` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -588,8 +764,8 @@ CREATE TABLE `portal_theme_info` (
   PRIMARY KEY (`structureId`,`themeId`),
   KEY `FK74F26F1719B53E3B` (`layout_id`),
   KEY `FK74F26F177199B8A` (`decorator_id`),
-  CONSTRAINT `FK74F26F1719B53E3B` FOREIGN KEY (`layout_id`) REFERENCES `portal_component` (`id`),
-  CONSTRAINT `FK74F26F177199B8A` FOREIGN KEY (`decorator_id`) REFERENCES `portal_component` (`id`)
+  CONSTRAINT `FK74F26F177199B8A` FOREIGN KEY (`decorator_id`) REFERENCES `portal_component` (`id`),
+  CONSTRAINT `FK74F26F1719B53E3B` FOREIGN KEY (`layout_id`) REFERENCES `portal_component` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -661,7 +837,7 @@ CREATE TABLE `um_application` (
 
 LOCK TABLES `um_application` WRITE;
 /*!40000 ALTER TABLE `um_application` DISABLE KEYS */;
-INSERT INTO `um_application` VALUES (1,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'tss','-1',NULL,NULL,'TSS',NULL);
+INSERT INTO `um_application` VALUES (1,'2015-04-23 14:20:56',-1,'Admin',0,NULL,NULL,NULL,'tss','-1',NULL,NULL,'TSS',NULL);
 /*!40000 ALTER TABLE `um_application` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -751,7 +927,7 @@ CREATE TABLE `um_operation` (
   `seqNo` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `applicationId` (`applicationId`,`resourceTypeId`,`operationId`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -760,7 +936,7 @@ CREATE TABLE `um_operation` (
 
 LOCK TABLES `um_operation` WRITE;
 /*!40000 ALTER TABLE `um_operation` DISABLE KEYS */;
-INSERT INTO `um_operation` VALUES (1,'tss',NULL,'2',NULL,'查看','1','1',1),(2,'tss','opt1',NULL,NULL,'管理','2','1',2),(3,'tss',NULL,'2',NULL,'查看','1','2',1),(4,'tss','opt1',NULL,NULL,'管理','2','2',2),(5,'tss',NULL,'2',NULL,'查看浏览','1','3',1),(6,'tss','opt1',NULL,NULL,'新建栏目','2','3',2),(7,'tss','opt1',NULL,NULL,'新建文章','3','3',3),(8,'tss','opt1','3',NULL,'发布文章','4','3',4),(9,'tss','opt1',NULL,NULL,'编辑权限','5','3',5),(10,'tss','opt1','3',NULL,'删除权限','6','3',6),(11,'tss','opt1','2,3',NULL,'停用启用','7','3',7),(12,'tss','opt1',NULL,NULL,'排序权限','8','3',8),(13,'tss','opt1',NULL,NULL,'移动权限','9','3',9),(14,'tss',NULL,'2','查看门户结构','查看','1','4',1),(15,'tss','opt1',NULL,'编辑门户结构','编辑','2','4',2),(16,'tss','opt1','3','删除门户结构','删除','3','4',3),(17,'tss','opt1',NULL,'增加门户结构','增加','4','4',4),(18,'tss','opt1',NULL,'排序门户结构','排序','5','4',5),(19,'tss','opt1','3','停用门户结构','停用','6','4',6),(20,'tss','opt1','2','启用门户结构','启用','7','4',7),(21,'tss',NULL,'2','浏览','浏览','1','5',1),(22,'tss',NULL,NULL,'维护','维护','2','5',2);
+INSERT INTO `um_operation` VALUES (1,'tss',NULL,'2',NULL,'查看','1','1',1),(2,'tss','opt1',NULL,NULL,'管理','2','1',2),(3,'tss',NULL,'2',NULL,'查看','1','2',1),(4,'tss','opt1',NULL,NULL,'管理','2','2',2),(5,'tss',NULL,'2',NULL,'查看浏览','1','3',1),(6,'tss','opt1',NULL,NULL,'新建栏目','2','3',2),(7,'tss','opt1',NULL,NULL,'新建文章','3','3',3),(8,'tss','opt1','3',NULL,'发布文章','4','3',4),(9,'tss','opt1',NULL,NULL,'编辑权限','5','3',5),(10,'tss','opt1','3',NULL,'删除权限','6','3',6),(11,'tss','opt1','2,3',NULL,'停用启用','7','3',7),(12,'tss','opt1',NULL,NULL,'排序权限','8','3',8),(13,'tss','opt1',NULL,NULL,'移动权限','9','3',9),(14,'tss',NULL,'2','查看门户结构','查看','1','4',1),(15,'tss','opt1',NULL,'编辑门户结构','编辑','2','4',2),(16,'tss','opt1','3','删除门户结构','删除','3','4',3),(17,'tss','opt1',NULL,'增加门户结构','增加','4','4',4),(18,'tss','opt1',NULL,'排序门户结构','排序','5','4',5),(19,'tss','opt1','3','停用门户结构','停用','6','4',6),(20,'tss','opt1','2','启用门户结构','启用','7','4',7),(21,'tss',NULL,'2','浏览','浏览','1','5',1),(22,'tss',NULL,NULL,'维护','维护','2','5',2),(23,'tss',NULL,'2',NULL,'查看报表','1','D1',1),(24,'tss','opt1',NULL,NULL,'维护报表','2','D1',2),(25,'tss','opt1','3',NULL,'删除报表','3','D1',3),(26,'tss','opt1','2,3',NULL,'停用启用','4','D1',4),(27,'tss',NULL,'2',NULL,'查看录入','1','D2',1),(28,'tss','opt1',NULL,NULL,'维护录入','2','D2',2),(29,'tss','opt1','3',NULL,'删除录入','3','D2',3);
 /*!40000 ALTER TABLE `um_operation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -850,7 +1026,7 @@ CREATE TABLE `um_resourcetype` (
   `seqNo` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `applicationId` (`applicationId`,`resourceTypeId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -859,7 +1035,7 @@ CREATE TABLE `um_resourcetype` (
 
 LOCK TABLES `um_resourcetype` WRITE;
 /*!40000 ALTER TABLE `um_resourcetype` DISABLE KEYS */;
-INSERT INTO `um_resourcetype` VALUES (1,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'tss','用户组织资源类型','用户组','com.jinhe.tss.um.entity.permission.GroupPermission','com.jinhe.tss.um.entity.permission.GroupResource','1',-1,1),(2,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'tss','角色资源类型','角色','com.jinhe.tss.um.entity.permission.RolePermission','com.jinhe.tss.um.entity.permission.RoleResource','2',-6,2),(3,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'tss','内容栏目资源类型','内容栏目','com.jinhe.tss.cms.entity.permission.ChannelPermission','com.jinhe.tss.cms.entity.permission.ChannelResource','3',-1,3),(4,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'tss','门户结构资源类型','门户结构','com.jinhe.tss.portal.entity.permission.PortalPermission','com.jinhe.tss.portal.entity.permission.PortalResource','4',0,4),(5,'2015-01-05 18:23:17',-1,'Admin',0,NULL,NULL,NULL,'tss','菜单导航资源类型','菜单导航','com.jinhe.tss.portal.entity.permission.NavigatorPermission','com.jinhe.tss.portal.entity.permission.NavigatorResource','5',0,5);
+INSERT INTO `um_resourcetype` VALUES (1,'2015-04-23 14:20:55',-1,'Admin',0,NULL,NULL,NULL,'tss','用户组织资源类型','用户组','com.jinhe.tss.um.entity.permission.GroupPermission','com.jinhe.tss.um.entity.permission.GroupResource','1',-1,1),(2,'2015-04-23 14:20:55',-1,'Admin',0,NULL,NULL,NULL,'tss','角色资源类型','角色','com.jinhe.tss.um.entity.permission.RolePermission','com.jinhe.tss.um.entity.permission.RoleResource','2',-6,2),(3,'2015-04-23 14:20:55',-1,'Admin',0,NULL,NULL,NULL,'tss','内容栏目资源类型','内容栏目','com.jinhe.tss.cms.entity.permission.ChannelPermission','com.jinhe.tss.cms.entity.permission.ChannelResource','3',-1,3),(4,'2015-04-23 14:20:55',-1,'Admin',0,NULL,NULL,NULL,'tss','门户结构资源类型','门户结构','com.jinhe.tss.portal.entity.permission.PortalPermission','com.jinhe.tss.portal.entity.permission.PortalResource','4',0,4),(5,'2015-04-23 14:20:55',-1,'Admin',0,NULL,NULL,NULL,'tss','菜单导航资源类型','菜单导航','com.jinhe.tss.portal.entity.permission.NavigatorPermission','com.jinhe.tss.portal.entity.permission.NavigatorResource','5',0,5),(6,'2015-04-23 14:20:55',-1,'Admin',0,NULL,NULL,NULL,'tss','数据报表资源','数据报表','com.jinhe.dm.report.permission.ReportPermission','com.jinhe.dm.report.permission.ReportResource','D1',0,21),(7,'2015-04-23 14:20:55',-1,'Admin',0,NULL,NULL,NULL,'tss','数据录入资源','数据录入','com.jinhe.dm.record.permission.RecordPermission','com.jinhe.dm.record.permission.RecordResource','D2',0,22);
 /*!40000 ALTER TABLE `um_resourcetype` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -876,7 +1052,7 @@ CREATE TABLE `um_resourcetype_root` (
   `resourceTypeId` varchar(255) DEFAULT NULL,
   `rootId` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -885,7 +1061,7 @@ CREATE TABLE `um_resourcetype_root` (
 
 LOCK TABLES `um_resourcetype_root` WRITE;
 /*!40000 ALTER TABLE `um_resourcetype_root` DISABLE KEYS */;
-INSERT INTO `um_resourcetype_root` VALUES (1,'tss','1',-1),(2,'tss','2',-6),(3,'tss','3',-1),(4,'tss','4',0),(5,'tss','5',0);
+INSERT INTO `um_resourcetype_root` VALUES (1,'tss','1',-1),(2,'tss','2',-6),(3,'tss','3',-1),(4,'tss','4',0),(5,'tss','5',0),(6,'tss','D1',0),(7,'tss','D2',0);
 /*!40000 ALTER TABLE `um_resourcetype_root` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -926,7 +1102,7 @@ CREATE TABLE `um_role` (
 
 LOCK TABLES `um_role` WRITE;
 /*!40000 ALTER TABLE `um_role` DISABLE KEYS */;
-INSERT INTO `um_role` VALUES (-10000,NULL,NULL,NULL,0,NULL,NULL,NULL,'0000100002',NULL,0,'2099-01-01 00:00:00',0,2,'匿名角色',-6,2,'2015-01-05 18:23:15'),(-6,NULL,NULL,NULL,0,NULL,NULL,NULL,'00001',NULL,0,NULL,1,1,'全部',0,1,NULL),(-1,NULL,NULL,NULL,0,NULL,NULL,NULL,'0000100001',NULL,0,'2099-01-01 00:00:00',0,2,'系统管理员',-6,1,'2015-01-05 18:23:15');
+INSERT INTO `um_role` VALUES (-10000,NULL,NULL,NULL,0,NULL,NULL,NULL,'0000100002',NULL,0,'2099-01-01 00:00:00',0,2,'匿名角色',-6,2,'2015-04-23 14:20:54'),(-6,NULL,NULL,NULL,0,NULL,NULL,NULL,'00001',NULL,0,NULL,1,1,'全部',0,1,NULL),(-1,NULL,NULL,NULL,0,NULL,NULL,NULL,'0000100001',NULL,0,'2099-01-01 00:00:00',0,2,'系统管理员',-6,1,'2015-04-23 14:20:54');
 /*!40000 ALTER TABLE `um_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1156,6 +1332,38 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
+-- Temporary table structure for view `view_record_resource`
+--
+
+DROP TABLE IF EXISTS `view_record_resource`;
+/*!50001 DROP VIEW IF EXISTS `view_record_resource`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `view_record_resource` (
+  `id` tinyint NOT NULL,
+  `name` tinyint NOT NULL,
+  `parentId` tinyint NOT NULL,
+  `decode` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `view_report_resource`
+--
+
+DROP TABLE IF EXISTS `view_report_resource`;
+/*!50001 DROP VIEW IF EXISTS `view_report_resource`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `view_report_resource` (
+  `id` tinyint NOT NULL,
+  `name` tinyint NOT NULL,
+  `parentId` tinyint NOT NULL,
+  `decode` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Temporary table structure for view `view_role_resource`
 --
 
@@ -1276,6 +1484,44 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
+-- Final view structure for view `view_record_resource`
+--
+
+/*!50001 DROP TABLE IF EXISTS `view_record_resource`*/;
+/*!50001 DROP VIEW IF EXISTS `view_record_resource`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_record_resource` AS select 0 AS `id`,'root' AS `name`,-(1) AS `parentId`,'00001' AS `decode` union select `dm_record`.`id` AS `id`,`dm_record`.`name` AS `name`,`dm_record`.`parentId` AS `parentId`,`dm_record`.`decode` AS `decode` from `dm_record` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `view_report_resource`
+--
+
+/*!50001 DROP TABLE IF EXISTS `view_report_resource`*/;
+/*!50001 DROP VIEW IF EXISTS `view_report_resource`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_report_resource` AS select 0 AS `id`,'root' AS `name`,-(1) AS `parentId`,'00001' AS `decode` union select `dm_report`.`id` AS `id`,`dm_report`.`name` AS `name`,`dm_report`.`parentId` AS `parentId`,`dm_report`.`decode` AS `decode` from `dm_report` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `view_role_resource`
 --
 
@@ -1341,4 +1587,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-02-04 12:55:57
+-- Dump completed on 2015-04-23 14:24:21
