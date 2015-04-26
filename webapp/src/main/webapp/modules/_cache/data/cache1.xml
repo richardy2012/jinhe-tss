@@ -5,10 +5,10 @@
 		<column name="name" caption="名称" mode="string" editable="false"/>
 		<column name="accessMethod" caption="存取方式" mode="combo" values="1|2|3|4|5" texts="FIFO|LIFO|RANDOM|LRU|LFU"/>
 		<column name="disabled" caption="状态" mode="combo" values="0|1" texts="启用|停用"/>
-		<column name="interruptTime" caption="等待时间" mode="number" inputReg="/^\d*$/g"/>	
-		<column name="cyclelife" caption="生命周期" mode="number" inputReg="/^\d*$/g"/>
-		<column name="initNum" caption="初始化数" mode="number" inputReg="/^\d*$/g"/>
-		<column name="poolSize" caption="池容量" mode="number" inputReg="/^\d*$/g"/>
+		<column name="interruptTime" caption="等待时间" mode="number" inputReg="^\d*$"/>	
+		<column name="cyclelife" caption="生命周期" mode="number" inputReg="^\d*$"/>
+		<column name="initNum" caption="初始化数" mode="number" inputReg="^\d*$"/>
+		<column name="poolSize" caption="池容量" mode="number" inputReg="^\d*$"/>
 		<column name="poolClass" caption="缓存池类" mode="string"/>
 		<column name="poolContainerClass" caption="池容器类" mode="string"/>
 		<column name="customizerClass" caption="自定义类" mode="string"/>

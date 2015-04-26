@@ -4,7 +4,7 @@
 		<column name="id" mode="hidden"/>
 		<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>
 		<column name="description" caption="备注" mode="string"/>
-        <column name="portNumber" caption="窗口数" mode="string" maxLength="4" inputReg="/^\-?\d*$/" empty="false"/>
+        <column name="portNumber" caption="窗口数" mode="string" maxLength="4" inputReg="^\-?\d*$" empty="false"/>
         <column name="script" caption="JS脚本" mode="string"/>
         <column name="style" caption="CSS样式" mode="string"/>
         <column name="html" caption="HTML片段" mode="string" empty="false"/>

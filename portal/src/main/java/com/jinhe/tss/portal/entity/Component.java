@@ -53,7 +53,7 @@ public class Component extends OperateInfo implements IEntity, ILevelTreeNode, I
     private String  name; // 元素名称
 	
 	/** 
-	 * 元素类别： 1-布局器, 2-修饰器组 3-Portlet组 
+	 * 元素类别： 1-布局器(组), 2-修饰器(组), 3-Portlet(组)
 	 */
 	private Integer type;
 	

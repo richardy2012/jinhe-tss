@@ -4,7 +4,7 @@
         <xform>
             <declare>
                 <column name="loginName" caption="账号" mode="string" maxLength="100" empty="false"/>
-                <column name="password" caption="密码" mode="string" maxLength="100" empty="false" inputReg="/^[\u0000-\u00FF]*$/" />
+                <column name="password" caption="密码" mode="string" maxLength="100" empty="false" inputReg="^[\u0000-\u00FF]*$" />
                 <column name="password2" caption="确认密码" mode="string" maxLength="100" empty="false"/>
                 <column name="userName" caption="姓名" mode="string" maxLength="100" empty="false"/>
                 <column name="employeeNo" caption="员工号" maxLength="100" mode="string"/>
@@ -12,10 +12,10 @@
                 <column name="birthday" caption="出生年月" mode="date" pattern="yyyy/MM/dd"/>
                 <column name="certificateCategory" caption="证件种类" mode="combo" values="1|2" texts="工作证|身份证"/>
                 <column name="certificateNumber" caption="证件号码" maxLength="100" mode="string"/>
-                <column name="mail" caption="电子邮件" mode="string" inputReg="/^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$/" maxLength="100"/>
+                <column name="mail" caption="电子邮件" mode="string" inputReg="^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$" maxLength="100"/>
                 <column name="telephone" caption="联系电话" maxLength="100" mode="string"/>
                 <column name="address" caption="联系地址" maxLength="100" mode="string"/>
-                <column name="postalCode" caption="邮政编码" mode="string" maxLength="100" inputReg="/^\d{0,10}$/"/>
+                <column name="postalCode" caption="邮政编码" mode="string" maxLength="100" inputReg="^\d{0,10}$"/>
                 <column name="passwordQuestion" caption="密码提示问题" mode="string" maxLength="100" empty="false"/>
                 <column name="passwordAnswer" caption="密码提示答案" mode="string" maxLength="100" empty="false"/>
             </declare>

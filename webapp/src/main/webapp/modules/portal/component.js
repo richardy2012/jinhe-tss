@@ -8,6 +8,7 @@ URL_SOURCE_SORT      = AUTH_PATH + "component/sort/"; // {id}/{targetId}/{direct
 URL_STOP_NODE        = AUTH_PATH + "component/disable/"; // {id}/{state}
 URL_SOURCE_DETAIL    = AUTH_PATH + "component/";  // {groupId}/{id}
 URL_DELETE_NODE      = AUTH_PATH + "component/";  // {id}
+URL_MOVE_NODE        = AUTH_PATH + "component/move/";
 URL_SOURCE_SAVE      = AUTH_PATH + "component";
 URL_SOURCE_RENAME    = AUTH_PATH + "component/rename/";
 URL_EXPORT_COMPONENT = AUTH_PATH + "component/export/"; // {id}
@@ -19,6 +20,7 @@ if(IS_TEST) {
 	URL_STOP_NODE        = "data/_success.xml?";
 	URL_SOURCE_DETAIL    = "data/component_detail.xml?";
 	URL_DELETE_NODE      = "data/_success.xml?";
+	URL_MOVE_NODE        = "data/_success.xml?";
 	URL_SOURCE_SAVE      = "data/_success.xml?";
 	URL_SOURCE_RENAME    = "data/_success.xml?";
 	URL_EXPORT_COMPONENT = "data/_success.xml?";
@@ -107,6 +109,12 @@ function initMenus() {
         icon:ICON + "preview.gif",
         visible:function() {return !isGroup();}
     }
+    var item11 = {
+        label:"移动到...",
+        callback:moveTo,
+        icon:ICON + "icon_move.gif",
+        visible: function() {return !isGroup();}
+    }
 
     var menu1 = new $.Menu();
 	menu1.addItem(item6);
@@ -115,6 +123,7 @@ function initMenus() {
     menu1.addItem(item2);
     menu1.addItem(item4);
     menu1.addItem(item5);
+    menu1.addItem(item11);
     menu1.addSeparator();
    	menu1.addItem(item7);
     menu1.addItem(item8);
@@ -474,6 +483,21 @@ function exportComponent() {
 	var url = URL_EXPORT_COMPONENT + getTreeNodeId();
     var frameName = createExportFrame();
     $1(frameName).setAttribute("src", url);
+}
+
+function moveTo() {
+    var tree = $.T("tree");
+    var treeNode = tree.getActiveTreeNode();
+	var id = treeNode.id;
+	var type = treeNode.attrs["type"];
+
+	var url = URL_SOURCE_TREE;
+    popupTree(url, XML_MAIN_TREE, {}, function(target){
+    	if(target.attrs["isGroup"] != "true" || target.attrs["type"] != type) {
+    		return alert("请移动到类型一致的分组下");
+    	}
+        moveTreeNode(tree, id, target.id)
+    });
 }
 
 /* 组件资源管理 */

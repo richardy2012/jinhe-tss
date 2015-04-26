@@ -105,4 +105,17 @@ public class ComponentService implements IComponentService {
     public void sort(Long id, Long targetId, int direction) {
         dao.sort(id, targetId, direction);
     }
+
+	public void moveComponent(Long id, Long groupId) {
+		Component component = dao.getEntity(id);
+		Component group = dao.getEntity(groupId);
+		if(!group.isGroup() || !component.getType().equals(group.getType())) {
+			throw new BusinessException("目标对象不是" + component.getComponentType() + "分组");
+		}
+		
+		component.setParentId(groupId);
+		component.setSeqNo(dao.getNextSeqNo(groupId));
+                   
+        dao.moveEntity(component);
+	}
 }

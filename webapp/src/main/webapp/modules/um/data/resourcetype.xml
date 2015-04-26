@@ -4,7 +4,7 @@
 <xform>
 	<declare>
 		<column name="resourceTypeId" caption="资源类型ID" mode="string" empty="false"/>
-		<column name="rootId" caption="根节点ID" mode="number" inputReg="/^\-?\d*$/" empty="false"/>
+		<column name="rootId" caption="根节点ID" mode="number" inputReg="^\-?\d*$" empty="false"/>
 		<column name="name" caption="名称" mode="string" empty="false"/>
 		<column name="description" caption="描述" mode="string"/>
 		<column name="permissionTable" caption="权限表名" mode="string" empty="false"/>

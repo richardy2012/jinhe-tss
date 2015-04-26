@@ -113,6 +113,13 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
 		}
 
 		componentAction.sort(Context.getResponse(), id, id + 1, 1);
+		componentAction.moveTo(response, id, group1.getId());
+		
+		try {
+			componentAction.moveTo(response, id, id + 1);
+			Assert.fail("should throw exception but didn't.");
+		} catch(Exception e) {
+		}
 
 		componentAction.getEnabledComponents4Tree(response, Component.DECORATOR_TYPE);
 

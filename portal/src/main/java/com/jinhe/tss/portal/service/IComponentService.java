@@ -62,4 +62,11 @@ public interface IComponentService {
      * @param direction
      */
     void sort(Long id, Long targetId, int direction);
+
+    /**
+     * 对组件进行移动
+     * @param id
+     * @param groupId
+     */
+	void moveComponent(Long id, Long groupId);
 }

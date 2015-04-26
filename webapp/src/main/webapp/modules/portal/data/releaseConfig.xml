@@ -3,7 +3,7 @@
 	<declare>
 		<column name="id" caption="ID号" mode="hidden" editable="false"/>
 		<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>
-		<column name="visitUrl" caption="映射地址" mode="string" maxLength="50" inputReg="/^[\u0000-\u00FF]*$/g" empty="false"/>
+		<column name="visitUrl" caption="映射地址" mode="string" maxLength="50" inputReg="^[\u0000-\u00FF]*$" empty="false"/>
 		<column name="portal.id" caption="" mode="hidden" editable="false"/>
 		<column name="portal.name" caption="对应门户" mode="function" empty="false" cmd="getPortal()"/>
 		<column name="theme.id" caption="主题" mode="combo" values="1|2" texts="默认主题|Jon的主题"/>

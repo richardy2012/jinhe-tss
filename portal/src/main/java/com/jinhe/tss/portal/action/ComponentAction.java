@@ -158,6 +158,18 @@ public class ComponentAction extends FMSupportAction {
         service.sort(id, targetId, direction);
         printSuccessMessage();
     }
+    
+    /**
+     * 移动
+     */
+	@RequestMapping(value = "/move/{id}/{groupId}", method = RequestMethod.POST)
+    public void moveTo(HttpServletResponse response, 
+    		@PathVariable("id") Long id, 
+    		@PathVariable("groupId") Long groupId) {
+		
+        service.moveComponent(id, groupId);
+        printSuccessMessage();
+    }
  
     /**
      * 导出组件

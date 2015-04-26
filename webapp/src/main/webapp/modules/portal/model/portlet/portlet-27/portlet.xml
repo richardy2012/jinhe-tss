@@ -29,11 +29,12 @@ function ${id}_onload(){
     demo.onmouseout=function() { MyMar=setInterval(${id}_Marquee,speed) }; //鼠标移开时重设定时器
 }]]></script>
   <style><![CDATA[]]></style>
-  <prototypeStyle><![CDATA[]]></prototypeStyle>
-  <html><![CDATA[<@common.getPicArticleListByChannel #{picChannelId}, 1, #{pageSize}/>
+  <html><![CDATA[<@common.getArticleListXML #{channelId}, 1, #{pageSize}/>
+
 <#assign count = 0/>
+
 <div id="${id}">
-           <div id="${id}_demo" style="overflow: hidden; height: 590px;"/>
+        <div id="${id}_demo" style="overflow: hidden; height: 590px;"/>
 	<div id="${id}_demo1">
 	<#if common.totalPageNum != '0'>
 	  <#list common.articleList.item as item>
@@ -56,7 +57,7 @@ function ${id}_onload(){
     <attach event="onload" onevent="${id}_onload"/>
   </events>
   <parameters>
-    <param name="picChannelId " defaultValue=" 12"/>
-    <param name="pageSize " defaultValue=" 5"/>
+    <param name="channelId" defaultValue="2"/>
+    <param name="pageSize" defaultValue="5"/>
   </parameters>
 </portlet>
