@@ -82,6 +82,10 @@ public class DisplayTest extends TxTestSupport4DM {
         display.showAsJson(request, report1.getName());
         request.removeParameter("noCache");
         
+        // test get param define
+        Object[] paramDefine = (Object[]) display.getReportParamDefine(reportId);
+        Assert.assertTrue(paramDefine.length == 3);
+        
         // test jsonp
         request.addParameter("jsonpCallback", "func1");
         display.showAsJson(request, report1.getName());

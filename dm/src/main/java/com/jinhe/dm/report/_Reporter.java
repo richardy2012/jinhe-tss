@@ -45,6 +45,13 @@ public class _Reporter extends BaseActionSupport {
     
     @Autowired private ReportService reportService;
     
+	@RequestMapping("/{reportId}/define")
+    @ResponseBody
+    public Object getReportParamDefine(@PathVariable("reportId") Long reportId) {
+		Report report = reportService.getReport(reportId);
+		return new Object[] {report.getName(), report.getParam(), report.getDisplayUri()};
+    }
+    
     private Map<String, String> getRequestMap(HttpServletRequest request, boolean isGet) {
     	Map<String, String[]> parameterMap = request.getParameterMap();
     	Map<String, String> requestMap = new HashMap<String, String>();

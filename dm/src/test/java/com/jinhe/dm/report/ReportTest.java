@@ -53,7 +53,9 @@ public class ReportTest extends TxTestSupport4DM {
         report1.setParentId(group1.getId());
         report1.setName("report-1");
         report1.setScript("select * from dm_report where id = ?");
-        report1.setParam("id:1");
+        String paramsConfig = "[ {'label':'报表ID', 'type':'Number', 'jsonUrl':'../xxx/list', 'multiple':'true'}," +
+        		"{'label':'组织列表', 'type':'String', 'nullable':'false'}]"	;
+        report1.setParam(paramsConfig);
         report1.setDatasource(DMConstants.DEFAULT_CONN_POOL);
         report1.setDisplayUri("template/ichart.html");
         report1.setRemark("test report");

@@ -67,7 +67,7 @@
 			onsuccess : function() { 
 				if( opener ) {  // opener返回对创建该窗口的Window 对象的引用
 					var loginName = registerForm.getData("loginName");
-					opener.$.F("loginForm").updateDataExternal("userName", loginName); 
+					opener.$("#userName").value(loginName); 
 				}
 				window.close();
 			}

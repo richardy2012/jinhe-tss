@@ -3,7 +3,7 @@
 	<declare>
 		<column mode="string" empty="false" maxLength="20" name="userName"  caption="姓名" />
 		<column mode="string" empty="false" maxLength="20" name="loginName" caption="账号"/>
-		<column mode="string" empty="false" maxLength="50" name="email"     caption="电子邮件" inputReg="^[\w\-]*@?[\w\-]*(\.[\w\-]*){0,2}$"/>
+		<column mode="string" empty="false" maxLength="50" name="email"     caption="电子邮件" inputReg="\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"/>
 		<column mode="string" empty="false" maxLength="20" name="password"  caption="密码" />
 		<column mode="string" empty="false" maxLength="20" name="password2" caption="密码确认" />
 	</declare>

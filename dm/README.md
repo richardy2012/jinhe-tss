@@ -24,3 +24,35 @@ DMS的核心的设计思想简单至极：怎么样把一个SQL快速变成报�
 - 用户能自己订阅感兴趣的数据
 - 允许用户把自己查询到的数据（图表）分享给其它人，并可加以评论，形成数据门户加数据社区
 - 最后还要有一些辅助功能，能统计每个报表的执行效率、访问情况等，能对数据进行缓存提升性能
+
+
+ 
+var title;
+
+window.onload = function() {
+	var globalValiable = window.parent.globalValiable;
+	if(globalValiable && globalValiable.data) {
+		title = globalValiable.title;
+		show(globalValiable.data);
+		return;
+	}
+	
+	// 运行到这里说明是页面单独打开的情况
+	title = "报表XXX";
+	serviceUrl = "../data/1.json";
+	$.ajax({
+		url : serviceUrl,
+		method : "GET",
+		type : "json",
+		waiting : true,
+		ondata : function() {
+			var data = this.getResponseJSON();
+			show(data);
+		}
+	});	  
+}
+
+function show(data) {	
+	......
+}
+  

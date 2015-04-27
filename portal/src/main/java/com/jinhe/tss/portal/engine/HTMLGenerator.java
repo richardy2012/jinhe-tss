@@ -254,6 +254,8 @@ public class HTMLGenerator {
         // 默认挂载的js
         String commonJSPath = Environment.getContextPath() + "/tools/tssJS/";
         sb.append("<script src=\"" + commonJSPath + "tssJS.all.js\"></script>\n");
+        sb.append("<script src=\"" + commonJSPath + "tssJS.json2Form.js\"></script>\n");
+        sb.append("<script src=\"" + commonJSPath + "tssJS.jsonp.js\"></script>\n");
         
         for ( String filePath : scriptFiles ) {
             sb.append("<script src=\"" + (portalResourseDir + filePath) + "\"></script>\n");
