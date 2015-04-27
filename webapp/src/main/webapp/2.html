@@ -1,20 +1,33 @@
 <!doctype html>
 <html>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"/> 
-	<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/> 
+    <meta charset="UTF-8">
     <title> report portlet demo </title>
 
     <link rel="stylesheet" href="tools/tssJS/css/tss.all.css" type="text/css" />
+    <link rel="stylesheet" href="tools/tssJS/css/tss.button.css" type="text/css" />
 
     <script src="tools/tssJS/tssJS.all.js"></script>
-	<script src="tools/tssJS/tssJS.json2Form.js"></script>
-	<script src="tools/tssJS/tssJS.jsonp.js"></script>
+    <script src="tools/tssJS/tssJS.json2Form.js"></script>
+    <script src="tools/tssJS/tssJS.jsonp.js"></script>
 
     <style type="text/css">
 
         body { background-color: grey;  margin:0;  padding:0; }
  
+        iframe {
+            width:100%; height:100%; 
+        }
+
+        .searchForm {
+            background-color:#BEC6EE; border:1px solid #416371; border-radius: 5px;
+            width:400px; height:250px; font-size: 12px; padding: 10px; overflow: auto; 
+            z-index:999;
+            position:absolute;
+        } 
+
+        .searchForm .buttonBox { margin: 20px 10px 10px 55px;  }
 
     </style>
 
@@ -24,50 +37,71 @@
 
    
 
-    <div id="panel1" style="width:600px;position:absolute;top:0px;left:500px;"></div>
-	<div id="panel2" style="width:600px;position:absolute;top:300px;left:200px;"></div>
+    <div id="panel1" style="width:600px;position:absolute;top:0px;left:500px;" onresize="alert(1);"></div>
+    <div id="panel2" style="width:600px;position:absolute;top:300px;left:40%;" onresize="alert(2);"></div>
  
     <script type="text/javascript">
     
         $.leftbar( function() { alert("点击成功") } );
 
-        $("#panel1").css("height", "400px").panel('报表一【<a href="#" onclick="getQueryForm(62)">设置条件</a>】', '<iframe id="chatFrame62" style="width:100%;height:100%;" frameborder="0"></iframe>');
+        $("#panel1").css("height", "400px").panel('报表一【<a href="#" onclick="getQueryForm(497)">设置条件</a>】', '<iframe id="chatFrame497" frameborder="0"></iframe>');
 
-		$("#panel2").css("height", "400px").panel('报表二【<a href="#" onclick="getQueryForm(63)">设置条件</a>】', '<iframe id="chatFrame63" style="width:100%;height:100%;" frameborder="0"></iframe>');
+        $("#panel2").css("height", "400px").panel('报表二【<a href="#" onclick="getQueryForm(500)">设置条件</a>】', '<iframe id="chatFrame500" frameborder="0"></iframe>');
+
+ $.ajax({
+    url: '/tss/data/497/define',
+    method: 'get',
+    ondata: function() {
+        var define = this.getResponseJSON();
+        globalValiable.title = define[0];
+        globalValiable.url = define[2];
+
+        var _params = $.parseJSON(define[1]);
+        var params = {};
+        $.each(_params, function(i, param) {
+            if(param.defaultValue) {
+                var key = "param" + (i+1);
+                params[key] = param.defaultValue;
+            }
+        });
+
+        searchReport(497, params);
+    }
+});
 
 
 var globalValiable = {}; // 用来存放传递给iframe页面的信息
 
 function getQueryForm(reportId) {
-	var $searchForm = $("#searchForm" + reportId);
+    var $searchForm = $("#searchForm" + reportId);
     if( $searchForm.length ) {
         $searchForm.show();
         return;
     }
 
-	$.ajax({
-		url: '/tss/data/param/define/' + reportId,
-		method: 'get',
-		ondata: function() {
-			var define = this.getResponseJSON();
-			globalValiable.title = define[0];
-			globalValiable.url = define[2];
+    $.ajax({
+        url: '/tss/data/' + reportId + '/define',
+        method: 'get',
+        ondata: function() {
+            var define = this.getResponseJSON();
+            globalValiable.title = define[0];
+            globalValiable.url = define[2];
 
-			createQueryForm(reportId, define[1]);
-		}
-	});
+            createQueryForm(reportId, define[1]);
+        }
+    });
 }
 
 function createQueryForm(reportId, paramConfig) {
-	var formId = "searchForm" + reportId;
-	var searchFormEl = $.createElement("div", "", formId);
-	document.body.appendChild(searchFormEl);
+    var formId = "searchForm" + reportId;
+    var searchFormEl = $.createElement("div", "searchForm", formId);
+    document.body.appendChild(searchFormEl);
 
     var buttonBox = [];
     buttonBox[buttonBox.length] = "        <TR>";
     buttonBox[buttonBox.length] = "          <TD colspan='2' height='46'><div class='buttonBox'>";
-    buttonBox[buttonBox.length] = "             <input type='button' class='btStrong btSearch' value='查询'/> - ";
-    buttonBox[buttonBox.length] = "             <input type='button' class='btWeak btClose' value='关闭'/>";
+    buttonBox[buttonBox.length] = "             <a class='tssbutton medium black btSearch' >查 询</a> - ";
+    buttonBox[buttonBox.length] = "             <a class='tssbutton medium black btClose' >关 闭</a>";
     buttonBox[buttonBox.length] = "          </div></TD>";
     buttonBox[buttonBox.length] = "        </TR>";
 
@@ -76,13 +110,21 @@ function createQueryForm(reportId, paramConfig) {
     $.cache.XmlDatas[formId] = searchForm.template.sourceXML;
     
     $(".btSearch", searchFormEl).click( function () {
-		if( searchForm.checkForm() ) {
-			var searchFormXML = $.cache.XmlDatas[formId];
-			var dataNode = searchFormXML.querySelector("data");
-			searchReport(reportId, dataNode);
+        if( searchForm.checkForm() ) {
+            var searchFormXML = $.cache.XmlDatas[formId];
+            var dataNode = searchFormXML.querySelector("data");
 
-			$(searchFormEl).remove();
-		}
+            var params = {};
+            var nodes = dataNode.querySelectorAll("row *");
+            for(var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+                params[node.nodeName] = $.XML.getText(node);
+            }
+
+            searchReport(reportId, params);
+
+            $(searchFormEl).remove();
+        }
     });
 
     $(".btClose", searchFormEl).click( function () {
@@ -90,22 +132,27 @@ function createQueryForm(reportId, paramConfig) {
     });
 }
 
-function searchReport(reportId, dataNode) {
-	var request = new $.HttpRequest();
-    request.url = "/tss/data/json/" + reportId;
-    request.waiting = true;
-	request.setFormContent(dataNode);
-     
-    request.ondata = function() {
-		globalValiable.queryParams = this.params;
-        globalValiable.data = this.getResponseJSON();
+function searchReport(reportId, params) {
+    $.ajax({
+        url: "/tss/data/json/" + reportId,
+        waiting: true,
+        params: params,
+        ondata: function() {
+            globalValiable.queryParams = this.params;
+            globalValiable.data = this.getResponseJSON();
 
-		// TODO 记录当前的条件，在iframeEL上。
+            // TODO 记录当前的条件，在iframeEL上。
 
-		$("#chatFrame" + reportId).show().attr("src", globalValiable.url);
-    }
-    request.send();
+            $("#chatFrame" + reportId).show().attr("src", globalValiable.url);
+
+            $1("panel2").onresize = function() {
+                $("#chatFrame" + reportId).attr("src", globalValiable.url);
+            }
+        }
+    })
 }
+
+        
 
 // 定时刷新
 
