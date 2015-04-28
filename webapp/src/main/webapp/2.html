@@ -22,12 +22,11 @@
 
         .searchForm {
             background-color:#BEC6EE; border:1px solid #416371; border-radius: 5px;
-            width:400px; height:250px; font-size: 12px; padding: 10px; overflow: auto; 
-            z-index:999;
-            position:absolute;
+            width:350px; height:150px; font-size: 12px; padding: 5px; overflow: auto; 
+            z-index:999; position:absolute; top:22px; left:1px;
         } 
 
-        .searchForm .buttonBox { margin: 20px 10px 10px 55px;  }
+        .searchForm .buttonBox { margin: 5px 0 5px 80px; }
 
     </style>
 
@@ -35,67 +34,71 @@
 </head>
 <body>
 
-   
-
-    <div id="panel1" style="width:600px;position:absolute;top:0px;left:500px;" onresize="alert(1);"></div>
-    <div id="panel2" style="width:600px;position:absolute;top:300px;left:40%;" onresize="alert(2);"></div>
+    <div id="panel1" style="width:600px;position:absolute;top:0px;left:63px;"></div>
+    <div id="panel2" style="width:600px;position:absolute;top:300px;left:40%;"></div>
  
     <script type="text/javascript">
     
         $.leftbar( function() { alert("点击成功") } );
-
-        $("#panel1").css("height", "400px").panel('报表一【<a href="#" onclick="getQueryForm(497)">设置条件</a>】', '<iframe id="chatFrame497" frameborder="0"></iframe>');
-
-        $("#panel2").css("height", "400px").panel('报表二【<a href="#" onclick="getQueryForm(500)">设置条件</a>】', '<iframe id="chatFrame500" frameborder="0"></iframe>');
-
- $.ajax({
-    url: '/tss/data/497/define',
-    method: 'get',
-    ondata: function() {
-        var define = this.getResponseJSON();
-        globalValiable.title = define[0];
-        globalValiable.url = define[2];
-
-        var _params = $.parseJSON(define[1]);
-        var params = {};
-        $.each(_params, function(i, param) {
-            if(param.defaultValue) {
-                var key = "param" + (i+1);
-                params[key] = param.defaultValue;
-            }
-        });
-
-        searchReport(497, params);
-    }
-});
+ 
+initReportPanel($("#panel1"), 62);
+initReportPanel($("#panel2"), 63);
 
 
-var globalValiable = {}; // 用来存放传递给iframe页面的信息
+var globalValiable = {}; // 用来存放传递给iframe页面的信息   TODO 多个报表一起，数据混乱了，需要加锁。
 
-function getQueryForm(reportId) {
-    var $searchForm = $("#searchForm" + reportId);
-    if( $searchForm.length ) {
-        $searchForm.show();
-        return;
-    }
+function initReportPanel($panel, reportId) {
+	 $panel.css("height", "400px");
 
-    $.ajax({
-        url: '/tss/data/' + reportId + '/define',
-        method: 'get',
-        ondata: function() {
-            var define = this.getResponseJSON();
-            globalValiable.title = define[0];
-            globalValiable.url = define[2];
+	 $.ajax({
+		url: '/tss/data/' +reportId+ '/define',
+		method: 'get',
+		ondata: function() {
+			var define = this.getResponseJSON();
+			$panel.title = define[0];
+			$panel.url = define[2];
+			$panel.define = define[1];
 
-            createQueryForm(reportId, define[1]);
-        }
-    });
+			var _params = $.parseJSON($panel.define);
+			var params = {};
+			$.each(_params, function(i, param) {
+				// TODO 检查是否所有必填的参数都有默认值了，不是的话不宜发起查询
+				if(param.defaultValue) {
+					var key = "param" + (i+1);
+					params[key] = param.defaultValue;
+				}
+			});
+
+			$panel.panel(define[0] + '【<a href="#" class="setQuery">设置条件</a>】', '<iframe id="chatFrame' +reportId+ '" frameborder="0"></iframe>');
+			$panel.find(".setQuery").click(function(){
+				getQueryForm(reportId, $panel);
+			});
+
+			searchReport(reportId, params, $panel);
+		}
+	});
 }
 
-function createQueryForm(reportId, paramConfig) {
+function getQueryForm(reportId, $panel) {
+    var $searchForm = $("#searchForm" + reportId);
+    if( !$searchForm.length ) {
+        var formId = "searchForm" + reportId;
+		var searchFormEl = $.createElement("div", "searchForm", formId);
+		$panel.appendChild(searchFormEl);
+    }
+
+	createQueryForm(reportId, $panel);
+}
+
+function createQueryForm(reportId, $panel) {
+	// 先删除已经生成的其它panel的searchForm的form
+	$(".searchForm form").remove();
+	$(".comboTree").remove();
+	$(".searchForm").hide();
+	
     var formId = "searchForm" + reportId;
-    var searchFormEl = $.createElement("div", "searchForm", formId);
-    document.body.appendChild(searchFormEl);
+    var searchFormEl = $1(formId);
+	$(searchFormEl).show();
 
     var buttonBox = [];
     buttonBox[buttonBox.length] = "        <TR>";
@@ -105,7 +108,16 @@ function createQueryForm(reportId, paramConfig) {
     buttonBox[buttonBox.length] = "          </div></TD>";
     buttonBox[buttonBox.length] = "        </TR>";
 
-    var searchForm = $.json2Form(formId, paramConfig, buttonBox.join(""));
+    var searchForm = $.json2Form(formId, $panel.define, buttonBox.join(""));
+
+	if($panel.params) { // 设置上一次的查询条件
+		setTimeout(function() {
+			$.each($panel.params, function(key, value) {
+				searchForm.updateDataExternal(key, value);
+			});
+		
+		}, 300); // 待comboTree等加载好
+	}
 
     $.cache.XmlDatas[formId] = searchForm.template.sourceXML;
     
@@ -121,40 +133,37 @@ function createQueryForm(reportId, paramConfig) {
                 params[node.nodeName] = $.XML.getText(node);
             }
 
-            searchReport(reportId, params);
+			$panel.params = params; // TODO 记录当前的条件
+            searchReport(reportId, params, $panel);
 
-            $(searchFormEl).remove();
+            $(searchFormEl).hide();
         }
     });
 
     $(".btClose", searchFormEl).click( function () {
-        $(searchFormEl).remove(); 
+        $(searchFormEl).hide(); 
     });
 }
 
-function searchReport(reportId, params) {
+function searchReport(reportId, params, $panel) {
     $.ajax({
         url: "/tss/data/json/" + reportId,
         waiting: true,
         params: params,
         ondata: function() {
-            globalValiable.queryParams = this.params;
+			//if( !$.isEmptyObject(globalValiable) ) { }
+			
+			globalValiable.title = $panel.title;
+            globalValiable.queryParams = params;
             globalValiable.data = this.getResponseJSON();
 
-            // TODO 记录当前的条件，在iframeEL上。
-
-            $("#chatFrame" + reportId).show().attr("src", globalValiable.url);
-
-            $1("panel2").onresize = function() {
-                $("#chatFrame" + reportId).attr("src", globalValiable.url);
-            }
+            $("#chatFrame" + reportId).show().attr("src", $panel.url);
         }
     })
 }
 
-        
 
-// 定时刷新
+// TODO　定时刷新
 
     </script>  
 </body>

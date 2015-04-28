@@ -41,7 +41,7 @@ function initMenus() {
 		label:"报表查询",
 		callback:showReport,
 		icon: ICON + "icon_search.gif",
-		visible:function() {return isReport() && !isTreeNodeDisabled() && getOperation("1");}
+		visible:function() {return isReport() && getOperation("1");}
 	}
 	var item10 = {
 		label:"查看",
@@ -49,7 +49,7 @@ function initMenus() {
 			loadReportDetail(false, true);
 		},
 		icon: ICON + "icon_view.gif",
-		visible:function() {return !isTreeRoot() && getOperation("1"); }
+		visible:function() { return !isTreeRoot() && getOperation("1"); }
 	}
 	var item2 = {
 		label:"修改",
@@ -57,7 +57,7 @@ function initMenus() {
 			loadReportDetail(false, false);
 		},
 		icon: ICON + "icon_edit.gif",
-		visible:function() {return !isTreeRoot() && !isTreeNodeDisabled() && getOperation("2"); }
+		visible:function() { return !isTreeRoot() && getOperation("2"); }
 	}
 	var item3 = {
 		label:"新增报表",
@@ -65,7 +65,7 @@ function initMenus() {
 			loadReportDetail(true, false, "1");
 		},
 		icon: ICON + "report_0.gif",
-		visible:function() {return (isReportGroup() || isTreeRoot()) && !isTreeNodeDisabled() && getOperation("2");}
+		visible:function() {return (isReportGroup() || isTreeRoot()) && getOperation("2");}
 	}
 	var item4 = {
 		label:"新增分组",
@@ -73,7 +73,7 @@ function initMenus() {
 			loadReportDetail(true, false, "0");
 		},
 		icon: ICON + "icon_folder_new.gif",
-		visible:function() {return (isReportGroup() || isTreeRoot()) && !isTreeNodeDisabled() && getOperation("2");}
+		visible:function() {return (isReportGroup() || isTreeRoot()) && getOperation("2");}
 	}
 	var item5 = {
 		label:"删除",
@@ -109,13 +109,13 @@ function initMenus() {
 		label:"测试报表服务",
 		callback:testRestfulReportService,
 		icon: ICON + "icon_service.gif",
-		visible:function() {return isReport() && !isTreeNodeDisabled() && getOperation("2");}
+		visible:function() {return isReport() && getOperation("2");}
 	}
 	var item12 = {
 		label:"定时邮件",
 		callback:scheduleReport,
 		icon: ICON + "schedule.gif",
-		visible:function() {return isReport() && !isTreeNodeDisabled() && getOperation("2");}
+		visible:function() {return isReport() && getOperation("2");}
 	}
     var item13 = {
         label:"授予角色",

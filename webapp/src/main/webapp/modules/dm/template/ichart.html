@@ -50,6 +50,14 @@
 		title = "报表XXX";
 		serviceUrl = "../data/1.json";
 	}
+
+	window.onresize = function() {
+		var globalValiable = window.parent.globalValiable;
+		if(globalValiable && globalValiable.data) {
+			title = globalValiable.title;
+			show(globalValiable.data);
+		}
+	}
 	
 	window.onload = function() {
 		if(window.parent.$1("searchFormDiv") && window.parent.$1("btCloseSearchForm")) {

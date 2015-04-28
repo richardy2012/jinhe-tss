@@ -212,9 +212,10 @@ public class ReportServiceImpl implements ReportService {
 				if ( reportScript.indexOf("${" + paramKy + "}") > 0 ) {
 					isMacrocode = "true";		
 				}
-				else if(reportScript.indexOf("#if " + paramKy) > 0
-						&& reportScript.indexOf("#if " + paramKy + "??") < 0) {
-					// eg1: <#if param1==1> group by week </#if>  --> is macrocode
+				else if(reportScript.indexOf("if " + paramKy) > 0
+						&& reportScript.indexOf("if " + paramKy + "??") < 0) {
+					// <#if param1==1> or <#elseif param1==1>
+					// eg1: <#if param1==1> group by week </#if>  --> is macrocode   
 					// eg2: <#if param1??> createTime > ? </#if>  --> is not
 					isMacrocode = "true";
 				}

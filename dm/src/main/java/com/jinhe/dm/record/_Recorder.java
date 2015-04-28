@@ -52,7 +52,8 @@ public class _Recorder extends BaseActionSupport {
 	@RequestMapping("/define/{recordId}")
     @ResponseBody
     public Object getDefine(@PathVariable("recordId") Long recordId) {
-        return getDB(recordId).getFields();
+		Record record = recordService.getRecord(recordId);
+        return new Object[] { getDB(recordId).getFields(), record.getCustomizeJS() };
     }
 	
 	public static final int PAGE_SIZE = 50;

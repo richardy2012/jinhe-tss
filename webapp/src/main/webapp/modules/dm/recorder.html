@@ -50,7 +50,7 @@ URL_SAVE_SOURCE   = AUTH_PATH + "xdata/";
 URL_DELETE_SOURCE = AUTH_PATH + "xdata/";
 URL_GET_DEFINES   = AUTH_PATH + "xdata/define/";
 
-var recordId = 1, recordName = "数据录入", recordDefine;
+var recordId = 1, recordName = "数据录入", recordDefine, customizeJS;
 
 $(function() {
     var globalValiable = window.parent.globalValiable;
@@ -79,7 +79,9 @@ function init() {
     $.ajax({
         url : URL_GET_DEFINES + recordId,
         ondata: function() {
-            recordDefine = this.getResponseJSON();
+            var result = this.getResponseJSON();
+            recordDefine = result[0];
+            customizeJS = result[1];
         }
     });
 
@@ -148,7 +150,8 @@ function loadDetailData(rowID) {
         });
     }
 
-    var xform = $.json2Form("page1Form", recordDefine);
+    var xform = $.json2Form("page1Form", recordDefine, null, customizeJS);
+    customizeJS = null; // 自定义脚本加载后即清除
 
     $.cache.XmlDatas[rowID] = xform.template.dataNode;
 
