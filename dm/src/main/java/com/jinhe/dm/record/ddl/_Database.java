@@ -128,16 +128,15 @@ public abstract class _Database {
 		
 		// 如果原表有数据则重命名原表，没有则删之，然后新建一张新表
 		if(addFields.size() > 0) {
-			SQLExcutor ex = new SQLExcutor(false);
-			ex.excuteQuery("select id from " + this.table, this.datasource);
-			if(ex.result.size() == 0 ) {
-				try {
+			try {
+				SQLExcutor ex = new SQLExcutor(false);
+				ex.excuteQuery("select id from " + this.table, this.datasource);
+				if( ex.result.isEmpty() ) {
 					dropTable(this.table, newDS);
-				} catch(Exception e) {
-					// 如果表不存在导致删表失败（oracle），则忽略
 				}
-			}
-			else {
+			} catch(Exception e) {
+				// 如果表不存在导致删表失败（oracle），则忽略
+			} finally {
 				String oldTable = this.table + "_" + _new.getLockVersion();
 				SQLExcutor.excute("alter table " + this.table + " rename to " + oldTable, newDS);
 			}
