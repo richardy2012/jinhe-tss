@@ -2,6 +2,7 @@ package com.jinhe.tss.um.action;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
@@ -24,6 +26,7 @@ import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.User;
+import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.um.service.IUserService;
 import com.jinhe.tss.util.EasyUtils;
 
@@ -32,6 +35,7 @@ import com.jinhe.tss.util.EasyUtils;
 public class UserAction extends BaseActionSupport {
 
 	@Autowired private IUserService userService;
+	@Autowired private ILoginService loginService;
 
     /**
      * 获取一个User（用户）对象的明细信息、用户对用户组信息、用户对角色的信息
@@ -234,4 +238,14 @@ public class UserAction extends BaseActionSupport {
         Collection<String> list = OnlineUserManagerFactory.getManager().getOnlineUserNames();
         print(new String[] {"size", "users"},  new Object[]{list.size(), EasyUtils.list2Str(list, " | ")});
     }
+    
+	/** 用户所属组织、角色等信息的json接口 */
+	@RequestMapping(value = "/has", method = RequestMethod.GET)
+	@ResponseBody
+	public Object[] getUserHas() {
+		Long userId = Environment.getUserId();
+		List<Object[]> groups = loginService.getGroupsByUserId(userId);
+		List<Long> roleIds = loginService.getRoleIdsByUserId(userId);
+		return new Object[] { groups, roleIds };
+	}
 }

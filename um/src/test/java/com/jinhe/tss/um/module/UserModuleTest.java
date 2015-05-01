@@ -204,6 +204,8 @@ public class UserModuleTest extends TxSupportTest4UM {
         action.getForgetPasswordInfo(response);
         
         action.getOperatorInfo(response);
+        
+        action.getUserHas();
     }
     
     @Test
