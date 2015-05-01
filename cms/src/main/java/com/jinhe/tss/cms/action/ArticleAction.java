@@ -280,11 +280,9 @@ public class ArticleAction extends BaseActionSupport {
      * 全文检索接口。
      * 供门户网站上通过本接口调用全文搜索。
      */
-    @RequestMapping(value = "/search/{siteId}/{searchStr}/{page}/{pageSize}", method = RequestMethod.GET)
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
     public void search(HttpServletResponse response, HttpServletRequest request, 
-    		@PathVariable("siteId") Long siteId, 
-    		@PathVariable("page") int page, 
-    		@PathVariable("pageSize") int pageSize) {
+    		Long siteId, int page, int pageSize) {
     	
     	String searchStr = request.getParameter("searchStr"); 
     	try {

@@ -238,8 +238,8 @@ public class HTMLGenerator {
         StringBuffer sb = new StringBuffer();
         // 默认挂载的css
         String commonCSSPath = Environment.getContextPath() + "/tools/tssJS/css/";
-        sb.append("<link href=\"" + commonCSSPath + "tss.all.css rel=\"stylesheet\">\n");
-        sb.append("<link href=\"" + commonCSSPath + "tss.button.css rel=\"stylesheet\">\n");
+        sb.append("<link href=\"" + commonCSSPath + "tss.all.css\" rel=\"stylesheet\">\n");
+        sb.append("<link href=\"" + commonCSSPath + "tss.button.css\" rel=\"stylesheet\">\n");
         
         for ( String filePath : styleFiles ) {
             sb.append("<link href=\"" + (portalResourseDir + filePath) + "\" rel=\"stylesheet\">\n");

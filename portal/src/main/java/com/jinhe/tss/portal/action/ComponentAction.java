@@ -347,6 +347,10 @@ public class ComponentAction extends FMSupportAction {
         StringBuffer sb = new StringBuffer("<html>\n<head>\n");               
         sb.append("<style>\n").append(MacrocodeCompiler.run(style, parameters, true)).append("\n</style>\n");        
         
+        String commonCSSPath = Environment.getContextPath() + "/tools/tssJS/css/";
+        sb.append("<link href=\"" + commonCSSPath + "tss.all.css\" rel=\"stylesheet\">\n");
+        sb.append("<link href=\"" + commonCSSPath + "tss.button.css\" rel=\"stylesheet\">\n");
+        
         String commonJSPath = Environment.getContextPath() + "/tools/tssJS/";
         sb.append("<script src=\"" + commonJSPath + "tssJS.all.js\"></script>\n");
         

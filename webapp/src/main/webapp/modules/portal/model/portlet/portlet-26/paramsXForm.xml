@@ -4,15 +4,15 @@
   <ConfigParams> 
     <xform> 
       <declare> 
-        <column name="menuId" caption="菜单ID" mode="string"/> 
+        <column name="siteId" caption="站点ID"/> 
       </declare>  
       <layout> 
         <TR> 
-          <TD width="50">
-            <label binding="menuId"/>
+          <TD width="50"> 
+            <label binding="siteId"/> 
           </TD>  
-          <TD>
-            <input binding="menuId" type="text"/>
+          <TD> 
+            <input binding="siteId" type="text"/> 
           </TD> 
         </TR> 
       </layout>  
