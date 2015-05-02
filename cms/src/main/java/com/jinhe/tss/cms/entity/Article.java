@@ -50,8 +50,8 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
     private String author;			//作者
     private String summary;			//摘要 
     
-    @Column(length = 4000, nullable = false)  
-    private String  content;		//正文内容  
+    @Column(length = 4000)  
+    private String  content = "";		//正文内容  
     
     private Date    overdueDate;    // 过期时间
     private Date    issueDate;	    // 发布日期	开始为空,只有审核和发布阶段可以改

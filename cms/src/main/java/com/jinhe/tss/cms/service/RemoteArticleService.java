@@ -224,10 +224,10 @@ public class RemoteArticleService implements IRemoteArticleService {
     }
 
     public String search(Long siteId, String searchStr, int page, int pageSize) {
-        JobStrategy tacticIndex = JobStrategy.getIndexStrategy();
-        tacticIndex.site = channelDao.getEntity(siteId);
+        JobStrategy js = JobStrategy.getIndexStrategy();
+        js.site = channelDao.getEntity(siteId);
         
-        String indexPath = tacticIndex.getIndexPath();
+        String indexPath = js.getIndexPath();
         if (!new File(indexPath).exists() || searchStr == null || "".equals(searchStr.trim())) {
             return "<Response><ArticleList><rss version=\"2.0\"><channel/></rss></ArticleList></Response>";
         }
@@ -238,7 +238,7 @@ public class RemoteArticleService implements IRemoteArticleService {
         Element channelElement = doc.addElement("rss").addAttribute("version", "2.0");
         try {
             IndexSearcher searcher = new IndexSearcher(indexPath);
-            Query query = IndexExecutorFactory.create(tacticIndex.executorClass).createIndexQuery(searchStr);
+            Query query = IndexExecutorFactory.create(js.executorClass).createIndexQuery(searchStr);
             Hits hits = searcher.search(query, new Sort(new SortField("createTime", SortField.STRING, true))); // 按创建时间排序
             
             // 先遍历一边查询结果集，对其权限进行过滤，将过滤后的结果集放入到一个临时list中。

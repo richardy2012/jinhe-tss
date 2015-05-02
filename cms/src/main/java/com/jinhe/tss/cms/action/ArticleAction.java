@@ -280,7 +280,7 @@ public class ArticleAction extends BaseActionSupport {
      * 全文检索接口。
      * 供门户网站上通过本接口调用全文搜索。
      */
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
     public void search(HttpServletResponse response, HttpServletRequest request, 
     		Long siteId, int page, int pageSize) {
     	
