@@ -12,11 +12,13 @@ CACHE_CACHE_MANAGE = "_cache_id_";
 
 /* XMLHTTP请求地址汇总 */
 URL_SOURCE_TREE   = AUTH_PATH + "portal/list";
+URL_SECTION_LIST  = AUTH_PATH + "portal/activePages/";
 URL_SOURCE_DETAIL = AUTH_PATH + "portal/";
 URL_SOURCE_SAVE   = AUTH_PATH + "portal";
 URL_DELETE_NODE   = AUTH_PATH + "portal/";
 URL_STOP_NODE     = AUTH_PATH + "portal/disable/";
 URL_SORT_NODE     = AUTH_PATH + "portal/sort/";
+URL_MOVE_NODE     = AUTH_PATH + "portal/move/";
 URL_VIEW_SITE     = AUTH_PATH + "portal/preview/";
 URL_GET_COMPONENT_PARAMS =  AUTH_PATH + "component/params/";     // {id}
 URL_GET_COMPONENT_TREE =  AUTH_PATH + "component/enabledlist/";  // {type}
@@ -33,11 +35,13 @@ URL_GET_FLOW_RATE     = AUTH_PATH + "portal/flowrate/";
 
 if(IS_TEST) {
 	URL_SOURCE_TREE   = "data/structure_tree.xml?";
+    URL_SECTION_LIST  = "data/structure_tree.xml?";
 	URL_SOURCE_DETAIL = "data/structure_detail.xml?";
 	URL_SOURCE_SAVE   = "data/_success.xml?";
 	URL_DELETE_NODE   = "data/_success.xml?";
 	URL_STOP_NODE     = "data/_success.xml?";
 	URL_SORT_NODE     = "data/_success.xml?";
+    URL_MOVE_NODE     = "data/_success.xml?";
 	URL_VIEW_SITE     = "portal!previewPortal.action";
 	URL_GET_COMPONENT_PARAMS = "data/structure-params.xml?";
 	URL_GET_COMPONENT_TREE = "data/component_tree.xml?";
@@ -150,6 +154,12 @@ function initMenus() {
         callback:showPageFlowRate,
         visible:function() {return isPortalNode();}
     }
+    var item13 = {
+        label:"移动到...",
+        callback:moveTo,
+        icon:ICON + "icon_move.gif",
+        visible: function() {return isPortletNode();}
+    }
 
     var menu1 = new $.Menu();
     menu1.addItem(item1);
@@ -160,6 +170,7 @@ function initMenus() {
     menu1.addItem(item6);
 	menu1.addItem(item7);
     menu1.addItem(item8);
+    menu1.addItem(item13);
 	menu1.addItem(item17);
     menu1.addSeparator();
     menu1.addItem(item9);
@@ -870,6 +881,18 @@ function resourceManage() {
     var treeNode = getActiveTreeNode();
 	var code = treeNode.getAttribute("code");
 	window.open("filemanager.html?code=" + code, 'newwindow', 'height=360, width=500');
+}
+
+function moveTo() {
+    var tree = $.T("tree");
+    var treeNode = tree.getActiveTreeNode();
+    var id = treeNode.id;
+    var portalId = treeNode.getAttribute("portalId");
+
+    var url = URL_SECTION_LIST + portalId;
+    popupTree(url, "PageTree", {}, function(target) {
+        moveTreeNode(tree, id, target.id)
+    });
 }
 
 window.onload = init;

@@ -58,20 +58,25 @@ function initPortlet() {
             globalValiable.url = define[2];
             globalValiable.define = define[1];
 
-            var _params = $.parseJSON(globalValiable.define);
             var params = {};
-            $.each(_params, function(i, param) {
-                // TODO 检查是否所有必填的参数都有默认值了，不是的话不宜发起查询
-                if(param.defaultValue) {
-                    var key = "param" + (i+1);
-                    params[key] = param.defaultValue;
-                }
-            });
- 
-            window.parent.$("#panel" + reportId).find(".setQuery").click(function(){
-                getQueryForm();
-            });
-
+            if(define[1]) {
+                var _params = $.parseJSON(globalValiable.define);
+                $.each(_params, function(i, param) {
+                    // TODO 检查是否所有必填的参数都有默认值了，不是的话不宜发起查询
+                    if(param.defaultValue) {
+                        var key = "param" + (i+1);
+                        params[key] = param.defaultValue;
+                    }
+                });
+     
+                window.parent.$("#panel" + reportId).find(".setQuery").click(function(){
+                    getQueryForm();
+                });
+            }
+            else {
+                window.parent.$("#panel" + reportId).find(".setQuery").hide();
+            }
+            
             searchReport(params);
         }
     });

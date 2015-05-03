@@ -207,6 +207,18 @@ public class PortalAction extends FMSupportAction {
         printSuccessMessage();
     }
     
+	/**
+	 * 门户结构移动
+	 */
+	@RequestMapping(value = "/move/{id}/{container}", method = RequestMethod.POST)
+	public void move(HttpServletResponse response, 
+			@PathVariable("id") Long id, 
+			@PathVariable("container") Long container) {
+		
+		service.move(id, container);
+        printSuccessMessage("移动成功！");
+	}
+	
     //******************************** 以下为主题管理  ***************************************
     
     /**

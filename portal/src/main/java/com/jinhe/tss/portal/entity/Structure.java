@@ -103,6 +103,7 @@ public class Structure extends OperateInfo implements IXForm, IResource, IDecoda
     @Transient 
     private Component decorator; // 修饰器
 
+    @Column(length = 1000)
     private String parameters;  // Portlet、修饰器实例化时自定义参数值
     
     @Column(nullable = false)

@@ -44,6 +44,7 @@ public class PortalModuleTest extends TxSupportTest4Portal {
     Structure page1;
     Structure page2;
     Structure section1;
+    Component portlet;
     Theme defaultTheme;
     
     @Before
@@ -73,7 +74,8 @@ public class PortalModuleTest extends TxSupportTest4Portal {
          page2 = createPageOrSection(root, "页面二", "page2", Structure.TYPE_PAGE);
          section1 = createPageOrSection(page1, "版面一", "section1", Structure.TYPE_SECTION);
          Structure section2 = createPageOrSection(page2, "版面二", "section2", Structure.TYPE_SECTION);
-         Component portlet = createTestPortlet();
+         
+         portlet = createTestPortlet();
          createPortletInstance(section1, "portletInstance1", "portletInstance1", portlet);
          Structure temp = createPortletInstance(section2, "portletInstance2", "portletInstance2", portlet);
          
@@ -250,6 +252,13 @@ public class PortalModuleTest extends TxSupportTest4Portal {
     public void testPortalSort() {
     	// 测试排序
         portalAction.sort(response, page1.getId(), page2.getId(), 1);
+        portalAction.getAllStructures4Tree(response);
+    }
+    
+    @Test
+    public void testPortalMove() {
+    	// 测试移动
+        portalAction.move(response, portlet.getId(), portlet.getParentId());
         portalAction.getAllStructures4Tree(response);
     }
     

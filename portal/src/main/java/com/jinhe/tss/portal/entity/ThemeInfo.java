@@ -2,6 +2,7 @@ package com.jinhe.tss.portal.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -35,6 +36,7 @@ public class ThemeInfo implements IEntity {
     /**
      * Portlet、修饰器、布局器的实例化时自定义参数值
      */
+	@Column(length = 1000)
     private String  parameters;
 
 	public ThemeInfoId getId() {

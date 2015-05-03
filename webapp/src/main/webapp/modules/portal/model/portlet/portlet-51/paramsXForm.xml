@@ -6,7 +6,7 @@
       <declare> 
         <column name="panelWidth" caption="面板宽度" mode="string"/>  
         <column name="panelHeight" caption="面板高度" mode="string"/>  
-        <column name="panelTitle" caption="面板标题" mode="string"/> 
+        <column name="reportId" caption="报表ID" mode="string"/> 
       </declare>  
       <layout> 
         <TR> 
@@ -27,10 +27,10 @@
         </TR>  
         <TR> 
           <TD>
-            <label binding="panelTitle"/>
+            <label binding="reportId"/>
           </TD>  
           <TD>
-            <input binding="panelTitle" type="text"/>
+            <input binding="reportId" type="text"/>
           </TD> 
         </TR> 
       </layout>  

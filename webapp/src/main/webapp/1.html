@@ -45,7 +45,7 @@ function initReportPanel($panel, reportId) {
      $panel.css("height", "500px");
      $panel.attr("id", "panel" + reportId);
 
-     $panel.panel('【<a href="#" class="setQuery">设置条件</a>】', '<iframe frameborder="0"></iframe>');
+     $panel.panel('<a href="#" class="setQuery">【设置条件】</a>', '<iframe frameborder="0"></iframe>');
 
      $panel.find("iframe").attr("src", "modules/dm/report_portlet.html?id=" + reportId);
 }

@@ -134,11 +134,12 @@ public abstract class _Database {
 				if( ex.result.isEmpty() ) {
 					dropTable(this.table, newDS);
 				}
+				else {
+					String oldTable = this.table + "_" + _new.getLockVersion();
+					SQLExcutor.excute("alter table " + this.table + " rename to " + oldTable, newDS);
+				}
 			} catch(Exception e) {
 				// 如果表不存在导致删表失败（oracle），则忽略
-			} finally {
-				String oldTable = this.table + "_" + _new.getLockVersion();
-				SQLExcutor.excute("alter table " + this.table + " rename to " + oldTable, newDS);
 			}
 			
 			this.fields = newFields;

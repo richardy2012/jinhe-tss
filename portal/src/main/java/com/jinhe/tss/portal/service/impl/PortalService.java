@@ -338,6 +338,13 @@ public class PortalService implements IPortalService {
     public void sort(Long id, Long targetId, int direction) {
         portalDao.sort(id, targetId, direction);
     }
+    
+    public void move(Long id, Long container) {
+    	Structure ps = portalDao.getEntity(id);
+    	ps.setSeqNo(portalDao.getNextSeqNo(container));
+    	ps.setParentId(container);
+    	portalDao.moveEntity(ps);
+	}
 
    /****************************   门户相关的（包括门户主题、门户发布等）的相关维护  *************************************************/
    

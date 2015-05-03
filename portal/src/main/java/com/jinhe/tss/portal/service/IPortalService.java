@@ -11,6 +11,7 @@ import com.jinhe.tss.portal.entity.Theme;
 import com.jinhe.tss.portal.permission.PermissionFilter4Check;
 import com.jinhe.tss.portal.permission.PermissionFilter4Portal;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Create;
+import com.jinhe.tss.um.permission.filter.PermissionFilter4Move;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Sort;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Update;
 import com.jinhe.tss.um.permission.filter.PermissionTag;
@@ -155,6 +156,19 @@ public interface IPortalService {
     void sort(Long id, Long targetId, int direction);
     
     /**
+     * 移动门户结构（portlet）到页面或其它版面下
+     * @param id
+     * @param container
+     */
+    @Logable(operateObject="门户结构", operateInfo="(ID: ${args[0]})节点移动到了(ID: ${args[1]})节点里.")
+    @PermissionTag(
+            operation = PortalConstants.PORTAL_ADD_OPERRATION + "," + PortalConstants.PORTAL_DEL_OPERRATION, 
+            resourceType = PortalConstants.PORTAL_RESOURCE_TYPE,
+            filter = PermissionFilter4Move.class
+    )
+    void move(Long id, Long container);
+    
+    /**
      * 获取一个门户树的一份拷贝。
      * 方法将会被权限过滤拦截器拦截，用户没有权限的门户结构节点将会被过滤掉。
      * 如果用户是匿名用户，则应该调用本方法，因为匿名用户没有自定义门户。
@@ -262,5 +276,4 @@ public interface IPortalService {
      * @return
      */
     List<?> getFlowRate(Long portalId);
-
 }
