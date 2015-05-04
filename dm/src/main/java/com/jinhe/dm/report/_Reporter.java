@@ -19,10 +19,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.data.util.DataExport;
 import com.jinhe.dm.log.AccessLog;
 import com.jinhe.dm.log.AccessLogRecorder;
+import com.jinhe.dm.record.ddl._Util;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
@@ -196,6 +198,14 @@ public class _Reporter extends BaseActionSupport {
     	Map<String, String> requestMap = getRequestMap(request, false);
         SQLExcutor excutor = reportService.queryReport(reportId, requestMap, 1, 100000, getLoginUserId(requestMap));
         
+        // 对一些转换为json为报错的类型值进行预处理
+        for(Map<String, Object> row : excutor.result ) {
+        	for(String key : row.keySet()) {
+        		Object value = row.get(key);
+        		row.put(key, _Util.preTreatValue(value));
+        	}
+        }
+        
         outputAccessLog(reportId, "showAsJson", requestMap, start);
  
         // 如果定义了jsonpCallback参数，则为jsonp调用
@@ -221,6 +231,12 @@ public class _Reporter extends BaseActionSupport {
 	private void outputAccessLog(Long reportId, String methodName, Map<String, String> requestMap, long start) {
 		Report report = reportService.getReport(reportId);
 		String methodCnName = report.getName();
+		
+		// 过滤掉定时刷新类型的报表
+		String remark = report.getRemark();
+		if( remark != null && remark.indexOf(DMConstants.ACLOG_IGNORE_REPORT) >= 0) {
+			return;
+		}
 		
 		String params = "";
 		for(Entry<String, String> entry : requestMap.entrySet()) {

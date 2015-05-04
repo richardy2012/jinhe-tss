@@ -22,6 +22,8 @@ public final class DMConstants {
 	public final static String USER_ID = "userId";
 	public final static String USER_CODE = "userCode";
 	public final static String FROM_USER_ID = "fromUserId";
+	
+	public final static String ACLOG_IGNORE_REPORT = "ACLOG_IGNORE_REPORT";
     
     /**
      * 报表模板资源文件目录

@@ -40,7 +40,10 @@ public class _Util {
   	
   	// oracle的TIMESTAMP类型的字段，转换为json时会报错，需要先转换为字符串
   	public static Object preTreatValue(Object value) {
-  		if(value != null && value.getClass().getName().indexOf("oracle.sql.TIMESTAMP") >=0 ) {
+  		if(value == null) return null;
+  				
+  		String valueCN = value.getClass().getName();
+		if(valueCN.indexOf("oracle.sql.TIMESTAMP") >=0 ) {
   			return value.toString();
   		}
   		return value;
