@@ -296,6 +296,7 @@ public class PortalService implements IPortalService {
         List<Structure> branch = portalDao.getChildrenById(id, PortalConstants.PORTAL_DEL_OPERRATION );
         for( Structure node : branch ) {
             portalDao.deleteStructure(node);
+            portalDao.executeHQL("delete from ThemeInfo o where o.id.structureId = ?", node.getId());
         }
  
         // 如果删除的是门户：

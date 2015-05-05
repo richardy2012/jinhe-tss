@@ -44,7 +44,7 @@ public class _MySQL extends _Database {
 			createDDL.append( ", " );
    		}
    		
-   		createDDL.append("`createtime` TIMESTAMP NOT NULL, ");
+   		createDDL.append("`createtime` TIMESTAMP NULL, ");
 		createDDL.append("`creator` varchar(50) NOT NULL, ");
 		createDDL.append("`updatetime` TIMESTAMP null, ");
 		createDDL.append("`updator` varchar(50), ");

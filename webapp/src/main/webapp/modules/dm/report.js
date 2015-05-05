@@ -106,7 +106,7 @@ function initMenus() {
 		visible:function() {return !isTreeRoot() && isTreeNodeDisabled() && getOperation("4");}
 	}
 	var item11 = {
-		label:"测试报表服务",
+		label:"测试数据服务",
 		callback:testRestfulReportService,
 		icon: ICON + "icon_service.gif",
 		visible:function() {return isReport() && getOperation("2");}
