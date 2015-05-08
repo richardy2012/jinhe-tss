@@ -466,6 +466,10 @@
     $.fn.extend({
 
         find: function(selector, parent) {
+            if(this[0]) {
+                return $(selector, this[0]);
+            }
+
             parent = parent || document;
             var elements = parent.querySelectorAll(selector);
 
@@ -717,23 +721,30 @@
 
         //  获取绝对位置
         absPosition: function(node) {
-            var left, top, pEl = node;
+            var left, right, top, bottom, pEl = node;
 
             if (typeof node.getBoundingClientRect === 'function') {
                 var clientRect = node.getBoundingClientRect();
                 left = clientRect.left + window.pageXOffset;
-                top = clientRect.bottom + window.pageYOffset;
+                right = clientRect.right + window.pageXOffset;
+                top = clientRect.top + window.pageYOffset;
+                bottom = clientRect.bottom + window.pageYOffset;
             } else {
                 left = pEl.offsetLeft;
-                top = pEl.offsetTop + pEl.offsetHeight;
+                top = pEl.offsetTop;
                 while ((pEl = pEl.offsetParent)) {
                     left += pEl.offsetLeft;
                     top += pEl.offsetTop;
                 }
+
+                right = left + node.offsetWidth;
+                bottom = top + node.offsetHeight
             }
             return {
                 "left": left,
-                "top": top
+                "top": top,
+                "right": right,
+                "bottom": bottom
             };
         },
 
@@ -1230,7 +1241,6 @@
         ($.alert || alert)(msg);
     },
 
- 
     /*
      *  XMLHTTP请求对象，负责发起XMLHTTP请求并接收响应数据。例:
             var request = new HttpRequest();
@@ -1651,111 +1661,18 @@
             $.Cookie.del("token", "/" + FROMEWORK_CODE.toLowerCase());
             $.Cookie.del("token", "/" + CONTEXTPATH);
 
-            relogin(request, info.msg);
-        }
-
-        function relogin(request, msg) {
-            var reloginBox = $("#relogin_box")[0];
-            if(reloginBox == null) {
-                var boxHtml = [];
-                boxHtml[boxHtml.length] = "<h1>重新登录</h1>";
-                boxHtml[boxHtml.length] = "<span> <input type='text' id='loginName' placeholder='请输入您的账号'/> </span>";
-                boxHtml[boxHtml.length] = "<span> <input type='password' id='password' placeholder='请输入您的密码' /> </span>";
-                boxHtml[boxHtml.length] = "<span class='bottonBox'>";
-                boxHtml[boxHtml.length] = "  <input type='button' id='bt_login'  value='确  定'/>&nbsp;&nbsp;";
-                boxHtml[boxHtml.length] = "  <input type='button' id='bt_cancel' value='取  消'/>";
-                boxHtml[boxHtml.length] = "</span>";
-
-                reloginBox = $.createElement("div", "popupBox", "relogin_box");    
-                document.body.appendChild(reloginBox);
-                $(reloginBox).html(boxHtml.join(""));
-
-                $("#bt_cancel").click(function() {
-                    $(reloginBox).hide();
-                });
-
-                var defaultUserName = $.Cookie.getValue("iUserName");
-                if( defaultUserName ) {
-                    $("#loginName").value(defaultUserName);
-                }
-            }
-
-            var title = "重新登录";
-            if(msg) {
-                title += "，因" + msg.substring(0, 10) + (msg.length > 10 ? "..." : "");
-            }
-            $("h1", reloginBox).html(title);
-
-            $(reloginBox).show(); // 显示登录框
-
-            var loginNameObj = $("#loginName")[0];
-            var passwordObj  = $("#password")[0];
-
-            loginNameObj.focus();
-            passwordObj.value = ""; // 清空上次输入的密码，以防泄密
-            
-            loginNameObj.onblur = function() { 
-                var value = this.value;
-                if(value == null || value == "") return;
-                
-                if(loginNameObj.identifier) {
-                    delete loginNameObj.identifier;
-                }
-                
-                $.ajax({
-                    url: "/" + CONTEXTPATH + "getLoginInfo.in",
-                    params: {"loginName": value},
-                    onexcption: function() {
-                        loginNameObj.focus();
-                    },
-                    onresult: function(){
-                        loginNameObj.identifier = this.getNodeValue("identifier");
-                        loginNameObj.randomKey  = this.getNodeValue("randomKey");
-                        
-                        passwordObj.focus();
-                    }
-                });
-            }
-
-            $.Event.addEvent(document, "keydown", function(ev) {
-                if(13 == ev.keyCode) { // enter
-                    $.Event.cancel(event);
-                    $("#bt_login").focus();
-
-                    setTimeout(doLogin, 10);
-                }
-            });
-
-            $("#bt_login").click( function() { doLogin(); } );
-            
-            var doLogin = function() {
-                var identifier = loginNameObj.identifier;
-                var randomKey  = loginNameObj.randomKey;
-
-                var loginName  = loginNameObj.value;
-                var password   = passwordObj.value;
-                
-                if( "" == loginName ) {
-                    popupMessage("请输入账号");
-                    loginNameObj.focus();
-                    return;
-                } 
-                else if( "" == password ) {
-                    popupMessage("请输入密码");
-                    passwordObj.focus();
-                    return;
-                } 
-                else if( identifier == null ) {
-                    popupMessage("无法登录，用户配置可能有误，请联系管理员。");
-                    return;
-                } 
-
-                request.setHeader("loginName", $.encode(loginName, randomKey));
-                request.setHeader("password",  $.encode(password, randomKey));
-                request.setHeader("identifier", identifier);
-                request.setHeader("randomKey", randomKey);
-                request.send();
-                $(reloginBox).hide();
+            if($.relogin) {
+                $.relogin( 
+                    function(loginName, password, identifier, randomKey) { 
+                        request.setHeader("loginName", $.encode(loginName, randomKey));
+                        request.setHeader("password",  $.encode(password, randomKey));
+                        request.setHeader("identifier", identifier);
+                        request.setHeader("randomKey", randomKey);
+                        request.send();
+                    }, info.msg );
+            } else {
+                alert(info.msg);
+                location.href = "/" + CONTEXTPATH + "/login.html";
             }
         }
     }   
@@ -1946,12 +1863,12 @@
             x = position.left + targetEl.offsetWidth/2 - BUBBLE_WIDTH/2, 
             y;
 
-        if( position.top + 50 >= document.body.clientHeight) {
-            y = position.top - targetEl.offsetHeight - ARROW_HEIGHT * 4 - this.el.offsetHeight; 
+        if( position.bottom + 50 >= document.body.clientHeight) {
+            y = position.top - ARROW_HEIGHT * 4.5 - this.el.offsetHeight; 
             $(this.el).addClass(_STYLE_ARROW_BOTTOM);
         }
         else {
-            y = position.top + ARROW_HEIGHT;
+            y = position.bottom + ARROW_HEIGHT;
             $(this.el).addClass(_STYLE_ARROW_TOP);
         } 
         
@@ -1966,46 +1883,54 @@
 });
 
 
+/* Alert/Confirm/Prompt */
 (function($) {
 
     var popupBox = function(title, callback) {
-            var $box = $("#alert_box");
-            if($box.length > 0) {
-                $box.remove();
+        var $box = $("#alert_box");
+        if($box.length > 0) {
+            $box.remove();
+        }
+
+        var boxEl = $.createElement("div", "moveable", "alert_box");
+        document.body.appendChild(boxEl);
+
+        var html = [];
+        html.push('  <h1 class="title"></h1>');
+        html.push('  <span class="close"></span>');
+        html.push('  <div class="content">');
+        html.push('    <div class="message"></div>');
+        html.push('    <div class="btbox"><input type="button" value="确 定" class="ok"></div>');
+        html.push('  </div>');
+
+        $box = $(boxEl).html(html.join("\n")).show().drag();
+        $(".close", boxEl).click(closeBox);
+        $("h1", boxEl).html(title).addClass("text2");
+        $(".content .message", boxEl).addClass("text1");
+
+        $(boxEl).center(360, 300);   
+        callback && $.showWaitingLayer();
+
+        $.Event.addEvent(document, "keydown", function(ev) {
+            if(27 == ev.keyCode) { // ESC 退出
+               closeBox();
             }
+        });
 
-            var boxEl = $.createElement("div", "moveable", "alert_box");
-            document.body.appendChild(boxEl);
+        return $box[0];
+    },
 
-            var html = [];
-            html.push('  <h1 class="title"></h1>');
-            html.push('  <span class="close"></span>');
-            html.push('  <div class="content">');
-            html.push('    <div class="message"></div>');
-            html.push('    <div class="btbox"><input type="button" value="确 定" class="ok"></div>');
-            html.push('  </div>');
+    closeBox = function() {
+        $("#alert_box").hide().remove();
+        $.hideWaitingLayer();
+    },
 
-            $box = $(boxEl).html(html.join("\n")).show().drag();
-            $(".close", boxEl).click(closeBox);
-            $("h1", boxEl).html(title).addClass("text2");
-            $(".content .message", boxEl).addClass("text1");
-
-            $(boxEl).center(360, 300);   
-            callback && $.showWaitingLayer();
-
-            $.Event.addEvent(document, "keydown", function(ev) {
-                if(27 == ev.keyCode) { // ESC 退出
-                   closeBox();
-                }
-            });
-
-            return $box[0];
-        },
-
-        closeBox = function() {
-            $("#alert_box").hide().remove();
-            $.hideWaitingLayer();
-        };
+    // 检查是否在texteara外按了enter键
+    checkEnterPress = function(ev){
+        var srcElement = $.Event.getSrcElement(ev);
+        var tagName = srcElement.tagName.toLowerCase();
+        return 13 == ev.keyCode && "textarea" != tagName;
+    };
 
 
     // content：内容，title：对话框标题，callback：回调函数    
@@ -2020,7 +1945,7 @@
         }
         $(".btbox .ok", boxEl).click(ok);
         $.Event.addEvent(document, "keydown", function(ev) {
-            if(13 == ev.keyCode) { // Enter
+            if( checkEnterPress(ev) ) { 
                setTimeout(ok, 10);
             }
         });
@@ -2044,7 +1969,7 @@
         $(".btbox .ok", boxEl).click(function() { ok(true); });
         $(".btbox .cancel", boxEl).click(function() { ok(false); });
         $.Event.addEvent(document, "keydown", function(ev) {
-            if(13 == ev.keyCode) { // Enter
+            if( checkEnterPress(ev) ) { 
                setTimeout( function() { ok(true); }, 10);
             }
         });
@@ -2068,11 +1993,119 @@
         $(".btbox .cancel", boxEl).click(closeBox);
 
         $.Event.addEvent(document, "keydown", function(ev) {
-            if(13 == ev.keyCode) { // Enter
+            if( checkEnterPress(ev) ) { 
                setTimeout(ok, 10);
             }
         });
     };
+
+})(tssJS);
+
+
+/* relogin */
+;(function($){
+
+    $.relogin = function(callback, msg) {
+        var reloginBox = $("#relogin_box")[0];
+        if(reloginBox == null) {
+            var boxHtml = [];
+            boxHtml[boxHtml.length] = "<h1>重新登录</h1>";
+            boxHtml[boxHtml.length] = "<span> <input type='text' id='loginName' placeholder='请输入您的账号'/> </span>";
+            boxHtml[boxHtml.length] = "<span> <input type='password' id='password' placeholder='请输入您的密码' /> </span>";
+            boxHtml[boxHtml.length] = "<span class='bottonBox'>";
+            boxHtml[boxHtml.length] = "  <input type='button' id='bt_login'  value='确  定'/>&nbsp;&nbsp;";
+            boxHtml[boxHtml.length] = "  <input type='button' id='bt_cancel' value='取  消'/>";
+            boxHtml[boxHtml.length] = "</span>";
+
+            reloginBox = $.createElement("div", "popupBox", "relogin_box");    
+            document.body.appendChild(reloginBox);
+            $(reloginBox).html(boxHtml.join(""));
+
+            $("#bt_cancel").click(function() {
+                $(reloginBox).hide();
+            });
+
+            var defaultUserName = $.Cookie.getValue("iUserName");
+            if( defaultUserName ) {
+                $("#loginName").value(defaultUserName);
+            }
+        }
+
+        var title = "请输入账号密码";
+        if(msg) {
+            title = "重新登录，因" + msg.substring(0, 10) + (msg.length > 10 ? "..." : "");
+        }
+        $("h1", reloginBox).html(title);
+
+        $(reloginBox).show(); // 显示登录框
+
+        var loginNameObj = $("#loginName")[0];
+        var passwordObj  = $("#password")[0];
+
+        loginNameObj.focus();
+        passwordObj.value = ""; // 清空上次输入的密码，以防泄密
+        
+        loginNameObj.onblur = function() { 
+            var value = this.value;
+            if(value == null || value == "") return;
+            
+            if(loginNameObj.identifier) {
+                delete loginNameObj.identifier;
+            }
+            
+            $.ajax({
+                url: "/" + CONTEXTPATH + "getLoginInfo.in",
+                params: {"loginName": value},
+                onexcption: function() {
+                    loginNameObj.focus();
+                },
+                onresult: function(){
+                    loginNameObj.identifier = this.getNodeValue("identifier");
+                    loginNameObj.randomKey  = this.getNodeValue("randomKey");
+                    
+                    passwordObj.focus();
+                }
+            });
+        }
+
+        $.Event.addEvent(document, "keydown", function(ev) {
+            if(13 == ev.keyCode) { // enter
+                $.Event.cancel(event);
+                $("#bt_login").focus();
+
+                setTimeout(doLogin, 10);
+            }
+        });
+
+        $("#bt_login").click( function() { doLogin(); } );
+        
+        var doLogin = function() {
+            var identifier = loginNameObj.identifier;
+            var randomKey  = loginNameObj.randomKey;
+
+            var loginName  = loginNameObj.value;
+            var password   = passwordObj.value;
+            
+            if( "" == loginName ) {
+                $.alert("请输入账号");
+                loginNameObj.focus();
+                return;
+            } 
+            else if( "" == password ) {
+                $.alert("请输入密码");
+                passwordObj.focus();
+                return;
+            } 
+            else if( identifier == null ) {
+                $.alert("无法登录，用户配置可能有误，请联系管理员。");
+                return;
+            } 
+
+            callback(loginName, password, identifier, randomKey);
+
+            $(reloginBox).hide();
+        }
+    }
 
 })(tssJS);
 
@@ -2087,7 +2120,7 @@
 
     var
     /* 样式名称 */
-    CSS_CLASS_MENU = "menu",
+    CSS_CLASS_MENU = "rmenu",
     CSS_CLASS_MENU_ITEM_ACITVE = "active",
     CSS_CLASS_MENU_SEPARATOR = "separator",
 
@@ -2270,9 +2303,7 @@
 
         /* 添加分隔线 */
         addSeparator: function() {
-            var separator = document.createElement("div");
-            separator.className = CSS_CLASS_MENU_SEPARATOR;
-
+            var separator = $.createElement("div", CSS_CLASS_MENU_SEPARATOR);
             this.el.appendChild(separator);
         },
 
@@ -2334,7 +2365,7 @@
         /* 高亮菜单项 */
         active: function() {
             if( !!this.isEnable ) {
-                this.el.className = CSS_CLASS_MENU_ITEM_ACITVE;
+                $(this.el).addClass(CSS_CLASS_MENU_ITEM_ACITVE);
             }
         },
 
@@ -2387,9 +2418,7 @@
         showSubMenu: function() {
             if( this.submenu ) {
                 var position = $.absPosition(this.el);
-                var x = position.left + this.el.offsetWidth;
-                var y = position.top;
-                this.submenu.show(x, y);
+                this.submenu.show(position.right, position.bottom);
             }
         },
 
@@ -3287,7 +3316,7 @@
         if(value == "" && empty == "false") {
             errorMsg = "[" + caption.replace(/\s/g, "") + "] 不允许为空。";
         }
-        if(checkReg && !eval(checkReg).test(value)) {
+        else if(checkReg && value && !(new RegExp(checkReg)).test(value)) {
             errorMsg = this.el.getAttribute("errorMsg");
             errorMsg = errorMsg || "[" + caption + "] 格式不正确，请更正.";
         }
@@ -3306,27 +3335,49 @@
         return true;
     },
 
-    restore = function(el, value) {    
-        var tempEvent = el.onpropertychange;
-        if( tempEvent == null ) {
-            clearTimeout(el.timeout);
-            tempEvent = el._onpropertychange;
-        }
-        else {
-            el._onpropertychange = tempEvent;
-        }
+    value2List = function(value) {
+        var valueList = {};
+        if( !$.isNullOrEmpty(value) ) {
+            value.split(",").each(function(i, item){
+                valueList[item] = true;
+            })
+        }           
+        return valueList;
+    },
 
-        el.onpropertychange = null;
-        el.timeout = setTimeout(function() {
-            el.value = value;
-            el.onpropertychange = tempEvent;
-        }, 10);
+    createFieldObj = function(field, $el) {
+        var fieldObj;
+        var fieldType = field.getAttribute("mode");
+        switch(fieldType) {
+            case "number":
+                fieldObj = new StringField($el, this);
+                break;
+            case "date":
+            case "function":
+            case "datetime":
+                fieldObj = new FunctionField($el, this, fieldType === "datetime");
+                break;
+            case "hidden":
+                fieldObj = new HiddenFiled($el, this);
+                break;
+            case "combo":
+                fieldObj = new ComboField($el, this);
+                break;
+            case "combotree":
+                fieldObj = new ComboTreeField($el, this);
+                break;
+            case "string":
+            default:
+                fieldObj = new StringField($el, this);
+                break;
+        }
+        return fieldObj;
     },
 
     fireOnChangeEvent = function(el, newValue) {
         var onchangeFunc = el.getAttribute("onchange");
         if(onchangeFunc) {
-            onchangeFunc = onchangeFunc.replace(/\^/g, "'"); // 有些地方的配置無法直接使用引號（如JSON），用^代替，這裡替換回來
+            onchangeFunc = onchangeFunc.replace(/\^/g, "'"); // 有些地方的配置無法直接使用引号（如JSON），用^代替，這裡替換回來
             var rightKH = onchangeFunc.indexOf(")");
             if(rightKH > 0) {
                 onchangeFunc = onchangeFunc.substring(0, rightKH) + ", '" + newValue + "')"; 
@@ -3342,11 +3393,11 @@
     XMLTemplate = function(dataXML) {
         this.sourceXML = dataXML;
              
-        this.declare = $("declare", dataXML)[0];
-        this.layout  = $("layout", dataXML)[0]; 
-        this.script  = $("script", dataXML)[0];
+        this.declare = $("xform>declare", dataXML)[0];
+        this.layout  = $("xform>layout", dataXML)[0]; 
+        this.script  = $("xform>script", dataXML)[0];
     
-        this.dataNode =  $("data", dataXML)[0];
+        this.dataNode =  $("xform>data", dataXML)[0];
         if(this.dataNode == null) {             
             this.dataNode = $.XML.createNode("data");
             this.sourceXML.appendChild(this.dataNode);
@@ -3416,7 +3467,6 @@
                         }
 
                         var mode    = column.getAttribute("mode") || 'string';
-                        var editor  = column.getAttribute("editor");
                         var caption = column.getAttribute("caption");
                         var value   = this.getFieldValue(binding);
                         var _value  = (value ? " value=\"" + value + "\"" : " ");
@@ -3425,13 +3475,13 @@
                         if(nodeName == "label" && binding && binding != "") {
                             htmls.push("<label id='label_" + binding + "'>" + caption + "</label>");
                         }
-                        else if(mode == "string" && editor == 'comboedit') {
+                        else if(mode == 'combo') {
                             htmls.push("<select " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + _value + "></select>");
                         }
                         else if(mode == "string" && nodeName == 'textarea') {
                             htmls.push("<textarea " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + ">" + (value ? value : "") + "</textarea>");
                         }
-                        else if(mode == "string" || mode == "number" || mode == "function" || mode == "date" || mode == "datetime") {
+                        else if(mode == "string" || mode == "number" || mode == "function" || mode == "date" || mode == "datetime" || mode == "combotree") {
                             htmls.push("<input " + copyNodeAttribute(childNode) + copyColumnAttribute(column) + _value + "></input>");
                         }
                     }
@@ -3478,10 +3528,10 @@
     };
  
     var Form = function(element) {
-        this.id   = element.id;
-        this.box  = element;
+        this.id  = element.id;
+        this.box = element;
 
-        this.editable  = element.getAttribute("editable") || "true";
+        this.editable = element.getAttribute("editable") || "true";
         this.fieldObjMap = {};
     };
 
@@ -3497,6 +3547,11 @@
 
             // 绑定各个字段输入框对应的编辑方式
             this.attachEditor();
+
+            // 添加tssForm定制的script
+            if(this.template.script) {
+                $.createScript($.XML.getText(this.template.script));
+            }
         
             // 绑定事件
             this.box.onselectstart = function() {
@@ -3515,46 +3570,15 @@
                 var field = fieldsMap[fieldName];
 
                 // 取layout中绑定该field column的element，如无，则字段无需展示。
-                var fieldEl = $1(fieldName);
-                if( fieldEl == null) {
-                    continue;
-                }
+                var el = $1(fieldName);
+                if( !el )  continue;
 
-                var fieldObj;
-                var fieldType = field.getAttribute("mode");
-                switch(fieldType) {
-                    case "number":
-                        fieldObj = new StringField(fieldName, this);
-                        break;
-                    case "date":
-                    case "function":
-                        fieldObj = new FunctionField(fieldName, this);
-                        break;
-                    case "datetime":
-                        fieldObj = new FunctionField(fieldName, this, true);
-                        break;
-                    case "hidden":
-                        fieldObj = new HiddenFiled(fieldName, this);
-                        break;
-                    case "string":
-                    default:
-                        var colEditor = field.getAttribute("editor");
-                        if(colEditor == "comboedit") {
-                            fieldObj = new ComboField(fieldName, this);
-                        }
-                        else {
-                            fieldObj = new StringField(fieldName, this);
-                        }
-                        break;
-                }
-
-                fieldObj.saveAsDefaultValue();
-                this.fieldObjMap[fieldName] = fieldObj;
+                this.fieldObjMap[fieldName] = createFieldObj.call(this, field, $(el));
 
                 if(field.getAttribute('empty') == "false") {
                     var requiredTag = $.createElement("span", "required");
                     $(requiredTag).html("*");
-                    fieldEl.parentNode.appendChild(requiredTag);
+                    el.parentNode.appendChild(requiredTag);
                 }
             }
 
@@ -3588,12 +3612,11 @@
                 if ( editable == "false" ) {
                     _status = "false";
                 } 
-
-                if(firstEditableField == null && _status == "true" && mode != "hidden") {
-                    firstEditableField = fieldObj;
-                }
-
                 fieldObj.setEditable(_status);
+
+                if( !firstEditableField && _status == "true" && mode == "string") {
+                    firstEditableField = fieldObj;
+                }               
             });
 
             if(firstEditableField) {
@@ -3632,7 +3655,7 @@
         // 将界面数据更新到Form模板的data/row/里
         updateData: function(el) {
             var newValue;
-            if(window.event && window.event.propertyName == "checked") {
+            if(event && event.propertyName == "checked") {
                 newValue = el.checked == true ? 1 : 0;
             }
             else if(el.tagName.toLowerCase() == "select") {
@@ -3681,14 +3704,30 @@
             return field.getAttribute(attrName);
         },
 
+        updateField: function(name, attrs) {
+            var field = this.template.fieldsMap[name];
+            if( field ) {
+                var $el = $($1(name));
+                $.each(attrs, function(i, attr) {
+                    $(field).attr(attr.name, attr.value);
+                    $el.attr(attr.name, attr.value);
+                });
+
+                var fieldObj = createFieldObj.call(this, field, $el);
+                this.fieldObjMap[name] = fieldObj;
+
+                fieldObj.refresh && fieldObj.refresh();
+            }
+        },
+
         getXmlDocument: function() {
             return this.template.sourceXML;
         }
     };
 
     // 普通文本输入框
-    var StringField = function(fieldName, form) {
-        this.el = $1(fieldName);
+    var StringField = function($el, form) {
+        this.el = $el[0];
         this.el._value = this.el.value; // 备份原值
 
         var oThis = this;
@@ -3696,22 +3735,7 @@
             if("text" == this.type) { // 判断input的类型
                 this.value = this.value.trim(); // 去掉前后的空格
             }
-
             form.updateData(this);
-        };
-
-        this.el.onpropertychange = function() {
-            if(window.event.propertyName == "value") {
-                var maxLength = parseInt(this.getAttribute('maxLength'));
-
-                // 超出长度则截掉
-                if(this.value.length > maxLength) {
-                    restore(this, this.value.substring(0, maxLength));
-                }
-                else{
-                    this._value = this.value;
-                }
-            }
         };
     };
 
@@ -3723,7 +3747,7 @@
         validate: validate,
         
         setEditable : function(status) {
-            this.el.editable = status || this.el.getAttribute("editable");
+            this.el.editable = status || $(this.el).attr("editable");
 
             var disabled = (this.el.editable == "false");
             this.el.className = disabled ? "field_disabled" : "string";
@@ -3734,19 +3758,15 @@
                 this.el.disabled = disabled;        
             }
         },
-
-        saveAsDefaultValue : function() {
-            this.el.defaultValue = this.el.value;
-        },
-
+ 
         setFocus : setFocus
     };
 
     // 自定义方法输入值类型
-    var FunctionField = function(fieldName, form, isDatetime) {
-        this.el = $$(fieldName);
+    var FunctionField = function($el, form, isDatetime) {
+        this.el = $el[0];
         this.el._value = this.el.value; // 备份原值
-        this.isdate = (this.el.getAttribute("mode").toLowerCase() == "date") || isDatetime;
+        this.isdate = ($el.attr("mode").toLowerCase() == "date") || isDatetime;
      
         if( !this.el.disabled ) {
             if(this.isdate) {
@@ -3770,7 +3790,7 @@
                     this.el.parentNode.appendChild(funcIcon);
                 }               
  
-                var cmd = this.el.getAttribute("cmd");
+                var cmd = $el.attr("cmd");
                 funcIcon.onclick = function() {
                     $.execCommand(cmd);
                 };
@@ -3801,49 +3821,46 @@
             
             this.el.editable = status;
         },
-
-        saveAsDefaultValue : function() {
-            this.el.defaultValue = this.el.value;
-        },
-
+ 
         setFocus : setFocus
     };
 
     // 下拉选择框，单选或多选
-    var ComboField = function(fieldName, form) {
-        this.el = $1(fieldName);
-        this.multiple = this.el.getAttribute("multiple") == "multiple";
+    var ComboField = function($el, form) {
+        this.el = $el[0];
+        this.multiple = $el.attr("multiple") != null;
+        this.required = $el.attr('empty') == "false";
+
+        var valueList = ($el.attr("values") || "");
+        var textList  = ($el.attr("texts")  || "");   
         
         var valueNode = this.el.attributes["value"];
         this.el._value = valueNode ? valueNode.value : "";
 
-        var selectedValues = this.value2List(this.el._value);
-        var selectedIndex = [];
+        var selectedValues = value2List(this.el._value);
 
-        var valueList = (this.el.getAttribute("editorvalue") || "").split('|');
-        var textList  = (this.el.getAttribute("editortext")  || "").split('|');
+        // 加一个空白的选项
+        if(!this.required) {
+            valueList = ("|" + valueList);
+            textList = ("|" + textList);
+        }
+        valueList = valueList.split('|');
+        textList  = textList.split('|');
         for(var i=0; i < valueList.length; i++) {
             var value = valueList[i];
             this.el.options[i] = new Option(textList[i], value);
      
             if( selectedValues[value] ) {
                 this.el.options[i].selected = true;
-                selectedIndex[selectedIndex.length] = i;
             }
         }
-        if( selectedIndex.length > 0 ){
-            this.el.defaultSelectedIndex = selectedIndex.join(",");
-        } 
-        else {
-            this.el.defaultSelectedIndex = this.el.selectedIndex = -1;
-        }
 
-        if(this.multiple && this.el.getAttribute("height") == null) {
-            this.el.style.height = Math.min(Math.max(valueList.length, 4), 4) * 18 + "px";
+        if(this.multiple && $el.attr("height") == null) {
+            $el.css("height", Math.min(Math.max(valueList.length, 4), 4) * 18 + "px");
         }   
 
         // 当empty = false(表示不允许为空)时，下拉列表的默认值自动取第一项值
-        if( this.el._value == "" &&  this.el.getAttribute('empty') == "false") {
+        if( !this.el._value && this.required) {
             this.setValue(valueList[0]);
             form.setFieldValue(this.el.id, valueList[0]);
         }
@@ -3864,31 +3881,14 @@
     };
 
     ComboField.prototype = {
-        value2List: function(value) {
-            var valueList = {};
-            if( !$.isNullOrEmpty(value) ) {
-                value.split(",").each(function(i, item){
-                    valueList[item] = true;
-                })
-            }           
-
-            return valueList;
-        },
-
         setValue: function(value) {
-            var valueList = this.value2List(value);
+            var valueList = value2List(value);
 
-            var noSelected = true;
             $.each(this.el.options, function(i, option){
                 if(valueList[option.value]) {
                     option.selected = true;
-                    noSelected = false;
                 }
             });
- 
-            if(noSelected){
-                this.el.selectedIndex = -1; 
-            }
 
             this.el._value = value;
             fireOnChangeEvent(this.el, value);
@@ -3896,36 +3896,181 @@
 
         setEditable: function(status) {
             this.el.disabled  = (status == "true" ? false : true);
-            this.el.className = (status == "true" ? "comboedit" : "field_disabled");
+            this.el.className = (status == "true" ? "combo" : "field_disabled");
             this.el.editable  = status;
         },
 
         validate: validate,
 
-        saveAsDefaultValue: function() {
-            var selectedIndex = [];
-            for(var i=0; i < this.el.options.length; i++){
-                var opt = this.el.options[i];
-                if(opt.selected) {
-                    selectedIndex[selectedIndex.length] = i;
+        setFocus: setFocus
+    };
+
+    var ComboTreeField = function($el, form) {
+        this.el = $el[0];
+        this.multiple = $el.attr("multiple") != null;
+        
+        var treeEl;
+        if( !this.el.treeEl ) {
+            var treeEl = $.createElement("Tree", "comboTree", $.getUniqueID("comboTree"));
+            document.body.appendChild(treeEl);
+            this.el.treeEl = treeEl;
+        } else {
+            treeEl = this.el.treeEl;
+        }
+        
+        if(this.multiple) {
+            $(treeEl).attr("treeType", "multi");
+        } 
+
+        var oThis = this;
+        this.load = function() {
+            var valueList = ($el.attr("values") || "").split('|');
+            var textList  = ($el.attr("texts")  || "").split('|');
+            this.height = Math.max(3, Math.min(valueList.length, 10)) * 18 + "px";
+
+            this.nodesData = [];
+            for(var i=0; i < valueList.length; i++) {
+                this.nodesData.push( {"id": valueList[i], "name": textList[i], })
+            }
+
+            this.tree = $(treeEl).tree(this.nodesData); 
+            this.tree.onTreeNodeActived = onSelectNode;
+            this.tree.onTreeNodeChecked = onSelectNode;
+
+            var valueNode = this.el.attributes["value"];
+            this.el._value = valueNode ? valueNode.value : "";
+            var texts;
+            if(this.el._value) {
+                if(this.multiple) {
+                    this.tree.setCheckValues(this.el._value, true);
+                    texts = this.tree.getCheckedIds(false, "name");
+                } else {
+                    this.tree.setActiveTreeNode(this.el._value);
+                    texts = this.tree.getActiveTreeNodeName();
                 }
             }
-            this.el.defaultSelectedIndex = selectedIndex.join(",");
+            this.el.value = texts || "";
+        }
+        this.load();
+
+        this.position = function() {
+            var elPosition = $.absPosition(this.el);
+            $(treeEl).position(elPosition.left, elPosition.bottom).hide();
+            $(treeEl).css("height", this.height).css("width", $.getStyle(this.el, "width"));
+        }
+        this.position();
+
+        $.Event.addEvent(this.tree.el, 'mousedown', function(e) {
+            e = e || window.event;
+            $.Event.cancel(e);
+        }, true);
+
+        this.el.onblur = function() {
+            $(oThis.tree.el).hide();
+        };
+
+        this.el.onfocus = function() {
+            oThis.position();
+            $(oThis.tree.el).show();
+        };
+
+        this.el.onclick = function() {
+            oThis.position();
+            $(oThis.tree.el).show();
+        };
+
+        this.el.oninput = function() {
+            // 自动过滤树节点
+            var temp = [], inputVal = this.value;
+            oThis.nodesData.each(function(i, nodeData){
+                inputVal.split(",").each(function(i, item) {
+                    if(nodeData.name.indexOf(item) >=0 && !temp.contains(nodeData)) {
+                        temp.push(nodeData);
+                    }
+                });
+            });
+            oThis.tree = $(treeEl).tree(temp); 
+            oThis.tree.onTreeNodeActived = onSelectNode;
+            oThis.tree.onTreeNodeChecked = onSelectNode;
+
+            // 如果删空了，则清除已经选中的值
+            if( $.isNullOrEmpty(inputVal) ) {
+                oThis.setValue(inputVal);
+                form.setFieldValue(oThis.el.id, inputVal);
+            }
+        };
+
+        function onSelectNode(event) {
+            if(oThis.multiple) {
+                var value = oThis.setValue();
+                form.setFieldValue(oThis.el.id, value);
+            }
+            else {
+                $(treeEl).hide();
+
+                var selectedNodeId = event.node.id;
+                oThis.setValue(selectedNodeId);
+                form.setFieldValue(oThis.el.id, selectedNodeId);
+            }
+        }
+
+        this.tree.onTreeNodeActived = onSelectNode;
+        this.tree.onTreeNodeChecked = onSelectNode;
+    };
+
+    ComboTreeField.prototype = {
+        setValue: function(value) {
+            if(value) {
+                if(this.multiple) {
+                    this.tree.setCheckValues(value.split(','), true);
+                } else {
+                    this.tree.setActiveTreeNode(value);
+                }
+            } else {
+                if(this.multiple) {
+                    value = this.tree.getCheckedIds(false);
+                } else {
+                    value = this.tree.getActiveTreeNodeId();
+                }
+            }
+
+            var text;
+            if(this.multiple) {
+                text = this.tree.getCheckedIds(false, "name");
+            } else {
+                text = this.tree.getActiveTreeNodeName();
+            }
+
+            this.el.value = text || "";
+            this.el._value = value || "";
+            fireOnChangeEvent(this.el, value);
+
+            return value;
         },
 
-        setFocus: setFocus
+        setEditable: function(status) {
+            this.el.editable  = status;
+            this.el.disabled  = (status == "true" ? false : true);
+            this.el.className = this.el.disabled ? "field_disabled" : "combo";
+        },
+
+        validate: validate,
+        setFocus: setFocus,
+
+        refresh: function() {
+            this.load();
+        }
     };
  
     // 隐藏hidden字段
-    var HiddenFiled = function(fieldName, form) {
-        this.el = $1(fieldName);
+    var HiddenFiled = function($el, form) {
+        this.el = $el[0];
     };
 
     HiddenFiled.prototype = {
         setValue: function(s) {},
         setEditable: function(s) {},
         validate: function() { return true; },
-        saveAsDefaultValue: function() {},
         setFocus: function() {}
     };
 
@@ -4285,12 +4430,11 @@
                     break;
                 case "string":
                 default:
-                    var editor = column.getAttribute("editor");
-                    var editortext = column.getAttribute("editortext");
-                    var editorvalue = column.getAttribute("editorvalue");
-                    if(editor == "comboedit" && editorvalue && editortext) {
-                        var listNames  = editortext.split("|");
-                        var listValues = editorvalue.split("|");
+                    var texts = column.getAttribute("texts");
+                    var values = column.getAttribute("values");
+                    if(values && texts) {
+                        var listNames  = texts.split("|");
+                        var listValues = values.split("|");
                         listValues.each(function(n, optionValue) {
                             if(value == optionValue) {
                                 value = listNames[n];
@@ -4724,7 +4868,8 @@
             eventNodeActived     = new $.EventFirer(this, "onTreeNodeActived"), 
             eventNodeDoubleClick = new $.EventFirer(this, "onTreeNodeDoubleClick"),
             eventNodeRightClick  = new $.EventFirer(this, "onTreeNodeRightClick"),
-            eventNodeMoved       = new $.EventFirer(this, "onTreeNodeMoved");
+            eventNodeMoved       = new $.EventFirer(this, "onTreeNodeMoved"),
+            eventNodeChecked     = new $.EventFirer(this, "onTreeNodeChecked");
 
         this.el = el;
         this.treeType  = el.getAttribute(_TREE_TYPE) || _TREE_TYPE_SINGLE;
@@ -5098,6 +5243,11 @@
                     .removeClass("checkstate_1_" + this.disabled)
                     .removeClass("checkstate_2_" + this.disabled)
                     .addClass("checkstate_" + this.checkState + "_" + this.disabled);
+
+                var ev = event || {};
+                ev.node = this;
+                ev.checkState = this.checkState;
+                eventNodeChecked.fire(ev);
             },
 
             getAttribute: function(name) {
@@ -5141,8 +5291,21 @@
             return activeNode
         },
 
+        getActiveTreeNodeId: function(key) {
+            var activeNode = this.getActiveTreeNode();
+             return activeNode ? activeNode.id : "";
+        }, 
+
+        getActiveTreeNodeName: function(key) {
+            var activeNode = this.getActiveTreeNode();
+            return activeNode ? activeNode.name : "";
+        }, 
+
         getActiveTreeNodeAttr: function(key) {
-            return this.getActiveTreeNode().attrs[key];
+            var activeNode = this.getActiveTreeNode();
+            if(activeNode) {
+                return activeNode.attrs[key];
+            }
         }, 
 
         setActiveTreeNode: function(id) {
@@ -5238,11 +5401,11 @@
             this.el.scrollTop = treeNode.li.offsetTop - this.el.clientHeight / 2;
         },
 
-        getCheckedIds: function(includeHalfChecked) {
+        getCheckedIds: function(includeHalfChecked, idName) {
             var checkedNodes = this.getCheckedNodes(includeHalfChecked);
             var checkedNodeIds = [];
             checkedNodes.each(function(i, node){
-                checkedNodeIds.push(node.id);
+                checkedNodeIds.push(node[idName || "id"]);
             });
 
             return checkedNodeIds;
@@ -5272,7 +5435,9 @@
                 node.refreshCheckState(0);
             });
 
-            checkedIds = (checkedIds || "").split(',');
+            if( !checkedIds ) return;
+
+            checkedIds = checkedIds.length ? checkedIds : checkedIds.split(',');
             for(var i = 0; i < checkedIds.length; i++) {
                 var li = this.el.querySelector("li[nodeId='" + checkedIds[i] + "']");
                 if(li) {
@@ -5868,6 +6033,118 @@
     return WorkSpace;
 }); 
 
+/* 
+ * panel 
+ */
+;(function($){
+
+    $.fn.extend({
+        panel: function(title, contentHtml, resizable, moveable) {
+            if(this.length > 0) {
+                return new Panel(this[0], title, contentHtml, resizable, moveable);
+            }
+        }
+    });
+
+    var panelIndex = 1;
+
+    var Panel = function(el, title, contentHtml, resizable, moveable) {
+        this.el = el;
+        this.$el = $(el);
+        this.$el.html(
+            '<div class="title">' + 
+                '<h2>' +title+ '</h2>' + 
+                '<div>' + 
+                    '<span class="min" title="最小化"></span>' + 
+                    '<span class="max" title="最大化"></span>' + 
+                    '<span class="revert" title="还原"></span>' + 
+                    '<span class="close" title="关闭"></span>' + 
+                '</div>' + 
+            '</div>' + 
+            '<div class="content">' + contentHtml + '</div>'
+        );
+        this.$el.addClass("tss-panel").css("zIndex", panelIndex++);
+
+        if(moveable == null || moveable) {
+            this.$el.drag();
+        }
+        if(resizable) {
+            this.$el.resize().resize("col").resize("row");
+        }
+
+        this.width  = el.clientWidth;
+        this.height = el.clientHeight;
+        this.location = $.absPosition(el);
+
+        var $title = $(".title", el);
+        var $content = $(".content", el);
+
+        var $min = $(".min", el);
+        var $max = $(".max", el);
+        var $revert = $(".revert", el);
+        var $close = $(".close", el);
+
+        var oThis = this;
+
+        this.$el.click(function() {
+            oThis.$el.css("zIndex", panelIndex++);
+        });
+
+        $max.click(function(){
+            var inner = $.getInner();
+            oThis.$el.css('width',  "100%")
+                .css('height', "100%")
+                .css('top', '0px').css('left', '0px');
+            oThis.$el.addClass('tss-panel-max').removeClass("tss-panel-min");
+
+            $max.hide();
+            $min.hide();
+            $revert.show(true);
+            $content.show();
+        });
+
+        $revert.click(function(){
+            var inner = $.getInner();
+            oThis.$el.removeClass('tss-panel-max')
+                .css('width', oThis.width + "px")
+                .css('height', oThis.height + "px")
+                .css('left', oThis.location.left + 'px').css('top', oThis.location.top + 'px');
+            $max.show(true);
+            $min.show(true);
+            $revert.hide();
+        });
+
+        $min.click(function(){
+            if(oThis.$el.hasClass("tss-panel-min")) {
+                oThis.$el.removeClass("tss-panel-min").css('height', oThis.height + "px");
+                $content.show();
+            } 
+            else {
+                oThis.$el.addClass("tss-panel-min").removeClass('tss-panel-max')
+                    .css('width', oThis.width + "px")
+                    .css('height', "");
+                $max.show(true);
+                $revert.hide();
+                $content.hide();
+            }
+        });
+
+        $close.click(function(){
+            oThis.$el.hide();
+        });
+
+        function cancelBubble(event) {
+            this.onfocus = function () {this.blur()};
+            $.Event.cancel(event)
+        }
+        $min.addEvent("mousedown", cancelBubble);
+        $max.addEvent("mousedown", cancelBubble);
+        $revert.addEvent("mousedown", cancelBubble);
+        $close.addEvent("mousedown", cancelBubble);
+    }
+
+})(tssJS);
+
 /*
  *  左栏
  */
@@ -5906,7 +6183,7 @@
                 i = parseInt(100 / parseInt(document.body.clientWidth / _x, 10), 10), 
                 s = !1;
 
-            if (Math.abs(i - f) < 5)
+            if (Math.abs(i - f) < 10)
                 return;
 
             $(".leftbar").hasClass("leftbar-open") && _x > barWidth && closeLeftbar();
@@ -5971,6 +6248,8 @@ tssJS.fn.extend({
                 document.addEventListener("mousemove", doDrag, true);
                 document.addEventListener("mouseup", stopDrag, true);
             }
+
+            return false;
         };
 
         function doDrag(ev) {
@@ -5985,7 +6264,8 @@ tssJS.fn.extend({
 
         function stopDrag() {
             if (handle.releaseCapture) {
-                handle.onmousemove = handle.onmouseup = null;
+                handle.onmousemove = null;
+                handle.onmouseup = null;
                 handle.releaseCapture();
             } else {
                 document.removeEventListener("mousemove", doDrag, true);
@@ -6023,6 +6303,10 @@ tssJS.fn.extend({
 
             document.addEventListener("mousemove", doDrag, true);
             document.addEventListener("mouseup", stopDrag, true);
+
+            $.showWaitingLayer(); // 创建一个遮罩层，防止存在iframe时捕捉不到mousemove事件
+
+            return false;
         };
 
         function doDrag(ev) {
@@ -6056,6 +6340,7 @@ tssJS.fn.extend({
         function stopDrag() {
             document.removeEventListener("mousemove", doDrag, true);
             document.removeEventListener("mouseup", stopDrag, true);
+            $.hideWaitingLayer();
         };
 
         return this;

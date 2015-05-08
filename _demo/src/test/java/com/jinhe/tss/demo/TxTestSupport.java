@@ -11,6 +11,8 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.jinhe.tss.framework.Global;
+import com.jinhe.tss.framework.component.param.Param;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.component.param.ParamService;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.TokenUtil;
@@ -81,5 +83,41 @@ public abstract class TxTestSupport extends AbstractTransactionalJUnit4SpringCon
     	String token = TokenUtil.createToken("1234567890", userId); 
         IdentityCard card = new IdentityCard(token, loginUser);
         Context.initIdentityInfo(card);
+    }
+    
+    /** 简单参数 */
+    protected Param addParam(Long parentId, String code, String name, String value) {
+        Param param = new Param();
+        param.setCode(code);
+        param.setName(name);
+        param.setValue(value);
+        param.setParentId(parentId);
+        param.setType(ParamConstants.NORMAL_PARAM_TYPE);
+        param.setModality(ParamConstants.SIMPLE_PARAM_MODE);
+        paramService.saveParam(param);
+        return param;
+    }
+
+    /** 下拉型参数 */
+    protected Param addComboParam(Long parentId, String code, String name) {
+        Param param = new Param();
+        param.setCode(code);
+        param.setName(name);
+        param.setParentId(parentId);
+        param.setType(ParamConstants.NORMAL_PARAM_TYPE);
+        param.setModality(ParamConstants.COMBO_PARAM_MODE);
+        paramService.saveParam(param);
+        return param;
+    }
+
+    /** 新建设参数项 */
+    protected Param addComboItem(Long parentId, String value, String text) {
+        Param param = new Param();
+        param.setValue(value);
+        param.setText(text);
+        param.setParentId(parentId);
+        param.setType(ParamConstants.ITEM_PARAM_TYPE);
+        paramService.saveParam(param);
+        return param;
     }
 }

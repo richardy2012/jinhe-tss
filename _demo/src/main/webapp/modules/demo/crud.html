@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>CRUD Demo</title>
+    <title>Demo</title>
     <link rel="stylesheet" type="text/css" href="../../tools/easyui/themes/default/easyui.css">
     <link rel="stylesheet" type="text/css" href="../../tools/easyui/themes/icon.css">
 
@@ -12,6 +12,7 @@
     <style type="text/css">
         body {
             margin: 2px;
+            font-family: '微软雅黑'; 
         }
         #fm{
             margin:0;
@@ -36,6 +37,97 @@
         }
     </style>
 
+    <script type="text/javascript">
+
+$(document).ready(function(){
+    initCombobox('stateId', 'DemoState');
+});
+
+function initCombobox(id, code, params) {
+    var url = '../../param/json/combo/' + code;
+    $.get(url, params, function(data){
+        var _data = [];
+        $.each(data, function(i, item){
+            _data.push({'id': item[0], 'text': item[1]});
+        });
+
+        $('#' + id).combobox( {
+                    panelHeight: '120px',
+                    valueField: 'id',
+                    textField: 'text',
+                    data: _data
+                });
+    });
+}
+
+function create(){
+    $('#dlg').dialog('open').dialog('setTitle','新增').dialog('center');
+    $('#fm').form('clear');
+}
+
+function update(){
+    var row = $('#dg').datagrid('getSelected');
+    if (row){
+        $('#dlg').dialog('open').dialog('setTitle','修改').dialog('center');
+
+        $.get("../../demo/" + row.id, {}, function(data){
+            data['state.id'] = data.state.id;
+            $('#fm').form('load', data);
+        });
+    }
+    else {
+        $.messager.alert({
+            title: '提示',
+            msg: '您没有选中任何行，请先点击选中需要修改的行。'
+        });
+    }
+}
+
+function saveUser(){
+    $('#fm').form('submit',{
+        url: '../../demo',
+        onSubmit: function(){
+            return $(this).form('validate');
+        },
+        success: function(result){
+            var result = eval('(' + result + ')');
+            if (result.errorMsg){
+                $.messager.show({
+                    title: 'Error',
+                    msg: result.errorMsg
+                });
+            } else {
+                $('#dlg').dialog('close'); // close the dialog
+                $('#dg').datagrid('reload'); // reload the user data
+            }
+        }
+    });
+}
+
+function _remove(){
+    var row = $('#dg').datagrid('getSelected');
+    if (row){
+        $.messager.confirm('Confirm','您确定要删除这行数据吗?', function(r){
+            if (r) {
+                $.ajax({
+                     url: '../../demo/' + row.id,
+                     type: 'DELETE',
+                     success: function(result) {
+                        $('#dg').datagrid('reload'); // reload the user data
+                     }
+                });
+            }
+        });
+    }
+    else {
+        $.messager.alert({
+            title: '提示',
+            msg: '您没有选中任何行，请先点击选中需要删除的行。'
+        });
+    }
+}
+    </script>
+
 </head>
 <body>
     <table id="dg" title="数据列表" class="easyui-datagrid" 
@@ -47,6 +139,7 @@
                 <th field="id" width="50">ID</th>
                 <th field="name" width="50">名称</th>
                 <th field="code" width="50">编码</th>
+                <th field="stateName" width="50">状态</th>
                 <th field="udf1" width="50">自定义1</th>
                 <th field="udf2" width="50">自定义2</th>
                 <th field="udf3" width="50">自定义3</th>
@@ -55,12 +148,12 @@
     </table>
 
     <div id="toolbar">
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newUser()">新建</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editUser()">修改</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyUser()">删除</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="create()">新建</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="update()">修改</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="_remove()">删除</a>
     </div>
 
-    <div id="dlg" class="easyui-dialog" style="width:400px;height:300px;padding:10px 20px;" closed="true" buttons="#dlg-buttons">
+    <div id="dlg" class="easyui-dialog" style="width:400px;height:320px;padding:10px 20px;" closed="true" buttons="#dlg-buttons">
         <div class="ftitle">详细信息</div>
         <form id="fm" method="post" novalidate>
             <input name="id" type="hidden">
@@ -71,6 +164,10 @@
             <div class="fitem">
                 <label>编码:</label>
                 <input name="code" class="easyui-textbox" required="true">
+            </div>
+            <div class="fitem">
+                <label>状态:</label>
+                <input name="state.id" id="stateId" required="true">
             </div>
             <div class="fitem">
                 <label>自定义1:</label>
@@ -87,73 +184,9 @@
         </form>
     </div>
     <div id="dlg-buttons">
-        <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveUser()" style="width:90px">保存</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">取消</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveUser()" style="width:90px">保存</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">取消</a>
     </div>
-
-<script type="text/javascript">
-
-var url;
-function newUser(){
-    $('#dlg').dialog('open').dialog('setTitle','新增').dialog('center');
-    $('#fm').form('clear');
-    url = '../../demo';
-}
-
-function editUser(){
-    var row = $('#dg').datagrid('getSelected');
-    if (row){
-        $('#dlg').dialog('open').dialog('setTitle','修改').dialog('center');
-        $('#fm').form('load', row);
-        url = '../../demo?id=' + row.id;
-    }
-}
-
-function saveUser(){
-    $('#fm').form('submit',{
-        url: url,
-        onSubmit: function(){
-            return $(this).form('validate');
-        },
-        success: function(result){
-            var result = eval('('+result+')');
-            if (result.errorMsg){
-                $.messager.show({
-                    title: 'Error',
-                    msg: result.errorMsg
-                });
-            } else {
-                $('#dlg').dialog('close'); // close the dialog
-                $('#dg').datagrid('reload'); // reload the user data
-            }
-        }
-    });
-}
-
-function destroyUser(){
-    var row = $('#dg').datagrid('getSelected');
-    if (row){
-        $.messager.confirm('Confirm','Are you sure you want to destroy this user?', function(r){
-            if (r) {
-                $.ajax({
-                     url: '../../demo/' + row.id,
-                     type: 'DELETE',
-                     success: function(result) {
-                        if (result.errorMsg){
-                            $.messager.show({ // show error message
-                                title: 'Error',
-                                msg: result.errorMsg
-                            });
-                        } else {
-                            $('#dg').datagrid('reload'); // reload the user data
-                        }
-                     }
-                });
-            }
-        });
-    }
-}
-</script>
 
 </body>
 </html>

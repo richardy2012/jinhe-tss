@@ -62,7 +62,7 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     private String customizePage;
     
     /** 定制的JS方法： 用于校验，自动计算等  */
-    @Column(length = 2000)  
+    @Column(length = 4000)  
     private String customizeJS;
    
     private String  remark; 

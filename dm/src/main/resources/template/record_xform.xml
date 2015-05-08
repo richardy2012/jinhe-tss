@@ -7,7 +7,7 @@
 		<column name="table"  caption="目标数据表" maxLength="100"/>
 		<column name="define" caption="表字段定义" maxLength="10000" empty="false"/>
 		<column name="customizePage" caption="定制页" maxLength="100"/>
-		<column name="customizeJS" caption="定制JS" maxLength="2000"/>
+		<column name="customizeJS" caption="定制JS" maxLength="4000"/>
 		<column name="remark" caption="数据录入简介" maxLength="400"/>
 	</declare>
 	<layout>

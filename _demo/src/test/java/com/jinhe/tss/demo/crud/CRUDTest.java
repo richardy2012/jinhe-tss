@@ -4,16 +4,31 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.demo.TxTestSupport;
-import com.jinhe.tss.demo.crud.DemoAction;
-import com.jinhe.tss.demo.crud.DemoEntity;
+import com.jinhe.tss.framework.component.param.Param;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 
 public class CRUDTest extends TxTestSupport {
 	
 	@Autowired DemoAction action;
+	
+	List<Param> list1;
+	
+	@Before
+	public void setUp() throws Exception {
+		super.setUp();
+		
+		if(paramService.getParam("DemoState") == null) {
+        	Param cp = addComboParam(ParamConstants.DEFAULT_PARENT_ID, "DemoState", "测试状态");
+        	addComboItem( cp.getId(), "1", "停用" );
+        	addComboItem( cp.getId(), "0", "启用" );
+        }
+		list1 = paramService.getComboParam("DemoState");
+	}
 	
 	@Test
 	public void test() {
@@ -23,6 +38,7 @@ public class CRUDTest extends TxTestSupport {
 		DemoEntity entity = new DemoEntity();
 		entity.setCode("test 1");
 		entity.setName("test 1");
+		entity.setState(list1.get(0));
 		entity = action.save(entity );
 		
 		Long id = entity.getId();

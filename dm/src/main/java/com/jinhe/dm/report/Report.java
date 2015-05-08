@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -58,7 +59,7 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
     @Column(length = 100, nullable = false)
     private String  name;       // 展示名称
     
-    @Column(length = 4000)  
+    @Lob
     private String  script;     // SQL
     
     @Column(length = 2000)  

@@ -7,12 +7,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.persistence.IEntity;
 
 @Entity
@@ -33,6 +35,13 @@ public class DemoEntity implements IEntity  {
 	private String 	udf1;
 	private String 	udf2;
 	private String 	udf3;
+	
+	@ManyToOne
+	private Param state;
+	
+	public String getStateName() {
+		return state.getText();
+	}
  
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
@@ -88,6 +97,14 @@ public class DemoEntity implements IEntity  {
 
 	public void setUdf3(String udf3) {
 		this.udf3 = udf3;
+	}
+	
+	public Param getState() {
+		return state;
+	}
+
+	public void setState(Param state) {
+		this.state = state;
 	}
 }
 
