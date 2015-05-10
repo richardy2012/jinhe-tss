@@ -5,95 +5,50 @@
 	<meta charset="UTF-8">
 	<title>ichart图表</title>
 
+	<link href="common.css" rel="stylesheet">
+
 	<script src="../../../tools/tssJS/tssJS.all.js"></script>
 	<script src="common.js"></script>
 	<script src="ichart.js"></script>
-
 	<script src="../../../tools/ichartjs/ichart.1.1.min.js"></script>
-
-	<style>
-
-		html { height:100%; }	
-		body { color: #000000; height:100%; margin: 0 0 0 0; background-color: #E7E7E7; } 
-
-		#researh {
-			position: absolute;
-			top:5px;
-			left: 5px;
-			width: 100px;
-		    height: 30px;
-		    border: 1px solid #88D0E7;
-		    background: #0C6F73;
-		    box-shadow: #3a3c42 0 1px 0 inset;
-		    border-radius: 3px;
-		    font-size: 16px;
-		    font-family:"微软雅黑";
-		    color: #fff;
-		    cursor: pointer;
-		}
-
-		#researh:hover { font-weight: bold; }
-
-	</style>
 
 	<script type="text/javascript">
 
 	var CHART_TYPES = ["Column2D", "Column3D", "Pie2D", "Pie3D", "Donut2D", "Bar2D", "Line2D"];
 	
-	var title      = $.Query.get("title") ;
-	var chartType  = $.Query.get("type") || "column2D";
-	var serviceUrl = $.Query.get("service", "true") ;  // 服务地址包括参数。编码的，先解码
-	var autoSize;
-
-	var isTest = (window.parent === window.self);
-	if( isTest ) {
-		title = "报表XXX";
-		serviceUrl = "../data/1.json";
-	}
-
-	window.onresize = function() {
+	var autoSize, title, chartType  = $.Query.get("type") || "column2D";
+ 
+	function showGlobal() {
 		var globalValiable = window.parent.globalValiable;
 		if(globalValiable && globalValiable.data) {
 			title = globalValiable.title;
 			show(globalValiable.data);
+			return true;
 		}
+		return false;
 	}
-	
+
+	window.onresize = showGlobal;
 	window.onload = function() {
-		if(window.parent.$1("searchFormDiv") && window.parent.$1("btCloseSearchForm")) {
-			$1("researh").onclick = function() {
-				window.parent.$("#searchFormDiv").css("display", "block").center(500, 500);
-			}
-		}
-		else {
-			$1("researh").style.display = "none";
-		}
+		initResearhBt();
 
-		var globalValiable = window.parent.globalValiable;
-		if(globalValiable && globalValiable.data) {
-			title = globalValiable.title;
-			show(globalValiable.data);
+		if(showGlobal()) {
 			return;
 		}
 
+		title = "报表XXX";
 		$.ajax({
-			url : serviceUrl,
+			url : "data/1.json",
 			method : "GET",
 			type : "json",
 			waiting : true,
 			ondata : function() {
 				var data = this.getResponseJSON();
-
-				if(isTest) {
-					var index = 0;
-					window.setInterval( function() {
-						chartType = CHART_TYPES[index++ % CHART_TYPES.length];
-						show(data);
-					}, 1000 * 1.5); 
-				} else {
+				var index = 0;
+				window.setInterval( function() {
+					chartType = CHART_TYPES[index++ % CHART_TYPES.length];
 					show(data);
-				}
-
+				}, 1000 * 1.5); 
 			}
 		});	  
 	}
