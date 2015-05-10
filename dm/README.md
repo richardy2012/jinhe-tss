@@ -55,4 +55,30 @@ window.onload = function() {
 function show(data) {	
 	......
 }
+
+
+[
+  {'label':'金额一','code':'money1','type':'number','nullable':'false','width':'90'},
+  {'label':'金额二','code':'money2','type':'number','nullable':'true','width':'90'},
+  {'label':'金额三','code':'money3','type':'number','width':'90'},
+  {'label':'总金额','code':'_money','type':'number','width':'90'},
+  {'label':'默认日期','type':'date','defaultValue':'today-0','code':'defaultDay'},
+  {'label':'季节','code':'season','options':{'codes':'春|夏|秋|冬','names':'春|夏|秋|冬'},'onchange':'f1'},
+  {'label':'月份','code':'month','type':'string','options':{'codes':' ','names':' '}},
+  {'label':'自定义一','code':'udf1'},
+  {'label':'自定义二','code':'udf2'},
+  {'label':'自定义三','code':'udf3'},
+  {'label':'自定义四','code':'udf4'},
+  {'label':'自定义五','code':'udf5'},
+  {'label':'自定义六','code':'udf6'}
+]
+
+
+calculateSum("_money", ["money1", "money2", "money3"]);
+forbid("defaultDay");
+forbid("udf6", 100);
+onlyOne(["udf1", "udf2", "udf3"]);
+function f1() {
+    nextLevel("season", "month", {"春":"三月|四月|五月", "夏":"六月|七月|八月", "秋":"九月|十月|十一月", "冬":"十二月|一月|二月"});
+}
   

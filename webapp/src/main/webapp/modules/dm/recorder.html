@@ -49,8 +49,9 @@ URL_SOURCE_LIST   = AUTH_PATH + "xdata/xml/";
 URL_SAVE_SOURCE   = AUTH_PATH + "xdata/";
 URL_DELETE_SOURCE = AUTH_PATH + "xdata/";
 URL_GET_DEFINES   = AUTH_PATH + "xdata/define/";
+URL_GET_USER_HAS  = AUTH_PATH + "user/has";
 
-var recordId = 1, recordName = "数据录入", recordDefine, customizeJS;
+var recordId = 1, recordName = "数据录入", recordDefine, customizeJS, userGroups = [], userRoles = [];
 
 $(function() {
     var globalValiable = window.parent.globalValiable;
@@ -67,6 +68,7 @@ $(function() {
     URL_SAVE_SOURCE   = "data/_success.xml?";
     URL_DELETE_SOURCE = "data/_success.xml?";
     URL_GET_DEFINES   = "data/record_define.json?";
+    URL_GET_USER_HAS  = "data/user_has.json?";
 
     init();
 });
@@ -78,10 +80,22 @@ function init() {
 
     $.ajax({
         url : URL_GET_DEFINES + recordId,
+        type : "json",
         ondata: function() {
             var result = this.getResponseJSON();
             recordDefine = result[0];
             customizeJS = result[1];
+        }
+    });
+
+    $.ajax({
+        url : URL_GET_USER_HAS,
+        method : "GET",
+        type : "json",
+        ondata: function() {
+            var result = this.getResponseJSON();
+            userGroups = result[0];
+            userRoles = result[1];
         }
     });
 
@@ -151,7 +165,6 @@ function loadDetailData(rowID) {
     }
 
     var xform = $.json2Form("page1Form", recordDefine, null, customizeJS);
-    customizeJS = null; // 自定义脚本加载后即清除
 
     $.cache.XmlDatas[rowID] = xform.template.dataNode;
 
@@ -267,7 +280,7 @@ function showQueryForm() {
     }
 }
 
-// ------------------------------------------------- 多级下拉选择联动 ------------------------------------------------
+// ------------------------------------------------- 自定义扩展 ------------------------------------------------
 /*
  *  多级下拉选择联动
  *  参数： nextL    下一级联动参数的序号
@@ -282,8 +295,84 @@ function getNextLevelOption(nextL, serviceID, currParam, currParamValue) {
 
     // serviceID maybe is ID of record, maybe a serviceUrl
     var url = dreg.test(serviceID) ? '../../data/json/' + serviceID : serviceID;
+    
+    var xform = $.F("page1Form");
+    $.getNextLevelOption(xform, currParam, currParamValue, url, nextL);
+}
 
-    $.getNextLevelOption($.F("page1Form"), currParam, currParamValue, url, nextL);
+/* nextLevel("season", "month", 
+ *   {"春":"三月|四月|五月", "夏":"六月|七月|八月", "秋":"九月|十月|十一月", "冬":"十二月|一月|二月"});
+ */
+function nextLevel(current, next, map) {
+    var currentVal = $("#" + current).value();
+    var nextOpts = map[currentVal];
+    if(!nextOpts) {
+        return;
+    }
+
+    var xform = $.F("page1Form");
+    xform.updateField(next, [
+        {"name": "texts", "value": nextOpts},
+        {"name": "values", "value": nextOpts}
+     ]);
+}
+
+// 依据用户的角色和组织判断用户是否能对指定字段可编辑
+function forbid(field, role, group) {
+    var xform = $.F("page1Form");
+    var editable = false;
+    if(role) {
+        editable = userRoles.contains(role);
+    } 
+    if(group) {
+        if(userGroups && userGroups.length) {
+            var g = userGroups[userGroups.length - 1];
+            if(group == g[0] || group == g[1]) {
+                editable = true;
+            }
+        }
+    }  
+
+    if(!editable) {
+        xform.setFieldEditable(field, "false"); 
+    }
+}
+
+function calculateSum(totalField, fields) {
+    var xform = $.F("page1Form");
+    forbid(totalField); 
+    fields.each(function(i, field){
+        $("#" + field).blur(function(){
+            var value = 0;
+            fields.each(function(j, f){
+                value += getFloatValue(f);
+            });
+            xform.updateDataExternal(totalField, value);    
+            xform.updateData(this);
+        });
+    });
+}
+
+function getFloatValue(field) {
+    return parseFloat($("#" + field).value() || '0');
+}
+
+// onlyOne(["udf1", "udf2", "udf3"]);
+function onlyOne( fields ) {
+    var xform = $.F("page1Form");
+    fields.each(function(i, field){
+        $("#" + field).blur(function(){
+            var value = this.value;
+            
+            fields.each(function(j, f){
+                if(field !== f) {
+                    xform.setFieldEditable(f, !value ? "true" : "false");   
+                }
+            });
+
+            xform.updateData(this);
+        });
+    });
 }
 
 //-->
