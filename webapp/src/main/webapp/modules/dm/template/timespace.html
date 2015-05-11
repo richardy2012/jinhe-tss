@@ -10,196 +10,83 @@
 <script src="../../../tools/tssJS/tssJS.all.js"></script>
 <script src="common.js"></script>
 <script src="../../../tools/echarts/echarts-all-2.1.10.js"></script>
+<script src="echart.js"></script>
 
 <script type="text/javascript">
 
-var autoSize, title;
+var autoSize, title, data;
 
-function showGlobal() {
-	var globalValiable = window.parent.globalValiable;
-	if(globalValiable && globalValiable.data) {
-		title = globalValiable.title;
-		show(globalValiable.data);
-		return true;
-	}
-	return false;
-}
-
-window.onresize = showGlobal;
+window.onresize = show;
 
 window.onload = function() {
 	initResearhBt();
 
-	if(showGlobal()) return;
+	var globalValiable = window.parent.globalValiable;
+	if(globalValiable && globalValiable.data) {
+		title = globalValiable.title;
+		data = globalValiable.data
+		show();
+		return true;
+	}
 
-	title = "报表XXX";
+	title = "货量";
 	$.ajax({
 		url : "data/2.json",
 		method : "GET",
 		type : "json",
 		waiting : true,
 		ondata : function() {
-			var data = this.getResponseJSON();
-			show(data);
+			data = this.getResponseJSON();
+			show();
 		}
 	});	  
 }
 
-function show(data) {	
- 	autoAdjustSize("canvasDiv");
+function show() {	
+ 	autoAdjustSize("canvasDiv1");
+ 	autoAdjustSize("canvasDiv2");
 
-	 // console.log(data.groupby("org,center", "weight"));
-
-	var dayData = data.groupby("day", "weight");
+	var dayData = data.groupby("day");
 	dayData.each(function(i, item){
 		item.name = item.day;
-		item.value = item.weight;
+	});
+	echartLine2D("canvasDiv1", title + "走势情况", dayData, "", showSpace);
+
+	var spaceData = data.groupby("space1");
+	spaceData.each(function(i, item){
+		item.name = item.space1;
+	});
+	echartColumn2D("canvasDiv2", title + "分布情况", spaceData, showDay);
+}
+
+function showSpace(day) {
+	var temp = [];
+	data.each(function(i, item){
+		if(item.day === day) {
+			temp.push(item);
+		}
 	});
 
-	echartLine2D("canvasDiv", "XXX", dayData, "吨");
+	var result = temp.groupby("space1");
+	result.each(function(i, item){
+		item.name = item.space1;
+	});
+	echartColumn2D("canvasDiv2", day + title + "分布情况", result);
 }
 
-
-
-// data中数据个数和labels个数不一定相等，以labels为准，labels有data里没有的默认等于0
-function echartLine2D(canvasName, title, data, unitName) {
-	// 单条折线图
-	if(isArray(data)) {
-		var _data = {};
-		_data[title] = data;
-		data = _data;
-	}
-
-	var legends = [],
-		series = [],
-		labels = [];
- 
-	for(var legend in data) {
-		legends.push(legend);
-		var legendData = data[legend];
- 
-		var serieData = [];
-		var temp = {};
-		for(var i = 0; i < legendData.length; i++) {
-			var item = legendData[i];
-			temp[item.name] = item.value;
-			labels.push(item.name);
+function showDay(space1) {
+	var temp = [];
+	data.each(function(i, item){
+		if(item.space1 === space1) {
+			temp.push(item);
 		}
+	});
 
-		for(var i = 0; i < labels.length; i++) {
-			serieData[i] = temp[labels[i]] || 0;
-		}
-
-		series.push({
-			"name": legend,
-			"type": 'line',
-			"data": serieData,
-			smooth: true,
-            //symbol: 'none', 
-            symbolSize: 10,
-            markPoint: {
-                data: [
-                    {type : 'max', name: '最大值'},
-                    {type : 'min', name: '最小值'}
-                ]
-            },
-            markLine: {
-                data: [
-                    {type : 'average', name: '平均值'}
-                ]
-            }
-
-		});
-	}	
-	
-	var chartObj = echarts.init($1(canvasName));
-	var option = {
-	    title : {
-	        text: title
-	    },
-	    tooltip : {
-	        trigger: 'axis'
-	    },
-	    legend: {
-	        data:legends
-	    },
-	    toolbox: {
-	        show : true,
-	        feature : {
-	            magicType : {show: true, type: ['line', 'bar']},
-	            restore : {show: true},
-	            saveAsImage : {show: true}
-	        }
-	    },
-	    calculable : true,
-	    xAxis : [
-	        {
-	            type : 'category',
-	            boundaryGap : false,
-	            data : labels
-	        }
-	    ],
-	    yAxis : [
-	        {
-	            type : 'value',
-	            axisLabel : {
-	                formatter: '{value} ' + (unitName ? unitName : '')
-	            }
-	        }
-	    ],
-	    series : series
-	};  
-
-	chartObj.on('click', function (param) {
-           console.log(param);
-        });
-
-	chartObj.setOption(option);                  
-}
-
-function echartPie2D(canvasName, title, data) {
-	var labels = [];
-	for(var i = 0; i < data.length; i++) {
-		var item = data[i];
-		labels[i] = item.name;
-	}
-
-	var chartObj = echarts.init($$(canvasName));
-	var option = {
-	    title : {
-	        text: title,
-	        x:'center'
-	    },
-	    tooltip : {
-	        trigger: 'item',
-	        formatter: "{a} <br/>{b} : {c} ({d}%)"
-	    },
-	    legend: {
-	        orient : 'vertical',
-	        x : 'left',
-	        data: labels
-	    },
-	    toolbox: {
-	        show : true,
-	        feature : {
-	            mark : {show: true},
-	            dataView : {show: true, readOnly: false},
-	            restore : {show: true},
-	            saveAsImage : {show: true}
-	        }
-	    },
-	    calculable : true,
-	    series : [
-	        {
-	            name: title,
-	            type:'pie',
-	            radius : '75%',
-	            center: ['50%', '50%'],
-	            data:data
-	        }
-	    ]
-	};
-    chartObj.setOption(option);         
+	var result = temp.groupby("day");
+	result.each(function(i, item){
+		item.name = item.day;
+	});
+	echartLine2D("canvasDiv1", space1 + title + "走势情况", result, "");
 }
 
 </script>
@@ -207,7 +94,14 @@ function echartPie2D(canvasName, title, data) {
 
 <body>
 
-	<div id='canvasDiv'></div>
+	<div style="height:50%">
+		<div id='canvasDiv1'></div>
+	</div>
+
+	<div style="height:50%">
+		<div id='canvasDiv2'></div>
+	</div>
+	
 	<input type='button' id='researh' value='查询条件'/>
 
 </body>

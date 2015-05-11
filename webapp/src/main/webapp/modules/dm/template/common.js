@@ -4,6 +4,7 @@ function isArray(v){
 } 
 
 Array.prototype.groupby = function(fields, vFiled) {
+	vFiled = vFiled || "value";
 	var result = [], keySet = [], map = {}, fields = fields.split(",");
 	this.each(function(i, row){
 		var key = [];
