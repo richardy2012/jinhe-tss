@@ -62,7 +62,6 @@
  
     function init() { 
         ICON = "images/";
-        initPaletteResize();
         initMenus();
         initEvents();
 

@@ -358,7 +358,7 @@
 			</activation>
 			<properties>
 				<environment>demo</environment>
-				<log.level>debug</log.level>
+				<log.level>info</log.level>
 				<job.enable>true</job.enable>
 				<db.username>root</db.username>
 				<db.password>800best@com</db.password>

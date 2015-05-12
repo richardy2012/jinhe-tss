@@ -56,7 +56,6 @@
 	}
  
     function init() {
-        initPaletteResize();
         initMenus();
         initWorkSpace(false);
         initEvents();

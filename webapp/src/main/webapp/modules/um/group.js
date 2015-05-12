@@ -72,10 +72,8 @@
 	}
  
     function init() {
-        initPaletteResize();
         initMenus();
         initWorkSpace();
-
         initEvents();
 
         loadInitData();

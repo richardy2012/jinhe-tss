@@ -57,9 +57,6 @@ function initWorkSpace() {
 	}
 }
 
-/* 左栏添加左右拖动效果 */
-function initPaletteResize() { }
-
 function closePalette() {
 	$("#palette").hide().removeClass("opend");;
 	$("#paletteOpen").show();
@@ -75,8 +72,9 @@ function openPalette() {
 }
 
 window.onresize = function() {
-	$("#palette #tree").css("height", (document.body.offsetHeight - 45) + "px");
-	$(".panel .groove #ws Tree").css("height", (document.body.offsetHeight - 112) + "px");	
+	var bodyHeight = document.body.offsetHeight;
+	$("#palette #tree").css("height", (bodyHeight - 45) + "px");
+	$(".panel .groove #ws Tree").css("height", (bodyHeight - 112) + "px");	
 }
  
 /* 事件绑定初始化 */
