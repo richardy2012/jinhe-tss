@@ -3,10 +3,10 @@ function isArray(v){
     return Object.prototype.toString.call(v) === '[object Array]';
 } 
 
-Array.prototype.groupby = function(fields, vFiled) {
+function groupby(arr, fields, vFiled) {
 	vFiled = vFiled || "value";
 	var result = [], keySet = [], map = {}, fields = fields.split(",");
-	this.each(function(i, row){
+	arr.each(function(i, row){
 		var key = [];
 		fields.each(function(i, f){
 			key.push(row[f]);
@@ -22,7 +22,7 @@ Array.prototype.groupby = function(fields, vFiled) {
 
 	keySet.each(function(i, key) {
 		var item = {}, key = key.split(",");
-		item[vFiled] = parseFloat( (map[key]/1000).toFixed(2) );
+		item[vFiled] = parseFloat( map[key].toFixed(1) );
 		fields.each(function(i, f){
 			item[f] = key[i];
 		});
@@ -31,6 +31,10 @@ Array.prototype.groupby = function(fields, vFiled) {
 	});
 
 	return result;
+}
+
+Array.prototype.groupby = function(fields, vFiled) {
+	groupby(this, fields, vFiled);
 }
 
 // 计算百分比，保留一位小数
