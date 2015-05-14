@@ -375,6 +375,17 @@ function onlyOne( fields ) {
     });
 }
 
+function notice(field, msg) {
+	$("#" + field).click(function(){  
+		$(this).notice(msg); 
+	});
+}
+
+function disableForm() {
+	$("#page1BtSave").hide(); 
+	$.F("page1Form").setEditable("false");
+}
+
 //-->
 </SCRIPT>
 

@@ -149,7 +149,13 @@ function echartColumn2D(canvasName, title, data, func) {
 	    xAxis : [
 	        {
 	            type : 'category',
-	            data : labels
+	            data : labels,
+	            axisLabel : {	 
+	                rotate: 15, // 倾斜度
+	                textStyle: {
+	                    fontSize: 14,
+	                }
+	            }
 	        }
 	    ],
 	    yAxis : [
