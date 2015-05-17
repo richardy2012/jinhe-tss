@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.jinhe.tss.cms.AbstractTestSupport;
@@ -84,6 +85,21 @@ public class ArticleModuleTest extends AbstractTestSupport {
 		// 移动文章
         articleAction.moveArticle(response, article.getId(), channel3.getId());
         assertEquals(article.getChannel().getId(), channel3.getId());
+        
+        // 添加/删除/读取评论
+        request.addParameter("comment", "very good!");
+        articleAction.addComment(response, request, articleId);
+        
+        request.addParameter("comment", "so bad!");
+        articleAction.addComment(response, request, articleId);
+        
+        List<?> comments = articleAction.getComment(request, articleId);
+        Assert.assertTrue(comments.size() == 2);
+        
+        articleAction.delComment(request, response, articleId, 1);
+        
+        comments = articleAction.getComment(request, articleId);
+        Assert.assertTrue(comments.size() == 1);
        
         // 最后删除文章、栏目、站点
         articleAction.deleteArticle(response, articleId);

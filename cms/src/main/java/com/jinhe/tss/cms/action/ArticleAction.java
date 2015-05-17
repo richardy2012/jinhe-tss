@@ -11,11 +11,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Article;
@@ -297,5 +299,82 @@ public class ArticleAction extends BaseActionSupport {
     	
         String returnXML = remoteService.search(siteId, searchStr, page, pageSize);
         print(returnXML);
+    }
+    
+    /**
+     * 添加评论
+     */
+	@RequestMapping(value = "/{articleId}/comment", method = RequestMethod.POST)
+	@SuppressWarnings("unchecked")
+    public void addComment(HttpServletResponse response, HttpServletRequest request,
+    		@PathVariable Long articleId) {
+    	
+    	Article article = articleService.getArticleById(articleId);
+    	String comments = article.getComment();
+    	
+    	List<Object[]> list;
+    	ObjectMapper objectMapper = new ObjectMapper();
+    	try {  
+   			list = objectMapper.readValue(comments, List.class);  
+   	    } 
+   		catch (Exception e) {  
+   			list = new ArrayList<Object[]>();
+   	    } 
+    	
+    	String comment = request.getParameter("comment"); 
+    	String commentTime = DateUtil.formatCare2Second(new Date());
+		list.add(new Object[] { Environment.getUserName(), comment, commentTime });
+		
+		try {
+			comments = objectMapper.writeValueAsString(list);
+		} catch (Exception e) {  
+  	    }  
+		article.setComment(comments);
+		articleService.updateArticle(article, null, null);
+    	
+    	printSuccessMessage("评论成功");
+    }
+	
+	@RequestMapping(value = "/{articleId}/comment", method = RequestMethod.GET)
+	@ResponseBody
+    public List<?> getComment(HttpServletRequest request, @PathVariable Long articleId) {
+    	Article article = articleService.getArticleById(articleId);
+    	ObjectMapper objectMapper = new ObjectMapper();
+    	try {  
+    		return objectMapper.readValue(article.getComment(), List.class);  
+   	    } catch (Exception e) {  
+   			return new ArrayList<Object[]>();
+   	    } 
+    }
+	
+	@RequestMapping(value = "/{articleId}/comment/{index}", method = RequestMethod.DELETE)
+	@SuppressWarnings("unchecked")
+	public void delComment(HttpServletRequest request, HttpServletResponse response,
+    		@PathVariable Long articleId, @PathVariable int index) {
+		
+		Article article = articleService.getArticleById(articleId);
+    	String comments = article.getComment();
+    	
+    	List<Object[]> list;
+    	ObjectMapper objectMapper = new ObjectMapper();
+    	try {  
+   			list = objectMapper.readValue(comments, List.class);  
+   	    } 
+   		catch (Exception e) {  
+   			return;
+   	    } 
+    	
+    	if(index < list.size()) {
+    		list.remove(index);
+    	}
+		
+		try {
+			comments = objectMapper.writeValueAsString(list);
+		} catch (Exception e) {  
+  	    }  
+		article.setComment(comments);
+		articleService.updateArticle(article, null, null);
+    	
+    	printSuccessMessage("删除评论成功");
     }
 }

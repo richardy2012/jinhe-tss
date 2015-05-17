@@ -113,77 +113,44 @@ public class ArticleService implements IArticleService {
         for ( Attachment attachment : attachments ) {
 			Integer seqNo = attachment.getSeqNo();
             if (attachSeqNos.contains(seqNo.toString())) { // 判断附件在文章保存时是否还存在
-				translatePath(attachment, article, channelId);
-				
 				attachment.setArticleId(article.getId());
 				attachment.setSeqNo(seqNo);
-				
 				articleDao.update(attachment);
 			}
-            else {
-				// 删除附件
+            else { // 删除附件
 				String[] uploadName = ArticleHelper.getAttachUploadPath(channel.getSite(), attachment);
                 new File(uploadName[0]).delete();
-                
                 articleDao.delete(attachment);
 			}
 		}
 	}
  
-	/**
-	 * 将文章正文中的临时地址替换成真实地址。
-     * 主要是将临时生成的附件ID替换成附件所属文章的ID。
-	 */
-	private void translatePath(Attachment attachment, Article article, Long channelId) {
-		// download?id=1&seqNo=1
-		String downloadUrl = attachment.getRelationUrl(); 
-        downloadUrl = downloadUrl.replaceAll("&", "&amp;"); //将&替换成&amp;
-        
-        int indexOfAmp = downloadUrl.indexOf("&amp;");
-        
-        // 修改正文中的地址链接
-		StringBuffer sb = new StringBuffer(article.getContent());
-		int index = sb.indexOf(downloadUrl);
-		while (index != -1) {
-			StringBuffer buffer = new StringBuffer();
-			int idIndex = downloadUrl.indexOf("?id=");
-			String realNameAfterUpload;
-			if (idIndex != -1) {
-				realNameAfterUpload = downloadUrl.substring(0, idIndex + 4);
-				
-				realNameAfterUpload += article.getId() + downloadUrl.substring(indexOfAmp);
-				buffer.append(sb.substring(0, index)).append(realNameAfterUpload).append(sb.substring(index + downloadUrl.length()));
-				sb = buffer;
-			}
-			index = sb.indexOf(downloadUrl);
-		}
-		article.setContent(sb.toString());
-	}
-    
     public void updateArticle(Article article, Long channelId, String attachList) {
     	
         articleDao.update(article);
         
+        if(channelId == null) return; // 不关心附件的增删
+        
         // 处理附件, attachList为剩余的附件列表
+        List<String> attachSeqNos = new LinkedList<String>();
         if ( !EasyUtils.isNullOrEmpty(attachList) ) {
             StringTokenizer st = new StringTokenizer(attachList, ",");
-            List<String> attachSeqNos = new LinkedList<String>();
             while (st.hasMoreTokens()) {
                 attachSeqNos.add(st.nextToken());
             }
-            
-            List<Attachment> attachments = articleDao.getArticleAttachments(article.getId());
-            for ( Attachment attachment : attachments ) {
-                if (attachSeqNos.contains(attachment.getSeqNo().toString())) {
-                   continue;
-                }
-                
-                // 删除附件
-                articleDao.delete(attachment);
-                Channel site = channelDao.getSiteByChannel(channelId);
-                String path = site.getPath() + "/" + site.getAttanchmentPath(attachment) + "/" + attachment.getLocalPath();
-                new File(path).delete();
+        }
+        
+        List<Attachment> attachments = articleDao.getArticleAttachments(article.getId());
+        for ( Attachment attachment : attachments ) {
+            if (attachSeqNos.contains(attachment.getSeqNo().toString())) {
+               continue;
             }
+            
+            // 删除附件
+            articleDao.delete(attachment);
+            Channel site = channelDao.getSiteByChannel(channelId);
+            String path = site.getPath() + "/" + site.getAttanchmentPath(attachment) + "/" + attachment.getLocalPath();
+            new File(path).delete();
         }
     }
 

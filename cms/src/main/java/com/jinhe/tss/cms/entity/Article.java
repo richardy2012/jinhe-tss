@@ -13,6 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -41,23 +42,26 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "article_sequence")
-    private Long   id;				//文章编号 PK
+    private Long   id;			//文章编号 PK
 	
 	@Column(nullable = false)
-    private String title;			//标题
-    private String subtitle;		//副标题
-    private String keyword;			//关键字
-    private String author;			//作者
-    private String summary;			//摘要 
+    private String title;		//标题
+    private String subtitle;	//副标题
+    private String keyword;		//关键字
+    private String author;		//作者
+    private String summary;		//摘要 
     
-    @Column(length = 4000)  
-    private String  content = "";		//正文内容  
+    @Column(length = 4000)
+    private String  content = ""; //正文内容  
     
-    private Date    overdueDate;    // 过期时间
-    private Date    issueDate;	    // 发布日期	开始为空,只有审核和发布阶段可以改
-    private String  pubUrl;         // 发布路径
+    @Lob    
+    private String  comment;	  //评论  
     
-    private Integer hitCount = 0;   //点击率
+    private Date    overdueDate;  // 过期时间
+    private Date    issueDate;	  // 发布日期	开始为空,只有审核和发布阶段可以改
+    private String  pubUrl;       // 发布路径
+    
+    private Integer hitCount = 0; //点击率
 	
     private Integer status = CMSConstants.START_STATUS;	   // 文章的状态 1：编辑中 2：待发布 3：已发布生成xml 4：过期 
     
@@ -228,5 +232,13 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
 	
 	public Serializable getPK() {
 		return this.id;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 }
