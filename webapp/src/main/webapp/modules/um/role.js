@@ -113,7 +113,9 @@
         }
         var item12 = {
             label:"授予角色",
-            callback:setRole2Permission,            
+            callback:function() { 
+                setRole2Permission("2"); 
+            },        
             visible:function() {return !isRootNode() && !isAnonymous() && getOperation("2");}
         }
         var item13 = {
@@ -133,7 +135,7 @@
 		menu1.addItem(item11);
         menu1.addSeparator();    
 		menu1.addItem(item10); 
-        menu1.addItem(item12);
+        menu1.addItem(item12); 
         menu1.addItem(item13);
 
         $1("tree").contextmenu = menu1;
@@ -254,9 +256,6 @@
 		$.ajax({
 			url : URL_ROLE_GROUP_DETAIL + treeID + "/" + parentID,
 			onresult : function() {		
-				$("#authframe").hide();
-        		$(ws.element).show();
-
 				var roleGroupInfoNode = this.getNodeValue(XML_ROLE_GROUP_INFO);
 
 				var roleGroupInfoNodeID = treeID + "." + XML_ROLE_GROUP_INFO;
@@ -279,7 +278,7 @@
 		});
     }
 
-    function saveRoleGroup(cacheID, parentID) {
+    function saveRoleGroup(treeID, parentID) {
 		var xform = $.F("page1Form");	
 		if( !xform.checkForm() ) return;
 
@@ -287,7 +286,7 @@
         request.url = URL_SAVE_ROLE_GROUP;
  
 		// 角色组基本信息
-		var roleGroupInfoNode = $.cache.XmlDatas[cacheID + "." + XML_ROLE_GROUP_INFO];
+		var roleGroupInfoNode = $.cache.XmlDatas[treeID + "." + XML_ROLE_GROUP_INFO];
 		var dataNode = roleGroupInfoNode.querySelector("data");
 		request.setFormContent(dataNode);
  
@@ -295,16 +294,10 @@
 		syncButton([$1("page1BtSave"), $1("page2BtSave")], request);
 
 		request.onresult = function() {
-			var treeNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
-			appendTreeNode(parentID, treeNode);
-
-			ws.closeActiveTab();
+			afterSaveTreeNode(treeID, parentID);
 		}
 		request.onsuccess = function() {
-			// 更新树节点名称
-			modifyTreeNode(cacheID, "name", xform.getData("name"));
-
-			ws.closeActiveTab();
+			afterSaveTreeNode(treeID, xform);
 		}
 		request.send();
     }
@@ -372,9 +365,6 @@
      */
     function loadRoleDetailData(treeID, editable, parentID) {
 		var onresult = function() {
-        	$("#authframe").hide();
-        	$(ws.element).show();
-
 			var roleInfoNode = this.getNodeValue(XML_ROLE_INFO);
 			var role2UserTreeNode   = this.getNodeValue(XML_ROLE_TO_GROUP_TREE);
 			var role2UserExsitInfo  = this.getNodeValue(XML_ROLE_TO_USER_EXIST_TREE);
@@ -387,8 +377,8 @@
 			var roleInfoNodeID  = treeID + "." + XML_ROLE_INFO;
 			$.cache.XmlDatas[roleInfoNodeID] = roleInfoNode;
 
-			var page1FormObj = $.F("page1Form", roleInfoNode);
-            page1FormObj.editable = editable ? "true" : "false";
+			var page1Form = $.F("page1Form", roleInfoNode);
+            page1Form.editable = editable ? "true" : "false";
 
 			var page4Tree  = $.T("page4Tree",  role2UserTreeNode);
 			var page4Tree3 = $.T("page4Tree3", role2UserExsitInfo);
@@ -441,10 +431,10 @@
 		$.ajax({url: URL_ROLE_DETAIL + treeID + "/" + parentID, onresult: onresult});
     }
  
-    function saveRole(cacheID, parentID) {
+    function saveRole(treeID, parentID) {
         // 校验page1Form数据有效性
-        var page1FormObj = $.F("page1Form");
-        if( !page1FormObj.checkForm() ) {
+        var page1Form = $.F("page1Form");
+        if( !page1Form.checkForm() ) {
             ws.switchToPhase("page1");
             return;
         }
@@ -453,7 +443,7 @@
         request.url = URL_SAVE_ROLE;
  
 		// 角色基本信息
-		var roleInfoNode = $.cache.XmlDatas[cacheID + "." + XML_ROLE_INFO];
+		var roleInfoNode = $.cache.XmlDatas[treeID + "." + XML_ROLE_INFO];
 		var roleInfoDataNode = roleInfoNode.querySelector("data");
 		request.setFormContent(roleInfoDataNode);
 
@@ -469,22 +459,13 @@
         syncButton([$1("page1BtSave"), $1("page2BtSave"), $1("page4BtSave")], request);
 
         request.onresult = function() {                   
-			var treeNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
-			appendTreeNode(parentID, treeNode);
-
-			ws.closeActiveTab();
+			afterSaveTreeNode(treeID, parentID);
         }
         request.onsuccess = function() {                  
-			var name = page1FormObj.getData("name");
-			modifyTreeNode(cacheID, "name", name); //更新树节点名称
-
-			ws.closeActiveTab();
+            afterSaveTreeNode(treeID, page1Form);
         }
         request.send();
     }		
-
-
-    var globalValiable; // 用来存放传递给iframe页面的信息
 
     /* 角色权限设置 */
     function setRolePermission() {
@@ -492,26 +473,22 @@
         globalValiable = {};	
         globalValiable.roleId = treeNode.id;
         globalValiable.isRole2Resource = "1";
-        globalValiable.title = "设置角色【" + treeNode.name + "】对资源的权限";
+        var title = "设置角色【" + treeNode.name + "】对资源的权限";
 
-        $(ws.element).hide();
-        $("#authframe").show();
-        $1("authframe").setAttribute("src", "setpermission.html");
-    }
-    
-    /* 授予角色 */
-    function setRole2Permission() {
-        var treeNode = getActiveTreeNode();
-        globalValiable = {};
-        globalValiable.roleId = treeNode.id;
-        globalValiable.resourceType = "2";
-        globalValiable.applicationId = "tss";
-        globalValiable.isRole2Resource = "0";
-        globalValiable.title = "把【" + treeNode.name + "】作为资源授予角色";
+        var $panel = $("#permissionPanel");
+        if( !$panel.length ) {
+            var permissionPanel = $.createElement("div", "panel", "permissionPanel");
+            document.body.appendChild(permissionPanel);
 
-		$(ws.element).hide();
-        $("#authframe").show();
-        $1("authframe").setAttribute("src", "setpermission.html");
+            var $panel = $(permissionPanel);
+            $panel.css("width", "844px").css("height", "626px").center();
+            $panel.panel(title, '<iframe frameborder="0"></iframe>', false);
+            $panel.find("iframe").css("width", "100%").css("height", "100%");
+        }
+
+        $panel.find("h2").html(title);
+        $panel.find("iframe").attr("src", "setpermission.html");
+        $panel.show();
     }
 
     /* 综合查询(所有拥有指定角色的用户列表) */

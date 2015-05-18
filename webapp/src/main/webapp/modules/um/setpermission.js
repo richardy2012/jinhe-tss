@@ -9,7 +9,7 @@ URL_RESOURCE_TYPES  = AUTH_PATH + "role/resourceTypes/";         // {application
 URL_PERMISSION      = AUTH_PATH + "role/permission/matrix/";    // {permissionRank}/{isRole2Resource}/{roleId}
 URL_SAVE_PERMISSION = AUTH_PATH + "role/permission/";          // {permissionRank}/{isRole2Resource}/{roleId} POST
 
-if(window.parent == window.self) {
+if(IS_TEST) {
     URL_INIT            = "data/setpermission_init.xml?";
     URL_RESOURCE_TYPES  = "data/resourcetypeList.json?";
     URL_PERMISSION      = "data/setpermission.xml?";
@@ -24,7 +24,13 @@ function init() {
         params.resourceType = globalValiable.resourceType;
         params.applicationId = globalValiable.applicationId;
         params.isRole2Resource = globalValiable.isRole2Resource;
-        $(".box h2").html(globalValiable.title);
+
+        if(globalValiable.title) {
+            $(".box h2").html(globalValiable.title);
+        }
+        else {
+            $(".box h2").hide();
+        }
     }
 
     $.ajax({

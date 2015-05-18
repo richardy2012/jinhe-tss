@@ -89,12 +89,6 @@ function initMenus() {
 		icon: ICON + "icon_move.gif",
 		visible:function() {return isRecord() && getOperation("2");}
 	}
-	var item7 = {
-        label:"授予角色",
-        icon:"../um/" + ICON + "role_permission.gif",
-        callback:setRole2Permission,   
-        visible:function() {return getOperation("2");}
-    }
 
 	var menu = new $.Menu();
 	menu.addItem(item1);
@@ -106,7 +100,7 @@ function initMenus() {
 	menu.addItem(item5);
 	menu.addItem(item6);
 	menu.addSeparator();
-	menu.addItem(item7);
+	menu.addItem(createPermissionMenuItem("D2"));
 	
 	$1("tree").contextmenu = menu;
 }
@@ -232,9 +226,6 @@ function moveRecord() {
     });
 }		
 
-
-var globalValiable = {}; // 用来存放传递给iframe页面的信息
-
 function showRecord() {
 	var treeNode = getActiveTreeNode();
 
@@ -249,22 +240,6 @@ function showRecord() {
 	customizePage = customizePage || 'recorder.html';
 	$("#chatFrame").show().attr("src", customizePage);
 }  
-
-/* 授予角色 */
-function setRole2Permission() {
-    var treeNode = getActiveTreeNode();
-    globalValiable = {};
-    globalValiable.roleId = treeNode.id == '_root' ? "0" : treeNode.id;
-    globalValiable.resourceType = "D2";
-    globalValiable.applicationId = "tss";
-    globalValiable.isRole2Resource = "0";
-    globalValiable.title = "把【" + treeNode.name + "】作为资源授予角色";
-
-    $("#recordFormDiv").hide();
-    closeDefine();
-    
-    $("#chatFrame").show().attr("src", "../um/setpermission.html");
-}
 
 // -------------------------------------------------   配置数据录入表   ------------------------------------------------
 function configDefine() {

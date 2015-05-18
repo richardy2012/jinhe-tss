@@ -204,11 +204,7 @@
             };
 
             var inf = {};
-            if(editable) {
-				inf.label = OPERATION_EDIT.replace(/\$label/i, treeName);
-            } else {
-                inf.label = OPERATION_VIEW.replace(/\$label/i, treeName);
-            }
+            inf.label = (editable ? OPERATION_EDIT : OPERATION_VIEW).replace(/\$label/i, treeName);
 			inf.SID = treeID;
             inf.defaultPage = "page1";
             inf.callback = callback;
@@ -248,7 +244,7 @@
 
             var inf = {};
             inf.defaultPage = "page1";
-            inf.label = OPERATION_ADD.replace(/\$label/i,treeName);
+            inf.label = OPERATION_ADD.replace(/\$label/i, treeName);
             inf.phases = null;
             inf.callback = callback;
             inf.SID = $.now();
@@ -264,9 +260,12 @@
                 boolean:type                节点类型(0参数组/1参数/2参数项)
      */
     function loadTreeDetailData(treeID, editable, parentID, type, mode) {
-		var params = {};
-		params["type"] = type;
-		params["mode"] = mode || 0;
+        var paramInfoNode = $.cache.XmlDatas[treeID];
+        if(paramInfoNode) {
+            return initForm();
+        }
+
+		var params = {"type": type, "mode": mode || 0};
 		if(treeID) {
 		    params["paramId"] = treeID;			
 		} else {
@@ -278,25 +277,27 @@
 			method : "POST",
 			params : params,
 			onresult : function() { 
-				var paramInfoNode = this.getNodeValue(XML_PARAM_INFO);
+				paramInfoNode = this.getNodeValue(XML_PARAM_INFO);
 				$.cache.XmlDatas[treeID] = paramInfoNode;
-				
-				var form = $.F("page1Form", paramInfoNode);
-				form.setEditable(editable ? "true" : "false");
-
-				attachReminder(treeID, form); // 离开提醒
-	 
-                if(!editable) {
-                    $("#page1BtSave").hide();
-                }
-                else {
-                    $("#page1BtSave").show();
-                }
-				$("#page1BtSave").click( function() {
-					saveParam(treeID, parentID, type);
-				} );
+				initForm();
 			}
 		});
+
+        function initForm() {
+            var form = $.F("page1Form", paramInfoNode);
+            form.setEditable(editable ? "true" : "false");
+
+            attachReminder(treeID, form); // 离开提醒
+ 
+            if(!editable) {
+                $("#page1BtSave").hide();
+            } else {
+                $("#page1BtSave").show();
+            }
+            $("#page1BtSave").click( function() {
+                saveParam(treeID, parentID, type);
+            } );
+        }
     }
 
     /*
@@ -323,11 +324,8 @@
 		detachReminder(cacheID); // 解除提醒
 
         request.onresult = function() {                  
-			var treeNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
-			appendTreeNode(parentID, treeNode);
-			ws.closeActiveTab();
+            afterSaveTreeNode(treeID, parentID);
         }
-
         request.onsuccess = function() { // 更新树节点名称
 			if("1" == type) {
 				var name = xform.getData("name");

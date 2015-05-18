@@ -24,7 +24,15 @@ function isReport() {
     return !isTreeRoot() && !isReportGroup();
 }
 
+function closeReportDefine() {
+    $("#reportParamsDiv").hide();
+    $("#ws").hide();
+}
+
 function showGridChart(displayUri, hiddenTree) {
+    closeReportDefine();
+    $(".body>.groove>table").show();
+
     if(displayUri) {
         $("#grid").hide();
         $("#gridTitle").hide();
@@ -40,8 +48,6 @@ function showGridChart(displayUri, hiddenTree) {
         $("#gridTitle .title").html("报表【" + getTreeNodeName() + "】查询结果");
     }
 }
-
-var globalValiable = {}; // 用来存放传递给iframe页面的信息
 
 function showReport() {
     var treeNode = getActiveTreeNode();
@@ -166,24 +172,26 @@ function getServiceUrl(treeID, displayUri) {
 }
 
 function createQueryForm(treeID, paramConfig, callback) {
-    if( $.cache.Variables["treeNodeID_SF"] == treeID && $.funcCompare($.cache.Variables["callback_SF"], callback) ) {
-        Element.show($1("searchFormDiv"));  // 如果上一次打开的和本次打开的是同一报表的查询框，则直接显示
+    var $panel = $("#searchFormDiv");
+    $panel.show();
+
+    // 如果上一次打开的和本次打开的是同一报表的查询框，则直接显示
+    if( $.cache.Variables["treeNodeID_SF"] == treeID && $.funcCompare($.cache.Variables["callback_SF"], callback) ) { 
         return;
     }
+
+    $panel.html("").panel("查询报表【" + getTreeNodeName() + "】", '<div id="searchForm"></div>');
 
     var buttonBox = [];
     buttonBox[buttonBox.length] = "        <TR>";
     buttonBox[buttonBox.length] = "          <TD colspan='2' height='46'><div class='buttonBox'>";
-    buttonBox[buttonBox.length] = "             <input type='button' class='btStrong' id='btSearch' value='查询'/> - ";
-    buttonBox[buttonBox.length] = "             <input type='button' class='btStrongL' id='btDownload' value='查询并导出'/> - ";
+    buttonBox[buttonBox.length] = "             <input type='button' class='btStrong' id='btSearch' value='查询'/>";
+    buttonBox[buttonBox.length] = "             <input type='button' class='btStrongL' id='btDownload' value='查询并导出'/>";
     buttonBox[buttonBox.length] = "             <input type='button' class='btWeak' id='btCloseSearchForm' value='关闭'/>";
     buttonBox[buttonBox.length] = "          </div></TD>";
     buttonBox[buttonBox.length] = "        </TR>";
 
     var searchForm = $.json2Form("searchForm", paramConfig, buttonBox.join(""));
-
-    Element.show($1("searchFormDiv"));
-    $("#reportName").html("查询报表【" + getTreeNodeName() + "】");
 
     $.cache.XmlDatas["searchFormXML"] = searchForm.template.sourceXML;
     $.cache.Variables["treeNodeID_SF"] = treeID;
@@ -208,6 +216,8 @@ function createQueryForm(treeID, paramConfig, callback) {
     $1("btCloseSearchForm").onclick = function () {
         $("#searchFormDiv").hide();
     }
+
+    $panel.show();
 }
 
 // ------------------------------------------------- 多级下拉选择联动 ------------------------------------------------

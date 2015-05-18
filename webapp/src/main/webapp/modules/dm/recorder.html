@@ -54,8 +54,9 @@ URL_GET_USER_HAS  = AUTH_PATH + "user/has";
 var recordId = 1, recordName = "数据录入", recordDefine, customizeJS, userGroups = [], userRoles = [];
 
 $(function() {
-    var globalValiable = window.parent.globalValiable;
-    if(globalValiable) {
+    
+    if( !IS_TEST ) {
+        var globalValiable = window.parent.globalValiable;
         recordId   = globalValiable.id;
         recordName = globalValiable.name;
 

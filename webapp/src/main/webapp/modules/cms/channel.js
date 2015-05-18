@@ -172,7 +172,7 @@
         }
 		submenu5.addItem(subitem5a);
         submenu5.addItem(subitem5b);
-
+ 
         var menu1 = new $.Menu();
 		menu1.addItem(item1);
         menu1.addItem(item2);
@@ -186,6 +186,8 @@
         menu1.addItem(item4);
 		menu1.addItem(item10);
 		menu1.addItem(item11);
+        
+        menu1.addItem(createPermissionMenuItem("3"));
 
         $1("tree").contextmenu = menu1;
 
@@ -276,14 +278,11 @@
         syncButton([ $1("channelFormSave")], request);
 
         request.onresult = function() { 
-			var treeNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
-			appendTreeNode("_root", treeNode);
-
+            afterSaveTreeNode(treeID, "_root");
 			$("#channelFormDiv").hide();
         }
         request.onsuccess = function() { 
-			modifyTreeNode(treeID, "name", xform.getData("name"));
-
+            afterSaveTreeNode(treeID, xform);
 			$("#channelFormDiv").hide();
         }
         request.send();
@@ -331,15 +330,11 @@
         syncButton([$1("channelFormSave")], request);
 
         request.onresult = function() { 
-			var treeNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
-			appendTreeNode(parentID, treeNode);
-
+			afterSaveTreeNode(treeID, parentID);
 			$("#channelFormDiv").hide();
         }
-        request.onsuccess = function() { // 更新树节点名称
-			var name = xform.getData("name");
-			modifyTreeNode(treeID, "name", name);
-
+        request.onsuccess = function() {
+			afterSaveTreeNode(treeID, xform);
 			$("#channelFormDiv").hide();
         }
         request.send();

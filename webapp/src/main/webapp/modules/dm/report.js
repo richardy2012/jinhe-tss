@@ -28,6 +28,7 @@ if(IS_TEST) {
 /* 页面初始化 */
 $(function() {
 	initMenus();
+	initWorkSpace();
 	initEvents();
 
 	loadInitData();
@@ -44,9 +45,9 @@ function initMenus() {
 		visible:function() {return isReport() && getOperation("1");}
 	}
 	var item10 = {
-		label:"查看",
+		label:"查看报表定义",
 		callback: function() {
-			loadReportDetail(false, true);
+			openReportDefine(false, true);
 		},
 		icon: ICON + "icon_view.gif",
 		visible:function() { return !isTreeRoot() && getOperation("1"); }
@@ -54,7 +55,7 @@ function initMenus() {
 	var item2 = {
 		label:"修改",
 		callback: function() {
-			loadReportDetail(false, false);
+			openReportDefine(false, false);
 		},
 		icon: ICON + "icon_edit.gif",
 		visible:function() { return !isTreeRoot() && getOperation("2"); }
@@ -62,7 +63,7 @@ function initMenus() {
 	var item3 = {
 		label:"新增报表",
 		callback: function() {
-			loadReportDetail(true, false, "1");
+			openReportDefine(true, false, "1");
 		},
 		icon: ICON + "report_0.gif",
 		visible:function() {return (isReportGroup() || isTreeRoot()) && getOperation("2");}
@@ -70,7 +71,7 @@ function initMenus() {
 	var item4 = {
 		label:"新增分组",
 		callback: function() {
-			loadReportDetail(true, false, "0");
+			openReportDefine(true, false, "0");
 		},
 		icon: ICON + "icon_folder_new.gif",
 		visible:function() {return (isReportGroup() || isTreeRoot()) && getOperation("2");}
@@ -117,17 +118,11 @@ function initMenus() {
 		icon: ICON + "schedule.gif",
 		visible:function() {return isReport() && getOperation("2");}
 	}
-    var item13 = {
-        label:"授予角色",
-        icon:"../um/" + ICON + "role_permission.gif",
-        callback:setRole2Permission,   
-        visible:function() {return getOperation("2");}
-    }
 
 	var menu = new $.Menu();
 	menu.addItem(item1);
 	menu.addSeparator();
-	// menu.addItem(item10);
+	menu.addItem(item10);
 	menu.addItem(item2);
 	menu.addItem(item3);
 	menu.addItem(item4);
@@ -140,7 +135,8 @@ function initMenus() {
 	menu.addSeparator();
 	menu.addItem(item11);
 	menu.addItem(item12);
-	menu.addItem(item13);
+	
+	menu.addItem(createPermissionMenuItem("D1"));
 	
 	$1("tree").contextmenu = menu;
 }
@@ -156,7 +152,7 @@ function loadInitData() {
 					showReport();
 				}
 				if( isReportGroup() && getOperation("2") ) {
-					loadReportDetail(false, false);
+					openReportDefine(false, false);
 				}
 			});
 		}
@@ -173,44 +169,69 @@ function loadInitData() {
 	$.ajax({url : URL_SOURCE_TREE, onresult : onresult});
 }
 
-function loadReportDetail(isCreate, readonly, type) { 
+function openReportDefine(isCreate, readonly, type) { 
 	var treeNode = $.T("tree").getActiveTreeNode();
 	var treeNodeID = treeNode.id;
+	var treeName = treeNode.name;
 	type = type || treeNode.getAttribute("type") ;
-	
-	$("#searchFormDiv").hide();
-	Element.show($1("reportFormDiv"));
-	
+
 	var params = {};
 	if( isCreate ) {
 		params["parentId"] = treeNodeID; // 新增
 		readonly = false;
+		treeName = "报表" + (type === "0" ? "组" : "");
 	} else {
 		params["reportId"] = treeNodeID; // 修改					
 	}
 
-	$1("sourceSave").disabled = readonly ? "true" : "";
+    var callback = {};
+    callback.onTabChange = function() {
+        setTimeout(function() {
+            loadReport(treeNodeID, type, params, readonly);
+        }, TIMEOUT_TAB_CHANGE);
+    };
+
+    var operation = readonly ? OPERATION_VIEW : (isCreate ? OPERATION_ADD : OPERATION_EDIT);
+    var inf = {};
+    inf.defaultPage = "page1";
+    inf.label = operation.replace(/\$label/i, treeName);
+    inf.callback = callback;
+    inf.SID = isCreate ? $.now() : treeNodeID;
+    var tab = ws.open(inf);
+}
+
+function loadReport(treeNodeID, type, params, readonly) {
+	$("#searchFormDiv").hide();
+	$(".body>.groove>table").hide();
+	$(ws).show();
+
+	var sourceInfoNode = $.cache.XmlDatas[treeNodeID];
+	if(sourceInfoNode) {
+		return initForm();	
+	}
+
+	function initForm() {
+		var xform = $.F("reportForm", sourceInfoNode);
+		if(readonly) {
+			$("#sourceSave").hide();
+			xform.setEditable("false");
+		} 
+		else {
+			$("#sourceSave").click(function() { saveReport(treeNodeID); });
+		}	
+		$("#sourceClose").click(function() { ws.closeActiveTab(); });
+	}
 
 	$.ajax({
 		url : URL_SOURCE_DETAIL + "/" + type,
 		params : params,
-		onresult : function() { 
-			var sourceInfoNode = this.getNodeValue(XML_SOURCE_INFO);
+		onresult : function() {
+			sourceInfoNode = this.getNodeValue(XML_SOURCE_INFO);
 			$.cache.XmlDatas[treeNodeID] = sourceInfoNode;
-			
-			$1("reportForm").editable = readonly ? "false" : "true";
-			var xform = $.F("reportForm", sourceInfoNode);
-		
-			// 设置保存/关闭按钮操作
-			$1("closeReportForm").onclick = function() {
-				closeReportFormDiv();
-			}
-			$1("sourceSave").onclick = function() {
-				saveReport(treeNodeID);
-			}
+			initForm();
 		},
 		onexception : function() { 
-			closeReportFormDiv();
+			closeReportDefine();
 		}
 	});
 }
@@ -231,22 +252,17 @@ function saveReport(treeNodeID) {
 	request.onresult = function() { // 新增结果返回              
 		var xmlNode = this.getNodeValue(XML_SOURCE_TREE).querySelector("treeNode");
 		appendTreeNode(treeNodeID, xmlNode);
-		closeReportFormDiv();
+		closeReportDefine();
 	}
 	request.onsuccess = function() { // 更新
 		modifyTreeNode(treeNodeID, "name", xform.getData("name"));
 		modifyTreeNode(treeNodeID, "param", xform.getData("param"));
 		modifyTreeNode(treeNodeID, "displayUri", xform.getData("displayUri"));
 		
-		closeReportFormDiv();
+		closeReportDefine();
 		delete $.cache.Variables["treeNodeID_SF"];
 	}
 	request.send();
-}
-
-function closeReportFormDiv() {
-	$("#reportParamsDiv").hide();
-	$("#reportFormDiv").hide();
 }
 
 function deleteReport()  { delTreeNode(URL_DELETE_SOURCE); }
@@ -368,8 +384,8 @@ function scheduleReport() {
 		}
 	});
 
-	Element.show($1("scheduleFormDiv"));
-	$("#reportName2").html("报表【" + treeNode.name + "】定时邮件配置");
+	$("#scheduleFormDiv").show(true);
+	$("#scheduleFormDiv").find("h3").html("报表【" + treeNode.name + "】定时邮件配置");
 	
 	$1("scheduleSave").onclick = function () { 
 		if( scheduleForm.checkForm() ) {
@@ -604,19 +620,6 @@ function saveConfigParams() {
 
 	var formatResult = JSON.stringify(result).replace(/\"/g, "'").replace(/\{'label/g, "\n  {'label");
 	$.F("reportForm").updateDataExternal("param", formatResult.replace(/\}]/g, "}\n]"));
-}
-
-/* 授予角色 */
-function setRole2Permission() {
-    var treeNode = getActiveTreeNode();
-    globalValiable = {};
-    globalValiable.roleId = treeNode.id == '_root' ? "0" : treeNode.id;
-    globalValiable.resourceType = "D1";
-    globalValiable.applicationId = "tss";
-    globalValiable.isRole2Resource = "0";
-    globalValiable.title = "把【" + treeNode.name + "】作为资源授予角色";
-
-	showGridChart("../um/setpermission.html", false);
 }
 
 function selectTL() {

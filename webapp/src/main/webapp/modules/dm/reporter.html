@@ -16,6 +16,18 @@
 <script language="javascript" src="reporter.js"></script>
 <script language="javascript" src="customize.js"></script>
 
+<style>
+
+.Formbox { display:none; background-color:#BEC6EE; border:1px solid #416371; border-radius: 5px; }
+
+#searchFormDiv { max-width: 600px; max-height: 450px; top: 100px; left: 250px; }
+#searchFormDiv .content { padding: 5px; overflow: auto; }
+#searchFormDiv .buttonBox { margin: 0 auto; text-align: center; }
+#searchFormDiv .buttonBox input { margin-left: 12px;  }
+#searchFormDiv .max, #searchFormDiv .min { display: none; }
+  
+</style>
+
 <script type="text/javascript">
  
 URL_SOURCE_TREE = AUTH_PATH + "rp/my";
@@ -49,15 +61,6 @@ function loadInitData() {
 } 
 
 </script>
-
-<style>
-
-  .Formbox { display:none; background-color:#BEC6EE; border:1px solid #416371; border-radius: 5px; }
-
-  #searchFormDiv { width:500px; height:450px; font-size: 12px; padding: 10px; overflow: auto; }
-  #searchFormDiv .buttonBox { margin: 20px 10px 10px 55px;  }
-  
-</style>
 
 </head>
 
@@ -98,10 +101,7 @@ function loadInitData() {
   <tr class="footer"> <td/><td/><td/><td/> </tr>
 </table>
  
-<div id="searchFormDiv" class="Formbox">
-	<h3 id="reportName"></h3>
-	<div id="searchForm"></div>
-</div>
+<div id="searchFormDiv" class="panel"></div>
 
 <iframe id="downloadFrame" style="display:none"></iframe>
 

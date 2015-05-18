@@ -204,23 +204,28 @@ function editComponentInfo() {
 
 function loadTreeDetailData(treeID, parentID) {
 	if(treeID == null) return;
-	
+    var componentInfo = $.cache.XmlDatas[treeID];
+
+    if(componentInfo) {
+        return initForm();
+    }
+
 	$.ajax({
 		url: URL_SOURCE_DETAIL +　parentID + "/" + treeID,
 		onresult: function() {
-			var componentInfoNode = this.getNodeValue(XML_SOURCE_DETAIL);
-			preProcessXml(componentInfoNode);
-			$.cache.XmlDatas[treeID] = componentInfoNode;
+			componentInfo = this.getNodeValue(XML_SOURCE_DETAIL);
+			preProcessXml(componentInfo);
 
-			var page1Form = $.F("page1Form", componentInfoNode);
-			attachReminder(treeID, page1Form);
-
-			// 设置保存按钮操作
-			$1("page1BtSave").onclick = function() {
-				saveComponent(treeID, parentID);
-			}
+			$.cache.XmlDatas[treeID] = componentInfo;
+            initForm();
 		}
 	});
+
+    function initForm() {
+        var page1Form = $.F("page1Form", componentInfo);
+        attachReminder(treeID, page1Form);
+        $("#page1BtSave").click(function() { saveComponent(treeID, parentID); });
+    }
 }
 
 /* 预解析definition，分别设置到script,style,html,events和parameters上 */
@@ -272,8 +277,8 @@ function saveComponent(treeID, parentID) {
     request.url = URL_SOURCE_SAVE;
 
 	//修饰基本信息
-	var componentInfoNode = $.cache.XmlDatas[treeID];
-	var dataNode = componentInfoNode.querySelector("data");
+	var componentInfo = $.cache.XmlDatas[treeID];
+	var dataNode = componentInfo.querySelector("data");
 	dataNode = dataNode.cloneNode(true);
 
 	var rowNode = dataNode.querySelector("row");
@@ -346,25 +351,14 @@ function saveComponent(treeID, parentID) {
 
 	request.setFormContent(dataNode);
     
-	//同步按钮状态
+	// 同步按钮状态
     syncButton([ $1("page1BtSave") ], request);
 
     request.onresult = function() {
-		detachReminder(treeID); // 解除提醒
-
-		var xmlNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
-		appendTreeNode(parentID, xmlNode);
-
-		ws.closeActiveTab();
+        afterSaveTreeNode(treeID, parentID);
     }
     request.onsuccess = function() {
-		detachReminder(treeID); // 解除提醒
-
-		//更新树节点名称
-		var name = page1Form.getData("name");
-		modifyTreeNode(treeID, "name", name);
-
-		ws.closeActiveTab();
+        afterSaveTreeNode(treeID, page1Form);
     }
     request.send();
 }

@@ -31,11 +31,11 @@ public class _MySQL extends _Database {
 				createDDL.append( " date " ); 
 			}
 			else {
-				int height = 255;
+				int length = 255;
 				if( !EasyUtils.isNullOrEmpty(_height) ) {
-					height = Math.max(1, Integer.parseInt(_height.replace("px", ""))/18) * 255;
+					length = Math.max(1, Integer.parseInt(_height.replace("px", ""))/18) * 255;
 				}
-				createDDL.append( " varchar(" + height + ") " ); 
+				createDDL.append( " varchar(" + length + ") " ); 
 			}
 			
 			if("false".equals(nullable)) {

@@ -19,14 +19,18 @@
 
 <style>
 
-  .Formbox { display:none; background-color:#BEC6EE; border:1px solid #416371; border-radius: 5px; }
+.Formbox { display:none; background-color:#BEC6EE; border:1px solid #416371; border-radius: 5px; }
 
-  #searchFormDiv { width:500px; height:450px; font-size: 12px; padding: 10px; overflow: auto; }
-  #searchFormDiv .buttonBox { margin: 20px 10px 10px 55px;  }
-  #searchFormDiv h3 { font-size: 120%; margin-bottom: 10px; }
-  
-  #reportFormDiv { width: 78%; height: 500; padding: 10px; }
-  #scheduleFormDiv { width: 50%; padding: 10px;}
+#searchFormDiv { max-width: 600px; max-height: 450px; top: 100px; left: 250px; }
+#searchFormDiv .content { padding: 5px; overflow: auto; }
+#searchFormDiv .buttonBox { margin: 0 auto; text-align: center; }
+#searchFormDiv .buttonBox input { margin-left: 12px;  }
+#searchFormDiv .max, #searchFormDiv .min { display: none; }
+
+#scheduleFormDiv { width: 50%; background-color:#fff; font-size: 13px; color: #999; position: absolute; top: 100px; left: 250px; }
+#scheduleFormDiv h3 { background:url(../../tools/tssJS/images/alert/title.gif) repeat-x 0px -2px;
+     height: 22px; color:#fff; padding: 2px 5px; font-size: 14px; }
+#scheduleForm { margin: 0 0 8px 8px; }
 
 #reportParamsDiv { width: 466px; height: 330px; padding: 5px; }
 #reportParamsDiv Tree, #reportParamsDiv form { background-color:#fff; display:inline-block; }
@@ -102,28 +106,26 @@ hr { height:4px; border:none; border-top: 1px dashed #555555; }
 			   <iframe id="chatFrame" style="display:none;width:100%;height:100%;" frameborder="0"></iframe>
 			</td>
 		  </tr>
-		</table>				
+		</table>	
+        <WorkSpace:Box id="ws" style="display:none">
+          <WorkSpace:Page id="page1">
+              <div id="reportForm"></div>
+              <WorkSpace:PageStep>
+                <input type="button" class="btStrong" value="保存" id="sourceSave"/> &nbsp;&nbsp;
+                <input type="button" class="btWeak" value="关闭" id="sourceClose"/>
+              </WorkSpace:PageStep>
+          </WorkSpace:Page>
+        </WorkSpace:Box>			
 	</td>
 	<td/>
   </tr>
   <tr class="footer"> <td/><td/><td/><td/> </tr>
 </table>
 
-<div id="reportFormDiv" class="dialog Formbox">
-	<div id="reportForm"></div>
-	<div class="bts">
-		<input type="button" class="btStrong" value="保存" id="sourceSave"/>
-		<input type="button" class="btWeak" value="关闭" id="closeReportForm"/>
-	</div>
-</div>
-
-<div id="searchFormDiv" class="Formbox">
-	<h3 id="reportName"></h3>
-	<div id="searchForm"></div>
-</div>
+<div id="searchFormDiv" class="panel"></div>
 
 <div id="scheduleFormDiv" class="dialog Formbox">
-	<h3 id="reportName2"></h3>
+	<h3></h3>
 	<div id="scheduleForm"></div>
 	<div class="bts">
 		<input type="button" class="btStrong" value="保存" id="scheduleSave"/>

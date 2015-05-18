@@ -1,7 +1,7 @@
 
 /*********************** 系统配置 开始 **********************************/
  var
-	IS_TEST = false,
+	IS_TEST = (location.protocol === 'file:'),
 
 	FROMEWORK_CODE = "TSS",    /* 当前框架名 */
 	APP_CODE       = "TSS";    /* 当前应用名 */
@@ -204,6 +204,45 @@ function checkOperation(code, _operation) {
 		flag = reg.test(_operation);
 	}
 	return flag;
+}
+
+var globalValiable = {};  // 用来存放传递给iframe页面的信息
+
+/* 授予角色 */
+function setRole2Permission(resourceType, rootId) {
+    var treeNode = getActiveTreeNode();
+    globalValiable = {};
+    globalValiable.roleId = treeNode.id == '_root' ? (rootId || "0") : treeNode.id;
+    globalValiable.resourceType = resourceType;
+    globalValiable.applicationId = "tss";
+    globalValiable.isRole2Resource = "0";
+    var title = "把【" + treeNode.name + "】作为资源授予角色";
+
+    var $panel = $("#permissionPanel");
+    if( !$panel.length ) {
+    	var permissionPanel = $.createElement("div", "panel", "permissionPanel");
+    	document.body.appendChild(permissionPanel);
+    	
+    	var $panel = $(permissionPanel);
+    	$panel.css("width", "844px").css("height", "626px").center();
+	    $panel.panel(title, '<iframe frameborder="0"></iframe>', false);
+	    $panel.find("iframe").css("width", "100%").css("height", "100%");
+    }
+
+    $panel.find("h2").html(title);
+    $panel.find("iframe").attr("src", "../um/setpermission.html");
+    $panel.show();
+}
+
+function createPermissionMenuItem(resourceType, operation) {
+	return {
+        label:"授予角色",
+        icon:"../um/images/role_permission.gif",
+        callback:function() { 
+            setRole2Permission(resourceType); 
+        },   
+        visible:function() { return getOperation(operation || "2"); }
+    };
 }
 
 /* request请求期间，同步按钮禁止/允许状态 */
@@ -433,6 +472,22 @@ function getTreeNodeIds(xmlNode) {
 		}
 	});
 	return idArray;
+}
+
+function afterSaveTreeNode(treeID, X) {
+	if(X.getData) { // 更新树节点名称
+		var name = X.getData("name");
+		modifyTreeNode(treeID, "name", name); 
+	} 
+	else { // 往资源树上动态添加新增的节点
+		var xmlNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
+		appendTreeNode(X, xmlNode);  
+	}
+
+	ws && ws.closeActiveTab(); // 关闭资源tab页，以免重复保存的时候报乐观锁。界面上缓存的lockVersion值没有及时更新
+
+    delete $.cache.XmlDatas[treeID]; // 清除缓存
+    detachReminder(treeID); // 解除提醒
 }
 
 /* 根据条件将部分树节点设置为不可选状态 */

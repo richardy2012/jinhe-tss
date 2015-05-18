@@ -137,6 +137,8 @@ function initMenus() {
 	menu1.addItem(item12);
     menu1.addItem(item13);
 
+    menu1.addItem(createPermissionMenuItem("5"));
+
     $1("tree").contextmenu = menu1;
 }
 
@@ -221,47 +223,47 @@ function loadMenuDetailData(treeID, type, parentId, portalId) {
 		params.portalId = portalId;
 	}
 
+    var menuInfoNode = $.cache.XmlDatas[treeID];
+    if(menuInfoNode) {
+        return initForm();
+    }
+
 	$.ajax({
 		url: URL_SOURCE_DETAIL + treeID,
 		params: params,
 		onresult: function() {
-			var menuInfoNode = this.getNodeValue(XML_MENU_INFO);
-			$.cache.XmlDatas[treeID + "." + XML_MENU_INFO] = menuInfoNode;
-
-			var page1Form = $.F("page1Form", menuInfoNode);
-
-			$1("page1BtSave").onclick = function() {
-				saveMenu(treeID, parentId);
-			}
+			menuInfoNode = this.getNodeValue(XML_MENU_INFO);
+			$.cache.XmlDatas[treeID] = menuInfoNode;
+            initForm();
 		}
 	});
+
+    function initForm() {
+        $.F("page1Form", menuInfoNode);
+        $("#page1BtSave").click(function() {
+            saveMenu(treeID, parentId);
+        });
+    }
 }
 
-function saveMenu(cacheID, parentId) {
+function saveMenu(treeID, parentId) {
     var page1Form = $.F("page1Form");
     if( !page1Form.checkForm() )  return;
 
 	var request = new $.HttpRequest();
 	request.url = URL_SOURCE_SAVE;
 
-    var menuInfoNode = $.cache.XmlDatas[cacheID + "." + XML_MENU_INFO];
+    var menuInfoNode = $.cache.XmlDatas[treeID];
     var dataNode = menuInfoNode.querySelector("data");
 	request.setFormContent(dataNode);
 
     syncButton([$1("page1BtSave")], request); // 同步按钮状态
 
     request.onresult = function() {
-		var xmlNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
-		appendTreeNode(parentId, xmlNode);
-
-		ws.closeActiveTab();
+		afterSaveTreeNode(treeID, parentId);
     }
     request.onsuccess = function() {
-		// 更新树节点名称
-		var name = page1Form.getData("name");
-		modifyTreeNode(cacheID, "name", name);
-
-		ws.closeActiveTab();
+        afterSaveTreeNode(treeID, page1Form);
     }
     request.send();
 }

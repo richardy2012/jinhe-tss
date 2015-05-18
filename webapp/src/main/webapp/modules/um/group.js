@@ -204,6 +204,8 @@
         menu1.addSeparator();
         menu1.addItem(item12);
 
+        menu1.addItem(createPermissionMenuItem("1"));
+
         $1("tree").contextmenu = menu1;
     }
  
@@ -455,21 +457,10 @@
         syncButton([$1("page1BtSave"), $1("page4BtSave"), $1("page3BtSave")], request);
 
         request.onresult = function() {
-			detachReminder(treeID); // 解除提醒
-
-			var xmlNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
-			appendTreeNode(parentID, xmlNode);
-
-			ws.closeActiveTab();
+            afterSaveTreeNode(treeID, parentID);
         }
         request.onsuccess = function() {
-			detachReminder(treeID); // 解除提醒
-
-			// 更新树节点名称
-			var name = page1Form.getData("name");
-			modifyTreeNode(treeID, "name", name);
-
-			ws.closeActiveTab(); // 先关掉，以免重复保存的时候报乐观锁。界面上缓存的lockVersion值没有及时更新
+            afterSaveTreeNode(treeID, page1Form);
         }
         request.send();
     }
@@ -683,7 +674,6 @@
 		syncButton([$1("page1BtSave"), $1("page2BtSave"), $1("page3BtSave")], request);
 
 		request.onsuccess = function(){
-			// 解除提醒
 			detachReminder(page1Form.box.id);
 
 			// 如果当前grid显示为此用户所在组，则刷新grid
