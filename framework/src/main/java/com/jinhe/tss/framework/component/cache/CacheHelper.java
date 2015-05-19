@@ -26,5 +26,4 @@ public class CacheHelper {
 	public static Pool getNoDeadCache() {
 		return JCache.getInstance().getPool(CacheLife.NODEAD.toString());
 	}
-
 }

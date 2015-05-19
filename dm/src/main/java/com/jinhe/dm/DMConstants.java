@@ -54,6 +54,13 @@ public final class DMConstants {
 		return ds;
 	}
 	
+	public static String getDefaultDS() {
+    	// ParamManager.getValue 有缓存，不宜用。（单元测试环节或自动切换数据源时容易出问题）
+        // String datasource = ParamManager.getValue(DEFAULT_CONN_POOL).trim();
+        String datasource = ParamManager.getValueNoSpring(DEFAULT_CONN_POOL).trim();
+        return datasource;
+    }
+	
 	static Pattern cnPattern = Pattern.compile("[\u4e00-\u9fa5]");
 	public static boolean hasCNChar(String str) {
 		return cnPattern.matcher(str).find();

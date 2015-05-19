@@ -20,10 +20,10 @@ import java.util.StringTokenizer;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
+import com.jinhe.dm.DMConstants;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
-import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
@@ -31,8 +31,6 @@ import com.jinhe.tss.util.XMLDocUtil;
 public class SQLExcutor {
 
     static Logger log = Logger.getLogger(SQLExcutor.class);
-    
-    final static String DEFAULT_CONN_POOL =  "default_conn_pool";
     
     /**
      * 自己解析SQL语句的select字段。Oracle会自动把字段转成大写，容易混乱
@@ -128,6 +126,23 @@ public class SQLExcutor {
     public void excuteQuery(String sql) {
         excuteQuery(sql, new HashMap<Integer, Object>(), 0, 0);
     }
+ 
+    public void excuteQuery(String sql, String dataSource, Object...params) {
+    	Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
+    	if(params != null) {
+        	int index = 1;
+        	for(Object param : params) {
+        		paramsMap.put(index++, param);
+        	}
+        }
+        excuteQuery(sql, paramsMap, 0, 0, dataSource);
+    }
+ 
+    public static List<Map<String, Object>> query(String dataSource, String sql, Object...params) {
+    	SQLExcutor ex = new SQLExcutor(false);
+		ex.excuteQuery(sql, dataSource, params);
+		return ex.result;
+    }
     
     public void excuteQuery(String sqlCollection, int index, Map<Integer, Object> paramsMap) {
     	String sql = SqlConfig.getScript(sqlCollection, index);
@@ -137,12 +152,9 @@ public class SQLExcutor {
     public void excuteQuery(String sql, Map<Integer, Object> paramsMap) {
         excuteQuery(sql, paramsMap, 0, 0);
     }
-
+ 
     public void excuteQuery(String sql, Map<Integer, Object> paramsMap, int page, int pagesize) {
-        // ParamManager.getValue 有缓存，不宜用。（单元测试环节或自动切换数据源时容易出问题）
-        // String datasource = ParamManager.getValue(DEFAULT_CONN_POOL).trim();
-        String datasource = ParamManager.getValueNoSpring(DEFAULT_CONN_POOL).trim();
-        excuteQuery(sql, paramsMap, page, pagesize, datasource);
+        excuteQuery(sql, paramsMap, page, pagesize, DMConstants.getDefaultDS());
     }
 
     public void excuteQuery(String sql, Map<Integer, Object> paramsMap, String datasource) {

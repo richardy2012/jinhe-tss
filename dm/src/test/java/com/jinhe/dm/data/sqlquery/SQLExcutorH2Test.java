@@ -99,6 +99,10 @@ public class SQLExcutorH2Test {
 		ex = new SQLExcutor();
 		ex.excuteQuery("select id, name from x_group", DMConstants.LOCAL_CONN_POOL);
 		Assert.assertTrue(ex.result.size() > 10);
+		
+		String sql = "select id, name from x_group where description = ?";
+		List<Map<String, Object>> rerult = SQLExcutor.query(DMConstants.LOCAL_CONN_POOL, sql, "test");
+		Assert.assertTrue(rerult.size() == 9);
 	}
 	
 	public class TempSO extends AbstractSO {

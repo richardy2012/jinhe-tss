@@ -10,7 +10,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,75 +49,22 @@ public class CacheDisplayAction extends BaseActionSupport {
     private static JCache cache = JCache.getInstance();
     
     @Autowired ParamService paramService;
-    
-    private static boolean hasInited = false;
- 
-    /**
-     * 检查是否有缓存相关的配置存在于系统参数中，有的话对其单独加载
-     */
-    @RequestMapping(value = "/init", method = RequestMethod.POST)
-    public void init() {
-    	if(hasInited) return;
-    	
-    	Param cacheParamGroup = paramService.getParam(CacheHelper.CACHE_PARAM);
-    	if(cacheParamGroup == null) {
-    		initCacheParamGroup();
-    		return;
-    	}
-    	
-    	hasInited = true;
-    	
-    	List<Param> cacheParams = paramService.getParamsByParentCode(CacheHelper.CACHE_PARAM);
-    	for(Param item : cacheParams) {
-    		String cacheCode   = item.getCode();
-    		String cacheConfig = item.getValue();
-    		CacheStrategy strategy = refreshCacheStrategy(cacheCode, cacheConfig);
-    		if(strategy != null) {
-    			CacheStrategy newStrategy = new CacheStrategy();
-        		BeanUtil.copy(newStrategy, strategy);
-        		JCache.pools.put(cacheCode, newStrategy.getPoolInstance()); 
-    		}
-    	}
-    }
-    
-    private Param initCacheParamGroup() {
-    	Param param = new Param();
-        param.setName("缓存池配置");
-        param.setCode(CacheHelper.CACHE_PARAM);
-        param.setParentId(ParamConstants.DEFAULT_PARENT_ID);
-        param.setType(ParamConstants.GROUP_PARAM_TYPE);
-		return paramService.saveParam(param);
-    }
-    
-    private CacheStrategy refreshCacheStrategy(String cacheCode, String newConfig) {
-    	Pool pool = cache.getPool(cacheCode);
-    	if(pool == null) {
-    		return null;
-    	}
-    	
-		CacheStrategy strategy = pool.getCacheStrategy();
-    	try {  
-  			ObjectMapper objectMapper = new ObjectMapper();
-  			
-  			@SuppressWarnings("unchecked")
-			Map<String, String> attrsMap = objectMapper.readValue(newConfig, Map.class);
-			BeanUtil.setDataToBean(strategy, attrsMap);
-		} catch (Exception e) {  
-			log.error("CACHE_PARAM【" + cacheCode + "】的参数配置有误。\n" + newConfig, e);
-  	    } 
-    	return strategy;
-    }
+    @Autowired PCache pcache;
     
     @RequestMapping(method = RequestMethod.POST)
     public void modifyCacheConfig(HttpServletResponse response, String cacheCode, String jsonData) {
-		CacheStrategy strategy = refreshCacheStrategy(cacheCode, jsonData);
-		cache.getPool(cacheCode).setCacheStrategy(strategy);
+		PCache.rebuildCache(cacheCode, jsonData);
 		
 		// 将更新信息保存到系统参数模块
 		Param cacheParamGroup = paramService.getParam(CacheHelper.CACHE_PARAM);
 		if(cacheParamGroup == null) {
-			cacheParamGroup = initCacheParamGroup();
-    	}
+	    	Param param = new Param();
+	        param.setName("缓存池配置");
+	        param.setCode(CacheHelper.CACHE_PARAM);
+	        param.setParentId(ParamConstants.DEFAULT_PARENT_ID);
+	        param.setType(ParamConstants.GROUP_PARAM_TYPE);
+	        cacheParamGroup = paramService.saveParam(param);
+		}
 		
 		Param cacheParam = null;
 		List<Param> cacheParams = paramService.getParamsByParentCode(CacheHelper.CACHE_PARAM);
@@ -131,7 +77,7 @@ public class CacheDisplayAction extends BaseActionSupport {
 		if(cacheParam == null) {
 			cacheParam = new Param();
 			cacheParam.setCode(cacheCode);
-			cacheParam.setName(strategy.getName());
+			cacheParam.setName(cache.getPool(cacheCode).getCacheStrategy().getName());
 			cacheParam.setParentId(cacheParamGroup.getId());
 			cacheParam.setType(ParamConstants.NORMAL_PARAM_TYPE);
 			cacheParam.setModality(ParamConstants.SIMPLE_PARAM_MODE);
@@ -174,7 +120,6 @@ public class CacheDisplayAction extends BaseActionSupport {
     
     @RequestMapping("/grid")
     public void getPoolsGrid(HttpServletResponse response) {
-    	init();
     	
     	List<IGridNode> dataList = new ArrayList<IGridNode>();
     	 
@@ -184,20 +129,21 @@ public class CacheDisplayAction extends BaseActionSupport {
             CacheStrategy strategy = pool.getCacheStrategy();
             
             DefaultGridNode gridNode = new DefaultGridNode();
-            gridNode.getAttrs().put("code", entry.getKey());
-            gridNode.getAttrs().put("name", pool.getName());
-            gridNode.getAttrs().put("accessMethod", strategy.getAccessMethod());
-            gridNode.getAttrs().put("disabled", strategy.getDisabled());
-            gridNode.getAttrs().put("cyclelife", strategy.getCyclelife());
-            gridNode.getAttrs().put("interruptTime", strategy.getInterruptTime());
-            gridNode.getAttrs().put("poolSize", strategy.getPoolSize());
-            gridNode.getAttrs().put("initNum", strategy.getInitNum());
-            gridNode.getAttrs().put("requests", pool.getRequests());
-            gridNode.getAttrs().put("hitrate", Math.round(pool.getHitRate()) + "%");
+            Map<String, Object> attrs = gridNode.getAttrs();
+			attrs.put("code", entry.getKey());
+            attrs.put("name", pool.getName());
+            attrs.put("accessMethod", strategy.getAccessMethod());
+            attrs.put("disabled", strategy.getDisabled());
+            attrs.put("cyclelife", strategy.getCyclelife());
+            attrs.put("interruptTime", strategy.getInterruptTime());
+            attrs.put("poolSize", strategy.getPoolSize());
+            attrs.put("initNum", strategy.getInitNum());
+            attrs.put("requests", pool.getRequests());
+            attrs.put("hitrate", Math.round(pool.getHitRate()) + "%");
             
             if(pool instanceof AbstractPool) {
-            	gridNode.getAttrs().put("freeItemNum", ((AbstractPool)pool).getFree().size());
-            	gridNode.getAttrs().put("busyItemNum", ((AbstractPool)pool).getUsing().size());
+            	attrs.put("freeItemNum", ((AbstractPool)pool).getFree().size());
+            	attrs.put("busyItemNum", ((AbstractPool)pool).getUsing().size());
             }
             
             dataList.add(gridNode);

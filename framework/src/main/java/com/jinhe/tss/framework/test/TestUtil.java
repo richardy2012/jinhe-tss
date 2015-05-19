@@ -7,11 +7,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.jinhe.tss.cache.Cacheable;
+import com.jinhe.tss.cache.JCache;
+import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.component.log.LogQueryCondition;
 import com.jinhe.tss.framework.component.log.LogService;
 import com.jinhe.tss.framework.persistence.IDao;
-import com.jinhe.tss.framework.persistence.connpool.DBHelper;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
@@ -53,7 +55,10 @@ public class TestUtil {
     public static void excuteSQL(String sqlDir, boolean isTSS) {  
         log.info("正在执行目录：" + sqlDir+ "下的SQL脚本。。。。。。");  
         try {  
-            Connection conn = DBHelper.getConnection();
+        	Pool connectionPool = JCache.getInstance().getConnectionPool();
+    		Cacheable connItem = connectionPool.checkOut(0);
+    		Connection conn = (Connection) connItem.getValue();
+    		
             Statement stat = conn.createStatement();  
             
             List<File> sqlFiles = FileHelper.listFilesByTypeDeeply(".sql", new File(sqlDir));

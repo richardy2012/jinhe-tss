@@ -99,7 +99,7 @@ public class CacheStrategy {
 	public String paramFile;
 
 	/** 缓存策略的名称 */
-	Pool pool; // 缓存策略里定义的缓存池
+	public Pool pool; // 缓存策略里定义的缓存池
 
 	public Pool getPoolInstance() {
 		if (pool != null && pool.getCacheStrategy().equals(this)) {

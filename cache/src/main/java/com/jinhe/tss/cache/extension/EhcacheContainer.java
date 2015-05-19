@@ -35,8 +35,11 @@ public class EhcacheContainer extends AbstractContainer {
 	public EhcacheContainer(String name) {
 		super(name);
 		try {
-			CacheManager.getInstance().addCache(name);
 			cache = CacheManager.getInstance().getCache(name);
+			if(cache == null) {
+				CacheManager.getInstance().addCache(name);
+				cache = CacheManager.getInstance().getCache(name);
+			}
 		} catch (Exception e) {
 			log.error("pool use EhcacheContainer error", e);
 		}

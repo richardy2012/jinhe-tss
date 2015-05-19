@@ -10,6 +10,7 @@
 package com.jinhe.tss.framework.persistence.connpool;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +27,6 @@ import com.jinhe.tss.util.ConfigurableContants;
 /**
  * 管理数据库连接的provider，以及创建或释放掉连接.
  * 如果连接池定义了自己的数据源信息，则采用；否则从默认的系统配置文件里加载。
- * 
  */
 public class _Connection extends ConfigurableContants {
 
@@ -34,27 +34,26 @@ public class _Connection extends ConfigurableContants {
 
 	private IConnectionProvider provider;
 	
-	Properties dbProperties;
-	
 	/**
 	 * 如果配置的是数据源，则优先从数据源获取连接；否则手动创建一个连接。
 	 */
-	private _Connection(String propertiesFile) {
-	    dbProperties = init(propertiesFile);
-	    
-		if (dbProperties.getProperty(Environment.DATASOURCE) != null) {
-			provider = new DatasourceConnectionProvider();
-		} else {
-			provider = new DriverManagerConnectionProvider();
+	private _Connection(String propertiesX) {
+		if(propertiesX.endsWith(".properties")) {
+			Properties dbProperties = super.init(propertiesX);
+		    
+			if (dbProperties.getProperty(Environment.DATASOURCE) != null) {
+				provider = new DatasourceConnectionProvider(dbProperties);
+			} else {
+				provider = new DriverManagerConnectionProvider(dbProperties);
+			}
+		}
+		else {
+			provider = new DriverManagerConnectionProvider(propertiesX);
 		}
 	}
 
 	static Map<String, _Connection> _connectionMap = new HashMap<String, _Connection>();
-
-	public static _Connection getInstanse() {
-		return getInstanse(DEFAULT_PROPERTIES);
-	}
-	
+ 
     public static _Connection getInstanse(String propertiesFile) {
         if(propertiesFile == null) {
             propertiesFile = DEFAULT_PROPERTIES;
@@ -68,7 +67,7 @@ public class _Connection extends ConfigurableContants {
     }
 
 	public Connection getConnection() {
-		return provider.getConnection(dbProperties);
+		return provider.getConnection();
 	}
 
 	public void releaseConnection(Connection conn) {
@@ -82,8 +81,9 @@ public class _Connection extends ConfigurableContants {
 		}
 	}
  
+	/*************************************** 获取连接接口  ***************************/
 	interface IConnectionProvider {
-		Connection getConnection(Properties p);
+		Connection getConnection();
 	}
 
 	/**
@@ -95,7 +95,14 @@ public class _Connection extends ConfigurableContants {
 	 * </pre>
 	 */
 	static class DatasourceConnectionProvider implements IConnectionProvider {
-		public Connection getConnection(Properties p) {
+		
+		Properties p;
+		
+		public DatasourceConnectionProvider(Properties p) {
+			this.p = p;
+		}
+		
+		public Connection getConnection() {
 			try {
 				String user = p.getProperty(Environment.USER);
 				String pass = p.getProperty(Environment.PASS);
@@ -115,8 +122,33 @@ public class _Connection extends ConfigurableContants {
 	}
  
 	class DriverManagerConnectionProvider implements IConnectionProvider {
-		public Connection getConnection(Properties p) {
-			return DBHelper.getConnection(p);
+ 
+	    String driver, url, user, pwd;
+		
+		public DriverManagerConnectionProvider(Properties p) {
+			driver = p.getProperty("db.connection.driver_class");
+			url    = p.getProperty("db.connection.url");
+			user   = p.getProperty("db.connection.username");
+			pwd    = p.getProperty("db.connection.password");
+		}
+		
+		public DriverManagerConnectionProvider(String config) {
+			String[] infos = config.split(",");
+			driver = infos[0];
+			url    = infos[1];
+			user   = infos[2];
+			pwd    = infos[3];
+		}
+		
+		public Connection getConnection() {
+			Connection conn = null;
+	        try {
+	            Class.forName(driver);
+				conn = DriverManager.getConnection(url, user, pwd);
+	        } catch (Exception e) {
+	            throw new RuntimeException("创建数据库连接时候出错，url：" + url, e);
+	        } 
+	        return conn;
 		}
 	}
 }

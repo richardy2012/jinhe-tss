@@ -30,7 +30,7 @@ public class ConnPoolCustomizer extends DefaultCustomizer {
 		String cacheKey = TimeWrapper.createSequenceKey("Connection");
 		
 		// 包装新创建的Connection，赋予其生命周期。
-		return  new TimeWrapper(cacheKey, conn, strategy.cyclelife);
+		return new TimeWrapper(cacheKey, conn, strategy.cyclelife);
 	}
 
 	public boolean isValid(Cacheable o) {

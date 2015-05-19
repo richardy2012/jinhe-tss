@@ -69,7 +69,6 @@
 	URL_CACHE_EDIT   = NO_AUTH_PATH + "cache";
 	URL_CACHE_CLEAR  = NO_AUTH_PATH + "cache/release";
 	URL_CACHE_INIT   = NO_AUTH_PATH + "cache/init/";
-	URL_POOLs_INIT   = NO_AUTH_PATH + "cache/init";
 	URL_VIEW_ITEM    = NO_AUTH_PATH + "cache/item";
 	
 	if(IS_TEST) {
@@ -79,7 +78,6 @@
 		URL_CACHE_EDIT   = "data/_success.xml?";
 		URL_CACHE_CLEAR  = "data/_success.xml?";
 		URL_CACHE_INIT   = "data/_success.xml?";
-		URL_POOLS_INIT   = "data/_success.xml?";
 		URL_VIEW_ITEM    = "data/item.xml?";
 	}	
 	 
@@ -291,14 +289,6 @@
 				loadInitGrid();
 			}
 		});	
-	}
-	
-	// 加载存储在param表里的缓存池配置信息（暂时没用到，如果以后需要在界面上触发加载操作，可调用本方法）
-	function initPools() {
-		$.ajax({
-			url : URL_POOLS_INIT,
-			method : "POST"
-		});
 	}
 
 	window.onload = init;

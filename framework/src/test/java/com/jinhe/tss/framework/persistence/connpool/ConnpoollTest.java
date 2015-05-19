@@ -28,9 +28,9 @@ public class ConnpoollTest {
 		
 		Assert.assertTrue(connpool.getCustomizer().isValid(connItem) == true);
 		
-		IConnectionProvider provider = new DatasourceConnectionProvider();
+		IConnectionProvider provider = new DatasourceConnectionProvider(new Properties());
 		try {
-			provider.getConnection(new Properties());
+			provider.getConnection();
 		} catch(Exception e) {
 		}
 	}

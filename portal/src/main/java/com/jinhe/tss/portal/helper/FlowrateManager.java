@@ -5,13 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.tss.cache.extension.workqueue.OutputRecordsManager;
-import com.jinhe.tss.framework.persistence.connpool.DBHelper;
 import com.jinhe.tss.framework.persistence.connpool.Output2DBTask;
 import com.jinhe.tss.portal.entity.FlowRate;
+import com.jinhe.tss.util.EasyUtils;
 
 /** 
  * <p> FlowrateManager.java </p> 
@@ -65,13 +68,21 @@ public class FlowrateManager extends OutputRecordsManager{
          * 则判定为是重复访问，不记流量。
          */
         private boolean checkIsTheSameVisitor(Connection conn, FlowRate temp) {
-            String sql = "select count(*) from portal_flowrate t " +
+            String sql = "select count(*) as num from portal_flowrate t " +
             		" where t.ip =? and t.pageId = ? and t.visitTime > ? ";
             
             String ip = temp.getIp();
 			Long pageId = temp.getPageId();
-			Date fromTime = new Date(System.currentTimeMillis() - 3*60*1000);
-			return DBHelper.executeCountSQL(conn, sql, ip, pageId, fromTime) > 0;
+			Date fromTime = new Date(System.currentTimeMillis() - 1*60*1000);
+			
+			SQLExcutor ex = new SQLExcutor(false);
+			Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
+			paramsMap.put(1, ip);
+			paramsMap.put(2, pageId);
+			paramsMap.put(3, fromTime);
+			ex.excuteQuery(sql, paramsMap, conn);
+			
+			return EasyUtils.obj2Int(ex.getFirstRow("num")) > 0;
         }
     }
 }
