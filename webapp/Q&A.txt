@@ -16,3 +16,14 @@
 打包注意：
 0、BtrBI的10.8.73.80机器安裝的是JDK6，打包只能用JDK1.6, 1.7會出錯  
    
+   
+{
+    "customizerClass": "com.jinhe.tss.framework.persistence.connpool.ConnPoolCustomizer",
+    "poolClass": "com.jinhe.tss.cache.extension.ReusablePool",
+    "code": "connpool-h2",
+    "name": "DB连接池-H2",
+    "cyclelife": "180000",
+    "paramFile": "org.h2.Driver,jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1,sa,123",
+    "interruptTime": "1000",
+    "poolSize": "10"
+}

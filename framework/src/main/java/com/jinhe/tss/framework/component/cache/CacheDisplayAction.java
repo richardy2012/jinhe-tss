@@ -49,21 +49,23 @@ public class CacheDisplayAction extends BaseActionSupport {
     private static JCache cache = JCache.getInstance();
     
     @Autowired ParamService paramService;
-    @Autowired PCache pcache;
     
+    /**
+     * 一般改的是池大小及等待时间等，只需更新pool对应的策略对象，无需重新生成pool对象。
+     */
     @RequestMapping(method = RequestMethod.POST)
     public void modifyCacheConfig(HttpServletResponse response, String cacheCode, String jsonData) {
 		PCache.rebuildCache(cacheCode, jsonData);
 		
 		// 将更新信息保存到系统参数模块
-		Param cacheParamGroup = paramService.getParam(CacheHelper.CACHE_PARAM);
-		if(cacheParamGroup == null) {
-	    	Param param = new Param();
-	        param.setName("缓存池配置");
-	        param.setCode(CacheHelper.CACHE_PARAM);
-	        param.setParentId(ParamConstants.DEFAULT_PARENT_ID);
-	        param.setType(ParamConstants.GROUP_PARAM_TYPE);
-	        cacheParamGroup = paramService.saveParam(param);
+		Param cacheGroup = paramService.getParam(CacheHelper.CACHE_PARAM);
+		if(cacheGroup == null) {
+			cacheGroup = new Param();
+			cacheGroup.setName("缓存池配置");
+			cacheGroup.setCode(CacheHelper.CACHE_PARAM);
+			cacheGroup.setParentId(ParamConstants.DEFAULT_PARENT_ID);
+			cacheGroup.setType(ParamConstants.GROUP_PARAM_TYPE);
+	        paramService.saveParam(cacheGroup);
 		}
 		
 		Param cacheParam = null;
@@ -78,7 +80,7 @@ public class CacheDisplayAction extends BaseActionSupport {
 			cacheParam = new Param();
 			cacheParam.setCode(cacheCode);
 			cacheParam.setName(cache.getPool(cacheCode).getCacheStrategy().getName());
-			cacheParam.setParentId(cacheParamGroup.getId());
+			cacheParam.setParentId(cacheGroup.getId());
 			cacheParam.setType(ParamConstants.NORMAL_PARAM_TYPE);
 			cacheParam.setModality(ParamConstants.SIMPLE_PARAM_MODE);
 		}

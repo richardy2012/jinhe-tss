@@ -54,11 +54,12 @@ public class TestUtil {
     
     public static void excuteSQL(String sqlDir, boolean isTSS) {  
         log.info("正在执行目录：" + sqlDir+ "下的SQL脚本。。。。。。");  
+        
+        Pool connectionPool = JCache.getInstance().getConnectionPool();
+		Cacheable connItem = connectionPool.checkOut(0);
+		
         try {  
-        	Pool connectionPool = JCache.getInstance().getConnectionPool();
-    		Cacheable connItem = connectionPool.checkOut(0);
-    		Connection conn = (Connection) connItem.getValue();
-    		
+        	Connection conn = (Connection) connItem.getValue();
             Statement stat = conn.createStatement();  
             
             List<File> sqlFiles = FileHelper.listFilesByTypeDeeply(".sql", new File(sqlDir));
@@ -88,6 +89,8 @@ public class TestUtil {
             conn.close();  
         } catch (Exception e) {  
             throw new RuntimeException("目录：" + sqlDir+ "下的SQL脚本执行出错：", e);
+        } finally {
+        	connectionPool.checkIn(connItem);
         }
     }
     

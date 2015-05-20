@@ -12,7 +12,6 @@ import com.jinhe.tss.framework.component.param.TxTestSupportParam;
 public class CacheDisplayActionTest extends TxTestSupportParam {
 	
 	@Autowired private CacheDisplayAction action;
-	@Autowired private PCache pcache;
  
     @Test
 	public void testCacheAction() {
@@ -35,8 +34,6 @@ public class CacheDisplayActionTest extends TxTestSupportParam {
  
     @Test
 	public void testModifyCacheConfig() {
-    	pcache.refresh();
-    	
 		action.modifyCacheConfig(response, "connectionpool", "{\"poolSize\":\"20\", \"initNum\":\"10\"}");
 		action.modifyCacheConfig(response, "connectionpool", "{\"poolSize\":\"8\", \"initNum\":\"6\"}");
 		action.modifyCacheConfig(response, "connectionpool", "{\"poolSize\":\"8\", \"cyclelife\":\"10000\"}");
@@ -64,12 +61,8 @@ public class CacheDisplayActionTest extends TxTestSupportParam {
 		CacheDisplayAction action2 = new CacheDisplayAction();
 		action2.paramService = action.paramService;
 		
-		pcache.refresh();
-		jCache.getConnectionPool().checkOut(0);
-		
 		action2.getCacheStrategyInfo(response, "connectionpool");
-		
-		pcache.refresh();
+		action.modifyCacheConfig(response, "connectionpool", "{\"poolSize\":\"20\"}");
 	}
     
 }

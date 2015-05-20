@@ -14,51 +14,26 @@ import com.jinhe.tss.framework.component.cache.CacheLife;
 import com.jinhe.tss.framework.exception.BusinessException;
 
 @Service("ParamService")
-public class ParamServiceImpl implements ParamService {
+public class ParamServiceImpl implements ParamService, ParamListener {
 
     @Autowired private ParamDao paramDao;
     
-    public void delete(Long id) {
-        // 一并删除子节点
-        List<?> children = paramDao.getChildrenById(id);
-        for(Object entity : children) {
-            Param item = (Param)entity;
-            paramDao.delete(item);
-            
-            if(id.equals(item.getId())) {
-            	refreshCache(item);
-            }
+    /**
+     * 删除或修改完成后，触发param监听器列表，以刷新缓存 及更新定时任务、新建缓存池等依赖param模块的功能
+     */
+    public void fireListener(Param param) {
+        for(ParamListener listener : ParamManager.listeners) {
+        	listener.afterChange(param);
         }
-    }
-
-    public Param saveParam(Param param) {
-        if (null == param.getId()) {
-            param.setSeqNo(paramDao.getNextSeqNo(param.getParentId()));
-            judgeLegit(param, ParamConstants.SAVE_FLAG);
-            paramDao.create(param);
-        }
-        else {
-            judgeLegit(param, ParamConstants.EDIT_FLAG);
-            if(param.getLockVersion() == 0) { // 非param.htm维护系统参数的情况
-            	Param old = paramDao.getEntity(param.getId());
-            	param.setLockVersion(old.getLockVersion());
-            	param.setCreateTime(old.getCreateTime());
-            	param.setCreatorId(old.getCreatorId());
-            	param.setCreatorName(old.getCreatorName());
-            }
-            paramDao.update(param);
-        }
-        
-        refreshCache(param);
-
-        return param;
     }
     
-    /**
-     * 删除或修改完成后，刷新缓存，如果已经被缓存的话。 对于下拉或树形参数，新增参数项也需要刷新
-     */
-    private void refreshCache(Param param) {
-        String paramCode = null;
+	/* 
+	 * 删除或修改完成后，刷新缓存，如果已经被缓存的话。 对于下拉或树形参数，新增参数项也需要刷新
+	 */
+    public void afterChange(Param param) {
+    	if(param == null) return;
+		
+		String paramCode = null;
         if(ParamConstants.NORMAL_PARAM_TYPE.equals(param.getType())) {
         	paramCode = param.getCode();
         } else if(ParamConstants.ITEM_PARAM_TYPE.equals(param.getType())) {
@@ -82,7 +57,43 @@ public class ParamServiceImpl implements ParamService {
             }
         }
     }
+ 
+    public void delete(Long id) {
+        // 一并删除子节点
+        List<?> children = paramDao.getChildrenById(id);
+        for(Object entity : children) {
+            Param item = (Param)entity;
+            paramDao.delete(item);
+            
+            if(id.equals(item.getId())) {
+            	fireListener(item);
+            }
+        }
+    }
+    
+    public Param saveParam(Param param) {
+        if (null == param.getId()) {
+            param.setSeqNo(paramDao.getNextSeqNo(param.getParentId()));
+            judgeLegit(param, ParamConstants.SAVE_FLAG);
+            paramDao.create(param);
+        }
+        else {
+            judgeLegit(param, ParamConstants.EDIT_FLAG);
+            if(param.getLockVersion() == 0) { // 非param.htm维护系统参数的情况
+            	Param old = paramDao.getEntity(param.getId());
+            	param.setLockVersion(old.getLockVersion());
+            	param.setCreateTime(old.getCreateTime());
+            	param.setCreatorId(old.getCreatorId());
+            	param.setCreatorName(old.getCreatorName());
+            }
+            paramDao.update(param);
+        }
+        
+        fireListener(param);
 
+        return param;
+    }
+    
     /**
      * <p>
      * 字段重复判断。 （区分参数组、参数、参数项的概念） 不同参数的code不可以相同，必须帮助每个参数 的code值对整个参数表中的“参数”唯一
@@ -122,6 +133,8 @@ public class ParamServiceImpl implements ParamService {
             Param param = (Param) datas.get(i);
             param.setDisabled(disabled);
             paramDao.updateWithoutFlush(param);
+            
+            fireListener(param);
         }
         paramDao.flush();
     }

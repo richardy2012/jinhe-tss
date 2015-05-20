@@ -129,7 +129,7 @@ public class JCache {
 				return pools.get(code); 
 			}
 
-			log.error("找不到相应的缓存池，请确定code值：【" + code + "】是否正确。");
+			log.error("找不到相应的缓存池，请确定code值：【" + code + "】是否正确。 " + pools.keySet());
 		}
 		return pool;
 	}

@@ -14,11 +14,11 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
-import org.springframework.stereotype.Component;
 
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.component.param.ParamListener;
 import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.util.BeanUtil;
@@ -30,30 +30,39 @@ import com.jinhe.tss.util.EasyUtils;
  * 新增或删除一个job失败,不影响其它job的生成和删除。
  * 
  */
-@Component
-public class SchedulerBean {
+public class SchedulerBean implements ParamListener {
     
 	protected Logger log = Logger.getLogger(this.getClass());
 	
 	public static final String TIMER_PARAM_CODE = "TIMER_PARAM_CODE";
 	
-	static long initCyclelife = 1000 * 180; // 3分钟
-	
-    private static Scheduler scheduler;
-    
-    private static Map<String, String> configsMap;
-    
-    public SchedulerBean() {
-    	this(initCyclelife);
+    private Scheduler scheduler;
+    private Map<String, String> configsMap;
+ 
+    public void afterChange(Param param) {
+    	// 为第一次初始化，由ParamServiceImpl初始化完成后触发
+    	if(param == null) {
+    		refresh();
+    		return;
+    	}
+    	
+    	Long parentId = param.getParentId();
+    	Param parent  = ParamManager.getService().getParam(parentId);
+		if( parent != null && TIMER_PARAM_CODE.equals(parent.getCode()) ) {
+			refresh();
+		}
     }
  
-    public SchedulerBean(final long initCyclelife) {
+    public SchedulerBean() {
+    	
+    	configsMap = new HashMap<String, String>();
+    	
     	// 根据配置决定是否启用定时Job
     	if( !Config.TRUE.equals(Config.getAttribute(Config.ENABLE_JOB)) ) {
     		return;
     	}
     	
-    	log.info("SchedulerBean is starting....." + initCyclelife);
+    	log.info("SchedulerBean is starting....." );
     	
     	try {
 			scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -61,26 +70,11 @@ public class SchedulerBean {
 		} catch (SchedulerException e) {
             throw new BusinessException("初始化定时策略出错!", e);
         } 
-    	
-    	configsMap = new HashMap<String, String>();
-        
-        new Thread() {
-        	public void run() {
-	            try {
-	                while (true) {
-                    	/* 定时检查，如果定时配置有改动，则刷新定时器 （第一次启动时，还需要等其他IOC池里的Bean就位（因依赖ParamManager））*/
-                        sleep(initCyclelife); 
-                        
-                        init();
-	                }
-	            } catch (InterruptedException e) {
-	            	throw new BusinessException("初始化SchedulerBean时出错！", e);
-	            }
-            }
-        }.start(); 
     }
     
-    public void init() {
+    private void refresh() {
+    	if(scheduler == null) return;
+    	
         List<Param> list = null;
         try {
         	list = ParamManager.getComboParam(TIMER_PARAM_CODE);
@@ -91,7 +85,7 @@ public class SchedulerBean {
         	return;
         }
         
-        log.debug("SchedulerBean init begin...");
+        log.debug("SchedulerBean refresh begin...");
         
         List<String> jobCodes = new ArrayList<String>();
 		for(Param param : list) {
@@ -136,7 +130,7 @@ public class SchedulerBean {
 		Set<String> deleteJobCodes = new HashSet<String>(configsMap.keySet());
 		deleteJobCodes.removeAll(jobCodes);
 		for(String code : deleteJobCodes) {
-			deleteJob(code);
+			deleteJob(code); // 停用/删除的定时配置
 		}
         
         log.debug("SchedulerBean init end.");

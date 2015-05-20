@@ -24,18 +24,14 @@ public class BusinessLogger extends OutputRecordsManager implements IBusinessLog
     }
 
     protected void excuteTask(List<Object> temp) {
-        // apool池中有可能混入了其他Task
-    	Cacheable item = null;
-        while( item == null || !(item.getValue() instanceof LogOutputTask) ) {
-        	if(item != null) {
-        		apool.removeObject(item.getKey());
-        	}
-        	
-        	item = apool.checkOut(0);
-        	break;
+    	Cacheable item = apool.checkOut(0);
+    	
+        LogOutputTask task;
+        try {
+        	task = (LogOutputTask) item.getValue();
+        } catch(Exception e) {
+        	task = new LogOutputTask();
         }
-        
-        LogOutputTask task = (LogOutputTask) item.getValue();
         task.fill(temp);
         item.update(task);
         

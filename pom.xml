@@ -5,7 +5,7 @@
     <artifactId>tss</artifactId>
     <packaging>pom</packaging>
     <name>TSS</name>
-    <version>3.2</version>
+    <version>3.3</version>
  
 	<organization>
 		<name>Jin He</name>
@@ -28,7 +28,7 @@
 	</developers>
     
    	<properties>
-		<tss.version>3.2</tss.version>
+		<tss.version>3.3</tss.version>
 		<spring.version>3.2.0.RELEASE</spring.version>
 		<hibernate.version>3.5.1-Final</hibernate.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  

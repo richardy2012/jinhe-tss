@@ -3,20 +3,31 @@ package com.jinhe.tss.framework.component.param;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.Global;
+import com.jinhe.tss.framework.component.cache.PCache;
+import com.jinhe.tss.framework.component.timer.SchedulerBean;
 import com.jinhe.tss.framework.exception.BusinessException;
 
 /**
  *  调用参数管理功能入口
  */
 public class ParamManager {
-
-    private static ParamService getService() {
+	
+	/** 监听器列表 */
+    public static List<ParamListener> listeners = new ArrayList<ParamListener>();
+    
+    static {
+    	ParamManager.listeners.add(new PCache());
+    	ParamManager.listeners.add(new SchedulerBean());
+    }
+    
+    public static ParamService getService() {
         return (ParamService) Global.getBean("ParamService");
     }
     

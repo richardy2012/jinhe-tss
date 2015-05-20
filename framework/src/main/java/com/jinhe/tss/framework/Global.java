@@ -3,6 +3,9 @@ package com.jinhe.tss.framework;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.jinhe.tss.framework.component.param.ParamListener;
+import com.jinhe.tss.framework.component.param.ParamManager;
+import com.jinhe.tss.framework.component.param.ParamService;
 import com.jinhe.tss.framework.sso.online.IOnlineUserManager;
 
 /**
@@ -37,9 +40,17 @@ public class Global {
 	public static IOnlineUserManager getRemoteOnlineUserManager() {
 		return (IOnlineUserManager) getBean("RemoteOnlineUserManager");
 	}
+	
+    public static ParamService getParamService() {
+        return (ParamService) Global.getBean("ParamService");
+    }
 
 	public static synchronized void setContext(ApplicationContext context) {
 		_ctx = context;
+		
+		// param缓存刷新监听器需要第一个执行，其它监听器里需要读取刷新后的Param信息
+    	ParamManager.listeners.add(0, (ParamListener) ParamManager.getService());
+    	getParamService().fireListener(null); // 系统启动时，自动触发一次所有的监听器，以完成缓存池、定时器等初始化。
 	}
 
 	public static synchronized void destroyContext() {

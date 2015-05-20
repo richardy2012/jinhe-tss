@@ -13,7 +13,7 @@ import com.jinhe.tss.util.EasyUtils;
 
 public class SchedulerBeanTest extends TxTestSupportParam {
 	
-	String jobConfig = "com.jinhe.tss.framework.component.timer.DemoJob | 50 * * * * ? | " +
+	String jobConfig = "com.jinhe.tss.framework.component.timer.DemoJob | 10,20,30,40,55 * * * * ? | " +
 			"1:报表一:pjjin@800best.com,pjjin@800best.com:param1=0,param2=0\n" + 
             "2:报表二:pjjin@800best.com,pjjin@800best.com:param1=0"; 
 	
@@ -27,11 +27,6 @@ public class SchedulerBeanTest extends TxTestSupportParam {
 		Param item1 = addParamItem(cpId, jobConfig + ",param2=1", "Job1", ParamConstants.COMBO_PARAM_MODE);
 		Param item2 = addParamItem(cpId, jobConfig + ",param2=2", "Job2", ParamConstants.COMBO_PARAM_MODE);
         
-		SchedulerBean scheduler = new SchedulerBean(1000*15);
-		Assert.assertNotNull(scheduler);
-		
-		try { Thread.sleep(1000*70); } catch (InterruptedException e) { }
-		
 		// 修改、新增、删除定时配置
 		item1.setValue(jobConfig + "1");
 		paramService.saveParam(item1);
@@ -42,7 +37,8 @@ public class SchedulerBeanTest extends TxTestSupportParam {
 		Pool shortCache = CacheHelper.getShortCache();
 		shortCache.removeObject("com.jinhe.tss.framework.component.param.ParamService.getComboParam(TIMER_PARAM_CODE)");
 		
-		try { Thread.sleep(1000*80); } catch (InterruptedException e) { }
+		// DemoJob配了没分钟里10,20,30,40,55执行
+		try { Thread.sleep(1000 * 16); } catch (InterruptedException e) { }
 		
 		TestUtil.printLogs(logService);
 	}
@@ -52,7 +48,7 @@ public class SchedulerBeanTest extends TxTestSupportParam {
     	String[] array = EasyUtils.split(jobConfig, "|");
 		Assert.assertTrue( array.length == 3 );
 		Assert.assertEquals( array[0].trim(), "com.jinhe.tss.framework.component.timer.DemoJob");
-		Assert.assertEquals( array[1].trim(), "50 * * * * ?");
+		Assert.assertEquals( array[1].trim(), "10,20,30,40,55 * * * * ?");
     	
     	array = EasyUtils.split(array[2].trim(), "\n");
     	Assert.assertTrue( array.length == 2 );

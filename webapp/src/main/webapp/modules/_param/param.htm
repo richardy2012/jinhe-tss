@@ -302,11 +302,11 @@
 
     /*
      *	保存参数
-     *	参数：	string:cacheID          缓存数据id
+     *	参数：	string:treeID          缓存数据id
                 string:parentID         父节点id
                 boolean:type            节点类型(0参数组/1参数/2参数项)
      */
-    function saveParam(cacheID, parentID, type) {
+    function saveParam(treeID, parentID, type) {
         var xform = $.F("page1Form");	
         if( !xform.checkForm() ) {
             return;
@@ -315,13 +315,13 @@
         var request = new $.HttpRequest();
         request.url = URL_SAVE_PARAM;
 
-        var paramInfoNode = $.cache.XmlDatas[cacheID];
+        var paramInfoNode = $.cache.XmlDatas[treeID];
         var dataNode = paramInfoNode.querySelector("data");
         request.setFormContent(dataNode);
         request.addParam("type", type);
        
         syncButton([$1("page1BtSave")], request); // 同步按钮状态
-		detachReminder(cacheID); // 解除提醒
+		detachReminder(treeID); // 解除提醒
 
         request.onresult = function() {                  
             afterSaveTreeNode(treeID, parentID);
@@ -332,14 +332,14 @@
 				if( $.isNullOrEmpty(name) ) {
 					name = xform.getData("code");
 				}
-				modifyTreeNode(cacheID, "name", name);
+				modifyTreeNode(treeID, "name", name);
 			} 
 			if("2" == type ) {
 				var text = xform.getData("text");
 				if( $.isNullOrEmpty(text) ) {
 					text = xform.getData("value");
 				}
-				modifyTreeNode(cacheID, "name", text);
+				modifyTreeNode(treeID, "name", text);
 			}
 
 			ws.closeActiveTab();

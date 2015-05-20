@@ -7,6 +7,8 @@ import com.jinhe.tss.framework.component.log.Logable;
  
 public interface ParamService {
 
+	void fireListener(Param param);
+	
 	/** 保存参数 */
 	@Logable(operateObject="系统参数", operateInfo="新增/修改了系统参数：${returnVal?default(\"\")}")
 	Param saveParam(Param param);

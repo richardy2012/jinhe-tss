@@ -126,18 +126,18 @@ public class _Connection extends ConfigurableContants {
 	    String driver, url, user, pwd;
 		
 		public DriverManagerConnectionProvider(Properties p) {
-			driver = p.getProperty("db.connection.driver_class");
-			url    = p.getProperty("db.connection.url");
-			user   = p.getProperty("db.connection.username");
-			pwd    = p.getProperty("db.connection.password");
+			driver = p.getProperty("db.connection.driver_class").trim();
+			url    = p.getProperty("db.connection.url").trim();
+			user   = p.getProperty("db.connection.username").trim();
+			pwd    = p.getProperty("db.connection.password").trim();
 		}
 		
 		public DriverManagerConnectionProvider(String config) {
 			String[] infos = config.split(",");
-			driver = infos[0];
-			url    = infos[1];
-			user   = infos[2];
-			pwd    = infos[3];
+			driver = infos[0].trim();
+			url    = infos[1].trim();
+			user   = infos[2].trim();
+			pwd    = infos[3].trim();
 		}
 		
 		public Connection getConnection() {
