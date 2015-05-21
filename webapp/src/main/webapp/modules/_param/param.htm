@@ -270,6 +270,7 @@
 		    params["paramId"] = treeID;			
 		} else {
 			params["parentId"] = parentID;
+            treeID = DEFAULT_NEW_ID;
 		}
 
 		$.ajax({
@@ -324,7 +325,7 @@
 		detachReminder(treeID); // 解除提醒
 
         request.onresult = function() {                  
-            afterSaveTreeNode(treeID, parentID);
+            afterSaveTreeNode.call(this, treeID, parentID);
         }
         request.onsuccess = function() { // 更新树节点名称
 			if("1" == type) {

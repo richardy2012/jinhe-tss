@@ -150,7 +150,7 @@
 				var treeNode = getActiveTreeNode();
 				getTreeOperation(treeNode, function(_operation) {            
 					if( !isRootNode() ) {
-						var canEdit = checkOperation("4", _operation);
+						var canEdit = checkOperation("2", _operation);
 						editTreeNode(canEdit);
 					}
 				});

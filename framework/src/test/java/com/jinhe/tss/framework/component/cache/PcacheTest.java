@@ -50,9 +50,10 @@ public class PcacheTest extends TxTestSupportParam {
 		
 		Param param1 = addSimpleParam(parentId, "pool_1", "pool_1", poolConfig1);
 		Param param2 = addSimpleParam(parentId, "pool_2", "pool_2", poolConfig2);
+		paramService.startOrStop(parentId, 1);
 		
-		Pool pool1 = JCache.getInstance().getPool("pool_1");
-		Pool pool2 = JCache.getInstance().getPool("pool_2");
+		Pool pool1 = JCache.pools.get("pool_1");
+		Pool pool2 = JCache.pools.get("pool_2");
 		
 		Assert.assertNotNull(pool1);
 		Assert.assertNotNull(pool2);

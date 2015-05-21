@@ -480,7 +480,7 @@ function afterSaveTreeNode(treeID, X) {
 		modifyTreeNode(treeID, "name", name); 
 	} 
 	else { // 往资源树上动态添加新增的节点
-		var xmlNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
+		var xmlNode = this.getResponseXML().querySelector("treeNode");
 		appendTreeNode(X, xmlNode);  
 	}
 

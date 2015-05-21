@@ -15,15 +15,70 @@
        
 打包注意：
 0、BtrBI的10.8.73.80机器安裝的是JDK6，打包只能用JDK1.6, 1.7會出錯  
-   
+ 
+TSS3.3版本更新点：
+1、Param增加监听器列表
+2、定时任务监听器
+3、缓存池监听器、在线创建 缓存池（连接池）
+4、Spring ContextLoaderListener 扩展
+5、Record 缓存查询条件、复制功能、查询条件级联
    
 {
     "customizerClass": "com.jinhe.tss.framework.persistence.connpool.ConnPoolCustomizer",
     "poolClass": "com.jinhe.tss.cache.extension.ReusablePool",
-    "code": "connpool-h2",
-    "name": "DB连接池-H2",
+    "code": "connpool-oms",
+    "name": "DB连接池-OMS",
     "cyclelife": "180000",
-    "paramFile": "org.h2.Driver,jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1,sa,123",
+    "paramFile": "oracle.jdbc.driver.OracleDriver,jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.8.73.136)(PORT = 1521))(CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = dsedi) )),ecboss,oraecboss",
     "interruptTime": "1000",
+    "initNum":"0",
+    "poolSize": "10"
+}
+
+{
+    "customizerClass": "com.jinhe.tss.framework.persistence.connpool.ConnPoolCustomizer",
+    "poolClass": "com.jinhe.tss.cache.extension.ReusablePool",
+    "code": "connpool-v5",
+    "name": "DB连接池-V5",
+    "cyclelife": "180000",
+    "paramFile": "oracle.jdbc.driver.OracleDriver,jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = v5ecdb2.800best.com)(PORT = 1521)) )(CONNECT_DATA = (SERVICE_NAME = vf) ) ),rdo_vf,orardo_vf",
+    "interruptTime": "1000",
+    "initNum":"0",
+    "poolSize": "10"
+}
+
+{
+    "customizerClass": "com.jinhe.tss.framework.persistence.connpool.ConnPoolCustomizer",
+    "poolClass": "com.jinhe.tss.cache.extension.ReusablePool",
+    "code": "connpool-wms",
+    "name": "DB连接池-WMS",
+    "cyclelife": "180000",
+    "paramFile": "oracle.jdbc.driver.OracleDriver,jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.8.73.139)(PORT = 1521)) (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = wms))),wms,wms800best",
+    "interruptTime": "1000",
+    "initNum":"1",
+    "poolSize": "10"
+}
+
+{
+    "customizerClass": "com.jinhe.tss.framework.persistence.connpool.ConnPoolCustomizer",
+    "poolClass": "com.jinhe.tss.cache.extension.ReusablePool",
+    "code": "connpool-bsd",
+    "name": "DB连接池-BSD",
+    "cyclelife": "180000",
+    "paramFile": "oracle.jdbc.driver.OracleDriver,jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.8.72.70)(PORT = 1521))(CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = kybi.800best.com))),usr_vf,usr_vf",
+    "interruptTime": "1000",
+    "initNum":"1",
+    "poolSize": "10"
+}
+
+{
+    "customizerClass": "com.jinhe.tss.framework.persistence.connpool.ConnPoolCustomizer",
+    "poolClass": "com.jinhe.tss.cache.extension.ReusablePool",
+    "code": "connpool-wms-mysql",
+    "name": "DB连接池-WMS-MySQL",
+    "cyclelife": "180000",
+    "paramFile": "com.mysql.jdbc.Driver,jdbc:mysql://10.8.10.30:3306/wmsdata?useUnicode=true&amp;characterEncoding=utf8,wmsxProd,wmsdata@800best",
+    "interruptTime": "1000",
+    "initNum":"1",
     "poolSize": "10"
 }

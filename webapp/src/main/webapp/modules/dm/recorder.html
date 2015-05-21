@@ -86,6 +86,10 @@ function init() {
             var result = this.getResponseJSON();
             recordDefine = result[0];
             customizeJS = result[1];
+
+            recordDefine.each(function(i, field){
+                field._defaultValue = field.defaultValue;
+            });
         }
     });
 
@@ -100,7 +104,7 @@ function init() {
         }
     });
 
-    loadGridData({}, 1); 
+    loadGridData(1); 
     $("#rcTitle").html("【" + recordName + "】");
 }
 
@@ -112,6 +116,11 @@ function initMenus() {
         icon: "images/icon_edit.gif"
     }
     var item2 = {
+        label:"复制",
+        callback: function() { showDetail("_copy") },
+        icon: "images/icon_copy.gif"
+    }
+    var item3 = {
         label:"删除",
         callback: remove,
         icon: "images/icon_del.gif"
@@ -120,17 +129,27 @@ function initMenus() {
     var menu = new $.Menu();
     menu.addItem(item1);
     menu.addItem(item2);
+    menu.addItem(item3);
     $1("grid").contextmenu = menu;
 }
 
 /* grid加载数据  */
-function loadGridData(params, page) {
+function loadGridData(page) {
     $.showGrid(URL_SOURCE_LIST + recordId, XML_SOURCE_LIST, showDetail, "grid", page, params);
 }
 
 /* 显示资源详细信息 */
-function showDetail(isCreate) {    
-    var rowID = isCreate ? '_new' : $.G("grid").getColumnValue("id");  
+function showDetail(rowID) {    
+    rowID = rowID || $.G("grid").getColumnValue("id");  
+
+    if(rowID) {
+        if(rowID == '_copy') {
+            rowID = $.G("grid").getColumnValue("id") + '_copy';
+        }
+    }
+    else {
+        rowID = $.G("grid").getColumnValue("id"); 
+    }
     var rowName = recordName + rowID;
 
     var callback = {};
@@ -158,7 +177,12 @@ function showDetail(isCreate) {
 }
 
 function loadDetailData(rowID) {
-    if(rowID != '_new') {
+    if(rowID === '_new') {
+        recordDefine.each(function(i, field){
+            field.defaultValue = field._defaultValue;
+        });
+    }
+    else {
         var grid = $.G("grid");
         recordDefine.each(function(i, field){
             field.defaultValue = grid.getColumnValue(field.code);
@@ -190,7 +214,7 @@ function saveSource(rowID) {
     var dataNode = $.cache.XmlDatas[rowID];
     request.setFormContent(dataNode);
 
-    if(rowID != '_new') {
+    if(rowID != '_new' && (rowID + "").indexOf('_copy') < 0 ) {
        request.url += "/" + rowID;
     }
 
@@ -198,7 +222,7 @@ function saveSource(rowID) {
     detachReminder(rowID); // 解除提醒
 
     request.onsuccess = function() { // 更新
-        loadGridData({}, $1("GridPageList").value || 1); 
+        loadGridData( $1("GridPageList").value || 1 ); 
         ws.closeActiveTab();
     }
     request.send();
@@ -245,8 +269,20 @@ function showQueryForm() {
             delete copy["height"];
             delete copy["width"];
             delete copy["defaultValue"];
-            delete copy["onchange"];
-            delete copy["multiple"];
+            if(copy.onchange) {
+                var temp = [], count = 1;
+                for(var i=0, length = copy.onchange.length; i < length; i++) {
+                    var ch = copy.onchange[i];
+                    if(ch === '^') {
+                        if(count++ % 2 == 1) {
+                            ch = '^p_';
+                        }
+                    }
+                    temp.push(ch);
+                }
+                copy.onchange = temp.join("");
+            }
+
             copy.name = "p_" + (copy.name || copy.code);
             paramsConfig.push(copy);
         }
@@ -267,19 +303,21 @@ function showQueryForm() {
             var searchFormXML = $.cache.XmlDatas["searchFormXML"];
             var dataNode = searchFormXML.querySelector("data");
         
-            var params = {};
+            params = {};
             var nodes = dataNode.querySelectorAll("row *");
             for(var i = 0; i < nodes.length; i++) {
                 var node = nodes[i];
                 params[node.nodeName.substring(2)] = $.XML.getText(node);
             }
-            loadGridData(params, 1);
+            loadGridData(1);
         }
     }
     $1("btCloseSearch").onclick = function () {
         $("#searchFormDiv").hide();
     }
 }
+
+var params = {};  // 缓存查询条件，增加删除修改后刷新Grid可以继续使用 
 
 // ------------------------------------------------- 自定义扩展 ------------------------------------------------
 /*
@@ -382,6 +420,7 @@ function notice(field, msg) {
 	});
 }
 
+// if($("#udf1").value() === "11") { disableForm(); } else { $("#page1BtSave").show();  };
 function disableForm() {
 	$("#page1BtSave").hide(); 
 	$.F("page1Form").setEditable("false");
@@ -398,7 +437,7 @@ function disableForm() {
         <tr>
           <td id="gridTitle">
             <span class="icon"></span><span id="rcTitle">资源列表</span>&nbsp;
-            <input type="button" class="btStrong" value="新 增" onclick="showDetail(true)"/>&nbsp;
+            <input type="button" class="btStrong" value="新 增" onclick="showDetail('_new')"/>&nbsp;
             <input type="button" class="btStrong" value="查 询" onclick="showQueryForm()"/>
             <span class="buttonBox" id="gridToolBar"></span>
           </td>

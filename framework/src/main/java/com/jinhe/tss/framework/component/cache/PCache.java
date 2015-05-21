@@ -39,12 +39,13 @@ public class PCache implements ParamListener {
 		if(paramService.getParam(param.getId()) == null) return; // 如果是删除了参数，则什么都不做
 		
 		Long parentId = param.getParentId();
+		if(parentId == null) return;
+		
 		try {
 			Param parent = paramService.getParam(parentId);
 			if( parent != null && CacheHelper.CACHE_PARAM.equals(parent.getCode()) ){
 				String cacheCode   = param.getCode();
 	    		String cacheConfig = param.getValue();
-	    		
 	    		rebuildCache(cacheCode, cacheConfig);
 			}
 		} catch(Exception e) { 

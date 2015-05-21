@@ -47,6 +47,8 @@ public class SchedulerBean implements ParamListener {
     	}
     	
     	Long parentId = param.getParentId();
+    	if(parentId == null) return;
+    	
     	Param parent  = ParamManager.getService().getParam(parentId);
 		if( parent != null && TIMER_PARAM_CODE.equals(parent.getCode()) ) {
 			refresh();
