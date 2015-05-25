@@ -67,6 +67,7 @@ function showReport() {
         }
         else {
             $("#searchForm").html(""); // 删除查询框（其它报表的）
+            $("#searchFormDiv").hide();
             if(displayUri.indexOf("?type=") > 0) {
                 sendAjax(); // 使用通用模板的，有可能此处是不带任何参数的SQL查询
             } 
@@ -176,7 +177,9 @@ function createQueryForm(treeID, paramConfig, callback) {
     $panel.show();
 
     // 如果上一次打开的和本次打开的是同一报表的查询框，则直接显示
-    if( $.cache.Variables["treeNodeID_SF"] == treeID && $.funcCompare($.cache.Variables["callback_SF"], callback) ) { 
+    if( $.cache.Variables["treeNodeID_SF"] == treeID 
+    		&& $.funcCompare($.cache.Variables["callback_SF"], callback) 
+    		&& $("#searchFormDiv .tssForm").length ) { 
         return;
     }
 

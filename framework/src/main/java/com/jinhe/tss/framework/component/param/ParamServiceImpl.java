@@ -187,7 +187,6 @@ public class ParamServiceImpl implements ParamService, ParamListener {
 
     public void move(Long paramId, Long toParamId) {
         List<?> params = paramDao.getChildrenById(paramId);
-        Param toParam = paramDao.getEntity(toParamId);
         for (int i = 0; i < params.size(); i++) {
             Param param = (Param) params.get(i);
             if (param.getId().equals(paramId)) { // 判断是否是移动节点（即被移动枝的根节点）
@@ -196,7 +195,10 @@ public class ParamServiceImpl implements ParamService, ParamListener {
             }
             
             // 如果目标根节点是停用状态，则所有新复制出来的节点也一律为停用状态
-            param.setDisabled(toParam.getDisabled()); 
+            if(toParamId.longValue() > 0) { // 非_root
+            	Param toParam = paramDao.getEntity(toParamId);
+            	param.setDisabled(toParam.getDisabled()); 
+            }
             
             paramDao.update(param);
         }

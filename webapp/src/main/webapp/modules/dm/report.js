@@ -250,16 +250,13 @@ function saveReport(treeNodeID) {
 	syncButton([$1("sourceSave")], request); // 同步按钮状态
 
 	request.onresult = function() { // 新增结果返回              
-		var xmlNode = this.getNodeValue(XML_SOURCE_TREE).querySelector("treeNode");
-		appendTreeNode(treeNodeID, xmlNode);
-		closeReportDefine();
+		afterSaveTreeNode.call(this, treeNodeID, treeNodeID);
 	}
 	request.onsuccess = function() { // 更新
-		modifyTreeNode(treeNodeID, "name", xform.getData("name"));
+		afterSaveTreeNode(treeNodeID, xform);
+		
 		modifyTreeNode(treeNodeID, "param", xform.getData("param"));
 		modifyTreeNode(treeNodeID, "displayUri", xform.getData("displayUri"));
-		
-		closeReportDefine();
 		delete $.cache.Variables["treeNodeID_SF"];
 	}
 	request.send();

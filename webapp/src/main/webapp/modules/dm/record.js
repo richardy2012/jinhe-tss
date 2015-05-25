@@ -191,10 +191,11 @@ function saveRecord(treeNodeID) {
 	syncButton([$1("sourceSave")], request); // 同步按钮状态
 
 	request.onresult = function() { // 新增结果返回              
-		var xmlNode = this.getNodeValue(XML_SOURCE_TREE).querySelector("treeNode");
+		var xmlNode = this.getResponseXML().querySelector("treeNode");
 		appendTreeNode(treeNodeID, xmlNode);
 
 		closeRecordFormDiv();
+		delete $.cache.XmlDatas[treeNodeID];
 	}
 	request.onsuccess = function() { // 更新
 		modifyTreeNode(treeNodeID, "name", xform.getData("name"));
@@ -202,6 +203,7 @@ function saveRecord(treeNodeID) {
 		modifyTreeNode(treeNodeID, "customizePage", xform.getData("customizePage"));
 		
 		closeRecordFormDiv();
+		delete $.cache.XmlDatas[treeNodeID];
 	}
 	request.send();
 }

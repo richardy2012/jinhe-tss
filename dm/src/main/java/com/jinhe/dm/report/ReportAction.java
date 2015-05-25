@@ -136,7 +136,7 @@ public class ReportAction extends BaseActionSupport {
 	    		" order by " + (onlySelf ? "lastTime" : "value")  + " desc";
 	    SQLExcutor ex = new SQLExcutor(false);
 	    Map<Integer, Object> params = new HashMap<Integer, Object>();
-	    params.put(1, _DateUtil.subDays(_DateUtil.today(), 100));
+	    params.put(1, _DateUtil.subDays(_DateUtil.today(), 30));
 	    if(onlySelf) {
 	    	params.put(2, Environment.getUserId());
 	    }

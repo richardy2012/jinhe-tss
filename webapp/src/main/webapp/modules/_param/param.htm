@@ -328,6 +328,8 @@
             afterSaveTreeNode.call(this, treeID, parentID);
         }
         request.onsuccess = function() { // 更新树节点名称
+        	afterSaveTreeNode(treeID, xform);
+        	
 			if("1" == type) {
 				var name = xform.getData("name");
 				if( $.isNullOrEmpty(name) ) {
@@ -342,8 +344,6 @@
 				}
 				modifyTreeNode(treeID, "name", text);
 			}
-
-			ws.closeActiveTab();
         }
         request.send();
     }
