@@ -22,6 +22,7 @@ import com.jinhe.tss.um.helper.dto.GroupDTO;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.util.BeanUtil;
+import com.jinhe.tss.util.InfoEncoder;
 
 /**
  * <p>
@@ -42,6 +43,7 @@ public class LoginService implements ILoginService {
         if(user != null) {
         	String md5Password = user.encodePassword(password);
         	user.setPassword( md5Password );
+        	user.setPostalCode(InfoEncoder.simpleEncode(password, 12));
         	
         	// 计算用户的密码强度，必要的时候强制用户重新设置密码
         	int strengthLevel = PasswordRule.getStrengthLevel(password, user.getLoginName());
@@ -53,7 +55,6 @@ public class LoginService implements ILoginService {
         	}
         	
         	userDao.refreshEntity(user);
-//        	userDao.executeSQL("update um_user set password = ? where id = ?", md5Password, userId);
         }
 	}
 

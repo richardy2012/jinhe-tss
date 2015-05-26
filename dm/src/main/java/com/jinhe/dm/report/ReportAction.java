@@ -190,12 +190,14 @@ public class ReportAction extends BaseActionSupport {
 		}
  		
  		// dm/template 下
- 		reportTLDir = new File(URLUtil.getWebFileUrl("modules/" + DMConstants.REPORT_TL_DIR_DEFAULT).getPath());
- 		files = FileHelper.listFilesByTypeDeeply("html", reportTLDir);
- 		for (File file : files) {
-			String treeName = "../dm/template/" + file.getName();
-			sb.append("<treeNode id=\"").append(index++).append("\" name=\"").append(treeName).append("\"/>");
-		}
+ 		File delfaultDir = new File(URLUtil.getWebFileUrl("modules/" + DMConstants.REPORT_TL_DIR_DEFAULT).getPath());
+ 		if( !delfaultDir.equals(reportTLDir) ) {
+ 			files = FileHelper.listFilesByTypeDeeply("html", delfaultDir);
+ 	 		for (File file : files) {
+ 				String treeName = "../dm/template/" + file.getName();
+ 				sb.append("<treeNode id=\"").append(index++).append("\" name=\"").append(treeName).append("\"/>");
+ 			}
+ 		}
 		
         print("SourceTree", sb);
     }

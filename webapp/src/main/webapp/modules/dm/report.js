@@ -50,7 +50,7 @@ function initMenus() {
 			openReportDefine(false, true);
 		},
 		icon: ICON + "icon_view.gif",
-		visible:function() { return !isTreeRoot() && getOperation("1"); }
+		visible:function() { return isReport() && getOperation("1") && !getOperation("2"); }
 	}
 	var item2 = {
 		label:"修改",
@@ -180,9 +180,13 @@ function openReportDefine(isCreate, readonly, type) {
 		params["parentId"] = treeNodeID; // 新增
 		readonly = false;
 		treeName = "报表" + (type === "0" ? "组" : "");
-	} else {
+	} 
+	else {
 		params["reportId"] = treeNodeID; // 修改					
 	}
+	
+	/* 新增时，传入的是父节点ID，如果父节点是打开状态，需要先关闭父节点的Tab页；修改时先关闭再重新打开，以load最新的对象。 */
+	ws.closeTab(treeNodeID);
 
     var callback = {};
     callback.onTabChange = function() {
@@ -190,13 +194,17 @@ function openReportDefine(isCreate, readonly, type) {
             loadReport(treeNodeID, type, params, readonly);
         }, TIMEOUT_TAB_CHANGE);
     };
+    callback.onTabClose = function(sid) {
+    	$("#reportParamsDiv").hide();
+        delete $.cache.XmlDatas[sid];
+    };
 
     var operation = readonly ? OPERATION_VIEW : (isCreate ? OPERATION_ADD : OPERATION_EDIT);
     var inf = {};
     inf.defaultPage = "page1";
     inf.label = operation.replace(/\$label/i, treeName);
     inf.callback = callback;
-    inf.SID = isCreate ? $.now() : treeNodeID;
+    inf.SID = treeNodeID;
     var tab = ws.open(inf);
 }
 
@@ -217,7 +225,7 @@ function loadReport(treeNodeID, type, params, readonly) {
 			xform.setEditable("false");
 		} 
 		else {
-			$("#sourceSave").click(function() { saveReport(treeNodeID); });
+			$("#sourceSave").show().click(function() { saveReport(treeNodeID); });
 		}	
 		$("#sourceClose").click(function() { ws.closeActiveTab(); });
 	}

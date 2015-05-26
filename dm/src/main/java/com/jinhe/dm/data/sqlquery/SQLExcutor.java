@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -319,12 +320,14 @@ public class SQLExcutor {
     }
     
     public static void excute(String sql, Connection conn) {
+    	Statement statement = null;
     	try {
     		boolean autoCommit = conn.getAutoCommit();
             conn.setAutoCommit(false);
             
     		log.info(" excute  sql: " + sql);
-			conn.createStatement().execute(sql);
+			statement = conn.createStatement();
+			statement.execute(sql);
 			conn.commit();
 			
 			conn.setAutoCommit(autoCommit);
@@ -332,7 +335,15 @@ public class SQLExcutor {
 		} catch (SQLException e) {
 			log.error("执行SQL时出错了。sql : " + sql, e);
 			throw new BusinessException("执行SQL时出错了。sql : " + sql, e);
-		} 
+		} finally {
+			try {
+				if(statement != null) {
+					statement.close();
+					statement = null;
+				}
+            } catch (Exception e) {
+            }
+		}
     }
     
     // 批量执行SQL, 每条SQL的参数放在Map里，key值为参数序号。

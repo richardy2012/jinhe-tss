@@ -45,6 +45,13 @@ function calculatePercent(val1, val2) {
 	return '';
 }
 
+function divide(val1, val2) {
+	if(val1 && val2) {
+		return Math.round(val1 * 1000 / val2) / 10;
+	}
+	return 0;
+}
+
 // 14345 返回 15000，坐标展示用 
 function $round(intNum) {
 	intNum = Math.round(intNum);
