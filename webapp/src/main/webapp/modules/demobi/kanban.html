@@ -27,7 +27,7 @@ table{border-collapse:collapse;border-spacing:0;}
 body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
 
 /* 主体样式 */
-#content {  position: relative; width: 100%; border-top: 1px solid red;}
+#content {  position: relative; width: 100%; }
 #content h2 { height:22px; line-height:22px; font-size:12px; text-indent:13px; background-color:#D2E8F7; }
 
 #gridBox1{ float: left; height: 360px; width: 30%; }
@@ -89,14 +89,15 @@ body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
 <!--
     var globalValiable = {}; // 用来存放传递给iframe页面的信息
 
-    URL_DATA_SERVICE1   = '../../api/json/' + 'SONumOrder';
-    URL_DATA_SERVICE2   = '../../wms/kanban/1';
-    URL_DATA_SERVICE3   = '../../api/json/' + 'SONumSendPM';
-    URL_DATA_SERVICE4   = '../../api/json/' + 'SONumSendPH';
+    URL_DATA_SERVICE1   = '../../api/json/' + 'SORank';
+ // URL_DATA_SERVICE2   = '../../api/json/' + 'SOProgress';
+    URL_DATA_SERVICE2 = 'data/kanban/2.json?';
+    URL_DATA_SERVICE3   = '../../api/json/' + 'SOShipPM';
+    URL_DATA_SERVICE4   = '../../api/json/' + 'SOShipPH';
 
     if (location.protocol === 'file:') {
         URL_DATA_SERVICE1 = 'data/kanban/1.json?';
-        URL_DATA_SERVICE2 = 'data/kanban/so.json?';
+        URL_DATA_SERVICE2 = 'data/kanban/2.json?';
         URL_DATA_SERVICE3 = 'data/kanban/3.json?';
         URL_DATA_SERVICE4 = 'data/kanban/4.json?';
     }
@@ -128,7 +129,7 @@ body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
  
         tssJS.ajax({
             url : URL_DATA_SERVICE1,
-            method : "GET",
+            method : "POST",
             params : queryParams,
             type : "json",
             waiting : true,

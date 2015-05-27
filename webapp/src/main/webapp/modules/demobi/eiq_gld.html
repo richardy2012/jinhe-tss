@@ -50,29 +50,14 @@ legend { background-color:#F9EE70; height:20px; font-weight:bolder; }
 
 <script type="text/javascript">
 
-	URL_WAREHOUSE_LIST   = '../../wms/warehouses';
-	URL_CUSTOMER_LIST      = '../../wms/customers?';
-	
-	URL_PREVIEW_DATA     = '../../wms/eiq/data';
-	URL_ANALYSE_DATA     = '../../wms/eiq/gld';
-	URL_ANALYSE_EXPORT   = '../../wms/eiq/gld/csv';
-
-	URL_DS_LIST          = 'data/dataSource.json?';
-	URL_DT_LIST          = 'data/dataTable.json?';
-	URL_SF_LIST          = 'data/gldAlgorithm.json?';
-
-	if (location.protocol === 'file:') {
-		URL_WAREHOUSE_LIST  = 'data/eiq/warehouse.json?';
-		URL_CUSTOMER_LIST   = 'data/eiq/customer.json?';
-		
-		URL_PREVIEW_DATA    = 'data/eiq/eiq-gld-data.json?';
-		URL_ANALYSE_DATA    = 'data/eiq/eiq-gld.json?';
-		URL_ANALYSE_EXPORT  = 'data/eiq/xxx.json?';
-
-		URL_DS_LIST         = 'data/eiq/dataSource.json?';
-		URL_DT_LIST         = 'data/eiq/dataTable.json?';
-		URL_SF_LIST         = 'data/eiq/eiq_gld_algorithm.json?';
-	}
+	URL_WAREHOUSE_LIST  = 'data/eiq/warehouse.json?';
+	URL_CUSTOMER_LIST   = 'data/eiq/customer.json?';
+	URL_PREVIEW_DATA    = 'data/eiq/eiq-gld-data.json?';
+	URL_ANALYSE_DATA    = 'data/eiq/eiq-gld.json?';
+	URL_ANALYSE_EXPORT  = 'data/eiq/xxx.json?';
+	URL_DS_LIST         = 'data/eiq/dataSource.json?';
+	URL_DT_LIST         = 'data/eiq/dataTable.json?';
+	URL_SF_LIST         = 'data/eiq/eiq_gld_algorithm.json?';
 	
 	function getComboboxValues(selector) {
 		if($(selector) && $(selector)[0]) {

@@ -5,11 +5,9 @@
 <meta charset="UTF-8">
 <title>分仓模拟设置</title>
 
-<link href="../../tools/sweet-alert.css" rel="stylesheet">
 <link href="../../tools/tssJS/css/tss.all.css" rel="stylesheet">
 <link href="../../css/css.css" rel="stylesheet">
 
-<script src="../../tools/sweet-alert.js"></script>
 <script src="../../tools/tssJS/tssJS.all.js"></script>
 <script src="../../tools/tssJS/tssJS.matrix.js"></script>
 <script src="../../tools/tssUtils.js"></script>
@@ -101,8 +99,8 @@ var regionData = [], data;
     // just test
     URL_REGIONS   = "data/fc/regionTree.json?";
     URL_OFCS      = "data/fc/ofc.json?";
-    URL_SAVE_PLAN = "data/fc/_success.xml?";
-    URL_DELE_PLAN = "data/fc/_success.xml?";
+    URL_SAVE_PLAN = "data/_success.xml?";
+    URL_DELE_PLAN = "data/_success.xml?";
     URL_PLANS 	  = "data/fc/plans.json?";
 
     tssJS.ajax({
@@ -202,7 +200,7 @@ function createPlan(flag) {
     buildMatrix(data, true);
 
     if( !!flag ) {
-        swal("温馨提示：请从左下方的仓库列表里选择仓库到方案中，然后可进行区域和仓库映射。");
+        tssJS.alert("温馨提示：请从左下方的仓库列表里选择仓库到方案中，然后可进行区域和仓库映射。");
     }
 }
 
@@ -210,25 +208,17 @@ function deletePlan() {
     var tree1 = $.T("tree1");
     var treeNode = tree1.getActiveTreeNode();
 
-    swal({   
-            title: "您确定要删除方案【" + treeNode.name + "】吗？",   
-            type: "warning",   
-            showCancelButton: true,   
-            confirmButtonColor: "#DD6B55",   
-            confirmButtonText: "确定!",   
-            closeOnConfirm: true 
-        }, 
-        function() {   
-            $.ajax({
-                url : URL_DELE_PLAN + treeNode.id,
-                method : "DELETE",
-                onsuccess : function() { 
-                    tree1.removeTreeNode(treeNode);
-                    tree1.setActiveTreeNode(treeNode.parent.id);
-                    createPlan(false);
-                }
-            }); 
+	$.confirm("您确定要删除方案【" + treeNode.name + "】吗？", "删除方案", function() {
+        tssJS.ajax({
+            url : URL_DELE_PLAN + treeNode.id,
+            method : "DELETE",
+            onsuccess : function() { 
+                tree1.removeTreeNode(treeNode);
+                tree1.setActiveTreeNode(treeNode.parent.id);
+                createPlan(false);
+            }
         }); 
+    });
 }
 
 function editPlan() {
@@ -378,7 +368,7 @@ function selectWarehouses2plan() {
     var tree2 = $.T("tree2");
     var selectedNodes = tree2.getCheckedNodes();
     if(selectedNodes.length === 0) {
-        return swal("您必须选择一个以上仓库。");
+        return tssJS.alert("您必须选择一个以上仓库。");
     }
 
     var result = [], codes = [], names = [];
@@ -468,7 +458,7 @@ function savePlan() {
     });
 
     if( !completed ) {
-       return swal("温馨提示：尚有部分省级节点没有完成分仓，请完成后再保存。");
+       return tssJS.alert("温馨提示：尚有部分省级节点没有完成分仓，请完成后再保存。");
     }
 
     planData.id = $1("planInfo0").value;

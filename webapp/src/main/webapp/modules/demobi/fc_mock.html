@@ -5,12 +5,11 @@
 <meta charset="UTF-8">
 <title>分仓模拟效果</title>
 
-<link href="../../tools/sweet-alert.css" rel="stylesheet">
+<link href="../../tools/tssJS/css/tss.all.css" rel="stylesheet">
 <link rel="stylesheet" href="../../tools/easyui/themes/default/easyui.css">
 <link rel="stylesheet" href="../../tools/easyui/themes/icon.css">
 <link rel="stylesheet" href="../dm/template/common.css">
 
-<script src="../../tools/sweet-alert.js"></script>
 <script src="../../tools/tssJS/tssJS.all.js"></script>
 <script src="../dm/template/common.js"></script>
  
@@ -45,7 +44,7 @@ body { background-color: #fff; height: 95%;}
 
     URL_DATA2 = '/tss/api/json/GetRegionSoNums';
     URL_DATA3 = '/tss/api/json/GetRegionSoNums';
-    URL_DATA4 = '/tss/api/json/293?noCache=true';   //  请求《模拟分仓设置》的取分仓方案列表服务。 TODO 消除魔术数
+    URL_DATA4 = '/tss/api/json/658?noCache=true';   //  请求《模拟分仓设置》的取分仓方案列表服务。 TODO 消除魔术数
     URL_DATA5 = '/tss/api/json/GetRegions';
     
     // 如果分析的是第三方数据，则加参数fcmock.html?thirdData=true
@@ -100,7 +99,7 @@ body { background-color: #fff; height: 95%;}
             ondata : function() {
                 data1 = this.getResponseJSON();
                 if(data1 == null || data1.length == 0) {
-                    return swal("目前没有分仓方案，请先到《模拟分仓设置》页面创建分仓方案。");
+                    return tssJS.alert("目前没有分仓方案，请先到《模拟分仓设置》页面创建分仓方案。");
                 }
                
                 precheatPlanData(data1[0]);

@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <title>货品分仓分析</title>
 
-<link href="../../tools/sweet-alert.css" rel="stylesheet">
+<link rel="stylesheet" href="../../tools/tssJS/css/tss.all.css">
 <link rel="stylesheet" href="../../tools/easyui/themes/default/easyui.css">
 <link rel="stylesheet" href="../../tools/easyui/themes/icon.css">
 <link rel="stylesheet" href="../dm/template/common.css">
@@ -75,7 +75,7 @@ body { background-color: #fff; height: 95%;}
  
     function query() {
         if(_data == null || _data.length == 0) {
-            return swal("您查询的客户在当前查询时间段内没有做过任何发货。");
+            return tssJS.alert("您查询的客户在当前查询时间段内没有做过任何发货。");
         }
 
         skuIDs = [];
