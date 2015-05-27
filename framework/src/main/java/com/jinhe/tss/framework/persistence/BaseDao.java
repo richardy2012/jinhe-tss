@@ -167,7 +167,7 @@ public abstract class BaseDao<T extends IEntity> implements IDao<T>{
                 }
                 
                 if (param instanceof Object[])
-                    query.setParameter((String) conditionNames[i], Arrays.asList((Object[]) param));
+                    query.setParameter((String) conditionNames[i], Arrays.asList((Object[]) param)); // in查询，接收List类型，不支持数组
                 else
                     query.setParameter((String) conditionNames[i], param);
             }

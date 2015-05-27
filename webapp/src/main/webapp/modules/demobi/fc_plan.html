@@ -64,12 +64,11 @@ URL_SAVE_PLAN = NO_AUTH_PATH + "param";
 URL_DELE_PLAN = NO_AUTH_PATH + "param/";
 
 if(window.self === window.parent) {
-    URL_REGIONS   = "data/regionTree.json?";
-    URL_OFCS      = "data/ofc.json?";
+    URL_REGIONS   = "data/fc/regionTree.json?";
+    URL_OFCS      = "data/fc/ofc.json?";
     URL_SAVE_PLAN = "data/_success.xml?";
     URL_DELE_PLAN = "data/_success.xml?";
-
-    URL_PLANS = "data/plans.json?";
+    URL_PLANS     = "data/fc/plans.json?";
 }
 
 var regionData = [], data;
@@ -100,12 +99,11 @@ var regionData = [], data;
     }
 
     // just test
-    URL_REGIONS   = "data/regionTree.json?";
-    URL_OFCS      = "data/ofc.json?";
-    URL_SAVE_PLAN = "data/_success.xml?";
-    URL_DELE_PLAN = "data/_success.xml?";
-
-    URL_PLANS = "data/plans.json?";
+    URL_REGIONS   = "data/fc/regionTree.json?";
+    URL_OFCS      = "data/fc/ofc.json?";
+    URL_SAVE_PLAN = "data/fc/_success.xml?";
+    URL_DELE_PLAN = "data/fc/_success.xml?";
+    URL_PLANS 	  = "data/fc/plans.json?";
 
     tssJS.ajax({
         url : URL_PLANS,

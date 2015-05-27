@@ -44,11 +44,13 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
        
 		String md5Password1 = encodePassword(loginName, password);
 		String md5Password2 = encodePassword(loginName.toUpperCase(), password); // 转换成大写再次尝试
+		String md5Password3 = encodePassword(loginName.toLowerCase(), password); // 转换成小写再次尝试
         String md5Password0 = operator.getPassword();
         
         // 如果各种验证都不通过
 		if ( !md5Password1.equals(md5Password0) 
-				&& !md5Password2.equals(md5Password0) 
+				&& !md5Password2.equals(md5Password0)
+				&& !md5Password3.equals(md5Password0)
 				&& !customizeValidate(operator, password)) {
 			
 			throw new BusinessException("用户密码不正确，请重新登录", false);

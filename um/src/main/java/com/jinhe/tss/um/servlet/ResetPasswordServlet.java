@@ -46,7 +46,6 @@ public class ResetPasswordServlet extends HttpServlet {
     	
 		String userId = request.getParameter("userId");
 		String password = request.getParameter("password");
-        String newPassword = request.getParameter("newPassword");
 
 		Long id = Long.valueOf(userId);
 		User user = userService.getUserById(id);
@@ -54,12 +53,17 @@ public class ResetPasswordServlet extends HttpServlet {
             throw new BusinessException("修改密码时找不到用户ID为" + id + "用户，可能已被删除，请联系管理员");
         }
         
+        String newPassword;
         String verifyOrReset = request.getParameter("type");
-        if( !"reset".equals(verifyOrReset) ) { 
-            String oldPassword = user.encodePassword(password);
+        if( "reset".equals(verifyOrReset) ) { // 根据密码问题重置密码
+        	newPassword = password;
+        }
+        else { // 正常修改密码
+        	String oldPassword = user.encodePassword(password);
 			if(!user.getPassword().equals(oldPassword)){
             	throw new BusinessException("旧密码输入不正确");
             }
+			newPassword = request.getParameter("newPassword");
         }
         
 		// 更新密码
