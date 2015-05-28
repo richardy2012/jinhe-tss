@@ -142,6 +142,8 @@
             request.onresult = function() { // 新增
                 var xmlNode = this.getNodeValue(XML_MAIN_TREE).querySelector("treeNode");
                 appendTreeNode("-2", xmlNode);
+                $.alert("新建成功");
+
                 getOtherApplication(false, xmlNode.getAttribute("id"));
             }
             request.onsuccess = function() { // 修改，更新树节点名称

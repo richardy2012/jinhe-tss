@@ -278,7 +278,7 @@
         syncButton([ $1("channelFormSave")], request);
 
         request.onresult = function() { 
-            afterSaveTreeNode(treeID, "_root");
+            afterSaveTreeNode.call(this, treeID, "_root");
 			$("#channelFormDiv").hide();
         }
         request.onsuccess = function() { 
@@ -330,7 +330,7 @@
         syncButton([$1("channelFormSave")], request);
 
         request.onresult = function() { 
-			afterSaveTreeNode(treeID, parentID);
+			afterSaveTreeNode.call(this, treeID, parentID);
 			$("#channelFormDiv").hide();
         }
         request.onsuccess = function() {

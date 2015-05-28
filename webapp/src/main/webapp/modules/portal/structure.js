@@ -342,7 +342,7 @@ function saveStructure(treeID, parentID) {
     syncButton([$1("page1BtSave")], request); // 同步按钮状态
 
     request.onresult = function() {
-        afterSaveTreeNode(treeID, parentID);
+        afterSaveTreeNode.call(this, treeID, parentID);
     }
     request.onsuccess = function() {
         afterSaveTreeNode(treeID, page1Form);

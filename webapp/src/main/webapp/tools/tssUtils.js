@@ -80,7 +80,7 @@ window.onresize = function() {
 /* 事件绑定初始化 */
 function initEvents() {
 	/* 树节点查找 和 刷新 */
-	$(".refreshTreeBT").title("刷新").click(loadInitData);
+	$(".refreshTreeBT").title("刷新").click( function() { loadInitData(); } );
 	$("#palette .search input[type=button]").click(searchTree);
 
 	window.onresize();

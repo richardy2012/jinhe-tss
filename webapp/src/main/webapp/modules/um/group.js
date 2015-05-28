@@ -457,7 +457,7 @@
         syncButton([$1("page1BtSave"), $1("page4BtSave"), $1("page3BtSave")], request);
 
         request.onresult = function() {
-            afterSaveTreeNode(treeID, parentID);
+            afterSaveTreeNode.call(this, treeID, parentID);
         }
         request.onsuccess = function() {
             afterSaveTreeNode(treeID, page1Form);

@@ -260,7 +260,7 @@ function saveMenu(treeID, parentId) {
     syncButton([$1("page1BtSave")], request); // 同步按钮状态
 
     request.onresult = function() {
-		afterSaveTreeNode(treeID, parentId);
+		afterSaveTreeNode.call(this, treeID, parentId);
     }
     request.onsuccess = function() {
         afterSaveTreeNode(treeID, page1Form);

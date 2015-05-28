@@ -294,7 +294,7 @@
 		syncButton([$1("page1BtSave"), $1("page2BtSave")], request);
 
 		request.onresult = function() {
-			afterSaveTreeNode(treeID, parentID);
+			afterSaveTreeNode.call(this, treeID, parentID);
 		}
 		request.onsuccess = function() {
 			afterSaveTreeNode(treeID, xform);
@@ -459,7 +459,7 @@
         syncButton([$1("page1BtSave"), $1("page2BtSave"), $1("page4BtSave")], request);
 
         request.onresult = function() {                   
-			afterSaveTreeNode(treeID, parentID);
+			afterSaveTreeNode.call(this, treeID, parentID);
         }
         request.onsuccess = function() {                  
             afterSaveTreeNode(treeID, page1Form);
