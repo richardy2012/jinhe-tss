@@ -64,6 +64,8 @@
 			html.push('<div style="margin:20px;">');
 			html.push('可选附件：<select class="imageSelf" id="attachSelector">');
 			$("#attachGrid tbody>tr").each(function(i, row){
+				if( $('td', row).length == 0 ) return;
+
 				var name = $('td[name=name]', row).attr('value');
 				var url  = NO_AUTH_PATH + $('td[name=relationUrl]', row).attr('value');
 				var type = $('td[name=type]', row).attr('value');
@@ -275,7 +277,7 @@
 		<div class="bts">
 			<input type="button" value="完成" class="btStrong" id="btSave"/> 
 			<input type="button" value="完成并提交" class="btStrongL" id="btSaveAndPublish"/>
-			<input type="button" value="关闭" class="btWeak" onclick="window.close()"/>
+			<input type="button" value="关闭" class="btWeak" onclick="window.parent.showArticleList(channelId);"/>
 		</div>
 	</div>
 

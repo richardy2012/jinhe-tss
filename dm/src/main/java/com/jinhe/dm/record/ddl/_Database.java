@@ -198,11 +198,11 @@ public abstract class _Database {
 		SQLExcutor.excute(updateSQL, this.datasource);
 	}
 	
-	public List<Map<String, Object>> select() {
+	public SQLExcutor select() {
 		 return this.select(1, 100, new HashMap<String, String>());
 	}
 
-	public List<Map<String, Object>> select(int page, int pagesize, Map<String, String> params) {
+	public SQLExcutor select(int page, int pagesize, Map<String, String> params) {
 		Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
 		paramsMap.put(1, Environment.getUserCode());
 		
@@ -239,7 +239,7 @@ public abstract class _Database {
 		SQLExcutor ex = new SQLExcutor(false);
 		ex.excuteQuery(selectSQL, paramsMap, page, pagesize, this.datasource);
 		
-		return ex.result;
+		return ex;
 	}
 
 	public Document getGridTemplate() {

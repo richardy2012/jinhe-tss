@@ -86,7 +86,7 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
     }
  
     public void setContent(String content) {
-        this.content = content;
+        this.content = content != null ? content : "";
     }
  
     public Integer getHitCount() {

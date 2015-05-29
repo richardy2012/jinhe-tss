@@ -81,7 +81,7 @@ public class _DatabaseTest {
 		valuesMap.put("f3", "2015-04-05");
 		_db.insert(valuesMap);
 		
-		List<Map<String, Object>> result = _db.select();
+		List<Map<String, Object>> result = _db.select().result;
 		Assert.assertTrue(result.size() == 1);
 		
 		Map<String, Object> row = result.get(0);
@@ -95,7 +95,7 @@ public class _DatabaseTest {
 		valuesMap.put("f1", "12");
 		_db.update(id, valuesMap);
 		
-		result = _db.select();
+		result = _db.select().result;
 		Assert.assertTrue(result.size() == 1);
 		row = result.get(0);
 		Assert.assertEquals(12.0, row.get("f1"));
@@ -115,7 +115,7 @@ public class _DatabaseTest {
 		record.setDefine(tblDefine);
 		
 		_db.updateTable(record);
-		result = _db.select();
+		result = _db.select().result;
 		Assert.assertTrue(result.size() == 0);
 		
 		SQLExcutor ex = new SQLExcutor(false);
@@ -132,20 +132,20 @@ public class _DatabaseTest {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("f2", "just test");
 		params.put("creator", UMConstants.ADMIN_USER_NAME);
-		result = _db.select(1, 10, params);
+		result = _db.select(1, 10, params).result;
 		Assert.assertTrue(result.size() == 1);
 		
 		params.put("f2", "no test");
 		params.put("updator", UMConstants.ADMIN_USER_NAME);
-		result = _db.select(1, 10, params);
+		result = _db.select(1, 10, params).result;
 		Assert.assertTrue(result.size() == 0);
 		
 		// test delete
-		result = _db.select();
+		result = _db.select().result;
 		Assert.assertTrue(result.size() == 1);
 		id = EasyUtils.obj2Int( result.get(0).get("id") );
 		
 		_db.delete(id);
-		Assert.assertTrue(_db.select().size() == 0);
+		Assert.assertTrue(_db.select().result.size() == 0);
 	}
 }

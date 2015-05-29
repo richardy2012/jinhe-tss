@@ -371,6 +371,7 @@
     var globalValiable = {}; // 用来存放传递给iframe页面的信息
     function addNewArticle() { 
         globalValiable.channelId = getTreeNodeId();
+        globalValiable.articleId = null;
 
         $("#grid").hide();
         $("#articleFrame").show();

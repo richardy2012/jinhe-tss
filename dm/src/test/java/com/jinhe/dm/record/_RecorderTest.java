@@ -47,7 +47,7 @@ public class _RecorderTest extends TxTestSupport4DM {
 		recorder.create(request, response, recordId);
 		recorder.update(request, response, recordId, 1);
 		
-		Assert.assertTrue(recorder.getDB(recordId).select().size() == 1);
+		Assert.assertTrue(recorder.getDB(recordId).select().result.size() == 1);
 		
 		request = new MockHttpServletRequest();
 		request.addParameter("f2", "just test"); // test as query condition
@@ -56,7 +56,7 @@ public class _RecorderTest extends TxTestSupport4DM {
 		
 		recorder.delete(response, recordId, 1);
 		
-		Assert.assertTrue(recorder.getDB(recordId).select().size() == 0);
+		Assert.assertTrue(recorder.getDB(recordId).select().result.size() == 0);
 	}
 	
 }

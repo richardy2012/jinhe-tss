@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.record.ddl._Database;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.Pool;
@@ -65,10 +66,10 @@ public class _Recorder extends BaseActionSupport {
  
         _Database _db = getDB(recordId);
         
-        List<Map<String, Object>> result = _db.select(page, PAGE_SIZE, getRequestMap(request));
+        SQLExcutor ex = _db.select(page, PAGE_SIZE, getRequestMap(request));
         
         List<IGridNode> temp = new ArrayList<IGridNode>();
-		for(Map<String, Object> item : result) {
+		for(Map<String, Object> item : ex.result) {
             DefaultGridNode gridNode = new DefaultGridNode();
             gridNode.getAttrs().putAll(item);
             temp.add(gridNode);
@@ -77,7 +78,7 @@ public class _Recorder extends BaseActionSupport {
         
         PageInfo pageInfo = new PageInfo();
         pageInfo.setPageSize(PAGE_SIZE);
-        pageInfo.setTotalRows(result.size());
+        pageInfo.setTotalRows(ex.count);
         pageInfo.setPageNum(page);
         
         print(new String[] {"RecordData", "PageInfo"}, new Object[] {gEncoder, pageInfo});
@@ -89,7 +90,7 @@ public class _Recorder extends BaseActionSupport {
     		@PathVariable("recordId") Long recordId, @PathVariable("page") int page) {
     	
         _Database _db = getDB(recordId);
-        return _db.select(page, PAGE_SIZE, getRequestMap(request));
+        return _db.select(page, PAGE_SIZE, getRequestMap(request)).result;
     }
 	
     @RequestMapping(value = "/{recordId}", method = RequestMethod.POST)
