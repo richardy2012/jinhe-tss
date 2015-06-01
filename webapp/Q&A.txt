@@ -21,7 +21,7 @@ TSS3.3版本更新点：
 2、定时任务监听器
 3、缓存池监听器、在线创建 缓存池（连接池）
 4、Spring ContextLoaderListener 扩展
-5、Record 缓存查询条件、复制功能、查询条件级联
+5、Record 缓存查询条件、复制功能、查询条件级联、分页失效问题、查询条件date（oracle）出错问题
    
 
 {

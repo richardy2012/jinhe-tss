@@ -136,6 +136,7 @@ public class _DatabaseTest {
 		Assert.assertTrue(result.size() == 1);
 		
 		params.put("f2", "no test");
+		params.put("f4", "2015-04-05");
 		params.put("updator", UMConstants.ADMIN_USER_NAME);
 		result = _db.select(1, 10, params).result;
 		Assert.assertTrue(result.size() == 0);
