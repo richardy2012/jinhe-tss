@@ -257,11 +257,9 @@
     }
 
     function showChannelForm() {
-        var formObj = $1("channelFormDiv");
-        Element.show(formObj);
-        $1("channelFormClose").onclick = function() {
-            $(formObj).hide();
-        }
+        var $panel = $("#channelFormDiv").show(true);
+        var html = '<div id="channelForm"></div><input type="button" class="btStrong" value="保存" id="channelFormSave"/>';
+        $panel.html("").panel("编辑栏目【" + getTreeNodeName() + "】", html);
     }
  
     function saveSite(treeID) {

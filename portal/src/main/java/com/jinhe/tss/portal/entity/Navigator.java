@@ -126,6 +126,10 @@ public class Navigator extends OperateInfo implements IXForm, IDecodable, IResou
             map.put("icon", "images/menu_item_" + disabled + ".gif");
         }       
         
+        if( this.levelNo <= 3 ) {
+        	map.put("_open", "true");
+        }
+        
         return map;
     }
     

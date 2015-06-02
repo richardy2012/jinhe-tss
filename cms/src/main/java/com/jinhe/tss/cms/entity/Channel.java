@@ -173,6 +173,10 @@ public class Channel extends OperateInfo implements IXForm, IDecodable, IResourc
  
 		String iconName = (isSiteRoot() ? "site" : "channel");
 		map.put("icon", "images/" + iconName + "_" + disabled + ".gif");
+		
+        if( this.levelNo <= 3 ) {
+        	map.put("_open", "true");
+        }
         
 		return map;
 	}

@@ -221,9 +221,15 @@ public abstract class _Database {
 				String valueStr = params.get(key);
 				if(EasyUtils.isNullOrEmpty(valueStr)) continue;
 				
+				Object value;
 				int fieldIndex = this.fieldCodes.indexOf(key);
-				String paramType = this.fieldTypes.get(fieldIndex);
-				Object value = _Util.preTreatValue(valueStr, paramType);
+				if(fieldIndex >= 0) {
+					String paramType = this.fieldTypes.get(fieldIndex);
+					value = _Util.preTreatValue(valueStr, paramType);
+				}
+				else {
+					value = valueStr;
+				}
 				
 				if(this.fieldCodes.contains(key) || "updator".equals(key)) {
 					condition += " and " + key + " = ? ";

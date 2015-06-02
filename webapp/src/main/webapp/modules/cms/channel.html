@@ -14,8 +14,12 @@
 <script src="channel.js"></script>
 
 <style>
-  #channelFormDiv { display:none; background-color:#BEC6EE; border:1px solid #416371; 
-      width:400px; height:180px; padding: 10px 10px 10px 10px; }
+  #channelFormDiv { width: 400px; max-height: 320px; top: 100px; left: 220px; display:none; }
+  #channelFormDiv .content { padding: 12px; overflow: auto; }
+  #channelFormDiv .buttonBox { margin: 0 auto; text-align: center; }
+  #channelFormDiv .buttonBox input { margin-left: 12px;  }
+  #channelFormDiv .max, #channelFormDiv .min { display: none; }
+ 
 
   #channelFormDiv input[type='button'] { margin: 10px; }
       
@@ -61,11 +65,7 @@
     <tr class="footer"> <td/><td/><td/><td/> </tr>
   </table>
 
-  <div id="channelFormDiv">
-    <div id="channelForm"></div>
-    <input type="button" class="btStrong" value="保存" id="channelFormSave"/>      
-    <input type="button" class="btWeak" value="关闭" id="channelFormClose"/>
-  </div>
+  <div id="channelFormDiv"></div>
 
 </body>
 </html>

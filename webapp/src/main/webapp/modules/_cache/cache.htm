@@ -97,6 +97,8 @@
 
 		loadInitData();
 		loadInitGrid();
+
+		window.setInterval(loadInitGrid, 1000 * 10);  // 每10秒刷新一次
 	}
  
 	/* 页面初始化加载数据(包括工具条、菜单树) */

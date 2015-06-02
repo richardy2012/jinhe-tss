@@ -334,8 +334,12 @@ function getNextLevelOption(nextL, serviceID, currParam, currParamValue) {
 
     // serviceID maybe is ID of record, maybe a serviceUrl
     var url = dreg.test(serviceID) ? '../../data/json/' + serviceID : serviceID;
+    currParam = dreg.test(currParam) ? "param" + currParam : "param1";  // TODO 无法同时支持录入form和查询form的下拉
+    nextL = dreg.test(nextL) ? "f" + nextL : nextL;
+
+    url = url.replace('p_', '');
     
-    var xform = $.F("page1Form");
+    var xform = $.F("page1Form") || $.F("searchForm");
     $.getNextLevelOption(xform, currParam, currParamValue, url, nextL);
 }
 
