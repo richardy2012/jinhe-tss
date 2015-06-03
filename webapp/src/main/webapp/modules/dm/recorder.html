@@ -31,10 +31,11 @@
         overflow: auto; 
     }
 
-    .Formbox { display:none; background-color:#BEC6EE; border:1px solid #416371; border-radius: 5px; }
-    #searchFormDiv { display: none; width:500px; height:400px; padding: 10px; overflow: auto; }
-    #searchFormDiv .buttonBox { margin: 20px 10px 10px 55px;  }
-    #searchFormDiv h3 { font-size: 120%; margin-bottom: 10px; }
+    #searchFormDiv { max-width: 600px; max-height: 450px; top: 200px; left: 30px; display:none; }
+    #searchFormDiv .content { padding: 12px; overflow: auto; }
+    #searchFormDiv .buttonBox { margin: 0 auto; text-align: center; }
+    #searchFormDiv .buttonBox input { margin-left: 12px;  }
+    #searchFormDiv .max, #searchFormDiv .min { display: none; }
 
 </style>
 
@@ -246,15 +247,18 @@ function remove()  {
 
 function showQueryForm() {
     if($.cache.XmlDatas["searchFormXML"]) {
-        $("#searchFormDiv").show(true).center(1000, 400);
+        $("#searchFormDiv").show(true);
         return;
     }
+
+    var $panel = $("#searchFormDiv").show(true);
+    var html = '<div id="searchForm"></div>';
+    $panel.html("").panel("查询【" + recordName + "】的录入数据", html);
 
     var buttonBox = [];
     buttonBox[buttonBox.length] = "        <TR>";
     buttonBox[buttonBox.length] = "          <TD colspan='2' height='46'><div class='buttonBox'>";
-    buttonBox[buttonBox.length] = "             <input type='button' class='btStrong' id='btSearch' value='查询'/> - ";
-    buttonBox[buttonBox.length] = "             <input type='button' class='btWeak' id='btCloseSearch' value='关闭'/>";
+    buttonBox[buttonBox.length] = "             <input type='button' class='btStrong' id='btSearch' value='查 询'/>";
     buttonBox[buttonBox.length] = "          </div></TD>";
     buttonBox[buttonBox.length] = "        </TR>";
 
@@ -290,11 +294,7 @@ function showQueryForm() {
     paramsConfig.push({"label": "创建人", "name": "p_creator"});
     paramsConfig.push({"label": "修改人", "name": "p_updator"});
 
-    var searchForm = $.json2Form("searchForm", paramsConfig, buttonBox.join(""));
-
-    $("#searchFormDiv").show(true).center(1000, 400);
-    $("#searchFormDiv h3").html("查询【" + recordName + "】的录入数据");
-
+    var searchForm = $.json2Form("searchForm", paramsConfig, buttonBox.join("")); 
     $.cache.XmlDatas["searchFormXML"] = searchForm.template.sourceXML;
     
     $1("btSearch").onclick = function () {
@@ -312,34 +312,46 @@ function showQueryForm() {
             loadGridData(1);
         }
     }
-    $1("btCloseSearch").onclick = function () {
-        $("#searchFormDiv").hide();
-    }
 }
 
 var params = {};  // 缓存查询条件，增加删除修改后刷新Grid可以继续使用 
 
 // ------------------------------------------------- 自定义扩展 ------------------------------------------------
 /*
- *  多级下拉选择联动
+ *  多级下拉选择联动，录入表单和查询表单都使用本方法
+ *
  *  参数： nextL    下一级联动参数的序号
         serviceID       下一级联动的service地址             
         currParam       当前联动参数的序号
         currParamValue  当前联动参数的值
+
+    eg: getNextLevelOption(^center^, ^../../api/json/GetFenBo^, ^param1^)  // 数据服务接收参数名为param1
+        getNextLevelOption(^center^, ^../../service/centers^, ^org^)      // 数据服务接收参数名为org
  */
 function getNextLevelOption(nextL, serviceID, currParam, currParamValue) {
-    if(nextL == null || serviceID == null || currParam == null || $.isNullOrEmpty(currParamValue)) return;
+    if( !nextL || !serviceID || !currParam || $.isNullOrEmpty(currParamValue)) return;
 
-    var dreg = /^[1-9]+[0-9]*]*$/;
+    var dreg = /^[1-9]+[0-9]*]*$/, xform;
+
+    nextL = dreg.test(nextL) ? "f" + nextL : nextL;
+    if( $("#" + nextL).length == 0 ) return; 
 
     // serviceID maybe is ID of record, maybe a serviceUrl
     var url = dreg.test(serviceID) ? '../../data/json/' + serviceID : serviceID;
-    currParam = dreg.test(currParam) ? "param" + currParam : "param1";  // TODO 无法同时支持录入form和查询form的下拉
-    nextL = dreg.test(nextL) ? "f" + nextL : nextL;
-
-    url = url.replace('p_', '');
     
-    var xform = $.F("page1Form") || $.F("searchForm");
+    if( currParam.indexOf('p_') >= 0 || url.indexOf('p_') >= 0) { // 查询表单的级联下拉
+        currParam = currParam.replace('p_', '')
+        url = url.replace('p_', '');
+        xform = $.F("searchForm");
+    } 
+    else {
+        xform = $.F("page1Form");
+    }
+
+    if( dreg.test(currParam) ) { // 数字
+        currParam = "param" + currParam;
+    }
+    
     $.getNextLevelOption(xform, currParam, currParamValue, url, nextL);
 }
 
@@ -462,10 +474,7 @@ function disableForm() {
         </WorkSpace:Page>
     </WorkSpace:Box>
 
-    <div id="searchFormDiv" class="Formbox">
-        <h3></h3>
-        <div id="searchForm"></div>
-    </div>
+    <div id="searchFormDiv"></div>
 
 </body>
 </html>

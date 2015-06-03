@@ -284,16 +284,18 @@ public class SQLExcutor {
             throw new BusinessException(errorMsg, e);
         } finally {
             try {
-                if (rs != null) {
-                    rs.close();
-                    rs = null;
-                }
                 if (pstmt != null) {
                     pstmt.close();
                     pstmt = null;
                 }
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { }
+            
+            try {
+                if (rs != null) {
+                    rs.close();
+                    rs = null;
+                }
+            } catch (Exception e) { }
         }
     }
 

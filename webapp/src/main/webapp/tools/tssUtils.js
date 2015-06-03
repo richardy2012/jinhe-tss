@@ -335,10 +335,10 @@ function createExportFrame() {
 	window.alert = $.alert;
 
 	/* 捕获页面js报错 */
-	window.onerror = function(msg, url, line) {
-		alert(msg, "错误:" + msg + "\r\n行:" + line + "\r\n地址:" + url);
-		$.Event.cancel();
-	};
+	// window.onerror = function(msg, url, line) {
+	// 	alert(msg, "错误:" + msg + "\r\n行:" + line + "\r\n地址:" + url);
+	// 	$.Event.cancel();
+	// };
 
 	// 离开提醒
 	window.onbeforeunload = function() {

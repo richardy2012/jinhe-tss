@@ -175,15 +175,18 @@ public abstract class _Database {
 
 	public void update(Integer id, Map<String, String> valuesMap) {
 		Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
-		int index = 0, n = 0;
+		int index = 0;
 		String tags = "";
 		for(String field : this.fieldCodes) {
-			if( valuesMap.containsKey(field) ) {
-				Object value = _Util.preTreatValue(valuesMap.get(field), fieldTypes.get(n));
-				paramsMap.put(++index, value);
-				tags += field + "=?, ";
+			Object value = valuesMap.get(field);
+			if( value != null ) {
+				value = _Util.preTreatValue((String)value, fieldTypes.get(index));
+			} else {
+				value = null;
 			}
-			n++;
+			
+			paramsMap.put(++index, value);
+			tags += field + "=?, ";
 		}
 		paramsMap.put(++index, new Timestamp(new Date().getTime()));
 		paramsMap.put(++index, Environment.getUserCode());
@@ -211,7 +214,8 @@ public abstract class _Database {
 		try {
 			List<String> permissions = PermissionHelper.getInstance().getOperationsByResource(recordId,
 	                RecordPermission.class.getName(), RecordResource.class);
-			canEdit = canEdit || permissions.contains(Record.OPERATION_EDIT);
+			canEdit = canEdit || permissions.contains(Record.OPERATION_VDATA) 
+					|| permissions.contains(Record.OPERATION_EDATA);
 		} catch(Exception e) {
 		}
 		String condition = canEdit ? " '000' <> ? " : " creator = ? ";
@@ -231,13 +235,14 @@ public abstract class _Database {
 					value = valueStr;
 				}
 				
+				if( "creator".equals(key) ) {
+					paramsMap.put(1, value);     // 替换登录账号，允许查询其它人创建的数据; 
+					condition = " creator = ? "; // 如果填写了创建人作为查询条件，则只查该创建人的数据
+				}
+				
 				if(this.fieldCodes.contains(key) || "updator".equals(key)) {
 					condition += " and " + key + " = ? ";
 					paramsMap.put(paramsMap.size() + 1, value);
-				}
-				
-				if( "creator".equals(key) ) {
-					paramsMap.put(1, value); // 替换登录账号，允许查询其它人创建的数据; 
 				}
 			}
 		}

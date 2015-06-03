@@ -13,13 +13,13 @@ public interface RecordService {
     
     @PermissionTag(
     		resourceType = Record.RESOURCE_TYPE,
-	        operation = Record.OPERATION_VIEW
+	        operation = Record.OPERATION_CDATA
 	)
     List<Record> getAllRecord();
 
     @PermissionTag(
     		resourceType = Record.RESOURCE_TYPE,
-	        operation = Record.OPERATION_VIEW
+	        operation = Record.OPERATION_CDATA
 	)
     List<Record> getAllRecordGroups();
 

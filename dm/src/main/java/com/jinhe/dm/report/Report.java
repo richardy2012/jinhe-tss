@@ -42,8 +42,7 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
     public static final String OPERATION_DELETE  = "3"; // 删除
     public static final String OPERATION_DISABLE = "4"; // 停用启用
     
-    public Report() {
-    }
+    public Report() { }
     
     public Report(Long groupId, String groupName) {
     	this.id = groupId;
@@ -160,7 +159,7 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
         TreeAttributesMap map = new TreeAttributesMap(id, name);;
        
         String icon_path;
-        if (TYPE0 == type) {
+        if ( isGroup() ) {
             icon_path = "images/reportGroup.gif";
         } 
         else {
@@ -193,6 +192,14 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
             return ReportResource.class;
         }
         return this.getClass();
+    }
+    
+    public boolean isGroup() {
+    	return TYPE0 == this.type;
+    }
+    
+    public boolean isActive() {
+    	return !ParamConstants.TRUE.equals(this.getDisabled());
     }
 
 	public String getResourceType() {

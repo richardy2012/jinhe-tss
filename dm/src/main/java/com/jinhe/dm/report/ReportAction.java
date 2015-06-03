@@ -77,7 +77,7 @@ public class ReportAction extends BaseActionSupport {
 	    	result.add(new Report(selfGroupId, "您最近访问报表"));
 	    	for(String temp : topSelf) {
 	    		for(Report report : list) {
-		    		if(temp.equals(report.getName()) && !ParamConstants.TRUE.equals(report.getDisabled())) {
+		    		if(temp.equals(report.getName()) && report.isActive() && !report.isGroup()) {
 		        		result.add(cloneReport(selfGroupId, report));
 		        		break;
 		    		}
@@ -88,7 +88,7 @@ public class ReportAction extends BaseActionSupport {
 	    	result.add(new Report(topGroupId, "近期热门报表"));
 	    	for(String temp : topX) {
 	    		for(Report report : list) {
-		    		if(temp.equals(report.getName()) && !ParamConstants.TRUE.equals(report.getDisabled())) {
+		    		if(temp.equals(report.getName()) && report.isActive() && !report.isGroup()) {
 		        		result.add(cloneReport(topGroupId, report));
 		        		break;
 		    		}
@@ -99,7 +99,7 @@ public class ReportAction extends BaseActionSupport {
 	    result.add(new Report(newGroupId, "近期新出报表"));
 	    List<Report> latest = new ArrayList<Report>();
     	for(Report report : list) {
-    		if(ParamConstants.TRUE.equals(report.getDisabled()))  continue;
+    		if( !report.isActive() || report.isGroup())  continue;
  
     		if(Report.TYPE1 == report.getType() 
     				&& report.getCreateTime().after(_DateUtil.subDays(_DateUtil.today(), 10))

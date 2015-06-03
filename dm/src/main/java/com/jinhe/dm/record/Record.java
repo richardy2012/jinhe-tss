@@ -36,9 +36,11 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     public static final String RESOURCE_TYPE = "D2"; 
     
     // 数据录入资源操作ID
-    public static final String OPERATION_VIEW    = "1"; // 查看
-    public static final String OPERATION_EDIT    = "2"; // 维护
-    public static final String OPERATION_DELETE  = "3"; // 删除
+    public static final String OPERATION_CDATA   = "1"; // 录入数据, create data/delete data
+    public static final String OPERATION_EDIT    = "2"; // 维护录入
+    public static final String OPERATION_DELETE  = "3"; // 删除录入
+    public static final String OPERATION_VDATA   = "4"; // 查看数据，授此操作权限的用户能看到所有录入数据, view data
+    public static final String OPERATION_EDATA   = "5"; // 维护数据，授此操作权限的用户能看到所有录入数据，且能编辑 edit data
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "record_sequence")
@@ -64,6 +66,10 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     /** 定制的JS方法： 用于校验，自动计算等  */
     @Column(length = 4000)  
     private String customizeJS;
+    
+    /** 定制的过滤条件，可按登录人的角色、组织等信息进行过滤  */
+    @Column(length = 1000)  
+    private String customizeTJ;
    
     private String  remark; 
     
@@ -212,5 +218,13 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
 
 	public void setCustomizeJS(String customizeJS) {
 		this.customizeJS = customizeJS;
+	}
+
+	public String getCustomizeTJ() {
+		return customizeTJ;
+	}
+
+	public void setCustomizeTJ(String customizeTJ) {
+		this.customizeTJ = customizeTJ;
 	}
 }

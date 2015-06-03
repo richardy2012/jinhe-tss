@@ -105,7 +105,7 @@ public class ReportServiceImpl implements ReportService {
         report.setParentId(groupId);
         report.setSeqNo(reportDao.getNextSeqNo(groupId));
  
-        if (reportGroup != null && ParamConstants.TRUE.equals(reportGroup.getDisabled())) {
+        if ( reportGroup != null && !reportGroup.isActive() ) {
             report.setDisabled(ParamConstants.TRUE); // 如果目标根节点是停用状态，则新复制出来的节点也为停用状态
         }
         
@@ -126,7 +126,7 @@ public class ReportServiceImpl implements ReportService {
             }
             
             // reportGroup有可能是“全部”节点
-            if (reportGroup != null && ParamConstants.TRUE.equals(reportGroup.getDisabled())) {
+            if (reportGroup != null && !reportGroup.isActive() ) {
                 temp.setDisabled(ParamConstants.TRUE); // 如果目标根节点是停用状态，则所有新复制出来的节点也一律为停用状态
             }
             
