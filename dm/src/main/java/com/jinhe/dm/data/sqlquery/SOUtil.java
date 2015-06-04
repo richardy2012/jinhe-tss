@@ -1,27 +1,18 @@
 package com.jinhe.dm.data.sqlquery;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import com.jinhe.dm._Util;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 
 public class SOUtil {
 	
-	private static final Log logger = LogFactory.getLog(SOUtil.class);
- 
 	public static Map<String, Object> getProperties(AbstractSO so, String...ignore) {
 		Set<String> ignoreNames = new HashSet<String>();
 		if(ignore != null && ignore.length > 0) {
@@ -84,21 +75,6 @@ public class SOUtil {
     }
 	
     public static String freemarkerParse(String script, AbstractSO so) {
-    	return freemarkerParse(script, SOUtil.getProperties(so));
-    }
- 
-    /** 用Freemarker引擎解析脚本 */
-    public static String freemarkerParse(String script, Map<String, ?> dataMap) {
-        try {
-            Template temp = new Template("t.ftl", new StringReader(script), new Configuration());
-            Writer out = new StringWriter();
-            temp.process(dataMap, out);
-            script = out.toString();
-            out.flush();
-        } catch (Exception e) {
-        	logger.error("用Freemarker引擎解析脚本出错了", e);
-            return script;
-        }  
-        return script;
+    	return _Util.freemarkerParse(script, SOUtil.getProperties(so));
     }
 }

@@ -36,9 +36,11 @@
 		permissionTable="com.jinhe.dm.record.permission.RecordPermission" 
 		resourceTable="com.jinhe.dm.record.permission.RecordResource">
 		
-		<operation operationId="1"  name="查看录入" seqNo="1" dependParent="2"  />
-		<operation operationId="2"  name="维护录入" seqNo="2" dependId="opt1" />	
-		<operation operationId="3"  name="删除录入" seqNo="3" dependId="opt1" dependParent="3"/>
+		<operation operationId="1"  name="录入数据" seqNo="3" dependParent="2"  />
+		<operation operationId="2"  name="维护录入" seqNo="1" dependId="opt1" />	
+		<operation operationId="3"  name="删除录入" seqNo="2" dependId="opt1" dependParent="3"/>
+		<operation operationId="4"  name="浏览数据" seqNo="4" />
+		<operation operationId="5"  name="维护数据" seqNo="5" />
 	
 	</resourceType>
 	<resourceTypeRoot applicationId="tss" resourceTypeId="D2" rootId="0"/>

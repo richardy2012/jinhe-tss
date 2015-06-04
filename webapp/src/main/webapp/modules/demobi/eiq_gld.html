@@ -182,24 +182,24 @@ legend { background-color:#F9EE70; height:20px; font-weight:bolder; }
 		queryParams.searchDateTo   = $1("searchTimeTo").value || "";
 
 		if(queryParams.dataSource == "") {
-			alert("请选择数据源");
+			tssJS.alert("请选择数据源");
 			return false;
 		} else if (queryParams.dataSource != 'connectionpool-1') {
 			if(queryParams.tableName == "") {
-				alert("请选择数据样本");
+				tssJS.alert("请选择数据样本");
 				return false;
 			} 
 		} else {
 			if(queryParams.whCodes == "") {
-				alert("请选择仓库");
+				tssJS.alert("请选择仓库");
 				return false;
 			}
 			if(queryParams.searchDateFrom == "") {
-				alert("请输入起始时间");
+				tssJS.alert("请输入起始时间");
 				return false;
 			}
 			if(queryParams.searchDateTo == "") {
-				alert("请输入结束时间");
+				tssJS.alert("请输入结束时间");
 				return false;
 			}
 		}
@@ -245,7 +245,7 @@ legend { background-color:#F9EE70; height:20px; font-weight:bolder; }
 		}
 
 		if(queryParams.gldAlgorithm == "") {
-			alert("请选择算法");
+			tssJS.alert("请选择算法");
 			return false;
 		}
 

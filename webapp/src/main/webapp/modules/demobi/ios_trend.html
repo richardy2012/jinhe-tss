@@ -21,9 +21,10 @@
  
 	var autoSize, title, data;
 
-	window.onresize = show;
+	// window.onresize = show;
 	
 	window.onload = function() {
+		/*
 		var globalValiable = window.parent.globalValiable;
 		if(globalValiable && globalValiable.data) {
 			title = globalValiable.title;
@@ -31,6 +32,7 @@
 			show();
 			return true;
 		}
+		*/
 	
 		tssJS.ajax({
 			url : 'data/ios_trend.json?',

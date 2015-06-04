@@ -3,7 +3,7 @@ package com.jinhe.dm.record;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.jinhe.dm.record.ddl._Util;
+import com.jinhe.dm._Util;
 import com.jinhe.tss.util.DateUtil;
 
 public class _UtilTest {

@@ -208,7 +208,7 @@ function autoAdjustSize(elementID) {
 
 	var _width  = Math.max(600, parentNode.offsetWidth - 5);
     var _height = Math.max(300, parentNode.offsetHeight - 5);
-    $(node).css("width", _width + "px").css("height", _height + "px");
+    tssJS(node).css("width", _width + "px").css("height", _height + "px");
 
     return [ _width, _height];
 }
@@ -232,7 +232,7 @@ function initResearhBt() {
 
     if(window.parent.$1("searchFormDiv") && window.parent.$1("btCloseSearchForm")) {
         researhBt.onclick = function() {
-            window.parent.$("#searchFormDiv").css("display", "block").center(500, 500);
+            window.parent.tssJS("#searchFormDiv").css("display", "block").center(500, 500);
         }
     }
     else {
@@ -298,7 +298,7 @@ function createExportFrame() {
 	var frameName = "exportFrame";
 	var frameObj = $1(frameName);
 	if( frameObj == null ) {
-		var exportDiv = $.createElement("div"); 
+		var exportDiv = tssJS.createElement("div"); 
 		exportDiv.innerHTML = "<div><iframe id='" + frameName + "' src='about:blank' style='display:none'></iframe></div>";
 		document.body.appendChild(exportDiv);
 	}

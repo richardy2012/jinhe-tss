@@ -233,6 +233,7 @@ function showRecord() {
 
 	globalValiable.id = treeNode.id;
 	globalValiable.name  = treeNode.name;
+	globalValiable._operation = treeNode.getAttribute("_operation");
 
 	closePalette(); // 关闭左栏
 	$("#recordFormDiv").hide();

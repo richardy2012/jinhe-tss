@@ -13,16 +13,12 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jinhe.dm.DMConstants;
+import com.jinhe.dm._Util;
 import com.jinhe.dm.data.sqlquery.SOUtil;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.data.util._DateUtil;
-import com.jinhe.dm.record.ddl._Util;
-import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamConstants;
-import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.exception.BusinessException;
-import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.util.DateUtil;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.MacrocodeCompiler;
@@ -134,31 +130,6 @@ public class ReportServiceImpl implements ReportService {
         }
     }
     
-    private Map<String, Object> getFreemarkerDataMap( Object loginUserId ) {
-    	Map<String, Object> fmDataMap = new HashMap<String, Object>();
-        
-      	// 加入登陆用户的信息
-      	fmDataMap.put(DMConstants.USER_ID, loginUserId);
-      	fmDataMap.put(DMConstants.USER_CODE, Environment.getUserCode());
-		Object fromUserId = Environment.getUserInfo("fromUserId");
-		if (fromUserId != null) {
-			fmDataMap.put(DMConstants.FROM_USER_ID, fromUserId);
-		}
-		
-		// 将常用的script片段（权限过滤等）存至param模块，这里取出来加入fmDataMap
-		List<Param> macroParams = ParamManager.getComboParam(DMConstants.SCRIPT_MACRO);
-		if(macroParams != null) {
-			for(Param p : macroParams) {
-				String key = p.getText();
-				if( !fmDataMap.containsKey(key) ) {
-					fmDataMap.put(key, p.getValue());
-				}
-			}
-		}
-		
-		return fmDataMap;
-    }
-    
     @SuppressWarnings("unchecked")
   	public SQLExcutor queryReport(Long reportId, Map<String, String> requestMap, int page, int pagesize, Object loginUserId) {
 		Report report = this.getReport(reportId);
@@ -170,7 +141,7 @@ public class ReportServiceImpl implements ReportService {
 		}
           
 		// 宏代码池
-      	Map<String, Object> fmDataMap = getFreemarkerDataMap(loginUserId);
+      	Map<String, Object> fmDataMap = _Util.getFreemarkerDataMap(loginUserId);
       	
 		/* 先预解析，以判断request参数是否用做了宏代码。后续还将有一次解析，以支持宏嵌套。 
 		 * eg： ${GetWHListByLogonUser} --> param里的script宏（... user_id = ${fromUserId}) ... ）
@@ -239,28 +210,24 @@ public class ReportServiceImpl implements ReportService {
 					paramValue = DateUtil.format(_DateUtil.subDays(today, deltaDays));
 				} 
 
+				// 处理in查询的条件值，为每个项加上单引号
 				if (reportScript.indexOf("in (${" + paramKy + "})") > 0 ||
 						reportScript.indexOf("IN (${" + paramKy + "})") > 0) {
 					
-					// 处理in查询的条件值，为每个项加上单引号
-					paramValue = SOUtil.insertSingleQuotes(paramValue);
+					paramValue = SOUtil.insertSingleQuotes(paramValue); 
 				}
 				// 判断参数是否只用于freemarker解析
 				else if ( !"true".equals(isMacrocode) ) {
 					Object value = _Util.preTreatValue(paramValue, paramType);
 					paramsMap.put(paramsMap.size() + 1, value);
 				}
+				
 				fmDataMap.put(paramKy, paramValue);
   	        }
       	}
       	
         // 结合 requestMap 进行 freemarker解析 sql，允许指定sql预处理类。
-      	ScriptParser scriptParser = ScriptParserFactory.getParser();
-      	if(scriptParser == null) {
-      		reportScript = SOUtil.freemarkerParse(reportScript, fmDataMap);
-      	} else {
-      		reportScript = scriptParser.parse(reportScript, fmDataMap);
-      	}
+      	reportScript = _Util.customizeParse(reportScript, fmDataMap);
           
 		SQLExcutor excutor = new SQLExcutor(false);
 		String datasource = report.getDatasource();

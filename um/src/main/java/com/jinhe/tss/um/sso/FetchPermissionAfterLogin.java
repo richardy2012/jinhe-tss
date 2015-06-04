@@ -42,5 +42,15 @@ public class FetchPermissionAfterLogin implements ILoginCustomizer {
         HttpSession session = Context.getRequestContext().getSession();
         session.setAttribute(SSOConstants.USER_RIGHTS_IN_SESSION, roleIds);
         session.setAttribute(SSOConstants.LOGINNAME_IN_SESSION, Environment.getUserCode());
+        
+        // 获取登陆用户所在父组，可用于宏代码解析等
+        List<Object[]> fatherGroups = loginSerivce.getGroupsByUserId(logonUserId);
+        int index = 1, level = fatherGroups.size(); // 层级
+        session.setAttribute("GROUP_LEVEL", level);
+        for(Object[] temp : fatherGroups) {
+        	session.setAttribute("GROUP_" + index + "_ID", temp[0]);
+        	session.setAttribute("GROUP_" + index + "_NAME", temp[1]);
+        	index++;
+        }
     }
 }

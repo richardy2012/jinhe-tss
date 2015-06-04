@@ -52,7 +52,8 @@ URL_DELETE_SOURCE = AUTH_PATH + "xdata/";
 URL_GET_DEFINES   = AUTH_PATH + "xdata/define/";
 URL_GET_USER_HAS  = AUTH_PATH + "user/has";
 
-var recordId = 1, recordName = "数据录入", recordDefine, customizeJS, userGroups = [], userRoles = [];
+var recordId = 1, recordName = "数据录入", _operation = ['1','2','3','4','5'], 
+    recordDefine, customizeJS, userCode, userGroups = [], userRoles = [];
 
 $(function() {
     
@@ -60,6 +61,7 @@ $(function() {
         var globalValiable = window.parent.globalValiable;
         recordId   = globalValiable.id;
         recordName = globalValiable.name;
+        _operation = (globalValiable._operation || '').split(',');
 
         init();
         return;
@@ -102,29 +104,40 @@ function init() {
             var result = this.getResponseJSON();
             userGroups = result[0];
             userRoles = result[1];
+            userCode = result[3];
         }
     });
 
     loadGridData(1); 
     $("#rcTitle").html("【" + recordName + "】");
+
+    if( !_operation.contains("1") ) {
+        $("#btn_create").hide();
+    }
+    if( !_operation.contains("2") && !_operation.contains("4") && !_operation.contains("5") ) {
+        $("#btn_search").hide();
+    }
 }
 
 function initMenus() {
     /* Grid菜单初始化  */
     var item1 = {
         label:"编辑",
-        callback: showDetail,
-        icon: "images/icon_edit.gif"
+        callback:  function() { showDetail() },
+        icon: "images/icon_edit.gif",
+        visible:function() {return (_operation.contains("1") && userCode == $.G("grid").getColumnValue("creator")) || _operation.contains("5");}
     }
     var item2 = {
         label:"复制",
         callback: function() { showDetail("_copy") },
-        icon: "images/icon_copy.gif"
+        icon: "images/icon_copy.gif",
+        visible:function() {return  _operation.contains("1");}
     }
     var item3 = {
         label:"删除",
         callback: remove,
-        icon: "images/icon_del.gif"
+        icon: "images/icon_del.gif",
+        visible:function() {return (_operation.contains("1") && userCode == $.G("grid").getColumnValue("creator")) || _operation.contains("5");}
     }
 
     var menu = new $.Menu();
@@ -453,8 +466,8 @@ function disableForm() {
         <tr>
           <td id="gridTitle">
             <span class="icon"></span><span id="rcTitle">资源列表</span>&nbsp;
-            <input type="button" class="btStrong" value="新 增" onclick="showDetail('_new')"/>&nbsp;
-            <input type="button" class="btStrong" value="查 询" onclick="showQueryForm()"/>
+            <input type="button" class="btStrong" value="新 增" id="btn_create" onclick="showDetail('_new')"/>&nbsp;
+            <input type="button" class="btStrong" value="查 询" id="btn_search" onclick="showQueryForm()"/>
             <span class="buttonBox" id="gridToolBar"></span>
           </td>
         </tr>

@@ -300,7 +300,7 @@ function initTree2() {
                         return; // 用户取消创建
                     }
                     if(name.trim() == "") {
-                        return alert("仓库名不能为空。");
+                        return tssJS.alert("仓库名不能为空。");
                     }
 
                     var root = tree2.getTreeNodeById('_root');
@@ -321,7 +321,7 @@ function initTree2() {
                         return; // 用户取消修改
                     }
                     if(name.trim() == "") {
-                        return alert("仓库名不能为空。");
+                        return tssJS.alert("仓库名不能为空。");
                     }
 
                     modifyTreeNode(treeNode.id, "name", name, "tree2");

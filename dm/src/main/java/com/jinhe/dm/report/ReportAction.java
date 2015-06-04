@@ -99,16 +99,16 @@ public class ReportAction extends BaseActionSupport {
 	    result.add(new Report(newGroupId, "近期新出报表"));
 	    List<Report> latest = new ArrayList<Report>();
     	for(Report report : list) {
-    		if( !report.isActive() || report.isGroup())  continue;
+    		if( !report.isActive() )  continue;
  
-    		if(Report.TYPE1 == report.getType() 
+    		if( !report.isGroup() 
     				&& report.getCreateTime().after(_DateUtil.subDays(_DateUtil.today(), 10))
     				&& DMConstants.hasCNChar(report.getName())) {
     			
     			latest.add(cloneReport(newGroupId, report));
     		}
     		
-    		result.add(report);
+    		result.add(report); // 此处将list里的所有report及分组放入到result里
     	}
     	Collections.sort(latest, new Comparator<Report>() {
             public int compare(Report r1, Report r2) {

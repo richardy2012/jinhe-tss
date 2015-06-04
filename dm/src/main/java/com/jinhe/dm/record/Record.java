@@ -22,6 +22,17 @@ import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.um.permission.IResource;
 import com.jinhe.tss.util.BeanUtil;
 
+/**
+ * 说明：
+	1、数据录入权限项分为： 维护录入表、删除录入表、录入数据、浏览数据、维护数据
+	2、拥有”维护录入表“权限的，可以编辑录入表的定义、移动至其它分组及授予角色
+	3、拥有“删除录入表”权限的，可以删除录入表
+	4、拥有“录入数据”权限的，可打开录入页，进行数据录入，并可以修改、删除自己录入的数据；只能看到自己录入的数据；可以复制自己的数据
+	5、拥有“浏览数据”权限的，可以查看或查询其它人的录入数据，但不能修改和删除
+	6、拥有“维护数据”权限的，可以查看或查询其它人的录入数据，并能修改和删除
+	7、同时拥有“录入数据”和“浏览数据”权限的，可以复制他人创建的数据，但不能编辑和删除，只能编辑/删除自己创建数据
+ *
+ */
 @Entity
 @Table(name = "dm_record")
 @SequenceGenerator(name = "record_sequence", sequenceName = "record_sequence", initialValue = 1, allocationSize = 10)

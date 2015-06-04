@@ -63,14 +63,15 @@ public class _DatabaseTest {
 		
 		// test update table with row = 0
 		tblDefine = "[ {'label':'类型', 'code':'f1', 'type':'number', 'nullable':'false'}," +
-        		"{'label':'名称', 'code':'f2', 'type':'string'}," +
-        		"{'label':'时间', 'code':'f3', 'type':'datetime', 'nullable':'false'}," +
+        		"{'label':'名称', 'code':'f2', 'type':'string', 'nullable':'false'}," +
+        		"{'label':'时间', 'code':'f3', 'type':'datetime'}," +
         		"{'label':'UDF', 'code':'f5', 'type':'string'}]";
 		record = new Record();
 		record.setId(3L);
 		record.setDatasource(datasource);
 		record.setTable(type + "_tbl_3");
 		record.setDefine(tblDefine);
+		record.setCustomizeJS(" creator = '${userCode}' ");
 		
 		_db.updateTable(record);
 		
@@ -93,6 +94,8 @@ public class _DatabaseTest {
 		// test update
 		valuesMap = new HashMap<String, String>();
 		valuesMap.put("f1", "12");
+		valuesMap.put("f2", "just test");
+		valuesMap.put("f3", "2015-04-05");
 		_db.update(id, valuesMap);
 		
 		result = _db.select().result;

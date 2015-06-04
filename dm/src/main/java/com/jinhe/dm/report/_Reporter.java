@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.dm.DMConstants;
+import com.jinhe.dm._Util;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.data.util.DataExport;
 import com.jinhe.dm.log.AccessLog;
 import com.jinhe.dm.log.AccessLogRecorder;
-import com.jinhe.dm.record.ddl._Util;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;

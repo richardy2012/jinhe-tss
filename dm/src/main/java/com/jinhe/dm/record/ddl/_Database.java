@@ -14,6 +14,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.dom4j.Document;
 
 import com.jinhe.dm.DMConstants;
+import com.jinhe.dm._Util;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.record.Record;
 import com.jinhe.dm.record.permission.RecordPermission;
@@ -35,6 +36,7 @@ public abstract class _Database {
 	public String recordName;
 	public String datasource;
 	public String table;
+	public String customizeTJ;
 	
 	List<Map<Object, Object>> fields;
 	List<String> fieldCodes;
@@ -47,6 +49,7 @@ public abstract class _Database {
 		this.datasource = record.getDatasource();
 		this.table = record.getTable();
 		this.fields = parseJson(record.getDefine());
+		this.customizeTJ = record.getCustomizeTJ();
 		this.initFieldCodes();
 	}
 	
@@ -95,6 +98,7 @@ public abstract class _Database {
 	public void updateTable(Record _new) {
 		String newDS = _new.getDatasource();
 		String table = _new.getTable();
+		this.customizeTJ = _new.getCustomizeJS();
 		
 		if(!newDS.equals(this.datasource) || !table.equals(this.table)) {
 			this.datasource = newDS;
@@ -209,44 +213,53 @@ public abstract class _Database {
 		Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
 		paramsMap.put(1, Environment.getUserCode());
 		
+		if(params == null) {
+			params = new HashMap<String, String>();
+		}
+		
 		// TODO 增加权限控制，针对有編輯权限的允許查看他人录入数据, '000' <> ? <==> 忽略创建人这个查询条件
-		boolean canEdit = DMConstants.isAdmin();
+		boolean visible = DMConstants.isAdmin();
 		try {
 			List<String> permissions = PermissionHelper.getInstance().getOperationsByResource(recordId,
 	                RecordPermission.class.getName(), RecordResource.class);
-			canEdit = canEdit || permissions.contains(Record.OPERATION_VDATA) 
+			visible = visible || permissions.contains(Record.OPERATION_VDATA) 
 					|| permissions.contains(Record.OPERATION_EDATA);
 		} catch(Exception e) {
 		}
-		String condition = canEdit ? " '000' <> ? " : " creator = ? ";
+		String condition;
+		if( visible && !params.containsKey("creator") ) {
+			condition = " '000' <> ? ";
+		} else {
+			condition = " creator = ? ";
+		}
 		
-		if(params != null) {
-			for(String key : params.keySet()) {
-				String valueStr = params.get(key);
-				if(EasyUtils.isNullOrEmpty(valueStr)) continue;
-				
-				Object value;
-				int fieldIndex = this.fieldCodes.indexOf(key);
-				if(fieldIndex >= 0) {
-					String paramType = this.fieldTypes.get(fieldIndex);
-					value = _Util.preTreatValue(valueStr, paramType);
-				}
-				else {
-					value = valueStr;
-				}
-				
-				if( "creator".equals(key) ) {
-					paramsMap.put(1, value);     // 替换登录账号，允许查询其它人创建的数据; 
-					condition = " creator = ? "; // 如果填写了创建人作为查询条件，则只查该创建人的数据
-				}
-				
-				if(this.fieldCodes.contains(key) || "updator".equals(key)) {
-					condition += " and " + key + " = ? ";
-					paramsMap.put(paramsMap.size() + 1, value);
-				}
+		for(String key : params.keySet()) {
+			String valueStr = params.get(key);
+			if(EasyUtils.isNullOrEmpty(valueStr)) continue;
+			
+			Object value;
+			int fieldIndex = this.fieldCodes.indexOf(key);
+			if(fieldIndex >= 0) {
+				String paramType = this.fieldTypes.get(fieldIndex);
+				value = _Util.preTreatValue(valueStr, paramType);
+			}
+			else {
+				value = valueStr;
+			}
+			
+			if( "creator".equals(key) ) {
+				paramsMap.put(1, value);     // 替换登录账号，允许查询其它人创建的数据; 
+			}
+			
+			if(this.fieldCodes.contains(key) || "updator".equals(key)) {
+				condition += " and " + key + " = ? ";
+				paramsMap.put(paramsMap.size() + 1, value);
 			}
 		}
 		
+		if( !EasyUtils.isNullOrEmpty(this.customizeTJ) ) {
+			condition += " and " + _Util.customizeParse(this.customizeTJ);
+		}
 		String selectSQL = "select " + EasyUtils.list2Str(this.fieldCodes) + 
 					",createtime,creator,updatetime,updator,version,id from " + this.table + 
 					" where " + condition + " order by id desc ";
