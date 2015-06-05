@@ -78,7 +78,7 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     @Column(length = 4000)  
     private String customizeJS;
     
-    /** 定制的过滤条件，可按登录人的角色、组织等信息进行过滤  */
+    /** 定制的过滤条件，可按登录人的角色、组织等信息进行过滤 , 1=1 <#if btrOrg??> and org='${btrOrg}' </#if> */
     @Column(length = 1000)  
     private String customizeTJ;
    
@@ -91,6 +91,11 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     
     public String toString() {
         return "数据录入【id = " + this.id + ", name = " + this.name + "】";
+    }
+    
+    public boolean equals(Object obj) {
+    	Record object = (Record) obj;
+        return this.id.equals(object.getId());
     }
     
     public String getDatasource() {

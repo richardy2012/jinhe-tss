@@ -46,7 +46,7 @@ function initMenus() {
 		label:"录入数据",
 		callback:showRecord,
 		icon: ICON + "icon_edit.gif",
-		visible:function() {return isRecord() && getOperation("1");}
+		visible:function() {return isRecord() && getOperation("1,2,3,4,5");}
 	}
 	var item21 = {
 		label:"修改分组",
@@ -120,7 +120,7 @@ function loadInitData() {
 		tree.onTreeNodeDoubleClick = function(ev) {
 			var treeNode = getActiveTreeNode();
 			getTreeOperation(treeNode, function(_operation) {            
-				if( isRecord() ) {
+				if( isRecord() && getOperation("1,2,3,4,5") ) {
 					showRecord();
 				}
 				if( isRecordGroup() && getOperation("2") ) {

@@ -125,7 +125,7 @@ function initMenus() {
         label:"编辑",
         callback:  function() { showDetail() },
         icon: "images/icon_edit.gif",
-        visible:function() {return (_operation.contains("1") && userCode == $.G("grid").getColumnValue("creator")) || _operation.contains("5");}
+        visible:function() {return canEditRow();}
     }
     var item2 = {
         label:"复制",
@@ -137,7 +137,7 @@ function initMenus() {
         label:"删除",
         callback: remove,
         icon: "images/icon_del.gif",
-        visible:function() {return (_operation.contains("1") && userCode == $.G("grid").getColumnValue("creator")) || _operation.contains("5");}
+        visible:function() {return canEditRow();}
     }
 
     var menu = new $.Menu();
@@ -145,6 +145,19 @@ function initMenus() {
     menu.addItem(item2);
     menu.addItem(item3);
     $1("grid").contextmenu = menu;
+}
+
+function canEditRow(rowID) {
+    if(rowID === '_new') { // 新增
+        return _operation.contains("1");
+    }
+    else if( (rowID || '').indexOf('_copy') >= 0 ) { // 复制新增
+        return true;
+    }
+    else { // 编辑（本人及有维护数据权限的人能编辑）
+        var creator = $.G("grid").getColumnValue("creator");       
+        return (_operation.contains("1") && userCode == creator) || _operation.contains("5");
+    }
 }
 
 /* grid加载数据  */
@@ -210,12 +223,12 @@ function loadDetailData(rowID) {
     attachReminder(rowID, xform); // 离开提醒
 
     // 设置保存/关闭按钮操作
-    $1("page1BtCancel").onclick = function() {
-        ws.closeActiveTab();
+    if( canEditRow(rowID) ) {
+        $("#page1BtSave").show().click( function() { saveSource(rowID);  } );
+    } else {
+        $("#page1BtSave").hide();
     }
-    $1("page1BtSave").onclick = function() {
-        saveSource(rowID);
-    }
+    $("#page1BtCancel").click( function() { ws.closeActiveTab(); } );
 }
 
 function saveSource(rowID) {
@@ -482,7 +495,7 @@ function disableForm() {
             <WorkSpace:PageStep>
                 <br>
                 <input type="button" class="btStrong" value="完成" id="page1BtSave"/>&nbsp;
-                <input type="button" class="btWeak" value="取消" id="page1BtCancel"/>
+                <input type="button" class="btWeak" value="关闭" id="page1BtCancel"/>
             </WorkSpace:PageStep>
         </WorkSpace:Page>
     </WorkSpace:Box>

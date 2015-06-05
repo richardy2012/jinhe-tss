@@ -87,8 +87,12 @@ public class ArticlePublishTest extends AbstractTestSupport {
         Set<ArticleContent> content = IndexHelper.getIndexableArticles(channelIdList, false, channelDao, articleDao);
         IndexHelper.createIndex(strategy, content, new Progress(list.size()));
         
+        try { Thread.sleep(1500); } catch(Exception e) { }
+        
         content = IndexHelper.getIndexableArticles(channelIdList, true, channelDao, articleDao);
         IndexHelper.createIndex(strategy, content, new Progress(list.size()));
+        
+        try { Thread.sleep(1500); } catch(Exception e) { }
  
         // 测试检索文章
         request.addParameter("searchStr", "矛盾");

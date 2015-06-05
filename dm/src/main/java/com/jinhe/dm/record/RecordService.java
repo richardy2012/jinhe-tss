@@ -15,7 +15,13 @@ public interface RecordService {
     		resourceType = Record.RESOURCE_TYPE,
 	        operation = Record.OPERATION_CDATA
 	)
-    List<Record> getAllRecord();
+    List<Record> getRecordables();
+    
+    @PermissionTag(
+    		resourceType = Record.RESOURCE_TYPE,
+	        operation = Record.OPERATION_VDATA
+	)
+    List<Record> getVisiables();
 
     @PermissionTag(
     		resourceType = Record.RESOURCE_TYPE,

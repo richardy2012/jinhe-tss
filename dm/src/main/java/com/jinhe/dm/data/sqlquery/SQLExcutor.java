@@ -225,6 +225,9 @@ public class SQLExcutor {
                     if (rs.next()) {
                         count = rs.getInt(1);
                     }
+                    
+                    pstmt.close();
+                    rs.close();
             	}
 
                 int fromRow = pagesize * (page - 1);

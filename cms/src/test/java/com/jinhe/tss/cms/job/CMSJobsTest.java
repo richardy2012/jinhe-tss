@@ -91,6 +91,8 @@ public class CMSJobsTest extends AbstractTestSupport {
   
         IndexJob indexJob = new IndexJob();
 		((Progressable)indexJob).execute(paramsMap, new Progress(data.size()));
+		
+		try { Thread.sleep(1500); } catch(Exception e) { }
     }
 	
 	@Test
@@ -99,6 +101,8 @@ public class CMSJobsTest extends AbstractTestSupport {
         
         IndexJob indexJob = new IndexJob();
 		indexJob.excuteJob(jobConfig);
+		
+		try { Thread.sleep(1500); } catch(Exception e) { }
 		
 		JobStrategy.getIndexStrategy().executorClass = TitleIndexExecutor.class.getName();
 		indexJob.excuteJob(jobConfig);

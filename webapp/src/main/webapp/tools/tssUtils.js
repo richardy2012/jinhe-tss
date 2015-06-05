@@ -187,7 +187,13 @@ function getOperation(code, treeName) {
 	var treeNode = getActiveTreeNode(treeName);
 	if( treeNode ) {
 		var _operation = treeNode.getAttribute("_operation");
-		flag = checkOperation(code, _operation);
+
+		var opts = code.split(",");
+		opts.each(function(i, opt){
+			if( checkOperation(opt, _operation) ) {
+				flag = true;
+			}
+		});
 	}
 	return flag;
 }

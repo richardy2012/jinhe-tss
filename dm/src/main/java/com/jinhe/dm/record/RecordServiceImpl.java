@@ -10,6 +10,7 @@ import com.jinhe.dm.record.ddl._Database;
 import com.jinhe.tss.util.EasyUtils;
 
 @Service("RecordService")
+@SuppressWarnings("unchecked")
 public class RecordServiceImpl implements RecordService {
 	
 	Logger log = Logger.getLogger(this.getClass());
@@ -22,12 +23,18 @@ public class RecordServiceImpl implements RecordService {
         return record;
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<Record> getAllRecord() {
+	private List<Record> getAllRecords() {
 		return (List<Record>) recordDao.getEntities("from Record o order by o.decode");
 	}
+	
+	public List<Record> getVisiables() {
+		return getAllRecords();
+	}
+	
+	public List<Record> getRecordables() {
+		return getAllRecords();
+	}
 
-	@SuppressWarnings("unchecked")
 	public List<Record> getAllRecordGroups() {
 		return (List<Record>) recordDao.getEntities("from Record o where o.type = ? order by o.decode", Record.TYPE0);
 	}

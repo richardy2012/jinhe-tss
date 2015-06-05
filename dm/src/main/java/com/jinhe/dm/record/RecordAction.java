@@ -36,7 +36,14 @@ public class RecordAction extends BaseActionSupport {
     
     @RequestMapping("/all")
     public void getAllRecord(HttpServletResponse response) {
-        List<?> list = recordService.getAllRecord();
+        List<Record> list = recordService.getRecordables();
+        List<Record> list2 = recordService.getVisiables();
+        for(Record record : list2) {
+        	if( !list.contains(record) ){
+        		list.add(record);
+        	}
+        }
+        
         TreeEncoder treeEncoder = new TreeEncoder(list, new LevelTreeParser());
         print("SourceTree", treeEncoder);
     }
