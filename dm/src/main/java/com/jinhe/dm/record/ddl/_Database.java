@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -154,24 +155,41 @@ public abstract class _Database {
 	}
 	
 	public void insert(Map<String, String> valuesMap) {
+		Map<Integer, Object> paramsMap = buildInsertParams(valuesMap);
+		SQLExcutor.excute(createInsertSQL(), paramsMap, this.datasource);
+	}
+
+	private Map<Integer, Object> buildInsertParams(Map<String, String> valuesMap) {
 		Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
 		int index = 0;
-		String valueTags = "", fieldTags = "";
 		for(String field : this.fieldCodes) {
 			Object value = _Util.preTreatValue(valuesMap.get(field), fieldTypes.get(index));
 			paramsMap.put(++index, value);
-			valueTags += "?,";
-			fieldTags += field + ",";
 		}
 		paramsMap.put(++index, new Timestamp(new Date().getTime())); 
 		paramsMap.put(++index, Environment.getUserCode());
 		paramsMap.put(++index, 0);
-		
-		String insertSQL = createInsertSQL(valueTags, fieldTags);
-		SQLExcutor.excute(insertSQL, paramsMap, this.datasource);
+		return paramsMap;
 	}
 	
-	protected String createInsertSQL(String valueTags, String fieldTags) {
+	public void insertBatch(Collection<Map<String, String>> valuesMaps) {
+		if(valuesMaps == null || valuesMaps.isEmpty()) return;
+		
+		List<Map<Integer, Object>> paramsList = new ArrayList<Map<Integer,Object>>();
+		for(Map<String, String> valuesMap : valuesMaps) {
+			Map<Integer, Object> paramsMap = buildInsertParams(valuesMap);
+			paramsList.add(paramsMap);
+		}
+		
+		SQLExcutor.excuteBatch(createInsertSQL(), paramsList , this.datasource);
+	}
+	
+	protected String createInsertSQL() {
+		String valueTags = "", fieldTags = "";
+		for(String field : this.fieldCodes) {
+			valueTags += "?,";
+			fieldTags += field + ",";
+		}
 		String insertSQL = "insert into " + this.table + "(" + fieldTags + "createtime,creator,version) " +
 				" values (" + valueTags + " ?, ?, ?)";
 		return insertSQL;

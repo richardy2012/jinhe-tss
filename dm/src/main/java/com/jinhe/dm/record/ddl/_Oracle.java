@@ -65,7 +65,12 @@ public class _Oracle extends _Database {
 		return this.table + "_seq";
 	}
 	
-	protected String createInsertSQL(String valueTags, String fieldTags) {
+	protected String createInsertSQL() {
+		String valueTags = "", fieldTags = "";
+		for(String field : this.fieldCodes) {
+			valueTags += "?,";
+			fieldTags += field + ",";
+		}
 		String insertSQL = "insert into " + this.table + "(" + fieldTags + "createtime,creator,version,id) " +
 				" values (" + valueTags + " ?, ?, ?, " + getSeq() + ".nextval)";
 		return insertSQL;
