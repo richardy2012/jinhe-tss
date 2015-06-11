@@ -71,7 +71,7 @@ public class WashDataJobTest extends TxTestSupport4DM {
 		Long record2Id = record2.getId();
         
         String jobConfig = "\n" +
-        		record1Id + ":" + reportId + ":param1=today-1\n" +
+        		record1Id + ":" + reportId + ":param1=today-1:50\n" +
         		record2Id + ":" + reportId + ":param1=today-3\n";
         
 		try {

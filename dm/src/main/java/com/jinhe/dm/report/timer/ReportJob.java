@@ -79,7 +79,9 @@ public class ReportJob extends AbstractJob {
 	    		String[] params = reportInfo[3].split(",");
 	    		for(String param : params) {
 	    			String[] keyValue = param.split("=");
-	    			paramsMap.put(keyValue[0].trim(), keyValue[1].trim());
+	    			if(keyValue.length == 2) {
+	    				paramsMap.put(keyValue[0].trim(), keyValue[1].trim());
+	    			}
 	    		}
 	    	}
 	        SQLExcutor ex = reportService.queryReport(reportId, paramsMap, 0, 0, System.currentTimeMillis());  

@@ -45,16 +45,27 @@ public class WashDataJob extends AbstractJob {
 			Long recordId = EasyUtils.obj2Long(reportInfo[0]);
 	        Long reportId = EasyUtils.obj2Long(reportInfo[1]);
 	        
+	        // 读取配置的参数
 	    	Map<String, String> paramsMap = new HashMap<String, String>();
 	    	if(reportInfo.length >= 3) {
 	    		String[] params = reportInfo[2].split(",");
 	    		for(String param : params) {
 	    			String[] keyValue = param.split("=");
-	    			paramsMap.put(keyValue[0].trim(), keyValue[1].trim());
+	    			if(keyValue.length == 2) {
+	    				paramsMap.put(keyValue[0].trim(), keyValue[1].trim());
+	    			}
 	    		}
 	    	}
 	    	
+	    	// 读取配置的分页
 	    	int pagesize = 100;
+	    	if(reportInfo.length >= 4) {
+	    		try {
+	    			pagesize = EasyUtils.obj2Int(reportInfo[3]);
+	    		} catch(Exception e) { }
+	    	}
+	    	pagesize = Math.max(100, pagesize);
+	    	
 	        SQLExcutor ex = reportService.queryReport(reportId, paramsMap, 1, 1, -1);  
 	        int total = ex.count;
 	        int totalPages = total / pagesize;
