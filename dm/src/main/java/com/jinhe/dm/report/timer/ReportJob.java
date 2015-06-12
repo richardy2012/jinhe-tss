@@ -18,13 +18,15 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.data.util.DataExport;
+import com.jinhe.dm.report.Report;
 import com.jinhe.dm.report.ReportService;
 import com.jinhe.tss.framework.Global;
+import com.jinhe.tss.framework.component.message.MailUtil;
 import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.component.timer.AbstractJob;
-import com.jinhe.tss.framework.component.timer.MailUtil;
 import com.jinhe.tss.framework.exception.BusinessException;
+import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.util.DateUtil;
@@ -74,12 +76,16 @@ public class ReportJob extends AbstractJob {
 	        rr.reportTitles.add(title);
 					
 	        Long reportId = EasyUtils.obj2Long(reportInfo[0]);
+	        rr.reportIds.add(reportId);
+	        
 	    	Map<String, String> paramsMap = new HashMap<String, String>();
 	    	if(reportInfo.length > 3) {
 	    		String[] params = reportInfo[3].split(",");
 	    		for(String param : params) {
 	    			String[] keyValue = param.split("=");
-	    			paramsMap.put(keyValue[0].trim(), keyValue[1].trim());
+	    			if(keyValue.length == 2) {
+	    				paramsMap.put(keyValue[0].trim(), keyValue[1].trim());
+	    			}
 	    		}
 	    	}
 	        SQLExcutor ex = reportService.queryReport(reportId, paramsMap, 0, 0, System.currentTimeMillis());  
@@ -125,7 +131,9 @@ public class ReportJob extends AbstractJob {
 			
 			int index = 0;
 			for(SQLExcutor ex : rr.reportResults) {
-				buildEmailContent(rr.reportTitles.get(index++), ex, messageHelper, html);
+				Long reportId = rr.reportIds.get(index);
+				buildEmailContent(reportId, rr.reportTitles.get(index), ex, messageHelper, html);
+				index++;
 			}
 			
 			html.append("</body>");
@@ -139,7 +147,7 @@ public class ReportJob extends AbstractJob {
 		}
 	}
 
-	private void buildEmailContent(String title, SQLExcutor ex,
+	private void buildEmailContent(Long reportId, String title, SQLExcutor ex,
 			MimeMessageHelper messageHelper, StringBuffer html) throws Exception {
 		
 		if(ex.result.size() > 100) {
@@ -159,7 +167,8 @@ public class ReportJob extends AbstractJob {
 		    	for( Map<String, Object> row : ex.result) {
 					html.append("<tr>");
 					for(String field : ex.selectFields) {
-			    		html.append("<td>").append(row.get(field)).append("</td>");
+			    		Object fieldV = row.get(field);
+						html.append("<td>").append(fieldV == null ? "" : fieldV).append("</td>");
 			    	}
 					html.append("</tr>");
 				}
@@ -167,6 +176,13 @@ public class ReportJob extends AbstractJob {
 		    }
 			
 			html.append("</table><br>");
+		}
+		
+		Report report = reportService.getReport(reportId);
+		if( !EasyUtils.isNullOrEmpty( report.getDisplayUri()) ) {
+			String url = Context.getApplicationContext().getCurrentAppServer().getBaseURL();
+			url += "/modules/dm/report_portlet.html?id=" + reportId;
+			html.append("<h5>更详细可访问：<a href='" + url + "'>" + url + "<a></h5><br>");
 		}
 		
 		// 附件内容
@@ -182,6 +198,7 @@ public class ReportJob extends AbstractJob {
 	 * 收件人对报表的映射，当一组收件人对应多个报表时，将这些报表合并成一个邮件发送
 	 */
 	class ReceiverReports {
+		List<Long> reportIds = new ArrayList<Long>();
 		List<String> reportTitles = new ArrayList<String>();
 		List<SQLExcutor> reportResults = new ArrayList<SQLExcutor>();
 	}

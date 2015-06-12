@@ -1,5 +1,7 @@
 package com.jinhe.dm.record;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,9 +10,13 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.TxTestSupport4DM;
+import com.jinhe.tss.framework.component.log.LogService;
+import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.test.TestUtil;
 
 public class _RecorderTest extends TxTestSupport4DM {
 	
+	@Autowired LogService logService;
 	@Autowired RecordService recordService;
 	@Autowired _Recorder recorder;
 	
@@ -32,6 +38,7 @@ public class _RecorderTest extends TxTestSupport4DM {
 		record.setDatasource(DMConstants.LOCAL_CONN_POOL);
 		record.setTable("x_tbl_12");
 		record.setDefine(tblDefine);
+		record.setNeedLog(ParamConstants.TRUE);
 		
 		recordService.saveRecord(record);
 		recordId = record.getId();
@@ -54,9 +61,31 @@ public class _RecorderTest extends TxTestSupport4DM {
 		recorder.showAsGrid(request, response, recordId, 1);
 		recorder.showAsJSON(request, recordId, 1);
 		
+		for(int i = 0; i < 17; i++) {
+			request = new MockHttpServletRequest();
+			request.addParameter("f1", "12.0");
+			request.addParameter("f2", "i'm " + i);
+			request.addParameter("f3", "2015-04-05");
+			recorder.update(request, response, recordId, 1); // 多次修改，以生成日志
+		}
+		
 		recorder.delete(response, recordId, 1);
 		
 		Assert.assertTrue(recorder.getDB(recordId).select().result.size() == 0);
+		
+		try { Thread.sleep(1000); } catch (Exception e) { } // 等待修改日志输出
+		assertTrue(TestUtil.printLogs(logService) > 0);
+		
+		try {
+			request = new MockHttpServletRequest();
+			request.addParameter("f1", "12.12");
+			request.addParameter("f2", "just test end");
+			request.addParameter("f3", "2015-04-05");
+			recorder.update(request, response, recordId, 1);
+        	Assert.fail("should throw exception but didn't.");
+        } catch (Exception e) {
+        	Assert.assertTrue("修改出错，该记录不存在，可能已经被删除。", true);
+        }
 	}
 	
 }

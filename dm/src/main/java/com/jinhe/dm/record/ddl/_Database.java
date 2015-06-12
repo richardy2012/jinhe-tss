@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,10 @@ import com.jinhe.dm.record.permission.RecordResource;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
+import com.jinhe.tss.framework.Global;
+import com.jinhe.tss.framework.component.log.IBusinessLogger;
+import com.jinhe.tss.framework.component.log.Log;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.um.permission.PermissionHelper;
@@ -37,6 +42,7 @@ public abstract class _Database {
 	public String datasource;
 	public String table;
 	public String customizeTJ;
+	boolean needLog;
 	
 	List<Map<Object, Object>> fields;
 	List<String> fieldCodes;
@@ -50,6 +56,8 @@ public abstract class _Database {
 		this.table = record.getTable();
 		this.fields = parseJson(record.getDefine());
 		this.customizeTJ = record.getCustomizeTJ();
+		this.needLog = ParamConstants.TRUE.equals(record.getNeedLog());
+		
 		this.initFieldCodes();
 	}
 	
@@ -99,6 +107,7 @@ public abstract class _Database {
 		String newDS = _new.getDatasource();
 		String table = _new.getTable();
 		this.customizeTJ = _new.getCustomizeJS();
+		this.needLog = ParamConstants.TRUE.equals(_new.getNeedLog());
 		
 		if(!newDS.equals(this.datasource) || !table.equals(this.table)) {
 			this.datasource = newDS;
@@ -154,30 +163,52 @@ public abstract class _Database {
 	}
 	
 	public void insert(Map<String, String> valuesMap) {
+		Map<Integer, Object> paramsMap = buildInsertParams(valuesMap);
+		SQLExcutor.excute(createInsertSQL(), paramsMap, this.datasource);
+	}
+
+	private Map<Integer, Object> buildInsertParams(Map<String, String> valuesMap) {
 		Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
 		int index = 0;
-		String valueTags = "", fieldTags = "";
 		for(String field : this.fieldCodes) {
 			Object value = _Util.preTreatValue(valuesMap.get(field), fieldTypes.get(index));
 			paramsMap.put(++index, value);
-			valueTags += "?,";
-			fieldTags += field + ",";
 		}
 		paramsMap.put(++index, new Timestamp(new Date().getTime())); 
 		paramsMap.put(++index, Environment.getUserCode());
 		paramsMap.put(++index, 0);
-		
-		String insertSQL = createInsertSQL(valueTags, fieldTags);
-		SQLExcutor.excute(insertSQL, paramsMap, this.datasource);
+		return paramsMap;
 	}
 	
-	protected String createInsertSQL(String valueTags, String fieldTags) {
+	public void insertBatch(Collection<Map<String, String>> valuesMaps) {
+		if(valuesMaps == null || valuesMaps.isEmpty()) return;
+		
+		List<Map<Integer, Object>> paramsList = new ArrayList<Map<Integer,Object>>();
+		for(Map<String, String> valuesMap : valuesMaps) {
+			Map<Integer, Object> paramsMap = buildInsertParams(valuesMap);
+			paramsList.add(paramsMap);
+		}
+		
+		SQLExcutor.excuteBatch(createInsertSQL(), paramsList , this.datasource);
+	}
+	
+	protected String createInsertSQL() {
+		String valueTags = "", fieldTags = "";
+		for(String field : this.fieldCodes) {
+			valueTags += "?,";
+			fieldTags += field + ",";
+		}
 		String insertSQL = "insert into " + this.table + "(" + fieldTags + "createtime,creator,version) " +
 				" values (" + valueTags + " ?, ?, ?)";
 		return insertSQL;
 	}
 
 	public void update(Integer id, Map<String, String> valuesMap) {
+		Map<String, Object> old = get(id);
+		if( old == null ) {
+			throw new BusinessException("修改出错，该记录不存在，可能已经被删除。");
+		}
+		
 		Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
 		int index = 0;
 		String tags = "";
@@ -198,11 +229,37 @@ public abstract class _Database {
 		
 		String updateSQL = "update " + this.table + " set " + tags + "updatetime=?, updator=?, version=version+1 where id=?";
 		SQLExcutor.excute(updateSQL, paramsMap, this.datasource);
+		
+		if(this.needLog) { // 记录修改日志
+			Log excuteLog = new Log(recordName + ", " + id, old + " ==> " + valuesMap);
+	    	excuteLog.setOperateTable("数据录入修改");
+	        ((IBusinessLogger) Global.getBean("BusinessLogger")).output(excuteLog);
+		}
+	}
+
+	private Map<String, Object> get(Integer id) {
+		String fieldTags = "";
+		for(String field : this.fieldCodes) {
+			fieldTags += field + ",";
+		}
+		String sql = "select " + fieldTags + "creator from " + this.table + " where id=?";
+		List<Map<String, Object>> list = SQLExcutor.query(this.datasource, sql, id);
+		if( EasyUtils.isNullOrEmpty(list) ) {
+			return null;
+		}
+		return list.get(0);
 	}
 
 	public void delete(Integer id) {
+		Map<String, Object> old = get(id);
+		
 		String updateSQL = "delete from " + this.table + " where id=" + id;
 		SQLExcutor.excute(updateSQL, this.datasource);
+		
+		// 记录删除日志
+		Log excuteLog = new Log(recordName + ", " + id, Environment.getUserCode() + "删除了记录：" + old );
+    	excuteLog.setOperateTable("数据录入删除");
+        ((IBusinessLogger) Global.getBean("BusinessLogger")).output(excuteLog);
 	}
 	
 	public SQLExcutor select() {
@@ -217,7 +274,7 @@ public abstract class _Database {
 			params = new HashMap<String, String>();
 		}
 		
-		// TODO 增加权限控制，针对有編輯权限的允許查看他人录入数据, '000' <> ? <==> 忽略创建人这个查询条件
+		// 增加权限控制，针对有編輯权限的允許查看他人录入数据, '000' <> ? <==> 忽略创建人这个查询条件
 		boolean visible = DMConstants.isAdmin();
 		try {
 			List<String> permissions = PermissionHelper.getInstance().getOperationsByResource(recordId,
@@ -248,7 +305,7 @@ public abstract class _Database {
 			}
 			
 			if( "creator".equals(key) ) {
-				paramsMap.put(1, value);     // 替换登录账号，允许查询其它人创建的数据; 
+				paramsMap.put(1, value);  // 替换登录账号，允许查询其它人创建的数据; 
 			}
 			
 			if(this.fieldCodes.contains(key) || "updator".equals(key)) {

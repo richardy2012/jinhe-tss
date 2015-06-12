@@ -24,9 +24,10 @@ public class ReportJobTest extends TxTestSupport4DM {
         report1.setType(Report.TYPE1);
         report1.setParentId(Report.DEFAULT_PARENT_ID);
         report1.setName("report-job-test");
-        report1.setScript(" select id, name from dm_report " +
+        report1.setScript(" select id, name, null as udf1 from dm_report " +
         		" where id > ? <#if param2??> and type <> ${param2} <#else> and type = 1 </#if>" +
         		"	and createTime > ?");
+        report1.setDisplayUri("template.html");
         
         String paramsConfig = 
         		"[ {'label':'报表ID', 'type':'Number', 'nullable':'false', 'jsonUrl':'../xxx/list', 'multiple':'true'}," +

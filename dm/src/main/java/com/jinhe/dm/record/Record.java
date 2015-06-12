@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.record.permission.RecordResource;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
@@ -88,6 +89,8 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     private Integer seqNo;    // 排序号
     private String  decode;  // 层码，要求唯一
     private Integer levelNo;// 层次值
+    
+    private Integer needLog = ParamConstants.FALSE; // 记录修改日志，适用于重要性高的数据录入
     
     public String toString() {
         return "数据录入【id = " + this.id + ", name = " + this.name + "】";
@@ -242,5 +245,13 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
 
 	public void setCustomizeTJ(String customizeTJ) {
 		this.customizeTJ = customizeTJ;
+	}
+
+	public Integer getNeedLog() {
+		return needLog;
+	}
+
+	public void setNeedLog(Integer needLog) {
+		this.needLog = needLog;
 	}
 }

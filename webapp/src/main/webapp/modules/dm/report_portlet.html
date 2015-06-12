@@ -45,7 +45,7 @@ if(window.parent == window.self) {
     $.leftbar( function() { getQueryForm(); } );
 }
 
-var globalValiable = {}; // 用来存放传递给iframe页面的信息   TODO 多个报表一起，数据混乱了，需要加锁。
+var globalValiable = {}; // 用来存放传递给iframe页面的信息
 initPortlet();
 
 function initPortlet() {
@@ -156,8 +156,6 @@ function searchReport(params) {
         }
     })
 }
-
-// TODO　定时刷新
 
     </script>  
 </body>

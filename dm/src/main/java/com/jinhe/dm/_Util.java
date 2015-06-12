@@ -118,7 +118,6 @@ public class _Util {
 	        out.flush();
 	    } catch (Exception e) {
 	    	log.error("用Freemarker引擎解析脚本出错了", e);
-	        return script;
 	    }
 	    return script;
 	}
