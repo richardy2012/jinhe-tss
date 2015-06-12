@@ -15,7 +15,7 @@ public class _UtilTest {
 		Assert.assertEquals("JK", _Util.preTreatValue("JK", null));
 		Assert.assertEquals("JK", _Util.preTreatValue("JK", "hidden"));
 		
-		Assert.assertEquals(12, _Util.preTreatValue("12", "number"));
+		Assert.assertEquals(12L, _Util.preTreatValue("12", "number"));
 		Assert.assertEquals(12.2, _Util.preTreatValue("12.2", "number"));
 		
 		Assert.assertEquals(DateUtil.parse("2015-04-06"), _Util.preTreatValue("2015-04-06", "date"));

@@ -40,7 +40,7 @@ public class _Util {
   			if(value.indexOf(".") > 0) {
   				return EasyUtils.obj2Double(value);
   			}
-  			return EasyUtils.obj2Int(value);
+  			return EasyUtils.obj2Long(value);
   		}
   		else if("date".equals(type) || "datetime".equals(type)) {
 			try {
