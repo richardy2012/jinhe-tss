@@ -11,8 +11,13 @@ import com.jinhe.dm.record.RecordService;
 import com.jinhe.dm.record.ddl._Database;
 import com.jinhe.dm.report.ReportService;
 import com.jinhe.tss.framework.Global;
-import com.jinhe.tss.framework.component.message.MailUtil;
+import com.jinhe.tss.framework.MailUtil;
 import com.jinhe.tss.framework.component.timer.AbstractJob;
+import com.jinhe.tss.framework.sso.IdentityCard;
+import com.jinhe.tss.framework.sso.TokenUtil;
+import com.jinhe.tss.framework.sso.context.Context;
+import com.jinhe.tss.um.UMConstants;
+import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.util.EasyUtils;
 
 /**
@@ -33,6 +38,9 @@ public class WashDataJob extends AbstractJob {
 	 * jobConfig的格式为: recordId:reportId:param1=a,param2=b
 	 */
 	protected void excuteJob(String jobConfig) {
+		String token = TokenUtil.createToken("1234567890", UMConstants.ADMIN_USER_ID);
+		IdentityCard card = new IdentityCard(token, OperatorDTO.ADMIN);
+		Context.initIdentityInfo(card); // 模拟管理员登录
 		
 		String[] jobConfigs = EasyUtils.split(jobConfig, "\n");
 		

@@ -1,18 +1,25 @@
-package com.jinhe.tss.framework.component.message;
+package com.jinhe.tss.um.action;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.jinhe.tss.framework.MailUtil;
+import com.jinhe.tss.um.service.ILoginService;
+
 @Controller
-@RequestMapping("/message")
+@RequestMapping("/auth/message")
 public class MessageAction {
 	
 	protected Logger log = Logger.getLogger(this.getClass());
 	
+	@Autowired ILoginService loginService;
+	
     @RequestMapping(value = "/email", method = RequestMethod.POST)
     public void sendEmail(String title, String content, String receivers) {
-    	MailUtil.send(title, content, receivers.split(","));
+    	String[] emails = loginService.getEmails(receivers);
+		MailUtil.send(title, content, emails);
     }
 }

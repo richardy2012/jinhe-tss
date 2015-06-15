@@ -154,7 +154,7 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
 	//* *****************************************  for portlet  ********************************************
      
     public PageInfo getChannelPageArticleList(ArticleQueryCondition condition) {
-        String hql = "select a.id, a.title, a.author, a.summary, a.issueDate, a.createTime, a.hitCount, a.isTop "
+        String hql = "select a.id, a.title, a.author, a.summary, a.issueDate, a.createTime, a.hitCount, a.isTop, a.commentNum "
                 + " from Article a"
                 + " where 1=1 ${channelId} ${status} "
                 + " order by a.isTop desc, a.createTime desc";
@@ -167,7 +167,7 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
         insertIds2TempTable(condition.getChannelIds());
         condition.setChannelIds(null);
  
-        String hql = "select a.id, a.title, a.author, a.summary, a.issueDate, a.createTime, a.hitCount, a.isTop"
+        String hql = "select a.id, a.title, a.author, a.summary, a.issueDate, a.createTime, a.hitCount, a.isTop, a.commentNum "
                     + " from Article a, Temp t "
                     + " where a.channel.id = t.id ${status} ${createTime} "
                     + " order by a.isTop desc, a.createTime desc";

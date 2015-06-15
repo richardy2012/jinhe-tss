@@ -326,6 +326,7 @@ public class ArticleAction extends BaseActionSupport {
 		list.add(new Object[] { Environment.getUserName(), comment, commentTime });
 		
 		try {
+			article.setCommentNum(list.size());
 			comments = objectMapper.writeValueAsString(list);
 		} catch (Exception e) {  
   	    }  
@@ -373,8 +374,9 @@ public class ArticleAction extends BaseActionSupport {
 		} catch (Exception e) {  
   	    }  
 		article.setComment(comments);
+		article.setCommentNum(list.size());
+		
 		articleService.updateArticle(article, null, null);
-    	
     	printSuccessMessage("删除评论成功");
     }
 }

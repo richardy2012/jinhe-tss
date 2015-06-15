@@ -162,4 +162,9 @@ public final class UMConstants {
 	public static final String RESOURCETYPE_TREENODE_ICON = "images/resource_type.gif";//资源图标
 	public static final String OPERATION_TREENODE_ICON   = "images/permission.gif";    //权限选项Tree图标
 	public static final String RESOURCE_TREENODE_ICON   = "images/resource1.gif";      //资源Tree图标
+	
+	/**
+	 * 使用系统参数配置邮件组
+	 */
+	public final static String EMAIL_MACRO  = "EmailMacros";
 }

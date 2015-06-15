@@ -231,7 +231,7 @@ public abstract class _Database {
 		SQLExcutor.excute(updateSQL, paramsMap, this.datasource);
 		
 		if(this.needLog) { // 记录修改日志
-			Log excuteLog = new Log(recordName + ", " + id, old + " ==> " + valuesMap);
+			Log excuteLog = new Log(recordName + ", " + id, "\n修改前： " + old + " \n修改后： " + valuesMap);
 	    	excuteLog.setOperateTable("数据录入修改");
 	        ((IBusinessLogger) Global.getBean("BusinessLogger")).output(excuteLog);
 		}

@@ -12,9 +12,9 @@ import org.apache.log4j.Logger;
 
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.Global;
+import com.jinhe.tss.framework.MailUtil;
 import com.jinhe.tss.framework.component.log.IBusinessLogger;
 import com.jinhe.tss.framework.component.log.Log;
-import com.jinhe.tss.framework.component.message.MailUtil;
 import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.exception.convert.ExceptionConvertorFactory;
 import com.jinhe.tss.framework.exception.convert.IExceptionConvertor;

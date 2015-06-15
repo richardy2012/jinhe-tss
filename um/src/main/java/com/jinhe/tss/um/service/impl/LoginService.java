@@ -3,16 +3,22 @@ package com.jinhe.tss.um.service.impl;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.IOperator;
 import com.jinhe.tss.framework.sso.context.Context;
+import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupDao;
 import com.jinhe.tss.um.dao.IUserDao;
 import com.jinhe.tss.um.entity.Group;
@@ -22,7 +28,9 @@ import com.jinhe.tss.um.helper.dto.GroupDTO;
 import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.util.BeanUtil;
+import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.InfoEncoder;
+import com.jinhe.tss.util.MacrocodeCompiler;
 
 /**
  * <p>
@@ -181,4 +189,67 @@ public class LoginService implements ILoginService {
         }
         return returnList;
     }
+    
+    public String[] getEmails(String receiverStr) {
+    	Map<String, Object> fmDataMap = new HashMap<String, Object>();
+		List<Param> macroParams = ParamManager.getComboParam(UMConstants.EMAIL_MACRO);
+		if(macroParams != null) {
+			for(Param p : macroParams) {
+				fmDataMap.put(p.getText(), p.getValue());
+			}
+		}
+		
+		receiverStr = MacrocodeCompiler.runLoop(receiverStr, fmDataMap, true);
+		String[] receiver = receiverStr.split(",");
+		
+		// 将登陆账号转换成该用户的邮箱
+		Set<String> emails = new HashSet<String>();
+		for(int j = 0; j < receiver.length; j++) {
+			String temp = receiver[j];
+			
+			// 判断配置的是否已经是email，如不是，作为loginName处理
+			if(temp.endsWith("@tssRole")) {
+				List<OperatorDTO> list = getUsersByRoleId(parseID(temp));
+				for(OperatorDTO user : list) {
+					addUserEmail2List(user, emails);
+				}
+			} 
+			else if(temp.endsWith("@tssGroup")) {
+				List<OperatorDTO> list = getUsersByGroupId(parseID(temp));
+				for(OperatorDTO user : list) {
+					addUserEmail2List(user, emails);
+				}
+			} 
+			else if(temp.indexOf("@") < 0) {
+				try {
+					OperatorDTO user = getOperatorDTOByLoginName(temp);
+					addUserEmail2List(user, emails);
+				} 
+				catch(Exception e) {
+				}
+			}
+			else if(temp.indexOf("@") > 0 && temp.indexOf(".") > 0) {
+				emails.add(temp);
+			}
+		}
+		receiver = new String[emails.size()];
+		receiver = emails.toArray(receiver);
+		
+		return receiver;
+	}
+	
+	private Long parseID(String temp) {
+		try {
+			return EasyUtils.obj2Long( temp.split("@")[0] );
+		} catch(Exception e) {
+			return 0L;
+		}
+	}
+ 
+	private void addUserEmail2List(OperatorDTO user, Set<String> emails) {
+		String email = (String) user.getAttribute("email");
+		if( !EasyUtils.isNullOrEmpty(email) ) {
+			emails.add( email );
+		}
+	}
 }

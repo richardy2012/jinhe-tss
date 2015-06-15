@@ -3,12 +3,12 @@ package com.jinhe.dm.report.timer;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.TxTestSupport4DM;
 import com.jinhe.dm.report.Report;
 import com.jinhe.dm.report.ReportService;
 import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.um.UMConstants;
 
 public class ReportJobTest extends TxTestSupport4DM {
 	
@@ -17,7 +17,7 @@ public class ReportJobTest extends TxTestSupport4DM {
 	@Test
 	public void testReportJob() {
 		
-		Param paramL = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, DMConstants.EMAIL_MACRO, "常用收件人组");
+		Param paramL = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, UMConstants.EMAIL_MACRO, "常用收件人组");
         addParamItem(paramL.getId(), "pjjin@800best.com", "JK", ParamConstants.COMBO_PARAM_MODE);
         
         Report report1 = new Report();

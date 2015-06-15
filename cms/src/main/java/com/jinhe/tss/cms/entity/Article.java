@@ -55,7 +55,8 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
     private String  content = ""; //正文内容  
     
     @Lob    
-    private String  comment;	  //评论  
+    private String  comment;	  // 评论  
+    private int commentNum = 0;   // 评论次数
     
     private Date    overdueDate;  // 过期时间
     private Date    issueDate;	  // 发布日期	开始为空,只有审核和发布阶段可以改
@@ -240,5 +241,13 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public int getCommentNum() {
+		return commentNum;
+	}
+
+	public void setCommentNum(int commentNum) {
+		this.commentNum = commentNum;
 	}
 }

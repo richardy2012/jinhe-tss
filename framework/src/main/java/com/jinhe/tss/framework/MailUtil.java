@@ -1,4 +1,4 @@
-package com.jinhe.tss.framework.component.message;
+package com.jinhe.tss.framework;
 
 import org.apache.log4j.Logger;
 import org.springframework.mail.MailSender;

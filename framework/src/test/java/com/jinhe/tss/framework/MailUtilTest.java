@@ -1,8 +1,8 @@
-package com.jinhe.tss.framework.component.message;
+package com.jinhe.tss.framework;
 
 import org.junit.Test;
 
-import com.jinhe.tss.framework.component.message.MailUtil;
+import com.jinhe.tss.framework.MailUtil;
 
 public class MailUtilTest {
 	

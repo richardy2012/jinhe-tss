@@ -17,7 +17,6 @@ public final class DMConstants {
 	public final static String TEMP_EXPORT_PATH  = "TEMP_EXPORT_PATH";
     
 	public final static String SCRIPT_MACRO = "ReportScriptMacros";
-	public final static String EMAIL_MACRO  = "EmailMacros";
     
 	public final static String USER_ID = "userId";
 	public final static String USER_CODE = "userCode";

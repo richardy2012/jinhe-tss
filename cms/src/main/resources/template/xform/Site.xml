@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
 	<declare>
+		<column name="id"   caption="站点ID"  mode="number" editable="false"/>
 		<column name="name" caption="站点名称" mode="string" empty="false"/>
 		<column name="remark" caption="站点描述" mode="string" maxLength="255"/>
 		<column name="overdueDate" caption="文章过期时间" mode="combo" values="0|1|2|3|4|5" texts="一年|六个月|一个季度|一个月|一个星期|一天"/>
@@ -9,6 +10,10 @@
 		<column name="imagePath" caption="图片路径" mode="hidden"/>	
 	</declare>
 	<layout>
+		<TR>
+			<TD width="80"><label binding="id"/></TD>
+			<TD><input binding="id" style="width:60px;"/></TD>
+		</TR>
 		<TR>
 			<TD width="80"><label binding="name"/></TD>
 			<TD><input binding="name" style="width:90%;"/></TD>
@@ -24,7 +29,7 @@
 		<TR>
 			<TD><label binding="remark"/></TD>
 			<TD>
-				<textarea binding="remark" style="width:90%;height:60px;"/>
+				<textarea binding="remark" style="width:90%;height:40px;"/>
 			</TD>
 		</TR>
 	</layout>		
