@@ -57,7 +57,7 @@ div.groove { border-left: 1px solid #D1D1D1; border-top: 1px solid #D1D1D1; padd
 .btStrongS { color: #2F2469; width: 18px; height: 18px; border: 0; background-image: url(../images/button/strong_short.gif); }
 .btStrongL { color: #2F2469; width: 90px; height: 18px; border: 0; background-image: url(../images/button/strong_long.gif); }
 
-.loading { width:53px; height:20px;	background:url(../images/loading.gif) no-repeat 3px 3px; }
+.loading { width:53px; height:20px; background:url(../images/loading.gif) no-repeat 3px 3px; }
 .separator { height:6px; background:url(../images/sep_line.gif) repeat-x center; overflow: hidden;}
 
 .l { border-left:  1px solid #98989C; }
@@ -86,18 +86,16 @@ WorkSpace\:Page .Tree a, WorkSpace\:Page .Tree a.hover { border: 1px solid #F7F8
     z-index: 100;
 }
 
-#importDiv {border:1px solid #98989C; background-color: #E7E7E7; height: 260px; width: 276px; padding:10px;}
-#importDiv input[type='button'] { margin-left: 40px; margin-top: 5px; }
-#importDiv h2 { font-size: 20px; position: absolute; z-index: 2; }
+ #importDiv input[type='button'] { margin-left: 40px; margin-top: 5px; }
 .fileUpload {
-	height: 236px; width: 256px;
-	position: relative;
-	background: url(../images/upload.png);
+    height: 236px; width: 300px; 
+    position: relative;
+    background: url(../images/upload.png) no-repeat 25px bottom;
 }
 .fileUpload input[type='file'] {
-	height: 236px; width: 256px;
-	overflow: hidden;
-	position: absolute;
-	cursor: pointer;
-	opacity:0; filter:alpha(opacity=0);
+    height: 236px; width: 256px;
+    overflow: hidden;
+    position: absolute;
+    cursor: pointer;
+    opacity:0; filter:alpha(opacity=0);
 }

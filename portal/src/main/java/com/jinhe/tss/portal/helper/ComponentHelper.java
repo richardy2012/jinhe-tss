@@ -120,7 +120,7 @@ public class ComponentHelper {
             component.setVersion(propertyElement.elementText("version"));
             component.setDefinition(document.asXML());
             if(component.isLayout()) {
-                component.setPortNumber(Integer.valueOf(propertyElement.elementText("portNumber")));
+                component.setPortNumber(1);
             }
         } catch (Exception e) {
             throw new BusinessException("导入文件可能不是规定的" + component.getClass().getName() + "导入文件", e);

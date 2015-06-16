@@ -273,15 +273,14 @@ function createImportDiv(remark, checkFileWrong, importUrl) {
 		document.body.appendChild(importDiv);
 
 		var str = [];
-		str[str.length] = "<h2>"+remark+"</h2>";
 		str[str.length] = "<form id='importForm' method='post' target='fileUpload' enctype='multipart/form-data'>";
 		str[str.length] = "	 <div class='fileUpload'> <input type='file' name='file' id='sourceFile' onchange=\"$('#importDiv h2').html(this.value)\" /> </div> ";
-		str[str.length] = "	 <input type='button' id='importBt' value='上   传' class='btStrongL'/> ";
-		str[str.length] = "	 <input type='button' id='closeBt'  value='关闭' class='btWeak'/> ";
+		str[str.length] = "	 <input type='button' id='importBt' value='确定导入' class='tssbutton blue bigrounded'/> ";
+		str[str.length] = "	 <input type='button' id='closeBt'  value='关闭' class='tssbutton blue medium'/> ";
 		str[str.length] = "</form>";
 		str[str.length] = "<iframe width='0px' height='0px' name='fileUpload'></iframe>";
-		
-		$(importDiv).html(str.join("\r\n")).center();
+
+		$(importDiv).panel(remark, str.join("\r\n"), false);
 
 		$("#closeBt").click( function () {
 			$(importDiv).hide();

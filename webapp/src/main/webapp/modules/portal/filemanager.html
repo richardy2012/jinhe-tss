@@ -6,6 +6,7 @@
 <title>资源文件管理</title>
 
 <link href="../../tools/tssJS/css/tss.all.css" rel="stylesheet">
+<link href="../../tools/tssJS/css/tss.button.css" rel="stylesheet">
 <link href="../../css/css.css" rel="stylesheet">
 
 <script src="../../tools/tssJS/tssJS.all.js"></script>
@@ -265,7 +266,7 @@
         var url = URL_UPLOAD_FILE + "?contextPath=" + contextPath; 
         url += "&afterUploadClass=com.jinhe.tss.portal.helper.MovePortalFile";
 
-        var importDiv = createImportDiv("", null, url);
+        var importDiv = createImportDiv("点击图标选择要上传的文件", null, url);
         Element.show(importDiv);
     }
 
@@ -290,7 +291,7 @@
             <Tree id="tree" treeType="multi"></Tree>
         </div>
         <div class="bts">
-            <input type="button" value="上传附件" class="btStrongL" onclick="upload()"/>
+            <input type="button" value="选择附件" class="btStrongL" onclick="upload()"/>
             <input type="button" value="关闭" class="btWeak" onclick="window.close()"/>
         </div>
     </div>

@@ -53,7 +53,7 @@ URL_GET_DEFINES   = AUTH_PATH + "xdata/define/";
 URL_GET_USER_HAS  = AUTH_PATH + "user/has";
 
 var recordId = 1, recordName = "数据录入", _operation = ['1','2','3','4','5'], 
-    recordDefine, customizeJS, userCode, userGroups = [], userRoles = [];
+    recordDefine, customizeJS, userCode, userName, userGroups = [], userRoles = [];
 
 $(function() {
     
@@ -105,6 +105,7 @@ function init() {
             userGroups = result[0];
             userRoles = result[1];
             userCode = result[3];
+            userName = result[4];
         }
     });
 
