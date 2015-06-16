@@ -20,7 +20,6 @@ import com.jinhe.tss.cms.entity.Attachment;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.helper.ArticleHelper;
 import com.jinhe.tss.cms.helper.ArticleQueryCondition;
-import com.jinhe.tss.cms.helper.ImageProcessor;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.util.EasyUtils;
@@ -70,6 +69,7 @@ public class ArticleService implements IArticleService {
         file.renameTo(new File(newPath));
 		file = new File(newPath);
 
+		/* 缩略图质量太差
 		if (attachment.isImage()) { // 如果是图片，则为其制作缩略图
 			try {
 				newPath = new ImageProcessor(newPath).resize(0.68);
@@ -78,6 +78,7 @@ public class ArticleService implements IArticleService {
 				newPath = file.getPath(); // 如果缩略失败，则还是采用原图片
 			}
 		}
+		*/
 
 		String year = new SimpleDateFormat("yyyy").format(new Date());
 		int index = newPath.indexOf(year);

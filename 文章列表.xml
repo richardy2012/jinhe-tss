@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<portlet> 
+  <property> 
+    <name>文章列表</name>  
+    <version/>  
+    <description> <![CDATA[]]> </description> 
+  </property>  
+  <script> <![CDATA[]]> </script>  
+  <style> <![CDATA[.shadow-box-noshadow {background-color: #fff; margin-bottom: 10px; border: 1px solid #cacaca;}
+.search-wrap-list { padding:10px; line-height: 24px;} 
+.search-wrap-list-ul { list-style-type: disc; }
+.search-wrap-list-ul li { border-bottom:1px dashed #cacaca; padding:20px 0; }
+.search-wrap-list-ul li h2 { font-size:16px; margin-bottom:5px; }
+.search-wrap-list-ul li a { color:#555; font-weight:bold }
+.search-wrap-list-ul li .mob-sub { font-size:12px; color:#555; }
+.search-wrap-list-ul li .mob-sub b { color:#999; }
+.search-wrap-list-ul li .mob-summay { font-size:14px; }
+.search-wrap-list-ul li .mob-summay a { color:#999; font-weight: normal; }
+.search-wrap-list-ul li em { color:#ff4800; margin:0 2px; font-style:normal; }
+
+.author { margin-right: 20px; }]]> </style>  
+  <html> <![CDATA[<#assign tempChannelId = common.Long.valueOf(channelId?default('#{channelId}'))/>
+<@common.getArticleListXML tempChannelId, common.Integer.valueOf(page?default('1')), #{pageSize}/>
+
+<div class="shadow-box-noshadow search-wrap-list container" id="${id}">
+ <ul class="search-wrap-list-ul">
+<#if common.totalPageNum = '0'>
+<#else>
+  <#list common.articleList.item as item>
+  <li>
+    <h2>
+      <a href="${common.articlePageUrl}&articleId=${item.id}" target="_blank">
+        ${item.title}
+      </a>
+    </h2>
+    <div class="mob-author">
+      <span class="author">${item.author}</span>
+      <time class="time">${item.issueDate}</time>
+    </div>
+    <div class="mob-summay">
+      摘要：${item.summary}...
+      <a href="${common.articlePageUrl}&articleId=${item.id}" target="_blank">[详细]</a>
+    </div>
+  </li>
+  </#list>
+</#if>
+ </ul>
+</div>
+
+<script language="JavaScript">
+	// showPageInfo(${common.currentPage}, ${common.totalPageNum}, ${common.totalRows}, "${common.articleListUrl}&channelId=${tempChannelId}");
+</script>]]> </html>  
+  <events></events>  
+  <parameters> 
+    <param name="pageSize" defaultValue="20"/>  
+    <param name="channelId" defaultValue="2"/> 
+  </parameters> 
+</portlet>
