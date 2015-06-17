@@ -105,10 +105,6 @@ function initMenus() {
         label:"门户内部链接",
         callback: function() { addNewMenu("3"); }
     }
-    subItem5 = {
-        label:"局部替换",
-        callback: function() { addNewMenu("5"); }
-    }
     subItem6 = {
         label:"定制脚本跳转",
         callback: function() { addNewMenu("6"); }
@@ -121,15 +117,14 @@ function initMenus() {
 	submenu.addItem(subItem3);
 	submenu.addItem(subItem7);
     submenu.addItem(subItem6);
-	submenu.addItem(subItem5);
     item5.submenu = submenu;
 
     var menu1 = new $.Menu();
     menu1.addItem(item3);
-    menu1.addItem(item2);
     menu1.addItem(item6);
 	menu1.addItem(item4);
 	menu1.addItem(item7);
+    menu1.addItem(item2);
 	menu1.addItem(item8);
     menu1.addSeparator();
     menu1.addItem(item1);

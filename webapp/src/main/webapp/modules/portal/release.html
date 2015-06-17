@@ -28,6 +28,7 @@
     URL_GET_THEME_LIST  = AUTH_PATH + "portal/theme4release/";
 	URL_GET_PORTAL_LIST = AUTH_PATH + "portal/activePortals";
 	URL_GET_PAGE_LIST   = AUTH_PATH + "portal/activePages/";
+    URL_GET_PS_TREE     = AUTH_PATH + "navigator/pstree/";
 
 	if(IS_TEST) {
 		URL_INIT            = "data/releaseConfig_tree.xml?";
@@ -37,6 +38,7 @@
 		URL_GET_THEME_LIST  = "data/themes4release.xml?";
 		URL_GET_PORTAL_LIST = "data/structure_tree.xml?";
 		URL_GET_PAGE_LIST   = "data/structure_page_tree.xml?";
+        URL_GET_PS_TREE      = "data/structure_tree2.xml?";
 	}
 
     function init() {
@@ -208,12 +210,12 @@
         });
     }
 
-    /* 获取页面/版面  */
+    /* 获取页面内容  */
     function getPage() {
         var page1Form = $.F("page1Form");
-        var id = page1Form.getData("portal.id");
-        var url = URL_GET_PAGE_LIST + id;
-        popupTree(url, "PageTree", {}, function(page){
+        var portalId = page1Form.getData("portal.id");
+        var url = URL_GET_PS_TREE + portalId + "/3";
+        popupTree(url, "StructureTree", {}, function(page){
             page1Form.updateDataExternal("page.id", page.id);
             page1Form.updateDataExternal("page.name", page.name);
         });

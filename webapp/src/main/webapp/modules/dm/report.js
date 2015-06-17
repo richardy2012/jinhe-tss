@@ -126,12 +126,12 @@ function initMenus() {
 	menu.addItem(item2);
 	menu.addItem(item3);
 	menu.addItem(item4);
-	menu.addItem(item5);
 	menu.addSeparator();
 	menu.addItem(item6);
 	menu.addItem(item7);
 	menu.addItem(item8);
 	menu.addItem(item9);
+	menu.addItem(item5);
 	menu.addSeparator();
 	menu.addItem(item11);
 	menu.addItem(item12);

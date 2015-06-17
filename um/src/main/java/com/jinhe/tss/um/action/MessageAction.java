@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.tss.framework.MailUtil;
 import com.jinhe.tss.um.service.ILoginService;
@@ -18,6 +19,7 @@ public class MessageAction {
 	@Autowired ILoginService loginService;
 	
     @RequestMapping(value = "/email", method = RequestMethod.POST)
+    @ResponseBody
     public void sendEmail(String title, String content, String receivers) {
     	String[] emails = loginService.getEmails(receivers);
     	if(emails != null && emails.length > 0) {

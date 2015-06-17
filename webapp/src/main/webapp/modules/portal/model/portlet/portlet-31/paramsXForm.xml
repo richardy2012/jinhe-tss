@@ -11,35 +11,35 @@
       </declare>  
       <layout> 
         <TR> 
-          <TD width="50">
-            <label binding="channelId"/>
+          <TD width="100"> 
+            <label binding="channelId"/> 
           </TD>  
-          <TD>
-            <input binding="channelId" type="text"/>
+          <TD> 
+            <input binding="channelId" type="text"/> 
           </TD> 
         </TR>  
         <TR> 
-          <TD width="50">
-            <label binding="pageSize"/>
+          <TD> 
+            <label binding="pageSize"/> 
           </TD>  
-          <TD>
-            <input binding="pageSize" type="text"/>
+          <TD> 
+            <input binding="pageSize" type="text"/> 
           </TD> 
         </TR>  
         <TR> 
-          <TD width="50">
-            <label binding="needPageInfo"/>
+          <TD> 
+            <label binding="needPageInfo"/> 
           </TD>  
-          <TD>
-            <input binding="needPageInfo" type="text"/>
+          <TD> 
+            <input binding="needPageInfo" type="text"/> 
           </TD> 
         </TR>  
         <TR> 
-          <TD width="50">
-            <label binding="wordNum"/>
+          <TD> 
+            <label binding="wordNum"/> 
           </TD>  
-          <TD>
-            <input binding="wordNum" type="text"/>
+          <TD> 
+            <input binding="wordNum" type="text"/> 
           </TD> 
         </TR> 
       </layout>  

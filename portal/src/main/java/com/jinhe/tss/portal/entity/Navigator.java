@@ -70,12 +70,7 @@ public class Navigator extends OperateInfo implements IXForm, IDecodable, IResou
      * 读取时再解析成 url = "/tss/auth/portal/preview/{portalId}?id=" + contentId 
      */
     public static final Integer TYPE_MENU_ITEM_3 = 3;
-    
-    /**
-     * 局部替换: contentId=66, targetId=88
-     * 读取时再解析成 url = "/tss/auth/portal/xml/{portalId}/{contentId}/{targetId}" 
-     */
-    public static final Integer TYPE_MENU_ITEM_5 = 5;
+ 
     
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "navigator_sequence")
@@ -97,9 +92,6 @@ public class Navigator extends OperateInfo implements IXForm, IDecodable, IResou
     
     @ManyToOne
     private Structure content;    // 显示内容   
-    
-    @ManyToOne
-    private Structure toContent;  // 目标：版面/Portlet替换  
     
  	private String methodName;    // 方法名                        
     private String params;        // 参数    
@@ -190,12 +182,6 @@ public class Navigator extends OperateInfo implements IXForm, IDecodable, IResou
             }
         }
         
-        // 局部替换方式
-        if(type.equals(TYPE_MENU_ITEM_5)) {
-            map.put("targetId", toContent.getId());
-            map.put("action", "/tss/auth/portal/xml/" + portalId + "/" + content.getId() + "/" + toContent.getId());
-        }
-        
         return XMLDocUtil.map2AttributeNode(map, this.type.equals(TYPE_MENU) ? "Menu" : "MenuItem");
     }
 
@@ -206,10 +192,6 @@ public class Navigator extends OperateInfo implements IXForm, IDecodable, IResou
         if(content != null) {
             map.put("content.id", content.getId());
             map.put("content.name", content.getName());
-        }
-        if(toContent != null) {
-            map.put("toContent.id", toContent.getId());
-            map.put("toContent.name", toContent.getName());
         }
        
         return map;
@@ -349,15 +331,7 @@ public class Navigator extends OperateInfo implements IXForm, IDecodable, IResou
     public void setContent(Structure content) {
         this.content = content;
     }
-
-    public Structure getToContent() {
-        return toContent;
-    }
-
-    public void setToContent(Structure toContent) {
-        this.toContent = toContent;
-    }
-    
+ 
 	public Serializable getPK() {
 		return this.id;
 	}

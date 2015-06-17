@@ -106,7 +106,11 @@ public class NavigatorService implements INavigatorService {
     }
 
 	private String createNavigatorXML(Long id) {
-		Navigator navigator = getNavigator(id);   
+		Navigator navigator = getNavigator(id);  
+		if(navigator == null) {
+			return "<MainMenu/>";
+		}
+		
 		List<Navigator> menuItems = dao.getMenuItemListByMenu(id);
 		
 		// 解析地址参数中 ${APP_URL}等信息，取 AppServer的配置信息。

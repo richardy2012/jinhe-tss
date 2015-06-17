@@ -4,7 +4,6 @@ import java.util.Map;
 
 import com.jinhe.tss.portal.engine.HTMLGenerator;
 import com.jinhe.tss.portal.engine.model.LayoutNode;
-import com.jinhe.tss.util.MacrocodeCompiler;
 
 /**
  * <p> 布局器宏代码运行容器 </p>
@@ -42,13 +41,7 @@ public class LayoutMacrocodeContainer extends AbstractMacrocodeContainer{
     public LayoutMacrocodeContainer(String code, LayoutNode node) {
         super(code, node);
     }
-
-    protected Map<String, Object> getParameters() {
-        Map<String, Object> params = super.getParameters();
-        params.remove(MacrocodeCompiler.createVariable(HTMLGenerator.NAVIGATOR_CONTENT_INDEX)); // ${navigatorContentIndex}
-        return params;
-    }
-    
+ 
     protected String getElementId() {
         return "L" + node.getParent().getId();
     }

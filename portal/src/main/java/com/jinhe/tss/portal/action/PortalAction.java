@@ -60,27 +60,6 @@ public class PortalAction extends FMSupportAction {
 
         printHTML(portalId, gen.toHTML(), true);
     }
-    
-    /**
-     * 获取页面上某个版面或者portletInstanse的xml格式内容。
-     * 用以替换某块指定的区域（targetId对应的版面（或页面）中布局器的替换区域：navigatorContentIndex）。
-     * 菜单点击的时候会调用到本方法。
-     */
-    @RequestMapping("/xml/{portalId}/{contentId}/{targetId}")
-    public void getPortalXML(HttpServletResponse response, HttpServletRequest request, 
-    		@PathVariable("portalId")  Long portalId, 
-    		@PathVariable("contentId") Long contentId, 
-    		@PathVariable("targetId")  Long targetId) {
-    	
-    	Long themeId = EasyUtils.obj2Long(request.getParameter("themeId"));
-        PortalNode portalNode = service.getPortal(portalId, themeId);
-        HTMLGenerator gen = new HTMLGenerator(portalNode, contentId, targetId);
-        
-        StringBuffer sb = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        sb.append("<Response><Portlet>").append(gen.toXML()).append("</Portlet></Response>");
-         
-        printHTML(portalId, sb.toString(), false);
-    }
 
     /**
      * 获取所有的Portal对象（取门户结构）并转换成Tree相应的xml数据格式

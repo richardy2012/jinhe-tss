@@ -97,8 +97,8 @@ function initMenus() {
 	menu.addItem(item4);
 	menu.addItem(item21);
 	menu.addItem(item22);
-	menu.addItem(item5);
 	menu.addItem(item6);
+	menu.addItem(item5);
 	menu.addSeparator();
 	menu.addItem(createPermissionMenuItem("D2"));
 	

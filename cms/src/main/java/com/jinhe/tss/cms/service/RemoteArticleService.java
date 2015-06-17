@@ -56,7 +56,7 @@ public class RemoteArticleService implements IRemoteArticleService {
         Channel channel = channelDao.getEntity(channelId);
         if(channel == null) {
         	log.error("ID为：" + channelId + " 的栏目不存在！");
-            return "<Response><ArticleList><totalPageNum>0</totalPageNum><totalRows>0</totalRows></ArticleList></Response>";
+            return "<Response><ArticleList><rss><totalPageNum>0</totalPageNum><totalRows>0</totalRows></rss></ArticleList></Response>";
         }
         
         if( !channelDao.checkBrowsePermission(channelId) ) {

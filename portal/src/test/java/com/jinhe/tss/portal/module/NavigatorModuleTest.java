@@ -102,12 +102,11 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         menuService.saveNavigator(menu2_2);
         
         Navigator menu3 = new Navigator();
-        menu3.setType(Navigator.TYPE_MENU_ITEM_5);
+        menu3.setType(Navigator.TYPE_MENU_ITEM_7);
         menu3.setName("二级页面");
         menu3.setParentId(rootMenuId);
         menu3.setPortalId(portalId);
         menu3.setContent(root);
-        menu3.setToContent(root);
         menuService.saveNavigator(menu3);
         
         Navigator menu4 = new Navigator();

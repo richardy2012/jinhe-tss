@@ -236,6 +236,11 @@ function saveSource(rowID) {
     var xform = $.F("page1Form");  
     if( !xform.checkForm() ) return;
 
+    if( preListener && $.isFunction(preListener) ) {
+        var result = preListener();
+        if(!result) return;
+    }
+
     var request = new $.HttpRequest();
     request.url = URL_SAVE_SOURCE + recordId;
 
@@ -249,14 +254,20 @@ function saveSource(rowID) {
     syncButton([$1("page1BtSave")], request); // 同步按钮状态
     detachReminder(rowID); // 解除提醒
 
-    request.onsuccess = function() { // 更新
-        loadGridData( $1("GridPageList").value || 1 ); 
-        ws.closeActiveTab();
+    request.onsuccess = function() { 
+        if( afterListener && $.isFunction(afterListener) ) {
+            afterListener();
+        }
 
-        // TODO 添加执行定制方法，可用作流程控制，发生email等
+        loadGridData( $1("GridPageList").value || 1 ); // 更新Grid
+        ws.closeActiveTab(); 
     }
     request.send();
 }
+
+// 监听器
+var preListener, // 在表单保存前触发，如不通过，则终止保存
+    afterListener; // 在表单保存后触发，可用作流程控制，发生email等
 
 function remove()  { 
     $.confirm("您确定要删除该行记录吗？", "删除确认", function(){
@@ -418,7 +429,10 @@ function forbid(field, role, group) {
     }  
 
     if(!editable) {
-        xform.setFieldEditable(field, "false"); 
+        var fields = field.split(",");
+        fields.each(function(i, _field) {
+            xform.setFieldEditable(_field, "false"); 
+        });
     }
 }
 
@@ -469,6 +483,12 @@ function notice(field, msg) {
 function disableForm() {
 	$("#page1BtSave").hide(); 
 	$.F("page1Form").setEditable("false");
+}
+
+function updateField(code, value) {
+    var xform = $.F("page1Form");
+    xform.updateDataExternal(code, value);    
+    xform.updateData( $1(code) );
 }
 
 //-->

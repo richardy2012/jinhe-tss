@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,6 @@ import com.jinhe.tss.portal.engine.model.AbstractElementNode;
 import com.jinhe.tss.portal.engine.model.DecoratorConfigable;
 import com.jinhe.tss.portal.engine.model.DecoratorNode;
 import com.jinhe.tss.portal.engine.model.IPageElement;
-import com.jinhe.tss.portal.engine.model.LayoutConfigable;
 import com.jinhe.tss.portal.engine.model.LayoutNode;
 import com.jinhe.tss.portal.engine.model.Node;
 import com.jinhe.tss.portal.engine.model.PageNode;
@@ -43,8 +43,6 @@ public class HTMLGenerator {
     
     Logger log = Logger.getLogger(HTMLGenerator.class);
     
-    public static final String NAVIGATOR_CONTENT_INDEX = "navigatorContentIndex";
-
     /**
      * 页面关键字
      */
@@ -84,17 +82,6 @@ public class HTMLGenerator {
      * 预览元素的路径（门户结构树上路径）： Portlet实例，版面，……，版面，页面
      */
     private List<Node> treePath = new ArrayList<Node>();
-    
-
-    /**
-     * 目标节点：生成后对象在页面上所放的父版面ID
-     */
-    private Long targetId;
-
-    /**
-     * 目标节点布局器的目标区域：生成后放到相应父版面布局器的相应区域中
-     */
-    private int targetIndex;
 
     /**
      * 门户加载的外部JS、CSS文件目录访问地址
@@ -134,6 +121,17 @@ public class HTMLGenerator {
                 throw new BusinessException("选中预览节点【ID:" + id +"】在门户缓存中不存在，如果节点为新增节点，请先刷新缓存");
             }
             
+            // 调整指定预览的节点至所在分支的第一个节点，以保证优先被生成
+            Set<Node> brothers = content.getParent().getChildren();
+			brothers.remove(content);
+			
+			Set<Node> set = new LinkedHashSet<Node>(); 
+			set.add(content);
+			set.addAll(brothers);
+			
+			brothers.clear();
+			brothers.addAll(set);
+            
             // 往上查找需要显示节点的父亲节点，直到门户根节点，把整个路径加入到treePath中来（不包括根节点）
             while ( !portal.equals(content) ) {
                 treePath.add(content);
@@ -164,34 +162,6 @@ public class HTMLGenerator {
     }
 
     /**
-     * HTML页面生成器构造函数：生成部分页面元素HTML代码的XML字符串<br>
-     * <br>
-     * @param portal   
-     *                 操作门户PortalNode对象<br>
-     * @param contentId       
-     *                 对应（版面/portlet替换）菜单中的 "版面/Portlet" ID， 即即将显示的节点Id<br>
-     * @param targetId 
-     *                 对应（版面/portlet替换）菜单中的目标版面/页面ID，<br>
-     *                 即被取代的区域（对应布局器中targetIndex的区域）所在的页面或版面ID
-     */
-    public HTMLGenerator(PortalNode portal, Long contentId, Long targetId) {
-        this.targetId = targetId;
-        
-        Node content = portal.getNodesMap().get(contentId);
-        Node target  = portal.getNodesMap().get(targetId);
-        
-        if( !(content instanceof IPageElement) ) {
-            throw new BusinessException("（版面/portlet替换）菜单中指定的 版面/Portlet 有误，必须是版面或Portlet实例。");
-        }
-        if( !(target instanceof LayoutConfigable) ) {
-            throw new BusinessException("（版面/portlet替换）菜单中指定的 目标版面/页面 有误，必须是版面或页面。");
-        }
-        
-        this.dom = new Element((IPageElement)content, false);
-        this.targetIndex = getMenuPointContentIndex((LayoutConfigable) target);
-    }
-
-    /**
      * <p>
      * 生成页面HTML代码
      * </p>
@@ -213,17 +183,7 @@ public class HTMLGenerator {
         sb.append("</HEAD>\n");
         return sb.append(dom).append("</HTML>").toString();
     }
-
-    public String toXML() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<segment targetIndex=\"").append(targetIndex).append("\">");
-        sb.append("<html><![CDATA[").append(dom).append("]]></html>");
-        sb.append("<script><![CDATA[").append(formatSimpleScirptCodes()).append("]]></script>");
-        sb.append("<style>").append(formatStyleCodes()).append("</style>");
-        sb.append("<event>").append(formatEvents4XML()).append("</event>");
-        return sb.append("</segment>").toString();
-    }
-
+ 
     /**
      * 返回门户页面的关键字字符串
      */
@@ -338,36 +298,6 @@ public class HTMLGenerator {
 
     /**
      * <p>
-     * 【菜单所指内容】显示区域的索引号。<br>
-     * 获取所在版面、页面默认菜单所指内容显示区域在相应布局器的序号。
-     * </p>
-     * @param node
-     * @return
-     */
-    private int getMenuPointContentIndex(LayoutConfigable node) {
-        LayoutNode layoutNode = node.getLayoutNode();
-        int absPortNumber = Math.abs( layoutNode.getPortNumber() );
-        
-        // 【菜单所指内容】显示区域默认为布局器的【最后一个区域】
-        int menuPointContentIndex = absPortNumber - 1; 
-        
-        // 取布局器参数里设置好了的菜单区域
-        String index = layoutNode.getParameters().get(NAVIGATOR_CONTENT_INDEX); 
-        if (index != null) { // 如果设置了默认替换区域的参数
-            try { 
-                int definedIndex = Integer.parseInt(index);
-                if(definedIndex < absPortNumber) {
-                	menuPointContentIndex = definedIndex;
-                }
-            } catch (NumberFormatException e) { 
-                // 出错则取布局器的最后一个区域
-            }
-        }
-        return menuPointContentIndex;
-    }
-
-    /**
-     * <p>
      * 页面生成时使用的自定义Element对象，用于生成页面HTML代码
      * </p>
      */
@@ -394,27 +324,16 @@ public class HTMLGenerator {
          *             true:  预览页面， 根据页面、版面下的子节点（IPageElement）创建Element对象 
          *             false: 生成(局部页面:IPageElement)XML
          */
-        public Element(IPageElement node, boolean isPreviewPage) { 
+        public Element(IPageElement node) { 
         	Long id = node.getId();
             String elementType = node.getPageElementType();
            
-            if(isPreviewPage){
-                HTMLGenerator.this.keyword.add(node.getName());
-                
-                // 创建页面元素（包括版面和portletInstance）上下文关系的初始化代码， 定义门户结构关系
-                HTMLGenerator.this.initCodes.add(appendElementType(id, elementType)); 
-                HTMLGenerator.this.initCodes.add(appendElementParent(id, node.getParent().getId())); 
-            }
-            else {
-                // 创建页面上版面/Portlet实例对象上下文关系的修正代码
-                HTMLGenerator.this.initCodes.add(appendElementType(id, elementType));  
-                HTMLGenerator.this.initCodes.add(appendElementParent(id, node.getParent().getId())); 
-                
-                HTMLGenerator.this.initCodes.add(appendElementIndex(id, targetIndex));
-                HTMLGenerator.this.initCodes.add(appendElementCIndex(id, 0));
-                HTMLGenerator.this.initCodes.add("$$('" + targetId + "').subset[" + targetIndex + "] = [$$('" + id + "')];\n");
-            }
+            HTMLGenerator.this.keyword.add(node.getName());
             
+            // 创建页面元素（包括版面和portletInstance）上下文关系的初始化代码， 定义门户结构关系
+            HTMLGenerator.this.initCodes.add(appendElementType(id, elementType)); 
+            HTMLGenerator.this.initCodes.add(appendElementParent(id, node.getParent().getId())); 
+ 
             createIPageElement(node);
         }
 
@@ -551,10 +470,9 @@ public class HTMLGenerator {
             appendEventCodes(node); // 事件           
                        
             // 创建所有子节点对应的Element对象集合
-            int menuPointContentIndex = getMenuPointContentIndex((LayoutConfigable) parent);
             int portNumber = node.getPortNumber();
             List<List<String>> childIds = new ArrayList<List<String>>();  // 二维List，数据如  ： [[child1, child2], [child3], [child4]]
-            Map<String, Element> portMappingElement = createChildElements(parent, portNumber, menuPointContentIndex, childIds);
+            Map<String, Element> portMappingElement = createChildElements(parent, portNumber, childIds);
            
             // 补上子节点所在版面位置索引号及子索引号定义脚本
             for (int i = 0; i < childIds.size(); i++) {
@@ -614,22 +532,11 @@ public class HTMLGenerator {
          * @param parent
          * 				布局器所在的门户结构节点
          * @param portNumber
-         * @param menuPointContentIndex
          * @param childIds
          * @return Map
          */
-		private Map<String, Element> createChildElements(Node parent, 
-		        int portNumber, int menuPointContentIndex, List<List<String>> childIds) {
-            /* 
-             * 判断【选中浏览】的门户节点是否为当前parent的子节点。
-             * 如果是parent在treePath存在且非第一个节点，则说明其前面还有它的子节点存在 
-             * treePath结构为： portletInstance(0...n)-->section(*)-->page 
-             */
-		    int parentIndex = treePath.indexOf(parent);
-            boolean oneChildSelected = parentIndex > 0; 
-		    
+		private Map<String, Element> createChildElements(Node parent, int portNumber, List<List<String>> childIds) {
             int index = -1;
-            boolean flag = false; // 用来判断是否需要设置【菜单所指内容】到菜单格子
             Map<String, Element> portMappingElement = new HashMap<String, Element>();
             for ( Node child : parent.getChildren() ) {
                 index++;
@@ -640,14 +547,8 @@ public class HTMLGenerator {
                         break;     // 如果布局器已经满了则跳出，剩下的子节点将不会被生成放入进来
                     }
                 }
-                
-                // 判断当前index是否为parent节点布局器中的【菜单所指内容】区域，且【选中浏览】的节点为parent的子节点
-                if(index == menuPointContentIndex && oneChildSelected) {
-                    flag = true;
-                    continue; // 先返回，该区域留待后面单独补上
-                }
-                
-                Element childElement = new Element((IPageElement) child, true);
+ 
+                Element childElement = new Element((IPageElement) child);
                 String portMacro = MacrocodeCompiler.createMacroCode("port" + index); // ${portX}
                 
                 // 如果portElement已经存在，则说明该index已经put过到childrenMap里。同一index再次被循环到，所以一定是循环类布局器
@@ -663,16 +564,7 @@ public class HTMLGenerator {
                     childIds.add( new ArrayList<String>(Arrays.asList(child.getId().toString())) );
                 }
             }
-            
-            // 将菜单所指的内容【版面或Portlet实例】设置到父版面或页面中指定放【菜单所指内容】的布局器窗口。
-            if ( flag ) {
-                //【parentIndex - 1】即被【选中浏览】的节点在treePath里的序号，排在其parent前面。
-                Node content = treePath.get(parentIndex - 1);
-                String portMacro = MacrocodeCompiler.createMacroCode("port" + menuPointContentIndex); 
-                portMappingElement.put(portMacro, new Element((IPageElement) content, true));
-                childIds.set(menuPointContentIndex, Arrays.asList(content.getId().toString()));
-            }
-            
+ 
             // 如果布局器的单元格中还有空的，则加一些【空Element】将其填满
             int filledNum = portMappingElement.size(); // 已经填充的单元格个数
             for ( int i = Math.abs(portNumber) - 1; i >= filledNum; i-- ) {
@@ -709,19 +601,11 @@ public class HTMLGenerator {
      */
     private class NoNullLinkedList<T> extends LinkedList<T> {
         private static final long serialVersionUID = 1851415859447342905L;
-
-        /*
-         * 覆写LinkedList的add方法
-         * @see java.util.LinkedList#add(java.lang.Object)
-         */
+ 
         public boolean add(T obj) {
             return EasyUtils.isNullOrEmpty(obj) ? false : super.add(obj);
         }
-        
-        /*
-         * 覆写LinkedList的addAll方法
-         * @see java.util.LinkedList#addAll(java.util.Collection)
-         */
+ 
         public boolean addAll(Collection<? extends T> c) {
             if(c == null) return false;
             

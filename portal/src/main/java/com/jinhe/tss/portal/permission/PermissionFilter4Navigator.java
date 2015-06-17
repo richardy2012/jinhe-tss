@@ -41,13 +41,9 @@ public class PermissionFilter4Navigator implements IPermissionFilter {
             // 对菜单引用到的portlet实例（门户结构的一种）进行过滤
             if(menu.getType().equals(Navigator.TYPE_MENU)) continue;
             
-            if(menu.getContent() == null && menu.getToContent() == null) continue;
+            if(menu.getContent() == null) continue;
             
-            if(menu.getContent() == null && psPermissions.contains(menu.getToContent().getId())) continue;
-            
-            if(psPermissions.contains(menu.getContent().getId()) && menu.getToContent() == null) continue;  
-            
-            if(psPermissions.contains(menu.getContent().getId()) && psPermissions.contains(menu.getToContent().getId())) continue;
+            if( psPermissions.contains(menu.getContent().getId()) ) continue;  
             
             it.remove();
         }
