@@ -43,8 +43,12 @@ public class MailUtil {
 	}
 	
 	public static void send(String subject, String text, String receiver[]) {
+		if(receiver == null || receiver.length == 0) {
+			log.error("收件人不能为空"); 
+			return;
+		}
+		
 		SimpleMailMessage mail = new SimpleMailMessage();
-
 		try {
 			mail.setTo(receiver);
 			mail.setFrom(getEmailFrom()); // 发送者,这里还可以另起Email别名，不用和xml里的username一致
@@ -53,7 +57,7 @@ public class MailUtil {
 			getMailSender().send(mail);
 		} 
 		catch (Exception e) {
-			log.error("发送文本邮件时出错了：", e);
+			log.error("发送文本邮件时出错了, " + receiver, e);
 		}
 	}
 }

@@ -252,6 +252,8 @@ function saveSource(rowID) {
     request.onsuccess = function() { // 更新
         loadGridData( $1("GridPageList").value || 1 ); 
         ws.closeActiveTab();
+
+        // TODO 添加执行定制方法，可用作流程控制，发生email等
     }
     request.send();
 }

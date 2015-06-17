@@ -859,3 +859,11 @@ function popupGroupTree(callback) {
 	}
 	popupTree(url, "GroupTree", {}, callback)
 }
+
+function email(receivers, title, content) {
+	$.ajax({
+		url: AUTH_PATH + "message/email",
+		params: {"receivers": receivers, "title": title, "content": content},
+		method: "POST"
+	});
+}

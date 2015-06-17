@@ -20,6 +20,8 @@ public class MessageAction {
     @RequestMapping(value = "/email", method = RequestMethod.POST)
     public void sendEmail(String title, String content, String receivers) {
     	String[] emails = loginService.getEmails(receivers);
-		MailUtil.send(title, content, emails);
+    	if(emails != null && emails.length > 0) {
+    		MailUtil.send(title, content, emails);
+    	}
     }
 }
