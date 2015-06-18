@@ -9,3 +9,19 @@ ANALYZE TABLE dm_access_log;
 DELETE FROM dm_access_log  WHERE accessTime < DATE_SUB(CURDATE(), INTERVAL 7 DAY)
 DELETE FROM dm_access_log  WHERE `methodCnName` IN ('SONumSendPM', 'SONumOrder', 'SONumSendPH', '看板（订单状态统计）');
 SELECT COUNT(*) FROM dm_access_log t 
+
+-- 清除日志
+SELECT t.`methodCnName`, COUNT(*)
+FROM dm_access_log t
+WHERE `methodCnName` IN ('CompanyNameList', 'CenterNameList') OR `methodCnName` LIKE 'Get%'
+GROUP BY t.`methodCnName`
+
+DELETE FROM dm_access_log  
+WHERE `methodCnName` IN ('CompanyNameList', 'CenterNameList') OR `methodCnName` LIKE 'Get%';
+
+-- 设置标记，忽略记录访问日志
+UPDATE  dm_report SET remark = CONCAT(IFNULL(remark, ''), ',ACLOG_IGNORE_REPORT')
+WHERE `name` IN ('CompanyNameList', 'CenterNameList') OR `name` LIKE 'Get%';
+
+SELECT remark FROM  dm_report 
+WHERE `name` IN ('CompanyNameList', 'CenterNameList') OR `name` LIKE 'Get%';
