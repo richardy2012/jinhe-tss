@@ -19,7 +19,7 @@
 	<#assign menu = doc.Menu />
 </#macro>  
 
-<#macro getArticleListXML channelId, page=1, pagesize=5>
+<#macro getArticleListXML channelId, page=1, pagesize=12>
 	<#assign data = articleService.getArticleListByChannel(channelId, page, pagesize, true) />
 	<#assign doc  = manager.translateValue(data)/>
 	<#assign articleList = doc.Response.ArticleList.rss/>
@@ -27,7 +27,17 @@
 	<#assign totalPageNum = articleList.totalPageNum/>
 	<#assign totalRows = articleList.totalRows/>
 	<#assign currentPage = articleList.currentPage/>
-</#macro> 
+</#macro>
+
+<#macro getArticleListDeeplyXML channelId, page=1, pagesize=12>
+	<#assign data = articleService.queryArticlesDeeplyByChannelId(channelId, page, pagesize) />
+	<#assign doc  = manager.translateValue(data)/>
+	<#assign articleList = doc.Response.ArticleList.rss/>
+    <#assign channelName = articleList.channelName?default('')/>
+	<#assign totalPageNum = articleList.totalPageNum/>
+	<#assign totalRows = articleList.totalRows/>
+	<#assign currentPage = articleList.currentPage/>
+</#macro>  
 
 <#macro getArticleXML articleId>
 	<#assign data = articleService.getArticleXML(articleId) />
