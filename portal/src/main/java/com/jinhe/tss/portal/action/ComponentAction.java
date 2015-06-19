@@ -334,11 +334,7 @@ public class ComponentAction extends FMSupportAction {
 
         // 直接预览门户组件
         String data = toHTML(html, script, style, events, parameters);
-        if(component.isportlet()) {
-            printHTML(data); // 如果是预览portlet，则需要执行模板引擎解析
-        } else {
-            print(data);
-        }
+        printHTML(data);
     }
     
     private String toHTML(String html, String script, String style, 

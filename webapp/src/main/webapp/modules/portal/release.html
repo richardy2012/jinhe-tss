@@ -194,17 +194,17 @@
                 var column = this.getNodeValue(XML_THEME_LIST);
                 var name = column.getAttribute("name");
 
-                page1Form.setEditable("page.name", "true");
-                
-                var treeID = page1Form.getData("id") || DEFAULT_NEW_ID;
-                var dataXmlNode = $.cache.XmlDatas[treeID];
+                page1Form.setEditable("true");
 
-                var oldColumn = dataXmlNode.querySelector("column[name='" + name + "']");
+                var values = [], texts = [];
                 $.each(column.attributes, function(i, attr) {
-                    oldColumn.setAttribute(attr.nodeName, attr.value);
+                    values.push( attr.value );
+                    texts.push( attr.nodeName );
                 });
-
-                page1Form = $.F("page1Form", dataXmlNode); // 重新加载xform
+                page1Form.updateField("theme.id", [
+                    {"name": "texts", "value": texts.join('|')},
+                    {"name": "values", "value": values.join('|')}
+                 ]);
             }
             request.send();
         });
