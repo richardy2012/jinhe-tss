@@ -196,14 +196,10 @@
 
                 page1Form.setEditable("true");
 
-                var values = [], texts = [];
-                $.each(column.attributes, function(i, attr) {
-                    values.push( attr.value );
-                    texts.push( attr.nodeName );
-                });
+                var values = column.getAttribute("values"), texts = column.getAttribute("texts");
                 page1Form.updateField("theme.id", [
-                    {"name": "texts", "value": texts.join('|')},
-                    {"name": "values", "value": values.join('|')}
+                    {"name": "texts", "value": texts},
+                    {"name": "values", "value": values}
                  ]);
             }
             request.send();
