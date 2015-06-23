@@ -88,18 +88,20 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
 		return result;
 	}
 	
-    public List<UserRoleDTO> searchUserRolesMapping(Long groupId) {
+    @SuppressWarnings("unchecked")
+	public List<UserRoleDTO> searchUserRolesMapping(Long groupId) {
 		queryUsersInsertTemp(groupId);
 	    
         // 再查出这些用户拥有的角色情况
         String hql = "select u, r from User u, Role r, ViewRoleUser ru, Temp t " 
         	+ " where u.id = ru.id.userId and ru.id.roleId = r.id and u.id = t.id" 
         	+ " order by u.id";
-        List<?> list = commonDao.getEntities(hql);
+        List<Object[]> list = (List<Object[]>) commonDao.getEntities(hql);
+        
+        list.add(new Object[] {new User(), new Role()});
         
         List<UserRoleDTO> returnList = new ArrayList<UserRoleDTO>();
-        for ( Object temp : list ) {
-            Object[] objs = (Object[]) temp;
+        for ( Object[] objs : list ) {
             UserRoleDTO relation = new UserRoleDTO((User) objs[0], (Role) objs[1]);
             if ( !returnList.contains(relation) ) {
                 returnList.add(relation);

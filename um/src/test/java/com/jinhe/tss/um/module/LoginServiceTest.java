@@ -113,5 +113,8 @@ public class LoginServiceTest extends TxSupportTest4UM {
 		Assert.assertEquals("JK", users1.get(0).getAttributesMap().get("userName"));
 		
 		loginSerivce.resetPassword(userId, "abc123456=11");
+		
+		String[] emails = loginSerivce.getEmails("-1@tssRole,-2@tssGroup");
+		Assert.assertEquals(1, emails.length);
 	}
 }

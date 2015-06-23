@@ -83,11 +83,10 @@ public class RemoteArticleService implements IRemoteArticleService {
         if (articleList != null) {
             for (int i = 0; i < articleList.size(); i++) {
                 Object[] fields = (Object[]) articleList.get(i);
-                Long articleId = (Long) fields[0];
-                
                 Element itemElement = createArticleElement(channelElement, fields);
                 
                 if(isNeedPic){
+                	Long articleId = (Long) fields[0];
                 	List<Attachment> attachments = articleDao.getArticleAttachments(articleId);
                     ArticleHelper.addPicListInfo(itemElement, attachments);
                 }
@@ -149,7 +148,11 @@ public class RemoteArticleService implements IRemoteArticleService {
         if (articleList != null) {
             for (int i = 0; i < articleList.size(); i++) {
                 Object[] fields = (Object[]) articleList.get(i);
-                createArticleElement(channelElement, fields);
+                Element itemElement = createArticleElement(channelElement, fields);
+                
+                Long articleId = (Long) fields[0];
+                List<Attachment> attachments = articleDao.getArticleAttachments(articleId);
+                ArticleHelper.addPicListInfo(itemElement, attachments);
             }
         }
         return channelElement.asXML();
@@ -157,8 +160,9 @@ public class RemoteArticleService implements IRemoteArticleService {
     
     // fields : a.id, a.title, a.author, a.summary, a.issueDate, a.createTime, a.hitCount, a.isTop, a.commentNum
     private Element createArticleElement(Element channelElement, Object[] fields) {
-    	return createArticleElement(channelElement, (Long) fields[0], (String) fields[1], (String) fields[2], 
-                (Date) fields[4], (String) fields[3], (Integer) fields[6], (Integer) fields[8]);
+		return createArticleElement(channelElement, (Long) fields[0],
+				(String) fields[1], (String) fields[2], (Date) fields[4],
+				(String) fields[3], (Integer) fields[6], (Integer) fields[8]);
     }
     
     private Element createArticleElement(Element channelElement, 

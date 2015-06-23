@@ -223,18 +223,7 @@ public class HTMLGenerator {
         }
         return sb;
     }
-
-    /**
-     * 获取所有事件的XML代码
-     */
-    public StringBuffer formatEvents4XML() {
-        StringBuffer sb = new StringBuffer();
-        for( String[] codes : eventCodes ) {
-            sb.append("<attach event=\"" + codes[0] + "\" onevent=\"" + codes[1] + "\"/>\n");
-        }
-        return sb;
-    }
-
+ 
     /**
      * 所有JS脚本代码
      */
@@ -264,24 +253,7 @@ public class HTMLGenerator {
         
         return sb.append(onloadEvent);
     }
-
-    /**
-     * 获取简单脚本代码：不包含事件部分代码。
-     * 用于toXML()方法。
-     */
-    public StringBuffer formatSimpleScirptCodes() {
-        StringBuffer sb = new StringBuffer();
-        for( String script : scriptCodes ) {
-            sb.append(script).append("\n");
-        }
-        sb.append("\n");
-        
-        for( String initCode : initCodes ) {
-            sb.append(initCode).append("\n"); // 将每个node生成的js code换行分隔开来
-        }
-        return sb;
-    }
-
+ 
     /**
      * <p>
      * 所有样式表代码
