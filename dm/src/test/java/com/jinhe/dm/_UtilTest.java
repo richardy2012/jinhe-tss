@@ -1,4 +1,4 @@
-package com.jinhe.dm.record;
+package com.jinhe.dm;
 
 import org.junit.Assert;
 import org.junit.Test;

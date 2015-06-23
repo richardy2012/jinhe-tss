@@ -97,6 +97,8 @@ public abstract class _Database {
    	    } 
 	}
 	
+	protected abstract String getFieldType(Map<Object, Object> fDefs);
+	
 	public abstract void createTable();
 	
 	public void dropTable(String table, String datasource) {
@@ -118,8 +120,8 @@ public abstract class _Database {
 		
 		// 比较新旧字段定义的异同（新增的和删除的，暂时只关心新增的）
 		List<Map<Object, Object>> newFields = parseJson(_new.getDefine());
-		List<Map<Object, Object>> addFields = new ArrayList<Map<Object,Object>>();
 				
+		// 新增加的字段
 		int index = 0;
 		for(Map<Object, Object> fDefs1 : newFields) {
 			String code = (String) fDefs1.get("code");
@@ -135,31 +137,33 @@ public abstract class _Database {
         	}
         	
         	if( !exsited ) {
-        		addFields.add(fDefs1);
+        		String fieldType = getFieldType(fDefs1);
+        		try {
+    				SQLExcutor.excute("alter table " + this.table + " add " + code + " " + fieldType, newDS);
+    			} catch(Exception e) { }
         	}
 		}
 		
-		// 如果原表有数据则重命名原表，没有则删之，然后新建一张新表
-		if(addFields.size() > 0) {
-			try {
-				SQLExcutor ex = new SQLExcutor(false);
-				ex.excuteQuery("select id from " + this.table, this.datasource);
-				if( ex.result.isEmpty() ) {
-					dropTable(this.table, newDS);
-				}
-				else {
-					String oldTable = this.table + "_" + _new.getLockVersion();
-					SQLExcutor.excute("alter table " + this.table + " rename to " + oldTable, newDS);
-				}
-			} catch(Exception e) {
-				// 如果表不存在导致删表失败（oracle），则忽略
-			}
-			
-			this.fields = newFields;
-			initFieldCodes();
-			
-			createTable();
-		}
+		// 被删除的字段（原来有的，在新的定义里没有了）
+		for(Map<Object, Object> fDefs2 : this.fields ) {
+			Object oldCode = fDefs2.get("code");
+			boolean exsited = false;
+    		for(Map<Object, Object> fDefs1 : newFields) {
+    			String code = (String) fDefs1.get("code");
+ 
+				if(code.equals(oldCode)) {
+        			exsited = true; 
+        		}
+    		}
+    		if( !exsited ) {
+    			try {
+    				SQLExcutor.excute("alter table " + this.table + " drop column " + oldCode, newDS);
+    			} catch(Exception e) { }
+        	}
+    	}
+		
+		this.fields = newFields;
+		initFieldCodes();
 	}
 	
 	public void insert(Map<String, String> valuesMap) {
@@ -329,7 +333,7 @@ public abstract class _Database {
 
 	public Document getGridTemplate() {
 		StringBuffer sb = new StringBuffer();
-        sb.append("<grid><declare sequence=\"true\">");
+        sb.append("<grid><declare sequence=\"true\" header=\"checkbox\">");
         
         int index = 0; 
         for(String filed : fieldNames) {

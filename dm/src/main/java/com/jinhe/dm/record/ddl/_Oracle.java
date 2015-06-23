@@ -4,7 +4,6 @@ import java.util.Map;
 
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.record.Record;
-import com.jinhe.tss.util.EasyUtils;
 
 public class _Oracle extends _Database {
 	
@@ -12,33 +11,32 @@ public class _Oracle extends _Database {
 		super(record);
 	}
 	
+	protected String getFieldType(Map<Object, Object> fDefs) {
+		String type = (String) fDefs.get("type"); // string number date datetime hidden
+		
+		if("number".equals(type)) {
+			return " float "; 
+		} 
+		else if("datetime".equals(type)) {
+			return " date "; 
+		} 
+		else if("date".equals(type)) {
+			return " date "; 
+		}
+		else {
+			return " varchar(" + DDLUtil.getVarcharLength(fDefs) + ") "; 
+		}
+	}
+	
 	public void createTable() {
 		if(this.fields.isEmpty()) return;
  
 		StringBuffer createDDL = new StringBuffer("create table " + this.table + " ( ");
    		for(Map<Object, Object> fDefs : fields) {
-			String code = (String) fDefs.get("code");
-			String type = (String) fDefs.get("type"); // string number date datetime hidden
-			String nullable = (String) fDefs.get("nullable");
-			String _height = (String) fDefs.get("height");
+			createDDL.append( fDefs.get("code") ); 
+			createDDL.append( getFieldType(fDefs) );
 			
-			createDDL.append( code ); 
-			if("number".equals(type)) {
-				createDDL.append( " float " ); 
-			} else if("datetime".equals(type)) {
-				createDDL.append( " date " ); 
-			} else if("date".equals(type)) {
-				createDDL.append( " date " ); 
-			}
-			else {
-				int length = 255;
-				if( !EasyUtils.isNullOrEmpty(_height) ) {
-					length = Math.max(1, Integer.parseInt(_height.replace("px", ""))/18) * 255;
-				}
-				createDDL.append( " varchar(" + length + ") " ); 
-			}
-			
-			if("false".equals(nullable)) {
+			if("false".equals(fDefs.get("nullable"))) {
 				createDDL.append( " NOT NULL " ); 
 			}
 			createDDL.append( ", " );

@@ -14,47 +14,41 @@
 	</declare>
 	<layout>
 		<TR>
+			<TD width="80"><label binding="name"/></TD>
+			<TD width="300"><input binding="name" style="width:200px;"/></TD>
 			<TD width="80"><label binding="id"/></TD>
-			<TD><input binding="id" style="width:60px;"/></TD>
+			<TD width="120"><input binding="id" style="width:60px;"/></TD>
+			<TD width="100"><label binding="needLog"/></TD>
+			<TD><input binding="needLog"/></TD>
 		</TR>
 		<TR>
-			<TD><label binding="name"/></TD>
-			<TD><input binding="name" style="width:200px;"/></TD>
+			<TD width="80"><label binding="datasource"/></TD>
+			<TD><input binding="datasource" style="width:250px;"/></TD>
+			<TD width="80"><label binding="table"/></TD>
+			<TD><input binding="table" style="width:250px;"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top">
 				<label binding="define"/><br/><br/>
 				<input type="button" value="配置" onclick="configDefine()" class="btStrong"/>
 			</TD>
-			<TD><textarea binding="define" style="width:98%;height:300px"/></TD>
-		</TR>
-		<TR>
-			<TD><label binding="datasource"/></TD>
-			<TD><input binding="datasource" style="width:250px;"/></TD>
-		</TR>
-		<TR>
-			<TD><label binding="table"/></TD>
-			<TD><input binding="table" style="width:250px;"/></TD>
+			<TD colspan="5"><textarea binding="define" style="width:98%;height:240px"/></TD>
 		</TR>
 		<TR>
 			<TD><label binding="customizePage"/></TD>
-			<TD><input binding="customizePage" style="width:50%;"/></TD>
+			<TD colspan="5"><input binding="customizePage" style="width:50%;"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="customizeJS"/></TD>
-			<TD><textarea binding="customizeJS" style="width:95%;height:60px"/></TD>
+			<TD colspan="5"><textarea binding="customizeJS" style="width:95%;height:120px"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="customizeTJ"/></TD>
-			<TD><textarea binding="customizeTJ" style="width:95%;height:40px"/></TD>
+			<TD colspan="5"><textarea binding="customizeTJ" style="width:95%;height:50px"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="remark"/></TD>
-			<TD><textarea binding="remark" style="width:95%;height:30px"/></TD>
-		</TR>
-		<TR>
-			<TD><label binding="needLog"/></TD>
-			<TD><input binding="needLog"/></TD>
+			<TD colspan="5"><textarea binding="remark" style="width:95%;height:40px"/></TD>
 		</TR>
 	</layout>
 	<data><row><createTime><![CDATA[2015-04-08 00:00:00.0]]></createTime><define><![CDATA[[

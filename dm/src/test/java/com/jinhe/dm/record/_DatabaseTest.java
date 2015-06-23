@@ -5,28 +5,24 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.jinhe.dm.DMConstants;
-import com.jinhe.dm.data.sqlquery.SQLExcutor;
+import com.jinhe.dm.TxTestSupport4DM;
 import com.jinhe.dm.record.ddl._Database;
-import com.jinhe.tss.framework.sso.IdentityCard;
-import com.jinhe.tss.framework.sso.TokenUtil;
-import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.um.UMConstants;
-import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.util.EasyUtils;
 
-public class _DatabaseTest {
+public class _DatabaseTest extends TxTestSupport4DM  {
 	
-	@Before
-	public void setUp() {
-		OperatorDTO loginUser = new OperatorDTO(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
-    	String token = TokenUtil.createToken("1234567890", UMConstants.ADMIN_USER_ID); 
-        IdentityCard card = new IdentityCard(token, loginUser);
-        Context.initIdentityInfo(card);
-	}
+//public class _DatabaseTest  {
+//	@Before
+//	public void setUp() {
+//		OperatorDTO loginUser = new OperatorDTO(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
+//    	String token = TokenUtil.createToken("1234567890", UMConstants.ADMIN_USER_ID); 
+//        IdentityCard card = new IdentityCard(token, loginUser);
+//        Context.initIdentityInfo(card);
+//	}
 	
 	@Test
 	public void testMySQL() {
@@ -119,11 +115,7 @@ public class _DatabaseTest {
 		
 		_db.updateTable(record);
 		result = _db.select().result;
-		Assert.assertTrue(result.size() == 0);
-		
-		SQLExcutor ex = new SQLExcutor(false);
-		ex.excuteQuery("select id from " + type + "_tbl_3_" + record.getLockVersion(), datasource);
-		Assert.assertTrue(ex.result.size() == 1);
+		Assert.assertTrue(result.size() == 1);
 		
 		// test insert
 		valuesMap = new HashMap<String, String>();
@@ -136,7 +128,7 @@ public class _DatabaseTest {
 		params.put("f2", "just test");
 		params.put("creator", UMConstants.ADMIN_USER_NAME);
 		result = _db.select(1, 10, params).result;
-		Assert.assertTrue(result.size() == 1);
+		Assert.assertTrue(result.size() == 2);
 		
 		params.put("f2", "no test");
 		params.put("f4", "2015-04-05");
@@ -146,10 +138,10 @@ public class _DatabaseTest {
 		
 		// test delete
 		result = _db.select().result;
-		Assert.assertTrue(result.size() == 1);
+		Assert.assertTrue(result.size() == 2);
 		id = EasyUtils.obj2Int( result.get(0).get("id") );
 		
 		_db.delete(id);
-		Assert.assertTrue(_db.select().result.size() == 0);
+		Assert.assertTrue(_db.select().result.size() == 1);
 	}
 }
