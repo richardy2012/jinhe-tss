@@ -333,6 +333,9 @@ public class ComponentAction extends FMSupportAction {
         parameters.put("${basepath}", Environment.getContextPath() + "/" + component.getResourcePath() + "/");
 
         // 直接预览门户组件
+        for(int i = 0; i < 12; i++) {
+        	parameters.put("${port" + i + "}", "port" + i);
+        }
         String data = toHTML(html, script, style, events, parameters);
         printHTML(data);
     }
