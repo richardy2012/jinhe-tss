@@ -27,9 +27,9 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>Oracle</groupId>
+			<groupId>ojdbc</groupId>
 			<artifactId>ojdbc</artifactId>
-			<version>1.4G</version>
+			<version>14</version>
 		</dependency>
  
 	</dependencies>

@@ -14,6 +14,8 @@
        
 6、record和report的字段code一律用小写
 
+7、oracle10G 驱动取date类型数据时分秒不见了的问题解决办法：在tomcat的启动配置里加  -Doracle.jdbc.V8Compatible=true
+
        
 打包注意：
 0、BtrBI的10.8.73.80机器安裝的是JDK6，打包只能用JDK1.6, 1.7會出錯  
