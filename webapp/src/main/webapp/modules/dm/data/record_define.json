@@ -48,5 +48,6 @@
             "defaultValue": "today-0"
         }
     ],
-    "console.log(123);"
+    "console.log(123);",
+    "var batchOpBtn = $.createElement('button', 'btStrongL');$(batchOpBtn).html('批量确认');  $('#customizeBox').appendChild(batchOpBtn);"
 ]

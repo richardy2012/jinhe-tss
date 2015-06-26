@@ -3675,9 +3675,8 @@
         updateField: function(name, attrs) {
             var field = this.template.fieldsMap[name];
             if(!field) {
-                field = this.template.fieldsMap[name.replace('p_', '')]; // TODO recorder.html的查询form在字段前加了p_
+                field = this.template.fieldsMap[name.replace('p_', '')]; // recorder.html的查询form在字段前加了p_
             }
-
             if( field ) {
                 var $el = $($1(name));
                 $.each(attrs, function(i, attr) {
@@ -4110,12 +4109,19 @@
 
     bindAdjustTHHandler = function(table) { 
 
+        $(".checkAll", table).click(function(){
+            var allCheck = this.checked;
+            $("input[name='grid_cb']", table).each(function(){
+                this.checked = allCheck;
+            });
+        });
+
         $("thead tr td", table).each(function(i, th) {
             // 双击隐藏列
             th.ondblclick = function() {
-                $(th).css("display", "none");
+                $(th).hide();
                 $("tbody tr", table).each( function(j, row) {
-                    $(row.cells[i]).css("display", "none");
+                    $(row.cells[i]).hide();
                 });
             };
 
@@ -4230,7 +4236,7 @@
 
             thead.push('<thead><tr>');
             if(this.hasHeader) {
-                thead.push('<td name="cellheader" style="width:30px"><input type="checkbox" id="checkAll"/></td>');
+                thead.push('<td name="cellheader" style="width:30px"><input type="checkbox" class="checkAll"/></td>');
             }
             if(this.needSequence) {
                 thead.push('<td name="sequence" style="width:30px">序号</td>');
@@ -4534,6 +4540,19 @@
         getHighlightRow: function() {
             return $(".rolloverRow", this.tbody)[0];
         },
+
+        getCheckedRows: function() {
+            var ids = [];
+            $("input[name='grid_cb']", this.tbody).each(function(){
+                if(this.checked){
+                    var tr = this.parentNode.parentNode;
+                    var id = $("td[name='id']", tr).attr("value");
+                    ids.push(id);
+                }
+            });
+            return ids.join(",");
+        },
+
 
         // 添加Grid事件处理
         addGridEvent: function() {          

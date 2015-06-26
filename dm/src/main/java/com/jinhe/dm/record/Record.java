@@ -75,9 +75,13 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     /** 定制的录入界面: 可以自己定制录入表单和展示表格 */
     private String customizePage;
     
-    /** 定制的JS方法： 用于校验，自动计算等  */
+    /** 定制的JS： 用于Form表单的校验，自动计算等  */
     @Column(length = 4000)  
     private String customizeJS;
+    
+    /** 定制的JS： 用于Grid的定制化需求等  */
+    @Column(length = 2000)  
+    private String customizeGrid;
     
     /** 定制的过滤条件，可按登录人的角色、组织等信息进行过滤 , 1=1 <#if btrOrg??> and org='${btrOrg}' </#if> */
     @Column(length = 1000)  
@@ -253,5 +257,13 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
 
 	public void setNeedLog(Integer needLog) {
 		this.needLog = needLog;
+	}
+
+	public String getCustomizeGrid() {
+		return customizeGrid;
+	}
+
+	public void setCustomizeGrid(String customizeGrid) {
+		this.customizeGrid = customizeGrid;
 	}
 }

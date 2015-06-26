@@ -2,7 +2,7 @@
 <Response>
   <RecordData> 
     <grid>
-      <declare sequence="true">
+      <declare sequence="true" header="checkbox">
         <column name="org" mode="string" caption="分公司"/>
         <column name="center" mode="string" caption="分拨中心"/>
         <column name="content" mode="string" caption="考核内容"/>

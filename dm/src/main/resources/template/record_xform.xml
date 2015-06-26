@@ -9,6 +9,7 @@
 		<column name="customizePage" caption="定制页" maxLength="100"/>
 		<column name="customizeJS" caption="定制JS" maxLength="4000"/>
 		<column name="customizeTJ" caption="定制条件" maxLength="1000"/>
+		<column name="customizeGrid" caption="定制Grid" maxLength="4000"/>
 		<column name="remark" caption="数据录入简介" maxLength="400"/>
 		<column name="needLog" caption="记录更新日志" mode="combo" values="1|0" texts="是|否"/>
 	</declare>
@@ -32,7 +33,7 @@
 				<label binding="define"/><br/><br/>
 				<input type="button" value="配置" onclick="configDefine()" class="btStrong"/>
 			</TD>
-			<TD colspan="5"><textarea binding="define" style="width:98%;height:240px"/></TD>
+			<TD colspan="5"><textarea binding="define" style="width:98%;height:220px"/></TD>
 		</TR>
 		<TR>
 			<TD><label binding="customizePage"/></TD>
@@ -40,7 +41,11 @@
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="customizeJS"/></TD>
-			<TD colspan="5"><textarea binding="customizeJS" style="width:95%;height:120px"/></TD>
+			<TD colspan="5"><textarea binding="customizeJS" style="width:95%;height:100px"/></TD>
+		</TR>
+		<TR>
+			<TD valign="top"><label binding="customizeGrid"/></TD>
+			<TD colspan="5"><textarea binding="customizeGrid" style="width:95%;height:60px"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="customizeTJ"/></TD>

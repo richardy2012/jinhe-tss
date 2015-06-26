@@ -37,6 +37,9 @@
     #searchFormDiv .buttonBox input { margin-left: 12px;  }
     #searchFormDiv .max, #searchFormDiv .min { display: none; }
 
+    #customizeBox { display: inline-block; }
+    #customizeBox button { margin: 3px; }
+
 </style>
 
 <SCRIPT type="text/javascript">
@@ -48,12 +51,13 @@ XML_SOURCE_LIST = "RecordData";
 /* XMLHTTP请求地址汇总 */
 URL_SOURCE_LIST   = AUTH_PATH + "xdata/xml/";
 URL_SAVE_SOURCE   = AUTH_PATH + "xdata/";
+URL_BATCH_OPERATE = AUTH_PATH + "xdata/batch/";
 URL_DELETE_SOURCE = AUTH_PATH + "xdata/";
 URL_GET_DEFINES   = AUTH_PATH + "xdata/define/";
 URL_GET_USER_HAS  = AUTH_PATH + "user/has";
 
 var recordId = 1, recordName = "数据录入", _operation = ['1','2','3','4','5'], 
-    recordDefine, customizeJS, userCode, userName, userGroups = [], userRoles = [];
+    recordDefine, customizeJS, customizeGrid, userCode, userName, userGroups = [], userRoles = [];
 
 $(function() {
     
@@ -70,6 +74,7 @@ $(function() {
     // just Test
     URL_SOURCE_LIST   = "data/data_grid.xml?";
     URL_SAVE_SOURCE   = "data/_success.xml?";
+    URL_BATCH_OPERATE = "data/_success.xml?";
     URL_DELETE_SOURCE = "data/_success.xml?";
     URL_GET_DEFINES   = "data/record_define.json?";
     URL_GET_USER_HAS  = "data/user_has.json?";
@@ -89,10 +94,16 @@ function init() {
             var result = this.getResponseJSON();
             recordDefine = result[0];
             customizeJS = result[1];
+            customizeGrid = result[2];
 
             recordDefine.each(function(i, field){
                 field._defaultValue = field.defaultValue;
             });
+
+            // 添加tssGrid定制的script
+            if(customizeGrid) {
+                $.createScript( customizeGrid );
+            }
         }
     });
 
@@ -412,6 +423,32 @@ function nextLevel(current, next, map) {
      ]);
 }
 
+function batchOp(field, value) {
+    var ids = $.G("grid").getCheckedRows();
+    if(!ids) {
+        return alert("你没有选中任何记录，请勾选后再进行批量操作。");
+    }
+    $.ajax({
+        url: URL_BATCH_OPERATE + recordId,
+        params: {"ids": ids, "field": field, "value": value},
+        onsuccess: function() { 
+            loadGridData( $1("GridPageList").value || 1 ); // 更新Grid
+        }
+    });
+}
+
+// addOptBtn('批量及格', function() { batchOp("score", "及格") });  
+function addOptBtn(name, fn) {
+    var batchOpBtn = $.createElement('button', 'btStrongL');
+    $(batchOpBtn).html(name).click( fn );  
+    $('#customizeBox').appendChild(batchOpBtn);
+}
+
+// batchOpt('批量及格', "score", "及格");
+function batchOpt(name, field, value) {
+    addOptBtn(name, function() { batchOp(field, value) });  
+}
+
 // 依据用户的角色和组织判断用户是否能对指定字段可编辑
 function forbid(field, role, group) {
     var xform = $.F("page1Form");
@@ -457,12 +494,12 @@ function getFloatValue(field) {
 
 // onlyOne(["udf1", "udf2", "udf3"]);
 function onlyOne( fields ) {
-    var xform = $.F("page1Form");
-    fields.each(function(i, field){
+    var xform = $.F("page1Form"); 
+    fields.each(function(i, field){  
         $("#" + field).blur(function(){
             var value = this.value;
             
-            fields.each(function(j, f){
+            fields.each(function(j, f){ 
                 if(field !== f) {
                     xform.setFieldEditable(f, !value ? "true" : "false");   
                 }
@@ -470,19 +507,30 @@ function onlyOne( fields ) {
 
             xform.updateData(this);
         });
+
+        var tempV = $("#" + field).value(); 
+        if(tempV) {
+            fields.each(function(j, f){
+                if(field !== f) {
+                    setTimeout(function() {
+                        xform.setFieldEditable(f, "false"); 
+                    }, 50*j);
+                }
+            });
+        }
     });
 }
 
 function notice(field, msg) {
-	$("#" + field).click(function(){  
-		$(this).notice(msg); 
-	});
+    $("#" + field).click(function(){  
+        $(this).notice(msg); 
+    });
 }
 
 // if($("#udf1").value() === "11") { disableForm(); } else { $("#page1BtSave").show();  };
 function disableForm() {
-	$("#page1BtSave").hide(); 
-	$.F("page1Form").setEditable("false");
+    $("#page1BtSave").hide(); 
+    $.F("page1Form").setEditable("false");
 }
 
 function updateField(code, value) {
@@ -503,7 +551,8 @@ function updateField(code, value) {
           <td id="gridTitle">
             <span class="icon"></span><span id="rcTitle">资源列表</span>&nbsp;
             <input type="button" class="btStrong" value="新 增" id="btn_create" onclick="showDetail('_new')"/>&nbsp;
-            <input type="button" class="btStrong" value="查 询" id="btn_search" onclick="showQueryForm()"/>
+            <input type="button" class="btStrong" value="查 询" id="btn_search" onclick="showQueryForm()"/>&nbsp;
+            <span id="customizeBox"></span>
             <span class="buttonBox" id="gridToolBar"></span>
           </td>
         </tr>
@@ -518,7 +567,7 @@ function updateField(code, value) {
             <WorkSpace:PageStep>
                 <br>
                 <input type="button" class="btStrong" value="完成" id="page1BtSave"/>&nbsp;
-                <input type="button" class="btWeak" value="关闭" id="page1BtCancel"/>
+                <input type="button" class="btWeak" value="关闭" id="page1BtCancel"/>&nbsp;
             </WorkSpace:PageStep>
         </WorkSpace:Page>
     </WorkSpace:Box>

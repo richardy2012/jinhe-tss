@@ -54,7 +54,12 @@ public class _Recorder extends BaseActionSupport {
     @ResponseBody
     public Object getDefine(@PathVariable("recordId") Long recordId) {
 		Record record = recordService.getRecord(recordId);
-        return new Object[] { getDB(recordId).getFields(), record.getCustomizeJS() };
+        return 
+        	new Object[] { 
+        		getDB(recordId).getFields(), 
+        		record.getCustomizeJS(), 
+        		record.getCustomizeGrid() 
+        	};
     }
 	
 	public static final int PAGE_SIZE = 50;
@@ -109,6 +114,18 @@ public class _Recorder extends BaseActionSupport {
     	
     	Map<String, String> row = getRequestMap(request);
 		getDB(recordId).update(id, row);
+        printSuccessMessage();
+    }
+    
+    /**
+     * 批量更新选中记录行的某个字段值，用在批量审批等场景
+     */
+    @RequestMapping(value = "/batch/{recordId}", method = RequestMethod.POST)
+    public void updateBatch(HttpServletResponse response, 
+    		@PathVariable("recordId") Long recordId, 
+    		String ids, String field, String value) {
+    	
+		getDB(recordId).updateBatch(ids, field, value);
         printSuccessMessage();
     }
     

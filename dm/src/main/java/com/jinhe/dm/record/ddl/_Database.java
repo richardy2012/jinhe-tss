@@ -218,11 +218,7 @@ public abstract class _Database {
 		String tags = "";
 		for(String field : this.fieldCodes) {
 			Object value = valuesMap.get(field);
-			if( value != null ) {
-				value = _Util.preTreatValue((String)value, fieldTypes.get(index));
-			} else {
-				value = null;
-			}
+			value = _Util.preTreatValue((String)value, fieldTypes.get(index));
 			
 			paramsMap.put(++index, value);
 			tags += field + "=?, ";
@@ -239,6 +235,19 @@ public abstract class _Database {
 	    	excuteLog.setOperateTable("数据录入修改");
 	        ((IBusinessLogger) Global.getBean("BusinessLogger")).output(excuteLog);
 		}
+	}
+	
+	public void updateBatch(String ids, String field, String value) {
+		String updateSQL = "update " + this.table + " set " + field + "=?, updatetime=?, updator=?, version=version+1 where id in (" + ids + ")";
+		
+		Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
+		int index = 0, fieldIndex = this.fieldCodes.indexOf(field);
+		
+		paramsMap.put(++index, _Util.preTreatValue( value, fieldTypes.get(fieldIndex) ));
+		paramsMap.put(++index, new Timestamp(new Date().getTime()));
+		paramsMap.put(++index, Environment.getUserCode());
+		
+		SQLExcutor.excute(updateSQL, paramsMap, this.datasource);
 	}
 
 	private Map<String, Object> get(Integer id) {

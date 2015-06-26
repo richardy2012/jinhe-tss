@@ -2,6 +2,9 @@ package com.jinhe.dm.record;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +57,8 @@ public class _RecorderTest extends TxTestSupport4DM {
 		recorder.create(request, response, recordId);
 		recorder.update(request, response, recordId, 1);
 		
-		Assert.assertTrue(recorder.getDB(recordId).select().result.size() == 1);
+		List<Map<String, Object>> result = recorder.getDB(recordId).select().result;
+		Assert.assertTrue(result.size() == 1);
 		
 		request = new MockHttpServletRequest();
 		request.addParameter("f2", "just test"); // test as query condition
@@ -69,9 +73,14 @@ public class _RecorderTest extends TxTestSupport4DM {
 			recorder.update(request, response, recordId, 1); // 多次修改，以生成日志
 		}
 		
+		recorder.updateBatch(response, recordId, "1,2", "f1", "1212");
+		result = recorder.getDB(recordId).select().result;
+		Assert.assertTrue(result.get(0).get("f1").equals(1212.0d));
+		
 		recorder.delete(response, recordId, 1);
 		
-		Assert.assertTrue(recorder.getDB(recordId).select().result.size() == 0);
+		result = recorder.getDB(recordId).select().result;
+		Assert.assertTrue(result.size() == 0);
 		
 		try { Thread.sleep(1000); } catch (Exception e) { } // 等待修改日志输出
 		assertTrue(TestUtil.printLogs(logService) > 0);
