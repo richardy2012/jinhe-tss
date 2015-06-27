@@ -16,6 +16,8 @@
 
 7、oracle10G 驱动取date类型数据时分秒不见了的问题解决办法：在tomcat的启动配置里加  -Doracle.jdbc.V8Compatible=true
 
+8、ORA-00936: missing expression 可能是因为record的字段里包含了oracle的某关键字
+
 打包注意：
 0、BtrBI的10.8.73.80机器安裝的是JDK6，打包只能用JDK1.6, 1.7會出錯  
 
@@ -34,7 +36,3 @@ TSS3.3版本更新点：
 3、邮件接口、preListener、afterListener
 4、数据门户
 
-
-var batchOpBtn = $.createElement('button', 'btStrongL');
-$(batchOpBtn).html('批量及格').click(function() { batchOp("score", "及格") });  
-$('#customizeBox').appendChild(batchOpBtn);

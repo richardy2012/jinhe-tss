@@ -2,7 +2,6 @@ package com.jinhe.tss.um.action;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -243,9 +242,16 @@ public class UserAction extends BaseActionSupport {
 	@RequestMapping(value = "/has", method = RequestMethod.GET)
 	@ResponseBody
 	public Object[] getUserHas() {
+		
 		Long userId = Environment.getUserId();
-		List<Object[]> groups = loginService.getGroupsByUserId(userId);
-		List<Long> roleIds = loginService.getRoleIdsByUserId(userId);
-		return new Object[] { groups, roleIds, userId, Environment.getUserCode(), Environment.getUserName() };
+		
+		Object[] userHas = new Object[5];
+		userHas[0] = loginService.getGroupsByUserId(userId);  //List<[groupId, groupName]>
+		userHas[1] = loginService.getRoleIdsByUserId(userId); //List<roleId>
+		userHas[2] = userId;
+		userHas[3] = Environment.getUserCode();
+		userHas[4] = Environment.getUserName();
+		
+		return userHas;
 	}
 }

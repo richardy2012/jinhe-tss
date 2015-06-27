@@ -7,6 +7,7 @@ import com.jinhe.tss.cms.service.IChannelService;
 import com.jinhe.tss.util.EasyUtils;
 
 /**
+ * 0 *\/30 * * * ?   每半小时发布一次
  * com.jinhe.tss.cms.job.PublishJob | 0 07 * * * ? | 4,12
  */
 public class PublishJob extends AbstractCMSJob {

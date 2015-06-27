@@ -13,7 +13,7 @@ import com.jinhe.tss.framework.component.progress.Progressable;
 import com.jinhe.tss.util.EasyUtils;
 
 /**
- * 创建文章索引的定时JOB
+ * 创建文章索引的定时JOB & 带进度信息的实现类（共手动建索引时action调用）
  * 
  * com.jinhe.tss.cms.job.IndexJob | 0 07 * * * ? | 4,12
  */
@@ -21,14 +21,20 @@ public class IndexJob extends AbstractCMSJob implements Progressable {
 
 	protected void excuteCMSJob(String jobConfig) {
         Long siteId = EasyUtils.obj2Long(jobConfig.trim());
-		Set<ArticleContent> data = getData(siteId, true);
+		Set<ArticleContent> data = getData(siteId, false); // 重建索引 而非增量
                 
 		JobStrategy strategy = getJobStrategy();
+		strategy.isIncrement = false;
 		strategy.site = getChannelService().getChannelById(siteId);
 		IndexHelper.createIndex(strategy, data, new Progress(data.size())); 
 	}
 	
-	// 需要建索引的所有文章地址列表
+    /**
+     * 需要建索引的所有文章地址列表
+     * @param siteId
+     * @param isIncrement 是否增量
+     * @return
+     */
     private Set<ArticleContent> getData(Long siteId, boolean isIncrement) {
     	List<Long> channelIds = getChannelService().getAllEnabledChannelIds(siteId);
     	return getChannelService().getIndexableArticles(channelIds, isIncrement);
@@ -44,6 +50,7 @@ public class IndexJob extends AbstractCMSJob implements Progressable {
     	Map<String, Object> paramsMap = new HashMap<String, Object>();
         paramsMap.put("data", data); // 需要建索引的所有文章地址列表
         paramsMap.put("siteId", siteId);
+        getJobStrategy().isIncrement = isIncrement;
     	
     	String progressCode = new ProgressManager(this, data.size(), paramsMap).execute();
     	return progressCode;
