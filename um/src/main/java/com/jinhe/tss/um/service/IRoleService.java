@@ -36,7 +36,7 @@ public interface IRoleService {
 	 * @param entity
 	 * @return
 	 */
-    @Logable(operateObject="角色组", 
+    @Logable(operateObject="角色", 
             operateInfo="新建/修改了角色组 ${args[0]}"
         )
 	Role saveRoleGroup(Role entity);

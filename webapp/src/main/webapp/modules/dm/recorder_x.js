@@ -54,7 +54,7 @@ function nextLevel(current, next, map) {
      ]);
 }
 
-function batchOp(field, value) {
+function batchUpdate(field, value) {
     var ids = $.G("grid").getCheckedRows();
     if(!ids) {
         return alert("你没有选中任何记录，请勾选后再进行批量操作。");
@@ -68,15 +68,29 @@ function batchOp(field, value) {
     });
 }
 
-// addOptBtn('批量及格', function() { batchOp("score", "及格") });  
-function addOptBtn(name, fn, roleId, group) {
-    if( roleId && !userRoles.contains(roleId) ) return;
+// addOptBtn('批量及格', function() { batchUpdate("score", "及格") });  
+function addOptBtn(name, fn, roles, groups) {
+    if( roles ) {
+        var checkRole = false;
+        (roles + "").split(",").each(function(i, role){
+            if( userRoles.contains( parseInt(role) ) ) {
+                checkRole = true;
+            }
+        });
 
-    if(group && userGroups && userGroups.length) {
+        if(!checkRole) return;
+    }
+
+    if(groups && userGroups.length) {
+        var checkGroup = false;
         var g = userGroups[userGroups.length - 1];
-        if(group != g[0] && group != g[1]) {
-            return;
-        }
+        (groups + "").split(",").each(function(i, group){
+            if(group == (g[0]+"") && group == g[1]) {
+                checkGroup = true;
+            }
+        });
+
+        if(!checkGroup) return;
     }
 
     var batchOpBtn = $.createElement('button', 'btStrongL');
@@ -85,8 +99,8 @@ function addOptBtn(name, fn, roleId, group) {
 }
 
 // batchOpt('批量及格', "score", "及格");
-function batchOpt(name, field, value, roleId, group) {
-    addOptBtn(name, function() { batchOp(field, value) }, roleId, group);  
+function batchOpt(name, field, value, roles, groups) {
+    addOptBtn(name, function() { batchUpdate(field, value) }, roles, groups);  
 }
 
 // 依据用户的角色和组织判断用户是否能对指定字段可编辑

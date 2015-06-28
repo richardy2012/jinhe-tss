@@ -40,22 +40,25 @@
 
     <script type="text/javascript">
 
+var refresh  = $.Query.get("refresh");
 var leftBar  = $.Query.get("leftBar"); 
 var reportId = $.Query.get("id") || 497; 
 var defaultParams;
 
-// 从邮件里打开
+/* http://btrbi.800best.com/tss/modules/dm/report_portlet.html?leftBar=true&refresh=3&id=547&param1=today-0
+   从邮件里打开 或 从文章里打开
+*/
 if( leftBar ) {
-    $.leftbar( getQueryForm );
+    $.leftbar( showQueryForm );
+}
 
-    var index = 10;
-    while(index--) {
-        var key = "param" + index;
-        var value = $.Query.get(key);
-        if(value) {
-            defaultParams = defaultParams || {};
-            defaultParams[key] = value;
-        }
+var index = 10;
+while(index--) {
+    var key = "param" + index;
+    var value = $.Query.get(key);
+    if(value) {
+        defaultParams = defaultParams || {};
+        defaultParams[key] = value;
     }
 }
 
@@ -67,13 +70,13 @@ function initPortlet() {
         url: '/tss/data/' +reportId+ '/define',
         method: 'get',
         ondata: function() {
-            var define = this.getResponseJSON();
-            globalValiable.title = define[0];
-            globalValiable.url = define[2];
-            globalValiable.define = define[1];
-
+            var defines = this.getResponseJSON();
+            globalValiable.title = defines[0];
+            globalValiable.url = defines[2];
+            
             var params = {};
-            if(define[1]) {
+            if(defines[1]) {
+                globalValiable.define = defines[1];
                 var _params = $.parseJSON(globalValiable.define);
                 $.each(_params, function(i, param) {
                     // TODO 检查是否所有必填的参数都有默认值了，不是的话不宜发起查询
@@ -84,19 +87,29 @@ function initPortlet() {
                 });
      
                 window.parent.$("#panel" + reportId).find(".setQuery").click(function(){
-                    getQueryForm();
+                    showQueryForm();
                 });
             }
             else {
                 window.parent.$("#panel" + reportId).find(".setQuery").hide();
             }
             
-            searchReport( defaultParams || params );
+            // 优先使用通过url传入的参数
+            if(defaultParams) {
+                $.each(defaultParams, function(param, value){
+                    params[param] = value;
+                });
+            }
+
+            searchReport( params );
+
+            // 默认每30分钟刷新一次
+            window.setInterval( function() { searchReport( params ); }, (refresh || 30) * 60 * 1000);
         }
     });
 }
 
-function getQueryForm() {
+function showQueryForm() {
     var $searchForm = $("#searchForm" + reportId);
     if( !$searchForm.length ) {
         var formId = "searchForm" + reportId;

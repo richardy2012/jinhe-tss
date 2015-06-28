@@ -33,7 +33,7 @@ public interface IChannelService {
 	 * @param channel
 	 * @return
 	 */
-    @Logable(operateObject="栏目", operateInfo="新增了 ${args[0]} 节点")
+    @Logable(operateObject="站点栏目", operateInfo="新增了 ${args[0]} 节点")
     @PermissionTag(
             operation = CMSConstants.OPERATION_ADD_CHANNEL, 
             resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL,
@@ -41,7 +41,7 @@ public interface IChannelService {
     )
 	Channel createChannel(Channel channel);
     
-    @Logable(operateObject="栏目", operateInfo="修改了 ${args[0]} 节点")
+    @Logable(operateObject="站点栏目", operateInfo="修改了 ${args[0]} 节点")
     @PermissionTag(
             operation = CMSConstants.OPERATION_EDIT, 
             resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL,
@@ -54,7 +54,7 @@ public interface IChannelService {
      * @param channel
      * @return
      */
-    @Logable(operateObject="站点", operateInfo="新增了 ${args[0]} 节点")
+    @Logable(operateObject="站点栏目", operateInfo="新增了 ${args[0]} 节点")
     @PermissionTag(
             operation = CMSConstants.OPERATION_ADD_CHANNEL, 
             resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL,
@@ -67,7 +67,7 @@ public interface IChannelService {
      * @param channel
      * @return
      */
-    @Logable(operateObject="站点", operateInfo="修改了 ${args[0]} 节点")
+    @Logable(operateObject="站点栏目", operateInfo="修改了 ${args[0]} 节点")
     @PermissionTag(
             operation = CMSConstants.OPERATION_EDIT, 
             resourceType = CMSConstants.RESOURCE_TYPE_CHANNEL,
