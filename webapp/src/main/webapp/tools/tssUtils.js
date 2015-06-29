@@ -860,9 +860,10 @@ function popupGroupTree(callback) {
 	popupTree(url, "GroupTree", {}, callback)
 }
 
+// 发送定时邮件，支持html标签
 function email(receivers, title, content) {
 	$.ajax({
-		url: AUTH_PATH + "message/email",
+		url: AUTH_PATH + "message/email/html",
 		params: {"receivers": receivers, "title": title, "content": content},
 		method: "POST"
 	});

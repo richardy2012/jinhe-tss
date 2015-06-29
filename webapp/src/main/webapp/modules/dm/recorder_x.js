@@ -54,6 +54,19 @@ function nextLevel(current, next, map) {
      ]);
 }
 
+function checkBatch(field, expectVal, msg) {
+    var values = $.G("grid").getCheckedRowsValue(field);
+    var flag = true;
+    values.each(function(i, val) {
+        if(val != expectVal) {
+            flag = false;
+        }
+    });
+
+    !flag && msg && $.alert(msg);
+    return flag;
+}
+
 function batchUpdate(field, value) {
     var ids = $.G("grid").getCheckedRows();
     if(!ids) {

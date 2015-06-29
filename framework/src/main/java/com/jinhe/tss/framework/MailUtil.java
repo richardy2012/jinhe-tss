@@ -1,11 +1,15 @@
 package com.jinhe.tss.framework;
 
+import javax.mail.internet.MimeMessage;
+
 import org.apache.log4j.Logger;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
 import com.jinhe.tss.framework.component.param.ParamConfig;
+import com.jinhe.tss.framework.exception.BusinessException;
 
 public class MailUtil {
 	
@@ -58,6 +62,36 @@ public class MailUtil {
 		} 
 		catch (Exception e) {
 			log.error("发送文本邮件时出错了, " + receiver, e);
+		}
+	}
+	
+	public static void sendHTML(String subject, String htmlText, String receiver[]) {
+		// 邮件内容，注意加参数true
+		StringBuffer html = new StringBuffer();
+		html.append("<html>");
+		html.append("<head>");
+		html.append("<style type='text/css'> " );
+		html.append("	body { margin:0; padding:5px; font-family: 微软雅黑; font-size: 15px;}");
+		html.append("</style>");
+		html.append("</head>");
+		html.append("<body>");
+		html.append(htmlText);
+		html.append("</body>");
+		html.append("</html>");
+		
+		JavaMailSenderImpl sender = (JavaMailSenderImpl) MailUtil.getMailSender();
+		MimeMessage mailMessage = sender.createMimeMessage();
+		try {
+			// 设置utf-8或GBK编码，否则邮件会有乱码
+			MimeMessageHelper messageHelper = new MimeMessageHelper(mailMessage, true, "utf-8");
+			messageHelper.setTo(receiver);   // 接受者
+			messageHelper.setFrom(MailUtil.getEmailFrom());  // 发送者
+			messageHelper.setSubject(subject); // 主题
+			messageHelper.setText(html.toString(), true);
+			sender.send(mailMessage);
+		} 
+		catch (Exception e) {
+			throw new BusinessException("发送报表邮件时出错了：", e);
 		}
 	}
 }

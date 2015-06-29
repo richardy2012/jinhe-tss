@@ -26,4 +26,13 @@ public class MessageAction {
     		MailUtil.send(title, content, emails);
     	}
     }
+    
+    @RequestMapping(value = "/email/html", method = RequestMethod.POST)
+    @ResponseBody
+    public void sendHtmlEmail(String title, String content, String receivers) {
+    	String[] emails = loginService.getEmails(receivers);
+    	if(emails != null && emails.length > 0) {
+    		MailUtil.sendHTML(title, content, emails);
+    	}
+    }
 }

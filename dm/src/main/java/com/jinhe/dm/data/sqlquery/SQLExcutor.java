@@ -351,7 +351,7 @@ public class SQLExcutor {
 		}
     }
     
-    // 批量执行SQL, 每条SQL的参数放在Map里，key值为参数序号。
+    // 批量执行SQL, 每条SQL的参数放在Map里，"key"值为参数序号。
     public static void excuteBatch(String sql, List<Map<Integer, Object>> paramsList, String datasource) {
         List<Object[]> _paramsList = new ArrayList<Object[]>();
         for(Map<Integer, Object> params : paramsList) {
@@ -359,7 +359,7 @@ public class SQLExcutor {
     		
     		Collections.sort(list, new Comparator<Map.Entry<Integer, Object>>() {   
     		    public int compare(Map.Entry<Integer, Object> o1, Map.Entry<Integer, Object> o2) {      
-    		        return (o1.getKey() - o2.getKey()); 
+    		        return (o1.getKey() - o2.getKey());  // "key"值为参数序号
     		    }
     		});
     		

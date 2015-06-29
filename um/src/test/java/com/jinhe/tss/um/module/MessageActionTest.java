@@ -14,7 +14,12 @@ public class MessageActionTest extends TxSupportTest4UM {
 	
 	@Test
 	public void test() {
-		messageAction.sendEmail("test", "test", ParamConfig.getAttribute(MailUtil.SEND_TO));
+		messageAction.sendEmail("test", "<html><body><h3>生命变的厚重</h3></body></html>", ParamConfig.getAttribute(MailUtil.SEND_TO));
+	}
+	
+	@Test
+	public void test2() {
+		messageAction.sendHtmlEmail("test", "<html><body><h3>生命变的厚重</h3></body></html>", ParamConfig.getAttribute(MailUtil.SEND_TO));
 	}
 
 }
