@@ -83,54 +83,57 @@ function batchUpdate(field, value) {
 
 // addOptBtn('批量及格', function() { batchUpdate("score", "及格") });  
 function addOptBtn(name, fn, roles, groups) {
-    if( roles ) {
-        var checkRole = false;
-        (roles + "").split(",").each(function(i, role){
-            if( userRoles.contains( parseInt(role) ) ) {
-                checkRole = true;
-            }
-        });
-
-        if(!checkRole) return;
-    }
-
-    if(groups && userGroups.length) {
-        var checkGroup = false;
-        var g = userGroups[userGroups.length - 1];
-        (groups + "").split(",").each(function(i, group){
-            if(group == (g[0]+"") && group == g[1]) {
-                checkGroup = true;
-            }
-        });
-
-        if(!checkGroup) return;
-    }
+    if( !checkRole(roles) && !checkGroup(groups) ) {
+        return;
+    } 
 
     var batchOpBtn = $.createElement('button', 'btStrongL');
     $(batchOpBtn).html(name).click( fn );  
     $('#customizeBox').appendChild(batchOpBtn);
 }
 
-// batchOpt('批量及格', "score", "及格");
+// batchOpt('批量及格', "score", "及格", "r1,r2", "g1, g2");
 function batchOpt(name, field, value, roles, groups) {
     addOptBtn(name, function() { batchUpdate(field, value) }, roles, groups);  
 }
 
-// 依据用户的角色和组织判断用户是否能对指定字段可编辑
-function forbid(field, role, group) {
+function checkRole(roles) {    
+    if(!roles) return true; // 默认通过
+
+    var result = false;
+    (roles + "").split(",").each(function(i, role){
+        if( userRoles.contains( parseInt(role) ) ) {
+            result = true;
+        }
+    });
+    return result;
+}
+
+function checkGroup(groups) {
+    if(!groups) return true; // 默认通过
+
+    var result = false;
+    if(userGroups.length) {
+        var g = userGroups[userGroups.length - 1];
+        (groups + "").split(",").each(function(i, group){
+            if(group == (g[0]+"") && group == g[1]) {
+                result = true;
+            }
+        });
+    }
+    return result;
+}
+
+/* 
+ * 依据用户的角色和组织判断用户是否能对指定字段可编辑，除指定的角色和组织之外一律不可编辑 
+ * forbid( "score", "r1,r2", "g1, g2");
+ */
+function forbid(field, roles, groups) {
     var xform = $.F("page1Form");
     var editable = false;
-    if(role) {
-        editable = userRoles.contains(role);
+    if( (roles && checkRole(roles)) || (groups && checkGroup(groups)) ) {
+        editable = true;
     } 
-    if(group) {
-        if(userGroups && userGroups.length) {
-            var g = userGroups[userGroups.length - 1];
-            if(group == g[0] || group == g[1]) {
-                editable = true;
-            }
-        }
-    }  
 
     if(!editable) {
         var fields = field.split(",");
