@@ -11,5 +11,10 @@ public class FrameworkTest {
 		Object[] result = new Framework().getVersion(null, null);
 		Assert.assertEquals("dev", result[1]);
 	}
+	
+	@Test
+	public void testLiceence() {
+		Assert.assertTrue(Framework.validateTSS());
+	}
 
 }

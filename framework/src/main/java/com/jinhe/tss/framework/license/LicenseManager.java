@@ -98,7 +98,7 @@ public final class LicenseManager {
         }
         return false;
     }
-
+    
     /**
      * 获取license的类型。
      * 

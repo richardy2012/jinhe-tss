@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.tss.framework.Config;
+import com.jinhe.tss.framework.license.LicenseManager;
 
 @Controller
 @RequestMapping("/framework")
@@ -21,5 +22,8 @@ public class Framework {
 		String environment = Config.getAttribute("environment");
 		return new Object[] { packageTime, environment };
 	}
-
+	
+    public static boolean validateTSS() {
+    	return LicenseManager.getInstance().validateLicense("tss", "3.3");
+    }
 }
