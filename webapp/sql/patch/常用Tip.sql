@@ -25,3 +25,15 @@ date_format(日期字段,’%Y-%m-%d’)
     "initNum":"1",
     "poolSize": "10"
 }
+
+{
+    "customizerClass": "com.jinhe.tss.framework.persistence.connpool.ConnPoolCustomizer",
+    "poolClass": "com.jinhe.tss.cache.extension.ReusablePool",
+    "code": "connpool-bsd-oracle",
+    "name": "DB连接池-波塞冬",
+    "cyclelife": "720000",
+    "paramFile": "oracle.jdbc.driver.OracleDriver,jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.8.72.70)(PORT = 1521))(CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = kybi.800best.com))),usr_vf,usr_vf2",
+    "interruptTime": "1000",
+    "initNum":"0",
+    "poolSize": "20"
+}

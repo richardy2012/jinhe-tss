@@ -126,9 +126,11 @@ public interface ILoginService {
     List<OperatorDTO> getUsersByRoleId(Long roleId);
     
 	/**
-	 * 读取邮件列表，支持loginName，email，角色，用户组，辅助组、参数宏。
+	 * 读取用户联系方式：
+	 * 1、ID列表，用于站内消息
+	 * 2、邮件列表，支持loginName，email，角色，用户组，辅助组、参数宏。
 	 * 如： pjjin@800best.com,BL01037,-1@tssRole,-2@tssGroup,${JK}
 	 */
-    String[] getEmails(String receiverStr);
+    String[] getContactInfos(String receiverStr, boolean justID);
 }
 

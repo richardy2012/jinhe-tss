@@ -85,7 +85,7 @@ public class ReportJob extends AbstractJob {
 		}
 		
 		for(String receiverStr : map.keySet()) {
-			String receiver[] = loginService.getEmails( receiverStr );
+			String receiver[] = loginService.getContactInfos( receiverStr, false );
 			if(receiver == null || receiver.length == 0) {
 				continue;
 			}

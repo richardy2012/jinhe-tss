@@ -160,6 +160,8 @@ public class GroupModuleTest extends TxSupportTest4UM {
         log.debug("Testing sort group......");
         action.sortGroup(response, mainGroupId, group2.getId(), 1);
         
+        action.move(response, group2.getId(), mainGroupId);
+        
         action.getVisibleGroup2Tree(response);
         
         Object[] result = groupService.getMainGroupsByOperationId(UMConstants.GROUP_EDIT_OPERRATION);
@@ -220,6 +222,14 @@ public class GroupModuleTest extends TxSupportTest4UM {
         log.debug("\n");
         
         action.getCanAddedGroup2Tree(response, Group.ASSISTANT_GROUP_TYPE);
+        
+        action.move(response, group2.getId(), group1.getId());
+        try {
+        	action.move(response, group2.getId(), mainGroupId);
+        	Assert.fail("should throw exception but didn't.");
+        } catch (Exception e) {
+        	Assert.assertTrue("不能移动到不同类型的组织下面", true);
+        }
     }
     
     @Test

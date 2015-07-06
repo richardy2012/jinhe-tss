@@ -29,5 +29,7 @@
 	<entity class="com.jinhe.tss.um.entity.permission.GroupPermission"/>
 	<entity class="com.jinhe.tss.um.entity.permission.RoleResource"/>
 	<entity class="com.jinhe.tss.um.entity.permission.RolePermission"/>
+	
+	<entity class="com.jinhe.tss.um.entity.Message"/>
 
 </entity-mappings>

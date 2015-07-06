@@ -146,7 +146,8 @@ public class _Connection extends ConfigurableContants {
 	            Class.forName(driver);
 				conn = DriverManager.getConnection(url, user, pwd);
 	        } catch (Exception e) {
-	            throw new RuntimeException("创建数据库连接时候出错，url：" + url, e);
+	        	log.error("创建数据库连接时候出错，url：" + url + ", user:" + user);
+	            throw new RuntimeException("创建数据库连接时候出错，" + driver + "，" + user, e);
 	        } 
 	        return conn;
 		}

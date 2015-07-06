@@ -36,6 +36,13 @@
 		line-height: 22px;
 		margin-top: 5px;
 	}
+
+	.ke-icon-reportportlet {
+		background-image: url(../../tools/kindeditor/themes/default/default.png);
+		background-position: 0px -560px;
+		width: 16px;
+		height: 16px;
+	}
 	
 </style>
 
@@ -103,6 +110,60 @@
 		});
 	});
 
+	KindEditor.lang({
+		reportportlet : '插入报表Portlet'
+	});
+	KindEditor.plugin('reportportlet', function(K) {
+		var self = this, name = 'reportportlet';
+		self.clickToolbar(name, function() {
+			var html = [];
+			html.push('<div style="margin:20px;line-height:22px;">');
+			html.push('报表ID ：<input id="reportId" style="width:100px;">');
+			html.push('<br/>报表宽度：<input id="reportWidth" value="100%" style="width:100px;">&nbsp;&nbsp;&nbsp;&nbsp;');
+			html.push('报表高度：<input id="reportHeight" value="600px" style="width:100px;">');
+			html.push('<br/>报表参数1：<input id="reportParam1" style="width:300px;">');
+			html.push('<br/>报表参数2：<input id="reportParam2" style="width:300px;">');
+			html.push('<br/>报表参数3：<input id="reportParam3" style="width:300px;">');
+			html.push('<br/>报表参数4：<input id="reportParam4" style="width:300px;">');
+			html.push('<br/>报表参数5：<input id="reportParam5" style="width:300px;">');
+			html.push('</div>');
+
+			self.createDialog({
+				name : 'reportportlet',
+				width : 450,
+				title : '插入报表Portlet',
+				body : html.join('\n'),
+				yesBtn : {
+					name : "插入",
+					click : function(e) {
+						var reportId = $("#reportId").value();
+						if(!reportId) {
+							return alert("报表ID不能为空");
+						}
+
+						var url = "/tss/modules/dm/report_portlet.html?id=" + reportId;
+
+						for(var i=1; i <= 5; i++) {
+							var tempV =  $('#reportParam' + i).value();
+							if(tempV) {
+								url += '&param' + i + '=' + tempV;
+							}
+						}
+						
+						var reportWidth = $("#reportWidth").value() || "100%";
+						var reportHeight = $("#reportHeight").value() || "600px";
+						var style = "width:" + reportWidth + ";height:" + reportHeight + ";";
+						var html = '<iframe src="' + url + '" frameborder="0" style="' + style + '"></iframe>';
+
+						self.insertHtml(html);
+						self.select().hideDialog().focus();
+					}
+				}
+			});
+		});
+	});
+
+
 	var editor;
 	KindEditor.ready( function(K) {
 		editor = K.create('textarea[name="content"]', {
@@ -112,7 +173,7 @@
 				items : [
 					'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'lineheight',
 					'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-					'insertunorderedlist', '|', /*'image',*/ 'imageSelf', 'table', 'baidumap', '|', 'source', 'fullscreen', 'quickformat', 'preview']
+					'insertunorderedlist', '|', /*'image',*/ 'imageSelf', 'reportportlet', 'table', 'baidumap', '|', 'source', 'fullscreen', 'quickformat', 'preview']
 			});				
 	} );
 

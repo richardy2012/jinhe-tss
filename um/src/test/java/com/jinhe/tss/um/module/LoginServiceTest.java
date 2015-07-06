@@ -114,7 +114,7 @@ public class LoginServiceTest extends TxSupportTest4UM {
 		
 		loginSerivce.resetPassword(userId, "abc123456=11");
 		
-		String[] emails = loginSerivce.getEmails("-1@tssRole,-2@tssGroup");
+		String[] emails = loginSerivce.getContactInfos("-1@tssRole,-2@tssGroup", false);
 		Assert.assertEquals(1, emails.length);
 	}
 }

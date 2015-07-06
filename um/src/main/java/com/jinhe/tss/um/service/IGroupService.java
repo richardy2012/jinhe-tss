@@ -126,4 +126,6 @@ public interface IGroupService {
 	 */
 	List<?> getVisibleSubGroups(Long groupId);
 
+	void move(Long id, Long toGroupId);
+
 }

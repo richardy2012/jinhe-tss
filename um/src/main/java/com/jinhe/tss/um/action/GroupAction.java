@@ -53,7 +53,7 @@ public class GroupAction extends ProgressActionSupport {
 		print("GroupTree", encoder);
 	}
 
-	@RequestMapping("/list/{type}/")
+	@RequestMapping("/list/{type}")
     public void getCanAddedGroup2Tree(HttpServletResponse response, @PathVariable("type") int type) {
         String operationId = UMConstants.GROUP_EDIT_OPERRATION;
         
@@ -200,6 +200,16 @@ public class GroupAction extends ProgressActionSupport {
         service.sortGroup(id, targetId, direction);
         printSuccessMessage();
     }  
+    
+	/** 移动 */
+    @RequestMapping(value = "/move/{id}/{toGroupId}", method = RequestMethod.POST)
+	public void move(HttpServletResponse response, 
+			@PathVariable("id") Long id, 
+			@PathVariable("toGroupId") Long toGroupId) {
+    	
+    	service.move(id, toGroupId);        
+        printSuccessMessage();
+	}
     
     @RequestMapping("/sync/{applicationId}/{groupId}")
     public void syncData(HttpServletResponse response, 

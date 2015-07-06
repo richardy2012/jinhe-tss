@@ -48,6 +48,8 @@ public class RegisterServlet extends HttpServlet {
         user.setPassword(request.getParameter("password"));
         user.setUserName(request.getParameter("userName"));
         user.setEmail(request.getParameter("email"));
+        user.setPasswordQuestion(request.getParameter("passwordQuestion"));
+        user.setPasswordAnswer(request.getParameter("passwordAnswer"));
         
         service.registerUser(user);
 

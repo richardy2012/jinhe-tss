@@ -190,7 +190,7 @@ public class LoginService implements ILoginService {
         return returnList;
     }
     
-    public String[] getEmails(String receiverStr) {
+    public String[] getContactInfos(String receiverStr, boolean justID) {
     	Map<String, Object> fmDataMap = new HashMap<String, Object>();
 		List<Param> macroParams = ParamManager.getComboParam(UMConstants.EMAIL_MACRO);
 		if(macroParams != null) {
@@ -204,6 +204,7 @@ public class LoginService implements ILoginService {
 		
 		// 将登陆账号转换成该用户的邮箱
 		Set<String> emails = new HashSet<String>();
+		Set<Long> ids = new HashSet<Long>();
 		for(int j = 0; j < receiver.length; j++) {
 			String temp = receiver[j];
 			
@@ -211,19 +212,19 @@ public class LoginService implements ILoginService {
 			if(temp.endsWith("@tssRole")) {
 				List<OperatorDTO> list = getUsersByRoleId(parseID(temp));
 				for(OperatorDTO user : list) {
-					addUserEmail2List(user, emails);
+					addUserEmail2List(user, emails, ids);
 				}
 			} 
 			else if(temp.endsWith("@tssGroup")) {
 				List<OperatorDTO> list = getUsersByGroupId(parseID(temp));
 				for(OperatorDTO user : list) {
-					addUserEmail2List(user, emails);
+					addUserEmail2List(user, emails, ids);
 				}
 			} 
 			else if(temp.indexOf("@") < 0) {
 				try {
 					OperatorDTO user = getOperatorDTOByLoginName(temp);
-					addUserEmail2List(user, emails);
+					addUserEmail2List(user, emails, ids);
 				} 
 				catch(Exception e) {
 				}
@@ -232,6 +233,11 @@ public class LoginService implements ILoginService {
 				emails.add(temp);
 			}
 		}
+		
+		if(justID) {
+			return EasyUtils.list2Str(ids).split(",");
+		}
+		
 		receiver = new String[emails.size()];
 		receiver = emails.toArray(receiver);
 		
@@ -246,10 +252,11 @@ public class LoginService implements ILoginService {
 		}
 	}
  
-	private void addUserEmail2List(OperatorDTO user, Set<String> emails) {
+	private void addUserEmail2List(OperatorDTO user, Set<String> emails, Set<Long> ids) {
 		String email = (String) user.getAttribute("email");
 		if( !EasyUtils.isNullOrEmpty(email) ) {
 			emails.add( email );
 		}
+		ids.add(user.getId());
 	}
 }

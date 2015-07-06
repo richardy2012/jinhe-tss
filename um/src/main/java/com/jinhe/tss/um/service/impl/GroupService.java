@@ -158,6 +158,19 @@ public class GroupService implements IGroupService {
     public void sortGroup(Long groupId, Long toGroupId, int direction) {
         groupDao.sort(groupId, toGroupId, direction);
     }
+    
+    public void move(Long id, Long toGroupId) {
+        Group group = groupDao.getEntity(id);
+        Group target = groupDao.getEntity(toGroupId);
+        if( !group.getGroupType().equals(target.getGroupType()) ) {
+        	throw new BusinessException("不能移动到不同类型的组织下面");
+        }
+        
+        group.setParentId(toGroupId);
+        group.setSeqNo(groupDao.getNextSeqNo(toGroupId));
+                   
+        groupDao.moveEntity(group);
+    }
 
     public void startOrStopGroup(Long groupId, Integer disabled) {
         String applicationId = UMConstants.TSS_APPLICATION_ID;
