@@ -136,11 +136,19 @@ function forbid(field, roles, groups) {
     } 
 
     if(!editable) {
-        var fields = field.split(",");
+        var fields = (field || '').split(",");
         fields.each(function(i, _field) {
             xform.setFieldEditable(_field, "false"); 
         });
     }
+}
+
+function permit(field) {
+    var xform = $.F("page1Form");
+    var fields = (field || '').split(",");
+    fields.each(function(i, _field) {
+        xform.setFieldEditable(_field, "false"); 
+    });
 }
 
 function calculateSum(totalField, fields) {
