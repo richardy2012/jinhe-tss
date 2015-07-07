@@ -7,6 +7,7 @@ import java.io.File;
 
 import org.junit.Test;
 
+import com.jinhe.tss.util.DateUtil;
 import com.jinhe.tss.util.FileHelper;
 
 public class LicenseTest {
@@ -37,7 +38,14 @@ public class LicenseTest {
         
         // 第三步：利用公钥对license进行合法性验证。可以在软件代码的重要模块中加入下面的验证，比如登录模块等。
         LicenseManager manager = LicenseManager.getInstance();
+        assertEquals("tss", license.product);
+        assertEquals("3.3", license.version);
+        assertEquals("Commercial", license.licenseType);
+        assertEquals(DateUtil.parse("2016-06-22"), license.expiresDate);
+        assertEquals("6C-62-6D-C6-49-9E", license.macAddress);
+        
         assertEquals(true, manager.validateLicense(license.product, license.version));
+        
         assertEquals("Commercial", manager.getLicenseType(license.product, license.version));
     }
 }

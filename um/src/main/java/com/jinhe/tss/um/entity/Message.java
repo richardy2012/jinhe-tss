@@ -2,8 +2,6 @@ package com.jinhe.tss.um.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,9 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.jinhe.tss.framework.persistence.IEntity;
-import com.jinhe.tss.framework.web.dispaly.grid.GridAttributesMap;
-import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
-import com.jinhe.tss.util.BeanUtil;
  
 /**
  * 站内消息对象
@@ -25,7 +20,7 @@ import com.jinhe.tss.util.BeanUtil;
 @Entity
 @Table(name = "um_message")
 @SequenceGenerator(name = "message_sequence", sequenceName = "message_sequence", initialValue = 1000, allocationSize = 10)
-public class Message implements IGridNode, IEntity {
+public class Message implements IEntity {
     
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "message_sequence")
@@ -111,14 +106,6 @@ public class Message implements IGridNode, IEntity {
 		this.title = title;
 	}
  
-	public GridAttributesMap getAttributes(GridAttributesMap map) {
-		Map<String, Object> properties = new LinkedHashMap<String, Object>();
-        BeanUtil.addBeanProperties2Map(this, properties);
-        map.putAll(properties);
-        
-		return map;
-	}
-
     public String getReceiverIds() {
         return receiverIds;
     }

@@ -1,10 +1,12 @@
 package com.jinhe.tss.um.action;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,8 +16,6 @@ import com.jinhe.tss.um.entity.Message;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.um.service.IMessageService;
 import com.jinhe.tss.util.EasyUtils;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 @Controller
 @RequestMapping("/auth/message")
@@ -57,21 +57,21 @@ public class MessageAction {
     	}
     }
     
-    @RequestMapping(method = RequestMethod.DELETE)
-    @ResponseBody
-    public void deleteMessage(Long id) {
-    	messageService.deleteMessage(id);
-    }
-    
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
     public List<Message> listMessages() {
     	return messageService.getInboxList();
     }
     
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Message getMessage(Long id) {
+    public Message getMessage(@PathVariable("id") Long id) {
     	return messageService.viewMessage(id);
+    }
+    
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public void deleteMessage(@PathVariable("id") Long id) {
+    	messageService.deleteMessage(id);
     }
 }

@@ -864,7 +864,46 @@ function popupGroupTree(callback) {
 function email(receivers, title, content) {
 	$.ajax({
 		url: AUTH_PATH + "message/email/html",
-		params: {"receivers": receivers, "title": title, "content": content},
-		method: "POST"
+		method: "POST",
+		params: {"receivers": receivers, "title": title, "content": content}
+	});
+}
+
+function sendMessage(receivers, title, content) {
+	$.ajax({
+		url: AUTH_PATH + "message",
+		method: "POST",
+		params: {"receivers": receivers, "title": title, "content": content}
+	});
+}
+
+function deleteMessage(id) {
+	$.ajax({
+		url: AUTH_PATH + "message/" + id,
+		method: "DELETE"
+	});
+}
+
+function listMessages(callback) {
+	$.ajax({
+		url: AUTH_PATH + "message/list",
+		method: "GET",
+		type : "json",
+		ondata: function() {
+			var messages = this.getResponseJSON();
+			callback && callback(messages);
+		}
+	});
+}
+
+function viewMessage(id, callback) {
+	$.ajax({
+		url: AUTH_PATH + "message/" + id,
+		method: "GET",
+		type : "json",
+		ondata: function() {
+			var message = this.getResponseJSON();
+			callback && callback(message);
+		}
 	});
 }
