@@ -14,6 +14,7 @@ import com.jinhe.tss.cms.service.IRemoteArticleService;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.context.ApplicationContext;
 import com.jinhe.tss.framework.sso.context.Context;
+import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.TxSupportTest4Portal;
 import com.jinhe.tss.portal.dao.INavigatorDao;
@@ -59,9 +60,10 @@ public class FreeMarkerParserTest extends TxSupportTest4Portal {
 
     @Test
     public void test1() throws Exception {
+    	String tempDir = TestUtil.getTempDir();
         String templateStr = "<#assign manager = statics[\"com.jinhe.tss.portal.engine.StaticManager\"] />" +
-                "<#assign data = manager.listFiles(\"d:/temp\") />" +
-                "${data.get(2)} \n <#list data as file> ${file} \n </#list> ";
+                "<#assign data = manager.listFiles(\"" + tempDir + "\") />" +
+                "${data.get(0)} \n <#list data as file> ${file} \n </#list> ";
 
         FreemarkerParser parser = new FreemarkerParser(null);
         parser.parseTemplateTwice(templateStr, new OutputStreamWriter(System.out));

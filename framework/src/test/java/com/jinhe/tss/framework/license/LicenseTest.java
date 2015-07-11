@@ -5,14 +5,21 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import junit.framework.Assert;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
+import com.jinhe.tss.framework.Framework;
 import com.jinhe.tss.util.DateUtil;
 import com.jinhe.tss.util.FileHelper;
 
 public class LicenseTest {
 	
 	private String licenceName = "cpu.license";
+	
+	private final Log log = LogFactory.getLog(getClass());
     
 	@Test
     public void testLicense() {
@@ -21,6 +28,7 @@ public class LicenseTest {
         try {
             LicenseFactory.generateKey();
         } catch (Exception e) {
+        	log.error(e);
             assertTrue(e.getMessage(), false);
         }
         
@@ -30,11 +38,12 @@ public class LicenseTest {
             license = License.fromConfigFile(licenceName);
             LicenseFactory.sign(license);
         } catch (Exception e) {
+        	log.error(e);
             assertTrue(e.getMessage(), false);
         }
         
         FileHelper.writeFile(new File(LicenseFactory.LICENSE_DIR + "/" + licenceName), license.toString());
-        System.out.println(license);
+        log.debug(license);
         
         // 第三步：利用公钥对license进行合法性验证。可以在软件代码的重要模块中加入下面的验证，比如登录模块等。
         LicenseManager manager = LicenseManager.getInstance();
@@ -44,9 +53,13 @@ public class LicenseTest {
         assertEquals(DateUtil.parse("2016-06-22"), license.expiresDate);
         assertEquals("6C-62-6D-C6-49-9E", license.macAddress);
         
-        assertEquals(true, manager.validateLicense(license.product, license.version));
+        boolean result = manager.validateLicense(license.product, license.version);
+		assertEquals(true, result);
         
-        assertEquals("Commercial", manager.getLicenseType(license.product, license.version));
+        String licenseType = manager.getLicenseType(license.product, license.version);
+		assertEquals("Commercial", licenseType);
+        
+        Assert.assertTrue(Framework.validateTSS());
     }
 }
 

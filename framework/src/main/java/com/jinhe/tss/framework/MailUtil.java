@@ -9,7 +9,6 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import com.jinhe.tss.framework.component.param.ParamConfig;
-import com.jinhe.tss.framework.exception.BusinessException;
 
 public class MailUtil {
 	
@@ -91,7 +90,7 @@ public class MailUtil {
 			sender.send(mailMessage);
 		} 
 		catch (Exception e) {
-			throw new BusinessException("发送报表邮件时出错了：", e);
+			log.error("发送报表邮件时出错了：", e);
 		}
 	}
 }

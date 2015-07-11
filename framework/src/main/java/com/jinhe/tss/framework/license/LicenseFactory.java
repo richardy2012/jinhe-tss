@@ -12,12 +12,17 @@ import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;
 
 public class LicenseFactory {
 
+	private final static Log log = LogFactory.getLog(LicenseFactory.class);
+	
     static String LICENSE_DIR = URLUtil.getClassesPath().getPath();
     static String PRIVATE_KEY_FILE = LICENSE_DIR + "/private.key";
     static String PUBLIC_KEY_FILE  = LICENSE_DIR + "/public.key";
@@ -58,13 +63,16 @@ public class LicenseFactory {
         PrivateKey priv = pair.getPrivate();
         PublicKey pub = pair.getPublic();
         
+        log.info("开始生成秘钥");
         DataOutputStream out = new DataOutputStream(new FileOutputStream(PUBLIC_KEY_FILE));
         out.writeBytes(EasyUtils.encodeHex(pub.getEncoded()));
         out.close();
+        log.info("成功生成：" + PUBLIC_KEY_FILE);
         
         out = new DataOutputStream(new FileOutputStream(PRIVATE_KEY_FILE));
         out.writeBytes(EasyUtils.encodeHex(priv.getEncoded()));
         out.close();
+        log.info("成功生成：" + PRIVATE_KEY_FILE);
     }
     
 }

@@ -69,12 +69,12 @@ public final class LicenseManager {
                 licenses.add(license);
             } 
             catch(Exception e) {
-                log.error(e);
+                log.error("读取license文件出错了，" + filename, e);
             }
         }
 
         if(licenses.isEmpty()){
-            log.error("找不到合法的许可文件（license）.");
+            log.error("找不到合法有效的许可文件（license）.");
         }
         return;
     }

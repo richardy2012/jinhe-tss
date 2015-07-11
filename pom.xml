@@ -238,7 +238,10 @@
 	            <artifactId>maven-clover2-plugin</artifactId>
 	            <version>3.0.5</version>
 	            <configuration>
+	          <!--
 		          <licenseLocation>D:/project/clover.license</licenseLocation>
+		      -->
+		      	  <licenseLocation>/Users/jinpujun/Desktop/project/clover.license</licenseLocation>
 		          <generateHtml>true</generateHtml>
 		          <generateXml>true</generateXml>
 		        </configuration>

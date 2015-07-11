@@ -54,7 +54,7 @@ public abstract class ConfigurableContants {
             if (in != null) {
                 properties.load(in);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("load " + propertiesFileName + " into Contants error", e);
         }
         finally {
