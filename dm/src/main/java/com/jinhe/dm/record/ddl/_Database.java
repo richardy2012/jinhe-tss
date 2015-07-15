@@ -296,6 +296,8 @@ public abstract class _Database {
 					|| permissions.contains(Record.OPERATION_EDATA);
 		} catch(Exception e) {
 		}
+		
+		// 设置查询条件
 		String condition;
 		if( visible && !params.containsKey("creator") ) {
 			condition = " '000' <> ? ";
@@ -307,32 +309,69 @@ public abstract class _Database {
 			String valueStr = params.get(key);
 			if(EasyUtils.isNullOrEmpty(valueStr)) continue;
 			
-			Object value;
+			if( "creator".equals(key) ) {
+				paramsMap.put(1, valueStr);  // 替换登录账号，允许查询其它人创建的数据; 
+				continue;
+			}
+			
+			if("updator".equals(key)) {
+				condition += " and updator = ? ";
+				paramsMap.put(paramsMap.size() + 1, valueStr);
+				continue;
+			}
+			
 			int fieldIndex = this.fieldCodes.indexOf(key);
 			if(fieldIndex >= 0) {
 				String paramType = this.fieldTypes.get(fieldIndex);
-				value = _Util.preTreatValue(valueStr, paramType);
-			}
-			else {
-				value = valueStr;
-			}
-			
-			if( "creator".equals(key) ) {
-				paramsMap.put(1, value);  // 替换登录账号，允许查询其它人创建的数据; 
-			}
-			
-			if(this.fieldCodes.contains(key) || "updator".equals(key)) {
-				condition += " and " + key + " = ? ";
-				paramsMap.put(paramsMap.size() + 1, value);
+				
+				String[] vals = _Util.preTreatScopeValue(valueStr);				
+				if(vals.length == 1) {
+					condition += " and " + key + " = ? ";
+					paramsMap.put(paramsMap.size() + 1, _Util.preTreatValue(vals[0], paramType));
+				}
+				else if(vals.length == 2) {
+					String val1 = vals[0], val2 = vals[1];
+					if(!EasyUtils.isNullOrEmpty(val1)) {
+						condition += " and " + key + " >= ? ";
+						paramsMap.put(paramsMap.size() + 1, _Util.preTreatValue(val1, paramType));
+					}
+					if(!EasyUtils.isNullOrEmpty(val2)) {
+						condition += " and " + key + " <= ? ";
+						paramsMap.put(paramsMap.size() + 1, _Util.preTreatValue(val2, paramType));
+					}
+				}
 			}
 		}
 		
 		if( !EasyUtils.isNullOrEmpty(this.customizeTJ) ) {
 			condition += " and " + _Util.customizeParse(this.customizeTJ);
 		}
+		
+		// 设置排序方式
+		String sortField = params.get("sortField");
+		String sortType  = params.get("sortType");
+		
+		String orderby = "order by ";
+		if( !EasyUtils.isNullOrEmpty(sortField) && this.fieldCodes.indexOf(sortField) >= 0) {
+			if("onlynull".equals(sortType)) {
+				condition += " and " + sortField + " is null ";
+				orderby += " id desc ";
+			}
+			else {
+				orderby += sortField;
+				if( EasyUtils.isNullOrEmpty(sortType) ) {
+					sortType = "asc";
+				}
+				orderby += " " + sortType;
+			}
+		}
+		else {
+			orderby += " id desc ";
+		}
+		
 		String selectSQL = "select " + EasyUtils.list2Str(this.fieldCodes) + 
 					",createtime,creator,updatetime,updator,version,id from " + this.table + 
-					" where " + condition + " order by id desc ";
+					" where " + condition + orderby;
 		
 		SQLExcutor ex = new SQLExcutor(false);
 		ex.excuteQuery(selectSQL, paramsMap, page, pagesize, this.datasource);

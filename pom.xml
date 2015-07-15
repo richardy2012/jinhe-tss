@@ -366,7 +366,7 @@
 				<db.username>root</db.username>
 				<db.password>800best@com</db.password>
 				<db.url>127.0.0.1:3306/demo_bi</db.url>
-				<tomcat.url>10.8.72.80:8888</tomcat.url>
+				<tomcat.url>localhost:8088</tomcat.url>
 			</properties>
 		</profile>
 

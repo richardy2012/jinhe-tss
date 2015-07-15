@@ -23,7 +23,7 @@ public class RecordServiceImpl implements RecordService {
         return record;
 	}
 
-	private List<Record> getAllRecords() {
+	public List<Record> getAllRecords() {
 		return (List<Record>) recordDao.getEntities("from Record o order by o.decode");
 	}
 	

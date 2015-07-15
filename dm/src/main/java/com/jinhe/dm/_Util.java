@@ -30,6 +30,21 @@ public class _Util {
 	
 	static Logger log = Logger.getLogger(_Util.class);
 	
+	// 判断是否为区间查询（从 。。。 到 。。。）
+	public static String[] preTreatScopeValue(String value) {
+		if(value == null) return new String[] { };
+		
+  		value = value.trim();
+  		if(value.startsWith("[") && value.endsWith("]") && value.indexOf(",") > 0) {
+  			String[] vals = value.substring(1, value.length() - 1).split(",");
+  			if(vals.length >= 2) {
+  				return new String[] { vals[0], vals[1] };
+  			}
+			return vals;
+  		}
+  		return new String[] { value };
+	}
+	
   	public static Object preTreatValue(String value, Object type) {
   		if(type == null || value == null) {
   			return value;

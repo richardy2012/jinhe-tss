@@ -87,7 +87,7 @@ function initMenus() {
 		label:"移动到",
 		callback:moveRecord,
 		icon: ICON + "icon_move.gif",
-		visible:function() {return isRecord() && getOperation("2");}
+		visible:function() {return !isTreeRoot() && getOperation("2");}
 	}
 
 	var menu = new $.Menu();

@@ -38,14 +38,16 @@
             "type": "number",
             "checkReg": "^[0-9]\\d{0,1}$",
             "errorMsg": "请输入0到99之间的数字",
-            "width": "100"
+            "width": "100",
+            "isparam":"true"
         },
         {
             "label": "日期",
             "code": "day",
             "type": "date",
             "nullable": "false",
-            "defaultValue": "today-0"
+            "defaultValue": "today-0",
+            "isparam":"true"
         }
     ],
     "console.log(123);",

@@ -11,6 +11,8 @@ public interface RecordService {
 
     Record getRecord(Long id);
     
+    List<Record> getAllRecords();
+    
     @PermissionTag(
     		resourceType = Record.RESOURCE_TYPE,
 	        operation = Record.OPERATION_CDATA

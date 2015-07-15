@@ -1,5 +1,6 @@
 package com.jinhe.dm.record;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,15 +37,17 @@ public class RecordAction extends BaseActionSupport {
     
     @RequestMapping("/all")
     public void getAllRecord(HttpServletResponse response) {
-        List<Record> list = recordService.getRecordables();
-        List<Record> list2 = recordService.getVisiables();
-        for(Record record : list2) {
-        	if( !list.contains(record) ){
-        		list.add(record);
+    	List<Record> result = new ArrayList<Record>();
+    	List<Record> all = recordService.getAllRecords();
+        List<Record> list1 = recordService.getRecordables(); 
+        List<Record> list2 = recordService.getVisiables(); // include record groups
+        for(Record record : all) {
+        	if( list1.contains(record) || list2.contains(record) ){
+        		result.add(record);
         	}
         }
         
-        TreeEncoder treeEncoder = new TreeEncoder(list, new LevelTreeParser());
+        TreeEncoder treeEncoder = new TreeEncoder(result, new LevelTreeParser());
         print("SourceTree", treeEncoder);
     }
     

@@ -14,15 +14,17 @@ import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.util.EasyUtils;
 
 public class _DatabaseTest extends TxTestSupport4DM  {
-	
-//public class _DatabaseTest  {
-//	@Before
-//	public void setUp() {
-//		OperatorDTO loginUser = new OperatorDTO(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
-//    	String token = TokenUtil.createToken("1234567890", UMConstants.ADMIN_USER_ID); 
-//        IdentityCard card = new IdentityCard(token, loginUser);
-//        Context.initIdentityInfo(card);
-//	}
+
+/*
+public class _DatabaseTest  {
+	@Before
+	public void setUp() {
+		OperatorDTO loginUser = new OperatorDTO(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
+    	String token = TokenUtil.createToken("1234567890", UMConstants.ADMIN_USER_ID); 
+        IdentityCard card = new IdentityCard(token, loginUser);
+        Context.initIdentityInfo(card);
+	}
+*/
 	
 	@Test
 	public void testMySQL() {
@@ -127,11 +129,21 @@ public class _DatabaseTest extends TxTestSupport4DM  {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("f2", "just test");
 		params.put("creator", UMConstants.ADMIN_USER_NAME);
+		params.put("sortField", "f4");
+		params.put("sortType", "desc");
 		result = _db.select(1, 10, params).result;
 		Assert.assertTrue(result.size() == 2);
 		
+		params.put("sortType", "onlynull");
+		result = _db.select(1, 10, params).result;
+		Assert.assertTrue(result.size() == 1);
+		
+		params.remove("sortType");
+		params.put("f4", "[2015-04-04,2015-04-06]");
+		result = _db.select(1, 10, params).result;
+		Assert.assertTrue(result.size() == 1);
+		
 		params.put("f2", "no test");
-		params.put("f4", "2015-04-05");
 		params.put("updator", UMConstants.ADMIN_USER_NAME);
 		result = _db.select(1, 10, params).result;
 		Assert.assertTrue(result.size() == 0);

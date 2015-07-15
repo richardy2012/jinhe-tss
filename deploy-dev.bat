@@ -1,4 +1,0 @@
-rd /s/q D:\Tomcat7042\webapps\tss
-call mvn clean install  -Pdev -Dmaven.test.skip=true
-xcopy /Y webapp\target\tss.war  D:\Tomcat7042\webapps
-::start D:\Tomcat7042\bin\startup.bat

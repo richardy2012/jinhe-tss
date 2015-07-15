@@ -306,6 +306,14 @@ function remove()  {
     });
 }
 
+function clone (obj) {
+    var copy = {};
+    for (var name in obj) {
+        copy[name] = obj[name];
+    }
+    return copy;
+}
+
 function showQueryForm() {
     if($.cache.XmlDatas["searchFormXML"]) {
         $("#searchFormDiv").show(true);
@@ -323,17 +331,32 @@ function showQueryForm() {
     buttonBox[buttonBox.length] = "          </div></TD>";
     buttonBox[buttonBox.length] = "        </TR>";
 
-    var paramsConfig = [];
+    var paramsConfig = [], codes = [], names = [];
     recordDefine.each(function(i, field){
+        codes.push(field.code);
+        names.push(field.label);
         if(field.isparam === 'true') {
-            var copy = {};
-            for (var name in field) {
-                copy[name] = field[name];
-            }
+            var copy = clone(field);
+            copy.name = "p_" + (copy.name || copy.code);
+
             delete copy["nullable"];
             delete copy["height"];
-            delete copy["width"];
+            // delete copy["width"];
             delete copy["defaultValue"];
+
+            if(field.type === 'date' || field.type === 'datetime' || field.type === 'number') {
+                var from = clone(copy), to = clone(copy);
+                from.name += "__1";
+                from.label += "从"; 
+                to.name += "__2";
+                to.label += "到";
+                paramsConfig.push(from);
+                paramsConfig.push(to);
+            } 
+            else {                
+                paramsConfig.push(copy);
+            }
+
             if(copy.onchange) {
                 var temp = [], count = 1;
                 for(var i=0, length = copy.onchange.length; i < length; i++) {
@@ -347,13 +370,16 @@ function showQueryForm() {
                 }
                 copy.onchange = temp.join("");
             }
-
-            copy.name = "p_" + (copy.name || copy.code);
-            paramsConfig.push(copy);
         }
     });
     paramsConfig.push({"label": "创建人", "name": "p_creator"});
     paramsConfig.push({"label": "修改人", "name": "p_updator"});
+
+    // 添加排序字段
+    var sortObj = {"label":"按字段排序", "name":"sortField", "options": {"codes":codes.join("|"), "names":names.join("|")}};
+    paramsConfig.push(sortObj);
+
+    paramsConfig.push({"label":"排序方式", "name":"sortType", "options": {"codes":"asc|desc|onlynull", "names": "升序|降序|只取为空"}});
 
     var searchForm = $.json2Form("searchForm", paramsConfig, buttonBox.join("")); 
     $.cache.XmlDatas["searchFormXML"] = searchForm.template.sourceXML;
@@ -368,7 +394,19 @@ function showQueryForm() {
             var nodes = dataNode.querySelectorAll("row *");
             for(var i = 0; i < nodes.length; i++) {
                 var node = nodes[i];
-                params[node.nodeName.substring(2)] = $.XML.getText(node);
+                var value = $.XML.getText(node);
+                if( $.isNullOrEmpty(value) ) {
+                    continue;
+                }
+
+                var key = node.nodeName.substring(2); // 截去'p_' 和 '__1' '__2'
+                key = key.replace('__1', '').replace('__2', '');
+
+                if(params[key]) {
+                    params[key] = '[' + params[key] + ',' + value  + ']';
+                } else {
+                    params[key] = value;
+                }               
             }
             loadGridData(1);
         }
