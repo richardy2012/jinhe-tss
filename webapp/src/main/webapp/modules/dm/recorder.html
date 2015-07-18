@@ -399,8 +399,8 @@ function showQueryForm() {
                     continue;
                 }
 
-                var key = node.nodeName.substring(2); // 截去'p_' 和 '__1' '__2'
-                key = key.replace('__1', '').replace('__2', '');
+                // 截去'p_' 和 '__1' '__2'
+                var key = node.nodeName.replace('p_', '').replace('__1', '').replace('__2', ''); 
 
                 if(params[key]) {
                     params[key] = '[' + params[key] + ',' + value  + ']';

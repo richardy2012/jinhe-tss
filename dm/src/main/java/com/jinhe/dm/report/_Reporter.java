@@ -25,6 +25,7 @@ import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.data.util.DataExport;
 import com.jinhe.dm.log.AccessLog;
 import com.jinhe.dm.log.AccessLogRecorder;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
@@ -237,7 +238,8 @@ public class _Reporter extends BaseActionSupport {
 		
 		// 过滤掉定时刷新类型的报表
 		String remark = report.getRemark();
-		if( remark != null && remark.indexOf(DMConstants.ACLOG_IGNORE_REPORT) >= 0) {
+		boolean ignoreLog = ParamConstants.FALSE.equals(report.getNeedLog());
+		if( ignoreLog || (remark != null && remark.indexOf(DMConstants.ACLOG_IGNORE_REPORT) >= 0) ) {
 			return;
 		}
 		

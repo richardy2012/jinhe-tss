@@ -8,42 +8,43 @@
 		<column name="datasource"  caption="数据源"  mode="combo"/>
 		<column name="displayUri"  caption="展示页面" mode="string" maxLength="200"/>
 		<column name="remark" caption="报表简介" mode="string" maxLength="400"/>
+		<column name="needLog" caption="记录访问日志" mode="combo" values="1|0" texts="是|否"/>
 	</declare>
 	<layout>
 		<TR>
+			<TD width="80"><label binding="name"/></TD>
+			<TD width="300"><input binding="name" style="width:200px;"/></TD>
 			<TD width="80"><label binding="id"/></TD>
-			<TD><input binding="id" style="width:50px;"/></TD>
-		</TR>
-		<TR>
-			<TD><label binding="name"/></TD>
-			<TD><input binding="name" style="width:30%;"/></TD>
-		</TR>
-		<TR>
-			<TD><label binding="displayUri"/></TD>
-			<TD>
-				<input binding="displayUri" style="width:40%;margin-right:10px;"/>
-				<input type="button" value="选择模板" onclick="selectTL()" class="btWeakL" style="margin-right:10px;"/>
-				<input type="button" value="上传模板" onclick="uploadTL()" class="btWeakL"/>
-			</TD>
+			<TD width="120"><input binding="id" style="width:60px;"/></TD>
+			<TD width="100"><label binding="needLog"/></TD>
+			<TD><input binding="needLog"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="script"/></TD>
-			<TD><textarea binding="script" style="width:98%;height:250px"/></TD>
+			<TD colspan="5"><textarea binding="script" style="width:98%;height:250px"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top">
 				<label binding="param"/><br/><br/>
 				<input type="button" value="配置" onclick="configParams()" class="btStrong"/>
 			</TD>
-			<TD><textarea binding="param" style="width:98%;height:100px"/></TD>
+			<TD colspan="5"><textarea binding="param" style="width:98%;height:100px"/></TD>
 		</TR>
 		<TR>
 			<TD><label binding="datasource"/></TD>
-			<TD><input binding="datasource" style="width:250px;"/></TD>
+			<TD colspan="5"><input binding="datasource" style="width:250px;"/></TD>
+		</TR>
+		<TR>
+			<TD><label binding="displayUri"/></TD>
+			<TD colspan="5">
+				<input binding="displayUri" style="width:40%;margin-right:10px;"/>
+				<input type="button" value="选择模板" onclick="selectTL()" class="btWeakL" style="margin-right:10px;"/>
+				<input type="button" value="上传模板" onclick="uploadTL()" class="btWeakL"/>
+			</TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="remark"/></TD>
-			<TD><textarea binding="remark" style="width:95%;height:30px"/></TD>
+			<TD colspan="5"><textarea binding="remark" style="width:95%;height:30px"/></TD>
 		</TR>
 	</layout>
 	<data/>

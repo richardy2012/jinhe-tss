@@ -77,8 +77,17 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
     private Integer levelNo;// 层次值
     
     private Integer disabled = ParamConstants.FALSE; // 停用/启用标记
+    private Integer needLog  = ParamConstants.TRUE; // 记录修改日志
     
-    public String toString() {
+    public Integer getNeedLog() {
+		return needLog;
+	}
+
+	public void setNeedLog(Integer needLog) {
+		this.needLog = needLog;
+	}
+
+	public String toString() {
         return "报表【id = " + this.id + ", name = " + this.name + "】";
     }
     

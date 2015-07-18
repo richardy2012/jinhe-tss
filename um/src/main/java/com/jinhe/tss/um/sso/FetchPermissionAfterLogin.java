@@ -47,10 +47,17 @@ public class FetchPermissionAfterLogin implements ILoginCustomizer {
         List<Object[]> fatherGroups = loginSerivce.getGroupsByUserId(logonUserId);
         int index = 1, level = fatherGroups.size(); // 层级
         session.setAttribute("GROUP_LEVEL", level);
+        
+        Object[] lastGroup = new Object[] {-0, "noGroup"};
         for(Object[] temp : fatherGroups) {
         	session.setAttribute("GROUP_" + index + "_ID", temp[0]);
         	session.setAttribute("GROUP_" + index + "_NAME", temp[1]);
         	index++;
+        	
+        	lastGroup = temp;
         }
+        
+        session.setAttribute("GROUP_LAST_ID", lastGroup[0]);
+    	session.setAttribute("GROUP_LAST_NAME", lastGroup[1]);
     }
 }

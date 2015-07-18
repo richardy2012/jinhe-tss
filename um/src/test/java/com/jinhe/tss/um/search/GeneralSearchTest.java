@@ -3,6 +3,9 @@ package com.jinhe.tss.um.search;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
+
+import junit.framework.Assert;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,5 +84,9 @@ public class GeneralSearchTest extends TxSupportTest4UM {
     	action.searchRolesByGroup(response, roleId);
     	
     	action.searchUsersByRole(response, roleId);
+    	
+    	List<?> result = action.getVisiableRoles();
+    	Assert.assertTrue(result.size() > 0);
+    	
     }
 }

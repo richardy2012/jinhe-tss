@@ -94,9 +94,18 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     private String  decode;  // 层码，要求唯一
     private Integer levelNo;// 层次值
     
-    private Integer needLog = ParamConstants.FALSE; // 记录修改日志，适用于重要性高的数据录入
+    private Integer needLog  = ParamConstants.FALSE; // 记录修改日志，适用于重要性高的数据录入
+    private Integer needFile = ParamConstants.FALSE; // 是否需要附件上传
     
-    public String toString() {
+    public Integer getNeedFile() {
+		return needFile;
+	}
+
+	public void setNeedFile(Integer needFile) {
+		this.needFile = needFile;
+	}
+
+	public String toString() {
         return "数据录入【id = " + this.id + ", name = " + this.name + "】";
     }
     

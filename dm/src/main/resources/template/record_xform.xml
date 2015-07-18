@@ -11,7 +11,8 @@
 		<column name="customizeTJ" caption="定制条件" maxLength="1000"/>
 		<column name="customizeGrid" caption="定制Grid" maxLength="4000"/>
 		<column name="remark" caption="数据录入简介" maxLength="400"/>
-		<column name="needLog" caption="记录更新日志" mode="combo" values="1|0" texts="是|否"/>
+		<column name="needLog"  caption="记录更新日志" mode="combo" values="0|1" texts="否|是"/>
+		<column name="needFile" caption="是否上传文件" mode="combo" values="0|1" texts="否|是"/>
 	</declare>
 	<layout>
 		<TR>
@@ -26,7 +27,9 @@
 			<TD width="80"><label binding="datasource"/></TD>
 			<TD><input binding="datasource" style="width:250px;"/></TD>
 			<TD width="80"><label binding="table"/></TD>
-			<TD><input binding="table" style="width:250px;"/></TD>
+			<TD><input binding="table" style="width:180px;"/></TD>
+			<TD width="100"><label binding="needFile"/></TD>
+			<TD><input binding="needFile"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top">

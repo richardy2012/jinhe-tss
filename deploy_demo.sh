@@ -1,6 +1,11 @@
 
 TOMCAT_HOME="/Users/jinpujun/Desktop/tomcat7063"
 
+#找到tomcat进程的id并kill掉
+ps -ef |grep tomcat  |awk {'print $2'} | sed -e "s/^/kill -9 /g" | sh -
+
+#删除日志文件
+rm  $TOMCAT_HOME/logs/* -rf
 
 mvn clean install -Pdemo -Dmaven.test.skip=true
 
