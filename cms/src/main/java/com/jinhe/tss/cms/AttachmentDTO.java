@@ -26,11 +26,11 @@ public class AttachmentDTO implements Serializable {
     }
  
     public boolean isImage(){
-        return CMSConstants.ATTACHMENTTYPE_PICTURE.equals(type);
+        return CMSConstants.ATTACH_TYPE_PIC.equals(type);
     }
 
     public boolean isOfficeDoc(){
-        return CMSConstants.ATTACHMENTTYPE_OFFICE.equals(type);
+        return CMSConstants.ATTACH_TYPE_DOC.equals(type);
     }
  
     public String[] getBasePath() {

@@ -120,19 +120,19 @@ public class Attachment implements IEntity, IGridNode {
     }
     
     public boolean isImage(){
-        return CMSConstants.ATTACHMENTTYPE_PICTURE.equals(type);
+        return CMSConstants.ATTACH_TYPE_PIC.equals(type);
     }
 
     public boolean isOfficeDoc(){
-        return CMSConstants.ATTACHMENTTYPE_OFFICE.equals(type);
+        return CMSConstants.ATTACH_TYPE_DOC.equals(type);
     }
     
     public static boolean isImage(Integer type){
-        return CMSConstants.ATTACHMENTTYPE_PICTURE.equals(type);
+        return CMSConstants.ATTACH_TYPE_PIC.equals(type);
     }
 
     public static boolean isOfficeDoc(Integer type){
-        return CMSConstants.ATTACHMENTTYPE_OFFICE.equals(type);
+        return CMSConstants.ATTACH_TYPE_DOC.equals(type);
     }
     
     public GridAttributesMap getAttributes(GridAttributesMap map) {

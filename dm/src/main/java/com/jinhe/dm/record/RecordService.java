@@ -2,6 +2,7 @@ package com.jinhe.dm.record;
 
 import java.util.List;
 
+import com.jinhe.dm.record.file.RecordAttach;
 import com.jinhe.tss.framework.component.log.Logable;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Create;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Sort;
@@ -50,4 +51,13 @@ public interface RecordService {
  
     @Logable(operateObject="数据录入", operateInfo="移动(ID: ${args[0]}) 节点至 (ID: ${args[1]}) 组下。")
     void move(Long id, Long groupId);
+
+    
+    Integer getAttachSeqNo(Long recordId, Long itemId);
+    
+	List<?> getAttachList(Long recordId, Long itemId);
+	
+	void deleteAttach(Long id);
+
+	RecordAttach createAttach(RecordAttach attach);
 }

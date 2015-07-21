@@ -21,7 +21,7 @@
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="script"/></TD>
-			<TD colspan="5"><textarea binding="script" style="width:98%;height:250px"/></TD>
+			<TD colspan="5"><textarea binding="script" style="width:95%;height:250px"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top">

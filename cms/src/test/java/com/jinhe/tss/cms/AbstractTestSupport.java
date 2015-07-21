@@ -27,16 +27,15 @@ import com.jinhe.tss.cms.entity.Article;
 import com.jinhe.tss.cms.entity.Channel;
 import com.jinhe.tss.cms.job.PublishManger;
 import com.jinhe.tss.cms.service.IArticleService;
-import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.framework.web.servlet.AfterUpload;
-import com.jinhe.tss.framework.web.servlet.Servlet4Upload;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.FileHelper;
 
 public class AbstractTestSupport extends TxSupportTest4CMS {
     
-    static String UPLOAD_PATH = ParamConfig.getAttribute(Servlet4Upload.UPLOAD_PATH);;
+//    static String UPLOAD_PATH = ParamConfig.getAttribute(Servlet4Upload.UPLOAD_PATH);
+    static String UPLOAD_PATH = TestUtil.getTempDir() + "/upload";
     
 	@Autowired protected ChannelAction channelAction;
     @Autowired protected ArticleAction articleAction;
@@ -113,7 +112,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
 	    
 	    EasyMock.expect(mockRequest.getParameter("articleId")).andReturn(articleId.toString());
 	    EasyMock.expect(mockRequest.getParameter("channelId")).andReturn(channelId.toString());
-	    EasyMock.expect(mockRequest.getParameter("type")).andReturn(CMSConstants.ATTACHMENTTYPE_OFFICE.toString());
+	    EasyMock.expect(mockRequest.getParameter("type")).andReturn(CMSConstants.ATTACH_TYPE_DOC.toString());
 	    EasyMock.expect(mockRequest.getParameter("petName")).andReturn(null);
 	    
 	    try {
@@ -140,7 +139,7 @@ public class AbstractTestSupport extends TxSupportTest4CMS {
 	    
 	    EasyMock.expect(mockRequest.getParameter("articleId")).andReturn(articleId.toString());
 	    EasyMock.expect(mockRequest.getParameter("channelId")).andReturn(channelId.toString());
-	    EasyMock.expect(mockRequest.getParameter("type")).andReturn(CMSConstants.ATTACHMENTTYPE_PICTURE.toString());
+	    EasyMock.expect(mockRequest.getParameter("type")).andReturn(CMSConstants.ATTACH_TYPE_PIC.toString());
 	    EasyMock.expect(mockRequest.getParameter("petName")).andReturn(null);
 	    
 	    try {

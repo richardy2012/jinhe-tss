@@ -2,9 +2,14 @@ package com.jinhe.dm.record;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.easymock.EasyMock;
+import org.easymock.IMocksControl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,9 +18,14 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.TxTestSupport4DM;
+import com.jinhe.dm.record.file.CreateAttach;
+import com.jinhe.dm.record.file.RecordAttach;
 import com.jinhe.tss.framework.component.log.LogService;
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.test.TestUtil;
+import com.jinhe.tss.framework.web.servlet.AfterUpload;
+import com.jinhe.tss.util.EasyUtils;
+import com.jinhe.tss.util.FileHelper;
 
 public class _RecorderTest extends TxTestSupport4DM {
 	
@@ -42,6 +52,8 @@ public class _RecorderTest extends TxTestSupport4DM {
 		record.setTable("x_tbl_12");
 		record.setDefine(tblDefine);
 		record.setNeedLog(ParamConstants.TRUE);
+		
+		record.setNeedFile(ParamConstants.TRUE);
 		
 		recordService.saveRecord(record);
 		recordId = record.getId();
@@ -75,8 +87,24 @@ public class _RecorderTest extends TxTestSupport4DM {
 		
 		recorder.updateBatch(response, recordId, "1,2", "f1", "1212");
 		result = recorder.getDB(recordId).select().result;
-		Assert.assertTrue(result.get(0).get("f1").equals(1212.0d));
+		Map<String, Object> recordItem = result.get(0);
+		Assert.assertTrue(recordItem.get("f1").equals(1212.0d));
 		
+		// test upload record attach
+		Object itemId = recordItem.get("id");
+		uploadDocFile(recordId, itemId);
+		List<?> attachList = recorder.getAttachList(recordId, EasyUtils.obj2Long(itemId));
+		Assert.assertTrue(attachList.size() == 1);
+		
+		RecordAttach ra = (RecordAttach) attachList.get(0);
+		Assert.assertEquals("123.txt", ra.getName());
+		
+		recorder.deleteAttach(response, ra.getId());
+		
+		attachList = recorder.getAttachList(recordId, EasyUtils.obj2Long(itemId));
+		Assert.assertTrue(attachList.size() == 0);
+		
+		// test delete record
 		recorder.delete(response, recordId, 1);
 		
 		result = recorder.getDB(recordId).select().result;
@@ -96,5 +124,34 @@ public class _RecorderTest extends TxTestSupport4DM {
         	Assert.assertTrue("修改出错，该记录不存在，可能已经被删除。", true);
         }
 	}
+	
+	static String UPLOAD_PATH = TestUtil.getTempDir() + "/upload/record/";
+	
+	 // 上传附件
+    private void uploadDocFile(Long recordId, Object itemId) {
+    	AfterUpload upload = new CreateAttach();
+    	
+	    IMocksControl mocksControl =  EasyMock.createControl();
+	    HttpServletRequest mockRequest = mocksControl.createMock(HttpServletRequest.class);
+	    
+	    EasyMock.expect(mockRequest.getParameter("recordId")).andReturn(recordId.toString());
+	    EasyMock.expect(mockRequest.getParameter("itemId")).andReturn(itemId.toString());
+	    EasyMock.expect(mockRequest.getParameter("type")).andReturn(RecordAttach.ATTACH_TYPE_DOC.toString());
+	    EasyMock.expect(mockRequest.getParameter("petName")).andReturn(null);
+	    
+	    try {
+			String filepath = UPLOAD_PATH + "/123.txt";
+			FileHelper.writeFile(new File(filepath), "卜贝求真。");
+	        
+	        mocksControl.replay(); 
+			upload.processUploadFile(mockRequest, filepath, "123.txt");
+			
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			Assert.assertFalse(e.getMessage(), true);
+		}
+	    
+	    TestUtil.printEntity(super.permissionHelper, "RecordAttach"); 
+    }
 	
 }

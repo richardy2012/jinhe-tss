@@ -28,8 +28,8 @@ public interface CMSConstants {
     static final String DEFAULT_IMG_PATH = "img";
     
     /* 文章附件 */
-    static final Integer ATTACHMENTTYPE_PICTURE = 1;	// 文章附件图片类型
-    static final Integer ATTACHMENTTYPE_OFFICE  = 2;	// 文章附件OFFICE类型
+    static final Integer ATTACH_TYPE_PIC = 1;	// 文章附件图片类型
+    static final Integer ATTACH_TYPE_DOC = 2;	// 文章附件OFFICE类型
 
     /* 文章状态 */
     static final Integer START_STATUS     = 1; // 编辑中

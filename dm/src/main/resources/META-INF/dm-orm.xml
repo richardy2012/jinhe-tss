@@ -11,6 +11,7 @@
 	<entity class="com.jinhe.dm.report.permission.ReportResource"/>
 	
 	<entity class="com.jinhe.dm.record.Record"/>
+	<entity class="com.jinhe.dm.record.file.RecordAttach"/>
 	<entity class="com.jinhe.dm.record.permission.RecordPermission"/>
 	<entity class="com.jinhe.dm.record.permission.RecordResource"/>
 	

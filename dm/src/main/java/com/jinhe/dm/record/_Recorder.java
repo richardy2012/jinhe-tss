@@ -150,4 +150,19 @@ public class _Recorder extends BaseActionSupport {
     	getDB(recordId).delete(id);
         printSuccessMessage();
     }
+    
+    /************************************* record attach operation **************************************/
+    
+	@RequestMapping("/attach/{recordId}/{itemId}")
+    @ResponseBody
+    public List<?> getAttachList(@PathVariable("recordId") Long recordId, @PathVariable("itemId") Long itemId) {
+		List<?> list = recordService.getAttachList(recordId, itemId);
+		return list;
+    }
+	
+	@RequestMapping(value = "/attach/{id}", method = RequestMethod.DELETE)
+    public void deleteAttach(HttpServletResponse response, @PathVariable("id") Long id) {
+		recordService.deleteAttach(id);
+        printSuccessMessage();
+    }
 }

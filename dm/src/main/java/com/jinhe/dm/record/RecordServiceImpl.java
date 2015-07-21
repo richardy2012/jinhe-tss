@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jinhe.dm.record.ddl._Database;
+import com.jinhe.dm.record.file.RecordAttach;
 import com.jinhe.tss.util.EasyUtils;
 
 @Service("RecordService")
@@ -91,6 +92,31 @@ public class RecordServiceImpl implements RecordService {
  
             recordDao.moveEntity(temp);
         }
+	}
+	
+	public Integer getAttachSeqNo(Long recordId, Long itemId) {
+		String hql = "select max(o.seqNo) + 1 from RecordAttach o where o.recordId = ? and o.itemId = ?";
+        List<?> list = recordDao.getEntities(hql, recordId, itemId);
+        Integer nextSeqNo = (Integer) list.get(0);
+        if (nextSeqNo == null) {
+        	return 1;
+        }
+        return nextSeqNo + 1;
+	}
+
+	public List<?> getAttachList(Long recordId, Long itemId) {
+		String hql = "from RecordAttach o where o.recordId = ? and o.itemId = ?";
+        List<?> list = recordDao.getEntities(hql, recordId, itemId);
+		return list;
+	}
+
+	public void deleteAttach(Long id) {
+		recordDao.delete(RecordAttach.class, id);
+	}
+
+	public RecordAttach createAttach(RecordAttach attach) {
+		recordDao.createObject(attach);
+		return attach;
 	}
 
 }
