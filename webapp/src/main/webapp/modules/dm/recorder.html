@@ -42,6 +42,10 @@
     #customizeBox { display: inline-block; }
     #customizeBox button { margin: 3px; }
 
+    .attach  { position: absolute; top: 200px; left: 250px; width:800px; }
+    #uploadForm  { background-color: #99CCCC; padding: 5px 5px 5px 10px; margin-top: -3px; }
+    #attachGrid { height: 200px; background-color: #fff; }
+
 </style>
 
 <SCRIPT type="text/javascript">
@@ -421,7 +425,14 @@ function showQueryForm() {
 }
 
 function manageAttach() {
-    // body...
+    $.ajax({ 
+        url: 'data/record_attach_list.xml', 
+        method: "GET", 
+        onresult: function(){
+            var attachNode  = this.getNodeValue("RecordAttach");
+            var grid = $.G("attachGrid", attachNode);
+        } 
+    });
 }
 
 //-->
@@ -460,6 +471,7 @@ function manageAttach() {
     <div id="searchFormDiv"></div>
 
     <div class="attach">
+        <Grid id="attachGrid"></Grid>
         <form id="uploadForm" method="post" target='fileUpload' enctype="multipart/form-data">
             附件类型: 
             <select id="fileType">
@@ -470,7 +482,6 @@ function manageAttach() {
             <b>&nbsp;单个附件大小不宜超过3M</b>
         </form>
         <iframe name='fileUpload' style='display:none;'></iframe>
-        <Grid id="attachGrid"></Grid>
     </div>
 
 </body>

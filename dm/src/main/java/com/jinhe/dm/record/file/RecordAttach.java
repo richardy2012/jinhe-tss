@@ -2,8 +2,6 @@ package com.jinhe.dm.record.file;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,11 +14,10 @@ import javax.persistence.Table;
 import com.jinhe.dm.DMConstants;
 import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.persistence.IEntity;
-import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.framework.web.dispaly.grid.GridAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
-import com.jinhe.tss.util.BeanUtil;
+import com.jinhe.tss.util.DateUtil;
 
 /**
  * <p>
@@ -56,8 +53,8 @@ public class RecordAttach implements IEntity, IGridNode {
 	private String fileName; // 附件名称
 	private String fileExt;  // 文件后缀
 
-	private Date uploadDate; // 上传日期
-	private Long uploadUser; // 上传用户
+	private Date   uploadDate; // 上传日期
+	private String uploadUser; // 上传用户
 	
 	public String getAttachPath() {
 		return getAttachDir(this.recordId, this.itemId) + "/" + this.fileName;
@@ -77,11 +74,11 @@ public class RecordAttach implements IEntity, IGridNode {
 		return "record attach: id:" + id + ", name:" + name + ", itemId:" + itemId + ", recordId:" + recordId;
 	}
 
-	public Long getUploadUser() {
+	public String getUploadUser() {
 		return uploadUser;
 	}
 
-	public void setUploadUser(Long uploadUser) {
+	public void setUploadUser(String uploadUser) {
 		this.uploadUser = uploadUser;
 	}
 
@@ -162,19 +159,22 @@ public class RecordAttach implements IEntity, IGridNode {
 	}
 
 	public GridAttributesMap getAttributes(GridAttributesMap map) {
-		Map<String, Object> attributes = new LinkedHashMap<String, Object>();
-		BeanUtil.addBeanProperties2Map(this, attributes);
-
-		map.putAll(attributes);
+		map.put("id", this.id);
+		map.put("name", this.name);
+		map.put("type", this.type);
+		map.put("uploadDate", DateUtil.formatCare2Second(uploadDate));
+		map.put("uploadUser", this.uploadUser);
+		map.put("url", this.getDownloadUrl());
+		map.put("_url", "<a href='" + this.getDownloadUrl() + "' target='_blank'>查看</a>");
+		map.put("delOpt", "<a href='javascript:void(0)' onclick='delAttach(" + this.getPK() + ")'>删除</a>");
 		return map;
 	}
 
 	/**
-	 * 绝对地址，返回格式类似：http://localhost:8088/tss/download?id=1216&seqNo=1
+	 * 绝对地址，返回格式类似：/auth/xdata/attach/download/12
 	 */
 	public String getDownloadUrl() {
-		String baseUrl = Context.getApplicationContext().getCurrentAppServer().getBaseURL();
-		return baseUrl + "/data/file/" + getRecordId() + "/" + getItemId() + "/" + getSeqNo();
+		return "/auth/xdata/attach/download/" + getId();
 	}
 
 	public Long getItemId() {

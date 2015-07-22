@@ -93,9 +93,9 @@ public class _RecorderTest extends TxTestSupport4DM {
 		Assert.assertTrue(recordItem.get("f1").equals(1212.0d));
 		
 		// test upload record attach
-		Object itemId = recordItem.get("id");
+		Long itemId = EasyUtils.obj2Long(recordItem.get("id"));
 		uploadDocFile(recordId, itemId);
-		List<?> attachList = recorder.getAttachList(recordId, EasyUtils.obj2Long(itemId));
+		List<?> attachList = recorder.getAttachList(recordId, itemId);
 		Assert.assertTrue(attachList.size() == 1);
 		
 		RecordAttach ra = (RecordAttach) attachList.get(0);
@@ -107,9 +107,11 @@ public class _RecorderTest extends TxTestSupport4DM {
 			Assert.assertTrue("下载附件出错。", true);
 		}
 		
+		recorder.getAttachListXML(recordId, itemId);
+		
 		recorder.deleteAttach(response, ra.getId());
 		
-		attachList = recorder.getAttachList(recordId, EasyUtils.obj2Long(itemId));
+		attachList = recorder.getAttachList(recordId, itemId);
 		Assert.assertTrue(attachList.size() == 0);
 		
 		// test delete record

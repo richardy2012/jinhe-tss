@@ -157,11 +157,18 @@ public class _Recorder extends BaseActionSupport {
     
     /************************************* record attach operation **************************************/
     
-	@RequestMapping("/attach/{recordId}/{itemId}")
+	@RequestMapping("/attach/{recordId}/{itemId}/json")
     @ResponseBody
     public List<?> getAttachList(@PathVariable("recordId") Long recordId, @PathVariable("itemId") Long itemId) {
 		List<?> list = recordService.getAttachList(recordId, itemId);
 		return list;
+    }
+	
+	@RequestMapping("/attach/{recordId}/{itemId}/xml")
+    public void getAttachListXML(@PathVariable("recordId") Long recordId, @PathVariable("itemId") Long itemId) {
+		List<?> list = recordService.getAttachList(recordId, itemId);
+        GridDataEncoder attachGrid = new GridDataEncoder(list, "template/record_attach_grid.xml");
+        print("RecordAttach", attachGrid);
     }
 	
 	@RequestMapping(value = "/attach/{id}", method = RequestMethod.DELETE)

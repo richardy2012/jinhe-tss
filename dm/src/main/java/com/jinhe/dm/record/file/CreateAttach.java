@@ -58,7 +58,7 @@ public class CreateAttach implements AfterUpload {
 		attach.setItemId(itemId);
 		attach.setSeqNo(recordService.getAttachSeqNo(recordId, itemId));
 		attach.setUploadDate(new Date());
-		attach.setUploadUser(Environment.getUserId());
+		attach.setUploadUser(Environment.getUserName());
 		
         String attachDir = RecordAttach.getAttachDir(recordId, itemId);
         File rootDir = new File(attachDir);
