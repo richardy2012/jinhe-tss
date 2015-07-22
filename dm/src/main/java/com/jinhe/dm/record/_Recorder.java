@@ -1,5 +1,6 @@
 package com.jinhe.dm.record;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.record.ddl._Database;
+import com.jinhe.dm.record.file.RecordAttach;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.component.cache.CacheHelper;
@@ -25,6 +27,7 @@ import com.jinhe.tss.framework.web.dispaly.grid.DefaultGridNode;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
+import com.jinhe.tss.util.FileHelper;
 
 @Controller
 @RequestMapping("/auth/xdata")
@@ -58,7 +61,8 @@ public class _Recorder extends BaseActionSupport {
         	new Object[] { 
         		getDB(recordId).getFields(), 
         		record.getCustomizeJS(), 
-        		record.getCustomizeGrid() 
+        		record.getCustomizeGrid(),
+        		record.getNeedFile()
         	};
     }
 	
@@ -165,4 +169,10 @@ public class _Recorder extends BaseActionSupport {
 		recordService.deleteAttach(id);
         printSuccessMessage();
     }
+	
+	@RequestMapping("/attach/download/{id}")
+	public void downloadAttach(HttpServletResponse response, @PathVariable("id") Long id) throws IOException {
+		RecordAttach attach = recordService.getAttach(id);
+        FileHelper.downloadFile(response, attach.getAttachPath(), attach.getName());
+	}
 }

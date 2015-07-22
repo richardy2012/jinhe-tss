@@ -13,8 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.jinhe.dm.DMConstants;
+import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.persistence.IEntity;
 import com.jinhe.tss.framework.sso.context.Context;
+import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.framework.web.dispaly.grid.GridAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
 import com.jinhe.tss.util.BeanUtil;
@@ -47,14 +50,28 @@ public class RecordAttach implements IEntity, IGridNode {
 	private Integer type; // 附件类型 1：图片 2：office文档
 
 	@Column(nullable = false)
-	private String name; // 附件名称
+	private String name; // 原文件名
 
 	@Column(nullable = false)
-	private String fileName; // 原文件名
+	private String fileName; // 附件名称
 	private String fileExt;  // 文件后缀
 
 	private Date uploadDate; // 上传日期
 	private Long uploadUser; // 上传用户
+	
+	public String getAttachPath() {
+		return getAttachDir(this.recordId, this.itemId) + "/" + this.fileName;
+	}
+	
+	public static String getAttachDir(Long recordId, Long itemId) {
+		String attachDir = ParamManager.getValue(DMConstants.TEMP_EXPORT_PATH);
+        if(attachDir == null) {
+        	attachDir = TestUtil.getTempDir();
+        }
+        attachDir = attachDir + "/" + recordId + "/" + itemId;
+        
+        return attachDir;
+	}
 	
 	public String toString() {
 		return "record attach: id:" + id + ", name:" + name + ", itemId:" + itemId + ", recordId:" + recordId;

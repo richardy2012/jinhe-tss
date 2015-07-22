@@ -7,12 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
-import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.record.RecordService;
 import com.jinhe.tss.framework.Global;
-import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.sso.Environment;
-import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.framework.web.servlet.AfterUpload;
 import com.jinhe.tss.util.FileHelper;
 
@@ -63,11 +60,7 @@ public class CreateAttach implements AfterUpload {
 		attach.setUploadDate(new Date());
 		attach.setUploadUser(Environment.getUserId());
 		
-        String attachDir = ParamManager.getValue(DMConstants.TEMP_EXPORT_PATH);
-        if(attachDir == null) {
-        	attachDir = TestUtil.getTempDir();
-        }
-        attachDir = attachDir + "/" + recordId + "/" + itemId;
+        String attachDir = RecordAttach.getAttachDir(recordId, itemId);
         File rootDir = new File(attachDir);
         
         // 将附件从上传临时目录剪切到站点指定的附件目录里
@@ -83,7 +76,7 @@ public class CreateAttach implements AfterUpload {
         file.renameTo(new File(newPath));
         
         attach.setFileName(fileName);
-        attach.setFileExt(fileSuffix);
+        attach.setFileExt(fileSuffix.toLowerCase());
 		
         recordService.createAttach(attach);
 

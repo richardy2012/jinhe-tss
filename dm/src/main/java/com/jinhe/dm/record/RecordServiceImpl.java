@@ -118,5 +118,9 @@ public class RecordServiceImpl implements RecordService {
 		recordDao.createObject(attach);
 		return attach;
 	}
+	
+	public RecordAttach getAttach(Long id) {
+		return (RecordAttach) recordDao.getEntity(RecordAttach.class, id);
+	}
 
 }

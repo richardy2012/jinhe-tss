@@ -60,4 +60,6 @@ public interface RecordService {
 	void deleteAttach(Long id);
 
 	RecordAttach createAttach(RecordAttach attach);
+	
+	RecordAttach getAttach(Long id);
 }

@@ -3,6 +3,7 @@ package com.jinhe.dm.record;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.TxTestSupport4DM;
@@ -98,6 +100,12 @@ public class _RecorderTest extends TxTestSupport4DM {
 		
 		RecordAttach ra = (RecordAttach) attachList.get(0);
 		Assert.assertEquals("123.txt", ra.getName());
+		
+		try {
+			recorder.downloadAttach(new MockHttpServletResponse(), ra.getId());
+		} catch (IOException e1) {
+			Assert.assertTrue("下载附件出错。", true);
+		}
 		
 		recorder.deleteAttach(response, ra.getId());
 		

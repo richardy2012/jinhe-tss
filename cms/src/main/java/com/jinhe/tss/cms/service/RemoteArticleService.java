@@ -277,17 +277,17 @@ public class RemoteArticleService implements IRemoteArticleService {
     }
  
     public AttachmentDTO getAttachmentInfo(Long articleId, int seqNo) {
-        Attachment att = articleDao.getAttachment(articleId, seqNo);
-        if (att == null) {
+        Attachment attach = articleDao.getAttachment(articleId, seqNo);
+        if (attach == null) {
             log.error("数据库中没有相应的附件信息！文章ID：" + articleId + ", 序号：" + seqNo);
             return null;
         }
         
         // 通过文章id获取栏目id
-        Channel site = att.getArticle().getChannel().getSite(); 
+        Channel site = attach.getArticle().getChannel().getSite(); 
         
-        AttachmentDTO dto = new AttachmentDTO(att.getType(), att.getName(), att.getFileName(), att.getFileExt(),
-                att.getLocalPath(), new String[]{site.getPath(), site.getDocPath(), site.getImagePath()});
+        AttachmentDTO dto = new AttachmentDTO(attach.getType(), attach.getName(), attach.getFileName(), attach.getFileExt(),
+                attach.getLocalPath(), new String[]{site.getPath(), site.getImagePath(), site.getDocPath()});
         
         return dto;
     }

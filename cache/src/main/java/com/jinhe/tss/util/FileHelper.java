@@ -31,6 +31,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
@@ -39,6 +43,8 @@ import org.dom4j.io.XMLWriter;
  * 文件操作帮助类
  */
 public class FileHelper {
+	
+	static Logger log = Logger.getLogger(FileHelper.class);
     
     public final static String PATH_SEPARATOR = "/";
     
@@ -656,6 +662,51 @@ public class FileHelper {
 		zfile.close();
 
 		return destDir.getPath();
+	}
+	
+	public static void downloadFile(HttpServletResponse response, String filePath, String fileName) throws IOException {
+		File file = new File(filePath);
+		String fileExt = getFileSuffix(filePath).toLowerCase();
+		if(fileName == null) {
+			fileName = file.getName();
+		}
+		
+		response.reset(); // 设置附件下载页面
+		
+		if("gif".equals(fileExt)) { response.setContentType("image/gif"); }
+        else if("png".equals(fileExt)) { response.setContentType("image/png"); }
+        else if("bmp".equals(fileExt)) { response.setContentType("image/bmp"); }
+        else if("jpg".equals(fileExt) || "jpeg".equals(fileExt)) {
+        	response.setContentType("image/jpeg"); 
+        }
+        else {
+        	response.setContentType("application/octet-stream"); // 设置附件类型
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + EasyUtils.toUtf8String(fileName) + "\"");        
+	    }
+        
+        ServletOutputStream out = null;
+        FileInputStream stream = null;
+        try {
+            out = response.getOutputStream();
+            stream = new FileInputStream(file);
+
+            int bytesRead = 0;
+            final int length = 8192;
+            byte[] buffer = new byte[length];
+            while ((bytesRead = stream.read(buffer, 0, length)) != -1) {
+                out.write(buffer, 0, bytesRead);
+                out.flush();
+            }
+        } catch (IOException e) {
+            log.error("下载附件时IO异常，Message:" + e.getMessage());
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
+            if (out != null) {
+                out.close();
+            }
+        }		
 	}
     
 }

@@ -9,12 +9,13 @@ public class AttachmentDTO implements Serializable {
 
     private static final long serialVersionUID = -263389438942564792L;
     
-    private Integer type;						//附件类型	1：图片 2：office文档
-    private String name;						//附件名称
-    private String fileName;					//选择上传的文件名		text
-    private String fileExt;						//文件后缀	.gif
-    private String localPath;
-    private String[] basePath;                  //站点存放附件的根目录
+    public Integer type;			// 附件类型	1：图片 2：office文档
+    public String  name;			// 原名称
+    public String  fileName;		// 文件名
+    public String  fileExt;			// 文件后缀
+    
+    public String  localPath;
+    public String[] basePath;      // 站点存放附件的根目录
     
     public AttachmentDTO(Integer type, String name, String fileName, String fileExt, String localPath, String[] basePath){
         this.type = type;
@@ -23,37 +24,5 @@ public class AttachmentDTO implements Serializable {
         this.fileExt = fileExt;
         this.localPath = localPath;
         this.basePath = basePath;
-    }
- 
-    public boolean isImage(){
-        return CMSConstants.ATTACH_TYPE_PIC.equals(type);
-    }
-
-    public boolean isOfficeDoc(){
-        return CMSConstants.ATTACH_TYPE_DOC.equals(type);
-    }
- 
-    public String[] getBasePath() {
-        return basePath;
-    }
- 
-    public String getFileExt() {
-        return fileExt;
-    }
- 
-    public String getFileName() {
-        return fileName;
-    }
- 
-    public String getLocalPath() {
-        return localPath;
-    }
- 
-    public String getName() {
-        return name;
-    }
- 
-    public Integer getType() {
-        return type;
     }
 }

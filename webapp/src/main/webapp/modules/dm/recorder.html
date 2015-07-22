@@ -59,7 +59,7 @@ URL_GET_DEFINES   = AUTH_PATH + "xdata/define/";
 URL_GET_USER_HAS  = AUTH_PATH + "user/has";
 
 // 数据录入定义信息
-var recordId = 1, recordName = "数据录入", recordDefine, customizeJS, customizeGrid;
+var recordId = 1, recordName = "数据录入", recordDefine, customizeJS, customizeGrid, needFile;
 
 // 用户权限信息
 var _operation = ['1','2','3','4','5'], userCode, userName, userGroups = [], userRoles = [];
@@ -117,9 +117,10 @@ function init() {
                 type : "json",
                 ondata: function() {
                     var result = this.getResponseJSON();
-                    recordDefine = result[0];
-                    customizeJS = result[1];
+                    recordDefine  = result[0];
+                    customizeJS   = result[1];
                     customizeGrid = result[2];
+                    needFile      = result[3];
 
                     recordDefine.each(function(i, field){
                         field._defaultValue = field.defaultValue;
@@ -165,11 +166,17 @@ function initMenus() {
         icon: "images/icon_del.gif",
         visible:function() {return canEditRow();}
     }
+    var item4 = {
+        label:"管理附件",
+        callback: manageAttach,
+        visible:function() {return canEditRow() && needFile;}
+    }
 
     var menu = new $.Menu();
     menu.addItem(item1);
     menu.addItem(item2);
     menu.addItem(item3);
+    menu.addItem(item4);
     $1("grid").contextmenu = menu;
 }
 
@@ -413,6 +420,10 @@ function showQueryForm() {
     }
 }
 
+function manageAttach() {
+    // body...
+}
+
 //-->
 </SCRIPT>
 
@@ -447,6 +458,20 @@ function showQueryForm() {
     </WorkSpace:Box>
 
     <div id="searchFormDiv"></div>
+
+    <div class="attach">
+        <form id="uploadForm" method="post" target='fileUpload' enctype="multipart/form-data">
+            附件类型: 
+            <select id="fileType">
+                <option value="1" selected>图片</option>
+                <option value="2">文档</option>
+            </select>
+            <input type="file" name="file"/><input type="button" class="btStrongL" onclick="uploadAttach()" value="上传附件" />
+            <b>&nbsp;单个附件大小不宜超过3M</b>
+        </form>
+        <iframe name='fileUpload' style='display:none;'></iframe>
+        <Grid id="attachGrid"></Grid>
+    </div>
 
 </body>
 </html>
