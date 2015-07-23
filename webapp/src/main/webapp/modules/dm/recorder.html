@@ -42,7 +42,7 @@
     #customizeBox { display: inline-block; }
     #customizeBox button { margin: 3px; }
 
-    .attach  { position: absolute; top: 200px; left: 250px; width:800px; }
+    #attach  { width:800px; display: none; border: 1px solid red;  z-index: 10000;}
     #uploadForm  { background-color: #99CCCC; padding: 5px 5px 5px 10px; margin-top: -3px; }
     #attachGrid { height: 200px; background-color: #fff; }
 
@@ -172,7 +172,7 @@ function initMenus() {
     }
     var item4 = {
         label:"管理附件",
-        callback: manageAttach,
+        callback: function() { manageAttach(); },
         visible:function() {return canEditRow() && needFile;}
     }
 
@@ -266,6 +266,15 @@ function loadDetailData(rowID) {
         $("#page1BtSave").hide();
     }
     $("#page1BtCancel").click( function() { ws.closeActiveTab(); } );
+
+    $('#btnViewAttach').remove();
+    if(needFile && rowID != '_new' && (rowID + "").indexOf('_copy') < 0) {
+        var newBtn = $.createElement('button', 'btStrongL', 'btnViewAttach');
+        $(newBtn).html("查看附件").click( function() {      
+            manageAttach(rowID);
+        } );  
+        $("WorkSpace\\:PageStep").appendChild(newBtn);
+    }
 }
 
 function saveSource(rowID) {
@@ -424,14 +433,74 @@ function showQueryForm() {
     }
 }
 
-function manageAttach() {
+// ------------------------------------------------ 数据录入附件管理 -----------------------------------------------
+
+URL_ATTACH_LIST   = AUTH_PATH + "xdata/attach/xml/";
+URL_ATTACH_DELETE = AUTH_PATH + "xdata/attach/";
+
+if( IS_TEST ) {
+    URL_ATTACH_LIST   = "data/record_attach_list.xml?";
+    URL_ATTACH_DELETE = "data/_success.xml?";
+}
+
+var selectedLineId;
+function manageAttach(lineId) {   
+    selectedLineId = lineId || $.G("grid").getColumnValue("id"); 
+    
     $.ajax({ 
-        url: 'data/record_attach_list.xml', 
+        url: URL_ATTACH_LIST + recordId + "/" + selectedLineId, 
         method: "GET", 
         onresult: function(){
             var attachNode  = this.getNodeValue("RecordAttach");
+
+            $.showWaitingLayer();
+            $("#attach").show(true).center();
+
+            if( !canEditRow(lineId) ) {
+                $("#uploadForm span").hide();
+                $("column[name='delOpt']", attachNode).attr("display", "none");
+            }
+            else {
+                $("#uploadForm span").show();
+            }
             var grid = $.G("attachGrid", attachNode);
         } 
+    });
+}
+
+function clostUpload() {
+    $("#attach").hide();
+    $.hideWaitingLayer();
+}
+
+function uploadAttach() {
+    var url = URL_UPLOAD_FILE + "?afterUploadClass=com.jinhe.dm.record.file.CreateAttach";
+    url += "&recordId=" + recordId; selectedLineId  
+    url += "&itemId=" + selectedLineId;
+    
+    var type, typeRadios = $("input[name='fileType'");
+    typeRadios.each(function(i, item) {
+        if(item.checked) {
+            type = item.value;
+        }
+    });
+    url += "&type=" + (type || 2);
+    
+    var form = $1("uploadForm");
+    form.action = url;
+    form.submit();
+}
+
+function delAttach() {
+    $.confirm("您确定要删除该附件吗？", "删除确认", function(){
+        var attachId = $.G("attachGrid").getColumnValue("id"); 
+        $.ajax({
+            url: URL_ATTACH_DELETE + attachId,
+            method: 'DELETE',
+            onsuccess: function() {
+                $.G("attachGrid").deleteSelectedRow();
+            }
+        });
     });
 }
 
@@ -470,16 +539,19 @@ function manageAttach() {
 
     <div id="searchFormDiv"></div>
 
-    <div class="attach">
+    <div id="attach">
         <Grid id="attachGrid"></Grid>
         <form id="uploadForm" method="post" target='fileUpload' enctype="multipart/form-data">
-            附件类型: 
-            <select id="fileType">
-                <option value="1" selected>图片</option>
-                <option value="2">文档</option>
-            </select>
-            <input type="file" name="file"/><input type="button" class="btStrongL" onclick="uploadAttach()" value="上传附件" />
-            <b>&nbsp;单个附件大小不宜超过3M</b>
+            <span>
+                <input type="file" name="file"/>
+                附件类型: 
+                <label><input name="fileType" type="radio" value="1"/> 图片 </label> 
+                <label><input name="fileType" type="radio" value="2" checked="checked"/> 文档 </label> 
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="button" class="btStrongL" onclick="uploadAttach()" value="上传附件" />
+                <b>&nbsp;单个附件大小不宜超过3M</b>
+            </span>
+            <input type="button" class="btWeak" onclick="clostUpload()" value="关闭" style="margin-left:30px"/>
         </form>
         <iframe name='fileUpload' style='display:none;'></iframe>
     </div>

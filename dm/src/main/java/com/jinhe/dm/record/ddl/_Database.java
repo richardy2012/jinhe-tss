@@ -389,9 +389,9 @@ public abstract class _Database {
         }
         sb.append("<column name=\"createtime\" mode=\"string\" caption=\"创建时间\" />");
         sb.append("<column name=\"creator\" mode=\"string\" caption=\"创建人\" />");
-        sb.append("<column name=\"updatetime\" mode=\"string\" caption=\"最后更新时间\" />");
-        sb.append("<column name=\"updator\" mode=\"string\" caption=\"最后更新人\" />");
-        sb.append("<column name=\"version\" mode=\"string\" caption=\"修改次数\" />");
+        sb.append("<column name=\"updatetime\" mode=\"string\" caption=\"更新时间\" />");
+        sb.append("<column name=\"updator\" mode=\"string\" caption=\"更新人\" />");
+        sb.append("<column name=\"version\" mode=\"string\" caption=\"更新次数\" />");
         sb.append("<column name=\"id\" display=\"none\"/>");
         
         sb.append("</declare><data></data></grid>");

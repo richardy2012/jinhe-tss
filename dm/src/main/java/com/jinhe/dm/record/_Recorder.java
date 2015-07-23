@@ -157,14 +157,14 @@ public class _Recorder extends BaseActionSupport {
     
     /************************************* record attach operation **************************************/
     
-	@RequestMapping("/attach/{recordId}/{itemId}/json")
+	@RequestMapping("/attach/json/{recordId}/{itemId}")
     @ResponseBody
     public List<?> getAttachList(@PathVariable("recordId") Long recordId, @PathVariable("itemId") Long itemId) {
 		List<?> list = recordService.getAttachList(recordId, itemId);
 		return list;
     }
 	
-	@RequestMapping("/attach/{recordId}/{itemId}/xml")
+	@RequestMapping("/attach/xml/{recordId}/{itemId}")
     public void getAttachListXML(@PathVariable("recordId") Long recordId, @PathVariable("itemId") Long itemId) {
 		List<?> list = recordService.getAttachList(recordId, itemId);
         GridDataEncoder attachGrid = new GridDataEncoder(list, "template/record_attach_grid.xml");

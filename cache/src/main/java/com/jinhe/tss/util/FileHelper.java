@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -664,21 +665,27 @@ public class FileHelper {
 		return destDir.getPath();
 	}
 	
+	public static boolean isImage(String fileName) {
+		String[] imgTags = new String[] {"gif", "png", "bmp", "jpg", "jpeg"};
+		String fileExt = getFileSuffix(fileName).toLowerCase();
+		return Arrays.asList(imgTags).contains(fileExt);
+	}
+	
 	public static void downloadFile(HttpServletResponse response, String filePath, String fileName) throws IOException {
 		File file = new File(filePath);
-		String fileExt = getFileSuffix(filePath).toLowerCase();
 		if(fileName == null) {
 			fileName = file.getName();
 		}
 		
 		response.reset(); // 设置附件下载页面
 		
-		if("gif".equals(fileExt)) { response.setContentType("image/gif"); }
-        else if("png".equals(fileExt)) { response.setContentType("image/png"); }
-        else if("bmp".equals(fileExt)) { response.setContentType("image/bmp"); }
-        else if("jpg".equals(fileExt) || "jpeg".equals(fileExt)) {
-        	response.setContentType("image/jpeg"); 
-        }
+		String fileExt = getFileSuffix(filePath).toLowerCase();
+		if(isImage(filePath)) { 
+			if("jpg".equals(fileExt)) {
+				fileExt = "jpeg"; 
+	        }
+			response.setContentType("image/" + fileExt); 
+		}
         else {
         	response.setContentType("application/octet-stream"); // 设置附件类型
             response.setHeader("Content-Disposition", "attachment; filename=\"" + EasyUtils.toUtf8String(fileName) + "\"");        

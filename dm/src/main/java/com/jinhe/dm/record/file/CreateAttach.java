@@ -35,20 +35,19 @@ public class CreateAttach implements AfterUpload {
 
 		// 保存附件信息
 		File targetFile = new File(filepath);
-		RecordAttach attachObj = saveAttach(targetFile, recordId, itemId, type, oldfileName);
+		RecordAttach attach = saveAttach(targetFile, recordId, itemId, type, oldfileName);
 
 		// 向前台返回成功信息
-		String downloadUrl = attachObj.getDownloadUrl();
-		Integer seqNo = attachObj.getSeqNo();
-		String fileName = attachObj.getFileName();
-		String fileExt = attachObj.getFileExt();
-		
-		return "parent.addAttach(" + seqNo + ", '" + fileName + "', '" 
-				+ fileExt + "', '" + oldfileName + "', '" + downloadUrl + "')";
+		return "parent.addAttach(" + attach.getId() + ", " + attach.getType() + ", '" 
+				+ attach.getName() + "', '" + attach.getDownloadUrl() + "', '" + attach.getUploadUser() + "')";
 	}
 	
 	private RecordAttach saveAttach(File file, Long recordId, Long itemId, int type, String oldfileName) {
 		RecordService recordService = (RecordService) Global.getBean("RecordService");
+		
+		if( FileHelper.isImage(oldfileName) ) {
+			type = RecordAttach.ATTACH_TYPE_PIC;
+		}
 		
 		// 保存附件信息对象
 		RecordAttach attach = new RecordAttach();
