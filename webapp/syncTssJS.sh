@@ -1,15 +1,15 @@
-cp ../../jinhe-tss-JS/tssJS.all.js  src/main/webapp/tools/tssJS/
-cp ../../jinhe-tss-JS/src/tssJS.json2Form.js  src/main/webapp/tools/tssJS/
-cp ../../jinhe-tss-JS/src/tssJS.jsonp.js  src/main/webapp/tools/tssJS/
+cp ../../jinhe-tssJS/tssJS.all.js  src/main/webapp/tools/tssJS/
+cp ../../jinhe-tssJS/src/tssJS.json2Form.js  src/main/webapp/tools/tssJS/
+cp ../../jinhe-tssJS/src/tssJS.jsonp.js  src/main/webapp/tools/tssJS/
 
-cp ../../jinhe-tss-JS/tss.all.css  src/main/webapp/tools/tssJS/css/
-cp ../../jinhe-tss-JS/css/tss.common.css  src/main/webapp/tools/tssJS/css/
-cp ../../jinhe-tss-JS/css/tss.button.css  src/main/webapp/tools/tssJS/css/
-cp ../../jinhe-tss-JS/css/tss.message.css  src/main/webapp/tools/tssJS/css/
-cp ../../jinhe-tss-JS/css/tss.tool.css  src/main/webapp/tools/tssJS/css/
+cp ../../jinhe-tssJS/tss.all.css  src/main/webapp/tools/tssJS/css/
+cp ../../jinhe-tssJS/css/tss.common.css  src/main/webapp/tools/tssJS/css/
+cp ../../jinhe-tssJS/css/tss.button.css  src/main/webapp/tools/tssJS/css/
+cp ../../jinhe-tssJS/css/tss.message.css  src/main/webapp/tools/tssJS/css/
+cp ../../jinhe-tssJS/css/tss.tool.css  src/main/webapp/tools/tssJS/css/
 
-cp -r ../../jinhe-tss-JS/images/  src/main/webapp/tools/tssJS/images/
+cp -r ../../jinhe-tssJS/images/  src/main/webapp/tools/tssJS/images/
 
-#cp ../../jinhe-tss-JS/lib/*.*  src/main/webapp/tools/
+#cp ../../jinhe-tssJS/lib/*.*  src/main/webapp/tools/
 
  

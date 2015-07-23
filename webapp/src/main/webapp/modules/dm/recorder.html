@@ -473,18 +473,16 @@ function clostUpload() {
     $.hideWaitingLayer();
 }
 
-function uploadAttach() {
+function uploadAttach() {       
+    var fileValue = $("#sourceFile").value();
+    if( !fileValue ) {
+         return $("#sourceFile").notice("您还没有选择文件，请选择一个文件再点上传!");               
+    }
+
     var url = URL_UPLOAD_FILE + "?afterUploadClass=com.jinhe.dm.record.file.CreateAttach";
     url += "&recordId=" + recordId; selectedLineId  
     url += "&itemId=" + selectedLineId;
-    
-    var type, typeRadios = $("input[name='fileType'");
-    typeRadios.each(function(i, item) {
-        if(item.checked) {
-            type = item.value;
-        }
-    });
-    url += "&type=" + (type || 2);
+    url += "&type=" + ($.radioValue("fileType") || 2);
     
     var form = $1("uploadForm");
     form.action = url;
@@ -497,6 +495,7 @@ function delAttach() {
         $.ajax({
             url: URL_ATTACH_DELETE + attachId,
             method: 'DELETE',
+            waiting: true,
             onsuccess: function() {
                 $.G("attachGrid").deleteSelectedRow();
             }
@@ -543,7 +542,7 @@ function delAttach() {
         <Grid id="attachGrid"></Grid>
         <form id="uploadForm" method="post" target='fileUpload' enctype="multipart/form-data">
             <span>
-                <input type="file" name="file"/>
+                <input type="file" name="file" id="sourceFile"/>
                 附件类型: 
                 <label><input name="fileType" type="radio" value="1"/> 图片 </label> 
                 <label><input name="fileType" type="radio" value="2" checked="checked"/> 文档 </label> 
