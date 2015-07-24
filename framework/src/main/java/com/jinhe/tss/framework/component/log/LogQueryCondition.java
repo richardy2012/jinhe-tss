@@ -22,7 +22,7 @@ public class LogQueryCondition extends MacrocodeQueryCondition {
 	public Map<String, Object> getConditionMacrocodes() {
 		Map<String, Object> map = new HashMap<String, Object>() ;
         map.put("${operateTable}",  " and o.operateTable  = :operateTable");
-        map.put("${operationCode}", " and o.operationCode = :operationCode");
+        map.put("${operationCode}", " and o.operationCode like :operationCode");
         map.put("${operatorName}",  " and o.operatorName  = :operatorName");
         map.put("${operatorIP}",    " and o.operatorIP    = :operatorIP");
         
@@ -65,6 +65,9 @@ public class LogQueryCondition extends MacrocodeQueryCondition {
     }
 
     public String getOperationCode() {
+    	if(operationCode != null){
+    		operationCode = "%" + operationCode.trim() + "%";           
+        }
         return operationCode;
     }
 

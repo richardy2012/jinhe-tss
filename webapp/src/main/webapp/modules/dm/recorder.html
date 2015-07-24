@@ -241,23 +241,39 @@ function showDetail(rowID) {
 }
 
 function loadDetailData(rowID) {
-    if(rowID === '_new') {
+    var form, dataNode = $.cache.XmlDatas[rowID];
+
+    // 如果已经在打开的tab页里了
+    if(dataNode) {
+        var kvMap = {}
+        var nodes = dataNode.querySelectorAll("row *");
+        for(var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            kvMap[node.nodeName] = $.XML.getText(node);
+        }
+
         recordDefine.each(function(i, field){
-            field.defaultValue = field._defaultValue;
+            field.defaultValue = kvMap[field.code];
         });
+        xform = $.json2Form("page1Form", recordDefine, null, customizeJS);
     }
     else {
-        var grid = $.G("grid");
-        recordDefine.each(function(i, field){
-            field.defaultValue = grid.getColumnValue(field.code);
-        });
+        if(rowID === '_new') {
+            recordDefine.each(function(i, field){
+                field.defaultValue = field._defaultValue;
+            });
+        }
+        else {
+            var grid = $.G("grid");
+            recordDefine.each(function(i, field){
+                field.defaultValue = grid.getColumnValue(field.code);
+            });
+        }
+        xform = $.json2Form("page1Form", recordDefine, null, customizeJS);
+
+        $.cache.XmlDatas[rowID] = xform.template.dataNode;
+        attachReminder(rowID, xform); // 离开提醒
     }
-
-    var xform = $.json2Form("page1Form", recordDefine, null, customizeJS);
-
-    $.cache.XmlDatas[rowID] = xform.template.dataNode;
-
-    attachReminder(rowID, xform); // 离开提醒
 
     // 设置保存/关闭按钮操作
     if( canEditRow(rowID) ) {
@@ -274,7 +290,7 @@ function loadDetailData(rowID) {
             manageAttach(rowID);
         } );  
         $("WorkSpace\\:PageStep").appendChild(newBtn);
-    }
+    }  
 }
 
 function saveSource(rowID) {
@@ -489,6 +505,20 @@ function uploadAttach() {
     form.submit();
 }
 
+function addAttach(id, type, name, url, uploadUser) {
+    var newAttach = {
+        "id": id, 
+        "type": type, 
+        "name": name, 
+        "url": url, 
+        "_url": "<a href='" + url + "' target='_blank'>查看</a>", 
+        "delOpt": "<a href='javascript:void(0)' onclick='delAttach(" + id + ")'>删除</a>", 
+        "uploadUser": uploadUser,
+        "uploadDate": $.now(true),
+    };
+    $.G("attachGrid").insertRow(newAttach);
+}
+
 function delAttach() {
     $.confirm("您确定要删除该附件吗？", "删除确认", function(){
         var attachId = $.G("attachGrid").getColumnValue("id"); 
@@ -548,7 +578,7 @@ function delAttach() {
                 <label><input name="fileType" type="radio" value="2" checked="checked"/> 文档 </label> 
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="button" class="btStrongL" onclick="uploadAttach()" value="上传附件" />
-                <b>&nbsp;单个附件大小不宜超过3M</b>
+                <b>&nbsp;单个附件大小不宜超过2M</b>
             </span>
             <input type="button" class="btWeak" onclick="clostUpload()" value="关闭" style="margin-left:30px"/>
         </form>

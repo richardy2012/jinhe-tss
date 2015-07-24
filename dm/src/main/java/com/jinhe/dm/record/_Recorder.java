@@ -1,5 +1,6 @@
 package com.jinhe.dm.record;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -159,13 +160,16 @@ public class _Recorder extends BaseActionSupport {
     
 	@RequestMapping("/attach/json/{recordId}/{itemId}")
     @ResponseBody
-    public List<?> getAttachList(@PathVariable("recordId") Long recordId, @PathVariable("itemId") Long itemId) {
-		List<?> list = recordService.getAttachList(recordId, itemId);
-		return list;
+    public List<?> getAttachList(@PathVariable("recordId") Long recordId, 
+    		@PathVariable("itemId") Long itemId) {
+		
+		return recordService.getAttachList(recordId, itemId);
     }
 	
 	@RequestMapping("/attach/xml/{recordId}/{itemId}")
-    public void getAttachListXML(@PathVariable("recordId") Long recordId, @PathVariable("itemId") Long itemId) {
+    public void getAttachListXML(HttpServletResponse response, 
+    		@PathVariable("recordId") Long recordId, @PathVariable("itemId") Long itemId) {
+		
 		List<?> list = recordService.getAttachList(recordId, itemId);
         GridDataEncoder attachGrid = new GridDataEncoder(list, "template/record_attach_grid.xml");
         print("RecordAttach", attachGrid);
@@ -173,7 +177,9 @@ public class _Recorder extends BaseActionSupport {
 	
 	@RequestMapping(value = "/attach/{id}", method = RequestMethod.DELETE)
     public void deleteAttach(HttpServletResponse response, @PathVariable("id") Long id) {
+		RecordAttach attach = recordService.getAttach(id);
 		recordService.deleteAttach(id);
+		FileHelper.deleteFile(new File(attach.getAttachPath()));
         printSuccessMessage();
     }
 	

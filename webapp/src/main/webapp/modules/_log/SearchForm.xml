@@ -5,7 +5,7 @@
 			<declare>
 				<column name="operatorName" caption="操作人" mode="string" />
 				<column name="operatorIP" caption="操作人IP" mode="string" />
-                <column name="operationCode" caption="操作类型" mode="string" />
+                <column name="operationCode" caption="操作方法" mode="string" />
                 <column name="operateTable"  caption="操作对象" mode="string" />
 				<column name="startTime" caption="起始时间" mode="date"/>
 				<column name="endTime"   caption="截止时间" mode="date"/>

@@ -171,10 +171,10 @@ public class RecordAttach implements IEntity, IGridNode {
 	}
 
 	/**
-	 * 绝对地址，返回格式类似：/auth/xdata/attach/download/12
+	 * 绝对地址，返回格式类似：/tss/auth/xdata/attach/download/12
 	 */
 	public String getDownloadUrl() {
-		return "/auth/xdata/attach/download/" + getId();
+		return "/tss/auth/xdata/attach/download/" + getId();
 	}
 
 	public Long getItemId() {

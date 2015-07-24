@@ -143,7 +143,7 @@ public class PermissionServiceImpl implements PermissionService {
                 	
                 	// 权限项横向依赖的id，格式如： opt12
                 	String dependId = operation.getDependId(); 
-                    dependId = dependId == null ? null : dependId.substring(3);
+                    dependId = EasyUtils.isNullOrEmpty(dependId) ? null : dependId.substring(3);
                     
                     // 权限项纵向依赖的类型（1:向上兼向下，2:向上，3:向下）
                     String dependParent = operation.getDependParent(); 
