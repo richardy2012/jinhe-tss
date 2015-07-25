@@ -255,7 +255,6 @@ function loadDetailData(rowID) {
         recordDefine.each(function(i, field){
             field.defaultValue = kvMap[field.code];
         });
-        xform = $.json2Form("page1Form", recordDefine, null, customizeJS);
     }
     else {
         if(rowID === '_new') {
@@ -269,11 +268,11 @@ function loadDetailData(rowID) {
                 field.defaultValue = grid.getColumnValue(field.code);
             });
         }
-        xform = $.json2Form("page1Form", recordDefine, null, customizeJS);
-
-        $.cache.XmlDatas[rowID] = xform.template.dataNode;
-        attachReminder(rowID, xform); // 离开提醒
     }
+
+    xform = $.json2Form("page1Form", recordDefine, null, customizeJS);
+    $.cache.XmlDatas[rowID] = xform.template.dataNode;
+    attachReminder(rowID, xform); // 离开提醒
 
     // 设置保存/关闭按钮操作
     if( canEditRow(rowID) ) {
@@ -319,6 +318,7 @@ function saveSource(rowID) {
         if( afterListener && $.isFunction(afterListener) ) {
             afterListener();
         }
+        delete $.cache.XmlDatas[rowID];
 
         loadGridData( $1("GridPageList").value || 1 ); // 更新Grid
         ws.closeActiveTab(); 

@@ -83,7 +83,7 @@ function batchUpdate(field, value) {
 
 // addOptBtn('批量及格', function() { batchUpdate("score", "及格") });  
 function addOptBtn(name, fn, roles, groups) {
-    if( !checkRole(roles) && !checkGroup(groups) ) {
+    if( !checkRole(roles) && !checkGroup(groups||'-1212') ) {
         return;
     } 
 
@@ -215,4 +215,18 @@ function updateField(code, value) {
     var xform = $.F("page1Form");
     xform.updateDataExternal(code, value);    
     xform.updateData( $1(code) );
+}
+
+function isNew() {
+    var tag = ws.getActiveTab().SID;
+    if(tag && tag.indexOf("_new") > 0 && tag.indexOf("_copy")) {
+        return true;
+    }
+    return false;
+}
+
+function before(day, delta) {
+    var today = new Date();
+    today.setDate(today.getDate() - delta);
+    return new Date(day) < today;
 }

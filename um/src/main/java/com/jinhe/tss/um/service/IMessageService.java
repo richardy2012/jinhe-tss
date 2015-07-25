@@ -2,7 +2,9 @@ package com.jinhe.tss.um.service;
 
 import java.util.List;
 
+import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.um.entity.Message;
+import com.jinhe.tss.um.helper.MessageQueryCondition;
  
 public interface IMessageService {
  
@@ -32,4 +34,6 @@ public interface IMessageService {
 	 * @return
 	 */
 	List<Message> getInboxList();
+	
+	PageInfo getInboxList(MessageQueryCondition condition);
 }

@@ -7,7 +7,7 @@
 		<column name="table"  caption="目标数据表" maxLength="100"/>
 		<column name="define" caption="表字段定义" maxLength="10000" empty="false"/>
 		<column name="customizePage" caption="定制页" maxLength="100"/>
-		<column name="customizeJS" caption="定制JS" maxLength="4000"/>
+		<column name="customizeJS" caption="定制JS" maxLength="10000"/>
 		<column name="customizeTJ" caption="定制条件" maxLength="1000"/>
 		<column name="customizeGrid" caption="定制Grid" maxLength="4000"/>
 		<column name="remark" caption="数据录入简介" maxLength="400"/>
@@ -36,7 +36,7 @@
 				<label binding="define"/><br/><br/>
 				<input type="button" value="配置" onclick="configDefine()" class="btStrong"/>
 			</TD>
-			<TD colspan="5"><textarea binding="define" style="width:95%;height:150px"/></TD>
+			<TD colspan="5"><textarea binding="define" style="width:95%;height:130px"/></TD>
 		</TR>
 		<TR>
 			<TD><label binding="customizePage"/></TD>
@@ -44,15 +44,15 @@
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="customizeJS"/></TD>
-			<TD colspan="5"><textarea binding="customizeJS" style="width:95%;height:100px"/></TD>
+			<TD colspan="5"><textarea binding="customizeJS" style="width:95%;height:130px"/></TD>
+		</TR>
+		<TR>
+			<TD valign="top"><label binding="customizeTJ"/></TD>
+			<TD colspan="5"><textarea binding="customizeTJ" style="width:95%;height:40px"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="customizeGrid"/></TD>
 			<TD colspan="5"><textarea binding="customizeGrid" style="width:95%;height:60px"/></TD>
-		</TR>
-		<TR>
-			<TD valign="top"><label binding="customizeTJ"/></TD>
-			<TD colspan="5"><textarea binding="customizeTJ" style="width:95%;height:50px"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="remark"/></TD>

@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.tss.framework.MailUtil;
+import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.um.entity.Message;
+import com.jinhe.tss.um.helper.MessageQueryCondition;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.um.service.IMessageService;
 import com.jinhe.tss.util.EasyUtils;
@@ -61,6 +63,15 @@ public class MessageAction {
     @ResponseBody
     public List<Message> listMessages() {
     	return messageService.getInboxList();
+    }
+    
+    @RequestMapping(value = "/list/{page}", method = RequestMethod.GET)
+    @ResponseBody
+    public Object[] listMessages(MessageQueryCondition condition, @PathVariable int page) {
+        condition.getPage().setPageNum(page);
+        PageInfo pi = messageService.getInboxList(condition);
+        
+        return new Object[] { pi.getItems(), pi.getTotalRows()};
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)

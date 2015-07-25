@@ -107,7 +107,7 @@ public class _RecorderTest extends TxTestSupport4DM {
 			Assert.assertTrue("下载附件出错。", true);
 		}
 		
-		recorder.getAttachListXML(recordId, itemId);
+		recorder.getAttachListXML(response, recordId, itemId);
 		
 		recorder.deleteAttach(response, ra.getId());
 		

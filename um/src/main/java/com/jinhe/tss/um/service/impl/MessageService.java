@@ -7,9 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jinhe.tss.framework.persistence.ICommonDao;
+import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
+import com.jinhe.tss.framework.persistence.pagequery.PaginationQueryByHQL;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.um.dao.IGroupDao;
 import com.jinhe.tss.um.entity.Message;
+import com.jinhe.tss.um.helper.MessageQueryCondition;
 import com.jinhe.tss.um.service.IMessageService;
 import com.jinhe.tss.util.EasyUtils;
  
@@ -55,5 +58,16 @@ public class MessageService implements IMessageService {
 		String hql = " from Message m where m.receiverId = ? order by m.id desc ";
 		return (List<Message>) commonDao.getEntities(hql, userId);
 	}
+	
+	public PageInfo getInboxList(MessageQueryCondition condition) {
+		Long userId = Environment.getUserId();
+		condition.setReceiverId(userId);
+        String hql = " from Message o " 
+        		+ " where 1=1 " + condition.toConditionString() 
+        		+ " order by o.id desc ";
+ 
+        PaginationQueryByHQL pageQuery = new PaginationQueryByHQL(commonDao.em(), hql, condition);
+        return pageQuery.getResultList();
+    }
  
 }

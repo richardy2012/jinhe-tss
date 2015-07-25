@@ -123,6 +123,18 @@ function searchTree() {
 		$.T('tree').searchNode(key);
 	}
 }
+
+function openDefaultTreeNode(callback) {
+	var searchKey = $.Query.get("_treeNode");
+	if(searchKey) {
+		var tree = $.T('tree');
+		tree.searchNode(searchKey);
+		if(tree.getActiveTreeNode()) {
+    		callback = callback || tree.onTreeNodeDoubleClick || tree.onTreeNodeActived;
+    		callback && callback();
+        }
+	}
+}
  
 function onTreeNodeActived(ev) { }
 
