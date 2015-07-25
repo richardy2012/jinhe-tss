@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<HTML xmlns:WorkSpace xmlns:Tree xmlns:Grid>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>    
+<meta charset="UTF-8">
+<title>站内消息</title>
+
+<link href="../../css/css.css" rel="stylesheet">
+<link href="../../tools/tssJS/css/tss.all.css" rel="stylesheet">
+
+<script src="../../tools/tssJS/tssJS.all.js"></script>
+<script src="../../tools/tssUtils.js"></script>
+
+<style type="text/css">
+
+	.red {
+		color: red;
+		font-weight: bold;
+	}
+
+	#alert_box .message {
+		max-height: 500px;
+	}
+
+</style>
+
+<SCRIPT type="text/javascript">
+<!--  
+    /* XMLHTTP请求地址汇总 */
+    URL_MSG_LIST   = AUTH_PATH + "message/list/";
+
+	if(IS_TEST) {
+		URL_MSG_LIST = "data/message_list.xml?";
+	}
+	
+    /* 页面初始化 */
+    function init() {
+		closePalette();
+
+		loadGridData({}, "1"); 
+
+		/* Grid菜单初始化  */
+		var item1 = {
+			label:"查看",
+			callback: function() {
+				showMsgInfo(false);
+			},
+			icon:"images/view.gif"
+		};
+		var item2 = {
+			label:"删除",
+			callback: function() {
+				deleteMsg();
+			},
+			icon:"images/icon_del.gif"
+		}
+
+		var menu = new $.Menu();
+		menu.addItem(item1);
+		menu.addItem(item2);
+		$1("grid").contextmenu = menu;
+    }
+
+    /* grid加载数据  */
+    function loadGridData(requestParam, page) {
+		$.showGrid(URL_MSG_LIST, "MsgList", showMsgInfo, "grid", page, requestParam);
+    }
+	
+    function searchMsg() {
+        var treeNode = $.T("tree").getActiveTreeNode();
+        popupForm("SearchForm.xml", "SearchLog", {}, function(condition) {
+        	loadGridData(condition, "1"); 
+        }, "日志查询");
+    }
+
+    /* 显示详细信息 */
+    function showMsgInfo(id) {		
+		var rowID = id || $.G("grid").getColumnValue("id");  
+		viewMessage(rowID, function(msg) {
+			msg && $.alert(msg.content.replace(/\n/g, "<br>"), msg.title);
+		});
+    }
+
+    function deleteMsg(id) {
+    	id = id || $.G("grid").getColumnValue("id"); 
+
+    	$.confirm("您确定要删除该信息吗？", "删除确认", function(){
+	        $.ajax({
+				url: AUTH_PATH + "message/" + id,
+				method: "DELETE"
+			});
+
+			$.G("grid").deleteSelectedRow();
+	    }); 	
+	}
+
+	function viewMessage(id, callback) {
+		$.ajax({
+			url: AUTH_PATH + "message/" + id,
+			method: "GET",
+			type : "json",
+			ondata: function() {
+				var message = this.getResponseJSON();
+				callback && callback(message);
+			}
+		});
+	}
+	
+    window.onload = init;
+
+//-->
+</SCRIPT>
+
+</head>
+
+<body>
+
+<!-- 版面 开始 -->
+<table class="panel" >
+  <tr class="header"> <td/><td/><td/><td/> </tr>
+  <tr class="body"> 
+	<td/>
+	<!-- 左栏 开始 -->
+	<td id="palette">
+	</td>
+	<!-- 左栏 结束 -->
+	<td class="groove">
+	  <table>
+		<tr>
+			<td id="gridTitle">
+			  <span class="icon"></span>消息列表<span class="buttonBox" id="gridToolBar"></span>
+			</td>
+		</tr>
+		<tr>
+			<td id="gridContainer"><Grid id="grid"></Grid></td>
+		</tr>
+	  </table>
+	</td>
+	<td/>
+  </tr>
+  <tr class="footer"> <td/><td/><td/><td/> </tr>
+</table>
+<!-- 版面 结束 -->
+
+</body>
+</html>

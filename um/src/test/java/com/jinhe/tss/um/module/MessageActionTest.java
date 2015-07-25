@@ -16,7 +16,6 @@ import com.jinhe.tss.um.action.MessageAction;
 import com.jinhe.tss.um.entity.Message;
 import com.jinhe.tss.um.helper.MessageQueryCondition;
 import com.jinhe.tss.util.DateUtil;
-import com.jinhe.tss.util.EasyUtils;
 
 public class MessageActionTest extends TxSupportTest4UM {
 	
@@ -38,14 +37,15 @@ public class MessageActionTest extends TxSupportTest4UM {
 		List<Message> list = messageAction.listMessages();
 		Assert.assertTrue(list.size() > 0);
 		
+		Assert.assertTrue( messageAction.getNewMessageNum() > 0 );
+		
 		MessageQueryCondition condition = new MessageQueryCondition();
 		condition.setContent("厚重");
 		condition.setTitle("test");
 		condition.setSender(null);
 		condition.setSearchTime1(DateUtil.parse("2015-01-01"));
 		condition.setSearchTime2(new Date());
-		Object[] result = messageAction.listMessages(condition, 1);
-		Assert.assertTrue( EasyUtils.obj2Int(result[1]) > 0 );
+		messageAction.listMessages(response, condition, 1);
 		
 		Message message1 = list.get(0);
 		Assert.assertEquals(UMConstants.ADMIN_USER_ID, message1.getReceiverId());

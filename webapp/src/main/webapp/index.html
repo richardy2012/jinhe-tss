@@ -7,7 +7,7 @@
 <link rel="shortcut icon" href="images/tss.ico">
 <link rel="Bookmark" href="images/tss.ico">
 
-<link href="tools/tssJS/css/tss.common.css" rel="stylesheet">
+<link href="tools/tssJS/css/tss.all.css" rel="stylesheet">
 <link href="css/css.css" rel="stylesheet">
 
 <script src="tools/tssJS/tssJS.all.js"></script>
@@ -52,8 +52,28 @@
 				
 				resizeIFrame();
 				turn2IFrame("modules/dm/record.html");
+
+				dbsx();
 			}
 		});
+	}
+
+	function dbsx() {
+	  $.ajax({
+	    url: "auth/message/num",
+	    method: "GET",
+	    type : "json",
+	    ondata: function() {
+	      var num = this.getResponseJSON();
+	      if(num > 0) {
+	        $.tssTip("您的站内信箱里有<b> " + num + " </b>条新的待办事项，<a href='javascript:void(0)' onclick='openMsgPage()'>点击查看。</a>");
+	      }
+	    }
+	  });
+	}
+
+	function openMsgPage() {
+		turn2IFrame('modules/um/message.html');
 	}
 
 	var resizeIFrame = function resizeIFrame() {
@@ -91,39 +111,40 @@
 	<div class="logo"></div>
 	<div class="menu"> 
 		<ul> 
-			<li><a href="#">数据管理</a> 	 
+			<li><a href='javascript:void(0)'>数据管理</a> 	 
 				<ul> 
-					<li><a href="#" onclick="turn2IFrame('modules/dm/report.html')">数据报表</a> </li> 
-					<li><a href="#" onclick="turn2IFrame('modules/dm/record.html')">数据录入</a> </li>
-					<li><a href="#" onclick="turn2IFrame('modules/cms/channel.html')">栏目内容</a></li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/dm/report.html')">数据报表</a> </li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/dm/record.html')">数据录入</a> </li>
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/cms/channel.html')">栏目内容</a></li> 
 				</ul> 
 			</li>  
-			<li><a href="#">用户权限</a> 	 
+			<li><a href='javascript:void(0)'>用户权限</a> 	 
 				<ul> 
-					<li><a href="#" onclick="turn2IFrame('modules/um/group.html')">用户管理</a> </li> 
-					<li><a href="#" onclick="turn2IFrame('modules/um/resource.html')">应用资源</a> </li> 
-					<li><a href="#" onclick="turn2IFrame('modules/um/role.html')">角色授权</a> </li> 
-					<li><a href="#" onclick="turn2IFrame('modules/um/subauth.html')">权限转授</a> </li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/group.html')">用户管理</a> </li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/resource.html')">应用资源</a> </li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/role.html')">角色授权</a> </li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/subauth.html')">权限转授</a> </li> 
 				</ul> 
 			</li> 
-			<li><a href="#">门户管理</a> 	 
+			<li><a href='javascript:void(0)'>门户管理</a> 	 
 				<ul> 
-					<li><a href="#" onclick="turn2IFrame('modules/portal/structure.html')">门户结构</a> </li> 
-					<li><a href="#" onclick="turn2IFrame('modules/portal/component.html')">门户组件</a> </li> 
-					<li><a href="#" onclick="turn2IFrame('modules/portal/release.html')">门户发布</a> </li>
-					<li><a href="#" onclick="turn2IFrame('modules/portal/navigator.html')">菜单导航</a> </li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/portal/structure.html')">门户结构</a> </li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/portal/component.html')">门户组件</a> </li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/portal/release.html')">门户发布</a> </li>
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/portal/navigator.html')">菜单导航</a> </li> 
 				</ul> 
 			</li> 
-			<li><a href="#">系统辅助</a> 	 
+			<li><a href='javascript:void(0)'>系统辅助</a> 	 
 				<ul> 
-					<li><a href="#" onclick="turn2IFrame('modules/_log/log.htm')">日志查询</a> </li> 
-					<li><a href="#" onclick="turn2IFrame('modules/_param/param.htm')">系统参数</a> </li> 
-					<li><a href="#" onclick="turn2IFrame('modules/_cache/cache.htm')">缓存管理</a> </li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/_log/log.htm')">日志查询</a> </li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/_param/param.htm')">系统参数</a> </li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/_cache/cache.htm')">缓存管理</a> </li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/_password.htm');">修改密码</a></li>
 				</ul> 
-			</li> 
-			<li><a href="#" onclick="turn2IFrame('modules/um/_password.htm');">修改密码</a></li>
-            <li><a href="#" onclick="turn2IFrame('modules/um/_userInfo.htm');"><span id="userInfo">个人信息</span></a></li>
-			<li><a href="#" onclick="logout()"> 注销 </a></li> 
+			</li> 	
+			<li><a href='javascript:void(0)' onclick="openMsgPage()">待办事项</a> </li> 
+            <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/_userInfo.htm');"><span id="userInfo">个人信息</span></a></li>
+			<li><a href='javascript:void(0)' onclick="logout()"> 注销 </a></li> 
 		</ul>  
 	</div> 
 </div>

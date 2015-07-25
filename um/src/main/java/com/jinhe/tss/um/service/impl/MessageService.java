@@ -59,6 +59,13 @@ public class MessageService implements IMessageService {
 		return (List<Message>) commonDao.getEntities(hql, userId);
 	}
 	
+	public int getNewMessageNum() {
+		Long userId = Environment.getUserId();
+		String hql = " select count(m) from Message m where m.receiverId = ? and readTime is null order by m.id desc ";
+		List<?> list = commonDao.getEntities(hql, userId);
+		return EasyUtils.obj2Int( list.get(0) );
+	}
+	
 	public PageInfo getInboxList(MessageQueryCondition condition) {
 		Long userId = Environment.getUserId();
 		condition.setReceiverId(userId);

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<PageInfo>
+		<pagelist totalpages="1" totalrecords="1" currentpage="1" pagesize="100" firstpage="1" prepage="0" nextpage="0" lastpage="1" pagerecords="1"/>
+		</PageInfo>
+	<MsgList>
+		<grid>
+			<declare>
+				<column name="id" caption="ID号" display="none"/>
+				<column name="title" caption="标题" width="150px"/>
+				<column name="content" caption="内容" width="400px"/>
+				<column name="status" caption="是否已阅" values="0|1" texts="已阅|未读" width="60px"/>
+				<column name="sender" caption="发送人" width="60px"/>
+				<column name="sendTime" caption="发送时间" mode="date" pattern="yyyy-MM-dd HH:mm:ss" width="100px"/>
+			</declare>			
+			<data>
+				<row id="1" title="&lt;span class='red'&gt;测试站内信&lt;/span&gt;" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+				<row id="1" title="测试站内信" content="生命变的厚重" status="0" sender="天行" sendTime="2015-07-25 20:55:38"/>
+			</data>
+		</grid>
+	</MsgList>
+</Response>

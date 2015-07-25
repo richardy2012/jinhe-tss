@@ -35,5 +35,7 @@ public interface IMessageService {
 	 */
 	List<Message> getInboxList();
 	
+	int getNewMessageNum();
+	
 	PageInfo getInboxList(MessageQueryCondition condition);
 }

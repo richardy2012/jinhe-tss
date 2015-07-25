@@ -889,13 +889,6 @@ function sendMessage(receivers, title, content) {
 	});
 }
 
-function deleteMessage(id) {
-	$.ajax({
-		url: AUTH_PATH + "message/" + id,
-		method: "DELETE"
-	});
-}
-
 function listMessages(callback) {
 	$.ajax({
 		url: AUTH_PATH + "message/list",
@@ -908,14 +901,14 @@ function listMessages(callback) {
 	});
 }
 
-function viewMessage(id, callback) {
+function getNewMessageNum(callback) {
 	$.ajax({
-		url: AUTH_PATH + "message/" + id,
+		url: AUTH_PATH + "message/num",
 		method: "GET",
 		type : "json",
 		ondata: function() {
-			var message = this.getResponseJSON();
-			callback && callback(message);
+			var num = this.getResponseJSON();
+			callback && callback(num);
 		}
 	});
 }

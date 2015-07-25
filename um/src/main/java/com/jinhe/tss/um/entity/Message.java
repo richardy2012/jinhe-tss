@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.jinhe.tss.framework.persistence.IEntity;
+import com.jinhe.tss.framework.web.dispaly.grid.GridAttributesMap;
+import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
  
 /**
  * 站内消息对象
@@ -20,7 +22,7 @@ import com.jinhe.tss.framework.persistence.IEntity;
 @Entity
 @Table(name = "um_message")
 @SequenceGenerator(name = "message_sequence", sequenceName = "message_sequence", initialValue = 1000, allocationSize = 10)
-public class Message implements IEntity {
+public class Message implements IEntity, IGridNode {
     
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "message_sequence")
@@ -124,5 +126,24 @@ public class Message implements IEntity {
 
 	public Serializable getPK() {
 		return this.getId();
+	}
+
+	@Override
+	public GridAttributesMap getAttributes(GridAttributesMap map) {
+		String _class = readed() ? "" : "red";
+		map.put("id", id);
+		map.put("title", "<span class='" + _class + "'>" + title + "</span>");
+		map.put("content", "<span class='" + _class + "'>" + content + "</span>");
+		map.put("status", readed() ? 0 : 1);
+		map.put("sender", sender);
+		map.put("sendTime", this.sendTime);
+		map.put("opts", "<a href='javascript:void(0)' onclick='showMsgInfo("+this.id+")'>查看</a>&nbsp;/&nbsp;" +
+				"<a href='javascript:void(0)' onclick='deleteMsg("+this.id+")'>删除</a>");
+		
+		return map;
+	}
+	
+	public boolean readed() {
+		return this.readTime != null;
 	}
 }
