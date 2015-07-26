@@ -884,6 +884,7 @@ function email(receivers, title, content) {
 function sendMessage(receivers, title, content) {
 	$.ajax({
 		url: AUTH_PATH + "message",
+		headers: {"appCode": FROMEWORK_CODE},
 		method: "POST",
 		params: {"receivers": receivers, "title": title, "content": content}
 	});
@@ -892,6 +893,7 @@ function sendMessage(receivers, title, content) {
 function listMessages(callback) {
 	$.ajax({
 		url: AUTH_PATH + "message/list",
+		headers: {"appCode": FROMEWORK_CODE},
 		method: "GET",
 		type : "json",
 		ondata: function() {
@@ -904,6 +906,7 @@ function listMessages(callback) {
 function getNewMessageNum(callback) {
 	$.ajax({
 		url: AUTH_PATH + "message/num",
+		headers: {"appCode": FROMEWORK_CODE},
 		method: "GET",
 		type : "json",
 		ondata: function() {

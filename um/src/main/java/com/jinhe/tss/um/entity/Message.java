@@ -134,7 +134,7 @@ public class Message implements IEntity, IGridNode {
 		map.put("id", id);
 		map.put("title", "<span class='" + _class + "'>" + title + "</span>");
 		map.put("content", "<span class='" + _class + "'>" + content + "</span>");
-		map.put("status", readed() ? 0 : 1);
+		map.put("status", readed() ? 1 : 0);
 		map.put("sender", sender);
 		map.put("sendTime", this.sendTime);
 		map.put("opts", "<a href='javascript:void(0)' onclick='showMsgInfo("+this.id+")'>查看</a>&nbsp;/&nbsp;" +

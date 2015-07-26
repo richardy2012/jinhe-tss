@@ -131,6 +131,10 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
             map.put("define", define);
         }
         map.put("icon", "images/" + (TYPE0 == type ? "folder" : "record") + ".gif");
+        
+        if( this.levelNo < 3 ) {
+        	map.put("_open", "true");
+        }
  
         return map;
     }
