@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -26,6 +27,7 @@ import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.exception.BusinessException;
+import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
 
@@ -390,6 +392,8 @@ public class SQLExcutor {
 
     // 批量执行SQL
     public static void excuteBatch(String sql, List<Object[]> paramsList, Connection conn) {
+    	if(paramsList == null || paramsList.isEmpty()) return;
+    	
         PreparedStatement pstmt = null;
         try {
             log.debug("  excuteBatch  sql: " + sql);
@@ -398,22 +402,21 @@ public class SQLExcutor {
             conn.setAutoCommit(false);
             
             pstmt = conn.prepareStatement(sql);
-            if(paramsList != null) {
-            	for (Object[] params : paramsList) {
-                	int index = 1;
-                    for (Object paramValue : params) {
-                        pstmt.setObject(index++, paramValue); // 从1开始，非0
-                    }
-                    pstmt.addBatch();
+        	for (Object[] params : paramsList) {
+            	int index = 1;
+                for (Object paramValue : params) {
+                    pstmt.setObject(index++, paramValue); // 从1开始，非0
                 }
+                pstmt.addBatch();
             }
             pstmt.executeBatch();
 
             conn.commit();
             conn.setAutoCommit(autoCommit);
-
+            
         } catch (SQLException e) {
-            throw new BusinessException("执行SQL时出错了。sql : " + sql, e);
+        	log.error(Environment.getUserCode() + ": " + Arrays.asList(paramsList.get(0)));
+            throw new BusinessException("执行SQL时出错了，sql : " + sql, e);
         } finally {
             try {
                 if (pstmt != null) {

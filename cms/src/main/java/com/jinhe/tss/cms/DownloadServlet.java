@@ -45,7 +45,7 @@ public class DownloadServlet extends HttpServlet {
         
 	    AttachmentDTO attach = service.getAttachmentInfo(id, seqNo);
         if(attach == null){
-        	log.error("附件不存在");
+        	log.error("附件不存在.");
             return;
         }
         

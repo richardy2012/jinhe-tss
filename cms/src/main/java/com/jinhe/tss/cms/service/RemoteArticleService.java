@@ -284,7 +284,18 @@ public class RemoteArticleService implements IRemoteArticleService {
         }
         
         // 通过文章id获取栏目id
-        Channel site = attach.getArticle().getChannel().getSite(); 
+        Article article = attach.getArticle();
+        if(article == null) {
+        	log.error("附件：" + attach + " 对应的文章为空，可能已被删除了。 articleId = " + articleId);
+            return null;
+        }
+        
+		Channel channel = article.getChannel();
+		if(channel == null) {
+			log.error("附件：" + attach + " 对应的文章所在的栏目为空，可能已被删除了。 articleId = " + articleId);
+            return null;
+        }
+		Channel site = channel.getSite(); 
         
         AttachmentDTO dto = new AttachmentDTO(attach.getType(), attach.getName(), attach.getFileName(), attach.getFileExt(),
                 attach.getLocalPath(), new String[]{site.getPath(), site.getImagePath(), site.getDocPath()});

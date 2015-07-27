@@ -705,7 +705,7 @@ public class FileHelper {
                 out.flush();
             }
         } catch (IOException e) {
-            log.error("下载附件时IO异常，Message:" + e.getMessage());
+            log.error("下载附件时IO异常，" + e.getMessage() + "," + e.getCause());
         } finally {
             if (stream != null) {
                 stream.close();

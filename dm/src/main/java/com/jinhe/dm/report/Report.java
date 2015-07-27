@@ -76,7 +76,7 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
     private String  decode;  // 层码，要求唯一
     private Integer levelNo;// 层次值
     
-    private Integer disabled = ParamConstants.FALSE; // 停用/启用标记
+    private Integer disabled = ParamConstants.TRUE; // 停用/启用标记。默认为停用，开发完成后再启用
     private Integer needLog  = ParamConstants.TRUE; // 记录修改日志
     
     public Integer getNeedLog() {

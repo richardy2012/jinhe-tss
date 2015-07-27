@@ -59,6 +59,10 @@ public class ReportServiceImpl implements ReportService {
         if ( report.getId() == null ) {
             report.setSeqNo(reportDao.getNextSeqNo(report.getParentId()));
             reportDao.create(report);
+            
+            if(report.isGroup()) {
+            	report.setDisabled(ParamConstants.FALSE);
+            }
         }
         else {
         	reportDao.refreshEntity(report);
