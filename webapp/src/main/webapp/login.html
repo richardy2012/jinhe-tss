@@ -42,6 +42,16 @@
 /*********************** 应用配置 开始 **********************************/
  var 
     indexPage = "index.html";    /* 登录成功后调整到的页面 */
+
+ getParam('sysTitle', function(title) {
+    if( title ) {
+        indexPage = "index.portal";
+    }
+    else {
+        title = '它山石基础平台';       
+    }
+    $("#sys_title").html(title);
+ });
  
  function setSysTitle() {
     $.ajax({

@@ -3,12 +3,13 @@ package com.jinhe.tss.framework;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import com.jinhe.tss.framework.component.param.ParamConfig;
+import com.jinhe.tss.util.EasyUtils;
 
 public class MailUtil {
 	
@@ -18,10 +19,12 @@ public class MailUtil {
 	
 	// 邮箱信息配置到参数管理里
 	public static String MAIL_SERVER = "email.server"; 
+	public static String MAIL_SERVER_USER = "email.server.user"; 
+	public static String MAIL_SERVER_PWD  = "email.server.pwd"; 
 	public static String SEND_FROM = "email.from";
-	public static String SEND_TO = "email.to";
+	public static String SEND_TO   = "email.to";
 	
-	public static MailSender getMailSender() {
+	public static JavaMailSender getMailSender() {
 		if(mailSender != null) {
 			return mailSender;
 		}
@@ -29,6 +32,13 @@ public class MailUtil {
 		mailSender = new JavaMailSenderImpl();
 		mailSender.setHost(ParamConfig.getAttribute(MAIL_SERVER));
 		mailSender.setPort(25);
+		
+		String auth_user = ParamConfig.getAttribute(MailUtil.MAIL_SERVER_USER);
+		if( !EasyUtils.isNullOrEmpty(auth_user) ) {
+			mailSender.setUsername( auth_user );
+			mailSender.setPassword( ParamConfig.getAttribute(MailUtil.MAIL_SERVER_PWD) ); 
+			mailSender.getJavaMailProperties().put("mail.smtp.auth", true);
+		}
 		
 		return mailSender;
 	}

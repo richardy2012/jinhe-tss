@@ -42,7 +42,7 @@ public class MessageAction extends BaseActionSupport {
     	}
     }
     
-    @RequestMapping(value = "/email/html", method = RequestMethod.POST)
+    @RequestMapping(value = "/email2", method = RequestMethod.POST)
     @ResponseBody
     public void sendHtmlEmail(String title, String content, String receivers) {
     	String[] emails = loginService.getContactInfos(receivers, false);

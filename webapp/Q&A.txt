@@ -19,20 +19,5 @@
 8、ORA-00936: missing expression 可能是因为record的字段里包含了oracle的某关键字
 
 打包注意：
-0、BtrBI的10.8.73.80机器安裝的是JDK6，打包只能用JDK1.6, 1.7會出錯  
-
-
-TSS3.3版本更新点：
-1、Param增加监听器列表
-2、定时任务监听器
-3、缓存池监听器、在线创建 缓存池（连接池）
-4、Spring ContextLoaderListener 扩展
-5、Record 缓存查询条件、复制功能、查询条件级联、分页失效问题、查询条件date（oracle）出错问题
-6、所有资源实现授予角色功能
-7、Tab页切换支持编辑多个资源   
-
-1、数据录入记录删除或修过时，记录快照日志
-2、报表推送邮件支持直接连接至report_portlet查看实时数据
-3、邮件接口、preListener、afterListener
-4、数据门户
+0、BtrBI的10.8.72.70机器安裝的是JDK6，打包只能用JDK1.6, 1.7會出錯  
 

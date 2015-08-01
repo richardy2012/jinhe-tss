@@ -18,7 +18,7 @@ public class ReportJobTest extends TxTestSupport4DM {
 	public void testReportJob() {
 		
 		Param paramL = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, UMConstants.EMAIL_MACRO, "常用收件人组");
-        addParamItem(paramL.getId(), "pjjin@800best.com", "JK", ParamConstants.COMBO_PARAM_MODE);
+        addParamItem(paramL.getId(), "lovejava@163.com", "JK", ParamConstants.COMBO_PARAM_MODE);
         
         Report report1 = new Report();
         report1.setType(Report.TYPE1);
@@ -40,9 +40,9 @@ public class ReportJobTest extends TxTestSupport4DM {
         ReportJob job = new ReportJob();
         
         String jobConfig = "\n" +
-        				   report1.getId() + ":报表一:pjjin@800best.com,BL00618,-1@tssRole,-2@tssGroup,${JK}:param1=0,param2=0,param3=today-0\n" + 
-        		           report1.getId() + ":报表二:BL00618,pjjin@800best.com:param1=0,param3=today-1\n" +
-        		           report1.getId() + ":报表三:BL00618,pjjin@800best.com:param1=0,param3=today-1\n" +
+        				   report1.getId() + ":报表一:lovejava@163.com,BL00618,-1@tssRole,-2@tssGroup,${JK}:param1=0,param2=0,param3=today-0\n" + 
+        		           report1.getId() + ":报表二:BL00618,lovejava@163.com:param1=0,param3=today-1\n" +
+        		           report1.getId() + ":报表三:BL00618,lovejava@163.com:param1=0,param3=today-1\n" +
         		           report1.getId() + ":报表三\n";
 		try{
         	job.excuteJob(jobConfig);

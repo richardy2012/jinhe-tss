@@ -27,12 +27,12 @@ import com.jinhe.tss.util.DateUtil;
 import com.jinhe.tss.util.EasyUtils;
 
 /**
- * com.jinhe.dm.report.timer.ReportJob | 0 36 10 * * ? | 268:各省日货量流向:pjjin@800best.com,BL01037:param1=today-1
+ * com.jinhe.dm.report.timer.ReportJob | 0 36 10 * * ? | 268:各省日货量流向:lovejava@163.com,BL01037:param1=today-1
  * 261:各省生产货量:BL00618,BL01037:param1=today-0
  * 262:报表三:BL00618,BL01037:param1=0,param3=today-1
  * 
  * 收件人支持方式有：email、账号、角色、用户组、参数定义，分别如下
- * pjjin@800best.com,BL01037,-1@tssRole,-2@tssGroup,${JK}
+ * lovejava@163.com,BL01037,-1@tssRole,-2@tssGroup,${JK}
  */
 public class ReportJob extends AbstractJob {
 	

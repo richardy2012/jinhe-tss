@@ -10,6 +10,13 @@ URL_REPORT_DATA    = NO_AUTH_PATH + "data/";
 URL_REPORT_JSON    = NO_AUTH_PATH + "api/json/";
 URL_REPORT_EXPORT  = NO_AUTH_PATH + "data/export/";
 
+// 获取导出分离机器的配置，如果有的话, eg: http://10.45.10.96:8080/tss/data/export/
+ getParam('report_export_url', function(url) {
+    if( url ) {
+        URL_REPORT_EXPORT  = url + URL_REPORT_EXPORT;
+    }
+ });
+
 if(IS_TEST) {
     URL_REPORT_DATA    = "data/report_data.xml?";
     URL_REPORT_JSON    = "data/report_data.json?";

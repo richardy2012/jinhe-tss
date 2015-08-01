@@ -191,6 +191,8 @@ public class LoginService implements ILoginService {
     }
     
     public String[] getContactInfos(String receiverStr, boolean justID) {
+    	if(receiverStr == null) return null;
+    	
     	Map<String, Object> fmDataMap = new HashMap<String, Object>();
 		List<Param> macroParams = ParamManager.getComboParam(UMConstants.EMAIL_MACRO);
 		if(macroParams != null) {

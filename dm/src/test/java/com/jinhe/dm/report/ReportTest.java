@@ -82,7 +82,7 @@ public class ReportTest extends TxTestSupport4DM {
         // test report schedule
         Long reportId = report1.getId();
         String jobConfig = " 0 36 10 * * ? | " +
-        		reportId + ":" + report1.getName() + ":pjjin@800best.com,BL00618:param1=1";
+        		reportId + ":" + report1.getName() + ":lovejava@163.com,BL00618:param1=1";
         action.saveJobParam(response, report1.getId(), jobConfig);
         
         List<Param> list = paramService.getComboParam(SchedulerBean.TIMER_PARAM_CODE);

@@ -872,10 +872,26 @@ function popupGroupTree(callback) {
 	popupTree(url, "GroupTree", {}, callback)
 }
 
+// 获取系统参数模块的配置信息
+function getParam(key, callback) {
+	$.ajax({
+        url: NO_AUTH_PATH + "param/json/simple/" + key,
+        method: 'GET',
+        type: "json",
+        ondata: function() {
+            var result = this.getResponseJSON(), val;
+            if( result && result.length  && result[0] ) {
+                val = result[0];
+            }
+            callback && callback(val);
+        }
+    });
+}
+
 // 发送定时邮件，支持html标签
 function email(receivers, title, content) {
 	$.ajax({
-		url: AUTH_PATH + "message/email/html",
+		url: AUTH_PATH + "message/email2",
 		method: "POST",
 		params: {"receivers": receivers, "title": title, "content": content}
 	});

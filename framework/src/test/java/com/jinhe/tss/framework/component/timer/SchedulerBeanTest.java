@@ -14,8 +14,8 @@ import com.jinhe.tss.util.EasyUtils;
 public class SchedulerBeanTest extends TxTestSupportParam {
 	
 	String jobConfig = "com.jinhe.tss.framework.component.timer.DemoJob | 10,20,30,40,55 * * * * ? | " +
-			"1:报表一:pjjin@800best.com,pjjin@800best.com:param1=0,param2=0\n" + 
-            "2:报表二:pjjin@800best.com,pjjin@800best.com:param1=0"; 
+			"1:报表一:lovejava@163.com,lovejava@163.com:param1=0,param2=0\n" + 
+            "2:报表二:lovejava@163.com,lovejava@163.com:param1=0"; 
 	
 	@Test
 	public void testSchedulerBean() {

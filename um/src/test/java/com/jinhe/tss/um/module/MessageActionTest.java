@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jinhe.tss.framework.MailUtil;
-import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.UMConstants;
@@ -23,12 +22,12 @@ public class MessageActionTest extends TxSupportTest4UM {
 	
 	@Test
 	public void test() {
-		messageAction.sendEmail("test", "<html><body><h3>生命变的厚重</h3></body></html>", ParamConfig.getAttribute(MailUtil.SEND_TO));
+		messageAction.sendEmail("test", "<html><body><h3>生命变的厚重</h3></body></html>", MailUtil.getEmailTo()[0]);
 	}
 	
 	@Test
 	public void test2() {
-		messageAction.sendHtmlEmail("test", "<html><body><h3>生命变的厚重</h3></body></html>", ParamConfig.getAttribute(MailUtil.SEND_TO));
+		messageAction.sendHtmlEmail("test", "<html><body><h3>生命变的厚重</h3></body></html>", MailUtil.getEmailTo()[0]);
 	}
 	
 	@Test
