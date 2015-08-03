@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSessionListener;
 import org.apache.log4j.Logger;
 
 import com.jinhe.tss.framework.Config;
+import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.online.IOnlineUserManager;
 import com.jinhe.tss.framework.sso.online.OnlineUserManagerFactory;
@@ -29,7 +30,7 @@ public class SessionDestroyedListener implements HttpSessionListener {
         
         // 设置 session 的过期时间
         if(session.isNew()){
-            String configValue = Config.getAttribute(Config.SESSION_CYCLELIFE_CONFIG);
+            String configValue = ParamConfig.getAttribute(Config.SESSION_CYCLELIFE_CONFIG);
             if ( !EasyUtils.isNullOrEmpty(configValue) ) {
                 session.setMaxInactiveInterval(Integer.parseInt(configValue)); // 以秒为单位
             }

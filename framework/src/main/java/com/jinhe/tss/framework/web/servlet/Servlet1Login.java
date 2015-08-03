@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.jinhe.tss.framework.Config;
+import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.web.dispaly.SuccessMessageEncoder;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 
@@ -33,7 +33,7 @@ public class Servlet1Login extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 如果是从其它系统单点登录到平台（TSS），则自动转到配置的门户首页地址
         if(request.getParameter("sso") != null){
-            String ssoIndex = Config.getAttribute("sso.index.page");
+            String ssoIndex = ParamConfig.getAttribute("sso.index.page");
             if(ssoIndex != null){
                 response.sendRedirect(response.encodeRedirectURL(ssoIndex));
                 return;

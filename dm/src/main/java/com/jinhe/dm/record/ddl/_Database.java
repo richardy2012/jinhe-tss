@@ -28,6 +28,7 @@ import com.jinhe.tss.framework.component.log.IBusinessLogger;
 import com.jinhe.tss.framework.component.log.Log;
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
+import com.jinhe.tss.framework.sso.AnonymousOperator;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.util.EasyUtils;
@@ -193,6 +194,10 @@ public abstract class _Database {
 			paramsList.add(paramsMap);
 		}
 		
+		// 判断是否是匿名用户。匿名用户（登录超时后变的）不允许新增数据
+		if( AnonymousOperator.anonymous.getLoginName().equals(Environment.getUserCode())) {
+			throw new BusinessException("您当前的登录已超时，请重新登录！");
+		}
 		SQLExcutor.excuteBatch(createInsertSQL(), paramsList , this.datasource);
 	}
 	
