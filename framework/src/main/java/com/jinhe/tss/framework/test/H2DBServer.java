@@ -32,7 +32,7 @@ public class H2DBServer implements IH2DBServer{
     	
     	// 此时H2数据库只起来了服务，没有实例。
     	// 支持部署多个web应用时，启动多个不同端口的H2实例
-    	while(server == null && port < 9099) {
+    	while(server == null && port < 9091) {
     		try {  
                 server = Server.createTcpServer("-tcpPort", String.valueOf(port)).start();  
             } catch (Exception e) {  

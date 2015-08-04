@@ -381,7 +381,7 @@
 				<job.enable>true</job.enable>
 				<db.username>root</db.username>
 				<db.password>800best@com</db.password>
-				<db.url>10.8.72.70:3306/demo_bi</db.url>
+				<db.url>10.45.10.216:3306/demo_bi</db.url>
 				<tomcat.url>10.45.10.96:8080</tomcat.url>
 			</properties>
 		</profile>
