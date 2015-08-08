@@ -21,6 +21,12 @@ public interface ReportService {
     		resourceType = Report.RESOURCE_TYPE,
 	        operation = Report.OPERATION_VIEW
 	)
+    List<Report> getReportsByGroup(Long groupId);
+    
+    @PermissionTag(
+    		resourceType = Report.RESOURCE_TYPE,
+	        operation = Report.OPERATION_VIEW
+	)
     List<Report> getAllReport();
 
     @PermissionTag(

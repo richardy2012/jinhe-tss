@@ -44,6 +44,10 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return (Long) list.get(0);
 	}
+	
+    public List<Report> getReportsByGroup(Long groupId) {
+        return reportDao.getChildrenById(groupId);
+    }
     
     @SuppressWarnings("unchecked")
     public List<Report> getAllReport() {

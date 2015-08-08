@@ -91,7 +91,7 @@ public class DisplayTest extends TxTestSupport4DM {
         display.showAsJson(request, report1.getName());
         request.removeParameter("jsonpCallback");
         
-        // 测试导出超阀值(导出时，前台限定50万行，超过该值将提示要求缩短查询条件，分批导出)
+        // 测试导出超阀值(导出时，前台限定10万行，超过该值将提示要求缩短查询条件，分批导出)
         Report reportGruop = new Report();
         reportGruop.setName("reportGruop1");
         reportGruop.setParentId(Report.DEFAULT_PARENT_ID);
@@ -116,7 +116,8 @@ public class DisplayTest extends TxTestSupport4DM {
 		for(int i = 0; i < 30; i++) {
 			display.showAsJson(request, report1.getName());
 		}
-        action.getCustomizeReports(response);
+        action.getCustomizeReports(response, null);
+        action.getCustomizeReports(response, reportGruop.getId());
     }
     
     /**

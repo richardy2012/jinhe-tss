@@ -61,11 +61,25 @@ public class ReportAction extends BaseActionSupport {
         print("SourceTree", treeEncoder);
     }
     
+    /**
+     * 如果指定了分组，则只取该分组下的报表
+     */
     @RequestMapping("/my")
-    public void getCustomizeReports(HttpServletResponse response) {
+    public void getCustomizeReports(HttpServletResponse response, Long groupId) {
 	    checkPwdSecurity();
 	    
-	    List<Report> list = reportService.getAllReport();
+	    List<Report> list;
+	    if(groupId != null) {
+	    	list = reportService.getReportsByGroup(groupId);
+	    	for(Report temp : list) {
+	    		if(groupId.equals(temp.getId())) {
+	    			list.remove(temp);
+	    			break;
+	    		}
+	    	}
+	    } else {
+	    	list = reportService.getAllReport();
+	    }
 	    
 	    // 查出过去100天个人和整站访问Top10的报表名称
 	    List<String> topSelf = getTops(true);
@@ -117,7 +131,8 @@ public class ReportAction extends BaseActionSupport {
         });
     	result.addAll(latest);
        
-        TreeEncoder treeEncoder = new TreeEncoder(result, new StrictLevelTreeParser(Report.DEFAULT_PARENT_ID));
+        TreeEncoder treeEncoder = new TreeEncoder(result, new LevelTreeParser());
+        treeEncoder.setNeedRootNode(false);
         print("SourceTree", treeEncoder);
     }
 

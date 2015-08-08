@@ -57,7 +57,12 @@ function loadInitData() {
         }
     }
 
-    $.ajax({url : URL_SOURCE_TREE, onresult : onresult});
+    var groupId = $.Query.get("group");
+    $.ajax({
+    	url : URL_SOURCE_TREE, 
+    	params : {"groupId": groupId},
+    	onresult : onresult
+    });
 } 
 
 </script>
