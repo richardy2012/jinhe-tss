@@ -142,7 +142,22 @@ public class ReportJob extends AbstractJob {
 		Long reportId = rr.reportIds.get(index);
 		String title = rr.reportTitles.get(index);
 		Map<String, String> paramsMap = rr.reportParams.get(index);
-		SQLExcutor ex = reportService.queryReport(reportId, paramsMap , 0, 0, System.currentTimeMillis());
+		SQLExcutor ex = reportService.queryReport(reportId, paramsMap, 0, 10*10000, System.currentTimeMillis());
+		
+		Report report = reportService.getReport(reportId);
+		if( !EasyUtils.isNullOrEmpty( report.getDisplayUri()) ) {
+			String url = "/tss";
+			try {
+				url = Context.getApplicationContext().getCurrentAppServer().getBaseURL();
+			} catch (Exception e) {}
+			
+			url += "/modules/dm/report_portlet.html?leftBar=true&id=" + reportId;
+			for(String paramKey : paramsMap.keySet()) {
+				url += "& " + paramKey + "=" + paramsMap.get(paramKey);
+			}
+			
+			html.append("<h4>点击链接可以看到更详细的图表：<a href='" + url + "'>" + url + "<a></h4><br>");
+		}
 		
 		if(ex.result.size() > 100) {
 			html.append("<h1>报表【" + title + "】的内容详细请参见附件。</h1>");
@@ -170,17 +185,6 @@ public class ReportJob extends AbstractJob {
 		    }
 			
 			html.append("</table><br>");
-		}
-		
-		Report report = reportService.getReport(reportId);
-		if( !EasyUtils.isNullOrEmpty( report.getDisplayUri()) ) {
-			String url = Context.getApplicationContext().getCurrentAppServer().getBaseURL();
-			url += "/modules/dm/report_portlet.html?leftBar=true&id=" + reportId;
-			for(String paramKey : paramsMap.keySet()) {
-				url += "& " + paramKey + "=" + paramsMap.get(paramKey);
-			}
-			
-			html.append("<h4>更详细可访问：<a href='" + url + "'>" + url + "<a></h4><br>");
 		}
 		
 		// 附件内容

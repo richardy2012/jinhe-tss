@@ -23,6 +23,8 @@ import com.jinhe.dm.record.file.RecordAttach;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.component.cache.CacheHelper;
+import com.jinhe.tss.framework.exception.BusinessException;
+import com.jinhe.tss.framework.exception.ExceptionEncoder;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.web.dispaly.grid.DefaultGridNode;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
@@ -118,8 +120,17 @@ public class _Recorder extends BaseActionSupport {
     		@PathVariable("id") Integer id) {
     	
     	Map<String, String> row = getRequestMap(request);
-		getDB(recordId).update(id, row);
-        printSuccessMessage();
+    	_Database _db = getDB(recordId);
+    	try {
+			_db.update(id, row);
+    		printSuccessMessage();
+    	}
+    	catch(Exception e) {
+    		Throwable firstCause = ExceptionEncoder.getFirstCause(e);
+			String errorMsg = "在" + _db + "里修改数据时出错了：" + (firstCause == null ? e : firstCause).getMessage();
+			log.error(errorMsg);
+    		throw new BusinessException(errorMsg);
+    	}
     }
     
     /**

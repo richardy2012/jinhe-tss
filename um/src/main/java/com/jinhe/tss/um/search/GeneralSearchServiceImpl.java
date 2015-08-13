@@ -52,6 +52,8 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
  
 			dto.setSubAuthorizedUserId(creator.getId());
 			dto.setSubAuthorizedUserName(creator.getUserName());
+			dto.setSubAuthorizedGroupId(-1L);
+			dto.setSubAuthorizedGroupName("Admin Group");
  
 			result.add(dto);
 		}

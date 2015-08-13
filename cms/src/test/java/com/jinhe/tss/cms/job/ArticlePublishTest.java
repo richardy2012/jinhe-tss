@@ -158,6 +158,15 @@ public class ArticlePublishTest extends AbstractTestSupport {
 			Assert.assertFalse(e.getMessage(), true);
 		}
         
+        try {
+        	request.removeParameter("seqNo");
+            request.addParameter("seqNo", "error seqNo");
+        	download.doPost(request, new MockHttpServletResponse());
+        	Assert.fail("should throw exception but didn't.");
+		} catch (Exception e) {
+			Assert.assertTrue("下载附件时参数值有误", true);
+		}
+        
         // 最后删除文章、栏目、站点
         super.deleteSite(siteId);
         

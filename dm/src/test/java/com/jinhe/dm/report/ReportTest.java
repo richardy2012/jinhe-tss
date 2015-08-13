@@ -16,6 +16,7 @@ import com.jinhe.dm.TxTestSupport4DM;
 import com.jinhe.tss.framework.component.log.LogQueryCondition;
 import com.jinhe.tss.framework.component.log.LogService;
 import com.jinhe.tss.framework.component.param.Param;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.component.timer.SchedulerBean;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.context.Context;
@@ -59,6 +60,7 @@ public class ReportTest extends TxTestSupport4DM {
         report1.setDatasource(DMConstants.DEFAULT_CONN_POOL);
         report1.setDisplayUri("template/ichart.html");
         report1.setRemark("test report");
+        report1.setDisabled(ParamConstants.FALSE);
         action.saveReport(response, report1);
         
         action.getAllReport(response);
@@ -68,6 +70,8 @@ public class ReportTest extends TxTestSupport4DM {
         action.getReport(request, response, Report.TYPE1);
         
         action.startOrStop(response, group1.getId(), 1);
+        
+        action.startOrStop(response, report1.getId(), 1);
         action.startOrStop(response, report1.getId(), 0);
         
         action.copy(response, report1.getId(), group2.getId());

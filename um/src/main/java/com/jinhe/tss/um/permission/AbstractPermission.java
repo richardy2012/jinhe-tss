@@ -11,15 +11,12 @@ import javax.persistence.SequenceGenerator;
 
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.IEntity;
-import com.jinhe.tss.framework.web.dispaly.tree.ITreeNode;
-import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 
 /**
  * 权限表超类。
- * 实现了ITreeNode接口，因其要作为一个节点在权限树上展示。
  */
 @MappedSuperclass
-public abstract class AbstractPermission implements IEntity, ITreeNode {
+public abstract class AbstractPermission implements IEntity {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "permission_sequence")
@@ -107,15 +104,5 @@ public abstract class AbstractPermission implements IEntity, ITreeNode {
  
     public void setResourceName(String resourceName) {
         this.resourceName = resourceName;
-    }
-
-    public TreeAttributesMap getAttributes() {
-        return new TreeAttributesMap(id, resourceName);
-    }
-    
-    public String toString() {
-    	return "resource = " + resourceId + ", role = " + roleId 
-     		   + ", operationId = " + operationId + ", permissionState = " + permissionState
-     		   + ", isGrant = " + isGrant + ", isPass = " + isPass + ", resourceName = " + resourceName;
     }
 }

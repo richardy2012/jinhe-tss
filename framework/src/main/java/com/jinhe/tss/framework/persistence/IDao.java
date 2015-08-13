@@ -46,7 +46,7 @@ public interface IDao<T extends IEntity> {
     
     /**
      * 不直接调用dao.update(entity)方法，以避开decodeInterceptor和permissionInterceptor等的拦截。
-     * TODO operateInfoInteceptor也将拦截不到，导致无法设置更新时间等信息
+     * operateInfoInteceptor也将拦截不到，需要重写里面的匹配规则，增加对refresh的识别。
      */
     Object refreshEntity(Object entity);
 

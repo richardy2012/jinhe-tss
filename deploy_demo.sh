@@ -1,3 +1,4 @@
+# deploy to my mac localhost
 
 TOMCAT_HOME="/Users/jinpujun/Desktop/tomcat7063"
 

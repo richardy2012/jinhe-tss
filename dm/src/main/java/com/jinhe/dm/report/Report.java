@@ -224,6 +224,6 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
 	}
 	
 	public Serializable getPK() {
-		return this.id;
+		return this.getId();
 	}
 }

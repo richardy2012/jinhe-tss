@@ -106,6 +106,9 @@ public class LoginServiceTest extends TxSupportTest4UM {
 		List<GroupDTO> groups = loginSerivce.getGroupTreeByGroupId(groupId);
 		Assert.assertTrue(groups.size() == 2);
 		
+		GroupDTO gDTO = groups.get(0);
+		gDTO.setDisabled(0);
+		
 		List<OperatorDTO> users1 = loginSerivce.getUsersByGroupId(groupId);
 		List<OperatorDTO> users2 = loginSerivce.getUsersByRoleId(role1Id);
 		Assert.assertTrue(users1.size() == 1); // JK

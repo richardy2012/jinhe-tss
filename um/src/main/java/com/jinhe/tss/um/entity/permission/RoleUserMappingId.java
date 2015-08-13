@@ -40,7 +40,7 @@ public class RoleUserMappingId implements Serializable {
 	}
 
 	public String toString() {
-		return "roleId=" + roleId + ",userId=" + userId;
+		return "roleId=" + this.getRoleId() + ",userId=" + this.getUserId();
 	}
 }
 

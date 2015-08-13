@@ -50,11 +50,11 @@ public class ExceptionEncoder {
                 
                 long theadId = Thread.currentThread().getId();
                 String userName = Environment.getUserName();
-				if( userName != null && !e.needRelogin() ) {
-					log.warn(theadId + "出现异常, 当前登陆用户【" + userName + "】");
-                }
                 
 				if( e.needPrint() ) {
+					if( !e.needRelogin() ) {
+						log.warn( "出现异常, 当前登陆用户【" + userName + "】, " + theadId);
+	                }
                     printErrorMessage(be);
                     log.debug("-----------------------  Exception  -----------------------");
                     log.debug("AppCode: " + Config.getAttribute(Config.APPLICATION_CODE));
@@ -62,7 +62,8 @@ public class ExceptionEncoder {
                     log.debug("--------------------- End of Exception --------------------");
                 }
 				else {
-					log.warn(be.getMessage() + ", request url:" + requestContext.getRequest().getServletPath() + ", " + theadId);
+					log.warn("出现异常, 当前登陆用户【" + userName + "】, " + be.getMessage() 
+							+ ", request url:" + requestContext.getRequest().getServletPath() + ", " + theadId);
 				}
             }
             
@@ -81,18 +82,11 @@ public class ExceptionEncoder {
     }
 
     /**
-     * <p>
      * 打印详细错误信息到日志中
-     * </p>
      * @param be
      */
     private static void printErrorMessage(Throwable be) {
-        Throwable first = null;
-        Throwable cause = be.getCause();
-        while (cause != null) {
-            first = cause;
-            cause = cause.getCause();
-        }
+        Throwable first = getFirstCause(be);
         
         // 过滤掉不需要输出到控制台（或日志）的异常，比如SocketException等
         if(first != null && first instanceof SocketException) {
@@ -103,6 +97,24 @@ public class ExceptionEncoder {
         if (first != null && first != be) {
             printStackTrace(first);
         }
+    }
+    
+    /**
+     * 读取到最里面一级的异常对象。
+     * 异常经过层层重新抛出，但只有最里面一级才是引起本次异常的根本原因。
+     * 
+     * @param be
+     * @return
+     */
+    public static Throwable getFirstCause(Throwable be) {
+        Throwable first = null;
+        Throwable cause = be.getCause();
+        while (cause != null) {
+            first = cause;
+            cause = cause.getCause();
+        }
+        
+        return first;
     }
 
     /**

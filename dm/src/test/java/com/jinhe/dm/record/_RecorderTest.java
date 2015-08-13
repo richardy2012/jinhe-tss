@@ -71,6 +71,15 @@ public class _RecorderTest extends TxTestSupport4DM {
 		recorder.create(request, response, recordId);
 		recorder.update(request, response, recordId, 1);
 		
+		// test 更新时必填字段为空
+		try {
+			request.removeParameter("f3");
+			recorder.update(request, response, recordId, 1);
+			Assert.fail("should throw exception but didn't.");
+		} 
+		catch(Exception e) {
+		}
+		
 		List<Map<String, Object>> result = recorder.getDB(recordId).select().result;
 		Assert.assertTrue(result.size() == 1);
 		
@@ -99,7 +108,16 @@ public class _RecorderTest extends TxTestSupport4DM {
 		Assert.assertTrue(attachList.size() == 1);
 		
 		RecordAttach ra = (RecordAttach) attachList.get(0);
+		log.info(ra.toString());
 		Assert.assertEquals("123.txt", ra.getName());
+		Assert.assertEquals(recordId, ra.getRecordId());
+		Assert.assertEquals(itemId, ra.getItemId());
+		Assert.assertNotNull(ra.getSeqNo());
+		Assert.assertEquals("txt", ra.getFileExt());
+		Assert.assertNotNull(ra.getFileName());
+		Assert.assertNotNull(ra.getUploadDate());
+		Assert.assertTrue(ra.isOfficeDoc());
+		Assert.assertFalse(ra.isImage());
 		
 		try {
 			recorder.downloadAttach(new MockHttpServletResponse(), ra.getId());

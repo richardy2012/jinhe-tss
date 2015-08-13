@@ -40,7 +40,7 @@ public abstract class MatchByDaoMethodNameInterceptor implements MethodIntercept
         return 0;
     }
     
-    private boolean match(String methodName, List<String> list){
+    protected boolean match(String methodName, List<String> list){
         for(Iterator<String> it = list.iterator(); it.hasNext();){
             if(methodName.indexOf((String)it.next()) != -1)
                 return true;

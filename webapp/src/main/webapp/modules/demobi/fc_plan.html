@@ -55,21 +55,22 @@
 
 <script>
 
+var regionData = [], data, method = 'POST';
+
 /* XMLHTTP请求地址汇总 */
 URL_REGIONS   = "/tss/api/json/GetRegions";
 URL_OFCS      = NO_AUTH_PATH + "param/json/simple/";
 URL_SAVE_PLAN = NO_AUTH_PATH + "param";
 URL_DELE_PLAN = NO_AUTH_PATH + "param/";
 
-if(window.self === window.parent) {
+if(true) {
+    method = 'GET';
     URL_REGIONS   = "data/fc/regionTree.json?";
     URL_OFCS      = "data/fc/ofc.json?";
     URL_SAVE_PLAN = "data/_success.xml?";
     URL_DELE_PLAN = "data/_success.xml?";
     URL_PLANS     = "data/fc/plans.json?";
 }
-
-var regionData = [], data;
 
  $(function() {
     initTree2();
@@ -118,6 +119,7 @@ function getRegionTreeData() {
     $.ajax({
         url: URL_REGIONS,
         type: 'json',
+        method: method,
         ondata: function() {
             var data = this.getResponseJSON();
             data.each(function(i, item) {

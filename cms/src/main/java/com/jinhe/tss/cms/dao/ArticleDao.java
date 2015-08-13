@@ -2,7 +2,6 @@ package com.jinhe.tss.cms.dao;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -93,15 +92,6 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
 				" where a.channel.id = ? and a.status = ? ";
         return getEntities(hql, channelId, CMSConstants.XML_STATUS );
 	}
-
-    @SuppressWarnings("unchecked")
-	public List<Article> getExpireArticlePuburlList(Date now, Long channelId) {
-        String hql = "from Article a " +
-                " where a.channel.id = ? and a.status = ? and a.overdueDate <= ? ";
-        
-        // 需要过期的文章为”已发布“状态的文章。其他状态没必要设置为过期
-        return (List<Article>) getEntities(hql, channelId, CMSConstants.XML_STATUS, now);
-    }
  
     //* *****************************************            for page search         ********************************************
     

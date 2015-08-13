@@ -29,6 +29,8 @@ public class TreeTest {
 		DefaultLevelTreeNode node3 = new DefaultLevelTreeNode(4L, root.getId(), "node3");
 		DefaultLevelTreeNode node4 = new DefaultLevelTreeNode(5L, node2.getId(), "node4");
 		
+		Assert.assertEquals(node1, node1);
+		
 		List<ILevelTreeNode> list = new ArrayList<ILevelTreeNode>();
 		list.add(root);
 		list.add(node1);

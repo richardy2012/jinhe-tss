@@ -87,15 +87,15 @@ body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
-    var globalValiable = {}; // 用来存放传递给iframe页面的信息
+    var globalValiable = {}, method = 'POST'; // 用来存放传递给iframe页面的信息
 
     URL_DATA_SERVICE1   = '../../api/json/' + 'SORank';
- // URL_DATA_SERVICE2   = '../../api/json/' + 'SOProgress';
-    URL_DATA_SERVICE2 = 'data/kanban/2.json?';
+    URL_DATA_SERVICE2   = '../../api/json/' + 'SOProgress';
     URL_DATA_SERVICE3   = '../../api/json/' + 'SOShipPM';
     URL_DATA_SERVICE4   = '../../api/json/' + 'SOShipPH';
 
-    if (location.protocol === 'file:') {
+    if (location.protocol === 'file:' || true) {
+        method = 'GET';
         URL_DATA_SERVICE1 = 'data/kanban/1.json?';
         URL_DATA_SERVICE2 = 'data/kanban/2.json?';
         URL_DATA_SERVICE3 = 'data/kanban/3.json?';
@@ -129,7 +129,7 @@ body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
  
         tssJS.ajax({
             url : URL_DATA_SERVICE1,
-            method : "POST",
+            method : method,
             params : queryParams,
             type : "json",
             waiting : true,
@@ -295,7 +295,7 @@ body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
         tssJS.ajax({
             url : URL_DATA_SERVICE2,
             params : queryParams,
-            method : "GET",
+            method : method,
             type : "json",
             waiting : true,
             ondata : function() {
@@ -438,7 +438,7 @@ body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
 
         tssJS.ajax({
             url : URL_DATA_SERVICE4,
-            method : "GET",
+            method : method,
             params : queryParams,
             type : "json",
             waiting : true,
@@ -468,7 +468,7 @@ body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
 
         tssJS.ajax({
             url : URL_DATA_SERVICE4,
-            method : "GET",
+            method : method,
             params : queryParams,
             type : "json",
             waiting : true,

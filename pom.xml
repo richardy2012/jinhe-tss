@@ -386,6 +386,22 @@
 			</properties>
 		</profile>
 
+		<profile>
+			<id>boubei</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<environment>boubei</environment>
+				<log.level>info</log.level>
+				<job.enable>true</job.enable>
+				<db.username>root</db.username>
+				<db.password>800best@com</db.password>
+				<db.url>127.0.0.1:3306/demo_bi</db.url>
+				<tomcat.url>www.boubei.com:8080</tomcat.url>
+			</properties>
+		</profile>
+
 	</profiles>
 
 	<distributionManagement>

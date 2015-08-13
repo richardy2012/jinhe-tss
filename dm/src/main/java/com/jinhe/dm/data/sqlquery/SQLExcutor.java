@@ -286,7 +286,7 @@ public class SQLExcutor {
         } catch (SQLException e) {
             String errorMsg = "执行SQL时出错了:" + e.getMessage();
             log.error(errorMsg + "\n   数据源：" + dbUrl + ",\n   参数：" + paramsMap + ",\n   脚本：" + sql);
-            throw new BusinessException(errorMsg, e);
+            throw new BusinessException(errorMsg);
         } finally {
             try {
                 if (pstmt != null) {
@@ -415,7 +415,7 @@ public class SQLExcutor {
             conn.setAutoCommit(autoCommit);
             
         } catch (SQLException e) {
-        	log.error(Environment.getUserCode() + ": " + Arrays.asList(paramsList.get(0)));
+        	log.error(Environment.getUserCode() + ", " + Arrays.asList(paramsList.get(0)));
             throw new BusinessException("执行SQL时出错了，sql : " + sql, e);
         } finally {
             try {

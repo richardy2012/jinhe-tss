@@ -38,7 +38,7 @@ body { background-color: #fff; height: 95%;}
     URL_DATA4 = '/tss/api/json/GetSOQty_OMS'; 
     URL_DATA5 = '/tss/api/json/GetWHs';
 
-    var _params = {}, skus = {}, skuIDs, skuCodes, whs = {}, _data, data1, data2, data3, data, _data2;
+    var _params = {}, skus = {}, skuIDs, skuCodes, whs = {}, _data, data1, data2, data3, data, _data2, method = 'POST';
 
     $(function() {
         initResearhBt();
@@ -53,6 +53,7 @@ body { background-color: #fff; height: 95%;}
         }
 
         // just Test
+        method = 'GET';
         URL_DATA1 = 'data/fc/hpfcfx_topSKU.json?';
         URL_DATA2 = 'data/fc/hpfcfx_1.json?';
         URL_DATA3 = 'data/fc/hpfcfx_2.json?';
@@ -106,6 +107,7 @@ body { background-color: #fff; height: 95%;}
         tssJS.ajax({
             url : URL_DATA2,
             type: 'json',
+            method : method,
             params: { "param1": _params.param1, "param3": _params.param2, "param4": _params.param3, "param2": skuIDs.join(",") },
             waiting : true,
             ondata : function() {
@@ -118,6 +120,7 @@ body { background-color: #fff; height: 95%;}
         tssJS.ajax({
             url : URL_DATA3,
             type: 'json',
+            method : method,
             params: { "param1": customerCode, "param3": _params.param2, "param4": _params.param3, "param2": skuCodes.join(",") },
             waiting : true,
             ondata : function() {
@@ -130,6 +133,7 @@ body { background-color: #fff; height: 95%;}
         tssJS.ajax({
             url : URL_DATA4,
             type: 'json',
+            method : method,
             params: { "param1": customerCode, "param3": _params.param2, "param4": _params.param3, "param2": skuCodes.join(",") },
             waiting : true,
             ondata : function() {

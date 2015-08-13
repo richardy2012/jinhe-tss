@@ -26,7 +26,8 @@ public class UserDTO {
         // 默认有效期50年
         Calendar calendar = new GregorianCalendar();
         calendar.add(Calendar.YEAR, 50);
-        accountLife = calendar.getTime();
+        
+        this.setAccountLife(calendar.getTime());
         return accountLife;
     }
  
@@ -96,11 +97,6 @@ public class UserDTO {
  
 	public void setUserName(String userName) {
 		this.userName = userName;
-	}
-	
-	public String toString(){
-		return "登陆名:[" + loginName + "] 姓名:[" + userName + "] 员工编号:["
-				+ employeeNo + "] 用户所在组id:[" + groupId + "]";
 	}
  
     public String getEmail() {

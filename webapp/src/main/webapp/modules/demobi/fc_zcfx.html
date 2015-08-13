@@ -43,7 +43,7 @@ body { background-color: #fff; height: 95%;}
     URL_DATA4 = '/tss/api/json/GetWHs';
 
     var _params = {}, skuIDs, skuCodes, whs, _data, data1, data2, 
-        FIELD_DEFINE0, FIELD_DEFINE1, FIELD_DEFINE2, FIELD_DEFINE3;
+        FIELD_DEFINE0, FIELD_DEFINE1, FIELD_DEFINE2, FIELD_DEFINE3, method = 'POST';
 
     $(function() {
         initResearhBt();
@@ -58,6 +58,7 @@ body { background-color: #fff; height: 95%;}
         }
 
         // just Test
+        method = 'GET';
         URL_DATA1 = 'data/fc/zcfhfx_1.json?';
         URL_DATA2 = 'data/fc/zcfhfx_topSKU3.json?';
         URL_DATA3 = 'data/fc/zcfhfx_2.json?';
@@ -120,6 +121,7 @@ body { background-color: #fff; height: 95%;}
         tssJS.ajax({
             url : URL_DATA2,
             type: 'json',
+            method: method,
             params: { "param1": customerCode, "param2": _params.param2, "param3": _params.param3, "param4": _params.param5 },
             waiting : true,
             ondata : function() {
@@ -137,6 +139,7 @@ body { background-color: #fff; height: 95%;}
                 tssJS.ajax({
                     url : URL_DATA3,
                     type: 'json',
+                    method: method,
                     params: { 
                         "param1": customerCode, 
                         "param2": _params.param2, 

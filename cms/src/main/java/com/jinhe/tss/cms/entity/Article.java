@@ -24,8 +24,6 @@ import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.grid.GridAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
-import com.jinhe.tss.framework.web.dispaly.tree.ITreeNode;
-import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.DateUtil;
@@ -36,7 +34,7 @@ import com.jinhe.tss.util.DateUtil;
 @Entity
 @Table(name = "cms_article")
 @SequenceGenerator(name = "article_sequence", sequenceName = "article_sequence", initialValue = 1, allocationSize = 10)
-public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm {
+public class Article extends OperateInfo implements IGridNode, IXForm {
     
 	public static final String[] IGNORE_PROPERTIES = new String[] { "id", "status", "hitCount", "issueDate" };
 	
@@ -199,11 +197,6 @@ public class Article extends OperateInfo implements ITreeNode, IGridNode, IXForm
         	map.put("issueDate", DateUtil.format(issueDate));
         }
         
-        return map;
-    }
-
-    public TreeAttributesMap getAttributes() {
-        TreeAttributesMap map = new TreeAttributesMap(id.toString(), title);
         return map;
     }
  

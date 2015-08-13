@@ -50,6 +50,10 @@ public abstract class _Database {
 	List<String> fieldTypes;
 	List<String> fieldNames;
 	
+	public String toString() {
+		return "【" + this.datasource + ", " + this.recordName + ", " + this.table + "】";
+	}
+	
 	public _Database(Record record) {
 		this.recordId = record.getId();
 		this.recordName = record.getName();

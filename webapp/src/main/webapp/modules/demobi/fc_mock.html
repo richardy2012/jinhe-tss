@@ -57,7 +57,7 @@ body { background-color: #fff; height: 95%;}
     var _params = {};
     var _data;
     var regions = {}, planData, whList, whData = {}, skus = {}, skuIDs, 
-        data1, data2, data3;
+        data1, data2, data3, method = 'POST';
 
     $(function() {
         initResearhBt();
@@ -72,6 +72,7 @@ body { background-color: #fff; height: 95%;}
         }
 
         // just Test
+        method = 'GET';
         URL_DATA1 = 'data/fc/fcmock_topSKU.json?';
         URL_DATA2 = 'data/fc/fcmock_distribute.json?';
         URL_DATA3 = 'data/fc/fcmock_distribute_sku.json?';
@@ -155,6 +156,7 @@ body { background-color: #fff; height: 95%;}
         tssJS.ajax({
             url : URL_DATA2,
             type: 'json',
+            method: method,
             params: { "param1": _params.param1, "param3": _params.param2, "param4": _params.param3 },
             waiting : true,
             ondata : function() {
@@ -173,6 +175,7 @@ body { background-color: #fff; height: 95%;}
         tssJS.ajax({
             url : URL_DATA3,
             type: 'json',
+            method: method,
             params: { "param1": _params.param1, "param3": _params.param2, "param4": _params.param3, "param2": skuIDs.join(",") },
             waiting : true,
             ondata : function() {

@@ -54,10 +54,6 @@ public class GroupDTO implements Serializable {
 	public void setDisabled(Integer disabled) {
 		this.disabled = disabled;
 	}
-
-	public String toString(){
-		return "Name:[" + name + "] id:[" + id + "] parentId:[" + parentId + "] disabled:[" + disabled + "]";
-	}
 }
 
 	

@@ -36,14 +36,5 @@ public class DefaultLevelTreeNode implements ILevelTreeNode {
         DefaultLevelTreeNode object = (DefaultLevelTreeNode) obj;
         return this.id.equals(object.getId());
     }
-
-    public int hashCode() {
-        return this.id.hashCode();
-    }
-
-    public String toString() {
-        return id + "_" + name;
-    }
-
 }
 

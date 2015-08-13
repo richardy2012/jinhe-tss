@@ -13,7 +13,6 @@ public class MailUtilTest {
 		} catch(Exception e) {
 			
 		}
-		
 	}
 	
 	@Test

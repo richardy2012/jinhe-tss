@@ -9,6 +9,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jinhe.dm.TxTestSupport4DM;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.sso.context.Context;
 
 public class DisplayTest extends TxTestSupport4DM {
@@ -54,6 +55,8 @@ public class DisplayTest extends TxTestSupport4DM {
         
         report1.setRemark("test report");
         action.saveReport(response, report1);
+        
+        action.startOrStop(response, report1.getId(), ParamConstants.FALSE);
         
         log.debug("开始测试报表展示：");
         request.addParameter("param1", "0");
@@ -148,6 +151,7 @@ public class DisplayTest extends TxTestSupport4DM {
         		"{'label':'组织列表', 'type':'String', 'nullable':'false'}]"	;
         report1.setParam(paramsConfig);
         
+        report1.setDisabled(ParamConstants.FALSE);
         report1.setRemark("test report");
         action.saveReport(response, report1);
         
