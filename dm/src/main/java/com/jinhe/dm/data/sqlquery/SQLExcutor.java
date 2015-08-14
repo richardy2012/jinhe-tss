@@ -340,6 +340,8 @@ public class SQLExcutor {
 			conn.setAutoCommit(autoCommit);
 			
 		} catch (SQLException e) {
+			try { conn.rollback(); } catch (Exception e2) { }
+			
 			log.error("执行SQL时出错了。sql : " + sql, e);
 			throw new BusinessException("执行SQL时出错了。sql : " + sql, e);
 		} finally {
@@ -381,16 +383,33 @@ public class SQLExcutor {
         Cacheable connItem = connpool.checkOut(0);
         Connection conn = (Connection) connItem.getValue();
         
+        boolean hasException = false;
         try {
         	excuteBatch(sql, paramsList, conn);
+        	
         } catch (Exception e) {
+        	hasException = true;
         	throw new BusinessException("执行SQL时出错了。sql : " + sql, e);
         } finally {
-            connpool.checkIn(connItem);
+        	connpool.checkIn(connItem);
+        	
+        	// 对于执行出错SQL后的Connetion，做销毁处理（因发现conn.rollback后，conn里缓存数据无法清除，导致数据不一致情况出现）
+        	if( hasException ) { 
+        		connpool.removeObject(connItem.getKey());
+        		connpool.destroyObject(connItem);
+        	}
         }
     }
 
-    // 批量执行SQL
+    /**
+     * 批量执行SQL
+     * 
+     * 循环里连续的进行插入操作，在开始时设置了：conn.setAutoCommit(false);  最后才进行conn.commit(),
+     * 这样即使插入的时候报错，修改的内容也不会提交到数据库，而如果你没有手动的进行setAutoCommit(false); 
+     * 出错时就会造成，前几条插入，后几条没有会形成脏数据。
+     * 
+     * 注：设定setAutoCommit(false) 没有在catch中进行Connection的rollBack操作，操作的表就会被锁住，造成数据库死锁。
+     */
     public static void excuteBatch(String sql, List<Object[]> paramsList, Connection conn) {
     	if(paramsList == null || paramsList.isEmpty()) return;
     	
@@ -415,6 +434,8 @@ public class SQLExcutor {
             conn.setAutoCommit(autoCommit);
             
         } catch (SQLException e) {
+        	try { conn.rollback(); } catch (Exception e2) { }
+        	
         	log.error(Environment.getUserCode() + ", " + Arrays.asList(paramsList.get(0)));
             throw new BusinessException("执行SQL时出错了，sql : " + sql, e);
         } finally {
