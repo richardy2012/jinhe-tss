@@ -162,21 +162,15 @@ public class ArticleAction extends BaseActionSupport {
 	    articleService.doTopArticle(id);
         printSuccessMessage();
 	}
- 
-    /**
-     * 获取搜索文章的查询模板
-     */
-	@RequestMapping(value = "/search/template", method = RequestMethod.GET)
-    public void getSearchArticleTemplate(HttpServletResponse response) {
-        print("SearchArticle", new XFormEncoder(CMSConstants.XFORM_SEARCH_ARTICLE));
-    }
-    
+
 	/**
 	 *  搜索文章列表
 	 */
-	@RequestMapping(value = "/search/result", method = RequestMethod.GET)
-	public void getArticleList(HttpServletResponse response, ArticleQueryCondition condition) {
-        Object[] data = articleService.searchArticleList(condition);
+	@RequestMapping("/query/{page}")
+	public void queryArticles(HttpServletResponse response, @PathVariable("page") int page, ArticleQueryCondition condition) {
+        condition.getPage().setPageNum(page);
+		
+		Object[] data = articleService.searchArticleList(condition);
 		GridDataEncoder gEncoder = new GridDataEncoder(data[0], CMSConstants.GRID_TEMPLATE_ARTICLELIST);
         print(new String[]{"ArticleList", "PageInfo"}, new Object[]{gEncoder, (PageInfo)data[1]});
 	}	

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.record.ddl._Database;
 import com.jinhe.dm.record.file.RecordAttach;
@@ -80,10 +81,27 @@ public class _Recorder extends BaseActionSupport {
         
         SQLExcutor ex = _db.select(page, PAGE_SIZE, getRequestMap(request));
         
+        // 读取记录的附件信息
+        Map<Object, Object> itemAttach = new HashMap<Object, Object>();
+        if(_db.needFile) {
+        	String sql = "select itemId item, count(*) num from dm_record_attach where recordId = ? group by itemId";
+        	List<Map<String, Object>> attachResult = SQLExcutor.query(DMConstants.LOCAL_CONN_POOL, sql, recordId);
+        	for(Map<String, Object> temp : attachResult) {
+        		itemAttach.put(temp.get("item").toString(), temp.get("num"));
+        	}
+        }
+        
         List<IGridNode> temp = new ArrayList<IGridNode>();
 		for(Map<String, Object> item : ex.result) {
             DefaultGridNode gridNode = new DefaultGridNode();
             gridNode.getAttrs().putAll(item);
+            
+            Object itemId = item.get("id").toString();
+            Object attachNum = itemAttach.get(itemId);
+            if(attachNum != null) {
+            	gridNode.getAttrs().put("fileNum", "<a href='javascript:void(0)' onclick='manageAttach(" + itemId + ")'>" + attachNum + "</a>");
+            }
+            
             temp.add(gridNode);
         }
         GridDataEncoder gEncoder = new GridDataEncoder(temp, _db.getGridTemplate());

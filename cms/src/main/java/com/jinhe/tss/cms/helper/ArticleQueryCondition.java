@@ -12,12 +12,7 @@ import com.jinhe.tss.framework.persistence.pagequery.MacrocodeQueryCondition;
  * 文章列表的查询条件
  */
 public class ArticleQueryCondition extends MacrocodeQueryCondition {
-    
-    /* 搜索期限 */
-    public static final int QUERY_CONDITION_DATE_ONE    = 1;   // 一天以内
-    public static final int QUERY_CONDITION_DATE_THREE  = 2;   // 三天以内
-    public static final int QUERY_CONDITION_DATE_SEVENE = 7;   // 一星期以内
-    
+ 
     private String  title;
     private String  author;
     private Integer status;  // 流程状态
@@ -27,23 +22,13 @@ public class ArticleQueryCondition extends MacrocodeQueryCondition {
     private List<Long> channelIds;
     
     private String keyword;
+    private String summary;
     
     private String orderField;  // 排序字段
     private Integer isDesc;     // 是否降序排序
     
     public Set<String> getIgnoreProperties() {
-        if(channelId == null){
-            super.getIgnoreProperties().add("channelId");
-        }
-        if(channelIds == null){
-            super.getIgnoreProperties().add("channelIds");
-        }
-        if(getCreateTime() == null){
-            super.getIgnoreProperties().add("createTime");
-        }
-        
-        super.getIgnoreProperties().add("daysAgo");
-        super.getIgnoreProperties().add("fetchAll");
+        super.getIgnoreProperties().add("channelIds");
         super.getIgnoreProperties().add("orderField");
         super.getIgnoreProperties().add("isDesc");
         return super.getIgnoreProperties();
@@ -54,6 +39,7 @@ public class ArticleQueryCondition extends MacrocodeQueryCondition {
         map.put("${title}",  " and a.title  like :title");
         map.put("${author}", " and a.author like :author");
         map.put("${keyword}", " and a.keyword like :keyword");
+        map.put("${summary}", " and a.keyword like :summary");
         
         map.put("${status}", " and a.status = :status");
         map.put("${createTime}", " and a.createTime > :createTime");
@@ -129,6 +115,9 @@ public class ArticleQueryCondition extends MacrocodeQueryCondition {
     }
     
 	public String getKeyword() {
+		if(keyword != null){
+			keyword = "%" + keyword.trim() + "%";           
+        }
 		return keyword;
 	}
 	
@@ -138,5 +127,16 @@ public class ArticleQueryCondition extends MacrocodeQueryCondition {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public String getSummary() {
+		if(summary != null){
+			keyword = "%" + summary.trim() + "%";           
+        }
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
 	}
 }

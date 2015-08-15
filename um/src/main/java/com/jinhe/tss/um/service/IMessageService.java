@@ -22,10 +22,16 @@ public interface IMessageService {
 	Message viewMessage(Long id);
 	
 	/**
-	 * 删除短消息 将标志位设为已删状态
+	 * 批量设置消息为已阅
 	 * @param id
 	 */
-	void deleteMessage(Long id);
+	void viewMore(String ids);
+	
+	/**
+	 * 删除短消息
+	 * @param id
+	 */
+	void deleteMessage(String id);
 	
 	/**
 	 * <p>

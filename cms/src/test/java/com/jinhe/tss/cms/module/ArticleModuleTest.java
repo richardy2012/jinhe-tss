@@ -64,23 +64,21 @@ public class ArticleModuleTest extends AbstractTestSupport {
         articleAction.doOrUndoTopArticle(response, articleId);
         assertEquals(article.getIsTop(), ParamConstants.FALSE);
         
-        // 获取搜索文章的查询模板
-        articleAction.getSearchArticleTemplate(response);
-        
         articleAction.getChannelArticles(response, channelId, 1);
         
         ArticleQueryCondition condition = new ArticleQueryCondition();
         condition.setTitle("轮回");
         condition.setChannelId(channelId);
-		articleAction.getArticleList(response, condition);
+		articleAction.queryArticles(response, 1, condition);
 		
 		condition.setChannelId(channelId);
 		condition.setCreateTime(new Date());
 		condition.setIsDesc(ParamConstants.TRUE);
 		condition.setAuthor("Jon.King");
 		condition.setKeyword("历史 轮回");
+		condition.setSummary("历史");
 		condition.setOrderField("author");
-		articleAction.getArticleList(response, condition);
+		articleAction.queryArticles(response, 1, condition);
 		
 		// 移动文章
         articleAction.moveArticle(response, article.getId(), channel3.getId());

@@ -47,5 +47,28 @@ public class DateUtilTest {
 		}
 		
 	}
+	
+	@Test
+	public void test2() {
+		Date day1 = DateUtil.today();
+		Date day2 = DateUtil.addDays(day1, 10);
+		Date day3 = DateUtil.subDays(day1, 10);
+		
+		Assert.assertEquals(21, DateUtil.daysBetweenFromAndTo(day3, day2).size());
+		
+		DateUtil.getDay(day1);
+		int month = DateUtil.getMonth(day1);
+		int year = DateUtil.getYear(day1);
+		
+		Date day4 = DateUtil.noHMS(new Date());
+		Assert.assertEquals(0, DateUtil.getHour(day4));
+		
+		DateUtil.isMonthEnd(day1);
+		
+		Assert.assertEquals("202006", DateUtil.toYYYYMM(2020, 6));
+		
+		Assert.assertEquals(DateUtil.toYYYYMM(year, month),
+				DateUtil.toYYYYMM(day1));
+	}
 
 }

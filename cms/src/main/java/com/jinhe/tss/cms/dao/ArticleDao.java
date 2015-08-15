@@ -123,7 +123,7 @@ public class ArticleDao extends BaseDao<Article> implements IArticleDao {
 				+ "  a.status, a.channel, a.isTop, a.overdueDate"
                 + " from Article a, Temp t"
 				+ " where a.channel.id = t.id "
-				+ " ${author} ${status} ${title} ${keyword} ${createTime}" ;
+				+ "  ${title} ${author} ${keyword} ${summary} ${createTime} ${status} " ;
         
         String orderField = condition.getOrderField();
 		String orderBy = orderField == null ? null : "a." + orderField;

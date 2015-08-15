@@ -43,7 +43,9 @@ public abstract class _Database {
 	public String datasource;
 	public String table;
 	public String customizeTJ;
-	boolean needLog;
+	
+	private boolean needLog;
+	public boolean needFile;
 	
 	List<Map<Object, Object>> fields;
 	List<String> fieldCodes;
@@ -62,6 +64,7 @@ public abstract class _Database {
 		this.fields = parseJson(record.getDefine());
 		this.customizeTJ = record.getCustomizeTJ();
 		this.needLog = ParamConstants.TRUE.equals(record.getNeedLog());
+		this.needFile = ParamConstants.TRUE.equals(record.getNeedFile());
 		
 		this.initFieldCodes();
 	}
@@ -115,6 +118,7 @@ public abstract class _Database {
 		String table = _new.getTable();
 		this.customizeTJ = _new.getCustomizeJS();
 		this.needLog = ParamConstants.TRUE.equals(_new.getNeedLog());
+		this.needFile = ParamConstants.TRUE.equals(_new.getNeedFile());
 		
 		if(!newDS.equals(this.datasource) || !table.equals(this.table)) {
 			this.datasource = newDS;
@@ -395,6 +399,10 @@ public abstract class _Database {
         int index = 0; 
         for(String filed : fieldNames) {
             sb.append("<column name=\"" + fieldCodes.get(index++) + "\" mode=\"string\" caption=\"" + filed + "\" />");
+        }
+        
+        if(this.needFile) {
+        	sb.append("<column name=\"fileNum\" mode=\"string\" caption=\"附件数\" />");
         }
         sb.append("<column name=\"createtime\" mode=\"string\" caption=\"创建时间\" />");
         sb.append("<column name=\"creator\" mode=\"string\" caption=\"创建人\" />");

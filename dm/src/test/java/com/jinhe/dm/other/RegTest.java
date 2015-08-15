@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-import com.jinhe.dm.data.util._DateUtil;
 import com.jinhe.tss.util.DateUtil;
 
 public class RegTest {
@@ -16,8 +15,8 @@ public class RegTest {
   		Date dateObj;
   		if (Pattern.compile("^today[\\s]*-[\\s]*\\d").matcher(paramValue).matches()) {
   			int deltaDays = Integer.parseInt(paramValue.split("-")[1].trim());
-  			Date today = _DateUtil.noHMS(new Date());
-  			dateObj = _DateUtil.subDays(today, deltaDays);
+  			Date today = DateUtil.noHMS(new Date());
+  			dateObj = DateUtil.subDays(today, deltaDays);
   		} 
   			else {
   				try {

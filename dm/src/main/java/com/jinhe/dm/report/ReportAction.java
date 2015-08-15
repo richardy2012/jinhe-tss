@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
-import com.jinhe.dm.data.util._DateUtil;
 import com.jinhe.dm.report.permission.ReportPermission;
 import com.jinhe.dm.report.permission.ReportResource;
 import com.jinhe.dm.report.timer.ReportJob;
@@ -41,6 +40,7 @@ import com.jinhe.tss.um.helper.PasswordRule;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.util.BeanUtil;
+import com.jinhe.tss.util.DateUtil;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;
@@ -116,7 +116,7 @@ public class ReportAction extends BaseActionSupport {
     		if( !report.isActive() )  continue;
  
     		if( !report.isGroup() 
-    				&& report.getCreateTime().after(_DateUtil.subDays(_DateUtil.today(), 10))
+    				&& report.getCreateTime().after(DateUtil.subDays(DateUtil.today(), 10))
     				&& DMConstants.hasCNChar(report.getName())) {
     			
     			latest.add(cloneReport(newGroupId, report));
@@ -151,7 +151,7 @@ public class ReportAction extends BaseActionSupport {
 	    		" order by " + (onlySelf ? "lastTime" : "value")  + " desc";
 	    SQLExcutor ex = new SQLExcutor(false);
 	    Map<Integer, Object> params = new HashMap<Integer, Object>();
-	    params.put(1, _DateUtil.subDays(_DateUtil.today(), 30));
+	    params.put(1, DateUtil.subDays(DateUtil.today(), 30));
 	    if(onlySelf) {
 	    	params.put(2, Environment.getUserId());
 	    }

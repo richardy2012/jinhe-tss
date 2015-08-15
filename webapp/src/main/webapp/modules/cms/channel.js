@@ -25,7 +25,7 @@
     URL_MOVE_ARTICLE   = AUTH_PATH + "article/move/"; // {articleId}/{channelId}
     URL_LOCK_ARTICLE   = AUTH_PATH + "article/list";
     URL_SETTOP_ARTICLE = AUTH_PATH + "article/top/";  // {id}
-	URL_SEARCH_ARTICLE = AUTH_PATH + "article/search/result";  // 暂时没用到，日后加上查询功能
+	URL_SEARCH_ARTICLE = AUTH_PATH + "article/query";  // {page}
 
     URL_PUBLISH_PROGRESS = AUTH_PATH + "channel/publish/";   // {id}/{category}
 	URL_SYNC_PROGRESS    = AUTH_PATH + "channel/progress/";  // GET
@@ -51,7 +51,7 @@
 		URL_MOVE_ARTICLE   = "data/_success.xml?";
 		URL_LOCK_ARTICLE   = "data/_success.xml?";
 		URL_SETTOP_ARTICLE = "data/_success.xml?";
-		URL_SEARCH_ARTICLE = "data/articlelist.xml?";
+		URL_SEARCH_ARTICLE = "data/article_list.xml?";
 
 		URL_PUBLISH_PROGRESS = "data/progress.xml?";
 		URL_SYNC_PROGRESS    = "data/_success.xml?";
@@ -149,7 +149,13 @@
             callback: function() { showArticleList(); },
             icon:ICON + "icon_view_list.gif",
             visible:function() { return isChannel() && getOperation("1");}
-        }         
+        }        
+        var item12 = {
+            label:"搜索文章",
+            callback: searchArticles,
+            icon:"images/search.gif",
+            visible:function() { return getOperation("1"); }
+        } 
 
 		var submenu5 = new $.Menu(); // 即时建立索引
         var item11 = {
@@ -186,6 +192,7 @@
         menu1.addItem(item4);
 		menu1.addItem(item10);
 		menu1.addItem(item11);
+        menu1.addItem(item12);
         
         menu1.addItem(createPermissionMenuItem("3"));
 
@@ -523,5 +530,21 @@
 		channelId = channelId || getTreeNodeId();
 		$.showGrid(URL_ARTICLE_LIST + channelId, XML_ARTICLE_LIST, editArticleInfo);
 	}   
+
+    function searchArticles(){
+        $("#grid").show();
+        $("#articleFrame").hide();
+
+        var treeNode = $.T("tree").getActiveTreeNode();
+        var treeID   = treeNode.id;
+        var treeName = treeNode.name;
+
+        popupForm("SearchArticle.xml", "SearchArticle", {}, function(condition) {
+            condition.channelId = treeID;
+            $.showGrid(URL_SEARCH_ARTICLE, XML_ARTICLE_LIST, editArticleInfo, "grid", 1, condition);
+
+        }, "搜索【" + treeName + "】下所有文章");
+    }
  
     window.onload = init;
+

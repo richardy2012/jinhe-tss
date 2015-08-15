@@ -85,6 +85,12 @@ public class MessageAction extends BaseActionSupport {
     	return messageService.viewMessage(id);
     }
     
+    @RequestMapping(value = "/more/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public void viewMore(@PathVariable("id") String id) {
+    	messageService.viewMore(id);
+    }
+    
     @RequestMapping(value = "/num", method = RequestMethod.GET)
     @ResponseBody
     public int getNewMessageNum() {
@@ -93,7 +99,7 @@ public class MessageAction extends BaseActionSupport {
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public void deleteMessage(@PathVariable("id") Long id) {
+    public void deleteMessage(@PathVariable("id") String id) {
     	messageService.deleteMessage(id);
     }
 }

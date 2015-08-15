@@ -86,12 +86,12 @@ function initPortlet() {
                     }
                 });
      
-                window.parent.$("#panel" + reportId).find(".setQuery").click(function(){
+                window.parent.$ && window.parent.$("#panel" + reportId).find(".setQuery").click(function(){
                     showQueryForm();
                 });
             }
             else {
-                window.parent.$("#panel" + reportId).find(".setQuery").hide();
+                window.parent.$ && window.parent.$("#panel" + reportId).find(".setQuery").hide();
             }
             
             // 优先使用通过url传入的参数

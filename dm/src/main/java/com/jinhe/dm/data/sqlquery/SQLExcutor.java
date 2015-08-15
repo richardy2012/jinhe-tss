@@ -177,7 +177,7 @@ public class SQLExcutor {
             this.excuteQuery(sql, paramsMap, page, pagesize, conn);
         } catch (Exception e) {
         	this.result = null;
-        	throw new BusinessException(e.getMessage(), e);
+        	throw new BusinessException(e.getMessage());
         } finally {
             // 返回连接到连接池
             connpool.checkIn(connItem);
@@ -241,7 +241,7 @@ public class SQLExcutor {
                 } else if (driveName.startsWith("Oracle")) {
                     queryDataSql = "SELECT * FROM ( SELECT t.*, ROWNUM RN FROM (\n " + sql + " \n) t WHERE ROWNUM <= " + toRow + ") WHERE RN > " + fromRow;
                 } else {
-                    // TODO 暂时不支持其他数据源
+                    // TODO 支持其他数据源在此扩展
                 } 
             }
 
@@ -284,7 +284,7 @@ public class SQLExcutor {
             log.debug("本次SQL查询耗时：" + (System.currentTimeMillis() - startTime) + "ms");
 
         } catch (SQLException e) {
-            String errorMsg = "执行SQL时出错了:" + e.getMessage();
+            String errorMsg = "出错了！" + e.getMessage();
             log.error(errorMsg + "\n   数据源：" + dbUrl + ",\n   参数：" + paramsMap + ",\n   脚本：" + sql);
             throw new BusinessException(errorMsg);
         } finally {
@@ -320,16 +320,17 @@ public class SQLExcutor {
         try {
         	excute(sql, conn);
         } catch (Exception e) {
-        	throw new BusinessException("执行SQL时出错了。sql : " + sql, e);
+        	throw new BusinessException(e.getMessage());
         } finally {
             connpool.checkIn(connItem);
         }
     }
     
     public static void excute(String sql, Connection conn) {
+    	boolean autoCommit = true;
     	Statement statement = null;
     	try {
-    		boolean autoCommit = conn.getAutoCommit();
+    		autoCommit = conn.getAutoCommit();
             conn.setAutoCommit(false);
             
     		log.info(" excute  sql: " + sql);
@@ -342,9 +343,14 @@ public class SQLExcutor {
 		} catch (SQLException e) {
 			try { conn.rollback(); } catch (Exception e2) { }
 			
-			log.error("执行SQL时出错了。sql : " + sql, e);
-			throw new BusinessException("执行SQL时出错了。sql : " + sql, e);
+			String errorMsg = "出错了! SQL : " + sql + ", 错误原因：" + e.getMessage();
+			log.error(errorMsg);
+			throw new BusinessException(errorMsg);
+			
 		} finally {
+			try { conn.setAutoCommit(autoCommit); } 
+        	catch (Exception e2) { log.error(e2.getMessage(), e2);  }
+			
 			try {
 				if(statement != null) {
 					statement.close();
@@ -393,10 +399,13 @@ public class SQLExcutor {
         } finally {
         	connpool.checkIn(connItem);
         	
-        	// 对于执行出错SQL后的Connetion，做销毁处理（因发现conn.rollback后，conn里缓存数据无法清除，导致数据不一致情况出现）
+        	/* 对于执行出错SQL后的Connetion，做销毁处理（因发现conn.rollback后，conn里缓存数据无法清除，导致数据不一致情况出现）
+        	 * 问题已解决：conn.setAutoCommit成了false，重新设置为true可以上面说的问题 */
         	if( hasException ) { 
+        		/*
         		connpool.removeObject(connItem.getKey());
         		connpool.destroyObject(connItem);
+        		*/
         	}
         }
     }
@@ -413,12 +422,13 @@ public class SQLExcutor {
     public static void excuteBatch(String sql, List<Object[]> paramsList, Connection conn) {
     	if(paramsList == null || paramsList.isEmpty()) return;
     	
+    	boolean autoCommit = true;
         PreparedStatement pstmt = null;
         try {
             log.debug("  excuteBatch  sql: " + sql);
 
-            boolean autoCommit = conn.getAutoCommit();
-            conn.setAutoCommit(false);
+            autoCommit = conn.getAutoCommit();
+            conn.setAutoCommit(false); // 所有sql执行完成后再提交
             
             pstmt = conn.prepareStatement(sql);
         	for (Object[] params : paramsList) {
@@ -431,14 +441,17 @@ public class SQLExcutor {
             pstmt.executeBatch();
 
             conn.commit();
-            conn.setAutoCommit(autoCommit);
             
         } catch (SQLException e) {
-        	try { conn.rollback(); } catch (Exception e2) { }
+        	try { conn.rollback(); } 
+        	catch (Exception e2) { log.error(e2.getMessage(), e2); }
         	
         	log.error(Environment.getUserCode() + ", " + Arrays.asList(paramsList.get(0)));
-            throw new BusinessException("执行SQL时出错了，sql : " + sql, e);
+            throw new BusinessException("出错了! sql : " + sql, e);
         } finally {
+        	try { conn.setAutoCommit(autoCommit); } 
+        	catch (Exception e2) { log.error(e2.getMessage(), e2);  }
+        	
             try {
                 if (pstmt != null) {
                     pstmt.close();

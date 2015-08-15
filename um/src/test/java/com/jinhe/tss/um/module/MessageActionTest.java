@@ -59,7 +59,11 @@ public class MessageActionTest extends TxSupportTest4UM {
 		message1 = messageAction.getMessage(message1Id);
 		Assert.assertNotNull(message1.getReadTime());
 		
-		messageAction.deleteMessage(message1Id);
+		messageAction.viewMore("view_all");
+		messageAction.viewMore(message1Id.toString());
+		
+		messageAction.deleteMessage(message1Id.toString());
+		messageAction.deleteMessage("del_all");
 		
 		list = messageAction.listMessages();
 		Assert.assertTrue(list.size() == 0);

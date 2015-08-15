@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import com.jinhe.dm._Util;
 import com.jinhe.dm.data.sqlquery.SOUtil;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
-import com.jinhe.dm.data.util._DateUtil;
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.util.DateUtil;
@@ -207,15 +206,15 @@ public class ReportServiceImpl implements ReportService {
 				// 将相对时间解析成绝对时间（today - 2 --> 2014-7-20）
 				if (Pattern.compile("^today[\\s]*-[\\s]*\\d{1,4}").matcher(paramValue).matches()) {
 					int deltaDays = Integer.parseInt(paramValue.split("-")[1].trim());
-					Date today = _DateUtil.noHMS(new Date());
-					paramValue = DateUtil.format(_DateUtil.subDays(today, deltaDays));
+					Date today = DateUtil.noHMS(new Date());
+					paramValue = DateUtil.format(DateUtil.subDays(today, deltaDays));
 				} 
 				
 				// 将相对时间解析成绝对时间（today + 2 --> 2014-7-24）
 				if (Pattern.compile("^today[\\s]*\\+[\\s]*\\d{1,4}").matcher(paramValue).matches()) {
 					int deltaDays = Integer.parseInt(paramValue.split("\\+")[1].trim());
-					Date today = _DateUtil.noHMS(new Date());
-					paramValue = DateUtil.format(_DateUtil.subDays(today, deltaDays));
+					Date today = DateUtil.noHMS(new Date());
+					paramValue = DateUtil.format(DateUtil.subDays(today, deltaDays));
 				} 
 
 				// 处理in查询的条件值，为每个项加上单引号

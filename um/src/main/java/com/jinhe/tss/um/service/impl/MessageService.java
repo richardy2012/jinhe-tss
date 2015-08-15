@@ -48,8 +48,32 @@ public class MessageService implements IMessageService {
 		return message;
 	}
 	
-	public void deleteMessage(Long id){
-        commonDao.delete( Message.class, id );
+	public void viewMore(String ids) {
+		if("view_all".equals(ids)) { // 设置用户的所有站内消息为已阅
+			String hql = "update Message m set m.readTime = ?  where m.receiverId = ? and readTime is null";
+			commonDao.executeHQL(hql, Environment.getUserId());
+			return;
+		}
+		
+		String[] idArray = ids.split(",");
+		for(String _id : idArray) {
+			Message message = (Message) commonDao.getEntity( Message.class, EasyUtils.obj2Int(_id) );
+			message.setReadTime(new Date());
+			commonDao.update(message);
+		}
+	}
+	
+	public void deleteMessage(String ids){
+		if("del_all".equals(ids)) { // 清空用户的站内消息
+			List<?> list = commonDao.getEntities("from Message m where m.receiverId = ?", Environment.getUserId());
+			commonDao.deleteAll(list);
+			return;
+		}
+		
+		String[] idArray = ids.split(",");
+		for(String _id : idArray) {
+			commonDao.delete( Message.class, EasyUtils.obj2Int(_id) );
+		}
 	}
  
 	@SuppressWarnings("unchecked")

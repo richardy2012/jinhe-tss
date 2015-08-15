@@ -188,7 +188,7 @@ function canEditRow(rowID) {
     if(rowID === '_new') { // 新增
         return _operation.contains("1");
     }
-    else if( (rowID || '').indexOf('_copy') >= 0 ) { // 复制新增
+    else if( (rowID + '').indexOf('_copy') >= 0 ) { // 复制新增
         return true;
     }
     else { // 编辑（本人及有维护数据权限的人能编辑）
