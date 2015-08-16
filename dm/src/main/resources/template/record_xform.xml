@@ -36,7 +36,7 @@
 				<label binding="define"/><br/><br/>
 				<input type="button" value="配置" onclick="configDefine()" class="btStrong"/>
 			</TD>
-			<TD colspan="5"><textarea binding="define" style="width:95%;height:130px"/></TD>
+			<TD colspan="5"><textarea binding="define" style="width:95%;height:120px"/></TD>
 		</TR>
 		<TR>
 			<TD><label binding="customizePage"/></TD>
@@ -44,11 +44,11 @@
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="customizeJS"/></TD>
-			<TD colspan="5"><textarea binding="customizeJS" style="width:95%;height:130px"/></TD>
+			<TD colspan="5"><textarea binding="customizeJS" style="width:95%;height:120px"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="customizeTJ"/></TD>
-			<TD colspan="5"><textarea binding="customizeTJ" style="width:95%;height:40px"/></TD>
+			<TD colspan="5"><textarea binding="customizeTJ" style="width:95%;height:60px"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="customizeGrid"/></TD>

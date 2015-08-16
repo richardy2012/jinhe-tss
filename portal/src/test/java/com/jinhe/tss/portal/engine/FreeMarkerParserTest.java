@@ -2,7 +2,9 @@ package com.jinhe.tss.portal.engine;
  
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -139,7 +141,7 @@ public class FreeMarkerParserTest extends TxSupportTest4Portal {
     }
     
     @Test
-    public void test7() throws Exception{
+    public void test7() throws Exception {
         Map<String, String> map = new HashMap<String, String>();
         map.put("channelId", "22");
         FreemarkerParser parser = new FreemarkerParser();
@@ -162,6 +164,26 @@ public class FreeMarkerParserTest extends TxSupportTest4Portal {
         System.out.println(out.toString());
     }
     
+    @Test
+    public void test8() throws Exception {
+    	String tpl = "<#if xx?contains(\"ice\")>It contains ice! \n</#if>" +
+    			"<#assign xxx = [1, 2, 3]>" +
+    			" ${xxx?seq_contains(1)?string(\"yes\n\", \"no\n\")}" +
+    			"<#if xxx?seq_contains(2)>It contains 2! \n</#if>" +
+    			"<#if xxxx?seq_contains(12)>It contains 12! \n</#if>";
+    	
+    	Map<String, Object> map = new HashMap<String, Object>();
+        map.put("xx", "piceous");
+        
+        List<Long> list = new ArrayList<Long>();
+        list.add(11L);
+        list.add(12L);
+        list.add(13L);
+        map.put("xxxx", list);
+        FreemarkerParser parser = new FreemarkerParser();
+        parser.putParameters(map);
+        parser.parseTemplateTwice(tpl, new OutputStreamWriter(System.out));
+    }
     
     public static Long increase(Long num){
         return new Long(num.longValue() + 1);

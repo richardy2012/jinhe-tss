@@ -169,6 +169,7 @@ var Field = function(info) {
 							{"name": "texts", "value": texts.join('|')},
 						 	{"name": "values", "value": values.join('|')}
 						 ]);
+						tssForm.updateDataExternal(field.name, field.defaultValue);
 					}			
 				}
 			});

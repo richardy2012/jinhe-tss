@@ -225,8 +225,13 @@ public class ReportServiceImpl implements ReportService {
 				}
 				// 判断参数是否只用于freemarker解析
 				else if ( !"true".equals(isMacrocode) ) {
-					Object value = _Util.preTreatValue(paramValue, paramType);
-					paramsMap.put(paramsMap.size() + 1, value);
+					try {
+						Object value = _Util.preTreatValue(paramValue, paramType);
+						paramsMap.put(paramsMap.size() + 1, value);
+					} 
+					catch(Exception e){
+						throw new BusinessException(e.getMessage());
+					}
 				}
 				
 				fmDataMap.put(paramKy, paramValue);

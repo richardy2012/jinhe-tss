@@ -36,7 +36,7 @@ public class EasyUtils {
         try{
             rlt = Double.valueOf(value == null ? "0" : value.toString());
         } catch (Exception e) {
-            throw new RuntimeException("error double value:" + value, e);
+            throw new RuntimeException("error double value: " + value + ", " + e.getMessage());
         }
         return rlt;
     }
@@ -46,7 +46,7 @@ public class EasyUtils {
         try{
             rlt = Long.valueOf(value == null ? "0" : value.toString());
         } catch (Exception e) {
-        	 throw new RuntimeException("error long value:" + value, e);
+        	 throw new RuntimeException("error long value: " + value + ", " + e.getMessage());
         }
         return rlt;
     }
@@ -56,7 +56,7 @@ public class EasyUtils {
         try{
             rlt = Integer.valueOf(value == null ? "0" : value.toString());
         } catch (Exception e) {
-        	 throw new RuntimeException("error int value:" + value, e);
+        	 throw new RuntimeException("error int value:" + value + ", " + e.getMessage());
         }
         return rlt;
     }

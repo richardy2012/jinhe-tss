@@ -51,13 +51,13 @@ public class MessageService implements IMessageService {
 	public void viewMore(String ids) {
 		if("view_all".equals(ids)) { // 设置用户的所有站内消息为已阅
 			String hql = "update Message m set m.readTime = ?  where m.receiverId = ? and readTime is null";
-			commonDao.executeHQL(hql, Environment.getUserId());
+			commonDao.executeHQL(hql, new Date(), Environment.getUserId());
 			return;
 		}
 		
 		String[] idArray = ids.split(",");
 		for(String _id : idArray) {
-			Message message = (Message) commonDao.getEntity( Message.class, EasyUtils.obj2Int(_id) );
+			Message message = (Message) commonDao.getEntity( Message.class, EasyUtils.obj2Long(_id) );
 			message.setReadTime(new Date());
 			commonDao.update(message);
 		}
@@ -72,7 +72,7 @@ public class MessageService implements IMessageService {
 		
 		String[] idArray = ids.split(",");
 		for(String _id : idArray) {
-			commonDao.delete( Message.class, EasyUtils.obj2Int(_id) );
+			commonDao.delete( Message.class, EasyUtils.obj2Long(_id) );
 		}
 	}
  

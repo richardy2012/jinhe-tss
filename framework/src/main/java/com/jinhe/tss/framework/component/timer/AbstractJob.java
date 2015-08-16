@@ -15,9 +15,13 @@ public abstract class AbstractJob implements Job {
 	
 	protected Logger log = Logger.getLogger(this.getClass());
 	
-	IBusinessLogger businessLogger = (IBusinessLogger) Global.getBean("BusinessLogger");
+	IBusinessLogger businessLogger;
 	
     public void execute(JobExecutionContext context) throws JobExecutionException {
+    	try {
+    		businessLogger = (IBusinessLogger) Global.getBean("BusinessLogger"); // 跑Test时可能没有spring IOC
+    	} catch (Exception e) { }
+    	
     	JobDetail jobDetail = context.getJobDetail();
     	String jobName = jobDetail.getName();
     	
@@ -48,7 +52,7 @@ public abstract class AbstractJob implements Job {
         	excuteLog = new Log(jobName + "-失败", resultMsg);
         } 
         finally {
-        	if(excuteLog != null) {
+        	if(excuteLog != null && businessLogger != null) {
         		excuteLog.setOperateTable("定时任务");
                 businessLogger.output(excuteLog);
         	}
