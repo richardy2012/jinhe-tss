@@ -237,7 +237,7 @@ public class LoginService implements ILoginService {
 		}
 		
 		if(justID) {
-			return EasyUtils.list2Str(ids).split(",");
+			return ids.isEmpty() ? new String[]{} : EasyUtils.list2Str(ids).split(",");
 		}
 		
 		receiver = new String[emails.size()];

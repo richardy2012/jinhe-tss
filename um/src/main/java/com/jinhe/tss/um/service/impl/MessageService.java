@@ -48,7 +48,7 @@ public class MessageService implements IMessageService {
 		return message;
 	}
 	
-	public void viewMore(String ids) {
+	public void batchRead(String ids) {
 		if("view_all".equals(ids)) { // 设置用户的所有站内消息为已阅
 			String hql = "update Message m set m.readTime = ?  where m.receiverId = ? and readTime is null";
 			commonDao.executeHQL(hql, new Date(), Environment.getUserId());

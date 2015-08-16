@@ -55,6 +55,10 @@ public class MessageAction extends BaseActionSupport {
     @ResponseBody
     public void sendMessage(String title, String content, String receivers) {
     	String[] ids = loginService.getContactInfos(receivers, true);
+    	
+    	if(ids == null || ids.length == 0) {
+    		ids = receivers.split(","); // 有可能接收人为ID（如：站内信直接回复）
+    	}
     	if(ids != null && ids.length > 0) {
     		Message message = new Message();
     		message.setTitle(title);
@@ -85,10 +89,11 @@ public class MessageAction extends BaseActionSupport {
     	return messageService.viewMessage(id);
     }
     
-    @RequestMapping(value = "/more/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/batch/{ids}", method = RequestMethod.POST)
     @ResponseBody
-    public void viewMore(@PathVariable("id") String id) {
-    	messageService.viewMore(id);
+    public String batchRead(@PathVariable("ids") String ids) {
+    	messageService.batchRead(ids);
+    	return "success";
     }
     
     @RequestMapping(value = "/num", method = RequestMethod.GET)
@@ -97,9 +102,10 @@ public class MessageAction extends BaseActionSupport {
     	return messageService.getNewMessageNum();
     }
     
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{ids}", method = RequestMethod.DELETE)
     @ResponseBody
-    public void deleteMessage(@PathVariable("id") String id) {
-    	messageService.deleteMessage(id);
+    public String deleteMessage(@PathVariable("ids") String ids) {
+    	messageService.deleteMessage(ids);
+    	return "success";
     }
 }

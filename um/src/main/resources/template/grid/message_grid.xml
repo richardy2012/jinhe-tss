@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grid>
-	<declare>
-		<column name="id"       caption="ID号"  display="none"/>
+	<declare sequence="true" header="checkbox">
+		<column name="id" display="none"/>
+		<column name="_title" display="none"/>
+		<column name="senderId" display="none"/>
 		<column name="title"    caption="标题"  width="200px"/>
 		<column name="content"  caption="内容"  width="400px"/>
 		<column name="status"   caption="是否已阅" values="1|0" texts="已阅|未读" width="60px"/>

@@ -25,7 +25,7 @@ public interface IMessageService {
 	 * 批量设置消息为已阅
 	 * @param id
 	 */
-	void viewMore(String ids);
+	void batchRead(String ids);
 	
 	/**
 	 * 删除短消息

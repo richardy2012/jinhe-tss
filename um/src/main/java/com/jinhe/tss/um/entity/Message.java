@@ -132,12 +132,15 @@ public class Message implements IEntity, IGridNode {
 	public GridAttributesMap getAttributes(GridAttributesMap map) {
 		String _class = readed() ? "" : "red";
 		map.put("id", id);
+		map.put("_title", title);
 		map.put("title", "<span class='" + _class + "'>" + title + "</span>");
 		map.put("content", "<span class='" + _class + "'>" + content + "</span>");
 		map.put("status", readed() ? 1 : 0);
 		map.put("sender", sender);
+		map.put("senderId", senderId);
 		map.put("sendTime", this.sendTime);
 		map.put("opts", "<a href='javascript:void(0)' onclick='showMsgInfo("+this.id+")'>查看</a>&nbsp;/&nbsp;" +
+				"<a href='javascript:void(0)' onclick='replyMsg("+this.id+")'>回复</a>&nbsp;/&nbsp;" +
 				"<a href='javascript:void(0)' onclick='deleteMsg("+this.id+")'>删除</a>");
 		
 		return map;

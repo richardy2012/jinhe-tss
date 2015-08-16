@@ -230,6 +230,7 @@ public class ReportServiceImpl implements ReportService {
 						paramsMap.put(paramsMap.size() + 1, value);
 					} 
 					catch(Exception e){
+						log.error("预处理参数时出错了，" + e.getMessage());
 						throw new BusinessException(e.getMessage());
 					}
 				}
