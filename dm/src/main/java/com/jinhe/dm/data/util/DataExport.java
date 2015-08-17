@@ -30,7 +30,7 @@ public class DataExport {
 	static Logger log = Logger.getLogger(DataExport.class);
 	
 	public static String getExportPath() {
-		return ParamManager.getValue(DMConstants.TEMP_EXPORT_PATH).replace("\n", "");
+		return ParamManager.getValue(DMConstants.TEMP_EXPORT_PATH).replace("\n", "") + "/export";
 	}
 	
 	/**
@@ -164,7 +164,7 @@ public class DataExport {
             fw.close();
             
         } catch (IOException e) {
-            throw new BusinessException("export csv error:" + path, e);
+            throw new BusinessException("export csv error:" + path + ", " + e.getMessage());
         }
     }
     

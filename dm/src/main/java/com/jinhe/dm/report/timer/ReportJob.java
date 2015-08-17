@@ -187,7 +187,7 @@ public class ReportJob extends AbstractJob {
 			html.append("</table><br>");
 		}
 		
-		// 附件内容
+		// 附件内容(注意：此处生成的附件不会被自动删除，将一直存在于 export 目录下，需手动清除)
 		String fileName = title + "-" + DateUtil.format(new Date()) + ".csv";
 		String exportPath = DataExport.exportCSV(fileName, ex.result, ex.selectFields);
 		

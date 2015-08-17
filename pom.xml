@@ -9,7 +9,7 @@
  
 	<organization>
 		<name>Jin He</name>
-		<url>http://www.llrtss.com</url>
+		<url>http://www.boubei.com</url>
 	</organization>
 	<url>index.html</url>
 
@@ -17,8 +17,8 @@
 		<developer>
 			<id>Jon.King</id>
 			<name>Jon.King</name>
-			<email>jinpujun@gmail.com</email>
-			<url>http://www.llrtss.com</url>
+			<email>boubei@163.com</email>
+			<url>http://www.boubei.com</url>
 			<organization>Jin He</organization>
 			<roles>
 				<role>developer</role>
@@ -308,6 +308,14 @@
 									file="${basedir}/target/classes/application.properties" 
 									match="environment = dev"
 									replace="environment = ${environment}" byline="true" />
+
+								<echo>
+									process application.properties: set upload_path to ${upload.path};
+								</echo>
+								<replaceregexp
+									file="${basedir}/target/classes/application.properties" 
+									match="upload_path = upload"
+									replace="upload_path = ${upload.path}" byline="true" />
 								
 								<echo>
 									process appServers.xml: set tomcat.url to ${tomcat.url};
@@ -351,6 +359,7 @@
 				<db.password>800best@com</db.password>
 				<db.url>127.0.0.1:3306/demo_bi</db.url>
 				<tomcat.url>localhost:8088</tomcat.url>
+				<upload.path>D:/temp</upload.path>
 			</properties>
 		</profile>
 		
@@ -367,6 +376,7 @@
 				<db.password>800best@com</db.password>
 				<db.url>127.0.0.1:3306/demo_bi</db.url>
 				<tomcat.url>localhost:8088</tomcat.url>
+				<upload.path>/Users/jinpujun/Desktop/workspace/temp/upload</upload.path>
 			</properties>
 		</profile>
 		
@@ -383,6 +393,7 @@
 				<db.password>800best@com</db.password>
 				<db.url>10.45.10.216:3306/demo_bi</db.url>
 				<tomcat.url>10.45.10.96:8080</tomcat.url>
+				<upload.path>/home/btrbi/temp/upload</upload.path>
 			</properties>
 		</profile>
 
@@ -399,6 +410,7 @@
 				<db.password>800best@com</db.password>
 				<db.url>127.0.0.1:3306/demo_bi</db.url>
 				<tomcat.url>www.boubei.com:8080</tomcat.url>
+				<upload.path>/home/tss/temp/upload</upload.path>
 			</properties>
 		</profile>
 
@@ -406,7 +418,7 @@
 
 	<distributionManagement>
 		<site>
-			<id>www.llrtss.com</id>      
+			<id>www.boubei.com</id>      
 			<url>file://</url>
 		</site>
 	</distributionManagement>
