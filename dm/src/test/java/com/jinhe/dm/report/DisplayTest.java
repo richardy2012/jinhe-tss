@@ -25,7 +25,7 @@ public class DisplayTest extends TxTestSupport4DM {
     	request.addParameter("name", "网页报表");
     	request.addParameter("data", "仓库,库存\nOFC1,100\nOFC2,200");
     	
-    	String fileName = display.data2CSV(request, response);
+    	String fileName = display.data2CSV(request, response)[0];
     	
     	display.download(response, fileName);
     }

@@ -159,7 +159,7 @@ public class _Reporter extends BaseActionSupport {
      */
     @RequestMapping("/export/data2csv")
     @ResponseBody
-    public String data2CSV(HttpServletRequest request, HttpServletResponse response) {
+    public String[] data2CSV(HttpServletRequest request, HttpServletResponse response) {
     	Map<String, String> requestMap = getRequestMap(request, false);
     	String name = requestMap.get("name");
     	String data = requestMap.get("data");
@@ -170,7 +170,7 @@ public class _Reporter extends BaseActionSupport {
 		// 先输出内容到服务端的导出文件中
         DataExport.exportCSV(exportPath, data);
         
-        return fileName;
+        return new String[]{ fileName };
     }
     
     @RequestMapping("/download/{fileName}")

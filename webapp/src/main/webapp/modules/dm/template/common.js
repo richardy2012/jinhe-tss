@@ -284,10 +284,10 @@ function $exportCSV(dataUrl, queryParams) {
 		type: 'json',
 		ondata : function() {
 			// 根据返回的导出文件名（压缩后的），生成下载链接。
-			var fileName = this.getResponseText();
-			if (fileName) {
+			var fileName = this.getResponseJSON();
+			if (fileName && fileName.length) {
 				var frameName = createExportFrame();
-    			$1(frameName).setAttribute("src", URL_DOWNLOAD + fileName);
+    			$1(frameName).setAttribute("src", URL_DOWNLOAD + fileName[0]);
 			}
 		}
 	});
