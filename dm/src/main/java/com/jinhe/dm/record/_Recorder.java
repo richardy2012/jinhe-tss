@@ -128,8 +128,17 @@ public class _Recorder extends BaseActionSupport {
     		@PathVariable("recordId") Long recordId) {
     	
     	Map<String, String> row = getRequestMap(request);
-		getDB(recordId).insert(row);
-        printSuccessMessage();
+    	_Database _db = getDB(recordId);
+    	try {
+    		_db.insert(row);
+            printSuccessMessage();
+    	}
+    	catch(Exception e) {
+    		Throwable firstCause = ExceptionEncoder.getFirstCause(e);
+			String errorMsg = "在" + _db + "里新增数据时出错了：" + (firstCause == null ? e : firstCause).getMessage();
+			log.error(errorMsg);
+    		throw new BusinessException(errorMsg);
+    	}
     }
     
     @RequestMapping(value = "/{recordId}/{id}", method = RequestMethod.POST)

@@ -18,6 +18,8 @@
 
 8、ORA-00936: missing expression 可能是因为record的字段里包含了oracle的某关键字
 
+9、如果定时JOB里的class不存在或路径有误，tomcat将无法启动
+
 打包注意：
 0、BtrBI的10.8.72.70机器安裝的是JDK6，打包只能用JDK1.6, 1.7會出錯  
 

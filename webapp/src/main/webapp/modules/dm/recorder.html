@@ -459,7 +459,7 @@ if( IS_TEST ) {
     URL_ATTACH_DELETE = "data/_success.xml?";
 }
 
-var selectedLineId;
+var selectedLineId, checkFileOpt;
 function manageAttach(lineId) {   
     selectedLineId = lineId || $.G("grid").getColumnValue("id"); 
     
@@ -472,12 +472,12 @@ function manageAttach(lineId) {
             $.showWaitingLayer();
             $("#attach").show(true).center();
 
-            if( !canEditRow(lineId) ) {
-                $("#uploadForm span").hide();
-                $("column[name='delOpt']", attachNode).attr("display", "none");
+            if( canEditRow(lineId) && (!checkFileOpt || checkFileOpt()) ) {
+                $("#uploadForm span").show();               
             }
             else {
-                $("#uploadForm span").show();
+                $("#uploadForm span").hide();
+                $("column[name='delOpt']", attachNode).attr("display", "none");
             }
             var grid = $.G("attachGrid", attachNode);
         } 

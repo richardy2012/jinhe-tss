@@ -1,4 +1,4 @@
-package com.jinhe.tss.job;
+package com.jinhe.dm.ext;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,8 +14,8 @@ import com.jinhe.tss.util.EasyUtils;
 /**
  * 自动同步用户和角色对应关系，这关系可能由某第三方模块维护
  * 
- * com.jinhe.tss.job.SyncUserRoleJob | 0 12 * * * ? | 
- * 		select userId user, roleId1 role1, roleId2 as role2 from xx_roleuser where updateTime > ?@datasource1
+ * com.jinhe.dm.ext.SyncUserRoleJob | 0 12 * * * ? | 
+ * 		select userId user, roleId1 role1, roleId2 as role2 from xx_roleuser where updatetime > ? or createtime > ?@datasource1
  * 
  */
 public class SyncUserRoleJob extends AbstractJob {
@@ -40,7 +40,7 @@ public class SyncUserRoleJob extends AbstractJob {
 		String dataSource = info[1];
 		Date fromDay = DateUtil.subDays(DateUtil.today(), 3);
 		
-		List<Map<String, Object>> list = SQLExcutor.query(dataSource, sql, fromDay);
+		List<Map<String, Object>> list = SQLExcutor.query(dataSource, sql, fromDay, fromDay);
 		List<Object[]> addList = new ArrayList<Object[]>();
 		List<Object[]> delList = new ArrayList<Object[]>();
 		
@@ -50,15 +50,19 @@ public class SyncUserRoleJob extends AbstractJob {
 			String[] role2 = EasyUtils.obj2String(item.get("role2")).split(","); // 需要删除的用户角色关系
 			
 			for(String role : role1) {
-				Long _role = EasyUtils.obj2Long(role);
-				if( getCount(user, _role) == 0 ) {
-					addList.add(new Object[]{ user, _role });
+				if( !EasyUtils.isNullOrEmpty(role) ) {
+					Long _role = EasyUtils.obj2Long(role);
+					if( getCount(user, _role) == 0 ) {
+						addList.add(new Object[]{ user, _role });
+					}
 				}
 			}
 			
 			for(String role : role2) {
-				Long _role = EasyUtils.obj2Long(role);
-				delList.add(new Object[]{ user, _role });
+				if( !EasyUtils.isNullOrEmpty(role) ) {
+					Long _role = EasyUtils.obj2Long(role);
+					delList.add(new Object[]{ user, _role });
+				}
 			}
 		}
 		

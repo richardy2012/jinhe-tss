@@ -67,6 +67,14 @@ public class _RecorderTest extends TxTestSupport4DM {
 		
 		request.addParameter("f1", "10.9");
 		request.addParameter("f2", "just test");
+		
+		// test 更新时必填字段为空
+		try {
+			recorder.create(request, response, recordId);
+			Assert.fail("should throw exception but didn't.");
+		} 
+		catch(Exception e) { }
+				
 		request.addParameter("f3", "2015-04-05");
 		recorder.create(request, response, recordId);
 		recorder.update(request, response, recordId, 1);
@@ -77,8 +85,7 @@ public class _RecorderTest extends TxTestSupport4DM {
 			recorder.update(request, response, recordId, 1);
 			Assert.fail("should throw exception but didn't.");
 		} 
-		catch(Exception e) {
-		}
+		catch(Exception e) { }
 		
 		List<Map<String, Object>> result = recorder.getDB(recordId).select().result;
 		Assert.assertTrue(result.size() == 1);
@@ -118,6 +125,8 @@ public class _RecorderTest extends TxTestSupport4DM {
 		Assert.assertNotNull(ra.getUploadDate());
 		Assert.assertTrue(ra.isOfficeDoc());
 		Assert.assertFalse(ra.isImage());
+		
+		recorder.showAsGrid(request, response, recordId, 1);
 		
 		try {
 			recorder.downloadAttach(new MockHttpServletResponse(), ra.getId());
