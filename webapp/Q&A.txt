@@ -20,6 +20,28 @@
 
 9、如果定时JOB里的class不存在或路径有误，tomcat将无法启动
 
+10、数据录入查询时，如果一个查询条件为下拉列表，且字段定义上有onchange选项，且是自定义的方法如f2，则需要把f2定义在“定制Grid”里，否则进页面查询选择该条件会报f2方法不存在（定制JS里定义f2的话，f2在打开录入form时才加载），导致查询无效。
+
+
+数据录入表创建常见错误：
+1、字段重名：Duplicate column name ‘position’   — MySQL
+                     ORA-00957: duplicate column name --Oracle
+2、字段名称太长：ORA-00972: identifier is too long
+     比如：in_op_data_collection的  motor_registeration_certificate
+3、表名冲突，已经有同名的表存在了：ORA-00955: name is already used by an existing object
+4、字段命名不合法，一般是和数据库的关键字冲突了，ORA-00904: : invalid identifier
+     比如date、number、group、order、select、from这些词
+
+输入记录的常见报错：
+1、违反唯一性约束
+2、违反非空约束
+
+BI速记：
+   1、文章里嵌入report_portlet.html 时，报表页需设置：
+         body    {  margin: 0;  }
+         table tbody  {    max-height: 600px;  }
+
+
 打包注意：
 0、BtrBI的10.8.72.70机器安裝的是JDK6，打包只能用JDK1.6, 1.7會出錯  
 

@@ -127,11 +127,24 @@ public class SyncService implements ISyncService, Progressable {
             
             // 检查组（和该fromApp下的组对应的组）是否已经存在
             List<?> temp = groupDao.getEntities("from Group t where t.fromGroupId=? and t.fromApp=?", fromGroupId, fromApp);
-            if(temp == null || temp.isEmpty()) {
-            	groupDao.saveGroup(group);
+            if( EasyUtils.isNullOrEmpty(temp) ) {
+        		/* 
+        		 * 有可能管理员已经在tss里手动创建了同名的分组，这样情况下同步组过来会违反组名唯一性约束 
+        		 * 先找出同名的Group, 为其设置fromApp和fromGroup
+        		 */
+        		String name = group.getName();
+        		temp = groupDao.getEntities("from Group t where t.parentId=? and t.name=?", parentId, name);
+        		if( !EasyUtils.isNullOrEmpty(temp) ) {
+        			group = (Group) temp.get(0);
+        			group.setFromApp(fromApp);
+        			group.setFromGroupId(fromGroupId);
+                	groupDao.saveGroup(group);
+        		}
+        		else {
+        			groupDao.saveGroup(group);
+        		}
             } else {
             	group = (Group) temp.get(0);
-            	groupDao.saveGroup(group); // TODO 临时用一下，补齐decode值
             }
             idMapping.put(fromGroupId, group.getId()); // 保存对应结果
             

@@ -101,7 +101,8 @@ public abstract class _Database {
    			return list;
    	    } 
    		catch (Exception e) {  
-   	        throw new BusinessException("数据录入【" + recordName + "】的参数配置有误，要求为标准JSON格式。", e);
+   	        String errorMsg = "【" + recordName + "】的参数配置有误，JSON格式存在错误，请检查修正后再保存。具体原因：" + e.getMessage();
+			throw new BusinessException(errorMsg);
    	    } 
 	}
 	

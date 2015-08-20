@@ -171,7 +171,7 @@ public class ReportServiceImpl implements ReportService {
   				list = objectMapper.readValue(paramsConfig, List.class);  
       	        
       	    } catch (Exception e) {  
-      	        throw new BusinessException("报表【" + report.getName() + "】的参数配置有误，要求为标准JSON格式。", e);
+      	        throw new BusinessException("报表【" + report.getName() + "】的参数配置有误，JSON格式存在错误，请检查修正后再保存。具体原因：" + e.getMessage());
       	    }  
       		
       		for(int i = 0; i < list.size(); i++) {

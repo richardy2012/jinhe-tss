@@ -179,7 +179,12 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
 		Assert.assertEquals("1", user1.getSex());
 		Assert.assertEquals("jinpujun@gmail.com", user1.getEmail());
 		
-		// 再增加同步一次，相同账号用户更更新
+		// 再增加同步一次，相同账号用户更更新。及重名组已经存在的情况（新建的子组，非同步过来）
+		Group tg = groupService.getGroupById(3L);
+		tg.setFromApp(null);
+		tg.setFromGroupId(null);
+		groupService.editExistGroup(tg, "-1", "-1");
+		
 		((Progressable)syncService).execute(datasMap, progress );
 		userList = groupService.getUsersByGroupId(mainGroupId); 
 		Assert.assertTrue(userList.size() >= 1);

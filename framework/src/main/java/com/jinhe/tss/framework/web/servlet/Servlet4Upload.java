@@ -16,6 +16,7 @@ import javax.servlet.http.Part;
 import org.apache.log4j.Logger;
 
 import com.jinhe.tss.framework.component.param.ParamConfig;
+import com.jinhe.tss.framework.exception.ExceptionEncoder;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpEncoder;
 import com.jinhe.tss.util.BeanUtil;
@@ -42,8 +43,8 @@ public class Servlet4Upload extends HttpServlet {
 				encoder.put("script", script);
 			}
 		} catch (Exception e) {
-			log.error("上传失败，请查看日志信息！", e);
-			encoder.put("script", "alert(\"上传失败，请查看日志信息！\");");
+			log.error("上传失败：" + e.getMessage() + ", " + ExceptionEncoder.getFirstCause(e).getMessage() );
+			encoder.put("script", "alert(\"上传失败，请检查文件是否过大，单个文件最大不宜超过3M。如果过大，请压缩处理后再上传。！\");");
 		}
 
 		response.setContentType("text/html;charset=utf-8");
