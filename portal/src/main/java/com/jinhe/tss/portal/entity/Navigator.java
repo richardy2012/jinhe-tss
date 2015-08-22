@@ -178,7 +178,7 @@ public class Navigator extends OperateInfo implements IXForm, IDecodable, IResou
             
             // 页面/版面/Portlet 门户内部链接
             if(type.equals(TYPE_MENU_ITEM_3)){
-                map.put("url", "/tss/auth/portal/preview/" + portalId + "?id=" + content.getId());
+                map.put("url", "/tss/auth/portal/preview/" + portalId + "?pageId=" + content.getId());
             }
         }
         

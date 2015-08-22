@@ -7,20 +7,15 @@
        
 3、如果select的字段有oracle的TIMESTAMP类型的字段，转换为json时会报错，需要先用to_char函数先转换为字符串类型。
 
-4、使用param模块来管理脚本片段时，不能带${paramX}，因Freemarker解析发生在判断参数是否为isMacrocode之后，所以会导致判断有误，
-       如非写到param模块，则需要为参数显式的加上 isMacrocode = true
-  
-5、如果通过hibernate insert数据时报The database returned no natively generated identity value，则可能是因为该表的ID没有设置为自增的
+4、如果通过hibernate insert数据时报The database returned no natively generated identity value，则可能是因为该表的ID没有设置为自增的
        
-6、record和report的字段code一律用小写
+5、record和report的字段code一律用小写
 
-7、oracle10G 驱动取date类型数据时分秒不见了的问题解决办法：在tomcat的启动配置里加  -Doracle.jdbc.V8Compatible=true
+6、oracle10G 驱动取date类型数据时分秒不见了的问题解决办法：在tomcat的启动配置里加  -Doracle.jdbc.V8Compatible=true
 
-8、ORA-00936: missing expression 可能是因为record的字段里包含了oracle的某关键字
+7、如果定时JOB里的class不存在或路径有误，tomcat将无法启动
 
-9、如果定时JOB里的class不存在或路径有误，tomcat将无法启动
-
-10、数据录入查询时，如果一个查询条件为下拉列表，且字段定义上有onchange选项，且是自定义的方法如f2，则需要把f2定义在“定制Grid”里，否则进页面查询选择该条件会报f2方法不存在（定制JS里定义f2的话，f2在打开录入form时才加载），导致查询无效。
+8、数据录入查询时，如果一个查询条件为下拉列表，且字段定义上有onchange选项，且是自定义的方法如f2，则需要把f2定义在“定制Grid”里，否则进页面查询选择该条件会报f2方法不存在（定制JS里定义f2的话，f2在打开录入form时才加载），导致查询无效。
 
 
 数据录入表创建常见错误：
@@ -31,6 +26,7 @@
 3、表名冲突，已经有同名的表存在了：ORA-00955: name is already used by an existing object
 4、字段命名不合法，一般是和数据库的关键字冲突了，ORA-00904: : invalid identifier
      比如date、number、group、order、select、from这些词
+   ORA-00936: missing expression 可能是因为record的字段里包含了oracle的某关键字
 
 输入记录的常见报错：
 1、违反唯一性约束
