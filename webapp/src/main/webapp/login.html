@@ -4,6 +4,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>    
 <meta charset="UTF-8">
 <title>系统登陆</title>
+<meta name="viewport" content="width=device-width">
+<meta name="keywords" content="卜贝软件，它山石，应用基础平台，门户，应用，内容, 聚合，数据分析，数据挖掘，大数据">
+
 <link rel="shortcut icon" href="images/tss.ico">
 <link rel="Bookmark" href="images/tss.ico">
 
@@ -42,34 +45,17 @@
 /*********************** 应用配置 开始 **********************************/
  var 
     indexPage = "index.html";    /* 登录成功后调整到的页面 */
-
- getParam('sysTitle', function(title) {
-    if( title ) {
-        indexPage = "index.portal";
-    }
-    else {
-        title = '它山石基础平台';       
-    }
-    $("#sys_title").html(title);
- });
  
  function setSysTitle() {
-    $.ajax({
-        url: "param/json/simple/sysTitle",
-        method: 'GET',
-        type: "json",
-        ondata: function() {
-            var title = this.getResponseJSON();
-            if( title && title.length > 0 && title[0] ) {
-                $("#sys_title").html(title[0]);
-
-                indexPage = "index.portal";
-            }
-            else {
-                 $("#sys_title").html('它山石基础平台');
-            }
+    getParam('sysTitle', function(title) {
+        if( title ) {
+            indexPage = "index.portal";
         }
-    });
+        else {
+            title = '它山石基础平台';       
+        }
+        $("#sys_title").html(title);
+     });
  }
 
 /*********************** 应用配置 END **********************************/
