@@ -58,7 +58,7 @@ while(index--) {
     var value = $.Query.get(key);
     if(value) {
         defaultParams = defaultParams || {};
-        defaultParams[key] = value;
+        defaultParams[key] = decodeURI(value);
     }
 }
 

@@ -14,7 +14,7 @@ public interface ParamService {
 	Param saveParam(Param param);
 	
 	/** 停用、启用参数 */
-	@Logable(operateObject="系统参数", operateInfo="<#if args[1]=1>停用<#else>启用</#if>了报表(ID = ${args[0]?default(\"\")})")
+	@Logable(operateObject="系统参数", operateInfo="<#if args[1]=1>停用<#else>启用</#if>了系统参数(ID = ${args[0]?default(\"\")})")
 	void startOrStop(Long paramId, Integer disabled);
 	
 	/** 删除参数 */

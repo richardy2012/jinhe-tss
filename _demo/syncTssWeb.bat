@@ -1,14 +1,14 @@
-xcopy /Y ..\..\jinhe-tss-JS\tssJS.all.js  src\main\webapp\tools\tssJS\
-xcopy /Y ..\..\jinhe-tss-JS\src\tssJS.json2Form.js  src\main\webapp\tools\tssJS\
-xcopy /Y ..\..\jinhe-tss-JS\src\tssJS.jsonp.js  src\main\webapp\tools\tssJS\
+xcopy /Y ..\..\jinhe-tssJS\tssJS.all.js  src\main\webapp\tools\tssJS\
+xcopy /Y ..\..\jinhe-tssJS\src\tssJS.json2Form.js  src\main\webapp\tools\tssJS\
+xcopy /Y ..\..\jinhe-tssJS\src\tssJS.jsonp.js  src\main\webapp\tools\tssJS\
 
-xcopy /Y ..\..\jinhe-tss-JS\tss.all.css  src\main\webapp\tools\tssJS\css\
-xcopy /Y ..\..\jinhe-tss-JS\css\tss.common.css  src\main\webapp\tools\tssJS\css\
-xcopy /Y ..\..\jinhe-tss-JS\css\tss.button.css  src\main\webapp\tools\tssJS\css\
-xcopy /Y ..\..\jinhe-tss-JS\css\tss.message.css  src\main\webapp\tools\tssJS\css\
-xcopy /Y ..\..\jinhe-tss-JS\css\tss.tool.css  src\main\webapp\tools\tssJS\css\
-xcopy /Y ..\..\jinhe-tss-JS\lib\*.*  src\main\webapp\tools\
-xcopy /Y /S ..\..\jinhe-tss-JS\images  src\main\webapp\tools\tssJS\images\
+xcopy /Y ..\..\jinhe-tssJS\tss.all.css  src\main\webapp\tools\tssJS\css\
+xcopy /Y ..\..\jinhe-tssJS\css\tss.common.css  src\main\webapp\tools\tssJS\css\
+xcopy /Y ..\..\jinhe-tssJS\css\tss.button.css  src\main\webapp\tools\tssJS\css\
+xcopy /Y ..\..\jinhe-tssJS\css\tss.message.css  src\main\webapp\tools\tssJS\css\
+xcopy /Y ..\..\jinhe-tssJS\css\tss.tool.css  src\main\webapp\tools\tssJS\css\
+xcopy /Y ..\..\jinhe-tssJS\lib\*.*  src\main\webapp\tools\
+xcopy /Y /S ..\..\jinhe-tssJS\images  src\main\webapp\tools\tssJS\images\
 
 xcopy /Y /S ..\..\jinhe-tss\webapp\src\main\webapp\css  src\main\webapp\css\
 xcopy /Y /S ..\..\jinhe-tss\webapp\src\main\webapp\images  src\main\webapp\images\
