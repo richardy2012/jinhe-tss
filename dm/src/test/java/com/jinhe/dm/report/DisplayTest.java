@@ -91,7 +91,7 @@ public class DisplayTest extends TxTestSupport4DM {
         
         // test jsonp
         request.addParameter("jsonpCallback", "func1");
-        display.showAsJson(request, report1.getName());
+        display.showAsJsonp(request, response, report1.getName());
         request.removeParameter("jsonpCallback");
         
         // 测试导出超阀值(导出时，前台限定10万行，超过该值将提示要求缩短查询条件，分批导出)

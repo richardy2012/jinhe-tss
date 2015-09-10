@@ -69,7 +69,10 @@
 	<build>
 		<plugins>
 			<!-- 
-			mvn install:install-file -DgroupId=com.jinhe.tss -DartifactId=tss-base -Dversion=3.2 -Dpackaging=jar -Dfile=D:/project/TSS/jinhe-tss/um/target/tss-base-3.2.jar
+			mvn install:install-file -DgroupId=com.jinhe.tss -DartifactId=tss-base -Dversion=3.3 -Dpackaging=jar -Dfile=D:/project/TSS/jinhe-tss/um/target/tss-base-3.3.jar
+			-->
+			<!-- 
+			mvn install:install-file -DgroupId=com.jinhe.tss -DartifactId=tss-base -Dversion=3.3 -Dpackaging=jar -Dfile=/Users/jinpujun/GitHub/jinhe-tss/um/target/tss-base-3.3.jar
 			-->
 			<!-- mvn clean compile assembly:single 
 			<plugin>

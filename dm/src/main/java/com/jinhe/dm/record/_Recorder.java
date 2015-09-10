@@ -144,7 +144,7 @@ public class _Recorder extends BaseActionSupport {
     @RequestMapping(value = "/{recordId}/{id}", method = RequestMethod.POST)
     public void update(HttpServletRequest request, HttpServletResponse response, 
     		@PathVariable("recordId") Long recordId, 
-    		@PathVariable("id") Integer id) {
+    		@PathVariable("id") Long id) {
     	
     	Map<String, String> row = getRequestMap(request);
     	_Database _db = getDB(recordId);
@@ -188,7 +188,7 @@ public class _Recorder extends BaseActionSupport {
     @RequestMapping(value = "/{recordId}/{id}", method = RequestMethod.DELETE)
     public void delete(HttpServletResponse response, 
     		@PathVariable("recordId") Long recordId, 
-    		@PathVariable("id") Integer id) {
+    		@PathVariable("id") Long id) {
     	
     	getDB(recordId).delete(id);
         printSuccessMessage();

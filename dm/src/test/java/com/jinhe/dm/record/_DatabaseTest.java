@@ -84,7 +84,7 @@ public class _DatabaseTest  {
 		Assert.assertTrue(result.size() == 1);
 		
 		Map<String, Object> row = result.get(0);
-		Integer id = EasyUtils.obj2Int( row.get("id") );
+		Long id = EasyUtils.obj2Long( row.get("id") );
 		Assert.assertEquals(10.9, row.get("f1"));
 		Assert.assertNotNull(row.get("createtime"));
 		Assert.assertEquals(0, EasyUtils.obj2Int( row.get("version") ).intValue());
@@ -151,7 +151,7 @@ public class _DatabaseTest  {
 		// test delete
 		result = _db.select().result;
 		Assert.assertTrue(result.size() == 2);
-		id = EasyUtils.obj2Int( result.get(0).get("id") );
+		id = EasyUtils.obj2Long( result.get(0).get("id") );
 		
 		_db.delete(id);
 		Assert.assertTrue(_db.select().result.size() == 1);

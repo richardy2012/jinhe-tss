@@ -221,7 +221,7 @@ public abstract class _Database {
 		return insertSQL;
 	}
 
-	public void update(Integer id, Map<String, String> valuesMap) {
+	public void update(Long id, Map<String, String> valuesMap) {
 		Map<String, Object> old = get(id);
 		if( old == null ) {
 			throw new BusinessException("修改出错，该记录不存在，可能已经被删除。");
@@ -264,7 +264,7 @@ public abstract class _Database {
 		SQLExcutor.excute(updateSQL, paramsMap, this.datasource);
 	}
 
-	private Map<String, Object> get(Integer id) {
+	private Map<String, Object> get(Long id) {
 		String fieldTags = "";
 		for(String field : this.fieldCodes) {
 			fieldTags += field + ",";
@@ -277,7 +277,7 @@ public abstract class _Database {
 		return list.get(0);
 	}
 
-	public void delete(Integer id) {
+	public void delete(Long id) {
 		Map<String, Object> old = get(id);
 		
 		String updateSQL = "delete from " + this.table + " where id=" + id;

@@ -200,7 +200,7 @@ public class _Reporter extends BaseActionSupport {
     	
     	long start = System.currentTimeMillis();
     	Map<String, String> requestMap = getRequestMap(request, false);
-        SQLExcutor excutor = reportService.queryReport(reportId, requestMap, 1, 100000, getLoginUserId(requestMap));
+        SQLExcutor excutor = reportService.queryReport(reportId, requestMap, 1, 10*10000, getLoginUserId(requestMap));
         
         // 对一些转换为json为报错的类型值进行预处理
         for(Map<String, Object> row : excutor.result ) {
@@ -211,22 +211,25 @@ public class _Reporter extends BaseActionSupport {
         }
         
         outputAccessLog(reportId, "showAsJson", requestMap, start);
+        
+        return excutor.result;
+    }
  
-        // 如果定义了jsonpCallback参数，则为jsonp调用
+    @RequestMapping("/jsonp/{report}")
+    public void showAsJsonp(HttpServletRequest request, HttpServletResponse response, @PathVariable("report") String report) {
+        // 如果定义了jsonpCallback参数，则为jsonp调用。示例参考：jinhe-tssJS/JSONP.html
         String jsonpCallback = request.getParameter("jsonpCallback");
 		if(jsonpCallback != null) {
 			ObjectMapper objectMapper = new ObjectMapper();
 			String jsonString;
 			try {
-				jsonString = objectMapper.writeValueAsString(excutor.result);
+				jsonString = objectMapper.writeValueAsString( showAsJson(request, report) );
 			} catch (Exception e) {  
 				jsonString = "";
       	    }  
 			
-        	return jsonpCallback + "(" + jsonString + ")";
+        	print(jsonpCallback + "(" + jsonString + ")");
         }
-        
-        return excutor.result;
     }
     
 	/**

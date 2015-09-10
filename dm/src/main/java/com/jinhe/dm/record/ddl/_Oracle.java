@@ -47,7 +47,7 @@ public class _Oracle extends _Database {
 		createDDL.append("updatetime date null, ");
 		createDDL.append("updator varchar(50), ");
 		createDDL.append("version NUMBER(5), ");
-   		createDDL.append("id NUMBER(11) not null");
+   		createDDL.append("id NUMBER(19) not null");
    		createDDL.append( ")" );
    		
    		SQLExcutor.excute(createDDL.toString(), datasource);	

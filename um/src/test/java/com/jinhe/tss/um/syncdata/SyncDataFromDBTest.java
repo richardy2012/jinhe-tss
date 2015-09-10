@@ -180,7 +180,8 @@ public class SyncDataFromDBTest extends TxSupportTest4UM {
 		Assert.assertEquals("jinpujun@gmail.com", user1.getEmail());
 		
 		// 再增加同步一次，相同账号用户更更新。及重名组已经存在的情况（新建的子组，非同步过来）
-		Group tg = groupService.getGroupById(3L);
+		groups = permissionHelper.getEntities("from Group g where g.groupType=1 order by  g.decode");
+		Group tg = (Group) groups.get(groups.size() - 1);
 		tg.setFromApp(null);
 		tg.setFromGroupId(null);
 		groupService.editExistGroup(tg, "-1", "-1");

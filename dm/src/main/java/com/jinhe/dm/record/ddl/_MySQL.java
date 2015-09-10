@@ -45,7 +45,7 @@ public class _MySQL extends _Database {
 		createDDL.append("`updatetime` TIMESTAMP null, ");
 		createDDL.append("`updator` varchar(50), ");
 		createDDL.append("`version` int(5), ");
-   		createDDL.append("`id` int(11) not null AUTO_INCREMENT, ");
+   		createDDL.append("`id` bigint(20) not null AUTO_INCREMENT, ");
    		createDDL.append( "primary key (id))" );
    		
    		SQLExcutor.excute(createDDL.toString(), datasource);		

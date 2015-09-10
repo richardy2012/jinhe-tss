@@ -77,12 +77,12 @@ public class _RecorderTest extends TxTestSupport4DM {
 				
 		request.addParameter("f3", "2015-04-05");
 		recorder.create(request, response, recordId);
-		recorder.update(request, response, recordId, 1);
+		recorder.update(request, response, recordId, 1L);
 		
 		// test 更新时必填字段为空
 		try {
 			request.removeParameter("f3");
-			recorder.update(request, response, recordId, 1);
+			recorder.update(request, response, recordId, 1L);
 			Assert.fail("should throw exception but didn't.");
 		} 
 		catch(Exception e) { }
@@ -100,7 +100,7 @@ public class _RecorderTest extends TxTestSupport4DM {
 			request.addParameter("f1", "12.0");
 			request.addParameter("f2", "i'm " + i);
 			request.addParameter("f3", "2015-04-05");
-			recorder.update(request, response, recordId, 1); // 多次修改，以生成日志
+			recorder.update(request, response, recordId, 1L); // 多次修改，以生成日志
 		}
 		
 		recorder.updateBatch(response, recordId, "1,2", "f1", "1212");
@@ -142,7 +142,7 @@ public class _RecorderTest extends TxTestSupport4DM {
 		Assert.assertTrue(attachList.size() == 0);
 		
 		// test delete record
-		recorder.delete(response, recordId, 1);
+		recorder.delete(response, recordId, 1L);
 		
 		result = recorder.getDB(recordId).select().result;
 		Assert.assertTrue(result.size() == 0);
@@ -155,7 +155,7 @@ public class _RecorderTest extends TxTestSupport4DM {
 			request.addParameter("f1", "12.12");
 			request.addParameter("f2", "just test end");
 			request.addParameter("f3", "2015-04-05");
-			recorder.update(request, response, recordId, 1);
+			recorder.update(request, response, recordId, 1L);
         	Assert.fail("should throw exception but didn't.");
         } catch (Exception e) {
         	Assert.assertTrue("修改出错，该记录不存在，可能已经被删除。", true);
