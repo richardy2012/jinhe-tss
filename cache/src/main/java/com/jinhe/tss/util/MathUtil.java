@@ -76,5 +76,12 @@ public class MathUtil {
         Random random = new Random();
         return random.nextInt(factor);
     }
+    
+    /**
+     * 生成一个六位随机数
+     */
+    public static int randomInt6() {
+        return new Random().nextInt(900000) + 100000;
+    }
 
 }

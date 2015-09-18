@@ -67,16 +67,18 @@ public class ExceptionEncoder {
 				}
             }
             
-            if (requestContext.isXmlhttpRequest()) {
+            // XMLHTTP，tssJS发出的ajax请求, 返回XML格式错误信息
+            if (requestContext.isXmlhttpRequest()) { 
                 response.setContentType("text/html;charset=UTF-8");
                 XmlPrintWriter writer = new XmlPrintWriter(response.getWriter());
-                // XMLHTTP，返回XML格式错误信息
                 errorMsgEncoder.print(writer);
             } 
-            else { // HTTP 
-            	response.getWriter().println(be);
+            else { // HTTP JSON: 默认用json格式往response写入异常信息
+            	response.setContentType("application/json;charset=UTF-8");
+            	response.getWriter().println("{\"errorMsg\": \"" + getFirstCause(be).getMessage() + "\"}");
             }
-        } catch (Exception e) {
+        } 
+    	catch (Exception e) {
             log.error("ExceptionEncoder.encodeException时出错：" + e.getMessage());
         }
     }

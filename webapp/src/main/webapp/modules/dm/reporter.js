@@ -226,8 +226,6 @@ function createQueryForm(treeID, paramConfig, callback) {
     $1("btCloseSearchForm").onclick = function () {
         $("#searchFormDiv").hide();
     }
-
-    $panel.show();
 }
 
 // ------------------------------------------------- 多级下拉选择联动 ------------------------------------------------

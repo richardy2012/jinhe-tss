@@ -219,6 +219,57 @@ function getLastFlushTime() {
 }
 
 /* ---------------------------------- 标准图标模板相关 ----------------------------------------------- */
+/*
+function createQueryForm(paramConfig, callback) {
+    var $panel = $("#searchFormDiv");
+    $panel.show();
+
+    if($panel.length) return;
+
+	$panel = $($.createElement("div", null, "searchFormDiv"));
+	document.body.appendChild($panel[0]);
+    $panel.html("").panel("设置报表查询条件", '<div id="searchForm"></div>');
+
+    var buttonBox = [];
+    buttonBox[buttonBox.length] = "        <TR><TD colspan='2' height='46'>";
+    buttonBox[buttonBox.length] = "          <div class='buttonBox'>";
+    buttonBox[buttonBox.length] = "             <input type='button' class='btStrong' id='btSearch' value='查询'/>";
+    buttonBox[buttonBox.length] = "             <input type='button' class='btWeak' id='btCloseSearchForm' value='关闭'/>";
+    buttonBox[buttonBox.length] = "          </div>";
+    buttonBox[buttonBox.length] = "        </TD></TR>";
+
+    var searchForm = $.json2Form("searchForm", paramConfig, buttonBox.join(""));
+
+    $.cache.XmlDatas["searchFormXML"] = searchForm.template.sourceXML;
+
+    $1("btSearch").onclick = function () {
+        if(callback && searchForm.checkForm() ) {
+            $("#searchFormDiv").hide();
+            var searchFormXML = $.cache.XmlDatas["searchFormXML"];
+            var dataNode = searchFormXML.querySelector("data");
+            callback(dataNode);
+        } 
+    }
+    $1("btCloseSearchForm").onclick = function () {
+        $("#searchFormDiv").hide();
+    }
+}
+
+createQueryForm(paramsConfig, function(paramsNode) {
+	$.ajax({
+        url : url,
+        method : "POST",
+        formNode : paramsNode,
+        type : "json",
+        waiting : true,
+        ondata : function() { 
+            var result = this.getResponseJSON();
+            show(result);
+        }
+    });
+});
+
+*/
 
 function initResearhBt() {
 	var researhBt = $1("researh");

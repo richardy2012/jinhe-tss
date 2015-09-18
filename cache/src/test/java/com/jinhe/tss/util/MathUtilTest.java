@@ -18,9 +18,13 @@ public class MathUtilTest {
 		assertTrue(0d == MathUtil.multiply(null, null));
 		
 		int value = MathUtil.randomInt(10);
-		
 		assertTrue(value >= 0);
 		assertTrue(value <= 10);
+		
+		value = MathUtil.randomInt6();
+		assertTrue(value >= 100000);
+		assertTrue(value <= 999999);
+
 	}
 
 }

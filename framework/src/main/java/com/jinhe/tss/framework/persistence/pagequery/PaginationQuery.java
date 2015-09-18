@@ -62,6 +62,9 @@ public abstract class PaginationQuery {
             }
         }
         
+        // 添加HQL中order by 语句
+        appendOrderBy();
+        
         // 解析带了宏定义的QL语句
         String queryQl = MacrocodeCompiler.run(ql, macrocodes, false);
  
@@ -72,9 +75,6 @@ public abstract class PaginationQuery {
         // 获取当前页数据记录集
         int firstResult = page.getFirstResult();
         if (firstResult >= 0) {
-            // 添加HQL中order by 语句
-            appendOrderBy();
-            
             Query query = createQuery(queryQl);
             query.setFirstResult(firstResult);
             query.setMaxResults(page.getPageSize());

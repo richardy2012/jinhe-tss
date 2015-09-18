@@ -38,10 +38,6 @@ public class DemoEntity implements IEntity  {
 	
 	@ManyToOne
 	private Param state;
-	
-	public String getStateName() {
-		return state.getText();
-	}
  
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

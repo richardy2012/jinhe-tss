@@ -6,8 +6,9 @@
     <link rel="stylesheet" type="text/css" href="../../tools/easyui/themes/default/easyui.css">
     <link rel="stylesheet" type="text/css" href="../../tools/easyui/themes/icon.css">
 
-    <script type="text/javascript" src="../../tools/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../../tools/easyui/jquery.min.js"></script>
     <script type="text/javascript" src="../../tools/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../tools/easyui/easyui-lang-zh_CN.js"></script>
 
     <style type="text/css">
         body {
@@ -41,6 +42,7 @@
 
 $(document).ready(function(){
     initCombobox('stateId', 'DemoState');
+    initGrid();
 });
 
 function initCombobox(id, code, params) {
@@ -126,26 +128,41 @@ function _remove(){
         });
     }
 }
+
+
+var FIELDS_1 = [
+        { field : 'id', title : 'ID', width : 90},
+        { field : 'name', title : '名称', width : 90 },
+        { field : 'code', title : '编码', width : 80 },
+        { field : 'stateName', title : '状态', width : 80 },
+        { field : 'udf1', title : '自定义1', width : 80 }, 
+        { field : 'udf2', title : '自定义2', width : 80 }, 
+        { field : 'udf3', title : '自定义3', width : 80 }
+    ];
+
+function initGrid() {
+    $.get('../../demo/', {}, function(data){
+        $.each(data, function(i, item){
+            item.stateName = item.state.text;
+        });
+
+        $('#t1').datagrid({
+            fit : true,
+            fitColumns : true,
+            rownumbers : true,
+            singleSelect : true,
+            toolbar: "#toolbar",
+            columns : [FIELDS_1],
+            data: data
+        });
+    });
+}
+
     </script>
 
 </head>
 <body>
-    <table id="dg" title="数据列表" class="easyui-datagrid" 
-        url="../../demo/"
-        toolbar="#toolbar" pagination="true"
-        rownumbers="true" fitColumns="true" fit="true" singleSelect="true">
-        <thead>
-            <tr>
-                <th field="id" width="50">ID</th>
-                <th field="name" width="50">名称</th>
-                <th field="code" width="50">编码</th>
-                <th field="stateName" width="50">状态</th>
-                <th field="udf1" width="50">自定义1</th>
-                <th field="udf2" width="50">自定义2</th>
-                <th field="udf3" width="50">自定义3</th>
-            </tr>
-        </thead>
-    </table>
+    <table id="t1" title="数据列表"></table>
 
     <div id="toolbar">
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="create()">新建</a>

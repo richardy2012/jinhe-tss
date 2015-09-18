@@ -51,7 +51,7 @@ public abstract class MacrocodeQueryCondition  {
 	}
 
 	public void addOrderByFields(String orderByFields) {
-		this.orderByFields.add(orderByFields);
+		this.getOrderByFields().add(orderByFields);
 	}
 	
 	public String toConditionString() {

@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.tree.ILevelTreeNode;
@@ -28,6 +30,8 @@ import com.jinhe.tss.util.EasyUtils;
 @Entity
 @Table(name = "component_param")
 @SequenceGenerator(name = "param_sequence", sequenceName = "param_sequence", initialValue = 1000, allocationSize = 10)
+@JsonIgnoreProperties(value={"pk", "attributes4XForm", "attributes", "parentClass", "creatorId", "createTime", "creatorName", 
+		"updatorId", "updateTime", "updatorName", "lockVersion", "decode", "seqNo", "levelNo", "hidden"})
 public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecodable {
  
     @Id
