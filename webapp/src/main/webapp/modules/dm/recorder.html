@@ -33,7 +33,7 @@
         overflow: auto; 
     }
 
-    #searchFormDiv { max-width: 600px; max-height: 450px; top: 200px; left: 30px; display:none; }
+    #searchFormDiv { max-width: 600px; max-height: 500px; top: 100px; left: 50px; display:none; }
     #searchFormDiv .content { padding: 12px; overflow: auto; }
     #searchFormDiv .buttonBox { margin: 0 auto; text-align: center; }
     #searchFormDiv .buttonBox input { margin-left: 12px;  }
@@ -130,7 +130,9 @@ function init() {
                         field._defaultValue = field.defaultValue;
                     });
 
-                    // 添加tssGrid定制的script
+                    /* 添加tssGrid定制的script。
+                     * 注：customizeGrid可用作全局js，customizeJS只有在录入Form打开后才加载，查询Form需要的onchange对应方法可放在customizeGrid里。
+                     */
                     if(customizeGrid) {
                         $.createScript( customizeGrid );
                     }

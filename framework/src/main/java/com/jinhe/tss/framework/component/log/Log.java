@@ -23,7 +23,6 @@ import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.web.dispaly.grid.GridAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
-import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.DateUtil;
 
 /** 
@@ -65,7 +64,7 @@ public class Log implements IEntity, IXForm, IGridNode {
         this.setOperatorIP( Environment.getClientIp() );
         this.setOperationCode( operationCode );
         this.setOperateTable ( entity.getClass().getName() );
-        this.setContent      ( BeanUtil.toXml(entity) );
+        this.setContent( ToStringBuilder.reflectionToString(entity, ToStringStyle.SHORT_PREFIX_STYLE));
         this.setOperateTime  ( new Date() );
         
         RequestContext rc = Context.getRequestContext();

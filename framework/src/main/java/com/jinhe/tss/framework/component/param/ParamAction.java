@@ -226,7 +226,7 @@ public class ParamAction extends BaseActionSupport {
 			if(list != null) {
 				List<Object[]> result = new ArrayList<Object[]>();
 				for (Param param : list) {
-					result.add(new Object[] { param.getId(), param.getText(), param.getParentId() });
+					result.add(new Object[] { param.getId(), param.getText(), param.getParentId(), param.getValue() });
 				}
 				return result;
 			}

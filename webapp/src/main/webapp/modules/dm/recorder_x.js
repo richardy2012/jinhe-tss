@@ -219,7 +219,7 @@ function updateField(code, value) {
 
 function isNew() {
     var tag = ws.getActiveTab().SID;
-    if(tag && tag.indexOf("_new") > 0 && tag.indexOf("_copy")) {
+    if(tag && (tag.indexOf("_new") > 0 || tag.indexOf("_copy") > 0) ) {
         return true;
     }
     return false;

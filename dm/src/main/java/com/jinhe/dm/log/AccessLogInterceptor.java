@@ -34,8 +34,8 @@ public class AccessLogInterceptor implements MethodInterceptor {
         		 buffer.append(arg).append(", ");
         	}
         	else {
-        		buffer.append(ToStringBuilder
-        				.reflectionToString(arg, ToStringStyle.SHORT_PREFIX_STYLE)).append(", ");
+        		String argString = ToStringBuilder.reflectionToString(arg, ToStringStyle.SHORT_PREFIX_STYLE);
+				buffer.append(argString).append(", ");
         	}
         }
 
