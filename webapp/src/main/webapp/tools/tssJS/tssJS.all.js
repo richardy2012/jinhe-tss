@@ -12,7 +12,7 @@
             return new tssJS.fn.init(selector, parent, rootTssJS);
         },
 
-        version = "1.1.0",
+        version = "1.2.0",
 
         // Map over the $ in case of overwrite
         _$ = window.$,
@@ -44,7 +44,7 @@
         // tssJS对象原型
         tssJS.fn = tssJS.prototype = {
 
-            tssjs: version,
+            version: version,
 
             constructor: tssJS,
 
@@ -2371,12 +2371,12 @@
         this.el.title = this.label;
         this.el.innerHTML = this.bold ? ("<b>" + this.label + "</b>") : this.label;
 
-        if(this.icon && "" != this.icon) {
+        if( this.icon ) {
             var img = $.createElement("img");
             img.src = this.icon;
             this.el.appendChild(img);
         }
-        if(this.submenu) {
+        if( this.submenu ) {
             var img = $.createElement("div", "hasChild");
             this.el.appendChild(img);
             
@@ -3899,9 +3899,14 @@
         }   
 
         // 当empty = false(表示不允许为空)时，下拉列表的默认值自动取第一项值
-        if( !this.el._value && this.required) {
-            this.setValue(valueList[0]);
-            form.setFieldValue(this.el.id, valueList[0]);
+        if( this.required ) {
+            var oldVal = this.el._value; 
+
+            // 原值为空，或当前的下拉列表已经不包含原值，则重新设值
+            if( !oldVal || !valueList.contains(oldVal) ) {
+                this.setValue(valueList[0]);
+                form.setFieldValue(this.el.id, valueList[0]);
+            }            
         }
         
         this.el.onchange = function() {
@@ -4412,10 +4417,10 @@
         processDataRow: function(curRow) {
             $(curRow).hover(
                 function() { 
-                    $(curRow).addClass("rolloverRow"); 
+                    $(curRow).addClass("highlight"); 
                 }, 
                 function() { 
-                    $(curRow).removeClass("rolloverRow");
+                    $(curRow).removeClass("highlight");
                 } 
             );
             
@@ -4447,7 +4452,7 @@
             } 
 
             if(column.getAttribute("highlight") == "true") {
-                $(cell).addClass("highlightCol");
+                $(cell).addClass("highlight");
             }
             $(cell).css("text-align", getAlign(column));
 
@@ -4600,7 +4605,7 @@
         },
 
         getHighlightRow: function() {
-            return $(".rolloverRow", this.tbody)[0];
+            return $(".highlight", this.tbody)[0];
         },
 
         getCheckedRows: function() {

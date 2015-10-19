@@ -116,7 +116,7 @@
 
 		<pluginManagement>
 			<plugins>
-				<!-- checkstyle??findbugs -->
+				<!-- checkstyle & findbugs -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
@@ -411,23 +411,6 @@
 				<db.url>127.0.0.1:3306/demo_bi</db.url>
 				<tomcat.url>www.boubei.com:8080</tomcat.url>
 				<upload.path>/home/tss/temp/upload</upload.path>
-			</properties>
-		</profile>
-
-		<profile>
-			<id>wanma</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<environment>wanma</environment>
-				<log.level>debug</log.level>
-				<job.enable>true</job.enable>
-				<db.username>root</db.username>
-				<db.password>800best@com</db.password>
-				<db.url>127.0.0.1:3306/tss_wm</db.url>
-				<tomcat.url>127.0.0.1:8088</tomcat.url>
-				<upload.path>/tmp/upload</upload.path>
 			</properties>
 		</profile>
 
