@@ -13,30 +13,30 @@
 
 <style>
 #cacheStrategyDiv {
-    display:none;
+    display: none;
     background-color: #fff;
-    border:1px solid #95B8E7;
+    border: 1px solid #95B8E7;
     min-width: 600px;    
     min-height: 340px;  
 }
 
 #cacheStrategyDiv h2 { 
-	width:100%; 
-	height:25px; 
-	line-height:25px; 
-	font-size:14px;
+	width: 100%; 
+	height: 25px; 
+	line-height: 25px; 
+	font-size: 14px;
 	background-color: #049cdb; 
 	color: #fff; 
-	text-indent:10px; 
-	cursor:move; 
+	text-indent: 10px; 
+	cursor: move; 
 }
 
 #cacheStrategyDiv .bt { 
-	margin:5px 0 0 10px;
+	margin: 8px 0 5px 10px;
 }
 
 #cacheStrategyDiv .bt input{ 
-	margin:0 0 0 20px;
+	margin: 0 0 0 20px;
 }
 
 #cacheStrategy {
@@ -48,7 +48,7 @@
 	border: none;
 }
 
-#poolHitRate { left:60px; top:4px; font-weight:bold; }
+#poolHitRate { left: 60px; top: 4px; font-weight: bold; }
 #poolHitRate:hover { cursor: pointer; }
   
 </style>
@@ -219,10 +219,10 @@
 						var $form = $("#cacheStrategyDiv");
 				        $form.css("display", "block").center(600, 320);
 
-				        $("#cacheStrategyClose").click( function() {
+				        $("#bt2").click( function() {
 				            $form.hide();
 				        });
-				        $("#cacheStrategyEdit").click( function() {
+				        $("#bt1").click( function() {
 				            editCacheStrategy();
 				        });
 					});
@@ -324,7 +324,7 @@
 			<table>
 				<tr> 
 					<td id="gridTitle">
-						※缓存池明细<span id="poolHitRate"></span><span class="buttonBox" id="gridToolBar"></span>
+						- 缓存池明细<span id="poolHitRate"></span><span class="buttonBox" id="gridToolBar"></span>
 					</td> 
 				</tr>
 				<tr> 
@@ -342,12 +342,12 @@
  
   <div id="cacheStrategyDiv">
   	<h2>
-		缓 存 策 略
+		缓存策略
 	</h2><br/>
     <div id="cacheStrategy"></div>    
     <div class="bt">
-        <input type="button" class="btWeak" value="修改" id="cacheStrategyEdit"/>
-    	<input type="button" class="btStrong" value="隐藏" id="cacheStrategyClose"/>
+        <input type="button" class="tssbutton orange small" value="修 改" id="bt1"/>
+    	<input type="button" class="tssbutton orange small" value="隐 藏" id="bt2"/>
      </div>
   </div>
 

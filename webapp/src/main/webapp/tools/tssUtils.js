@@ -82,7 +82,7 @@ function openPalette() {
 
 window.onresize = function() {
 	var bodyHeight = document.body.offsetHeight;
-	$("#palette #tree").css("height", (bodyHeight - 45) + "px");
+	$("#palette #tree").css("height", (bodyHeight - 30) + "px");
 	$(".panel .groove #ws Tree").css("height", (bodyHeight - 112) + "px");	
 }
  
@@ -96,26 +96,13 @@ function initEvents() {
 
 	/* 点击左栏控制按钮 */
 	$("#palette").addClass("opend");
-	var paletteOpen = $("#paletteOpen");
-	var paletteClose = $("#paletteClose");
-
-	if( paletteClose.length ) {
-		paletteClose.click(closePalette);	
-	}
-
-	if( paletteOpen.length ) {
-		paletteOpen.hide();
-		paletteOpen.click(openPalette);
-	} 
-	else if( paletteClose.length ) {
-		$.leftbar(function(){
-			if($("#palette").hasClass("opend")){
-				closePalette();
-			} else {
-				openPalette();
-			}
-		});
-	}
+	$.leftbar(function(){
+		if($("#palette").hasClass("opend")){
+			closePalette();
+		} else {
+			openPalette();
+		}
+	});
 
 	// 关闭页面自动注销
 	$.Event.addEvent(window, "unload", function(ev) {
@@ -753,15 +740,16 @@ function popupTree(url, nodeName, params, callback) {
 
 	var boxName = "popupTree";
 	var el = $.createElement("div", "popupItem");
-	el.innerHTML = '<Tree id="' + boxName + '"><div class="loading"></div></Tree>' + 
+	el.innerHTML = '<h2>' + nodeName + '</h2>' +
+		'<Tree id="' + boxName + '"><div class="loading"></div></Tree>' + 
 	    '<div class="bts">' + 
-	       '<input type="button" value="确定" class="btStrong" onclick="doCallback()"/>' + 
-       	   '<input type="button" value="关闭" class="btWeak" onclick="$.removeNode(el)"/>' +  
+	       '<input type="button" value="确定" class="tssbutton orange small b1" >' + 
+       	   '<input type="button" value="关闭" class="tssbutton orange small b2" >' +  
 	    '</div>';
 	document.body.appendChild(el);
-	$(el).addClass("dialog").css("width", "300px").css("height", "300px").center(300, 400).css("zIndex", "999");
+	$(el).addClass("dialog").css("width", "300px").css("height", "320px").center(300, 400).css("zIndex", "999");
 
-	$(".bts .btWeak", el).click(removeDialog);
+	$(".bts .b2", el).click(removeDialog);
 
 	params = params || {};
 	$.ajax({
@@ -783,7 +771,7 @@ function popupTree(url, nodeName, params, callback) {
 				}
 			}
 
-			$(".bts .btStrong", el).click(doCallback);
+			$(".bts .b1", el).click(doCallback);
 		}
 	});
 }
@@ -796,13 +784,13 @@ function popupForm(url, nodeName, params, callback, title) {
 	el.innerHTML = '<h2>' + title + '：</h2>' +
 		'<div id="' + boxName + '"><div class="loading"></div></div>' + 
 	    '<div class="bts">' + 
-	       '<input type="button" value="确定" class="btStrong"/>' + 
-       	   '<input type="button" value="关闭" class="btWeak"/>' +  
+	       '<input type="button" value="确 定" class="b1 tssbutton orange small">' + 
+       	   '<input type="button" value="关 闭" class="b2 tssbutton orange small">' +  
 	    '</div>';
 	document.body.appendChild(el);
 	$(el).addClass("dialog").center(300, 300).css("zIndex", "999");
 
-	$(".bts .btWeak", el).click(removeDialog);
+	$(".bts .b2", el).click(removeDialog);
 
 	params = params || {};
 
@@ -825,7 +813,7 @@ function popupForm(url, nodeName, params, callback, title) {
 			$.cache.XmlDatas[nodeName] = formXML;
 			$.F(boxName, formXML);
 
-			$(".bts .btStrong", el).click(function(){
+			$(".bts .b1", el).click(function(){
 				var condition = {};       
 		        var formXML = $.cache.XmlDatas[nodeName];
 	            var nodes = formXML.querySelectorAll("data row *");
@@ -856,13 +844,13 @@ function popupGrid(url, nodeName, title, params) {
 	el.innerHTML = '<h2>' + title + '</h2>' +
 		'<Grid id="' + boxName + '"><div class="loading"></div></Grid>' + 
 	    '<div class="bts">' + 
-       	   '<input type="button" value="关闭" class="btWeak"/>' +  
+       	   '<input type="button" value="关闭" class="tssbutton orange small"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
 	$(el).addClass("dialog").css("width", "600px").css("height", "auto").center(600, 400);
 	$("#" + boxName, el).css("minHeight", "200px").css("maxHeight", "400px");
 
-	$(".bts .btWeak", el).click(removeDialog);
+	$(".bts .tssbutton", el).click(removeDialog);
 
 	$.ajax({
 		url: url,
