@@ -16,6 +16,8 @@
 
 <style type="text/css">
 	body { overflow: auto; height: auto;}
+	input[type=file] { background-color: inherit; }
+
 	.article { border: 1px solid #98989C; background-color:#fff; margin: 0px; padding: 1px; height: 100%;}
 	.article .summary { background-color: #99CCCC; padding: 3px; }
 	.article .content { height: 400px; }
@@ -328,7 +330,8 @@
 					<option value="1" selected>图片</option>
 					<option value="2">文档</option>
 				</select>
-				<input type="file" name="file"/><input type="button" class="btStrongL" onclick="uploadAttachment()" value="上传附件" />
+				<input type="file" name="file"/>
+				<input type="button" class="tssbutton small blue" onclick="uploadAttachment()" value="上传附件" />
 				<b>&nbsp;单个附件大小不宜超过3M</b>
 			</form>
 			<iframe name='fileUpload' style='display:none;'></iframe>
@@ -337,9 +340,9 @@
 			<Grid id="attachGrid"></Grid>
 		</div>
 		<div class="bts">
-			<input type="button" value="完成" class="btStrong" id="btSave"/> 
-			<input type="button" value="完成并提交" class="btStrongL" id="btSaveAndPublish"/>
-			<input type="button" value="关闭" class="btWeak" onclick="window.parent.showArticleList(channelId);"/>
+			<input type="button" value="完 成" class="tssbutton small blue" id="btSave"/> 
+			<input type="button" value="完成并提交" class="tssbutton small blue" id="btSaveAndPublish"/>
+			<input type="button" value="关 闭" class="tssbutton small blue" onclick="window.parent.showArticleList(channelId);"/>
 		</div>
 	</div>
 

@@ -76,6 +76,7 @@ public interface ILoginService {
      * @return
      *      登陆用户拥有的所有权限 List(roleId)
      */
+    @Cached
     List<Long> getRoleIdsByUserId(Long userId);
     
 	/**

@@ -32,7 +32,7 @@
 	</declare>
     <layout>
         <TR>
-            <TD width="50"><label binding="name"/></TD>
+            <TD width="60"><label binding="name"/></TD>
             <TD><input binding="name" style="width:40%"/></TD>
         </TR>
         <TR showType="0">
@@ -51,24 +51,24 @@
             <TD><label binding="definer.name"/></TD>
             <TD>
                 <input binding="definer.name" style="width:200px"/>
-                <input type="button" value="配置" id="configDefinerBt" 
-                	onclick="configParams('layout','definer.id','definer.name','parameters')" class="btWeak"/>
+                <a class="tssbutton small blue" id="configDefinerBt" href="javascript:void(0)" 
+                    onclick="configParams('layout','definer.id','definer.name','parameters')">配置</a>
             </TD>
         </TR>
         <TR showType="3">
             <TD><label binding="definer.name"/></TD>
             <TD>
                 <input binding="definer.name" style="width:200px"/>
-                <input type="button" value="配置" id="configDefinerBt" 
-                	onclick="configParams('portlet','definer.id','definer.name','parameters')" class="btWeak"/>
+                <a class="tssbutton small blue" id="configDefinerBt" href="javascript:void(0)" 
+                    onclick="configParams('portlet','definer.id','definer.name','parameters')">配置</a>
             </TD>
         </TR>
         <TR showType="1,2,3">
             <TD><label binding="decorator.name"/></TD>
             <TD>
                 <input binding="decorator.name" style="width:200px"/>
-                <input type="button" value="配置" id="configDecoratorBt" 
-                	onclick="configParams('decorator','decorator.id','decorator.name','parameters')" class="btWeak"/>
+                <a class="tssbutton small blue" id="configDecoratorBt" href="javascript:void(0)" 
+                    onclick="configParams('decorator','decorator.id','decorator.name','parameters')">配置</a>
             </TD>
         </TR>
         <TR showType="0,1">
@@ -82,19 +82,19 @@
         <TR showType="0,1">
             <TD valign="top"><label binding="jsCode"/></TD>
             <TD>
-                <textarea binding="jsCode" style="width:100%;height:150px"/>
+                <textarea binding="jsCode" style="width:95%;height:150px"/>
             </TD>
         </TR>
         <TR showType="0,1">
             <TD valign="top"><label binding="cssCode"/></TD>
             <TD>
-                <textarea binding="cssCode" style="width:100%;height:180px"/>
+                <textarea binding="cssCode" style="width:95%;height:180px"/>
             </TD>
         </TR>
         <TR>
             <TD><label binding="description"/></TD>
             <TD>
-                <textarea binding="description" style="width:100%;height:50px"/>
+                <textarea binding="description" style="width:95%;height:50px"/>
             </TD>
         </TR>		
     </layout>

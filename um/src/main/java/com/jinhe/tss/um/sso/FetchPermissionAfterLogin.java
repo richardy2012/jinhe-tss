@@ -28,17 +28,16 @@ public class FetchPermissionAfterLogin implements ILoginCustomizer {
         Long logonUserId = Environment.getUserId();
         
         // 1.获取登陆用户的权限（拥有的角色）
-        List<Object[]> userRoles = loginSerivce.getUserRolesAfterLogin(logonUserId);
+        List<Long> roleIds = loginSerivce.getRoleIdsByUserId(logonUserId);
         
         // 2.保存到用户权限（拥有的角色）对应表
+        List<Object[]> userRoles = new ArrayList<Object[]>();
+        for( Long roleId : roleIds ) {
+        	userRoles.add( new Object[] { logonUserId, roleId } );
+        }
         permissionService.saveUserRolesAfterLogin(userRoles, logonUserId);
         
-        // 将用户角色信息塞入到session里
-        List<Long> roleIds = new ArrayList<Long>();
-        for( Object[] urInfo : userRoles ){
-            roleIds.add((Long) urInfo[1]);
-        }
-        
+        // 将用户角色信息塞入到session里        
         HttpSession session = Context.getRequestContext().getSession();
         session.setAttribute(SSOConstants.USER_RIGHTS_IN_SESSION, roleIds);
         session.setAttribute(SSOConstants.LOGINNAME_IN_SESSION, Environment.getUserCode());

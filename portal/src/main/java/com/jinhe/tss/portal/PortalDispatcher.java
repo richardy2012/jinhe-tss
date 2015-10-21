@@ -34,9 +34,7 @@ public class PortalDispatcher extends HttpServlet {
  
     private static final long serialVersionUID = -5610690924047339502L;
 
-	/**
-	 * 发布路径的后缀名
-	 */
+	/** 发布路径的后缀名 */
 	public static final String PORTAL_REDIRECT_URL_SUFFIX = ".portal";
 	
 	public static final String THE_404_URL = "/tss/404.html";
@@ -55,8 +53,12 @@ public class PortalDispatcher extends HttpServlet {
 			}
 			
 			// 检测相应门户是否可以使用匿名用户访问
-			Long portalId = issueInfo.getPortal().getId();
-			if (portalId != null && canPortalBrowseByAnonymous(portalId)) {
+			Long portalId = issueInfo.getPortal().getId(), pageId = null;
+			if(issueInfo.getPage() != null) {
+				pageId = issueInfo.getPage().getId();
+			}
+
+			if ( portalId != null && canPortalBrowseByAnonymous(portalId, pageId) ) {
 				String redirectPage = getRedirectPath(issueInfo);
 	            log.debug("访问门户发布地址被转向至真实地址:" + redirectPage );
 
@@ -125,25 +127,23 @@ public class PortalDispatcher extends HttpServlet {
      * @param portalId
      * @return
      */
-    private boolean canPortalBrowseByAnonymous(Long portalId){
+    private boolean canPortalBrowseByAnonymous(Long portalId, Long pageId) {
     	PermissionHelper helper = PermissionHelper.getInstance();
         List<?> list = helper.getEntities("from Structure o where o.portalId = ? and o.type = ?", 
         		portalId, Structure.TYPE_PORTAL);
         
         if(list.isEmpty())  return false; 
 
-        String application = UMConstants.TSS_APPLICATION_ID;
+        String application  = UMConstants.TSS_APPLICATION_ID;
         String resourceType = PortalConstants.PORTAL_RESOURCE_TYPE;
-        String operration = PortalConstants.PORTAL_VIEW_OPERRATION;
-        
+        String operration   = PortalConstants.PORTAL_VIEW_OPERRATION;
         Long operatorId = Environment.getUserId();
         if(operatorId == null) {
         	operatorId = AnonymousOperator.anonymous.getId();
         }
         List<Long> permissons = helper.getResourceIdsByOperation(application, resourceType, operration, operatorId);
         
-        Structure rootPS = (Structure) list.get(0);
-        return permissons.contains(rootPS.getId());
+        return permissons.contains(portalId) && (pageId == null || permissons.contains(pageId) );
     }
     
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

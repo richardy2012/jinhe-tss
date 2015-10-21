@@ -7,7 +7,7 @@
 <link rel="shortcut icon" href="images/tss.ico">
 <link rel="Bookmark" href="images/tss.ico">
 
-<link href="tools/tssJS/css/tss.all.css" rel="stylesheet">
+<link href="tools/tssJS/css/boubei.css" rel="stylesheet">
 <link href="css/css.css" rel="stylesheet">
 
 <script src="tools/tssJS/tssJS.all.js"></script>
@@ -31,78 +31,78 @@
 
 </style>
 
-<script LANGUAGE="JavaScript">
-<!--
+<script type="text/javascript">
 	
-	FROMEWORK_CODE = "TSS";
-	APP_CODE    = "TSS";
-	APPLICATION = APP_CODE.toLowerCase();
-	CONTEXTPATH = APPLICATION + "/";
-	
-	/* 用户信息初始化  */
-	window.onload = function() {
-		$.ajax({
-			url : "auth/user/operatorInfo",
-			method : "POST",
-			headers: {"appCode": APP_CODE},
-			params : {"anonymous": "true"}, 
-			onresult : function() {
-				var userName = this.getNodeValue("name");
-				$("#userInfo").html(userName);
-				
-				resizeIFrame();
-				turn2IFrame("modules/dm/record.html");
+FROMEWORK_CODE = "TSS";
+APP_CODE    = "TSS";
+APPLICATION = APP_CODE.toLowerCase();
+CONTEXTPATH = APPLICATION + "/";
 
-				dbsx();
-			}
-		});
-	}
+/* 用户信息初始化  */
+window.onload = function() {
+	$.ajax({
+		url : "auth/user/operatorInfo",
+		method : "POST",
+		headers: {"appCode": APP_CODE},
+		params : {"anonymous": "true"}, 
+		onresult : function() {
+			var userName = this.getNodeValue("name");
+			$("#userInfo").html(userName);
+			
+			resizeIFrame();
+			turn2IFrame("modules/dm/record.html");
 
-	function dbsx() {
-	  $.ajax({
-	    url: "auth/message/num",
-	    method: "GET",
-	    type : "json",
-	    ondata: function() {
-	      var num = this.getResponseJSON();
-	      if(num > 0) {
-	        $.tssTip("您的站内信箱里有<b> " + num + " </b>条新的待办事项，<a href='javascript:void(0)' onclick='openMsgPage()'>点击查看。</a>");
-	      }
-	    }
-	  });
-	}
-
-	function openMsgPage() {
-		turn2IFrame('modules/um/message.html');
-	}
-
-	var resizeIFrame = function resizeIFrame() {
-		$("#iframeSrc").css("height", (document.body.offsetHeight - 41) + "px");
-	}
-
-	window.onresize = resizeIFrame;
-	
-	function logout() {
-		$.ajax({
-			url : "logout.in",
-			method : "GET",
-			onsuccess : function() { 
-				$.Cookie.del("token", "");
-				$.Cookie.del("token", "/");
-				$.Cookie.del("token", "/" + APPLICATION);
-				$.Cookie.del("token", "/" + CONTEXTPATH);
-				location.href = "login.html";
-			}
-		});
-	}
-
-	function turn2IFrame(ahref) {
-		if (ahref != "#") {
-			$1("iframeSrc").setAttribute("src", ahref);
+			dbsx();
 		}
+	});
+}
+
+function dbsx() {
+  $.ajax({
+    url: "auth/message/num",
+    method: "GET",
+    type : "json",
+    ondata: function() {
+      var num = this.getResponseJSON();
+      if(num > 0) {
+        $.tssTip("您的站内信箱里有<b> " + num + " </b>条新的待办事项，<a href='javascript:void(0)' onclick='openMsgPage()'>点击查看。</a>");
+      }
     }
-//-->
+  });
+}
+
+function openMsgPage() {
+	turn2IFrame('modules/um/message.html');
+}
+
+var resizeIFrame = function resizeIFrame() {
+	$("#iframeSrc").css("height", (document.body.offsetHeight - 41) + "px");
+}
+
+window.onresize = resizeIFrame;
+
+function logout() {
+	$.ajax({
+		url : "logout.in",
+		method : "GET",
+		onsuccess : function() { 
+			$.Cookie.del("token", "");
+			$.Cookie.del("token", "/");
+			$.Cookie.del("token", "/" + APPLICATION);
+			$.Cookie.del("token", "/" + CONTEXTPATH);
+			location.href = "login.html";
+		}
+	});
+}
+
+function turn2IFrame(ahref) {
+	if (ahref != "#") {
+		$1("iframeSrc").setAttribute("src", ahref);
+	}
+}
+
 </script>
+
 </head>
 
 <body>

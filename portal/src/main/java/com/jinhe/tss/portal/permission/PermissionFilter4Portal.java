@@ -2,6 +2,8 @@ package com.jinhe.tss.portal.permission;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.jinhe.tss.framework.exception.BusinessException;
@@ -33,8 +35,18 @@ public class PermissionFilter4Portal implements IPermissionFilter {
      * @param permitedResouceIds
      */
     private void doFiltrate(Node node, List<Long> permitedResouceIds){
-        if(node instanceof PortalNode && !permitedResouceIds.contains(node.getId())){
-        	 throw new BusinessException("您对当前门户【" + node.getName()+ "】没有浏览访问权限！");
+        if( node instanceof PortalNode ) {
+        	if( !permitedResouceIds.contains(node.getId()) ) {
+        		throw new BusinessException("您对当前门户【" + node.getName() + "】没有浏览访问权限！");
+        	}
+        	PortalNode portalNode = (PortalNode) node;
+        	Map<Long, Node> nodesMap = portalNode.getNodesMap();
+        	for(Iterator<Entry<Long, Node>> it = nodesMap.entrySet().iterator(); it.hasNext(); ) {
+        		Long nodeId = it.next().getKey();
+        		if( !permitedResouceIds.contains(nodeId) ) {
+        			it.remove();
+        		}
+        	}
         }
         
         Set<Node> children = node.getChildren();

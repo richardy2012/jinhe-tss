@@ -41,9 +41,11 @@
 			<TD><textarea binding="events" style="width:95%;height:60px"/>
 				<br/><span>注:按照"事件名=处理方法"格式填写，例:"onload=${js.layout}.onload"</span>
 			</TD>
-			<TD valign="top"><label binding="parameters"/></TD>
+			<TD valign="top">
+				<label binding="parameters"/>
+				<a href="javascript:void(0)" onclick="editParamsTemplate(1)" class="tssbutton small blue">配置</a>
+			</TD>
 			<TD><textarea binding="parameters" style="width:98%;height:60px"/>
-				<br/><input type="button" value="配置参数模板" id="page1BtEditPT" onclick="editParamsTemplate(1)" class="btStrongL"/>
 				<br/><span>注:按照"参数名=参数值"格式填写，例:"bgColor=#FFFFFF"，不能有空格。</span>
 			</TD>	
 		</TR>

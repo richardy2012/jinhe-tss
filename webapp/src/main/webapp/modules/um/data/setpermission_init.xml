@@ -20,7 +20,7 @@
 					<TD><label binding="permissionRank"/></TD>
 					<TD><input binding="permissionRank"/></TD>
 					
-					<TD><input type="button" class="btWeak" value="查询" id="page3BtSearch"/></TD>
+					<TD><a href="javascript:void(0)" class="tssbutton small blue" id="page3BtSearch">查询</a></TD>
 				</TR>
 			</layout>
 			<data>

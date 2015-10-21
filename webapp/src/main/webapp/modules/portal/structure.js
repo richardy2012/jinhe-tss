@@ -579,7 +579,7 @@ function configParams(paramsType, id, name) {
     var xmlNode = parseParameters(parameters.revertEntity());
     var oldParamsNode = xmlNode.querySelector(paramsType);
 
-    var title = "设置【\"" + nameValue + "】\"的参数";
+    var title = "配置【" + nameValue + "】的参数";
     var url = "#";
     if( oldParamsNode && oldParamsNode.firstChild){
         url = $.XML.getText(oldParamsNode.firstChild); // 组件参数配置模板所在目录
@@ -840,7 +840,7 @@ function loadCacheManageData(treeID, portalId) {
             var name = cacheItem.getAttribute("name");
             var id = cacheItem.getAttribute("id");
             str[str.length] = "<tr height='30'><td class='b' width='30%'>" + name + 
-				"</td><td class='b'><input type='button' class='btWeak' value='刷新' onclick='flushCache(" + id + ", " + portalId + ")'/></td></tr>";
+				"</td><td class='b'><input type='button' class='tssbutton small blue' value='刷新' onclick='flushCache(" + id + ", " + portalId + ")'/></td></tr>";
         }
         str[str.length] = "</table>";
 

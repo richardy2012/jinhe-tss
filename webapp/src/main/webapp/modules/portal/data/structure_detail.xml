@@ -32,7 +32,7 @@
 		</declare>
             <layout>
                 <TR>
-                    <TD width="50"><label binding="name"/></TD>
+                    <TD width="60"><label binding="name"/></TD>
                     <TD><input binding="name" style="width:40%"/></TD>
                 </TR>
                 <TR showType="0">
@@ -48,27 +48,33 @@
                     </TD>
                 </TR>
                 <TR showType="1,2">
-                    <TD><label binding="definer.name"/></TD>
+                    <TD>
+                        <label binding="definer.name"/>
+                    </TD>
                     <TD>
                         <input binding="definer.name" style="width:200px"/>
-                        <input type="button" value="配置" id="configDefinerBt" style="" 
-                            onclick="configParams('layout','definer.id','definer.name','parameters')" class="btWeak"/>
+                        <a class="tssbutton small blue" id="configDefinerBt" href="javascript:void(0)" 
+                            onclick="configParams('layout','definer.id','definer.name','parameters')">配置</a>
                     </TD>
                 </TR>
                 <TR showType="3">
-                    <TD><label binding="definer.name"/></TD>
+                    <TD>
+                        <label binding="definer.name"/>
+                    </TD>
                     <TD>
                         <input binding="definer.name" style="width:200px"/>
-                        <input type="button" value="配置" id="configDefinerBt" style="" 
-                            onclick="configParams('portlet','definer.id','definer.name','parameters')" class="btWeak"/>
+                        <a class="tssbutton small blue" id="configDefinerBt" href="javascript:void(0)" 
+                            onclick="configParams('portlet','definer.id','definer.name','parameters')">配置</a>
                     </TD>
                 </TR>
                 <TR showType="1,2,3">
-                    <TD><label binding="decorator.name"/></TD>
+                    <TD>
+                        <label binding="decorator.name"/>
+                    </TD>
                     <TD>
                         <input binding="decorator.name" style="width:200px"/>
-                        <input type="button" value="配置" id="configDecoratorBt" style="" 
-                            onclick="configParams('decorator','decorator.id','decorator.name','parameters')" class="btWeak"/>
+                        <a class="tssbutton small blue" id="configDecoratorBt" href="javascript:void(0)" 
+                            onclick="configParams('decorator','decorator.id','decorator.name','parameters')">配置</a>
                     </TD>
                 </TR>
                 <TR showType="0,1">

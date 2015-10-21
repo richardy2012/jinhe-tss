@@ -15,17 +15,14 @@
 
 <style>
  
-  .trxx { height: 13px; background-color:#E4E6F5  }
-  .bottomBT { height: 45px; background-color:#E4E6F5; }
-  .bottomBT td { vertical-align:top; padding-top: 3px; }
-
   #ws { 
-    z-index: 200; display: none; width: 800px; height: 500px; 
-    position: absolute; top:120px; left:220px;
-    border-radius: 3px; border-bottom:1px solid #416371;
-    background-color: transparent;
+    position: absolute; top: 60px; left: 220px;
+    z-index: 200; display: none; 
+    width: 800px; height: 500px; 
+    border-radius: 10px 10px 0 0; 
+    border-bottom: 1px solid #95B8E7;
   }
-  #ws Tree { height:425px; }
+  #ws Tree { height: 418px; max-height: 418px; }
 
 </style>
 
@@ -42,7 +39,7 @@
         <div>
           <div class="bar">
             <span class="icon"></span>用户组
-            <span class="search"><input id="searchKey"/><input type="button" class="btWeak" value="查 找"/></span>
+            <span class="search"><input id="searchKey"/><input type="button" class="tssbutton small blue" value="查 找"/></span>
             <span class="refreshTreeBT"></span>
           </div>
           <Tree id="tree" moveable="true"><div class="loading"></div></Tree>
@@ -69,8 +66,8 @@
     <WorkSpace:Page id="page1">
       <div id="page1Form"></div><br/><br/>
       <WorkSpace:PageStep>
-        <input type="button" class="btWeak" value="下一步" id="page1BtNext" onclick="ws.nextPhase(false)"/>
-        <input type="button" class="btStrong" value="完成" id="page1BtSave"/>
+        <input type="button" class="tssbutton small blue" value="下一步" id="page1BtNext" onclick="ws.nextPhase(false)"/>
+        <input type="button" class="tssbutton small blue" value="完成" id="page1BtSave"/>
       </WorkSpace:PageStep>
     </WorkSpace:Page>
     <!-- page1 结束 -->
@@ -78,29 +75,29 @@
     <!-- page2 开始 -->
     <WorkSpace:Page id="page2" class="tight">
       <table>
-       <tr class="trxx">
+       <tr class="titleBox">
           <td class="r b">&nbsp;※&nbsp;可选用户组：</td>
           <td class="r b">&nbsp;</td>
-          <td class="b label">&nbsp;※&nbsp;已有用户组：</td>
+          <td class="b label">&nbsp;※&nbsp;已选用户组：</td>
         </tr>
         <tr>
           <td class="r b" width="49%">
             <Tree id="page2Tree" treeType="multi" selectSelf="true"></Tree>
           </td>
-          <td class="r b" style="background-color:#E4E6F5;width:18px">
-            <input type="button" class="btWeakS" value=">>" id="page2BtAdd"/>
-            <input type="button" class="btWeakS" value="<<" id="page2BtDel"/>
+          <td class="r b mbar">
+            <input type="button" value=">>" id="page2BtAdd"/>
+            <input type="button" value="<<" id="page2BtDel"/>
           </td>
           <td class="b">
             <Tree id="page2Tree2" treeType="multi" selectSelf="false"></Tree>
           </td>
         </tr>
-        <tr class="bottomBT">
+        <tr class="btnBox">
           <td colspan="3">
             <WorkSpace:PageStep>
-              <input type="button" class="btWeak" value="上一步" id="page2BtPrev" onclick="ws.prevPhase(false)"/>
-              <input type="button" class="btWeak" value="下一步" id="page2BtNext" onclick="ws.nextPhase(false)"/>
-              <input type="button" class="btStrong" value="完成" id="page2BtSave"/>
+              <input type="button" class="tssbutton small blue" value="上一步" id="page2BtPrev" onclick="ws.prevPhase(false)"/>
+              <input type="button" class="tssbutton small blue" value="下一步" id="page2BtNext" onclick="ws.nextPhase(false)"/>
+              <input type="button" class="tssbutton small blue" value="完成" id="page2BtSave"/>
             </WorkSpace:PageStep>
           </td>
         </tr>
@@ -111,28 +108,28 @@
     <!-- page3 开始 -->
     <WorkSpace:Page id="page3" class="tight">
       <table>
-       <tr class="trxx">
+       <tr class="titleBox">
           <td class="r b">&nbsp;※&nbsp;可选角色：</td>
           <td class="r b">&nbsp;</td>
-          <td class="b label">&nbsp;※&nbsp;已有角色：</td>
+          <td class="b label">&nbsp;※&nbsp;已选角色：</td>
         </tr>
         <tr>
           <td class="r b" width="49%">
             <Tree id="page3Tree" treeType="multi"></Tree>
           </td>
-          <td class="r b" style="background-color:#E4E6F5;width:18px">
-            <input type="button" class="btWeakS" value=">>" id="page3BtAdd"/>
-            <input type="button" class="btWeakS" value="<<" id="page3BtDel"/>
+          <td class="r b mbar">
+            <input type="button" value=">>" id="page3BtAdd"/>
+            <input type="button" value="<<" id="page3BtDel"/>
           </td>
           <td class="b">
             <Tree id="page3Tree2" treeType="multi" selectSelf="false"></Tree>
           </td>
         </tr>
-        <tr class="bottomBT">
+        <tr class="btnBox">
           <td colspan="3">
             <WorkSpace:PageStep>
-              <input type="button" class="btWeak" value="上一步" id="page3BtPrev" onclick="ws.prevPhase(false)"/>
-              <input type="button" class="btStrong" value="完成" id="page3BtSave"/>
+              <input type="button" class="tssbutton small blue" value="上一步" id="page3BtPrev" onclick="ws.prevPhase(false)"/>
+              <input type="button" class="tssbutton small blue" value="完成" id="page3BtSave"/>
             </WorkSpace:PageStep>
           </td>
         </tr>
@@ -143,11 +140,11 @@
     <!-- page4 开始 -->
     <WorkSpace:Page id="page4" class="tight">
       <table>
-        <tr class="trxx">
+        <tr class="titleBox">
           <td class="r b">&nbsp;※&nbsp;可选用户组：</td>
           <td class="r b">&nbsp;※&nbsp;可选用户：</td>
           <td class="r b">&nbsp;</td>
-          <td class="b label">&nbsp;※&nbsp;已有：</td>
+          <td class="b label">&nbsp;※&nbsp;已选：</td>
         </tr>
         <tr>
           <td class="r b" width="36%">
@@ -156,20 +153,20 @@
           <td class="r b" width="29%">
             <Tree id="page4Tree2" treeType="multi" selectSelf="false"></Tree>
           </td>
-          <td class="r b" style="background-color:#E4E6F5;width:18px">
-            <input type="button" class="btWeakS" value=">>" id="page4BtAdd"/>
-            <input type="button" class="btWeakS" value="<<" id="page4BtDel"/>
+          <td class="r b mbar">
+            <input type="button" value=">>" id="page4BtAdd"/>
+            <input type="button" value="<<" id="page4BtDel"/>
           </td>
           <td class="b">
             <Tree id="page4Tree3" treeType="multi" selectSelf="false"></Tree>
           </td>
         </tr>
-        <tr class="bottomBT">
+        <tr class="btnBox">
           <td colspan="4">
             <WorkSpace:PageStep>
-              <input type="button" class="btWeak" value="上一步" id="page4BtPrev" onclick="ws.prevPhase(false)"/>
-              <input type="button" class="btWeak" value="下一步" id="page4BtNext" onclick="ws.nextPhase(false)"/>
-              <input type="button" class="btStrong" value="完成" id="page4BtSave"/>
+              <input type="button" class="tssbutton small blue" value="上一步" id="page4BtPrev" onclick="ws.prevPhase(false)"/>
+              <input type="button" class="tssbutton small blue" value="下一步" id="page4BtNext" onclick="ws.nextPhase(false)"/>
+              <input type="button" class="tssbutton small blue" value="完成" id="page4BtSave"/>
             </WorkSpace:PageStep>
           </td>
         </tr>

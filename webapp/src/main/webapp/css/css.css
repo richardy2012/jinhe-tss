@@ -8,6 +8,7 @@ body {
 body {
   overflow: hidden;
   background-color: #fff;
+  color: #555;
 }
 table {
   width: 100%;
@@ -142,16 +143,47 @@ div.groove {
   overflow: hidden;
 }
 .l {
-  border-left: 1px solid #98989C;
+  border-left: 1px solid #95B8E7;
 }
 .t {
-  border-top: 1px solid #98989C;
+  border-top: 1px solid #95B8E7;
 }
 .b {
-  border-bottom: 1px solid #98989C;
+  border-bottom: 1px solid #95B8E7;
 }
 .r {
-  border-right: 1px solid #98989C;
+  border-right: 1px solid #95B8E7;
+}
+/* 用户组、用户、角色关系维护 */
+.titleBox {
+  height: 20px;
+  background-color: #E0ECFF;
+}
+.btnBox {
+  height: 50px;
+  background-color: #E0ECFF;
+}
+.btnBox td {
+  vertical-align: top;
+}
+.btnBox WorkSpace\:PageStep {
+  padding: 2px 0;
+}
+td.mbar {
+  width: 20px;
+  background-color: #E0ECFF;
+}
+td.mbar input {
+  margin-bottom: 100px;
+  width: 20px;
+  border: 0;
+  line-height: 30px;
+  background-color: #049cdb;
+  color: #fff;
+}
+td.mbar input:hover {
+  cursor: pointer;
+  background-color: orange;
 }
 /* 弹层相关 */
 .dialog {
@@ -160,7 +192,7 @@ div.groove {
   margin: 0 auto;
   padding-bottom: 5px;
   overflow: auto;
-  border: 1px solid #98989C;
+  border: 1px solid #95B8E7;
   background-color: #fff;
 }
 .dialog h2 {

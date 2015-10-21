@@ -5,9 +5,9 @@
 				<column name="name" caption="名称" mode="string" maxLength="50" empty="false"/>
 				<column name="description" caption="备注" mode="string"/>
                 
-                <column name="script" caption="js脚本" mode="string"/>
-                <column name="style" caption="私有css" mode="string"/>
-                <column name="html" caption="html代码" mode="string" empty="false"/>
+                <column name="script" caption="JS脚本" mode="string"/>
+                <column name="style" caption="CSS样式" mode="string"/>
+                <column name="html" caption="HTML片段" mode="string" empty="false"/>
                 <column name="events" caption="事件" mode="string"/>
                 <column name="parameters" caption="自定义参数" mode="string"/>
 				<column name="definition" caption="描述信息" mode="string"/>
@@ -15,33 +15,36 @@
 			</declare>
 			<layout>
 				<TR>
-					<TD width="50"><label binding="name"/></TD>
+					<TD width="60"><label binding="name"/></TD>
 					<TD><input binding="name"/></TD>
 				</TR>
 				<TR>
 					<TD><label binding="html"/></TD>
-					<TD><textarea binding="html" style="width:100%;height:250px"/></TD>
+					<TD><textarea binding="html" style="width:95%;height:200px"/></TD>
 				</TR>
 				<TR>
 					<TD><label binding="script"/></TD>
-					<TD><textarea binding="script" style="width:100%;height:100px"/></TD>
+					<TD><textarea binding="script" style="width:95%;height:100px"/></TD>
 				</TR>
 				<TR>
 					<TD><label binding="style"/></TD>
-					<TD><textarea binding="style" style="width:100%;height:100px"/></TD>
+					<TD><textarea binding="style" style="width:95%;height:100px"/></TD>
 				</TR>
 				<TR>
 					<TD><label binding="events"/></TD>
-					<TD><textarea binding="events" style="width:100%;height:40px"/>注:请按照"事件名=处理方法"格式书写，例如"onload=${js.layout}.onload"</TD>
+					<TD><textarea binding="events" style="width:95%;height:40px"/>注:请按照"事件名=处理方法"格式书写，例如"onload=${js.layout}.onload"</TD>
 				</TR>
 				<TR>
-					<TD><label binding="parameters"/></TD>
-					<TD><textarea binding="parameters" style="width:100%;height:40px"/>注:请按照"参数名=参数值"格式书写，例如"bgColor=#FFFFFF"
-						<input type="button" value="配置参数模板" id="page1BtEditPT" onclick="editParamsTemplate(2)" class="btStrongL"/></TD>	
+					<TD>
+						<label binding="parameters"/>
+						<a href="javascript:void(0)" onclick="editParamsTemplate(2)" class="tssbutton small blue">配置</a>
+					</TD>
+					<TD><textarea binding="parameters" style="width:95%;height:40px"/>注:请按照"参数名=参数值"格式书写，例如"bgColor=#FFFFFF"
+					</TD>	
 				</TR>
 				<TR>
 					<TD><label binding="description"/></TD>
-					<TD><textarea binding="description" style="width:100%;height:40px"/></TD>
+					<TD><textarea binding="description" style="width:95%;height:40px"/></TD>
 				</TR>
 				<TR>
 					<TD><label binding="version"/></TD>

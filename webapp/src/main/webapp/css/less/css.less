@@ -40,7 +40,7 @@
 
 html { box-sizing: content-box; }
 html, body { height: 100%; }
-body { overflow: hidden; background-color: @white; }
+body { overflow: hidden; background-color: @white; color: @textColor; }
 table { 
     width:100%; height:100%;
 }
@@ -105,16 +105,37 @@ div.groove { border-left: 1px solid @borderColor; border-top: 1px solid @borderC
 .loading { width: 53px; height: 20px; background: url(../images/loading.gif) no-repeat 3px 3px; }
 .separator { height: 6px; background: url(../images/sep_line.gif) repeat-x center; overflow: hidden; }
 
-.l { border-left:  1px solid #98989C; }
-.t { border-top:   1px solid #98989C; }
-.b { border-bottom:1px solid #98989C; }
-.r { border-right: 1px solid #98989C; }
+.l { border-left:  1px solid @borderColor; }
+.t { border-top:   1px solid @borderColor; }
+.b { border-bottom:1px solid @borderColor; }
+.r { border-right: 1px solid @borderColor; }
+
+/* 用户组、用户、角色关系维护 */
+.titleBox { height: 20px; background-color: @blueLight; }
+.btnBox { 
+    height: 50px; background-color: @blueLight; 
+    & td { vertical-align: top; }
+    & WorkSpace\:PageStep { padding: 2px 0; }
+}
+td.mbar { 
+    width: 20px; background-color: @blueLight; 
+    & input { 
+        margin-bottom: 100px;   
+        width: 20px;
+        border: 0;
+        line-height: 30px;
+        background-color: @blue;
+        color: #fff; 
+
+        &:hover { cursor: pointer; background-color: orange; }
+    }
+} 
 
 /* 弹层相关 */
 .dialog { 
     position: absolute; top: 100px; margin: 0 auto; 
     padding-bottom: 5px; overflow: auto; 
-    border: 1px solid #98989C; background-color: @white; 
+    border: 1px solid @borderColor; background-color: @white; 
 
     & h2 {
         width: 100%; height: 25px; line-height: 25px; 

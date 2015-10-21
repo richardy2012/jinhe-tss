@@ -433,7 +433,7 @@ function editParamsTemplate(type) {
 		return alert("请先保存组件后再配置其参数模板");
 	}
 
-	$(".cp").show().center(300, 300);
+	$(".cp").show().center(300, 500);
 
 	$.ajax({
 		url: URL_COMPONENT_PARAMS_INFO + id,
@@ -446,7 +446,7 @@ function editParamsTemplate(type) {
 		}
 	});
 
-	$(".cp .bts .btStrong").click(function(){
+	$("#b2").click(function(){
 		$.ajax( {
 			url: URL_COMPONENT_PARAMS_SAVE + id,
 			params: {"configXML": $1("paramTemplate").value},
@@ -456,7 +456,7 @@ function editParamsTemplate(type) {
 		});
 	});
 
-	$(".cp .bts .btWeak").click(function(){
+	$("#b3").click(function(){
 		$(".cp").hide();
 	});
 }

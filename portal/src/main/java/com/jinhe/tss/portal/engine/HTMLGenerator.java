@@ -118,7 +118,7 @@ public class HTMLGenerator {
         else {
             Node content = portal.getNodesMap().get(id);
             if(content == null) {
-                throw new BusinessException("选中预览节点【ID:" + id +"】在门户缓存中不存在，如果节点为新增节点，请先刷新缓存");
+                throw new BusinessException("您对当前要打开的门户页面没有访问权限；或者该页面不存在，如果节点为新增节点，请先刷新缓存");
             }
             
             // 调整指定预览的节点至所在分支的第一个节点，以保证优先被生成
@@ -198,8 +198,7 @@ public class HTMLGenerator {
         StringBuffer sb = new StringBuffer();
         // 默认挂载的css
         String commonCSSPath = Environment.getContextPath() + "/tools/tssJS/css/";
-        sb.append("<link href=\"" + commonCSSPath + "tss.all.css\" rel=\"stylesheet\">\n");
-        sb.append("<link href=\"" + commonCSSPath + "tss.button.css\" rel=\"stylesheet\">\n");
+        sb.append("<link href=\"" + commonCSSPath + "boubei.css\" rel=\"stylesheet\">\n");
         
         for ( String filePath : styleFiles ) {
             sb.append("<link href=\"" + (portalResourseDir + filePath) + "\" rel=\"stylesheet\">\n");

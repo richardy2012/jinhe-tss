@@ -45,14 +45,16 @@ public class ExceptionEncoder {
             }
             IDataEncoder errorMsgEncoder = new ErrorMessageEncoder(convertor.convert(be));
             
+            boolean needRelogin = false;
             if(be instanceof IBusinessException){
                 IBusinessException e = (IBusinessException) be;
+                needRelogin = e.needRelogin();
                 
                 long theadId = Thread.currentThread().getId();
                 String userName = Environment.getUserName();
                 
 				if( e.needPrint() ) {
-					if( !e.needRelogin() ) {
+					if( !needRelogin ) {
 						log.warn( "出现异常, 当前登陆用户【" + userName + "】, " + theadId);
 	                }
                     printErrorMessage(be);
@@ -68,7 +70,7 @@ public class ExceptionEncoder {
             }
             
             // XMLHTTP，tssJS发出的ajax请求, 返回XML格式错误信息
-            if (requestContext.isXmlhttpRequest()) { 
+            if ( requestContext.isXmlhttpRequest() ) { 
                 response.setContentType("text/html;charset=UTF-8");
                 XmlPrintWriter writer = new XmlPrintWriter(response.getWriter());
                 errorMsgEncoder.print(writer);

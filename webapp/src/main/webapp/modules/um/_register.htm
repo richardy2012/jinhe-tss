@@ -13,8 +13,7 @@
 
 <style>
 
-    body { margin: 3px; font-size: 12px; background-color:#E7E7E7; overflow:hidden; }
-    .dialog { width: 500px; height: 255px; position:relative; overflow:hidden; padding:10px; top:0; }
+    .dialog { height: 255px; position:relative; padding:10px; top:0; }
 
 </style>
 
@@ -104,8 +103,8 @@
     <div class="dialog">
         <div id="registerForm"></div>
         <div class="bts">
-            <input type="button" class="btStrong" value="提交" onclick="if( checkRegisterForm() ) { register() }"/>
-            <input type="button" class="btWeak"   value="关闭" onclick="window.close()"/>
+            <input type="button" class="tssbutton small blue" value="提交" onclick="if(checkRegisterForm()){ register(); }"/>
+            <input type="button" class="tssbutton small blue" value="关闭" onclick="window.close()"/>
         </div>
     </div>
 </body>

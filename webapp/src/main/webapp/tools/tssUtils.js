@@ -83,7 +83,7 @@ function openPalette() {
 window.onresize = function() {
 	var bodyHeight = document.body.offsetHeight;
 	$("#palette #tree").css("height", (bodyHeight - 30) + "px");
-	$(".panel .groove #ws Tree").css("height", (bodyHeight - 112) + "px");	
+	$("#ws Tree").css("height", (bodyHeight - 110) + "px");	
 }
  
 /* 事件绑定初始化 */
@@ -743,8 +743,8 @@ function popupTree(url, nodeName, params, callback) {
 	el.innerHTML = '<h2>' + nodeName + '</h2>' +
 		'<Tree id="' + boxName + '"><div class="loading"></div></Tree>' + 
 	    '<div class="bts">' + 
-	       '<input type="button" value="确定" class="tssbutton orange small b1" >' + 
-       	   '<input type="button" value="关闭" class="tssbutton orange small b2" >' +  
+	       '<input type="button" value="确定" class="tssbutton blue small b1" >' + 
+       	   '<input type="button" value="关闭" class="tssbutton blue small b2" >' +  
 	    '</div>';
 	document.body.appendChild(el);
 	$(el).addClass("dialog").css("width", "300px").css("height", "320px").center(300, 400).css("zIndex", "999");
@@ -784,8 +784,8 @@ function popupForm(url, nodeName, params, callback, title) {
 	el.innerHTML = '<h2>' + title + '：</h2>' +
 		'<div id="' + boxName + '"><div class="loading"></div></div>' + 
 	    '<div class="bts">' + 
-	       '<input type="button" value="确 定" class="b1 tssbutton orange small">' + 
-       	   '<input type="button" value="关 闭" class="b2 tssbutton orange small">' +  
+	       '<input type="button" value="确 定" class="b1 tssbutton blue small">' + 
+       	   '<input type="button" value="关 闭" class="b2 tssbutton blue small">' +  
 	    '</div>';
 	document.body.appendChild(el);
 	$(el).addClass("dialog").center(300, 300).css("zIndex", "999");
@@ -844,7 +844,7 @@ function popupGrid(url, nodeName, title, params) {
 	el.innerHTML = '<h2>' + title + '</h2>' +
 		'<Grid id="' + boxName + '"><div class="loading"></div></Grid>' + 
 	    '<div class="bts">' + 
-       	   '<input type="button" value="关闭" class="tssbutton orange small"/>' +  
+       	   '<input type="button" value="关闭" class="tssbutton blue small"/>' +  
 	    '</div>';
 	document.body.appendChild(el);
 	$(el).addClass("dialog").css("width", "600px").css("height", "auto").center(600, 400);
