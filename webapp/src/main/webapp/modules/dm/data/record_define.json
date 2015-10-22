@@ -51,6 +51,6 @@
         }
     ],
     "console.log(123);",
-    "var batchOpBtn = $.createElement('button', 'btStrongL');$(batchOpBtn).html('批量确认');  $('#customizeBox').appendChild(batchOpBtn);",
+    "var batchOpBtn = $.createElement('button', 'tssbutton small blue');$(batchOpBtn).html('批量确认');  $('#customizeBox').appendChild(batchOpBtn);",
     1
 ]

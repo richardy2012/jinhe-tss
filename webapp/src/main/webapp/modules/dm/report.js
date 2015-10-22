@@ -279,7 +279,7 @@ function copyReportTo() {
 	var id  = treeNode.id;
 	var pId = treeNode.parent.id;
 
-    var params = {id:id, parentID: pId};
+    var params = {id:id, parentID: pId, "_title": "复制【" + treeNode.name + "】至："};
     popupTree(URL_GROUPS_TREE, "SourceTree", params, function(target) {
     	var targetId = (target.id == '_root' ? '0' : target.id);
         $.ajax({
@@ -298,7 +298,7 @@ function moveReport() {
 	var id  = treeNode.id;
     var pId = treeNode.parent.id;
 
-    var params = {id:id, parentID: pId};
+    var params = {id:id, parentID: pId, "_title": "移动【" + treeNode.name + "】至："};
     popupTree(URL_GROUPS_TREE, "SourceTree", params, function(target) {
     	var targetId = (target.id == '_root' ? '0' : target.id);
         moveTreeNode(tree, id, targetId, URL_MOVE_SOURCE);
@@ -628,7 +628,7 @@ function saveConfigParams() {
 }
 
 function selectTL() {
-    popupTree(AUTH_PATH + "rp/template", "SourceTree", {}, function(target) {
+    popupTree(AUTH_PATH + "rp/template", "SourceTree", {"_title": "可选模板列表"}, function(target) {
         $.F("reportForm").updateDataExternal("displayUri", target.name);
     });
 }

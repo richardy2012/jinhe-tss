@@ -34,7 +34,7 @@
 		<TR>
 			<TD valign="top">
 				<label binding="define"/><br/><br/>
-				<input type="button" value="配置" onclick="configDefine()" class="btStrong"/>
+				<a href="#" onclick="configDefine()" class="tssbutton small blue">配置</a>
 			</TD>
 			<TD colspan="5"><textarea binding="define" style="width:95%;height:120px"/></TD>
 		</TR>

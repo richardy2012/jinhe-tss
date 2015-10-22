@@ -90,7 +90,7 @@ window.onresize = function() {
 function initEvents() {
 	/* 树节点查找 和 刷新 */
 	$(".refreshTreeBT").title("刷新").click( function() { loadInitData(); } );
-	$("#palette .search input[type=button]").click(searchTree);
+	$("#palette .search input[type=button]").addClass("btWeak").click(searchTree);
 
 	window.onresize();
 
@@ -737,10 +737,11 @@ Element.moveable = function(element, handle) {
 // 弹出选择树
 function popupTree(url, nodeName, params, callback) {
 	removeDialog();
+	params = params || {};
 
 	var boxName = "popupTree";
 	var el = $.createElement("div", "popupItem");
-	el.innerHTML = '<h2>' + nodeName + '</h2>' +
+	el.innerHTML = '<h2>' + (params._title || nodeName) + '</h2>' +
 		'<Tree id="' + boxName + '"><div class="loading"></div></Tree>' + 
 	    '<div class="bts">' + 
 	       '<input type="button" value="确定" class="tssbutton blue small b1" >' + 
@@ -751,7 +752,7 @@ function popupTree(url, nodeName, params, callback) {
 
 	$(".bts .b2", el).click(removeDialog);
 
-	params = params || {};
+	delete params._title;
 	$.ajax({
 		url: url,
 		params: params,

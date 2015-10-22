@@ -193,13 +193,12 @@ function createQueryForm(treeID, paramConfig, callback) {
     $panel.html("").panel("查询报表【" + getTreeNodeName() + "】", '<div id="searchForm"></div>');
 
     var buttonBox = [];
-    buttonBox[buttonBox.length] = "        <TR>";
-    buttonBox[buttonBox.length] = "          <TD colspan='2' height='46'><div class='buttonBox'>";
-    buttonBox[buttonBox.length] = "             <input type='button' class='btStrong' id='btSearch' value='查询'/>";
-    buttonBox[buttonBox.length] = "             <input type='button' class='btStrongL' id='btDownload' value='查询并导出'/>";
-    buttonBox[buttonBox.length] = "             <input type='button' class='btWeak' id='btCloseSearchForm' value='关闭'/>";
-    buttonBox[buttonBox.length] = "          </div></TD>";
-    buttonBox[buttonBox.length] = "        </TR>";
+    buttonBox[buttonBox.length] = "<TR>";
+    buttonBox[buttonBox.length] = "  <TD colspan='2' height='46'><div class='buttonBox'>";
+    buttonBox[buttonBox.length] = "     <a href='#' class='tssbutton small blue' id='btSearch'>查询</a> - ";
+    buttonBox[buttonBox.length] = "     <a href='#' class='tssbutton small blue' id='btDownload'>查询并导出</a>";
+    buttonBox[buttonBox.length] = "  </div></TD>";
+    buttonBox[buttonBox.length] = "</TR>";
 
     var searchForm = $.json2Form("searchForm", paramConfig, buttonBox.join(""));
 
@@ -222,9 +221,6 @@ function createQueryForm(treeID, paramConfig, callback) {
     }
     $1("btDownload").onclick = function () {
         searchReport(treeID, true);
-    }
-    $1("btCloseSearchForm").onclick = function () {
-        $("#searchFormDiv").hide();
     }
 }
 

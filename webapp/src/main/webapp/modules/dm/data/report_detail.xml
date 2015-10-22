@@ -24,8 +24,8 @@
 					<TD><label binding="displayUri"/></TD>
 					<TD>
 						<input binding="displayUri" style="width:40%;margin-right:10px;"/>
-						<input type="button" value="选择展示模板" onclick="selectTL()" class="btWeakL" style="margin-right:10px;"/>
-						<input type="button" value="上传模板" onclick="uploadTL()" class="btWeakL"/>
+						<a href="#" onclick="selectTL()" class="tssbutton small blue" style="margin-right:10px;">选择展示模板</a>
+						<a href="#" onclick="uploadTL()" class="tssbutton small blue">上传模板</a>
 					</TD>
 				</TR>
 				<TR>
@@ -35,7 +35,7 @@
 				<TR>
 					<TD valign="top">
 						<label binding="param"/><br/><br/>
-						<input type="button" value="配置" onclick="configParams()" class="btStrong"/>
+						<a href="#" onclick="configParams()" class="tssbutton small blue">配置</a>
 					</TD>
 					<TD><textarea binding="param" style="width:99%;height:100px"/></TD>
 				</TR>

@@ -16,6 +16,7 @@
 
 <style type="text/css">
     body { overflow-x:auto; }
+    .gridContainer { vertical-align: top; }
 
     #ws {
         width: 40%;
@@ -39,9 +40,9 @@
     #searchFormDiv .max, #searchFormDiv .min { display: none; }
 
     #customizeBox { display: inline-block; }
-    #customizeBox button { margin: 3px; }
+    #customizeBox button { margin: 2px; }
 
-    #attach  { width:800px; display: none; border: 1px solid red;  z-index: 10000;}
+    #attach  { width: 800px; display: none; border: 1px solid #95B8E7;  z-index: 10000; }
     #uploadForm  { background-color: #99CCCC; padding: 5px 5px 5px 10px; margin-top: -3px; }
     #attachGrid { height: 200px; background-color: #fff; }
 
@@ -285,7 +286,7 @@ function loadDetailData(rowID) {
 
     $('#btnViewAttach').remove();
     if(needFile && rowID != '_new' && (rowID + "").indexOf('_copy') < 0) {
-        var newBtn = $.createElement('button', 'btStrongL', 'btnViewAttach');
+        var newBtn = $.createElement('button', 'tssbutton small blue', 'btnViewAttach');
         $(newBtn).html("查看附件").click( function() {      
             manageAttach(rowID);
         } );  
@@ -362,11 +363,11 @@ function showQueryForm() {
     $panel.html("").panel("查询【" + recordName + "】的录入数据", html);
 
     var buttonBox = [];
-    buttonBox[buttonBox.length] = "        <TR>";
-    buttonBox[buttonBox.length] = "          <TD colspan='2' height='46'><div class='buttonBox'>";
-    buttonBox[buttonBox.length] = "             <input type='button' class='btStrong' id='btSearch' value='查 询'/>";
-    buttonBox[buttonBox.length] = "          </div></TD>";
-    buttonBox[buttonBox.length] = "        </TR>";
+    buttonBox[buttonBox.length] = "<TR>";
+    buttonBox[buttonBox.length] = "  <TD colspan='2' height='46'><div class='buttonBox'>";
+    buttonBox[buttonBox.length] = "     <a href='#' class='tssbutton small blue' id='btSearch'>查询</a>";
+    buttonBox[buttonBox.length] = "  </div></TD>";
+    buttonBox[buttonBox.length] = "</TR>";
 
     var paramsConfig = [], codes = [], names = [];
     recordDefine.each(function(i, field){
@@ -545,8 +546,8 @@ function delAttach() {
         <tr>
           <td id="gridTitle">
             <span class="icon"></span><span id="rcTitle">资源列表</span>&nbsp;
-            <input type="button" class="btStrong" value="新 增" id="btn_create" onclick="showDetail('_new')"/>&nbsp;
-            <input type="button" class="btStrong" value="查 询" id="btn_search" onclick="showQueryForm()"/>&nbsp;
+            <input type="button" class="tssbutton small blue" value="新 增" id="btn_create" onclick="showDetail('_new')"/>&nbsp;
+            <input type="button" class="tssbutton small blue" value="查 询" id="btn_search" onclick="showQueryForm()"/>&nbsp;
             <span id="customizeBox"></span>
             <span class="buttonBox" id="gridToolBar"></span>
           </td>
@@ -561,8 +562,8 @@ function delAttach() {
             <div id="page1Form" editable="true"></div>
             <WorkSpace:PageStep>
                 <br>
-                <input type="button" class="btStrong" value="完成" id="page1BtSave"/>&nbsp;
-                <input type="button" class="btWeak" value="关闭" id="page1BtCancel"/>&nbsp;
+                <input type="button" class="tssbutton small blue" value="完成" id="page1BtSave"/>&nbsp;
+                <input type="button" class="tssbutton small blue" value="关闭" id="page1BtCancel"/>&nbsp;
             </WorkSpace:PageStep>
         </WorkSpace:Page>
     </WorkSpace:Box>
@@ -578,10 +579,10 @@ function delAttach() {
                 <label><input name="fileType" type="radio" value="1"/> 图片 </label> 
                 <label><input name="fileType" type="radio" value="2" checked="checked"/> 文档 </label> 
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="button" class="btStrongL" onclick="uploadAttach()" value="上传附件" />
+                <input type="button" class="tssbutton small blue" onclick="uploadAttach()" value="上传附件" />
                 <b>&nbsp;单个附件大小不宜超过2M</b>
             </span>
-            <input type="button" class="btWeak" onclick="clostUpload()" value="关闭" style="margin-left:30px"/>
+            <input type="button" class="tssbutton small blue" onclick="clostUpload()" value="关闭" style="margin-left:30px"/>
         </form>
         <iframe name='fileUpload' style='display:none;'></iframe>
     </div>

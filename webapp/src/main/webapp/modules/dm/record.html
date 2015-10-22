@@ -17,18 +17,16 @@
 
 <style>
 
-#palette { width:240px; }
 #palette Tree { overflow-y: auto; }
-.panel .body>td:nth-child(3)  { background-color: #fff; }
 
 .bts { padding-left: 10px; padding-top: 10px;}
 
-.Formbox { display:none; background-color:#BEC6EE; border:1px solid #416371; border-radius: 5px; }
+.Formbox { display:none; background-color:#E0ECFF; border-radius: 5px; }
 
 #recordFormDiv { width: 96%; height: 100%; padding: 10px; display: none; }
 
 #recordDefinesDiv { width: 466px; height: 370px; padding: 5px; }
-#recordDefinesDiv Tree, #recordDefinesDiv form { background-color:#fff; display:inline-block; }
+#recordDefinesDiv Tree, #recordDefinesDiv form { background-color: #fff; display:inline-block; }
 #recordDefinesDiv Tree { width:152px; height:90%; overflow-y: auto; }
 #recordDefinesDiv form { width:285px; height:95%; padding:5px; position:absolute; top:5px; left:176px; }
 
@@ -49,7 +47,7 @@
     width: 200px;
     height: 18px;
     line-height: 18px;
-    border: 1px solid #bababa;
+    border: 1px solid #95B8E7;
     border-radius: 2px;
     padding-left: 2px;
 }
@@ -58,13 +56,13 @@
     margin-right: 5px;
 }
 #recordDefinesDiv select {
-    border: 1px solid #bababa;
+    border: 1px solid #95B8E7;
     height: 20px;
     width: 70px;
     border-radius: 2px;
 }
-hr { height:8px; border:none; border-top: 1px dashed #555555; margin-top: 3px; }
-#recordDefinesDiv .bts { margin-left:10px; padding-top:3px; position:absolute; bottom:5px; left:0; }
+hr { height: 8px; border: none; border-top: 1px dashed #95B8E7; margin-top: 3px; }
+#recordDefinesDiv .bts { margin-left: 10px; padding-top: 5px; position:absolute; bottom: 2px; left:0; }
 
 </style>
 
@@ -81,7 +79,7 @@ hr { height:8px; border:none; border-top: 1px dashed #555555; margin-top: 3px; }
 	  <div>
 	  	<div class="bar">
 			<span class="icon"></span>资源树
-            <span class="search"><input id="searchKey"/><input type="button" class="btWeak" value="查 找"/></span>
+            <span class="search"><input id="searchKey"/><input type="button" value="查 找"/></span>
 			<span class="refreshTreeBT"></span>
 			<span class="paletteSwitch" id="paletteClose"></span>
 		</div>
@@ -93,8 +91,8 @@ hr { height:8px; border:none; border-top: 1px dashed #555555; margin-top: 3px; }
         <div id="recordFormDiv">
             <div id="recordForm"></div>
             <div class="bts">
-                <input type="button" class="btStrong" value="保存" id="sourceSave"/> &nbsp;
-                <input type="button" class="btWeak" value="关闭" id="closeRecordForm"/>
+                <input type="button" class="tssbutton small blue" value="保存" id="sourceSave"/> &nbsp;
+                <input type="button" class="tssbutton small blue" value="关闭" id="closeRecordForm"/>
             </div>
         </div>	
 	</td>
@@ -149,8 +147,8 @@ hr { height:8px; border:none; border-top: 1px dashed #555555; margin-top: 3px; }
 		</div>
 	</form>
 	<div class="bts">
-		<input type="button" class="btStrong" value="完成" onclick="saveDefine()"/>
-		<input type="button" class="btWeak" value="关闭" onclick="closeDefine()"/>
+		<input type="button" class="tssbutton small blue" value="完成" onclick="saveDefine()"/>
+		<input type="button" class="tssbutton small blue" value="关闭" onclick="closeDefine()"/>
 	</div>
 </div>
 
