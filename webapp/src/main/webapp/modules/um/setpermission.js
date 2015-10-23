@@ -16,6 +16,7 @@ if(IS_TEST) {
     URL_SAVE_PERMISSION = "data/_success.xml?";
 }
  
+var _role2Resource = false, _resourceType;
 function init() {   
     var params = {};
     if( window.parent != window.self ) {
@@ -24,6 +25,9 @@ function init() {
         params.resourceType = globalValiable.resourceType;
         params.applicationId = globalValiable.applicationId;
         params.isRole2Resource = globalValiable.isRole2Resource;
+
+        _role2Resource = ("0" === params.isRole2Resource);
+        _resourceType = globalValiable.resourceType;
 
         if(globalValiable.title) {
             $(".box h2").html(globalValiable.title);
@@ -38,11 +42,10 @@ function init() {
         params  : params, 
         onresult : function() {
             var xmlData = this.getNodeValue(XML_SEARCH_PERMISSION);
-            var isRole2Resource = ("0" == params["isRole2Resource"]);
 
             $.cache.XmlDatas[XML_SEARCH_PERMISSION] = xmlData;
             
-            if(isRole2Resource) {
+            if(_role2Resource) {
                 // 设置用户、用户组权限，自动隐藏应用系统和资源类型字段
                 $("layout>TR>TD", xmlData).each(function(i, cell){
                     if($("[binding]", cell).length == 0) return;
@@ -66,7 +69,7 @@ function init() {
 
 function getResourceTypes(applicationId) {
     $.ajax({
-        url : URL_RESOURCE_TYPES + applicationId,
+        url : URL_RESOURCE_TYPES + (applicationId || APPLICATION),
         type : "json",
         ondata : function() { 
             var result = this.getResponseJSON();
@@ -91,7 +94,7 @@ function searchPermission() {
     var isRole2Resource = xformObj.getData("isRole2Resource");
     var roleID          = xformObj.getData("roleId");
     var applicationId   = xformObj.getData("applicationId");
-    var resourceType    = xformObj.getData("resourceType");
+    var resourceType    = _resourceType || xformObj.getData("resourceType");
 
     $.ajax({
         url : URL_PERMISSION + permissionRank + "/" + isRole2Resource + "/" + roleID,

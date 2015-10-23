@@ -198,7 +198,7 @@ public class UserAction extends BaseActionSupport {
         tempMap.put("userName", Environment.getUserName());
         tempMap.put("loginName", Environment.getUserCode());
         XFormEncoder pwdEncoder = new XFormEncoder(UMConstants.PASSWORD_CHANGE_XFORM, tempMap);
-        userEncoder.setColumnAttribute("userName", "editable", "false");
+        pwdEncoder.setColumnAttribute("userName", "editable", "false");
         
         print(new String[]{"UserInfo", "PasswordInfo"}, new Object[]{userEncoder, pwdEncoder});
 	}

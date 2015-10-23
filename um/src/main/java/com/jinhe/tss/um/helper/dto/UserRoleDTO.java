@@ -1,13 +1,9 @@
 package com.jinhe.tss.um.helper.dto;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import com.jinhe.tss.framework.web.dispaly.grid.GridAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
 import com.jinhe.tss.um.entity.Role;
 import com.jinhe.tss.um.entity.User;
-import com.jinhe.tss.util.BeanUtil;
 
 public class UserRoleDTO implements IGridNode {
     
@@ -26,9 +22,11 @@ public class UserRoleDTO implements IGridNode {
 	}
 
 	public GridAttributesMap getAttributes(GridAttributesMap map) {
-        Map<String, Object> attributes = new LinkedHashMap<String, Object>();
-        BeanUtil.addBeanProperties2Map(this, attributes);
-        map.putAll(attributes);
+        map.put("userId", userId);
+        map.put("userName", userName);
+        map.put("roleId", roleId);
+        map.put("roleName", roleName);
+        map.put("description", description);
         
 		return map;
 	}

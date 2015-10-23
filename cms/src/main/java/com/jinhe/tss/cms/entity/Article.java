@@ -177,6 +177,7 @@ public class Article extends OperateInfo implements IGridNode, IXForm {
         BeanUtil.addBeanProperties2Map(this, attributes, "channel");
         map.putAll(attributes);
         map.put("channel.id", channel.getId());
+        map.put("channel.name", channel.getName());
         
         map.put("icon", "images/article_0.gif");
         

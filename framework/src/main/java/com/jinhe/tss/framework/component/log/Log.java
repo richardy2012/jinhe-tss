@@ -64,8 +64,15 @@ public class Log implements IEntity, IXForm, IGridNode {
         this.setOperatorIP( Environment.getClientIp() );
         this.setOperationCode( operationCode );
         this.setOperateTable ( entity.getClass().getName() );
-        this.setContent( ToStringBuilder.reflectionToString(entity, ToStringStyle.SHORT_PREFIX_STYLE));
         this.setOperateTime  ( new Date() );
+        
+        String content;
+	    if(entity instanceof String || entity instanceof Number) {
+	    	content = String.valueOf(entity);
+	   	} else {
+	   		content = ToStringBuilder.reflectionToString(entity, ToStringStyle.SHORT_PREFIX_STYLE);
+	   	}
+        this.setContent( content);
         
         RequestContext rc = Context.getRequestContext();
         if(rc != null && rc.getRequest() != null) {

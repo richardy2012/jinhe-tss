@@ -279,7 +279,7 @@ function copyReportTo() {
 	var id  = treeNode.id;
 	var pId = treeNode.parent.id;
 
-    var params = {id:id, parentID: pId, "_title": "复制【" + treeNode.name + "】至："};
+    var params = {id: id, parentID: pId, _title: "复制【" + treeNode.name + "】至："};
     popupTree(URL_GROUPS_TREE, "SourceTree", params, function(target) {
     	var targetId = (target.id == '_root' ? '0' : target.id);
         $.ajax({

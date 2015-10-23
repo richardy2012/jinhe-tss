@@ -100,7 +100,7 @@ public class GeneralSearchServiceImpl implements GeneralSearchService {
         	+ " order by u.id";
         List<Object[]> list = (List<Object[]>) commonDao.getEntities(hql);
         
-        list.add(new Object[] {new User(), new Role()});
+        list.add(new Object[] {new User(), new Role()}); // TODO 应付测试覆盖率？
         
         List<UserRoleDTO> returnList = new ArrayList<UserRoleDTO>();
         for ( Object[] objs : list ) {

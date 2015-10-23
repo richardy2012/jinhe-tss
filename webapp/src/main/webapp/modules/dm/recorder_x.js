@@ -87,7 +87,7 @@ function addOptBtn(name, fn, roles, groups) {
         return;
     } 
 
-    var batchOpBtn = $.createElement('button', 'btStrongL');
+    var batchOpBtn = $.createElement('button', 'tssbutton small blue');
     $(batchOpBtn).html(name).click( fn );  
     $('#customizeBox').appendChild(batchOpBtn);
 }

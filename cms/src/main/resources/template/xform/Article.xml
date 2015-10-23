@@ -30,7 +30,7 @@
 		<TR>
 			<TD><label binding="summary"/></TD>
 			<TD colspan="3">
-				<textarea binding="summary" style="width:80%;height:50px;"/>
+				<textarea binding="summary" style="width:80%;height:40px;"/>
 			</TD>
 		</TR>
 	</layout>

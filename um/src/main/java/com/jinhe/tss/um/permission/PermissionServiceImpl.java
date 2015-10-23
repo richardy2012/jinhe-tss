@@ -407,7 +407,8 @@ public class PermissionServiceImpl implements PermissionService {
         List<?> setableRolesPermissionsOnSelectedResource = null;
         if ( !EasyUtils.isNullOrEmpty(setableRoleIds) ){ // 获取用户的角色树
             hql = "select distinct o.id, o.parentId, o.name, o.decode from "
-                + roleResourceTable + " o, " + rolePermissionTable + " p where p.resourceId = o.id and o.id in (:ids)"
+                + roleResourceTable + " o, " + rolePermissionTable + " p, Role r where p.resourceId = o.id and o.id in (:ids)"
+            	+ " and o.id = r.id and r.isGroup = 0 "
                 + permissionHelper.genRankCondition4SelectPermission(permissionRank) + " order by o.decode";
 
             List<?> list = permissionHelper.getEntities(hql, new Object[]{"ids"}, new Object[]{setableRoleIds});

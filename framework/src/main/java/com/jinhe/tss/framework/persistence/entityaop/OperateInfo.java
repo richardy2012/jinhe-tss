@@ -5,6 +5,9 @@ import java.util.Date;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import com.jinhe.tss.framework.persistence.IEntity;
 
 /** 
@@ -24,7 +27,7 @@ public abstract class OperateInfo implements IOperatable, IEntity {
     private int lockVersion = 0;
     
 	public String toString() {
-		return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
  
     public Long getCreatorId() {

@@ -14,9 +14,9 @@
 	</declare>
 	<layout>
 		<TR>
-			<TD width="50"><label binding="name"/></TD>
+			<TD width="60"><label binding="name"/></TD>
 			<TD width="360"><input binding="name" style="width:200px;"/></TD>
-			<TD width="50" valign="top"><label binding="description"/></TD>
+			<TD width="60" valign="top"><label binding="description"/></TD>
 			<TD><textarea binding="description" style="width:96%;height:30px"/></TD>
 		</TR>
 		<TR>
@@ -37,7 +37,7 @@
 				<br/><span>注:按照"事件名=处理方法"格式填写，例:"onload=${js.layout}.onload"</span>
 			</TD>
 			<TD valign="top">
-				<label binding="parameters"/>
+				<label binding="parameters"/><br/><br/>
 				<a href="javascript:void(0)" onclick="editParamsTemplate(2)" class="tssbutton small blue">配置</a>
 			</TD>
 			<TD><textarea binding="parameters" style="width:98%;height:60px"/>

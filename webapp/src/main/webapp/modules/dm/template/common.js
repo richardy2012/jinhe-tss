@@ -218,8 +218,8 @@ function getLastFlushTime() {
 	return today.format('yyyy-MM-dd hh:mm:ss');  
 }
 
-/* ---------------------------------- 标准图标模板相关 ----------------------------------------------- */
-/*
+/* ---------------------------------- 标准图表模板相关 ----------------------------------------------- */
+/* 留着参考用
 function createQueryForm(paramConfig, callback) {
     var $panel = $("#searchFormDiv");
     $panel.show();
@@ -231,18 +231,18 @@ function createQueryForm(paramConfig, callback) {
     $panel.html("").panel("设置报表查询条件", '<div id="searchForm"></div>');
 
     var buttonBox = [];
-    buttonBox[buttonBox.length] = "        <TR><TD colspan='2' height='46'>";
-    buttonBox[buttonBox.length] = "          <div class='buttonBox'>";
-    buttonBox[buttonBox.length] = "             <input type='button' class='btStrong' id='btSearch' value='查询'/>";
-    buttonBox[buttonBox.length] = "             <input type='button' class='btWeak' id='btCloseSearchForm' value='关闭'/>";
-    buttonBox[buttonBox.length] = "          </div>";
-    buttonBox[buttonBox.length] = "        </TD></TR>";
+    buttonBox[buttonBox.length] = "<TR><TD colspan='2' height='46'>";
+    buttonBox[buttonBox.length] = "  <div class='buttonBox'>";
+    buttonBox[buttonBox.length] = "     <input type='button' class='tssbutton small blue' id='btSearch_' value='查询'/>";
+    buttonBox[buttonBox.length] = "     <input type='button' class='tssbutton small blue' id='btCloseQF' value='关闭'/>";
+    buttonBox[buttonBox.length] = "  </div>";
+    buttonBox[buttonBox.length] = "</TD></TR>";
 
     var searchForm = $.json2Form("searchForm", paramConfig, buttonBox.join(""));
 
     $.cache.XmlDatas["searchFormXML"] = searchForm.template.sourceXML;
 
-    $1("btSearch").onclick = function () {
+    $1("btSearch_").onclick = function () {
         if(callback && searchForm.checkForm() ) {
             $("#searchFormDiv").hide();
             var searchFormXML = $.cache.XmlDatas["searchFormXML"];
@@ -250,24 +250,27 @@ function createQueryForm(paramConfig, callback) {
             callback(dataNode);
         } 
     }
-    $1("btCloseSearchForm").onclick = function () {
+    $1("btCloseQF").onclick = function () {
         $("#searchFormDiv").hide();
     }
 }
 
-createQueryForm(paramsConfig, function(paramsNode) {
-	$.ajax({
-        url : url,
-        method : "POST",
-        formNode : paramsNode,
-        type : "json",
-        waiting : true,
-        ondata : function() { 
-            var result = this.getResponseJSON();
-            show(result);
-        }
-    });
-});
+createQueryForm(
+	paramsConfig, 
+	function(paramsNode) {
+		$.ajax({
+	        url : url,
+	        method : "POST",
+	        formNode : paramsNode,
+	        type : "json",
+	        waiting : true,
+	        ondata : function() { 
+	            var result = this.getResponseJSON();
+	            show(result);
+	        }
+	    });
+	}
+);
 
 */
 
@@ -281,13 +284,13 @@ function initResearhBt() {
 		document.body.appendChild(researhBt);
 	}
 
-    if(window.parent.$1("searchFormDiv") && window.parent.$1("btCloseSearchForm")) {
+    if(window.parent.$1("searchFormDiv") && window.parent.$1("btSearch")) {
         researhBt.onclick = function() {
-            window.parent.tssJS("#searchFormDiv").css("display", "block").center(500, 500);
+            window.parent.tssJS("#searchFormDiv").show(true);
         }
     }
     else {
-        researhBt.style.display = "none";
+        tssJS(researhBt).hide();
     }
 }
 

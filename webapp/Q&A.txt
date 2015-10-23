@@ -1,3 +1,5 @@
+0、record和report的字段code一律用小写
+
 1、有展示页面和SQL，没有查询条件，点击查询时SQL不会执行？
       可以在展示页面后面加上一串 "?type=x"，这样可以触发SQL执行
       
@@ -5,17 +7,17 @@
   SQL如果分成多行书写，当想要注释掉中间某一行时候，不能用"--"来注释，这样发到后台执行时，会把改行后面的记录全部注释掉。
        可以用 /* ... */来注释，或直接删除改行
        
-3、如果select的字段有oracle的TIMESTAMP类型的字段，转换为json时会报错，需要先用to_char函数先转换为字符串类型。
+3、和oracle相关
+   a、如果select的字段有oracle的TIMESTAMP类型的字段，转换为json时会报错，需要先用to_char函数先转换为字符串类型。
+   b、oracle10G 驱动取date类型数据时分秒不见了的问题解决办法：在tomcat的启动配置里加  -Doracle.jdbc.V8Compatible=true
 
 4、如果通过hibernate insert数据时报The database returned no natively generated identity value，则可能是因为该表的ID没有设置为自增的
        
-5、record和report的字段code一律用小写
+5、JOB相关：
+  a、如果定时JOB里的class不存在或路径有误，tomcat将无法启动
+  b、JOB服务分离后，需要在job的tomcat上维护job param才能生效. 如btrbi的：http://10.8.72.70:8082/tss
 
-6、oracle10G 驱动取date类型数据时分秒不见了的问题解决办法：在tomcat的启动配置里加  -Doracle.jdbc.V8Compatible=true
-
-7、如果定时JOB里的class不存在或路径有误，tomcat将无法启动
-
-8、数据录入查询时，如果一个查询条件为下拉列表，且字段定义上有onchange选项，且是自定义的方法如f2，则需要把f2定义在“定制Grid”里，否则进页面查询选择该条件会报f2方法不存在（定制JS里定义f2的话，f2在打开录入form时才加载），导致查询无效。
+6、数据录入查询时，如果一个查询条件为下拉列表，且字段定义上有onchange选项，且是自定义的方法如f2，则需要把f2定义在“定制Grid”里，否则进页面查询选择该条件会报f2方法不存在（定制JS里定义f2的话，f2在打开录入form时才加载），导致查询无效。
 
 
 数据录入表创建常见错误：
@@ -35,9 +37,7 @@
 BI速记：
    1、文章里嵌入report_portlet.html 时，报表页需设置：
          body    {  margin: 0;  }
-         table tbody  {    max-height: 600px;  }
-
 
 打包注意：
-0、BtrBI的10.8.72.70机器安裝的是JDK6，打包只能用JDK1.6, 1.7會出錯  
+1、BtrBI的10.8.72.70机器安裝的是JDK6，打包只能用JDK1.6,  用1.7會出錯  
 

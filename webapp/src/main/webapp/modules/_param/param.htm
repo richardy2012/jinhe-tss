@@ -386,7 +386,7 @@
 		var id  = treeNode.id;
 		var pId = treeNode.parent.id;
 
-        var params = {id:id, parentID: pId};
+        var params = {id:id, parentID: pId, _title: "复制【" + treeNode.name + "】至："};
         popupTree(URL_POPUP_TREE, "ParamTree", params, function(target) {
             $.ajax({
                 url : URL_COPY_PARAM + id + "/" + target.id,
@@ -404,7 +404,7 @@
 		var id  = treeNode.id;
         var pId = treeNode.parent.id;
 
-        var params = {id:id, parentID: pId};
+        var params = {id:id, parentID: pId, _title: "移动【" + treeNode.name + "】至："};
         popupTree(URL_POPUP_TREE, "ParamTree", params, function(target) {
             moveTreeNode(tree, id, target.id, URL_MOVE_PARAM_TO);
         });

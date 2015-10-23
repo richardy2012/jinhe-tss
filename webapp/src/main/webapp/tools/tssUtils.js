@@ -741,7 +741,7 @@ function popupTree(url, nodeName, params, callback) {
 
 	var boxName = "popupTree";
 	var el = $.createElement("div", "popupItem");
-	el.innerHTML = '<h2>' + (params._title || nodeName) + '</h2>' +
+	el.innerHTML = '<h2>' + (params._title || '选择目标树节点') + '</h2>' +
 		'<Tree id="' + boxName + '"><div class="loading"></div></Tree>' + 
 	    '<div class="bts">' + 
 	       '<input type="button" value="确定" class="tssbutton blue small b1" >' + 

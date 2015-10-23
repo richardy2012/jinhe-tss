@@ -12,6 +12,7 @@
 		<column caption="过期日期" name="overdueDate" mode="date" pattern="yyyy-MM-dd" width="80px" />
 		<column caption="置顶"   name="isTop" mode="string" width="35px" texts="是|否" values="1|0"/>
 		<column caption="点击次数" name="hitCount" mode="string" width="50px" />
+		<column caption="所属栏目" name="channel.name" mode="string" width="60px"/>
 	</declare>
 	<data/>
 </grid>
