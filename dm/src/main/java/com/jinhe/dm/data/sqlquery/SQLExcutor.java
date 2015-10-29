@@ -400,7 +400,7 @@ public class SQLExcutor {
         	connpool.checkIn(connItem);
         	
         	/* 对于执行出错SQL后的Connetion，做销毁处理（因发现conn.rollback后，conn里缓存数据无法清除，导致数据不一致情况出现）
-        	 * 问题已解决：conn.setAutoCommit成了false，重新设置为true可以上面说的问题 */
+        	 * 问题已解决：conn.setAutoCommit成了false，重新设置为true可以解决上面说的问题 */
         	if( hasException ) { 
         		/*
         		connpool.removeObject(connItem.getKey());
@@ -414,7 +414,7 @@ public class SQLExcutor {
      * 批量执行SQL
      * 
      * 循环里连续的进行插入操作，在开始时设置了：conn.setAutoCommit(false);  最后才进行conn.commit(),
-     * 这样即使插入的时候报错，修改的内容也不会提交到数据库，而如果你没有手动的进行setAutoCommit(false); 
+     * 这样即使插入的时候报错，修改的内容也不会提交到数据库，而如果没有手动的进行setAutoCommit(false); 
      * 出错时就会造成，前几条插入，后几条没有会形成脏数据。
      * 
      * 注：设定setAutoCommit(false) 没有在catch中进行Connection的rollBack操作，操作的表就会被锁住，造成数据库死锁。
@@ -443,6 +443,7 @@ public class SQLExcutor {
             conn.commit();
             
         } catch (SQLException e) {
+        	// 执行回滚
         	try { conn.rollback(); } 
         	catch (Exception e2) { log.error(e2.getMessage(), e2); }
         	

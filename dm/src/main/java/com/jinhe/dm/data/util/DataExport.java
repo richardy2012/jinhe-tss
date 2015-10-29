@@ -27,6 +27,8 @@ import com.jinhe.tss.util.EasyUtils;
 
 public class DataExport {
 	
+	public static final String CSV_CHAR_SET = "GBK";
+	
 	static Logger log = Logger.getLogger(DataExport.class);
 	
 	public static String getExportPath() {
@@ -132,7 +134,7 @@ public class DataExport {
     public static void exportCSV(String path, Collection<Object[]> data, List<String> fields) {
         try {
         	File file = getFile(path);
-            OutputStreamWriter write = new OutputStreamWriter(new FileOutputStream(file), "GBK" );
+            OutputStreamWriter write = new OutputStreamWriter(new FileOutputStream(file), CSV_CHAR_SET );
             BufferedWriter fw = new BufferedWriter(write);   
             
             if(fields != null) {
@@ -185,7 +187,7 @@ public class DataExport {
     public static void exportCSV(String path, String data) {
         try {
         	File file = getFile(path);
-            OutputStreamWriter write = new OutputStreamWriter(new FileOutputStream(file), "GBK" );
+            OutputStreamWriter write = new OutputStreamWriter(new FileOutputStream(file), CSV_CHAR_SET );
             BufferedWriter fw = new BufferedWriter(write);   
             
             fw.write(data);
@@ -214,7 +216,7 @@ public class DataExport {
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/octet-stream"); // 设置附件类型
         response.setContentLength((int) sourceFile.length());
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + sourceFile.getName() + "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + EasyUtils.toUtf8String(sourceFile.getName()) + "\"");
         
         InputStream inStream = null;
         OutputStream outStream = null;

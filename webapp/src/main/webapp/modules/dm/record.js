@@ -14,6 +14,7 @@ URL_DELETE_SOURCE  = AUTH_PATH + "rc/";
 URL_SORT_SOURCE    = AUTH_PATH + "rc/sort/";
 URL_MOVE_SOURCE    = AUTH_PATH + "rc/move/";
 URL_GET_OPERATION  = AUTH_PATH + "rc/operations/";  // {id}
+URL_RECORD_CSV_TL  = AUTH_PATH + "xdata/import/tl/";
 
 if(IS_TEST) {
 	URL_SOURCE_TREE    = "data/record_tree.xml?";
@@ -79,19 +80,33 @@ function initMenus() {
 	}
 	var item5 = {
 		label:"删除",
-		callback:deleteRecord,
+		callback: deleteRecord,
 		icon: ICON + "icon_del.gif",
 		visible:function() {return !isTreeRoot() && getOperation("3");}
 	}
 	var item6 = {
 		label:"移动到",
-		callback:moveRecord,
+		callback: moveRecord,
 		icon: ICON + "icon_move.gif",
 		visible:function() {return !isTreeRoot() && getOperation("2");}
+	}
+	var item7 = {
+		label:"下载导入模板",
+		callback: getImportTL,
+		icon: ICON + "icon_down.gif",
+		visible:function() { return isRecord() && getOperation("1,2,3,4,5"); }
+	}
+	var item8 = {
+		label:"批量导入数据",
+		callback: batchImport,
+		icon: ICON + "icon_up.gif",
+		visible:function() { return isRecord() && getOperation("1,2,3,4,5"); }
 	}
 
 	var menu = new $.Menu();
 	menu.addItem(item1);
+	menu.addItem(item7);
+	menu.addItem(item8);
 	menu.addSeparator();
 	menu.addItem(item3);
 	menu.addItem(item4);
@@ -243,6 +258,23 @@ function showRecord() {
 	customizePage = customizePage || 'recorder.html';
 	$("#chatFrame").show().attr("src", customizePage);
 }  
+
+function getImportTL() {
+	var recordId = getTreeNodeId();
+	$("#downloadFrame").attr( "src", encodeURI(URL_RECORD_CSV_TL + recordId ) );
+}
+
+function batchImport() {
+    function checkFileWrong(subfix) {
+        return subfix != ".csv";
+    }
+
+    var recordId = getTreeNodeId();
+    var url = URL_UPLOAD_FILE + "?afterUploadClass=com.jinhe.dm.record.file.ImportCSV";
+    url += "&recordId=" + recordId;
+    var importDiv = createImportDiv("请点击图标选择CSV文件导入", checkFileWrong, url);
+    Element.show(importDiv);
+}
 
 // -------------------------------------------------   配置数据录入表   ------------------------------------------------
 function configDefine() {

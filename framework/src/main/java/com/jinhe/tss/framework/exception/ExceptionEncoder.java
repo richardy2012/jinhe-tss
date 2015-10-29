@@ -79,6 +79,7 @@ public class ExceptionEncoder {
             	response.setContentType("application/json;charset=UTF-8");
             	response.getWriter().println("{\"errorMsg\": \"" + getFirstCause(be).getMessage() + "\"}");
             }
+            // 注: 上传导入附件抛出的异常统一在 Servlet4Upload 里处理。不会流到此处。
         } 
     	catch (Exception e) {
             log.error("ExceptionEncoder.encodeException时出错：" + e.getMessage());
@@ -118,7 +119,7 @@ public class ExceptionEncoder {
             cause = cause.getCause();
         }
         
-        return first;
+        return first != null ? first : be;
     }
 
     /**

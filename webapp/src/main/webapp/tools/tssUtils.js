@@ -90,7 +90,7 @@ window.onresize = function() {
 function initEvents() {
 	/* 树节点查找 和 刷新 */
 	$(".refreshTreeBT").title("刷新").click( function() { loadInitData(); } );
-	$("#palette .search input[type=button]").addClass("btWeak").click(searchTree);
+	$("#palette .search input[type=button]").addClass("tssbutton small blue").click(searchTree);
 
 	window.onresize();
 
@@ -120,16 +120,21 @@ function searchTree() {
 	}
 }
 
+// @Deprecated Tree控件已经自动集成了此功能
 function openDefaultTreeNode(callback) {
 	var searchKey = $.Query.get("_treeNode");
 	if(searchKey) {
-		var tree = $.T('tree');
-		tree.searchNode(searchKey);
-		if(tree.getActiveTreeNode()) {
-    		callback = callback || tree.onTreeNodeDoubleClick || tree.onTreeNodeActived;
-    		callback && callback();
-        }
+		$.T('tree').searchNode(searchKey);
+		openActiveTreeNode(callback);
 	}
+}
+
+function openActiveTreeNode(callback) {	
+	var tree = $.T('tree');
+	if( tree && tree.getActiveTreeNode() ) {
+		callback = callback || tree.onTreeNodeDoubleClick || tree.onTreeNodeActived;
+		callback && callback();
+    }
 }
  
 function onTreeNodeActived(ev) { }
@@ -238,7 +243,7 @@ function setRole2Permission(resourceType, rootId) {
     	document.body.appendChild(permissionPanel);
     	
     	var $panel = $(permissionPanel);
-    	$panel.css("width", "844px").css("height", "626px").center();
+    	$panel.css("width", "844px").css("height", "620px").center();
 	    $panel.panel(title, '<iframe frameborder="0"></iframe>', false);
 	    $panel.find("iframe").css("width", "100%").css("height", "100%");
     }
@@ -283,16 +288,11 @@ function createImportDiv(remark, checkFileWrong, importUrl) {
 		var str = [];
 		str[str.length] = "<form id='importForm' method='post' target='fileUpload' enctype='multipart/form-data'>";
 		str[str.length] = "	 <div class='fileUpload'> <input type='file' name='file' id='sourceFile' onchange=\"$('#importDiv h2').html(this.value)\" /> </div> ";
-		str[str.length] = "	 <input type='button' id='importBt' value='确定导入' class='tssbutton blue bigrounded'/> ";
-		str[str.length] = "	 <input type='button' id='closeBt'  value='关闭' class='tssbutton blue medium'/> ";
+		str[str.length] = "	 <input type='button' id='importBt' value='确定导入' class='tssbutton blue'/> ";
 		str[str.length] = "</form>";
 		str[str.length] = "<iframe width='0px' height='0px' name='fileUpload'></iframe>";
 
 		$(importDiv).panel(remark, str.join("\r\n"), false);
-
-		$("#closeBt").click( function () {
-			$(importDiv).hide();
-		});
 	}
 
 	// 每次 importUrl 可能不一样，比如导入门户组件时。不能缓存

@@ -1,3 +1,8 @@
+//
+// Variables
+// --------------------------------------------------
+
+
 // Global values
 // --------------------------------------------------
 @fontFamily: Arial, Helvetica, '微软雅黑', sans-serif;
@@ -10,6 +15,7 @@
 @grayDark:              #333;
 @gray:                  #555;
 @grayLight:             #999;
+@grayLight2:            #ccc;
 @grayLighter:           #eee;
 @white:                 #fff;
 @lightgrey:             lightgrey;
@@ -21,12 +27,11 @@
 @blue:                  #049cdb;
 @blueDark:              #0064cd;
 @blueLight:             #E0ECFF;
-@green:                 #46a546;
 @red:                   #9d261d;
 @yellow:                #ffc40d;
 @orange:                #f89406;
-@pink:                  #c3325f;
-@purple:                #7a43b6;
+@tiered:                #e36f5f;
+@green:                 #8bcf7b;
 
 
 // Scaffolding
@@ -36,6 +41,14 @@
 @disabled:              #A6A6A6;
 @borderColor:           #95B8E7;
 @barColor:              #BEC6EE;
+@inputBgColor:          #F7FBFC;
+@hrColor:               rgba(0, 0, 0, 0.1);
+
+// Links
+// -------------------------
+@linkColor:             #08c;
+@linkColorHover:        darken(@linkColor, 15%);
+
 
 
 html { box-sizing: content-box; }
@@ -67,11 +80,13 @@ table {
         border-right: 1px solid @borderColor;  
 
         & .bar { 
-            height: 19px; padding: 2px 0 0 4px; line-height: 17px;
-            background-color: @barColor; color: @textColor; font-weight: bold;  
+            height: 21px; padding: 2px 0 0 4px; line-height: 19px;
+            *background-color: @barColor; 
+            background: linear-gradient(@barColor 0px, @blue 100%) repeat-x;
+            color: @textColor; font-weight: bold;  
 
             & .search { 
-                & #searchKey { width: 80px; text-indent: 2px; }
+                & #searchKey { width: 80px; height: 16px; text-indent: 2px; margin-right: 2px; }
             }
             & .icon { 
                 display: inline-block;
@@ -173,5 +188,5 @@ td.mbar {
         opacity:0; filter:alpha(opacity=0);
     }
 }
-#importDiv input[type='button'] { margin-left: 40px; margin-top: 5px; }
+#importDiv input[type='button'] { margin-left: 80px; margin-top: 1px; }
 

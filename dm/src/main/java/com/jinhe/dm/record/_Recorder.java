@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
+import com.jinhe.dm.data.util.DataExport;
 import com.jinhe.dm.record.ddl._Database;
 import com.jinhe.dm.record.file.RecordAttach;
 import com.jinhe.tss.cache.Cacheable;
@@ -31,6 +32,7 @@ import com.jinhe.tss.framework.web.dispaly.grid.DefaultGridNode;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
+import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.FileHelper;
 
 @Controller
@@ -192,6 +194,23 @@ public class _Recorder extends BaseActionSupport {
     	
     	getDB(recordId).delete(id);
         printSuccessMessage();
+    }
+    
+    /************************************* record batch import **************************************/
+    
+    /**
+     * 将前台（一般为生成好的table数据）数据导出成CSV格式
+     */
+    @RequestMapping("/import/tl/{recordId}")
+    public void getImportTL(HttpServletResponse response, @PathVariable("recordId") Long recordId) {
+    	 _Database _db = getDB(recordId);
+		
+		String fileName = _db.recordName + "-导入模板.csv";
+        String exportPath = DataExport.getExportPath() + "/" + fileName;
+ 
+        DataExport.exportCSV(exportPath, EasyUtils.list2Str(_db.fieldNames));
+        
+        DataExport.downloadFileByHttp(response, exportPath);
     }
     
     /************************************* record attach operation **************************************/

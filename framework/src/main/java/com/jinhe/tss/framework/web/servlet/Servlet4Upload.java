@@ -43,8 +43,10 @@ public class Servlet4Upload extends HttpServlet {
 				encoder.put("script", script);
 			}
 		} catch (Exception e) {
-			log.error("上传失败：" + e.getMessage() + ", " + ExceptionEncoder.getFirstCause(e).getMessage() );
-			encoder.put("script", "alert(\"上传失败，请检查文件是否过大，单个文件最大不宜超过3M。如果过大，请压缩处理后再上传。！\");");
+			String errorMsg = "上传失败：" + e.getMessage() + ", " + ExceptionEncoder.getFirstCause(e).getMessage();
+			log.error(errorMsg );
+			encoder.put("script", "alert('" + errorMsg + "。如果是数据文件，请检查数据内容是否正确。" +
+					"同时请检查文件是否过大，单个文件最大不宜超过3M。如果过大，请压缩处理后再上传。！');");
 		}
 
 		response.setContentType("text/html;charset=utf-8");

@@ -79,6 +79,8 @@ public class _RecorderTest extends TxTestSupport4DM {
 		recorder.create(request, response, recordId);
 		recorder.update(request, response, recordId, 1L);
 		
+		recorder.getImportTL(response, recordId);
+		
 		// test 更新时必填字段为空
 		try {
 			request.removeParameter("f3");
@@ -162,6 +164,7 @@ public class _RecorderTest extends TxTestSupport4DM {
         }
 	}
 	
+	
 	static String UPLOAD_PATH = TestUtil.getTempDir() + "/upload/record/";
 	
 	 // 上传附件
@@ -177,11 +180,12 @@ public class _RecorderTest extends TxTestSupport4DM {
 	    EasyMock.expect(mockRequest.getParameter("petName")).andReturn(null);
 	    
 	    try {
-			String filepath = UPLOAD_PATH + "/123.txt";
+	    	String filename = "123.txt";
+			String filepath = UPLOAD_PATH + "/" + filename;
 			FileHelper.writeFile(new File(filepath), "卜贝求真。");
 	        
 	        mocksControl.replay(); 
-			upload.processUploadFile(mockRequest, filepath, "123.txt");
+			upload.processUploadFile(mockRequest, filepath, filename);
 			
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

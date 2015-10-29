@@ -19,6 +19,10 @@
 
 6、数据录入查询时，如果一个查询条件为下拉列表，且字段定义上有onchange选项，且是自定义的方法如f2，则需要把f2定义在“定制Grid”里，否则进页面查询选择该条件会报f2方法不存在（定制JS里定义f2的话，f2在打开录入form时才加载），导致查询无效。
 
+7、报表查询和导出分离： 在param里配置一个参数【report_export_url】，值为【http://10.45.10.96:8080】,则所有导出数据请求都被引导至这个服务地址
+8、默认打开树节点界面：http://www.boubei.com/tss/modules/dm/record.html?_default=%E6%8A%A5%E9%94%80%E5%AE%A1%E6%89%B9
+   Tree控件集成了自动执行双击树节点的功能
+
 
 数据录入表创建常见错误：
 1、字段重名：Duplicate column name ‘position’   — MySQL

@@ -21,14 +21,14 @@
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="script"/></TD>
-			<TD colspan="5"><textarea binding="script" style="width:95%;height:250px"/></TD>
+			<TD colspan="5"><textarea binding="script" style="width:97%;height:250px"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top">
 				<label binding="param"/><br/><br/>
 				<a href="#" onclick="configParams()" class="tssbutton small blue">配置</a>
 			</TD>
-			<TD colspan="5"><textarea binding="param" style="width:98%;height:100px"/></TD>
+			<TD colspan="5"><textarea binding="param" style="width:97%;height:100px"/></TD>
 		</TR>
 		<TR>
 			<TD><label binding="datasource"/></TD>
@@ -44,7 +44,7 @@
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="remark"/></TD>
-			<TD colspan="5"><textarea binding="remark" style="width:95%;height:30px"/></TD>
+			<TD colspan="5"><textarea binding="remark" style="width:97%;height:30px"/></TD>
 		</TR>
 	</layout>
 	<data/>

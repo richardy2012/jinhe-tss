@@ -48,9 +48,9 @@ public abstract class _Database {
 	public boolean needFile;
 	
 	List<Map<Object, Object>> fields;
-	List<String> fieldCodes;
-	List<String> fieldTypes;
-	List<String> fieldNames;
+	public List<String> fieldCodes;
+	public List<String> fieldTypes;
+	public List<String> fieldNames;
 	
 	public String toString() {
 		return "【" + this.datasource + ", " + this.recordName + ", " + this.table + "】";

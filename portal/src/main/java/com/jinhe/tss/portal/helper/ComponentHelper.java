@@ -209,7 +209,7 @@ public class ComponentHelper {
         response.reset(); // 设置附件下载页面
         response.setContentType("application/octet-stream"); // 设置附件类型
         response.setContentLength((int) new File(sourceFilePath).length()); // 文件长度
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + exportName + "\""); // 设置标头
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + EasyUtils.toUtf8String(exportName) + "\""); // 设置标头
         
         InputStream inStream = null;
         OutputStream outStream = null;

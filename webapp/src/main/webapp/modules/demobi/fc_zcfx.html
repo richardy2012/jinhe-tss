@@ -414,15 +414,15 @@ body { background-color: #fff; height: 95%;}
     <input type="button" value="导出汇总" class="dmsbt" style="margin-left:85px;" onclick="exportCSV1()">
     <input type="button" value="导出明细" class="dmsbt" style="margin-left:170px;" onclick="exportCSV2()">
 
-    <div class="easyui-tabs" data-options="fit:true">
+    <div class="easyui-tabs" data-options="fit:true" border="false" >
         
-        <div id="d1" title="货品转仓发货汇总" >
-            <table id="t1" style="max-height:300px;"></table>
+        <div id="d1" title="货品转仓发货汇总" border="false" >
+            <table id="t1" style="max-height:300px;" border="false" ></table>
             <div id='canvasDiv'></div>
         </div>
 
-        <div id="d2" title="货品转仓发货明细">
-            <table id="t2" style="height:500px;"></table>
+        <div id="d2" title="货品转仓发货明细" border="false" >
+            <table id="t2" style="height:500px;" border="false" ></table>
         </div>
 
     </div>

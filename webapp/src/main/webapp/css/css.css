@@ -52,16 +52,19 @@ table {
   border-right: 1px solid #95B8E7;
 }
 #palette > div .bar {
-  height: 19px;
+  height: 21px;
   padding: 2px 0 0 4px;
-  line-height: 17px;
-  background-color: #BEC6EE;
+  line-height: 19px;
+  *background-color: #BEC6EE;
+  background: linear-gradient(#BEC6EE 0px, #049cdb 100%) repeat-x;
   color: #555;
   font-weight: bold;
 }
 #palette > div .bar .search #searchKey {
   width: 80px;
+  height: 16px;
   text-indent: 2px;
+  margin-right: 2px;
 }
 #palette > div .bar .icon {
   display: inline-block;
@@ -243,6 +246,6 @@ td.mbar input:hover {
   filter: alpha(opacity=0);
 }
 #importDiv input[type='button'] {
-  margin-left: 40px;
-  margin-top: 5px;
+  margin-left: 80px;
+  margin-top: 1px;
 }

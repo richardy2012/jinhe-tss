@@ -132,7 +132,7 @@ public class _Reporter extends BaseActionSupport {
     	Map<String, String> requestMap = getRequestMap(request, true);
 		SQLExcutor excutor = reportService.queryReport(reportId, requestMap, page, pagesize, getLoginUserId(requestMap));
 		
-		String fileName = reportId + "-" + System.currentTimeMillis() + ".csv";
+		String fileName = reportId + "-" + start + ".csv";
         String exportPath;
         
         // 如果导出数据超过了pageSize（前台为导出设置的pageSize为50万），则不予导出并给与提示
