@@ -1,6 +1,7 @@
 package com.jinhe.dm.record;
 
 import java.io.File;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,14 +17,17 @@ import com.jinhe.dm.TxTestSupport4DM;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.dm.record.ddl._Database;
 import com.jinhe.dm.record.file.ImportCSV;
+import com.jinhe.dm.report._Reporter;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.framework.web.servlet.AfterUpload;
+import com.jinhe.tss.util.DateUtil;
 import com.jinhe.tss.util.FileHelper;
 
 public class ImportCSVTest extends TxTestSupport4DM {
 	
 	@Autowired RecordService recordService;
 	@Autowired _Recorder recorder;
+	@Autowired _Reporter reporter;
 	
 	Logger log = Logger.getLogger(this.getClass());
 	
@@ -54,10 +58,14 @@ public class ImportCSVTest extends TxTestSupport4DM {
 		SQLExcutor ex = _db.select();
 		Assert.assertEquals(2, ex.result.size());
 		Assert.assertEquals("hehe", ex.result.get(0).get("f2"));
-		Assert.assertEquals("哈哈", ex.result.get(1).get("f2"));
+		Assert.assertEquals(DateUtil.parse("2015-10-29"), ex.result.get(1).get("f3"));
 		
 		// 下载导入模板
 		recorder.getImportTL(response, recordId);
+		
+		reporter.trojan(0, DMConstants.LOCAL_CONN_POOL, "delete from x_tbl_icsv_1");
+		List<?> list = (List<?>) reporter.trojan(1, DMConstants.LOCAL_CONN_POOL, "select f1 from x_tbl_icsv_1");;
+		Assert.assertEquals(0, list.size());
 	}
 	
 	static String UPLOAD_PATH = TestUtil.getTempDir() + "/upload/record/";

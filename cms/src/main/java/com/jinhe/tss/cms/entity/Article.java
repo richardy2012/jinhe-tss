@@ -179,7 +179,8 @@ public class Article extends OperateInfo implements IGridNode, IXForm {
         map.put("channel.id", channel.getId());
         map.put("channel.name", channel.getName());
         
-        map.put("icon", "images/article_0.gif");
+        boolean overdue = overdueDate != null && overdueDate.before(new Date());
+        map.put("icon", "images/article_" + (overdue ? 1 : 0) + ".gif");
         
         return map;
     }

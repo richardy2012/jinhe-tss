@@ -41,6 +41,7 @@ table {
 /* 左栏 */
 #palette {
   width: 250px;
+  min-width: 250px;
   padding-right: 2px;
 }
 #palette > div {
@@ -75,7 +76,7 @@ table {
 }
 #palette > div .bar .refreshTreeBT {
   position: absolute;
-  top: 2px;
+  top: 4px;
   right: 2px;
   width: 16px;
   height: 15px;
