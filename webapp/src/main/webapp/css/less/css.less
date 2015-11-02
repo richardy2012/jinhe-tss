@@ -80,9 +80,10 @@ table {
         border-right: 1px solid @borderColor;  
 
         & .bar { 
-            height: 21px; padding: 2px 0 0 4px; line-height: 19px;
-            *background-color: @barColor; 
-            background: linear-gradient(@barColor 0px, @blue 100%) repeat-x;
+            height: 20px; padding: 2px 0 0 4px; line-height: 18px;
+            background-color: @blueLight; 
+            border-bottom: 1px solid @borderColor;
+            *background: linear-gradient(@barColor 0px, @blue 100%) repeat-x;
             color: @textColor; font-weight: bold;  
 
             & .search { 
@@ -151,6 +152,8 @@ td.mbar {
     position: absolute; top: 100px; margin: 0 auto; 
     padding-bottom: 5px; overflow: auto; 
     border: 1px solid @borderColor; background-color: @white; 
+    border-radius: 0 0 5px 5px;
+    box-shadow: @gray 0px 0px 100px;
 
     & h2 {
         width: 100%; height: 25px; line-height: 25px; 

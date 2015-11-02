@@ -15,19 +15,25 @@
 <style>
 
 /* 顶部 */
-.top { height: 41px; background-image: url(images/panel/blue_top.gif); }
-.top .logo { width: 571px; height: 41px; background-image: url(images/panel/title.jpg); }
+.top { height: 40px; background-color: black; }
+.top .logo { display: inline-block; text-decoration: none; padding: .5em 1em; color: #fff; }
+.top .logo .forename { font-weight: bold; font-size: 22px;color: #4ecdc4 }
+.top .logo .surname  { font-weight: normal; font-size: 20px; color: #fff }
 
-.menu { margin:1px 0px; position:absolute; top:10px; right:3px; font-size:13px; } 
+.menu a:hover {  text-decoration: none; }
+.menu { margin:1px 0px; position:absolute; top:0px; right:0px; font-size:13px; } 
 .menu ul { list-style-type: none; } 
 .menu ul li { float:left; position:relative; width:88px; text-align:center; } 
-.menu ul li a, .menu ul li a:visited { display:block; height:25px; line-height:25px; 
-	color:#000; background:#00BFFF; border:1px solid #fff; border-width:0px 0px 1px 0px; } 
+.menu ul li a, 
+.menu ul li a:visited { 
+	display:block; height:25px; line-height:25px; 
+	color: #333; background: #049cdb; 
+} 
 .menu ul li ul { display: none; } 
-.menu ul li:hover a { color:#fff; background:#AFEEEE; } 
+.menu ul li:hover a { color:#fff; background:#AFEEEE; border-bottom:1px solid #fff; } 
 .menu ul li:hover ul { display:block; position:absolute; top:25px; left:0; width:88px; } 
-.menu ul li:hover ul li a { display:block; background:#00BFFF; color:#000; } 
-.menu ul li:hover ul li a:hover { color:#FFF; font-weight:bold;} 
+.menu ul li:hover ul li a { display:block; background:#049cdb; color:#333; } 
+.menu ul li:hover ul li a:hover { color:#fff; font-weight:bold; } 
 
 </style>
 
@@ -47,7 +53,7 @@ window.onload = function() {
 		params : {"anonymous": "true"}, 
 		onresult : function() {
 			var userName = this.getNodeValue("name");
-			$("#userInfo").html(userName);
+			$("#userInfo").html(userName || '个人信息');
 			
 			resizeIFrame();
 			turn2IFrame("modules/dm/record.html");
@@ -108,7 +114,9 @@ function turn2IFrame(ahref) {
 <body>
  
 <div class="top">
-	<div class="logo"></div>
+	<div class="logo">
+		<b class="forename">它山石</b><b class="surname">数据管理平台</b>
+	</div>
 	<div class="menu"> 
 		<ul> 
 			<li><a href='javascript:void(0)'>数据管理</a> 	 
@@ -144,7 +152,7 @@ function turn2IFrame(ahref) {
 			</li> 	
 			<li><a href='javascript:void(0)' onclick="openMsgPage()">待办事项</a> </li> 
             <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/_userInfo.htm');"><span id="userInfo">个人信息</span></a></li>
-			<li><a href='javascript:void(0)' onclick="logout()"> 注销 </a></li> 
+			<li><a href='javascript:void(0)' onclick="logout()"> 注销登陆</a></li> 
 		</ul>  
 	</div> 
 </div>

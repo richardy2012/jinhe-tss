@@ -330,7 +330,7 @@
     /* 初始化密码  */
     function resetPassword(){
         var treeNode = $.T("tree").getActiveTreeNode();
-        $.prompt("请输入新密码", "初始化'" + treeNode.name + "'的密码", function(value) {
+        $.prompt("请输入新密码", "初始化【" + treeNode.name + "】的密码", function(value) {
             if ( $.isNullOrEmpty(value) ) return alert("密码不能为空。");
             
             $.ajax({
@@ -744,7 +744,7 @@
         var treeID   = treeNode.id;
         var treeName = treeNode.name;
         
-        $.prompt("请输入查询条件", "查询'" + treeName + "'下用户", function(value) {
+        $.prompt("请输入查询条件", "查询【" + treeName + "】下用户", function(value) {
             if ( $.isNullOrEmpty(value) ) return alert("条件不能为空。");
             
             var params = {"groupId": treeID, "searchStr": value};

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -45,8 +46,11 @@ public class Servlet4Upload extends HttpServlet {
 		} catch (Exception e) {
 			String errorMsg = "上传失败：" + e.getMessage() + ", " + ExceptionEncoder.getFirstCause(e).getMessage();
 			log.error(errorMsg );
-			encoder.put("script", "alert('" + errorMsg + "。如果是数据文件，请检查数据内容是否正确。" +
-					"同时请检查文件是否过大，单个文件最大不宜超过3M。如果过大，请压缩处理后再上传。！');");
+			
+			String alertErr = errorMsg + "。如果是数据文件，请检查数据内容是否正确。" +
+					"同时请检查文件是否过大，单个文件最大不宜超过3M。如果过大，请压缩处理后再上传。！";
+            alertErr = Pattern.compile("\t|\r|\n|\'").matcher(alertErr).replaceAll(""); // 剔除换行，以免alert不出来
+			encoder.put("script", "alert('" + alertErr + "');");
 		}
 
 		response.setContentType("text/html;charset=utf-8");

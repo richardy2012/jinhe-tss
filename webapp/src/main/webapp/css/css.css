@@ -53,11 +53,12 @@ table {
   border-right: 1px solid #95B8E7;
 }
 #palette > div .bar {
-  height: 21px;
+  height: 20px;
   padding: 2px 0 0 4px;
-  line-height: 19px;
-  *background-color: #BEC6EE;
-  background: linear-gradient(#BEC6EE 0px, #049cdb 100%) repeat-x;
+  line-height: 18px;
+  background-color: #E0ECFF;
+  border-bottom: 1px solid #95B8E7;
+  *background: linear-gradient(#BEC6EE 0px, #049cdb 100%) repeat-x;
   color: #555;
   font-weight: bold;
 }
@@ -198,6 +199,8 @@ td.mbar input:hover {
   overflow: auto;
   border: 1px solid #95B8E7;
   background-color: #fff;
+  border-radius: 0 0 5px 5px;
+  box-shadow: #555 0px 0px 100px;
 }
 .dialog h2 {
   width: 100%;
