@@ -127,7 +127,6 @@
         var menu1 = new $.Menu();
 		menu1.addItem(item1);
         menu1.addItem(item9);
-		menu1.addSeparator();
         menu1.addItem(item3);
         menu1.addItem(item7);
         menu1.addItem(item8);

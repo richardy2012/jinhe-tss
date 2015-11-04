@@ -12,42 +12,6 @@
 <script src="../../tools/tssUtils.js"></script>
 
 <style>
-#cacheStrategyDiv {
-    display: none;
-    background-color: #fff;
-    border: 1px solid #95B8E7;
-    box-shadow: #555 0px 0px 80px;
-    min-width: 600px;    
-    min-height: 340px;  
-}
-
-#cacheStrategyDiv h2 { 
-	width: 100%; 
-	height: 25px; 
-	line-height: 25px; 
-	font-size: 14px;
-	background-color: #049cdb; 
-	color: #fff; 
-	text-indent: 10px; 
-	cursor: move; 
-}
-
-#cacheStrategyDiv .bt { 
-	margin: 8px 0 5px 10px;
-}
-
-#cacheStrategyDiv .bt input{ 
-	margin: 0 0 0 20px;
-}
-
-#cacheStrategy {
-	padding-left: 10px;
-}
-
-#cacheStrategy hr {
-	height: 1px;
-	border: none;
-}
 
 #poolHitRate { left: 60px; top: 4px; font-weight: bold; }
 #poolHitRate:hover { cursor: pointer; }
@@ -92,9 +56,11 @@
 			$("#poolHitRate").html("");
 		});
 
-		var el = $1("cacheStrategyDiv");
-		Element.moveable(el);
-		Element.attachResize(el);
+		var panel = $.createElement("div", "panel", "cacheStrategyDiv");
+    	document.body.appendChild(panel);   	
+    	$panel = $(panel);
+    	$panel.css("width", "580px").css("height", "340px").center().hide();
+	    $panel.panel("维护缓存策略", '<div id="cacheStrategy"></div><div class="bts"><button class="tssbutton blue small" onclick="editCacheStrategy()">保存策略</button></div>', false);
 
 		loadInitData();
 		loadInitGrid();
@@ -127,32 +93,38 @@
 		$.ajax({
 			url : URL_INIT_GRID, 
 			onresult : function() {
-				$.G("poolsGrid", this.getNodeValue(XML_MAIN_GRID)); 	
+				$.G("poolsGrid", this.getNodeValue(XML_MAIN_GRID)); 
+				$("#poolHitRate").html("");	
 			}
 		});
 	}
 
 	function initMenus() {
 		var item1 = {
-			label:"维护",
+			label:"查看缓存池明细",
 			callback:showCachePools,
-			icon:"images/edit.gif"
+			icon:"images/view.gif"
 		}
 		var item2 = {
-			label:"初始化",
+			label:"初始化缓存池",
 			callback:initCache,
 			icon:"images/init.gif",
 			visible:function() {return getTreeAttribute("released") == "1";}
 		}
 		var item3 = {
-			label:"清空",
+			label:"清空缓存池",
 			callback:clearCache,
 			icon:"images/clear.gif"
+		}
+		var item4 = {
+			label:"维护缓存策略",
+			callback: function() { showCachePools(1, true); },
+			icon:"images/edit.gif"
 		}
 
 		var menu = new $.Menu();
 		menu.addItem(item1);
-		menu.addSeparator();
+		menu.addItem(item4);
 		menu.addItem(item2);
 		menu.addItem(item3);
 
@@ -161,6 +133,8 @@
  
 	/* 初始化缓存池  */
 	function initCache() {
+		hideStrategy();
+		
 		var treeNode = getActiveTreeNode();
 		if ( treeNode ) {
 			$.ajax({
@@ -175,6 +149,8 @@
 
 	/* 清空缓存池  */
 	function clearCache() {
+		hideStrategy();
+
 		var treeNode = getActiveTreeNode();
 		if ( treeNode ) {
 			$.ajax({
@@ -190,18 +166,20 @@
 	/*
 	 *	缓存池详细信息 
 	 *	参数：	string: page                页码
-			boolean: justRefreshGrid    false的话只刷新grid列表
+			boolean: isShowStrategy    false: 只刷新grid列表
 	 */
-	function showCachePools(page, justRefreshGrid) {
+	function showCachePools(page, isShowStrategy) {
 		var tree = $.T("tree");
 		var treeNode = tree.getActiveTreeNode();
 		$.ajax({ 
 			url: URL_CACHE_DETAIL + treeNode.id, 
 			onresult: function() {
 				var strategyXML = this.getNodeValue(XML_CACHE_STRATEGY);
-				if( strategyXML && !justRefreshGrid) {
+				if( strategyXML ) {
 					$.cache.XmlDatas["currentCacheInfo"] = strategyXML;
 					$.F("cacheStrategy", strategyXML);
+
+					isShowStrategy && showStrategy();
 				}
 
 				$.initGridToolBar($1("gridToolBar"), this.getNodeValue(XML_PAGE_INFO), function(page) {
@@ -214,22 +192,24 @@
 				
 				//设置点击率
 				var hitRateData = this.getNodeValue(XML_HIT_RATE);
-				$("#poolHitRate")
-					.html("『 " + treeNode.name + "-命中率：" + hitRateData + " 』")
-					.click( function() {
-						var $form = $("#cacheStrategyDiv");
-				        $form.css("display", "block").center(600, 320);
-
-				        $("#bt2").click( function() {
-				            $form.hide();
-				        });
-				        $("#bt1").click( function() {
-				            editCacheStrategy();
-				        });
-					});
+				var title = "『 " + treeNode.name + " -- 命中率：" + hitRateData + " 』";
+				$("#poolHitRate").html(title).click( showStrategy );
 			}
 		});
 	}
+
+	function showStrategy() {
+        var $panel = $("#cacheStrategyDiv");
+    	$panel.show();
+    	$panel.find(".tssForm").css("padding", "8px 10px");
+    	$panel.find(".bts").css("padding", "0px 240px");
+    	$panel.find(".max").hide();
+        $panel.find(".min").hide();
+   	}
+
+   	function hideStrategy() {
+   		$("#cacheStrategyDiv").hide();
+   	}
  
 	/* Grid菜单初始化 */
 	function initGridMenuAndEvents() {
@@ -278,6 +258,8 @@
 	}
 	
 	function editCacheStrategy() {
+		hideStrategy();
+
 		var cacheInfo = $.cache.XmlDatas["currentCacheInfo"];
 		var dataNode = cacheInfo.querySelector("data");
 		var fieldNodes = dataNode.querySelectorAll("row *");
@@ -324,7 +306,9 @@
 			<table>
 				<tr> 
 					<td id="gridTitle">
-						- 缓存池明细<span id="poolHitRate"></span><span class="buttonBox" id="gridToolBar"></span>
+						<span class="icon"></span>缓存池明细
+						<span id="poolHitRate"></span>
+						<span class="buttonBox" id="gridToolBar"></span>
 					</td> 
 				</tr>
 				<tr> 
@@ -339,17 +323,6 @@
 	  <tr class="footer"> <td/><td/><td/><td/> </tr>
 	</table>
 	<!-- 版面 结束 -->
- 
-  <div id="cacheStrategyDiv">
-  	<h2>
-		缓存策略
-	</h2><br/>
-    <div id="cacheStrategy"></div>    
-    <div class="bt">
-        <input type="button" class="tssbutton blue small" value="修 改" id="bt1"/>
-    	<input type="button" class="tssbutton blue small" value="隐 藏" id="bt2"/>
-     </div>
-  </div>
 
 </body>
 </html>

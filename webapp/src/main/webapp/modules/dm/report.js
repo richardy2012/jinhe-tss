@@ -121,7 +121,6 @@ function initMenus() {
 
 	var menu = new $.Menu();
 	menu.addItem(item1);
-	menu.addSeparator();
 	menu.addItem(item10);
 	menu.addItem(item2);
 	menu.addItem(item3);
