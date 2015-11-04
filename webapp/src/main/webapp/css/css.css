@@ -22,27 +22,31 @@ table {
 .panel .footer {
   height: 0px;
 }
-/* .panel .body td.groove { border: 1px solid @borderColor; height: 100%; } */
+/* FireFox：TD显式给高度，TD里面的元素设置height：100%才有效 */
+.panel .body td.groove {
+  position: relative;
+  vertical-align: top;
+  height: 100%;
+}
 .panel .body td.groove .hasframe {
   height: 100%;
 }
 .panel .body td.groove #ws .hastree {
   vertical-align: top;
 }
-.panel .body td.groove {
-  position: relative;
-}
 .panel .body td.groove WorkSpace\:Page {
   border: 0;
 }
 #gridContainer {
   vertical-align: top;
+  height: 100%;
 }
 /* 左栏 */
 #palette {
+  box-sizing: border-box;
   width: 250px;
   min-width: 250px;
-  padding-right: 2px;
+  vertical-align: top;
 }
 #palette > div {
   position: relative;
@@ -53,18 +57,17 @@ table {
   border-right: 1px solid #95B8E7;
 }
 #palette > div .bar {
-  height: 20px;
+  height: 23px;
   padding: 2px 0 0 4px;
   line-height: 18px;
   background-color: #E0ECFF;
   border-bottom: 1px solid #95B8E7;
-  *background: linear-gradient(#BEC6EE 0px, #049cdb 100%) repeat-x;
   color: #555;
   font-weight: bold;
 }
 #palette > div .bar .search #searchKey {
   width: 80px;
-  height: 16px;
+  height: 18px;
   text-indent: 2px;
   margin-right: 2px;
 }
@@ -73,7 +76,7 @@ table {
   width: 8px;
   height: 8px;
   margin-right: 5px;
-  background: url(../images/panel/title_icon.gif) no-repeat center;
+  background: url(../images/icon_title.gif) no-repeat center;
 }
 #palette > div .bar .refreshTreeBT {
   position: absolute;
@@ -82,71 +85,20 @@ table {
   width: 16px;
   height: 15px;
   cursor: pointer;
-  background: url(../images/panel/refresh.gif) no-repeat center;
+  background: url(../images/icon_refresh.gif) no-repeat center;
 }
 #palette #tree {
   height: auto;
   min-height: 90%;
-  max-width: 235px;
+  max-width: 248px;
   background-color: #fff;
-}
-div.groove {
-  border-left: 1px solid #95B8E7;
-  border-top: 1px solid #95B8E7;
-  padding: 3px;
-}
-.btWeak {
-  color: #403756;
-  width: 50px;
-  height: 18px;
-  border: 0;
-  background-image: url(../images/button/weak.gif);
-}
-.btWeakS {
-  color: #403756;
-  width: 18px;
-  height: 18px;
-  border: 0;
-  background-image: url(../images/button/weak_short.gif);
-}
-.btWeakL {
-  color: #403756;
-  width: 90px;
-  height: 18px;
-  border: 0;
-  background-image: url(../images/button/weak_long.gif);
-}
-.btStrong {
-  color: #2F2469;
-  width: 50px;
-  height: 18px;
-  border: 0;
-  background-image: url(../images/button/strong.gif);
-}
-.btStrongS {
-  color: #2F2469;
-  width: 18px;
-  height: 18px;
-  border: 0;
-  background-image: url(../images/button/strong_short.gif);
-}
-.btStrongL {
-  color: #2F2469;
-  width: 90px;
-  height: 18px;
-  border: 0;
-  background-image: url(../images/button/strong_long.gif);
 }
 .loading {
   width: 53px;
   height: 20px;
   background: url(../images/loading.gif) no-repeat 3px 3px;
 }
-.separator {
-  height: 6px;
-  background: url(../images/sep_line.gif) repeat-x center;
-  overflow: hidden;
-}
+/* 用户组、用户、角色关系维护 */
 .l {
   border-left: 1px solid #95B8E7;
 }
@@ -159,7 +111,6 @@ div.groove {
 .r {
   border-right: 1px solid #95B8E7;
 }
-/* 用户组、用户、角色关系维护 */
 .titleBox {
   height: 20px;
   background-color: #E0ECFF;

@@ -12,23 +12,19 @@
 <script src="../../tools/tssUtils.js"></script>
 
 <style>
-    body { background-color: #fff; }
-    .dialog { border: 0px solid #98989C; background-color:#003399; overflow:auto; padding:5px;}
+    .dialog { width: 440px; border: 0; background-color:#E0ECFF; overflow:auto; padding:1px 0; border-radius: 0; }
 
-    .dialog Tree { height: 275px; }
+    .dialog Tree { height: 300px; }
 
-    .operation { height: 30px; vertical-align:bottom; padding-top: 3px; color: #fff; font-size: 15px;}
-    .operation span { width:20px; height:18px; display: inline-block; padding-left:3px; background-repeat:no-repeat; } 
-    .operation .download {background-image:url(images/icon_download.gif); }
-    .operation .rename   {background-image:url(images/icon_rename.gif); }
-    .operation .remove   {background-image:url(images/icon_del.gif); }
-    .operation .newfolder{background-image:url(images/icon_folder_new.gif); }
-    .operation input { background-color:#fff; }
+    .header { height: 25px; padding: 3px 3px 0 15px; color: #555; font-size: 14px; border-bottom: 1px solid #95B8E7; }
+    .header input { background-color:#fff; height: 18px;}
+    .header #contextPath{ background-color:#eee; width:290px; } 
+    .header #fileFilter { width: 50px; padding-left:3px; }
 
-    .operation #contextPath{ color:#999999; background-color:#F6F6F6; width:160px; border:1px; } 
-    .operation #fileFilter { width:40px; padding-left:3px; }
+    .dialog>div:nth-child(2) { background-color: #fff; } 
 
-    .dialog>div:nth-child(2) { background-color: #E7E7E7; } 
+    .dialog .bts { padding: 4px 20px; border-top: 1px solid #95B8E7; }
+    .dialog .bts button { margin-left: 5px; }
    
 </style>
 
@@ -60,10 +56,6 @@
         loadFileTree();
 
         $(".dialog").center();
-        $(".operation .download").click(downloadFiles);
-        $(".operation .rename").click(renameFile);
-        $(".operation .remove").click(delFiles);
-        $(".operation .newfolder").click(addFolder);
     }
 
     function loadFileTree(contextPath, filter) {
@@ -90,7 +82,7 @@
                     var name = treeNode.name;
                     var isFolder = treeNode.getAttribute("isFolder");
                     if ("-1" == id) {
-                        var newPath = getParentContextPath(); // 回到夫目录
+                        var newPath = getParentContextPath(); // 回到父目录
                         loadFileTree(newPath);
                     } else if ("1" == isFolder) {
                         var newPath = getFolderContextPath(name); // 进入子目录
@@ -277,21 +269,20 @@
 
 <body>
     <div class="dialog">
-        <div class="operation" >路径: 
+        <div class="header">
             <input type="text" id="contextPath" readOnly="true"/>
             <input type="text" id="fileFilter" value="*.*">
-            <input type="button" class="btWeak" value="过滤" onclick="filterFiles()"/>&nbsp;
-            <span class="download" title="下载"></span>
-            <span class="rename" title="重命名"></span>
-            <span class="remove" title="删除"></span>
-            <span class="newfolder" title="新建目录"></span>
+            <button class="tssbutton blue small" onclick="filterFiles()">过滤</button>&nbsp;           
         </div>
         <div>
             <Tree id="tree" treeType="multi"></Tree>
         </div>
         <div class="bts">
-            <input type="button" value="选择附件" class="tssbutton small blue" onclick="upload()"/>
-            <input type="button" value="关闭" class="tssbutton small blue" onclick="window.close()"/>
+            <button class="tssbutton small blue" onclick="upload()">上传附件</button>
+            <button class="tssbutton small blue" onclick="downloadFiles()">下载附件</button>
+            <button class="tssbutton small blue" onclick="renameFile()">重命名</button>
+            <button class="tssbutton small blue" onclick="delFiles()">删除附件</button>
+            <button class="tssbutton small blue" onclick="addFolder()">新建目录</button>
         </div>
     </div>
  

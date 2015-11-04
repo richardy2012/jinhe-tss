@@ -634,6 +634,5 @@ function selectTL() {
 }
 
 function uploadTL() {
-	var type = "reportTL";
-	window.open("../portal/filemanager.html?type=" + type, 'newwindow', 'height=360, width=500');
+	fileManage("type=reportTL", "管理报表模板文件");
 }

@@ -16,7 +16,7 @@
 	URL_UPLOAD_FILE  = AUTH_PATH + "file/upload",	
 
 	URL_CORE = IS_TEST ? "../../tools/tssJS/" : "/" + APPLICATION + "/tools/tssJS/",  // 界面核心包相对路径
-	ICON  =  URL_CORE + "images/";
+	ICON  =  URL_CORE + "img/";
 
 /*
 $(function() {
@@ -82,8 +82,8 @@ function openPalette() {
 
 window.onresize = function() {
 	var bodyHeight = document.body.offsetHeight;
-	$("#palette #tree").css("height", (bodyHeight - 30) + "px");
-	$("#ws Tree").css("height", (bodyHeight - 110) + "px");	
+	$("#palette #tree").css("height", (bodyHeight - 23) + "px");
+	$("#ws Tree").css("height", (bodyHeight - 103) + "px");	
 }
  
 /* 事件绑定初始化 */
@@ -239,10 +239,10 @@ function setRole2Permission(resourceType, rootId) {
 
     var $panel = $("#permissionPanel");
     if( !$panel.length ) {
-    	var permissionPanel = $.createElement("div", "panel", "permissionPanel");
-    	document.body.appendChild(permissionPanel);
+    	var panel = $.createElement("div", "panel", "permissionPanel");
+    	document.body.appendChild(panel);
     	
-    	var $panel = $(permissionPanel);
+    	$panel = $(panel);
     	$panel.css("width", "844px").css("height", "620px").center();
 	    $panel.panel(title, '<iframe frameborder="0"></iframe>', false);
 	    $panel.find("iframe").css("width", "100%").css("height", "100%");
@@ -275,6 +275,27 @@ function syncButton(btObjs, request) {
 			btEl.disabled = false;
 		});
 	}
+}
+
+/* 组件资源管理 */
+function fileManage(params, title) {
+    var $panel = $("#fileManagerPanel");
+    if( !$panel.length ) {
+        var panel = $.createElement("div", "panel", "fileManagerPanel");
+        document.body.appendChild(panel);
+        
+        $panel = $(panel);
+        $panel.css("width", "440px").css("height", "385px").center();
+        $panel.panel(title, '<iframe frameborder="0"></iframe>', false);
+        $panel.find("iframe").css("width", "100%").css("height", "100%");
+
+        $panel.find(".max").hide();
+        $panel.find(".min").hide();
+    }
+
+    $panel.find("h2").html(title);
+    $panel.find("iframe").attr("src", "../portal/filemanager.html?" + params );
+    $panel.show();
 }
 
 /* 创建导入Div */

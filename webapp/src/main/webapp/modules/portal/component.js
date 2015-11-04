@@ -495,10 +495,12 @@ function moveTo() {
 
 /* 组件资源管理 */
 function resourceManage() {
-    var treeNode = getActiveTreeNode();
+	var treeNode = getActiveTreeNode();
 	var code = treeNode.getAttribute("code");
+	var title = "管理【" + treeNode.name + "】的文件资源："
 	var type = getComponentType();
-	window.open("filemanager.html?code=" + code + "&type=" + type, 'newwindow', 'height=360, width=500');
+
+    fileManage("code=" + code + "&type=" + type, title);
 }
  
 

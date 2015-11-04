@@ -70,6 +70,7 @@ function initPortlet() {
      $.ajax({
         url: '/tss/data/' +reportId+ '/define',
         method: 'get',
+        type : "json",
         ondata: function() {
             var defines = this.getResponseJSON();
             globalValiable.title = defines[0];
@@ -174,6 +175,7 @@ function createQueryForm() {
 function searchReport(params) {
     $.ajax({
         url: "/tss/data/json/" + reportId,
+        type : "json",
         waiting: true,
         params: params,
         ondata: function() {

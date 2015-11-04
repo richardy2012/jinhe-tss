@@ -16,9 +16,13 @@
 
 /* 顶部 */
 .top { height: 40px; background-color: black; }
-.top .logo { display: inline-block; text-decoration: none; padding: .5em 1em; color: #fff; }
-.top .logo .forename { font-weight: bold; font-size: 22px;color: #4ecdc4 }
-.top .logo .surname  { font-weight: normal; font-size: 20px; color: #fff }
+.top .logo { 
+	display: inline-block; text-decoration: none; padding: .5em 1em; color: #fff; 
+     -webkit-font-smoothing: antialiased;
+  	-moz-osx-font-smoothing: grayscale; 
+}
+.top .logo .forename { font-weight: bold; font-size: 22px;color: #4ecdc4; }
+.top .logo .surname  { font-weight: normal; font-size: 20px; color: #fff; }
 
 .menu a:hover {  text-decoration: none; }
 .menu { margin:1px 0px; position:absolute; top:0px; right:0px; font-size:13px; } 
@@ -30,7 +34,7 @@
 	color: #333; background: #049cdb; 
 } 
 .menu ul li ul { display: none; } 
-.menu ul li:hover a { color:#fff; background:#AFEEEE; border-bottom:1px solid #fff; } 
+.menu ul li:hover a { color:#fff; background:#AFEEEE; border-bottom:1px solid #E0ECFF; } 
 .menu ul li:hover ul { display:block; position:absolute; top:25px; left:0; width:88px; } 
 .menu ul li:hover ul li a { display:block; background:#049cdb; color:#333; } 
 .menu ul li:hover ul li a:hover { color:#fff; font-weight:bold; } 

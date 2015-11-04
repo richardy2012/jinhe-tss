@@ -213,6 +213,7 @@ public class ReportAction extends BaseActionSupport {
  				sb.append("<treeNode id=\"").append(index++).append("\" name=\"").append(treeName).append("\"/>");
  			}
  		}
+ 		sb.append("</actionSet>");
 		
         print("SourceTree", sb);
     }

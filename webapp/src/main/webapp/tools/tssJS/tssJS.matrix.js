@@ -112,6 +112,9 @@
                 ul.appendChild(li);
             });
             this.el.appendChild(ul);
+
+            // tip: firefox下float元素和非float元素共占一行时，float元素位置会下移
+            $.isFirefox && $(this.el).find("span.optionBox").css("margin-top", "-20px");
         }
 
         var tThis = this;

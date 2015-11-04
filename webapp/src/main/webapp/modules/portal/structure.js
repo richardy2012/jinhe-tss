@@ -876,7 +876,9 @@ function showPageFlowRate() {
 function resourceManage() {
     var treeNode = getActiveTreeNode();
 	var code = treeNode.getAttribute("code");
-	window.open("filemanager.html?code=" + code, 'newwindow', 'height=360, width=500');
+	var title = "管理【" + treeNode.name + "】的文件资源："
+
+    fileManage("code=" + code, title);
 }
 
 function moveTo() {
