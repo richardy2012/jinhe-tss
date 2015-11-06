@@ -67,15 +67,18 @@ table {
 }
 #palette > div .bar .search #searchKey {
   width: 80px;
-  height: 18px;
+  height: 1.4em;
   text-indent: 2px;
-  margin-right: 2px;
+  margin-right: 3px;
+}
+#palette > div .bar .search .tssbutton {
+  padding: .12em .5em .1em;
 }
 #palette > div .bar .icon {
   display: inline-block;
   width: 8px;
   height: 8px;
-  margin-right: 5px;
+  margin-right: 6px;
   background: url(../images/icon_title.gif) no-repeat center;
 }
 #palette > div .bar .refreshTreeBT {

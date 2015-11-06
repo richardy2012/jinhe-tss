@@ -210,7 +210,7 @@
 
         var url = URL_UPLOAD_FILE + "?afterUploadClass=com.jinhe.tss.um.servlet.ImportAppConfig";
         var importDiv = createImportDiv("只支持XML文件格式导入", checkFileWrong, url);
-        Element.show(importDiv);
+        $(importDiv).show();
     }
 
     window.onload = init;

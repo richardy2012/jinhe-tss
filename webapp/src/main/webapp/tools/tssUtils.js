@@ -237,20 +237,8 @@ function setRole2Permission(resourceType, rootId) {
     globalValiable.isRole2Resource = "0";
     var title = "把【" + treeNode.name + "】作为资源授予角色";
 
-    var $panel = $("#permissionPanel");
-    if( !$panel.length ) {
-    	var panel = $.createElement("div", "panel", "permissionPanel");
-    	document.body.appendChild(panel);
-    	
-    	$panel = $(panel);
-    	$panel.css("width", "844px").css("height", "620px").center();
-	    $panel.panel(title, '<iframe frameborder="0"></iframe>', false);
-	    $panel.find("iframe").css("width", "100%").css("height", "100%");
-    }
-
-    $panel.find("h2").html(title);
-    $panel.find("iframe").attr("src", "../um/setpermission.html");
-    $panel.show();
+    $.openIframePanel("permissionPanel", title, 844, 616, "../um/setpermission.html");
+    $("#permissionPanel").find("h2").html(title);
 }
 
 function createPermissionMenuItem(resourceType, operation) {
@@ -279,31 +267,14 @@ function syncButton(btObjs, request) {
 
 /* 组件资源管理 */
 function fileManage(params, title) {
-    var $panel = $("#fileManagerPanel");
-    if( !$panel.length ) {
-        var panel = $.createElement("div", "panel", "fileManagerPanel");
-        document.body.appendChild(panel);
-        
-        $panel = $(panel);
-        $panel.css("width", "440px").css("height", "385px").center();
-        $panel.panel(title, '<iframe frameborder="0"></iframe>', false);
-        $panel.find("iframe").css("width", "100%").css("height", "100%");
-
-        $panel.find(".max").hide();
-        $panel.find(".min").hide();
-    }
-
-    $panel.find("h2").html(title);
-    $panel.find("iframe").attr("src", "../portal/filemanager.html?" + params );
-    $panel.show();
+    $.openIframePanel("fileManagerPanel", title, 440, 388, "../portal/filemanager.html?", true);
 }
 
 /* 创建导入Div */
 function createImportDiv(remark, checkFileWrong, importUrl) {
 	var importDiv = $1("importDiv");
 	if( importDiv == null ) {
-		importDiv = $.createElement("div");    
-		importDiv.id = "importDiv";      
+		importDiv = $.createElement("div", null, "importDiv");    
 		document.body.appendChild(importDiv);
 
 		var str = [];
@@ -311,9 +282,10 @@ function createImportDiv(remark, checkFileWrong, importUrl) {
 		str[str.length] = "	 <div class='fileUpload'> <input type='file' name='file' id='sourceFile' onchange=\"$('#importDiv h2').html(this.value)\" /> </div> ";
 		str[str.length] = "	 <input type='button' id='importBt' value='确定导入' class='tssbutton blue'/> ";
 		str[str.length] = "</form>";
-		str[str.length] = "<iframe width='0px' height='0px' name='fileUpload'></iframe>";
+		str[str.length] = "<iframe style='width:0; height:0;' name='fileUpload'></iframe>";
 
 		$(importDiv).panel(remark, str.join("\r\n"), false);
+		$(importDiv).css("height", "300px").center();
 	}
 
 	// 每次 importUrl 可能不一样，比如导入门户组件时。不能缓存
@@ -735,18 +707,6 @@ function checkPasswordSecurityLevel(formObj, url, password, loginName) {
 }
 
 /*********************** 临时 公用函数 **********************************/
-Element.show = function(element, opacity) {
-	if(element) {
-		element.style.display = "block"; 
-		element.style.position = "absolute";  
-		element.style.left = "18%";   
-		element.style.top  = "50px";    
-		element.style.zIndex = "999"; 
-	
-		$.setOpacity(element, opacity || 95);
-	}
-}, 
-
 Element.attachResize = function(element, type) {
 	 $(element).resize(type);
 }

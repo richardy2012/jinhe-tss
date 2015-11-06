@@ -57,6 +57,9 @@ public class FileHelper {
     public static String readFile(File file) {
         return readFile(file, "UTF-8");
     }
+    public static String readFile(String filePath) {
+    	return readFile(new File(filePath));
+    }
     
     /**
      * 指定编码读入文件为字符串
@@ -98,6 +101,10 @@ public class FileHelper {
         } catch (IOException e) {
             throw new RuntimeException("写入文件内容时IO异常", e);
         }
+    }
+    
+    public static void writeFile(String filePath, String content) {
+    	writeFile(new File(filePath), content);
     }
     
 	/**
@@ -232,6 +239,9 @@ public class FileHelper {
 	 */
 	public static List<String> listFiles(File dir) {
 		return listFilesByType("", dir);
+	}
+	public static List<String> listFiles(String dirPath) {
+		return listFiles(new File(dirPath));
 	}
 
 	/**
@@ -416,6 +426,9 @@ public class FileHelper {
         else if( file.isDirectory() ) {
             deleteFilesInDir("", file);
         }
+	}
+	public static void deleteFile(String filePath) {
+		deleteFile(new File(filePath));
 	}
 
     /**

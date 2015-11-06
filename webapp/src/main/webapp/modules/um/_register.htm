@@ -13,7 +13,8 @@
 
 <style>
 
-    .dialog { height: 255px; position:relative; padding:10px; top:0; }
+    #d1 { padding: 20px 30px; }
+    #d1 .bts { padding: 8px 0 5px 220px; }
 
 </style>
 
@@ -100,11 +101,10 @@
 </head>
 
 <body>
-    <div class="dialog">
+    <div id="d1">
         <div id="registerForm"></div>
         <div class="bts">
-            <input type="button" class="tssbutton small blue" value="提交" onclick="if(checkRegisterForm()){ register(); }"/>
-            <input type="button" class="tssbutton small blue" value="关闭" onclick="window.close()"/>
+            <button class="tssbutton small blue" onclick="if(checkRegisterForm()){ register(); }">完成注册</button>
         </div>
     </div>
 </body>

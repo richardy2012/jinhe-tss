@@ -474,20 +474,8 @@
         globalValiable.isRole2Resource = "1";
         var title = "设置角色【" + treeNode.name + "】对资源的权限";
 
-        var $panel = $("#permissionPanel");
-        if( !$panel.length ) {
-            var permissionPanel = $.createElement("div", "panel", "permissionPanel");
-            document.body.appendChild(permissionPanel);
-
-            var $panel = $(permissionPanel);
-            $panel.css("width", "844px").css("height", "626px").center();
-            $panel.panel(title, '<iframe frameborder="0"></iframe>', false);
-            $panel.find("iframe").css("width", "100%").css("height", "100%");
-        }
-
-        $panel.find("h2").html(title);
-        $panel.find("iframe").attr("src", "setpermission.html");
-        $panel.show();
+        $.openIframePanel("permissionPanel", title, 844, 616, "../um/setpermission.html");
+    	$("#permissionPanel").find("h2").html(title);
     }
 
     /* 综合查询(所有拥有指定角色的用户列表) */

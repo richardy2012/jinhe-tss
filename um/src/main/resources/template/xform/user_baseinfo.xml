@@ -27,10 +27,10 @@
 	</declare>
 	<layout>
 		<TR>
-			<TD width="50"><label binding="loginName"/></TD>
+			<TD width="60"><label binding="loginName"/></TD>
 			<TD><input binding="loginName"/></TD>
 			
-			<TD width="50"><label binding="userName"/></TD>
+			<TD width="60"><label binding="userName"/></TD>
 			<TD><input binding="userName"/></TD>
 		</TR>
 		<TR>

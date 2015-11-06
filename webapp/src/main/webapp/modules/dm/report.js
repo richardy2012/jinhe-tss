@@ -471,8 +471,7 @@ function configParams() {
     	});
 	}
 
-	Element.show($1("reportParamsDiv"), 100);
- 
+	$("#reportParamsDiv").show(true).center();
 }
 
 function initParamTreeMenus() {

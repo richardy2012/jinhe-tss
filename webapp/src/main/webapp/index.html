@@ -15,7 +15,7 @@
 <style>
 
 /* 顶部 */
-.top { height: 40px; background-color: black; }
+.top { height: 40px; background-color: #323232; box-sizing: border-box; border-bottom: 1px solid #95B8E7; }
 .top .logo { 
 	display: inline-block; text-decoration: none; padding: .5em 1em; color: #fff; 
      -webkit-font-smoothing: antialiased;
@@ -125,11 +125,11 @@ function turn2IFrame(ahref) {
 		<ul> 
 			<li><a href='javascript:void(0)'>数据管理</a> 	 
 				<ul> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/dm/report.html')">数据报表</a> </li> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/dm/record.html')">数据录入</a> </li>
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/cms/channel.html')">栏目内容</a></li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/dm/report.html')">数据分析</a> </li> 
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/dm/record.html')">数据采集</a> </li>
 				</ul> 
 			</li>  
+			<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/cms/channel.html')">栏目内容</a></li>
 			<li><a href='javascript:void(0)'>用户权限</a> 	 
 				<ul> 
 					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/group.html')">用户管理</a> </li> 
@@ -151,12 +151,18 @@ function turn2IFrame(ahref) {
 					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/_log/log.htm')">日志查询</a> </li> 
 					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/_param/param.htm')">系统参数</a> </li> 
 					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/_cache/cache.htm')">缓存管理</a> </li> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/_password.htm');">修改密码</a></li>
 				</ul> 
 			</li> 	
 			<li><a href='javascript:void(0)' onclick="openMsgPage()">待办事项</a> </li> 
-            <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/_userInfo.htm');"><span id="userInfo">个人信息</span></a></li>
-			<li><a href='javascript:void(0)' onclick="logout()"> 注销登陆</a></li> 
+            <li>
+            	<a href='javascript:void(0)' 
+            		onclick='$.openIframePanel("p1", "个人信息", 760, 320, "modules/um/_userInfo.htm", true);' id="userInfo">个人信息</a>
+            	<ul>
+            		<li><a href='javascript:void(0)' onclick='$.openIframePanel("p2", "修改密码", 440, 300, "modules/um/_password.htm", true);'>修改密码</a></li>
+            		<li><a href='javascript:void(0)' onclick="logout()"> 注销登陆</a></li> 
+            	</ul>
+            </li>
+			
 		</ul>  
 	</div> 
 </div>

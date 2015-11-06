@@ -273,7 +273,7 @@ function batchImport() {
     var url = URL_UPLOAD_FILE + "?afterUploadClass=com.jinhe.dm.record.file.ImportCSV";
     url += "&recordId=" + recordId;
     var importDiv = createImportDiv("请点击图标选择CSV文件导入", checkFileWrong, url);
-    Element.show(importDiv);
+    $(importDiv).show();
 }
 
 // -------------------------------------------------   配置数据录入表   ------------------------------------------------

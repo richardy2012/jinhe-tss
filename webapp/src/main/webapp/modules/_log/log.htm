@@ -50,8 +50,7 @@
 		var item2 = {
 			label:"搜索日志",
 			callback:searchLog,
-			icon:"images/search.gif",
-			visible:function() {return !isTreeRoot();}
+			icon:"images/search.gif"
 		}
 
 		var menu = new $.Menu();
@@ -99,8 +98,9 @@
     }
 
     function searchLog() {
-        var treeNode = $.T("tree").getActiveTreeNode();
-        popupForm("SearchForm.xml", "SearchLog", {operateTable: treeNode.id}, function(condition) {
+        var params = isTreeRoot() ? {} : {operateTable: getTreeNodeId()};
+        
+        popupForm("SearchForm.xml", "SearchLog", params, function(condition) {
         	loadGridData(condition, "1"); 
         }, "日志查询");
     }

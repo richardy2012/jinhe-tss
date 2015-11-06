@@ -258,7 +258,7 @@
         url += "&afterUploadClass=com.jinhe.tss.portal.helper.MovePortalFile";
 
         var importDiv = createImportDiv("点击图标选择要上传的文件", null, url);
-        Element.show(importDiv);
+        $(importDiv).show();
     }
 
     window.onload = init;

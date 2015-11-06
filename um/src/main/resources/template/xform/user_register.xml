@@ -11,7 +11,7 @@
 	</declare>
 	<layout>
 		<TR>
-			<TD width="50"><label binding="loginName"/></TD>
+			<TD width="60"><label binding="loginName"/></TD>
 			<TD><input binding="loginName" style="width:250px;"/></TD>
 		</TR>
 		<TR>

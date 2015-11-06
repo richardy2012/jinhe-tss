@@ -34,7 +34,7 @@ public class FileHelperTest {
          Assert.assertFalse( FileHelper.isFolder(tempDir1, "1.txt") );
          
          FileHelper.writeFile(tempFile1, "111111111111");
-         FileHelper.writeFile(tempFile2, "222222222222");
+         FileHelper.writeFile(tempFile2.getPath(), "222222222222");
          
          FileHelper.copyFile(tempDir2, tempFile1);
          
@@ -43,6 +43,7 @@ public class FileHelperTest {
          File tempDir1_1 = FileHelper.createDir(classDir + "/temp1/dir1");
          File tempFile1_1 = new File(tempDir1_1.getPath() + "/11.txt");
          FileHelper.writeFile(tempFile1_1, "1111111222222211111");
+         
          Assert.assertTrue(FileHelper.renameFile("temp1/dir1/11.txt", "1_1.txt"));
          Assert.assertFalse(FileHelper.renameFile("temp1/dir1/22.txt", "2_2.txt"));
          
@@ -64,9 +65,11 @@ public class FileHelperTest {
          
          FileHelper.listFileNamesByTypeDeeply("txt", tempDir2);
          FileHelper.listFiles(tempDir2);
+         FileHelper.listFiles(tempDir2.getPath());
          FileHelper.listFilesDeeply(tempDir2);
          FileHelper.listSubDir(tempDir2);
          
+         FileHelper.readFile(tempFile1.getPath());
          FileHelper.readFile(tempFile1);
          FileHelper.readFile(tempFile1, "UTF-8");
          
@@ -81,7 +84,7 @@ public class FileHelperTest {
          FileHelper.wirteOldFile(tempFile1.getPath(), tempDir2, "2.txt");
          
          FileHelper.deleteFile(tempDir1);
-         FileHelper.deleteFile(tempDir2);
+         FileHelper.deleteFile(tempDir2.getPath());
          FileHelper.deleteFile(zipFile);
     }
 }
