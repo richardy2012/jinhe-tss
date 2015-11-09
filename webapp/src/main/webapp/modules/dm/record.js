@@ -94,13 +94,13 @@ function initMenus() {
 		label:"下载导入模板",
 		callback: getImportTL,
 		icon: ICON + "icon_down.gif",
-		visible:function() { return isRecord() && getOperation("1,2,3,4,5"); }
+		visible:function() { return isRecord() && getOperation("1,2,3,4,5") && canBatchImp(); }
 	}
 	var item8 = {
 		label:"批量导入数据",
 		callback: batchImport,
 		icon: ICON + "icon_up.gif",
-		visible:function() { return isRecord() && getOperation("1,2,3,4,5"); }
+		visible:function() { return isRecord() && getOperation("1,2,3,4,5") && canBatchImp(); }
 	}
 
 	var menu = new $.Menu();
@@ -126,6 +126,10 @@ function isRecordGroup() {
 
 function isRecord() {
 	return !isTreeRoot() && !isRecordGroup();
+}
+
+function canBatchImp() {
+	return "1" == getTreeAttribute("batchImp");
 }
 
 function loadInitData() {

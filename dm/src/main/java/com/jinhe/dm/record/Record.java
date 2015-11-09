@@ -96,6 +96,7 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     
     private Integer needLog  = ParamConstants.FALSE; // 记录修改日志，适用于重要性高的数据录入
     private Integer needFile = ParamConstants.FALSE; // 是否需要附件上传
+    private Integer batchImp = ParamConstants.FALSE; // 是否允许批量导入
     
     public Integer getNeedFile() {
 		return needFile;
@@ -132,9 +133,10 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
         }
         map.put("icon", "images/" + (TYPE0 == type ? "folder" : "record") + ".gif");
         
-        if( this.levelNo < 3 ) {
+        if( this.levelNo < 2 ) {
         	map.put("_open", "true");
         }
+        map.put("batchImp", this.batchImp);
  
         return map;
     }
@@ -278,5 +280,13 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
 
 	public void setCustomizeGrid(String customizeGrid) {
 		this.customizeGrid = customizeGrid;
+	}
+
+	public Integer getBatchImp() {
+		return batchImp;
+	}
+
+	public void setBatchImp(Integer batchImp) {
+		this.batchImp = batchImp;
 	}
 }

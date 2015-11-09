@@ -25,3 +25,6 @@ WHERE `name` IN ('CompanyNameList', 'CenterNameList') OR `name` LIKE 'Get%';
 
 SELECT remark FROM  dm_report 
 WHERE `name` IN ('CompanyNameList', 'CenterNameList') OR `name` LIKE 'Get%';
+
+delete FROM dm_access_log  WHERE accessTime < DATE_SUB(CURDATE(), INTERVAL 30 DAY);
+delete FROM component_log  WHERE operatetime < DATE_SUB(CURDATE(), INTERVAL 30 DAY)

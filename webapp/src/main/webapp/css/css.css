@@ -17,10 +17,12 @@ table {
 .panel > tbody > tr > td:nth-child(1),
 .panel > tbody > tr > td:nth-child(4) {
   width: 0px;
+  display: none;
 }
 .panel .header,
 .panel .footer {
   height: 0px;
+  display: none;
 }
 /* FireFox：TD显式给高度，TD里面的元素设置height：100%才有效 */
 .panel .body td.groove {

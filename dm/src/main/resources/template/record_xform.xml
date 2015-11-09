@@ -13,6 +13,7 @@
 		<column name="remark" caption="数据录入简介" maxLength="400"/>
 		<column name="needLog"  caption="记录更新日志" mode="combo" values="0|1" texts="否|是"/>
 		<column name="needFile" caption="是否上传文件" mode="combo" values="0|1" texts="否|是"/>
+		<column name="batchImp" caption="允许批量导入" mode="combo" values="0|1" texts="否|是"/>
 	</declare>
 	<layout>
 		<TR>
@@ -51,8 +52,10 @@
 			<TD colspan="5"><textarea binding="customizeGrid" style="width:97%;height:60px"/></TD>
 		</TR>
 		<TR>
+			<TD><label binding="batchImp"/></TD>
+			<TD><input binding="batchImp"/></TD>
 			<TD><label binding="customizePage"/></TD>
-			<TD colspan="5"><input binding="customizePage" style="width:50%;"/></TD>
+			<TD colspan="3"><input binding="customizePage" style="width:250px;"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="remark"/></TD>
