@@ -3,6 +3,7 @@ package com.jinhe.tss.um.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +20,24 @@ import com.jinhe.tss.util.EasyUtils;
 @Service
 public class MessageService implements IMessageService {
 	
+	Logger log = Logger.getLogger(this.getClass());
+	
 	@Autowired private ICommonDao commonDao;
 	@Autowired private IGroupDao groupDao;
  
 	public void sendMessage(Message message){
 		String[] receiverIds = message.getReceiverIds().split(",");
-		for(String receiverId : receiverIds){
+		for(String receiverId : receiverIds) {
+			Long _receiveId;
+			try {
+				_receiveId = EasyUtils.obj2Long(receiverId);
+			} catch(Exception e) {
+//				log.error("发送消息给【" + receiverId + "】时异常，" + ToStringBuilder.reflectionToString(message));
+				continue;
+			}
+			
 			Message temp = new Message();
-			temp.setReceiverId(EasyUtils.obj2Long(receiverId));
+			temp.setReceiverId(_receiveId);
 			temp.setReceiver(receiverId);
 			temp.setTitle(message.getTitle());
 			temp.setContent(message.getContent());

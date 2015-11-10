@@ -37,7 +37,8 @@ public class CreateAttach implements AfterUpload {
 		File targetFile = new File(filepath);
 		RecordAttach attach = saveAttach(targetFile, recordId, itemId, type, oldfileName);
 
-		// 向前台返回成功信息
+		// 向前台返回成功信息。
+		// 因为上传附件都是通过一个隐藏的iframe来实现上传的（可防止刷新主页面），所以上传成功回调JS需要加上 parent.
 		return "parent.addAttach(" + attach.getId() + ", " + attach.getType() + ", '" 
 				+ attach.getName() + "', '" + attach.getDownloadUrl() + "', '" + attach.getUploadUser() + "')";
 	}

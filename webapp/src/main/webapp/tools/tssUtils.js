@@ -81,9 +81,15 @@ function openPalette() {
 }
 
 window.onresize = function() {
+	var bodyWidth = document.body.offsetWidth;
 	var bodyHeight = document.body.offsetHeight;
+
 	$("#palette #tree").css("height", (bodyHeight - 23) + "px");
 	$("#ws Tree").css("height", (bodyHeight - 103) + "px");	
+
+	// 设置右边容易的最大宽度
+	$(".panel .body td.groove").css("maxWidth", (bodyWidth - 250) + "px");
+	$("#gridContainer").css("maxWidth", (bodyWidth - 250) + "px");
 }
  
 /* 事件绑定初始化 */
@@ -267,7 +273,7 @@ function syncButton(btObjs, request) {
 
 /* 组件资源管理 */
 function fileManage(params, title) {
-    $.openIframePanel("fileManagerPanel", title, 440, 388, "../portal/filemanager.html?", true);
+    $.openIframePanel("fileManagerPanel", title, 440, 388, "../portal/filemanager.html?" + params, true);
 }
 
 /* 创建导入Div */

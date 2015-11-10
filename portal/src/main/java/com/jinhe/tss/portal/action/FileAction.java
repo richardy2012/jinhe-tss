@@ -46,7 +46,7 @@ public class FileAction extends BaseActionSupport {
         	String tlDir = ParamConfig.getAttribute(DMConstants.REPORT_TL_DIR);
 			if( (indexOfModel > 0 && indexOfModel < contextPath.length() - 6) 
 					|| contextPath.indexOf(tlDir) > 0 ) {
-        		sb.append("<treeNode id=\"-1\" name=\"..\" icon=\"../framework/images/folder.gif\" />"); 
+        		sb.append("<treeNode id=\"-1\" name=\"..\" />"); 
         	}
         } 
         else {
@@ -174,7 +174,7 @@ public class FileAction extends BaseActionSupport {
             }
         }
  
-        print("script", "parent.loadFileTree();");
+        print("script", "loadFileTree();");
     }
     
     /**
@@ -196,7 +196,7 @@ public class FileAction extends BaseActionSupport {
         if( !file.renameTo(newFile) ) {
         	throw new BusinessException("重命名失败，可能文件正在使用中！");
         }
-        print("script", "parent.loadFileTree();");
+        print("script", "loadFileTree();");
     }
     
     /**
@@ -209,7 +209,7 @@ public class FileAction extends BaseActionSupport {
     	
     	contextPath = getContextPath(contextPath);
         FileHelper.createDir(contextPath + newFileName);
-        print("script", "window.parent.loadFileTree();");
+        print("script", "loadFileTree();");
     }
  
     public static String getContextPath(String contextPath) {

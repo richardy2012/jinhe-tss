@@ -54,6 +54,8 @@ public class MessageAction extends BaseActionSupport {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public void sendMessage(String title, String content, String receivers) {
+    	if(receivers == null) return;
+    	
     	String[] ids = loginService.getContactInfos(receivers, true);
     	
     	if(ids == null || ids.length == 0) {

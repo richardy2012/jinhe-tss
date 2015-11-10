@@ -65,119 +65,124 @@
 
 /*********************** 应用配置 END **********************************/
 
-    URL_GET_USER_NAME = "getLoginInfo.in";
-    URL_LOGIN = AUTH_PATH + "login.do";
-    
-    window.onload = function() {
-        setSysTitle();
+URL_GET_USER_NAME = "getLoginInfo.in";
+URL_LOGIN = AUTH_PATH + "login.do";
 
-        var loginNameObj = $1("loginName");
-        var passwordObj  = $1("password");
-    
-        loginNameObj.onfocus = passwordObj.onfocus = function() {
-             this.style.backgroundColor = "white";
-        }
+window.onresize = function() {
+    $("#login_box").center();
+}
 
-        var defaultUserName = $.Cookie.getValue("iUserName");
-        if( defaultUserName ) {
-            loginNameObj.value = defaultUserName;
-        }
-        loginNameObj.focus();
+window.onload = function() {
+    setSysTitle(); 
+    window.onresize();
 
-        var loginButton = $1("bt_login");
+    var loginNameObj = $1("loginName");
+    var passwordObj  = $1("password");
 
-        loginButton.onclick = function() {
-            doLogin(loginNameObj, passwordObj);
-        };
- 
-        $.Event.addEvent(document, "keydown", function(ev) {
-            if(13 == ev.keyCode) { // enter
-                $.Event.cancel(ev);
-                $1("bt_login").focus();
-
-                setTimeout(function() {
-                    doLogin(loginNameObj, passwordObj);
-                }, 10);
-            }
-        });
-
-        passwordObj.onblur = function() { 
-            this.style.backgroundColor = "#f0f0f0";
-        }
-
-        loginNameObj.onblur = function() { 
-            this.style.backgroundColor = "#f0f0f0";
-
-            var value = this.value;
-            if(value == null || value == "") return;
- 
-            if(loginNameObj.identifier) {
-                delete loginNameObj.identifier;
-            }
-            $.ajax({
-                url: URL_GET_USER_NAME,
-                params:  {"loginName": value},
-                onexcption: function() {
-                    loginNameObj.focus();
-                },
-                onresult: function(){
-                    loginNameObj.identifier = this.getNodeValue("identifier");
-                    loginNameObj.randomKey  = this.getNodeValue("randomKey");
-                    
-                    passwordObj.focus();
-                }
-            });
-        }
+    loginNameObj.onfocus = passwordObj.onfocus = function() {
+         this.style.backgroundColor = "white";
     }
 
-    var doLogin = function(loginNameObj, passwordObj) {
-        var identifier = loginNameObj.identifier;
-        var randomKey  = loginNameObj.randomKey;
-        
-        var loginName  = loginNameObj.value;
-        var password   = passwordObj.value;
-        
-        if( "" == loginName ) {
-            alert("请输入账号");
-            loginNameObj.focus();
-            return;
-        } 
-        else if( "" == password ) {
-            alert("请输入密码");
-            passwordObj.focus();
-            return;
-        }
-        else if( identifier == null ) {
-            alert("无法登录，用户配置可能有误，请联系管理员。");
-            return;
-        } 
+    var defaultUserName = $.Cookie.getValue("iUserName");
+    if( defaultUserName ) {
+        loginNameObj.value = defaultUserName;
+    }
+    loginNameObj.focus();
 
+    var loginButton = $1("bt_login");
+
+    loginButton.onclick = function() {
+        doLogin(loginNameObj, passwordObj);
+    };
+
+    $.Event.addEvent(document, "keydown", function(ev) {
+        if(13 == ev.keyCode) { // enter
+            $.Event.cancel(ev);
+            $1("bt_login").focus();
+
+            setTimeout(function() {
+                doLogin(loginNameObj, passwordObj);
+            }, 10);
+        }
+    });
+
+    passwordObj.onblur = function() { 
+        this.style.backgroundColor = "#f0f0f0";
+    }
+
+    loginNameObj.onblur = function() { 
+        this.style.backgroundColor = "#f0f0f0";
+
+        var value = this.value;
+        if(value == null || value == "") return;
+
+        if(loginNameObj.identifier) {
+            delete loginNameObj.identifier;
+        }
         $.ajax({
-            url: URL_LOGIN,
-            headers : {
-                "loginName": $.encode(loginName, randomKey), 
-                "password": $.encode(password, randomKey), 
-                "identifier": identifier
+            url: URL_GET_USER_NAME,
+            params:  {"loginName": value},
+            onexcption: function() {
+                loginNameObj.focus();
             },
-            onexception: function(errorMsg) {
+            onresult: function(){
+                loginNameObj.identifier = this.getNodeValue("identifier");
+                loginNameObj.randomKey  = this.getNodeValue("randomKey");
+                
                 passwordObj.focus();
-            },
-            onsuccess: function() {
-                $.Cookie.setValue("iUserName", loginName);
-                location.href = indexPage;
             }
         });
     }
+}
 
-    /* 找回密码  */
-    function forget() {
-        $.openIframePanel("forgetPanel", "找回密码", 460, 300, "modules/um/_forget.html", true);
+var doLogin = function(loginNameObj, passwordObj) {
+    var identifier = loginNameObj.identifier;
+    var randomKey  = loginNameObj.randomKey;
+    
+    var loginName  = loginNameObj.value;
+    var password   = passwordObj.value;
+    
+    if( "" == loginName ) {
+        alert("请输入账号");
+        loginNameObj.focus();
+        return;
+    } 
+    else if( "" == password ) {
+        alert("请输入密码");
+        passwordObj.focus();
+        return;
     }
+    else if( identifier == null ) {
+        alert("无法登录，用户配置可能有误，请联系管理员。");
+        return;
+    } 
 
-    /* 注册 */
-    function register() {
-        $.openIframePanel("registerPanel", "注册新用户", 550, 320, "modules/um/_register.htm", true);
-    }
+    $.ajax({
+        url: URL_LOGIN,
+        headers : {
+            "loginName": $.encode(loginName, randomKey), 
+            "password": $.encode(password, randomKey), 
+            "identifier": identifier
+        },
+        onexception: function(errorMsg) {
+            passwordObj.focus();
+        },
+        onsuccess: function() {
+            $.Cookie.setValue("iUserName", loginName);
+            location.href = indexPage;
+        }
+    });
+}
+
+/* 找回密码  */
+function forget() {
+    $.openIframePanel("forgetPanel", "找回密码", 460, 300, "modules/um/_forget.html", true);
+}
+
+/* 注册 */
+function register() {
+    $.openIframePanel("registerPanel", "注册新用户", 550, 320, "modules/um/_register.htm", true);
+}
 
 </script>
 </head>

@@ -52,9 +52,6 @@ public class _Reporter extends BaseActionSupport {
     @ResponseBody
     public Object getReportParamDefine(@PathVariable("reportId") Long reportId) {
 		Report report = reportService.getReport(reportId);
-		if(report == null) {
-			throw new BusinessException("report【" + reportId + "】不存在，可能已经被删除。");
-		}
 		return new Object[] {report.getName(), report.getParam(), report.getDisplayUri()};
     }
     

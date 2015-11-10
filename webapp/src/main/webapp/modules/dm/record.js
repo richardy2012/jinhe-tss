@@ -220,6 +220,7 @@ function saveRecord(treeNodeID) {
 		modifyTreeNode(treeNodeID, "name", xform.getData("name"));
 		modifyTreeNode(treeNodeID, "define", xform.getData("define"));
 		modifyTreeNode(treeNodeID, "customizePage", xform.getData("customizePage"));
+		modifyTreeNode(treeNodeID, "batchImp", xform.getData("batchImp"));
 		
 		closeRecordFormDiv();
 		delete $.cache.XmlDatas[treeNodeID];
