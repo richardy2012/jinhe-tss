@@ -130,11 +130,11 @@ public class Message implements IEntity, IGridNode {
 
 	@Override
 	public GridAttributesMap getAttributes(GridAttributesMap map) {
-		String _class = readed() ? "" : "red";
+		String _class = readed() ? "" : "unread";
 		map.put("id", id);
 		map.put("_title", title);
-		map.put("title", "<span class='" + _class + "'>" + title + "</span>");
-		map.put("content", "<span class='" + _class + "'>" + content + "</span>");
+		map.put("title", "<a href='javascript:void(0)' onclick='showMsgInfo("+this.id+")' class='" + _class + "'>" + title + "</a>");
+		map.put("content", content);
 		map.put("status", readed() ? 1 : 0);
 		map.put("sender", sender);
 		map.put("senderId", senderId);
