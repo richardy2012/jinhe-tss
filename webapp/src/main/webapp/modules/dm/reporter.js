@@ -36,18 +36,29 @@ function closeReportDefine() {
     $("#ws").hide();
 }
 
-function showGridChart(displayUri, hiddenTree) {
+function showGridChart(displayUri, treeID, refresh) {
     closeReportDefine();
     $(".body>.groove>table").show();
 
     if(displayUri) {
         $("#grid").hide();
         $("#gridTitle").hide();
+        $("#gridContainer iframe").hide();
+        treeID && closePalette(); // 关闭左栏
+        
+        var iframeId = "chatFrame_" + treeID;
+        var $iframe = $("#" + iframeId);
+        if( !$iframe.length ) {
+            var iframeEl = $.createElement("iframe", "container", iframeId);
+            $("#gridContainer").appendChild(iframeEl);
 
-        if(hiddenTree) {
-            closePalette(); // 关闭左栏
+            $iframe = $(iframeEl);
+            $iframe.attr("frameborder", 0).attr("src", displayUri);
         }
-        $("#chatFrame").show().attr("src", displayUri);
+        else {
+            refresh && $iframe.attr("src", displayUri);
+        }
+        $iframe.show();
     }
     else {
         $("#grid").show();
@@ -68,6 +79,9 @@ function showReport() {
     if( displayUri.length > 0 ) {
         // 如果还配置了参数，则由report页面统一生成查询Form，查询后再打开展示页面里。
         if(paramConfig.length > 0) {
+            $("#gridContainer iframe").hide();
+            $("#chatFrame_" + treeID).show(); // 如之前已打开过报表，则先调出之前的结果
+
             createQueryForm(treeID, paramConfig, function(dataNode) {
                 sendAjax(dataNode);
             });
@@ -81,7 +95,7 @@ function showReport() {
                 sendAjax(); // 使用通用模板的，有可能此处是不带任何参数的SQL查询
             } 
             else {
-                showGridChart(displayUri, true); // 直接打开展示页面
+                showGridChart(displayUri, treeID); // 直接打开展示页面
             }
         }
     } 
@@ -102,7 +116,7 @@ function showReport() {
                 globalValiable.data = this.getResponseJSON();
                 
                 // 数据在iframe里展示
-                showGridChart(displayUri, true);
+                showGridChart(displayUri, treeID, true);
             }
         });
     }
@@ -125,6 +139,15 @@ function searchReport(treeID, download) {
                 }
                 queryString +=  node.nodeName + "=" + $.XML.getText(node);
             });
+        }
+
+        // 因为导出服务器可能是独立的，发导出请求时需要带上在查询服务器上的登录信息
+        var user = $.Cookie.getValue("iUserName");
+        if(user) {
+            if( queryString.length > 1 ) {
+                queryString += "&";
+            }
+            queryString += "iUser=" + user;
         }
         
         // 为防止一次性查询出太多数据导致OOM，限制每次最多只能导出10万行，超出则提示进行分批查询

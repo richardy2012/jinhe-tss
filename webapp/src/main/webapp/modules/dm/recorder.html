@@ -414,6 +414,10 @@ function showQueryForm() {
     paramsConfig.push({"label": "修改人", "name": "p_updator"});
 
     // 添加排序字段
+    codes.push("createtime");
+    codes.push("updatetime");
+    names.push("创建时间");
+    names.push("更新时间");
     var sortObj = {"label":"按字段排序", "name":"sortField", "options": {"codes":codes.join("|"), "names":names.join("|")}};
     paramsConfig.push(sortObj);
 

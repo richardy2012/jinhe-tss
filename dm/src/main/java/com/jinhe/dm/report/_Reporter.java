@@ -29,10 +29,12 @@ import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.Environment;
+import com.jinhe.tss.framework.sso.IOperator;
 import com.jinhe.tss.framework.web.dispaly.grid.DefaultGridNode;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
+import com.jinhe.tss.um.service.ILoginService;
 
 /**
  * http://localhost:9000/dm/display/12/1/100
@@ -47,6 +49,7 @@ import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 public class _Reporter extends BaseActionSupport {
     
     @Autowired private ReportService reportService;
+    @Autowired private ILoginService loginService;
     
 	@RequestMapping("/{reportId}/define")
     @ResponseBody
@@ -247,6 +250,7 @@ public class _Reporter extends BaseActionSupport {
 	private void outputAccessLog(Long reportId, String methodName, Map<String, String> requestMap, long start) {
 		Report report = reportService.getReport(reportId);
 		String methodCnName = report.getName();
+		String iUser = requestMap.remove("iUser");
 		
 		// 过滤掉定时刷新类型的报表
 		String remark = report.getRemark();
@@ -274,7 +278,15 @@ public class _Reporter extends BaseActionSupport {
             log.setAccessTime(new Date(start));
             log.setRunningTime(runningTime);
             log.setParams(params);
-            log.setUserId(Environment.getUserId());
+            
+            Long userId = Environment.getUserId();
+            if(userId == null && iUser != null) {
+            	IOperator operator = loginService.getOperatorDTOByLoginName(iUser);
+            	if(operator != null) {
+            		userId = operator.getId();
+            	}
+            }
+			log.setUserId(userId);
 
             AccessLogRecorder.getInstanse().output(log);
         } 

@@ -224,6 +224,10 @@ function saveRecord(treeNodeID) {
 		
 		closeRecordFormDiv();
 		delete $.cache.XmlDatas[treeNodeID];
+
+		// 如果已经打开录入界面，则先关闭；以便下次打开时能实时更新
+	    var $iframe = $("#chatFrame_" + treeNodeID);
+	    $iframe.length && $iframe.remove();
 	}
 	request.send();
 }
@@ -259,9 +263,20 @@ function showRecord() {
 	$("#recordFormDiv").hide();
     closeDefine();
 
-	var customizePage  = (treeNode.getAttribute("customizePage") || "").trim(); 
+	var customizePage = (treeNode.getAttribute("customizePage") || "").trim(); 
 	customizePage = customizePage || 'recorder.html';
-	$("#chatFrame").show().attr("src", customizePage);
+
+	$("iframe.container").hide();
+	var iframeId = "chatFrame_" + treeNode.id;
+    var $iframe = $("#" + iframeId);
+    if( !$iframe.length ) {
+        var iframeEl = $.createElement("iframe", "container", iframeId);
+        $(".panel td.groove").appendChild(iframeEl);
+
+        $iframe = $(iframeEl);
+        $iframe.attr("frameborder", 0).attr("src", customizePage);
+    }
+    $iframe.show();
 }  
 
 function getImportTL() {
@@ -463,4 +478,6 @@ function saveDefine() {
 
 	var formatResult = JSON.stringify(result).replace(/\"/g, "'").replace(/\{'label/g, "\n  {'label");
 	$.F("recordForm").updateDataExternal("define", formatResult.replace(/\}]/g, "}\n]"));
+
+	closeDefine();
 }

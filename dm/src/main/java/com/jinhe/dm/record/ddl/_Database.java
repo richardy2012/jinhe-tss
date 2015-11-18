@@ -366,7 +366,10 @@ public abstract class _Database {
 		String sortType  = params.get("sortType");
 		
 		String orderby = "order by ";
-		if( !EasyUtils.isNullOrEmpty(sortField) && this.fieldCodes.indexOf(sortField) >= 0) {
+		if( !EasyUtils.isNullOrEmpty(sortField) && 
+				(this.fieldCodes.contains(sortField) 
+						|| "createtime,updatetime".indexOf(sortField) >= 0) ) {
+			
 			if("onlynull".equals(sortType)) {
 				condition += " and " + sortField + " is null ";
 				orderby += " id desc ";
@@ -405,10 +408,10 @@ public abstract class _Database {
         if(this.needFile) {
         	sb.append("<column name=\"fileNum\" mode=\"string\" caption=\"附件数\" />");
         }
-        sb.append("<column name=\"createtime\" mode=\"string\" caption=\"创建时间\" />");
-        sb.append("<column name=\"creator\" mode=\"string\" caption=\"创建人\" />");
-        sb.append("<column name=\"updatetime\" mode=\"string\" caption=\"更新时间\" />");
-        sb.append("<column name=\"updator\" mode=\"string\" caption=\"更新人\" />");
+        sb.append("<column name=\"createtime\" mode=\"string\" caption=\"创建时间\" sortable=\"true\"/>");
+        sb.append("<column name=\"creator\" mode=\"string\" caption=\"创建人\" sortable=\"true\"/>");
+        sb.append("<column name=\"updatetime\" mode=\"string\" caption=\"更新时间\" sortable=\"true\"/>");
+        sb.append("<column name=\"updator\" mode=\"string\" caption=\"更新人\" sortable=\"true\"/>");
         sb.append("<column name=\"version\" mode=\"string\" caption=\"更新次数\" />");
         sb.append("<column name=\"id\" display=\"none\"/>");
         

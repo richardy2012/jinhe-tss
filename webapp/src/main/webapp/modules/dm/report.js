@@ -471,7 +471,7 @@ function configParams() {
     	});
 	}
 
-	$("#reportParamsDiv").show(true).center();
+	$("#reportParamsDiv").show(true).center().css("top", "30px");
 }
 
 function initParamTreeMenus() {
@@ -623,6 +623,8 @@ function saveConfigParams() {
 
 	var formatResult = JSON.stringify(result).replace(/\"/g, "'").replace(/\{'label/g, "\n  {'label");
 	$.F("reportForm").updateDataExternal("param", formatResult.replace(/\}]/g, "}\n]"));
+
+	closeConfigParams();
 }
 
 function selectTL() {
