@@ -147,7 +147,6 @@ public class ReportServiceImpl implements ReportService {
 		String reportScript = report.getScript();
 		
 		if( EasyUtils.isNullOrEmpty(reportScript) ) {
-//			throw new BusinessException("报表【" + report.getName() + "】的脚本没有任何内容，无法查询。");
 			return new SQLExcutor();
 		}
           

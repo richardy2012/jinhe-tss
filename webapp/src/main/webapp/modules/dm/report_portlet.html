@@ -1,45 +1,51 @@
-<!doctype html>
-<html>
+<!DOCTYPE HTML>
+<html xmlns:Grid>
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/> 
 <meta charset="UTF-8">
 <title> report portlet </title>
 
 <link rel="stylesheet" href="../../tools/tssJS/css/boubei.css"/>
+<link href="dm.css" rel="stylesheet">
 
 <script src="../../tools/tssJS/tssJS.all.js"></script>
 <script src="../../tools/tssJS/tssJS.json2Form.js"></script>
 <script src="../../tools/tssJS/tssJS.jsonp.js"></script>
+<script src="../../tools/tssUtils.js"></script>
+<script src="reporter_x.js"></script>
 
 <style type="text/css">
 
-    html, body { height: 100%; }
-    body { overflow: hidden; }
-    iframe { width: 100%; height: 100%; }
-
-    .searchForm {
-        position: absolute; top: 0; left: 30px; 
-        z-index: 999; 
-        width: 350px; height: 150px; 
-        padding: 5px; 
-        overflow: auto;
-        background-color: #fff; 
-        border: 1px solid #95B8E7;
-        border-top: none; 
-        border-radius: 0 0 5px 5px;                
-    } 
-    .searchForm .buttonBox { margin: 5px 0 5px 80px; }
-
-    .leftbar-hidden { left: -0px; }
+html, body { height: 100%; }
+body { width:100%; overflow: hidden; }
+#t1 { height: 100%; width: 100%; }
+#gridContainer { vertical-align: top; }
+.leftbar { left: -20px; }
 
 </style>
 
 </head>
 <body>
 
-    <iframe id="chartFrame" frameborder="0"></iframe>
+<iframe id="chartFrame" frameborder="0" class="container"></iframe>
+<iframe id="downloadFrame" style="display:none"></iframe>
+
+<table id="t1">
+  <tr>
+    <td id="gridTitle">
+      <span class="icon"></span><span class="title">查询结果</span><span class="buttonBox" id="gridToolBar"></span>
+    </td>
+  </tr>
+  <tr>
+    <td id="gridContainer">
+       <Grid id="grid"></Grid>
+    </td>
+  </tr>
+</table>    
 
 <script type="text/javascript">
+
+var IS_TEST = (location.protocol === 'file:');
 
 var refresh  = $.Query.get("refresh");
 var leftBar  = $.Query.get("leftBar"); 
@@ -49,11 +55,7 @@ var defaultParams;
 /* http://btrbi.800best.com/tss/modules/dm/report_portlet.html?leftBar=true&refresh=3&id=547&param1=today-0
    从邮件里打开 或 从文章里打开
 */
-if( leftBar ) {
-    $.leftbar( showQueryForm );
-}
-
-var index = 10;
+var index = 10;  // 最多10个参数
 while(index--) {
     var key = "param" + index;
     var value = $.Query.get(key);
@@ -67,15 +69,18 @@ var globalValiable = {}; // 用来存放传递给iframe页面的信息
 initPortlet();
 
 function initPortlet() {
-     $.ajax({
-        url: '/tss/data/' +reportId+ '/define',
+    var url = IS_TEST ? 'data/report_potlet.json' : '/tss/data/' +reportId+ '/define'
+
+    $.ajax({
+        url: url,
         method: 'get',
         type : "json",
         ondata: function() {
             var defines = this.getResponseJSON();
             globalValiable.title = defines[0];
-            globalValiable.url = defines[2];
-            
+            globalValiable._url  = defines[2];
+            globalValiable.hasScript = defines[3];
+
             var params = {};
             if(defines[1]) {
                 globalValiable.define = defines[1];
@@ -88,11 +93,11 @@ function initPortlet() {
                     }
                 });
      
-                window.parent.$ && window.parent.$("#panel" + reportId).find(".setQuery").click(function(){
-                    showQueryForm();
-                });
+                leftBar && $.leftbar( showQueryForm );
+                window.parent.$ && window.parent.$("#panel" + reportId).find(".setQuery").click(showQueryForm);
             }
-            else {
+            else { // 隐藏打开查询条件框的开关
+                $(".leftbar").hide();
                 window.parent.$ && window.parent.$("#panel" + reportId).find(".setQuery").hide();
             }
             
@@ -112,30 +117,24 @@ function initPortlet() {
 }
 
 function showQueryForm() {
-    var $searchForm = $("#searchForm" + reportId);
-    if( !$searchForm.length ) {
-        var formId = "searchForm" + reportId;
-        var searchFormEl = $.createElement("div", "searchForm", formId);
-        document.body.appendChild(searchFormEl);
+    if( !globalValiable.define ) return;
+
+    var formId = "searchFormDiv";
+    if( $.cache.XmlDatas["searchFormXML"] ) {
+        $("#" + formId).show(true).center();
+        return;
     }
 
-    createQueryForm();
-}
+    var $searchForm = $("#" + formId);
+    if( !$searchForm.length ) {
+        var searchFormEl = $.createElement("div", "searchForm", formId);
+        document.body.appendChild(searchFormEl);
 
-function createQueryForm() {    
-    var formId = "searchForm" + reportId;
-    var searchFormEl = $1(formId);
-    $(searchFormEl).show();
+        $searchForm = $(searchFormEl);
+    }
 
-    var buttonBox = [];
-    buttonBox[buttonBox.length] = "        <TR>";
-    buttonBox[buttonBox.length] = "          <TD colspan='2' height='46'><div class='buttonBox'>";
-    buttonBox[buttonBox.length] = "             <a class='tssbutton small blue btSearch'>查 询</a> - ";
-    buttonBox[buttonBox.length] = "             <a class='tssbutton small blue btClose' >关 闭</a>";
-    buttonBox[buttonBox.length] = "          </div></TD>";
-    buttonBox[buttonBox.length] = "        </TR>";
-
-    var searchForm = $.json2Form(formId, globalValiable.define, buttonBox.join(""));
+    var searchForm = genQueryForm(globalValiable.title, globalValiable.define);
+    $searchForm.center();
 
     if(globalValiable.params) { // 设置上一次的查询条件
         setTimeout(function() {
@@ -146,43 +145,52 @@ function createQueryForm() {
         }, 200); // 待comboTree等加载好
     }
 
-    $.cache.XmlDatas[formId] = searchForm.template.sourceXML;
-    
-    $(".btSearch", searchFormEl).click( function () {
+    $searchForm.find(".btSearch").click( function () {
         if( searchForm.checkForm() ) {
-            var searchFormXML = $.cache.XmlDatas[formId];
-            var dataNode = searchFormXML.querySelector("data");
-
-            var params = {};
-            var nodes = dataNode.querySelectorAll("row *");
-            for(var i = 0; i < nodes.length; i++) {
-                var node = nodes[i];
-                params[node.nodeName] = $.XML.getText(node);
-            }
-
+            var params = getParams();
             globalValiable.params = params; // 记录当前的条件
             searchReport(params);
-
-            $(searchFormEl).hide();
         }
     });
-
-    $(".btClose", searchFormEl).click( function () {
-        $(searchFormEl).hide(); 
+    $searchForm.find(".btDownload").click( function () {
+        if( searchForm.checkForm() ) {
+            var params = getParams();
+            exportReport(reportId, params);
+        }
     });
 }
 
 function searchReport(params) {
+    // 没有独立的displayUri，则用Grid展示查询结果
+    if( !globalValiable._url ) {
+        $("#t1").show();
+        $("#chartFrame").hide();
+        $("#gridTitle .title").html("报表【" + globalValiable.title + "】查询结果");
+        searchGridReport(reportId, params);
+        return;
+    }
+
+    $("#t1").hide();
+    $("#chartFrame").show();
+    globalValiable.queryParams = params;
+    /* 
+     * 以下情形直接打开报表页面
+     * 1、如果地址里指明了nodb（数据库已经不可访问），则直接打开展示页面，使之读取静态的本地json数据作为展示用
+     * 2、没有script的报表, 直接嵌入报表展示页（后台直接返回空的SQLExcutor）
+     */
+    if( globalValiable._url.indexOf("?nodb=") > 0 || !globalValiable.hasScript) {
+        $("#chartFrame").attr("src", globalValiable._url);
+        return;
+    }
+
     $.ajax({
         url: "/tss/data/json/" + reportId,
         type : "json",
         waiting: true,
         params: params,
-        ondata: function() {
-            globalValiable.queryParams = params;
+        ondata: function() {           
             globalValiable.data = this.getResponseJSON();
-
-            $("#chartFrame").show().attr("src", globalValiable.url);
+            $("#chartFrame").attr("src", globalValiable._url);
         }
     })
 }

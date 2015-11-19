@@ -7,10 +7,10 @@
 
 <link rel="stylesheet" href="../../tools/easyui/themes/default/easyui.css">
 <link rel="stylesheet" href="../../tools/easyui/themes/icon.css">
-<link rel="stylesheet" href="../dm/template/common.css">
+<link rel="stylesheet" href="../bi_template/common.css">
 
 <script src="../../tools/tssJS/tssJS.all.js"></script>
-<script src="../dm/template/common.js"></script>
+<script src="../bi_template/common.js"></script>
  
 <script src="../../tools/easyui/jquery.min.js"></script>
 <script src="../../tools/easyui/jquery.easyui.min.js"></script>
@@ -19,11 +19,8 @@
 
 <style>
 
-.dmsbt {
-    top: 2px;
-    left: 252px;
-    height: 27px;
-    z-index: 99;
+.bibt {
+    left: inherit; right: 5px;
 }
 
 </style>
@@ -47,8 +44,6 @@
     }
 
     $(function() {
-        initResearhBt();
-
         var globalValiable = window.parent.globalValiable;
         if(globalValiable && globalValiable.queryParams) {
             params = globalValiable.queryParams;
@@ -266,7 +261,7 @@
 
 <body>
 
-    <input type="button" value="导出数据" class="dmsbt" style="margin-left:85px;" onclick="exportCSV()">
+    <input type="button" value="导出数据" class="tssbutton blue bibt" style="margin-right:88px;" onclick="exportCSV()">
 
     <div class="easyui-tabs" data-options="fit:true">
         <div id="d1" title="统计BI访问情况" >

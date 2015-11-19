@@ -263,7 +263,9 @@ function saveReport(treeNodeID) {
 		afterSaveTreeNode(treeNodeID, xform);
 		
 		modifyTreeNode(treeNodeID, "param", xform.getData("param"));
-		modifyTreeNode(treeNodeID, "displayUri", xform.getData("displayUri"));
+		modifyTreeNode(treeNodeID, "displayUri", xform.getData("displayUri")); 
+		modifyTreeNode(treeNodeID, "hasScript", xform.getData("script") ? "true" : "false");
+
 		delete $.cache.Variables["treeNodeID_SF"];
 	}
 	request.send();

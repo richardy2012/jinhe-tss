@@ -35,6 +35,7 @@ import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
 import com.jinhe.tss.um.service.ILoginService;
+import com.jinhe.tss.util.EasyUtils;
 
 /**
  * http://localhost:9000/dm/display/12/1/100
@@ -55,7 +56,10 @@ public class _Reporter extends BaseActionSupport {
     @ResponseBody
     public Object getReportParamDefine(@PathVariable("reportId") Long reportId) {
 		Report report = reportService.getReport(reportId);
-		return new Object[] {report.getName(), report.getParam(), report.getDisplayUri()};
+		
+		boolean hasScript = !EasyUtils.isNullOrEmpty(report.getScript());
+		String displayUri = report.getDisplayUri();
+		return new Object[] {report.getName(), report.getParam(), displayUri, hasScript};
     }
     
     private Map<String, String> getRequestMap(HttpServletRequest request, boolean isGet) {

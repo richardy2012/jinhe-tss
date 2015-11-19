@@ -194,7 +194,7 @@ public class ReportAction extends BaseActionSupport {
 		List<File> files = FileHelper.listFilesByTypeDeeply("html", reportTLDir);
 		int index = 1;
  		for (File file : files) {
-			String treeName = "../" + rtd.substring(8);
+			String treeName = "../../" + rtd;
 			File parentFile = file.getParentFile();
 			if( !parentFile.equals(reportTLDir) ) {
 				treeName +=  "/" + parentFile.getName();
@@ -205,11 +205,11 @@ public class ReportAction extends BaseActionSupport {
 		}
  		
  		// dm/template 下
- 		File delfaultDir = new File(URLUtil.getWebFileUrl("modules/" + DMConstants.REPORT_TL_DIR_DEFAULT).getPath());
+ 		File delfaultDir = new File(URLUtil.getWebFileUrl(DMConstants.REPORT_TL_DIR_DEFAULT).getPath());
  		if( !delfaultDir.equals(reportTLDir) ) {
  			files = FileHelper.listFilesByTypeDeeply("html", delfaultDir);
  	 		for (File file : files) {
- 				String treeName = "../dm/template/" + file.getName();
+ 				String treeName = "../../more/bi_template/" + file.getName();
  				sb.append("<treeNode id=\"").append(index++).append("\" name=\"").append(treeName).append("\"/>");
  			}
  		}

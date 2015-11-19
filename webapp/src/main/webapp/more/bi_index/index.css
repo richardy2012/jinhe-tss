@@ -103,12 +103,12 @@ section .main {
   display: inline-block;
 }
 section .left {
-  width: 17%;
+  width: 14.5%;
   overflow-y: auto;
   background-color: #444359;
 }
 section .main {
-  width: 83%;
+  width: 85.5%;
   overflow-y: hidden;
   background-color: #fff;
 }
@@ -256,7 +256,6 @@ footer > div > i:after {
 .accordion .link {
   position: relative;
   padding: 12px;
-  text-indent: 13px;
   color: #ccc;
   font-size: 1.2em;
   font-weight: 700;
@@ -297,7 +296,7 @@ footer > div > i:after {
   display: block;
   padding: 10px;
   color: #fff;
-  text-indent: 30px;
+  text-indent: 12px;
   text-decoration: none;
   overflow: hidden;
   text-overflow: ellipsis;

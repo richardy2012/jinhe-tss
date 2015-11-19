@@ -8,28 +8,30 @@
 <link rel="stylesheet" href="../../tools/tssJS/css/boubei.css">
 <link rel="stylesheet" href="../../tools/easyui/themes/default/easyui.css">
 <link rel="stylesheet" href="../../tools/easyui/themes/icon.css">
-<link rel="stylesheet" href="../dm/template/common.css">
+<link rel="stylesheet" href="../bi_template/common.css">
 
 <script src="../../tools/tssJS/tssJS.all.js"></script>
-<script src="../dm/template/common.js"></script>
+<script src="../bi_template/common.js"></script>
  
 <script src="../../tools/easyui/jquery.min.js"></script>
 <script src="../../tools/easyui/jquery.easyui.min.js"></script>
 
 <style>
 
-body { background-color: #fff; height: 95%;}
+body { background-color: #fff; }
 
 .container {
     background-color: #fff;
-    padding: 5px;
-    margin-top: 30px;
 }
 
 .container h2 { 
-    height:25px; width: 30%; line-height:25px; 
+    height:25px; width: 100%; line-height:25px; 
     font-size:14px; text-indent:13px; 
     background-color:#D2E8F7; color: #003300; 
+}
+
+.bibt {
+    left: 300px;
 }
 
 </style>
@@ -265,7 +267,7 @@ body { background-color: #fff; height: 95%;}
             <table id="details"></table>
         </div>
 
-        <input type="button" value="导出结果" class="dmsbt" style="left:108px" onclick="exportCSV()">
+        <input type="button" value="导出结果" class="tssbutton blue bibt" style="left:400px" onclick="exportCSV()">
 
     </div>
 

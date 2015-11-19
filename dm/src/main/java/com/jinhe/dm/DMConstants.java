@@ -27,7 +27,7 @@ public final class DMConstants {
     /**
      * 报表模板资源文件目录
      */
-	public static final String REPORT_TL_DIR_DEFAULT = "dm/template";
+	public static final String REPORT_TL_DIR_DEFAULT = "more/bi_template";
 	public static final String REPORT_TL_DIR = "report.template.dir";
 	public static final String REPORT_TL_TYPE = "reportTL";
 	
@@ -36,7 +36,7 @@ public final class DMConstants {
 		if(EasyUtils.isNullOrEmpty(tlDir)) {
 			tlDir = REPORT_TL_DIR_DEFAULT;
 		}
-		return "modules/" + tlDir;
+		return tlDir;
 	}
     
 	public static boolean isAdmin() {

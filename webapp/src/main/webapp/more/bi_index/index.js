@@ -87,10 +87,12 @@
 			hideOther();
 		},
 
-		openReport: function(a) {
+		openReport: function(a, isFirst) {
 			var $a  = $(a);
 			var rid = $a.attr("rid");
 			if( !rid ) return;
+
+			!isFirst && closeSwitch();
 
 			var id = "rp_" + rid, iframeId = "iframe_" + rid;
 			var $ul = $("footer ul");
@@ -123,8 +125,11 @@
 				var iframeEl = $.createElement("iframe", "", iframeId);
 				$("section .main").appendChild(iframeEl);
 
-				// TODO 换成report_portlet.html?id=rid
-				$(iframeEl).attr("frameborder", 0).attr("src", "test.html");
+				var url = "../../modules/dm/report_portlet.html?leftBar=true&id=" + rid;
+				if(rid.indexOf("x") >= 0) {
+					url = "../../404.html";
+				}
+				$(iframeEl).attr("frameborder", 0).attr("src", url);
 
 				// 添加事件
 				$li.find("span").click(function() {
@@ -158,20 +163,28 @@
 	// TODO 先过滤报表的权限
 	var accordion = $('#ad1').accordion(false);
 
-	$("footer .switch").toggle(
-		function() {
-			$("header").hide();
-			$("section>.left").hide();
-			$("section .main").css("width", "100%");
-			$("section").css("padding-bottom", "30px");
-		},
-		function() {
-			$("header").show();
-			$("section>.left").show();
-			$("section .main").css("width", "83%");
-			$("section").css("padding-bottom", "66px");
-		}
-	);
+	var switchOpen = true;
+	$("footer .switch").click( function() {
+		if(switchOpen) {
+			closeSwitch();
+		} else {
+			openSwitch();
+		} 
+	});
+	function openSwitch() {
+		switchOpen = true;
+		$("header").show();
+		$("section>.left").show();
+		$("section .main").css("width", "85.5%");
+		$("section").css("padding-bottom", "66px");
+	}
+	function closeSwitch() {
+		switchOpen = false;
+		$("header").hide();
+		$("section>.left").hide();
+		$("section .main").css("width", "100%");
+		$("section").css("padding-bottom", "30px");
+	}
 
 	$("header li").each(function(i, li) {
 		$li = $(li);
@@ -189,7 +202,7 @@
 
 		// 初次加载时，默认打开第一个首页
 		if(i == 0) {
-			$.openReport(a);
+			$.openReport(a, true);
 		}
 	});
 
@@ -224,6 +237,20 @@
 		$(".other ul li[id]").remove();
 		$("section .main iframe").remove();
 		hideOther();
+	});
+
+})(tssJS);
+
+// user & permission
+;(function($) {
+
+	$.ajax({
+		url : "../../auth/user/operatorInfo",
+		method : "POST",
+		onresult : function() {
+			var userName = this.getNodeValue("name");
+			$("#iUser span").html( userName || '欢迎您' );
+		}
 	});
 
 })(tssJS);

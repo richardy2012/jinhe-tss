@@ -8,30 +8,31 @@
 <link rel="stylesheet" href="../../tools/tssJS/css/boubei.css">
 <link rel="stylesheet" href="../../tools/easyui/themes/default/easyui.css">
 <link rel="stylesheet" href="../../tools/easyui/themes/icon.css">
-<link rel="stylesheet" href="../dm/template/common.css">
+<link rel="stylesheet" href="../bi_template/common.css">
 
 <script src="../../tools/tssJS/tssJS.all.js"></script>
-<script src="../dm/template/common.js"></script>
+<script src="../bi_template/common.js"></script>
 <script src="../../tools/easyui/jquery.min.js"></script>
 <script src="../../tools/easyui/jquery.easyui.min.js"></script>
 
 <style>
 
 html, body { height: 100%; }
+.bibt { left: -200px; }
 
 .searchDiv { font-size: 13px; }
 .searchDiv div { padding: 8px 0px 0px 3px; }
 .searchDiv div label { line-height:20px; margin:0 6px; }
 
-fieldset { width:95%; border:1px dashed #ccc; margin:10px auto; }
-legend { background-color:#F9EE70; height:20px; font-weight:bolder; }
+fieldset { width:95%; border:1px dashed #ccc; margin:10px auto; border-radius: 10px; }
+legend { background-color:#F9EE70; height:20px; line-height: 20px; font-weight:bolder; }
 
 #searchDiv input { color: #535458; height: 18px; }
 #searchDiv select { font-size: 12px; height: 18px; border: 1px solid #ABAAAF; background-color: #ECEFF8; }
 #searchDiv td { font-size: 12px; color: white; }
 
-.gldBtn { color: #403756; font-size:15px; font-weight:bolder; margin:10px; padding: 3px;}
-.gldBtn:hover { cursor: pointer; }
+.tssbutton {  margin: 10px; }
+
 
 #displayDiv table { margin:8px;  border-collapse:collapse;  border: 1px solid #96969E;  border-spacing:0; }
 #displayDiv td {
@@ -325,14 +326,14 @@ legend { background-color:#F9EE70; height:20px; font-weight:bolder; }
 					<fieldset>
            				<legend>样本读取</legend>
 						<div> <label>数据源:  </label> <input id="datasource" class="easyui-combobox" style="width: 205px;" /></div>
-						<div> <label>数据样本:</label> <input id="datatable" class="easyui-combobox" style="width: 190px;" /></div>
+						<div> <label>数据样本:</label> <input id="datatable" class="easyui-combobox" style="width: 193px;" /></div>
 						<div> <label>仓库:    </label> <select id="warehouse" class="easyui-combotree" multiple style="width: 220px;"> </select></div>
 						<div> <label>客户:    </label> <input id="customer" class="easyui-combobox" style="width: 220px;" /></div>
-						<div> <label>作业模式:</label> <input id="mode" class="easyui-combobox" style="width: 190px;" /></div>
+						<div> <label>作业模式:</label> <input id="mode" class="easyui-combobox" style="width: 193px;" /></div>
 						<div> <label>起始时间:</label> <input id="searchTimeFrom" style="height:18px; width: 187px;"/></div>
 						<div> <label>结束时间:</label> <input id="searchTimeTo" style="height:18px; width: 187px;"/></div>
 						<div style="padding:12px 0 5px 80px;"> 
-							<input type="button" onclick="preview()" value="预览数据" class="gldBtn"/>
+							<input type="button" onclick="preview()" value="预览数据" class="tssbutton blue"/>
 						</div>
 					</fieldset>
 					<fieldset>
@@ -343,8 +344,8 @@ legend { background-color:#F9EE70; height:20px; font-weight:bolder; }
 						<div> <label>每组个数上限:</label> <br/><br/><input id="heapSize" value="50" class="easyui-slider" style="width:270px" data-options="showTip:true, max:200"/></div>
 						<br/>
 						<div style="padding-left:40px;"> 
-							<input type="button" onclick="analyse()" value="开始分析" class="gldBtn"/>
-							<input type="button" onclick="exportCSV()" value="导出结果" class="gldBtn"/>
+							<input type="button" onclick="analyse()" value="开始分析" class="tssbutton blue"/>
+							<input type="button" onclick="exportCSV()" value="导出结果" class="tssbutton blue"/>
 						</div>
 					</fieldset>
 

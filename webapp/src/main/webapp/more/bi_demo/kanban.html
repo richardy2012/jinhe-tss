@@ -8,23 +8,16 @@
 <link rel="Bookmark" href="mages/tab.ico">
 
 <link rel="stylesheet" href="../../tools/tssJS/css/boubei.css">
+<link rel="stylesheet" href="../bi_template/common.css">
 
 <script src="../../tools/tssJS/tssJS.all.js"></script>
-<script src="../dm/template/common.js"></script>
-<script src="../dm/template/ichart.js"></script>
+<script src="../bi_template/common.js"></script>
+<script src="../bi_template/ichart.js"></script>
 <script src="../../tools/ichartjs/ichart.1.1.min.js"></script>
-
 
 <style type="text/css">
 
-html { height:100%; }
-body { width:100%;  height:100%;  background-color:#D2E8F7; font-family: "微软雅黑", Verdana, Arial, Helvetica, AppleGothic, sans-serif; }
-body,h1,h2,h3,h4,h5,h6,hr,p,dl,dt,dd,ul,ol,li,pre,form,fieldset,legend,button,input,textarea,th,td{margin:0; padding:0;}
-ul,ol{list-style:none;}
-a{text-decoration:none;}
-a:hover{text-decoration:none;cursor: pointer;}
-table{border-collapse:collapse;border-spacing:0;}
-body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
+body { background-color:#D2E8F7;  }
 
 /* 主体样式 */
 #content {  position: relative; width: 100%; }
@@ -50,7 +43,7 @@ body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
      
 #conditionBox {
     width: 250px;
-    height: 100px;
+    height: 120px;
     display:none;
     background-color:#BEC6EE;
     border:1px solid #416371;
@@ -59,15 +52,6 @@ body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
     line-height: 30px;
 }
 #conditionButton {
-    width: 100px;
-    height: 25px;
-    border: 1px solid #88D0E7;
-    background: #0C6F73;
-    box-shadow: #3a3c42 0 1px 0 inset;
-    border-radius: 3px;
-    font-size: 14px;
-    color: #FFFFFF;
-    cursor: pointer;
     margin-left: 50px;
     margin-top: 15px;
 }
@@ -412,7 +396,7 @@ body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
                 }
                 
                 // 数据在iframe里展示
-                $1("chatFrame").setAttribute("src", "../dm/template/ichart.html?type=Line2D");
+                $1("chatFrame").setAttribute("src", "../bi_template/ichart.html?type=Line2D");
             }
         });
     }
@@ -452,7 +436,7 @@ body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
                 }
                 
                 // 数据在iframe里展示
-                $1("chatFrame").setAttribute("src", "../dm/template/ichart.html?type=Column3D");
+                $1("chatFrame").setAttribute("src", "../bi_template/ichart.html?type=Column3D");
             }
         });
     }
@@ -482,7 +466,7 @@ body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
                 }
                 
                 // 数据在iframe里展示
-                $1("chatFrame").setAttribute("src", "../dm/template/ichart.html?type=Pie3D");
+                $1("chatFrame").setAttribute("src", "../bi_template/ichart.html?type=Pie3D");
             }
         });
     }
@@ -554,7 +538,7 @@ body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53;}
     <div id="conditionBox">
         <label>时间从:</label> <input id="searchTimeFrom" /> <br/>
         <label>时间到:</label> <input id="searchTimeTo" /> <br/>
-        <input type="button" value="确 定" id="conditionButton"/>
+        <input type="button" value="确 定" class="tssbutton blue" id="conditionButton"/>
     </div>
 
     <div id="chartBox1">

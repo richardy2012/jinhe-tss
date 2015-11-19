@@ -7,10 +7,11 @@
 
 	<link href="common.css" rel="stylesheet">
 
-	<script src="../../../tools/tssJS/tssJS.all.js"></script>
+	<script src="../../tools/tssJS/tssJS.all.js"></script>
 	<script src="common.js"></script>
+	
+	<script src="../../tools/ichartjs/ichart.1.1.min.js"></script>
 	<script src="ichart.js"></script>
-	<script src="../../../tools/ichartjs/ichart.1.1.min.js"></script>
 
 	<script type="text/javascript">
 
@@ -18,7 +19,8 @@
 	
 	var autoSize, title, chartType  = $.Query.get("type") || "column2D";
  
-	function showGlobal() {
+ 	// 显示外部传入的数据
+	function showOuterData() {
 		var globalValiable = window.parent.globalValiable;
 		if(globalValiable && globalValiable.data) {
 			title = globalValiable.title;
@@ -28,16 +30,14 @@
 		return false;
 	}
 
-	window.onresize = showGlobal;
+	window.onresize = showOuterData;
 	window.onload = function() {
-		initResearhBt();
-
-		if(showGlobal()) {
+		if(showOuterData()) {
 			return;
 		}
 
 		title = "报表XXX";
-		$.ajax({
+		tssJS.ajax({
 			url : "data/1.json",
 			method : "GET",
 			type : "json",
@@ -145,7 +145,6 @@
 <body>
 
 	<div id='canvasDiv'></div>
-	<input type='button' id='researh' value='查询条件' class='dmsbt'/>
 
 </body>
 </html>

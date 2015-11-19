@@ -7,32 +7,35 @@
 
 <link rel="stylesheet" href="../../tools/easyui/themes/default/easyui.css">
 <link rel="stylesheet" href="../../tools/easyui/themes/icon.css">
-<link rel="stylesheet" href="../dm/template/common.css">
+<link rel="stylesheet" href="../bi_template/common.css">
 
 <script src="../../tools/tssJS/tssJS.all.js"></script>
-<script src="../dm/template/common.js"></script>
+<script src="../bi_template/common.js"></script>
 
 <script src="../../tools/easyui/jquery.min.js"></script>
 <script src="../../tools/easyui/jquery.easyui.min.js"></script>
 <script src="../../tools/echarts/echarts-all-2.1.10.js"></script>
 
+<style type="text/css">
+	.bibt {
+	    left: inherit; right: 50px; top: 2px;
+	}
+</style>
 
 <script type="text/javascript">
  
 	var autoSize, title, data;
 
-	// window.onresize = show;
+	window.onresize = show;
 	
 	window.onload = function() {
-		/*
 		var globalValiable = window.parent.globalValiable;
 		if(globalValiable && globalValiable.data) {
 			title = globalValiable.title;
 			data = globalValiable.data
 			show();
 			return true;
-		}
-		*/
+		}		
 	
 		tssJS.ajax({
 			url : 'data/ios_trend.json?',
@@ -149,7 +152,7 @@
 
 	<div class="easyui-accordion" data-options="fit:true" id="topDiv">
 		<div title="IOS汇总明细">
-			<table id="detailTable"></table>
+			<table id="detailTable" border="false"></table>
 		</div>
 
 		<div title="IOS汇总图表">

@@ -3,14 +3,14 @@
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>    
 <meta charset="UTF-8">
-<title>订单分布地图</title>
+<title>分布地图</title>
 
 <link rel="stylesheet" href="../../tools/easyui/themes/default/easyui.css">
 <link rel="stylesheet" href="../../tools/easyui/themes/icon.css">
-<link rel="stylesheet" href="../dm/template/common.css">
+<link rel="stylesheet" href="common.css">
 
 <script src="../../tools/tssJS/tssJS.all.js"></script>
-<script src="../dm/template/common.js"></script>
+<script src="common.js"></script>
  
 <script src="../../tools/easyui/jquery.min.js"></script>
 <script src="../../tools/easyui/jquery.easyui.min.js"></script>
@@ -24,14 +24,12 @@
     padding: 5px;
     height: 99%;
 }
-
 .container #detailsDiv {
     position: absolute;
     top: 50px;
     left: 5px;
     z-index: 100;
 }
-
 #canvasDiv {
     min-height: 600px;
 }
@@ -40,13 +38,12 @@
 
 <script type="text/javascript">
 
-    var URL_DATA = 'data/fc/fcmock_distribute.json?';
+    var URL_DATA = 'data/3.json?';
     var title = '全国订单分布图';
     var subtext = 'data from 百世云仓';
     var data;
 
     $(function() {
-        initResearhBt();
         initEvents();
 
         var globalValiable = window.parent.globalValiable;
@@ -355,8 +352,8 @@ option = {
             <table id="details" style="width:404px;height:600px"></table>
         </div>
 
-        <input type="button" value="按省份" class="dmsbt" style="left:108px" id="switchBt">
-        <input type="button" value="隐藏表格" class="dmsbt" style="left:200px" id="hideBt">
+        <input type="button" value="按省份" class="tssbutton blue bibt" style="left:100px" id="switchBt">
+        <input type="button" value="隐藏表格" class="tssbutton blue bibt" style="left:190px" id="hideBt">
 
     </div>
 

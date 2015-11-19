@@ -7,6 +7,7 @@
 
 <link href="../../tools/tssJS/css/boubei.css" rel="stylesheet">
 <link href="../../css/css.css" rel="stylesheet">
+<link href="dm.css" rel="stylesheet">
 
 <script src="../../tools/tssJS/tssJS.all.js"></script>
 <script src="../../tools/tssJS/tssJS.json2Form.js"></script>
@@ -19,29 +20,15 @@
     .gridContainer { vertical-align: top; }
 
     #ws {
-        width: 40%;
-        max-width: 600px;
-        min-width: 400px;
+        width: 40%; max-width: 600px; min-width: 400px;
         height: 100%;
-        position: fixed;
-        right: 0;
-        top: 0;
+        position: fixed; right: 0; top: 0;
     }
 
-    #page1Form {
-        height: 85%;
-        overflow: auto; 
-    }
-
-    #searchFormDiv { max-width: 600px; max-height: 500px; top: 100px; left: 50px; display:none; }
-    #searchFormDiv .content { padding: 12px; overflow: auto; }
-    #searchFormDiv .buttonBox { margin: 0 auto; text-align: center; }
-    #searchFormDiv .buttonBox input { margin-left: 12px;  }
-    #searchFormDiv .max, #searchFormDiv .min { display: none; }
-
+    #page1Form { height: 85%; overflow: auto; }
+    #searchFormDiv { max-width: 600px; max-height: 500px; left: 50px; display:none; }
     #customizeBox { display: inline-block; }
     #customizeBox button { margin: 2px; }
-
     #attach  { width: 800px; display: none; border: 1px solid #95B8E7;  z-index: 10000; }
     #uploadForm  { background-color: #99CCCC; padding: 5px 5px 5px 10px; margin-top: -3px; }
     #attachGrid { height: 200px; background-color: #fff; }

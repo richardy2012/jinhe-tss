@@ -22,6 +22,7 @@ import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.xform.IXForm;
 import com.jinhe.tss.um.permission.IResource;
 import com.jinhe.tss.util.BeanUtil;
+import com.jinhe.tss.util.EasyUtils;
 
 @Entity
 @Table(name = "dm_report")
@@ -181,6 +182,7 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
         if(TYPE1 == type) {
             map.put("param", param);
             map.put("displayUri", displayUri);
+            map.put("hasScript", EasyUtils.isNullOrEmpty(this.script) ? "false" : "true" );
         }
         
         if( this.id.longValue() < 0 ) {

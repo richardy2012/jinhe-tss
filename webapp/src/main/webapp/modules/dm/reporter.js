@@ -1,28 +1,3 @@
-/* 后台响应数据节点名称 */
-XML_SOURCE_TREE = "SourceTree";
-XML_REPORT_DATA = "ReportData";
-XML_SOURCE_INFO = "SourceInfo";
-
-PAGESIZE = 100;
-
-/* XMLHTTP请求地址汇总 */
-URL_REPORT_DATA    = NO_AUTH_PATH + "data/";
-URL_REPORT_JSON    = NO_AUTH_PATH + "api/json/";
-URL_REPORT_EXPORT  = NO_AUTH_PATH + "data/export/";
-
-// 获取导出分离机器的配置，如果有的话, eg: http://10.45.10.96:8080/tss/data/export/
- getParam('report_export_url', function(url) {
-    if( url ) {
-        URL_REPORT_EXPORT  = url + URL_REPORT_EXPORT;
-    }
- });
-
-if(IS_TEST) {
-    URL_REPORT_DATA    = "data/report_data.xml?";
-    URL_REPORT_JSON    = "data/report_data.json?";
-    URL_REPORT_EXPORT  = "data/_success.xml?";  
-}
-
 function isReportGroup() {
     return "0" == getTreeAttribute("type");
 }
@@ -36,7 +11,7 @@ function closeReportDefine() {
     $("#ws").hide();
 }
 
-function showGridChart(displayUri, treeID, refresh) {
+function showGridChart(displayUri, reportId, refresh) {
     closeReportDefine();
     $(".body>.groove>table").show();
 
@@ -44,9 +19,9 @@ function showGridChart(displayUri, treeID, refresh) {
         $("#grid").hide();
         $("#gridTitle").hide();
         $("#gridContainer iframe").hide();
-        treeID && closePalette(); // 关闭左栏
+        reportId && closePalette(); // 关闭左栏
         
-        var iframeId = "chatFrame_" + treeID;
+        var iframeId = "chatFrame_" + reportId;
         var $iframe = $("#" + iframeId);
         if( !$iframe.length ) {
             var iframeEl = $.createElement("iframe", "container", iframeId);
@@ -56,7 +31,7 @@ function showGridChart(displayUri, treeID, refresh) {
             $iframe.attr("frameborder", 0).attr("src", displayUri);
         }
         else {
-            refresh && $iframe.attr("src", displayUri);
+            refresh && $iframe.attr("src", displayUri); // 重新查询后需要刷新（重新加载iframe里的网页）
         }
         $iframe.show();
     }
@@ -69,21 +44,28 @@ function showGridChart(displayUri, treeID, refresh) {
 
 function showReport() {
     var treeNode = getActiveTreeNode();
-    var treeID = treeNode.id;
+    var reportId = treeNode.id;
     var displayUri  = (treeNode.getAttribute("displayUri") || "").trim().replace('|', '&'); 
     var paramConfig = (treeNode.getAttribute("param") || "").trim(); 
+    var hasScript = treeNode.getAttribute("hasScript") == "true"; 
 
     globalValiable.title = treeNode.name;
 
     // 判断当前报表是否专门配置了展示页面
     if( displayUri.length > 0 ) {
+        // 如果地址里指明了nodb（数据库已经不可访问），则直接打开展示页面，使之读取静态的本地json数据作为展示用
+        if( displayUri.indexOf("?nodb=") > 0 ) {
+            showGridChart(displayUri, reportId); 
+            return;
+        }
+
         // 如果还配置了参数，则由report页面统一生成查询Form，查询后再打开展示页面里。
         if(paramConfig.length > 0) {
             $("#gridContainer iframe").hide();
-            $("#chatFrame_" + treeID).show(); // 如之前已打开过报表，则先调出之前的结果
+            $("#chatFrame_" + reportId).show(); // 如之前已打开过报表，则先调出之前的结果
 
-            createQueryForm(treeID, paramConfig, function(dataNode) {
-                sendAjax(dataNode);
+            createQueryForm(reportId, paramConfig, function(params) {
+                sendAjax(params);
             });
         }
         else {
@@ -91,24 +73,24 @@ function showReport() {
             $("#searchFormDiv").hide();
             delete globalValiable.data;
 
-            if(displayUri.indexOf("?type=") > 0) {
+            if(hasScript || displayUri.indexOf("?type=") > 0) {
                 sendAjax(); // 使用通用模板的，有可能此处是不带任何参数的SQL查询
             } 
             else {
-                showGridChart(displayUri, treeID); // 直接打开展示页面
+                showGridChart(displayUri, reportId); // 直接打开展示页面
             }
         }
     } 
     else {
-        createQueryForm(treeID, paramConfig); // 生成查询Form
+        createQueryForm(reportId, paramConfig); // 生成查询Form
     }   
 
-    function sendAjax(searchFormDataNode) {
-        var url = getServiceUrl(treeID, displayUri); // 根据服务地址取出数据放在全局变量里
+    function sendAjax(params) {
+        var url = getServiceUrl(reportId, displayUri); // 根据服务地址取出数据放在全局变量里
         $.ajax({
             url : url,
             method : "POST",
-            formNode : searchFormDataNode,
+            params : params,
             type : "json",
             waiting : true,
             ondata : function() { 
@@ -116,157 +98,53 @@ function showReport() {
                 globalValiable.data = this.getResponseJSON();
                 
                 // 数据在iframe里展示
-                showGridChart(displayUri, treeID, true);
+                showGridChart(displayUri, reportId, true);
             }
         });
     }
 }
 
-function searchReport(treeID, download) {       
+function searchReport(reportId, download) {       
     var xform = $.F("searchForm");  
     if( xform && !xform.checkForm() ) return;
 
-    $("#searchFormDiv").hide();
-    var searchFormXML = $.cache.XmlDatas["searchFormXML"];
-
+    var params = getParams();
     if(download) {
-        var queryString = "?";
-        if( searchFormXML ) {
-            var nodes = searchFormXML.querySelectorAll("data row *");
-            $.each(nodes, function(i, node) {
-                if( queryString.length > 1 ) {
-                    queryString += "&";
-                }
-                queryString +=  node.nodeName + "=" + $.XML.getText(node);
-            });
-        }
-
-        // 因为导出服务器可能是独立的，发导出请求时需要带上在查询服务器上的登录信息
-        var user = $.Cookie.getValue("iUserName");
-        if(user) {
-            if( queryString.length > 1 ) {
-                queryString += "&";
-            }
-            queryString += "iUser=" + user;
-        }
-        
-        // 为防止一次性查询出太多数据导致OOM，限制每次最多只能导出10万行，超出则提示进行分批查询
-        $("#downloadFrame").attr( "src", encodeURI(URL_REPORT_EXPORT + treeID + "/1/100000" + queryString) );
-        return;
+        exportReport(reportId, params);
     }
- 
-    var request = new $.HttpRequest();
-    request.url = URL_REPORT_DATA + treeID + "/1/" + PAGESIZE;
-    request.waiting = true;
-    if( searchFormXML ) {
-        var dataNode = searchFormXML.querySelector("data");
-        request.setFormContent(dataNode);
-    }
-    
-    request.onresult = function() {
+    else {
         showGridChart();
-
-        var grid = $.G("grid", this.getNodeValue(XML_REPORT_DATA)); 
-        var gridToolBar = $1("gridToolBar");
-
-        var pageListNode = this.getNodeValue(XML_PAGE_INFO);        
-        var callback = function(page) {
-            request.url = URL_REPORT_DATA + treeID + "/" + page + "/" + PAGESIZE;
-            request.onresult = function() {
-                $.G("grid", this.getNodeValue(XML_REPORT_DATA)); 
-            }               
-            request.send();
-        };
-
-        $.initGridToolBar(gridToolBar, pageListNode, callback);
-        
-        grid.el.onScrollToBottom = function () {            
-            var currentPage = gridToolBar.getCurrentPage();
-            if(currentPage <= gridToolBar.getTotalPages() ) {
-                var nextPage = parseInt(currentPage) + 1; 
-                request.url = URL_REPORT_DATA + treeID + "/" + nextPage + "/" + PAGESIZE;
-                request.onresult = function() {
-                    $.G("grid").load(this.getNodeValue(XML_REPORT_DATA), true);
-                    $.initGridToolBar(gridToolBar, this.getNodeValue(XML_PAGE_INFO), callback);
-                }               
-                request.send();
-            }
-        }
+        searchGridReport(reportId, params);
     }
-    request.send();
 } 
 
-function getServiceUrl(treeID, displayUri) {
-    $.Query.init(displayUri);
-    var url = $.Query.get("service") || (URL_REPORT_JSON + treeID); // 优先使用展示地址里指定的模板地址
-    $.Query.init();
-
-    return url;
-}
-
-function createQueryForm(treeID, paramConfig, callback) {
+function createQueryForm(reportId, paramConfig, callback) {
     var $panel = $("#searchFormDiv");
     $panel.show();
 
     // 如果上一次打开的和本次打开的是同一报表的查询框，则直接显示
-    if( $.cache.Variables["treeNodeID_SF"] == treeID 
+    if( $.cache.Variables["treeNodeID_SF"] == reportId 
     		&& $.funcCompare($.cache.Variables["callback_SF"], callback) 
     		&& $("#searchFormDiv .tssForm").length ) { 
         return;
     }
 
-    $panel.html("").panel("查询报表【" + getTreeNodeName() + "】", '<div id="searchForm"></div>');
-
-    var buttonBox = [];
-    buttonBox[buttonBox.length] = "<TR>";
-    buttonBox[buttonBox.length] = "  <TD colspan='2' height='46'><div class='buttonBox'>";
-    buttonBox[buttonBox.length] = "     <a href='#' class='tssbutton small blue' id='btSearch'>查询</a> - ";
-    buttonBox[buttonBox.length] = "     <a href='#' class='tssbutton small blue' id='btDownload'>查询并导出</a>";
-    buttonBox[buttonBox.length] = "  </div></TD>";
-    buttonBox[buttonBox.length] = "</TR>";
-
-    var searchForm = $.json2Form("searchForm", paramConfig, buttonBox.join(""));
-
-    $.cache.XmlDatas["searchFormXML"] = searchForm.template.sourceXML;
-    $.cache.Variables["treeNodeID_SF"] = treeID;
+    $.cache.Variables["treeNodeID_SF"] = reportId;
     $.cache.Variables["callback_SF"] = callback;
-    
-    $1("btSearch").onclick = function () {
+
+    var searchForm = genQueryForm(getTreeNodeName(), paramConfig);
+
+    $panel.find(".btSearch").click( function () {
         if(callback) {
             if( searchForm.checkForm() ) {
-                $("#searchFormDiv").hide();
-                var searchFormXML = $.cache.XmlDatas["searchFormXML"];
-                var dataNode = searchFormXML.querySelector("data");
-                callback(dataNode); // 在回调函数里读取数据并展示
+                callback( getParams() ); // 在回调函数里读取数据并展示
             }
         } 
         else {
-            searchReport(treeID, false);
+            searchReport(reportId, false);  // 直接Grid展示
         }
-    }
-    $1("btDownload").onclick = function () {
-        searchReport(treeID, true);
-    }
-}
-
-// ------------------------------------------------- 多级下拉选择联动 ------------------------------------------------
-/*
- *  多级下拉选择联动
- *  参数： nextIndex    下一级联动参数的序号（1->n）
-        serviceID       下一级联动的service地址             
-        currParam       当前联动参数的序号
-        currParamValue  当前联动参数的值
- */
-function getNextLevelOption(nextIndex, serviceID, currParam, currParamValue) {
-    if(nextIndex == null || serviceID == null || currParam == null || $.isNullOrEmpty(currParamValue)) return;
-
-    var dreg = /^[1-9]+[0-9]*]*$/;
-    var paramElementId = "param" + nextIndex;
- 
-    var paramName = dreg.test(currParam) ? "param" + currParam : currParam;
-    
-    // serviceID maybe is ID of report, maybe a serviceUrl
-    var url = dreg.test(serviceID) ? '../../api/json/' + serviceID : serviceID;
-
-    $.getNextLevelOption($.F("searchForm"), paramName, currParamValue, url, paramElementId);
+    });
+    $panel.find(".btDownload").click( function () {
+        searchReport(reportId, true);
+    });
 }
