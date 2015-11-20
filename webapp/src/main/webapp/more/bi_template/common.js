@@ -221,7 +221,7 @@ function getLastFlushTime() {
 /* ---------------------------------- 标准图表模板相关 ----------------------------------------------- */
 
 function initResearhBt() {
-    if( window.parent.$1("searchFormDiv") && window.parent.$("#searchFormDiv .btSearch") ) {
+    if( window.parent.tssJS("#searchFormDiv .btSearch").length ) {
     	var researhBt = $1("researh");
 		if( !researhBt ) {
 			researhBt = tssJS.createElement("input", "tssbutton blue bibt", "research"); 

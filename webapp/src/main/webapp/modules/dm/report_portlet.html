@@ -18,7 +18,7 @@
 
 html, body { height: 100%; }
 body { width:100%; overflow: hidden; }
-#t1 { height: 100%; width: 100%; }
+#t1 { height: 100%; width: 100%; display: none; }
 #gridContainer { vertical-align: top; }
 .leftbar { left: -20px; }
 
@@ -52,9 +52,10 @@ var leftBar  = $.Query.get("leftBar");
 var reportId = $.Query.get("id") || 497; 
 var defaultParams;
 
-/* http://btrbi.800best.com/tss/modules/dm/report_portlet.html?leftBar=true&refresh=3&id=547&param1=today-0
-   从邮件里打开 或 从文章里打开
-*/
+/* 
+   http://localhost:8088/tss/modules/dm/report_portlet.html?leftBar=true&refresh=3&id=501&param1=today-10
+   从邮件里打开 或 从文章里打开 */
+   
 var index = 10;  // 最多10个参数
 while(index--) {
     var key = "param" + index;
@@ -77,22 +78,32 @@ function initPortlet() {
         type : "json",
         ondata: function() {
             var defines = this.getResponseJSON();
-            globalValiable.title = defines[0];
-            globalValiable._url  = defines[2];
+            globalValiable.title  = defines[0];
+            globalValiable.define = defines[1];
+            globalValiable._url   = defines[2];
             globalValiable.hasScript = defines[3];
 
-            var params = {};
-            if(defines[1]) {
-                globalValiable.define = defines[1];
+            var params = {}, allReady = true;
+            if( globalValiable.define ) {            
                 var _params = $.parseJSON(globalValiable.define);
                 $.each(_params, function(i, param) {
-                    // TODO 检查是否所有必填的参数都有默认值了，不是的话不宜发起查询
                     if(param.defaultValue) {
-                        var key = "param" + (i+1);
-                        params[key] = param.defaultValue;
+                        var key = "param" + (i+1);          
+
+                        // 优先使用通过url传入的参数            
+                        if(defaultParams && defaultParams[key]) {
+                            params[key] = defaultParams[key];
+                        } else {
+                            params[key] = param.defaultValue;
+                        }
+                    }
+
+                    // 检查是否所有必填的参数都有默认值了，否的话不发起查询，直接弹出查询框
+                    if(param.nullable == "false" && !params[key]) {
+                        allReady = false;
                     }
                 });
-     
+
                 leftBar && $.leftbar( showQueryForm );
                 window.parent.$ && window.parent.$("#panel" + reportId).find(".setQuery").click(showQueryForm);
             }
@@ -101,15 +112,12 @@ function initPortlet() {
                 window.parent.$ && window.parent.$("#panel" + reportId).find(".setQuery").hide();
             }
             
-            // 优先使用通过url传入的参数
-            if(defaultParams) {
-                $.each(defaultParams, function(param, value){
-                    params[param] = value;
-                });
+            if(allReady) {
+                searchReport( params );
+            } else {
+                showQueryForm();
             }
-
-            searchReport( params );
-
+            
             // 默认每30分钟刷新一次
             window.setInterval( function() { searchReport( params ); }, (refresh || 30) * 60 * 1000);
         }
@@ -136,9 +144,9 @@ function showQueryForm() {
     var searchForm = genQueryForm(globalValiable.title, globalValiable.define);
     $searchForm.center();
 
-    if(globalValiable.params) { // 设置上一次的查询条件
+    if(globalValiable.queryParams) { // 设置上一次的查询条件
         setTimeout(function() {
-            $.each(globalValiable.params, function(key, value) {
+            $.each(globalValiable.queryParams, function(key, value) {
                 searchForm.updateDataExternal(key, value);
             });
         
@@ -148,7 +156,7 @@ function showQueryForm() {
     $searchForm.find(".btSearch").click( function () {
         if( searchForm.checkForm() ) {
             var params = getParams();
-            globalValiable.params = params; // 记录当前的条件
+            globalValiable.queryParams = params; // 记录当前的条件
             searchReport(params);
         }
     });
