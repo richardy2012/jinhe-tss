@@ -38,6 +38,10 @@ public class ReportServiceImpl implements ReportService {
         return report;
     }
     
+	public Report getReportCached(Long id) {
+		return this.getReport(id);
+	}
+    
 	public Long getReportIdByName(String name) {
 		String hql = "select o.id from Report o where o.name = ? order by o.decode";
 		List<?> list = reportDao.getEntities(hql, name); 
@@ -47,7 +51,8 @@ public class ReportServiceImpl implements ReportService {
 		return (Long) list.get(0);
 	}
 	
-    public List<Report> getReportsByGroup(Long groupId) {
+	// 加userId以便于缓存
+    public List<Report> getReportsByGroup(Long groupId, Long userId) {
         return reportDao.getChildrenById(groupId);
     }
     

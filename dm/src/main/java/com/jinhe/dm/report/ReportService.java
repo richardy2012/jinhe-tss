@@ -15,13 +15,17 @@ public interface ReportService {
 
     Report getReport(Long id);
     
+    @Cached
+    Report getReportCached(Long id);
+    
     Long getReportIdByName(String name);
     
+    @Cached
     @PermissionTag(
     		resourceType = Report.RESOURCE_TYPE,
 	        operation = Report.OPERATION_VIEW
 	)
-    List<Report> getReportsByGroup(Long groupId);
+    List<Report> getReportsByGroup(Long groupId, Long userId);
     
     @PermissionTag(
     		resourceType = Report.RESOURCE_TYPE,

@@ -64,19 +64,27 @@
 
 
 // init
-;(function($) {
+function initBIIndex($) {
 	$.extend({ 
-		openMenu: function(li) {
+		openMenu: function(li, isFirst) {
 			var $li = $(li);
 			var mid = $li.attr("mid");
 			if( !mid ) return;
 
+			var firstAOpened = false;
 			$(".link").each(function(i, link) {
-				$link = $(link);
+				var $link = $(link), $ul = $(link.parentNode);
 				if( $link.hasClass(mid) ) {
-					$(link.parentNode).removeClass("hidden");
-				} else {
-					$(link.parentNode).addClass("hidden");
+					$ul.removeClass("hidden");
+
+					if( !firstAOpened ) {
+						var $lia = $ul.find("li>a");
+						$lia.length && $.openReport( $lia[0], true );
+						firstAOpened = true;
+					}
+				} 
+				else {
+					$ul.addClass("hidden");
 				}
 			});
 
@@ -160,7 +168,6 @@
 		}
 	});
 
-	// TODO 先过滤报表的权限
 	var accordion = $('#ad1').accordion(false);
 
 	var switchOpen = true;
@@ -191,7 +198,7 @@
 		$li.attr("onclick", "$.openMenu(this)");
 
 		if(i == 0) {
-			$.openMenu(li);
+			$.openMenu(li, true);
 		}
 	});
 
@@ -239,17 +246,92 @@
 		hideOther();
 	});
 
-})(tssJS);
-
-// user & permission
-;(function($) {
-
 	$.ajax({
 		url : "../../auth/user/operatorInfo",
 		method : "POST",
 		onresult : function() {
 			var userName = this.getNodeValue("name");
 			$("#iUser span").html( userName || '欢迎您' );
+		}
+	});
+}
+
+// user & permission
+CONTEXTPATH = "tss";
+;(function($) {
+
+	if( !$("#iUser").length ) return;
+
+	// 过滤报表的权限
+	$.ajax({
+		url : "../../auth/rp/my/ids",
+		method : "POST",
+		type : "json",
+		ondata : function() {
+			var list = this.getResponseJSON(), permissions = [];
+			list.each(function(i, id) {
+				permissions.push(id + "");
+			});
+
+			$("#ad1 li>a[rid]").each(function(i, a) {
+				var rid = $(a).attr("rid");
+				permissions.contains(rid) || $(a.parentNode).remove();
+			});
+
+			initBIIndex(tssJS);
+		}
+	});
+
+})(tssJS);
+
+
+;(function($) {
+
+	if( $("#iUser").length ) return;
+
+	// 从后台获取三级目录结构
+	var topGid = 800;
+	$.ajax({
+		url : "../../auth/rp/my/" + topGid,
+		method : "POST",
+		type : "json",
+		ondata : function() {
+			var reports = this.getResponseJSON();
+
+			var $headerUL = $("header ul"), $leftUL = $("section .left ul");
+			reports.each(function(i, report) {
+				var top1Id = report[0];
+				if(report[2] === topGid) {
+					var li = $.createElement("li", (i == 0 ? "active" : ""));
+					$(li).attr("rid", "m" + top1Id).html(report[1]);
+					$headerUL.appendChild(li);				
+
+					reports.each(function(i, report) {
+						var top2Id = report[0];
+						if(report[2] === top1Id) {
+							var li = $.createElement("li");
+							$(li).html('<div class="link m"' +top1Id+ '>' +report[1]+ '<i class="tag"></i></div><ul class="submenu"></ul>');
+							$leftUL.appendChild(li);
+						
+							var $ul2 = $(li).find("ul");
+							reports.each(function(i, report) {
+								var top3Id = report[0];
+								if(report[2] === top2Id) {
+									var li = $.createElement("li");
+									$(li).html('<a href="#" rid="' +top1Id+ '">' +report[1]+ '</a>');
+									$li2.appendChild(li);
+								}
+							});
+						}
+					});
+				}
+			});
+
+			var li = $.createElement("li", "", "iUser");
+			$(li).html('<span>欢迎您</span>');
+			$headerUL.appendChild(li);	
+
+			initBIIndex(tssJS);
 		}
 	});
 

@@ -61,22 +61,56 @@ public class ReportAction extends BaseActionSupport {
         print("SourceTree", treeEncoder);
     }
     
+	@RequestMapping("/my/ids")
+	@ResponseBody
+    public List<Long> getMyReportIds() {
+        String pt = ReportPermission.class.getName();
+		return PermissionHelper.getInstance().getResourceIdsByOperation(pt, Report.OPERATION_VIEW);
+    }
+	
+    @RequestMapping("/my/{groupId}")
+	@ResponseBody
+    public List<Object> getReportsByGroup(@PathVariable Long groupId) {
+    	List<Report> list = reportService.getReportsByGroup(groupId, Environment.getUserId());
+    	List<Report> tempList = new ArrayList<Report>();
+    	List<Object> result = new ArrayList<Object>();
+	    
+	    List<String> topSelf = getTops(true);
+	    Long selfGroupId = -2L;
+	    		
+	    if(topSelf.size() > 0) {
+	    	tempList.add(new Report(selfGroupId, "您最近访问报表"));
+	    	tempList.addAll( cloneTops(selfGroupId, topSelf, list) );
+	    }
+
+    	for(Report report : list) {
+    		Long reportId = report.getId();
+			if( !report.isActive() || reportId.equals(groupId) )  continue;
+
+    		tempList.add(report); 
+    	}
+    	
+    	for(Report report : tempList) {
+    		Long reportId = report.getId();
+    		String name = report.getName();
+			Long parentId = report.getParentId();
+			Integer levelNo = report.getLevelNo();
+			result.add(new Object[] { reportId, name, parentId, levelNo });
+    	}
+    	
+		return result;
+    }
+    
     /**
      * 如果指定了分组，则只取该分组下的报表
      */
     @RequestMapping("/my")
-    public void getCustomizeReports(HttpServletResponse response, Long groupId) {
+    public void getMyReports(HttpServletResponse response, Long groupId) {
 	    checkPwdSecurity();
 	    
 	    List<Report> list;
 	    if(groupId != null) {
-	    	list = reportService.getReportsByGroup(groupId);
-	    	for(Report temp : list) {
-	    		if(groupId.equals(temp.getId())) {
-	    			list.remove(temp);
-	    			break;
-	    		}
-	    	}
+	    	list = reportService.getReportsByGroup(groupId, Environment.getUserId());
 	    } else {
 	    	list = reportService.getAllReport();
 	    }
@@ -89,31 +123,17 @@ public class ReportAction extends BaseActionSupport {
 	    List<Report> result = new ArrayList<Report>();
 	    if(topSelf.size() > 0) {
 	    	result.add(new Report(selfGroupId, "您最近访问报表"));
-	    	for(String temp : topSelf) {
-	    		for(Report report : list) {
-		    		if(temp.equals(report.getName()) && report.isActive() && !report.isGroup()) {
-		        		result.add(cloneReport(selfGroupId, report));
-		        		break;
-		    		}
-		    	}
-	    	}
+	    	result.addAll( cloneTops(selfGroupId, topSelf, list) );
 	    }
 	    if(topX.size() > 0) {
 	    	result.add(new Report(topGroupId, "近期热门报表"));
-	    	for(String temp : topX) {
-	    		for(Report report : list) {
-		    		if(temp.equals(report.getName()) && report.isActive() && !report.isGroup()) {
-		        		result.add(cloneReport(topGroupId, report));
-		        		break;
-		    		}
-		    	}
-	    	}
+	    	result.addAll( cloneTops(topGroupId, topX, list) );
 	    }
 	    
 	    result.add(new Report(newGroupId, "近期新出报表"));
 	    List<Report> latest = new ArrayList<Report>();
     	for(Report report : list) {
-    		if( !report.isActive() )  continue;
+    		if( !report.isActive()  || report.getId().equals(groupId) )  continue;
  
     		if( !report.isGroup() 
     				&& report.getCreateTime().after(DateUtil.subDays(DateUtil.today(), 10))
@@ -134,6 +154,20 @@ public class ReportAction extends BaseActionSupport {
         TreeEncoder treeEncoder = new TreeEncoder(result, new LevelTreeParser());
         treeEncoder.setNeedRootNode(false);
         print("SourceTree", treeEncoder);
+    }
+    
+    private List<Report> cloneTops(Long topGroupId, List<String> topX, List<Report> list) {
+    	List<Report> result = new ArrayList<Report>();
+    	for(String temp : topX) {
+    		for(Report report : list) {
+	    		if(temp.equals(report.getName()) && report.isActive() && !report.isGroup()) {
+	        		result.add( cloneReport(topGroupId, report) );
+	        		break;
+	    		}
+	    	}
+    	}
+    	
+    	return result;
     }
 
 	private Report cloneReport(Long topGroupId, Report report) {

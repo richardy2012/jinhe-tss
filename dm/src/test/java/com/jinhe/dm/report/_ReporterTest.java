@@ -12,10 +12,10 @@ import com.jinhe.dm.TxTestSupport4DM;
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.sso.context.Context;
 
-public class DisplayTest extends TxTestSupport4DM {
+public class _ReporterTest extends TxTestSupport4DM {
     
     @Autowired private ReportAction action;
-    @Autowired private _Reporter display;
+    @Autowired private _Reporter _reporter;
     
     @Test
     public void testJson2CSV() {   
@@ -25,9 +25,9 @@ public class DisplayTest extends TxTestSupport4DM {
     	request.addParameter("name", "网页报表");
     	request.addParameter("data", "仓库,库存\nOFC1,100\nOFC2,200");
     	
-    	String fileName = display.data2CSV(request, response)[0];
+    	String fileName = _reporter.data2CSV(request, response)[0];
     	
-    	display.download(response, fileName);
+    	_reporter.download(response, fileName);
     }
 
     @Test
@@ -66,32 +66,32 @@ public class DisplayTest extends TxTestSupport4DM {
         request.addParameter("param5", "报表一,report-1");
         
         Long reportId = report1.getId();
-        display.showAsGrid(request, response, reportId, 1, 10);
-        display.showAsJson(request, reportId.toString());
+        _reporter.showAsGrid(request, response, reportId, 1, 10);
+        _reporter.showAsJson(request, reportId.toString());
         
-        display.showAsJson(request, report1.getName());
+        _reporter.showAsJson(request, report1.getName());
         
-        display.exportAsCSV(request, response, reportId, 1, 0); // 测试导出
+        _reporter.exportAsCSV(request, response, reportId, 1, 0); // 测试导出
         
         request = new MockHttpServletRequest();
         request.addParameter("param1", "0");
         request.addParameter("param3", "today - 100");
         request.addParameter("param4", "today + 10");
         request.addParameter("param5", "report-1,report-1");
-        display.showAsJson(request, report1.getName());
+        _reporter.showAsJson(request, report1.getName());
         
         // test nocache
         request.addParameter("noCache", "noCache");
-        display.showAsJson(request, report1.getName());
+        _reporter.showAsJson(request, report1.getName());
         request.removeParameter("noCache");
         
         // test get param define
-        Object[] paramDefine = (Object[]) display.getReportParamDefine(reportId);
-        Assert.assertTrue(paramDefine.length == 3);
+        Object[] paramDefine = (Object[]) _reporter.getReportParamDefine(reportId);
+        Assert.assertTrue(paramDefine.length == 4);
         
         // test jsonp
         request.addParameter("jsonpCallback", "func1");
-        display.showAsJsonp(request, response, report1.getName());
+        _reporter.showAsJsonp(request, response, report1.getName());
         request.removeParameter("jsonpCallback");
         
         // 测试导出超阀值(导出时，前台限定10万行，超过该值将提示要求缩短查询条件，分批导出)
@@ -113,14 +113,14 @@ public class DisplayTest extends TxTestSupport4DM {
         request.addParameter("param3", "2013-10-01");
         request.addParameter("param4", "2013/10/01 11:11:11");
         request.addParameter("param5", "reportGruop1,reportGruop2");
-		display.exportAsCSV(request, new MockHttpServletResponse(), reportId, 1, 1); // 阀值为1
+		_reporter.exportAsCSV(request, new MockHttpServletResponse(), reportId, 1, 1); // 阀值为1
 		
         // test Customize report tree
 		for(int i = 0; i < 30; i++) {
-			display.showAsJson(request, report1.getName());
+			_reporter.showAsJson(request, report1.getName());
 		}
-        action.getCustomizeReports(response, null);
-        action.getCustomizeReports(response, reportGruop.getId());
+        action.getMyReports(response, null);
+        action.getMyReports(response, reportGruop.getId());
     }
     
     /**
@@ -165,7 +165,7 @@ public class DisplayTest extends TxTestSupport4DM {
         Long reportId = report1.getId();
         
 		try {
-			display.showAsJson(request, reportId.toString());
+			_reporter.showAsJson(request, reportId.toString());
 			Assert.fail("should throw exception but didn't.");
 		} catch (Exception e) {
 			log.debug(e.getMessage());

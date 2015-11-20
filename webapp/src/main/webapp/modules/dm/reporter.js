@@ -136,11 +136,8 @@ function createQueryForm(reportId, paramConfig, callback) {
 
     $panel.find(".btSearch").click( function () {
         if(callback) {
-            if( searchForm.checkForm() ) {
-                callback( getParams() ); // 在回调函数里读取数据并展示
-            }
-        } 
-        else {
+            searchForm.checkForm() && callback( getParams() ); // 在回调函数里读取数据并展示
+        } else {
             searchReport(reportId, false);  // 直接Grid展示
         }
     });

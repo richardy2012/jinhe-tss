@@ -23,7 +23,7 @@ import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.util.FileHelper;
 import com.jinhe.tss.util.URLUtil;
 
-public class ReportTest extends TxTestSupport4DM {
+public class ReportActionTest extends TxTestSupport4DM {
     
     @Autowired private ReportAction action;
     @Autowired private LogService logService;
@@ -82,6 +82,13 @@ public class ReportTest extends TxTestSupport4DM {
         
         // test permission 
         action.getOperations(response, report1.getId());
+        
+        // test get my reports
+        List<Long> myreportIds = action.getMyReportIds();
+        Assert.assertTrue(myreportIds.size() > 1);
+        
+        List<Object> myreports = action.getReportsByGroup(group2.getId());
+        Assert.assertTrue(myreports.size() > 1);
         
         // test report schedule
         Long reportId = report1.getId();
