@@ -252,7 +252,7 @@ var Field = function(info) {
 			var delta = parseInt( day.split("-")[1] );
 			today.setDate(today.getDate() - delta);
 		} 
-		else if( (/today[\s]*+/gi).test(day) ) {
+		else if( (/today[\s]*\+/gi).test(day) ) {
 			var delta = parseInt( day.split("+")[1] );
 			today.setDate(today.getDate() + delta);
 		} 
