@@ -238,12 +238,8 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         BeanUtil.addBeanProperties2Map(this, properties);
         map.putAll(properties);
- 
-        if (ParamConstants.TRUE.equals(disabled)) {
-            map.put("icon", UMConstants.STOP_USER_GRID_NODE_ICON);
-        } else {
-            map.put("icon", UMConstants.START_USER_GRID_NODE_ICON);
-        }
+        
+        map.put("icon", UMConstants.USER_GRID_NODE_ICON + disabled + ".gif");
        
         return map;
     }

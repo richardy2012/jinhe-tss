@@ -137,9 +137,13 @@ public class GroupDao extends TreeSupportDao<Group> implements IGroupDao {
 		String permissionTable = resourceTypeDao.getPermissionTable(UMConstants.TSS_APPLICATION_ID, UMConstants.GROUP_RESOURCE_TYPE_ID);
 		
 		String hql = "select distinct o " + PermissionHelper.formatHQLFrom(entityName, permissionTable) + " , Group child " +
-		        PermissionHelper.permissionConditionII() + " and child.id in (:groupIds) and child.decode like o.decode||'%'" + PermissionHelper.ORDER_BY;
+		        PermissionHelper.permissionConditionII() + 
+		        " and child.id in (:groupIds) and child.decode like o.decode||'%' and o.id not in (-1, -7)" + 
+		        PermissionHelper.ORDER_BY;
 		
-		return getEntities(hql, new Object[]{"operatorId", "operationId", "groupIds"}, new Object[]{operatorId, operationId, groupIds});
+		return getEntities(hql, 
+				new Object[]{"operatorId", "operationId", "groupIds"}, 
+				new Object[]{operatorId, operationId, groupIds} );
 	}
 
 	public List<?> getVisibleMainUsers(Long operatorId) {

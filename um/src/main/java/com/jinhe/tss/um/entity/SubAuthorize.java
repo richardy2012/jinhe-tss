@@ -106,12 +106,7 @@ public class SubAuthorize extends OperateInfo implements IEntity, ITreeNode, IXF
 	public TreeAttributesMap getAttributes() {
 		TreeAttributesMap map = new TreeAttributesMap(id, name);
 		map.put("disabled", disabled);
-
-		if (ParamConstants.FALSE.equals(disabled)) {// 启用
-			map.put("icon", UMConstants.START_STRATEGY_TREENODE_ICON);
-		} else {
-			map.put("icon", UMConstants.STOP_STRATEGY_TREENODE_ICON);
-		}
+		map.put("icon", UMConstants.STRATEGY_TREENODE_ICON + disabled + ".gif");
 		
 		return map;
 	}

@@ -349,8 +349,11 @@ public class ComponentAction extends FMSupportAction {
         String commonCSSPath = Environment.getContextPath() + "/tools/tssJS/css/";
         sb.append("<link href=\"" + commonCSSPath + "boubei.css\" rel=\"stylesheet\">\n");
         
-        String commonJSPath = Environment.getContextPath() + "/tools/tssJS/";
-        sb.append("<script src=\"" + commonJSPath + "tssJS.all.js\"></script>\n");
+        String commonJSPath = Environment.getContextPath() + "/tools/";
+        sb.append("<script src=\"" + commonJSPath + "tssJS/tssJS.all.js\"></script>\n");
+        sb.append("<script src=\"" + commonJSPath + "tssJS/tssJS.json2Form.js\"></script>\n");
+        sb.append("<script src=\"" + commonJSPath + "tssJS/tssJS.jsonp.js\"></script>\n");
+        sb.append("<script src=\"" + commonJSPath + "portlet.js\"></script>\n");
         
         sb.append("<script language=\"javascript\">\n");
         sb.append(MacrocodeCompiler.run(script, parameters, true));

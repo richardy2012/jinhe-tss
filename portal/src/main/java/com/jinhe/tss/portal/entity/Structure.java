@@ -192,7 +192,7 @@ public class Structure extends OperateInfo implements IXForm, IResource, IDecoda
             break;
         }
         
-        if( this.levelNo <= 3 ) {
+        if( this.levelNo <= 2 ) {
         	map.put("_open", "true");
         }
         

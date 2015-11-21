@@ -8,11 +8,13 @@
 <link rel="Bookmark" href="images/tss.ico">
 
 <link href="tools/tssJS/css/boubei.css" rel="stylesheet">
-<link href="css/css.css" rel="stylesheet">
 
 <script src="tools/tssJS/tssJS.all.js"></script>
+<script src="tools/portlet.js"></script>
 
 <style>
+
+html, body { height: 100%; overflow: hidden; }
 
 /* 顶部 */
 .top { height: 40px; background-color: #323232; box-sizing: border-box; border-bottom: 1px solid #95B8E7; }
@@ -42,73 +44,29 @@
 </style>
 
 <script type="text/javascript">
-	
-FROMEWORK_CODE = "TSS";
-APP_CODE    = "TSS";
-APPLICATION = APP_CODE.toLowerCase();
-CONTEXTPATH = APPLICATION + "/";
 
 /* 用户信息初始化  */
 window.onload = function() {
-	$.ajax({
-		url : "auth/user/operatorInfo",
-		method : "POST",
-		headers: {"appCode": APP_CODE},
-		params : {"anonymous": "true"}, 
-		onresult : function() {
-			var userName = this.getNodeValue("name");
-			$("#userInfo").html(userName || '个人信息');
-			
-			resizeIFrame();
-			turn2IFrame("modules/dm/record.html");
+	initUserInfo(function() {
+		resizeIFrame();
+		turn2IFrame("modules/dm/record.html");
 
-			dbsx();
-		}
+		dbsx();
 	});
-}
-
-function dbsx() {
-  $.ajax({
-    url: "auth/message/num",
-    method: "GET",
-    type : "json",
-    ondata: function() {
-      var num = this.getResponseJSON();
-      if(num > 0) {
-        $.tssTip("您的站内信箱里有<b> " + num + " </b>条新的待办事项，<a href='javascript:void(0)' onclick='openMsgPage()'>点击查看。</a>");
-      }
-    }
-  });
-}
-
-function openMsgPage() {
-	turn2IFrame('modules/um/message.html');
-}
-
-var resizeIFrame = function resizeIFrame() {
-	$("#iframeSrc").css("height", (document.body.offsetHeight - 41) + "px");
 }
 
 window.onresize = resizeIFrame;
-
-function logout() {
-	$.ajax({
-		url : "logout.in",
-		method : "GET",
-		onsuccess : function() { 
-			$.Cookie.del("token", "");
-			$.Cookie.del("token", "/");
-			$.Cookie.del("token", "/" + APPLICATION);
-			$.Cookie.del("token", "/" + CONTEXTPATH);
-			location.href = "login.html";
-		}
-	});
-}
 
 function turn2IFrame(ahref) {
 	if (ahref != "#") {
 		$1("iframeSrc").setAttribute("src", ahref);
 	}
+}
+function openMsgPage() {
+	turn2IFrame('modules/um/message.html');
+}
+var resizeIFrame = function resizeIFrame() {
+	$("#iframeSrc").css("height", (document.body.offsetHeight - 40) + "px");
 }
 
 </script>
@@ -119,7 +77,7 @@ function turn2IFrame(ahref) {
  
 <div class="top">
 	<div class="logo">
-		<b class="forename">它山石</b><b class="surname">数据管理平台</b>
+		<b class="forename">它山石</b><b class="surname">基础平台</b>
 	</div>
 	<div class="menu"> 
 		<ul> 

@@ -290,7 +290,7 @@ CONTEXTPATH = "tss";
 	if( $("#iUser").length ) return;
 
 	// 从后台获取三级目录结构
-	var topGid = 800;
+	var topGid = $.Query.get("id") || 497;
 	$.ajax({
 		url : "../../auth/rp/my/" + topGid,
 		method : "POST",
@@ -301,6 +301,11 @@ CONTEXTPATH = "tss";
 			var $headerUL = $("header ul"), $leftUL = $("section .left ul");
 			reports.each(function(i, report) {
 				var top1Id = report[0];
+				if(top1Id == topGid) { // 根节点
+					$("header .logo .forename").html(report[1]);
+					return true;
+				}
+
 				if(report[2] === topGid) {
 					var li = $.createElement("li", (i == 0 ? "active" : ""));
 					$(li).attr("rid", "m" + top1Id).html(report[1]);

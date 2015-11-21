@@ -164,11 +164,7 @@ public class Group extends OperateInfo implements IDecodable, IXForm, IResource 
 		
 		// 特殊组不显示图标 (特殊组指系统初始化的主用户、辅助用户组等根节点，它们的ID为负值)
 		if (id.longValue() > 0) {
-			if (ParamConstants.FALSE.equals(disabled)) {
-				map.put("icon", UMConstants.START_GROUP_TREENODE_ICON);
-			} else {
-				map.put("icon", UMConstants.STOP_GROUP_TREENODE_ICON);
-			}
+			map.put("icon", UMConstants.GROUP_TREENODE_ICON + disabled + ".gif");
 		}
 		
 		return map;

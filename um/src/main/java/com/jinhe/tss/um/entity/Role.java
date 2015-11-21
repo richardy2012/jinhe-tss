@@ -133,20 +133,16 @@ public class Role extends OperateInfo implements IDecodable, IXForm, IResource {
 		map.put("resourceTypeId", getResourceType());
 
 		if (ParamConstants.FALSE.equals(isGroup)) { // 角色
-			if (ParamConstants.FALSE.equals(disabled)) {// 启用
-				map.put("icon", UMConstants.START_ROLE_TREENODE_ICON);
-			} else {// 停用
-				map.put("icon", UMConstants.STOP_ROLE_TREENODE_ICON);
-			}
+			map.put("icon", UMConstants.ROLE_TREENODE_ICON + disabled + ".gif");
 		} 
 		else { // 角色组
-			if (ParamConstants.FALSE.equals(disabled)) {// 启用
-				map.put("icon", UMConstants.START_GROUP_ROLE_TREENODE_ICON);
-			} else {// 停用
-				map.put("icon", UMConstants.STOP_GROUP_ROLE_TREENODE_ICON);
-			}
+			map.put("icon", UMConstants.GROUP_ROLE_TREENODE_ICON + disabled + ".gif");
 		}
 		
+		if( this.levelNo <= 2 ) {
+        	map.put("_open", "true");
+        }
+		 
 		return map;
 	}
  

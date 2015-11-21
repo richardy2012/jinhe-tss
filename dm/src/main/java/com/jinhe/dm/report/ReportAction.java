@@ -75,20 +75,19 @@ public class ReportAction extends BaseActionSupport {
     	List<Report> tempList = new ArrayList<Report>();
     	List<Object> result = new ArrayList<Object>();
 	    
-	    List<String> topSelf = getTops(true);
+    	for(Report report : list) {
+			if( report.isActive() ) {
+				tempList.add(report);
+			}
+    	}
+    	
+    	List<String> topSelf = getTops(true);
 	    Long selfGroupId = -2L;
 	    		
 	    if(topSelf.size() > 0) {
-	    	tempList.add(new Report(selfGroupId, "您最近访问报表"));
+	    	tempList.add(new Report(selfGroupId, "您最近访问"));
 	    	tempList.addAll( cloneTops(selfGroupId, topSelf, list) );
 	    }
-
-    	for(Report report : list) {
-    		Long reportId = report.getId();
-			if( !report.isActive() || reportId.equals(groupId) )  continue;
-
-    		tempList.add(report); 
-    	}
     	
     	for(Report report : tempList) {
     		Long reportId = report.getId();
@@ -149,7 +148,7 @@ public class ReportAction extends BaseActionSupport {
                 return r2.getId().intValue() - r1.getId().intValue();
             }
         });
-    	result.addAll(latest);
+    	result.addAll(latest.size() > 3 ? latest.subList(0, 3) : latest);
        
         TreeEncoder treeEncoder = new TreeEncoder(result, new LevelTreeParser());
         treeEncoder.setNeedRootNode(false);
@@ -192,8 +191,9 @@ public class ReportAction extends BaseActionSupport {
 		ex.excuteQuery(sql, params , DMConstants.LOCAL_CONN_POOL);
 	    
 	    List<String> tops = new ArrayList<String>();
+	    int max = onlySelf ? 5 : 3;
 	    for( Map<String, Object> row : ex.result){
-	    	if(tops.size() < 8) {
+	    	if(tops.size() < max) {
 	    		String reportName = (String) row.get("name");
 	    	    if(DMConstants.hasCNChar(reportName)) {
 	    	    	tops.add(reportName);

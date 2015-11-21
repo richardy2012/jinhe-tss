@@ -212,10 +212,11 @@ public class HTMLGenerator {
     private StringBuffer formatScriptLinks() {
         StringBuffer sb = new StringBuffer();
         // 默认挂载的js
-        String commonJSPath = Environment.getContextPath() + "/tools/tssJS/";
-        sb.append("<script src=\"" + commonJSPath + "tssJS.all.js\"></script>\n");
-        sb.append("<script src=\"" + commonJSPath + "tssJS.json2Form.js\"></script>\n");
-        sb.append("<script src=\"" + commonJSPath + "tssJS.jsonp.js\"></script>\n");
+        String commonJSPath = Environment.getContextPath() + "/tools/";
+        sb.append("<script src=\"" + commonJSPath + "tssJS/tssJS.all.js\"></script>\n");
+        sb.append("<script src=\"" + commonJSPath + "tssJS/tssJS.json2Form.js\"></script>\n");
+        sb.append("<script src=\"" + commonJSPath + "tssJS/tssJS.jsonp.js\"></script>\n");
+        sb.append("<script src=\"" + commonJSPath + "portlet.js\"></script>\n");
         
         for ( String filePath : scriptFiles ) {
             sb.append("<script src=\"" + (portalResourseDir + filePath) + "\"></script>\n");

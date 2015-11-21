@@ -6,12 +6,12 @@
 	</declare>
 	<layout>
 		<TR>
-			<TD width="50"><label binding="name"/></TD>
-			<TD><input binding="name" style="width:50%;"/></TD>
+			<TD width="80"><label binding="name"/></TD>
+			<TD><input binding="name" style="width:40%;"/></TD>
 		</TR>
 		<TR>
 			<TD><label binding="description"/></TD>
-			<TD><textarea binding="description" style="width:80%;height:100px"/></TD>
+			<TD><textarea binding="description" style="width:70%;height:100px"/></TD>
 		</TR>
 	</layout>
 	<data>

@@ -148,16 +148,12 @@ public final class UMConstants {
 	/**
 	 * 对象节点 Tree 图标文件的路径定义
 	 */
-	public static final String START_GROUP_TREENODE_ICON      = "images/user_group_0.gif";     //Group图标(启用)
-	public static final String STOP_GROUP_TREENODE_ICON      = "images/user_group_1.gif";     //Group图标(停用)
-	public static final String START_STRATEGY_TREENODE_ICON = "images/rule_0.gif";  //权限转授图标(启用)
-	public static final String STOP_STRATEGY_TREENODE_ICON = "images/rule_1.gif";  //(Admin)图标(停用)
-	public static final String START_USER_GRID_NODE_ICON  = "images/user_0.gif";  //User图标(启用)
-	public static final String STOP_USER_GRID_NODE_ICON  = "images/user_1.gif";  //User图标(停用)
-	public static final String START_GROUP_ROLE_TREENODE_ICON = "images/role_group_0.gif"; //角色组图标(启用)
-	public static final String STOP_GROUP_ROLE_TREENODE_ICON = "images/role_group_1.gif";  //角色组图标(停用)
-	public static final String START_ROLE_TREENODE_ICON = "images/role_0.gif";   //角色图标(启用)
-	public static final String STOP_ROLE_TREENODE_ICON = "images/role_1.gif";    //角色图标(停用)
+	public static final String GROUP_TREENODE_ICON      = "images/user_group_";     //Group图标(停用)
+	public static final String STRATEGY_TREENODE_ICON = "images/rule_"; // 权限转授图标
+	public static final String USER_GRID_NODE_ICON  = "images/user_";  //User图标
+	public static final String GROUP_ROLE_TREENODE_ICON = "images/role_group_";  //角色组图标
+	public static final String ROLE_TREENODE_ICON = "images/role_";   //角色图标
+
 	public static final String APPLICATION_TREENODE_ICON   = "images/app.gif";   //应用图标
 	public static final String RESOURCETYPE_TREENODE_ICON = "images/resource_type.gif";//资源图标
 	public static final String OPERATION_TREENODE_ICON   = "images/permission.gif";    //权限选项Tree图标
