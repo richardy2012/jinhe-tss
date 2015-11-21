@@ -82,19 +82,20 @@ public class ReportAction extends BaseActionSupport {
     	}
     	
     	List<String> topSelf = getTops(true);
-	    Long selfGroupId = -2L;
 	    		
 	    if(topSelf.size() > 0) {
-	    	tempList.add(new Report(selfGroupId, "您最近访问"));
-	    	tempList.addAll( cloneTops(selfGroupId, topSelf, list) );
+	    	Report tg1 = new Report(-1L, "您最近访问", groupId);
+	    	Report tg2 = new Report(-2L, "您最近访问", tg1.getId());
+			tempList.add(tg1);
+			tempList.add(tg2);
+	    	tempList.addAll( cloneTops(tg2.getId(), topSelf, list) );
 	    }
     	
     	for(Report report : tempList) {
     		Long reportId = report.getId();
     		String name = report.getName();
 			Long parentId = report.getParentId();
-			Integer levelNo = report.getLevelNo();
-			result.add(new Object[] { reportId, name, parentId, levelNo });
+			result.add(new Object[] { reportId, name, parentId, report.getType() });
     	}
     	
 		return result;
@@ -121,15 +122,15 @@ public class ReportAction extends BaseActionSupport {
 	    		
 	    List<Report> result = new ArrayList<Report>();
 	    if(topSelf.size() > 0) {
-	    	result.add(new Report(selfGroupId, "您最近访问报表"));
+	    	result.add(new Report(selfGroupId, "您最近访问报表", null));
 	    	result.addAll( cloneTops(selfGroupId, topSelf, list) );
 	    }
 	    if(topX.size() > 0) {
-	    	result.add(new Report(topGroupId, "近期热门报表"));
+	    	result.add(new Report(topGroupId, "近期热门报表", null));
 	    	result.addAll( cloneTops(topGroupId, topX, list) );
 	    }
 	    
-	    result.add(new Report(newGroupId, "近期新出报表"));
+	    result.add(new Report(newGroupId, "近期新出报表", null));
 	    List<Report> latest = new ArrayList<Report>();
     	for(Report report : list) {
     		if( !report.isActive()  || report.getId().equals(groupId) )  continue;

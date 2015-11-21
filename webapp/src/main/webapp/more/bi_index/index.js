@@ -290,7 +290,7 @@ CONTEXTPATH = "tss";
 	if( $("#iUser").length ) return;
 
 	// 从后台获取三级目录结构
-	var topGid = $.Query.get("id") || 497;
+	var topGid = parseInt($.Query.get("id") || "0");
 	$.ajax({
 		url : "../../auth/rp/my/" + topGid,
 		method : "POST",
@@ -306,25 +306,25 @@ CONTEXTPATH = "tss";
 					return true;
 				}
 
-				if(report[2] === topGid) {
+				if(report[2] === topGid && report[3] === 0) {
 					var li = $.createElement("li", (i == 0 ? "active" : ""));
-					$(li).attr("rid", "m" + top1Id).html(report[1]);
+					$(li).attr("mid", "m" + top1Id).html(report[1]);
 					$headerUL.appendChild(li);				
 
-					reports.each(function(i, report) {
-						var top2Id = report[0];
-						if(report[2] === top1Id) {
+					reports.each(function(i2, report2) {
+						var top2Id = report2[0];
+						if(report2[2] === top1Id && report2[3] === 0) {
 							var li = $.createElement("li");
-							$(li).html('<div class="link m"' +top1Id+ '>' +report[1]+ '<i class="tag"></i></div><ul class="submenu"></ul>');
+							$(li).html('<div class="link m' +top1Id+ '">' +report2[1]+ '<i class="tag"></i></div><ul class="submenu"></ul>');
 							$leftUL.appendChild(li);
 						
 							var $ul2 = $(li).find("ul");
-							reports.each(function(i, report) {
-								var top3Id = report[0];
-								if(report[2] === top2Id) {
+							reports.each(function(i3, report3) {
+								var top3Id = report3[0];
+								if(report3[2] === top2Id && report3[3] === 1) {
 									var li = $.createElement("li");
-									$(li).html('<a href="#" rid="' +top1Id+ '">' +report[1]+ '</a>');
-									$li2.appendChild(li);
+									$(li).html('<a href="#" rid="' +report3[0]+ '">' +report3[1]+ '</a>');
+									$ul2.appendChild(li);
 								}
 							});
 						}

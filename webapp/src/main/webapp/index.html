@@ -16,30 +16,28 @@
 
 html, body { height: 100%; overflow: hidden; }
 
-/* 顶部 */
-.top { height: 40px; background-color: #323232; box-sizing: border-box; border-bottom: 1px solid #95B8E7; }
+/* 顶部 背景色：#323232，隔条：rgba(204,204,204,0.2)，字体色：#b7bac1 */
+.top { height: 30px; background-color: #323232; box-sizing: border-box; }
 .top .logo { 
-	display: inline-block; text-decoration: none; padding: .5em 1em; color: #fff; 
+	display: inline-block; text-decoration: none; padding: 3px 12px; color: #fff; position: absolute; left: 0;
      -webkit-font-smoothing: antialiased;
   	-moz-osx-font-smoothing: grayscale; 
 }
-.top .logo .forename { font-weight: bold; font-size: 22px;color: #4ecdc4; }
-.top .logo .surname  { font-weight: normal; font-size: 20px; color: #fff; }
+.top .logo .forename { font-weight: bold; font-size: 20px; color: #4ecdc4; }
+.top .logo .surname  { font-weight: normal; font-size: 18px; color: #fff; }
 
-.menu a:hover {  text-decoration: none; }
-.menu { margin:1px 0px; position:absolute; top:0px; right:0px; font-size:13px; } 
+.menu { position: absolute; top:0; right: 0; font-size: 1.1em; } 
+.menu a { background-color: #323232; color: #b7bac1; }
+.menu a:hover { background-color: #444; color:#fff; text-decoration: none; }
+
 .menu ul { list-style-type: none; } 
-.menu ul li { float:left; position:relative; width:88px; text-align:center; } 
+.menu ul li { float:left; position:relative; width: 85px; text-align:center;  } 
+.menu>ul>li { border-right: 1px solid rgba(204,204,204,0.2); }
 .menu ul li a, 
-.menu ul li a:visited { 
-	display:block; height:25px; line-height:25px; 
-	color: #333; background: #049cdb; 
-} 
-.menu ul li ul { display: none; } 
-.menu ul li:hover a { color:#fff; background:#AFEEEE; border-bottom:1px solid #E0ECFF; } 
-.menu ul li:hover ul { display:block; position:absolute; top:25px; left:0; width:88px; } 
-.menu ul li:hover ul li a { display:block; background:#049cdb; color:#333; } 
-.menu ul li:hover ul li a:hover { color:#fff; font-weight:bold; } 
+.menu ul li a:visited { display: block; height: 30px; line-height: 30px;  } 
+.menu ul li ul { display: none; }  
+.menu ul li:hover ul { display: block; position: absolute; top: 30px; left:0; width: 85px; } 
+.menu ul li:hover a { border-bottom: 1px solid rgba(204,204,204,0.2); }
 
 </style>
 
@@ -66,7 +64,7 @@ function openMsgPage() {
 	turn2IFrame('modules/um/message.html');
 }
 var resizeIFrame = function resizeIFrame() {
-	$("#iframeSrc").css("height", (document.body.offsetHeight - 40) + "px");
+	$("#iframeSrc").css("height", (document.body.offsetHeight - 30) + "px");
 }
 
 </script>
@@ -81,13 +79,13 @@ var resizeIFrame = function resizeIFrame() {
 	</div>
 	<div class="menu"> 
 		<ul> 
-			<li><a href='javascript:void(0)'>数据管理</a> 	 
+			<li><a href='javascript:void(0)'>数据内容</a> 	 
 				<ul> 
 					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/dm/report.html')">数据分析</a> </li> 
 					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/dm/record.html')">数据采集</a> </li>
+					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/cms/channel.html')">栏目内容</a></li>
 				</ul> 
 			</li>  
-			<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/cms/channel.html')">栏目内容</a></li>
 			<li><a href='javascript:void(0)'>用户权限</a> 	 
 				<ul> 
 					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/group.html')">用户管理</a> </li> 

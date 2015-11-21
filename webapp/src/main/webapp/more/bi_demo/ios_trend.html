@@ -58,7 +58,7 @@
 
 	function drawChart(result) {
 		var data1 = [], data2 = [], data3 = [], labels = [];
-		result = result.reverse();
+		result = result.slice().reverse();
 
 		for(var i = 0; i < result.length - 1; i++) {
 			var item = result[i];

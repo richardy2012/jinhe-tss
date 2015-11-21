@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
 	<declare>	
-		<column caption="id" name="id" mode="string" display="none"/>
+		<column name="id"   caption="分组ID"  mode="number" editable="false"/>
 		<column name="name" caption="分组名称" mode="string" maxLength="30" empty="false"/>
 		<column name="remark" caption="描述" mode="string" maxLength="400"/>
 	</declare>
 	<layout>
 		<TR>
-			<TD width="100"><label binding="name"/></TD>
-			<TD><input binding="name" style="width:50%;"/></TD>
+			<TD width="80"><label binding="name"/></TD>
+			<TD width="300"><input binding="name" style="width:200px;"/></TD>
+			<TD width="80"><label binding="id"/></TD>
+			<TD width="120"><input binding="id" style="width:60px;"/></TD>
 		</TR>
 		<TR>
 			<TD valign="top"><label binding="remark"/></TD>
-			<TD><textarea binding="remark" style="width:80%;height:60px"/></TD>
+			<TD colspan="3"><textarea binding="remark" style="width:80%;height:60px"/></TD>
 		</TR>
 	</layout>
 	<data/>

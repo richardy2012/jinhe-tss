@@ -45,11 +45,11 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
     
     public Report() { }
     
-    public Report(Long groupId, String groupName) {
+    public Report(Long groupId, String groupName, Long parentId) {
     	this.id = groupId;
     	this.name = groupName;
     	this.type = TYPE0;
-    	this.parentId = DEFAULT_PARENT_ID;
+    	this.parentId = parentId == null ? DEFAULT_PARENT_ID : parentId;
     }
     
     @Id
@@ -185,7 +185,7 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
             map.put("hasScript", EasyUtils.isNullOrEmpty(this.script) ? "false" : "true" );
         }
         
-        if( this.id.longValue() < 0 ) {
+        if( this.id.longValue() < 0 || (this.levelNo <= 2 && isActive()) ) {
         	map.put("_open", "true");
         }
  
