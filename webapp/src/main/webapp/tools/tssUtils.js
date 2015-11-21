@@ -1,3 +1,11 @@
+/*
+$(function() {
+    var scriptNode = document.createElement("script");
+    scriptNode.src = "http://s11.cnzz.com/z_stat.php?id=1256153120&web_id=1256153120";
+    scriptNode.async = false;
+    $('head').appendChild(scriptNode);
+});
+*/
 
 /*********************** 系统配置 开始 **********************************/
  var
@@ -18,14 +26,6 @@
 	URL_CORE = IS_TEST ? "../../tools/tssJS/" : "/" + APPLICATION + "/tools/tssJS/",  // 界面核心包相对路径
 	ICON  =  URL_CORE + "img/";
 
-/*
-$(function() {
-    var scriptNode = document.createElement("script");
-    scriptNode.src = "http://s4.cnzz.com/z_stat.php?id=1256153120&web_id=1256153120";
-    scriptNode.async = false;
-    $('head').appendChild(scriptNode);
-});
-*/
 
 /*********************** 和工作区Workspace相关 的 公用函数 **********************************/
 
