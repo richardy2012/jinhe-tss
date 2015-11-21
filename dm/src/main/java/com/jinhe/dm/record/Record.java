@@ -133,7 +133,7 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
         }
         map.put("icon", "images/" + (TYPE0 == type ? "folder" : "record") + ".gif");
         
-        if( this.levelNo < 2 ) {
+        if( this.levelNo < 2 || this.id < 30) {
         	map.put("_open", "true");
         }
         map.put("batchImp", this.batchImp);

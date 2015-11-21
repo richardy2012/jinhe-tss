@@ -83,9 +83,9 @@ window.onload = function() {
          this.style.backgroundColor = "white";
     }
 
-    var defaultUserName = $.Cookie.getValue("iUserName");
-    if( defaultUserName ) {
-        loginNameObj.value = defaultUserName;
+    var defaultUser = $.Cookie.getValue("iUserName");
+    if( defaultUser ) {
+        loginNameObj.value = defaultUser;
     }
     loginNameObj.focus();
 
