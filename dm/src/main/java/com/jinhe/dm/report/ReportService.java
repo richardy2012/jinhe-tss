@@ -20,7 +20,7 @@ public interface ReportService {
     
     Long getReportIdByName(String name);
     
-    @Cached
+//    @Cached
     @PermissionTag(
     		resourceType = Report.RESOURCE_TYPE,
 	        operation = Report.OPERATION_VIEW

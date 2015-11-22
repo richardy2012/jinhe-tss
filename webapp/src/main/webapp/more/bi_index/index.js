@@ -272,6 +272,9 @@ CONTEXTPATH = "tss";
 	if( !$("#iUser").length ) return;
 
 	var x = $.Query.get("x");
+	if(!x) { 
+		return initBIIndex(tssJS);
+	}
 
 	// 过滤报表的权限
 	$.ajax({
@@ -286,7 +289,7 @@ CONTEXTPATH = "tss";
 
 			$("#ad1 li>a[rid]").each(function(i, a) {
 				var rid = $(a).attr("rid");
-				permissions.contains(rid) || (x && $(a.parentNode).remove());
+				permissions.contains(rid) || $(a.parentNode).remove();
 			});
 
 			initBIIndex(tssJS);

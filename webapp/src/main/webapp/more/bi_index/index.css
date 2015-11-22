@@ -50,7 +50,8 @@ header {
 }
 header .logo {
   display: inline-block;
-  padding: .4em 1em;
+  padding: 0 1em;
+  line-height: 33px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -61,8 +62,8 @@ header .logo .forename {
 }
 header .logo .surname {
   font-weight: normal;
-  font-size: 1.6em;
-  margin-left: 2px;
+  font-size: 1.55em;
+  margin-left: 4px;
 }
 header ul {
   position: absolute;
@@ -139,7 +140,7 @@ footer > span table td {
 }
 footer ul {
   position: absolute;
-  margin-right: 40px;
+  left: 50px;
 }
 footer ul li {
   position: relative;
@@ -291,11 +292,13 @@ footer > div > i:after {
   transition: height 0.3s ease-in-out;
 }
 .accordion ul.submenu li {
+  max-height: 36px;
   border-bottom: 1px solid rgba(204, 204, 204, 0.2);
 }
 .accordion ul.submenu li a {
   display: block;
-  padding: 10px;
+  padding: 0 10px;
+  line-height: 35px;
   color: #fff;
   text-indent: 12px;
   text-decoration: none;
@@ -303,6 +306,8 @@ footer > div > i:after {
   text-overflow: ellipsis;
   word-break: break-all;
   white-space: nowrap;
+  overflow: inherit;
+  /* IE11下加了 overflow：hidden a 会下沉 */
   transition: all 0.25s ease;
 }
 .accordion ul.submenu li a:hover {
