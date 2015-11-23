@@ -9,6 +9,7 @@ public class DemoSO extends MacrocodeQueryCondition {
     
 	private String  name;
 	private String  code; 
+	private Long stateId;
 	 
     private String  udf1;  
     private String  udf2;
@@ -18,6 +19,7 @@ public class DemoSO extends MacrocodeQueryCondition {
 		Map<String, Object> map = new HashMap<String, Object>() ;
         map.put("${name}", " and o.name = :name");
         map.put("${code}", " and o.code = :code");
+        map.put("${stateId}", " and o.state.id = :stateId");
         
         map.put("${udf1}", " and o.udf1 = :udf1");
         map.put("${udf2}", " and o.udf2 like :udf2");
@@ -67,5 +69,13 @@ public class DemoSO extends MacrocodeQueryCondition {
 
 	public void setUdf3(String udf3) {
 		this.udf3 = udf3;
+	}
+
+	public Long getStateId() {
+		return stateId;
+	}
+
+	public void setStateId(Long stateId) {
+		this.stateId = stateId;
 	}
 }

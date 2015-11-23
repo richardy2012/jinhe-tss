@@ -13,10 +13,6 @@ public class DemoDaoImpl extends BaseDao<DemoEntity> implements DemoDao {
         super(DemoEntity.class);
     }
 
-	public DemoEntity getEntityById(Long id) {
-		return super.getEntity(id);
-	}
-
 	@SuppressWarnings("unchecked")
 	public List<DemoEntity> getAllEntities() {
 		return (List<DemoEntity>) super.getEntities("from DemoEntity");

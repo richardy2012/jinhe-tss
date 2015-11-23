@@ -85,7 +85,8 @@ public class ImportCSVTest extends TxTestSupport4DM {
 			String filepath = UPLOAD_PATH + "/" + filename;
 			FileHelper.writeFile(new File(filepath), "类型,名称,时间\n" +
 					"1,哈哈,2015-10-29\n" +
-					"2,hehe,2015-10-19\n");
+//					",哈哈,2015-10-29\n" +  // 改成 Test number类型为空
+					"2,hehe,2015-10-19\n"); 
 	        
 	        mocksControl.replay(); 
 			upload.processUploadFile(mockRequest, filepath, filename);

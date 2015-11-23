@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<application applicationId="cwp" name="Demo系统">
+<application applicationId="tssdemo" name="Demo系统">
 
 	<resourceType resourceTypeId="R1" name="XX资源" seqNo="31" description="XX资源" 
 		permissionTable="com.jinhe.tss.demo.resource.XXPermission" 
@@ -11,6 +11,6 @@
 	
 	</resourceType>
 	
-	<resourceTypeRoot applicationId="cwp" resourceTypeId="R1" rootId="0"/>
+	<resourceTypeRoot applicationId="tssdemo" resourceTypeId="R1" rootId="0"/>
 	
 </application>

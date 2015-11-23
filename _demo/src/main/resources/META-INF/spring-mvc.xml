@@ -10,7 +10,15 @@
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 	  
-	<mvc:annotation-driven />
+	<mvc:annotation-driven>  
+        <mvc:message-converters>  
+            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">  
+                <property name="objectMapper" ref="TSSObjectMapper"></property>  
+            </bean>  
+        </mvc:message-converters>  
+    </mvc:annotation-driven>  
+    
+    <bean id="TSSObjectMapper" class="com.jinhe.tss.framework.web.json.TSSObjectMapper"></bean> 
 
 	<!-- 在springMVC配置文件中将Service注解给去掉，以免注入的service没有事务功能 -->
 	<context:component-scan base-package="com"> 
@@ -22,6 +30,7 @@
     <mvc:resources mapping="/css/**"    location="/css/"/>  
     <mvc:resources mapping="/images/**" location="/images/"/>  
 	<mvc:resources mapping="/modules/**" location="/modules/"/>  
+	<mvc:resources mapping="/more/**" location="/more/"/> 
 	<mvc:resources mapping="/tools/**" location="/tools/"/> 
 	
 	<mvc:resources mapping="/*.html" location="/"/>  

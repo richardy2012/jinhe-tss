@@ -1,6 +1,8 @@
 DATE_ADD(now(),  INTERVAL 2 DAY)
 date_format(日期字段,’%Y-%m-%d’)
 
+SET SQL_SAFE_UPDATES = 0;
+
 
 {
     "customizerClass": "com.jinhe.tss.framework.persistence.connpool.ConnPoolCustomizer",

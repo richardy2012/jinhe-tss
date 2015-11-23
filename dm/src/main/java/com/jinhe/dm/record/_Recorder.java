@@ -243,6 +243,9 @@ public class _Recorder extends BaseActionSupport {
 	@RequestMapping("/attach/download/{id}")
 	public void downloadAttach(HttpServletResponse response, @PathVariable("id") Long id) throws IOException {
 		RecordAttach attach = recordService.getAttach(id);
+		if(attach == null) {
+			throw new BusinessException("该附件找不到了，可能已被删除!");
+		}
         FileHelper.downloadFile(response, attach.getAttachPath(), attach.getName());
 	}
 }

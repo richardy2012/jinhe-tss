@@ -1,208 +1,182 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Demo</title>
-    <link rel="stylesheet" type="text/css" href="../../tools/easyui/themes/default/easyui.css">
-    <link rel="stylesheet" type="text/css" href="../../tools/easyui/themes/icon.css">
+<meta charset="UTF-8">
+<title>演示CRUD</title>
 
-    <script type="text/javascript" src="../../tools/easyui/jquery.min.js"></script>
-    <script type="text/javascript" src="../../tools/easyui/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="../../tools/easyui/easyui-lang-zh_CN.js"></script>
+<link rel="stylesheet" href="common.css">
 
-    <style type="text/css">
-        body {
-            margin: 2px;
-            font-family: '微软雅黑'; 
-        }
-        #fm{
-            margin:0;
-            padding:10px 30px;
-        }
-        .ftitle{
-            font-size:14px;
-            font-weight:bold;
-            padding:5px 0;
-            margin-bottom:10px;
-            border-bottom:1px solid #ccc;
-        }
-        .fitem{
-            margin-bottom:5px;
-        }
-        .fitem label{
-            display:inline-block;
-            width:80px;
-        }
-        .fitem input{
-            width:160px;
-        }
-    </style>
+<link rel="stylesheet" href="../../tools/easyui/themes/default/easyui.css">
+<link rel="stylesheet" href="../../tools/easyui/themes/icon.css">
 
-    <script type="text/javascript">
+<script src="../../tools/easyui/jquery.min.js"></script>
+<script src="../../tools/easyui/jquery.easyui.min.js"></script>
+<script src="../../tools/easyui/datagrid-filter.js"></script>
+<script src="../../tools/easyui/easyui-lang-zh_CN.js"></script>
+
+<script src="common.js"></script>
+
+<style type="text/css">
+    
+
+</style>
+
+<script type="text/javascript">
+
+BASE_URL = "../../demo";
+GET_URL   = BASE_URL + '/';  //{id}
+SAVE_URL  = BASE_URL;
+DELTE_URL = BASE_URL + '/';  //{id}
+QUERY_URL = BASE_URL + 'query';
 
 $(document).ready(function(){
-    initCombobox('stateId', 'DemoState');
-    initGrid();
+    query();
+
+    initCombobox('stateId', 'EntityState');
+    initCombobox('param3', 'EntityState');
 });
 
-function initCombobox(id, code, params) {
-    var url = '../../param/json/combo/' + code;
-    $.get(url, params, function(data){
-        var _data = [];
-        $.each(data, function(i, item){
-            _data.push({'id': item[0], 'text': item[1]});
-        });
-
-        $('#' + id).combobox( {
-                    panelHeight: '120px',
-                    valueField: 'id',
-                    textField: 'text',
-                    data: _data
-                });
-    });
-}
-
 function create(){
-    $('#dlg').dialog('open').dialog('setTitle','新增').dialog('center');
-    $('#fm').form('clear');
+    openDialog('新增', true);
+
+    initCombobox('stateId', 'EntityState', {}, 1);
 }
 
 function update(){
-    var row = $('#dg').datagrid('getSelected');
+    var row = getSelectedRow(); 
     if (row){
-        $('#dlg').dialog('open').dialog('setTitle','修改').dialog('center');
+        openDialog('修改');
 
-        $.get("../../demo/" + row.id, {}, function(data){
+        $.get(GET_URL + row.id, {}, function(data){
             data['state.id'] = data.state.id;
+
             $('#fm').form('load', data);
         });
     }
-    else {
-        $.messager.alert({
-            title: '提示',
-            msg: '您没有选中任何行，请先点击选中需要修改的行。'
-        });
-    }
 }
-
-function saveUser(){
-    $('#fm').form('submit',{
-        url: '../../demo',
-        onSubmit: function(){
-            return $(this).form('validate');
-        },
-        success: function(result){
-            var result = eval('(' + result + ')');
-            if (result.errorMsg){
-                $.messager.show({
-                    title: 'Error',
-                    msg: result.errorMsg
-                });
-            } else {
-                $('#dlg').dialog('close'); // close the dialog
-                $('#dg').datagrid('reload'); // reload the user data
-            }
-        }
-    });
-}
-
-function _remove(){
-    var row = $('#dg').datagrid('getSelected');
-    if (row){
-        $.messager.confirm('Confirm','您确定要删除这行数据吗?', function(r){
-            if (r) {
-                $.ajax({
-                     url: '../../demo/' + row.id,
-                     type: 'DELETE',
-                     success: function(result) {
-                        $('#dg').datagrid('reload'); // reload the user data
-                     }
-                });
-            }
-        });
-    }
-    else {
-        $.messager.alert({
-            title: '提示',
-            msg: '您没有选中任何行，请先点击选中需要删除的行。'
-        });
-    }
-}
-
 
 var FIELDS_1 = [
-        { field : 'id', title : 'ID', width : 90},
+        { field : 'ck', checkbox: true},
+        { field : 'id', title : 'ID', width : 90, sortable: true},
         { field : 'name', title : '名称', width : 90 },
-        { field : 'code', title : '编码', width : 80 },
-        { field : 'stateName', title : '状态', width : 80 },
+        { field : 'code', title : '编码', width : 80, sortable: true },
+        { field : 'stateName', title : '状态', width : 80, sortable: true },
         { field : 'udf1', title : '自定义1', width : 80 }, 
         { field : 'udf2', title : '自定义2', width : 80 }, 
         { field : 'udf3', title : '自定义3', width : 80 }
     ];
 
-function initGrid() {
-    $.get('../../demo/', {}, function(data){
-        $.each(data, function(i, item){
-            item.stateName = item.state.text;
-        });
+function query(params) {
+    params = params || {};
 
-        $('#t1').datagrid({
-            fit : true,
-            fitColumns : true,
-            rownumbers : true,
-            singleSelect : true,
-            toolbar: "#toolbar",
-            columns : [FIELDS_1],
-            data: data
-        });
+    var dg = $('#t1').datagrid({
+        url: '../../demo/query',
+        queryParams: params,
+        fit : true,
+        fitColumns : true,
+        pagination : true,
+        pageSize : 10,
+        rownumbers : true,
+        singleSelect : true,
+        checkOnSelect : true,
+        selectOnCheck : true,
+        // remoteSort : false,
+        multiSort : true,
+        toolbar: [ 
+            { text: '新增', iconCls: 'icon-add', handler: create }, 
+            '-', { text: '修改', iconCls: 'icon-edit', handler: update }, 
+            '-', { text: '删除', iconCls : 'icon-remove', handler : _remove }, 
+            '-', { text: '导出', handler : _export }
+        ] ,
+        columns : [FIELDS_1],
+        loadFilter: function(data){
+            $.each(data.rows, function(i, item){
+                item.stateName = item.state.text;
+            });
+            return data;
+        },
+        onHeaderContextMenu: function(e, field){
+            e.preventDefault();
+            if (!cmenu){
+                createColumnMenu();
+            }
+            cmenu.menu('show', {left:e.pageX, top:e.pageY});
+        }
     });
+
+    // datagrid-filter 适合全部数据在一页里加载完成的场景使用。 和分页一起用翻页时出不来数据
+    // dg.datagrid('enableFilter', [{
+    //         field:'id',
+    //         type:'numberbox',
+    //         options:{precision:1},
+    //         op:['equal','notequal','less','greater']
+    //     }]);
 }
 
-    </script>
+function beginQuery() {
+    var params = {};
+    params.code = $('#param1').val();
+    params.name = $('#param2').val();
+    params.stateId = $('#param3').textbox("getValue");
+    query(params);
+}
+
+</script>
 
 </head>
 <body>
-    <table id="t1" title="数据列表"></table>
-
-    <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="create()">新建</a>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="update()">修改</a>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="_remove()">删除</a>
+    <div id="main" class="easyui-layout" fit="true" >
+        <div id="queryContainer" data-options="region:'north'" border="false">
+            <label>编码:</label><input id="param1" class="easyui-textbox"></input>
+            <label>名称:</label><input id="param2" class="easyui-textbox"></input>
+            <label>状态:</label><input id="param3" class="easyui-textbox"></input>
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick='beginQuery()'>查询</a>&nbsp;&nbsp;
+            <a href="#" class="easyui-linkbutton" onclick='moreParams()'>更多条件</a>&nbsp;
+            <a href="#" class="easyui-linkbutton" onclick='lessParams()'>收起条件</a>
+        </div>
+        <div id="dataContainer" data-options="region:'center'" border="false" title="数据列表">
+            <table id="t1" border="false"></table>
+        </div>
     </div>
 
-    <div id="dlg" class="easyui-dialog" style="width:400px;height:320px;padding:10px 20px;" closed="true" buttons="#dlg-buttons">
-        <div class="ftitle">详细信息</div>
+    <div id="dlg" class="easyui-dialog" style="width:800px;height:200px;" closed="true" buttons="#dlg-buttons">
         <form id="fm" method="post" novalidate>
             <input name="id" type="hidden">
-            <div class="fitem">
-                <label>名称:</label>
-                <input name="name" class="easyui-textbox" required="true">
-            </div>
-            <div class="fitem">
-                <label>编码:</label>
-                <input name="code" class="easyui-textbox" required="true">
-            </div>
-            <div class="fitem">
-                <label>状态:</label>
-                <input name="state.id" id="stateId" required="true">
-            </div>
-            <div class="fitem">
-                <label>自定义1:</label>
-                <input name="udf1" class="easyui-textbox">
-            </div>
-            <div class="fitem">
-                <label>自定义2:</label>
-                <input name="udf2" class="easyui-textbox">
-            </div>
-            <div class="fitem">
-                <label>自定义3:</label>
-                <input name="udf3" class="easyui-textbox" validType="email">
-            </div>
+            <table>
+                <tr>
+                    <td class="label">编码:</td>
+                    <td>
+                        <input name="code" class="easyui-textbox" required="true">
+                    </td>
+                    <td class="label">名称:</td>
+                    <td>
+                        <input name="name" class="easyui-textbox" required="true">
+                    </td>
+                    <td class="label">状态:</td>
+                    <td>
+                        <input name="state.id" id="stateId" class="easyui-textbox" required="true">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">自定义1:</td>
+                    <td>
+                        <input name="udf1" class="easyui-textbox">
+                    </td>
+                    <td class="label">自定义2:</td>
+                    <td>
+                        <input name="udf2" class="easyui-textbox">
+                    </td>
+                    <td class="label">自定义3:</td>
+                    <td>
+                        <input name="udf3" class="easyui-textbox" validType="email">
+                    </td>
+                </tr>
+            </table>
         </form>
     </div>
     <div id="dlg-buttons">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveUser()" style="width:90px">保存</a>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">取消</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="save()">保存</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="closeDialog()" >取消</a>
     </div>
 
 </body>

@@ -1,0 +1,26 @@
+一、基于TSS开发应用（拷贝所有TSS文件至待开发应用）
+1、拷贝Demo项目至和jinhe-tss目录平级
+2、执行syncTss.sh
+3、修改pom.xml，选择基于TSS的依赖；并把所有tssdemo字样替换成tss
+4、删除资源注册文件 resources/resource-config.xml
+5、修改application.properties里的 application.code值为TSS，及数据库连接改名为tss；
+   去除#online user manager的注释；
+6、放开META-INF/persistence.xml里对um-orm.xml等的注释， 去掉orm.xml里对RoleUserMapping的配置
+7、去掉tss/appServers.xml里的tssDemo配置
+8、导入一个TSS的初始化数据库
+9、TxTestSupport.java里注释掉："classpath:META-INF/remote/um-remote.xml"
+   放开："classpath:META-INF/um-spring.xml"
+10、执行 mvn eclipse:eclipse，导入到eclipse
+11、尝试跑Test 及 mvn jetty:run, 访问登陆 http://localhost:9000/tssdemo, 一切正常则OK
+
+二、围绕TSS开发应用（独立应用，向TSS注册应用资源信息）
+1、拷贝Demo项目至和jinhe-tss目录平级
+2、执行syncTssWeb.sh； 并修改tssUtils.js里的appCode为目标Code
+3、修改pom.xml，选择围绕TSS的依赖；
+4、完善资源注册文件 resources/resource-config.xml
+5、修改application.properties里的 application.code值为目标Code；
+   去除#online user manager的注释；
+6、修改tss/appServers.xml里的tssDemo配置为目标Code
+7、初始化数据库，执行test里的 InitDatabase.java
+8、执行 mvn eclipse:eclipse，导入到eclipse
+9、尝试跑Test 及 mvn jetty:run, 访问登陆 http://localhost:9000/tssdemo, 一切正常则OK

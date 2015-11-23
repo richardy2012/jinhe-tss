@@ -52,10 +52,14 @@ public class _Util {
   		
   		type = type.toString().toLowerCase();
   		if("number".equals(type)) {
-  			if(value.indexOf(".") > 0) {
-  				return EasyUtils.obj2Double(value);
-  			}
-  			return EasyUtils.obj2Long(value);
+  			try {
+  				if(value.indexOf(".") > 0) {
+  	  				return EasyUtils.obj2Double(value);
+  	  			}
+  	  			return EasyUtils.obj2Long(value);
+  			} catch(Exception e) {
+				return null; // 如果输入的是空字符串等，会有异常
+			}
   		}
   		else if("date".equals(type) || "datetime".equals(type)) {
 			try {

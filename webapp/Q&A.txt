@@ -26,7 +26,9 @@
 7、报表查询和导出分离： 在param里配置一个参数【report_export_url】，值为【http://10.45.10.96:8080】,则所有导出数据请求都被引导至这个服务地址
 8、默认打开树节点界面：http://www.boubei.com/tss/modules/dm/record.html?_default=%E6%8A%A5%E9%94%80%E5%AE%A1%E6%89%B9
    Tree控件集成了自动执行双击树节点的功能
-
+   
+9、Mac下 CSV文件用Excel打开时，并成了一列。 解决办法，改变 系统偏好 --> 语言与地区， 选择一个非中国的，比如尼泊尔.
+  注：这样改后会导致mac下打出来的war包发布到linux环境下时日志、附件目录名等中文字乱码。改回“中国”重启后再打包回复正常。
 
 数据录入表创建常见错误：
 1、字段重名：Duplicate column name ‘position’   — MySQL

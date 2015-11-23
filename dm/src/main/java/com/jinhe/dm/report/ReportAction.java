@@ -223,7 +223,7 @@ public class ReportAction extends BaseActionSupport {
     public void getReportTLs(HttpServletResponse response) {
     	StringBuffer sb = new StringBuffer("<actionSet>"); 
     	
-    	// btr or wms 目录下
+    	// modules/btr or modules/wms 等目录下
     	String rtd = DMConstants.getReportTLDir();
  		File reportTLDir = new File(URLUtil.getWebFileUrl(rtd).getPath());
 		List<File> files = FileHelper.listFilesByTypeDeeply("html", reportTLDir);

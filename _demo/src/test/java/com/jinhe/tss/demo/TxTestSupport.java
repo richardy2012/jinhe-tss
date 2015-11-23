@@ -11,8 +11,7 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.jinhe.tss.framework.Global;
-import com.jinhe.tss.framework.component.param.Param;
-import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.SystemInit;
 import com.jinhe.tss.framework.component.param.ParamService;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.TokenUtil;
@@ -27,10 +26,11 @@ import com.jinhe.tss.util.URLUtil;
 @ContextConfiguration(
 	  locations={
 			"classpath:META-INF/framework-spring.xml",
-		    "classpath:META-INF/remote/um-remote.xml",
+//			"classpath:META-INF/um-spring.xml",
+			"classpath:META-INF/remote/um-remote.xml",
 		    "classpath:META-INF/spring-mvc.xml",
 		    "classpath:META-INF/spring-test.xml"
-	  }   
+	  }
 ) 
 @TransactionConfiguration(defaultRollback = true) // 自动回滚设置为false，否则数据将不插进去
 public abstract class TxTestSupport extends AbstractTransactionalJUnit4SpringContextTests { 
@@ -39,7 +39,9 @@ public abstract class TxTestSupport extends AbstractTransactionalJUnit4SpringCon
     
     @Autowired protected IH2DBServer dbserver;
     
+    @Autowired protected SystemInit systemInit;
     @Autowired protected ParamService paramService;
+    
     @Autowired protected PermissionHelper permissionHelper;
     
     protected MockHttpServletRequest request;
@@ -51,7 +53,7 @@ public abstract class TxTestSupport extends AbstractTransactionalJUnit4SpringCon
         Context.setResponse(response = new MockHttpServletResponse());
 		Context.initRequestContext(request = new MockHttpServletRequest());
 		
-		// DB数据在一轮跑多个单元测试中初始化一次就够了。
+		// DB数据在一轮跑多个单元测试的场景下，初始化一次就够了。
         if( dbserver.isPrepareed() ) {
             return;
         }
@@ -76,6 +78,8 @@ public abstract class TxTestSupport extends AbstractTransactionalJUnit4SpringCon
         
     	// 初始化虚拟登录用户信息
         login(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
+        
+        systemInit.init();
     }
     
     protected void login(Long userId, String loginName) {
@@ -83,41 +87,5 @@ public abstract class TxTestSupport extends AbstractTransactionalJUnit4SpringCon
     	String token = TokenUtil.createToken("1234567890", userId); 
         IdentityCard card = new IdentityCard(token, loginUser);
         Context.initIdentityInfo(card);
-    }
-    
-    /** 简单参数 */
-    protected Param addParam(Long parentId, String code, String name, String value) {
-        Param param = new Param();
-        param.setCode(code);
-        param.setName(name);
-        param.setValue(value);
-        param.setParentId(parentId);
-        param.setType(ParamConstants.NORMAL_PARAM_TYPE);
-        param.setModality(ParamConstants.SIMPLE_PARAM_MODE);
-        paramService.saveParam(param);
-        return param;
-    }
-
-    /** 下拉型参数 */
-    protected Param addComboParam(Long parentId, String code, String name) {
-        Param param = new Param();
-        param.setCode(code);
-        param.setName(name);
-        param.setParentId(parentId);
-        param.setType(ParamConstants.NORMAL_PARAM_TYPE);
-        param.setModality(ParamConstants.COMBO_PARAM_MODE);
-        paramService.saveParam(param);
-        return param;
-    }
-
-    /** 新建设参数项 */
-    protected Param addComboItem(Long parentId, String value, String text) {
-        Param param = new Param();
-        param.setValue(value);
-        param.setText(text);
-        param.setParentId(parentId);
-        param.setType(ParamConstants.ITEM_PARAM_TYPE);
-        paramService.saveParam(param);
-        return param;
     }
 }
