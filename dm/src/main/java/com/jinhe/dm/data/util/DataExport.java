@@ -150,9 +150,10 @@ public class DataExport {
             		if(value == null) {
             			value = "";
             		}
-            		String valueS = value.toString().replaceAll(",", "，");
+            		String valueS = value.toString().replaceAll(",", "，"); // 导出时字段含英文逗号会错列
             		valueS = valueS.replaceAll("\r\n", " ").replaceAll("\n", " ");
-					values.add(valueS); // 导出时字段含英文逗号会错列
+            		valueS = valueS.replaceAll("\"", "");
+					values.add(valueS); 
             	}
                 fw.write(EasyUtils.list2Str(values));
                 fw.write("\r\n");

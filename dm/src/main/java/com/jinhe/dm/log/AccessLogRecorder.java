@@ -60,6 +60,11 @@ public class AccessLogRecorder extends OutputRecordsManager {
             }
 
             String script = SqlConfig.getScript("saveAccessLog", 1);
+            if(script == null) {
+            	script = "insert into dm_access_log " +
+            			"(className, methodName, methodCnName, accessTime, runningTime, params, userId, ip) " +
+            			"values (?, ?, ?, ?, ?, ?, ?, ?)";
+            }
             SQLExcutor.excuteBatch(script, paramsMapList, DMConstants.LOCAL_CONN_POOL);
         }
     }

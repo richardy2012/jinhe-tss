@@ -56,7 +56,7 @@ public class ImportCSVTest extends TxTestSupport4DM {
 		
 		_Database _db = _Database.getDB(record);
 		SQLExcutor ex = _db.select();
-		Assert.assertEquals(2, ex.result.size());
+		Assert.assertEquals( SIZE, ex.result.size() );
 		Assert.assertEquals("hehe", ex.result.get(0).get("f2"));
 		Assert.assertEquals(DateUtil.parse("2015-10-29"), ex.result.get(1).get("f3"));
 		
@@ -69,6 +69,7 @@ public class ImportCSVTest extends TxTestSupport4DM {
 	}
 	
 	static String UPLOAD_PATH = TestUtil.getTempDir() + "/upload/record/";
+	static int SIZE = 10 * 10000;  // 10万 12秒
 	
 	 // 上传附件
     private void importCSVData(Long recordId) {
@@ -83,13 +84,23 @@ public class ImportCSVTest extends TxTestSupport4DM {
 	    try {
 	    	String filename = "1.csv";
 			String filepath = UPLOAD_PATH + "/" + filename;
-			FileHelper.writeFile(new File(filepath), "类型,名称,时间\n" +
-					"1,哈哈,2015-10-29\n" +
-//					",哈哈,2015-10-29\n" +  // 改成 Test number类型为空
-					"2,hehe,2015-10-19\n"); 
+			
+			StringBuffer sb = new StringBuffer("类型,名称,时间\n");
+
+			// 压力测试 一次导入10万
+			for(int i = 3; i <= SIZE; i++) {
+				sb.append(i + ",heihei,2015-11-27\n");
+			}
+			
+			sb.append("1,哈哈,2015-10-29\n");
+			sb.append("2,hehe,2015-10-19\n");
+//			sb.append(",哈哈,2015-10-29\n") // Test number类型为空
+			
+			FileHelper.writeFile(new File(filepath), sb.toString()); 
 	        
 	        mocksControl.replay(); 
 			upload.processUploadFile(mockRequest, filepath, filename);
+//			upload.processUploadFile(mockRequest, "/Users/jinpujun/Desktop/workspace/temp/1.csv", filename);
 			
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

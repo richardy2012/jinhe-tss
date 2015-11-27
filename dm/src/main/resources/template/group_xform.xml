@@ -3,7 +3,7 @@
 	<declare>	
 		<column name="id"   caption="分组ID"  mode="number" editable="false"/>
 		<column name="name" caption="分组名称" mode="string" maxLength="30" empty="false"/>
-		<column name="remark" caption="描述" mode="string" maxLength="400"/>
+		<column name="remark" caption="描述" mode="string" maxLength="200"/>
 	</declare>
 	<layout>
 		<TR>

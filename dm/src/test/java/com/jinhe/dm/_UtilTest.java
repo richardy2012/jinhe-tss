@@ -1,5 +1,7 @@
 package com.jinhe.dm;
 
+import java.util.HashMap;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,6 +23,9 @@ public class _UtilTest {
 		Assert.assertEquals(DateUtil.parse("2015-04-06"), _Util.preTreatValue("2015-04-06", "date"));
 		Assert.assertEquals(DateUtil.parse("2015-04-06 06:06:06"), _Util.preTreatValue("2015-04-06 06:06:06", "datetime"));
 		Assert.assertNull(_Util.preTreatValue("2015-04-06T06:06:06", "datetime"));
+		
+		// test freemarker error print
+		_Util.freemarkerParse("<#if p1??> <#else> ${param1} </#if>", new HashMap<String, String>());
 	}
 
 }

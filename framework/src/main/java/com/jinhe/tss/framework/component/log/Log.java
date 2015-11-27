@@ -76,7 +76,11 @@ public class Log implements IEntity, IXForm, IGridNode {
         
         RequestContext rc = Context.getRequestContext();
         if(rc != null && rc.getRequest() != null) {
-        	this.setOperatorBrowser(rc.getRequest().getHeader("USER-AGENT"));
+        	String browser = rc.getRequest().getHeader("USER-AGENT");
+        	if(browser != null && browser.length() > 127) {
+        		browser = browser.substring(0, 127);
+        	}
+			this.setOperatorBrowser(browser);
         }
     }
  

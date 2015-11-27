@@ -136,7 +136,7 @@ public class _Util {
 	        script = out.toString();
 	        out.flush();
 	    } catch (Exception e) {
-	    	log.error("用Freemarker引擎解析脚本出错了", e);
+	    	log.error("Freemarker引擎解析脚本出错了: " + e.getMessage());
 	    }
 	    return script;
 	}

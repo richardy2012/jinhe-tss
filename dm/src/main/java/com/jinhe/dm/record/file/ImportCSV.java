@@ -51,6 +51,11 @@ public class ImportCSV implements AfterUpload {
         	}
 			
 			valuesMaps.add(valuesMap);
+			// TODO 批量插入，如果莫一批出错，如何回滚所有已经插入的数据
+			if(valuesMaps.size() == 10000) { // 按每一万批量插入一次
+				_db.insertBatch(valuesMaps);
+				valuesMaps.clear();
+			}
 		}
     	_db.insertBatch(valuesMaps);
 		
