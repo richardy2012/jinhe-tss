@@ -51,7 +51,5 @@
 		from xxx_user u 
 		where u.groupId >= :groupId
 	</userSql>
-	<singleUser>
-	</singleUser>
 </params>]]></paramDesc><updateTime><![CDATA[2015-02-05 16:26:24.0]]></updateTime><applicationId><![CDATA[WMS8]]></applicationId><creatorId><![CDATA[-1]]></creatorId><updatorName><![CDATA[Admin]]></updatorName><applicationType><![CDATA[-2]]></applicationType><updatorId><![CDATA[-1]]></updatorId><lockVersion><![CDATA[16]]></lockVersion><id><![CDATA[3]]></id><creatorName><![CDATA[Admin]]></creatorName><description><![CDATA[一个月内登录过的用户]]></description><name><![CDATA[WMS（同步用户）]]></name><dataSourceType><![CDATA[2]]></dataSourceType></row></data>
 </xform></AppDetail></Response>

@@ -17,7 +17,6 @@ public class SyncDataHelper {
     public final static String URL = "url";
     public final static String USERNAME = "user";
     public final static String PASSWORD = "password";
-    public final static String SINGLE_USER = "singleUser";
     
     public final static String QUERY_GROUP_SQL_NAME = "groupSql";
     public final static String QUERY_USER_SQL_NAME  = "userSql";

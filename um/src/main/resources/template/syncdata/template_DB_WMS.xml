@@ -16,10 +16,4 @@
 	    where u.status_id=3 and u.usertype_id=448 and u.code like 'BL%'
 	      and u.domain_id=:groupId
 	</userSql>
-	<singleUser>
-	    select distinct u.id, u.domain_id groupId, u.code loginName, '111111' as password, u.userName, null sex, null birthday, u.email, u.code employeeNo, 
-	    	'com.jinhe.tss.um.sso.UMPasswordIdentifier' authMethod
-	    from gv_sys_userinfo u 
-	    where u.id = :userId
-	</singleUser>
 </params>
