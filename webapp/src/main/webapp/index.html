@@ -35,7 +35,9 @@ html, body { height: 100%; overflow: hidden; }
 .menu ul li { float:left; position:relative; width: 85px; text-align:center;  } 
 .menu>ul>li { border-right: 1px solid rgba(204,204,204,0.2); }
 .menu ul li a, 
-.menu ul li a:visited { display: block; height: 30px; line-height: 30px;  } 
+.menu ul li a:visited { display: block; height: 30px; line-height: 30px; 
+	overflow: hidden; text-overflow: ellipsis; word-break: break-all; white-space: nowrap; 
+} 
 .menu ul li ul { display: none; }  
 .menu ul li:hover ul { display: block; position: absolute; top: 30px; left:0; width: 85px; } 
 .menu ul li:hover a { border-bottom: 1px solid rgba(204,204,204,0.2); }

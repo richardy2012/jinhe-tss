@@ -28,7 +28,7 @@ public class NavigatorDao extends TreeSupportDao<Navigator> implements INavigato
         delete(em.merge(navigator));
     }
     
-    public List<Navigator> getMenuItemListByMenu(Long id) {
+    public List<Navigator> getMenuItems(Long id, Long userId) {
         return getChildrenById(id);
     }
     

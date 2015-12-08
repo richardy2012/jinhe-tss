@@ -18,6 +18,7 @@ import com.jinhe.tss.portal.action.PortalAction;
 import com.jinhe.tss.portal.entity.Navigator;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
+import com.jinhe.tss.portal.helper.MenuDTO;
 import com.jinhe.tss.portal.service.INavigatorService;
 import com.jinhe.tss.portal.service.IPortalService;
 import com.jinhe.tss.um.UMConstants;
@@ -143,6 +144,10 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         
         // 生成菜单XML格式
         menuAction.getNavigatorXML(response, rootMenuId);
+        
+        // 测试生成Json格式
+        List<MenuDTO> mList = menuAction.getNavigatorJson(rootMenuId);
+        Assert.assertTrue(mList.size() > 0);
         
         // 匿名用户读取菜单（缓存）
         login(UMConstants.ANONYMOUS_USER_ID, "ANONYMOUS");

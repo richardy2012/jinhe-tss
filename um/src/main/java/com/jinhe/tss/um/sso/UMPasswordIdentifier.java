@@ -56,12 +56,6 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
 			throw new BusinessException("用户密码不正确，请重新登录", false);
         }
         
-        try {
-        	// 设置一下密码强度，同时也可以将第三方的密码设置到UM中
-    		loginservice.resetPassword(operator.getId(), password); 
-    	} catch(Exception e) {
-    		log.error("resetPassword时出错了：" + e.getMessage());
-    	}
     	return operator;
     }
     
@@ -71,6 +65,14 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
      */
     protected boolean customizeValidate(IPWDOperator operator, String password) {
         IdentityGetter ig = IdentityGetterFactory.getInstance();
-        return ig.indentify(operator, password);
+        boolean result = ig.indentify(operator, password);
+        if(result) { // 如果密码是在地方系统里验证通过，则将第三方的密码设置到UM中
+        	try {
+        		loginservice.resetPassword(operator.getId(), password); 
+        	} catch(Exception e) {
+        		log.error("resetPassword时出错了：" + e.getMessage());
+        	}
+        }
+		return result;
     }
 }

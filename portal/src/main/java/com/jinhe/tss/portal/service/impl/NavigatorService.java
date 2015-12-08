@@ -9,15 +9,14 @@ import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jinhe.tss.cache.Cacheable;
-import com.jinhe.tss.cache.Pool;
-import com.jinhe.tss.framework.component.cache.CacheHelper;
 import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.sso.appserver.AppServer;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.dao.INavigatorDao;
 import com.jinhe.tss.portal.entity.Navigator;
+import com.jinhe.tss.portal.helper.MenuDTO;
 import com.jinhe.tss.portal.service.INavigatorService;
 import com.jinhe.tss.util.MacrocodeCompiler;
 
@@ -91,27 +90,12 @@ public class NavigatorService implements INavigatorService {
     }
     
     public String getNavigatorXML(Long id) {
-    	if( !Context.getIdentityCard().isAnonymous() ) {
-    		return createNavigatorXML(id);
-    	}
-    	
-    	// 缓存只针对匿名用户访问进行缓存
-        Pool navigatorPool = CacheHelper.getNoDeadCache();
-        String key = PortalConstants.NAVIGATOR_CACHE + id;
-        Cacheable cachedMenu = navigatorPool.getObject(key);
-        if( cachedMenu == null ){
-        	cachedMenu = navigatorPool.putObject(key, createNavigatorXML(id));
-        }
-        return (String) cachedMenu.getValue();
-    }
-
-	private String createNavigatorXML(Long id) {
 		Navigator navigator = getNavigator(id);  
 		if(navigator == null) {
 			return "<MainMenu/>";
 		}
 		
-		List<Navigator> menuItems = dao.getMenuItemListByMenu(id);
+		List<Navigator> menuItems = dao.getMenuItems(id, Environment.getUserId());
 		
 		// 解析地址参数中 ${APP_URL}等信息，取 AppServer的配置信息。
 		Collection<AppServer> appservers = Context.getApplicationContext().getAppServers();
@@ -125,6 +109,11 @@ public class NavigatorService implements INavigatorService {
 			return "<MainMenu/>";
 		}
 		return MacrocodeCompiler.run(node.asXML(), macros, true);
+	}
+	
+	public List<MenuDTO> getMenuTree(Long id) {
+		List<Navigator> list = dao.getMenuItems(id, Environment.getUserId());
+		return MenuDTO.buildTree(id, list);
 	}
 }
 

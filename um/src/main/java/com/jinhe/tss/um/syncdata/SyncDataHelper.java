@@ -49,7 +49,10 @@ public class SyncDataHelper {
         if(userPassword == null) {
         	userPassword = DEFAULT_PWD;
         }
-        user.setPassword(user.encodePassword(userPassword));
+        if(userPassword.length() < 32) { // 如果是32位，则同步的是已经加密好的密码
+        	userPassword = user.encodePassword(userPassword);
+        }
+        user.setPassword(userPassword);
         user.setPasswordQuestion("?");
         user.setPasswordAnswer( System.currentTimeMillis() + "!" );
         

@@ -12,8 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.component.cache.CacheHelper;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
@@ -25,6 +25,7 @@ import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.entity.Navigator;
 import com.jinhe.tss.portal.entity.permission.NavigatorPermission;
 import com.jinhe.tss.portal.entity.permission.NavigatorResource;
+import com.jinhe.tss.portal.helper.MenuDTO;
 import com.jinhe.tss.portal.helper.PSTreeTranslator4CreateMenu;
 import com.jinhe.tss.portal.service.INavigatorService;
 import com.jinhe.tss.portal.service.IPortalService;
@@ -46,13 +47,22 @@ public class NavigatorAction extends BaseActionSupport {
         print("MainMenu", service.getNavigatorXML(id));
     }
 	
+	@RequestMapping("/json/{id}")
+	@ResponseBody
+    public List<MenuDTO> getNavigatorJson(@PathVariable("id") Long id) {
+        return service.getMenuTree(id);
+    }
+	
     /** 刷新一下参数的缓存 */
 	@RequestMapping("/cache/{key}")
     public void flushCache(HttpServletResponse response, @PathVariable("key") Object key) {
-		Pool navigatorPool = CacheHelper.getNoDeadCache();;
-        navigatorPool.removeObject(PortalConstants.NAVIGATOR_CACHE + key);
+		flushMenuCache();
         printSuccessMessage();
     }
+	
+	private void flushMenuCache() {
+		CacheHelper.flushLongCache("NavigatorDao.getMenuItems");
+	}
     
 	/**
 	 * <p>
@@ -102,6 +112,8 @@ public class NavigatorAction extends BaseActionSupport {
         boolean isNew = navigator.getId() == null;
         
         navigator = service.saveNavigator(navigator);
+        flushMenuCache();
+        
         doAfterSave(isNew, navigator, "MenuTree");
 	}
 	
@@ -110,7 +122,9 @@ public class NavigatorAction extends BaseActionSupport {
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public void delete(HttpServletResponse response, @PathVariable("id") Long id) {
-		service.deleteNavigator(id);	
+		service.deleteNavigator(id);
+		flushMenuCache();
+		
 		printSuccessMessage();
 	}
 	
@@ -123,6 +137,8 @@ public class NavigatorAction extends BaseActionSupport {
     		@PathVariable("state") int state) {
     	
 		service.disable(id, state);
+		flushMenuCache();
+		
         printSuccessMessage();
 	}
 	
@@ -135,7 +151,9 @@ public class NavigatorAction extends BaseActionSupport {
             @PathVariable("targetId") Long targetId,  
             @PathVariable("direction") int direction) {
 		
-		service.sort(id, targetId, direction);        
+		service.sort(id, targetId, direction);   
+		flushMenuCache();
+		
         printSuccessMessage();
 	}
     
@@ -151,6 +169,8 @@ public class NavigatorAction extends BaseActionSupport {
             throw new BusinessException("节点不能移动到自身节点下");
         }
         service.moveNavigator(id, targetId);
+        flushMenuCache();
+        
         printSuccessMessage();
     }
 	

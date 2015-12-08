@@ -320,11 +320,11 @@ function testRestfulReportService() {
 		sendAjax();
 	}
 
-	function sendAjax(searchFormDataNode) {
+	function sendAjax(params) {
 		$.ajax({
 			url : url,
 			method : "POST",
-			formNode : searchFormDataNode,
+			params : params,
 			type : "json",
 			waiting : true,
 			ondata : function() { 

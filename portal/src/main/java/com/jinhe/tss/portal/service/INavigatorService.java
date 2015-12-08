@@ -5,6 +5,7 @@ import java.util.List;
 import com.jinhe.tss.framework.component.log.Logable;
 import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.entity.Navigator;
+import com.jinhe.tss.portal.helper.MenuDTO;
 import com.jinhe.tss.um.permission.filter.PermissionTag;
  
 public interface INavigatorService {
@@ -72,11 +73,12 @@ public interface INavigatorService {
 
     /**
      * 生成一个菜单下所有菜单项集合的XML格式数据。
-     * 注：本方法主要供门户取菜单调用，比较频繁，需要对其进行缓存，然后修改菜单的时候刷新该缓存。
-     * 另外因为菜单是授权的，不同用户看到的菜单有可能不一样，所以菜单缓存只针对匿名用户进行缓存。
+     * 注：本方法主要供门户取菜单调用，比较频繁，在Dao调用时对其进行了缓存。
      * 
      * @param id
      * @return
      */
     String getNavigatorXML(Long id);
+    
+    List<MenuDTO> getMenuTree(Long id);
 }

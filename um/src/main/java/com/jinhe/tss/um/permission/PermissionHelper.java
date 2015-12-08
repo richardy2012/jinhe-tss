@@ -415,15 +415,20 @@ public class PermissionHelper extends TreeSupportDao<IDecodable> {
         	roleUserList.add( new Long[]{ logonUserId, UMConstants.ANONYMOUS_ROLE_ID } );
         }
         
-        for(Object[] roleUserInfo : roleUserList){
+        List<RoleUserMappingId> list = new ArrayList<RoleUserMappingId>();
+        for(Object[] roleUserInfo : roleUserList) {
 			RoleUserMappingId id = new RoleUserMappingId();
 			id.setUserId( (Long) roleUserInfo[0] );
 			id.setRoleId( (Long) roleUserInfo[1] );
+			if(list.contains(id)) {
+				continue;
+			} 
 			
 			RoleUserMapping entity = new RoleUserMapping();
 			entity.setId(id);
 			
 			createObject(entity);
+			list.add(id);
 		}
 	}
 	
