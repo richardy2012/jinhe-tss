@@ -216,7 +216,19 @@ public class _Reporter extends BaseActionSupport {
     	
     	long start = System.currentTimeMillis();
     	Map<String, String> requestMap = getRequestMap(request, false);
-        SQLExcutor excutor = reportService.queryReport(reportId, requestMap, 1, 10*10000, getLoginUserId(requestMap));
+    	
+    	Object page = requestMap.get("page");
+    	Object pagesize = requestMap.get("pagesize");
+    	if(pagesize == null) {
+    		pagesize = requestMap.get("rows");  // easyUI
+    	}
+    	if(pagesize == null) {
+    		pagesize = 10*10000;
+    	}
+    	int _pagesize = EasyUtils.obj2Int(pagesize);
+    	int _page = page != null ? EasyUtils.obj2Int(page) : 1;
+    			
+        SQLExcutor excutor = reportService.queryReport(reportId, requestMap, _page, _pagesize, getLoginUserId(requestMap));
         
         // 对一些转换为json为报错的类型值进行预处理
         for(Map<String, Object> row : excutor.result ) {
@@ -227,6 +239,13 @@ public class _Reporter extends BaseActionSupport {
         }
         
         outputAccessLog(reportId, "showAsJson", requestMap, start);
+        
+        if(page != null) {
+        	Map<String, Object> returlVal = new HashMap<String, Object>();
+        	returlVal.put("total", excutor.count);
+        	returlVal.put("rows", excutor.result);
+        	return returlVal;
+        }
         
         return excutor.result;
     }

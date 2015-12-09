@@ -69,6 +69,8 @@ public class _ReporterTest extends TxTestSupport4DM {
         _reporter.showAsGrid(request, response, reportId, 1, 10);
         _reporter.showAsJson(request, reportId.toString());
         
+        request.addParameter("page", "1");
+        request.addParameter("rows", "3");
         _reporter.showAsJson(request, report1.getName());
         
         _reporter.exportAsCSV(request, response, reportId, 1, 0); // 测试导出
