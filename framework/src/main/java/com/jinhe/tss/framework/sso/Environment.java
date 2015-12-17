@@ -10,6 +10,10 @@ import com.jinhe.tss.framework.sso.context.RequestContext;
  */
 public class Environment {
 	
+	public static boolean isAnonymous() {
+		return AnonymousOperator.anonymous.getId().equals( getUserId() );
+	}
+	
     /**
      * 获取用户ID信息
      */
