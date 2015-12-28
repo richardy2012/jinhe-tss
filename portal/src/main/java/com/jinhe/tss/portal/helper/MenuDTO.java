@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.portal.entity.Navigator;
 
 public class MenuDTO {
@@ -36,6 +37,10 @@ public class MenuDTO {
 		Map<Long, MenuDTO> map = new HashMap<Long, MenuDTO>();
         
         for(Navigator menu : list) {
+        	if(ParamConstants.TRUE.equals(menu.getDisabled())) {
+        		continue; // 过滤掉停用的
+        	}
+        	
         	MenuDTO dto = new MenuDTO(menu);
         	map.put(menu.getId(), dto);
         	

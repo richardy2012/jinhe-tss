@@ -43,3 +43,8 @@ function dbsx() {
     }
   });
 }
+
+function feedback() {
+	var url = encodeURI('modules/dm/record.html?_default=系统使用反馈');
+  	window.open(url);
+}

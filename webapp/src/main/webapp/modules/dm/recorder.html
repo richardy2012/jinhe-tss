@@ -278,7 +278,7 @@ function loadDetailData(rowID) {
     $('#btnViewAttach').remove();
     if(needFile && rowID != '_new' && (rowID + "").indexOf('_copy') < 0) {
         var newBtn = $.createElement('button', 'tssbutton small blue', 'btnViewAttach');
-        $(newBtn).html("查看附件").click( function() {      
+        $(newBtn).html("管理附件").click( function() {      
             manageAttach(rowID);
         } );  
         $("WorkSpace\\:PageStep").appendChild(newBtn);
