@@ -312,10 +312,11 @@ function saveSource(rowID) {
             afterListener();
         }
         delete $.cache.XmlDatas[rowID];
+        ws.closeTab("viewRow_" + rowID);  
 
-        loadGridData( $1("GridPageList").value || 1 ); // 更新Grid
-        ws.closeActiveTab(); 
+        loadGridData( $1("GridPageList").value || 1 ); // 更新Grid       
     }
+
     request.send();
 }
 

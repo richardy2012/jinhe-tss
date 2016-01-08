@@ -16,15 +16,16 @@ function echartLine2D(canvasName, title, data, unitName, func) {
 		var legendData = data[legend];
  
 		var serieData = [];
-		var temp = {};
+		var tempMap = {};
 		for(var i = 0; i < legendData.length; i++) {
 			var item = legendData[i];
-			temp[item.name] = item.value;
-			labels.push(item.name);
+			tempMap[item.name] = item.value;
+			
+			!labels.contains(item.name) && labels.push(item.name);
 		}
 
 		for(var i = 0; i < labels.length; i++) {
-			serieData[i] = temp[labels[i]] || 0;
+			serieData[i] = tempMap[labels[i]] || 0;
 		}
 
 		series.push({
@@ -34,7 +35,7 @@ function echartLine2D(canvasName, title, data, unitName, func) {
 			data: serieData,
 			smooth: true,
             //symbol: 'none', 
-            symbolSize: 10,
+            symbolSize: 3,
             markLine: {
                 data: [
                     {type : 'average', name: '平均值'}
