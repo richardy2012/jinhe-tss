@@ -223,6 +223,12 @@ public class _Recorder extends BaseActionSupport {
 		return recordService.getAttachList(recordId, itemId);
     }
 	
+	@RequestMapping("/attach/json/{recordId}")
+    @ResponseBody
+    public List<?> getAttachList(@PathVariable("recordId") Long recordId) {
+		return recordService.getAttachList(recordId, null);
+    }
+	
 	@RequestMapping("/attach/xml/{recordId}/{itemId}")
     public void getAttachListXML(HttpServletResponse response, 
     		@PathVariable("recordId") Long recordId, @PathVariable("itemId") Long itemId) {

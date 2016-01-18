@@ -105,9 +105,12 @@ public class RecordServiceImpl implements RecordService {
 	}
 
 	public List<?> getAttachList(Long recordId, Long itemId) {
-		String hql = "from RecordAttach o where o.recordId = ? and o.itemId = ?";
-        List<?> list = recordDao.getEntities(hql, recordId, itemId);
-		return list;
+		String hql = "from RecordAttach o where o.recordId = ? ";
+		if(itemId != null) {
+			hql += "and o.itemId = ?";
+			return recordDao.getEntities(hql, recordId, itemId);
+		}
+        return recordDao.getEntities(hql, recordId);
 	}
 
 	public void deleteAttach(Long id) {

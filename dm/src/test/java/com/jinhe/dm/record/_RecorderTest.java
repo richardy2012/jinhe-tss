@@ -116,6 +116,9 @@ public class _RecorderTest extends TxTestSupport4DM {
 		List<?> attachList = recorder.getAttachList(recordId, itemId);
 		Assert.assertTrue(attachList.size() == 1);
 		
+		attachList = recorder.getAttachList(recordId);
+		Assert.assertTrue(attachList.size() >= 1);
+		
 		RecordAttach ra = (RecordAttach) attachList.get(0);
 		log.info(ra.toString());
 		Assert.assertEquals("123.txt", ra.getName());

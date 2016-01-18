@@ -68,7 +68,7 @@ public class CreateAttach implements AfterUpload {
 		String fileSuffix = FileHelper.getFileSuffix(fileName);
 		
 		// file指向剪切后的地址
-		file = new File(rootDir + "/" +fileName); 
+		file = new File(rootDir + "/" +fileName);
 		
 		// 对附件进行重命名
 		fileName = System.currentTimeMillis() + "." + fileSuffix;

@@ -62,6 +62,7 @@ public class _Reporter extends BaseActionSupport {
 		return new Object[] {report.getName(), report.getParam(), displayUri, hasScript};
     }
     
+	// 注：通过tssJS.ajax能自动过滤params里的空值，jQuery发送的ajax请求则不能
     private Map<String, String> getRequestMap(HttpServletRequest request, boolean isGet) {
     	Map<String, String[]> parameterMap = request.getParameterMap();
     	Map<String, String> requestMap = new HashMap<String, String>();
