@@ -242,9 +242,8 @@ tssJS(function() {
 
 /* ---------------------------------- 数据导出 ----------------------------------------------- */
 
-// 相对于 /tss/more/bi_demo or /tss/more/bi_template 目录
-URL_EXPORT_DATA = '../../data/export/data2csv';
-URL_DOWNLOAD    = '../../data/download/';
+URL_EXPORT_DATA = '/tss/data/export/data2csv';
+URL_DOWNLOAD    = '/tss/data/download/';
 
 function data2CSV(name, header, data) {
     if(data && data.length > 0) {

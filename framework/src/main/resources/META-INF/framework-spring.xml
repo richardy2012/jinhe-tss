@@ -60,6 +60,7 @@
 		</property>
 		<property name="interceptorNames">
 			<list>
+				<value>queryCacheInterceptor</value>
 				<value>cacheInterceptor</value>
 			</list>
 		</property>

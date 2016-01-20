@@ -6,6 +6,7 @@ import java.util.Map;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
 import com.jinhe.tss.framework.component.cache.CacheLife;
 import com.jinhe.tss.framework.component.cache.Cached;
+import com.jinhe.tss.framework.component.cache.QueryCached;
 import com.jinhe.tss.framework.component.log.Logable;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Create;
 import com.jinhe.tss.um.permission.filter.PermissionFilter4Sort;
@@ -68,6 +69,7 @@ public interface ReportService {
     /**
      * 传入 loginUserId 目的是防止不同用户使用同一份缓存数据，因用户权限不同，各自看到的数据多少也不同，所以需要分开来缓存。
      */
+    @QueryCached
     @Cached(cyclelife = CacheLife.SHORTER)
     SQLExcutor queryReport(Long reportId, Map<String, String> requestMap, int page, int pagesize, Object loginUserId);
 }

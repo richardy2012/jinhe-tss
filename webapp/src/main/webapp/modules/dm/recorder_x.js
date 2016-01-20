@@ -205,6 +205,11 @@ function notice(field, msg) {
     });
 }
 
+// 隐藏右键的删除按钮
+function hideDelButton() {
+    $1("grid").contextmenu.delItem("_item_id3");
+}
+
 // if($("#udf1").value() === "11") { disableForm(); } else { $("#page1BtSave").show();  };
 function disableForm() {
     $("#page1BtSave").hide(); 
