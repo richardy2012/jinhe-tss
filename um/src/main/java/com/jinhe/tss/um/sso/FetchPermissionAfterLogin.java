@@ -6,6 +6,8 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import com.jinhe.tss.framework.Global;
+import com.jinhe.tss.framework.component.log.IBusinessLogger;
+import com.jinhe.tss.framework.component.log.Log;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.sso.ILoginCustomizer;
 import com.jinhe.tss.framework.sso.SSOConstants;
@@ -22,6 +24,7 @@ public class FetchPermissionAfterLogin implements ILoginCustomizer {
     
     ILoginService loginSerivce = (ILoginService) Global.getBean("LoginService");
     PermissionService permissionService = (PermissionService) Global.getBean("PermissionService");
+    IBusinessLogger businessLogger = ((IBusinessLogger) Global.getBean("BusinessLogger"));
 
     public void execute() {
         
@@ -58,5 +61,10 @@ public class FetchPermissionAfterLogin implements ILoginCustomizer {
         
         session.setAttribute("GROUP_LAST_ID", lastGroup[0]);
     	session.setAttribute("GROUP_LAST_NAME", lastGroup[1]);
+    	
+    	// 记录登陆成功的日志信息
+		Log excuteLog = new Log(Environment.getUserName(), "FetchPermissionAfterLogin");
+    	excuteLog.setOperateTable( "用户登录" );
+    	businessLogger.output(excuteLog);
     }
 }

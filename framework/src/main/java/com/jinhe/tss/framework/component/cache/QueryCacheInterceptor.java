@@ -15,7 +15,9 @@ import com.jinhe.tss.cache.TimeWrapper;
  * 将耗时查询（如report）的执行中的查询缓存起来。
  * 如果同一个用户对同一报表，相同查询条件的查询还在执行中，则让后面的请求进入等待状态。
  * 等第一次的查询执行完成，然后后续的查询直接取缓存里的数据。
- * 这样可以防止用户重复点击查询，造成性能瓶颈。 测试时，把第一次查询设置断点断住。
+ * 这样可以防止用户重复点击查询，造成性能瓶颈。 
+ * 
+ * 测试时，可以把第一次查询设置断点断住，来模拟耗时的report查询过程。
  */
 @Component("queryCacheInterceptor")
 public class QueryCacheInterceptor implements MethodInterceptor {
@@ -56,9 +58,10 @@ public class QueryCacheInterceptor implements MethodInterceptor {
 			cacheItem.update( ++count );
 			log.debug(currentThread + " QueryCache【"+key+"】= " + count);
 			
-			// 等待执行中的上一次请求先执行完成
-			while( cache.getObject(key) != null ) {
-				Thread.sleep(100 * count);
+			// 等待执行中的上一次请求先执行完成； 超过10分钟则不再等待
+			long start = System.currentTimeMillis();
+			while( cache.getObject(key) != null || System.currentTimeMillis() - start > 10*60*1000 ) {
+				Thread.sleep(500 * count);
 				log.debug(currentThread + " QueryCache waiting...");
 			}
 			
