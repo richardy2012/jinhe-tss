@@ -42,7 +42,11 @@ public class AccessLogTest extends TxTestSupport4DM {
 				return null;
 			}
 		});
-		ex.excuteQuery("test1", 1, new HashMap<Integer, Object>());
+		
+		HashMap<Integer, Object> paramsMap = new HashMap<Integer, Object>();
+		paramsMap.put(1, "0");
+		ex.excuteQuery("test1", 1, paramsMap);
+		
 		ex.excuteQuery(sql, new HashMap<Integer, Object>());
 		
 		Assert.assertTrue(ex.result.size() > 10);

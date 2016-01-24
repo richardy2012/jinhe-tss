@@ -122,8 +122,9 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         
         // 测试停用启用
         for(int i = 0; i < 2; i++) {
-	        menuAction.disable(response, rootMenuId, ParamConstants.TRUE);
-	        menuAction.disable(response, rootMenuId, ParamConstants.FALSE);
+	        menuAction.disable(response, rootMenuId, ParamConstants.TRUE);  // 停用这个枝
+	        menuAction.disable(response, menu2_2.getId(), ParamConstants.FALSE); // 启用当前节点及其所有父节点
+	        menuAction.disable(response, menu3.getId(), ParamConstants.FALSE);
         }
         
         // 排序、移动
