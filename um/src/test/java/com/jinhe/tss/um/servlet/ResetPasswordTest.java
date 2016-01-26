@@ -9,7 +9,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jinhe.tss.um.TxSupportTest4UM;
 
-public class ResetPasswordServletTest extends TxSupportTest4UM {
+public class ResetPasswordTest extends TxSupportTest4UM {
     
 	@Test
     public void testDoPost() {
@@ -21,7 +21,7 @@ public class ResetPasswordServletTest extends TxSupportTest4UM {
         request.addParameter("newPassword", "123456789");
         request.addParameter("type", "not-reset");
          
-        ResetPasswordServlet servlet = new ResetPasswordServlet();
+        ResetPassword servlet = new ResetPassword();
         try {
             servlet.init();
             try {

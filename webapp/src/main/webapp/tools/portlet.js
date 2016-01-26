@@ -48,3 +48,16 @@ function feedback() {
 	var url = encodeURI('modules/dm/record.html?_default=系统使用反馈');
   	window.open(url);
 }
+
+/* 禁止鼠标右键 
+(function() {
+	document.oncontextmenu = function(ev) {
+		ev = ev || window.event;
+		var srcElement = $.Event.getSrcElement(ev);
+		var tagName = srcElement.tagName.toLowerCase();
+		if("input" != tagName && "textarea" != tagName) {
+			$.Event.cancel(ev);            
+		}
+	}
+})();
+*/

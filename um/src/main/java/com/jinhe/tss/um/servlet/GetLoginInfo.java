@@ -22,7 +22,7 @@ import com.jinhe.tss.util.MathUtil;
  * </p>
  */
 @WebServlet(urlPatterns="/getLoginInfo.in")
-public class GetLoginInfoServlet extends HttpServlet {
+public class GetLoginInfo extends HttpServlet {
     private static final long serialVersionUID = 8680769606094382553L;
  
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

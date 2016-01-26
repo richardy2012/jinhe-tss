@@ -7,7 +7,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jinhe.tss.um.TxSupportTest4UM;
 
-public class RegisterServletTest extends TxSupportTest4UM {
+public class RegisterTest extends TxSupportTest4UM {
     
 	@Test
     public void testDoPost() {
@@ -29,7 +29,7 @@ public class RegisterServletTest extends TxSupportTest4UM {
         request.addParameter("certificate", "");
         request.addParameter("certificateNo", "");
         
-        RegisterServlet registerServlet = new RegisterServlet();
+        Register registerServlet = new Register();
         
         try {
             registerServlet.init();

@@ -8,7 +8,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import com.jinhe.tss.framework.sso.SSOConstants;
 import com.jinhe.tss.um.TxSupportTest4UM;
 
-public class GetLoginInfoServletTest extends TxSupportTest4UM {
+public class GetLoginInfoTest extends TxSupportTest4UM {
     
 	@Test
     public void testDoPost() {
@@ -18,7 +18,7 @@ public class GetLoginInfoServletTest extends TxSupportTest4UM {
         request.addParameter(SSOConstants.LOGINNAME_IN_SESSION, "Admin");
         
         try {
-            GetLoginInfoServlet servlet = new GetLoginInfoServlet();
+            GetLoginInfo servlet = new GetLoginInfo();
 			servlet.doGet(request, response);
             
         } catch (Exception e) {

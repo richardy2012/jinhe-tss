@@ -43,6 +43,14 @@
     #login_box a:hover { color: #FEF7A9; text-decoration:underline; }
     #login_box a:active { color: #ff7f24; }
 
+    @media screen and (max-width: 660px) {
+        #login_box a { display: none; }
+    }
+    @media screen and (max-width: 420px) {
+        #login_box { width: 100%; }
+        #login_box input, #bt_login, #login_box h1 { width: 95%; }
+    }
+
 </style>
 
 <script type="text/javascript">

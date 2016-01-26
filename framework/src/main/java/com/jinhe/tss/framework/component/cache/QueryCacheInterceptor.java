@@ -60,7 +60,7 @@ public class QueryCacheInterceptor implements MethodInterceptor {
 			
 			// 等待执行中的上一次请求先执行完成； 超过10分钟则不再等待
 			long start = System.currentTimeMillis();
-			while( cache.getObject(key) != null || System.currentTimeMillis() - start > 10*60*1000 ) {
+			while( cache.getObject(key) != null && System.currentTimeMillis() - start < 10*60*1000 ) {
 				Thread.sleep(500 * count);
 				log.debug(currentThread + " QueryCache waiting...");
 			}

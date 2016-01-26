@@ -22,7 +22,7 @@ import com.jinhe.tss.util.EasyUtils;
  * </p>
  */
 @WebServlet(urlPatterns="/getPassword.in")
-public class GetPasswordServlet extends HttpServlet {
+public class GetPassword extends HttpServlet {
  
 	private static final long serialVersionUID = -740569423483772472L;
  
@@ -47,7 +47,7 @@ public class GetPasswordServlet extends HttpServlet {
             String userPasswordAnswer = user.getPasswordAnswer();
             String userPasswordQuestion = user.getPasswordQuestion();
             if ( EasyUtils.isNullOrEmpty(userPasswordQuestion) || EasyUtils.isNullOrEmpty(userPasswordAnswer)) {
-                ErrorMessageEncoder encoder = new ErrorMessageEncoder("您没有设置密码保护，无法通过本方式找回密码。");
+                ErrorMessageEncoder encoder = new ErrorMessageEncoder("您没有设置密码保护，无法通过本方式重置密码，请联系管理员。");
                 encoder.print(new XmlPrintWriter(response.getWriter()));
             } 
             else if (passwordAnswer.equals(userPasswordAnswer) && passwordQuestion.equals(userPasswordQuestion)) {

@@ -16,7 +16,7 @@ import com.jinhe.tss.um.helper.PasswordRule;
  * 获取密码强度
  */
 @WebServlet(urlPatterns="/getPasswordStrength.in")
-public class GetPasswordStrengthServlet extends HttpServlet {
+public class GetPasswordStrength extends HttpServlet {
 
 	private static final long serialVersionUID = -192831928301L;
  

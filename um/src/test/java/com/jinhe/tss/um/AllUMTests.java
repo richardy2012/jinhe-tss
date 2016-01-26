@@ -8,11 +8,11 @@ import com.jinhe.tss.um.module.RoleModuleTest;
 import com.jinhe.tss.um.module.SubAuthorizeModuleTest;
 import com.jinhe.tss.um.module.UserModuleTest;
 import com.jinhe.tss.um.search.GeneralSearchTest;
-import com.jinhe.tss.um.servlet.GetLoginInfoServletTest;
-import com.jinhe.tss.um.servlet.GetPasswordServletTest;
-import com.jinhe.tss.um.servlet.GetPasswordStrengthServletTest;
-import com.jinhe.tss.um.servlet.RegisterServletTest;
-import com.jinhe.tss.um.servlet.ResetPasswordServletTest;
+import com.jinhe.tss.um.servlet.GetLoginInfoTest;
+import com.jinhe.tss.um.servlet.GetPasswordTest;
+import com.jinhe.tss.um.servlet.GetPasswordStrengthTest;
+import com.jinhe.tss.um.servlet.RegisterTest;
+import com.jinhe.tss.um.servlet.ResetPasswordTest;
 import com.jinhe.tss.um.sso.FetchPermissionAfterLoginCustomizerTest;
 import com.jinhe.tss.um.sso.UMIdentityGetterTest;
 import com.jinhe.tss.um.sso.UMPasswordIdentifierTest;
@@ -28,11 +28,11 @@ import com.jinhe.tss.um.zlast.ResourceModuleTest;
 	FetchPermissionAfterLoginCustomizerTest.class,
 	UMPasswordIdentifierTest.class,
 	UMIdentityGetterTest.class,
-	GetLoginInfoServletTest.class,
-	GetPasswordServletTest.class,
-	GetPasswordStrengthServletTest.class,
-	RegisterServletTest.class,
-	ResetPasswordServletTest.class,
+	GetLoginInfoTest.class,
+	GetPasswordTest.class,
+	GetPasswordStrengthTest.class,
+	RegisterTest.class,
+	ResetPasswordTest.class,
 	GeneralSearchTest.class,
 })
 public class AllUMTests {

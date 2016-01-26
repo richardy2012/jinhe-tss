@@ -29,11 +29,13 @@
 
     /* XMLHTTP请求地址汇总 */
     URL_INIT   = AUTH_PATH + "user/forgetpwd";
+    URL_QUESTION = NO_AUTH_PATH + "getQuestion.in";
     URL_FORGET = NO_AUTH_PATH + "getPassword.in";
     URL_RESET  = NO_AUTH_PATH + "resetPassword.in";
 
     if( IS_TEST ) {
         URL_INIT   = "data/_forget_init.xml";
+        URL_QUESTION = "data/_question.xml";
         URL_FORGET = "data/_forget.xml";
         URL_RESET  = "data/_success.xml";
     }
@@ -52,6 +54,25 @@
                 $1("password").disabled = "disabled";
                 $1("repassword").disabled = "disabled";
                 $1("resetBT").style.visibility = "hidden";
+
+                /* 自动获取密码提示的问题 */
+                $1("loginName").onblur = function() { 
+                    var value = this.value;
+                    if( !value ) return;
+
+                    $.ajax({
+                        url: URL_QUESTION,
+                        params:  {"loginName": value},
+                        onexcption: function() {
+                            $1("passwordQuestion").focus();
+                        },
+                        onresult: function(){
+                            var question = this.getNodeValue("Question");  
+                            forgetForm.updateDataExternal("passwordQuestion", question);                         
+                            $1("passwordAnswer").focus();
+                        }
+                    });
+                }
             }
         });
     }

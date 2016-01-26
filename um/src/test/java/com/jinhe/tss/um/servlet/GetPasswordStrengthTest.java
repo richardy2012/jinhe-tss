@@ -8,7 +8,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import com.jinhe.tss.framework.sso.SSOConstants;
 import com.jinhe.tss.um.TxSupportTest4UM;
 
-public class GetPasswordStrengthServletTest extends TxSupportTest4UM {
+public class GetPasswordStrengthTest extends TxSupportTest4UM {
     
 	@Test
     public void testDoPost() {
@@ -19,7 +19,7 @@ public class GetPasswordStrengthServletTest extends TxSupportTest4UM {
         request.addParameter(SSOConstants.USER_PASSWORD, "123456");
         
         try {
-            GetPasswordStrengthServlet servlet = new GetPasswordStrengthServlet();
+            GetPasswordStrength servlet = new GetPasswordStrength();
 			servlet.doGet(request, response);
             
         } catch (Exception e) {

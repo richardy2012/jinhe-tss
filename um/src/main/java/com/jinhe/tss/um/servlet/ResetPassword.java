@@ -29,7 +29,7 @@ import com.jinhe.tss.um.service.IUserService;
  * 2、reset ：根据密码提示重置密码。只需UserID不为空且对应的用户存在
  */
 @WebServlet(urlPatterns="/resetPassword.in")
-public class ResetPasswordServlet extends HttpServlet {
+public class ResetPassword extends HttpServlet {
 
 	private static final long serialVersionUID = -740569423483772472L;
     

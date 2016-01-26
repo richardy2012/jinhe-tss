@@ -1,9 +1,13 @@
 package com.jinhe.dm.report;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
+
+import junit.framework.Assert;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +47,7 @@ public class SqlDebugTest extends TxTestSupport4DM {
         display.showAsGrid(request, response, reportId, 1, 100);
         
         // test queryCacheInterceptor
+        final List<Object> results = new ArrayList<Object>();
         for(int i = 0; i < 10; i++) {
         	new Thread() {
         		public void run() {
@@ -50,8 +55,12 @@ public class SqlDebugTest extends TxTestSupport4DM {
         			requestMap.put("param1", "0");
 					Object ret = service.queryReport(reportId, requestMap , 1, 0, -1L);
 					
-					System.out.println("-------------" + Thread.currentThread().getId() + "-------------" + ret); 
 					// 查看打出来的是不是同一个对象，是的话说明cache拦截器在queryCache拦截器后执行，正常。
+					System.out.println("-------------" + Thread.currentThread().getId() + "-------------" + ret); 
+					for(Object obj : results) {
+						Assert.assertEquals(obj, ret);
+					}
+					results.add(ret);
     			}
         	}.start();
         	

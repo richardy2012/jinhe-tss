@@ -11,7 +11,7 @@ import com.jinhe.tss.um.TxSupportTest4UM;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.IUserService;
 
-public class GetPasswordServletTest extends TxSupportTest4UM {
+public class GetQuestionTest extends TxSupportTest4UM {
     
     @Autowired IUserService userService;
     
@@ -21,26 +21,20 @@ public class GetPasswordServletTest extends TxSupportTest4UM {
         MockHttpServletResponse response = new MockHttpServletResponse();
         
         request.addParameter(SSOConstants.LOGINNAME_IN_SESSION, "Admin001");
-        request.addParameter("passwordAnswer", "?");
-        request.addParameter("passwordQuestion", "!");
         
-        GetPasswordServlet getPasswordServlet = new GetPasswordServlet();
+        GetQuestion servlet = new GetQuestion();
         
         try {
-            getPasswordServlet.doPost(request, response);
+            servlet.doPost(request, response);
             
             request.removeParameter(SSOConstants.LOGINNAME_IN_SESSION);
             request.addParameter(SSOConstants.LOGINNAME_IN_SESSION, "Admin");
-            getPasswordServlet.doPost(request, response);
+            servlet.doPost(request, response);
             
             User user = userService.getUserByLoginName("Admin");
-            user.setPasswordAnswer("?");
-            user.setPasswordQuestion("!");
-            getPasswordServlet.doPost(request, response);
-            
-            request.removeParameter("passwordAnswer");
-            request.addParameter("passwordAnswer", "************");
-            getPasswordServlet.doGet(request, response);
+            user.setPasswordQuestion("1+1=?");
+            user.setPasswordAnswer("=2");
+            servlet.doPost(request, response);
             
         } catch (Exception e) {
         	Assert.assertFalse("Test servlet error:" + e.getMessage(), true);

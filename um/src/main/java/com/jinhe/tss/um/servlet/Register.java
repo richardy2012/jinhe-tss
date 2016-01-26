@@ -21,7 +21,7 @@ import com.jinhe.tss.um.service.IUserService;
  * </p>
  */
 @WebServlet(urlPatterns="/register.in")
-public class RegisterServlet extends HttpServlet {
+public class Register extends HttpServlet {
 
     private static final long serialVersionUID = -740569423483772472L;
     
