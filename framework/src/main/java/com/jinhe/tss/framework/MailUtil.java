@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 
 import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.util.EasyUtils;
+import com.jinhe.tss.util.InfoEncoder;
 
 public class MailUtil {
 	
@@ -36,7 +37,8 @@ public class MailUtil {
 		String auth_user = ParamConfig.getAttribute(MailUtil.MAIL_SERVER_USER);
 		if( !EasyUtils.isNullOrEmpty(auth_user) ) {
 			mailSender.setUsername( auth_user );
-			mailSender.setPassword( ParamConfig.getAttribute(MailUtil.MAIL_SERVER_PWD) ); 
+			String pwd = ParamConfig.getAttribute(MailUtil.MAIL_SERVER_PWD);
+			mailSender.setPassword( InfoEncoder.simpleDecode(pwd, 12) ); 
 			mailSender.getJavaMailProperties().put("mail.smtp.auth", true);
 		}
 		
