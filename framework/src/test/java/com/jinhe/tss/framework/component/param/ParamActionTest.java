@@ -64,12 +64,12 @@ public class ParamActionTest extends TxTestSupportParam {
 		
 		action.get2Tree(response);
 		
-		log.debug(action.getSimpleParam2Json(request, response, "application.code"));
-		log.debug(action.getComboParam2Json(request, response, "book", false));
-		log.debug(action.getComboParam2Json(request, response, "group", true));
+		log.debug(action.getSimpleParam2Json("application.code"));
+		log.debug(action.getComboParam2Json("book", false));
+		log.debug(action.getComboParam2Json("group", true));
 		
-		log.debug(action.getComboParam2Json(request, response, "notExsit", true));
-		log.debug(action.getComboParam2Json(request, response, "book", true));
+		log.debug(action.getComboParam2Json("notExsit", true));
+		log.debug(action.getComboParam2Json("book", true));
 		
 		action.delParam(response, paramGroup.getId());
 		action.delParam(response, paramGroup2.getId());

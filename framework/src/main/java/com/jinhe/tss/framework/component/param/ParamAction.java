@@ -210,16 +210,14 @@ public class ParamAction extends BaseActionSupport {
 	/** 系统配置参数 */
 	@RequestMapping(value = "/json/simple/{code}", method = RequestMethod.GET)
 	@ResponseBody
-	public Object getSimpleParam2Json(HttpServletRequest request, HttpServletResponse response, 
-			@PathVariable("code") String code) {
+	public Object getSimpleParam2Json(@PathVariable("code") String code) {
 		return new Object[] { ParamConfig.getAttribute(code) };
 	}
 	
 	/** 获取下拉类型/树型参数列表  */
 	@RequestMapping(value = "/json/combo/{code}", method = RequestMethod.GET)
 	@ResponseBody
-	public Object getComboParam2Json(HttpServletRequest request, HttpServletResponse response, 
-			@PathVariable("code") String code, boolean isTree) {
+	public Object getComboParam2Json(@PathVariable("code") String code, boolean isTree) {
     	try{
 			List<Param> list = isTree ? paramService.getTreeParam(code) 
 					: paramService.getComboParam(code);

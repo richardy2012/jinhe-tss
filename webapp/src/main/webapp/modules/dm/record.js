@@ -297,75 +297,67 @@ function batchImport() {
 }
 
 // -------------------------------------------------   配置数据录入表   ------------------------------------------------
+var fieldTree, count = 0;
 function configDefine() {
 	var rform = $.F("recordForm");
 	var _define = $.parseJSON(rform.getData("define")) || [];
 
 	var fieldNodes = [];
 	_define.each(function(index, item){
-		var paramNode = {"id": index, "name": item.label, "value": JSON.stringify(item)};
+		var paramNode = {"id": index+1, "name": item.label, "value": JSON.stringify(item)};
 		fieldNodes.push(paramNode); 
 	});
 
 	var treeData = [{"id": "_root", "name": "字段列表", "children": fieldNodes}];
-	var fieldTree = $.T("fieldTree", treeData);	
+	fieldTree = $.T("fieldTree", treeData);	
 	initFieldTreeMenus();
 
-	fieldTree.onTreeNodeActived = function(event) {
-		if(fieldTree.getActiveTreeNode().id != '-1') {
+	fieldTree.onTreeNodeActived = function(ev) {
+		if(fieldTree.getActiveTreeNodeId() != '_root') {
 			editFieldConfig();
 		}
 	}
-	fieldTree.onTreeNodeRightClick = function(event) {
-		if(fieldTree.getActiveTreeNode().id != '-1') {
+	fieldTree.onTreeNodeRightClick = function(ev) {
+		if(fieldTree.getActiveTreeNodeId() != '_root') {
 			editFieldConfig();
 		}
-		fieldTree.el.contextmenu.show(event.clientX, event.clientY);
+		fieldTree.el.contextmenu.show(ev.clientX, ev.clientY);
 	}
-	fieldTree.onTreeNodeMoved = function(event) {
-		event.ownTree.sortTreeNode(event.dragNode, event.destNode);
+	fieldTree.onTreeNodeMoved = function(ev) {
+		ev.ownTree.sortTreeNode(ev.dragNode, ev.destNode);
 	}
+
+	$("#recordDefinesDiv").show(true).center();
 
 	// 默认选中第一个参数，如果没有则清空表单
 	var fieldNodeIds = fieldTree.getAllNodeIds();
-	if(fieldNodeIds.length > 0) {
+	count = fieldNodeIds.length;
+	if( count > 0) {
 		fieldTree.setActiveTreeNode(fieldNodeIds[0]);
 		editFieldConfig();
 	}
 	else {
 		RECORD_PARAM_FIELDS.each(function(i, field){
-    		var fieldEl = $1("_" + field);
-    		fieldEl.value = '';
+    		$("#_" + field).value('');
     	});
-	}
-
-	$("#recordDefinesDiv").show(true).center();
- 
+    	createNewField();
+	}	
 }
 
 function initFieldTreeMenus() {
-	var fieldTree = $.T("fieldTree");
     var item1 = {
         label:"删除字段",
         icon: ICON + "icon_del.gif",
-        callback:function() {
-            fieldTree.removeActiveNode();
-        },
+        callback: function() { fieldTree.removeActiveNode(); },
         visible: function() { 
-        	return fieldTree.getActiveTreeNode().id != '_root';
+        	return fieldTree.getActiveTreeNodeId() !== '_root';
         }
     }
     var item2 = {
         label:"新建字段",
-        callback:function() {
-			var id = $.now();
-			var newNode = {'id': id, 'name': '新增字段', 'value': '{"label":"新增字段"}'};
-			fieldTree.addTreeNode(newNode);
-			fieldTree.setActiveTreeNode(id);
-			editFieldConfig();
-        },
+        callback: createNewField,
         visible: function() { 
-        	return fieldTree.getActiveTreeNode().id === '_root'; 
+        	return fieldTree.getActiveTreeNodeId() === '_root'; 
         }
     }
  
@@ -375,6 +367,15 @@ function initFieldTreeMenus() {
     fieldTree.el.contextmenu = menu1;
 }
 
+function createNewField() {
+	var id = $.now(), name = '新增字段' + (++count);
+	var newNode = {'id': id, 'name': name, 'value': '{"label": "' +name+ '"}'};
+	var _root = fieldTree.getTreeNodeById("_root");
+	fieldTree.addTreeNode(newNode, _root);
+	fieldTree.setActiveTreeNode(id);
+	editFieldConfig();
+}
+
 function closeDefine() {
 	$("#recordDefinesDiv").hide();
 }
@@ -382,8 +383,9 @@ function closeDefine() {
 var RECORD_PARAM_FIELDS = ['label', 'code', 'type', 'nullable', 'defaultValue', 'isparam', 'checkReg', 'errorMsg', 'width', 'height', 'options', 'multiple', 'onchange'];
 
 function editFieldConfig() {
-	var fieldTree = $.T("fieldTree");
 	var activeNode = fieldTree.getActiveTreeNode();
+	if( !activeNode ) return;
+
     var valuesMap = $.parseJSON(fieldTree.getActiveTreeNodeAttr("value")) || {};
     RECORD_PARAM_FIELDS.each(function(i, field){
     	var fieldEl = $1("_" + field);
@@ -470,7 +472,7 @@ function editFieldConfig() {
 
 function saveDefine() {
 	var result = [];
-	var fieldNodes = $.T("fieldTree").getAllNodes();
+	var fieldNodes = fieldTree.getAllNodes();
 	fieldNodes.each(function(i, node){
 		var valuesMap = $.parseJSON(node.attrs["value"] || '{}');
 		result.push( valuesMap );

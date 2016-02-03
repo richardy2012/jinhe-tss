@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.cache.TimeWrapper;
+import com.jinhe.tss.framework.exception.BusinessException;
  
 /**
  * 将耗时查询（如report）的执行中的查询缓存起来。
@@ -58,11 +59,16 @@ public class QueryCacheInterceptor implements MethodInterceptor {
 			cacheItem.update( ++count );
 			log.debug(currentThread + " QueryCache【"+key+"】= " + count);
 			
-			// 等待执行中的上一次请求先执行完成； 超过10分钟则不再等待
+			// 等待执行中的上一次请求先执行完成； 
 			long start = System.currentTimeMillis();
-			while( cache.getObject(key) != null && System.currentTimeMillis() - start < 10*60*1000 ) {
+			while( cache.getObject(key) != null ) {
 				Thread.sleep(500 * count);
 				log.debug(currentThread + " QueryCache waiting...");
+				
+				// 超过10分钟，说明执行非常缓慢，则不再继续等待，同时抛错提示用户。
+				if(System.currentTimeMillis() - start > 10*60*1000) {
+					throw new BusinessException("本次请求执行缓慢，请稍后再操作。");
+				}
 			}
 			
 			returnVal = invocation.proceed();

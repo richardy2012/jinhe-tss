@@ -17,6 +17,7 @@
 <script src="reporter_x.js"></script>
 <script src="reporter.js"></script>
 <script src="report.js"></script>
+<script src="dm.js"></script>
 <script src="customize.js"></script>
 
 <style>
@@ -33,10 +34,10 @@
 }
 #scheduleForm { margin: 5px 0 8px 8px; }
 
-#reportParamsDiv { width: 466px; height: 330px; padding: 5px; }
+#reportParamsDiv { width: 500px; height: 330px; padding: 5px; }
 #reportParamsDiv Tree, #reportParamsDiv form { background-color: #fff; display: inline-block; }
-#reportParamsDiv Tree { width:152px; height:280px; overflow-y: auto; }
-#reportParamsDiv form { width:285px; height:320px; padding:5px; position:absolute; top:5px; left:176px; }
+#reportParamsDiv Tree { width:152px; height:295px; overflow-y: auto; }
+#reportParamsDiv form { width:320px; height:320px; padding:5px; position:absolute; top:5px; left:176px; }
 #reportParamsDiv .required {
     color: red;
     width: 10px;
@@ -69,7 +70,7 @@
     border-radius: 2px;
 }
 hr { height: 4px; border: none; border-top: 1px dashed #95B8E7; }
-#reportParamsDiv .bts { margin-left:10px; padding-top:3px; position:absolute; top:300px; left:0; }
+#reportParamsDiv .bts { margin-left:10px; padding-top:3px; position:absolute; top:313px; left:0; }
 
 </style>
 
@@ -111,8 +112,8 @@ hr { height: 4px; border: none; border-top: 1px dashed #95B8E7; }
               <div id="reportForm"></div>
               <WorkSpace:PageStep>
               	<br/>
-                <input type="button" class="tssbutton small blue" value="保存" id="sourceSave"/> &nbsp;&nbsp;
-                <input type="button" class="tssbutton small blue" value="关闭" id="sourceClose"/>
+                <input type="button" class="tssbutton medium blue" value="保 存" id="sourceSave"/> &nbsp;&nbsp;
+                <input type="button" class="tssbutton medium blue" value="关 闭" id="sourceClose"/>
               </WorkSpace:PageStep>
           </WorkSpace:Page>
         </WorkSpace:Box>			
@@ -182,6 +183,7 @@ hr { height: 4px; border: none; border-top: 1px dashed #95B8E7; }
 					
 			<hr>
 			<label>下拉列表：</label><input type="text" id="_options" placeholder="格式：1|2, A|B 或 数据服务地址"/>
+			&nbsp;<button class="tssbutton small blue" onclick="checkDataService()">选择</button>
 			<br><label>是否多选：</label>
 			<select id="_multiple">
 				<option value="true">是</option>

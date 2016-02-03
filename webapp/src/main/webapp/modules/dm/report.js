@@ -431,74 +431,67 @@ function scheduleReport() {
 }
 
 // -------------------------------------------------   配置报表参数   ------------------------------------------------
+var paramTree, count = 0;
 function configParams() {
 	var rform = $.F("reportForm");
 	var paramsConfig = $.parseJSON(rform.getData("param")) || [];
 
 	var paramNodes = [];
 	paramsConfig.each(function(index, item){
-		var paramNode = {"id": index, "name": item.label, "value": JSON.stringify(item)};
+		var paramNode = {"id": index+1, "name": item.label, "value": JSON.stringify(item)};
 		paramNodes.push(paramNode); 
 	});
 
-	var treeData = [{"id": "_root", "name": "报表参数列表", "children": paramNodes}];
-	var paramTree = $.T("paramTree", treeData);	
+	var treeData = [{"id": "_root", "name": "查询参数列表", "children": paramNodes}];
+	paramTree = $.T("paramTree", treeData);	
 	initParamTreeMenus();
 
-	paramTree.onTreeNodeActived = function(event) {
-		if(paramTree.getActiveTreeNode().id != '-1') {
+	paramTree.onTreeNodeActived = function(ev) {
+		if(paramTree.getActiveTreeNodeId() != '_root') {
 			editParamConfig();
 		}
 	}
-	paramTree.onTreeNodeRightClick = function(event) {
-		if(paramTree.getActiveTreeNode().id != '-1') {
+	paramTree.onTreeNodeRightClick = function(ev) {
+		if(paramTree.getActiveTreeNodeId() != '_root') {
 			editParamConfig();
 		}
-		paramTree.el.contextmenu.show(event.clientX, event.clientY);
+		paramTree.el.contextmenu.show(ev.clientX, ev.clientY);
 	}
-	paramTree.onTreeNodeMoved = function(event) {
-		event.ownTree.sortTreeNode(event.dragNode, event.destNode);
+	paramTree.onTreeNodeMoved = function(ev) {
+		ev.ownTree.sortTreeNode(ev.dragNode, ev.destNode);
 	}
+
+	$("#reportParamsDiv").show(true).center().css("top", "30px");
 
 	// 默认选中第一个参数，如果没有则清空表单
 	var paramNodeIds = paramTree.getAllNodeIds();
-	if(paramNodeIds.length > 0) {
+	count = paramNodeIds.length;
+	if(count > 0) {
 		paramTree.setActiveTreeNode(paramNodeIds[0]);
 		editParamConfig();
 	}
 	else {
 		REPORT_PARAM_FIELDS.each(function(i, field){
-    		var fieldEl = $1("_" + field);
-    		fieldEl.value = '';
+    		$("#_" + field).value('');
     	});
+    	createNewParam();
 	}
-
-	$("#reportParamsDiv").show(true).center().css("top", "30px");
 }
 
 function initParamTreeMenus() {
-	var paramTree = $.T("paramTree");
     var item1 = {
         label:"删除",
         icon: ICON + "icon_del.gif",
-        callback:function() {
-            paramTree.removeActiveNode();
-        },
+        callback: function() { paramTree.removeActiveNode(); },
         visible: function() { 
-        	return paramTree.getActiveTreeNode().id != '_root';
+        	return paramTree.getActiveTreeNodeId() !== '_root';
         }
     }
     var item2 = {
         label:"新建参数",
-        callback:function() {
-			var id = $.now();
-			var newNode = {'id': id, 'name': '新增参数', 'value': '{"label":"新增参数"}'};
-			paramTree.addTreeNode(newNode);
-			paramTree.setActiveTreeNode(id);
-			editParamConfig();
-        },
+        callback: createNewParam,
         visible: function() { 
-        	return paramTree.getActiveTreeNode().id === '_root'; 
+        	return paramTree.getActiveTreeNodeId() === '_root'; 
         }
     }
  
@@ -508,6 +501,15 @@ function initParamTreeMenus() {
     paramTree.el.contextmenu = menu1;
 }
 
+function createNewParam() {
+	var id = $.now(), name = '新增参数' + (++count);
+	var newNode = {'id': id, 'name': name, 'value': '{"label": "' +name+ '"}'};
+	var _root = paramTree.getTreeNodeById("_root");
+	paramTree.addTreeNode(newNode, _root);
+	paramTree.setActiveTreeNode(id);
+	editParamConfig();
+}
+
 function closeConfigParams() {
 	$("#reportParamsDiv").hide();
 }
@@ -515,8 +517,9 @@ function closeConfigParams() {
 var REPORT_PARAM_FIELDS = ['label', 'type', 'nullable', 'defaultValue', 'checkReg', 'errorMsg', 'width', 'height', 'options', 'multiple', 'onchange', 'isMacrocode'];
 
 function editParamConfig() {
-	var paramTree = $.T("paramTree");
 	var activeNode = paramTree.getActiveTreeNode();
+	if( !activeNode ) return;
+
     var valuesMap = $.parseJSON(paramTree.getActiveTreeNodeAttr("value")) || {};
     REPORT_PARAM_FIELDS.each(function(i, field){
     	var fieldEl = $1("_" + field);
@@ -617,7 +620,7 @@ function editParamConfig() {
 
 function saveConfigParams() {
 	var result = [];
-	var paramNodes = $.T("paramTree").getAllNodes();
+	var paramNodes = paramTree.getAllNodes();
 	paramNodes.each(function(i, node){
 		var valuesMap = $.parseJSON(node.attrs["value"] || '{}');
 		result.push( valuesMap );

@@ -41,7 +41,10 @@
 				</TR>
 				<TR>
 					<TD><label binding="datasource"/></TD>
-					<TD><input binding="datasource" style="width:250px;"/></TD>
+					<TD>
+						<input binding="datasource" style="width:250px;;margin-right:10px"/>
+						<a href="#" onclick="manageDS()" class="tssbutton small blue">管理数据源</a>
+					</TD>
 				</TR>
 				<TR>
 					<TD valign="top"><label binding="remark"/></TD>

@@ -14,7 +14,8 @@
 <script src="../../tools/tssJS/tssJS.jsonp.js"></script>
 <script src="../../tools/tssUtils.js"></script>
 
-<script language="javascript" src="record.js"></script>
+<script src="dm.js"></script>
+<script src="record.js"></script>
 
 <style>
 
@@ -24,10 +25,10 @@
 
 #recordFormDiv { width: 96%; height: 100%; padding: 10px; display: none; }
 
-#recordDefinesDiv { width: 466px; height: 370px; padding: 5px; }
+#recordDefinesDiv { width: 500px; height: 370px; padding: 5px; }
 #recordDefinesDiv Tree, #recordDefinesDiv form { background-color: #fff; display:inline-block; }
 #recordDefinesDiv Tree { width:152px; height:90%; overflow-y: auto; }
-#recordDefinesDiv form { width:285px; height:95%; padding:5px; position:absolute; top:5px; left:176px; }
+#recordDefinesDiv form { width:320px; height:95%; padding:5px; position:absolute; top:5px; left:176px; }
 
 #recordDefinesDiv .required {
     color: red;
@@ -136,6 +137,7 @@ hr { height: 8px; border: none; border-top: 1px dashed #95B8E7; margin-top: 3px;
 					
 			<hr>
 			<label>下拉列表：</label><input type="text" id="_options" placeholder="格式：1|2, A|B 或 数据服务地址"/>
+			&nbsp;<button class="tssbutton small blue" onclick="checkDataService()">选择</button>
 			<br><label>是否多选：</label>
 			<select id="_multiple">
 				<option value="true">是</option>

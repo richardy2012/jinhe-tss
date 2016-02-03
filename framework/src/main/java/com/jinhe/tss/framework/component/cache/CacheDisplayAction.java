@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.tss.cache.AbstractPool;
 import com.jinhe.tss.cache.CacheStrategy;
@@ -89,6 +90,14 @@ public class CacheDisplayAction extends BaseActionSupport {
         
         printSuccessMessage();
     }
+    
+	/** 系统配置参数 */
+	@RequestMapping(value = "/json/configs", method = RequestMethod.GET)
+	@ResponseBody
+	public Object getCacheConfigs() {
+		List<Param> cacheParams = paramService.getParamsByParentCode(CacheHelper.CACHE_PARAM);
+		return cacheParams;
+	}
  
     /**
      * 树型展示所有缓存池
