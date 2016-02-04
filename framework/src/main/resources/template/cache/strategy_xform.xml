@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xform>
 	<declare prefix="cacheStrategy">
-		<column name="code" caption="键值" mode="string" editable="false"/>
-		<column name="name" caption="名称" mode="string" editable="false"/>
-		<column name="remark" caption="备注" mode="string"/>
+		<column name="code" caption="键值" editable="false"/>
+		<column name="name" caption="名称" editable="false"/>
+		<column name="remark" caption="备注" />
 		<column name="disabled" caption="状态" mode="combo" values="0|1" texts="启用|停用"/>
 		<column name="accessMethod" caption="存取方式" mode="combo" values="1|2|3|4|5" texts="FIFO|LIFO|RANDOM|LRU|LFU" empty="false"/>
 		<column name="interruptTime" caption="等待时间" mode="number" inputReg="^\d*$" empty="false"/>	
@@ -11,10 +11,10 @@
 		<column name="initNum"       caption="初始化数" mode="number" inputReg="^\d*$" empty="false"/>
 		<column name="poolSize"      caption="池容量"  mode="number" inputReg="^\d*$" empty="false"/>
 		
-		<column name="poolClass"          caption="缓存池类" mode="string" empty="false"/>
-		<column name="poolContainerClass" caption="池容器类" mode="string" empty="false"/>
-		<column name="customizerClass"    caption="自定义类" mode="string" />
-		<column name="paramFile"          caption="参数文件" mode="string" />
+		<column name="poolClass"          caption="缓存池类" empty="false"/>
+		<column name="poolContainerClass" caption="池容器类" empty="false"/>
+		<column name="customizerClass"    caption="自定义类" />
+		<column name="paramFile"          caption="参数文件" />
 	</declare>
 	<layout>
 		<TR>

@@ -442,7 +442,7 @@ function editParamsTemplate(type) {
 		onresult: function() {
 			var dataXmlNode = this.getNodeValue(XML_CONFIG_PARAMS);
 			$1("paramTemplate").value = $.XML.toXml(dataXmlNode);
-			$('.cp>h2').html("配置组件【" + name + "】的参数模板");
+			$('.cp>h2').html("- 配置组件【" + name + "】的参数模板");
 		}
 	});
 

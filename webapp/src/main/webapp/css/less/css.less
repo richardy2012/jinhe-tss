@@ -150,7 +150,7 @@ td.mbar {
     box-shadow: @gray 0px 0px 100px;
 
     & h2 {
-        width: 100%; height: 20px; line-height: 20px; 
+        width: 100%; height: 22px; line-height: 22px; 
         font-size: 13px; text-indent: 10px; 
         background-color: @blue; color: @white; 
     }
@@ -164,6 +164,14 @@ td.mbar {
 }
 
 #popupForm { padding: 12px 40px; }
+
+.popupItem { 
+    & h2 { padding-top: 1px; }   
+}
+span.search {
+    & input[id^="sk"] { width: 80px; height: 15px; text-indent: 2px; margin: 0 3px; }
+    & button { padding: .1em .5em .1em; }
+} 
 
 .hiddenWS {
     display: none;

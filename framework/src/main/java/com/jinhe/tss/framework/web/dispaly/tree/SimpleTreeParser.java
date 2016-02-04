@@ -4,7 +4,6 @@ import java.util.Collection;
 
 /**
  * 单层树形结构转换器。
- * 
  */
 public class SimpleTreeParser implements ITreeParser {
 
@@ -13,7 +12,6 @@ public class SimpleTreeParser implements ITreeParser {
 	 * 
 	 * @param data
 	 * @return
-	 * @throws Exception
 	 */
 	public TreeNode parse(Object data) {
 		TreeNode root = new TreeNode();

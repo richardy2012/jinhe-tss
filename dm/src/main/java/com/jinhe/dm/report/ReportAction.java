@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +33,8 @@ import com.jinhe.tss.framework.component.timer.SchedulerBean;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.sso.IOperator;
+import com.jinhe.tss.framework.web.dispaly.tree.DefaultTreeNode;
+import com.jinhe.tss.framework.web.dispaly.tree.ITreeNode;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.StrictLevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
@@ -344,7 +348,6 @@ public class ReportAction extends BaseActionSupport {
         
         reportService.sort(startId, targetId, direction);
         printSuccessMessage();
-        
     }
 
     @RequestMapping(value = "/copy/{reportId}/{groupId}", method = RequestMethod.POST)
@@ -427,4 +430,47 @@ public class ReportAction extends BaseActionSupport {
 		}
 		return null;
     }
+	
+	/** 
+	 * 前台下拉列表可用的数据服务 
+	 * 所有带script且displayUri为空的report, 后台单独发布的服务（配置到param里）
+	 * */
+	@RequestMapping("/dataservice")
+    public void getDateServiceList(HttpServletResponse response) {
+        List<?> list = reportService.getAllReport();
+        List<ITreeNode> result = new ArrayList<ITreeNode>();
+        
+        for(Object temp : list) {
+        	Report report = (Report) temp;
+        	if(report.isGroup()) continue;
+        	if( !EasyUtils.isNullOrEmpty(report.getDisplayUri()) ) continue;
+        	
+        	String script = report.getScript();
+        	if( EasyUtils.isNullOrEmpty(script) ) continue;
+        	
+        	// 检查是否包含了必要的关键字
+        	Pattern p = Pattern.compile("text|name|pk", Pattern.CASE_INSENSITIVE); // 忽略大小写
+    		Matcher m = p.matcher(script);
+        	if( !m.find() ) continue;
+    		
+        	result.add( new DefaultTreeNode(report.getId(), report.getName()) );
+        }
+        
+        // 后台单独发布的服务（配置在param里）
+        Param param = paramService.getParam(DMConstants.DATA_SERVICE_CONFIG);
+        if(param != null && param.getValue() != null) {
+        	String[] array = param.getValue().split(",");
+        	for(String _ds : array) {
+        		final String[] ds = _ds.split("\\|");
+        		if(ds.length == 2) {
+        			result.add( new DefaultTreeNode(ds[0], ds[1]) );
+        		}
+        	}
+        }
+        
+        TreeEncoder treeEncoder = new TreeEncoder(result);
+        treeEncoder.setNeedRootNode(false);
+        print("DataServiceList", treeEncoder);
+    }
+	
 }

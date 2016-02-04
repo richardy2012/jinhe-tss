@@ -42,6 +42,11 @@
         initEvents();
 
         loadInitData();
+
+        bindTreeSearch("sk1", "page2Tree");
+        bindTreeSearch("sk2", "page3Tree");
+        bindTreeSearch("sk3", "page4Tree");
+        bindTreeSearch("sk4", "page4Tree2");
     }
   
     function initMenus() {  
@@ -80,10 +85,8 @@
         var menu1 = new $.Menu();
         menu1.addItem(item1);
         menu1.addItem(item2);
-        menu1.addSeparator();
         menu1.addItem(item5);
         menu1.addItem(item4);
-        menu1.addSeparator();
         menu1.addItem(item3);
 
         $1("tree").contextmenu = menu1;

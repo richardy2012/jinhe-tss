@@ -59,8 +59,8 @@
 		var panel = $.createElement("div", "panel", "cacheStrategyDiv");
     	document.body.appendChild(panel);   	
     	$panel = $(panel);
-    	$panel.css("width", "580px").css("height", "340px").center().hide();
-	    $panel.panel("维护缓存策略", '<div id="cacheStrategy"></div><div class="bts"><button class="tssbutton blue small" onclick="editCacheStrategy()">保存策略</button></div>', false);
+    	$panel.css("width", "580px").css("height", "350px").center().hide();
+	    $panel.panel("维护缓存策略", '<div id="cacheStrategy"></div><div class="bts"><button class="tssbutton blue medium" onclick="editCacheStrategy()">保存策略</button></div>', false);
 
 		loadInitData();
 		loadInitGrid();

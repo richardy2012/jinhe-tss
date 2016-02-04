@@ -23,6 +23,8 @@ public final class DMConstants {
 	public final static String FROM_USER_ID = "fromUserId";
 	
 	public final static String ACLOG_IGNORE_REPORT = "ACLOG_IGNORE_REPORT";
+	
+	public final static String DATA_SERVICE_CONFIG = "DATA_SERVICE_CONFIG";
     
     /**
      * 报表模板资源文件目录

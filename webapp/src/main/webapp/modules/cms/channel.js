@@ -265,7 +265,8 @@
 
     function showChannelForm() {
         var $panel = $("#channelFormDiv").show(true);
-        var html = '<div id="channelForm"></div><input type="button" class="tssbutton small blue" value="保 存" id="channelFormSave"/>';
+        var html = '<div id="channelForm"></div>' +
+            '<input type="button" class="tssbutton medium blue" value="保 存" id="channelFormSave"/>';
         $panel.html("").panel("编辑栏目【" + getTreeNodeName() + "】", html);
     }
  

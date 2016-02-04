@@ -181,8 +181,8 @@
 		<tr>
 			<td id="gridTitle">
 			  <span class="icon"></span>消息列表<span class="buttonBox" id="gridToolBar"></span>&nbsp;
-			  <span class="search" style="margin-left: 20px;">
-			  	<input id="searchKey" style="width:150px"/>
+			  <span style="margin-left: 20px;">
+			  	<input id="searchKey" style="width:150px; height: 16px;"/>
 			  	<select id="searchField" style="top:0px;">
 			  		<option value="title" selected>标题</option>
 			  		<option value="sender">发送人</option>
@@ -190,7 +190,7 @@
 			  	</select>
 			  	<input type="button" class="tssbutton small blue" value="搜 索" onclick="search()"/>
 			  </span>
-			  <span class="search">&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+			  <span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
 			  	<input type="button" class="tssbutton small blue" value="批量删除" onclick="batchDelete()"/>
 			  	<input type="button" class="tssbutton small blue" value="批量设为已阅" onclick="batchView()"/>
 			  	<input type="button" class="tssbutton small blue" value="全部设为已阅" onclick="batchView('view_all')"/>

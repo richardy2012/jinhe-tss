@@ -29,8 +29,8 @@ import com.jinhe.tss.framework.component.param.ParamService;
 import com.jinhe.tss.framework.web.dispaly.grid.DefaultGridNode;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
 import com.jinhe.tss.framework.web.dispaly.grid.IGridNode;
+import com.jinhe.tss.framework.web.dispaly.tree.DefaultTreeNode;
 import com.jinhe.tss.framework.web.dispaly.tree.ITreeNode;
-import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
@@ -114,14 +114,11 @@ public class CacheDisplayAction extends BaseActionSupport {
         
         List<ITreeNode> treeNodeList = new ArrayList<ITreeNode>();
         for(final CacheStrategy stategy : strategyList) {
-            treeNodeList.add(new ITreeNode(){
-                public TreeAttributesMap getAttributes() {
-                    TreeAttributesMap map = new TreeAttributesMap(stategy.code, stategy.name);
-                    map.put("icon", "images/cache.gif");
-                    map.put("display", stategy.visible);
-                    return map;
-                }
-            });
+        	DefaultTreeNode node = new DefaultTreeNode(stategy.code, stategy.name);
+        	node.getAttributes().put("icon", "images/cache.gif");
+        	node.getAttributes().put("display", stategy.visible);
+        	
+            treeNodeList.add(node);
         }
         
         TreeEncoder encoder = new TreeEncoder(treeNodeList);

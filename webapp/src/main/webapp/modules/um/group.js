@@ -81,6 +81,11 @@
         initEvents();
 
         loadInitData();
+
+        bindTreeSearch("sk1", "page2Tree");
+        bindTreeSearch("sk2", "page3Tree");
+        bindTreeSearch("sk3", "page4Tree");
+        bindTreeSearch("sk4", "page4Tree2");
     }
 
     function initMenus(){

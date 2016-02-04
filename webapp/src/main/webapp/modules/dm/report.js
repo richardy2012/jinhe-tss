@@ -32,6 +32,12 @@ $(function() {
 	initEvents();
 
 	loadInitData();
+
+	getParam('sysTitle', function(title) {
+		if( title && title.indexOf("它山石") < 0 ) { // 基于TSS扩展的系统，BtrBI等
+        	$.createScriptJS("customize.js");
+        }
+    });	
 });
 
 /* 菜单初始化 */
@@ -280,7 +286,7 @@ function copyReportTo() {
 	var id  = treeNode.id;
 	var pId = treeNode.parent.id;
 
-    var params = {id: id, parentID: pId, _title: "复制【" + treeNode.name + "】至："};
+    var params = {id: id, parentID: pId, _title: "复制报表到："};
     popupTree(URL_GROUPS_TREE, "SourceTree", params, function(target) {
     	var targetId = (target.id == '_root' ? '0' : target.id);
         $.ajax({
@@ -299,7 +305,7 @@ function moveReport() {
 	var id  = treeNode.id;
     var pId = treeNode.parent.id;
 
-    var params = {id:id, parentID: pId, "_title": "移动【" + treeNode.name + "】至："};
+    var params = {id:id, parentID: pId, "_title": "移动报表到："};
     popupTree(URL_GROUPS_TREE, "SourceTree", params, function(target) {
     	var targetId = (target.id == '_root' ? '0' : target.id);
         moveTreeNode(tree, id, targetId, URL_MOVE_SOURCE);

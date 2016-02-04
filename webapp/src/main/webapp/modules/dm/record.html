@@ -19,16 +19,16 @@
 
 <style>
 
-.bts { padding-left: 10px; padding-top: 10px;}
+.bts { padding-left: 10px; padding-top: 10px; text-align: center; }
 
 .Formbox { display:none; background-color:#E0ECFF; border-radius: 5px; }
 
 #recordFormDiv { width: 96%; height: 100%; padding: 10px; display: none; }
 
 #recordDefinesDiv { width: 500px; height: 370px; padding: 5px; }
-#recordDefinesDiv Tree, #recordDefinesDiv form { background-color: #fff; display:inline-block; }
+#recordDefinesDiv Tree, #defineForm { background-color: #fff; display:inline-block; }
 #recordDefinesDiv Tree { width:152px; height:90%; overflow-y: auto; }
-#recordDefinesDiv form { width:320px; height:95%; padding:5px; position:absolute; top:5px; left:176px; }
+#defineForm { width:320px; height:95%; padding:5px; position:absolute; top:5px; left:176px; }
 
 #recordDefinesDiv .required {
     color: red;
@@ -90,8 +90,8 @@ hr { height: 8px; border: none; border-top: 1px dashed #95B8E7; margin-top: 3px;
         <div id="recordFormDiv">
             <div id="recordForm"></div>
             <div class="bts">
-                <input type="button" class="tssbutton small blue" value="保存" id="sourceSave"/> &nbsp;
-                <input type="button" class="tssbutton small blue" value="关闭" id="closeRecordForm"/>
+                <input type="button" class="tssbutton medium blue" value="保 存" id="sourceSave"/> &nbsp;&nbsp;&nbsp;
+                <input type="button" class="tssbutton medium blue" value="关 闭" id="closeRecordForm"/>
             </div>
         </div>	
 	</td>
@@ -102,7 +102,7 @@ hr { height: 8px; border: none; border-top: 1px dashed #95B8E7; margin-top: 3px;
 
 <div id="recordDefinesDiv" class="dialog Formbox">
 	<Tree id="fieldTree" moveable="true"></Tree>
-	<form id="defineForm">
+	<div id="defineForm">
 		<label>字段名称：</label><input type="text" id="_label" /><em class="required">*</em>
 		<label>字段编码：</label><input type="text" id="_code" placeholder="一律小写字母或数字"/><em class="required">*</em>
 		<br><label>字段类型:</label>
@@ -145,10 +145,10 @@ hr { height: 8px; border: none; border-top: 1px dashed #95B8E7; margin-top: 3px;
 			</select> 
 			<br><label>联动方法：</label><input type="text" id="_onchange" />
 		</div>
-	</form>
+	</div>
 	<div class="bts">
-		<input type="button" class="tssbutton small blue" value="完成" onclick="saveDefine()"/>
-		<input type="button" class="tssbutton small blue" value="关闭" onclick="closeDefine()"/>
+		<input type="button" class="tssbutton small blue" value="完 成" onclick="saveDefine()"/>
+		<input type="button" class="tssbutton small blue" value="关 闭" onclick="closeDefine()"/>
 	</div>
 </div>
 

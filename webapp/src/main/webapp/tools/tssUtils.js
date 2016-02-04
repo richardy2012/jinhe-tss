@@ -98,6 +98,9 @@ function initEvents() {
 	$(".refreshTreeBT").title("刷新").click( function() { loadInitData(); } );
 	$("#palette .search input[type=button]").addClass("tssbutton small blue").click(searchTree);
 
+	var searchKey = $1("searchKey");
+	if( searchKey ) { searchKey.oninput = searchTree; }	
+
 	window.onresize();
 
 	/* 点击左栏控制按钮 */
@@ -121,8 +124,20 @@ function initEvents() {
 
 function searchTree() {
 	var key = $("#searchKey").value();
-	if(key) {
-		$.T('tree').searchNode(key);
+	key && $.T('tree').searchNode(key);
+}
+
+function bindTreeSearch(inputElId, treeId) {
+	var inputEl = $1(inputElId);
+	var $btn = $("button", inputEl.parentNode);
+	$btn.addClass("tssbutton small blue").click( function(){
+		var key = $(inputEl).value();
+		key && $.T(treeId).searchNode(key);
+	} );
+
+	inputEl.oninput = function() {
+		var key = $(this).value();
+		key && $.T(treeId).searchNode(key);
 	}
 }
 
@@ -728,25 +743,40 @@ function popupTree(url, nodeName, params, callback) {
 
 	var boxName = "popupTree";
 	var el = $.createElement("div", "popupItem");
-	el.innerHTML = '<h2>' + (params._title || '选择目标树节点') + '</h2>' +
+	el.innerHTML = '<h2>- ' + (params._title || '点击选择树节点') + 
+		'<span class="search"> <input id="sksk"/><button class="tssbutton orange small">查找</button> </span> </h2>' +
 		'<Tree id="' + boxName + '"><div class="loading"></div></Tree>' + 
 	    '<div class="bts">' + 
 	       '<input type="button" value="确定" class="tssbutton blue small b1" >' + 
        	   '<input type="button" value="关闭" class="tssbutton blue small b2" >' +  
 	    '</div>';
 	document.body.appendChild(el);
-	$(el).addClass("dialog").css("width", "300px").css("height", "320px").center(300, 400).css("zIndex", "999");
+	$(el).addClass("dialog").css("width", "320px").css("height", "320px").center(320, 400).css("zIndex", "999");
 
 	$(".bts .b2", el).click(removeDialog);
 
+	$(".search input", el)[0].oninput = function(){
+		var key = $(this).value();
+		key && $.T(boxName).searchNode(key);
+	}
+	$(".search button", el).click(function(){
+		var key = $(".search input", el).value();
+		key && $.T(boxName).searchNode(key);
+	});
+
+	var _default = params._default;
+	delete params._default;
 	delete params._title;
+
 	$.ajax({
 		url: url,
 		params: params,
 		onresult : function() { 
 			$.showWaitingLayer();
 
-			var tree = $.T(boxName, this.getNodeValue(nodeName));		
+			var tree = $.T(boxName, this.getNodeValue(nodeName));
+			_default && tree.setActiveTreeNode(_default);
+
 			tree.onTreeNodeDoubleClick = function(ev) {
 				doCallback();
 			}
@@ -769,7 +799,7 @@ function popupForm(url, nodeName, params, callback, title) {
 
 	var boxName = "popupForm";
 	var el = $.createElement("div", "popupItem");
-	el.innerHTML = '<h2>' + title + '：</h2>' +
+	el.innerHTML = '<h2>- ' + title + '：</h2>' +
 		'<div id="' + boxName + '"><div class="loading"></div></div>' + 
 	    '<div class="bts">' + 
 	       '<input type="button" value="确 定" class="b1 tssbutton blue small">' + 
@@ -829,7 +859,7 @@ function popupGrid(url, nodeName, title, params) {
 	removeDialog();
 	var boxName = "popupGrid";
 	var el = $.createElement("div", "popupItem");
-	el.innerHTML = '<h2>' + title + '</h2>' +
+	el.innerHTML = '<h2>- ' + title + '</h2>' +
 		'<Grid id="' + boxName + '"><div class="loading"></div></Grid>' + 
 	    '<div class="bts">' + 
        	   '<input type="button" value="关闭" class="tssbutton blue small"/>' +  

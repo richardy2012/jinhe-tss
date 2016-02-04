@@ -68,7 +68,7 @@
       <div id="page1Form"></div><br/><br/>
       <WorkSpace:PageStep>
         <input type="button" class="tssbutton small blue" value="下一步" id="page1BtNext" onclick="ws.nextPhase(false)"/>
-        <input type="button" class="tssbutton small blue" value="完成" id="page1BtSave"/>
+        <input type="button" class="tssbutton small blue" value="保 存" id="page1BtSave"/>
       </WorkSpace:PageStep>
     </WorkSpace:Page>
     <!-- page1 结束 -->
@@ -77,7 +77,9 @@
     <WorkSpace:Page id="page2" class="tight">
       <table>
        <tr class="titleBox">
-          <td class="r b">&nbsp;※&nbsp;可选用户组：</td>
+          <td class="r b">&nbsp;※&nbsp;可选用户组：
+            <span class="search"> <input id="sk1"/><button>查找</button> </span>
+          </td>
           <td class="r b">&nbsp;</td>
           <td class="b label">&nbsp;※&nbsp;已选用户组：</td>
         </tr>
@@ -98,7 +100,7 @@
             <WorkSpace:PageStep>
               <input type="button" class="tssbutton small blue" value="上一步" id="page2BtPrev" onclick="ws.prevPhase(false)"/>
               <input type="button" class="tssbutton small blue" value="下一步" id="page2BtNext" onclick="ws.nextPhase(false)"/>
-              <input type="button" class="tssbutton small blue" value="完成" id="page2BtSave"/>
+              <input type="button" class="tssbutton small blue" value="保 存" id="page2BtSave"/>
             </WorkSpace:PageStep>
           </td>
         </tr>
@@ -110,7 +112,9 @@
     <WorkSpace:Page id="page3" class="tight">
       <table>
        <tr class="titleBox">
-          <td class="r b">&nbsp;※&nbsp;可选角色：</td>
+          <td class="r b">&nbsp;※&nbsp;可选角色：
+            <span class="search"> <input id="sk2"/><button>查找</button> </span>
+          </td>
           <td class="r b">&nbsp;</td>
           <td class="b label">&nbsp;※&nbsp;已选角色：</td>
         </tr>
@@ -130,7 +134,7 @@
           <td colspan="3">
             <WorkSpace:PageStep>
               <input type="button" class="tssbutton small blue" value="上一步" id="page3BtPrev" onclick="ws.prevPhase(false)"/>
-              <input type="button" class="tssbutton small blue" value="完成" id="page3BtSave"/>
+              <input type="button" class="tssbutton small blue" value="保 存" id="page3BtSave"/>
             </WorkSpace:PageStep>
           </td>
         </tr>
@@ -142,8 +146,12 @@
     <WorkSpace:Page id="page4" class="tight">
       <table>
         <tr class="titleBox">
-          <td class="r b">&nbsp;※&nbsp;可选用户组：</td>
-          <td class="r b">&nbsp;※&nbsp;可选用户：</td>
+          <td class="r b"> &nbsp;※&nbsp;可选用户组 
+            <span class="search"> <input id="sk3"/><button>查找</button> </span>
+          </td>
+          <td class="r b"> &nbsp;※&nbsp;可选用户 
+            <span class="search"> <input id="sk4"/><button>查找</button> </span>
+          </td>
           <td class="r b">&nbsp;</td>
           <td class="b label">&nbsp;※&nbsp;已选：</td>
         </tr>
@@ -167,7 +175,7 @@
             <WorkSpace:PageStep>
               <input type="button" class="tssbutton small blue" value="上一步" id="page4BtPrev" onclick="ws.prevPhase(false)"/>
               <input type="button" class="tssbutton small blue" value="下一步" id="page4BtNext" onclick="ws.nextPhase(false)"/>
-              <input type="button" class="tssbutton small blue" value="完成" id="page4BtSave"/>
+              <input type="button" class="tssbutton small blue" value="保 存" id="page4BtSave"/>
             </WorkSpace:PageStep>
           </td>
         </tr>
