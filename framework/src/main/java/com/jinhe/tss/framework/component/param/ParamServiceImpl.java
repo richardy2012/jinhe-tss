@@ -12,6 +12,8 @@ import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.component.cache.CacheLife;
 import com.jinhe.tss.framework.exception.BusinessException;
+import com.jinhe.tss.framework.sso.AnonymousOperator;
+import com.jinhe.tss.framework.sso.Environment;
 
 @Service("ParamService")
 public class ParamServiceImpl implements ParamService, ParamListener {
@@ -57,8 +59,24 @@ public class ParamServiceImpl implements ParamService, ParamListener {
             }
         }
     }
+    
+    /**
+     * 只有管理员 或 创建者本人，才能执行删除、停用、修改等操作
+     */
+    private void checkPermission(Long paramId) {
+    	Param param = getParam(paramId);
+    	Long currentUser = Environment.getUserId();
+    	if(currentUser == null) {
+    		currentUser = AnonymousOperator.anonymous.getId();
+    	}
+    	if( !currentUser.equals( param.getCreatorId() ) && !currentUser.equals( -1L ) ) {
+    		throw new BusinessException("您不能执行当前操作，请联系系统管理员！");
+    	}
+    }
  
     public void delete(Long id) {
+    	checkPermission(id);
+    	
         // 一并删除子节点
         List<?> children = paramDao.getChildrenById(id);
         for(Object entity : children) {
@@ -128,6 +146,8 @@ public class ParamServiceImpl implements ParamService, ParamListener {
     }
 
     public void startOrStop(Long paramId, Integer disabled) {
+    	checkPermission(paramId);
+    	
         List<?> datas = ParamConstants.TRUE.equals(disabled) ? paramDao.getChildrenById(paramId) : paramDao.getParentsById(paramId);
         for (int i = 0; i < datas.size(); i++) {
             Param param = (Param) datas.get(i);

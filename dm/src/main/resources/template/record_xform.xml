@@ -26,7 +26,10 @@
 		</TR>
 		<TR>
 			<TD width="80"><label binding="datasource"/></TD>
-			<TD><input binding="datasource" style="width:250px;"/></TD>
+			<TD>
+				<input binding="datasource" style="width:150px; margin-right:10px;"/>
+				<a href="#" onclick="manageDS()" class="tssbutton small blue">管理数据源</a>
+			</TD>
 			<TD width="80"><label binding="table"/></TD>
 			<TD><input binding="table" style="width:180px;"/></TD>
 			<TD width="100"><label binding="needFile"/></TD>

@@ -1,13 +1,15 @@
 /* 放置DM模块公用的JS代码 */
+GET_DATA_SERVICE = AUTH_PATH + "rp/dataservice";
+
+if(IS_TEST) {
+	GET_DATA_SERVICE = "data/data_service_list.xml";
+}
 
 // 管理数据源
 function manageDS() {
-	
-}
 
-GET_DATA_SERVICE = AUTH_PATH + "rp/dataservice";
-if(IS_TEST) {
-	GET_DATA_SERVICE = "data/data_service_list.xml";
+	
+	
 }
 
 function checkDataService() {

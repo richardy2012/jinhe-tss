@@ -185,7 +185,7 @@ public class Report extends OperateInfo implements IXForm, IDecodable, IResource
             map.put("hasScript", EasyUtils.isNullOrEmpty(this.script) ? "false" : "true" );
         }
         
-        if( this.id.longValue() < 0 || (this.levelNo <= 1 && isActive()) ) {
+        if( this.id.longValue() < 0 || (this.levelNo <= 2 && isActive()) ) {
         	map.put("_open", "true");
         }
  

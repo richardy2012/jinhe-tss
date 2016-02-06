@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<HTML xmlns:WorkSpace xmlns:Tree>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>    
+<meta charset="UTF-8">
+<title>数据源管理</title>
+
+<link href="../../tools/tssJS/css/boubei.css" rel="stylesheet">
+<link href="../../css/css.css" rel="stylesheet">
+
+<script src="../../tools/tssJS/tssJS.all.js"></script>
+<script src="../../tools/tssUtils.js"></script>
+
+<SCRIPT type="text/javascript">
+
+    /*  XMLHTTP请求地址汇总 */
+	URL_SAVE_PARAM    = NO_AUTH_PATH + "param";
+    URL_PARAM_DELETE  = NO_AUTH_PATH + "param/";
+    URL_PARAM_DISABLE = NO_AUTH_PATH + "param/disable/";
+	GET_DS_1 = NO_AUTH_PATH + "param/json/combo/datasource_list";
+    GET_DS_2 = NO_AUTH_PATH + "cache/param/config";
+    GET_DS_3 = "datasource/connpool.xml";
+
+	if(IS_TEST) {
+		URL_SAVE_PARAM = "data/_success.xml?";
+		URL_PARAM_DELETE = "data/_success.xml?";
+		URL_PARAM_DISABLE = "data/_success.xml?";
+        GET_DS_1 = "datasource/ds_list.json";
+        GET_DS_2 = "datasource/ds_configs.json";
+	}
+
+    function init() {
+        initMenus();
+        initWorkSpace();
+        initEvents();
+
+        loadInitData();
+    }
+ 
+    function initMenus() {
+        var item2 = {
+            label: "删除数据源",
+            callback: delDS,
+            icon: "images/icon_del.gif"
+        }
+        var item3 = {
+            label: "修改数据源",
+            callback: function() {
+                editDSInfo();
+            },
+            icon: "images/icon_edit.gif"
+        }
+        var item4 = {
+            label: "复制数据源",
+            callback: copyDS,
+            icon: "images/icon_copy.gif"
+        }     
+
+        var menu1 = new $.Menu();
+        menu1.addItem(item2);
+        menu1.addItem(item3);
+        menu1.addItem(item4);
+
+        $1("tree").contextmenu = menu1;
+    }
+
+	function loadInitData() {
+        var data1, data2;
+        $.ajax({
+            url: GET_DS_1,
+            method: "GET",
+            ondata: function() {
+                data1 = this.getResponseJSON();
+                data1 && data2 && showDS();
+            }
+        });
+
+        $.ajax({
+            url: GET_DS_2,
+            method: "GET",
+            ondata: function() {
+                data2 = this.getResponseJSON();
+                data1 && data2 && showDS();
+            }
+        });
+
+        function showDS() {
+            var result = [];
+            data1.each(function(i, item1) {
+
+                data2.each(function(j, item2) {
+                    if(item1[3] === item2.code) {
+                        result.push(item2);
+                    }
+                });
+            });
+
+            var tree = $("#tree").tree(result, "node3");    
+			tree.onTreeNodeActived = function(ev) {
+				editDSInfo();
+			}
+			tree.onTreeNodeRightClick = function(ev) {
+				tree.el.contextmenu.show(ev.clientX, ev.clientY); 
+			}			
+		}
+    }
+
+    /* 编辑参数信息 */
+    function editDSInfo() {
+        var tree = $.T("tree");
+        var treeNode = tree.getActiveTreeNode();
+        if( treeNode ) {
+            var treeID   = treeNode.id;
+            var treeName = treeNode.name;
+
+            var callback = {};
+            callback.onTabChange = function() {
+                setTimeout(function() {
+                    loadTreeDetailData(treeNode);
+                }, TIMEOUT_TAB_CHANGE);
+            };
+
+            var inf = {};
+            inf.label = treeName;
+			inf.SID = treeID;
+            inf.defaultPage = "page1";
+            inf.callback = callback;
+            ws.open(inf);
+        }
+    }
+
+    function addNewDS() {
+        var callback = {};
+        callback.onTabChange = function() {
+            setTimeout(function() {
+                loadTreeDetailData();
+            }, TIMEOUT_TAB_CHANGE);
+        };
+
+        var inf = {};
+        inf.defaultPage = "page1";
+        inf.label = OPERATION_ADD.replace(/\$label/i, "数据源");
+        inf.phases = null;
+        inf.callback = callback;
+        inf.SID = "_new_";
+        var tab = ws.open(inf);
+    }
+
+    function loadTreeDetailData(treeNode) {
+        var treeID = treeNode ? treeNode.id : "_new_";
+        var xmlNode = $.cache.XmlDatas[treeID];
+        if(xmlNode) {
+            return initForm();
+        }
+
+		$.ajax({
+			url : GET_DS_3,
+			method : "GET",
+			onresult : function() { 
+				xmlNode = this.getNodeValue("TL");
+				$.cache.XmlDatas[treeID] = xmlNode;
+				initForm();
+			}
+		});
+
+        function initForm() {
+            var xform = $.F("page1Form", xmlNode);
+
+            // 初始化值
+            if(treeNode) {
+                var config = $.parseJSON( treeNode.attrs.value );
+                updateField("code", config.code, xform);
+                updateField("name", config.name, xform);
+                updateField("interruptTime", config.interruptTime, xform);
+                updateField("cyclelife", config.cyclelife, xform);
+                updateField("initNum", config.initNum, xform);
+                updateField("poolSize", config.poolSize, xform);
+
+                var dbproperties = config.paramFile.split(",");
+                if( dbproperties.length == 4 ) {
+                    updateField("driver", dbproperties[0], xform);
+                    updateField("connUrl", dbproperties[1], xform);
+                    updateField("connUser", dbproperties[2], xform);
+                    updateField("connPwd", dbproperties[3], xform);
+                } else {
+                    updateField("connUrl", config.paramFile, xform);
+                }           
+            }
+
+            attachReminder(treeID, xform); // 离开提醒
+ 
+            $("#page1BtSave").click( function() {
+                saveDS(treeID, parentID, type);
+            } );
+        }
+    }
+
+    function saveDS(treeID, parentID, type) {
+        var xform = $.F("page1Form");	
+        if( !xform.checkForm() ) {
+            return;
+        }
+ 
+        var request = new $.HttpRequest();
+        request.url = URL_SAVE_PARAM;
+
+        var xmlNode = $.cache.XmlDatas[treeID];
+        var dataNode = xmlNode.querySelector("data");
+        request.setFormContent(dataNode);
+       
+        syncButton([$1("page1BtSave")], request); // 同步按钮状态
+		detachReminder(treeID); // 解除提醒
+
+        request.onresult = request.onsuccess = function() { 
+        	ws.closeActiveTab();
+            delete $.cache.XmlDatas[treeID]; // 清除缓存
+        	
+			loadInitData();
+        }
+        request.send();
+    }
+ 
+    function delDS() {
+		 delTreeNode(URL_PARAM_DELETE);
+    }
+ 
+    function getTreeNodeVal() {
+        return getTreeAttribute("value");
+    }
+
+    function copyDS() {
+        
+    }
+
+    function updateField(code, value, xform) {
+        xform.updateDataExternal(code, value);    
+        xform.updateData( $1(code) );
+    }
+
+    window.onload = init;
+
+</script>
+
+</head>
+
+<body>
+
+<table class="panel" >
+    <tr class="header"> <td/><td/><td/><td/> </tr>
+    <tr class="body"> 
+        <td/>
+        <td id="palette">
+            <div>
+                <div class="bar">
+                    <span class="icon"></span>数据源列表&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class='tssbutton small blue' onclick="addNewDS();">创建一个</button>
+                    <span class="refreshTreeBT"></span>
+                </div>
+                <Tree id="tree" moveable="true"><div class="loading"></div></Tree>
+            </div> 
+        </td>
+        <td class="groove"> 
+        	<WorkSpace:Box id="ws">
+        	  <WorkSpace:Page id="page1">
+        		  <div id="page1Form"></div>
+        		  <WorkSpace:PageStep>
+        			<input type="button" class="tssbutton blue medium" value="保 存" id="page1BtSave"/>
+                    <input type="button" class="tssbutton blue medium" value="测试连接" id="page1BtTestConn"/>
+        		  </WorkSpace:PageStep>
+        	  </WorkSpace:Page>
+        	</WorkSpace:Box>
+        </td>
+        <td/>
+    </tr>
+    <tr class="footer"> <td/><td/><td/><td/> </tr>
+</table>
+
+</body>
+</html>

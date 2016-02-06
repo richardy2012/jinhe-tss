@@ -92,11 +92,19 @@ public class CacheDisplayAction extends BaseActionSupport {
     }
     
 	/** 系统配置参数 */
-	@RequestMapping(value = "/json/configs", method = RequestMethod.GET)
+	@RequestMapping(value = "/param/config", method = RequestMethod.GET)
 	@ResponseBody
 	public Object getCacheConfigs() {
 		List<Param> cacheParams = paramService.getParamsByParentCode(CacheHelper.CACHE_PARAM);
 		return cacheParams;
+	}
+	
+	@RequestMapping(value = "/connpool", method = RequestMethod.POST)
+	@ResponseBody
+	public Object createConnpool(String code, String name, String value) {
+		
+		
+		return null;
 	}
  
     /**
