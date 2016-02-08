@@ -1,6 +1,5 @@
 package com.jinhe.tss.framework.component.cache;
 
-import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.tss.cache.AbstractPool;
 import com.jinhe.tss.cache.CacheStrategy;
@@ -60,15 +58,7 @@ public class CacheDisplayAction extends BaseActionSupport {
 		PCache.rebuildCache(cacheCode, jsonData);
 		
 		// 将更新信息保存到系统参数模块
-		Param cacheGroup = paramService.getParam(CacheHelper.CACHE_PARAM);
-		if(cacheGroup == null) {
-			cacheGroup = new Param();
-			cacheGroup.setName("缓存池配置");
-			cacheGroup.setCode(CacheHelper.CACHE_PARAM);
-			cacheGroup.setParentId(ParamConstants.DEFAULT_PARENT_ID);
-			cacheGroup.setType(ParamConstants.GROUP_PARAM_TYPE);
-	        paramService.saveParam(cacheGroup);
-		}
+		Param cacheGroup = CacheHelper.getCacheParamGroup(paramService);
 		
 		Param cacheParam = null;
 		List<Param> cacheParams = paramService.getParamsByParentCode(CacheHelper.CACHE_PARAM);
@@ -91,33 +81,6 @@ public class CacheDisplayAction extends BaseActionSupport {
         
         printSuccessMessage();
     }
-    
-	/** 系统配置参数 */
-	@RequestMapping(value = "/param/config", method = RequestMethod.GET)
-	@ResponseBody
-	public Object getCacheConfigs() {
-		List<Param> cacheParams = paramService.getParamsByParentCode(CacheHelper.CACHE_PARAM);
-		return cacheParams;
-	}
-	
-	@RequestMapping(value = "/connpool", method = RequestMethod.POST)
-	@ResponseBody
-	public Object createConnpool(String code, String name, String value) {
-				
-		return null;
-	}
-	
-	@RequestMapping(value = "/connpool/test", method = RequestMethod.GET)
-	@ResponseBody
-	public Object testConn(String driver, String url, String user, String pwd) {
-        try {
-            Class.forName(driver);
-			DriverManager.getConnection(url, user, pwd);
-        } catch (Exception e) {
-            return "测试失败，原因：" + e.getMessage();
-        } 
-		return "测试成功";
-	}
  
     /**
      * 树型展示所有缓存池

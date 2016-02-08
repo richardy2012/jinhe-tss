@@ -14,20 +14,22 @@
 <SCRIPT type="text/javascript">
 
     /*  XMLHTTP请求地址汇总 */
-	URL_SAVE_PARAM    = NO_AUTH_PATH + "param";
     URL_PARAM_DELETE  = NO_AUTH_PATH + "param/";
     URL_PARAM_DISABLE = NO_AUTH_PATH + "param/disable/";
 	GET_DS_1 = NO_AUTH_PATH + "param/json/combo/datasource_list";
-    GET_DS_2 = NO_AUTH_PATH + "cache/param/config";
+    GET_DS_2 = NO_AUTH_PATH + "ds/param/config";
     GET_DS_3 = "datasource/connpool.xml";
+    URL_DS_SAVE = NO_AUTH_PATH + "ds/connpool";
+    URL_DS_TEST = NO_AUTH_PATH + "ds/connpool/test";
     URL_GET_USER_HAS  = AUTH_PATH + "user/has";
 
 	if(IS_TEST) {
-		URL_SAVE_PARAM = "data/_success.xml?";
 		URL_PARAM_DELETE = "data/_success.xml?";
 		URL_PARAM_DISABLE = "data/_success.xml?";
         GET_DS_1 = "datasource/ds_list.json";
         GET_DS_2 = "datasource/ds_configs.json";
+        URL_DS_SAVE = "data/_success.json?";
+        URL_DS_TEST = "data/_success.json?";
         URL_GET_USER_HAS  = "data/user_has.json?";
 	}
 
@@ -204,6 +206,7 @@
 
             attachReminder(treeID, xform); // 离开提醒
  
+            $1("page1BtSave").disabled = false;
             $("#page1BtSave").click( function() {
                 saveDS(treeID);
             } );
@@ -212,25 +215,35 @@
 
     function saveDS(treeID) {
         var xform = $.F("page1Form");	
-        if( !xform.checkForm() ) {
-            return;
-        }
+        if( !xform.checkForm() ) return;
  
         var request = new $.HttpRequest();
-        request.url = URL_SAVE_PARAM;
+        request.url = URL_DS_SAVE;
 
-        var xmlNode = $.cache.XmlDatas[treeID];
-        // TODO 拼接各个配置值
-        request.params.driver = xform.getData("driver");
-        request.params.url = xform.getData("connUrl");
-        request.params.user = xform.getData("connUser");
-        request.params.pwd = xform.getData("connPwd");
+        // 拼接各个配置值
+        var param = {};
+        param.paramFile = xform.getData("driver") + "," + xform.getData("connUrl")
+             + "," + xform.getData("connUser") + "," + xform.getData("connPwd");
+        param.code = xform.getData("code");
+        param.name = xform.getData("name");
+        param.interruptTime = xform.getData("interruptTime");
+        param.cyclelife = xform.getData("cyclelife");
+        param.initNum = xform.getData("initNum");
+        param.poolSize = xform.getData("poolSize");
+        param.customizerClass = "com.jinhe.tss.framework.persistence.connpool.ConnPoolCustomizer";
+        param.poolClass = "com.jinhe.tss.cache.extension.ReusablePool";
 
+        request.params.value = JSON.stringify(param);
+        request.params.code = param.code;
+        request.params.name = param.name;
        
         syncButton([$1("page1BtSave")], request); // 同步按钮状态
 		detachReminder(treeID); // 解除提醒
 
-        request.onresult = request.onsuccess = function() { 
+        request.ondata = function() { 
+            var returnVal = this.getResponseJSON();
+            $.alert(returnVal);
+
         	ws.closeActiveTab();
             delete $.cache.XmlDatas[treeID]; // 清除缓存
         	
@@ -266,7 +279,7 @@
         params.pwd = xform.getData("connPwd");
 
         $.ajax( {
-            url: "/tss/cache/connpool/test",
+            url: URL_DS_TEST,
             params: params,
             ondata: function() {
                 var result = this.getResponseJSON();
@@ -294,7 +307,7 @@
                     <button class='tssbutton small blue' onclick="addNewDS();">创建一个</button>
                     <span class="refreshTreeBT"></span>
                 </div>
-                <Tree id="tree" moveable="true"><div class="loading"></div></Tree>
+                <Tree id="tree"><div class="loading"></div></Tree>
             </div> 
         </td>
         <td class="groove"> 
@@ -302,6 +315,7 @@
         	  <WorkSpace:Page id="page1">
         		  <div id="page1Form"></div>
         		  <WorkSpace:PageStep>
+                    <br>
         			<input type="button" class="tssbutton blue medium" value="保 存" id="page1BtSave"/>
                     <input type="button" class="tssbutton blue medium" value="测试连接" onclick="testConn()"/>
         		  </WorkSpace:PageStep>

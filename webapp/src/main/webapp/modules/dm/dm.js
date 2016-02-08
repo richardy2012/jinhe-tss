@@ -7,9 +7,9 @@ if(IS_TEST) {
 
 // 管理数据源
 function manageDS() {
-
-	
-	
+	$.openIframePanel("dsPanel", "管理数据源", 900, 420, "datasource.html", true);
+	// 先关闭report or record的编辑Tab，待数据源维护完成后再由重新打开
+	ws && ws.closeActiveTab();
 }
 
 function checkDataService() {

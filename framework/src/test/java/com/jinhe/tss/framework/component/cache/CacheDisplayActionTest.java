@@ -16,7 +16,6 @@ public class CacheDisplayActionTest extends TxTestSupportParam {
     @Test
 	public void testCacheAction() {
 		action.getAllCacheStrategy4Tree(response);
-		action.getCacheConfigs();
 		
 		action.getPoolsGrid(response);
 		
