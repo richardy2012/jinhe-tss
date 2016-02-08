@@ -1,5 +1,6 @@
 package com.jinhe.tss.framework.component.cache;
 
+import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -102,9 +103,20 @@ public class CacheDisplayAction extends BaseActionSupport {
 	@RequestMapping(value = "/connpool", method = RequestMethod.POST)
 	@ResponseBody
 	public Object createConnpool(String code, String name, String value) {
-		
-		
+				
 		return null;
+	}
+	
+	@RequestMapping(value = "/connpool/test", method = RequestMethod.GET)
+	@ResponseBody
+	public Object testConn(String driver, String url, String user, String pwd) {
+        try {
+            Class.forName(driver);
+			DriverManager.getConnection(url, user, pwd);
+        } catch (Exception e) {
+            return "测试失败，原因：" + e.getMessage();
+        } 
+		return "测试成功";
 	}
  
     /**

@@ -30,7 +30,7 @@ import com.jinhe.tss.util.EasyUtils;
 @Entity
 @Table(name = "component_param")
 @SequenceGenerator(name = "param_sequence", sequenceName = "param_sequence", initialValue = 1000, allocationSize = 10)
-@JsonIgnoreProperties(value={"pk", "attributes4XForm", "attributes", "parentClass", "creatorId", "createTime", "creatorName", 
+@JsonIgnoreProperties(value={"pk", "attributes4XForm", "attributes", "parentClass", "createTime", "creatorName", 
 		"updatorId", "updateTime", "updatorName", "lockVersion", "decode", "seqNo", "levelNo", "hidden"})
 public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecodable {
  

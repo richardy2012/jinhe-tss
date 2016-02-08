@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><Response><TL>
 <xform>
 	<declare prefix="cacheStrategy">
-		<column name="code" caption="数据源编码" empty="false"/>
+		<column name="code" caption="数据源编码" empty="false" editable="false"/>
 		<column name="name" caption="数据源名称" empty="false"/>
 		<column name="interruptTime" caption="等待时间(微秒)" mode="number" inputReg="^\d*$" empty="false"/>	
 		<column name="cyclelife"     caption="连接有效期(微秒)" mode="number" inputReg="^\d*$" empty="false"/>
@@ -35,7 +35,7 @@
 			<TD><input binding="interruptTime" style="width:100px;"/></TD>
 		</TR>
 		<TR>
-            <TD colspan="4"> <b style="color: red; padding: 8px 0; display: block;">*注: 0或空表示不限制</b> </TD>
+            <TD colspan="4"> <b style="color: red; padding: 8px 0; display: block;">*注: 0或空表示不限制，数据源编码为自动生成</b> </TD>
         </TR>
         <TR>
             <TD colspan="4"><hr noshade="true" size="1"/></TD>
