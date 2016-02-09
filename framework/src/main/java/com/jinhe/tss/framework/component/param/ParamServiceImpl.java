@@ -38,7 +38,8 @@ public class ParamServiceImpl implements ParamService, ParamListener {
 		String paramCode = null;
         if(ParamConstants.NORMAL_PARAM_TYPE.equals(param.getType())) {
         	paramCode = param.getCode();
-        } else if(ParamConstants.ITEM_PARAM_TYPE.equals(param.getType())) {
+        } 
+        else if(ParamConstants.ITEM_PARAM_TYPE.equals(param.getType())) {
         	List<Param> parents = paramDao.getParentsById(param.getId()); 
         	for(Param temp: parents) {
         		if(ParamConstants.NORMAL_PARAM_TYPE.equals(temp.getType())) {
@@ -81,11 +82,11 @@ public class ParamServiceImpl implements ParamService, ParamListener {
         List<?> children = paramDao.getChildrenById(id);
         for(Object entity : children) {
             Param item = (Param)entity;
-            paramDao.delete(item);
-            
             if(id.equals(item.getId())) {
-            	fireListener(item);
+            	fireListener(item); /* 在执行delete前触发触发器，否则执行如getParentsById等查询时，因o1已经删除，将查询不到数据 */
+            	item = paramDao.getEntity(id);
             }
+            paramDao.delete(item);
         }
     }
     

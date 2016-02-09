@@ -173,6 +173,10 @@ function showQueryForm() {
 }
 
 function searchReport(params) {
+
+    addShareBtn();
+    addSubscribeBtn();
+
     // 没有独立的displayUri，则用Grid展示查询结果
     if( !globalValiable._url ) {
         $("#t1").show();
@@ -205,6 +209,20 @@ function searchReport(params) {
             $("#chartFrame").attr("src", globalValiable._url);
         }
     })
+}
+
+/* ------------------ 在小黄条上增加分享、订阅功能 -------------- */
+// 用户查询出结果后，可直接分享给其他人（通过栏目文章、邮件或站内信），url = 报表地址 + 参数 
+function addShareBtn() {
+
+}
+
+/* 用户订阅功能：将可定时推送的report整理成订阅列表供用户自行订阅（邮件或站内信）接收 
+    订阅条件为用户设置的个性化条件，没有则取报表的默认条件。
+    订阅报表的配置界面同“定时邮件”的配置界面：触发时间、参数（收件人不可修改，默认为当前用户）
+*/
+function addSubscribeBtn() {
+    
 }
 
 </script>  

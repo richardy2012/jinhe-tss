@@ -1,5 +1,7 @@
 package com.jinhe.dm.data;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,16 +27,27 @@ public class DataSourceManagerTest extends TxTestSupport4DM {
 				" \"interruptTime\": \"1000\",    \"initNum\":\"0\",    \"poolSize\": \"10\"}";
 		
 		// create
-		dsManager.configConnpool(code, name, value);
+		Object result = dsManager.configConnpool(code, name, value);
+		Assert.assertEquals("数据源配置成功", result);
 		
 		// update
-		dsManager.configConnpool(code, name, value);
+		result = dsManager.configConnpool(code, name, value);
+		Assert.assertEquals("数据源配置修改成功", result);
 		
 		String driver = "org.h2.Driver";
 		String url  = "jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1;LOCK_MODE=0";
 		String user = "sa";
 		String pwd  = "123";
-		dsManager.testConn(driver, url, user, pwd);
+		result = dsManager.testConn(driver, url, user, pwd);
+		Assert.assertEquals("测试连接成功", result);
+		
+		result = dsManager.testConn(driver, url, user, "123456");
+		System.out.println(" --------- " + result);
+		Assert.assertTrue( result.toString().startsWith("测试连接失败") );
+		
+		dsManager.delConnpool(response, paramService.getParam(code).getId());
+		
+		try { Thread.sleep(1000); } catch(Exception e) { }
 	}
 	
     protected String getDefaultSource(){
