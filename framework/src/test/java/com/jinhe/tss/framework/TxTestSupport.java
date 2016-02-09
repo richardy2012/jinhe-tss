@@ -14,6 +14,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
+import com.jinhe.tss.framework.component.log.LogService;
+import com.jinhe.tss.framework.component.param.ParamService;
 import com.jinhe.tss.framework.sso.DemoOperator;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.TokenUtil;
@@ -34,6 +36,9 @@ public abstract class TxTestSupport extends AbstractTransactionalJUnit4SpringCon
     protected static Logger log = Logger.getLogger(TxTestSupport.class);    
     
     @Autowired protected IH2DBServer dbserver;
+    
+    @Autowired protected LogService logService;
+    @Autowired protected ParamService paramService;
     
     protected HttpServletResponse response;
     protected MockHttpServletRequest request;

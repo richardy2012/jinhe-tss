@@ -111,8 +111,19 @@ public class ParamManager {
         return value;
     }
     
+    /** 建参数组 */
+    public static Param addParamGroup(Long parentId, String name) {
+        Param param = new Param();
+        param.setName(name);
+        param.setParentId(parentId);
+        param.setType(ParamConstants.GROUP_PARAM_TYPE);
+        
+        getService().saveParam(param);
+        return param;
+    }
+    
     /** 简单参数 */
-    public static Param addParam(Long parentId, String code, String name, String value) {
+    public static Param addSimpleParam(Long parentId, String code, String name, String value) {
         Param param = new Param();
         param.setCode(code);
         param.setName(name);
@@ -126,7 +137,7 @@ public class ParamManager {
     }
     
     /** 下拉型参数 */
-    public static Param addComboParamItem(Long parentId, String code, String name) {
+    public static Param addComboParam(Long parentId, String code, String name) {
         Param param = new Param();
         param.setCode(code);
         param.setName(name);
@@ -137,9 +148,22 @@ public class ParamManager {
         getService().saveParam(param);
         return param;
     }
+    
+    /** 树型参数 */
+    public static Param addTreeParam(Long parentId, String code, String name) {
+        Param param = new Param();
+        param.setCode(code);
+        param.setName(name);
+        param.setParentId(parentId);
+        param.setType(ParamConstants.NORMAL_PARAM_TYPE);
+        param.setModality(ParamConstants.TREE_PARAM_MODE);
+        
+        getService().saveParam(param);
+        return param;
+    }
 
     /** 新建设参数项 */
-    public static Param addTreeParamItem(Long parentId, String value, String text, Integer mode) {
+    public static Param addParamItem(Long parentId, String value, String text, Integer mode) {
         Param param = new Param();
         param.setValue(value);
         param.setText(text);

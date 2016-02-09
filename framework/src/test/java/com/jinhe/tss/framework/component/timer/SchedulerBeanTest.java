@@ -4,14 +4,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.jinhe.tss.cache.Pool;
+import com.jinhe.tss.framework.TxTestSupport;
 import com.jinhe.tss.framework.component.cache.CacheHelper;
 import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamConstants;
-import com.jinhe.tss.framework.component.param.TxTestSupportParam;
+import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.test.TestUtil;
 import com.jinhe.tss.util.EasyUtils;
 
-public class SchedulerBeanTest extends TxTestSupportParam {
+public class SchedulerBeanTest extends TxTestSupport {
 	
 	String jobConfig = "com.jinhe.tss.framework.component.timer.DemoJob | 10,20,30,40,55 * * * * ? | " +
 			"1:报表一:lovejava@163.com,lovejava@163.com:param1=0,param2=0\n" + 
@@ -19,19 +20,19 @@ public class SchedulerBeanTest extends TxTestSupportParam {
 	
 	@Test
 	public void testSchedulerBean() {
-        Param paramGroup = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "我的分组");
+        Param paramGroup = ParamManager.addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "我的分组");
         String comboParamCode = SchedulerBean.TIMER_PARAM_CODE;
-		Param comboParam = addComboParam(paramGroup.getId(), comboParamCode, "定时Job配置");
+		Param comboParam = ParamManager.addComboParam(paramGroup.getId(), comboParamCode, "定时Job配置");
 		Long cpId = comboParam.getId();
 		
-		Param item1 = addParamItem(cpId, jobConfig + ",param2=1", "Job1", ParamConstants.COMBO_PARAM_MODE);
-		Param item2 = addParamItem(cpId, jobConfig + ",param2=2", "Job2", ParamConstants.COMBO_PARAM_MODE);
+		Param item1 = ParamManager.addParamItem(cpId, jobConfig + ",param2=1", "Job1", ParamConstants.COMBO_PARAM_MODE);
+		Param item2 = ParamManager.addParamItem(cpId, jobConfig + ",param2=2", "Job2", ParamConstants.COMBO_PARAM_MODE);
         
 		// 修改、新增、删除定时配置
 		item1.setValue(jobConfig + "1");
 		paramService.saveParam(item1);
 		paramService.delete(item2.getId());
-		addParamItem(cpId, jobConfig + ",param2=3", "Job3", ParamConstants.COMBO_PARAM_MODE);
+		ParamManager.addParamItem(cpId, jobConfig + ",param2=3", "Job3", ParamConstants.COMBO_PARAM_MODE);
 		
 		// 清除service method cache
 		Pool shortCache = CacheHelper.getShortCache();

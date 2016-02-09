@@ -3,10 +3,10 @@
 	<declare prefix="cacheStrategy">
 		<column name="code" caption="数据源编码" empty="false" editable="false"/>
 		<column name="name" caption="数据源名称" empty="false"/>
-		<column name="interruptTime" caption="等待时间(微秒)" mode="number" inputReg="^\d*$" empty="false"/>	
-		<column name="cyclelife"     caption="连接有效期(微秒)" mode="number" inputReg="^\d*$" empty="false"/>
-		<column name="initNum"       caption="初始化连接个数" mode="number" inputReg="^\d*$" empty="false"/>
-		<column name="poolSize"      caption="最大连接个数" mode="number" inputReg="^\d*$" empty="false"/>
+		<column name="interruptTime" caption="等待时间(微秒)" mode="number" inputReg="^\d*$" empty="false" errorMsg="请填入整数数字"/>	
+		<column name="cyclelife" caption="连接有效期(微秒)" mode="number" inputReg="^\d*$" empty="false" errorMsg="请填入整数数字"/>
+		<column name="initNum"   caption="初始化连接个数" mode="number" inputReg="^\d*$" empty="false" errorMsg="请填入整数数字"/>
+		<column name="poolSize"  caption="最大连接个数" mode="number" inputReg="^\d*$" empty="false" errorMsg="请填入整数数字"/>
 		
 		<column name="driver"  caption="数据库连类型" empty="false" mode="combo" 
 			values="oracle.jdbc.driver.OracleDriver|com.mysql.jdbc.Driver" 

@@ -16,6 +16,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.component.param.ParamService;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.TokenUtil;
@@ -101,16 +102,16 @@ public abstract class TxTestSupport4DM extends AbstractTransactionalJUnit4Spring
         resourceService.setInitial(false);
         
         if(paramService.getParam(DMConstants.DATASOURCE_LIST) == null) {
-        	Param dlParam = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, DMConstants.DATASOURCE_LIST, "数据源列表");
-            addParamItem(dlParam.getId(), "connectionpool-1", "数据源1", ParamConstants.COMBO_PARAM_MODE);
+        	Param dlParam = ParamManager.addComboParam(ParamConstants.DEFAULT_PARENT_ID, DMConstants.DATASOURCE_LIST, "数据源列表");
+            ParamManager.addParamItem(dlParam.getId(), "connectionpool-1", "数据源1", ParamConstants.COMBO_PARAM_MODE);
         }
         if(paramService.getParam(DMConstants.DEFAULT_CONN_POOL) == null) {
-            addParam(ParamConstants.DEFAULT_PARENT_ID, DMConstants.DEFAULT_CONN_POOL, "默认数据源", getDefaultSource());
+        	ParamManager.addSimpleParam(ParamConstants.DEFAULT_PARENT_ID, DMConstants.DEFAULT_CONN_POOL, "默认数据源", getDefaultSource());
         }
         if(paramService.getParam(DMConstants.TEMP_EXPORT_PATH) == null) {
 			String tmpDir = System.getProperty("java.io.tmpdir") + "temp";
 			log.info("临时文件导出目录：" + tmpDir);
-            addParam(ParamConstants.DEFAULT_PARENT_ID, DMConstants.TEMP_EXPORT_PATH, "临时文件导出目录", tmpDir);
+			ParamManager.addSimpleParam(ParamConstants.DEFAULT_PARENT_ID, DMConstants.TEMP_EXPORT_PATH, "临时文件导出目录", tmpDir);
         }
     }
     
@@ -123,42 +124,5 @@ public abstract class TxTestSupport4DM extends AbstractTransactionalJUnit4Spring
         // 获取登陆用户的权限（拥有的角色）并保存到用户权限（拥有的角色）对应表
         List<Object[]> userRoles = loginSerivce.getUserRolesAfterLogin(userId);
         permissionService.saveUserRolesAfterLogin(userRoles, userId);
-    }
-    
-    /** 简单参数 */
-    protected Param addParam(Long parentId, String code, String name, String value) {
-        Param param = new Param();
-        param.setCode(code);
-        param.setName(name);
-        param.setValue(value);
-        param.setParentId(parentId);
-        param.setType(ParamConstants.NORMAL_PARAM_TYPE);
-        param.setModality(ParamConstants.SIMPLE_PARAM_MODE);
-        paramService.saveParam(param);
-        return param;
-    }
-    
-    /** 下拉型参数 */
-    protected Param addParamGroup(Long parentId, String code, String name) {
-        Param param = new Param();
-        param.setCode(code);
-        param.setName(name);
-        param.setParentId(parentId);
-        param.setType(ParamConstants.NORMAL_PARAM_TYPE);
-        param.setModality(ParamConstants.COMBO_PARAM_MODE);
-        paramService.saveParam(param);
-        return param;
-    }
-
-    /** 新建设参数项 */
-    protected Param addParamItem(Long parentId, String value, String text, Integer mode) {
-        Param param = new Param();
-        param.setValue(value);
-        param.setText(text);
-        param.setParentId(parentId);
-        param.setType(ParamConstants.ITEM_PARAM_TYPE);
-        param.setModality(mode);
-        paramService.saveParam(param);
-        return param;
     }
 }

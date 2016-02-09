@@ -10,6 +10,7 @@ import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.TxTestSupport4DM;
 import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.sso.context.Context;
 
 public class ScriptParseTest extends TxTestSupport4DM {
@@ -19,8 +20,8 @@ public class ScriptParseTest extends TxTestSupport4DM {
 
     @Test
     public void test1() {      
-    	Param paramL = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, DMConstants.SCRIPT_MACRO, "常用脚本段");
-        addParamItem(paramL.getId(), "1=1", "testMacro", ParamConstants.COMBO_PARAM_MODE);
+    	Param paramL = ParamManager.addComboParam(ParamConstants.DEFAULT_PARENT_ID, DMConstants.SCRIPT_MACRO, "常用脚本段");
+    	ParamManager.addParamItem(paramL.getId(), "1=1", "testMacro", ParamConstants.COMBO_PARAM_MODE);
     	
         HttpServletResponse response = Context.getResponse();
         MockHttpServletRequest  request = new MockHttpServletRequest();

@@ -6,11 +6,10 @@ import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.component.param.ParamService;
 
 public class CacheHelper {
-	
-	public final static String CACHE_PARAM = "CACHE_PARAM";
 	
 	public static Pool getShorterCache() {
 		return JCache.getInstance().getPool(CacheLife.SHORTER.toString());
@@ -42,14 +41,14 @@ public class CacheHelper {
 		}
 	}
 	
+	
+	public final static String CACHE_PARAM = "CACHE_PARAM";
+	
 	public static Param getCacheParamGroup(ParamService paramService) {
 		Param paramGroup = paramService.getParam(CacheHelper.CACHE_PARAM);
 		if(paramGroup == null) {
-			paramGroup = new Param();
-			paramGroup.setName("缓存池配置");
+			paramGroup = ParamManager.addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "缓存池配置");
 			paramGroup.setCode(CacheHelper.CACHE_PARAM);
-			paramGroup.setParentId(ParamConstants.DEFAULT_PARENT_ID);
-			paramGroup.setType(ParamConstants.GROUP_PARAM_TYPE);
 	        paramService.saveParam(paramGroup);
 		}
 		return paramGroup;

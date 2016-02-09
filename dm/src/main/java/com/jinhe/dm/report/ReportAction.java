@@ -383,13 +383,8 @@ public class ReportAction extends BaseActionSupport {
     public void saveJobParam(HttpServletResponse response, Long reportId, String configVal) {
 		Param jobParam = paramService.getParam(SchedulerBean.TIMER_PARAM_CODE);
 		if(jobParam == null) {
-			jobParam = new Param();
-			jobParam.setCode(SchedulerBean.TIMER_PARAM_CODE);
-			jobParam.setName("定时配置");
-			jobParam.setParentId(ParamConstants.DEFAULT_PARENT_ID);
-			jobParam.setType(ParamConstants.NORMAL_PARAM_TYPE);
-			jobParam.setModality(ParamConstants.COMBO_PARAM_MODE);
-	        paramService.saveParam(jobParam);
+			jobParam = ParamManager.addComboParam(ParamConstants.DEFAULT_PARENT_ID, 
+	        		SchedulerBean.TIMER_PARAM_CODE, "定时配置");
     	}
 		
 		Param jobParamItem = null;
@@ -401,16 +396,17 @@ public class ReportAction extends BaseActionSupport {
 				break;
 			}
 		}
+		
+		String value = ReportJob.class.getName() + " | " + configVal;
 		if(jobParamItem == null) {
-			jobParamItem = new Param();
-			jobParamItem.setText(reportService.getReport(reportId).getName() + "-" + reportId);
+			String text = reportService.getReport(reportId).getName() + "-" + reportId;
+			jobParamItem = ParamManager.addParamItem(jobParam.getId(), value, text, jobParam.getModality());
 			jobParamItem.setUdf1(jobCode);
-			jobParamItem.setParentId(jobParam.getId());
-			jobParamItem.setType(ParamConstants.ITEM_PARAM_TYPE);
-			jobParamItem.setModality(jobParam.getModality());
 		}
-		jobParamItem.setValue(ReportJob.class.getName() + " | " + configVal);
-        paramService.saveParam(jobParamItem);
+		else {
+			jobParamItem.setValue(value);
+		}
+		paramService.saveParam(jobParamItem);
         
         printSuccessMessage();
     }

@@ -13,6 +13,7 @@ import com.jinhe.dm.report.ReportService;
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.MailUtil;
 import com.jinhe.tss.framework.component.timer.AbstractJob;
+import com.jinhe.tss.framework.exception.ExceptionEncoder;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
@@ -106,7 +107,7 @@ public class WashDataJob extends AbstractJob {
 	        } 
 	        catch(Exception e) {
         		rollback(db, startId);
-	        	log.error("insert washed data error: ", e);
+	        	log.error("insert washed data error: ", ExceptionEncoder.getFirstCause(e)); 
 	        } 
 	        finally {
 	        	// 检查插入的数据记录数和查询出来的是否一致，如不一致，则回滚数据，并发送邮件提醒

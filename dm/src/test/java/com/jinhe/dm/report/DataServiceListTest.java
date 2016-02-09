@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.TxTestSupport4DM;
 import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.sso.context.Context;
 
 public class DataServiceListTest extends TxTestSupport4DM {
@@ -18,7 +19,7 @@ public class DataServiceListTest extends TxTestSupport4DM {
     @Test
     public void test1() {  
     	String dsVal = "/tss/btr/orgs|分公司列表,/tss/btr/centers|分拨列表";
-    	addParam(ParamConstants.DEFAULT_PARENT_ID, DMConstants.DATA_SERVICE_CONFIG, "特殊数据服务", dsVal);
+    	ParamManager.addSimpleParam(ParamConstants.DEFAULT_PARENT_ID, DMConstants.DATA_SERVICE_CONFIG, "特殊数据服务", dsVal);
     	
         HttpServletResponse response = Context.getResponse();
         

@@ -23,7 +23,7 @@ import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.JCache;
 import com.jinhe.tss.cache.Pool;
 import com.jinhe.tss.framework.component.param.Param;
-import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.component.param.ParamService;
 import com.jinhe.tss.framework.web.dispaly.grid.DefaultGridNode;
 import com.jinhe.tss.framework.web.dispaly.grid.GridDataEncoder;
@@ -38,7 +38,7 @@ import com.jinhe.tss.util.XMLDocUtil;
 
 @Controller
 @RequestMapping("/cache")
-public class CacheDisplayAction extends BaseActionSupport {
+public class CacheAction extends BaseActionSupport {
 	
 	protected Logger log = Logger.getLogger(this.getClass());
     
@@ -69,15 +69,14 @@ public class CacheDisplayAction extends BaseActionSupport {
 			}
 		}
 		if(cacheParam == null) {
-			cacheParam = new Param();
-			cacheParam.setCode(cacheCode);
-			cacheParam.setName(cache.getPool(cacheCode).getCacheStrategy().getName());
-			cacheParam.setParentId(cacheGroup.getId());
-			cacheParam.setType(ParamConstants.NORMAL_PARAM_TYPE);
-			cacheParam.setModality(ParamConstants.SIMPLE_PARAM_MODE);
+			Long parentId = cacheGroup.getId();
+			String name = cache.getPool(cacheCode).getCacheStrategy().getName();
+			cacheParam = ParamManager.addSimpleParam(parentId, cacheCode, name, jsonData);
 		}
-		cacheParam.setValue(jsonData);
-        paramService.saveParam(cacheParam);
+		else {
+			cacheParam.setValue(jsonData);
+	        paramService.saveParam(cacheParam);
+		}
         
         printSuccessMessage();
     }

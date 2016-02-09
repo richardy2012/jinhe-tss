@@ -19,6 +19,7 @@ import com.jinhe.dm.DMConstants;
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.component.param.ParamService;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.TokenUtil;
@@ -120,11 +121,11 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
     
     // 数据源配置
     private void initDM() {
-    	Param group = addParam(ParamConstants.DEFAULT_PARENT_ID, "数据源配置");
-        addParam(group.getId(), DMConstants.DEFAULT_CONN_POOL, "默认数据源", "connectionpool");
+    	Param group = ParamManager.addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "数据源配置");
+    	ParamManager.addSimpleParam(group.getId(), DMConstants.DEFAULT_CONN_POOL, "默认数据源", "connectionpool");
         
-        Param dlParam = addParam(group.getId(), DMConstants.DATASOURCE_LIST, "数据源列表");
-        addParamItem(dlParam.getId(), "connectionpool", "本地数据源", ParamConstants.COMBO_PARAM_MODE);
+        Param dlParam = ParamManager.addComboParam(group.getId(), DMConstants.DATASOURCE_LIST, "数据源列表");
+        ParamManager.addParamItem(dlParam.getId(), "connectionpool", "本地数据源", ParamConstants.COMBO_PARAM_MODE);
     }
     
     /** 初始化默认的修饰器，布局器 */
@@ -188,17 +189,17 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
      */
     public void importSystemProperties(){
         String name = "系统参数";
-        Param param = addParam(ParamConstants.DEFAULT_PARENT_ID, name);
+        Param param = ParamManager.addParamGroup(ParamConstants.DEFAULT_PARENT_ID, name);
         ResourceBundle resources = ResourceBundle.getBundle("application", Locale.getDefault());
         if (resources == null) return;
         
         for (Enumeration<String> enumer = resources.getKeys(); enumer.hasMoreElements();) {
             String key = enumer.nextElement();
             String value = resources.getString(key);
-            addParam(param.getId(), key, key, value);
+            ParamManager.addSimpleParam(param.getId(), key, key, value);
         }
  
-        Param paramGroup = addParam(ParamConstants.DEFAULT_PARENT_ID, "应用服务配置");
+        Param paramGroup = ParamManager.addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "应用服务配置");
         
         Document doc = XMLDocUtil.createDoc("tss/appServers.xml");
         List<?> elements = doc.getRootElement().elements();
@@ -206,62 +207,7 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
             org.dom4j.Element element = (org.dom4j.Element) it.next();
             String appName = element.attributeValue("name");
             String appCode = element.attributeValue("code");
-            addParam(paramGroup.getId(), appCode, appName, element.asXML());
+            ParamManager.addSimpleParam(paramGroup.getId(), appCode, appName, element.asXML());
         }
-    }
-
-    /**
-     * 建参数组
-     */
-    Param addParam(Long parentId, String name) {
-        Param param = new Param();
-        param.setName(name);
-        param.setParentId(parentId);
-        param.setType(ParamConstants.GROUP_PARAM_TYPE);
-        paramService.saveParam(param);
-        return param;
-    }
-
-    /**
-     * 简单参数
-     */
-    Param addParam(Long parentId, String code, String name, String value) {
-        Param param = new Param();
-        param.setCode(code);
-        param.setName(name);
-        param.setValue(value);
-        param.setParentId(parentId);
-        param.setType(ParamConstants.NORMAL_PARAM_TYPE);
-        param.setModality(ParamConstants.SIMPLE_PARAM_MODE);
-        paramService.saveParam(param);
-        return param;
-    }
-
-    /**
-     * 下拉型参数
-     */
-    Param addParam(Long parentId, String code, String name) {
-        Param param = new Param();
-        param.setCode(code);
-        param.setName(name);
-        param.setParentId(parentId);
-        param.setType(ParamConstants.NORMAL_PARAM_TYPE);
-        param.setModality(ParamConstants.COMBO_PARAM_MODE);
-        paramService.saveParam(param);
-        return param;
-    }
-
-    /**
-     * 新建设参数项
-     */
-    Param addParamItem(Long parentId, String value, String text, Integer mode) {
-        Param param = new Param();
-        param.setValue(value);
-        param.setText(text);
-        param.setParentId(parentId);
-        param.setType(ParamConstants.ITEM_PARAM_TYPE);
-        param.setModality(mode);
-        paramService.saveParam(param);
-        return param;
     }
 }

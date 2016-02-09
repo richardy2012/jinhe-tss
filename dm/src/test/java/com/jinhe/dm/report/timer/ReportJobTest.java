@@ -8,6 +8,7 @@ import com.jinhe.dm.report.Report;
 import com.jinhe.dm.report.ReportService;
 import com.jinhe.tss.framework.component.param.Param;
 import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.um.UMConstants;
 
 public class ReportJobTest extends TxTestSupport4DM {
@@ -17,8 +18,8 @@ public class ReportJobTest extends TxTestSupport4DM {
 	@Test
 	public void testReportJob() {
 		
-		Param paramL = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, UMConstants.EMAIL_MACRO, "常用收件人组");
-        addParamItem(paramL.getId(), "jinhetss@163.com", "JK", ParamConstants.COMBO_PARAM_MODE);
+		Param paramL = ParamManager.addComboParam(ParamConstants.DEFAULT_PARENT_ID, UMConstants.EMAIL_MACRO, "常用收件人组");
+		ParamManager.addParamItem(paramL.getId(), "jinhetss@163.com", "JK", ParamConstants.COMBO_PARAM_MODE);
         
         Report report1 = new Report();
         report1.setType(Report.TYPE1);

@@ -187,19 +187,17 @@ public class ParamAction extends BaseActionSupport {
             @PathVariable("name") String name, 
             @PathVariable("value") String value) {
 	    
+		String config = "<server code=" + code + " framework=\"tss\" name="
+                + code + " sessionIdName=\"JSESSIONID\" baseURL=" + value  + "/>";
+		
         Param param = paramService.getParam(code);
         if(param == null) {
-            param = new Param();
-            param.setCode(code);
-            param.setName(name);
-            param.setType(ParamConstants.NORMAL_PARAM_TYPE);
-            param.setModality(ParamConstants.SIMPLE_PARAM_MODE);
-            param.setParentId(ParamConstants.DEFAULT_PARENT_ID);
+            param = ParamManager.addSimpleParam(ParamConstants.DEFAULT_PARENT_ID, code, name, config);
+        }
+        else {
+        	param.setValue(config);
             paramService.saveParam(param);
         }
-        param.setValue("<server code=" + code + " framework=\"tss\" name="
-                + code + " sessionIdName=\"JSESSIONID\" baseURL=" + value  + "/>");
-        paramService.saveParam(param);
        
         String msg = "当前应用里设置【" + code + "】应用配置信息成功";
         printSuccessMessage(msg);

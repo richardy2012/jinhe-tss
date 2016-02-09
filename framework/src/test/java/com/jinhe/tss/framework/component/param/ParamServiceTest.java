@@ -10,7 +10,9 @@ import java.util.ResourceBundle;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ParamServiceTest extends TxTestSupportParam {
+import com.jinhe.tss.framework.TxTestSupport;
+
+public class ParamServiceTest extends TxTestSupport {
     
     /** 导入application.properties文件 */
     @Test
@@ -18,11 +20,11 @@ public class ParamServiceTest extends TxTestSupportParam {
         ResourceBundle resources = ResourceBundle.getBundle("application", Locale.getDefault());
         if (resources == null) return;
         
-        Param group = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "系统参数");
+        Param group = ParamManager.addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "系统参数");
         for (Enumeration<String> enumer = resources.getKeys(); enumer.hasMoreElements();) {
             String key = enumer.nextElement();
             String value = resources.getString(key);
-            addSimpleParam(group.getId(), key, key, value);
+            ParamManager.addSimpleParam(group.getId(), key, key, value);
         }
         
         // test Param Manager
@@ -56,21 +58,21 @@ public class ParamServiceTest extends TxTestSupportParam {
     /** CRUD/排序/移动/复制/停用启用等  */
     @Test
     public void testParamFunction() {
-        Param paramGroup = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组1");
+        Param paramGroup = ParamManager.addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组1");
         String comboParamCode = "book";
-		Param comboParam = addComboParam(paramGroup.getId(), comboParamCode, "可选书籍");
+		Param comboParam = ParamManager.addComboParam(paramGroup.getId(), comboParamCode, "可选书籍");
         
-        addParamItem(comboParam.getId(), "Thinking in JAVA", "Thinking in JAVA", ParamConstants.COMBO_PARAM_MODE);
-        addParamItem(comboParam.getId(), "Effictive JAVA", "Effictive JAVA", ParamConstants.COMBO_PARAM_MODE);
-        addParamItem(comboParam.getId(), "Design Pattern", "Design Pattern", ParamConstants.COMBO_PARAM_MODE);
+		ParamManager.addParamItem(comboParam.getId(), "Thinking in JAVA", "Thinking in JAVA", ParamConstants.COMBO_PARAM_MODE);
+		ParamManager.addParamItem(comboParam.getId(), "Effictive JAVA", "Effictive JAVA", ParamConstants.COMBO_PARAM_MODE);
+		ParamManager.addParamItem(comboParam.getId(), "Design Pattern", "Design Pattern", ParamConstants.COMBO_PARAM_MODE);
         
-        Param paramGroup2 = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组2");
+        Param paramGroup2 = ParamManager.addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组2");
         String treeParamCode = "group";
-		Param treeParam = addTreeParam(paramGroup2.getId(), treeParamCode, "组织");
+		Param treeParam = ParamManager.addTreeParam(paramGroup2.getId(), treeParamCode, "组织");
         
-        Param temp = addParamItem(treeParam.getId(), "group1", "组一", ParamConstants.TREE_PARAM_MODE);
-        addParamItem(temp.getId(), "group2", "组二", ParamConstants.TREE_PARAM_MODE);
-        addParamItem(treeParam.getId(), "group3", "组三", ParamConstants.TREE_PARAM_MODE);
+        Param temp = ParamManager.addParamItem(treeParam.getId(), "group1", "组一", ParamConstants.TREE_PARAM_MODE);
+        ParamManager.addParamItem(temp.getId(), "group2", "组二", ParamConstants.TREE_PARAM_MODE);
+        ParamManager.addParamItem(treeParam.getId(), "group3", "组三", ParamConstants.TREE_PARAM_MODE);
         
         printParams();
         paramService.startOrStop(treeParam.getId(), 1);
@@ -88,7 +90,7 @@ public class ParamServiceTest extends TxTestSupportParam {
         list = ParamManager.getTreeParam(treeParamCode);
         Assert.assertEquals(3, list.size());
         
-        Param simpleParam = addSimpleParam(ParamConstants.DEFAULT_PARENT_ID, "test1", "test1", "test1");
+        Param simpleParam = ParamManager.addSimpleParam(ParamConstants.DEFAULT_PARENT_ID, "test1", "test1", "test1");
         Assert.assertEquals("test1", simpleParam.getName());
         
         simpleParam.setName(null);
@@ -97,7 +99,7 @@ public class ParamServiceTest extends TxTestSupportParam {
         Assert.assertEquals("test1", simpleParam.getCode());
         
         try {
-        	addSimpleParam(ParamConstants.DEFAULT_PARENT_ID, "test1", "test1", "test1");
+        	ParamManager.addSimpleParam(ParamConstants.DEFAULT_PARENT_ID, "test1", "test1", "test1");
         } catch(Exception e) {
         	log.debug(e.getMessage());
         }

@@ -5,27 +5,28 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jinhe.tss.framework.TxTestSupport;
 import com.jinhe.tss.framework.test.TestUtil;
 
-public class ParamActionTest extends TxTestSupportParam {
+public class ParamActionTest extends TxTestSupport {
 	
 	@Autowired private ParamAction action;
 
     @Test
 	public void testParamAction() {
-		Param paramGroup = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组1");
-        Param comboParam = addComboParam(paramGroup.getId(), "book", "可选书籍");
+		Param paramGroup = ParamManager.addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组1");
+        Param comboParam = ParamManager.addComboParam(paramGroup.getId(), "book", "可选书籍");
         
-        addParamItem(comboParam.getId(), "Thinking in JAVA", "Thinking in JAVA", ParamConstants.COMBO_PARAM_MODE);
-        addParamItem(comboParam.getId(), "Effictive JAVA", "Effictive JAVA", ParamConstants.COMBO_PARAM_MODE);
-        addParamItem(comboParam.getId(), "Design Pattern", "Design Pattern", ParamConstants.COMBO_PARAM_MODE);
+        ParamManager.addParamItem(comboParam.getId(), "Thinking in JAVA", "Thinking in JAVA", ParamConstants.COMBO_PARAM_MODE);
+        ParamManager.addParamItem(comboParam.getId(), "Effictive JAVA", "Effictive JAVA", ParamConstants.COMBO_PARAM_MODE);
+        ParamManager.addParamItem(comboParam.getId(), "Design Pattern", "Design Pattern", ParamConstants.COMBO_PARAM_MODE);
         
-        Param paramGroup2 = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组2");
-        Param treeParam = addTreeParam(paramGroup2.getId(), "group", "用户组织");
+        Param paramGroup2 = ParamManager.addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组2");
+        Param treeParam = ParamManager.addTreeParam(paramGroup2.getId(), "group", "用户组织");
         
-        Param temp = addParamItem(treeParam.getId(), "group1", "研发部", ParamConstants.TREE_PARAM_MODE);
-        addParamItem(temp.getId(), "group2", "IT部", ParamConstants.TREE_PARAM_MODE);
-        addParamItem(treeParam.getId(), "group3", "财务部", ParamConstants.TREE_PARAM_MODE);
+        Param temp = ParamManager.addParamItem(treeParam.getId(), "group1", "研发部", ParamConstants.TREE_PARAM_MODE);
+        ParamManager.addParamItem(temp.getId(), "group2", "IT部", ParamConstants.TREE_PARAM_MODE);
+        ParamManager.addParamItem(treeParam.getId(), "group3", "财务部", ParamConstants.TREE_PARAM_MODE);
         
         temp.setDescription("update param item");
         action.saveParam(response, temp); // update param item
@@ -53,7 +54,7 @@ public class ParamActionTest extends TxTestSupportParam {
 		action.saveParamValue(response, "test", "test test");
 		assertEquals("test test", ParamConfig.getAttribute("test"));
 		
-		Param paramGroup3 = addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组3");
+		Param paramGroup3 = ParamManager.addParamGroup(ParamConstants.DEFAULT_PARENT_ID, "测试参数组3");
 		action.moveParam(response, treeParam.getId(), paramGroup3.getId().toString());
 		
 		action.sortParam(response, paramGroup.getId(), paramGroup3.getId(), 1);

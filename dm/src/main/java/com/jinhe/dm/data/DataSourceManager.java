@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.jinhe.dm.DMConstants;
 import com.jinhe.tss.framework.component.cache.CacheHelper;
 import com.jinhe.tss.framework.component.param.Param;
+import com.jinhe.tss.framework.component.param.ParamConstants;
+import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.component.param.ParamService;
 
 @Controller
@@ -36,6 +38,9 @@ public class DataSourceManager {
 			// 新增时还需要在 ComboParam（”数据源列表“） 下增加一个param选项
 			Param paramGroup = CacheHelper.getCacheParamGroup(paramService);
 			Param dsList = paramService.getParam(DMConstants.DATASOURCE_LIST);
+			
+			ParamManager.addSimpleParam(paramGroup.getId(), code, name, value);
+			ParamManager.addParamItem(dsList.getId(), code, name, ParamConstants.COMBO_PARAM_MODE);
 		} 
 		else {
 			param.setValue(value);

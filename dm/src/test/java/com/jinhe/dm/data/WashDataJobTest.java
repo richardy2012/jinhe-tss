@@ -77,10 +77,11 @@ public class WashDataJobTest extends TxTestSupport4DM {
 		try {
 			WashDataJob job = new WashDataJob();
         	job.excuteJob(jobConfig);
-        	
-		} catch(Exception e) {
+		} 
+		catch(Exception e) {
         	log.error(e.getCause());
         }
+		// 测试异常流 end ------------
 		
 		SQLExcutor.excute("delete from dm_report where id > 1", getDefaultSource());
 	}
