@@ -444,6 +444,10 @@ public class ReportAction extends BaseActionSupport {
         	String script = report.getScript();
         	if( EasyUtils.isNullOrEmpty(script) ) continue;
         	
+        	// 检查参数，数据服务的参数配置需要为空;
+        	String param = report.getParam();
+        	if( !EasyUtils.isNullOrEmpty(param) ) continue;
+        	
         	// 检查是否包含了必要的关键字
         	Pattern p = Pattern.compile("text|name|pk", Pattern.CASE_INSENSITIVE); // 忽略大小写
     		Matcher m = p.matcher(script);

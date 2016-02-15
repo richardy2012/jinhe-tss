@@ -29,6 +29,9 @@
 9、Mac下 CSV文件用Excel打开时，并成了一列。 解决办法，改变 系统偏好 --> 语言与地区， 选择一个非中国的，比如尼泊尔.
   注：这样改后会导致mac下打出来的war包发布到linux环境下时日志、附件目录名等中文字乱码。改回“中国”重启后再打包回复正常。
 
+10、部署TSS时需要设置文件目录的地方有： 栏目站点、系统参数里的导出目录
+
+
 数据录入表创建常见错误：
 1、字段重名：Duplicate column name ‘position’   — MySQL
                      ORA-00957: duplicate column name --Oracle
@@ -60,3 +63,4 @@
 打包注意：
 1、BtrBI的10.8.72.70机器安裝的是JDK6，打包只能用JDK1.6,  用1.7會出錯  
 
+$("#P16_iframe")[0].contentWindow
