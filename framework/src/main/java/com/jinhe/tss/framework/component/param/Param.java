@@ -205,6 +205,10 @@ public class Param extends OperateInfo implements ILevelTreeNode, IXForm, IDecod
             icon_path = ParamConstants.PARAM_ITEM;
         }
         
+        if( this.levelNo <= 1 && ParamConstants.GROUP_PARAM_TYPE.equals(type) ) {
+        	map.put("_open", "true");
+        }
+        
         map.put("icon", icon_path + this.disabled + ".gif");
         map.put("parentId", parentId);
         map.put("disabled", disabled);

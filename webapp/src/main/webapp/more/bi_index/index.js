@@ -320,6 +320,7 @@ CONTEXTPATH = "tss";
 					return true;
 				}
 
+				// 一级目录
 				if(report[2] === topGid && report[3] === 0) {
 					var li = $.createElement("li", (i == 0 ? "active" : ""));
 					$(li).attr("mid", "m" + top1Id).html(report[1]);
@@ -327,6 +328,8 @@ CONTEXTPATH = "tss";
 
 					reports.each(function(i2, report2) {
 						var top2Id = report2[0];
+
+						// 二级目录
 						if(report2[2] === top1Id && report2[3] === 0) {
 							var li = $.createElement("li");
 							$(li).html('<div class="link m' +top1Id+ '">' +report2[1]+ '<i class="tag"></i></div><ul class="submenu"></ul>');
@@ -335,6 +338,8 @@ CONTEXTPATH = "tss";
 							var $ul2 = $(li).find("ul");
 							reports.each(function(i3, report3) {
 								var top3Id = report3[0];
+
+								// Report
 								if(report3[2] === top2Id && report3[3] === 1) {
 									var li = $.createElement("li");
 									$(li).html('<a href="#" rid="' +report3[0]+ '">' +report3[1]+ '</a>');

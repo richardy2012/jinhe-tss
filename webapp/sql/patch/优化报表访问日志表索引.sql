@@ -28,6 +28,3 @@ WHERE `name` IN ('CompanyNameList', 'CenterNameList') OR `name` LIKE 'Get%';
 
 delete FROM dm_access_log  WHERE accessTime < DATE_SUB(CURDATE(), INTERVAL 30 DAY);
 delete FROM component_log  WHERE operatetime < DATE_SUB(CURDATE(), INTERVAL 30 DAY)
-
-注：在mysql里执行delete、update语句，有时会提示：rror Code: 1175. You are using safe update mode
-   可以先执行：SET SQL_SAFE_UPDATES = 0;
