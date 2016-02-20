@@ -24,8 +24,8 @@ import com.jinhe.tss.util.EasyUtils;
 /**
  * 用于清洗数据的JOB，利用report和record一进一出的功能，将数据清洗到指定的数据表（支持跨DB）
  * 
- * com.jinhe.dm.data.WashDataJob | 0 36 10 * * ? | 261:122:param1=today-1
- * 262:123:param1=0,param3=today-1
+ * com.jinhe.dm.data.WashDataJob | 0 36 10 * * ? | 101:122:param1=today-1
+ * 102:123:param1=0,param3=today-1,fullUpdate
  * 
  * 支持分页查询，批量插入
  * 
@@ -34,6 +34,8 @@ public class WashDataJob extends AbstractJob {
 	
 	ReportService reportService = (ReportService) Global.getBean("ReportService");
 	RecordService recordService = (RecordService) Global.getBean("RecordService");
+	
+	public static final String FULL_UPDATE = "fullUpdate";  // 全量更新
 	
 	/* 
 	 * jobConfig的格式为: recordId:reportId:param1=a,param2=b
@@ -49,10 +51,11 @@ public class WashDataJob extends AbstractJob {
 			if(EasyUtils.isNullOrEmpty(jobConfigs[i])) continue;
 			
 			String reportInfo[] = EasyUtils.split(jobConfigs[i], ":");
-			if(reportInfo.length <= 2) continue;
+			if(reportInfo.length < 2) continue;
  		
 			Long recordId = EasyUtils.obj2Long(reportInfo[0]);
 	        Long reportId = EasyUtils.obj2Long(reportInfo[1]);
+	        boolean fullUpdate = false;
 	        
 	        // 读取配置的参数
 	    	Map<String, String> paramsMap = new HashMap<String, String>();
@@ -62,6 +65,10 @@ public class WashDataJob extends AbstractJob {
 	    			String[] keyValue = param.split("=");
 	    			if(keyValue.length == 2) {
 	    				paramsMap.put(keyValue[0].trim(), keyValue[1].trim());
+	    			} 
+	    			else if( FULL_UPDATE.equalsIgnoreCase(param) ) {
+	    				// 全量更新，插入数据前先清空表
+	    				fullUpdate = true;
 	    			}
 	    		}
 	    	}
@@ -83,8 +90,12 @@ public class WashDataJob extends AbstractJob {
 	        }
 	        
 	        _Database db = getDB(recordId);
-	        int startCount = getCount(db);
-	        long startId = getMaxId(db);
+	        if(fullUpdate) {
+	        	truncate(db);
+	        }
+	        
+	        int startCount = fullUpdate ? 0 : getCount(db);
+	        long startId = fullUpdate ? 0 : getMaxId(db);
 	        try {
 	        	// 分页查询，批量插入
 		        for(int pageNum = 1; pageNum <= totalPages; pageNum++) {
@@ -143,6 +154,11 @@ public class WashDataJob extends AbstractJob {
 		Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
 		paramsMap.put(1, startId);
 		SQLExcutor.excute(sql, paramsMap, db.datasource);
+	}
+	
+	void truncate(_Database db) {
+		String sql = "truncate table " + db.table;
+		SQLExcutor.excute(sql, new HashMap<Integer, Object>(), db.datasource);
 	}
 	
 	_Database getDB(Long recordId) {
