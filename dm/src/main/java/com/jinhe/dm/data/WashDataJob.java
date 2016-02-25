@@ -39,6 +39,7 @@ public class WashDataJob extends AbstractJob {
 	
 	/* 
 	 * jobConfig的格式为: recordId:reportId:param1=a,param2=b
+	 * 支持在有一个Job里配置多个清洗任务，每个任务单独一行
 	 */
 	protected void excuteJob(String jobConfig) {
 		String token = TokenUtil.createToken("1234567890", UMConstants.ADMIN_USER_ID);

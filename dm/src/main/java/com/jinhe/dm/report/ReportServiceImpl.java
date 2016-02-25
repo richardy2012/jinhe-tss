@@ -222,7 +222,7 @@ public class ReportServiceImpl implements ReportService {
 				if (Pattern.compile("^today[\\s]*\\+[\\s]*\\d{1,4}").matcher(paramValue).matches()) {
 					int deltaDays = Integer.parseInt(paramValue.split("\\+")[1].trim());
 					Date today = DateUtil.noHMS(new Date());
-					paramValue = DateUtil.format(DateUtil.subDays(today, deltaDays));
+					paramValue = DateUtil.format(DateUtil.addDays(today, deltaDays));
 				} 
 
 				// 处理in查询的条件值，为每个项加上单引号
