@@ -946,3 +946,16 @@ function getNewMessageNum(callback) {
 		}
 	});
 }
+
+function getAttachs(tableId, itemId, callback) {
+    tssJS.ajax({ 
+        url: "/tss/auth/xdata/attach/json/" + tableId + "/" + itemId, 
+        method: "GET", 
+        ondata: function(){
+            var data  = this.getResponseJSON();
+            data && data.each(function(i, item) {
+                callback(item);
+            });
+        } 
+    });
+}

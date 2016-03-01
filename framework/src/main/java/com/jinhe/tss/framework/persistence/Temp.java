@@ -33,6 +33,12 @@ public class Temp implements IEntity {
 	private String udf1;
 	private String udf2;
 	private String udf3;
+	
+	public Temp() { }
+	
+	public Temp(Long id) {
+		this.setId(id);
+	}
     
     public Long getId() {
         return id;
@@ -68,6 +74,18 @@ public class Temp implements IEntity {
 
 	public Serializable getPK() {
 		return this.id;
+	}
+	
+	public boolean equals(Object obj) {
+		return this.toString().equals(obj.toString());
+	}
+
+	public int hashCode() {
+		return this.toString().hashCode();
+	}
+
+	public String toString() {
+		return "id=" + this.getId();
 	}
 }
 

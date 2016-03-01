@@ -66,7 +66,7 @@ public class _Util {
 				Date dateObj = DateUtil.parse(value);
 				return new Timestamp(dateObj.getTime());
 			} catch(Exception e) {
-				log.warn("Date type param'value【" + value + "】  is wrong. " + e.getMessage());
+				log.debug("Date type param'value【" + value + "】  is wrong. " + e.getMessage());
 				return null;
 			}
   		}

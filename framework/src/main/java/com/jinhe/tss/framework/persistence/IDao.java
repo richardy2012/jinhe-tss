@@ -111,7 +111,7 @@ public interface IDao<T extends IEntity> {
     void insertIds2TempTable(List<?> list);
     void insertIds2TempTable(List<? extends Object[]> list, int idIndex);
     void insertEntityIds2TempTable(List<? extends IEntity> list);
-    void insert2TempTable(List<Temp> list);
+    void insert2TempTable(Collection<Temp> list);
     void clearTempTable();
 
 }

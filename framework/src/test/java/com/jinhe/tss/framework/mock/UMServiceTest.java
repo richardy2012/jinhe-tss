@@ -129,8 +129,7 @@ public class UMServiceTest extends TxTestSupport {
         umSerivce.createGroup(group);
         
         List<Temp> list = new ArrayList<Temp>();
-    	Temp temp = new Temp();
-    	temp.setId(group.getId());
+    	Temp temp = new Temp(group.getId());
     	temp.setUdf1(group.getCode());
     	temp.setUdf2(group.getCode());
     	temp.setUdf3(group.getName());

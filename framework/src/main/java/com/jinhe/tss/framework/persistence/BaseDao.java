@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -269,52 +271,50 @@ public abstract class BaseDao<T extends IEntity> implements IDao<T>{
     }
     
     public void insertIds2TempTable(List<?> list) {
-        clearTempTable();
-        
         if( !EasyUtils.isNullOrEmpty(list) ) {
+        	Collection<Temp> c = new HashSet<Temp>();
             for(Object id : list){
-                Temp entity = new Temp();
-                entity.setId(EasyUtils.obj2Long(id));
-                createObjectWithoutFlush(entity);
+                Temp temp = new Temp( EasyUtils.obj2Long(id) );
+                c.add(temp);
             }
+            this.insert2TempTable(c);
         }
     }
     
     public void insertIds2TempTable(List<? extends Object[]> list, int idIndex) {
-        clearTempTable();
- 
         if( !EasyUtils.isNullOrEmpty(list) ) {
+        	Collection<Temp> c = new HashSet<Temp>();
             for(Object[] objs : list){
-                Temp entity = new Temp();
-                entity.setId((Long) objs[idIndex]);
-                createObjectWithoutFlush(entity);
+                Temp temp = new Temp( (Long) objs[idIndex] );
+                c.add(temp);
             }
+            this.insert2TempTable(c);
         }
     }
  
     public void insertEntityIds2TempTable(List<? extends IEntity> list) {
-        clearTempTable();
-        
         if( !EasyUtils.isNullOrEmpty(list) ) {
+        	Collection<Temp> c = new HashSet<Temp>();
             for(IEntity entity : list){
-                Temp temp = new Temp();
-                temp.setId((Long) entity.getPK());
-                createObjectWithoutFlush(temp);
+                Temp temp = new Temp( (Long) entity.getPK() );
+                c.add(temp);
             }
+            this.insert2TempTable(c);
         }
     }
     
-    public void insert2TempTable(List<Temp> list) {
+    public void insert2TempTable(Collection<Temp> list) {
         clearTempTable();
         
         if( !EasyUtils.isNullOrEmpty(list) ) {
-            for(Temp temp : list){
+        	Set<Temp> set = new HashSet<Temp>(list); // 剔除重复的
+            for(Temp temp : set){
                 createObjectWithoutFlush(temp);
             }
         }
     }
     
     public void clearTempTable() {
-        deleteAll(getEntities("from Temp"));
+        deleteAll( getEntities("from Temp") );
     }
 }
