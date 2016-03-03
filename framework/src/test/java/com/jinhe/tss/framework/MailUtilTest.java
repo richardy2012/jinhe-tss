@@ -9,9 +9,8 @@ public class MailUtilTest {
 	@Test
 	public void test1() {
 		try {
-			MailUtil.send("test", "test");
+			MailUtil.send("这是一封简单的测试邮件", "看到的人都会长命百岁");
 		} catch(Exception e) {
-			
 		}
 	}
 	

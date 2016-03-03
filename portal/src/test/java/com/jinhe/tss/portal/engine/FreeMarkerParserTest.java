@@ -10,10 +10,8 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.jinhe.tss.cms.service.IRemoteArticleService;
-import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.sso.context.ApplicationContext;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.TestUtil;
@@ -21,7 +19,6 @@ import com.jinhe.tss.portal.PortalConstants;
 import com.jinhe.tss.portal.TxSupportTest4Portal;
 import com.jinhe.tss.portal.dao.INavigatorDao;
 import com.jinhe.tss.portal.entity.Navigator;
-import com.jinhe.tss.um.helper.dto.OperatorDTO;
 import com.jinhe.tss.util.XMLDocUtil;
 
 public class FreeMarkerParserTest extends TxSupportTest4Portal {
@@ -47,10 +44,7 @@ public class FreeMarkerParserTest extends TxSupportTest4Portal {
     
     @Test
     public void test0() throws Exception {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        Context.initRequestContext(request);
-        IdentityCard card = new IdentityCard("token", OperatorDTO.ADMIN);
-        Context.initIdentityInfo(card);
+        initIdentityCard();
         
         String templateStr = "<#assign Environment = statics[\"com.jinhe.tss.framework.sso.Environment\"] />" +
                 "<#setting number_format=\"0\">" +
@@ -95,6 +89,8 @@ public class FreeMarkerParserTest extends TxSupportTest4Portal {
     
     @Test
     public void test3() throws Exception {
+    	initIdentityCard();
+    	
         String tempalteStr = "<@common.showMenu menuId=" + menu.getId() + "/>";
         FreemarkerParser parser = new FreemarkerParser(null);
         parser.parseTemplateTwice(tempalteStr, new OutputStreamWriter(System.out));

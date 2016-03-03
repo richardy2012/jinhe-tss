@@ -52,10 +52,11 @@ public class ExceptionEncoder {
                 
                 long theadId = Thread.currentThread().getId();
                 String userName = Environment.getUserName();
+                userName = userName == null ? "匿名" : userName;
                 
 				if( e.needPrint() ) {
 					if( !needRelogin ) {
-						log.warn( "出现异常, 当前登陆用户【" + userName + "】, " + theadId);
+						log.warn( "异常【" + userName + "】, " + theadId);
 	                }
                     printErrorMessage(be);
                     log.debug("-----------------------  Exception  -----------------------");
@@ -64,7 +65,7 @@ public class ExceptionEncoder {
                     log.debug("--------------------- End of Exception --------------------");
                 }
 				else {
-					log.warn("出现异常, 当前登陆用户【" + userName + "】, " + be.getMessage() 
+					log.warn("异常【" + userName + "】, " + be.getMessage() 
 							+ ", request url:" + requestContext.getRequest().getServletPath() + ", " + theadId);
 				}
             }

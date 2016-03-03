@@ -130,13 +130,15 @@ public class _Util {
 	/** 用Freemarker引擎解析脚本 */
 	public static String freemarkerParse(String script, Map<String, ?> dataMap) {
 	    try {
-	        Template temp = new Template("t.ftl", new StringReader(script), new Configuration());
+	        Configuration fmCfg = new Configuration();
+			Template temp = new Template("t.ftl", new StringReader(script), fmCfg);
 	        Writer out = new StringWriter();
 	        temp.process(dataMap, out);
 	        script = out.toString();
 	        out.flush();
-	    } catch (Exception e) {
-	    	log.error("Freemarker引擎解析脚本出错了: " + e.getMessage());
+	    } 
+	    catch (Exception e) {
+//	    	log.error("Freemarker引擎解析脚本出错了: " + e.getMessage());
 	    }
 	    return script;
 	}

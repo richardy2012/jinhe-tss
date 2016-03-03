@@ -25,6 +25,7 @@ public class _UtilTest {
 		Assert.assertNull(_Util.preTreatValue("2015-04-06T06:06:06", "datetime"));
 		
 		// test freemarker error print
+		// Expression param1 is undefined on line 1, column 22 in t.ftl
 		_Util.freemarkerParse("<#if p1??> <#else> ${param1} </#if>", new HashMap<String, String>());
 	}
 

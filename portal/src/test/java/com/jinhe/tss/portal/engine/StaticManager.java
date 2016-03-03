@@ -21,8 +21,8 @@ public class StaticManager {
         return new InputSource(new StringReader(value));
     }
     
-    private static void initWebContent(){
-        MockHttpServletRequest request = new MockHttpServletRequest();
+    private static void initWebContent(){   	
+    	MockHttpServletRequest request = new MockHttpServletRequest();
         Context.initRequestContext(request);
         IdentityCard card = new IdentityCard("token", OperatorDTO.ADMIN);
         Context.initIdentityInfo(card);

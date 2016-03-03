@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -22,6 +23,7 @@ import com.jinhe.tss.cms.service.IChannelService;
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.component.log.LogService;
 import com.jinhe.tss.framework.sso.IdentityCard;
+import com.jinhe.tss.framework.sso.SSOConstants;
 import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.IH2DBServer;
@@ -74,6 +76,19 @@ public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit4Sprin
     
     public static String CK_FILE_PATH = "application.properties";
     
+	protected void initContext() {
+		Global.setContext(super.applicationContext);
+		
+		Context.setResponse(response = new MockHttpServletResponse());
+		
+		request = new MockHttpServletRequest();
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute(SSOConstants.RANDOM_KEY, 100);
+		request.setSession(session);
+		
+		Context.initRequestContext(request);
+	}
+    
     @Before
     public void setUp() throws Exception {
     	
@@ -86,11 +101,7 @@ public abstract class TxSupportTest4CMS extends AbstractTransactionalJUnit4Sprin
         tempDir2 = FileHelper.createDir(classDir + "/temp2");
         tempDir3 = FileHelper.createDir(classDir + "/temp3");
         
-        Global.setContext(super.applicationContext);
-		Context.setResponse(response = new MockHttpServletResponse());
-        
-        request = new MockHttpServletRequest();
-        Context.initRequestContext(request);
+        initContext();
         
         // DB数据在一轮跑多个单元测试中初始化一次就够了。
         if( dbserver.isPrepareed() ) {

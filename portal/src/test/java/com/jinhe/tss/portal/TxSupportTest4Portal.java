@@ -6,7 +6,6 @@ import java.io.File;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
@@ -17,6 +16,7 @@ import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -25,6 +25,7 @@ import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.component.log.LogService;
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.sso.IdentityCard;
+import com.jinhe.tss.framework.sso.SSOConstants;
 import com.jinhe.tss.framework.sso.TokenUtil;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.test.IH2DBServer;
@@ -74,16 +75,34 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4Sp
     @Autowired protected IComponentService componentService;
     @Autowired protected IPortalService portalService;
     
-    protected HttpServletResponse response;
+    protected MockHttpServletResponse response;
     protected MockHttpServletRequest request;
+    
+	protected void initContext() {
+		Global.setContext(super.applicationContext);
+		
+		Context.setResponse(response = new MockHttpServletResponse());
+		
+		request = new MockHttpServletRequest();
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute(SSOConstants.RANDOM_KEY, 100);
+		request.setSession(session);
+		
+		Context.initRequestContext(request);
+	}
+	
+	// for FreeMarker
+	protected void initIdentityCard() {
+		request = request == null ? new MockHttpServletRequest() : request;
+        Context.initRequestContext(request);
+        
+        IdentityCard card = new IdentityCard("token", OperatorDTO.ADMIN);
+        Context.initIdentityInfo(card);
+	}
     
     @Before
     public void setUp() throws Exception {
-        Global.setContext(super.applicationContext);
-        
-        Context.initRequestContext(request = new MockHttpServletRequest());
-        
-        Context.setResponse( response = new MockHttpServletResponse());
+        initContext();
         
         // DB数据在一轮跑多个单元测试中初始化一次就够了。
         if( dbserver.isPrepareed() ) {
@@ -117,7 +136,9 @@ public abstract class TxSupportTest4Portal extends AbstractTransactionalJUnit4Sp
         resourceService.setInitial(false);
         
         // 门户浏览时，freemarker解析时需要用到request里的参数
-        Context.initRequestContext(new MockHttpServletRequest()); 
+        MockHttpServletRequest request2 = new MockHttpServletRequest();
+        request2.setSession(request.getSession());
+        Context.initRequestContext(request2); 
         
         /* 初始化默认的修饰器，布局器 */
         initializeDefaultElement();

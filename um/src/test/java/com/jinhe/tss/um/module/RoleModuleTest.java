@@ -130,6 +130,8 @@ public class RoleModuleTest extends TxSupportTest4UM {
         
         action.disable(response, role2.getId(), ParamConstants.TRUE);
         
+        action.sort(response, role1.getId(), role2.getId(), 1);
+        
         Role roleGroup2 = new Role();
         roleGroup2.setIsGroup(1);
         roleGroup2.setName("角色组-2");

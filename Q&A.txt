@@ -31,6 +31,11 @@
 
 10、部署TSS时需要设置文件目录的地方有： 栏目站点、系统参数里的导出目录
 
+11、阿里云boubei.com重启步骤：
+/etc/rc.d/init.d/mysqld start
+./home/tss/release/restart.sh
+service nginx start
+
 
 数据录入表创建常见错误：
 1、字段重名：Duplicate column name ‘position’   — MySQL

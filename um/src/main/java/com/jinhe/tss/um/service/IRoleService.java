@@ -60,6 +60,19 @@ public interface IRoleService {
             operateInfo="停用或启动 (ID: ${args[0]})角色(组)(disabled: ${args[1]})"
         )
 	void disable(Long id, Integer disabled);
+    
+	/**
+	 * 排序
+	 * @param id
+	 * @param targetId
+	 * @param direction
+	 * 			+1/向下
+	 * 			-1/向上
+	 */
+    @Logable(operateObject="角色", 
+            operateInfo="排序(ID: ${args[0]}) 角色至 (ID: ${args[1]}) 角色"
+        )
+    void sortRole(Long id, Long targetId, int direction);
 	
 	/**
 	 * 跨父节点移动
@@ -133,4 +146,5 @@ public interface IRoleService {
 	 * @return
 	 */
 	List<Long[]> getRoles4Permission();
+
 }

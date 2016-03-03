@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpSession;
 
 import com.jinhe.tss.framework.sso.DemoOperator;
 import com.jinhe.tss.framework.sso.IdentityCard;
@@ -25,15 +26,19 @@ public class HttpInvokerProxyTest {
     @Before
     public void setUp() throws Exception {
         
+        Context.setResponse(response = new MockHttpServletResponse());
+		
+		request = new MockHttpServletRequest();
+		MockHttpSession session = new MockHttpSession();
+		request.setSession(session);
+		
+		Context.initRequestContext(request);
+		
+        request.addParameter(RequestContext.PROXY_REAL_PATH, "param/json?code=sysTitle");
+        
         String token = TokenUtil.createToken(new Random().toString(), 12L); 
         IdentityCard card = new IdentityCard(token, new DemoOperator(12L));
         Context.initIdentityInfo(card);
-        
-        request = new MockHttpServletRequest();
-        request.addParameter(RequestContext.PROXY_REAL_PATH, "param/json?code=sysTitle");
-        
-        Context.initRequestContext(request);
-        Context.setResponse(response = new MockHttpServletResponse());
     }
 	
 	@Test

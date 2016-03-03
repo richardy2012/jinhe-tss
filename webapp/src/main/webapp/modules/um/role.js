@@ -33,6 +33,7 @@
 	URL_SAVE_ROLE_GROUP   = AUTH_PATH + "role"; 
     URL_STOP_NODE		  = AUTH_PATH + "role/disable/";  // {id}/{state}
     URL_DELETE_NODE		  = AUTH_PATH + "role/";  // {id}
+    URL_SORT_NODE         = AUTH_PATH + "role/sort/";
 	URL_MOVE_NODE		  = AUTH_PATH + "role/move/"; // {id}/{toGroupId}
     URL_GROUP_USERS       = AUTH_PATH + "group/users/";  // {groupId}
     URL_GET_OPERATION     = AUTH_PATH + "role/operations/";  // {id}
@@ -49,6 +50,7 @@
 		URL_STOP_NODE         = "data/_success.xml?";
 		URL_DELETE_NODE       = "data/_success.xml?";
 		URL_GROUP_USERS       = "data/userlist.xml?";
+		URL_SORT_NODE         = "data/_success.xml?";
 		URL_MOVE_NODE         = "data/_success.xml?";
 		URL_GET_OPERATION     = "data/operation.xml?";
 
@@ -158,6 +160,7 @@
 					}
 				});
             }
+            tree.onTreeNodeMoved = function(ev){ sortTreeNode(URL_SORT_NODE, ev); }
             tree.onTreeNodeRightClick = function(ev) { onTreeNodeRightClick(ev, true); }
         }
 		

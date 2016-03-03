@@ -38,7 +38,7 @@ public class SchedulerBeanTest extends TxTestSupport {
 		Pool shortCache = CacheHelper.getShortCache();
 		shortCache.removeObject("com.jinhe.tss.framework.component.param.ParamService.getComboParam(TIMER_PARAM_CODE)");
 		
-		// DemoJob配了没分钟里10,20,30,40,55执行
+		// DemoJob配了每分钟里10,20,30,40,55执行
 		try { Thread.sleep(1000 * 16); } catch (InterruptedException e) { }
 		
 		TestUtil.printLogs(logService);

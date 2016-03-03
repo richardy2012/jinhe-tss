@@ -147,6 +147,10 @@ public class RoleService implements IRoleService {
     private List<?> getVisibleGroups() {
         return groupDao.getMainAndAssistantGroups(Environment.getUserId());
     }
+    
+    public void sortRole(Long id, Long targetId, int direction) {
+        roleDao.sort(id, targetId, direction);
+    }
 
 	public void move(Long id, Long targetId) {
 		Role movedRole = roleDao.getEntity(id);

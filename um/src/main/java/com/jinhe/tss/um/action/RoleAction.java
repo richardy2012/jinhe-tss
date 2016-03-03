@@ -195,6 +195,19 @@ public class RoleAction extends BaseActionSupport {
 		roleService.disable(id, state);
         printSuccessMessage();
 	}
+    
+    /**
+     * 排序
+     */
+    @RequestMapping(value = "/sort/{id}/{targetId}/{direction}")
+    public void sort(HttpServletResponse response,             
+    		@PathVariable("id") Long id, 
+            @PathVariable("targetId") Long targetId, 
+            @PathVariable("direction") int direction) {
+    	
+    	roleService.sortRole(id, targetId, direction);
+        printSuccessMessage();
+    } 
  
 	/**
 	 * 移动
