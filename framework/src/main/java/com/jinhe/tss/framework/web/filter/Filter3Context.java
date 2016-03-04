@@ -74,6 +74,9 @@ public class Filter3Context implements Filter {
 			Context.setResponse((HttpServletResponse) response); 
             
 			chain.doFilter(request, Context.getResponse()); // 使用转换后的response
+			
+			/* 请求结束后销毁Context；如果出现了异常，Filter2CatchException里会进行销毁操作 */
+			Context.destroy(); 
 		} 
 		catch (BusinessServletException e) {
 			throw e;
@@ -81,12 +84,5 @@ public class Filter3Context implements Filter {
 		catch (Exception e) {
 			throw new BusinessServletException(e);
 		} 
-		finally {
-			/* 请求结束后销毁Context */
-			Context.destroy(); 
-			
-        	/* 在web环境下需要每次调用结束后重置当前线程的Token值，以免串号 */
-			Context.setToken(null); 
-		}
 	}
 }

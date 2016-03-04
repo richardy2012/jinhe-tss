@@ -53,7 +53,8 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
 				&& !md5Password3.equals(md5Password0)
 				&& !customizeValidate(operator, password)) {
 			
-			throw new BusinessException("【" + loginName + ", " + password + "】用户密码不正确，请重新登录", false);
+			log.info("【" + loginName + ", " + password + "】用户密码不正确，请重新登录");
+			throw new BusinessException("【" + loginName + "】用户密码不正确，请重新登录", false);
         }
         
     	return operator;

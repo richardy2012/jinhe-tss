@@ -60,6 +60,8 @@
                     var value = this.value;
                     if( !value ) return;
 
+                    forgetForm.updateDataExternal("loginName", value); 
+
                     $.ajax({
                         url: URL_QUESTION,
                         params:  {"loginName": value},
@@ -95,7 +97,7 @@
         });
     }
 
-    /* 检测注册表单是否填写正确。点击“找回”按钮的时候触发 */
+    /* 检测表单是否填写正确。点击“重置密码”按钮的时候触发 */
     function checkForgetForm() {
         var flag = true;
         if( false == forgetForm.checkForm()) {

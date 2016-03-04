@@ -36,7 +36,7 @@ public class PasswordPassport {
         	randomKey = requestContext.getValueFromHeaderOrParameter(SSOConstants.RANDOM_KEY);
         }
         if(randomKey == null) {
-        	throw new BusinessException("登陆失败，可能是您操作时间过长，请重新输入账户密码。");
+        	throw new BusinessException("登陆失败，可能是您操作时间过长，请重新输入账户及密码。");
         }
         int _randomKey = Integer.parseInt(randomKey.toString());
         

@@ -145,7 +145,7 @@ public abstract class BaseDao<T extends IEntity> implements IDao<T>{
             for (int i = 0; i < conditionValues.length; i++) {
                 Object param = conditionValues[i];
                 if (param == null) {
-                    throw new BusinessException("执行HQL为：" + hql  + " 查询的时候验证参数出错，第 " + (i + 1) + " 个参数值为null！");
+                    throw new BusinessException("HQL【" + hql  + "】参数有误，第 " + (i + 1) + " 个参数值为Null！");
                 }
                 query.setParameter(i + 1, param); // 从1开始，非0
             }
@@ -166,7 +166,7 @@ public abstract class BaseDao<T extends IEntity> implements IDao<T>{
             for (int i = 0; i < conditionValues.length; i++) {
                 Object param = conditionValues[i];
                 if (param == null) {
-                    throw new BusinessException("执行HQL为：" + hql  + " 查询的时候验证参数出错，第 " + (i + 1) + " 个参数值为null！");
+                    throw new BusinessException("HQL【" + hql  + "】参数有误，第 " + (i + 1) + " 个参数值为Null！");
                 }
                 
                 if (param instanceof Object[])
@@ -192,7 +192,7 @@ public abstract class BaseDao<T extends IEntity> implements IDao<T>{
             for (int i = 0; i < params.length; i++) {
                 Object param = params[i];
                 if (param == null) {
-                    throw new BusinessException("执行原生SQL为：" + nativeSql + " 查询的时候验证参数出错，第 " + (i + 1) + " 个参数值为null!");
+                    throw new BusinessException("SQL【" + nativeSql + "】参数有误，第 " + (i + 1) + " 个参数值为Null!");
                 }
                 query.setParameter(i + 1, param);  // 从1开始，非0
             }
@@ -206,7 +206,7 @@ public abstract class BaseDao<T extends IEntity> implements IDao<T>{
             for (int i = 0; i < params.length; i++) {
                 Object param = params[i];
                 if (param == null) {
-                    throw new BusinessException("执行原生SQL为：" + nativeSql + " 查询的时候验证参数出错，第 " + (i + 1) + " 个参数值为null!");
+                    throw new BusinessException("SQL【" + nativeSql + "】参数有误，第 " + (i + 1) + " 个参数值为Null!");
                 }
                 query.setParameter(i + 1, param);  // 从1开始，非0
             }
