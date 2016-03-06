@@ -263,6 +263,7 @@ function loadDetailData(rowID) {
     }
 
     xform = $.json2Form("page1Form", recordDefine, null, customizeJS);
+    xform.template.dataNode.id = rowID;
     $.cache.XmlDatas[rowID] = xform.template.dataNode;
     attachReminder(rowID, xform); // 离开提醒
 
@@ -277,7 +278,7 @@ function loadDetailData(rowID) {
     } );
 
     $('#btnViewAttach').remove();
-    if(needFile && rowID != '_new' && (rowID + "").indexOf('_copy') < 0) {
+    if(needFile && rowID != '_new' && (rowID+"").indexOf('_copy') < 0) {
         var newBtn = $.createElement('button', 'tssbutton small blue', 'btnViewAttach');
         $(newBtn).html("管理附件").click( function() {      
             manageAttach(rowID);
@@ -303,6 +304,12 @@ function saveSource(rowID) {
 
     if(rowID != '_new' && (rowID + "").indexOf('_copy') < 0 ) {
        request.url += "/" + rowID;
+
+       // update操作，检查id是否和form里的一致，防止多个修改时发生串数据现象
+       if( rowID != dataNode.id ) {
+            $.tssTip("本次修改的数据有异常，请刷新页面后重新编辑后保存。");
+            return;
+       }
     }
 
     syncButton([$1("page1BtSave")], request); // 同步按钮状态

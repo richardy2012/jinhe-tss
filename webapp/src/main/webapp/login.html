@@ -30,7 +30,7 @@
         width: 320px; height:25px; line-height:15px;
         border: 1px solid #009999; border-radius:3px; background-color: #eee; 
     }
-    #login_box input:hover { background-color: #fff; }
+    #login_box input:hover, #login_box input:focus { background-color: #fff; }
 
     #login_box span.bottonBox { margin:10px 0px; }        
     #bt_login { 
@@ -60,7 +60,7 @@
 
 /*********************** 应用配置 开始 **********************************/
  var 
-    indexPage = "index.html";    /* 登录成功后调整到的页面 */
+    indexPage = "index.html";    /* 登录成功后跳转到的页面 */
  
  function setSysTitle() {
     getParam('sysTitle', function(title) {
@@ -99,29 +99,21 @@ window.onload = function() {
     var passwordObj  = $1("password");
 
     loginNameObj.onfocus = function() {
-         this.style.backgroundColor = "white";
          passwordObj.disabled = true;
     }
-    passwordObj.onfocus = function() {
-         this.style.backgroundColor = "white";
-    }
 
-    var defaultUser = $.Cookie.getValue("iUserName");
-    if( defaultUser ) {
-        loginNameObj.value = defaultUser;
-    }
+    var defaultUser = $.Cookie.getValue("iUserName") || "";
+    loginNameObj.value = defaultUser;
     loginNameObj.focus();
 
-    var loginButton = $1("bt_login");
-
-    loginButton.onclick = function() {
+    $("#bt_login").click ( function() {
         doLogin(loginNameObj, passwordObj);
-    };
+    } );
 
     $.Event.addEvent(document, "keydown", function(ev) {
         if(13 == ev.keyCode) { // enter
             $.Event.cancel(ev);
-            $1("bt_login").focus();
+            $("#bt_login").focus();
 
             setTimeout(function() {
                 doLogin(loginNameObj, passwordObj);
@@ -129,17 +121,10 @@ window.onload = function() {
         }
     });
 
-    passwordObj.onblur = function() { 
-        this.style.backgroundColor = "#f0f0f0";
-    }
-
     loginNameObj.onblur = function() { 
-        this.style.backgroundColor = "#f0f0f0";
-
         var value = this.value;
-        if(value == null || value == "") {
-            $(loginNameObj).notice("请输入账号");
-            loginNameObj.focus();
+        if( !value ) {
+            $(loginNameObj).focus().notice("请输入账号");
             return;
         }
 
@@ -148,7 +133,7 @@ window.onload = function() {
         }
         $.ajax({
             url: URL_GET_USER_NAME,
-            params:  {"loginName": value},
+            params: {"loginName": value},
             waiting: true,
             onexcption: function() {
                 loginNameObj.focus();
@@ -171,18 +156,16 @@ var doLogin = function(loginNameObj, passwordObj) {
     var loginName  = loginNameObj.value;
     var password   = passwordObj.value;
     
-    if( "" == loginName ) {
-        $(loginNameObj).notice("请输入账号");
-        loginNameObj.focus();
+    if( !loginName ) {
+        $(loginNameObj).focus().notice("请输入账号");
         return;
     } 
-    else if( "" == password ) {
-        $(passwordObj).notice("请输入密码");
-        passwordObj.focus();
+    else if( !password ) {
+        $(passwordObj).focus().notice("请输入密码");
         return;
     }
-    else if( identifier == null ) {
-        alert("无法登录，用户配置可能有误，请联系管理员。");
+    else if( !identifier ) {
+        alert("系统无法登录，服务器异常，请联系管理员。");
         return;
     } 
 

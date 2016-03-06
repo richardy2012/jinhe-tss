@@ -68,7 +68,16 @@ public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrap
 	
 	// 获得如checkbox类（名字相同，但值有多个）的数据
 	public String[] getParameterValues(String name) {
-		return getParameterMap().get(name);
+		String[] values = getParameterMap().get(name);
+        if (values == null) {
+            return null;
+        }
+        int count = values.length;
+        String[] encodedValues = new String[count];
+        for (int i = 0; i < count; i++) {
+            encodedValues[i] = SecurityUtil.fuckXSS( values[i] );
+        }
+        return encodedValues;
 	}
 	
 	// 取指定名字参数的值（单值）
@@ -77,7 +86,7 @@ public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrap
         if (value != null && value.length > 0) {
             return value[0];
         }
-        return super.getParameter(name);
+        return SecurityUtil.fuckXSS( super.getParameter(name) );
     }
 
 	public String getHeader(String name) {
@@ -85,7 +94,7 @@ public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrap
 		if ( value != null ) {
 			return value;
 		}
-		return super.getHeader(name);
+		return SecurityUtil.fuckXSS( super.getHeader(name) );
 	}
 	
 	public Enumeration<String> getHeaderNames() {
