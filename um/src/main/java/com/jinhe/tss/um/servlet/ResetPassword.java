@@ -55,13 +55,6 @@ public class ResetPassword extends HttpServlet {
             throw new BusinessException("修改密码时找不到用户ID为" + id + "用户，可能已被删除，请联系管理员");
         }
         
-		if(SecurityUtil.getSecurityLevel() >= 3) {
-			int level = PasswordRule.getStrengthLevel(password, user.getLoginName());
-			if( level <= PasswordRule.MEDIUM_LEVEL ) {
-				throw new BusinessException("您的密码强度不够，请重新设置一个强度更强的密码！");
-			}
-		}
-        
         String newPassword;
         String verifyOrReset = request.getParameter("type");
         if( "reset".equals(verifyOrReset) ) { // 根据密码问题重置密码
@@ -76,6 +69,12 @@ public class ResetPassword extends HttpServlet {
         }
         
 		// 更新密码
+		if(SecurityUtil.getSecurityLevel() >= 3) {
+			int level = PasswordRule.getStrengthLevel(newPassword, user.getLoginName());
+			if( level < PasswordRule.MEDIUM_LEVEL ) {
+				throw new BusinessException("您的密码强度不够，请重新设置一个强度更强的密码！");
+			}
+		}
         loginService.resetPassword(id, newPassword);
         
 		SuccessMessageEncoder encoder = new SuccessMessageEncoder("设置新密码成功！");
