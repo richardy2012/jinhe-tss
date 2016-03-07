@@ -127,7 +127,7 @@ public abstract class TxSupportTest4UM extends AbstractTransactionalJUnit4Spring
 		
 		request = new MockHttpServletRequest();
 		MockHttpSession session = new MockHttpSession();
-		session.setAttribute(SSOConstants.RANDOM_KEY, 100);
+		session.setAttribute(SSOConstants.RANDOM_KEY, 100);  // 单元测试用100作为随机数
 		request.setSession(session);
 		
 		Context.initRequestContext(request);

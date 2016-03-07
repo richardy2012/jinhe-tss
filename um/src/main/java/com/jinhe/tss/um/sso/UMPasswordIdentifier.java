@@ -41,6 +41,8 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
         } catch (BusinessException e) {
         	throw new BusinessException(e.getMessage(), false);
         }
+		
+		int errorCount = loginservice.checkPwdErrorCount(loginName);
        
 		String md5Password1 = encodePassword(loginName, password);
 		String md5Password2 = encodePassword(loginName.toUpperCase(), password); // 转换成大写再次尝试
@@ -52,6 +54,9 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
 				&& !md5Password2.equals(md5Password0)
 				&& !md5Password3.equals(md5Password0)
 				&& !customizeValidate(operator, password)) {
+			
+			// 记录密码连续输入错误的次数，超过5次将禁止登陆10分钟
+			loginservice.recordPwdErrorCount(loginName, errorCount);
 			
 			log.info("【" + loginName + ", " + password + "】用户密码不正确，请重新登录");
 			throw new BusinessException("【" + loginName + "】用户密码不正确，请重新登录", false);

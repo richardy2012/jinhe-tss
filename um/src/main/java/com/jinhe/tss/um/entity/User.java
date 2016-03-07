@@ -66,6 +66,9 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
     
     private Integer disabled = ParamConstants.FALSE; // 帐户状态, 帐户状态(0-停用, 1-启用)
     
+    private Integer pwdErrorCount; // 10分钟内密码连续输错次数
+    private Date lastPwdErrorTime; // 最后一次密码输错的时间
+    
     // 以下值展示的时候用
     @Transient private Long   groupId;         // 用户所在组id
     @Transient private String groupName;       // 用户所在组名称
@@ -282,5 +285,21 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
     
 	public Serializable getPK() {
 		return this.id;
+	}
+
+	public Integer getPwdErrorCount() {
+		return pwdErrorCount == null ? 0 : pwdErrorCount;
+	}
+
+	public void setPwdErrorCount(Integer pwdErrorCount) {
+		this.pwdErrorCount = pwdErrorCount;
+	}
+
+	public Date getLastPwdErrorTime() {
+		return lastPwdErrorTime;
+	}
+
+	public void setLastPwdErrorTime(Date lastPwdErrorTime) {
+		this.lastPwdErrorTime = lastPwdErrorTime;
 	}
 }

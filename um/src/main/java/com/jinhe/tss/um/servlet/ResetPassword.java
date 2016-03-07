@@ -12,7 +12,9 @@ import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.SuccessMessageEncoder;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
+import com.jinhe.tss.framework.web.wrapper.SecurityUtil;
 import com.jinhe.tss.um.entity.User;
+import com.jinhe.tss.um.helper.PasswordRule;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.um.service.IUserService;
 
@@ -52,6 +54,13 @@ public class ResetPassword extends HttpServlet {
         if(user == null) {
             throw new BusinessException("修改密码时找不到用户ID为" + id + "用户，可能已被删除，请联系管理员");
         }
+        
+		if(SecurityUtil.getSecurityLevel() >= 3) {
+			int level = PasswordRule.getStrengthLevel(password, user.getLoginName());
+			if( level <= PasswordRule.MEDIUM_LEVEL ) {
+				throw new BusinessException("您的密码强度不够，请重新设置一个强度更强的密码！");
+			}
+		}
         
         String newPassword;
         String verifyOrReset = request.getParameter("type");

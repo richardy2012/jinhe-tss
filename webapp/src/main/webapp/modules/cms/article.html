@@ -264,6 +264,15 @@
 	}
  
 	function uploadAttachment() {
+		var fileValue = $("#sourceFile").value();
+	    if( !fileValue ) {
+	         return $("#sourceFile").notice("您还没有选择文件，请选择一个文件再点上传!");               
+	    }
+
+	    if( checkUploadFile(fileValue) ) {
+	        return $.tssTip("当前后缀类型的文件已被禁止上传。");
+	    }
+    
 		var url = URL_UPLOAD_FILE + "?afterUploadClass=com.jinhe.tss.cms.CreateAttach";
 		url += "&articleId=" + articleId;	
 		url += "&channelId=" + channelId;
@@ -330,7 +339,7 @@
 					<option value="1" selected>图片</option>
 					<option value="2">文档</option>
 				</select>
-				<input type="file" name="file"/>
+				<input type="file" name="file" id="sourceFile"/>
 				<input type="button" class="tssbutton small blue" onclick="uploadAttachment()" value="上传附件" />
 				<b>&nbsp;单个附件大小不宜超过3M</b>
 			</form>

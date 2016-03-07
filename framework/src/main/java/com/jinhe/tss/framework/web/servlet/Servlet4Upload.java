@@ -23,6 +23,18 @@ import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpEncoder;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.FileHelper;
 
+/**
+ * 文件上传的文件载体要么在服务器端具备可执行性，要么具备影响服务器端行为的能力，其发挥作用还需要具备以下几个条件：
+ * -1. 上传的文件具备可执行性或能够影响服务器行为，所以文件后所在的目录必须在WEB容器覆盖的路径之内；
+ * -2. 用户可以从WEB上访问这个文件，从而使得WEB容器解释执行该文件；
+ * -3. 上传后的文件必须经过应用程序的安全检查，以及不会被格式化、压缩等处理改变其内容
+ * 
+ * 如何安全上传文件:
+ * -1. 最有效的，将文件上传目录直接设置为不可执行，对于Linux而言，撤销其目录的'x'权限；
+ * -2. 文件类型检查：强烈推荐白名单方式，结合MIME Type、后缀检查等方式；此外对于图片的处理可以使用压缩函数或resize函数，处理图片的同时破坏其包含的HTML代码；
+ * -3. 使用随机数改写文件名和文件路径，使得用户不能轻易访问自己上传的文件
+ * -4. 单独设置文件服务器的域名
+ */
 @WebServlet(urlPatterns="/auth/file/upload")
 @MultipartConfig(maxFileSize = 1024 * 1024 * 20)
 public class Servlet4Upload extends HttpServlet {

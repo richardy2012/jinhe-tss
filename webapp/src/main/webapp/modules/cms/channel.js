@@ -488,7 +488,7 @@
             label:"删除",
             callback:delArticle,
             icon:ICON + "icon_del.gif",
-            visible:function() { return getGridOperation("3");}
+            visible:function() { return getGridOperation("5");}
         }
         var item3 = {
             label:"移动到...",

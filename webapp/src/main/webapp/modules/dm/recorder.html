@@ -501,6 +501,10 @@ function uploadAttach() {
          return $("#sourceFile").notice("您还没有选择文件，请选择一个文件再点上传!");               
     }
 
+    if( checkUploadFile(fileValue) ) {
+        return $.tssTip("当前后缀类型的文件已被禁止上传。");
+    }
+
     var url = URL_UPLOAD_FILE + "?afterUploadClass=com.jinhe.dm.record.file.CreateAttach";
     url += "&recordId=" + recordId;  
     url += "&itemId=" + selectedLineId;

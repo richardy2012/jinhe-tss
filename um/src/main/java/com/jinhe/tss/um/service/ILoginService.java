@@ -26,6 +26,13 @@ public interface ILoginService {
      */
 	@Cached(cyclelife = CacheLife.SHORTER)
     String[] getLoginInfoByLoginName(String loginName);
+	
+	/**
+	 * 统计用户连续输错密码的次数
+	 * @param loginName
+	 */
+	int checkPwdErrorCount(String loginName);
+	void recordPwdErrorCount(String loginName, int currCount);
     
 	/**
 	 * 重新设置密码。

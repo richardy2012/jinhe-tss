@@ -2,12 +2,27 @@ package com.jinhe.tss.framework.web.wrapper;
 
 import java.util.regex.Pattern;
 
-// TODO 设置一个安全级别的配置参数，依据相应级别来判断是否要进行XSS清理等安全操作
+import com.jinhe.tss.framework.component.param.ParamConfig;
+import com.jinhe.tss.util.EasyUtils;
+
+// 设置一个安全级别的配置参数，依据相应级别来判断是否要进行XSS清理等安全操作
 // 当编辑门户组件时, 需要降低安全级别
 public class SecurityUtil {
     
+	private final static String SECURITY_LEVEL = "security.level";
+	private final static Integer SECURITY_LEVELS[] = {1, 2, 3, 4, 5};
+	
+	public static int getSecurityLevel() {
+		try {
+			return EasyUtils.obj2Int( ParamConfig.getAttribute(SECURITY_LEVEL) );
+		} catch(Exception e) {
+			return SECURITY_LEVELS[0];
+		}
+	}
+	
     public static String fuckXSS(String value) {
         if (value == null)  return value;
+        if( getSecurityLevel() < 3 ) return value;;
     
         // NOTE: It's highly recommended to use the ESAPI library and uncomment the following line to
         // avoid encoded attacks.

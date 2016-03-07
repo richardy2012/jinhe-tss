@@ -258,7 +258,7 @@ function setRole2Permission(resourceType, rootId) {
     globalValiable.isRole2Resource = "0";
     var title = "把【" + treeNode.name + "】作为资源授予角色";
 
-    $.openIframePanel("permissionPanel", title, 844, 616, "../um/setpermission.html");
+    $.openIframePanel("permissionPanel", title, 844, 516, "../um/setpermission.html");
     $("#permissionPanel").find("h2").html(title);
 }
 
@@ -958,4 +958,15 @@ function getAttachs(tableId, itemId, callback) {
             });
         } 
     });
+}
+
+function checkUploadFile(fileValue) {
+	var blacklist = ['php','php3','php5','phtml','asp','aspx','jsp','cfc','pl','bat','exe','dll','reg','cgi'];
+    var flag = false;
+    blacklist.each(function(i, x){
+        if( fileValue.indexOf("." + x) > 0 ) {
+            flag = true;
+        }
+    });
+    return flag;
 }

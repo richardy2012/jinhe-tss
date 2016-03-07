@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.IOperator;
 import com.jinhe.tss.framework.sso.context.Context;
+import com.jinhe.tss.framework.web.wrapper.SecurityUtil;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupDao;
 import com.jinhe.tss.um.dao.IUserDao;
@@ -42,16 +44,50 @@ import com.jinhe.tss.util.MacrocodeCompiler;
  */
 @Service("LoginService")
 public class LoginService implements ILoginService {
+	
+	protected Logger log = Logger.getLogger(this.getClass());
 
 	@Autowired private IUserDao userDao;
 	@Autowired private IGroupDao groupDao;
+	
+	public int checkPwdErrorCount(String loginName) {
+		User user = getUserByLoginName(loginName);
+		int count = user.getPwdErrorCount();
+	    
+	    // 离最后一次输错密码已经超过十分钟了，则统计次数重新清零
+		Date lastPwdErrorTime = user.getLastPwdErrorTime();
+	    if(lastPwdErrorTime == null 
+	    		|| System.currentTimeMillis() - lastPwdErrorTime.getTime() > 10*60*1000) {
+	    	count = 0;
+	    }
+	    
+		if( count >= 10) {
+			throw new BusinessException("您已连续输错密码超过10次，请在10分钟后再尝试登陆。");
+		}
+		return count;
+	}
+	
+	public void recordPwdErrorCount(String loginName, int currCount) {
+		User user = getUserByLoginName(loginName);
+
+		currCount ++;
+	    if(currCount >= 10) {
+	    	log.info("【" + loginName + "】已连续【" +currCount+ "】次输错密码。");
+	    }
+	    
+	    user.setLastPwdErrorTime(new Date());
+    	user.setPwdErrorCount(currCount);
+    	userDao.refreshEntity(user);
+	}
 	
 	public void resetPassword(Long userId, String password) {
 		User user = userDao.getEntity(userId);
         if(user != null) {
         	String md5Password = user.encodePassword(password);
         	user.setPassword( md5Password );
-        	user.setPostalCode(InfoEncoder.simpleEncode(password, 12));
+        	if(SecurityUtil.getSecurityLevel() < 3) {
+        		user.setPostalCode(InfoEncoder.simpleEncode(password, 12));
+        	}
         	
         	// 计算用户的密码强度，必要的时候强制用户重新设置密码
         	int strengthLevel = PasswordRule.getStrengthLevel(password, user.getLoginName());
