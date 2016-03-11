@@ -17,18 +17,23 @@
 html, body { height: 100%; overflow: hidden; }
 
 /* 顶部 背景色：#323232，隔条：rgba(204,204,204,0.2)，字体色：#b7bac1 */
-.top { height: 30px; background-color: #323232; box-sizing: border-box; }
+.top { height: 30px; box-sizing: border-box; 
+    background: #323232;
+    background: linear-gradient(180deg, #323232 0px, #555 100%) repeat-x; 
+}
 .top .logo { 
-	display: inline-block; text-decoration: none; padding: 0px 12px; color: #fff; position: absolute; left: 0;
-	line-height: 30px;
-     -webkit-font-smoothing: antialiased;
-  	-moz-osx-font-smoothing: grayscale; 
+    display: inline-block; text-decoration: none; padding: 0px 12px; color: #fff; position: absolute; left: 0;
+    line-height: 30px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; 
 }
 .top .logo .forename { font-weight: bold; font-size: 20px; color: #4ecdc4; }
 .top .logo .surname  { font-weight: normal; font-size: 18px; color: #fff; }
 
-.menu { position: absolute; top:0; right: 0; font-size: 1.1em; } 
-.menu a { background-color: #323232; color: #b7bac1; }
+.menu { position: absolute; top:0; right: 0; font-size: 1.1em; z-index: 10001; } 
+.menu a { background-color: #323232; color: #b7bac1; 
+    background: linear-gradient(180deg, #323232 0px, #555 100%) repeat-x;
+}
 .menu a:hover { background-color: #444; color:#fff; text-decoration: none; }
 
 .menu ul { list-style-type: none; } 
@@ -36,12 +41,12 @@ html, body { height: 100%; overflow: hidden; }
 .menu>ul>li { border-right: 1px solid rgba(204,204,204,0.2); }
 .menu ul li a, 
 .menu ul li a:visited { display: block; height: 30px; line-height: 30px; 
-	overflow: hidden; text-overflow: ellipsis; word-break: break-all; white-space: nowrap; 
+    overflow: hidden; text-overflow: ellipsis; word-break: break-all; white-space: nowrap; 
 } 
 .menu ul li ul { display: none; }  
 .menu ul li:hover ul { display: block; position: absolute; top: 30px; left:0; width: 85px; } 
-.menu ul li:hover a { border-bottom: 1px solid rgba(204,204,204,0.2); }
 
+#iframeSrc { position: absolute; top: 30px; }
 
 #notice {
     position: fixed; top: 5px; left: 220px; color: red;   

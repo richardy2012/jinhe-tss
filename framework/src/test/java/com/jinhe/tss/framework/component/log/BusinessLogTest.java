@@ -68,6 +68,10 @@ public class BusinessLogTest extends TxTestSupport {
         PageInfo logsInfo = logService.getLogsByCondition(condition);
         assertEquals(PageInfo.DEFAULT_PAGESIZE, logsInfo.getItems().size());
         assertTrue( logsInfo.getTotalRows() >= 180 ); // 还有10条没输出Test就over了
+        
+        condition.setContent("no no no");
+        logsInfo = logService.getLogsByCondition(condition);
+        assertTrue( logsInfo.getTotalRows() == 0 );
     }
 
 }

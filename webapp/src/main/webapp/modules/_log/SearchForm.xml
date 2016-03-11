@@ -7,6 +7,7 @@
 				<column name="operatorIP" caption="操作人IP" mode="string" />
                 <column name="operationCode" caption="操作方法" mode="string" />
                 <column name="operateTable"  caption="操作对象" mode="string" />
+                <column name="content"  caption="日志内容" mode="string" />
 				<column name="operateTimeFrom" caption="起始时间" mode="date"/>
 				<column name="operateTimeTo"   caption="截止时间" mode="date"/>
 			</declare>
@@ -26,6 +27,10 @@
 				<TR>
 					<TD><label binding="operateTable"/></TD>
 					<TD><input binding="operateTable"/></TD>
+				</TR>
+				<TR>
+					<TD><label binding="content"/></TD>
+					<TD><input binding="content"/></TD>
 				</TR>
 				<TR>
 					<TD><label binding="operateTimeFrom"/></TD>

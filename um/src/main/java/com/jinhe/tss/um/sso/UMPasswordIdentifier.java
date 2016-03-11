@@ -59,10 +59,10 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
 			loginservice.recordPwdErrorCount(loginName, errorCount);
 			errorCount++;
 			String notice = (errorCount == 10 ? "您已累积输错了10次，账号已被锁定，请在10分钟后再尝试登录。" 
-					: "连续输错10次账号将被锁定，您还可以尝试" +(10-errorCount)+ "次");
+					: "连续输错10次，账号将被锁定。您还可以尝试" +(10-errorCount)+ "次。");
 			
 			log.info("【" + loginName + ", " + password + "】密码有误，已输错" + errorCount + "次");
-			throw new BusinessException("密码输入有误，" + notice, false);
+			throw new BusinessException("密码错误，" + notice, false);
         }
         
     	return operator;

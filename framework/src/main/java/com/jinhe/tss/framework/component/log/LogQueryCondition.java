@@ -19,6 +19,8 @@ public class LogQueryCondition extends MacrocodeQueryCondition {
     private Date    operateTimeFrom; // 开始时间
     private Date    operateTimeTo;   // 结束时间
     
+    private String  content;
+    
 	public Map<String, Object> getConditionMacrocodes() {
 		Map<String, Object> map = new HashMap<String, Object>() ;
         map.put("${operateTable}",  " and o.operateTable  = :operateTable");
@@ -28,6 +30,8 @@ public class LogQueryCondition extends MacrocodeQueryCondition {
         
         map.put("${operateTimeFrom}", " and o.operateTime >= :operateTimeFrom");
         map.put("${operateTimeTo}",   " and o.operateTime <= :operateTimeTo");
+        
+        map.put("${content}",   " and o.content like :content");
         
         return map;
 	}
@@ -82,4 +86,15 @@ public class LogQueryCondition extends MacrocodeQueryCondition {
     public void setOperateTable(String operateTable) {
         this.operateTable = operateTable;
     }
+
+	public String getContent() {
+		if(content != null){
+			content = "%" + content.trim() + "%";           
+        }
+        return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
 }
