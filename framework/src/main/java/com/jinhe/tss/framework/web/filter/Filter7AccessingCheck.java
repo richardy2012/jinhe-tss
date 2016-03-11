@@ -34,7 +34,7 @@ import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XMLDocUtil;
 
 /** 
- * 应用地址访问权限控制检测过滤器
+ * 应用地址(html类型)访问权限控制检测过滤器
  * 
  */
 @WebFilter(filterName = "AccessingCheckFilter", urlPatterns = {"*.htm", "*.html"})
@@ -56,11 +56,13 @@ public class Filter7AccessingCheck implements Filter {
         
         HttpSession session = req.getSession(false);
         if(session == null) {
-        	// 如果链接配置了权限检测，则提示先进行登录
+        	/* 如果链接配置了权限检测，则提示先进行登录 */
         	if( checker.isNeedPermission(servletPath) ) {
         		log.warn("试图匿名访问" + servletPath + "失败。");
-        		throw new BusinessServletException("您无权访问本页面，请先进行登录！");
+//        		throw new BusinessServletException("您无权访问本页面，请先进行登录！");
+        		((HttpServletResponse)response).sendRedirect(checker.get404URL());
         	}
+        	
             chain.doFilter(request, response);
             return;
         }

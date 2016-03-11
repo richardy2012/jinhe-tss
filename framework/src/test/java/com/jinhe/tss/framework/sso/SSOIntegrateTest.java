@@ -30,6 +30,7 @@ import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.sso.online.IOnlineUserManager;
 import com.jinhe.tss.framework.sso.servlet.JustRedirectServlet;
 import com.jinhe.tss.framework.sso.servlet.SimpleRequestServlet;
+import com.jinhe.tss.framework.web.filter.Filter0Security;
 import com.jinhe.tss.framework.web.filter.Filter1Encoding;
 import com.jinhe.tss.framework.web.filter.Filter2CatchException;
 import com.jinhe.tss.framework.web.filter.Filter3Context;
@@ -42,6 +43,7 @@ import com.jinhe.tss.framework.web.rmi.HttpInvokerProxyFactory;
 import com.jinhe.tss.framework.web.servlet.Servlet1Login;
 import com.jinhe.tss.framework.web.servlet.Servlet2Logout;
 import com.jinhe.tss.framework.web.servlet.Servlet8Empty;
+import com.jinhe.tss.util.InfoEncoder;
 
 /**
  * <p>
@@ -85,6 +87,7 @@ public class SSOIntegrateTest {
         
         context.getSessionHandler().addEventListener(new SessionDestroyedListener());
         
+        context.addFilter(Filter0Security.class, "/*", null);
         context.addFilter(Filter1Encoding.class, "/*", null).setInitParameter("encoding", "UTF-8");
         context.addFilter(Filter2CatchException.class, "*", null);
         context.addFilter(Filter3Context.class, "/*", null).setInitParameter("ignorePaths", "js,htm,html,jpg,png,gif,ico,css,xml,swf");
@@ -126,11 +129,14 @@ public class SSOIntegrateTest {
         httppost.setRequestHeader("loginName", "Jon.King");
         httppost.setRequestHeader("password", "123456");
         httppost.setRequestHeader("identifier", "com.jinhe.tss.framework.sso.DemoUserIdentifier");
+        int encodeKey = 44;
+        httppost.setRequestHeader("encodeKey", encodeKey+"");
         
         String body = "<Request>" +
                         "<Param><Name><![CDATA[loginName]]></Name><Value><![CDATA[Jon.King]]></Value></Param>" +
                         "<Param><Name><![CDATA[password]]></Name><Value><![CDATA[123456]]></Value></Param>" +
                       "</Request>";
+        body = InfoEncoder.simpleEncode(body, encodeKey); // 对参数数据进行加密
         httppost.setRequestEntity(new StringRequestEntity(body, null, null));
         excuteRequest(client, httppost);
  

@@ -62,7 +62,7 @@ public class LoginService implements ILoginService {
 	    }
 	    
 		if( count >= 10) {
-			throw new BusinessException("您已连续输错密码超过10次，请在10分钟后再尝试登陆。");
+			throw new BusinessException("您的账号已被锁定，因连续输错密码超过10次，请在10分钟后再尝试登陆。");
 		}
 		return count;
 	}
@@ -110,7 +110,7 @@ public class LoginService implements ILoginService {
 	private User getUserByLoginName(String loginName) {
         User user = userDao.getUserByLoginName(loginName);
         if (user == null) {
-            throw new BusinessException("此帐号(" + loginName + ")不存在");
+            throw new BusinessException("此帐号不存在." + loginName);
         } 
         else if (ParamConstants.TRUE.equals(user.getDisabled())) {
             throw new BusinessException("此帐号(" + loginName + ")已被停用");

@@ -23,6 +23,8 @@ import com.jinhe.tss.framework.exception.BusinessServletException;
 import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.web.dispaly.xmlhttp.XmlHttpDecoder;
+import com.jinhe.tss.util.EasyUtils;
+import com.jinhe.tss.util.InfoEncoder;
 import com.jinhe.tss.util.XMLDocUtil;
 import com.jinhe.tss.util.XmlUtil;
 
@@ -62,7 +64,16 @@ public class Filter6XmlHttpDecode implements Filter {
                 String requestBody = null;
                 try {
                     requestBody = getRequestBody(is = request.getInputStream());
+                    
+                    // 如果请求的参数数据做了加密，则先解开
+                    String encodeKey = requestContext.getValueFromHeaderOrParameter("encodeKey");
+                    if( !EasyUtils.isNullOrEmpty(encodeKey) ) {
+                    	int key = EasyUtils.obj2Int(encodeKey);
+                    	requestBody = InfoEncoder.simpleDecode(requestBody, key);
+                    }
+                    
                     doc = XMLDocUtil.dataXml2Doc(requestBody);
+                    
                 } catch (IOException e) {
                     throw new BusinessException("获取请求数据流失败.requestBody = " + requestBody + ", " + e.getMessage());
                 } catch (Exception e) {
