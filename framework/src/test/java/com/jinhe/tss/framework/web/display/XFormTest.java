@@ -1,7 +1,6 @@
 package com.jinhe.tss.framework.web.display;
 
 import java.io.IOException;
-import java.util.Date;
 
 import junit.framework.Assert;
 
@@ -20,15 +19,14 @@ public class XFormTest {
 	public void testXForm() {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		
-		Log log = new Log();
-		log.setOperateTable("用户");
-		log.setContent("XXXXXXXXXX");
-		log.setOperateTime(new Date());
+		Log entity = new Log();
+		entity.setId(12L);
+		entity.setOperatorBrowser("Chrome 44");
 		
-		XFormEncoder encoder = new XFormEncoder(LogAction.LOG_XFORM_TEMPLET_PATH, log);
+		XFormEncoder encoder = new XFormEncoder(LogAction.LOG_XFORM_TEMPLET_PATH, entity);
 		
-		log = (Log) XFormDecoder.decode(encoder.toXml(), Log.class);
-		Assert.assertEquals("XXXXXXXXXX", log.getContent());
+		entity = (Log) XFormDecoder.decode(encoder.toXml(), Log.class);
+		Assert.assertEquals("Chrome 44", entity.getOperatorBrowser());
 		
 		try {
 			XmlPrintWriter writer = new XmlPrintWriter(response.getWriter());

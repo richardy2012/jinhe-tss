@@ -116,6 +116,7 @@ public class SSOIntegrateTest {
         log.info("---------------------------------1、先测试匿名访问------------------------------------------------------");
         PostMethod httppost = new PostMethod("http://localhost:8111/tss/index.html");
         httppost.setRequestHeader(RequestContext.ANONYMOUS_REQUEST, "true");
+        httppost.setRequestHeader("referer", "http://localhost:8111/tss/index.html");
         excuteRequest(client, httppost);
     }
     

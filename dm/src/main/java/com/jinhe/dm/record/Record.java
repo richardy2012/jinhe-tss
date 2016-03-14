@@ -94,17 +94,14 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
     private String  decode;  // 层码，要求唯一
     private Integer levelNo;// 层次值
     
+    private Integer disabled = ParamConstants.FALSE; // 停用/启用标记，默认为启用
     private Integer needLog  = ParamConstants.FALSE; // 记录修改日志，适用于重要性高的数据录入
     private Integer needFile = ParamConstants.FALSE; // 是否需要附件上传
     private Integer batchImp = ParamConstants.FALSE; // 是否允许批量导入
-    
-    public Integer getNeedFile() {
-		return needFile;
-	}
-
-	public void setNeedFile(Integer needFile) {
-		this.needFile = needFile;
-	}
+	
+    public boolean isActive() {
+    	return !ParamConstants.TRUE.equals(this.getDisabled());
+    }
 
 	public String toString() {
         return "数据录入【id = " + this.id + ", name = " + this.name + "】";
@@ -131,7 +128,9 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
             map.put("customizePage", customizePage);
             map.put("define", define);
         }
-        map.put("icon", "images/" + (TYPE0 == type ? "folder" : "record") + ".gif");
+        map.put("icon", "images/" + (TYPE0 == type ? "folder.gif" : "record_" + getDisabled() + ".png") );
+        
+        map.put("disabled", getDisabled());
         
         if( this.levelNo < 2 || this.id < 30) {
         	map.put("_open", "true");
@@ -288,5 +287,21 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
 
 	public void setBatchImp(Integer batchImp) {
 		this.batchImp = batchImp;
+	}
+
+	public Integer getDisabled() {
+		return disabled == null ? ParamConstants.FALSE : disabled;
+	}
+
+	public void setDisabled(Integer disabled) {
+		this.disabled = disabled;
+	}
+	
+    public Integer getNeedFile() {
+		return needFile;
+	}
+
+	public void setNeedFile(Integer needFile) {
+		this.needFile = needFile;
 	}
 }

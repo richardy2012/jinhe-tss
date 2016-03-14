@@ -117,6 +117,14 @@ public class RecordAction extends BaseActionSupport {
         recordService.delete(id);
         printSuccessMessage();
     }
+    
+    @RequestMapping(value = "/disable/{id}/{disabled}", method = RequestMethod.POST)
+    public void startOrStop(HttpServletResponse response, 
+            @PathVariable("id") Long id, @PathVariable("disabled") int disabled) {
+        
+    	recordService.startOrStop(id, disabled);
+        printSuccessMessage();
+    }
  
     @RequestMapping(value = "/sort/{startId}/{targetId}/{direction}", method = RequestMethod.POST)
     public void sort(HttpServletResponse response, 

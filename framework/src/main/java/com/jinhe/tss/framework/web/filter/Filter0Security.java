@@ -37,13 +37,23 @@ public class Filter0Security implements Filter {
      * url.white.list = /version,.in,.do,.portal,login.html,404.html,version.html,redirect.html,_forget.html,_register.html
      */
     private static final String WHITE_LIST = "url.white.list";
+    private static final String THE_404_URL = "/tss/404.html";
  
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
     	
     	HttpServletRequest req = (HttpServletRequest) request;
-        String servletPath = req.getServletPath();
         
+        // 防止盗链
+        String referer    = req.getHeader("referer");
+        String serverName = req.getServerName(); // 网站的域名
+        if(referer != null && !referer.contains(serverName)) {
+        	((HttpServletResponse)response).sendRedirect(THE_404_URL);
+        	return;
+        } 
+        
+        // 检查是否忽略权限
+        String servletPath = req.getServletPath();
         if( !isNeedPermission(servletPath) ) {
         	chain.doFilter(request, response);
             return;
@@ -62,7 +72,7 @@ public class Filter0Security implements Filter {
         log.debug("权限检测开始：" + servletPath);
         if ( !checkPermission(userRights, servletPath) ) {
             log.debug("权限检测失败");
-            ((HttpServletResponse)response).sendRedirect("/tss/404.html");
+            ((HttpServletResponse)response).sendRedirect(THE_404_URL);
             return;
         }
         

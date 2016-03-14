@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.jinhe.dm.record.ddl._Database;
 import com.jinhe.dm.record.file.RecordAttach;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.util.EasyUtils;
 
 @Service("RecordService")
@@ -78,6 +79,17 @@ public class RecordServiceImpl implements RecordService {
         return recordDao.deleteRecord(record);
 	}
 
+    public void startOrStop(Long reportId, Integer disabled) {
+        List<Record> list = ParamConstants.TRUE.equals(disabled) ? 
+        		recordDao.getChildrenById(reportId, Record.OPERATION_EDIT) : recordDao.getParentsById(reportId);
+        
+        for (Record record : list) {
+            record.setDisabled(disabled);
+            recordDao.updateWithoutFlush(record);
+        }
+        recordDao.flush();
+    }
+    
 	public void sort(Long startId, Long targetId, int direction) {
 		recordDao.sort(startId, targetId, direction);
 	}

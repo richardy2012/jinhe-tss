@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -13,6 +14,7 @@ import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.TxTestSupport4DM;
 import com.jinhe.tss.framework.component.log.LogQueryCondition;
 import com.jinhe.tss.framework.component.log.LogService;
+import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.persistence.pagequery.PageInfo;
 import com.jinhe.tss.framework.sso.context.Context;
 
@@ -20,6 +22,7 @@ public class RecordTest extends TxTestSupport4DM {
     
     @Autowired private RecordAction action;
     @Autowired private LogService logService;
+    @Autowired private _Recorder _recorder;
     
     @Test
     public void testRecordCRUD() {
@@ -74,6 +77,16 @@ public class RecordTest extends TxTestSupport4DM {
         
         // test permission
         action.getOperations(response, record1.getId());
+        
+        action.startOrStop(response, record1.getId(), ParamConstants.TRUE);
+        try{
+	        _recorder.getDefine(record1.getId());
+	        Assert.fail("should throw exception but didn't.");
+	    } catch (Exception e) {
+	    	Assert.assertTrue("该数据录入已被停用，无法再录入数据！", true);
+	    }
+        action.startOrStop(response, record1.getId(), ParamConstants.FALSE);
+        _recorder.getDefine(record1.getId());
         
         action.delete(response, record1.getId());
         action.getAllRecord(response);

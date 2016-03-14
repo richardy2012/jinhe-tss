@@ -50,6 +50,7 @@ public class _Recorder extends BaseActionSupport {
 		_Database _db;
 		if(cacheItem == null) {
 			Record record = recordService.getRecord(recordId);
+			
 			cache.putObject(cacheKey, _db = _Database.getDB(record));
 		}
 		else{
@@ -63,6 +64,10 @@ public class _Recorder extends BaseActionSupport {
     @ResponseBody
     public Object getDefine(@PathVariable("recordId") Long recordId) {
 		Record record = recordService.getRecord(recordId);
+		if(!record.isActive()) {
+			throw new BusinessException("该数据录入已被停用，无法再录入数据！");
+		}
+		
         return 
         	new Object[] { 
         		getDB(recordId).getFields(), 

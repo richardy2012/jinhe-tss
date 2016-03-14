@@ -21,4 +21,8 @@ public class RecordDaoImpl extends TreeSupportDao<Record> implements RecordDao {
         }
         return record;
 	}
+	
+	public List<Record> getChildrenById(Long id, String operationId) {
+		return getChildrenById(id);
+	}
 }

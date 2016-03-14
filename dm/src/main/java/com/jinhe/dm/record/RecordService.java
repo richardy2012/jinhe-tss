@@ -41,6 +41,9 @@ public interface RecordService {
     
     @Logable(operateObject="数据录入", operateInfo="删除了：${returnVal?default(\"\")}")
     Record delete(Long id);
+    
+    @Logable(operateObject="数据录入", operateInfo="<#if args[1]=1>停用<#else>启用</#if>了报表(ID = ${args[0]?default(\"\")}) ")
+    void startOrStop(Long recordId, Integer disabled);
  
     @PermissionTag(
             resourceType = Record.RESOURCE_TYPE,

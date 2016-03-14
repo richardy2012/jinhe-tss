@@ -11,6 +11,7 @@ URL_GROUPS_TREE    = AUTH_PATH + "rc/groups";
 URL_SOURCE_DETAIL  = AUTH_PATH + "rc/detail";
 URL_SAVE_SOURCE    = AUTH_PATH + "rc";
 URL_DELETE_SOURCE  = AUTH_PATH + "rc/";
+URL_DISABLE_SOURCE = AUTH_PATH + "rc/disable/";
 URL_SORT_SOURCE    = AUTH_PATH + "rc/sort/";
 URL_MOVE_SOURCE    = AUTH_PATH + "rc/move/";
 URL_GET_OPERATION  = AUTH_PATH + "rc/operations/";  // {id}
@@ -22,6 +23,7 @@ if(IS_TEST) {
 	URL_SOURCE_DETAIL  = "data/record_detail.xml?";
 	URL_SAVE_SOURCE    = "data/_success.xml?";
 	URL_DELETE_SOURCE  = "data/_success.xml?";
+	URL_DISABLE_SOURCE = "data/_success.xml?";
 	URL_SORT_SOURCE    = "data/_success.xml?";
 	URL_MOVE_SOURCE    = "data/_success.xml?";
 	URL_GET_OPERATION  = "data/_operation.xml?";
@@ -47,7 +49,7 @@ function initMenus() {
 		label:"录入数据",
 		callback:showRecord,
 		icon: ICON + "icon_edit.gif",
-		visible:function() {return isRecord() && getOperation("1,2,3,4,5");}
+		visible:function() {return isRecord() && !isTreeNodeDisabled() && getOperation("1,2,3,4,5");}
 	}
 	var item21 = {
 		label:"修改分组",
@@ -77,6 +79,18 @@ function initMenus() {
 		},
 		icon: ICON + "icon_folder_new.gif",
 		visible:function() {return (isRecordGroup() || isTreeRoot()) && getOperation("2");}
+	}
+	var item10 = {
+		label:"停用",
+		callback:disableRecord,
+		icon: ICON + "icon_stop.gif",
+		visible:function() {return !isTreeRoot() && !isTreeNodeDisabled() && getOperation("2");}
+	}
+	var item9 = {
+		label:"启用",
+		callback:enableRecord,
+		icon: ICON + "icon_start.gif",
+		visible:function() {return !isTreeRoot() && isTreeNodeDisabled() && getOperation("2");}
 	}
 	var item5 = {
 		label:"删除",
@@ -113,6 +127,8 @@ function initMenus() {
 	menu.addItem(item21);
 	menu.addItem(item22);
 	menu.addItem(item6);
+	menu.addItem(item9);
+	menu.addItem(item10);
 	menu.addItem(item5);
 	menu.addSeparator();
 	menu.addItem(createPermissionMenuItem("D2"));
@@ -139,7 +155,7 @@ function loadInitData() {
 		tree.onTreeNodeDoubleClick = function(ev) {
 			var treeNode = getActiveTreeNode();
 			getTreeOperation(treeNode, function(_operation) {            
-				if( isRecord() && getOperation("1,2,3,4,5") ) {
+				if( isRecord() && !isTreeNodeDisabled() && getOperation("1,2,3,4,5") ) {
 					showRecord();
 				}
 				if( isRecordGroup() && getOperation("2") ) {
@@ -238,6 +254,8 @@ function closeRecordFormDiv() {
 }
 
 function deleteRecord()  { delTreeNode(URL_DELETE_SOURCE); }
+function disableRecord() { stopOrStartTreeNode("1", URL_DISABLE_SOURCE); }
+function enableRecord()  { stopOrStartTreeNode("0", URL_DISABLE_SOURCE); }
 
 function moveRecord() {
 	var tree = $.T("tree");

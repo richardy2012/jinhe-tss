@@ -636,6 +636,7 @@ function refreshTreeNodeState(treeNode, state) {
 	var iconPath = treeNode.getAttribute("icon");
 	if(iconPath) {
 		iconPath = iconPath.replace( /_[0,1].gif/gi, "_" + state + ".gif"); 
+		iconPath = iconPath.replace( /_[0,1].png/gi, "_" + state + ".png"); 
 	
 		treeNode.setAttribute("icon", iconPath);
 		treeNode.li.selfIcon.css("backgroundImage", "url(" + iconPath + ")");

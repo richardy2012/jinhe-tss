@@ -48,11 +48,14 @@ public class Filter0SecurityTest {
         EasyMock.expect(request.getHeader(RequestContext.USER_CLIENT_IP)).andReturn("127.0.0.1").times(0, 3);
         EasyMock.expect(request.getContextPath()).andReturn("/tss").times(0, 3);
         
+		EasyMock.expect(request.getServerName()).andReturn("www.boubei.com");
+        
         filter = new Filter0Security();
     }
  
     @Test
     public final void testPass() throws IOException, ServletException {
+    	EasyMock.expect(request.getHeader("referer")).andReturn("http://www.boubei.com/tss/index.html");
 		EasyMock.expect(request.getRequestURI()).andReturn("/tss/login.html");
 		EasyMock.expect(request.getServletPath()).andReturn("/login.html");
 		
@@ -77,6 +80,7 @@ public class Filter0SecurityTest {
 				session.getAttribute(SSOConstants.USER_RIGHTS_IN_SESSION))
 				.andReturn(Arrays.asList(new Long[] { -10000L, 12L })).times(0, 3);
     	
+    	EasyMock.expect(request.getHeader("referer")).andReturn("http://www.boubei.com/tss/index.html");
 		EasyMock.expect(request.getRequestURI()).andReturn("/tss/index.html");
 		EasyMock.expect(request.getServletPath()).andReturn("/index.html");
 		
@@ -101,6 +105,7 @@ public class Filter0SecurityTest {
 				session.getAttribute(SSOConstants.USER_RIGHTS_IN_SESSION))
 				.andReturn(null).times(0, 3);
     	
+    	EasyMock.expect(request.getHeader("referer")).andReturn("http://www.boubei.com/tss/index.html");
 		EasyMock.expect(request.getRequestURI()).andReturn("/tss/data/json/122");
 		EasyMock.expect(request.getServletPath()).andReturn("/data/json/122");
 		
@@ -111,6 +116,23 @@ public class Filter0SecurityTest {
 		EasyMock.expect(
 				session.getAttribute(SSOConstants.LOGINNAME_IN_SESSION))
 				.andReturn("Jane").times(0, 3);
+		
+        mocksControl.replay(); // 让mock 准备重放记录的数据
+
+        filter.doFilter(request, response, new FilterChain() {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            }
+        });
+    }
+    
+    @Test
+    public final void testDeny2() throws IOException, ServletException {
+    	
+		EasyMock.expect(request.getHeader("referer")).andReturn("http://www.12306.com/tss/index.html");
+		
+		/* 没有返回值void方法的mock方式 */
+		response.sendRedirect("/tss/404.html");
+		EasyMock.expectLastCall();
 		
         mocksControl.replay(); // 让mock 准备重放记录的数据
 
