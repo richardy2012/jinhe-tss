@@ -40,6 +40,7 @@ import com.jinhe.tss.framework.web.dispaly.tree.StrictLevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeEncoder;
 import com.jinhe.tss.framework.web.dispaly.xform.XFormEncoder;
 import com.jinhe.tss.framework.web.mvc.BaseActionSupport;
+import com.jinhe.tss.framework.web.wrapper.SecurityUtil;
 import com.jinhe.tss.um.helper.PasswordRule;
 import com.jinhe.tss.um.permission.PermissionHelper;
 import com.jinhe.tss.um.service.ILoginService;
@@ -218,7 +219,8 @@ public class ReportAction extends BaseActionSupport {
     	} catch(Exception e) {
     		// do nothing
      	}
-    	if(strengthLevel != null && EasyUtils.obj2Int(strengthLevel) <= PasswordRule.LOW_LEVEL) {
+    	if(strengthLevel != null && EasyUtils.obj2Int(strengthLevel) <= PasswordRule.LOW_LEVEL
+    			&& SecurityUtil.getSecurityLevel() >= 4 ) {
 			throw new BusinessException("您的密码过于简单，请点右上角【修改密码】菜单重置密码后，再进行访问！");
 		}
 	}

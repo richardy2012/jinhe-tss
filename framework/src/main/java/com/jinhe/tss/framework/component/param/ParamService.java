@@ -2,6 +2,7 @@ package com.jinhe.tss.framework.component.param;
 
 import java.util.List;
 
+import com.jinhe.tss.framework.component.cache.CacheLife;
 import com.jinhe.tss.framework.component.cache.Cached;
 import com.jinhe.tss.framework.component.log.Logable;
  
@@ -28,15 +29,15 @@ public interface ParamService {
 	Param getParam(Long id);
 	
 	/** 根据code取参数。供ParamManager使用 */
-	@Cached
+	@Cached(cyclelife = CacheLife.LONG)
 	Param getParam(String code);
 	
 	/** 取下拉型参数的值 */
-	@Cached
+	@Cached(cyclelife = CacheLife.LONG)
 	List<Param> getComboParam(String code);
 	
 	/** 取树型参数的值 */
-	@Cached
+	@Cached(cyclelife = CacheLife.LONG)
 	List<Param> getTreeParam(String code);
 	
 	/**

@@ -36,6 +36,8 @@
 ./home/tss/release/restart.sh
 service nginx start
 
+12、并发大时系统卡顿，需检查： 数据类连接池、apache连接数、tomcat配置、机器负载情况
+
 
 数据录入表创建常见错误：
 1、字段重名：Duplicate column name ‘position’   — MySQL

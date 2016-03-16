@@ -65,7 +65,7 @@ public class ExceptionEncoder {
                     log.debug("--------------------- End of Exception --------------------");
                 }
 				else {
-					log.warn("异常【" + userName + "】, " + be.getMessage() 
+					log.debug("异常【" + userName + "】, " + be.getMessage() 
 							+ ", request url:" + requestContext.getRequest().getServletPath() + ", " + theadId);
 				}
             }

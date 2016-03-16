@@ -56,8 +56,11 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
 				&& !customizeValidate(operator, password)) {
 			
 			// 记录密码连续输入错误的次数，超过10次将禁止登陆10分钟
-			loginservice.recordPwdErrorCount(loginName, errorCount);
-			errorCount++;
+			try {
+				loginservice.recordPwdErrorCount(loginName, errorCount);
+				errorCount ++;
+			} catch(Exception e) { }
+			
 			String notice = (errorCount == 10 ? "您已累积输错了10次，账号已被锁定，请在10分钟后再尝试登录。" 
 					: "连续输错10次，账号将被锁定。您还可以尝试" +(10-errorCount)+ "次。");
 			

@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 
 import com.jinhe.tss.cms.service.IRemoteArticleService;
 import com.jinhe.tss.framework.Global;
-import com.jinhe.tss.framework.exception.BusinessServletException;
 import com.jinhe.tss.util.FileHelper;
 
 /** 
@@ -40,7 +39,8 @@ public class DownloadServlet extends HttpServlet {
     	    id = new Long(request.getParameter("id"));
     	    seqNo = new Integer(request.getParameter("seqNo"));
         } catch(Exception e) {
-            throw new BusinessServletException("下载附件时参数值有误", e);
+        	log.debug("下载附件时参数值有误: " + e.getMessage());
+        	return;
         }
         
 	    AttachmentDTO attach = service.getAttachmentInfo(id, seqNo);

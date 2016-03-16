@@ -92,7 +92,7 @@ public class ReusablePool extends ObjectPool {
 		}
 		
 		logDebug(" check out item : 【" + (item == null ? " 无对象返回" : item.getKey()) 
-		        + "】（" + getName() + ", 命中率 =" + getHitRate() + "%）" /* + this*/);
+		        + "】（" + getName() + ", 命中率 = " + getHitRate() + "%）" /* + this*/);
 		
 		return item;
 	}

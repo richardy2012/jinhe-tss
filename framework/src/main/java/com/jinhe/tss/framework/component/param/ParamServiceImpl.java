@@ -50,7 +50,7 @@ public class ParamServiceImpl implements ParamService, ParamListener {
         }
         
         if(paramCode != null) {
-        	Pool dataCache = JCache.getInstance().getPool(CacheLife.SHORT.toString());
+        	Pool dataCache = JCache.getInstance().getPool(CacheLife.LONG.toString());
             Set<Object> keys = dataCache.listKeys();
             for(Object key : keys) {
             	String _key = key.toString();
