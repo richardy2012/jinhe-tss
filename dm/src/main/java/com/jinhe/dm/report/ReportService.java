@@ -16,7 +16,7 @@ public interface ReportService {
 
     Report getReport(Long id);
     
-    @Cached
+    @Cached(cyclelife = CacheLife.SHORT)
     Report getReportCached(Long id);
     
     Long getReportIdByName(String name);

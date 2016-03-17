@@ -10,9 +10,12 @@
 	
 	<servlet right="-1,Admin" name="/modules/_param/param.htm"/>
 	<servlet right="-1,Admin" name="/modules/_cache/cache.htm"/>
+	
+	<servlet right="-1,Admin" name="/modules/um/resource.html"/>
+	
 	<!-- 
 	<servlet right="-1,Admin" name="/modules/_log/log.htm"/>
 	-->
-	<servlet right="-1,Admin" name="/modules/um/resource.html"/>
+	<servlet right="-1,Admin" name="/modules/dm/datasource.html"/>
 	
 </rightConfig>
