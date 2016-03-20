@@ -12,6 +12,7 @@ import com.jinhe.tss.framework.sso.Environment;
 import com.jinhe.tss.framework.sso.ILoginCustomizer;
 import com.jinhe.tss.framework.sso.SSOConstants;
 import com.jinhe.tss.framework.sso.context.Context;
+import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.permission.PermissionService;
 import com.jinhe.tss.um.service.ILoginService;
 
@@ -39,6 +40,7 @@ public class FetchPermissionAfterLogin implements ILoginCustomizer {
         	userRoles.add( new Object[] { logonUserId, roleId } );
         }
         permissionService.saveUserRolesAfterLogin(userRoles, logonUserId);
+        roleIds.add(UMConstants.ANONYMOUS_ROLE_ID); // 默认加上匿名角色
         
         // 将用户角色信息塞入到session里        
         HttpSession session = Context.getRequestContext().getSession();

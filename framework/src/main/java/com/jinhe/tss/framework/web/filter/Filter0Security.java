@@ -60,12 +60,12 @@ public class Filter0Security implements Filter {
         }
          
         // 检测权限
-        List<?> userRights = new ArrayList<Object>();
+        List<Object> userRights = new ArrayList<Object>();
         try {
         	HttpSession session = req.getSession(false);
-        	userRights = session == null ? null : (List<?>) session.getAttribute(SSOConstants.USER_RIGHTS_IN_SESSION);
-            if(userRights == null) {
-                userRights = new ArrayList<Object>();
+            if(session != null) {
+                List<?> list = (List<?>) session.getAttribute(SSOConstants.USER_RIGHTS_IN_SESSION);
+				userRights.addAll( list );
             }
         } catch(Exception e) {  }
         

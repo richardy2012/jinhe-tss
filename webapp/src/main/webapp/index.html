@@ -70,31 +70,31 @@ html, body { height: 100%; overflow: hidden; }
 
 /* 用户信息初始化  */
 window.onload = function() {
-	initUserInfo(function() {
-		resizeIFrame();
-		turn2IFrame("modules/dm/record.html");
+    initUserInfo(function() {
+        resizeIFrame();
+        turn2IFrame("modules/_cache/cache.htm");
 
-		dbsx();
-	});
+        dbsx();
+    });
 }
 
 window.onresize = resizeIFrame;
 
 function turn2IFrame(ahref) {
-	if (ahref != "#") {
-		$1("iframeSrc").setAttribute("src", ahref);
-	}
+    if (ahref != "#") {
+        $1("iframeSrc").setAttribute("src", ahref);
+    }
 }
 function openMsgPage() {
-	turn2IFrame('modules/um/message.html');
+    turn2IFrame('modules/um/message.html');
 }
 var resizeIFrame = function resizeIFrame() {
-	$("#iframeSrc").css("height", (document.body.offsetHeight - 30) + "px");
+    $("#iframeSrc").css("height", (document.body.offsetHeight - 30) + "px");
 }
 
 function feedback() {
-	var url = encodeURI('modules/dm/record.html?_default=系统使用反馈');
-  	turn2IFrame(url);
+    var url = encodeURI('modules/dm/record.html?_default=系统使用反馈');
+    turn2IFrame(url);
 }
 
 // ----------------------------------------- 顶部跑马灯公告栏 ----------------------------------------------------
@@ -153,54 +153,55 @@ tssJS(function(){
 <body>
  
 <div class="top">
-	<div class="logo">
-		<b class="forename">它山石</b><b class="surname">基础平台</b>
-	</div>
-	<div class="menu"> 
-		<ul> 
-			<li><a href='javascript:void(0)' onclick="openMsgPage()">待办事项</a> </li> 
-			<li><a href='javascript:void(0)'>数据管理</a> 	 
-				<ul> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/dm/report.html')">数据分析</a> </li> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/dm/record.html')">数据采集</a> </li>
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/cms/channel.html')">分发共享</a></li>
-				</ul> 
-			</li>  
-			<li><a href='javascript:void(0)'>用户权限</a> 	 
-				<ul> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/group.html')">用户管理</a> </li> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/resource.html')">应用资源</a> </li> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/role.html')">角色授权</a> </li> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/subauth.html')">权限转授</a> </li> 
-				</ul> 
-			</li> 
-			<li><a href='javascript:void(0)'>门户管理</a> 	 
-				<ul> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/portal/structure.html')">门户结构</a> </li> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/portal/component.html')">门户组件</a> </li> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/portal/release.html')">门户发布</a> </li>
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/portal/navigator.html')">菜单导航</a> </li> 
-				</ul> 
-			</li> 
-			<li><a href='javascript:void(0)'>系统辅助</a> 	 
-				<ul> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/_log/log.htm')">日志查询</a> </li> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/_param/param.htm')">系统参数</a> </li> 
-					<li><a href='javascript:void(0)' onclick="turn2IFrame('modules/_cache/cache.htm')">缓存管理</a> </li> 
-				</ul> 
-			</li> 	
+    <div class="logo">
+        <b class="forename">它山石</b><b class="surname">基础平台</b>
+    </div>
+    <div class="menu"> 
+        <ul> 
+            <li><a href='javascript:void(0)' onclick="openMsgPage()">待办事项</a> </li> 
+            <li><a href='javascript:void(0)'>数据管理</a>    
+                <ul> 
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/dm/report.html')">数据分析</a> </li> 
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/dm/record.html')">数据采集</a> </li>
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/cms/channel.html')">分发共享</a></li>
+                </ul> 
+            </li>  
+            <li><a href='javascript:void(0)'>用户权限</a>    
+                <ul> 
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/group.html')">用户管理</a> </li> 
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/resource.html')">应用资源</a> </li> 
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/role.html')">角色授权</a> </li> 
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/um/subauth.html')">权限转授</a> </li> 
+                </ul> 
+            </li> 
+            <li><a href='javascript:void(0)'>门户管理</a>    
+                <ul> 
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/portal/structure.html')">门户结构</a> </li> 
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/portal/component.html')">门户组件</a> </li> 
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/portal/release.html')">门户发布</a> </li>
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/portal/navigator.html')">菜单导航</a> </li> 
+                </ul> 
+            </li> 
+            <li><a href='javascript:void(0)'>系统辅助</a>    
+                <ul> 
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/_log/log.htm')">日志查询</a> </li> 
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/_param/param.htm')">系统参数</a> </li> 
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('modules/_cache/cache.htm')">缓存管理</a> </li> 
+                    <li><a href='javascript:void(0)' onclick="feedback()">管理反馈</a> </li>
+                    <li><a href='javascript:void(0)' onclick="turn2IFrame('more/x/feedback.html')">查看反馈</a> </li> 
+                </ul> 
+            </li>   
             <li>
-            	<a href='javascript:void(0)' 
-            		onclick='$.openIframePanel("p1", "个人信息", 760, 320, "modules/um/_userInfo.htm", true);' id="userInfo">个人信息</a>
-            	<ul>
-            		<li><a href='javascript:void(0)' onclick='$.openIframePanel("p2", "修改密码", 440, 300, "modules/um/_password.htm", true);'>修改密码</a></li>
-            		<li><a href='javascript:void(0)' onclick="feedback()">我要反馈</a> </li>
-            		<li><a href='javascript:void(0)' onclick="logout()"> 注销登陆</a></li> 
-            	</ul>
+                <a href='javascript:void(0)' 
+                    onclick='$.openIframePanel("p1", "个人信息", 760, 320, "modules/um/_userInfo.htm", true);' id="userInfo">个人信息</a>
+                <ul>
+                    <li><a href='javascript:void(0)' onclick='$.openIframePanel("p2", "修改密码", 440, 300, "modules/um/_password.htm", true);'>修改密码</a></li>
+                    <li><a href='javascript:void(0)' onclick="logout()"> 注销登陆</a></li> 
+                </ul>
             </li>
-			
-		</ul>  
-	</div> 
+            
+        </ul>  
+    </div> 
 </div>
 
 <div id="notice">
