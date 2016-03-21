@@ -31,8 +31,8 @@ public class CacheHelper {
 		return JCache.getInstance().getPool(CacheLife.NODEAD.toString());
 	}
 	
-	public static void flushLongCache(String likeKey) {
-		Pool pool = CacheHelper.getLongCache();
+	public static void flushCache(String poolName, String likeKey) {
+		Pool pool = JCache.getInstance().getPool(poolName);
 		Set<Object> keys = pool.listKeys();
 		for(Object _key : keys) {
 			if(_key.toString().indexOf(likeKey) >= 0) {

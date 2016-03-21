@@ -102,14 +102,15 @@ public class Filter0Security implements Filter {
     		}
     	}
     	
-    	if( servletPath.indexOf(".htm") >= 0 ) {
-    		return true;
+    	if( SecurityUtil.getSecurityLevel() >= 3 ) {
+    		if( servletPath.indexOf(".htm") >= 0 ) {
+        		return true;
+        	}
+        	if( servletPath.indexOf(".") < 0 ) { // 无后缀，一般restful地址 或 /download
+        		return true;
+        	}
     	}
     	
-    	if( servletPath.indexOf(".") < 0   // 无后缀，一般restful地址 或 /download
-    			&& SecurityUtil.getSecurityLevel() >= 3 ) {
-    		return true;
-    	}
     	return false;
     }
 

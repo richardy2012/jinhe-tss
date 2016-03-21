@@ -139,7 +139,7 @@ public class Role extends OperateInfo implements IDecodable, IXForm, IResource {
 			map.put("icon", UMConstants.GROUP_ROLE_TREENODE_ICON + disabled + ".gif");
 		}
 		
-		if( this.levelNo <= 2 ) {
+		if( this.levelNo < 2 ) {
         	map.put("_open", "true");
         }
 		 

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jinhe.tss.framework.component.cache.CacheHelper;
+import com.jinhe.tss.framework.component.cache.CacheLife;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.tree.LevelTreeParser;
 import com.jinhe.tss.framework.web.dispaly.tree.StrictLevelTreeParser;
@@ -61,7 +62,7 @@ public class NavigatorAction extends BaseActionSupport {
     }
 	
 	private void flushMenuCache() {
-		CacheHelper.flushLongCache("NavigatorDao.getMenuItems");
+		CacheHelper.flushCache(CacheLife.SHORTER.toString(), "NavigatorDao.getMenuItems");
 	}
     
 	/**
