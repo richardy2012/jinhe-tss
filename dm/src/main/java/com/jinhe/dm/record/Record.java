@@ -132,7 +132,7 @@ public class Record extends OperateInfo implements IXForm, IDecodable, IResource
         
         map.put("disabled", getDisabled());
         
-        if( this.levelNo < 2 || this.id < 30) {
+        if( this.levelNo < 2 ) {
         	map.put("_open", "true");
         }
         map.put("batchImp", this.batchImp);
