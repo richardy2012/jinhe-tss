@@ -75,7 +75,7 @@ public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrap
         int count = values.length;
         String[] encodedValues = new String[count];
         for (int i = 0; i < count; i++) {
-            encodedValues[i] = SecurityUtil.fuckXSS( values[i] );
+            encodedValues[i] = SecurityUtil.fuckXSS( values[i], this );
         }
         return encodedValues;
 	}
@@ -86,7 +86,7 @@ public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrap
         if (value != null && value.length > 0) {
             return value[0];
         }
-        return SecurityUtil.fuckXSS( super.getParameter(name) );
+        return SecurityUtil.fuckXSS( super.getParameter(name), this );
     }
 
 	public String getHeader(String name) {
@@ -94,7 +94,7 @@ public class RewriteableHttpServletRequestWrapper extends HttpServletRequestWrap
 		if ( value != null ) {
 			return value;
 		}
-		return SecurityUtil.fuckXSS( super.getHeader(name) );
+		return SecurityUtil.fuckXSS( super.getHeader(name), this );
 	}
 	
 	public Enumeration<String> getHeaderNames() {

@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.sso.SSOConstants;
+import com.jinhe.tss.framework.sso.context.RequestContext;
 import com.jinhe.tss.framework.web.wrapper.SecurityUtil;
 import com.jinhe.tss.util.EasyUtils;
 
@@ -36,25 +37,41 @@ public class Filter0Security implements Filter {
      * 不用登陆既能访问的白名单，可配置在application.properties 或 系统参数 
      * url.white.list = /version,.in,.do,.portal,login.html,404.html,version.html,redirect.html,_forget.html,_register.html
      */
-    private static final String WHITE_LIST = "url.white.list";
-    private static final String THE_404_URL = "/tss/404.html";
+    public static final String IP_WHITE_LIST = "ip.white.list";
+    public static final String URL_WHITE_LIST = "url.white.list";
+    public static final String THE_404_URL = "/tss/404.html";
  
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
     	
     	HttpServletRequest req = (HttpServletRequest) request;
         
-        // 防止盗链
+        /* 防止盗链 */
         String referer    = req.getHeader("referer");
         String serverName = req.getServerName(); // 网站的域名
-        if(referer != null && !referer.contains(serverName)) {
-        	((HttpServletResponse)response).sendRedirect(THE_404_URL);
-        	return;
-        } 
+        if(referer != null && !referer.contains(serverName)) { // 如果是跨域访问了，则过滤ip白名单
+        	String ipWhiteListConfig = ParamConfig.getAttribute(IP_WHITE_LIST);
+        	List<String> whiteList = new ArrayList<String>();
+        	if( !EasyUtils.isNullOrEmpty(ipWhiteListConfig) ) {
+        		whiteList.addAll( Arrays.asList( ipWhiteListConfig.split(",") ) );
+        	}
+        	
+        	boolean flag = false;
+        	for(String whiteip : whiteList) {
+        		if(referer.indexOf( whiteip.trim() ) >= 0) {
+        			flag = true;
+        		}
+        	}
+        	
+        	if( !flag ){
+        		((HttpServletResponse)response).sendRedirect(THE_404_URL);
+            	return;
+        	}
+        }      
         
         // 检查是否忽略权限
         String servletPath = req.getServletPath();
-        if( !isNeedPermission(servletPath) ) {
+        if( !isNeedPermission(servletPath, req) ) {
         	chain.doFilter(request, response);
             return;
         }
@@ -87,10 +104,10 @@ public class Filter0Security implements Filter {
 		return false;
 	}
     
-    private boolean isNeedPermission(String servletPath) {
+    private boolean isNeedPermission(String servletPath, HttpServletRequest request) {
     	if( EasyUtils.isNullOrEmpty(servletPath) ) return false;
     	
-    	String whiteListConfig = ParamConfig.getAttribute(WHITE_LIST);
+    	String whiteListConfig = ParamConfig.getAttribute(URL_WHITE_LIST);
     	List<String> whiteList = new ArrayList<String>();
     	if( !EasyUtils.isNullOrEmpty(whiteListConfig) ) {
     		whiteList.addAll( Arrays.asList( whiteListConfig.split(",") ) );
@@ -107,6 +124,16 @@ public class Filter0Security implements Filter {
         		return true;
         	}
         	if( servletPath.indexOf(".") < 0 ) { // 无后缀，一般restful地址 或 /download
+        		if(servletPath.indexOf("/data/export/") >= 0) { 
+        			return false; // 跨机器数据导出请求，放行
+        		}
+        		
+        		String requestType = request.getHeader(RequestContext.REQUEST_TYPE);
+				if(servletPath.indexOf("/data/json/") >= 0 
+        				&& RequestContext.XMLHTTP_REQUEST.equals(requestType ) ) {
+        			return false; // ajax json跨域请求（多为本地调试用），放行。（注：jQuery发ajax请求需要在header里加上此参数）
+        		}
+        		
         		return true;
         	}
     	}

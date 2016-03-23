@@ -285,7 +285,7 @@ public class SQLExcutor {
 
         } catch (SQLException e) {
             String errorMsg = "出错了！" + e.getMessage();
-            String _sql = sql.substring(0, Math.min(100, sql.length()));
+            String _sql = sql.substring(0, Math.min(500, sql.length()));
             log.error(errorMsg + "\n   数据源：" + dbUrl + ",\n   参数：" + paramsMap + ",\n   脚本：" + _sql);
             throw new BusinessException(errorMsg);
         } finally {

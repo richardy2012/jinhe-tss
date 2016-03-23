@@ -162,9 +162,9 @@ public class ArticlePublishTest extends AbstractTestSupport {
         	request.removeParameter("seqNo");
             request.addParameter("seqNo", "error seqNo");
         	download.doPost(request, new MockHttpServletResponse());
-        	Assert.fail("should throw exception but didn't.");
+//        	Assert.fail("should throw exception but didn't.");
 		} catch (Exception e) {
-			Assert.assertTrue("下载附件时参数值有误", true);
+			Assert.assertFalse("下载附件时参数值有误, 不再抛出异常", true);
 		}
         
         // 最后删除文章、栏目、站点

@@ -2,6 +2,8 @@ package com.jinhe.tss.framework.web.wrapper;
 
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.util.EasyUtils;
 
@@ -20,10 +22,17 @@ public class SecurityUtil {
 		}
 	}
 	
-    public static String fuckXSS(String value) {
+	public static String fuckXSS(String value, HttpServletRequest request) {
+        if( getSecurityLevel() < 3 ) {
+        	return value;
+        }
+        
+        return _fuckXSS(value, request);
+    }
+	
+    public static String _fuckXSS(String value, HttpServletRequest request) {
         if (value == null)  return value;
-        if( getSecurityLevel() < 3 ) return value;;
-    
+     
         // NOTE: It's highly recommended to use the ESAPI library and uncomment the following line to
         // avoid encoded attacks.
         // value = ESAPI.encoder().canonicalize(value);

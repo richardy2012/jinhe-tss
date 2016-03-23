@@ -40,6 +40,8 @@ service nginx start
 
 12、并发大时系统卡顿，需检查： 数据类连接池、apache连接数、tomcat配置、机器负载情况
 
+13、需要在线维护record、门户组件的，安全级别不宜 >= 3， XSS检测将会是JS脚本保存出现异常。
+
 
 数据录入表创建常见错误：
 1、字段重名：Duplicate column name ‘position’   — MySQL

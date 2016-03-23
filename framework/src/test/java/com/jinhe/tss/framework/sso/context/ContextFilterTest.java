@@ -58,6 +58,7 @@ public class ContextFilterTest {
         
         EasyMock.expect(request.getSession()).andReturn(session).times(0, 8);
         EasyMock.expect(request.getHeader(RequestContext.USER_CLIENT_IP)).andReturn("127.0.0.1").times(0, 8);
+        
         EasyMock.expect(request.getContextPath()).andReturn("/tss");
         EasyMock.expect(request.getRequestURI()).andReturn("/tss/login.do");
         EasyMock.expect(request.getServletPath()).andReturn("/login.do");

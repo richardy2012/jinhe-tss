@@ -100,6 +100,51 @@ public class Filter0SecurityTest {
     }
     
     @Test
+    public final void testPass3() throws IOException, ServletException {
+    	EasyMock.expect(
+				session.getAttribute(SSOConstants.USER_RIGHTS_IN_SESSION))
+				.andReturn(null).times(0, 3);
+    	
+    	EasyMock.expect(request.getHeader("referer")).andReturn("http://www.boubei.com/tss/index.html");
+		EasyMock.expect(request.getRequestURI()).andReturn("/tss/data/json/122");
+		EasyMock.expect(request.getServletPath()).andReturn("/data/json/122");
+		EasyMock.expect(request.getHeader("REQUEST-TYPE")).andReturn("xmlhttp");
+		
+		EasyMock.expect(
+				session.getAttribute(SSOConstants.LOGINNAME_IN_SESSION))
+				.andReturn("Jane").times(0, 3);
+		
+        mocksControl.replay(); // 让mock 准备重放记录的数据
+
+        filter.doFilter(request, response, new FilterChain() {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            }
+        });
+    }
+    
+    @Test
+    public final void testPass4() throws IOException, ServletException {
+    	EasyMock.expect(
+				session.getAttribute(SSOConstants.USER_RIGHTS_IN_SESSION))
+				.andReturn(null).times(0, 3);
+    	
+    	EasyMock.expect(request.getHeader("referer")).andReturn("http://www.boubei.com/tss/index.html");
+		EasyMock.expect(request.getRequestURI()).andReturn("/tss/data/export/122/1/1000000");
+		EasyMock.expect(request.getServletPath()).andReturn("/data/export/122/1/1000000");
+		
+		EasyMock.expect(
+				session.getAttribute(SSOConstants.LOGINNAME_IN_SESSION))
+				.andReturn("Jane").times(0, 3);
+		
+        mocksControl.replay(); // 让mock 准备重放记录的数据
+
+        filter.doFilter(request, response, new FilterChain() {
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+            }
+        });
+    }
+    
+    @Test
     public final void testDeny() throws IOException, ServletException {
     	EasyMock.expect(
 				session.getAttribute(SSOConstants.USER_RIGHTS_IN_SESSION))
@@ -108,6 +153,7 @@ public class Filter0SecurityTest {
     	EasyMock.expect(request.getHeader("referer")).andReturn("http://www.boubei.com/tss/index.html");
 		EasyMock.expect(request.getRequestURI()).andReturn("/tss/data/json/122");
 		EasyMock.expect(request.getServletPath()).andReturn("/data/json/122");
+		EasyMock.expect(request.getHeader("REQUEST-TYPE")).andReturn("http");
 		
 		/* 没有返回值void方法的mock方式 */
 		response.sendRedirect("/tss/404.html");
