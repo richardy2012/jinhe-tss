@@ -14,6 +14,8 @@ mysql -u root -p btrbi  <  /home/btrbi/temp/_report.sql
 service mysql stop / start
 /etc/rc.d/init.d/mysql status
 
+SET SQL_SAFE_UPDATES = 0;
+
 -------------------------------------------- Oracle ------------------------------------------------------
 1. su -oracle 
 2. sqlplus "/ as sysdba"
