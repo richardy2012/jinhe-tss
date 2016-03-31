@@ -72,6 +72,9 @@ function batchUpdate(field, value) {
     if(!ids) {
         return alert("你没有选中任何记录，请勾选后再进行批量操作。");
     }
+    if(ids.length >= 1000) {
+        return alert("单次批量操作行数不能超过999行。")
+    }
     $.ajax({
         url: URL_BATCH_OPERATE + recordId,
         params: {"ids": ids, "field": field, "value": value},
