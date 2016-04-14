@@ -71,7 +71,7 @@ public class Servlet4Upload extends HttpServlet {
 	
 	String doUpload(HttpServletRequest request, Part part) throws Exception {
 		String uploadPath = ParamConfig.getAttribute(UPLOAD_PATH);
-		if( uploadPath == null ) { // gets absolute path of the web application
+		if( uploadPath == null ) { // gets absolute path of the web application, tomcat7/webapps/tss
 			uploadPath = request.getServletContext().getRealPath("");
 		}
 		

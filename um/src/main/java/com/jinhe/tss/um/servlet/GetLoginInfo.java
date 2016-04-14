@@ -40,7 +40,7 @@ public class GetLoginInfo extends HttpServlet {
             encoder.put("identifier", info[1]); // 返回身份认证器类名：全路径
             
             // 产生一个登录随机数给客户端，客户端使用该随机数对账号和密码进行加密后再传回后台
-            int randomKey = MathUtil.randomInt(1000);
+            int randomKey = MathUtil.randomInt(10000);
             encoder.put(SSOConstants.RANDOM_KEY, randomKey);
 			request.getSession(true).setAttribute(SSOConstants.RANDOM_KEY, randomKey);
             

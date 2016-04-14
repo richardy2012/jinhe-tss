@@ -88,6 +88,7 @@ public class PasswordRule {
 		int flag = 1;
 		
 		// 密码长度小于要求的最低长度 则设为不可用
+		password = password == null ? "" : password;
 		if(password.length() < rule.leastLength) {
 			flag = 0;
 		}

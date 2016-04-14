@@ -38,33 +38,33 @@ public class ImageProcessorTest {
 	public void testResize() {
 		try {
 			// 先用java创建一张图片
-			int width = 100;   
-	        int height = 100;   
-	        String s = "JAVA创建图片";   
+			int width = 60;   
+	        int height = 30;   
+	        String s = "8341";   
 	        
 	        String filePath = tempDir1 + "/1.jpg";
 	        File file = new File(filePath);   
 	           
-	        Font font = new Font("Serif", Font.BOLD, 10);   
+	        Font font = new Font("Serif", Font.ITALIC, 25);   
 	        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);   
 	        Graphics2D g2 = (Graphics2D)bi.getGraphics();   
 	        g2.setBackground(Color.WHITE);   
 	        g2.clearRect(0, 0, width, height);   
 	        g2.setPaint(Color.RED);   
+	        g2.setFont(font);
 	           
 	        FontRenderContext context = g2.getFontRenderContext();   
 	        Rectangle2D bounds = font.getStringBounds(s, context);   
-	        double x = (width - bounds.getWidth()) / 2;   
-	        double y = (height - bounds.getHeight()) / 2;   
-	        double ascent = -bounds.getY();   
-	        double baseY = y + ascent;   
+	        double x = (width - bounds.getWidth()) / 2.5;   
+	        double y = (height - bounds.getHeight()) / 1.2;   
+	        double baseY = y - bounds.getY();   
 	           
 	        g2.drawString(s, (int)x, (int)baseY);   
 	        ImageIO.write(bi, "jpg", file);   
 	        
 	        // 测试缩略图
 			ImageProcessor imageProcessor = new ImageProcessor(filePath);
-			imageProcessor.resize(0.68);
+			imageProcessor.resize(0.98);
 			
 			imageProcessor.resizeFix(20, 20);
 		} 

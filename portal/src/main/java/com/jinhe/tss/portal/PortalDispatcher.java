@@ -115,7 +115,7 @@ public class PortalDispatcher extends HttpServlet {
         	return portalService.getReleaseConfig(visitUrl);
         } 
         catch(Exception e) {
-        	log.error("portal release url was error：" + uri + ", " + e.getMessage());
+        	log.debug("portal release url was error：" + uri + ", " + e.getMessage());
         	return null;
         }
 	}
