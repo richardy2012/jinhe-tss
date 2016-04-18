@@ -23,9 +23,11 @@ public class AnalyzerFactory {
      */
     public static Analyzer createAnalyzer() {
         if(analyzer == null){
-            // 此处采用MMAnalyzer，分词粒度为2（分词粒度：当字数等于或超过该参数，且能成词，该词就被切分出来 ）
+            
             analyzer = new CJKAnalyzer();
             
+         // 此处采用MMAnalyzer，分词粒度为2（分词粒度：当字数等于或超过该参数，且能成词，该词就被切分出来 ）
+//            analyzer = new MMAnalyzer();
 //            try {
 //                URL dictionaryPath = URLUtil.getResourceFileUrl(DICTIONARY_FILE);
 //                if(dictionaryPath != null) {

@@ -1,6 +1,7 @@
 package com.jinhe.tss.cms.lucene;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 
 import com.jinhe.tss.cms.dao.IArticleDao;
@@ -89,13 +91,19 @@ public class IndexHelper {
         }
         
         File tempIndexDir = FileHelper.createDir(indexPath + "/temp"); // 先把新建的索引文件放在临时文件里，创建成功再覆盖原先的
+        Analyzer analyzer = AnalyzerFactory.createAnalyzer();
         IndexWriter indexWriter = null;
         int count = 0;
         try {
             // 如果 不是增量创建索引 或者 tempIndexDir目录为空， 则重新创建索引目录
             boolean isRecreateIndex = !strategy.isIncrement || FileHelper.listFiles(tempIndexDir).isEmpty();
             
-            indexWriter = new IndexWriter(tempIndexDir, AnalyzerFactory.createAnalyzer(), isRecreateIndex);
+            try {
+				indexWriter = new IndexWriter(tempIndexDir, analyzer, isRecreateIndex);
+            } catch(FileNotFoundException e){
+            	indexWriter = new IndexWriter(tempIndexDir, analyzer, !isRecreateIndex);
+            }
+            
             indexWriter.setMaxBufferedDocs(10); // 设置强制索引document对象后flush
             
             for ( Iterator<ArticleContent> it = articleContentSet.iterator(); it.hasNext(); ) {

@@ -138,7 +138,7 @@ public class _Util {
 	        out.flush();
 	    } 
 	    catch (Exception e) {
-	    	log.debug("Freemarker引擎解析脚本出错了: " + e.getMessage());
+	    	log.info("Freemarker引擎解析脚本出错了: " + script + ", params:" + dataMap);
 	    }
 	    return script;
 	}
