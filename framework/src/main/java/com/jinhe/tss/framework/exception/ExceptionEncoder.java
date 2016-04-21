@@ -43,7 +43,9 @@ public class ExceptionEncoder {
             if (!response.isCommitted() && !requestContext.isMultiRequest()) {
                 response.resetBuffer();
             }
-            IDataEncoder errorMsgEncoder = new ErrorMessageEncoder(convertor.convert(be));
+            
+            be = convertor.convert(be);
+			IDataEncoder errorMsgEncoder = new ErrorMessageEncoder(be);
             
             boolean needRelogin = false;
             if(be instanceof IBusinessException){

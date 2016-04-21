@@ -334,7 +334,7 @@ public class SQLExcutor {
     		autoCommit = conn.getAutoCommit();
             conn.setAutoCommit(false);
             
-    		log.info(" excute  sql: " + sql);
+    		log.debug(" excute  sql: " + sql);
 			statement = conn.createStatement();
 			statement.execute(sql);
 			conn.commit();

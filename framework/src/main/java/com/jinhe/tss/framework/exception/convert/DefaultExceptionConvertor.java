@@ -3,6 +3,7 @@ package com.jinhe.tss.framework.exception.convert;
 import org.apache.log4j.Logger;
 
 import com.jinhe.tss.framework.exception.BusinessException;
+import com.jinhe.tss.framework.exception.ExceptionEncoder;
 
 /** 
  * <p>
@@ -17,15 +18,20 @@ public class DefaultExceptionConvertor implements IExceptionConvertor {
 	public final static String ERROR_2 = "该数据已被其它数据引用，不能删除";
 	public final static String ERROR_3 = "您正在保存的信息可能已经被其它人修改过或删除了，请重新操作一遍试试。";
 	
-    public Exception convert(Exception exception) {
-    	if( exception != null && exception.getMessage() != null) {
-    		String msg = exception.getMessage();
+    public Exception convert(Exception e) {
+    	if( e != null && e.getMessage() != null) {
+    		Throwable firstCause = ExceptionEncoder.getFirstCause(e);
+			String msg = e.getMessage() + firstCause.getClass() + firstCause.getMessage();
+    		
     		if(msg.indexOf("ConstraintViolationException") >= 0) {
     			if(msg.indexOf("insert") >= 0) {
     				return new BusinessException( ERROR_1 );
     			}
     			else if(msg.indexOf("delete") >= 0) {
     				return new BusinessException( ERROR_2 );
+    			}
+    			else {
+    				return new BusinessException( firstCause.getMessage() );
     			}
     		}
     		
@@ -34,6 +40,6 @@ public class DefaultExceptionConvertor implements IExceptionConvertor {
 				return new BusinessException( ERROR_3 );
 			}
     	}
-        return exception;
+        return e;
     }
 }

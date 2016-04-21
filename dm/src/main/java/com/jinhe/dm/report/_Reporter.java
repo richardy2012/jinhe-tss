@@ -216,7 +216,8 @@ public class _Reporter extends BaseActionSupport {
     	}
     	
     	long start = System.currentTimeMillis();
-    	Map<String, String> requestMap = getRequestMap(request, false);
+    	String jsonpCallback = request.getParameter("jsonpCallback"); // jsonp是用GET请求
+    	Map<String, String> requestMap = getRequestMap(request, jsonpCallback != null);
     	
     	Object page = requestMap.get("page");
     	Object pagesize = requestMap.get("pagesize");
