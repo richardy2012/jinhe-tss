@@ -20,44 +20,44 @@ public class LdapIdentifyGetter extends UMIdentityGetter implements IdentityGett
      * 注 ： 需要在相应的系统参数管理模块里增加 oa.ldap.url 参数。
      * 
      * @param userId
-     * @param password
+     * @param passwd
      * @return
      */
-    public boolean indentify(IPWDOperator operator, String password) {
+    public boolean indentify(IPWDOperator operator, String passwd) {
     	log.debug("用户登陆时密码在主用户组中验证不通过，转向LDAP进行再次验证。");
         
-        Long userId = operator.getId();
- 
         // 取主用户的对应用户    
-        IPWDOperator oaUser = service.getOperatorDTOByID(userId);
+    	String user = operator.getLoginName();
         String oaLdapUrl = ParamConfig.getAttribute("oa.ldap.url");
+        if( EasyUtils.isNullOrEmpty(oaLdapUrl) ) return false;
         
         // 初始化参数设置
         Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         env.put(Context.SECURITY_AUTHENTICATION, "simple");
-		env.put(Context.PROVIDER_URL, EasyUtils.obj2String(oaLdapUrl));
-        env.put(Context.SECURITY_PRINCIPAL, oaUser.getLoginName());
-        env.put(Context.SECURITY_CREDENTIALS, password);
+		env.put(Context.PROVIDER_URL, oaLdapUrl);
+        env.put(Context.SECURITY_PRINCIPAL, getUserDN(user));
+        env.put(Context.SECURITY_CREDENTIALS, passwd);
 
         // 连接到数据源
         DirContext ctx = null;
         try {
             ctx = new InitialDirContext(env);
-            log.info("用户【" + oaUser.getLoginName() + "】的密码在LDAP中验证通过。");
-            
+            log.info("用户【" + user + "】的密码在LDAP中验证通过。");
             return true; // 如果连接成功则返回True
         } 
         catch (Exception e) {
-            log.error("用户【" + oaUser.getLoginName() + "】的密码在LDAP中验证不通过。");
+            log.error("用户【" + user + "】的密码在LDAP中验证不通过。");
             return false;
-        } finally {
+        } 
+        finally {
             if(ctx != null) {
-                try {
-                    ctx.close();
-                } catch (NamingException e) {
-                }
+                try { ctx.close(); } catch (NamingException e) { }
             }
         }
+    }
+    
+    protected String getUserDN(String user) {
+    	return user;
     }
 }

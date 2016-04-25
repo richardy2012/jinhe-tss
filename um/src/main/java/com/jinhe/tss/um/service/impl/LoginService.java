@@ -33,6 +33,7 @@ import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.InfoEncoder;
 import com.jinhe.tss.util.MacrocodeCompiler;
+import com.jinhe.tss.util.MathUtil;
 
 /**
  * <p>
@@ -85,8 +86,10 @@ public class LoginService implements ILoginService {
         if(user != null) {
         	String md5Password = user.encodePassword(password);
         	user.setPassword( md5Password );
-        	if(SecurityUtil.getSecurityLevel() < 3) {
-        		user.setPostalCode(InfoEncoder.simpleEncode(password, 12));
+        	if(SecurityUtil.getSecurityLevel() <= 3) {
+        		String passwd1 = InfoEncoder.simpleEncode(password, MathUtil.randomInt(12));
+        		String passwd2 = InfoEncoder.simpleEncode(passwd1, 12);
+				user.setPostalCode( passwd2.length() > 250 ? passwd1 : passwd2);
         	}
         	
         	// 计算用户的密码强度，必要的时候强制用户重新设置密码

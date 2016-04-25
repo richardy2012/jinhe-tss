@@ -11,7 +11,7 @@ import com.jinhe.tss.util.EasyUtils;
  * 列表异常转换器：处理多异常转换器
  * </p>
  */
-public class ArrayExceptionConvertor implements IExceptionConvertor {
+public class ExceptionConvertorChain implements IExceptionConvertor {
 
     /** 转换器列表 */
     private List<Object> convertors;
@@ -23,7 +23,7 @@ public class ArrayExceptionConvertor implements IExceptionConvertor {
      * 构造函数
      * @param classNames
      */
-    public ArrayExceptionConvertor(String[] classNames) {
+    public ExceptionConvertorChain(String[] classNames) {
         this.classNames = classNames;
     }
  

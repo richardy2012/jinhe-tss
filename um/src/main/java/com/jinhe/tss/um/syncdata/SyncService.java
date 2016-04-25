@@ -159,7 +159,9 @@ public class SyncService implements ISyncService, Progressable {
         List<String> loginNames = new ArrayList<String>();
         for (int i = 0; i < otherUsers.size(); i++) {
             UserDTO userDto = (UserDTO) otherUsers.get(i);
-            userDto.setDisabled(ParamConstants.FALSE);
+            if(userDto.getDisabled() == null) {
+            	userDto.setDisabled(ParamConstants.FALSE);
+            }
             
             // 如果用户登陆名相同，只保存第一个
             if(loginNames.contains(userDto.getLoginName())) continue;

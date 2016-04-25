@@ -46,7 +46,7 @@ public class LDAPDataDao implements IOutDataDao {
     public final static String SEX_USER          = "sex";
     public final static String BIRTHDAY_USER     = "birthday";
     public final static String EMPLOYEE_NO_USER  = "employeeNo";
-    public final static String AUTH_METHOD       = "authMethod";
+    public final static String USER_STATUS       = "disabled";
  
     private static final String GROUP_FILTER_STR = "(objectclass=organizationalUnit)";
     private static final String USER_FILTER_STR  = "CN=*";
@@ -213,9 +213,9 @@ public class LDAPDataDao implements IOutDataDao {
 				String employeeNoName = fieldNames.get(EMPLOYEE_NO_USER);
                 user.setEmployeeNo(defaultValues.get(employeeNoName));
                 
-                // authMethod
-                String authMethodName = fieldNames.get(AUTH_METHOD);
-                user.setAuthMethod(defaultValues.get(authMethodName));
+                // disabled
+                String disabled = fieldNames.get(USER_STATUS);
+                user.setAuthMethod(defaultValues.get(disabled));
                 
                 if( user != null ) {
                     items.add(user);

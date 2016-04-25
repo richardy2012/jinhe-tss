@@ -36,7 +36,7 @@ public class DefaultExceptionConvertor implements IExceptionConvertor {
     		}
     		
     		if(msg.indexOf("Row was updated or deleted by another transaction") >= 0) {
-    			log.error(msg);
+    			log.debug(msg);
 				return new BusinessException( ERROR_3 );
 			}
     	}

@@ -15,12 +15,12 @@ public class ExceptionConvertorFactoryTest {
 		
 		ExceptionConvertorFactory.convertor = null;
 		Config.setProperty(ExceptionConvertorFactory.EXCEPTION_CONVERTOR, "com.jinhe.tss.framework.exception.convert.DefaultExceptionConvertor");
-		Assert.assertTrue(ExceptionConvertorFactory.getConvertor() instanceof DefaultExceptionConvertor);
+		Assert.assertTrue(ExceptionConvertorFactory.getConvertor() instanceof IExceptionConvertor);
 		
 		ExceptionConvertorFactory.convertor = null;
 		Config.setProperty(ExceptionConvertorFactory.EXCEPTION_CONVERTOR, 
 				"com.jinhe.tss.framework.exception.convert.DefaultExceptionConvertor,com.jinhe.tss.framework.exception.convert.DefaultExceptionConvertor");
-		Assert.assertTrue(ExceptionConvertorFactory.getConvertor() instanceof ArrayExceptionConvertor);
+		Assert.assertTrue(ExceptionConvertorFactory.getConvertor() instanceof ExceptionConvertorChain);
 	}
 
 }

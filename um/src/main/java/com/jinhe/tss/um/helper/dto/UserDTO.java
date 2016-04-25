@@ -35,8 +35,8 @@ public class UserDTO {
 		return disabled;
 	}
  
-	public void setDisabled(Integer accountState) {
-		this.disabled = accountState;
+	public void setDisabled(Integer disabled) {
+		this.disabled = disabled;
 	}
  
 	public void setAccountLife(Date accountLife) {
