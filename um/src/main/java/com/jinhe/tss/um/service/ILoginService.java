@@ -40,7 +40,7 @@ public interface ILoginService {
 	 * @param userId
 	 * @param password
 	 */
-	void resetPassword(Long userId, String password);
+	Object resetPassword(Long userId, String password);
 	
     /**
      * <p>

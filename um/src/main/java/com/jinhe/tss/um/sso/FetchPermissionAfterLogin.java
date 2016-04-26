@@ -65,8 +65,8 @@ public class FetchPermissionAfterLogin implements ILoginCustomizer {
     	session.setAttribute("GROUP_LAST_NAME", lastGroup[1]);
     	
     	// 记录登陆成功的日志信息
-		Log excuteLog = new Log(Environment.getUserName(), "Logged in FetchPermissionAfterLogin");
-    	excuteLog.setOperateTable( "用户登录" );
-    	businessLogger.output(excuteLog);
+		Log _log = new Log(Environment.getUserName(), session.getAttribute("LOGIN_MSG"));
+    	_log.setOperateTable( "用户登录" );
+    	businessLogger.output(_log);
     }
 }

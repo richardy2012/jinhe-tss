@@ -19,7 +19,6 @@ import com.jinhe.tss.framework.component.param.ParamManager;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.sso.IOperator;
 import com.jinhe.tss.framework.sso.context.Context;
-import com.jinhe.tss.framework.web.wrapper.SecurityUtil;
 import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.dao.IGroupDao;
 import com.jinhe.tss.um.dao.IUserDao;
@@ -81,28 +80,25 @@ public class LoginService implements ILoginService {
     	userDao.refreshEntity(user);
 	}
 	
-	public void resetPassword(Long userId, String password) {
+	public Object resetPassword(Long userId, String passwd) {
 		User user = userDao.getEntity(userId);
-        if(user != null) {
-        	String md5Password = user.encodePassword(password);
-        	user.setPassword( md5Password );
-        	if(SecurityUtil.getSecurityLevel() <= 3) {
-        		String passwd1 = InfoEncoder.simpleEncode(password, MathUtil.randomInt(12));
-        		String passwd2 = InfoEncoder.simpleEncode(passwd1, 12);
-				user.setPostalCode( passwd2.length() > 250 ? passwd1 : passwd2);
-        	}
-        	
-        	// 计算用户的密码强度，必要的时候强制用户重新设置密码
-        	int strengthLevel = PasswordRule.getStrengthLevel(password, user.getLoginName());
-        	user.setPasswordStrength(strengthLevel);
-        	
-        	if(Context.isOnline()) {
-        		IOperator operator = Context.getIdentityCard().getOperator();
-        		operator.getAttributesMap().put("passwordStrength", strengthLevel);
-        	}
-        	
-        	userDao.refreshEntity(user);
-        }
+		String token = InfoEncoder.simpleEncode(userId + "_" + passwd, MathUtil.randomInt(12));
+        if(user == null)  return token;
+        
+    	String md5Password = user.encodePassword(passwd);
+    	user.setPassword( md5Password );
+    	
+    	// 计算用户的密码强度，必要的时候强制用户重新设置密码
+    	int strengthLevel = PasswordRule.getStrengthLevel(passwd, user.getLoginName());
+    	user.setPasswordStrength(strengthLevel);
+    	
+    	if(Context.isOnline()) {
+    		IOperator operator = Context.getIdentityCard().getOperator();
+    		operator.getAttributesMap().put("passwordStrength", strengthLevel);
+    	}
+    	
+    	userDao.refreshEntity(user);
+    	return token;
 	}
 
 	public String[] getLoginInfoByLoginName(String loginName) {

@@ -58,6 +58,7 @@ public class Log implements IEntity, IXForm, IGridNode {
     	if(operationCode != null && operationCode.length() > 100) {
     		operationCode = operationCode.substring(0, 100);
     	}
+    	entity = entity == null ? "" : entity;
     	
     	this.setOperatorId( Environment.getUserId() );
         this.setOperatorName( Environment.getUserCode() );

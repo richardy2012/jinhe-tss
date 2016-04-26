@@ -26,6 +26,7 @@ import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.sso.UMPasswordIdentifier;
 import com.jinhe.tss.util.BeanUtil;
 import com.jinhe.tss.util.DateUtil;
+import com.jinhe.tss.util.InfoEncoder;
 
 /**
  * 用户域对象
@@ -72,10 +73,6 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
     // 以下值展示的时候用
     @Transient private Long   groupId;         // 用户所在组id
     @Transient private String groupName;       // 用户所在组名称
-    
-    public String encodePassword(String password) {
-    	return UMPasswordIdentifier.encodePassword(this.getLoginName(), password);
-    }
 
     public Long getId() {
         return id;
@@ -235,6 +232,15 @@ public class User extends OperateInfo implements ITreeNode, IGridNode, IXForm {
  
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+    
+    public String encodePassword(String password) {
+    	return encodePasswd(this.getLoginName(), password);
+    }
+    
+    /** 对用户密码进行加密 */
+    public static String encodePasswd(String loginName, String password) {
+    	return InfoEncoder.string2MD5(loginName + "_" + password);
     }
  
     public GridAttributesMap getAttributes(GridAttributesMap map) {
