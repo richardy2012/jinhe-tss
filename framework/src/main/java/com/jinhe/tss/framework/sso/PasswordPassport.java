@@ -25,15 +25,15 @@ public class PasswordPassport {
      */
     public PasswordPassport() throws BusinessException {
         RequestContext requestContext = Context.getRequestContext();
-        String loginName = requestContext.getValueFromHeaderOrParameter(SSOConstants.LOGINNAME_IN_SESSION);
-        String password  = requestContext.getValueFromHeaderOrParameter(SSOConstants.USER_PASSWORD);
+        String loginName = requestContext.getValue(SSOConstants.LOGINNAME_IN_SESSION);
+        String password  = requestContext.getValue(SSOConstants.USER_PASSWORD);
         if (loginName == null || password == null) {
             throw new BusinessException("账号或密码不能为空，请重新登录。");
         }
         
         Object randomKey = requestContext.getSession().getAttribute(SSOConstants.RANDOM_KEY);
         if(randomKey == null) {
-        	randomKey = requestContext.getValueFromHeaderOrParameter(SSOConstants.RANDOM_KEY);
+        	randomKey = requestContext.getValue(SSOConstants.RANDOM_KEY);
         }
         if(randomKey == null) {
         	throw new BusinessException("登陆失败，可能是您操作时间过长，请重新输入账户及密码。");

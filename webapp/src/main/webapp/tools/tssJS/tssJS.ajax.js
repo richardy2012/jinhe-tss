@@ -451,7 +451,7 @@
 
         if( info.type != "0" ) {
             
-            popupMessage(info.msg);
+            !request.headers.noAlert && popupMessage(info.msg);
 
             // 3秒后自动自动隐藏成功提示信息
             setTimeout(function() {

@@ -66,7 +66,7 @@ public class Filter6XmlHttpDecode implements Filter {
                     requestBody = getRequestBody(is = request.getInputStream());
                     
                     // 如果请求的参数数据做了加密，则先解开
-                    String encodeKey = requestContext.getValueFromHeaderOrParameter("encodeKey");
+                    String encodeKey = requestContext.getValue("encodeKey");
                     if( !EasyUtils.isNullOrEmpty(encodeKey) ) {
                     	int key = EasyUtils.obj2Int(encodeKey);
                     	requestBody = InfoEncoder.simpleDecode(requestBody, key);

@@ -188,7 +188,7 @@ public class Filter4AutoLogin implements Filter {
 		try {
             customizer.execute();
 		} catch (Throwable e) {
-            String msg = "自定义登录操作（" + customizer.getClass().getName() + "）执行失败，请先检查数据源配置等是否正确。";
+            String msg = "自定义登录操作（" + customizer.getClass().getName() + "）执行失败。";
             log.error(msg, e);
             throw new BusinessException(msg, e);
 		}

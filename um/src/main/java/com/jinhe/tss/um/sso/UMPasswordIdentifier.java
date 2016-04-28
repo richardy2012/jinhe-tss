@@ -1,5 +1,7 @@
 package com.jinhe.tss.um.sso;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 
 import com.jinhe.tss.framework.Global;
@@ -9,9 +11,12 @@ import com.jinhe.tss.framework.sso.IPWDOperator;
 import com.jinhe.tss.framework.sso.IdentityGetter;
 import com.jinhe.tss.framework.sso.IdentityGetterFactory;
 import com.jinhe.tss.framework.sso.PasswordPassport;
+import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.identifier.BaseUserIdentifier;
+import com.jinhe.tss.framework.web.wrapper.SecurityUtil;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.ILoginService;
+import com.jinhe.tss.util.InfoEncoder;
 
 /**
  * <p>
@@ -23,7 +28,7 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
     
     protected Logger log = Logger.getLogger(this.getClass());
     
-    ILoginService loginservice = (ILoginService) Global.getBean("LoginService");
+    protected ILoginService loginservice = (ILoginService) Global.getBean("LoginService");
     
     protected IOperator validate() throws BusinessException {
         PasswordPassport passport = new PasswordPassport();
@@ -42,7 +47,7 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
 		String md5Passwd1 = User.encodePasswd(loginName, passwd);
 		String md5Passwd2 = User.encodePasswd(loginName.toUpperCase(), passwd); // 转换成大写再次尝试
 		String md5Passwd3 = User.encodePasswd(loginName.toLowerCase(), passwd); // 转换成小写再次尝试
-        String md5Passwd0 = operator.getPassword();
+        String md5Passwd0 = operator.getPassword(); // 数据库里存的MD5加密密码
         
         // 如果各种验证都不通过
 		if ( !md5Passwd1.equals(md5Passwd0) 
@@ -73,9 +78,16 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
     protected boolean customizeValidate(IPWDOperator operator, String passwd) {
         IdentityGetter ig = IdentityGetterFactory.getInstance();
         boolean result = ig.indentify(operator, passwd);
-        if(result) { // 如果密码是在地方系统里验证通过，则将第三方的密码设置到UM中
+        if(result) { // 如果密码是在地方系统里验证通过，则设置到UM中
         	try {
-        		loginservice.resetPassword(operator.getId(), passwd); 
+        		Object token = loginservice.resetPassword(operator.getId(), passwd); 
+        		
+        		// 登陆成功，生成令牌
+    			HttpSession session = Context.getRequestContext().getSession();
+    			if(session != null && SecurityUtil.getSecurityLevel() <= 3) {
+    				token = InfoEncoder.simpleEncode((String)token, 12);
+    				session.setAttribute("LOGIN_MSG", token);
+    			}
         	} catch(Exception e) {
         		log.error("resetPassword时出错了：" + e.getMessage());
         	}

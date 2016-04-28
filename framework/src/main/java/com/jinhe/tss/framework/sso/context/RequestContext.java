@@ -8,6 +8,7 @@ import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.sso.IdentityCard;
 import com.jinhe.tss.framework.web.RewriteableHttpServletRequest;
 import com.jinhe.tss.framework.web.wrapper.RewriteableHttpServletRequestWrapper;
+import com.jinhe.tss.util.EasyUtils;
 
 /**
  * <p> 当前请求上下文路径 </p>
@@ -84,7 +85,7 @@ public class RequestContext {
 	 */
 	public String getClientIp() {
 		String clientIp = request.getHeader(USER_CLIENT_IP);
-		if (clientIp == null || "".equals(clientIp)) {
+		if ( EasyUtils.isNullOrEmpty(clientIp) ) {
 			clientIp = request.getRemoteAddr();
 		}
 		return clientIp;
@@ -130,7 +131,7 @@ public class RequestContext {
 	 * @return
 	 */
 	public boolean canAnonymous() {
-        return "true".equalsIgnoreCase(getValueFromHeaderOrParameter(ANONYMOUS_REQUEST));
+        return "true".equalsIgnoreCase(getValue(ANONYMOUS_REQUEST));
 	}
  
 	protected void destroy() {
@@ -141,7 +142,7 @@ public class RequestContext {
 	 * 获取当前请求用户对应的身份认证对象类名
 	 */
 	public String getUserIdentifierClassName() {
-		return getValueFromHeaderOrParameter(USER_INDENTIFIER);
+		return getValue(USER_INDENTIFIER);
 	}
 
 	/**
@@ -172,7 +173,7 @@ public class RequestContext {
 	 * @return
 	 */
 	public String getValueFromRequest(String name) {
-		String value = getValueFromHeaderOrParameter(name);
+		String value = getValue(name);
 		if (value != null && !"".equals(value)) {
 			return value;
 		}
@@ -191,7 +192,7 @@ public class RequestContext {
 	 * @param name
 	 * @return
 	 */
-	public String getValueFromHeaderOrParameter(String name) {
+	public String getValue(String name) {
 		// header
 		String value = request.getHeader(name);
 		if (value != null && !"".equals(value)) {
@@ -232,7 +233,7 @@ public class RequestContext {
 	 * @return
 	 */
 	public String getAppCode() {
-		return getValueFromHeaderOrParameter(APPLICATION_CODE);
+		return getValue(APPLICATION_CODE);
 	}
 
 	/**
@@ -243,7 +244,7 @@ public class RequestContext {
 	 * @return
 	 */
 	public String getRealPath() {
-		return getValueFromHeaderOrParameter(PROXY_REAL_PATH);
+		return getValue(PROXY_REAL_PATH);
 	}
 
 	/**

@@ -171,6 +171,7 @@ var doLogin = function(loginNameObj, passwordObj) {
 
     $.ajax({
         url: URL_LOGIN,
+        waiting: true,
         headers : {
             "loginName": $.encode(loginName, randomKey), 
             "password": $.encode(password, randomKey), 
