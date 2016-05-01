@@ -26,11 +26,4 @@ public class XmlPrintWriter {
 	public void println(String xml) {
 		out.println(xml);
 	}
-
-	/**
-	 * 刷新数据流缓存，将内容输出到客户端
-	 */
-	public void flush() {
-		out.flush();
-	}
 }

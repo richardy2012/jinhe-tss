@@ -10,7 +10,6 @@ import com.jinhe.tss.util.EasyUtils;
  */
 public class PermissionDTO {
     
-    private String  resourceName;   // 资源名称
 	private Long    resourceId;    // 资源Id
 	private Long    roleId;       // 用户Id
 	private String  operationId; // 操作选项Id
@@ -35,32 +34,28 @@ public class PermissionDTO {
         return result;
     }
 
-    public String getResourceName() {
-        return resourceName;
-    }
-
     public Long getResourceId() {
         return resourceId;
     }
-
-    public Long getRoleId() {
-        return roleId;
-    }
-
+    
     public String getOperationId() {
         return operationId;
     }
-
-    public Integer getPermissionState() {
-        return permissionState;
-    }
-
+    
     public Integer getIsGrant() {
         return isGrant;
     }
 
     public Integer getIsPass() {
         return isPass;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public Integer getPermissionState() {
+        return permissionState;
     }
 }
 

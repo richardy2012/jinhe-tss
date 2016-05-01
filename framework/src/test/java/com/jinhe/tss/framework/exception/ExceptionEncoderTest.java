@@ -23,6 +23,12 @@ public class ExceptionEncoderTest {
 		
 		be = new BusinessServletException(be, true);
 		ExceptionEncoder.encodeException(response, be);
+		
+		be = new BusinessServletException("xxx");
+		ExceptionEncoder.encodeException(response, be);
+		
+		be = new BusinessServletException("xxx", be);
+		ExceptionEncoder.encodeException(response, be);
 	}
 
 }

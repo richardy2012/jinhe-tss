@@ -67,6 +67,9 @@ public class MessageActionTest extends TxSupportTest4UM {
 		
 		list = messageAction.listMessages();
 		Assert.assertTrue(list.size() == 0);
+		
+		message1.setId((Long) message1.getPK());
+		log.debug( message1.getReceiver() );
 	}
 
 }

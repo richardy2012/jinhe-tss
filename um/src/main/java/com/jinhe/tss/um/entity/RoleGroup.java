@@ -27,11 +27,6 @@ public class RoleGroup implements IEntity {
 	private Long groupId;    // 用户组Id
 	private Long roleId;     // 角色Id
 	private Long strategyId; // 策略Id
-	
-    public String toString() {
-        return "roleId = " + roleId + ", groupId = " + groupId 
-               + ", strategyId = " + strategyId;
-    }
  
 	public Long getId() {
 		return id;

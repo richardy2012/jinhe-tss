@@ -75,6 +75,8 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         
         Assert.assertNotNull(componentDao.getDefaultDecorator());
         Assert.assertNotNull(componentDao.getDefaultLayout());
+        
+        Assert.assertTrue(componentDao.getDefaultDecorator().isDecorator());
     }
 
     @Test
@@ -205,6 +207,7 @@ public class ComponentModuleTest extends TxSupportTest4Portal {
         assertTrue(list.size() >= 2);
         Component portlet1 = (Component) list.get(list.size() - 1);
         Long id = portlet1.getId();
+        Assert.assertTrue(portlet1.isportlet());
         
         try {
             componentAction.previewComponent(response, id);

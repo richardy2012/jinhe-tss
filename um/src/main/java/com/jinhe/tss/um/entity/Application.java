@@ -126,10 +126,6 @@ public class Application extends OperateInfo implements ITreeNode, IXForm {
 		BeanUtil.addBeanProperties2Map(this, map);
 		return map;
 	}
- 
-	public String toString(){
-        return "(id:" + this.id + ", name:" + this.name + ", code:" + this.applicationId + ")"; 
-    }
 
 	public Serializable getPK() {
 		return this.id;

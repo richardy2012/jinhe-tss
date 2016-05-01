@@ -58,8 +58,7 @@ public class Filter7AccessingCheck implements Filter {
         if(session == null) {
         	/* 如果链接配置了权限检测，则提示先进行登录 */
         	if( checker.isNeedPermission(servletPath) ) {
-        		log.warn("试图匿名访问" + servletPath + "失败。");
-//        		throw new BusinessServletException("您无权访问本页面，请先进行登录！");
+        		log.warn("试图匿名访问" + servletPath + "失败。"); // "您无权访问本页面，请先进行登录！"
         		((HttpServletResponse)response).sendRedirect(checker.get404URL());
         	}
         	

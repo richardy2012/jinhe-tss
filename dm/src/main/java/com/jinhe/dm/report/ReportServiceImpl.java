@@ -248,6 +248,8 @@ public class ReportServiceImpl implements ReportService {
       	}
       	
         // 结合 requestMap 进行 freemarker解析 sql，允许指定sql预处理类。
+      	fmDataMap.put("report.id", reportId);
+      	fmDataMap.put("report.name", report.getName()); // 用于解析出错时定位report
       	reportScript = _Util.customizeParse(reportScript, fmDataMap);
           
 		SQLExcutor excutor = new SQLExcutor(false);

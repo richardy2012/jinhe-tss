@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.jinhe.tss.util.DateUtil;
+import com.jinhe.tss.util.EasyUtils;
 import com.jinhe.tss.util.XmlUtil;
 
 /** 
@@ -90,11 +91,9 @@ public class GridNode {
      * 根据给定的pattern格式化数字类数据为字符串
      */
     private static String formatNumber(Object value, String pattern) {
-        if (value == null || Double.valueOf(value.toString()) == 0) {
-            return "";  // null 和 0 都不显示
-        } 
+        if (value == null)  return ""; 
         
-        if (pattern == null || "".equals(pattern)) {
+        if ( EasyUtils.isNullOrEmpty(pattern) ) {
             return value.toString();
         }
         return new DecimalFormat(pattern).format(value);

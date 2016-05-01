@@ -165,6 +165,9 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         portalAction.delete(response, root.getId());
         
         assertTrue(TestUtil.printLogs(logService) > 0);
+        
+        Assert.assertEquals(PortalConstants.NAVIGATOR_RESOURCE_TYPE, menu1.getResourceType());
+        Assert.assertEquals(PortalConstants.PORTAL_RESOURCE_TYPE, root.getResourceType());
     }
     
 }

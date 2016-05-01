@@ -67,13 +67,6 @@ public class Environment {
     }
 
     /**
-     * 获取令牌
-     */
-    public static String getToken() {
-        return Context.getToken();
-    }
-
-    /**
      * 获取用户客户端IP
      */
     public static String getClientIp() {

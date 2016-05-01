@@ -138,8 +138,9 @@ public class _Util {
 	        out.flush();
 	    } 
 	    catch (Exception e) {
-	    	String _script = script.substring(0, Math.min(1000, script.length()));
-	    	log.info("Freemarker引擎解析脚本出错了, params" + dataMap + ", params:\n" + _script);
+	    	String _script = script.substring(0, Math.min(200, script.length()));
+	    	log.info("Freemarker引擎解析脚本出错了: \n------------ params-----------: " + dataMap + 
+	    			", \n------------ script ----------: " + _script);
 	    }
 	    return script;
 	}

@@ -95,6 +95,8 @@ public class ParamServiceTest extends TxTestSupport {
         
         simpleParam.setName(null);
         simpleParam.setHidden(1);
+        simpleParam.setUdf2("udf2");
+        simpleParam.setUdf3("udf3");
         paramService.saveParam(simpleParam);
         Assert.assertEquals("test1", simpleParam.getCode());
         

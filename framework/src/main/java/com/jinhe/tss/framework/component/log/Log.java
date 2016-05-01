@@ -172,10 +172,6 @@ public class Log implements IEntity, IXForm, IGridNode {
         
         return map;
     }
-    
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
 
     public Integer getMethodExcuteTime() {
         return methodExcuteTime;

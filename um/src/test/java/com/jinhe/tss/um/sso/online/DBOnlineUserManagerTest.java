@@ -55,6 +55,7 @@ public class DBOnlineUserManagerTest extends TxSupportTest4UM {
         
         OnlineUser first = (OnlineUser) userSet.toArray()[0];
         DBOnlineUser second = (DBOnlineUser) userSet.toArray()[1];
+        second.setId((Long) second.getPK());
         
         log.debug(second.getId());
         log.debug(second.getLoginTime());

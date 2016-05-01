@@ -100,6 +100,8 @@ public class ResourceModuleTest extends TxSupportTest4UM {
         Assert.assertEquals(UMConstants.TSS_APPLICATION_ID, rtr.getApplicationId());
         Assert.assertEquals(resourceTypeId, rtr.getResourceTypeId());
         Assert.assertEquals(rtr.getPK(), rtr.getId());
+        
+        rtr.setId( (Long) rtr.getPK() );
     }
     
     @Test

@@ -61,7 +61,9 @@ public class TreeEncoder implements IDataEncoder {
 		TreeNode root = parser.parse(data); // 解析完成后，node为根节点
 		if (root != null) {
 		    root.initTreeNode(TREE_ROOT_NODE_ID, rootNodeName, needRootNode);
-            if (!rootCanSelect) {
+            if ( rootCanSelect ) {
+            	root.enabled();
+            } else {
                 root.disabled();
             }
 			sb.append(root.toXml(TREE_NODE_NAME, translator));

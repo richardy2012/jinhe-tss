@@ -62,8 +62,7 @@ public class PaginationQueryBySQLTest  extends TxTestSupport {
         PageInfo result = pageQuery.getResultList();
         Assert.assertTrue(result.getItems().size() == 1);
         
-        sql = " select o.* from test_user o " 
-         		+ " where 1=1 " + condition.toConditionString();
+        sql = " select o.* from test_user o where 1=1 " + condition;
         pageQuery.setResultClass(_User.class);
         
         // TODO 使用原生SQL查询尚有问题，id字段无法匹配。

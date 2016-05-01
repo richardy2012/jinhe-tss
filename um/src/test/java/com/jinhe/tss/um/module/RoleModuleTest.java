@@ -99,6 +99,7 @@ public class RoleModuleTest extends TxSupportTest4UM {
         roleGroup.setParentId(UMConstants.ROLE_ROOT_ID);
         action.saveRole(response, request, roleGroup);
         roleGroupId = roleGroup.getId();
+        roleGroup.setId((Long) roleGroup.getPK());
         
         // 新建角色
         Role role1 = new Role();
@@ -309,6 +310,7 @@ public class RoleModuleTest extends TxSupportTest4UM {
     		Assert.assertEquals(gu.getId(), gu.getPK());
     		Assert.assertNotNull(gu.getUserId());
     		Assert.assertNotNull(gu.getGroupId());
+    		gu.setId((Long) gu.getPK());
     	}
     	
     	if(list2.size() > 0) {
@@ -316,6 +318,8 @@ public class RoleModuleTest extends TxSupportTest4UM {
     		Assert.assertEquals(ru.getId(), ru.getPK());
     		Assert.assertNotNull(ru.getUserId());
     		Assert.assertNotNull(ru.getRoleId());
+    		ru.setId((Long) ru.getPK());
+    		Assert.assertNull( ru.getStrategyId() );
     	}
     	
     	if(list3.size() > 0) {
@@ -323,6 +327,8 @@ public class RoleModuleTest extends TxSupportTest4UM {
     		Assert.assertEquals(rg.getId(), rg.getPK());
     		Assert.assertNotNull(rg.getRoleId());
     		Assert.assertNotNull(rg.getGroupId());
+    		rg.setId((Long) rg.getPK());
+    		Assert.assertNull( rg.getStrategyId() );
     	}
     	
     	 // 删除角色组

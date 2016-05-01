@@ -140,10 +140,11 @@ public class UMServiceTest extends TxTestSupport {
     	List<?> list2 = userDao.getEntities("from Temp");
     	Assert.assertTrue(list2.size() == 1);
     	temp = (Temp) list2.get(0);
-    	Assert.assertEquals(group.getId(), temp.getId());
+    	Assert.assertEquals(group.getId(), temp.getPK());
     	Assert.assertEquals(group.getCode(), temp.getUdf1());
     	Assert.assertEquals(group.getCode(), temp.getUdf2());
     	Assert.assertEquals(group.getName(), temp.getUdf3());
+    	Assert.assertTrue( temp.equals(temp) );
     	
     	userDao.executeSQL("update test_group set name = 'XXX' where code = ?", "RD");
     	userDao.executeSQL("update test_group set name = 'XXX' where code = :code", 

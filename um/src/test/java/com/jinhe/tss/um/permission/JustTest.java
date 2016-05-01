@@ -6,12 +6,16 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.jinhe.tss.um.UMConstants;
 import com.jinhe.tss.um.entity.permission.GroupPermission;
 import com.jinhe.tss.um.entity.permission.GroupResource;
+import com.jinhe.tss.um.entity.permission.RoleResource;
 import com.jinhe.tss.um.entity.permission.RoleUserMapping;
 import com.jinhe.tss.um.entity.permission.RoleUserMappingId;
 import com.jinhe.tss.um.entity.permission.ViewRoleUser;
+import com.jinhe.tss.um.entity.permission.ViewRoleUser4SubAuthorize;
 import com.jinhe.tss.um.entity.permission.ViewRoleUserId;
+import com.jinhe.tss.um.sso.UMIdentityGetter;
 
 public class JustTest {
 	
@@ -75,5 +79,20 @@ public class JustTest {
 		Assert.assertEquals(ru1.toString(), ru1.toString());
 		
 		Assert.assertEquals(ru1.getId().hashCode(), ru2.getId().hashCode());
+	}
+	
+	@Test
+	public void test3() {
+		ViewRoleUser4SubAuthorize t = new ViewRoleUser4SubAuthorize();
+		t.setId(null);
+		t.getId();
+		
+		Assert.assertEquals(UMConstants.ROLE_RESOURCE_TYPE_ID, new RoleResource().getResourceType());
+		
+		PermissionDTO pt = new PermissionDTO(new Object[6]);
+		pt.getRoleId();
+		pt.getPermissionState();
+		
+		new UMIdentityGetter().indentify(null, "123456");
 	}
 }

@@ -92,6 +92,7 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         request.addParameter("Rule2GroupIds", mainGroupId + "," + childGroup.getId());
         request.addParameter("Rule2RoleIds", roleId + "");
         action.saveSubauth(response, request, strategy);
+        strategy.setId((Long) strategy.getPK());
         
         Long strategyId = strategy.getId();
         action.getSubauthInfo(response, strategyId);
@@ -132,8 +133,7 @@ public class SubAuthorizeModuleTest extends TxSupportTest4UM {
         printUserRoleMapping(mainUser.getId(), 1); // 匿名角色 （转授策略删除了）
         
         action.getSubauth2Tree(response);
-        
-        
+       
     }
     
     protected void printUserRoleMapping(Long userId, int count) {

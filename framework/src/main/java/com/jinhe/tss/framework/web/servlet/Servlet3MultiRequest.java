@@ -32,11 +32,11 @@ import com.jinhe.tss.util.XMLDocUtil;
 public class Servlet3MultiRequest extends HttpServlet {
 	private static final long serialVersionUID = 2840752639965867560L;
  
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doPost(request, response);
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
 	}
  
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         XmlPrintWriter writer = new XmlPrintWriter(response.getWriter());
         writer.println("<Responses>");

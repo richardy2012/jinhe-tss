@@ -73,7 +73,7 @@ public class Temp implements IEntity {
     }
 
 	public Serializable getPK() {
-		return this.id;
+		return this.getId();
 	}
 	
 	public boolean equals(Object obj) {

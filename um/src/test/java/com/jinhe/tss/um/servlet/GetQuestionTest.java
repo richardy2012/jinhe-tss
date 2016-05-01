@@ -36,6 +36,11 @@ public class GetQuestionTest extends TxSupportTest4UM {
             user.setPasswordAnswer("=2");
             servlet.doPost(request, response);
             
+            user.setPasswordQuestion(null);
+            user.setPasswordAnswer(null);
+            userService.updateUser(user);
+            servlet.doGet(request, response);
+            
         } catch (Exception e) {
         	Assert.assertFalse("Test servlet error:" + e.getMessage(), true);
         }

@@ -49,6 +49,7 @@ public class TreeTest {
 		optionsEncoder.add(option);
 		optionsEncoder.toXml();
 		treeEncoder.setOptionsEncoder(optionsEncoder );
+		treeEncoder.setRootNodeName("ROOT");
 		
 		try {
 			XmlPrintWriter writer = new XmlPrintWriter(response.getWriter());

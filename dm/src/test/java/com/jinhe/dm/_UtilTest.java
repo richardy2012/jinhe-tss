@@ -1,11 +1,11 @@
 package com.jinhe.dm;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.jinhe.dm._Util;
 import com.jinhe.tss.util.DateUtil;
 
 public class _UtilTest {
@@ -26,7 +26,11 @@ public class _UtilTest {
 		
 		// test freemarker error print
 		// Expression param1 is undefined on line 1, column 22 in t.ftl
-		_Util.freemarkerParse("<#if p1??> <#else> ${param1} </#if>", new HashMap<String, String>());
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("report.id", "120");
+		map.put("report.name", "报表120");
+		
+		_Util.freemarkerParse("<#if p1??> <#else> ${param1} </#if>", map);
 	}
 
 }

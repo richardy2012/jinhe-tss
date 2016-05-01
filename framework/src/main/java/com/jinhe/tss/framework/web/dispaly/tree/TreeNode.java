@@ -90,7 +90,7 @@ public class TreeNode {
     }
     
     boolean isRootNode() {
-        Object treeNodeId = attributes.get(TreeNode.TREENODE_ATTR_ID);
+        Object treeNodeId = this.getId();
 		return TreeEncoder.TREE_ROOT_NODE_ID.equals(treeNodeId);
     }
     
@@ -105,14 +105,6 @@ public class TreeNode {
      */
     public void addChild(TreeNode treeNode) {
         children.add(treeNode);
-    }
-
-    /**
-     * 获取子节点
-     * @return
-     */
-    public List<TreeNode> getChildren() {
-        return children;
     }
 
     /**

@@ -50,10 +50,6 @@ public abstract class MacrocodeQueryCondition  {
 		return orderByFields;
 	}
 
-	public void addOrderByFields(String orderByFields) {
-		this.getOrderByFields().add(orderByFields);
-	}
-	
 	public String toConditionString() {
 		StringBuffer buffer = new StringBuffer();
 		Map<String, Object> conditionsMap = getConditionMacrocodes();
