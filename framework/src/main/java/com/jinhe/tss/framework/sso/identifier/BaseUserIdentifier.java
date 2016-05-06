@@ -1,5 +1,7 @@
 package com.jinhe.tss.framework.sso.identifier;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 
 import com.jinhe.tss.framework.exception.UserIdentificationException;
@@ -50,4 +52,11 @@ public abstract class BaseUserIdentifier implements IUserIdentifier {
 	 * @return
 	 */
 	protected abstract IOperator validate() throws UserIdentificationException;
+	
+	protected void loginSuccess(String msg) {
+		HttpSession session = Context.getRequestContext().getSession();
+		if( session != null ) {
+			session.setAttribute("LOGIN_MSG", msg);
+		}
+	}
 }

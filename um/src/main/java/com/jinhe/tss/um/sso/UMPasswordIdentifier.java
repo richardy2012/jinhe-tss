@@ -1,7 +1,5 @@
 package com.jinhe.tss.um.sso;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
 
 import com.jinhe.tss.framework.Global;
@@ -11,9 +9,7 @@ import com.jinhe.tss.framework.sso.IPWDOperator;
 import com.jinhe.tss.framework.sso.IdentityGetter;
 import com.jinhe.tss.framework.sso.IdentityGetterFactory;
 import com.jinhe.tss.framework.sso.PasswordPassport;
-import com.jinhe.tss.framework.sso.context.Context;
 import com.jinhe.tss.framework.sso.identifier.BaseUserIdentifier;
-import com.jinhe.tss.framework.web.wrapper.SecurityUtil;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.service.ILoginService;
 import com.jinhe.tss.util.InfoEncoder;
@@ -71,11 +67,7 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
 			throw new BusinessException("密码错误，" + notice, false);
         }
 		else {
-			HttpSession session = Context.getRequestContext().getSession();
-			if( session != null ) {
-				session.setAttribute("LOGIN_MSG", "Logon by UM password");
-			}
-			
+			loginSuccess("Logon by UM password");
 			return operator;
 		}
     }
@@ -90,14 +82,9 @@ public class UMPasswordIdentifier extends BaseUserIdentifier {
         if(result) { // 如果密码是在地方系统里验证通过，则设置到UM中
         	try {
         		Object token = loginservice.resetPassword(operator.getId(), passwd); 
-        		
-        		// 登陆成功，生成令牌
-    			HttpSession session = Context.getRequestContext().getSession();
-    			if(session != null && SecurityUtil.getSecurityLevel() <= 3) {
-    				token = InfoEncoder.simpleEncode((String)token, 12);
-    				session.setAttribute("LOGIN_MSG", token);
-    			}
-        	} catch(Exception e) {
+        		loginSuccess( InfoEncoder.simpleEncode( (String)token, 12) );
+        	} 
+        	catch( Exception e ) {
         		log.error("resetPassword时出错了：" + e.getMessage());
         	}
         }
