@@ -152,6 +152,10 @@ public class ArticlePublishTest extends AbstractTestSupport {
         	for(Attachment attach : attachs) {
                 request.addParameter("seqNo", attach.getSeqNo().toString());
             	download.doPost(request, new MockHttpServletResponse());
+            	
+            	attach.setId( (Long) attach.getPK() );
+            	Assert.assertEquals(attach.getId(), attach.getId());
+            	Assert.assertNotNull(attach.getUploadDate());
         	}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

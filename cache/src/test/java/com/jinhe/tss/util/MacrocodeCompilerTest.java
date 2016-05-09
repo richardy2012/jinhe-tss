@@ -22,6 +22,10 @@ public class MacrocodeCompilerTest {
 		
 		String result = MacrocodeCompiler.runLoop(script, macrocodes);
 		Assert.assertEquals("This Loop End!", result);
+		
+		Assert.assertEquals("${xx}", MacrocodeCompiler.createMacroCode("xx") );
+		Assert.assertEquals("#{xx}", MacrocodeCompiler.createVariable("xx") );
+		Assert.assertEquals("${xx}", MacrocodeCompiler.run("${xx}", null) );
 	}
     
 	@Test

@@ -14,6 +14,7 @@ public class ArticleHelperTest {
 		Channel channel = new Channel();
 		for(int i = 0; i <= 5; i++) {
 			channel.setOverdueDate(String.valueOf(i));
+			channel.setId( (long) i );
 			
 			Date overDate = ArticleHelper.calculateOverDate(channel);
 			Assert.assertTrue(overDate.after(new Date()));

@@ -18,6 +18,8 @@ import com.jinhe.tss.portal.action.PortalAction;
 import com.jinhe.tss.portal.entity.Navigator;
 import com.jinhe.tss.portal.entity.Structure;
 import com.jinhe.tss.portal.entity.Theme;
+import com.jinhe.tss.portal.entity.permission.NavigatorResource;
+import com.jinhe.tss.portal.entity.permission.PortalResource;
 import com.jinhe.tss.portal.helper.MenuDTO;
 import com.jinhe.tss.portal.service.INavigatorService;
 import com.jinhe.tss.portal.service.IPortalService;
@@ -167,7 +169,10 @@ public class NavigatorModuleTest extends TxSupportTest4Portal {
         assertTrue(TestUtil.printLogs(logService) > 0);
         
         Assert.assertEquals(PortalConstants.NAVIGATOR_RESOURCE_TYPE, menu1.getResourceType());
+        Assert.assertEquals(PortalConstants.NAVIGATOR_RESOURCE_TYPE, new NavigatorResource().getResourceType());
+        
         Assert.assertEquals(PortalConstants.PORTAL_RESOURCE_TYPE, root.getResourceType());
+        Assert.assertEquals(PortalConstants.PORTAL_RESOURCE_TYPE, new PortalResource().getResourceType());
     }
     
 }

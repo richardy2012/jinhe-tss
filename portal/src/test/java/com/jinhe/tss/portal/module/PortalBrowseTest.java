@@ -1,6 +1,7 @@
 package com.jinhe.tss.portal.module;
 
 import static org.junit.Assert.assertFalse;
+import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +56,8 @@ public class PortalBrowseTest extends TxSupportTest4Portal {
          portalId = root.getPortalId();
          
          defaultTheme = (Theme) portalService.getThemesByPortal(portalId).get(0);
+         Assert.assertFalse( defaultTheme.equals(null) );
+         Assert.assertFalse( defaultTheme.equals(root) );
          
          // 新建页面、版面
          page1 = createPageOrSection(root, "页面一", "page1", Structure.TYPE_PAGE);
@@ -87,6 +90,7 @@ public class PortalBrowseTest extends TxSupportTest4Portal {
     	// 测试门户缓存管理
         portalAction.cacheManage(response, portalId);
         portalAction.flushCache(response, portalId, defaultTheme.getId());
+        
     }
     
     private void testPageBrowse() {

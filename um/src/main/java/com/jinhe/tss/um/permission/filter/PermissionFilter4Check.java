@@ -1,11 +1,9 @@
-package com.jinhe.tss.portal.permission;
+package com.jinhe.tss.um.permission.filter;
 
 import java.util.List;
 
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.um.permission.PermissionHelper;
-import com.jinhe.tss.um.permission.filter.IPermissionFilter;
-import com.jinhe.tss.um.permission.filter.PermissionTag;
 
 /**
  * 删除时候检查用户是否对删除资源有删除权限。
@@ -28,7 +26,7 @@ public class PermissionFilter4Check implements IPermissionFilter {
         List<Long> permitedResourceIds = helper.getResourceIdsByOperation(tag.application(), tag.resourceType(), tag.operation());
  
         if(!permitedResourceIds.contains(resourceId)) {
-            throw new BusinessException("操作失败，您对进行操作的ID为:" + resourceId + " 目标对象没有该操作权限！");
+            throw new BusinessException("检查资源权限失败，您对ID为:" + resourceId + "目标资源没有当前操作所需的权限！");
         }
 	}
 }

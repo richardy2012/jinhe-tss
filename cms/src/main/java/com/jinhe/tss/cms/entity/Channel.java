@@ -18,7 +18,6 @@ import javax.persistence.UniqueConstraint;
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.permission.ChannelResource;
 import com.jinhe.tss.framework.component.param.ParamConstants;
-import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.persistence.entityaop.IDecodable;
 import com.jinhe.tss.framework.persistence.entityaop.OperateInfo;
 import com.jinhe.tss.framework.web.dispaly.tree.TreeAttributesMap;
@@ -193,10 +192,7 @@ public class Channel extends OperateInfo implements IXForm, IDecodable, IResourc
         if (attanchment.isImage()) {
             return this.getImagePath();
         }
-        if (attanchment.isOfficeDoc()) {
-            return this.getDocPath();
-        }
-        throw new BusinessException("指定类型的附件路径不存在");
+        return this.getDocPath();
     }
     
     public String toString(){

@@ -12,6 +12,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import com.jinhe.tss.framework.SecurityUtil;
 import com.jinhe.tss.framework.web.RewriteableHttpServletRequest;
 
 /**

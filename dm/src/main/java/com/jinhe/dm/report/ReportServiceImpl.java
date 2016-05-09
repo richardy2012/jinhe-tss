@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.jinhe.dm._Util;
 import com.jinhe.dm.data.sqlquery.SOUtil;
 import com.jinhe.dm.data.sqlquery.SQLExcutor;
+import com.jinhe.tss.framework.SecurityUtil;
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.util.DateUtil;
@@ -29,8 +30,9 @@ public class ReportServiceImpl implements ReportService {
     
     @Autowired ReportDao reportDao;
     
-    public Report getReport(Long id) {
-        Report report = reportDao.getEntity(id);
+    public Report getReport(Long id, boolean auth) {
+        Report report = auth ? reportDao.getReportById(id) : reportDao.getEntity(id);
+        
         if(report == null) {
         	throw new BusinessException("Report【id=" + id + "】不存在，可能已经被删除。");
         }
@@ -38,9 +40,10 @@ public class ReportServiceImpl implements ReportService {
         return report;
     }
     
-	public Report getReportCached(Long id) {
-		return this.getReport(id);
-	}
+    public Report getReport(Long id) {
+        boolean auth = SecurityUtil.getSecurityLevel() >= 4;
+		return this.getReport(id, auth);
+    }
     
 	public Long getReportIdByName(String name) {
 		String hql = "select o.id from Report o where o.name = ? order by o.decode";
@@ -147,7 +150,8 @@ public class ReportServiceImpl implements ReportService {
     
     @SuppressWarnings("unchecked")
   	public SQLExcutor queryReport(Long reportId, Map<String, String> requestMap, int page, int pagesize, Object loginUserId) {
-		Report report = this.getReport(reportId);
+    	Report report = this.getReport(reportId);
+    	
 		String paramsConfig = report.getParam();
 		String reportScript = report.getScript();
 		

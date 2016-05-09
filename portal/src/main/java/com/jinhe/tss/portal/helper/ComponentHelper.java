@@ -235,7 +235,6 @@ public class ComponentHelper {
             	}
                 outStream.close();
             } catch (IOException e) {
-                throw new RuntimeException("导出时发生IOException!!", e);
             }           
         }
         new File(sourceFilePath).delete();  // 删除资源文件夹下面的zip文件

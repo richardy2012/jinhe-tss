@@ -30,6 +30,7 @@ public class AccessLogTest extends TxTestSupport4DM {
 		List<?> logs = permissionHelper.getEntities("from AccessLog");
 		Assert.assertTrue(logs.size() >= 0);
 		AccessLog firstLog = (AccessLog) logs.get(0);
+		firstLog.setId((Long) firstLog.getPK());
 		Assert.assertEquals(firstLog.getId(), firstLog.getPK());
 		
 		SQLExcutor ex = new SQLExcutor();

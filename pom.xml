@@ -279,6 +279,13 @@
 									match="job.enable = true" replace="job.enable = ${job.enable}" byline="true" />
 
 								<echo>
+									process application.properties: set security.level to ${security.level};
+								</echo>
+								<replaceregexp
+									file="${basedir}/target/classes/application.properties" 
+									match="security.level = 2" replace="security.level = ${security.level}" byline="true" />
+									
+								<echo>
 									process application.properties: set last.package.time to
 									${maven.build.timestamp};
 								</echo>
@@ -353,6 +360,7 @@
 			</activation>
 			<properties>
 				<environment>dev</environment>
+				<security.level>2</security.level>
 				<log.level>debug</log.level>
 				<job.enable>true</job.enable>
 				<db.username>root</db.username>
@@ -370,6 +378,7 @@
 			</activation>
 			<properties>
 				<environment>demo</environment>
+				<security.level>2</security.level>
 				<log.level>debug</log.level>
 				<job.enable>true</job.enable>
 				<db.username>root</db.username>
@@ -387,6 +396,7 @@
 			</activation>
 			<properties>
 				<environment>boubei</environment>
+				<security.level>2</security.level>
 				<log.level>info</log.level>
 				<job.enable>true</job.enable>
 				<db.username>root</db.username>

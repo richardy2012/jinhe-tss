@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.jinhe.tss.framework.Global;
+import com.jinhe.tss.framework.SecurityUtil;
 import com.jinhe.tss.framework.exception.BusinessException;
 import com.jinhe.tss.framework.web.dispaly.SuccessMessageEncoder;
 import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
-import com.jinhe.tss.framework.web.wrapper.SecurityUtil;
 import com.jinhe.tss.um.entity.User;
 import com.jinhe.tss.um.helper.PasswordRule;
 import com.jinhe.tss.um.service.ILoginService;

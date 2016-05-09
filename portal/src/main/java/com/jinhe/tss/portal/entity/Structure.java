@@ -188,8 +188,6 @@ public class Structure extends OperateInfo implements IXForm, IResource, IDecoda
         case 3:
             map.put("icon", "images/portlet_instance" + "_" + disabled + ".gif");
             break;
-        default:
-            break;
         }
         
         if( this.levelNo <= 2 ) {

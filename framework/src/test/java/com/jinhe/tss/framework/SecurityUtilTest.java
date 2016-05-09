@@ -1,9 +1,11 @@
-package com.jinhe.tss.framework.web.wrapper;
+package com.jinhe.tss.framework;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
+
+import com.jinhe.tss.framework.SecurityUtil;
 
 public class SecurityUtilTest {
 	

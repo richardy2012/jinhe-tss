@@ -168,10 +168,6 @@ public class Article extends OperateInfo implements IGridNode, IXForm {
 		this.overdueDate = overdueDate;
 	}
     
-    public String getName(){
-        return title;
-    }
-    
     public GridAttributesMap getAttributes(GridAttributesMap map) {
         Map<String, Object> attributes = new LinkedHashMap<String, Object>();
         BeanUtil.addBeanProperties2Map(this, attributes, "channel");

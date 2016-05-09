@@ -19,10 +19,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.jinhe.tss.framework.Config;
+import com.jinhe.tss.framework.SecurityUtil;
 import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.framework.sso.SSOConstants;
 import com.jinhe.tss.framework.sso.context.RequestContext;
-import com.jinhe.tss.framework.web.wrapper.SecurityUtil;
 import com.jinhe.tss.util.EasyUtils;
 
 /**

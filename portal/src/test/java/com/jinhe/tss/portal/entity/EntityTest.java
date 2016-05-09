@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.jinhe.tss.portal.entity.ThemeInfo.ThemeInfoId;
 
-public class ThemeInfoTest {
+public class EntityTest {
 	
 	@Test
 	public void testThemeInfo() {
@@ -17,8 +17,26 @@ public class ThemeInfoTest {
 		Assert.assertTrue(tiId1.equals(tiId2));
 		Assert.assertFalse(tiId1.equals(tiId3));
 		
+		Assert.assertFalse(tiId1.equals( new Object() ));
+		
 		Assert.assertTrue(tiId1.hashCode() == tiId2.hashCode());
 		
 		Assert.assertNotNull(tiId1.getThemeId());
+		
+		ThemeInfo ti = new ThemeInfo();
+		ti.setId(tiId1);
+		Assert.assertEquals(tiId1, ti.getPK());
+	}
+	
+	@Test
+	public void test() {
+		new Component().setId(12L);
+		new Navigator().setId(12L);
+		new Structure().setId(12L);
+		new ThemePersonal().setId(12L);
+		
+		FlowRate fr = new FlowRate();
+		fr.setId(12L);
+		Assert.assertEquals(fr.getId(), fr.getPK());
 	}
 }

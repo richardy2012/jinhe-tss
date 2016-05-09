@@ -24,6 +24,9 @@ public class MathUtilTest {
 		value = MathUtil.randomInt6();
 		assertTrue(value >= 100000);
 		assertTrue(value <= 999999);
+		
+		assertTrue(0d == MathUtil.addDoubles(null, null));
+		assertTrue(0 == MathUtil.addInteger(null, null));
 
 	}
 

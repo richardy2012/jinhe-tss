@@ -14,14 +14,11 @@ import com.jinhe.tss.um.permission.filter.PermissionTag;
 
 public interface ReportService {
 
-    Report getReport(Long id);
-    
-    @Cached(cyclelife = CacheLife.SHORT)
-    Report getReportCached(Long id);
+	Report getReport(Long id);
+    Report getReport(Long id, boolean auth);
     
     Long getReportIdByName(String name);
     
-//    @Cached
     @PermissionTag(
     		resourceType = Report.RESOURCE_TYPE,
 	        operation = Report.OPERATION_VIEW

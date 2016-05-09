@@ -3,7 +3,6 @@ package com.jinhe.dm.record;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -135,7 +134,8 @@ public class _RecorderTest extends TxTestSupport4DM {
 		
 		try {
 			recorder.downloadAttach(new MockHttpServletResponse(), ra.getId());
-		} catch (IOException e1) {
+			recorder.downloadAttach(new MockHttpServletResponse(), -1010L);
+		} catch (Exception e1) {
 			Assert.assertTrue("下载附件出错。", true);
 		}
 		

@@ -46,6 +46,10 @@ public class SqlDebugTest extends TxTestSupport4DM {
         request.addParameter("param1", "-1");
         display.showAsGrid(request, response, reportId, 1, 100);
         
+        // test get report with auth check
+        Report reportx = service.getReport(reportId, true);
+        Assert.assertNotNull(reportx);
+        
         // test queryCacheInterceptor
         final List<Object> results = new ArrayList<Object>();
         for(int i = 0; i < 10; i++) {

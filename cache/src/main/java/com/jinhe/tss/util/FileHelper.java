@@ -133,7 +133,7 @@ public class FileHelper {
 			        writer.close();
 			    }
 			} catch (IOException e) {
-				throw new RuntimeException("文件流关闭失败", e);
+//				log.debug("文件流关闭失败", e);
 			}
 		}
 	}
@@ -452,7 +452,7 @@ public class FileHelper {
             try {
                 out.close();
             } catch (IOException e) {
-                throw new RuntimeException("压缩完关闭输出流时出错!", e);
+//            	log.debug("压缩完关闭输出流时出错!", e);
             }
         }
         return zipFileName;
@@ -550,10 +550,11 @@ public class FileHelper {
 			throw new RuntimeException("输入流关闭失败", e);
 		} finally {
 			try {
-                if(outStream != null)
-                    outStream.close();
+                if(outStream != null) {
+                	outStream.close();
+                }
 			} catch (IOException e) {
-				throw new RuntimeException("输出流关闭失败", e);
+//				log.debug("输出流关闭失败", e);
 			}
 		}
 	}

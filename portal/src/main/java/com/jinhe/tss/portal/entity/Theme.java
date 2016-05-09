@@ -34,10 +34,8 @@ public class Theme extends OperateInfo implements IEntity, ITreeNode {
 	private String  name;   // 主题名称
 	
     private Long    portalId;    // 主题所属的门户ID
-	private String  description; // 主题的描述
 	
-    public Theme() {
-    }
+    public Theme() { }
     
     public Theme(Long themeId) {
         this.id = themeId;
@@ -48,14 +46,6 @@ public class Theme extends OperateInfo implements IEntity, ITreeNode {
         map.put("icon", "images/theme.gif");
         return map;
     }
- 
-	public String getDescription() {
-		return description;
-	}
- 
-	public void setDescription(String description) {
-		this.description = description;
-	}
  
 	public Long getId() {
 		return id;

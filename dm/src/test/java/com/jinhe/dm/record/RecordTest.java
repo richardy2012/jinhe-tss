@@ -45,6 +45,9 @@ public class RecordTest extends TxTestSupport4DM {
         group2.setName("record-group-2");
         action.saveRecord(response, group2);
         
+        group2.setDisabled(null);
+        Assert.assertEquals(ParamConstants.FALSE, group2.getDisabled());
+        
         // test create record
         Record record1 = new Record();
         record1.setType(Record.TYPE1);
@@ -57,6 +60,9 @@ public class RecordTest extends TxTestSupport4DM {
         		"{'label':'时间', 'code':'f3', 'type':'datetime', 'nullable':'false'}]");
         record1.setCustomizePage("../xx.html");
         record1.setCustomizeJS(" function() f1() { } ");
+        record1.setCustomizeGrid(" function() gf1() { } ");
+        record1.setBatchImp(ParamConstants.TRUE);
+        record1.setCustomizeTJ("");
         record1.setRemark("test record");
         action.saveRecord(response, record1);
         

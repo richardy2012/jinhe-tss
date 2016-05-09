@@ -41,7 +41,7 @@ public class DateUtilTest {
 		Assert.assertEquals(DateUtil.parse("2013-11-07 11:26"), DateUtil.parse("2013/11/07 11:26"));
 		
 		try {
-			DateUtil.parse("2013/11-07");
+			DateUtil.parse("2013/、11-07");
 		} catch (Exception e) {
 			Assert.assertTrue("非法日期字符串，解析失败", true);
 		}
@@ -66,9 +66,9 @@ public class DateUtilTest {
 		DateUtil.isMonthEnd(day1);
 		
 		Assert.assertEquals("202006", DateUtil.toYYYYMM(2020, 6));
+		Assert.assertEquals("202012", DateUtil.toYYYYMM(2020, 12));
 		
-		Assert.assertEquals(DateUtil.toYYYYMM(year, month),
-				DateUtil.toYYYYMM(day1));
+		Assert.assertEquals(DateUtil.toYYYYMM(year, month), DateUtil.toYYYYMM(day1));
 	}
 
 }

@@ -1,14 +1,15 @@
-package com.jinhe.tss.framework.web.wrapper;
+package com.jinhe.tss.framework;
 
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.jinhe.tss.framework.component.param.ParamConfig;
 import com.jinhe.tss.util.EasyUtils;
 
-// 设置一个安全级别的配置参数，依据相应级别来判断是否要进行XSS清理等安全操作
-// 当编辑门户组件时, 需要降低安全级别
+/**
+ * 设置一个安全级别的配置参数，依据相应级别来判断是否要进行XSS清理等安全操作
+ * 注：当编辑门户组件时, 需要降低安全级别
+ */
 public class SecurityUtil {
     
 	private final static String SECURITY_LEVEL = "security.level";
@@ -16,7 +17,7 @@ public class SecurityUtil {
 	
 	public static int getSecurityLevel() {
 		try {
-			return EasyUtils.obj2Int( ParamConfig.getAttribute(SECURITY_LEVEL) );
+			return EasyUtils.obj2Int( Config.getAttribute(SECURITY_LEVEL) );
 		} catch(Exception e) {
 			return SECURITY_LEVELS[0];
 		}
