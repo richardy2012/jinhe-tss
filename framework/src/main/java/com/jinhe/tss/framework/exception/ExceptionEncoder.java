@@ -10,7 +10,6 @@ import javax.servlet.ServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.Global;
 import com.jinhe.tss.framework.MailUtil;
 import com.jinhe.tss.framework.component.log.IBusinessLogger;
@@ -27,8 +26,9 @@ import com.jinhe.tss.framework.web.dispaly.XmlPrintWriter;
 import com.jinhe.tss.util.EasyUtils;
 
 /**
- * 异常信息编码器
+ * 异常信息编码器。
  * 
+ * 注: 上传导入附件抛出的异常统一在 Servlet4Upload 里处理。不会流到此处。
  */
 public class ExceptionEncoder {
     private static Logger log = Logger.getLogger(ExceptionEncoder.class);
@@ -36,53 +36,55 @@ public class ExceptionEncoder {
     static IExceptionConvertor convertor = ExceptionConvertorFactory.getConvertor();
 
     public static void encodeException(ServletResponse response, Exception be) {
-    	RequestContext requestContext = Context.getRequestContext();
-        if( requestContext == null ) return;
+    	RequestContext rc = Context.getRequestContext();
+        if( rc == null ) return;
     	
     	try {
-            if (!response.isCommitted() && !requestContext.isMultiRequest()) {
-                response.resetBuffer();
-            }
-            
             be = convertor.convert(be);
-			IDataEncoder errorMsgEncoder = new ErrorMessageEncoder(be);
-            
+
             boolean needRelogin = false;
             if(be instanceof IBusinessException){
                 IBusinessException e = (IBusinessException) be;
                 needRelogin = e.needRelogin();
                 
-                long theadId = Thread.currentThread().getId();
-                String userName = Environment.getUserName();
-                userName = userName == null ? "匿名" : userName;
-                
 				if( e.needPrint() ) {
-					if( !needRelogin ) {
-						log.warn( "异常【" + userName + "】, " + theadId);
-	                }
                     printErrorMessage(be);
-                    log.debug("-----------------------  Exception  -----------------------");
-                    log.debug("AppCode: " + Config.getAttribute(Config.APPLICATION_CODE));
-                    log.debug(errorMsgEncoder.toXml());
-                    log.debug("--------------------- End of Exception --------------------");
                 }
-				else {
-					log.debug("异常【" + userName + "】, " + be.getMessage() 
-							+ ", request url:" + requestContext.getRequest().getServletPath() + ", " + theadId);
-				}
             }
             
-            // XMLHTTP，tssJS发出的ajax请求, 返回XML格式错误信息
-            if ( requestContext.isXmlhttpRequest() ) { 
-                response.setContentType("text/html;charset=UTF-8");
-                XmlPrintWriter writer = new XmlPrintWriter(response.getWriter());
-                errorMsgEncoder.print(writer);
+            String beMsg = getFirstCause(be).getMessage();
+            if( !needRelogin ) {
+            	String userName = Environment.getUserName();
+            	log.warn("【" + userName + ", " +  Thread.currentThread().getId()
+						+ "】request url: " + rc.getRequest().getServletPath() + "\n ------ " + beMsg);
+            }
+            
+            // 将异常提示输出到前台
+            if (!response.isCommitted() && !rc.isMultiRequest()) {
+                response.resetBuffer();
+            }
+            boolean isXmlhttpRequest = rc.isXmlhttpRequest();
+			String contentType = isXmlhttpRequest ? "text/html;charset=UTF-8" : "application/json;charset=UTF-8";
+            response.setContentType(contentType);
+            
+            /* 
+             * 在一次请求中(如下载附件出现异常时)，同时调用response.getOutputStream() 和 response.getWriter()将会报错：
+             *   getOutputStream() has already been called for this response 
+             */
+            PrintWriter out;
+            try {
+            	out = response.getWriter();
+            } catch( Exception e ) {
+            	out = new PrintWriter( response.getOutputStream() );
+            }
+            
+            if ( isXmlhttpRequest ) {  // tssJS发出的ajax请求, 返回XML格式错误信息
+            	IDataEncoder encoder = new ErrorMessageEncoder(be);
+                encoder.print( new XmlPrintWriter(out) );
             } 
             else { // HTTP JSON: 默认用json格式往response写入异常信息
-            	response.setContentType("application/json;charset=UTF-8");
-            	response.getWriter().println("{\"errorMsg\": \"" + getFirstCause(be).getMessage() + "\"}");
+            	out.println("{\"errorMsg\": \"" + beMsg + "\"}");
             }
-            // 注: 上传导入附件抛出的异常统一在 Servlet4Upload 里处理。不会流到此处。
         } 
     	catch (Exception e) {
             log.error("ExceptionEncoder.encodeException时出错：" + e.getMessage());

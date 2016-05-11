@@ -6,11 +6,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 
 import com.jinhe.tss.cms.AbstractTestSupport;
 import com.jinhe.tss.cms.CMSConstants;
 import com.jinhe.tss.cms.entity.Channel;
+import com.jinhe.tss.cms.entity.permission.ChannelResource;
 import com.jinhe.tss.framework.component.param.ParamConstants;
 import com.jinhe.tss.framework.test.TestUtil;
 
@@ -47,6 +50,7 @@ public class ChannelModuleTest extends AbstractTestSupport {
         channelAction.saveChannel(response, channel1);
         Long channelId = channel1.getId();
         assertNotNull(channelId);
+        Assert.assertEquals(channel1.getResourceType(), new ChannelResource().getResourceType());
         
         channelAction.getChannelDetail(response, channelId, channel1.getParentId());
         

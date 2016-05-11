@@ -50,7 +50,7 @@ public abstract class FieldIndexExecutor  extends DefaultIndexExecutor {
     }
  
     public Query createIndexQuery(String searchStr) throws ParseException {
-        return createIndexQuery(getFiledName(), searchStr);
+        return super.createIndexQuery(getFiledName(), searchStr);
     }
 }
 

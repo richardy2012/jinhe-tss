@@ -36,6 +36,6 @@ public class PublishJob extends AbstractCMSJob {
 	}
 
 	protected JobStrategy getJobStrategy() {
-		return JobStrategy.getIndexStrategy();
+		return JobStrategy.getPublishStrategy();
 	}
 }
