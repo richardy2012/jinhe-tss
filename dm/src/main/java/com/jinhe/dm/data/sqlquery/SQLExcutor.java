@@ -450,6 +450,7 @@ public class SQLExcutor {
         	
         	log.error(Environment.getUserCode() + ", " + Arrays.asList(paramsList.get(0)));
             throw new BusinessException("出错了! sql : " + sql, e);
+            
         } finally {
         	try { conn.setAutoCommit(autoCommit); } 
         	catch (Exception e2) { log.error(e2.getMessage(), e2);  }

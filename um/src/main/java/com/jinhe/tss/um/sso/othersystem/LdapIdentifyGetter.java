@@ -43,11 +43,11 @@ public class LdapIdentifyGetter extends UMIdentityGetter implements IdentityGett
         DirContext ctx = null;
         try {
             ctx = new InitialDirContext(env);
-            log.debug("用户【" + user + "】的密码在LDAP中验证通过。");
+            log.debug("【" + user + "】在LDAP中验证通过。");
             return true; // 如果连接成功则返回True
         } 
         catch (Exception e) {
-            log.debug("用户【" + user + "】的密码在LDAP中验证【不】通过。");
+            log.info("【" + user + "】在LDAP中验证【不】通过。" + e.getMessage());
             return false;
         } 
         finally {

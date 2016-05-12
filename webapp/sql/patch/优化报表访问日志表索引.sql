@@ -6,7 +6,7 @@ CHECK TABLE dm_access_log;
 REPAIR TABLE dm_access_log;
 ANALYZE TABLE dm_access_log;
 
-DELETE FROM dm_access_log  WHERE `methodCnName` IN ('SONumSendPM', 'SONumOrder', 'SONumSendPH');
+
 SELECT COUNT(*) FROM dm_access_log t 
 
 -- 清除日志
@@ -19,3 +19,5 @@ update btrbi.dm_report set `needLog` = 0 WHERE `needLog` = 1 and `name` LIKE 'Ge
 
 delete FROM dm_access_log  WHERE accessTime < DATE_SUB(CURDATE(), INTERVAL 30 DAY);
 delete FROM component_log  WHERE operatetime < DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+
+truncate table component_log;

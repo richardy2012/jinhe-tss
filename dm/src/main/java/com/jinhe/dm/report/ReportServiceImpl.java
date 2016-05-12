@@ -34,7 +34,7 @@ public class ReportServiceImpl implements ReportService {
         Report report = auth ? reportDao.getReportById(id) : reportDao.getEntity(id);
         
         if(report == null) {
-        	throw new BusinessException("Report【id=" + id + "】不存在，可能已经被删除。");
+        	throw new BusinessException("数据服务【" + id + "】当前无法访问，可能已被删除或停用。");
         }
         reportDao.evict(report);
         return report;

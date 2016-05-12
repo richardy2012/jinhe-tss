@@ -1,14 +1,14 @@
 package com.jinhe.tss.framework;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.jinhe.tss.framework.Config;
 import com.jinhe.tss.framework.license.LicenseManager;
 
 @Controller
@@ -17,10 +17,18 @@ public class Framework {
 	
 	@RequestMapping(value = "/version", method = RequestMethod.GET)
 	@ResponseBody
-	public Object[] getVersion(HttpServletRequest request, HttpServletResponse response) {
+	public Object[] getVersion() {
 		String packageTime = Config.getAttribute("last.package.time");
 		String environment = Config.getAttribute("environment");
 		return new Object[] { packageTime, environment };
+	}
+	
+	@RequestMapping(value = "/threads", method = RequestMethod.GET)
+	@ResponseBody
+	public Object[] getThreadInfos() {
+		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+		ThreadInfo[] threadInfos = threadMXBean.dumpAllThreads(true, true);  
+		return new Object[] { threadMXBean.getThreadCount(), threadInfos };
 	}
 	
     public static boolean validateTSS() {

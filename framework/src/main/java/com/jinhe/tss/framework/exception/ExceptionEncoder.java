@@ -42,21 +42,21 @@ public class ExceptionEncoder {
     	try {
             be = convertor.convert(be);
 
-            boolean needRelogin = false;
+            boolean needRelogin = false, needPrint = true;
             if(be instanceof IBusinessException){
                 IBusinessException e = (IBusinessException) be;
                 needRelogin = e.needRelogin();
                 
-				if( e.needPrint() ) {
+				if( needPrint = e.needPrint() ) {
                     printErrorMessage(be);
                 }
             }
             
             String beMsg = getFirstCause(be).getMessage();
-            if( !needRelogin ) {
+            if( needPrint && !needRelogin ) {
             	String userName = Environment.getUserName();
             	log.warn("【" + userName + ", " +  Thread.currentThread().getId()
-						+ "】request url: " + rc.getRequest().getServletPath() + "\n ------ " + beMsg);
+						+ "】request url: " + rc.getRequest().getServletPath() + " ------ " + beMsg);
             }
             
             // 将异常提示输出到前台

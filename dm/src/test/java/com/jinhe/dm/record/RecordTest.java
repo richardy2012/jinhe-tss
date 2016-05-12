@@ -12,6 +12,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.TxTestSupport4DM;
+import com.jinhe.dm.record.permission.RecordResource;
 import com.jinhe.tss.framework.component.log.LogQueryCondition;
 import com.jinhe.tss.framework.component.log.LogService;
 import com.jinhe.tss.framework.component.param.ParamConstants;
@@ -65,6 +66,7 @@ public class RecordTest extends TxTestSupport4DM {
         record1.setCustomizeTJ("");
         record1.setRemark("test record");
         action.saveRecord(response, record1);
+        Assert.assertEquals(record1.getResourceType(), new RecordResource().getResourceType());
         
         // test update record
         record1.setTable("x_tbl_test");

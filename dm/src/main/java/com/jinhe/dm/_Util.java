@@ -139,7 +139,13 @@ public class _Util {
 	    } 
 	    catch (Exception e) {
 	    	String _script = script.substring(0, Math.min(200, script.length()));
-	    	log.info("Freemarker引擎解析脚本出错了: \n------------ params-----------: " + dataMap + 
+	    	Map<String, Object> paramsMap = new HashMap<String, Object>();
+	    	for(String key : dataMap.keySet()) {
+	    		if(key.startsWith("param") || key.startsWith("report.")) {
+	    			paramsMap.put(key, dataMap.get(key));
+	    		}
+	    	}
+	    	log.info("Freemarker引擎解析脚本出错了: \n------------ params-----------: " + paramsMap + 
 	    			", \n------------ script ----------: " + _script);
 	    }
 	    return script;

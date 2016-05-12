@@ -71,16 +71,20 @@ public class QueryCacheInterceptor implements MethodInterceptor {
 				}
 			}
 			
-			returnVal = invocation.proceed();
+			returnVal = invocation.proceed(); // 此时去执行查询，结果已经在3分钟的cache中
 		} 
 		else {
 			cache.putObject(key, 1); // 缓存执行信息
 			log.debug(currentThread + " QueryCache【"+key+"】first executing...");
 			
 			/* 执行方法，如果非空则Cache结果  */
-			returnVal = invocation.proceed();
-			
-			cache.removeObject(key); // 移除缓存的执行信息
+			try {
+				returnVal = invocation.proceed();
+			} catch(Exception e) {
+				throw e;
+			} finally {
+				cache.removeObject(key); // 移除缓存的执行信息（出现异常时也要移除）
+			}
 		}
  
         return returnVal;

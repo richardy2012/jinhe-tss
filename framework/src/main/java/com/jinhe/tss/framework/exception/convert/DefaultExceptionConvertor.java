@@ -22,7 +22,8 @@ public class DefaultExceptionConvertor implements IExceptionConvertor {
     	if( e != null && e.getMessage() != null) {
     		Throwable firstCause = ExceptionEncoder.getFirstCause(e);
 			String msg = e.getMessage() + firstCause.getClass() + firstCause.getMessage();
-    		
+			log.debug(msg);
+			
     		if(msg.indexOf("ConstraintViolationException") >= 0) {
     			if(msg.indexOf("insert") >= 0) {
     				return new BusinessException( ERROR_1 );
@@ -36,7 +37,6 @@ public class DefaultExceptionConvertor implements IExceptionConvertor {
     		}
     		
     		if(msg.indexOf("Row was updated or deleted by another transaction") >= 0) {
-    			log.debug(msg);
 				return new BusinessException( ERROR_3 );
 			}
     	}

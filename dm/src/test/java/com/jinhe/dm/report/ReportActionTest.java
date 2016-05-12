@@ -13,6 +13,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.jinhe.dm.DMConstants;
 import com.jinhe.dm.TxTestSupport4DM;
+import com.jinhe.dm.report.permission.ReportResource;
 import com.jinhe.tss.framework.component.log.LogQueryCondition;
 import com.jinhe.tss.framework.component.log.LogService;
 import com.jinhe.tss.framework.component.param.Param;
@@ -62,6 +63,7 @@ public class ReportActionTest extends TxTestSupport4DM {
         report1.setRemark("test report");
         report1.setDisabled(ParamConstants.FALSE);
         action.saveReport(response, report1);
+        Assert.assertEquals(report1.getResourceType(), new ReportResource().getResourceType());
         
         action.getAllReport(response);
         action.getAllReportGroups(response);

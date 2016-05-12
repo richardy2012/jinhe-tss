@@ -9,7 +9,7 @@ import org.h2.tools.Server;
 import org.springframework.stereotype.Component;
 
 @Component
-public class H2DBServer implements IH2DBServer{  
+public class H2DBServer implements IH2DBServer {  
     
     protected Logger log = Logger.getLogger(this.getClass());
     
@@ -30,13 +30,14 @@ public class H2DBServer implements IH2DBServer{
     	port = DEFAULT_PORT; 
     	log.info("正在启动H2 database, 尝试端口号：" + port);  
     	
-    	// 此时H2数据库只起来了服务，没有实例。
-    	// 支持部署多个web应用时，启动多个不同端口的H2实例
-    	while(server == null && port < 9091) {
+    	/* 
+    	 * 此时H2数据库只起来了服务，没有实例。支持部署多个web应用时，启动多个不同端口的H2实例 
+    	 */
+    	while(server == null && port <= 9090) {
     		try {  
                 server = Server.createTcpServer("-tcpPort", String.valueOf(port)).start();  
             } catch (Exception e) {  
-                log.warn("启动H2（createTcpServer）时出错：" + e.getMessage() + "。将尝试以其他端口号重启。");  
+                log.warn("启动H2（createTcpServer）时出错：" + e.getMessage() );  
                 port ++;
             } 
     	} 
