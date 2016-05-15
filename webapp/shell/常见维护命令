@@ -45,6 +45,10 @@ zip -r btrbi0919.zip  /home/btrbi/temp/btrbi_0919.sql
 scp /home/btrbi/temp.tar.gz root@10.45.11.74:/home/btrbi/
 scp -r /home/btrbi/temp root@10.45.10.216:/data/bk/74/
 
+-------------------------------------------- 目录权限 ------------------------------------------------------
+
+sudo chmod -R 777 appadmin  把appadmin目录及所有子目录和文件授给当前用户自己
+
 -------------------------------------------- 定时配置 ------------------------------------------------------
 查看异常信息： tail -f /var/mail/jinpujun
 查看定时配置： crontab -l
@@ -58,3 +62,5 @@ service crond start
 安装crontab:
 [root@CentOS ~]# yum install vixie-cron
 [root@CentOS ~]# yum install crontabs
+
+查看linux发行版本：cat /etc/issue

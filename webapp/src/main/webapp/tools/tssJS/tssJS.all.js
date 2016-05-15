@@ -34,8 +34,8 @@
         push = Array.prototype.push,    
 
         ua = navigator.userAgent.toLowerCase(),
-        mc = function(e) {
-            return e.test(ua)
+        mc = function(_regex) {
+            return _regex.test(ua);
         },
 
         // [[Class]] -> type pairs
@@ -372,12 +372,21 @@
                 return result.join("");
             },
 
+            hashCode: function(str) {
+                var h = 0, len = str.length, t = 2147483648;
+                for (var i = 0; i < len; i++) {
+                    h = 31 * h + str.charCodeAt(i);
+                    if(h > 2147483647) h %= t;
+                }
+                return h;
+            },
+            
             isIE: mc(/.net/),
             isChrome: mc(/\bchrome\b/),
             isFirefox: mc(/\bfirefox\b/),
             isWebKit: mc(/webkit/),
             supportCanvas: !!document.createElement('canvas').getContext,
-            isMobile: mc(/ipod|ipad|iphone|android/gi),
+            isMobile: mc(/ipod|ipad|iphone|android|webOS|BlackBerry|IEMobile|Opera Mini/gi),
         });
 
         // Populate the class2type map
@@ -1694,7 +1703,7 @@
             $.Cookie.del("token", "/tss");
             $.Cookie.del("token", "/" + CONTEXTPATH);
 
-            if($.relogin) {
+            if($.relogin) { // 如果不希望弹出登陆小窗口，则再调用ajax之前设置：$.relogin = null;
                 $.relogin( 
                     function(loginName, password, identifier, randomKey) { 
                         request.setHeader("loginName", $.encode(loginName, randomKey));
@@ -1704,7 +1713,7 @@
                         request.send();
                     }, info.msg );
             } else {
-                alert(info.msg);
+                console.log(info.msg);
                 location.href = "/" + CONTEXTPATH + "/login.html";
             }
         }
@@ -3757,6 +3766,12 @@
             return field.getAttribute(attrName);
         },
 
+        /* 示例：动态更新下拉树：
+            form.updateField("center2", [
+                        {"name": "mode", "value": "combotree"},
+                        {"name": "texts", "value": texts.join('|')},
+                        {"name": "values", "value": values.join('|')}
+                     ]);) */
         updateField: function(name, attrs) {
             var field = this.template.fieldsMap[name];
             if(!field) {
@@ -6202,6 +6217,7 @@
             }       
         }
 
+        $panel.find(".title>h2").html(title);
         $panel.find("iframe").attr("src", src);
         $panel.show();
     }

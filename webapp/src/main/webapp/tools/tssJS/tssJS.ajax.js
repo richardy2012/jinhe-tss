@@ -501,7 +501,7 @@
             $.Cookie.del("token", "/tss");
             $.Cookie.del("token", "/" + CONTEXTPATH);
 
-            if($.relogin) {
+            if($.relogin) { // 如果不希望弹出登陆小窗口，则再调用ajax之前设置：$.relogin = null;
                 $.relogin( 
                     function(loginName, password, identifier, randomKey) { 
                         request.setHeader("loginName", $.encode(loginName, randomKey));
@@ -511,7 +511,7 @@
                         request.send();
                     }, info.msg );
             } else {
-                alert(info.msg);
+                console.log(info.msg);
                 location.href = "/" + CONTEXTPATH + "/login.html";
             }
         }
