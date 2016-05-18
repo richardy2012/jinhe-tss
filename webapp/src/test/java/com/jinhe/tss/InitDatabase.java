@@ -41,6 +41,13 @@ import com.jinhe.tss.util.XMLDocUtil;
 /**
  * 初始化数据库。
  * 
+ * 步骤：
+ * 0、创建一个空的MySQL库（比如wms），并把application.properties里的连接改过去
+ * 1、先放开 step1 和 step2 方法上的@Test注释
+ * 2、确保 step1 在 step2 前面执行
+ * 3、注释掉 step1 和 step2 方法上的@Test
+ * 4、把 application.properties 的数据库连接改回原来的
+ * 
  * 需使用 src/main/resources目录下的配置文件，比如persistence.xml, application.properties等。
  * 初始化时需要把spring.xml 里 <property name="generateDdl" value="true"/> 设为true
  */
@@ -70,18 +77,22 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
     }
     
     @Test
-    public void init0() {
-    	
-    }
+    public void step0() { }
     
 //    @Test
-    public void initDatabase() {
-        log.info("create tss databse schema starting......");
+    public void step1() {
+    	log.info("init tss databse step2 starting......");
  
         String sqlpath = TestUtil.getInitSQLDir();
         TestUtil.excuteSQL(sqlpath);
  
-        //-------------------------------初始化系統的必要数据 --------------------
+        log.info("init tss databse step1 over.");
+    }
+    
+//    @Test
+    public void step2() { /*-------------------------------初始化系統的必要数据 -------------------- */
+        log.info("init tss databse step2 starting......");
+      
         // 初始化虚拟登录用户信息
         OperatorDTO loginUser = new OperatorDTO(UMConstants.ADMIN_USER_ID, UMConstants.ADMIN_USER_NAME);
         String token = TokenUtil.createToken("1234567890", UMConstants.ADMIN_USER_ID); 
@@ -91,14 +102,14 @@ public class InitDatabase extends AbstractTransactionalJUnit4SpringContextTests 
         // 获取登陆用户的权限（拥有的角色）并保存到用户权限（拥有的角色）对应表
         List<Object[]> userRoles = loginSerivce.getUserRolesAfterLogin(UMConstants.ADMIN_USER_ID);
         permissionService.saveUserRolesAfterLogin(userRoles, UMConstants.ADMIN_USER_ID);
-        
+ 
         initUM();
         initDM();
         initPortal();
         
         importSystemProperties();
         
-        log.info("init tss databse base data over.");
+        log.info("init tss databse step2 over.");
     }
  
     /**

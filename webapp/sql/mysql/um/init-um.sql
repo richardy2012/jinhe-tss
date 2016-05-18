@@ -39,13 +39,11 @@ commit;
 
 
 truncate table um_groupuser;
-
 insert into um_groupuser (ID, GROUPID, USERID) values (-1, -2, -1);
 insert into um_groupuser (ID, GROUPID, USERID) values (-2, -2, -10000);
 commit;
 
 truncate table um_roleuser;
-
 insert into um_roleuser (ID, ROLEID, USERID) values (0, -1, -1);
 commit;
 
