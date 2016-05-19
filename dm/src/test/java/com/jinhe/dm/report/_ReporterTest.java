@@ -49,8 +49,9 @@ public class _ReporterTest extends TxTestSupport4DM {
         		"{'label':'报表类型', 'type':'String'}," +
         		"{'label':'起始时间', 'type':'date', 'nullable':'false', 'defaultValue':'today-10'}, " +
         		"{'label':'结束时间', 'type':'date', 'nullable':'false'}," +
-        		"{'label':'隐藏值', 'type':'hidden'}," +
-        		"{'label':'组织列表', 'type':'String', 'nullable':'false'}]";
+        		"{'label':'组织列表', 'type':'String', 'nullable':'false'}," +
+        		"{'label':'隐藏值', 'type':'hidden'}" +
+        		"]";
         report1.setParam(paramsConfig);
         
         report1.setRemark("test report");
@@ -158,9 +159,8 @@ public class _ReporterTest extends TxTestSupport4DM {
         action.saveReport(response, report1);
         
         log.debug("开始测试报表展示：");
-//        request.addParameter("param1", "0");
+        request.addParameter("param1", "0");
         request.addParameter("param2", "0");
-        request.addParameter("param3", "2013-10-01");
         request.addParameter("param4", "2013/10/01 11:11:11");
         request.addParameter("param5", "report-1,report-1");
         
@@ -170,8 +170,20 @@ public class _ReporterTest extends TxTestSupport4DM {
 			_reporter.showAsJson(request, reportId.toString());
 			Assert.fail("should throw exception but didn't.");
 		} catch (Exception e) {
-			log.debug(e.getMessage());
-			Assert.assertTrue("参数个数不对：", true);
+			Assert.assertEquals("参数【起始时间】不能为空。", e.getMessage());
+		}
+		
+		request = new MockHttpServletRequest();
+		request.addParameter("param1", "0");
+        request.addParameter("param2", "0");
+        request.addParameter("param3", "2013-10-01");
+        request.addParameter("param4", "2013/10/01 11:11:11");
+        
+        try {
+			_reporter.showAsJson(request, reportId.toString());
+			Assert.fail("should throw exception but didn't.");
+		} catch (Exception e) {
+			Assert.assertEquals("参数【组织列表】不能为空。", e.getMessage());
 		}
     }
 }

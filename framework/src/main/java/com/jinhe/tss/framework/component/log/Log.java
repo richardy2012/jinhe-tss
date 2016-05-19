@@ -84,6 +84,10 @@ public class Log implements IEntity, IXForm, IGridNode {
 			this.setOperatorBrowser(browser);
         }
     }
+    
+    public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+	}
  
     public String getContent() {
         return content;

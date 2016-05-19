@@ -152,6 +152,7 @@ public class ReportServiceImpl implements ReportService {
   	public SQLExcutor queryReport(Long reportId, Map<String, String> requestMap, int page, int pagesize, Object loginUserId) {
     	Report report = this.getReport(reportId);
     	
+    	String reportName = report.getName();
 		String paramsConfig = report.getParam();
 		String reportScript = report.getScript();
 		
@@ -173,7 +174,7 @@ public class ReportServiceImpl implements ReportService {
       	// 过滤掉用于宏解析（ ${paramX} ）后的request参数
      	Map<Integer, Object> paramsMap = new HashMap<Integer, Object>();
 		
-      	if( !EasyUtils.isNullOrEmpty(paramsConfig) ) {
+		if( !EasyUtils.isNullOrEmpty(paramsConfig) ) {
       		List<LinkedHashMap<Object, Object>> list;
       		try {  
       			ObjectMapper objectMapper = new ObjectMapper();
@@ -182,7 +183,7 @@ public class ReportServiceImpl implements ReportService {
   				list = objectMapper.readValue(paramsConfig, List.class);  
       	        
       	    } catch (Exception e) {  
-      	        throw new BusinessException("报表【" + report.getName() + "】的参数配置有误，JSON格式存在错误，请检查修正后再保存。具体原因：" + e.getMessage());
+      	        throw new BusinessException( report + "参数配置JSON格式存在错误：" + e.getMessage() );
       	    }  
       		
       		for(int i = 0; i < list.size(); i++) {
@@ -190,10 +191,13 @@ public class ReportServiceImpl implements ReportService {
   	        	
   	        	int index = i + 1;
   	        	String paramKy = "param" + index;
-				if (!requestMap.containsKey(paramKy)) {
+				if ( !requestMap.containsKey(paramKy) ) {
+					if( "false".equals(map.get("nullable")) ) {
+						throw new BusinessException("参数【" + map.get("label") + "】不能为空。");
+					}
 					continue;
 				}
-
+				
 				String paramValue = requestMap.get(paramKy).trim();
 				Object paramType = map.get("type");
 				Object isMacrocode = map.get("isMacrocode"); // 如一些只用于多级下拉联动的参数，可能并不用于script
@@ -205,8 +209,8 @@ public class ReportServiceImpl implements ReportService {
 				else if(reportScript.indexOf("if " + paramKy) > 0
 						&& reportScript.indexOf("if " + paramKy + "??") < 0) {
 					// <#if param1==1> or <#elseif param1==1>
-					// eg1: <#if param1==1> group by week </#if>  --> is macrocode   
-					// eg2: <#if param1??> createTime > ? </#if>  --> is not
+					// eg1: <#if param1==1> group by week </#if>  --> is macrocode: true 
+					// eg2: <#if param1??> createTime > ? </#if>  --> is macrocode: false
 					isMacrocode = "true";
 				}
 				
@@ -241,8 +245,8 @@ public class ReportServiceImpl implements ReportService {
 						Object value = _Util.preTreatValue(paramValue, paramType);
 						paramsMap.put(paramsMap.size() + 1, value);
 					} 
-					catch(Exception e){
-						log.error("预处理参数时出错了，" + e.getMessage());
+					catch(Exception e) {
+						log.error("预处理参数时出错，" + e.getMessage());
 						throw new BusinessException(e.getMessage());
 					}
 				}
@@ -253,7 +257,7 @@ public class ReportServiceImpl implements ReportService {
       	
         // 结合 requestMap 进行 freemarker解析 sql，允许指定sql预处理类。
       	fmDataMap.put("report.id", reportId);
-      	fmDataMap.put("report.name", report.getName()); // 用于解析出错时定位report
+      	fmDataMap.put("report.name", reportName); // 用于解析出错时定位report
       	reportScript = _Util.customizeParse(reportScript, fmDataMap);
           
 		SQLExcutor excutor = new SQLExcutor(false);
@@ -261,7 +265,9 @@ public class ReportServiceImpl implements ReportService {
 		try {
 			excutor.excuteQuery(reportScript, paramsMap, page, pagesize, datasource);
 		} catch (Exception e) {
-			throw new BusinessException(e.getMessage(), false);
+			String exMsg = e.getMessage();
+			log.error( report + "查询出错：" + exMsg);
+			throw new BusinessException(exMsg);
 		}
 
 		return excutor;

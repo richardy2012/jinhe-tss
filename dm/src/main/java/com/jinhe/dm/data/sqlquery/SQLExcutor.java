@@ -201,8 +201,6 @@ public class SQLExcutor {
     }
 
     public void excuteQuery(String sql, Map<Integer, Object> paramsMap, int page, int pagesize, Connection conn) {
-    	long startTime = System.currentTimeMillis();
-    	
         String queryDataSql = sql;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -217,10 +215,9 @@ public class SQLExcutor {
             
             // 如果不分页查询 ，则不执行count(*)查询
             if (page > 0 && pagesize > 0) {
-            	// 已经取到总记录Count值，则不执行count(*)查询
+            	// 已经取到总记录Count值，则不再执行count(*)查询
             	if(count <= 0) {
             		String queryCountSql = " select count(*) from (\n " + sql + " \n) t ";
-                    log.debug("  excuteQuery  queryCountSql: \n" + queryCountSql);
                     
                     pstmt = prepareStatement(conn, queryCountSql, paramsMap);
                     rs = pstmt.executeQuery();
@@ -245,8 +242,7 @@ public class SQLExcutor {
                 } 
             }
 
-            log.debug("  excuteQuery  queryDataSql: \n" + queryDataSql);
-
+            log.debug(" excute query sql: \n" + queryDataSql);
             pstmt = prepareStatement(conn, queryDataSql, paramsMap);
             rs = pstmt.executeQuery();
             
@@ -280,28 +276,18 @@ public class SQLExcutor {
 
                 result.add(rowData);
             }
+        } 
+        catch (SQLException e) {
+            String exMsg = "出错了！" + e.getMessage();
+            log.debug(exMsg + "\n   数据源：" + dbUrl + ",\n   参数：" + paramsMap + ",\n   脚本：" + sql);
+            throw new BusinessException(exMsg);
+        } 
+        finally {
+            try { if (pstmt != null) pstmt.close(); } 
+            catch (Exception e) { }
             
-            log.debug("本次SQL查询耗时：" + (System.currentTimeMillis() - startTime) + "ms");
-
-        } catch (SQLException e) {
-            String errorMsg = "出错了！" + e.getMessage();
-            String _sql = sql.substring(0, Math.min(1000, sql.length()));
-            log.error(errorMsg + "\n   数据源：" + dbUrl + ",\n   参数：" + paramsMap + ",\n   脚本：" + _sql);
-            throw new BusinessException(errorMsg);
-        } finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                    pstmt = null;
-                }
-            } catch (Exception e) { }
-            
-            try {
-                if (rs != null) {
-                    rs.close();
-                    rs = null;
-                }
-            } catch (Exception e) { }
+            try { if (rs != null) rs.close(); } 
+            catch (Exception e) { }
         }
     }
 
@@ -353,12 +339,8 @@ public class SQLExcutor {
         	catch (Exception e2) { log.error(e2.getMessage(), e2);  }
 			
 			try {
-				if(statement != null) {
-					statement.close();
-					statement = null;
-				}
-            } catch (Exception e) {
-            }
+				if(statement != null) { statement.close(); }
+            } catch (Exception e) { }
 		}
     }
     
@@ -455,13 +437,8 @@ public class SQLExcutor {
         	try { conn.setAutoCommit(autoCommit); } 
         	catch (Exception e2) { log.error(e2.getMessage(), e2);  }
         	
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                    pstmt = null;
-                }
-            } catch (Exception e) {
-            }
+            try { if (pstmt != null) { pstmt.close(); } } 
+            catch (Exception e) { }
         }
     }
 }

@@ -138,15 +138,17 @@ public class _Util {
 	        out.flush();
 	    } 
 	    catch (Exception e) {
-	    	String _script = script.substring(0, Math.min(200, script.length()));
 	    	Map<String, Object> paramsMap = new HashMap<String, Object>();
 	    	for(String key : dataMap.keySet()) {
 	    		if(key.startsWith("param") || key.startsWith("report.")) {
 	    			paramsMap.put(key, dataMap.get(key));
 	    		}
 	    	}
-	    	log.info("Freemarker引擎解析脚本出错了: \n------------ params-----------: " + paramsMap + 
-	    			", \n------------ script ----------: " + _script);
+	    	log.info("FM引擎解析脚本出错了: \n------------ params-----------: " + paramsMap + "\n" );
+	    	log.debug(script);
+	    	
+	    	// 抛异常则脚本里含有注释掉的宏代码（如：-- ${param1} or /* ${param1} */），将会报错
+//	    	throw new BusinessException("脚本解析出错了，请检查参数是否正确，或把错误反馈给管理员。");
 	    }
 	    return script;
 	}
