@@ -12,9 +12,11 @@ package com.jinhe.tss.framework.persistence.connpool;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import com.jinhe.tss.cache.CacheStrategy;
 import com.jinhe.tss.cache.Cacheable;
 import com.jinhe.tss.cache.TimeWrapper;
 import com.jinhe.tss.cache.extension.DefaultCustomizer;
+import com.jinhe.tss.framework.exception.BusinessException;
 
 /**
  * <pre>
@@ -26,6 +28,10 @@ import com.jinhe.tss.cache.extension.DefaultCustomizer;
 public class ConnPoolCustomizer extends DefaultCustomizer {
     
 	public Cacheable create() {
+		if( CacheStrategy.TRUE.equals(strategy.disabled) ) {
+			throw new BusinessException("数据库存在异常，【" + strategy.name + "】已被停用，请稍后再访问");
+		}
+		
 		Connection conn = _Connection.getInstanse(strategy.paramFile).getConnection();
 		String cacheKey = TimeWrapper.createSequenceKey("Connection");
 		

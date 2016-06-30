@@ -108,37 +108,41 @@ public class Filter0Security implements Filter {
 	}
     
     private boolean isNeedPermission(String servletPath, HttpServletRequest request) {
-    	if( EasyUtils.isNullOrEmpty(servletPath) ) return false;
+    	// 1、安全级别 < 3, 全部放行
+    	if( SecurityUtil.getSecurityLevel() < 3 || EasyUtils.isNullOrEmpty(servletPath) ) {
+    		return false;
+    	}
     	
+    	// 2、检查URL白名单，白名单内的，放行
     	String whiteListConfig = ParamConfig.getAttribute(URL_WHITE_LIST);
     	List<String> whiteList = new ArrayList<String>();
     	if( !EasyUtils.isNullOrEmpty(whiteListConfig) ) {
     		whiteList.addAll( Arrays.asList( whiteListConfig.split(",") ) );
     	}
-    	
     	for(String whiteItem : whiteList) {
     		if(servletPath.indexOf( whiteItem.trim() ) >= 0) {
     			return false;
     		}
     	}
     	
-    	if( SecurityUtil.getSecurityLevel() >= 3 ) {
-    		if( servletPath.indexOf(".htm") >= 0 ) {
-        		return true;
-        	}
-        	if( servletPath.indexOf(".") < 0 ) { // 无后缀，一般restful地址 或 /download
-        		if(servletPath.indexOf("/data/export/") >= 0) { 
-        			return false; // 跨机器数据导出请求，放行
-        		}
-        		
-        		String requestType = request.getHeader(RequestContext.REQUEST_TYPE);
-				if(servletPath.indexOf("/data/json/") >= 0 
-        				&& RequestContext.XMLHTTP_REQUEST.equals(requestType ) ) {
-        			return false; // ajax json跨域请求（多为本地调试用），放行。（注：jQuery发ajax请求需要在header里加上此参数）
-        		}
-        		
-        		return true;
-        	}
+    	// 3、安全级别 >= 3, 限制对所有 htm、html、restful（部分除外）的访问
+		if( servletPath.indexOf(".htm") >= 0 ) {
+    		return true;
+    	}
+		else if( servletPath.indexOf(".") < 0 ) { // 无后缀，一般restful地址 或 /download
+    		if(servletPath.indexOf("/data/export/") >= 0) { 
+    			return false; // 跨机器数据导出请求，放行
+    		}
+    		
+    		String requestType = request.getHeader(RequestContext.REQUEST_TYPE);
+			if( (servletPath.indexOf("/data/json/") >= 0 
+					&& RequestContext.XMLHTTP_REQUEST.equals(requestType)
+				) || servletPath.indexOf("/data/jsonp/") >= 0 ) {
+				
+    			return false; /* jsonp、ajax json跨域请求（多为本地调试用），放行。（注：jQuery发ajax请求需要在header里加上此参数）*/
+    		}
+    		
+    		return true;
     	}
     	
     	return false;
